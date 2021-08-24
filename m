@@ -2,135 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985633F6349
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFE33F635C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbhHXQvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:51:44 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:47113 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232862AbhHXQvh (ORCPT
+        id S233770AbhHXQwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:52:30 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:36697 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233753AbhHXQwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:51:37 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 17OGoVNT016204;
-        Wed, 25 Aug 2021 01:50:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 17OGoVNT016204
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629823832;
-        bh=EkRhcEpTCWDYCMBzaFS4gMIDR56jHPgpS+7UsaLpdHQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Nm2Q/6WNCiAZMfol9gE9KP1GHUwCyzQxGcs85vyGOjIaf2QRjCz0yusE6oNTt8qp/
-         ADsZhffXjDjOSdYb1woATFzDOlP48vepPeLSnTVLL1sp2eqYdjHw7NikK4pI+4xE8J
-         PH+/lgQH78tu8gvKmifdgD9aJictv1ycV+X75nTuY8yGabmGlNh8OB4AGnFkzCwWAg
-         q67rkXIx0KPeOVQXykyy6s/1DsO8kVoJqtP/yyhQjc6VTRiWNZmhaSs5yZAajkyIoq
-         20j6HtNLBcAPpNeaiPFoP7djaq5V5ha2nMNCKJQ76P9KxXGjcYSLGNqPKyIB4WPIOM
-         fCQzZT5ffOX5Q==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts: add generic install.sh
-Date:   Wed, 25 Aug 2021 01:50:24 +0900
-Message-Id: <20210824165024.303771-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        Tue, 24 Aug 2021 12:52:22 -0400
+Received: by mail-ot1-f42.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso26869894otv.3;
+        Tue, 24 Aug 2021 09:51:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=TqDTocubplmJ8KIunSvtYYFh2tdzr0o4H6aSnsFWwoQ=;
+        b=FajAzifi4PglX2qAAZvtbVMhll47upp6HknWOrPTgwem6GWwkElSrZ0jEWTwweFFNG
+         CEQ3T77ZpCTUeSCGvk+Zy+wnEPRaXmGKU0McGXEo4fD6T+3hx2/UTgPkPB7Rjd9MZJoe
+         hvhTEFvrqwGPd4ZXHlJfmJoVCZH7TtPhfvwDkf/W9ycAqg547QmEwCMF9HgcEs35ubJI
+         hzmJiQGrbIbgSzms2R/+/qNufkiaOOKIopynD66VzT7gYPqCXYK5mTbUXh0CerY9sRNH
+         ovLfy3qpEzlqJw80T9LH23YW8qzBjcSpLoNXhwxXhQWK5cda/nno2XTivcpcvlJlPcVp
+         DVtw==
+X-Gm-Message-State: AOAM531Qkgm0QiR8iAsUx290nRm/MtyqNVq+Uh5axZ83jNtrEFoAj9d6
+        WjUHp+/jYnT5/atG4/CF4w==
+X-Google-Smtp-Source: ABdhPJw2Hya/lTKLZYUqyBceJAvjGguwwCvu6T1Gp8q0wDr42rjLwqv+cAQ7rocAmn8afcP6DRhdhw==
+X-Received: by 2002:a9d:de1:: with SMTP id 88mr34275329ots.60.1629823898082;
+        Tue, 24 Aug 2021 09:51:38 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id g8sm4048072otk.34.2021.08.24.09.51.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 09:51:37 -0700 (PDT)
+Received: (nullmailer pid 614406 invoked by uid 1000);
+        Tue, 24 Aug 2021 16:51:36 -0000
+Date:   Tue, 24 Aug 2021 11:51:36 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, mir@bang-olufsen.dk,
+        Russell King <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH net-next 2/5] dt-bindings: net: dsa: realtek-smi:
+ document new compatible rtl8365mb
+Message-ID: <YSUjmFdtX5uUutPt@robh.at.kernel.org>
+References: <20210822193145.1312668-1-alvin@pqrs.dk>
+ <20210822193145.1312668-3-alvin@pqrs.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210822193145.1312668-3-alvin@pqrs.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many architectures has a similar install.sh script.
+On Sun, 22 Aug 2021 21:31:40 +0200, Alvin Šipraga wrote:
+> From: Alvin Šipraga <alsi@bang-olufsen.dk>
+> 
+> rtl8365mb is a new realtek-smi subdriver for the RTL8365MB-VC 4+1 port
+> 10/100/1000M Ethernet switch controller. Its compatible string is
+> "realtek,rtl8365mb".
+> 
+> Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+> ---
+>  Documentation/devicetree/bindings/net/dsa/realtek-smi.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-The first half is really generic; ensures the kernel image and the map
-file exist, then invokes ~/bin/${INSTALLKERNEL} or /sbin/${INSTALLKERNEL}
-if available.
-
-The second half is kind of arch-specific. It just copies the kernel image
-and map file to the destination, but the code is slightly different.
-(Maybe, this part can be consolidated as well if we want).
-
-This patch factors out the generic part into scripts/install.sh, which
-will architectures to drop the duplicated code.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- Makefile           |  8 ++++++++
- scripts/install.sh | 43 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 51 insertions(+)
- create mode 100755 scripts/install.sh
-
-diff --git a/Makefile b/Makefile
-index 185ce47d6734..725eadc4fcb8 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1325,6 +1325,14 @@ scripts_unifdef: scripts_basic
- 
- install: sub_make_done :=
- 
-+# Install $(KBUILD_IMAGE) by default.
-+# If necessary, override install-image per target.
-+install-image = $(KBUILD_IMAGE)
-+
-+quiet_cmd_install = INSTALL $(INSTALL_PATH)
-+      cmd_install = scripts/install.sh $(KERNELRELEASE) $(install-image) \
-+			System.map "$(INSTALL_PATH)"
-+
- # ---------------------------------------------------------------------------
- # Tools
- 
-diff --git a/scripts/install.sh b/scripts/install.sh
-new file mode 100755
-index 000000000000..6ac0e0c0f078
---- /dev/null
-+++ b/scripts/install.sh
-@@ -0,0 +1,43 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# This file is subject to the terms and conditions of the GNU General Public
-+# License.  See the file "COPYING" in the main directory of this archive
-+# for more details.
-+#
-+# Copyright (C) 1995 by Linus Torvalds
-+#
-+# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
-+#
-+# Arguments:
-+#   $1 - kernel version
-+#   $2 - kernel image file
-+#   $3 - kernel map file
-+#   $4 - default install path (blank if root directory)
-+
-+verify () {
-+	if [ ! -f "$1" ]; then
-+		echo >&2
-+		echo >&2 " *** Missing file: $1"
-+		echo >&2 ' *** You need to run "make" before "make install".'
-+		echo >&2
-+		exit 1
-+	fi
-+}
-+
-+# Make sure the files actually exist
-+verify "$2"
-+verify "$3"
-+
-+# User/arch may have a custom install script
-+
-+for script in "~/bin/${INSTALLKERNEL}" "/sbin/${INSTALLKERNEL}" \
-+		"arch/${SRCARCH}/install.sh" "arch/${SRCARCH}/boot/install.sh"
-+do
-+	if [ -x "${script}" ]; then
-+		exec "${script}" "$@"
-+	fi
-+done
-+
-+echo "No install script found" >&2
-+exit 1
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
