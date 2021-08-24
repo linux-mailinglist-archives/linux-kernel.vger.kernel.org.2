@@ -2,107 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6213F59E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02583F59E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235331AbhHXIhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
+        id S235382AbhHXIiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbhHXIhH (ORCPT
+        with ESMTP id S235349AbhHXIiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:37:07 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80028C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:36:23 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id g184so610584pgc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:36:23 -0700 (PDT)
+        Tue, 24 Aug 2021 04:38:14 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF78C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:37:31 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id r2so19109429pgl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:37:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F1XMyMZTrlMsAyxJHJ7+jgxpDBQIUvOlx6q4619hvdU=;
-        b=NUoRDRdLXEWTEekCDmBtZ/exdtGXze3rrbYg+ex/+uIqp7rJsa6G1CjW9ZlBEbGJPa
-         0E9ZTiBZqMWIHwk7RZqP77HaITamZxBNT5RVqPYk0GC4AG8bcGOqwG6McNx/1WRjBYBZ
-         aDAXLl9Mjfl68opbSN2x68GaPNFYOVo6orj7fRjUDwa/kZLN3+OZTwxFE03UekCI6qhR
-         3I2uNbJQVkKOsWInW3GrI+etyfetVKbN6j/7w0fuZB2RqYweNmNrkge8BnBLNF6xVwdy
-         wqF6TjBxK2KjbLdlWUR2uSSpM53Yf9dG5mFMUrtxcOzUV2tjRiP2zld8yCb1tnES86TI
-         KmHQ==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=B2gKm6chBsv5r3i/L80Y3/d7t6I2kPU5f7xacAN/16I=;
+        b=UN1hqkTUde+ZVmSeDs02KLaAqXx+Udsm8mkh6v/GeeQMKx9dUk3As7xnfnzTCdVvIT
+         8GAdUxoIa2yNJ1CT23mGdkZgZoRYCn396OF0ASku2oEgxzklDtMa3azVrL+49MbiuVHe
+         Ys8qNpa5mE9KrEsMezYUpgiC64AkYaXleghP6Semde5mheftJcQQrlAR4pC+Nx9xyKXf
+         FzwkfCFrBnkSP0X2SY4coE8htycrioioGpxj5zPfjnEGzdH+4UoCrU7FL6CH7N/yFTgC
+         ZtsmHIBe/Qx4Sbwxq0IRDLLHF0Rdh+F4nMlSZdlz2ZyMiYY54IiujG06xWqKWly7QcUT
+         4Jsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F1XMyMZTrlMsAyxJHJ7+jgxpDBQIUvOlx6q4619hvdU=;
-        b=un40kFX6te21Ta0GV3kVMKf29UfqJNSdGMkH7klS3afg8ZPrkNsz5jG1GCSaCw90XI
-         kYy++3XQDNAaTdGjBwwDhIcf98CF3KdudLkzvX0898GaBaj7kVuZQ1wJDadYjuXZzsAt
-         4+DLdYSUGu6mxL+i6oYRRxtyWvRgAp1Hi6oLoetHwE78OlHzTAgkr35o6dPqRWSg5mgA
-         +QXNLknkkgzfdPQcWS2Pf1rJJwxNkTxosAfVRHpV86YM0HsEaE+pvXYk89epuLCexqu2
-         +keSWI2QPubNGpC0XxMDo3bNCH19ZTkVavmAfAIRdwKm5m2W1CAbD5fCr1uw0vlYC0YQ
-         RYqA==
-X-Gm-Message-State: AOAM530a96Hqn6unxzG6zljC89TwsfF29tuisgXhoTSxEDKkmLU//dg7
-        XQH+vdrgRy2hUEbndwLRC3MWUA==
-X-Google-Smtp-Source: ABdhPJyUW69QXyRkb+6UuNtr5+pZZHByZSuSk3OEROQ/prtfEBYN0rOUFRkvTRN1VPFRsmRgERbpVw==
-X-Received: by 2002:aa7:86c3:0:b0:3eb:1857:8ae9 with SMTP id h3-20020aa786c3000000b003eb18578ae9mr14612757pfo.52.1629794182897;
-        Tue, 24 Aug 2021 01:36:22 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id z3sm18612008pff.47.2021.08.24.01.36.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 01:36:22 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 16:36:15 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     mathieu.poirier@linaro.org, coresight@lists.linaro.org,
-        linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
-        acme@kernel.org, suzuki.poulose@arm.com,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] perf cs-etm: Show a warning for an unknown magic
- number
-Message-ID: <20210824083615.GF204566@leoy-ThinkPad-X240s>
-References: <20210806134109.1182235-1-james.clark@arm.com>
- <20210806134109.1182235-10-james.clark@arm.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=B2gKm6chBsv5r3i/L80Y3/d7t6I2kPU5f7xacAN/16I=;
+        b=op1XfvpnS45O3WO6qTr2oKpnBpAjnD6cOULwjDshnT3nAxEjj682iq4fP4DzG1WxwJ
+         HCVK0joKetn4AdyZDqj+9DKk4vI07IlDE9cyMRPE7x7OZx0fQKorPO0l3mqfUEkh+/7F
+         uC32+5h1Ex2hOq2OGVKUCmZynOBbMs2HKua2jlGFetEnXuSUXd1U2wZv+44mowC4Pnuk
+         1CZfubVFzRpCgnfG7gJYJPlvqdvGthUTT+PX9mIS+Lv5OWzDaG4OWRrdqMOzZVkUFTAf
+         o8J1OiFZqxoQ4TvBsy9WfrRoG2xzxcgRcZNJ0lREPKzl0dbfd/NPIsSXPmLNeV4vJvrf
+         PN2A==
+X-Gm-Message-State: AOAM531BePGfG0sg2qcLiR5Cg2B36Rn6A8V7NbOxnduFrir72+rKYBDY
+        3GO7FPJvovwbeFDjCFqCyXv6jQ==
+X-Google-Smtp-Source: ABdhPJwm8/hDWjBO4m0jD9d+GUvfnpaDVbH4ZheRLKmoA8ju9VtsRmFdyxMMuVmlFA/NmuXdBO1Ygw==
+X-Received: by 2002:a62:9712:0:b029:3be:3408:65a9 with SMTP id n18-20020a6297120000b02903be340865a9mr38537843pfe.63.1629794250637;
+        Tue, 24 Aug 2021 01:37:30 -0700 (PDT)
+Received: from [192.168.10.23] (124-171-108-209.dyn.iinet.net.au. [124.171.108.209])
+        by smtp.gmail.com with UTF8SMTPSA id ds6sm1700529pjb.32.2021.08.24.01.37.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 01:37:30 -0700 (PDT)
+Message-ID: <a1be1913-f564-924b-1750-03efa859a0b1@ozlabs.ru>
+Date:   Tue, 24 Aug 2021 18:37:25 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806134109.1182235-10-james.clark@arm.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0
+Subject: Re: [PATCH kernel] KVM: PPC: Book3S HV: Make unique debugfs nodename
+Content-Language: en-US
+To:     Fabiano Rosas <farosas@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@ozlabs.org>
+References: <20210707041344.3803554-1-aik@ozlabs.ru>
+ <be02290c-60a0-48af-0491-61e8a6d5b7b7@ozlabs.ru>
+ <87pmubu306.fsf@linux.ibm.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <87pmubu306.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 02:41:09PM +0100, James Clark wrote:
-> Currently perf reports "Cannot allocate memory" which isn't very helpful
-> for a potentially user facing issue. If we add a new magic number in
-> the future, perf will be able to report unrecognised magic numbers.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
 
-> ---
->  tools/perf/util/cs-etm.c | 5 +++++
->  1 file changed, 5 insertions(+)
+On 18/08/2021 08:20, Fabiano Rosas wrote:
+> Alexey Kardashevskiy <aik@ozlabs.ru> writes:
 > 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 788ad5a099f6..5b276bdb96a6 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -2973,6 +2973,11 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
->  
->  			/* ETE shares first part of metadata with ETMv4 */
->  			trcidr_idx = CS_ETMV4_TRCTRACEIDR;
-> +		} else {
-> +			ui__error("CS ETM Trace: Unrecognised magic number %#"PRIx64". File could be from a newer version of perf.\n",
-> +				  ptr[i]);
-> +			err = -EINVAL;
-> +			goto err_free_metadata;
->  		}
->  
->  		if (!metadata[j]) {
-> -- 
-> 2.28.0
+>> On 07/07/2021 14:13, Alexey Kardashevskiy wrote:
 > 
+>> alternatively move this debugfs stuff under the platform-independent
+>> directory, how about that?
+> 
+> That's a good idea. I only now realized we have two separate directories
+> for the same guest:
+> 
+> $ ls /sys/kernel/debug/kvm/ | grep $pid
+> 19062-11
+> vm19062
+> 
+> Looks like we would have to implement kvm_arch_create_vcpu_debugfs for
+> the vcpu information and add a similar hook for the vm.
+
+Something like that. From the git history, it looks like the ppc folder 
+was added first and then the generic kvm folder was added but apparently 
+they did not notice the ppc one due to natural reasons :)
+
+If you are not too busy, can you please merge the ppc one into the 
+generic one and post the patch, so we won't need to fix these 
+duplication warnings again? Thanks,
+
+
+
+>>> ---
+>>>    arch/powerpc/kvm/book3s_hv.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+>>> index 1d1fcc290fca..0223ddc0eed0 100644
+>>> --- a/arch/powerpc/kvm/book3s_hv.c
+>>> +++ b/arch/powerpc/kvm/book3s_hv.c
+>>> @@ -5227,7 +5227,7 @@ static int kvmppc_core_init_vm_hv(struct kvm *kvm)
+>>>    	/*
+>>>    	 * Create a debugfs directory for the VM
+>>>    	 */
+>>> -	snprintf(buf, sizeof(buf), "vm%d", current->pid);
+>>> +	snprintf(buf, sizeof(buf), "vm%d-lp%ld", current->pid, lpid);
+>>>    	kvm->arch.debugfs_dir = debugfs_create_dir(buf, kvm_debugfs_dir);
+>>>    	kvmppc_mmu_debugfs_init(kvm);
+>>>    	if (radix_enabled())
+>>>
+
+-- 
+Alexey
