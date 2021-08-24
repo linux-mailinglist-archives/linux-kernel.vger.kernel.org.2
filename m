@@ -2,230 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049AC3F6C26
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DC03F6C28
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhHXXV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 19:21:28 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:34457 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231842AbhHXXVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 19:21:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629847241; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=+hqb204QRL2EPxKMGNmO/oBWGOBKdNFKw5QUoXVhKro=; b=QxgFigLlpwPHhkv3JUYkV0ALtbFRhlNT0Wz2ZCWzWO4KoiaBdbKxqMzh/kkvX+pIJNzVtp9y
- UXSQn77nL3LGMVDtB8DcJKtQB/PwF59MkElDOinhMvLFaueao8hjpwGW5qUoJ31ZcCBPteH7
- ZuGilc5OBddcQjeOPgFNkqCw3nQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 61257ec44cd9015037b8d94f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Aug 2021 23:20:36
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 746B0C43619; Tue, 24 Aug 2021 23:20:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 40E07C4338F;
-        Tue, 24 Aug 2021 23:20:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 40E07C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, mkrishn@codeaurora.org,
-        kalyan_t@codeaurora.org, rajeevny@codeaurora.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sc7280: Add Display Port node
-Date:   Tue, 24 Aug 2021 16:20:26 -0700
-Message-Id: <1629847226-10112-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S233464AbhHXXXQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Aug 2021 19:23:16 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:35420 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231745AbhHXXXP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 19:23:15 -0400
+Received: by mail-ed1-f48.google.com with SMTP id q17so12242691edv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 16:22:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jt1xPoihlMFualcaA7azQSeNjnGZTnYUqYiE9vCrqw4=;
+        b=jkMiwJyiqmQi2v2zemE+XCCtY0YT22oGzKEUXPcKjV5wpeltO+YW+46q12Vsf/JqrY
+         UAhuH89VOy0Q0O0nT8V/jsGwUEKbTxu5iaXlOxyy1wSYVyrCT2uT1rqR4z3NcmF4yOSD
+         XtCrFFp2VxE07sNYF2dGaN0pVHNOSc38mAdiIHALI9bwdtS4th4eOowXfXWl9tb5AmIs
+         74k5NqHsN1wZWAAW3Ov3LtMWkWbMUuuTbokSkYUp9Dz/cmL9xMprIVTb7C5RlLiSf4LU
+         q82t5sh09En5ok+2q5OegiUdKsgu+FBPJTb0xcjwQzK+/tnuKNOmC/lKLG0hqaBmOJU5
+         iApg==
+X-Gm-Message-State: AOAM533wlfq1tmcXizSzKnCO7gbvvV8yfkhpSPYdeB/7iCCWNxr5EHt6
+        1JakgOFeU6fCzhriiZ1lXM7LDTEuot509mm4drY=
+X-Google-Smtp-Source: ABdhPJziKW6jfdeUb4d4V2qsdARFCHE6mqvY1OCTNOGkaZMl2VuYepfUOwr7MMCOw1oT/1BJc3ZD/XCeYLQ9z6cW0cw=
+X-Received: by 2002:a05:6402:35d2:: with SMTP id z18mr14289865edc.92.1629847349638;
+ Tue, 24 Aug 2021 16:22:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
+ <3181031.RqgVF4sTRC@tjmaciei-mobl5> <YR1HYRRN0HMTxXrw@zn.tnic>
+ <BCC327C2-CF9F-4910-B626-315E515E9A3A@intel.com> <YR14zq2LaExjhFR+@zn.tnic>
+In-Reply-To: <YR14zq2LaExjhFR+@zn.tnic>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 24 Aug 2021 19:22:18 -0400
+Message-ID: <CAJvTdKnhn8rOKUJ0VKvM08sFYkvmEsSWBsH2ynncxH9_z49bxA@mail.gmail.com>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add display port supported node for sc7280. Also correct dp-phy node
-tx/rx/pcs/tx2/rx2 base reg address to fix aux channel read/write
-failure issue.
+On Wed, Aug 18, 2021 at 5:16 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Aug 18, 2021 at 08:43:50PM +0000, Bae, Chang Seok wrote:
+> > Maybe I’m missing something, but I wonder what’s the difference
+> > from reading XCR0.
+>
+> Wny, because adding another prctl() is too damn hard?
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280-idp2.dts |  9 +++
- arch/arm64/boot/dts/qcom/sc7280.dtsi     | 98 +++++++++++++++++++++++++++++---
- 2 files changed, 100 insertions(+), 7 deletions(-)
+Adding complexity is easy.  Removing it is the hard part. ;-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
-index b1cf70e..4aea369 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
-@@ -202,3 +202,12 @@ ap_h1_spi: &spi14 {};
- 		backlight = <&backlight>;
- 	};
- };
-+
-+&msm_dp {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&dp_hot_plug_det>;
-+	data-lanes = <0 1>;
-+	vdda-1p2-supply = <&vreg_l6b_1p2>;
-+	vdda-0p9-supply = <&vreg_l1b_0p8>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index c29226b..a350d84 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2918,15 +2918,11 @@
- 			dp_phy: dp-phy@88ea200 {
- 				reg = <0 0x088ea200 0 0x200>,
- 				      <0 0x088ea400 0 0x200>,
--				      <0 0x088eac00 0 0x400>,
-+				      <0 0x088eaa00 0 0x200>,
- 				      <0 0x088ea600 0 0x200>,
--				      <0 0x088ea800 0 0x200>,
--				      <0 0x088eaa00 0 0x100>;
-+				      <0 0x088ea800 0 0x200>;
- 				#phy-cells = <0>;
- 				#clock-cells = <1>;
--				clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
--				clock-names = "pipe0";
--				clock-output-names = "usb3_phy_pipe_clk_src";
- 			};
- 		};
- 
-@@ -3202,6 +3198,13 @@
- 							remote-endpoint = <&edp_in>;
- 						};
- 					};
-+
-+					port@2 {
-+                                                reg = <2>;
-+                                                dpu_intf0_out: endpoint {
-+                                                        remote-endpoint = <&dp_in>;
-+                                                };
-+                                        };
- 				};
- 
- 				mdp_opp_table: mdp-opp-table {
-@@ -3389,6 +3392,74 @@
- 					};
- 				};
- 			};
-+
-+			msm_dp: displayport-controller@ae90000 {
-+				status = "disabled";
-+				compatible = "qcom,sc7180-dp";
-+
-+				reg = <0 0x0ae90000 0 0x1400>;
-+
-+				interrupt-parent = <&mdss>;
-+				interrupts = <12 IRQ_TYPE_NONE>;
-+
-+				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
-+				clock-names = "core_iface", "core_aux", "ctrl_link",
-+					      "ctrl_link_iface", "stream_pixel";
-+				#clock-cells = <1>;
-+				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
-+						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
-+				assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
-+				phys = <&dp_phy>;
-+				phy-names = "dp";
-+
-+				operating-points-v2 = <&dp_opp_table>;
-+				power-domains = <&rpmhpd SC7180_CX>;
-+
-+				#sound-dai-cells = <0>;
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					port@0 {
-+						reg = <0>;
-+						dp_in: endpoint {
-+							remote-endpoint = <&dpu_intf0_out>;
-+						};
-+					};
-+
-+					port@1 {
-+						reg = <1>;
-+						dp_out: endpoint { };
-+					};
-+				};
-+
-+				dp_opp_table: dp-opp-table {
-+					compatible = "operating-points-v2";
-+
-+					opp-160000000 {
-+						opp-hz = /bits/ 64 <160000000>;
-+						required-opps = <&rpmhpd_opp_low_svs>;
-+					};
-+
-+					opp-270000000 {
-+						opp-hz = /bits/ 64 <270000000>;
-+						required-opps = <&rpmhpd_opp_svs>;
-+					};
-+
-+					opp-540000000 {
-+						opp-hz = /bits/ 64 <540000000>;
-+						required-opps = <&rpmhpd_opp_svs_l1>;
-+					};
-+
-+					opp-810000000 {
-+						opp-hz = /bits/ 64 <810000000>;
-+						required-opps = <&rpmhpd_opp_nom>;
-+					};
-+				};
-+			};
- 		};
- 
- 		dispcc: clock-controller@af00000 {
-@@ -3398,7 +3469,8 @@
- 				 <&gcc GCC_DISP_GPLL0_CLK_SRC>,
- 				 <&dsi_phy 0>,
- 				 <&dsi_phy 1>,
--				 <0>, <0>,
-+			  	 <&dp_phy 0>,
-+			  	 <&dp_phy 1>,
- 				 <&msm_edp 0>,
- 				 <&msm_edp 1>;
- 			clock-names = "bi_tcxo", "gcc_disp_gpll0_clk",
-@@ -3525,6 +3597,18 @@
-                                 };
-                         };
- 
-+			dp_hot_plug_det: dp-hot-plug-det {
-+                                pinmux {
-+                                        pins = "gpio47";
-+                                        function = "dp_hot";
-+                                };
-+
-+				pinconf {
-+			                pins = "gpio47";
-+			                bias-disable;
-+			        };
-+                        };
-+
- 			qspi_clk: qspi-clk {
- 				pins = "gpio14";
- 				function = "qspi_clk";
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Programmers today know what CPUID and xgetbv(XCR0) mean:
+1. feature exists in the HW
+2. OS has ability to handle state
 
+This is true for all features.
+
+We are forced to complicate their life for AMX (and subsequent features)
+because of the legacy Linux signal ABI.
+We require that new apps invoke a system call to tell us that they are
+not indeed a legacy
+program, but that they are a program that understands if they use an
+alt-sig-stack
+that it must be big enough to handle whatever current hardware requires.
+
+The secondary motivation for the system call is the desire to give the
+kernel a hook
+so that it can refuse to give permission for some apps to use AMX,
+should the need arise.
+
+Programmers don't like this, but it nobody has figured out a more
+programmer-friendly way
+to meet these requirements.
+And so if they want to use AMX on Linux, they *must* use this new SET syscall.
+Since Linux enforces that they use it, they will use it if they want
+AMX (or subsequent features).
+
+> prctl(GET_FEATURES_WITH_KERNEL_ASSISTANCE);
+
+The problem is that it adds zero value over the currently used xgetbv(XCR0).
+As it adds no value, programmers will not use it.
+
+Sure, if the hardware is re-designed, and Linux is re-designed, and XCR0
+can then change at run-time during the lifetime of a program, we have additional
+challenges.  (such as legacy code that doesn't expect XCR0 to change
+at run-time).
+I don't think that this additional system call even begins to address
+that theoretical
+new world.
+
+But this discussion moot.  If it has no use, it will not get used.
+--
+Len Brown, Intel Open Source Technology Center
