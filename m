@@ -2,118 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2081D3F6C5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D6F3F6C5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235388AbhHXXwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 19:52:37 -0400
-Received: from ozlabs.org ([203.11.71.1]:38083 "EHLO ozlabs.org"
+        id S235813AbhHXXwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 19:52:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231552AbhHXXwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 19:52:36 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GvQr54nLDz9sW4;
-        Wed, 25 Aug 2021 09:51:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629849110;
-        bh=63d7GRj7v+w0BCripYHkLfK2Q6sS1tGG20uSv7wKGRU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=c/+05zGj9p4mzI8jWgDmC7GXqf4Ka3djv6eSs165cO48GaHVL67QY0b280jsBKI0d
-         AUBJAk05iUEOoMmbviK3lC6DUz66IaCzsl1HkINbVLyfToUk9GV9ediAyL9udt5JCc
-         Ug1vQj7InhUFofw8Oong6TQkH6oYMmcUP3Lsepp8NUKvGkXnlsbSf/GcnXNnVbtawp
-         SuJaik9doVFgEZsJwnX2HO+ta7f4XCf539LACA5waZhycPSHbmx5DNLePYaCzjyC+r
-         cXmjJhLQf5YiJxdpza1tg32sBSz1g2L2rhPkkYBplQZPU9tUQ3NJC0AIMfCd9LvpI4
-         DaCLG0e46S4yQ==
-Date:   Wed, 25 Aug 2021 09:51:48 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>
-Cc:     Chao Yu <chao@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the f2fs tree with the ext3 tree
-Message-ID: <20210825095148.1eb9bc54@canb.auug.org.au>
+        id S235429AbhHXXwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 19:52:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E25361247;
+        Tue, 24 Aug 2021 23:52:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629849129;
+        bh=Y+YdA+2CMsgqdmmpnQ4ORVcuiQP93MiMTcXGC05a0x8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P76SmD/+8qyjtGB124/Yo5+ywHRqyZ/spCL7h8+blkI86gF0FXQs/HUJJQKpLiLkB
+         5RhnTM7hVGcPauQvKe9vziKnZGWmCYjdD+tuW4vpXJ92WHG54t5ZP/mnfUizL8CcQW
+         QZdvcpTD9z/yHCQjEDJULv8FWPSkrLXW5tFYHv9FKSDoqnVRncqLZkux0n++Ubo+Qr
+         VyG5U5nnrWbBdqppsHYfnIjMAlucgE2zy/ypEtF8GXHuP7mJvPIAjimAfYoIeIKh7a
+         Y/F7kc3fbApgHP9tJuRaH+CL0EDx9WuVA7IlO894qEzaDHqNbVTjydrfD5xjE7R+GP
+         6sMorJjKV8UPA==
+Date:   Tue, 24 Aug 2021 16:52:08 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Kangmin Park <l4stpr0gr4m@gmail.com>
+Cc:     Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 net-next] net: bridge: change return type of
+ br_handle_ingress_vlan_tunnel
+Message-ID: <20210824165208.36944d77@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <d37ff915-6d94-2d22-9e93-46b374fc47d7@nvidia.com>
+References: <20210823102118.17966-1-l4stpr0gr4m@gmail.com>
+        <d37ff915-6d94-2d22-9e93-46b374fc47d7@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ga+cSpzEGhqgc9OA2W9.e/.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ga+cSpzEGhqgc9OA2W9.e/.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 23 Aug 2021 13:25:20 +0300 Nikolay Aleksandrov wrote:
+> On 23/08/2021 13:21, Kangmin Park wrote:
+> > br_handle_ingress_vlan_tunnel() is only referenced in
+> > br_handle_frame(). If br_handle_ingress_vlan_tunnel() is called and
+> > return non-zero value, goto drop in br_handle_frame().
+> > 
+> > But, br_handle_ingress_vlan_tunnel() always return 0. So, the
+> > routines that check the return value and goto drop has no meaning.
+> > 
+> > Therefore, change return type of br_handle_ingress_vlan_tunnel() to
+> > void and remove if statement of br_handle_frame().
+> > 
+> > Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
+> 
+> Looks good to me,
+> Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
 
-Hi all,
-
-Today's linux-next merge of the f2fs tree got a conflict in:
-
-  fs/f2fs/file.c
-
-between commit:
-
-  edc6d01bad73 ("f2fs: Convert to using invalidate_lock")
-
-from the ext3 tree and commit:
-
-  4817758c80ad ("f2fs: adjust unlock order for cleanup")
-
-from the f2fs tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/f2fs/file.c
-index 1ff333755721,3330efb41f22..000000000000
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@@ -3473,8 -3496,8 +3494,8 @@@ static int f2fs_release_compress_blocks
-  		released_blocks +=3D ret;
-  	}
- =20
-- 	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- -	up_write(&F2FS_I(inode)->i_mmap_sem);
- +	filemap_invalidate_unlock(inode->i_mapping);
-+ 	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-  out:
-  	inode_unlock(inode);
- =20
-@@@ -3626,8 -3649,8 +3647,8 @@@ static int f2fs_reserve_compress_blocks
-  		reserved_blocks +=3D ret;
-  	}
- =20
-- 	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- -	up_write(&F2FS_I(inode)->i_mmap_sem);
- +	filemap_invalidate_unlock(inode->i_mapping);
-+ 	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- =20
-  	if (ret >=3D 0) {
-  		clear_inode_flag(inode, FI_COMPRESS_RELEASED);
-
---Sig_/Ga+cSpzEGhqgc9OA2W9.e/.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmElhhQACgkQAVBC80lX
-0GxcHQf+MjxGIVXZ+89/gBg/PnoRPwmURLWYXA5jgreViSEdbXE5M7HfZerT5uw2
-A0dPcYMUPS55IrqoxPmTdKVnP2ENWobqLYrVUp4w9a0vnQKTiAPOVD7R8efOj8dq
-e3dSncF6ZKvdHrcjfQSxxMu6XYko+vcq8qU2glTBIPJgC2QpyV3NgRYUQV7HhXRo
-pBIiy8UORIhyjUOVVwI15jJ33NIYoSNX7MG6NHGTgOBJE8XqXzQvHmS6TEX0v43I
-5OYx0nCmovvQ7obJVwTfLTxMSjOKY5TNpG2zSuypGreogxT2jSEQcMY+vQgSPTud
-4KPAwvHBdOMyAKvmVWyP2y7DpqA9oA==
-=Cwia
------END PGP SIGNATURE-----
-
---Sig_/Ga+cSpzEGhqgc9OA2W9.e/.--
+Applied, thanks!
