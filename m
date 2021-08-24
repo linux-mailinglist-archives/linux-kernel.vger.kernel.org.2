@@ -2,142 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF32D3F699F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AA03F69A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbhHXTNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:13:37 -0400
-Received: from mail-dm6nam10on2078.outbound.protection.outlook.com ([40.107.93.78]:35905
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232117AbhHXTNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:13:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZjBppCnJXDehO+mmEDsKd7CT6JkHHpHobdff0mUOZiKff5XRczMP/SASfufOuO/A39SyhzbatkxX3aHPCkPRAgGk5et9RDqIjzFWe7Vh7ZMuGf+99es9erP6PRLkcqCbfEDQFNlYT8Ulq1C9FLXixz9MN3oIixOZWQBFLg2KFPOkt/pp+C5ythpJiVvA8Vjj2nxVc6bGz2B6XHao5dVLPkWQlu22uiP9R7GftGy913t2jZl/Ee/pUMfLt/t13xsm0LHH5h3XQqTyU+yQYeTGETZetDCJACyEhEqFUx3n813HNtKQza517zBMKhOEd9Yunj3DvRN6pcN0e73MYIZBxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=abMgsTLmWuOhEWdZ71ia/I1HSWvK2+MqEjuPC/HEZu0=;
- b=kcQ7gZdTbUDMdRSynGKy4CiCzelCQPigXZK9tGFAay6ijSocDrMnBh++GhfOW4UTHtt8iLc4ZwuakKLYvyhdj3sqv+R1B7CPfYvVpF5ofpZq9QrEnEAKSR3vWkv3MdcVvEd75FOeWA01m33Twpl0qtP4Of0JTTOp+9IGx24Ch3IOi1Wtt2LOw3y4Vq76I4YqGIMC0D+O792Vatr/3WxXhbTysYgR/W19LJXIhVxmE6QUN7Mg3J06xAgBfhz8IeAvKz4RCx4EqjMJzS01wxmmkl543v68lCUs0bvwz7LPpF84XRKbxkcvVmRpLhiQ4RBn3Ky4x/FVa2N8mPktFvJgag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=abMgsTLmWuOhEWdZ71ia/I1HSWvK2+MqEjuPC/HEZu0=;
- b=YSxHh7m4hsRMUcTfwcamON5pvMASmj4gMw+qi3EAuHpceDczAtO5eNV6VibojSq1Ldr1mxYQzV3sOICltYw8PaKF2YSl+GEOy1JC+pV4mFpi76Nq9m1hWOeT0BKLMkCYouqoBqWsoueB+gjKe4XGqSKyCIR797DjU5lYWXl4/18N5tHNkXM5+6OkpGTMAhcR2ZeddBA7OAbfVm0AToxzd8lT1M9eaMtrrC84LcFIG1RsRfPxGlIcJIYqMBTTznzZjUzM85CX0/Q6PGQshd/3X6D/FwJjWGgaT3OqquRIWFUOjGX5YHOgEIlQJlu/PrcOF73TEbJhj0s2uHiHuY/0UQ==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5256.namprd12.prod.outlook.com (2603:10b6:208:319::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Tue, 24 Aug
- 2021 19:12:49 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Tue, 24 Aug 2021
- 19:12:49 +0000
-Date:   Tue, 24 Aug 2021 16:12:48 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Maor Gottlieb <maorg@nvidia.com>
-Cc:     dledford@redhat.com, hch@infradead.org, leonro@nvidia.com,
-        aelior@marvell.com, daniel@ffwll.ch, airlied@linux.ie,
-        dennis.dalessandro@cornelisnetworks.com,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        mkalderon@marvell.com, mike.marciniszyn@cornelisnetworks.com,
-        mustafa.ismail@intel.com, rodrigo.vivi@intel.com,
-        sroland@vmware.com, shiraz.saleem@intel.com, tzimmermann@suse.de,
-        linux-graphics-maintainer@vmware.com, liweihang@huawei.com,
-        liangwenpeng@huawei.com, yishaih@nvidia.com, zackr@vmware.com,
-        zyjzyj2000@gmail.com
-Subject: Re: [PATCH rdma-next v4 2/3] lib/scatterlist: Fix wrong update of
- orig_nents
-Message-ID: <20210824191248.GY1721383@nvidia.com>
-References: <20210824142531.3877007-1-maorg@nvidia.com>
- <20210824142531.3877007-3-maorg@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824142531.3877007-3-maorg@nvidia.com>
-X-ClientProxiedBy: MN2PR12CA0007.namprd12.prod.outlook.com
- (2603:10b6:208:a8::20) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S234462AbhHXTPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:15:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232117AbhHXTPV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 15:15:21 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E56C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:14:37 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id u3so46513446ejz.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:14:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=hjAqUT+Fq6/TWZa/X42R0R7+2i4oUVHe3Y/7siyGu+8=;
+        b=iDwJf5ecAx07otgWfeMwBbfxTlybCAZG9A/cTmWl6CVeIAkhuvdbqRqaLkEFQxOoff
+         LOD6dAvAjyE6rpLGvou+zH8C7+TFg8U8DF3Ybbd8z4aSuGc2EQGeJM/XRRv8yD+oQXtY
+         Ve6CLaywqobWYicpjerqkQgFLmkVdPi0gTZP27RmRrBt/1Mitiwp5FbmgNE3mkfyLlmA
+         vzX/id0G2Gi1CprPJTiXtMRbW9Fu6n2bxHMlHT1xpjtt3YWFofHJzTW7pcAakbAEREl9
+         k0bzKvBa1cT6F82PKiDcIkafU2vFaOUoxyaiZCq6EM4geAe6dmCyA0kebjU/mMJeoP15
+         5/DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=hjAqUT+Fq6/TWZa/X42R0R7+2i4oUVHe3Y/7siyGu+8=;
+        b=aSH4q5B11UC47Be/M6cWEV47TMcYVTXtK03rrZGKd6SqUiQoR7H6FGx/3W0ucM5HZ/
+         XBwNnms0UAtrH99uk+Ucs04Pqp2U3dZOndXxJcM6nwH26Yyq8z5yIpP1Pn/1NJutDf7E
+         /NeSmZdbeSdyOISubopfQDN+TXDVitPuIIREwFKfzG2e+ED7WP9JpRaeFMbRBuwcIK2B
+         qPSU6koKh/HFaREtu+TE5usvzN3d8ZY0UG1Vn9SiKSLHVZLDWpUNxSc97xr2Rps49nHd
+         JrFcIxcPKcDyIq8rTYJSA8lpCLRnH3sLkCxvteaElKt4tIZo1aCPnp3tY5BiLIHBph7c
+         0t6Q==
+X-Gm-Message-State: AOAM532H5rY39jVbV9BIPbd9+pcLyg/fwBrZ/ewxXVrPgyZWfvQhctvK
+        lr+gy4/dhVokx7+VLPha91stLiCJGGx2BwqFH1Q=
+X-Google-Smtp-Source: ABdhPJzsDCTe3wfMdNxcPqfUK85GEpBMkDKxvvVqdmKhOOEfP8rZmA97McCPoPgD8BUG+rWStNL4A4O7vLlC3/EwJ7o=
+X-Received: by 2002:a17:906:a399:: with SMTP id k25mr581529ejz.514.1629832475751;
+ Tue, 24 Aug 2021 12:14:35 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR12CA0007.namprd12.prod.outlook.com (2603:10b6:208:a8::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 19:12:49 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIbqq-004YzM-5S; Tue, 24 Aug 2021 16:12:48 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8326c9fc-1077-41e6-c0a4-08d9673329b1
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5256:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5256E8FCE571B2625EE4FADFC2C59@BL1PR12MB5256.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:561;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8BkXlmtyXuqwVLHKGpQkA34uPsBBhzL9euo//nTP6KygrTlbkhLMsDSXKkIKVbHV0ZRZrgFZNPinWI620UCArMKAzgdWjG0d37Dy2/j75lPZ9Bt4+I+xN0ZS+HtofFRCvnqXwvUWoE0Rr59VoHd8Mhbig7BImA4HGSVRWSNhXV2D0+JYd/IxzNSy6iHAQLpHhUE8m4dpvzbkkCk3aRxRom3RX49y8ECEhXdgGULK8o5+LR+M19/A47fQ7c5AanWgzEFO0W+IshKqjZr1f6AvnR8j1LBbE4zb9FJpPhYGSrEWaXu7XbFhulAHXN9IBKteEml7gjv4B1k0Q9Yfb5fA/DFO9gPqVhERECgTFDcIQhkKJHvFcwFoumYbcZ6pK6or3EP7ZA4d3VYiKid63AMJ+YZ922rIp/uq451y+jO+71NLIOpSJKANtH8i82QM67JwIYhPNW+w3HiRHzItT5I1YtCklm/rpH1RaQtUuki+Bt6zlQ4f2Nv4c+nTfRvwbRfBpLRrcywCsfJ0bDX9+au4Ko5yJjUSrEhJncRpmqjJ1znWovGiaZ7CXCW4hYX9X30gOLyVbsuacX+MrBVGXuiwbRXAsJlsye2R2kd/Vg1kdHxL0b3i8USsUri9fELcquwqbiD1h2C6M1RqlD2MB9g2kA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(346002)(39860400002)(396003)(1076003)(66556008)(86362001)(26005)(66476007)(8676002)(4744005)(6636002)(66946007)(5660300002)(37006003)(6862004)(9786002)(316002)(7416002)(2906002)(2616005)(36756003)(9746002)(38100700002)(478600001)(33656002)(186003)(4326008)(8936002)(426003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7fNoaHNaeNLMVMjo2tPoYuoWUWSsL1x678OCpEkSdoaCDfyU1DsmOHGZsEW7?=
- =?us-ascii?Q?A2rR/Dbcn4Ma1sD8EZrotjzxxMQZ9yGBdAIFDibS4D68dL+qt3gc715+RUHv?=
- =?us-ascii?Q?uw9AJQFfGYw0PGgrkeOd/nZJCFHGxqmVops7Np6LNd4JPQoWmDUugSXVE9ZK?=
- =?us-ascii?Q?y8vDnSy48iJGlf6QFrqChCzjbeRJiBd/aJMKFITtz7Ps3MbADyap/9O5++Mq?=
- =?us-ascii?Q?dC1GjPqmcMcZjqe/2hjXpCwCeCbdpHvj1wvs0+jpzUeZjfKsyeiNeDFIgL7+?=
- =?us-ascii?Q?4eMFkSUtX2X59pYl9qN8mVbTUq7yY7KYl0ZgmtUNKd0QC2mbdI8RD8jybV/e?=
- =?us-ascii?Q?sdGxfUXipAUx7j+ebCKbJo/zsd9303ATJFbcfZ6VCYA/lJqwfY3lRP7HilwO?=
- =?us-ascii?Q?aHKpZyr7sq8ro8JJKeJ3BuVbRdEmr+dCdyBLQ0uqqBohd4nIu0Bps+tFP8sk?=
- =?us-ascii?Q?+iRWQRANrb940jLwvihdt8SsR5SnXtX9/ifVu6A7Th1tKtb6NbTmqQ5DgRMk?=
- =?us-ascii?Q?sDwzxm16IWSIKJW2pdDA8EDtXrOP0D4+pnVXiu5FBusQlYsI3Y8kTgXbssWL?=
- =?us-ascii?Q?s9sFA0Fm8xbxH8ejMPKwoSBaF59i883AYWDtlPip6TS12OaNeDn38fjt4ZH/?=
- =?us-ascii?Q?5LVtQQQR2Ptyu6y6IqzguvZ6zc06MOTx16V9zXb/F3oUbhBVTs5Nk5P09PRg?=
- =?us-ascii?Q?4km4J1pkpxFrrZz0Ft6uvIVAlenQRAW+TokOApqJr++3QABjPB+n2BFCq+T6?=
- =?us-ascii?Q?Q1J84QtdPRDm7qhv5DZlbBmhjHG/f+RfbM4DKwvI7oY11xe9P4pBk/PyQdZ9?=
- =?us-ascii?Q?EueOYGu692VRNBxSULAs7uYzx2jSIklQFq6vklMq/cBfUPf5heyRUfaC6MPJ?=
- =?us-ascii?Q?IXvzR7oaifxyh/pZAPjti5VcYO6CJtkPgRuUQMXW63pBko5VxgX1+8oIcGdt?=
- =?us-ascii?Q?zalxCK7XcGCG3MMCDmrfINANCi9BVeSOpTz9dUeSpAZGXQ01hDJs6eZRcG9j?=
- =?us-ascii?Q?7phlKW/M4TPwLY9x3XXtD3KbDkUzWNcXkozxsCdiA7FXrQPifIHBPPxyLjuJ?=
- =?us-ascii?Q?dQNhKF0D1Yf0beiG52efmpUFG9RKPVyuLTuvP9oKINhEpWGEAngVIr+9/GvY?=
- =?us-ascii?Q?8Cnvkcktmq+PJaLEoQXzaEc1WfKIyxjmSfQQdbHUEVFcgRhdpTKxYmGAjpT7?=
- =?us-ascii?Q?m89ygHdC11furwS0Lm3OZz+m5qavgKe+eRFaQhoU29bbCK1rfqCIBvSM13OQ?=
- =?us-ascii?Q?t+FNndtlOjlt4rwYq4J3mlUNBM81Zn5EatjzLFNxyv51qB6U0V3e7jTBGPd1?=
- =?us-ascii?Q?31YM3nHNmRJXkECbkvWRc+V/?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8326c9fc-1077-41e6-c0a4-08d9673329b1
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 19:12:49.4445
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: co43WElRz25n1SyWK11WeCUaoAGSr/ltv8TzTM0e705FsSOiraHDD32VO+QrvS4Y
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5256
+References: <00000000000007510305ca5225b0@google.com> <CAHbLzkpgQtnvK6qHL1+cnHKZQgniq0wzSLTdYTDC5Bn-NbCD_g@mail.gmail.com>
+In-Reply-To: <CAHbLzkpgQtnvK6qHL1+cnHKZQgniq0wzSLTdYTDC5Bn-NbCD_g@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 24 Aug 2021 12:14:23 -0700
+Message-ID: <CAHbLzkrmvOeBtFu1xE9Q+ZCiafHsUg4YZLb6Vh+V6=hNdwGZaw@mail.gmail.com>
+Subject: Re: [syzbot] kernel BUG in collapse_file
+To:     syzbot <syzbot+f17e5ab118d29367bda9@syzkaller.appspotmail.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 05:25:30PM +0300, Maor Gottlieb wrote:
-> @@ -514,11 +531,13 @@ struct scatterlist *sg_alloc_append_table_from_pages(struct sg_table *sgt,
->  		offset = 0;
->  		cur_page = j;
->  	}
-> -	sgt->nents += added_nents;
-> +	sgt_append->sgt.nents += added_nents;
-> +	sgt_append->sgt.orig_nents = sgt_append->sgt.nents;
-> +	sgt_append->prv = s;
+On Tue, Aug 24, 2021 at 12:13 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Tue, Aug 24, 2021 at 11:17 AM syzbot
+> <syzbot+f17e5ab118d29367bda9@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    d6d09a694205 Merge tag 'for-5.14-rc6-tag' of git://git.ker..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=14924605300000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=f17e5ab118d29367bda9
+> > compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+f17e5ab118d29367bda9@syzkaller.appspotmail.com
+> >
+> >  unmap_region+0x2ab/0x300 mm/mmap.c:2680
+> >  __do_munmap+0x18eb/0x2050 mm/mmap.c:2911
+> >  __do_sys_mremap+0x5d9/0x1390 mm/mremap.c:969
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > ------------[ cut here ]------------
+> > kernel BUG at mm/khugepaged.c:1830!
+>
+> The BUG means the page is not fully unmapped due to some race, just
+> like what https://lore.kernel.org/linux-mm/00000000000030563005ca006ffd@google.com/
+> reported.
+>
+> But I really don't think it is worth VM_BUG since khugepaged can just back off.
 
-Why is nents being touched here?
+Forgot cc to other stakeholders.
 
-Shouldn't it just be
-
-    sgt_append->sgt.orig_nents += added_nents; 
-    sgt_append->prv = s;
-
-?
-
-Let me know I can fix it
-
-Jason
+>
+> > invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> > CPU: 0 PID: 1651 Comm: khugepaged Not tainted 5.14.0-rc6-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > RIP: 0010:collapse_file+0x3537/0x36e0 mm/khugepaged.c:1830
+> > Code: e8 1e 7a b2 ff 48 89 df 48 c7 c6 40 7b 3d 8a e8 ef 02 e8 ff 0f 0b e8 08 7a b2 ff 48 89 df 48 c7 c6 a0 7b 3d 8a e8 d9 02 e8 ff <0f> 0b e8 f2 79 b2 ff 4c 89 e7 48 c7 c6 a0 7e 3d 8a e8 c3 02 e8 ff
+> > RSP: 0018:ffffc900066df820 EFLAGS: 00010046
+> > RAX: 8601299b4ae62f00 RBX: ffffea0000e4e240 RCX: ffff888018fed4c0
+> > RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
+> > RBP: ffffc900066dfa90 R08: ffffffff81d08764 R09: ffffed1017383f2c
+> > R10: ffffed1017383f2c R11: 0000000000000000 R12: ffffc900066df9d8
+> > R13: dffffc0000000000 R14: ffffc900066dfa20 R15: 0000000000000001
+> > FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000100000000 CR3: 000000000c48e000 CR4: 00000000001506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  khugepaged_scan_file mm/khugepaged.c:2051 [inline]
+> >  khugepaged_scan_mm_slot+0x27be/0x2ad0 mm/khugepaged.c:2146
+> >  khugepaged_do_scan+0x2b1/0x640 mm/khugepaged.c:2230
+> >  khugepaged+0x105/0x890 mm/khugepaged.c:2275
+> >  kthread+0x453/0x480 kernel/kthread.c:319
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> > Modules linked in:
+> > ---[ end trace 8de2a60ea4ac5483 ]---
+> > RIP: 0010:collapse_file+0x3537/0x36e0 mm/khugepaged.c:1830
+> > Code: e8 1e 7a b2 ff 48 89 df 48 c7 c6 40 7b 3d 8a e8 ef 02 e8 ff 0f 0b e8 08 7a b2 ff 48 89 df 48 c7 c6 a0 7b 3d 8a e8 d9 02 e8 ff <0f> 0b e8 f2 79 b2 ff 4c 89 e7 48 c7 c6 a0 7e 3d 8a e8 c3 02 e8 ff
+> > RSP: 0018:ffffc900066df820 EFLAGS: 00010046
+> > RAX: 8601299b4ae62f00 RBX: ffffea0000e4e240 RCX: ffff888018fed4c0
+> > RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
+> > RBP: ffffc900066dfa90 R08: ffffffff81d08764 R09: ffffed1017383f2c
+> > R10: ffffed1017383f2c R11: 0000000000000000 R12: ffffc900066df9d8
+> > R13: dffffc0000000000 R14: ffffc900066dfa20 R15: 0000000000000001
+> > FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000100000000 CR3: 000000000c48e000 CR4: 00000000001506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > ----------------
+> > Code disassembly (best guess):
+> >    0:   e8 1e 7a b2 ff          callq  0xffb27a23
+> >    5:   48 89 df                mov    %rbx,%rdi
+> >    8:   48 c7 c6 40 7b 3d 8a    mov    $0xffffffff8a3d7b40,%rsi
+> >    f:   e8 ef 02 e8 ff          callq  0xffe80303
+> >   14:   0f 0b                   ud2
+> >   16:   e8 08 7a b2 ff          callq  0xffb27a23
+> >   1b:   48 89 df                mov    %rbx,%rdi
+> >   1e:   48 c7 c6 a0 7b 3d 8a    mov    $0xffffffff8a3d7ba0,%rsi
+> >   25:   e8 d9 02 e8 ff          callq  0xffe80303
+> >   2a:   0f 0b                   ud2     <-- trapping instruction
+> >   2c:   e8 f2 79 b2 ff          callq  0xffb27a23
+> >   31:   4c 89 e7                mov    %r12,%rdi
+> >   34:   48 c7 c6 a0 7e 3d 8a    mov    $0xffffffff8a3d7ea0,%rsi
+> >   3b:   e8 c3 02 e8 ff          callq  0xffe80303
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >
