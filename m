@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE24B3F5FCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF6B3F5FDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237783AbhHXODc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
+        id S237749AbhHXOGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237710AbhHXOD2 (ORCPT
+        with ESMTP id S237475AbhHXOGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:03:28 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05223C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:02:44 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id r9so45845337lfn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ATCLIjFqGGObCAiQgVaXtBBFI9QIF1mOiCwgN84NEFY=;
-        b=Ee2I65kwMa9FJHXFTs9H/aca7oPAS8wfzb+aSAZV0IDwCA5OpCnXfsZHSf6UBH4kXZ
-         h4tAzfZ3iERx1pRkJjecAPO0aTuyORHr76zcu69t03TcqxxPjhMKo7JaEEdRJ+cEvMKH
-         hbgjJoEtR1NeTBi3i7iEzSWuridV31QfuZPx8AHtfvVl/XDdspzy1ql2UPhai6otYd+p
-         +bPXHYHpDeG5GOljLy1zReWobRFpu3vTm3YD/7Ggpxhj6XL9/hOv3nmjCQQMXOuqJLpO
-         vtoRHP7Cs+nkaIsP/3Diu+nS0rue3Pdpil9viLyTFCWKIXO9081sdgLjYeNjzzdWLro7
-         dHfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ATCLIjFqGGObCAiQgVaXtBBFI9QIF1mOiCwgN84NEFY=;
-        b=VmYWQ/2/mIxL3gnejs/zc99yRoEJP8GnwhjE2Q1zn1lYxj5giXHdYdNb22X+7+xmmN
-         3DjuCxz58dKxRlTHpH7akouHAbk44/qas6cz84bph3CLbg9xYTrvFjkvZCrjskczvBKZ
-         /gn3SUE1AKUX2cYINP/CfsLNw8/2Z31NyQeDyiaGbaxHEqCqloQXoJEQwvCzQQ7m+Lmh
-         Y7E3R6kwMqYbgcBruG3SYaeD3XNcFaDkiydYu1kkb2YY5NV05fPXi5fGClORawmjTard
-         Quha/h/onfw7o4nv7WoYaxZxsvEAVxw5YnP5nzeyzgooZ4Y2hOH8aGbJIlPpz9B8MMVD
-         F2sQ==
-X-Gm-Message-State: AOAM530n18jVT2iUEy0TDw9qZMlgwS0vdz9PxSz+AgGFnJBuLEetb3b/
-        //7GAwhykMfOEbWbyJjNza8QGA3pkDTW41mtnSQ=
-X-Google-Smtp-Source: ABdhPJzkQ4rFj7lkZ9BaUxN8qpDoxb/CQiTVtbhzJph4lOu0InQcUVl6ruvwgIjaleJvBvnXM0qWv+/tRq9aaK+d8/E=
-X-Received: by 2002:a05:6512:158e:: with SMTP id bp14mr21104783lfb.509.1629813762145;
- Tue, 24 Aug 2021 07:02:42 -0700 (PDT)
+        Tue, 24 Aug 2021 10:06:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA67BC061796;
+        Tue, 24 Aug 2021 07:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Xqja1HTyBUf8uuKLULMlLCkspx2KkmGFa3M60ugx7SA=; b=nkiCR5PXnBI2kOYu9sWcekaCWQ
+        yKWpqOl2UlffS0bJ1kSpjldLoczjJkX2SBHFwC8X6bJaoME7zkHjTcZNHQ7UNBUbwLmhCaq4dRmFd
+        vMoraImRqOd/nXBYw/Il1WUhTXACqmnzsjuT8YdaLMKDpmIv4kQsIMiW80XpAN+0xUjtn8EkmvNGM
+        ktdWjL54SQgz7IEevZKCwsKmdsc9EvDz6hq1RWi9zlkM37z5wQHI4Uh8P6WZBDhRNzubIEWuJvpdL
+        BhF0KvKZPmK+uKVqfX1fqnR/io3we8J0AgKiBsSqoYQUF/jyHow1DXSfBRTzX0zL4nds6HkJq2tTZ
+        4lm9BWzQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIX1d-00B8bA-27; Tue, 24 Aug 2021 14:03:52 +0000
+Date:   Tue, 24 Aug 2021 15:03:37 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] folio: Add a function to get the host inode for a
+ folio
+Message-ID: <YST8OcVNy02Rivbm@casper.infradead.org>
+References: <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk>
+ <162981151155.1901565.7010079316994382707.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Received: by 2002:a05:6520:58e:b029:11f:45d7:c3e6 with HTTP; Tue, 24 Aug 2021
- 07:02:41 -0700 (PDT)
-Reply-To: barristerbengazzarak@gmail.com
-From:   Barrister Ben Gazzara Kekel <barristerbenkekeli7@gmail.com>
-Date:   Tue, 24 Aug 2021 07:02:41 -0700
-Message-ID: <CAFSkZWPZDJPNwKGy1xuEij=xBdoDr=-7FMUegSxq93g9frCY4g@mail.gmail.com>
-Subject: Hi,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162981151155.1901565.7010079316994382707.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I hope this mail meets you in good health? I sent you an email a
-couple of days ago to help me receive sum of $3.2million
-dollars(Money) Please get back to me because it is urgent and of
-mutual benefits and 100% legitimate.
+On Tue, Aug 24, 2021 at 02:25:11PM +0100, David Howells wrote:
+> + * For folios which are in the page cache, return the inode that is hosting
+> + * this folio belongs to.
+> + *
+> + * Do not call this for folios which aren't in the page cache.
+> + */
+> +static inline struct inode *folio_inode(struct folio *folio)
+> +{
+> +	return folio_file_mapping(folio)->host;
+
+You're contradicting yourself here.  If you're allowed to call this
+function for swap cache pages, then the documentation needs to change.
+If you're not, then we can just use folio->mapping->host.
