@@ -2,130 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88AD03F589C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DA63F5857
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234572AbhHXHBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:01:39 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:64520 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhHXHBc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:01:32 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210824070047epoutp0355cc0fd9080d90d3c0392b51756d6540~eK-U8Fshf0387903879epoutp03R
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:00:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210824070047epoutp0355cc0fd9080d90d3c0392b51756d6540~eK-U8Fshf0387903879epoutp03R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629788447;
-        bh=E134hzmZMQpeYeSKjqO+0gr3vCGL8A1TvXL8JKY6ios=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=SNNwYsIPaRtwmhuyHITTDAaXEbNcv6OCjvqRRdjuk8yzWr7Mfq0LJKezWMw4uvOn4
-         +wUFCUw5dSWWNeso1WFP4nzSDSHC82THuiNYsBalX95dxl/jvEaic9XxbMhVry22cu
-         ab6OMKrm0BZ+dF/BLtyfLl3u1j8m0/JYJjcWCrfU=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20210824070046epcas5p4863c62aa272408f58afee0198c0582a4~eK-TxCbtY3126331263epcas5p4X;
-        Tue, 24 Aug 2021 07:00:46 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B1.E0.09897.E1994216; Tue, 24 Aug 2021 16:00:46 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210824063513epcas5p46ba8b375c3e32fab210640a28041efb6~eKpALHHQ63036830368epcas5p4X;
-        Tue, 24 Aug 2021 06:35:13 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210824063513epsmtrp1aae0cfac95db6b18f1b3f92d69c46b00~eKpAKZLTP1674216742epsmtrp12;
-        Tue, 24 Aug 2021 06:35:13 +0000 (GMT)
-X-AuditID: b6c32a49-e89ff700000026a9-39-6124991ecf52
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8E.BE.09091.12394216; Tue, 24 Aug 2021 15:35:13 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.44]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210824063511epsmtip1229485d87ee256e6e33551e1cad5d3d1~eKo_qIPL73241332413epsmtip1J;
-        Tue, 24 Aug 2021 06:35:11 +0000 (GMT)
-From:   Maninder Singh <maninder1.s@samsung.com>
-To:     apw@canonical.com, joe@perches.com, dwaipayanray1@gmail.com,
-        lukas.bulwahn@gmail.com
-Cc:     linux-kernel@vger.kernel.org, a.sahrawat@samsung.com,
-        Maninder Singh <maninder1.s@samsung.com>,
-        Vaneet Narang <v.narang@samsung.com>
-Subject: [PATCH 1/1] scripts/checkpatch.pl: remove warning for
- pritk_deferred also
-Date:   Tue, 24 Aug 2021 12:05:00 +0530
-Message-Id: <1629786900-4644-1-git-send-email-maninder1.s@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDIsWRmVeSWpSXmKPExsWy7bCmpq7cTJVEgy2v2Swu7k61+LBWw2L9
-        wmXMFrPvP2axuLxrDptFy9F2FovD89tYLA6dnMvowOExq6GXzWPnrLvsHl9WXWP26NuyitHj
-        8ya5ANYoLpuU1JzMstQifbsEroxX81vZCt6yV7T83srawHiMrYuRk0NCwETiS2MvYxcjF4eQ
-        wG5GiZ7lF5ghnE+MEpf7j7GAVAkJfGOU6D9rAtPxaes0FoiivYwSC29sZoNwvgC1H9sONpdN
-        QE9i1a49YN0iAlESXcvOgu1gFuhilFi9ZzszSEJYIERi1a83YA0sAqoSl3pbwRp4Bdwkbl1s
-        YoVYJydx81wn2E0SAuvYJb782MgMkXCReL30DhOELSzx6vgWdghbSuJlfxs7REM3o8TMOZeh
-        ulczSmx6cR1qrL3E6+YGoG4OoJs0Jdbv0ocIy0pMPbUObCizAJ9E7+8nUAt4JXbMg7FVJVpu
-        boAaIy3x+eNHFpAxEgIeEseWhYKYQgKxEs/exE5glJ2FMH8BI+MqRsnUguLc9NRi0wLDvNRy
-        veLE3OLSvHS95PzcTYzgBKDluYPx7oMPeocYmTgYDzFKcDArifD+ZVJOFOJNSaysSi3Kjy8q
-        zUktPsQozcGiJM6r+0omUUggPbEkNTs1tSC1CCbLxMEp1cDEyrTk4jGbrbXPHrcJbdhg/d5W
-        L6yU8RLTJ+E7Bjt/bpSZfqf8zM3CpRWl5pEBe4OuzBVJrW/7yBc0ufLLPOc5vjKsXktTGPND
-        fllm1ZqZarjc+fC138hoxqQlogEeEtd+hd5//91d5KtX4T3pr2qCfz2OFz2Mn71qci1PSM1i
-        67qdOn92cQWv+7IniE1eOmBihcf5IrvnO7w+G/052LvPYxHf+ofvA3/55XbkLkuaFrqFwe19
-        2Z2XjOsFcvuYyk9vuF+Zdby35MBr7WcGU05s1fjy2HdJjsD5jrZVr6p8nxVrPo1hFbW4c775
-        dt/Ttm+2kj8qjjFn6kU+v1M0P5+vJCg2d6VS8601ecytc7mVWIozEg21mIuKEwEyhXhvbwMA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmluLIzCtJLcpLzFFi42LZdlhJTldxskqiwamPnBYXd6dafFirYbF+
-        4TJmi9n3H7NYXN41h82i5Wg7i8Xh+W0sFodOzmV04PCY1dDL5rFz1l12jy+rrjF79G1Zxejx
-        eZNcAGsUl01Kak5mWWqRvl0CV8ar+a1sBW/ZK1p+b2VtYDzG1sXIySEhYCLxaes0li5GLg4h
-        gd2MEl07NrNAJKQlfv57D2ULS6z895wdougTo8T2yasYQRJsAnoSq3btASsSEYiTmHx0CTNI
-        EbNAH6PEwg8TmUASwgJBEgefN4A1sAioSlzqbQVr4BVwk7h1sYkVYoOcxM1zncwTGHkWMDKs
-        YpRMLSjOTc8tNiwwzEst1ytOzC0uzUvXS87P3cQIDictzR2M21d90DvEyMTBeIhRgoNZSYT3
-        L5NyohBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeC10n44UE0hNLUrNTUwtSi2CyTBycUg1MPN7Z
-        4grskep5Qmy6M7qtr8XpXzt62cT5uP6+TbbepeemLvjyccrSTb9ui+jI5uSVLLLbdzr5C/Pj
-        BxrMj2+LhGtMmvVUi3G2YsWVnHf2b1y/TdOb59IUv0ZG5n13xt4Hqm0/DyUlzZvQLvItbbp4
-        3qadrzQj992pulugzuHLx91554y9TYSmRcVho6e7gk99cklRnOH5yqG5XPECF7/fKXetHVFN
-        xUElYQvzjudam/MpPStvbJ18/7Umd9KKIsamvP3hO3S+B7T+3JNcZ5X4pOJI2dO4HyEGjfP4
-        3WsE/8odZlGXDP5gXBnO9Mb1eH/eNDbNH00qp7Vr2x74bIwVdUkytov36gpl7O/sUWIpzkg0
-        1GIuKk4EAFlLREyWAgAA
-X-CMS-MailID: 20210824063513epcas5p46ba8b375c3e32fab210640a28041efb6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210824063513epcas5p46ba8b375c3e32fab210640a28041efb6
-References: <CGME20210824063513epcas5p46ba8b375c3e32fab210640a28041efb6@epcas5p4.samsung.com>
+        id S230494AbhHXGjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:39:19 -0400
+Received: from mail.thorsis.com ([92.198.35.195]:38898 "EHLO mail.thorsis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231401AbhHXGjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 02:39:12 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.thorsis.com (Postfix) with ESMTP id 19950ECC;
+        Tue, 24 Aug 2021 08:38:27 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
+Received: from mail.thorsis.com ([127.0.0.1])
+        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id q-l84O7cbou0; Tue, 24 Aug 2021 08:38:27 +0200 (CEST)
+Received: by mail.thorsis.com (Postfix, from userid 109)
+        id 85C50D17; Tue, 24 Aug 2021 08:38:24 +0200 (CEST)
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RELAYS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.2
+X-Spam-Report: * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
+        *      blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [URIs: thorsis.com]
+        * -0.0 NO_RELAYS Informational: message was not relayed via SMTP
+Received: from adahl by ada.ifak-system.com with local (Exim 4.92)
+        (envelope-from <ada@thorsis.com>)
+        id 1mIQ3S-0006PM-Pe; Tue, 24 Aug 2021 08:37:02 +0200
+From:   Alexander Dahl <ada@thorsis.com>
+To:     linux-usb@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] USB: host: ehci-atmel: Allow enabling HSIC on SAMA5D2
+Date:   Tue, 24 Aug 2021 08:37:02 +0200
+Message-Id: <20210824063702.24586-1-ada@thorsis.com>
+In-Reply-To: <20210823140052.GA120849@rowland.harvard.edu>
+References: <20210823140052.GA120849@rowland.harvard.edu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-printk_deferred also supossed to get loglevel, but checkpatch.pl
-returns warning for same.
+Unlike other SoC series featuring the 'atmel,at91sam9g45-ehci' USB EHCI
+controller, which have embedded USB high-speed transceivers for each
+port, the third port on the SAMA5D2 series is HSIC only.  That HSIC
+interface is not enabled after a power-on reset, but can be enabled by
+setting a flag in a vendor specific EHCI register.
 
-WARNING: Possible unnecessary KERN_ALERT
-+printk_deferred(KERN_ALERT "checking deferred\n");
+The register offsets added to the new header file were compared with
+those for the SAM9G45, SAM9X25, SAMA5D3, SAMA5D4, and SAM9X60 series and
+there are no differences in the offsets or contents of those registers.
+Which of those additional vendor specific registers are supported,
+differs by SoC family.  So while the HSIC enable feature is currently
+only present for SAMA5D2, it probably does not hurt to set it on the
+other families, hence no additional check for SoC family here.
 
-total: 0 errors, 1 warnings, 20 lines checked
+Tested on a custom board featuring a SAMA5D27C-D5M SiP connected to an
+USB3503 hub with an upstream HSIC interface.
 
-Thus removing warning for printk_deferred also.
-
-Signed-off-by: Vaneet Narang <v.narang@samsung.com>
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Link: https://community.atmel.com/forum/sama5d2-using-hsic-under-linux
+Signed-off-by: Alexander Dahl <ada@thorsis.com>
 ---
- scripts/checkpatch.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 161ce7fe5d1e..e3bea0d36c10 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6252,7 +6252,7 @@ sub process {
- 		}
+Notes:
+    - for introducing new dt binding, would be nice to convert old one
+      first, probably needs split up and multiple iteration review?
+    - name of that new dt property?
+    - register definitions put to a separate file, like
+      'drivers/usb/host/ehci-fsl.h'
+    - unsure where exactly in the probe process that register write should
+      happen, datasheet gives no hint
+    - should suspend/resume be considered?
+
+ drivers/usb/host/ehci-atmel.c | 17 +++++++++++++++++
+ drivers/usb/host/ehci-atmel.h | 19 +++++++++++++++++++
+ 2 files changed, 36 insertions(+)
+ create mode 100644 drivers/usb/host/ehci-atmel.h
+
+diff --git a/drivers/usb/host/ehci-atmel.c b/drivers/usb/host/ehci-atmel.c
+index e893467d659c..f8d9e686c082 100644
+--- a/drivers/usb/host/ehci-atmel.c
++++ b/drivers/usb/host/ehci-atmel.c
+@@ -20,6 +20,7 @@
+ #include <linux/usb/hcd.h>
  
- # check for logging functions with KERN_<LEVEL>
--		if ($line !~ /printk(?:_ratelimited|_once)?\s*\(/ &&
-+		if ($line !~ /printk(?:_ratelimited|_once|_deferred)?\s*\(/ &&
- 		    $line =~ /\b$logFunctions\s*\(.*\b(KERN_[A-Z]+)\b/) {
- 			my $level = $1;
- 			if (WARN("UNNECESSARY_KERN_LEVEL",
+ #include "ehci.h"
++#include "ehci-atmel.h"
+ 
+ #define DRIVER_DESC "EHCI Atmel driver"
+ 
+@@ -85,6 +86,7 @@ static void atmel_stop_ehci(struct platform_device *pdev)
+ 
+ static int ehci_atmel_drv_probe(struct platform_device *pdev)
+ {
++	struct device_node *np = pdev->dev.of_node;
+ 	struct usb_hcd *hcd;
+ 	const struct hc_driver *driver = &ehci_atmel_hc_driver;
+ 	struct resource *res;
+@@ -149,6 +151,14 @@ static int ehci_atmel_drv_probe(struct platform_device *pdev)
+ 
+ 	atmel_start_ehci(pdev);
+ 
++	if (of_property_read_bool(np, "atmel,enable-hsic")) {
++		u32 tmp;
++
++		tmp = ehci_readl(ehci, hcd->regs + AT91_UHPHS_INSNREG08);
++		tmp |= AT91_UHPHS_HSIC_EN;
++		ehci_writel(ehci, tmp, hcd->regs + AT91_UHPHS_INSNREG08);
++	}
++
+ 	retval = usb_add_hcd(hcd, irq, IRQF_SHARED);
+ 	if (retval)
+ 		goto fail_add_hcd;
+@@ -170,10 +180,17 @@ static int ehci_atmel_drv_probe(struct platform_device *pdev)
+ static int ehci_atmel_drv_remove(struct platform_device *pdev)
+ {
+ 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
++	struct ehci_hcd *ehci;
++	u32 tmp;
+ 
+ 	usb_remove_hcd(hcd);
+ 	usb_put_hcd(hcd);
+ 
++	ehci = hcd_to_ehci(hcd);
++	tmp = ehci_readl(ehci, hcd->regs + AT91_UHPHS_INSNREG08);
++	tmp &= ~AT91_UHPHS_HSIC_EN;
++	ehci_writel(ehci, tmp, hcd->regs + AT91_UHPHS_INSNREG08);
++
+ 	atmel_stop_ehci(pdev);
+ 
+ 	return 0;
+diff --git a/drivers/usb/host/ehci-atmel.h b/drivers/usb/host/ehci-atmel.h
+new file mode 100644
+index 000000000000..4c4998c2a6dd
+--- /dev/null
++++ b/drivers/usb/host/ehci-atmel.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Vendor specific definitions for EHCI on Atmel/Microchip SoCs.
++ *
++ * © 2021 Alexander Dahl <ada@thorsis.com>
++ */
++#ifndef EHCI_ATMEL_H
++#define EHCI_ATMEL_H
++
++/* device specific register offsets, taken from SAMA5D2 datasheet */
++
++#define AT91_UHPHS_INSNREG06    0xA8        /* AHB Error Status Register */
++
++#define AT91_UHPHS_INSNREG07    0xAC        /* AHB Master Error Address Register */
++
++#define AT91_UHPHS_INSNREG08    0xB0        /* HSIC Enable/Disable Register */
++#define AT91_UHPHS_HSIC_EN      (1 << 2)    /* HSIC Enable/Disable */
++
++#endif /* ECHI_ATMEL_H */
+
+base-commit: e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
 -- 
-2.17.1
+2.30.2
 
