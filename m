@@ -2,133 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B522B3F6B7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2CE3F6B80
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238785AbhHXWAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 18:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238742AbhHXWAh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 18:00:37 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FCFC06179A
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:59:52 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id r9so3494344pfh.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jcFx0PZcA3f5x3kcuOE3FShtVPGcFTUcoRfnJMf2+WA=;
-        b=kSoxnifXykQ6StIPlHX99aPNWQu+Di5Pk4x5o0CyBgJd9Hi73+uUta5pC3l9MPuDvg
-         fBBpumEasAZeQZ2lG3NadMhBf/b9wuvINIZK2gj66HQh13cdNeZ+ZXIwck5oL9wu4os+
-         US/+tqwCN2mSD+JCYRel2n+VEvcXsl1OGVQLjDfi4InNQ0bwty5/GVhAIxR6hITtGdLg
-         B2dsfbm0W5uvRuyca+8kETN9jz+XRkeYZnbViXu4AvIglxlwUOQjCHGEfA65Iz68RZya
-         QItoB3l4XDQYmoL1ZwgpumDwEUbCDGUDrdkJu1fa/f2rehIPRlYuMHbS58voDQNxtFcC
-         VbJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jcFx0PZcA3f5x3kcuOE3FShtVPGcFTUcoRfnJMf2+WA=;
-        b=IyMueTwP6np1c5KP/d+H976+73Jc6FwKKFaUdHC1Tz7bTcrgNjE3gaSCR6SpDbTCyI
-         Z7ZUW94KwmruWEheER0shqIQiAikjY1CB7rg9At5VQz1rxYdNLPvdZgetG2ZGQCFFsd1
-         VB2X7pMIZ2OM8+m/mp4evAQs/9la5b8grzbBRT2EQk6fFt4bFof3mNTY1JLc6VrSqzkU
-         SIhqIbqXpAIhE6GlUlVPyue0NNbVN5m2gdYqUqsg0xEo2iWCIv6IeQN3C7IxpftqVkvE
-         eJ+q/zZH7TGNq6DhV6V3K7Hh/EyEr9Nxfwa4CqGqisEjbTr3MzLmm2FqDq1Hqi7s6nvh
-         Ysog==
-X-Gm-Message-State: AOAM532uqtEUvOjDHYxwz6pFHD8onE38VMXVT+wXQUd+Vv/uKwNVursn
-        84aFFPWFVj0kaARgT5jaYPI0902krQiygro+pPIh3g==
-X-Google-Smtp-Source: ABdhPJwK8XFV5db9UjT/ngKEY9JdyqfX6Fj3bAtuqrgUOWJJ8sDeTs4RTnwa4sK7JgHj0SxhjNCQ0rptoEHmw8RZG3Y=
-X-Received: by 2002:a65:6642:: with SMTP id z2mr26520993pgv.240.1629842392235;
- Tue, 24 Aug 2021 14:59:52 -0700 (PDT)
+        id S238734AbhHXWBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 18:01:33 -0400
+Received: from vps5.brixit.nl ([192.81.221.234]:50966 "EHLO vps5.brixit.nl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238439AbhHXWBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 18:01:31 -0400
+Received: from [192.168.20.2] (unknown [77.239.252.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by vps5.brixit.nl (Postfix) with ESMTPSA id 0B45160A56;
+        Tue, 24 Aug 2021 22:00:44 +0000 (UTC)
+Subject: Re: [PATCH] arm64: dts: qcom: sdm660: Add initial IFC6560 board
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+References: <20210824151036.678802-1-bjorn.andersson@linaro.org>
+From:   Alexey Minnekhanov <alexeymin@postmarketos.org>
+Message-ID: <2b552137-d279-8ec6-8324-5a97f2291d55@postmarketos.org>
+Date:   Wed, 25 Aug 2021 01:00:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210823195409-mutt-send-email-mst@kernel.org> <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
- <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com> <CACK8Z6E+__kZqU8mVUnYhFc0wz_e81qBLO3ffqSDghVtztNeQw@mail.gmail.com>
-In-Reply-To: <CACK8Z6E+__kZqU8mVUnYhFc0wz_e81qBLO3ffqSDghVtztNeQw@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 24 Aug 2021 14:59:41 -0700
-Message-ID: <CAPcyv4gmQeRNJJqxef5Vhws=v1g8+NtMjLBnJ1KR6rCWcd5VnA@mail.gmail.com>
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-To:     Rajat Jain <rajatja@google.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210824151036.678802-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 2:57 PM Rajat Jain <rajatja@google.com> wrote:
->
-> On Mon, Aug 23, 2021 at 6:06 PM Dan Williams <dan.j.williams@intel.com> wrote:
-> >
-> > On Mon, Aug 23, 2021 at 5:31 PM Kuppuswamy, Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> > >
-> > >
-> > >
-> > > On 8/23/21 4:56 PM, Michael S. Tsirkin wrote:
-> > > >> Add a new variant of pci_iomap for mapping all PCI resources
-> > > >> of a devices as shared memory with a hypervisor in a confidential
-> > > >> guest.
-> > > >>
-> > > >> Signed-off-by: Andi Kleen<ak@linux.intel.com>
-> > > >> Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
-> > > > I'm a bit puzzled by this part. So why should the guest*not*  map
-> > > > pci memory as shared? And if the answer is never (as it seems to be)
-> > > > then why not just make regular pci_iomap DTRT?
-> > >
-> > > It is in the context of confidential guest (where VMM is un-trusted). So
-> > > we don't want to make all PCI resource as shared. It should be allowed
-> > > only for hardened drivers/devices.
-> >
-> > That's confusing, isn't device authorization what keeps unaudited
-> > drivers from loading against untrusted devices? I'm feeling like
-> > Michael that this should be a detail that drivers need not care about
-> > explicitly, in which case it does not need to be exported because the
-> > detail can be buried in lower levels.
-> >
-> > Note, I specifically said "unaudited", not "hardened" because as Greg
-> > mentioned the kernel must trust drivers, its devices that may not be
-> > trusted.
->
-> Can you please point me to the thread where this discussion with Greg
-> is ongoing?
+24.08.2021 18:10, Bjorn Andersson wrote:
 
-It slowed down to implement the "move to the 'authorized' device
-model" recommendation. LWN has a good writeup (as usual) and a link to
-the thread:
+> diff --git a/arch/arm64/boot/dts/qcom/sdm660-ifc6560.dts b/arch/arm64/boot/dts/qcom/sdm660-ifc6560.dts
+> new file mode 100644
+> index 000000000000..2244529bc6bf
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm660-ifc6560.dts
+...
+> +
+> +&rpm_requests {
+...
+> +	pm660l-regulators 
+> +		vreg_l2b_2p95: l2 {
+...
+> +		vreg_l4b_29p5: l4 {
 
-https://lwn.net/Articles/865918/
+Maybe call it 2p95 (and not 29p5) like the one above, for consistency?
+
+> +
+> +		vreg_l5b_29p5: l5 {
+
+Maybe call it 2p95 too?
+
+-- 
+Regards
+Alexey Minnekhanov
