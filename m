@@ -2,156 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E283F5D25
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529AF3F5D29
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236818AbhHXLd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 07:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236670AbhHXLdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 07:33:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4E47610F8;
-        Tue, 24 Aug 2021 11:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629804788;
-        bh=2Hc2s5MP8VgjPj7miIH53TIMlz5XScjpv+wx8O+JKHQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VHD2NIU/6yYZ1HNWv2I2wmTJNvlnhCJO30OIr+QFykf75+O0TDyWO8ocfcXI/f9YK
-         yRMY7TMhVlrQ+eFRL8V/StoL3NpCmS1tXo47Ahu9d5Ia7sR+y6f7OimzzepX0wYtN8
-         8DkyNbRbPZn6Vcnx0DWgwlZZ6cKBOid3LgG2xMQc77XDE6KGsiBg8tjQc2V8jYZck4
-         GpvZ8xp2wIx7e1cgOmP7yGV+LMaXUC67JTlP2qn8HhMJPri2pcn8uI3CNXImW5FMpq
-         qT0BC2CKxrdShXFFaLMdb8mHsz6/jYYGehQaLgRtBrLKHgieuj/CU7BtJRMYH/X4vw
-         9U3RsSqf0FBHw==
-Received: by pali.im (Postfix)
-        id 43EB67A5; Tue, 24 Aug 2021 13:33:05 +0200 (CEST)
-Date:   Tue, 24 Aug 2021 13:33:04 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     viro@zeniv.linux.org.uk,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dsterba@suse.cz, aaptel@suse.com, willy@infradead.org,
-        rdunlap@infradead.org, joe@perches.com, mark@harmstone.com,
-        nborisov@suse.com, linux-ntfs-dev@lists.sourceforge.net,
-        anton@tuxera.com, dan.carpenter@oracle.com, hch@lst.de,
-        ebiggers@kernel.org, andy.lavr@gmail.com, oleksandr@natalenko.name
-Subject: Re: [PATCH v27 04/10] fs/ntfs3: Add file operations and
- implementation
-Message-ID: <20210824113304.eabzy7ulbuouzlac@pali>
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210729134943.778917-5-almaz.alexandrovich@paragon-software.com>
- <20210822122003.kb56lexgvv6prf2t@pali>
- <20210822143133.4meiisx2tbfgrz5l@kari-VirtualBox>
+        id S236826AbhHXLgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 07:36:04 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:34212 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236205AbhHXLfz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 07:35:55 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 7306875957;
+        Tue, 24 Aug 2021 14:35:06 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1629804906;
+        bh=GYBaQLze7V8QkffIPN1VdgsX/1gXYT+yCMz9naFMfN4=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=pm5kl2r/3XsNo8wLflIie8bPCLk6TZGUFX2SfpkUbOnggCdIMiPz3svKCKRm7gzPS
+         ckwnbNTeJROsCchTQ4mkhfHsbpMCHOtsvOyQJ8PIamXTyyIMBn6EbT5QqHHVDKa/z9
+         85BYe1HjbnMX3FbXvipi3IIZKjHhTmZNJheAvx4FJy/gjOTvWcUTVM4AxsQ6i8Iq5i
+         y82ffc6A6EFX1nRz357sEitxa/B6CvJyrTpW9iRUMHSnWaTb4/JWsipWyZlH/Q+mZI
+         rml4F+pmYTlTQE+xtTRt2KRGC50JKZmCI8JRLmo+oaXiayH8qg+cvp7e1IwPY9Su0X
+         Wo5VO0vlHpERw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 2C35175967;
+        Tue, 24 Aug 2021 14:35:05 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 24
+ Aug 2021 14:35:04 +0300
+Subject: Re: [RFC PATCH v3 0/6] virtio/vsock: introduce MSG_EOR flag for
+ SEQPACKET
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210816085036.4173627-1-arseny.krasnov@kaspersky.com>
+ <3f3fc268-10fc-1917-32c2-dc0e7737dc48@kaspersky.com>
+ <20210824100523.yn5hgiycz2ysdnvm@steredhat>
+ <d28ff03e-c8ab-f7c6-68a2-90c9a400d029@kaspersky.com>
+ <20210824103137.v3fny2yc5ww46p33@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <0c0a7b61-524e-ab44-7d7e-b35bd094c7ca@kaspersky.com>
+Date:   Tue, 24 Aug 2021 14:35:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210822143133.4meiisx2tbfgrz5l@kari-VirtualBox>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210824103137.v3fny2yc5ww46p33@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/24/2021 10:59:13
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165761 [Aug 24 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 08/24/2021 11:01:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 24.08.2021 7:59:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/08/24 10:44:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/08/24 07:59:00 #17090872
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday 22 August 2021 17:31:33 Kari Argillander wrote:
-> On Sun, Aug 22, 2021 at 02:20:03PM +0200, Pali Rohár wrote:
-> > On Thursday 29 July 2021 16:49:37 Konstantin Komarov wrote:
-> > > diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-> > > new file mode 100644
-> > > index 000000000..b4369c61a
-> > > --- /dev/null
-> > > +++ b/fs/ntfs3/file.c
-> > > @@ -0,0 +1,1130 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + *
-> > > + * Copyright (C) 2019-2021 Paragon Software GmbH, All rights reserved.
-> > > + *
-> > > + *  regular file handling primitives for ntfs-based filesystems
-> > > + */
-> > > +#include <linux/backing-dev.h>
-> > > +#include <linux/buffer_head.h>
-> > > +#include <linux/compat.h>
-> > > +#include <linux/falloc.h>
-> > > +#include <linux/fiemap.h>
-> > > +#include <linux/msdos_fs.h> /* FAT_IOCTL_XXX */
-> > > +#include <linux/nls.h>
-> > > +
-> > > +#include "debug.h"
-> > > +#include "ntfs.h"
-> > > +#include "ntfs_fs.h"
-> > > +
-> > > +static int ntfs_ioctl_fitrim(struct ntfs_sb_info *sbi, unsigned long arg)
-> > > +{
-> > > +	struct fstrim_range __user *user_range;
-> > > +	struct fstrim_range range;
-> > > +	struct request_queue *q = bdev_get_queue(sbi->sb->s_bdev);
-> > > +	int err;
-> > > +
-> > > +	if (!capable(CAP_SYS_ADMIN))
-> > > +		return -EPERM;
-> > > +
-> > > +	if (!blk_queue_discard(q))
-> > > +		return -EOPNOTSUPP;
-> > > +
-> > > +	user_range = (struct fstrim_range __user *)arg;
-> > > +	if (copy_from_user(&range, user_range, sizeof(range)))
-> > > +		return -EFAULT;
-> > > +
-> > > +	range.minlen = max_t(u32, range.minlen, q->limits.discard_granularity);
-> > > +
-> > > +	err = ntfs_trim_fs(sbi, &range);
-> > > +	if (err < 0)
-> > > +		return err;
-> > > +
-> > > +	if (copy_to_user(user_range, &range, sizeof(range)))
-> > > +		return -EFAULT;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static long ntfs_ioctl(struct file *filp, u32 cmd, unsigned long arg)
-> > > +{
-> > > +	struct inode *inode = file_inode(filp);
-> > > +	struct ntfs_sb_info *sbi = inode->i_sb->s_fs_info;
-> > > +	u32 __user *user_attr = (u32 __user *)arg;
-> > > +
-> > > +	switch (cmd) {
-> > > +	case FAT_IOCTL_GET_ATTRIBUTES:
-> > > +		return put_user(le32_to_cpu(ntfs_i(inode)->std_fa), user_attr);
-> > > +
-> > > +	case FAT_IOCTL_GET_VOLUME_ID:
-> > > +		return put_user(sbi->volume.ser_num, user_attr);
-> > > +
-> > > +	case FITRIM:
-> > > +		return ntfs_ioctl_fitrim(sbi, arg);
-> > > +	}
-> > > +	return -ENOTTY; /* Inappropriate ioctl for device */
-> > > +}
-> > 
-> > Hello! What with these two FAT_* ioctls in NTFS code? Should NTFS driver
-> > really implements FAT ioctls? Because they looks like some legacy API
-> > which is even not implemented by current ntfs.ko driver.
-> 
-> I was looking same thing when doing new ioctl for shutdown. These
-> should be dropped completly before this gets upstream. Then we have
-> more time to think what ioctl calls should used and which are
-> necessarry.
 
-Ok. I agree, these FAT* ioctls should not be included into upstream in
-this way. Later we can decide how to handle them...
-
-> > Specially, should FS driver implements ioctl for get volume id which in
-> > this way? Because basically every fs have some kind of uuid / volume id
-> > and they can be already retrieved by appropriate userspace tool.
-> 
-> My first impression when looking this code was that this is just copy
-> paste work from fat driver. FITRIM is exactly the same. Whoever
-> copyed it must have not thinked this very closly. Good thing you
-> bringing this up.
-> 
-> I didn't want to just yet because there is quite lot messages and
-> things which are in Komarov todo list. Hopefully radio silence will
-> end soon. I'm afraid next message will be "Please pull" for Linus
-> and then it cannot happend because of radio silence.
-> 
+On 24.08.2021 13:31, Stefano Garzarella wrote:
+> Caution: This is an external email. Be cautious while opening links or attachments.
+>
+>
+>
+> On Tue, Aug 24, 2021 at 01:18:06PM +0300, Arseny Krasnov wrote:
+>> On 24.08.2021 13:05, Stefano Garzarella wrote:
+>>> Caution: This is an external email. Be cautious while opening links or attachments.
+>>>
+>>>
+>>>
+>>> Hi Arseny,
+>>>
+>>> On Mon, Aug 23, 2021 at 09:41:16PM +0300, Arseny Krasnov wrote:
+>>>> Hello, please ping :)
+>>>>
+>>> Sorry, I was off last week.
+>>> I left some minor comments in the patches.
+>>>
+>>> Let's wait a bit for other comments before next version, also on the
+>>> spec, then I think you can send the next version without RFC tag.
+>>> The target should be the net-next tree, since this is a new feature.
+>> Hello,
+>>
+>> E.g. next version will be [net-next] instead of [RFC] for both
+>> kernel and spec patches?
+> Nope, net-next tag is useful only for kernel patches (net tree -
+> Documentation/networking/netdev-FAQ.rst).
+Ack
+>
+> Thanks,
+> Stefano
+>
+>
