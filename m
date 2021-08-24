@@ -2,76 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52FA3F5EE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABFB3F5EF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237544AbhHXNZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:25:38 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42889 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237520AbhHXNZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:25:37 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S237583AbhHXN0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:26:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58869 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237601AbhHXNZ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:25:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629811511;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h2Qta3tolraxtrizV7nWCzmHIjkmwUURhMGBy2rmL/A=;
+        b=PSj7GBUJLqahCA6qs7z1cNPSvoh7IAUHpuWnMOnPQ6IazvR4/Ckd4AMXMBpzAUA1Tr3f4n
+        j3r+6/Q1ndaDqJu540KIjsJvowXqXzgFVCTlry8SrdYzfSkrnDgJMiI5ZAVNF6pFdCkvu5
+        vaF3G7cZfWH2Cr3qeo9McRFBRBHv/UY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-538-Y926XhEaO66XEOrzBoN50Q-1; Tue, 24 Aug 2021 09:25:08 -0400
+X-MC-Unique: Y926XhEaO66XEOrzBoN50Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gv8wg40tBz9ssP;
-        Tue, 24 Aug 2021 23:24:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1629811492;
-        bh=hDmMWgLZDKPhAUavmwMYjiIkTsL9aGJyOGWvyuQf6/w=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=mkARf6/bwM+bNJncHzWWvTnHKV3p34icQ8fmrgNOyJb+LkedTebgCbW6JKsRrF2jl
-         VvAokAkuVHwPr289qzS925UF9anXbLm40l2YiZJLV8vl5I2qTO6qJqrDUoA9YOk/0q
-         Yfza1le7LdcqFZA/uWuAn/24p7LwdN43mvEF1DXCCnbNzHCpsjnytvyNMCibAh/j1R
-         jg1RTl15r5J8lEGJzwYQuMN/B3F01raFYfnjMkKcW2CV6ExgKfftlF1TBwRvVFMg6o
-         8XUcf71WJJh4UygSvih7uo0sfgTVkSvY6mRdpygHZKa7swWaTCJkqyegFoFbvpCtsk
-         Mh7krD2BMdqQQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] powerpc/audit: Convert powerpc to
- AUDIT_ARCH_COMPAT_GENERIC
-In-Reply-To: <dc14509a28a993738b1325211f412be72a4f9b1e.1629701132.git.christophe.leroy@csgroup.eu>
-References: <dc14509a28a993738b1325211f412be72a4f9b1e.1629701132.git.christophe.leroy@csgroup.eu>
-Date:   Tue, 24 Aug 2021 23:24:50 +1000
-Message-ID: <877dgbc6vx.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 505201082921;
+        Tue, 24 Aug 2021 13:25:06 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 01E6D60C05;
+        Tue, 24 Aug 2021 13:24:59 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 2/6] folio: Add a function to change the private data attached
+ to a folio
+From:   David Howells <dhowells@redhat.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Date:   Tue, 24 Aug 2021 14:24:59 +0100
+Message-ID: <162981149911.1901565.17776700811659843340.stgit@warthog.procyon.org.uk>
+In-Reply-To: <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk>
+References: <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Commit e65e1fc2d24b ("[PATCH] syscall class hookup for all normal
-> targets") added generic support for AUDIT but that didn't include
-> support for bi-arch like powerpc.
->
-> Commit 4b58841149dc ("audit: Add generic compat syscall support")
-> added generic support for bi-arch.
->
-> Convert powerpc to that bi-arch generic audit support.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
-> v2:
-> - Missing 'git add' for arch/powerpc/include/asm/unistd32.h
-> - Finalised commit description
-> ---
->  arch/powerpc/Kconfig                |  5 +-
->  arch/powerpc/include/asm/unistd32.h |  7 +++
->  arch/powerpc/kernel/Makefile        |  3 --
->  arch/powerpc/kernel/audit.c         | 84 -----------------------------
->  arch/powerpc/kernel/compat_audit.c  | 44 ---------------
->  5 files changed, 8 insertions(+), 135 deletions(-)
->  create mode 100644 arch/powerpc/include/asm/unistd32.h
->  delete mode 100644 arch/powerpc/kernel/audit.c
->  delete mode 100644 arch/powerpc/kernel/compat_audit.c
+Add a function, folio_change_private(), that will change the private data
+attached to a folio, without the need to twiddle the private bit or the
+refcount.  It assumes that folio_add_private() has already been called on
+the page.
 
-This looks OK, but I don't know much about audit.
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
 
-Can you resend with the audit maintainers on Cc?
+ include/linux/pagemap.h |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-cheers
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index f55d8d9001a9..c8d336e62177 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -229,6 +229,25 @@ static inline void folio_attach_private(struct folio *folio, void *data)
+ 	folio_set_private(folio);
+ }
+ 
++/**
++ * folio_change_private - Change private data on a folio.
++ * @folio: Folio to change the data on.
++ * @data: Data to set on the folio.
++ *
++ * Change the private data attached to a folio and return the old
++ * data.  The page must previously have had data attached and the data
++ * must be detached before the folio will be freed.
++ *
++ * Return: Data that was previously attached to the folio.
++ */
++static inline void *folio_change_private(struct folio *folio, void *data)
++{
++	void *old = folio_get_private(folio);
++
++	folio->private = data;
++	return old;
++}
++
+ /**
+  * folio_detach_private - Detach private data from a folio.
+  * @folio: Folio to detach data from.
+
+
