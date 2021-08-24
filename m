@@ -2,82 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11F43F5C6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414343F5C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbhHXKww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:52:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:33828 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236150AbhHXKwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:52:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF4BB101E;
-        Tue, 24 Aug 2021 03:52:07 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.90.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56C5D3F66F;
-        Tue, 24 Aug 2021 03:52:05 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 11:52:02 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
-Subject: Re: [PATCH 5/5] arm64: Document the requirement for SCR_EL3.HCE
-Message-ID: <20210824105202.GB96738@C02TD0UTHF1T.local>
-References: <20210812190213.2601506-1-maz@kernel.org>
- <20210812190213.2601506-6-maz@kernel.org>
- <20210824104900.GB623@arm.com>
+        id S236432AbhHXKx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:53:59 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59742 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236305AbhHXKx6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 06:53:58 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17OAr6gj066435;
+        Tue, 24 Aug 2021 05:53:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629802386;
+        bh=S0OVBAatI84KIbShrBm5yBL8uU+nTOrTxMrx2mLEoHY=;
+        h=From:To:CC:Subject:Date;
+        b=aX/HRPTvjAxb+FkNeA4Vjx/p0oBkN4Tyr3fXoQ1OFGIatvCQQc770HGRmHBje3SJf
+         S1v3FDud76qNGqh4TjyEM7RBuCp95Z6AB5w8CDFqeXpF5+E5G57l6R5dsXkh0VjYj7
+         kCawd93aKUpwPxb8gYEWsS4ZImcqizr5G1rDRe0I=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17OAr6rf072332
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 24 Aug 2021 05:53:06 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 24
+ Aug 2021 05:53:06 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 24 Aug 2021 05:53:06 -0500
+Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17OAr3Dc129176;
+        Tue, 24 Aug 2021 05:53:04 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chris.chiu@canonical.com>
+Subject: [RFC PATCH 0/5] Fix cold plugged USB device on certain PCIe USB cards
+Date:   Tue, 24 Aug 2021 16:22:57 +0530
+Message-ID: <20210824105302.25382-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824104900.GB623@arm.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:49:01AM +0100, Catalin Marinas wrote:
-> On Thu, Aug 12, 2021 at 08:02:13PM +0100, Marc Zyngier wrote:
-> > It is amazing that we never documented this absolutely basic
-> > requirement: if you boot the kernel at EL2, you'd better
-> > enable the HVC instruction from EL3.
-> > 
-> > Really, just do it.
-> > 
-> > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > ---
-> >  Documentation/arm64/booting.rst | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/Documentation/arm64/booting.rst b/Documentation/arm64/booting.rst
-> > index a9192e7a231b..6c729d0c4bc2 100644
-> > --- a/Documentation/arm64/booting.rst
-> > +++ b/Documentation/arm64/booting.rst
-> > @@ -212,6 +212,11 @@ Before jumping into the kernel, the following conditions must be met:
-> >    - The value of SCR_EL3.FIQ must be the same as the one present at boot
-> >      time whenever the kernel is executing.
-> >  
-> > +  For all systems:
-> > +  - If EL3 is present and the kernel is entered at EL2:
-> > +
-> > +    - SCR_EL3.HCE (bit 8) must be initialised to 0b1.
-> > +
-> >    For systems with a GICv3 interrupt controller to be used in v3 mode:
-> >    - If EL3 is present:
-> 
-> I'll queue this patch only for now.
-> 
-> A nitpick, I think we should move "For all systems" and "If EL3 is
-> present..." above the lines describing the SCR_EL3.FIQ requirement (I
-> can make the change locally).
+Cold plugged USB device was not detected on certain PCIe USB cards
+(like Inateck card connected to AM64 EVM or connected to J7200 EVM).
 
+Re-plugging the USB device always gets it enumerated.
 
-FWIW, with that:
+This issue was discussed in
+https://lore.kernel.org/r/772e4001-178e-4918-032c-6e625bdded24@ti.com
+and
+https://bugzilla.kernel.org/show_bug.cgi?id=214021
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+So the suggested solution is to register both root hubs along with the
+second hcd for xhci. This series performs some cleanups and implements
+the suggested solution.
 
-Mark.
+Kishon Vijay Abraham I (5):
+  usb: core: hcd: Modularize HCD stop configuration in usb_stop_hcd()
+  usb: core: hcd: Let usb_add_hcd() indicate if roothub has to be
+    registered
+  usb: core: hcd: Add support for registering secondary RH along with
+    primary HCD
+  usb: core: hcd-pci: Let usb_hcd_pci_probe() indicate if RH has to be
+    registered
+  xhci-pci: Use flag to not register roothub while adding primary HCD
+
+ drivers/usb/core/hcd-pci.c  | 11 +++---
+ drivers/usb/core/hcd.c      | 72 ++++++++++++++++++++++++-------------
+ drivers/usb/host/xhci-pci.c |  2 +-
+ include/linux/usb/hcd.h     | 16 ++++++---
+ 4 files changed, 65 insertions(+), 36 deletions(-)
+
+-- 
+2.17.1
+
