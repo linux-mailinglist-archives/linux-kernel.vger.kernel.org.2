@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4DF3F58DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AB03F58E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbhHXHWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbhHXHWQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:22:16 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10498C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:21:33 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id z2so6590778qvl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:21:33 -0700 (PDT)
+        id S234683AbhHXHXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:23:53 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:61983 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231945AbhHXHXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 03:23:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EXEw0YHebXp7XbzjSzJV0jI/BHO0fdfjhG7OETjh8as=;
-        b=gDOUuArVgRB6gTtcNAFpm7LiLec6ZWraiG8vZH6hBHBvPYe/ILnj9EXWgM2srM5lKc
-         BJpXWMNvZrpsQufh9RYjxP9p8phot+Gq/6pBKd3LiDdP8AAJ3EQn13r6zueSDIRFdm3C
-         dgjy5ByaftGNttDYabI+4CwiMVhuwxsnCdyd/HYn0CaVrgMoIsg6TBIZdf9ODAXGGXcq
-         y09PzVnbuvCs8YOnOOoMym84KNJJLtjjM6rM42rK1oC83SgDe/u2kyr/9h0Uy8MRk1wO
-         yfUhtHeFyYBED4pAgV3fdE/tnaxGcsGIkTaTMdlJBJreE/leNZ2gc0uQgmkH7g5UTplC
-         7jmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EXEw0YHebXp7XbzjSzJV0jI/BHO0fdfjhG7OETjh8as=;
-        b=uU6RvFC0XksESf9gI+LSxZAPXFsfw2QrM2HGQGJDRoAL9CufSlZjOnea+sVO+aILlY
-         mizUrvSXJIqoJXD/H4KyrEDv3Vg+hiYFFeXUl0z4VB6d7bAHSPQ8H9nH0rmXDPobOQHk
-         VkzV1GbOUmK7hrenYDCp3fJQQ6Ii60uLeC/6rLOwCN1xfssN6i4oETD3gMDVbcq9RWmI
-         mh4F4Nau/co19x0rhz5zE24r5Qs5nwHcCrYVR1TJjF+6jVCYReScUV8jqAssiDhk+bSd
-         jLmRDozkTebKC/Wz0YYuJJRgSXd3pnklUvmutrACM1/4CyVkf25QSmQIMAVS5DIz/QFM
-         s+1w==
-X-Gm-Message-State: AOAM530djt7z/DKiWPtFVOBIE44FVmvESrJ3uxv+xqdvaOPVJ4kqyTvj
-        KJDOUuMCXg1/qYOBOzhUvDI=
-X-Google-Smtp-Source: ABdhPJy6+xjGhPQk89+oc4mbeuGSPdcX+29eEoztT8uZnFVnsovZQDuwmViusPhAaEZWIPSXw6FTjQ==
-X-Received: by 2002:a05:6214:a45:: with SMTP id ee5mr37263446qvb.9.1629789692347;
-        Tue, 24 Aug 2021 00:21:32 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id 9sm7467786qtz.83.2021.08.24.00.21.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 00:21:32 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Steve Wahl <steve.wahl@hpe.com>
-Cc:     Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] x86:uv: fix boolreturn.cocci warnings
-Date:   Tue, 24 Aug 2021 00:21:24 -0700
-Message-Id: <20210824072124.61750-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+  d=axis.com; q=dns/txt; s=axis-central1; t=1629789788;
+  x=1661325788;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IfhqP2RM3ChQYnmM5eJg3nw2hVwagJF4PQHhkcCi/ms=;
+  b=nggq/7K2RjF8ZdnSHzmY8EwJXpPOOUpfAtrwHcxA8ad3Quc404HEdJ5W
+   p0SLFWJMH/tbgPMwhU8xcfYjNLsMycNeJs+4fGDjkvaYcNgTIGsGbY0e5
+   Dsb3Oc+cuIwcR/+zMRYgnD+WNnWrl9IpD/n77j5Vqn3Hm3IEogSqMVYNl
+   6Je9a3Jm7dNv1fboniHb/ID9HmNVQlYwHNNY6k2fRsk/s673piYryYaP/
+   JkcRybSsfft+Ujxv5c+08mfvt+A1yOWlZzsKCgOUvutCSFjyiolNzaejB
+   zpiNtQaHzXAaE/SXP1aZF+0NNxa5+OnNaj4DxVqD1R0lV2GQms5n8CTK2
+   g==;
+Date:   Tue, 24 Aug 2021 09:23:06 +0200
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Jason Wang <jasowang@redhat.com>, kernel <kernel@axis.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] vhost: add support for mandatory barriers
+Message-ID: <20210824072306.GA29073@axis.com>
+References: <20210823081437.14274-1-vincent.whitchurch@axis.com>
+ <20210823171609-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210823171609-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Mon, Aug 23, 2021 at 11:19:56PM +0200, Michael S. Tsirkin wrote:
+> On Mon, Aug 23, 2021 at 10:14:37AM +0200, Vincent Whitchurch wrote:
+> > vhost always uses SMP-conditional barriers, but these may not be
+> > sufficient when vhost is used to communicate between heterogeneous
+> > processors in an AMP configuration, especially since they're NOPs on
+> > !SMP builds.
+> > 
+> > To solve this, use the virtio_*() barrier functions and ask them for
+> > non-weak barriers if requested by userspace.
+> > 
+> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> 
+> I am inclined to say let's (ab)use VIRTIO_F_ORDER_PLATFORM for this.
+> Jason what do you think?
 
-./arch/x86/include/asm/uv/uv.h:36:53-54:WARNING:return of 0/1 in
-function 'is_early_uv_system' with return type bool
+OK, thanks, I'll look into that.
 
-Return statements in functions returning bool should use true/false
-instead of 1/0.
+> Also is the use of DMA variants really the intended thing here? Could
+> you point me at some examples please?
 
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- arch/x86/include/asm/uv/uv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/uv/uv.h b/arch/x86/include/asm/uv/uv.h
-index 648eb23..9395925 100644
---- a/arch/x86/include/asm/uv/uv.h
-+++ b/arch/x86/include/asm/uv/uv.h
-@@ -33,7 +33,7 @@ static inline bool is_early_uv_system(void)
- #else	/* !X86_UV */
- 
- static inline enum uv_system_type get_uv_system_type(void) { return UV_NONE; }
--static inline bool is_early_uv_system(void)	{ return 0; }
-+static inline bool is_early_uv_system(void)	{ return false; }
- static inline int is_uv_system(void)	{ return 0; }
- static inline int is_uv_hubbed(int uv)	{ return 0; }
- static inline void uv_cpu_init(void)	{ }
--- 
-1.8.3.1
-
-
+I'm using this on an ARM-based SoC.  The main processor is a Cortex-A53
+(arm64) and this processor runs the virtio drivers.  The SoC also has
+another processor which is a Cortex-A5 (arm32) and this processor runs
+the virtio device end using vhost.  There is no coherency between these
+two processors and to each other they look like any other DMA-capable
+hardware.
