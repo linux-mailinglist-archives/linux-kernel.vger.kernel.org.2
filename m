@@ -2,64 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF6B3F5FDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520AE3F5FD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237749AbhHXOGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
+        id S237659AbhHXOGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237475AbhHXOGq (ORCPT
+        with ESMTP id S232311AbhHXOG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:06:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA67BC061796;
-        Tue, 24 Aug 2021 07:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Xqja1HTyBUf8uuKLULMlLCkspx2KkmGFa3M60ugx7SA=; b=nkiCR5PXnBI2kOYu9sWcekaCWQ
-        yKWpqOl2UlffS0bJ1kSpjldLoczjJkX2SBHFwC8X6bJaoME7zkHjTcZNHQ7UNBUbwLmhCaq4dRmFd
-        vMoraImRqOd/nXBYw/Il1WUhTXACqmnzsjuT8YdaLMKDpmIv4kQsIMiW80XpAN+0xUjtn8EkmvNGM
-        ktdWjL54SQgz7IEevZKCwsKmdsc9EvDz6hq1RWi9zlkM37z5wQHI4Uh8P6WZBDhRNzubIEWuJvpdL
-        BhF0KvKZPmK+uKVqfX1fqnR/io3we8J0AgKiBsSqoYQUF/jyHow1DXSfBRTzX0zL4nds6HkJq2tTZ
-        4lm9BWzQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIX1d-00B8bA-27; Tue, 24 Aug 2021 14:03:52 +0000
-Date:   Tue, 24 Aug 2021 15:03:37 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] folio: Add a function to get the host inode for a
- folio
-Message-ID: <YST8OcVNy02Rivbm@casper.infradead.org>
-References: <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk>
- <162981151155.1901565.7010079316994382707.stgit@warthog.procyon.org.uk>
+        Tue, 24 Aug 2021 10:06:29 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B433CC061757;
+        Tue, 24 Aug 2021 07:05:45 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so1896206pjb.0;
+        Tue, 24 Aug 2021 07:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BdtL4BgokjgujApJ06tQSXQaIiFk2bqrpHTm5UuiXVg=;
+        b=DnSSy2sCW4l8HMb5J0ljKo0yiqzEUo/COydY729551qsxQcw1C7UqW4AGxI19Inxpp
+         hxp+ZzvTwXWAz/4LZrrMo08CJIhpQi4eMYaPh51mTwOy1guaKQLZzNO5uPCi3vSqKA6B
+         7IN9+sN84HZgSZOChdqxtkw39Cb3zZDiI2/Kq5J8I4pi4fyN7h2ic9eHPRBhgbQfEEYv
+         3mfWiK8FxUhHIg0i2dBCyk3Ihg4Ac+hUuTjdl3pnbXkNBjDX6S/niPHC3MFC9ReHN5E0
+         0hQWD8RBCWbgSgqwE1laG4BpgWuAqU5Qk5wTF1LFMfWFWmmodebzwS8RHlg5QC24DBVg
+         dEbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BdtL4BgokjgujApJ06tQSXQaIiFk2bqrpHTm5UuiXVg=;
+        b=VgALX1hhzEvhcGNwNlJy+aWUDyLSqzw1hEKuTR4MSZ17sTZ+kf/9kkTQFatW7ubAKd
+         FGIOFlW9Cd9YQ7v4tRGOGYoaI928UQWsikBsTLZLAAgNKBbuVH3U1BueHBr5e61/ZC5z
+         Ez2CqEvtJUfVBZI8Hx4MGuc1nGd4FVbJgP3dVFyUi0djb04WtnxAEwPssbdD73RFH+X+
+         T538V0jq28o+sb/CAAnWPGcLrXE4hYqhjhd2MTwzFDdnZX/tZips1xyJIu1EeSIKPXHw
+         XAwNJ8ILLLch8eHkpdosceKeDQJjHbrJ4a12K99EtlyVxBEr3NGBbpwvdoAigD1Wsbrd
+         KqxQ==
+X-Gm-Message-State: AOAM530qpyzQxeJRA+pMYzZx/AT8WT/A+7GSLjRitZxjeAGsaMLc9Lf/
+        jglkk9l1lzpdV1HBtFWv9hQ=
+X-Google-Smtp-Source: ABdhPJzCA4TGdP0RxqYe87RtOsdJBuEI/1t/V2fnwfkQL88ttw1AkX+kEDsHve9owb5Zlw8/2bvNaA==
+X-Received: by 2002:a17:902:6b49:b0:136:3f21:7a9 with SMTP id g9-20020a1709026b4900b001363f2107a9mr3173720plt.81.1629813945290;
+        Tue, 24 Aug 2021 07:05:45 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id ml5sm2710652pjb.4.2021.08.24.07.05.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 07:05:44 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 07:05:42 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Harini Katakam <harini.katakam@xilinx.com>
+Cc:     nicolas.ferre@microchip.com, davem@davemloft.net,
+        claudiu.beznea@microchip.com, andrei.pistirica@microchip.com,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, michal.simek@xilinx.com,
+        harinikatakamlinux@gmail.com
+Subject: Re: [RFC PATCH] net: macb: Process tx timestamp only on ptp packets
+Message-ID: <20210824140542.GA17195@hoboy.vegasvil.org>
+References: <20210824101238.21105-1-harini.katakam@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <162981151155.1901565.7010079316994382707.stgit@warthog.procyon.org.uk>
+In-Reply-To: <20210824101238.21105-1-harini.katakam@xilinx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 02:25:11PM +0100, David Howells wrote:
-> + * For folios which are in the page cache, return the inode that is hosting
-> + * this folio belongs to.
-> + *
-> + * Do not call this for folios which aren't in the page cache.
-> + */
-> +static inline struct inode *folio_inode(struct folio *folio)
-> +{
-> +	return folio_file_mapping(folio)->host;
+On Tue, Aug 24, 2021 at 03:42:38PM +0530, Harini Katakam wrote:
+> The current implementation timestamps all packets and also processes
+> the BD timestamp for the same. While it is true that HWTSTAMP_TX_ON
+> enables timestamps for outgoing packets, the sender of the packet
+> i.e. linuxptp enables timestamp for PTP or PTP event packets. Cadence
+> GEM IP has a provision to enable this in HW only for PTP packets.
+> Enable this option in DMA BD settings register to decrease overhead.
 
-You're contradicting yourself here.  If you're allowed to call this
-function for swap cache pages, then the documentation needs to change.
-If you're not, then we can just use folio->mapping->host.
+NAK, because the HWTSTAMP_TX_ON means to time stamp any frame marked
+by user space, not just PTP frames.
+
+This patch does not "decrease overhead" because the code tests whether
+time stamping was request per packet:
+
+drivers/net/ethernet/cadence/macb_main.c line 1202
+
+	if (unlikely(skb_shinfo(skb)->tx_flags &
+		     SKBTX_HW_TSTAMP) &&
+	    gem_ptp_do_txstamp(queue, skb, desc) == 0) {
+		...
+	}
+
+Thanks,
+Richard
