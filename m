@@ -2,86 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786163F559F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF6C3F55A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbhHXCHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:07:34 -0400
-Received: from mail-qk1-f179.google.com ([209.85.222.179]:41532 "EHLO
-        mail-qk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhHXCHd (ORCPT
+        id S233732AbhHXCIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhHXCID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:07:33 -0400
-Received: by mail-qk1-f179.google.com with SMTP id bk29so15761989qkb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:06:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JAUUnTgkoa3k12aTtTd1I7GW9Zir2hN+aG0xsiNu28Q=;
-        b=jGL8TInuP3uTcBji/+1DgfXQWgVn/fOZr8vts4g1a2TbUN4D951kYk/P7dRJC5IeBL
-         rDXd/xrKvcpq1P7pknZ9/MRd/SgBTQ5Yp8RVCQyFyYDhyhQmMHWmXt2ftlDO4gah8FDH
-         y3YJX4h/2yYL+FHz99YHm43Iam8p/J5YNEo/Le+yfrnPIYWXfOvZB09FONCPO5oKSCyB
-         q1JdKM76Zd2aIWwvCWQl0Y5Zm8FyLcdxg/dyGdlXLVfeYma2+OID1joglFmEjL9hwY9g
-         X/JTbO/ziEbWPldtV5D2/ifU+lkbLBPSm1fA+UkekCCBplPezJdl3FDfhDjw36tucLrg
-         ZBFA==
-X-Gm-Message-State: AOAM531IlTDtnAg6HhSlYByoVrrWwStD2PciLOKGbCbeToE1sSpmdoAT
-        9HXVZz4Qh8eSmFcMVinZoD2k5FaYGxCDKg==
-X-Google-Smtp-Source: ABdhPJxWSN1E85hQycCFZ4I7YEf3eAqWxQmhtdWFxoWw9Vgl7IjjL9h4/Erx3OVVYmABtuSgvilAZw==
-X-Received: by 2002:a37:8044:: with SMTP id b65mr23838872qkd.295.1629770809337;
-        Mon, 23 Aug 2021 19:06:49 -0700 (PDT)
-Received: from fedora (pool-173-68-57-129.nycmny.fios.verizon.net. [173.68.57.129])
-        by smtp.gmail.com with ESMTPSA id q14sm9636827qkl.44.2021.08.23.19.06.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 19:06:48 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 22:06:47 -0400
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCHv2 1/2] kernel/workqueue: Make schedule_on_each_cpu as
- EXPORT_SYMBOL_GPL
-Message-ID: <YSRUNzVEig80IBtq@fedora>
-References: <5afc2a0c4da65e71ccf24fe65396710d34fc662e.1629751104.git.riteshh@linux.ibm.com>
+        Mon, 23 Aug 2021 22:08:03 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DF7C061575;
+        Mon, 23 Aug 2021 19:07:18 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gtstq05sMz9sXM;
+        Tue, 24 Aug 2021 12:07:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629770835;
+        bh=r4ymY9gWQpZ6Z04duXoJmp16wAd5c4r06ImlbHiBxZA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YG9629AJIr/aPfPGVYetbttRIYIz9QesWb6LN3wm0NAVEUIHsxJRais88+s+MZdmU
+         eNysElEtF3Xwr6Ziio/qKklzXJmjDw2OhpPAhccrV4pf9UpLbtP+DfIcqU4VXYaQTD
+         F5Eqif24WAXtkUt+850mE25Sjl7uu0D7Bbmrm4F0uW+JVZ4JrZP2w3M712gXNqekjx
+         GRh6ZisQ1Gp57BGWyJ03Byr1z+jxirEhPlfjhsYAQXLfM8MJw5uXMuVL+QiQ7BRptP
+         nsyRdZS5StzAwe5angKjQUTL9Pv+JU8JwcPHzaAMRAB751EWOzmDTkcGlrc1VjCkBV
+         tgzxKgmsciwSA==
+Date:   Tue, 24 Aug 2021 12:07:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        Wireless <linux-wireless@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: linux-next: manual merge of the wireless-drivers-next tree with
+ the printk tree
+Message-ID: <20210824120714.421e734d@canb.auug.org.au>
+In-Reply-To: <20210809131813.3989f9e8@canb.auug.org.au>
+References: <20210809131813.3989f9e8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5afc2a0c4da65e71ccf24fe65396710d34fc662e.1629751104.git.riteshh@linux.ibm.com>
+Content-Type: multipart/signed; boundary="Sig_/4UxtGFUocPEUzdTXtzwtA1y";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/4UxtGFUocPEUzdTXtzwtA1y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 24, 2021 at 02:12:29AM +0530, Ritesh Harjani wrote:
-> Make schedule_on_each_cpu as EXPORT_SYMBOL_GPL
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
-> [v1 -> v2]: Use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL
-> 
->  kernel/workqueue.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index f148eacda55a..993f8983186d 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -3309,6 +3309,7 @@ int schedule_on_each_cpu(work_func_t func)
->  	free_percpu(works);
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(schedule_on_each_cpu);
-> 
->  /**
->   * execute_in_process_context - reliably execute the routine with user context
-> --
-> 2.31.1
-> 
+Hi all,
 
-I think you missed the point of Christoph's comment. I agree with him
-and don't think a test justifies exporting of this particular function.
+On Mon, 9 Aug 2021 13:18:13 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Today's linux-next merge of the wireless-drivers-next tree got a
+> conflict in:
+>=20
+>   MAINTAINERS
+>=20
+> between commit:
+>=20
+>   337015573718 ("printk: Userspace format indexing support")
+>=20
+> from the printk tree and commit:
+>=20
+>   d249ff28b1d8 ("intersil: remove obsolete prism54 wireless driver")
+>=20
+> from the wireless-drivers-next tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc MAINTAINERS
+> index 5cf181197a50,492bc169c3bd..000000000000
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@@ -14974,18 -14927,6 +14974,11 @@@ S:	Maintaine
+>   F:	include/linux/printk.h
+>   F:	kernel/printk/
+>  =20
+>  +PRINTK INDEXING
+>  +R:	Chris Down <chris@chrisdown.name>
+>  +S:	Maintained
+>  +F:	kernel/printk/index.c
+>  +
+> - PRISM54 WIRELESS DRIVER
+> - M:	Luis Chamberlain <mcgrof@kernel.org>
+> - L:	linux-wireless@vger.kernel.org
+> - S:	Obsolete
+> - W:	https://wireless.wiki.kernel.org/en/users/Drivers/p54
+> - F:	drivers/net/wireless/intersil/prism54/
+> -=20
+>   PROC FILESYSTEM
+>   L:	linux-kernel@vger.kernel.org
+>   L:	linux-fsdevel@vger.kernel.org
 
-Thanks,
-Dennis
+This is now a conflict between the net-next tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/4UxtGFUocPEUzdTXtzwtA1y
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEkVFIACgkQAVBC80lX
+0GwNggf/afvc+h6lbKU/zmPTyivHHMDmEn3zYtbtVXiEVHLUs2m3Oeoo+/OVhY6Q
+ajQChLL5WGw9Zk1Ov5d5X6i2PH7456RiIdBcJz6bCsuGQUfEs//7GXS8IOL8g5Dd
+A+KIoufI8FgUagoAJ+39osPvWb4Sj+xIcgLr1211lRAOz2l7t8h487XRedLb0DHN
+2PMZr4XC9t3Vmwv85F54lfbqJM4CjC2WwCKjmEsCwFO6SKsXQPnn2FU496n5DAtM
+GcllVU1D/84VtplRF4j+CJzaW5Q3QsM2S9Qt0RuAOvbvMFdyO5eTTz0fMNChAktY
+n0MN+ldVhx76izsvs8MEOMrvKkK4fQ==
+=YKJx
+-----END PGP SIGNATURE-----
+
+--Sig_/4UxtGFUocPEUzdTXtzwtA1y--
