@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10533F5A61
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DCD3F5A64
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235418AbhHXJEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
+        id S235479AbhHXJFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234214AbhHXJES (ORCPT
+        with ESMTP id S235353AbhHXJFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:04:18 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C655C061757;
-        Tue, 24 Aug 2021 02:03:34 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id u22so43891288lfq.13;
-        Tue, 24 Aug 2021 02:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tww6XVE62J265ghFTkVGXgkg5lbz4z++5Ad3DbvV2v0=;
-        b=j5rQGC/VUVcFs01zA0bPZ+6T6p53CUNuDWeYLpl/I18ETzkRCMfJanVwuehBYAd/ST
-         9pTFsE6vXjh6hb2Q/UpvLFiRaVlQ3FYXbaRPPWhi1jm4G2PvCgLxFKWjeA7+hwELZet2
-         J6psJziUUYzpJq//CVVtEQwWBHGyHqYy3Ibcg+RxmmRkyOv+m1HRljpzEuR0N1bOvxlB
-         RuQE2V5FpaVw30AeTdkHzcrg1BlTn6POuJ0vb1jTWcdbYgYixLupXbOyEsF4tJk+rHCO
-         ZIXFgwfobIOrSDXyveYMI6cuRHdxIoLit91NnSU2lh1GJ1hjM+r0Wd0lqdzEV0cZ/bvZ
-         V1wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tww6XVE62J265ghFTkVGXgkg5lbz4z++5Ad3DbvV2v0=;
-        b=Tix4v+Sksk5Bbp7Bd0ZT8vlj5qMxRc/MjF+UZWdSP1GkRckt7TsAxh03NvV2NqzKzT
-         T16WzdGoJF7F8H8/8QpRKA75+KKY+hiBEDSf90foybp4/4/lI37bfXDanEOw5sbtpUH6
-         YNebg7RUuQ0W3xkMZHkZASDHlE2hERVUnEP5xbj7Ig7pZrsFiDgXr8TiWqgRUJ9ihlcg
-         yD0WGbzU4KDSoLWgFN39yGFUScKJWJcGKnXVIBfJBQ1XIgJ6lkNNsq9aXCOKfdNzYsne
-         15HdE6LRGXredUez7WxQC+6n4k4HYhqE2qWpxmyHclnkZkBl6c1mx1D8yoLUDA4VEMbH
-         5faA==
-X-Gm-Message-State: AOAM5331AM0tHZ7rQRrsXzLhkVDNMMT6+D9U6qxI1/4tecfK2/lJHyKP
-        uYsAUr8t1xEMviKaur2aEmo=
-X-Google-Smtp-Source: ABdhPJwykt2xAx+PCjTM/YKA46NLFqqW/T+1ErGDhcJCcfeJxT2tJwGzItdj5OLURNVHE8BFKccbAw==
-X-Received: by 2002:ac2:4c45:: with SMTP id o5mr2392789lfk.177.1629795812382;
-        Tue, 24 Aug 2021 02:03:32 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id p1sm733035lfs.10.2021.08.24.02.03.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 02:03:31 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 12:03:30 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/3] fs/ntfs3: Fix error code in indx_add_allocate()
-Message-ID: <20210824090330.fmuif7e4kku2nrli@kari-VirtualBox>
-References: <20210824074932.GA13096@kili>
+        Tue, 24 Aug 2021 05:05:04 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00813C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:04:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4BqOeEvKn3VT12X6PVV36rmpulDjNs6oQIazXntzmGs=; b=VdNEU++DYYanfEoGHkoAMxqdQs
+        apdSS7XiB730XVzHPhewHEQ5kwUFUxK2LtFcGRXDS0AsUDqSLDOV7jkHdQUQHAfgjhGSM0iSZzmoD
+        /vjsAp1WlrTjIt7E2ZKvdH6RWqUgPAMCmri8W1g16RBJOQXnOMheMtFyeqFV/JExOTwHolelwUwIQ
+        3AU/RLSdAKoSoDuK38biQIBMqX04uoE/dx1GJOYGJVr21248pOGcl1tUhNz5TB9vNd5tVwcv9EYPZ
+        vMIxdXKmMOYp4bm0FEGDJ5XoKCUGJKhTkDs4L4LF1luGW6uqa9I8pUmPsI+kavIAv71q0DrR31P3v
+        Py1hZGZg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mISLf-00CXwA-0S; Tue, 24 Aug 2021 09:03:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6F69F300024;
+        Tue, 24 Aug 2021 11:03:58 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5866B2C57D1EB; Tue, 24 Aug 2021 11:03:58 +0200 (CEST)
+Date:   Tue, 24 Aug 2021 11:03:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vineeth Pillai <vineethrp@gmail.com>
+Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, tao.zhou@linux.dev
+Subject: Re: [PATCH] sched/core: fix pick_next_task 'max' tracking
+Message-ID: <YSS1/rqqsGaBX/yQ@hirez.programming.kicks-ass.net>
+References: <20210818005615.138527-1-joshdon@google.com>
+ <YSODqN9G7VuV+kNR@hirez.programming.kicks-ass.net>
+ <CAOBnfPjH=y3Lk7AukLeG4mNcJnf5cgV260=PZCbF9u69-T+Q6Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210824074932.GA13096@kili>
+In-Reply-To: <CAOBnfPjH=y3Lk7AukLeG4mNcJnf5cgV260=PZCbF9u69-T+Q6Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:49:32AM +0300, Dan Carpenter wrote:
-> Return -EINVAL if ni_find_attr() fails.  Don't return success.
+On Mon, Aug 23, 2021 at 04:25:28PM -0400, Vineeth Pillai wrote:
+> Hi Peter,
 > 
-> Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> > > Here, we should have instead updated 'max' when picking for SMT-1. Note
+> > > that this code would eventually have righted itself, since the retry
+> > > loop would re-pick p2, and update 'max' accordingly. However, this patch
+> > > avoids the extra round-trip.
+> >
+> > Going with the observation Tao made; how about we rewrite the whole lot
+> > to not be mind-bending complicated :-)
+> >
+> > How's this? It seems to build and pass the core-sched selftest thingy
+> > (so it must be perfect, right? :-)
+> >
+> Nice, the code is much simpler now :-). A minor suggestion down..
+> 
+> > -       for_each_cpu(i, smt_mask) {
+> > -               struct rq *rq_i = cpu_rq(i);
+> > -
+> > +       /*
+> > +        * For each thread: do the regular task pick and find the max prio task
+> > +        * amongst them.
+> > +        *
+> > +        * Tie-break prio towards the current CPU
+> > +        */
+> > +       for_each_cpu_wrap(i, smt_mask, cpu) {
+> > +               rq_i = cpu_rq(i);
+> >                 rq_i->core_pick = NULL;
+> >
+> >                 if (i != cpu)
+> >                         update_rq_clock(rq_i);
+> > +
+> > +               for_each_class(class) {
+> > +                       p = rq_i->core_temp = class->pick_task(rq_i);
+> I think we can use core_pick to store the pick here and core_temp
+> might not be required. What do you feel?
 
-Good catch. It seems it is like 50/50 if this should be -ENOENT. I
-just check what we do else where where !ni_find_attr().
+Indeed we can; makes the code a little less obvious but saves a few
+bytes.
 
-But either way:
-Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
-
-> ---
->  fs/ntfs3/index.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-> index 6aa9540ece47..07d6dee0a4ba 100644
-> --- a/fs/ntfs3/index.c
-> +++ b/fs/ntfs3/index.c
-> @@ -1499,6 +1499,7 @@ static int indx_add_allocate(struct ntfs_index *indx, struct ntfs_inode *ni,
->  	alloc = ni_find_attr(ni, NULL, NULL, ATTR_ALLOC, in->name, in->name_len,
->  			     NULL, &mi);
->  	if (!alloc) {
-> +		err = -EINVAL;
->  		if (bmp)
->  			goto out2;
->  		goto out1;
-> -- 
-> 2.20.1
-> 
-> 
+Let me go do that and also attempt a Changelog to go with it ;-)
