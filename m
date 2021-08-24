@@ -2,85 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DAA3F69F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329DD3F69F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234870AbhHXTkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbhHXTj6 (ORCPT
+        id S234958AbhHXTkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:40:05 -0400
+Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:59539 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234542AbhHXTj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:39:58 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C48BC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:39:14 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id m4so4760914ljq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:39:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sg2PeXygntpvBqIKJYVWHWj4D3JPXoTat1Hdlqkmh7U=;
-        b=fVGpm4zytOEgKYCiYTv8HiBsEBqkpXonVy0t2eG8CE8JNNbpbZjbUdBL08kDjWv7W+
-         Rt6w3znYPC91yDwSJc3FQliDhEAwKpijLzmNopf/row0wktjFdarFGHVG1e0YELcJco5
-         +Gw4ptbu76uHIyyI+9wE+qNhCkKyOOB+qGkHc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sg2PeXygntpvBqIKJYVWHWj4D3JPXoTat1Hdlqkmh7U=;
-        b=ZAoBX8eCVic3U6ozImpKqhL4Tdp4uqyOFKg3guQgZCU/sRsvOgs6zLcLcGzTDfaYFL
-         AXXFfVXzt8bXyDoxta1aln+LM35tZkVBUM/mcTBv2PUqiviVKq5aY1rgCHCypgoT4/jm
-         fcTyp0wCl24uE+dNyyXVap/DZKIA7V7MyUO77baDFYdhBjfhKPgYRv1c72GW0QGELFCY
-         NuC5vXTFMNw6Uz6SU+h2fdxS/XpTU9mmyajHMO2QAAP9ay1J+ksvy6t/jmS/GqcXRC9w
-         yGUhLICC6QiPgQ/gn305g98MuDyQB+4Bcmu2IV+qipFt4gapfylDmjAkXjlH4CWpo64w
-         +Isg==
-X-Gm-Message-State: AOAM5314smxiNj31xg7UiXRXokDgEaNYPXxmmbEjy2TisJ2KV8RFAF/Y
-        lhJH6PTceXn9kTeigIyTc7lckskTY/3aQ0IG
-X-Google-Smtp-Source: ABdhPJzZS4JYABc+ZZWvg1u8xAghy9/q44IeLTVRrTLKgn41P4KgSkGbhm1SCbDj4AMsbHzAUF7mQQ==
-X-Received: by 2002:a05:651c:1409:: with SMTP id u9mr32811480lje.429.1629833952535;
-        Tue, 24 Aug 2021 12:39:12 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id w2sm479368lfp.231.2021.08.24.12.39.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 12:39:12 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id l18so32003551lji.12
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:39:11 -0700 (PDT)
-X-Received: by 2002:a2e:7d0e:: with SMTP id y14mr32977454ljc.251.1629833951436;
- Tue, 24 Aug 2021 12:39:11 -0700 (PDT)
+        Tue, 24 Aug 2021 15:39:59 -0400
+Received: from [192.168.1.18] ([90.126.253.178])
+        by mwinf5d35 with ME
+        id lXfC2500Q3riaq203XfC8y; Tue, 24 Aug 2021 21:39:13 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 24 Aug 2021 21:39:13 +0200
+X-ME-IP: 90.126.253.178
+Subject: Re: [PATCH] parisc/parport_gsc: switch from 'pci_' to 'dma_' API
+To:     Robin Murphy <robin.murphy@arm.com>,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        sudipm.mukherjee@gmail.com, sumit.semwal@linaro.org,
+        christian.koenig@amd.com
+Cc:     linux-parisc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <93b21629db55629ec3d384e8184c4a9dd0270c11.1629754126.git.christophe.jaillet@wanadoo.fr>
+ <1a6f5b12-7cf2-cdb8-7a60-20c2d2ee38f3@arm.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <c9d650ba-686a-7813-b0a1-eaef4eef612e@wanadoo.fr>
+Date:   Tue, 24 Aug 2021 21:39:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
- <YSPwmNNuuQhXNToQ@casper.infradead.org> <YSQSkSOWtJCE4g8p@cmpxchg.org>
- <1957060.1629820467@warthog.procyon.org.uk> <YSUy2WwO9cuokkW0@casper.infradead.org>
- <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
- <CAHk-=wgRdqtpsbHkKeqpRWUsuJwsfewCL4SZN2udXVgExFZOWw@mail.gmail.com>
- <1966106.1629832273@warthog.procyon.org.uk> <CAHk-=wiZ=wwa4oAA0y=Kztafgp0n+BDTEV6ybLoH2nvLBeJBLA@mail.gmail.com>
-In-Reply-To: <CAHk-=wiZ=wwa4oAA0y=Kztafgp0n+BDTEV6ybLoH2nvLBeJBLA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 24 Aug 2021 12:38:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whd8ugrzMS-3bupkPQz9VS+dWHPpsVssrDfuFgfff+n5A@mail.gmail.com>
-Message-ID: <CAHk-=whd8ugrzMS-3bupkPQz9VS+dWHPpsVssrDfuFgfff+n5A@mail.gmail.com>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-To:     David Howells <dhowells@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1a6f5b12-7cf2-cdb8-7a60-20c2d2ee38f3@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:25 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Something like "page_group" or "pageset" sound reasonable to me as type names.
+Le 24/08/2021 à 12:24, Robin Murphy a écrit :
+> On 2021-08-23 22:30, Christophe JAILLET wrote:
+>> The wrappers in include/linux/pci-dma-compat.h should go away.
+>>
+>> The patch has been generated with the coccinelle script below.
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_free_consistent(e1, e2, e3, e4)
+>> +    dma_free_coherent(&e1->dev, e2, e3, e4)
+>>
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+>>     https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+>>
+>> This has *NOT* been compile tested because I don't have the needed
+>> configuration.
+>> ssdfs
+>> ---
+>>   drivers/parport/parport_gsc.c | 5 ++---
+>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/parport/parport_gsc.c 
+>> b/drivers/parport/parport_gsc.c
+>> index 1e43b3f399a8..db912fa6b6df 100644
+>> --- a/drivers/parport/parport_gsc.c
+>> +++ b/drivers/parport/parport_gsc.c
+>> @@ -390,9 +390,8 @@ static int __exit parport_remove_chip(struct 
+>> parisc_device *dev)
+>>           if (p->irq != PARPORT_IRQ_NONE)
+>>               free_irq(p->irq, p);
+>>           if (priv->dma_buf)
+>> -            pci_free_consistent(priv->dev, PAGE_SIZE,
+>> -                        priv->dma_buf,
+>> -                        priv->dma_handle);
+>> +            dma_free_coherent(&priv->dev->dev, PAGE_SIZE,
+>> +                      priv->dma_buf, priv->dma_handle);
+> 
+> Hmm, seeing a free on its own made me wonder where the corresponding 
+> alloc was, but on closer inspection it seems there isn't one. AFAICS 
+> priv->dma_buf is only ever assigned with NULL (and priv->dev doesn't 
+> seem to be assigned at all), so this could likely just be removed. In 
+> fact it looks like all the references to DMA in this driver are just 
+> copy-paste from parport_pc and unused.
+> 
+> Robin.
+> 
 
-"pageset" is such a great name that we already use it, so I guess that
-doesn't work.
+Agreed. I had the same reaction, but as the patch should basically be a 
+no-op, it looked safe, even if non-optimal.
 
-            Linus
+Looking at parport_gsc_private, pword, readIntrThreshold and 
+writeIntrThreshold also look unused.
+
+My own goal is to remove the 'pci_free_consistent()' call in order to 
+remove a deprecated API.
+
+As said, I can not compile this driver.
+I could send a blind fix that axes 'pci_free_consistent()' and remove 
+some fields in parport_gsc_private, but I'm not sure that it is the best 
+way to go.
+
+Do you prefer to look at it by yourself or do you prefer to compile test 
+my trials?
+
+
+CJ
+
+
+
+>>           kfree (p->private_data);
+>>           parport_put_port(p);
+>>           kfree (ops); /* hope no-one cached it */
+>>
+> 
+
