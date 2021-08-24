@@ -2,159 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFFF3F5C04
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A123F5C2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236249AbhHXKZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:25:19 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:18033 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235829AbhHXKZP (ORCPT
+        id S236156AbhHXKcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:32:51 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4888 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236319AbhHXKco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:25:15 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gv4r85DFZzbhXS;
-        Tue, 24 Aug 2021 18:20:40 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 24 Aug 2021 18:24:29 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 24 Aug
- 2021 18:24:29 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>
-Subject: [PATCH -next] mtd: fix possible deadlock when loading and opening mtd device
-Date:   Tue, 24 Aug 2021 18:30:05 +0800
-Message-ID: <20210824103005.1895457-1-yangyingliang@huawei.com>
+        Tue, 24 Aug 2021 06:32:44 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17OATa9T120550;
+        Tue, 24 Aug 2021 06:31:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=55jPYrm2CeOCXNTRbI3j9+G9udguvuCT/EodvQBcFn0=;
+ b=gsp97i6DcRC4eGjuz7wKhFK74F44PB5ujUAOvlz+wxZ2m/aP7Z4rNweds9LMP2PPBQdD
+ 2GKGa2FsPBY/3dEsW03kf+EkKz7mwnyDWUWHctzQJW6s1k9MHLpFzp2F/24FggqGzat7
+ vnx5+d+htCEmHErBL5NiQKb6nIBsc3zvvWrvGYooCnq1qcGRk0x38lO5/PpvWVBzmuAV
+ XEQskRM8B6zygtCIeS2EJ75++ZVyiqLgq1QvMP99vNyyNL3ZIDKYCHxC7WU+k9NU6EQn
+ 9gqQi38VurgdkM4GJsH5PWKJ4C7BqJMNzkMYPM5oaw8HtlGXXcR60WoqHGHbVwOV9rls yw== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3amy2kr1gm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 06:31:09 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17OARioa030215;
+        Tue, 24 Aug 2021 10:31:07 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3ajs48cxx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 10:31:06 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17OARKQE23724438
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Aug 2021 10:27:20 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7DB9C11C05C;
+        Tue, 24 Aug 2021 10:31:03 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4ECC11C054;
+        Tue, 24 Aug 2021 10:31:02 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 24 Aug 2021 10:31:02 +0000 (GMT)
+From:   Julian Wiedmann <jwi@linux.ibm.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] driver core: clean up open-coded NUMA_NO_NODE in device_initialize()
+Date:   Tue, 24 Aug 2021 12:30:55 +0200
+Message-Id: <20210824103056.1571475-1-jwi@linux.ibm.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: CubTcxcH7l3hNKE8JRnicOQXxI13E6mx
+X-Proofpoint-GUID: CubTcxcH7l3hNKE8JRnicOQXxI13E6mx
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-24_02:2021-08-24,2021-08-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ phishscore=0 malwarescore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108240066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got the possible circular locking dependency detected report:
+Use the right macro to get rid of a magic number.
 
-[   52.472106][  T483] ======================================================
-[   52.473212][  T483] WARNING: possible circular locking dependency detected
-[   52.474322][  T483] 5.14.0-rc6-next-20210820+ #438 Not tainted
-[   52.475272][  T483] ------------------------------------------------------
-[   52.476385][  T483] systemd-udevd/483 is trying to acquire lock:
-[   52.477356][  T483] ffffffff8c5d45a8 (mtd_table_mutex){+.+.}-{3:3}, at: blktrans_open.cold.18+0x44/0x4b1
-[   52.480510][  T483]
-[   52.480510][  T483] but task is already holding lock:
-[   52.481664][  T483] ffff88810eff8918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x428/0x910
-[   52.483164][  T483]
-[   52.483164][  T483] which lock already depends on the new lock.
-[   52.483164][  T483]
-[   52.484578][  T483]
-[   52.484578][  T483] the existing dependency chain (in reverse order) is:
-[   52.485803][  T483]
-[   52.485803][  T483] -> #1 (&disk->open_mutex){+.+.}-{3:3}:
-[   52.486888][  T483]        __mutex_lock+0x140/0x15d0
-[   52.487599][  T483]        bd_register_pending_holders+0xb9/0x302
-[   52.488463][  T483]        device_add_disk+0x375/0xcf0
-[   52.489198][  T483]        add_mtd_blktrans_dev+0x11a4/0x16f0
-[   52.490019][  T483]        mtdblock_add_mtd+0x21a/0x2b0
-[   52.490771][  T483]        blktrans_notify_add+0xae/0xdb
-[   52.491531][  T483]        add_mtd_device.cold.26+0xa98/0xc98
-[   52.492348][  T483]        mtd_device_parse_register+0x516/0x870
-[   52.493201][  T483]        mtdram_init_device+0x294/0x350
-[   52.493966][  T483]        init_mtdram+0xde/0x16e
-[   52.494644][  T483]        do_one_initcall+0x105/0x650
-[   52.495381][  T483]        kernel_init_freeable+0x6aa/0x732
-[   52.496171][  T483]        kernel_init+0x1c/0x1c0
-[   52.496847][  T483]        ret_from_fork+0x1f/0x30
-[   52.497530][  T483]
-[   52.497530][  T483] -> #0 (mtd_table_mutex){+.+.}-{3:3}:
-[   52.498591][  T483]        __lock_acquire+0x2cfa/0x5990
-[   52.499343][  T483]        lock_acquire+0x1a0/0x500
-[   52.500041][  T483]        __mutex_lock+0x140/0x15d0
-[   52.500749][  T483]        blktrans_open.cold.18+0x44/0x4b1
-[   52.501545][  T483]        blkdev_get_whole+0x9f/0x280
-[   52.502282][  T483]        blkdev_get_by_dev+0x593/0x910
-[   52.503041][  T483]        blkdev_open+0x154/0x2a0
-[   52.503726][  T483]        do_dentry_open+0x6a9/0x1260
-[   52.504461][  T483]        path_openat+0xe06/0x2850
-[   52.505160][  T483]        do_filp_open+0x1b0/0x280
-[   52.505857][  T483]        do_sys_openat2+0x60e/0x9a0
-[   52.506576][  T483]        do_sys_open+0xca/0x140
-[   52.507251][  T483]        do_syscall_64+0x38/0xb0
-[   52.507936][  T483]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   52.508822][  T483]
-[   52.508822][  T483] other info that might help us debug this:
-[   52.508822][  T483]
-[   52.510218][  T483]  Possible unsafe locking scenario:
-[   52.510218][  T483]
-[   52.511240][  T483]        CPU0                    CPU1
-[   52.511975][  T483]        ----                    ----
-[   52.512708][  T483]   lock(&disk->open_mutex);
-[   52.513342][  T483]                                lock(mtd_table_mutex);
-[   52.514295][  T483]                                lock(&disk->open_mutex);
-[   52.515276][  T483]   lock(mtd_table_mutex);
-[   52.515884][  T483]
-[   52.515884][  T483]  *** DEADLOCK ***
-
-load module path:              open device path:
-init_mtdram()
-add_mtd_device()
-mutex_lock(&mtd_table_mutex)
-blktrans_notifier()
-add_mtd()
-                                blkdev_get_by_dev()
-                                mutex_lock(&disk->open_mutex)
-                                blktrans_open()
-                                mutex_lock(&mtd_table_mutex);
-bd_register_pending_holders()
-mutex_lock(&disk->open_mutex)
-
-add_mtd() is called under mtd_table_mutex, before it acquires open_mutex,
-open_mutex may be acquired by another cpu when opening the device, and it
-will wait for mtd_table_mutex which is already acquired, then the 'ABBA'
-deadlock scenario is happend, reduce the mtd_table_mutex to avoid this.
-
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
 ---
- drivers/mtd/mtd_blkdevs.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/base/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 44bea3f65060..476933ab561d 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -358,6 +358,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	list_add_tail(&new->list, &tr->devs);
-  added:
- 	mutex_unlock(&blktrans_ref_mutex);
-+	mutex_unlock(&mtd_table_mutex);
- 
- 	mutex_init(&new->lock);
- 	kref_init(&new->ref);
-@@ -434,6 +435,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 					new->disk_attributes);
- 		WARN_ON(ret);
- 	}
-+	mutex_lock(&mtd_table_mutex);
- 	return 0;
- 
- out_free_tag_set:
-@@ -441,6 +443,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- out_kfree_tag_set:
- 	kfree(new->tag_set);
- out_list_del:
-+	mutex_lock(&mtd_table_mutex);
- 	list_del(&new->list);
- 	return ret;
- }
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index f6360490a4a3..fa1043d74e36 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -2835,7 +2835,7 @@ void device_initialize(struct device *dev)
+ 	spin_lock_init(&dev->devres_lock);
+ 	INIT_LIST_HEAD(&dev->devres_head);
+ 	device_pm_init(dev);
+-	set_dev_node(dev, -1);
++	set_dev_node(dev, NUMA_NO_NODE);
+ #ifdef CONFIG_GENERIC_MSI_IRQ
+ 	INIT_LIST_HEAD(&dev->msi_list);
+ #endif
 -- 
 2.25.1
 
