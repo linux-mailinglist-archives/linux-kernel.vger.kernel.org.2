@@ -2,129 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCAC3F608B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4AF43F607B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237867AbhHXOiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:38:14 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15730 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237852AbhHXOiN (ORCPT
+        id S237817AbhHXOfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:35:13 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:44649 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232840AbhHXOfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:38:13 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17OEaQIV088398;
-        Tue, 24 Aug 2021 10:36:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=LscKHOmM4JXne0ldvl9TPd0dEiLHWZoKTEFyx0n/fFk=;
- b=Vt5FXLCTugPQWD9ChXt6LeboeDn2bqF/B+EuObl75hT2ljdFNqWEsUFjOmtuB8AepbA+
- wEmjaN2um8Z3RUgkRk79Dw5yXtfG+tIi1iybUnxkF7RM6Wn0MndCrVzC2LbYmNROndA+
- ZPb78OhAPtzrKssNQsfxKAjv0LFjnl/yN/dBNkmMuatOobejo6zAGalji0x+LG64+UfF
- JrxLeF8lk1Z7qs93J0nerCmF4Aak8+qohTz4jwMakuQ/zTU1eEuncTSctRAmzITG9bIT
- TFNgWJOKfqEltaEye4oRFsDHx4uY6TSOJX7lEmFHzHjeShMEVDr6r97FKW0LtlCr+6ZD QA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3amv09beb3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Aug 2021 10:36:43 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17OEacmN089288;
-        Tue, 24 Aug 2021 10:36:43 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3amv09bdt3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Aug 2021 10:36:43 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17OEXVaS004979;
-        Tue, 24 Aug 2021 14:34:18 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3ajs48wbvr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Aug 2021 14:34:17 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17OEYFQc54133198
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Aug 2021 14:34:15 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6709F42041;
-        Tue, 24 Aug 2021 14:34:15 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 622124204C;
-        Tue, 24 Aug 2021 14:34:10 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.88.64])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 24 Aug 2021 14:34:10 +0000 (GMT)
-Message-ID: <9526a4e0be9579a9e52064dd590a78c6496ee025.camel@linux.ibm.com>
-Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Nayna <nayna@linux.vnet.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        pjones@redhat.com,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        Patrick Uiterwijk <patrick@puiterwijk.org>
-Date:   Tue, 24 Aug 2021 10:34:09 -0400
-In-Reply-To: <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
-References: <20210819002109.534600-1-eric.snowberg@oracle.com>
-         <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
-         <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
-         <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
-         <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
-         <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
-         <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: r_swUgDIao0jShx0mbE5bkkPhHhggCoq
-X-Proofpoint-GUID: SQpjP5z9YPQ9zB2BIjFB6bvDvc41h9gG
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-24_05:2021-08-24,2021-08-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 mlxlogscore=999 mlxscore=0 phishscore=0 clxscore=1015
- suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108240094
+        Tue, 24 Aug 2021 10:35:07 -0400
+Received: by mail-ot1-f48.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so38084960otg.11;
+        Tue, 24 Aug 2021 07:34:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cjxpAdrXRiBgSjXIV19OMMUSDjglkcpFQ3o1vBWTrBQ=;
+        b=VFBvHm6DZgAEZ5CNLfR7mgX0Yg13NnNdUww9d0p58+3TjrpM9QULkuQ/VHzHlxxvsT
+         JPlr/yUdaOgHUDwTjKziRZUwX/6MXHG8ohnpYrrBo+z8cM2loqgwae2mzutdyUlYlw//
+         XRQtbIIxzQLNO972ly0fRW5c/dpKXIjq4n4DndrBVbMQea3Y+axbAt0Dwbp4I5MclOPs
+         QV+RnbB4G5tHRPIMLDMyGZeJ7TInAiGHb/YA2L/RPMtkkHj9bamS/CjiSQVpGfVZDSYl
+         fRvreD4UfQdcAnXNMDmT51xG964HahnmC6iXKo0yHHnPEMyA9q0aPrMIMMNlboL9bVQI
+         mP4A==
+X-Gm-Message-State: AOAM532TMwgxesJsXEXEErKDU3UJ4wz+3BzdFTgAIKyNvMvgFs6s12WH
+        YYjBUobaf+4miT0lrQNsMA==
+X-Google-Smtp-Source: ABdhPJwuUeEoin7xC064PUAkjPR/fiPbTso7HebfqesbrtSbFz0E3l8nUkrDJS0xNkjYJOC0E639+Q==
+X-Received: by 2002:a9d:7a4e:: with SMTP id z14mr18304739otm.366.1629815663246;
+        Tue, 24 Aug 2021 07:34:23 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bd27sm1361645oib.43.2021.08.24.07.34.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 07:34:22 -0700 (PDT)
+Received: (nullmailer pid 399601 invoked by uid 1000);
+        Tue, 24 Aug 2021 14:34:21 -0000
+Date:   Tue, 24 Aug 2021 09:34:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>, devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Piotr Sroka <piotrs@cadence.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Yash Shah <yash.shah@sifive.com>, linux-mmc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, Atish Patra <atish.patra@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: Re: [PATCH 1/6] dt-bindings: riscv: correct e51 and u54-mc CPU
+ bindings
+Message-ID: <YSUDbcN3EsMvZOct@robh.at.kernel.org>
+References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> >> Jarkko, I think the emphasis should not be on "machine" from Machine
-> >> Owner Key (MOK), but on "owner".  Whereas Nayna is focusing more on the
-> >> "_ca" aspect of the name.   Perhaps consider naming it
-> >> "system_owner_ca" or something along those lines.
-
-> > What do you gain such overly long identifier? Makes no sense. What
-> > is "ca aspect of the name" anyway?
+On Thu, 19 Aug 2021 17:44:31 +0200, Krzysztof Kozlowski wrote:
+> All existing boards with sifive,e51 and sifive,u54-mc use it on top of
+> sifive,rocket0 compatible:
 > 
-> As I mentioned previously, the main usage of this new keyring is that it 
-> should contain only CA keys which can be later used to vouch for user 
-> keys loaded onto secondary or IMA keyring at runtime. Having ca in the 
-> name like .xxxx_ca, would make the keyring name self-describing. Since 
-> you preferred .system, we can call it .system_ca.
+>   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: cpu@0: compatible: 'oneOf' conditional failed, one must be fixed:
+>     ['sifive,e51', 'sifive,rocket0', 'riscv'] is too long
+>     Additional items are not allowed ('riscv' was unexpected)
+>     Additional items are not allowed ('sifive,rocket0', 'riscv' were unexpected)
+>     'riscv' was expected
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  Documentation/devicetree/bindings/riscv/cpus.yaml | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
 
-Sounds good to me.  Jarkko?
-
-thanks,
-
-Mimi
-
+Acked-by: Rob Herring <robh@kernel.org>
