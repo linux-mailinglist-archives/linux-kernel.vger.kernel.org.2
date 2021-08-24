@@ -2,60 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F913F65D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24163F664B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240273AbhHXRRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:17:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55440 "EHLO mail.kernel.org"
+        id S239982AbhHXRWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:22:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240022AbhHXROE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:14:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B7AF261A7F;
-        Tue, 24 Aug 2021 17:01:35 +0000 (UTC)
+        id S238767AbhHXRSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:18:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF96961AD1;
+        Tue, 24 Aug 2021 17:03:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629824495;
-        bh=rGBceb6nEqSjkrJx5lFbFiYdVrmnBh62HwT++73XYzI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=DSlea4jACmtF60tK99yPYFv4sn+kTVnkM2rAYIgKPPivxWTO2rVryKtMA1hsEBQQ8
-         FBZ0QDz+BAKMs1yJXz8r46Yt/FS1jL7J/zqz04qE2lRSlTifV3eJk0va2lv15UduaZ
-         NI7HNMlLAvFLX9qo/mSfXqIAzBqUBgloWxAQePtbiQyxNDOsurVC1cHJE9C3X+k9ZV
-         JDzMLCbcjQYE1a6fJjX1Ek+tzN38YazBGeNHvswfF7gEue4s9t5Z8V8swLbc6g+wVQ
-         CgpKctLA8cVrG4WJFy9PuDs+DOXSwKN/rI7OgC+ZCNSU5/6+7sSxMByR3tsaR0J4A2
-         U9YCVxzUcRWYA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A7FF26096F;
-        Tue, 24 Aug 2021 17:01:35 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210824142310.GA1070942@nvidia.com>
-References: <20210824142310.GA1070942@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210824142310.GA1070942@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: cc4f596cf85e97ca6606e1bd10b3b9851ef52ddf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6e764bcd1cf72a2846c0e53d3975a09b242c04c9
-Message-Id: <162982449562.32359.8999725810934804142.pr-tracker-bot@kernel.org>
-Date:   Tue, 24 Aug 2021 17:01:35 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        s=k20201202; t=1629824581;
+        bh=r96vHC86Y2bXWDYzoPukiUPUe4HKP48t4e4w71DbyD0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oZsAjq/32VJZQRmGSnn+nd4ZeVbg+PiVS0U/W5fpywRnr3mPMnemse9Fh/+0yL3ia
+         tsl2kveaO/wIt2kguE7xxfvuAg6/L/aQtA5ueQfGsRM3PsrBsk3VyvGyZz6+ft7ROV
+         mbAGn95z0hqEqSCIVhOwQ4DJBawyUA5b1ELUtMoN/JgoSyQJr1v83pS1ZVUG+itrnx
+         G5UTuSYU4dCgY4/bvEeIfLlZgpaBXRTXF8KzorQMz6gmMPn8SDmNXjYS7XAAyG1R5w
+         onHJLgPE4awp8iH+6rtKIUL/CJCZCyhd10CbOkCP9HWoy7xSee6tLLl1IKIiEkw9E5
+         xdt8UjRy1dQdg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 09/84] ASoC: cs42l42: Don't allow SND_SOC_DAIFMT_LEFT_J
+Date:   Tue, 24 Aug 2021 13:01:35 -0400
+Message-Id: <20210824170250.710392-10-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210824170250.710392-1-sashal@kernel.org>
+References: <20210824170250.710392-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.205-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.205-rc1
+X-KernelTest-Deadline: 2021-08-26T17:02+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 24 Aug 2021 11:23:10 -0300:
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+[ Upstream commit 64324bac750b84ca54711fb7d332132fcdb87293 ]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6e764bcd1cf72a2846c0e53d3975a09b242c04c9
+The driver has no support for left-justified protocol so it should
+not have been allowing this to be passed to cs42l42_set_dai_fmt().
 
-Thank you!
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Link: https://lore.kernel.org/r/20210729170929.6589-2-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/codecs/cs42l42.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 6a58c666776a..ca6541ac59e1 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -773,7 +773,6 @@ static int cs42l42_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-	case SND_SOC_DAIFMT_LEFT_J:
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.30.2
+
