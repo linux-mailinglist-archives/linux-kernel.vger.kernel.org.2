@@ -2,139 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E343F59AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41ED3F59AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbhHXIKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:10:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34152 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233910AbhHXIKu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:10:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629792606;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=MGsYtJMGFLyprrQTnd9PIheslLOcxb8mNsq/26oD5hU=;
-        b=Z/+Vuh0uVr2LYZpi7GNsKeudV+OE9y5fNmNJCzyIQ2zIH18eF6FOgB+xuQ8XcgItnJBz05
-        J7q5OM1YQ9NYVbcgm0AFquWZqISJ0hKPSKNkUPsQ2ZYD+yRgsB458NhemaG1EzSqf26JLL
-        ISP2RyR0Ra4Tw9kNymWk3v4FDVegD0M=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-AnvXHUbuM0WVd2uIJYgA3w-1; Tue, 24 Aug 2021 04:10:04 -0400
-X-MC-Unique: AnvXHUbuM0WVd2uIJYgA3w-1
-Received: by mail-oo1-f70.google.com with SMTP id f2-20020a4a2202000000b0028c8a8074deso8709092ooa.20
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:10:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=MGsYtJMGFLyprrQTnd9PIheslLOcxb8mNsq/26oD5hU=;
-        b=QsGJQsejBLXNQcrnopXz+tAKB4vDwW9EP2L6mspoGdl1Ko4wAmZejN2X8/U54HLNwX
-         YbPOnMKa0Vfvt4bfLsEZZZRaOX4VnGgJosB2p1BljCe8OdEVpUJgokO26Dca43Ag7P9Q
-         luDSjJE6EfuXW66E+jLNM5q++4jAyHDNyP50c7cD/Drv717Ofm2TjqwpLJTu1GRWg90O
-         TmBdqdHLHSZnSjFUIF9lO76krz6Z4gdjFfGgOnYWqTBtjyTLjnnngDD+VnHzHiPxMRdz
-         7Ov/o5ROR0MKvpBX+v12xdCLOzvjd7c7D1atOrZ1C8dCoSF31wnFLNzGgq7fDB/KXJjx
-         2eDA==
-X-Gm-Message-State: AOAM530dMkKUsDyk+YfqCFI2o++gu2zq5ytacuENnl4Ubl1nCgkiD8gb
-        pfQqoZcoGK07MzqRnyrqQsklCzzzU2kIzpze+rV5UfjCji6hUeRycGweaWd3e5o46xCYoEI6pvn
-        l0QDqKOf09iuTXcrJh078vVN923V0WqgcDdGJzSx0
-X-Received: by 2002:a4a:4484:: with SMTP id o126mr5638512ooa.90.1629792603775;
-        Tue, 24 Aug 2021 01:10:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxci/jOnkRlZu88z946maUn/riomVLmMlqTthjrndr8zN4dHsF1vDuVBgRRoP1wMnEnJWQy1EqPXmpRxAELDps=
-X-Received: by 2002:a4a:4484:: with SMTP id o126mr5638501ooa.90.1629792603519;
- Tue, 24 Aug 2021 01:10:03 -0700 (PDT)
+        id S235221AbhHXILj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:11:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62208 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235073AbhHXILh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 04:11:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629792654; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ZvmDGo5JvtaJAXLkf0eBgrFDnHbWT3Gwp4OipUJ/4z4=;
+ b=nYysTbq51qFd+4BASvQhXphdyTNRf5TLucxCOa3cKI48yixZKL3ovy6Rmvzb+jGLmsSZSCaM
+ 2AGir9e/OSc2VDlZGuqRIPMLmeofoaPg+Yejeik6VnCYc8rLiDheIEi1M7qX06WqBawA4Ld2
+ f1qI+hSd9O+2efEWPpOSRwJjsVY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6124a98d1567234b8c77addb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Aug 2021 08:10:53
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D7813C43460; Tue, 24 Aug 2021 08:10:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4D042C4338F;
+        Tue, 24 Aug 2021 08:10:48 +0000 (UTC)
 MIME-Version: 1.0
-From:   Bruno Goncalves <bgoncalv@redhat.com>
-Date:   Tue, 24 Aug 2021 10:09:52 +0200
-Message-ID: <CA+QYu4q-sNwhHLOwCQLc=bFwXidH=g-Pnc=eUn_UXm4wm3TURA@mail.gmail.com>
-Subject: BUG: sleeping function called from invalid context at mm/page_alloc.c:5169
-To:     linux-kernel@vger.kernel.org
-Cc:     CKI Project <cki-project@redhat.com>,
-        Memory Management <mm-qe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 24 Aug 2021 13:40:48 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+In-Reply-To: <349b1178f071407dfad8ba3050482772@codeaurora.org>
+References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
+ <1628568516-24155-5-git-send-email-pmaliset@codeaurora.org>
+ <349b1178f071407dfad8ba3050482772@codeaurora.org>
+Message-ID: <e54b4f62dbcd670a0e0658598e045051@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021-08-17 22:56, Prasad Malisetty wrote:
+> On 2021-08-10 09:38, Prasad Malisetty wrote:
+>> On the SC7280, By default the clock source for pcie_1_pipe is
+>> TCXO for gdsc enable. But after the PHY is initialized, the clock
+>> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+>>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
+>>  1 file changed, 18 insertions(+)
+>> 
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
+>> b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index 8a7a300..39e3b21 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
+>>  	struct regulator_bulk_data supplies[2];
+>>  	struct reset_control *pci_reset;
+>>  	struct clk *pipe_clk;
+>> +	struct clk *gcc_pcie_1_pipe_clk_src;
+>> +	struct clk *phy_pipe_clk;
+>>  };
+>> 
+>>  union qcom_pcie_resources {
+>> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct
+>> qcom_pcie *pcie)
+>>  	if (ret < 0)
+>>  		return ret;
+>> 
+>> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+>> +		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
+>> +		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+>> +			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+>> +
+>> +		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+>> +		if (IS_ERR(res->phy_pipe_clk))
+>> +			return PTR_ERR(res->phy_pipe_clk);
+>> +	}
+>> +
+> 
+> Hi All,
+> 
+> Greetings!
+> 
+> I would like to check is there any other better approach instead of
+> compatible method here as well or is it fine to use compatible method.
+> 
+> Thanks
+> -Prasad
+> 
+>>  	res->pipe_clk = devm_clk_get(dev, "pipe");
+>>  	return PTR_ERR_OR_ZERO(res->pipe_clk);
+>>  }
+>> @@ -1255,6 +1267,12 @@ static void qcom_pcie_deinit_2_7_0(struct
+>> qcom_pcie *pcie)
+>>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+>>  {
+>>  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+>> +	struct dw_pcie *pci = pcie->pci;
+>> +	struct device *dev = pci->dev;
+>> +	struct device_node *node = dev->of_node;
+>> +
+>> +	if (of_property_read_bool(node, "pipe-clk-source-switch"))
+>> +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
+>> 
+>>  	return clk_prepare_enable(res->pipe_clk);
+>>  }
 
-Since commit "002c0aef1090 - Merge tag 'block-5.14-2021-08-20'" we
-started to see the following call trace when booting up, it seems to
-be reproducible only on ppc64le.
+Hi,
 
-[    4.112119] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid:
-1240, name: systemd-udevd
-[    4.112150] 1 lock held by systemd-udevd/1240:
-[    4.112173]  #0: c0000000026f41e0 (ftrace_lock){+.+.}-{3:3}, at:
-ftrace_process_locs.isra.0+0x278/0x530
-[    4.112230] irq event stamp: 40788
-[    4.112241] hardirqs last  enabled at (40787): [<c0000000004ce300>]
-bad_range+0x1d0/0x200
-[    4.112281] hardirqs last disabled at (40788): [<c0000000000b09e4>]
-patch_instruction+0x3b4/0x510
-[    4.112322] softirqs last  enabled at (36242): [<c0000000011e7c1c>]
-__do_softirq+0x60c/0x67c
-[    4.112364] softirqs last disabled at (36233): [<c000000000165544>]
-__irq_exit_rcu+0x234/0x240
-[    4.112395] CPU: 56 PID: 1240 Comm: systemd-udevd Not tainted 5.14.0-rc6 #1
-[    4.112432] Call Trace:
-[    4.112451] [c00000004495f4d0] [c000000000971054]
-dump_stack_lvl+0x98/0xe0 (unreliable)
-[    4.112485] [c00000004495f510] [c0000000001a920c] ___might_sleep+0x2dc/0x300
-[    4.112516] [c00000004495f5a0] [c0000000004cef8c]
-prepare_alloc_pages.constprop.0+0x19c/0x280
-[    4.112563] [c00000004495f5f0] [c0000000004d86bc] __alloc_pages+0x9c/0x350
-[    4.112601] [c00000004495f670] [c00000000050ca0c] alloc_pages+0xcc/0x190
-[    4.112643] [c00000004495f6c0] [c00000000008ed0c]
-pte_fragment_alloc+0xdc/0x2e0
-[    4.112682] [c00000004495f720] [c00000000049d620]
-__pte_alloc_kernel+0x40/0xf0
-[    4.112723] [c00000004495f770] [c00000000009d4dc]
-__map_kernel_page+0x5dc/0x6d0
-[    4.112765] [c00000004495f810] [c0000000000b09cc]
-patch_instruction+0x39c/0x510
-[    4.112807] [c00000004495f8b0] [c000000000077ab4] ftrace_make_nop+0x164/0x730
-[    4.112849] [c00000004495f9b0] [c0000000003060ec]
-ftrace_process_locs.isra.0+0x39c/0x530
-[    4.112893] [c00000004495fa90] [c00000000029ab1c] load_module+0x322c/0x3cb0
-[    4.112935] [c00000004495fca0] [c00000000029b8e4]
-__do_sys_finit_module+0xc4/0x130
-[    4.112977] [c00000004495fdb0] [c00000000002dd5c]
-system_call_exception+0x11c/0x2f0
-[    4.113021] [c00000004495fe10] [c00000000000c1f0]
-system_call_vectored_common+0xf0/0x280
-[    4.113064] --- interrupt: 3000 at 0x7fffb67ebeac
-[    4.113099] NIP:  00007fffb67ebeac LR: 0000000000000000 CTR: 0000000000000000
-[    4.113135] REGS: c00000004495fe80 TRAP: 3000   Not tainted  (5.14.0-rc6)
-[    4.113170] MSR:  900000000000f033 <SF,HV,EE,PR,FP,ME,IR,DR,RI,LE>
-CR: 48224244  XER: 00000000
-[    4.113232] IRQMASK: 0
-               GPR00: 0000000000000161 00007ffff63902d0
-00007fffb68f6f00 0000000000000006
-               GPR04: 00007fffb69cb678 0000000000000000
-0000000000000006 0000000000000000
-               GPR08: 0000000000000000 0000000000000000
-0000000000000000 0000000000000000
-               GPR12: 0000000000000000 00007fffb5627810
-0000000020000000 0000000000000000
-               GPR16: 0000000000000000 00000000000f4240
-00007ffff6390828 000000011b8846e0
-               GPR20: 0000000000000000 0000000124033bf0
-00007fffb6d209d0 0000000124034070
-               GPR24: 0000000000000000 0000000124032440
-0000000000000007 00007fffb69cb678
-               GPR28: 000000012402bd10 0000000000020000
-00000001240342c0 0000000124032440
-[    4.113534] NIP [00007fffb67ebeac] 0x7fffb67ebeac
-[    4.113558] LR [0000000000000000] 0x0
-[    4.113588] --- interrupt: 3000
+Kindly provide your inputs and confirmation on latest queries, I will 
+share new patch version.
 
-
-More logs can be found checking out dmesg logs on:
-https://arr-cki-prod-datawarehouse-public.s3.amazonaws.com/datawarehouse-public/2021/08/21/357093404/build_ppc64le_redhat%3A1522897150/tests/Boot_test/10527926_ppc64le_2_dmesg.log
-https://arr-cki-prod-datawarehouse-public.s3.amazonaws.com/datawarehouse-public/2021/08/23/357988779/build_ppc64le_redhat%3A1526871701/tests/Reboot_test/10534932_ppc64le_2_dmesg.log
-
-Thank you,
-Bruno Goncalves
-
+Thanks
+-Prasad
