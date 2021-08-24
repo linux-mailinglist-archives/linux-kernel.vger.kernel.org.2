@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7003F5839
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3873F5830
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbhHXGaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbhHXGaP (ORCPT
+        id S232173AbhHXG2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:28:49 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:53326 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229854AbhHXG2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:30:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC17EC061575;
-        Mon, 23 Aug 2021 23:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=h3MydBBxPtnCn8mECKrga5hLvZ89hWgHnN/iC3nPPtw=; b=X0xFkwNCQeDfxPyCeeHS3KtJFY
-        qOQtl/+7Y+F4gcfDj91x4YthWDlyyTu7bo8m5zxAM4yepyJYc0B884cRelvurJ+vMbaJOJ006Svtp
-        4YzWZNbdbrQ54HMBkDsthzWAZ5nFEL7NSD3Ehm8MMy8ZuliBZ+65hp5HgEmud87d6W11ymY+XVYqm
-        dkOT3wHIIFhYqQu48r/hYk2iyojImtPbmt+x7SyaINEuO/RWu+7VpcKs717E4+mPM118wO8c9GQ+1
-        2TZRPOE8RLSx3LkhPbRNTS2esfKFrUw0YYwPXB26xDKqRZva/6Zaix4f8WCrQGMRUPA3Y5/e528VW
-        A99X0qbw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIPsH-00AePY-Vj; Tue, 24 Aug 2021 06:25:57 +0000
-Date:   Tue, 24 Aug 2021 07:25:29 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
-        bvanassche@acm.org, ming.lei@redhat.com,
-        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
-        nbd@other.debian.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 09/10] loop: add error handling support for add_disk()
-Message-ID: <YSSQ2Qa5HkDQCF0J@infradead.org>
-References: <20210823202930.137278-1-mcgrof@kernel.org>
- <20210823202930.137278-10-mcgrof@kernel.org>
+        Tue, 24 Aug 2021 02:28:38 -0400
+X-UUID: d6b05217e38f4be0a01df831c02c2830-20210824
+X-UUID: d6b05217e38f4be0a01df831c02c2830-20210824
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <christine.zhu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 537937534; Tue, 24 Aug 2021 14:27:52 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 24 Aug 2021 14:27:51 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 24 Aug 2021 14:27:50 +0800
+From:   Christine Zhu <Christine.Zhu@mediatek.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
+        Christine Zhu <Christine.Zhu@mediatek.com>
+Subject: [RESEND v8,1/2] dt-bindings: reset: mt8195: add toprgu reset-controller header file
+Date:   Tue, 24 Aug 2021 14:26:35 +0800
+Message-ID: <20210824062633.14374-2-Christine.Zhu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210824062633.14374-1-Christine.Zhu@mediatek.com>
+References: <20210824062633.14374-1-Christine.Zhu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823202930.137278-10-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 01:29:29PM -0700, Luis Chamberlain wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Add toprgu reset-controller header file for MT8195 platform.
 
-Looks good:
+Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+---
+ include/dt-bindings/reset/mt8195-resets.h | 29 +++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 include/dt-bindings/reset/mt8195-resets.h
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+diff --git a/include/dt-bindings/reset/mt8195-resets.h b/include/dt-bindings/reset/mt8195-resets.h
+new file mode 100644
+index 000000000000..a26bccc8b957
+--- /dev/null
++++ b/include/dt-bindings/reset/mt8195-resets.h
+@@ -0,0 +1,29 @@
++/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)*/
++/*
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Christine Zhu <christine.zhu@mediatek.com>
++ */
++
++#ifndef _DT_BINDINGS_RESET_CONTROLLER_MT8195
++#define _DT_BINDINGS_RESET_CONTROLLER_MT8195
++
++#define MT8195_TOPRGU_CONN_MCU_SW_RST          0
++#define MT8195_TOPRGU_INFRA_GRST_SW_RST        1
++#define MT8195_TOPRGU_APU_SW_RST               2
++#define MT8195_TOPRGU_INFRA_AO_GRST_SW_RST     6
++#define MT8195_TOPRGU_MMSYS_SW_RST             7
++#define MT8195_TOPRGU_MFG_SW_RST               8
++#define MT8195_TOPRGU_VENC_SW_RST              9
++#define MT8195_TOPRGU_VDEC_SW_RST              10
++#define MT8195_TOPRGU_IMG_SW_RST               11
++#define MT8195_TOPRGU_APMIXEDSYS_SW_RST        13
++#define MT8195_TOPRGU_AUDIO_SW_RST             14
++#define MT8195_TOPRGU_CAMSYS_SW_RST            15
++#define MT8195_TOPRGU_EDPTX_SW_RST             16
++#define MT8195_TOPRGU_ADSPSYS_SW_RST           21
++#define MT8195_TOPRGU_DPTX_SW_RST              22
++#define MT8195_TOPRGU_SPMI_MST_SW_RST          23
++
++#define MT8195_TOPRGU_SW_RST_NUM               16
++
++#endif  /* _DT_BINDINGS_RESET_CONTROLLER_MT8195 */
+-- 
+2.18.0
 
-and I think you can drop my signoff.  I added this when I planned
-to send out with the original conversion, but dropped it for simpler
-examples.
