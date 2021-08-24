@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCC73F57C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5413F57C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234514AbhHXF4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 01:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
+        id S234530AbhHXF4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 01:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhHXF4C (ORCPT
+        with ESMTP id S233048AbhHXF4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 01:56:02 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C6CC061575;
-        Mon, 23 Aug 2021 22:55:18 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so1601449pjt.0;
-        Mon, 23 Aug 2021 22:55:18 -0700 (PDT)
+        Tue, 24 Aug 2021 01:56:34 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F74C061575;
+        Mon, 23 Aug 2021 22:55:51 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id l3so15869503qtk.10;
+        Mon, 23 Aug 2021 22:55:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uzm00SI6Xxv7Dr12oDCG09tFQ89IjLql7VYEkcSa46Y=;
-        b=U+/FRkIIjFBtQoRW5haOg0F8PlwQaveBzrO3OYhJi0C3fyk25+NPCgb9o8wUrKcNHf
-         ae/4mTxPFes/E4AatfwSp6CwzbwS5SaGFPyGBbXiziD0TbQKB0gZxdft+/vbZaaUGmnK
-         T8BXeOseqa3/sQo7eyhGLJV0zuw5uy8nvV49gNccJzEZQO+uugR2H50r7uuc8P8KEK8K
-         C6PvI7X6UgWBCwHy/5LGZBjO5pQaQkcJWR6JHWf1Riz38nat4JXClCQbsxSEw4U/s44N
-         +t4RqSyoIT/IM3HRkfn8mvFyMDy9f2heRo7RIQ02bIRmA4aICIz7u+tHYOxpJ2TblFBJ
-         zByw==
+        bh=FEEhbunvDteSPSEQiaiXD+V/tL/q7V9ooJr+nkkYsL0=;
+        b=dievfyJ3/AgtuwGCikiR1DVKDR3Eb5JzHhx6gs4zw67YQCYeSH4/K0YUECOZvU62Vp
+         Rd+c5DzS1CHhDXyLmLdh4RqgfiYFhtkRdDk92rUV/bNIqT4dY6OqWSvdlymeuOxim2an
+         7A1f0b5ieYKYFAsxWmFhSNWQTnX/RtFOm/w0UdivjYW/vN+RPKfuXyW8eJvQ+eF+ZhRi
+         itCJjxpQTMWfdCi6UGUsVXWllkbubv0iHt/iYhVroGQXxQMhklPoQfi5u5wnarutw9lr
+         cUoV+47KVQPFAz4FHmagJZulFVoIjrIHN4h5/Janhhbqy4OkvBLz6ItSF3iV9PGfk0cA
+         KScQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uzm00SI6Xxv7Dr12oDCG09tFQ89IjLql7VYEkcSa46Y=;
-        b=oNVftBXrwzUNmRd3pXWY/cJSFSwe2nyw15l2aec1YPMiI4DMtnGVkvMeIOEsfN603K
-         chewOmwkLuQgYApMwCUZsMF/x12TaatfEwoUopOIMpOjkDqdGZbtP2FLzGAcWGgnXaFe
-         ut8L2xcQz17j4oRNRDOgFwnwSHIdXXPwRV+AH912aWxiWxX5NKJoLyTg3046hQKsLoI0
-         CbGzORgNj3yepPUIK5TCmlPmMcfQa+QrJnRVQ45s6NCn4fgYr/D4s162UaFcC57C+A51
-         ThHyEfDbOAPzbthrCf22ft/oBv3YbfMwgbX9o3Yad9ARCBaSqpEdqI5se/hoePStmXja
-         eenw==
-X-Gm-Message-State: AOAM530I8DOTNBNmisbymeYR3xdN4w8kek6BKPT8A1QQqAdxLKE40F87
-        hm3bd252CoTKVL2DBvWaZpNaPxweHPrP4T5f
-X-Google-Smtp-Source: ABdhPJzBi/kmvgCws8SSBpovsykHE9dI8wovC6w+AuFQJxJ7Rnya+3XcIsj2pgCgwhudhuxNy0sklg==
-X-Received: by 2002:a17:90a:af88:: with SMTP id w8mr2625365pjq.104.1629784518132;
-        Mon, 23 Aug 2021 22:55:18 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id j5sm1053958pjv.56.2021.08.23.22.55.13
+        bh=FEEhbunvDteSPSEQiaiXD+V/tL/q7V9ooJr+nkkYsL0=;
+        b=Och91O3/K/QRF1o7pxiSE+uQ4ot1jg2MZaTAg7iIEH6PEWlC0LQszRZrFInEH5ljlS
+         ujjkV0/dEX69UQ3jozMYgODPdgCtd2uC6ddSVxiVmS08lKSVPP4/gIpy8PipNl6PafJp
+         dNyw6k4AxlWzOoDsJPjSuxwa43K9HWBij+UaFsg7b+8O79G9EyVAmM54UGPQlqucc7qu
+         uObaH1jw1Y8eNwWfqRSGU2MYvkL8NidiZr1JeFAecf1B3lE0+RNaBvPkjr+LbXKXvIpr
+         iin7k3mZBukRijfK8f+HDTSV2ZgrfwI0Zrm4+cQxfHRP8POvjSbINHT4bhFCwCK2agTs
+         F8fQ==
+X-Gm-Message-State: AOAM530B0AtIdtpfUVdmZrfVLIG7Rgr9iX8x22o67vxaOOXowTuYHdpQ
+        DTXdfU0MI1zi4DiXeTJv0PVLyxe7jFM=
+X-Google-Smtp-Source: ABdhPJzfmobXqq9XUpJ/qPGOsxgImkN+WkNhzhfj6GgG52wKG3nrmWVU364LBTaUtdq7SXpnM+8ATw==
+X-Received: by 2002:ac8:ec4:: with SMTP id w4mr33754148qti.30.1629784550320;
+        Mon, 23 Aug 2021 22:55:50 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id p123sm10307929qke.94.2021.08.23.22.55.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 22:55:17 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     stable@vger.kernel.org
-Cc:     Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@savoirfairelinux.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org (open list:MEDIATEK SWITCH DRIVER),
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: [PATCH 4.19.y] net: dsa: mt7530: disable learning on standalone ports
-Date:   Tue, 24 Aug 2021 13:55:08 +0800
-Message-Id: <20210824055509.1316124-1-dqfext@gmail.com>
+        Mon, 23 Aug 2021 22:55:49 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     tytso@mit.edu
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] ext4:namei: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 22:55:43 -0700
+Message-Id: <20210824055543.58718-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,56 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a partial backport of commit 5a30833b9a16f8d1aa15de06636f9317ca51f9df
-("net: dsa: mt7530: support MDB and bridge flag operations") upstream.
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-Make sure that the standalone ports start up with learning disabled.
+Return statements in functions returning bool should use true/false
+instead of 1/0.
 
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+./fs/ext4/namei.c:1441:12-13:WARNING:return of 0/1 in function
+'ext4_match' with return type bool
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- drivers/net/dsa/mt7530.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ fs/ext4/namei.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 6335c4ea0957..67dfab774618 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -803,6 +803,8 @@ mt7530_port_bridge_join(struct dsa_switch *ds, int port,
- 			   PCR_MATRIX_MASK, PCR_MATRIX(port_bitmap));
- 	priv->ports[port].pm |= PCR_MATRIX(port_bitmap);
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index f3bbcd4..b5cb32d 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1438,7 +1438,7 @@ static bool ext4_match(struct inode *parent,
+ 					fname->hinfo.minor_hash !=
+ 						EXT4_DIRENT_MINOR_HASH(de)) {
  
-+	mt7530_clear(priv, MT7530_PSC_P(port), SA_DIS);
-+
- 	mutex_unlock(&priv->reg_mutex);
- 
- 	return 0;
-@@ -907,6 +909,8 @@ mt7530_port_bridge_leave(struct dsa_switch *ds, int port,
- 
- 	mt7530_port_set_vlan_unaware(ds, port);
- 
-+	mt7530_set(priv, MT7530_PSC_P(port), SA_DIS);
-+
- 	mutex_unlock(&priv->reg_mutex);
- }
- 
-@@ -1287,11 +1291,15 @@ mt7530_setup(struct dsa_switch *ds)
- 		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
- 			   PCR_MATRIX_CLR);
- 
--		if (dsa_is_cpu_port(ds, i))
-+		if (dsa_is_cpu_port(ds, i)) {
- 			mt7530_cpu_port_enable(priv, i);
--		else
-+		} else {
- 			mt7530_port_disable(ds, i, NULL);
- 
-+			/* Disable learning by default on all user ports */
-+			mt7530_set(priv, MT7530_PSC_P(i), SA_DIS);
-+		}
-+
- 		/* Enable consistent egress tag */
- 		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
- 			   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
+-					return 0;
++					return false;
+ 				}
+ 			}
+ 			return !ext4_ci_compare(parent, &cf, de->name,
 -- 
-2.25.1
+1.8.3.1
+
 
