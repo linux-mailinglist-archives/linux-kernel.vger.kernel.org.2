@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9F43F5AF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30473F5B00
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235686AbhHXJYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:24:06 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42808 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234545AbhHXJYF (ORCPT
+        id S235698AbhHXJ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:28:47 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:55918 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234669AbhHXJ2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:24:05 -0400
-X-UUID: f1c77deed7ad4765b590f2d5fb132666-20210824
-X-UUID: f1c77deed7ad4765b590f2d5fb132666-20210824
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <fengquan.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1027731108; Tue, 24 Aug 2021 17:23:16 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 24 Aug 2021 17:23:15 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkcas07.mediatek.inc
- (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Aug
- 2021 17:23:15 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 24 Aug 2021 17:23:14 +0800
-From:   Fengquan Chen <Fengquan.Chen@mediatek.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     <fengquan.chen@mediatek.com>
-Subject: [PATCH] [v5, 1/1] clocksource/drivers/timer-mediatek: optimize systimer irq clear flow on shutdown
-Date:   Tue, 24 Aug 2021 17:23:10 +0800
-Message-ID: <1629796990-28361-2-git-send-email-Fengquan.Chen@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1629796990-28361-1-git-send-email-Fengquan.Chen@mediatek.com>
-References: <1629796990-28361-1-git-send-email-Fengquan.Chen@mediatek.com>
+        Tue, 24 Aug 2021 05:28:46 -0400
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 17O9ReOO014183;
+        Tue, 24 Aug 2021 18:27:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17O9ReOO014183
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629797261;
+        bh=U+ETojJLC46giLV0nmFB3HMfhm00P2uQEj6O7D2QdBQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LX8dlc4V1V68ls3dBTGJ4wO/Sez/ReNhciPSQ4lZWQ8oxxcNUpDLIo7s37Kj5WMdn
+         jO3+uhXo0lc1d2rlSKkLZlB1gUyXAqHBpzxAaOv43LvIz4E8nBVQ2WkTIe0CKByeO9
+         scrXPIGG9zTWXTwSVdBUNt0qcoR4hgfgicIwSiEpprcLEAJSv7HJO+Hvxb+Wko1M91
+         gQPADHucP6kGL+lvTrR+oYFGoNLyQQy1HVM1FaEc81EzliCanhrrrohj4W7OwOveEh
+         NlPKcIeMcHX/vTsxwGZUpyvBove6xmssFJCroHkQjWjF1Qdrb9Hp1hcV5msK2RMAgw
+         dwvm1fPJaLYTQ==
+X-Nifty-SrcIP: [209.85.215.181]
+Received: by mail-pg1-f181.google.com with SMTP id r2so19209514pgl.10;
+        Tue, 24 Aug 2021 02:27:40 -0700 (PDT)
+X-Gm-Message-State: AOAM530uU8avtLPCqgC3QE/VgV+LDqLcgKCaVi/so8K+ph/lxn01qQJQ
+        X132Acb6LJeSsbWZmk+CxjvsLFvtZN4YzEeEULY=
+X-Google-Smtp-Source: ABdhPJxfShD1P0kCObeK6dJf5CZ3KcyG1O2nFtAivI0lNRJ/uey7BF+d+YEH+hMIPYM+yGSuVGc/qhLx0NySiCPwzSs=
+X-Received: by 2002:aa7:94ac:0:b0:3e0:f21a:e6ff with SMTP id
+ a12-20020aa794ac000000b003e0f21ae6ffmr37132148pfl.76.1629797260039; Tue, 24
+ Aug 2021 02:27:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210528180140.176257-1-masahiroy@kernel.org> <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
+In-Reply-To: <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 24 Aug 2021 18:27:03 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR3NR=u7D0qPVeLUSEiStDvbVUdj4VnFBJ_wHo1UMmcOg@mail.gmail.com>
+Message-ID: <CAK7LNAR3NR=u7D0qPVeLUSEiStDvbVUdj4VnFBJ_wHo1UMmcOg@mail.gmail.com>
+Subject: Re: [PATCH] security: remove unneeded subdir-$(CONFIG_...)
+To:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "fengquan.chen" <fengquan.chen@mediatek.com>
+On Sat, Jul 31, 2021 at 3:02 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Sat, May 29, 2021 at 3:02 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > All of these are unneeded. The directories to descend are specified
+> > by obj-$(CONFIG_...).
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+>
+> Ping?
+>
 
-mtk_syst_clkevt_shutdown is called after irq disabled in suspend flow,
-clear any pending systimer irq when shutdown to avoid suspend aborted
-due to timer irq pending
 
-Also as for systimer in mediatek socs, there must be firstly enable
-timer before clear systimer irq
 
-Fixes: e3af677607d9("clocksource/drivers/timer-mediatek: Add support for system timer")
-Signed-off-by: Fengquan Chen <fengquan.chen@mediatek.com>
----
- drivers/clocksource/timer-mediatek.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Applied to linux-kbuild.
 
-diff --git a/drivers/clocksource/timer-mediatek.c b/drivers/clocksource/timer-mediatek.c
-index 9318edc..6461fd3 100644
---- a/drivers/clocksource/timer-mediatek.c
-+++ b/drivers/clocksource/timer-mediatek.c
-@@ -60,9 +60,9 @@
-  * SYST_CON_EN: Clock enable. Shall be set to
-  *   - Start timer countdown.
-  *   - Allow timeout ticks being updated.
-- *   - Allow changing interrupt functions.
-+ *   - Allow changing interrupt status,like clear irq pending.
-  *
-- * SYST_CON_IRQ_EN: Set to allow interrupt.
-+ * SYST_CON_IRQ_EN: Set to enable interrupt.
-  *
-  * SYST_CON_IRQ_CLR: Set to clear interrupt.
-  */
-@@ -75,6 +75,7 @@
- static void mtk_syst_ack_irq(struct timer_of *to)
- {
- 	/* Clear and disable interrupt */
-+	writel(SYST_CON_EN, SYST_CON_REG(to));
- 	writel(SYST_CON_IRQ_CLR | SYST_CON_EN, SYST_CON_REG(to));
- }
- 
-@@ -111,6 +112,9 @@ static int mtk_syst_clkevt_next_event(unsigned long ticks,
- 
- static int mtk_syst_clkevt_shutdown(struct clock_event_device *clkevt)
- {
-+	/* Clear any irq */
-+	mtk_syst_ack_irq(to_timer_of(clkevt));
-+
- 	/* Disable timer */
- 	writel(0, SYST_CON_REG(to_timer_of(clkevt)));
- 
+
+
+
+>
+>
+> > ---
+> >
+> >  security/Makefile | 11 -----------
+> >  1 file changed, 11 deletions(-)
+> >
+> > diff --git a/security/Makefile b/security/Makefile
+> > index 47e432900e24..18121f8f85cd 100644
+> > --- a/security/Makefile
+> > +++ b/security/Makefile
+> > @@ -4,16 +4,6 @@
+> >  #
+> >
+> >  obj-$(CONFIG_KEYS)                     += keys/
+> > -subdir-$(CONFIG_SECURITY_SELINUX)      += selinux
+> > -subdir-$(CONFIG_SECURITY_SMACK)                += smack
+> > -subdir-$(CONFIG_SECURITY_TOMOYO)        += tomoyo
+> > -subdir-$(CONFIG_SECURITY_APPARMOR)     += apparmor
+> > -subdir-$(CONFIG_SECURITY_YAMA)         += yama
+> > -subdir-$(CONFIG_SECURITY_LOADPIN)      += loadpin
+> > -subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
+> > -subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM) += lockdown
+> > -subdir-$(CONFIG_BPF_LSM)               += bpf
+> > -subdir-$(CONFIG_SECURITY_LANDLOCK)     += landlock
+> >
+> >  # always enable default capabilities
+> >  obj-y                                  += commoncap.o
+> > @@ -36,5 +26,4 @@ obj-$(CONFIG_BPF_LSM)                 += bpf/
+> >  obj-$(CONFIG_SECURITY_LANDLOCK)                += landlock/
+> >
+> >  # Object integrity file lists
+> > -subdir-$(CONFIG_INTEGRITY)             += integrity
+> >  obj-$(CONFIG_INTEGRITY)                        += integrity/
+> > --
+> > 2.27.0
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
+
+
+
 -- 
-1.8.1.1.dirty
-
+Best Regards
+Masahiro Yamada
