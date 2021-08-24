@@ -2,114 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9583E3F58AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1C43F58BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbhHXHIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
+        id S234616AbhHXHMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhHXHIk (ORCPT
+        with ESMTP id S229823AbhHXHMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:08:40 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BD8C061575;
-        Tue, 24 Aug 2021 00:07:56 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id t190so22093497qke.7;
-        Tue, 24 Aug 2021 00:07:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KW9Fann3y1pzFb8Tj8FcUbRkvqHfnrfQMy5cjfBajPE=;
-        b=E8346BZeUL8t99GarHoHggpyszoczHSqPLZ/eRhkgKZVlmtX87ySc+CCdbTgrezAKl
-         hA/Xh6RF59CzovtQhUPRMxN3gfGPB3HH72b2tniEllOKhalX85CDsf8o6lRJcNCrtfOx
-         sPQXOYOu02ZktchkqT3c4xtYAfzjt9Lmlp1FeZAkqBqta/X8BnDtt65n13g1sbabPoDV
-         +21r6cPhc24qKGbEfA1u7Z/I/Ja1D/fU8sM7Eb3AWiz7AiZD+LCWckHECHAwbMH5ohR+
-         XolJlnhcFdFYxkI2bgbodT/2z8WMGwuGrK7oCYr0jMxCn0TkaTiCqU90Grehtd+P2y8L
-         4eHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KW9Fann3y1pzFb8Tj8FcUbRkvqHfnrfQMy5cjfBajPE=;
-        b=jjGZGPI3a+8lDvHw0Fqaar5WhN7vAQC0R+QzFk9Sbl4EDhVQfiqOIURypnVOrC752N
-         WRCl8+RopK8/2xqVotRLKOGSzb+9gfZ3f88F5YAPoQkIXkq1RRBIY3fmtUtDeFiduiVs
-         TBBIHMIA+FLc9ygq6GINEQTMCMxn7jyqv9phps0wIqga+VYrPXhuF+LPI5S0QRnzQX8X
-         zImg0bj+ofOhOfXuMCCWNBKZ1sYEjq+5WWi2LtmicZg6ET1Iyj45ZFlYhEn6cwcD8y3X
-         04yJTKWwR8Pd8k9xqCKF9o1UvRIcrifsjgpvghKZarJe530XdkU4Jv/mM7a9IS8k3W7M
-         jt1w==
-X-Gm-Message-State: AOAM531EYjXdEPXZePfi4rpR2mUHhlw05ilw+ZCXk5EmB3lem1+ujubT
-        4lJgQ+RQfHRn7c2d8YLLYyg=
-X-Google-Smtp-Source: ABdhPJyUSN3LeForA9GNMytIsl/iJwQU6503i0PuxS0PXu97Joa3JZUIPHFHAzuaXJ1djDWZtL+rFQ==
-X-Received: by 2002:a05:620a:2223:: with SMTP id n3mr1232278qkh.66.1629788875807;
-        Tue, 24 Aug 2021 00:07:55 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id q22sm5372122qtr.95.2021.08.24.00.07.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 00:07:55 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, x86@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] x86:lbr: fix boolreturn.cocci warnings
-Date:   Tue, 24 Aug 2021 00:07:47 -0700
-Message-Id: <20210824070747.61163-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Aug 2021 03:12:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC81C061575;
+        Tue, 24 Aug 2021 00:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yyOWKyVgFnzXQH7hUCU2sLB3yDJPcTOpVipPjz3CdkE=; b=vhbSFZGCSzrdVnS1l48yczaF9K
+        SvGLI6rQMV0CT4xfqBFA1Ef8Ep6dM6q2xMdXaRx9S+pjQv+qRWNTnYsJWFL8YUyXFnmmGXijIOv/u
+        PmjJy+0bZz71DBJ/UkUMV+6BfLJLvi+0cQKLjAPOl4yUvzdEyDBluDRFXDs9PGsu260PN6t8h9BWS
+        H1PEQ3FThNCcxhmfejfOihqbEbqvN5Tz9D5EG6yz3rmvyIp8Jq/WE/Lfa1HosWUPEttO8bNdoTMb3
+        MEPPz3NaNDAKI3Hj8hsdNgFtMUO4QPPaCM8IM8adV5zMNm5tB0B7013DPglF0teZ/nW4MFAZoW9MB
+        bODkw5sg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIQXL-00Ah6e-Fc; Tue, 24 Aug 2021 07:08:07 +0000
+Date:   Tue, 24 Aug 2021 08:07:55 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+Message-ID: <YSSay4zGjLaNMOh1@infradead.org>
+References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210823195409-mutt-send-email-mst@kernel.org>
+ <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Mon, Aug 23, 2021 at 05:30:54PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> 
+> 
+> On 8/23/21 4:56 PM, Michael S. Tsirkin wrote:
+> > > Add a new variant of pci_iomap for mapping all PCI resources
+> > > of a devices as shared memory with a hypervisor in a confidential
+> > > guest.
+> > > 
+> > > Signed-off-by: Andi Kleen<ak@linux.intel.com>
+> > > Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
+> > I'm a bit puzzled by this part. So why should the guest*not*  map
+> > pci memory as shared? And if the answer is never (as it seems to be)
+> > then why not just make regular pci_iomap DTRT?
+> 
+> It is in the context of confidential guest (where VMM is un-trusted). So
+> we don't want to make all PCI resource as shared. It should be allowed
+> only for hardened drivers/devices.
 
-./arch/x86/events/intel/lbr.c:925:9-10:WARNING: return of 0/1 in
-function 'get_lbr_mispred' with return type bool
-./arch/x86/events/intel/lbr.c:933:9-10:WARNING: return of 0/1 in
-function 'get_lbr_predicted' with return type bool
-
-Return statements in functions returning bool should use true/false
-instead of 1/0.
-
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- arch/x86/events/intel/lbr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index 9e6d6ea..c803282 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -922,7 +922,7 @@ static __always_inline int get_lbr_br_type(u64 info)
- static __always_inline bool get_lbr_mispred(u64 info)
- {
- 	if (static_cpu_has(X86_FEATURE_ARCH_LBR) && !x86_pmu.lbr_mispred)
--		return 0;
-+		return false;
- 
- 	return !!(info & LBR_INFO_MISPRED);
- }
-@@ -930,7 +930,7 @@ static __always_inline bool get_lbr_mispred(u64 info)
- static __always_inline bool get_lbr_predicted(u64 info)
- {
- 	if (static_cpu_has(X86_FEATURE_ARCH_LBR) && !x86_pmu.lbr_mispred)
--		return 0;
-+		return false;
- 
- 	return !(info & LBR_INFO_MISPRED);
- }
--- 
-1.8.3.1
-
-
+Well, assuming the host can do any damage when mapped shared that also
+means not mapping it shared will completely break the drivers.
