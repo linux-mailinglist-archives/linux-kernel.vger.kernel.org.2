@@ -2,140 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9D13F6073
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895D33F6077
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237759AbhHXOdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237442AbhHXOdq (ORCPT
+        id S237803AbhHXOei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:34:38 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:34564 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237442AbhHXOeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:33:46 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB39C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:33:02 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id l10so6974198ilh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:33:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WAOiuATXevPHNBvPplmlBHr/FxqYY3GsxpXENpilWKY=;
-        b=WOyt9t0ZSbCOg6SIqTfFuAaqsoP+napnQatblZNXOZv389nl83Ysmds3o/R/BCG8CR
-         Ggl2Kqha7WNRG8f7ytT0aW2T0c8GwgW6Tz/kJo1FvpLknhg6m4T7xd6dVPsZQaUzP5Fj
-         iD48EZsk/WB8RA54gj1+CIxY+j2fscClna/mY=
+        Tue, 24 Aug 2021 10:34:36 -0400
+Received: by mail-ot1-f45.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso41519367otp.1;
+        Tue, 24 Aug 2021 07:33:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WAOiuATXevPHNBvPplmlBHr/FxqYY3GsxpXENpilWKY=;
-        b=drfoKtGvp1j+N6UI5R8xtUdEk7Wl+Eqpot5B2jLG2GGSocG5KLdRrtcwBFAHcYTYS5
-         waZRYhL9UwXA/5+6ioiaBK68iyl0oAj6NBlXUiH0yGXBIdsHQOw7JmsqEOibSStj1FA1
-         fuCn2ERkmLogTOEmCL1pqKcMcNB4f2UeIyHnotIDetFQay6ZCrndsb4Pa1COtRKv/bAj
-         qpYKm1QaI//mIlhV8o55T1hlkUPDNUXkf0nnzL2eNB8h/SHFT31OKjiNNsjhGMz34vaT
-         ffMkT+2ilbsO4hRd9rprgMBs3JheM/Xd6a+7mitZlL9KIB8xTg6UOs3t/ORHV/mTy8pO
-         oUiQ==
-X-Gm-Message-State: AOAM530QMCUML7ujFIgqxlJXnk/3SpbEzcKLavQM0u6Hrmtjso9QJzSO
-        c+khPQVks1xzOaUNUasgdo0wWQ==
-X-Google-Smtp-Source: ABdhPJy7xWOsKHq9uY1p9tQB3YbrrULbZDI49VHGJeQAUgzbZygTm0Qysf9Xuy5NdXX5HfB9vL0Qgw==
-X-Received: by 2002:a92:c94e:: with SMTP id i14mr26842749ilq.143.1629815581534;
-        Tue, 24 Aug 2021 07:33:01 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 12sm6128492ilq.37.2021.08.24.07.33.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 07:33:01 -0700 (PDT)
-Subject: Re: [PATCH] selftests: openat2: Fix testing failure for O_LARGEFILE
- flag
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Aleksa Sarai <cyphar@cyphar.com>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>, shuah@kernel.org,
-        Christian Brauner <christian@brauner.io>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <1627475340-128057-1-git-send-email-baolin.wang@linux.alibaba.com>
- <01184d9e-477d-cbe4-c936-62b92e915911@linux.alibaba.com>
- <9411d418-567b-78f0-0e4d-30f08371c55a@linux.alibaba.com>
- <a9dc1616-61b9-c010-950c-521693c74247@linuxfoundation.org>
- <20210824112129.2t6lzqyf2dxllw4a@senku>
- <20210824113619.a3gyxlerst7tumzn@wittgenstein>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <11702c81-8b7c-bbe6-705a-f0fed5f10ba5@linuxfoundation.org>
-Date:   Tue, 24 Aug 2021 08:33:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9kldX5LSk1AeNzh82BbMV96MR54hwptzA7Wk7T/NXSI=;
+        b=YqpdEhWcig/dLrK5TnvFjVJSV99L52WGXPkMbJxvpKX0TE7tmhKrFgcTNoYT4tcB5X
+         Be55KHsWnE74vAjQKr1Mqpod1lBRcpS6Vk1qt3E05aZqzQuTaAbsccNs8gvWpaMp7lum
+         +3H1qVm3bKHgejGQDGPkJyXUV1xs/49W/OJs7ejD36RmNoO0orJ3cY1wd9TmfwEfDefY
+         MJkXsm/ZqlPaCESfnvo3Ob9axZhalnJLHQ2pYkVh9bszWOc4l16AH8SnGHFLqkGfq2ww
+         xYwQl8B8Hf8d5GlPxgz6Ak0JSx17oCcJJsN2ow0qAS+exZ0czVH3bCo3qN3IwvrMkgSv
+         /hIQ==
+X-Gm-Message-State: AOAM531BQqw6YOI5uWtBjcPYTf+p80aR+ztniPAsrhQyYhOBtbkwlwoQ
+        gvnqmxpbd+42v2NYehDPag==
+X-Google-Smtp-Source: ABdhPJx7YaMi06Fse66vJ/pNEcdzY1UiZ22EuP9LQFco4+TJ7Jlv2NLgfPAmKdyaXBvYoPpG8oWoNA==
+X-Received: by 2002:a9d:5548:: with SMTP id h8mr12471244oti.370.1629815631667;
+        Tue, 24 Aug 2021 07:33:51 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id b11sm4033809ooi.0.2021.08.24.07.33.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 07:33:50 -0700 (PDT)
+Received: (nullmailer pid 398737 invoked by uid 1000);
+        Tue, 24 Aug 2021 14:33:49 -0000
+Date:   Tue, 24 Aug 2021 09:33:49 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Atish Patra <atish.patra@wdc.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Piotr Sroka <piotrs@cadence.com>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 2/6] dt-bindings: mmc: cdns: match MPFS MMC/SDHCI
+ controller
+Message-ID: <YSUDTSuNlsOmu/G+@robh.at.kernel.org>
+References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
+ <20210819154436.117798-2-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210824113619.a3gyxlerst7tumzn@wittgenstein>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819154436.117798-2-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 5:36 AM, Christian Brauner wrote:
-> On Tue, Aug 24, 2021 at 09:21:29PM +1000, Aleksa Sarai wrote:
->> On 2021-08-23, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>> Hi Baolin,
->>>
->>> On 8/22/21 8:40 PM, Baolin Wang wrote:
->>>> Hi Shuah,
->>>>
->>>> On 2021/7/28 20:32, Baolin Wang wrote:
->>>>> Hi,
->>>>>
->>>>>> When running the openat2 test suite on ARM64 platform, we got below failure,
->>>>>> since the definition of the O_LARGEFILE is different on ARM64. So we can
->>>>>> set the correct O_LARGEFILE definition on ARM64 to fix this issue.
->>>>>
->>>>> Sorry, I forgot to copy the failure log:
->>>>>
->>>
->>> Please cc everybody get_maintainers.pl suggests. You are missing
->>> key reviewers for this change.
->>>
->>> Adding Christian Brauner and Aleksa Sarai to the thread.
->>>
->>>>> # openat2 unexpectedly returned # 3['/lkp/benchmarks/kernel_selftests/tools/testing/selftests/openat2'] with 208000 (!= 208000)
->>>
->>> Not sure I understand this. 208000 (!= 208000) look sthe same to me.
->>>
->>>>> not ok 102 openat2 with incompatible flags (O_PATH | O_LARGEFILE) fails with -22 (Invalid argument)
->>>>>
->>>>>>
->>>>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>>>
->>>> Could you apply this patch if no objection from your side? Thanks.
->>>>
->>>
->>> Ideally this define should come from an include file.
->>
->> The issue is that O_LARGEFILE is set to 0 by glibc because glibc appears
->> to hide the nuts and bolts of largefile support from userspace. I
->> couldn't find a nice way of doing a architecture-dependent includes of
->> include/uapi from kselftests, so I just went with this instead -- but I
->> agree that a proper include would be better if someone can figure out
->> how to do it.
+On Thu, Aug 19, 2021 at 05:44:32PM +0200, Krzysztof Kozlowski wrote:
+> The Microchip MPFS Icicle Kit uses Cadence SD/SDIO/eMMC Host Controller
+> without any additional vendor compatible:
+
+I think the lack of vendor compatible is the error here. Experience has 
+shown that vendor specific compatibles are needed for licensed IP.
+
 > 
-
- From a quick look, it will take sone work to consolidate multiple
-O_LARGEFILE defines.
-
-> I'd just add arch-dependent defines for now and call it good. So seems
-> good enough for me:
+>   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible:0: 'cdns,sd4hc' is not one of ['socionext,uniphier-sd4hc']
+>   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible: ['cdns,sd4hc'] is too short
 > 
-> Thanks!
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
->>
->>> Christian, Aleksa,
->>>
->>> Can you review this patch and let me know if this approach looks right.
->>
->> Reviewed-by: Aleksa Sarai <cyphar@cyphar.com>
-
-Thank you for the patch and the reviews. I will apply this for 5.15-rc1
-
-thanks,
--- Shuah
+> diff --git a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
+> index af7442f73881..0489aa92cb54 100644
+> --- a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
+> @@ -15,9 +15,11 @@ allOf:
+>  
+>  properties:
+>    compatible:
+> -    items:
+> -      - enum:
+> -          - socionext,uniphier-sd4hc
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - socionext,uniphier-sd4hc
+> +          - const: cdns,sd4hc
+>        - const: cdns,sd4hc
+>  
+>    reg:
+> -- 
+> 2.30.2
+> 
+> 
