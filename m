@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F033F57E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E0B3F57FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhHXGH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
+        id S231489AbhHXGOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhHXGHx (ORCPT
+        with ESMTP id S229854AbhHXGOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:07:53 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7B0C061575;
-        Mon, 23 Aug 2021 23:07:09 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id e3so9699036qth.9;
-        Mon, 23 Aug 2021 23:07:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xlxVIlSIJOfwlvlyoHVU5DcvdPbYDq3D2Wp4glE4NMQ=;
-        b=aVRcjTk2xVRDpklFxv1rTRvnh9OxA13KpPftmpbWOxvC6Jy4PrlYStTMIqPTSXnZBq
-         8ry65Z13+LJTmx+R/4fMICmBccxu6RRCEoexOnwI/hl1iu4YKR5A5qFBayz7yLlsTVqA
-         jRBb6IwtVuI+b5jpZvqGRfF6RC6NybSU4DhMTyubv8ZRORUERo5+jZUKyRfNE//uW9Qw
-         W/oQPqUuFzIfPANJiy/5IQlbfDiQ3KKm9b0dbAmxib1ShBlYM1gMQFuRn8ARAxfYhdto
-         xflEkGQd6BABzT7aNthhAxLQ3y5Ro7inh2kGxXyeCAo71Ros3E/V/ogim94hcQ6Zw2bn
-         IK4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xlxVIlSIJOfwlvlyoHVU5DcvdPbYDq3D2Wp4glE4NMQ=;
-        b=DtmJp7q0d21rpdJVNAbIMjoG8CYDCo8Phkt8BhjmOX0J5MT3hwtt9YgJpr0QNCtHfK
-         vwkYz6SCOkgm+BnUYfs/Qs18HnhQRk2sRfrwDoqeSlOBRVojBpUBIDuKOFOiCfOahtke
-         GBpdUKAE2os8Zx2jb14RbCR/11SIneCHbCxbebqFr5288yoGefyXH+CrrHKVYnfoBgLg
-         NJqKSjy/J2VqQrqZv+GESVnHq3KxrjQfIYUR9V/oYXXnRsBT7RTBGYgvpkLdakyUhZ1y
-         +KgI3BjdRKWkuat0J9NQOFu2nVF+SL/x3rWw0WrsQtxN5b/yifwvJ9wRFmSnefMqFM0G
-         E7eQ==
-X-Gm-Message-State: AOAM530D7KBhEsgeQxC41BbW1Ti3MInGHGZTaGJxot1Cq7P30/63UVen
-        FiZix2ZdJvW5/rCUEFh5yd9k8ucYJUE=
-X-Google-Smtp-Source: ABdhPJzvoJGu2eEDi45tIT+9IwlTn7ZQP9gA7GNK3uPiukbk2Eg0W31PujTJScxx/Bo8gzIqbn9Jjg==
-X-Received: by 2002:ac8:7761:: with SMTP id h1mr15123062qtu.272.1629785228905;
-        Mon, 23 Aug 2021 23:07:08 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id g13sm1803263qkk.110.2021.08.23.23.07.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:07:08 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] include:libata: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 23:07:02 -0700
-Message-Id: <20210824060702.59006-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Aug 2021 02:14:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C31C061575;
+        Mon, 23 Aug 2021 23:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f7fH1rEvs0xJyERlr1GeZJ7G2DDZAEuI5WBFO6aM0DE=; b=IawXlIwSwAzz4WaAqpSzlEYxuz
+        YiMQyUZgyoz6kZjcZVo1wk9wnfy8loh2so2h4F0X6QTyc0UumyE1gSMOAESY0Wgk9RKtw9E2EUrOJ
+        IpzX0i8DVqmIyy4L3J+wUOM6gSArc/8+o1oQro7eRQSN0Mea6zOI+O+3Y5oUgqy6Iwnuk8hVd4OiB
+        WcUde1NJHpd7HYCa5qUS537YP7wYEVRMGEQhPKT29n5iWmWtEy8vhDoA7iHO5dsxhIPSkBBVbRHc4
+        vNKG1wE5yZW+Pua4UHYAjlWohpQHBS4ePYZdMerkcT+36IeBcq4CnFhzMNGhxfue7Y0Y8jf9L6fHL
+        7+6xITiQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIPcv-00AdX1-Qy; Tue, 24 Aug 2021 06:09:50 +0000
+Date:   Tue, 24 Aug 2021 07:09:37 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
+        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
+        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
+        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
+        bvanassche@acm.org, ming.lei@redhat.com,
+        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
+        nbd@other.debian.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/10] nvme: add error handling support for add_disk()
+Message-ID: <YSSNIaYpUhrkvC+J@infradead.org>
+References: <20210823202930.137278-1-mcgrof@kernel.org>
+ <20210823202930.137278-6-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823202930.137278-6-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Mon, Aug 23, 2021 at 01:29:25PM -0700, Luis Chamberlain wrote:
+> +	rc = device_add_disk(ctrl->device, ns->disk, nvme_ns_id_attr_groups);
+> +	if (rc)
+> +		goto out_cleanup_ns_from_list;
+> +
 
-./include/linux/libata.h:1462:8-9:WARNING: return of 0/1 in function
-'ata_is_host_link' with return type bool
+Nit: no real need for the rc variable here as we never use the actual
+value.
 
-Return statements in functions returning bool should use true/false
-instead of 1/0.
+>  	if (!nvme_ns_head_multipath(ns->head))
+>  		nvme_add_ns_cdev(ns);
+>  
+> @@ -3785,6 +3789,10 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+>  
+>  	return;
+>  
+> + out_cleanup_ns_from_list:
+> +	down_write(&ctrl->namespaces_rwsem);
+> +	list_del_init(&ns->list);
+> +	up_write(&ctrl->namespaces_rwsem);
 
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- include/linux/libata.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/libata.h b/include/linux/libata.h
-index a2d1bae..860e63f 100644
---- a/include/linux/libata.h
-+++ b/include/linux/libata.h
-@@ -1459,7 +1459,7 @@ static inline bool sata_pmp_attached(struct ata_port *ap)
- 
- static inline bool ata_is_host_link(const struct ata_link *link)
- {
--	return 1;
-+	return true;
- }
- #endif /* CONFIG_SATA_PMP */
- 
--- 
-1.8.3.1
-
-
+This also needs to do a nvme_put_ctrl.
