@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DC03F6C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CFB3F6C2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbhHXXXQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Aug 2021 19:23:16 -0400
-Received: from mail-ed1-f48.google.com ([209.85.208.48]:35420 "EHLO
-        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhHXXXP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 19:23:15 -0400
-Received: by mail-ed1-f48.google.com with SMTP id q17so12242691edv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 16:22:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jt1xPoihlMFualcaA7azQSeNjnGZTnYUqYiE9vCrqw4=;
-        b=jkMiwJyiqmQi2v2zemE+XCCtY0YT22oGzKEUXPcKjV5wpeltO+YW+46q12Vsf/JqrY
-         UAhuH89VOy0Q0O0nT8V/jsGwUEKbTxu5iaXlOxyy1wSYVyrCT2uT1rqR4z3NcmF4yOSD
-         XtCrFFp2VxE07sNYF2dGaN0pVHNOSc38mAdiIHALI9bwdtS4th4eOowXfXWl9tb5AmIs
-         74k5NqHsN1wZWAAW3Ov3LtMWkWbMUuuTbokSkYUp9Dz/cmL9xMprIVTb7C5RlLiSf4LU
-         q82t5sh09En5ok+2q5OegiUdKsgu+FBPJTb0xcjwQzK+/tnuKNOmC/lKLG0hqaBmOJU5
-         iApg==
-X-Gm-Message-State: AOAM533wlfq1tmcXizSzKnCO7gbvvV8yfkhpSPYdeB/7iCCWNxr5EHt6
-        1JakgOFeU6fCzhriiZ1lXM7LDTEuot509mm4drY=
-X-Google-Smtp-Source: ABdhPJziKW6jfdeUb4d4V2qsdARFCHE6mqvY1OCTNOGkaZMl2VuYepfUOwr7MMCOw1oT/1BJc3ZD/XCeYLQ9z6cW0cw=
-X-Received: by 2002:a05:6402:35d2:: with SMTP id z18mr14289865edc.92.1629847349638;
- Tue, 24 Aug 2021 16:22:29 -0700 (PDT)
+        id S233930AbhHXXXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 19:23:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231745AbhHXXXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 19:23:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36A46610F8;
+        Tue, 24 Aug 2021 23:23:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629847387;
+        bh=4ZASDukXEFD6gzQ3txH7gkEOWmXTrxFmwK+P5dWdDlQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XeCbBM0ZbkYIgSeNifwC91fAm1WEGYJ4JuxoYgQNpeKuCb0Ywt2jQyVCfiqNSOueh
+         PPdJiAzTR+c1jJ4HFcOC+MJRftf2zrRXXBlxWvg8dA4wmqwd61xMesXxsEJX+F1TYP
+         6Lx6yT8AorZRbQFNNprX7Jhh1VX4YBaY5HO1/wbxzdCJ5hjGvL2VsEruzzHsgRLJ+s
+         w1BH2Sm81RjXH/WrbEl6Ov/4Sd110xIuXb69BxzYYoXDxdGe/yrY83+A74mNIoT4Le
+         rL5tDOhGF2CluFIaYjVoCy9iNfa/vTbP7cocrExi24clP7R+jaaH1n7G/wcee7q1IR
+         DrlnnY64ASetQ==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] drm/i915: Clean up disabled warnings
+Date:   Tue, 24 Aug 2021 16:22:38 -0700
+Message-Id: <20210824232237.2085342-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
- <3181031.RqgVF4sTRC@tjmaciei-mobl5> <YR1HYRRN0HMTxXrw@zn.tnic>
- <BCC327C2-CF9F-4910-B626-315E515E9A3A@intel.com> <YR14zq2LaExjhFR+@zn.tnic>
-In-Reply-To: <YR14zq2LaExjhFR+@zn.tnic>
-From:   Len Brown <lenb@kernel.org>
-Date:   Tue, 24 Aug 2021 19:22:18 -0400
-Message-ID: <CAJvTdKnhn8rOKUJ0VKvM08sFYkvmEsSWBsH2ynncxH9_z49bxA@mail.gmail.com>
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        "Macieira, Thiago" <thiago.macieira@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 5:16 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Aug 18, 2021 at 08:43:50PM +0000, Bae, Chang Seok wrote:
-> > Maybe I’m missing something, but I wonder what’s the difference
-> > from reading XCR0.
->
-> Wny, because adding another prctl() is too damn hard?
+i915 enables a wider set of warnings with '-Wall -Wextra' then disables
+several with cc-disable-warning. If an unknown flag gets added to
+KBUILD_CFLAGS when building with clang, all subsequent calls to
+cc-{disable-warning,option} will fail, meaning that all of these
+warnings do not get disabled [1].
 
-Adding complexity is easy.  Removing it is the hard part. ;-)
+A separate series will address the root cause of the issue by not adding
+these flags when building with clang [2]; however, the symptom of these
+extra warnings appearing can be addressed separately by just removing
+the calls to cc-disable-warning, which makes the build ever so slightly
+faster because the compiler does not need to be called as much before
+building.
 
-Programmers today know what CPUID and xgetbv(XCR0) mean:
-1. feature exists in the HW
-2. OS has ability to handle state
+The following warnings are supported by GCC 4.9 and clang 10.0.1, which
+are the minimum supported versions of these compilers so the call to
+cc-disable-warning is not necessary. Masahiro cleaned this up for the
+reset of the kernel in commit 4c8dd95a723d ("kbuild: add some extra
+warning flags unconditionally").
 
-This is true for all features.
+* -Wmissing-field-initializers
+* -Wsign-compare
+* -Wtype-limits
+* -Wunused-parameter
 
-We are forced to complicate their life for AMX (and subsequent features)
-because of the legacy Linux signal ABI.
-We require that new apps invoke a system call to tell us that they are
-not indeed a legacy
-program, but that they are a program that understands if they use an
-alt-sig-stack
-that it must be big enough to handle whatever current hardware requires.
+-Wunused-but-set-variable was implemented in clang 13.0.0 and
+-Wframe-address was implemented in clang 12.0.0 so the
+cc-disable-warning calls are kept for these two warnings.
 
-The secondary motivation for the system call is the desire to give the
-kernel a hook
-so that it can refuse to give permission for some apps to use AMX,
-should the need arise.
+Lastly, -Winitializer-overrides is clang's version of -Woverride-init,
+which is disabled for the specific files that are problematic. clang
+added a compatibility alias in clang 8.0.0 so -Winitializer-overrides
+can be removed.
 
-Programmers don't like this, but it nobody has figured out a more
-programmer-friendly way
-to meet these requirements.
-And so if they want to use AMX on Linux, they *must* use this new SET syscall.
-Since Linux enforces that they use it, they will use it if they want
-AMX (or subsequent features).
+[1]: https://lore.kernel.org/r/202108210311.CBtcgoUL-lkp@intel.com/
+[2]: https://lore.kernel.org/r/20210824022640.2170859-1-nathan@kernel.org/
 
-> prctl(GET_FEATURES_WITH_KERNEL_ASSISTANCE);
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
 
-The problem is that it adds zero value over the currently used xgetbv(XCR0).
-As it adds no value, programmers will not use it.
+NOTE: This is based on my series to enable -Wsometimes-initialized here:
 
-Sure, if the hardware is re-designed, and Linux is re-designed, and XCR0
-can then change at run-time during the lifetime of a program, we have additional
-challenges.  (such as legacy code that doesn't expect XCR0 to change
-at run-time).
-I don't think that this additional system call even begins to address
-that theoretical
-new world.
+https://lore.kernel.org/r/20210824225427.2065517-1-nathan@kernel.org/
 
-But this discussion moot.  If it has no use, it will not get used.
---
-Len Brown, Intel Open Source Technology Center
+I sent it separately as this can go into whatever release but I would
+like for that series to go into 5.15.
+
+ drivers/gpu/drm/i915/Makefile | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+index 335ba9f43d8f..6b38547543b1 100644
+--- a/drivers/gpu/drm/i915/Makefile
++++ b/drivers/gpu/drm/i915/Makefile
+@@ -13,13 +13,11 @@
+ # will most likely get a sudden build breakage... Hopefully we will fix
+ # new warnings before CI updates!
+ subdir-ccflags-y := -Wall -Wextra
+-subdir-ccflags-y += $(call cc-disable-warning, unused-parameter)
+-subdir-ccflags-y += $(call cc-disable-warning, type-limits)
+-subdir-ccflags-y += $(call cc-disable-warning, missing-field-initializers)
++subdir-ccflags-y += -Wno-unused-parameter
++subdir-ccflags-y += -Wno-type-limits
++subdir-ccflags-y += -Wno-missing-field-initializers
++subdir-ccflags-y += -Wno-sign-compare
+ subdir-ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
+-# clang warnings
+-subdir-ccflags-y += $(call cc-disable-warning, sign-compare)
+-subdir-ccflags-y += $(call cc-disable-warning, initializer-overrides)
+ subdir-ccflags-y += $(call cc-disable-warning, frame-address)
+ subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
+ 
+
+base-commit: fb43ebc83e069625cfeeb2490efc3ffa0013bfa4
+prerequisite-patch-id: 31c28450ed7e8785dce967a16db6d52eff3d7d6d
+prerequisite-patch-id: 372dfa0e07249f207acc1942ab0e39b13ff229b2
+prerequisite-patch-id: 1a585fa6cda50c32ad1e3ac8235d3cff1b599978
+-- 
+2.33.0
+
