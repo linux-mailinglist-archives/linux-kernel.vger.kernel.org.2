@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAC33F5681
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0ED73F567E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhHXDKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 23:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60954 "EHLO
+        id S235116AbhHXDJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 23:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235086AbhHXDFo (ORCPT
+        with ESMTP id S235107AbhHXDFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Aug 2021 23:05:44 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC6FC0613A3;
-        Mon, 23 Aug 2021 20:03:48 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id f22so11931054qkm.5;
-        Mon, 23 Aug 2021 20:03:48 -0700 (PDT)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A985FC06129E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 20:04:24 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id j2so6959042pll.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 20:04:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DcXimKD9ktUTQ9h2I2cOvz7m+Ks/LKV85VIoEJzO/cY=;
-        b=csPq3rt1tkj8/W1nEfwuuf9UZOKvUzQhVhlta8+9aic6joNZRE4lKsu8ufe20IKmEa
-         4eESj3RxZAfjND8RNI+uSpldpy4/qow91j+6r1rgPZyjc7sTcJqdHv3CJGKMssq3yPrp
-         zwUpeeKz4dPtZMU7RvK3/5jFjwTnw/s4hUiECEx/F2NRSa9O7eN2kdN8Pb2ocpCv+k2f
-         jK6PKwJuFefezal882+JqNzWL9LrpyMoTku8b5jqze+6Q48gWlnpQc6PdjYfkLemVrDx
-         5Hz3dcO+LdHt7nfUKFb1uJUSPsdTCzBud9TImS8oZWWSTv0ogz2E9u7yvGYhm554n8h9
-         QyyQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ftVLBcz2CA6HVw5Sak06NSKiX7H+vKeynT4dia9GcmU=;
+        b=k+9ugNQMNP1T757zCmBjD0HZ4Cm6T3BE+v/X7Wxf65qXhZ4Y1Om/ZwreVVsFldU5ED
+         26Au5VziBd3fTRw9qajnc5Q1bzTZtCXlNbNzYEhhdrLy0j6q3RP41Bfsx2Vet4JiZwHE
+         HpssKarI+iW9nKfS+aZW4kug15wwleM1PIEsfGzs+E/ENGb7NoFhvlaUVQuCR3IWspbE
+         1jdc92yTGvHUY8w5qgAHpd6F4jZjsLSyz7OphX6zYHG1h8uepViMakkTUt9Apji0AqlD
+         h496UE7ulnKIyaYIIz+9WlMWKL7f+UCly0DgUoeMlhVK/OeculmtFoztQ69V1z3oNjW5
+         BaQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DcXimKD9ktUTQ9h2I2cOvz7m+Ks/LKV85VIoEJzO/cY=;
-        b=FiENhkOW1FFThrinLNkH9i5/h+cPWQQHBpRSKn8Av7McgfMZUFZpo5lSBFVMFD5d/z
-         q6uPiCqpgJ1Lj6ARSRAytEY5DdnzX1XHNgvjwFol41WXCZ4WfkkQHUE21u+5afnwjMdn
-         jrS16HkZK8JBBKhsuke/xz/rdXoMRq9yG0UQcyOqW9I/EvyjFJVLLlqh8DfiVKYY6n24
-         eJpAn7qkzh4ZSDlVOhJ6Fn54Y5J0xKU6mEXjWq8sRJAfypOTvCzwPIp+ecMstzVdCnbJ
-         5t4QoaKQSVd2eA5kG6ke9A22XXQeqXBd6CKpnKOSBFEvnKHEmZ3l97j+z387KH3DXfxR
-         Nmlg==
-X-Gm-Message-State: AOAM532KFDggFGro235XnclDa0+weKKRz+dG2Y+clALvwpqiNIN7sca1
-        Y+gqdHwEWt3vjCvN3yg6uGU=
-X-Google-Smtp-Source: ABdhPJzBSu2ILEuN5IUNETzEf6ebHzCaTXcz5UgSaQEIKJPmMq9w9KaPOTYEJby+ubs+Bd+PGr+4VQ==
-X-Received: by 2002:a37:54f:: with SMTP id 76mr24597132qkf.226.1629774227994;
-        Mon, 23 Aug 2021 20:03:47 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id p22sm9667227qkj.16.2021.08.23.20.03.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ftVLBcz2CA6HVw5Sak06NSKiX7H+vKeynT4dia9GcmU=;
+        b=SPmRK7cV3Yb4T5O9ydrc66g5XETIglP94ZKtwJcxj4tvQBsLYpIlG2szE+z16tzQHh
+         dHoadcSdufbs4npsjMxCYNXAJLLBBNgy6AjTDbdeEQtIwTrT1SPdkJAyHX1ceF/WiW2s
+         YJQ/yJ5kSSJ17btQsy+9JsjDZMfBDr05ihnND/UNJFLF+ByllfM+uMKwZVceoiI0WvEr
+         pzUaRIcHtFXJMJzh0QvBgARL8+cc8qkXydxW+xqL31N5YOhcs/OPFMleInec5TJmPra6
+         9nY/6J6jHmM06ByoPna95miXvZenA3CqwDpaNrgj8LH7UqgmbJeQZXYmJmtIm5azggUP
+         dWXg==
+X-Gm-Message-State: AOAM531NEzR9dd+5Or6Q4gMzSamyBuBBcS4P0gnOXtdKu7m0YQy2rQeI
+        c2OJoliWq8DaZKH0xk6aTzuUMA==
+X-Google-Smtp-Source: ABdhPJxgNZPrPk9tzmxpkCehrPdfFes88M8DqFhHlA/X7V8qZTGRmqZiqGy9NJMzzCPLtwobPdjSGw==
+X-Received: by 2002:a17:902:e547:b029:12c:563c:4a03 with SMTP id n7-20020a170902e547b029012c563c4a03mr30922945plf.46.1629774264209;
+        Mon, 23 Aug 2021 20:04:24 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id c12sm16184839pfl.56.2021.08.23.20.04.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 20:03:47 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Chris Hyser <chris.hyser@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] kselftest: remove duplicate include
-Date:   Mon, 23 Aug 2021 20:03:38 -0700
-Message-Id: <20210824030338.57396-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 23 Aug 2021 20:04:23 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 08:34:21 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+Message-ID: <20210824030421.3tjfjkx3c2silbnz@vireshk-i7>
+References: <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+ <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
+ <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
+ <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
+ <CAPDyKFpg8ixT4AEjzVLTwQR7Nn9CctjnLCDS5GwkOrAERquyxw@mail.gmail.com>
+ <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
+ <CAPDyKFo0rzHT4AhueWjyz9k2ZqUy8N6Od5pbr8sL_m0Jf2AwUg@mail.gmail.com>
+ <085d1a2e-57b0-222e-c569-12f3c6bc8161@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <085d1a2e-57b0-222e-c569-12f3c6bc8161@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On 23-08-21, 23:24, Dmitry Osipenko wrote:
+> It's not clear to me whether it will be okay to add a generic OPP syncing by clock rate or should it be a Tegra-specific helper. Viresh, what do you think about this generic OPP helper:
+> 
+> /**
+>  * dev_pm_opp_sync_with_clk_rate() - Sync OPP state with clock rate
+>  * @dev:	device for which we do this operation
+>  *
+>  * Sync OPP table state with the current clock rate of device.
+>  *
+>  * Return: 0 on success or a negative error value.
+>  */
+> int dev_pm_opp_sync_with_clk_rate(struct device *dev)
+> {
+> 	struct opp_table *opp_table;
+> 	int ret = 0;
+> 
+> 	/* Device may not have OPP table */
+> 	opp_table = _find_opp_table(dev);
+> 	if (IS_ERR(opp_table))
+> 		return 0;
+> 
+> 	/* Device may not use clock */
+> 	if (IS_ERR(opp_table->clk))
+> 		goto put_table;
+> 
+> 	/* Device may have empty OPP table */
+> 	if (!_get_opp_count(opp_table))
+> 		goto put_table;
+> 
+> 	ret = dev_pm_opp_set_rate(dev, clk_get_rate(opp_table->clk));
+> put_table:
+> 	/* Drop reference taken by _find_opp_table() */
+> 	dev_pm_opp_put_opp_table(opp_table);
+> 
+> 	return ret;
+> }
+> EXPORT_SYMBOL_GPL(dev_pm_opp_sync_with_clk_rate);
 
-Clean up the following includecheck warning:
+I am not sure why you still need this, hope we were going another way
+? Anyway I will have a look at what you have posted now.
 
-./tools/testing/selftests/sched/cs_prctl_test.c: sys/types.h and sys/wait.h
-are included more than once.
-
-No functional change.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- tools/testing/selftests/sched/cs_prctl_test.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
-index 63fe652..7db9cf8 100644
---- a/tools/testing/selftests/sched/cs_prctl_test.c
-+++ b/tools/testing/selftests/sched/cs_prctl_test.c
-@@ -25,8 +25,6 @@
- #include <sys/types.h>
- #include <sched.h>
- #include <sys/prctl.h>
--#include <sys/types.h>
--#include <sys/wait.h>
- #include <unistd.h>
- #include <time.h>
- #include <stdio.h>
 -- 
-1.8.3.1
-
-
+viresh
