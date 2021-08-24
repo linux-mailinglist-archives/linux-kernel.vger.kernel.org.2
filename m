@@ -2,114 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349D73F6A9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160183F6AA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbhHXUrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 16:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233289AbhHXUrG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 16:47:06 -0400
-Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E101C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 13:46:21 -0700 (PDT)
-Received: from [10.0.20.3] (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 9010A1F4F5;
-        Tue, 24 Aug 2021 22:46:17 +0200 (CEST)
-Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Replace usage of parent_names
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        angelogioacchino.delregno@somainline.org
-References: <20210824150606.678666-1-bjorn.andersson@linaro.org>
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-Message-ID: <386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org>
-Date:   Tue, 24 Aug 2021 22:46:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S234341AbhHXUuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 16:50:50 -0400
+Received: from mga06.intel.com ([134.134.136.31]:34159 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232549AbhHXUus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 16:50:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="278414150"
+X-IronPort-AV: E=Sophos;i="5.84,348,1620716400"; 
+   d="scan'208";a="278414150"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 13:50:03 -0700
+X-IronPort-AV: E=Sophos;i="5.84,348,1620716400"; 
+   d="scan'208";a="526823403"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.119.65]) ([10.209.119.65])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 13:50:01 -0700
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Rajat Jain <rajatja@google.com>
+References: <20210824203115.GA3492097@bjorn-Precision-5520>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <bb8c6f96-2597-bb80-bd08-7958405e1bf5@linux.intel.com>
+Date:   Tue, 24 Aug 2021 13:50:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210824150606.678666-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20210824203115.GA3492097@bjorn-Precision-5520>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
 
-Thanks for this cleanup, that's needed and much appreciated!
+On 8/24/2021 1:31 PM, Bjorn Helgaas wrote:
+> On Tue, Aug 24, 2021 at 01:14:02PM -0700, Andi Kleen wrote:
+>> On 8/24/2021 11:55 AM, Bjorn Helgaas wrote:
+>>> [+cc Rajat; I still don't know what "shared memory with a hypervisor
+>>> in a confidential guest" means,
+>> A confidential guest is a guest which uses memory encryption to isolate
+>> itself from the host. It doesn't trust the host. But it still needs to
+>> communicate with the host for IO, so it has some special memory areas that
+>> are explicitly marked shared. These are used to do IO with the host. All
+>> their usage needs to be carefully hardened to avoid any security attacks on
+>> the guest, that's why we want to limit this interaction only to a small set
+>> of hardened drivers. For MMIO, the set is currently only virtio and MSI-X.
+> Good material for the commit log next time around.  Thanks!
 
-On 8/24/21 5:06 PM, Bjorn Andersson wrote:
-> Using parent_data and parent_hws, instead of parent_names, does protect
-> against some cases of incompletely defined clock trees. While it turns
-> out that the bug being chased this time was totally unrelated, this
-> patch converts the SDM660 GCC driver to avoid such issues.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+This is all in the patch intro too, which should make it into the merge 
+commits.
 
-
-Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
-
-On the Sony Xperia XA2 Ultra, bar the necessary change in the 14NM DSI 
-PHY driver commented below.
-
-> [..]
-> -
-> -static struct clk_fixed_factor xo = {
-> -	.mult = 1,
-> -	.div = 1,
-> -	.hw.init = &(struct clk_init_data){
-> -		.name = "xo",
-> -		.parent_names = (const char *[]){ "xo_board" },
-> -		.num_parents = 1,
-> -		.ops = &clk_fixed_factor_ops,
-> -	},
-> -};
+I don't think we can reexplain the basic concepts for every individual 
+patch in a large patch kit.
 
 
-Removing the global "xo" clock makes it so that our 14nm DSI PHY does 
-not have a parent clock anymore, as the clock is called "xo_board" 
-nowadays ("xo" in the position of fw_name is, as you know, only local to 
-this driver because it is named that way in the clock-names property). 
-We (SoMainline) suffer the same DSI PHY hardcoding issue on many other 
-boards and are at this point investigating whether to provide &xo_board 
-in DT like any other sane driver.  Do you happen to know if work is 
-already underway to tackle this?
+-Andi
 
->   static struct clk_alpha_pll gpll0_early = {
->   	.offset = 0x0,
->   	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
-> @@ -158,7 +35,9 @@ static struct clk_alpha_pll gpll0_early = {
->   		.enable_mask = BIT(0),
->   		.hw.init = &(struct clk_init_data){
->   			.name = "gpll0_early",
-> -			.parent_names = (const char *[]){ "xo" },
-> +			.parent_data = &(const struct clk_parent_data){
-> +				.fw_name = "xo",
-> +			},
-
-
-I wish we could use .parent_names for a list of .fw_name's too
-> [..]
-> @@ -265,7 +270,7 @@ static struct clk_rcg2 blsp1_qup1_i2c_apps_clk_src = {
->   	.freq_tbl = ftbl_blsp1_qup1_i2c_apps_clk_src,
->   	.clkr.hw.init = &(struct clk_init_data){
->   		.name = "blsp1_qup1_i2c_apps_clk_src",
-> -		.parent_names = gcc_parent_names_xo_gpll0_gpll0_early_div,
-> +		.parent_data = gcc_parent_data_xo_gpll0_gpll0_early_div,
->   		.num_parents = 3,
-
-
-How about using ARRAY_SIZE(gcc_parent_data_xo_gpll0_gpll0_early_div) 
-now?  Same for every other occurrence of this pattern.
-
-- Marijn
