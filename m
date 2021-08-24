@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE093F59CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A72823F59D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235245AbhHXIZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234732AbhHXIZQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:25:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C149FC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:24:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YGfdbDOawum2mbfqpNDUHheysMZf9Btirs2ih1z/UTY=; b=emrbnSAjcdWrhiwV3mF8hgq+Q0
-        riq6ezoo3GUEYfrhO4rfi5jhp9nN8wSC0MYXdlTA9Y6oNTVMxpxq3+qFPmcmNa9fQNeyQl3tg/jli
-        Yzfo+P1/57fiYZZ20IMcCA53rC/6YWoMsfyuiZyxJ9pT9HTcK5UuQgwQLTj4QC18e18EPZmdOs9NQ
-        KT3CB64RreDkdOeRHmcRC8e3uJqoQTCAVnVCCGdcCAJLs0XsO4354oYVnzgzYT5hvRXVDJOUe5HBk
-        +zNJfMW6kqUgYFcdqgt6nw77lFFXYjH08vJNDFJA3t1nBg1ttS5If2TStkiWNvX7AEM+U43GIRkn4
-        pPCJeYWA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIRhq-00AmOg-FQ; Tue, 24 Aug 2021 08:23:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1803C3007AE;
-        Tue, 24 Aug 2021 10:22:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EBC3C20985311; Tue, 24 Aug 2021 10:22:49 +0200 (CEST)
-Date:   Tue, 24 Aug 2021 10:22:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
+        id S235292AbhHXI0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:26:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:60716 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233920AbhHXI0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 04:26:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FBDF101E;
+        Tue, 24 Aug 2021 01:25:35 -0700 (PDT)
+Received: from [10.57.17.43] (unknown [10.57.17.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 125F33F766;
+        Tue, 24 Aug 2021 01:25:33 -0700 (PDT)
+Subject: Re: [PATCH linux-next] arm:nommu: fix boolreturn.cocci warnings
+To:     CGEL <cgel.zte@gmail.com>, Russell King <linux@armlinux.org.uk>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] kernel:fair: fix boolreturn.cocci warnings
-Message-ID: <YSSsWaXD5VX+HJNS@hirez.programming.kicks-ass.net>
-References: <20210824062359.59474-1-deng.changcheng@zte.com.cn>
- <YSSqusBah2AzUD7V@hirez.programming.kicks-ass.net>
+        Zeal Robot <zealci@zte.com.cn>, denghuilong@cdjrlc.com
+References: <20210824041112.57915-1-deng.changcheng@zte.com.cn>
+From:   Vladimir Murzin <vladimir.murzin@arm.com>
+Message-ID: <328bbb63-f8a6-2c50-2264-1fd404ff1f9d@arm.com>
+Date:   Tue, 24 Aug 2021 09:25:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSSqusBah2AzUD7V@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210824041112.57915-1-deng.changcheng@zte.com.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:15:54AM +0200, Peter Zijlstra wrote:
-> On Mon, Aug 23, 2021 at 11:23:59PM -0700, CGEL wrote:
-> > From: Jing Yangyang <jing.yangyang@zte.com.cn>
-> > 
-> > ./kernel/sched/fair.c:9638:9-10:WARNING: return of 0/1 in function
-> > 'imbalanced_active_balance' with return type bool
-> > 
-> > Return statements in functions returning bool should use true/false
-> > instead of 1/0.
-> > 
-> > Generated by: scripts/coccinelle/misc/boolreturn.cocci
-> > 
-> > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> > Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+On 8/24/21 5:11 AM, CGEL wrote:
+> From: Jing Yangyang <jing.yangyang@zte.com.cn>
 > 
-> *sigh*, another stupid robot sending stupid patches..
+> ./arch/arm/mm/nommu.c:59:8-9:WARNING:return of 0/1 in function
+> 'security_extensions_enabled' with return type bool
 > 
-> /me goes create another mail filter...
+> Return statements in functions returning bool should use true/false
+> instead of 1/0.
+> 
+> Generated by: scripts/coccinelle/misc/boolreturn.cocci
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+> ---
+>  arch/arm/mm/nommu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mm/nommu.c b/arch/arm/mm/nommu.c
+> index 2658f52..7256ac1 100644
+> --- a/arch/arm/mm/nommu.c
+> +++ b/arch/arm/mm/nommu.c
+> @@ -56,7 +56,7 @@ static inline bool security_extensions_enabled(void)
+>  	if ((read_cpuid_id() & 0x000f0000) == 0x000f0000)
+>  		return cpuid_feature_extract(CPUID_EXT_PFR1, 4) ||
+>  			cpuid_feature_extract(CPUID_EXT_PFR1, 20);
+> -	return 0;
+> +	return false;
+>  }
+>  
+>  unsigned long setup_vectors_base(void)
+> 
 
-Here, the hunk of sieve script, incase other people want to use it too.
+The same patch was sent before [1] by Huilong Deng. It was reviewed
+and author was advised to submit it into RMK's Patch system.  
 
 
-#SCRIPTNAME: Zeal Robot
-if body :text :contains "Reported-by: Zeal Robot <zealci@zte.com.cn>"
-{
-    fileinto "SPAM";
-    stop;
-}
+[1] https://lore.kernel.org/linux-arm-kernel/1e30b659-a91a-58f6-f9aa-d0f0259eb9e8@arm.com/T/#t
 
+Cheers
+Vladimir
