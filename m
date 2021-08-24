@@ -2,70 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F513F5C80
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE903F5C84
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236410AbhHXK4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:56:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38544 "EHLO mail.kernel.org"
+        id S236395AbhHXK5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:57:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:33904 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236320AbhHXK4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:56:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4487361163;
-        Tue, 24 Aug 2021 10:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629802518;
-        bh=NsgaVcjwqPVDQvxpxv1KlOmUMb96K7W1aN79AbgQurQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eFG1rBLaoSsSNEEGcCNos4mgcK48yTXWELBhHC8qEjuppOLF5ZAKsHbk2TC5nCf4G
-         lfHj9+2wPQq/4fkJ4DEJQX9DniW1B+2cjWyFFrCZ1zkSaodpFz/FX+/aYmMaiftUkT
-         d7XWD7QCMiiQvZ0IbuwRe/UcipyRE7EMengwhq1QQE9yptUzKDcqwUol5/J5taM3Z6
-         +f/ByQCwTzDCzxE3Q2EJYl5QWQAswUtuJUGGW0hj1RKKsm1sE1LYMyTL9wI6iTuzaK
-         JdthOJ5m6smxkqAeCDNZotZMm/X4kxBt0XvomqXdKpGSbnwSQRu7pn/300h9RFvRKz
-         bM/ywsTSOdm0A==
-From:   Roger Quadros <rogerq@kernel.org>
-To:     nsekhar@ti.com
-Cc:     bgolaszewski@baylibre.com, nm@ti.com, lokeshvutla@ti.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v2] ARM: dts: da850-evm: Change aemif node status from "ok" to "okay"
-Date:   Tue, 24 Aug 2021 13:55:12 +0300
-Message-Id: <20210824105512.19242-1-rogerq@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S235905AbhHXK5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 06:57:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2B6E101E;
+        Tue, 24 Aug 2021 03:57:00 -0700 (PDT)
+Received: from e108754-lin.cambridge.arm.com (e108754-lin.cambridge.arm.com [10.1.198.34])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3FF683F66F;
+        Tue, 24 Aug 2021 03:56:59 -0700 (PDT)
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Sean Kelley <skelley@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 0/3] arch_topology, ACPI: populate cpu capacity from CPPC
+Date:   Tue, 24 Aug 2021 11:56:48 +0100
+Message-Id: <20210824105651.28660-1-ionela.voinescu@arm.com>
+X-Mailer: git-send-email 2.29.2.dirty
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per Device Tree Specification [1], the status parameter of nodes can
-be "okay", "disabled", etc. "ok" is not a valid parameter.
+Hi all,
 
-U-boot Driver Model does not recognize status="ok" either and treats
-the node as disabled.
+Apologies for the long delay in posting v2.
 
-[1] https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
+v1->v2:
+ - v1 can be found at [1]
+ - Changed debug prints to the format used on the DT path
+ - s/init_cpu_capacity_cppc/topology_init_cpu_capacity_cppc
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
-Changelog:
-v2
--refer to DT spec instead of schema in commit log.
+Patches are based on v5.14-rc7.
 
- arch/arm/boot/dts/da850-evm.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The patches have been build tested on x86 and more thoroughly tested on
+Juno R2 (arm64), which uses the new functionality, with the following
+results:
 
-diff --git a/arch/arm/boot/dts/da850-evm.dts b/arch/arm/boot/dts/da850-evm.dts
-index 87c517d65f62..9dc79b5977bf 100644
---- a/arch/arm/boot/dts/da850-evm.dts
-+++ b/arch/arm/boot/dts/da850-evm.dts
-@@ -415,7 +415,7 @@
- &aemif {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&nand_pins>;
--	status = "ok";
-+	status = "okay";
- 	cs3 {
- 		#address-cells = <2>;
- 		#size-cells = <1>;
+root@buildroot:~# dmesg | grep cpu_capacity
+[    2.191152] cpu_capacity: CPU0 cpu_capacity=38300 (raw).
+[    2.196482] cpu_capacity: CPU1 cpu_capacity=38300 (raw).
+[    2.201809] cpu_capacity: CPU2 cpu_capacity=38300 (raw).
+[    2.207136] cpu_capacity: CPU3 cpu_capacity=38300 (raw).
+[    2.212463] cpu_capacity: CPU4 cpu_capacity=102400 (raw).
+[    2.217877] cpu_capacity: CPU5 cpu_capacity=102400 (raw).
+[    2.223291] cpu_capacity: capacity_scale=102400
+[    2.227834] cpu_capacity: CPU0 cpu_capacity=383
+[    2.232376] cpu_capacity: CPU1 cpu_capacity=383
+[    2.236919] cpu_capacity: CPU2 cpu_capacity=383
+[    2.241462] cpu_capacity: CPU3 cpu_capacity=383
+[    2.246004] cpu_capacity: CPU4 cpu_capacity=1024
+[    2.250634] cpu_capacity: CPU5 cpu_capacity=1024
+[    2.255321] cpu_capacity: cpu_capacity initialization done
+
+root@buildroot:~# tail -n +1 /sys/devices/system/cpu/cpu*/cpu_capacity
+==> /sys/devices/system/cpu/cpu0/cpu_capacity <==
+383
+==> /sys/devices/system/cpu/cpu1/cpu_capacity <==
+383
+==> /sys/devices/system/cpu/cpu2/cpu_capacity <==
+383
+==> /sys/devices/system/cpu/cpu3/cpu_capacity <==
+383
+==> /sys/devices/system/cpu/cpu4/cpu_capacity <==
+1024
+==> /sys/devices/system/cpu/cpu5/cpu_capacity <==
+1024
+
+[1]
+https://lore.kernel.org/lkml/20210514095339.12979-1-ionela.voinescu@arm.com/
+
+Thanks,
+Ionela.
+
+Ionela Voinescu (3):
+  x86, ACPI: rename init_freq_invariance_cppc to
+    arch_init_invariance_cppc
+  arch_topology: obtain cpu capacity using information from CPPC
+  arm64, topology: enable use of init_cpu_capacity_cppc()
+
+ arch/arm64/include/asm/topology.h |  4 ++++
+ arch/x86/include/asm/topology.h   |  2 +-
+ drivers/acpi/cppc_acpi.c          |  6 ++---
+ drivers/base/arch_topology.c      | 37 +++++++++++++++++++++++++++++++
+ include/linux/arch_topology.h     |  4 ++++
+ 5 files changed, 49 insertions(+), 4 deletions(-)
+
 -- 
-2.17.1
+2.29.2.dirty
 
