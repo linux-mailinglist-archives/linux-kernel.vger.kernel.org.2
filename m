@@ -2,161 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E363F5956
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E999B3F5952
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234958AbhHXHrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:47:41 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:34900 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234705AbhHXHrj (ORCPT
+        id S234878AbhHXHqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:46:34 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33116
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234618AbhHXHqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:47:39 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210824074654epoutp04864a2fa8883db91a7ab427eaf67eebc3~eLnl-TZ243017630176epoutp04D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:46:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210824074654epoutp04864a2fa8883db91a7ab427eaf67eebc3~eLnl-TZ243017630176epoutp04D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629791214;
-        bh=tuxFvzdU1KPojEc11Y0mpRn20+di5IHcqdwp/lNK8j8=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=B9YDRisu8kZjHWxPeMq6Rl/Q87VaBmWlvfP01xFkVpnWHvLvL/2tdZySnpciFe4Jn
-         2GV2nUV3/Gjuq38YsxXzW40qMnohgAN6pYeOOlgokLh7LX6YIrpq131EwH9+8V3qe/
-         Uc9BSE8wKr58BsH6hIBbcth+yfw5I4z+Cmqzl03c=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210824074653epcas1p3b04ab06af77f483edfa9fdfe00a0195d~eLnlTk_bw2845228452epcas1p3M;
-        Tue, 24 Aug 2021 07:46:53 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.38.240]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4Gv1Qg6RY2z4x9Qh; Tue, 24 Aug
-        2021 07:46:51 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        04.07.10095.BE3A4216; Tue, 24 Aug 2021 16:46:51 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210824074651epcas1p3b6965040fa6a4660a31192f96125c374~eLnjG-FxE2840828408epcas1p3L;
-        Tue, 24 Aug 2021 07:46:51 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210824074651epsmtrp27f8cc0079d76e63291939ccaaaf371f6~eLnjF7gTu3158831588epsmtrp23;
-        Tue, 24 Aug 2021 07:46:51 +0000 (GMT)
-X-AuditID: b6c32a38-691ff7000000276f-17-6124a3eb332b
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A6.A7.08750.BE3A4216; Tue, 24 Aug 2021 16:46:51 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210824074651epsmtip2fc6cc2f39fa74824d58649f25d8b088c~eLni32Dkb1954019540epsmtip2n;
-        Tue, 24 Aug 2021 07:46:51 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        cw9316.lee@samsung.com, colyli@suse.de, axboe@kernel.dk,
-        ebiggers@google.com, pcc@google.com, porzio@gmail.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com
-Subject: [PATCH] mmc: queue: Match the data type of max_segments
-Date:   Tue, 24 Aug 2021 16:39:34 +0900
-Message-Id: <20210824073934.19727-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Tue, 24 Aug 2021 03:46:32 -0400
+X-Greylist: delayed 352 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Aug 2021 03:46:32 EDT
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7527D4075F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:39:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629790789;
+        bh=Zuyxk19zELEDrtZ5P5c0Ms+6wi23L0zn72ao5lHm2JE=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=s2RuUrw1t8LKgkxv/v054KXpyTrapFip5hH8Qx0E9Ir8xtqhCkOwsXIBGpKyMU2iE
+         Frk52A6tCkjqRK96OAgEYGlmcs5FwNqUu1Iv806vFnoMCO03rdvE5ljz6x8EApDaWb
+         NMi/gL9W5ZSd4nXO2KL68+Ih40TbLJbb0Pw8W62gq3b+3T5LqGunFSe0tq3evvu4Jx
+         j68ehQant5gzP0VHdvE2PTyY//pwbmdcdjcgmi0YtJI6d0fPgc0zyJ0kmAzmss3j1N
+         yCL+BXpkWFQvx1bEu6Ejssk4/QagO1wKjRu4wC93Qcl0O/jJU38R5NvXNssvc5Fhjr
+         uwyBWz2t1eaPg==
+Received: by mail-ed1-f72.google.com with SMTP id s25-20020a50d499000000b003c1a8573042so4389737edi.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:39:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zuyxk19zELEDrtZ5P5c0Ms+6wi23L0zn72ao5lHm2JE=;
+        b=I2ChSl8CSdOqnj2icg7sYP5wzR4C9aI9vhRfx5BpOldSzKfYUlfX2CQhh7ZYfXBwKn
+         uYBJdH1jLyJ1lo/nTprn9Fc255snL3mCGK7RPOSpCWk6f2IQiLARwU+EprxjvInh5G9h
+         kd9p6uoRWodxy8JRzybKdnJYAlpydPlRZ5iFLEPh6kL+GfSxPBdCn92Bha2iXJp0ukDH
+         YCzSfxBr01ZiWZWSzmkab/K2ou2wHiVeFl+zJtobftvoo54zG5i9v/VS+x4HkPnNjXNv
+         +riLS0ZI8PDKB1MObF4Zbnr2430Pmk55rVZ1b0rdrypE1hDRChTSeN9Xq8a27brAH4wf
+         rMOQ==
+X-Gm-Message-State: AOAM531Q4lnC+HA4NqrTJ45/8FR7AacBm2x3v/iSpGPnl4qr72Bd+Cjj
+        +cCpqV2CthE3SBeFkawjA5AwNkHT0KwaP7C/HU6My61EU+ykOg2VitmCMYekT58rzS1P8YfVZuc
+        209w8nt1sq77+rjgftDql8ywvj3yqB/R9lSgBRZvyeCjSsxxHBXyHrn+Npw==
+X-Received: by 2002:a17:906:6d9:: with SMTP id v25mr40563799ejb.192.1629790787675;
+        Tue, 24 Aug 2021 00:39:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfAMy5028gDLZFF3NX7qVJxB/Bfu0IQnN2gB92EDHCsxshcZq4TLviWQfhAzi0O6ddx0dG4313iHbhciyccj8=
+X-Received: by 2002:a17:906:6d9:: with SMTP id v25mr40563778ejb.192.1629790787402;
+ Tue, 24 Aug 2021 00:39:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUxTVxjO6W1vLyxtbotzZ9UB3tUfgNAW2u6iQFx02gR/dDGLxoThHdy0
-        BGjv+uHQJQsIaw0gaGajQ7o0wOQbk4rIp+NjKl9KAOcYK7Ctbmx1ErCgGUpYy4XNf8/znOd9
-        n/Oe82KIuAWVYFkGC20yUDkEGsptG4iKjX1SLaXky9/Gk0OPm1CycaYcJS8XjPHJK8M2Hnn7
-        0RCfHG8s4pGra9f5ZPv8KJ+c7KxEye/XywFZ7vkRJX3XxlHy7KvbXPJe87H9Qk1HxQxf43Jb
-        NdXdf3E0k/etGs+jblRT1toANDdGPtf43eFa7ER2kp6mMmlTJG3IMGZmGXTJROrR9APpKrVc
-        EatIJN8jIg1ULp1MHDyijT2UlRO4NBF5isqxBiQtZTYTspQkk9FqoSP1RrMlmaCZzBxGzcSZ
-        qVyz1aCLM9CWvQq5PF4VMJ7M1q83jwKmRZg34G3h5oPv3igGIRjElfDK73fRYhCKifF2AJ8O
-        LvFY8gzAb6bb+CzxAzi0/jfYKnH85OKyB50ArtQ4OSxZBnDd9wNSDDAMxaPhz3dTg/o2/BcA
-        G3or+cFqBM+EvtIFbhCH4fuh+9fZja5cfDf01F1DgliA74PNrQUImxYBX82VbuoiOPT1Yy7b
-        JwIW3ry66XFg0OYSBXMhfhBOlzKsHAZ991r5LJZA/0LPxpwQLwRw+OoDPkuKAHzycGrTlQCf
-        +f0g2AjBo+D1Thkr74IdL52AzRXChZVSHpslgOdsYtYihZXFD9CtrKUpL4/FGjjSM7ihi/E0
-        WNBv510AERWvTVPx2jQV/we7ANIAttOMOVdHmxWM8r9fzTDmusHG4kaT7cD5dDGuH3Aw0A8g
-        hhDbBGucdymxIJM6fYY2GdNN1hza3A9Ugfe9iEjezDAGNt9gSVcoE+VKdbySTEhMUBNvCYBv
-        JyXGdZSFzqZphjZt1XGwEEk+J/fLHWXPSXkPqX//wgfHq/bUhafcSqtdu3Sp+phk8rPf8Jsr
-        uy1J7bPnTo80krV2ma2kqeRlXsyR8zLtCXuLw7FjPj7+nfsjo/KmRLunoe/o27VRnkmP7vlJ
-        6A2bETr8UfU67krvolGUN0GsxuydG0zZyUSBPjCuBsjw4uE6baHoQ+yj2S84H0u7ylHvktDZ
-        MTWmvHNLdXbALftTdagp9VORqWqVCXkBx/JjbuwhkiKm67VCZ+jyH9I0yT9t+/I6zxStzX0i
-        P1/2VUzXZbV0F9rtmq/pffjCVnKq6k44tTZ2sW37RF9vR+oBdX3JRNyIvTK/QdaVVuMVupUM
-        PE5wzXpKEY2YzNS/Tdu60kEEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDLMWRmVeSWpSXmKPExsWy7bCSvO7rxSqJBi/+CVmcfLKGzWL13X42
-        i+mN59ktZpxqY7XYd+0ku8XF1S2sFr/+rme32PH8DLvF5V1z2CyO/O9ntOi/c53N4tWyi2wW
-        TX/2sVgcXxvuwOexc9Zddo8Fm0o9Fu95yeRx+Wypx51re9g8+rasYvTYfLra4/MmuQCOKC6b
-        lNSczLLUIn27BK6M/2vPMBas46s4/HgdSwPjfu4uRk4OCQETiak3F7B0MXJxCAnsYJTomH6Q
-        DSIhJbF7/3kgmwPIFpY4fLgYouYTo8SetQdZQeJsAloSt495g8RFBN4xSux4/5sJpJdZIEPi
-        28cTYLawgIPEpof3GEFsFgFViTsrljGD2LwC1hJrtzQyQ+ySl/hzvwcqLihxcuYTFog58hLN
-        W2czT2Dkm4UkNQtJagEj0ypGydSC4tz03GLDAqO81HK94sTc4tK8dL3k/NxNjOAI0NLawbhn
-        1Qe9Q4xMHIyHGCU4mJVEeP8yKScK8aYkVlalFuXHF5XmpBYfYpTmYFES573QdTJeSCA9sSQ1
-        OzW1ILUIJsvEwSnVwKS3LiyyKmrugceVtgr6G4Vz5CYaMUi+nnSoX0RCo3nxwz/L0sID0mdE
-        v7yaFf+b0dWg+8yN/a/PlfUXhmlt2cLivssuWS5t342Wf19jna5VtCr9Df932mPv1L3/jMTS
-        Nm70Vu2c/qMio0jIbNPvNtOdl4uKDPdKLBV4l8nMtOkb5/czMo+cUjUu3VcwFzu+VnrGoRWK
-        csmzRVLPfLzcN//VqqJPC6bOVnK0D3BY35CtoXS0bv/8/0zXy6q0o/aeS+OefMXGs5Rrrva9
-        TaWX103UsTsveOM8r5z5SSXF6JREpokR+10jf4sIz6/ZcnuGdPJx/jPaMlvf1D4z+PZw5ZPH
-        hQHvT2qLM9qGaHt+2qPEUpyRaKjFXFScCAClLP3C7wIAAA==
-X-CMS-MailID: 20210824074651epcas1p3b6965040fa6a4660a31192f96125c374
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210824074651epcas1p3b6965040fa6a4660a31192f96125c374
-References: <CGME20210824074651epcas1p3b6965040fa6a4660a31192f96125c374@epcas1p3.samsung.com>
+References: <9ebf8fa1-cbd4-75d6-1099-1a45ca8b8bb0@gmail.com> <20210820210309.GA3357515@bjorn-Precision-5520>
+In-Reply-To: <20210820210309.GA3357515@bjorn-Precision-5520>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue, 24 Aug 2021 15:39:35 +0800
+Message-ID: <CAAd53p5KH69NPMejM93STx3J+0WNBuXzaheWJJoURM39=DLvxg@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 1/3] r8169: Implement dynamic ASPM mechanism
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
+On Sat, Aug 21, 2021 at 5:03 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Thu, Aug 19, 2021 at 05:45:22PM +0200, Heiner Kallweit wrote:
+> > On 19.08.2021 13:42, Bjorn Helgaas wrote:
+> > > On Thu, Aug 19, 2021 at 01:45:40PM +0800, Kai-Heng Feng wrote:
+> > >> r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
+> > >> Same issue can be observed with older vendor drivers.
+> > >
+> > > On some platforms but not on others?  Maybe the PCIe topology is a
+> > > factor?  Do you have bug reports with data, e.g., "lspci -vv" output?
+> > >
+> > >> The issue is however solved by the latest vendor driver. There's a new
+> > >> mechanism, which disables r8169's internal ASPM when the NIC traffic has
+> > >> more than 10 packets, and vice versa.
+> > >
+> > > Presumably there's a time interval related to the 10 packets?  For
+> > > example, do you want to disable ASPM if 10 packets are received (or
+> > > sent?) in a certain amount of time?
+> > >
+> > >> The possible reason for this is
+> > >> likely because the buffer on the chip is too small for its ASPM exit
+> > >> latency.
+> > >
+> > > Maybe this means the chip advertises incorrect exit latencies?  If so,
+> > > maybe a quirk could override that?
+> > >
+> > >> Realtek confirmed that all their PCIe LAN NICs, r8106, r8168 and r8125
+> > >> use dynamic ASPM under Windows. So implement the same mechanism here to
+> > >> resolve the issue.
+> > >
+> > > What exactly is "dynamic ASPM"?
+> > >
+> > > I see Heiner's comment about this being intended only for a downstream
+> > > kernel.  But why?
+> > >
+> > We've seen various more or less obvious symptoms caused by the broken
+> > ASPM support on Realtek network chips. Unfortunately Realtek releases
+> > neither datasheets nor errata information.
+> > Last time we attempted to re-enable ASPM numerous problem reports came
+> > in. These Realtek chips are used on basically every consumer mainboard.
+> > The proposed workaround has potential side effects: In case of a
+> > congestion in the chip it may take up to a second until ASPM gets
+> > disabled, what may affect performance, especially in case of alternating
+> > traffic patterns. Also we can't expect support from Realtek.
+> > Having said that my decision was that it's too risky to re-enable ASPM
+> > in mainline even with this workaround in place. Kai-Heng weights the
+> > power saving higher and wants to take the risk in his downstream kernel.
+> > If there are no problems downstream after few months, then this
+> > workaround may make it to mainline.
+>
+> Since ASPM apparently works well on some platforms but not others, I'd
+> suspect some incorrect exit latencies.
 
-Each function has a different data type for max_segments,
-Modify to match unsigned short(host->max_segs).
-* unsigned short          max_segs;       /* see blk_queue_max_segments */
+Can be, but if their dynamic ASPM mechanism can workaround the issue,
+maybe their hardware is just designed that way?
 
-1) Return type : unsigned int
-static unsigned int mmc_get_max_segments(struct mmc_host *host)
-{
-       return host->can_dma_map_merge ? MMC_DMA_MAP_MERGE_SEGMENTS :
-                                         host->max_segs;
-}
+>
+> Ideally we'd have some launchpad/bugzilla links, and a better
+> understanding of the problem, and maybe a quirk that makes this work
+> on all platforms without mucking up the driver with ASPM tweaks.
 
-2) Parameter type : int
- mmc_alloc_sg(mmc_get_max_segments(host), gfp);
-   -> static struct scatterlist *mmc_alloc_sg(int sg_len, gfp_t gfp)
+The tweaks is OS-agnostic and is also implemented in Windows.
 
-3) Parameter type : unsigned short
- blk_queue_max_segments(mq->queue, mmc_get_max_segments(host));
-   -> void blk_queue_max_segments(struct request_queue *q,
-                                        unsigned short max_segments)
+>
+> But I'm a little out of turn here because the only direct impact to
+> the PCI core is the pcie_aspm_supported() interface.  It *looks* like
+> these patches don't actually touch the PCIe architected ASPM controls
+> in Link Control; all I see is mucking with Realtek-specific registers.
 
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
----
- drivers/mmc/core/queue.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+AFAICT, Realtek ethernet NIC and wireless NIC both have two layers of
+ASPM, one is the regular PCIe ASPM, and a Realtek specific internal
+ASPM.
+Both have to be enabled to really make ASPM work for them.
 
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index cc3261777637..48304bcf963c 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -163,7 +163,7 @@ static void mmc_mq_recovery_handler(struct work_struct *work)
- 	blk_mq_run_hw_queues(q, true);
- }
- 
--static struct scatterlist *mmc_alloc_sg(int sg_len, gfp_t gfp)
-+static struct scatterlist *mmc_alloc_sg(unsigned short sg_len, gfp_t gfp)
- {
- 	struct scatterlist *sg;
- 
-@@ -193,7 +193,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
- 		blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
- }
- 
--static unsigned int mmc_get_max_segments(struct mmc_host *host)
-+static unsigned short mmc_get_max_segments(struct mmc_host *host)
- {
- 	return host->can_dma_map_merge ? MMC_DMA_MAP_MERGE_SEGMENTS :
- 					 host->max_segs;
--- 
-2.29.0
+Kai-Heng
 
+>
+> I think this is more work than it should be and likely to be not as
+> reliable as it should be.  But I guess that's up to you guys.
+>
+> Bjorn
