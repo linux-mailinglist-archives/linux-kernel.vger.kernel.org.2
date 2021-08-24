@@ -2,145 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E79B3F6148
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7DA3F614B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238163AbhHXPHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
+        id S238205AbhHXPIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238142AbhHXPHt (ORCPT
+        with ESMTP id S238080AbhHXPIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:07:49 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF8DC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:07:05 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id s25so19505041edw.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:07:05 -0700 (PDT)
+        Tue, 24 Aug 2021 11:08:35 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4F7C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:07:51 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so1994887pjw.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:07:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+hULPFAkyAPdS/vngzljMkYnL+FEm5rIj4ZI5jqPlpo=;
-        b=EQMJ6qdHjnSDnKUPsqFMI4lpIr9Q9caVjs/72KugI9xSH+BHi/jHdSbMCsgPIBrEel
-         TCAtD6YIH6ZvJ33I5Ni2ctlyYq3AxXcBvO/XjBRQk9sTwK+RfM2BIJkSkyYm/9tMY7lW
-         kreBho9k+nyZjW64sCqq6IVidV3QuSTFjuotJrC+6KykAsQQpGw+ThHRQXrYgOarCstK
-         r/ZF8WnylnD2H7sZGLSAOYFu/Kankea2T8qNGRoboy2ZAww3ALoN8nHH7RE+7d4qV4h8
-         BkFXKj6xGDM+kIabXDEgUxZT2XzC6b182ilrNMzhmfpMIsEvFVKpHWpB4SUS4vNWgt0v
-         FUmQ==
+        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=CrvJVyQNbZShLMemqxYoBqBYQ2Gzkms2NEqpFCTxgFg=;
+        b=GG4p17qQULEkXmJuULN17D8CN5s5hbWcjAhzTs+yEw4sfqEOoxK69v/ddJeJFi9F8l
+         nRr3VMWv1O0I/shDr6IAwuZRtAgcbJLsXH8qf7uzcFE8LHl5FJdyOh+SwWYNYvgaEG7j
+         j+0UhS8FdDrf18ODv46GBM8Ar3oaL/LsDUZkl4i7XXAUt+kPpX+e5D5+Cs5zKaKUgrGU
+         LZ243AZhx8QhYfqM1+gi3U1VdcQo6LDT9n1mEjFJsv16BtbKE/FOpqdexMj7RwT6gFN7
+         WaGKuAtV33XawCfgRyynhAqjmRJOblIB+jhuxJsBJDuqie7+igJzw/leNshOIvgiJfZi
+         HaCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+hULPFAkyAPdS/vngzljMkYnL+FEm5rIj4ZI5jqPlpo=;
-        b=geOWWlHc7W+OszkW2NWNORg04HUu2e2nrkdibD6SZhHMM2az9jKFO3nLO2kD9w0gZT
-         XRvAOOwhJXugS/8+cTjmQxEyU5WyXyOipgc3YiFJu8DmxKa+ru/wUqwwd6o22fJqIybc
-         GxOa4MxzbWEEIKrl6uO4DYiY4j/hUDkpNG3JVWrahOvV6yMCJDT6n/vUFR3MGvcJ5A5G
-         idhePhFptx0aOo903ea31oEKuynmouJE+QC0pKBtdZkQK4aBLvaKGFj2zNIPqy4nhUAn
-         lv5j5+6GcdaOvhGRDE6KCyLsWxsJVQMNJulqIls/D6dStBoyOd9Ug1WLHmGEaKHNNalL
-         vs/A==
-X-Gm-Message-State: AOAM532D1e/pprm68G+lyuCBMLclLx/zz8oC+/EhmV588OTztmsZkOMV
-        ttnZMQQiy7zMbMJru5zI2Cs=
-X-Google-Smtp-Source: ABdhPJyumdBm7YK5jEmH4azn80w0E4VFSOF6bI5Lr3EDch3FLSi1/EZ8WpwYJMRTTUvcNcJKuDLZTQ==
-X-Received: by 2002:a05:6402:8ce:: with SMTP id d14mr43765546edz.228.1629817624076;
-        Tue, 24 Aug 2021 08:07:04 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id n23sm11971876eds.41.2021.08.24.08.07.02
+         :references;
+        bh=CrvJVyQNbZShLMemqxYoBqBYQ2Gzkms2NEqpFCTxgFg=;
+        b=LvKiiJk3q3kIytEaTM7MZkqeilmk4YEhkzbpZpzc7+rbmLkdZNx55yJrsueZwvypgV
+         I8lhlHZDGRpGvaZ/D6WmurxAsiT24GCyMVAWHiDi5u4/D5KkSYFWjDS8PofLexniL59v
+         IyThfluLhdNuElEYBqPZbjs1QTtUVd++rlQ6CH7EZK1HQr7xL3c5X5p43MfgLm0hbFKI
+         mHdHUzGvioDxY/j89ukrz1LhBraWTkpu+/6/oU2yq5+qHC8RSBoPAF0c2nLVnnZ20cua
+         6FCywTGB0YIVweT84r7S5Uy4IEq91VxhHbzONm3GOYoZ6kMpiUs41liA7RO2sT3DY5Dp
+         gAHA==
+X-Gm-Message-State: AOAM532hNpqU+5Our4R/ptsv9eg4J7436oFSjWKkcSz4izt6nbWVHEpy
+        oRi2NXhD4Ze7uj9plpUJg++6
+X-Google-Smtp-Source: ABdhPJzlUc2kfz5lNrVZPHUeOBMRtjZxhr1snXZ66Z5Oy/f4K6sIuxQmhHNRYkNeqRJMPY/QF1SD5w==
+X-Received: by 2002:a17:902:c40e:b029:12c:cbce:2d18 with SMTP id k14-20020a170902c40eb029012ccbce2d18mr33623315plk.60.1629817670545;
+        Tue, 24 Aug 2021 08:07:50 -0700 (PDT)
+Received: from localhost.localdomain ([175.157.61.62])
+        by smtp.gmail.com with ESMTPSA id y12sm23800336pgk.7.2021.08.24.08.07.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 08:07:03 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 5/6] staging: r8188eu: add error handling of rtw_read32
-Date:   Tue, 24 Aug 2021 17:07:02 +0200
-Message-ID: <1655559.bbUi69aIZD@localhost.localdomain>
-In-Reply-To: <e50d266f-410c-34cb-e28f-f27dc429ef37@gmail.com>
-References: <cover.1629642658.git.paskripkin@gmail.com> <20210824065825.GL1931@kadam> <e50d266f-410c-34cb-e28f-f27dc429ef37@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+        Tue, 24 Aug 2021 08:07:50 -0700 (PDT)
+From:   "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com
+Cc:     "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paskripkin@gmail.com
+Subject: [PATCH v3] HID: betop: fix slab-out-of-bounds Write in betop_probe
+Date:   Tue, 24 Aug 2021 20:37:30 +0530
+Message-Id: <20210824150730.9118-1-asha.16@itfac.mrt.ac.lk>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210816201544.26405-1-asha.16@itfac.mrt.ac.lk>
+References: <20210816201544.26405-1-asha.16@itfac.mrt.ac.lk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 24, 2021 9:01:23 AM CEST Pavel Skripkin wrote:
-> On 8/24/21 9:58 AM, Dan Carpenter wrote:
-> > On Sun, Aug 22, 2021 at 05:36:01PM +0300, Pavel Skripkin wrote:
-> >> -static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
-> >> +static int usb_read32(struct intf_hdl *pintfhdl, u32 addr, u32 *data)
-> >>  {
-> >>  	u8 requesttype;
-> >>  	u16 wvalue;
-> >>  	u16 len;
-> >> -	__le32 data;
-> >> +	int res;
-> >> +	__le32 tmp;
-> >> +
-> >> +	if (WARN_ON(unlikely(!data)))
-> >> +		return -EINVAL;
-> >>  
-> >>  	requesttype = 0x01;/* read_in */
-> >>  
-> >>  	wvalue = (u16)(addr & 0x0000ffff);
-> >>  	len = 4;
-> >>  
-> >> -	usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
-> >> +	res = usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
-> >> +	if (res < 0) {
-> >> +		dev_err(dvobj_to_dev(pintfhdl->pintf_dev), "Failed to read 32 bytes: %d\n", res);
-> > 
-> > Add a return here.  Try to keep the success path and the failure path
-> > as separate as possible.  Try to keep the success path indented at one
-> > tab so the code looks like this:
-> > 
-> > 	success();
-> > 	success();
-> > 	if (fail)
-> > 		handle_failure();
-> > 	success();
-> > 	success();
-> > 
-> > Try to deal with exceptions as quickly as possible so that the reader
-> > has less to remember.
-> > 
-> >> +	} else {
-> >> +		/* Noone cares about positive return value */
-> > 
-> > Ugh...  That's unfortunate.  We should actually care.  The
-> > usbctrl_vendorreq() has an information leak where it copies len (4)
-> > bytes of data even if usb_control_msg() is not able to read len bytes.
-> > 
-> > The best fix would be to remove the information leak and make
-> > usbctrl_vendorreq() return zero on success.  In other words something
-> > like:
-> > 
-> > 	status = usb_control_msg();
-> > 	if (status < 0)
-> > 		return status;
-> > 	if (status != len)
-> > 		return -EIO;
-> > 	status = 0;
-> > 
-> 
-> I see, thank you for reviewing, will fix in v3! I fully forgot, that 
-> usb_control_msg() can receive only part of the message :)
+Syzbot reported slab-out-of-bounds Write bug in hid-betopff driver.
+The problem is the driver assumes the device must have an input report but
+some malicious devices violate this assumption.
 
-With the use of the new API I think that you don't have anymore
-partial messages. usb_control_msg() returns the number of bytes 
-transferred, while usb_control_msg_recv/send return only 0 if successful
-otherwise a negative error number.
+So this patch checks hid_device's input is non empty before it's been used.
 
-Regards,
+Reported-by: syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com
+Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
+---
+ drivers/hid/hid-betopff.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-Fabio
-
-> With regards,
-> Pavel Skripkin
-> 
-
-
-
+diff --git a/drivers/hid/hid-betopff.c b/drivers/hid/hid-betopff.c
+index 0790fbd3fc9a..467d789f9bc2 100644
+--- a/drivers/hid/hid-betopff.c
++++ b/drivers/hid/hid-betopff.c
+@@ -56,15 +56,22 @@ static int betopff_init(struct hid_device *hid)
+ {
+ 	struct betopff_device *betopff;
+ 	struct hid_report *report;
+-	struct hid_input *hidinput =
+-			list_first_entry(&hid->inputs, struct hid_input, list);
++	struct hid_input *hidinput;
+ 	struct list_head *report_list =
+ 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
+-	struct input_dev *dev = hidinput->input;
++	struct input_dev *dev;
+ 	int field_count = 0;
+ 	int error;
+ 	int i, j;
+ 
++	if (list_empty(&hid->inputs)) {
++		hid_err(hid, "no inputs found\n");
++		return -ENODEV;
++	}
++
++	hidinput = list_first_entry(&hid->inputs, struct hid_input, list);
++	dev = hidinput->input;
++
+ 	if (list_empty(report_list)) {
+ 		hid_err(hid, "no output reports found\n");
+ 		return -ENODEV;
+-- 
+2.17.1
 
