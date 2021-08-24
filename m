@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9613F6B02
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542DC3F6B4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbhHXVdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 17:33:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58167 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231474AbhHXVc7 (ORCPT
+        id S235603AbhHXVmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 17:42:19 -0400
+Received: from scorn.kernelslacker.org ([45.56.101.199]:43442 "EHLO
+        scorn.kernelslacker.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235505AbhHXVmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 17:32:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629840734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1bBKQxF9AzQlxTWDTeQSqBxRnoYnXGYVxoI8bGH2M7Q=;
-        b=MBqdOr89AEJD+meJLzM+kQzU+S6/q8tDYnZe4v5m9aBOrYnW8kU/TFgN9WV95iTgmIF6dF
-        q2cDM9eL91QMZJfD6tp0Nf0Vt6y9WRK5hxcNKpHSTrIwmfspO+0wvZAfqjoxygPhfGJqGP
-        puxxgd3QXAyjOTcuP3RWkM0q6ETCa2A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-kETizTevP-u1-NfG0NVGLA-1; Tue, 24 Aug 2021 17:32:12 -0400
-X-MC-Unique: kETizTevP-u1-NfG0NVGLA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF71D1082922;
-        Tue, 24 Aug 2021 21:32:10 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0788E5D9C6;
-        Tue, 24 Aug 2021 21:32:04 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YSVQOgrPhwGcUSp4@mit.edu>
-References: <YSVQOgrPhwGcUSp4@mit.edu> <YSVH6k5plj9lrTFe@mit.edu> <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com> <YSPwmNNuuQhXNToQ@casper.infradead.org> <YSQSkSOWtJCE4g8p@cmpxchg.org> <1957060.1629820467@warthog.procyon.org.uk> <YSUy2WwO9cuokkW0@casper.infradead.org> <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com> <CAHk-=wgRdqtpsbHkKeqpRWUsuJwsfewCL4SZN2udXVgExFZOWw@mail.gmail.com> <1967090.1629833687@warthog.procyon.org.uk>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     dhowells@redhat.com,
+        Tue, 24 Aug 2021 17:42:12 -0400
+X-Greylist: delayed 66273 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Aug 2021 17:42:12 EDT
+Received: from [2601:196:4600:6634:ae9e:17ff:feb7:72ca] (helo=wopr.kernelslacker.org)
+        by scorn.kernelslacker.org with esmtp (Exim 4.92)
+        (envelope-from <davej@codemonkey.org.uk>)
+        id 1mIe3R-0001GT-2b; Tue, 24 Aug 2021 17:33:57 -0400
+Received: by wopr.kernelslacker.org (Postfix, from userid 1026)
+        id AF50556006F; Tue, 24 Aug 2021 17:33:42 -0400 (EDT)
+Date:   Tue, 24 Aug 2021 17:33:42 -0400
+From:   Dave Jones <davej@codemonkey.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: 5.14-rc breaks iotop swap io monitoring.
+Message-ID: <20210824213342.GA1708@codemonkey.org.uk>
+Mail-Followup-To: Dave Jones <davej@codemonkey.org.uk>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+References: <20210824031648.GA2725@codemonkey.org.uk>
+ <YSSuVO47ieWDfWMQ@hirez.programming.kicks-ass.net>
+ <20210824151943.GA386@codemonkey.org.uk>
+ <CAHk-=wiRe=JBK85HG7xtXH1XbOWcO1KYW8csuWfLuFoHKTqF0w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1974379.1629840723.1@warthog.procyon.org.uk>
-Date:   Tue, 24 Aug 2021 22:32:03 +0100
-Message-ID: <1974380.1629840723@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiRe=JBK85HG7xtXH1XbOWcO1KYW8csuWfLuFoHKTqF0w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Note: SpamAssassin invocation failed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Theodore Ts'o <tytso@mit.edu> wrote:
+On Tue, Aug 24, 2021 at 09:34:02AM -0700, Linus Torvalds wrote:
+ > On Tue, Aug 24, 2021 at 8:19 AM Dave Jones <davej@codemonkey.org.uk> wrote:
+ > >
+ > > On Tue, Aug 24, 2021 at 10:31:16AM +0200, Peter Zijlstra wrote:
+ > >  >
+ > >  > If you need DELAYACCT I'm thinking:
+ > >  >
+ > >  >   e4042ad49235 ("delayacct: Default disabled")
+ > >  >
+ > >  > and
+ > >  >
+ > >  >   0cd7c741f01d ("delayacct: Add sysctl to enable at runtime")
+ > >
+ > > That does sound more relevant. however, even after echo 1  > /proc/sys/kernel/task_delayacct,
+ > > it still fails in the same way.
+ > 
+ > Hmm.
+ > 
+ > What happens if you boot with the 'delayacct' kernel parameter.
+ > 
+ > Even if you enable it at run-time, processes that have been started
+ > before it was enabled won't actually have the 'tsk->delays'
+ > allocation. So I'm not sure how effective the run-time thing is.
 
-> What do you think of "struct pageset"?  Not quite as short as folios,
-> but it's clearer.
+Yeah that boot option does make iotop work again.
 
-Fine by me (I suggested page_set), and as Vlastimil points out, the current
-usage of the name could be renamed.
-
-David
+	Dave
 
