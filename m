@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2493F5D9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC893F5D97
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236921AbhHXMEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 08:04:53 -0400
-Received: from smtpbg587.qq.com ([113.96.223.105]:50970 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234787AbhHXMEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 08:04:51 -0400
-X-QQ-mid: bizesmtp54t1629806534tjskznfw
-Received: from localhost.localdomain (unknown [171.223.97.141])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 24 Aug 2021 20:02:13 +0800 (CST)
-X-QQ-SSF: 01000000000000B0D000000A0000000
-X-QQ-FEAT: X7NOTpAiNV9y2mUVjnG8y0XYRtp6ebttZyUfiBBe3EQj5Fcr2bdcWJe1rLBUf
-        QmjOFhF9IG6VcW25vClp/mRXX3siqUCjxGywC/sT22vcuV9RkmX6G62J+RVEfvPx1N2yFlZ
-        0eYpSp1OkmvI5LaA/f2HW1IbQFtAnuGQqRdbI8zMjh3RBOln9HpGxJq8j+1favQJDpKEs11
-        f04qLunsOUBulhMAEc904aTgefcFsZgdbjRLsJ+ahvAElxsnAat7vUXjTB7YzX1Zs6bwwXK
-        Dnba+Rzr7gMHCWXlf/rvT1aN9zmvfYmlwx3sLhEwbwuMYABm3/Sr5GB7F/mMQodBZqmoDSy
-        zR6dq2c
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     paul@pwsan.com
-Cc:     bcousson@baylibre.com, tony@atomide.com, linux@armlinux.org.uk,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] ARM: OMAP2+: Fix typo in some comments
-Date:   Tue, 24 Aug 2021 20:01:23 +0800
-Message-Id: <20210824120123.10899-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S236858AbhHXME3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 08:04:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51062 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234787AbhHXME3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 08:04:29 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5094E1FD86;
+        Tue, 24 Aug 2021 12:03:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629806624; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjVOBoLYlFPkCxcpIhB874TqF4XIjaBYDgr606Kwa/g=;
+        b=1mCuHwC5K0rttzaTTUmKsPM8PzpmWeo/byJ6svKok6ftncys7yfV3cq8MrEtDUVF+Sm/f9
+        dy7nHMgSBgVdOC1kEHO1KKG+wZFXO87XSLUG5bz1znkn7akVdwkBsG/FifgV7tOsWhhP2O
+        XXpwYcg1cO0YJ+4YqqJ96IjsJTYnmP8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629806624;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjVOBoLYlFPkCxcpIhB874TqF4XIjaBYDgr606Kwa/g=;
+        b=JXnX0OV1euN57lhYhpOJ/kHnYSSew9bUF9nl2Xeh4WVaaV+QE5rtPhjsIC8gppNt/XH/HN
+        ETq8FQpwgSRXdzCA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3811D13A50;
+        Tue, 24 Aug 2021 12:03:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id B37+DCDgJGGkIgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Tue, 24 Aug 2021 12:03:44 +0000
+Message-ID: <0c438e9d-7879-a1c1-7641-5c0dc00f5163@suse.cz>
+Date:   Tue, 24 Aug 2021 14:03:43 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Content-Language: en-US
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+References: <20210819195533.211756-1-hannes@cmpxchg.org>
+ <20210819195533.211756-2-hannes@cmpxchg.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 2/4] mm: Kconfig: group swap, slab, hotplug and thp
+ options into submenus
+In-Reply-To: <20210819195533.211756-2-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The double `the' in comment "get a struct clk * for the the hwmod's ..."
-is repeated. Therefore, we should remove one of them from the comments.
+On 8/19/21 21:55, Johannes Weiner wrote:
+> There are several clusters of related config options spread throughout
+> the mostly flat MM submenu. Group them together and put specialization
+> options into further subdirectories to make the MM section a bit more
+> organized and easier to navigate.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/arm/mach-omap2/omap_hwmod.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-diff --git a/arch/arm/mach-omap2/omap_hwmod.c b/arch/arm/mach-omap2/omap_hwmod.c
-index 12b26e04686f..a78ef7e7ce23 100644
---- a/arch/arm/mach-omap2/omap_hwmod.c
-+++ b/arch/arm/mach-omap2/omap_hwmod.c
-@@ -812,7 +812,7 @@ static struct clk *_lookup_clkctrl_clk(struct omap_hwmod *oh)
- }
- 
- /**
-- * _init_main_clk - get a struct clk * for the the hwmod's main functional clk
-+ * _init_main_clk - get a struct clk * for the hwmod's main functional clk
-  * @oh: struct omap_hwmod *
-  *
-  * Called from _init_clocks().  Populates the @oh _clk (main
-@@ -862,7 +862,7 @@ static int _init_main_clk(struct omap_hwmod *oh)
- }
- 
- /**
-- * _init_interface_clks - get a struct clk * for the the hwmod's interface clks
-+ * _init_interface_clks - get a struct clk * for the hwmod's interface clks
-  * @oh: struct omap_hwmod *
-  *
-  * Called from _init_clocks().  Populates the @oh OCP slave interface
-@@ -901,7 +901,7 @@ static int _init_interface_clks(struct omap_hwmod *oh)
- }
- 
- /**
-- * _init_opt_clk - get a struct clk * for the the hwmod's optional clocks
-+ * _init_opt_clk - get a struct clk * for the hwmod's optional clocks
-  * @oh: struct omap_hwmod *
-  *
-  * Called from _init_clocks().  Populates the @oh omap_hwmod_opt_clk
--- 
-2.32.0
+Note:
 
+> -config ZBUD
+> -	tristate "Low (Up to 2x) density storage for compressed pages"
+> -	help
+> -	  A special purpose allocator for storing compressed pages.
+> -	  It is designed to store up to two compressed pages per physical
+> -	  page.  While this design limits storage density, it has simple and
+> -	  deterministic reclaim properties that make it preferable to a higher
+> -	  density approach when reclaim will be used.
+> -
+
+The whole large hunk with deletion part of the block move will be rejected in
+current trees because this is apparently based on older commit than 2a03085ce887
+("mm/zbud: don't export any zbud API") which adds a "depends on ZPOOL" to the
+above. It's thus also missing in the add hunk part of the move and if not
+careful when resolving the reject, the depend will then be missing in the result.
