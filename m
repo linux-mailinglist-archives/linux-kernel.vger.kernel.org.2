@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FDC3F58A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292333F58A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbhHXHDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57392 "EHLO
+        id S234705AbhHXHDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234664AbhHXHDP (ORCPT
+        with ESMTP id S233356AbhHXHDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:03:15 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34837C061760;
-        Tue, 24 Aug 2021 00:02:31 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id fz10so2199917pjb.0;
-        Tue, 24 Aug 2021 00:02:31 -0700 (PDT)
+        Tue, 24 Aug 2021 03:03:31 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A15C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:02:47 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id j9so11142535qvt.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:02:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oBX4YIAIW1Lbo+DKwuinsj3XFa4b7I197fWtFrroOkw=;
-        b=Iz1l+BKZmk6rvR1qvQTI85Ev1PiVlrZf1SE+mkwOi1sUT8BNYOib3RU2srJLPcwBdn
-         14+j4oKjZB09b6avirzYaM9tnM2QgDj3vBgry2ie9GVFkxLpOplcXXbplnkb0AUvGOvk
-         N1RR8+rfdTHnoGBMjcwiVGyGxPKfuRTUZRQ2gfHfeD9R9FcjWH+ozhWF14b8yaZimM/n
-         omSRz6CJFSaBs0XHj6t1Z6gCDuS5kjS9Osg1jNUCm+CskQFCydCofbhySdOvAPP4Rf4j
-         aOGum/iDWCLy5zxfqPc0GPf6LVcN1UE6ZVXsxRv9OBNWPRmn32Zt4xnF0p8o0wcqkOFu
-         8T8Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VOYqUiVV8G1nXoB/NzcuImO3HYZj7BWdsfpUjBJU75w=;
+        b=ZUDcTCzFni000bcq7ZPRPXupo2KV1fXLb+LvqVtNdba1vj6WhCpuYl+9gojB/MANK8
+         arehkZFpUbj4/m4EPLBllxlVZKjkqwB9e8XUPE558a1PTsC+0A1zcuvduRLctr/6wgnd
+         QdHAkJY5rvuqgPsmAEyX+2Od6bUbdjNfyA/dL//wW+AEOicfeXf5m9dtKDcRFxRmWGjT
+         ikgMt5i/KD/nw2obxtbEF5Qtuu/GNo81Eoday0AWlq9M5YlZqs7kPfWdaFhXYdz7o+gq
+         hRmfJF7OTxgTjqpwapAR8Pp1r6eKhoneclQyl5IKuspyVoRX8fezk2J+mbcLCbEWeL8r
+         OwgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oBX4YIAIW1Lbo+DKwuinsj3XFa4b7I197fWtFrroOkw=;
-        b=htj97ijesXGiK8z/hz/JR6dq5hBiW5er5Quvb34hu0fmVoYdB8SyHYlEqvmWdmrF6o
-         bEzK0FYhzzbFEaxHTAcEJoQzFhgYCbPDICcBqhGD09lnh2t043i7i04GkFZFMcxj4pCV
-         0sorE4RM9Jk+bNbXiN6YvSDkkpxY0WIleJJ6c4BqeDN5bNWCdG4UfW2WOEB3tUG5WqxA
-         ZpoNIBG+Irr0LhIJnXmSTDkNz1p7DpVAg/r7a1IHqfEuo2ooGIterD0O2nO42UGDW4IF
-         74uUzrep8JE9E6AyFLNi/8oIqrXXBJNkLQxmZYJPP1sfaSXngE3seeRwL3oyoFfVaKEe
-         pnwA==
-X-Gm-Message-State: AOAM531cT5f+mC+Vo8w8WBV259eypqH4LktBpltUeNFPkcPDGD3bC5YQ
-        V/dJ3VTq24jIYvY5nZn2dU8=
-X-Google-Smtp-Source: ABdhPJwjl2rOeOrASOTBv/k9TzyFpyQfE0/4jDUWDQXS1mVDn1bFA8mRNVVhpWP8U2vixbNKhL+R+g==
-X-Received: by 2002:a17:90b:3608:: with SMTP id ml8mr2921425pjb.22.1629788550803;
-        Tue, 24 Aug 2021 00:02:30 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id b17sm20365340pgl.61.2021.08.24.00.02.27
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VOYqUiVV8G1nXoB/NzcuImO3HYZj7BWdsfpUjBJU75w=;
+        b=O3ZNlyuBPXj0lt5DsV/gAGPzWMUsWyNRmalY3Dn0p99HbhGXM0pVEuW/+TShPlth8q
+         5abqNVtEzZiKAsOAofzqKali8GDi6x0R92sbhFFhJQWOZ96og3qFy3LkWUzvCFxlH9dl
+         thXiN6UStTLho8g9Ivg9rhalE0lnSvmjB9vOVVtCsXWt2Z0V8Ct/PLiZ6lQunvm+dXso
+         enOBRYxE9HZkNB5PsvcQaTyOgxioEJMsPNE1T4QA5WDotpnWlSTtOiwDLTSa0T6Vu2wr
+         VOWhZtmCR/bwyJyTAdKGjaeQZ33NKuYcK698HTsZB/a2uLMYectwjKmgALH1AFAh75CI
+         rqfg==
+X-Gm-Message-State: AOAM533vaLxUUXYBjZVhkctm2bYGXen5Wfvvt5+7lzDvTCBXpjFPR/Ze
+        TGf34Xuh7DhWHv26sbCaDfQ=
+X-Google-Smtp-Source: ABdhPJw15AWZs7+S3sxYuHphXSQ5Jfi4UzlD9Q+3PP9JuqPZH/+bEI+9rLFL4p+JHYlNbbNaLhEmFw==
+X-Received: by 2002:a05:6214:194b:: with SMTP id q11mr37610942qvk.33.1629788567217;
+        Tue, 24 Aug 2021 00:02:47 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id x23sm7975878qkn.29.2021.08.24.00.02.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 00:02:30 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Luting Guo <luting.guo@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] spi: sprd: fill offset only to RD_CMD register for reading from slave device
-Date:   Tue, 24 Aug 2021 15:02:12 +0800
-Message-Id: <20210824070212.2089255-3-zhang.lyra@gmail.com>
+        Tue, 24 Aug 2021 00:02:46 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] x86:irq_remapping: fix boolreturn.cocci warnings
+Date:   Tue, 24 Aug 2021 00:02:38 -0700
+Message-Id: <20210824070238.60940-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210824070212.2089255-1-zhang.lyra@gmail.com>
-References: <20210824070212.2089255-1-zhang.lyra@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-RD_CMD can accept slave address offset only, higher bits are reserved.
-Writing the whole slave address including slave base seems unnecessary.
+./arch/x86/include/asm/irq_remapping.h:59:70-71:WARNING:return of 0/1
+in function 'irq_remapping_cap' with return type bool
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Return statements in functions returning bool should use true/false
+instead of 1/0.
+
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- drivers/spi/spi-sprd-adi.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/irq_remapping.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-sprd-adi.c b/drivers/spi/spi-sprd-adi.c
-index 06af519c0b21..07f11b17bf20 100644
---- a/drivers/spi/spi-sprd-adi.c
-+++ b/drivers/spi/spi-sprd-adi.c
-@@ -159,7 +159,7 @@ static int sprd_adi_read(struct sprd_adi *sadi, u32 reg, u32 *read_val)
- {
- 	int read_timeout = ADI_READ_TIMEOUT;
- 	unsigned long flags;
--	u32 val, rd_addr, paddr;
-+	u32 val, rd_addr;
- 	int ret = 0;
+diff --git a/arch/x86/include/asm/irq_remapping.h b/arch/x86/include/asm/irq_remapping.h
+index 7cc4943..2b0d2b7 100644
+--- a/arch/x86/include/asm/irq_remapping.h
++++ b/arch/x86/include/asm/irq_remapping.h
+@@ -56,7 +56,7 @@ static inline struct irq_domain *arch_get_ir_parent_domain(void)
  
- 	if (sadi->hwlock) {
-@@ -177,11 +177,10 @@ static int sprd_adi_read(struct sprd_adi *sadi, u32 reg, u32 *read_val)
- 		goto out;
+ #else  /* CONFIG_IRQ_REMAP */
  
- 	/*
--	 * Set the physical register address need to read into RD_CMD register,
-+	 * Set the slave address offset need to read into RD_CMD register,
- 	 * then ADI controller will start to transfer automatically.
- 	 */
--	paddr = sadi->slave_pbase + reg;
--	writel_relaxed(paddr, sadi->base + REG_ADI_RD_CMD);
-+	writel_relaxed(reg, sadi->base + REG_ADI_RD_CMD);
- 
- 	/*
- 	 * Wait read operation complete, the BIT_RD_CMD_BUSY will be set
-@@ -211,9 +210,9 @@ static int sprd_adi_read(struct sprd_adi *sadi, u32 reg, u32 *read_val)
- 	 */
- 	rd_addr = (val & RD_ADDR_MASK) >> RD_ADDR_SHIFT;
- 
--	if (rd_addr != (paddr & REG_ADDR_LOW_MASK)) {
-+	if (rd_addr != (reg & REG_ADDR_LOW_MASK)) {
- 		dev_err(sadi->dev, "read error, reg addr = 0x%x, val = 0x%x\n",
--			paddr, val);
-+			reg, val);
- 		ret = -EIO;
- 		goto out;
- 	}
+-static inline bool irq_remapping_cap(enum irq_remap_cap cap) { return 0; }
++static inline bool irq_remapping_cap(enum irq_remap_cap cap) { return false; }
+ static inline void set_irq_remapping_broken(void) { }
+ static inline int irq_remapping_prepare(void) { return -ENODEV; }
+ static inline int irq_remapping_enable(void) { return -ENODEV; }
 -- 
-2.25.1
+1.8.3.1
+
 
