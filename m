@@ -2,258 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E399E3F69CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5403F69D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234738AbhHXT0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:26:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234096AbhHXT0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:26:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0582A60ED6;
-        Tue, 24 Aug 2021 19:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629833157;
-        bh=HbEZS6OQhEM/2DYcwn87oZ+DrBDVAvOQQjpH05sCT08=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ZqDq+xjV2GnGMcXhyFxlbz+gxaLdttMj3boW7RC3lBeTCClieSP6WbvUaJ8DiDcab
-         qijUTUFIyKbgK8exIr46fDH+MaAi5bBa4FW4ENDzfQCRO3Qeg9nAmncCxFgt3hk45P
-         Q1f13WNguhkGUvN1huqTrGAAwmLwHsdUICAHvMGL3QUNpZj514LIY+w4iWZEIM6a+H
-         hjIXNG8ptQb6jZJ2RBZEWwXSM2vuihHtlIR/nVv18kvdYwHPoZXN8iIAUeJBlzMLvq
-         UfPMPSkgcqQ14L11LM3iQydEmGX5KbR95OHieWG2VAnMmIfRo0T42+A076RyTE6iP9
-         oDKRPxT52mtJA==
-Date:   Tue, 24 Aug 2021 14:25:55 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, Jonathan.Cameron@huawei.com,
-        bilbao@vt.edu, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Linuxarm <linuxarm@huawei.com>,
-        luzmaximilian@gmail.com, mchehab+huawei@kernel.org,
-        schnelle@linux.ibm.com, Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 1/2] PCI/MSI: Fix the confusing IRQ sysfs ABI for MSI-X
-Message-ID: <20210824192555.GA3487590@bjorn-Precision-5520>
+        id S234659AbhHXT1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhHXT1h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 15:27:37 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EDFC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:26:53 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id q70so26949515ybg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o+GXjuExgpFLiKz+SfOVZmH6xXRDHlIzQs7oNHYjApw=;
+        b=IYfQpUGnmEamH9o3fxGYMlQFCTUXD9+IdarnH7ONXXIl+GRVZbx6/dwRy+Rw2EV4mn
+         zoz2yvLqEMjjbIGPArd45GMLDbEl7aqSA11Faef2TFOjNzOUzzfd9bNj5PxkXiuvF7D5
+         38Vm++eSlhwjsdkN2v5zqSX6YaZnX0TaNuSapj5zNSPTCPqTN3cSOEQX2sju7bmdJYUc
+         ghucLhBNnsSVSBnZY65lam1k31TlhL5hdujdDktjLGlt05TXmnv/B86JAEzAUU5mpqGM
+         yK8CYEPY/jFXcWTHPfx3NEK9oQgywbPPYmqDVghLXkvT5khxEedB7KBV1GY7gWIQPEs8
+         vYZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o+GXjuExgpFLiKz+SfOVZmH6xXRDHlIzQs7oNHYjApw=;
+        b=C40u56g62uziWJnC2WyADcKd6AgTZSRLPprrWs61F3kwAAA/vwl8GwRo0yh383XujH
+         ITaVjDaHMYh04lCui12C9Z7z+HfxFnVgpt6wBNTLCCDKLQrIuWN1w9aoOgPpK6M9U8fv
+         baOigt/8SMVjVCPvZybgXQikU4YHppQAf4E7YqzCTRX/+KA5QW75ic+8AuuJvSxG1nB7
+         20YWOFS/CDSCcMxFbVhXoKMlsz6nJzi0kHXfkf4+Q0oxTpkkIOtZ46584MQzAEAaAUlF
+         WkuEBFcDNo0tkenOm6vGB+/YRZhiaBcP5gAVXfWQQwwNvIJ5NCnIAZFZEmDT/JShEWfu
+         XxjQ==
+X-Gm-Message-State: AOAM533ezThqf9A/RHO01aHdsQLHQlSRMrLtZbSFEhpf8dzXOO/oVj/B
+        RKuzjLz+jcsC+BoGGn5U69vEv7snndLrAicn5BvBeA==
+X-Google-Smtp-Source: ABdhPJyuqqrWLfhFQlkJqnjPwpMsh3bAA1RpYHa/t1POenc5dtmykolOqqEhnLLNF/p1592kM+eaYbpzIT8dcJaqyfo=
+X-Received: by 2002:a25:bdc6:: with SMTP id g6mr50371115ybk.310.1629833212315;
+ Tue, 24 Aug 2021 12:26:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGsJ_4w35+mRE_qp117HhNOaHeUN1cO6GGPW36qtjaX6wUcQNA@mail.gmail.com>
+References: <CGME20210304195109eucas1p1779060378305d0f9a1eb0c7ddefd1db3@eucas1p1.samsung.com>
+ <20210304195101.3843496-1-saravanak@google.com> <30b4141e-11bd-45a2-b890-fddf444548ea@samsung.com>
+ <CAGETcx87v5=jDqCmdJL9VShAv+OzOGyF43mahxdk9A-RzNJYkA@mail.gmail.com>
+ <077fcc5b-cd09-d587-6906-d10bcc991eaf@samsung.com> <CAGETcx-bmeXK4Ws2=Zeth2yiNJ0hXHZEs4GxqL7jY3+71hhF=g@mail.gmail.com>
+In-Reply-To: <CAGETcx-bmeXK4Ws2=Zeth2yiNJ0hXHZEs4GxqL7jY3+71hhF=g@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 24 Aug 2021 12:26:16 -0700
+Message-ID: <CAGETcx8b228nDUho3cX9AAQ-pXOfZTMv8cj2vhdx9yc_pk8q+A@mail.gmail.com>
+Subject: Re: [PATCH v3] amba: Remove deferred device addition
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 10:41:17AM +1200, Barry Song wrote:
-> On Sun, Aug 22, 2021 at 10:14 AM Barry Song <21cnbao@gmail.com> wrote:
+On Mon, Mar 8, 2021 at 11:15 AM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Sun, Mar 7, 2021 at 11:28 PM Marek Szyprowski
+> <m.szyprowski@samsung.com> wrote:
 > >
-> > On Sat, Aug 21, 2021 at 10:42 PM Marc Zyngier <maz@kernel.org> wrote:
-> > >
-> > > Hi Bjorn,
-> > >
-> > > On Sat, 21 Aug 2021 00:33:28 +0100,
-> > > Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > >
-> > > > [+cc Thomas, Marc]
-> > > >
-> > > > On Sat, Aug 21, 2021 at 10:37:43AM +1200, Barry Song wrote:
-> > > > > From: Barry Song <song.bao.hua@hisilicon.com>
-> > > > >
-> > > > > /sys/bus/pci/devices/.../irq sysfs ABI is very confusing at this
-> > > > > moment especially for MSI-X cases.
-> > > >
-> > > > AFAICT this patch *only* affects MSI-X.  So are you saying the sysfs
-> > > > ABI is fine for MSI but confusing for MSI-X?
-> > > >
-> > > > > While MSI sets IRQ to the first
-> > > > > number in the vector, MSI-X does nothing for this though it saves
-> > > > > default_irq in msix_setup_entries(). Weird the saved default_irq
-> > > > > for MSI-X is never used in pci_msix_shutdown(), which is quite
-> > > > > different with pci_msi_shutdown(). Thus, this patch moves to show
-> > > > > the first IRQ number which is from the first msi_entry for MSI-X.
-> > > > > Hopefully, this can make IRQ ABI more clear and more consistent.
-> > > > >
-> > > > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> > > > > ---
-> > > > >  drivers/pci/msi.c | 6 ++++++
-> > > > >  1 file changed, 6 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> > > > > index 9232255..6bbf81b 100644
-> > > > > --- a/drivers/pci/msi.c
-> > > > > +++ b/drivers/pci/msi.c
-> > > > > @@ -771,6 +771,7 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
-> > > > >     int ret;
-> > > > >     u16 control;
-> > > > >     void __iomem *base;
-> > > > > +   struct msi_desc *desc;
-> > > > >
-> > > > >     /* Ensure MSI-X is disabled while it is set up */
-> > > > >     pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
-> > > > > @@ -814,6 +815,10 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
-> > > > >     pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_MASKALL, 0);
-> > > > >
-> > > > >     pcibios_free_irq(dev);
-> > > > > +
-> > > > > +   desc = first_pci_msi_entry(dev);
-> > > > > +   dev->irq = desc->irq;
-> > > >
-> > > > This change is not primarily about sysfs.  This is about changing
-> > > > "dev->irq" when MSI-X is enabled, and it's only incidental that sysfs
-> > > > reflects that.
-> > > >
-> > > > So we need to know the effect of changing dev->irq.  Drivers may use
-> > > > the value of dev->irq, and I'm *guessing* this change shouldn't break
-> > > > them since we already do this for MSI, but I'd like some more expert
-> > > > opinion than mine :)
-> > > >
-> > > > For MSI we have:
-> > > >
-> > > >   msi_capability_init
-> > > >     msi_setup_entry
-> > > >       entry = alloc_msi_entry(nvec)
-> > > >       entry->msi_attrib.default_irq = dev->irq;     /* Save IOAPIC IRQ */
-> > > >     dev->irq = entry->irq;
-> > > >
-> > > >   pci_msi_shutdown
-> > > >     /* Restore dev->irq to its default pin-assertion IRQ */
-> > > >     dev->irq = desc->msi_attrib.default_irq;
-> > > >
-> > > > and for MSI-X we have:
-> > > >
-> > > >   msix_capability_init
-> > > >     msix_setup_entries
-> > > >       for (i = 0; i < nvec; i++)
-> > > >         entry = alloc_msi_entry(1)
-> > > >       entry->msi_attrib.default_irq = dev->irq;
-> > > >
-> > > >   pci_msix_shutdown
-> > > >     for_each_pci_msi_entry(entry, dev)
-> > > >       __pci_msix_desc_mask_irq
-> > > > +   dev->irq = entry->msi_attrib.default_irq;   # added by this patch
-> > > >
-> > > >
-> > > > Things that seem strange to me:
-> > > >
-> > > >   - The msi_setup_entry() comment "Save IOAPIC IRQ" seems needlessly
-> > > >     specific; maybe it should be "INTx IRQ".
-> > > >
-> > > >   - The pci_msi_shutdown() comment "Restore ... pin-assertion IRQ"
-> > > >     should match the msi_setup_entry() one, e.g., maybe it should also
-> > > >     be "INTx IRQ".  There are no INTx or IOAPIC pins in PCIe.
-> > > >
-> > > >   - The only use of .default_irq is to save and restore dev->irq, so
-> > > >     it looks like a per-device thing, not a per-vector thing.
-> > > >
-> > > >     In msi_setup_entry() there's only one msi_entry, so there's only
-> > > >     one saved .default_irq.
-> > > >
-> > > >     In msix_setup_entries(), we get nvecs msi_entry structs, and we
-> > > >     get a saved .default_irq in each one?
-> > >
-> > > That's a key point.
-> > >
-> > > Old-school PCI/MSI is represented by a single interrupt, and you
-> > > *could* somehow make it relatively easy for drivers that only
-> > > understand INTx to migrate to MSI if you replaced whatever is held in
-> > > dev->irq (which should only represent the INTx mapping) with the MSI
-> > > interrupt number. Which I guess is what the MSI code is doing.
-> > >
-> > > This is the 21st century, and nobody should ever rely on such horror,
-> > > but I'm sure we do have such drivers in the tree. Boo.
-> > >
-> > > However, this *cannot* hold true for Multi-MSI, nor MSI-X, because
-> > > there is a plurality of interrupts. Even worse, for MSI-X, there is
-> > > zero guarantee that the allocated interrupts will be in a contiguous
-> > > space.
-> > >
-> > > Given that, what is dev->irq good for? "Absolutely Nothing! (say it
-> > > again!)".
-> > >
+> > Hi Saravana,
 > >
-> > The only thing is that dev->irq is an sysfs ABI to userspace. Due to
-> > the inconsistency
-> > between legacy PCI INTx, MSI, MSI-X, this ABI should have been
-> > absolutely broken nowadays.
-> > This is actually what the patchset was originally aiming at to fix.
-> >
-> > One more question from me is that does dev->irq actually hold any
-> > valid hardware INTx
-> > information while hardware is using MSI-X? At least in my hardware,
-> > sysfs ABI for PCI is all "0".
-> >
-> > root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat irq
-> > 0
-> >
-> > root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# ls -l msi_irqs/*
-> > -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/499
-> > -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/500
-> > -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/501
-> > ...
-> > root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat msi_irqs/499
-> > msix
-> >
-> > Not quite sure how it is going on different hardware platforms.
-> >
-> > > MSI-X is not something you can "accidentally" use. You have to
-> > > actively embrace it. In all honesty, this patch tries to move in the
-> > > wrong direction. If anything, we should kill this hack altogether and
-> > > fix the (handful of?) drivers that rely on it. That'd actually be a
-> > > good way to find whether they are still worth keeping in the tree. And
-> > > if it breaks too many of them, then at least we'll know where we
-> > > stand.
+> > On 05.03.2021 19:02, Saravana Kannan wrote:
+> > > On Fri, Mar 5, 2021 at 3:45 AM Marek Szyprowski
+> > > <m.szyprowski@samsung.com> wrote:
+> > >> On 04.03.2021 20:51, Saravana Kannan wrote:
+> > >>> The uevents generated for an amba device need PID and CID information
+> > >>> that's available only when the amba device is powered on, clocked and
+> > >>> out of reset. So, if those resources aren't available, the information
+> > >>> can't be read to generate the uevents. To workaround this requirement,
+> > >>> if the resources weren't available, the device addition was deferred and
+> > >>> retried periodically.
+> > >>>
+> > >>> However, this deferred addition retry isn't based on resources becoming
+> > >>> available. Instead, it's retried every 5 seconds and causes arbitrary
+> > >>> probe delays for amba devices and their consumers.
+> > >>>
+> > >>> Also, maintaining a separate deferred-probe like mechanism is
+> > >>> maintenance headache.
+> > >>>
+> > >>> With this commit, instead of deferring the device addition, we simply
+> > >>> defer the generation of uevents for the device and probing of the device
+> > >>> (because drivers needs PID and CID to match) until the PID and CID
+> > >>> information can be read. This allows us to delete all the amba specific
+> > >>> deferring code and also avoid the arbitrary probing delays.
+> > >>>
+> > >>> Cc: Rob Herring <robh@kernel.org>
+> > >>> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> > >>> Cc: John Stultz <john.stultz@linaro.org>
+> > >>> Cc: Saravana Kannan <saravanak@google.com>
+> > >>> Cc: Linus Walleij <linus.walleij@linaro.org>
+> > >>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > >>> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > >>> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> > >>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> > >>> Cc: Russell King <linux@armlinux.org.uk>
+> > >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > >>> ---
+> > >>>
+> > >>> v1 -> v2:
+> > >>> - Dropped RFC tag
+> > >>> - Complete rewrite to not use stub devices.
+> > >>> v2 -> v3:
+> > >>> - Flipped the if() condition for hard-coded periphids.
+> > >>> - Added a stub driver to handle the case where all amba drivers are
+> > >>>     modules loaded by uevents.
+> > >>> - Cc Marek after I realized I forgot to add him.
+> > >>>
+> > >>> Marek,
+> > >>>
+> > >>> Would you mind testing this? It looks okay with my limited testing.
+> > >> It looks it works fine on my test systems. I've checked current
+> > >> linux-next and this patch. You can add:
+> > >>
+> > >> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > > Hi Marek,
 > > >
-> > > I'd be tempted to leave the below patch simmer in -next for a few
-> > > weeks and see if how many people shout:
+> > > Thanks! Does your test set up have amda drivers that are loaded based
+> > > on uevents? That's the one I couldn't test.
 > >
-> > This looks like a more proper direction to go.
-> > but here i am wondering how sysfs ABI document should follow the below change
-> > doc is patch 2/2:
-> > https://lore.kernel.org/lkml/20210820223744.8439-3-21cnbao@gmail.com/
+> > I've checked both, the built-in and all amba drivers compiled as
+> > modules, loaded by udev. Both works fine here.
 > >
-> > On the other hand, my feeling is that nobody should depend on sysfs
-> > irq entry nowadays.
-> > For example, userspace irqbalance is actually using /sys/devices/.../msi_irqs/
-> > So probably we should set this ABI invisible when devices are using
-> > MSI or MSI-X?
-> 
-> i mean something like the below,
-> 
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index 5d63df7..1323841 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -26,6 +26,7 @@
->  #include <linux/slab.h>
->  #include <linux/vgaarb.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/msi.h>
->  #include <linux/of.h>
->  #include "pci.h"
-> 
-> @@ -1437,6 +1438,16 @@ static umode_t pci_dev_attrs_are_visible(struct
-> kobject *kobj,
->                 if ((pdev->class >> 8) != PCI_CLASS_DISPLAY_VGA)
->                         return 0;
-> 
-> +#ifdef CONFIG_PCI_MSI
-> +       /*
-> +        * if devices are MSI and MSI-X, IRQ sysfs ABI is meaningless
-> +        * and broken
-> +        */
-> +       if (a == &dev_attr_irq.attr)
-> +               if (first_pci_msi_entry(pdev))
-> +                       return 0;
-> +#endif
-> +
->         return a->mode;
->  }
+> > >> I've briefly scanned the code and I'm curious how does it work. Does it
+> > >> depend on the recently introduced "fw_devlink=on" feature? I don't see
+> > >> other mechanism, which would trigger matching amba device if pm domains,
+> > >> clocks or resets were not available on time to read pid/cid while adding
+> > >> a device...
+> > > No, it does not depend on fw_devlink or device links in any way.
+> > >
+> > > When a device is attempted to be probed (when it's added or during
+> > > deferred probe), it's matched with all the drivers on the bus.
+> > > When a new driver is registered to a bus, all devices in that bus are
+> > > matched with the driver to see if they'll work together.
+> > > That's how match is called. And match() can return -EPROBE_DEFER and
+> > > that'll cause the device to be put in the deferred probe list by
+> > > driver core.
+> > >
+> > > The tricky part in this patch was the uevent handling and the
+> > > chicken-and-egg issue I talk about in the comments.
+> >
+> > Thanks for the explanation. This EPROBE_DEFER support in match()
+> > callback must be something added after I crafted that periodic retry
+> > based workaround.
+> >
+>
+> I think it got in just a few months before your patches, but your
+> patches worked :) I actually don't like match returning -EPROBE_DEFER,
+> but I can work around it for some of my fw_devlink optimization plans.
+>
+> More context here:
+> https://lore.kernel.org/lkml/CAGETcx_qO4vxTSyBtBR2k7fd_3rGJF42iBbJH37HPNw=FheDKg@mail.gmail.com/
 
-I think this idea has been discarded anyway, but sysfs doesn't work
-this way.  The .is_visible() function is evaluated once at
-device_add()-time, i.e., during enumeration, so there's no way to
-dynamically change the visibility as the driver enables/disables
-MSI.
+I just noticed that this still hasn't been picked up.
 
-I *wish* sysfs had more flexibility like this, though.
+Russell/Greg, can we please pick this up. This finally cleans up
+deferred probing of AMBA devices so that they don't have any special
+case.
+
+
+-Saravana
