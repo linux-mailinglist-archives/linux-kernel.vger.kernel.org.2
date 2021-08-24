@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0BB3F6873
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2073F66FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241019AbhHXR4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240615AbhHXR4Q (ORCPT
+        id S239329AbhHXRaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:30:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240796AbhHXR1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:56:16 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BB6C0ABDA6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:27:10 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2600:8800:8c06:1000::c8f3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: alyssa)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 748DA1F426FC;
-        Tue, 24 Aug 2021 18:27:06 +0100 (BST)
-From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/panfrost: Use upper/lower_32_bits helpers
-Date:   Tue, 24 Aug 2021 13:26:14 -0400
-Message-Id: <20210824172614.7299-1-alyssa.rosenzweig@collabora.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 24 Aug 2021 13:27:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629825981;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wH/laxt92cAPsS5DORg7moxidJ+sFb/ugbwwhp2S/dk=;
+        b=BfMltmJ2oONaD9ejn17glMjs9P0bRR9kUzA6Pry+9ECSWyGVz4ycy6wgEUByz+V4JhUJ9s
+        HPAmF1i0qqRWSbIfut4PbxJGn5ySNPozWxwmNghWcvg8nVKsNFdG/k1NefB85ZOgXIMYjK
+        RoOUIkRd9llpoWWOx8eAPu/aVihsHBE=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-soa92xYrMeuWyaB4Ue6H3w-1; Tue, 24 Aug 2021 13:26:19 -0400
+X-MC-Unique: soa92xYrMeuWyaB4Ue6H3w-1
+Received: by mail-qk1-f199.google.com with SMTP id s206-20020a3745d70000b02903b9207abc7bso14799042qka.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:26:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wH/laxt92cAPsS5DORg7moxidJ+sFb/ugbwwhp2S/dk=;
+        b=dwXtCvWXmcGkWfejv7hV/ItsuG5tq+AzPJO1sFJyJD7/Kf01yfUwFjeHzAKtmyuGai
+         VTBO8LKQoLIE4Ix7C4AUPH0RYWTDCDjJQiFrhgrJy+AtPokLMbuhtVx/7tX288vzAqoW
+         XyBPvdppCQTpUAMQBdecoUzwX7yTxHaWIqT/T03UZIvZyza7Oiyt7WgBkbjPf/Y7LPdk
+         VuNg7JUOyeKmUkFGY6TFi6E+lCfLxI9ysty+nXnrC4+zpyzPKsRgBE9kei73WzVkl3gL
+         K1d393dJHx3US/wNiqBqreiCPmULJBZ8WMad86Y602GgfzkpE/etS/4bkyMYgQ73EAUw
+         5zMQ==
+X-Gm-Message-State: AOAM532sOqxYDKWyKCsu8ilMaJPJ/9Ckdks0WqKqGau0RavFm9lirAhS
+        1i6JxejCvrZElu20jhZ/ORNz1k8GO/xNdbD/inrA+LKxiTRLcXQNQc/Q0GdmUiCAYYAOrtGcM1k
+        5P/jpTNFdkuhZMXi5sBILwiMI
+X-Received: by 2002:a37:4141:: with SMTP id o62mr6348367qka.380.1629825979547;
+        Tue, 24 Aug 2021 10:26:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyPfydha2WMaqbxaCR6qCBIVYjLefJCzf43YSyCq1K9A1bslH6yCHFkMwBJ4tvEQvd0jM3DVw==
+X-Received: by 2002:a37:4141:: with SMTP id o62mr6348347qka.380.1629825979334;
+        Tue, 24 Aug 2021 10:26:19 -0700 (PDT)
+Received: from tstellar.remote.csb (97-120-182-34.ptld.qwest.net. [97.120.182.34])
+        by smtp.gmail.com with ESMTPSA id t66sm11093328qkc.3.2021.08.24.10.26.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 10:26:18 -0700 (PDT)
+Subject: Re: [PATCH v2 00/14] x86: Add support for Clang CFI
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210823171318.2801096-1-samitolvanen@google.com>
+ <1706ee8e-c21c-f867-c0be-24814a92b853@redhat.com>
+ <CABCJKufrpx9arM-hfX_bR-efO+13VBMFNBTe4ff036VEZi1LZQ@mail.gmail.com>
+From:   Tom Stellard <tstellar@redhat.com>
+Message-ID: <9349a92d-f2a7-9ee4-64db-98d30eadc505@redhat.com>
+Date:   Tue, 24 Aug 2021 10:26:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABCJKufrpx9arM-hfX_bR-efO+13VBMFNBTe4ff036VEZi1LZQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use upper_32_bits/lower_32_bits helpers instead of open-coding them.
-This is easier to scan quickly compared to bitwise manipulation, and it
-is pleasingly symmetric. I noticed this when debugging lock_region,
-which had a particularly "creative" way of writing upper_32_bits.
+On 8/23/21 10:20 AM, Sami Tolvanen wrote:
+> On Mon, Aug 23, 2021 at 10:16 AM Tom Stellard <tstellar@redhat.com> wrote:
+>>
+>> On 8/23/21 10:13 AM, 'Sami Tolvanen' via Clang Built Linux wrote:
+>>> This series adds support for Clang's Control-Flow Integrity (CFI)
+>>> checking to x86_64. With CFI, the compiler injects a runtime
+>>> check before each indirect function call to ensure the target is
+>>> a valid function with the correct static type. This restricts
+>>> possible call targets and makes it more difficult for an attacker
+>>> to exploit bugs that allow the modification of stored function
+>>> pointers. For more details, see:
+>>>
+>>>     https://clang.llvm.org/docs/ControlFlowIntegrity.html
+>>>
+>>> Version 2 depends on Clang >=14, where we fixed the issue with
+>>> referencing static functions from inline assembly. Based on the
+>>> feedback for v1, this version also changes the declaration of
+>>> functions that are not callable from C to use an opaque type,
+>>> which stops the compiler from replacing references to them. This
+>>> avoids the need to sprinkle function_nocfi() macros in the kernel
+>>> code.
+>>
+>> How invasive are the changes in clang 14 necessary to make CFI work?
+>> Would it be possible to backport them to LLVM 13?
+> 
+> I'm not sure what the LLVM backport policy is, but this specific fix
+> was quite simple:
+> 
+> https://reviews.llvm.org/rG7ce1c4da7726
+> 
 
-Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
----
- drivers/gpu/drm/panfrost/panfrost_job.c |  8 ++++----
- drivers/gpu/drm/panfrost/panfrost_mmu.c | 12 ++++++------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+That looks like something we could backport, I filed a bug to track
+the backport: https://bugs.llvm.org/show_bug.cgi?id=51588.
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-index 71a72fb50e6b..763b7abfc88e 100644
---- a/drivers/gpu/drm/panfrost/panfrost_job.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-@@ -137,8 +137,8 @@ static void panfrost_job_write_affinity(struct panfrost_device *pfdev,
- 	 */
- 	affinity = pfdev->features.shader_present;
- 
--	job_write(pfdev, JS_AFFINITY_NEXT_LO(js), affinity & 0xFFFFFFFF);
--	job_write(pfdev, JS_AFFINITY_NEXT_HI(js), affinity >> 32);
-+	job_write(pfdev, JS_AFFINITY_NEXT_LO(js), lower_32_bits(affinity));
-+	job_write(pfdev, JS_AFFINITY_NEXT_HI(js), upper_32_bits(affinity));
- }
- 
- static u32
-@@ -203,8 +203,8 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
- 
- 	cfg = panfrost_mmu_as_get(pfdev, job->file_priv->mmu);
- 
--	job_write(pfdev, JS_HEAD_NEXT_LO(js), jc_head & 0xFFFFFFFF);
--	job_write(pfdev, JS_HEAD_NEXT_HI(js), jc_head >> 32);
-+	job_write(pfdev, JS_HEAD_NEXT_LO(js), lower_32_bits(jc_head));
-+	job_write(pfdev, JS_HEAD_NEXT_HI(js), upper_32_bits(jc_head));
- 
- 	panfrost_job_write_affinity(pfdev, job->requirements, js);
- 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-index 0da5b3100ab1..c3fbe0ad9090 100644
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -80,8 +80,8 @@ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
- 	region |= region_width;
- 
- 	/* Lock the region that needs to be updated */
--	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), region & 0xFFFFFFFFUL);
--	mmu_write(pfdev, AS_LOCKADDR_HI(as_nr), (region >> 32) & 0xFFFFFFFFUL);
-+	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), lower_32_bits(region));
-+	mmu_write(pfdev, AS_LOCKADDR_HI(as_nr), upper_32_bits(region));
- 	write_cmd(pfdev, as_nr, AS_COMMAND_LOCK);
- }
- 
-@@ -123,14 +123,14 @@ static void panfrost_mmu_enable(struct panfrost_device *pfdev, struct panfrost_m
- 
- 	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0UL, AS_COMMAND_FLUSH_MEM);
- 
--	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), transtab & 0xffffffffUL);
--	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), transtab >> 32);
-+	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), lower_32_bits(transtab));
-+	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), upper_32_bits(transtab));
- 
- 	/* Need to revisit mem attrs.
- 	 * NC is the default, Mali driver is inner WT.
- 	 */
--	mmu_write(pfdev, AS_MEMATTR_LO(as_nr), memattr & 0xffffffffUL);
--	mmu_write(pfdev, AS_MEMATTR_HI(as_nr), memattr >> 32);
-+	mmu_write(pfdev, AS_MEMATTR_LO(as_nr), lower_32_bits(memattr));
-+	mmu_write(pfdev, AS_MEMATTR_HI(as_nr), upper_32_bits(memattr));
- 
- 	write_cmd(pfdev, as_nr, AS_COMMAND_UPDATE);
- }
--- 
-2.30.2
+Do you have any concerns about backporting it or do you think it's pretty
+safe?
+
+-Tom
+
+
+> Sami
+> 
 
