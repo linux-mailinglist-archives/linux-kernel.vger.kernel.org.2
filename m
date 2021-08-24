@@ -2,120 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B16E3F58D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57ABB3F58D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234705AbhHXHVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:21:14 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54612 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232173AbhHXHVH (ORCPT
+        id S234610AbhHXHVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234672AbhHXHVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:21:07 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 1BE3320B7192; Tue, 24 Aug 2021 00:20:24 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1BE3320B7192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1629789624;
-        bh=pT9MfMBwFEzM8B1XTfJ8fkYHPKmhI6ubzUcWHq4gd20=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lLWFly0aKAauojK7Rlr2GcDxHv76/4KGNj99MTYveFGZBo5d+JCmMGofQaXqrnjVA
-         7qxnwLDf6wZr3065KuPO1VKK4EJ/dLRzB8QpdqqDeOz5sVeDFnDiBuMmh1iEYPvaTV
-         zWHAFTJs0q0UJr/aNG4sFBqksr+26PNektX9c1gY=
-From:   longli@linuxonhyperv.com
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Tue, 24 Aug 2021 03:21:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCFAC061575;
+        Tue, 24 Aug 2021 00:20:30 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 07:20:27 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629789629;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=koFu0mLGCF6o2X/1LaBNrEmvRKzB76SFAIX0nAbd/oU=;
+        b=LUo+mxaBS5JvKi+GtINXy1O62wi9hx1c2vcRelXcsh+MM7uhX1gcUwsmw4JjjO/JGy1inU
+        KkzwHjMpFI8HkFLCR92J/7x5SCHd77RsslFtgMKaeOPOOJetAdjPOPBX7ouqXcfMjlaa+c
+        heemABojBLboc3FN6ghsQazj+qImeK4MMDLnHu7qcKH2otL3LTDfVKJkaAuJIBHmNy6mKH
+        i/5mlotyBIeOENDmC36zv43I5YQoh7AhAmJ66BP9Wry40frX0SnD9OLRdCkqNkRWAFNtsk
+        NtnxwbsyU2Zgb3v47eAC5PgVadayUSXlUWrveVGM0RGZtY1OBE2XoeDAiX9fzA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629789629;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=koFu0mLGCF6o2X/1LaBNrEmvRKzB76SFAIX0nAbd/oU=;
+        b=LCjkg8BCDOFMvgjvNso3B963G5DwjlByVsb79aRHCUCSRXvAZM8McRhLaAUtxRfOpgwzJa
+        Pb2H9cxKcXEvQUBg==
+From:   "tip-bot2 for Barry Song" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] platform-msi: Add ABI to show msi_irqs of platform devices
+Cc:     Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] PCI: hv: Fix a bug on removing child devices on the bus
-Date:   Tue, 24 Aug 2021 00:20:20 -0700
-Message-Id: <1629789620-11049-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
+        Marc Zyngier <maz@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210813035628.6844-3-21cnbao@gmail.com>
+References: <20210813035628.6844-3-21cnbao@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-ID: <162978962795.25758.15709206714387292964.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+The following commit has been merged into the irq/core branch of tip:
 
-In hv_pci_bus_exit, the code is holding a spinlock while calling
-pci_destroy_slot(), which takes a mutex.
+Commit-ID:     00ed1401a0058e8cca4cc1b6ba14b893e5df746e
+Gitweb:        https://git.kernel.org/tip/00ed1401a0058e8cca4cc1b6ba14b893e5df746e
+Author:        Barry Song <song.bao.hua@hisilicon.com>
+AuthorDate:    Fri, 13 Aug 2021 15:56:28 +12:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 24 Aug 2021 09:16:20 +02:00
 
-This is not safe for spinlock. Fix this by moving the children to be
-deleted to a list on the stack, and removing them after spinlock is
-released.
+platform-msi: Add ABI to show msi_irqs of platform devices
 
-Fixes: 94d22763207a ("PCI: hv: Fix a race condition when removing the device")
+PCI devices expose the associated MSI interrupts via sysfs, but platform
+devices which utilize MSI interrupts do not. This information is important
+for user space tools to optimize affinity settings.
 
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Stephen Hemminger <sthemmin@microsoft.com>
-Cc: Wei Liu <wei.liu@kernel.org>
-Cc: Dexuan Cui <decui@microsoft.com>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: "Krzysztof Wilczyński" <kw@linux.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Michael Kelley <mikelley@microsoft.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Long Li <longli@microsoft.com>
+Utilize the generic MSI sysfs facility to expose this information for
+platform MSI.
+
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210813035628.6844-3-21cnbao@gmail.com
+
 ---
- drivers/pci/controller/pci-hyperv.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ Documentation/ABI/testing/sysfs-bus-platform | 14 +++++++++++++-
+ drivers/base/platform-msi.c                  | 20 ++++++++++++++-----
+ 2 files changed, 29 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index a53bd8728d0d..d4f3cce18957 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -3220,6 +3220,7 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
- 	struct hv_pci_dev *hpdev, *tmp;
- 	unsigned long flags;
- 	int ret;
-+	struct list_head removed;
- 
- 	/*
- 	 * After the host sends the RESCIND_CHANNEL message, it doesn't
-@@ -3229,9 +3230,18 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
- 		return 0;
- 
- 	if (!keep_devs) {
--		/* Delete any children which might still exist. */
-+		INIT_LIST_HEAD(&removed);
+diff --git a/Documentation/ABI/testing/sysfs-bus-platform b/Documentation/ABI/testing/sysfs-bus-platform
+index 194ca70..ff30728 100644
+--- a/Documentation/ABI/testing/sysfs-bus-platform
++++ b/Documentation/ABI/testing/sysfs-bus-platform
+@@ -28,3 +28,17 @@ Description:
+ 		value comes from an ACPI _PXM method or a similar firmware
+ 		source. Initial users for this file would be devices like
+ 		arm smmu which are populated by arm64 acpi_iort.
 +
-+		/* Move all present children to the list on stack */
- 		spin_lock_irqsave(&hbus->device_list_lock, flags);
--		list_for_each_entry_safe(hpdev, tmp, &hbus->children, list_entry) {
-+		list_for_each_entry_safe(hpdev, tmp, &hbus->children, list_entry)
-+			list_move_tail(&hpdev->list_entry, &removed);
-+		spin_unlock_irqrestore(&hbus->device_list_lock, flags);
++What:		/sys/bus/platform/devices/.../msi_irqs/
++Date:		August 2021
++Contact:	Barry Song <song.bao.hua@hisilicon.com>
++Description:
++		The /sys/devices/.../msi_irqs directory contains a variable set
++		of files, with each file being named after a corresponding msi
++		irq vector allocated to that device.
 +
-+		/* Remove all children in the list */
-+		while (!list_empty(&removed)) {
-+			hpdev = list_first_entry(&removed, struct hv_pci_dev,
-+						 list_entry);
- 			list_del(&hpdev->list_entry);
- 			if (hpdev->pci_slot)
- 				pci_destroy_slot(hpdev->pci_slot);
-@@ -3239,7 +3249,6 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
- 			put_pcichild(hpdev);
- 			put_pcichild(hpdev);
- 		}
--		spin_unlock_irqrestore(&hbus->device_list_lock, flags);
++What:		/sys/bus/platform/devices/.../msi_irqs/<N>
++Date:		August 2021
++Contact:	Barry Song <song.bao.hua@hisilicon.com>
++Description:
++		This attribute will show "msi" if <N> is a valid msi irq
+diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
+index 0b72b13..3d6c8f9 100644
+--- a/drivers/base/platform-msi.c
++++ b/drivers/base/platform-msi.c
+@@ -21,11 +21,12 @@
+  * and the callback to write the MSI message.
+  */
+ struct platform_msi_priv_data {
+-	struct device		*dev;
+-	void 			*host_data;
+-	msi_alloc_info_t	arg;
+-	irq_write_msi_msg_t	write_msg;
+-	int			devid;
++	struct device			*dev;
++	void				*host_data;
++	const struct attribute_group    **msi_irq_groups;
++	msi_alloc_info_t		arg;
++	irq_write_msi_msg_t		write_msg;
++	int				devid;
+ };
+ 
+ /* The devid allocator */
+@@ -272,8 +273,16 @@ int platform_msi_domain_alloc_irqs(struct device *dev, unsigned int nvec,
+ 	if (err)
+ 		goto out_free_desc;
+ 
++	priv_data->msi_irq_groups = msi_populate_sysfs(dev);
++	if (IS_ERR(priv_data->msi_irq_groups)) {
++		err = PTR_ERR(priv_data->msi_irq_groups);
++		goto out_free_irqs;
++	}
++
+ 	return 0;
+ 
++out_free_irqs:
++	msi_domain_free_irqs(dev->msi_domain, dev);
+ out_free_desc:
+ 	platform_msi_free_descs(dev, 0, nvec);
+ out_free_priv_data:
+@@ -293,6 +302,7 @@ void platform_msi_domain_free_irqs(struct device *dev)
+ 		struct msi_desc *desc;
+ 
+ 		desc = first_msi_entry(dev);
++		msi_destroy_sysfs(dev, desc->platform.msi_priv_data->msi_irq_groups);
+ 		platform_msi_free_priv_data(desc->platform.msi_priv_data);
  	}
  
- 	ret = hv_send_resources_released(hdev);
--- 
-2.25.1
-
