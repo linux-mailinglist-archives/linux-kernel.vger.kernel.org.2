@@ -2,177 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F513F69AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922CD3F69AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbhHXTSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
+        id S234487AbhHXTUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbhHXTSa (ORCPT
+        with ESMTP id S232117AbhHXTT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:18:30 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D64C061757;
-        Tue, 24 Aug 2021 12:17:45 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso2482235pjh.5;
-        Tue, 24 Aug 2021 12:17:45 -0700 (PDT)
+        Tue, 24 Aug 2021 15:19:59 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3532C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:19:14 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso17230241otv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:19:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=+4xPI+b9gcqTacves1GJHdBbgUOL7d4IuoFmSsHpYzA=;
-        b=WrbjOdyZY07c5RqPjHbLotTsWRei299jFNgFbmy5m9hCYruNFTzxVIB/o/+W1XxJcP
-         0cbyF8K9yHmyVwcevxnHOYcVPU5thiTNRkax36kdqtR1AMcqWO11iVt9bG+F/Io6zvA0
-         kBo/WXAKUuQBfDR/mleyRXfu/R3cR83osrRiCaD/eexRNxF7VJI+n+2Y826VIvHUvdgI
-         hgoA1Yho6RTKcpkNtrIxJkbtVDo5hpgQaE6ELeKurIruakuDcSn8v54EFCZiikroBKIU
-         oePQydycrUD4Kkb7ioq2+ZpJOLG2XwwBHiMQFDc1JoFTvCMRgMn/X9shlXiTmM36ajKt
-         Ng1Q==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=LGCeyfC6vEKfLae19fP8mn/WuTKX4Jw7bG4cIvDmLso=;
+        b=R59QzVU2d0mjkmpq1nFfB1AJoqKJnfsKMOGCJUni7a2kUrPs2hYN/mv4wHL4GoUkhS
+         OLepk8FvlFkWVeaf0ITC3eYtxKDMAGEZ1v9yh6xbA1RcVNMY8DXxqvsP6kcUQibX46s0
+         5GO5tuXIcytDHzh984pjQf+QSLJHQt79/K1J6JZEmMH9b/ouVRQN6h710ah76z0iMy+N
+         I2uvYhB5FsF/gXYc0zKrVM7+pYmXaZjidkhv51wAiSlZ/fDeW1wTUrmKK5hfKj3V0kNv
+         6lrCioP5DcfojF0HYOS42/vnDMqrIVKRx6G7FVfgBGOjXLqOOr4CgRQTnLKfBvu30/Gi
+         NAMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=+4xPI+b9gcqTacves1GJHdBbgUOL7d4IuoFmSsHpYzA=;
-        b=XWgiAPh41RKh+XJ6H1Fdf6/8IZrOr2OEYMyptYeHB6H1o+8XDtxJK93jC6ASjPuHBY
-         wffR8vA7/7SW4ybsTVoZEc9Kckb8k2bHrazENvKLMt21SXar7+GKGluY+EdZhCyCUdTl
-         z0CaBQpAE9MvCqCAcx4HuJKsy/b7RWqfHVT21Pw6BDii4LksB5y0UY9+8DUKgRYQ+CgZ
-         eRn6LPO/ztDwldaKqJd8zsoATqKGrF1JLwnr/JFUPe+T9ft7xyK+mja52nSu+ZIkL5Zb
-         R1UdKGMsvzUYLCNzmBBaxM6gCT6m5JOn3XCybn4PfBjdlfp1b7MT6SGiOXS5qFZiC7tK
-         QsPQ==
-X-Gm-Message-State: AOAM5305ewj5UiTgxuzZz9WMPpNkTz+sIVqkt9xueUCta8lWdY1l4o4x
-        cU6eJ8fxCg0Pm6ZsIK4X4R8=
-X-Google-Smtp-Source: ABdhPJx7U1lqKzlqTsa0i4LLziCoXD2mZVkRuQX4ZRbZL0EMjWuIEfq6N0lYNXUO6stlDLjz2fKvjw==
-X-Received: by 2002:a17:90a:2e0e:: with SMTP id q14mr6077329pjd.16.1629832665030;
-        Tue, 24 Aug 2021 12:17:45 -0700 (PDT)
-Received: from localhost.localdomain ([106.51.233.109])
-        by smtp.gmail.com with ESMTPSA id j16sm15498180pfc.70.2021.08.24.12.17.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 12:17:44 -0700 (PDT)
-From:   Nishad Kamdar <nishadkamdar@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Avri Altman <avri.altman@wdc.com>
-Cc:     Nishad Kamdar <nishadkamdar@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] mmc: core: Return correct emmc response in case of ioctl error
-Date:   Wed, 25 Aug 2021 00:47:26 +0530
-Message-Id: <20210824191726.8296-1-nishadkamdar@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=LGCeyfC6vEKfLae19fP8mn/WuTKX4Jw7bG4cIvDmLso=;
+        b=RTuavn+2iM2lm0DGfwiwNEaCGhXTJP0/oPo4jalAgM7mjQePDdtAnIUV54wkHZXY3R
+         GJ/dKKMSawjdiLDOx6qCFHzEjfLdTnrwxWGrQbzgAuCw0IMChb19iKsgrB4aA4bbD3K0
+         Ii/cJRhz2iFXUVR6mM7luSSbJE0D+U8Vym4tkSRjOZjf491l/27s8OiOKuVp96Tcu0lm
+         TmVOyQSMIZYKTuqVX2KFRY9H/mavLFIhuIPsC71M2VimC6bBO2m72r950D2TKGggq5Kd
+         Aw/AHoIKHlbLXjSTKGDS53FRebJV3e3/jv7geyO6tGJ1p9UaWBBbyLcmoEF2v4j2CQd4
+         14TA==
+X-Gm-Message-State: AOAM531zfdNvV7sZsjzvYkW8SGiL1XagaxG9N8J2cwAXbAscV5Lzymc6
+        MSs/g5y0rGEAIvy6xgbnWKV5zlSQjU8yGPbaCK0=
+X-Google-Smtp-Source: ABdhPJzjuXXpD3DpxuUbIqZlk0aG0+SWHAwGJeAoaVG3mZdD4y/utikvnFrGIxjourULAtzEWfXuEXlqvuIGj9ZIN1w=
+X-Received: by 2002:a05:6830:237c:: with SMTP id r28mr34319755oth.267.1629832754373;
+ Tue, 24 Aug 2021 12:19:14 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a4a:3949:0:0:0:0:0 with HTTP; Tue, 24 Aug 2021 12:19:13
+ -0700 (PDT)
+Reply-To: ms.lisahugh000@gmail.com
+From:   MS LISA HUGH <blaise.newton1@gmail.com>
+Date:   Tue, 24 Aug 2021 21:19:13 +0200
+Message-ID: <CAJx+uo5bWURbjn+=vTucSdYHyQKOwa6Hv3YvB2so+QJOH9wRkA@mail.gmail.com>
+Subject: YOUR ATTENTION FROM >>MS LISA HUGH.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a read/write command is sent via ioctl to the kernel,
-and the command fails, the actual error response of the emmc
-is not sent to the user.
+Dear Friend,
 
-IOCTL read/write tests are carried out using commands
-17 (Single BLock Read), 24 (Single Block Write),
-18 (Multi Block Read), 25 (Multi Block Write)
+I am Ms Lisa Hugh, work in the department of Audit and accounting
+manager here in the Bank.
 
-The tests are carried out on a 64Gb emmc device. All of these
-tests try to access an "out of range" sector address (0x09B2FFFF).
+I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
+bank account with your co-operation
 
-It is seen that without the patch the response received by the user
-is not OUT_OF_RANGE error (R1 response 31st bit is not set) as per
-JEDEC specification. After applying the patch proper response is seen.
-This is because the function returns without copying the response to
-the user in case of failure. This patch fixes the issue.
+Please send the follow below,
 
-Hence, this memcpy is required whether we get an error response or not.
-Therefor it is moved up from the current position up to immediately
-after we have called mmc_wait_for_req().
+1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
 
-The test code and the output of only the CMD17 is included in the
-commit to limit the message length.
-
-CMD17 (Test Code Snippet):
-==========================
-        printf("Forming CMD%d\n", opt_idx);
-        /*  single block read */
-        cmd.blksz = 512;
-        cmd.blocks = 1;
-        cmd.write_flag = 0;
-        cmd.opcode = 17;
-        //cmd.arg = atoi(argv[3]);
-        cmd.arg = 0x09B2FFFF;
-        /* Expecting response R1B */
-        cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
-
-        memset(data, 0, sizeof(__u8) * 512);
-        mmc_ioc_cmd_set_data(cmd, data);
-
-        printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
-        if(ioctl(fd, MMC_IOC_CMD, &cmd))
-                perror("Error");
-
-        printf("\nResponse: %08x\n", cmd.response[0]);
-
-CMD17 (Output without patch):
-=============================
-test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
-Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
-Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 0x09B2FFF]
-Forming CMD17
-Sending CMD17: ARG[0x09b2ffff]
-Error: Connection timed out
-
-Response: 00000000
-(Incorrect response)
-
-CMD17 (Output with patch):
-==========================
-test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
-[sudo] password for test:
-Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
-Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 09B2FFFF]
-Forming CMD17
-Sending CMD17: ARG[0x09b2ffff]
-Error: Connection timed out
-
-Response: 80000900
-(Correct OUT_OF_ERROR response as per JEDEC specification)
-
-Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
----
-Changes in v4:
-  - Moved the existing 
-    "memcpy(&(idata->ic.response), cmd.resp, sizeof(cmd.resp));"
-    from a couple of lines further down in the code, up to 
-    immediately after we have called mmc_wait_for_req().
-  - Modified the commit message to explain this change
-Changes in v3:
-  - Shorten the commit message to include only CMD17 related
-    code and test.
-Changes in v2:
-  - Make commit message clearer by adding test cases as outputs.
-
- drivers/mmc/core/block.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 672cc505ce378..94bb8b4cd6a4e 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -557,6 +557,7 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
- 		return mmc_sanitize(card, idata->ic.cmd_timeout_ms);
- 
- 	mmc_wait_for_req(card->host, &mrq);
-+	memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
- 
- 	if (cmd.error) {
- 		dev_err(mmc_dev(card->host), "%s: cmd error %d\n",
-@@ -606,8 +607,6 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
- 	if (idata->ic.postsleep_min_us)
- 		usleep_range(idata->ic.postsleep_min_us, idata->ic.postsleep_max_us);
- 
--	memcpy(&(idata->ic.response), cmd.resp, sizeof(cmd.resp));
--
- 	if (idata->rpmb || (cmd.flags & MMC_RSP_R1B) == MMC_RSP_R1B) {
- 		/*
- 		 * Ensure RPMB/R1B command has completed by polling CMD13
--- 
-2.17.1
-
+Thanks.
+Ms Lisa Hugh
