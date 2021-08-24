@@ -2,74 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03E03F6973
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B503F696E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbhHXTD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        id S233610AbhHXTCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234110AbhHXTD2 (ORCPT
+        with ESMTP id S234047AbhHXTCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:03:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D84C061764;
-        Tue, 24 Aug 2021 12:02:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/URawqNzD9p24ByjtYjkORGk8sChIZbeqxBr5P92U1E=; b=T0bMyPf0DHvC4HBKpfhArM/Nuq
-        bOJFItaWCupAM2hBMS9krR1VoxfkreTkA+4eisVSsLFoBShTjXrJBL4l2AcwDMoRKJ36GzeqFc8xX
-        PssQciEFhlHo5P4lBv6rcqrU+tDQG9aWo5to42Zh+4PP4uPP5kPaemLZaW7T+h7uUE2Qcr8gS8Vl8
-        vzKjW+l7OtBNmeI/VKUu5byvZGNcU4frdfIPlQ8sSp5osQvUcIIY5M0qzDmplwWjKG6TmXC+s3F/Y
-        B1zpDJFRepPZVve9OlzuAtOGm/0V25qjO3+79u7JCb4/5qdwkYfTTBFc8d8Sy/Bt0wjesbcrupXh2
-        dsxJzm2w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIbfk-00BSyq-Mo; Tue, 24 Aug 2021 19:01:42 +0000
-Date:   Tue, 24 Aug 2021 20:01:20 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YSVCAJDYShQke6Sy@casper.infradead.org>
-References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
- <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YSQSkSOWtJCE4g8p@cmpxchg.org>
- <1957060.1629820467@warthog.procyon.org.uk>
- <YSUy2WwO9cuokkW0@casper.infradead.org>
- <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
+        Tue, 24 Aug 2021 15:02:43 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0630C0613D9;
+        Tue, 24 Aug 2021 12:01:57 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id j4so12741895lfg.9;
+        Tue, 24 Aug 2021 12:01:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C+vFyNR/1OJe5NmRgGHzvjWmVVpiLWeRk5VXwkNwTqw=;
+        b=V/wCt0DFLylUr9ZPvdE2XKZ9h4ERCiKlsgv4WtIjOPkVI7qFAypR3OJghkrRChvnaS
+         FquS9aoLz7fuYJuQfOUgXVabeccoVYEdIWqHQCFRvOfpwLdNL2hIJD4b8TJK5I0moRHf
+         bWc9z8BC/dD5NaKvDKUCoTzw9EqtNqnB8WijHTCL19FDbdTV/gize12qJlCs9fqT6kKD
+         MM0CbPorSI051t3w+zyRfQ8oz3TBmZPkSxyR2Xyp3Dw7nXQXgkktSIj0pX4T5BsgI3QG
+         3aT5I5H0iV+89krwA8FsFkrV54BrCMWqGpYwRcP2OzxHa5QphdjqcBSkLc5OfmeEgodj
+         Futw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C+vFyNR/1OJe5NmRgGHzvjWmVVpiLWeRk5VXwkNwTqw=;
+        b=XvRZbTKhLMXV0WeW8otExyWpm+PGEUH5Xa/YiWtYwm8zkU4kfRJ1AdsMVeVUMfkafU
+         +uTiUYu/Pr4FJGqMUiXuqjkgw2GkfyH124bmoTp0mKxXNCdOYphHrBFCZw8Ka2r3VwmU
+         ZZT2kTDAqY2GLOyjMRq3ZUbGyFtmUgwEcSwMMTM9UQc502mXYrQeiJJDzYaZZscf7N8l
+         OeREkPPLrgEhEkd2HVmKI9M3ucwmdTSJfRN4lrjEE9PG/T2a/LnZIxMM3rhyK3bht+Pz
+         xFDsyKuLiaNcfDy/GNBzRM7vHCC6IPARqeq3KwHH620gES3MG38erfYOyr19bjsrb1yl
+         Fnsw==
+X-Gm-Message-State: AOAM533dCRpr9PEWkJMbAgAm30rX10zzxUzcXQMsTE44YVtcXaA4OtU5
+        nDyotNVCZdgwtz5b+YTzwXM=
+X-Google-Smtp-Source: ABdhPJwXaKZXB/bWN0z2ppWaZDJEZ+/xduLV2hKgJ/OJMHxrWIf5W70gcp4NK16ucMTnVESwmSChUw==
+X-Received: by 2002:ac2:434f:: with SMTP id o15mr29455145lfl.124.1629831716325;
+        Tue, 24 Aug 2021 12:01:56 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id y4sm1829677lfl.38.2021.08.24.12.01.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 12:01:55 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 22:01:53 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     nandhini.srikandan@intel.com
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        broonie@kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        mgross@linux.intel.com, kris.pan@intel.com,
+        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
+        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
+        rashmi.a@intel.com
+Subject: Re: [PATCH v2 0/2] Add support for Intel Thunder Bay SPI
+Message-ID: <20210824190153.nscabdjuk4num3ly@mobilestation>
+References: <20210824085856.12714-1-nandhini.srikandan@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
+In-Reply-To: <20210824085856.12714-1-nandhini.srikandan@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:26:30AM -0700, Linus Torvalds wrote:
-> On Tue, Aug 24, 2021 at 11:17 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > If the only thing standing between this patch and the merge is
-> > s/folio/ream/g,
+Hello Nandhini
+
+On Tue, Aug 24, 2021 at 04:58:54PM +0800, nandhini.srikandan@intel.com wrote:
+> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
 > 
-> I really don't think that helps. All the book-binding analogies are
-> only confusing.
+> Hi,
 > 
-> If anything, I'd make things more explicit. Stupid and
-> straightforward. Maybe just "struct head_page" or something like that.
-> Name it by what it *is*, not by analogies.
+> This patch set enables support for Designware SPI on the Intel Thunder Bay SoC.
+> 
+> Patch 1: SPI DT bindings for Intel Thunder Bay SoC.
+> Patch 2: Adds support for Designware SPI on Intel Thunderbay SoC.
+> 
+> The driver is tested on Keem Bay and Thunder Bay evaluation board
+> 
+> Changes from v1:
+> 1) Designware CR0 specific macros are named in a generic way.
+> 2) SPI CAP macros are named in generic way rather than naming project specific.
+> 3) SPI KEEM BAY specific macros are replaced by generic macros.
+> 4) Resued the existing SPI deassert API instead of adding another reset
 
-I don't mind calling it something entirely different.  I mean, the word
-"slab" has nothing to do with memory or pages or anything.  I just want
-something short and greppable.  Choosing short words at random from
-/usr/share/dict/words:
+Thanks for the update. I'll have a look at the series on the next
+week.
 
-belt gala claw ogre peck raft 
-bowl moat cask deck rink toga
+Regards,
+-Sergey
 
+> 
+> Thanks & Regards,
+> Nandhini
+> 
+> Nandhini Srikandan (2):
+>   dt-bindings: spi: Add bindings for Intel Thunder Bay SoC
+>   spi: dw: Add support for Intel Thunder Bay SPI
+> 
+>  .../bindings/spi/snps,dw-apb-ssi.yaml         |  2 ++
+>  drivers/spi/spi-dw-core.c                     |  7 +++++--
+>  drivers/spi/spi-dw-mmio.c                     | 20 ++++++++++++++++++-
+>  drivers/spi/spi-dw.h                          | 12 ++++++++---
+>  4 files changed, 35 insertions(+), 6 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
