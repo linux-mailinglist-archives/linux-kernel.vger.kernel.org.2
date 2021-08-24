@@ -2,118 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BB03F6016
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A24D3F6017
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237582AbhHXOVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbhHXOVU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:21:20 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4A9C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:20:36 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id r2so19915155pgl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:20:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5T95M5lfE+srLIAkpG9PHutUq3ARWWsEvJ8TbETp7i0=;
-        b=bbMFlT0KhjOcGWgTjRCQ+dd/LrVYiNuirkt7WHtNe44YENjMWcnaoOwIm6OUe6T6oo
-         93jmPglRpIJcK+qFjqrNLburIffZs0+xbu84oGGwb/pAXw5yMgL881msZriA8Y2lp25y
-         lOYNlK9foRn/XrQyP42Qdp2AK6seI35w94Dgp3WhrbaONPS6/LDweLbHO4Ew7WvaD7p8
-         5u18q/UaXM1/NQX7qVD4/kK4e3WFAXaCyQfr891eHBKKaOLhIHECxDZrbyzwcJXOUTOx
-         SZlvuXvkWWad2+C5JdxcSHTkpR/8o5PoNQGTBVIjtNmN6xbgY9W44llPIhpof38EzZSE
-         HWaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5T95M5lfE+srLIAkpG9PHutUq3ARWWsEvJ8TbETp7i0=;
-        b=kSL7glVsosCWUEQloTCf34nXMlLaEQ0zYPEnHzBfVm3wJHSQaIC1gutiep264DFCno
-         LgH/TQq45SJbEEwKYABgTavEHPN4KuDhRimMDIHWUq1gM3zIh7C0P0DZfynjhQBZW1fl
-         oY4xbg5CLPe8Z7mVe4TjHJsiz5YP9w8IFj0sgEy8M7DbJJvnpOgIqmn1tji/yxwdEuRL
-         vUzt61sfrM+KsqHLDzIzsyEC0Sr/RriNn/E26pUcjzuqOeZF4cXzkj19tgW9cyxYDjXu
-         RzlcwF2VkSyr0in7IMrofrm3jqrj/PA/vHtkc4lRXt2HPc/YAEiEt3iZ6UbNrCrZATPo
-         ltRg==
-X-Gm-Message-State: AOAM531yYWeymxY/QBac0J9L9ZCpYRwg0DFzbT4qGjLlROBLaDzkYF9W
-        HhXuZqVbu2Bv+lMD/0zeARF04Q==
-X-Google-Smtp-Source: ABdhPJyDjUJtKVJaMfykvUPFlFwfXzWuU+K3Fk1o2sOxOg09hq0opgYgTbd+0rqZkJXrr+E6SMCAUA==
-X-Received: by 2002:aa7:8f14:0:b0:3e1:3bdf:e4d3 with SMTP id x20-20020aa78f14000000b003e13bdfe4d3mr39140212pfr.39.1629814835939;
-        Tue, 24 Aug 2021 07:20:35 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z4sm2790761pjl.53.2021.08.24.07.20.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 07:20:35 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 14:20:30 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] KVM: VMX: Disallow PT MSRs accessing if PT is not
- exposed to guest
-Message-ID: <YSUALsBF8rKNPiaS@google.com>
-References: <20210824110743.531127-1-xiaoyao.li@intel.com>
- <20210824110743.531127-5-xiaoyao.li@intel.com>
+        id S237720AbhHXOVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:21:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237629AbhHXOVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:21:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4AA3611EF;
+        Tue, 24 Aug 2021 14:20:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629814850;
+        bh=Vqxn9Pp2lymDhFqYmDN38oKpw1DF8fgwY36r0tJnI4k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DUYI5+eAnGsGPwfI6lc9pgui0ozgRu3RfoRFSo2Gs1fjIo2cksIb8eG29Bp8hfrH1
+         aoh+kUUaDyLBSIRlFrN/lwJPVYPMCZDifzXkb8L+CPfOer1wdVORIkpAs2WezzSolk
+         +XXwxlw2Ov+IqdOdoCYtYXBcEVqoDDiUfarOYLTfd9ZlQSlF137aDAkWy22mbvAEoP
+         qv0iPtd459s7K8qY7BOjlAuQfSBY7Y7kO+GCC45QnJCI7bo28bUipPNJUaMZ84PMHn
+         OWVckqCTQfLBJp3b4dSWt9r3VIhJyXLBkKnPuw2/hFK7Hi4VZCrVCaOOtkiZ3Xcp9I
+         mnQ1QKPwL7CxA==
+Date:   Tue, 24 Aug 2021 07:20:49 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zhongya Yan <yan2228598786@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        edumazet@google.com, rostedt@goodmis.org, mingo@redhat.com,
+        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        hengqi.chen@gmail.com, yhs@fb.com
+Subject: Re: [PATCH] net: tcp_drop adds `reason` parameter for tracing
+Message-ID: <20210824072049.76789bba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210824125140.190253-1-yan2228598786@gmail.com>
+References: <20210824125140.190253-1-yan2228598786@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824110743.531127-5-xiaoyao.li@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021, Xiaoyao Li wrote:
-> Per SDM, it triggers #GP for all the accessing of PT MSRs, if
-> X86_FEATURE_INTEL_PT is not available.
-> 
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 20 ++++++++++++++------
->  1 file changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 4a70a6d2f442..1bbc4d84c623 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -1010,9 +1010,16 @@ static unsigned long segment_base(u16 selector)
->  static inline bool pt_can_write_msr(struct vcpu_vmx *vmx)
+On Tue, 24 Aug 2021 05:51:40 -0700 Zhongya Yan wrote:
+> +enum tcp_drop_reason {
+> +	TCP_OFO_QUEUE = 1,
+> +	TCP_DATA_QUEUE_OFO = 2,
+> +	TCP_DATA_QUEUE = 3,
+> +	TCP_PRUNE_OFO_QUEUE = 4,
+> +	TCP_VALIDATE_INCOMING = 5,
+> +	TCP_RCV_ESTABLISHED = 6,
+> +	TCP_RCV_SYNSENT_STATE_PROCESS = 7,
+> +	TCP_RCV_STATE_PROCESS = 8
+> +};
+
+This is basically tracking the caller, each may have multiple reasons
+for dropping. Is tracking the caller sufficient? Should we at least
+make this a bitmask so we can set multiple bits (caller and more
+precise reason)? Or are we going to add another field in that case?
+
+> -static void tcp_drop(struct sock *sk, struct sk_buff *skb)
+> +static void __tcp_drop(struct sock *sk,
+> +		   struct sk_buff *skb)
 >  {
->  	return vmx_pt_mode_is_host_guest() &&
-> +	       guest_cpuid_has(&vmx->vcpu, X86_FEATURE_INTEL_PT) &&
->  	       !(vmx->pt_desc.guest.ctl & RTIT_CTL_TRACEEN);
+>  	sk_drops_add(sk, skb);
+>  	__kfree_skb(skb);
 >  }
->  
-> +static inline bool pt_can_read_msr(struct kvm_vcpu *vcpu)
+
+Why keep this function if there is only one caller?
+
+> +/* tcp_drop whit reason,for epbf trace
+> + */
+
+This comment is (a) misspelled, (b) doesn't add much value.
+
+> +static void tcp_drop(struct sock *sk, struct sk_buff *skb,
+> +		 enum tcp_drop_reason reason)
 > +{
-> +	return vmx_pt_mode_is_host_guest() &&
-> +	       guest_cpuid_has(vcpu, X86_FEATURE_INTEL_PT);
+> +	trace_tcp_drop(sk, skb, reason);
+> +	__tcp_drop(sk, skb);
 > +}
-> +
->  static inline bool pt_output_base_valid(struct kvm_vcpu *vcpu, u64 base)
->  {
->  	/* The base must be 128-byte aligned and a legal physical address. */
-> @@ -1849,24 +1856,24 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  							&msr_info->data);
->  		break;
->  	case MSR_IA32_RTIT_CTL:
-> -		if (!vmx_pt_mode_is_host_guest())
-> +		if (!pt_can_read_msr(vcpu))
-
-These all need to provide exemptions for accesses from the host.  KVM allows
-access to MSRs that are not exposed to the guest so long as all the other checks
-pass.  Same for the next patch.
-
-Easiest thing is probably to pass in @msr_info to the helpers and do the check
-there.
-
->  			return 1;
->  		msr_info->data = vmx->pt_desc.guest.ctl;
->  		break;
