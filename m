@@ -2,103 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FE63F5AB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299C33F5AEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbhHXJPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235658AbhHXJPW (ORCPT
+        id S235652AbhHXJVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:21:39 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:44729 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233910AbhHXJVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:15:22 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAF8C0613D9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:14:38 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id b1so16223120qtx.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:14:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version:in-reply-to
-         :content-transfer-encoding;
-        bh=6R9MsfR3gmhuz3nWLZW1kqph4hPawg4BSnB7Fx8sGqE=;
-        b=Bkod/r27mUBMfYIfxzoQRvTvoKu3LrmldiZeC8OQKd2wVKA3L0kXx4mV8DpEs9FooS
-         s0uI4lOd55Yj5hCVFXYpQKcyc6mjxJdUac2SbV1zufjQvs3JsOdQ9mSGck3QNbYnxCun
-         bJJSrbWuBIQX2gWLqcV30IJyDV5cans8oXwj0ihdbhKfThJWDM4iqaBi3NRJpgwW9gZT
-         lzx/HYi1qYBkT+Cxsl2BNyEbX9bf8SCIEeYaf6nr2OS32Fw50Kn9GAvWg7oilBwEkYog
-         YgzyWJobGdPzWnCa1UW4u6bca2zonAdPUmkzYNOXV7tg+BqRIPOUcN5501/YLT1QqHy9
-         nXwQ==
+        Tue, 24 Aug 2021 05:21:37 -0400
+Received: by mail-ua1-f51.google.com with SMTP id x6so7017366uai.11;
+        Tue, 24 Aug 2021 02:20:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :in-reply-to:content-transfer-encoding;
-        bh=6R9MsfR3gmhuz3nWLZW1kqph4hPawg4BSnB7Fx8sGqE=;
-        b=pPNZfS/fotktoqhe+nDQ7SsF/u2VlsnaOSmFcNeRMldG+jPSH3Cg+bKCmLkmErqd4y
-         3v4mtVlcnPzHnT98ViOl+SfmNf+6HCZ0oH/xEf1cDH/mh8oKgNlTWzEEBpAkIM906SkW
-         KnfrNwPmiPEtYEyOwMHBeCoHqLTvmJE271gqADLFoNh4wTrqCX0UHlRcLVsWCXyE9je2
-         wBOaZhNPejrnPBk30kN1EM5OW6OfNSZSFaUOI8xf++H0ZovEAlTiqmvCKlXUNFDLGeWq
-         uR9uL2GWDvvPcezN7Cu9UGzyfKySYSouF+5qR2DEQjwYPSpgrDbQbpz1gAlmnjsKjUn+
-         4FNw==
-X-Gm-Message-State: AOAM531haLZMOtfnNkdnSL/hI80pDfJkWgdAWQECDsm6oGodL/p7XU1J
-        N+IUUiRxfIgoNROpTHttB6s=
-X-Google-Smtp-Source: ABdhPJx4UqNi4OVETVF3balK/Re4mq/lG32MPqME9IjJObMZxQAPI0HRgPuiL2FB65IYypI6P9seGg==
-X-Received: by 2002:ac8:5194:: with SMTP id c20mr24749748qtn.68.1629796477596;
-        Tue, 24 Aug 2021 02:14:37 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id z21sm5464570qts.27.2021.08.24.02.14.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 02:14:37 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: qcom-cpufreq-hw: Fix 'make allmodconfig' build
-Date:   Tue, 24 Aug 2021 09:14:30 +0000
-Message-Id: <20210824091430.20367-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=co/l04akHW3etWgSy2OztNXt7PMFZ7ZHbsWH7CoJ+gE=;
+        b=gGXd/9s92Xbo+qZx0v2VaK1u2ZNNZbwaaLTK7HKQq4hLD8OQzZaZLQEPyUr29XG7Bc
+         cw/G2vVq/0KZW5Dg5xpIgsQirv52ywALIFlcvDhnMTRYFPG4Qtote3BW95yLG/Pyn1Eu
+         a8BOdB+0xdIgV4gudTenHVEJsNM4jAmCg+59tw4m9Fyrj0ZN7mObhMa8fOx0zeGDhbb9
+         tfFoVB85hJkari8G9X8eUiqslwLNTsB6pIdS3dcKFhN8dqYEtZlr+heicqgXedjbxnjZ
+         nGNUN3af0BNbq+wnqWflo9AA8EYzcaLEL8no4nLS0JGisGsBwVPVUHJRFY1ZRJVSvdLD
+         75Dw==
+X-Gm-Message-State: AOAM532/vyopPqAeP12107Q+aROpIcqV/dNt286mQjbyRKlI6zuTUFpP
+        CDPYIDrNmn5qvMNrwqqDPuTgQTOhZ0DRjVCQ8aYiBI9G
+X-Google-Smtp-Source: ABdhPJwsNb9SNFfbUO5aG1bAWZpm2pmoEhzE8QnqIA19VcQXklMU1V4yjVEhoOtKrGpRYZIldYjmFBYLwNysyN7ZzKo=
+X-Received: by 2002:a67:c789:: with SMTP id t9mr27382818vsk.60.1629796853308;
+ Tue, 24 Aug 2021 02:20:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <440653.1629666844@turing-police>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210324223713.1334666-1-frowand.list@gmail.com>
+ <20210327174035.GA291160@robh.at.kernel.org> <3e6710e7-08ac-7d1b-aa69-bcd36f0d932a@gmail.com>
+ <CAMuHMdXpGKMi-xv6hZQmmEw0JO=Q0WuvUzwJ2v0O28Tx5uW+sg@mail.gmail.com>
+ <d1aefaae-7b12-b5fb-4b97-7230bd52c1be@gmail.com> <20210526061144.yvoaurpz75a3bsjr@vireshk-i7>
+ <f651e95b-feef-5c86-edba-d6008bc80b34@gmail.com> <YK70Xsl1oXeEQpWZ@yekko>
+ <CAMuHMdWdb2s08a=axC+m88gARSA3enOBnczsN59XL2F9yHXXYA@mail.gmail.com>
+ <YLBnX4PeK51YwUJB@yekko> <CAMuHMdXPn9FHr41xmihuuzNNNKvY-50yAwY4HyuyVo6qBn=Z1w@mail.gmail.com>
+ <CAMuHMdWeL3DOXY3xcPOBW2WDDGW3PxgSM8didt7J1KxSm1ivJg@mail.gmail.com>
+In-Reply-To: <CAMuHMdWeL3DOXY3xcPOBW2WDDGW3PxgSM8didt7J1KxSm1ivJg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 24 Aug 2021 11:20:41 +0200
+Message-ID: <CAMuHMdWXXoS9mmX9VWRQyXfmsy8YROgpLZ-xB7zthEdPdM2u4A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] of: unittest: rename overlay source files from .dts
+ to .dtso
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sun, 22 Aug 2021 17:14:04 -0400 "Valdis Klētnieks" <valdis.kletnieks@vt.edu> wrote:
-
-> 
-> [-- Attachment #1: Type: text/plain, Size: 270 bytes --]
-> 
-> On Sun, 22 Aug 2021 14:08:08 -0700, Randy Dunlap said:
-> 
-> > This fixes one build error for me but I am still seeing another one:
+On Tue, Jun 22, 2021 at 11:44 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Sat, May 29, 2021 at 12:16 PM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > On Sat, May 29, 2021 at 7:16 AM David Gibson
+> > <david@gibson.dropbear.id.au> wrote:
+> > > On Thu, May 27, 2021 at 09:21:05AM +0200, Geert Uytterhoeven wrote:
+> > > 65;6401;1c> On Thu, May 27, 2021 at 3:48 AM David Gibson
+> > > > <david@gibson.dropbear.id.au> wrote:
+> > > > > On Wed, May 26, 2021 at 04:21:48PM -0500, Frank Rowand wrote:
+> > > > > > On 5/26/21 1:11 AM, Viresh Kumar wrote:
+> > > > > > > On 22-04-21, 13:54, Frank Rowand wrote:
+> > > > > > >> On 4/22/21 3:44 AM, Geert Uytterhoeven wrote:
+> > > > > > >>> On Mon, Mar 29, 2021 at 9:23 PM Frank Rowand <frowand.list@gmail.com> wrote:
+> > > > > > >>>> On 3/27/21 12:40 PM, Rob Herring wrote:
+> > > > > > >>>>> On Wed, Mar 24, 2021 at 05:37:13PM -0500, frowand.list@gmail.com wrote:
+> > > > > > >>>>>> From: Frank Rowand <frank.rowand@sony.com>
+> > > > > > >>>>>>
+> > > > > > >>>>>> Add Makefile rule to build .dtbo.o assembly file from overlay .dtso
+> > > > > > >>>>>> source file.
+> > > > > > >>>>>>
+> > > > > > >>>>>> Rename unittest .dts overlay source files to use .dtso suffix.
+> > > > > > >>>>>
+> > > > > > >>>>> I'm pretty lukewarm on .dtso...
+> > > > > > >>>>
+> > > > > > >>>> I was originally also, but I'm warming up to it.
+> > > > > > >>>
+> > > > > > >>> What's the status of this?
+> > > > > > >>
+> > > > > > >> I was planning to resend on top of the upcoming -rc1.
+> > > > > > >
+> > > > > > > Ping.
+> > > > > > >
+> > > > > >
+> > > > > > Thanks for the prod...
+> > > > > >
+> > > > > > The .dtso convention was added to the dtc compiler, then a patch was
+> > > > > > accepted to revert one mention of .dtso ,though there still remains
+> > > > > > two location where .dtbo is still recognized (guess_type_by_name() in
+> > > > > > dtc and the help text of the fdtoverlay program).
+> > > > > >
+> > > > > > It seems that the general .dtso and .dtbo were not popular, so I'm
+> > > > > > going to drop this patch instead of continuing to try to get it
+> > > > > > accepted.
+> > > > >
+> > > > > AFAICT .dtbo is moderately well established, and I think it's a good
+> > > > > convention, since it matters whether a blob is an overlay or base
+> > > > > tree, and it's not trivial to tell which is which.
+> > > >
+> > > > Indeed.
+> > > >
+> > > > > .dtso is much more recent,
+> > > >
+> > > > Is it?
+> > >
+> > > Well, I wouldn't bet money on it, I just seem to remember encountering
+> > > .dtbo for some time before .dtso was mentioned.
+> > >
+> > > > The oldest reference I could find is from May 2015:
+> > > > "[PATCH/RFC] kbuild: Create a rule for building device tree overlay objects"
+> > > > https://lore.kernel.org/linux-devicetree/1431431816-24612-1-git-send-email-geert+renesas@glider.be/
+> > >
+> > > Hm, I think .dtbo is even older than that, but again, I wouldn't swear
+> > > to it.
 > >
-> > ERROR: modpost: "cpu_scale" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
-> 
-> That's a different patch, am working on fixing that one now..
+> > Sure. My work is based on Pantelis' work for BeagleBoard capes.
+> > His code (from 2013?) used .dtbo and .dts:
+> >
+> >     overlay/v3.10/merge:firmware/Makefile:$(obj)/%.dtbo: $(obj)/%.dts
+> > | $(objtree)/$(obj)/$$(dir %)
+> >
+> > So I might be the one who introduced .dtso...
+> >
+> > > > I have always used dtbo/dtso in my published overlays branches,
+> > > > referred from https://elinux.org/R-Car/DT-Overlays, and used by
+> > > > various people.
+> > > >
+> > > > > and I think there's much less value to it.
+> > > >
+> > > > IMHO the same reasoning as for dtb vs. dtbo applies to dts vs. dtso.
+> > > > It matters if the resulting blob will be an overlay or base tree,
+> > > > as the blob will have to be called .dtb or .dtbo.
+> > > > As dtc outputs to stdout by default, the caller has to provide the
+> > > > output filename, and thus needs to know.
+> > > > Even if dtc would name the output file based on the presence of
+> > > > "/plugin/" in the input file, the build system still needs to know
+> > > > for dependency tracking.
+> > >
+> > > Hm, fair point.  I was thinking of the the /plugin/ tag as the
+> > > distinction, whereas dtb is binary and the distinction isn't even
+> > > marked in the header.  But you're right that even readable text labels
+> > > inside the file don't really help make(1).  So, I retract that
+> > > assertion.
+> >
+> > Thanks!
+> >
+> > > > We also do have .dts vs. .dtsi.
+>
+> In the mean time, we're at rc7 again?
 
-I didn't take a deep look here, so I unsure if this is an appropriate fix, but
-I was able to work-around this issue for my use case with below change.
+That was v5.13-rc7. Now we're at v5.14-rc7...
 
-```
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -149,6 +149,7 @@ void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
- }
+Will we live with the inability to e.g. let make distinguish between
+DT includes and overlays forever?
 
- DEFINE_PER_CPU(unsigned long, cpu_scale) = SCHED_CAPACITY_SCALE;
-+EXPORT_PER_CPU_SYMBOL_GPL(cpu_scale);
+Thanks!
 
- void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity)
- {
-```
+Gr{oetje,eeting}s,
 
+                        Geert
 
-Thanks,
-SJ
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
