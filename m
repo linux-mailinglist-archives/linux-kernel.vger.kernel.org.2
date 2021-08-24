@@ -2,122 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A233D3F5AC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5633F5AAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235791AbhHXJP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:15:57 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:20697 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235060AbhHXJPs (ORCPT
+        id S235609AbhHXJOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232653AbhHXJOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:15:48 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 17O8rGxk098402;
-        Tue, 24 Aug 2021 16:53:16 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Aug
- 2021 17:11:49 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <p.zabel@pengutronix.de>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [RESEND v4 11/15] iio: adc: aspeed: Fix the calculate error of clock.
-Date:   Tue, 24 Aug 2021 17:12:39 +0800
-Message-ID: <20210824091243.9393-12-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210824091243.9393-1-billy_tsai@aspeedtech.com>
-References: <20210824091243.9393-1-billy_tsai@aspeedtech.com>
+        Tue, 24 Aug 2021 05:14:16 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55B0C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:13:32 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id z5so39676315ybj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:13:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zgWUg1cu9y2wNzJh4uBLrobUt8MwmGlK5zzyl+Ymn0k=;
+        b=wAelqMeRa21jd5nmjMo9hwwxRDvt9UIKOVhDEHom+7maZ+SffpJq5CeH6nUFpLZNOp
+         rXiAdIDqk1HheALul4vl1yCtv8GDdP8mLei0xNnpHDirbnjQNSjst+sDuom3GjLsESmW
+         jREI3xKkAFzwf6cGiwCpSQbwUblllNBmAyN7P1CAS/N272Wxc2izTwqIpbypculHmgkG
+         WeW6BYFN0h7fjN9mL4MPA4FvpeTDhHcLK3BmpWSBycxok15ideqDZ7TXCq1gNuNZqME4
+         yXKO/f+XxLRbqMRyQssgmph7lPjC7ndOPUgvFy60lmuRoMAIAfbq7cGdVUTMLDfuPE1m
+         7U9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zgWUg1cu9y2wNzJh4uBLrobUt8MwmGlK5zzyl+Ymn0k=;
+        b=bO5j1Mn6hJvOvlvJrWB75rCsDNqnZCUk+7Enk7zfJ7jnabbsxtbHYyTxxvft/cE+Mw
+         TCSi+pfHk+f7gVWSvTD/ximuRDHwLa+bK8s+TK14GmfvYuEPzhghAyZgLA1f5I58QuBt
+         IA6J6Kctfq4Pamd7Zp07Qp12rLhx7qwPR4beTCEQHSOYiOW/khDqVZUMvwTSXa1eNTso
+         ktLXx3qgKfxo8WnW+6EhCWTOOTXJ+vTLlgEFXSo9eZ/3iq4rzAf/xDB7XABq8o5DxxzM
+         0YeP6Ii7UNVu+m7dUzvwAVeHGmj7MVYn9iEVORwZxOYON9N2Jcm1KP959cMcs9EYz4bg
+         U+0A==
+X-Gm-Message-State: AOAM533bJwD6gMf9/apj8h4Ubd9U6jACegAJNNVa/URZLN1kVWB41IwG
+        PdkGgt2ZJ8Yu3ePUtqFkWNpfjdWipGjtsDgaJxlY+g==
+X-Google-Smtp-Source: ABdhPJyJfp5NzkWtY0l7A9iMamwp9I5qxRl6XzHvf63lLqGTmx6J7/yPKuYx9ul+6aoB5WvwkM2uNDRTIwzn+uuWMyM=
+X-Received: by 2002:a25:3545:: with SMTP id c66mr49877960yba.317.1629796412021;
+ Tue, 24 Aug 2021 02:13:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.149]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 17O8rGxk098402
+References: <1629796009-11010-1-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1629796009-11010-1-git-send-email-linyunsheng@huawei.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Tue, 24 Aug 2021 12:12:53 +0300
+Message-ID: <CAC_iWjKUwnQPXDAFu_TCzFk4bF5ohNZemNUf_=94LxetN_9FaQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3] page_pool: use relaxed atomic for release
+ side accounting
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The adc clcok formula is
-ast2400/2500:
-ADC clock period = PCLK * 2 * (ADC0C[31:17] + 1) * (ADC0C[9:0] + 1)
-ast2600:
-ADC clock period = PCLK * 2 * (ADC0C[15:0] + 1)
-They all have one fixed divided 2 and the legacy driver didn't handle it.
-This patch register the fixed factory clock device as the parent of adc
-clock scaler to fix this issue.
+On Tue, 24 Aug 2021 at 12:07, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> There is no need to synchronize the account updating, so
+> use the relaxed atomic to avoid some memory barrier in the
+> data path.
+>
+> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+> V3: Drop patch 2.
+> V2: Remove unnecessary unliky() mark as pointed out by
+>     Heiner.
+> ---
+>  net/core/page_pool.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index e140905..1a69784 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -370,7 +370,7 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+>         /* This may be the last page returned, releasing the pool, so
+>          * it is not safe to reference pool afterwards.
+>          */
+> -       count = atomic_inc_return(&pool->pages_state_release_cnt);
+> +       count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
+>         trace_page_pool_state_release(pool, page, count);
+>  }
+>  EXPORT_SYMBOL(page_pool_release_page);
+> --
+> 2.7.4
+>
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/iio/adc/aspeed_adc.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-index ea3e9a52fcc9..8fe7da1a651f 100644
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -4,6 +4,12 @@
-  *
-  * Copyright (C) 2017 Google, Inc.
-  * Copyright (C) 2021 Aspeed Technology Inc.
-+ *
-+ * ADC clock formula:
-+ * Ast2400/Ast2500:
-+ * clock period = period of PCLK * 2 * (ADC0C[31:17] + 1) * (ADC0C[9:0] + 1)
-+ * Ast2600:
-+ * clock period = period of PCLK * 2 * (ADC0C[15:0] + 1)
-  */
- 
- #include <linux/clk.h>
-@@ -77,6 +83,7 @@ struct aspeed_adc_data {
- 	struct regulator	*regulator;
- 	void __iomem		*base;
- 	spinlock_t		clk_lock;
-+	struct clk_hw		*fixed_div_clk;
- 	struct clk_hw		*clk_prescaler;
- 	struct clk_hw		*clk_scaler;
- 	struct reset_control	*rst;
-@@ -196,6 +203,13 @@ static void aspeed_adc_unregister_divider(void *data)
- 	clk_hw_unregister_divider(clk);
- }
- 
-+static void aspeed_adc_unregister_fixed_divider(void *data)
-+{
-+	struct clk_hw *clk = data;
-+
-+	clk_hw_unregister_fixed_factor(clk);
-+}
-+
- static void aspeed_adc_reset_assert(void *data)
- {
- 	struct reset_control *rst = data;
-@@ -312,6 +326,18 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	/* Register ADC clock prescaler with source specified by device tree. */
- 	spin_lock_init(&data->clk_lock);
- 	snprintf(clk_parent_name, 32, of_clk_get_parent_name(pdev->dev.of_node, 0));
-+	snprintf(clk_name, 32, "%s-fixed-div", data->model_data->model_name);
-+	data->fixed_div_clk = clk_hw_register_fixed_factor(
-+		&pdev->dev, clk_name, clk_parent_name, 0, 1, 2);
-+	if (IS_ERR(data->fixed_div_clk))
-+		return PTR_ERR(data->fixed_div_clk);
-+
-+	ret = devm_add_action_or_reset(data->dev,
-+				       aspeed_adc_unregister_fixed_divider,
-+				       data->clk_prescaler);
-+	if (ret)
-+		return ret;
-+	snprintf(clk_parent_name, 32, clk_name);
- 	if (data->model_data->need_prescaler) {
- 		snprintf(clk_name, 32, "%s-prescaler",
- 			 data->model_data->model_name);
--- 
-2.25.1
-
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
