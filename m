@@ -2,151 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4FE3F662C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9F33F684B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239821AbhHXRVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:21:21 -0400
-Received: from mail-bn8nam11on2048.outbound.protection.outlook.com ([40.107.236.48]:38112
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240011AbhHXRSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:18:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KJ2j9NIp5gboc5DVWQEW6ZZJAa178N3AmyN0NPpj8nkpU/gys9siYpGpNUjnsanlGOCuWpzJHO2WJv65w/uTqRwba2pXEPBqLnJWl5/ecHF67W0Nof0rJMfaA4iHj4fVk/DJJEPBfJD8JuGYC98UXjx/hJcI3vlvqnaYqekPPcnvyO4kdMBRpZkOeyuBf/53grb89nBMFZXSwQg8pwUKrJymfnAfSeT6ZEj+o6HNN6trP80qnXdkCBOR6oYGqxwHeds7s4DzDg7EAvaj5l1WNNugJ7LA4/uxpPh9tcNGeuXxMWPn3/dSOQBT5497O3Xuh7nAuE5Y/cEjOsNKXINW8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7knTfQSDfMufJP+ojSC1wtxOeUxx+4Rdvq6I68xMd0k=;
- b=VxD8pOlB7KW+vxBnom2vSmtAOziTmKIzBZtS4PS9KBSUtHY3r3teXBYVM76am8TUYxQyNAUXtWSt1I+NRs6cEnQUk9vW5Z/oq1zLFv58m59coZiy54z2Uzx0SH/YISXHWkRrPbLZ3ZMShj/g4UisKIbxi4/tSfR3CUFTRFFTQunG/D1ka9fvj/a5bd3+yCCpfx1TDWV+4LJspjiqUy80WvFdT0S1Q7onNUadyLPkO0uWXcg2NPRE3+pOqF9xvXtPsUS9kMWznm1zRhGiFUa6ONDH0t2dRoxQwjPnn6fGpAwOMjIYKV8kIJC+vLN339wmsNfOa9zfKgrcY2BiOWQzLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7knTfQSDfMufJP+ojSC1wtxOeUxx+4Rdvq6I68xMd0k=;
- b=n5JAf4QbEWP1rYEbqClsyXiQJOA5hABZbCkFAJupM24QMBXKEr7e6aRtd4MZzGARS4uB/8CR3lX+eX//A3+iHAY9xyRgmRn9WosfSRmom8YPX7WxROIxvCOj36UzUZh6SukTK0T9BDroA78e/JTDgMhbbUHMXdsip376xpBs6Ys=
-Received: from DM5PR15CA0049.namprd15.prod.outlook.com (2603:10b6:3:ae::11) by
- BN6PR02MB3315.namprd02.prod.outlook.com (2603:10b6:405:68::34) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4436.23; Tue, 24 Aug 2021 17:17:47 +0000
-Received: from DM3NAM02FT043.eop-nam02.prod.protection.outlook.com
- (2603:10b6:3:ae:cafe::8b) by DM5PR15CA0049.outlook.office365.com
- (2603:10b6:3:ae::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend
- Transport; Tue, 24 Aug 2021 17:17:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT043.mail.protection.outlook.com (10.13.4.237) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 17:17:47 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 24 Aug 2021 10:17:45 -0700
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 24 Aug 2021 10:17:45 -0700
-Envelope-to: git@xilinx.com,
- peter.chen@kernel.org,
- gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- linux-usb@vger.kernel.org
-Received: from [172.23.64.8] (port=48488 helo=xhdvnc108.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <manish.narani@xilinx.com>)
-        id 1mIa3U-0000Q5-Ik; Tue, 24 Aug 2021 10:17:44 -0700
-Received: by xhdvnc108.xilinx.com (Postfix, from userid 16987)
-        id 61AA660546; Tue, 24 Aug 2021 22:46:38 +0530 (IST)
-From:   Manish Narani <manish.narani@xilinx.com>
-To:     <peter.chen@kernel.org>, <gregkh@linuxfoundation.org>,
-        <michal.simek@xilinx.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>, Piyush Mehta <piyush.mehta@xilinx.com>,
-        Manish Narani <manish.narani@xilinx.com>
-Subject: [PATCH 6/6] usb: chipidea: udc: Add xilinx revision support
-Date:   Tue, 24 Aug 2021 22:46:18 +0530
-Message-ID: <1629825378-8089-7-git-send-email-manish.narani@xilinx.com>
-X-Mailer: git-send-email 2.1.1
-In-Reply-To: <1629825378-8089-1-git-send-email-manish.narani@xilinx.com>
-References: <1629825378-8089-1-git-send-email-manish.narani@xilinx.com>
+        id S241000AbhHXRm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:42:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242624AbhHXRjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:39:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4779B610C9;
+        Tue, 24 Aug 2021 17:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629825406;
+        bh=kn+XwzsVevnsYgage2fYiKaQAdypJdXXDutxJUgBKaA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WZLrNQJ1iEetXM6GBKMAocgKpBYBaoeqG/BEsyLHHCD4+94xqZ0L+If5trrPppTTL
+         4FzvC3o3BKsV6f9lENaJA2d79QY0v8ezUrOuMBkRwp+9l1JZtBrVoOiTTttZdeOP9b
+         e2AqhhxBOHjtti93T3X2Vzqr1Eq4iUzzQfU1+gg6mmoDrqcv0t2wUcYr+zxxBhOWuU
+         3jPisWpfvK5jiEcdzx4DByclaUj817smieAnDimvH9l3BLLcTpOLd4fw3en/xkGHGl
+         uvWjHepN2wL1HzBSnbVA7CRy87+zQxWa3JXxLDo7I7SAb1DuMYjAth014qMjaqHKaj
+         UzqLO/qCjUEVw==
+Date:   Tue, 24 Aug 2021 18:16:19 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH 8/9] spi: amd: Refactor to overcome 70 bytes per CS
+ limitation
+Message-ID: <20210824171619.GK4393@sirena.org.uk>
+References: <20210824104041.708945-1-tanureal@opensource.cirrus.com>
+ <20210824104041.708945-9-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5d05b435-1beb-4e01-912a-08d967231802
-X-MS-TrafficTypeDiagnostic: BN6PR02MB3315:
-X-Microsoft-Antispam-PRVS: <BN6PR02MB33157E0ACE542FA89E433AB0C1C59@BN6PR02MB3315.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: txjzeAXG27GBNya055fTLhmGCJc9bhW9Cn/dc9R9MKyqCFpBD+S6x4C8lMzMl2pw1S40DbGtWQcVIygFbHBzcQD/afEpwlnheqyWw7dQp9cBTQaZ63Uzfa3rWqDrOYz2q9cu6XpPl/u8MaI/LN2QBP3fpbJI7OJjG3nl0zr3J55SWedMrYTfD/M+kCR51W1UaxF7sSw0GSgRuwWWbi2KidBsjlOr5vS7N5pm7ozoXcrqQxODB0t00OSbJlr5IC0KMEgvBCostg6s63Snf6ZTeF1EczVmmcs8nZNFWnu92PZ1UhQDGb5xDGxnsmfu2UAGp5N/i+qqoOrYF86N8cSnX7BC+d7xOa6h7WT+aE0+ATiwQtvoGnI1q/ecivU+8cyOSjymumwlqkTMuOxVDfJu18FnQ+58bh7zQYFswDLa4rMsLFh7fHbNaU5J4JKMwiq6oTKUirItUfKyaaVdn5eI6T+D7ouj96SlKKcTQDYODKGR7Ej92aHafbG2MtMGdOf09ySKFteZH7Qe6ybhRWWVuK9Q2NZonNkj2BbdU163hipHF82rmJaIK/xaDOpKVHtBqTtgAyj3Ups+KNFwrqZLYyJ69xI2BtSnGVqqMj1d0oSIZRXg8rdRvw2o41bS6OCxs1kKKofHLU0FL5l/eWCGg3dgodzuymISJ+tITs3ifPhF0EpV/69g9Zl/z5tGWi81rnU2AcvLFmUmyLttsupjnLBpQ5VoEJumK1LuZqhYo4w=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(4326008)(336012)(5660300002)(186003)(36860700001)(426003)(44832011)(36756003)(8936002)(356005)(107886003)(110136005)(47076005)(2616005)(42186006)(70586007)(316002)(6266002)(6666004)(8676002)(70206006)(36906005)(54906003)(83380400001)(6636002)(82310400003)(7636003)(26005)(508600001)(2906002)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 17:17:47.3053
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d05b435-1beb-4e01-912a-08d967231802
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT043.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB3315
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vk/v8fjDPiDepTtA"
+Content-Disposition: inline
+In-Reply-To: <20210824104041.708945-9-tanureal@opensource.cirrus.com>
+X-Cookie: Sentient plasmoids are a gas.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Piyush Mehta <piyush.mehta@xilinx.com>
 
-Issue: Adding a dTD to a Primed Endpoint May Not Get Recognized with
-revision 2.20a.
+--vk/v8fjDPiDepTtA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-There is an issue with the add dTD tripwire semaphore (ATDTW bit in
-USBCMD register) that can cause the controller to ignore a dTD that is
-added to a primed endpoint. When this happens, the software can read
-the tripwire bit and the status bit at '1' even though the endpoint is
-unprimed.
-This issue observed with the Windows host machine.
+On Tue, Aug 24, 2021 at 11:40:40AM +0100, Lucas Tanure wrote:
+> AMD SPI controller has 70 bytes for its FIFO and it has an
+> automatic way of controlling it`s internal CS, which can
+> only be activated during the time that the FIFO is being
+> transfered.
 
-Workaround:
-The software must implement a periodic cycle, and check for each dTD
-pending on execution (Active = 1), if the endpoint is primed. It can do
-this by reading the corresponding bits in the ENDPTPRIME and ENDPTSTAT
-registers. If these bits are read at 0, the software needs to re-prime
-the endpoint by writing 1 to the corresponding bit in the ENDPTPRIME
-register.
+> SPI_MASTER_HALF_DUPLEX here means that it can only read
+> RX bytes after TX bytes were written, and RX+TX must be
+> less than 70. If you write 4 bytes the first byte of read
+> is in position 5 of the FIFO.
+>=20
+> All of that means that for devices that require an address
+> for reads and writes, the 2 transfers must be put in the same
+> FIFO so the CS can be hold for address and data, otherwise
+> the data would lose it`s meaning.
 
-Added conditional revision check of 2.20[CI_REVISION_22] along with 2.40.
+This commit message is confusing, it's hard to tell what the refactoring
+is.  It also doesn't seem at all joined up with the rest of the series
+or the contents of the patch.  The rest of this series adds a new
+interface which says that the controller is only capable of doing a
+single transfer which means that the core should ensure that the
+controller never sees a message with more than one transfer in it but
+this patch appears to be attempting to parse multiple transfers and pack
+them together due to controller limitations in some way.  That is never
+going to do anything useful, if anything is paying attention to the flag
+the controller will never see messages like that.  Indeed code that pays
+attention to the flag and needs this is likely to refuse to work with
+the hardware at all since the device is half duplex so anything that
+needs messages mixing reads and writes just won't work at all.
 
-Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
----
- drivers/usb/chipidea/udc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+It also looks like the code is adding support for a new revision of the
+hardware which isn't mentioned anywhere in the commit message at all and
+really should be, it should most likely be a separate commit.
 
-diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
-index 8834ca6..b440205 100644
---- a/drivers/usb/chipidea/udc.c
-+++ b/drivers/usb/chipidea/udc.c
-@@ -680,7 +680,8 @@ static int _hardware_dequeue(struct ci_hw_ep *hwep, struct ci_hw_req *hwreq)
- 		if ((TD_STATUS_ACTIVE & tmptoken) != 0) {
- 			int n = hw_ep_bit(hwep->num, hwep->dir);
- 
--			if (ci->rev == CI_REVISION_24)
-+			if (ci->rev == CI_REVISION_24 ||
-+			    ci->rev == CI_REVISION_22)
- 				if (!hw_read(ci, OP_ENDPTSTAT, BIT(n)))
- 					reprime_dtd(ci, hwep, node);
- 			hwreq->req.status = -EALREADY;
--- 
-2.1.1
+As far as I can tell what you're trying to do here is better expressed
+as saying that the controller has a limit on the maximum message size
+then having the transfer_one_message() pack those down into whatever the
+controller needs so it can send them without bouncing chip select.  The
+new flag is not needed for this device and indeed looks like it will
+actively work against what's needed to make the controller useful in
+these applications.
 
+Please also use normal apostrophies.
+
+> +	amd_spi_set_tx_count(amd_spi, tx1_len + tx2_len);
+> +	ret =3D amd_spi_execute_opcode(amd_spi);
+> +
+> +	return ret ? ret : tx1_len + 1 + tx2_len;
+
+Please write normal conditional statements so people can read the code
+more easily.
+
+> +static const struct amd_spi_devtype_data spi_v1 =3D {
+> +       .exec_op        =3D amd_spi_execute_opcode_v1,
+> +       .set_op         =3D amd_spi_set_opcode_v1,
+> +};
+> +
+> +static const struct amd_spi_devtype_data spi_v2 =3D {
+> +       .version        =3D 1,
+
+v2 sets the version to 1 and v1 doesn't set the version at all and the
+only use of the version field AFAICT is that we should try to call
+amd_spi_clear_chip() after a transfer.  This isn't entirely clear.  If
+it's just a flag for the need to do that clear make it an explicit flag
+for that.
+
+--vk/v8fjDPiDepTtA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmElKWIACgkQJNaLcl1U
+h9DwkAf/dcn31D3dwArT6L8leGiiqSooISv+bR8bCSNl/zMJaZMOP1dVQNDQsuKp
+fhGWgt1WjGZK7mitS4gtBlvNLK39puap7QApUSZTyb466GR7sNuQVDEKdCekAXel
+JMsOTlvduZ6X3BdNQ3dFl+67JxWk1Ho0ZReEh/NwzdpSN9wfB8PXiIcvBbwJkSsA
+exAiu9txc0upjAxVQ460QSKmC3ODyNHtCjRYiYnvitF9V2SxqIXQfzXuSKWAFP8E
+B4AD0y4XgXVJ3qK+xiNCXateaigtuADMgqeKSbuO/qysy7wUJQk5kQUQCXiSRPHD
+2rSjs6U6RPeaAAK8RoeUZrEyjaNJ3w==
+=Z3HA
+-----END PGP SIGNATURE-----
+
+--vk/v8fjDPiDepTtA--
