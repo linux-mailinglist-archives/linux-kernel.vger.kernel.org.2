@@ -2,89 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499F23F5FD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50FB3F5FE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237714AbhHXOGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:06:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237669AbhHXOGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:06:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C14161212;
-        Tue, 24 Aug 2021 14:05:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629813955;
-        bh=t4e2cm3gb1n1OucC5GO6DcA/X+Kew8TVxJ8GdOTEUtM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C4e0oBi8AN2a8ghIAD0nL7gCg90aJHiLdwld94QkvRhotWfHuCUqu2IfNeXYM46ya
-         uDc5AZQQ5mhtSO0S9QX43NSGfK7dLgdcu9QaNmHA8kWrSDNS1aGATh1DL5YfFtkiNX
-         GuMiTO9IQhQDDFapRHgMyOhd4Q52wmODZ+E76fm5UtqFz3RlsXhkNnge6Uikz9BIFv
-         0TamGOIWOU44lRXUdICbgm7hKXmzXOy6/A1nvLL6kHEuZbvMre0yCo+pcgaw/mDdtX
-         xW/s1TeMoAaNXIBtIAmF6Einl83plBj+ICSmO4pLQKYbdQA7UlpqVOBKIvUmK8lPTQ
-         qOOxokX58P9Rw==
-Date:   Tue, 24 Aug 2021 17:05:50 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jordy Zomer <jordy@pwning.systems>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        James Bottomley <jejb@linux.ibm.com>
-Subject: Re: [PATCH] mm/secretmem: use refcount_t instead of atomic_t
-Message-ID: <YST8vi6J1NlCdirU@kernel.org>
-References: <20210820043339.2151352-1-jordy@pwning.systems>
- <202108192227.8BE02F1C@keescook>
+        id S235997AbhHXOKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:10:34 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:18034 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232311AbhHXOKb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:10:31 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gv9r34RD9zbhXk;
+        Tue, 24 Aug 2021 22:05:55 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 24 Aug 2021 22:09:44 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 24 Aug 2021 22:09:44 +0800
+Subject: Re: [PATCH v2 0/4] optimize the bfq queue idle judgment
+From:   "yukuai (C)" <yukuai3@huawei.com>
+To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210806020826.1407257-1-yukuai3@huawei.com>
+ <0b83e2e1-9cce-6ffc-90ca-4f03ad518b82@huawei.com>
+Message-ID: <516e0694-cce7-43af-543e-e8ae50692e85@huawei.com>
+Date:   Tue, 24 Aug 2021 22:09:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108192227.8BE02F1C@keescook>
+In-Reply-To: <0b83e2e1-9cce-6ffc-90ca-4f03ad518b82@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 10:33:49PM -0700, Kees Cook wrote:
-> On Fri, Aug 20, 2021 at 06:33:38AM +0200, Jordy Zomer wrote:
-> > When a secret memory region is active, memfd_secret disables
-> > hibernation. One of the goals is to keep the secret data from being
-> > written to persistent-storage.
-> > 
-> > It accomplishes this by maintaining a reference count to
-> > `secretmem_users`. Once this reference is held your system can not be
-> > hibernated due to the check in `hibernation_available()`. However,
-> > because `secretmem_users` is of type `atomic_t`, reference counter
-> > overflows are possible.
+On 2021/08/14 10:34, yukuai (C) wrote:
+> On 2021/08/06 10:08, Yu Kuai wrote:
+>> Chagnes in V2:
+>>   - as suggested by Paolo, add support to track if root_group have any
+>>   pending requests, and use that to handle the situation when only one
+>>   group is activated while root group doesn't have any pending requests.
+>>   - modify commit message in patch 2
+>>
+>> Yu Kuai (4):
+>>    block, bfq: add support to track if root_group have any pending
+>>      requests
+>>    block, bfq: do not idle if only one cgroup is activated
+>>    block, bfq: add support to record request size information
+>>    block, bfq: consider request size in bfq_asymmetric_scenario()
+>>
+>>   block/bfq-iosched.c | 69 ++++++++++++++++++++++++++++++++++++++-------
+>>   block/bfq-iosched.h | 29 +++++++++++++++++--
+>>   block/bfq-wf2q.c    | 37 +++++++++++++++---------
+>>   3 files changed, 110 insertions(+), 25 deletions(-)
+>>
 > 
-> It's an unlikely condition to hit given max-open-fds, etc, but there's
-> no reason to leave this weakness. Changing this to refcount_t is easy
-> and better than using atomic_t.
 > 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ping ...
+> .
 > 
-> > As you can see there's an `atomic_inc` for each `memfd` that is opened
-> > in the `memfd_secret` syscall. If a local attacker succeeds to open 2^32
-> > memfd's, the counter will wrap around to 0. This implies that you may
-> > hibernate again, even though there are still regions of this secret
-> > memory, thereby bypassing the security check.
-> 
-> IMO, this hibernation check is also buggy, since it looks to be
-> vulnerable to ToCToU: processes aren't frozen when
-> hibernation_available() checks secretmem_users(), so a process could add
-> one and fill it before the process freezer stops it.
-> 
-> And of course, there's still the ptrace hole[1], which is think is quite
-> serious as it renders the entire defense moot.
 
-I thought about what can be done here and could not come up with anything
-better that prevent PTRACE on a process with secretmem, but this seems to
-me too much from usability vs security POV.
-
-Protecting against root is always hard and secretmem anyway does not
-provide 100% guarantee by itself but rather makes an accidental data leak
-or non-target attack much harder.
-
-To be effective it also presumes that other hardening features are turned
-on by the system administrator on production systems, so it's not
-unrealistic to rely on ptrace being disabled.
-
--- 
-Sincerely yours,
-Mike.
+friendly ping ...
