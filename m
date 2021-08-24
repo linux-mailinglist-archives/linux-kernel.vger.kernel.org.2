@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05763F5698
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8C83F5695
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbhHXDTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 23:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbhHXDTf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 23:19:35 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B311C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 20:18:52 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id y23so18485151pgi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 20:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=ljIRRfacT3qujdXpWiWXLGhvxuZKggz1kLiwmatqcXk=;
-        b=ViKI8uTtaHrkAhPsH5f36f+JiQRf1mXDYC+4Q0v809GHlcYUhVgShIoa2PjCa9to0G
-         RqfQGp4c0/rHz78JJD0iE8jwmgyGl02bXsrRPW1+ouP0AzQiUl/PvSy+D74a1aXwSQIT
-         OwzR3LCuxB7e0ANnwc3fspJ6F8+yXpchA11dvWoWffkVjf9ezQg5AmfiiGdwAuG/MI3k
-         al5VBSY0w3eOFpDoskhLx+PFgyF5nVVAi5yMrmEwK8pASRlODZdmvHt9MLt/HmahR+cs
-         2iwpYQR5WplbmWEaVVpoqNMmlI2pGA37zr47zdvXN3SG76fCg+lMl3skX5fARM/MMB5o
-         ADFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ljIRRfacT3qujdXpWiWXLGhvxuZKggz1kLiwmatqcXk=;
-        b=Ds5BHaxHfrtz2VPVNZRWqZmVx5tNIJprBIA0gEVWUI5BTo4ZSyp7O9Rd0FPO47Qw8Z
-         AsyVSBrvWZiyQ+ykKtWI9c29JKrSwBwmaHNaaJl9r8U8sOQJe49B0tFYNAlqNwID7vP1
-         7ochx/kB7EZw45QWX7rrowxI1c2Dx9AOSfXVGo7JU+w5Cvk/xh2vJBqs2aVIiShd3/vn
-         bJRTb5AbyusnpvxFPXAeyxLYEdEIMhjt+qffkgt3+Gqt7MbfZmF4L+ykqtjQIzFBmYCk
-         LwM2UnUZiBnvWIh/KyKoq14Rji4QioE0yMOqIQMKOc6sqfro21sh14g4xSq1uVYlug6V
-         GhKg==
-X-Gm-Message-State: AOAM530CuNFRe8ouj6Yy46311TtpPv5cpzRbY4PBh+amDMJFYLM6EL0W
-        MLnZWMvNixr2RpsCSrBnuG4=
-X-Google-Smtp-Source: ABdhPJxNaVYoMT/jCr83lr4UZlxXdEa+xywTGpfGsALNu6xzjiZ5Sk5tOpjQld6h06NeMok2r6InNQ==
-X-Received: by 2002:a63:6705:: with SMTP id b5mr35203852pgc.69.1629775131574;
-        Mon, 23 Aug 2021 20:18:51 -0700 (PDT)
-Received: from raspberrypi ([210.183.35.240])
-        by smtp.gmail.com with ESMTPSA id i8sm17691949pfo.117.2021.08.23.20.18.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 20:18:51 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 04:18:47 +0100
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     dhowells@redhat.com
-Cc:     linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
-        austin.kim@lge.com
-Subject: [PATCH] cachefiles: remove always false 'datalen < 0' expression
-Message-ID: <20210824031847.GA23326@raspberrypi>
+        id S234154AbhHXDTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 23:19:43 -0400
+Received: from ozlabs.org ([203.11.71.1]:52787 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233885AbhHXDTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 23:19:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtvTR65y6z9sXk;
+        Tue, 24 Aug 2021 13:18:51 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629775131;
+        bh=aZA0MxZV2syqPqzW4k4W1sjD8tLPSUM78b8udh9Yu24=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FFsJDhUcm78gBjnxrbOEWwonV1SnO/TiuGJ7GVDJp4xAQepiXNLP96JiWNgvGJHpE
+         NMs+AOGrf0WzmmNkGRJM/9zEYqhZAZYF+m5Xl5EaN/nMHzXaDSISm9rjMfWartJMTt
+         RDEK67KFUv4vAv8J2cbDF1ef/q58ZAxo+xu4v4/WY5cUdyo1zdCpHtaCyViJ1Z0G0C
+         Gu6kqgPSHLC/xz/VNAFXo8upQjl+7yqSntsrpl8Sh8BHvJNY3Qtqow/qIz8pU3yMzh
+         P0SfVSdg8X1fMgoB4eL2JIr2SrBBi1aZUAA1OlKHbgkAYk48h+LD6yUmZiJw6ZFMg1
+         FkrTXYzJhkXUA==
+Date:   Tue, 24 Aug 2021 13:18:50 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the devicetree tree
+Message-ID: <20210824131850.62b29724@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/Els_f0f_OmDxFoFHJ.8+ty8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Austin Kim <austin.kim@lge.com>
+--Sig_/Els_f0f_OmDxFoFHJ.8+ty8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Since 'datalen' is declared as size_t, the 'datalen < 0' expression
-is always false. Where size_t is defined as below;
+Hi all,
 
-   typedef unsigned long __kernel_ulong_t;
-   typedef __kernel_ulong_t __kernel_size_t;
-   typedef __kernel_size_t size_t;
+After merging the devicetree tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
-So it had better remove unnecessary 'always false' expression.
+arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning (pci_device_reg=
+): /scb/pcie@7d500000/pci@1,0: PCI unit address format error, expected "0,0"
+arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning (pci_device_reg=
+): /scb/pcie@7d500000/pci@1,0: PCI unit address format error, expected "0,0"
 
-Signed-off-by: Austin Kim <austin.kim@lge.com>
----
- fs/cachefiles/daemon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Presumably exposed by commit
 
-diff --git a/fs/cachefiles/daemon.c b/fs/cachefiles/daemon.c
-index 752c1e43416f..1cfed9e0812a 100644
---- a/fs/cachefiles/daemon.c
-+++ b/fs/cachefiles/daemon.c
-@@ -225,7 +225,7 @@ static ssize_t cachefiles_daemon_write(struct file *file,
- 	if (test_bit(CACHEFILES_DEAD, &cache->flags))
- 		return -EIO;
- 
--	if (datalen < 0 || datalen > PAGE_SIZE - 1)
-+	if (datalen > PAGE_SIZE - 1)
- 		return -EOPNOTSUPP;
- 
- 	/* drag the command string into the kernel so we can parse it */
--- 
-2.20.1
+  1ee7943c3343 ("kbuild: Enable dtc 'pci_device_reg' warning by default")
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Els_f0f_OmDxFoFHJ.8+ty8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEkZRsACgkQAVBC80lX
+0Gwe5Af+NKrhLuD+XfyLsyZd3nW/7yb6pl007gy6eDl/VZQP8q/p6+cZtIDFBJNc
+tahy8nfK+nLnUdFiiCF2vLixdf3QboaE3UX2WTzIBWt+Kbpx3vSigjAxjjhNHzz8
+VTKMwf0ODBBpFTaITfyiM+q6kD7GQmnifuH4O/lKwbHxE7jVTMAzKm0JSGZGo70e
+mSNvPIkA1WmcU7a8wxujKJsLooHnTkqa6TJbGSSzFWwtvskRZ2obpSzLXvRj8TGn
+Mp1kAbpDlGWs0PEtrW0IZ0GuZQTALfwMH4g0f7vzx8fBlNtIkVqem3AmL62tLUfx
+H5b3tKNlAUTtscTUNuhwFOMpdGOapw==
+=LOw+
+-----END PGP SIGNATURE-----
+
+--Sig_/Els_f0f_OmDxFoFHJ.8+ty8--
