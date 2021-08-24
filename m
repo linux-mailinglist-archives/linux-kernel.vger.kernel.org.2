@@ -2,132 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BF03F63D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E49C3F637A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238634AbhHXQ6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39532 "EHLO mail.kernel.org"
+        id S232732AbhHXQzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:55:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234778AbhHXQ50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:57:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3203F6138B;
-        Tue, 24 Aug 2021 16:56:41 +0000 (UTC)
+        id S232594AbhHXQzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:55:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 141F861183;
+        Tue, 24 Aug 2021 16:54:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629824201;
-        bh=3Ivn0NdOQlS7/R3oobsU5roqVSIfAAoYr0ZRFzKsBh0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=upqnfQIMrCEIBgD8udZh7l+Zx+CYf+Rd68czwA1BeG6seVaPDdm6muvtr9tuMJ/0T
-         l+5E4aJ8TglEbJ2xBqyiWOgYLyh/1aMCzN0eLYw2+ok27OTv0ylbxLk48Kr0AtTqRf
-         O6iVDo0z4Lc7YrZJxUnkyrQjy4wUNGGkkg7T4Kv7+37GZMiRH+yG87WxMbh6O/SKEG
-         wNXILsfaXZkWDzsKfeQSKSdqtjIVln0sce9KcRuBojQXGlAaDA9WACVYNWkD2eCS7t
-         X8iHTnOY3MR7rr1yQulD+wfZIZJf81ckFa97paAPFYNjtEgdzf3REHIDrjwfMGaVVg
-         jT8YZGghrwHWg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 034/127] mt76: fix enum type mismatch
-Date:   Tue, 24 Aug 2021 12:54:34 -0400
-Message-Id: <20210824165607.709387-35-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210824165607.709387-1-sashal@kernel.org>
-References: <20210824165607.709387-1-sashal@kernel.org>
+        s=k20201202; t=1629824109;
+        bh=S3loidLLlu1xrh4xk6ck0Wtc3n7jz085PzeWqCBUG04=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=SnE/VPqSsIHaRPvZjktlP2kD2wgG+k5z1bfxXHcdHzy2xHM/ZuEsJw546F7NTebsC
+         5E2WN+E4yXDFZpA1LWaevIGcmM/M7liCmBqwqbtmUkFyQvFBxqx1s39QVH7Wjv6fvN
+         OHmd/6mVqjwFuwCJ2jITtTgNvhmVR7oTqORL6eAWYcl6MnKSxdssCU2j9Vc2La84m7
+         v1eeTwgw5Q1nqIEFCTsIMX9OuzH8fhjtj4Hhe0iMr4NMc6sLy3XJRqpfkF+PVJu/Iw
+         f8uzUz86x3DIk/cLHi7tXBL50BNHR5DtUZg9rmSjqFbMa0XZfLciFO/Xzfn4TB+3wP
+         sSiTzVPo34gAA==
+References: <20210823184449.2796184-1-Nehal-Bakulchandra.shah@amd.com>
+ <20210823184449.2796184-3-Nehal-Bakulchandra.shah@amd.com>
+ <87pmu36ypp.fsf@kernel.org> <1d9ecba4-d180-2193-66a3-3812759e1916@amd.com>
+ <87czq27r5w.fsf@kernel.org> <05c17f61-30db-6d10-d980-d3973dedfa5e@amd.com>
+User-agent: mu4e 1.6.4; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     "Shah, Nehal-bakulchandra" <nehal-bakulchandra.shah@amd.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kun.liu2@amd.com,
+        alexander.deucher@amd.com
+Subject: Re: [PATCH 2/2] usb: dwc3: pci add property to allow user space
+ role switch
+Date:   Tue, 24 Aug 2021 19:54:34 +0300
+In-reply-to: <05c17f61-30db-6d10-d980-d3973dedfa5e@amd.com>
+Message-ID: <878s0q7pgp.fsf@kernel.org>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.13-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.13.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.13.13-rc1
-X-KernelTest-Deadline: 2021-08-26T16:55+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit abf3d98dee7c4038152ce88833ddc2189f68cbd4 ]
+Hi,
 
-There is no 'NONE' version of 'enum mcu_cipher_type', and returning
-'MT_CIPHER_NONE' causes a warning:
+"Shah, Nehal-bakulchandra" <nehal-bakulchandra.shah@amd.com> writes:
+> On 8/24/2021 9:47 PM, Felipe Balbi wrote:
+>> "Shah, Nehal-bakulchandra" <nehal-bakulchandra.shah@amd.com> writes:
+>> 
+>>> Hi
+>>> On 8/24/2021 1:49 PM, Felipe Balbi wrote:
+>>>> Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com> writes:
+>>>>
+>>>>> For AMD platform there is a requirement to enable user space role
+>>>>> switch from host to device and device to host by means of running
+>>>>> following commands.
+>>>>>
+>>>>> HOST:   echo host > /sys/class/usb_role/dwc3.0.auto-role-switch/role
+>>>>> DEVICE: echo device > /sys/class/usb_role/dwc3.0.auto-role-switch/role
+>>>> A more important question that needs to be answered: why?
+>>>>
+>>> Our customer platform is not completely capable of OTG i.e with type C
+>>> controller it does not have PD to support role switching. Hence, they
+>>> have script which triggers the role switch based on ACPI/EC interrupt.
+>> sounds like some generalized version of this text should be added to
+>> commit log.
+>> 
+> Sure i will resubmit this patch with this description should be ok?
 
-drivers/net/wireless/mediatek/mt76/mt7921/mcu.c: In function 'mt7921_mcu_get_cipher':
-drivers/net/wireless/mediatek/mt76/mt7921/mcu.c:114:24: error: implicit conversion from 'enum mt76_cipher_type' to 'enum mcu_cipher_type' [-Werror=enum-conversion]
-  114 |                 return MT_CIPHER_NONE;
-      |                        ^~~~~~~~~~~~~~
+yup, sounds good. Thank you
 
-Add the missing MCU_CIPHER_NONE defintion that fits in here with
-the same value.
 
-Fixes: c368362c36d3 ("mt76: fix iv and CCMP header insertion")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210721150745.1914829-1-arnd@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 2 +-
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.h | 3 ++-
- drivers/net/wireless/mediatek/mt76/mt7921/mcu.c | 2 +-
- drivers/net/wireless/mediatek/mt76/mt7921/mcu.h | 3 ++-
- 4 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index 607980321d27..106177072d18 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -111,7 +111,7 @@ mt7915_mcu_get_cipher(int cipher)
- 	case WLAN_CIPHER_SUITE_SMS4:
- 		return MCU_CIPHER_WAPI;
- 	default:
--		return MT_CIPHER_NONE;
-+		return MCU_CIPHER_NONE;
- 	}
- }
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.h b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.h
-index 517621044d9e..c0255c3ac7d0 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.h
-@@ -1035,7 +1035,8 @@ enum {
- };
- 
- enum mcu_cipher_type {
--	MCU_CIPHER_WEP40 = 1,
-+	MCU_CIPHER_NONE = 0,
-+	MCU_CIPHER_WEP40,
- 	MCU_CIPHER_WEP104,
- 	MCU_CIPHER_WEP128,
- 	MCU_CIPHER_TKIP,
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-index 47843b055959..fc0d7dc3a5f3 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-@@ -111,7 +111,7 @@ mt7921_mcu_get_cipher(int cipher)
- 	case WLAN_CIPHER_SUITE_SMS4:
- 		return MCU_CIPHER_WAPI;
- 	default:
--		return MT_CIPHER_NONE;
-+		return MCU_CIPHER_NONE;
- 	}
- }
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.h b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.h
-index 07abe86f07a9..adad20819341 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.h
-@@ -198,7 +198,8 @@ struct sta_rec_sec {
- } __packed;
- 
- enum mcu_cipher_type {
--	MCU_CIPHER_WEP40 = 1,
-+	MCU_CIPHER_NONE = 0,
-+	MCU_CIPHER_WEP40,
- 	MCU_CIPHER_WEP104,
- 	MCU_CIPHER_WEP128,
- 	MCU_CIPHER_TKIP,
 -- 
-2.30.2
-
+balbi
