@@ -2,100 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873173F5AFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0613F3F5B14
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235604AbhHXJ2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233910AbhHXJ2c (ORCPT
+        id S235856AbhHXJaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:30:09 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51962 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235642AbhHXJaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:28:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB32C061757;
-        Tue, 24 Aug 2021 02:27:48 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 09:27:46 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629797267;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CPhM15sS7uHWi7ZsroKW7dkJMk1jrQ9AzQx0QYOhu1s=;
-        b=GBX56r566UpwQHsD30/8BUxcBK3QYkoLgPo0l8mwkiDwXS03QJ6c/ijMC7N4bgAHR1WycG
-        U3YavPb8emQUPLU/krzTmLk47aoDGjUgp62NyodUZFVGItuayeQuaawlFBnmCBOpqbwNQz
-        YHHqZ2MP0gTqjxi2Jjm+zl/UCdEWGjn6UvqcOl/uleP9YsIi1Re88YfJbqgNKMO6TyfcMf
-        z53Dr2uxj5gHYKCLmA6GJl31+HQs2uipOjy1eUAE91l+h/TKEPz3Kl698P3UtQnIdar36e
-        qFW4Dj/GcULmDxZ8SRLIWV8yON7cM2VPyn9uu5Yvb/B0/kvOq+veVL8ZjDIJ/Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629797267;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CPhM15sS7uHWi7ZsroKW7dkJMk1jrQ9AzQx0QYOhu1s=;
-        b=YJ6WNCKNC7cdFcMUoMaVPjXi4NtUcA+Ei9+EqnKXoFRncxnd9A9QD7nkuL06FT74lTGeGb
-        HuJ0scB0fOYA5tAA==
-From:   "tip-bot2 for Jing Yangyang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/kaslr: Have process_mem_region() return a boolean
-Cc:     Zeal Robot <zealci@zte.com.cn>,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210824070515.61065-1-deng.changcheng@zte.com.cn>
-References: <20210824070515.61065-1-deng.changcheng@zte.com.cn>
+        Tue, 24 Aug 2021 05:30:05 -0400
+X-UUID: 7e43988e7f59449eaada16ee93508e5c-20210824
+X-UUID: 7e43988e7f59449eaada16ee93508e5c-20210824
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <sam.shih@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 19402614; Tue, 24 Aug 2021 17:29:17 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 24 Aug 2021 17:29:15 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 24 Aug 2021 17:29:15 +0800
+From:   Sam Shih <sam.shih@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>, Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-crypto@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>, <linux-clk@vger.kernel.org>
+CC:     John Crispin <john@phrozen.org>,
+        Ryder Lee <Ryder.Lee@mediatek.com>,
+        Sam Shih <sam.shih@mediatek.com>
+Subject: [v3,04/12] pinctrl: mediatek: moore: check if pin_desc is valid before use
+Date:   Tue, 24 Aug 2021 17:29:03 +0800
+Message-ID: <20210824092904.25439-1-sam.shih@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Message-ID: <162979726622.25758.13276488886487213050.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+Certain SoC are missing the middle part gpios in consecutive pins,
+it's better to check if mtk_pin_desc is a valid pin for the extensibility
 
-Commit-ID:     5b3fd8aa5df0244fc19f2572598dee406bcc6b07
-Gitweb:        https://git.kernel.org/tip/5b3fd8aa5df0244fc19f2572598dee406bcc6b07
-Author:        Jing Yangyang <jing.yangyang@zte.com.cn>
-AuthorDate:    Tue, 24 Aug 2021 00:05:15 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 24 Aug 2021 10:54:15 +02:00
+Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+Acked-by: Sean Wang <sean.wang@mediatek.com>
 
-x86/kaslr: Have process_mem_region() return a boolean
-
-Fix the following coccicheck warning:
-
-  ./arch/x86/boot/compressed/kaslr.c:671:10-11:WARNING:return of 0/1
-  in function 'process_mem_region' with return type bool
-
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210824070515.61065-1-deng.changcheng@zte.com.cn
 ---
- arch/x86/boot/compressed/kaslr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v3: added an Acked-by tag.
+v2: applied the comment suggested by reviewers:
+    - for the pins not ballout, we can fill .name in struct mtk_pin_desc
+      as NULL and return -ENOTSUPP in gpio/pinconf ops.
+---
+ drivers/pinctrl/mediatek/pinctrl-moore.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index e366907..67c3208 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -668,7 +668,7 @@ static bool process_mem_region(struct mem_vector *region,
+diff --git a/drivers/pinctrl/mediatek/pinctrl-moore.c b/drivers/pinctrl/mediatek/pinctrl-moore.c
+index 3a4a23c40a71..ad3b67163973 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-moore.c
++++ b/drivers/pinctrl/mediatek/pinctrl-moore.c
+@@ -60,6 +60,8 @@ static int mtk_pinmux_set_mux(struct pinctrl_dev *pctldev,
+ 		int pin = grp->pins[i];
  
- 		if (slot_area_index == MAX_SLOT_AREA) {
- 			debug_putstr("Aborted e820/efi memmap scan when walking immovable regions(slot_areas full)!\n");
--			return 1;
-+			return true;
- 		}
- 	}
- #endif
+ 		desc = (const struct mtk_pin_desc *)&hw->soc->pins[pin];
++		if (!desc->name)
++			return -ENOTSUPP;
+ 
+ 		mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_MODE,
+ 				 pin_modes[i]);
+@@ -76,6 +78,8 @@ static int mtk_pinmux_gpio_request_enable(struct pinctrl_dev *pctldev,
+ 	const struct mtk_pin_desc *desc;
+ 
+ 	desc = (const struct mtk_pin_desc *)&hw->soc->pins[pin];
++	if (!desc->name)
++		return -ENOTSUPP;
+ 
+ 	return mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_MODE,
+ 				hw->soc->gpio_m);
+@@ -89,6 +93,8 @@ static int mtk_pinmux_gpio_set_direction(struct pinctrl_dev *pctldev,
+ 	const struct mtk_pin_desc *desc;
+ 
+ 	desc = (const struct mtk_pin_desc *)&hw->soc->pins[pin];
++	if (!desc->name)
++		return -ENOTSUPP;
+ 
+ 	/* hardware would take 0 as input direction */
+ 	return mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_DIR, !input);
+@@ -103,6 +109,8 @@ static int mtk_pinconf_get(struct pinctrl_dev *pctldev,
+ 	const struct mtk_pin_desc *desc;
+ 
+ 	desc = (const struct mtk_pin_desc *)&hw->soc->pins[pin];
++	if (!desc->name)
++		return -ENOTSUPP;
+ 
+ 	switch (param) {
+ 	case PIN_CONFIG_BIAS_DISABLE:
+@@ -218,6 +226,8 @@ static int mtk_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
+ 	int cfg, err = 0;
+ 
+ 	desc = (const struct mtk_pin_desc *)&hw->soc->pins[pin];
++	if (!desc->name)
++		return -ENOTSUPP;
+ 
+ 	for (cfg = 0; cfg < num_configs; cfg++) {
+ 		param = pinconf_to_config_param(configs[cfg]);
+@@ -435,6 +445,8 @@ static int mtk_gpio_get(struct gpio_chip *chip, unsigned int gpio)
+ 	int value, err;
+ 
+ 	desc = (const struct mtk_pin_desc *)&hw->soc->pins[gpio];
++	if (!desc->name)
++		return -ENOTSUPP;
+ 
+ 	err = mtk_hw_get_value(hw, desc, PINCTRL_PIN_REG_DI, &value);
+ 	if (err)
+@@ -449,6 +461,10 @@ static void mtk_gpio_set(struct gpio_chip *chip, unsigned int gpio, int value)
+ 	const struct mtk_pin_desc *desc;
+ 
+ 	desc = (const struct mtk_pin_desc *)&hw->soc->pins[gpio];
++	if (!desc->name) {
++		dev_err(hw->dev, "Failed to set gpio %d\n", gpio);
++		return;
++	}
+ 
+ 	mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_DO, !!value);
+ }
+@@ -490,6 +506,8 @@ static int mtk_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
+ 	u32 debounce;
+ 
+ 	desc = (const struct mtk_pin_desc *)&hw->soc->pins[offset];
++	if (!desc->name)
++		return -ENOTSUPP;
+ 
+ 	if (!hw->eint ||
+ 	    pinconf_to_config_param(config) != PIN_CONFIG_INPUT_DEBOUNCE ||
+-- 
+2.29.2
+
