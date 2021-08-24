@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2793F6343
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719EA3F6345
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232809AbhHXQvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:51:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232294AbhHXQvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:51:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FBC261183;
-        Tue, 24 Aug 2021 16:50:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629823817;
-        bh=PqWcM2DXGBqdI5G1i+z9Vad05u3WXsmZil2k4r/K1+c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Am0xGlRWm4DlvaeTt1E8gmrAXLLRwxeU0tMsInw62CXOcKlbyB0J+xDGND5WV+C/v
-         8MN/8Ck47wxynFEzVQ5jcYki9Hua7J3iuH9CZhj2AZFcWz+3cfL50wkC7eECzpYlIE
-         gDwHdx2UVxxRokYldJxD5JauDgOFyQXsNeledSXUt9izAegnfuu44k2rlf2yZVTx5u
-         0LStKLaUyJk5xP4SgxI7RY6ZFwhodM0pVH4jLx55+niu9W2yT4N7GwX7OexNwfqNRk
-         xVPxgqaLKAfUlvV9PyLJJiDx22PTdZIlHxV2LcS6ufxuw+pKEj+QP7DFrn1UFlx8M4
-         0uZWA0e5iwJhA==
-Date:   Tue, 24 Aug 2021 17:49:49 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH 7/9] spi: amd: Check for idle bus before execute opcode
-Message-ID: <20210824164949.GJ4393@sirena.org.uk>
-References: <20210824104041.708945-1-tanureal@opensource.cirrus.com>
- <20210824104041.708945-8-tanureal@opensource.cirrus.com>
+        id S232263AbhHXQvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232907AbhHXQvJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:51:09 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F780C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:50:25 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id j15so21179654ila.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:50:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4wnJLmDQpwuCqmlXZqmbQNE5CdhWiVCeYL5fmov+jPQ=;
+        b=Cq0fO4jvWCmNgiGilupCwBZ2tfiVRhKAEoiGtovZjenwmX9//DacVdrdYr70cOKjdt
+         k+IEENvoo4egWQXg9ihuqGfNLtksAN/nL2E2ohO4U4tXsoppZINewj7UL2jGDIQiWf3G
+         aRg439BxgGKzu2DKKGWnjSVYfB8d9d23KLXQ8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4wnJLmDQpwuCqmlXZqmbQNE5CdhWiVCeYL5fmov+jPQ=;
+        b=jkUyyqk4aCZXjK6h2RXKOUSNSmterINzDz+vxh3Ogsg3halowEv3lwKXKSG7XmPfp3
+         rw50sIa9eSBuwcNjSQ0TfND/RxEdM4MeP1mb0YxyYsug4mRycx64P0lmZ0gaf7Z6OAZY
+         DKx2UdgNshbkUsq09XbYSdKYbVQUxUir5NrQ8rkHFKdOF93YdX/61k/u9ZonQBKysNtl
+         2rI2QNQ8cnNy+Y8kIpuKvGs0TUn4oCzj+TkSRhe3CoBQ6OoV64Yu49zSNlOmkf0yqmYT
+         zXdiAzalGR5+5yF0Fv+6r8oRuE+/yGVQuKyjm0KaoM2Ja/wxCAZ5bKCbtGJXhAbFAZcr
+         Zv8g==
+X-Gm-Message-State: AOAM532gIRuHSc84WBqca4LrXkozZ11OuqD4Z2ebzCqoRXuDLnYq4Byx
+        eITSk2ZG1/g3YVx0yMSjEKNb3Q==
+X-Google-Smtp-Source: ABdhPJydHPCaEnl3IkA8mTycs0cxZYQP9Ymnmlz/K/UoonbCL0bLKLGni/gwJHR1eYvfFVZ2P0G6Og==
+X-Received: by 2002:a05:6e02:547:: with SMTP id i7mr27240637ils.102.1629823824918;
+        Tue, 24 Aug 2021 09:50:24 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c23sm10333329ioi.31.2021.08.24.09.50.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 09:50:24 -0700 (PDT)
+Subject: Re: [PATCH] selftests: openat2: Fix testing failure for O_LARGEFILE
+ flag
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>, shuah@kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <1627475340-128057-1-git-send-email-baolin.wang@linux.alibaba.com>
+ <01184d9e-477d-cbe4-c936-62b92e915911@linux.alibaba.com>
+ <9411d418-567b-78f0-0e4d-30f08371c55a@linux.alibaba.com>
+ <a9dc1616-61b9-c010-950c-521693c74247@linuxfoundation.org>
+ <20210824112129.2t6lzqyf2dxllw4a@senku>
+ <20210824113619.a3gyxlerst7tumzn@wittgenstein>
+ <11702c81-8b7c-bbe6-705a-f0fed5f10ba5@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <15672b09-e4fc-78ec-7415-1ff7b777cc15@linuxfoundation.org>
+Date:   Tue, 24 Aug 2021 10:50:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/qIPZgKzMPM+y5U5"
-Content-Disposition: inline
-In-Reply-To: <20210824104041.708945-8-tanureal@opensource.cirrus.com>
-X-Cookie: Sentient plasmoids are a gas.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <11702c81-8b7c-bbe6-705a-f0fed5f10ba5@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/24/21 8:33 AM, Shuah Khan wrote:
+> On 8/24/21 5:36 AM, Christian Brauner wrote:
+>> On Tue, Aug 24, 2021 at 09:21:29PM +1000, Aleksa Sarai wrote:
+>>> On 2021-08-23, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>> Hi Baolin,
+>>>>
+>>>> On 8/22/21 8:40 PM, Baolin Wang wrote:
+>>>>> Hi Shuah,
+>>>>>
+>>>>> On 2021/7/28 20:32, Baolin Wang wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>>> When running the openat2 test suite on ARM64 platform, we got below failure,
+>>>>>>> since the definition of the O_LARGEFILE is different on ARM64. So we can
+>>>>>>> set the correct O_LARGEFILE definition on ARM64 to fix this issue.
+>>>>>>
+>>>>>> Sorry, I forgot to copy the failure log:
+>>>>>>
 
---/qIPZgKzMPM+y5U5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Please send me v2 with failure log included in the commit log.
 
-On Tue, Aug 24, 2021 at 11:40:39AM +0100, Lucas Tanure wrote:
-> Check if the bus is not in use before starting the transfer
-> Also wait after so the READ bytes in the FIFO are ready to
-> be copied
+thanks,
+-- Shuah
 
-This means that we will wait for read to be ready even for write only
-operations, as opposed to potentially just absorbing the delay while the
-CPU does other stuff.  If we need to wait prior to reading we should do
-that in the relevant code.
-
---/qIPZgKzMPM+y5U5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmElIy0ACgkQJNaLcl1U
-h9BVpAf9EgW5aal3kzLoffCA4qyVNqQdAp8Fs8kUL3eu0uyTFQNYSJ18tJkPXRgf
-WDOPjBYLzJAiJk0R4k5koZRT5/JvQiqsQRdHxVAVtWpl6qqTFvmMKmU4pzpStIw9
-w+bzDAshDBTRAu5F0nlts8i9KM/Mo+gVdjCPJDH+GmO3VTxw1KvZpsGe6ZJ1ATbs
-0NMi4qFlYLA0higQ8gTOcrBQzxf/uHdL8HGXdwIqPreZ9guUWuSYaFg0ft7hrHVD
-cY4uuwU5gI2+gZkZOCwAjmVU90TMAN9KDZk7O0VbVOS8uDzEwLE2rf0pfjTE8CAn
-w92nvXrDo74py3LunUvSLSrTvek28Q==
-=QJBt
------END PGP SIGNATURE-----
-
---/qIPZgKzMPM+y5U5--
