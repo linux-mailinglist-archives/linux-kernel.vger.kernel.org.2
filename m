@@ -2,323 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB1D3F6889
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865CC3F688F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235304AbhHXSAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 14:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
+        id S239930AbhHXSAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238088AbhHXR76 (ORCPT
+        with ESMTP id S236374AbhHXR77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:59:58 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2893C08ED8A
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:40:25 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id x140so8276096ybe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:40:25 -0700 (PDT)
+        Tue, 24 Aug 2021 13:59:59 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1041C08ED8E
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:40:40 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id a5so12681164plh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:40:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UwVp3TaTrsW4yFZIGDaaNefCtZpYijG6P9cNfIiRWFs=;
-        b=JVU8DDJfmYOaTtEs7m7fMk+Zp/gcPMpZrtO3FuN+pWzA1ygtP52hhITN4j+0V/ftQE
-         Omanc4vfr2kxM0K+VFSppJ5SIbDcKyy+a1XSGSkhyQwhNadvTlCz/nd8JhOIX78D32tQ
-         RzfUnfl8+5z+RT/sdtBsQ4/QTtg1PLQZ+IV4DRZNHYvaoLXsoEDDadKPHhs7KUX+ZlDq
-         QJg+3DCdUJrgcXpT0rDbXfZQunT34Q5BdSmy9RnXXQARPauPY4srtIXpTi6p716rq5is
-         SYdGZAfUzzebA7T2xKdiS6w7CdGJ1NjR8W3sanC2T5ASk0Jfi7rHfFX+KQ+Y8/1sSFgO
-         Kiwg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2MRfElf5Ktg2ZL34FL8vljahbPh47EMrD1FdyVS+g+o=;
+        b=bNZ07zqJSLhYeyR5d7Jb4iWgrARD6Kv3snnrt53OcU6hGM2ZXcKg52lyPlKS/M9nfE
+         Z9itCPtOfwJR6mmWNYz2hK1E/aEahDPoH3JAhvNCctvkXn4geR/KJmm0KLR6FH+Nckp9
+         mq+wqqysJjUupRx/ED1ySAlh8/by+zl8rYDK2XYtG/I1SthYnPMZkrzeQBCRVbbe2Xyx
+         YSzEmJ+8rkaoQzk9oe+OT+88PfGjC5ezP1rg92Zo0hPAacDisujaH6rSP2waujq/ZOfm
+         q6kqCm05NYHKizssC9zM9vcFjLutUCIVlz2zFylryHrmPldGBQWCaxhuv4Fe1XyCJkHD
+         6eUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UwVp3TaTrsW4yFZIGDaaNefCtZpYijG6P9cNfIiRWFs=;
-        b=KfJJS9E8jbLsPqgvBrx6Ilb7vPJ6gybp094pDX3avYRVwiL28xwGI3VkyVvmENGMhw
-         DttK4+u13ayfXtZ0WCbS103HJ0NjeS/HJR+T6ZUYDEcuv5SrygAxi6U6MZ0jKvS5O9wW
-         AcqlbvvwVnCYaYLnSfnsm+WSW0qZ9MIHJF7wj6Yy07ZLpvwF3/aHJGLdKB/u4WIoO+El
-         paR3qrkzVxRgG1iK9xlGIVDXjpgRk82RoDSag4SRPalWhQQArvaDWgi6tDRdAbXUhCdg
-         pe4kNWNjL4ZeTuckFkd1zVlWcVxY2l7B3wEdZpfAZToij+K7eEaZ7YyAT5yLriUH5Ilr
-         udyg==
-X-Gm-Message-State: AOAM532t6QZZO51wxpFhqDNggkoGZ8yjpmefWBjfvJpev0b/EP64bDLi
-        PAaYnHUnFuaJkFzs1Vl3fQliqiBTW4oZ3AGYZwPLqw==
-X-Google-Smtp-Source: ABdhPJzF+Mlo7BQh5YVf/svCpx69TquFepkJPwJfpzkEgAtDfvMJl66TlEpJePEwAJEE4ucYOE+byat9Qk9zlYt2N4o=
-X-Received: by 2002:a5b:391:: with SMTP id k17mr53684767ybp.152.1629826824711;
- Tue, 24 Aug 2021 10:40:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2MRfElf5Ktg2ZL34FL8vljahbPh47EMrD1FdyVS+g+o=;
+        b=pSfdKKCGckNKXK+YYKgwxbmcGEL5iYxtcyP8KjrPzqrQTkcib/q0CcX2YqDd4Kkeky
+         ylzW3w1OYWU8a3XfMayiGdNkuix0T/JIZhZOU9hrKevQhYiqwYZTD8kPk+ycu7Bc1INq
+         nZ77TQwhiZ4CVu+VxGREWmyIiZ45EQUE/aQRvHXVYMikd5iDjXIag4kxTQQsGcRrN769
+         tYeL7LdgB/AcRj9B+MWuXvfzoEioGWULQyq3l8+9X+O267nxIibHq4DVbpTfO630PL55
+         YMhxzbYfmiNBKy+HPBo6eICvUAVD9FOMtrcY8qXGQtF1a0bU5IGl6l0l63daMx0TekJb
+         KOlQ==
+X-Gm-Message-State: AOAM532n5iFsDq0mXpWhrM+Tyon13e9rlKOTZ/bIARr4l86WbqR7q3dY
+        LHOjZ6a4FY00zl7aCAMtqGPhUQ==
+X-Google-Smtp-Source: ABdhPJxNfb6wPoVgTa5ynkgUH+QlI5xB0tV3Q4uJEWvwhzOK5c/yhrCS5YeIPcSbtAO9ST/2G/HMVw==
+X-Received: by 2002:a17:902:7145:b0:137:2e25:5bf0 with SMTP id u5-20020a170902714500b001372e255bf0mr896260plm.10.1629826840089;
+        Tue, 24 Aug 2021 10:40:40 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id gn12sm2996444pjb.26.2021.08.24.10.40.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 10:40:39 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 17:40:33 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
+ from ioapic_write_indirect()
+Message-ID: <YSUvESHcms6B3+DA@google.com>
+References: <20210823143028.649818-1-vkuznets@redhat.com>
+ <20210823143028.649818-5-vkuznets@redhat.com>
+ <20210823185841.ov7ejn2thwebcwqk@habkost.net>
+ <87mtp7jowv.fsf@vitty.brq.redhat.com>
+ <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
+ <87k0kakip9.fsf@vitty.brq.redhat.com>
+ <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
 MIME-Version: 1.0
-References: <20210818005615.138527-1-joshdon@google.com> <YSODqN9G7VuV+kNR@hirez.programming.kicks-ass.net>
- <CAOBnfPjH=y3Lk7AukLeG4mNcJnf5cgV260=PZCbF9u69-T+Q6Q@mail.gmail.com>
- <YSS1/rqqsGaBX/yQ@hirez.programming.kicks-ass.net> <YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net>
-In-Reply-To: <YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 24 Aug 2021 10:40:13 -0700
-Message-ID: <CABk29Nt7413WKqhYDdA5qwPAiwUr7mWWpE02J5aaYSTbOoEzOQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/core: Simplify core-wide task selection
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Vineeth Pillai <vineethrp@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tao Zhou <tao.zhou@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 2:38 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Aug 24, 2021 at 11:03:58AM +0200, Peter Zijlstra wrote:
-> > Let me go do that and also attempt a Changelog to go with it ;-)
->
-> How's this then?
->
-> ---
-> Subject: sched/core: Simplify core-wide task selection
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Tue Aug 24 11:05:47 CEST 2021
->
-> Tao suggested a two-pass task selection to avoid the retry loop.
->
-> Not only does it avoid the retry loop, it results in *much* simpler
-> code.
->
-> This also fixes an issue spotted by Josh Don where, for SMT3+, we can
-> forget to update max on the first pass and get to do an extra round.
->
-> Suggested-by: Tao Zhou <tao.zhou@linux.dev>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On Tue, Aug 24, 2021, Maxim Levitsky wrote:
+> On Tue, 2021-08-24 at 16:42 +0200, Vitaly Kuznetsov wrote:
+> > Eduardo Habkost <ehabkost@redhat.com> writes:
+> > 
+> > > On Tue, Aug 24, 2021 at 3:13 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+> > > > Eduardo Habkost <ehabkost@redhat.com> writes:
+> > > > 
+> > > > > On Mon, Aug 23, 2021 at 04:30:28PM +0200, Vitaly Kuznetsov wrote:
+> > > > > > diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
+> > > > > > index ff005fe738a4..92cd4b02e9ba 100644
+> > > > > > --- a/arch/x86/kvm/ioapic.c
+> > > > > > +++ b/arch/x86/kvm/ioapic.c
+> > > > > > @@ -319,7 +319,7 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
+> > > > > >      unsigned index;
+> > > > > >      bool mask_before, mask_after;
+> > > > > >      union kvm_ioapic_redirect_entry *e;
+> > > > > > -    unsigned long vcpu_bitmap;
+> > > > > > +    unsigned long vcpu_bitmap[BITS_TO_LONGS(KVM_MAX_VCPUS)];
 
-Reviewed-by: Josh Don <joshdon@google.com>
+The preferred pattern is:
 
-> ---
->  kernel/sched/core.c | 156 +++++++++++++++-------------------------------------
->  1 file changed, 45 insertions(+), 111 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index ceae25ea8a0e..8a9a32df5f38 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5381,8 +5381,7 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->                         return p;
->         }
->
-> -       /* The idle class should always have a runnable task: */
-> -       BUG();
-> +       BUG(); /* The idle class should always have a runnable task. */
->  }
->
->  #ifdef CONFIG_SCHED_CORE
-> @@ -5404,54 +5403,18 @@ static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
->         return a->core_cookie == b->core_cookie;
->  }
->
-> -// XXX fairness/fwd progress conditions
-> -/*
-> - * Returns
-> - * - NULL if there is no runnable task for this class.
-> - * - the highest priority task for this runqueue if it matches
-> - *   rq->core->core_cookie or its priority is greater than max.
-> - * - Else returns idle_task.
-> - */
-> -static struct task_struct *
-> -pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *max, bool in_fi)
-> +static inline struct task_struct *pick_task(struct rq *rq)
->  {
-> -       struct task_struct *class_pick, *cookie_pick;
-> -       unsigned long cookie = rq->core->core_cookie;
-> -
-> -       class_pick = class->pick_task(rq);
-> -       if (!class_pick)
-> -               return NULL;
-> -
-> -       if (!cookie) {
-> -               /*
-> -                * If class_pick is tagged, return it only if it has
-> -                * higher priority than max.
-> -                */
-> -               if (max && class_pick->core_cookie &&
-> -                   prio_less(class_pick, max, in_fi))
-> -                       return idle_sched_class.pick_task(rq);
-> +       const struct sched_class *class;
-> +       struct task_struct *p;
->
-> -               return class_pick;
-> +       for_each_class(class) {
-> +               p = class->pick_task(rq);
-> +               if (p)
-> +                       return p;
->         }
->
-> -       /*
-> -        * If class_pick is idle or matches cookie, return early.
-> -        */
-> -       if (cookie_equals(class_pick, cookie))
-> -               return class_pick;
-> -
-> -       cookie_pick = sched_core_find(rq, cookie);
-> -
-> -       /*
-> -        * If class > max && class > cookie, it is the highest priority task on
-> -        * the core (so far) and it must be selected, otherwise we must go with
-> -        * the cookie pick in order to satisfy the constraint.
-> -        */
-> -       if (prio_less(cookie_pick, class_pick, in_fi) &&
-> -           (!max || prio_less(max, class_pick, in_fi)))
-> -               return class_pick;
-> -
-> -       return cookie_pick;
-> +       BUG(); /* The idle class should always have a runnable task. */
->  }
->
->  extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
-> @@ -5459,11 +5422,12 @@ extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_f
->  static struct task_struct *
->  pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  {
-> -       struct task_struct *next, *max = NULL;
-> -       const struct sched_class *class;
-> +       struct task_struct *next, *p, *max = NULL;
->         const struct cpumask *smt_mask;
->         bool fi_before = false;
-> -       int i, j, cpu, occ = 0;
-> +       unsigned long cookie;
-> +       int i, cpu, occ = 0;
-> +       struct rq *rq_i;
->         bool need_sync;
->
->         if (!sched_core_enabled(rq))
-> @@ -5536,12 +5500,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->          * and there are no cookied tasks running on siblings.
->          */
->         if (!need_sync) {
-> -               for_each_class(class) {
-> -                       next = class->pick_task(rq);
-> -                       if (next)
-> -                               break;
-> -               }
-> -
-> +               next = pick_task(rq);
->                 if (!next->core_cookie) {
->                         rq->core_pick = NULL;
->                         /*
-> @@ -5554,76 +5513,51 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->                 }
->         }
->
-> -       for_each_cpu(i, smt_mask) {
-> -               struct rq *rq_i = cpu_rq(i);
-> -
-> -               rq_i->core_pick = NULL;
-> +       /*
-> +        * For each thread: do the regular task pick and find the max prio task
-> +        * amongst them.
-> +        *
-> +        * Tie-break prio towards the current CPU
-> +        */
-> +       for_each_cpu_wrap(i, smt_mask, cpu) {
-> +               rq_i = cpu_rq(i);
->
->                 if (i != cpu)
->                         update_rq_clock(rq_i);
-> +
-> +               p = rq_i->core_pick = pick_task(rq_i);
-> +               if (!max || prio_less(max, p, fi_before))
-> +                       max = p;
->         }
->
-> +       cookie = rq->core->core_cookie = max->core_cookie;
-> +
->         /*
-> -        * Try and select tasks for each sibling in descending sched_class
-> -        * order.
-> +        * For each thread: try and find a runnable task that matches @max or
-> +        * force idle.
->          */
-> -       for_each_class(class) {
-> -again:
-> -               for_each_cpu_wrap(i, smt_mask, cpu) {
-> -                       struct rq *rq_i = cpu_rq(i);
-> -                       struct task_struct *p;
-> -
-> -                       if (rq_i->core_pick)
-> -                               continue;
-> +       for_each_cpu(i, smt_mask) {
-> +               rq_i = cpu_rq(i);
-> +               p = rq_i->core_pick;
->
-> -                       /*
-> -                        * If this sibling doesn't yet have a suitable task to
-> -                        * run; ask for the most eligible task, given the
-> -                        * highest priority task already selected for this
-> -                        * core.
-> -                        */
-> -                       p = pick_task(rq_i, class, max, fi_before);
-> +               if (!cookie_equals(p, cookie)) {
-> +                       p = NULL;
-> +                       if (cookie)
-> +                               p = sched_core_find(rq_i, cookie);
->                         if (!p)
-> -                               continue;
-> +                               p = idle_sched_class.pick_task(rq_i);
-> +               }
->
-> -                       if (!is_task_rq_idle(p))
-> -                               occ++;
-> +               rq_i->core_pick = p;
->
-> -                       rq_i->core_pick = p;
-> -                       if (rq_i->idle == p && rq_i->nr_running) {
-> +               if (p == rq_i->idle) {
-> +                       if (rq_i->nr_running) {
->                                 rq->core->core_forceidle = true;
->                                 if (!fi_before)
->                                         rq->core->core_forceidle_seq++;
->                         }
-> -
-> -                       /*
-> -                        * If this new candidate is of higher priority than the
-> -                        * previous; and they're incompatible; we need to wipe
-> -                        * the slate and start over. pick_task makes sure that
-> -                        * p's priority is more than max if it doesn't match
-> -                        * max's cookie.
-> -                        *
-> -                        * NOTE: this is a linear max-filter and is thus bounded
-> -                        * in execution time.
-> -                        */
-> -                       if (!max || !cookie_match(max, p)) {
-> -                               struct task_struct *old_max = max;
-> -
-> -                               rq->core->core_cookie = p->core_cookie;
-> -                               max = p;
-> -
-> -                               if (old_max) {
-> -                                       rq->core->core_forceidle = false;
-> -                                       for_each_cpu(j, smt_mask) {
-> -                                               if (j == i)
-> -                                                       continue;
-> -
-> -                                               cpu_rq(j)->core_pick = NULL;
-> -                                       }
-> -                                       occ = 1;
-> -                                       goto again;
-> -                               }
-> -                       }
-> +               } else {
-> +                       occ++;
->                 }
->         }
->
-> @@ -5643,7 +5577,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->          * non-matching user state.
->          */
->         for_each_cpu(i, smt_mask) {
-> -               struct rq *rq_i = cpu_rq(i);
-> +               rq_i = cpu_rq(i);
->
->                 /*
->                  * An online sibling might have gone offline before a task
+	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
+
+> > > > > 
+> > > > > Is there a way to avoid this KVM_MAX_VCPUS-sized variable on the
+> > > > > stack?  This might hit us back when we increase KVM_MAX_VCPUS to
+> > > > > a few thousand VCPUs (I was planning to submit a patch for that
+> > > > > soon).
+> > > > 
+> > > > What's the short- or mid-term target?
+> > > 
+> > > Short term target is 2048 (which was already tested). Mid-term target
+> > > (not tested yet) is 4096, maybe 8192.
+> > > 
+> > > > Note, we're allocating KVM_MAX_VCPUS bits (not bytes!) here, this means
+> > > > that for e.g. 2048 vCPUs we need 256 bytes of the stack only. In case
+> > > > the target much higher than that, we will need to either switch to
+> > > > dynamic allocation or e.g. use pre-allocated per-CPU variables and make
+> > > > this a preempt-disabled region. I, however, would like to understand if
+> > > > the problem with allocating this from stack is real or not first.
+> > > 
+> > > Is 256 bytes too much here, or would that be OK?
+> > > 
+> > 
+> > AFAIR, on x86_64 stack size (both reqular and irq) is 16k, eating 256
+
+Don't forget i386!  :-)
+
+> > bytes of it is probably OK. I'd start worrying when we go to 1024 (8k
+> > vCPUs) and above (but this is subjective of course).
+
+256 is fine, 1024 would indeed be problematic, e.g. CONFIG_FRAME_WARN defaults to
+1024 on 32-bit kernels.  That's not a hard limit per se, but ideally KVM will stay
+warn-free on all flavors of x86.
+
+> On the topic of enlarging these bitmaps to cover all vCPUs.
+> 
+> I also share the worry of having the whole bitmap on kernel stack for very
+> large number of vcpus.
+> Maybe we need to abstract and use a bitmap for a sane number of vcpus, 
+> and use otherwise a 'kmalloc'ed buffer?
+
+That's a future problem.  More specifically, it's the problem of whoever wants to
+push KVM_MAX_VCPUS > ~2048.  There are a lot of ways to solve the problem, e.g.
+this I/O APIC code runs under a spinlock so a dedicated bitmap in struct kvm_ioapic
+could be used to avoid a large stack allocation.
+
+> Also in theory large bitmaps might affect performance a bit.
+
+Maybe.  The only possible degredation for small VMs, i.e. VMs that don't need the
+full bitmap, is if the compiler puts other variables below the bitmap and causes
+sub-optimal cache line usage.  But I suspect/hope the compiler is smart enough to
+use GPRs and/or organize the local variables on the stack so that doesn't happen.
