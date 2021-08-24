@@ -2,54 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227DF3F5F68
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1C73F5F4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237657AbhHXNqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:46:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56690 "EHLO mail.kernel.org"
+        id S237559AbhHXNhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:37:04 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:47835 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237403AbhHXNql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:46:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79F1D601FF;
-        Tue, 24 Aug 2021 13:45:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629812757;
-        bh=gbyfwyBl+3sjTR1TrDd8LA5MAl4lkrvpI+04lctKP3o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=isjmp9rvh2NKkrEuFjZiN0Vu1ULLzvhpJp+3u/slKfxRzbwm+RuUiaOC0oMYFayqS
-         sNiAmL+/ieEt3vaLtGtwjwtGeq3TbPwuiS+EUo/ak4G/nfYBRg8Jcv3TPTi5QlHqNw
-         6pTWcmVh/NV31xr9j9q+45iD+ob632ManldTBa0Y=
-Date:   Tue, 24 Aug 2021 15:36:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Phy <linux-phy@lists.infradead.org>
-Subject: Re: [GIT PULL]: Generic phy updates for v5.15
-Message-ID: <YST1wr4RGKnt9RDK@kroah.com>
-References: <YSR/UHNxE6iu3GBc@matsya>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSR/UHNxE6iu3GBc@matsya>
+        id S236661AbhHXNg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:36:59 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Gv99p135Qz9sRs;
+        Tue, 24 Aug 2021 15:36:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id aA_Ckaa4wtwK; Tue, 24 Aug 2021 15:36:14 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gv99p04TWz9sRj;
+        Tue, 24 Aug 2021 15:36:14 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BF8D18B826;
+        Tue, 24 Aug 2021 15:36:13 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id mS4iE9qcOepp; Tue, 24 Aug 2021 15:36:13 +0200 (CEST)
+Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5D7628B824;
+        Tue, 24 Aug 2021 15:36:13 +0200 (CEST)
+Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 2B9B16BC82; Tue, 24 Aug 2021 13:36:13 +0000 (UTC)
+Message-Id: <a4b3951d1191d4183d92a07a6097566bde60d00a.1629812058.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 RESEND] powerpc/audit: Convert powerpc to
+ AUDIT_ARCH_COMPAT_GENERIC
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com
+Date:   Tue, 24 Aug 2021 13:36:13 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:40:40AM +0530, Vinod Koul wrote:
-> Hello Greg,
-> 
-> Here is the update for v5.15, sorry this time it is bit late than
-> normal. Will make sure this hits early next time.
-> 
-> The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
-> 
->   Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-5.15
+Commit e65e1fc2d24b ("[PATCH] syscall class hookup for all normal
+targets") added generic support for AUDIT but that didn't include
+support for bi-arch like powerpc.
 
-Pulled and pushed out, thanks.
+Commit 4b58841149dc ("audit: Add generic compat syscall support")
+added generic support for bi-arch.
 
-greg k-h
+Convert powerpc to that bi-arch generic audit support.
+
+Cc: Paul Moore <paul@paul-moore.com>
+Cc: Eric Paris <eparis@redhat.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+Resending v2 with Audit people in Cc
+
+v2:
+- Missing 'git add' for arch/powerpc/include/asm/unistd32.h
+- Finalised commit description
+---
+ arch/powerpc/Kconfig                |  5 +-
+ arch/powerpc/include/asm/unistd32.h |  7 +++
+ arch/powerpc/kernel/Makefile        |  3 --
+ arch/powerpc/kernel/audit.c         | 84 -----------------------------
+ arch/powerpc/kernel/compat_audit.c  | 44 ---------------
+ 5 files changed, 8 insertions(+), 135 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/unistd32.h
+ delete mode 100644 arch/powerpc/kernel/audit.c
+ delete mode 100644 arch/powerpc/kernel/compat_audit.c
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 663766fbf505..5472358609d2 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -163,6 +163,7 @@ config PPC
+ 	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+ 	select ARCH_WANT_LD_ORPHAN_WARN
+ 	select ARCH_WEAK_RELEASE_ACQUIRE
++	select AUDIT_ARCH_COMPAT_GENERIC
+ 	select BINFMT_ELF
+ 	select BUILDTIME_TABLE_SORT
+ 	select CLONE_BACKWARDS
+@@ -316,10 +317,6 @@ config GENERIC_TBSYNC
+ 	bool
+ 	default y if PPC32 && SMP
+ 
+-config AUDIT_ARCH
+-	bool
+-	default y
+-
+ config GENERIC_BUG
+ 	bool
+ 	default y
+diff --git a/arch/powerpc/include/asm/unistd32.h b/arch/powerpc/include/asm/unistd32.h
+new file mode 100644
+index 000000000000..07689897d206
+--- /dev/null
++++ b/arch/powerpc/include/asm/unistd32.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef _ASM_POWERPC_UNISTD32_H_
++#define _ASM_POWERPC_UNISTD32_H_
++
++#include <asm/unistd_32.h>
++
++#endif /* _ASM_POWERPC_UNISTD32_H_ */
+diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+index 7be36c1e1db6..825121eba3c2 100644
+--- a/arch/powerpc/kernel/Makefile
++++ b/arch/powerpc/kernel/Makefile
+@@ -125,9 +125,6 @@ obj-$(CONFIG_PCI)		+= pci_$(BITS).o $(pci64-y) \
+ 				   pci-common.o pci_of_scan.o
+ obj-$(CONFIG_PCI_MSI)		+= msi.o
+ 
+-obj-$(CONFIG_AUDIT)		+= audit.o
+-obj64-$(CONFIG_AUDIT)		+= compat_audit.o
+-
+ obj-$(CONFIG_PPC_IO_WORKAROUNDS)	+= io-workarounds.o
+ 
+ obj-y				+= trace/
+diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
+deleted file mode 100644
+index a2dddd7f3d09..000000000000
+--- a/arch/powerpc/kernel/audit.c
++++ /dev/null
+@@ -1,84 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <linux/init.h>
+-#include <linux/types.h>
+-#include <linux/audit.h>
+-#include <asm/unistd.h>
+-
+-static unsigned dir_class[] = {
+-#include <asm-generic/audit_dir_write.h>
+-~0U
+-};
+-
+-static unsigned read_class[] = {
+-#include <asm-generic/audit_read.h>
+-~0U
+-};
+-
+-static unsigned write_class[] = {
+-#include <asm-generic/audit_write.h>
+-~0U
+-};
+-
+-static unsigned chattr_class[] = {
+-#include <asm-generic/audit_change_attr.h>
+-~0U
+-};
+-
+-static unsigned signal_class[] = {
+-#include <asm-generic/audit_signal.h>
+-~0U
+-};
+-
+-int audit_classify_arch(int arch)
+-{
+-#ifdef CONFIG_PPC64
+-	if (arch == AUDIT_ARCH_PPC)
+-		return 1;
+-#endif
+-	return 0;
+-}
+-
+-int audit_classify_syscall(int abi, unsigned syscall)
+-{
+-#ifdef CONFIG_PPC64
+-	extern int ppc32_classify_syscall(unsigned);
+-	if (abi == AUDIT_ARCH_PPC)
+-		return ppc32_classify_syscall(syscall);
+-#endif
+-	switch(syscall) {
+-	case __NR_open:
+-		return 2;
+-	case __NR_openat:
+-		return 3;
+-	case __NR_socketcall:
+-		return 4;
+-	case __NR_execve:
+-		return 5;
+-	default:
+-		return 0;
+-	}
+-}
+-
+-static int __init audit_classes_init(void)
+-{
+-#ifdef CONFIG_PPC64
+-	extern __u32 ppc32_dir_class[];
+-	extern __u32 ppc32_write_class[];
+-	extern __u32 ppc32_read_class[];
+-	extern __u32 ppc32_chattr_class[];
+-	extern __u32 ppc32_signal_class[];
+-	audit_register_class(AUDIT_CLASS_WRITE_32, ppc32_write_class);
+-	audit_register_class(AUDIT_CLASS_READ_32, ppc32_read_class);
+-	audit_register_class(AUDIT_CLASS_DIR_WRITE_32, ppc32_dir_class);
+-	audit_register_class(AUDIT_CLASS_CHATTR_32, ppc32_chattr_class);
+-	audit_register_class(AUDIT_CLASS_SIGNAL_32, ppc32_signal_class);
+-#endif
+-	audit_register_class(AUDIT_CLASS_WRITE, write_class);
+-	audit_register_class(AUDIT_CLASS_READ, read_class);
+-	audit_register_class(AUDIT_CLASS_DIR_WRITE, dir_class);
+-	audit_register_class(AUDIT_CLASS_CHATTR, chattr_class);
+-	audit_register_class(AUDIT_CLASS_SIGNAL, signal_class);
+-	return 0;
+-}
+-
+-__initcall(audit_classes_init);
+diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
+deleted file mode 100644
+index 55c6ccda0a85..000000000000
+--- a/arch/powerpc/kernel/compat_audit.c
++++ /dev/null
+@@ -1,44 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#undef __powerpc64__
+-#include <asm/unistd.h>
+-
+-unsigned ppc32_dir_class[] = {
+-#include <asm-generic/audit_dir_write.h>
+-~0U
+-};
+-
+-unsigned ppc32_chattr_class[] = {
+-#include <asm-generic/audit_change_attr.h>
+-~0U
+-};
+-
+-unsigned ppc32_write_class[] = {
+-#include <asm-generic/audit_write.h>
+-~0U
+-};
+-
+-unsigned ppc32_read_class[] = {
+-#include <asm-generic/audit_read.h>
+-~0U
+-};
+-
+-unsigned ppc32_signal_class[] = {
+-#include <asm-generic/audit_signal.h>
+-~0U
+-};
+-
+-int ppc32_classify_syscall(unsigned syscall)
+-{
+-	switch(syscall) {
+-	case __NR_open:
+-		return 2;
+-	case __NR_openat:
+-		return 3;
+-	case __NR_socketcall:
+-		return 4;
+-	case __NR_execve:
+-		return 5;
+-	default:
+-		return 1;
+-	}
+-}
+-- 
+2.25.0
+
