@@ -2,182 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627003F5E2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152B13F5E5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237360AbhHXMqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 08:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
+        id S237196AbhHXMtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 08:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237196AbhHXMqE (ORCPT
+        with ESMTP id S236858AbhHXMtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 08:46:04 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EBDC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 05:45:19 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i28so45308836lfl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 05:45:19 -0700 (PDT)
+        Tue, 24 Aug 2021 08:49:13 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED06C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 05:48:29 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id z19so6970823edi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 05:48:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1gie8TKzTCG88PuowyLmmMIyp13AaJq23WJtnBAiVf8=;
-        b=c1FoAnPy8qFssF63uF/85NZ1Lv496397sCBGP+/crIbuU01fSuEAe6UsJMYa4FiyT0
-         rFtlT5NmPUyPHOP6+WbSGFDe/Jtx+6P2/cdAcsNxhcoFbKWiPOVmHH43yGR5W3+4kfee
-         D7oH8gCaLgJ6htGsubwDtiHkpFm8NTnxVymBr/R/yoAoQGFLr86NAbN1bXRgbSfrmJal
-         M7HYt0U2r2M6T+lMEFxsHRaa3AOYYiwosidVgSA15OGkpWmkwWFF8EF9iL0qGb1gR7R6
-         XvVERuGbxXP3RwWPLL/Aplt9BNTtyWi2MbtuTlbBr/fvKvC9V/Mf9hbFDzaXuybD13J+
-         fdPg==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=TRjaWKEPVAbYmcyTrEjZ5MangDAm0gSp+lRrNJV1+0E=;
+        b=JuFjEmwKkgGaZ350+GxWYS55NfLZLshjFgSXuQFfRGAi1Wt+nFC3EcoJpYERZsl0g2
+         /JNRRuTdHrB1oJWikBmJ44ugHG4gLYTVMlloXBGeqt4Q82D4u2T8Ua7jS/23VcaFgZqU
+         h/WFF4XWciydkircfKxhgkX41Xd6bQyYq5nOtPFFdLAAlyUBeF4pp/PGp/Vsp9L6KbcM
+         XMbfExrRLttMdjQk4taL07BIQExMIxZ3MiM3yAIZRuHX2o2CyMes7CMd0AOzqpdZUp/g
+         Dxyj8zOb4NU/r/PZ0vWOn90uE13hgDdhdbCLzZwyJNCif1NcJr17FQe6/BPn6ge7h5XJ
+         dmnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1gie8TKzTCG88PuowyLmmMIyp13AaJq23WJtnBAiVf8=;
-        b=Dsm5t0XY4USlaEKhaSwT7DrVOND7nrhgiD5V2Xwgqhgrc6+Sc5+9oN5X28tduPXqtk
-         m9FIacbL1QTbF4YmjADA40/i1Gs0k0WMs875RGZ/z0Ynb3xRWrmuqBeXgNxnBTP3rb/1
-         6DGgyiCAR/IWypTGr+69G4wOqGnlKYt9gL52X7G46yMoSHQHB8Slh5pm61bgH0s3Xp4c
-         cGS3CE5/j+YcD2xUUuy+B9kvlBj69GEUdmNtUIvI7e71sQcMQHp9WzzirIoV1tiKY2Ut
-         6nnngD1Gl9pcx4Tmppap2+JMkqbdiWlr+MC9t9YMonVpdtejFdV2wUuMswxQqJ2R3tXP
-         0cxA==
-X-Gm-Message-State: AOAM533O8id6JgS/SGwvops25iRl+MJG8zcvWLRL3+7phLamAMjNteNq
-        PZCV2N/yiwYimNIibcDOBCujnijUF1SXIDhBymOGOA==
-X-Google-Smtp-Source: ABdhPJxyj7ety9g6PGkwH7WZePRsUrUZjKH7kE2GjMwJxsb9Eh60l+DuERnR6VMKEl5nju/iLWgbb+Ic3lz/d5nzLlU=
-X-Received: by 2002:a05:6512:e99:: with SMTP id bi25mr2885410lfb.486.1629809118189;
- Tue, 24 Aug 2021 05:45:18 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=TRjaWKEPVAbYmcyTrEjZ5MangDAm0gSp+lRrNJV1+0E=;
+        b=rTW8Qd4CjZ+Rbu9Ky1r/zhWR+jUi61HMttCXDe+y7jikvKVL8ZG5BL9PdAvMvQoMua
+         Fdrdg4VGcno1EaxDqXL6cEQdli5AyoVEAI7xs6uMmGVNRt2WS/y2sXUFDJJLaji76PYz
+         51wMO32nsn0w/9pbGgK26Xio1n/vPdwRiUenirwhwRGf9ck/34lHdHL8IhYtboU/7MU/
+         S7tL2/QhDEG4YFrnni4vL7D4TXDEEEmwZt+ccl6jIimFpyWxodEAauyAfpDWqlEW5UZv
+         3IozKU3EBlOc7lbcSlKI073lD6e/dHPai6n9+2b0+1zRCO0TaGMPlBctxVVT8KNaWv71
+         E6+w==
+X-Gm-Message-State: AOAM5324SjDfFQPhFHlxD88FF3jBGtrmVnaIqPt1XL+c/uICnKmOzT5S
+        yCFO1Q31Wl8CQSymXhtiW6pKvv60XSeH+2e3/Fo=
+X-Google-Smtp-Source: ABdhPJzbjULq2tq5A7IHzG4KTGaU+4svjj7gzajNUpAe4yGBlJ6FBcGrlVTuSP/C5nrQvzFgeyeUmeRWbhrX6J4ee0Y=
+X-Received: by 2002:a05:6402:424a:: with SMTP id g10mr42280879edb.326.1629809308158;
+ Tue, 24 Aug 2021 05:48:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210812065730.3986-1-nishadkamdar@gmail.com>
-In-Reply-To: <20210812065730.3986-1-nishadkamdar@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 24 Aug 2021 14:44:42 +0200
-Message-ID: <CAPDyKFoaXdNDvO91n3rUsqe2JMg5E7YObYDnkAW4jqzVV+GLtw@mail.gmail.com>
-Subject: Re: [PATCH v3] mmc: core: Return correct emmc response in case of
- ioctl error
-To:     Nishad Kamdar <nishadkamdar@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Received: by 2002:a54:298b:0:0:0:0:0 with HTTP; Tue, 24 Aug 2021 05:48:27
+ -0700 (PDT)
+Reply-To: sarahjamson1999@gmail.com
+From:   Robert morrison <dave84114@gmail.com>
+Date:   Tue, 24 Aug 2021 13:48:27 +0100
+Message-ID: <CAK3pH7ssZxJXdwBZ39mAeNdPwF3nttLv9b87r++eacug1PupVA@mail.gmail.com>
+Subject: ATM Card
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Aug 2021 at 08:57, Nishad Kamdar <nishadkamdar@gmail.com> wrote:
->
-> When a read/write command is sent via ioctl to the kernel,
-> and the command fails, the actual error response of the emmc
-> is not sent to the user.
->
-> IOCTL read/write tests are carried out using commands
-> 17 (Single BLock Read), 24 (Single Block Write),
-> 18 (Multi Block Read), 25 (Multi Block Write)
->
-> The tests are carried out on a 64Gb emmc device. All of these
-> tests try to access an "out of range" sector address (0x09B2FFFF).
->
-> It is seen that without the patch the response received by the user
-> is not OUT_OF_RANGE error (R1 response 31st bit is not set) as per
-> JEDEC specification. After applying the patch proper response is seen.
-> This is because the function returns without copying the response to
-> the user in case of failure. This patch fixes the issue.
->
-> The test code and the output of only the CMD17 is included in the
-> commit to limit the message length.
->
-> CMD17 (Test Code Snippet):
-> ==========================
->         printf("Forming CMD%d\n", opt_idx);
->         /*  single block read */
->         cmd.blksz = 512;
->         cmd.blocks = 1;
->         cmd.write_flag = 0;
->         cmd.opcode = 17;
->         //cmd.arg = atoi(argv[3]);
->         cmd.arg = 0x09B2FFFF;
->         /* Expecting response R1B */
->         cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
->
->         memset(data, 0, sizeof(__u8) * 512);
->         mmc_ioc_cmd_set_data(cmd, data);
->
->         printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
->         if(ioctl(fd, MMC_IOC_CMD, &cmd))
->                 perror("Error");
->
->         printf("\nResponse: %08x\n", cmd.response[0]);
->
-> CMD17 (Output without patch):
-> =============================
-> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
-> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
-> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 0x09B2FFF]
-> Forming CMD17
-> Sending CMD17: ARG[0x09b2ffff]
-> Error: Connection timed out
->
-> Response: 00000000
-> (Incorrect response)
->
-> CMD17 (Output with patch):
-> ==========================
-> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17
-> [sudo] password for test:
-> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
-> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 09B2FFFF]
-> Forming CMD17
-> Sending CMD17: ARG[0x09b2ffff]
-> Error: Connection timed out
->
-> Response: 80000900
-> (Correct OUT_OF_ERROR response as per JEDEC specification)
->
-> Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
-> Reviewed-by: Avri Altman <avri.altman@wdc.com>
-> ---
-> Changes in v2:
->   - Make commit message clearer by adding test cases as outputs.
-> Changes in v3:
->   - Shorten the commit message to include only CMD17 related
->     code and test.
->
->  drivers/mmc/core/block.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index a9ad9f5fa9491..efa92aa7e2368 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -522,11 +522,13 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
->         if (cmd.error) {
->                 dev_err(mmc_dev(card->host), "%s: cmd error %d\n",
->                                                 __func__, cmd.error);
-> +               memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
->                 return cmd.error;
->         }
->         if (data.error) {
->                 dev_err(mmc_dev(card->host), "%s: data error %d\n",
->                                                 __func__, data.error);
-> +               memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
-
-It looks like we should do this memcpy, no matter whether we get an
-error response or not.
-
-In other words, I suggest you move the existing
-"memcpy(&(idata->ic.response), cmd.resp, sizeof(cmd.resp));" from a
-couple of lines further done in the code, up to immediately after we
-have called mmc_wait_for_req(). That should make it more clear as
-well, I think.
-
->                 return data.error;
->         }
->
-> --
-> 2.17.1
->
-
-Kind regards
-Uffe
+LS0gDQrQn9Cw0LLQsNC20LDQvdGLINGB0Y/QsdCw0YAsDQoNCtCU0L7QsdGA0Ysg0LTQt9C10L3R
+jCwg0LTQsNGA0LDQs9GWINGB0Y/QsdCw0YAsINGP0Log0YHQv9GA0LDQstGLPyDQodCw0LzRiyDQ
+tNC+0Z7Qs9GWINGH0LDRgS4g0K8g0YDQsNC00YsNCtC/0LDQstC10LTQsNC80ZbRhtGMINCy0LDQ
+vCDQsNCxINC80LDRltC8INC/0L7RgdC/0LXRhdGDINGeINC/0LXRgNCw0LTQsNGH0Ysg0LPRjdGC
+0YvRhSDRgdGA0L7QtNC60LDRniDRgdC/0LDQtNGH0YvQvdGLINC/0YDRiw0K0YHRg9C/0YDQsNGG
+0L7RntC90ZbRhtGC0LLQtSDQvdC+0LLQsNCz0LAg0L/QsNGA0YLQvdGR0YDQsC4g0KMg0YbRj9C/
+0LXRgNCw0YjQvdGWINGH0LDRgSDRjyDQt9C90LDRhdC+0LTQttGD0YHRjyDRng0K0ZbQvdC00YvQ
+udGB0LrRltGFINGW0L3QstC10YHRgtGL0YbRi9C50L3Ri9GFINC/0YDQsNC10LrRgtCw0YUg0Lcg
+0YPQu9Cw0YHQvdCw0Lkg0LTQvtC70Y/QuSDQsNC0INCw0LPRg9C70YzQvdCw0Lkg0YHRg9C80Ysu
+INCc0LDRjg0K0L3QsCDRntCy0LDQt9C1LCDRiNGC0L4g0Y8g0L3QtSDQt9Cw0LHRi9Cy0LDRniDQ
+stCw0YjRiyDQvNGW0L3Rg9C70YvRjyDQvdCw0LzQsNCz0LDQvdC90ZYg0ZYg0YHQv9GA0L7QsdGL
+INC00LDQv9Cw0LzQsNCz0YfRiw0K0LzQvdC1INGeINC/0LXRgNCw0LTQsNGH0Ysg0LPRjdGC0YvR
+hSDRgdGA0L7QtNC60LDRniDRgdC/0LDQtNGH0YvQvdGLLCDRhdC+0YbRjCDQs9GN0YLQsCDQvdCw
+0Lwg0L3QtSDRntC00LDQu9C+0YHRjy4g0KbRj9C/0LXRgA0K0LfQstGP0LbRi9GG0LXRgdGPINC3
+INC80LDRkdC5INGB0LDQutGA0LDRgtCw0YDQutCw0Lkg0YMg0JfQsNGF0L7QtNC90Y/QuSDQkNGE
+0YDRi9GG0Ysg0JvQvtC80LUsINGP0LUg0LfQsNCy0YPRhtGMINCh0LDRgNCwDQrQlNC20Y3QvNGB
+0LDQvSDQvdCwINGP0LUg0LDQtNGA0LDRgSDRjdC70LXQutGC0YDQvtC90L3QsNC5INC/0L7RiNGC
+0YsgKHNhcmFoamFtc29uMTk5OUBnbWFpbC5jb20pINGWDQrQv9Cw0L/RgNCw0YHRltGG0LUg0Y/Q
+tSDQstGL0YHQu9Cw0YbRjCDQstCw0Lwg0LDQs9GD0LvRjNC90YPRjiDRgdGD0LzRgyAoNTAwIDAw
+MCwwMCDQtNC+0LvQsNGA0LDRniDQl9Co0JApLA0K0L/Rj9GG0YzRgdC+0YIg0YLRi9GB0Y/RhyDQ
+tNC+0LvQsNGA0LDRniDQl9Co0JAsINGP0LrRltGPINGPINC30LDRhdC+0Z7QstCw0Z4g0LLQsNGI
+0LAg0LrQsNC80L/QtdC90YHQsNGG0YvRjyDQt9CwINGe0YHQtQ0K0LzRltC90YPQu9GL0Y8g0L3Q
+sNC80LDQs9Cw0L3QvdGWINGWINGB0L/RgNC+0LHRiyDQtNCw0L/QsNC80LDQs9GH0Ysg0LzQvdC1
+INGeINC30LTQt9C10LvRhtGLLiDQryDQstC10LvRjNC80ZYg0LDRhtCw0L3RltGeDQrQstCw0YjR
+iyDQvdCw0LzQsNCz0LDQvdC90ZYg0Z4g0YLQvtC5INGH0LDRgS4g0KLQsNC6INGI0YLQviDQvdC1
+INGB0LDRgNC+0LzQtdC50YbQtdGB0Y8g0ZYg0LfQstGP0LbRi9GG0LXRgdGPINC3INC80LDRkdC5
+DQrRgdCw0LrRgNCw0YLQsNGA0LrQsNC5INCh0LDRgNCw0Lkg0JTQttGN0LzRgdCw0L0g0ZYg0YHQ
+utCw0LbRi9GG0LUg0ZHQuSwg0LrRg9C00Ysg0LDQtNC/0YDQsNCy0ZbRhtGMINCa0JDQoNCi0JrQ
+ow0K0LHQsNC90LrQsNC80LDRgtCwINC90LAg0LDQs9GD0LvRjNC90YPRjiDRgdGD0LzRgyAoNTAw
+IDAwMCwwMCDQtNC+0LvQsNGA0LDRniDQl9Co0JApLiDQmtCw0LvRliDQu9Cw0YHQutCwLCDQtNCw
+0LnRhtC1DQrQvNC90LUg0LLQtdC00LDRhtGMLCDQutCw0LvRliDQstGLINGP0LPQviDQsNGC0YDR
+i9C80LDQtdGG0LUsINC60LDQsSDQvNGLINC80LDQs9C70ZYg0L/QsNC00LfRj9C70ZbRhtGG0LAg
+0YDQsNC00LDRgdGG0Y4NCtC/0LDRgdC70Y8g0Z7RgdGW0YUg0L/QsNC60YPRgiDRgyDRgtC+0Lkg
+0YfQsNGBLiDQoyDQs9GN0YLRiyDQvNC+0LzQsNC90YIg0Y8g0LLQtdC70YzQvNGWINC30LDQvdGP
+0YLRiyDRgtGD0YIg0LcgLdC30LANCtGW0L3QstC10YHRgtGL0YbRi9C50L3Ri9GFINC/0YDQsNC1
+0LrRgtCw0Z4sINGP0LrRltGPINC80LDRjiDQtyDQvdC+0LLRi9C8INC/0LDRgNGC0L3RkdGA0LDQ
+vCwg0L3QsNGA0Y3RiNGG0LUg0Z7RgdC/0L7QvNC90ZbRhtC1LA0K0YjRgtC+INGPINC/0LXRgNCw
+0LTQsNGeINGW0L3RgdGC0YDRg9C60YbRi9GWINC80LDQudC80YMg0YHQsNC60YDQsNGC0LDRgNGD
+INCw0LQg0LLQsNGI0LDQs9CwINGW0LzRjyDQsNGC0YDRi9C80LDRhtGMINC60LDRgNGC0LrRgw0K
+0LHQsNC90LrQsNC80LDRgtCwLCDRgtCw0LzRgyDQvdC1INGB0LDRgNC+0LzQtdC50YbQtdGB0Y8g
+0LfQstGP0LfQsNGG0YbQsCDQtyDQodCw0YDQsNC5INCU0LbRjdC80YHQsNC9LCDRj9C90LAg0LLR
+i9GI0LvQtSDQstCw0LwNCtGB0YPQvNGDINCx0LXQtyDQt9Cw0YLRgNGL0LzQutGWLg0KDQrQlyDQ
+vdCw0LnQu9C10L/RiNGL0LzRliDQv9Cw0LbQsNC00LDQvdC90Y/QvNGWLA0KDQrQkyAt0L0g0KDQ
+vtCx0LXRgNGCINCc0L7RgNGL0YHQsNC9Lg0K
