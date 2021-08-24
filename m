@@ -2,201 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7FA3F60D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77D13F60CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237978AbhHXOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237890AbhHXOpC (ORCPT
+        id S238016AbhHXOoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:44:44 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61322 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237890AbhHXOon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:45:02 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFD4C061764;
-        Tue, 24 Aug 2021 07:44:17 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id v10so20480840wrd.4;
-        Tue, 24 Aug 2021 07:44:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1NzbKqbkTUbaFr+lA6+JmiCj0QXO0t1xf2uOeDq9W8Q=;
-        b=QIWtxOCX0oHdFAhMS0IA+Nk/oigUtaZqVLUx+1JyZzUkGeFvj66ZPB4rEzpmC/KKUJ
-         nRwsRbine1J6TlOGxl7jhaZzTj0CISRCUtp/3F/0TNtxGc3pvkC14lmd4RsFhMVGc4Ht
-         R6RmvTtyk2fk9EbE2Mb2AKc7SnCwnGVJ3StiCbSVnU82frso0FicLyNLp4mm3lA855Bc
-         usNz+hVKdO6zLKvNMAhcCjS67mMSwqw/9vUu/fSS2B3tlkwWA6C4h9d7WBtjq26eqvNp
-         6tskO4cQIpQdM4HGHbUGeoxSLfitKpA2T1X4BcmcXW1IhxR6fxCHO1PpbnzIuHZM0F9v
-         vPXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1NzbKqbkTUbaFr+lA6+JmiCj0QXO0t1xf2uOeDq9W8Q=;
-        b=SglvO4XD/0AWr6ERK1qHUaUlHu87tplO/lWsRiqupKHG6xBm3xPWdVXbJ30gC9FBwm
-         04ZDGUdud7aYu7KeGec1tdmmGl3CO8TU1reiBMxNYX1WceWZeujQndbHYKwHuMg2zImG
-         oEMmJysG+/sf5G8cdYYjpsia60vgxHUoWIQ6dFcurUF8xCt9DlZW4+DIIvdVgoxSQVYW
-         ms9D3pL6oQU70bRfESncoVlYMebg0kxjOfPbABHupiZBNMrrPuAe9BuHLcuAI26SOwJ8
-         ve0Avuu3RccktgPuKnlDhm876Xhc9iv/66D4bpXHBzGW2DwjmsFrCSYu3QO8n89BgN0g
-         qcog==
-X-Gm-Message-State: AOAM531BbBrlP4q6En/PXgqLpXID3xEMNH+dhrEhaV6y+Kp/292UE+8E
-        Xnl1JMlSKEQV8+xEmKIPdV0=
-X-Google-Smtp-Source: ABdhPJwVzopxdLaEHLT47W3U+AaaD3NlZ7TYfWpSMAL/CjrUYRkdBmkjawuQUMi15yYA2TNeP4StzA==
-X-Received: by 2002:adf:e711:: with SMTP id c17mr1160877wrm.417.1629816256556;
-        Tue, 24 Aug 2021 07:44:16 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.232.113])
-        by smtp.gmail.com with ESMTPSA id o7sm2452557wmc.46.2021.08.24.07.44.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 07:44:16 -0700 (PDT)
-To:     Jens Axboe <axboe@kernel.dk>, Josh Triplett <josh@joshtriplett.org>
-Cc:     io-uring@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
-References: <cover.1629559905.git.asml.silence@gmail.com>
- <7fa72eec-9222-60eb-9ec6-e4b6efbfc5fb@kernel.dk> <YSPzab+g8ee84bX7@localhost>
- <59494bda-f804-4185-dd7d-4827b14bae61@kernel.dk>
- <2527d712-bc8b-7393-f4c0-3035dd525b1e@gmail.com>
- <c4653859-4003-70db-8b81-291dd17a6718@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH v3 0/4] open/accept directly into io_uring fixed file
- table
-Message-ID: <ce1aba5d-3fdd-092d-9870-ff989642ffd2@gmail.com>
-Date:   Tue, 24 Aug 2021 15:43:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 24 Aug 2021 10:44:43 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 12868023fb957ac8; Tue, 24 Aug 2021 16:43:57 +0200
+Received: from kreacher.localnet (unknown [213.134.181.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id C52C066A267;
+        Tue, 24 Aug 2021 16:43:56 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PCI <linux-pci@vger.kernel.org>,
+        Jonathan Derrick <jonathan.derrick@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Wendy Wang <wendy.wang@intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Box <david.e.box@linux.intel.com>
+Subject: [PATCH v2] PCI: VMD: ACPI: Make ACPI companion lookup work for VMD bus
+Date:   Tue, 24 Aug 2021 16:43:55 +0200
+Message-ID: <4352365.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <c4653859-4003-70db-8b81-291dd17a6718@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.181.106
+X-CLIENT-HOSTNAME: 213.134.181.106
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddtjedgjeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepvddufedrudefgedrudekuddruddtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukedurddutdeipdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhnrghthhgrnhdruggvrhhrihgtkhesihhnthgvlhdrtghomhdprhgtphhtthhopehhvghlghgrrghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopeifvghnugihrdifrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgv
+ lhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggrvhhiugdrvgdrsghogieslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 3:02 PM, Jens Axboe wrote:
-> On 8/24/21 3:48 AM, Pavel Begunkov wrote:
->> On 8/23/21 8:40 PM, Jens Axboe wrote:
->>> On 8/23/21 1:13 PM, Josh Triplett wrote:
->>>> On Sat, Aug 21, 2021 at 08:18:12PM -0600, Jens Axboe wrote:
->>>>> On 8/21/21 9:52 AM, Pavel Begunkov wrote:
->>>>>> Add an optional feature to open/accept directly into io_uring's fixed
->>>>>> file table bypassing the normal file table. Same behaviour if as the
->>>>>> snippet below, but in one operation:
->>>>>>
->>>>>> sqe = prep_[open,accept](...);
->>>>>> cqe = submit_and_wait(sqe);
->>>>>> io_uring_register_files_update(uring_idx, (fd = cqe->res));
->>>>>> close((fd = cqe->res));
->>>>>>
->>>>>> The idea in pretty old, and was brough up and implemented a year ago
->>>>>> by Josh Triplett, though haven't sought the light for some reasons.
->>>>>>
->>>>>> The behaviour is controlled by setting sqe->file_index, where 0 implies
->>>>>> the old behaviour. If non-zero value is specified, then it will behave
->>>>>> as described and place the file into a fixed file slot
->>>>>> sqe->file_index - 1. A file table should be already created, the slot
->>>>>> should be valid and empty, otherwise the operation will fail.
->>>>>>
->>>>>> we can't use IOSQE_FIXED_FILE to switch between modes, because accept
->>>>>> takes a file, and it already uses the flag with a different meaning.
->>>>>>
->>>>>> since RFC:
->>>>>>  - added attribution
->>>>>>  - updated descriptions
->>>>>>  - rebased
->>>>>>
->>>>>> since v1:
->>>>>>  - EBADF if slot is already used (Josh Triplett)
->>>>>>  - alias index with splice_fd_in (Josh Triplett)
->>>>>>  - fix a bound check bug
->>>>>
->>>>> With the prep series, this looks good to me now. Josh, what do you
->>>>> think?
->>>>
->>>> I would still like to see this using a union with the `nofile` field in
->>>> io_open and io_accept, rather than overloading the 16-bit buf_index
->>>> field. That would avoid truncating to 16 bits, and make less work for
->>>> expansion to more than 16 bits of fixed file indexes.
->>>>
->>>> (I'd also like that to actually use a union, rather than overloading the
->>>> meaning of buf_index/nofile.)
->>>
->>> Agree, and in fact there's room in the open and accept command parts, so
->>> we can just make it a separate entry there instead of using ->buf_index.
->>> Then just pass in the index to io_install_fixed_file() instead of having
->>> it pull it from req->buf_index.
->>
->> That's internal details, can be expanded at wish in the future, if we'd
->> ever need larger tables. ->buf_index already holds indexes to different
->> resources just fine.
-> 
-> Sure it's internal and can always be changed, doesn't change the fact
-> that it's a bit iffy that it's used differently in different spots. As
-> it costs us nothing to simply add a 'fixed_file' u32 for io_accept and
-> io_open, I really think that should be done instead.
-> 
->> Aliasing with nofile would rather be ugly, so the only option, as you
->> mentioned, is to grab some space from open/accept structs, but don't see
->> why we'd want it when there is a more convenient alternative.
-> 
-> Because it's a lot more readable and less error prone imho. Agree on the
-> union, we don't have to resort to that.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Ok, I don't have a strong opinion on that. Will resend
+On some systems, in order to get to the deepest low-power state of
+the platform (which may be necessary to save significant enough
+amounts of energy while suspended to idle. for example), devices on
+the PCI bus exposed by the VMD driver need to be power-managed via
+ACPI.  However, the layout of the ACPI namespace below the VMD
+controller device object does not reflect the layout of the PCI bus
+under the VMD host bridge, so in order to identify the ACPI companion
+objects for the devices on that bus, it is necessary to use a special
+_ADR encoding on the ACPI side.  In other words, acpi_pci_find_companion()
+does not work for these devices, so it needs to be amended with a
+special lookup logic specific to the VMD bus.
+
+Address this issue by allowing the VMD driver to temporarily install
+an ACPI companion lookup hook containing the code matching the devices
+on the VMD PCI bus with the corresponding objects in the ACPI
+namespace.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+-> v2:
+   * Use a read-write semaphore for hook manipulation protection and
+     get rid of the static key present in the previous version.
+   * Add a busnr check in vmd_acpi_find_companion().
+
+Wendy, David, please test this one!
+
+---
+ drivers/pci/controller/vmd.c |   55 +++++++++++++++++++++++++++++++
+ drivers/pci/host-bridge.c    |    1 
+ drivers/pci/pci-acpi.c       |   74 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/pci-acpi.h     |    3 +
+ 4 files changed, 133 insertions(+)
+
+Index: linux-pm/drivers/pci/controller/vmd.c
+===================================================================
+--- linux-pm.orig/drivers/pci/controller/vmd.c
++++ linux-pm/drivers/pci/controller/vmd.c
+@@ -11,6 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/msi.h>
+ #include <linux/pci.h>
++#include <linux/pci-acpi.h>
+ #include <linux/pci-ecam.h>
+ #include <linux/srcu.h>
+ #include <linux/rculist.h>
+@@ -447,6 +448,56 @@ static struct pci_ops vmd_ops = {
+ 	.write		= vmd_pci_write,
+ };
+ 
++#ifdef CONFIG_ACPI
++static struct acpi_device *vmd_acpi_find_companion(struct pci_dev *pci_dev)
++{
++	struct pci_host_bridge *bridge;
++	u32 busnr, addr;
++
++	if (pci_dev->bus->ops != &vmd_ops)
++		return NULL;
++
++	bridge = pci_find_host_bridge(pci_dev->bus);
++	busnr = pci_dev->bus->number - bridge->bus->number;
++	/*
++	 * The address computation below is only applicable to relative bus
++	 * numbers below 32.
++	 */
++	if (busnr > 31)
++		return NULL;
++
++	addr = (busnr << 24) | ((u32)pci_dev->devfn << 16) | 0x8000FFFFU;
++
++	dev_dbg(&pci_dev->dev, "Looking for ACPI companion (address 0x%x)\n",
++		addr);
++
++	return acpi_find_child_device(ACPI_COMPANION(bridge->dev.parent), addr,
++				      false);
++}
++
++static bool hook_installed;
++
++static void vmd_acpi_begin(void)
++{
++	if (pci_acpi_set_companion_lookup_hook(vmd_acpi_find_companion))
++		return;
++
++	hook_installed = true;
++}
++
++static void vmd_acpi_end(void)
++{
++	if (!hook_installed)
++		return;
++
++	pci_acpi_clear_companion_lookup_hook();
++	hook_installed = false;
++}
++#else
++static inline void vmd_acpi_begin(void) { }
++static inline void vmd_acpi_end(void) { }
++#endif /* CONFIG_ACPI */
++
+ static void vmd_attach_resources(struct vmd_dev *vmd)
+ {
+ 	vmd->dev->resource[VMD_MEMBAR1].child = &vmd->resources[1];
+@@ -747,6 +798,8 @@ static int vmd_enable_domain(struct vmd_
+ 	if (vmd->irq_domain)
+ 		dev_set_msi_domain(&vmd->bus->dev, vmd->irq_domain);
+ 
++	vmd_acpi_begin();
++
+ 	pci_scan_child_bus(vmd->bus);
+ 	pci_assign_unassigned_bus_resources(vmd->bus);
+ 
+@@ -760,6 +813,8 @@ static int vmd_enable_domain(struct vmd_
+ 
+ 	pci_bus_add_devices(vmd->bus);
+ 
++	vmd_acpi_end();
++
+ 	WARN(sysfs_create_link(&vmd->dev->dev.kobj, &vmd->bus->dev.kobj,
+ 			       "domain"), "Can't create symlink to domain\n");
+ 	return 0;
+Index: linux-pm/drivers/pci/host-bridge.c
+===================================================================
+--- linux-pm.orig/drivers/pci/host-bridge.c
++++ linux-pm/drivers/pci/host-bridge.c
+@@ -23,6 +23,7 @@ struct pci_host_bridge *pci_find_host_br
+ 
+ 	return to_pci_host_bridge(root_bus->bridge);
+ }
++EXPORT_SYMBOL_GPL(pci_find_host_bridge);
+ 
+ struct device *pci_get_host_bridge_device(struct pci_dev *dev)
+ {
+Index: linux-pm/drivers/pci/pci-acpi.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci-acpi.c
++++ linux-pm/drivers/pci/pci-acpi.c
+@@ -17,6 +17,7 @@
+ #include <linux/pci-acpi.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pm_qos.h>
++#include <linux/rwsem.h>
+ #include "pci.h"
+ 
+ /*
+@@ -1159,6 +1160,69 @@ void acpi_pci_remove_bus(struct pci_bus
+ }
+ 
+ /* ACPI bus type */
++
++
++static DECLARE_RWSEM(pci_acpi_companion_lookup_sem);
++static struct acpi_device *(*pci_acpi_find_companion_hook)(struct pci_dev *);
++
++/**
++ * pci_acpi_set_companion_lookup_hook - Set ACPI companion lookup callback.
++ * @func: ACPI companion lookup callback pointer or NULL.
++ *
++ * Set a special ACPI companion lookup callback for PCI devices whose companion
++ * objects in the ACPI namespace have _ADR with non-standard bus-device-function
++ * encodings.
++ *
++ * Return 0 on success or a negative error code on failure (in which case no
++ * changes are made).
++ *
++ * The caller is responsible for the appropriate ordering of the invocations of
++ * this function with respect to the enumeration of the PCI devices needing the
++ * callback installed by it.
++ */
++int pci_acpi_set_companion_lookup_hook(struct acpi_device *(*func)(struct pci_dev *))
++{
++	int ret;
++
++	if (!func)
++		return -EINVAL;
++
++	down_write(&pci_acpi_companion_lookup_sem);
++
++	if (pci_acpi_find_companion_hook) {
++		ret = -EBUSY;
++	} else {
++		pci_acpi_find_companion_hook = func;
++		ret = 0;
++	}
++
++	up_write(&pci_acpi_companion_lookup_sem);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(pci_acpi_set_companion_lookup_hook);
++
++/**
++ * pci_acpi_clear_companion_lookup_hook - Clear ACPI companion lookup callback.
++ *
++ * Clear the special ACPI companion lookup callback previously set by
++ * pci_acpi_set_companion_lookup_hook().  Block until the last running instance
++ * of the callback returns before clearing it.
++ *
++ * The caller is responsible for the appropriate ordering of the invocations of
++ * this function with respect to the enumeration of the PCI devices needing the
++ * callback cleared by it.
++ */
++void pci_acpi_clear_companion_lookup_hook(void)
++{
++	down_write(&pci_acpi_companion_lookup_sem);
++
++	pci_acpi_find_companion_hook = NULL;
++
++	up_write(&pci_acpi_companion_lookup_sem);
++}
++EXPORT_SYMBOL_GPL(pci_acpi_clear_companion_lookup_hook);
++
+ static struct acpi_device *acpi_pci_find_companion(struct device *dev)
+ {
+ 	struct pci_dev *pci_dev = to_pci_dev(dev);
+@@ -1166,6 +1230,16 @@ static struct acpi_device *acpi_pci_find
+ 	bool check_children;
+ 	u64 addr;
+ 
++	down_read(&pci_acpi_companion_lookup_sem);
++
++	adev = pci_acpi_find_companion_hook ?
++		pci_acpi_find_companion_hook(pci_dev) : NULL;
++
++	up_read(&pci_acpi_companion_lookup_sem);
++
++	if (adev)
++		return adev;
++
+ 	check_children = pci_is_bridge(pci_dev);
+ 	/* Please ref to ACPI spec for the syntax of _ADR */
+ 	addr = (PCI_SLOT(pci_dev->devfn) << 16) | PCI_FUNC(pci_dev->devfn);
+Index: linux-pm/include/linux/pci-acpi.h
+===================================================================
+--- linux-pm.orig/include/linux/pci-acpi.h
++++ linux-pm/include/linux/pci-acpi.h
+@@ -122,6 +122,9 @@ static inline void pci_acpi_add_edr_noti
+ static inline void pci_acpi_remove_edr_notifier(struct pci_dev *pdev) { }
+ #endif /* CONFIG_PCIE_EDR */
+ 
++int pci_acpi_set_companion_lookup_hook(struct acpi_device *(*func)(struct pci_dev *));
++void pci_acpi_clear_companion_lookup_hook(void);
++
+ #else	/* CONFIG_ACPI */
+ static inline void acpi_pci_add_bus(struct pci_bus *bus) { }
+ static inline void acpi_pci_remove_bus(struct pci_bus *bus) { }
 
 
 
->>>> I personally still feel that using non-zero to signify index-plus-one is
->>>> both error-prone and not as future-compatible. I think we could do
->>>> better with no additional overhead. But I think the final call on that
->>>> interface is up to you, Jens. Do you think it'd be worth spending a flag
->>>> bit or using a different opcode, to get a cleaner interface? If you
->>>> don't, then I'd be fine with seeing this go in with just the io_open and
->>>> io_accept change.
->>>
->>> I'd be inclined to go the extra opcode route instead, as the flag only
->>> really would make sense to requests that instantiate file descriptors.
->>> For this particular case, we'd need 3 new opcodes for
->>> openat/openat2/accept, which is probably a worthwhile expenditure.
->>>
->>> Pavel, what do you think? Switch to using a different opcode for the new
->>> requests, and just grab some space in io_open and io_accept for the fd
->>> and pass it in to install.
->>
->> I don't get it, why it's even called hackish? How that's anyhow better?
->> To me the feature looks like a natural extension to the operations, just
->> like a read can be tuned with flags, so and creating new opcodes seems
->> a bit ugly, unnecessary taking space from opcodes and adding duplication
->> (even if both versions call the same handler).
-> 
-> I agree that it's a natural extension, the problem is that we have to do
-> unnatural things (somewhat) to make it work. I'm fine with using the
-> union for the splice_fd_in to pass it in, I don't think it's a big deal.
-> 
-> I do wish that IORING_OP_CLOSE would work with them, though. I think we
-> should to that as a followup patch. It's a bit odd to be able to open a
-> file with IORING_OP_OPENAT and not being able to close it with
-> IORING_OP_CLOSE. For the latter, we should just give it fixed file
-> support, which would be pretty trivial.
-> 
->> First, why it's not future-compatible? It's a serious argument, but I
->> don't see where it came from. Do I miss something?
->>
->> It's u32 now, and so will easily cover all indexes. SQE fields should
->> always be zeroed, that's a rule, liburing follows it, and there would
->> have been already lots of problems for users not honoring it. And there
->> will be a helper hiding all the index conversions for convenience.
->>
->> void io_uring_prep_open_direct(sqe, index, ...)
->> {
->> 	io_uring_prep_open(sqe, ...);
->> 	sqe->file_index = index + 1;
->> }
-> 
-> Let's keep it the way that it is, but I do want to see the buf_index
-> thing go away and just req->open.fixed_file or whatever being used for
-> open and accept. We should fold that in.
-
--- 
-Pavel Begunkov
