@@ -2,161 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEA33F6A4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2167D3F6A4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235080AbhHXUPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 16:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
+        id S234860AbhHXUS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 16:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbhHXUPS (ORCPT
+        with ESMTP id S229514AbhHXUS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 16:15:18 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2431C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 13:14:33 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso34526899ota.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 13:14:33 -0700 (PDT)
+        Tue, 24 Aug 2021 16:18:26 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B79C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 13:17:42 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso28459375otv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 13:17:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QZeCJMWa2DyYIKT8pa19hLZA7G5Ooy4YsTZZ7q3AAk0=;
-        b=o+MAEkXjUlnugHRMChx4LwieuBiIAi4mQZvjGR7fvreydNMyquGGa7fWcTDHUcBgrQ
-         gWlcqGrFAKtu2bJuKxRDqAnZ4qFfy8bUCzt6kJ8boduahrwtF+mrhVnq4XhZRAaDbjR7
-         kZYRGjhp+SnfywAk+RIOi8BN7wfJQFVgs7dfHDKoJe2/bo4TVWrVjAcSbVwcSUbFCHTf
-         6ZfhxY4W6tQFuE7roPCKS71L87X+cvFgIsxwQS3GqLIJwzK+QT5dPL3+axVYg4YyfBpz
-         n9DdbKuJHP5rogwWs3tRSuPicO1+0IwX4sXAFQGaU6XCp85W8KBI+GSBTshdie8lxPyP
-         yWcw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=cTrpKt7ssoq5MU1N/SFjHGYYyQ2cJrI5wLd1aEf1FI4=;
+        b=VVIHkuhZsoAL/OufQvFMKeLxIVUi7m7FcRBWD2fAJU/wpCiRJcdqH36XymLXT77auh
+         mqhGuJFrj88MSPb+Y3C/ztxaWgcOTLq4SnQpCNbxlJ/25/4o3qXRxOTAZLiWAn+ghxP3
+         OdoXK55NqSovj+FRJ8ug8jI36TiWMml8qDwZa10t8CIPWFXrko3UUj39HOe2FIcsq9Kc
+         JSGCCwnPLK4jwW1hQq7Cvo5frRTRHwUHkVAAwtI2TiIW70iYSqeiukEsF3sTOpc0hfXF
+         R47CGGOGsHXEMJoW7sf+ox/5Ec/mU6ScXt6oInbLuLMeoGixpntT96BOhFuReRYWiKsr
+         6Rwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QZeCJMWa2DyYIKT8pa19hLZA7G5Ooy4YsTZZ7q3AAk0=;
-        b=AbHFaNBhTrAWcxmz8QxZMHAlyptJ5pu4DCPPcnbt/b/Cj950cA5W5aB84S6q0sTH2t
-         JpCrvJfXG8M7nR546XCZ+oSUYR4CqkA2Qx5sZfehBmkn4Npso5oevx/f8y+gAzETwcY4
-         xMaor4C2QOId487wYGhWe28eOQ6KvKHrT6taX2IMiXaBrnPWBEs28ZDpkBO3d6OhX8XT
-         ooN9xfCdbkxdOxuf9N2fhgwomo0RCYklvi4kmlM6h6Du2RcHoTK34tBd0wsD3OTyQ2Gj
-         hmV97LQ2kSMYz2Dhm1MpXg6mHh2A4oZHZjrC+iim8cekyfRjYOprvzcwZWE5EW4JKBTE
-         dvTw==
-X-Gm-Message-State: AOAM531qKgR0v+IpSjGNzSci3WECw5gR+YvKeIaw8tvEktL2mRjjbaJh
-        APUl9oHrARj6YXhhUt1EPVv4EQ==
-X-Google-Smtp-Source: ABdhPJxxW96qHYBwTeBhQSeNQcMWYpoBctpNwA/ov26qmHt06vQxhPHx8QeZsks//ic1sCFa8V2zow==
-X-Received: by 2002:aca:a8c8:: with SMTP id r191mr4201299oie.144.1629836072932;
-        Tue, 24 Aug 2021 13:14:32 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r13sm4790133oti.80.2021.08.24.13.14.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 13:14:32 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 13:15:49 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof Wilczy??ski <kw@linux.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] PCI: dwc: Perform host_init() before registering
- msi
-Message-ID: <YSVTdedrDSgSYgwm@ripper>
-References: <20210823154958.305677-1-bjorn.andersson@linaro.org>
- <20210824190527.GA3486548@bjorn-Precision-5520>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=cTrpKt7ssoq5MU1N/SFjHGYYyQ2cJrI5wLd1aEf1FI4=;
+        b=L3yk8+6KJz+RHGAz/yLdjHl0LU3Bj5g67HIdV1sISKWwkosbPdfYtzFEuxG8SkA/Ou
+         ke/9v1Dqvkgvtcrcp+Itjl6OmwIw+APuhSP0FxYH2j0fs8xG/AruH5vX6ykps4GJkcl7
+         lAg1Qd9C27Ju2LK3mvHwSeqAUkUmWDtQ1yDv52zxDirIh60p15SaMqJZwYmifFHAWW+G
+         NXTqGbCaYkYCcRtTO2r9/uG0WAjNFfgDpl/KV3Cb1UBlbv8pXYvoe7D4g9qIS0Ki8aRF
+         ZDHn+y7u8eU/tB8qkP8lPma0/ARPYkIyWxO6xsTfhOIJegLed1sUzxsAfzIKmDN0SLHJ
+         7hjQ==
+X-Gm-Message-State: AOAM5308EvdYBxLRMghgp0wlGRSRUxE0IssRTIblN1GQ2EPPnKAHczSZ
+        KiYtC0MmoDzh4N+9eFZp7qMOD6uT6lS4HkkAknE=
+X-Google-Smtp-Source: ABdhPJy/z95MXE7D+ujGOR7UhVwJeCFpXOBvGEsnUDxiCXf8UriFOkjPSa6HmnPLVn4UpQE6eywdupIlhh6cGJSgQEw=
+X-Received: by 2002:a05:6808:19a:: with SMTP id w26mr4284672oic.80.1629836261593;
+ Tue, 24 Aug 2021 13:17:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824190527.GA3486548@bjorn-Precision-5520>
+Received: by 2002:a4a:eacc:0:0:0:0:0 with HTTP; Tue, 24 Aug 2021 13:17:41
+ -0700 (PDT)
+Reply-To: mr.jeannasri@gmail.com
+From:   jean nasri <feshayy795@gmail.com>
+Date:   Tue, 24 Aug 2021 20:17:41 +0000
+Message-ID: <CAH9KMQuXWOsJg7cqRGHQ+KTPZa+tYHqXvy4VWAiaDh8cuQf8yg@mail.gmail.com>
+Subject: Meu amigo por favor confirme
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24 Aug 12:05 PDT 2021, Bjorn Helgaas wrote:
-
-> On Mon, Aug 23, 2021 at 08:49:57AM -0700, Bjorn Andersson wrote:
-> > On the Qualcomm sc8180x platform the bootloader does something related
-> > to PCI that leaves a pending "msi" interrupt, which with the current
-> > ordering often fires before init has a chance to enable the clocks that
-> > are necessary for the interrupt handler to access the hardware.
-> > 
-> > Move the host_init() call before the registration of the "msi" interrupt
-> > handler to ensure the host driver has a chance to enable the clocks.
-> 
-> Did you audit other drivers for similar issues?  If they do, we should
-> fix them all at once.
-> 
-
-I only looked at the DesignWware drivers, in an attempt to find any
-issues the proposed reordering.
-
-The set of bugs causes by drivers registering interrupts before critical
-resources tends to be rather visible and I don't know if there's much
-value in speculatively "fixing" drivers.
-
-E.g. a quick look through the drivers I see a similar pattern in
-pci-tegra.c, but it's unlikely that they have the similar problem in
-practice and I have no way to validate that a change to the order would
-have a positive effect - or any side effects.
-
-
-Or am I misunderstanding your request?
-
-Regards,
-Bjorn
-
-> > The assignment of the bridge's ops and child_ops is moved along, because
-> > at least the TI Keystone driver overwrites these in its host_init
-> > callback.
-> > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-> > Changes since v1:
-> > - New patch, instead of enabling resources in the qcom driver before jumping to
-> >   dw_pcie_host_init(), per Rob Herring's suggestion.
-> > 
-> >  .../pci/controller/dwc/pcie-designware-host.c | 19 ++++++++++---------
-> >  1 file changed, 10 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > index d1d9b8344ec9..f4755f3a03be 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > @@ -335,6 +335,16 @@ int dw_pcie_host_init(struct pcie_port *pp)
-> >  	if (pci->link_gen < 1)
-> >  		pci->link_gen = of_pci_get_max_link_speed(np);
-> >  
-> > +	/* Set default bus ops */
-> > +	bridge->ops = &dw_pcie_ops;
-> > +	bridge->child_ops = &dw_child_pcie_ops;
-> > +
-> > +	if (pp->ops->host_init) {
-> > +		ret = pp->ops->host_init(pp);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> >  	if (pci_msi_enabled()) {
-> >  		pp->has_msi_ctrl = !(pp->ops->msi_host_init ||
-> >  				     of_property_read_bool(np, "msi-parent") ||
-> > @@ -388,15 +398,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
-> >  		}
-> >  	}
-> >  
-> > -	/* Set default bus ops */
-> > -	bridge->ops = &dw_pcie_ops;
-> > -	bridge->child_ops = &dw_child_pcie_ops;
-> > -
-> > -	if (pp->ops->host_init) {
-> > -		ret = pp->ops->host_init(pp);
-> > -		if (ret)
-> > -			goto err_free_msi;
-> > -	}
-> >  	dw_pcie_iatu_detect(pci);
-> >  
-> >  	dw_pcie_setup_rc(pp);
-> > -- 
-> > 2.29.2
-> > 
+--=20
+Le enviamos un correo electr=C3=B3nico, pero me sorprende que nunca se haya
+molestado en responder. Por favor responda para m=C3=A1s explicaciones
