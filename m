@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC263F5819
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629F43F582A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhHXGVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        id S232155AbhHXG06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:26:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhHXGVc (ORCPT
+        with ESMTP id S231265AbhHXG0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:21:32 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5FFC061575;
-        Mon, 23 Aug 2021 23:20:49 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id jv8so11113630qvb.3;
-        Mon, 23 Aug 2021 23:20:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dntYHUzQ96z9Ky92LFdr542JcEb8KpIOuE1biM9oOng=;
-        b=XCRXYTyzatkPP8LEC19ZZxojm7wRfPfgig0TBX/WzVke5FJ94VLVeHBozn0K0xawJZ
-         hliKrJhvaacXh8PutX7ZOBMRfD7PmXd1C5avwhjShdNy05M0ZrK2MaFWDkFJvdcMxgup
-         3/+4OiQeJIPJMfPdnEr31zobPvuqOgmFtAaVF9Dn2kxn4CwLYxN9sIBwNntW7PxM+SAk
-         U+IIZ7W2W7RIFLUVLuXklqh3aeTNWACPFfYYaWWuhpKt8qSPmrbBClP6jkzgf08CP8fO
-         4PxNQkekqeupxF8Ohwn1ptAhB29JhZ06zqUatNmV/lpg+2CKqbKNc0eroYIWxjoXXtUz
-         g1mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dntYHUzQ96z9Ky92LFdr542JcEb8KpIOuE1biM9oOng=;
-        b=XFmhspIBRgDDi2c4CMP4bUWOKkMWgxtTk4BpMLVgAFOm1KcdiEe8OBFMn8PduSsvCx
-         mRzvXwwZdoe5SA1voIAix8ZifYDfJ8HgUUTmAJF0XOztKhhBK6IFgktHxTibSN8mYo6j
-         0OZl37gwD1hF99fRnSQ0OAcQmiqVcSyvtM7WhlPZtyd9rKr291CRCzEDc943mOPtw9Cz
-         jSfz6p63XedYnyoaD36PYPbwDCAU+eJACWULQa5oZ9JL4YhG5HVxDY3vitLlQVyxzv6u
-         NQk++Y+mhpIccxU/kLucvNwTi2RAl8nqH0qsIVJR1wGH0p0ZzFyL7qIg/K4Mtxb0skIi
-         upCQ==
-X-Gm-Message-State: AOAM532g5fUf/NaScRMqmrd+XD3vnrLL2nKgoQ00myJCMFYFRYeX/4Q1
-        E7XDUQR4aKgDrE8LiP/hbZs=
-X-Google-Smtp-Source: ABdhPJw1m88JOSSpAu2p8G5KZFCnC1u84/ZdM/n5H8zPBv7IWbRO4BJEhMcVC8+mWl8PCdPbjahU/Q==
-X-Received: by 2002:a05:6214:1c1:: with SMTP id c1mr37231034qvt.37.1629786048450;
-        Mon, 23 Aug 2021 23:20:48 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id d129sm10144598qkf.136.2021.08.23.23.20.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:20:48 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Luca Coelho <luciano.coelho@intel.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] iwlwifi:rfi: fix memdup.cocci warnings
-Date:   Mon, 23 Aug 2021 23:20:40 -0700
-Message-Id: <20210824062040.59414-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Aug 2021 02:26:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B638C061575;
+        Mon, 23 Aug 2021 23:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NKFJoeYTqWpvwgOnvXGlWBRk4r7Ma5K7sZ2OJmDpXzU=; b=U7bi6QnCeU8LmhajLwuLPmnZlS
+        LjSyGkqk3km9uYYmJ7D5A9FFyl8qVqyLW2dfuD8Ey8BE2oTJ7QhvGHnt6NVlXtwcw0N/4OKry2xhN
+        ba3337soV7oOg168NKc9dJPzJA1GboxJ1Qg8fj/tc7TI9Qcy7teO73MZ+eDQn7lsnB2FMUEps7QP0
+        KaNE4SkdKl+SeKbKHrIYiizI5JxTpPKmjNEV88s8nzhoGAiwvVk2/fA1iL0kMowDCe/U8zlI41FuG
+        QyC+3ZjOnn4G15hGXUmlVCQ6nZQOKtHTa5N3QvBQ3yFlhFGWpoMdoW17uzS4YCcvcRY36HbpEwDJc
+        85FfU+PQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIPoQ-00AeEP-DQ; Tue, 24 Aug 2021 06:21:46 +0000
+Date:   Tue, 24 Aug 2021 07:21:30 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
+        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
+        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
+        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
+        bvanassche@acm.org, ming.lei@redhat.com,
+        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
+        nbd@other.debian.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/10] dm: add add_disk() error handling
+Message-ID: <YSSP6ujNQttGN2sZ@infradead.org>
+References: <20210823202930.137278-1-mcgrof@kernel.org>
+ <20210823202930.137278-9-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823202930.137278-9-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Mon, Aug 23, 2021 at 01:29:28PM -0700, Luis Chamberlain wrote:
+> -	add_disk(md->disk);
+> +	r = add_disk(md->disk);
+> +	if (r)
+> +		goto out_cleanup_disk;
+>  
+>  	r = dm_sysfs_init(md);
+> -	if (r) {
+> -		del_gendisk(md->disk);
+> -		return r;
+> -	}
+> +	if (r)
+> +		goto out_del_gendisk;
+>  	md->type = type;
+>  	return 0;
+> +
+> +out_cleanup_disk:
+> +	blk_cleanup_disk(md->disk);
+> +out_del_gendisk:
+> +	del_gendisk(md->disk);
+> +	return r;
 
-./drivers/net/wireless/intel/iwlwifi/mvm/rfi.c:110:8-15:8-15:WARNING:
-opportunity for kmemdup
-
-Use kmemdup rather than duplicating its implementation
-
-Generated by: scripts/coccinelle/api/memdup.cocci
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- drivers/net/wireless/intel/iwlwifi/mvm/rfi.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
-index 0b81806..2225c4f 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
-@@ -107,12 +107,10 @@ struct iwl_rfi_freq_table_resp_cmd *iwl_rfi_get_freq_table(struct iwl_mvm *mvm)
- 	if (WARN_ON_ONCE(iwl_rx_packet_payload_len(cmd.resp_pkt) != resp_size))
- 		return ERR_PTR(-EIO);
- 
--	resp = kzalloc(resp_size, GFP_KERNEL);
-+	resp = kmemdup(cmd.resp_pkt->data, resp_size, GFP_KERNEL);
- 	if (!resp)
- 		return ERR_PTR(-ENOMEM);
- 
--	memcpy(resp, cmd.resp_pkt->data, resp_size);
--
- 	iwl_free_resp(&cmd);
- 	return resp;
- }
--- 
-1.8.3.1
-
-
+I think the add_disk should just return r.  If you look at the
+callers they eventualy end up in dm_table_destroy, which does
+this cleanup.
