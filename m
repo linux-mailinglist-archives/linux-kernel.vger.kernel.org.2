@@ -2,176 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBE83F5592
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 03:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B533F559A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 03:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233682AbhHXBqg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 21:46:36 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:43817 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbhHXBqf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 21:46:35 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 17O1jQohD005631, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 17O1jQohD005631
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 24 Aug 2021 09:45:26 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 24 Aug 2021 09:45:25 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 24 Aug 2021 09:45:25 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Tue, 24 Aug 2021 09:45:25 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-CC:     Colin Ian King <colin.king@canonical.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: RE: [PATCH] rtlwifi: rtl8192de: Fix initialization of place in _rtl92c_phy_get_rightchnlplace()
-Thread-Topic: [PATCH] rtlwifi: rtl8192de: Fix initialization of place in
- _rtl92c_phy_get_rightchnlplace()
-Thread-Index: AQHXmG0s5HBB1+4FIUaWbT4swfecM6uB4bug
-Date:   Tue, 24 Aug 2021 01:45:25 +0000
-Message-ID: <6ad224d9cd5545bebfaf2e60c54d359b@realtek.com>
-References: <20210823222014.764557-1-nathan@kernel.org>
-In-Reply-To: <20210823222014.764557-1-nathan@kernel.org>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.146]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/8/23_=3F=3F_11:22:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S233522AbhHXB7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 21:59:46 -0400
+Received: from ozlabs.org ([203.11.71.1]:59549 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229742AbhHXB7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 21:59:45 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtsjJ3s7Lz9sW8;
+        Tue, 24 Aug 2021 11:59:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629770341;
+        bh=NHi2IxLiZ/iGUyq/FORZhdLtj2vt6yMIofu48FWDu/o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HMXLwyfyLEc7uTr/mpMqg3lJdDC76hStM5aZaDRZ75XdC9zJljVhvOpZxV4kMWJSB
+         UusspzwI2olRIx+RVmFZ5sRHj6h93Z1erxybqx6WUcrjEfOJjrkXnuMHu1a9FBrVJJ
+         /Zb4moEPbuxUpfy4kEbv9AFifEp6KIUF23ww3E6dIi7Gil+Jawi1nQqQEe/HcQS40U
+         ysZza1VxESNHIUoHq7DZgmlmqOh/HUt1EfirmDVd6Y9xzfJR946E0AwDeqp41HgG5k
+         4Pw/cMxSpfJYbw0Q7RlpZkos2DUcXrfLaV3efqM6qUptIymLqCLw9Nz/l2nhmoYjtt
+         7MyzNbe+P769Q==
+Date:   Tue, 24 Aug 2021 11:58:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
+Message-ID: <20210824115859.187f272f@canb.auug.org.au>
+In-Reply-To: <66615de5-4acb-8d85-6d69-ddd0b9609348@infradead.org>
+References: <20210820192615.23e2e617@canb.auug.org.au>
+        <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
+        <202108202248.921E8C66@keescook>
+        <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
+        <20210823203742.5169ad54@canb.auug.org.au>
+        <66615de5-4acb-8d85-6d69-ddd0b9609348@infradead.org>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/24/2021 01:27:34
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165744 [Aug 23 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/24/2021 01:29:00
+Content-Type: multipart/signed; boundary="Sig_/n02XM_JdzDFuM1xJm7O.qfC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/n02XM_JdzDFuM1xJm7O.qfC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> -----Original Message-----
-> From: Nathan Chancellor [mailto:nathan@kernel.org]
-> Sent: Tuesday, August 24, 2021 6:20 AM
-> To: Pkshih; Kalle Valo
-> Cc: Colin Ian King; linux-wireless@vger.kernel.org; netdev@vger.kernel.org;
-> linux-kernel@vger.kernel.org; clang-built-linux@googlegroups.com; llvm@lists.linux.dev; Nathan
-> Chancellor
-> Subject: [PATCH] rtlwifi: rtl8192de: Fix initialization of place in _rtl92c_phy_get_rightchnlplace()
-> 
-> Clang warns:
-> 
-> drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:901:6: warning:
-> variable 'place' is used uninitialized whenever 'if' condition is false
-> [-Wsometimes-uninitialized]
->         if (chnl > 14) {
->             ^~~~~~~~~
-> drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:909:9: note:
-> uninitialized use occurs here
->         return place;
->                ^~~~~
-> drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:901:2: note: remove
-> the 'if' if its condition is always true
->         if (chnl > 14) {
->         ^~~~~~~~~~~~~~~
-> drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:899:10: note:
-> initialize the variable 'place' to silence this warning
->         u8 place;
->                 ^
->                  = '\0'
-> 1 warning generated.
-> 
-> Commit 369956ae5720 ("rtlwifi: rtl8192de: Remove redundant variable
-> initializations") removed the initialization of place but it appears
-> that this removal was in the wrong function.
+Hi Randy,
 
-Somehow, I also look into wrong function.
-Thanks for the catch.
+On Mon, 23 Aug 2021 18:24:44 -0700 Randy Dunlap <rdunlap@infradead.org> wro=
+te:
+>
+> This is just weird. What I am seeing is that for every source file
+> where gcc emits a warning: it then follows that up with this
+> >> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger=
+-than' =20
 
-> 
-> _rtl92c_phy_get_rightchnlplace() returns place's value at the end of the
-> function so now if the if statement is false, place never gets
-> initialized. Add that initialization back to address the warning.
-> 
-> place's initialization is not necessary in
-> rtl92d_get_rightchnlplace_for_iqk() as place is only used within the if
-> statement so it can be removed, which is likely what was intended in the
-> first place.
-> 
-> Fixes: 369956ae5720 ("rtlwifi: rtl8192de: Remove redundant variable initializations")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+I see the same, as well as:
 
-Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+<stdin>:1515:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
 
-> ---
->  drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> index 8ae69d914312..9b83c710c9b8 100644
-> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> @@ -896,7 +896,7 @@ static void _rtl92d_ccxpower_index_check(struct ieee80211_hw *hw,
-> 
->  static u8 _rtl92c_phy_get_rightchnlplace(u8 chnl)
->  {
-> -	u8 place;
-> +	u8 place = chnl;
-> 
->  	if (chnl > 14) {
->  		for (place = 14; place < sizeof(channel5g); place++) {
-> @@ -1363,7 +1363,7 @@ static void _rtl92d_phy_switch_rf_setting(struct ieee80211_hw *hw, u8 channel)
-> 
->  u8 rtl92d_get_rightchnlplace_for_iqk(u8 chnl)
->  {
-> -	u8 place = chnl;
-> +	u8 place;
-> 
->  	if (chnl > 14) {
->  		for (place = 14; place < sizeof(channel_all); place++) {
-> 
-> base-commit: 609c1308fbc6446fd6d8fec42b80e157768a5362
-> --
-> 2.33.0
+But only on my gcc 7.3.1 builds (the rest are gcc 10).
 
+> Smells like a gcc bug to me.
+
+Yes
+
+Also noted here: https://github.com/DynamoRIO/drmemory/issues/2099 (second =
+comment)
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/n02XM_JdzDFuM1xJm7O.qfC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEkUmMACgkQAVBC80lX
+0GzzcwgAjNtzSyfZwoEYXL3AJwWD3Gw9cjT0vTJ/n+5QoyUoY3fdseX46YkMZKOB
+qgLeCrtfBm6Pg6jd04pBxV9oRnh8IGCpt2KXVwHFQxiuDBnjbvYh2H/oXEYSRFJT
++Xe2TRD+BURXn0BOvQ0O7jhThSe/f/0CoTgIfaao6NNHExiNz/hPlvJ9FExHdtgF
+gUPlmCTe0tBOTAW6/qAtw6tl7dx4BDlBHGUO0uRGck63I2GQrKq0JRU2tGxxxaxN
+1NqpLe4GHVVxLDMU3/4iUINDE7J61UGLAfnkAzHuHDEpAAh01953LHRc8uBqf5o1
+1/zArWJ2qMBbTNX7CNMhyn/FgXpS5w==
+=1wHB
+-----END PGP SIGNATURE-----
+
+--Sig_/n02XM_JdzDFuM1xJm7O.qfC--
