@@ -2,140 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C033F62D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E461F3F62D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhHXQjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbhHXQjj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:39:39 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB43C061757;
-        Tue, 24 Aug 2021 09:38:55 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id l18so31169169lji.12;
-        Tue, 24 Aug 2021 09:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WcbXWm6oOaII+80v56ACkIrGHjl86sgP+RyMxyJ09A8=;
-        b=VgxR+vLNCWaXX9vH/TiuNk1s8Blpj/bHixJKjJU8IGBVkICQ7DLFmkxnyRWOxZ/0uw
-         daB4SlrZ4MqsYuoMQpI0of0QMv4MM3OcWX065ZRTbRMTnRPsngLy2R6JpCcMoijeHmP/
-         0JslrMM3Yx9RR1/AWzAffIk322NP1mjsmufc1i8I56HpqDrpSZXXxx1rEBF1C8LC3D75
-         Zda4qNu88qlU9byf/V5g1l7NeH9wpfbtRuydUbiHRc48uhnh+i8/WXvV6rOrgbp0xFXr
-         yGyCK1zFOFfv9CNLimnl9JfCMGVHaQxG22WTaV5/QM6xw736/WAyZ6HL7Vl+PMeMRJRg
-         sHog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WcbXWm6oOaII+80v56ACkIrGHjl86sgP+RyMxyJ09A8=;
-        b=T59u8Aq5QgRUz6xrSXn0SBzHMYKAIWVnFjw+OOCIrSvyGStTMdx0Izglr+ofJtFfNW
-         VWPmtCAN5Suzhfjqcq9d9GAWgBchQ56Th85YZ9wVHrLQfMUwHujds2xB+aqpgZp4bA10
-         ePut7kSEuElQ7QoY5ILVmK19IFSjqojNi/SXvaedHgZhXB324t8TWYaGX0I2BMlaocnS
-         1/CmDbXstMyXXkgKO81YfXiOAuRwoOU5XfTxN3UuOJF8v1my5wlwJNQ+ipnqxBjbl/S6
-         S63X9LqzRXqUnK693xvWIJ4QPupVo4ZlevRPzqVvvqPgmdxnWgB5QIM3Flqvquz8EJGj
-         Ulrg==
-X-Gm-Message-State: AOAM5311yJDAOCwzLX0DbhZkZp6zAp8JyxcgVCyFTbHYS0e3W72sQZwo
-        0Eyk1cnyWY29wqCJD0vVIQE=
-X-Google-Smtp-Source: ABdhPJzDvjUxWIex+xrOYK6wlSZ+gkF2dbG3MzCDm/VmX9bJU/GDpgRr9W5Bxm5NUsP2QJiV2bruUQ==
-X-Received: by 2002:a05:651c:235:: with SMTP id z21mr31938880ljn.462.1629823133430;
-        Tue, 24 Aug 2021 09:38:53 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id o16sm210439lfu.45.2021.08.24.09.38.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 09:38:52 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 19:38:51 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] fs/ntfs3: fix an error code in ntfs_get_acl_ex()
-Message-ID: <20210824163851.hfbjqqpztgk4ngd5@kari-VirtualBox>
-References: <20210824114858.GH31143@kili>
+        id S232576AbhHXQkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:40:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229896AbhHXQkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:40:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC6B661183;
+        Tue, 24 Aug 2021 16:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629823159;
+        bh=grPffO/AYJoyOT5FvaovgDQ2otCA+lgEQi6Zpr0dwOo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kg0rOWG0mpCHP1hYvApS13mg8W91KSr802Zm3OmGjeTvCEXlssWODJxXchovz/BbX
+         a/AyY34qid54WM3HsJmcrRuCVJGCyJ/PPgOcawrwwQXHIdftB+LYSXUMD1nWoHit25
+         uYadWaDrc3a2sW/nShZkotkPg1ydkoy3TPnb6SdcYcNdFs8B4fC1ghgeuamA1CTvcG
+         LK8IfIzTi8dC30+hql4RXe2GGIQSPbz2/wUw67JPF5qys8HhKW1xYwO51DuA+F7i/6
+         1Z5olpIhoXd3haI89F/0v812b8C1yUgafdu4GB2z6wYu84VwaoSmKDYl12Y0FkaH24
+         oRSurtytDPXQQ==
+Date:   Tue, 24 Aug 2021 17:38:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH 2/9] spi: core: Add flag for controllers that can't hold
+ cs between transfers
+Message-ID: <20210824163852.GG4393@sirena.org.uk>
+References: <20210824104041.708945-1-tanureal@opensource.cirrus.com>
+ <20210824104041.708945-3-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4eRLI4hEmsdu6Npr"
 Content-Disposition: inline
-In-Reply-To: <20210824114858.GH31143@kili>
+In-Reply-To: <20210824104041.708945-3-tanureal@opensource.cirrus.com>
+X-Cookie: Sentient plasmoids are a gas.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 02:48:58PM +0300, Dan Carpenter wrote:
-> The ntfs_get_ea() function returns negative error codes or on success
 
-Not reletad to this patch but ntfs_get_wsl_perm() seems quite bug
-because in there ntfs_get_ea use is not checked at all.
+--4eRLI4hEmsdu6Npr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Also ntfs_getxattr() should probably send errno if ntfs_get_ea() is 0.
+On Tue, Aug 24, 2021 at 11:40:34AM +0100, Lucas Tanure wrote:
+> Create a flag for a controller that has an automatic cs selection and
+> can't hold cs activated between transfers
+> Some messages send address and data split between two transfers, see
+> regmap-spi, and without the cs held the data loses it`s meaning
 
-> it returns the length.  In the original code a zero length return was
-> treated as -ENODATA and results in a NULL return.  But it should be
-> treated as an invalid length and result in an PTR_ERR(-EINVAL) return.
-> 
-> Fixes: be71b5cba2e6 ("fs/ntfs3: Add attrib operations")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> I'm not super familiar with this code.  Please review this one
-> extra carefully.  I think it's theoretical because hopefully
-> ntfs_get_ea() doesn't ever return invalid lengths.
+These controllers just plain can't support multiple transfers in any
+useful fashion, the flag name should reflect that as well as being a bit
+less long for legibility reasons.
 
-ntfs_get_ea() will return 0 if no info and this can happend quite
-easily in my eyes. 
+--4eRLI4hEmsdu6Npr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Here's snippets
+-----BEGIN PGP SIGNATURE-----
 
-ntfs_read_ea()
-{
-	attr_info =
-		ni_find_attr(ni, NULL, &le, ATTR_EA_INFO, NULL, 0, NULL, NULL);
-	attr_ea =
-		ni_find_attr(ni, attr_info, &le, ATTR_EA, NULL, 0, NULL, NULL);
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmElIJsACgkQJNaLcl1U
+h9B7bwgAgzR4kI15DF4rHzaLfxoVt2tdfkCIdWHsNwWmD3IzicsD8pwNbeZfNhPu
+HBwdwYzlfSZzYu+bDktqdHK83rr5UX1XKqzSysXzDIn/qtw4Yp51OTUBEo01XAJr
+PzGTuPqLiKCjHXFHEgJ7APM+clI0vmi2oTbIjn5ffnSnxJLEyslR7FZPwXFZILil
+ChBrzvoBTXQh2wyeT+El7v8EHdM0tL5mel+eVvi09jGwnny8MR749TZVy3OXiRG5
+WhHWJZgYSMDa4fr86/u4J8jTpX/zS3AJGCZkPenQ88LN5kCwuTW8eJh47AuXMEqn
+lUdSEo9Q5Umdw8fNWd1SaGH1+derHg==
+=eRBm
+-----END PGP SIGNATURE-----
 
-	if (!attr_ea || !attr_info)
-		return 0;	
-}
-
-ntfs_get_ea()
-{
-	len = 0;
-	err = ntfs_read_ea(ni, &ea_all, 0, &info);
-	if (err)
-		goto out;
-	if (!info)
-		goto out;
-out:
-	return err ? err : len;
-}
-
-> 
->  fs/ntfs3/xattr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-> index 9239c388050e..e8ed38d0c4c9 100644
-> --- a/fs/ntfs3/xattr.c
-> +++ b/fs/ntfs3/xattr.c
-> @@ -521,7 +521,7 @@ static struct posix_acl *ntfs_get_acl_ex(struct user_namespace *mnt_userns,
->  		ni_unlock(ni);
->  
->  	/* Translate extended attribute to acl */
-> -	if (err > 0) {
-> +	if (err >= 0) {
-
-So now if err (size) is 0 it will try to get acl. Didn't you just say
-that you want to return PTR_ERR(-EINVAL)?
-
-So overall good finding but maybe more work is needed with this one.
-
->  		acl = posix_acl_from_xattr(mnt_userns, buf, err);
->  		if (!IS_ERR(acl))
->  			set_cached_acl(inode, type, acl);
-> -- 
-> 2.20.1
-> 
-> 
+--4eRLI4hEmsdu6Npr--
