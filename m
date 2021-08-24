@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF39C3F6092
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176213F609D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237879AbhHXOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:39:21 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:36428 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237582AbhHXOjU (ORCPT
+        id S237940AbhHXOjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:39:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56669 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237922AbhHXOjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:39:20 -0400
-Received: by mail-ot1-f41.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso25695647otv.3;
-        Tue, 24 Aug 2021 07:38:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MNI9+l2qfeXu+JYLOWGEplhGEmiWaU2bLMFD2Oq3CvY=;
-        b=NV+sFbrBMP0XTaSevG7dAMJIDzWwEMS6kcyO1rXhXC/AcD3R6JfSmc/kUf1uEwnLAC
-         bl5oem1mHkzmh1EmL2A2Buq4huIw8bzgBcmZdhNfZ7P6iZG+qNrkBz03wx3FTbbrzoT7
-         FofzfuR5dKGaQtB+7NXm96PlW0DbWvvxu0jA3nDbX4veazxbHrLeSM3hQsb6EBoTGJpl
-         7c6tTCTeMGjMHYSdjTYD3z17OR4hYdcU9WK4aYDa9OZ9LtaaEusfIy6LbZGqI+ddsqL9
-         JJ0YeeGDy/unEVqoLeWGGvnmAhvdaHYF4HqAZrIo7fJnR1UitVPmD9EUGV2Map4WMFCv
-         kI1A==
-X-Gm-Message-State: AOAM533Tf3VCa299nfQInQwVfLNsBcJ5ipXxRQD/OYafNl/Tk2n5AyyF
-        rBy1jbpcY6FkIfVFqo1Rfw==
-X-Google-Smtp-Source: ABdhPJzJ90zPnJF3juBTU2DpZSBraqMFcC+aeN/nH4SCYmWp5Rb/Lzc9lN9Xv85eo+C7Ta7aQtzlnQ==
-X-Received: by 2002:a05:6808:20aa:: with SMTP id s42mr3113813oiw.37.1629815915627;
-        Tue, 24 Aug 2021 07:38:35 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l3sm3987637ooo.7.2021.08.24.07.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 07:38:35 -0700 (PDT)
-Received: (nullmailer pid 406532 invoked by uid 1000);
-        Tue, 24 Aug 2021 14:38:34 -0000
-Date:   Tue, 24 Aug 2021 09:38:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Marcel Ziswiler <marcel@ziswiler.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 9/9] dt-bindings: arm: fsl: add
- toradex,colibri-imx6ull-emmc
-Message-ID: <YSUEajJuiF5zQDBd@robh.at.kernel.org>
-References: <20210819220910.586819-1-marcel@ziswiler.com>
- <20210819220910.586819-10-marcel@ziswiler.com>
+        Tue, 24 Aug 2021 10:39:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629815947;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bIzJFNtN7r1shXWsohSNVJgyFOeYy/KSnJVcAMNs8DQ=;
+        b=WZd65Hsyj5t7EiBvIuXsWtTQdSZm4XjyAazo+vt6KXKMeDi2TqPMDr6iMCSZl/7LjRK5Os
+        QHiAkP4oYJSlFsOHXPvW/pxUj5N9W6HfuydidWEwB/75c/A4ci61td1LqkRoZQut8HW0fn
+        9ydkYcw+9XGI5dw6x/p2KHq3LJUlz+k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-ukmS65bfOAWoX3lGu4KGeA-1; Tue, 24 Aug 2021 10:39:03 -0400
+X-MC-Unique: ukmS65bfOAWoX3lGu4KGeA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DADBC1082921;
+        Tue, 24 Aug 2021 14:39:01 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 697AD1036D27;
+        Tue, 24 Aug 2021 14:38:56 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YST/0e92OdSH0zjg@casper.infradead.org>
+References: <YST/0e92OdSH0zjg@casper.infradead.org> <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk> <162981148752.1901565.3663780601682206026.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, Jeffrey Altman <jaltman@auristor.com>,
+        linux-afs@lists.infradead.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        devel@lists.orangefs.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] afs: Fix afs_launder_page() to set correct start file position
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819220910.586819-10-marcel@ziswiler.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1953536.1629815935.1@warthog.procyon.org.uk>
+Date:   Tue, 24 Aug 2021 15:38:55 +0100
+Message-ID: <1953537.1629815935@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 00:09:10 +0200, Marcel Ziswiler wrote:
-> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> 
-> Add toradex,colibri-imx6ull-emmc for our new Colibri iMX6ULL 1GB (eMMC)
-> Module and the carrier boards (so far only Colibri Evaluation Board) it
-> may be mated in.
-> 
-> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> 
-> ---
-> 
-> Changes in v2:
-> - New patch documenting dt-bindings.
-> 
->  Documentation/devicetree/bindings/arm/fsl.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Acked-by: Rob Herring <robh@kernel.org>
+> 
+> This could be page_offset(page), which reads better to me:
+> 
+> 		ret = afs_store_data(vnode, &iter, page_offset(page) + f, true);
+
+True.  It gets converted to folio_pos() in patch #5 - will that do?
+
+David
+
