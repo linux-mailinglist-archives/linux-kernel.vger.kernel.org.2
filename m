@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01F03F5D1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451DA3F5D1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236562AbhHXLbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 07:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35504 "EHLO
+        id S236886AbhHXLbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 07:31:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236786AbhHXLay (ORCPT
+        with ESMTP id S236850AbhHXLa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 07:30:54 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA5BC0613CF;
-        Tue, 24 Aug 2021 04:30:10 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id r2so19476640pgl.10;
-        Tue, 24 Aug 2021 04:30:10 -0700 (PDT)
+        Tue, 24 Aug 2021 07:30:57 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F2FC061764;
+        Tue, 24 Aug 2021 04:30:13 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id j187so18075482pfg.4;
+        Tue, 24 Aug 2021 04:30:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8zm5J1NbSAv3TdiryGrbNnK0wLWnfsAGlTXyiy0Xe10=;
-        b=a2PIZ+La9zU57Y18HTm6bWATO20DaJ6YSqmOX+Y7Z6m6Gtef65SuzOrEd3i9EbJaRo
-         FXBn0yCFYqrg4PkA2HQZpyn6yMtpfMv/ejX67KRnb/3PYgHp9SUQaI+i3iQmdW+4gKrp
-         uhJJI37FdgluSOHX91OmbaxBxfGt/uGxNXA0pOTKW8ajIs3pogYVn4E+zqr+G3orWXCK
-         U1rfw85WdxKJXGHQ9DryjE1Elkvc6q7LgLFHHtB9x/g8nqFFEYLqTQ65kTxRryhsTqL5
-         RkL1+lGqWVA2yuXVm+4A6V5rz8TStFK5mRDjhi4viByTogB/KsxCUDwPEsGOTNKGsqE1
-         ShFg==
+        bh=3Z/mcAy0AwiMUi0p/QTC0GnZiW2ukvf/TDSTvscZh4g=;
+        b=fWGzZmB2V5fJVKJv2PVaan7zHWI+8TWC8cTiV5HibtIABww1Hlx1mO9TQRrDWfc//J
+         mIdfg2K6z3SlLu3uMqFYWSpDaCOSZxj9QM3SrmcjmmAmAJgNKY+vJy+hwm2PKeBY1wuG
+         NMDiVtylNkNwtnxDnL80ve950a+9lOlrdKQrJgjBSZujGqNjXNC/W7nZAtFjlx6Z7Mw9
+         A8WVXAosSDWGQPm9UvOqTcHdtMibCIpcXIrM0E0T3n7k3oXAPBwld5e2aKLri+R4kANe
+         vQpW2PxB+7d2cP8JhJlUzATGETU9pYm9s1/bWcMYGXMpMUxZBifcATqzxLdHG7huUmc3
+         FR+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8zm5J1NbSAv3TdiryGrbNnK0wLWnfsAGlTXyiy0Xe10=;
-        b=ZCGf05+DFJBKXLHo/M774OLGHEgfksvlERoYsmE78J1g2JrSQaWcWUS61PkB7kmSCG
-         CUaZ7j+BXmH/w6HC9AxZn4B6oLdSySueUKZGTUSlBESO+foNasdlBtYE/tK8REJqWfGd
-         I2BFKqpZ4NYpdEX4gUqmCgNAKEu4NVbH6CiXQMW2K6W0aC469H7j4/sJ+YNhEPC5uA4I
-         S+UX/Jygzki516xHRCWP9GjsQMaoWos1jvN67KDghV9IJWAMl3fxiXOJELMK0qy1s/JW
-         6PW7Wy9FwIQMzP815CPfW2uI2QL7QjFL0OV7vQ8L91dXXnCdJgCCTT/coSGw0QafwXIW
-         UL3Q==
-X-Gm-Message-State: AOAM532zdElTdUhswdLTEJQ2HMThWPdQRhyB/1BYLjl3GIT1IVU2vRzP
-        WHKKr4Hxyfc2/amRJVLy/Vg=
-X-Google-Smtp-Source: ABdhPJzPJJ+t84WA7ZilqmCYK56gWc6BPMwkORW3LDFBA4mrU0+Plk7hI2aUzOOc2Rm0FfirEBQurQ==
-X-Received: by 2002:aa7:8e4f:0:b0:3ee:27d5:28bc with SMTP id d15-20020aa78e4f000000b003ee27d528bcmr2194660pfr.24.1629804609612;
-        Tue, 24 Aug 2021 04:30:09 -0700 (PDT)
+        bh=3Z/mcAy0AwiMUi0p/QTC0GnZiW2ukvf/TDSTvscZh4g=;
+        b=bPMT2raKPuGO4inuuwarDQNPZoqwSwy34/XYhQLLVpjyo5cAi+blSE3lKxGD2nK2R4
+         On4gnicVhz0qzTd1tM7UzSaKTKWNgcVOraTbrc1iGu7bCo1qDW2VK8188eYXd5G4MxNv
+         gmP0QmFvv2Mjp+9bJJHjaWvMlskTuT/zhPA70L7QLVLXFa8i5GgEcmJmRyc0jOZjR52f
+         MBBRPDBvNgXGbN8JXhZoskrVFJSBN1Zf3+ZwlGwMWhr03cJT1KRSDnY86CBPGWoj86Ig
+         0XWC5pxt/RoKc369BcHs6LKMVUB1MFJ2m1odKx7NPK2eVclwLyDUvonCQajVCuaz/M1y
+         bITg==
+X-Gm-Message-State: AOAM533L0xx80ysDE4ZGENKRCqv3VuQxQypQumpIbAa3sxAS9WIrp7nD
+        43HPT4kzYLPfsXc2BasGWBA=
+X-Google-Smtp-Source: ABdhPJx7q6DYUPXPo7wmC9La9yOcbba+MOoCx3CxVmU4jxXAwbKJcH3XxOsoTgLpqD13zSWrbjsImg==
+X-Received: by 2002:a65:51c8:: with SMTP id i8mr32730434pgq.451.1629804612995;
+        Tue, 24 Aug 2021 04:30:12 -0700 (PDT)
 Received: from localhost.localdomain ([45.77.24.247])
-        by smtp.gmail.com with ESMTPSA id on15sm2128732pjb.19.2021.08.24.04.30.06
+        by smtp.gmail.com with ESMTPSA id on15sm2128732pjb.19.2021.08.24.04.30.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 04:30:09 -0700 (PDT)
+        Tue, 24 Aug 2021 04:30:12 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     mingo@redhat.com, peterz@infradead.org, mgorman@suse.de,
         juri.lelli@redhat.com, vincent.guittot@linaro.org,
@@ -55,9 +55,9 @@ To:     mingo@redhat.com, peterz@infradead.org, mgorman@suse.de,
         bristot@redhat.com, achaiken@aurora.tech
 Cc:     lkp@intel.com, linux-kernel@vger.kernel.org,
         linux-rt-users@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v3 4/7] sched: make the output of schedstats independent of fair sched class
-Date:   Tue, 24 Aug 2021 11:29:43 +0000
-Message-Id: <20210824112946.9324-5-laoar.shao@gmail.com>
+Subject: [PATCH v3 5/7] sched: introduce task block time in schedstats
+Date:   Tue, 24 Aug 2021 11:29:44 +0000
+Message-Id: <20210824112946.9324-6-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210824112946.9324-1-laoar.shao@gmail.com>
 References: <20210824112946.9324-1-laoar.shao@gmail.com>
@@ -67,127 +67,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The per cpu stats can be show with /proc/sched_debug, which includes the
-per cpu schedstats of each task group. Currently these per cpu
-schedstats only show for the fair sched class. If we want to support
-other sched classes, we have to make these output independent of fair
-sched class.
+Currently in schedstats we have sum_sleep_runtime and iowait_sum, but
+there's no metric to show how long the task is in D state.  Once a task in
+D state, it means the task is blocked in the kernel, for example the
+task may be waiting for a mutex. The D state is more frequent than
+iowait, and it is more critital than S state. So it is worth to add a
+metric to measure it.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 Cc: Mel Gorman <mgorman@suse.de>
 Cc: Alison Chaiken <achaiken@aurora.tech>
 ---
- kernel/sched/debug.c | 70 +++++++++++++++++++++++++++++++-------------
- 1 file changed, 50 insertions(+), 20 deletions(-)
+ include/linux/sched.h | 2 ++
+ kernel/sched/debug.c  | 6 ++++--
+ kernel/sched/stats.c  | 1 +
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 39c29eae1af9..7888ad8384ba 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -502,6 +502,8 @@ struct sched_statistics {
+ 
+ 	u64				block_start;
+ 	u64				block_max;
++	s64				sum_block_runtime;
++
+ 	u64				exec_max;
+ 	u64				slice_max;
+ 
 diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 4cfee2aa1a2d..705987aed658 100644
+index 705987aed658..5c6bc3f373f0 100644
 --- a/kernel/sched/debug.c
 +++ b/kernel/sched/debug.c
-@@ -442,11 +442,7 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
- 	struct sched_entity *se = tg->se[cpu];
+@@ -560,10 +560,11 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
+ 		(long long)(p->nvcsw + p->nivcsw),
+ 		p->prio);
  
- #define P(F)		SEQ_printf(m, "  .%-30s: %lld\n",	#F, (long long)F)
--#define P_SCHEDSTAT(F)	SEQ_printf(m, "  .%-30s: %lld\n",	\
--		"se->statistics."#F, (long long)schedstat_val(tg->stats[cpu]->F))
- #define PN(F)		SEQ_printf(m, "  .%-30s: %lld.%06ld\n", #F, SPLIT_NS((long long)F))
--#define PN_SCHEDSTAT(F)	SEQ_printf(m, "  .%-30s: %lld.%06ld\n", \
--		"se->statistics."#F, SPLIT_NS((long long)schedstat_val(tg->stats[cpu]->F)))
+-	SEQ_printf(m, "%9Ld.%06ld %9Ld.%06ld %9Ld.%06ld",
++	SEQ_printf(m, "%9lld.%06ld %9lld.%06ld %9lld.%06ld %9lld.%06ld",
+ 		SPLIT_NS(schedstat_val_or_zero(p->stats.wait_sum)),
+ 		SPLIT_NS(p->se.sum_exec_runtime),
+-		SPLIT_NS(schedstat_val_or_zero(p->stats.sum_sleep_runtime)));
++		SPLIT_NS(schedstat_val_or_zero(p->stats.sum_sleep_runtime)),
++		SPLIT_NS(schedstat_val_or_zero(p->stats.sum_block_runtime)));
  
- 	if (!se)
- 		return;
-@@ -454,20 +450,6 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
- 	PN(se->exec_start);
- 	PN(se->vruntime);
- 	PN(se->sum_exec_runtime);
--
--	if (schedstat_enabled()) {
--		PN_SCHEDSTAT(wait_start);
--		PN_SCHEDSTAT(sleep_start);
--		PN_SCHEDSTAT(block_start);
--		PN_SCHEDSTAT(sleep_max);
--		PN_SCHEDSTAT(block_max);
--		PN_SCHEDSTAT(exec_max);
--		PN_SCHEDSTAT(slice_max);
--		PN_SCHEDSTAT(wait_max);
--		PN_SCHEDSTAT(wait_sum);
--		P_SCHEDSTAT(wait_count);
--	}
--
- 	P(se->load.weight);
- #ifdef CONFIG_SMP
- 	P(se->avg.load_avg);
-@@ -475,13 +457,60 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
- 	P(se->avg.runnable_avg);
- #endif
+ #ifdef CONFIG_NUMA_BALANCING
+ 	SEQ_printf(m, " %d %d", task_node(p), task_numa_group_id(p));
+@@ -995,6 +996,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
+ 		u64 avg_atom, avg_per_cpu;
  
--#undef PN_SCHEDSTAT
- #undef PN
--#undef P_SCHEDSTAT
- #undef P
- }
- #endif
+ 		PN_SCHEDSTAT(sum_sleep_runtime);
++		PN_SCHEDSTAT(sum_block_runtime);
+ 		PN_SCHEDSTAT(wait_start);
+ 		PN_SCHEDSTAT(sleep_start);
+ 		PN_SCHEDSTAT(block_start);
+diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
+index b2542f4d3192..21fae41c06f5 100644
+--- a/kernel/sched/stats.c
++++ b/kernel/sched/stats.c
+@@ -82,6 +82,7 @@ void __update_stats_enqueue_sleeper(struct rq *rq, struct task_struct *p,
  
-+#if defined(CONFIG_FAIR_GROUP_SCHED) || defined(CONFIG_RT_GROUP_SCHED)
-+struct tg_schedstats {
-+	struct seq_file *m;
-+	int cpu;
-+};
-+
-+static int tg_show_schedstats(struct task_group *tg, void *data)
-+{
-+	struct tg_schedstats *p = data;
-+	struct seq_file *m = p->m;
-+	int cpu = p->cpu;
-+
-+#define P_SCHEDSTAT(F)	SEQ_printf(m, "  .%-30s: %lld\n",	\
-+		"se->statistics."#F, (long long)schedstat_val(tg->stats[cpu]->F))
-+#define PN_SCHEDSTAT(F)	SEQ_printf(m, "  .%-30s: %lld.%06ld\n", \
-+		"se->statistics."#F, SPLIT_NS((long long)schedstat_val(tg->stats[cpu]->F)))
-+
-+	PN_SCHEDSTAT(wait_start);
-+	PN_SCHEDSTAT(sleep_start);
-+	PN_SCHEDSTAT(block_start);
-+	PN_SCHEDSTAT(sleep_max);
-+	PN_SCHEDSTAT(block_max);
-+	PN_SCHEDSTAT(exec_max);
-+	PN_SCHEDSTAT(slice_max);
-+	PN_SCHEDSTAT(wait_max);
-+	PN_SCHEDSTAT(wait_sum);
-+	P_SCHEDSTAT(wait_count);
-+
-+#undef P_SCHEDSTAT
-+#undef PN_SCHEDSTAT
-+
-+return 0;
-+}
-+
-+static void print_task_group_stats(struct seq_file *m, int cpu)
-+{
-+	struct tg_schedstats data = {
-+		.m = m,
-+		.cpu = cpu,
-+	};
-+
-+	if (!schedstat_enabled())
-+		return;
-+
-+	walk_tg_tree(tg_show_schedstats, tg_nop, &data);
-+}
-+#endif
-+
-+
- #ifdef CONFIG_CGROUP_SCHED
- static DEFINE_SPINLOCK(sched_debug_lock);
- static char group_path[PATH_MAX];
-@@ -756,6 +785,7 @@ do {									\
- 	print_cfs_stats(m, cpu);
- 	print_rt_stats(m, cpu);
- 	print_dl_stats(m, cpu);
-+	print_task_group_stats(m, cpu);
+ 		__schedstat_set(stats->block_start, 0);
+ 		__schedstat_add(stats->sum_sleep_runtime, delta);
++		__schedstat_add(stats->sum_block_runtime, delta);
  
- 	print_rq(m, rq, cpu);
- 	SEQ_printf(m, "\n");
+ 		if (p) {
+ 			if (p->in_iowait) {
 -- 
 2.18.2
 
