@@ -2,129 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897313F5419
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 02:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89223F541A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 02:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbhHXAcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 20:32:21 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16110 "EHLO mga14.intel.com"
+        id S233496AbhHXAhH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 20:37:07 -0400
+Received: from mga09.intel.com ([134.134.136.24]:19211 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233478AbhHXAcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 20:32:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="216928119"
+        id S233260AbhHXAhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 20:37:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="217207984"
 X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="216928119"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 17:31:30 -0700
+   d="scan'208";a="217207984"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 17:36:23 -0700
 X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="526371238"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 17:31:30 -0700
-Date:   Mon, 23 Aug 2021 17:31:29 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sumanth Kamatala <skamatala@juniper.net>
-Subject: [PATCH v3] x86/mce: Defer processing of early errors
-Message-ID: <20210824003129.GA1642753@agluck-desk2.amr.corp.intel.com>
-References: <20210819224452.1619400-1-tony.luck@intel.com>
- <YR+f/fdGIxWcLTP2@zn.tnic>
- <20210820144314.GA1622759@agluck-desk2.amr.corp.intel.com>
- <YR/Oxark0bhLlona@zn.tnic>
- <20210823184547.GA1638691@agluck-desk2.amr.corp.intel.com>
- <20210823204122.GA1640015@agluck-desk2.amr.corp.intel.com>
- <YSQKT0NPrx6puVUQ@zn.tnic>
+   d="scan'208";a="493206675"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 17:36:20 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [RFC 20/20] mm/rmap: avoid potential races
+References: <20210131001132.3368247-1-namit@vmware.com>
+        <20210131001132.3368247-21-namit@vmware.com>
+        <87zgt8y4aj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <3F1EF02A-6FD4-42BE-BD07-1C5AC97A515B@vmware.com>
+Date:   Tue, 24 Aug 2021 08:36:18 +0800
+In-Reply-To: <3F1EF02A-6FD4-42BE-BD07-1C5AC97A515B@vmware.com> (Nadav Amit's
+        message of "Mon, 23 Aug 2021 15:50:22 +0000")
+Message-ID: <87v93vy8zh.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSQKT0NPrx6puVUQ@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@alien8.de>
+Nadav Amit <namit@vmware.com> writes:
 
-When a fatal machine check results in a system reset, Linux does
-not clear the error(s) from machine check bank(s).
+>> On Aug 23, 2021, at 1:05 AM, Huang, Ying <ying.huang@intel.com> wrote:
+>> 
+>> Hi, Nadav,
+>> 
+>> Nadav Amit <nadav.amit@gmail.com> writes:
+>> 
+>>> From: Nadav Amit <namit@vmware.com>
+>>> 
+>>> flush_tlb_batched_pending() appears to have a theoretical race:
+>>> tlb_flush_batched is being cleared after the TLB flush, and if in
+>>> between another core calls set_tlb_ubc_flush_pending() and sets the
+>>> pending TLB flush indication, this indication might be lost. Holding the
+>>> page-table lock when SPLIT_LOCK is set cannot eliminate this race.
+>> 
+>> Recently, when I read the corresponding code, I find the exact same race
+>> too.  Do you still think the race is possible at least in theory?  If
+>> so, why hasn't your fix been merged?
+>
+> I think the race is possible. It didn’t get merged, IIRC, due to some
+> addressable criticism and lack of enthusiasm from other people, and
+> my laziness/busy-ness.
 
-Hardware preserves the machine check banks across a warm reset.
+Got it!  Thanks your information!
 
-During initialization of the kernel after the reboot, Linux reads,
-logs, and clears all machine check banks.
+>>> The current batched TLB invalidation scheme therefore does not seem
+>>> viable or easily repairable.
+>> 
+>> I have some idea to fix this without too much code.  If necessary, I
+>> will send it out.
+>
+> Arguably, it would be preferable to have a small back-portable fix for
+> this issue specifically. Just try to ensure that you do not introduce
+> performance overheads. Any solution should be clear about its impact
+> on additional TLB flushes on the worst-case scenario and the number
+> of additional atomic operations that would be required.
 
-But there is a problem. In:
-commit 5de97c9f6d85 ("x86/mce: Factor out and deprecate the /dev/mcelog driver")
-the call to mce_register_decode_chain() moved later in the boot sequence.
-This means that /dev/mcelog doesn't see those early error logs.
+Sure.  Will do that.
 
-This was partially fixed by:
-commit cd9c57cad3fe ("x86/MCE: Dump MCE to dmesg if no consumers")
-
-which made sure that the logs were not lost completely by printing
-to the console. But parsing console logs is error prone. Users
-of /dev/mcelog should expect to find any early errors logged to
-standard places.
-
-Add a new flag MCP_QUEUE_LOG to machine_check_poll() to be used
-in early machine check initialization to indicate that any errors
-found should just be queued to genpool. When mcheck_late_init() is
-called it will call mce_schedule_work() to actually log any errors
-queued in the genpool
-
-Fixes: 5de97c9f6d85 ("x86/mce: Factor out and deprecate the /dev/mcelog driver")
-Reported-by: Sumanth Kamatala <skamatala@juniper.net>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-
-[Boris: Your code (with one name change) my commit log]
----
- arch/x86/include/asm/mce.h     |  1 +
- arch/x86/kernel/cpu/mce/core.c | 11 ++++++++---
- 2 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index 0607ec4f5091..da9321548f6f 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -265,6 +265,7 @@ enum mcp_flags {
- 	MCP_TIMESTAMP	= BIT(0),	/* log time stamp */
- 	MCP_UC		= BIT(1),	/* log uncorrected errors */
- 	MCP_DONTLOG	= BIT(2),	/* only clear, don't log */
-+	MCP_QUEUE_LOG	= BIT(3),	/* only queue to genpool */
- };
- bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b);
- 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 22791aadc085..8cb7816d03b4 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -817,7 +817,10 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
- 		if (mca_cfg.dont_log_ce && !mce_usable_address(&m))
- 			goto clear_it;
- 
--		mce_log(&m);
-+		if (flags & MCP_QUEUE_LOG)
-+			mce_gen_pool_add(&m);
-+		else
-+			mce_log(&m);
- 
- clear_it:
- 		/*
-@@ -1639,10 +1642,12 @@ static void __mcheck_cpu_init_generic(void)
- 		m_fl = MCP_DONTLOG;
- 
- 	/*
--	 * Log the machine checks left over from the previous reset.
-+	 * Log the machine checks left over from the previous reset. Log them
-+	 * only, do not start processing them. That will happen in mcheck_late_init()
-+	 * when all consumers have been registered on the notifier chain.
- 	 */
- 	bitmap_fill(all_banks, MAX_NR_BANKS);
--	machine_check_poll(MCP_UC | m_fl, &all_banks);
-+	machine_check_poll(MCP_UC | MCP_QUEUE_LOG | m_fl, &all_banks);
- 
- 	cr4_set_bits(X86_CR4_MCE);
- 
--- 
-2.29.2
-
+Best Regards,
+Huang, Ying
