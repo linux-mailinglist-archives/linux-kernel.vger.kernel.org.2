@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B0F3F6086
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BF83F6084
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237850AbhHXOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237718AbhHXOiE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:38:04 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F44C061757;
-        Tue, 24 Aug 2021 07:37:20 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id n126so28177135ybf.6;
-        Tue, 24 Aug 2021 07:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3MRebzfdJOp7jfrcpL/FM2xLk9BBQctQ5lkdEQBZyiE=;
-        b=lUnmzjsSKekeg4RrPHvJL4hAY0dkCJBUVuO/Y3K99H1Ij3PpHtzCymd2Cv54aWYVUs
-         MR1ergB1cCMRNFbIAs1plvFg2CmLH5xTlzR3fTQtcQcjB5xo3Z/SPJfaWocFseERyQc6
-         U4kxWzLtdbm+5KqfgFqhQPVHujjTMNyYsYmkkV5WesNTQd/cy29ypPe+1ieBK6hTcnqp
-         13YjAhhHAuQuUSZa0gdedN/xLa59/qfEnLSaa9qcYkq/+oTg9bU1/efD3IQRZVDFwrBl
-         7UyN6pB9zdduy5vqtb5VwMk62oOJKT3rLyraZt5n4NPWNlc/l/5eFi3PojoH3peBf6cg
-         vK5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3MRebzfdJOp7jfrcpL/FM2xLk9BBQctQ5lkdEQBZyiE=;
-        b=UNZxNV4twpPu5b7QmLFRUESu/bsB/Jh4BIkMinPKCnQinvsC5wK5AhvhDPNBGBBrqD
-         FQdc/ztWxU1CFNNa4utDPAiZoHPQ6VlahiaGTzun+bPwLjG5BfVyPIn89YNueWYpqPGK
-         soDwlDs2T79QABQEVWw+Xk21Z/pMIAZ8Cf/xfNeSeDO5s+h/5YJ/loJ5CpE1rdrooDqi
-         R2mVr1B3btsu0w7Vt3D/ub3Bdmf1e3EVnWIedSGbB+83eY4FfNzzio9RJ3hOa1TU5u0/
-         ALtgLa+KYu4SKFKFz8c8jfIdUharcvU8MH6kJyR6nW62I7Tvrpcpm77Fl1AckLWMKuEW
-         yEvQ==
-X-Gm-Message-State: AOAM533Vp0nWV/JV9zKkpe8oZVeGu/Ohby6rwu070LpOuNIMeIQt93Ai
-        Bi9sHk3gNenNH3aXfierpDt9yaS3NqPOz6ZWgiU=
-X-Google-Smtp-Source: ABdhPJwKJmy4aqa4MWNoqDJiNS836xhXqLuUfoxvfZlxGsRtGm4/gB4+91sxR70u6FjJEi3JwghTzxN4YtmwKywnuAQ=
-X-Received: by 2002:a25:b948:: with SMTP id s8mr51178619ybm.281.1629815838270;
- Tue, 24 Aug 2021 07:37:18 -0700 (PDT)
+        id S237832AbhHXOhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:37:36 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55840 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237745AbhHXOhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:37:35 -0400
+Received: from zn.tnic (p200300ec2f11440070ccc1d7a1cb5edc.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:4400:70cc:c1d7:a1cb:5edc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F33D41EC030F;
+        Tue, 24 Aug 2021 16:36:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629815805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hfoMF6SGFqSHpHldUajmgBFLEl1tYqX+l2KPXDR9t9E=;
+        b=Qcu1fYJqbKqJ7kYnHDZVTAVyluKJX5rdTFNozSQZEZpJbShdBVDrSsV0tUagP5ekFGm1/4
+        oiAZDxtrza60ZKEx5eH+f45J4eP4mstqFQt50EHDeC8FmmiYIVMu1xTeb724y+1L+24dj/
+        62OLBED0ZTdaiz5THH119s4sjXcmhOk=
+Date:   Tue, 24 Aug 2021 16:37:22 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Lazar, Lijo" <lijo.lazar@amd.com>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/amdgpu: Fix build with missing
+ pm_suspend_target_state module export
+Message-ID: <YSUEIriLpcQQYy2k@zn.tnic>
+References: <YSP6Lv53QV0cOAsd@zn.tnic>
+ <CADnq5_O3cg+VtyCBGUDEVxb768jHK6m814W8u-q-kSX9jkHAAw@mail.gmail.com>
+ <YSQE6fN9uO0CIWeh@zn.tnic>
+ <CADnq5_PEOr=bcmLF2x67hx24=EWwH7DAgEsPjYqXgf8i-beEhg@mail.gmail.com>
+ <YSQJL0GBzO2ulEpm@zn.tnic>
+ <CADnq5_N0q8Rfm++O3jK6wcbePxg_Oj3=Xx9Utw60npKrEsSp8A@mail.gmail.com>
+ <YSS/F9kcQcRKlNJ5@zn.tnic>
+ <94ff5309-f71a-6107-01e8-8d7d544dd4e1@amd.com>
+ <YST2u5UznQjMKulE@zn.tnic>
+ <1bb0baef-7924-98ab-b125-aa3c2ac405d4@amd.com>
 MIME-Version: 1.0
-References: <20210824085947.224062-1-nghialm78@gmail.com>
-In-Reply-To: <20210824085947.224062-1-nghialm78@gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 24 Aug 2021 16:37:19 +0200
-Message-ID: <CAKXUXMzbJRHyUpFLGk8SBJHrkmkwq4VtfXmgvZtUBJGiED8qxw@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Add missing newline at the end of file
-To:     Nghia Le <nghialm78@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1bb0baef-7924-98ab-b125-aa3c2ac405d4@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:00 AM Nghia Le <nghialm78@gmail.com> wrote:
->
-> Add missing newline at the end of file parse-sublevel-options.h.
-> Thus removing relevant warning reported by checkpatch.
->
-> Signed-off-by: Nghia Le <nghialm78@gmail.com>
+On Tue, Aug 24, 2021 at 07:22:46PM +0530, Lazar, Lijo wrote:
+> 'pm_suspend_target_state' is only available when CONFIG_PM_SLEEP
+> is set/enabled.
 
-Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+pm_suspend_target_state is available only when CONFIG_SUSPEND is
+enabled. The extern thing is only a forward declaration.
 
-This addresses the only instance of a "no newline at the end of the
-file" throughout the kernel tree.
+> OTOH, when both SUSPEND and HIBERNATION are not set,
+> PM_SLEEP is not set, so this variable cannot be used.
 
-This is part of a larger effort to identify all rules that checkpatch
-warns about and that are never false positives (compared to the many
-rules in checkpatch that are heuristics or are known to be ignored by
-the current development community and hence, cause many false
-positives). We could use such rules to be enforced in the submission
-process.
+And it will not be used.
 
-Lukas
-Lukas
-> ---
->  tools/perf/util/parse-sublevel-options.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/parse-sublevel-options.h b/tools/perf/util/parse-sublevel-options.h
-> index 9b9efcc2aaad..578b18ef03bb 100644
-> --- a/tools/perf/util/parse-sublevel-options.h
-> +++ b/tools/perf/util/parse-sublevel-options.h
-> @@ -8,4 +8,4 @@ struct sublevel_option {
->
->  int perf_parse_sublevel_options(const char *str, struct sublevel_option *opts);
->
-> -#endif
-> \ No newline at end of file
-> +#endif
-> --
-> 2.25.1
->
+> ../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c: In function
+> ‘amdgpu_acpi_is_s0ix_active’:
+> ../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c:1046:11: error:
+> ‘pm_suspend_target_state’ undeclared (first use in this function); did you
+> mean ‘__KSYM_pm_suspend_target_state’?
+>     return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
+>            ^~~~~~~~~~~~~~~~~~~~~~~
+>            __KSYM_pm_suspend_target_state
+
+That looks like the .config didn't have CONFIG_SUSPEND enabled.
+
+> Also use shorter IS_ENABLED(CONFIG_foo) notation for checking the
+> 2 config symbols.
+
+What shorter notation?
+
+> So it does look like that error can be extracted as well in some
+> config.
+
+Yah, when CONFIG_SUSPEND=n.
+
+> Well, now it doesn't seem to be a better one. The original one checked
+> both.
+
+I don't see a reason for checking both.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
