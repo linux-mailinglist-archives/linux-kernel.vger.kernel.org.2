@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0163F5B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873173F5AFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbhHXJ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        id S235604AbhHXJ2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235829AbhHXJ3O (ORCPT
+        with ESMTP id S233910AbhHXJ2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:29:14 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F05BC0613D9;
-        Tue, 24 Aug 2021 02:28:30 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id n12so440735plk.10;
-        Tue, 24 Aug 2021 02:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5stGDS23SnfomsC4fdxwor1QYn4i/qRq+0VkZa4KXkY=;
-        b=MPgzRjKNrs1r7y2M7ftbqg3k/oiRUBrXJtlPorFNW0mZaKRv3dq7CH3rmaz9ZezQGX
-         VEnZmTC5yZ3oMY2gY6TgNYtfRvn840MH7TLeUbSHRf8yOr05pnT1vsE24oKQnwPpgrQ8
-         MAMKXdSFXFwotX/AyrUE+hQs4fYn2OFjvQNWqvJR90k6qSgMW9aT+SOOVBur56r2aCiH
-         lb+5k1wagRLSq0bXc6vWKSifBacITiNIkhPgobT0nzhoguARKaZ7w52jGpu1SSh2pfDM
-         Lyuxt1RDDTcjPducm+pQxT2x3ZwK40pVV5o1ovDdTR6lTMUXUbaZLCa9KO+ZCVXy5H30
-         E53A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5stGDS23SnfomsC4fdxwor1QYn4i/qRq+0VkZa4KXkY=;
-        b=En5mbYfIA/6GzqzfsfRGgcaYAAaBF5Mcj1r2riC8jDd+r9i7ABEaqFSRr6VxHy0D9a
-         XWQfihDiXQej8fMj198kQeKOL6NKmCeG49Tah+vSIun0dZ7ISazH7z/7XyxcEjD8gb17
-         H7wCU1nRIUQCvWP1s9Y1G5BtX2c2Ke7KFgbzNk5wbx6TLPeri/tOcr/vsVWMLIyiqnrD
-         3LvpfkGbsVxWTPKyo4JxarNSjkYk0wo4ikA4lSh1fMXWVLcPrd6VbXwu2Z+QJOcwMccL
-         pItPrwx2Mn3ILkVOrHp/NKlLq32aVRvQ0CE9tnjomtgvN+o6TaHiRFeO23M5so6tPCL+
-         LGNw==
-X-Gm-Message-State: AOAM531b8+KRHM4Jc40YN1ydsB4BeDULBhMRbqeZPFR8gQKSiVfSivMg
-        638WrJWO/yYAFoGiLi4hiRA=
-X-Google-Smtp-Source: ABdhPJyF3YORae+mW7D8rJstf8F9nPEjv5C6XR0PDnT/C/aqTruY0FfIepOoo4TlxGgqJ2blvB1bhQ==
-X-Received: by 2002:a17:90a:9dc6:: with SMTP id x6mr3556197pjv.122.1629797310230;
-        Tue, 24 Aug 2021 02:28:30 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id w5sm21270053pgp.79.2021.08.24.02.28.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 02:28:29 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Luting Guo <luting.guo@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] dt-bindings: spi: add sprd ADI for sc9863 and ums512
-Date:   Tue, 24 Aug 2021 17:27:45 +0800
-Message-Id: <20210824092745.2093640-4-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210824092745.2093640-1-zhang.lyra@gmail.com>
-References: <20210824092745.2093640-1-zhang.lyra@gmail.com>
+        Tue, 24 Aug 2021 05:28:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB32C061757;
+        Tue, 24 Aug 2021 02:27:48 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 09:27:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629797267;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CPhM15sS7uHWi7ZsroKW7dkJMk1jrQ9AzQx0QYOhu1s=;
+        b=GBX56r566UpwQHsD30/8BUxcBK3QYkoLgPo0l8mwkiDwXS03QJ6c/ijMC7N4bgAHR1WycG
+        U3YavPb8emQUPLU/krzTmLk47aoDGjUgp62NyodUZFVGItuayeQuaawlFBnmCBOpqbwNQz
+        YHHqZ2MP0gTqjxi2Jjm+zl/UCdEWGjn6UvqcOl/uleP9YsIi1Re88YfJbqgNKMO6TyfcMf
+        z53Dr2uxj5gHYKCLmA6GJl31+HQs2uipOjy1eUAE91l+h/TKEPz3Kl698P3UtQnIdar36e
+        qFW4Dj/GcULmDxZ8SRLIWV8yON7cM2VPyn9uu5Yvb/B0/kvOq+veVL8ZjDIJ/Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629797267;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CPhM15sS7uHWi7ZsroKW7dkJMk1jrQ9AzQx0QYOhu1s=;
+        b=YJ6WNCKNC7cdFcMUoMaVPjXi4NtUcA+Ei9+EqnKXoFRncxnd9A9QD7nkuL06FT74lTGeGb
+        HuJ0scB0fOYA5tAA==
+From:   "tip-bot2 for Jing Yangyang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/kaslr: Have process_mem_region() return a boolean
+Cc:     Zeal Robot <zealci@zte.com.cn>,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210824070515.61065-1-deng.changcheng@zte.com.cn>
+References: <20210824070515.61065-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162979726622.25758.13276488886487213050.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+The following commit has been merged into the x86/cleanups branch of tip:
 
-This patch adds support for sc9863 and ums512.
+Commit-ID:     5b3fd8aa5df0244fc19f2572598dee406bcc6b07
+Gitweb:        https://git.kernel.org/tip/5b3fd8aa5df0244fc19f2572598dee406bcc6b07
+Author:        Jing Yangyang <jing.yangyang@zte.com.cn>
+AuthorDate:    Tue, 24 Aug 2021 00:05:15 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 24 Aug 2021 10:54:15 +02:00
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+x86/kaslr: Have process_mem_region() return a boolean
+
+Fix the following coccicheck warning:
+
+  ./arch/x86/boot/compressed/kaslr.c:671:10-11:WARNING:return of 0/1
+  in function 'process_mem_region' with return type bool
+
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210824070515.61065-1-deng.changcheng@zte.com.cn
 ---
- Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/boot/compressed/kaslr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml b/Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
-index f464fb6033f9..5149a28c3ee2 100644
---- a/Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
-+++ b/Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
-@@ -50,6 +50,8 @@ properties:
-   compatible:
-     enum:
-       - sprd,sc9860-adi
-+      - sprd,sc9863-adi
-+      - sprd,ums512-adi
+diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
+index e366907..67c3208 100644
+--- a/arch/x86/boot/compressed/kaslr.c
++++ b/arch/x86/boot/compressed/kaslr.c
+@@ -668,7 +668,7 @@ static bool process_mem_region(struct mem_vector *region,
  
-   reg:
-     maxItems: 1
--- 
-2.25.1
-
+ 		if (slot_area_index == MAX_SLOT_AREA) {
+ 			debug_putstr("Aborted e820/efi memmap scan when walking immovable regions(slot_areas full)!\n");
+-			return 1;
++			return true;
+ 		}
+ 	}
+ #endif
