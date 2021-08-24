@@ -2,81 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8C83F5695
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0474D3F5697
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbhHXDTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 23:19:43 -0400
-Received: from ozlabs.org ([203.11.71.1]:52787 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233885AbhHXDTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 23:19:37 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtvTR65y6z9sXk;
-        Tue, 24 Aug 2021 13:18:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629775131;
-        bh=aZA0MxZV2syqPqzW4k4W1sjD8tLPSUM78b8udh9Yu24=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FFsJDhUcm78gBjnxrbOEWwonV1SnO/TiuGJ7GVDJp4xAQepiXNLP96JiWNgvGJHpE
-         NMs+AOGrf0WzmmNkGRJM/9zEYqhZAZYF+m5Xl5EaN/nMHzXaDSISm9rjMfWartJMTt
-         RDEK67KFUv4vAv8J2cbDF1ef/q58ZAxo+xu4v4/WY5cUdyo1zdCpHtaCyViJ1Z0G0C
-         Gu6kqgPSHLC/xz/VNAFXo8upQjl+7yqSntsrpl8Sh8BHvJNY3Qtqow/qIz8pU3yMzh
-         P0SfVSdg8X1fMgoB4eL2JIr2SrBBi1aZUAA1OlKHbgkAYk48h+LD6yUmZiJw6ZFMg1
-         FkrTXYzJhkXUA==
-Date:   Tue, 24 Aug 2021 13:18:50 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robherring2@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the devicetree tree
-Message-ID: <20210824131850.62b29724@canb.auug.org.au>
+        id S234227AbhHXDTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 23:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234158AbhHXDTr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 23:19:47 -0400
+X-Greylist: delayed 127 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Aug 2021 20:19:03 PDT
+Received: from scorn.kernelslacker.org (scorn.kernelslacker.org [IPv6:2600:3c03:e000:2fb::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC246C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 20:19:02 -0700 (PDT)
+Received: from [2601:196:4600:6634:ae9e:17ff:feb7:72ca] (helo=wopr.kernelslacker.org)
+        by scorn.kernelslacker.org with esmtp (Exim 4.92)
+        (envelope-from <davej@codemonkey.org.uk>)
+        id 1mIMxn-0001N0-0G; Mon, 23 Aug 2021 23:18:59 -0400
+Received: by wopr.kernelslacker.org (Postfix, from userid 1026)
+        id BD53956006F; Mon, 23 Aug 2021 23:18:58 -0400 (EDT)
+Date:   Mon, 23 Aug 2021 23:18:58 -0400
+From:   Dave Jones <davej@codemonkey.org.uk>
+To:     Linux Kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: 5.14-rc breaks iotop swap io monitoring.
+Message-ID: <20210824031858.GA3263@codemonkey.org.uk>
+Mail-Followup-To: Dave Jones <davej@codemonkey.org.uk>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210824031648.GA2725@codemonkey.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Els_f0f_OmDxFoFHJ.8+ty8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824031648.GA2725@codemonkey.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Note: SpamAssassin invocation failed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Els_f0f_OmDxFoFHJ.8+ty8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Aug 23, 2021 at 11:16:48PM -0400, Dave Jones wrote:
+ > I just noticed that in 5.14-rc running iotop, it complains on startup
+ > that "CONFIG_TASK_DELAY_ACCT not enabled in kernel, cannot determine
+ > SWAPIN and IO %" and sure enough a bunch of columns show up as
+ > 'unavailable'.
+ > 
+ > My suspicion is this commit, which I've not confirmed yet as it doesn't
+ > cleanly revert.  I'll poke at it some more in the morning, but figured
+ > I'd bring it up sans-evidence in the hope that I'll wake up to someone
+ > having an Ah-ha moment.
 
-Hi all,
+Forgot to mention, my config has both SCHEDSTATS, SCHED_INFO and TASK_DELAY_ACCT set
+to =y
 
-After merging the devicetree tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
-
-arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning (pci_device_reg=
-): /scb/pcie@7d500000/pci@1,0: PCI unit address format error, expected "0,0"
-arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning (pci_device_reg=
-): /scb/pcie@7d500000/pci@1,0: PCI unit address format error, expected "0,0"
-
-Presumably exposed by commit
-
-  1ee7943c3343 ("kbuild: Enable dtc 'pci_device_reg' warning by default")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Els_f0f_OmDxFoFHJ.8+ty8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEkZRsACgkQAVBC80lX
-0Gwe5Af+NKrhLuD+XfyLsyZd3nW/7yb6pl007gy6eDl/VZQP8q/p6+cZtIDFBJNc
-tahy8nfK+nLnUdFiiCF2vLixdf3QboaE3UX2WTzIBWt+Kbpx3vSigjAxjjhNHzz8
-VTKMwf0ODBBpFTaITfyiM+q6kD7GQmnifuH4O/lKwbHxE7jVTMAzKm0JSGZGo70e
-mSNvPIkA1WmcU7a8wxujKJsLooHnTkqa6TJbGSSzFWwtvskRZ2obpSzLXvRj8TGn
-Mp1kAbpDlGWs0PEtrW0IZ0GuZQTALfwMH4g0f7vzx8fBlNtIkVqem3AmL62tLUfx
-H5b3tKNlAUTtscTUNuhwFOMpdGOapw==
-=LOw+
------END PGP SIGNATURE-----
-
---Sig_/Els_f0f_OmDxFoFHJ.8+ty8--
+ 	Dave
+ 
