@@ -2,102 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DAD3F620A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB863F6216
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238473AbhHXPwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238411AbhHXPwr (ORCPT
+        id S238524AbhHXPzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:55:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28888 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238467AbhHXPzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:52:47 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE52CC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:52:02 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id q3so9540150iot.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G9UnSSnlYRLUttWk790OTUp3vVDNhuFNpjJPwPR33gg=;
-        b=eiDog05hn6geYVERCCz83M7DncCeFgjW4iVb4MF6TQEZkST+XbuWGBUN1J6xMd4+Jf
-         oM6/wKi3lPr7xBEq/SDCgNOErb+C8y5w78/D3J30mqecQNi6O/28hBNP1LgaZjVpIfoq
-         tgO3TkEdbvxp+lDdPSMN9Ujo3Q7e2wtUN10sM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G9UnSSnlYRLUttWk790OTUp3vVDNhuFNpjJPwPR33gg=;
-        b=BEjfJ97/w1yR6CihGGMaV2IEx5v5wxD2rxZa2Gh2Es3Ijt4Q486IhKDiNZ+fvNdUpR
-         ZZsY5B5lZQYd83QTEravzrJJNXO7NsMW0MiyFP/4EhL4N5GjHdO9Nd0Iua6BihF0aWOR
-         ztymxTLMi7F7/TvaSuIvsLIMtBXI87JxF5oqMSWbdt/r+9utVqapJn6Y6O8pQSwiIBIl
-         4x0h/TpVB/f7W8inTawY0pPIeV2DvYufb5naM1SRQC5qML5SGSHor27+ZT01Z8UHaCZP
-         TELQmB6NzjR8mLJe8Vm+xfM8MT5qPkdMN0Szyrtg5CdbUhuPTivLz8JobIND1mG4MgUj
-         SyAA==
-X-Gm-Message-State: AOAM5336aNPLq5r5NmEPsFsFSM78oXWloev0ZkOj8cTVjrY44WivKMw4
-        gu/4gVZOGmStJO35lde73uKI0A==
-X-Google-Smtp-Source: ABdhPJw12PHQe4ldQaJd+CQv6s5KafuQsOqHWMdAGHu+kcNMgcpKWej3e22m86/A7SuIEuuLmE4LnQ==
-X-Received: by 2002:a05:6638:1504:: with SMTP id b4mr32944162jat.144.1629820321934;
-        Tue, 24 Aug 2021 08:52:01 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c25sm10609598iom.9.2021.08.24.08.52.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 08:52:01 -0700 (PDT)
-Subject: Re: [PATCH linux-next] tools:test_xdp_noinline: fix boolreturn.cocci
- warnings
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     CGEL <cgel.zte@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210824065526.60416-1-deng.changcheng@zte.com.cn>
- <2d701f13-8996-ed7d-3d41-794aa8a6e96c@linuxfoundation.org>
- <20210824074657.363455a6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2b6bf2fa-cf40-9610-ede5-ceab35004864@linuxfoundation.org>
-Date:   Tue, 24 Aug 2021 09:52:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 24 Aug 2021 11:55:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629820474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ax6zjB8FCNgsQYLqgNFMq9OeoawxxmOPV3+aTibAsX4=;
+        b=HZXsexFZ2QOsFuCHkNVjaTGfSqt96FQJaQs7i2axsnJl1KX2foGniRwwxbmUxWvJlrJN7M
+        VMyaU4jpJkwH8woHuqbL5n0h0lN1tR/fsx4w52ODpR2dx3vlV0RcDLZsv5s8tsNzo3Va2q
+        nYn0wF4EFHHnHUskm+kJt3fPngLO6v4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-sL2lRNboPTWorPFJiNMLBA-1; Tue, 24 Aug 2021 11:54:32 -0400
+X-MC-Unique: sL2lRNboPTWorPFJiNMLBA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92BDA800493;
+        Tue, 24 Aug 2021 15:54:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AA77A10016F5;
+        Tue, 24 Aug 2021 15:54:28 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com> <YSPwmNNuuQhXNToQ@casper.infradead.org> <YSQSkSOWtJCE4g8p@cmpxchg.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
 MIME-Version: 1.0
-In-Reply-To: <20210824074657.363455a6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1957059.1629820467.1@warthog.procyon.org.uk>
+Date:   Tue, 24 Aug 2021 16:54:27 +0100
+Message-ID: <1957060.1629820467@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 8:46 AM, Jakub Kicinski wrote:
-> On Tue, 24 Aug 2021 08:42:15 -0600 Shuah Khan wrote:
->> On 8/24/21 12:55 AM, CGEL wrote:
->>> From: Jing Yangyang <jing.yangyang@zte.com.cn>
->>>
->>> Return statements in functions returning bool should use true/false
->>> instead of 1/0.
->>>
->>> Reported-by: Zeal Robot <zealci@zte.com.cn>
->>> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
->>
->> We can't accept this patch. The from and Signed-off-by don't match.
-> 
-> That's what I thought but there is a From in the email body which git
-> will pick up. The submission is correct.
-> 
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Missed that. Thanks.
+> Yeah, honestly, I would have preferred to see this done the exact
+> reverse way: make the rule be that "struct page" is always a head
+> page, and anything that isn't a head page would be called something
+> else.
+> ...
+> That said, I see why Willy did it the way he did - it was easier to do
+> it incrementally the way he did. But I do think it ends up with an end
+> result that is kind of topsy turvy where the common "this is the core
+> allocation" being called that odd "folio" thing, and then the simpler
+> "page" name is for things that almost nobody should even care about.
 
-> Please trim your responses.
-> 
+From a filesystem pov, it may be better done Willy's way.  There's a lot of
+assumption that "struct page" corresponds to a PAGE_SIZE patch of RAM and is
+equivalent to a hardware page, so using something other than struct page seems
+a better idea.  It's easier to avoid the assumption if it's called something
+different.
 
-Will do.
+We're dealing with variable-sized clusters of things that, in the future,
+could be, say, a combination of typical 4K pages and higher order pages
+(depending on what the arch supports), so I think using "page" is the wrong
+name to use.
 
-thanks,
--- Shuah
+There are some pieces, kmap being a prime example, that might be tricky to
+make handle a transparently variable-sized multipage object, so careful
+auditing will likely be required if we do stick with "struct page".
+
+Further, there's the problem that there are a *lot* of places where
+filesystems access struct page members directly, rather than going through
+helper functions - and all of these need to be fixed.  This is much easier to
+manage if we can get the compiler to do the catching.  Hiding them all within
+struct page would require a humongous single patch.
+
+One question does spring to mind, though: do filesystems even need to know
+about hardware pages at all?  They need to be able to access source data or a
+destination buffer, but that can be stitched together from disparate chunks
+that have nothing to do with pages (eg. iov_iter); they need access to the
+pagecache, and may need somewhere to cache pieces of information, and they
+need to be able to pass chunks of pagecache, data or bufferage to crypto
+(scatterlists) and I/O routines (bio, skbuff) - but can we hide "paginess"
+from filesystems?
+
+The main point where this matters, at the moment, is, I think, mmap - but
+could more of that be handled transparently by the VM?
+
+> Because, as you say, head pages are the norm. And "folio" may be a
+> clever term, but it's not very natural. Certainly not at all as
+> intuitive or common as "page" as a name in the industry.
+
+That's mostly because no one uses the term... yet, and that it's not commonly
+used.  I've got used to it in building on top of Willy's patches and have no
+problem with it - apart from the fact that I would expect something more like
+a plural or a collective noun ("sheaf" or "ream" maybe?) - but at least the
+name is similar in length to "page".
+
+And it's handy for grepping ;-)
+
+> I'd have personally preferred to call the head page just a "page", and
+> other pages "subpage" or something like that. I think that would be
+> much more intuitive than "folio/page".
+
+As previously stated, I think we need to leave "struct page" as meaning
+"hardware page" and build some other concept on top for aggregation/buffering.
+
+David
+
