@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50FB3F5FE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422AF3F5FEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235997AbhHXOKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:10:34 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:18034 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbhHXOKb (ORCPT
+        id S237615AbhHXOMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232353AbhHXOL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:10:31 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gv9r34RD9zbhXk;
-        Tue, 24 Aug 2021 22:05:55 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 24 Aug 2021 22:09:44 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 24 Aug 2021 22:09:44 +0800
-Subject: Re: [PATCH v2 0/4] optimize the bfq queue idle judgment
-From:   "yukuai (C)" <yukuai3@huawei.com>
-To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20210806020826.1407257-1-yukuai3@huawei.com>
- <0b83e2e1-9cce-6ffc-90ca-4f03ad518b82@huawei.com>
-Message-ID: <516e0694-cce7-43af-543e-e8ae50692e85@huawei.com>
-Date:   Tue, 24 Aug 2021 22:09:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 24 Aug 2021 10:11:58 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7733C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:11:14 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id x16so18492284pfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YmLwTeFT+SxrtBDHPBlPpTooAeMLXJ6OjqZTL8UUNLs=;
+        b=I9NZiJ1mM99W5a+Rj8XRIr7s3/bH+LCbc2cMe4RQvNyEG7Y6litHc20xpr75dBtISa
+         kTS75RUDWc9R4tslWVGsZYjr7tWxI7F7lVhfXN+w83+i4hLncRmApmshgZHRS8VBIASz
+         JgO0+bxHdm+kKqInFXjRY8CYDXVk/E7MFO+2mKTVD2YNOfcxs35/rVsTkLo3qNbVxl+y
+         jJInUuwcnaldaK3ai3I+ZZ1Fj8bfdkHZjCroeg5eR4KRLRnJOFPYcfNLpz5A2rktxgAc
+         UqexHcwCIye8OLocmxGiFFcrLjPvRM6qrNUBkzD0qcZodnN9Elg+jeIRJ0D6K9HbYxTb
+         ri1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YmLwTeFT+SxrtBDHPBlPpTooAeMLXJ6OjqZTL8UUNLs=;
+        b=a0mwqpXmE6z3E5fHw2ahkielSfY0lfHBZmGAOZm479KsakHm6nGzDRULkFWkusgFsY
+         zxQdqNOft37oSVJPe34lkbLnj5SG8rYpJLCgkPtZ3gHa0Oo/4ffOygsz8YV+HxTMD3GD
+         aDOBU9Gyp62lLBPMRgBn+54ixKzVhxKrDewSYijChuvY5Mp/NBRxu1g+NdxQVZLzRRfw
+         svu2EpbvmJS05JLu5AxClNVT8qH0hhdcF+eRKnmTwn+0TKK0+48qTjX0MGzm2gHW3PHy
+         GXT2RdLkMfFqHnW9ZuGr2Qzb9OnvjdQMs5t/E6xsqrqb2BpNxnHsbHKAsophQCynxnTW
+         OyRQ==
+X-Gm-Message-State: AOAM531rCY2S0vyqCHNyOM3IIXlYxPUlqRo9Ulo2T05zYxiAbL/NHf0y
+        u05AVCWyV/InU5leRf5T21W6LA==
+X-Google-Smtp-Source: ABdhPJz7RfF2QLwXvYlzePFOBGFnKOn7bmELvMtuWl6us8IT/ixsx9jdZRZh8RGN0l8N5PO4mwjiZA==
+X-Received: by 2002:a63:770f:: with SMTP id s15mr37114375pgc.137.1629814274047;
+        Tue, 24 Aug 2021 07:11:14 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y12sm23658595pgk.7.2021.08.24.07.11.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 07:11:13 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 14:11:07 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Artem Kashkanov <artem.kashkanov@intel.com>
+Subject: Re: [PATCH 2/3] KVM: x86: Register Processor Trace interrupt hook
+ iff PT enabled in guest
+Message-ID: <YST9+5K5Kv9J9ojY@google.com>
+References: <20210823193709.55886-1-seanjc@google.com>
+ <20210823193709.55886-3-seanjc@google.com>
+ <87v93vi9nb.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <0b83e2e1-9cce-6ffc-90ca-4f03ad518b82@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v93vi9nb.fsf@ashishki-desk.ger.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/08/14 10:34, yukuai (C) wrote:
-> On 2021/08/06 10:08, Yu Kuai wrote:
->> Chagnes in V2:
->>   - as suggested by Paolo, add support to track if root_group have any
->>   pending requests, and use that to handle the situation when only one
->>   group is activated while root group doesn't have any pending requests.
->>   - modify commit message in patch 2
->>
->> Yu Kuai (4):
->>    block, bfq: add support to track if root_group have any pending
->>      requests
->>    block, bfq: do not idle if only one cgroup is activated
->>    block, bfq: add support to record request size information
->>    block, bfq: consider request size in bfq_asymmetric_scenario()
->>
->>   block/bfq-iosched.c | 69 ++++++++++++++++++++++++++++++++++++++-------
->>   block/bfq-iosched.h | 29 +++++++++++++++++--
->>   block/bfq-wf2q.c    | 37 +++++++++++++++---------
->>   3 files changed, 110 insertions(+), 25 deletions(-)
->>
+On Tue, Aug 24, 2021, Alexander Shishkin wrote:
+> Sean Christopherson <seanjc@google.com> writes:
 > 
+> > diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
+> > index 0e4f2b1fa9fb..b06dbbd7eeeb 100644
+> > --- a/arch/x86/kvm/pmu.h
+> > +++ b/arch/x86/kvm/pmu.h
+> > @@ -41,6 +41,7 @@ struct kvm_pmu_ops {
+> >  	void (*reset)(struct kvm_vcpu *vcpu);
+> >  	void (*deliver_pmi)(struct kvm_vcpu *vcpu);
+> >  	void (*cleanup)(struct kvm_vcpu *vcpu);
+> > +	void (*handle_intel_pt_intr)(void);
 > 
-> ping ...
-> .
-> 
+> What's this one for?
 
-friendly ping ...
+Doh, the remnants of one of my explorations trying to figure out the least gross
+way to conditionally register the handling.  I'll get it removed.
+
+Good eyeballs, thanks!
