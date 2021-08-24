@@ -2,90 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6752C3F5831
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115433F5832
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhHXG2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:28:51 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:59812 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230350AbhHXG2k (ORCPT
+        id S231265AbhHXG25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232245AbhHXG2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:28:40 -0400
-X-UUID: df95c4a56db34735997babdbaf67c88f-20210824
-X-UUID: df95c4a56db34735997babdbaf67c88f-20210824
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <christine.zhu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1593886783; Tue, 24 Aug 2021 14:27:54 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 24 Aug 2021 14:27:53 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 24 Aug 2021 14:27:52 +0800
-From:   Christine Zhu <Christine.Zhu@mediatek.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
-        Christine Zhu <Christine.Zhu@mediatek.com>
-Subject: [RESEND v8,2/2] watchdog: mediatek: mt8195: add wdt support
-Date:   Tue, 24 Aug 2021 14:26:36 +0800
-Message-ID: <20210824062633.14374-3-Christine.Zhu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210824062633.14374-1-Christine.Zhu@mediatek.com>
-References: <20210824062633.14374-1-Christine.Zhu@mediatek.com>
+        Tue, 24 Aug 2021 02:28:49 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325CAC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:28:04 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d2so15933785qto.6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:28:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y6XPBNO/FjkntP73oDhopAIjrRJdicZGIZbcxURZOD0=;
+        b=Mnj9uBsNwwF2i/yxIuuPt2hD9TLiyKuHCyR41j2+Grk+HltMdDLIJtuS1gdAvnjiXu
+         vYUr8pVNEbfRcFPDT6fi32j3LFzxPD5/8idpCTh5hRR81B8rQ+0zfkyMPaS4YEM86UnF
+         Zr2PihIO/E9RZKBPY58OqayIA5Gutj3/3VsLW2gW6FrtXKCQ9th1fkfQ/WYF4V0DY112
+         orSFLTZnmGJa/77h75HMefFkmPqVrID/T1v2ivs5jr7zUgm9fYdDEudAzBVJubgwUzFf
+         bWmxSyxQMPXWWscoojgRdt1GXqeaxgVusCMLS3aK6oRrjPmVyDhPZ7+ra5gq+dhzD6Ic
+         bUSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y6XPBNO/FjkntP73oDhopAIjrRJdicZGIZbcxURZOD0=;
+        b=Gi3xsQV8K9+mEY/f0DsxcJ+Aa2PYSzKr1Oo6ocNOyFr/VWq6JY2xggm7UgIAm1h+vv
+         s8FEWl1aVWyXLtLVU8vT7wiohRha/zSRVehko9X47221uhM/JuWUuVmi+c1MUpA84sUh
+         dyA9F3RXjSi2II1kZUY6JWUSNPbMsT7HBO+j7p4AffZaL0XvCb5ps8XT4wiEis1q+Orw
+         vAnApbAoxdwrXu3Eagsrj+Dg8+D20q9+fGbTADHJr2mUJhZ8EFkyGaP3pGHo0ZnYyvD1
+         hoaWN18D89o/WUArm6W0klfgKpiMXwfFSbM+1ZTwLGWmKAC3A6Se72JLJvkugxnvuH2R
+         Gm7w==
+X-Gm-Message-State: AOAM531WlLu8J/LAt6mLQZwH3zov5pUco4tUxUVJ2WJ+OG7sZofum2PW
+        E8z38f/3lPXf30vKvMAHP9g=
+X-Google-Smtp-Source: ABdhPJyXoIjJGF6325fp6PLh3oNQxqSqioEHOoGZBqeULAfxng5g0O6SFz8pJ+q7Fo8rFbavjlZgQQ==
+X-Received: by 2002:a05:622a:3c6:: with SMTP id k6mr33334119qtx.29.1629786483411;
+        Mon, 23 Aug 2021 23:28:03 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id f20sm3552057qka.64.2021.08.23.23.28.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 23:28:03 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] kernel:rtmutex: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 23:27:56 -0700
+Message-Id: <20210824062756.59532-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support MT8195 watchdog device.
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+./kernel/locking/rtmutex.c:375:9-10:WARNING:return of 0/1 in
+function '__waiter_less' with return type bool
+
+Return statements in functions returning bool should use true/false
+instead of 1/0.
+
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- drivers/watchdog/mtk_wdt.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/locking/rtmutex.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 16b6aff324a7..796fbb048cbe 100644
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -12,6 +12,7 @@
- #include <dt-bindings/reset-controller/mt2712-resets.h>
- #include <dt-bindings/reset-controller/mt8183-resets.h>
- #include <dt-bindings/reset-controller/mt8192-resets.h>
-+#include <dt-bindings/reset/mt8195-resets.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/init.h>
-@@ -82,6 +83,10 @@ static const struct mtk_wdt_data mt8192_data = {
- 	.toprgu_sw_rst_num = MT8192_TOPRGU_SW_RST_NUM,
- };
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 8aaa352..f904f25 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -372,24 +372,24 @@ static __always_inline bool __waiter_less(struct rb_node *a, const struct rb_nod
+ 	struct rt_mutex_waiter *bw = __node_2_waiter(b);
  
-+static const struct mtk_wdt_data mt8195_data = {
-+	.toprgu_sw_rst_num = MT8195_TOPRGU_SW_RST_NUM,
-+};
-+
- static int toprgu_reset_update(struct reset_controller_dev *rcdev,
- 			       unsigned long id, bool assert)
- {
-@@ -408,6 +413,7 @@ static const struct of_device_id mtk_wdt_dt_ids[] = {
- 	{ .compatible = "mediatek,mt6589-wdt" },
- 	{ .compatible = "mediatek,mt8183-wdt", .data = &mt8183_data },
- 	{ .compatible = "mediatek,mt8192-wdt", .data = &mt8192_data },
-+	{ .compatible = "mediatek,mt8195-wdt", .data = &mt8195_data },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mtk_wdt_dt_ids);
+ 	if (rt_mutex_waiter_less(aw, bw))
+-		return 1;
++		return true;
+ 
+ 	if (!build_ww_mutex())
+-		return 0;
++		return false;
+ 
+ 	if (rt_mutex_waiter_less(bw, aw))
+-		return 0;
++		return false;
+ 
+ 	/* NOTE: relies on waiter->ww_ctx being set before insertion */
+ 	if (aw->ww_ctx) {
+ 		if (!bw->ww_ctx)
+-			return 1;
++			return true;
+ 
+ 		return (signed long)(aw->ww_ctx->stamp -
+ 				     bw->ww_ctx->stamp) < 0;
+ 	}
+ 
+-	return 0;
++	return false;
+ }
+ 
+ static __always_inline void
 -- 
-2.18.0
+1.8.3.1
+
 
