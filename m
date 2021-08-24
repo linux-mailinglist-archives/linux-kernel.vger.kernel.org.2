@@ -2,169 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B733F5E97
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B613F5E96
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237451AbhHXNEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:04:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237225AbhHXNEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:04:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47B9C61374;
-        Tue, 24 Aug 2021 13:03:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629810237;
-        bh=I5P48pHDbekoWM3FCfggAy2SVmKCGZrPXmhmt9QLetY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F45Ll4lAYAyL/1NSli9JfI/dQx9BjUedzzm8XeIvqpXhFy2h0HH7zi42cUKRjd5Vd
-         CidhcSEm3xcjNoiYDX+36vvJKmmpWSFnbRMncC/tzU2pHQP0s2Z3YUXjbIUrrE+Ksr
-         UX7KMGpEMkO8gaFT9v1fsN+hnjoIl5LtOu2fk+a1fjYJborvjZVBlYc6dfCqBV95IC
-         N2uEVyMSqT9WPasIMNRFYkrqwce/dAzSXLt8GYIsIL9UyPTGnStuu5Vht3OBi7NWUh
-         r3on1fen+TqV0RP3El6kzEE+gbo/IrtFq1E/ksrCyOA0oGz8IaAZfVUkA+en6R7duj
-         /UGhGnB45wIjA==
-Date:   Tue, 24 Aug 2021 16:03:26 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "Lutomirski, Andy" <luto@kernel.org>
-Subject: Re: [RFC PATCH 0/4] mm/page_alloc: cache pte-mapped allocations
-Message-ID: <YSTuHr7d//L3Ysjx@kernel.org>
-References: <20210823132513.15836-1-rppt@kernel.org>
- <1b49324674fd75294625f725c7f074efd8480efc.camel@intel.com>
+        id S237438AbhHXNEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:04:31 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:56403 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237225AbhHXNEW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:04:22 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210824130337euoutp01e61a7c9f8b085946bcce69d695aee3b3~eP8HyhoC71634816348euoutp01n
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 13:03:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210824130337euoutp01e61a7c9f8b085946bcce69d695aee3b3~eP8HyhoC71634816348euoutp01n
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1629810217;
+        bh=bb8pQFEXO/MIbUlxo4KF8yePNUpI8ibwbBLI5ne0iOI=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=cKfNjX4KwvwRQS0xZ/52vZlDSdLtT1zwN2289gLOWJmxYF//+q1vvAtxjf2QufKOU
+         377RC9SWRqznOrLh3dKWnFVQ0kACtGt9kVnzs7tm4fz8ejMTOEJUVwOr6N1c4/ZosD
+         4WfCMCPajz6N300x4BYvySBfgoAWkZnwSwmptz5E=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210824130336eucas1p14d92cd82544546a931fa58d8bb51796d~eP8HNfLhv1982019820eucas1p1w;
+        Tue, 24 Aug 2021 13:03:36 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id A4.76.45756.82EE4216; Tue, 24
+        Aug 2021 14:03:36 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210824130335eucas1p14f3a4a042dbfddf621c9ac6cff1f1319~eP8Gbyrfz1983619836eucas1p1o;
+        Tue, 24 Aug 2021 13:03:35 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210824130335eusmtrp249c0a8ed21b857d5f83fa53f7b319193~eP8Ga2Tqx2079420794eusmtrp2G;
+        Tue, 24 Aug 2021 13:03:35 +0000 (GMT)
+X-AuditID: cbfec7f2-7bdff7000002b2bc-b4-6124ee28a897
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 96.81.20981.72EE4216; Tue, 24
+        Aug 2021 14:03:35 +0100 (BST)
+Received: from [106.210.131.79] (unknown [106.210.131.79]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210824130335eusmtip25128605e5ccfd5ace35f41a1250716e7~eP8FuEAzT0255502555eusmtip2P;
+        Tue, 24 Aug 2021 13:03:35 +0000 (GMT)
+Message-ID: <3132aa24-43ae-9f1e-01db-a66aaa9b4076@samsung.com>
+Date:   Tue, 24 Aug 2021 15:03:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b49324674fd75294625f725c7f074efd8480efc.camel@intel.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0)
+        Gecko/20100101 Thunderbird/92.0
+Subject: Re: [PATCH v3 3/8] drm/mipi-dsi: Create devm device registration
+Content-Language: en-GB
+To:     Maxime Ripard <maxime@cerno.tech>, Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Robert Foss <robert.foss@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+From:   Andrzej Hajda <a.hajda@samsung.com>
+In-Reply-To: <20210823084723.1493908-4-maxime@cerno.tech>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGKsWRmVeSWpSXmKPExsWy7djP87oa71QSDU5uU7XoPXeSyWL5mXXM
+        Fle+vmezeD5/HaPFyTdXWSw6Jy5ht7i8aw6bxcKPW1ksZvz4x2hxqC/a4tOsh8wWK35uZbT4
+        uWsei8WWNxNZHfg83t9oZfe4c+48m8fOWXfZPWZ3zGT1WLznJZPHiQmXmDzuXNvD5rH92wNW
+        j3knAz3udx9n8lgy7Sqbx+bT1R6fN8kF8EZx2aSk5mSWpRbp2yVwZfzqmsBaMIm1ovP7OaYG
+        xkUsXYycHBICJhLHtv9h72Lk4hASWMEose/iE1aQhJDAF0aJsxPsIBKfGSXut21kgum4fP0O
+        I0RiOaPEze+7oNrfM0o8OnyZGaSKV8BOYvGx22A2i4CqxOvrq6DighInZz4B2y0qkCDxfOlX
+        sKnCAp4S199MZQOxmQXEJZq+rGQFGSoi8JtZYkvzeaiEo8TNqcfA7mMT0JT4u/kmWJxTwFJi
+        4YsWqBp5ieats5lBmiUEDnNKLFn6gR3ibheJmY++Qv0gLPHq+BaouIzE/53zoeL1EvdXtEA1
+        dzBKbN2wkxkiYS1x59wvoA0cQBs0Jdbv0ocIO0rcWtPEChKWEOCTuPFWEOIGPolJ26YzQ4R5
+        JTrahCCqFSXun90KNVBcYumFr2wTGJVmIQXLLCTvz0LyzSyEvQsYWVYxiqeWFuempxYb5qWW
+        6xUn5haX5qXrJefnbmIEJsXT/45/2sE499VHvUOMTByMhxglOJiVRHj/MiknCvGmJFZWpRbl
+        xxeV5qQWH2KU5mBREuddNXtNvJBAemJJanZqakFqEUyWiYNTqoHJYeU0q0Vfll44mFTkv267
+        BivD/JMyvlXn9y9eqSjHeFHjaWyVy4sivWixv5u4YpXay/T2/jH+En+jwTst867oM5GgNzz6
+        It+zOsReWZk6njC/FR148H5o4AFD1mol2aMH73ysObNx3oOHdZrbvNjm75yyZcmOJg59S1vn
+        vENfX688q9X5b6GWYjjDg+jq0L2yxwtOvDzzXH9RAO/6zWUVqWtf8ukflmI/eK9M0+Zvkzfv
+        tUfPuG7XRjvMVe2IZDh9xvDW+70zRGwdrENeL406/yTpwKy5UxdK/XPWc2456+fqZjPz/99L
+        bsH/O6qnRddXtlVZp19KE5DOvnLrxzsfrSDpJVuuda2ZerJV/90SJZbijERDLeai4kQA+spK
+        /vkDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJIsWRmVeSWpSXmKPExsVy+t/xe7rq71QSDe4fMrboPXeSyWL5mXXM
+        Fle+vmezeD5/HaPFyTdXWSw6Jy5ht7i8aw6bxcKPW1ksZvz4x2hxqC/a4tOsh8wWK35uZbT4
+        uWsei8WWNxNZHfg83t9oZfe4c+48m8fOWXfZPWZ3zGT1WLznJZPHiQmXmDzuXNvD5rH92wNW
+        j3knAz3udx9n8lgy7Sqbx+bT1R6fN8kF8Ebp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZ
+        GpvHWhmZKunb2aSk5mSWpRbp2yXoZfzqmsBaMIm1ovP7OaYGxkUsXYycHBICJhKXr99h7GLk
+        4hASWMoo0XK7AyohLrF7/ltmCFtY4s+1LjaIoreMEosPLWMHSfAK2EksPnYbrIhFQFXi9fVV
+        zBBxQYmTM5+ADRIVSJDYfbgLrF5YwFPi+pupbCA2M9CCpi8rWUFsEYG/zBJfFsVCxB0lbk49
+        xgqxbDejxP0t7WBD2QQ0Jf5uvgnWzClgKbHwRQvUIDOJrq1djBC2vETz1tnMExiFZiG5YxaS
+        fbOQtMxC0rKAkWUVo0hqaXFuem6xkV5xYm5xaV66XnJ+7iZGYBrYduznlh2MK1991DvEyMTB
+        eIhRgoNZSYT3L5NyohBvSmJlVWpRfnxRaU5q8SFGU2BgTGSWEk3OByaivJJ4QzMDU0MTM0sD
+        U0szYyVxXpMja+KFBNITS1KzU1MLUotg+pg4OKUamGZwm+1uZ722g195XvBcqbgygQBDj82f
+        rHXDWPSDjddteq6uo/SiLSN75jzTKIml/14acLawiQZ0xIV+3re3I7g0ualRcMnjzbsOLwlK
+        Up77oEbJZnvd0tDF4pV3VontkeGvOeUa9VTfcoXO6c097pv2LOOcL5PCMK/uQWiLNp9W/OMH
+        G876yH5N1Nz+IiPEq3/b/g27rh+fmOtp/e/XFU/DW6uuX311ft3Uyysn3z16dspiQ+6JgVvv
+        9ZxN3vKpsPSq8KEFs5/PPte1mO1K6euo2x+vd++1K91d+OvJ/z0NKz47HrminHw911T2SNP3
+        dYlL31j/C3JO8pY3tPbafyjFdvtCn6sPPsqu3r+kePZKJZbijERDLeai4kQAggqi9owDAAA=
+X-CMS-MailID: 20210824130335eucas1p14f3a4a042dbfddf621c9ac6cff1f1319
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210823084759eucas1p2fadefcbf8b70a88c7f3c062a74b701d7
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210823084759eucas1p2fadefcbf8b70a88c7f3c062a74b701d7
+References: <20210823084723.1493908-1-maxime@cerno.tech>
+        <CGME20210823084759eucas1p2fadefcbf8b70a88c7f3c062a74b701d7@eucas1p2.samsung.com>
+        <20210823084723.1493908-4-maxime@cerno.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 08:02:55PM +0000, Edgecombe, Rick P wrote:
->  Mon, 2021-08-23 at 16:25 +0300, Mike Rapoport wrote:
-> > 
-> > There are usecases that need to remove pages from the direct map or
-> > at
-> > least map them with 4K granularity. Whenever this is done e.g. with
-> > set_memory/set_direct_map APIs, the PUD and PMD sized mappings in the
-> > direct map are split into smaller pages.
-> > 
-> > To reduce the performance hit caused by the fragmentation of the
-> > direct map
-> > it make sense to group and/or cache the 4K pages removed from the
-> > direct
-> > map so that the split large pages won't be all over the place. 
-> > 
-> If you tied this into debug page alloc, you shouldn't need to group the
-> pages. Are you thinking this PKS-less page table usage would be a
-> security feature or debug time thing?
 
-I consider the PKS-less page table protection as an example user of the
-grouped pages/pte-mapped cache rather than an actual security feature or
-even a debug thing.
-
-With PKS we still have the same trade-off of allocation flexibility vs
-direct map fragmentation and I hoped to focus the discussion of the mm part
-of the series rather than on page table protection. Apparently it didn't
-work :)
- 
-> > == TODOs ==
-> > 
-> > Whenever pte-mapped cache is being shrunk, it is possible to add some
-> > kind
-> > of compaction to move all the free pages into PMD-sized chunks, free
-> > these
-> > chunks at once and restore large page in the direct map.
+W dniu 23.08.2021 o 10:47, Maxime Ripard pisze:
+> Devices that take their data through the MIPI-DSI bus but are controlled
+> through a secondary bus like I2C have to register a secondary device on
+> the MIPI-DSI bus through the mipi_dsi_device_register_full() function.
 >
-> I had made a POC to do this a while back that hooked into the buddy
-> code in the page allocator where this coalescing is already happening
-> for freed pages. The problem was that most pages that get their direct
-> map alias broken, end up using a page from the same 2MB page for the
-> page table in the split. But then the direct map page table never gets
-> freed so it never can restore the large page when checking the the
-> allocation page getting freed. Grouping permissioned pages OR page
-> tables would resolve that and it was my plan to try again after
-> something like this happened. 
-
-This suggests that one global cache won't be good enough, at least for the
-case when page tables are taken from that cache.
-
-> Was just an experiment, but can share if you are interested.
- 
-Yes, please.
-
-> > == Alternatives ==
-> > 
-> > Current implementation uses a single global cache.
-> > 
-> > Another option is to have per-user caches, e.g one for the page
-> > tables,
-> > another for vmalloc etc.  This approach provides better control of
-> > the
-> > permissions of the pages allocated from these caches and allows the
-> > user to
-> > decide when (if at all) the pages can be accessed, e.g. for cache
-> > compaction. The down side of this approach is that it complicates the
-> > freeing path. A page allocated from a dedicated cache cannot be freed
-> > with
-> > put_page()/free_page() etc but it has to be freed with a dedicated
-> > API or
-> > there should be some back pointer in struct page so that page
-> > allocator
-> > will know what cache this page came from.
+> At removal or when an error occurs, that device needs to be removed
+> through a call to mipi_dsi_device_unregister().
 >
-> This needs to reset the permissions before freeing, so doesn't seem too
-> different than freeing them a special way.
-
-Not quite. For instance, when freeing page table pages with mmu_gather, we
-can reset the permission at or near pgtable_pxy_page_dtor() and continue to
-the batched free.
- 
-> > Yet another possibility to make pte-mapped cache a migratetype of its
-> > own.
-> > Creating a new migratetype would allow higher order allocations of
-> > pte-mapped pages, but I don't have enough understanding of page
-> > allocator
-> > and reclaim internals to estimate the complexity associated with this
-> > approach. 
-> > 
-> I've been thinking about two categories of direct map permission
-> usages.
-> 
-> One is limiting the use of the direct map alias when it's not in use
-> and the primary alias is getting some other permission. Examples are
-> modules, secretmem, xpfo, KVM guest memory unmapping stuff, etc. In
-> this case re-allocations can share unmapped pages without doing any
-> expensive maintenance and it helps to have one big cache. If you are
-> going to convert pages to 4k and cache them, you might as well convert
-> them to NP at the time, since it's cheap to restore them or set their
-> permission from that state.
+> Let's create a device-managed variant of the registration function that
+> will automatically unregister the device at unbind.
 >
-> Two is setting permissions on the direct map as the only alias to be
-> used. This includes this rfc, some PKS usages, but also possibly some
-> set_pages_uc() callers and the like. It seems that this category could
-> still make use of a big unmapped cache of pages. Just ask for unmapped
-> pages and convert them without a flush.
-> 
-> So like something would have a big cache of grouped unmapped pages 
-> that category one usages could share. And then little category two
-> allocators could have their own caches that feed on it too. What do you
-> think? This is regardless if they live in the page allocator or not.
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
 
-I can say I see how category two cache would use a global unmapped cache.
-I would envision that these caches can share the implementation, but there
-will be different instances - one for the global cache and another one (or
-several) for users that cannot share the global cache for some reason.
-
--- 
-Sincerely yours,
-Mike.
+Regards
+Andrzej
