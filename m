@@ -2,136 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9B33F6328
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2793F6343
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhHXQte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233495AbhHXQtW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:49:22 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE32C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:48:38 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id y23so20295515pgi.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:48:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m9zx9wPkQsVwuuFwnbs+K5JFN1HzrSIu6c5FttUeBTs=;
-        b=Yx207EI3mkGQZ1fi5+Tt2VgC0a/NIK7O33psWgm2LM+oVVyiYo/RYMBuqq24/BXGH1
-         F9kZf2AsUo7b2yBXdXL8ISdPfp/0o8RNci9/l/7AX9wfDxYaaYdH9ILTM9RSL8t+BfMO
-         YiWwKctmpntJM3QYMp5Kx24m1ym+pxzBQ2LQVghWAPcBhgh76uoBeGT9zTscqpEpsO9V
-         VDX9g1XqvjfODfLlgp21dCGdICSt0nj1La2tprevpKyyU2ZfMsqAzHqjq9GFHjT2z1f+
-         5LX1z0YveYphXc+fmYfhsYfWoA+UvMMx2xebPfWOgdCBV9efprgd766j9AaIlp7ysnF1
-         V72A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m9zx9wPkQsVwuuFwnbs+K5JFN1HzrSIu6c5FttUeBTs=;
-        b=HYdu58Zo9uskeFdcj5IESBGuxBsPucUQaKV4wIxgVYShSDDurt+BDGsYpzfGj6DmG2
-         JeXNBK6HbRwBdteZAxf6AaPiP3rMU76bZzobxwy3v7rYa6D32iscw+FWRvZcsmCCLvmU
-         ImtqrRg4tV7aWY2RpLvJQG+n9btiItLDhdciVzsNAYqqnFQYbGIdPmr3zafuEe5eolbS
-         Wk/Z55r82khWIpecplOyH7og0FUEN25//xpVALVG+reTbmtDpfo4tGfW1HHskPolumrI
-         wEjZ3N1KSylcITQ+Rjq8i5GwoLSR8NMb8ZSSi73ppI6KHpcwVWXSYlX4xriomaL/MSpJ
-         bs8w==
-X-Gm-Message-State: AOAM532KHlWxzoUOv29SET6rSCp8Fc1tmmRTJ9bDBl10/t/xOuELNH5g
-        uXKb2/PMGA0G+Q4wuz+sO7Sv4A==
-X-Google-Smtp-Source: ABdhPJycSIiwd3j+2gWwhiF5A2vaSNO1KlHn04eDxrgllpC2n1y44TKvs9d77r4ajcqQ3u53q9H3XA==
-X-Received: by 2002:a63:ef12:: with SMTP id u18mr37413412pgh.331.1629823717428;
-        Tue, 24 Aug 2021 09:48:37 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z131sm20601519pfc.159.2021.08.24.09.48.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 09:48:36 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 16:48:31 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] KVM: VMX: Disallow PT MSRs accessing if PT is not
- exposed to guest
-Message-ID: <YSUi3/qLiOkKxjRC@google.com>
-References: <20210824110743.531127-1-xiaoyao.li@intel.com>
- <20210824110743.531127-5-xiaoyao.li@intel.com>
- <YSUALsBF8rKNPiaS@google.com>
- <8b53fc19-c3cc-d11f-37e3-70fc0639878d@intel.com>
+        id S232809AbhHXQvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232294AbhHXQvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:51:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FBC261183;
+        Tue, 24 Aug 2021 16:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629823817;
+        bh=PqWcM2DXGBqdI5G1i+z9Vad05u3WXsmZil2k4r/K1+c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Am0xGlRWm4DlvaeTt1E8gmrAXLLRwxeU0tMsInw62CXOcKlbyB0J+xDGND5WV+C/v
+         8MN/8Ck47wxynFEzVQ5jcYki9Hua7J3iuH9CZhj2AZFcWz+3cfL50wkC7eECzpYlIE
+         gDwHdx2UVxxRokYldJxD5JauDgOFyQXsNeledSXUt9izAegnfuu44k2rlf2yZVTx5u
+         0LStKLaUyJk5xP4SgxI7RY6ZFwhodM0pVH4jLx55+niu9W2yT4N7GwX7OexNwfqNRk
+         xVPxgqaLKAfUlvV9PyLJJiDx22PTdZIlHxV2LcS6ufxuw+pKEj+QP7DFrn1UFlx8M4
+         0uZWA0e5iwJhA==
+Date:   Tue, 24 Aug 2021 17:49:49 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH 7/9] spi: amd: Check for idle bus before execute opcode
+Message-ID: <20210824164949.GJ4393@sirena.org.uk>
+References: <20210824104041.708945-1-tanureal@opensource.cirrus.com>
+ <20210824104041.708945-8-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/qIPZgKzMPM+y5U5"
 Content-Disposition: inline
-In-Reply-To: <8b53fc19-c3cc-d11f-37e3-70fc0639878d@intel.com>
+In-Reply-To: <20210824104041.708945-8-tanureal@opensource.cirrus.com>
+X-Cookie: Sentient plasmoids are a gas.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021, Xiaoyao Li wrote:
-> On 8/24/2021 10:20 PM, Sean Christopherson wrote:
-> > On Tue, Aug 24, 2021, Xiaoyao Li wrote:
-> > > Per SDM, it triggers #GP for all the accessing of PT MSRs, if
-> > > X86_FEATURE_INTEL_PT is not available.
-> > > 
-> > > Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> > > ---
-> > >   arch/x86/kvm/vmx/vmx.c | 20 ++++++++++++++------
-> > >   1 file changed, 14 insertions(+), 6 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > > index 4a70a6d2f442..1bbc4d84c623 100644
-> > > --- a/arch/x86/kvm/vmx/vmx.c
-> > > +++ b/arch/x86/kvm/vmx/vmx.c
-> > > @@ -1010,9 +1010,16 @@ static unsigned long segment_base(u16 selector)
-> > >   static inline bool pt_can_write_msr(struct vcpu_vmx *vmx)
-> > >   {
-> > >   	return vmx_pt_mode_is_host_guest() &&
-> > > +	       guest_cpuid_has(&vmx->vcpu, X86_FEATURE_INTEL_PT) &&
-> > >   	       !(vmx->pt_desc.guest.ctl & RTIT_CTL_TRACEEN);
-> > >   }
-> > > +static inline bool pt_can_read_msr(struct kvm_vcpu *vcpu)
-> > > +{
-> > > +	return vmx_pt_mode_is_host_guest() &&
-> > > +	       guest_cpuid_has(vcpu, X86_FEATURE_INTEL_PT);
-> > > +}
-> > > +
-> > >   static inline bool pt_output_base_valid(struct kvm_vcpu *vcpu, u64 base)
-> > >   {
-> > >   	/* The base must be 128-byte aligned and a legal physical address. */
-> > > @@ -1849,24 +1856,24 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> > >   							&msr_info->data);
-> > >   		break;
-> > >   	case MSR_IA32_RTIT_CTL:
-> > > -		if (!vmx_pt_mode_is_host_guest())
-> > > +		if (!pt_can_read_msr(vcpu))
-> > 
-> > These all need to provide exemptions for accesses from the host.  KVM allows
-> > access to MSRs that are not exposed to the guest so long as all the other checks
-> > pass.
-> 
-> Not all the MSRs are allowed to be accessed from host regardless of whether
-> it's exposed to guest. e.g., MSR_IA32_TSC_ADJUST, it checks guest CPUID
-> first.
-> 
-> For me, for those PT MSRs, I cannot think of any reason that host/userspace
-> would access them without PT being exposed to guest.
 
-Order of operations.  Userspace is allowed to do KVM_GET/SET_MSR before
-KVM_SET_CPUID2.
+--/qIPZgKzMPM+y5U5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On the other hand, since this patch indeed breaks the existing userspace VMM
-> who accesses those MSRs without checking guest CPUID.
-> 
-> So I will follow your advice to allow the host_initiated case in next
-> version.
-> 
-> > Same for the next patch.
-> 
-> Sorry, I don't know how it matters next patch.
+On Tue, Aug 24, 2021 at 11:40:39AM +0100, Lucas Tanure wrote:
+> Check if the bus is not in use before starting the transfer
+> Also wait after so the READ bytes in the FIFO are ready to
+> be copied
 
-Me either.  Ignore that comment. :-)
+This means that we will wait for read to be ready even for write only
+operations, as opposed to potentially just absorbing the delay while the
+CPU does other stuff.  If we need to wait prior to reading we should do
+that in the relevant code.
+
+--/qIPZgKzMPM+y5U5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmElIy0ACgkQJNaLcl1U
+h9BVpAf9EgW5aal3kzLoffCA4qyVNqQdAp8Fs8kUL3eu0uyTFQNYSJ18tJkPXRgf
+WDOPjBYLzJAiJk0R4k5koZRT5/JvQiqsQRdHxVAVtWpl6qqTFvmMKmU4pzpStIw9
+w+bzDAshDBTRAu5F0nlts8i9KM/Mo+gVdjCPJDH+GmO3VTxw1KvZpsGe6ZJ1ATbs
+0NMi4qFlYLA0higQ8gTOcrBQzxf/uHdL8HGXdwIqPreZ9guUWuSYaFg0ft7hrHVD
+cY4uuwU5gI2+gZkZOCwAjmVU90TMAN9KDZk7O0VbVOS8uDzEwLE2rf0pfjTE8CAn
+w92nvXrDo74py3LunUvSLSrTvek28Q==
+=QJBt
+-----END PGP SIGNATURE-----
+
+--/qIPZgKzMPM+y5U5--
