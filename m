@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFF43F5801
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B783F5813
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhHXGOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
+        id S232113AbhHXGT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhHXGOc (ORCPT
+        with ESMTP id S229854AbhHXGTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:14:32 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0384BC061575;
-        Mon, 23 Aug 2021 23:13:49 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id l24so15904410qtj.4;
-        Mon, 23 Aug 2021 23:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LYMxCJ4NBxu4794/UcP4AF44CQQd5Z0ZA0goB99hB8Q=;
-        b=AMmwa2GbLa99YuQo8zpiaZ3wEM5kwlTCUn9oS++wBiimHnZc+PhfyCEGIJsAf8WfyT
-         rCYKiqSXhoFRJgiG5Jh7nE6fF7qLL98RPJ0TsIhEfBNxCP5LrlK5N/vUgMh0v5LZnjMg
-         heXzGpmbRlrzdpZuDW1ttqrQWMac9u/Y2ysloLT6Uf8kFWbBqkULvFlxQfuGuQ5vxeep
-         0Ni6uyQQC/zmr1QRv5NHS+CH1MFPFpJ6K0xa1jz5fgfFeazPjPH5nDDI/UIYO3l+BLIQ
-         y5ePNSfYvIA8WHzisuJiiiFoWeE0k+ogpqIEaDcn0z7lg5Izcm0339AM1IvJz2wEly5C
-         4nTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LYMxCJ4NBxu4794/UcP4AF44CQQd5Z0ZA0goB99hB8Q=;
-        b=uE2gpDqiuA9RLj6yHS3R7LL11b8QmOvJZbQpy2zJRboeP4Mp/sekaFvvsKjkEaug2x
-         8A583tpkOBrab8xAD0TvRAFegMuG4r+o9rO5F9WYjMKkEnSRdnLbHR8f5ppRPubuTGlG
-         MeYBbApZVd8RYfTMtYhCjvhDwB4wtrMix6PhHZriw2fBpxCFXzAys1txDNyypk7pkekh
-         si7aKS17m3h0dVwfcFNCA0umYgtV3A1Viwu5RAiMXVhyp+xLs6fYBmUbLZbKsh8Pnis5
-         Sr0aNMb/pQK2nF9B6V0DulP2/fu527JaEhwm8UB6hfDzG0+CLWr5DlXa2FUDfLk1NSTe
-         jEBw==
-X-Gm-Message-State: AOAM532y1U3lkQore+onRpbjFMn2l4xXvgyAM155lzv2+RoqnGTIQRAl
-        XLMvFFaU4pX65yu/+7ho3qM=
-X-Google-Smtp-Source: ABdhPJyh/3lx6D3q+Qhwu3WRz2GJgfCb4NapeerV/M39V/W1gHZuNNM/MYIN6K99qq4k10rDsjZazQ==
-X-Received: by 2002:a05:622a:9:: with SMTP id x9mr1831730qtw.134.1629785628186;
-        Mon, 23 Aug 2021 23:13:48 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id i16sm7757412qtq.52.2021.08.23.23.13.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:13:47 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Michael Buesch <m@bues.ch>, linux-wireless@vger.kernel.org,
+        Tue, 24 Aug 2021 02:19:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52F5C061575;
+        Mon, 23 Aug 2021 23:18:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qF6BRVtzKVgghor1P9ZGHoGt4E7dX5k+ejpk+dyk/2g=; b=SBO38hzeQXv6m2c52dS8JXGVs0
+        CxCHfl7Uyo197fvhgSiBCfNAb+8ml7tpeDWepn8if7abJN3Fu8BBpAjED2K5ZcSwhPThhtP3LORGe
+        wAXFWpFxhNpKy84ntO/swQ22soAzcrKeg3lku4px5saf8HWWKrYgkVA8TR20l1GwoFVz6FnXQ1FPY
+        H4ErhpE+DE6BtAqmTzXMJKP/znR2ostjLz9ZpgI7zCw3p/w0JAQEr146TSDoLBhByEmlKLwGH9Mdr
+        lXV3u4dsVxXkWBQ9EEY4bLuFxNENVUCx4inNzbv66prbDoe82t8fwJM8zXqkloz67CtosayTNkc1t
+        FBsyLieg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIPj2-00AdnG-1X; Tue, 24 Aug 2021 06:16:10 +0000
+Date:   Tue, 24 Aug 2021 07:15:56 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
+        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
+        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
+        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
+        bvanassche@acm.org, ming.lei@redhat.com,
+        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
+        nbd@other.debian.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] include:ssb: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 23:13:41 -0700
-Message-Id: <20210824061341.59255-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH 07/10] md: add error handling support for add_disk()
+Message-ID: <YSSOnEiPvCHZXVpb@infradead.org>
+References: <20210823202930.137278-1-mcgrof@kernel.org>
+ <20210823202930.137278-8-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823202930.137278-8-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Mon, Aug 23, 2021 at 01:29:27PM -0700, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+> 
+> We just do the unwinding of what was not done before, and are
+> sure to unlock prior to bailing.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-./include/linux/ssb/ssb_driver_extif.h:200:8-9:WARNING: return of 0/1 in
-function 'ssb_extif_available' with return type bool
+Looks good,
 
-Return statements in functions returning bool should use true/false
-instead of 1/0.
-
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- include/linux/ssb/ssb_driver_extif.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/ssb/ssb_driver_extif.h b/include/linux/ssb/ssb_driver_extif.h
-index 3f8bc97..19253bf 100644
---- a/include/linux/ssb/ssb_driver_extif.h
-+++ b/include/linux/ssb/ssb_driver_extif.h
-@@ -197,7 +197,7 @@ struct ssb_extif {
- 
- static inline bool ssb_extif_available(struct ssb_extif *extif)
- {
--	return 0;
-+	return false;
- }
- 
- static inline
--- 
-1.8.3.1
-
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
