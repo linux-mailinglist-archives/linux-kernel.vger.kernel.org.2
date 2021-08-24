@@ -2,120 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150BF3F5904
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E266A3F5908
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbhHXHaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:30:18 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:39145 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233436AbhHXHaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:30:15 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Gv12c3qTnz9sVf;
-        Tue, 24 Aug 2021 09:29:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3ozNqScM8a44; Tue, 24 Aug 2021 09:29:28 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gv12c2q8Xz9sTx;
-        Tue, 24 Aug 2021 09:29:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3B4F38B7DA;
-        Tue, 24 Aug 2021 09:29:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Ezv-owZ2jHMc; Tue, 24 Aug 2021 09:29:28 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C88178B7D1;
-        Tue, 24 Aug 2021 09:29:27 +0200 (CEST)
-Subject: Re: [kbuild-all] Re: arch/powerpc/kernel/signal_32.c:297:2: warning:
- Value stored to 'msr' is never read [clang-analyzer-deadcode.DeadStores]
-To:     "Chen, Rong A" <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-References: <202108231827.N9VUIKbD-lkp@intel.com>
- <3db8de6e-a971-be9f-19eb-e7d95faf2870@csgroup.eu>
- <7955eec5-c1d7-e0d7-280a-138d96b2daa9@intel.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <79754a11-fa14-756a-fc30-5cb139a286b6@csgroup.eu>
-Date:   Tue, 24 Aug 2021 09:29:26 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234797AbhHXHcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234865AbhHXHcg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 03:32:36 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8EAC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:31:43 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id i8so39181475ybt.7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nAbhJg9KzDnSNui0yJFPZ9VTbEY+6KHkXkiM9wTMo7U=;
+        b=nw4GMUAkEusgHcP8d+XatSp56K8mVrgcAEDxlvnhk5nj3gCmkWNUhunL8PbtN2+Su2
+         aAE8EeODCWz5wgPJtYsnyCsiaBlaonNAUyXmi49vtlFPWD+bIzy9D9MtWMGtg2UddqPY
+         frTZm0fjszj+0N3xpRKkIhJT8Hvl1lpr4Dt+Lf//YDmw+FID7xex/zLoXT76jJ0ohc7F
+         2E62YNsI9hbs4mxQncZc6hIvbELPWQhroUCkJLB5QuCJ/WmKemulF0GYj63+xCG4dQFq
+         UjDRMt2JEPyRRu7U0qIMdJpC/puZIpFCl2Z71FWFkrC5UnIFWGpK1nImA0Oy4nhku4CO
+         acUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nAbhJg9KzDnSNui0yJFPZ9VTbEY+6KHkXkiM9wTMo7U=;
+        b=bajEpGMj3QDKFsuuA96Ia5qrAN92jHD8Ix2yvA2deTGW3zLpH31bYKipO8Ibi7p6Cv
+         KZlk1RFv8Y7SG0Ah58azcSE5M2hbX9ucaU+ovLa3fnsFqf/jc2k7WpZvV1tIkkT1C5sa
+         sfSnWDD22PXG0Onzzmb1PJBdAfz0psH5+QXJoGboUjExv7ifgXeXq1GaU80XYfTF3NNR
+         bASYIaws9QmTI3B2d3IIYIu/J+dcUDlonOe5fPqthKBtufQZ3lQWRLQI9VPyx3q0GgBm
+         7iN6VvlLiTr4ZZ/Pyy3OC2qFbpPSy8enXH9FLq8s7PeRxYpXCjgu1N+v+cJEhaA5mPdc
+         8k+w==
+X-Gm-Message-State: AOAM533Z+HNZXHSZGJ2zj6gGq+tgzqwos+lGh55Qe4vMloAwjwWNzrBc
+        zIxJ0pjk1wHeP3YVOJwIZvbd6BNhni7xEhw56auCeg==
+X-Google-Smtp-Source: ABdhPJymfsqgvR+b9ZJBIHgV7DoRSEBfuTSnP4UhGjvYXCirnQKW+aO1kLAlKKbxF8PIZ0jHatdmxdXWNg621TxPflU=
+X-Received: by 2002:a25:da50:: with SMTP id n77mr19168506ybf.96.1629790302026;
+ Tue, 24 Aug 2021 00:31:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7955eec5-c1d7-e0d7-280a-138d96b2daa9@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <CGME20210823120849eucas1p11d3919886444358472be3edd1c662755@eucas1p1.samsung.com>
+ <20210818021717.3268255-1-saravanak@google.com> <0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com>
+ <CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com> <427ce8cd-977b-03ae-2020-f5ddc7439390@samsung.com>
+In-Reply-To: <427ce8cd-977b-03ae-2020-f5ddc7439390@samsung.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 24 Aug 2021 00:31:05 -0700
+Message-ID: <CAGETcx8cRXDciKiRMSb=ybKo8=SyiNyAv=7oeHU1HUhkZ60qmg@mail.gmail.com>
+Subject: Re: [PATCH v2] of: property: fw_devlink: Add support for "phy-handle" property
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        kernel-team@android.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 24, 2021 at 12:03 AM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> Hi,
+>
+> On 23.08.2021 20:22, Saravana Kannan wrote:
+> > On Mon, Aug 23, 2021 at 5:08 AM Marek Szyprowski
+> > <m.szyprowski@samsung.com> wrote:
+> >> On 18.08.2021 04:17, Saravana Kannan wrote:
+> >>> Allows tracking dependencies between Ethernet PHYs and their consumers.
+> >>>
+> >>> Cc: Andrew Lunn <andrew@lunn.ch>
+> >>> Cc: netdev@vger.kernel.org
+> >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >> This patch landed recently in linux-next as commit cf4b94c8530d ("of:
+> >> property: fw_devlink: Add support for "phy-handle" property"). It breaks
+> >> ethernet operation on my Amlogic-based ARM64 boards: Odroid C4
+> >> (arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts) and N2
+> >> (meson-g12b-odroid-n2.dts) as well as Khadas VIM3/VIM3l
+> >> (meson-g12b-a311d-khadas-vim3.dts and meson-sm1-khadas-vim3l.dts).
+> >>
+> >> In case of OdroidC4 I see the following entries in the
+> >> /sys/kernel/debug/devices_deferred:
+> >>
+> >> ff64c000.mdio-multiplexer
+> >> ff3f0000.ethernet
+> >>
+> >> Let me know if there is anything I can check to help debugging this issue.
+> > I'm fairly certain you are hitting this issue because the PHY device
+> > doesn't have a compatible property. And so the device link dependency
+> > is propagated up to the mdio bus. But busses as suppliers aren't good
+> > because busses never "probe".
+> >
+> > PHY seems to be one of those cases where it's okay to have the
+> > compatible property but also okay to not have it. You can confirm my
+> > theory by checking for the list of suppliers under
+> > ff64c000.mdio-multiplexer. You'd see mdio@0 (ext_mdio) and if you look
+> > at the "status" file under the folder it should be "dormant". If you
+> > add a compatible property that fits the formats a PHY node can have,
+> > that should also fix your issue (not the solution though).
+>
+> Where should I look for the mentioned device links 'status' file?
+>
+> # find /sys -name ff64c000.mdio-multiplexer
+> /sys/devices/platform/soc/ff600000.bus/ff64c000.mdio-multiplexer
+> /sys/bus/platform/devices/ff64c000.mdio-multiplexer
+>
+> # ls -l /sys/devices/platform/soc/ff600000.bus/ff64c000.mdio-multiplexer
+> total 0
 
+This is the folder I wanted you to check.
 
-Le 24/08/2021 à 08:59, Chen, Rong A a écrit :
-> 
-> 
-> On 8/23/2021 10:35 PM, Christophe Leroy wrote:
->>
->>
->> Le 23/08/2021 à 12:59, kernel test robot a écrit :
->>> tree: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
->>> commit: ef75e73182949a94bde169a774de1b62ae21fbbc powerpc/signal32: Transform save_user_regs() and 
->>> save_tm_user_regs() in 'unsafe' version
->>> date:   9 months ago
->>> config: powerpc-randconfig-c003-20210821 (attached as .config)
->>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 
->>> d9c5613e856cf2addfbf892fc4c1ce9ef9feceaa)
->>> reproduce (this is a W=1 build):
->>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O 
->>> ~/bin/make.cross
->>>          chmod +x ~/bin/make.cross
->>>          # install powerpc cross compiling tool for clang build
->>>          # apt-get install binutils-powerpc-linux-gnu
->>>          # 
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef75e73182949a94bde169a774de1b62ae21fbbc 
->>>
->>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>          git fetch --no-tags linus master
->>>          git checkout ef75e73182949a94bde169a774de1b62ae21fbbc
->>>          # save the attached .config to linux build tree
->>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc clang-analyzer
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>>
->>> clang-analyzer warnings: (new ones prefixed by >>)
->>>             ^
->>>>> arch/powerpc/kernel/signal_32.c:297:2: warning: Value stored to 'msr' is never read 
->>>>> [clang-analyzer-deadcode.DeadStores]
->>>             msr &= ~MSR_VSX;
->>>             ^      ~~~~~~~~
->>>     arch/powerpc/kernel/signal_32.c:297:2: note: Value stored to 'msr' is never read
->>>             msr &= ~MSR_VSX;
->>>             ^      ~~~~~~~~
->>
->>
->> This is wrong.
->>
->> msr is used at line 326:
->>
->> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 2020-08-18  326 
->> unsafe_put_user(msr, &frame->mc_gregs[PT_MSR], failed);
-> 
-> Hi Christophe,
-> 
-> The usage is under CONFIG_VSX, the test config (powerpc-randconfig-c003-20210821) didn't enable it 
-> which triggered this warning.
+> lrwxrwxrwx 1 root root    0 Jan  1 00:04
+> consumer:platform:ff3f0000.ethernet ->
+> ../../../../virtual/devlink/platform:ff64c000.mdio-multiplexer--platform:ff3f0000.ethernet
 
+But I should have asked to look for the consumer list and not the
+supplier list. In any case, we can see that the ethernet is marked as
+the consumer of the mdio-multiplexer instead of the PHY device. So my
+hunch seems to be right.
 
-No no, the 'unsafe_put_user(msr, &frame->mc_gregs[PT_MSR], failed) ' at line 326 is not under 
-CONFIG_VSX as far as I can see.
+> -rw-r--r-- 1 root root 4096 Jan  1 00:04 driver_override
+> -r--r--r-- 1 root root 4096 Jan  1 00:04 modalias
+> lrwxrwxrwx 1 root root    0 Jan  1 00:04 of_node ->
+> ../../../../../firmware/devicetree/base/soc/bus@ff600000/mdio-multiplexer@4c000
+> drwxr-xr-x 2 root root    0 Jan  1 00:02 power
+> lrwxrwxrwx 1 root root    0 Jan  1 00:04 subsystem ->
+> ../../../../../bus/platform
+> lrwxrwxrwx 1 root root    0 Jan  1 00:04
+> supplier:platform:ff63c000.system-controller:clock-controller ->
+> ../../../../virtual/devlink/platform:ff63c000.system-controller:clock-controller--platform:ff64c000.mdio-multiplexer
+> -rw-r--r-- 1 root root 4096 Jan  1 00:04 uevent
+> -r--r--r-- 1 root root 4096 Jan  1 00:04 waiting_for_supplier
+>
+> # cat
+> /sys/devices/platform/soc/ff600000.bus/ff64c000.mdio-multiplexer/waiting_for_supplier
+> 0
+>
+> I'm also not sure what compatible string should I add there.
 
+It should have been added to external_phy: ethernet-phy@0. But don't
+worry about it (because you need to use a specific format for the
+compatible string).
 
-Christophe
+-Saravana
+
+>
+> > I'll send out a fix this week (once you confirm my analysis). Thanks
+> > for reporting it.
+>
+> Best regards
+>
+> --
+> Marek Szyprowski, PhD
+> Samsung R&D Institute Poland
+>
