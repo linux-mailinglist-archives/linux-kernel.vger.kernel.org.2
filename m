@@ -2,161 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FF43F5C33
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333823F5C3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236142AbhHXKha convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Aug 2021 06:37:30 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:44753 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235991AbhHXKgn (ORCPT
+        id S236305AbhHXKj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236297AbhHXKjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:36:43 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 87C87240008;
-        Tue, 24 Aug 2021 10:35:44 +0000 (UTC)
-Date:   Tue, 24 Aug 2021 12:35:43 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <richard@nod.at>, <vigneshr@ti.com>
-Subject: Re: [PATCH -next] mtd: fix possible deadlock when loading and
- opening mtd device
-Message-ID: <20210824123543.21c6162b@xps13>
-In-Reply-To: <20210824103005.1895457-1-yangyingliang@huawei.com>
-References: <20210824103005.1895457-1-yangyingliang@huawei.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 24 Aug 2021 06:39:13 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0078AC0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 03:38:24 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a25so16639578ejv.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 03:38:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4gBKr5Su/PnxnA+c35DCA2AuEwsy9cp9ieoty+J7/6s=;
+        b=DaY6aP24jNeATcWLxb+or3diikBL03eyvWM/iHHlYFs4m0McOE0qqYCP5jQu7WM5py
+         nBVwJozod0A7RekJU9IvSpEpTSfw9BD7qv6l1UlhTPATEEkTPssE+RiMmmnXoBepufE1
+         6zCxl9ym9oXXP33YRCvCIVhSsul2A2QuiQSkehfw5pnAker5IFjLTVb65LjtNkEdiVDW
+         cNlM1VDGrA+t8SHz0X7D1+xS+FuGIe3NWPy2WzyUE2/LbKSlfcBS/XKPs57TMLolpTrc
+         8AuUOSoOMQnP0j+rncC9Ix8o9xzRQfJizlvvZCt13R36T6cUIcdCWJ1ohxxSszmUo1zu
+         G8RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4gBKr5Su/PnxnA+c35DCA2AuEwsy9cp9ieoty+J7/6s=;
+        b=L0RlRG4h67zAz/7TBhfgZIhHHXKst+33dROsvKKTPFB06PgniXiWV6SVWrfLMdiS/a
+         syQxsbsvqdSzCK/ZqdPmFl8KKNq2aPuIJgECGgAT9NzCbmd4xEEv1ztKmlGwCAaLLPwx
+         Tzlrt4XtIO6QRYBkodAMYkCQmiG/ueDrZF0tmv1yF4zS2o+pPTditKJtg4OhFuIVMipO
+         wlCCJ5fNmPCYcpq3MToYy2NRYgr33q3vaZvPzql81EV5dO6GoXDVtUp8jJVSp2hOJdKY
+         kr5N7bZpnn+sAYCf/w90WtvoT6/7FaQ167uvOsdvKcE7Na8NX8RL0xFoncpD6Ag9oPYn
+         r5ZQ==
+X-Gm-Message-State: AOAM530vZuXDfcXpNBlJysVL8/aYEIs36MtNZDrxQbqZnh7U2cikaGR6
+        U61DOq8WG9QACkrPlzAXEYI=
+X-Google-Smtp-Source: ABdhPJw17RHEaoyxTh+tq24OrhzheFzjMC6oLeNnpWbSA8Za9XqDentosi6gdBCxz4Vrv4wqNGLzHA==
+X-Received: by 2002:a17:906:1bb1:: with SMTP id r17mr40469127ejg.533.1629801502341;
+        Tue, 24 Aug 2021 03:38:22 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id v8sm10576027edc.2.2021.08.24.03.38.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 03:38:21 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Phillip Potter <phil@philpotter.co.uk>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
+Date:   Tue, 24 Aug 2021 12:38:20 +0200
+Message-ID: <1751314.Y7PUP2lcel@localhost.localdomain>
+In-Reply-To: <50d40020-5b0e-4bb9-357b-3640a0f9e8c6@wanadoo.fr>
+References: <20210823223751.25104-1-fmdefrancesco@gmail.com> <4118209.ZeClQeRtK1@localhost.localdomain> <50d40020-5b0e-4bb9-357b-3640a0f9e8c6@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang,
+On Tuesday, August 24, 2021 7:44:40 AM CEST Christophe JAILLET wrote:
+> Le 24/08/2021 =C3=A0 04:01, Fabio M. De Francesco a =C3=A9crit :
+> > On Tuesday, August 24, 2021 3:38:03 AM CEST Fabio M. De Francesco wrote:
+> >> I think that I've inadvertently switched the order by which usb_contro=
+l_msg_send()
+> >> and memcpy() are called. I'm very sorry for not doing my tests, but (a=
+s I had said
+> >> before) at the moment I don't have my device with me.
+> >=20
+> > No, I did not switch them. There must be something else...
+> > Sorry for the noise.
+> >=20
+> > Fabio
+> >=20
+>=20
+> Hi,
+>=20
+> 'usb_control_msg_recv()' looks like:
+>=20
+> int usb_control_msg_recv(struct usb_device *dev, __u8 endpoint, ...)
+> {
+> 	unsigned int pipe =3D usb_rcvctrlpipe(dev, endpoint);
+> 	...
+> 	ret =3D usb_control_msg(dev, pipe, ...);
+>=20
+>=20
+> 'usb_control_msg()' looks like:
+> int usb_control_msg(struct usb_device *dev, unsigned int pipe, ...)
+> {
+>=20
+> The difference is that one expect an 'endpoint' (and compute the pipe=20
+> from it), and the other expect a 'pipe'.
 
-Yang Yingliang <yangyingliang@huawei.com> wrote on Tue, 24 Aug 2021
-18:30:05 +0800:
+Hi Christophe,
 
-> I got the possible circular locking dependency detected report:
+Yes, correct. That's why I changed the type of 'pipe' from "unsigned int"
+to "u8". I also saw that usb_control_msg_recv/send take care of calling=20
+usb_rcvctrpipe() and usb_sndctrlpipe(); so, in my patch I deleted=20
+those calls.
 
-I think that possible lock dependency got fixed (patch has been applied
-on mtd/next and is available in linux-next already).
+Not related to my patch... why Linux has u8 and __u8? What are the =20
+different use cases they are meant for?=20
 
-Thanks for the patch anyway!
-Miquèl
+> Also, in your code, 'pipe' looks un-initialized.
 
-> 
-> [   52.472106][  T483] ======================================================
-> [   52.473212][  T483] WARNING: possible circular locking dependency detected
-> [   52.474322][  T483] 5.14.0-rc6-next-20210820+ #438 Not tainted
-> [   52.475272][  T483] ------------------------------------------------------
-> [   52.476385][  T483] systemd-udevd/483 is trying to acquire lock:
-> [   52.477356][  T483] ffffffff8c5d45a8 (mtd_table_mutex){+.+.}-{3:3}, at: blktrans_open.cold.18+0x44/0x4b1
-> [   52.480510][  T483]
-> [   52.480510][  T483] but task is already holding lock:
-> [   52.481664][  T483] ffff88810eff8918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x428/0x910
-> [   52.483164][  T483]
-> [   52.483164][  T483] which lock already depends on the new lock.
-> [   52.483164][  T483]
-> [   52.484578][  T483]
-> [   52.484578][  T483] the existing dependency chain (in reverse order) is:
-> [   52.485803][  T483]
-> [   52.485803][  T483] -> #1 (&disk->open_mutex){+.+.}-{3:3}:
-> [   52.486888][  T483]        __mutex_lock+0x140/0x15d0
-> [   52.487599][  T483]        bd_register_pending_holders+0xb9/0x302
-> [   52.488463][  T483]        device_add_disk+0x375/0xcf0
-> [   52.489198][  T483]        add_mtd_blktrans_dev+0x11a4/0x16f0
-> [   52.490019][  T483]        mtdblock_add_mtd+0x21a/0x2b0
-> [   52.490771][  T483]        blktrans_notify_add+0xae/0xdb
-> [   52.491531][  T483]        add_mtd_device.cold.26+0xa98/0xc98
-> [   52.492348][  T483]        mtd_device_parse_register+0x516/0x870
-> [   52.493201][  T483]        mtdram_init_device+0x294/0x350
-> [   52.493966][  T483]        init_mtdram+0xde/0x16e
-> [   52.494644][  T483]        do_one_initcall+0x105/0x650
-> [   52.495381][  T483]        kernel_init_freeable+0x6aa/0x732
-> [   52.496171][  T483]        kernel_init+0x1c/0x1c0
-> [   52.496847][  T483]        ret_from_fork+0x1f/0x30
-> [   52.497530][  T483]
-> [   52.497530][  T483] -> #0 (mtd_table_mutex){+.+.}-{3:3}:
-> [   52.498591][  T483]        __lock_acquire+0x2cfa/0x5990
-> [   52.499343][  T483]        lock_acquire+0x1a0/0x500
-> [   52.500041][  T483]        __mutex_lock+0x140/0x15d0
-> [   52.500749][  T483]        blktrans_open.cold.18+0x44/0x4b1
-> [   52.501545][  T483]        blkdev_get_whole+0x9f/0x280
-> [   52.502282][  T483]        blkdev_get_by_dev+0x593/0x910
-> [   52.503041][  T483]        blkdev_open+0x154/0x2a0
-> [   52.503726][  T483]        do_dentry_open+0x6a9/0x1260
-> [   52.504461][  T483]        path_openat+0xe06/0x2850
-> [   52.505160][  T483]        do_filp_open+0x1b0/0x280
-> [   52.505857][  T483]        do_sys_openat2+0x60e/0x9a0
-> [   52.506576][  T483]        do_sys_open+0xca/0x140
-> [   52.507251][  T483]        do_syscall_64+0x38/0xb0
-> [   52.507936][  T483]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   52.508822][  T483]
-> [   52.508822][  T483] other info that might help us debug this:
-> [   52.508822][  T483]
-> [   52.510218][  T483]  Possible unsafe locking scenario:
-> [   52.510218][  T483]
-> [   52.511240][  T483]        CPU0                    CPU1
-> [   52.511975][  T483]        ----                    ----
-> [   52.512708][  T483]   lock(&disk->open_mutex);
-> [   52.513342][  T483]                                lock(mtd_table_mutex);
-> [   52.514295][  T483]                                lock(&disk->open_mutex);
-> [   52.515276][  T483]   lock(mtd_table_mutex);
-> [   52.515884][  T483]
-> [   52.515884][  T483]  *** DEADLOCK ***
-> 
-> load module path:              open device path:
-> init_mtdram()
-> add_mtd_device()
-> mutex_lock(&mtd_table_mutex)
-> blktrans_notifier()
-> add_mtd()
->                                 blkdev_get_by_dev()
->                                 mutex_lock(&disk->open_mutex)
->                                 blktrans_open()
->                                 mutex_lock(&mtd_table_mutex);
-> bd_register_pending_holders()
-> mutex_lock(&disk->open_mutex)
-> 
-> add_mtd() is called under mtd_table_mutex, before it acquires open_mutex,
-> open_mutex may be acquired by another cpu when opening the device, and it
-> will wait for mtd_table_mutex which is already acquired, then the 'ABBA'
-> deadlock scenario is happend, reduce the mtd_table_mutex to avoid this.
-> 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/mtd/mtd_blkdevs.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> index 44bea3f65060..476933ab561d 100644
-> --- a/drivers/mtd/mtd_blkdevs.c
-> +++ b/drivers/mtd/mtd_blkdevs.c
-> @@ -358,6 +358,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
->  	list_add_tail(&new->list, &tr->devs);
->   added:
->  	mutex_unlock(&blktrans_ref_mutex);
-> +	mutex_unlock(&mtd_table_mutex);
->  
->  	mutex_init(&new->lock);
->  	kref_init(&new->ref);
-> @@ -434,6 +435,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
->  					new->disk_attributes);
->  		WARN_ON(ret);
->  	}
-> +	mutex_lock(&mtd_table_mutex);
->  	return 0;
->  
->  out_free_tag_set:
-> @@ -441,6 +443,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
->  out_kfree_tag_set:
->  	kfree(new->tag_set);
->  out_list_del:
-> +	mutex_lock(&mtd_table_mutex);
->  	list_del(&new->list);
->  	return ret;
->  }
+Oh yes, good catch.  Thanks!
+
+> So, my guess is that you should rename 'pipe' into 'endpoint' (to keep=20
+> the semantic),
+> have "endpoint =3D 0;" somewhere and pass it to=20
+> usb_control_msg_{recv|send}.
+> Or just remove 'pipe' and pass an explicit 0 directly.
+
+I've just seen that in other drivers the code passes an explicit 0.
+So, also according to your suggestion, I'll remove "pipe/endpoint".
+
+> Not sure it is enough, but it looks like a difference between before and=
+=20
+> after your patch.
+
+Since I cannot see other issues, I'm about to fix the code as said above and
+then submit a v2 series.
+
+Your 2c are worth much more than how much you think :)
+
+Thanks very much,
+
+=46abio
+
+> just my 2c,
+> CJ
+>=20
+
+
+
 
