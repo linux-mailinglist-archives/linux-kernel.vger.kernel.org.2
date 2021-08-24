@@ -2,232 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F903F55F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFD03F55FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233885AbhHXC53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:57:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24956 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233646AbhHXC5Y (ORCPT
+        id S233915AbhHXC5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233887AbhHXC5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:57:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629773800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6T5JAPZVa1j86BfQYVY4oz5vWxgay/VARFozO23Y+KY=;
-        b=GB4LVvpkXjTlXGxPCT4I13/j7jncBoM1NvGCAwbd2+/ZTFYjboumBfzJn/GieiyZmFplm7
-        J6GYLLXi5ZvLyZO5A+gWh2Ffyeyrg7Sore5o8Grc+b4w9jQ3FhcTZNkLvozmkMIgRz58y5
-        bqzBdHd9HiAUDAsAzsGpuNrpUklM0kw=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-00Yc4fXiM8Ct-_5DG7X6AQ-1; Mon, 23 Aug 2021 22:56:39 -0400
-X-MC-Unique: 00Yc4fXiM8Ct-_5DG7X6AQ-1
-Received: by mail-lf1-f71.google.com with SMTP id q18-20020a05651232b200b003d9019c6ae4so163653lfe.22
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:56:38 -0700 (PDT)
+        Mon, 23 Aug 2021 22:57:36 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2137EC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:56:53 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so1367583pjt.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=29Fb0DQb3lLM1RT0ONfW5Rl3roBtF0uhGZi6Clr4PQ8=;
+        b=GDUCXarovw3ukF3RwAsETeElR5eGZPBu70ayB2wBQ/TkJiUQsrK/LrueDGJCxotLKi
+         ONJSxgXeWrngVIsd79smxVSF174v3ocrKyIRx2FpMXOk9kzCNFVH2niEcM+R+iqNEmI7
+         ZlvmjevY3GS6Hme6xtZ3+Ptx+FnFMI9Yq/daLTAA4UCGxALn/6hgG5JG2QLb1sp4M1em
+         kl2plY0zoiACgUQbnHH2YRDzcEhkPyZQdD+mbfmlKIV9Vtf7FbLGrEhvgfrzAiF0T/Ex
+         QkqbMid4GkGvIAcMfdK7VJ5jWqv1njIol6NTXXsAqKIUXQJuVN0TAmsN7MSk3SSdFPmG
+         d1Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6T5JAPZVa1j86BfQYVY4oz5vWxgay/VARFozO23Y+KY=;
-        b=rjTp4SJ3L3nKl3Nlx7MJV/icW4UMEbeQwj0c0cKHATjlqIsE5qhsDn8Wi+gEIaVyrG
-         wXR+fbusYBUuHQy+jbUO18jsdrMi7ScGhHEJYmNs6SUSMIP4V/FfI+H8KcjnXkNLdSfw
-         MoVYjv2ADhAXc7e5DPcyM74XjPcEQNiaUT5vpIC42CGvzUGR1hfnri7TeggfuMQ0u+kD
-         mmHbPPt2cAY+HMsAs3ev7y/bEQ4Ko6gpPAEmNHGaqg/VjJ3bACsKi6Ty9zmFV/eRStjZ
-         ieng0y6PplcifOk4GIV+niYe4+NKFoVwr4HAKXqxdiPoN0GkU6YgA8SNBcxBrYYiqSOA
-         KM4g==
-X-Gm-Message-State: AOAM531JZmW9Du3BxxdT4+atbtVuWLIKQNEPxX1aCpV7bWDA4UA0OO0A
-        FKHR4te8afrJzRVK33PC0A/4vINYzIoOsjigLyc/4qieixKRMfklRUeoTn7ZifTTadXpB5UMaa1
-        wbPVzP5bc/qI5JAZmGu3+aXcaDpKU11dKtnBD2QzP
-X-Received: by 2002:ac2:5e7a:: with SMTP id a26mr27408927lfr.312.1629773797638;
-        Mon, 23 Aug 2021 19:56:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJygN5Mp6svg11K/9VEguoba3q4eEUcZcOAs1YmNXhHdqBM6qZVfDQCXZvrAlkEnufKmKVwkrzwSGyn7HWxTtX0=
-X-Received: by 2002:ac2:5e7a:: with SMTP id a26mr27408919lfr.312.1629773797467;
- Mon, 23 Aug 2021 19:56:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=29Fb0DQb3lLM1RT0ONfW5Rl3roBtF0uhGZi6Clr4PQ8=;
+        b=tQCY/So6c2EtIMuAdPs+nJsjmqVgYaRp7AkMaD/wc41XX0NThlN4EUwGE8QdWsXJ03
+         bWTPQd2YFrWV5RuulZdMZsFg2FXhk9WWvyZWmcFPLhVTTjWy6XTAhFKreaptoJGWckjj
+         ZWO1BrO3q+476ZqWDmyUbSLUjpSKYhA0WbAET2JVXpEt/38oioXyGhmFOL//MFhxCNSH
+         enbEsmT/E4OHZOww8/wOhklS5PwcOTZXceDZJvXo85KmSW1zrnpxKh4SslL/KY3NEEm9
+         ZIGWPixrAjeFyNgjWs6+K7g9O1DkC/Ne8iSGOgZlPvEmJF3OoZvO507BdyZ/NJCpNj/T
+         vPLg==
+X-Gm-Message-State: AOAM532Sn//6yXlJp5NQpyJA0E94AkzRmYjKerBSa2nA14PMBsgjpm+b
+        QuB1BMOgzFNJkUZXYpfsm2k4Og==
+X-Google-Smtp-Source: ABdhPJwXFrQMieCMh9x9c+mtDLu/YP/iQ36j1IknXDrvOvDegeb32ZiTPGsKdkfnQ8HYxv43bwJgqw==
+X-Received: by 2002:a17:903:310a:b0:133:9bb6:98bd with SMTP id w10-20020a170903310a00b001339bb698bdmr9300777plc.19.1629773812408;
+        Mon, 23 Aug 2021 19:56:52 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:200:196f:5297:b0e8:1313])
+        by smtp.gmail.com with ESMTPSA id y12sm18770264pgl.65.2021.08.23.19.56.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 19:56:51 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 19:56:47 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 1/2] x86: Do not add -falign flags unconditionally for
+ clang
+Message-ID: <20210824025647.tssnp7qtccbgvdq7@google.com>
+References: <20210824022640.2170859-1-nathan@kernel.org>
+ <20210824022640.2170859-2-nathan@kernel.org>
 MIME-Version: 1.0
-References: <20210823081437.14274-1-vincent.whitchurch@axis.com> <20210823171609-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210823171609-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 24 Aug 2021 10:56:26 +0800
-Message-ID: <CACGkMEvR6GVfgSCDvFWvHJ3UryN4GOMDQhWMSAAqVHsbfAfPiA@mail.gmail.com>
-Subject: Re: [PATCH] vhost: add support for mandatory barriers
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>, kernel@axis.com,
-        kvm <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210824022640.2170859-2-nathan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 5:20 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Mon, Aug 23, 2021 at 10:14:37AM +0200, Vincent Whitchurch wrote:
-> > vhost always uses SMP-conditional barriers, but these may not be
-> > sufficient when vhost is used to communicate between heterogeneous
-> > processors in an AMP configuration, especially since they're NOPs on
-> > !SMP builds.
-> >
-> > To solve this, use the virtio_*() barrier functions and ask them for
-> > non-weak barriers if requested by userspace.
-> >
-> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
->
-> I am inclined to say let's (ab)use VIRTIO_F_ORDER_PLATFORM for this.
-> Jason what do you think?
+On 2021-08-23, Nathan Chancellor wrote:
+>clang does not support -falign-jumps and only recently gained support
+>for -falign-loops. When one of the configuration options that adds these
+>flags is enabled, clang warns and all cc-{disable-warning,option} that
+>follow fail because -Werror gets added to test for the presence of this
+>warning:
 
-Yes, it looks fine to me.
+[I implemented clang -falign-loops :) It doesn't affect LTO, though.
+LTO ld.lld may use -Wl,-mllvm,-align-loops=32 for now.  ]
 
+>clang-14: warning: optimization flag '-falign-jumps=0' is not supported
+>[-Wignored-optimization-argument]
+
+grub made a similar mistake:) It thought the availability of -falign-X
+implies the availability of other -falign-*
+https://lists.gnu.org/archive/html/grub-devel/2021-08/msg00076.html
+
+>To resolve this, add a couple of cc-option calls when building with
+>clang; gcc has supported these options since 3.2 so there is no point in
+>testing for their support. -falign-functions was implemented in clang-7,
+>-falign-loops was implemented in clang-14, and -falign-jumps has not
+>been implemented yet.
 >
-> Also is the use of DMA variants really the intended thing here? Could
-> you point me at some examples please?
-
-Yes, we need to know which setup we need.
-
-Thanks
-
+>Link: https://lore.kernel.org/r/YSQE2f5teuvKLkON@Ryzen-9-3900X.localdomain/
+>Reported-by: kernel test robot <lkp@intel.com>
+>Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>---
+> arch/x86/Makefile_32.cpu | 12 +++++++++---
+> 1 file changed, 9 insertions(+), 3 deletions(-)
 >
+>diff --git a/arch/x86/Makefile_32.cpu b/arch/x86/Makefile_32.cpu
+>index cd3056759880..e8c65f990afd 100644
+>--- a/arch/x86/Makefile_32.cpu
+>+++ b/arch/x86/Makefile_32.cpu
+>@@ -10,6 +10,12 @@ else
+> tune		= $(call cc-option,-mcpu=$(1),$(2))
+> endif
 >
-> > ---
-> >  drivers/vhost/vhost.c      | 23 ++++++++++++++---------
-> >  drivers/vhost/vhost.h      |  2 ++
-> >  include/uapi/linux/vhost.h |  2 ++
-> >  3 files changed, 18 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> > index b9e853e6094d..f7172e1bc395 100644
-> > --- a/drivers/vhost/vhost.c
-> > +++ b/drivers/vhost/vhost.c
-> > @@ -500,6 +500,7 @@ void vhost_dev_init(struct vhost_dev *dev,
-> >               vq->indirect = NULL;
-> >               vq->heads = NULL;
-> >               vq->dev = dev;
-> > +             vq->weak_barriers = true;
-> >               mutex_init(&vq->mutex);
-> >               vhost_vq_reset(dev, vq);
-> >               if (vq->handle_kick)
-> > @@ -1801,6 +1802,10 @@ long vhost_dev_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *argp)
-> >               if (ctx)
-> >                       eventfd_ctx_put(ctx);
-> >               break;
-> > +     case VHOST_SET_STRONG_BARRIERS:
-> > +             for (i = 0; i < d->nvqs; ++i)
-> > +                     d->vqs[i]->weak_barriers = false;
-> > +             break;
-> >       default:
-> >               r = -ENOIOCTLCMD;
-> >               break;
-> > @@ -1927,7 +1932,7 @@ int vhost_log_write(struct vhost_virtqueue *vq, struct vhost_log *log,
-> >       int i, r;
-> >
-> >       /* Make sure data written is seen before log. */
-> > -     smp_wmb();
-> > +     virtio_wmb(vq->weak_barriers);
-> >
-> >       if (vq->iotlb) {
-> >               for (i = 0; i < count; i++) {
-> > @@ -1964,7 +1969,7 @@ static int vhost_update_used_flags(struct vhost_virtqueue *vq)
-> >               return -EFAULT;
-> >       if (unlikely(vq->log_used)) {
-> >               /* Make sure the flag is seen before log. */
-> > -             smp_wmb();
-> > +             virtio_wmb(vq->weak_barriers);
-> >               /* Log used flag write. */
-> >               used = &vq->used->flags;
-> >               log_used(vq, (used - (void __user *)vq->used),
-> > @@ -1982,7 +1987,7 @@ static int vhost_update_avail_event(struct vhost_virtqueue *vq, u16 avail_event)
-> >       if (unlikely(vq->log_used)) {
-> >               void __user *used;
-> >               /* Make sure the event is seen before log. */
-> > -             smp_wmb();
-> > +             virtio_wmb(vq->weak_barriers);
-> >               /* Log avail event write */
-> >               used = vhost_avail_event(vq);
-> >               log_used(vq, (used - (void __user *)vq->used),
-> > @@ -2228,7 +2233,7 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
-> >               /* Only get avail ring entries after they have been
-> >                * exposed by guest.
-> >                */
-> > -             smp_rmb();
-> > +             virtio_rmb(vq->weak_barriers);
-> >       }
-> >
-> >       /* Grab the next descriptor number they're advertising, and increment
-> > @@ -2367,7 +2372,7 @@ static int __vhost_add_used_n(struct vhost_virtqueue *vq,
-> >       }
-> >       if (unlikely(vq->log_used)) {
-> >               /* Make sure data is seen before log. */
-> > -             smp_wmb();
-> > +             virtio_wmb(vq->weak_barriers);
-> >               /* Log used ring entry write. */
-> >               log_used(vq, ((void __user *)used - (void __user *)vq->used),
-> >                        count * sizeof *used);
-> > @@ -2402,14 +2407,14 @@ int vhost_add_used_n(struct vhost_virtqueue *vq, struct vring_used_elem *heads,
-> >       r = __vhost_add_used_n(vq, heads, count);
-> >
-> >       /* Make sure buffer is written before we update index. */
-> > -     smp_wmb();
-> > +     virtio_wmb(vq->weak_barriers);
-> >       if (vhost_put_used_idx(vq)) {
-> >               vq_err(vq, "Failed to increment used idx");
-> >               return -EFAULT;
-> >       }
-> >       if (unlikely(vq->log_used)) {
-> >               /* Make sure used idx is seen before log. */
-> > -             smp_wmb();
-> > +             virtio_wmb(vq->weak_barriers);
-> >               /* Log used index update. */
-> >               log_used(vq, offsetof(struct vring_used, idx),
-> >                        sizeof vq->used->idx);
-> > @@ -2428,7 +2433,7 @@ static bool vhost_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
-> >       /* Flush out used index updates. This is paired
-> >        * with the barrier that the Guest executes when enabling
-> >        * interrupts. */
-> > -     smp_mb();
-> > +     virtio_mb(vq->weak_barriers);
-> >
-> >       if (vhost_has_feature(vq, VIRTIO_F_NOTIFY_ON_EMPTY) &&
-> >           unlikely(vq->avail_idx == vq->last_avail_idx))
-> > @@ -2530,7 +2535,7 @@ bool vhost_enable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
-> >       }
-> >       /* They could have slipped one in as we were doing that: make
-> >        * sure it's written, then check again. */
-> > -     smp_mb();
-> > +     virtio_mb(vq->weak_barriers);
-> >       r = vhost_get_avail_idx(vq, &avail_idx);
-> >       if (r) {
-> >               vq_err(vq, "Failed to check avail idx at %p: %d\n",
-> > diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-> > index 638bb640d6b4..5bd20d0db457 100644
-> > --- a/drivers/vhost/vhost.h
-> > +++ b/drivers/vhost/vhost.h
-> > @@ -108,6 +108,8 @@ struct vhost_virtqueue {
-> >       bool log_used;
-> >       u64 log_addr;
-> >
-> > +     bool weak_barriers;
-> > +
-> >       struct iovec iov[UIO_MAXIOV];
-> >       struct iovec iotlb_iov[64];
-> >       struct iovec *indirect;
-> > diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-> > index c998860d7bbc..4b8656307f51 100644
-> > --- a/include/uapi/linux/vhost.h
-> > +++ b/include/uapi/linux/vhost.h
-> > @@ -97,6 +97,8 @@
-> >  #define VHOST_SET_BACKEND_FEATURES _IOW(VHOST_VIRTIO, 0x25, __u64)
-> >  #define VHOST_GET_BACKEND_FEATURES _IOR(VHOST_VIRTIO, 0x26, __u64)
-> >
-> > +#define VHOST_SET_STRONG_BARRIERS _IO(VHOST_VIRTIO, 0x27)
-> > +
-> >  /* VHOST_NET specific defines */
-> >
-> >  /* Attach virtio net ring to a raw socket, or tap device.
-> > --
-> > 2.28.0
->
+>+ifdef CONFIG_CC_IS_CLANG
+>+align		:= -falign-functions=0 $(call cc-option,-falign-jumps=0) $(call cc-option,-falign-loops=0)
+>+else
+>+align		:= -falign-functions=0 -falign-jumps=0 -falign-loops=0
+>+endif
+>+
+> cflags-$(CONFIG_M486SX)		+= -march=i486
+> cflags-$(CONFIG_M486)		+= -march=i486
+> cflags-$(CONFIG_M586)		+= -march=i586
+>@@ -25,11 +31,11 @@ cflags-$(CONFIG_MK6)		+= -march=k6
+> # They make zero difference whatsosever to performance at this time.
+> cflags-$(CONFIG_MK7)		+= -march=athlon
+> cflags-$(CONFIG_MK8)		+= $(call cc-option,-march=k8,-march=athlon)
+>-cflags-$(CONFIG_MCRUSOE)	+= -march=i686 -falign-functions=0 -falign-jumps=0 -falign-loops=0
+>-cflags-$(CONFIG_MEFFICEON)	+= -march=i686 $(call tune,pentium3) -falign-functions=0 -falign-jumps=0 -falign-loops=0
+>+cflags-$(CONFIG_MCRUSOE)	+= -march=i686 $(align)
+>+cflags-$(CONFIG_MEFFICEON)	+= -march=i686 $(call tune,pentium3) $(align)
+> cflags-$(CONFIG_MWINCHIPC6)	+= $(call cc-option,-march=winchip-c6,-march=i586)
+> cflags-$(CONFIG_MWINCHIP3D)	+= $(call cc-option,-march=winchip2,-march=i586)
+>-cflags-$(CONFIG_MCYRIXIII)	+= $(call cc-option,-march=c3,-march=i486) -falign-functions=0 -falign-jumps=0 -falign-loops=0
+>+cflags-$(CONFIG_MCYRIXIII)	+= $(call cc-option,-march=c3,-march=i486) $(align)
+> cflags-$(CONFIG_MVIAC3_2)	+= $(call cc-option,-march=c3-2,-march=i686)
+> cflags-$(CONFIG_MVIAC7)		+= -march=i686
+> cflags-$(CONFIG_MCORE2)		+= -march=i686 $(call tune,core2)
+>-- 
+>2.33.0
 
+https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html says
+"If n is not specified or is zero, use a machine-dependent default."
+
+Unless some other files specify -falign-loops=N and expect 0 to reset to
+the machine default, -falign-jumps=0 -falign-loops=0 -falign-functions=0 should just be dropped.
+
+BTW: I believe GCC 8 (likely when fixing another issue with a large refactor
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84100) introduced a bug
+that -falign-X=0 was essentially -falign-X=1.
+GCC 11.0 (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=96247) fixed the bug.
