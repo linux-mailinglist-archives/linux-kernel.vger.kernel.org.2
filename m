@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631613F586C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96513F586E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhHXGp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbhHXGp4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:45:56 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3427CC061575;
-        Mon, 23 Aug 2021 23:45:12 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id f22so12348729qkm.5;
-        Mon, 23 Aug 2021 23:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6FT1ojsV75TCrF1rCy+OOWVmjykOF5gOnO7UHdj0LF0=;
-        b=emOnulKqiJ9wq1KTq9sslCb0EcgzhgfjeqjAW1DxnQeHBDz0AD7k/zBBrLe12qn/Wi
-         1HZd1oknXLHPTFp5kOhCSn5KTYpC3OvZ87eXyN2WBmc/EB2alb2OfIDutKxpPzyQnd5l
-         0cpTYnsNcmwKVcep5qabnxVkaSC2rXci5+23bt1E7f2GfbhVOs0+5XrvRfDABbXF9vEm
-         wplAro8L1eNopHifrcZzHv7ulysF3qZDEQJtRZD70svhOX1fGDOj7Yzkq1qwXKbf42o6
-         xIP6ojnPtIyH04JP7txHF1i9esfK6/m9ocpcJTFZQvJaLYlaUBYZ0hhNBtKuYsR7aV4K
-         6nUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6FT1ojsV75TCrF1rCy+OOWVmjykOF5gOnO7UHdj0LF0=;
-        b=oWZ9ac08qSQUfBgGgMNe2CSQbGdVBNb4BeAGdIrYLwCx/tw9zRTtYHRIZ6SP3a3UFZ
-         yt3clfNK5OhaoAcbt4F08AA5utajVtYAwQg+hwx4/bwRpeUy4MH/YCwdXSk3q5EqH+Wx
-         LoSlvcNe/fT2CU5mNnLm6TZYIOQhEI6KLp5HaGupH2hDJE2aEFeJGoMDZ5kiomdCr4/5
-         JK1JX5y61hHp0MOdL5bGRk1x1dzYDFx6XijRTZtLDa5KG/WTy9wMdHZRWyMmogTMGl+L
-         NIfxTnu7FuI6FpUmrYVfT8Jx348WMPuenfpxR8ZVnkruOwiaDP3tStIf3EQITDaZOirh
-         HIeA==
-X-Gm-Message-State: AOAM533AlGChxcEOtuEQBtE7xesf1GN1yfteeBqhi0TBheDU8IjQ7pk4
-        e/CL6SvpRwnRKhWTuAfhyCg=
-X-Google-Smtp-Source: ABdhPJy69fmqFsqEzXG+w7iWs/18qnOuF0+VJP1NNwDUZuX+X+LUOaosubWNr/vNJSwzuGbp/aTKEw==
-X-Received: by 2002:a05:620a:1f1:: with SMTP id x17mr25470245qkn.227.1629787510696;
-        Mon, 23 Aug 2021 23:45:10 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id y124sm10085912qke.70.2021.08.23.23.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:45:10 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] scripts/dtc/util: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 23:45:03 -0700
-Message-Id: <20210824064503.60168-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S233241AbhHXGqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:46:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230497AbhHXGqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 02:46:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D87F61101;
+        Tue, 24 Aug 2021 06:45:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629787529;
+        bh=Kubh2nvvp1Q6uolaYfDooSop8qoFrJBPwS451q3QqQQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xGWMER6q+ZDV6Hm4DxrGKvKsHkFDy8BDt6PNPXTysOZDKEdnwernVRLzn7TS/3Evl
+         GUhFInVIHNNsVxBZSDZ0VmXBTNgiiT2TJiC2djbzXkYTqJoXGLDf2G57b6ZSyxLmK9
+         P+TCRogG1zFDExrBgJV1rbTjS3lR406ezv9jq510=
+Date:   Tue, 24 Aug 2021 08:45:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alexander Dahl <ada@thorsis.com>
+Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] USB: host: ehci-atmel: Allow enabling HSIC on SAMA5D2
+Message-ID: <YSSVhblgt/45TvzF@kroah.com>
+References: <20210823140052.GA120849@rowland.harvard.edu>
+ <20210824063702.24586-1-ada@thorsis.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824063702.24586-1-ada@thorsis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Tue, Aug 24, 2021 at 08:37:02AM +0200, Alexander Dahl wrote:
+> Unlike other SoC series featuring the 'atmel,at91sam9g45-ehci' USB EHCI
+> controller, which have embedded USB high-speed transceivers for each
+> port, the third port on the SAMA5D2 series is HSIC only.  That HSIC
+> interface is not enabled after a power-on reset, but can be enabled by
+> setting a flag in a vendor specific EHCI register.
+> 
+> The register offsets added to the new header file were compared with
+> those for the SAM9G45, SAM9X25, SAMA5D3, SAMA5D4, and SAM9X60 series and
+> there are no differences in the offsets or contents of those registers.
+> Which of those additional vendor specific registers are supported,
+> differs by SoC family.  So while the HSIC enable feature is currently
+> only present for SAMA5D2, it probably does not hurt to set it on the
+> other families, hence no additional check for SoC family here.
+> 
+> Tested on a custom board featuring a SAMA5D27C-D5M SiP connected to an
+> USB3503 hub with an upstream HSIC interface.
+> 
+> Link: https://community.atmel.com/forum/sama5d2-using-hsic-under-linux
+> Signed-off-by: Alexander Dahl <ada@thorsis.com>
+> ---
+> 
+> Notes:
+>     - for introducing new dt binding, would be nice to convert old one
+>       first, probably needs split up and multiple iteration review?
+>     - name of that new dt property?
+>     - register definitions put to a separate file, like
+>       'drivers/usb/host/ehci-fsl.h'
+>     - unsure where exactly in the probe process that register write should
+>       happen, datasheet gives no hint
+>     - should suspend/resume be considered?
+> 
+>  drivers/usb/host/ehci-atmel.c | 17 +++++++++++++++++
+>  drivers/usb/host/ehci-atmel.h | 19 +++++++++++++++++++
 
-Return statements in functions returning bool should use true/false
-instead of 1/0.
+No need for a new .h file that is only used in a single .c file.  Just
+put those few lines in the .c file please.
 
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
+thanks,
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- scripts/dtc/util.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/scripts/dtc/util.c b/scripts/dtc/util.c
-index 40274fb..1faded1 100644
---- a/scripts/dtc/util.c
-+++ b/scripts/dtc/util.c
-@@ -112,11 +112,11 @@ bool util_is_printable_string(const void *data, int len)
- 
- 	/* zero length is not */
- 	if (len == 0)
--		return 0;
-+		return false;
- 
- 	/* must terminate with zero */
- 	if (s[len - 1] != '\0')
--		return 0;
-+		return false;
- 
- 	se = s + len;
- 
-@@ -127,12 +127,12 @@ bool util_is_printable_string(const void *data, int len)
- 
- 		/* not zero, or not done yet */
- 		if (*s != '\0' || s == ss)
--			return 0;
-+			return false;
- 
- 		s++;
- 	}
- 
--	return 1;
-+	return true;
- }
- 
- /*
--- 
-1.8.3.1
-
-
+greg k-h
