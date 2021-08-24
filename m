@@ -2,105 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094AE3F6377
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03613F6424
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhHXQzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbhHXQzZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:55:25 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B302C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:54:33 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f11440049ee8a07127e6a59.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:4400:49ee:8a07:127e:6a59])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 104521EC04D1;
-        Tue, 24 Aug 2021 18:54:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629824068;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oucuOJ/6VvgUop2x1OI+HAFbSiUqa9pO9eiBxTDjqDU=;
-        b=PNEDFxELl/eP785dgUGCkCL/yDSv4Uo0/Rl1JC8Eu0NqLPFsnSOJ+Q+m1oGl+c29okCpDn
-        EXyBrlRojKbgqSvZGqwfTpkMep3+tae08RF6aIF6VwerwELWPpa/7uYP8qPa8pS04UnRqh
-        enUQNP6+Cp7riAoIVAghu8QXIfRDQmI=
-Date:   Tue, 24 Aug 2021 18:55:05 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 10/12] x86/tdx: Add MSR support for TDX guest
-Message-ID: <YSUkaUQtUpqAXCVd@zn.tnic>
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-11-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S238439AbhHXRBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:01:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238471AbhHXQ6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:58:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FA8B61401;
+        Tue, 24 Aug 2021 16:57:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629824233;
+        bh=M+R0hoakc5y3nPgxpjCuU06fRRtzmObweeNz03A9oaQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=T6mw5VUFi9JmOvaTuFrRQutWy8e2+EfNPDWEi4MA17f7zf4PWJte0NzWGj0KYzXUM
+         EKIhTWD/SVAuo1W/Rj63VDnnRrytOqi1aFasFOZTIRSaHU3PYknJe/e85eEA0qjU/0
+         +zTskB4MWqjZHasbFAh0eOrhr+Aab3zi3BN206eie2x8HjVwRGJzE6+npTS1bZC8im
+         8vPllrkuRmLSFMKaMKpi990eqF3h672Sx1W7VcGxd3K4qEofSagV0bknXueRMUDw/s
+         XLjZv2vgZkSGKaeIkUkorordDrlKouXszf4T0si+10bs7VE1gxKRdcnFgJbS+AWLR+
+         2inLBbnlR3r5A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 066/127] net: mdio-mux: Don't ignore memory allocation errors
+Date:   Tue, 24 Aug 2021 12:55:06 -0400
+Message-Id: <20210824165607.709387-67-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210824165607.709387-1-sashal@kernel.org>
+References: <20210824165607.709387-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210804181329.2899708-11-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.13-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.13.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.13.13-rc1
+X-KernelTest-Deadline: 2021-08-26T16:55+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 11:13:27AM -0700, Kuppuswamy Sathyanarayanan wrote:
->  int tdg_handle_virtualization_exception(struct pt_regs *regs,
->  					struct ve_info *ve)
->  {
-> +	unsigned long val;
-> +	int ret = 0;
-> +
->  	switch (ve->exit_reason) {
->  	case EXIT_REASON_HLT:
->  		tdg_halt();
->  		break;
-> +	case EXIT_REASON_MSR_READ:
-> +		val = tdg_read_msr_safe(regs->cx, (unsigned int *)&ret);
-> +		if (!ret) {
-> +			regs->ax = val & UINT_MAX;
+From: Saravana Kannan <saravanak@google.com>
 
-			regs->ax = (u32)val;
+[ Upstream commit 99d81e942474cc7677d12f673f42a7ea699e2589 ]
 
-> +			regs->dx = val >> 32;
-> +		}
-> +		break;
-> +	case EXIT_REASON_MSR_WRITE:
-> +		ret = tdg_write_msr_safe(regs->cx, regs->ax, regs->dx);
-> +		break;
->  	default:
->  		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
->  		return -EFAULT;
->  	}
->  
->  	/* After successful #VE handling, move the IP */
-> -	regs->ip += ve->instr_len;
-> +	if (!ret)
-> +		regs->ip += ve->instr_len;
->  
-> -	return 0;
-> +	return ret;
->  }
->  
->  void __init tdx_early_init(void)
-> -- 
+If we are seeing memory allocation errors, don't try to continue
+registering child mdiobus devices. It's unlikely they'll succeed.
 
+Fixes: 342fa1964439 ("mdio: mux: make child bus walking more permissive and errors more verbose")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Tested-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Kevin Hilman <khilman@baylibre.com>
+Tested-by: Kevin Hilman <khilman@baylibre.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/mdio/mdio-mux.c | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/mdio/mdio-mux.c b/drivers/net/mdio/mdio-mux.c
+index 110e4ee85785..d6ed9033339c 100644
+--- a/drivers/net/mdio/mdio-mux.c
++++ b/drivers/net/mdio/mdio-mux.c
+@@ -82,6 +82,17 @@ out:
+ 
+ static int parent_count;
+ 
++static void mdio_mux_uninit_children(struct mdio_mux_parent_bus *pb)
++{
++	struct mdio_mux_child_bus *cb = pb->children;
++
++	while (cb) {
++		mdiobus_unregister(cb->mii_bus);
++		mdiobus_free(cb->mii_bus);
++		cb = cb->next;
++	}
++}
++
+ int mdio_mux_init(struct device *dev,
+ 		  struct device_node *mux_node,
+ 		  int (*switch_fn)(int cur, int desired, void *data),
+@@ -144,7 +155,7 @@ int mdio_mux_init(struct device *dev,
+ 		cb = devm_kzalloc(dev, sizeof(*cb), GFP_KERNEL);
+ 		if (!cb) {
+ 			ret_val = -ENOMEM;
+-			continue;
++			goto err_loop;
+ 		}
+ 		cb->bus_number = v;
+ 		cb->parent = pb;
+@@ -152,8 +163,7 @@ int mdio_mux_init(struct device *dev,
+ 		cb->mii_bus = mdiobus_alloc();
+ 		if (!cb->mii_bus) {
+ 			ret_val = -ENOMEM;
+-			devm_kfree(dev, cb);
+-			continue;
++			goto err_loop;
+ 		}
+ 		cb->mii_bus->priv = cb;
+ 
+@@ -182,6 +192,10 @@ int mdio_mux_init(struct device *dev,
+ 
+ 	dev_err(dev, "Error: No acceptable child buses found\n");
+ 	devm_kfree(dev, pb);
++
++err_loop:
++	mdio_mux_uninit_children(pb);
++	of_node_put(child_bus_node);
+ err_pb_kz:
+ 	put_device(&parent_bus->dev);
+ err_parent_bus:
+@@ -193,14 +207,8 @@ EXPORT_SYMBOL_GPL(mdio_mux_init);
+ void mdio_mux_uninit(void *mux_handle)
+ {
+ 	struct mdio_mux_parent_bus *pb = mux_handle;
+-	struct mdio_mux_child_bus *cb = pb->children;
+-
+-	while (cb) {
+-		mdiobus_unregister(cb->mii_bus);
+-		mdiobus_free(cb->mii_bus);
+-		cb = cb->next;
+-	}
+ 
++	mdio_mux_uninit_children(pb);
+ 	put_device(&pb->mii_bus->dev);
+ }
+ EXPORT_SYMBOL_GPL(mdio_mux_uninit);
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
