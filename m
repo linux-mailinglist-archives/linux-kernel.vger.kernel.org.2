@@ -2,106 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A433F59B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14FB3F59B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbhHXIMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
+        id S235189AbhHXIOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234936AbhHXIMh (ORCPT
+        with ESMTP id S234936AbhHXIOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:12:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06EFC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:11:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=T3mdjdXunlsbWXwGgryPRHDmOYktBKnLJTuTpTZcTpA=; b=coXP/mZ/BzITdG8+Z/+NlMTDsQ
-        +Ypj6x8QLQcjHn+rnSePfN2jfVoCpzHk9hJmmQ3FYjve040rxsi9MBk4f4Vmk0L/EEk+dweTL53cQ
-        oYYUZp/9MdwNtCpziGfS64fdH2CJMCUjmu3hluc7l2zfQ/v3l53bShjaZyHQn27LX0T9ufy95LoqW
-        UrOO4U7ry+sTpVFm8Xa391c5et7EAOQFQ55OUCxhTbub6AQsqskxgUfeQGpdQWD0us5dXGY5R1TCW
-        fCQNIW/GtFPYj7rVknsHJPMfSSqMk5ImccLjP383QKqjtvP6eDVdYnnRZnWrbZRVcHNf4cEcbH3Y5
-        2ZwyKPuA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIRXA-00CXMu-IC; Tue, 24 Aug 2021 08:11:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5FB6C300399;
-        Tue, 24 Aug 2021 10:11:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C739220CCE56B; Tue, 24 Aug 2021 10:11:46 +0200 (CEST)
-Date:   Tue, 24 Aug 2021 10:11:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v3 1/2] sched/fair: Add NOHZ balancer flag for
- nohz.next_balance updates
-Message-ID: <YSSpwo/VM3+ybgV9@hirez.programming.kicks-ass.net>
-References: <20210823111700.2842997-1-valentin.schneider@arm.com>
- <20210823111700.2842997-2-valentin.schneider@arm.com>
- <YSONmyWL14mqV6zA@hirez.programming.kicks-ass.net>
- <87fsv02u9h.mognet@arm.com>
- <99b4c9d6-d20c-bc94-58c0-c1f5249b2636@arm.com>
+        Tue, 24 Aug 2021 04:14:33 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485E6C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:13:49 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i9so43644177lfg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=AgeEwGNV/wNzrPf/FKB8cVKReR6L7EhRt0SuLyHNHGo=;
+        b=q6Ba1Gip+2Ytcz+JIX4C2qOSOHa7+/2pV4or3lnzQwbp4zYo5b3xYUNJs9z7ZtRXJO
+         pQpPPxsFOLPa2caYEeaMhiYfFvShNfLiizpjllWoyKC6ojmQtXXu42rKH2rbpA1V2Cfu
+         WmbqvapGFiYEnMfnIR04LlxvTA1oHdNyYlVyJ8R93El02KbHukLX7/iKUyuk47pYYJmX
+         E44yMt0bxQLozQQEk0dUvY/1fwhe0CPeLeunsByq36NKTWhx8gvFaSPtXBSQ7xcQMfCA
+         CjBPMiF7LfE0fyUA2Z3W7vExxO6Gbs9tyU5dFmS9S5mAcwr6c4Y0QCpwMMDxgByi9nBF
+         NnSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AgeEwGNV/wNzrPf/FKB8cVKReR6L7EhRt0SuLyHNHGo=;
+        b=TabWLOW2aRx0jmpDkx4hKYOzZHkxKB/A2pa6DthkGSdPIRYgBVvSYbBS0Do9g62nMF
+         Kb+61p3xvlY5SlUh3dz9rFBYahuHCcRru2cChGsm4luoqqTD777MH3LzQYJexrjndOIz
+         NI6SvBwcb9ihL7eoUZYXBhX1y+Lm0poICO8ZZL39+eocrLVIrV3/I2TJP27GEYSioPF8
+         Y4GoRNB0eg91DudiJFLBeJMSyMYT08pM53J74kyWEk8HNlmWL9BaGc3OoQx31PiaK2K8
+         OYeZPqWaVcEChbN5mE7vaosS0OpZSkRqhNn/WouxmcYNKfXZ9a8bG4k2/5sSgNXwWfan
+         CW9g==
+X-Gm-Message-State: AOAM531XsiXXyZX7aTWW8c9iHZCXiSJ8mcTnCqlxGiSv+d5iZZyzuzZh
+        ORyX7jT77hZn2hjnZTsL8DX2EYx01iYfMA==
+X-Google-Smtp-Source: ABdhPJzgZr37Q5o4qbry5OMUI/gfBPb+dSKoL+Tk5uVFykzdBaIh2uPbBUjBlGt2XrkknvcbaqwF6w==
+X-Received: by 2002:a05:6512:31ce:: with SMTP id j14mr24236976lfe.646.1629792827319;
+        Tue, 24 Aug 2021 01:13:47 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id u8sm1682746lfg.31.2021.08.24.01.13.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 01:13:47 -0700 (PDT)
+Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in
+ usbctrl_vendorreq()
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210823223751.25104-1-fmdefrancesco@gmail.com>
+ <20210823223751.25104-2-fmdefrancesco@gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <68eebfaf-50a3-a7ec-12ba-cde33c74c9ce@gmail.com>
+Date:   Tue, 24 Aug 2021 11:13:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99b4c9d6-d20c-bc94-58c0-c1f5249b2636@arm.com>
+In-Reply-To: <20210823223751.25104-2-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 03:53:16PM +0200, Dietmar Eggemann wrote:
-> >> I'm a bit puzzled by this; that function has:
-> >>
-> >>   SCHED_WARN_ON((flags & NOHZ_KICK_MASK) == NOHZ_BALANCE_KICK);
-> >>
-> >> Which:
-> >>
-> >>  - isn't updated
-> >>  - implies STATS must be set when BALANCE
-> > 
-> > Yup
-> > 
-> >>
-> >> the latter gives rise to my confusion; why add that gate on STATS? It
-> >> just doesn't make sense to do a BALANCE and not update STATS.
-> > 
-> > AFAIA that warning was only there to catch BALANCE && !STATS, so I didn't
-> > tweak it.
-> > 
-> > Now, you could still end up with
-> > 
-> >   flags == NOHZ_NEXT_KICK
-> > 
-> > (e.g. nohz.next_balance is in the future, but a new CPU entered NOHZ-idle
-> > and needs its own rq.next_balance collated into the nohz struct)
-> > 
-> > in which case you don't do any blocked load update, hence the
-> > gate. In v1 I had that piggyback on NOHZ_STATS_KICK, but Vincent noted
-> > that might not be the best given blocked load updates can be time
-> > consuming - hence the separate flag.
+On 8/24/21 1:37 AM, Fabio M. De Francesco wrote:
+> Replace usb_control_msg() with the new usb_control_msg_recv() and
+> usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
 > 
-> Maybe the confusion stems from the fact that the NOHZ_NEXT_KICK-set
-> changes are only introduced in 2/2?
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
 > 
-> @@ -10417,6 +10418,9 @@ static void nohz_balancer_kick(struct rq *rq)
->  unlock:
->  	rcu_read_unlock();
->  out:
-> +	if (READ_ONCE(nohz.needs_update))
-> +		flags |= NOHZ_NEXT_KICK;
-> +
+> Thanks to Pavel Skripkin <paskripkin@gmail.com> for his review of the
+> RFC patch.
+>   
+> drivers/staging/r8188eu/hal/usb_ops_linux.c | 25 ++++++++++-----------
+> 1 file changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> index a93d5cfe4635..6f51660b967a 100644
+> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> @@ -15,9 +15,8 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>   	struct adapter	*adapt = pintfhdl->padapter;
+>   	struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
+>   	struct usb_device *udev = dvobjpriv->pusbdev;
+> -	unsigned int pipe;
+> +	u8 pipe;
+>   	int status = 0;
+> -	u8 reqtype;
+>   	u8 *pIo_buf;
+>   	int vendorreq_times = 0;
+>   
+> @@ -44,22 +43,22 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>   	}
+>   
+>   	while (++vendorreq_times <= MAX_USBCTRL_VENDORREQ_TIMES) {
+> -		memset(pIo_buf, 0, len);
+> -
+>   		if (requesttype == 0x01) {
+> -			pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
+> -			reqtype =  REALTEK_USB_VENQT_READ;
+> +			status = usb_control_msg_recv(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> +						      REALTEK_USB_VENQT_READ, value,
+> +						      REALTEK_USB_VENQT_CMD_IDX,
+> +						      pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+> +						      GFP_KERNEL);
+>   		} else {
+> -			pipe = usb_sndctrlpipe(udev, 0);/* write_out */
+> -			reqtype =  REALTEK_USB_VENQT_WRITE;
+>   			memcpy(pIo_buf, pdata, len);
+> +			status = usb_control_msg_send(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> +						      REALTEK_USB_VENQT_WRITE, value,
+> +						      REALTEK_USB_VENQT_CMD_IDX,
+> +						      pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+> +						      GFP_KERNEL);
+>   		}
+>   
+> -		status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> -					 reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
+> -					 pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
+> -
+> -		if (status == len) {   /*  Success this control transfer. */
+> +		if (!status) {   /*  Success this control transfer. */
+>   			rtw_reset_continual_urb_error(dvobjpriv);
+>   			if (requesttype == 0x01)
+>   				memcpy(pdata, pIo_buf,  len);
+> 
 
-The confusion was about how we'd ever get there and not have STATS set,
-but i guess having it all nicely gated does make it saner.
+Hi, Fabio!
 
-Thanks!
+Christophe is right about semantic part. Also,
+
+if (!status) {
+
+} else {
+	if (status < 0) {		<-
+					  |
+	} else {			  |
+					  |
+	}				<-
+}					
+
+
+Extra if-else is not needed, since status can be 0 and < 0, there is no 
+3rd state, like it was before.
+
+
+
+
+With regards,
+Pavel Skripkin
