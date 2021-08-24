@@ -2,129 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32533F5A35
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9329D3F5A36
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbhHXIyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        id S235396AbhHXIy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234214AbhHXIx6 (ORCPT
+        with ESMTP id S234214AbhHXIyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:53:58 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5577BC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:53:14 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id d11so42658567eja.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:53:14 -0700 (PDT)
+        Tue, 24 Aug 2021 04:54:23 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F598C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:53:39 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id c12so36329922ljr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:53:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=KchTKU3OTyx4fIEVz6kFgXk9gVOceFXcIF7F4XX2QJA=;
-        b=Az7/YPEWAQmJ/pH1jQ4FfIN/YG+FL19RVNpRvIddo4L61nVXKgSNgF4uzp82HaX2UE
-         rO9iXKRh8n0Ex2q9OamfciJNS2047kSDCkExR9u6fiu+3GcbRBvfY8Sg6V6P1BclJgRT
-         jDeRTTYPnqw4wNicRUFrWpju4PXLBTk/mS4WyqRkcCGs/4vVcpVibjxjWc1WkJl2ufaY
-         Xnu+57sVcHR7ZL5p/7LxZbdKcR33NOt1mfg8RUVZg6bDctGbE+sQaoJCtKMZlIoKIpAF
-         5LoUTnBszNXDXPA/faQMcPOO8tL7EvvAHt4PvDkLwevKXgrGaIIsPNPZEGYe4neayxp7
-         3eKA==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2r4ngFjLjfq9YSn0jkH9oDjdsB7Zq43pzXKudghtmFc=;
+        b=pfS31p19wSJYrzNTPwffVtwFHGcHwSbE703NfJkMZH5TEeMFBPQkz4U8U5NVDBcgud
+         nelWuK3WRt3rFouau4tArlPm+lEYxJzuGkVRnbdDm+UvreOGbvUO/55dsiJkycjVM+VS
+         nLe7P1dmc7V2VWWKcllGBVZreQFTPLpuzcSRu3y1FAIMNXWj/vsdEC7RKmby80DpzQ+i
+         7v5yFX/4MhHpNzf0AkE01cJNiGXz0dmqDXk9AfYZHusHy+5jbo1X08oz6soEylDWipBm
+         XaFMYU0beRWzYecyLRODrzOanqI0kxI07xNb9Y46WshIKKaj5vaG1AHZqvxVX19XFO6X
+         /j5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KchTKU3OTyx4fIEVz6kFgXk9gVOceFXcIF7F4XX2QJA=;
-        b=bsao/NfZJilThTizICxkb1PsDKe3pa2GvowslAtNrogcUY8cCegiItU0jNA8Jlplj2
-         nPYm2u7QvUE9OfbZiwsk+j2DUpyXoBIK8KmxTT6MxVS2FLZ4i3vcUd3xl8xy/gC+3fUc
-         Sb3gsDs5lSG1lEuyqEbcgNgMd6z/2XqV68vWPQgjDc662K9OIlRC5AxVTJGAFWhHtW2h
-         zpqbdvqlwQ5TOhZAmiQzU6Dz9D8nlvqHhy/2o63PB+Xsv+8x2CqMgUNKhYqs3XUDMwj0
-         2Ui6Uyi4Su6Tco5uXMEPqrcQPOAqnH/w+kuli/gtMsXSBJ5Ex0jhj3GHEZ7c+9IXvN/M
-         QiOw==
-X-Gm-Message-State: AOAM5330t6RUWpwKM9wEPfX5TsDOJSCzzftN0nfKxUWutlI7PEZ5NyTR
-        /T3IeSw2oYXe63kBbrBgqJQ=
-X-Google-Smtp-Source: ABdhPJwq3eWorCB9QGeZKXl53/047RtAFkG9EOLac4I5mz7r1CQUdKcRtgyS9j8sMWeB/1gw/MYjbw==
-X-Received: by 2002:a17:906:498b:: with SMTP id p11mr40761873eju.295.1629795192909;
-        Tue, 24 Aug 2021 01:53:12 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id br16sm8819806ejb.34.2021.08.24.01.53.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 01:53:12 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
-Date:   Tue, 24 Aug 2021 10:53:11 +0200
-Message-ID: <3198276.4iybWabFxt@localhost.localdomain>
-In-Reply-To: <68eebfaf-50a3-a7ec-12ba-cde33c74c9ce@gmail.com>
-References: <20210823223751.25104-1-fmdefrancesco@gmail.com> <20210823223751.25104-2-fmdefrancesco@gmail.com> <68eebfaf-50a3-a7ec-12ba-cde33c74c9ce@gmail.com>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2r4ngFjLjfq9YSn0jkH9oDjdsB7Zq43pzXKudghtmFc=;
+        b=ugGlHAQa+tVKwxyUQswEAJnXG45BiPBh0JY6dKD0gUfmC979sKQIjz6bneRgTwXFOw
+         Sk+hypyjWgkj4KEy9AvMMpWh35E+Dx+4zAOs/23pKXOPqK9uMD2eUfNn2xyyELoLw+g8
+         laQ81X6ua29fUoQ+DmibvrL/I+x6fK04+3+A/os0cE0mjTS61i9pQYZOT9kOOxxDPfwc
+         jtFPUWXrrvLexTeHkZMJmLwC1x7Q/FnUQBgVQ5WNFMN/IF79MbVklsXByH8QtePfMu8v
+         KJ0kJgSlYRDJccS1TVJJWhkOvACx5ivMu12evEQ3V+I4O8AYb0ltwGfcclXvozAkFjGE
+         oE1A==
+X-Gm-Message-State: AOAM533hcXd+/VX1HNO5pERq0VCp1CgB6u+tgr52onJ912bQu4Ig00B9
+        IaXagx+0hR636FVDwr4UDTgICgk96gbHqQ==
+X-Google-Smtp-Source: ABdhPJyz3LJTJ8WmlkjVQKtHRaQseRiwNI2uP++yp4ZBLERUO8lQSi1N4M9St5jdzKtYjGLY/1CL7w==
+X-Received: by 2002:a05:651c:1695:: with SMTP id bd21mr31444075ljb.5.1629795217106;
+        Tue, 24 Aug 2021 01:53:37 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id u2sm1715045lji.82.2021.08.24.01.53.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 01:53:36 -0700 (PDT)
+Subject: Re: [PATCH RFC v2 5/6] staging: r8188eu: add error handling of
+ rtw_read32
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Phillip Potter <phil@philpotter.co.uk>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1629642658.git.paskripkin@gmail.com>
+ <2424268.2DCLMNk6Lg@localhost.localdomain>
+ <2355365e-d75e-8d1b-aad8-6979b70f33ec@gmail.com>
+ <3419359.n4KOUNuIW1@localhost.localdomain>
+ <77da7c63-a5b1-a09d-39ec-32c5485b8eac@gmail.com>
+Message-ID: <96e3703e-a5e2-3c6d-ea3c-b5d3892849b2@gmail.com>
+Date:   Tue, 24 Aug 2021 11:53:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <77da7c63-a5b1-a09d-39ec-32c5485b8eac@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 24, 2021 10:13:46 AM CEST Pavel Skripkin wrote:
-> On 8/24/21 1:37 AM, Fabio M. De Francesco wrote:
-> > Replace usb_control_msg() with the new usb_control_msg_recv() and
-> > usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
-> > 
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> > 
-> > Thanks to Pavel Skripkin <paskripkin@gmail.com> for his review of the
-> > RFC patch.
-> >   
-> > drivers/staging/r8188eu/hal/usb_ops_linux.c | 25 ++++++++++-----------
-> > 1 file changed, 12 insertions(+), 13 deletions(-)
-> > 
-> > [...]
-> >
+On 8/24/21 11:47 AM, Pavel Skripkin wrote:
+> On 8/24/21 11:38 AM, Fabio M. De Francesco wrote:
+>> On Tuesday, August 24, 2021 8:40:18 AM CEST Pavel Skripkin wrote:
+>>> On 8/24/21 3:10 AM, Fabio M. De Francesco wrote:
+>>> > On Tuesday, August 24, 2021 1:33:46 AM CEST Phillip Potter wrote:
+>>> >> On Sun, 22 Aug 2021 at 15:36, Pavel Skripkin <paskripkin@gmail.com> wrote:
+>>> >> > -static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
+>>> >> > +static int usb_read32(struct intf_hdl *pintfhdl, u32 addr, u32 *data)
+>>> >> >  {
+>>> >> >         u8 requesttype;
+>>> >> >         u16 wvalue;
+>>> >> >         u16 len;
+>>> >> > -       __le32 data;
+>>> >> > +       int res;
+>>> >> > +       __le32 tmp;
+>>> >> > +
+>>> >> > +       if (WARN_ON(unlikely(!data)))
+>>> >> > +               return -EINVAL;
+>>> >> >
+>>> >> >         requesttype = 0x01;/* read_in */
+>>> >> >
+>>> >> >         wvalue = (u16)(addr & 0x0000ffff);
+>>> >> >         len = 4;
+>>> >> >
+>>> >> > -       usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
+>>> >> > +       res = usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
+>>> >> > +       if (res < 0) {
+>>> >> > +               dev_err(dvobj_to_dev(pintfhdl->pintf_dev), "Failed to read 32 bytes: %d\n", res);
+>>> >> > +       } else {
+>>> >> > +               /* Noone cares about positive return value */
+>>> >> > +               *data = le32_to_cpu(tmp);
+>>> >> > +               res = 0;
+>>> >> > +       }
+>>> >> >
+>>> >> > -       return le32_to_cpu(data);
+>>> >> > +       return res;
+>>> >> >  }
+>>> >> 
+>>> >> Dear Pavel,
+>>> >> 
+>>> >> OK, found the issue with decoded stack trace after reviewing this
+>>> >> usb_read32 function. Your line:
+>>> >> res = usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
+>>> >> 
+>>> >> should read:
+>>> >> res = usbctrl_vendorreq(pintfhdl, wvalue, &tmp, len, requesttype);
+>>> > 
+>>> > Dear Philip,
+>>> > 
+>>> > No, it should read:
+>>> > 
+>>> > res = usbctrl_vendorreq(pintfhdl, wvalue, data, len, requesttype);
+>>> > 
+>>> > I suspect that Pavel didn't notice he was reusing a line of the old code
+>>> > wth no due changes.
+>>> > 
+>>> >> With this change, the driver runs fine with no crashes/oopses. I will
+>>> >> explain the issue but you can probably see already, so I hope I'm not
+>>> >> coming across as patronising, just trying to be helpful :-)
+>>> >> 
+>>> >> Essentially, you are taking the address of the data function parameter
+>>> >> on this line with &data, a pointer to u32, which is giving you a
+>>> >> pointer to a pointer to u32 (u32 **) for this function parameter
+>>> >> variable. When passed to usbctrl_vendorreq, it is being passed to
+>>> >> memcpy inside this function as a void *, meaning that memcpy
+>>> >> subsequently overwrites the value of the memory address inside data to
+>>> >> point to a different location, which is problem when it is later
+>>> >> deferenced at:
+>>> >> *data = le32_to_cpu(tmp);
+>>> >> causing the OOPS
+>>> >> 
+>>> >> Also, as written, you can probably see that tmp is uninitialised. This
+>>> >> looks like a typo, so guessing this wasn't your intention. Anyhow,
+>>> >> with that small change, usbctrl_vendorreq reads into tmp, which is
+>>> >> then passed to le32_to_cpu whose return value is stored via the
+>>> >> deferenced data ptr (which now has its original address within and not
+>>> >> inadvertently modified). Hope this helps, and I'd be happy to Ack the
+>>> >> series if you want to resend this patch. Many thanks.
+>>> > 
+>>> > I think that another typo is having 'tmp', because that variable is unnecessary
+>>> > and "*data = le32_to_cpu(tmp);" is wrong too.
+>>> > 
+>>> > Now I also see that also usb_read16() is wrong, while usb_read8() (the one that
+>>> > I had read yesterday) is the only correct function of the three usb_read*().
+>>> > 
+>>> 
+>>> Hi, guys!
+>>> 
+>>> 
+>>> Sorry for breaking your system, Phillip. This code was part of "last 
+>>> minute" changes and yes, it's broken :)
+>>> 
+>>> I get what Phillip said, because I _should_ read into tmp variable 
+>>> instead of directly to data, but I don't get Fabio's idea, sorry.
+>> 
+>> Hi Pavel,
+>> 
+>> I (wrongly?) assumed from the prototype of usb_read32() that u32 *data is in native
+>> endianness. So, I didn't see the necessity of using _le32 tmp and then convert that tmp
+>> with le32_to_cpu().
+>> 
+>> I simply thought that data could be passed to usbctrl_vendorreq as it-is.
+>> 
+>>> Data from chip comes in little-endian, so we _should_ convert it to 
+>>> cpu's endian. Temp variable is needed to make smatch and all other 
+>>> static anylis tools happy about this code.
+>> 
+>> Now that you explained that "Data from chip comes in little-endian", obviously
+>> I must agree with you that the code needs tmp and that tmp must be
+>> swapped by le32_to_cpu(), ahead of assigning it to *data.
+>> 
+>> Just a curiosity... Since I was not able to see that *data is returned in little endian,
+>> can you please point me where in the code you found out that it is? There must
+>> be some place in the code that I'm unable to find and see that *data is LE.
+>> 
+>> Thanks in advance,
+>> 
+>> Fabio
+> 
 > Hi, Fabio!
 > 
-> Christophe is right about semantic part. 
-
-Hi Pavel,
-
-I haven't yet read Christophe's message (but I'm going to do it ASAP). 
-I hope he found out what is wrong with the code, what made Phil's tests
-fail.
-
-> Also,
+> previous usb_read16() realization, which is 100% right:
 > 
-> if (!status) {
 > 
-> } else {
-> 	if (status < 0) {		<-
-> 					  |
-> 	} else {			  |
-> 					  |
-> 	}				<-
-> }					
+> static u16 usb_read16(struct intf_hdl *pintfhdl, u32 addr)
+> {
+> 	u8 requesttype;
+> 	u16 wvalue;
+> 	u16 len;
+> 	__le32 data;
 > 
-> Extra if-else is not needed, since status can be 0 and < 0, there is no 
-> 3rd state, like it was before.
-
-Correct, thanks!
-
-Now I read the following from the documentation of the new API...
-
-"Return: If successful, 0 is returned, Otherwise, a negative error number."
-
-I'll remove that status < 0 check and whatever else is no more necessary.
-Thanks, again :)
-
-Regards,
-
-Fabio
-
-> With regards,
-> Pavel Skripkin
+> 	requesttype = 0x01;/* read_in */
+> 	wvalue = (u16)(addr & 0x0000ffff);
+> 	len = 2;
+> 	usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
 > 
+> 	return (u16)(le32_to_cpu(data) & 0xffff);
+> }
+> 
+> 
+> Bases on this code, I think, it's oblivious, that data comes in
+> little-endian. That's why I leaved temp variable for casting le32 to
+> cpu's endianess.
+> 
+> I could just read into u{16,32} * and then make smth like
+> 
+> *data = le32_to_cpu(*data)
+> 
+> but static analysis tools will complain about wrong data type passed to
+>    le32_to_cpu()
+> 
+> + Phillip tested fixed v2 version and it worked well for him. I guess,
+> Phillip was able to spot weird driver behavior, if this cast is wrong.
+> 
+		^^^^^&
+
+I am wrong with this statement, I guess. Most likely, Phillip is testing 
+on smth like x64 and this arch is le, so...
 
 
 
 
+With regards,
+Pavel Skripkin
