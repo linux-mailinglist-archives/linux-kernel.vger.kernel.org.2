@@ -2,69 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81C53F5F84
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B013F5F8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237654AbhHXNwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237310AbhHXNwk (ORCPT
+        id S237683AbhHXNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:52:59 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:21204 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237667AbhHXNwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:52:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49DDC061757;
-        Tue, 24 Aug 2021 06:51:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dphydDBhsChUJLwVEWb00CCa8GMnSbiXaH5DNPOezEE=; b=WgteAEox+UaTlhamNZdxg/s7qR
-        z5eA3h8+N4u2yKj5aNwh4Otf8bP+nrCl+Q/ir19VSbLNr6kocFWJuP9kO531c5RhJA2pQcjOzt3K1
-        x7W2alyXMnyn6sEDFCohsV7osUy5jLzDw9yLdQcj33/UGUOH7HqHLiX9r3hhdDG3XbeNkghzjSx74
-        RfxjccfIoHISWBoUV/L124T1o3Zfrt+XDAibgcUZHl8eDt1VSllYVjzF3a7S8c8FAAeGgF70Od/hy
-        +A0I3zLAngdCqBxx5/BONlehN8O4FVp9OpFEXsfmGpmgU5q2+/554EvCOc2ALx9kT9LoSTL9bLcwy
-        UO0sDjjA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIWnH-00B7Uv-6Y; Tue, 24 Aug 2021 13:49:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 84199300024;
-        Tue, 24 Aug 2021 15:48:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 756432C5B4A98; Tue, 24 Aug 2021 15:48:46 +0200 (CEST)
-Date:   Tue, 24 Aug 2021 15:48:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     mingo@redhat.com, will@kernel.org, longman@redhat.com,
-        boqun.feng@gmail.com, paulmck@kernel.org, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH V2][RFC] lockdep: improve comments in wait-type checks
-Message-ID: <YST4vtfcbJGKqoYD@hirez.programming.kicks-ass.net>
-References: <20210811025920.20751-1-zhouzhouyi@gmail.com>
+        Tue, 24 Aug 2021 09:52:51 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17O7c7kr001613;
+        Tue, 24 Aug 2021 06:51:46 -0700
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2177.outbound.protection.outlook.com [104.47.58.177])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3amkrkaym1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 06:51:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GTZ9mW4HHzCzXONiLA/akogyGeGNEP2e8RvITWE2o8ErUxtFNn8okYPKI8Qn4jdRTACV/soCiAZNUk81zjIgRDdLFiA6lF5l23j16HCQP9lOMOOJuCUhkobfTLVpUw+Lgvc0+fshvTQG6W2qdWHMvm/VVZTm2VMIt4vkvgnYjXR31cgmwomPC1umsdOhot007tqLRmhP7FTD3mFVgL4mnF3qIzElIDGtmB6Pwj7nO/uxMNhLTTMTJTcfWrH3cJAdIHHgdUV1bFe2CTxzWORA6JbxEX+kqYaN4xRISo3dVghewriaT0r/cAdamPZmxohenU5iafSZYV5V058simfsWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d7Q/8UGudqLi8wcwPle43t+wM7F6ZcDGUqZV6Wh/DQM=;
+ b=TB5y/reqXD+V6Bcw8hTQTrXsBByjtayUV7wywozhTQeEiqhqrmqeaq2yQ8+Yjs9ukNY4a3DWXI0u1Gx3zDHbqYy0VAL1CALIn7MF78EQ6xy2XYyI6hjJTs2UWQD5893+DbUlCNwfjYg+bPhxrxJXTAjNQK71aKultLE+7vxirBWNZF0ItQ5X2nBVml01el66BWTjjnu6hxPbqCNsFvFHRLOZbgARGnkodyr9WOwOy/80InNXfzAlZj3rYaA/4xrmIFOMA1rpaNKe6+XAXfquS6HpxX7t1vOo8O1+81rV8vjadNtL9iqBtIedUVBB5wWhPGUQP/WiZDf1Zr/QKBJozQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d7Q/8UGudqLi8wcwPle43t+wM7F6ZcDGUqZV6Wh/DQM=;
+ b=CHtBS7WCUilc9iwor4XjRsrnL3RjZXhIsCO5FHsvjHUrgOVGNpfAMwdrJW9+NS+qYZjDU45D+67hP9vm3EyQNu2m2yKs7fuDPB4eOrWnRbPp7EB1DsvX/x07wX1BKivUUwDwy47f4dduEnRToszoem+B/aLB2IzUebCAdjGw/14=
+Received: from DM5PR18MB2229.namprd18.prod.outlook.com (2603:10b6:4:b9::24) by
+ DM4PR18MB4173.namprd18.prod.outlook.com (2603:10b6:5:390::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4436.21; Tue, 24 Aug 2021 13:51:45 +0000
+Received: from DM5PR18MB2229.namprd18.prod.outlook.com
+ ([fe80::a9c9:dccf:5e59:fdec]) by DM5PR18MB2229.namprd18.prod.outlook.com
+ ([fe80::a9c9:dccf:5e59:fdec%2]) with mapi id 15.20.4436.024; Tue, 24 Aug 2021
+ 13:51:44 +0000
+From:   Prabhakar Kushwaha <pkushwaha@marvell.com>
+To:     Kees Cook <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Ariel Elior <aelior@marvell.com>,
+        Sudarsana Reddy Kalluru <skalluru@marvell.com>,
+        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Shai Malin <smalin@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [PATCH v2 17/63] bnx2x: Use struct_group() for memcpy() region
+Thread-Topic: [PATCH v2 17/63] bnx2x: Use struct_group() for memcpy() region
+Thread-Index: AdeY7yGdR9cZvhLdSru1pL8aUI2KKQ==
+Date:   Tue, 24 Aug 2021 13:51:44 +0000
+Message-ID: <DM5PR18MB2229B0413C372CC6E49D59A3B2C59@DM5PR18MB2229.namprd18.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=marvell.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cff11d0b-a9d6-4ef8-79a0-08d967064f71
+x-ms-traffictypediagnostic: DM4PR18MB4173:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM4PR18MB4173859078969B3FB6DD878CB2C59@DM4PR18MB4173.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2276;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: A48KM2JlMSMYgGArSHWjjJVD6xTijC+sMFJ/pdep2lhNAEFu8S31wBryajCFXqph1dRnIb99zR/ENyy8ItUiE0CFHDOe959R0Rz3AYK2RO0nD9QRVEjed97DVP6Em8VexOUJ4gp4n3srtbnjkZza4sTa1gVn9rtKWI+UzbZcnLIRubvaM7u8Uehs0owExl52VjGqitNFeGD6eHxfvxpGfuz3NESmJUoDntwzWPZ8NJqeSgGOxc09aPp4o80qA1HbHnpo+tgGh+YoCLlj2m/s2qsOwtT5UmCdrm4woUOmmWXU1vArd1mz7o4CGRypHhaGUXeZfB9nT3vvda//LMjg1Cc/cKLV0AaJvTDSUFdopdbazasd+Z1UDk6sK3U7AwHZm2hVb04LwnAFyz/5voGihLiW30RVWFr4n2MHdLZU/I6NQJCMZCW/XrTEQWh8/R1NWWYbrnqV2lYvMnu9G5vNm98DmH3IaBYmLuK4YT4xvB9UoAEGLe9zstngepVwURFphINW425nh2ScKQJqC+pL7PinCB7OZso3V3kq8+wpfyMgYL8iS62bXyuVn41s3n1sX06Vi5UVNm5maXbj+zFocVTY7AZlpHxb0AypIqD6+8WF5Q8dOCo8NBL4yCUJdz7d5M2wF769p7RyEsrXwKoPsD4jdtaGOacajg4oDMEXePRAstuX4LdF4vCEAx0CX7Fo0eYeX6jT8+cmc40mFJHTEQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR18MB2229.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(136003)(376002)(39860400002)(6506007)(83380400001)(26005)(76116006)(66946007)(53546011)(122000001)(9686003)(64756008)(55016002)(86362001)(66446008)(38100700002)(66556008)(66476007)(54906003)(33656002)(4326008)(71200400001)(316002)(186003)(8676002)(8936002)(7416002)(478600001)(38070700005)(5660300002)(7696005)(52536014)(2906002)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EMDIb0DJI8NV0xiWg7/D5hHaDWHCeDakcGy/278+cHfPg4FEvj1RULd+LY1V?=
+ =?us-ascii?Q?mvT/JOTAOIJvK6HqD/vlPwz+dhLIzBFNiWXADKZlC/INcG+INVr7/vM1Wsiw?=
+ =?us-ascii?Q?O23P9w2+qJxzteL3TrWDr95dnVkZBnSkBQLym6qkwt1JY+0lWtnAFq2wTa0N?=
+ =?us-ascii?Q?xFfZH0vtOex/q0v/noaqvI4vL0A1jlqYpimb2pM1qqH4anPQDVTZkIXDDpGU?=
+ =?us-ascii?Q?56gQF0Pjo8Lq6+DP4lSVaBnAPmVxwVE02YgkINn3bxTa98Vf5tXQHEZdi8H7?=
+ =?us-ascii?Q?KWbmHRRRalXBU4cDvvMZyi6gXGO4a+eD+j8ZKMG59FQBW3n0cBdIHfPUlMRh?=
+ =?us-ascii?Q?TsTltdQogzI7BvGQzUX0BzWdkb49YwF2QST7+Ol/0Rv4UeveJr4H3NzvzjuP?=
+ =?us-ascii?Q?1UxL05n3SrnHK7RnGcDJbJOGGt4awXNsnPbUvIyjh7ni09Zv61zeyYiHq5g+?=
+ =?us-ascii?Q?8/x3wOrpleWlXp66e9gy+/2/c9gxNfLbSMOI6XwCpaCKaVnJN+hQmjCQ8AIq?=
+ =?us-ascii?Q?8MoRFl4j+jt1n8ca0MkPO3rJMELlxlR4kgm8dWRCkiDT0QArszs6hsaDdZY1?=
+ =?us-ascii?Q?z7NX9aFdbS5WnOXtEkZdueyNj2Ovho3QfAzofKT2Zrl5fzAgOXWKiRxYkq6u?=
+ =?us-ascii?Q?PDevoZ2dRFa5jgfhLVLmbO+/eJEuVkUJQFtXOm3abUrTr/w4oTIIHySIM04v?=
+ =?us-ascii?Q?JCMUDkiEB4M0JTh9XIxMDubek566tSQIcg6SLNHJTZ1XXywNOC8zy9zeI04h?=
+ =?us-ascii?Q?bgz6LpJmmNUlxR1SdFT4anRbfI1P2gXbZVUkdTMgbO3kS/m/6eOSr/jdVtHU?=
+ =?us-ascii?Q?7eo7cIFVLCy5PwzpaGKPhfv/0qUBvIG9b1aZ9LRDKOzP57pHIKc/WZra0VGM?=
+ =?us-ascii?Q?fbaAw6nQcRfnvmepUxBGFVSpMtJLT+vsFkxvPPYM8qTfQvb4MjM3UWcpYVUh?=
+ =?us-ascii?Q?oaYJuFhu7QLpeRhMkiZGFdKArTEMbKOSBPe8jQLHnP9NNrwx/6Sq1ZpOH3de?=
+ =?us-ascii?Q?kKnuukJ21vXn9ZkhGxDfLXYELdemQEcsuZITqvgAh9GKf1uXwEoqO5NRrjBN?=
+ =?us-ascii?Q?QESh8lLi/IbI4rQln+J+S5sPzRJtd2FPe5u5ylMs+UledCu6GIGg6nonOzrs?=
+ =?us-ascii?Q?CNZsrucVDyhaH+ST31Gn1cS7U/83K8usv3bBSmEVznXXUkEV6rpwXIi5j+2Q?=
+ =?us-ascii?Q?vw/DNoIaqzsSRXNe3TpdweF4AUaSFOmq0YFaUheWZRWTeGQ4XS3+3WOwPfOV?=
+ =?us-ascii?Q?PaZC9Jb4CpTONNpbwkASp2EVSAA5PqVwP6RTa7iy9311VQ6zpcw9HPEszm8h?=
+ =?us-ascii?Q?wB0aQqxTrFzOGhs1b8PziTyd?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811025920.20751-1-zhouzhouyi@gmail.com>
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR18MB2229.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cff11d0b-a9d6-4ef8-79a0-08d967064f71
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Aug 2021 13:51:44.7798
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: S07K5TsDOEM1fYOyl4L5sHc6IFKNL8HtJzGfPubKFD6+2Z+PKq+bOkDAl63rre8IrpHApOzgGQ5mrJm/p90OxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR18MB4173
+X-Proofpoint-GUID: lLSeim5oVrTVDfdXvJxQPHeUBF8phhVS
+X-Proofpoint-ORIG-GUID: lLSeim5oVrTVDfdXvJxQPHeUBF8phhVS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-08-24_04,2021-08-24_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 10:59:20AM +0800, Zhouyi Zhou wrote:
-> comments in wait-type checks be improved by mentioning the
-> PREEPT_RT kernel configure option.
-> 
-> Many thanks
-> Zhouyi
-> 
-> Acked-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
-Acked goes after sobs, fixed that for you.
+> -----Original Message-----
+> From: Kees Cook <keescook@chromium.org>
+> Sent: Wednesday, August 18, 2021 11:35 AM
+> To: linux-kernel@vger.kernel.org
+> Cc: Kees Cook <keescook@chromium.org>; Ariel Elior <aelior@marvell.com>;
+> Sudarsana Reddy Kalluru <skalluru@marvell.com>; GR-everest-linux-l2 <GR-
+> everest-linux-l2@marvell.com>; David S. Miller <davem@davemloft.net>; Jak=
+ub
+> Kicinski <kuba@kernel.org>; netdev@vger.kernel.org; Gustavo A. R. Silva
+> <gustavoars@kernel.org>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>;
+> Andrew Morton <akpm@linux-foundation.org>; linux-wireless@vger.kernel.org=
+;
+> dri-devel@lists.freedesktop.org; linux-staging@lists.linux.dev; linux-
+> block@vger.kernel.org; linux-kbuild@vger.kernel.org; clang-built-
+> linux@googlegroups.com; Rasmus Villemoes <linux@rasmusvillemoes.dk>;
+> linux-hardening@vger.kernel.org
+> Subject: [PATCH v2 17/63] bnx2x: Use struct_group() for memcpy() region
+>=20
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy(), memmove(), and memset(), avoid
+> intentionally writing across neighboring fields.
+>=20
+> Use struct_group() in struct nig_stats around members egress_mac_pkt0_lo,
+> egress_mac_pkt0_hi, egress_mac_pkt1_lo, and egress_mac_pkt1_hi (and the
+> respective members in struct bnx2x_eth_stats), so they can be referenced
+> together. This will allow memcpy() and sizeof() to more easily reason
+> about sizes, improve readability, and avoid future warnings about writing
+> beyond the end of struct bnx2x_eth_stats's rx_stat_ifhcinbadoctets_hi.
+>=20
+> "pahole" shows no size nor member offset changes to either struct.
+> "objdump -d" shows no meaningful object code changes (i.e. only source
+> line number induced differences and optimizations).
+>=20
+> Additionally adds BUILD_BUG_ON() to compare the separate struct group
+> sizes.
+>=20
+> Cc: Ariel Elior <aelior@marvell.com>
+> Cc: Sudarsana Kalluru <skalluru@marvell.com>
+> Cc: GR-everest-linux-l2@marvell.com
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-Thanks!
+Reviewed-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
