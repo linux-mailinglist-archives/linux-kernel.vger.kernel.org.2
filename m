@@ -2,110 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446C03F612D
+	by mail.lfdr.de (Postfix) with ESMTP id 967B33F612E
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238123AbhHXO6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238115AbhHXO6V (ORCPT
+        id S238134AbhHXO6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:58:34 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41820 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238011AbhHXO6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:58:21 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380CBC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:57:37 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id i28so38170755ljm.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z7T239jsLbsayF4aZWEjWJeLPMK9E8+LYFTW4JTLP0s=;
-        b=ti+oB3vBOMMyqJa5uq/Hn58qVzWC8LgeR80juypKZJGX90tRhWFfEz+1y/aG8kAnXY
-         7prtD6JiMEg3zy8ryNOBCE2r0EdM/PN757z8eqKKtlt377TSbSOxvWe76eqmrzU/sx/J
-         sO3p3xoM/vzqiH+cnifvIvDpZl0E7Q4+kvc4oMf+QTfDPHa7ga0UbCHERdRylr5BPjVF
-         gjHv33kVgKi3YEbZmywENx8um2oNstnU8rYh+lAaKVoiopo/4AvJ/3x8yA2bygAjLYoj
-         pdfYGDL4WF4HOUhOpFkEVxdK0nS1G1fb7YL7GRfknZWX7U7wIEDy2MkhoLFBYWplqXai
-         r6dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z7T239jsLbsayF4aZWEjWJeLPMK9E8+LYFTW4JTLP0s=;
-        b=P6g1vFYOk8J2C0Zg7Oq+iVKwk/omuKuvNS72SU7BnbLpSg2kJ1boj8r2uJw5Rx1OEK
-         zP8srXOu42kmdURJMCMAggTAuOIqEc5IpEpSMWMk1tZb2q4NBKtryNk7IbleNJ/9+R7o
-         GwBL/FwXCA/zYUoOAnaOKjBOuqLKwiVT97EJo66c51WAZ7pIFcf90jUt1pDXKcw4mb17
-         B65G32SC7mn6WjZQ1ThnSK0Eru4ROQgYb+LgzA9wdoWtCqYw1NYkn8iwCgk+gtvW64sy
-         0etdATAzqbiIV06UeHWOmCOwN18SMdIEwMpbX8aOCTfbXWpNuO9464QGraq16qThhZ+U
-         6Dug==
-X-Gm-Message-State: AOAM532dSiv0AcjBn4kYqjG5ntxM6iTTOwnGcvz8y47lZ5iBeZ9sPZF1
-        DBrggRc9IFobKnFxYi71SSmDMqXuvrxNQbrAXjEtFg==
-X-Google-Smtp-Source: ABdhPJzzIZQHBatfr+jqvETbFY5S5lhayAwi2jztkhIbN/273EBxLJcym9xRcPYkoS13Ey36043Cn/LDLk8X5lK4BEY=
-X-Received: by 2002:a05:651c:83:: with SMTP id 3mr32649938ljq.341.1629817055638;
- Tue, 24 Aug 2021 07:57:35 -0700 (PDT)
+        Tue, 24 Aug 2021 10:58:31 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 34E2F1FD9D;
+        Tue, 24 Aug 2021 14:57:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629817066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lTY2+6RSUY5UGPOVYIqJLIbgI+78nykiaQqgyxaQdR0=;
+        b=nVAQuPIE2aHk8Xqf65LgW+pGJcxIj7xpZIXafRKBKQD2pDaJpeUWaQrx2EFBp9XRYMZXDy
+        3DFw2R3UfiBRvhJRrf4vSnD3fIEoVu25bzhFns1l3l2kBynSLPHXlA0f23QWGHB8mdkCZy
+        /eacySNqSfg4bws9dggjurzFygz1LK8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629817066;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lTY2+6RSUY5UGPOVYIqJLIbgI+78nykiaQqgyxaQdR0=;
+        b=dxpqltLT00QV/2Rfz3Uu8Dtx6JvdMtAwd41NxGZQ8CEHLcnumo9z4hrfm+/1Gr0MFGL3Xk
+        kd91EpMXnn1Iw2AQ==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id 2EF38A3B90;
+        Tue, 24 Aug 2021 14:57:46 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 17828)
+        id 1D3F1518D984; Tue, 24 Aug 2021 16:57:46 +0200 (CEST)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v4] nvme-multipath: revalidate paths during rescan
+Date:   Tue, 24 Aug 2021 16:57:42 +0200
+Message-Id: <20210824145742.94212-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210817224208.153652-1-huobean@gmail.com> <20210817224208.153652-2-huobean@gmail.com>
-In-Reply-To: <20210817224208.153652-2-huobean@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 24 Aug 2021 16:56:58 +0200
-Message-ID: <CAPDyKFrhXEA73pb1eiehFN=tqj9CqVj4jxRKVYRVnmVd4fxNvA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] mmc: core: Issue HPI in case the BKOPS timed out
-To:     Bean Huo <huobean@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bean Huo <beanhuo@micron.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 at 00:42, Bean Huo <huobean@gmail.com> wrote:
->
-> From: Bean Huo <beanhuo@micron.com>
->
-> If the BKOPS timed out, the card is probably still busy in the
-> R1_STATE_PRG. Rather than let application in the userland continue
-> to wait, let's try to abort it with a HPI command to get back into
-> R1_STATE_TRAN.
->
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
+From: Hannes Reinecke <hare@suse.de>
 
-Applied for next, thanks! I took the liberty of updating the commit
-message a bit to clarify.
+When triggering a rescan due to a namespace resize we will be
+receiving AENs on every controller, triggering a rescan of all
+attached namespaces. If multipath is active only the current path and
+the ns_head disk will be updated, the other paths will still refer to
+the old size until AENs for the remaining controllers are received.
 
-Kind regards
-Uffe
+If I/O comes in before that it might be routed to one of the old
+paths, triggering an I/O failure with 'access beyond end of device'.
+With this patch the old paths are skipped from multipath path
+selection until the controller serving these paths has been rescanned.
+
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+[dwagner: - introduce NVME_NS_READY flag instead of NVME_NS_INVALIDATE
+          - use 'revalidate' instead of 'invalidate' which
+	    follows the zoned device code path.
+	  - clear NVME_NS_READY before clearing current_path]
+Tested-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+v3:
+  - https://lore.kernel.org/linux-nvme/20210811152803.30017-1-dwagner@suse.de/
+  - Renamed nvme_mpath_invalidated_paths to nvme_mpath_revalidate_paths()
+  - Replaced NVME_NS_INVALIDATE with NVME_NS_READY
+v2:
+  - https://lore.kernel.org/linux-nvme/20210730071059.124347-1-dwagner@suse.de/
+  - removed churn from failed rebase.
+v1:
+  - https://lore.kernel.org/linux-nvme/20210729194630.i5mhvvgb73duojqq@beryllium.lan/
 
 
+ drivers/nvme/host/core.c      |  3 +++
+ drivers/nvme/host/multipath.c | 17 ++++++++++++++++-
+ drivers/nvme/host/nvme.h      |  5 +++++
+ 3 files changed, 24 insertions(+), 1 deletion(-)
 
-> ---
->  drivers/mmc/core/mmc_ops.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-> index 90d213a2203f..0c54858e89c0 100644
-> --- a/drivers/mmc/core/mmc_ops.c
-> +++ b/drivers/mmc/core/mmc_ops.c
-> @@ -959,8 +959,15 @@ void mmc_run_bkops(struct mmc_card *card)
->          */
->         err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
->                          EXT_CSD_BKOPS_START, 1, MMC_BKOPS_TIMEOUT_MS);
-> -       if (err)
-> -               pr_warn("%s: Error %d starting bkops\n",
-> +       /*
-> +        * If the BKOPS timed out, the card is probably still busy in the
-> +        * R1_STATE_PRG. Rather than continue to wait, let's try to abort
-> +        * it with a HPI command to get back into R1_STATE_TRAN.
-> +        */
-> +       if (err == -ETIMEDOUT && !mmc_interrupt_hpi(card))
-> +               pr_warn("%s: BKOPS aborted\n", mmc_hostname(card->host));
-> +       else if (err)
-> +               pr_warn("%s: Error %d running bkops\n",
->                         mmc_hostname(card->host), err);
->
->         mmc_retune_release(card->host);
-> --
-> 2.25.1
->
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index b9a46c54f714..42b69f3c6e20 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -1875,6 +1875,7 @@ static int nvme_update_ns_info(struct nvme_ns *ns, struct nvme_id_ns *id)
+ 			goto out_unfreeze;
+ 	}
+ 
++	set_bit(NVME_NS_READY, &ns->flags);
+ 	blk_mq_unfreeze_queue(ns->disk->queue);
+ 
+ 	if (blk_queue_is_zoned(ns->queue)) {
+@@ -1886,6 +1887,7 @@ static int nvme_update_ns_info(struct nvme_ns *ns, struct nvme_id_ns *id)
+ 	if (nvme_ns_head_multipath(ns->head)) {
+ 		blk_mq_freeze_queue(ns->head->disk->queue);
+ 		nvme_update_disk_info(ns->head->disk, ns, id);
++		nvme_mpath_revalidate_paths(ns);
+ 		blk_stack_limits(&ns->head->disk->queue->limits,
+ 				 &ns->queue->limits, 0);
+ 		blk_queue_update_readahead(ns->head->disk->queue);
+@@ -3803,6 +3805,7 @@ static void nvme_ns_remove(struct nvme_ns *ns)
+ 	if (test_and_set_bit(NVME_NS_REMOVING, &ns->flags))
+ 		return;
+ 
++	clear_bit(NVME_NS_READY, &ns->flags);
+ 	set_capacity(ns->disk, 0);
+ 	nvme_fault_inject_fini(&ns->fault_inject);
+ 
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index 3f32c5e86bfc..ea2b70fd9ac1 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -147,6 +147,21 @@ void nvme_mpath_clear_ctrl_paths(struct nvme_ctrl *ctrl)
+ 	mutex_unlock(&ctrl->scan_lock);
+ }
+ 
++void nvme_mpath_revalidate_paths(struct nvme_ns *ns)
++{
++	struct nvme_ns_head *head = ns->head;
++	sector_t capacity = get_capacity(head->disk);
++	int node;
++
++	list_for_each_entry_rcu(ns, &head->list, siblings) {
++		if (capacity != get_capacity(ns->disk))
++			clear_bit(NVME_NS_READY, &ns->flags);
++	}
++
++	for_each_node(node)
++		rcu_assign_pointer(head->current_path[node], NULL);
++}
++
+ static bool nvme_path_is_disabled(struct nvme_ns *ns)
+ {
+ 	/*
+@@ -158,7 +173,7 @@ static bool nvme_path_is_disabled(struct nvme_ns *ns)
+ 	    ns->ctrl->state != NVME_CTRL_DELETING)
+ 		return true;
+ 	if (test_bit(NVME_NS_ANA_PENDING, &ns->flags) ||
+-	    test_bit(NVME_NS_REMOVING, &ns->flags))
++	    !test_bit(NVME_NS_READY, &ns->flags))
+ 		return true;
+ 	return false;
+ }
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index a2e1f298b217..8fd30ef19757 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -456,6 +456,7 @@ struct nvme_ns {
+ #define NVME_NS_DEAD     	1
+ #define NVME_NS_ANA_PENDING	2
+ #define NVME_NS_FORCE_RO	3
++#define NVME_NS_READY		4
+ 
+ 	struct cdev		cdev;
+ 	struct device		cdev_device;
+@@ -748,6 +749,7 @@ void nvme_mpath_init_ctrl(struct nvme_ctrl *ctrl);
+ void nvme_mpath_uninit(struct nvme_ctrl *ctrl);
+ void nvme_mpath_stop(struct nvme_ctrl *ctrl);
+ bool nvme_mpath_clear_current_path(struct nvme_ns *ns);
++void nvme_mpath_revalidate_paths(struct nvme_ns *ns);
+ void nvme_mpath_clear_ctrl_paths(struct nvme_ctrl *ctrl);
+ void nvme_mpath_shutdown_disk(struct nvme_ns_head *head);
+ 
+@@ -795,6 +797,9 @@ static inline bool nvme_mpath_clear_current_path(struct nvme_ns *ns)
+ {
+ 	return false;
+ }
++static inline void nvme_mpath_revalidate_paths(struct nvme_ns *ns)
++{
++}
+ static inline void nvme_mpath_clear_ctrl_paths(struct nvme_ctrl *ctrl)
+ {
+ }
+-- 
+2.29.2
+
