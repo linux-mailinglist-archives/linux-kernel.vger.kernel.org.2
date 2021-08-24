@@ -2,84 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA083F62FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF9E3F630E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhHXQpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:45:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50060 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhHXQpK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:45:10 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 78C621FDB4;
-        Tue, 24 Aug 2021 16:44:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629823464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z2MS98YdJwtJG8FeEq/L2x2vYouQos57GNWyqg6QJyA=;
-        b=hglYmTZ0ibs1kipNcDW5ppNCm78oIvq31YUQTGxYE8JL/H3Wp8stjoxc6XSfbVqbCPZWyt
-        dASzpF/UoW3GZDFju1KQQEVfGEgc/19+HZjo10yyqbLoV3XhjN/WiOCz7eUY3CydwdrSeP
-        hjtEnkPekDuCd/Wzr5eXZa4izsSh76k=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 522C113A5B;
-        Tue, 24 Aug 2021 16:44:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id iTNtE+ghJWG1XQAAGKfGzw
-        (envelope-from <mkoutny@suse.com>); Tue, 24 Aug 2021 16:44:24 +0000
-Date:   Tue, 24 Aug 2021 18:44:23 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        vipinsh@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v2] misc_cgroup: use a counter to count the number of
- failures
-Message-ID: <20210824164423.GA11859@blackbody.suse.cz>
-References: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
+        id S232450AbhHXQpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:45:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:38128 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229521AbhHXQpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:45:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF72431B;
+        Tue, 24 Aug 2021 09:44:55 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.90.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E64623F766;
+        Tue, 24 Aug 2021 09:44:53 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 17:44:51 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 05/13] clocksource/arm_arch_timer: Fix MMIO base address
+ vs callback ordering issue
+Message-ID: <20210824164451.GJ96738@C02TD0UTHF1T.local>
+References: <20210809152651.2297337-1-maz@kernel.org>
+ <20210809152651.2297337-6-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210809152651.2297337-6-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
-
-On Sat, Aug 14, 2021 at 08:15:16AM +0800, brookxu <brookxu.cn@gmail.com> wrote:
-> 1. If a large number of containers are created and deleted,
->    there will be a lot of error logs.
-> 2. According to an error log, we cannot better understand
->    the actual pressure of resources.
+On Mon, Aug 09, 2021 at 04:26:43PM +0100, Marc Zyngier wrote:
+> The MMIO timer base address gets published after we have registered
+> the callbacks and the interrupt handler, which is... a bit dangerous.
 > 
-> Therefore, perhaps we should use a failcnt counter to count
-> the number of failures, so that we can easily understand the
-> actual pressure of resources and avoid too many error log..
+> Fix this by moving the base address publication to the point where
+> we register the timer, and expose a pointer to the timer structure
+> itself rather than a naked value.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-This is an understandable use case and generally the implementation via
-the counter is good as well.
+I don't have agood setup to test this with, but this looks good to me,
+and builds cleanly for arm/arm64, so:
 
-However, the non-hierarchical failcnt interface looks like v1ism to me
-(I think new features should come with v2 first in mind).
-What about exposing this in misc.events file with max.$res_name entries? 
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
 
-Or if the hierarchical reporting is unnecessary now, there can be just
-misc.events.local for starters.
+Mark.
 
-(That reminds me the forgotten pids.events[.local] rework [1], oops.)
-
-Michal
-
-https://lore.kernel.org/lkml/20191128172612.10259-1-mkoutny@suse.com/#t
-
+> ---
+>  drivers/clocksource/arm_arch_timer.c | 27 +++++++++++++--------------
+>  1 file changed, 13 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+> index 160464f75017..ca7761d8459a 100644
+> --- a/drivers/clocksource/arm_arch_timer.c
+> +++ b/drivers/clocksource/arm_arch_timer.c
+> @@ -54,13 +54,13 @@
+>  
+>  static unsigned arch_timers_present __initdata;
+>  
+> -static void __iomem *arch_counter_base __ro_after_init;
+> -
+>  struct arch_timer {
+>  	void __iomem *base;
+>  	struct clock_event_device evt;
+>  };
+>  
+> +static struct arch_timer *arch_timer_mem __ro_after_init;
+> +
+>  #define to_arch_timer(e) container_of(e, struct arch_timer, evt)
+>  
+>  static u32 arch_timer_rate __ro_after_init;
+> @@ -975,9 +975,9 @@ static u64 arch_counter_get_cntvct_mem(void)
+>  	u32 vct_lo, vct_hi, tmp_hi;
+>  
+>  	do {
+> -		vct_hi = readl_relaxed(arch_counter_base + CNTVCT_HI);
+> -		vct_lo = readl_relaxed(arch_counter_base + CNTVCT_LO);
+> -		tmp_hi = readl_relaxed(arch_counter_base + CNTVCT_HI);
+> +		vct_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
+> +		vct_lo = readl_relaxed(arch_timer_mem->base + CNTVCT_LO);
+> +		tmp_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
+>  	} while (vct_hi != tmp_hi);
+>  
+>  	return ((u64) vct_hi << 32) | vct_lo;
+> @@ -1168,25 +1168,25 @@ static int __init arch_timer_mem_register(void __iomem *base, unsigned int irq)
+>  {
+>  	int ret;
+>  	irq_handler_t func;
+> -	struct arch_timer *t;
+>  
+> -	t = kzalloc(sizeof(*t), GFP_KERNEL);
+> -	if (!t)
+> +	arch_timer_mem = kzalloc(sizeof(*arch_timer_mem), GFP_KERNEL);
+> +	if (!arch_timer_mem)
+>  		return -ENOMEM;
+>  
+> -	t->base = base;
+> -	t->evt.irq = irq;
+> -	__arch_timer_setup(ARCH_TIMER_TYPE_MEM, &t->evt);
+> +	arch_timer_mem->base = base;
+> +	arch_timer_mem->evt.irq = irq;
+> +	__arch_timer_setup(ARCH_TIMER_TYPE_MEM, &arch_timer_mem->evt);
+>  
+>  	if (arch_timer_mem_use_virtual)
+>  		func = arch_timer_handler_virt_mem;
+>  	else
+>  		func = arch_timer_handler_phys_mem;
+>  
+> -	ret = request_irq(irq, func, IRQF_TIMER, "arch_mem_timer", &t->evt);
+> +	ret = request_irq(irq, func, IRQF_TIMER, "arch_mem_timer", &arch_timer_mem->evt);
+>  	if (ret) {
+>  		pr_err("Failed to request mem timer irq\n");
+> -		kfree(t);
+> +		kfree(arch_timer_mem);
+> +		arch_timer_mem = NULL;
+>  	}
+>  
+>  	return ret;
+> @@ -1444,7 +1444,6 @@ arch_timer_mem_frame_register(struct arch_timer_mem_frame *frame)
+>  		return ret;
+>  	}
+>  
+> -	arch_counter_base = base;
+>  	arch_timers_present |= ARCH_TIMER_TYPE_MEM;
+>  
+>  	return 0;
+> -- 
+> 2.30.2
+> 
