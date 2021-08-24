@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F078D3F57C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922CE3F57CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233048AbhHXF7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 01:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
+        id S234015AbhHXGCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhHXF7T (ORCPT
+        with ESMTP id S230129AbhHXGCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 01:59:19 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6BBC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 22:58:36 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id 14so21949533qkc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 22:58:36 -0700 (PDT)
+        Tue, 24 Aug 2021 02:02:17 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F701C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:01:33 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id e3so9691651qth.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:01:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=AqkXI6oLzHyFwvv2AStlufK4ixhmUEXUgRHQRPPodyQ=;
-        b=kBxWH1GJsPwUZ+B0gNIC5nhJbrvEei+xyWGeo7YiyuOebe/h/h+6R6cMA5l4Zsi09G
-         j2p2mo29bOYmHWwNKnmYMsivxoDqtklqqSGJD4troNCovAb04qF0Yh8tPRQtKdqcy/bl
-         n4v88i44efr/WqVtBnqElOcobG+h6yDTGSpkVhf1NpPruWpoDmtWoF5+PFU1rYaJV93O
-         P6DeqqsugbW+POwpLrWpR88umgLYpDHj1xobbYvjQ5t3luFVT4u2qm/EYS6ZITDdChv0
-         JuxAundi1+VEWxwkthrIrEVS8KRpClm6srodehhZ63KH5fmmZvuwATFhvRY0kOjiHXhG
-         jetw==
+        bh=TLrsFLcIPKC6CG/0VvCylI2X80DCwh8ZPpOaFIdXByg=;
+        b=JNE2mnG4oOTnOyKMWIwQYukTP+hadXGmSCghyPV4CAOgqsIKQzUt12VSuZDoLzaqkl
+         V1i+QN+/oxLOxNGARNuUbUGqcXk2oqKlKIpUti1d/f2MT68MyZbNp5V+Kj49K3UhKIPm
+         l507CpFqMGaWC9BTQQfm8vVOVYMulOf0ajIndXYRU97IPtqGctkJON+VTiHRHxmw2191
+         tjk8IFmTHv7poWzyRMvFzoiblUlEoUqm22izm0Dk5JvpuORK5hCJJRV7IvbTM5s5ij81
+         KEu3hmwzGWSAtMkptRvzg0IEK9qA6MUqlqA29/sJLoogKwQ0MgxFeExfvcun71ccSSHy
+         Ghqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=AqkXI6oLzHyFwvv2AStlufK4ixhmUEXUgRHQRPPodyQ=;
-        b=q47M8vINDYOfB6H3B3usXr15Yg+8i+gYBffhLgKZKWeWHbBIiJVCdWq1nozE8IpUd8
-         +32lMMuDcR/s8UN7ccvQplDPMyQs5o7jnEHfXBfjSp3E6g4Bc8tiLVGT+K4GiFyB7V6W
-         EVV8nvV+cYkGXHYHF8XTS3mFoo+RhpdWesl5qFlcGuYIX8K+V/pCzVD9JjWBtJxHpVxy
-         0ShopZZ3YSf5gzjc/Ezc6wI/hmgj526rcq6iQYE/Ci5nfKHqjCeyGm6IbxfF/k8cCvnw
-         Nd+8Voj5iaZ0cIAsmgJDn/uKzzzDGUNYAyOayxXRA1vI3Z7FBbr7c1uG+goSZ9PS8URj
-         0hKQ==
-X-Gm-Message-State: AOAM533yyzYvod0qmhnZrL4O7lGG0ANHcnoPcVsGPZGKhOD7oWmZ+5PG
-        WkwVgdbOUApcm0fUrKD7J5A=
-X-Google-Smtp-Source: ABdhPJwTNEIvzJilez2oVyKHVsioR7UWci90FU8ojPsKFrcTABzL5B5QAvwL3w+i36b5ZoUJVNcZUQ==
-X-Received: by 2002:a37:624f:: with SMTP id w76mr4695839qkb.284.1629784715484;
-        Mon, 23 Aug 2021 22:58:35 -0700 (PDT)
+        bh=TLrsFLcIPKC6CG/0VvCylI2X80DCwh8ZPpOaFIdXByg=;
+        b=caSogTkh+Nr6j3Vekvdd0MZk631voCGrotwyjM1cypHUANbvjyGGUmLGXL1y0GYWMy
+         CMQCZG35RH+3U5MDIWoBcJ72+lpIuXJOqQ7jWpae2QTFcmrSBJbR3Ndj0fnB3HK8AmPc
+         QyPg3wZRFyC8u3MzFgT2MGcJ856Q7qrVtRbEUiG3K9YK/5Qy1VYs/dJh2EDmyVs3OmGl
+         wPnF4KzcICOPdSNmVNOWEtcqoyGH+pqSAOobdIvuODOC9jouOVuf/hGK9fkcHqIRE86r
+         E69hXUdCKNa5JOWrEYSh3Z/JwXGaR5t+RD2Z3FxNmqzCPXVysDSPNAp1Ku1AKq+JdkSe
+         I/Iw==
+X-Gm-Message-State: AOAM532PRMnAw9R6gIS4oB7maIAWNCeArvgOUZK1Qrtf/AUiBcnzoHfX
+        L3sg4wgljyZeFv8B8RD3NOQ=
+X-Google-Smtp-Source: ABdhPJxSZuqA+L/JH2/SJU2Kd9hP8vUruOTZFu4EjpqC1xq6yOuKoUxgLV0T/5HTkOzt/VuJG6TQaA==
+X-Received: by 2002:a05:622a:11ca:: with SMTP id n10mr4493657qtk.362.1629784892678;
+        Mon, 23 Aug 2021 23:01:32 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id x25sm7887304qtj.77.2021.08.23.22.58.33
+        by smtp.gmail.com with ESMTPSA id q10sm10480054qke.108.2021.08.23.23.01.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 22:58:35 -0700 (PDT)
+        Mon, 23 Aug 2021 23:01:32 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
+To:     Dave Young <dyoung@redhat.com>
+Cc:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
         Jing Yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] include:buffer_head: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 22:58:28 -0700
-Message-Id: <20210824055828.58783-1-deng.changcheng@zte.com.cn>
+Subject: [PATCH linux-next] include:crash_dump: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 23:01:25 -0700
+Message-Id: <20210824060125.58876-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,8 +67,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-./include/linux/buffer_head.h:412:64-65:WARNING:return of 0/1 in
-function 'has_bh_in_lru' with return type bool
+./include/linux/crash_dump.h:98:50-51:WARNING: return of 0/1 in
+function 'is_kdump_kernel' with return type bool
 
 Return statements in functions returning bool should use true/false
 instead of 1/0.
@@ -78,22 +78,22 @@ Generated by: scripts/coccinelle/misc/boolreturn.cocci
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- include/linux/buffer_head.h | 2 +-
+ include/linux/crash_dump.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index e7e99da..6486d3c 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -409,7 +409,7 @@ static inline void invalidate_inode_buffers(struct inode *inode) {}
- static inline int remove_inode_buffers(struct inode *inode) { return 1; }
- static inline int sync_mapping_buffers(struct address_space *mapping) { return 0; }
- static inline void invalidate_bh_lrus_cpu(int cpu) {}
--static inline bool has_bh_in_lru(int cpu, void *dummy) { return 0; }
-+static inline bool has_bh_in_lru(int cpu, void *dummy) { return false; }
- #define buffer_heads_over_limit 0
+diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
+index a5192b7..f92ebfe 100644
+--- a/include/linux/crash_dump.h
++++ b/include/linux/crash_dump.h
+@@ -95,7 +95,7 @@ static inline void vmcore_unusable(void)
+ extern void unregister_oldmem_pfn_is_ram(void);
  
- #endif /* CONFIG_BLOCK */
+ #else /* !CONFIG_CRASH_DUMP */
+-static inline bool is_kdump_kernel(void) { return 0; }
++static inline bool is_kdump_kernel(void) { return false; }
+ #endif /* CONFIG_CRASH_DUMP */
+ 
+ /* Device Dump information to be filled by drivers */
 -- 
 1.8.3.1
 
