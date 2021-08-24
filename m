@@ -2,142 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8883F6C01
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D900E3F6C04
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbhHXXCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 19:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        id S233252AbhHXXDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 19:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhHXXCp (ORCPT
+        with ESMTP id S231444AbhHXXDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 19:02:45 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991AFC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 16:02:00 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id i21so6319023ejd.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 16:02:00 -0700 (PDT)
+        Tue, 24 Aug 2021 19:03:20 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D75BC061757;
+        Tue, 24 Aug 2021 16:02:36 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso2851963pjh.5;
+        Tue, 24 Aug 2021 16:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BqR285zA8y29+qvWRSLYagKArtLa82Wb9hRGFBtEPV4=;
-        b=Yl6fMWXf1gCAPL9EsDg0PzNaP008s/cd+vwKdcaHRsgteyHGM2tuvZJI64BFo8bSsk
-         77Eli3S9jcCOpw+vJDtEaUX3vjHiluZm+o3H/vrLeB0mjy24nXtPrDDH8E4E34chnlSl
-         OSkOP0rxAapOFRKn0xIq2MPaX+KkHFqcDvz2p08NUOgBXbKyRogVJG2e2mAw+W/2DK1k
-         kvGZq9p0j9UHOZJ6hf2T6mR6ZjlvJ+mshTFaozHSfDYTyh9Fo47Cxk6t2AEBB/LWSkH9
-         YQRH7CrFNlHF65lgLJXytuEgY1A35jqf8dbwdHsj0Y00ihEri75Yqz6NLYqYbzt+ilbd
-         DPTg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oRutMmfmW+MGy1iLNBbS8khgGdiC/2DVGIuLCvRzIxc=;
+        b=D12KbHKDX2FItHHdsbeVU0omV3ybH8+TUrbldLtROeNhVf75RjAD6kgMQS6JJ0N78/
+         rIDDzdPWPMwD0f7rdL321JW1R3vLftlZTC9ULJYImUqc3fQrXizDoFchG7b07MJcSfWm
+         0Pkp5qCreURDK6hoRzhzZV1RZ+fzYi0ivF+UCNqfIPlXNJmNTsK7y+3fHoe+zYooRXv7
+         sPi/20yLCoYYe1LxbJokFyQHV2SffHx4Qj2AMp/XJ3pUV3gpQy1txUoq0JUBWzmk6ZJZ
+         8TOUshr8LqRb00pL3UUsEfwTRinlHg95pZD3bEM7xIyn6n72r4Ll10Tl7umXvukF9hsh
+         chJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BqR285zA8y29+qvWRSLYagKArtLa82Wb9hRGFBtEPV4=;
-        b=uIPhItPrQipLGMLqJGAHWFEqMdrScNPl+GHGZgQw+s1H3axxm1UkxZlUbCiQZC5PT2
-         614LjpMBRIh3rokpSi5auGmNesVR5PETpWJpccoT42aoq44CMzOmttFURkQMWPLaOK7f
-         lRxoi8RuMIlFoiG+xU21vpBTx2+51iXewYTS+ZyD+hFmtg3Nrw++unifbyWp07bdq/uK
-         PGanxARS7aW9IMeOYnpBde4aoM0oFAN5Nbev2fU3/R24x5EnNxpaddTslOHLyIDFfSoH
-         OsCznwqimcU04uer3m85H7oAq2GRDKJVt9rPMJikFa5PbXBjYmoWkYCjWe0+cjdaxMPY
-         BM0g==
-X-Gm-Message-State: AOAM532tbxd/Ew2zuRrVhoBOOUPEm+cpuPbb64+Km9Jhcb49PbGZnj05
-        VWi8RG13roJ4nvhtxQsuuXW05Th2Bs3sxW0tsSBd
-X-Google-Smtp-Source: ABdhPJynazijutOBUCcImE0zFY6OYKC4Zg6RSKVEULjGJXYqNDJiooPUg8XT4Ekv4timM9PXihaHhxWd3KUesXGBzew=
-X-Received: by 2002:a17:906:b845:: with SMTP id ga5mr1107720ejb.106.1629846119190;
- Tue, 24 Aug 2021 16:01:59 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oRutMmfmW+MGy1iLNBbS8khgGdiC/2DVGIuLCvRzIxc=;
+        b=G4oQTnY4JpX3aFED1RmzWNNr4b5ixr1P6Mj86SRuIYTwuGvysdN3I/cQ5r3tVUtB+P
+         K9zvYoNcZNGh51PCY2F/gOE7PnnSBE2iXoZp+8k9JgUJEqqqszJJHuEJ65nPqJAgmhvw
+         IPH5WaZncGa0f+NtQJ5ZR456BnEF5coybJhySG/FG6Ch8udsUSftfUznxpoHRCiwuYEB
+         ntfhAVPI1RcJXl0BpHJDuk5L9vWjL+Y4rkBgPhNKcLOMMk3B1YsUU1cdoTr4gRBja7a+
+         7WCQdewZ+EyeMDvkXaDw4C7siay/EAQzW2SrkIiQK9TwTa0OwJ4XRJ7FQKkl3Z5kBBdY
+         jMKA==
+X-Gm-Message-State: AOAM530xYZeWH/Q/ptMejpO2MaldYtvjkgp3+4dY4VEQxjCXjVRRGoY8
+        rS1A/FQG+lLZOFuif+A8R5VSM9AKsLk=
+X-Google-Smtp-Source: ABdhPJw7FH241pGhrdQO3cXCJ57NSAVZlaQhi7eAd2A9b883WxGmbq1kbkyJ3jXMVz/EeX/5PYccuw==
+X-Received: by 2002:a17:90b:4b0b:: with SMTP id lx11mr7085430pjb.70.1629846155436;
+        Tue, 24 Aug 2021 16:02:35 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id y3sm24128749pgc.67.2021.08.24.16.02.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 16:02:35 -0700 (PDT)
+Subject: Re: [RFCv3 05/15] tcp: authopt: Add crypto initialization
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1629840814.git.cdleonard@gmail.com>
+ <abb720b34b9eef1cc52ef68017334e27a2af83c6.1629840814.git.cdleonard@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <72d126d8-1d44-de0c-fa1d-4362774ea3db@gmail.com>
+Date:   Tue, 24 Aug 2021 16:02:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <a4b3951d1191d4183d92a07a6097566bde60d00a.1629812058.git.christophe.leroy@csgroup.eu>
- <CAHC9VhR3E6=5HmRaWMWbp4WHsua02niwnzaRGM3tLqd4Y4LA6w@mail.gmail.com> <5a2692b6-5077-21b4-8ebf-73b1c2b83a40@csgroup.eu>
-In-Reply-To: <5a2692b6-5077-21b4-8ebf-73b1c2b83a40@csgroup.eu>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 24 Aug 2021 19:01:48 -0400
-Message-ID: <CAHC9VhSG8tPAkAAz5Z77HDMKXLAiaEOanxR+oY5c1E_Xoiso9Q@mail.gmail.com>
-Subject: Re: [PATCH v2 RESEND] powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPAT_GENERIC
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <abb720b34b9eef1cc52ef68017334e27a2af83c6.1629840814.git.cdleonard@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 1:11 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> Le 24/08/2021 =C3=A0 16:47, Paul Moore a =C3=A9crit :
-> > On Tue, Aug 24, 2021 at 9:36 AM Christophe Leroy
-> > <christophe.leroy@csgroup.eu> wrote:
-> >>
-> >> Commit e65e1fc2d24b ("[PATCH] syscall class hookup for all normal
-> >> targets") added generic support for AUDIT but that didn't include
-> >> support for bi-arch like powerpc.
-> >>
-> >> Commit 4b58841149dc ("audit: Add generic compat syscall support")
-> >> added generic support for bi-arch.
-> >>
-> >> Convert powerpc to that bi-arch generic audit support.
-> >>
-> >> Cc: Paul Moore <paul@paul-moore.com>
-> >> Cc: Eric Paris <eparis@redhat.com>
-> >> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> >> ---
-> >> Resending v2 with Audit people in Cc
-> >>
-> >> v2:
-> >> - Missing 'git add' for arch/powerpc/include/asm/unistd32.h
-> >> - Finalised commit description
-> >> ---
-> >>   arch/powerpc/Kconfig                |  5 +-
-> >>   arch/powerpc/include/asm/unistd32.h |  7 +++
-> >>   arch/powerpc/kernel/Makefile        |  3 --
-> >>   arch/powerpc/kernel/audit.c         | 84 ---------------------------=
---
-> >>   arch/powerpc/kernel/compat_audit.c  | 44 ---------------
-> >>   5 files changed, 8 insertions(+), 135 deletions(-)
-> >>   create mode 100644 arch/powerpc/include/asm/unistd32.h
-> >>   delete mode 100644 arch/powerpc/kernel/audit.c
-> >>   delete mode 100644 arch/powerpc/kernel/compat_audit.c
-> >
-> > Can you explain, in detail please, the testing you have done to verify
-> > this patch?
-> >
->
-> I built ppc64_defconfig and checked that the generated code is functionna=
-ly equivalent.
->
-> ppc32_classify_syscall() is exactly the same as audit_classify_compat_sys=
-call() except that the
-> later takes the syscall as second argument (ie in r4) whereas the former =
-takes it as first argument
-> (ie in r3).
->
-> audit_classify_arch() and powerpc audit_classify_syscall() are slightly d=
-ifferent between the
-> powerpc version and the generic version because the powerpc version check=
-s whether it is
-> AUDIT_ARCH_PPC or not (ie value 20), while the generic one checks whether=
- it has bit
-> __AUDIT_ARCH_64BIT set or not (__AUDIT_ARCH_64BIT is the sign bit of a wo=
-rd), but taking into
-> account that the abi is either AUDIT_ARCH_PPC, AUDIT_ARCH_PPC64 or AUDIT_=
-ARCH_PPC64LE, the result is
-> the same.
->
-> If you are asking I guess you saw something wrong ?
 
-I was asking because I didn't see any mention of testing, and when you
-are enabling something significant like this it is nice to see that it
-has been verified to work :)
 
-While binary dumps and comparisons are nice, it is always good to see
-verification from a test suite.  I don't have access to the necessary
-hardware to test this, but could you verify that the audit-testsuite
-passes on your test system with your patches applied?
+On 8/24/21 2:34 PM, Leonard Crestez wrote:
+> The crypto_shash API is used in order to compute packet signatures. The
+> API comes with several unfortunate limitations:
+> 
+> 1) Allocating a crypto_shash can sleep and must be done in user context.
+> 2) Packet signatures must be computed in softirq context
+> 3) Packet signatures use dynamic "traffic keys" which require exclusive
+> access to crypto_shash for crypto_setkey.
+> 
+> The solution is to allocate one crypto_shash for each possible cpu for
+> each algorithm at setsockopt time. The per-cpu tfm is then borrowed from
+> softirq context, signatures are computed and the tfm is returned.
+> 
+> The pool for each algorithm is reference counted, initialized at
+> setsockopt time and released in tcp_authopt_key_info's rcu callback
+> 
+>
 
- * https://github.com/linux-audit/audit-testsuite
+I don't know, why should we really care and try so hard to release
+the tfm per cpu ?
 
---=20
-paul moore
-www.paul-moore.com
+I would simply allocate them at boot time.
+This would avoid the expensive refcounting (potential false sharing)
+
