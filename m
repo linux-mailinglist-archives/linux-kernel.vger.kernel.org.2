@@ -2,108 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06973F61E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451183F61E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238596AbhHXPoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:44:01 -0400
-Received: from mga14.intel.com ([192.55.52.115]:63076 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238432AbhHXPnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:43:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="217061467"
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="217061467"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 08:42:48 -0700
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="526670292"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.172.211]) ([10.249.172.211])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 08:42:46 -0700
-Subject: Re: [PATCH 2/5] KVM: VMX: Use cached vmx->pt_desc.addr_range
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210824110743.531127-1-xiaoyao.li@intel.com>
- <20210824110743.531127-3-xiaoyao.li@intel.com> <YSUPKmtP6Dcl1yio@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <faf53e42-428b-5d54-0a29-2dbe3af6ddd2@intel.com>
-Date:   Tue, 24 Aug 2021 23:42:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S238585AbhHXPoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:44:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35398 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238586AbhHXPn6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 11:43:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629819794;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=SRYxxgJ63pDRsrO9ZE9g90mvC3z/w/yOFtU3rThZSs4=;
+        b=YGaZvJQsR7iR3SNF54dPWC4eb4O4Ndzs+ihry+wBh0Xkv7mv8f2ipSjLfGuXT6Z5UW93Qa
+        cnS3jesRcR7/SyZwe0ZYXwVKovfEH9b3z4pRCSChNHhXenazkSEuwz4YiDfOTG4L7iAkgB
+        66KCmawTCRLVvVu+7F6JBpvU9PNZbcY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-k3wnSLAoOpqm7RsidLxbjg-1; Tue, 24 Aug 2021 11:43:12 -0400
+X-MC-Unique: k3wnSLAoOpqm7RsidLxbjg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44206190A7A6;
+        Tue, 24 Aug 2021 15:43:11 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7F6BD282DC;
+        Tue, 24 Aug 2021 15:43:03 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id CA2A8416CE49; Tue, 24 Aug 2021 12:42:52 -0300 (-03)
+Date:   Tue, 24 Aug 2021 12:42:52 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christoph Lameter <cl@gentwo.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: rt-tests: add task isolation activation to cyclictest/oslat
+Message-ID: <20210824154252.GA105087@fuller.cnet>
 MIME-Version: 1.0
-In-Reply-To: <YSUPKmtP6Dcl1yio@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/2021 11:24 PM, Sean Christopherson wrote:
-> On Tue, Aug 24, 2021, Xiaoyao Li wrote:
->> The number of guest's valid PT ADDR MSRs is cached in
-> 
-> Can you do s/cached/precomputed in the shortlog and changelog?  Explanation below.
 
-OK.
+Check whether task isolation is configured, right before the latency
+sensitive loop, and if so, activate it.
 
->> vmx->pt_desc.addr_range. Use it instead of calculating it again.
->>
->> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
->> ---
->>   arch/x86/kvm/vmx/vmx.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index e0a9460e4dab..7ed96c460661 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -2202,8 +2202,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->>   		if (!pt_can_write_msr(vmx))
->>   			return 1;
->>   		index = msr_info->index - MSR_IA32_RTIT_ADDR0_A;
->> -		if (index >= 2 * intel_pt_validate_cap(vmx->pt_desc.caps,
->> -						       PT_CAP_num_address_ranges))
->> +		if (index >= 2 * vmx->pt_desc.addr_range)
-> 
-> Ugh, "validate" is a lie, a better name would be intel_pt_get_cap() or so.  There
-> is no validation, the helper is simply extracting the requested cap from the
-> passed in array of capabilities.
-> 
-> That matters in this case because the number of address ranges exposed to the
-> guest is not bounded by the number of address ranges present in hardware, i.e.
-> it's not "validated".  And that matters because KVM uses vmx->pt_desc.addr_range
-> to pass through the ADDRn_{A,B} MSRs when tracing enabled.  In other words,
-> userspace can expose MSRs to the guest that do not exist.
+Use chisol util-linux tool to configure task isolation externally.
 
-That's why I provided patch 5.
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
-> The bug shouldn't be a security issue, so long as Intel CPUs are bug free and
-> aren't doing silly things with MSR indexes.  The number of possible address ranges
-> is encoded in three bits, thus the theoretical max is 8 ranges.  So userspace can't
-> get access to arbitrary MSRs, just ADDR0_A -> ADDR7_B.
-> 
-> And since KVM would be modifying the "validated" value, it's more than just a
-> cache, hence the request to use "precomputed".
-> 
-> Finally, vmx_get_msr() should use the precomputed value as well.
-
-Argh, I missed it.
-
-> P.S. If you want to introduce a bit of churn, s/addr_range/nr_addr_ranges would
->       be a welcome change as well.
-
-In a separate patch?
-
->>   			return 1;
->>   		if (is_noncanonical_address(data, vcpu))
->>   			return 1;
->> -- 
->> 2.27.0
->>
+Index: rt-tests/src/cyclictest/cyclictest.c
+===================================================================
+--- rt-tests.orig/src/cyclictest/cyclictest.c
++++ rt-tests/src/cyclictest/cyclictest.c
+@@ -509,7 +509,7 @@ static void *timerthread(void *param)
+ 	struct itimerval itimer;
+ 	struct itimerspec tspec;
+ 	struct thread_stat *stat = par->stats;
+-	int stopped = 0;
++	int ret, stopped = 0;
+ 	cpu_set_t mask;
+ 	pthread_t thread;
+ 	unsigned long smi_now, smi_old = 0;
+@@ -617,11 +617,21 @@ static void *timerthread(void *param)
+ 
+ 	stat->threadstarted++;
+ 
++#ifdef PR_ISOL_GET
++        ret = prctl(PR_ISOL_GET, 0, 0, 0, 0);
++        if (ret != -1) {
++                unsigned long mask = ret;
++
++                ret = prctl(PR_ISOL_CTRL_SET, mask, 0, 0);
++                if (ret == -1)
++                        fatal("prctl PR_ISOL_CTRL_SET");
++        }
++#endif
+ 	while (!shutdown) {
+ 
+ 		uint64_t diff;
+ 		unsigned long diff_smi = 0;
+-		int sigs, ret;
++		int sigs;
+ 
+ 		/* Wait for next period */
+ 		switch (par->mode) {
+@@ -769,6 +779,12 @@ static void *timerthread(void *param)
+ 	}
+ 
+ out:
++#ifdef PR_ISOL_GET
++	ret = prctl(PR_ISOL_CTRL_SET, 0, 0, 0);
++	if (ret == -1)
++		fatal("prctl PR_ISOL_CTRL_SET");
++#endif
++
+ 	if (refresh_on_max) {
+ 		pthread_mutex_lock(&refresh_on_max_lock);
+ 		/* We could reach here with both shutdown and allstopped unset (0).
+Index: rt-tests/src/oslat/oslat.c
+===================================================================
+--- rt-tests.orig/src/oslat/oslat.c
++++ rt-tests/src/oslat/oslat.c
+@@ -351,9 +351,21 @@ static void insert_bucket(struct thread
+ 
+ static void doit(struct thread *t)
+ {
++#ifdef PR_ISOL_GET
++	int ret;
++#endif
+ 	stamp_t ts1, ts2;
+ 	workload_fn workload_fn = g.workload->w_fn;
+ 
++#ifdef PR_ISOL_GET
++	ret = prctl(PR_ISOL_GET, 0, 0, 0, 0);
++	if (ret != -1) {
++		unsigned long mask = ret;
++
++		TEST0(prctl(PR_ISOL_CTRL_SET, mask, 0, 0, 0));
++	}
++#endif
++
+ 	frc(&ts2);
+ 	do {
+ 		workload_fn(t->dst_buf, t->src_buf, g.workload_mem_size);
+@@ -361,6 +373,10 @@ static void doit(struct thread *t)
+ 		insert_bucket(t, ts1 - ts2);
+ 		ts2 = ts1;
+ 	} while (g.cmd == GO);
++
++#ifdef PR_ISOL_GET
++	TEST0(prctl(PR_ISOL_CTRL_SET, 0, 0, 0, 0));
++#endif
+ }
+ 
+ static int set_fifo_prio(int prio)
 
