@@ -2,147 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B493F5B97
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 490A13F5BA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236248AbhHXKB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:01:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235566AbhHXKBn (ORCPT
+        id S236075AbhHXKGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:06:43 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3681 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236025AbhHXKGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:01:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629799259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AsfgonFEhHbtRW9+iWzj2iDpJcwnghT7FgzSm7rVr3I=;
-        b=OWntaB+NXPrlDtpTakkoZitch+/NkZHvciZ1tMnzCLzbrTa6cv+akeAekm7k6zWvFYnEKj
-        gfZSvdHp1qVRCQa+ZhG9ROXqwIeKPj2Ga3hBk6zZv/jK+0/3I7++oIYcJPPEL7kEwNf3TQ
-        Im9JBqzCxKEKAtIqmBBPLzAeapdAvsE=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-7QwYz1oUN2Wd9qzBdEkYKA-1; Tue, 24 Aug 2021 06:00:58 -0400
-X-MC-Unique: 7QwYz1oUN2Wd9qzBdEkYKA-1
-Received: by mail-ej1-f70.google.com with SMTP id yz13-20020a170906dc4d00b005c61ad936f0so2060184ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 03:00:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AsfgonFEhHbtRW9+iWzj2iDpJcwnghT7FgzSm7rVr3I=;
-        b=eHp2SSTxg5CQjgz4BLtX8L6Ny6wlWyeKmKgWbzMQ7yt6vSK2tn80UWsfK36R73Vd4v
-         evLojT5kaxGr2+zzSlqtyndRna8OLOm5ok8NBvjFJqWlQOinZp2WOdE74mUQQA/pkosx
-         TgY5Eq39K1OT/oAzBpi4XTnOKePh9wxg5xAj6yyvKCDw1P4OlbFsqc15gXW+IaFlq3YL
-         AowWFIju6CDaUlOAapmAPtoocEO25Nwhct/9qgnYNy4IkZoK20GePZTciZVQG+AVcc3k
-         dk/JHEWjikt/EObaMPFk0yBU2KZBZvCNA/HMZiWsDD1HhQ+KPRzu8ljvTcHqAyNlvQlX
-         /uTg==
-X-Gm-Message-State: AOAM533GAWpUQHwRYWatUdOwKdPDQ5PIdaBjr31mPmU3MeoNqqcJT5hY
-        qUqYb91GA3VjrEu9HC5AXskCgzuHouMjGV3cJn3FuU60jQmS3/ggcfVUshCLdKTL4YZP1v3H/n6
-        Aln85xrKOqDu/rVJNQeXBF0Zk
-X-Received: by 2002:a17:906:a0ce:: with SMTP id bh14mr38811944ejb.434.1629799257233;
-        Tue, 24 Aug 2021 03:00:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1OFEVEhnIhV9jwM2SN934WwXV2gbD7ZeMHy2q4u+7FfCSG2W+EV79uua+jleY+7NYrWEmuQ==
-X-Received: by 2002:a17:906:a0ce:: with SMTP id bh14mr38811918ejb.434.1629799257043;
-        Tue, 24 Aug 2021 03:00:57 -0700 (PDT)
-Received: from steredhat (host-79-45-8-152.retail.telecomitalia.it. [79.45.8.152])
-        by smtp.gmail.com with ESMTPSA id f30sm3469843ejl.78.2021.08.24.03.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 03:00:56 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 12:00:53 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.co
-Subject: Re: [RFC PATCH v3 3/6] vhost/vsock: support MSG_EOR bit processing
-Message-ID: <20210824100053.jc2pgttgwq5sujvu@steredhat>
-References: <20210816085036.4173627-1-arseny.krasnov@kaspersky.com>
- <20210816085143.4174099-1-arseny.krasnov@kaspersky.com>
+        Tue, 24 Aug 2021 06:06:33 -0400
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gv4TX2c5Dz67byN;
+        Tue, 24 Aug 2021 18:04:32 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 24 Aug 2021 12:05:47 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 24 Aug 2021 11:05:45 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH 0/5] hisi_sas: Some misc patches for next
+Date:   Tue, 24 Aug 2021 18:00:55 +0800
+Message-ID: <1629799260-120116-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210816085143.4174099-1-arseny.krasnov@kaspersky.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 11:51:40AM +0300, Arseny Krasnov wrote:
->'MSG_EOR' handling has same logic as 'MSG_EOM' - if bit present
+This series contains some minor misc patches, including:
+- Fix debugfs dump index
+- Stop printing #hw queues
+- Use PCI managed functions
+- Some timer changes
 
-s/same/similar
+Thanks in advance!
 
->in packet's header, reset it to 0. Then restore it back if packet
->processing wasn't completed. Instead of bool variable for each
->flag, bit mask variable was added: it has logical OR of 'MSG_EOR'
->and 'MSG_EOM' if needed, to restore flags, this variable is ORed
->with flags field of packet.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> drivers/vhost/vsock.c | 12 ++++++++----
-> 1 file changed, 8 insertions(+), 4 deletions(-)
->
->diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->index feaf650affbe..d217955bbcd4 100644
->--- a/drivers/vhost/vsock.c
->+++ b/drivers/vhost/vsock.c
->@@ -114,7 +114,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
-> 		size_t nbytes;
-> 		size_t iov_len, payload_len;
-> 		int head;
->-		bool restore_flag = false;
->+		uint32_t flags_to_restore = 0;
+John Garry (1):
+  scsi: hisi_sas: Remove print in v3 hw probe about #hw queues
 
-checkpatch.pl suggest the following:
-CHECK: Prefer kernel type 'u32' over 'uint32_t'
+Luo Jiaxing (2):
+  scsi: hisi_sas: Rename HISI_SAS_{RESET -> RESETTING}_BIT
+  scsi: hisi_sas: Increase debugfs_dump_index after dump is completed
 
-Sorry, I suggested that, I forgot that u32 is preferable :-)
+Xiang Chen (2):
+  scsi: hisi_sas: Use managed PCI functions
+  scsi: hisi_sas: Replace some del_timer() calls with del_timer_sync()
 
->
-> 		spin_lock_bh(&vsock->send_pkt_list_lock);
-> 		if (list_empty(&vsock->send_pkt_list)) {
->@@ -187,7 +187,12 @@ vhost_transport_do_send_pkt(struct vhost_vsock 
->*vsock,
-> 			 */
+ drivers/scsi/hisi_sas/hisi_sas.h       |  2 +-
+ drivers/scsi/hisi_sas/hisi_sas_main.c  | 24 ++++++++---------
+ drivers/scsi/hisi_sas/hisi_sas_v1_hw.c |  2 +-
+ drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |  8 +++---
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 37 +++++++++++---------------
+ 5 files changed, 33 insertions(+), 40 deletions(-)
 
-Please also update the comment above with the new flag handled.
-
-> 			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM) {
-> 				pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
->-				restore_flag = true;
->+				flags_to_restore |= VIRTIO_VSOCK_SEQ_EOM;
->+
->+				if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR) {
->+					pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->+					flags_to_restore |= VIRTIO_VSOCK_SEQ_EOR;
->+				}
-> 			}
-> 		}
->
->@@ -224,8 +229,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
-> 		 * to send it with the next available buffer.
-> 		 */
-> 		if (pkt->off < pkt->len) {
->-			if (restore_flag)
->-				pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
->+			pkt->hdr.flags |= cpu_to_le32(flags_to_restore);
->
-> 			/* We are queueing the same virtio_vsock_pkt to handle
-> 			 * the remaining bytes, and we want to deliver it
->-- 
->2.25.1
->
-
-The rest LGTM.
-
-Stefano
+-- 
+2.26.2
 
