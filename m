@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619613F5860
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631613F586C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhHXGoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
+        id S232245AbhHXGp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhHXGn6 (ORCPT
+        with ESMTP id S230497AbhHXGp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:43:58 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DD3C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:43:14 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id q6so11110993qvs.12
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:43:14 -0700 (PDT)
+        Tue, 24 Aug 2021 02:45:56 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3427CC061575;
+        Mon, 23 Aug 2021 23:45:12 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id f22so12348729qkm.5;
+        Mon, 23 Aug 2021 23:45:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Ah/rJWi0NLhZbJOpC0X2PmI+XkqH9hJi0RUtj1M4gok=;
-        b=Pbi4ForVHk4S/1XoyYXHTNwtBEBRxzssym1PKIj32APdsFj6N46qyvldyo2Jwkd0+4
-         jS/8xmhXbyqJn3oSshktrv8pPDIhQ+mhlbO51RcW4VqBvaC2HaeJvS8Zcu50zcFOX6h0
-         TFCMONtP0tzMuR23P7/V8nwpNN5Y3ZMcqJ81HnKKtIBKzN54yncnCgq7px697mWtkFEm
-         SxG/z3i/0zxBn4ViAWypSlSo0bT5NIaLREV3Z5QmloQnJI3Phr05t9ObJxBT5drwzw4R
-         CdgY90E91/jYt1+WOvqTyois8XsV8oVU4OoHzp4AmzJqYUUqRtIw7f+j2Y1S4pEZW6N8
-         WwBg==
+        bh=6FT1ojsV75TCrF1rCy+OOWVmjykOF5gOnO7UHdj0LF0=;
+        b=emOnulKqiJ9wq1KTq9sslCb0EcgzhgfjeqjAW1DxnQeHBDz0AD7k/zBBrLe12qn/Wi
+         1HZd1oknXLHPTFp5kOhCSn5KTYpC3OvZ87eXyN2WBmc/EB2alb2OfIDutKxpPzyQnd5l
+         0cpTYnsNcmwKVcep5qabnxVkaSC2rXci5+23bt1E7f2GfbhVOs0+5XrvRfDABbXF9vEm
+         wplAro8L1eNopHifrcZzHv7ulysF3qZDEQJtRZD70svhOX1fGDOj7Yzkq1qwXKbf42o6
+         xIP6ojnPtIyH04JP7txHF1i9esfK6/m9ocpcJTFZQvJaLYlaUBYZ0hhNBtKuYsR7aV4K
+         6nUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Ah/rJWi0NLhZbJOpC0X2PmI+XkqH9hJi0RUtj1M4gok=;
-        b=hQ7v/WeOKeEcowVKAnwrOmL3f39mXYObdihc0tQ/nWz0fTDT/cnEKOOKWMs6G0vQxY
-         AY7pAa6Z7Tg9518YiU6NHjIrzXIkjsbXclprZXQIQN2fSIRlMhFwqxVTBPOPPBdv1Fde
-         W+fd5FcwfjQeDe79QNaF5V+bApnSkLv5Spv1JXsVitu9fMsUltZrX29mpaKADncTxdX1
-         GV6RyyyS0/ygYzxGS0eMF+47YHyoLNgD6kvzSm9vdZwUDk3EujUm9LiUH4dFO6VpAY1X
-         TJRtkw1PiKv8HG6tHczv4t2kJC8XPbRoV/PUPzDxGDQRZFqag8sJnt9amKEjXwD0rpLt
-         Fqvg==
-X-Gm-Message-State: AOAM530BExhcYa7qjnGRD/3WzxPNqoYHzscrlPQrJJ07xT1XUdoFNU7c
-        kD5IdTKPitd7Vug+nr6sPqQ=
-X-Google-Smtp-Source: ABdhPJz2lh1GBzvw5iOREg2yD444GZ5st7aHCg4mw7Pl63Cm4HFd9uEAtjKoIRpzdPUODSkl2/cSCg==
-X-Received: by 2002:a05:6214:10eb:: with SMTP id q11mr1952169qvt.7.1629787393543;
-        Mon, 23 Aug 2021 23:43:13 -0700 (PDT)
+        bh=6FT1ojsV75TCrF1rCy+OOWVmjykOF5gOnO7UHdj0LF0=;
+        b=oWZ9ac08qSQUfBgGgMNe2CSQbGdVBNb4BeAGdIrYLwCx/tw9zRTtYHRIZ6SP3a3UFZ
+         yt3clfNK5OhaoAcbt4F08AA5utajVtYAwQg+hwx4/bwRpeUy4MH/YCwdXSk3q5EqH+Wx
+         LoSlvcNe/fT2CU5mNnLm6TZYIOQhEI6KLp5HaGupH2hDJE2aEFeJGoMDZ5kiomdCr4/5
+         JK1JX5y61hHp0MOdL5bGRk1x1dzYDFx6XijRTZtLDa5KG/WTy9wMdHZRWyMmogTMGl+L
+         NIfxTnu7FuI6FpUmrYVfT8Jx348WMPuenfpxR8ZVnkruOwiaDP3tStIf3EQITDaZOirh
+         HIeA==
+X-Gm-Message-State: AOAM533AlGChxcEOtuEQBtE7xesf1GN1yfteeBqhi0TBheDU8IjQ7pk4
+        e/CL6SvpRwnRKhWTuAfhyCg=
+X-Google-Smtp-Source: ABdhPJy69fmqFsqEzXG+w7iWs/18qnOuF0+VJP1NNwDUZuX+X+LUOaosubWNr/vNJSwzuGbp/aTKEw==
+X-Received: by 2002:a05:620a:1f1:: with SMTP id x17mr25470245qkn.227.1629787510696;
+        Mon, 23 Aug 2021 23:45:10 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id n5sm4153428qtp.35.2021.08.23.23.43.09
+        by smtp.gmail.com with ESMTPSA id y124sm10085912qke.70.2021.08.23.23.45.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:43:13 -0700 (PDT)
+        Mon, 23 Aug 2021 23:45:10 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Ingo Molnar <mingo@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Jing Yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] sched:autogroup: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 23:43:05 -0700
-Message-Id: <20210824064305.60081-1-deng.changcheng@zte.com.cn>
+Subject: [PATCH linux-next] scripts/dtc/util: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 23:45:03 -0700
+Message-Id: <20210824064503.60168-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -73,9 +67,6 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-./kernel/sched/autogroup.h:46:8-9:WARNING: return of 0/1 in function
-'task_group_is_autogroup' with return type bool
-
 Return statements in functions returning bool should use true/false
 instead of 1/0.
 
@@ -84,22 +75,42 @@ Generated by: scripts/coccinelle/misc/boolreturn.cocci
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- kernel/sched/autogroup.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/dtc/util.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/sched/autogroup.h b/kernel/sched/autogroup.h
-index b964199..238ac9e 100644
---- a/kernel/sched/autogroup.h
-+++ b/kernel/sched/autogroup.h
-@@ -43,7 +43,7 @@ static inline void autogroup_init(struct task_struct *init_task) {  }
- static inline void autogroup_free(struct task_group *tg) { }
- static inline bool task_group_is_autogroup(struct task_group *tg)
- {
--	return 0;
-+	return false;
+diff --git a/scripts/dtc/util.c b/scripts/dtc/util.c
+index 40274fb..1faded1 100644
+--- a/scripts/dtc/util.c
++++ b/scripts/dtc/util.c
+@@ -112,11 +112,11 @@ bool util_is_printable_string(const void *data, int len)
+ 
+ 	/* zero length is not */
+ 	if (len == 0)
+-		return 0;
++		return false;
+ 
+ 	/* must terminate with zero */
+ 	if (s[len - 1] != '\0')
+-		return 0;
++		return false;
+ 
+ 	se = s + len;
+ 
+@@ -127,12 +127,12 @@ bool util_is_printable_string(const void *data, int len)
+ 
+ 		/* not zero, or not done yet */
+ 		if (*s != '\0' || s == ss)
+-			return 0;
++			return false;
+ 
+ 		s++;
+ 	}
+ 
+-	return 1;
++	return true;
  }
  
- static inline struct task_group *
+ /*
 -- 
 1.8.3.1
 
