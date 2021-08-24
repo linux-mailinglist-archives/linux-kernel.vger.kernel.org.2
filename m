@@ -2,271 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1C73F5F4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE18F3F5F4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237559AbhHXNhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:37:04 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:47835 "EHLO pegase2.c-s.fr"
+        id S237619AbhHXNhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:37:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236661AbhHXNg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:36:59 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Gv99p135Qz9sRs;
-        Tue, 24 Aug 2021 15:36:14 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id aA_Ckaa4wtwK; Tue, 24 Aug 2021 15:36:14 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gv99p04TWz9sRj;
-        Tue, 24 Aug 2021 15:36:14 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BF8D18B826;
-        Tue, 24 Aug 2021 15:36:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id mS4iE9qcOepp; Tue, 24 Aug 2021 15:36:13 +0200 (CEST)
-Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5D7628B824;
-        Tue, 24 Aug 2021 15:36:13 +0200 (CEST)
-Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 2B9B16BC82; Tue, 24 Aug 2021 13:36:13 +0000 (UTC)
-Message-Id: <a4b3951d1191d4183d92a07a6097566bde60d00a.1629812058.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 RESEND] powerpc/audit: Convert powerpc to
- AUDIT_ARCH_COMPAT_GENERIC
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com
-Date:   Tue, 24 Aug 2021 13:36:13 +0000 (UTC)
+        id S237571AbhHXNhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:37:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9911B6113B;
+        Tue, 24 Aug 2021 13:36:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629812180;
+        bh=WjUMkQNz8BXdmmzGgZfIvQXaLnwVHiI+UpdqeqPwc4o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rrT0k65qzo5JlmgqGUXvSzZpfqN/HVq6vntPw10xDmDpa1CxSXEFviP/xnYfLHV+f
+         mWeJzoVjcsxwlXalrN73X/M75Nh8rqwVGGNLqG+nbVmFK/YKvCrVZZ+F/uu4dog+Mc
+         75QIB2Zpd4X013k9FzyhBzyM7AY8HZJTrS/7H76hYQC1cpx3j8cIHV1diaw3yqbhbq
+         iiVQ+GqYcYTfPkGXqwL0+EVWyuM+g/LbWbE4lXEjozryNLCtWqjfzySTum1nPi8QEi
+         bvqZFzkke44PLYiAYbeqdD0aRW5DRW4MU74pizzsg3O7c+rLP0dJeZOWtGM3TzqTDz
+         FNwwb9kdAlOAg==
+Date:   Tue, 24 Aug 2021 16:36:13 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 4/4] x86/mm: write protect (most) page tables
+Message-ID: <YST1zQ0FugifJnfi@kernel.org>
+References: <20210823132513.15836-1-rppt@kernel.org>
+ <20210823132513.15836-5-rppt@kernel.org>
+ <FB6C09CD-9CEA-4FE8-B179-98DB63EBDD68@gmail.com>
+ <05242256-4B5F-4AD6-B7DA-46A583335E5C@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05242256-4B5F-4AD6-B7DA-46A583335E5C@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e65e1fc2d24b ("[PATCH] syscall class hookup for all normal
-targets") added generic support for AUDIT but that didn't include
-support for bi-arch like powerpc.
+On Mon, Aug 23, 2021 at 10:34:42PM -0700, Nadav Amit wrote:
+> On Aug 23, 2021, at 10:32 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
+> > 
+> > On Aug 23, 2021, at 6:25 AM, Mike Rapoport <rppt@kernel.org> wrote:
+> > 
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Allocate page table using __GFP_PTE_MAPPED so that they will have 4K PTEs
+> > in the direct map. This allows to switch _PAGE_RW bit each time a page
+> > table page needs to be made writable or read-only.
+> > 
+> > The writability of the page tables is toggled only in the lowest level page
+> > table modifiction functions and immediately switched off.
+> > 
+> > The page tables created early in the boot (including the direct map page
+> > table) are not write protected.
+> > 
+> > 
+> 
+> [ snip ]
+> 
+> > +static void pgtable_write_set(void *pg_table, bool set)
+> > +{
+> > +	int level = 0;
+> > +	pte_t *pte;
+> > +
+> > +	/*
+> > +	 * Skip the page tables allocated from pgt_buf break area and from
+> > +	 * memblock
+> > +	 */
+> > +	if (!after_bootmem)
+> > +		return;
+> > +	if (!PageTable(virt_to_page(pg_table)))
+> > +		return;
+> > +
+> > +	pte = lookup_address((unsigned long)pg_table, &level);
+> > +	if (!pte || level != PG_LEVEL_4K)
+> > +		return;
+> > +
+> > +	if (set) {
+> > +		if (pte_write(*pte))
+> > +			return;
+> > +
+> > +		WRITE_ONCE(*pte, pte_mkwrite(*pte));
+> 
+> I think that the pte_write() test (and the following one) might hide
+> latent bugs. Either you know whether the PTE is write-protected or you
+> need to protect against nested/concurrent calls to pgtable_write_set()
+> by disabling preemption/IRQs.
+> 
+> Otherwise, you risk in having someone else write-protecting the PTE
+> after it is write-unprotected and before it is written - causing a crash,
+> or write-unprotecting it after it is protected - which circumvents the
+> protection.
+> 
+> Therefore, I would think that instead you should have:
+> 
+> 	VM_BUG_ON(pte_write(*pte));  // (or WARN_ON_ONCE())
+> 
+> In addition, if there are assumptions on the preemptability of the code,
+> it would be nice to have some assertions. I think that the code assumes
+> that all calls to pgtable_write_set() are done while holding the
+> page-table lock. If that is the case, perhaps adding some lockdep
+> assertion would also help to confirm the correctness.
+> 
+> [ I put aside the lack of TLB flushes, which make the whole matter of
+> delivered protection questionable. I presume that once PKS is used, 
+> this is not an issue. ]
 
-Commit 4b58841149dc ("audit: Add generic compat syscall support")
-added generic support for bi-arch.
+As I said in another reply, the actual page table protection is merely to
+exercise the allocator. I'll consider to actually use PKS for the next
+versions (unless Rick beats me to it).
 
-Convert powerpc to that bi-arch generic audit support.
-
-Cc: Paul Moore <paul@paul-moore.com>
-Cc: Eric Paris <eparis@redhat.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-Resending v2 with Audit people in Cc
-
-v2:
-- Missing 'git add' for arch/powerpc/include/asm/unistd32.h
-- Finalised commit description
----
- arch/powerpc/Kconfig                |  5 +-
- arch/powerpc/include/asm/unistd32.h |  7 +++
- arch/powerpc/kernel/Makefile        |  3 --
- arch/powerpc/kernel/audit.c         | 84 -----------------------------
- arch/powerpc/kernel/compat_audit.c  | 44 ---------------
- 5 files changed, 8 insertions(+), 135 deletions(-)
- create mode 100644 arch/powerpc/include/asm/unistd32.h
- delete mode 100644 arch/powerpc/kernel/audit.c
- delete mode 100644 arch/powerpc/kernel/compat_audit.c
-
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 663766fbf505..5472358609d2 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -163,6 +163,7 @@ config PPC
- 	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
- 	select ARCH_WANT_LD_ORPHAN_WARN
- 	select ARCH_WEAK_RELEASE_ACQUIRE
-+	select AUDIT_ARCH_COMPAT_GENERIC
- 	select BINFMT_ELF
- 	select BUILDTIME_TABLE_SORT
- 	select CLONE_BACKWARDS
-@@ -316,10 +317,6 @@ config GENERIC_TBSYNC
- 	bool
- 	default y if PPC32 && SMP
- 
--config AUDIT_ARCH
--	bool
--	default y
--
- config GENERIC_BUG
- 	bool
- 	default y
-diff --git a/arch/powerpc/include/asm/unistd32.h b/arch/powerpc/include/asm/unistd32.h
-new file mode 100644
-index 000000000000..07689897d206
---- /dev/null
-+++ b/arch/powerpc/include/asm/unistd32.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _ASM_POWERPC_UNISTD32_H_
-+#define _ASM_POWERPC_UNISTD32_H_
-+
-+#include <asm/unistd_32.h>
-+
-+#endif /* _ASM_POWERPC_UNISTD32_H_ */
-diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
-index 7be36c1e1db6..825121eba3c2 100644
---- a/arch/powerpc/kernel/Makefile
-+++ b/arch/powerpc/kernel/Makefile
-@@ -125,9 +125,6 @@ obj-$(CONFIG_PCI)		+= pci_$(BITS).o $(pci64-y) \
- 				   pci-common.o pci_of_scan.o
- obj-$(CONFIG_PCI_MSI)		+= msi.o
- 
--obj-$(CONFIG_AUDIT)		+= audit.o
--obj64-$(CONFIG_AUDIT)		+= compat_audit.o
--
- obj-$(CONFIG_PPC_IO_WORKAROUNDS)	+= io-workarounds.o
- 
- obj-y				+= trace/
-diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
-deleted file mode 100644
-index a2dddd7f3d09..000000000000
---- a/arch/powerpc/kernel/audit.c
-+++ /dev/null
-@@ -1,84 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/init.h>
--#include <linux/types.h>
--#include <linux/audit.h>
--#include <asm/unistd.h>
--
--static unsigned dir_class[] = {
--#include <asm-generic/audit_dir_write.h>
--~0U
--};
--
--static unsigned read_class[] = {
--#include <asm-generic/audit_read.h>
--~0U
--};
--
--static unsigned write_class[] = {
--#include <asm-generic/audit_write.h>
--~0U
--};
--
--static unsigned chattr_class[] = {
--#include <asm-generic/audit_change_attr.h>
--~0U
--};
--
--static unsigned signal_class[] = {
--#include <asm-generic/audit_signal.h>
--~0U
--};
--
--int audit_classify_arch(int arch)
--{
--#ifdef CONFIG_PPC64
--	if (arch == AUDIT_ARCH_PPC)
--		return 1;
--#endif
--	return 0;
--}
--
--int audit_classify_syscall(int abi, unsigned syscall)
--{
--#ifdef CONFIG_PPC64
--	extern int ppc32_classify_syscall(unsigned);
--	if (abi == AUDIT_ARCH_PPC)
--		return ppc32_classify_syscall(syscall);
--#endif
--	switch(syscall) {
--	case __NR_open:
--		return 2;
--	case __NR_openat:
--		return 3;
--	case __NR_socketcall:
--		return 4;
--	case __NR_execve:
--		return 5;
--	default:
--		return 0;
--	}
--}
--
--static int __init audit_classes_init(void)
--{
--#ifdef CONFIG_PPC64
--	extern __u32 ppc32_dir_class[];
--	extern __u32 ppc32_write_class[];
--	extern __u32 ppc32_read_class[];
--	extern __u32 ppc32_chattr_class[];
--	extern __u32 ppc32_signal_class[];
--	audit_register_class(AUDIT_CLASS_WRITE_32, ppc32_write_class);
--	audit_register_class(AUDIT_CLASS_READ_32, ppc32_read_class);
--	audit_register_class(AUDIT_CLASS_DIR_WRITE_32, ppc32_dir_class);
--	audit_register_class(AUDIT_CLASS_CHATTR_32, ppc32_chattr_class);
--	audit_register_class(AUDIT_CLASS_SIGNAL_32, ppc32_signal_class);
--#endif
--	audit_register_class(AUDIT_CLASS_WRITE, write_class);
--	audit_register_class(AUDIT_CLASS_READ, read_class);
--	audit_register_class(AUDIT_CLASS_DIR_WRITE, dir_class);
--	audit_register_class(AUDIT_CLASS_CHATTR, chattr_class);
--	audit_register_class(AUDIT_CLASS_SIGNAL, signal_class);
--	return 0;
--}
--
--__initcall(audit_classes_init);
-diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
-deleted file mode 100644
-index 55c6ccda0a85..000000000000
---- a/arch/powerpc/kernel/compat_audit.c
-+++ /dev/null
-@@ -1,44 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#undef __powerpc64__
--#include <asm/unistd.h>
--
--unsigned ppc32_dir_class[] = {
--#include <asm-generic/audit_dir_write.h>
--~0U
--};
--
--unsigned ppc32_chattr_class[] = {
--#include <asm-generic/audit_change_attr.h>
--~0U
--};
--
--unsigned ppc32_write_class[] = {
--#include <asm-generic/audit_write.h>
--~0U
--};
--
--unsigned ppc32_read_class[] = {
--#include <asm-generic/audit_read.h>
--~0U
--};
--
--unsigned ppc32_signal_class[] = {
--#include <asm-generic/audit_signal.h>
--~0U
--};
--
--int ppc32_classify_syscall(unsigned syscall)
--{
--	switch(syscall) {
--	case __NR_open:
--		return 2;
--	case __NR_openat:
--		return 3;
--	case __NR_socketcall:
--		return 4;
--	case __NR_execve:
--		return 5;
--	default:
--		return 1;
--	}
--}
 -- 
-2.25.0
-
+Sincerely yours,
+Mike.
