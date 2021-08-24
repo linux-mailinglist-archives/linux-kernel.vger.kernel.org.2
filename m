@@ -2,197 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679633F5FCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898EA3F5FD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237803AbhHXODV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
+        id S237618AbhHXOGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237734AbhHXODC (ORCPT
+        with ESMTP id S237473AbhHXOGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:03:02 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BCFC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:02:18 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id g9so26476620ioq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SXhAUewW+r0PMnd1AF5dqqxnB74hWPeETejTBaHF3Qk=;
-        b=i/dHXfhTEWVw1RePpMLRJ6oAcfCgekoNLv+MnnDFUKUujfj0wt/y/3KOtgo5KgTjzf
-         w3CCYIvlZINQzZ0sKMcTFbKdLewS99ClUdG7MGWCktRwgQd1/3I/uceTs2zdpdK8K8HQ
-         2ZbJaRh+B0KORJYuWIQIy7Ch5N/MnSPB1zx4EQgm6g/usFhK18ppzzkJeS5djf6+FTqG
-         pp6562noEzwh+mHtaWgRdhIAYfsOxqA2TVjq2yOLlTYgoO3PHKcIPnijy+uYMBBeQBTs
-         gkoyh5m8+qcAdcsETEY5A2iUym+bFtCUVfenmUfHVw0RvVhKYCL0krYB6BikPRJt5ED8
-         Uwvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SXhAUewW+r0PMnd1AF5dqqxnB74hWPeETejTBaHF3Qk=;
-        b=lUzBAtl2zdRjgBzViIud0KSHfy3g5eiKCEBKnCwcj1Kd9rzL73UJT8lA8wfDhxy/Iv
-         x9mPZKBY7NQapZXmF4ogz2O10QyY8ttSX63EEwNNr0kpJsjTSfs4R0Ik7oWl59+TMlOB
-         a01LDssGGAolGjtT85lXNrQSGN0d1tN+zVUdfaZ15XCJqhBWRMqmPtonpD4vLvdQAaXh
-         RmZsAINVhzMkj4hbquPT2r28aCQUxoW/0fgaHQoqBPltRvNcl08yjrYXh3u79PabwsUB
-         HXD6tP4edX0mUy7CaxD7o+EjuzYHbzmk6tnmvgO7a85zMcYCi2viKE4fWUxpjvVzeQCY
-         ruhA==
-X-Gm-Message-State: AOAM530Yf+tFJ0CEP+t30c6XwPvGCW+qgYwP2ja5G2oeq6wx/kxQvaSn
-        q8pv1CUuaeDUEkoHjgPLgy+BIw==
-X-Google-Smtp-Source: ABdhPJzrBFabN2yPRk3crVjsEKj+8uZoejubOqtSz7dYYj6xKvzC7HagRjBOUFUEJl60KaC/wQ5k3g==
-X-Received: by 2002:a05:6602:2597:: with SMTP id p23mr31607681ioo.195.1629813737898;
-        Tue, 24 Aug 2021 07:02:17 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id z16sm10166033ile.72.2021.08.24.07.02.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 07:02:17 -0700 (PDT)
-Subject: Re: [PATCH v3 0/4] open/accept directly into io_uring fixed file
- table
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>
-Cc:     io-uring@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
-References: <cover.1629559905.git.asml.silence@gmail.com>
- <7fa72eec-9222-60eb-9ec6-e4b6efbfc5fb@kernel.dk> <YSPzab+g8ee84bX7@localhost>
- <59494bda-f804-4185-dd7d-4827b14bae61@kernel.dk>
- <2527d712-bc8b-7393-f4c0-3035dd525b1e@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c4653859-4003-70db-8b81-291dd17a6718@kernel.dk>
-Date:   Tue, 24 Aug 2021 08:02:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 24 Aug 2021 10:06:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3834C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:05:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1s0LcFjh0S0+++UK3bj92uUZLqvdtOic0+opEa2Q3wE=; b=AT+63kG+Sp+Wq8TOsO0WSvbUc/
+        O1g8hH2j/4KSqz+NP10+HyINRu2KvH3i+hvf4d8KC43pp0BamLXF6JCStX+YmZhFDIDJpC0WL+o/K
+        UqUPRJIXsB8T45bTHFS+jRg98sIADpmZrcz7KFsqeCiJOnx3uyL/VCSIXw0harubJFQdowZLfyOKf
+        oJxN0MwkSJy+RIiLHKttx7lQWWXp7sY7H9JoAPI/NiTCBhu9wn742WfC5j5YW/kVaIAAViP1+G/zd
+        IxVdip2dpy8t1V+ShOSHuL4XhWSL5gHW7m+cQuAHDmAM9sKwPTijfOc44gZALIkQ8b7uGLOX74ZUt
+        tq+4pWnw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIX0N-00B8YG-Qm; Tue, 24 Aug 2021 14:03:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 08448300252;
+        Tue, 24 Aug 2021 16:02:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DA0772C5B4A98; Tue, 24 Aug 2021 16:02:18 +0200 (CEST)
+Date:   Tue, 24 Aug 2021 16:02:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Gabriel Marin <gmx@google.com>
+Subject: Re: [RFC] perf/core: Add an ioctl to get a number of lost samples
+Message-ID: <YST76vy8UQRCaKtO@hirez.programming.kicks-ass.net>
+References: <20210811062135.1332927-1-namhyung@kernel.org>
+ <YRPnCLyn9oE540gM@krava>
+ <CAM9d7ci2ZkJ-FK0R1VoYjZZ9GzB4qDrPY=JD6_eOyUFQ1DLh7Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2527d712-bc8b-7393-f4c0-3035dd525b1e@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7ci2ZkJ-FK0R1VoYjZZ9GzB4qDrPY=JD6_eOyUFQ1DLh7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 3:48 AM, Pavel Begunkov wrote:
-> On 8/23/21 8:40 PM, Jens Axboe wrote:
->> On 8/23/21 1:13 PM, Josh Triplett wrote:
->>> On Sat, Aug 21, 2021 at 08:18:12PM -0600, Jens Axboe wrote:
->>>> On 8/21/21 9:52 AM, Pavel Begunkov wrote:
->>>>> Add an optional feature to open/accept directly into io_uring's fixed
->>>>> file table bypassing the normal file table. Same behaviour if as the
->>>>> snippet below, but in one operation:
->>>>>
->>>>> sqe = prep_[open,accept](...);
->>>>> cqe = submit_and_wait(sqe);
->>>>> io_uring_register_files_update(uring_idx, (fd = cqe->res));
->>>>> close((fd = cqe->res));
->>>>>
->>>>> The idea in pretty old, and was brough up and implemented a year ago
->>>>> by Josh Triplett, though haven't sought the light for some reasons.
->>>>>
->>>>> The behaviour is controlled by setting sqe->file_index, where 0 implies
->>>>> the old behaviour. If non-zero value is specified, then it will behave
->>>>> as described and place the file into a fixed file slot
->>>>> sqe->file_index - 1. A file table should be already created, the slot
->>>>> should be valid and empty, otherwise the operation will fail.
->>>>>
->>>>> we can't use IOSQE_FIXED_FILE to switch between modes, because accept
->>>>> takes a file, and it already uses the flag with a different meaning.
->>>>>
->>>>> since RFC:
->>>>>  - added attribution
->>>>>  - updated descriptions
->>>>>  - rebased
->>>>>
->>>>> since v1:
->>>>>  - EBADF if slot is already used (Josh Triplett)
->>>>>  - alias index with splice_fd_in (Josh Triplett)
->>>>>  - fix a bound check bug
->>>>
->>>> With the prep series, this looks good to me now. Josh, what do you
->>>> think?
->>>
->>> I would still like to see this using a union with the `nofile` field in
->>> io_open and io_accept, rather than overloading the 16-bit buf_index
->>> field. That would avoid truncating to 16 bits, and make less work for
->>> expansion to more than 16 bits of fixed file indexes.
->>>
->>> (I'd also like that to actually use a union, rather than overloading the
->>> meaning of buf_index/nofile.)
->>
->> Agree, and in fact there's room in the open and accept command parts, so
->> we can just make it a separate entry there instead of using ->buf_index.
->> Then just pass in the index to io_install_fixed_file() instead of having
->> it pull it from req->buf_index.
+On Wed, Aug 11, 2021 at 01:54:09PM -0700, Namhyung Kim wrote:
+> Hi Jiri,
 > 
-> That's internal details, can be expanded at wish in the future, if we'd
-> ever need larger tables. ->buf_index already holds indexes to different
-> resources just fine.
-
-Sure it's internal and can always be changed, doesn't change the fact
-that it's a bit iffy that it's used differently in different spots. As
-it costs us nothing to simply add a 'fixed_file' u32 for io_accept and
-io_open, I really think that should be done instead.
-
-> Aliasing with nofile would rather be ugly, so the only option, as you
-> mentioned, is to grab some space from open/accept structs, but don't see
-> why we'd want it when there is a more convenient alternative.
-
-Because it's a lot more readable and less error prone imho. Agree on the
-union, we don't have to resort to that.
-
->>> I personally still feel that using non-zero to signify index-plus-one is
->>> both error-prone and not as future-compatible. I think we could do
->>> better with no additional overhead. But I think the final call on that
->>> interface is up to you, Jens. Do you think it'd be worth spending a flag
->>> bit or using a different opcode, to get a cleaner interface? If you
->>> don't, then I'd be fine with seeing this go in with just the io_open and
->>> io_accept change.
->>
->> I'd be inclined to go the extra opcode route instead, as the flag only
->> really would make sense to requests that instantiate file descriptors.
->> For this particular case, we'd need 3 new opcodes for
->> openat/openat2/accept, which is probably a worthwhile expenditure.
->>
->> Pavel, what do you think? Switch to using a different opcode for the new
->> requests, and just grab some space in io_open and io_accept for the fd
->> and pass it in to install.
+> On Wed, Aug 11, 2021 at 8:04 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Tue, Aug 10, 2021 at 11:21:35PM -0700, Namhyung Kim wrote:
+> > > Sometimes we want to know an accurate number of samples even if it's
+> > > lost.  Currenlty PERF_RECORD_LOST is generated for a ring-buffer which
+> > > might be shared with other events.  So it's hard to know per-event
+> > > lost count.
+> > >
+> > > Add event->lost_samples field and PERF_EVENT_IOC_LOST_SAMPLES to
+> > > retrieve it from userspace.
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  include/linux/perf_event.h      | 2 ++
+> > >  include/uapi/linux/perf_event.h | 1 +
+> > >  kernel/events/core.c            | 9 +++++++++
+> > >  kernel/events/ring_buffer.c     | 5 ++++-
+> > >  4 files changed, 16 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> > > index f5a6a2f069ed..44d72079c77a 100644
+> > > --- a/include/linux/perf_event.h
+> > > +++ b/include/linux/perf_event.h
+> > > @@ -756,6 +756,8 @@ struct perf_event {
+> > >       struct pid_namespace            *ns;
+> > >       u64                             id;
+> > >
+> > > +     atomic_t                        lost_samples;
+> > > +
+> > >       u64                             (*clock)(void);
+> > >       perf_overflow_handler_t         overflow_handler;
+> > >       void                            *overflow_handler_context;
+> > > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> > > index bf8143505c49..24397799127d 100644
+> > > --- a/include/uapi/linux/perf_event.h
+> > > +++ b/include/uapi/linux/perf_event.h
+> > > @@ -505,6 +505,7 @@ struct perf_event_query_bpf {
+> > >  #define PERF_EVENT_IOC_PAUSE_OUTPUT          _IOW('$', 9, __u32)
+> > >  #define PERF_EVENT_IOC_QUERY_BPF             _IOWR('$', 10, struct perf_event_query_bpf *)
+> > >  #define PERF_EVENT_IOC_MODIFY_ATTRIBUTES     _IOW('$', 11, struct perf_event_attr *)
+> > > +#define PERF_EVENT_IOC_LOST_SAMPLES          _IOR('$', 12, __u64 *)
+> >
+> > would it be better to use the read syscall for that?
+> >   https://lore.kernel.org/lkml/20210622153918.688500-5-jolsa@kernel.org/
+> >
+> > that patchset ended up on me not having a way to reproduce the
+> > issue you guys wanted the fix for ;-) the lost count is there
+> > as well
 > 
-> I don't get it, why it's even called hackish? How that's anyhow better?
-> To me the feature looks like a natural extension to the operations, just
-> like a read can be tuned with flags, so and creating new opcodes seems
-> a bit ugly, unnecessary taking space from opcodes and adding duplication
-> (even if both versions call the same handler).
-
-I agree that it's a natural extension, the problem is that we have to do
-unnatural things (somewhat) to make it work. I'm fine with using the
-union for the splice_fd_in to pass it in, I don't think it's a big deal.
-
-I do wish that IORING_OP_CLOSE would work with them, though. I think we
-should to that as a followup patch. It's a bit odd to be able to open a
-file with IORING_OP_OPENAT and not being able to close it with
-IORING_OP_CLOSE. For the latter, we should just give it fixed file
-support, which would be pretty trivial.
-
-> First, why it's not future-compatible? It's a serious argument, but I
-> don't see where it came from. Do I miss something?
+> Oh, right... I forgot about that, sorry.
+> But I think the lost count is not collected accurately.
 > 
-> It's u32 now, and so will easily cover all indexes. SQE fields should
-> always be zeroed, that's a rule, liburing follows it, and there would
-> have been already lots of problems for users not honoring it. And there
-> will be a helper hiding all the index conversions for convenience.
-> 
-> void io_uring_prep_open_direct(sqe, index, ...)
-> {
-> 	io_uring_prep_open(sqe, ...);
-> 	sqe->file_index = index + 1;
-> }
+> Peter, what do you think about the interface (read vs ioctl)?
 
-Let's keep it the way that it is, but I do want to see the buf_index
-thing go away and just req->open.fixed_file or whatever being used for
-open and accept. We should fold that in.
-
--- 
-Jens Axboe
-
+I think I'm the one that suggested PERF_FORMAT_LOST at the time :-)
