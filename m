@@ -2,69 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BB83F6824
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E2A3F6860
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241058AbhHXRkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:40:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241605AbhHXRgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:36:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C74661BE2;
-        Tue, 24 Aug 2021 17:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629824817;
-        bh=33KM5CjdMIk139wwCKYxIjjNm9bDTq1SwXqP1doeXqk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pQs4a9AgZqqg7HxbwT5wKnffANHbiATL5bYivEJ88mw2Mb55Y7dvw9lCBJNXB1j+4
-         /tAp7Cj4UbYaShVM1wlNsKYno/SoXmf1JXLVubQZ6vBur5OwGUdZHHHQ6pycGKlwnb
-         OC5vNVfqXgM8A+HFkXiPm/ml4mBllzX9t44ocSB4q7fdVXQ7GAOVnp2EXJbTDIgrri
-         Ri6OBWt07yK1jGkv1u01xA5HWEca2I6rowymu/GmNwRQ2rMzwhePNvYiOdzrQtZSt0
-         PVFpDQyggWtgIqBqHFfQ61FE5KbDj/c6hoE82ZgLmiU4+r1OwD0IBOdChWkh4EP/f/
-         SVIXh/NGOsx3A==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 43/43] Linux 4.9.281-rc1
-Date:   Tue, 24 Aug 2021 13:06:14 -0400
-Message-Id: <20210824170614.710813-44-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210824170614.710813-1-sashal@kernel.org>
-References: <20210824170614.710813-1-sashal@kernel.org>
+        id S241288AbhHXRsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240962AbhHXRsg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:48:36 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611F2C06122E
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:06:28 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id h1so8824472pjs.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MQ6pXiB5RbqFmCzc7qkdRUQBBhu9mgPy2yl/Odr1B+Q=;
+        b=arNOw650gSkcbEsvJpHrW/uy+OQxY+AcLl5Euoqp5R6HG9rZbCmLJW2cKyaDzM/7uB
+         Lhb0UrfOXBsXZAivsHGs71QGfyC/E9aTNBTFOGKbkZvQKnel45nvxEemnXHXdXsHQdUP
+         8mSAMY6/PSbk9MU31fO9543Fdgd/ebGS1cXSQjZxMJnx+jODpRA6J73VXcmftH2uV3HT
+         ejiiuYab3GUhMcrrSqvoSpRV8/uzEUaK8kqokVNOZbUWkTEKYMLYwfssey1Gl/aUC5WD
+         zsqvlEbSB1QCgCX3E8LgaO2rdPydvsviTTJtjPBVjCnMAlVlF30GMVAKexwoGJFFJWA5
+         zoNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MQ6pXiB5RbqFmCzc7qkdRUQBBhu9mgPy2yl/Odr1B+Q=;
+        b=UN+xKXHlNrXcrVjSmDuB/56wqhuQawMk/ZqyMtVV2f+HZ8ld3otCUXCp21SxvcOnN3
+         Ye/uZwHEa5L2QDzTNL7kMrUYFqb3LJ4ApF+J8RpQsjz/Vzkv48yA8bnexy7zYo19BHCC
+         3ZO+Z3qMbGIMUorZjosE11+mOGvGEI2aZXhCKSYpV6H2Ep86W4aNmrq8a3GrujCqw8jg
+         olULV+GAWZySMq/fSFqB2/qslfyWJBRlGwbyPnO+xO0MWAGX3wmYuu7jL+kUUoZikykh
+         Cx9TT/SRcPzV7W1OPWrX3cM5cezdPdmefvFSvSBcUjfyahxD3+2rRdFahbZrhjFquKx5
+         eY+g==
+X-Gm-Message-State: AOAM533tMJWZuMk9ul5OANQs7cyrF/RiErY3Q57J4f0aTZ57eo358TwD
+        J7EAevHZHYidJjmwWuhKqBdZzw==
+X-Google-Smtp-Source: ABdhPJyFxc6Hoy1GTMwHqLR/xFLxZVSoMo+pFECFa9QC13JfcRcm8pcfAtzBvNqZTEFCklHijo83Xw==
+X-Received: by 2002:a17:90a:8a84:: with SMTP id x4mr4605274pjn.72.1629824787648;
+        Tue, 24 Aug 2021 10:06:27 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t4sm9553131pfe.166.2021.08.24.10.06.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 10:06:27 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 17:06:21 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 08/12] x86/tdx: Add HLT support for TDX guest
+Message-ID: <YSUnDQUrGYc8aY9j@google.com>
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-9-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YSUaAQPiBUqubBHM@zn.tnic>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.281-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.9.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.9.281-rc1
-X-KernelTest-Deadline: 2021-08-26T17:06+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSUaAQPiBUqubBHM@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Tue, Aug 24, 2021, Borislav Petkov wrote:
+> On Wed, Aug 04, 2021 at 11:13:25AM -0700, Kuppuswamy Sathyanarayanan wrote:
+> > +static __cpuidle void tdg_safe_halt(void)
+> > +{
+> > +	u64 ret;
+> > +
+> > +	/*
+> > +	 * Enable interrupts next to the TDVMCALL to avoid
+> > +	 * performance degradation.
+> 
+> That comment needs some more love to say exactly what the problem is.
 
-diff --git a/Makefile b/Makefile
-index 7cd5634469b1..332713b5a28f 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- VERSION = 4
- PATCHLEVEL = 9
--SUBLEVEL = 280
--EXTRAVERSION =
-+SUBLEVEL = 281
-+EXTRAVERSION = -rc1
- NAME = Roaring Lionus
- 
- # *DOCUMENTATION*
--- 
-2.30.2
+LOL, I guess hanging the vCPU counts as degraded performance.  But this comment
+can and should go away entirely...
 
+> > +	 */
+> > +	local_irq_enable();
+
+...because this is broken.  It's also disturbing because it suggests that these
+patches are not being tested.
+
+The STI _must_ immediately precede TDCALL, and it _must_ execute with interrupts
+disabled.  The whole point of the STI blocking shadow is to ensure interrupts are
+blocked until _after_ the HLT completes so that a wake event is not recongized
+before the HLT, in which case the vCPU will get stuck in HLT because its wake
+event alreadyfired.  Enabling IRQs well before the TDCALL defeats the purpose of
+the STI dance in __tdx_hypercall().
+
+There's even a massive comment in __tdx_hypercall() explaining all this...
+
+> > +
+> > +	/* IRQ is enabled, So set R12 as 0 */
+
+It would be helpful to use local variables to document what's up, e.g.
+
+ 	const bool irqs_enabled = true;
+	const bool do_sti = true;
+
+	ret = _tdx_hypercall(EXIT_REASON_HLT, irqs_enabled0, 0, 0, do_sti, NULL);
+	
+> > +	ret = _tdx_hypercall(EXIT_REASON_HLT, 0, 0, 0, 1, NULL);
+> > +
+> > +	/* It should never fail */
+> > +	BUG_ON(ret);
+> > +}
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
