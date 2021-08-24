@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4F93F58C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93B23F58CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234720AbhHXHQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60594 "EHLO
+        id S232173AbhHXHT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhHXHQt (ORCPT
+        with ESMTP id S230149AbhHXHTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:16:49 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9C8C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:16:05 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id jv8so11166343qvb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:16:05 -0700 (PDT)
+        Tue, 24 Aug 2021 03:19:39 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B10C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:18:55 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id ay33so10598074qkb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:18:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Oi2NKeRb5umrqspW8WxUOz0+Q8cfzSQseYI0EkxMUVk=;
-        b=vZ8kZ7uvYOJD6JqyYuynpBjgAs4y14YlKAFKBuPyAissYLTfkCVvZFu9fmy0DfmcZQ
-         YBrsgdWmAZztw2kVJfSdv0hGgE26dEvnzZfAS9bfrOClzVzYGRNp2fYF3fCagVRMhN6q
-         aJq07jucdJqiK8pKslKCCmAXn/1juE6LXN30MkJb+VFesuY6g7ocYxbJ+cIVaHxSNYUK
-         bEC7MjtBykq13GdnfFwN+4tcd9D7zvC8F8Gggg2py0reIMDfSyavJBsfBU3zFHCCA/d+
-         rdpp2l7z8oj6YNFPWaT3nlHBTiJrIzQPTP4g7hpYK1LFwPVpHVbA6V8cLxJ3IpeBDqyo
-         HIfg==
+        bh=L91kS7H4uI2Ju5dHGeUjJWE+8uGv+09xe8DNx1aTd0g=;
+        b=FJ/lLBUd6iQUZakqtOuchqRbm88Pd0fAZ1OM9mkgM3l0mIWYNjjOnPn09UuKT9y1P+
+         2E1uE35YzkO9b5IVxhFgNL+CS/eQno5DKckd4jpKH0I/b9y4OsCGNH5nzc0cO6IJSFGH
+         HkTc8k1wU5d7tUTV/SyB7eG1kVUzOi06xUYK/Z87cJ0d0c3V/mWFJTfaV9oosjlfIrJj
+         LnmzibGp+DDT/jtsT27HN9TFnzM7OoXyywtbRP3J+SCi1UXKIlHnfiT2WME+325TiKz5
+         dbMKoxY8BJypZYOwlYDlKR5WwH7+yxqqHbn35GQM8qIPNL+rXOGJBsUrIOQjmTL+NouU
+         NQtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Oi2NKeRb5umrqspW8WxUOz0+Q8cfzSQseYI0EkxMUVk=;
-        b=atnrDjTAK6pTUzpGd3BrOq3uqJM8+fzj4jNqc/owpoSS97niFtx7LaKFW5JLp39wJA
-         YChBGKhyu37WDcngvfci7h3s36yEcug8oFcFoJIMNM5UWYD2Hd0k4hdRew180blU5xCO
-         uNk3A2ddqg8AYW4Pl10nPPotymhQJ2Tb7xIszCf01D03xN4B/Oh8UO3goPm0bfHhwTqc
-         ewxME5cBw0pIcDYxNvMQp6Q2tJGYfnffNO5wp7PvivtRYfUcXnZ/nD6/gsdEMez1ZgV4
-         qFdLSwA42RhvCa0g2LHmSEUUZBhC4LAM0A1d32oIYuNfP8XUehSf6Ua7F6uv/TuGuM6E
-         3JPw==
-X-Gm-Message-State: AOAM531XkL3Aj61/3z2Ph2LLzEZ8i8+ahV/lSZOxCQZ9K7LeQXyWipht
-        m53X4M4kj8+ngqrigs0vB5E=
-X-Google-Smtp-Source: ABdhPJwN3EFDE5E22ZI4ROiENdrNeOilN2BraTWPPQDrBXMjsycSxEoqGn+Q4yEe17f0NSxn8544YQ==
-X-Received: by 2002:ad4:55eb:: with SMTP id bu11mr19135047qvb.57.1629789365131;
-        Tue, 24 Aug 2021 00:16:05 -0700 (PDT)
+        bh=L91kS7H4uI2Ju5dHGeUjJWE+8uGv+09xe8DNx1aTd0g=;
+        b=OpwtU8xe0ec81bx5XcqWdu14yygArgJYFmXGgZAsSgFPSiD9aYWraWpkMjBY63Z7fV
+         efkamy/rP467w5UNuJNRoMgcXNaiNWreRev0uhCDoHjZTDZdz4GThskqe8vIgoEAxPEN
+         dlCLJZI1HfQJjoryMYo01YAO8QfLJH+7WqvnXMZ8+1oolb7g/Y/zCbGNZSUbns3KuII/
+         +x2PIxwzvNqR38ulQLh3ml1eqJbaOvKpjOUZzhKKUpXkEmh+C8u1Vn0D4C5sy6o9AA3u
+         8ixpHRnctYgS8JZAOZvHaZwueGyInXGY/HkZE3WHPmbR3gMKQHG/mJReEeBVTzyecknJ
+         8+ag==
+X-Gm-Message-State: AOAM531/bVP/39WkZAIVBg6wofnSgZm526WGqnmt/WhhQAMWHOEigguJ
+        i3Ni6CXXIwI5Yn1v8OoLeAo=
+X-Google-Smtp-Source: ABdhPJz31dYLJnCSRaExZd7R1hpgaNQ5PmQ6G7rDdxdu1qgO9LlB1PDwLNxP42GTooaj0RB26pGvzA==
+X-Received: by 2002:a37:9b93:: with SMTP id d141mr25385757qke.236.1629789534675;
+        Tue, 24 Aug 2021 00:18:54 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id b21sm7898683qtt.91.2021.08.24.00.16.02
+        by smtp.gmail.com with ESMTPSA id p12sm7752401qtw.54.2021.08.24.00.18.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 00:16:04 -0700 (PDT)
+        Tue, 24 Aug 2021 00:18:54 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
+        x86@kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
         Jing Yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] x86:sections: fix boolreturn.cocci warnings
-Date:   Tue, 24 Aug 2021 00:15:57 -0700
-Message-Id: <20210824071557.61426-1-deng.changcheng@zte.com.cn>
+Subject: [PATCH linux-next] x86:uaccess: fix boolreturn.cocci warnings
+Date:   Tue, 24 Aug 2021 00:18:46 -0700
+Message-Id: <20210824071846.61488-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -68,8 +70,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-./arch/x86/include/asm/sections.h:28:9-10:WARNING:return of 0/1 in
-function 'arch_is_kernel_initmem_freed' with return type bool
+./arch/x86/include/asm/uaccess.h:477:9-10:WARNING:return of 0/1 in
+function 'user_access_begin' with return type bool
 
 Return statements in functions returning bool should use true/false
 instead of 1/0.
@@ -79,22 +81,25 @@ Generated by: scripts/coccinelle/misc/boolreturn.cocci
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- arch/x86/include/asm/sections.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/uaccess.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/sections.h b/arch/x86/include/asm/sections.h
-index a6e8373..5396bc3 100644
---- a/arch/x86/include/asm/sections.h
-+++ b/arch/x86/include/asm/sections.h
-@@ -25,7 +25,7 @@ static inline bool arch_is_kernel_initmem_freed(unsigned long addr)
- 	 * and we can not make assumptions about its use.
- 	 */
- 	if (_brk_start)
+diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+index c9fa7be..e3b6f4f 100644
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -474,9 +474,9 @@ static inline bool __chk_range_not_ok(unsigned long addr, unsigned long size, un
+ static __must_check __always_inline bool user_access_begin(const void __user *ptr, size_t len)
+ {
+ 	if (unlikely(!access_ok(ptr,len)))
 -		return 0;
 +		return false;
- 
- 	/*
- 	 * After brk allocation is complete, space between _brk_end and _end
+ 	__uaccess_begin_nospec();
+-	return 1;
++	return true;
+ }
+ #define user_access_begin(a,b)	user_access_begin(a,b)
+ #define user_access_end()	__uaccess_end()
 -- 
 1.8.3.1
 
