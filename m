@@ -2,148 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFD03F55FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795BE3F5600
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbhHXC5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233887AbhHXC5g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:57:36 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2137EC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:56:53 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so1367583pjt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=29Fb0DQb3lLM1RT0ONfW5Rl3roBtF0uhGZi6Clr4PQ8=;
-        b=GDUCXarovw3ukF3RwAsETeElR5eGZPBu70ayB2wBQ/TkJiUQsrK/LrueDGJCxotLKi
-         ONJSxgXeWrngVIsd79smxVSF174v3ocrKyIRx2FpMXOk9kzCNFVH2niEcM+R+iqNEmI7
-         ZlvmjevY3GS6Hme6xtZ3+Ptx+FnFMI9Yq/daLTAA4UCGxALn/6hgG5JG2QLb1sp4M1em
-         kl2plY0zoiACgUQbnHH2YRDzcEhkPyZQdD+mbfmlKIV9Vtf7FbLGrEhvgfrzAiF0T/Ex
-         QkqbMid4GkGvIAcMfdK7VJ5jWqv1njIol6NTXXsAqKIUXQJuVN0TAmsN7MSk3SSdFPmG
-         d1Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=29Fb0DQb3lLM1RT0ONfW5Rl3roBtF0uhGZi6Clr4PQ8=;
-        b=tQCY/So6c2EtIMuAdPs+nJsjmqVgYaRp7AkMaD/wc41XX0NThlN4EUwGE8QdWsXJ03
-         bWTPQd2YFrWV5RuulZdMZsFg2FXhk9WWvyZWmcFPLhVTTjWy6XTAhFKreaptoJGWckjj
-         ZWO1BrO3q+476ZqWDmyUbSLUjpSKYhA0WbAET2JVXpEt/38oioXyGhmFOL//MFhxCNSH
-         enbEsmT/E4OHZOww8/wOhklS5PwcOTZXceDZJvXo85KmSW1zrnpxKh4SslL/KY3NEEm9
-         ZIGWPixrAjeFyNgjWs6+K7g9O1DkC/Ne8iSGOgZlPvEmJF3OoZvO507BdyZ/NJCpNj/T
-         vPLg==
-X-Gm-Message-State: AOAM532Sn//6yXlJp5NQpyJA0E94AkzRmYjKerBSa2nA14PMBsgjpm+b
-        QuB1BMOgzFNJkUZXYpfsm2k4Og==
-X-Google-Smtp-Source: ABdhPJwXFrQMieCMh9x9c+mtDLu/YP/iQ36j1IknXDrvOvDegeb32ZiTPGsKdkfnQ8HYxv43bwJgqw==
-X-Received: by 2002:a17:903:310a:b0:133:9bb6:98bd with SMTP id w10-20020a170903310a00b001339bb698bdmr9300777plc.19.1629773812408;
-        Mon, 23 Aug 2021 19:56:52 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:200:196f:5297:b0e8:1313])
-        by smtp.gmail.com with ESMTPSA id y12sm18770264pgl.65.2021.08.23.19.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 19:56:51 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 19:56:47 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 1/2] x86: Do not add -falign flags unconditionally for
- clang
-Message-ID: <20210824025647.tssnp7qtccbgvdq7@google.com>
-References: <20210824022640.2170859-1-nathan@kernel.org>
- <20210824022640.2170859-2-nathan@kernel.org>
+        id S233986AbhHXC6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233847AbhHXC6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 22:58:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81D4261178;
+        Tue, 24 Aug 2021 02:57:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629773867;
+        bh=RdpriOT0bHKBfBi0jxPWhLF1oDTM1KCqsitxNV2732U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=O/uvBXNmqujv3A3iwjxn+NeIYV2fRbgfWMzDEgaqeoKyTxv3X2vakZaBAiPRjlSOA
+         vwCUB/E9L0Ykzy1Wmvddo0orhh8iNHcRvLXbnKkO71+NUoWXb3L2sxj01Gge51yIbK
+         6ZUvaHRzkYkCHJxncAkydeDgsGVzY83yWrcgGuXlMWg878v5VYkuQl/szX+xRHRoYN
+         z/YyMbaI/kGvApOOUDgsaZM3OclKiDERrMr5OjNzA4KmNqj0K/cdQ0i6uL39e6csSX
+         sZz9RZv9I1x5+RllRBpqPk9/6n+hIfSGL9FV0W4ai/vaz+ih4wBrjyZKATH3q6IgEM
+         6S0QjvSgI82kw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     stable@vger.kernel.org, srinivas.kandagatla@linaro.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "slimbus: ngd: set correct device for pm" failed to apply to 5.10-stable tree
+Date:   Mon, 23 Aug 2021 22:57:45 -0400
+Message-Id: <20210824025745.658101-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210824022640.2170859-2-nathan@kernel.org>
+X-Patchwork-Hint: ignore
+X-stable: review
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-23, Nathan Chancellor wrote:
->clang does not support -falign-jumps and only recently gained support
->for -falign-loops. When one of the configuration options that adds these
->flags is enabled, clang warns and all cc-{disable-warning,option} that
->follow fail because -Werror gets added to test for the presence of this
->warning:
+The patch below does not apply to the 5.10-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
 
-[I implemented clang -falign-loops :) It doesn't affect LTO, though.
-LTO ld.lld may use -Wl,-mllvm,-align-loops=32 for now.  ]
+Thanks,
+Sasha
 
->clang-14: warning: optimization flag '-falign-jumps=0' is not supported
->[-Wignored-optimization-argument]
+------------------ original commit in Linus's tree ------------------
 
-grub made a similar mistake:) It thought the availability of -falign-X
-implies the availability of other -falign-*
-https://lists.gnu.org/archive/html/grub-devel/2021-08/msg00076.html
+From c0e38eaa8d5102c138e4f16658ea762417d42a8f Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Mon, 9 Aug 2021 09:24:27 +0100
+Subject: [PATCH] slimbus: ngd: set correct device for pm
 
->To resolve this, add a couple of cc-option calls when building with
->clang; gcc has supported these options since 3.2 so there is no point in
->testing for their support. -falign-functions was implemented in clang-7,
->-falign-loops was implemented in clang-14, and -falign-jumps has not
->been implemented yet.
->
->Link: https://lore.kernel.org/r/YSQE2f5teuvKLkON@Ryzen-9-3900X.localdomain/
->Reported-by: kernel test robot <lkp@intel.com>
->Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->---
-> arch/x86/Makefile_32.cpu | 12 +++++++++---
-> 1 file changed, 9 insertions(+), 3 deletions(-)
->
->diff --git a/arch/x86/Makefile_32.cpu b/arch/x86/Makefile_32.cpu
->index cd3056759880..e8c65f990afd 100644
->--- a/arch/x86/Makefile_32.cpu
->+++ b/arch/x86/Makefile_32.cpu
->@@ -10,6 +10,12 @@ else
-> tune		= $(call cc-option,-mcpu=$(1),$(2))
-> endif
->
->+ifdef CONFIG_CC_IS_CLANG
->+align		:= -falign-functions=0 $(call cc-option,-falign-jumps=0) $(call cc-option,-falign-loops=0)
->+else
->+align		:= -falign-functions=0 -falign-jumps=0 -falign-loops=0
->+endif
->+
-> cflags-$(CONFIG_M486SX)		+= -march=i486
-> cflags-$(CONFIG_M486)		+= -march=i486
-> cflags-$(CONFIG_M586)		+= -march=i586
->@@ -25,11 +31,11 @@ cflags-$(CONFIG_MK6)		+= -march=k6
-> # They make zero difference whatsosever to performance at this time.
-> cflags-$(CONFIG_MK7)		+= -march=athlon
-> cflags-$(CONFIG_MK8)		+= $(call cc-option,-march=k8,-march=athlon)
->-cflags-$(CONFIG_MCRUSOE)	+= -march=i686 -falign-functions=0 -falign-jumps=0 -falign-loops=0
->-cflags-$(CONFIG_MEFFICEON)	+= -march=i686 $(call tune,pentium3) -falign-functions=0 -falign-jumps=0 -falign-loops=0
->+cflags-$(CONFIG_MCRUSOE)	+= -march=i686 $(align)
->+cflags-$(CONFIG_MEFFICEON)	+= -march=i686 $(call tune,pentium3) $(align)
-> cflags-$(CONFIG_MWINCHIPC6)	+= $(call cc-option,-march=winchip-c6,-march=i586)
-> cflags-$(CONFIG_MWINCHIP3D)	+= $(call cc-option,-march=winchip2,-march=i586)
->-cflags-$(CONFIG_MCYRIXIII)	+= $(call cc-option,-march=c3,-march=i486) -falign-functions=0 -falign-jumps=0 -falign-loops=0
->+cflags-$(CONFIG_MCYRIXIII)	+= $(call cc-option,-march=c3,-march=i486) $(align)
-> cflags-$(CONFIG_MVIAC3_2)	+= $(call cc-option,-march=c3-2,-march=i686)
-> cflags-$(CONFIG_MVIAC7)		+= -march=i686
-> cflags-$(CONFIG_MCORE2)		+= -march=i686 $(call tune,core2)
->-- 
->2.33.0
+For some reason we ended up using wrong device in some places for pm_runtime calls.
+Fix this so that NGG driver can do runtime pm correctly.
 
-https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html says
-"If n is not specified or is zero, use a machine-dependent default."
+Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210809082428.11236-4-srinivas.kandagatla@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/slimbus/qcom-ngd-ctrl.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-Unless some other files specify -falign-loops=N and expect 0 to reset to
-the machine default, -falign-jumps=0 -falign-loops=0 -falign-functions=0 should just be dropped.
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index c054e83ab636..f3ee8e036372 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -618,7 +618,7 @@ static void qcom_slim_ngd_rx(struct qcom_slim_ngd_ctrl *ctrl, u8 *buf)
+ 		(mc == SLIM_USR_MC_GENERIC_ACK &&
+ 		 mt == SLIM_MSG_MT_SRC_REFERRED_USER)) {
+ 		slim_msg_response(&ctrl->ctrl, &buf[4], buf[3], len - 4);
+-		pm_runtime_mark_last_busy(ctrl->dev);
++		pm_runtime_mark_last_busy(ctrl->ctrl.dev);
+ 	}
+ }
+ 
+@@ -1257,13 +1257,14 @@ static int qcom_slim_ngd_enable(struct qcom_slim_ngd_ctrl *ctrl, bool enable)
+ 		}
+ 		/* controller state should be in sync with framework state */
+ 		complete(&ctrl->qmi.qmi_comp);
+-		if (!pm_runtime_enabled(ctrl->dev) ||
+-				!pm_runtime_suspended(ctrl->dev))
+-			qcom_slim_ngd_runtime_resume(ctrl->dev);
++		if (!pm_runtime_enabled(ctrl->ctrl.dev) ||
++			 !pm_runtime_suspended(ctrl->ctrl.dev))
++			qcom_slim_ngd_runtime_resume(ctrl->ctrl.dev);
+ 		else
+-			pm_runtime_resume(ctrl->dev);
+-		pm_runtime_mark_last_busy(ctrl->dev);
+-		pm_runtime_put(ctrl->dev);
++			pm_runtime_resume(ctrl->ctrl.dev);
++
++		pm_runtime_mark_last_busy(ctrl->ctrl.dev);
++		pm_runtime_put(ctrl->ctrl.dev);
+ 
+ 		ret = slim_register_controller(&ctrl->ctrl);
+ 		if (ret) {
+@@ -1389,7 +1390,7 @@ static int qcom_slim_ngd_ssr_pdr_notify(struct qcom_slim_ngd_ctrl *ctrl,
+ 		/* Make sure the last dma xfer is finished */
+ 		mutex_lock(&ctrl->tx_lock);
+ 		if (ctrl->state != QCOM_SLIM_NGD_CTRL_DOWN) {
+-			pm_runtime_get_noresume(ctrl->dev);
++			pm_runtime_get_noresume(ctrl->ctrl.dev);
+ 			ctrl->state = QCOM_SLIM_NGD_CTRL_DOWN;
+ 			qcom_slim_ngd_down(ctrl);
+ 			qcom_slim_ngd_exit_dma(ctrl);
+-- 
+2.30.2
 
-BTW: I believe GCC 8 (likely when fixing another issue with a large refactor
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84100) introduced a bug
-that -falign-X=0 was essentially -falign-X=1.
-GCC 11.0 (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=96247) fixed the bug.
+
+
+
