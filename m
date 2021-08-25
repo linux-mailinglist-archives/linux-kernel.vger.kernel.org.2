@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259DB3F713D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85FF3F7141
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239407AbhHYIoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 04:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239358AbhHYIoT (ORCPT
+        id S239415AbhHYIpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 04:45:46 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:26322 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237471AbhHYIpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 04:44:19 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B96C061757;
-        Wed, 25 Aug 2021 01:43:33 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id z9so35116684wrh.10;
-        Wed, 25 Aug 2021 01:43:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=zUmFDHqZ0Q3WxpEfUpWX476kiHcEeInO7lHUzdflDWo=;
-        b=k8PzlGsAphn4WEDJKn65ujM/HNNd3Dxr6uq8S+7YcKg8sBFwOO1fQnr0Frhmj2ql9f
-         Yvz6hgvoCWhSMSiU1jXSV68oI+IOqWX3ccfm4Oe462e0xEhiDtFQUM9NyBBdQ5tHDWqc
-         uz//uLqfzrESsQY3ImHQYxRcjohE5t7vMY4tv9JxEMHNBOjo0v0942QCJVY30xKQ45Wl
-         THjNgUSebonsNLu8w2aPHdregLzQL2UKRgh3+8k8AtSX1ULMwfeerYUYdqrq60ZRusSU
-         ZPvLffD7hHe6Kn3KJ1dHRqN+b/ueyJx0s6yH4lfKefKeqNi0F3BXGE0392WTDp7c6jkH
-         bXTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=zUmFDHqZ0Q3WxpEfUpWX476kiHcEeInO7lHUzdflDWo=;
-        b=lpHJAhTDOaAiU7RjjLXnadOtuoMYk4l8ue903TJF6/sVYXCYPrAG92qUv0JxpTSWDM
-         PnKeG7kmrDb7H81WcqHzgaJyd6LHLtYh4k8kcmXeWUWokZSPhbeUw/CPLtIFEmWK3EWI
-         aa1liWDUqypG0Bf4T9TPstrgSCnIumzbKtk8d76vIolwB5bLP95QzViBvWhbzT8TRzEf
-         bW6/efwOmA+Y+pqcjz+Zyy2YFQoAJ7o+2Z2qhITwgUHGuCTfk2u3Gm6CF2Fkt5GUhPuk
-         0G72XCJpYKtkX6KawEGpKv0vQdEeQBqieEz3zaDBBsFvncq5qjwFgH5pJuEErc4Oh0e4
-         SMGQ==
-X-Gm-Message-State: AOAM533+nCqoI5CP9E+ypkY/JF6g1EBtABjOMkunSkYei68DCLWcOZbR
-        7x8Oqky2X6cVZYVoW6wRlkQ=
-X-Google-Smtp-Source: ABdhPJwJKck/zWbcc1t+3q/jJstxA2vTfT+n1VmldE3E29GY5UytssOrLIACln0YeIdwgsJuIe4IJQ==
-X-Received: by 2002:a5d:40c9:: with SMTP id b9mr6646225wrq.212.1629881012172;
-        Wed, 25 Aug 2021 01:43:32 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bec31.dynamic.kabel-deutschland.de. [95.91.236.49])
-        by smtp.googlemail.com with ESMTPSA id a3sm20232294wrx.38.2021.08.25.01.43.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 01:43:32 -0700 (PDT)
-Message-ID: <9e78ecd5b79ed7f0ca91021799e6e7396c458094.camel@gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc: core: Let BKOPS timeout readable/writable
- via sysfs
-From:   Bean Huo <huobean@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bean Huo <beanhuo@micron.com>
-Date:   Wed, 25 Aug 2021 10:43:31 +0200
-In-Reply-To: <CAPDyKFrQLDiamWZGzDDoA0EeRhR+VaeWuUHiu9EAMqDrQT-5CA@mail.gmail.com>
-References: <20210817224208.153652-1-huobean@gmail.com>
-         <20210817224208.153652-3-huobean@gmail.com>
-         <CAPDyKFrQLDiamWZGzDDoA0EeRhR+VaeWuUHiu9EAMqDrQT-5CA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Wed, 25 Aug 2021 04:45:45 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 25 Aug 2021 01:44:59 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 25 Aug 2021 01:44:58 -0700
+X-QCInternal: smtphost
+Received: from c-mansur-linux.qualcomm.com ([10.204.83.180])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 25 Aug 2021 14:14:39 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id D527722757; Wed, 25 Aug 2021 14:14:37 +0530 (IST)
+From:   Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org,
+        nhebert@chromium.org, Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: [PATCH] venus: vdec: update output buffer size during vdec_s_fmt()
+Date:   Wed, 25 Aug 2021 14:14:34 +0530
+Message-Id: <20210825084434.32309-1-mansur@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-24 at 16:33 +0200, Ulf Hansson wrote:
-> On Wed, 18 Aug 2021 at 00:42, Bean Huo <huobean@gmail.com> wrote:
-> > From: Bean Huo <beanhuo@micron.com>
-> > 
-> > For special cases, the application in the userspace wants to change
-> > BKOPS operation timeout value, also, wants eMMC back to
-> > R1_STATE_TRAN
-> > after BKOPS timeouts. A fixed BKOPS timeout value(120s) is no
-> > longer
-> > feasible, therefore, it is better to let the user controls its
-> > timeout
-> > value.
-> 
-> I am not fond of exporting tweakable timeout values through sysfs.
-> Primarily because it's ABI and it becomes difficult to change.
-> 
-> Can you perhaps explain in more detail when you want to have a
-> different timeout?
-> 
-> Perhaps we can do something similar as we currently do for
-> mmc_santize(), where we allow userspace to pass the cmd-timeout?
-> 
-> Kind regards
-> Uffe
-> 
-> > Signed-off-by: Bean Huo <beanhuo@micron.com>
-> > 
+Video driver maintains an internal context for the output buffer size.
+During S_fmt() on capture plane, the output buffer size is not updated
+in driver context. As a result, during buf_prepare(), the size of the
+vb2_plane and internal size of the buffer, as maintained by the driver,
+does not match. This leads to buf_prepare() failure.
+Update the instance context for the output buffer size during s_fmt().
 
-Hi Ullf,
-Thanks for your review. 
+Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+---
+ drivers/media/platform/qcom/venus/vdec.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Actually, taking the first patch "MMC: core: Issue HPI in case the
-BKOPS timed out" is good enough in the most of cases. And the current
-120s timeout for the manual BKOPS is also enough, we don't need to
-change this timeout value through sysfs.
-
-Kind regards,
-Bean
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 198e47eb63f4..c129b061a325 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -332,8 +332,11 @@ static int vdec_s_fmt(struct file *file, void *fh, struct v4l2_format *f)
+ 
+ 	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+ 		inst->fmt_out = fmt;
+-	else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
++	else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+ 		inst->fmt_cap = fmt;
++		inst->output2_buf_size =
++			venus_helper_get_framesz(pixfmt_cap, orig_pixmp.width, orig_pixmp.height);
++	}
+ 
+ 	return 0;
+ }
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
