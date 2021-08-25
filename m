@@ -2,96 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B6D3F7ACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0003F7ACD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242163AbhHYQjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242059AbhHYQjK (ORCPT
+        id S242096AbhHYQjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:39:21 -0400
+Received: from mail-oo1-f51.google.com ([209.85.161.51]:44621 "EHLO
+        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242059AbhHYQjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:39:10 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368D2C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:38:24 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id m26so234420pff.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:38:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=9Wr1+WXUoypE3YQABXETIrsp7QWtSDH3brrFfWMwZas=;
-        b=pcX9nw/wLqZueDexjR4bJD9NMiW7Drxh2rIqEQFNQe4Ek1potnkZTfwy1O7EVoctpd
-         93qvarZTUbCRht00dTuDJ5Yp4w2UaqsHIowBw0vFDQAZ/Gh8cuUfa7jrs34ItAx+cRjc
-         S0lPeImczmQVYkECB7KUMNhYmHenO0X0rp80hoFrVRmIEwXuEnofxhCK+uqxz6peJ8hY
-         OWzGWT+Gc8nenen16Szd4MZPfhFFSxBgtr1qVG0yyo90TJLbzycr2fqVcGj9Fqd+KsQb
-         UXDmLJtA1jHRJGh937e3YMTZ8Fr5o5U+B7BdeGSWlVVRYg9xtn3n8BD28hT8JLHliP5H
-         dujA==
+        Wed, 25 Aug 2021 12:39:17 -0400
+Received: by mail-oo1-f51.google.com with SMTP id t1-20020a4a54010000b02902638ef0f883so7770271ooa.11;
+        Wed, 25 Aug 2021 09:38:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=9Wr1+WXUoypE3YQABXETIrsp7QWtSDH3brrFfWMwZas=;
-        b=IEF2aDYG8OQ/zZEvUN/u4gyBRQO8vtJ1NGCy+9LxTwmm+gsa+b2xSBldSfoqaoVSLM
-         L00IARAJOK0w2/7JZgLeR6aTdS5h3fgC4RmH4l7bV2rv+qlse8aXz2ZqZvwxljROrnDW
-         +wHEk41yMdzdcEAv5LUXZ/MCtw7D6dlHYhGMDhVVdbjLeVE5WYsmfq/YyApIcgPm0om1
-         /Y5mMQ5nMqr1JAiTrG1LHP+S9qOSaJ+gRzX46TscYvIDN/fLNusicR+JCRFaGBd314X1
-         qdSiGRmWK15PLdPySh3/ajc9KZ5FZ0f9wh3NjJv2oAeUHHz/ajqcPskPYTRrLABRYv6g
-         MTRQ==
-X-Gm-Message-State: AOAM531lNu/lRj5QfqQr2B6mX7HdznUb7t0jIRjeqhZAwkWrcMMEwmgc
-        TH+SipOlQOhxTqsDUBZJvzI=
-X-Google-Smtp-Source: ABdhPJxQ3FMfF0LK750YP8PbTk5UP7c89+njt55GomboAUd7/c6VbmsbI71FXUbUz7zVfF1m4GKjXg==
-X-Received: by 2002:a63:1a65:: with SMTP id a37mr43248868pgm.338.1629909503729;
-        Wed, 25 Aug 2021 09:38:23 -0700 (PDT)
-Received: from [192.168.1.22] (amarseille-551-1-7-65.w92-145.abo.wanadoo.fr. [92.145.152.65])
-        by smtp.gmail.com with UTF8SMTPSA id x189sm349491pfx.99.2021.08.25.09.38.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 09:38:23 -0700 (PDT)
-Message-ID: <7a2f972d-fdd0-d0f7-cac2-1989980ed872@gmail.com>
-Date:   Wed, 25 Aug 2021 18:38:19 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AD/hPSNzIYnzA+6DdM2HAQVIs1u68PymAU53OjEcN5E=;
+        b=p1v4oZlWed1r3pi8qdQCrTCTHxpuGf6mhLU580iXbfWeP0K+ER2Fz81LSh9lcB/VtM
+         qkZaIheJhOQZqMIBmDTdY3WmAk+IvZqdkLO3MPf/7+sqnxeJNm9kTjXltsmlgRygtk44
+         h/V3pCWktZk5fcjLps2xFdOYKCLvpZuxG+pu3K5NGyFYUGK8KiPIew69wXLSJ8g0jmYP
+         xrbV+ItU3rK466bItGjbIORqVTOgmWMDAe0ofDEFApGQTLcLGmdebdhQizgq/QsZkqro
+         PWoYkVRJs2xYqVskqCDk+lJwJ5GjdvkPPLZFrwsvL9rgrkQAtgN0N77BoMC59TIwd1IQ
+         JXaw==
+X-Gm-Message-State: AOAM531SEoVZ2oRP404IFedCL7z+VYl2j3l3DYeAR7oIikyi5mgbsMZm
+        2cHgBYw2UqQxfvc38ePEcw==
+X-Google-Smtp-Source: ABdhPJzfHUhDqS0xr9XhaJ1quQvFLTLm/QkO4W8erZn4nY+BsrBGyg4gLpyaLO3An4YgoGUnZpf4ew==
+X-Received: by 2002:a4a:d65b:: with SMTP id y27mr9676424oos.17.1629909511428;
+        Wed, 25 Aug 2021 09:38:31 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id j17sm60330ots.10.2021.08.25.09.38.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 09:38:30 -0700 (PDT)
+Received: (nullmailer pid 2914154 invoked by uid 1000);
+        Wed, 25 Aug 2021 16:38:29 -0000
+Date:   Wed, 25 Aug 2021 11:38:29 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        devicetree@vger.kernel.org,
+        Florent Kermarrec <florent@enjoy-digital.fr>,
+        "Gabriel L . Somlo" <gsomlo@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: net: Add bindings for LiteETH
+Message-ID: <YSZyBVyb+AgDhkua@robh.at.kernel.org>
+References: <20210825124655.3104348-1-joel@jms.id.au>
+ <20210825124655.3104348-2-joel@jms.id.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.2
-Subject: Re: [PATCH v4 11/12] [RFC] firmware: arm_scmi: Add
- sync_cmds_atomic_replies transport flag
-Content-Language: en-US
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-References: <20210824135941.38656-1-cristian.marussi@arm.com>
- <20210824135941.38656-12-cristian.marussi@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210824135941.38656-12-cristian.marussi@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825124655.3104348-2-joel@jms.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/24/2021 3:59 PM, Cristian Marussi wrote:
-> A flag is added to let the transport signal the core that its handling of
-> synchronous command messages implies that, after .send_message has returned
-> successfully, the requested command can be assumed to be fully and
-> completely executed on SCMI platform side so that any possible response
-> value is already immediately available to be retrieved by a .fetch_reponse:
-> in other words the polling phase can be skipped in such a case and the
-> response values accessed straight away.
+On Wed, Aug 25, 2021 at 10:16:54PM +0930, Joel Stanley wrote:
+> LiteETH is a small footprint and configurable Ethernet core for FPGA
+> based system on chips.
 > 
-> Note that all of the above applies only when polling mode of operation was
-> selected by the core: if instead a completion IRQ was found to be available
-> the normal response processing path based on completions will still be
-> followed.
+> The hardware is parametrised by the size and number of the slots in it's
+> receive and send buffers. These are described as properties, with the
+> commonly used values set as the default.
+> 
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
+> ---
+> v2:
+>  - Fix dtschema check warning relating to registers
+>  - Add names to the registers to make it easier to distinguish which is
+>    what region
+>  - Add mdio description
+>  - Include ethernet-controller parent description
+> v3:
+>  - Define names for reg-names
+>  - update example to match common case
+>  - describe the hardware using slots and slot sizes. This is how the
+>    hardware is pramaterised, and it makes more sense than trying to use
+>    the rx/tx-fifo-size properties
+> ---
+>  .../bindings/net/litex,liteeth.yaml           | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/litex,liteeth.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/litex,liteeth.yaml b/Documentation/devicetree/bindings/net/litex,liteeth.yaml
+> new file mode 100644
+> index 000000000000..62911b8e913c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/litex,liteeth.yaml
+> @@ -0,0 +1,100 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/litex,liteeth.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LiteX LiteETH ethernet device
+> +
+> +maintainers:
+> +  - Joel Stanley <joel@jms.id.au>
+> +
+> +description: |
+> +  LiteETH is a small footprint and configurable Ethernet core for FPGA based
+> +  system on chips.
+> +
+> +  The hardware source is Open Source and can be found on at
+> +  https://github.com/enjoy-digital/liteeth/.
+> +
+> +allOf:
+> +  - $ref: ethernet-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: litex,liteeth
+> +
+> +  reg:
+> +    minItems: 3
 
-This might actually have to be settable on a per-message basis ideally 
-since we may be transporting short lived SCMI messages for which the 
-completion can be done at SMC time, and long lived SCMI messages (e.g.: 
-involving a voltage change) for which we would prefer a completion 
-interrupt. Jim, what do you think?
--- 
-Florian
+Don't need minItems if it is equal to 'items' length.
+
+> +    items:
+> +      - description: MAC registers
+> +      - description: MDIO registers
+> +      - description: Packet buffer
+> +
+> +  reg-names:
+> +    minItems: 3
+
+And here.
+
+With that fixed:
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+> +    items:
+> +      - const: mac
+> +      - const: mdio
+> +      - const: buffer
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  litex,rx-slots:
+> +    description: Number of slots in the receive buffer
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 1
+> +    default: 2
+> +
+> +  litex,tx-slots:
+> +    description: Number of slots in the transmit buffer
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 1
+> +    default: 2
+> +
+> +  litex,slot-size:
+> +    description: Size in bytes of a slot in the tx/rx buffer
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0x800
+> +    default: 0x800
+> +
+> +  mac-address: true
+> +  local-mac-address: true
+> +  phy-handle: true
+> +
+> +  mdio:
+> +    $ref: mdio.yaml#
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mac: ethernet@8020000 {
+> +        compatible = "litex,liteeth";
+> +        reg = <0x8021000 0x100>,
+> +              <0x8020800 0x100>,
+> +              <0x8030000 0x2000>;
+> +        reg-names = "mac", "mdio", "buffer";
+> +        litex,rx-slots = <2>;
+> +        litex,tx-slots = <2>;
+> +        litex,slot-size = <0x800>;
+> +        interrupts = <0x11 0x1>;
+> +        phy-handle = <&eth_phy>;
+> +
+> +        mdio {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          eth_phy: ethernet-phy@0 {
+> +            reg = <0>;
+> +          };
+> +        };
+> +    };
+> +...
+> +
+> +#  vim: set ts=2 sw=2 sts=2 tw=80 et cc=80 ft=yaml :
+> -- 
+> 2.33.0
+> 
+> 
