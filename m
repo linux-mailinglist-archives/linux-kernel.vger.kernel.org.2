@@ -2,76 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FC23F7A8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503803F7A8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240935AbhHYQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:32:01 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:44707 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbhHYQb7 (ORCPT
+        id S241168AbhHYQcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238543AbhHYQcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:31:59 -0400
-Received: by mail-ot1-f45.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so47102492otg.11;
-        Wed, 25 Aug 2021 09:31:13 -0700 (PDT)
+        Wed, 25 Aug 2021 12:32:09 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A509C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:31:23 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id j2so10239826pll.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:31:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=XJkAc9QmQEswaIUvQz6Upf/2ilMQ7WGC8GTDpVgEOXk=;
+        b=aYURodus3dsc5aroLaWgMkC3f3F8qX2V+toSTyJs1kqGCXES5/gZleGG8eC3tteYlp
+         0Af3Zq/nIvkJkSmmEAnLaOVYhe8eLKNwelyXSiBKk96W/k8j65upqn3KWze95OmLn3g/
+         ajooETd09pd16QAS/ujr0PuBGDNMPY1aJtJ1ODrdGnbsUpZYuDq03hbeMkAad52iX9pM
+         l7Nsy5Rm61aXMWBYfDdrXPY7MvCy/2o/NZQGNGebIbYuBGyCnCPf9bWgmCf2rt0xrkO8
+         roFpfm+bsMO5HLfeajB4eBTOVihKdunVFxtkjr3+aD53A5YcurhYC3T4u7GpYjX/DdEm
+         GMVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tMEQ5rSS37SXZ86EXg6wb4SRLylx3WacUr1VwiLL/Ng=;
-        b=Kf/5zzAhvWOIr+h1x/fWWoMGDkOWt2xQbkuJ2aSI93CUvtLBazWZHgMGFRoSBHpNLe
-         rp91Oe4as8RBftXZNx5pHAbDx04eGlMAHbBVxNYst8F5PxgFk8VZgKszH3inVB1Vk6Ss
-         SwTHqZkdisuec8l+aGwP/R3wbYBgMvoLrXg2Jo69mv+N+/zAuggqBle5wN8hNsCDf+Gi
-         yqfVHfBNAz46Z4/MBliWO7srsPRKcnS390X7c8YATkHzcgHv7+1NshC75oNgQbp5x70h
-         sxTk6Vjtp9qsgCLnmi62oxUmaYazLukGF4px/h4e5L02k9sWNxGTmv7CtVpoSmtZpOEW
-         02HA==
-X-Gm-Message-State: AOAM530MEq5/zHhSujOBP1wXlo980swr0SroF7FaIxSXdbkJ7n0uVGuV
-        25/HgA2sZQAO0E0gsXHJzA==
-X-Google-Smtp-Source: ABdhPJxfTu0ee+tYGYmnlkF+0uBzIVdwz+W40xhaEOvLrBXPblsCrnPz+qZSsntwz86pKMcuTxI+sA==
-X-Received: by 2002:a9d:6e0a:: with SMTP id e10mr34241962otr.259.1629909073115;
-        Wed, 25 Aug 2021 09:31:13 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r20sm66162oot.16.2021.08.25.09.31.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 09:31:12 -0700 (PDT)
-Received: (nullmailer pid 2904615 invoked by uid 1000);
-        Wed, 25 Aug 2021 16:31:11 -0000
-Date:   Wed, 25 Aug 2021 11:31:11 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
-        jitao.shi@mediatek.com, eizan@chromium.org,
-        linux-arm-kernel@lists.infradead.org, matthias.bgg@gmail.com,
-        Fabien Parent <fparent@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, chunkuang.hu@kernel.org,
-        hsinyi@chromium.org, devicetree@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, drinkcat@chromium.org
-Subject: Re: [PATCH v3 2/7] dt-bindings: mediatek: Add #reset-cells to mmsys
- system controller
-Message-ID: <YSZwT8QahCfWE5N3@robh.at.kernel.org>
-References: <20210825102632.601614-1-enric.balletbo@collabora.com>
- <20210825122613.v3.2.I3f7f1c9a8e46be07d1757ddf4e0097535f3a7d41@changeid>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=XJkAc9QmQEswaIUvQz6Upf/2ilMQ7WGC8GTDpVgEOXk=;
+        b=TWyL6DfsC0qsUW2kaUNz1BDIpHUAvSVw1DGrLQtMNeWwgT4cTSJcgDBuMPIEaGgkMV
+         HbwLZIDf85OcRIfN0HvtYS8dfqclBTHQ5wobapB3vTKwdSAghek7hyOc1mXrExPO4PSc
+         8itIKQQPNczmtXc58hepYW2tVsKaHTEpferXcqcpBxYsJwJw7AXGtjfHQ6gT/lCiaPJT
+         M7O4ESfZigc0H9wKJT0+Nmpmf82HFVJITcm1S1Mtzb8oA/BXqS8nQNB/RoBYaskmxQrO
+         JqkjF+jgAAzGj9oa2HffTVItV1nrHG3zEywHKfSHtVIP8Qa61vNT4H9KHK+yZVBbXJ//
+         pZXA==
+X-Gm-Message-State: AOAM530P2VLG0fJ4mh8EL0aaiZNQ7ppQartzZrnMeuOQYRc4qAdTt9HE
+        Xkvb8jja8EEeepDQ7GtCni0=
+X-Google-Smtp-Source: ABdhPJzaBjPTAJlgDbwfVWYZc0TGI0lgTxS+HjZIVFXZlhja8fXlrGnqzpU2aBlhdlO6AteBsn2PDQ==
+X-Received: by 2002:a17:902:8685:b0:12d:7f02:f7a6 with SMTP id g5-20020a170902868500b0012d7f02f7a6mr38798442plo.49.1629909082617;
+        Wed, 25 Aug 2021 09:31:22 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with UTF8SMTPSA id l6sm290590pff.74.2021.08.25.09.31.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 09:31:22 -0700 (PDT)
+Message-ID: <2ffa7d65-21ef-433b-8a86-068df13950d2@gmail.com>
+Date:   Wed, 25 Aug 2021 18:31:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210825122613.v3.2.I3f7f1c9a8e46be07d1757ddf4e0097535f3a7d41@changeid>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.2
+Subject: Re: [PATCH v4 05/12] firmware: arm_scmi: Use new trace event
+ scmi_xfer_response_wait
+Content-Language: en-US
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+References: <20210824135941.38656-1-cristian.marussi@arm.com>
+ <20210824135941.38656-6-cristian.marussi@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210824135941.38656-6-cristian.marussi@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021 12:26:27 +0200, Enric Balletbo i Serra wrote:
-> The mmsys system controller exposes a set of memory client resets and
-> needs to specify the #reset-cells property in order to advertise the
-> number of cells needed to describe each of the resets.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
-> 
-> Changes in v3:
-> - Based on top of the patch that converts mmsys to schema
-> 
->  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml      | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+On 8/24/2021 3:59 PM, Cristian Marussi wrote:
+> Use new trace event to mark start of waiting for response section.
+> 
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+
+Might be worth squashing into patch 4?
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
