@@ -2,88 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9133F705C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773DE3F70B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239216AbhHYH1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:27:00 -0400
-Received: from mga06.intel.com ([134.134.136.31]:59278 "EHLO mga06.intel.com"
+        id S238883AbhHYHwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:52:15 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:40898 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238654AbhHYH05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:26:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="278482192"
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="278482192"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 00:26:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="597961325"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 25 Aug 2021 00:26:09 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 25 Aug 2021 10:26:08 +0300
-Date:   Wed, 25 Aug 2021 10:26:08 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kun.liu2@amd.com,
-        alexander.deucher@amd.com
-Subject: Re: [RESEND PATCH 2/2] usb: dwc3: pci add property to allow user
- space role switch
-Message-ID: <YSXwkKJ53d/uwnhy@kuha.fi.intel.com>
-References: <20210824192337.3100288-1-Nehal-Bakulchandra.shah@amd.com>
- <87ilzu5ap0.fsf@kernel.org>
- <YSXqsXmuom2fFiKN@kuha.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSXqsXmuom2fFiKN@kuha.fi.intel.com>
+        id S231687AbhHYHwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 03:52:13 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 29ADD20264D;
+        Wed, 25 Aug 2021 09:51:27 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BB1F7202E5C;
+        Wed, 25 Aug 2021 09:51:26 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 46985183AC72;
+        Wed, 25 Aug 2021 15:51:21 +0800 (+08)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com
+Cc:     linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com
+Subject: [PATCH v2 1/2] dt-bindings: remoteproc: Add fsl,imx-dsp-rproc binding document
+Date:   Wed, 25 Aug 2021 15:28:35 +0800
+Message-Id: <1629876516-16513-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 10:01:05AM +0300, Heikki Krogerus wrote:
-> On Wed, Aug 25, 2021 at 08:55:41AM +0300, Felipe Balbi wrote:
-> > 
-> > Hi,
-> > 
-> > Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com> writes:
-> > 
-> > > For AMD platform there is a requirement to enable user space role
-> > > switch from host to device and device to host as customer platform is not
-> > > completely capable of OTG i.e. with type C controller it does not have PD
-> > > to support role switching. Hence, based ACPI/EC interrupt role switch is
-> > > triggered by the usemode script running in background.
-> >                    usermode ?
-> 
-> Couldn't you capture that ACPI/EC interrupt in kernel?
-> 
-> > > Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-> > 
-> > I'm okay with this, just wondering if we need to Document the property
-> > somewhere.
-> > 
-> > @Heikki, is there a place to document these private properties that's
-> > not on DT binding document?
-> 
-> The build-in properties are not documented separately. I've always
-> tried to supply DT bindings for all new properties I've proposed.
-> 
-> In this case though, do we need the new property at all? Why not just
-> register a normal USB role switch on this platform? It can be either a
-> dummy role switch that only passes the user space input to dwc3, or,
-> perhaps ideally, it would also be a driver that captures that ACPI/EC
-> event/notification and then passes the information from it to dwc3.
+Define the compatible string and properties needed by imx_dsp_rproc
+driver.
 
-Please ignore the above question. Sorry. Let me try again...
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v2:
+- add items for clock-names
+- change syscon to fsl,dsp-ctrl 
 
-The question is: why not just capture that ACPI/EC "interrupt" in
-kernel and then just use that information to set the dwc3 role switch?
-No extra properties needed.
+ .../remoteproc/fsl,imx-dsp-rproc.yaml         | 150 ++++++++++++++++++
+ 1 file changed, 150 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
 
-
-thanks,
-
+diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
+new file mode 100644
+index 000000000000..edf6e4b8d7bb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
+@@ -0,0 +1,150 @@
++# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/remoteproc/fsl,imx-dsp-rproc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: i.MX DSP Remoteproc Devices
++
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
++
++description:
++  This binding provides support for DSP processors found on i.mX family of SoCs
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx8qxp-hifi4
++      - fsl,imx8qm-hifi4
++      - fsl,imx8mp-hifi4
++      - fsl,imx8ulp-hifi4
++
++  clocks:
++    description:
++      Main functional clock for the remote processor
++    minItems: 1
++    maxItems: 32
++
++  clock-names:
++    description: |
++      List of clock names for the remote processor.
++      dsp_clkx for clocks of dsp itself.
++      per_clkx for clocks of peripherals used by dsp.
++    minItems: 1
++    maxItems: 26
++    items:
++      - const: dsp_clk1
++      - const: dsp_clk2
++      - const: dsp_clk3
++      - const: dsp_clk4
++      - const: dsp_clk5
++      - const: dsp_clk6
++      - const: dsp_clk7
++      - const: dsp_clk8
++      - const: per_clk1
++      - const: per_clk2
++      - const: per_clk3
++      - const: per_clk4
++      - const: per_clk5
++      - const: per_clk6
++      - const: per_clk7
++      - const: per_clk8
++      - const: per_clk9
++      - const: per_clk10
++      - const: per_clk11
++      - const: per_clk12
++      - const: per_clk13
++      - const: per_clk14
++      - const: per_clk15
++      - const: per_clk16
++      - const: per_clk17
++      - const: per_clk18
++
++  fsl,dsp-ctrl:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to syscon block which provide access for processor enablement
++
++  mbox-names:
++    items:
++      - const: tx
++      - const: rx
++      - const: rxdb
++
++  mboxes:
++    description:
++      This property is required only if the rpmsg/virtio functionality is used.
++      List of <&phandle type channel> - 1 channel for TX, 1 channel for RX, 1 channel for RXDB.
++      (see mailbox/fsl,mu.yaml)
++    minItems: 1
++    maxItems: 3
++
++  firmware-name:
++    description: |
++      Default name of the firmware to load to the remote processor.
++
++  memory-region:
++    description:
++      If present, a phandle for a reserved memory area that used for vdev buffer,
++      resource table, vring region and others used by remote processor.
++    minItems: 1
++    maxItems: 32
++
++  reg:
++    description: |
++      Address space for any remoteproc memories present on the SoC.
++
++  power-domains:
++    minItems: 1
++    maxItems: 32
++
++required:
++  - compatible
++  - reg
++  - mboxes
++  - mbox-names
++  - clocks
++  - clock-names
++  - firmware-name
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx8mp-clock.h>
++    dsp_reserved: dsp@92400000 {
++      reg = <0x92400000 0x1000000>;
++      no-map;
++    };
++    dsp_vdev0vring0: vdev0vring0@942f0000 {
++      reg = <0x942f0000 0x8000>;
++      no-map;
++    };
++    dsp_vdev0vring1: vdev0vring1@942f8000 {
++      reg = <0x942f8000 0x8000>;
++      no-map;
++    };
++    dsp_vdev0buffer: vdev0buffer@94300000 {
++      compatible = "shared-dma-pool";
++      reg = <0x94300000 0x100000>;
++      no-map;
++    };
++
++    dsp: dsp@3b6e8000 {
++      compatible = "fsl,imx8mp-hifi4";
++      reg = <0x3B6E8000 0x88000>;
++      clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_OCRAMA_IPG>,
++               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSP_ROOT>,
++               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSPDBG_ROOT>;
++      clock-names = "dsp_clk1", "dsp_clk2", "dsp_clk3";
++      firmware-name = "imx/dsp/hifi4.bin";
++      power-domains = <&audiomix_pd>;
++      mbox-names = "tx", "rx", "rxdb";
++      mboxes = <&mu2 0 0>,
++               <&mu2 1 0>,
++               <&mu2 3 0>;
++      memory-region = <&dsp_vdev0buffer>, <&dsp_vdev0vring0>,
++                      <&dsp_vdev0vring1>, <&dsp_reserved>;
++      fsl,dsp-ctrl = <&audio_blk_ctrl>;
++    };
 -- 
-heikki
+2.17.1
+
