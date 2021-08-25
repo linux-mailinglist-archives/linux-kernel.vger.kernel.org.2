@@ -2,105 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB933F7634
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325BE3F7635
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241413AbhHYNog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 09:44:36 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:35878
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239433AbhHYNoV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 09:44:21 -0400
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9A037407A7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 13:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629899015;
-        bh=skl+DRiXkNysfO8pcQNyeLlyFZw5ntPUibqnPCDAM3U=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=iNOt7udhk/TcPcnXRCrcag/nIHDyPhszuqjBxBS3RNX8wpv3oITNBzzdD/MWu3OWQ
-         3kcVha4beXy8+ofCQ/llg66SFoyy2Zzk3NiLLpT315JXb1RVvPS98TgGG8AxMRy1jx
-         5JXijaN7p6JeBDyNbY9F+QcjutEO0F3QyGqaGFjU7nWPDEzqRntckCvOBxCqGAlNR5
-         skvFwgvlOUxzUiLdvWT60UCCiUCdHbB86+/pVzv0WHkMif4k2gFMw2DZ/FcYhubu3c
-         SE+7Y7mhdK3qRBLr+vFapYs1dauLrgbEWLqFD3WpzfsVgIzevRKuBlFgiVQMEX6OPE
-         JzQGcUezwD8Tw==
-Received: by mail-wm1-f72.google.com with SMTP id x125-20020a1c3183000000b002e73f079eefso1547347wmx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 06:43:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=skl+DRiXkNysfO8pcQNyeLlyFZw5ntPUibqnPCDAM3U=;
-        b=PNoO724zW0nk/Rbu7lJdmGLzIQZSMbnQJez6xlr7/cCTBmKtZoNaZqChoqRHkvtz9J
-         yjLRTNjOXsuk4vSNdAGHHz//iMlHhhobpYkbR0xTVBWO6IPn+CJ+aQYjtHw5bSPHSu59
-         2lLIKduIUHbQThkcdmlg/ahH3EGh7eAFfZznNiJfDgtGiOlvsAT2BUL//hEJOpTq5IMC
-         XGK1YXrwnyc6cOgLQDSl/Ju9RbyuTS9/1uoU9PqTTcLxqNLRPluTvrD5lCMoXsIn4AGD
-         D8ApZ7+ePElpWHUvrCGOpTmWncV3XCNtoeO4MANs5PkrKD0RgKHBSDghC4AZ1K3l8Wtf
-         IMfw==
-X-Gm-Message-State: AOAM531Xtrx37bXEY5YbXjB8fTrlUIq06Vu/WZDqvafkWT8m8FvwDz+o
-        ix+sf4KLIAyQ3VbajI3+NZm7gE/HxVPAOZly4kxTE8pU80MaM1PY2eIc9i4nw9XMQGGCrvJFDAk
-        8MyEXDhh1CmLgFoim2ZPJxHOqABhhPiE8noJLH5K4yA==
-X-Received: by 2002:adf:e887:: with SMTP id d7mr24689377wrm.79.1629899015399;
-        Wed, 25 Aug 2021 06:43:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyuhNGgwvNYoo0GmQ6L5/SlgHG39BAbAF1TxdBcudJBAkgJcJdjgsnDBKXIrzEA7Y3mZjl6Iw==
-X-Received: by 2002:adf:e887:: with SMTP id d7mr24689355wrm.79.1629899015263;
-        Wed, 25 Aug 2021 06:43:35 -0700 (PDT)
-Received: from localhost.localdomain ([79.98.113.172])
-        by smtp.gmail.com with ESMTPSA id w9sm5238954wmc.19.2021.08.25.06.43.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 06:43:34 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sam Protsenko <semen.protsenko@linaro.org>
-Subject: [PATCH v3 8/8] MAINTAINERS: clock: include S3C and S5P in Samsung SoC clock entry
-Date:   Wed, 25 Aug 2021 15:42:51 +0200
-Message-Id: <20210825134251.220098-3-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210825134056.219884-6-krzysztof.kozlowski@canonical.com>
-References: <20210825134056.219884-6-krzysztof.kozlowski@canonical.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S241449AbhHYNoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 09:44:38 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:54729 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239022AbhHYNo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 09:44:26 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GvnHv64Ytz9sTj;
+        Wed, 25 Aug 2021 15:43:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qCXDYzNfVG8j; Wed, 25 Aug 2021 15:43:39 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GvnHv4qyKz9sTW;
+        Wed, 25 Aug 2021 15:43:39 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 656AC8B85B;
+        Wed, 25 Aug 2021 15:43:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id oS4fut5rjxxM; Wed, 25 Aug 2021 15:43:39 +0200 (CEST)
+Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 329D38B858;
+        Wed, 25 Aug 2021 15:43:39 +0200 (CEST)
+Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id B29096BC7B; Wed, 25 Aug 2021 13:43:38 +0000 (UTC)
+Message-Id: <b29c29d205737a833262df38e01c07139f1c3dec.1629899011.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc: Make set_endian() return EINVAL when not supporting
+ little endian
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 25 Aug 2021 13:43:38 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cover the S3C and S5Pv210 clock controller binding headers by Samsung
-SoC clock controller drivers maintainer entry.
+There is no point in modifying MSR_LE bit on CPUs not supporting
+little endian.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+Just like done for get_endian(), make set_endian() return
+EINVAL in that case.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/powerpc/kernel/process.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a8e1e5d10d1f..eb4ada858826 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16496,6 +16496,9 @@ F:	Documentation/devicetree/bindings/clock/samsung,s3c*
- F:	Documentation/devicetree/bindings/clock/samsung,s5p*
- F:	drivers/clk/samsung/
- F:	include/dt-bindings/clock/exynos*.h
-+F:	include/dt-bindings/clock/s3c*.h
-+F:	include/dt-bindings/clock/s5p*.h
-+F:	include/dt-bindings/clock/samsung,*.h
- F:	include/linux/clk/samsung.h
- F:	include/linux/platform_data/clk-s3c2410.h
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index 185beb290580..b2b9919795a2 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -1995,6 +1995,10 @@ int set_endian(struct task_struct *tsk, unsigned int val)
+ {
+ 	struct pt_regs *regs = tsk->thread.regs;
  
++	if (!cpu_has_feature(CPU_FTR_PPC_LE) &&
++	    !cpu_has_feature(CPU_FTR_REAL_LE))
++		return -EINVAL;
++
+ 	if ((val == PR_ENDIAN_LITTLE && !cpu_has_feature(CPU_FTR_REAL_LE)) ||
+ 	    (val == PR_ENDIAN_PPC_LITTLE && !cpu_has_feature(CPU_FTR_PPC_LE)))
+ 		return -EINVAL;
 -- 
-2.30.2
+2.25.0
 
