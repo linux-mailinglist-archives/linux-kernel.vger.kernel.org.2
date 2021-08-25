@@ -2,154 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C9E3F749A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02033F749C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240355AbhHYLw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 07:52:58 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8928 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239257AbhHYLw5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 07:52:57 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GvkkT2Drsz8v8M;
-        Wed, 25 Aug 2021 19:48:01 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 19:52:10 +0800
-Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
- (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 25
- Aug 2021 19:52:09 +0800
-Subject: Re: [PATCH v9 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
- PMU
-To:     Will Deacon <will@kernel.org>, Linuxarm <linuxarm@huawei.com>
-CC:     <mark.rutland@arm.com>, <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <zhangshaokun@hisilicon.com>
-References: <20210818051246.29545-1-liuqi115@huawei.com>
- <20210818051246.29545-3-liuqi115@huawei.com>
- <20210824143137.GA23146@willie-the-truck>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <4050af8b-f9a7-6666-4a9d-d1c8f2b212e1@huawei.com>
-Date:   Wed, 25 Aug 2021 19:52:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S240397AbhHYLyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 07:54:03 -0400
+Received: from mga17.intel.com ([192.55.52.151]:16989 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239257AbhHYLyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 07:54:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="197749106"
+X-IronPort-AV: E=Sophos;i="5.84,350,1620716400"; 
+   d="scan'208";a="197749106"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 04:53:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,350,1620716400"; 
+   d="scan'208";a="527231434"
+Received: from um.fi.intel.com (HELO um) ([10.237.72.62])
+  by FMSMGA003.fm.intel.com with ESMTP; 25 Aug 2021 04:53:05 -0700
+From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH 3/5] KVM: VMX: RTIT_CTL_BRANCH_EN has no dependency on
+ other CPUID bit
+In-Reply-To: <ed18e08f-1ea6-4ffa-91a7-9d8706a1b781@intel.com>
+References: <20210824110743.531127-1-xiaoyao.li@intel.com>
+ <20210824110743.531127-4-xiaoyao.li@intel.com>
+ <711265db-f634-36ac-40d2-c09cea825df6@gmail.com>
+ <b80a91db-cb35-ba6d-ab36-a0fa1ca051e7@intel.com>
+ <6dddf3c0-fa8f-f70c-bd5d-b43c7140ed9a@gmail.com>
+ <ed18e08f-1ea6-4ffa-91a7-9d8706a1b781@intel.com>
+Date:   Wed, 25 Aug 2021 14:53:04 +0300
+Message-ID: <87pmu1ivvj.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210824143137.GA23146@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.203]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Xiaoyao Li <xiaoyao.li@intel.com> writes:
 
-Hi, Will
-On 2021/8/24 22:31, Will Deacon wrote:
-> Hi,
-> 
-> On Wed, Aug 18, 2021 at 01:12:46PM +0800, Qi Liu wrote:
->> PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
->> to sample bandwidth, latency, buffer occupation etc.
->>
->> Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
->> registered as a PMU in /sys/bus/event_source/devices, so users can
->> select target PMU, and use filter to do further sets.
->>
->> Filtering options contains:
->> event     - select the event.
->> port      - select target Root Ports. Information of Root Ports are
->>              shown under sysfs.
->> bdf       - select requester_id of target EP device.
->> trig_len  - set trigger condition for starting event statistics.
->> trig_mode - set trigger mode. 0 means starting to statistic when bigger
->>              than trigger condition, and 1 means smaller.
->> thr_len   - set threshold for statistics.
->> thr_mode  - set threshold mode. 0 means count when bigger than threshold,
->>              and 1 means smaller.
-> 
-> I think this is getting there now, thanks for sticking with it. Just a
-> couple of comments below..
-> 
->> +static bool hisi_pcie_pmu_validate_event_group(struct perf_event *event)
->> +{
->> +	struct perf_event *sibling, *leader = event->group_leader;
->> +	int counters = 1;
->> +
->> +	if (!is_software_event(leader)) {
->> +		if (leader->pmu != event->pmu)
->> +			return false;
->> +
->> +		if (leader != event)
->> +			counters++;
->> +	}
->> +
->> +	for_each_sibling_event(sibling, event->group_leader) {
->> +		if (is_software_event(sibling))
->> +			continue;
->> +
->> +		if (sibling->pmu != event->pmu)
->> +			return false;
->> +
->> +		counters++;
->> +	}
->> +
->> +	return counters <= HISI_PCIE_MAX_COUNTERS;
->> +}
-> 
-> Given that this function doesn't look at the event numbers, doesn't this
-> over-provision the counter registers? For example, if I create a group
-> containing 4 of the same event, then we'll allocate four counters but only
-> use one. Similarly, if I create a group containing two events, one for the
-> normal counter and one for the extended counter, then we'll again allocate
-> two counters instead of one.
-> 
+> On 8/25/2021 2:08 PM, Like Xu wrote:
+>> On 25/8/2021 12:19 pm, Xiaoyao Li wrote:
+>>> On 8/25/2021 11:30 AM, Like Xu wrote:
+>>> BranchEn should be always supported if PT is available. Per "31.2.7.2 
+>> 
+>> Check d35869ba348d3f1ff3e6d8214fe0f674bb0e404e.
+>
+> This commit shows BranchEn is supported on BDW, and must be enabled on 
+> BDW. This doesn't conflict the description above that BranchEn should be 
+> always supported.
 
-Yes, we should add some check in hisi_pcie_pmu_validate_event_group() 
-function to avoid over-provision. I'll use a array to record events and 
-do this check.
+It's the *not* setting BranchEn that's not supported on BDW. The point
+of BranchEn is to allow the user to not set it and filter out all the
+branch trace related packets. The main point of PT, however, is the
+branch trace, so in the first implementation BranchEn was reserved as
+1.
 
-Thanks for your review, I'll fix this.
+IOW, it's always available, doesn't depend on CPUID, but on BDW,
+BranchEn==0 should throw a #GP, if I remember right. Check BDM106 for
+details.
 
-> Have I misunderstood?
-> 
->> +static int hisi_pcie_pmu_event_init(struct perf_event *event)
->> +{
->> +	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
->> +	struct hw_perf_event *hwc = &event->hw;
->> +
->> +	event->cpu = pcie_pmu->on_cpu;
->> +
->> +	if (EXT_COUNTER_IS_USED(hisi_pcie_get_event(event)))
->> +		hwc->event_base = HISI_PCIE_EXT_CNT;
->> +	else
->> +		hwc->event_base = HISI_PCIE_CNT;
->> +
->> +	if (event->attr.type != event->pmu->type)
->> +		return -ENOENT;
->> +
->> +	/* Sampling is not supported. */
->> +	if (is_sampling_event(event) || event->attach_state & PERF_ATTACH_TASK)
->> +		return -EOPNOTSUPP;
->> +
->> +	if (!hisi_pcie_pmu_valid_filter(event, pcie_pmu)) {
->> +		pci_err(pcie_pmu->pdev, "Invalid filter!\n");
-> 
-> Please remove this message, as it's triggerable from userspace.
-> 
-got it, will remove this.
-
-Thanks,
-Qi
-> Will
-> .
-> 
-
+Regards,
+--
+Alex
