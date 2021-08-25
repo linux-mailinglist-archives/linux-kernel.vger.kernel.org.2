@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488ED3F79D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6093F79D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240165AbhHYQGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:06:10 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:45732 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239775AbhHYQGI (ORCPT
+        id S238802AbhHYQGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:06:37 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:37394 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231971AbhHYQGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:06:08 -0400
-Received: by mail-ot1-f45.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso23770769otv.12;
-        Wed, 25 Aug 2021 09:05:22 -0700 (PDT)
+        Wed, 25 Aug 2021 12:06:31 -0400
+Received: by mail-oi1-f172.google.com with SMTP id y128so55814oie.4;
+        Wed, 25 Aug 2021 09:05:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=23tuXCnrXm28TiY2x5woHKXy7wqyajMKFQqBCk4bLyw=;
-        b=Bn0s04P+IjTbP+EJ3ZW+bY1qVvVVS/ZKay8H9ETCsSG/mbx2epRoD2wiHdlU5PTket
-         MHKguMwf67WbjXquo/IKSmFttJu+vHYn/IS5bV3do8rVwFUCkfBjX600gZ8g2839xrtA
-         bKdVMIA0Dlihf+mnyEJj145mcO1JbC7V3AiUHja3yagDUn02Jzm/+Y2pJfCLj+EI3yVh
-         wnXdw4Vi46iwNxV+gaexjTTeC8ebRx8OddO+Uf+tm9CCUceE0eYRY6zeOJ4UkpVc/Qa0
-         ECglNNorwLBC9Z9j9KSXwaIy/RkMdhBkksHWQ8K2+dWzeil15EElaRqCsKKz2y23TA9z
-         KvMQ==
-X-Gm-Message-State: AOAM532rNRLKcP+p/I45ORK3zTVJly0aKWZuYHB4zcNqauaPMyTIBjX8
-        CX6E/eMtVx/cMA6ij/brxtHG9/3Hbw==
-X-Google-Smtp-Source: ABdhPJyxNQAVYxnpQdtzNvsQFCTQpy7pDkpvIqO95m/5JpC8845G/LT4dKW2+Rai47BHDMVraVdLpA==
-X-Received: by 2002:a9d:ea5:: with SMTP id 34mr9175744otj.258.1629907521464;
-        Wed, 25 Aug 2021 09:05:21 -0700 (PDT)
+        bh=Bzeq1vxevafZNcmCfWSubGwbo3+FVzEro3mTelbJdwo=;
+        b=gNae1d9ARJ6aHQYrmuRZeJoKneFtvXQP8sWIMRM+VUgAq3NDI9ib8wc+isSwzD2h3t
+         lPJ4yfdzbN6Hd/lIfXQG+GtTDtassYLC8whC8Bp/cfUZZJ71iML6qM4AST0MNnG9dFnt
+         RZGxrKZA24yVcEdbZGUrCuucoarLm7mZP5dd3m9KdV1RXajvBwcvzVvI6ZR/i/7RrTqM
+         26XLHKvxB1tQIZS8m7M6gmBt+NBn+cxYn8iVmFqbcnagF6KMJj4/3EyyQ310g7mkXOb4
+         opM3HMPFvhWuW5FXkAj8g1Cv+wfzV6F/JQ08X1B2VeVcYIobY9jy1P+O3LsWo6o9juL3
+         d0Xg==
+X-Gm-Message-State: AOAM530dR24oxIWOR/FOpuOQqKBNx3M7FdoK8i0dWeiEiFbz1kLrVmRS
+        DE1mjfCOMxYya4AODDeP4Q==
+X-Google-Smtp-Source: ABdhPJzbhyfpOlDR/PZPQELidDiQ70AzLoDo5sxkqNbth7DfwIfYr61MfrDR1En9VR9U9z+ZntiA7w==
+X-Received: by 2002:a05:6808:1294:: with SMTP id a20mr7532780oiw.4.1629907543513;
+        Wed, 25 Aug 2021 09:05:43 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id i27sm47316ots.12.2021.08.25.09.05.20
+        by smtp.gmail.com with ESMTPSA id s63sm41636oia.52.2021.08.25.09.05.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 09:05:20 -0700 (PDT)
-Received: (nullmailer pid 2871006 invoked by uid 1000);
-        Wed, 25 Aug 2021 16:05:19 -0000
-Date:   Wed, 25 Aug 2021 11:05:19 -0500
+        Wed, 25 Aug 2021 09:05:42 -0700 (PDT)
+Received: (nullmailer pid 2871688 invoked by uid 1000);
+        Wed, 25 Aug 2021 16:05:41 -0000
+Date:   Wed, 25 Aug 2021 11:05:41 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        linux-spi@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Luting Guo <luting.guo@unisoc.com>, devicetree@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>
-Subject: Re: [PATCH V2 3/3] dt-bindings: spi: add sprd ADI for sc9863 and
- ums512
-Message-ID: <YSZqP9WfijcVeJ3Y@robh.at.kernel.org>
-References: <20210825065931.2111159-1-zhang.lyra@gmail.com>
- <20210825065931.2111159-4-zhang.lyra@gmail.com>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     Hao Fang <fanghao11@huawei.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        devicetree@vger.kernel.org, monstr@monstr.eu,
+        Daniel Palmer <daniel@0x0f.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Max Merchel <Max.Merchel@tq-group.com>, git@xilinx.com,
+        Joel Stanley <joel@jms.id.au>
+Subject: Re: [PATCH] dt-bindings: Add vendor prefix for Topic Embedded Systems
+Message-ID: <YSZqVWx9le8Kn7Z8@robh.at.kernel.org>
+References: <b6e42012977876c421672a84bdb7636be819d664.1629877585.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210825065931.2111159-4-zhang.lyra@gmail.com>
+In-Reply-To: <b6e42012977876c421672a84bdb7636be819d664.1629877585.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021 14:59:31 +0800, Chunyan Zhang wrote:
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Wed, 25 Aug 2021 09:46:28 +0200, Michal Simek wrote:
+> Add vendor prefix for Topic Embedded Systems (http://topic.nl).
 > 
-> This patch adds support for sc9863 and ums512.
-> 
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 > ---
->  Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml | 2 ++
+> 
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
 >  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Applied, thanks!
