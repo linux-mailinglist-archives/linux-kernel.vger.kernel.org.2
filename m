@@ -2,80 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4D93F7498
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C9E3F749A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240249AbhHYLvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 07:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbhHYLvP (ORCPT
+        id S240355AbhHYLw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 07:52:58 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8928 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239257AbhHYLw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 07:51:15 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D399C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:50:30 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id b1so19578182qtx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:50:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qCJ85EGARublB/DPvAvE10PnE4a7leOnf3RaeUHyVEw=;
-        b=LbgNAJLQqHwAL5o3fCfBl02muzZ1EDYGsw9kaLlV5AIpxM304WhNYiKrtPyriOVTJ0
-         vR/ZYlWUBsRvQJGduZnAr6glcn9UK60ie6/B3hYHNHjMHqwJe2etGZeqHSD8YavpfS4X
-         ck6aIrtwSrsy6FHdMefOTvN2PFyEhkk53ZCfw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qCJ85EGARublB/DPvAvE10PnE4a7leOnf3RaeUHyVEw=;
-        b=h5BAmhyVf8NVOpoZH+M6oXa9TAGLxk338RBHOlHAqqwOTHPa3oJGO3o820YMmLqpU5
-         NR+TUC0ofAm5Hb4tpz2+9E3ik86rm76WhhTpwZQJszfPoyjJyJJxSgDLFH5VAf0hN0+S
-         YKHp7mqXZ1a/SGZRH0QoC6x05Ba0m6Xz2Ut4ewFTPZ+FxcfUzsb484UKqODNXhiSnWQu
-         1ZuEN/rR711hbN6JdXP/QV0IYHCVreLevkspdTgFdNPB7DfMKCRsFH571LdMX1P1S82I
-         MDJDOj6Dq1irUawdubpu2SsDCgdpJI8qHd3PUHUOK1YutTna6+Rx0kb80+6q+zj9DZes
-         Ejug==
-X-Gm-Message-State: AOAM53075bKrZDOn/Nljbukx+dN0FND0IVEQvYMpG0SSuuHS6byMtpLw
-        yVYpe4XsFQlmNHETN7w54V4e7HkqW+U2I+hEIAJqPw==
-X-Google-Smtp-Source: ABdhPJxpqXw6fKZPDYAWX50CG23urulDwyDXfcLlrB94FwnQrKdRN9La8xXFxfd9Pqw4CB14ACowRv7d8m7fucB7vZg=
-X-Received: by 2002:ac8:7ee4:: with SMTP id r4mr7602882qtc.148.1629892229184;
- Wed, 25 Aug 2021 04:50:29 -0700 (PDT)
+        Wed, 25 Aug 2021 07:52:57 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GvkkT2Drsz8v8M;
+        Wed, 25 Aug 2021 19:48:01 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 25 Aug 2021 19:52:10 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 25
+ Aug 2021 19:52:09 +0800
+Subject: Re: [PATCH v9 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+To:     Will Deacon <will@kernel.org>, Linuxarm <linuxarm@huawei.com>
+CC:     <mark.rutland@arm.com>, <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <zhangshaokun@hisilicon.com>
+References: <20210818051246.29545-1-liuqi115@huawei.com>
+ <20210818051246.29545-3-liuqi115@huawei.com>
+ <20210824143137.GA23146@willie-the-truck>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <4050af8b-f9a7-6666-4a9d-d1c8f2b212e1@huawei.com>
+Date:   Wed, 25 Aug 2021 19:52:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20210717045627.1739959-1-daniel@0x0f.com> <CACRpkdbE+_DJFhBCmtz5JwJupf7QkkWZhXrgf1KG_3rPqvEm0w@mail.gmail.com>
-In-Reply-To: <CACRpkdbE+_DJFhBCmtz5JwJupf7QkkWZhXrgf1KG_3rPqvEm0w@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Wed, 25 Aug 2021 20:50:18 +0900
-Message-ID: <CAFr9PXmFHanrx4Frg3hQwo-RbAY-UXxC=FOAj++cshSHa99z3g@mail.gmail.com>
-Subject: Re: [PATCH 00/10] gpio: msc313: Add gpio support for ssd20xd
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Romain Perier <romain.perier@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210824143137.GA23146@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Bartosz
 
-Hi Linus, Bartosz,
+Hi, Will
+On 2021/8/24 22:31, Will Deacon wrote:
+> Hi,
+> 
+> On Wed, Aug 18, 2021 at 01:12:46PM +0800, Qi Liu wrote:
+>> PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
+>> to sample bandwidth, latency, buffer occupation etc.
+>>
+>> Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
+>> registered as a PMU in /sys/bus/event_source/devices, so users can
+>> select target PMU, and use filter to do further sets.
+>>
+>> Filtering options contains:
+>> event     - select the event.
+>> port      - select target Root Ports. Information of Root Ports are
+>>              shown under sysfs.
+>> bdf       - select requester_id of target EP device.
+>> trig_len  - set trigger condition for starting event statistics.
+>> trig_mode - set trigger mode. 0 means starting to statistic when bigger
+>>              than trigger condition, and 1 means smaller.
+>> thr_len   - set threshold for statistics.
+>> thr_mode  - set threshold mode. 0 means count when bigger than threshold,
+>>              and 1 means smaller.
+> 
+> I think this is getting there now, thanks for sticking with it. Just a
+> couple of comments below..
+> 
+>> +static bool hisi_pcie_pmu_validate_event_group(struct perf_event *event)
+>> +{
+>> +	struct perf_event *sibling, *leader = event->group_leader;
+>> +	int counters = 1;
+>> +
+>> +	if (!is_software_event(leader)) {
+>> +		if (leader->pmu != event->pmu)
+>> +			return false;
+>> +
+>> +		if (leader != event)
+>> +			counters++;
+>> +	}
+>> +
+>> +	for_each_sibling_event(sibling, event->group_leader) {
+>> +		if (is_software_event(sibling))
+>> +			continue;
+>> +
+>> +		if (sibling->pmu != event->pmu)
+>> +			return false;
+>> +
+>> +		counters++;
+>> +	}
+>> +
+>> +	return counters <= HISI_PCIE_MAX_COUNTERS;
+>> +}
+> 
+> Given that this function doesn't look at the event numbers, doesn't this
+> over-provision the counter registers? For example, if I create a group
+> containing 4 of the same event, then we'll allocate four counters but only
+> use one. Similarly, if I create a group containing two events, one for the
+> normal counter and one for the extended counter, then we'll again allocate
+> two counters instead of one.
+> 
 
-On Fri, 30 Jul 2021 at 19:12, Linus Walleij <linus.walleij@linaro.org> wrote:
-> I suppose Bartosz can just merge the 4 first patches into the
-> GPIO tree and you can take the rest into the SoC tree?
->
-> Yours,
-> Linus Walleij
+Yes, we should add some check in hisi_pcie_pmu_validate_event_group() 
+function to avoid over-provision. I'll use a array to record events and 
+do this check.
 
-I just noticed I hadn't to'd Bartosz about these. Is there anything I
-need to do for the first patches?
+Thanks for your review, I'll fix this.
 
-Cheers,
+> Have I misunderstood?
+> 
+>> +static int hisi_pcie_pmu_event_init(struct perf_event *event)
+>> +{
+>> +	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>> +	struct hw_perf_event *hwc = &event->hw;
+>> +
+>> +	event->cpu = pcie_pmu->on_cpu;
+>> +
+>> +	if (EXT_COUNTER_IS_USED(hisi_pcie_get_event(event)))
+>> +		hwc->event_base = HISI_PCIE_EXT_CNT;
+>> +	else
+>> +		hwc->event_base = HISI_PCIE_CNT;
+>> +
+>> +	if (event->attr.type != event->pmu->type)
+>> +		return -ENOENT;
+>> +
+>> +	/* Sampling is not supported. */
+>> +	if (is_sampling_event(event) || event->attach_state & PERF_ATTACH_TASK)
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	if (!hisi_pcie_pmu_valid_filter(event, pcie_pmu)) {
+>> +		pci_err(pcie_pmu->pdev, "Invalid filter!\n");
+> 
+> Please remove this message, as it's triggerable from userspace.
+> 
+got it, will remove this.
 
-Daniel
+Thanks,
+Qi
+> Will
+> .
+> 
+
