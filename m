@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE223F7CBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 21:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF7D3F7CC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 21:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242485AbhHYTbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 15:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55104 "EHLO
+        id S242502AbhHYTcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 15:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhHYTbt (ORCPT
+        with ESMTP id S231445AbhHYTcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 15:31:49 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7503C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:31:03 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id y34so1190522lfa.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:31:03 -0700 (PDT)
+        Wed, 25 Aug 2021 15:32:16 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5359DC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:31:30 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso330881otv.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:31:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8ci8RsGCUHfQz7nmoHgVgYoNhxkkZ9gzkCCxPYWj1Kw=;
-        b=YPTMaBTqCggdBkLCMMZEIi33gvKL6fqCAK93ss8pGeknbOaA/+JbrcCnkIU2jc8p5O
-         1CrJaqe8upu7Ms5/ZcMGP2E3QnwD8aTf66I19j/5gDuuenCauWQcw7mgFBrRZqv+gReD
-         CnLUQ9kwpMSGHaC0YgsmqiRhLhvUx8mGGn6yJXr8hC1FyoG8ntnT3WthyGorfBDHDwkA
-         kV07G28ZaDjV4qGlS1j+/cb+yYtttoMRqVxCQdkQjnoSyCioffDgQDPuPpe67gY/sIn8
-         GiCg+taD7mbDwEshYcwDLJwZCllOggYBq0f9jTkG6DSu8MCe5W0vT80L97po8wXGR9YT
-         tk7A==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=J6WVjBvRIT9A+PrV6sxYc5oJqYhffihj3mZfN9H1dBg=;
+        b=cRh+wuj9sAm9jNkbwlr/GCHXATQ88pPCKppXfUIy6dkAQwiRWGUxp7B/uI5Qvv6SW9
+         udoev0jxKXpaNed5mEERl71dmvdRngbtcrWxZB2DgfJBAojZiX1ktlzaoUMusoW0ZA6K
+         Gh/+Hfl1aKsLDeEcA9z8w/swfj7HoWcrixe38=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8ci8RsGCUHfQz7nmoHgVgYoNhxkkZ9gzkCCxPYWj1Kw=;
-        b=BMPOyAx+axzQBbXn7qaTPIWkxhO+X10AXRZ61Nc2VrZUgaoddYRq2iH4HXVnPO6UEt
-         YHNceMFKjlBGK3GE9CTQUXzRCqy6IL+HbDRIYCWsAswcwGP3RpPER/mCKVC2efxkurYw
-         Ahy7ZLTzA1Wr9G6c3g0ujz41xQ3z/ZpyyEdaPG/jaOmSgukeuT1oneFWiET5edxSN1qb
-         QyL0ate+LJ4aYN87Pf+UNOvZQW/mUUv1eCr4Mo0RXo5rX1zAxBv3NHaAs+OPy4WFJeoK
-         9pzVK2e+EtwLFitTZrbs9T2OG6LOuyHR6YlJFrUvQBqLPvkdUpjzlzN7L6vVefaXdJ9g
-         CiGQ==
-X-Gm-Message-State: AOAM531Jcjen6LfT155UnjcjFwAD0R9E6IkHW5sWsHM2QAQG2IDdyecF
-        H/rIgjKFiBbqDC1rT6QgwH0=
-X-Google-Smtp-Source: ABdhPJwCTVJ7Pbr7mOv2KUJCeiKaehlnS7v7SEIiGOr6TmwoXcfdlPlRDgFsEWrl21KSsOdOYrr26A==
-X-Received: by 2002:a05:6512:96f:: with SMTP id v15mr5698347lft.455.1629919862077;
-        Wed, 25 Aug 2021 12:31:02 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id o20sm91400lfu.148.2021.08.25.12.31.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 12:31:01 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 22:31:00 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/ntfs3: Remove unnecessary condition checking from
- ntfs_file_read_iter
-Message-ID: <20210825193100.fix4o2p7swifru5o@kari-VirtualBox>
-References: <20210825182522.1367594-1-kari.argillander@gmail.com>
- <20210825191757.GW7722@kadam>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J6WVjBvRIT9A+PrV6sxYc5oJqYhffihj3mZfN9H1dBg=;
+        b=fcVCDo9RdyjWj2zhecldQWKZ0W+8A7+pvrteME/7VNVnZs0EpoMyNE8O7qrxhwUD3M
+         dWSieKdo1Ry+Wx4XoACFnTAYAgUYZ4prDJOzqpZ83RJDOVS60H8YAKimsny5/x+5ADeO
+         yurGNSj+XW2CcWOjQEtousYtDUyQ1OCxVIJvB8R+V+m0zsc2fyCvs46YeSQzVPeiSvUa
+         ariLGR4rimMRCwHgu8mvVhdMhQ5PRG6oW64Jpdr53lxA7c0VsS5GAlsL8DLEFDmK7dTm
+         GcKMFvPLRrgDUNFWyIOxTTSZWHD/cZvl97c5JBzvvCVPOkMH/A3syfOWQLV6IKNUSq3h
+         Qheg==
+X-Gm-Message-State: AOAM533u29jX4qpOYT/v6dL0q0nexQJDN/ANIudQuMhxicM9eXrsKlQH
+        UfX/oE29hDAHoIrLI4W/HhW+zA==
+X-Google-Smtp-Source: ABdhPJzn7PpAMNIwAANraSQTOK7Ycgz1keQAfVRX9TYP4QAz30FZ/pSOKYIUDkIykLmZS5fZSUh6QQ==
+X-Received: by 2002:a05:6830:2a06:: with SMTP id y6mr89291otu.134.1629919889711;
+        Wed, 25 Aug 2021 12:31:29 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id k19sm156565oiw.49.2021.08.25.12.31.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 12:31:29 -0700 (PDT)
+Subject: Re: [PATCH] selftests: cleanup config
+To:     Li Zhijian <lizhijian@cn.fujitsu.com>, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, shuah@kernel.org, Jason@zx2c4.com,
+        masahiroy@kernel.org, linux-kselftest@vger.kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
+        Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210825050948.10339-1-lizhijian@cn.fujitsu.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <6547d239-56b7-71c0-70c9-20a67bdad1dd@linuxfoundation.org>
+Date:   Wed, 25 Aug 2021 13:31:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210825191757.GW7722@kadam>
+In-Reply-To: <20210825050948.10339-1-lizhijian@cn.fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 10:17:57PM +0300, Dan Carpenter wrote:
-> On Wed, Aug 25, 2021 at 09:25:22PM +0300, Kari Argillander wrote:
-> > This check will be also performed in generic_file_read_iter() so we do
-> > not want to check this two times in a row.
-> > 
-> > This was founded with Smatch
-> > 	fs/ntfs3/file.c:803 ntfs_file_read_iter()
-> > 	warn: unused return: count = iov_iter_count()
-> > 
-> > Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
-> > ---
-> > I cc Dan also because I am happy that I finally managed to install
-> > Smack and straight away I found something with it. Thank you for
-> > this great tool.
+On 8/24/21 11:09 PM, Li Zhijian wrote:
+> - DEBUG_PI_LIST was renamed to DEBUG_PLIST since 8e18faeac3 ("lib/plist: rename DEBUG_PI_LIST to DEBUG_PLIST")
+> - SYNC was removed since aff9da10e21 ("staging/android: make sync_timeline internal to sw_sync")
 > 
-> Thanks!
-> 
-> You got a bit lucky, because you're using the --two-passes and the truth
-> is I haven't looked at that in years so I'm worried it's probably not
-> great.  You probably be better off not using the --two-passes option.  :/
-> I should remove it.
 
-Haha no I need it :D I was just testing what this tool can do. I also
-notice that --two-passes seems quite bad to read. But hey I found
-something! :D Good to know that you are not using it. I will not use it
-then. Thanks.
+Please write a complete commit log explaining the change
+and tell us what happens if we don't do this.
 
+> $ for k in $(grep ^CONFIG $(find tools/testing/selftests/ -name config) | awk -F'=' '{print$1}' | awk -F':' '{print $2}' | sort | uniq); do  k=${k#CONFIG_}; git grep -qw -e "menuconfig $k" -e "config $k" || echo "$k is missing"; done;
+> DEBUG_PI_LIST is missing
+> SYNC is missing
 > 
-> regards,
-> dan carpenter
+> CC: Philip Li <philip.li@intel.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> ---
+>   tools/testing/selftests/cpufreq/config              | 2 +-
+>   tools/testing/selftests/sync/config                 | 1 -
+>   tools/testing/selftests/wireguard/qemu/debug.config | 2 +-
+>   3 files changed, 2 insertions(+), 3 deletions(-)
 > 
-> 
+
+Please split this into 3 patches
+
+thanks,
+-- Shuah
+
