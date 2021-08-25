@@ -2,156 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F283B3F757F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824FD3F7583
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240972AbhHYNDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 09:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S240610AbhHYNEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 09:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhHYNDU (ORCPT
+        with ESMTP id S241024AbhHYNEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 09:03:20 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59478C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 06:02:34 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id i28so43490946ljm.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 06:02:34 -0700 (PDT)
+        Wed, 25 Aug 2021 09:04:12 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA5FC061757;
+        Wed, 25 Aug 2021 06:03:26 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id d22-20020a1c1d16000000b002e7777970f0so4241763wmd.3;
+        Wed, 25 Aug 2021 06:03:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VJdIN+/yLxKd2dK6G+lnQvHGiAbSkLC1a8lGdr9xSoo=;
-        b=QoUXBQmHDkselc7MwEDy9wVldlkzLU9KQBqyiKw9vRGPfNhZd60CC0WgcCtJ2Rk3ex
-         GFJSJoXuTwNelBiRUqrSA5wf1/fe8E/rKXteAy6dhZT1vZb8PuM9bGecFxonwVpkBwhP
-         yJDjjhC7Esir8Kz78HkXSn7JBfZJ++vqw7DQia1YRyhjlmADbXAA9gekmJ+Xpl2cwtKB
-         Wfj/0aEuJ0Jpq8sP1KmDnAlV1tsteXa+uGig2T9x8k5OlwPLE7Dfd9Oj++92Wr/kNM0I
-         C0S0p4BHN2kwcAgqhE6vvZqC+Sa9iJwRLbGVb/yIlbWJfnOC1r4nEpcRmNpiD+7xh/e2
-         kDpQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ajoObTpBOMq0HG6JcMfkwvfTBeAFH7pnhMJZIOox90Y=;
+        b=iidePI8/ErhARNUitKfra37DTcNrGi8trDUpXw8kl5DOJSLKA1o2ZOeEwTvW9yUDAi
+         mNOz0OA/03uRMqx9SzN/SdRQqffLZvJe4l8I65NjDHTaRD/3px9TQ/W0bft+A9CzqJU1
+         uhUCY0mES//qQZL66wvyYOX8AWuPgOc42ilzhvkilKts71Vquo1WXTvvg47R6sEQ37FE
+         YeFvgwjsxBqZ1y7e26S4wKH+7Xn7k8X0/VynT1T4i1VmAeGzjEFq4AsNOM3R7e10ZTlm
+         zHc+B2Un91bnnT5tCUYVsj6uC1BDWLsOdrNYu4oNIuyjDoWocj7SnU3fZm8Uw25lIjM0
+         NQaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VJdIN+/yLxKd2dK6G+lnQvHGiAbSkLC1a8lGdr9xSoo=;
-        b=GVpwEujS0vCHgfIt+C/5tPn4rt11n0kFNQbpx5fEDu42WXooPLQ+w7eoM+os+dnwoo
-         +Nn6mrpH9Rdn0djrkU5GXfAwEpSg4m+ll5C5bY5gKHMsfegoo2fbBCjLNiPyysA9UWUD
-         PtFyMrqdKhZScXmhkSSn4YH+jJOCnEUTaXRFTlznjoDgP35FcwAKW6nyAiR2aSnw1Y/u
-         SDEyvLlxUmbcSGseCamdaOU9wY/DCuD5Bod1zK8sDPPD2MD4pls2dlzwEFEvq66vaYno
-         lxf+yahRdMe5Zl671fzMEXzlTV5qMjdRT+tI3sR+cpcocYULWzOwfRYoSFiczM7chB/E
-         kpMQ==
-X-Gm-Message-State: AOAM532dJm5clTmSMQAlVTeXEd8ap7oOH4dxYG2WrqSJvfF6fsV6JedS
-        ijW54Bq/kjJzjmJ3mUZ11B4Eb+x5apujgg==
-X-Google-Smtp-Source: ABdhPJyQRw3ly1HjrgANgceo9/zpMs/y2r9pUOkj8tWleeaoyfVsJXodSurbOiSugQJ2Q1jgHymy7g==
-X-Received: by 2002:a2e:bc26:: with SMTP id b38mr10172228ljf.497.1629896551014;
-        Wed, 25 Aug 2021 06:02:31 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id t69sm238994lff.27.2021.08.25.06.02.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 06:02:29 -0700 (PDT)
-Subject: Re: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kernel test robot <lkp@intel.com>, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, gregkh@linuxfoundation.org,
-        straube.linux@gmail.com, fmdefrancesco@gmail.com,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
- <202108251911.Vwmzl4rI-lkp@intel.com>
- <9743e1ee-75f4-6231-427b-8c7f659fb252@gmail.com>
- <20210825125159.GU1931@kadam>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <bd50c00e-1814-dc32-36cf-73cf58123201@gmail.com>
-Date:   Wed, 25 Aug 2021 16:02:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ajoObTpBOMq0HG6JcMfkwvfTBeAFH7pnhMJZIOox90Y=;
+        b=c+DT51jjiv+M2gfsj9B1hVOoKen9+B489GbolGfSLIyd1zftxx1x6DHNWl3B69JUR0
+         Y4QFI141ryWrFPOOXGCK6xCu5wlUUJ4GwuoLH+hHP71X3tig4bnN5dUcl+ko1ItRPT7y
+         Bki6zt0m678xn15Ur88+sRFSjZd6QzJoXc0WmJxKuAKgioA2Nerka4fmi4wj2lT3ZnuZ
+         pdwcQ+MLEgB9DdbJcyRCTogZvPq3wH3PCQN7CTToHdDL5QTJinYon+7tReG7x/JJRVG2
+         N+JxXV+eQ1JX8oA96fm1k9pgSgxwil3gpTLLdOwSj+somnkfCuSIsuBIPvFgAsLXn3Ja
+         BhFA==
+X-Gm-Message-State: AOAM533jCiSvfIOP7twia5lcSQkuwceVlOuxBS7xi2MHWlPaQlxrXkNL
+        eg37Zycbvk/Lpu/pxA+6ijk=
+X-Google-Smtp-Source: ABdhPJwBJ1eonlShCcYY5lreMLwyvX3XBf0OChuN2ZsTI19ZKJwHgFx3nZ9mlRzIQCjaqkO+WhqYEw==
+X-Received: by 2002:a1c:4e16:: with SMTP id g22mr9192676wmh.55.1629896605275;
+        Wed, 25 Aug 2021 06:03:25 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id f23sm5067597wmc.3.2021.08.25.06.03.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 06:03:24 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 14:03:23 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: Re: [PATCH 5.4 00/61] 5.4.143-rc1 review
+Message-ID: <YSY/m/h1AmTEKHXP@debian>
+References: <20210824170106.710221-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210825125159.GU1931@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824170106.710221-1-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/21 3:51 PM, Dan Carpenter wrote:
-> On Wed, Aug 25, 2021 at 03:17:06PM +0300, Pavel Skripkin wrote:
->> On 8/25/21 3:05 PM, kernel test robot wrote:
->> > Hi Pavel,
->> > 
->> > Thank you for the patch! Yet something to improve:
->> > 
->> > [auto build test ERROR on staging/staging-testing]
->> > 
->> > url:    https://github.com/0day-ci/linux/commits/Pavel-Skripkin/staging-r8188eu-remove-read-write-_macreg/20210824-162756
->> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git 093991aaadf0fbb34184fa37a46e7a157da3f386
->> > config: arm-buildonly-randconfig-r001-20210825 (attached as .config)
->> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project ea08c4cd1c0869ec5024a8bb3f5cdf06ab03ae83)
->> > reproduce (this is a W=1 build):
->> >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->> >          chmod +x ~/bin/make.cross
->> >          # install arm cross compiling tool for clang build
->> >          # apt-get install 11.1.1
->> >          # https://github.com/0day-ci/linux/commit/d4e4bbed4e59df37967086f60fe92cb1b4504d37
->> >          git remote add linux-review https://github.com/0day-ci/linux
->> >          git fetch --no-tags linux-review Pavel-Skripkin/staging-r8188eu-remove-read-write-_macreg/20210824-162756
->> >          git checkout d4e4bbed4e59df37967086f60fe92cb1b4504d37
->> >          # save the attached .config to linux build tree
->> >          mkdir build_dir
->> >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=arm SHELL=/bin/bash drivers/staging/r8188eu/
->> > 
->> > If you fix the issue, kindly add following tag as appropriate
->> > Reported-by: kernel test robot <lkp@intel.com>
->> > 
->> > All errors (new ones prefixed by >>):
->> > 
->> > > > drivers/staging/r8188eu/hal/usb_halinit.c:2022:3: error: expected expression
->> >                     u8 tmp;
->> >                     ^
->> >     1 error generated.
->> > 
->> > Kconfig warnings: (for reference only)
->> >     WARNING: unmet direct dependencies detected for QCOM_SCM
->> >     Depends on (ARM || ARM64) && HAVE_ARM_SMCCC
->> >     Selected by
->> >     - ARM_QCOM_SPM_CPUIDLE && CPU_IDLE && (ARM || ARM64) && (ARCH_QCOM || COMPILE_TEST && !ARM64 && MMU
->> > 
->> > 
->> 
->> We need to fix Kconfig, ok, I will take a look at it later
->> 
-> 
-> This is not related to your patch.  Ignore it.
-> 
-> 
->> > vim +2022 drivers/staging/r8188eu/hal/usb_halinit.c
->> > 
->> 
->> >    2020		case HW_VAR_BCN_VALID:
->> >    2021			/* BCN_VALID, BIT(16) of REG_TDECTRL = BIT(0) of REG_TDECTRL+2, write 1 to clear, Clear by sw */
->> > > 2022				u8 tmp;
->> 
->> Hm, I don't know anything about ARM compilers, so should I wrap this code
->> block with {}?
-> 
-> Yep.
-> 
->> 
->> My local gcc 11.1.1 (x86_64) does not produce any warnings/errors
->> 
-> 
-> You should figure out whats up with that because it shouldn't compile
-> with the gcc options that the kernel uses.
-> 
+Hi Sasha,
 
-AFAIK, at least 2 guys except me in this CC list compiled my series 
-without errors/warnings. Maybe, staging tree is missing some Makefile 
-updates?
+On Tue, Aug 24, 2021 at 01:00:05PM -0400, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 5.4.143 release.
+> There are 61 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu 26 Aug 2021 05:01:01 PM UTC.
+> Anything received after that time might be too late.
+
+Build test:
+mips (gcc version 11.1.1 20210816): 65 configs -> no new failure
+arm (gcc version 11.1.1 20210816): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210816): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/54
 
 
-I'll resend series this evening anyway, but this is strange....
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
-
-
-With regards,
-Pavel Skripkin
+--
+Regards
+Sudip
