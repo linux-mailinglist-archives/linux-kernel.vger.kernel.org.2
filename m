@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBD63F7E89
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098143F7E67
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232723AbhHYW0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38066 "EHLO
+        id S232425AbhHYWZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbhHYW0F (ORCPT
+        with ESMTP id S232217AbhHYWZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:26:05 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36585C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:25:19 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id f34-20020a05622a1a2200b0029c338949c1so615559qtb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:25:19 -0700 (PDT)
+        Wed, 25 Aug 2021 18:25:31 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FED1C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:24:45 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id y14-20020a0568302a0e00b0051acbdb2869so950834otu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=fT/uiX9DJiKWLSrGSaUNQbEmdVHwY+0Iq88fa/vtsiw=;
-        b=SnTQ1ly+r0hm+ryHx+ivlRgBcYtv2HN0O/wMKbA6Plz8rGu8wDd/AWD4Z0QgcIl/ME
-         0BrG5+grIN4eYXURMHvCWiHQdIPFwamLf6FSFlN8N4JqIbTJ2npI1ikFCOzTWeF76pon
-         062ZuXCHX6/0CBPUVlllMqqHi0LRdV+iROcoXZ4snvAB4SQqKQziDOX+mEqY6JZ0aHAS
-         pGsN9drTuW3pMIRpXsKyfWYrwrX7Zt4c7/ifMEolUUaLU7ISGI5FkJFlqg7rMzY4tyjU
-         GbUpwsoKimW8t51tIV4zbZpmpmxEjVlPyFc5Zzqt3kd1DdCdOuoj79nDmpnosUJ5FD6P
-         T3rQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lsXe1e72wRkGIfMRaHX5V5OYsm6EaNn+8h1FDv1jEg8=;
+        b=u3SuP2a+axhJJ3ZFEMFVhEpZAHwKfExb7Q1cnnzCtb3nQy4FMfuBD8YPhOjL4p1Suu
+         SXRqPLGCZ0BZxQfJxAmnW0XQDcYtn9Bo/pd/MUIWpi34SdReEWfeVhgiRniKI/RQje6T
+         yxDhU4iVyjE3FqfnPHKsFi/zvNKoADJ+daHM+jRKIgT0cT+GNQOpY1/Fgavt91L1G4ac
+         5q8VCEb15WFvq53rok5lk7IqdqvLVczUkhX4sQuiDh0QppSAFzJH3wb63EaJk4g4QNiA
+         4KDTwOfhxXPkfQ1hp5Z3rdYgf6Ql6pTzr5MpdPbckdsX3hEdUF0y2tY/Ksn13tc7XcR8
+         V78A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=fT/uiX9DJiKWLSrGSaUNQbEmdVHwY+0Iq88fa/vtsiw=;
-        b=rS/lU/YMxUMU7i3kx2/nBvOHztrlqFNjXOhv2+8qQKwmMtQJBRi5lOUAQjxkPURZyV
-         lJHO16975Jxf9457PDgI2lg3vXZIo7udqh6iPPBUvoWGmvm2s4dtcfLWqOh/mH7Ilnjz
-         qa1Chmj7jxi5N9AIvx45ax7jxJ6GOEf1JlEgH2mbPJDKHejWUMHYaRvYzx0V0B89D0qF
-         eWXf0J8OV8kCy/uEJl9kNv9uqyuL4VZSCyuRMA5wj+422+5Hbfn8HkUdupwrhykpyUsF
-         7j9CvHm5bqmJwpD4wQcMF1nK4EP1g/ESnIP3oRAwBiZvtmPgcVRL4iX1DfnS6WB3GfMa
-         OMEA==
-X-Gm-Message-State: AOAM533IJapS6wtWkul0zJ9wc7CdShmtdnP18yFNB5SYiOVIJJSkwEUx
-        a+yioMuovzmvWIUzk3mRKs+jpxyTiJk+
-X-Google-Smtp-Source: ABdhPJyTdeHC1yoxT0gpFRpMe2/9Nq4odvgwxIxMLPY5smJiapxFejusCW/e4+cxbKVi8bGMObu4dZAKKpSL
-X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:200:3664:f78f:3b89:adc6])
- (user=jiancai job=sendgmr) by 2002:a0c:f351:: with SMTP id
- e17mr605774qvm.21.1629930318275; Wed, 25 Aug 2021 15:25:18 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 15:25:14 -0700
-Message-Id: <20210825222514.2107728-1-jiancai@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH] coresight: syscfg: fix compiler warnings
-From:   Jian Cai <jiancai@google.com>
-Cc:     mike.leach@linaro.org, dianders@chromium.org, mka@chromium.org,
-        linux@roeck-us.net, manojgupta@google.com, llozano@google.com,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lsXe1e72wRkGIfMRaHX5V5OYsm6EaNn+8h1FDv1jEg8=;
+        b=ba72JtciVuu2BrpQ0p9rywvuB3xeEZBrUj8RLFRYWWs9CVGymd8fMU1zB4/QcXsQdJ
+         QeyAloQVUStoLqrvIN9vIsxJtIkBxKya56rYDvMt/+rsxftQJ8PfjMfAb41QpTN9WWam
+         LvPXM3CX7fpEPVkW2OtejeCarPhn/MV0UcsyliTbRFEAeMPsEV3YYAiCwftTIea78U5L
+         r5EPhPykoNF+NG/rzfUdJs8cIiYHb4RytWHHKu41lUxbOiXsIm8bmsqKPoeRs5dwPQEL
+         8XKenliSAZpxDLG3P9bqW3xGtupDIeVMNKmjVYdCeOwMl/O1JQDiDkQd+MelQv2S8puS
+         wxZg==
+X-Gm-Message-State: AOAM53141wkyZ1CN6Q/O4TVdgHSLh8hi48F3PBK8+5DBuclmWvOG/j+D
+        PHHf5gSLTJUhEjxC6YDahV5vzA==
+X-Google-Smtp-Source: ABdhPJzxblTCS2xRcc4B1gj6x6TLZbGGe/ZkxV55c9Zg/bc+WmiakZRcH3jYSR1lzG2mYLzQvdoLAA==
+X-Received: by 2002:a9d:4683:: with SMTP id z3mr542498ote.95.1629930284432;
+        Wed, 25 Aug 2021 15:24:44 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u19sm263721oiv.28.2021.08.25.15.24.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 15:24:43 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+Subject: [PATCH v2 0/5] drm/msm/dp: Allow variation in register regions
+Date:   Wed, 25 Aug 2021 15:25:52 -0700
+Message-Id: <20210825222557.1499104-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes warnings with -Wimplicit-function-declaration, e.g.
+It turns out that sc8180x (among others) doesn't have the same internal layout
+of the 4 subblocks. This series therefor modifies the binding to require all
+four regions to be described individually and then extends the driver to read
+these four regions. The driver will fall back to read the old single-reg format
+and apply the original offsets and sizes.
 
-^[[1m/mnt/host/source/src/third_party/kernel/v5.4/drivers/hwtracing/coresight/coresight-syscfg.c:455:15: ^[[0m^[[0;1;31merror: ^[[0m^[[1mimplicit declaration of function 'kzalloc' [-Werror,-Wimplicit-function-declaration]^[[0m
-        csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev), GFP_KERNEL);
-^[[0;1;32m                     ^
+Bjorn Andersson (5):
+  dt-bindings: msm/dp: Change reg definition
+  drm/msm/dp: Use devres for ioremap()
+  drm/msm/dp: Refactor ioremap wrapper
+  drm/msm/dp: Store each subblock in the io region
+  drm/msm/dp: Allow sub-regions to be specified in DT
 
-Signed-off-by: Jian Cai <jiancai@google.com>
----
- drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../bindings/display/msm/dp-controller.yaml   |  13 ++-
+ drivers/gpu/drm/msm/dp/dp_catalog.c           |  64 ++++-------
+ drivers/gpu/drm/msm/dp/dp_parser.c            | 102 ++++++++++--------
+ drivers/gpu/drm/msm/dp/dp_parser.h            |  11 +-
+ 4 files changed, 100 insertions(+), 90 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
-index fc0760f55c53..43054568430f 100644
---- a/drivers/hwtracing/coresight/coresight-syscfg.c
-+++ b/drivers/hwtracing/coresight/coresight-syscfg.c
-@@ -5,6 +5,7 @@
-  */
- 
- #include <linux/platform_device.h>
-+#include <linux/slab.h>
- 
- #include "coresight-config.h"
- #include "coresight-etm-perf.h"
 -- 
-2.33.0.259.gc128427fd7-goog
+2.29.2
 
