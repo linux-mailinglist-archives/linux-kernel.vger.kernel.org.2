@@ -2,101 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBFC3F6DF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 05:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE6B3F6E12
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237229AbhHYD4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 23:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235816AbhHYD4l (ORCPT
+        id S229503AbhHYEGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 00:06:02 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14412 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229379AbhHYEGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 23:56:41 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526D5C061757;
-        Tue, 24 Aug 2021 20:55:56 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id fz10so4259564pjb.0;
-        Tue, 24 Aug 2021 20:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=rIAtfGj5qvVENV9WWVZMFVGBJuT4wuu3+yhzjBnrODs=;
-        b=FFLev3F07ILuAs83PdrenjINmyoPq0n77COtk2VIQDbIdEIeXPxZuh6I0B7OU+4Tt1
-         /E2LjvMMHnXZrAtRJc68INgHwY+om8QEUIereki+erzJLc59mmv0+1E4hb+pliTjsmta
-         ndeTK1oMki5pOWNxKSvJzaJsxln2TScgQ5SamfpiNJoXpv3KMxIBerlRqClBYSqdCooB
-         U8lLIVYl7tisFR0hGB6gNqVn0ZCbM4B+L/PJxhQg/O5q8o6fwNJUUyiw2WLrhxzP8wc0
-         2Cpx0nIq0CB10pBWCp0R5uPg16kAk9b44mmjvPweTdxHy3yQnIEoIZKrKj6BApCD6lhS
-         O8ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=rIAtfGj5qvVENV9WWVZMFVGBJuT4wuu3+yhzjBnrODs=;
-        b=SLThGdUJpMb5UI5c0/7Pl7lsnOPQetayGyiseigS+6jSs7I2sfsmamBV+1mvhdj9VK
-         dYlPDrdxzxs2w8jzE/M8T5hA/jSLN30Pa3EuaFYJhI60G6FYqKUWfDmVM2tp4Zix6gI3
-         wPXRQLtbdgXJFght3GI5c7EHjbKPbHIAcurD5+2dFJMvhdWwb7y8XE7GHcY33GzXP38G
-         CfA8a2x4jIu1a47zvObLiiOLoUwqdJEQKvH/RraEovpDwcuJfOzXFy44ck3IkCjPC/PY
-         HJ0m8oklP5riOJ7Wvd3dlW79rB/Dd97TtWPxR2XaTf3w+rvIkLG4sqrvmOaWUkjx8vIh
-         8MaA==
-X-Gm-Message-State: AOAM5332q9Jtq+5AcfUd9ToGiUmoBzAXJi7QFqpZi/j08M3h3ODGUFIm
-        jZ04/cQ/dJaKEp2bA7+p9kM=
-X-Google-Smtp-Source: ABdhPJzGY1gLl625kG0Emo3PW5/KunYn2jQ8ZmvIFLtams9OGpbD31KTB44Cic0fv4r3bexeCiy9bA==
-X-Received: by 2002:a17:90b:4a82:: with SMTP id lp2mr8271118pjb.103.1629863755885;
-        Tue, 24 Aug 2021 20:55:55 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id a4sm21298248pfk.0.2021.08.24.20.55.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 20:55:55 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: dsa: mt7530: manually set up VLAN ID 0
-Date:   Wed, 25 Aug 2021 11:55:45 +0800
-Message-Id: <20210825035545.1836274-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210824173714.cgpt2addxyjzlbyy@skbuf>
-References: <20210824165253.1691315-1-dqfext@gmail.com> <20210824165742.xvkb3ke7boryfoj4@skbuf> <20210824173237.1691654-1-dqfext@gmail.com> <20210824173714.cgpt2addxyjzlbyy@skbuf>
+        Wed, 25 Aug 2021 00:06:01 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GvXN50KX5zbdcY;
+        Wed, 25 Aug 2021 12:01:25 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 25 Aug 2021 12:05:14 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 25 Aug 2021 12:05:14 +0800
+Subject: Re: [PATCH 3/3] amba: Properly handle device probe without IRQ domain
+To:     Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Frank Rowand" <frowand.list@gmail.com>,
+        <devicetree@vger.kernel.org>, Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Ruizhe Lin <linruizhe@huawei.com>, <wangkefeng.wang@huawei.com>
+References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
+ <20210816074619.177383-4-wangkefeng.wang@huawei.com>
+ <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
+ <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <ee649111-dc07-d6db-8872-dcb692802236@huawei.com>
+Date:   Wed, 25 Aug 2021 12:05:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 08:37:14PM +0300, Vladimir Oltean wrote:
-> On Wed, Aug 25, 2021 at 01:32:37AM +0800, DENG Qingfang wrote:
-> > Okay. So the Fixes tag should be 6087175b7991, which initially adds the
-> > software fallback support for mt7530.
-> 
-> Ok. Did the old code not need VLAN 0 for VLAN-unaware ports, or are you
-> saying that since the VLAN table lookup was bypassed completely in the
-> old code, 'no VLAN 0' was an inconsequential error?
-> 
-> I think it's the latter. Just wanted to make sure. So that means, either
-> this Fixes: tag or the other, the patch still belongs to net-next. From
-> my side you shouldn't need to resend.
 
-You're right. The old code does not use VLAN table lookup for VLAN-unaware
-ports, and the current code set VLAN-unaware ports to fallback mode so
-missing VLAN 0 will only make them fallback to SVL.
+On 2021/8/25 4:08, Saravana Kannan wrote:
+> On Tue, Aug 24, 2021 at 1:05 PM Rob Herring <robh+dt@kernel.org> wrote:
+>> +Saravana
+>>
+>> Saravana mentioned to me there may be some issues with this one...
+>>
+>>
+>> On Mon, Aug 16, 2021 at 2:43 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>>> of_amba_device_create() uses irq_of_parse_and_map() to translate
+>>> a DT interrupt specification into a Linux virtual interrupt number.
+>>>
+>>> But it doesn't properly handle the case where the interrupt controller
+>>> is not yet available, eg, when pl011 interrupt is connected to MBIGEN
+>>> interrupt controller, because the mbigen initialization is too late,
+>>> which will lead to no IRQ due to no IRQ domain found, log is shown below,
+>>>    "irq: no irq domain found for uart0 !"
+>>>
+>>> use of_irq_get() to return -EPROBE_DEFER as above, and in the function
+>>> amba_device_try_add()/amba_device_add(), it will properly handle in such
+>>> case, also return 0 in other fail cases to be consistent as before.
+>>>
+>>> Cc: Russell King <linux@armlinux.org.uk>
+>>> Cc: Rob Herring <robh+dt@kernel.org>
+>>> Cc: Frank Rowand <frowand.list@gmail.com>
+>>> Reported-by: Ruizhe Lin <linruizhe@huawei.com>
+>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>> ---
+>>>   drivers/amba/bus.c    | 27 +++++++++++++++++++++++++++
+>>>   drivers/of/platform.c |  6 +-----
+>>>   2 files changed, 28 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+>>> index 36f2f42c8014..720aa6cdd402 100644
+>>> --- a/drivers/amba/bus.c
+>>> +++ b/drivers/amba/bus.c
+>>> @@ -19,6 +19,7 @@
+>>>   #include <linux/clk/clk-conf.h>
+>>>   #include <linux/platform_device.h>
+>>>   #include <linux/reset.h>
+>>> +#include <linux/of_irq.h>
+>>>
+>>>   #include <asm/irq.h>
+>>>
+>>> @@ -371,12 +372,38 @@ static void amba_device_release(struct device *dev)
+>>>          kfree(d);
+>>>   }
+>>>
+>>> +static int of_amba_device_decode_irq(struct amba_device *dev)
+>>> +{
+>>> +       struct device_node *node = dev->dev.of_node;
+>>> +       int i, irq = 0;
+>>> +
+>>> +       if (IS_ENABLED(CONFIG_OF_IRQ) && node) {
+>>> +               /* Decode the IRQs and address ranges */
+>>> +               for (i = 0; i < AMBA_NR_IRQS; i++) {
+>>> +                       irq = of_irq_get(node, i);
+>>> +                       if (irq < 0) {
+>>> +                               if (irq == -EPROBE_DEFER)
+>>> +                                       return irq;
+>>> +                               irq = 0;
+>>> +                       }
+>>> +
+>>> +                       dev->irq[i] = irq;
+>>> +               }
+>>> +       }
+>>> +
+>>> +       return 0;
+>>> +}
+>>> +
+>>>   static int amba_device_try_add(struct amba_device *dev, struct resource *parent)
+>>>   {
+>>>          u32 size;
+>>>          void __iomem *tmp;
+>>>          int i, ret;
+>>>
+>>> +       ret = of_amba_device_decode_irq(dev);
+>>> +       if (ret)
+>>> +               goto err_out;
+>>> +
+> Similar to other resources the AMBA bus "gets" for the device, I think
+> this should be moved into amba_probe() and not here. There's no reason
+> to delay the addition of the device (and loading its module) because
+> the IRQ isn't ready yet.
 
-> 
-> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+The following code in the amba_device_try_add() will be called, it uses irq[0]
+and irq[1], so I put of_amba_device_decode_irq() into amba_device_try_add().
+
+470         if (dev->irq[0])
+471                 ret = device_create_file(&dev->dev, &dev_attr_irq0);
+472         if (ret == 0 && dev->irq[1])
+473                 ret = device_create_file(&dev->dev, &dev_attr_irq1);
+474         if (ret == 0)
+475                 return ret;
+
+of_amba_device_decode_irq() in amba_device_try_add() won't lead to issue,
+only delay the device add, right?
+
+If make it into amba_probe(), the above code should be moved too, could we
+make a new patch to move both of them, or don't move them?
+
