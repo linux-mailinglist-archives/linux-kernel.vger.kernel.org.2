@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179A93F7C1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE2A3F7C1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239665AbhHYSS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 14:18:26 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:40852 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234629AbhHYSSZ (ORCPT
+        id S241293AbhHYSS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 14:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234190AbhHYSS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 14:18:25 -0400
-Received: by mail-ot1-f48.google.com with SMTP id x9-20020a056830278900b0051b8be1192fso117004otu.7;
-        Wed, 25 Aug 2021 11:17:39 -0700 (PDT)
+        Wed, 25 Aug 2021 14:18:56 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6BDC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:18:10 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso4713362pjh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=InsY6Lj4sdxvx5Es6EZDInTBtlPB/ST6GXWE1MVZ6hA=;
+        b=NgB+oqTUbX9RTt45b4MdB+l7PFT9efVvVlcKtAZ2bvPaJ6sSNi8wAXWzEH50KgYWrA
+         xkE6ST3bDswbQ1epGVUhOOvmt2LVSk3p2aseqvAxxmTm/ojPMkVk9byII7QrFg8FjvGy
+         RKaul7UtxqVa8SRgE6ngDRTzJ7/o8OwigodzU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LQ0pZPWQx0ZHOI2wEp9wamWoXIMX5iP3PcetWMvFO/g=;
-        b=dfB5DmEN21Ej4e2EzE1d61MTtzQ1UzHOajh3jWqcdgZ3uXcbotd6p7Q83VZtYRavFY
-         dIWwtHAdLkscnop1FE64benYQHo5qvH4Inj1+7lDKWxklfJLaogeiLb2d0EZQzpRDTKH
-         U1rlXPP1taw15SFJlLBD0+n/jZsOB7En7g8FSL9lTfriPhV7GucTJDH739FbNh0juF9V
-         lv18ksyBZOx5pGFzmfGhEUQD/m4HHUJJR4c5NeC6BhV8ZiQ8tyyyvpvVsvKdboTDNnTs
-         8q3YXxIUX/7wDg1S45cjs9qpoMU8rGLzICuKe27RIE4TlWeaSqPlxO7pGwJYUXqUTYwk
-         Mz6Q==
-X-Gm-Message-State: AOAM5307iXD0Kf80VdOO95AnytkbKpBDClAK80mDxvGRA99Y6oL+HyY8
-        fXN4bSbNbVqJtNGOVBGtXWK+8q4DbXwtM0/isDY=
-X-Google-Smtp-Source: ABdhPJxtNO2eegtOegb2C9Yt03ivbvRBEbfYOPZ5oAJGHuLq2dvU7KBgtu/I+X63rKxNNn7CmbZNRKid1WgYS3JRqPI=
-X-Received: by 2002:a9d:a57:: with SMTP id 81mr24725554otg.260.1629915458885;
- Wed, 25 Aug 2021 11:17:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=InsY6Lj4sdxvx5Es6EZDInTBtlPB/ST6GXWE1MVZ6hA=;
+        b=axv6lSWbCiYAzgu9p67GRUZh1bc+6WRotYRyBZg8kN+NoDHeKeNm55DLwtlM3MISSx
+         +gd62hhivLaMSa1gg8bKcCahkzIouB8ToPApFKYWc3qNiUfM13FgXok7MwyQkAr8oVML
+         HH8wx6kvv72Keth+VXrJvhv8VVBBjWmzrs1paknWm3kLU5KBsgQVcgzBY4gVLMjjN0Jy
+         QOPW5nSxG2DGi6MUWKQ4JmE5sIs9WCO/+1mzFyHvjRwBqWv0dB6tN5YCozczE2T/IPzj
+         BPQ9wzbwELhQ5plDWfmaeZc8FVkcyMAUt13OgTRuqZyG4qfFc3oNE7vVY4Cp1gPhnUva
+         vJjA==
+X-Gm-Message-State: AOAM533OIi7G3QWJY/tj64X8y6/wl0O0QtqM7HYClt8acetCeExeXywI
+        7+F5a0VFzspz1D2gg+BWacpTSQ==
+X-Google-Smtp-Source: ABdhPJzSTjgZtSDgp6sJuCKjKwRbARY8O/vczpgOg/v5P8YCKBabQv0Md42cfC4X3T3NNbbxYx1KWA==
+X-Received: by 2002:a17:90b:ec9:: with SMTP id gz9mr11572369pjb.24.1629915489565;
+        Wed, 25 Aug 2021 11:18:09 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:43ef:7c11:c445:195f])
+        by smtp.gmail.com with UTF8SMTPSA id fh2sm273902pjb.12.2021.08.25.11.18.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 11:18:09 -0700 (PDT)
+From:   Gwendal Grignou <gwendal@chromium.org>
+To:     bleung@chromium.org, enric.balletbo@collabora.com,
+        groeck@chromium.org
+Cc:     linux-kernel@vger.kernel.org,
+        Gwendal Grignou <gwendal@chromium.org>
+Subject: [PATCH v2] platform/chrome: cros_ec_trace: Fix format warnings
+Date:   Wed, 25 Aug 2021 11:18:02 -0700
+Message-Id: <20210825181802.2838484-1-gwendal@chromium.org>
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
 MIME-Version: 1.0
-References: <20210823202412.25716-1-digetx@gmail.com> <CAPDyKFpsEMmuF4XzUX=ko4H3iBSu_77_+vozETg9njC94x8goA@mail.gmail.com>
-In-Reply-To: <CAPDyKFpsEMmuF4XzUX=ko4H3iBSu_77_+vozETg9njC94x8goA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 25 Aug 2021 20:17:27 +0200
-Message-ID: <CAJZ5v0hox4Y7pQARTTjMkj5TdDkcuKkyeB3=YR3YFnAcGMUJeA@mail.gmail.com>
-Subject: Re: [PATCH v1] PM: domains: Improve runtime PM performance state handling
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 9:51 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Mon, 23 Aug 2021 at 22:25, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >
-> > GENPD core doesn't support handling performance state changes while
-> > consumer device is runtime-suspended or when runtime PM is disabled.
-> > GENPD core may override performance state that was configured by device
-> > driver while RPM of the device was disabled or device was RPM-suspended.
-> > Let's close that gap by allowing drivers to control performance state
-> > while RPM of a consumer device is disabled and to set up performance
-> > state of RPM-suspended device that will be applied by GENPD core on
-> > RPM-resume of the device.
-> >
-> > Fixes: 5937c3ce2122 ("PM: domains: Drop/restore performance state votes for devices at runtime PM")
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
->
-> Rafael, if not too late, can you please queue this as a fix for v5.14?
-> I haven't heard about any regression, but the error is there.
+Fix printf format issues in new tracing events.
 
-Done, thanks!
+Fixes: 814318242 ("platform/chrome: cros_ec_trace: Add fields to command traces")
 
+Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+---
+Changes since v1:
+- Use %u instead of %d for ec timestamp, it is presented as a u32.
 
-> > ---
-> >  drivers/base/power/domain.c | 10 ++++++++--
-> >  1 file changed, 8 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > index e1c8994ae225..3a13a942d012 100644
-> > --- a/drivers/base/power/domain.c
-> > +++ b/drivers/base/power/domain.c
-> > @@ -435,7 +435,7 @@ static void genpd_restore_performance_state(struct device *dev,
-> >  int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
-> >  {
-> >         struct generic_pm_domain *genpd;
-> > -       int ret;
-> > +       int ret = 0;
-> >
-> >         genpd = dev_to_genpd_safe(dev);
-> >         if (!genpd)
-> > @@ -446,7 +446,13 @@ int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
-> >                 return -EINVAL;
-> >
-> >         genpd_lock(genpd);
-> > -       ret = genpd_set_performance_state(dev, state);
-> > +       if (pm_runtime_suspended(dev)) {
-> > +               dev_gpd_data(dev)->rpm_pstate = state;
-> > +       } else {
-> > +               ret = genpd_set_performance_state(dev, state);
-> > +               if (!ret)
-> > +                       dev_gpd_data(dev)->rpm_pstate = 0;
-> > +       }
-> >         genpd_unlock(genpd);
-> >
-> >         return ret;
-> > --
-> > 2.32.0
-> >
+ drivers/platform/chrome/cros_ec_trace.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/platform/chrome/cros_ec_trace.h b/drivers/platform/chrome/cros_ec_trace.h
+index f50b9f9b8610..9d0c848af310 100644
+--- a/drivers/platform/chrome/cros_ec_trace.h
++++ b/drivers/platform/chrome/cros_ec_trace.h
+@@ -92,7 +92,7 @@ TRACE_EVENT(cros_ec_sensorhub_timestamp,
+ 		__entry->current_time = current_time;
+ 		__entry->delta = current_timestamp - current_time;
+ 	),
+-	TP_printk("ec_ts: %12lld, ec_fifo_ts: %12lld, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
++	TP_printk("ec_ts: %9d, ec_fifo_ts: %9u, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
+ 		  __entry->ec_sample_timestamp,
+ 		__entry->ec_fifo_timestamp,
+ 		__entry->fifo_timestamp,
+@@ -122,7 +122,7 @@ TRACE_EVENT(cros_ec_sensorhub_data,
+ 		__entry->current_time = current_time;
+ 		__entry->delta = current_timestamp - current_time;
+ 	),
+-	TP_printk("ec_num: %4d, ec_fifo_ts: %12lld, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
++	TP_printk("ec_num: %4d, ec_fifo_ts: %9u, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
+ 		  __entry->ec_sensor_num,
+ 		__entry->ec_fifo_timestamp,
+ 		__entry->fifo_timestamp,
+@@ -153,7 +153,7 @@ TRACE_EVENT(cros_ec_sensorhub_filter,
+ 		__entry->x = state->x_offset;
+ 		__entry->y = state->y_offset;
+ 	),
+-	TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %12lld len: %d x: %12lld y: %12lld",
++	TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %12lld len: %lld x: %12lld y: %12lld",
+ 		  __entry->dx,
+ 		__entry->dy,
+ 		__entry->median_m,
+-- 
+2.33.0.rc2.250.ged5fa647cd-goog
+
