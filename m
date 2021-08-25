@@ -2,251 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79C23F7DC2
+	by mail.lfdr.de (Postfix) with ESMTP id 153743F7DC0
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhHYVcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 17:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhHYVce (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 17:32:34 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF6EC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:31:48 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id k5so1884385lfu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CY0qbvVPjAOFzT8qiDPpTkDYSNAZtyk57huJIJzryLM=;
-        b=M9bx0SOnsGDlg6EdWvfUJiOzp+LnJnCsliu6HetKE4lwMQsYMSjkRyiS3ej7A9NE0K
-         DirdJBjr4GEtvvADd7Uc/jozQEKtnOFqDn0569t2NcV7iaelhyQwfhLPmCTbNgEqlliO
-         6BgOXWTb5RqcSy2DGb2XzxNvSx0AhAIVNmRJyzySizRH7yVnnsCUJCGzNnYAT6gh1GBg
-         8wIjkuqvRlbdWQs/Vzk0LX1gXpdNB/xsdOr4Z57Iqftv68a/gbamW2ZnkKJBfVJZKngN
-         8vnPfc/n8NDG9AcAFmH+uVPJdHEjtz7lG2+/14IWR/DSRAujCLGzTFBIvdPFCAM8AWMm
-         h/sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CY0qbvVPjAOFzT8qiDPpTkDYSNAZtyk57huJIJzryLM=;
-        b=NSxiv9+ulKrO4SYoSYIU/pcYNC27A4RtShpWHzuVeYeYdtzSkupc1guGLJjpmQVC8A
-         TfIvRo+HDRSxAwrKui/VCtDPIT1JEaShvcg08eGnMycKPbhp1REIeW1LL4rKZKozmzU2
-         72UFOMq7zW7OYFjuD3By/aaTrF3SY2i3895VrGaFiZqCceAZBeCgIssJl9/6jBX50jKL
-         BsSlVhZXElxXKJKa/MaGaYRNURl68GrNcFahJmzyLhTjQIqR3Oe1K6XfH+AvI9w9/o2i
-         PFp+wct117vNzWJtybi+i3mID/dcz1cPOrW8JZ0wp/aGtmB/z3tAOfhsGqABGbsosjQw
-         CVAQ==
-X-Gm-Message-State: AOAM533FkJ5rHcvGZaSp6q9LXchtsSfseUO6IGzU07aHKHEYyjaLDK1s
-        YI45KVkVdF5mAt5ouNiwOmO2L53b09WoiAisyvKMmA==
-X-Google-Smtp-Source: ABdhPJz+RJT6IU3xUkzodKecOyUDoT1qdKVVe/S3mJKfCjuy3YGChtWjD6clJDWnMDm5h5aQ27DVyF2DNjR7rql3B48=
-X-Received: by 2002:a19:7117:: with SMTP id m23mr134039lfc.73.1629927106160;
- Wed, 25 Aug 2021 14:31:46 -0700 (PDT)
+        id S231708AbhHYVcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 17:32:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229599AbhHYVcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 17:32:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5593F610A1;
+        Wed, 25 Aug 2021 21:31:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629927105;
+        bh=GQpaLXOeTre1tnsmkfBCzjL/6oulqKgM/Nfy5gJGBlM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LeTFnAR42dMEaeLmLllAJtGnnuzmOTJ2zuduQj1EvtxFxgbK1UB8lG+6GyHEg6I+t
+         cDe8Lssni0jvQce61VRK6rx2/ZjiKIQLgCCStezU1EXnHH4ON4miFWP4wni7blVQFC
+         mRbQ/9f8/ECcFAFrPDCOMOPWF3HJHiJtslKIUGiu/9tL7afKYrOxmoPA385+pha4cG
+         g1moZrSG/jIBFYHiwc9R/tcFozpBOiqeNT7Fcnl70vYRsFrU/5EMPXwe9pYkhvBJGM
+         ENHEoI0x43sGo5BF7gLD4bij8B7W1lfmjpTwJh7QtHfhvqITuryuL0JfOOC4nc/TZi
+         KYHc77utMzp3Q==
+Date:   Wed, 25 Aug 2021 14:31:43 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH] f2fs: don't ignore writing pages on fsync
+ during checkpoint=disable
+Message-ID: <YSa2v7oLMAWZP+b5@google.com>
+References: <20210823170151.1434772-1-jaegeuk@kernel.org>
+ <baa8a361-1a22-76a0-423d-4378178f7073@kernel.org>
+ <YSUn1j22s/kc+hWS@google.com>
+ <d0a48947-e4df-9b0f-735e-6b306a64c4fe@kernel.org>
 MIME-Version: 1.0
-References: <20210818214021.2476230-1-keescook@chromium.org> <20210818214021.2476230-5-keescook@chromium.org>
-In-Reply-To: <20210818214021.2476230-5-keescook@chromium.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 25 Aug 2021 14:31:34 -0700
-Message-ID: <CAKwvOdmxRMcwKtWt+FogVY8iXn=vQ+0AZ36maJP2LbSdo_NNjg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/7] slab: Add __alloc_size attributes for better
- bounds checking
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Daniel Micay <danielmicay@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0a48947-e4df-9b0f-735e-6b306a64c4fe@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 2:40 PM Kees Cook <keescook@chromium.org> wrote:
->
-> As already done in GrapheneOS, add the __alloc_size attribute for
-> regular kmalloc interfaces, to provide additional hinting for better
-> bounds checking, assisting CONFIG_FORTIFY_SOURCE and other compiler
-> optimizations.
->
-> Co-developed-by: Daniel Micay <danielmicay@gmail.com>
-> Signed-off-by: Daniel Micay <danielmicay@gmail.com>
-> Cc: Christoph Lameter <cl@linux.com>
-> Cc: Pekka Enberg <penberg@kernel.org>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: linux-mm@kvack.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On 08/25, Chao Yu wrote:
+> On 2021/8/25 1:09, Jaegeuk Kim wrote:
+> > On 08/24, Chao Yu wrote:
+> > > On 2021/8/24 1:01, Jaegeuk Kim wrote:
+> > > > We must flush dirty pages when calling fsync() during checkpoint=disable.
+> > > > Returning zero makes inode being clear, which fails to flush them when
+> > > > enabling checkpoint back even by sync_inodes_sb().
+> > > 
+> > > Without this patch, file can be persisted via checkpoint=enable as well, my
+> > > testcase:
+> > > 
+> > > - mount -t f2fs -o checkpoint=disable,checkpoint_nomerge /dev/pmem0 /mnt/f2fs/
+> > > - cp file /mnt/f2fs/
+> > > - xfs_io /mnt/f2fs/file -c "fdatasync"
+> > > - mount -o remount,checkpoint=enable /dev/pmem0 /mnt/f2fs/
+> > > - umount /mnt/f2fs
+> > > - mount /dev/pmem0 /mnt/f2fs
+> > > - md5sum file /mnt/f2fs/file
+> > > chksum values are the same.
+> > > 
+> > > Am I missing something?
+> > 
+> > I'm trying to address one subtle issue where a file has only NEW_ADDR by the
+> 
+> Oh, I doubt that we may failed to flush data of all inodes due to failures during
+> sync_inodes_sb(), additionally, how about adding retry logic for sync_inodes_sb()
+> if there is still any F2FS_DIRTY_DATA reference counts in f2fs_enable_checkpoint()
+> to mitigate this issue, e.g.:
+> 
+> f2fs_enable_checkpoint()
+> 
+> 	do {
+> 		sync_inode_sb();
+> 		congestion_wait();
+> 		cond_resched();
+> 	} while (get_pages(sbi, F2FS_DIRTY_DATA) && retry_count--)
+> 
+> 	if (get_pages(sbi, F2FS_DIRTY_DATA))
+> 		f2fs_warm("");
 
-This is a good start, so
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Agreed. Sent v2.
 
-Do we also want to attribute:
-* __kmalloc_index
-* kmem_cache_free_bulk
-* kmem_cache_alloc_bulk
-* kmem_cache_alloc_trace
-* kmalloc_order
-* kmalloc_order_trace
-* kmalloc_large
-* kmalloc_node
-* __kmalloc_track_caller
-* kmalloc_array_node
-* __kmalloc_node_track_caller
-
-> ---
->  include/linux/slab.h | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index 10fd0a8c816a..6ce826d8194d 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -181,7 +181,7 @@ int kmem_cache_shrink(struct kmem_cache *s);
->  /*
->   * Common kmalloc functions provided by all allocators
->   */
-> -__must_check
-> +__must_check __alloc_size(2)
->  void *krealloc(const void *objp, size_t new_size, gfp_t flags);
->  void kfree(const void *objp);
->  void kfree_sensitive(const void *objp);
-> @@ -426,6 +426,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
->  #define kmalloc_index(s) __kmalloc_index(s, true)
->  #endif /* !CONFIG_SLOB */
->
-> +__alloc_size(1)
->  void *__kmalloc(size_t size, gfp_t flags) __assume_kmalloc_alignment __malloc;
->  void *kmem_cache_alloc(struct kmem_cache *s, gfp_t flags) __assume_kmalloc_alignment __malloc;
->  void kmem_cache_free(struct kmem_cache *s, void *objp);
-> @@ -450,6 +451,7 @@ static __always_inline void kfree_bulk(size_t size, void **p)
->  }
->
->  #ifdef CONFIG_NUMA
-> +__alloc_size(1)
->  void *__kmalloc_node(size_t size, gfp_t flags, int node) __assume_slab_alignment __malloc;
->  void *kmem_cache_alloc_node(struct kmem_cache *s, gfp_t flags, int node)
->                             __assume_slab_alignment __malloc;
-> @@ -574,6 +576,7 @@ static __always_inline void *kmalloc_large(size_t size, gfp_t flags)
->   *     Try really hard to succeed the allocation but fail
->   *     eventually.
->   */
-> +__alloc_size(1)
->  static __always_inline void *kmalloc(size_t size, gfp_t flags)
->  {
->         if (__builtin_constant_p(size)) {
-> @@ -596,6 +599,7 @@ static __always_inline void *kmalloc(size_t size, gfp_t flags)
->         return __kmalloc(size, flags);
->  }
->
-> +__alloc_size(1)
->  static __always_inline void *kmalloc_node(size_t size, gfp_t flags, int node)
->  {
->  #ifndef CONFIG_SLOB
-> @@ -620,6 +624,7 @@ static __always_inline void *kmalloc_node(size_t size, gfp_t flags, int node)
->   * @size: element size.
->   * @flags: the type of memory to allocate (see kmalloc).
->   */
-> +__alloc_size(1, 2)
->  static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
->  {
->         size_t bytes;
-> @@ -638,7 +643,7 @@ static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
->   * @new_size: new size of a single member of the array
->   * @flags: the type of memory to allocate (see kmalloc)
->   */
-> -__must_check
-> +__must_check __alloc_size(2, 3)
->  static inline void *krealloc_array(void *p, size_t new_n, size_t new_size,
->                                    gfp_t flags)
->  {
-> @@ -656,6 +661,7 @@ static inline void *krealloc_array(void *p, size_t new_n, size_t new_size,
->   * @size: element size.
->   * @flags: the type of memory to allocate (see kmalloc).
->   */
-> +__alloc_size(1, 2)
->  static inline void *kcalloc(size_t n, size_t size, gfp_t flags)
->  {
->         return kmalloc_array(n, size, flags | __GFP_ZERO);
-> @@ -685,6 +691,7 @@ static inline void *kmalloc_array_node(size_t n, size_t size, gfp_t flags,
->         return __kmalloc_node(bytes, flags, node);
->  }
->
-> +__alloc_size(1, 2)
->  static inline void *kcalloc_node(size_t n, size_t size, gfp_t flags, int node)
->  {
->         return kmalloc_array_node(n, size, flags | __GFP_ZERO, node);
-> @@ -718,6 +725,7 @@ static inline void *kmem_cache_zalloc(struct kmem_cache *k, gfp_t flags)
->   * @size: how many bytes of memory are required.
->   * @flags: the type of memory to allocate (see kmalloc).
->   */
-> +__alloc_size(1)
->  static inline void *kzalloc(size_t size, gfp_t flags)
->  {
->         return kmalloc(size, flags | __GFP_ZERO);
-> @@ -729,25 +737,31 @@ static inline void *kzalloc(size_t size, gfp_t flags)
->   * @flags: the type of memory to allocate (see kmalloc).
->   * @node: memory node from which to allocate
->   */
-> +__alloc_size(1)
->  static inline void *kzalloc_node(size_t size, gfp_t flags, int node)
->  {
->         return kmalloc_node(size, flags | __GFP_ZERO, node);
->  }
->
-> +__alloc_size(1)
->  extern void *kvmalloc_node(size_t size, gfp_t flags, int node);
-> +__alloc_size(1)
->  static inline void *kvmalloc(size_t size, gfp_t flags)
->  {
->         return kvmalloc_node(size, flags, NUMA_NO_NODE);
->  }
-> +__alloc_size(1)
->  static inline void *kvzalloc_node(size_t size, gfp_t flags, int node)
->  {
->         return kvmalloc_node(size, flags | __GFP_ZERO, node);
->  }
-> +__alloc_size(1)
->  static inline void *kvzalloc(size_t size, gfp_t flags)
->  {
->         return kvmalloc(size, flags | __GFP_ZERO);
->  }
->
-> +__alloc_size(1, 2)
->  static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
->  {
->         size_t bytes;
-> @@ -758,11 +772,13 @@ static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
->         return kvmalloc(bytes, flags);
->  }
->
-> +__alloc_size(1, 2)
->  static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
->  {
->         return kvmalloc_array(n, size, flags | __GFP_ZERO);
->  }
->
-> +__alloc_size(3)
->  extern void *kvrealloc(const void *p, size_t oldsize, size_t newsize,
->                 gfp_t flags);
->  extern void kvfree(const void *addr);
-> --
-
--- 
-Thanks,
-~Nick Desaulniers
+> 
+> Thanks,
+> 
+> > checkpoint=disable test. I don't think this hurts anything but can see
+> > some mitigation of the issue.
+> > 
+> > > 
+> > > Thanks,
