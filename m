@@ -2,429 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E313F7B66
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C214B3F7B6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhHYRSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
+        id S242249AbhHYRSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbhHYRSZ (ORCPT
+        with ESMTP id S242237AbhHYRSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:18:25 -0400
-X-Greylist: delayed 275 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Aug 2021 10:17:39 PDT
-Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543B5C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:17:39 -0700 (PDT)
-Received: from pps.filterd (m0122331.ppops.net [127.0.0.1])
-        by mx0b-00190b01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17PFvIH6003500;
-        Wed, 25 Aug 2021 18:17:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=edtcoh0yspDr53hDuDsONFWPx4KE3nSl18ap2QzWALU=;
- b=AGf66ys+HNaKXQoYU6gOXDwF7R2VN0TANXfyVdAiVzsUk3tT0LtR9/ehv7jEhh7zODi2
- REMqTGX1wkg0n16IsRn1jq8wUVoef88N4EDBhYmYdtSELY9Y4hIU3gNCbj0Bek2DmTQX
- iv5GFiBOpA9oW4AzU8cGEFq0k6PcQf8/tVOAzAgOSo4LpD3T4A2WZXrL8xmIQFL7dh+t
- 8q7qSTMuH1NbE5IA66QdZFjdmk3rtpbiA7ucLWfnWFLa8I6SSVGyySY9Vyx70lbFwHTr
- 35o9e670nE0cIaFV92r2KNdHtHbYNWCWbIDbgMclWJC/rLNI9nsWOuNCEZWpL0j2qjhv Ww== 
-Received: from prod-mail-ppoint1 (prod-mail-ppoint1.akamai.com [184.51.33.18] (may be forged))
-        by mx0b-00190b01.pphosted.com with ESMTP id 3anhh8mpd6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Aug 2021 18:17:35 +0100
-Received: from pps.filterd (prod-mail-ppoint1.akamai.com [127.0.0.1])
-        by prod-mail-ppoint1.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 17PH5amC011060;
-        Wed, 25 Aug 2021 13:17:34 -0400
-Received: from prod-mail-relay10.akamai.com ([172.27.118.251])
-        by prod-mail-ppoint1.akamai.com with ESMTP id 3an83bhd4w-1;
-        Wed, 25 Aug 2021 13:17:34 -0400
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay10.akamai.com (Postfix) with ESMTP id 38CD6472F8;
-        Wed, 25 Aug 2021 17:17:34 +0000 (GMT)
-Subject: Re: [PATCH v6 02/11] dyndbg: add DEFINE_DYNAMIC_DEBUG_CATEGORIES and
- callbacks
-To:     Jim Cromie <jim.cromie@gmail.com>, gregkh@linuxfoundation.org,
-        seanpaul@chromium.org, jeyu@kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-References: <20210822222009.2035788-1-jim.cromie@gmail.com>
- <20210822222009.2035788-3-jim.cromie@gmail.com>
-From:   Jason Baron <jbaron@akamai.com>
-Message-ID: <405391f8-eb8f-0b49-0d28-eb3ecf5d554d@akamai.com>
-Date:   Wed, 25 Aug 2021 13:17:33 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 25 Aug 2021 13:18:45 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C607DC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:17:59 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso4803807wmg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:17:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/f463DvLr/calLiNDLjjt5FVZTkgEt9zc8bsS269TX4=;
+        b=RxRikHdqw6b+lKNARRx5dCX2F0IAkiWmxrlJeJZAKxRWT8yPks8zcoHz0bioTrDxFc
+         BZhXiLKQNxU60sHlNvEZq6/1UcojlvGaPPMXkCzlHhbc8RoxIrXw/bEHmGleQ4JufsXB
+         647rvgHOiBUxbdjfv/zqvUjB4s3bl+9DseREk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/f463DvLr/calLiNDLjjt5FVZTkgEt9zc8bsS269TX4=;
+        b=dLoF/I5WVUVANPjylhufC0TDc8mE00sldQAW9sTaXpODY1aG2lCptfkMNZa09W7JfB
+         5j2mzCqREOF9IK3LmOPlWbAIJZYQ8wQf5faScWi9F1oGopSOqzdvNE1ZMnjSg4+kcbCI
+         QD471MlpILb4WaaJ1qBFjYv0H+Z4OJDHe1FAHGaZsFAbdGmb7c6duJx3hhA0FT7lKERZ
+         ofGLakgpnQhM1Fmn1iUGJKhfUlChoAoRgovx2PpoB3ESkg0+SDNvUTOdE/SnqCTurOAb
+         6dhMqld1B6CcDKf/JNwI6ta0LE5AHKeWfUiduyRyvBn/3Xm3tNHiWWZAt3dAEYTJ46k2
+         Bl+A==
+X-Gm-Message-State: AOAM530/XdPq+D+8NzvyGaAIPj+BWXrIZBZ9HXwy0BAL++vZZriMCh1v
+        mLieUSN/oJhYmOq98odotlhzZqRClTmBZGcGCDSlxw==
+X-Google-Smtp-Source: ABdhPJzI9RrfjwzTOtGiWMbqXx7vP1XByzV71h+90EGK5unVPWdIf36Ze521g0NSBr859KeELBJYfaTZ7AgEsaN9gcg=
+X-Received: by 2002:a1c:3182:: with SMTP id x124mr3157462wmx.35.1629911878352;
+ Wed, 25 Aug 2021 10:17:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210822222009.2035788-3-jim.cromie@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-25_07:2021-08-25,2021-08-25 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108250101
-X-Proofpoint-GUID: zilUZKmRc1EdpGDnXk3lz-SQFVuvWMqn
-X-Proofpoint-ORIG-GUID: zilUZKmRc1EdpGDnXk3lz-SQFVuvWMqn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-08-25_07,2021-08-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108250102
-X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 184.51.33.18)
- smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint1
+References: <20210824135941.38656-1-cristian.marussi@arm.com>
+ <20210824135941.38656-12-cristian.marussi@arm.com> <7a2f972d-fdd0-d0f7-cac2-1989980ed872@gmail.com>
+In-Reply-To: <7a2f972d-fdd0-d0f7-cac2-1989980ed872@gmail.com>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Wed, 25 Aug 2021 13:17:47 -0400
+Message-ID: <CA+-6iNw-_VXcntU_UE8kTiPb8Sq28KkZG1__N7rE4ezo=VqQVQ@mail.gmail.com>
+Subject: Re: [PATCH v4 11/12] [RFC] firmware: arm_scmi: Add
+ sync_cmds_atomic_replies transport flag
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        etienne.carriere@linaro.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000089cbfe05ca656e6a"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--00000000000089cbfe05ca656e6a
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, Aug 25, 2021 at 12:38 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 8/24/2021 3:59 PM, Cristian Marussi wrote:
+> > A flag is added to let the transport signal the core that its handling of
+> > synchronous command messages implies that, after .send_message has returned
+> > successfully, the requested command can be assumed to be fully and
+> > completely executed on SCMI platform side so that any possible response
+> > value is already immediately available to be retrieved by a .fetch_reponse:
+> > in other words the polling phase can be skipped in such a case and the
+> > response values accessed straight away.
+> >
+> > Note that all of the above applies only when polling mode of operation was
+> > selected by the core: if instead a completion IRQ was found to be available
+> > the normal response processing path based on completions will still be
+> > followed.
+>
+> This might actually have to be settable on a per-message basis ideally
+> since we may be transporting short lived SCMI messages for which the
+> completion can be done at SMC time, and long lived SCMI messages (e.g.:
+> involving a voltage change) for which we would prefer a completion
+> interrupt. Jim, what do you think?
+Even if the SCMI main driver could be configured this way in an
+elegant manner, I'm not sure that there is a clean way of specifying
+this  attribute on a per-message basis.  Certainly we could do this
+with our own protocols, but  many of our "long lived" messages are the
+Perf protocol's set_level command.  At any rate, let me give it some
+thought.
 
-On 8/22/21 6:20 PM, Jim Cromie wrote:
-> DEFINE_DYNAMIC_DEBUG_CATEGORIES(name, var, bitmap_desc, @bit_descs)
-> allows users to define a drm.debug style (bitmap) sysfs interface, and
-> to specify the desired mapping from bits[0-N] to the format-prefix'd
-> pr_debug()s to be controlled.
-> 
-> DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_gvt, __gvt_debug,
-> 	"i915/gvt bitmap desc",
-> 	/**
-> 	 * search-prefixes, passed to dd-exec_queries
-> 	 * defines bits 0-N in order.
-> 	 * leading ^ is tacitly inserted (by callback currently)
-> 	 * trailing space used here excludes subcats.
-> 	 * helper macro needs more work
-> 	 * macro to autogen ++$i, 0x%x$i ?
-> 	 */
-> 	_DD_cat_("gvt:cmd: "),
-> 	_DD_cat_("gvt:core: "),
-> 	_DD_cat_("gvt:dpy: "),
-> 	_DD_cat_("gvt:el: "),
-> 	_DD_cat_("gvt:irq: "),
-> 	_DD_cat_("gvt:mm: "),
-> 	_DD_cat_("gvt:mmio: "),
-> 	_DD_cat_("gvt:render: "),
-> 	_DD_cat_("gvt:sched: "));
-> 
-> dynamic_debug.c: add 3 new elements:
-> 
->  - int param_set_dyndbg()
->  - int param_get_dyndbg()
->  - struct kernel_param_ops param_ops_dyndbg
-> 
-> Following the model of kernel/params.c STANDARD_PARAM_DEFS, All 3 are
-> non-static and exported.
-> 
-> dynamic_debug.h:
-> 
-> Add DEFINE_DYNAMIC_DEBUG_CATEGORIES() described above, and a do-nothing stub.
-> 
-> Note that it also calls MODULE_PARM_DESC for the user, but expects the
-> user to catenate all the bit-descriptions together (as is done in
-> drm.debug), and in the following uses in amdgpu, i915.
-> 
-> This in the hope that someone can offer an auto-incrementing
-> label-generating macro, producing "\tbit-4 0x10\t" etc, and can show
-> how to apply it to __VA_ARGS__.
-> 
-> Also extern the struct kernel_param param_ops_dyndbg symbol, as is
-> done in moduleparams.h for all the STANDARD params.
-> 
-> USAGE NOTES:
-> 
-> Using dyndbg to query on "format ^$prefix" requires that the prefix be
-> present in the compiled-in format string; where run-time prefixing is
-> used, that format would be "%s...", which is not usefully selectable.
-> 
-> Adding structural query terms (func,file,lineno) could help (module is
-> already done), but DEFINE_DYNAMIC_DEBUG_CATEGORIES can't do that now,
-> adding it needs a better reason imo.
-> 
-> Dyndbg is completely agnostic wrt the categorization scheme used, to
-> play well with any prefix convention already in use.  Ad-hoc
-> categories and sub-categories are implicitly allowed, author
-> discipline and review is expected.
-> 
-> Here are some examples:
-> 
-> "1","2","3"		2 doesn't imply 1.
->    			otherwize, sorta like printk levels
-> "1:","2:","3:"		are better, avoiding [1-9]\d+ ambiguity
-> "hi:","mid:","low:"	are reasonable, and imply independence
-> "todo:","rfc:","fixme:" might be handy
-> "A:".."Z:"		uhm, yeah
-> 
-> Hierarchical classes/categories are natural:
-> 
-> "drm:<CAT>:"		is used in later commit
-> "drm:<CAT>:<SUB>:"	is a natural extension.
-> "drm:atomic:fail:"	has been proposed, sounds directly useful
-> 
-> Some properties of a hierarchical category deserve explication:
-> 
-> Trailing spaces matter !
-> 
-> With 1..3-space ("drm: ", "drm:atomic: ", "drm:atomic:fail: "), the
-> ":" doesn't terminate the search-space, the trailing space does.  So a
-> "drm:" search spec will match all DRM categories & subcategories, and
-> will not be useful in an interface where all categories are already
-> controlled together.  That said, "drm:atomic:" & "drm:atomic: " are
-> different, and both are useful in cases.
-> 
-> Ad-Hoc sub-categories:
-> 
-> These have a caveat wrt wrapper macros adding prefixes like
-> "drm:atomic: "; the trailing space in the prefix means that
-> drm_dbg_atomic("fail: ...") pastes as "drm:atomic: fail: ", which
-> obviously isn't ideal wrt clear and simple bitmaps.
-> 
-> A possible solution is to have a FOO_() version of every FOO() macro
-> which (anti-mnemonically) elides the trailing space, which is normally
-> inserted by a modified FOO().  Doing this would enforce a policy
-> decision that "debug categories will be space terminated", with an
-> pressure-relief valve.
-> 
-> Summarizing:
-> 
->  - "drm:kms: " & "drm:kms:" are different
->  - "drm:kms"		also different - includes drm:kms2:
->  - "drm:kms:\t"		also different
->  - "drm:kms:*"		doesn't work, no wildcard on format atm.
-> 
-> Order matters in DEFINE_DYNAMIC_DEBUG_CATEGORIES(... @bit_descs)
-> 
-> @bit_descs (array) position determines the bit mapping to the prefix,
-> so to keep a stable map, new categories or 3rd level categories must
-> be added to the end.
-> 
-> Since bits are/will-stay applied 0-N, the later bits can countermand
-> the earlier ones, but its tricky - consider;
-> 
->     DD_CATs(... "drm:atomic:", "drm:atomic:fail:" ) // misleading
-> 
-> The 1st search-term is misleading, because it includes (modifies)
-> subcategories, but then 2nd overrides it.  So don't do that.
-> 
-> For "drm:atomic:fail:" in particular, its best not to add it into an
-> existing bitmap, because the current setting would be lost at every
-> (unrelated) write, and a separate bitmap is much more stable.
-> 
-> There is still plenty of bikeshedding to do.
-> 
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> ---
-> v5:
-> . rename to DEFINE_DYNAMIC_DEBUG_CATEGORIES from DEFINE_DYNDBG_BITMAP
-> . in set_dyndbg, replace hardcoded "i915" w kp->mod->name
-> . static inline the stubs
-> . const *str in structs, const array. - Emil
-> . dyndbg: add do-nothing DEFINE_DYNAMIC_DEBUG_CATEGORIES if !DD_CORE
-> . call MOD_PARM_DESC(name, "$desc") for users
-> . simplify callback, remove bit-change detection
-> . config errs reported by <lkp@intel.com>
-> 
-> v6:
-> . return rc, bitmap->, snprintf, ws - Andy Shevchenko
-> . s/chgct/matches/ - old varname is misleading
-> . move code off file bottom to a "better" place
-> . change ##fsname to ##var for safer varname construct
-> . workaround for !CONFIG_MODULES
-> . move forward decl down to where its needed
-> ---
->  include/linux/dynamic_debug.h | 52 +++++++++++++++++++++++-
->  lib/dynamic_debug.c           | 76 ++++++++++++++++++++++++++++++++---
->  2 files changed, 121 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-> index dce631e678dd..51b7254daee0 100644
-> --- a/include/linux/dynamic_debug.h
-> +++ b/include/linux/dynamic_debug.h
-> @@ -51,8 +51,6 @@ struct _ddebug {
->  #endif
->  } __attribute__((aligned(8)));
->  
-> -
-> -
->  #if defined(CONFIG_DYNAMIC_DEBUG_CORE)
->  
->  /* exported for module authors to exercise >control */
-> @@ -181,6 +179,10 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
->  				   KERN_DEBUG, prefix_str, prefix_type,	\
->  				   rowsize, groupsize, buf, len, ascii)
->  
-> +struct kernel_param;
-> +int param_set_dyndbg(const char *instr, const struct kernel_param *kp);
-> +int param_get_dyndbg(char *buffer, const struct kernel_param *kp);
-> +
->  #else /* !CONFIG_DYNAMIC_DEBUG_CORE */
->  
->  #include <linux/string.h>
-> @@ -227,6 +229,52 @@ static inline int dynamic_debug_exec_queries(const char *query, const char *modn
->  	return 0;
->  }
->  
-> +static inline int param_set_dyndbg(const char *instr, const struct kernel_param *kp)
-> +	{ return 0; }
-> +static inline int param_get_dyndbg(char *buffer, const struct kernel_param *kp)
-> +	{ return 0; }
-> +
->  #endif /* !CONFIG_DYNAMIC_DEBUG_CORE */
->  
-> +struct dyndbg_bitdesc {
-> +	/* bitpos is inferred from index in containing array */
-> +	const char *prefix;
-> +	const char *help;
-> +};
-> +
-> +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> +	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> +/**
-> + * DEFINE_DYNAMIC_DEBUG_CATEGORIES() - define debug categories, bitmap, sysfs-knob
-> + * @fsname: parameter basename under /sys
-> + * @var:    C-identifier holding state
-> + * @_desc:  string summarizing the controls provided
-> + * @...:    list of struct dyndbg_bitdesc initializations
-> + *
-> + * Defines /sys/modules/$modname/parameters/@fsname, and @bit_descs,
-> + * which maps bits 0-N to categories of pr_debugs to be controlled.
-> + * This is effectively write only, because controlled callsites can be
-> + * further modified via >control.
-> + *
-> + * Also calls MODULE_PARM_DESC(fsname, _desc), with the intent to
-> + * generate the bit_legend and apply it to the given bit_descs
-> + */
-> +#define DEFINE_DYNAMIC_DEBUG_CATEGORIES(fsname, var, _desc, ...)	\
-> +	MODULE_PARM_DESC(fsname, _desc);				\
-> +	static const struct dyndbg_bitdesc dyndbg_cats_##var[] =	\
-> +		{ __VA_ARGS__, { NULL, NULL } };			\
-> +	module_param_cb_data(fsname, &param_ops_dyndbg, &var, 0644,	\
-> +			     &dyndbg_cats_##var)
-> +
-> +#define _DD_cat_(pfx)		{ .prefix = pfx, .help = "help for " pfx }
-> +#define _DD_cat_help_(pfx)	"\t   " pfx "\t- help for " pfx "\n"
-> +
-> +extern const struct kernel_param_ops param_ops_dyndbg;
-> +#else
-> +#define DEFINE_DYNAMIC_DEBUG_CATEGORIES(fsname, var, bitmap_desc, ...) \
-> +	MODULE_PARM_DESC(fsname, "auto: " bitmap_desc)
-> +#define _DD_cat_(pfx)
-> +#define _DD_cat_help_(pfx)
-> +#endif
-> +
->  #endif
-> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> index cb5abb42c16a..a43427c67c3f 100644
-> --- a/lib/dynamic_debug.c
-> +++ b/lib/dynamic_debug.c
-> @@ -511,10 +511,11 @@ static int ddebug_exec_query(char *query_string, const char *modname)
->  	return nfound;
->  }
->  
-> -/* handle multiple queries in query string, continue on error, return
-> -   last error or number of matching callsites.  Module name is either
-> -   in param (for boot arg) or perhaps in query string.
-> -*/
-> +/*
-> + * handle multiple queries in query string, continue on error, return
-> + * last error or number of matching callsites.  Module name is either
-> + * in param (for boot arg) or perhaps in query string.
-> + */
->  static int ddebug_exec_queries(char *query, const char *modname)
->  {
->  	char *split;
-> @@ -529,7 +530,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
->  		if (!query || !*query || *query == '#')
->  			continue;
->  
-> -		vpr_info("query %d: \"%s\"\n", i, query);
-> +		vpr_info("query %d: \"%s\" %s\n", i, query, (modname) ? modname : "");
->  
->  		rc = ddebug_exec_query(query, modname);
->  		if (rc < 0) {
-> @@ -577,6 +578,71 @@ int dynamic_debug_exec_queries(const char *query, const char *modname)
->  }
->  EXPORT_SYMBOL_GPL(dynamic_debug_exec_queries);
->  
-> +#ifdef MODULES
-> +#define KP_MOD_NAME kp->mod->name
-> +#else
-> +#define KP_MOD_NAME NULL /* wildcard */
-> +#endif
-> +#define FMT_QUERY_SIZE 128 /* typically need <40 */
-> +/**
-> + * param_set_dyndbg() - drm.debug style bits=>categories setter
-> + * @instr: string echo>d to sysfs
-> + * @kp:    struct kernel_param* ->data has bitmap
-> + * Exported to support DEFINE_DYNAMIC_DEBUG_CATEGORIES
-> + */
-> +int param_set_dyndbg(const char *instr, const struct kernel_param *kp)
-> +{
-> +	unsigned long inbits;
-> +	int rc, i, matches = 0, totct = 0;
-> +	char query[FMT_QUERY_SIZE];
-> +	const struct dyndbg_bitdesc *bitmap = kp->data;
-> +
-> +	if (!bitmap) {
-> +		pr_err("set_dyndbg: no bits=>queries map\n");
-> +		return -EINVAL;
-> +	}
-> +	rc = kstrtoul(instr, 0, &inbits);
-> +	if (rc) {
-> +		pr_err("set_dyndbg: failed\n");
-> +		return rc;
-> +	}
-> +	vpr_info("set_dyndbg: input 0x%lx\n", inbits);
-> +
-> +	for (i = 0; bitmap->prefix; i++, bitmap++) {
-> +		snprintf(query, FMT_QUERY_SIZE, "format '^%s' %cp", bitmap->prefix,
-> +			 test_bit(i, &inbits) ? '+' : '-');
-> +
-> +		matches = ddebug_exec_queries(query, KP_MOD_NAME);
-> +
-> +		v2pr_info("bit-%d: %d matches on '%s'\n", i, matches, query);
-> +		totct += matches;
-> +	}
-> +	vpr_info("total matches: %d\n", totct);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(param_set_dyndbg);
-> +
-> +/**
-> + * param_get_dyndbg() - drm.debug style bitmap to format-prefix categories
-> + * @buffer: string returned to user via sysfs
-> + * @kp:     struct kernel_param*
-> + * Exported to provide required .get interface, not useful.
-> + * pr_debugs may be altered after .set via `echo $foo >control`
-> + */
-> +int param_get_dyndbg(char *buffer, const struct kernel_param *kp)
-> +{
-> +	return scnprintf(buffer, PAGE_SIZE, "%u\n",
-> +			 *((unsigned int *)kp->arg));
+Regards,
+Jim
+> --
+> Florian
 
+--00000000000089cbfe05ca656e6a
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-If kp->arg is read here, don't we need to set too somewhere? I'm wondering
-if the 'get' can use one of the generic ones like param_get_int too? Instead
-of a special case here.
-
-Thanks,
-
--Jason
-
-> +}
-> +EXPORT_SYMBOL(param_get_dyndbg);
-> +
-> +const struct kernel_param_ops param_ops_dyndbg = {
-> +	.set = param_set_dyndbg,
-> +	.get = param_get_dyndbg,
-> +};
-> +/* support DEFINE_DYNAMIC_DEBUG_CATEGORIES users */
-> +EXPORT_SYMBOL(param_ops_dyndbg);
-> +
->  #define PREFIX_SIZE 64
->  
->  static int remaining(int wrote)
-> 
+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
+LeylbuEJGL9I80yqq8e6Z+Q6ulLxa6SopzpoysJe/vEVHgp9jPNppZzwKngVd2iDBRqpKlCngIAM
+DXgVGyEojXnuEbRs3NlB7wq1kJGlYysrnDug55ncJM8CAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
+BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
+VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFCeTeUYv84Mo3T1V+OyDdxib
+DDLvMA0GCSqGSIb3DQEBCwUAA4IBAQCCqR1PBVtHPvQHuG8bjMFQ94ZB7jmFEGhgfAsFJMaSMLov
+qyt8DKr8suCYF4dKGzqalbxo5QU9mmZXdLifqceHdt/Satxb+iGJjBhZg4E0cDds24ofYq+Lbww2
+YlIKC2HHxIN+JX2mFpavSXkshR5GT29B9EIJ8hgSjbs61XXeAcrmVIDfYbXQEmGbsnwqxdq+DJpQ
+S2kM2wvSlgSWDb6pL7myuKR5lCkQhj7piGSgrVLJRDRrMPw1L4MvnV9DjUFMlGCB40Hm6xqn/jm0
+8FCLlWhxve5mj+hgUOPETiKbjhCxJhhAPDdCvDRkZtJlQ8oxUVvXHugG8jm1YqB5AWx7MYICbTCC
+AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
+AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMI+Aj9XRk/wFexb9/
+MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCVN64LJAWxmqAoWlQP++xnRdGH3owy
+xZ+EcKeAs5EStjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMTA4
+MjUxNzE3NThaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
+hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
+AgEwDQYJKoZIhvcNAQEBBQAEggEAkLp65/WK3ztv1oEP8DJ/oedLBy6Bw2rkFkjGs7hf3aPgBGlE
+L49Jb4/kgdWMsavmdG/Se1QtZl6kwb4JJ5US3iyD4+rY+P1Aq7xez66d0A4/c8wnGQlQG1JCidUo
+VLXtwenR3JGLfvdUu9qRFOrJiL0IUHYwMQltCZibe7uh18vY8suQFttfRLGhLajfq8VsM6ss4koV
+n7Q1QiRY8kF7KCfQhzJIYRjDbjzi2Q4t6L6Rv1Du0DGxC3faoIUONcvk/gDuOUTb6jjb3PszyBfC
+Sixsyw0b0Ea/YIHY9r8t6ufJ9ztkvOEEkplxCiF8MR2u3p/OaTCNhZxZ5qZt8y1bIQ==
+--00000000000089cbfe05ca656e6a--
