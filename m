@@ -2,170 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE333F6C77
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 02:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0FD3F6C96
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 02:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235853AbhHYAOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 20:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
+        id S231552AbhHYA0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 20:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233890AbhHYAOu (ORCPT
+        with ESMTP id S236548AbhHYAZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 20:14:50 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC8FC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 17:14:05 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id a15so28613414iot.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 17:14:05 -0700 (PDT)
+        Tue, 24 Aug 2021 20:25:57 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D3DC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 17:25:12 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id 14so25302115qkc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 17:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NEtdD3iEI8OCv5vkiUPCt9bs8Qna6djyYdDmTXGr1vY=;
-        b=hrjQisC8NRybYk3NN5NB0ZXu6ZB/egOpYVZfJwU8VaKEkxKCeTjoB2W1oTblANva+J
-         0B9dPfkD/vSLqy61/ws4j8C1wo6QZ544ezuo4vyAmSNFCtaFVfSqyZkerRiNpIyhWkze
-         QtUPbJgkxzmfzy4OBPX53UR0bMIzwzIhp7EGsCthV9lF3vaN/j+i8mxvZKiMm0uV84hJ
-         jKmLVePIEkD5Arre4R32ZfIIkjyK3b2Dmbd38/kpgM3XuiBe5hVdCS/+VBAqOABgo5Tt
-         6LvEKKCnJjATi+92rqkqKWbX1rFBRKLCDHfvt/RE4m42FsUU/9JUo45x8QOowPojyF0F
-         UOzQ==
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ANXgq7I+Kfs3G3EW5qqi7r/ttOA7bI0HweQUsRUv3dk=;
+        b=ZjSwu0cl3qEfdJymDqUezMTnF3slC6OhdfEpaFdDPaDguthmZG/GNTLa5DzfHsgM0l
+         3qfIxU9H0UZb8w03z5Lm/l/MGuuPeKx9oYgwY6+VyQ8PaZLholNcc84m7JRxfi0J8IUi
+         vTkHjW9fog6LuFlCcfwUb6xcc8TmTiW9VOUzwPoXla0dtsfHwLYTeVtP1t6slUsNFuJc
+         CL6mN3Bc4GlUJb6PWQezC7N1UKxL8dWh4Asg4V/ZHapcbCxuXfMhqW26mrHSgN3v/3+4
+         vyTnDNNACmhn053E52srwfo0ooYwfBzFKZf2G4D4Rcf/AjmeecuoFaXjHDT/QMS5BZcH
+         HPoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NEtdD3iEI8OCv5vkiUPCt9bs8Qna6djyYdDmTXGr1vY=;
-        b=AULxe7Zk/hakeW9P7pp3P1HCaFTBV+iRBtIGziM0Jukyfy7YuEKCYyN8PR+/SJUTZG
-         R5MeXH4be4Z6p50qb3XHqvU0LrpDzP2VOhOvGvxWYiTOdX46xQ9VsLlr0gbypnCLKNrV
-         5rOSSXrEr6O7W+P8Clwlp1TJAyO1+9JpOEG9WeXAcIpludiezfJ0PmTkLx9gzdqKSxwC
-         RdaDalb2jHbY8hhZpxQE13yQDzkkZ3LY73qY3fhoZnTzHMGdAKidyqmvVckTQ9v1VCAp
-         1myj7UMnccuOc7lv/SMx+bbuU3KTPg+Z8wFu0dkCb0oTUMDmhaFLFLN7DOdfH3/bPE8q
-         amtQ==
-X-Gm-Message-State: AOAM531eL31AxmFRFso+sRUPiQEyD5xyEKm/i7+My9FwTsXKKFY7q5j8
-        N2j/ofIthwF1VgJnTugtKpsjrKpYjVYvakxYl3guqg==
-X-Google-Smtp-Source: ABdhPJyxjKuzPbTRDaEqEK4umKGFFDpVf1wDeQrV8SwRC0vLqzqXxU52E9RjaqJpkKtZAEx5ZAiJxUfgQNJQJkcEJkU=
-X-Received: by 2002:a5e:9249:: with SMTP id z9mr9664169iop.14.1629850444634;
- Tue, 24 Aug 2021 17:14:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ANXgq7I+Kfs3G3EW5qqi7r/ttOA7bI0HweQUsRUv3dk=;
+        b=XSqxmqSAY+RVSHcX+0Rs+6wyj9T96ZthRAupNwpyN/XjUcQGw5i2eSq+5PYgLKoY7O
+         jU3PNsud+t/r8dBThR1YV864dgxMxOcCFc60+DdbTu6DNaNRFJ2i3kj1iPTXWQ5UoUtE
+         2T2F1goiBfB5j8MzCO+ct5VNU1/aE43ku38NG45vTX/cRwlJHfTwZ4Nbvh3R46T/pohb
+         OgZKFDdgYLKieeW+IqX664JRbAoNSwqtqIvzlEB9r6kEYvOco3u0BYeiEzy+fbfMV0WH
+         kgHWsXRs4h0bpue4LcsKzqaJnpEmsFsgODBwehaDuMVAFtiiiU1CWl5U5i1/WJzxUVFo
+         ecyw==
+X-Gm-Message-State: AOAM532+NAPt6fkgucP4peo4e8SweSPaTnUFJPY7yfH6Drps3WJLB82k
+        4qVKcGLCzhfa+meYQtDzP5TQyQ==
+X-Google-Smtp-Source: ABdhPJz7iGo0dcUaTNUt15qfQDGTaS+1yrc7YhOmadg2z9sjI0e29wWm8boa+jvcSddXCpm9ikHUmA==
+X-Received: by 2002:a37:b7c1:: with SMTP id h184mr29883530qkf.65.1629851112111;
+        Tue, 24 Aug 2021 17:25:12 -0700 (PDT)
+Received: from localhost.localdomain ([190.2.102.85])
+        by smtp.gmail.com with ESMTPSA id d7sm9443191qth.70.2021.08.24.17.25.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 17:25:11 -0700 (PDT)
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     linux-media@vger.kernel.org
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH] media: Request API is no longer experimental
+Date:   Tue, 24 Aug 2021 21:23:37 -0300
+Message-Id: <20210825002337.6561-1-ezequiel@vanguardiasur.com.ar>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <2e52bc21-8e60-f1fc-804b-d8993ca7c482@huawei.com>
-In-Reply-To: <2e52bc21-8e60-f1fc-804b-d8993ca7c482@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 24 Aug 2021 17:13:51 -0700
-Message-ID: <CAP-5=fXqM4Y5R5BXJb9Caf8NO1Oyz+qFaote3AqFu0MDGCvgAQ@mail.gmail.com>
-Subject: Re: [Question] perf tools: lex parsing issue
-To:     John Garry <john.garry@huawei.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 4:23 AM John Garry <john.garry@huawei.com> wrote:
->
-> Hi jirka,
->
-> If you remember from some time ago we discussed how the lex parsing
-> creates strange aliases:
->
-> https://lore.kernel.org/lkml/20200320093006.GA1343171@krava/
->
-> I am no expert on l+y, but it seems that we simply don't set the term
-> config field for known term types. Well, not for
-> PARSE_EVENTS__TERM_TYPE_SAMPLE_PERIOD type anyway.
->
-> This super hack resolves that issue:
->
-> --->8----
->
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -765,7 +765,12 @@ event_config ',' event_term
-> struct list_head *head = $1;
-> struct parse_events_term *term = $3
->
-> + if (term->type_term == PARSE_EVENTS__TERM_TYPE_SAMPLE_PERIOD) {
-> +       term->config = strdup("period");
-> + }
-> +
-> if (!head) {
->         parse_events_term__delete(term);
->         YYABORT;
-> --
->
-> ----8-----
+The Request API is currently used and specified as part of the
+Memory-to-memory Stateless Video Decoder Interface [1].
 
-Agreed this is hacky, I think it'd be better to fix this up in the
-output. For example:
+This can now be considered as non-experimental and stable, given
+the decoder API has been used by products since a couple years,
+supported by several drivers and userspace frameworks,
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 6cdbee8a12e7..c77c42275efa 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -365,15 +365,21 @@ static int __perf_pmu__new_alias(struct
-list_head *list, char *dir, char *name,
-        memset(newval, 0, sizeof(newval));
-        ret = 0;
-        list_for_each_entry(term, &alias->terms, list) {
-+               const char * config = term->config;
-+
-                if (ret)
-                        ret += scnprintf(newval + ret, sizeof(newval) - ret,
-                                         ",");
-+               if (!config) {
-+                       /* Note: config_term_names in parse_events.c
-isn't accessible */
-+                       config = config_term_names[term->type_term];
-+               }
-                if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
-                        ret += scnprintf(newval + ret, sizeof(newval) - ret,
--                                        "%s=%#x", term->config, term->val.num);
-+                                        "%s=%#x", config, term->val.num);
-                else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
-                        ret += scnprintf(newval + ret, sizeof(newval) - ret,
--                                        "%s=%s", term->config, term->val.str);
-+                                        "%s=%s", config, term->val.str);
-        }
+[1] Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
 
-        alias->name = strdup(name);
+Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+---
+ drivers/media/mc/Kconfig | 8 --------
+ 1 file changed, 8 deletions(-)
 
-It looks like a similar fix is needed in format_alias.
+diff --git a/drivers/media/mc/Kconfig b/drivers/media/mc/Kconfig
+index 4815b9dde9af..375b09612981 100644
+--- a/drivers/media/mc/Kconfig
++++ b/drivers/media/mc/Kconfig
+@@ -16,13 +16,5 @@ config MEDIA_CONTROLLER_REQUEST_API
+ 	bool
+ 	depends on MEDIA_CONTROLLER
+ 	help
+-	  DO NOT ENABLE THIS OPTION UNLESS YOU KNOW WHAT YOU'RE DOING.
+-
+ 	  This option enables the Request API for the Media controller and V4L2
+ 	  interfaces. It is currently needed by a few stateless codec drivers.
+-
+-	  There is currently no intention to provide API or ABI stability for
+-	  this new API as of yet.
+-
+-comment "Please notice that the enabled Media controller Request API is EXPERIMENTAL"
+-	depends on MEDIA_CONTROLLER_REQUEST_API
+-- 
+2.31.1
 
-Thanks,
-Ian
-
-> So we get "umask=0x80,period=0x30d40,event=0x6" now, rather than
-> "umask=0x80,(null)=0x30d40,event=0x6", for the perf_pmu_alias.str, as an
-> example.
->
-> Did you ever get a chance to look into this issue? Do you know how could
-> or should this field be set properly?
->
-> Some more background:
-> The reason I was looking at this is because I think it causes a problem
-> for pmu-events (JSONs) aliasing for some PMUs. Specifically it's PMU
-> which use "config=xxx" in sysfs files in
-> /sys/bus/event_source/devices/PMUx/events/, rather than "event=xxx". The
-> actual problem is that I trigger this warn in pmu.c:
->
-> static void perf_pmu_assign_str(char *name, const char *field, char
-> **old_str,
-> char **new_str)
-> {
->
-> if (*new_str) { /* Have new string, check with old */
->         if (strcasecmp(*old_str, *new_str))
->                 pr_debug("alias %s differs i ... <---
->
-> As I get "config=event=0xXXX" vs "config=(null)=0xXXX"
->
-> As I am not sure how to solve that yet, but, since we have
-> config=(null), I thought it best to solve the first issue first.
->
-> Thanks,
-> John
