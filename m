@@ -2,229 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFE93F7D76
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932EC3F7D82
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhHYVFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 17:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
+        id S233792AbhHYVKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 17:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhHYVFg (ORCPT
+        with ESMTP id S229560AbhHYVKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 17:05:36 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FDEC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:04:50 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso699317otv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:04:50 -0700 (PDT)
+        Wed, 25 Aug 2021 17:10:50 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5C7C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:10:04 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id p38so1889080lfa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:10:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=36Q0ofkarUnJnasxqh9o7dRjOpQp4XtGsHLoQ13K/cU=;
-        b=kenzZ4CaHQobjrh5fP5Fvb/w370ER+9E6MBxFPIYmN922+5zScpqsivh+7h0F1dpK7
-         +R8xRFaL3SWIBcFSUDDNWXXCzEqXPvHg4J1WbfSFhkhXg+Yg/HC6jrtI9xORlQMH1Nus
-         iKmMoX9Tmm6pbf2OzG8Ir0kJC46/Ty/Trt/exLP3AZWBDe7GzzrSZb9O1zwnOFcvtM94
-         6rSqW4SNwPaKFZjSoVYn1TV+D5i4dbYlE50EyZo50QEir877/CHHuVOFfybqPfKb2NHl
-         /QI60urtFYcoZkEVPHVsQKhhhqnKpcugOIfCtz3ec0wCyUeBuf4s6UNiw9NX9l7d2kKp
-         +Q+g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E9tATzQmNnf1n87t/HdQMMPUKAwA0uk3NMuEvkkauNQ=;
+        b=rDk6QdPmNKIfsBWw+RCk/zTo1/Iz/KktStVviVo1+3U2kouL2fe+6wd/+A6pEaCMzh
+         xzM7QapYS3avKaOtSvCRpfQi1VypfGMygawhsTaUr+awCsB60kx+mrvhp8FXcMEcdXqO
+         k3IksxDiST5MMM06Rug+w9s0ESAs5BEt6zxwHbiXGdm6tVzS06DDI3L+Lt856rQlitrh
+         fVxEvhZ64781J7thqfN5yP8emsMeF7kIh9DgpVHuJN04jnJVHa/d/zG2uAegWku2U2Q2
+         Xc1QFKy0jWfRFrx/OwfmhlXYphVlf3P8Fh9tkf4nRNAo32xs40V655CNr61QKh0PP7Fd
+         npvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=36Q0ofkarUnJnasxqh9o7dRjOpQp4XtGsHLoQ13K/cU=;
-        b=dffxWodMD6L4Hsk4WkYHCcytP7UQuvzRekmeCUKmaQ72Ou58m54srwvXlnPszh3q2f
-         d6F1T50uLl/Tt4MdFlSGT7CARVpNtdpn6zVaiFiL7LKB81VG32f93uQAXptO9WsvnrXy
-         h2O/BpZIypp8NW9H5P5yLO0xXgpGNPg0Rj11D4LrCyFMrZkuvDI13lXpuFyfYEOPXpNZ
-         XX9UQT8T8GrYB64frgI9SqeM38gJBjzhX40lD74I0flVA+a1Kn+r5wm1pZijq5Nyxvps
-         O4COyOPo8JE7hVAmRXHmJwUQX33dKw2/h2dn/MA8liEczUUxXcvAaiVlDtdPpnXQ/dNd
-         I8ZQ==
-X-Gm-Message-State: AOAM532pcJXFu++hedWc29QhqjJyKIzNEeiDbTaubDrJw4WtHQa0Ej/S
-        NEJxDXpIDJqHTKdMD0QwFpo6nowuGZ1jMw1M
-X-Google-Smtp-Source: ABdhPJyV9BpFyupdvgbeGmXPlyP30XWPbBhiEOHeNRsGn2qnaIM+GvSzMK2zixJeysZcBB2fo5FbdA==
-X-Received: by 2002:a05:6830:40c3:: with SMTP id h3mr362666otu.198.1629925490188;
-        Wed, 25 Aug 2021 14:04:50 -0700 (PDT)
-Received: from [192.168.17.50] ([189.219.75.147])
-        by smtp.gmail.com with ESMTPSA id u194sm222292oie.37.2021.08.25.14.04.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 14:04:49 -0700 (PDT)
-Subject: Re: [PATCH 4.14 00/64] 4.14.245-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        akpm@linux-foundation.org, shuah@kernel.org, linux@roeck-us.net
-References: <20210824170457.710623-1-sashal@kernel.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <5f617100-b060-b176-f26b-00871cbb1834@linaro.org>
-Date:   Wed, 25 Aug 2021 16:04:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E9tATzQmNnf1n87t/HdQMMPUKAwA0uk3NMuEvkkauNQ=;
+        b=bJiJ70PModG0MwsCQ30vizJLo1rwNgNbnRIhr2OnZ8rNzxL0MGeuMZHZiIlP+D7Raz
+         RfLn4OPM55/lSAg2OyQ9bWbhfP0THLDb7X1ZH6K99i79ti+0UdqagpJVDp9jvvlnKwG5
+         h90CyJvpDZnESu6cWKHmQqk55czhPGVxEOxoCZl08s+qEFp/aTkxQl+w2YLAw4m5qPL1
+         GTCU+kdzZuxhZCV8ZZsNBOH31tkXcty8n8RbDFczeZCnW7W5OOr+QrNI0Y5i2ef4qM13
+         dPZQatei+OB5Ok6SLcDuFuZc0UK0Q8WTYSYoBe+Ap7FswGzeImd7XWAe+bzItLVdXtWi
+         T58g==
+X-Gm-Message-State: AOAM5332H61zm61tCgs4c1fuz8WwulQbXz1vk9vCpXay5QNjXH3Y1ivF
+        8J2Maf+UpSL+83j18ZWoRp+n/heGEpE8uJImNEsZew==
+X-Google-Smtp-Source: ABdhPJxcXkQ87HPRlelKv1H2O2oI5mVq94OOJodcCv7br/8wMY6xYTPcFQlMwHXL2Jn30VXNM/5NnB7UPwjzKfyqj9o=
+X-Received: by 2002:a05:6512:3b85:: with SMTP id g5mr87035lfv.368.1629925802350;
+ Wed, 25 Aug 2021 14:10:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210824170457.710623-1-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210817005624.1455428-1-nathan@kernel.org> <80fa539a-b767-76ed-dafa-4d8d1a6b063e@kernel.org>
+ <CAHk-=wgFXOf9OUh3+vmWjhp1PC47RVsUkL0NszBxSWhbGzx4tw@mail.gmail.com>
+ <5c856f36-69a7-e274-f72a-c3aef195adeb@kernel.org> <202108171056.EDCE562@keescook>
+ <3f28b45e-e725-8b75-042a-d34d90c56361@kernel.org> <CAK7LNAQFgYgavTP2ZG9Y16XBVdPuJ98J_Ty1OrQy1GXHq6JjQQ@mail.gmail.com>
+In-Reply-To: <CAK7LNAQFgYgavTP2ZG9Y16XBVdPuJ98J_Ty1OrQy1GXHq6JjQQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 25 Aug 2021 14:09:50 -0700
+Message-ID: <CAKwvOdkaHp5akDyAz_rav5u6gu4SgtjhmzftKgNCPr0LVukHOA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Enable -Wimplicit-fallthrough for clang 14.0.0+
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Tue, Aug 17, 2021 at 2:18 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Wed, Aug 18, 2021 at 3:25 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > On 8/17/2021 11:03 AM, Kees Cook wrote:
+> > > On Mon, Aug 16, 2021 at 09:55:28PM -0700, Nathan Chancellor wrote:
+> > >> If you/Gustavo would prefer, I can upgrade that check to
+> > >>
+> > >> ifneq ($(call cc-option, -Wunreachable-code-fallthrough),)
+> > >>
+> > >> I was just trying to save a call to the compiler, as that is more expensive
+> > >> than a shell test call.
+> > >
+> > > I prefer the option test -- this means no changes are needed on the
+> > > kernel build side if it ever finds itself backported to earlier versions
+> > > (and it handles the current case of "14" not meaning "absolute latest").
+> > >
+> > > More specifically, I think you want this (untested):
+> >
+> > That should work but since -Wunreachable-code-fallthrough is off by
+> > default, I did not really see a reason to include it in KBUILD_CFLAGS. I
+> > do not have a strong opinion though, your version is smaller than mine
+> > is so we can just go with that. I'll defer to Gustavo on it since he has
+> > put in all of the work cleaning up the warnings.
+>
+>
+>
+> https://github.com/llvm/llvm-project/commit/9ed4a94d6451046a51ef393cd62f00710820a7e8
+>
+>    did two things:
+>
+>  (1) Change the -Wimplicit-fallthrough behavior so that it fits
+>       to our use in the kernel
+>
+>  (2) Add a new option -Wunreachable-code-fallthrough
+>       that works like the previous -Wimplicit-fallthrough of
+>       Clang <= 13.0.0
+>
+>
+> They are separate things.
+>
+> Checking the presence of -Wunreachable-code-fallthrough
+> does not make sense since we are only interested in (1) here.
+>
+>
+>
+> So, checking the Clang version is sensible and matches
+> the explanation in the comment block.
+>
+>
+> Moreover, using $(shell test ...) is less expensive than cc-option.
+>
+>
+> If you want to make it even faster, you can use only
+> built-in functions, like this:
+>
+>
+> # Warn about unmarked fall-throughs in switch statement.
+> # Clang prior to 14.0.0 warned on unreachable fallthroughs with
+> # -Wimplicit-fallthrough, which is unacceptable due to IS_ENABLED().
+> # https://bugs.llvm.org/show_bug.cgi?id=51094
+> ifeq ($(firstword $(sort $(CONFIG_CLANG_VERSION) 140000)),140000)
+> KBUILD_CFLAGS += -Wimplicit-fallthrough
+> endif
+>
+>
+>
+> The $(sort ...) is alphabetical sort, not numeric sort.
+> It works for us because the minimum Clang version is 10.0.1
+> (that is CONFIG_CLANG_VERSION is always 6-digit)
+>
+> It will break when Clang version 100.0.0 is released.
+>
+> But, before that, we will raise the minimum supported clang version,
+> and this conditional will go away.
 
-On 8/24/21 12:03 PM, Sasha Levin wrote:
-> This is the start of the stable review cycle for the 4.14.245 release.
-> There are 64 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu 26 Aug 2021 05:04:55 PM UTC.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.14.y&id2=v4.14.244
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+I'd much rather pay the cost of cc-option to have a more precise
+check; Linus is right: when I upgrade AOSP's fork of LLVM, it may not
+be the fully released version of clang-14 though we have already moved
+the version numbers upstream to clang-14.  I think we should strive to
+prefer feature tests over version tests, which are brittle.
 
-Results from Linaro's test farm.
-No regressions on arm64, arm, x86_64, and i386.
+```
+# Clang would warn about unreachable fall throughs until clang-14.
+ifdef CONFIG_CC_IS_CLANG
+ifneq ($(call cc-option,-Wunreachable-code-fallthrough),)
+KBUILD_CFLAGS += -Wimplicit-fallthrough
+endif
+endif
+```
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.14.245-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-4.14.y
-* git commit: 156fc46e6ef4f9c0821f84a6b7e5f60647b6cbf1
-* git describe: v4.14.244-64-g156fc46e6ef4
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14.244-64-g156fc46e6ef4
-
-## No regressions (compared to v4.14.244)
-
-## No fixes (compared to v4.14.244)
-
-## Test result summary
-total: 65609, pass: 53110, fail: 525, skip: 10267, xfail: 1707
-
-## Build Summary
-* arm: 98 total, 98 passed, 0 failed
-* arm64: 28 total, 28 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 15 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 15 total, 15 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
+Is precisely what we want.
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+~Nick Desaulniers
