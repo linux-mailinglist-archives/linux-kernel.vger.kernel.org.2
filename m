@@ -2,228 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61013F702C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F953F702D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239272AbhHYHNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:13:14 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:56257 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239005AbhHYHND (ORCPT
+        id S239208AbhHYHNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:13:46 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:49014 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238771AbhHYHNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:13:03 -0400
-Received: by mail-il1-f199.google.com with SMTP id c16-20020a92cf500000b02902243aec7e27so13422452ilr.22
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:12:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Qr4rg0drxCa5TZhMN5ot1Xlomx3O22gGuoMzR1+wxl4=;
-        b=AULb9Dmu0zjL/SgotDrqPdZDAUWhfkUkDd4B1s3Wm3e1w0hhvT9+h7WgJPpRAmXFqo
-         K4A9vAD8OKmWJ2Ydti0tD0xrlqvmSgaokaHLk420j3Ju4xprHrqyT2xN7FRq1YUdUN52
-         zzxhZPiKO06AmEFA9ZJmKnibzrTaFjLUG280/5Ut99azvaKzcVc8a3ruLOI08/Dl7WWJ
-         6ZCVPVGKHzN7oBe3ZDa3OMiG+xxzSqXBVk8w+nxqYsoyzC05/zuG2NURlv6uQbdKMjLg
-         CRX5QT52tVxDb4KRGN6RUBp5E/vpzSYq/dTs0OURRqhspn6FzKx3m3iRxFxnTQTZzhlx
-         NOcg==
-X-Gm-Message-State: AOAM5330T+zhLwMeq32gT0A/mIDV9z4FIhI+AacjDhd/I6GTmWh1CmgT
-        oedk8BJ3R9QAZe6l0LNID2+/zYjq/gUFKU0bG25px6gQA5JB
-X-Google-Smtp-Source: ABdhPJw+sfVhlJKIL4C0mIDgjvd8HJTY4rZinoIIvqupyaisDvxLwT/hirNTxski5Ref8OMlfz8CjgeaFkchq+uNcW6r9ajYTxYX
+        Wed, 25 Aug 2021 03:13:44 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17P51e16000899;
+        Wed, 25 Aug 2021 07:12:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=0N4RMAE/INDTVBcVfBj9D/S1EZVXLFRKmowvegLSK0U=;
+ b=MRFmqQM0gV3IXW6hwQPI0RjcdbIP9IDpWxY0HlEGBwgsvHOrttnUYKVL+ezJFR1BXRTZ
+ v0vSYpNUsWmkNbkvkmZgW1TvSZFVoLNMnbXQIEc1en+8XkCVLpnzmWD95rD5vxtgsgxI
+ th/R95LuUV3SaESpNEnNt7lcujb568Do1X73sugrxNBTL+gwBvR3LBQujHhNyCh4v7n3
+ AodlwqM5otrWGgw5RyQxqm9Bji7y2bTUs7NXFSdluwKANzhi4RkPRgyHkcW7vsWtinIw
+ behmvWE7zXU6Jhp+c59mp+54DPbEbdc6/ABeTuxUn8145/IvlVOn6SA+z6YqgRK0mliD zA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2020-01-29;
+ bh=0N4RMAE/INDTVBcVfBj9D/S1EZVXLFRKmowvegLSK0U=;
+ b=asbuOD9iVduoorVSqn15qT6tajkT7Sfd8BaOUgH52um6X/DkEW7T5zT6XY1lfdLyg3h2
+ DgA2SZLWpk0NRZiHuq0ORs55fORPph0HxrWAmPiAEyi6RFvROVVEGxusu8IKTnmXgJfF
+ yNbuX5eqyY1w7tUrCd6I2oFEZoQBS3h44mCWwc0FGRRgShmyHI06nlOs9u7KQzTs67et
+ 8CzOimOO4ymRPk+L96EKCYwti5TZUMbJ3i5ILRSOND00ZA0T8YvKNlkoZNy8TP/I7Cne
+ 9X9tyufgrxgrYt0SL5CTKKmR+L2uIQ+tJq7asQOUgVMaHS7PTGyrwdP3IEXtpPVe4QRx 0g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3amwpdajpk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Aug 2021 07:12:55 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17P75bjZ155676;
+        Wed, 25 Aug 2021 07:12:54 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
+        by userp3030.oracle.com with ESMTP id 3ajpkytjdc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Aug 2021 07:12:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fsExZJ0w9y0338akR6mcdr4n2e1FgyVfVMESkVDT8cD1CG5FRl+nfoNKGvboZNsrTlsh/BxMo1uT0XfPBxfoB639zrMXyltcT3xR92Y5+Gz4CwjMNoVtOClvhxFmTxbbHaUyg5BqKqFfWIXiOeOShurIhm/uEkVR0LNufSSyHe2zaxfhwMliW9Ti8uPRoocwwwfwBBIaPBRyGdWFQS9Q7QBGJTqMPV8USBXHmz7mFlGu8N2hVBdMiuQeOF4DyPhWOX1H5cphV8vEbqbRbMXT0O3gw3nVZLqFHkuvKJtSoRoTdNCMzeD9sY8wa6+0tEFZJJguwvsrQR769cSbFxf/5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0N4RMAE/INDTVBcVfBj9D/S1EZVXLFRKmowvegLSK0U=;
+ b=jbi5N+Vq0kFPbP2g39rp1bt99IvwBLNhiE0+NN4yXp+QtSLljBBpXfUWb0MNHRPBwWivcgYd7G3jhAkmQZTVv5VQyq+Xvm0CZW9zjW2qkZOOzyJT0Jl5Cw+Kwwoa9ksqAnwVNg/8CGOWPfL2sdtm9jt+hJwTgvRhW6aEjTDvu9WAQAWq06TnUyCNQJwG92eSrhCVxorARTPFmO3I+YgiSDb8Ym9HKGtx/WS6Wt+bFWQW19yutQRF4M0THVxzxddqw0do1aEdu0Z5Z90KnNfHmQaZa+0S9AkQVh/gn6iVNimbRodYez/5+YE0H2CpRlogtAiBuG9cUcVVzfSQE32HfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0N4RMAE/INDTVBcVfBj9D/S1EZVXLFRKmowvegLSK0U=;
+ b=SqhyXMDQrsltKq7+jqHgBa++Hlw/vMIzG436mxO2MUUWx92agvFwpeUwBWerEhc/qAJdjFNIZpeNCqg1ZyuONR9t6M21gvMIzI10qEi/7hhFUDs4T3pQu7C1180BSkOsVuiiz1G6ohcqZZJ72zULjiSZFy/jAfJzmOUnS6vCVfY=
+Authentication-Results: lists.01.org; dkim=none (message not signed)
+ header.d=none;lists.01.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO6PR10MB5570.namprd10.prod.outlook.com
+ (2603:10b6:303:145::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Wed, 25 Aug
+ 2021 07:12:51 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4457.018; Wed, 25 Aug 2021
+ 07:12:51 +0000
+Date:   Wed, 25 Aug 2021 10:12:32 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Dan Williams <dan.j.williams@intel.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [cxl-cxl:pending 39/40] drivers/cxl/core/bus.c:501
+ devm_cxl_add_decoder() warn: variable dereferenced before check 'cxld' (see
+ line 497)
+Message-ID: <202108250714.GDy2jUg2-lkp@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JN2P275CA0007.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::19)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:a81a:: with SMTP id c26mr34558737ioa.15.1629875538033;
- Wed, 25 Aug 2021 00:12:18 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 00:12:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007900bd05ca5cf80b@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in nbd_genl_connect (2)
-From:   syzbot <syzbot+2c98885bcd769f56b6d6@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (62.8.83.99) by JN2P275CA0007.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Wed, 25 Aug 2021 07:12:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4bab008a-2598-48fa-0b15-08d96797c000
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5570:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO6PR10MB5570C6B561EAFAA5DB7AF0878EC69@CO6PR10MB5570.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:419;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0K+yqDq4xHIukfAQDldFfjfdzb+O6J9pL+EwRfeGnN7DYUOK4m5WQYKq9NztUP9aVJ8pfOhK6Ga+KN83q6aZcu8YaP0SZZaCmGIXKos/oOkS0lfVZrrQbj29r39c71olOEXuLUZXktigz01ZSyCBPbBVJCxFPXa2M8nZ5L51xOFFst7/PlfhFMh4iz9lOZ2ZreXaqeuNWAG8M5OgoURioNLfGUe3KQHbQrvR96Tm7+2iGBB9S/3oNjB6+R7ohrx9hIwNmb8SBvlTrunZag/Hh7Cfs3tlpZcAbSZEum2i/InvRpAewbI1OQGCBn6f6dmRPT4FCeplVdNVWRjjkvibjD+n7ymyJJ5QJgDoQivrZFrHJI+DpTNC02BvvafmVSjHzWc9IvjqIG/odgIDIGD2XoSM+gEMLkloYvMaHi6k7h9sOmD0Xe1aGibDN/DrUpt9V6FusbP+HHJ9R1ZHydW3mT44tfM7thIhvMv2199X4U4wYfWeKQA2Pj0EBEspXLTOnypyU/Fk3c9NaPt75NFcoILfzHN8CPmmc+VosyK4Tkv2Zo2L8IwMu6GgXu/CMWAGXOAygqG0Q0Af43cFBsmSWIGJrrDHBD22TonHotgEsvDKTd8iI5ZRoRZ50yxxMfvu0NyRmeS3fF4eLVMv3tauAP/miPqp4oHj38E9EeXNFwgyed5ynrlMojQxXtr4AOAjxtIOkBv5fM+yukLaTw0xpTU59O7QLfZrkiNebqrTvd6qOVFtODeRuPm7vbkjwILfFjCe+J7JGJW+wMKYItyKD5NRn5y3JfkK29bLVQ35rXbbWpPak1/1vhC+7dREeYOFvmlnf1DnYS/PxbQScwgZcg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(366004)(396003)(136003)(376002)(966005)(6486002)(2906002)(54906003)(66556008)(44832011)(37006003)(1076003)(8676002)(66946007)(66476007)(4326008)(316002)(956004)(6916009)(52116002)(478600001)(38100700002)(38350700002)(36756003)(5660300002)(83380400001)(86362001)(26005)(186003)(6666004)(9686003)(8936002)(6496006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kEodEGsccvW0r7MMIp8BldX1O/jn4gOB03OqMDcOTFApsVZDAFjNKnIfyFpk?=
+ =?us-ascii?Q?ok9gk9OyJvJqHUU8E99g1nP1rX34+9NmAPuO8+1oqxKJkEHekHrkKbfwXnEC?=
+ =?us-ascii?Q?qsw+vHxHprVEVBvssvYTdsfI8jJH4EzkLSG+/IPPp5epamxOiI9k8/PmmRNe?=
+ =?us-ascii?Q?fmckhHjSTj+ShVY8pwgIBwy/4kiWTNEOuOfDuKIltuoApZJpyZNPipm7jPXe?=
+ =?us-ascii?Q?AkEMLiD5k6t8GbIpvkQOB4l2FHvxD0sMCXLhgICGs1ro1nW9kcEbMHMc9B3J?=
+ =?us-ascii?Q?vL085lmtLRbNDQSlsYW89zaP2p93T/hg3qkrTGo3i0B+YIfSxQZa0ug/UVxD?=
+ =?us-ascii?Q?99Ypags11Yl4Ypb1Moui2HLaKkSwlA3alfxURAT+KhcaOrPoKeVr91DFJw4U?=
+ =?us-ascii?Q?LVoBFj4pT2+ERAbGoONpLngfD7wH4s6PVwwT5ZcHjcWtetr5Q870hW0yRsUa?=
+ =?us-ascii?Q?xuyicAbfOClHyGgrxkzkPO9vp/iwJFFZ7r8wZPrFL4PN7MYzelv3cIAef12D?=
+ =?us-ascii?Q?TTnEMQaAMk0NWX3J3V+QTNP9qpPqB7a3bK4KNE1krplRhGkibmwD6+Bg8bA/?=
+ =?us-ascii?Q?3mTfWXPDHwUvqecuTD6yGmCg9C/+aUgRxZNlngNXfGhJV2gFHoatocsz3XIo?=
+ =?us-ascii?Q?cnvXspqpd3pscMiiYRXUST4t9drXQ0VHAksmDgBHXFYamgD7rD38GE8xLPeU?=
+ =?us-ascii?Q?41mMhP3C7E+Pm4ZbSByFqjRfk9M0rtm0OkYBVYfdP4t9HqZ4niJgjLyRNVSb?=
+ =?us-ascii?Q?4xvoGSfMy6I2UmafGvDa/wbQXbmdxSm+omiv0NtykEzQ1j7HBeEGDcVDT661?=
+ =?us-ascii?Q?losEeIcI+qg3KcdK1hh/gusq8kxIZjjTY5arBFqRsA2b/aye2IcngvzVdJMe?=
+ =?us-ascii?Q?20ioh6pOjy2cLCJxWeermqkmeX2ff3Qk0dHArqtfAQye/VT78G0UB1vvRA9O?=
+ =?us-ascii?Q?LuomIuvxjq796fjaKczsE9hgpGwbmVHXlPmBatSdMVHJkjvMpCdmqNtCzCxA?=
+ =?us-ascii?Q?ycHD3ZhTnSDD6gGjCnVKbY/yyahyi41XOeLQwatVrXpNE7lH4v1HkVw/r1zZ?=
+ =?us-ascii?Q?WwXCUY2bJx7cmly23IfBkJSI97UenrDqvJBna7KaRcWwDYBMekSVsB4xCHCD?=
+ =?us-ascii?Q?lUEQfeVax6cUgfykXYNYQSbzF8CeDT4/MrJhsKzQG2lJ9ZQzXbSWO8aJaX1C?=
+ =?us-ascii?Q?NIgmGVsZeG3rHmAV+3Qf4uGPaYl1U3C+8IHdMZgL2ww8MvB5h1BTuGn/P6lK?=
+ =?us-ascii?Q?CDi3SPkA5oOS59G/pSuHMZlYaT4em4lTdIZ/uNp6m1M8xUktbTk86/QB868r?=
+ =?us-ascii?Q?VYSjbJL7jKC6fnU7WUZtvTq5?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4bab008a-2598-48fa-0b15-08d96797c000
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 07:12:50.9544
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mHS8iMXCv+ZvLw8XUgdgvldxg9x1wz845VLYCjTqiKtpoqMC+QftfEDDQ2mm/kSVdsF48McE/2z1LikflzzuyvCRZrJhvY2NFkglu2KrsY4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5570
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10086 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108250042
+X-Proofpoint-ORIG-GUID: JKl_piLK7ELCHZDZQlt9OIpkUSOZRICu
+X-Proofpoint-GUID: JKl_piLK7ELCHZDZQlt9OIpkUSOZRICu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl.git pending
+head:   036a16a39e2fab9bf7279201d04cf7e90993521f
+commit: b7ca54b625514464bac2db59b754e95c49b66fb5 [39/40] cxl/core: Split decoder setup into alloc + add
+config: x86_64-randconfig-m001-20210824 (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-syzbot found the following issue on:
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-HEAD commit:    86ed57fd8c93 Add linux-next specific files for 20210820
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11196189300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f64eccb415bd479d
-dashboard link: https://syzkaller.appspot.com/bug?extid=2c98885bcd769f56b6d6
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=158e3711300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14371b11300000
+smatch warnings:
+drivers/cxl/core/bus.c:501 devm_cxl_add_decoder() warn: variable dereferenced before check 'cxld' (see line 497)
+drivers/cxl/core/bus.c:541 devm_cxl_add_decoder() error: uninitialized symbol 'dev'.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2c98885bcd769f56b6d6@syzkaller.appspotmail.com
+vim +/cxld +501 drivers/cxl/core/bus.c
 
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
-BUG: KASAN: use-after-free in test_bit include/asm-generic/bitops/instrumented-non-atomic.h:134 [inline]
-BUG: KASAN: use-after-free in nbd_genl_connect+0x235/0x16a0 drivers/block/nbd.c:1869
-Read of size 8 at addr ffff8881463eeab0 by task syz-executor010/6561
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  494  int devm_cxl_add_decoder(struct device *host, struct cxl_decoder *cxld,
+574d46ed53b527 drivers/cxl/core/bus.c Dan Williams 2021-08-24  495  			 int *target_map)
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  496  {
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24 @497  	struct cxl_port *port = to_cxl_port(cxld->dev.parent);
+                                                                                                            ^^^^^^^^^^^^^^^^
+Dereference
 
-CPU: 1 PID: 6561 Comm: syz-executor010 Not tainted 5.14.0-rc6-next-20210820-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- check_region_inline mm/kasan/generic.c:183 [inline]
- kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- test_bit include/asm-generic/bitops/instrumented-non-atomic.h:134 [inline]
- nbd_genl_connect+0x235/0x16a0 drivers/block/nbd.c:1869
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x32d/0x590 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x154/0x430 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xd7/0x130 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4406d9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffec8655a78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000000103b8 RCX: 00000000004406d9
-RDX: 0000000000000000 RSI: 0000000020000280 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffec8655c18
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffec8655a8c
-R13: 431bde82d7b634db R14: 00000000004ae018 R15: 00000000004004a0
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  498  	struct device *dev;
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  499  	int rc = 0, i;
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  500  
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24 @501  	if (!cxld)
+                                                                            ^^^^^
+Checked too late.
 
-Allocated by task 1:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc mm/kasan/common.c:513 [inline]
- ____kasan_kmalloc mm/kasan/common.c:472 [inline]
- __kasan_kmalloc+0xa8/0xe0 mm/kasan/common.c:522
- kmalloc include/linux/slab.h:594 [inline]
- kzalloc include/linux/slab.h:731 [inline]
- nbd_dev_add+0x54/0xaf0 drivers/block/nbd.c:1696
- nbd_init+0x297/0x2a7 drivers/block/nbd.c:2457
- do_one_initcall+0x103/0x650 init/main.c:1292
- do_initcall_level init/main.c:1367 [inline]
- do_initcalls init/main.c:1383 [inline]
- do_basic_setup init/main.c:1402 [inline]
- kernel_init_freeable+0x6b4/0x73d init/main.c:1604
- kernel_init+0x1a/0x1d0 init/main.c:1496
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  502  		return -EINVAL;
+574d46ed53b527 drivers/cxl/core/bus.c Dan Williams 2021-08-24  503  
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  504  	if (IS_ERR(cxld))
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  505  		return PTR_ERR(cxld);
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  506  
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  507  	if (cxld->interleave_ways < 1) {
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  508  		rc = -EINVAL;
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  509  		goto err;
 
-Freed by task 10:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0x103/0x140 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1681 [inline]
- slab_free_freelist_hook+0x85/0x190 mm/slub.c:1706
- slab_free mm/slub.c:3459 [inline]
- kfree+0xea/0x540 mm/slub.c:4519
- process_one_work+0x9c9/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x65b/0x1200 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+"dev" not initialized at this point.
 
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xed/0x120 mm/kasan/generic.c:348
- insert_work+0x48/0x370 kernel/workqueue.c:1353
- __queue_work+0x5d1/0xf30 kernel/workqueue.c:1519
- queue_work_on+0xf6/0x110 kernel/workqueue.c:1546
- queue_work include/linux/workqueue.h:502 [inline]
- nbd_put drivers/block/nbd.c:283 [inline]
- nbd_put+0xd7/0x120 drivers/block/nbd.c:276
- nbd_genl_connect+0xc73/0x16a0 drivers/block/nbd.c:2019
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x32d/0x590 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x154/0x430 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xd7/0x130 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  510  	}
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  511  
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  512  	device_lock(&port->dev);
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  513  	if (list_empty(&port->dports))
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  514  		rc = -EINVAL;
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  515  
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  516  	for (i = 0; rc == 0 && target_map && i < cxld->nr_targets; i++) {
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  517  		struct cxl_dport *dport = find_dport(port, target_map[i]);
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  518  
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  519  		if (!dport) {
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  520  			rc = -ENXIO;
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  521  			break;
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  522  		}
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  523  		dev_dbg(host, "%s: target: %d\n", dev_name(dport->dport), i);
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  524  		cxld->target[i] = dport;
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  525  	}
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  526  	device_unlock(&port->dev);
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  527  	if (rc)
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  528  		goto err;
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  529  
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  530  	dev = &cxld->dev;
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  531  	rc = dev_set_name(dev, "decoder%d.%d", port->id, cxld->id);
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  532  	if (rc)
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  533  		goto err;
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  534  
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  535  	rc = device_add(dev);
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  536  	if (rc)
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  537  		goto err;
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  538  
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  539  	return devm_add_action_or_reset(host, unregister_cxl_dev, dev);
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  540  err:
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09 @541  	put_device(dev);
 
-The buggy address belongs to the object at ffff8881463ee800
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 688 bytes inside of
- 1024-byte region [ffff8881463ee800, ffff8881463eec00)
-The buggy address belongs to the page:
-page:ffffea000518fa00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8881463ef800 pfn:0x1463e8
-head:ffffea000518fa00 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0x57ff00000010200(slab|head|node=1|zone=2|lastcpupid=0x7ff)
-raw: 057ff00000010200 ffffea00050c7a08 ffffea00050fe608 ffff888010c41dc0
-raw: ffff8881463ef800 000000000010000f 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, ts 7639818470, free_ts 0
- prep_new_page mm/page_alloc.c:2424 [inline]
- get_page_from_freelist+0xa76/0x2f90 mm/page_alloc.c:4151
- __alloc_pages+0x1ba/0x510 mm/page_alloc.c:5373
- alloc_page_interleave+0x1e/0x200 mm/mempolicy.c:2033
- alloc_pages+0x29f/0x300 mm/mempolicy.c:2183
- alloc_slab_page mm/slub.c:1744 [inline]
- allocate_slab mm/slub.c:1881 [inline]
- new_slab+0x321/0x490 mm/slub.c:1944
- ___slab_alloc+0x937/0x1000 mm/slub.c:2970
- __slab_alloc.constprop.0+0x51/0xa0 mm/slub.c:3057
- slab_alloc_node mm/slub.c:3148 [inline]
- kmem_cache_alloc_node_trace+0x187/0x400 mm/slub.c:3232
- kmalloc_node include/linux/slab.h:613 [inline]
- kzalloc_node include/linux/slab.h:743 [inline]
- blk_throtl_init+0x7c/0x660 block/blk-throttle.c:2420
- blkcg_init_queue+0x199/0x770 block/blk-cgroup.c:1193
- blk_alloc_queue+0x451/0x630 block/blk-core.c:567
- blk_mq_init_queue_data block/blk-mq.c:3120 [inline]
- __blk_mq_alloc_disk+0x47/0x190 block/blk-mq.c:3143
- loop_add+0x324/0x940 drivers/block/loop.c:2344
- loop_init+0x1f5/0x218 drivers/block/loop.c:2575
- do_one_initcall+0x103/0x650 init/main.c:1292
- do_initcall_level init/main.c:1367 [inline]
- do_initcalls init/main.c:1383 [inline]
- do_basic_setup init/main.c:1402 [inline]
- kernel_init_freeable+0x6b4/0x73d init/main.c:1604
-page_owner free stack trace missing
+Should be:
 
-Memory state around the buggy address:
- ffff8881463ee980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8881463eea00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8881463eea80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                     ^
- ffff8881463eeb00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8881463eeb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+	put_device(&cxld->dev);
 
+But it feels like a layering violation to drop a reference that was
+aquired by the caller.
+
+b7ca54b6255144 drivers/cxl/core/bus.c Dan Williams 2021-08-24  542  	return rc;
+40ba17afdfabb0 drivers/cxl/core.c     Dan Williams 2021-06-09  543  }
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
