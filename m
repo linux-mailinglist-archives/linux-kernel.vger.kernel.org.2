@@ -2,154 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C0D3F759F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE293F75A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241139AbhHYNKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 09:10:20 -0400
-Received: from mail-dm6nam10on2062.outbound.protection.outlook.com ([40.107.93.62]:26070
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229694AbhHYNKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 09:10:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fmOMDSWmoMqCsCq7tnKk4fcZXAiRO8fVKxodc8U8muWZzF5FKTMFSC6HGn0pAnj9ZtxuYCp/kkh5ByKqsqhGK7yEugA6Og7aPcsg6xkXaIObEj/5IyfFxwQK8Ag8KUv9m96v+uhfK/vSq1enApD6GtVkyQMlLjdYtyPMYEWx9+2PmUZPOOK8fMWPtBow9JCkIgOEjKDZ984DLXUBva/7YQ6P/6cq9s2K2lQttME8fygBv5kibK6LeO8bHgtVSnfqz/mKE0xR1gc2lE6nNWCxfMAsQdMeUJnxJk3gMO1XaEZkvi5ZDmnc1XDUCvOnRCwnxQroXVJOfnHxitGvQdr3SQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+7cCNzajqyc1EZVk7UtTuWNkQ+kKdIo5ieq2E5WTAl8=;
- b=WAu+ua6sn6c3wfWqPOvY8vCdBGaCgfoMqVFVDBIH0ZkEkXrbrz4wTqEfJGn6/TNtjwzIG7i+5L5akvtfk8OnwkGGf90RHY+uxar6HpLdOShIcTmNyQsxLVRegDubZaOdZvCM3uftN1wtPzycxk6aObosH2Ns+KGaYi/AD+v0otWI7rgTFbExOiKqi4gJDpQ5G1UjHR57mPF7n3GatR0GkPcvKe2hNPEmZC7ZZPDVhUrYs+JdnhQV9dUnXvGXHnoVdQLNP5Nb4F3GflXzzzv0O+LE6lKUhvQrDUNZZtxsFFbsnNcUC34nPLj45ZBQU4M2dyr9MyDbAPcjX77AIdzVNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+7cCNzajqyc1EZVk7UtTuWNkQ+kKdIo5ieq2E5WTAl8=;
- b=ONyPm9zzOOdfX4MgyeRJvVEutve46UjAss17e5x7PuLsFMsreToypkhxQojOcdh4YGpfjEAK9lt4h852gOYzWA3G2M4CCAEssMyv1WUwygRBvUPEX/3ENw/cTpfZdqB8VgEIG3sErsc2abiW6mSuwzA4kNNJNbVQeaXy0wbvhvseG3t5Eq+H+8jU9P5+BV7ABoz99E1VjGdcvwySAGpdnEWMT18j1akigx6CMM/VHGOkmzRQP4oeMtkHRirz52h24J3dqI6IPCjZzH5kxmVKbYKYx9NjECJU4eXAwdy4p9q9icOdd2Z2Mc6XdG1/BEStFU43agvzbMPEfAdmFGXdeQ==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5127.namprd12.prod.outlook.com (2603:10b6:208:31b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.23; Wed, 25 Aug
- 2021 13:09:26 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
- 13:09:26 +0000
-Date:   Wed, 25 Aug 2021 10:09:23 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Maor Gottlieb <maorg@nvidia.com>
-Cc:     dledford@redhat.com, hch@infradead.org, leonro@nvidia.com,
-        aelior@marvell.com, daniel@ffwll.ch, airlied@linux.ie,
-        dennis.dalessandro@cornelisnetworks.com,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        mkalderon@marvell.com, mike.marciniszyn@cornelisnetworks.com,
-        mustafa.ismail@intel.com, rodrigo.vivi@intel.com,
-        sroland@vmware.com, shiraz.saleem@intel.com, tzimmermann@suse.de,
-        linux-graphics-maintainer@vmware.com, liweihang@huawei.com,
-        liangwenpeng@huawei.com, yishaih@nvidia.com, zackr@vmware.com,
-        zyjzyj2000@gmail.com
-Subject: Re: [PATCH rdma-next v4 2/3] lib/scatterlist: Fix wrong update of
- orig_nents
-Message-ID: <20210825130923.GF1721383@nvidia.com>
-References: <20210824142531.3877007-1-maorg@nvidia.com>
- <20210824142531.3877007-3-maorg@nvidia.com>
- <20210824191248.GY1721383@nvidia.com>
- <4f4a712a-71d4-ebac-48f2-766bfda61f1e@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f4a712a-71d4-ebac-48f2-766bfda61f1e@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0159.namprd13.prod.outlook.com
- (2603:10b6:208:2bd::14) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S240634AbhHYNMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 09:12:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229547AbhHYNMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 09:12:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C894361101;
+        Wed, 25 Aug 2021 13:12:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629897127;
+        bh=vb6zlF1GgtQtao0qLGE24EzkOC2L1Rd7nI7ZvWXvlPs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=usJ8mFB/sj/sibWICxDGAIVmLfO19jadVac7bNbETo07f52t+Q1070PNnX7dCGzG6
+         jc+T78jDPsXX/sG2mI5BAvK04emqpf3BZQSKHsvRx142bRPv396pi6ze+3HQ2y6rKf
+         I5ulspPpLlI0Bzd3dcbEkxWSv9O3CZC7c2kzlkJzczfkUtsUQf2Naw42BgLc7lKZzN
+         TFK69UZorXG8DokFa1beGf8clJ3G0TcmOJ/OJWuZ2WutM1I3PKorKredSV8XjaffcN
+         JLsVxbn/hv9u75Pw1tlCst30dxg5FYytQT2+JhaozjTqrzmw2/wJzAIRQtIg6FultK
+         A4Bq8aiJef9WA==
+Date:   Wed, 25 Aug 2021 14:11:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
+Message-ID: <20210825131139.GG5186@sirena.org.uk>
+References: <20210824230620.1003828-1-djrscally@gmail.com>
+ <20210824230620.1003828-2-djrscally@gmail.com>
+ <20210825103301.GC5186@sirena.org.uk>
+ <CAHp75VdHpjbjz4biTP11TKT6J+7WQi-a1Ru3VLuSxM5tSLCB3Q@mail.gmail.com>
+ <20210825113013.GD5186@sirena.org.uk>
+ <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0159.namprd13.prod.outlook.com (2603:10b6:208:2bd::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.6 via Frontend Transport; Wed, 25 Aug 2021 13:09:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIseh-004tWi-Tm; Wed, 25 Aug 2021 10:09:23 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 55eb86c5-7a5f-43a7-6dea-08d967c99025
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5127:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB512773DF61803FBD7211467FC2C69@BL1PR12MB5127.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jKXRPtHghVdMrXDbNWWaUIe3y5MLcRgMWTgmJY1N74pyNGRy5SqB1Jbt0be4IWNiyTHhj28Onk3PhfS1ZFUlr6fTwbYEXXETw5eOE3LROVRzLu3VCoy+AE/Gg92euRoa9ExORXW62hYNK+HuPcOBT20a9PaMExswXeMsHxXm2voDEsATV/9YJo5+ZumgfWA1z5o50SKfXVxGxSCnklisMHtJ9LGxNaIAxjI70WyN3x4qt0fFnCONJ3g14oWt3X+JyPK6uovmpE1xdpNfveJf2peX66H5/jAhYwOHYfjDP2fBXghCO7ZMp+20/DQ0EmVNEnZ+QoAm6zb+4ncSw53D8sI8sj/B8GSG6qqpM/ZhcaYBXSO0Wq43RBQRE9xrKIYk8Rz5OLokN5Oahwg5n89TUjXA/LY5OUhQMF9V135Ddd9EeBdI1wKgmEkuk1aYDHrDvZYLUdls6cxOs0Z7oLDQcDdyXzweyjUPaH9TZdJ7HDUsdVvDFHQbh0e6kQZvZVPHVhznwdM9Ca7c/DMBtpsza0zkOPfYJ1iaWI5TUxPhGQ7MQ/r7pc7iOKQopnfpcQraP/ugNNfQBQgdg8dIg1MZyWZDbJ7035bo4+0S1ECAeiKVBP2CdWm13wd+m6dYvdx7/Ysa7ei2EwSrF5KISaEOSA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(376002)(396003)(366004)(66556008)(66946007)(1076003)(426003)(6636002)(37006003)(66476007)(316002)(5660300002)(2906002)(9786002)(9746002)(38100700002)(86362001)(4326008)(6862004)(8936002)(7416002)(478600001)(8676002)(53546011)(186003)(26005)(83380400001)(36756003)(33656002)(2616005)(15650500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QC2HKcf36c/s+oibZmTNtcA78lnYhG+ixkUirhDXmpwQTtH/KN1r6NH6U+aG?=
- =?us-ascii?Q?fzC5XRHvUdwsrxnRu9l0I8Oyf+0u+rulS2Kyixg+ca2opPrQvkTe0EEpJy6P?=
- =?us-ascii?Q?DGMZD0fWZO0eBNUEuVFuRlOoz4bcyO/9frir2EN/1uOyuu9F5V5NYW4rkbk/?=
- =?us-ascii?Q?2rj0ekGqFUHcd04+TvvYEZLgJV+2RwWa5VDiuk+N+epclIR9mI3B5ySVjG0a?=
- =?us-ascii?Q?c2LsJPbLqEPVOYUULYjs/AcNQXzaVSxAEj2Xe3U8AaGZm8ZkQNavwx0TliVH?=
- =?us-ascii?Q?6ujccgdYzYttUZOag/r/h3RdUZiBSMPlI2baQ1cNk1uKc6R21DvlPNpaGm+6?=
- =?us-ascii?Q?dz/BrBw1Re2aBWdpX6u0zqDI4eU3Klsc3Fs5dez2ou1A3dooqe3ZllEnyCjr?=
- =?us-ascii?Q?f0y0zL55vRMq2i/fZCB2A/NCQ6PdBtFjnAJQrC1KYt9ywgVOqJLRMjny00y7?=
- =?us-ascii?Q?hSskqmKpgwVCWLUO5KrsLGkUq+z3GVMkwhcmb5/Nk89Zlqz/N/nb24d7UeDH?=
- =?us-ascii?Q?GpUqlH/Cb36sPsfnOuilB+k8Ac11/IgP1xcvM7qvd8NdfVzT9sVGg7aFBhTu?=
- =?us-ascii?Q?OLTzVFiY/nJrPgYu+m5zKgvBd4G47lHzJNT2VMOwZ1ChsSWjXBiV1cJcvZBa?=
- =?us-ascii?Q?7pW2jtThGQq4tE7sEN4pvv/sdaZNcTm6gohK9bHQ1Qdffx7KwoMKCrgiePtp?=
- =?us-ascii?Q?SY5206Ui+f7ioobxrI6v/91tRBwOVVkMggDwxJIxv1lYEG171jxmIw4GD1mM?=
- =?us-ascii?Q?WuEVcsMzkTAREwqHrGeN2z7lPwP6Gdd42t35JCsqv4eodkbKiY5XcFADmJ+J?=
- =?us-ascii?Q?/j1weMIijyZXYhn8hfmGUPOdDP/wqADfkKCbyljj7Lk7HrDSonsAippQmtWw?=
- =?us-ascii?Q?UH8qBrd4O7v1evspt6vjy9BEMoj3Gj12WslnrrHHWn8R5bqrK5R0iwjiA0uU?=
- =?us-ascii?Q?MZg/k7m6di5jcVWjJe2+i2lPIjm/Lz3xjCgp4nCJzBGbbF0J5Bjr9OZOF1dR?=
- =?us-ascii?Q?m2iFx6NErYuxZaLMLOa8L/Qx219eCnEhnw98BPxw4tmRGzXkW/yb0tWoSmdm?=
- =?us-ascii?Q?y7qXa385YBEMqsXvTXdG/6xk2C7yB+U9hpboHdQ+E+PNa/lBQYJ9QBP9e9Cl?=
- =?us-ascii?Q?txsipn2Z9LEPXgcBDmTPRY9Rt7mlRBnBEVVopFKrThmGeBOnix1PagSEkevZ?=
- =?us-ascii?Q?wxRMTOSVQFnj+4UAc2PvueN1KKMW6SWP6x/onVx4gqlquxlsD8Yhf20wIDFR?=
- =?us-ascii?Q?H8uf+HiiPMz9qy8g7LqH8qDgsN2I5PGVWHHXtWfOGyzUsmru3Dpo9RS7z/fW?=
- =?us-ascii?Q?/RubLX9LjBwrpTQebIffZxPa?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55eb86c5-7a5f-43a7-6dea-08d967c99025
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 13:09:26.0776
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fz3iXxxhA4MEAMAQUOoJSB5rK9bKG/Y6lGyZoDVOD3uwWD6ldZlS3LwmSUCos9yX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5127
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Fnm8lRGFTVS/3GuM"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
+X-Cookie: MY income is ALL disposable!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 07:59:27AM +0300, Maor Gottlieb wrote:
-> 
-> On 8/24/2021 10:12 PM, Jason Gunthorpe wrote:
-> > On Tue, Aug 24, 2021 at 05:25:30PM +0300, Maor Gottlieb wrote:
-> > > @@ -514,11 +531,13 @@ struct scatterlist *sg_alloc_append_table_from_pages(struct sg_table *sgt,
-> > >   		offset = 0;
-> > >   		cur_page = j;
-> > >   	}
-> > > -	sgt->nents += added_nents;
-> > > +	sgt_append->sgt.nents += added_nents;
-> > > +	sgt_append->sgt.orig_nents = sgt_append->sgt.nents;
-> > > +	sgt_append->prv = s;
-> > Why is nents being touched here?
-> > 
-> > Shouldn't it just be
-> > 
-> >      sgt_append->sgt.orig_nents += added_nents;
-> >      sgt_append->prv = s;
-> > 
-> > ?
-> 
-> In general yes, but all the sg_alloc_* functions update both
-> orig_nents and nents (to same value). May be drivers that pass nents
-> instead of orig_nents to dma_map_sg* (like umem did before this
-> patch set). So I prefer to set it here as well, also not to break
-> sg_alloc_table_from_pages_segment which use the same path. This kind
-> of change could be done very carefully next cycle for all
-> sg_alloc_*.
 
-Ok, interesting
+--Fnm8lRGFTVS/3GuM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Jason
+On Wed, Aug 25, 2021 at 03:26:37PM +0300, Andy Shevchenko wrote:
+> On Wed, Aug 25, 2021 at 2:30 PM Mark Brown <broonie@kernel.org> wrote:
+
+> > No, what was proposed for regulator was to duplicate all the the DT
+> > binding code in the regulator framework so it parses fwnodes then have
+> > an API for encoding fwnodes from C data structures at runtime.  The bit
+> > where the data gets joined up with the devices isn't the problem, it's
+> > the duplication and fragility introduced by encoding everything into
+> > an intermediate representation that has no purpose and passing that
+> > around which is the problem.
+
+> The whole exercise with swnode is to minimize the driver intrusion and
+> evolving a unified way for (some) of the device properties. V4L2 won't
+
+The practical implementation for regulators was to duplicate a
+substantial amount of code in the core in order to give us a less type
+safe and more indirect way of passing data from onen C file in the
+kernel to another.  This proposal is a lot better in that it uses the
+existing init_data and avoids the huge amounts of duplication, it's just
+not clear from the changelog why it's doing this in a regulator specific
+manner.
+
+*Please* stop trying to force swnodes in everywhere, take on board the
+feedback about why the swnode implementation is completely inappropriate
+for regulators.  I don't understand why you continue to push this so
+hard.  swnodes and fwnodes are a solution to a specific problem, they're
+not the answer to every problem out there and having to rehash this
+continually is getting in the way of actually discussing practical
+workarounds for these poorly implemented ACPI platforms.
+
+> like what you are suggesting exactly because they don't like the idea
+> of spreading the board code over the drivers. In some cases it might
+> even be not so straightforward and easy.
+
+> Laurent, do I understand correctly the v4l2 expectations?
+
+There will be some cases where swnodes make sense, for example where the
+data is going to be read through the fwnode API since the binding is
+firmware neutral which I think is the v4l case.  On the other hand
+having a direct C representation is a very common way of implementing
+DMI quirk tables, and we have things like the regulator API where
+there's off the shelf platform data support and we actively don't want
+to support fwnode.
+
+--Fnm8lRGFTVS/3GuM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEmQYsACgkQJNaLcl1U
+h9ANAwf/S6zYJSnp+10kaaC/6OAkXKT6uQv/eFL/gT8c/DjiGe755qgji1k8fsm4
+X4tGbb8AE3mRGaTOdjQXjEsLNfTbrU/sWDOyZnFUv6U0uLEje+2hBdxqZ77XI9Uj
+OK91Bq4IK9NFRO8yf18m6kP3prF3Fcl3VY4CIHxYMiCLf425F71PkJ23Nry+YQ7/
+ERC/tv0yw+1TrTEu9m5nFoQS6PBe6t3iMMeiOcgh/WOVB2VsW6yc0XKgKt9IKfPf
+HqtRuNTb9lJ94cU1vh1ZF209+cl9zpBSDQ/p0F64BVIbeBMRMSizgWwYNBJeekqq
+n/bwINS/S8djAWxsi97Aeurv5Kcaiw==
+=LW9S
+-----END PGP SIGNATURE-----
+
+--Fnm8lRGFTVS/3GuM--
