@@ -2,129 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFFD3F6E76
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4653F6E78
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhHYEaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 00:30:06 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:42175 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbhHYE37 (ORCPT
+        id S229826AbhHYEf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 00:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhHYEf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 00:29:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629865749; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=0+985ZB1bZ2Xt57BgaCKAO5yH9ewmG5YTGZdFzukfIw=; b=SMrTgYZPIhxyC1TOh8WQe8olqCXIMGW/yoEBiOanD1pOB7gjDA+xu6Y+pVfvLCv6LPYCe9AN
- Th7A7e1K48brtsKWVALSVbI2slzhesGw4841mbrrjZvBAuQZBDPPC+xdEIeqzTYh3Uf+X0wr
- E8gsqVkI80gqDOQkmqOtR3faLbo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6125c70c1567234b8cb458a5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Aug 2021 04:29:00
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D0314C43616; Wed, 25 Aug 2021 04:28:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5A39EC4338F;
-        Wed, 25 Aug 2021 04:28:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5A39EC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        Thinh.Nguyen@synopsys.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>,
-        stable@vger.kernel.org
-Subject: [PATCH v5] usb: dwc3: gadget: Stop EP0 transfers during pullup disable
-Date:   Tue, 24 Aug 2021 21:28:55 -0700
-Message-Id: <20210825042855.7977-1-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.33.0
+        Wed, 25 Aug 2021 00:35:57 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D96C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 21:35:11 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id h9so48858794ejs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 21:35:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jnVkSyJgN3E1sDFilQH189RfendGOGfI1/ufZRZKyB0=;
+        b=Cco65m4HBzBTv5b8p+0hDWptfNctJ7xmLI2VkvaRSCIRXeS2lcwfYCJx1TakW/zrB/
+         vBm+AhQNFZuLtPcsAieUcgf+06flF3tDmudZ+wNG/LwyweO6IgiIga+cK2VEv6kVphZa
+         bWwVskoq6mgw31zYgX9ocyPqW8jPOMtp1H1Q2dsd2fRu9mGHy8UTESBoRmy9Pa1CltWT
+         AyBHLW2Y4zVpLep+696g9UTNSo27PvANqWC5NrMZ1tKEwFRYB4r2/Fbuz7CQ4kQLSwNh
+         I168HLpgNZdTkp5GqGy7Rn3XBehwH6nMCvQgUrdIXkOV2AU5usEx2gfJnr691a10XB7L
+         XaVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jnVkSyJgN3E1sDFilQH189RfendGOGfI1/ufZRZKyB0=;
+        b=YbOM1vGb4X3m2xvThK7AvBQT86mR1r4Gg/1QZjbhualfOBfYVVkhZDCMiY5cwmdgEd
+         rM12onXrEz0lVKmZx8HUpsusKONHajN11Z+ZhKWHwzVNWs3eHnV/rdX03Gl+45/M/CzJ
+         rmmpdBPksOUVSe1jkzqxrkmz4Aiob3ZmJUz4fgWmKqwb7lYVRtNElvHE7WJWbenoAzeS
+         2wMUJJ+Mrm/wVU7nZO3AoqN6oH8E2yK4alhDAzclFR+SmIotN/Jsqga72DQcZpdmdw4h
+         XI5+4it5J9xEIgRNZ6tcvCLFFJe7SepOViRYIZeMAzcsEmQPgj1B+hzthhW35ei+jp6s
+         ZcPw==
+X-Gm-Message-State: AOAM531BZGIekSQ7/x648i38XYmEG62iiAo/CIzu+1/NprXLdUH2YoTz
+        nO+B9mRy5vAnnH5XNUSJxUs=
+X-Google-Smtp-Source: ABdhPJwUciuGXzKcuga0wgY2pqKDLFo5GDsUCC35UCs1jFKLv6eiNgf6mXYx4rZhcerDanUrAdtxrw==
+X-Received: by 2002:a17:906:b183:: with SMTP id w3mr30349862ejy.394.1629866110430;
+        Tue, 24 Aug 2021 21:35:10 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id v12sm10292649ejq.36.2021.08.24.21.35.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 21:35:09 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] staging: r8188eu: add error handling of rtw_read16
+Date:   Wed, 25 Aug 2021 06:35:08 +0200
+Message-ID: <1665728.ljvk3MsED4@localhost.localdomain>
+In-Reply-To: <d06f3173e0a4c6f5449d5551cbfb0202849332b7.1629789580.git.paskripkin@gmail.com>
+References: <cover.1629789580.git.paskripkin@gmail.com> <d06f3173e0a4c6f5449d5551cbfb0202849332b7.1629789580.git.paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During a USB cable disconnect, or soft disconnect scenario, a pending
-SETUP transaction may not be completed, leading to the following
-error:
+On Tuesday, August 24, 2021 9:27:35 AM CEST Pavel Skripkin wrote:
+> _rtw_read16 function can fail in case of usb transfer failure. But
+> previous function prototype wasn't designed to return an error to
+> caller. It can cause a lot uninit value bugs all across the driver code,
+> since rtw_read16() returns local stack variable to caller.
+> 
+> Fix it by changing the prototype of this function. Now it returns an
+> int: 0 on success, negative error value on failure and callers should pass
+> the pointer to storage location for register value.
+> 
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> 
+> [...]
+>
+> -static u16 usb_read16(struct intf_hdl *pintfhdl, u32 addr)
+> +static int usb_read16(struct intf_hdl *pintfhdl, u32 addr, u16 *data)
+>  {
+>  	u8 requesttype;
+>  	u16 wvalue;
+>  	u16 len;
+> -	__le32 data;
+> +	int res;
+> +	__le32 tmp;
+> +
+> +	if (WARN_ON(unlikely(!data)))
+> +		return -EINVAL;
+>  
+>  	requesttype = 0x01;/* read_in */
+>  	wvalue = (u16)(addr & 0x0000ffff);
+>  	len = 2;
+> -	usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
+> +	res = usbctrl_vendorreq(pintfhdl, wvalue, &tmp, len, requesttype);
+> +	if (res < 0) {
+> +		dev_err(dvobj_to_dev(pintfhdl->pintf_dev), "Failed to read 16 bytes: %d\n", res);
+> +		return res;
+> +	} else if (res != len) {
 
-    dwc3 a600000.dwc3: timed out waiting for SETUP phase
+Dear Pavel,
 
-If this occurs, then the entire pullup disable routine is skipped and
-proper cleanup and halting of the controller does not complete.
+Please note that if and when my patch "Use usb_control_msg_recv / send () in 
+usbctrl_vendorreq ()" will be merged, "if (res! = len)" will always evaluate 'true' 
+and usb_read16 () will always return -EIO even if usbctrl_vendorreq () succeeds.
 
-Instead of returning an error (which is ignored from the UDC
-perspective), allow the pullup disable routine to continue, which
-will also handle disabling of EP0/1.  This will end any active
-transfers as well.  Ensure to clear any delayed_status also, as the
-timeout could happen within the STATUS stage.
+> +		dev_err(dvobj_to_dev(pintfhdl->pintf_dev),
+> +			"Failed to read 16 bytes, could read only %d bytes\n", res);
+> +		return -EIO;
+> +	}
+>  
+> -	return (u16)(le32_to_cpu(data) & 0xffff);
+> +	*data = le32_to_cpu(tmp) & 0xffff;
+> +
+> +	return 0;
+>  }
 
-Cc: <stable@vger.kernel.org>
-Fixes: bb0147364850 ("usb: dwc3: gadget: don't clear RUN/STOP when it's invalid to do so")
-Reviewed-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
-Changes in v5:
- - Added Cc stable and fixes tag
+[...]
 
-Changes in v4:
- - Fixed formatting and typos in commit text
- - Removed braces due to the removal of the return statement
+Regards,
 
-Changes in v3:
- - Added suggestion by Thinh to change dev_err to dev_warn
+Fabio
 
-Changes in v2:
- - Removed calls to dwc3_ep0_end_control_data() and just allow the ep disables
-   on EP0 handle the proper ending of transfers.
- - Ensure that delayed_status is cleared, as ran into enumeration issues if the
-   SETUP transaction fails on a STATUS stage.  Saw delayed_status == TRUE on the
-   next connect, which blocked further SETUP transactions to be handled.
 
- drivers/usb/dwc3/gadget.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 5d084542718d..63f6d9f2a692 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2428,10 +2428,8 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 
- 		ret = wait_for_completion_timeout(&dwc->ep0_in_setup,
- 				msecs_to_jiffies(DWC3_PULL_UP_TIMEOUT));
--		if (ret == 0) {
--			dev_err(dwc->dev, "timed out waiting for SETUP phase\n");
--			return -ETIMEDOUT;
--		}
-+		if (ret == 0)
-+			dev_warn(dwc->dev, "timed out waiting for SETUP phase\n");
- 	}
- 
- 	/*
-@@ -2643,6 +2641,7 @@ static int __dwc3_gadget_start(struct dwc3 *dwc)
- 	/* begin to receive SETUP packets */
- 	dwc->ep0state = EP0_SETUP_PHASE;
- 	dwc->link_state = DWC3_LINK_STATE_SS_DIS;
-+	dwc->delayed_status = false;
- 	dwc3_ep0_out_start(dwc);
- 
- 	dwc3_gadget_enable_irq(dwc);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
 
