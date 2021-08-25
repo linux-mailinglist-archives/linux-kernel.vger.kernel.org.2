@@ -2,162 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D18F3F7BCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F1E3F7BD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242329AbhHYRzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:55:25 -0400
-Received: from mail-oo1-f52.google.com ([209.85.161.52]:40675 "EHLO
-        mail-oo1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231962AbhHYRzX (ORCPT
+        id S242381AbhHYR4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhHYR4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:55:23 -0400
-Received: by mail-oo1-f52.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so58864ooh.7;
-        Wed, 25 Aug 2021 10:54:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=df/OerwKAWPLPQITF2yDRoTeJU9NwWh+Y/yCNdwz/ko=;
-        b=I4vFIBZiZ0IVvOBOtgacSGIl3cwGeMfk3O6X5UJweFgZOK4YYqgFrJ/XBskc1XRBeB
-         mxcvE71JWAQDa0lmMF0gzo4HuwYbrr8yKVjt5E7I0CFAjYI8K0AgwNP39KIpntnb2/0d
-         1Al2cxDThdOVwQnTgsdh/R5RP8ti51SzfBibD9GxFFKE08hWV9OPUXmy9Jz/xfhi5Ev/
-         zaefV40IKH/sKIEdPHo5Mnxpvh8Xo2/C5AhQ4amGZDlRa+eBwm1DxqSAmSeHRBOmxTu5
-         eXQRhrZg/BcS8e+Y4Bi1l6sVcmUkpUw81MPjfdZ5jJn2/TRwW8SrjffzuAyTlPqZ98XQ
-         /2fA==
-X-Gm-Message-State: AOAM530wgZNyl5Xaan0rNDtxdyC/FnPzIPaf4tBBBIfO+Q/SCyBm6v5I
-        e8tKNj+UwESM2kh0oZ/jwgZ3hnldtBgBfDWBWcw=
-X-Google-Smtp-Source: ABdhPJw0iO5RUl0kIcWZiNbqkCp6fjYKpiq2CzB1BUVvZZmUvvEDmlByZS3c3GeJtyQMOY+XgXbVv0pa4d6u50r6jFY=
-X-Received: by 2002:a4a:a552:: with SMTP id s18mr35593004oom.1.1629914077598;
- Wed, 25 Aug 2021 10:54:37 -0700 (PDT)
+        Wed, 25 Aug 2021 13:56:21 -0400
+Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4B8C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:55:34 -0700 (PDT)
+Received: from [10.0.20.3] (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id B8BA41F73F;
+        Wed, 25 Aug 2021 19:55:21 +0200 (CEST)
+Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Replace usage of parent_names
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+References: <20210824150606.678666-1-bjorn.andersson@linaro.org>
+ <386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org>
+ <YSV0/bFiPgY3fjPF@ripper>
+ <ed5d27eb-5a54-04c4-dbc4-63da80df1638@somainline.org>
+ <YSZ7yQLasmTMWBaK@builder.lan>
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+Message-ID: <5eff6991-77c1-9d59-0f90-60923e3766dd@somainline.org>
+Date:   Wed, 25 Aug 2021 19:55:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210824105651.28660-1-ionela.voinescu@arm.com> <20210824105651.28660-3-ionela.voinescu@arm.com>
-In-Reply-To: <20210824105651.28660-3-ionela.voinescu@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 25 Aug 2021 19:54:26 +0200
-Message-ID: <CAJZ5v0hkgWQqOzfdv4kr6rxz9eMsOgHkMYj0cZpO7yC+=SnQfg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] arch_topology: obtain cpu capacity using
- information from CPPC
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Sean Kelley <skelley@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YSZ7yQLasmTMWBaK@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:57 PM Ionela Voinescu
-<ionela.voinescu@arm.com> wrote:
->
-> Define topology_init_cpu_capacity_cppc() to use highest performance
-> values from _CPC objects to obtain and set maximum capacity information
-> for each CPU. acpi_cppc_processor_probe() is a good point at which to
-> trigger the initialization of CPU (u-arch) capacity values, as at this
-> point the highest performance values can be obtained from each CPU's
-> _CPC objects. Architectures can therefore use this functionality
-> through arch_init_invariance_cppc().
->
-> The performance scale used by CPPC is a unified scale for all CPUs in
-> the system. Therefore, by obtaining the raw highest performance values
-> from the _CPC objects, and normalizing them on the [0, 1024] capacity
-> scale, used by the task scheduler, we obtain the CPU capacity of each
-> CPU.
->
-> While an ACPI Notify(0x85) could alert about a change in the highest
-> performance value, which should in turn retrigger the CPU capacity
-> computations, this notification is not currently handled by the ACPI
-> processor driver. When supported, a call to arch_init_invariance_cppc()
-> would perform the update.
->
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  drivers/base/arch_topology.c  | 37 +++++++++++++++++++++++++++++++++++
->  include/linux/arch_topology.h |  4 ++++
->  2 files changed, 41 insertions(+)
->
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 921312a8d957..358e22cd629e 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -306,6 +306,43 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
->         return !ret;
->  }
->
-> +#ifdef CONFIG_ACPI_CPPC_LIB
-> +#include <acpi/cppc_acpi.h>
-> +
-> +void topology_init_cpu_capacity_cppc(void)
-> +{
-> +       struct cppc_perf_caps perf_caps;
-> +       int cpu;
-> +
-> +       if (likely(acpi_disabled || !acpi_cpc_valid()))
-> +               return;
-> +
-> +       raw_capacity = kcalloc(num_possible_cpus(), sizeof(*raw_capacity),
-> +                              GFP_KERNEL);
-> +       if (!raw_capacity)
-> +               return;
-> +
-> +       for_each_possible_cpu(cpu) {
-> +               if (!cppc_get_perf_caps(cpu, &perf_caps)) {
-> +                       raw_capacity[cpu] = perf_caps.highest_perf;
+Hi Bjorn,
 
-From experience, I would advise doing some sanity checking on the
-per_caps values before using them here.
+On 8/25/21 7:20 PM, Bjorn Andersson wrote:
+> On Wed 25 Aug 11:00 CDT 2021, Marijn Suijten wrote:
+> 
+>> Hi Bjorn,
+>>
+>> On 8/25/21 12:38 AM, Bjorn Andersson wrote:
+>>> On Tue 24 Aug 13:46 PDT 2021, Marijn Suijten wrote:
+>>>
+>>>> Hi Bjorn,
+>>>>
+>>>> Thanks for this cleanup, that's needed and much appreciated!
+>>>>
+>>>> On 8/24/21 5:06 PM, Bjorn Andersson wrote:
+>>>>> Using parent_data and parent_hws, instead of parent_names, does protect
+>>>>> against some cases of incompletely defined clock trees. While it turns
+>>>>> out that the bug being chased this time was totally unrelated, this
+>>>>> patch converts the SDM660 GCC driver to avoid such issues.
+>>>>>
+>>>>> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>>>>
+>>>>
+>>>> Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
+>>>>
+>>>> On the Sony Xperia XA2 Ultra, bar the necessary change in the 14NM DSI PHY
+>>>> driver commented below.
+>>>>
+>>>>> [..]
+>>>>> -
+>>>>> -static struct clk_fixed_factor xo = {
+>>>>> -	.mult = 1,
+>>>>> -	.div = 1,
+>>>>> -	.hw.init = &(struct clk_init_data){
+>>>>> -		.name = "xo",
+>>>>> -		.parent_names = (const char *[]){ "xo_board" },
+>>>>> -		.num_parents = 1,
+>>>>> -		.ops = &clk_fixed_factor_ops,
+>>>>> -	},
+>>>>> -};
+>>>>
+>>>>
+>>>> Removing the global "xo" clock makes it so that our 14nm DSI PHY does not
+>>>> have a parent clock anymore, as the clock is called "xo_board" nowadays
+>>>> ("xo" in the position of fw_name is, as you know, only local to this driver
+>>>> because it is named that way in the clock-names property). We (SoMainline)
+>>>> suffer the same DSI PHY hardcoding issue on many other boards and are at
+>>>> this point investigating whether to provide &xo_board in DT like any other
+>>>> sane driver.  Do you happen to know if work is already underway to tackle
+>>>> this?
+>>>>
+>>>
+>>> As far as I can tell most other platforms doesn't define "xo" either.
+>>> E.g. according to debugfs dsi0vco_clk doesn't have a parent on sdm845...
+>>>
+>>> Sounds like we should update the dsi phys to specify a fw_name and
+>>> update binding and dts to provide this...
+>>
+>>
+>> I'm all for using .fw_name there, and I hope we all agree that clock
+>> dependencies based on global names should become a thing of the past; every
+>> such inter-driver dependency should be clearly visible in the DT.  We
+>> (SoMainline) can tackle this DSI side if no-one else is working on it yet.
+>>
+>>> Does this cause a noticeable regression or it's just that we have a
+>>> dangling clock?
+>>
+>>
+>> Unfortunately this regresses yes, starting with:
+>>
+>>      dsi0n1_postdiv_clk: Zero divisor and CLK_DIVIDER_ALLOW_ZERO not set
+>>
+>> And proceeding with more such errors on different clocks, clocks getting
+>> stuck or failing to update, and the panel never showing anything at all.
+>>
+>> Should we fix DSI PHYs first and let this patch sit for a while, or keep the
+>> implicit global "xo" clock just a little while longer until that's over
+>> with?
+>>
+> 
+> Thanks, should have read your email as well before replying to the
+> other.
 
-Also note that highest_perf may not be sustainable, so would using
-highest_perf as raw_capacity[] always work as expected?
 
-> +                       pr_debug("cpu_capacity: CPU%d cpu_capacity=%u (raw).\n",
-> +                                cpu, raw_capacity[cpu]);
-> +               } else {
-> +                       pr_err("cpu_capacity: CPU%d missing highest performance.\n", cpu);
-> +                       pr_err("cpu_capacity: partial information: fallback to 1024 for all CPUs\n");
-> +                       goto exit;
-> +               }
-> +       }
-> +
-> +       topology_normalize_cpu_scale();
-> +       schedule_work(&update_topology_flags_work);
-> +       pr_debug("cpu_capacity: cpu_capacity initialization done\n");
-> +
-> +exit:
-> +       free_raw_capacity();
-> +}
-> +#endif
-> +
->  #ifdef CONFIG_CPU_FREQ
->  static cpumask_var_t cpus_to_visit;
->  static void parsing_done_workfn(struct work_struct *work);
-> diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> index f180240dc95f..9cf1a17938f0 100644
-> --- a/include/linux/arch_topology.h
-> +++ b/include/linux/arch_topology.h
-> @@ -11,6 +11,10 @@
->  void topology_normalize_cpu_scale(void);
->  int topology_update_cpu_topology(void);
->
-> +#ifdef CONFIG_ACPI_CPPC_LIB
-> +void topology_init_cpu_capacity_cppc(void);
-> +#endif
-> +
->  struct device_node;
->  bool topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu);
->
-> --
-> 2.29.2.dirty
->
+No biggie, Angelo was first to reply after all :)
+
+> I will respin this with "xo" intact, then once we've fixed up the DSI
+> code we can drop it.
+
+
+Sounds good, thanks!
+
+> But I still don't understand why we don't have this problem on e.g.
+> sdm845. I must be missing something...
+
+
+It is strange indeed.  On MSM89[57]6 (Sony Xperia Loire, 28nm DSI 
+PHY/PLL) we don't have this parent hooked up either because of the same 
+issue, and it's not a problem there either.  I bet it all comes down to 
+slight differences between the various DSI PHY/PLL implementations.
+
+>> Either way, feel free to attach my:
+>>
+>> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
+>>
+>> After that.
+>>
+>>>>>     static struct clk_alpha_pll gpll0_early = {
+>>>>>     	.offset = 0x0,
+>>>>>     	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
+>>>>> @@ -158,7 +35,9 @@ static struct clk_alpha_pll gpll0_early = {
+>>>>>     		.enable_mask = BIT(0),
+>>>>>     		.hw.init = &(struct clk_init_data){
+>>>>>     			.name = "gpll0_early",
+>>>>> -			.parent_names = (const char *[]){ "xo" },
+>>>>> +			.parent_data = &(const struct clk_parent_data){
+>>>>> +				.fw_name = "xo",
+>>>>> +			},
+>>>>
+>>>>
+>>>> I wish we could use .parent_names for a list of .fw_name's too
+>>>
+>>> Afaict specifying "name" in struct clk_parent_data is the same as using
+>>> parent_names. But I'm not up to speed on the details of how to migrate
+>>> the dsi phys.
+>>
+>>
+>> Yes it is, both do _not_ look at clocks specified in DT before "falling
+>> back" to global names (that only happens when both .name and .fw_name are
+>> specified).  I'm sort of expressing the desire for .parent_fw_names here in
+>> hopes of phasing out global clock names on DT platforms altogether.  We
+>> definitely shouldn't rework .parent_names to support both, that only causes
+>> confusion and an implicit fallback to global clocks when the DT is
+>> under-specifying the required clocks is exactly what we're trying to avoid.
+>>
+>>>>> [..]
+>>>>> @@ -265,7 +270,7 @@ static struct clk_rcg2 blsp1_qup1_i2c_apps_clk_src = {
+>>>>>     	.freq_tbl = ftbl_blsp1_qup1_i2c_apps_clk_src,
+>>>>>     	.clkr.hw.init = &(struct clk_init_data){
+>>>>>     		.name = "blsp1_qup1_i2c_apps_clk_src",
+>>>>> -		.parent_names = gcc_parent_names_xo_gpll0_gpll0_early_div,
+>>>>> +		.parent_data = gcc_parent_data_xo_gpll0_gpll0_early_div,
+>>>>>     		.num_parents = 3,
+>>>>
+>>>>
+>>>> How about using ARRAY_SIZE(gcc_parent_data_xo_gpll0_gpll0_early_div) now?
+>>>> Same for every other occurrence of this pattern.
+>>>>
+>>>
+>>> I omitted that because it felt unrelated to the change I was doing, but
+>>> it could certainly be done.
+>>
+>>
+>> Fair, if done at all it should end up in a separate (2/2) patch or I'll take
+>> care of this in a followup.
+>>
+> 
+> Sounds good, I'd be happy to give you a review on that patch :)
+
+
+I'll spin that patch as soon as v2 is merged (preventing 
+ordering/dependency issues?), feel free to CC me.
+
+> Regards,
+> Bjorn
+> 
+
+- Marijn
