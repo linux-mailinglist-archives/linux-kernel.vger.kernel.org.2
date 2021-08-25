@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E4A3F708B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9063F7090
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238702AbhHYHjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:39:22 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:14319 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234058AbhHYHjV (ORCPT
+        id S238744AbhHYHmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238357AbhHYHmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:39:21 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GvdBL1cQXz89xG;
-        Wed, 25 Aug 2021 15:38:18 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 15:38:32 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 25 Aug 2021 15:38:31 +0800
-Subject: Re: [PATCH 5.4 00/61] 5.4.143-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>
-References: <20210824170106.710221-1-sashal@kernel.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <297c4759-32f7-118a-7d0b-441b00a82146@huawei.com>
-Date:   Wed, 25 Aug 2021 15:38:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 25 Aug 2021 03:42:11 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C94C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:41:25 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id mf2so31075309ejb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:41:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rGNuELwobwe6Q9P0rjpd5AahVZOV8f/nV1gzCjuC59s=;
+        b=XY+/qvXeyZ3mugrH2M/Sv50uz/QRC4KwiRXM8YKES85Ry+EACA8u9bpmV/wVxORCVb
+         /UJj23E99WiqHiBYgJ477l52PRBJIJjzRG+J9PiYfNccBf/LbXFgwQA0cfG7T2qyy0ZP
+         aPYO8BPGgo2HKiRwbl0MPp9I4xWtwgr6vRHdy3n5jamS9KIrmEwOmWtmZgWCMvSuTlsj
+         10INGmwgOtBFCSwm/RNMKHKJ1Ie7qGTeAg7YpCaom9nqXNIW0H9DU+yjIFsoP9Op4K4h
+         bD+GNuAS49204coa48ao0Jq0T3P1dg0zeMbJ8/CmN5le1CDWkSDUiTu56dJjJBlqla+z
+         a5vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=rGNuELwobwe6Q9P0rjpd5AahVZOV8f/nV1gzCjuC59s=;
+        b=SJ0BxkrQ571PsD3DzcsaVtB+tTogKc0Dz2k97B23BuuV1hSF0+scaLxZ6uwQDA+elF
+         5sfMn4h8gtiw29mkZF/fuxlf6HPniAHNrqk37LdBEz0GJN4mIuzh7yk1tCwS5tKEv9yw
+         Lj6IZLX/rxUR23HbRvWK6qbfwTrF0ihHakI+KL6Nv+CDV6CRBniKj/CdkC6dd4mM1e1h
+         YnZMVIRjzlDBZa/gdyno9SmS9eSXNW9wXKilyVJ0rXZoy7n6RIydVMkwGavBIEXZYmaZ
+         adSBJt4JgvP6gbT+t9lvtKIJyziN73zVhSPzkgEGhnTJU9JPD0RO2GAIhKwf5QxBD62M
+         jeWA==
+X-Gm-Message-State: AOAM531KQBTgrusCfg6Ai8hPUVUzO0iAWcetM/P128D7s7GjT+v4tu4Y
+        DppYvGxgbWpXn2DN6V73l6glui3aUw/wWZTo
+X-Google-Smtp-Source: ABdhPJxlmusMiKHs4knjmKtN+EIwNswsRRBXUTRMjY65PTEKIvrN8ODG0vGHbmTIF2iTFNVe+N3lQw==
+X-Received: by 2002:a17:906:4c8c:: with SMTP id q12mr45331461eju.254.1629877284271;
+        Wed, 25 Aug 2021 00:41:24 -0700 (PDT)
+Received: from localhost ([2a02:768:2307:40d6::e05])
+        by smtp.gmail.com with ESMTPSA id h30sm1641287edz.40.2021.08.25.00.41.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 25 Aug 2021 00:41:23 -0700 (PDT)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org
+Subject: [PATCH] pinctrl: core: Remove duplicated world from devm_pinctrl_unregister()
+Date:   Wed, 25 Aug 2021 09:41:22 +0200
+Message-Id: <8b75e5dfd9363f35ebdd7812e119757379678f97.1629877281.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210824170106.710221-1-sashal@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove duplicated "which" from devm_pinctrl_unregister() kernel doc
+description.
 
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
-On 2021/8/25 1:00, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 5.4.143 release.
-> There are 61 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu 26 Aug 2021 05:01:01 PM UTC.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.142
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
-> 
+ drivers/pinctrl/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested on arm64 and x86 for 5.4.143-rc1,
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index a4ac87c8b4f8..5082102d7d0d 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -2306,7 +2306,7 @@ EXPORT_SYMBOL_GPL(devm_pinctrl_register_and_init);
+ 
+ /**
+  * devm_pinctrl_unregister() - Resource managed version of pinctrl_unregister().
+- * @dev: device for which which resource was allocated
++ * @dev: device for which resource was allocated
+  * @pctldev: the pinctrl device to unregister.
+  */
+ void devm_pinctrl_unregister(struct device *dev, struct pinctrl_dev *pctldev)
+-- 
+2.33.0
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.143-rc1
-Commit: 3b97ed8d226facd9905f634982238e5a93b4481c
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
