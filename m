@@ -2,132 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0BE3F6E39
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C9A3F6E41
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhHYEUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 00:20:18 -0400
-Received: from mga09.intel.com ([134.134.136.24]:62675 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhHYEUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 00:20:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="217449836"
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="217449836"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 21:19:31 -0700
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="527064572"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.122]) ([10.239.13.122])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 21:19:27 -0700
-Subject: Re: [PATCH 3/5] KVM: VMX: RTIT_CTL_BRANCH_EN has no dependency on
- other CPUID bit
-To:     Like Xu <like.xu.linux@gmail.com>,
-        "Alexander Shishkin (hwtracing + intel_th + stm + R:perf)" 
-        <alexander.shishkin@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-References: <20210824110743.531127-1-xiaoyao.li@intel.com>
- <20210824110743.531127-4-xiaoyao.li@intel.com>
- <711265db-f634-36ac-40d2-c09cea825df6@gmail.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <b80a91db-cb35-ba6d-ab36-a0fa1ca051e7@intel.com>
-Date:   Wed, 25 Aug 2021 12:19:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S230467AbhHYEXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 00:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230407AbhHYEXJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 00:23:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17871C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 21:22:24 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mIkQU-00040Z-Cl; Wed, 25 Aug 2021 06:22:10 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mIkQR-0000tw-UG; Wed, 25 Aug 2021 06:22:07 +0200
+Date:   Wed, 25 Aug 2021 06:22:07 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Colin Ian King <colin.king@canonical.com>,
+        Grant Grundler <grundler@chromium.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: usb: asix: ax88772: fix boolconv.cocci warnings
+Message-ID: <20210825042207.GC14337@pengutronix.de>
+References: <202108250651.uuW5Q2Rg-lkp@intel.com>
+ <20210824221716.GA23759@2b586af07b64>
 MIME-Version: 1.0
-In-Reply-To: <711265db-f634-36ac-40d2-c09cea825df6@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210824221716.GA23759@2b586af07b64>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 06:08:53 up 188 days,  7:32, 79 users,  load average: 0.06, 0.23,
+ 0.30
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/2021 11:30 AM, Like Xu wrote:
-> +Alexander
+On Wed, Aug 25, 2021 at 06:17:16AM +0800, kernel test robot wrote:
+> From: kernel test robot <lkp@intel.com>
 > 
-> On 24/8/2021 7:07 pm, Xiaoyao Li wrote:
->> Per Intel SDM, RTIT_CTL_BRANCH_EN bit has no dependency on any CPUID
->> leaf 0x14.
->>
->> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
->> ---
->>   arch/x86/kvm/vmx/vmx.c | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 7ed96c460661..4a70a6d2f442 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -7116,7 +7116,8 @@ static void update_intel_pt_cfg(struct kvm_vcpu 
->> *vcpu)
->>       /* Initialize and clear the no dependency bits */
->>       vmx->pt_desc.ctl_bitmask = ~(RTIT_CTL_TRACEEN | RTIT_CTL_OS |
->> -            RTIT_CTL_USR | RTIT_CTL_TSC_EN | RTIT_CTL_DISRETC);
->> +            RTIT_CTL_USR | RTIT_CTL_TSC_EN | RTIT_CTL_DISRETC |
->> +            RTIT_CTL_BRANCH_EN);
->>       /*
->>        * If CPUID.(EAX=14H,ECX=0):EBX[0]=1 CR3Filter can be set otherwise
->> @@ -7134,12 +7135,11 @@ static void update_intel_pt_cfg(struct 
->> kvm_vcpu *vcpu)
->>                   RTIT_CTL_CYC_THRESH | RTIT_CTL_PSB_FREQ);
->>       /*
->> -     * If CPUID.(EAX=14H,ECX=0):EBX[3]=1 MTCEn BranchEn and
->> -     * MTCFreq can be set
->> +     * If CPUID.(EAX=14H,ECX=0):EBX[3]=1 MTCEn and MTCFreq can be set
+> drivers/net/usb/asix_devices.c:757:60-65: WARNING: conversion to bool not needed here
 > 
-> If CPUID.(EAX=14H,ECX=0):EBX[3]=1,
+>  Remove unneeded conversion to bool
 > 
->      "indicates support of MTC timing packet and suppression of 
-> COFI-based packets."
-
-I think it's a mistake of SDM in CPUID instruction.
-
-If you read 31.3.1, table 31-11 of SDM 325462-075US,
-
-It just says CPUID(0x14, 0):EBX[3]: MTC supprted.
-It doesn't talk anything about COFI packets suppression.
-
-Further as below.
-
-> Per 31.2.5.4 Branch Enable (BranchEn),
+> Semantic patch information:
+>  Relational and logical operators evaluate to bool,
+>  explicit conversion is overly verbose and unneeded.
 > 
->      "If BranchEn is not set, then relevant COFI packets (TNT, TIP*, 
-> FUP, MODE.*) are suppressed."
+> Generated by: scripts/coccinelle/misc/boolconv.cocci
 > 
-> I think if the COFI capability is suppressed, the software can't set the 
-> BranchEn bit, right ?
+> Fixes: 7a141e64cf14 ("net: usb: asix: ax88772: move embedded PHY detection as early as possible")
+> CC: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
 
-Based on your understanding, isn't it that
+Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-1. if CPUID.(EAX=14H,ECX=0):EBX[3]=0, it doesn't support "suppression of 
-COFI-based packets".
-2. if it doesn't support "suppression of COFI-based packets", then it 
-doens't support "If BranchEn is not set, then relevant COFI packets 
-(TNT, TIP*, FUP, MODE.*) are suppressed", i.e. BranchEn must be 1.
+> ---
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> head:   372b2891c15acbf7b90d948b08ac174bde77102c
+> commit: 7a141e64cf14099d84e530db0e86fcb2c489e341 [9154/10077] net: usb: asix: ax88772: move embedded PHY detection as early as possible
+> :::::: branch date: 12 hours ago
+> :::::: commit date: 35 hours ago
+> 
+>  asix_devices.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- a/drivers/net/usb/asix_devices.c
+> +++ b/drivers/net/usb/asix_devices.c
+> @@ -754,7 +754,7 @@ static int ax88772_bind(struct usbnet *d
+>  		return ret;
+>  
+>  	priv->phy_addr = ret;
+> -	priv->embd_phy = ((priv->phy_addr & 0x1f) == 0x10 ? true : false);
+> +	priv->embd_phy = ((priv->phy_addr & 0x1f) == 0x10);
+>  
+>  	asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG, 0, 0, 1, &chipcode, 0);
+>  	chipcode &= AX_CHIPCODE_MASK;
+> 
 
-Anyway, I think it's just a mistake on CPUID instruction document of SDM.
-
-CPUD.(EAX=14H,ECX=0):EBX[3] should only indicates the MTC support.
-
-BranchEn should be always supported if PT is available. Per "31.2.7.2 
-IA32_RTIT_CTL MSR" on SDM:
-When BranchEn is 1, it enables COFI-based packets.
-When BranchEn is 0, it disables COFI-based packtes. i.e., COFI packets 
-are suppressed.
-
->>        */
->>       if (intel_pt_validate_cap(vmx->pt_desc.caps, PT_CAP_mtc))
->>           vmx->pt_desc.ctl_bitmask &= ~(RTIT_CTL_MTC_EN |
->> -                RTIT_CTL_BRANCH_EN | RTIT_CTL_MTC_RANGE);
->> +                          RTIT_CTL_MTC_RANGE);
->>       /* If CPUID.(EAX=14H,ECX=0):EBX[4]=1 FUPonPTW and PTWEn can be 
->> set */
->>       if (intel_pt_validate_cap(vmx->pt_desc.caps, PT_CAP_ptwrite))
->>
-
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
