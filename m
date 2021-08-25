@@ -2,124 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977323F6ED9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891303F6EDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhHYFgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 01:36:00 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:29298 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229457AbhHYFf7 (ORCPT
+        id S232480AbhHYFhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 01:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232420AbhHYFhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 01:35:59 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17OISE1S024948;
-        Tue, 24 Aug 2021 22:35:11 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=tclLrg4wF9TWVSPrUW01x6YZcaJfOb5h2YgaX3HNudY=;
- b=XRHxBt2eXyItxFkTIyJDISjxR96q6TYY28ubHYnBpOwjvUli/LTFh1I6QBwQmmPJrKfX
- PHyjxMeqsxwsorWhJGWFEhyTCVE+E6HRCahTDC9VlF2fdsXOlUWtLRsWJHMjBwWMupAk
- x7eWQlyszMSAMkahjO4KIJMQiJrTzpNQB/LvIRrUcWt92cG9JTHSVMmomfYDE2mxCJEz
- +QenuI3wGJfYX1Ek9srlNAF2El9swBSuDyqyLCQsHE/C64OxtfY/LRSJKi9z9Fil12yA
- FpuDbJbetUkKVofP/mX0fLbx9pdNlMfensuDQbykmSlrNcW/n02EmkuZXkdvUZcS2JF0 6w== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3an62ksx8n-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 24 Aug 2021 22:35:10 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 24 Aug
- 2021 22:35:07 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Tue, 24 Aug 2021 22:35:07 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 195E73F7067;
-        Tue, 24 Aug 2021 22:35:04 -0700 (PDT)
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>
-Subject: [net-next PATCH] octeontx2-af: cn10k: Set cache lines for NPA batch alloc
-Date:   Wed, 25 Aug 2021 11:05:03 +0530
-Message-ID: <20210825053503.3506-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 25 Aug 2021 01:37:40 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3BCC061757;
+        Tue, 24 Aug 2021 22:36:55 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id w8so21980849pgf.5;
+        Tue, 24 Aug 2021 22:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y/MqU0erBadK6WTzUD4+anbam3g4wT0ApTC5fiHceJE=;
+        b=hNHWFAj0QuF4P8zQvHx7AzyTgD+WubCFaNo48O5eq/bq1N9pq0hTCOhIE8a8u+agFt
+         I9obgm3NTtjySA/3EanVcDUQQ3vhdRZ0FkxaPRPvnzMdBiIWGbV80fs9YYISTXYpuDcp
+         jc5YF7XebZIesjyZ1CEnll9i0sV4cLH5lE9TQvWSrXP6FoOUKHgaB3jZElWF7VpLATKA
+         tGinbv5nMmhc7DaxcfDEA0tCKbm+w0HZKedZldrEuEUh7O5A7RqkLkDQ27q7NZmFELBv
+         U46UpSJrpwE9hKyffPMIePQupJhbW1fOHN53oReiJ9FEy39JjcOf20D3Y6zzdIzRlYDk
+         ocyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y/MqU0erBadK6WTzUD4+anbam3g4wT0ApTC5fiHceJE=;
+        b=A1fLXIFoAuCkZMQSdNdfPvJQUvHELWe2XPHAb5Q5e2Bk4Mu9dEA4HnqKM77NG7q3az
+         CTO6G2pFFWojfAGsEw4hCa3WlzdA8vQW7b5IFtjM4RbqPGz0Y2uzZlly5gncH7bzVwl/
+         fG9ZU+sExsoWwoCrO3nP6fuDicl6LLk9EMPnPYDhJr15sfTb6tYVUNSqw+vUtvlJX3mw
+         /f3u0mLXSB/4XAoG3sCg+Rn/dPFTIjX8QLzp+Fv5wL2gaJnBp2CAb8REosEkmhHArVPw
+         jbI29AA+QrIkBXLDJHOWw+QZHg1TXL67LLSOe4TAq58+FbesbJRaD/nrhrext/kAN1NH
+         ABeg==
+X-Gm-Message-State: AOAM531swbrtf7W+1QJo5YD8IOfNlX3iC/3M/X8wNYkbP5Euy3aeRHcy
+        dB/va7jLtbMYOEmrH9c269c=
+X-Google-Smtp-Source: ABdhPJxevBUFecuFr0DnnG96VDA8pCure0g/A0ZfVeo2z0LqQqus9soZOofU2MicOofnxnx9HaWiCw==
+X-Received: by 2002:a63:5848:: with SMTP id i8mr18703030pgm.135.1629869814367;
+        Tue, 24 Aug 2021 22:36:54 -0700 (PDT)
+Received: from nishad ([106.51.233.109])
+        by smtp.gmail.com with ESMTPSA id m28sm25186911pgl.9.2021.08.24.22.36.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 24 Aug 2021 22:36:53 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 11:06:46 +0530
+From:   Nishad Kamdar <nishadkamdar@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mmc: core: Return correct emmc response in case of
+ ioctl error
+Message-ID: <20210825053644.GA2869@nishad>
+References: <20210808172448.4641-1-nishadkamdar@gmail.com>
+ <DM6PR04MB6575FA52433A1A3C7F89453BFCF69@DM6PR04MB6575.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: hTgJoQwLcxObUTSQDynq5EMKMXFKvub2
-X-Proofpoint-GUID: hTgJoQwLcxObUTSQDynq5EMKMXFKvub2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-08-25_01,2021-08-25_01,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR04MB6575FA52433A1A3C7F89453BFCF69@DM6PR04MB6575.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set NPA batch allocation engine to process 35 cache lines
-per turn on CN10k platform.
+On Mon, Aug 09, 2021 at 08:41:19AM +0000, Avri Altman wrote:
+> > When a read/write command is sent via ioctl to the kernel,
+> > and the command fails, the actual error response of the emmc
+> > is not sent to the user.
+> > 
+> > Following are the tests carried out using commands
+> > 17 (Single BLock Read),
+> > 24 (Single Block Write),
+> > 18 (Multi Block Read),
+> > 25 (Multi Block Write)
+> > 
+> > The tests are carried out on a 64Gb emmc device. All of these
+> > tests try to access an "out of range" sector address (0x09B2FFFF).
+> > 
+> > It is seen that without the patch the response received by the user
+> > is not OUT_OF_RANGE error (R1 response 31st bit is not set) as per
+> > JEDEC specification. After applying the patch proper response is seen.
+> > 
+> > The user level ioctl testcode for the above commands and their
+> > respective outputs without and with the patch are shown below:
+> > 
+> > CMD17 (Test Code Snippet):
+> > ==========================
+> >         printf("Forming CMD%d\n", opt_idx);
+> >         /*  single block read */
+> >         cmd.blksz = 512;
+> >         cmd.blocks = 1;
+> >         cmd.write_flag = 0;
+> >         cmd.opcode = 17;
+> >         //cmd.arg = atoi(argv[3]);
+> >         cmd.arg = 0x09B2FFFF;
+> >         /* Expecting response R1B */
+> >         cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
+> > 
+> >         memset(data, 0, sizeof(__u8) * 512);
+> >         mmc_ioc_cmd_set_data(cmd, data);
+> > 
+> >         printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+> >         if(ioctl(fd, MMC_IOC_CMD, &cmd))
+> >                 perror("Error");
+> > 
+> >         printf("\nResponse: %08x\n", cmd.response[0]);
+> > 
+> > CMD17 (Output without patch):
+> > =============================
+> > test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17 09B2FFFF
+> No need for arg 3 - you are hardcoded overriding it.
+> 
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17,
+> > 0x09B2FFF]
+> > Forming CMD17
+> > Sending CMD17: ARG[0x09b2ffff]
+> > Error: Connection timed out
+> > 
+> > Response: 00000000  (Wrong response)
+> > 
+> > CMD17 (Output with patch):
+> > ==========================
+> > test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17 09B2FFFF
+> > [sudo] password for test:
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 09B2FFFF]
+> > Forming CMD17
+> > Sending CMD17: ARG[0x09b2ffff]
+> > Error: Connection timed out
+> > 
+> > Response: 80000900
+> > (Correct OUT_OF_ERROR response as per JEDEC specification)
+> 
+> 
+> > 
+> > CMD24 (Test Code Snippet):
+> > ==========================
+> >         printf("Forming CMD%d\n", opt_idx);
+> >         cmd.opcode = 24;
+> >         //cmd.arg = atoi(argv[3]);
+> >         cmd.arg = 0x09B2FFFF;
+> >         cmd.flags = MMC_RSP_R1 | MMC_CMD_ADTC;
+> >         cmd.blksz = 512;
+> >         cmd.blocks = 1;
+> >         cmd.write_flag = 1;
+> > 
+> >         memset(data, 0xA5, sizeof(__u8) * 512);
+> >         mmc_ioc_cmd_set_data(cmd, data);
+> > 
+> >         printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+> >         if(ioctl(fd, MMC_IOC_CMD, &cmd))
+> >                 perror("Error");
+> > 
+> >         printf("\nResponse: %08x\n", cmd.response[0]);
+> > 
+> > CMD24 (Output without patch):
+> > =============================
+> > test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 24 0x09B2FFF
+> > [sudo] password for test:
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 options[24,
+> > 0x09B2FFF]
+> > Forming CMD24
+> > Sending CMD24: ARG[0x09b2ffff]
+> > Error: Connection timed out
+> > 
+> > Response: 00000000 (Incorrect response)
+> > 
+> > CMD24 (Output with patch):
+> > ==========================
+> > test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 24 09B2FFFF
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 options[24, 09B2FFFF]
+> > Forming CMD24
+> > Sending CMD24: ARG[0x09b2ffff]
+> > Error: Connection timed out
+> > 
+> > Response: 80000900
+> > (Correct OUT_OF_RANGE response as per JEDEC specification)
+> > 
+> > CMD18 (Test Code Snippet):
+> > ==========================
+> >         printf("Forming CMD%d\n", opt_idx);
+> > 
+> >         cmd.blksz = 512;
+> >         cmd.blocks = 1;
+> >         cmd.write_flag = 0;
+> >         cmd.opcode = 18;
+> >         //cmd.arg = atoi(argv[3]);
+> >         cmd.arg = 0x09B2FFFF;
+> > 
+> >         cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
+> > 
+> >         memset(data, 0, sizeof(__u8) * 512);
+> >         mmc_ioc_cmd_set_data(cmd, data);
+> > 
+> >         printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+> >         if(ioctl(fd, MMC_IOC_CMD, &cmd)) {
+> >                 printf(" error ioctl \n");
+> >                 perror("Error");
+> >         }
+> > 
+> >         printf("\nResponse: %08x\n", cmd.response[0]);
+> > 
+> > CMD18 (Output without patch):
+> > =============================
+> > test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 18 0x09B2FFF
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 options[18,
+> > 0x09B2FFF]
+> > Forming CMD18
+> > Sending CMD18: ARG[0x09b2ffff]
+> >  error ioctl
+> > Error: Connection timed out
+> > 
+> > Response: 00000000 (Incorrect response)
+> > 
+> > CMD18 (Output with patch):
+> > ==========================
+> > test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 18 09B2FFFF
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 options[18, 09B2FFFF]
+> > Forming CMD18
+> > Sending CMD18: ARG[0x09b2ffff]
+> >  error ioctl
+> > Error: Connection timed out
+> > 
+> > Response: 80000900
+> > (Correct OUT_OF_RANGE response as per JEDEC specification)
+> > 
+> > CMD25 (Test Code Snippet):
+> > ==========================
+> >         printf("Forming CMD%d\n", opt_idx);
+> >         cmd.opcode = 25;
+> >         //cmd.arg = atoi(argv[3]);
+> >         cmd.arg = 0x09B2FFFF;
+> >         cmd.flags = MMC_RSP_R1 | MMC_CMD_ADTC;
+> > 
+> >         cmd.blksz = 512;
+> >         cmd.blocks = 1;
+> >         cmd.write_flag = 1;
+> > 
+> >         memset(data, 0xA5, sizeof(__u8) * 512);
+> >         mmc_ioc_cmd_set_data(cmd, data);
+> > 
+> >         printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+> >         if(ioctl(fd, MMC_IOC_CMD, &cmd)) {
+> >                 printf("\nerror ioctl\n");
+> >                 perror("Error");
+> >         }
+> > 
+> >         printf("\nResponse: %08x\n", cmd.response[0]);
+> > 
+> > CMD25 (Output without patch):
+> > =============================
+> > test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 25 0x09B2FFF
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 options[25,
+> > 0x09B2FFF]
+> > Forming CMD25
+> > Sending CMD25: ARG[0x09b2ffff]
+> > 
+> > error ioctl
+> > Error: Connection timed out
+> > 
+> > Response: 00000000 (Incorrect response)
+> > 
+> > CMD25 (Output with patch):
+> > ==========================
+> > test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 25 09B2FFFF
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> > Entering the do_mmc_commands:Device: /dev/mmcblk0 options[25, 09B2FFFF]
+> > Forming CMD25
+> > Sending CMD25: ARG[0x09b2ffff]
+> > 
+> > error ioctl
+> > Error: Connection timed out
+> > 
+> > Response: 80000900
+> > (Correct OUT_OF_RANGE response as per JEDEC specification)
+> > 
+> > Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
+> Reviewed-by: Avri Altman <avri.altman@wdc.com>
+> 
+> > ---
+> > Changes in v2:
+> >   - Make commit message clearer by adding test cases as outputs
+> A little overwhelming IMO
+> 
+Ok, Thanks for the review and comments.
 
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/mbox.h    |  1 +
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c | 11 +++++++++++
- drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h |  1 +
- 3 files changed, 13 insertions(+)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index add4a39edced..d8f5e61f0304 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -594,6 +594,7 @@ struct npa_lf_alloc_rsp {
- 	u32 stack_pg_ptrs;  /* No of ptrs per stack page */
- 	u32 stack_pg_bytes; /* Size of stack page */
- 	u16 qints; /* NPA_AF_CONST::QINTS */
-+	u8 cache_lines; /*BATCH ALLOC DMA */
- };
- 
- /* NPA AQ enqueue msg */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c
-index 24c2bfdfec4e..f046f2e4256a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c
-@@ -419,6 +419,10 @@ int rvu_mbox_handler_npa_lf_alloc(struct rvu *rvu,
- 	rsp->stack_pg_ptrs = (cfg >> 8) & 0xFF;
- 	rsp->stack_pg_bytes = cfg & 0xFF;
- 	rsp->qints = (cfg >> 28) & 0xFFF;
-+	if (!is_rvu_otx2(rvu)) {
-+		cfg = rvu_read64(rvu, block->addr, NPA_AF_BATCH_CTL);
-+		rsp->cache_lines = (cfg >> 1) & 0x3F;
-+	}
- 	return rc;
- }
- 
-@@ -478,6 +482,13 @@ static int npa_aq_init(struct rvu *rvu, struct rvu_block *block)
- #endif
- 	rvu_write64(rvu, block->addr, NPA_AF_NDC_CFG, cfg);
- 
-+	/* For CN10K NPA BATCH DMA set 35 cache lines */
-+	if (!is_rvu_otx2(rvu)) {
-+		cfg = rvu_read64(rvu, block->addr, NPA_AF_BATCH_CTL);
-+		cfg &= ~0x7EULL;
-+		cfg |= BIT_ULL(6) | BIT_ULL(2) | BIT_ULL(1);
-+		rvu_write64(rvu, block->addr, NPA_AF_BATCH_CTL, cfg);
-+	}
- 	/* Result structure can be followed by Aura/Pool context at
- 	 * RES + 128bytes and a write mask at RES + 256 bytes, depending on
- 	 * operation type. Alloc sufficient result memory for all operations.
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
-index 960ee1c2e178..4600c31b336b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
-@@ -156,6 +156,7 @@
- #define NPA_AF_AQ_DONE_INT_W1S          (0x0688)
- #define NPA_AF_AQ_DONE_ENA_W1S          (0x0690)
- #define NPA_AF_AQ_DONE_ENA_W1C          (0x0698)
-+#define NPA_AF_BATCH_CTL		(0x06a0)
- #define NPA_AF_LFX_AURAS_CFG(a)         (0x4000 | (a) << 18)
- #define NPA_AF_LFX_LOC_AURAS_BASE(a)    (0x4010 | (a) << 18)
- #define NPA_AF_LFX_QINTS_CFG(a)         (0x4100 | (a) << 18)
--- 
-2.17.1
-
+Regards,
+Nishad
+> > 
+> >  drivers/mmc/core/block.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> > index a9ad9f5fa9491..efa92aa7e2368 100644
+> > --- a/drivers/mmc/core/block.c
+> > +++ b/drivers/mmc/core/block.c
+> > @@ -522,11 +522,13 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card
+> > *card, struct mmc_blk_data *md,
+> >         if (cmd.error) {
+> >                 dev_err(mmc_dev(card->host), "%s: cmd error %d\n",
+> >                                                 __func__, cmd.error);
+> > +               memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
+> >                 return cmd.error;
+> >         }
+> >         if (data.error) {
+> >                 dev_err(mmc_dev(card->host), "%s: data error %d\n",
+> >                                                 __func__, data.error);
+> > +               memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
+> >                 return data.error;
+> >         }
+> > 
+> > --
+> > 2.17.1
+> 
