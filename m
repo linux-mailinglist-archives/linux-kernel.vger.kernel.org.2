@@ -2,120 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2D83F7AAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A723F7AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241228AbhHYQex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233004AbhHYQeu (ORCPT
+        id S240947AbhHYQfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:35:51 -0400
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:44596 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239550AbhHYQfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:34:50 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A4DC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:34:04 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id r2so234437pgl.10
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6gejzDovBE5iuyuLz1hruEggadPtmSQG8HRcS9hcb10=;
-        b=GbxNR4ElwFyWcJgWo+tCWcZLf00B+Z2Vmtk9ZQCzbpZRuGR+62kJB5UXPUdLfMZ7qe
-         8I3BkoiVwC3G1+hadZLEeX/h0WjlD4pX70B8Z13Njs5KI3H4x7xDKgl5zdPDNCkJkAHZ
-         dsDLLSPuCR7BNJ1zf42UHS2YUuTtZLC3fG3ys=
+        Wed, 25 Aug 2021 12:35:50 -0400
+Received: by mail-ua1-f45.google.com with SMTP id x6so52128uai.11
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:35:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6gejzDovBE5iuyuLz1hruEggadPtmSQG8HRcS9hcb10=;
-        b=J7C9qVNATWqN8JT8XuR0tCYA3Mm6OnHU/kg7YBCT6Cr2J4FJdRbURaFc6NB6sDF+hO
-         2HduoOQpI2BUOa62JpZKKnj6Rbwv0wGMXLsY08sdRAUIfEGu3bu0ufZu62od9m5S2Gu5
-         ZKhJ0/w1wVKLUQ+Pau9GRn9s+ICFF4qJgbV5Q7cEPEPQQiXRf+cbUfVGDjINI1AY1gap
-         au7KagDPl6p9PklO0fDfA7DqKlYaJZL3d3nIlsVn0h+4nCPHUltwA3XGDfkg4W8oZg+q
-         EsQ9FV5kf9Z4Zu9gVZVDO/WDjzP3YYS8R7+dqDcdjjBwaXHaHNZhx9x8h+nmkpuJZdTi
-         Pa2A==
-X-Gm-Message-State: AOAM531TW8D8EfTLfuurMQOkZzKI3eKOeNWIpHacQmnfIDN7m53Bl0Da
-        2UcVTFpGwKb4eL0TTAaWmRnTNQ==
-X-Google-Smtp-Source: ABdhPJx0d2gtu/6AIisV6tawjy+0JIqWnbbfAIMeMMyluAgBJFE83MjdsKdasSqsPWqClwNX5kV2Xg==
-X-Received: by 2002:a63:705:: with SMTP id 5mr8798958pgh.265.1629909243823;
-        Wed, 25 Aug 2021 09:34:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h20sm278384pfn.173.2021.08.25.09.34.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 09:34:03 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 09:34:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christoph Lameter <cl@gentwo.de>
-Cc:     Daniel Micay <danielmicay@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux@googlegroups.com, Linux-MM <linux-mm@kvack.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/5] Add __alloc_size() for better bounds checking
-Message-ID: <202108250930.EED99F6@keescook>
-References: <20210818050841.2226600-1-keescook@chromium.org>
- <YR4frlpfJQonPuKp@infradead.org>
- <CA+DvKQL6pLfK1vRzaOkEWR7DQLgTh=WZTka2L5yuS8Lf_1ZmoA@mail.gmail.com>
- <alpine.DEB.2.22.394.2108251158420.317806@gentwo.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=83OVBCnfk7sBlKxb4S0hG/dKOkZ6Z4IHGlU5t4vNnnE=;
+        b=rONDX2yZ7YBUzQ1teK6PPN4k4gNm4vjafa4H8GSpUYVdFAKRfEgfm82hmymzZnRZ8Z
+         HmFtX34J4V6EF7+ovj/aqqqZ9o3DLuTW47TtIWilT8asGj+7B3Dyy2yvRZwVoW2UTO/t
+         7ZsFrzu2yXS4DVSVPQCgv9op8CoQ3E++a27GbKvKHC1ybQQ/PgpfIZHed7+TUImQwx9/
+         gk70UFbtR0ztfeQwH3m4ACni7IQW+l8y7SYquOI7EWPIenHJ0qwblmsNIK9YecOf9ZmI
+         bFecOKG22EqmI5L8N6GxJlz5XITig9rUNduu/zKzVuwOyYLjnvge0j/XQZvh06f7igk2
+         etag==
+X-Gm-Message-State: AOAM5303AInyRFbrDWy5ZCWAC6vDkNHq1pkozcCWZPbF8UK05+H+N1cq
+        CKb5MI+Ep9b3r5skDOKZQjyIgQehzk3icE+rbUU=
+X-Google-Smtp-Source: ABdhPJy5clPFNXhJoMuRuH6RJrg+novCLmNYnU787rBDzoCnquhEvfHnTLpAx4/T/rrqnrzIidoYgAHXTqLIqzBFirU=
+X-Received: by 2002:a9f:35aa:: with SMTP id t39mr3004251uad.89.1629909304332;
+ Wed, 25 Aug 2021 09:35:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2108251158420.317806@gentwo.de>
+References: <a52baa8b-6743-7570-aaa6-411b5b13c8aa@labbott.name>
+In-Reply-To: <a52baa8b-6743-7570-aaa6-411b5b13c8aa@labbott.name>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 25 Aug 2021 18:34:53 +0200
+Message-ID: <CAMuHMdXMbuFww73q3QgdroEYmWXe00rKsbd9pCgYd2zsuc06FQ@mail.gmail.com>
+Subject: Re: Linux Foundation Technical Advisory Board election: call for nominees
+To:     Laura Abbott <laura@labbott.name>
+Cc:     ksummit@lists.linux.dev,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 12:01:42PM +0200, Christoph Lameter wrote:
-> On Thu, 19 Aug 2021, Daniel Micay wrote:
-> 
-> > For example, it will know that kmalloc(n) returns either NULL or an
-> > allocation of size n. A simple sample program with calloc in
-> > userspace:
-> >
-> >     #include <stdlib.h>
-> >     #include <stdio.h>
-> >
-> >     int main(void) {
-> >         char *p = calloc(64, 1);
-> >         if (!p) {
-> >             return 1;
-> >         }
-> >         printf("%zu\n", __builtin_object_size(p, 1));
-> >         return 0;
-> >     }
-> >
-> > It will also detect an out-of-bounds access via the allocation with
-> > -fsanitize=object-size including with a runtime value as the index.
-> >
-> > It's not as useful as it should be yet because __builtin_object_size
-> > must return a compile-time constant. Clang has a new
-> > __builtin_dynamic_object_size that's allowed to return a value that's
-> > not a compile-time constant so it can work for kmalloc(n) where n is a
-> > runtime value. It might not be quite ready for use yet but it should
-> > be able to make it a lot more useful. GCC also seems open to adding it
-> > too.
-> 
-> The other complication with kmalloc etc is that the slab allocators may
-> decided to allocate more bytes than needed because it does not support
-> that particular allocation size. Some functions check the allocated true
-> size and make use of that. See ksize().
+Hi Laura,
 
-Yup, this is known. For the current iteration, this doesn't pose a
-problem since the compile-time checking has very limited scope.
+On Wed, Aug 25, 2021 at 4:27 PM Laura Abbott <laura@labbott.name> wrote:
+> Over the last year, matters tended to by the TAB include proposals for
+> developer workflow improvement, overseeing the Linux Plumbers
+> Conference, supporting the review of the University of Minnesota
+> patches and more.  Minutes from TAB meetings can be found here:
+>
+>      https://git.kernel.org/pub/scm/docs/tab/tab.git/tree/minutes
+
+It seems there are no minutes more recent than October 2020?
+Are they just missing, or were there no meetings?
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Kees Cook
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
