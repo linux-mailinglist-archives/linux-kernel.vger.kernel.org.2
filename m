@@ -2,86 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508563F7209
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554643F7216
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240011AbhHYJkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:40:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239940AbhHYJkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B24C3610CE;
-        Wed, 25 Aug 2021 09:39:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629884362;
-        bh=m04P8lfsKUBV3SPkcLaBDDyhcaMgaHK2RT+ylPPu9eg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QSrZrUTxiMCQEPeQs1qXBOHAAPJsXEiC/Ht3OF3rnYgcPdowM8T8/ic0LerRGoC9+
-         MzJlqgTdLMqXb+6e/e5fGDifPUWwoOYNmAUeYSdn3NOIDTvz35CX4QgxKjn8QuB4z3
-         TRGVBr4nOxlS4woAlZyJvuor/SVBFSEuuxQG2nHG5aaQrWFvbKK4Kkvs8uqcDhsYM9
-         pdSPF/tbcgKu5COTQ/DqoYJlk98xvKa1W1fiMcHJRdydnaNtzzG+/gmCVPnDfNVK7T
-         UwJr/E2KE8nzDndeMNqEOfy9TG6A/M+qubojzIs5zc+mq9rl+kZYt5Va5+6E9ZRn7E
-         PAha+ctjcCPSw==
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH] arm64: signal32: Drop pointless call to sigdelsetmask()
-Date:   Wed, 25 Aug 2021 10:39:11 +0100
-Message-Id: <20210825093911.24493-1-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S236762AbhHYJoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:44:04 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:31134 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234372AbhHYJoD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:44:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1629884597; x=1661420597;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qyh5WgATX9Xy0HOqROUyqu7EUpT8CmuQVGV9fQ0MnF8=;
+  b=XTYtk2ZhjbVtIdPS4p66xIzaKczM2iirgmSva5jneRGunDxbQWtBQAjD
+   /T37e96lbZPIOVb8Ee0AJ8mmCXQu4aVjHlF9ymwufACKDqB8rOp29gdQ5
+   iQInpgjwKfAIhuZXLtpWUGVX4P9b2lee6RHxC7MAFWI9fZq6D42Fzwr5A
+   cbPE4ZnhIUvhycsMtKQWXc2A4UGnoFJIMgNdtkf0yFbV9inzBpp+WO3nb
+   gkPRPIZKPL0n4r31azhYx2Mlw2Y4+3lk9PnwH4bvRl6TYFNqQ+7pd4irq
+   YC6R5euSKh1zLbwt7ZYSc5+PlzOpE31UdX/b97WutlUF+rt+vaWeIxO7m
+   Q==;
+IronPort-SDR: ixp3ZCRhTlN34kOJT6vexmzvrvaSckmpkQvhIkfBHtceC4NAJRRu0LxVaiNvtqCaQGlJEC3IYN
+ L2k7OzylpXI8e4IfXXGR51cVEAnvuC8oYB6GnRuxwJslVj35HRFSQ6dOhCD3saewmlOrtT4aF6
+ LF3Ap+fZuCoqw/sETVYZzaMoYF2HkAuPCEIxesstD9Zvul/VMr+8lf2hVii9nrC9iRMrPL3M86
+ hDNSBU95F7avhxm4Nnh7owNjEr9lquLgxz98412nVdOHK7ulaYffUY8YaH/GMyy3kv7vk7YQaV
+ V+cg7lkP1M5EV6+I2KpQ9ynE
+X-IronPort-AV: E=Sophos;i="5.84,350,1620716400"; 
+   d="scan'208";a="141504717"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Aug 2021 02:43:16 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 25 Aug 2021 02:43:16 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Wed, 25 Aug 2021 02:43:10 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v4] ARM: dts: at91: sama5d27_wlsom1: add wifi device
+Date:   Wed, 25 Aug 2021 12:40:55 +0300
+Message-ID: <20210825094055.642941-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 77097ae503b1 ("most of set_current_blocked() callers want
-SIGKILL/SIGSTOP removed from set") extended set_current_blocked() to
-remove SIGKILL and SIGSTOP from the new signal set and updated all
-callers accordingly.
+From: Eugen Hristev <eugen.hristev@microchip.com>
 
-Unfortunately, this collided with the merge of the arm64 architecture,
-which duly removes these signals when restoring the compat sigframe, as
-this was what was previously done by arch/arm/.
+SAMA5D27 WLSOM1 boards has a WILC3000 device soldered. Add proper
+device tree nodes for this.
 
-Remove the redundant call to sigdelsetmask() from
-compat_restore_sigframe().
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Reported-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Will Deacon <will@kernel.org>
+[eugen.hristev: original author of this code]
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+[nicolas.ferre: original author of this code]
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+[claudiu.beznea: adapt such that make dtbs_check is happy, remove status
+ for wifi_pwrseq and wifi nodes]
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- arch/arm64/kernel/signal32.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/arm64/kernel/signal32.c b/arch/arm64/kernel/signal32.c
-index 2f507f565c48..4850333669fb 100644
---- a/arch/arm64/kernel/signal32.c
-+++ b/arch/arm64/kernel/signal32.c
-@@ -46,8 +46,6 @@ struct compat_aux_sigframe {
- 	unsigned long			end_magic;
- } __attribute__((__aligned__(8)));
+Changes in v4:
+- keep only this patch as the rest from series were applied on mmc tree
+- remove status="okay" on wifi node and pwrseq node
+- adapt to remove all warnings thown by make dtbs_check
+
+ arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi | 70 +++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+
+diff --git a/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi b/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
+index 025a78310e3a..21c86171e462 100644
+--- a/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
++++ b/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
+@@ -30,6 +30,14 @@ main_xtal {
+ 			clock-frequency = <24000000>;
+ 		};
+ 	};
++
++	wifi_pwrseq: wifi_pwrseq {
++		compatible = "mmc-pwrseq-wilc1000";
++		reset-gpios = <&pioA PIN_PA27 GPIO_ACTIVE_HIGH>;
++		powerdown-gpios = <&pioA PIN_PA29 GPIO_ACTIVE_HIGH>;
++		pinctrl-0 = <&pinctrl_wilc_pwrseq>;
++		pinctrl-names = "default";
++	};
+ };
  
--#define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
--
- static inline int put_sigset_t(compat_sigset_t __user *uset, sigset_t *set)
- {
- 	compat_sigset_t	cset;
-@@ -190,10 +188,8 @@ static int compat_restore_sigframe(struct pt_regs *regs,
- 	unsigned long psr;
+ &flx1 {
+@@ -310,5 +318,67 @@ pinctrl_qspi1_default: qspi1_default {
+ 			 <PIN_PB10__QSPI1_IO3>;
+ 		bias-pull-up;
+ 	};
++
++	pinctrl_sdmmc1_default: sdmmc1_default {
++		cmd-data {
++			pinmux = <PIN_PA28__SDMMC1_CMD>,
++				 <PIN_PA18__SDMMC1_DAT0>,
++				 <PIN_PA19__SDMMC1_DAT1>,
++				 <PIN_PA20__SDMMC1_DAT2>,
++				 <PIN_PA21__SDMMC1_DAT3>;
++			bias-disable;
++		};
++
++		conf-ck {
++			pinmux = <PIN_PA22__SDMMC1_CK>;
++			bias-disable;
++		};
++	};
++
++	pinctrl_wilc_default: wilc_default {
++		conf-irq {
++			pinmux = <PIN_PB25__GPIO>;
++			bias-disable;
++		};
++	};
++
++	pinctrl_wilc_pwrseq: wilc_pwrseq {
++		conf-ce-nrst {
++			pinmux = <PIN_PA27__GPIO>,
++				 <PIN_PA29__GPIO>;
++			bias-disable;
++		};
++
++		conf-rtcclk {
++			pinmux = <PIN_PB13__PCK1>;
++			bias-disable;
++		};
++	};
++};
++
++&sdmmc1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	bus-width = <4>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_sdmmc1_default>;
++	mmc-pwrseq = <&wifi_pwrseq>;
++	no-1-8-v;
++	non-removable;
++	bus-width = <4>;
++	status = "okay";
++
++	wilc: wifi@0 {
++		reg = <0>;
++		compatible = "microchip,wilc1000";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_wilc_default>;
++		clocks = <&pmc PMC_TYPE_SYSTEM 9>;
++		clock-names = "rtc";
++		interrupts = <PIN_PB25 IRQ_TYPE_NONE>;
++		interrupt-parent = <&pioA>;
++		assigned-clocks = <&pmc PMC_TYPE_SYSTEM 9>;
++		assigned-clock-rates = <32768>;
++	};
+ };
  
- 	err = get_sigset_t(&set, &sf->uc.uc_sigmask);
--	if (err == 0) {
--		sigdelsetmask(&set, ~_BLOCKABLE);
-+	if (err == 0)
- 		set_current_blocked(&set);
--	}
- 
- 	__get_user_error(regs->regs[0], &sf->uc.uc_mcontext.arm_r0, err);
- 	__get_user_error(regs->regs[1], &sf->uc.uc_mcontext.arm_r1, err);
 -- 
-2.33.0.rc2.250.ged5fa647cd-goog
+2.25.1
 
