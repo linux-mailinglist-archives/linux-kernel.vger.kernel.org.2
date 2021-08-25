@@ -2,179 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44D53F7B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3F63F7B2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242169AbhHYRGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:06:23 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:53282 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhHYRGW (ORCPT
+        id S242183AbhHYRHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:07:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58281 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235694AbhHYRHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:06:22 -0400
-Received: from netfilter.org (unknown [78.30.35.141])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 558FF60126;
-        Wed, 25 Aug 2021 19:04:39 +0200 (CEST)
-Date:   Wed, 25 Aug 2021 19:05:29 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
-        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
-        Blair Steven <blair.steven@alliedtelesis.co.nz>
-Subject: Re: [PATCH net-next 2/3] net: netfilter: Add RFC-7597 Section 5.1
- PSID support
-Message-ID: <20210825170529.GA31115@salvia>
-References: <20210726143729.GN9904@breakpoint.cc>
- <20210809041037.29969-1-Cole.Dishington@alliedtelesis.co.nz>
- <20210809041037.29969-3-Cole.Dishington@alliedtelesis.co.nz>
+        Wed, 25 Aug 2021 13:07:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629911187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=gpUKC5h8J10ybyvZDqljNfqjwgKTySHJSQK0IjTg2II=;
+        b=ecKyNGvgqk+BQTOWZ9gnLB8bcKnBU7hQ/6j6jSfkZ2c/c4Il5qcdGSHZ4r/FSvg9Ww/KoD
+        L+HE7XviHWiI5TznJPgm6+vZVsN9iWI14ov3z7Lf2DzIb5D3WP8yEMfivXpsCS+xVU75wM
+        7DjWELXq82Rq2ovb8EXHDcsNs9Ycf34=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-9c4mkFDsP1WkbHzUj8Z4Jw-1; Wed, 25 Aug 2021 13:06:23 -0400
+X-MC-Unique: 9c4mkFDsP1WkbHzUj8Z4Jw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B18239381;
+        Wed, 25 Aug 2021 17:06:21 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.36.110.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8E7001346F;
+        Wed, 25 Aug 2021 17:06:16 +0000 (UTC)
+Date:   Wed, 25 Aug 2021 19:06:13 +0200
+From:   Eugene Syromiatnikov <esyr@redhat.com>
+To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Dmitry V. Levin" <ldv@strace.io>, linux-doc@vger.kernel.org,
+        linux-api@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v4] uapi/linux/prctl: provide macro definitions for the
+ PR_SCHED_CORE type argument
+Message-ID: <20210825170613.GA3884@asgard.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809041037.29969-3-Cole.Dishington@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Commit 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
+made use of enum pid_type in prctl's arg4; this type and the associated
+enumeration definitions are not exposed to userspace.  Christian
+has suggested to provide additional macro definitions that convey
+the meaning of the type argument more in alignment with its actual
+usage, and this patch does exactly that.
 
-On Mon, Aug 09, 2021 at 04:10:36PM +1200, Cole Dishington wrote:
-> Adds support for masquerading into a smaller subset of ports -
-> defined by the PSID values from RFC-7597 Section 5.1. This is part of
-> the support for MAP-E and Lightweight 4over6, which allows multiple
-> devices to share an IPv4 address by splitting the L4 port / id into
-> ranges.
-> 
-> Co-developed-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
-> Signed-off-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
-> Co-developed-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
-> Signed-off-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
-> Signed-off-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
-> Signed-off-by: Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-> Reviewed-by: Florian Westphal <fw@strlen.de>
-[...]
+Suggested-by: Christian Brauner <christian.brauner@ubuntu.com>
+Complements: 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
+Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
+---
+v4:
+  - Rewritten in accordance with Christian Brauner's suggestion to provide
+    macro definitions that are explicitly tailored for the prctl op.
 
-Looking at the userspace logic:
+v3: https://lore.kernel.org/lkml/20210807120905.GA14706@asgard.redhat.com/
+  - Fixed header guard macro: s/_UAPI_LINUX_PID_H/_UAPI_LINUX_PIDTYPE_H/,
+    as noted by Dmitry Levin.
 
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210716002219.30193-1-Cole.Dishington@alliedtelesis.co.nz/
+v2: https://lore.kernel.org/lkml/20210807104800.GA22620@asgard.redhat.com/
+  - Header file is renamed from pid.h to pidtype.h to avoid collisions
+    with include/linux/pid.h when included from uapi headers;
+  - The enum type has renamed from __kernel_pid_type to __kernel_pidtype
+    to avoid possible confusion with __kernel_pid_t.
 
-Chunk extracted from void parse_psid(...)
+v1: https://lore.kernel.org/lkml/20210807010123.GA5174@asgard.redhat.com/
+---
+ Documentation/admin-guide/hw-vuln/core-scheduling.rst | 5 +++--
+ include/uapi/linux/prctl.h                            | 3 +++
+ kernel/sched/core_sched.c                             | 4 ++++
+ 3 files changed, 10 insertions(+), 2 deletions(-)
 
->        offset = (1 << (16 - offset_len));
+diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+index 7b410ae..9a65fed 100644
+--- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
++++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+@@ -61,8 +61,9 @@ arg3:
+     ``pid`` of the task for which the operation applies.
+ 
+ arg4:
+-    ``pid_type`` for which the operation applies. It is of type ``enum pid_type``.
+-    For example, if arg4 is ``PIDTYPE_TGID``, then the operation of this command
++    ``pid_type`` for which the operation applies. It is one of
++    ``PR_SCHED_CORE_SCOPE_``-prefixed macro constants.  For example, if arg4
++    is ``PR_SCHED_CORE_SCOPE_THREAD_GROUP``, then the operation of this command
+     will be performed for all tasks in the task group of ``pid``.
+ 
+ arg5:
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index 967d9c5..644a3b4 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -266,5 +266,8 @@ struct prctl_mm_map {
+ # define PR_SCHED_CORE_SHARE_TO		2 /* push core_sched cookie to pid */
+ # define PR_SCHED_CORE_SHARE_FROM	3 /* pull core_sched cookie to pid */
+ # define PR_SCHED_CORE_MAX		4
++# define PR_SCHED_CORE_SCOPE_THREAD		0
++# define PR_SCHED_CORE_SCOPE_THREAD_GROUP	1
++# define PR_SCHED_CORE_SCOPE_PROCESS_GROUP	2
+ 
+ #endif /* _LINUX_PRCTL_H */
+diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
+index 9a80e9a..20f6409 100644
+--- a/kernel/sched/core_sched.c
++++ b/kernel/sched/core_sched.c
+@@ -134,6 +134,10 @@ int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
+ 	if (!static_branch_likely(&sched_smt_present))
+ 		return -ENODEV;
+ 
++	BUILD_BUG_ON(PR_SCHED_CORE_SCOPE_THREAD != PIDTYPE_PID);
++	BUILD_BUG_ON(PR_SCHED_CORE_SCOPE_THREAD_GROUP != PIDTYPE_TGID);
++	BUILD_BUG_ON(PR_SCHED_CORE_SCOPE_PROCESS_GROUP != PIDTYPE_PGID);
++
+ 	if (type > PIDTYPE_PGID || cmd >= PR_SCHED_CORE_MAX || pid < 0 ||
+ 	    (cmd != PR_SCHED_CORE_GET && uaddr))
+ 		return -EINVAL;
+-- 
+2.1.4
 
-Assuming offset_len = 6, then you skip 0-1023 ports, OK.
-
->        psid = psid << (16 - offset_len - psid_len);
-
-This psid calculation is correct? Maybe:
-
-        psid = psid << (16 - offset_len);
-
-instead?
-
-        psid=0  =>      0 << (16 - 6) = 1024
-        psid=1  =>      1 << (16 - 6) = 2048
-
-This is implicitly assuming that 64 PSIDs are available, each of them
-taking 1024 ports, ie. psid_len is 6 bits. But why are you subtracting
-the psid_len above?
-
->        /* Handle the special case of no offset bits (a=0), so offset loops */
->        min = psid;
-
-OK, this line above is the minimal port in the range
-
->        if (offset)
->                min += offset;
-
-... which is incremented by the offset (to skip the 0-1023 ports).
-
->       r->min_proto.all = htons(min);
->       r->max_proto.all = htons(min + ((1 << (16 - offset_len - psid_len)) - 1));
-
-Here, you subtract psid_len again, not sure why.
-
->       r->base_proto.all = htons(offset);
-
-base is set to offset, ie. 1024.
-
->       r->flags |= NF_NAT_RANGE_PSID;
->       r->flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
-
-Now looking at the kernel side.
-
-> diff --git a/net/netfilter/nf_nat_masquerade.c b/net/netfilter/nf_nat_masquerade.c
-> index 8e8a65d46345..19a4754cda76 100644
-> --- a/net/netfilter/nf_nat_masquerade.c
-> +++ b/net/netfilter/nf_nat_masquerade.c
-> @@ -55,8 +55,31 @@ nf_nat_masquerade_ipv4(struct sk_buff *skb, unsigned int hooknum,
->  	newrange.flags       = range->flags | NF_NAT_RANGE_MAP_IPS;
->  	newrange.min_addr.ip = newsrc;
->  	newrange.max_addr.ip = newsrc;
-> -	newrange.min_proto   = range->min_proto;
-> -	newrange.max_proto   = range->max_proto;
-> +
-> +	if (range->flags & NF_NAT_RANGE_PSID) {
-> +		u16 base = ntohs(range->base_proto.all);
-> +		u16 min =  ntohs(range->min_proto.all);
-> +		u16 off = 0;
-> +
-> +		/* xtables should stop base > 2^15 by enforcement of
-> +		 * 0 <= offset_len < 16 argument, with offset_len=0
-> +		 * as a special case inwhich base=0.
-
-I don't understand this comment.
-
-> +		 */
-> +		if (WARN_ON_ONCE(base > (1 << 15)))
-> +			return NF_DROP;
-> +
-> +		/* If offset=0, port range is in one contiguous block */
-> +		if (base)
-> +			off = prandom_u32_max(((1 << 16) / base) - 1);
-
-Assuming the example above, base is set to 1024. Then, off is a random
-value between UINT16_MAX (you expressed this as 1 << 16) and the base
-which is 1024 minus 1.
-
-So this is picking a random off (actually the PSID?) between 0 and 63.
-What about clashes? I mean, two different machines behind the NAT
-might get the same off.
-
-> +		newrange.min_proto.all   = htons(min + base * off);
-
-min could be 1024, 2048, 3072... you add base which is 1024 * off.
-
-Is this duplicated? Both calculated in user and kernel space?
-
-> +		newrange.max_proto.all   = htons(ntohs(newrange.min_proto.all) + ntohs(range->max_proto.all) - min);
-
-I'm stopping here, I'm getting lost.
-
-My understanding about this RFC is that you would like to split the
-16-bit ports in ranges to uniquely identify the host behind the NAT.
-
-Why don't you just you just select the port range from userspace
-utilizing the existing infrastructure? I mean, why do you need this
-kernel patch?
-
-Florian already suggested:
-
-> Is it really needed to place all of this in the nat core?
-> 
-> The only thing that has to be done in the NAT core, afaics, is to
-> suppress port reallocation attmepts when NF_NAT_RANGE_PSID is set.
-> 
-> Is there a reason why nf_nat_masquerade_ipv4/6 can't be changed instead
-> to do what you want?
-> 
-> AFAICS its enough to set NF_NAT_RANGE_PROTO_SPECIFIED and init the
-> upper/lower boundaries, i.e. change input given to nf_nat_setup_info().
-
-extracted from:
-
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210422023506.4651-1-Cole.Dishington@alliedtelesis.co.nz/
