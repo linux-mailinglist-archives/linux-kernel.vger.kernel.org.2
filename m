@@ -2,133 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3D13F7212
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623493F71C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239583AbhHYJmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:42:23 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:24544 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236729AbhHYJmR (ORCPT
+        id S239683AbhHYJfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237008AbhHYJe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:42:17 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210825094130epoutp031e27e89d9f24e1241a27acd0f4b45300~eg08Pl5pO0943109431epoutp038
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:41:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210825094130epoutp031e27e89d9f24e1241a27acd0f4b45300~eg08Pl5pO0943109431epoutp038
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629884490;
-        bh=MoAIQyz5Uf3JAXIkjW5sCnnu4uLDJbsFqG6pBajtU84=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=MtBehLR36EIGtkdL9P6oa8f/to2IdCcS1OdmPlbHsKWWcCi/EbQF96zjqvQP2jmiQ
-         9HcDtwQRUTM81HSiqGQTtJTjTEfSQ2WGMGaGFVKkIjhs3A4SN549stzNlDlvAekKbE
-         ovd6kzOrPLw4ZLunkuWPNM18L6fTI3bOkFHq5CDU=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210825094129epcas1p14475b00c984ba51d380facc39254020d~eg07fyhPS1578315783epcas1p1M;
-        Wed, 25 Aug 2021 09:41:29 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.38.247]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4GvgwS0X2Pz4x9Pr; Wed, 25 Aug
-        2021 09:41:28 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0D.84.10095.74016216; Wed, 25 Aug 2021 18:41:27 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210825094127epcas1p26709a5004dacdb2066e7f21dc1c997f5~eg05FrfOx0977909779epcas1p2W;
-        Wed, 25 Aug 2021 09:41:27 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210825094127epsmtrp1b1154e31dd3c5edb330c4fa29d1727b9~eg05ErpSd2830628306epsmtrp1v;
-        Wed, 25 Aug 2021 09:41:27 +0000 (GMT)
-X-AuditID: b6c32a38-c27d1a800000276f-c7-61261047ef6a
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        04.BE.09091.74016216; Wed, 25 Aug 2021 18:41:27 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210825094127epsmtip2dae0e5cf002c2519f18236f036136716~eg043Ol2g0151701517epsmtip2X;
-        Wed, 25 Aug 2021 09:41:27 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com,
-        ChanWoo Lee <cw9316.lee@samsung.com>
-Subject: [PATCH] mmc: sdhci: Change the code to check auto_cmd23
-Date:   Wed, 25 Aug 2021 18:33:45 +0900
-Message-Id: <20210825093345.14706-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Wed, 25 Aug 2021 05:34:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AFCC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:34:14 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mIpIL-0003oy-7B; Wed, 25 Aug 2021 11:34:05 +0200
+Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
+ trusted keys
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     David Gstir <david@sigma-star.at>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>, keyrings@vger.kernel.org,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        linux-security-module@vger.kernel.org,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Richard Weinberger <richard@nod.at>,
+        James Morris <jmorris@namei.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        David Howells <dhowells@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-crypto@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
+        linux-integrity@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
+ <CAJ+vNU23cXPmiqKcKH_WAgD-ea+=pEJzGK+q7zOy=v2o0XU7kA@mail.gmail.com>
+ <2b48a848-d70b-9c43-5ca0-9ab72622ed12@pengutronix.de>
+ <CAJ+vNU225mgHHg00r67f1L6bEub+_h55hCBAMhCq2rd8kWU-qg@mail.gmail.com>
+ <9200d46d-94a2-befd-e9b0-93036e56eb8a@pengutronix.de>
+ <CAJ+vNU19z0syr0oHOrSGxL0cVW+Kjv76kmp6uvGc2akHbtX0Nw@mail.gmail.com>
+ <fa530833-2bb9-f8f3-68c6-99423d29e2ca@pengutronix.de>
+ <CAJ+vNU0iRTagc5_qvsG4jvt=B_wruj=1O2ZRixqWek8JTN=aeg@mail.gmail.com>
+ <8b559c9c-a4c0-d335-5e54-40b9acc08707@pengutronix.de>
+ <CAJ+vNU2q_KCi8nNv56s0ip7CZaAE=YgObwFUyzuGa_T1Ywp-wQ@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <2b5b1722-7934-045e-1807-075278041ae7@pengutronix.de>
+Date:   Wed, 25 Aug 2021 11:34:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpjk+LIzCtJLcpLzFFi42LZdljTQNddQC3RYMdGG4uTT9awWcw41cZq
-        se/aSXaLX3/Xs1vseH6G3eLyrjlsFkf+9zNaNP3Zx2JxfG24A6fH4j0vmTzuXNvD5tG3ZRWj
-        x+dNcgEsUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6Z
-        OUCnKCmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKzAr0ihNzi0vz0vXyUkusDA0M
-        jEyBChOyM963b2ApuMZWcXTZC+YGxgOsXYycHBICJhKrOq4ydTFycQgJ7GCUmLXyACOE84lR
-        YlFHE5TzjVHi+NQGNpiWl3cfsUEk9jJKHFw0gxnC+cIosfzeU6BhHBxsAloSt495gzSICORJ
-        HDq7EmwSs0AXo8Svg10sIAlhAQeJGTsOg9ksAqoSV16vYgaxeQWsJRq6vkMdKC/x534PVFxQ
-        4uTMJ2D1zEDx5q2zwRZLCFxil3j++SATRIOLROuslVCnCku8Or6FHcKWknjZ38YO0dDMKHFq
-        9jkop4VR4vWVG1BVxhKfPn9mBHmBWUBTYv0ufYiwosTO33MZITbzSbz72sMKUiIhwCvR0SYE
-        UaIiMafrHBvMro83HkM94CFxctFCsAeEBGIlXr1ezzKBUX4Wkn9mIflnFsLiBYzMqxjFUguK
-        c9NTiw0LTODxmpyfu4kRnCC1LHYwzn37Qe8QIxMH4yFGCQ5mJRHev0zKiUK8KYmVValF+fFF
-        pTmpxYcYTYEhPJFZSjQ5H5ii80riDU0sDUzMjEwsjC2NzZTEeRlfySQKCaQnlqRmp6YWpBbB
-        9DFxcEo1MIlflteafXNl5eQHlSmVS78c9rE6fkiIk23ZnIDIyws3HDfd42xwYFHo9FN/Jk1q
-        OMqgm1fwZnHJ45OyoSdus9+5vP3x55D1Ms3WH/IVDnoGZ7Pt5gr5d+7E7CNR6zub+7Yw6v3e
-        9uFp2v5pWd73+jf/5bPlzin4P/dHq4GDVkNmyJvT2sdmNvLP9f9VXsVxY5vHr13X75WsYrlR
-        e8IzS4wp4CZfzoyQpGkrT3V6uFgaTBD6+OZqC3fNx3a2ved7/i/ZtK65QVX/q5IIl8c0b9ab
-        kySZvmnPWmfMfIFB/7b9la7Oo+5XdvAbT3u8tyDKxEGt9bzu2UkuE32cU//euMqyXO/4yTXr
-        Oi89fOH+SXKPEktxRqKhFnNRcSIABS4PERkEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrALMWRmVeSWpSXmKPExsWy7bCSvK67gFqiQetufouTT9awWcw41cZq
-        se/aSXaLX3/Xs1vseH6G3eLyrjlsFkf+9zNaNP3Zx2JxfG24A6fH4j0vmTzuXNvD5tG3ZRWj
-        x+dNcgEsUVw2Kak5mWWpRfp2CVwZ79s3sBRcY6s4uuwFcwPjAdYuRk4OCQETiZd3H7GB2EIC
-        uxklbv3TgIhLSezefx4ozgFkC0scPlzcxcgFVPKJUeLi22dMIHE2AS2J28e8QUwRgSKJE0fL
-        QEqYBSYwSiy+8pYZZIywgIPEjB2HWUBsFgFViSuvV4HFeQWsJRq6vkOdIC/x534PVFxQ4uTM
-        J2D1zEDx5q2zmScw8s1CkpqFJLWAkWkVo2RqQXFuem6xYYFhXmq5XnFibnFpXrpecn7uJkZw
-        oGpp7mDcvuqD3iFGJg7GQ4wSHMxKIrx/mZQThXhTEiurUovy44tKc1KLDzFKc7AoifNe6DoZ
-        LySQnliSmp2aWpBaBJNl4uCUamC66HG1yF4pqClq7epf2S0pQYtfP+qZKxrac/K4tYvd9Edy
-        9h+8vzroVuaUpvbeWcv0InNuIvthmeR//9rX+2V+utGpz2hWsayj4cHJHqMDwpPcVwUfl9Hj
-        Ef/w9fj9+IqpN/NXyG6NLZukUHHyrVnCSpkFOf7nbwUeeraU2bXdasG+Xw+rPb+8joyf/C/8
-        2FnhZx26pxt+aiom//1Rd8LuGpf8icYY24ufP370djRnWMPL+UcutSXTdYJP4SrVjTEsMzQn
-        lyes3Hx1k8268N/9mw4HMghqNnvf6nhlyLD/CPd90zQzdqeFzFu+vFcLW55+P/uoEV/dmfpb
-        rWlGz5t1n259lf/F88J9zvojIX5KLMUZiYZazEXFiQB5SsVHwwIAAA==
-X-CMS-MailID: 20210825094127epcas1p26709a5004dacdb2066e7f21dc1c997f5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210825094127epcas1p26709a5004dacdb2066e7f21dc1c997f5
-References: <CGME20210825094127epcas1p26709a5004dacdb2066e7f21dc1c997f5@epcas1p2.samsung.com>
+In-Reply-To: <CAJ+vNU2q_KCi8nNv56s0ip7CZaAE=YgObwFUyzuGa_T1Ywp-wQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
+On 24.08.21 17:23, Tim Harvey wrote:
+> On Tue, Aug 24, 2021 at 12:33 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>
+>> On 23.08.21 19:50, Tim Harvey wrote:
+>>> On Mon, Aug 23, 2021 at 6:29 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>>> On 20.08.21 23:19, Tim Harvey wrote:
+>>>>> On Fri, Aug 20, 2021 at 1:36 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>>>>> On 20.08.21 22:20, Tim Harvey wrote:
+>>>>> It works for a user keyring but not a session keyring... does that
+>>>>> explain anything?
+>>>>> # keyctl add trusted mykey 'new 32' @u
+>>>>> 941210782
+>>>>> # keyctl print 941210782
+>>>>> 83b7845cb45216496aead9ee2c6a406f587d64aad47bddc539d8947a247e618798d9306b36398b5dc2722a4c3f220a3a763ee175f6bd64758fdd49ca4db597e8ce328121b60edbba9b8d8d55056be896
+>>>>> # keyctl add trusted mykey 'new 32' @s
+>>>>> 310571960
+>>>>> # keyctl print 310571960
+>>>>> keyctl_read_alloc: Unknown error 126
+>>>>
+>>>> Both sequences work for me.
+>>>>
+>>>> My getty is started by systemd. I think systemd allocates a new session
+>>>> keyring for the getty that's inherited by the shell and the commands I run
+>>>> it in. If you don't do that, each command will get its own session key.
+>>>>
+>>>>> Sorry, I'm still trying to wrap my head around the differences in
+>>>>> keyrings and trusted vs user keys.
+>>>>
+>>>> No problem. HTH.
+>>>
+>>> Ahmad,
+>>>
+>>> Ok that explains it - my testing is using a very basic buildroot
+>>> ramdisk rootfs. If I do a 'keyctl new_session' first I can use the
+>>> system keyring fine as well.
+>>
+>> Great. Does this mean I can get your Tested-by: ? :)
+>>
+> 
+> Absolutely,
+> 
+> For the series:
+> 
+> I tested this series on top of v5.14.rc-7 on a Gateworks
+> imx8mm-venice-gw73xx board with kernel param trusted.source=caam and
+> keyutils-1.6:
+> # keyctl new_session
+> 22544757
+> # keyctl add trusted mykey 'new 32' @s
+> 160701809
+> # keyctl print 160701809
+> 990e03aa4515aee420eede17e26a58d0c5568c8bd2c9c2ee2f22a0583181d20d4f65cf9cb1f944a3cc92c0e3184a44a29a7e511f0a55a6af11a70ac2b2924514002475e73ae09820042896b9ee00a5ec
+> 
+> Tested-By: Tim Harvey <tharvey@gateworks.com>
 
-It is replaced with a function that is already declared.
-//[1/5] mmc: sdhci: Add helpers for the auto-CMD23 flag
-//20200412090349.1607-2-adrian.hunter@intel.com
+Thanks. I'll apply it to the whole series then.
 
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
----
- drivers/mmc/host/sdhci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> One more question: I've got a user that wants to blob/deblob generic
+> data. They can use the caam_encap_blob/caam_decap_blob functions in
+> kernel code but could you give me a suggestion for how they could use
+> this in:
+> a) userspace code (using the keyctl syscall I assume)
+> b) userspace cmdline (via keyutils I assume)
 
-diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index 36f15f81a6af..5782650ddf7d 100644
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -3232,7 +3232,7 @@ static void sdhci_cmd_irq(struct sdhci_host *host, u32 intmask, u32 *intmask_p)
- 			  -ETIMEDOUT :
- 			  -EILSEQ;
- 
--		if (mrq->sbc && (host->flags & SDHCI_AUTO_CMD23)) {
-+		if (sdhci_auto_cmd23(host, mrq)) {
- 			mrq->sbc->error = err;
- 			__sdhci_finish_mrq(host, mrq);
- 			return;
+Trusted keys aren't disclosed to userspace in plain text, only in sealed
+form (bar vulnerabilities of course).
+
+Cheers,
+Ahmad
+
+> 
+> Many thanks,
+> 
+> Tim
+> 
+
+
 -- 
-2.29.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
