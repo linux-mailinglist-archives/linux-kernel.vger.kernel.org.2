@@ -2,148 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D0A3F7405
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB743F7408
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240123AbhHYLGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 07:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
+        id S240306AbhHYLHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 07:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236038AbhHYLGU (ORCPT
+        with ESMTP id S236038AbhHYLH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 07:06:20 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9086C061757;
-        Wed, 25 Aug 2021 04:05:34 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ea70083109ebf80d1db9a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a700:8310:9ebf:80d1:db9a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 301C91EC036B;
-        Wed, 25 Aug 2021 13:05:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629889529;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=FmlAznHkQY06DZXhalxR6XDiPNF7pgBGfOoUZA3D+vo=;
-        b=jy+S22x5BGqIj6wZ/EDYcRcJ7KPx0io4/u4mhOd7rT/8pZqVzhf5Cv5q8b5BXMaTO9Timc
-        ZVVHryDmAoSKY5ydD29ngcwnWz0d+uh9eroCZsSt0bdmcrorGFplMCnF55w0a8eFPJAonF
-        XDRO2IL3+/d30AH0qTY8rSaSuGIxBaU=
-Date:   Wed, 25 Aug 2021 13:06:06 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 17/38] x86/mm: Add support to validate memory
- when changing C-bit
-Message-ID: <YSYkHhAMSOotEzXQ@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-18-brijesh.singh@amd.com>
+        Wed, 25 Aug 2021 07:07:29 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1DEC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:06:43 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id u14so25850689ejf.13
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:06:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oXHXNjMFde3RZo3Oxerlx2/B9K7hyGDePqliIxHv4MA=;
+        b=kFJPOezz5P+KBafIBtx5LkHwKkRJ8gvjuCuOmKNLsy1VV4GIZOVB+y5Oh9MP7bwnjg
+         c5TNOS3nKVLBTlPhcb877vCCYeK7uh/9/NeiOYW40MyHwa5LRQpGqNBmiImS9Uha5o0V
+         nCuIiWdythFAJ4EdNHvsT++8Y9FWC7+F5v/UrF/SEi0HdKvgH5S7jkLeUu0K4CUvhQAv
+         svTyNqePO2dnyvfw/xwAZ7zB5hqA6Z+186eHhlaymBMPt9xZaJYluVhZF9Md1pYuIDga
+         iVm17b4SZdlQ1ixl/vzkqRcectRASfTPP14RflXwmagkNL8JnYQ00XinfI/SJX8SnX+1
+         bDTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oXHXNjMFde3RZo3Oxerlx2/B9K7hyGDePqliIxHv4MA=;
+        b=PPDaKeyZhqWLg8Ez9CKZBCzbfCjTcwKVPI+DDAS4rVsfe5MYMvrrCGN5h/3NEsLKX1
+         pDE4vTZ1aV8UkngIX0BeSn41Etk1qYVwqCb5Haf88u2FKqI0/zexs/LprG2wrsBTaXXp
+         tzxhsw/ifqwBY091P9sgebPKs9s/NmrOfBYGhGnOLFs86eqJ/6Q7Y7EGFkU6UxHbo+nP
+         F1odY7CiUNOLntL+GmiITmXoK5H0LQvQC7lU3NMvsJMqMspeMMbvWVw4EXtQlAjpxtgi
+         kj94zV9xuj1C0rPvRANE2y77kiKxivBp7/1nMsSsf/tKBNN10yIveEx2LbHkuk8nsA/v
+         lS2g==
+X-Gm-Message-State: AOAM5305SOTJ44ZbgMYFCRcDJZx5y9IZoZZgiJMaXO38wWQHO662qS1r
+        QFkBU5en9YhSmwHRmQieJ/Nxoly/Oto=
+X-Google-Smtp-Source: ABdhPJwiRv4tF7NGkgUlL8yunBa4MTW70bNhkcmcV+TLo+TlZPs6Q3znBeeFglkMlyCHCCO7jtntSA==
+X-Received: by 2002:a17:907:7704:: with SMTP id kw4mr44804146ejc.23.1629889602317;
+        Wed, 25 Aug 2021 04:06:42 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id q11sm2992305edv.73.2021.08.25.04.06.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 04:06:41 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] staging: r8188eu: add error handling of rtw_read16
+Date:   Wed, 25 Aug 2021 13:06:40 +0200
+Message-ID: <3494498.825kMHXWDN@localhost.localdomain>
+In-Reply-To: <20210825103802.GS7722@kadam>
+References: <cover.1629789580.git.paskripkin@gmail.com> <3396277b-6d80-b621-0ef0-71de7d581602@gmail.com> <20210825103802.GS7722@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820151933.22401-18-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:19:12AM -0500, Brijesh Singh wrote:
-> +	while (hdr->cur_entry <= hdr->end_entry) {
-> +		ghcb_set_sw_scratch(ghcb, (u64)__pa(data));
-> +
-> +		ret = sev_es_ghcb_hv_call(ghcb, NULL, SVM_VMGEXIT_PSC, 0, 0);
-> +
-> +		/*
-> +		 * Page State Change VMGEXIT can pass error code through
-> +		 * exit_info_2.
-> +		 */
-> +		if (WARN(ret || ghcb->save.sw_exit_info_2,
-> +			 "SEV-SNP: PSC failed ret=%d exit_info_2=%llx\n",
-> +			 ret, ghcb->save.sw_exit_info_2)) {
-> +			ret = 1;
-> +			goto out;
-> +		}
-> +
-> +		/*
-> +		 * Sanity check that entry processing is not going backward.
-> +		 * This will happen only if hypervisor is tricking us.
-> +		 */
-> +		if (WARN(hdr->end_entry > end_entry || cur_entry > hdr->cur_entry,
-> +			 "SEV-SNP:  PSC processing going backward, end_entry %d (got %d) cur_entry %d (got %d)\n",
+On Wednesday, August 25, 2021 12:38:02 PM CEST Dan Carpenter wrote:
+> On Wed, Aug 25, 2021 at 01:13:54PM +0300, Pavel Skripkin wrote:
+> > On 8/25/21 1:06 PM, Dan Carpenter wrote:
+> > > On Wed, Aug 25, 2021 at 12:55:37PM +0300, Pavel Skripkin wrote:
+> > > > The main problem, that no one knows who is the "old". Greg can take patches
+> > > > in any order he wants
+> > > 
+> > > Patches are always taken in first come first serve.
+> > > 
+> > 
+> > 
+> > OK, but if pending patch needs new version, then it will be taken at the
+> > end?
+> 
+> Versions don't matter.  No one is tracking any of that.
+> 
+> A patch arrives.  It is either applied or rejected.  First come first
+> serve.
+> 
+> > 
+> > Here is the situation we have:
+> > 
+> > 	I have the patch series based on old function behavior, it was
+> > 	posted first
+> > 
+> > 	Then Fabio posted refactoring of the function and it changes
+> > 	return values.
+> > 
+> > 
+> > Both series are pending right now and made on top of staging-next branch.
+> > Who needs to rebase? I think, applying these series as-is can broke the
+> > driver, since error handling will be broken
+> 
+> That's a bug then.  The patch should be rejected.  You're not allowed to
+> break the code.
 
-I really meant putting the beginning of that string at the very first
-position on the line:
+Sorry Dan, I disagree. It's not a bug. No one intend to break the code. 
+How could anyone know that someone else is working simultaneously on 
+some code that is not compatible with the work of the other developer?
 
-                if (WARN(hdr->end_entry > end_entry || cur_entry > hdr->cur_entry,
-"SEV-SNP: PSC processing going backward, end_entry %d (got %d) cur_entry %d (got %d)\n",
-                         end_entry, hdr->end_entry, cur_entry, hdr->cur_entry)) {
+Pavel and I worked simultaneously on code based on the current Greg's tree.
 
-Exactly like this!
+We incidentally got to know that mine breaks his.
 
-...
+I suppose that Greg will take Pavel's work first, because it was submitted few 
+hours before mine and then will ask me to take into account Pavel's patches, 
+rebase, fix and resend mine.
 
-> +static void set_page_state(unsigned long vaddr, unsigned int npages, int op)
-> +{
-> +	unsigned long vaddr_end, next_vaddr;
-> +	struct snp_psc_desc *desc;
-> +
-> +	vaddr = vaddr & PAGE_MASK;
-> +	vaddr_end = vaddr + (npages << PAGE_SHIFT);
-> +
-> +	desc = kmalloc(sizeof(*desc), GFP_KERNEL_ACCOUNT);
+Each series is self contained and does not introduce bugs to the current tree.
+The bugs will arise when Greg will have applied one of the two series as usually 
+in a FIFO order.
 
-And again, from previous review:
+There's no practical means to know who is working to what just by reading all 
+the messages of the lists. Who reads all the messages before deciding to work 
+on something? This issue will be solved a way or the other, I really don't think it 
+is a big problem, it's unavoidable when a lot of people work on the same 
+driver or subsystem.
 
-kzalloc() so that you don't have to memset() later in
-__set_page_state().
+Regards,
 
-> +	if (!desc)
-> +		panic("SEV-SNP: failed to alloc memory for PSC descriptor\n");
+Fabio  
 
-"allocate" fits just fine too.
+> Also don't write patches which lead to merge order breaking the code
+> silently.  That makes it difficult for stable as well.  For example,
+> don't do this:
+> 
+> -void frob(int a, int b);
+> +void frob(int b, int a);
+> 
+> In that case, you would change the name of the function so that the
+> build would break when people mix old and new code.
+> 
+> regards,
+> dan carpenter
+> 
+> 
 
-> +
-> +	while (vaddr < vaddr_end) {
-> +		/*
-> +		 * Calculate the last vaddr that can be fit in one
-> +		 * struct snp_psc_desc.
-> +		 */
-> +		next_vaddr = min_t(unsigned long, vaddr_end,
-> +				   (VMGEXIT_PSC_MAX_ENTRY * PAGE_SIZE) + vaddr);
-> +
-> +		__set_page_state(desc, vaddr, next_vaddr, op);
-> +
-> +		vaddr = next_vaddr;
-> +	}
-> +
-> +	kfree(desc);
-> +}
 
--- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
