@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770B63F79DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CCE3F79DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237393AbhHYQHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:07:12 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:57778 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbhHYQHK (ORCPT
+        id S235478AbhHYQIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231873AbhHYQIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:07:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629907584; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=yc5dXmEbANnSyJ5gTovdFTL4dL+lLozkExAzl2y9EgI=;
- b=tqNWiM3urqPxPKl2PZ8MKvWBg2fapeQGFLx9+bcOF1XwdC47YJRf+24tF7U2ZnyBsbF78ZQf
- Xa45Z50Wlsg/IY1XalbITBuuOBvpuLTU1Sio1PPKdeGmuKT2Ogv6CTLjFTnWO3AAtrZfDeRP
- ouwWzqM44VbNSDSY3qqzngtmhbY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 61266a6b40d2129ac164b0e4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Aug 2021 16:06:03
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 10A15C43638; Wed, 25 Aug 2021 16:06:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2B4E6C4361A;
-        Wed, 25 Aug 2021 16:06:02 +0000 (UTC)
+        Wed, 25 Aug 2021 12:08:38 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4F3C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:07:52 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id n12so3177959plk.10
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:07:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/l5cLUlCqQuOmI9NOmST1rS3slCz2wAxqBsla1LtrEo=;
+        b=ibv558tfKD2EGwE3AuzA/JnRlUcJi1r5X6W78sOo+uBrn56+kdcAIWVg3u2rvY+2Wx
+         lr0GXiSLK9To2578biszUzs+RkAMNF9Mrv+UG/qmH54Ow2m2YshzVs4kuTB3OXOQdgT5
+         GQShwOY4bwOO6rzdcNiIdXDuHpuPLcM/Okksg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/l5cLUlCqQuOmI9NOmST1rS3slCz2wAxqBsla1LtrEo=;
+        b=uHvfdX0CFgTKvmdgSUetWn3eH32bxtJGDM9VP2DSe8YQ5NPv/Mi0tnxkfA+VIe28ym
+         RtD1XI9nUfeyXTPZ+gsiI2s5B9f6PYFDMpFnGfXpTi+jtO6fRE/11B+QCAFtkwgkaqZO
+         9ZBeesEPJgUQojL4R1lLLASKEPoNdsCXp8QULKI1+dhjrjOdzoQO9b7UZ+R+OXolt4/9
+         jFvSi2NUl/OZbDkwCia0/dLGjJEj+avVFTgCSg1+MhdyFYcFmSL1gLw+TYtTXxIvn9z1
+         I1JvJs8q3LwOM3gWcYCgCutsefE9Xt/ZIotzI2g+SKqGxKj+eDHQuf6BO+WG1UVAnHjn
+         1OHQ==
+X-Gm-Message-State: AOAM531IBWNQxsd27pR71rypiY8ZSdV8ZbTxq6Xn2GNsjYsoUGABL75c
+        m+h8J5aEEWpon44x7hq9tc9vSH/lQc4D7Q==
+X-Google-Smtp-Source: ABdhPJzcn3M/RGUv2vmIIIjnTPhjD6UJCKPAhfdFZM7OYaXVGFIXicuAZMiX6IY1qGNOTTly4Qq4WQ==
+X-Received: by 2002:a17:90b:155:: with SMTP id em21mr11404502pjb.116.1629907672421;
+        Wed, 25 Aug 2021 09:07:52 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q21sm434957pgk.71.2021.08.25.09.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 09:07:51 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Dell.Client.Kernel@dell.com,
+        platform-driver-x86@vger.kernel.org,
+        Andy Lavr <andy.lavr@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][RFC] platform/x86: dell-smbios-wmi: Avoid false-positive memcpy() warning
+Date:   Wed, 25 Aug 2021 09:07:49 -0700
+Message-Id: <20210825160749.3891090-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2093; h=from:subject; bh=qXsdfbAnxeyDMKPf/8AeuTAwgsFnkIChdg6LvC6u8KI=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhJmrUmxMtdLH2DxKjuRGAk4B4ozE+e7SiCLYZqSp9 DtvjLmmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSZq1AAKCRCJcvTf3G3AJteyD/ 9bq6aea/3GOxMrowBT27fyllzGBBs72gKCYBqk/wi662CuzVNNvJFN0kk4nsNkHssQpZrFn2DideLd IyJ668p6UmrQyfXTMqKsCO86VQ1grM821PgK28F416tdDhZtzB2d+x8k7FHJ1/9W/Sbx6T3qV9kRse IaSJ0HROFAzVCePL+RF6wr6H7T8apjput2yNKjHfw0+7ioQcEMrQ0u6vdXsnGjXBd9XWagCnDJ39i7 KZ6FXWm2pu0POcYgxQlxq2x0tPyme6m5T+ErM+5mlv0MLvQb5PfvOTGKlWcvsGQ0YYXQ3DSnWYuSVQ QMU+cNeGlTjAKprcx6ToUvSx9B9WkxaGK5oALUpZwwed9n9af3v+tTDeuyP5JdMYtUPotLI9Q4/i8n VfoZEzz+M+e/EKyNih5AzXLSrEajPMQbsXhsx+Ix3kklu702f21rdKvacUoI7Qh7qR3UJMXJt12fIJ 7j/ijOvIHh79WuLA6Vfp9TuiQjLiH5bJb6KBgJun0m6v1dTLQKJ+iQe4VZkrfLp8HOSCJbRwdYCs3q 8tkJUY7nbrcdCY3lJ9bjIOiK668or4z80tXNnszrNqPoBsFx08diPFjMDOsVRcjwmPpZ9hajDUQJQB BXY7BFkQLRkIgn2MBxIZKg+m3zTWL9GtdttU6dLWR6OxGYTNncrelEv4G/kQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-Date:   Wed, 25 Aug 2021 09:06:02 -0700
-From:   khsieh@codeaurora.org
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, rsubbia@codeaurora.org,
-        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drm/dp_mst: Fix return code on sideband message
- failure
-In-Reply-To: <e725235a77935184cd20dab5af55da95b28d9e88.camel@redhat.com>
-References: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
- <87zguy7c5a.fsf@intel.com> <a514c19f712a6feeddf854dc17cb8eb5@codeaurora.org>
- <2da3949fa3504592da42c9d01dc060691c6a8b8b.camel@redhat.com>
- <d9ec812b4be57e32246735ca2f5e9560@codeaurora.org>
- <79c5a60fc189261b7a9ef611acd126a41f921593.camel@redhat.com>
- <696a009e2ab34747abd12bda03c103c7@codeaurora.org>
- <e725235a77935184cd20dab5af55da95b28d9e88.camel@redhat.com>
-Message-ID: <64049ef6c598910c1025e0e5802bb83e@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-27 15:44, Lyude Paul wrote:
-> Nice timing, you literally got me as I was 2 minutes away from leaving 
-> work
-> for the day :P. I will go ahead and push it now.
-> 
-Hi Lyude,
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-Had you pushed this patch yet?
-We still did not see this patch at msm-nex and v5.10 branch.
-Thanks,
+Since all the size checking has already happened, use input.pointer
+(void *) so memcpy() doesn't get confused about how much is being
+written.
 
+Avoids this false-positive warning when run-time memcpy() strict
+bounds checking is enabled:
 
-> BTW - in the future I recommend using dim to add Fixes: tags as it'll 
-> add Cc:
-> to stable as appropriate (this patch in particular should be Cc:
-> stable@vger.kernel.org # v5.3+). will add these tags when I push it
-> 
-> On Tue, 2021-07-27 at 15:41 -0700, khsieh@codeaurora.org wrote:
->> On 2021-07-27 12:21, Lyude Paul wrote:
->> > On Thu, 2021-07-22 at 15:28 -0700, khsieh@codeaurora.org wrote:
->> > >
->> > > It looks like this patch is good to go (mainlined).
->> > > Anything needed from me to do?
->> > > Thanks,
->> >
->> > Do you have access for pushing this patch? If not let me know and I can
->> > go
->> > ahead and push it to drm-misc-next for you.
->> no, I do not have access to drm-misc-next.
->> Please push it for me.
->> Thanks a lots.
->> 
+memcpy: detected field-spanning write (size 4096) of single field (size 36)
+WARNING: CPU: 0 PID: 357 at drivers/platform/x86/dell/dell-smbios-wmi.c:74 run_smbios_call+0x110/0x1e0 [dell_smbios]
+
+Note: is there a missed kfree() in the marked error path?
+
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Mark Gross <mgross@linux.intel.com>
+Cc: Mario Limonciello <mario.limonciello@dell.com>
+Cc: "Pali Rohár" <pali@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+Cc: Dell.Client.Kernel@dell.com
+Cc: platform-driver-x86@vger.kernel.org
+Reported-by: Andy Lavr <andy.lavr@gmail.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/platform/x86/dell/dell-smbios-wmi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/platform/x86/dell/dell-smbios-wmi.c b/drivers/platform/x86/dell/dell-smbios-wmi.c
+index 33f823772733..c410d6d920b8 100644
+--- a/drivers/platform/x86/dell/dell-smbios-wmi.c
++++ b/drivers/platform/x86/dell/dell-smbios-wmi.c
+@@ -69,9 +69,10 @@ static int run_smbios_call(struct wmi_device *wdev)
+ 		if (obj->type == ACPI_TYPE_INTEGER)
+ 			dev_dbg(&wdev->dev, "SMBIOS call failed: %llu\n",
+ 				obj->integer.value);
++		/* output.pointer memory allocation leak? */
+ 		return -EIO;
+ 	}
+-	memcpy(&priv->buf->std, obj->buffer.pointer, obj->buffer.length);
++	memcpy(input.pointer, obj->buffer.pointer, obj->buffer.length);
+ 	dev_dbg(&wdev->dev, "result: [%08x,%08x,%08x,%08x]\n",
+ 		priv->buf->std.output[0], priv->buf->std.output[1],
+ 		priv->buf->std.output[2], priv->buf->std.output[3]);
+-- 
+2.30.2
+
