@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79F93F6E8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4FE3F6EA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbhHYEql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 00:46:41 -0400
-Received: from mga18.intel.com ([134.134.136.126]:49692 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhHYEqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 00:46:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="204581671"
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="204581671"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 21:45:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="473718717"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga008.jf.intel.com with ESMTP; 24 Aug 2021 21:45:50 -0700
-Subject: Re: [PATCH] mmc: queue: Remove unused parameters(request_queue)
-To:     Chanwoo Lee <cw9316.lee@samsung.com>, ulf.hansson@linaro.org,
-        colyli@suse.de, axboe@kernel.dk, ebiggers@google.com,
-        pcc@google.com, porzio@gmail.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com
-References: <CGME20210825004043epcas1p33ca4a682a765e1270258bba083fe66d6@epcas1p3.samsung.com>
- <20210825003318.31574-1-cw9316.lee@samsung.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <2e292b9c-9b1e-dc3e-45f9-06beb31d79b6@intel.com>
-Date:   Wed, 25 Aug 2021 07:46:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210825003318.31574-1-cw9316.lee@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231669AbhHYE7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 00:59:44 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:29948 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231487AbhHYE7n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 00:59:43 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210825045856epoutp01729d709cd10b5b00b039702ad11c1e18~ec_OZChhk1912019120epoutp01V
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:58:56 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210825045856epoutp01729d709cd10b5b00b039702ad11c1e18~ec_OZChhk1912019120epoutp01V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1629867536;
+        bh=PwE5uHqawGK9+a5e4GZ7xRkvV0L8t++bGlmByelV01k=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Anc1Kc3WrLERZaXldjLWLQqFFIi4mZ0RUmbGaOdhey/WxrdOI7Zpn23pivbnoL+Rq
+         N14CeVs3cWnGqoMMN9PqXcB5OAxgx25EiQKc/MIQ9Ot0lOzKl4opctVgKyfAlKodYJ
+         B4aOWZdnuiBYyaflfvqZXaL7J1f8FSkr/WAdgCpQ=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210825045855epcas1p1ed1771f3f0883f20e011d50fbef613ae~ec_N08ato0955609556epcas1p16;
+        Wed, 25 Aug 2021 04:58:55 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.38.241]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4GvYfQ6Cndz4x9Pt; Wed, 25 Aug
+        2021 04:58:54 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0C.4D.09827.E0EC5216; Wed, 25 Aug 2021 13:58:54 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210825045853epcas1p39e688eb91dcdd8913d274e499726af3b~ec_L_WYLR0829408294epcas1p3a;
+        Wed, 25 Aug 2021 04:58:53 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210825045853epsmtrp1e299e65f9894a9484ff7c97fb9ae96f9~ec_L9q3lD2443424434epsmtrp1o;
+        Wed, 25 Aug 2021 04:58:53 +0000 (GMT)
+X-AuditID: b6c32a36-c7bff70000002663-da-6125ce0ea486
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C6.EA.08750.D0EC5216; Wed, 25 Aug 2021 13:58:53 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.89.31.111]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210825045853epsmtip24fe65c3623d7b3f34e278ef2090b3d30~ec_Ly6HXB2473024730epsmtip2k;
+        Wed, 25 Aug 2021 04:58:53 +0000 (GMT)
+From:   Namjae Jeon <namjae.jeon@samsung.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Namjae Jeon <namjae.jeon@samsung.com>
+Subject: [PATCH] MAINTAINERS: exfat: update my email address
+Date:   Wed, 25 Aug 2021 13:48:33 +0900
+Message-Id: <20210825044833.16806-1-namjae.jeon@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMKsWRmVeSWpSXmKPExsWy7bCmgS7fOdVEg4PdBhZz1q9hs9iz9ySL
+        xeVdc9gsfkyvd2DxODHjN4tH35ZVjB6fN8kFMEdl22SkJqakFimk5iXnp2TmpdsqeQfHO8eb
+        mhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYALVNSKEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2Cql
+        FqTkFJgV6BUn5haX5qXr5aWWWBkaGBiZAhUmZGfceXyRsWAKa8WHb1ENjItYuhg5OSQETCSO
+        T93A2MXIxSEksINRYn3bE3YI5xOjxIZLE5kgnM+MErfm9TDDtPzu2MIGkdjFKHHlzgFWuJb7
+        i/8BZTg42AS0Jf5sEQVpEBGQlZj69zzYPmaBDInHvV9YQWxhARuJma+fMYLYLAKqEhs/HmYD
+        sXmB4n2bv7FBLJOXWL3hADPIfAmBdnaJL1PuQR3uIrH1yByoImGJV8e3sEPYUhIv+9ug7HKJ
+        Eyd/MUHYNRIb5u1jB7lNQsBYoudFCYjJLKApsX6XPkSFosTO33MZIc7kk3j3tYcVoppXoqNN
+        CKJEVaLv0mGogdISXe0foBZ5SHR9WgD2lZBArMTJNa1sExhlZyEsWMDIuIpRLLWgODc9tdiw
+        wAgeRcn5uZsYwalHy2wH46S3H/QOMTJxMB5ilOBgVhLh/cuknCjEm5JYWZValB9fVJqTWnyI
+        0RQYXBOZpUST84HJL68k3tDE0sDEzMjEwtjS2ExJnJfxlUyikEB6YklqdmpqQWoRTB8TB6dU
+        A1Nkwp9z0bOrXj336JqSYXfn5eStNo1GM84vTnV+OWf65gd+C1hZfHcWfH2S71jfm39OoWKC
+        QXfJC5WCB5/r1vey686f90jxx9lll7/MKpuUb82UJRjesVPuQ/IDkdO7N8zRn3Un3mB5Qr9c
+        w4mJadwh005URZ6YHiU052yAWN3GWSapH6dWX/7P+cNLdX/m8RenIlNT2oJTMpI1PxTyxFZF
+        T/mbuOlGnlTRadFJsdua2S4HHD5tedB587Ezu48oKyxq85r5jsFu7qdv722Vl7tz9V4RfHPX
+        ZqLD2zMyrXuMBe9Nz7v+bdvRDTMC5QOe3RV5OcPzXk+zttmGH9Xxz0TLrv/aGaM/dYPgscIs
+        +ZJ8JZbijERDLeai4kQAqPjYdcYDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrIJMWRmVeSWpSXmKPExsWy7bCSvC7vOdVEg55vxhZz1q9hs9iz9ySL
+        xeVdc9gsfkyvd2DxODHjN4tH35ZVjB6fN8kFMEdx2aSk5mSWpRbp2yVwZdx5fJGxYAprxYdv
+        UQ2Mi1i6GDk5JARMJH53bGHrYuTiEBLYwShx//0EJoiEtMSxE2eYuxg5gGxhicOHiyFqPjBK
+        fHo0lwUkziagLfFniyhIuYiArMTUv+fBwswCWRKzX9mBhIUFbCRmvn7GCGKzCKhKbPx4mA3E
+        5gWK923+xgaxSV5i9YYDzBMYeRYwMqxilEwtKM5Nzy02LDDKSy3XK07MLS7NS9dLzs/dxAgO
+        BS2tHYx7Vn3QO8TIxMF4iFGCg1lJhPcvk3KiEG9KYmVValF+fFFpTmrxIUZpDhYlcd4LXSfj
+        hQTSE0tSs1NTC1KLYLJMHJxSDUwBNa9qnbdc3XFEWJfna5JedbEK84rbFi9KvHoObV5lH3vx
+        nNmdPdvl9a45zqta1iK9teV7ccGNMFOntsBrrg1TXgq+v325IDR98d7n8qfeTHS2u14lsd/8
+        wr5Kg2Uca23YdXTMmnTddW/yT9v2/yGrklw4u857WZEtj5cl+ho9y3xYlPcvPuxne8Jq4YrQ
+        9Vs0Pvz8PvvLPI4jod+2VJo9dzTnMjkt9NubIctk47/AadbbWdy3ctnel5F0OuHd/ERPOq/p
+        tdeXVZtlm5lftubwXIuJ3l2ac/zumRbJVgPufJ7WGQ1zHi+OvbbBe9Hr45VPFPb0az+Kvbpg
+        wtvK60LC3MKCOnuKv9wr5RMV26rEUpyRaKjFXFScCABnL9t9dAIAAA==
+X-CMS-MailID: 20210825045853epcas1p39e688eb91dcdd8913d274e499726af3b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210825045853epcas1p39e688eb91dcdd8913d274e499726af3b
+References: <CGME20210825045853epcas1p39e688eb91dcdd8913d274e499726af3b@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/21 3:33 am, Chanwoo Lee wrote:
-> From: ChanWoo Lee <cw9316.lee@samsung.com>
-> 
-> In function mmc_exit_request, the request_queue structure(*q) is not used.
-> I remove the unnecessary code related to the request_queue structure.
-> 
-> Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
-> ---
->  drivers/mmc/core/queue.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-> index cc3261777637..b742385361e4 100644
-> --- a/drivers/mmc/core/queue.c
-> +++ b/drivers/mmc/core/queue.c
-> @@ -219,7 +219,7 @@ static int __mmc_init_request(struct mmc_queue *mq, struct request *req,
->  	return 0;
->  }
->  
-> -static void mmc_exit_request(struct request_queue *q, struct request *req)
-> +static void mmc_exit_request(struct request *req)
->  {
->  	struct mmc_queue_req *mq_rq = req_to_mmc_queue_req(req);
->  
-> @@ -236,9 +236,7 @@ static int mmc_mq_init_request(struct blk_mq_tag_set *set, struct request *req,
->  static void mmc_mq_exit_request(struct blk_mq_tag_set *set, struct request *req,
->  				unsigned int hctx_idx)
->  {
-> -	struct mmc_queue *mq = set->driver_data;
-> -
-> -	mmc_exit_request(mq->queue, req);
-> +	mmc_exit_request(req);
+My email address in exfat entry will be not available in a few days.
+Update it to my own kernel.org address.
 
-It seems this is the only caller of mmc_exit_request().  It is probably
-leftover from before the switch to blk-mq.  However we might as well get rid
-of it and just put the code directly into mmc_mq_exit_request().
+Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The same applies to mmc_mq_init_request() and __mmc_init_request(), so might
-as well tidy up those also.
-
->  }
->  
->  static blk_status_t mmc_mq_queue_rq(struct blk_mq_hw_ctx *hctx,
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3d638f19bbfb..ac2367d1114e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7002,7 +7002,7 @@ F:	include/uapi/linux/mdio.h
+ F:	include/uapi/linux/mii.h
+ 
+ EXFAT FILE SYSTEM
+-M:	Namjae Jeon <namjae.jeon@samsung.com>
++M:	Namjae Jeon <linkinjeon@kernel.org>
+ M:	Sungjong Seo <sj1557.seo@samsung.com>
+ L:	linux-fsdevel@vger.kernel.org
+ S:	Maintained
+-- 
+2.17.1
 
