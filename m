@@ -2,136 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847703F7B45
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5093F7B9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242153AbhHYRMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
+        id S233845AbhHYRfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhHYRMm (ORCPT
+        with ESMTP id S231602AbhHYRfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:12:42 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8D6C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:11:56 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id n1-20020a4ac7010000b0290262f3c22a63so22024ooq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MqpdMi6hO9sy30ttbNbhBiDZr61Z2YSjCeBA2+p4Zyg=;
-        b=PhvdOsPdUqsttKkL0Er1O0q/vt5zs9xr4tg3t8NRacZQRq8HaGmXwsyqw5SKtTD/og
-         0wdWiW6CsORl2aJEDwwrjbCFYACsL6NPYRX/SixX0lGCuQiqwusRZVYSIUjqAALxOIIu
-         Es1LXLki8lTzat1YzXJVqvB6e2sNXzfpKxtQ93oLQpC5gFtNMOtQCtbNE05A+cDX96kR
-         oPocCyYTOtgbV2BTlU7IWAsWMR8sH8iw7YRKEWOSQk+iHiChedCYf77NaiZNYw5vy0YQ
-         brDPvF8uq43xmNsxMvbpRNBzSrF96eMJBjL1cUOjZ3lq5Xe77q7pJwrgNx/nUhEZhkfT
-         MmUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MqpdMi6hO9sy30ttbNbhBiDZr61Z2YSjCeBA2+p4Zyg=;
-        b=ko/bjZtj7SA7I8A6Bl4HkcZLmTifxOws8VbwS4gcKvpLb/oMG7vkh7IbrkIJywKaOj
-         hT1lhF63DKNYFdEs7huGP5FtKf9KDBkAfZ+LozQ/YRLhtrZsel5S5QBSFNzjcw6zcwII
-         LL/enKSQKWAELjImuMt2uxz8MNGk/rpP5WQV+ACnfaLrzqDvo1aWzHmfx7srnYMM0FWl
-         dHkCLTZaA1Kmk6vzsfHW8UZcbCpAc5nXdIFfS6fwI+Gx5dW1bfFAjP8Vpz9oT5XG9zvB
-         rDQOQimMW2h0AZkDPu1NdVLu0h8gYfBj7NnXhen0sgP33OXRom6AwOoI5jtpDZZuRR8i
-         mF/Q==
-X-Gm-Message-State: AOAM533WFiZ2Spbf7dW8YxcCQFJmVL29orZ97QqvdasBR1/1rpAoh+ai
-        HV5LvNVlWUio3C7Wb5jQ4ui4WErYnSZTjzAqRQhc/g==
-X-Google-Smtp-Source: ABdhPJw/OLl5o4SwqXbUietzhznnRe+9OjRZAeOIbIOzhxBz2BRu5pQ3fbeYcd5QW+92TvcoO5/bH5JMHQhgeBAfYPo=
-X-Received: by 2002:a4a:d40a:: with SMTP id n10mr35067991oos.32.1629911515747;
- Wed, 25 Aug 2021 10:11:55 -0700 (PDT)
+        Wed, 25 Aug 2021 13:35:03 -0400
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3456C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:34:17 -0700 (PDT)
+Received: from pps.filterd (m0122331.ppops.net [127.0.0.1])
+        by mx0b-00190b01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17PF6fDr017837;
+        Wed, 25 Aug 2021 18:13:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=YXnAEFWbquKt14dSaU6kl7u8c9elGplzDvOg3WzNBxg=;
+ b=K6xFTyTEkTMv0s2G9LS9qPgLn58In6L688tTq5dAVzFvoKyrIkUMR5nKnbb4Vqu8tbmH
+ QWj+Xu905Gil2RafolO/MdXLs1ETdv74GM6abi+y3eIMgTyrS0GnMigqoPw+cFZaZhSz
+ Nh00QmX4yb1u2nUDjM7ixdtIUxu5neYvRAZrfZZI6ooP99q3tlTpMkF+ctzL2JgALsCK
+ 5VFCZNcwgPO7xbcj0MMBfjwdJVdEe6vJaz+lRHRLpMumhZ0+GWhHiRpMdU5jHTVqvw4Z
+ 1rdXjpzrOl5S0zuyvUE9jedsyT9J4MI62Cyw8DzAiJ2+7LPC78POUFcRyYfvTePm8fop /w== 
+Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19] (may be forged))
+        by mx0b-00190b01.pphosted.com with ESMTP id 3anhh8mmnj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Aug 2021 18:13:00 +0100
+Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
+        by prod-mail-ppoint2.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 17PH538P029405;
+        Wed, 25 Aug 2021 13:12:59 -0400
+Received: from prod-mail-relay10.akamai.com ([172.27.118.251])
+        by prod-mail-ppoint2.akamai.com with ESMTP id 3an3u21rka-1;
+        Wed, 25 Aug 2021 13:12:59 -0400
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay10.akamai.com (Postfix) with ESMTP id 1023647300;
+        Wed, 25 Aug 2021 17:12:58 +0000 (GMT)
+Subject: Re: [PATCH v6 01/11] moduleparam: add data member to struct
+ kernel_param
+To:     Jim Cromie <jim.cromie@gmail.com>, gregkh@linuxfoundation.org,
+        seanpaul@chromium.org, jeyu@kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+References: <20210822222009.2035788-1-jim.cromie@gmail.com>
+ <20210822222009.2035788-2-jim.cromie@gmail.com>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <c83b0814-b8e1-91f5-ba28-f9db3f363ce1@akamai.com>
+Date:   Wed, 25 Aug 2021 13:12:58 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
- <202108251911.Vwmzl4rI-lkp@intel.com> <9743e1ee-75f4-6231-427b-8c7f659fb252@gmail.com>
- <20210825125159.GU1931@kadam> <bd50c00e-1814-dc32-36cf-73cf58123201@gmail.com>
- <20210825133432.GW1931@kadam> <c982eea8-3b16-656b-dcb3-1b6e0d3e995d@gmail.com>
-In-Reply-To: <c982eea8-3b16-656b-dcb3-1b6e0d3e995d@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 25 Aug 2021 10:11:45 -0700
-Message-ID: <CAKwvOdn61==-pLs6oDUjeCD7DQvWjRx+b+04JMpN8w9kY9P-uQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel test robot <lkp@intel.com>, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, gregkh@linuxfoundation.org,
-        straube.linux@gmail.com, fmdefrancesco@gmail.com,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210822222009.2035788-2-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-25_07:2021-08-25,2021-08-25 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
+ phishscore=0 mlxscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108250101
+X-Proofpoint-GUID: d5yTm-Wha_RNPM4TBCAo1XVbzvDP6Kvc
+X-Proofpoint-ORIG-GUID: d5yTm-Wha_RNPM4TBCAo1XVbzvDP6Kvc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-08-25_07,2021-08-25_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 impostorscore=0 clxscore=1011 bulkscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108250102
+X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 184.51.33.19)
+ smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 6:44 AM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> On 8/25/21 4:34 PM, Dan Carpenter wrote:
-> > On Wed, Aug 25, 2021 at 04:02:26PM +0300, Pavel Skripkin wrote:
-> >> > This is not related to your patch.  Ignore it.
-> >> >
-> >> >
-> >> > > > vim +2022 drivers/staging/r8188eu/hal/usb_halinit.c
-> >> > > >
-> >> > >
-> >> > > >    2020                case HW_VAR_BCN_VALID:
-> >> > > >    2021                        /* BCN_VALID, BIT(16) of REG_TDECTRL = BIT(0) of REG_TDECTRL+2, write 1 to clear, Clear by sw */
-> >> > > > > 2022                         u8 tmp;
-> >> > >
-> >> > > Hm, I don't know anything about ARM compilers, so should I wrap this code
-> >> > > block with {}?
-> >> >
-> >> > Yep.
-> >> >
-> >> > >
-> >> > > My local gcc 11.1.1 (x86_64) does not produce any warnings/errors
-> >> > >
-> >> >
-> >> > You should figure out whats up with that because it shouldn't compile
-> >> > with the gcc options that the kernel uses.
-> >> >
-> >>
-> >> AFAIK, at least 2 guys except me in this CC list compiled my series without
-> >> errors/warnings. Maybe, staging tree is missing some Makefile updates?
-> >>
-> >>
-> >> I'll resend series this evening anyway, but this is strange....
-> >
-> > Hm...  In my version of GCC the error is:
-> >
-> > drivers/staging/r8188eu/hal/usb_halinit.c:1870:3: error: a label can only be part of a statement and a declaration is not a statement
-> >
-> > That's a different error from what I was expecting.  It's caused by
-> > having a declaration directly after a case statement.  The warning that
-> > I was expecting was from -Wdeclaration-after-statement and it looks
-> > like this:
-> >
-> > warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
-> >
-> > You really should try investigate why this compiles for you because
-> > something is going wrong.  It should not build without a warning.
-> >
->
-> Looks like it's bug in gcc 11.1.1. I've rebuilt this module with gcc 10
-> (gcc-10 (SUSE Linux) 10.3.1 20210707 [revision
-> 048117e16c77f82598fca9af585500572d46ad73]) and build fails with error
-> described above
->
->
-> My default gcc is
->
-> gcc (SUSE Linux) 11.1.1 20210721 [revision
-> 076930b9690ac3564638636f6b13bbb6bc608aea]
->
->
-> Any idea? :)
 
-The original report said the build was with clang-14, which is near
-top of tree and unreleased. It's possible that that build had a bug
-that hopefully was reverted.
 
--- 
+On 8/22/21 6:19 PM, Jim Cromie wrote:
+> Add a const void* data member to the struct, to allow attaching
+> private data that will be used soon by a setter method (via kp->data)
+> to perform more elaborate actions.
+> 
+> To attach the data at compile time, add new macros:
+> 
+> module_param_cb_data() derives from module_param_cb(), adding data
+> param, and latter is redefined to use former.
+> 
+> It calls __module_param_call_with_data(), which accepts new data param
+> and inits .data with it. Re-define __module_param_call() to use it.
+> 
+> Use of this new data member will be rare, it might be worth redoing
+> this as a separate/sub-type to de-bloat the base case.
+> 
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+> v6:
+> . const void* data - <emil.l.velikov@gmail.com>
+> . better macro names s/_cbd/_cb_data/, s/_wdata/_with_data/
+> . more const, no cast - Willy
+> ---
+>  include/linux/moduleparam.h | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
+> index eed280fae433..b8871e514de5 100644
+> --- a/include/linux/moduleparam.h
+> +++ b/include/linux/moduleparam.h
+> @@ -78,6 +78,7 @@ struct kernel_param {
+>  		const struct kparam_string *str;
+>  		const struct kparam_array *arr;
+>  	};
+> +	const void *data;
+>  };
+>  
+
+
+I wonder if kp->arg can just be used for all this and avoid this patch entirely?
+
+define something like:
+
+struct dd_bitmap_param {
+	int bitmap;
+	struct dyndbg_bitdesc *bitmap_arr;
+};
+
+and then just pass a pointer to it as 'arg' for module_param_cb? And then in
+the get/set callbacks you can use kp->bitmap and kp->bitmap_arr.
+
 Thanks,
-~Nick Desaulniers
+
+-Jason
+
+>  extern const struct kernel_param __start___param[], __stop___param[];
+> @@ -175,6 +176,9 @@ struct kparam_array
+>  #define module_param_cb(name, ops, arg, perm)				      \
+>  	__module_param_call(MODULE_PARAM_PREFIX, name, ops, arg, perm, -1, 0)
+>  
+> +#define module_param_cb_data(name, ops, arg, perm, data)			\
+> +	__module_param_call_with_data(MODULE_PARAM_PREFIX, name, ops, arg, perm, -1, 0, data)
+> +
+>  #define module_param_cb_unsafe(name, ops, arg, perm)			      \
+>  	__module_param_call(MODULE_PARAM_PREFIX, name, ops, arg, perm, -1,    \
+>  			    KERNEL_PARAM_FL_UNSAFE)
+> @@ -284,14 +288,17 @@ struct kparam_array
+>  
+>  /* This is the fundamental function for registering boot/module
+>     parameters. */
+> -#define __module_param_call(prefix, name, ops, arg, perm, level, flags)	\
+> +#define __module_param_call(prefix, name, ops, arg, perm, level, flags) \
+> +	__module_param_call_with_data(prefix, name, ops, arg, perm, level, flags, NULL)
+> +
+> +#define __module_param_call_with_data(prefix, name, ops, arg, perm, level, flags, data) \
+>  	/* Default value instead of permissions? */			\
+>  	static const char __param_str_##name[] = prefix #name;		\
+>  	static struct kernel_param __moduleparam_const __param_##name	\
+>  	__used __section("__param")					\
+>  	__aligned(__alignof__(struct kernel_param))			\
+>  	= { __param_str_##name, THIS_MODULE, ops,			\
+> -	    VERIFY_OCTAL_PERMISSIONS(perm), level, flags, { arg } }
+> +	    VERIFY_OCTAL_PERMISSIONS(perm), level, flags, { arg }, data }
+>  
+>  /* Obsolete - use module_param_cb() */
+>  #define module_param_call(name, _set, _get, arg, perm)			\
+> 
