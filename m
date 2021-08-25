@@ -2,486 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B706C3F793A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633E43F7947
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240526AbhHYPlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
+        id S240791AbhHYPmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 11:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbhHYPls (ORCPT
+        with ESMTP id S231995AbhHYPmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:41:48 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09869C061757;
-        Wed, 25 Aug 2021 08:41:03 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so4187134pje.0;
-        Wed, 25 Aug 2021 08:41:03 -0700 (PDT)
+        Wed, 25 Aug 2021 11:42:40 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A160DC061757;
+        Wed, 25 Aug 2021 08:41:54 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id y34so53838911lfa.8;
+        Wed, 25 Aug 2021 08:41:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E0acZteVNB6bdCtIp/5XbiopasQnADo+xEQHQFmWG/c=;
-        b=S1RZH45kmE8OON74359skFQWMNEwZevH5vagQqDm95ydeqDjHPh0sXy/A10mXBVJxu
-         1XgT9ZYN2u+quDla+N+i8sKm1HFVFNyxKmx1HD05aOkM+xP40uOxs4Ci0wwLGZHyS4k2
-         LM1PD9Igf/t3rYAY66/ddjEZMrtI/Zlqakdg5ZRwYjTrVw/aGiw8uaghgj8HLYCERUWs
-         YfZKcjnfPo7MNwlmSjoodFhD/8jJGlBVsKmvrsSjnvF+jOd8oFtC+3P11LiyVF0NU8GK
-         zLAc0K0GB2Yl/2PFh3BNY4mbf6hE3Y49+wrs1Abylh80D21qc5vHFBZS9edaWD7wxrRQ
-         qtvw==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Jh8WQ9yiN9zpRyuwMdWH53fKRiHl78imM33rFUTmvQc=;
+        b=VXTFuvzR5bLNZdHnuy92VMQKovkT2EzOUb9OcN3psg2tkN1i5/AsTKc7AKSGtEXF85
+         Kv3LG6+Tn57EqgqQdIFu7fcyD00uYC3VVRasNFaW2hIC3i/hNcdl5MBDtJB3kzhxdCet
+         wVwD4YkAEaQHK7uISBdatlDIYJE880IZdnG6G02/xPA2tk5n2zH3MPPJXANijDrbhcYx
+         17tod+tgRF+2C8YFqB6X18apDZJm9NiAVIa6wfWKXbvUt4khhVeaLLmRBxhXOo+nP5HW
+         B7+AKTu9GxrwBwjGazKwKUpgLJM7aheacozAFUxo3uu0zy3pZvy+b3kjVm+63moLaebu
+         VFDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=E0acZteVNB6bdCtIp/5XbiopasQnADo+xEQHQFmWG/c=;
-        b=qnFiMT63oKPOetjZtE0efcEc7TchhyF9JSzOVoErmpzVix2Ta7yq2TbGrSzH/FnZon
-         QUBwgvEA7YLo8vVxxQ9JBUzCyfsgsD8b08r1O422Frw8nh8DthHuxQ4qSdBz9owwleq1
-         NO+eLqOodKFxnIuLkt11sSrk16ge92dM9rjark9Yzi+g+oEMkS0326651x6D2+Wnhdcy
-         m0rCPUC/w0dHsvAeWga8nYXOIn5SC98ULV33/rgXo0CLp8KU2bH4u60lJs9gcU9qOarE
-         8lmKsbNUQct8k82SHjjOGkcYrcFNXni8HpSF638VyMNiK57hT3ISghdSpb6nQQ407T+q
-         k6xg==
-X-Gm-Message-State: AOAM532W3/GwV974h0mG0Gzbt9U0/SmWhw/Zu+dbFreUTZ7QCgsspJ5x
-        jA9AbDForLx4CCkYIjeoKQM=
-X-Google-Smtp-Source: ABdhPJzE+Hji5DahEjxMdpraFODw3NxPPd96N9e/YbCLcTiRGJBEuWyCAZhRsM2Xqz8lVeGrTpipfg==
-X-Received: by 2002:a17:90a:8b8d:: with SMTP id z13mr11242309pjn.1.1629906062474;
-        Wed, 25 Aug 2021 08:41:02 -0700 (PDT)
-Received: from localhost.localdomain ([221.225.34.48])
-        by smtp.googlemail.com with ESMTPSA id y13sm6038209pjr.50.2021.08.25.08.40.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 08:41:02 -0700 (PDT)
-From:   Zhongya Yan <yan2228598786@gmail.com>
-To:     kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        edumazet@google.com, rostedt@goodmis.org, mingo@redhat.com,
-        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        hengqi.chen@gmail.com, yhs@fb.com,
-        Zhongya Yan <yan2228598786@gmail.com>
-Subject: [PATCH] net: tcp_drop adds `reason` parameter for tracing v2
-Date:   Wed, 25 Aug 2021 08:40:43 -0700
-Message-Id: <20210825154043.247764-1-yan2228598786@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=Jh8WQ9yiN9zpRyuwMdWH53fKRiHl78imM33rFUTmvQc=;
+        b=oO2e8BxBoQ3IZxeiTU8K2wUnky3tUt0zWHOKCh7yma82NUNDzMEyfc454nNDyxBceu
+         gW6XkPpNBFTwAFQcCkU/YF5i3j8yKky0Nukp+tw0xMRuQFUfYe1RLv7vu/jCLUzPdKzN
+         BmUDlM9p+v4XsRGfjruDwBHso8fY6yJ5418LgjXiI4LvgK/cjYwCEtTLXdbXBDpNxaug
+         mILqfgeJJvsc+VvyaT+nibXvoToW65JOklYxL9BN5PAVovbZRuwgxlvM8gmf4yBml9RD
+         a4agahU1xr3WqXB2VfPzUzslip+I/m8Eb0Par8FymCFa4AR29TPtn0iKCij2gg05cIND
+         4pOg==
+X-Gm-Message-State: AOAM531gvhQlN+wiNNPgAvNkeQdgsEY9SHHyY6wIV5RxJMYIIcR7iJox
+        ocoWtg6NNR8vunVy+uUA1YncWtvqvug=
+X-Google-Smtp-Source: ABdhPJynPPjKhDfBdRrXu4deYFfQEOhUbJJoP2KAxKZEnwK6Q+6Z6UDmYAY47Ok5OqvkDNllzN7VAQ==
+X-Received: by 2002:ac2:592c:: with SMTP id v12mr27667572lfi.249.1629906112733;
+        Wed, 25 Aug 2021 08:41:52 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-17-251.dynamic.spd-mgts.ru. [94.29.17.251])
+        by smtp.googlemail.com with ESMTPSA id j14sm33529lfe.203.2021.08.25.08.41.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 08:41:52 -0700 (PDT)
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
+ <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+ <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
+ <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
+ <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
+ <CAPDyKFpg8ixT4AEjzVLTwQR7Nn9CctjnLCDS5GwkOrAERquyxw@mail.gmail.com>
+ <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
+ <b887de8c-a40b-a62e-8abf-698e67cdb70c@gmail.com>
+Message-ID: <ed70e422-e0e9-8c2a-7ce6-e39cb6fd8108@gmail.com>
+Date:   Wed, 25 Aug 2021 18:41:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <b887de8c-a40b-a62e-8abf-698e67cdb70c@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In this version, fix and modify some code issues. Changed the reason for `tcp_drop` from an enumeration to a mask and enumeration usage in the trace output.
-By shifting `__LINE__` left by 6 bits to accommodate the `tcp_drop` call method source, 6 bits are enough to use. This allows for a more granular identification of the reason for calling `tcp_drop` without conflicts and essentially without overflow.
-Example.
-```
-enum {
-TCP_OFO_QUEUE = 1
-}
-reason = __LINE__ << 6
-reason |= TCP_OFO_QUEUE
-```
-Suggestions from Jakub Kicinski, Eric Dumazet, much appreciated.
+22.08.2021 21:35, Dmitry Osipenko пишет:
+> 20.08.2021 08:18, Viresh Kumar пишет:
+>> On 19-08-21, 16:55, Ulf Hansson wrote:
+>>> Right, that sounds reasonable.
+>>>
+>>> We already have pm_genpd_opp_to_performance_state() which translates
+>>> an OPP to a performance state. This function invokes the
+>>> ->opp_to_performance_state() for a genpd. Maybe we need to allow a
+>>> genpd to not have ->opp_to_performance_state() callback assigned
+>>> though, but continue up in the hierarchy to see if the parent has the
+>>> callback assigned, to make this work for Tegra?
+>>>
+>>> Perhaps we should add an API dev_pm_genpd_opp_to_performance_state(),
+>>> allowing us to pass the device instead of the genpd. But that's a
+>>> minor thing.
+>>
+>> I am not concerned a lot about how it gets implemented, and am not
+>> sure as well, as I haven't looked into these details since sometime.
+>> Any reasonable thing will be accepted, as simple as that.
+>>
+>>> Finally, the precondition to use the above, is to first get a handle
+>>> to an OPP table. This is where I am struggling to find a generic
+>>> solution, because I guess that would be platform or even consumer
+>>> driver specific for how to do this. And at what point should we do
+>>> this?
+> 
+> GENPD core can't get OPP table handle, setting up OPP table is a platform/driver specific operation.
+> 
+>> Hmm, I am not very clear with the whole picture at this point of time.
+>>
+>> Dmitry, can you try to frame a sequence of events/calls/etc that will
+>> define what kind of devices we are looking at here, and how this can
+>> be made to work ?
+> 
+> Could you please clarify what do you mean by a "kind of devices"?
+> 
+> I made hack based on the recent discussions and it partially works. Getting clock rate involves resuming device which backs the clock and it also may use GENPD, so lockings are becoming complicated. It doesn't work at all if device uses multiple domains because virtual domain device doesn't have OPP table.
+> 
+> Setting up the performance state from a consumer driver is a cleaner variant so far. 
 
-Modified the expression of the enumeration, and the use of the output under the trace definition.
-Suggestion from Steven Rostedt. Thanks.
+Thinking a bit more about this, I got a nicer variant which actually works in all cases for Tegra.
 
-Signed-off-by: Zhongya Yan <yan2228598786@gmail.com>
----
- include/net/tcp.h          |  18 +++---
- include/trace/events/tcp.h |  39 +++++++++++--
- net/ipv4/tcp_input.c       | 114 ++++++++++++++++++++++---------------
- 3 files changed, 112 insertions(+), 59 deletions(-)
+Viresh / Ulf, what do you think about this:
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index dd8cd8d6f2f1..75614a252675 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -256,15 +256,19 @@ extern unsigned long tcp_memory_pressure;
- 
- enum tcp_drop_reason {
- 	TCP_OFO_QUEUE = 1,
--	TCP_DATA_QUEUE_OFO = 2,
--	TCP_DATA_QUEUE = 3,
--	TCP_PRUNE_OFO_QUEUE = 4,
--	TCP_VALIDATE_INCOMING = 5,
--	TCP_RCV_ESTABLISHED = 6,
--	TCP_RCV_SYNSENT_STATE_PROCESS = 7,
--	TCP_RCV_STATE_PROCESS = 8
-+	TCP_DATA_QUEUE_OFO,
-+	TCP_DATA_QUEUE,
-+	TCP_PRUNE_OFO_QUEUE,
-+	TCP_VALIDATE_INCOMING,
-+	TCP_RCV_ESTABLISHED,
-+	TCP_RCV_SYNSENT_STATE_PROCESS,
-+	TCP_RCV_STATE_PROCESS
- };
- 
-+#define TCP_DROP_MASK(line, code)	((line << 6) | code) /* reason for masking */
-+#define TCP_DROP_LINE(mask)		(mask >> 6)	/* Cause decode to get unique identifier */
-+#define TCP_DROP_CODE(mask)		(mask&0x3F) /* Cause decode get function code */
-+
- /* optimized version of sk_under_memory_pressure() for TCP sockets */
- static inline bool tcp_under_memory_pressure(const struct sock *sk)
- {
-diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-index a0d3d31eb591..699539702ea9 100644
---- a/include/trace/events/tcp.h
-+++ b/include/trace/events/tcp.h
-@@ -371,8 +371,26 @@ DEFINE_EVENT(tcp_event_skb, tcp_bad_csum,
- 	TP_ARGS(skb)
- );
- 
-+// from author @{Steven Rostedt}
-+#define TCP_DROP_REASON							\
-+	REASON_STRING(TCP_OFO_QUEUE,		ofo_queue)			\
-+	REASON_STRING(TCP_DATA_QUEUE_OFO,		data_queue_ofo)			\
-+	REASON_STRING(TCP_DATA_QUEUE,		data_queue)			\
-+	REASON_STRING(TCP_PRUNE_OFO_QUEUE,		prune_ofo_queue)		\
-+	REASON_STRING(TCP_VALIDATE_INCOMING,	validate_incoming)		\
-+	REASON_STRING(TCP_RCV_ESTABLISHED,		rcv_established)		\
-+	REASON_STRING(TCP_RCV_SYNSENT_STATE_PROCESS, rcv_synsent_state_process)	\
-+	REASON_STRINGe(TCP_RCV_STATE_PROCESS,	rcv_state_proces)
-+
-+#undef REASON_STRING
-+#undef REASON_STRINGe
-+
-+#define REASON_STRING(code, name) {code , #name},
-+#define REASON_STRINGe(code, name) {code, #name}
-+
-+
- TRACE_EVENT(tcp_drop,
--		TP_PROTO(struct sock *sk, struct sk_buff *skb, enum tcp_drop_reason reason),
-+		TP_PROTO(struct sock *sk, struct sk_buff *skb, __u32 reason),
- 
- 		TP_ARGS(sk, skb, reason),
- 
-@@ -392,6 +410,8 @@ TRACE_EVENT(tcp_drop,
- 			__field(__u32, rcv_wnd)
- 			__field(__u64, sock_cookie)
- 			__field(__u32, reason)
-+			__field(__u32, reason_code)
-+			__field(__u32, reason_line)
- 			),
- 
- 		TP_fast_assign(
-@@ -415,16 +435,23 @@ TRACE_EVENT(tcp_drop,
- 				__entry->snd_wnd = tp->snd_wnd;
- 				__entry->rcv_wnd = tp->rcv_wnd;
- 				__entry->ssthresh = tcp_current_ssthresh(sk);
--		__entry->srtt = tp->srtt_us >> 3;
--		__entry->sock_cookie = sock_gen_cookie(sk);
--		__entry->reason = reason;
-+				__entry->srtt = tp->srtt_us >> 3;
-+				__entry->sock_cookie = sock_gen_cookie(sk);
-+				__entry->reason = reason;
-+				__entry->reason_code = TCP_DROP_CODE(reason);
-+				__entry->reason_line = TCP_DROP_LINE(reason);
- 		),
- 
--		TP_printk("src=%pISpc dest=%pISpc mark=%#x data_len=%d snd_nxt=%#x snd_una=%#x snd_cwnd=%u ssthresh=%u snd_wnd=%u srtt=%u rcv_wnd=%u sock_cookie=%llx reason=%d",
-+		TP_printk("src=%pISpc dest=%pISpc mark=%#x data_len=%d snd_nxt=%#x snd_una=%#x \
-+				snd_cwnd=%u ssthresh=%u snd_wnd=%u srtt=%u rcv_wnd=%u \
-+				sock_cookie=%llx reason=%d reason_type=%s reason_line=%d",
- 				__entry->saddr, __entry->daddr, __entry->mark,
- 				__entry->data_len, __entry->snd_nxt, __entry->snd_una,
- 				__entry->snd_cwnd, __entry->ssthresh, __entry->snd_wnd,
--				__entry->srtt, __entry->rcv_wnd, __entry->sock_cookie, __entry->reason)
-+				__entry->srtt, __entry->rcv_wnd, __entry->sock_cookie,
-+				__entry->reason,
-+				__print_symbolic(__entry->reason_code, TCP_DROP_REASON),
-+				__entry->reason_line)
- );
- 
- #endif /* _TRACE_TCP_H */
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 83e31661876b..7dfcc4253c35 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -4643,20 +4643,14 @@ static bool tcp_ooo_try_coalesce(struct sock *sk,
- 	return res;
- }
- 
--static void __tcp_drop(struct sock *sk,
--		   struct sk_buff *skb)
--{
--	sk_drops_add(sk, skb);
--	__kfree_skb(skb);
--}
- 
--/* tcp_drop whit reason,for epbf trace
-+/* tcp_drop with reason
-  */
- static void tcp_drop(struct sock *sk, struct sk_buff *skb,
--		 enum tcp_drop_reason reason)
-+		 __u32 reason)
- {
- 	trace_tcp_drop(sk, skb, reason);
--	__tcp_drop(sk, skb);
-+	__kfree_skb(skb);
- }
- 
- /* This one checks to see if we can put data from the
-@@ -5621,7 +5615,8 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
- 						  LINUX_MIB_TCPACKSKIPPEDPAWS,
- 						  &tp->last_oow_ack_time))
- 				tcp_send_dupack(sk, skb);
--			goto discard;
-+			tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_VALIDATE_INCOMING));
-+			goto end;
- 		}
- 		/* Reset is accepted even if it did not pass PAWS. */
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index 3a13a942d012..814b0f7a1909 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -2700,15 +2700,28 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+ 		goto err;
+ 	} else if (pstate > 0) {
+ 		ret = dev_pm_genpd_set_performance_state(dev, pstate);
+-		if (ret)
++		if (ret) {
++			dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
++				pd->name, ret);
+ 			goto err;
++		}
+ 		dev_gpd_data(dev)->default_pstate = pstate;
  	}
-@@ -5644,7 +5639,8 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
- 		} else if (tcp_reset_check(sk, skb)) {
- 			tcp_reset(sk, skb);
- 		}
--		goto discard;
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_VALIDATE_INCOMING));
-+		goto end;
- 	}
- 
- 	/* Step 2: check RST bit */
-@@ -5689,7 +5685,8 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
- 				tcp_fastopen_active_disable(sk);
- 			tcp_send_challenge_ack(sk, skb);
- 		}
--		goto discard;
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_VALIDATE_INCOMING));
-+		goto end;
- 	}
- 
- 	/* step 3: check security and precedence [ignored] */
-@@ -5703,15 +5700,15 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
- 			TCP_INC_STATS(sock_net(sk), TCP_MIB_INERRS);
- 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPSYNCHALLENGE);
- 		tcp_send_challenge_ack(sk, skb);
--		goto discard;
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_VALIDATE_INCOMING));
-+		goto end;
- 	}
- 
- 	bpf_skops_parse_hdr(sk, skb);
- 
- 	return true;
- 
--discard:
--	tcp_drop(sk, skb, TCP_VALIDATE_INCOMING);
-+end:
- 	return false;
- }
- 
-@@ -5829,7 +5826,8 @@ void tcp_rcv_established(struct sock *sk, struct sk_buff *skb)
- 				return;
- 			} else { /* Header too small */
- 				TCP_INC_STATS(sock_net(sk), TCP_MIB_INERRS);
--				goto discard;
-+				tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_ESTABLISHED));
-+				goto end;
- 			}
- 		} else {
- 			int eaten = 0;
-@@ -5883,8 +5881,10 @@ void tcp_rcv_established(struct sock *sk, struct sk_buff *skb)
- 	if (len < (th->doff << 2) || tcp_checksum_complete(skb))
- 		goto csum_error;
- 
--	if (!th->ack && !th->rst && !th->syn)
--		goto discard;
-+	if (!th->ack && !th->rst && !th->syn) {
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_ESTABLISHED));
-+		goto end;
++
++	if (pd->get_performance_state) {
++		ret = pd->get_performance_state(pd, base_dev);
++		if (ret < 0) {
++			dev_err(dev, "failed to get performance state for power-domain %s: %d\n",
++				pd->name, ret);
++			goto err;
++		}
++
++		dev_gpd_data(dev)->rpm_pstate = ret;
 +	}
++
+ 	return 1;
  
- 	/*
- 	 *	Standard slow path.
-@@ -5894,8 +5894,10 @@ void tcp_rcv_established(struct sock *sk, struct sk_buff *skb)
- 		return;
- 
- step5:
--	if (tcp_ack(sk, skb, FLAG_SLOWPATH | FLAG_UPDATE_TS_RECENT) < 0)
--		goto discard;
-+	if (tcp_ack(sk, skb, FLAG_SLOWPATH | FLAG_UPDATE_TS_RECENT) < 0) {
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_ESTABLISHED));
-+		goto end;
-+	}
- 
- 	tcp_rcv_rtt_measure_ts(sk, skb);
- 
-@@ -5913,9 +5915,9 @@ void tcp_rcv_established(struct sock *sk, struct sk_buff *skb)
- 	trace_tcp_bad_csum(skb);
- 	TCP_INC_STATS(sock_net(sk), TCP_MIB_CSUMERRORS);
- 	TCP_INC_STATS(sock_net(sk), TCP_MIB_INERRS);
--
--discard:
--	tcp_drop(sk, skb, TCP_RCV_ESTABLISHED);
-+	tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_ESTABLISHED));
-+end:
-+	return;
+ err:
+-	dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
+-		pd->name, ret);
+ 	genpd_remove_device(pd, dev);
+ 	return ret;
  }
- EXPORT_SYMBOL(tcp_rcv_established);
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 2f1da33c2cd5..5f045030879b 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -2136,7 +2136,7 @@ struct opp_table *dev_pm_opp_set_clkname(struct device *dev, const char *name)
+ 	}
  
-@@ -6115,7 +6117,8 @@ static int tcp_rcv_synsent_state_process(struct sock *sk, struct sk_buff *skb,
+ 	/* clk shouldn't be initialized at this point */
+-	if (WARN_ON(opp_table->clk)) {
++	if (WARN_ON(!IS_ERR_OR_NULL(opp_table->clk))) {
+ 		ret = -EBUSY;
+ 		goto err;
+ 	}
+@@ -2967,3 +2967,33 @@ int dev_pm_opp_sync(struct device *dev)
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_opp_sync);
++
++/**
++ * dev_pm_opp_from_clk_rate() - Get OPP from current clock rate
++ * @dev:	device for which we do this operation
++ *
++ * Get OPP which corresponds to the current clock rate of a device.
++ *
++ * Return: pointer to 'struct dev_pm_opp' on success and errorno otherwise.
++ */
++struct dev_pm_opp *dev_pm_opp_from_clk_rate(struct device *dev)
++{
++	struct dev_pm_opp *opp = ERR_PTR(-ENODEV);
++	struct opp_table *opp_table;
++	unsigned long freq;
++
++	opp_table = _find_opp_table(dev);
++	if (IS_ERR(opp_table))
++		return ERR_CAST(opp_table);
++
++	if (!IS_ERR(opp_table->clk)) {
++		freq = clk_get_rate(opp_table->clk);
++		opp = _find_freq_ceil(opp_table, &freq);
++	}
++
++	/* Drop reference taken by _find_opp_table() */
++	dev_pm_opp_put_opp_table(opp_table);
++
++	return opp;
++}
++EXPORT_SYMBOL_GPL(dev_pm_opp_from_clk_rate);
+diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
+index 7c9bc93147f1..fc863d84f8d5 100644
+--- a/drivers/soc/tegra/pmc.c
++++ b/drivers/soc/tegra/pmc.c
+@@ -506,6 +506,96 @@ static void tegra_pmc_scratch_writel(struct tegra_pmc *pmc, u32 value,
+ 		writel(value, pmc->scratch + offset);
+ }
  
- 		if (th->rst) {
- 			tcp_reset(sk, skb);
--			goto discard;
-+			tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_SYNSENT_STATE_PROCESS));
-+			goto end;
- 		}
++static const char * const tegra_pd_no_perf_compats[] = {
++	"nvidia,tegra20-sclk",
++	"nvidia,tegra30-sclk",
++	"nvidia,tegra30-pllc",
++	"nvidia,tegra30-plle",
++	"nvidia,tegra30-pllm",
++	"nvidia,tegra20-dc",
++	"nvidia,tegra30-dc",
++	"nvidia,tegra20-emc",
++	"nvidia,tegra30-emc",
++	NULL,
++};
++
++static int tegra_pmc_pd_get_performance_state(struct generic_pm_domain *genpd,
++					      struct device *dev)
++{
++	struct opp_table *hw_opp_table, *clk_opp_table;
++	struct dev_pm_opp *opp;
++	u32 hw_version;
++	int ret;
++
++	/*
++	 * Tegra114+ SocS don't support OPP yet.  But if they will get OPP
++	 * support, then we want to skip OPP for older kernels to preserve
++	 * compatibility of newer DTBs with older kernels.
++	 */
++	if (!pmc->soc->supports_core_domain)
++		return 0;
++
++	/*
++	 * The EMC devices are a special case because we have a protection
++	 * from non-EMC drivers getting clock handle before EMC driver is
++	 * fully initialized.  The goal of the protection is to prevent
++	 * devfreq driver from getting failures if it will try to change
++	 * EMC clock rate until clock is fully initialized.  The EMC drivers
++	 * will initialize the performance state by themselves.
++	 *
++	 * Display controller also is a special case because only controller
++	 * driver could get the clock rate based on configuration of internal
++	 * divider.
++	 *
++	 * Clock driver uses its own state syncing.
++	 */
++	if (of_device_compatible_match(dev->of_node, tegra_pd_no_perf_compats))
++		return 0;
++
++	if (of_machine_is_compatible("nvidia,tegra20"))
++		hw_version = BIT(tegra_sku_info.soc_process_id);
++	else
++		hw_version = BIT(tegra_sku_info.soc_speedo_id);
++
++	hw_opp_table = dev_pm_opp_set_supported_hw(dev, &hw_version, 1);
++	if (IS_ERR(hw_opp_table)){
++		dev_err(dev, "failed to set OPP supported HW: %pe\n",
++			hw_opp_table);
++		return PTR_ERR(hw_opp_table);
++	}
++
++	clk_opp_table = dev_pm_opp_set_clkname(dev, NULL);
++	if (IS_ERR(clk_opp_table)){
++		dev_err(dev, "failed to set OPP clk: %pe\n", clk_opp_table);
++		ret = PTR_ERR(clk_opp_table);
++		goto put_hw;
++	}
++
++	ret = devm_pm_opp_of_add_table(dev);
++	if (ret) {
++		dev_err(dev, "failed to add OPP table: %d\n", ret);
++		goto put_clk;
++	}
++
++	opp = dev_pm_opp_from_clk_rate(dev);
++	if (IS_ERR(opp)) {
++		dev_err(&genpd->dev, "failed to get current OPP for %s: %pe\n",
++			dev_name(dev), opp);
++		ret = PTR_ERR(opp);
++	} else {
++		ret = dev_pm_opp_get_required_pstate(opp, 0);
++		dev_pm_opp_put(opp);
++	}
++
++	dev_pm_opp_of_remove_table(dev);
++put_clk:
++	dev_pm_opp_put_clkname(clk_opp_table);
++put_hw:
++	dev_pm_opp_put_supported_hw(hw_opp_table);
++
++	return ret;
++}
++
+ /*
+  * TODO Figure out a way to call this with the struct tegra_pmc * passed in.
+  * This currently doesn't work because readx_poll_timeout() can only operate
+@@ -1238,6 +1328,7 @@ static int tegra_powergate_add(struct tegra_pmc *pmc, struct device_node *np)
  
- 		/* rfc793:
-@@ -6204,9 +6207,9 @@ static int tcp_rcv_synsent_state_process(struct sock *sk, struct sk_buff *skb,
- 			tcp_enter_quickack_mode(sk, TCP_MAX_QUICKACKS);
- 			inet_csk_reset_xmit_timer(sk, ICSK_TIME_DACK,
- 						  TCP_DELACK_MAX, TCP_RTO_MAX);
-+			tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_SYNSENT_STATE_PROCESS));
+ 	pg->id = id;
+ 	pg->genpd.name = np->name;
++	pg->genpd.get_performance_state = tegra_pmc_pd_get_performance_state;
+ 	pg->genpd.power_off = tegra_genpd_power_off;
+ 	pg->genpd.power_on = tegra_genpd_power_on;
+ 	pg->pmc = pmc;
+@@ -1354,6 +1445,7 @@ static int tegra_pmc_core_pd_add(struct tegra_pmc *pmc, struct device_node *np)
+ 		return -ENOMEM;
  
--discard:
--			tcp_drop(sk, skb, TCP_RCV_SYNSENT_STATE_PROCESS);
-+end:
- 			return 0;
- 		} else {
- 			tcp_send_ack(sk);
-@@ -6279,7 +6282,8 @@ static int tcp_rcv_synsent_state_process(struct sock *sk, struct sk_buff *skb,
- 		 */
- 		return -1;
+ 	genpd->name = "core";
++	genpd->get_performance_state = tegra_pmc_pd_get_performance_state;
+ 	genpd->set_performance_state = tegra_pmc_core_pd_set_performance_state;
+ 	genpd->opp_to_performance_state = tegra_pmc_core_pd_opp_to_performance_state;
+ 
+diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+index 67017c9390c8..abe33be9828f 100644
+--- a/include/linux/pm_domain.h
++++ b/include/linux/pm_domain.h
+@@ -133,6 +133,8 @@ struct generic_pm_domain {
+ 						 struct dev_pm_opp *opp);
+ 	int (*set_performance_state)(struct generic_pm_domain *genpd,
+ 				     unsigned int state);
++	int (*get_performance_state)(struct generic_pm_domain *genpd,
++				     struct device *dev);
+ 	struct gpd_dev_ops dev_ops;
+ 	s64 max_off_time_ns;	/* Maximum allowed "suspended" time. */
+ 	ktime_t next_wakeup;	/* Maintained by the domain governor */
+diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+index 686122b59935..e7fd0dd493ca 100644
+--- a/include/linux/pm_opp.h
++++ b/include/linux/pm_opp.h
+@@ -169,6 +169,7 @@ void dev_pm_opp_remove_table(struct device *dev);
+ void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask);
+ int dev_pm_opp_sync_regulators(struct device *dev);
+ int dev_pm_opp_sync(struct device *dev);
++struct dev_pm_opp *dev_pm_opp_from_clk_rate(struct device *dev);
  #else
--		goto discard;
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_SYNSENT_STATE_PROCESS));
-+		goto end;
- #endif
- 	}
- 	/* "fifth, if neither of the SYN or RST bits is set then
-@@ -6289,7 +6293,8 @@ static int tcp_rcv_synsent_state_process(struct sock *sk, struct sk_buff *skb,
- discard_and_undo:
- 	tcp_clear_options(&tp->rx_opt);
- 	tp->rx_opt.mss_clamp = saved_clamp;
--	goto discard;
-+	tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_SYNSENT_STATE_PROCESS));
-+	goto end;
- 
- reset_and_undo:
- 	tcp_clear_options(&tp->rx_opt);
-@@ -6347,18 +6352,23 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 
- 	switch (sk->sk_state) {
- 	case TCP_CLOSE:
--		goto discard;
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+		goto end;
- 
- 	case TCP_LISTEN:
- 		if (th->ack)
- 			return 1;
- 
--		if (th->rst)
--			goto discard;
-+		if (th->rst) {
-+			tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+			goto end;
-+		}
- 
- 		if (th->syn) {
--			if (th->fin)
--				goto discard;
-+			if (th->fin) {
-+				tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+				goto end;
-+			}
- 			/* It is possible that we process SYN packets from backlog,
- 			 * so we need to make sure to disable BH and RCU right there.
- 			 */
-@@ -6373,7 +6383,8 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 			consume_skb(skb);
- 			return 0;
- 		}
--		goto discard;
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+		goto end;
- 
- 	case TCP_SYN_SENT:
- 		tp->rx_opt.saw_tstamp = 0;
-@@ -6399,12 +6410,16 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 		WARN_ON_ONCE(sk->sk_state != TCP_SYN_RECV &&
- 		    sk->sk_state != TCP_FIN_WAIT1);
- 
--		if (!tcp_check_req(sk, skb, req, true, &req_stolen))
--			goto discard;
-+		if (!tcp_check_req(sk, skb, req, true, &req_stolen)) {
-+			tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+			goto end;
-+		}
- 	}
- 
--	if (!th->ack && !th->rst && !th->syn)
--		goto discard;
-+	if (!th->ack && !th->rst && !th->syn) {
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+		goto end;
-+	}
- 
- 	if (!tcp_validate_incoming(sk, skb, th, 0))
- 		return 0;
-@@ -6418,7 +6433,8 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 		if (sk->sk_state == TCP_SYN_RECV)
- 			return 1;	/* send one RST */
- 		tcp_send_challenge_ack(sk, skb);
--		goto discard;
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+		goto end;
- 	}
- 	switch (sk->sk_state) {
- 	case TCP_SYN_RECV:
-@@ -6511,7 +6527,8 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 			inet_csk_reset_keepalive_timer(sk, tmo);
- 		} else {
- 			tcp_time_wait(sk, TCP_FIN_WAIT2, tmo);
--			goto discard;
-+			tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+			goto end;
- 		}
- 		break;
- 	}
-@@ -6519,7 +6536,8 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 	case TCP_CLOSING:
- 		if (tp->snd_una == tp->write_seq) {
- 			tcp_time_wait(sk, TCP_TIME_WAIT, 0);
--			goto discard;
-+			tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+			goto end;
- 		}
- 		break;
- 
-@@ -6527,7 +6545,8 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 		if (tp->snd_una == tp->write_seq) {
- 			tcp_update_metrics(sk);
- 			tcp_done(sk);
--			goto discard;
-+			tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+			goto end;
- 		}
- 		break;
- 	}
-@@ -6544,8 +6563,10 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 			/* If a subflow has been reset, the packet should not
- 			 * continue to be processed, drop the packet.
- 			 */
--			if (sk_is_mptcp(sk) && !mptcp_incoming_options(sk, skb))
--				goto discard;
-+			if (sk_is_mptcp(sk) && !mptcp_incoming_options(sk, skb)) {
-+				tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
-+				goto end;
-+			}
- 			break;
- 		}
- 		fallthrough;
-@@ -6577,9 +6598,10 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 	}
- 
- 	if (!queued) {
--discard:
--		tcp_drop(sk, skb, TCP_RCV_STATE_PROCESS);
-+		tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_RCV_STATE_PROCESS));
- 	}
-+
-+end:
- 	return 0;
+ static inline struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
+ {
+@@ -440,6 +441,11 @@ static inline int dev_pm_opp_sync(struct device *dev)
+ 	return -EOPNOTSUPP;
  }
- EXPORT_SYMBOL(tcp_rcv_state_process);
--- 
-2.25.1
+ 
++static struct inline dev_pm_opp *dev_pm_opp_from_clk_rate(struct device *dev)
++{
++	return ERR_PTR(-EOPNOTSUPP);
++}
++
+ #endif		/* CONFIG_PM_OPP */
+ 
+ #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
 
