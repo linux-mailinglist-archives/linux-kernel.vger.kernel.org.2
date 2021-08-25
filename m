@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADE43F6DB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 05:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994873F6DB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 05:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238043AbhHYDdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 23:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
+        id S237662AbhHYDiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 23:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhHYDdW (ORCPT
+        with ESMTP id S230021AbhHYDiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 23:33:22 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E033EC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 20:32:37 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id m17so6456379plc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 20:32:37 -0700 (PDT)
+        Tue, 24 Aug 2021 23:38:07 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4823DC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 20:37:22 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id t42so17542523pfg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 20:37:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EMvozoUZ7Z0eDAIiUvnacEplSWNqczHFTpBObMxFc/Y=;
-        b=Hl1VeBx1VSmDfIsz6h1ipCA7toiURujhTuLxid/8s4CpTOIXU0u89MQOnCXG+peA9X
-         s/m0Xw5LQ5j6y7q8mWsmTLETlyFlAD4JYsTcm3PqqAGgKdxLOh/1UAOwcMFuJu+wELob
-         vciGVjcZ+qJGT4w/6SItpycOwx3KDw3crLV+gqKAQDblMbpCsPQMvkKOa0TDdBjQOB5J
-         XrTuC26gWGZ+CjxvejxkdEb4bpV2hfXbFr9mtFBEasAC2V8lxyBmRv6bB1eAzco4am2W
-         hDp1n4WxOpaMwRp19hrN4nMYgZWK62pDbqFA4iKOMWp83teg0FTy1/4+n0A3Zmei/JSQ
-         f/ug==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rD0o67j/laHpe4aDVsl8MDb/cWf8HZLes0zv9r5sgOQ=;
+        b=C0XXUfq05Vk2o6FVLtiGfBsmlwFanOstvcjgB+89t26LIUhwwgGZVVJuecHjz62T4J
+         gQqxdpixoFdWbL3Mpmwv3/oN3UIUKL6hZv4MChJV2tsm+pwRZ/p+tWMsZ2tkTlvge6Px
+         qWA7mZjE4xu6xEhNqf4DBQzWBbuPrPLFluJ7A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EMvozoUZ7Z0eDAIiUvnacEplSWNqczHFTpBObMxFc/Y=;
-        b=pYcRiPzdkHgAa83/VClj27ld0QrqMG7pIj7ipT4g8unxUjZB3w9/Fap5qUaqLN05iw
-         dsqXxp25nAAfs0xGKRk7UhtfpUErbwWI4gHhCNeCBqakjMGBUqvagTEghadO2yCoyQgB
-         aD1hxLf3wEXNMCVS5X+WnHJFqIX7cZoN9szX5QjqCMNceblUGKH26NKqmSXFM+GVKbjC
-         YYtA7mDrC6ccBmsahwyUS/++E39A0FH89MPUM9dVya5hTeCtlUEhdK2UFkQg8huV4h/j
-         2ExlN8O8KotrmlZWbeqmFZwkiWYZ13Qf1hkryV+KG3A6OnkInwR8v7m5N1vm6eLbda4r
-         VYvA==
-X-Gm-Message-State: AOAM531x8ScSbQqVG9UB1Om7aADrvenFySsavEI+9thkrDyH0Cez0x+V
-        paO299vMOLYqNBx3dCL566Uas0CCJAn5JA==
-X-Google-Smtp-Source: ABdhPJzF9nwLx8MOn6Ef7vNx/Ok5Dm5sn5aPAthC1uYfXzYsN+GsB0U3SPPZXW8CI7KN6Gye6t9o+g==
-X-Received: by 2002:a17:90a:1b07:: with SMTP id q7mr7982600pjq.100.1629862357506;
-        Tue, 24 Aug 2021 20:32:37 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id b14sm20157966pfo.76.2021.08.24.20.32.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rD0o67j/laHpe4aDVsl8MDb/cWf8HZLes0zv9r5sgOQ=;
+        b=fPFBbt5augJZTs+JCCXG/7WBVWXmcvFnwN1vK7cForWb2rCSZQpi+S/rwXl+jtFY0J
+         ED9lbcznpCzSGejyK0t5KaMV6r8JkLNF1E5DZWcupT0pBNNSnToh4cCs/BJN1uZvkK3O
+         3i8cZlIDn1I51VZUtoEloVsRedZpe3P2zaKN3ho9wAeJzM4dLziVOysCpubf0+rY94RR
+         2QXWWfe5lwrydNY9WTG1ZVo4q4yrFqdnwiF/beQTQBbwE17yl/RZxd6j4gLLvleOXwW+
+         wrDh/1L7Fcf8E2GClDNQuFZm5mBSrm2Pu+545RUNB74pcrkoDxTKcomV05rqVsHnnX7A
+         NyBg==
+X-Gm-Message-State: AOAM530H2q2dxF9P1LqUlzv0KxuIOTJAsd4FQFatXi4lEYcU1UKURS3R
+        3kJxCd6qUQKC64YVUt7mmxpeiQ==
+X-Google-Smtp-Source: ABdhPJzwbcWBlXI82NOEE2KsqW6Q82aJPm9zRsXnknAE16aMI/brVUvUZFOAzmWHosV/cOUzj/Um4g==
+X-Received: by 2002:a63:87c3:: with SMTP id i186mr5700076pge.242.1629862641871;
+        Tue, 24 Aug 2021 20:37:21 -0700 (PDT)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:629f:4b05:2c88:776d])
+        by smtp.gmail.com with ESMTPSA id l10sm3902149pgn.22.2021.08.24.20.37.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 20:32:37 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 09:02:33 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [vireshk-pm:cpufreq/arm/linux-next 15/17]
- drivers/base/arch_topology.c:156:9: sparse: sparse: incorrect type in
- initializer (different address spaces)
-Message-ID: <20210825033233.sjnvlemmrocswxoc@vireshk-i7>
-References: <202108242312.DH3jDsOZ-lkp@intel.com>
+        Tue, 24 Aug 2021 20:37:21 -0700 (PDT)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Brian Norris <briannorris@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 0/2] regulator: vctrl: Avoid lockdep warning in enable/disable ops
+Date:   Wed, 25 Aug 2021 11:37:02 +0800
+Message-Id: <20210825033704.3307263-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108242312.DH3jDsOZ-lkp@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-08-21, 23:57, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git cpufreq/arm/linux-next
-> head:   028068a13c533046fd4e37f06fb6efe50c759892
-> commit: 942914c2f2438d137bcb9b9cb8343de62dc482df [15/17] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support
-> config: riscv-randconfig-s032-20210824 (attached as .config)
-> compiler: riscv64-linux-gcc (GCC) 11.2.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-348-gf0e6938b-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git/commit/?id=942914c2f2438d137bcb9b9cb8343de62dc482df
->         git remote add vireshk-pm https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git
->         git fetch --no-tags vireshk-pm cpufreq/arm/linux-next
->         git checkout 942914c2f2438d137bcb9b9cb8343de62dc482df
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=riscv 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> sparse warnings: (new ones prefixed by >>)
-> >> drivers/base/arch_topology.c:156:9: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
->    drivers/base/arch_topology.c:156:9: sparse:     expected void const [noderef] __percpu *__vpp_verify
->    drivers/base/arch_topology.c:156:9: sparse:     got unsigned long *
-> 
-> vim +156 drivers/base/arch_topology.c
-> 
-> 2ef7a2953c81ee Juri Lelli 2017-05-31  153  
-> 4ca4f26a9c6610 Juri Lelli 2017-05-31  154  void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity)
-> 2ef7a2953c81ee Juri Lelli 2017-05-31  155  {
-> 2ef7a2953c81ee Juri Lelli 2017-05-31 @156  	per_cpu(cpu_scale, cpu) = capacity;
-> 2ef7a2953c81ee Juri Lelli 2017-05-31  157  }
+Hi,
 
-Fixed thanks.
+Here are a couple fixes for vctrl-regulator. This driver is only used
+RK3399-based Chromebooks.
+
+Patch one fixes a misuse of the regulator API, which was found while
+tracing the code to fix the lockdep warning.
+
+Patch two fixes a lockdep warning and actual (not easy to reproduce)
+deadlock.
+
+Please have a look. The are no dependencies between the two patches.
+
+
+Additionally, I believe it would make sense to implement the voltage
+stepping feature for all regulators in the core. Then we could move
+away from vctrl-regulator. Right now it is only done for coupled
+regulators.
+
+
+Regards
+ChenYu
+
+
+Chen-Yu Tsai (2):
+  regulator: vctrl: Use locked regulator_get_voltage in probe path
+  regulator: vctrl: Avoid lockdep warning in enable/disable ops
+
+ drivers/regulator/vctrl-regulator.c | 73 +++++++++++++++++------------
+ 1 file changed, 43 insertions(+), 30 deletions(-)
 
 -- 
-viresh
+2.33.0.rc2.250.ged5fa647cd-goog
+
