@@ -2,353 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2253F7AFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60703F7AFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242138AbhHYQzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:55:46 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:52820 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhHYQzp (ORCPT
+        id S242120AbhHYQz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:55:27 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3692 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230490AbhHYQz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:55:45 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id ABB831F43AF9
-Subject: Re: [PATCH v7 7/7] media: mtk-mdp: use mdp-rdma0 alias to point to
- MDP master
-To:     houlong wei <houlong.wei@mediatek.com>
-Cc:     Eizan Miyamoto <eizan@chromium.org>,
+        Wed, 25 Aug 2021 12:55:26 -0400
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GvsVs5lK7z67GvM;
+        Thu, 26 Aug 2021 00:53:25 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 25 Aug 2021 18:54:37 +0200
+Received: from [10.47.26.214] (10.47.26.214) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 25 Aug
+ 2021 17:54:36 +0100
+Subject: Re: [Question] perf tools: lex parsing issue
+To:     Ian Rogers <irogers@google.com>
+CC:     Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        =?UTF-8?B?Q0sgSHUgKOiDoeS/ig==?= =?UTF-8?B?5YWJKQ==?= 
-        <ck.hu@mediatek.com>,
-        =?UTF-8?B?WW9uZ3FpYW5nIE5pdSAo54mb5rC45by6KQ==?= 
-        <yongqiang.niu@mediatek.com>,
-        =?UTF-8?B?QW5kcmV3LUNUIENoZW4gKOmZs+aZuui/qik=?= 
-        <Andrew-CT.Chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        =?UTF-8?B?TWluZ2hzaXUgVHNhaSAo6JSh5piO5L+uKQ==?= 
-        <Minghsiu.Tsai@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>
-References: <20210825063323.3607738-1-eizan@chromium.org>
- <20210825163247.v7.7.I2049e180dca12e0d1b3178bfc7292dcf9e05ac28@changeid>
- <1629880999.12893.17.camel@mhfsdcap03>
- <0c9fa482-57dd-d4ef-c65b-01f137c57359@collabora.com>
- <1629904697.15752.11.camel@mhfsdcap03>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <e9020b68-5d20-8e4f-4883-273fe4697d60@collabora.com>
-Date:   Wed, 25 Aug 2021 18:54:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>
+References: <2e52bc21-8e60-f1fc-804b-d8993ca7c482@huawei.com>
+ <CAP-5=fXqM4Y5R5BXJb9Caf8NO1Oyz+qFaote3AqFu0MDGCvgAQ@mail.gmail.com>
+ <e6157b05-fadd-b15d-17cf-9d964517da9c@huawei.com>
+ <CAP-5=fW4dWDH+=VLWc0jjRBDrU2qGQh9aUXhVp-Mvdme2HZrLA@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <055803d6-b483-f839-22fb-d84fad404bcf@huawei.com>
+Date:   Wed, 25 Aug 2021 17:58:31 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <1629904697.15752.11.camel@mhfsdcap03>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAP-5=fW4dWDH+=VLWc0jjRBDrU2qGQh9aUXhVp-Mvdme2HZrLA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.26.214]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Houlong,
-
-Thank you for your answer, some more questions below :-)
-
-On 25/8/21 17:18, houlong wei wrote:
-> On Wed, 2021-08-25 at 17:07 +0800, Enric Balletbo i Serra wrote:
->> Hi Houlong,
+On 25/08/2021 17:47, Ian Rogers wrote:
+> On Wed, Aug 25, 2021 at 7:32 AM John Garry<john.garry@huawei.com>  wrote:
+>> On 25/08/2021 01:13, Ian Rogers wrote:
 >>
->> Thank you for following up this patchset. I have some questions to try to
->> understand better the hardware though.
+>> Thanks for getting back to me
 >>
->> On 25/8/21 10:43, houlong wei wrote:
->>> Hi Eizan,
->>>
->>> Thanks for you patch. I have inline comment below.
->>>
->>> Regards,
->>> Houlong
->>>
->>> On Wed, 2021-08-25 at 14:33 +0800, Eizan Miyamoto wrote:
->>>> ... Instead of depending on the presence of a mediatek,vpu property in
->>>> the device node.
+>>
+>>>> + if (term->type_term == PARSE_EVENTS__TERM_TYPE_SAMPLE_PERIOD) {
+>>>> +       term->config = strdup("period");
+>>>> + }
+>>>> +
+>>>> if (!head) {
+>>>>           parse_events_term__delete(term);
+>>>>           YYABORT;
+>>>> --
 >>>>
->>>> That property was originally added to link to the vpu node so that the
->>>> mtk_mdp_core driver could pass the right device to
->>>> vpu_wdt_reg_handler(). However in a previous patch in this series,
->>>> the driver has been modified to search the device tree for that node
->>>> instead.
->>>>
->>>> That property was also used to indicate the primary MDP device, so that
->>>> it can be passed to the V4L2 subsystem as well as register it to be
->>>> used when setting up queues in the open() callback for the filesystem
->>>> device node that is created. In this case, assuming that the primary
->>>> MDP device is the one with a specific alias seems useable because the
->>>> alternative is to add a property to the device tree which doesn't
->>>> actually represent any facet of hardware (i.e., this being the primary
->>>> MDP device is a software decision). In other words, this solution is
->>>> equally as arbitrary, but at least it doesn't add a property to a
->>>> device node where said property is unrelated to the hardware present.
->>>>
->>>> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
->>>> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->>>> ---
->>>>
->>>> (no changes since v1)
->>>>
->>>>  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 56 +++++++++++++------
->>>>  drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 36 ++++++++----
->>>>  2 files changed, 64 insertions(+), 28 deletions(-)
->>>>
->>>> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
->>>> index 85ef274841a3..9527649de98e 100644
->>>> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
->>>> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
->>>> @@ -151,29 +151,50 @@ void mtk_mdp_comp_clock_off(struct mtk_mdp_comp *comp)
->>>>  		mtk_smi_larb_put(comp->larb_dev);
->>>>  }
->>>>  
->>>> -static int mtk_mdp_comp_bind(struct device *dev, struct device *master, void *data)
->>>> +/*
->>>> + * The MDP master device node is identified by the device tree alias
->>>> + * "mdp-rdma0".
->>>> + */
->>>> +static bool is_mdp_master(struct device *dev)
->>>> +{
->>>> +	struct device_node *aliases, *mdp_rdma0_node;
->>>> +	const char *mdp_rdma0_path;
->>>> +
->>>> +	if (!dev->of_node)
->>>> +		return false;
->>>> +
->>>> +	aliases = of_find_node_by_path("/aliases");
->>>> +	if (!aliases) {
->>>> +		dev_err(dev, "no aliases found for mdp-rdma0");
->>>> +		return false;
->>>> +	}
->>>> +
->>>> +	mdp_rdma0_path = of_get_property(aliases, "mdp-rdma0", NULL);
->>>> +	if (!mdp_rdma0_path) {
->>>> +		dev_err(dev, "get mdp-rdma0 property of /aliases failed");
->>>> +		return false;
->>>> +	}
->>>> +
->>>> +	mdp_rdma0_node = of_find_node_by_path(mdp_rdma0_path);
->>>> +	if (!mdp_rdma0_node) {
->>>> +		dev_err(dev, "path resolution failed for %s", mdp_rdma0_path);
->>>> +		return false;
->>>> +	}
->>>> +
->>>> +	return dev->of_node == mdp_rdma0_node;
+>>>> ----8-----
+>>> Agreed this is hacky,
+>> This might be a*bit*  better:
+>>
+>> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+>> index e5eae23cfceb..e597beaaa179 100644
+>> --- a/tools/perf/util/parse-events.c
+>> +++ b/tools/perf/util/parse-events.c
+>> @@ -1058,6 +1058,13 @@ static const char
+>> *config_term_names[__PARSE_EVENTS__TERM_TYPE_NR] = {
+>>          [PARSE_EVENTS__TERM_TYPE_AUX_SAMPLE_SIZE]       = "aux-sample-size",
+>>    };
+>>
+>> +const char * get_config_term(int term_type)
+>> +{
+>> +       if (term_type >= __PARSE_EVENTS__TERM_TYPE_NR)
+>> +               return "";
+>> +       return config_term_names[term_type];
+>> +}
+>> +
+>>    static bool config_term_shrinked;
+>>
+>>    static bool
+>> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+>> index bf6e41aa9b6a..0f658732535f 100644
+>> --- a/tools/perf/util/parse-events.h
+>> +++ b/tools/perf/util/parse-events.h
+>> @@ -90,6 +90,8 @@ enum {
+>>          __PARSE_EVENTS__TERM_TYPE_NR,
+>>    };
+>>
+>> +const char *get_config_term(int term_type);
+>> +
+>>    struct parse_events_array {
+>>          size_t nr_ranges;
+>>          struct {
+>> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+>> index 9321bd0e2f76..8d6d3fae226d 100644
+>> --- a/tools/perf/util/parse-events.y
+>> +++ b/tools/perf/util/parse-events.y
+>> @@ -832,8 +832,9 @@ PE_TERM '=' PE_NAME
+>>    PE_TERM '=' PE_VALUE
+>>    {
+>>          struct parse_events_term *term;
+>> +       char *config = strdup(get_config_term($1));
+>>
+>> -       ABORT_ON(parse_events_term__num(&term, (int)$1, NULL, $3, false, &@1,
+>> &@3));
+>> +       ABORT_ON(parse_events_term__num(&term, (int)$1, config, $3, false,
+>> &@1, &@3));
+>>          $$ = term;
+>>    }
+>>
+>>
+>>> I think it'd be better to fix this up in the
+>>> output. For example:
 >>>
+>>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>>> index 6cdbee8a12e7..c77c42275efa 100644
+>>> --- a/tools/perf/util/pmu.c
+>>> +++ b/tools/perf/util/pmu.c
+>>> @@ -365,15 +365,21 @@ static int __perf_pmu__new_alias(struct
+>>> list_head *list, char *dir, char *name,
+>>>           memset(newval, 0, sizeof(newval));
+>>>           ret = 0;
+>>>           list_for_each_entry(term, &alias->terms, list) {
+>>> +               const char * config = term->config;
+>>> +
+>>>                   if (ret)
+>>>                           ret += scnprintf(newval + ret, sizeof(newval) - ret,
+>>>                                            ",");
+>>> +               if (!config) {
+>>> +                       /* Note: config_term_names in parse_events.c
+>>> isn't accessible */
+>>> +                       config = config_term_names[term->type_term];
+>> We could just expose some parse-events.c API, like above.
+>>
+>>> +               }
+>>>                   if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
+>>>                           ret += scnprintf(newval + ret, sizeof(newval) - ret,
+>>> -                                        "%s=%#x", term->config, term->val.num);
+>>> +                                        "%s=%#x", config, term->val.num);
+>>>                   else if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
+>>>                           ret += scnprintf(newval + ret, sizeof(newval) - ret,
+>>> -                                        "%s=%s", term->config, term->val.str);
+>>> +                                        "%s=%s", config, term->val.str);
+>>>           }
 >>>
->>> About how to determine the master mdp driver, we also can
->>> judge the component type. The component type can be gotten by calling
->>> of_device_get_match_data(dev). If the component is MTK_MDP_RDMA, it is
->>> the master driver. No matter it is mdp_rdma0 or mdp_rdma1.
+>>>           alias->name = strdup(name);
+>> But how about this alternative simple one:
 >>
->>
->> I'm confused, you mean that the component type, aka MTK_MDP_RDMA is only set for
->> mtk_mdp_rdma0? isn't mtk_dmp_rdma1 also a MTK_MDP_RDMA type? Because looks weird
->> to me that two rdma have diffent types.
->>
-> Hi Enric,
-> 
-> I can understand your doubts. For mtk-mdp dirver, it is really difficult
-> to understand the relationship among the components. Because the MDP
-> hardware path is configured and connected in the VPU firmware.
+>> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+>> index e5eae23cfceb..9e5df934d22d 100644
+>> --- a/tools/perf/util/parse-events.c
+>> +++ b/tools/perf/util/parse-events.c
+>> @@ -3084,7 +3084,7 @@ int parse_events_term__num(struct
+>> parse_events_term **term,
+>>          struct parse_events_term temp = {
+>>                  .type_val  = PARSE_EVENTS__TERM_TYPE_NUM,
+>>                  .type_term = type_term,
+>> -               .config    = config,
+>> +               .config    = config ? : strdup(config_term_names[type_term]),
+>>                  .no_value  = no_value,
+>>                  .err_term  = loc_term ? loc_term->first_column : 0,
+>>                  .err_val   = loc_val  ? loc_val->first_column  : 0,
+>> --
+> If you have this change isn't the change to parse_events_term__num()
+> unnecessary?
 
-So is fixed by the VPU firmware and can't be changed via, i.e writing some
-registers? Can't be platform data then?
+eh, this is parse_events_term__num().
 
-If that's the case, can you draw the mdp hardware path for i.e MT8173? (so I
-have a better understanding)
+Anyway, yes, this 1-line change in parse_events_term__num() only does 
+look to fix it. More testing required, though.
 
+This 1 liner fix looks good to me.
 
-> For MT8173, the component type of mtk_mdp_rdma0 and mtk_mdp_rdma1 are
-> both MTK_MDP_RDMA. Even though the mtk-mdp driver's component list
-> contains both of them, only one corresponding hardware component takes
-> effect during the processing of a frame, the VPU decides it.
-> 
+Cheers,
+John
 
-So IIUC the VPU firmware decides which rdma uses on every frame, right? From hw
-point of view, why one of them need to be master?
-
-> Regards,
-> Houlong
->>
->>> http://lists.infradead.org/pipermail/linux-mediatek/2021-August/028533.html
->>>
->>> IMO, judging it by component type is more flexible because it does not
->>> limit to 'mdp_rdma0'.
->>>
->>
->> Using an alias like Eizan did is also flexible, you only need to set mdp-rdma0
->> to point the mdp_rdma1 node.
->>
->> What I am really interested to know is the differences between the platforms to
->> understand if this is really a platform hardware property or a software
->> configurable thing, so would help if you can give use the different use cases
->> for different SoCs.
->>
->> For MT8173 which is the master device? is _always_ rdma0 or can also be rdma1?
->>
->> Or maybe what is not clear here is what exactly means be a master device?
->>
->> What about MT8183 and other SoCs?
->>
->> Thanks,
->>   Enric
->>
-> Hi Enric,
-> 
-> Before answer your questions, let's unify the concept of the master
-> device.If an MDP device-tree node can not only generate a /dev/video
-> device node, but also can generate a mtk component device node, then
-> this component device is the master device.
-
-Sorry, what you mean with a mtk component device node?
-
-> From the perspective of the device tree node, the compatible of a MDP
-> device tree node contains both "mediatek,mt8173-mdp-rdma" and
-> "mediatek,mt8173-mdp", then its corresponding mtk component device is
-> the master device.
-
-So that's what's wrong, and Eizan patches get rid of this. In this case you
-can't use device-tree to specify such master device. Device-tree is only about
-hardware description, can't be used, in this case, as entry point to instantiate
-the mdp driver. Hence Eizan patches change this, and mdp is instantiated by the
-mmsys driver. Similar to what we do for the drm driver.
-
-For the two hw rdma blocks the compatible should be just
-"mediatek,mt8173-mdp-rdma" in this case.
-
-Thanks,
-  Enric
-
-> Since this concept comes from Eizan's patches, if my understanding is
-> different from yours, please let me know, thanks.
-> 
-> If there is only one master device, I fully agree with you. For MT8173,
-> both mdp_rdma0 and mdp_rdma1 can be master device at the same time.
-> But now only mdp_rdma0 takes this role, perhaps because one MDP hardware
-> path could meet the project's the requirement six years ago.
-> In some project, we have two or more MDP hardware paths, we can
-> configure all the mdp_rdma components as master devices, and there will
-> be several /dev/video device nodes. The user can control them
-> concurrently.
-> 
-> Regards,
-> Houlong
-> 
->>
->>>> +}
->>>> +
->>>> +static int mtk_mdp_comp_bind(struct device *dev, struct device *master,
->>>> +			void *data)
->>>>  {
->>>>  	struct mtk_mdp_comp *comp = dev_get_drvdata(dev);
->>>>  	struct mtk_mdp_dev *mdp = data;
->>>> -	struct device_node *vpu_node;
->>>>  
->>>>  	mtk_mdp_register_component(mdp, comp);
->>>>  
->>>> -	/*
->>>> -	 * If this component has a "mediatek-vpu" property, it is responsible for
->>>> -	 * notifying the mdp master driver about it so it can be further initialized
->>>> -	 * later.
->>>> -	 */
->>>> -	vpu_node = of_parse_phandle(dev->of_node, "mediatek,vpu", 0);
->>>> -	if (vpu_node) {
->>>> +	if (is_mdp_master(dev)) {
->>>>  		int ret;
->>>>  
->>>> -		mdp->vpu_dev = of_find_device_by_node(vpu_node);
->>>> -		if (WARN_ON(!mdp->vpu_dev)) {
->>>> -			dev_err(dev, "vpu pdev failed\n");
->>>> -			of_node_put(vpu_node);
->>>> -		}
->>>> -
->>>>  		ret = v4l2_device_register(dev, &mdp->v4l2_dev);
->>>>  		if (ret) {
->>>>  			dev_err(dev, "Failed to register v4l2 device\n");
->>>> @@ -187,9 +208,8 @@ static int mtk_mdp_comp_bind(struct device *dev, struct device *master, void *da
->>>>  		}
->>>>  
->>>>  		/*
->>>> -		 * presence of the "mediatek,vpu" property in a device node
->>>> -		 * indicates that it is the primary MDP rdma device and MDP DMA
->>>> -		 * ops should be handled by its DMA callbacks.
->>>> +		 * MDP DMA ops will be handled by the DMA callbacks associated with this
->>>> +		 * device;
->>>>  		 */
->>>>  		mdp->rdma_dev = dev;
->>>>  	}
->>>> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
->>>> index 50eafcc9993d..6a775463399c 100644
->>>> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
->>>> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
->>>> @@ -150,8 +150,9 @@ static void release_of(struct device *dev, void *data)
->>>>  
->>>>  static int mtk_mdp_master_bind(struct device *dev)
->>>>  {
->>>> -	int status;
->>>>  	struct mtk_mdp_dev *mdp = dev_get_drvdata(dev);
->>>> +	struct device_node *vpu_node;
->>>> +	int status;
->>>>  
->>>>  	status = component_bind_all(dev, mdp);
->>>>  	if (status) {
->>>> @@ -159,15 +160,30 @@ static int mtk_mdp_master_bind(struct device *dev)
->>>>  		goto err_component_bind_all;
->>>>  	}
->>>>  
->>>> -	if (mdp->vpu_dev) {
->>>> -		int ret = vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_reset_handler, mdp,
->>>> -					  VPU_RST_MDP);
->>>> -		if (ret) {
->>>> -			dev_err(dev, "Failed to register reset handler\n");
->>>> -			goto err_wdt_reg;
->>>> -		}
->>>> -	} else {
->>>> -		dev_err(dev, "no vpu_dev found\n");
->>>> +	if (mdp->rdma_dev == NULL) {
->>>> +		dev_err(dev, "Primary MDP device not found");
->>>> +		status = -ENODEV;
->>>> +		goto err_component_bind_all;
->>>> +	}
->>>> +
->>>> +	vpu_node = of_find_node_by_name(NULL, "vpu");
->>>> +	if (!vpu_node) {
->>>> +		dev_err(dev, "unable to find vpu node");
->>>> +		status = -ENODEV;
->>>> +		goto err_wdt_reg;
->>>> +	}
->>>> +
->>>> +	mdp->vpu_dev = of_find_device_by_node(vpu_node);
->>>
->>> The 'vpu_node' should be put by calling 'of_node_put(vpu_node)' when it
->>> is not used.
->>>
->>>> +	if (!mdp->vpu_dev) {
->>>> +		dev_err(dev, "unable to find vpu device");
->>>> +		status = -ENODEV;
->>>> +		goto err_wdt_reg;
->>>> +	}
->>>> +
->>>> +	status = vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_reset_handler, mdp, VPU_RST_MDP);
->>>> +	if (status) {
->>>> +		dev_err(dev, "Failed to register reset handler\n");
->>>> +		goto err_wdt_reg;
->>>>  	}
->>>>  
->>>>  	status = mtk_mdp_register_m2m_device(mdp);
->>>
-> 
