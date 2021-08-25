@@ -2,154 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8CF3F7EDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EC83F7EDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbhHYXEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 19:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
+        id S233242AbhHYXF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 19:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbhHYXEj (ORCPT
+        with ESMTP id S231535AbhHYXFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 19:04:39 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB79CC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:03:52 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id j12so1437160ljg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:03:52 -0700 (PDT)
+        Wed, 25 Aug 2021 19:05:55 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AD5C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:05:09 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id b4so2225977lfo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:05:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2OfbLRqwAnGB5jDnDWm7vnODC+VKBMH0mApM9uNShXs=;
-        b=LeHOXdGVlnEmXHRIBXzAJY8asTZDf++bfQ3M1qvvWJLxgDDVv78avIB9l1Jyz0qOMo
-         u9umdFPvNW+PyMkEHAKEeda/6q0JI9t81cT6CUfsYnFa2lKx0Iz8nTpXGcnrGQRBCrW9
-         wtytfUNZfGift6JaGL0FR9QLm39/oABYK5aZOHv2XKW1MjVkcY6SDpYRxHpxEZrQynXm
-         DCsKT0d7/7nkZLNmsICj2HgXPS+fhxcDFG5LXBYnqq62SgMfTnda6O4vcraEod8LJNyc
-         qOswtuUh/LwGb4ujrXvLe2kNG0UvSp9h8KDCra4ANOlDgSU9+8m/jxmE3e7EpL4VBsbz
-         fkbA==
+        bh=5dYfTfFoEwQ2ICJl8SbDnguBvvNuF7k4gO0Z6GR4+UM=;
+        b=g/m4ReYERQ60sWtKULs1pWrY8SBQexh9FfmV5YpThCdAz2L1kLRRduThW9cjrksS3+
+         IFEAIIYkruJsn5oosvTHtZTNmTwMy1mYwBIFTNkBMgR/yn1/bZ1Dp7L6JZK/rbH8ClI8
+         KK0o/FeRxPO6SsOnrukQ7rrD1LLt6J5iS5qEjZOUJUZUWbB5enosavl7TBLCSne840YR
+         fTE5RDDvYp+sduuImvjS2HE0L5AATnJvIk2QjEYBi4dkSaTKH2y26KQCBoDFxiv1vG4N
+         tTxpiUvwGaqkQWoshHsfmzWCHubpbqK89Xs65iWcWJV2Evz/gkpvuDE64vhUUn2/ll5o
+         BqNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2OfbLRqwAnGB5jDnDWm7vnODC+VKBMH0mApM9uNShXs=;
-        b=Uh8/ZqRgLvtn/q193hfV4iZuPk4mM864R5v7mIjbZr7oAN0AsiPTZyz5uSLspmGQ24
-         YPZhVTXx/Z/Pcxo5awEUoyYxlLL0QRfUsILyF2o4HH7UpFnSr2MMFRosile+z/ZnHsFv
-         25UYPPMjjJmzTyWUl1y31I7VfiXec2NwyWsLP5djWuehAIdsyJUmUodBJYEHNC8/PwMv
-         2yIK2zLfTgGzJmpvz2LIpCZzEvRz2/u3PPxXP6NGAxq4tI2HW+XSRf768ApkupREtxXJ
-         sVsLW36XnCcJ6PcG78cxN1RY6ONjdyDdgJAde+Bt+yJHpOc56jD4e6ksWc8SnhE+FXM4
-         qjXQ==
-X-Gm-Message-State: AOAM533ZDaORGesNBZ/vvjyVnyvEc2gJz5YSqFq038pRiUR0PN0eJSKH
-        feTdeco8NLCT8bUidOD8V+tOgosyaazFyKpuyDje1+oe+xnDWA==
-X-Google-Smtp-Source: ABdhPJwuDzns8qSLGm1dasF+52Y74fFiLN3vxGsN+IOwR3ac0gDzerXkqEQR/u7zlZ5f6A/hy0UYuL7SX3C1NJzPL6U=
-X-Received: by 2002:a05:651c:83:: with SMTP id 3mr477952ljq.341.1629932630932;
- Wed, 25 Aug 2021 16:03:50 -0700 (PDT)
+        bh=5dYfTfFoEwQ2ICJl8SbDnguBvvNuF7k4gO0Z6GR4+UM=;
+        b=iHbTYibubtGezsWFw+ahH2c0HHaDJpfrlRvNJdnIaE1u8q5bWESyKyv/kF4FeR177A
+         uniMtdQ1Uhf3XSnhhG/xDhvqJ3f+GZ4gGUpff2l1DItXrWoskC79+Nsai9uuIFCTQx1R
+         4zFOhboT+jHZYN2TMxL2zUxpnkb7GEgbKTeBQjj7hRYm1V0Oo8r0CgGw2iQ98UrSbmCD
+         BHU1L8i/dYVIiuOpVA8Y4yzyxbPi/dejI9X5M7ZEP+8Mj9iZe8VUwxlbiDjm+st+9NMR
+         OZNnPHN86VEHzSClFyPLk3wIh2kGKVOUS29eZf63YxKrcKBjqdPYKH4PNmxxlR1ePAfU
+         d9WQ==
+X-Gm-Message-State: AOAM530xlfz0vTsoyf3b5v2wUZlk7ldifudNIeGhjpaRFhQEtM/b4QOL
+        yfVkgv4IlcdZIVG/6P5C9us9V6+fcKjxTxquSThMrg==
+X-Google-Smtp-Source: ABdhPJwSnZtx/HfebEdviL7/cv+ShoseoKsJ2jhLLJ8/O582m6ZCtLffQRwT1ToFRuBUMeoSuaYhu80DydU/OY0rgQ0=
+X-Received: by 2002:a19:7117:: with SMTP id m23mr374169lfc.73.1629932707242;
+ Wed, 25 Aug 2021 16:05:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210824232237.2085342-1-nathan@kernel.org>
-In-Reply-To: <20210824232237.2085342-1-nathan@kernel.org>
+References: <202108241301.UdSncTEq-lkp@intel.com> <77ba5fc1-2bfa-0e9f-525c-dc260642c7ab@linux.intel.com>
+In-Reply-To: <77ba5fc1-2bfa-0e9f-525c-dc260642c7ab@linux.intel.com>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 25 Aug 2021 16:03:39 -0700
-Message-ID: <CAKwvOdk2mLem4w05o5cdr0Mz62M2CWeW+5LFnKE5L+pMPqa7WA@mail.gmail.com>
-Subject: Re: [PATCH] drm/i915: Clean up disabled warnings
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        llvm@lists.linux.dev
+Date:   Wed, 25 Aug 2021 16:04:56 -0700
+Message-ID: <CAKwvOdm9-O=qcaexQ1+quRCXg6HZsABhDm=XQTfD841FL2m4Zg@mail.gmail.com>
+Subject: Re: sound/soc/sof/intel/hda-dai.c:265:22: warning: Value stored to
+ 'sdev' during its initialization is never read [clang-analyzer-deadcode.DeadStores]
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Bard Liao <bard.liao@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 4:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
+On Tue, Aug 24, 2021 at 9:53 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
 >
-> i915 enables a wider set of warnings with '-Wall -Wextra' then disables
-> several with cc-disable-warning. If an unknown flag gets added to
-> KBUILD_CFLAGS when building with clang, all subsequent calls to
-> cc-{disable-warning,option} will fail, meaning that all of these
-> warnings do not get disabled [1].
+> Thanks for the report, I am not sure it's a real issue?
+> >>> sound/soc/sof/intel/hda-dai.c:265:22: warning: Value stored to 'sdev' during its initialization is never read [clang-analyzer-deadcode.DeadStores]
+> >            struct snd_sof_dev *sdev =
+> >                                ^~~~
+> >    sound/soc/sof/intel/hda-dai.c:265:22: note: Value stored to 'sdev' during its initialization is never read
+> >            struct snd_sof_dev *sdev =
+> >                                ^~~~
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  259
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  260  static int hda_link_pcm_prepare(struct snd_pcm_substream *substream,
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  261                              struct snd_soc_dai *dai)
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  262  {
+> > ed3baacd76baa0 Ranjani Sridharan 2019-04-30  263      struct hdac_ext_stream *link_dev =
+> > ed3baacd76baa0 Ranjani Sridharan 2019-04-30  264                              snd_soc_dai_get_dma_data(dai, substream);
+> > fdd961e37e47f2 Keyon Jie         2019-04-12 @265      struct snd_sof_dev *sdev =
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  266                              snd_soc_component_get_drvdata(dai->component);
+> > 1205300af9dba3 Kuninori Morimoto 2020-07-20  267      struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  268      int stream = substream->stream;
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  269
+> > a3ebccb52efdfb Kai Vehmanen      2019-07-22  270      if (link_dev->link_prepared)
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  271              return 0;
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  272
+> > ed3baacd76baa0 Ranjani Sridharan 2019-04-30  273      dev_dbg(sdev->dev, "hda: prepare stream dir %d\n", substream->stream);
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  274
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  275      return hda_link_hw_params(substream, &rtd->dpcm[stream].hw_params,
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  276                                dai);
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  277  }
+> > fdd961e37e47f2 Keyon Jie         2019-04-12  278
 >
-> A separate series will address the root cause of the issue by not adding
-> these flags when building with clang [2]; however, the symptom of these
-> extra warnings appearing can be addressed separately by just removing
-> the calls to cc-disable-warning, which makes the build ever so slightly
-> faster because the compiler does not need to be called as much before
-> building.
->
-> The following warnings are supported by GCC 4.9 and clang 10.0.1, which
-> are the minimum supported versions of these compilers so the call to
-> cc-disable-warning is not necessary. Masahiro cleaned this up for the
-> reset of the kernel in commit 4c8dd95a723d ("kbuild: add some extra
-> warning flags unconditionally").
->
-> * -Wmissing-field-initializers
-> * -Wsign-compare
-> * -Wtype-limits
-> * -Wunused-parameter
->
-> -Wunused-but-set-variable was implemented in clang 13.0.0 and
-> -Wframe-address was implemented in clang 12.0.0 so the
-> cc-disable-warning calls are kept for these two warnings.
->
-> Lastly, -Winitializer-overrides is clang's version of -Woverride-init,
-> which is disabled for the specific files that are problematic. clang
-> added a compatibility alias in clang 8.0.0 so -Winitializer-overrides
-> can be removed.
->
-> [1]: https://lore.kernel.org/r/202108210311.CBtcgoUL-lkp@intel.com/
-> [2]: https://lore.kernel.org/r/20210824022640.2170859-1-nathan@kernel.org/
->
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> The sdev variable is used in the dev_dbg() log, this looks legit to me?
 
-Thanks for the patch! Do you need to re-ping, rebase, or resend that
-other series?
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->
-> NOTE: This is based on my series to enable -Wsometimes-initialized here:
->
-> https://lore.kernel.org/r/20210824225427.2065517-1-nathan@kernel.org/
->
-> I sent it separately as this can go into whatever release but I would
-> like for that series to go into 5.15.
->
->  drivers/gpu/drm/i915/Makefile | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-> index 335ba9f43d8f..6b38547543b1 100644
-> --- a/drivers/gpu/drm/i915/Makefile
-> +++ b/drivers/gpu/drm/i915/Makefile
-> @@ -13,13 +13,11 @@
->  # will most likely get a sudden build breakage... Hopefully we will fix
->  # new warnings before CI updates!
->  subdir-ccflags-y := -Wall -Wextra
-> -subdir-ccflags-y += $(call cc-disable-warning, unused-parameter)
-> -subdir-ccflags-y += $(call cc-disable-warning, type-limits)
-> -subdir-ccflags-y += $(call cc-disable-warning, missing-field-initializers)
-> +subdir-ccflags-y += -Wno-unused-parameter
-> +subdir-ccflags-y += -Wno-type-limits
-> +subdir-ccflags-y += -Wno-missing-field-initializers
-> +subdir-ccflags-y += -Wno-sign-compare
->  subdir-ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
-> -# clang warnings
-> -subdir-ccflags-y += $(call cc-disable-warning, sign-compare)
-> -subdir-ccflags-y += $(call cc-disable-warning, initializer-overrides)
->  subdir-ccflags-y += $(call cc-disable-warning, frame-address)
->  subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
->
->
-> base-commit: fb43ebc83e069625cfeeb2490efc3ffa0013bfa4
-> prerequisite-patch-id: 31c28450ed7e8785dce967a16db6d52eff3d7d6d
-> prerequisite-patch-id: 372dfa0e07249f207acc1942ab0e39b13ff229b2
-> prerequisite-patch-id: 1a585fa6cda50c32ad1e3ac8235d3cff1b599978
-> --
-> 2.33.0
->
-
+Perhaps that depends on a config that was not set? The log does say
+this is a randconfig build.
 
 -- 
 Thanks,
