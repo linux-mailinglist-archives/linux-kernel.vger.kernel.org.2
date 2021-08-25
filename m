@@ -2,326 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784CA3F74DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0F73F74E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240664AbhHYMO3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Aug 2021 08:14:29 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:44547 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232681AbhHYMO2 (ORCPT
+        id S240687AbhHYMOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 08:14:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40074 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240679AbhHYMOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 08:14:28 -0400
-Received: by mail-oi1-f180.google.com with SMTP id c79so419707oib.11;
-        Wed, 25 Aug 2021 05:13:42 -0700 (PDT)
+        Wed, 25 Aug 2021 08:14:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629893629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T+mWtET0VJRoDSwpOU4ZXSont0R34OAjtdYQ/JJ1WlU=;
+        b=enEQ11pzhleM3Bts2nhpfsAW+ETO6Bzq/mkK+DG46w0jCfN8EkGPwA1wLEuORqy9eiffug
+        7Ra3XkmfWxsfRLTSSy/k0lE4xszZrF5gsrCwiNgyOW4nFKNZcVz38b6AOS3H5MkVLqScIc
+        ARLX1kSWNhI+envD+kT1lhYMLExOnNo=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-LCS4s7QbNNe49oVsXmzG4Q-1; Wed, 25 Aug 2021 08:13:47 -0400
+X-MC-Unique: LCS4s7QbNNe49oVsXmzG4Q-1
+Received: by mail-wm1-f72.google.com with SMTP id n20-20020a05600c4f9400b002e6dc6a99b9so1824243wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 05:13:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TmIO6Hmyj3EYyv/PHagEsfp0TosXNafobai+NzYsGAE=;
-        b=qE/RgTYgd7m5etbVLXaUMjh7YUYfo64HtcWzp15P/N2kpTsVHlVWMKQ8Dms5E+5BI/
-         A71YzkKa6mBf4vuxRca1acvyxTJZIrj4T/jqjI0cgl1ZlfGhXMq1zXppwJXXKv7Yxwry
-         b6s1mqUra0Ow2cfXnNUyzFAbhDnmqTcJjWhkMyIbCRY99j5CTfrAIoaepOGsbwq96XM4
-         ymtoJggia2eTcIRm+tXUNBkVBj85aRuOkL1BL6qDerH4QK2P2jpWpqjFZ3tgE3bvhQce
-         5WNWiGAFwS3oRHHkg9yGk6IL9M7yDUrZAmU+Ohr88Y1EMsRkBWc7tB9bNSsSRapbfUOc
-         UmUg==
-X-Gm-Message-State: AOAM532dueOFNWZtdLlK7I4JLiSRrqrzoiaxflK4RmM20UA1k6lWJa8+
-        tAAM8rz6QiSXtIXXplny0Nl/k1FR3HBP1dL3rZc=
-X-Google-Smtp-Source: ABdhPJyUSes/7MAOOLy6GicHHQLw9w3evtKUpwj+Dybpg4XjUS/fnKi7LinAh8aqL8/OvLplZ4M82ObUqe2o9yECgFY=
-X-Received: by 2002:a05:6808:10ce:: with SMTP id s14mr6733841ois.157.1629893622105;
- Wed, 25 Aug 2021 05:13:42 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=T+mWtET0VJRoDSwpOU4ZXSont0R34OAjtdYQ/JJ1WlU=;
+        b=T7qRLl3gYrc4IRzj1v45vvhS0nAZz3Z6j/JCmbpCv+eMrKg2czVrus/rxmI1CKmM1c
+         YnQuvvNwMk4Q4PDR//4ADTzFyqMiuGAGukMclaykmfP0qTfw+E+eyYlanuRWeFvbvRrQ
+         YBtyIsU76GmnRUV6ONeJULmoqHgUcwrbOU8V73sv/klvstr82TZMKBgs5PHJQUzg5sT0
+         IPBxELg9RFjDcBckVOeNjpX+L0o8IGGiBSf9vZ1s7yuzZUasjgztGvOo58hHs4otfsb2
+         YCDg26xMowyFlxzVladc9J72PB3YDIGJpJ6kevTK92A0PRPoPjtEvVW3c5a9Y2uOQidR
+         rdtQ==
+X-Gm-Message-State: AOAM533DBXtfCUvc5lSsRwIoOaL7bAh0MaSI3gTW6plGwzEWxGXTd6CY
+        k9MaYgFWGfUOb1amkwLQhIJGGxGx748k0zNmw3T+RlGKfvmx1+5lDEVXQojFO8Wt7Nk1HWcVjvN
+        uz4l678XgghCuBjtkVFDtZnQ6
+X-Received: by 2002:a7b:c316:: with SMTP id k22mr8896505wmj.56.1629893626682;
+        Wed, 25 Aug 2021 05:13:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw0KaHNPQm3HvatLTHztCmId4RLKJb1rPmJ4P0sk4rpSiu4Hwf3yk4JWqhdkOcTUQf/ieo+dg==
+X-Received: by 2002:a7b:c316:: with SMTP id k22mr8896490wmj.56.1629893626505;
+        Wed, 25 Aug 2021 05:13:46 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23d6b.dip0.t-ipconnect.de. [79.242.61.107])
+        by smtp.gmail.com with ESMTPSA id a77sm5408941wmd.31.2021.08.25.05.13.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 05:13:46 -0700 (PDT)
+Subject: Re: [PATCH 2/4] microblaze: simplify pte_alloc_one_kernel()
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Simek <monstr@monstr.eu>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210714123739.16493-1-rppt@kernel.org>
+ <20210714123739.16493-3-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <cb695be4-1ec8-f821-0446-26d9831981e2@redhat.com>
+Date:   Wed, 25 Aug 2021 14:13:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <4352365.LvFx2qVVIh@kreacher> <DM6PR11MB32449145A9E3779A480F01D69FC69@DM6PR11MB3244.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB32449145A9E3779A480F01D69FC69@DM6PR11MB3244.namprd11.prod.outlook.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 25 Aug 2021 14:13:30 +0200
-Message-ID: <CAJZ5v0g1WCdDt_cxGpLERBQZh+DbCqvNya_ERh41YxqLj8s3EA@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: VMD: ACPI: Make ACPI companion lookup work for
- VMD bus
-To:     "Wang, Wendy" <wendy.wang@intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "Derrick, Jonathan" <jonathan.derrick@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Box <david.e.box@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210714123739.16493-3-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 1:03 PM Wang, Wendy <wendy.wang@intel.com> wrote:
->
-> Hi Rafael,
->
-> Tested this PATCH v2 against intel next v5.12 kernel on ADL-S NVME and SATA storages:
->
-> cat /sys/devices/pci0000\:00/0000\:00\:0e.0/firmware_node/path
-> \_SB_.PC00.VMD0
->
-> 10000:e0:17.0 SATA controller: Intel Corporation Device 7ae2 (rev 11)
-> 10000:e0:1d.0 System peripheral: Intel Corporation Device 09ab
-> 10000:e0:1d.4 PCI bridge: Intel Corporation Device 7ab4 (rev 11)
-> 10000:e1:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller PM9A1/PM9A3/980PRO
->
-> [ 6193.658074] ahci 10000:e0:17.0: PCI PM: Suspend power state: D3hot
-> [ 6193.658156] nvme 10000:e1:00.0: PCI PM: Suspend power state: D3hot
-> [ 6193.710883] pcieport 10000:e0:1d.4: PCI PM: Suspend power state: D3cold
-> [ 6193.730318] vmd 0000:00:0e.0: PCI PM: Suspend power state: D3hot
->
-> cat /sys/kernel/debug/pmc_core/substate_residencies
-> Substate   Residency
-> S0i2.0     0
-> S0i2.1     13862128
->
-> Thanks!
-
-Thank you!
-
-> -----Original Message-----
-> From: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Sent: Tuesday, August 24, 2021 10:44 PM
-> To: Linux PCI <linux-pci@vger.kernel.org>; Derrick, Jonathan <jonathan.derrick@intel.com>; Bjorn Helgaas <helgaas@kernel.org>
-> Cc: Wang, Wendy <wendy.wang@intel.com>; Linux ACPI <linux-acpi@vger.kernel.org>; LKML <linux-kernel@vger.kernel.org>; Mika Westerberg <mika.westerberg@linux.intel.com>; David Box <david.e.box@linux.intel.com>
-> Subject: [PATCH v2] PCI: VMD: ACPI: Make ACPI companion lookup work for VMD bus
->
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> On some systems, in order to get to the deepest low-power state of the platform (which may be necessary to save significant enough amounts of energy while suspended to idle. for example), devices on the PCI bus exposed by the VMD driver need to be power-managed via ACPI.  However, the layout of the ACPI namespace below the VMD controller device object does not reflect the layout of the PCI bus under the VMD host bridge, so in order to identify the ACPI companion objects for the devices on that bus, it is necessary to use a special _ADR encoding on the ACPI side.  In other words, acpi_pci_find_companion() does not work for these devices, so it needs to be amended with a special lookup logic specific to the VMD bus.
->
-> Address this issue by allowing the VMD driver to temporarily install an ACPI companion lookup hook containing the code matching the devices on the VMD PCI bus with the corresponding objects in the ACPI namespace.
->
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 14.07.21 14:37, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> The microblaze's implementation of pte_alloc_one_kernel() used
+> memblock_alloc_try_nid_raw() along with clear_page() to allocated a zeroed
+> page during early setup.
+> 
+> Replace calls of these functions with a call to memblock_alloc_try_nid()
+> that already returns zeroed page and respects the same allocation limits as
+> memblock_alloc_try_nid_raw().
+> 
+> While on it drop early_get_page() wrapper that was only used in
+> pte_alloc_one_kernel().
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 > ---
->
-> -> v2:
->    * Use a read-write semaphore for hook manipulation protection and
->      get rid of the static key present in the previous version.
->    * Add a busnr check in vmd_acpi_find_companion().
->
-> Wendy, David, please test this one!
->
-> ---
->  drivers/pci/controller/vmd.c |   55 +++++++++++++++++++++++++++++++
->  drivers/pci/host-bridge.c    |    1
->  drivers/pci/pci-acpi.c       |   74 +++++++++++++++++++++++++++++++++++++++++++
->  include/linux/pci-acpi.h     |    3 +
->  4 files changed, 133 insertions(+)
->
-> Index: linux-pm/drivers/pci/controller/vmd.c
-> ===================================================================
-> --- linux-pm.orig/drivers/pci/controller/vmd.c
-> +++ linux-pm/drivers/pci/controller/vmd.c
-> @@ -11,6 +11,7 @@
->  #include <linux/module.h>
->  #include <linux/msi.h>
->  #include <linux/pci.h>
-> +#include <linux/pci-acpi.h>
->  #include <linux/pci-ecam.h>
->  #include <linux/srcu.h>
->  #include <linux/rculist.h>
-> @@ -447,6 +448,56 @@ static struct pci_ops vmd_ops = {
->         .write          = vmd_pci_write,
->  };
->
-> +#ifdef CONFIG_ACPI
-> +static struct acpi_device *vmd_acpi_find_companion(struct pci_dev
-> +*pci_dev) {
-> +       struct pci_host_bridge *bridge;
-> +       u32 busnr, addr;
-> +
-> +       if (pci_dev->bus->ops != &vmd_ops)
-> +               return NULL;
-> +
-> +       bridge = pci_find_host_bridge(pci_dev->bus);
-> +       busnr = pci_dev->bus->number - bridge->bus->number;
-> +       /*
-> +        * The address computation below is only applicable to relative bus
-> +        * numbers below 32.
-> +        */
-> +       if (busnr > 31)
-> +               return NULL;
-> +
-> +       addr = (busnr << 24) | ((u32)pci_dev->devfn << 16) | 0x8000FFFFU;
-> +
-> +       dev_dbg(&pci_dev->dev, "Looking for ACPI companion (address 0x%x)\n",
-> +               addr);
-> +
-> +       return acpi_find_child_device(ACPI_COMPANION(bridge->dev.parent), addr,
-> +                                     false);
-> +}
-> +
-> +static bool hook_installed;
-> +
-> +static void vmd_acpi_begin(void)
-> +{
-> +       if (pci_acpi_set_companion_lookup_hook(vmd_acpi_find_companion))
-> +               return;
-> +
-> +       hook_installed = true;
-> +}
-> +
-> +static void vmd_acpi_end(void)
-> +{
-> +       if (!hook_installed)
-> +               return;
-> +
-> +       pci_acpi_clear_companion_lookup_hook();
-> +       hook_installed = false;
-> +}
-> +#else
-> +static inline void vmd_acpi_begin(void) { } static inline void
-> +vmd_acpi_end(void) { } #endif /* CONFIG_ACPI */
-> +
->  static void vmd_attach_resources(struct vmd_dev *vmd)  {
->         vmd->dev->resource[VMD_MEMBAR1].child = &vmd->resources[1]; @@ -747,6 +798,8 @@ static int vmd_enable_domain(struct vmd_
->         if (vmd->irq_domain)
->                 dev_set_msi_domain(&vmd->bus->dev, vmd->irq_domain);
->
-> +       vmd_acpi_begin();
-> +
->         pci_scan_child_bus(vmd->bus);
->         pci_assign_unassigned_bus_resources(vmd->bus);
->
-> @@ -760,6 +813,8 @@ static int vmd_enable_domain(struct vmd_
->
->         pci_bus_add_devices(vmd->bus);
->
-> +       vmd_acpi_end();
-> +
->         WARN(sysfs_create_link(&vmd->dev->dev.kobj, &vmd->bus->dev.kobj,
->                                "domain"), "Can't create symlink to domain\n");
->         return 0;
-> Index: linux-pm/drivers/pci/host-bridge.c
-> ===================================================================
-> --- linux-pm.orig/drivers/pci/host-bridge.c
-> +++ linux-pm/drivers/pci/host-bridge.c
-> @@ -23,6 +23,7 @@ struct pci_host_bridge *pci_find_host_br
->
->         return to_pci_host_bridge(root_bus->bridge);
->  }
-> +EXPORT_SYMBOL_GPL(pci_find_host_bridge);
->
->  struct device *pci_get_host_bridge_device(struct pci_dev *dev)  {
-> Index: linux-pm/drivers/pci/pci-acpi.c
-> ===================================================================
-> --- linux-pm.orig/drivers/pci/pci-acpi.c
-> +++ linux-pm/drivers/pci/pci-acpi.c
-> @@ -17,6 +17,7 @@
->  #include <linux/pci-acpi.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/pm_qos.h>
-> +#include <linux/rwsem.h>
->  #include "pci.h"
->
->  /*
-> @@ -1159,6 +1160,69 @@ void acpi_pci_remove_bus(struct pci_bus  }
->
->  /* ACPI bus type */
-> +
-> +
-> +static DECLARE_RWSEM(pci_acpi_companion_lookup_sem);
-> +static struct acpi_device *(*pci_acpi_find_companion_hook)(struct
-> +pci_dev *);
-> +
-> +/**
-> + * pci_acpi_set_companion_lookup_hook - Set ACPI companion lookup callback.
-> + * @func: ACPI companion lookup callback pointer or NULL.
-> + *
-> + * Set a special ACPI companion lookup callback for PCI devices whose
-> +companion
-> + * objects in the ACPI namespace have _ADR with non-standard
-> +bus-device-function
-> + * encodings.
-> + *
-> + * Return 0 on success or a negative error code on failure (in which
-> +case no
-> + * changes are made).
-> + *
-> + * The caller is responsible for the appropriate ordering of the
-> +invocations of
-> + * this function with respect to the enumeration of the PCI devices
-> +needing the
-> + * callback installed by it.
-> + */
-> +int pci_acpi_set_companion_lookup_hook(struct acpi_device
-> +*(*func)(struct pci_dev *)) {
-> +       int ret;
-> +
-> +       if (!func)
-> +               return -EINVAL;
-> +
-> +       down_write(&pci_acpi_companion_lookup_sem);
-> +
-> +       if (pci_acpi_find_companion_hook) {
-> +               ret = -EBUSY;
-> +       } else {
-> +               pci_acpi_find_companion_hook = func;
-> +               ret = 0;
-> +       }
-> +
-> +       up_write(&pci_acpi_companion_lookup_sem);
-> +
-> +       return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(pci_acpi_set_companion_lookup_hook);
-> +
-> +/**
-> + * pci_acpi_clear_companion_lookup_hook - Clear ACPI companion lookup callback.
-> + *
-> + * Clear the special ACPI companion lookup callback previously set by
-> + * pci_acpi_set_companion_lookup_hook().  Block until the last running
-> +instance
-> + * of the callback returns before clearing it.
-> + *
-> + * The caller is responsible for the appropriate ordering of the
-> +invocations of
-> + * this function with respect to the enumeration of the PCI devices
-> +needing the
-> + * callback cleared by it.
-> + */
-> +void pci_acpi_clear_companion_lookup_hook(void)
-> +{
-> +       down_write(&pci_acpi_companion_lookup_sem);
-> +
-> +       pci_acpi_find_companion_hook = NULL;
-> +
-> +       up_write(&pci_acpi_companion_lookup_sem);
-> +}
-> +EXPORT_SYMBOL_GPL(pci_acpi_clear_companion_lookup_hook);
-> +
->  static struct acpi_device *acpi_pci_find_companion(struct device *dev)  {
->         struct pci_dev *pci_dev = to_pci_dev(dev); @@ -1166,6 +1230,16 @@ static struct acpi_device *acpi_pci_find
->         bool check_children;
->         u64 addr;
->
-> +       down_read(&pci_acpi_companion_lookup_sem);
-> +
-> +       adev = pci_acpi_find_companion_hook ?
-> +               pci_acpi_find_companion_hook(pci_dev) : NULL;
-> +
-> +       up_read(&pci_acpi_companion_lookup_sem);
-> +
-> +       if (adev)
-> +               return adev;
-> +
->         check_children = pci_is_bridge(pci_dev);
->         /* Please ref to ACPI spec for the syntax of _ADR */
->         addr = (PCI_SLOT(pci_dev->devfn) << 16) | PCI_FUNC(pci_dev->devfn);
-> Index: linux-pm/include/linux/pci-acpi.h ===================================================================
-> --- linux-pm.orig/include/linux/pci-acpi.h
-> +++ linux-pm/include/linux/pci-acpi.h
-> @@ -122,6 +122,9 @@ static inline void pci_acpi_add_edr_noti  static inline void pci_acpi_remove_edr_notifier(struct pci_dev *pdev) { }  #endif /* CONFIG_PCIE_EDR */
->
-> +int pci_acpi_set_companion_lookup_hook(struct acpi_device
-> +*(*func)(struct pci_dev *)); void
-> +pci_acpi_clear_companion_lookup_hook(void);
-> +
->  #else  /* CONFIG_ACPI */
->  static inline void acpi_pci_add_bus(struct pci_bus *bus) { }  static inline void acpi_pci_remove_bus(struct pci_bus *bus) { }
->
->
->
+>   arch/microblaze/include/asm/pgtable.h |  2 --
+>   arch/microblaze/mm/init.c             | 12 ------------
+>   arch/microblaze/mm/pgtable.c          | 17 ++++++++---------
+>   3 files changed, 8 insertions(+), 23 deletions(-)
+> 
+> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
+> index 71cd547655d9..c136a01e467e 100644
+> --- a/arch/microblaze/include/asm/pgtable.h
+> +++ b/arch/microblaze/include/asm/pgtable.h
+> @@ -443,8 +443,6 @@ extern int mem_init_done;
+>   
+>   asmlinkage void __init mmu_init(void);
+>   
+> -void __init *early_get_page(void);
+> -
+>   #endif /* __ASSEMBLY__ */
+>   #endif /* __KERNEL__ */
+>   
+> diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+> index ab55c70380a5..952f35b335b2 100644
+> --- a/arch/microblaze/mm/init.c
+> +++ b/arch/microblaze/mm/init.c
+> @@ -265,18 +265,6 @@ asmlinkage void __init mmu_init(void)
+>   	dma_contiguous_reserve(memory_start + lowmem_size - 1);
+>   }
+>   
+> -/* This is only called until mem_init is done. */
+> -void __init *early_get_page(void)
+> -{
+> -	/*
+> -	 * Mem start + kernel_tlb -> here is limit
+> -	 * because of mem mapping from head.S
+> -	 */
+> -	return memblock_alloc_try_nid_raw(PAGE_SIZE, PAGE_SIZE,
+> -				MEMBLOCK_LOW_LIMIT, memory_start + kernel_tlb,
+> -				NUMA_NO_NODE);
+> -}
+> -
+>   void * __ref zalloc_maybe_bootmem(size_t size, gfp_t mask)
+>   {
+>   	void *p;
+> diff --git a/arch/microblaze/mm/pgtable.c b/arch/microblaze/mm/pgtable.c
+> index 38ccb909bc9d..c1833b159d3b 100644
+> --- a/arch/microblaze/mm/pgtable.c
+> +++ b/arch/microblaze/mm/pgtable.c
+> @@ -33,6 +33,7 @@
+>   #include <linux/init.h>
+>   #include <linux/mm_types.h>
+>   #include <linux/pgtable.h>
+> +#include <linux/memblock.h>
+>   
+>   #include <asm/pgalloc.h>
+>   #include <linux/io.h>
+> @@ -242,15 +243,13 @@ unsigned long iopa(unsigned long addr)
+>   
+>   __ref pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+>   {
+> -	pte_t *pte;
+> -	if (mem_init_done) {
+> -		pte = (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+> -	} else {
+> -		pte = (pte_t *)early_get_page();
+> -		if (pte)
+> -			clear_page(pte);
+> -	}
+> -	return pte;
+> +	if (mem_init_done)
+> +		return (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+> +	else
+> +		return memblock_alloc_try_nid(PAGE_SIZE, PAGE_SIZE,
+> +					      MEMBLOCK_LOW_LIMIT,
+> +					      memory_start + kernel_tlb,
+> +					      NUMA_NO_NODE);
+>   }
+>   
+>   void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t flags)
+> 
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
