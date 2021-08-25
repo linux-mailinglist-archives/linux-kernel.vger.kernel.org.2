@@ -2,65 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907713F73A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4F73F73AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhHYKuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbhHYKuE (ORCPT
+        id S239338AbhHYKwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:52:30 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45278 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231697AbhHYKw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:50:04 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE605C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:49:17 -0700 (PDT)
+        Wed, 25 Aug 2021 06:52:28 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17PApb3L003133;
+        Wed, 25 Aug 2021 05:51:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629888697;
+        bh=ohwW3unW5jCvC6uKqinVsEJ5ctT/OYLeiTK7Sp7kdy0=;
+        h=From:To:CC:Subject:Date;
+        b=GWmhQqVYMOAU6Iml4yM86rwfdtPVaStREPzPK7Ez7DANMvk8ydXW3ZcEqEc8RmzPx
+         5/NfRVTHKGMGk1NjrTilX4HUFJDYql2zL3ooiNWUh0CRvD95yYmh9HmEEXUrms8hQI
+         fxwk9xDfwT3G5o/1aC4luFh4YG52b9x82lhjoRTo=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17PApbpC070866
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 25 Aug 2021 05:51:37 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 25
+ Aug 2021 05:51:36 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 25 Aug 2021 05:51:36 -0500
+Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17PApW85129194;
+        Wed, 25 Aug 2021 05:51:33 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chris.chiu@canonical.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+        <lokeshvutla@ti.com>
+Subject: [PATCH 0/3] Fix cold plugged USB device on certain PCIe USB cards
+Date:   Wed, 25 Aug 2021 16:21:29 +0530
+Message-ID: <20210825105132.10420-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1629888555;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OrNb43ZzSHz1Ze2clgfxoPvFEQ2+7dJpVKQAD7qnx7I=;
-        b=JKJ+QuQRviHy0cvSQpODpDsx4XmJTCduVHWkLrogEUa5j0E32QweP4vlygptiilpSTY0HG
-        cz/r4rtJnIzLPTZRGkRagjPtQQiBon98aJkvRiyk9Hs1qczUNRnUt2+5wOdyiw4NUXJPgS
-        plz7/cZvZBubgOHFxQ/VISrgOtQSs0M=
-Date:   Wed, 25 Aug 2021 10:49:14 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yajun.deng@linux.dev
-Message-ID: <01d7cf96c63c05097ef28789e2e27d6f@linux.dev>
-Subject: Re: [PATCH linux-next] arm64: PCI: Introduce pcibios_free_irq()
- helper function
-To:     "Will Deacon" <will@kernel.org>
-Cc:     catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, lorenzo.pieralisi@arm.com
-In-Reply-To: <20210825100500.GC24546@willie-the-truck>
-References: <20210825100500.GC24546@willie-the-truck>
- <20210825071612.21543-1-yajun.deng@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-August 25, 2021 6:05 PM, "Will Deacon" <will@kernel.org> wrote:=0A=0A> [+=
-Lorenzo]=0A> =0A> On Wed, Aug 25, 2021 at 03:16:12PM +0800, Yajun Deng wr=
-ote:=0A> =0A>> Introduce pcibios_free_irq() to free irq in pci_device_pro=
-be() and=0A>> pci_device_remove() that in drivers/pci/pci-driver.c.=0A> =
-=0A> Please can you describe the problem you're solving?=0A> =0A=0Apcibio=
-s_alloc_irq() will be called in pci_device_probe(), but there hasn't pcib=
-ios_free_irq()=0Ain arm64 architecture correspond it. pcibios_free_irq() =
-is an empty function in =0Adrivers/pci/pci-driver.c.So pcibios_alloc_irq(=
-) and pcibios_free_irq() don't correspond.=0A=0A>> Signed-off-by: Yajun D=
-eng <yajun.deng@linux.dev>=0A>> ---=0A>> arch/arm64/kernel/pci.c | 10 +++=
-++++++-=0A>> 1 file changed, 9 insertions(+), 1 deletion(-)=0A>> =0A>> di=
-ff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c=0A>> index 1=
-006ed2d7c60..40da5aff4548 100644=0A>> --- a/arch/arm64/kernel/pci.c=0A>> =
-+++ b/arch/arm64/kernel/pci.c=0A>> @@ -25,10 +25,18 @@=0A>> int pcibios_a=
-lloc_irq(struct pci_dev *dev)=0A>> {=0A>> if (!acpi_disabled)=0A>> - acpi=
-_pci_irq_enable(dev);=0A>> + return acpi_pci_irq_enable(dev);=0A> =0A> Th=
-is means we'll now fail device probe if we can't enable the GSI. Is that =
-a=0A> problem?=0A> =0AOh, It would be better that hasn't return.=0A> Will
+Cold plugged USB device was not detected on certain PCIe USB cards
+(like Inateck card connected to AM64 EVM or connected to J7200 EVM).
+
+Re-plugging the USB device always gets it enumerated.
+
+This issue was discussed in
+https://lore.kernel.org/r/772e4001-178e-4918-032c-6e625bdded24@ti.com
+and
+https://bugzilla.kernel.org/show_bug.cgi?id=214021
+
+So the suggested solution is to register both root hubs along with the
+second hcd for xhci.
+
+RFC Patch series can be found at [1]
+
+Changes from RFC:
+1) Mathias identified potential issues with the RFC patch [2] and suggested
+   the solution to use HCD flags. This series implements it.
+
+[1] -> https://lore.kernel.org/linux-usb/20210824105302.25382-1-kishon@ti.com/ 
+[2] -> https://lore.kernel.org/linux-usb/06693934-28f2-d59e-b004-62cabd3f9e8e@linux.intel.com
+
+Kishon Vijay Abraham I (3):
+  usb: core: hcd: Modularize HCD stop configuration in usb_stop_hcd()
+  usb: core: hcd: Add support for deferring roothub registration
+  xhci: Set HCD flag to defer primary roothub registration
+
+ drivers/usb/core/hcd.c  | 67 +++++++++++++++++++++++++++--------------
+ drivers/usb/host/xhci.c |  2 +-
+ include/linux/usb/hcd.h |  2 ++
+ 3 files changed, 48 insertions(+), 23 deletions(-)
+
+-- 
+2.17.1
+
