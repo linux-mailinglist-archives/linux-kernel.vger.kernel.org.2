@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A413F7463
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FBD3F7467
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239492AbhHYLcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 07:32:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38242 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239211AbhHYLcs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 07:32:48 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F3B4822165;
-        Wed, 25 Aug 2021 11:32:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629891121; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=EUpcw4pk3MekPcDv/py23Kdgnb7Z7cKMQP3tvBu30oI=;
-        b=douP5pr0lu5zQpF6lEKV2wLztJFOGJhe86+vyGcQ6hF9xECrC7P3GTyy2cr4xA36AhmPnd
-        BhYpCVdcnQ4FraXu5jag4luHLv+pqMZXzn0Bnsc9DKtxL/lU1wAYwXYfeXmvfbmfLNUgKy
-        yvCJqECRTe+jcbbM1yAKQJyr29ocYJg=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id A10A113887;
-        Wed, 25 Aug 2021 11:32:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 8bzAJTAqJmHPHwAAGKfGzw
-        (envelope-from <jgross@suse.com>); Wed, 25 Aug 2021 11:32:00 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] xen: remove stray preempt_disable() from PV AP startup code
-Date:   Wed, 25 Aug 2021 13:31:58 +0200
-Message-Id: <20210825113158.11716-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S239511AbhHYLfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 07:35:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239099AbhHYLfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 07:35:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEBA46113C;
+        Wed, 25 Aug 2021 11:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629891270;
+        bh=6hoWY3WQkLX2sswImTRTA9ZnKWT/Ne5C9i57x+tLmDU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WK5mZjfeNnEPTo8w+meCKT8nmz+qK/b4a1XySxdnsAQrDSh0NABTzFKtUrjMM55hj
+         9KkUVnlOCoXKkSKF5dlTTfZ0kzys0fxAvY+AXkmywnYrUplagsnVug42VQ3MYyMy1i
+         YsNSeQk6kVQJbhCfavIOtNiHlwLrZ77seoWseiRzrFaxEIfh6QQPHFkv8PJa0zoeuG
+         X16MrgRPEMWpl3uVEnoiK3+VNj1iMl3+EyG9K+H5XCOMbBugBAnDjiIWXV5Sor9xaJ
+         AjbDotUDyb/rWb5TCH0bqgHWPjwAlyngM3RIQi0HYMsytvzIlXp6mbmLaEvQxFl+pu
+         0SP9utR/6F9cw==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
+        Chao Yu <chao@kernel.org>
+Subject: [PATCH] f2fs: fix to unmap pages from userspace process in punch_hole()
+Date:   Wed, 25 Aug 2021 19:34:19 +0800
+Message-Id: <20210825113419.8645-1-chao@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In cpu_bringup() there is a call of preempt_disable() without a paired
-preempt_enable(). This is not needed as interrupts are off initially.
-Additionally this will result in early boot messages like:
+We need to unmap pages from userspace process before removing pagecache
+in punch_hole() like we did in f2fs_setattr().
 
-BUG: scheduling while atomic: swapper/1/0/0x00000002
+Similar change:
+commit 5e44f8c374dc ("ext4: hole-punch use truncate_pagecache_range")
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: fbfa2cc58d53 ("f2fs: add file operations")
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- arch/x86/xen/smp_pv.c | 1 -
- 1 file changed, 1 deletion(-)
+ fs/f2fs/file.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/xen/smp_pv.c b/arch/x86/xen/smp_pv.c
-index c2ac319f11a4..96afadf9878e 100644
---- a/arch/x86/xen/smp_pv.c
-+++ b/arch/x86/xen/smp_pv.c
-@@ -64,7 +64,6 @@ static void cpu_bringup(void)
- 	cr4_init();
- 	cpu_init();
- 	touch_softlockup_watchdog();
--	preempt_disable();
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 3330efb41f22..f30b841d4e5a 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -1106,7 +1106,6 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ 		}
  
- 	/* PVH runs in ring 0 and allows us to do native syscalls. Yay! */
- 	if (!xen_feature(XENFEAT_supervisor_mode_kernel)) {
+ 		if (pg_start < pg_end) {
+-			struct address_space *mapping = inode->i_mapping;
+ 			loff_t blk_start, blk_end;
+ 			struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 
+@@ -1118,8 +1117,7 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ 			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+ 			down_write(&F2FS_I(inode)->i_mmap_sem);
+ 
+-			truncate_inode_pages_range(mapping, blk_start,
+-					blk_end - 1);
++			truncate_pagecache_range(inode, blk_start, blk_end - 1);
+ 
+ 			f2fs_lock_op(sbi);
+ 			ret = f2fs_truncate_hole(inode, pg_start, pg_end);
 -- 
-2.26.2
+2.32.0
 
