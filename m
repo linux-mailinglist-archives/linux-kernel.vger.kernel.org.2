@@ -2,217 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C16A3F79FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19DE3F79FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235063AbhHYQRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhHYQRV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:17:21 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB82C061757;
-        Wed, 25 Aug 2021 09:16:35 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id c10so25621653qko.11;
-        Wed, 25 Aug 2021 09:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TEQBsqRyBKrTFBEPEYSxWovzrDerhiDO3jnvE5gA0hc=;
-        b=dkEhirQbFi+P4MfCY/vhSeQNGFw50cEEsSmOJDF1L1KmnoJS/HcJpHqk3gEZCdNms7
-         yOcrsQP7UO7X/HFlX3p/E4kSlWX/99FwcYRiSfKR9kThTgvyk/l+5pwPxTnQqBaRtLsj
-         vSS6XNcevFHbW/GZ4PIED7ZwMSvri8am8nUNo+wgUvxJGDJWMcNrJ/Fnv2DHHKp4Dzp8
-         B0u4kvA7VfQNxoEY3+R3HkITKYdAHQr5z+GkRe5/FqiOsS9z89IG9u6x1yhIfsAY03w6
-         XfJoRE/u2u7gr3DSn2q12bkSJs45v6pXmZioiQFe2GVPFzxmMqPojUXEfZZFd+BgwcR4
-         W2pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TEQBsqRyBKrTFBEPEYSxWovzrDerhiDO3jnvE5gA0hc=;
-        b=eJ/V5THA9vvF2PFsRdZ+n+2p1j1q/3qAIMahZj9trqU94xJoeuX/nexd1QFDbPJQni
-         EKF9a9J98SRTdeCK/y+moqDLNPAjeHDeev+OS33LV3jbc935qeMvcVGwMkG7wSWoE1yz
-         4GWi/dtv6PlJc4TNsdO6WZg51El3yhGAWCffydu+t9mgXavwvi9cgV5DjNTE4RY9yCWG
-         qf8MZlEsY5AZoLM5b+0b1a0lSTCT8Rz4889qZXuNlBJ2SAaSafGNq6BQyVhg/NiDvwbo
-         LtVfWq8eCsPBNm84+AdvzyFF9U0XxrArAPftfSj8ZRK8kgE2QggyUWttk1SV4Mwp3RkD
-         3g8A==
-X-Gm-Message-State: AOAM532061GXPjy9RHId4FNVniVFZ96wnzwbZmxea3gYGIT8VGJ8YlXf
-        1P3yZrVSJZiXLt8bzXOuxmc2at9m9mBMDsg8QnA=
-X-Google-Smtp-Source: ABdhPJzcBtYuOj4wv/5r0j9cBksb+FtL2rzRrdG1mqv1SQ5fr+oEej31lJJkd/ne4JcPCp6372WLNDBDi0MMnGBcI7E=
-X-Received: by 2002:a25:f20a:: with SMTP id i10mr57500863ybe.236.1629908194363;
- Wed, 25 Aug 2021 09:16:34 -0700 (PDT)
+        id S238439AbhHYQR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:17:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:54608 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229952AbhHYQR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 12:17:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3745D6E;
+        Wed, 25 Aug 2021 09:17:11 -0700 (PDT)
+Received: from monolith.cable.virginm.net (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 821C73F66F;
+        Wed, 25 Aug 2021 09:17:10 -0700 (PDT)
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        will@kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v4 00/39] KVM: arm64: Add Statistical Profiling Extension (SPE) support
+Date:   Wed, 25 Aug 2021 17:17:36 +0100
+Message-Id: <20210825161815.266051-1-alexandru.elisei@arm.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de> <20210819133128.45ef4353@coco.lan>
- <c56ec571-2278-95e9-2028-990e03159c3f@web.de> <20210822194709.4b9d33d4@coco.lan>
- <be6ac929-2443-ff55-3e11-6a86d6472e0e@web.de> <CAHk-=wjSadWPfzQ_hOqbjq6c_xwJs8GLHTyznhXRvDF5Yrs4FA@mail.gmail.com>
- <CAHFNz9L29LK+L8LjqyTyqq3LsvzeA6iYFHwP9n3uNBbqbbm1bg@mail.gmail.com> <20210825083305.562eba48@coco.lan>
-In-Reply-To: <20210825083305.562eba48@coco.lan>
-From:   Manu Abraham <abraham.manu@gmail.com>
-Date:   Wed, 25 Aug 2021 21:46:23 +0530
-Message-ID: <CAHFNz9L6W=zMjMZJRgtmiAwY9xHiM06Cp52GS0swy5awUoxpOQ@mail.gmail.com>
-Subject: Re: [Regression 5.14] media: dvb userspace api
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Soeren Moch <smoch@web.de>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 12:03 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Em Wed, 25 Aug 2021 08:25:57 +0530
-> Manu Abraham <abraham.manu@gmail.com> escreveu:
->
-> > On Mon, Aug 23, 2021 at 10:30 PM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > I have reverted the header file move. But I would also heartily
-> > > recommend that whatever user program includes those headers (VDR -
-> > > anything else?) should take snapshots of these specific kernel
-> > > headers.
-> > >
-> > > I'm not convinced that it makes sense to move the av7110 driver back
-> > > from staging - it may continue to work, but it _is_ old and there is
-> > > no maintenance - and I would certainly suggest that any other
-> > > out-of-tree driver that uses these old interfaces that nothing else
-> > > implements shouldn't do so, considering that nothing else implements
-> > > them.
-> >
-> > Sorry for barging in between your discussion, but it seemed like you really
-> > missed some perspective and hence.
-> >
-> > My 2 cents worth:
-> > * Revert the header changes.
-> >
-> > * Let someone else with knowledge of it take over the maintenance
-> > of the av7110 driver.
-> >
-> >   - This would allow other hardware also to be easily accommodated
-> > in a similar manner.
-> >
-> > * Pull the out of tree drivers and allocate maintenance of those, to
-> > someone who understands them. Don't you want more hardware to be
-> > supported out of the box ?
-> >
-> > Should there be no driver for those DVB output hardware, but only for
-> > V4L2 output devices ?
-> >
-> > There exists other hardware which As a person who worked on another
-> > av7110 like driver (saa716x based s2 6400), which I can confirm.
-> > The API is supposed to simplify life, not make it even more complex.
-> > These devices would need lot of workarounds to work with the API that
-> > which Mauro advocates, which might even break those drivers given
-> > their complexity and size.
-> >
-> > It would make life a lot easier for the users, Mauro himself and
-> > this long never ending discussion can be put to rest.
->
-> The "full-featured" API that it is implemented on av7110 always had
-> troubles. This is not only my view, but also the view of the
-> original API authors,as can be seen at the DVBv4 WIP documentation:
->
->         https://www.linuxtv.org/downloads/legacy/linux-dvb-api-v4/linux-dvb-api-v4-0-3.pdf
->
-> It clearly says that, on chapter 2.2:
->
->         "2.2 Linux DVB API Version 3 problems
+This is v4 of the SPE series posted at [1]. v2 can be found at [2], and the
+original series at [3].
+
+Statistical Profiling Extension (SPE) is an optional feature added in
+ARMv8.2. It allows sampling at regular intervals of the operations executed
+by the PE and storing a record of each operation in a memory buffer. A high
+level overview of the extension is presented in an article on arm.com [4].
+
+This is another complete rewrite of the series, and nothing is set in
+stone. If you think of a better way to do things, please suggest it.
 
 
-That's very misleading ! In fact, the legacy V3 API was upgraded to 3.1 and 3.2
-and those issues were ironed out. You are talking about V3 while V3.2
-fixed those
-issues. The V4 API documentation is legacy and was there even before the
-V3.2 API existed. It was even upgraded to V5, skipping V4 !
+Features added
+==============
+
+The rewrite enabled me to add support for several features not
+present in the previous iteration:
+
+- Support for heterogeneous systems, where only some of the CPUs support SPE.
+  This is accomplished via the KVM_ARM_VCPU_SUPPORTED_CPUS VCPU ioctl.
+
+- Support for VM migration with the KVM_ARM_VCPU_SPE_CTRL(KVM_ARM_VCPU_SPE_STOP)
+  VCPU ioctl.
+
+- The requirement for userspace to mlock() the guest memory has been removed,
+  and now userspace can make changes to memory contents after the memory is
+  mapped at stage 2.
+
+- Better debugging of guest memory pinning by printing a warning when we
+  get an unexpected read or write fault. This helped me catch several bugs
+  during development, it has already proven very useful. Many thanks to
+  James who suggested when reviewing v3.
 
 
->
->          The Linux DVB API Version 3 has very limited support for
->          modern hardware."
->
-> The "modern" there refers to hardware back in 2005!
+Missing features
+================
+
+I've tried to keep the series as small as possible to make it easier to review,
+while implementing the core functionality needed for the SPE emulation. As such,
+I've chosen to not implement several features:
+
+- Host profiling a guest which has the SPE feature bit set (see open
+  questions).
+
+- No errata workarounds have been implemented yet, and there are quite a few of
+  them for Neoverse N1 and Neoverse V1.
+
+- Disabling CONFIG_NUMA_BALANCING is a hack to get KVM SPE to work and I am
+  investigating other ways to get around automatic numa balancing, like
+  requiring userspace to disable it via set_mempolicy(). I am also going to
+  look at how VFIO gets around it. Suggestions welcome.
+
+- There's plenty of room for optimization. Off the top of my head, using
+  block mappings at stage 2, batch pinning of pages (similar to what VFIO
+  does), optimize the way KVM keeps track of pinned pages (using a linked
+  list triples the memory usage), context-switch the SPE registers on
+  vcpu_load/vcpu_put on VHE if the host is not profiling, locking
+  optimizations, etc, etc.
+
+- ...and others. I'm sure I'm missing at least a few things which are
+  important for someone.
 
 
-This is exactly what I wrote just above.
+Known issues
+============
+
+This is an RFC, so keep in mind that almost definitely there will be scary
+bugs. For example, below is a list of known issues which don't affect the
+correctness of the emulation, and which I'm planning to fix in a future
+iteration:
+
+- With CONFIG_PROVE_LOCKING=y, lockdep complains about lock contention when
+  the VCPU executes the dcache clean pending ops.
+
+- With CONFIG_PROVE_LOCKING=y, KVM will hit a BUG at
+  kvm_lock_all_vcpus()->mutex_trylock(&vcpu->mutex) with more than 48
+  VCPUs.
+
+This BUG statement can also be triggered with mainline. To reproduce it,
+compile kvmtool from this branch [5] and follow the instruction in the
+kvmtool commit message.
+
+One workaround could be to stop trying to lock all VCPUs when locking a
+memslot and document the fact that it is required that no VCPUs are run
+before the ioctl completes, otherwise bad things might happen to the VM.
 
 
-> I worked on a project back 8 years ago that tried to use it for TV
-> sets. It didn't work, because the API assumed a 1:1 mapping between
-> tuners and A/V codecs, which works for simpler embedded hardware,
-> but didn't cover smart TV hardware, where the number of frontends,
-> demods and A/V codecs were different. You may even have multiple
-> channels being displayed at the same time (Picture in Picture).
->
-> On today's embedded hardware, you need something like the media
-> controller, in order to dynamically re-configure the hardware
-> pipelines between:
->
->         - multiple tuners (DVB-C, DVB-T/T2, DVB-S/S2);
->         - multiple demods[1];
->         - multiple A/V decoders;
->         - display compositor;
->         - audio I/O;
->         - CA modules;
->         - encrypt/decrypt hardware (required on some Countries in order
->           to allow recording programs on storage);
->         - storage.
+Open questions
+==============
+
+1. Implementing support for host profiling a guest with the SPE feature
+means setting the profiling buffer owning regime to EL2. While that is in
+effect,  PMBIDR_EL1.P will equal 1. This has two consequences: if the guest
+probes SPE during this time, the driver will fail; and the guest will be
+able to determine when it is profiled. I see two options here:
+
+- Do not allow the host's userspace to profile a guest where at least one
+  VCPU has SPE.
+
+- Document the effects somewhere and let userspace do whatever it likes.
+
+No preference for either.
+
+2. Userspace is not allowed to profile a CPU event (not bound to a task) is
+!perf_allow_cpu(). It is my understanding that this is because of security
+reasons, as we don't want a task to profile another task. Because a VM
+will only be able to profile itself, I don't think it's necessary to
+restrict the VM in any way based on perf_allow_cpu(), like we do with
+perfmon_capable() and physical timer timestamps.
+
+3. How to handle guest triggered SPE SErrors. Right now the Linux SPE drivers
+doesn't do anything special SErrors reported by SPE, and I've done the same when
+a guest manages to trigger one. Should I do something more? Disabling SPE
+emulation for the entire VM is one option.
 
 
-Multiple frontends, tuners/demods, CAM's were already supported
-There is no encrypt/decrypt hardware, either you have hardware
-CAM's or SoftCAM's, which do the decryption for DVB streams.
-These already exist with the old API itself.
-The S2 6400, KNC S2 Twin and most others do have multiple first
-and second generation frontends.
+Summary of the patches
+======================
 
-The DVB demux provides multiple PID's, you can have multiple PiP's
-whatever you want.
+Below is a short summary of the patches. For a more detailed explanation of
+how SPE works, please see version 3 of the series [1].
 
-For some SoC's with A/V codecs what you are saying is true.
-It does not make sense for PCTV hardware to use the pipelines
-you apparently describe. Such SoC's make use the extended API that
-you advocate, but the standard PCTV, or standard STB hardware
-we all are used to need not use the convoluted API being advocated.
-For those SoC's one may use the V4L2 output. But for DVB output
-devices, it makes no sense but going many steps backwards to use
-the V4L2 output.
+Patches 1-11 implement the memslot locking functionality.
+
+Patch 12 implements the KVM_ARM_VCPU_SUPPORTED_CPUS ioctl.
+
+Patches 13-14 are preparatory for KVM SPE.
+
+Patches 15-19 makes it possible for KVM to deny running a SPE enabled VCPU
+on CPUs which don't have the SPE hardware.
+
+Patches 20-22 add the userspace interface to configure SPE.
+
+Patches 23-32 implement context switching of the SPE registers.
+
+Patch 33 allows a guest to use physical timestamps only if the VMM is
+perfmon_capable().
+
+Patch 34 add the emulation for the SPE buffer management interrupts.
+
+Patches 35-37 add the userspace API to temprorarily stop profiling so
+memory can be unlocked and the VM migrated.
+
+Patch 38 is a hack to get KVM SPE emulation going on NUMA systems (like the
+Altra server which I used for testing).
+
+Patch 39 finally enables SPE.
 
 
-> From driver's perspective, it makes no sense to keep support for av7110,
-> as TI stopped production of TMS320AV7110 a very long time ago. They
-> don't even mention this product number anymore on their website.
->
+Testing
+=======
 
-What I meant: If there are some users for some hardware, it is impolite
-to rip them out, especially when someone is volunteering to maintain them.
-Rather than impolite, that's quite rude and arrogant.
+Testing was done on Altra server with two sockets, both populated.
 
-I believe that is the de facto Linux kernel principle still, unless
-there is some
-real reason to rip it out.
+The Linux patches are based on v5.14-rc5 and can also be found on gitlab
+[6].
 
-FWIW, my 2c worth:
-a) leave the headers where they belong, already done by Linus.
+For testing, I've used an SPE enabled version of kvmtool, which can be
+found at [7]; the kvmtool patches will also be sent upstream. To test the
+SPE_STOP API, I used a special version of kvmtool which starts the guest in
+one of the stopped states; that can be found at [8] (compile from a
+different commit if a different state and/or transition is desired).
 
-b) av7110: hand over the maintenance to someone who is happy and has
-time to fiddle around with
+Finally, in the VM I used defconfig Linux guest compiled from v5.15-rc5 and
+some kvm-unit-tests patches which I wrote to test SPE [9].
 
-c) Pull in the saa716x driver. I wrote the saa716x driver with NXP support
-and with additional help from the community. It would be good to maintain
-the credits to the original developers though.
+All tests were run three times: once with VHE enabled, once in NVHE mode
+(kvm-arm.mode=nvhe) and once in protected mode (kvm-arm.mode=protected).
 
-You can pull the saa716x driver from Soeren, if he needs some help,
-I can chip in whatever possible way. Let him have some fun with the driver.
+The first test that I ran was the kvm-unit-tests test. This is also the
+test that I used to check that KVM_ARM_VCPU_SPE_STOP_{TRAP,EXIT,RESUME}
+works correctly with kvmtool.
 
-Mauro: Look, it's not good to convolute and pollute the discussion with stuff
-that are not relevant. Please! Have a heart; Don't do this drama..
-People will just hate you for eons, for no good reason !
+Then I profiled iperf3 in the guest (16 VCPUs to limit the size of perf.data,
+32GiB memory), while concurrently profiling in the host. This is the command
+that I used:
 
-Friendly Regards,
-MA
+# perf record -ae arm_spe/ts_enable=1,pa_enable=1,pct_enable=1/ -- iperf3 -c 127.0.0.1 -t 30
+
+Everything looked right to me and I didn't see any kernel warnings or bugs.
+
+[1] https://lore.kernel.org/linux-arm-kernel/20201027172705.15181-1-alexandru.elisei@arm.com/
+[2] https://www.spinics.net/lists/arm-kernel/msg776228.html
+[3] https://lists.cs.columbia.edu/pipermail/kvmarm/2019-February/034887.html
+[4] https://community.arm.com/developer/ip-products/processors/b/processors-ip-blog/posts/statistical-profiling-extension-for-armv8-a
+[5] https://gitlab.arm.com/linux-arm/kvmtool-ae/-/tree/vgic-lock-all-vcpus-lockdep-bug-v1
+[6] https://gitlab.arm.com/linux-arm/linux-ae/-/tree/kvm-spe-v4
+[7] https://gitlab.arm.com/linux-arm/kvmtool-ae/-/tree/kvm-spe-v4
+[8] https://gitlab.arm.com/linux-arm/kvmtool-ae/-/tree/kvm-spe-v4-spe-stop-tests
+[9] https://gitlab.arm.com/linux-arm/kvm-unit-tests-ae/-/tree/kvm-spe-v4
+
+Alexandru Elisei (35):
+  KVM: arm64: Make lock_all_vcpus() available to the rest of KVM
+  KVM: arm64: Add lock/unlock memslot user API
+  KVM: arm64: Implement the memslot lock/unlock functionality
+  KVM: arm64: Defer CMOs for locked memslots until a VCPU is run
+  KVM: arm64: Perform CMOs on locked memslots when userspace resets
+    VCPUs
+  KVM: arm64: Delay tag scrubbing for locked memslots until a VCPU runs
+  KVM: arm64: Unlock memslots after stage 2 tables are freed
+  KVM: arm64: Deny changes to locked memslots
+  KVM: Add kvm_warn{,_ratelimited} macros
+  KVM: arm64: Print a warning for unexpected faults on locked memslots
+  KVM: arm64: Allow userspace to lock and unlock memslots
+  KVM: arm64: Add the KVM_ARM_VCPU_SUPPORTED_CPUS VCPU ioctl
+  KVM: arm64: Add CONFIG_KVM_ARM_SPE Kconfig option
+  KVM: arm64: Add SPE capability and VCPU feature
+  drivers/perf: Expose the cpumask of CPUs that support SPE
+  KVM: arm64: Make SPE available when at least one CPU supports it
+  KVM: arm64: Set the VCPU SPE feature bit when SPE is available
+  KVM: arm64: Expose SPE version to guests
+  KVM: arm64: Do not emulate SPE on CPUs which don't have SPE
+  KVM: arm64: debug: Configure MDCR_EL2 when a VCPU has SPE
+  KVM: arm64: Move the write to MDCR_EL2 out of
+    __activate_traps_common()
+  KVM: arm64: VHE: Change MDCR_EL2 at world switch if VCPU has SPE
+  KVM: arm64: Add SPE system registers to VCPU context
+  KVM: arm64: nVHE: Save PMSCR_EL1 to the host context
+  KVM: arm64: Rename DEBUG_STATE_SAVE_SPE -> DEBUG_SAVE_SPE_BUFFER flags
+  KVM: arm64: nVHE: Context switch SPE state if VCPU has SPE
+  KVM: arm64: VHE: Context switch SPE state if VCPU has SPE
+  KVM: arm64: Save/restore PMSNEVFR_EL1 on VCPU put/load
+  KVM: arm64: Allow guest to use physical timestamps if
+    perfmon_capable()
+  KVM: arm64: Emulate SPE buffer management interrupt
+  KVM: arm64: Add an userspace API to stop a VCPU profiling
+  KVM: arm64: Implement userspace API to stop a VCPU profiling
+  KVM: arm64: Add PMSIDR_EL1 to the SPE register context
+  KVM: arm64: Make CONFIG_KVM_ARM_SPE depend on !CONFIG_NUMA_BALANCING
+  KVM: arm64: Allow userspace to enable SPE for guests
+
+Sudeep Holla (4):
+  KVM: arm64: Add a new VCPU device control group for SPE
+  KVM: arm64: Add SPE VCPU device attribute to set the interrupt number
+  KVM: arm64: Add SPE VCPU device attribute to initialize SPE
+  KVM: arm64: VHE: Clear MDCR_EL2.E2PB in vcpu_put()
+
+ Documentation/virt/kvm/api.rst          |  87 ++++-
+ Documentation/virt/kvm/devices/vcpu.rst |  76 ++++
+ arch/arm64/include/asm/kvm_arm.h        |   1 +
+ arch/arm64/include/asm/kvm_host.h       |  75 +++-
+ arch/arm64/include/asm/kvm_hyp.h        |  51 ++-
+ arch/arm64/include/asm/kvm_mmu.h        |   8 +
+ arch/arm64/include/asm/kvm_spe.h        |  96 ++++++
+ arch/arm64/include/asm/sysreg.h         |   3 +
+ arch/arm64/include/uapi/asm/kvm.h       |  11 +
+ arch/arm64/kvm/Kconfig                  |   8 +
+ arch/arm64/kvm/Makefile                 |   1 +
+ arch/arm64/kvm/arm.c                    | 140 +++++++-
+ arch/arm64/kvm/debug.c                  |  55 ++-
+ arch/arm64/kvm/guest.c                  |  10 +
+ arch/arm64/kvm/hyp/include/hyp/spe-sr.h |  32 ++
+ arch/arm64/kvm/hyp/include/hyp/switch.h |   1 -
+ arch/arm64/kvm/hyp/nvhe/Makefile        |   1 +
+ arch/arm64/kvm/hyp/nvhe/debug-sr.c      |  24 +-
+ arch/arm64/kvm/hyp/nvhe/spe-sr.c        | 133 +++++++
+ arch/arm64/kvm/hyp/nvhe/switch.c        |  35 +-
+ arch/arm64/kvm/hyp/vhe/Makefile         |   1 +
+ arch/arm64/kvm/hyp/vhe/spe-sr.c         | 193 +++++++++++
+ arch/arm64/kvm/hyp/vhe/switch.c         |  43 ++-
+ arch/arm64/kvm/hyp/vhe/sysreg-sr.c      |   2 +-
+ arch/arm64/kvm/mmu.c                    | 441 +++++++++++++++++++++++-
+ arch/arm64/kvm/reset.c                  |  23 ++
+ arch/arm64/kvm/spe.c                    | 381 ++++++++++++++++++++
+ arch/arm64/kvm/sys_regs.c               |  77 ++++-
+ arch/arm64/kvm/vgic/vgic-init.c         |   4 +-
+ arch/arm64/kvm/vgic/vgic-its.c          |   8 +-
+ arch/arm64/kvm/vgic/vgic-kvm-device.c   |  50 +--
+ arch/arm64/kvm/vgic/vgic.h              |   3 -
+ drivers/perf/arm_spe_pmu.c              |  30 +-
+ include/linux/kvm_host.h                |   4 +
+ include/linux/perf/arm_pmu.h            |   7 +
+ include/uapi/linux/kvm.h                |  13 +
+ 36 files changed, 1983 insertions(+), 145 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_spe.h
+ create mode 100644 arch/arm64/kvm/hyp/include/hyp/spe-sr.h
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/spe-sr.c
+ create mode 100644 arch/arm64/kvm/hyp/vhe/spe-sr.c
+ create mode 100644 arch/arm64/kvm/spe.c
+
+-- 
+2.33.0
+
