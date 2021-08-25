@@ -2,161 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2DD3F710B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B6F3F710F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239326AbhHYIVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 04:21:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49830 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229780AbhHYIVy (ORCPT
+        id S239342AbhHYIXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 04:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229780AbhHYIXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 04:21:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629879669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QW7PXYP8IfyOJUWBjxnrPNW0xt14Kogt0NQDd6gwJ6Y=;
-        b=XlnuEwNvZHW032qxtb+h2BIUdgbag86M7xdpw1zFKBHjArOF+1smPdmrI3V7t7OdIet5Nq
-        ldhfY1GS52j+TYxaffrC7vG+DQgNR9Sa325ZIOzG6ugGrISShNI6mHr08uLu9TbICJ/vXf
-        aBoBi6hiovc7BgEB2TpyluZ6d8q/X0Q=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-FCBE1qOqNoKZzdIL8xL4Mw-1; Wed, 25 Aug 2021 04:21:07 -0400
-X-MC-Unique: FCBE1qOqNoKZzdIL8xL4Mw-1
-Received: by mail-wm1-f70.google.com with SMTP id y188-20020a1c7dc5000000b002e80e0b2f87so2527620wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 01:21:07 -0700 (PDT)
+        Wed, 25 Aug 2021 04:23:08 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8E1C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 01:22:22 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x27so51199583lfu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 01:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5e2CYVsWK7yif+ZWhIuMzcEgDnkaLIfgz62zQHIC1l4=;
+        b=a4Kr7LuOcN0EeqnWmsBBFFPCJ8asQGmFso4pA8RfZVN+Ib7jeTXgtHhKMJRiQ41Qmz
+         E8SMqK4Heq/ikjOJVSvv2yb2MPOXriDjrIMr8tcYtOcUDNRixNcaD4B9tj7oe0Ky8Ism
+         P3eE9GjsubhYYeuV0g7KQEBJZaZkKXn9ruxMIt1DZ4QmRZu02VeSNiC5j/CvgAxgcLWY
+         69rxApImZKSkxl7Nzz0jCskBWdWE6UjJ2X7Uc/1bKBoXDVdjSI5zymzDLp9NRSER3jy5
+         dW8NqjQe88kGfcK4F5tparnB0xTanAh1DWOtGHQEfhtkDxm9m8KbzA3FjGXP+v229of8
+         zHLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=QW7PXYP8IfyOJUWBjxnrPNW0xt14Kogt0NQDd6gwJ6Y=;
-        b=VHMwIjxEnpKQbvQYh/J3v5KRmmECdV/8E7V6GoTS3BrTfsTjiMBfucLN7MWoncGdVr
-         RiXxM0Onc/jLJHcv76K/OmgCSHXl+/Z15j75642Nrc9pb32a0lO4puMPz+ozMVCPgJF1
-         rC2T3ZWvGKC7cgK8a4xjEfyDLdKVo1Ts+Plwzt7Q5QYlVilfHpq6W0cCT+oSFwl6EQW5
-         qHpcBcDnXYVdcRcfC79II6D0GkaAOsHvlaPShdMPGxMEXq4umHHPVbEGJqWejnbHiAkT
-         K5cCMv5geycoFTTXIt85URDXDUmbex4rWzeQT0SgorDavHvZFUnU1bUZVxWWuP88F3Yz
-         iRBw==
-X-Gm-Message-State: AOAM530h8TI3MMeT3nbLN2g0mwUUdMCExQYcYevBu2R/fSuzFCepj9j9
-        DHXgqPpS6nZe+jnD2uphr69gQSaCH2k/BIxaji0fWBAPnm95R0+VGkjAs0O32CK3zqIL59kn9kg
-        eR8RIcajOfmBWmVfuBDo5n7JJ
-X-Received: by 2002:a05:600c:22d3:: with SMTP id 19mr8046417wmg.36.1629879666477;
-        Wed, 25 Aug 2021 01:21:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTA19up2LH13aznsuiyStC+W/wWm3m+AvccbfYlcYYMsVuq7TaIZTrQj6ozbcDLZF+FTmrug==
-X-Received: by 2002:a05:600c:22d3:: with SMTP id 19mr8046395wmg.36.1629879666254;
-        Wed, 25 Aug 2021 01:21:06 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id d24sm4510653wmb.35.2021.08.25.01.21.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 01:21:05 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, Eduardo Habkost <ehabkost@redhat.com>
-Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
- from ioapic_write_indirect()
-In-Reply-To: <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
-References: <20210823143028.649818-1-vkuznets@redhat.com>
- <20210823143028.649818-5-vkuznets@redhat.com>
- <20210823185841.ov7ejn2thwebcwqk@habkost.net>
- <87mtp7jowv.fsf@vitty.brq.redhat.com>
- <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
- <87k0kakip9.fsf@vitty.brq.redhat.com>
- <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
-Date:   Wed, 25 Aug 2021 10:21:04 +0200
-Message-ID: <87h7fej5ov.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5e2CYVsWK7yif+ZWhIuMzcEgDnkaLIfgz62zQHIC1l4=;
+        b=EEXFIl2xBcISUIfxKwfzPlWIqYNgiNzZBAWMVelAm2ted3OLt4y1ZDo2XA5MnpERTU
+         0C5nb6y+eyQj17i46AYl5pxlF2x9XCXJAk3hBbhW6g/S2zz5TokOuYLnW81ZixPZxJhH
+         zY4htdil0VsKXuvix22XWLsWYZW8373UQ3EKhaGFMdsknKXaYgIRHZlOP9MXUASxLy7p
+         pK0vB0e2+gA3Fg5xrBy4jZgbI53P/KXkF7Ss7myAeC69KdDjLo35RXxqsVVn7QvREdA9
+         8n4uh7eZ0CKtR6tAHeh356SLOy0yKSFU9o8xnFGx9qT0zsR8TpCDVY8IzfvyXQ/iroQB
+         xFCw==
+X-Gm-Message-State: AOAM5317TwJD+aEhQ08fhpZJhIA04tH/NR7BTA1xRsTaJk/QbbooR8p6
+        6N1NdwstdsdlkcQbB+qlxslkyq0+S97lGo5H
+X-Google-Smtp-Source: ABdhPJx9ah3lG2IN9SggrEJai3dxMuYeLkvSlw7cKqY/OD8jUTB8PcwPIhpWpPor4x571SmyhmP56w==
+X-Received: by 2002:ac2:5231:: with SMTP id i17mr32422120lfl.497.1629879739813;
+        Wed, 25 Aug 2021 01:22:19 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id r8sm2030339ljc.7.2021.08.25.01.22.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 01:22:19 -0700 (PDT)
+Subject: Re: [PATCH v3 4/6] staging: r8188eu: add error handling of rtw_read16
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1629789580.git.paskripkin@gmail.com>
+ <d06f3173e0a4c6f5449d5551cbfb0202849332b7.1629789580.git.paskripkin@gmail.com>
+ <1665728.ljvk3MsED4@localhost.localdomain>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <ab20fcd7-69a8-0530-7770-0e309178b0f0@gmail.com>
+Date:   Wed, 25 Aug 2021 11:22:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1665728.ljvk3MsED4@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
+On 8/25/21 7:35 AM, Fabio M. De Francesco wrote:
+> On Tuesday, August 24, 2021 9:27:35 AM CEST Pavel Skripkin wrote:
+>> _rtw_read16 function can fail in case of usb transfer failure. But
+>> previous function prototype wasn't designed to return an error to
+>> caller. It can cause a lot uninit value bugs all across the driver code,
+>> since rtw_read16() returns local stack variable to caller.
+>> 
+>> Fix it by changing the prototype of this function. Now it returns an
+>> int: 0 on success, negative error value on failure and callers should pass
+>> the pointer to storage location for register value.
+>> 
+>> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+>> 
+>> [...]
+>>
+>> -static u16 usb_read16(struct intf_hdl *pintfhdl, u32 addr)
+>> +static int usb_read16(struct intf_hdl *pintfhdl, u32 addr, u16 *data)
+>>  {
+>>  	u8 requesttype;
+>>  	u16 wvalue;
+>>  	u16 len;
+>> -	__le32 data;
+>> +	int res;
+>> +	__le32 tmp;
+>> +
+>> +	if (WARN_ON(unlikely(!data)))
+>> +		return -EINVAL;
+>>  
+>>  	requesttype = 0x01;/* read_in */
+>>  	wvalue = (u16)(addr & 0x0000ffff);
+>>  	len = 2;
+>> -	usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
+>> +	res = usbctrl_vendorreq(pintfhdl, wvalue, &tmp, len, requesttype);
+>> +	if (res < 0) {
+>> +		dev_err(dvobj_to_dev(pintfhdl->pintf_dev), "Failed to read 16 bytes: %d\n", res);
+>> +		return res;
+>> +	} else if (res != len) {
+> 
+> Dear Pavel,
+> 
+> Please note that if and when my patch "Use usb_control_msg_recv / send () in
+> usbctrl_vendorreq ()" will be merged, "if (res! = len)" will always evaluate 'true'
+> and usb_read16 () will always return -EIO even if usbctrl_vendorreq () succeeds.
+> 
 
-> On Tue, 2021-08-24 at 16:42 +0200, Vitaly Kuznetsov wrote:
-...
->
-> Not a classical review but,
-> I did some digital archaeology with this one, trying to understand what is going on:
->
->
-> I think that 16 bit vcpu bitmap is due to the fact that IOAPIC spec states that
-> it can address up to 16 cpus in physical destination mode.
->  
-> In logical destination mode, assuming flat addressing and that logical id = 1 << physical id
-> which KVM hardcodes, it is also only possible to address 8 CPUs.
->  
-> However(!) in flat cluster mode, the logical apic id is split in two.
-> We have 16 clusters and each have 4 CPUs, so it is possible to address 64 CPUs,
-> and unlike the logical ID, the KVM does honour cluster ID, 
-> thus one can stick say cluster ID 0 to any vCPU.
->  
->  
-> Let's look at ioapic_write_indirect.
-> It does:
->  
->     -> bitmap_zero(&vcpu_bitmap, 16);
->     -> kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq, &vcpu_bitmap);
->     -> kvm_make_scan_ioapic_request_mask(ioapic->kvm, &vcpu_bitmap); // use of the above bitmap
->  
->  
-> When we call kvm_bitmap_or_dest_vcpus, we can already overflow the bitmap,
-> since we pass all 8 bit of the destination even when it is physical.
->  
->  
-> Lets examine the kvm_bitmap_or_dest_vcpus:
->  
->   -> It calls the kvm_apic_map_get_dest_lapic which 
->  
->        -> for physical destinations, it just sets the bitmap, which can overflow
->           if we pass it 8 bit destination (which basically includes reserved bits + 4 bit destination).
->  
->  
->        -> For logical apic ID, it seems to truncate the result to 16 bit, which isn't correct as I explained
->           above, but should not overflow the result.
->  
->   
->    -> If call to kvm_apic_map_get_dest_lapic fails, it goes over all vcpus and tries to match the destination
->        This can overflow as well.
->  
->  
-> I also don't like that ioapic_write_indirect calls the kvm_bitmap_or_dest_vcpus twice,
-> and second time with 'old_dest_id'
->  
-> I am not 100%  sure why old_dest_id/old_dest_mode are needed as I don't see anything in the
-> function changing them.
-> I think only the guest can change them, so maybe the code deals with the guest changing them
-> while the code is running from a different vcpu?
->  
-> The commit that introduced this code is 7ee30bc132c683d06a6d9e360e39e483e3990708
-> Nitesh Narayan Lal, maybe you remember something about it?
->  
+Yep, thank you, but it depends on which series will go in first :)
 
-Before posting this patch I've contacted Nitesh privately, he's
-currently on vacation but will take a look when he gets back.
+There is a chance, that you will need to clean up this part, if mine 
+will be merged before yours
 
->
-> Also I worry a lot about other callers of kvm_apic_map_get_dest_lapic
->  
-> It is also called from kvm_irq_delivery_to_apic_fast, and from kvm_intr_is_single_vcpu_fast
-> and both seem to also use 'unsigned long' for bitmap, and then only use 16 bits of it.
->  
-> I haven't dug into them, but these don't seem to be IOAPIC related and I think
-> can overwrite the stack as well.
 
-I'm no expert in this code but when writing the patch I somehow
-convinced myself that a single unsigned long is always enough. I think
-that for cluster mode 'bitmap' needs 64-bits (and it is *not* a
-vcpu_bitmap, we need to convert). I may be completely wrong of course
-but in any case this is a different issue. In ioapic_write_indirect() we
-have 'vcpu_bitmap' which should certainly be longer than 64 bits.
 
--- 
-Vitaly
-
+With regards,
+Pavel Skripkin
