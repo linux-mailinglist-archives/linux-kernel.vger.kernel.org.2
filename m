@@ -2,152 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB6A3F7B6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5413D3F7B73
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242249AbhHYRUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:20:11 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:50073 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242231AbhHYRUK (ORCPT
+        id S233665AbhHYRU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231685AbhHYRU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:20:10 -0400
-Received: by mail-il1-f197.google.com with SMTP id a15-20020a92444f000000b0022473393120so139035ilm.16
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:19:24 -0700 (PDT)
+        Wed, 25 Aug 2021 13:20:58 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1469CC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:20:12 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id n27so726673oij.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cl05HjhOd4YjlawD0/p56yGpJ35axAZhOs6i5BBeFOs=;
+        b=IhrkRAxV6XDDOu79mzcgeT8qDfmZhTxIAlDLXuoWFuDqRpVvMC8ums2jYYy1Ml3qoX
+         ct5HuR+qX2hlJAXYF1i8rex/Cookm2QeZ2YlXq4inhKuCU5sg8/VwZ+WAPpU7gvoaBtc
+         pGJMDe9jzdg1xpnfp7JIjJAGeRLUCO+9zYzXcOUYSvnKE7fjNz6L4uwREIQBqm9vYr+z
+         emOZLJHeGMcc72/6iBByHcBzA/MfXf96iZk0i+hLEwWHAwlMq365V2DmRjxpAde1KbQT
+         tZbGTR+NwuF7GM+hk7AGBiTPGtujiqVI3S/xn7HIKxuQPFTo7tOMRZvc1PWrMkfzB2Cp
+         9hxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0X1sbyRsKylsTNGKxaPe4MOXT3J577kzoaufgTkocVQ=;
-        b=YqQFgBXpLokxl/Ia5HxNNxvP9RoyHMXMo2Ii1SPhqk1rm+nE9/caZzeBkE6Xxop/wt
-         COqM17OyCuC3RF+3k8i2hkwg0ChAjlCXfkzMKDRjqlHoLHgoXaHqy4kQA7DVHBgRo++A
-         5RrhggQCCxm97CBa0O47311qlVuwYpwbd7SrqAqtZSn3kQm0bVDH5HvteGeHSYZWYW29
-         OJO04ItAInjZr5+F1mtyvBF0GYFAdeCwbx/7bMAoDfLHWniJpnhVrPRQbKQaVYLLamao
-         7X6WVk8Fa1QvfmKk7njoTnQJNdpaNhyd5tqqg6z6TMTz43SPJ7ZXejqh1PFS3qnSfF5B
-         /FNQ==
-X-Gm-Message-State: AOAM533CkdyrzccMrFxoY6lrhNw8xNXfPRUZkXycvFNoLxLhRHJOaT65
-        IwmdVPp/FwKqzHqAqSehF/eIvriII9W9TyRS2vnP1AnaUnL8
-X-Google-Smtp-Source: ABdhPJz3xDwqLH+vTlOyy6wQxM2Mzilkf12t++UGJY7AAhfx1UIZL2Y1E2MoNWWfFIp67K62oKRUfIv6NBF0YHoFDlFkpfjG4y6m
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cl05HjhOd4YjlawD0/p56yGpJ35axAZhOs6i5BBeFOs=;
+        b=miWhil//FTYT3D6tU4luSX/Px0rM2zICbv7iy2SZ7zSW9TYe6+U40sKL7d1qypamMd
+         5glIrPwGhThhvyYrRg4akS93dxlwLU/Lmj4L5H9mYiNJCoB12VBT4b/iCC4v9Ha3j7D1
+         uWQGxs5sBE3e/H1GkKvX0/P8LTegc1n0Fvp74W4cA6h0/vGApplADimSXMBDkt4VtGe8
+         cvgBHXncHMbD28c30T/NCnFDqod3Zi12j9mlGqNEdMo8xHYAbScDd4hVaVNRgL/Q/reJ
+         Uf9pjY/l4hUQksOPbr64AuSKID2MggFIbCE2Go+eHwsnSLcE4ElerVvrsJNz3UJgUxQN
+         drsA==
+X-Gm-Message-State: AOAM533LqSzkuqp+/FjPp043Yv2lDkmP5yIWrulV2sPKCDWFNZyBf5RD
+        7IxboTdhJ1mjzfEJzKfnlD/qIA==
+X-Google-Smtp-Source: ABdhPJz3tTVdfYPXKQ/Qw1UbGw+AufFf+Sce6P0LgePO8uCxsQ1RBzuS8Eq4iuiJIyT4uOvnd3kSBA==
+X-Received: by 2002:aca:bfc6:: with SMTP id p189mr7638738oif.167.1629912011375;
+        Wed, 25 Aug 2021 10:20:11 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v5sm85699oos.17.2021.08.25.10.20.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 10:20:11 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 12:20:09 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        angelogioacchino.delregno@somainline.org
+Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Replace usage of parent_names
+Message-ID: <YSZ7yQLasmTMWBaK@builder.lan>
+References: <20210824150606.678666-1-bjorn.andersson@linaro.org>
+ <386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org>
+ <YSV0/bFiPgY3fjPF@ripper>
+ <ed5d27eb-5a54-04c4-dbc4-63da80df1638@somainline.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:3012:: with SMTP id x18mr11200166ile.249.1629911964068;
- Wed, 25 Aug 2021 10:19:24 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 10:19:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a234e905ca657369@google.com>
-Subject: [syzbot] general protection fault in __kernfs_remove
-From:   syzbot <syzbot+c2626481ddf079d354c8@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed5d27eb-5a54-04c4-dbc4-63da80df1638@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed 25 Aug 11:00 CDT 2021, Marijn Suijten wrote:
 
-syzbot found the following issue on:
+> Hi Bjorn,
+> 
+> On 8/25/21 12:38 AM, Bjorn Andersson wrote:
+> > On Tue 24 Aug 13:46 PDT 2021, Marijn Suijten wrote:
+> > 
+> > > Hi Bjorn,
+> > > 
+> > > Thanks for this cleanup, that's needed and much appreciated!
+> > > 
+> > > On 8/24/21 5:06 PM, Bjorn Andersson wrote:
+> > > > Using parent_data and parent_hws, instead of parent_names, does protect
+> > > > against some cases of incompletely defined clock trees. While it turns
+> > > > out that the bug being chased this time was totally unrelated, this
+> > > > patch converts the SDM660 GCC driver to avoid such issues.
+> > > > 
+> > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > 
+> > > 
+> > > Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > > 
+> > > On the Sony Xperia XA2 Ultra, bar the necessary change in the 14NM DSI PHY
+> > > driver commented below.
+> > > 
+> > > > [..]
+> > > > -
+> > > > -static struct clk_fixed_factor xo = {
+> > > > -	.mult = 1,
+> > > > -	.div = 1,
+> > > > -	.hw.init = &(struct clk_init_data){
+> > > > -		.name = "xo",
+> > > > -		.parent_names = (const char *[]){ "xo_board" },
+> > > > -		.num_parents = 1,
+> > > > -		.ops = &clk_fixed_factor_ops,
+> > > > -	},
+> > > > -};
+> > > 
+> > > 
+> > > Removing the global "xo" clock makes it so that our 14nm DSI PHY does not
+> > > have a parent clock anymore, as the clock is called "xo_board" nowadays
+> > > ("xo" in the position of fw_name is, as you know, only local to this driver
+> > > because it is named that way in the clock-names property). We (SoMainline)
+> > > suffer the same DSI PHY hardcoding issue on many other boards and are at
+> > > this point investigating whether to provide &xo_board in DT like any other
+> > > sane driver.  Do you happen to know if work is already underway to tackle
+> > > this?
+> > > 
+> > 
+> > As far as I can tell most other platforms doesn't define "xo" either.
+> > E.g. according to debugfs dsi0vco_clk doesn't have a parent on sdm845...
+> > 
+> > Sounds like we should update the dsi phys to specify a fw_name and
+> > update binding and dts to provide this...
+> 
+> 
+> I'm all for using .fw_name there, and I hope we all agree that clock
+> dependencies based on global names should become a thing of the past; every
+> such inter-driver dependency should be clearly visible in the DT.  We
+> (SoMainline) can tackle this DSI side if no-one else is working on it yet.
+> 
+> > Does this cause a noticeable regression or it's just that we have a
+> > dangling clock?
+> 
+> 
+> Unfortunately this regresses yes, starting with:
+> 
+>     dsi0n1_postdiv_clk: Zero divisor and CLK_DIVIDER_ALLOW_ZERO not set
+> 
+> And proceeding with more such errors on different clocks, clocks getting
+> stuck or failing to update, and the panel never showing anything at all.
+> 
+> Should we fix DSI PHYs first and let this patch sit for a while, or keep the
+> implicit global "xo" clock just a little while longer until that's over
+> with?
+> 
 
-HEAD commit:    fa54d366a6e4 Merge tag 'acpi-5.14-rc7' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=102ca5c5300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3205625db2f96ac9
-dashboard link: https://syzkaller.appspot.com/bug?extid=c2626481ddf079d354c8
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+Thanks, should have read your email as well before replying to the
+other.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c2626481ddf079d354c8@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc000002447c: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x00000000001223e0-0x00000000001223e7]
-CPU: 1 PID: 15312 Comm: syz-executor.5 Not tainted 5.14.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:rb_set_parent_color include/linux/rbtree_augmented.h:165 [inline]
-RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:286 [inline]
-RIP: 0010:rb_erase+0x21a/0x1210 lib/rbtree.c:443
-Code: ea 03 80 3c 02 00 0f 85 b8 0f 00 00 49 89 5e 08 48 85 c9 74 4f 48 89 ca 48 83 cd 01 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 a2 0f 00 00 48 b8 00 00 00 00 00 fc ff df 48 89
-RSP: 0018:ffffc90001d87968 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff8880001224c8 RCX: 00000000001223e0
-RDX: 000000000002447c RSI: ffff8880001224c8 RDI: 1ffff110000244b6
-RBP: ffff8880001224c9 R08: 0000000000000001 R09: 0000000000000002
-R10: ffffffff81f18b5a R11: 0000000000000001 R12: 0000000000000001
-R13: ffff888000122780 R14: 0000000000000000 R15: ffff888000122898
-FS:  0000000002138400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa88952b000 CR3: 000000008e5ee000 CR4: 00000000001506e0
-Call Trace:
- kernfs_unlink_sibling fs/kernfs/dir.c:398 [inline]
- __kernfs_remove+0x637/0xa90 fs/kernfs/dir.c:1332
- kernfs_remove_by_name_ns+0x51/0xb0 fs/kernfs/dir.c:1517
- kernfs_remove_by_name include/linux/kernfs.h:593 [inline]
- remove_files+0x96/0x1c0 fs/sysfs/group.c:28
- sysfs_remove_group+0x87/0x170 fs/sysfs/group.c:289
- netdev_queue_update_kobjects+0x302/0x450 net/core/net-sysfs.c:1668
- remove_queue_kobjects net/core/net-sysfs.c:1767 [inline]
- netdev_unregister_kobject+0x15b/0x1f0 net/core/net-sysfs.c:1917
- unregister_netdevice_many+0xd21/0x1790 net/core/dev.c:11120
- unregister_netdevice_queue+0x2dd/0x3c0 net/core/dev.c:11027
- unregister_netdevice include/linux/netdevice.h:2969 [inline]
- __tun_detach+0x10ad/0x13d0 drivers/net/tun.c:670
- tun_detach drivers/net/tun.c:687 [inline]
- tun_chr_close+0xc4/0x180 drivers/net/tun.c:3397
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
- exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4193fb
-Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 63 fc ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 a1 fc ff ff 8b 44
-RSP: 002b:00007ffe5a6c3d80 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000004 RCX: 00000000004193fb
-RDX: 0000000000570c90 RSI: ffffffff892ab478 RDI: 0000000000000003
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000001b2f527494
-R10: 00000000000017a2 R11: 0000000000000293 R12: 00000000002bfecd
-R13: 00000000000003e8 R14: 000000000056bf80 R15: 00000000002bfe8e
-Modules linked in:
----[ end trace b5f9ab27060c4917 ]---
-RIP: 0010:rb_set_parent_color include/linux/rbtree_augmented.h:165 [inline]
-RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:286 [inline]
-RIP: 0010:rb_erase+0x21a/0x1210 lib/rbtree.c:443
-Code: ea 03 80 3c 02 00 0f 85 b8 0f 00 00 49 89 5e 08 48 85 c9 74 4f 48 89 ca 48 83 cd 01 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 a2 0f 00 00 48 b8 00 00 00 00 00 fc ff df 48 89
-RSP: 0018:ffffc90001d87968 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff8880001224c8 RCX: 00000000001223e0
-RDX: 000000000002447c RSI: ffff8880001224c8 RDI: 1ffff110000244b6
-RBP: ffff8880001224c9 R08: 0000000000000001 R09: 0000000000000002
-R10: ffffffff81f18b5a R11: 0000000000000001 R12: 0000000000000001
-R13: ffff888000122780 R14: 0000000000000000 R15: ffff888000122898
-FS:  0000000002138400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fda00030410 CR3: 000000008e5ee000 CR4: 00000000001506f0
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	03 80 3c 02 00 0f    	add    0xf00023c(%rax),%eax
-   6:	85 b8 0f 00 00 49    	test   %edi,0x4900000f(%rax)
-   c:	89 5e 08             	mov    %ebx,0x8(%rsi)
-   f:	48 85 c9             	test   %rcx,%rcx
-  12:	74 4f                	je     0x63
-  14:	48 89 ca             	mov    %rcx,%rdx
-  17:	48 83 cd 01          	or     $0x1,%rbp
-  1b:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  22:	fc ff df
-  25:	48 c1 ea 03          	shr    $0x3,%rdx
-* 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2d:	0f 85 a2 0f 00 00    	jne    0xfd5
-  33:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  3a:	fc ff df
-  3d:	48                   	rex.W
-  3e:	89                   	.byte 0x89
+I will respin this with "xo" intact, then once we've fixed up the DSI
+code we can drop it.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+But I still don't understand why we don't have this problem on e.g.
+sdm845. I must be missing something...
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> Either way, feel free to attach my:
+> 
+> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
+> 
+> After that.
+> 
+> > > >    static struct clk_alpha_pll gpll0_early = {
+> > > >    	.offset = 0x0,
+> > > >    	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
+> > > > @@ -158,7 +35,9 @@ static struct clk_alpha_pll gpll0_early = {
+> > > >    		.enable_mask = BIT(0),
+> > > >    		.hw.init = &(struct clk_init_data){
+> > > >    			.name = "gpll0_early",
+> > > > -			.parent_names = (const char *[]){ "xo" },
+> > > > +			.parent_data = &(const struct clk_parent_data){
+> > > > +				.fw_name = "xo",
+> > > > +			},
+> > > 
+> > > 
+> > > I wish we could use .parent_names for a list of .fw_name's too
+> > 
+> > Afaict specifying "name" in struct clk_parent_data is the same as using
+> > parent_names. But I'm not up to speed on the details of how to migrate
+> > the dsi phys.
+> 
+> 
+> Yes it is, both do _not_ look at clocks specified in DT before "falling
+> back" to global names (that only happens when both .name and .fw_name are
+> specified).  I'm sort of expressing the desire for .parent_fw_names here in
+> hopes of phasing out global clock names on DT platforms altogether.  We
+> definitely shouldn't rework .parent_names to support both, that only causes
+> confusion and an implicit fallback to global clocks when the DT is
+> under-specifying the required clocks is exactly what we're trying to avoid.
+> 
+> > > > [..]
+> > > > @@ -265,7 +270,7 @@ static struct clk_rcg2 blsp1_qup1_i2c_apps_clk_src = {
+> > > >    	.freq_tbl = ftbl_blsp1_qup1_i2c_apps_clk_src,
+> > > >    	.clkr.hw.init = &(struct clk_init_data){
+> > > >    		.name = "blsp1_qup1_i2c_apps_clk_src",
+> > > > -		.parent_names = gcc_parent_names_xo_gpll0_gpll0_early_div,
+> > > > +		.parent_data = gcc_parent_data_xo_gpll0_gpll0_early_div,
+> > > >    		.num_parents = 3,
+> > > 
+> > > 
+> > > How about using ARRAY_SIZE(gcc_parent_data_xo_gpll0_gpll0_early_div) now?
+> > > Same for every other occurrence of this pattern.
+> > > 
+> > 
+> > I omitted that because it felt unrelated to the change I was doing, but
+> > it could certainly be done.
+> 
+> 
+> Fair, if done at all it should end up in a separate (2/2) patch or I'll take
+> care of this in a followup.
+> 
+
+Sounds good, I'd be happy to give you a review on that patch :)
+
+Regards,
+Bjorn
