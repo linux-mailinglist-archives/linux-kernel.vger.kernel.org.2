@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946AD3F76B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8253F76B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240571AbhHYOAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
+        id S240773AbhHYOBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232058AbhHYOAg (ORCPT
+        with ESMTP id S232058AbhHYOBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 10:00:36 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558AEC061757;
-        Wed, 25 Aug 2021 06:59:50 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6440C24F;
-        Wed, 25 Aug 2021 15:59:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1629899987;
-        bh=lAmUs2tEJMT77bx/hltss4KbUysanylpuQF7pGqzjI8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W/KpBlPGtnBk7vh4xNcqJn+SPcuecSu9D8RHULsAnQOfc7Byhh2czJeuH1ioEeBSi
-         XvGveC5Arnp8bgsmcMIQyHs3xmjKNF9NH/YvI6SPSJ3aviDmCkh7mSer25sEjE0Old
-         9lejdGCJD4QLhkuKtKwqRql2hDb3sRICevYNpW0M=
-Date:   Wed, 25 Aug 2021 16:59:35 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        sailues@pendragon.ideasonboard.com
-Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
-Message-ID: <YSZMxxJ76vF316Pi@pendragon.ideasonboard.com>
-References: <20210824230620.1003828-1-djrscally@gmail.com>
- <20210824230620.1003828-2-djrscally@gmail.com>
- <20210825103301.GC5186@sirena.org.uk>
- <CAHp75VdHpjbjz4biTP11TKT6J+7WQi-a1Ru3VLuSxM5tSLCB3Q@mail.gmail.com>
- <20210825113013.GD5186@sirena.org.uk>
- <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
- <20210825131139.GG5186@sirena.org.uk>
+        Wed, 25 Aug 2021 10:01:09 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCB8C061757;
+        Wed, 25 Aug 2021 07:00:22 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ea7006bb4dcd1613a8626.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a700:6bb4:dcd1:613a:8626])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B24E11EC032C;
+        Wed, 25 Aug 2021 16:00:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629900016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=GhDtxzj1b1Wtn66QMK0bVDeTSbHy2I2GjFJNQ4tOTcs=;
+        b=JQObVsKHzQ5hVxJmdcfCZsiUJqP6TAGsSfHvyV5ovpRf1//1rYhVadL4J3Ko/0A7WDsfK7
+        y4YdG/2kZ/sK83Zf5Vqdnk+tj7ONnW6kzW+NfRw9Har380rpXiFNVu36+niS1bHXecPVX0
+        hXw4d1tEXpF6nii57mSh7iNh9CYPWTc=
+Date:   Wed, 25 Aug 2021 16:00:48 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 17/38] x86/mm: Add support to validate memory
+ when changing C-bit
+Message-ID: <YSZNELMY27U05Idh@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-18-brijesh.singh@amd.com>
+ <YSYkHhAMSOotEzXQ@zn.tnic>
+ <de04db4c-95e2-e921-5a2f-7fb33fed4fdc@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210825131139.GG5186@sirena.org.uk>
+In-Reply-To: <de04db4c-95e2-e921-5a2f-7fb33fed4fdc@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Aug 25, 2021 at 08:54:31AM -0500, Brijesh Singh wrote:
+> I replied to your previous comment. Depending on the npages value, the
+> __set_page_state() will be called multiple times and on each call it
+> needs to clear desc before populate it.
 
-CC'ing Sakari.
+Ah, now I missed it, sorry.
 
-On Wed, Aug 25, 2021 at 02:11:39PM +0100, Mark Brown wrote:
-> On Wed, Aug 25, 2021 at 03:26:37PM +0300, Andy Shevchenko wrote:
-> > On Wed, Aug 25, 2021 at 2:30 PM Mark Brown <broonie@kernel.org> wrote:
-> 
-> > > No, what was proposed for regulator was to duplicate all the the DT
-> > > binding code in the regulator framework so it parses fwnodes then have
-> > > an API for encoding fwnodes from C data structures at runtime.  The bit
-> > > where the data gets joined up with the devices isn't the problem, it's
-> > > the duplication and fragility introduced by encoding everything into
-> > > an intermediate representation that has no purpose and passing that
-> > > around which is the problem.
-> 
-> > The whole exercise with swnode is to minimize the driver intrusion and
-> > evolving a unified way for (some) of the device properties. V4L2 won't
-> 
-> The practical implementation for regulators was to duplicate a
-> substantial amount of code in the core in order to give us a less type
-> safe and more indirect way of passing data from onen C file in the
-> kernel to another.  This proposal is a lot better in that it uses the
-> existing init_data and avoids the huge amounts of duplication, it's just
-> not clear from the changelog why it's doing this in a regulator specific
-> manner.
-> 
-> *Please* stop trying to force swnodes in everywhere, take on board the
-> feedback about why the swnode implementation is completely inappropriate
-> for regulators.  I don't understand why you continue to push this so
-> hard.  swnodes and fwnodes are a solution to a specific problem, they're
-> not the answer to every problem out there and having to rehash this
-> continually is getting in the way of actually discussing practical
-> workarounds for these poorly implemented ACPI platforms.
-> 
-> > like what you are suggesting exactly because they don't like the idea
-> > of spreading the board code over the drivers. In some cases it might
-> > even be not so straightforward and easy.
-> 
-> > Laurent, do I understand correctly the v4l2 expectations?
-> 
-> There will be some cases where swnodes make sense, for example where the
-> data is going to be read through the fwnode API since the binding is
-> firmware neutral which I think is the v4l case.  On the other hand
-> having a direct C representation is a very common way of implementing
-> DMI quirk tables, and we have things like the regulator API where
-> there's off the shelf platform data support and we actively don't want
-> to support fwnode.
+> So, I do not see strong reason to use kzalloc() during the desc
+> allocation.
 
-From a camera sensor point of view, we want to avoid code duplication.
-Having to look for regulators using OF lookups *and* platform data in
-every single sensor driver is not a good solution. This means that, from
-a camera sensor driver point of view, we want to call regulator_get()
-(or the devm_ version) with a name, without caring about who establishes
-the mapping and how the lookup is performed. I don't care much
-personally if this would be implemented through swnode or a different
-mechanism, as long as the implementation can be centralized.
+Yeah, then you don't need it.
+
+Thx.
 
 -- 
-Regards,
+Regards/Gruss,
+    Boris.
 
-Laurent Pinchart
+https://people.kernel.org/tglx/notes-about-netiquette
