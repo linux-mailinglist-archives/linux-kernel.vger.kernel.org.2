@@ -2,221 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7013F7569
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F153F756D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240597AbhHYMxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 08:53:19 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:63996 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229759AbhHYMxS (ORCPT
+        id S240926AbhHYMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 08:54:15 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53650 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237860AbhHYMyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 08:53:18 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17PCb0DH000895;
-        Wed, 25 Aug 2021 12:52:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=Om5is2k2B8ElS/CyR00CzZe71ElrvS0Sw0NLCStdbd4=;
- b=Tc8Y1Rt+6MZFvs0xYUcHoWOzw6Wf0BHMlgmI/aIEiDHZfFDjKVQi2A/TDn8OOIHFGBms
- 4tz9bJoH2mEb6cusCNtRQjAOC/V5CrUdpNoTIhdBNskpY9zoXdYtR1Q74uefrUHqlmJa
- kblou4X/vHA6rlwdXjdnqxZTp6y/Vkcoe7RxmDjm7N7oZeSDAwsQfWkGsHCZWY69sl1k
- ZdoTHnPDXV5QtVbjGVHWhCEp7/kjJxvN8YCMP/waAAnFgtPIfMvraoAMaT4D+/n9RXcH
- b52BxkirzOB6LjAdTX1ijiIHflil3zn25NhZXSvHYwGDpc+xMz8F6fpZrkElLgBLjm18 kA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=Om5is2k2B8ElS/CyR00CzZe71ElrvS0Sw0NLCStdbd4=;
- b=QDOv79lvAGrl3dW6b8dnYTePPylF7M/n0WgmJ6hKXQ9U0gLlanRB50DSC4EwjJ5hIrkC
- ktuBSOwh+hbNicdwltyVSq/bQU43OcCxXFDlviB36MMVXnDC+pTqKZns1tqReRB0Y5Zx
- QTLJGBw5pr23Uy/DCdFB3nhPsJjwWb2HSKtVAGA35hNj5v7plQw0lM9pbxtLwgT9PI9v
- axOIVFwYTVM5LO4W6SmDFHCwkuc148RynUXdYlaky8OyXrwOjSxevBh8ZeJHrA7UNnp1
- uQIV/2whE1Jw7DNdUnn1dNs+7CMbJjr8pclYA+viogqKz4BP1PdWmhlDabVMIVrOqgS2 1A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3amwpdbag7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Aug 2021 12:52:22 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17PCpIjm134999;
-        Wed, 25 Aug 2021 12:52:22 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by aserp3020.oracle.com with ESMTP id 3ajsa78ger-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Aug 2021 12:52:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZdDu6SjkVBbzDB1pyXyk6aL8vsCgb1TBztg6uJW+p6y9OU80KIgJPdLze2UKGsBr69SIRHWRpbzOUdNfjbYEg5lLG2MmFxvuu0gwJc0OV08G5eWUq2p/ddE1jXAKldGr46Povdl+3xpXFY4gxnOc32eryvJ++sf9lamZQcPSlmHGOp2Qfs9kdQ2aXhZWtlGPDQkrfv0nTdSaVeb2ymVZR5Ndt+RduwYDKfCGf0a+4wSrGaX+Eq+B36bvrDz/B0mIoAiVLL6vOME0Yld5waH0R+DBZjnRMWHTBs7cRYITd5W6/+jVg2tsFYwB/OvOel0ShEd8dAjupsVXwXMyR4x+UQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Om5is2k2B8ElS/CyR00CzZe71ElrvS0Sw0NLCStdbd4=;
- b=h2b2Ece7vYcpN+xvOI0Qork60F0e825tg5qCAVOpmtmisG614cI/wWhSqCi+r/HwkJbWk/DAOJazKUpFo7i3xXAOcdSz35H3y5jkDzVmR+y4x6oE9kngkqipcD4L0WRuy1+IrJ1jWMYYxQEeGBnt6J1HQpourVJk7xpTs2rGFXvoOCM4rvxJJNQa8JJABytVany/QkM/r2qvIYoKX9BGg8XLAd89XwpyMLc3jHMPMP9MSYdW1S5boIhY8iVFphB58GAToXqZo1MTIcrl55CM5YIFbyDvKiOILs/kQFYNL8ev1ja7a+EYFrs4WP9wTpBTOfyQSIo0do4tDX/Y/L7TDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Om5is2k2B8ElS/CyR00CzZe71ElrvS0Sw0NLCStdbd4=;
- b=zLa4JNJqRZR45YtQ7h0qWjXqUJahWNDv4HdcDOwEHDSkddZTbHS9le1+Q/zUYLqxgFkpz0ponaVoxqzUvnXpkn6vGSpKORf1BWuSRnoT4GaKwbYGSTRA6RTqIJMYAiiYFgK5A0hX0bF0E59+yK/KkXIsmwtzoJxH2TuiYdVxIPM=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1903.namprd10.prod.outlook.com
- (2603:10b6:300:10b::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Wed, 25 Aug
- 2021 12:52:18 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4457.019; Wed, 25 Aug 2021
- 12:52:18 +0000
-Date:   Wed, 25 Aug 2021 15:51:59 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, gregkh@linuxfoundation.org,
-        straube.linux@gmail.com, fmdefrancesco@gmail.com,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
-Message-ID: <20210825125159.GU1931@kadam>
-References: <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
- <202108251911.Vwmzl4rI-lkp@intel.com>
- <9743e1ee-75f4-6231-427b-8c7f659fb252@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9743e1ee-75f4-6231-427b-8c7f659fb252@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0047.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::8)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Wed, 25 Aug 2021 08:54:14 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BD9822216D;
+        Wed, 25 Aug 2021 12:53:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629896007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2SfjGcm1HuoM3CeFm12Qr9ZG4hUuOx/+CkPo6RSmnA0=;
+        b=dLrmPd4wdn3pB+DJdb9G9KwYMf9RN5jnB7xQEa6y+VJzKqmpsPHMsvviiuxU29hMu2sCAC
+        RRkIi4SMZiWAdJzEYdVrZcxQHC0nmeB3BHgdpOmU6C44QcJEqUa98fjy6LJ2Kr7rSbxMyu
+        PjsAHrdVkS/DKR6vDlhb9VMr2gG/sNI=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6707013887;
+        Wed, 25 Aug 2021 12:53:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 2DD5Fkc9JmGVMgAAGKfGzw
+        (envelope-from <jgross@suse.com>); Wed, 25 Aug 2021 12:53:27 +0000
+Subject: Re: [PATCH linux-next] drivers/xen/events/events_base.c: fix
+ bugon.cocci warnings
+To:     CGEL <cgel.zte@gmail.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wei Liu <wei.liu@kernel.org>, Jan Beulich <jbeulich@suse.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20210825062222.69936-1-deng.changcheng@zte.com.cn>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <1dca78e6-a75c-4918-f901-23b5cec777fe@suse.com>
+Date:   Wed, 25 Aug 2021 14:53:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (62.8.83.99) by JNAP275CA0047.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Wed, 25 Aug 2021 12:52:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bc3be84a-e92a-43e4-e8e6-08d967c72b77
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1903:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB1903A2AE48B3007A78F0BF568EC69@MWHPR10MB1903.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F4NkzW3FdMljpK8+VgUuYnhhEW5Afs14Hjz6dQZ+15QXEfIZowe3k9z1RZ3gfoD9dwAuUWqfz6ORk9y8SC9F9/K00iTH/3/VGqrK5WaLD8vFXxbCvJ2pJLnZC4yD2HjNS7wwzuLB8/3KdQSum0AVjRytBvc4iBZdOinK0cXsxkX66/Gm2fDzheHE/3pPeBEKITog4WD8a7wyni8h53vqvBAWXdcVrF2IuIMfi6FZByPE63NfwPypy20Eb6kx+I/wSovutAD76MqvydKKt2YP8M4jyscooIJOgbx0+sF+w0O632ndZAte1lYJav2p6IjmETHpuhHSrxCAuansjGBRA1HuVIDuxXM17sWIQc+W8nkE5EI72aRQgrMTuRTbAN1qr9TTL8HKqMEDFnfmi6yGd8x/LdYIEFnsV9tBtdox0VvOxLtff9lIotBO3y5lNWEeYo44QERJylVmX0hzNazotJ1snXwz1yXHbfKexyfFGdz8u1z3KcjehQimyPN/h/4tlgV+zD6epkcXEJDjskE34lndRY5DfNU/4lzTc2LE+TEEFj6t0BI52BIQmxFg6hb7doGMPnoj3ptu/+QPph3CIetnerCGWS1VETG67YJdkxD6483yGLnGZq7ZlJoMV3hIuuTF9P4WZea0QDjkI4BWvMByDgPJZGvwYxYibR/sC37X7uAdvhhPseCcVJaCuTaw2gP8TL5aqMZhB4tJLe42rNGBmdHwe5ncZh/rO5/het8koKXxcJ5P8MaSUk6cbWcfZ21fifGGxUUo9U6GAKEtH9rN6Ld1ERueOJHDyZUXoQToILC0ELt2Rx3CZ7r2hwUqbryOosFWdKLxsNHb+SLzVA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(136003)(366004)(396003)(346002)(966005)(478600001)(55016002)(5660300002)(2906002)(44832011)(9686003)(83380400001)(33656002)(956004)(66946007)(66476007)(66556008)(53546011)(7416002)(316002)(8676002)(6666004)(1076003)(52116002)(6496006)(8936002)(9576002)(86362001)(6916009)(4326008)(186003)(38100700002)(38350700002)(26005)(33716001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?B7KlDnRi+ywNZGu6cgoKEekQQ76dzot+YnHZN/L2k1GgeIPABnYHqNUg4EYg?=
- =?us-ascii?Q?fMT5RgHgITxBAw0ZXEhoEms7mlNdmMm46bh52QffKOOv7wrppvowo/42ni+A?=
- =?us-ascii?Q?0wWNRY56dzVA292ZS2CmjqyvpW6MKLwhQMwfskUEeRoB4qoKGJ12yQijZebv?=
- =?us-ascii?Q?LToFzXwtASoUhNZBbwUJgHq8bpWgUKjxWs6Ku29eE0kL+qxehXtx5T2A/2Ej?=
- =?us-ascii?Q?yp9S4snENMnnfWO9D/FVWSuz4Ey8Wf+X7ooHPaFfsBv3t8X+QznOsnUt9LUd?=
- =?us-ascii?Q?8tC4Ntv9wr4DiBLAxSE3ubBCWldEDXxZ+YYYbW1/rBMbUM8G5H9E+PFvDIwo?=
- =?us-ascii?Q?/+8VrYdpdgZ8LlM8A5TjqB2MsBZ4oLEwLmo52wXm3uMA/eMwGQto83kOfMMU?=
- =?us-ascii?Q?e7Xy3b7OS1LMaLfHfwhC3GRQOxa94g6IVMuKcg6xCQn7AR/qVTA6bmi0kdaG?=
- =?us-ascii?Q?wCpzE6OulzuF/osHFWOdLnAQ+00e8NxhZG4fs5FesQBbUHGhLZd1ZJigShl+?=
- =?us-ascii?Q?QZZCID7GEaaHQjNRD0k8TC3HTTF5JkStmXaEwxyw2H3E9CHersBp6oaSQmzO?=
- =?us-ascii?Q?TgqFMUAVii3qf+4X2WIvI7PIEY4ZHAvJVo6a9oxtzc1YDtfly9t9dtv5hbSm?=
- =?us-ascii?Q?RWmZEJA4r1M9s8/3Hq3VE2lX9xn/opvP3/Gdh37AsBg86WqcSbS87S5Y1YBI?=
- =?us-ascii?Q?gCsxqIZ0klcNAlIq22JzdSc7nTxz8DPxjQULGizYvNe8EEC9248HTsilwei/?=
- =?us-ascii?Q?I/rKxQJFqfnLrY9QPGVPmgTlVVUfCsxtP9WtwXnpef78nQxfh7tOYrY+Wea4?=
- =?us-ascii?Q?51P7klGeQQ9CrC6jA/d8F89b6RBVrzkeimi2wdyMaG5rvuSxJ86EKLX4MXPb?=
- =?us-ascii?Q?q8Wo/pSFCwxMx/VEv9YoctFbVBAPM1xE7jcawaXh4jETi9iaxTXZmdrbHUEw?=
- =?us-ascii?Q?cXKQF4vWMl8vemY+uEMCGLNLm/1HcnrOOXpPrf31Aju9jO//fJ+PuLrCZqlw?=
- =?us-ascii?Q?boayhht/qtBEXfix6pP1cITXez3prdjAB7avmfkBNJDOrD34YNx7Cu8ycnkT?=
- =?us-ascii?Q?HH/mku5izYtbTLKqhpbiGP7072gusATMVXm7NfGPXEnUfbhvjn8kgH4aWmtk?=
- =?us-ascii?Q?XV5oo0DjxwsvCpp0dbG/Ke2KAUcqVX6Hf3nLRQBzp6Um6NK8OvdgQfrZ6XLk?=
- =?us-ascii?Q?MJMIReKf6IV2gergvSYdxVVtRiAUzVNMSXsxun9X7SNh0BYisnHBly8ZaJVk?=
- =?us-ascii?Q?meSz+c8ngVAZbLiYWr7QEoE4z+qUOxjLrUDVSvbpl70v5pHvUr66y2FbHliA?=
- =?us-ascii?Q?gPlRjJEv02ZZ/JLVa28sDmO/?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc3be84a-e92a-43e4-e8e6-08d967c72b77
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 12:52:17.9573
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zdL+JWcXQzcFy6AHCKJUWewQRhrcEXs1J4qAjC0PSwQcxbldOOL5g0TwfMT/fbywyUwxKL1Reo8BzVXxRiVLAUbjHZblIj4ti0USGmK9FjY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1903
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10086 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108250077
-X-Proofpoint-ORIG-GUID: wG3t9nL-3LS_3D1BR1puCyovgWsEaK_U
-X-Proofpoint-GUID: wG3t9nL-3LS_3D1BR1puCyovgWsEaK_U
+In-Reply-To: <20210825062222.69936-1-deng.changcheng@zte.com.cn>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="IlpedywfmCkLoMf1IHADgzPswdTIkqihH"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 03:17:06PM +0300, Pavel Skripkin wrote:
-> On 8/25/21 3:05 PM, kernel test robot wrote:
-> > Hi Pavel,
-> > 
-> > Thank you for the patch! Yet something to improve:
-> > 
-> > [auto build test ERROR on staging/staging-testing]
-> > 
-> > url:    https://github.com/0day-ci/linux/commits/Pavel-Skripkin/staging-r8188eu-remove-read-write-_macreg/20210824-162756
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git 093991aaadf0fbb34184fa37a46e7a157da3f386
-> > config: arm-buildonly-randconfig-r001-20210825 (attached as .config)
-> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project ea08c4cd1c0869ec5024a8bb3f5cdf06ab03ae83)
-> > reproduce (this is a W=1 build):
-> >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >          chmod +x ~/bin/make.cross
-> >          # install arm cross compiling tool for clang build
-> >          # apt-get install 11.1.1
-> >          # https://github.com/0day-ci/linux/commit/d4e4bbed4e59df37967086f60fe92cb1b4504d37
-> >          git remote add linux-review https://github.com/0day-ci/linux
-> >          git fetch --no-tags linux-review Pavel-Skripkin/staging-r8188eu-remove-read-write-_macreg/20210824-162756
-> >          git checkout d4e4bbed4e59df37967086f60fe92cb1b4504d37
-> >          # save the attached .config to linux build tree
-> >          mkdir build_dir
-> >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=arm SHELL=/bin/bash drivers/staging/r8188eu/
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> > > > drivers/staging/r8188eu/hal/usb_halinit.c:2022:3: error: expected expression
-> >                     u8 tmp;
-> >                     ^
-> >     1 error generated.
-> > 
-> > Kconfig warnings: (for reference only)
-> >     WARNING: unmet direct dependencies detected for QCOM_SCM
-> >     Depends on (ARM || ARM64) && HAVE_ARM_SMCCC
-> >     Selected by
-> >     - ARM_QCOM_SPM_CPUIDLE && CPU_IDLE && (ARM || ARM64) && (ARCH_QCOM || COMPILE_TEST && !ARM64 && MMU
-> > 
-> > 
-> 
-> We need to fix Kconfig, ok, I will take a look at it later
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--IlpedywfmCkLoMf1IHADgzPswdTIkqihH
+Content-Type: multipart/mixed; boundary="Wz5p7El1rcjvRvf7l75EYY94uAItMXZLp";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: CGEL <cgel.zte@gmail.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Wei Liu <wei.liu@kernel.org>,
+ Jan Beulich <jbeulich@suse.com>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org, Jing Yangyang <jing.yangyang@zte.com.cn>,
+ Zeal Robot <zealci@zte.com.cn>
+Message-ID: <1dca78e6-a75c-4918-f901-23b5cec777fe@suse.com>
+Subject: Re: [PATCH linux-next] drivers/xen/events/events_base.c: fix
+ bugon.cocci warnings
+References: <20210825062222.69936-1-deng.changcheng@zte.com.cn>
+In-Reply-To: <20210825062222.69936-1-deng.changcheng@zte.com.cn>
 
-This is not related to your patch.  Ignore it.
+--Wz5p7El1rcjvRvf7l75EYY94uAItMXZLp
+Content-Type: multipart/mixed;
+ boundary="------------2B83BFF24BE5051433BBF49A"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------2B83BFF24BE5051433BBF49A
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 25.08.21 08:22, CGEL wrote:
+> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+>=20
+> Use BUG_ON instead of a if condition followed by BUG.
+>=20
+> Generated by: scripts/coccinelle/misc/bugon.cocci
+>=20
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+
+I already gave you feedback for another patch asking you to adjust
+the continuation line indentations.
+
+Same here.
 
 
-> > vim +2022 drivers/staging/r8188eu/hal/usb_halinit.c
-> > 
-> 
-> >    2020		case HW_VAR_BCN_VALID:
-> >    2021			/* BCN_VALID, BIT(16) of REG_TDECTRL = BIT(0) of REG_TDECTRL+2, write 1 to clear, Clear by sw */
-> > > 2022				u8 tmp;
-> 
-> Hm, I don't know anything about ARM compilers, so should I wrap this code
-> block with {}?
+Juergen
 
-Yep.
+> ---
+>   drivers/xen/events/events_base.c | 21 ++++++++-------------
+>   1 file changed, 8 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/even=
+ts_base.c
+> index a78704a..dd44019 100644
+> --- a/drivers/xen/events/events_base.c
+> +++ b/drivers/xen/events/events_base.c
+> @@ -818,8 +818,7 @@ static void xen_evtchn_close(evtchn_port_t port)
+>   	struct evtchn_close close;
+>  =20
+>   	close.port =3D port;
+> -	if (HYPERVISOR_event_channel_op(EVTCHNOP_close, &close) !=3D 0)
+> -		BUG();
+> +	BUG_ON(HYPERVISOR_event_channel_op(EVTCHNOP_close, &close) !=3D 0);
+>   }
+>  =20
+>   /* Not called for lateeoi events. */
+> @@ -1270,9 +1269,8 @@ static int bind_ipi_to_irq(unsigned int ipi, unsi=
+gned int cpu)
+>   					      handle_percpu_irq, "ipi");
+>  =20
+>   		bind_ipi.vcpu =3D xen_vcpu_nr(cpu);
+> -		if (HYPERVISOR_event_channel_op(EVTCHNOP_bind_ipi,
+> -						&bind_ipi) !=3D 0)
+> -			BUG();
+> +		BUG_ON(HYPERVISOR_event_channel_op(EVTCHNOP_bind_ipi,
+> +						&bind_ipi) !=3D 0);
+>   		evtchn =3D bind_ipi.port;
+>  =20
+>   		ret =3D xen_irq_info_ipi_setup(cpu, irq, evtchn, ipi);
+> @@ -1983,9 +1981,8 @@ static void restore_cpu_virqs(unsigned int cpu)
+>   		/* Get a new binding from Xen. */
+>   		bind_virq.virq =3D virq;
+>   		bind_virq.vcpu =3D xen_vcpu_nr(cpu);
+> -		if (HYPERVISOR_event_channel_op(EVTCHNOP_bind_virq,
+> -						&bind_virq) !=3D 0)
+> -			BUG();
+> +		BUG_ON(HYPERVISOR_event_channel_op(EVTCHNOP_bind_virq,
+> +						&bind_virq) !=3D 0);
+>   		evtchn =3D bind_virq.port;
+>  =20
+>   		/* Record the new mapping. */
+> @@ -2009,9 +2006,8 @@ static void restore_cpu_ipis(unsigned int cpu)
+>  =20
+>   		/* Get a new binding from Xen. */
+>   		bind_ipi.vcpu =3D xen_vcpu_nr(cpu);
+> -		if (HYPERVISOR_event_channel_op(EVTCHNOP_bind_ipi,
+> -						&bind_ipi) !=3D 0)
+> -			BUG();
+> +		BUG_ON(HYPERVISOR_event_channel_op(EVTCHNOP_bind_ipi,
+> +						&bind_ipi) !=3D 0);
+>   		evtchn =3D bind_ipi.port;
+>  =20
+>   		/* Record the new mapping. */
+> @@ -2063,8 +2059,7 @@ void xen_poll_irq_timeout(int irq, u64 timeout)
+>   		poll.timeout =3D timeout;
+>   		set_xen_guest_handle(poll.ports, &evtchn);
+>  =20
+> -		if (HYPERVISOR_sched_op(SCHEDOP_poll, &poll) !=3D 0)
+> -			BUG();
+> +		BUG_ON(HYPERVISOR_sched_op(SCHEDOP_poll, &poll) !=3D 0);
+>   	}
+>   }
+>   EXPORT_SYMBOL(xen_poll_irq_timeout);
+>=20
 
-> 
-> My local gcc 11.1.1 (x86_64) does not produce any warnings/errors
-> 
 
-You should figure out whats up with that because it shouldn't compile
-with the gcc options that the kernel uses.
+--------------2B83BFF24BE5051433BBF49A
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-regards,
-dan carpenter
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------2B83BFF24BE5051433BBF49A--
+
+--Wz5p7El1rcjvRvf7l75EYY94uAItMXZLp--
+
+--IlpedywfmCkLoMf1IHADgzPswdTIkqihH
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmEmPUYFAwAAAAAACgkQsN6d1ii/Ey9t
+OQf8CSw+aY2dkHlnkjprUicXqHnR/kB8MdwEH33TrPHCTYPDaEU3h38greki4YQgWJ4SUXP7hcBD
+jpOI57EbsiKNU/KepJ4wclJWRbAxED39hw6Uwu0wBCvwphmxI57ssad2qE1WAWjZnv0xMFUTtM1N
+YkY/BGxr/acSSvYx+vi8Me0YbctUCwXivW1+NdUEdPNqMzUZdW5Ij+uUNqjCYi5gz/wVLxts9P5M
+jcmMQk3PdlNg6uJEFd7CDe95kNbhGCU2zFjFj1dmtmpUNsRoTBiw+4mnIgrsC9xY94TU+0nbGhsG
+ONt/e0F6dVSPd83cEGz6PKxVTLLDusGUvRSXWod5qA==
+=gFIh
+-----END PGP SIGNATURE-----
+
+--IlpedywfmCkLoMf1IHADgzPswdTIkqihH--
