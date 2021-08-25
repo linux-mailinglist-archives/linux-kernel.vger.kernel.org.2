@@ -2,77 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297F83F7BED
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8C13F7BF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242352AbhHYSAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 14:00:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234684AbhHYSAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 14:00:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F4EF60F35;
-        Wed, 25 Aug 2021 17:59:56 +0000 (UTC)
-Date:   Wed, 25 Aug 2021 18:59:53 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     will@kernel.org, ryabinin.a.a@gmail.com, andreyknvl@gmail.com,
-        dvyukov@google.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, elver@google.com
-Subject: Re: [PATCH v3 1/3] vmalloc: Choose a better start address in
- vm_area_register_early()
-Message-ID: <20210825175953.GI3420@arm.com>
-References: <20210809093750.131091-1-wangkefeng.wang@huawei.com>
- <20210809093750.131091-2-wangkefeng.wang@huawei.com>
+        id S242399AbhHYSBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 14:01:07 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:38909 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242390AbhHYSBD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 14:01:03 -0400
+Received: by mail-oi1-f180.google.com with SMTP id u25so532381oiv.5;
+        Wed, 25 Aug 2021 11:00:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SjZYAc+CzBfvGwYehqHA5XhyFyAkvf3Xf4yLc1LCyO8=;
+        b=s2eNTXv3jPVQ2b8NHftLfnNL+DHuYzVrtVNRryTVi30p9mhl0lbqIwe4k5bmV81qnx
+         5Ys0aRapgPX7EAcCeBwr5WUoGQ3bw43k4YytPAQWQTlO1wry1sypwsZazXre/+IAdf0t
+         favBWxbOs0YzzLhgKeay4RxkyaVRc6lsYzY4gRVts9J4c0LBviPprhuuTqGiADrW3nZG
+         rJpuxTt4W60XxWr7IChiJGwp7ZfaTG+CYlm+9GrfRAq2R/qmVFTTrqWy1R4wOQvEnePG
+         VzjVrljG2OKQvpCpCrurAw6sAScxnHIjByXZmTZTpX5pPFgUTfoLDjJbbdCzCBaOH//t
+         sMZw==
+X-Gm-Message-State: AOAM530QlgZzKt3oqmGWDAmb3pxgKIGTI7rtQFQrr0w2jF5Lvm5B7jhg
+        Ud/Sufk+JhtuTKjhvzuDlw==
+X-Google-Smtp-Source: ABdhPJwo5HsTSMzhVqr1Q1tJm/ToYs8A0NU8qfnSGGNhFZbGy2QDRsXrg7LexVTV0gskBRPeZON6dA==
+X-Received: by 2002:a05:6808:1586:: with SMTP id t6mr7871039oiw.83.1629914417392;
+        Wed, 25 Aug 2021 11:00:17 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v126sm123609oig.2.2021.08.25.11.00.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 11:00:16 -0700 (PDT)
+Received: (nullmailer pid 3022375 invoked by uid 1000);
+        Wed, 25 Aug 2021 18:00:15 -0000
+Date:   Wed, 25 Aug 2021 13:00:15 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sam Protsenko <semen.protsenko@linaro.org>,
+        devicetree@vger.kernel.org, Tomasz Figa <tomasz.figa@gmail.com>,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v3 5/8] dt-bindings: clock: samsung: convert Exynos4 to
+ dtschema
+Message-ID: <YSaFL6maujTOnSh3@robh.at.kernel.org>
+References: <20210825134056.219884-1-krzysztof.kozlowski@canonical.com>
+ <20210825134056.219884-6-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809093750.131091-2-wangkefeng.wang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210825134056.219884-6-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 05:37:48PM +0800, Kefeng Wang wrote:
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index d5cd52805149..1e8fe08725b8 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2238,11 +2238,17 @@ void __init vm_area_add_early(struct vm_struct *vm)
->   */
->  void __init vm_area_register_early(struct vm_struct *vm, size_t align)
->  {
-> -	static size_t vm_init_off __initdata;
-> -	unsigned long addr;
-> -
-> -	addr = ALIGN(VMALLOC_START + vm_init_off, align);
-> -	vm_init_off = PFN_ALIGN(addr + vm->size) - VMALLOC_START;
-> +	struct vm_struct *head = vmlist, *curr, *next;
-> +	unsigned long addr = ALIGN(VMALLOC_START, align);
-> +
-> +	while (head != NULL) {
+On Wed, 25 Aug 2021 15:40:53 +0200, Krzysztof Kozlowski wrote:
+> Merge Exynos4210 and Exynos4412 clock controller bindings to existing DT
+> schema.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  .../bindings/clock/exynos4-clock.txt          | 86 -------------------
+>  .../bindings/clock/samsung,exynos-clock.yaml  |  3 +
+>  .../clock/samsung,exynos4412-isp-clock.yaml   | 64 ++++++++++++++
+>  3 files changed, 67 insertions(+), 86 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/exynos4-clock.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos4412-isp-clock.yaml
+> 
 
-Nitpick: I'd use the same pattern as in vm_area_add_early(), i.e. a
-'for' loop. You might as well insert it directly than calling the add
-function and going through the loop again. Not a strong preference
-either way.
-
-> +		next = head->next;
-> +		curr = head;
-> +		head = next;
-> +		addr = ALIGN((unsigned long)curr->addr + curr->size, align);
-> +		if (next && (unsigned long)next->addr - addr > vm->size)
-
-Is greater or equal sufficient?
-
-> +			break;
-> +	}
->  
->  	vm->addr = (void *)addr;
-
-Another nitpick: it's very unlikely on a 64-bit architecture but not
-impossible on 32-bit to hit VMALLOC_END here. Maybe some BUG_ON.
-
--- 
-Catalin
+Reviewed-by: Rob Herring <robh@kernel.org>
