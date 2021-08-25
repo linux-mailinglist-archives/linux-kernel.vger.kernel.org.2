@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920543F711B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935263F7121
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhHYI2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 04:28:18 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55927 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229780AbhHYI2R (ORCPT
+        id S232764AbhHYIcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 04:32:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47702 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231697AbhHYIcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 04:28:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Ullo4cF_1629880048;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Ullo4cF_1629880048)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 25 Aug 2021 16:27:29 +0800
-Subject: Re: [PATCH linux-next] fs/ocfs2/dlm/dlmmaster.c: fix bugon.cocci
- warnings
-To:     CGEL <cgel.zte@gmail.com>, Mark Fasheh <mark@fasheh.com>,
-        akpm <akpm@linux-foundation.org>
-Cc:     Joel Becker <jlbec@evilplan.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Wed, 25 Aug 2021 04:32:52 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17P83KOB031074;
+        Wed, 25 Aug 2021 04:32:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=n9SHBptqzWZ2B6k5FIRVom2V/ZJEr2Jom/F7F5i63pA=;
+ b=KbvTTas8AhiorHuwWBEYl4/SCCxm4HR259SxeCpOXcUmH74O7LKEXMgG7r+KJcN7HWiR
+ PFyClVU7FdHIjMOgTob7cA0MS0Ae8civ/5USE38rJ5MPmeEPvQE9auQJQ7jYswpNbQ77
+ +f6Qif/EzClBeGh9he2AtmEiZaSRftRn3ke//QNst5Svx0da3SiFZHGZZ9oyew9Isf//
+ yz3TY5WceFpnJ0HFz6P40Kxtb40ZydQkKp10yyLjZFQj4uaSECbex68spANjzh4IxYhu
+ CQx5M5afw8i+ve7OsrAOxCxGV+k6OTInAwBZnHs7vBgI6ftmF84wIxg3NYQDYllmG7e+ +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3anhydgvmk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Aug 2021 04:32:06 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17P84LmI037127;
+        Wed, 25 Aug 2021 04:32:06 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3anhydgvkw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Aug 2021 04:32:06 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17P8HRcv015024;
+        Wed, 25 Aug 2021 08:32:04 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3ajrrheqhs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Aug 2021 08:32:04 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17P8VvJ514614974
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Aug 2021 08:31:57 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41C224C059;
+        Wed, 25 Aug 2021 08:31:57 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E35FC4C040;
+        Wed, 25 Aug 2021 08:31:56 +0000 (GMT)
+Received: from osiris (unknown [9.145.63.47])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 25 Aug 2021 08:31:56 +0000 (GMT)
+Date:   Wed, 25 Aug 2021 10:31:55 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     CGEL <cgel.zte@gmail.com>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-References: <20210825063125.70192-1-deng.changcheng@zte.com.cn>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <6c5bc597-8ab8-ab7e-6005-656660e9a17a@linux.alibaba.com>
-Date:   Wed, 25 Aug 2021 16:27:28 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+Subject: Re: [PATCH linux-next] s390:raw3270: Convert sysfs sprintf/snprintf
+ family to sysfs_emit
+Message-ID: <YSX/+4zj+fFQxtDa@osiris>
+References: <20210825064523.70563-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
-In-Reply-To: <20210825063125.70192-1-deng.changcheng@zte.com.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825064523.70563-1-deng.changcheng@zte.com.cn>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 7H_vkXazW-dx9DOCRH3lUxMKZ-hN5Xbi
+X-Proofpoint-GUID: -f2I0Wgove-Dh6SsBsmQishT1kutBbet
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-25_02:2021-08-25,2021-08-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ spamscore=0 mlxscore=0 suspectscore=0 bulkscore=0 mlxlogscore=800
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108250048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/25/21 2:31 PM, CGEL wrote:
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Tue, Aug 24, 2021 at 11:45:23PM -0700, CGEL wrote:
+> From: jing yangyang <jing.yangyang@zte.com.cn>
 > 
-> Use BUG_ON instead of a if condition followed by BUG.
-> 
-> Generated by: scripts/coccinelle/misc/bugon.cocci
+> Fix the following coccicheck warning:
+> ./drivers/s390/char/raw3270.c:1066:8-16: WARNING: use scnprintf or sprintf
+> ./drivers/s390/char/raw3270.c:1050:8-16: WARNING:use scnprintf or sprintf
+> ./drivers/s390/char/raw3270.c:1058:8-16: WARNING:use scnprintf or sprintf
 > 
 > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
-
-Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-
+> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 > ---
->  fs/ocfs2/dlm/dlmmaster.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ocfs2/dlm/dlmmaster.c b/fs/ocfs2/dlm/dlmmaster.c
-> index 227da5b..afaf9a7 100644
-> --- a/fs/ocfs2/dlm/dlmmaster.c
-> +++ b/fs/ocfs2/dlm/dlmmaster.c
-> @@ -2181,8 +2181,7 @@ static int dlm_pre_master_reco_lockres(struct dlm_ctxt *dlm,
->  		ret = dlm_do_master_requery(dlm, res, nodenum, &master);
->  		if (ret < 0) {
->  			mlog_errno(ret);
-> -			if (!dlm_is_host_down(ret))
-> -				BUG();
-> +			BUG_ON(!dlm_is_host_down(ret));
->  			/* host is down, so answer for that node would be
->  			 * DLM_LOCK_RES_OWNER_UNKNOWN.  continue. */
->  			ret = 0;
-> @@ -2238,8 +2237,7 @@ int dlm_drop_lockres_ref(struct dlm_ctxt *dlm, struct dlm_lock_resource *res)
->  		mlog(ML_ERROR, "%s: res %.*s, DEREF to node %u got %d\n",
->  		     dlm->name, namelen, lockname, res->owner, r);
->  		dlm_print_one_lock_resource(res);
-> -		if (r == -ENOMEM)
-> -			BUG();
-> +		BUG_ON(r == -ENOMEM);
->  	} else
->  		ret = r;
->  
-> 
+>  drivers/s390/char/raw3270.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+
+Ignoring comments and resending the same unmodified patch is not helpful.
