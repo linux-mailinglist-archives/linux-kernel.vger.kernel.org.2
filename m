@@ -2,130 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1873F7A76
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E085A3F7A7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbhHYQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:27:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28612 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230112AbhHYQ0z (ORCPT
+        id S235063AbhHYQ3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhHYQ3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:26:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629908768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=81MH9LvvmF94Xq/fdROYPDvLqRHwmN8vJwPNmh3G3RI=;
-        b=g4x9JWbAi1TmYe7z3C9zCbBxVolElUuCXawYVqLdlLsx9yk/7RwDT0cvw8JGkP5uqnlyH6
-        VOstPcRzpseBf3nl0vn16yBfrgAqLRMUJccvV75UUAH6+qn+3eVjlwBTbo2YKsmncFsenu
-        48re8Oig0Nxd1PL0uaYiZBydObtHjJ4=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-523-pe3KOs5nM665kgNCXrbVdw-1; Wed, 25 Aug 2021 12:26:07 -0400
-X-MC-Unique: pe3KOs5nM665kgNCXrbVdw-1
-Received: by mail-qt1-f200.google.com with SMTP id l24-20020ac84a98000000b00298c09593afso12920020qtq.22
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:26:07 -0700 (PDT)
+        Wed, 25 Aug 2021 12:29:10 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D827C0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:28:24 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j1so175385pjv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:28:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=msG8GEqXO6botd24sEhmeMAsEWWJElu/gzrYBnFNGJY=;
+        b=XiA3Fr4CzgyAUIS1P1KNXiyEs3I2mFNlEfCaflNW3grig51wBvKIBf6ZSqZ0/IapQ7
+         0mXPzYs/Eo6tK6eDiucPNINHs/6pVbeiTLTl0X9GPCoGCZNREz3GSO0kW/qMeGhD4NJw
+         gM6zQC+4pnlz/OLPIDvdjglLokhlCl/AJOMOI3yEY9F0eldkwWSG0Yr8PcH+xT5iCEG7
+         NkdvkJTZ9di3VCHs1x55iMGf1mg/LyirzyFb+/PTIhiQfcG6UL5GxRwIMz6w1lW2uMo/
+         4bKbNXTbtn3UAgEXKJRdD96vlwtgNAs9crEoLpBDuMsINfsPqlt3t6GQG0r9eam5gzWj
+         09Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=81MH9LvvmF94Xq/fdROYPDvLqRHwmN8vJwPNmh3G3RI=;
-        b=AjNYbUdVSFDa+2c4+z/d3NuDvKFmVi8Css8H70ztnw7koC0lWPQ5R8ZTOPgCKtAv6w
-         r/zM2Y9sSf1dyl5fNDSF0cHXZe8IQne1FhN0rPJdRPEiDoX/cMC+o6Ar31N0NjLMXLbe
-         BIOGXWP88IvrpQODyrHWqveW7JEZnSaLSk/HXJw06c4xtBfQzVoxWyPXKm4WxnNL3rYX
-         aO5rWDX/ayqxjfvYJoQ2a9ousOoHkz9FEekvOyd3tpK1Oz0NNlZPx9LH0wcMOgKprUjf
-         7qfogxrAcmURzxULkvTmfYNay7vCFiwX6q/JjdFqEvTaxWb9IZ6xtMH8g8chocFkv82a
-         iquQ==
-X-Gm-Message-State: AOAM530VD1XYyRBYc/h1AwCQtHQ20KRxILs+n6R2yhnrIJ5a2O6k/Ntu
-        5ivumMxIk0wHJN4UvXT7V7h6IuXFdhtVJLIOnrGeUnqAZnktK7P0stNUmR0Eeid1A1SeF3jCnNY
-        xRFaWasofutJBqRmZlXN4V9Uz
-X-Received: by 2002:a05:620a:cd0:: with SMTP id b16mr33236663qkj.136.1629908766818;
-        Wed, 25 Aug 2021 09:26:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2hbGvq6X6Eeo1e/X0RrlLiDx0IZFm+v9074G6Af3gBq7QNBz9w7hpyaUv9eJGkjMTtQrdGg==
-X-Received: by 2002:a05:620a:cd0:: with SMTP id b16mr33236646qkj.136.1629908766609;
-        Wed, 25 Aug 2021 09:26:06 -0700 (PDT)
-Received: from [192.168.8.104] (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id c68sm327240qkf.48.2021.08.25.09.26.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 09:26:06 -0700 (PDT)
-Message-ID: <88b5fbe60c95bcdf42353bec9f8c48aefa864a31.camel@redhat.com>
-Subject: Re: [PATCH v3] drm/dp_mst: Fix return code on sideband message
- failure
-From:   Lyude Paul <lyude@redhat.com>
-To:     khsieh@codeaurora.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, rsubbia@codeaurora.org,
-        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 25 Aug 2021 12:26:03 -0400
-In-Reply-To: <64049ef6c598910c1025e0e5802bb83e@codeaurora.org>
-References: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
-         <87zguy7c5a.fsf@intel.com>
-         <a514c19f712a6feeddf854dc17cb8eb5@codeaurora.org>
-         <2da3949fa3504592da42c9d01dc060691c6a8b8b.camel@redhat.com>
-         <d9ec812b4be57e32246735ca2f5e9560@codeaurora.org>
-         <79c5a60fc189261b7a9ef611acd126a41f921593.camel@redhat.com>
-         <696a009e2ab34747abd12bda03c103c7@codeaurora.org>
-         <e725235a77935184cd20dab5af55da95b28d9e88.camel@redhat.com>
-         <64049ef6c598910c1025e0e5802bb83e@codeaurora.org>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        bh=msG8GEqXO6botd24sEhmeMAsEWWJElu/gzrYBnFNGJY=;
+        b=fzO+Q5yvs5tn+M0GSYwc8GNLJCK/4RzkM6pvz63JUtn7M0UutZseS3zHfhZRBVN51s
+         ui2cw+pEyGtUn5/+uTysb7++1WXpnX0DhGOiwXyfc2RmEq1YtoCQWhZlHQW/pNd3dRkH
+         C288R49LmyMo6dHA8bmw0HJaWy65TgpHKjmri3sjWqV20514f2AOsF1oW9omwJ+WA01d
+         ZPY2q8jPUiGACXGd1argu1R/uXO8dot0rtujtB/j1J1WakYlEQbn7LafUOZixlBbk9MV
+         a1aeH8flqZ5yocwR7CtsKaF4hr7HAkUQ5HrWo3fCj/nrH6KmiYvU9/jsfARs1mQxFKPn
+         3M6Q==
+X-Gm-Message-State: AOAM532ZyEe1rsantYDwergL5KxII9w5iFzrdmk6CHG43TvsF5MOrX9r
+        rjsOMkkkdWdtLTdPGFbndRQ=
+X-Google-Smtp-Source: ABdhPJzczKOrK6z7TiC3cmttuYWtALCjvCq4pWxfvOXaZS8qNdAvp44pw2RgUumLtAiaoZ/EnZ86qQ==
+X-Received: by 2002:a17:90b:120a:: with SMTP id gl10mr1939629pjb.234.1629908903748;
+        Wed, 25 Aug 2021 09:28:23 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with UTF8SMTPSA id x16sm496482pgc.49.2021.08.25.09.28.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 09:28:23 -0700 (PDT)
+Message-ID: <6344d757-7ef5-f6af-5f27-9c88f5befcbf@gmail.com>
+Date:   Wed, 25 Aug 2021 18:28:14 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.2
+Subject: Re: [PATCH v4 01/12] firmware: arm_scmi: Perform earlier cinfo lookup
+ call in do_xfer
+Content-Language: en-US
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+References: <20210824135941.38656-1-cristian.marussi@arm.com>
+ <20210824135941.38656-2-cristian.marussi@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210824135941.38656-2-cristian.marussi@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch was pushed yes (was part of drm-misc-next-2021-07-29), seems like it
-just hasn't trickled down to linus's branch quite yet.
 
-On Wed, 2021-08-25 at 09:06 -0700, khsieh@codeaurora.org wrote:
-> On 2021-07-27 15:44, Lyude Paul wrote:
-> > Nice timing, you literally got me as I was 2 minutes away from leaving 
-> > work
-> > for the day :P. I will go ahead and push it now.
-> > 
-> Hi Lyude,
-> 
-> Had you pushed this patch yet?
-> We still did not see this patch at msm-nex and v5.10 branch.
-> Thanks,
-> 
-> 
-> > BTW - in the future I recommend using dim to add Fixes: tags as it'll 
-> > add Cc:
-> > to stable as appropriate (this patch in particular should be Cc:
-> > stable@vger.kernel.org # v5.3+). will add these tags when I push it
-> > 
-> > On Tue, 2021-07-27 at 15:41 -0700, khsieh@codeaurora.org wrote:
-> > > On 2021-07-27 12:21, Lyude Paul wrote:
-> > > > On Thu, 2021-07-22 at 15:28 -0700, khsieh@codeaurora.org wrote:
-> > > > > 
-> > > > > It looks like this patch is good to go (mainlined).
-> > > > > Anything needed from me to do?
-> > > > > Thanks,
-> > > > 
-> > > > Do you have access for pushing this patch? If not let me know and I
-> > > > can
-> > > > go
-> > > > ahead and push it to drm-misc-next for you.
-> > > no, I do not have access to drm-misc-next.
-> > > Please push it for me.
-> > > Thanks a lots.
-> > > 
-> 
 
+On 8/24/2021 3:59 PM, Cristian Marussi wrote:
+> Lookup cinfo data early in do_xfer so as to avoid any further init work
+> on xfer structure in case of error.
+> 
+> No functional change.
+> 
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
-
+Florian
