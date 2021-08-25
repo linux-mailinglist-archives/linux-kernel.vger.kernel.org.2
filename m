@@ -2,139 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DAE3F71B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9603F720E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239598AbhHYJaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhHYJaB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:30:01 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689EBC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:29:15 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id w4so40974032ljh.13
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:29:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J2/OQEffn/ha/SHF1AP1mfEI0+u4GaQpxzyiwpPvr08=;
-        b=HgnFsVv3taOdV0Fwq/Gg1EnGRV5idZHsFWLEzxJQs2i3eqnAirD/0prcm+4Z0uJQ4n
-         C4cYOQh246/Ec6+zrhFhMl04DJ2tAbNoPi1TCYbZi6IYhjvvlsI02UtvUJ/VPx67l9lR
-         oRVrRPAwyMg9+MbM5wzBmnGRncsDS+KNKYh6A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J2/OQEffn/ha/SHF1AP1mfEI0+u4GaQpxzyiwpPvr08=;
-        b=pvpX5eMkONGDkwLXiS/DzwV9BkYqxUwCe98yg5vXQ+tM+OdxDwOrHh4JVshh7TMBWy
-         w2l4Heh+DrKRD2aYbZo+QJ2PxO4PlkFnb+QQ92JqIjgMwed2gry21sHBpHrLl1WTfuXH
-         5dt4NzhVpJtA6v7Erv1aochQygzXGtqcC97vGGQwc8DvCjjd2HtmLOSduKJKyu+7Hvpp
-         PCbxkHD8ymVSJuJj6iVMK/xM++Tn1utZn7/U2YCnUgsHp/HPBF2YakXrf0FH0O7a0ier
-         9b+U6v6nSCYuww9qhyYUgqmD4cgCDWRdvRrRbEa9HDj2vj4POjtqbxK08pzWVffp8KY7
-         rrsA==
-X-Gm-Message-State: AOAM533g6ciglucq/128pMIJrNqyC2yoTlFAnFW1WGAPeR+T8MklM1Pw
-        rVld3iR11sRXg3Bo+OWRarloNQ==
-X-Google-Smtp-Source: ABdhPJzJ03y84acKkitqDj2TH2dOhiplmNOK5xQOC2FECadNDLsegJ9CbL4G62c7gZ/OWtbS34L71A==
-X-Received: by 2002:a2e:7005:: with SMTP id l5mr22066141ljc.355.1629883753790;
-        Wed, 25 Aug 2021 02:29:13 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id u20sm490639lfr.272.2021.08.25.02.29.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 02:29:13 -0700 (PDT)
-Subject: Re: [PATCH v1 2/3] lib/sort: Introduce rotate() to circular shift an
- array of elements
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Dan Scally <djrscally@gmail.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20210824133351.88179-1-andriy.shevchenko@linux.intel.com>
- <20210824133351.88179-2-andriy.shevchenko@linux.intel.com>
- <4078b7a3-2ec2-ba87-d23c-b8daed7386fe@rasmusvillemoes.dk>
- <20210825080832.GN3@paasikivi.fi.intel.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <8bc8d977-5204-6f5b-8a1c-f2338c141993@rasmusvillemoes.dk>
-Date:   Wed, 25 Aug 2021 11:29:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236405AbhHYJl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:41:27 -0400
+Received: from vmi485042.contaboserver.net ([161.97.139.209]:34606 "EHLO
+        gentwo.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235365AbhHYJl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:41:26 -0400
+X-Greylist: delayed 595 seconds by postgrey-1.27 at vger.kernel.org; Wed, 25 Aug 2021 05:41:25 EDT
+Received: by gentwo.de (Postfix, from userid 1001)
+        id C21F2B0021C; Wed, 25 Aug 2021 11:30:43 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.de (Postfix) with ESMTP id C16DDB00125;
+        Wed, 25 Aug 2021 11:30:43 +0200 (CEST)
+Date:   Wed, 25 Aug 2021 11:30:43 +0200 (CEST)
+From:   Christoph Lameter <cl@gentwo.de>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [patch V3 8/8] mm: vmstat_refresh: avoid queueing work item if
+ cpu stats are clean
+In-Reply-To: <20210824152646.948424573@fuller.cnet>
+Message-ID: <alpine.DEB.2.22.394.2108251121260.317297@gentwo.de>
+References: <20210824152423.300346181@fuller.cnet> <20210824152646.948424573@fuller.cnet>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20210825080832.GN3@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2021 10.08, Sakari Ailus wrote:
-> Hi Rasmus, Andy,
-> 
+On Tue, 24 Aug 2021, Marcelo Tosatti wrote:
 
->>> + * @num: number of elements
->>> + * @size: size of each element
->>> + * @by: number of elements to rotate by
->>
->> Perhaps add (0 <= @by < @num) or something like that, and/or start the
->> implementation with "if (num <= 1) return; if (by >= num) by %= num;"
-> 
-> The latter could be done unconditionally.
+> It is not necessary to queue work item to run refresh_vm_stats
+> on a remote CPU if that CPU has no dirty stats and no per-CPU
+> allocations for remote nodes.
 
-Yes (provided num is tested at least for being non-zero first, but then
-it's mostly free to check <= 1 instead), but in the vast majority of
-cases the caller would pass a sane value of by, and an unconditional %=
-would thus waste 100+ clock cycles for nothing.
+The issue in the past was whether the effort to check is adding overhead
+that is comparable to run refresh_vm_stats. YMMV.
 
->>> +	struct {
->>> +		size_t begin, end;
->>> +	} arr[2] = {
->>> +		{ .begin = 0, .end = by - 1 },
->>> +		{ .begin = by, .end = num - 1 },
->>> +	};
->>
->> I see you just copied-and-adapted, but I think the code would be much
->> easier to read without all those plus/minus ones all over.
-> 
-> Now that I think about it, they can be just removed. In that case end
-> refers to the element following end, rather than the last element.
+> This fixes sosreport hang (which uses vmstat_refresh) with
+> spinning SCHED_FIFO process.
 
-Yes, as we almost always do array indexing in C... the math simply ends
-up coming out more naturally that way in the majority of cases.
+Ughhh.. SCHED_FIFO is evil....
 
->> Perhaps add a small self-test, it's not at all obvious how this works
->> (perhaps it's some standard CS101 algorithm for rotating in-place, I
->> don't know, but even then an implementation can have off-by-ones and
->> corner cases).
-> 
-> I don't know, I wrote this to fix a bug in the ipu3-cio2 driver. ;-) The
-> hardware, and so the arguments, were static. Nice to see it would be useful
-> elsewhere almost as-is.
+>  #ifdef CONFIG_PROC_FS
+> +static bool need_drain_remote_zones(int cpu)
 
-Well, Andy hasn't actually shown that it would be useful anywhere else.
-I think I'd like to see another user. Just doing "move this helper to
-lib/ because we can reuse choose-a-proper-swap-func and thus implement
-this perhaps a tiny bit faster" without considering whether it's even
-performance-critical in the sole user is not a good idea IMO.
+Well this is not related to vm stats but per cpu pages of the page
+allocator. Maybe call this need_drain_remote_pcp or something?
 
-Especially since it can affect code generation of the much more
-important (at least, has many more users) sort() function - the
-do_swap() function grows another user, so could make the compiler end up
-choosing not to inline it anymore.
+> @@ -1860,8 +1885,12 @@ int vmstat_refresh(struct ctl_table *tab
+>  		   void *buffer, size_t *lenp, loff_t *ppos)
+>  {
+>  	long val;
+> -	int err;
+> -	int i;
+> +	int i, cpu;
+> +	struct work_struct __percpu *works;
+> +
+> +	works = alloc_percpu(struct work_struct);
 
-There's another slightly simpler way to implement rotate(), which might
-end up having more users (though I can't find any currently): Add a
-reverse() helper, then rotate() can be done as reverse(a, 0, n);
-reverse(a, 0, k); reverse(a, k, n-k);. If my math is right, the current
-suggested rotate() ends up doing n-gcd(n,k) swaps, while the
-implementation in terms of a reverse() would do n-1 if either n or k is
-odd, otherwise n, calls to swap().
+Do malloc instead? Using the percpu allocator frequently in a function to
+allocator temporary variables can cause needless fragmentation there. The
+percpu allocator does not have the frag management features of the slab
+allocators.
 
-Rasmus
