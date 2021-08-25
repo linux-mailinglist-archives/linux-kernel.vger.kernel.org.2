@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1F03F6D8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 04:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908313F6D8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 04:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238802AbhHYCvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 22:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
+        id S238814AbhHYCwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 22:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238839AbhHYCvs (ORCPT
+        with ESMTP id S238835AbhHYCwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 22:51:48 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC1DC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 19:51:03 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id j187so20028457pfg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 19:51:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rKfFXl/BbyfwmX4rHQZ3Hn9r2Vj8gM4pm+E9o5QNLKs=;
-        b=oaGWPYaI37IRjoaH+TWQNDm536ZSBnteIXFbFsJIRWONl2RyxSjvpCkJJrafPE3qwl
-         pl0f54VAY8Mz5RYN+8THqTSTxc21EI+8plqLain6+3Q9Gou8B6mXg0c3sjVuLkmW7d8T
-         ZU62l23yObbhBMHnhzBMg2wEecMY0BP6dWXHI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rKfFXl/BbyfwmX4rHQZ3Hn9r2Vj8gM4pm+E9o5QNLKs=;
-        b=bKjppvTtvGqP/YNBo/GQ36IGxo0ZNX7DE/Sv5aTpATsj6IjphSIxZ+zNlX28S/8BvG
-         mTtv6e2RNULgpnXwtITMa3KddYNIoYPhQ61aznxL3FwLkQGMwsOP+Ttv2OEeTct0JbrJ
-         COuwlLRRNvaZRlSOssolWJ6j1NnSObbRdgi9M9HvxBqpRi7ORhnX6lYccLXraMbQgb6k
-         c5GPNq8tl813dhADa8Dst3t20k5zsiUF38VtZd8AWk3Ng5W0aC80yTz8OgQId96+kuVB
-         L+B/QC0nGsjvBdkLbby0HaCNKUt8pW9fM6yn+4hAWckTmyxEulq9Rnh2CgvF73Fx7++O
-         DTRA==
-X-Gm-Message-State: AOAM5332sc82ZuoSUEG7xR9kd/bfPPO9B73Dead0cQfG29laXvnfpSYQ
-        9gQoYrolehShbKWRGH2E1+dl+Q==
-X-Google-Smtp-Source: ABdhPJwBwxXyy2P4z2kutpUEa/D8L7EFlg94RCzvp0UEeNsPtaucsoMQia1pwsRo6utZst0JN8IfvA==
-X-Received: by 2002:a62:e914:0:b029:3dd:a1d0:be57 with SMTP id j20-20020a62e9140000b02903dda1d0be57mr42699866pfh.11.1629859863420;
-        Tue, 24 Aug 2021 19:51:03 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:d273:c78c:fce8:a0e2])
-        by smtp.gmail.com with UTF8SMTPSA id nl9sm3856717pjb.33.2021.08.24.19.51.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 19:51:03 -0700 (PDT)
-From:   David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        David Stevens <stevensd@chromium.org>
-Subject: [PATCH v3 4/4] KVM: mmu: remove over-aggressive warnings
-Date:   Wed, 25 Aug 2021 11:50:09 +0900
-Message-Id: <20210825025009.2081060-5-stevensd@google.com>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-In-Reply-To: <20210825025009.2081060-1-stevensd@google.com>
-References: <20210825025009.2081060-1-stevensd@google.com>
+        Tue, 24 Aug 2021 22:52:07 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFC0C06179A;
+        Tue, 24 Aug 2021 19:51:20 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GvVq75hBkz9sWl;
+        Wed, 25 Aug 2021 12:51:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629859876;
+        bh=knKjxsyznS4IE1GXjcLUhTL3fKLtXd+Srj38s+xqkr8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nAh4QQXSJb+hXJ8hob6lzPXg8XTtv7t5D/jrH1QgBaumrkqnaFxDwdb/d/NkEew6C
+         n6H+ZpFvcfA2bmduJl5wFiE/LFaYo+GDxrH+V8elBmiBqR3xD0os+2JS4ai1cOalq2
+         aHPujjYkKjZiEcfWCV6oZIb5FXmt8POxZmcgPxmD4br58apvxI5NcZUhtC4vnP3yxa
+         aLVBMPjat0dgsHYD3Uk7tOA3ExoVRW7R8zbytFKVerC8tml6TcqtcqwsZmlpJtp2JB
+         KiV7dANokqmfuY7vLtD1gUTDRqRIgCugFzIai/DdgPhVYL08FclP6++0AKs8kQ2cJ3
+         W7OM1LXEVJRsA==
+Date:   Wed, 25 Aug 2021 12:51:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Fangzhi Zuo <Jerry.Zuo@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the amdgpu tree
+Message-ID: <20210825125114.498e2a61@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/BD=SuAckv1DE9tzzZX_2=pj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
+--Sig_/BD=SuAckv1DE9tzzZX_2=pj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Remove two warnings that require ref counts for pages to be non-zero, as
-mapped pfns from follow_pfn may not have an initialized ref count.
+Hi all,
 
-Signed-off-by: David Stevens <stevensd@chromium.org>
----
- arch/x86/kvm/mmu/mmu.c | 7 -------
- virt/kvm/kvm_main.c    | 2 +-
- 2 files changed, 1 insertion(+), 8 deletions(-)
+After merging the amdgpu tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index d2b99c2f7dfa..88ceded7f022 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -623,13 +623,6 @@ static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
- 
- 	pfn = spte_to_pfn(old_spte);
- 
--	/*
--	 * KVM does not hold the refcount of the page used by
--	 * kvm mmu, before reclaiming the page, we should
--	 * unmap it from mmu first.
--	 */
--	WARN_ON(!kvm_is_reserved_pfn(pfn) && !page_count(pfn_to_page(pfn)));
--
- 	if (is_accessed_spte(old_spte))
- 		kvm_set_pfn_accessed(pfn);
- 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 5c47ea93df23..e5ddf238ec64 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -168,7 +168,7 @@ bool kvm_is_zone_device_pfn(kvm_pfn_t pfn)
- 	 * the device has been pinned, e.g. by get_user_pages().  WARN if the
- 	 * page_count() is zero to help detect bad usage of this helper.
- 	 */
--	if (!pfn_valid(pfn) || WARN_ON_ONCE(!page_count(pfn_to_page(pfn))))
-+	if (!pfn_valid(pfn) || !page_count(pfn_to_page(pfn)))
- 		return false;
- 
- 	return is_zone_device_page(pfn_to_page(pfn));
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
+drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_hw_sequencer.c: In f=
+unction 'apply_single_controller_ctx_to_hw':
+drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_hw_sequencer.c:1495:=
+20: warning: unused variable 'params' [-Wunused-variable]
+ 1495 |  struct drr_params params =3D {0};
+      |                    ^~~~~~
 
+Introduced by commit
+
+  5de27e1d6755 ("drm/amd/display: Add DP 2.0 SST DC Support")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/BD=SuAckv1DE9tzzZX_2=pj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmElsCIACgkQAVBC80lX
+0GzKhgf9HwypSqQYnqZxjgpz4lU+UcDJbsd0+LRsQFxVt906KUEJ9oxLfIFr8ln/
+hTjZmlLyYrVfo6VaSNT+DF3DZ34Gi0xzVzIOozwr1iq91uzArbiXM4cSdTYIsRG7
+I19hSlv60Or24Y0+4fo1fn+zHzWYi4WXXDn/QyEpk3rdANAndkb4NxZq7qFwZmwO
+0nhymak/n12CoU+j7I7GRG0pL/roWhw3tMvrQpcJT95Sfevn6TWJmrQd4fUMEOLk
+MNLzHL5saJOdiU9RS8JGUoUMwp8Ru10yf/X/wApMI2v5clIxqD8zP867xeQxlUbq
+/HvseUD7sIwhozgj3+Q0+ULlfaZYPA==
+=KhEu
+-----END PGP SIGNATURE-----
+
+--Sig_/BD=SuAckv1DE9tzzZX_2=pj--
