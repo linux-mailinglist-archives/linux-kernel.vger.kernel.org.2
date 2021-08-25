@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108B93F799D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE363F79A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241956AbhHYQBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:01:41 -0400
-Received: from mga14.intel.com ([192.55.52.115]:15524 "EHLO mga14.intel.com"
+        id S242007AbhHYQCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:02:12 -0400
+Received: from mga07.intel.com ([134.134.136.100]:32818 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241599AbhHYQBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:01:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="217271100"
+        id S241763AbhHYQBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 12:01:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="281267278"
 X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="217271100"
+   d="scan'208";a="281267278"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 09:00:44 -0700
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 09:00:45 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="494317276"
+   d="scan'208";a="494317280"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by fmsmga008.fm.intel.com with ESMTP; 25 Aug 2021 09:00:44 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -28,9 +28,9 @@ Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
         thiago.macieira@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
         chang.seok.bae@intel.com
-Subject: [PATCH v10 15/28] x86/arch_prctl: Create ARCH_SET_STATE_ENABLE/ARCH_GET_STATE_ENABLE
-Date:   Wed, 25 Aug 2021 08:54:00 -0700
-Message-Id: <20210825155413.19673-16-chang.seok.bae@intel.com>
+Subject: [PATCH v10 16/28] x86/fpu/xstate: Support both legacy and expanded signal XSTATE size
+Date:   Wed, 25 Aug 2021 08:54:01 -0700
+Message-Id: <20210825155413.19673-17-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210825155413.19673-1-chang.seok.bae@intel.com>
 References: <20210825155413.19673-1-chang.seok.bae@intel.com>
@@ -38,31 +38,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch_prctl(ARCH_SET_STATE_ENABLE, u64 bitmask)
-    Some XSTATE features, such as AMX, are unavailable to applications
-    until that process explicitly requests them via this call. Requests can
-    be made for any number of valid user XSTATEs in a single call. This
-    call is intended to be invoked very early in process initialization. A
-    forked child inherits access, but permission is reset upon exec. There
-    is no concept of un-requesting XSTATE access.
-    Return codes:
-        0: success (including repeated calls)
-        EINVAL: no hardware feature for the request
+Prepare to support two XSTATE sizes on the signal stack -- legacy and
+expanded. Legacy programs have not requested access to AMX (or later
+features), and the XSTATE on their signal stack can include up through
+AVX-512.
 
-arch_prctl(ARCH_GET_STATE_ENABLE, u64 *bitmask)
-    Return the bitmask of permitted user XSTATE features. If XSAVE is
-    disabled, the bitmask indicates only legacy states.
+Programs that request access to AVX (and/or later features) will have an
+uncompressed XSTATE that includes those features. If such program that also
+use the sigaltstack, they must assure that their sigaltstack is large
+enough to handle that full XSTATE format. (This is most easily done by
+using signal.h from glibc 2.34 or later)
 
-The permission is checked at every XSTATE buffer expansion: e.g.
-XFD-induced #NM event, and ptracer's XSTATE injection. When no permission
-is found, inform userspace via SIGSEGV or with error code.
-
-The notion of granted permission is broadcast to all threads in a process.
-But a new task may have a race condition. Reference the group leader's
-permission only.
-
-Rename the third argument for do_arch_prctl_common() to reflect its generic
-use.
+Introduce a new XSTATE size variable for the legacy stack and some helpers.
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
@@ -70,354 +57,267 @@ Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
 Changes from v9:
-* Simplify and improve the implementation.
-* Use cpu_feature_enabled() instead of boot_cpu_has(). (Borislav Petkov)
-
-Changes from v8:
-* Update arch_prctl prototype for consistency with other arch_prctl's. It
-  now takes an address of return bitmask as a parameter.
-* Optimize the reset function.
-
-Changes from v7:
-* Rename the syscalls. (Thiago Macieira and Dave Hansen)
-* If XSAVE is disabled, assure that syscall correctly indicates legacy
-  states. (Thiago Macieira and Dave Hansen)
+* Use get_group_state_perm() to check the permission.
 
 Changes from v6:
-* Add state bitmap param to proposed syscall. (Thiago Macieira)
-* Add companion syscall to return the current permission bitmap.
-* Update the ptrace path to return EFAULT when no permission to write
-  XTILEDATA.
-* Update do_arch_prctl_common().
+* Massage the code comments.
 
-Changes from v5:
-* Switched to per-process permission. (Based on the discussion on LKML)
+Changes form v5:
+* Added as a new patch.
 ---
- arch/x86/include/asm/fpu/types.h  | 12 +++++
- arch/x86/include/asm/fpu/xstate.h | 31 ++++++++++++
- arch/x86/include/asm/proto.h      |  2 +-
- arch/x86/include/uapi/asm/prctl.h |  3 ++
- arch/x86/kernel/fpu/core.c        |  7 +--
- arch/x86/kernel/fpu/regset.c      | 17 ++++---
- arch/x86/kernel/fpu/xstate.c      | 83 +++++++++++++++++++++++++++++++
- arch/x86/kernel/process.c         |  8 ++-
- arch/x86/kernel/process_64.c      |  4 ++
- arch/x86/kernel/traps.c           |  8 +--
- 10 files changed, 159 insertions(+), 16 deletions(-)
+ arch/x86/include/asm/fpu/internal.h | 23 +++++++++--
+ arch/x86/include/asm/fpu/xstate.h   |  5 ++-
+ arch/x86/kernel/fpu/init.c          |  1 +
+ arch/x86/kernel/fpu/signal.c        | 63 ++++++++++++++++++++---------
+ arch/x86/kernel/fpu/xstate.c        | 15 +++++++
+ 5 files changed, 82 insertions(+), 25 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-index 0cc9f6c5a10c..51acc637ca98 100644
---- a/arch/x86/include/asm/fpu/types.h
-+++ b/arch/x86/include/asm/fpu/types.h
-@@ -336,6 +336,18 @@ struct fpu {
- 	 */
- 	unsigned long			avx512_timestamp;
- 
-+	/*
-+	 * @state_perm:
-+	 *
-+	 * This bitmap indicates the permission for dynamic state
-+	 * components, which should be the same in a process.
-+	 *
-+	 * Always reference group_leader's value via
-+	 * get_group_dynamic_state_perm() as it readily represents the
-+	 * process's state permission.
-+	 */
-+	u64				dynamic_state_perm;
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index 1aa8bc75b24d..a7e39862df30 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -337,15 +337,30 @@ static inline void os_xrstor(struct xregs_state *xstate, u64 mask)
+  */
+ static inline int xsave_to_user_sigframe(struct xregs_state __user *buf)
+ {
++	u32 lmask, hmask;
++	u64 mask;
++	int err;
 +
  	/*
- 	 * @state_mask:
- 	 *
+ 	 * Include the features which are not xsaved/rstored by the kernel
+ 	 * internally, e.g. PKRU. That's user space ABI and also required
+ 	 * to allow the signal handler to modify PKRU.
+ 	 */
+-	u64 mask = xfeatures_mask_uabi();
+-	u32 lmask = mask;
+-	u32 hmask = mask >> 32;
+-	int err;
++	mask = xfeatures_mask_uabi();
++
++	/*
++	 * Exclude dynamic user states for non-opt-in threads.
++	 */
++	if (xfeatures_mask_user_dynamic) {
++		struct fpu *fpu = &current->thread.fpu;
++
++		mask &= fpu->dynamic_state_perm ?
++			fpu->state_mask :
++			~xfeatures_mask_user_dynamic;
++	}
++
++	lmask = mask;
++	hmask = mask >> 32;
+ 
+ 	/*
+ 	 * Clear the xsave header first, so that reserved fields are
 diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index cbe19e05b5c9..450537b0b92f 100644
+index 450537b0b92f..d896061933bb 100644
 --- a/arch/x86/include/asm/fpu/xstate.h
 +++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -157,6 +157,37 @@ unsigned int calculate_xstate_buf_size_from_mask(u64 mask);
- void *get_xsave_addr(struct fpu *fpu, int xfeature_nr);
- int realloc_xstate_buffer(struct fpu *fpu, u64 mask);
- void free_xstate_buffer(struct fpu *fpu);
-+
-+/**
-+ * get_group_dynamic_state_perm - Get a per-process dynamic state perm
-+ * @tsk:	A struct task_struct * pointer
-+ * Return:	A bitmap to indicate which state permission is set.
+@@ -145,10 +145,13 @@ extern void __init update_regset_xstate_info(unsigned int size,
+  *				contains all the enabled state components.
+  * @user_size:			The size of user-space buffer for signal and
+  *				ptrace frames, in the non-compacted format.
++ * @user_minsig_size:		The non-compacted legacy xstate size for signal.
++ *				Legacy programs do not request to access dynamic
++ *				states.
+  */
+ struct fpu_xstate_buffer_config {
+ 	unsigned int min_size, max_size;
+-	unsigned int user_size;
++	unsigned int user_size, user_minsig_size;
+ };
+ 
+ extern struct fpu_xstate_buffer_config fpu_buf_cfg;
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index cd1f3114f3ca..75bacda2ab87 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -210,6 +210,7 @@ static void __init fpu__init_system_xstate_size_legacy(void)
+ 	fpu_buf_cfg.min_size = xstate_size;
+ 	fpu_buf_cfg.max_size = xstate_size;
+ 	fpu_buf_cfg.user_size = xstate_size;
++	fpu_buf_cfg.user_minsig_size = xstate_size;
+ }
+ 
+ /* Legacy code to initialize eager fpu mode. */
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index fe2732db6d6b..8273e9122ccb 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -15,9 +15,25 @@
+ #include <asm/sigframe.h>
+ #include <asm/trace/fpu.h>
+ 
++/*
++ * Record the signal xstate size and feature bits. Exclude dynamic user
++ * states. See fpu__init_prepare_fx_sw_frame(). The opt-in tasks will
++ * dynamically adjust the data.
 + */
-+static inline u64 get_group_dynamic_state_perm(struct task_struct *tsk)
+ static struct _fpx_sw_bytes fx_sw_reserved __ro_after_init;
+ static struct _fpx_sw_bytes fx_sw_reserved_ia32 __ro_after_init;
+ 
++static unsigned int current_sig_xstate_size(void)
 +{
-+	return tsk->group_leader->thread.fpu.dynamic_state_perm;
++	return get_group_state_perm(current) & xfeatures_mask_user_dynamic ?
++	       fpu_buf_cfg.user_size : fpu_buf_cfg.user_minsig_size;
 +}
 +
-+/**
-+ * dynamic_state_permitted - Check a task's permission for indicated
-+ *			     features.
-+ * @tsk:	A struct task_struct * pointer
-+ * @state_mask:	A bitmap of queried features
-+ * Return:	true if all of the queried features are permitted;
-+ *		otherwise, false.
-+ */
-+static inline bool dynamic_state_permitted(struct task_struct *tsk, u64 state_mask)
++static inline int extend_sig_xstate_size(unsigned int size)
 +{
-+	u64 dynamic_state_mask = state_mask & xfeatures_mask_user_dynamic;
-+
-+	return ((dynamic_state_mask & get_group_dynamic_state_perm(tsk)) ==
-+		dynamic_state_mask);
++	return use_xsave() ? size + FP_XSTATE_MAGIC2_SIZE : size;
 +}
 +
-+void reset_dynamic_state_perm(struct task_struct *tsk);
-+long set_group_state_perm(struct task_struct *tsk, u64 state_perm);
-+u64 get_group_state_perm(struct task_struct *tsk);
+ /*
+  * Check for the presence of extended state information in the
+  * user fpstate pointer in the sigcontext.
+@@ -36,7 +52,7 @@ static inline int check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
+ 	/* Check for the first magic field and other error scenarios. */
+ 	if (fx_sw->magic1 != FP_XSTATE_MAGIC1 ||
+ 	    fx_sw->xstate_size < min_xstate_size ||
+-	    fx_sw->xstate_size > fpu_buf_cfg.user_size ||
++	    fx_sw->xstate_size > current_sig_xstate_size() ||
+ 	    fx_sw->xstate_size > fx_sw->extended_size)
+ 		goto setfx;
+ 
+@@ -94,20 +110,32 @@ static inline int save_fsave_header(struct task_struct *tsk, void __user *buf)
+ 
+ static inline int save_xstate_epilog(void __user *buf, int ia32_frame)
+ {
++	unsigned int current_xstate_size = current_sig_xstate_size();
+ 	struct xregs_state __user *x = buf;
+-	struct _fpx_sw_bytes *sw_bytes;
++	struct _fpx_sw_bytes sw_bytes;
+ 	u32 xfeatures;
+ 	int err;
+ 
+-	/* Setup the bytes not touched by the [f]xsave and reserved for SW. */
+-	sw_bytes = ia32_frame ? &fx_sw_reserved_ia32 : &fx_sw_reserved;
+-	err = __copy_to_user(&x->i387.sw_reserved, sw_bytes, sizeof(*sw_bytes));
++	/*
++	 * Setup the bytes not touched by the [f]xsave and reserved for SW.
++	 *
++	 * Use the recorded values if it matches with the current task. Otherwise,
++	 * adjust it.
++	 */
++	sw_bytes = ia32_frame ? fx_sw_reserved_ia32 : fx_sw_reserved;
++	if (sw_bytes.xstate_size != current_xstate_size) {
++		unsigned int default_xstate_size = sw_bytes.xstate_size;
 +
- int xfeature_size(int xfeature_nr);
- int copy_uabi_from_kernel_to_xstate(struct fpu *fpu, const void *kbuf);
- int copy_sigframe_from_user_to_xstate(struct fpu *fpu, const void __user *ubuf);
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index 8c5d1910a848..feed36d44d04 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -40,6 +40,6 @@ void x86_report_nx(void);
- extern int reboot_force;
++		sw_bytes.xfeatures = xfeatures_mask_uabi();
++		sw_bytes.xstate_size = current_xstate_size;
++		sw_bytes.extended_size += (current_xstate_size - default_xstate_size);
++	}
++	err = __copy_to_user(&x->i387.sw_reserved, &sw_bytes, sizeof(sw_bytes));
  
- long do_arch_prctl_common(struct task_struct *task, int option,
--			  unsigned long cpuid_enabled);
-+			  unsigned long arg2);
+ 	if (!use_xsave())
+ 		return err;
  
- #endif /* _ASM_X86_PROTO_H */
-diff --git a/arch/x86/include/uapi/asm/prctl.h b/arch/x86/include/uapi/asm/prctl.h
-index 5a6aac9fa41f..c73e141ce90a 100644
---- a/arch/x86/include/uapi/asm/prctl.h
-+++ b/arch/x86/include/uapi/asm/prctl.h
-@@ -10,6 +10,9 @@
- #define ARCH_GET_CPUID		0x1011
- #define ARCH_SET_CPUID		0x1012
- 
-+#define ARCH_SET_STATE_ENABLE	0x1021
-+#define ARCH_GET_STATE_ENABLE	0x1022
-+
- #define ARCH_MAP_VDSO_X32	0x2001
- #define ARCH_MAP_VDSO_32	0x2002
- #define ARCH_MAP_VDSO_64	0x2003
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 164e75c37dbb..74941a490200 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -274,10 +274,11 @@ int fpu_clone(struct task_struct *dst)
- 		return 0;
+-	err |= __put_user(FP_XSTATE_MAGIC2,
+-			  (__u32 __user *)(buf + fpu_buf_cfg.user_size));
++	err |= __put_user(FP_XSTATE_MAGIC2, (__u32 __user *)(buf + current_xstate_size));
  
  	/*
--	 * The child does not inherit the dynamic states. Thus, use the
--	 * buffer embedded in struct task_struct, which has the minimum
--	 * size.
-+	 * The child does not inherit the dynamic states but permission.
-+	 * Use the buffer embedded in struct task_struct, which has the
-+	 * minimum size.
- 	 */
-+	dst_fpu->dynamic_state_perm = get_group_dynamic_state_perm(current);
- 	dst_fpu->state_mask = (xfeatures_mask_all & ~xfeatures_mask_user_dynamic);
- 	dst_fpu->state = &dst_fpu->__default_state;
- 	/*
-diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
-index c57ad37a95fe..443500bcbe5f 100644
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -166,7 +166,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
- 	/*
- 	 * When a ptracer attempts to write any dynamic user state in the
- 	 * target buffer but not sufficiently allocated, it dynamically
--	 * expands the buffer.
-+	 * expands the buffer if permitted.
- 	 */
- 	if (xfeatures_mask_user_dynamic) {
- 		u64 state_mask;
-@@ -175,13 +175,16 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
- 		memcpy(&state_mask, (kbuf ?: tmpbuf) + offsetof(struct xregs_state, header),
- 		       sizeof(u64));
+ 	 * Read the xfeatures which we copied (directly from the cpu or
+@@ -144,7 +172,7 @@ static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
+ 	else
+ 		err = fnsave_to_user_sigframe((struct fregs_state __user *) buf);
  
--		/* Expand the xstate buffer based on the XSTATE_BV. */
--		state_mask &= xfeatures_mask_user_dynamic;
--		if (state_mask) {
--			ret = realloc_xstate_buffer(fpu, state_mask);
--			if (ret)
--				goto out;
-+		/* Check the permission. */
-+		if (!dynamic_state_permitted(target, state_mask)) {
-+			ret = -EFAULT;
-+			goto out;
- 		}
-+
-+		/* Expand the xstate buffer based on the XSTATE_BV. */
-+		ret = realloc_xstate_buffer(fpu, state_mask);
-+		if (ret)
-+			goto out;
+-	if (unlikely(err) && __clear_user(buf, fpu_buf_cfg.user_size))
++	if (unlikely(err) && __clear_user(buf, current_sig_xstate_size()))
+ 		err = -EFAULT;
+ 	return err;
+ }
+@@ -205,7 +233,7 @@ int copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
+ 	fpregs_unlock();
+ 
+ 	if (ret) {
+-		if (!fault_in_pages_writeable(buf_fx, fpu_buf_cfg.user_size))
++		if (!fault_in_pages_writeable(buf_fx, current_sig_xstate_size()))
+ 			goto retry;
+ 		return -EFAULT;
  	}
+@@ -418,18 +446,13 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+ 	fpregs_unlock();
+ 	return ret;
+ }
+-static inline int xstate_sigframe_size(void)
+-{
+-	return use_xsave() ? fpu_buf_cfg.user_size + FP_XSTATE_MAGIC2_SIZE :
+-			fpu_buf_cfg.user_size;
+-}
  
- 	fpu_force_restore(fpu);
+ /*
+  * Restore FPU state from a sigframe:
+  */
+ int fpu__restore_sig(void __user *buf, int ia32_frame)
+ {
+-	unsigned int size = xstate_sigframe_size();
++	unsigned int size = extend_sig_xstate_size(current_sig_xstate_size());
+ 	struct fpu *fpu = &current->thread.fpu;
+ 	void __user *buf_fx = buf;
+ 	bool ia32_fxstate = false;
+@@ -476,7 +499,7 @@ unsigned long
+ fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
+ 		     unsigned long *buf_fx, unsigned long *size)
+ {
+-	unsigned long frame_size = xstate_sigframe_size();
++	unsigned long frame_size = extend_sig_xstate_size(current_sig_xstate_size());
+ 
+ 	*buf_fx = sp = round_down(sp - frame_size, 64);
+ 	if (ia32_frame && use_fxsr()) {
+@@ -491,7 +514,7 @@ fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
+ 
+ unsigned long fpu__get_fpstate_size(void)
+ {
+-	unsigned long ret = xstate_sigframe_size();
++	unsigned long ret = extend_sig_xstate_size(fpu_buf_cfg.user_size);
+ 
+ 	/*
+ 	 * This space is needed on (most) 32-bit kernels, or when a 32-bit
+@@ -516,12 +539,12 @@ unsigned long fpu__get_fpstate_size(void)
+  */
+ void fpu__init_prepare_fx_sw_frame(void)
+ {
+-	int ext_size = fpu_buf_cfg.user_size + FP_XSTATE_MAGIC2_SIZE;
+-	int xstate_size = fpu_buf_cfg.user_size;
++	int ext_size = fpu_buf_cfg.user_minsig_size + FP_XSTATE_MAGIC2_SIZE;
++	int xstate_size = fpu_buf_cfg.user_minsig_size;
+ 
+ 	fx_sw_reserved.magic1 = FP_XSTATE_MAGIC1;
+ 	fx_sw_reserved.extended_size = ext_size;
+-	fx_sw_reserved.xfeatures = xfeatures_mask_uabi();
++	fx_sw_reserved.xfeatures = xfeatures_mask_uabi() & ~xfeatures_mask_user_dynamic;
+ 	fx_sw_reserved.xstate_size = xstate_size;
+ 
+ 	if (IS_ENABLED(CONFIG_IA32_EMULATION) ||
 diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 1bcab5af0a5a..fefa6a139e96 100644
+index fefa6a139e96..bb31ef8a45b5 100644
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -925,6 +925,7 @@ void __init fpu__init_system_xstate(void)
- 	 * Initially, the FPU buffer used is the static one, without
- 	 * dynamic states.
+@@ -820,6 +820,21 @@ static int __init init_xstate_size(void)
+ 	 * User space is always in standard format.
  	 */
-+	current->thread.fpu.dynamic_state_perm = 0;
- 	current->thread.fpu.state_mask = (xfeatures_mask_all & ~xfeatures_mask_user_dynamic);
- 
- 	/*
-@@ -1186,6 +1187,88 @@ int realloc_xstate_buffer(struct fpu *fpu, u64 mask)
+ 	fpu_buf_cfg.user_size = xsave_size;
++
++	/*
++	 * The minimum signal xstate size is for non-opt-in user threads
++	 * that do not access dynamic states.
++	 */
++	if (xfeatures_mask_user_dynamic) {
++		int nr = fls64(xfeatures_mask_uabi() & ~xfeatures_mask_user_dynamic) - 1;
++		unsigned int size, offset, ecx, edx;
++
++		cpuid_count(XSTATE_CPUID, nr, &size, &offset, &ecx, &edx);
++		fpu_buf_cfg.user_minsig_size = offset + size;
++	} else {
++		fpu_buf_cfg.user_minsig_size = xsave_size;
++	}
++
  	return 0;
  }
  
-+/**
-+ * set_group_state_perm - Set a per-process permission for dynamic user
-+ *			  states.
-+ * @tsk:	A struct task_struct * pointer
-+ * @state_perm:	A bitmap to indicate which state's permission to be set.
-+ * Return:	0 if successful; otherwise, error code.
-+ */
-+long set_group_state_perm(struct task_struct *tsk, u64 state_perm)
-+{
-+	u64 features_mask;
-+
-+	if (!cpu_feature_enabled(X86_FEATURE_FPU))
-+		features_mask = 0;
-+	else if (use_xsave())
-+		features_mask = xfeatures_mask_uabi();
-+	else if (use_fxsr())
-+		features_mask = XFEATURE_MASK_FPSSE;
-+	else
-+		features_mask = XFEATURE_MASK_FP;
-+
-+	if (state_perm & ~features_mask)
-+		return -EINVAL;
-+
-+	state_perm &= ~(get_group_state_perm(tsk));
-+	if (!state_perm)
-+		return 0;
-+
-+	tsk->group_leader->thread.fpu.dynamic_state_perm |= state_perm;
-+	return 0;
-+}
-+
-+/**
-+ * reset_dynamic_state_perm - Reset a task's permission for dynamic user
-+ *			      state
-+ *
-+ * It is expected to call at exec in which one task runs in a process.
-+ *
-+ * @task:	A struct task_struct * pointer
-+ */
-+void reset_dynamic_state_perm(struct task_struct *tsk)
-+{
-+	struct fpu *fpu = &tsk->thread.fpu;
-+
-+	if (!xfeatures_mask_user_dynamic ||
-+	    !(fpu->state_mask & xfeatures_mask_user_dynamic))
-+		return;
-+
-+	WARN_ON(tsk->signal->nr_threads > 1);
-+
-+	fpu->state_mask = (xfeatures_mask_all & ~xfeatures_mask_user_dynamic);
-+	free_xstate_buffer(fpu);
-+	fpu->state = &fpu->__default_state;
-+	if (cpu_feature_enabled(X86_FEATURE_XSAVES))
-+		fpstate_init_xstate(&fpu->state->xsave, fpu->state_mask);
-+
-+	wrmsrl_safe(MSR_IA32_XFD,
-+		    (fpu->state_mask & xfeatures_mask_user_dynamic) ^
-+		    xfeatures_mask_user_dynamic);
-+
-+	fpu->dynamic_state_perm = 0;
-+}
-+
-+/**
-+ * get_group_state_perm - read the state permission
-+ * @tsk:	A struct task_struct * pointer
-+ * Return:	A bitmap to indicate which state's permission is set.
-+ */
-+u64 get_group_state_perm(struct task_struct *tsk)
-+{
-+	if (!cpu_feature_enabled(X86_FEATURE_FPU))
-+		return 0;
-+
-+	if (use_xsave())
-+		return (xfeatures_mask_uabi() & ~xfeatures_mask_user_dynamic) |
-+		       get_group_dynamic_state_perm(tsk);
-+
-+	if (use_fxsr())
-+		return XFEATURE_MASK_FPSSE;
-+
-+	return XFEATURE_MASK_FP;
-+}
-+
- static void copy_feature(bool from_xstate, struct membuf *to, void *xstate,
- 			 void *init_xstate, unsigned int size)
- {
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 6cd4fb098f8f..beab1bf76d1a 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -1016,13 +1016,17 @@ unsigned long get_wchan(struct task_struct *p)
- }
- 
- long do_arch_prctl_common(struct task_struct *task, int option,
--			  unsigned long cpuid_enabled)
-+			  unsigned long arg2)
- {
- 	switch (option) {
- 	case ARCH_GET_CPUID:
- 		return get_cpuid_mode();
- 	case ARCH_SET_CPUID:
--		return set_cpuid_mode(task, cpuid_enabled);
-+		return set_cpuid_mode(task, arg2);
-+	case ARCH_SET_STATE_ENABLE:
-+		return set_group_state_perm(task, arg2);
-+	case ARCH_GET_STATE_ENABLE:
-+		return put_user(get_group_state_perm(task), (unsigned long __user *)arg2);
- 	}
- 
- 	return -EINVAL;
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 41c9855158d6..020e68d97245 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -678,6 +678,8 @@ void set_personality_64bit(void)
- 	   so it's not too bad. The main problem is just that
- 	   32bit children are affected again. */
- 	current->personality &= ~READ_IMPLIES_EXEC;
-+
-+	reset_dynamic_state_perm(current);
- }
- 
- static void __set_personality_x32(void)
-@@ -723,6 +725,8 @@ void set_personality_ia32(bool x32)
- 	/* Make sure to be in 32bit mode */
- 	set_thread_flag(TIF_ADDR32);
- 
-+	reset_dynamic_state_perm(current);
-+
- 	if (x32)
- 		__set_personality_x32();
- 	else
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 8a608f0e107b..334dd5dc1ed2 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -1135,10 +1135,12 @@ static __always_inline bool handle_xfd_event(struct fpu *fpu, struct pt_regs *re
- 			int err = -1;
- 
- 			/*
--			 * Make sure not in interrupt context as handling a
--			 * trap from userspace.
-+			 * Make sure that dynamic buffer expansion is permitted
-+			 * and not in interrupt context as handling a trap from
-+			 * userspace.
- 			 */
--			if (!WARN_ON(in_interrupt())) {
-+			if (dynamic_state_permitted(current, xfd_event) &&
-+			    !WARN_ON(in_interrupt())) {
- 				err = realloc_xstate_buffer(fpu, xfd_event);
- 				if (!err)
- 					wrmsrl_safe(MSR_IA32_XFD, (fpu->state_mask &
 -- 
 2.17.1
 
