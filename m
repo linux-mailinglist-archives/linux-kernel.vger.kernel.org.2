@@ -2,221 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087F53F7CC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 21:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847D03F7CCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 21:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242507AbhHYTdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 15:33:39 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:45656 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhHYTdi (ORCPT
+        id S239340AbhHYTm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 15:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235248AbhHYTm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 15:33:38 -0400
-Received: by mail-lf1-f54.google.com with SMTP id g13so1154686lfj.12;
-        Wed, 25 Aug 2021 12:32:51 -0700 (PDT)
+        Wed, 25 Aug 2021 15:42:56 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74E6C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:42:09 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id s12so706069ljg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:42:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e8bdCyvC7Uu9hJ+o7Jz6ECHUhPAIMpOORzVb26WnGxM=;
+        b=fy7FSMFVhod+RQF9PxaNTXukhehzmnrw1oVvDT6ae1n1J2qALCG4+tGNP3gWGuP4TO
+         EHapm1ur3TPgRbHJ4n4KixsoM/Og/0Hv1QyipQr8I9Gzo7NycATrc3EGLMCdllO2e5pR
+         5C+VYFEX+Txbv5I9Bpxa4Hhud2zg+zRSP8ePynlDEmgWB2YkK06YIpQ7+dQ4/bGDQdEw
+         +RzNQz2O5OCruiOJbcE8PFY5Knpx1aEH9X4LzfLcWCgWbB68/pqzg8Shu07RVYTpqzo4
+         IGZMriF7cj5OC43E+/QyQcAJoE9gGaED08EjsBMgeZaSYJDnQVZ0cf0qOszhqrPOjOVi
+         gh5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RnHjnCmLan8yYm6lK27l8MzfjmagGa0jqlW8pR+jgfc=;
-        b=MWD3OSUXVOui2XSn3XBKq/vxSeOQO0qizLHuwEozzgL4VZcWSDfBcJaSMkWJfoO8lJ
-         AsXkRLIHya2+yaJmf+adUGtxPuHLC+jHUHZHUJz+9NFEc1SSiW5lP2LXNtds1a1IPnSu
-         0GC7ZpEKFknrerVJ1Zh7BcXPuz2tdyHwefVSIqZnzV0ytcS3IkR9GP5doy4SSomTFILn
-         EoNJX8Z9/z7nEb2AsM/sremQIjUAnyshi0gERAbGld+tikbH+Y+NvVot7uLSr57KF4nl
-         U8lScmXeFQR5LaWqB9aWkLPy3nZJba+uxUMMbnjpHPvDiK9KqrJm9Ebp+bCYShzPd8MR
-         bB8A==
-X-Gm-Message-State: AOAM530ZfVIHN4UjtSSi+mptz7zTXG4QNf8QhDdHHhANFzhevwixefvr
-        WgdikZxxkqSK5UzpFH8XMPEZZ152L9wPDrqZAuU=
-X-Google-Smtp-Source: ABdhPJyv+0eYTR/9htNvTKlSuS8p6BCVQ52JgASLHc+TYA//6bl0MkOVWYQV2mlF3eClkuvRDts8rQ0CScWEf5c96P4=
-X-Received: by 2002:a19:6d02:: with SMTP id i2mr14554275lfc.112.1629919971171;
- Wed, 25 Aug 2021 12:32:51 -0700 (PDT)
+        bh=e8bdCyvC7Uu9hJ+o7Jz6ECHUhPAIMpOORzVb26WnGxM=;
+        b=HH+IPS4pqS+636nW+KKDah1idfeq3bRkLtLIDXnuHQVJ6vfsy/Nut/irksB+qRMj0r
+         AUT8Nu1PN23jF0fZxznlDXoNB3UNgcoo/c1p9lwMdHDOVxd6i5avJkJWfJ6nT8kVvcaD
+         VLfuIhvETKjgwiBB9hKEfLMrerZ4whErLK9ZAbakHG/B1lqR+bthNp/C8TrP1aGiT5LN
+         jQyw+rIeZ1fB11nV7GixEIT1oWc60I/clORTl7P4F8bkSySzWYkLmKA1mPNuY4dUdLRk
+         YwxYIK87SBw8i21/zcO7WKsBXknsyOpZPDQQwShuQEk3q2pSuJ+pQ8FZw0VaLy+cB5q+
+         Cowg==
+X-Gm-Message-State: AOAM530ecu5NM9jv3A6DpYh93CA9/AUnybWLYsQzw0SHvM9n8SbzkubF
+        YkMrmS/xLKC/MdQqsNbWaY/jAGYEGeJZ+7MHkSs/RA==
+X-Google-Smtp-Source: ABdhPJwZnjnGR+4s5l/KVJUFTI3ve9z49umzxrFnkgYuE41CcXxbXBK+PWqEpd6EYW2goWod17qptKYPuxBC6zXhitk=
+X-Received: by 2002:a2e:8008:: with SMTP id j8mr36245723ljg.233.1629920527830;
+ Wed, 25 Aug 2021 12:42:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <YSZ2+Wvt2Kjq6twd@kernel.org>
-In-Reply-To: <YSZ2+Wvt2Kjq6twd@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 25 Aug 2021 12:32:39 -0700
-Message-ID: <CAM9d7cgEZNSor+B+7Y2C+QYGme_v5aH0Zn0RLfxoQ+Fy83EHrg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] perf bench inject-buildid: Handle writen() errors
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>
+References: <20210822075122.864511-1-keescook@chromium.org> <20210822075122.864511-17-keescook@chromium.org>
+In-Reply-To: <20210822075122.864511-17-keescook@chromium.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 25 Aug 2021 12:41:56 -0700
+Message-ID: <CAKwvOd=A+ueGV2ihdy5GtgR2fQbcXjjAtVxv3=cPjffpebZB7A@mail.gmail.com>
+Subject: Re: [PATCH for-next 16/25] fortify: Explicitly disable Clang support
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        David Gow <davidgow@google.com>, linux-mm@kvack.org,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On Sun, Aug 22, 2021 at 12:57 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> Clang has never correctly compiled the FORTIFY_SOURCE defenses due to
+> a couple bugs:
+>
+>         Eliding inlines with matching __builtin_* names
+>         https://bugs.llvm.org/show_bug.cgi?id=50322
+>
+>         Incorrect __builtin_constant_p() of some globals
+>         https://bugs.llvm.org/show_bug.cgi?id=41459
+>
+> In the process of making improvements to the FORTIFY_SOURCE defenses, the
+> first (silent) bug (coincidentally) becomes worked around, but exposes
+> the latter which breaks the build. As such, Clang must not be used with
+> CONFIG_FORTIFY_SOURCE until at least latter bug is fixed (in Clang 13),
+> and the fortify routines have been rearranged.
+>
+> Update the Kconfig to reflect the reality of the current situation.
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-On Wed, Aug 25, 2021 at 9:59 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Hi Namhyung,
->
->         Please check and ack,
->
-> - Arnaldo
->
-> From 4e5caa5fbe6955dd26336a0b106c52b98c793f3b Mon Sep 17 00:00:00 2001
-> From: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Date: Wed, 25 Aug 2021 11:50:37 -0300
-> Subject: [PATCH 1/2] perf bench inject-buildid: Handle writen() errors
->
-> The build on fedora:35 and fedora:rawhide with clang is failing with:
->
->   49    41.00 fedora:35                     : FAIL clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
->     bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
->             u64 len = 0;
->                 ^
->     1 error generated.
->     make[3]: *** [/git/perf-5.14.0-rc7/tools/build/Makefile.build:139: bench] Error 2
->   50    41.11 fedora:rawhide                : FAIL clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
->     bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
->             u64 len = 0;
->                 ^
->     1 error generated.
->     make[3]: *** [/git/perf-5.14.0-rc7/tools/build/Makefile.build:139: bench] Error 2
->
-> That 'len' variable is not used at all, so just make sure all the
-> synthesize_RECORD() routines return ssize_t to propagate the writen()
-> return, as it may fail, ditch the 'ret' var and bail out if those
-> routines fail.
->
-> Fixes: 0bf02a0d80427f26 ("perf bench: Add build-id injection benchmark")
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-Thanks,
-Namhyung
-
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
 > ---
->  tools/perf/bench/inject-buildid.c | 52 ++++++++++++++++++-------------
->  1 file changed, 30 insertions(+), 22 deletions(-)
+>  security/Kconfig | 3 +++
+>  1 file changed, 3 insertions(+)
 >
-> diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
-> index 55d373b75791b0e4..17672790f1231acc 100644
-> --- a/tools/perf/bench/inject-buildid.c
-> +++ b/tools/perf/bench/inject-buildid.c
-> @@ -133,7 +133,7 @@ static u64 dso_map_addr(struct bench_dso *dso)
->         return 0x400000ULL + dso->ino * 8192ULL;
->  }
->
-> -static u32 synthesize_attr(struct bench_data *data)
-> +static ssize_t synthesize_attr(struct bench_data *data)
->  {
->         union perf_event event;
->
-> @@ -151,7 +151,7 @@ static u32 synthesize_attr(struct bench_data *data)
->         return writen(data->input_pipe[1], &event, event.header.size);
->  }
->
-> -static u32 synthesize_fork(struct bench_data *data)
-> +static ssize_t synthesize_fork(struct bench_data *data)
->  {
->         union perf_event event;
->
-> @@ -169,8 +169,7 @@ static u32 synthesize_fork(struct bench_data *data)
->         return writen(data->input_pipe[1], &event, event.header.size);
->  }
->
-> -static u32 synthesize_mmap(struct bench_data *data, struct bench_dso *dso,
-> -                          u64 timestamp)
-> +static ssize_t synthesize_mmap(struct bench_data *data, struct bench_dso *dso, u64 timestamp)
->  {
->         union perf_event event;
->         size_t len = offsetof(struct perf_record_mmap2, filename);
-> @@ -198,23 +197,25 @@ static u32 synthesize_mmap(struct bench_data *data, struct bench_dso *dso,
->
->         if (len > sizeof(event.mmap2)) {
->                 /* write mmap2 event first */
-> -               writen(data->input_pipe[1], &event, len - bench_id_hdr_size);
-> +               if (writen(data->input_pipe[1], &event, len - bench_id_hdr_size) < 0)
-> +                       return -1;
->                 /* zero-fill sample id header */
->                 memset(id_hdr_ptr, 0, bench_id_hdr_size);
->                 /* put timestamp in the right position */
->                 ts_idx = (bench_id_hdr_size / sizeof(u64)) - 2;
->                 id_hdr_ptr[ts_idx] = timestamp;
-> -               writen(data->input_pipe[1], id_hdr_ptr, bench_id_hdr_size);
-> -       } else {
-> -               ts_idx = (len / sizeof(u64)) - 2;
-> -               id_hdr_ptr[ts_idx] = timestamp;
-> -               writen(data->input_pipe[1], &event, len);
-> +               if (writen(data->input_pipe[1], id_hdr_ptr, bench_id_hdr_size) < 0)
-> +                       return -1;
-> +
-> +               return len;
->         }
-> -       return len;
-> +
-> +       ts_idx = (len / sizeof(u64)) - 2;
-> +       id_hdr_ptr[ts_idx] = timestamp;
-> +       return writen(data->input_pipe[1], &event, len);
->  }
->
-> -static u32 synthesize_sample(struct bench_data *data, struct bench_dso *dso,
-> -                            u64 timestamp)
-> +static ssize_t synthesize_sample(struct bench_data *data, struct bench_dso *dso, u64 timestamp)
->  {
->         union perf_event event;
->         struct perf_sample sample = {
-> @@ -233,7 +234,7 @@ static u32 synthesize_sample(struct bench_data *data, struct bench_dso *dso,
->         return writen(data->input_pipe[1], &event, event.header.size);
->  }
->
-> -static u32 synthesize_flush(struct bench_data *data)
-> +static ssize_t synthesize_flush(struct bench_data *data)
->  {
->         struct perf_event_header header = {
->                 .size = sizeof(header),
-> @@ -348,14 +349,16 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
->         int status;
->         unsigned int i, k;
->         struct rusage rusage;
-> -       u64 len = 0;
->
->         /* this makes the child to run */
->         if (perf_header__write_pipe(data->input_pipe[1]) < 0)
->                 return -1;
->
-> -       len += synthesize_attr(data);
-> -       len += synthesize_fork(data);
-> +       if (synthesize_attr(data) < 0)
-> +               return -1;
-> +
-> +       if (synthesize_fork(data) < 0)
-> +               return -1;
->
->         for (i = 0; i < nr_mmaps; i++) {
->                 int idx = rand() % (nr_dsos - 1);
-> @@ -363,13 +366,18 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
->                 u64 timestamp = rand() % 1000000;
->
->                 pr_debug2("   [%d] injecting: %s\n", i+1, dso->name);
-> -               len += synthesize_mmap(data, dso, timestamp);
-> +               if (synthesize_mmap(data, dso, timestamp) < 0)
-> +                       return -1;
->
-> -               for (k = 0; k < nr_samples; k++)
-> -                       len += synthesize_sample(data, dso, timestamp + k * 1000);
-> +               for (k = 0; k < nr_samples; k++) {
-> +                       if (synthesize_sample(data, dso, timestamp + k * 1000) < 0)
-> +                               return -1;
-> +               }
->
-> -               if ((i + 1) % 10 == 0)
-> -                       len += synthesize_flush(data);
-> +               if ((i + 1) % 10 == 0) {
-> +                       if (synthesize_flush(data) < 0)
-> +                               return -1;
-> +               }
->         }
->
->         /* this makes the child to finish */
+> diff --git a/security/Kconfig b/security/Kconfig
+> index 0ced7fd33e4d..fe6c0395fa02 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -191,6 +191,9 @@ config HARDENED_USERCOPY_PAGESPAN
+>  config FORTIFY_SOURCE
+>         bool "Harden common str/mem functions against buffer overflows"
+>         depends on ARCH_HAS_FORTIFY_SOURCE
+> +       # https://bugs.llvm.org/show_bug.cgi?id=50322
+> +       # https://bugs.llvm.org/show_bug.cgi?id=41459
+> +       depends on !CC_IS_CLANG
+>         help
+>           Detect overflows of buffers in common string and memory functions
+>           where the compiler can determine and validate the buffer sizes.
 > --
-> 2.31.1
+> 2.30.2
 >
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210822075122.864511-17-keescook%40chromium.org.
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
