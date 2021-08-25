@@ -2,108 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C1C3F7029
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2E23F7025
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239294AbhHYHM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:12:28 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:57852 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239204AbhHYHMW (ORCPT
+        id S238702AbhHYHMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239005AbhHYHMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:12:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629875497; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=LRZ59MHtwhDfCCrByq/bFpM20hBGTxzPwxFPdQwcGjc=; b=B4EJ6nB60pO4jGNaJCcDzo2SknLjwK+rJKf3FdebtNNg4M6KpUzldQa/BSXRq9LCU1GPCCep
- yPB9XTVqRIWQrav9QpjCbkYzikDbK4EwWRpMq7xYPD+3/yArmACvVNTNQxUcA9U3qkHStqiu
- sPLKJZw5gjKF0jA1FGKHb0fzRMo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6125ed284f8fcf705485559a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Aug 2021 07:11:36
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 299D5C43619; Wed, 25 Aug 2021 07:11:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from localhost (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 676AAC43616;
-        Wed, 25 Aug 2021 07:11:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 676AAC43616
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        urezki@gmail.com, frederic@kernel.org, boqun.feng@gmail.com,
-        Neeraj Upadhyay <neeraju@codeaurora.org>
-Subject: [PATCH v2 5/5] rcu-tasks: Clarify read side section info for rcu_tasks_rude GP primitives
-Date:   Wed, 25 Aug 2021 12:40:51 +0530
-Message-Id: <1629875451-20628-6-git-send-email-neeraju@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629875451-20628-1-git-send-email-neeraju@codeaurora.org>
-References: <1629875451-20628-1-git-send-email-neeraju@codeaurora.org>
+        Wed, 25 Aug 2021 03:12:05 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63068C061757;
+        Wed, 25 Aug 2021 00:11:19 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id e1so6834435plt.11;
+        Wed, 25 Aug 2021 00:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dDWWfjycZLV3IxSuze6wt1njkX6GdjVfdq4FRPlZ9kU=;
+        b=UF0fgSVJcFRrpEC2yzwwVn86yVEuDNvc+S0VNrbPIwvJBlMm6xyYRSa7EqUpmxTtfD
+         z/ZXGEnsqLMuZa0dhM7RGCeWtdbp6qcayawBFFOx9oMtM/LV3vclAin4jTIhJ/arXq39
+         tE2e+LPnynj/z1jx5LW852QBqcrzD6ox2+KO5c2eS2IxH4bHIcNKhePSfhRyZlNdfpl8
+         Dv/Rf5uEQWYeZ9auZvSKl506WNgLZ6+nso+GKg3TN1YF7ROYByJjjbFFV+x84n0NGPxA
+         2gk0C81rYnUiO1/ErRNAwrTwRstDXPnERn5+xt8YpIT4uhMhEWZrLVN29jFfskZ38ebd
+         MMww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dDWWfjycZLV3IxSuze6wt1njkX6GdjVfdq4FRPlZ9kU=;
+        b=XGKKoTuc425glgP8fcJF80D9xSNA6oGCvI/Xjh8Dz5R+Y9QIaBwqksl85TIKdQqELD
+         Zwypj6QLvBMwDVgThCWxNSXiXJq3r4ZNSSsR0N4AeN8w6QKVpp8zBRTrXKGovLW+tcU/
+         DTiFOVuxRLIVJWN/e4cDUwoT7/tNa/e2bH0AaPA9iVwkThyPDavdBayU4H3WTx+AjMJL
+         JgJsZCrJIBw6mokUCFuOs8KBG9jaFiAGij4mfkXdjrSZ7hL+AsU4f1ytygMXCxtWfT3w
+         5m356K6tzZ6Sw5jU5yGWW5piq9B1qnm7I84IeLW1Cw7LjzJoGGh4YKr83f+Kh1TM3R8t
+         4s8w==
+X-Gm-Message-State: AOAM531T1DzW8aVHkWfTus5pEdNaovwL130aFOydiqUWE+72J8lkchIW
+        uy91XxmJVJJwn4N7XgrW4WdVyH1+YnYfMlfwvj4=
+X-Google-Smtp-Source: ABdhPJz01n4op3Br7li5DPpI73/Q+T9EvWeuuQ3m0IZmBkgdBIkFe8usQ8m/VBFPo1S6ras3Usq69pNM2M7wi98zxKg=
+X-Received: by 2002:a17:90a:a382:: with SMTP id x2mr9163863pjp.86.1629875478922;
+ Wed, 25 Aug 2021 00:11:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <f20a0eb45957c6931a8f35d035514484a2ac0f3d.1629838169.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <f20a0eb45957c6931a8f35d035514484a2ac0f3d.1629838169.git.christophe.jaillet@wanadoo.fr>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 25 Aug 2021 10:11:07 +0300
+Message-ID: <CA+U=DspfvNU6gwRGZjWMtjrDQV2=N8H5ARnq4Sz4HWZ=FBmn_g@mail.gmail.com>
+Subject: Re: [PATCH] iio: adc128s052: Simplify 'adc128_probe()'
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RCU tasks rude variant does not maintain or check whether the current
-running context on a CPU is usermode. Read side critical section ends
-on transition to usermode execution, by the virtue of usermode
-execution being schedulable. Clarify this in comments for
-call_rcu_tasks_rude() and synchronize_rcu_tasks_rude().
+On Tue, Aug 24, 2021 at 11:52 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> Turn 'adc128_probe()' into a full resource managed function to simplify the
+> code.
+>
+> This way, the .remove function can be removed.
+> Doing so, the only 'spi_get_drvdata()' call is removed and the
+> corresponding 'spi_set_drvdata()' can be removed as well.
+>
 
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
----
- kernel/rcu/tasks.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Minor note inline. Nothing major.
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index c5f1c2f..691defa 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -677,11 +677,11 @@ DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude,
-  * period elapses, in other words after all currently executing RCU
-  * read-side critical sections have completed. call_rcu_tasks_rude()
-  * assumes that the read-side critical sections end at context switch,
-- * cond_resched_rcu_qs(), or transition to usermode execution.  As such,
-- * there are no read-side primitives analogous to rcu_read_lock() and
-- * rcu_read_unlock() because this primitive is intended to determine
-- * that all tasks have passed through a safe state, not so much for
-- * data-structure synchronization.
-+ * cond_resched_rcu_qs(), or transition to usermode execution (as
-+ * usermode execution is schedulable). As such, there are no read-side
-+ * primitives analogous to rcu_read_lock() and rcu_read_unlock() because
-+ * this primitive is intended to determine that all tasks have passed
-+ * through a safe state, not so much for data-structure synchronization.
-  *
-  * See the description of call_rcu() for more detailed information on
-  * memory ordering guarantees.
-@@ -699,8 +699,8 @@ EXPORT_SYMBOL_GPL(call_rcu_tasks_rude);
-  * grace period has elapsed, in other words after all currently
-  * executing rcu-tasks read-side critical sections have elapsed.  These
-  * read-side critical sections are delimited by calls to schedule(),
-- * cond_resched_tasks_rcu_qs(), userspace execution, and (in theory,
-- * anyway) cond_resched().
-+ * cond_resched_tasks_rcu_qs(), userspace execution (which is a schedulable
-+ * context), and (in theory, anyway) cond_resched().
-  *
-  * This is a very specialized primitive, intended only for a few uses in
-  * tracing and other situations requiring manipulation of function preambles
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-hosted by The Linux Foundation
+Other than that:
 
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+
+> Suggested-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Compile tested only.
+>
+> When reviewing, pay special attention to the 'spi_set_drvdata()' call
+> removal. I recently introduced a regression with a too aggressive cleanup
+> like that.
+>
+> This patch should be applied after
+> https://lore.kernel.org/linux-iio/f33069f0-601b-4bbb-3766-026f7a161912@wanadoo.fr/T/#meb792dcd6540f87d9ae041660ca4738a776e924a
+> ---
+>  drivers/iio/adc/ti-adc128s052.c | 34 +++++++++++----------------------
+>  1 file changed, 11 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/iio/adc/ti-adc128s052.c b/drivers/iio/adc/ti-adc128s052.c
+> index 83c1ae07b3e9..e1afdb775100 100644
+> --- a/drivers/iio/adc/ti-adc128s052.c
+> +++ b/drivers/iio/adc/ti-adc128s052.c
+> @@ -132,6 +132,13 @@ static const struct iio_info adc128_info = {
+>         .read_raw = adc128_read_raw,
+>  };
+>
+> +static void adc128_disable_regulator(void *data)
+> +{
+> +       struct regulator *reg = data;
+> +
+> +       regulator_disable(reg);
+> +}
+
+You can also do this as:
+
+static void adc128_disable_regulator(void *reg)
+{
+      regulator_disable(reg);
+}
+
+> +
+>  static int adc128_probe(struct spi_device *spi)
+>  {
+>         struct iio_dev *indio_dev;
+> @@ -151,8 +158,6 @@ static int adc128_probe(struct spi_device *spi)
+>         adc = iio_priv(indio_dev);
+>         adc->spi = spi;
+>
+> -       spi_set_drvdata(spi, indio_dev);
+> -
+>         indio_dev->name = spi_get_device_id(spi)->name;
+>         indio_dev->modes = INDIO_DIRECT_MODE;
+>         indio_dev->info = &adc128_info;
+> @@ -167,29 +172,13 @@ static int adc128_probe(struct spi_device *spi)
+>         ret = regulator_enable(adc->reg);
+>         if (ret < 0)
+>                 return ret;
+> -
+> -       mutex_init(&adc->lock);
+> -
+> -       ret = iio_device_register(indio_dev);
+> +       ret = devm_add_action_or_reset(&spi->dev, adc128_disable_regulator, adc->reg);
+>         if (ret)
+> -               goto err_disable_regulator;
+> -
+> -       return 0;
+> -
+> -err_disable_regulator:
+> -       regulator_disable(adc->reg);
+> -       return ret;
+> -}
+> -
+> -static int adc128_remove(struct spi_device *spi)
+> -{
+> -       struct iio_dev *indio_dev = spi_get_drvdata(spi);
+> -       struct adc128 *adc = iio_priv(indio_dev);
+> +               return ret;
+>
+> -       iio_device_unregister(indio_dev);
+> -       regulator_disable(adc->reg);
+> +       mutex_init(&adc->lock);
+>
+> -       return 0;
+> +       return devm_iio_device_register(&spi->dev, indio_dev);
+>  }
+>
+>  static const struct of_device_id adc128_of_match[] = {
+> @@ -231,7 +220,6 @@ static struct spi_driver adc128_driver = {
+>                 .acpi_match_table = ACPI_PTR(adc128_acpi_match),
+>         },
+>         .probe = adc128_probe,
+> -       .remove = adc128_remove,
+>         .id_table = adc128_id,
+>  };
+>  module_spi_driver(adc128_driver);
+> --
+> 2.30.2
+>
