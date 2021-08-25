@@ -2,178 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735443F792C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38073F7932
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239899AbhHYPi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:38:27 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:52353 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233573AbhHYPi0 (ORCPT
+        id S240180AbhHYPkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 11:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231995AbhHYPkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:38:26 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CD8E9581083;
-        Wed, 25 Aug 2021 11:37:39 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 25 Aug 2021 11:37:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=/0eVR1LO8zbGReZXGH8OHCw0mxS
-        kJRrqtSARXT+ndjE=; b=jOJoLOZJ7qqIkWp6K7FpTOChGd2qZmIRXLmSWjlJqRO
-        dQblvhua/6eE+Jt9fE8sbongC2crCLUSrfuLXEB24ESruSTwCM6CkhnUwcqxFNbY
-        uLP9YHVAyfzCcWG+EIQhcp4XXa+lSkJJKk4rjvtDFC9tW1sGxP547FTA3wqVH3oZ
-        1G2tZSQ9oJPKob+ToTi4396mjeDSANBauZTG3jeP5W/cn+S9jH8E1UOCFz8dxq7w
-        TJNjnyrayo3vrTs2Bvik7r/XDcTHOEQSCPb0GLhJlqE/X2fiuBeTRIO/dnbGMW1P
-        jLvoagU4A2J7qAWmzRahj4zGv1aCzrMIijvELcGYBPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=/0eVR1
-        LO8zbGReZXGH8OHCw0mxSkJRrqtSARXT+ndjE=; b=ChzAkc6XRxFFWDxmLe9OTf
-        nhPLQSPOH9FW3yTzhJFXc3LYrqPB6yuDnV+al0sLOpcSX92N9q2oGnlw1AqpeKHn
-        arPkznBwpy9V2HgIYM1ZZFRFcpukVoEXEv4bHZbFglsX4UquxVwhEfuZWBPjIvF/
-        90eCztKUJjttdPPh7slJPAr3JT+L3543JmGeCrezchXTnQsg4B07Nd/45Sw+SHo4
-        QCIfzLIWlRg99+seytJOe1aEpBtF+krEw0WAK8OdqVsAOG/sfLTu+7odouUQeoVl
-        pUOHlb2+WsK15GyK0BwWS9ad6dmV+IE8arI3ZmpVyXbX8jwOPjG3ncQEfIBxjv8g
-        ==
-X-ME-Sender: <xms:wGMmYaOx6PU9g5zpPTMk0xavlo2KZrCYc7MjBG-E5dxsZenG3J4LMg>
-    <xme:wGMmYY8w5ieXwOZSGWLwYLWqgEQykpIc1HJWdb5BlG_7wtsRlz2zYQHeJUpMs6zpT
-    dzIoeNoIqfgOx-TX0Y>
-X-ME-Received: <xmr:wGMmYRR_14ki0BgOD3QDXfE-sTab2EUT9bmzCk_R66UtJpPeiPeVCnH2fmsj4zyXpVd6CAhtkBiFzl_Q9IqDBnsOV4fp8AOip9wQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddtledgleduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:wGMmYat_QBC7cfDUTgFkenPs_zYq0rJu85JLMSP_htH1Xjgah0MHSg>
-    <xmx:wGMmYSfCERYHwBrYVDj_5JPoCbF_WOJgINH0pXCIfNofHeBo6WKN8w>
-    <xmx:wGMmYe1Q2ahKsgSOwaiB-6YhJC6UqRTz1SGN3NJ3SgfJEWOcFVL69w>
-    <xmx:w2MmYe14yVuP9zsqrKPxmCVDC-XVE0jny2BzZCLuShtq3cHkrCbaiA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Aug 2021 11:37:36 -0400 (EDT)
-Date:   Wed, 25 Aug 2021 17:37:34 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc:     Icenowy Zheng <icenowy@sipeed.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Samuel Holland <samuel@sholland.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/17] clk: sunxi=ng: add support for R329 R-CCU
-Message-ID: <20210825153734.3cwlufietc63ma3m@gilmour>
-References: <20210802062212.73220-1-icenowy@sipeed.com>
- <5432230.1UTMcGJKg4@jernej-laptop>
- <20210825145027.ixc7wnh3x5w6wzny@gilmour>
- <3221818.pD4rYpbbZ1@jernej-laptop>
+        Wed, 25 Aug 2021 11:40:39 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6A2C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 08:39:53 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id t4so13341184qkb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 08:39:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zjssu5ahlXThFXNBjYOHJIYjJl60yuZstUx26e7TTp0=;
+        b=htWC6Nv5ySrGX2xuBWtOPuyg8qgjrsPVrKobVhrtrKxoLrRSEB4K1lc40aUJHg2ypP
+         U56wBsk5aHSqRUkpjcJvITpQY2S1UA7MfAVyasq7eXi60Yb2lR5hiZDyTH7cGG0e8GsK
+         HXGkohxsud/vQcxA3d+AZxc5lZXEZF0ZbwGxGTVLHA1Fg/fX3IncH8hCvfRr228sKk+S
+         jzeIuafPN2Y+Z/dhjVJetDHV86RaeywL9N6quKUo5Cg0lQkl6VjBRzICH36ln/btpO+d
+         jqwDn2SguuR74G+yyizWIIrrO+iK6jSVQibR5CAmzeQN8ipll6onyre6ZyoaSj9F0L6M
+         rsEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zjssu5ahlXThFXNBjYOHJIYjJl60yuZstUx26e7TTp0=;
+        b=tO/18Lazf7+k9xPHIgXWlEdjx0296kB+IfTJ6ausA6GJXc9qe2WpM6JLxGLD5+Fec2
+         Lla4gN7x1gEDZ9MXgQO6pbt6MOjjmCNbI7hGmLd7D9PsMG04b0A4xIBGK6Xth8JOIr6G
+         81EHZaLMjI5JHgPofRMe/5U4n8abxyDziRX0vhoudEsANV8oNt1b8e67V9y6JEVKb3wQ
+         EBIU3JPJ6S4eQwjhrubtFYghuXKU/aacfx1qHb5K11XFssXGi1xFOlzbvPSaH5w/+xJo
+         Y7rFX8AcjzV32BhLXECfi8cqWFu3MDruVDNawIRvd631/7wIcuDdpA1uGB/eb5dIg75H
+         EPgA==
+X-Gm-Message-State: AOAM533c77EQqpJaP7woxXBAJkHH18wHE7it6MPr1NDcvAQSNoS26trH
+        hIEHfzc6pjwO4tpQMUTDnPhb7EavvPk4m2j1V3eLIQ==
+X-Google-Smtp-Source: ABdhPJwnx8VGSiF3ofmAzyFVczdtlbK+E3GAYoUX5PekX2iKCZs5fZ/8w/F5Hz+f6EBeOvVKSXQmmPFvFq6QTgUyPuY=
+X-Received: by 2002:a25:d6d8:: with SMTP id n207mr20551970ybg.518.1629905991975;
+ Wed, 25 Aug 2021 08:39:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ujvj4sh6srxe5rru"
-Content-Disposition: inline
-In-Reply-To: <3221818.pD4rYpbbZ1@jernej-laptop>
+References: <20210824125140.190253-1-yan2228598786@gmail.com>
+ <20210824112957.3a780186@oasis.local.home> <CALcyL7icKx5RH9UXiEqLmZtP5MViip5Pn1yNyogbADA3Xeo3xw@mail.gmail.com>
+In-Reply-To: <CALcyL7icKx5RH9UXiEqLmZtP5MViip5Pn1yNyogbADA3Xeo3xw@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 25 Aug 2021 08:39:40 -0700
+Message-ID: <CANn89iKCDkKTJxK2LuAXN7DmVMwE9zbemtKRAhrTpHR+Uc71SA@mail.gmail.com>
+Subject: Re: [PATCH] net: tcp_drop adds `reason` parameter for tracing
+To:     Zhongya Yan <yan2228598786@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, hengqi.chen@gmail.com,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 24, 2021 at 5:08 PM Zhongya Yan <yan2228598786@gmail.com> wrote=
+:
+>
+> Cool, thanks!
+> i will do it
 
---ujvj4sh6srxe5rru
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Since these drops are hardly hot path, why not simply use a string ?
+An ENUM will not really help grep games.
 
-On Wed, Aug 25, 2021 at 05:03:30PM +0200, Jernej =C5=A0krabec wrote:
-> Dne sreda, 25. avgust 2021 ob 16:50:27 CEST je Maxime Ripard napisal(a):
-> > Hi,
-> >=20
-> > On Fri, Aug 20, 2021 at 06:34:38AM +0200, Jernej =C5=A0krabec wrote:
-> > > > > +static void __init sun50i_r329_r_ccu_setup(struct device_node *n=
-ode)
-> > > > > +{
-> > > > > +	void __iomem *reg;
-> > > > > +	u32 val;
-> > > > > +	int i;
-> > > > > +
-> > > > > +	reg =3D of_io_request_and_map(node, 0, of_node_full_name(node));
-> > > > > +	if (IS_ERR(reg)) {
-> > > > > +		pr_err("%pOF: Could not map clock registers\n", node);
-> > > > > +		return;
-> > > > > +	}
-> > > > > +
-> > > > > +	/* Enable the lock bits and the output enable bits on all PLLs =
-*/
-> > > > > +	for (i =3D 0; i < ARRAY_SIZE(pll_regs); i++) {
-> > > > > +		val =3D readl(reg + pll_regs[i]);
-> > > > > +		val |=3D BIT(29) | BIT(27);
-> > > > > +		writel(val, reg + pll_regs[i]);
-> > > > > +	}
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * Force the I/O dividers of PLL-AUDIO1 to reset default value
-> > > > > +	 *
-> > > > > +	 * See the comment before pll-audio1 definition for the reason.
-> > > > > +	 */
-> > > > > +
-> > > > > +	val =3D readl(reg + SUN50I_R329_PLL_AUDIO1_REG);
-> > > > > +	val &=3D ~BIT(1);
-> > > > > +	val |=3D BIT(0);
-> > > > > +	writel(val, reg + SUN50I_R329_PLL_AUDIO1_REG);
-> > > > > +
-> > > > > +	i =3D sunxi_ccu_probe(node, reg, &sun50i_r329_r_ccu_desc);
-> > > > > +	if (i)
-> > > > > +		pr_err("%pOF: probing clocks fails: %d\n", node, i);
-> > > > > +}
-> > > > > +
-> > > > > +CLK_OF_DECLARE(sun50i_r329_r_ccu, "allwinner,sun50i-r329-r-ccu",
-> > > > > +	       sun50i_r329_r_ccu_setup);
-> > > >=20
-> > > > Please make this a platform driver. There is no particular reason w=
-hy it
-> > > > needs to be an early OF clock provider.
-> > >=20
-> > > Why? It's good to have it as early clock provider. It has no dependen=
-cies
-> > > and other drivers that depends on it, like IR, can be deferred, if th=
-is
-> > > is loaded later.
-> >=20
-> > No, Samuel is right, we should make them regular drivers as much as we
-> > can.
-> >=20
-> > The reason we had CLK_OF_DECLARE in the first place is that timers
-> > usually have a parent clock, and you need the timers before the device
-> > model is set up.
-> >=20
-> > Fortunately for us, since the A20, the architected timers don't require
-> > a parent clock from us, and we can thus boot up fine.
->=20
-> There are other timers. A lot of SoCs, newer than A20 (like H6), have Hig=
-h=20
-> Speed Timer, which requires parent clock to be enabled. We just choose no=
-t to=20
-> add node for it to DT, even if it's there and driver already exists.
+tcp_drop(sk, skb, "csum error");
 
-Yeah, I know. The thing is, we just need one timer in order to boot to
-the point where the DM is there. We can totally have a timer driver
-probing just like any other driver, through the DM, later on.
+The const char * argument would not be used unless tracepoint is
+active, but who cares.
 
-Maxime
+(Speaking of csum errors, they are not currently calling tcp_drop(),
+but we could unify all packet drops to use this tracepoint,
+and get rid of adhoc ones, like trace_tcp_bad_csum()
 
---ujvj4sh6srxe5rru
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYSZjvgAKCRDj7w1vZxhR
-xX+TAP0WGHG2s4yHamp+fjkYZIyN3blRmTbmA8bbbYAZDDpWPAD8D3b0gM0/5VYF
-c22yVcU2bytiqTiat5LMPSwOhQzTCQo=
-=zJhK
------END PGP SIGNATURE-----
-
---ujvj4sh6srxe5rru--
+>
+> Steven Rostedt <rostedt@goodmis.org> =E4=BA=8E2021=E5=B9=B48=E6=9C=8824=
+=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8811:30=E5=86=99=E9=81=93=EF=BC=
+=9A
+>>
+>> On Tue, 24 Aug 2021 05:51:40 -0700
+>> Zhongya Yan <yan2228598786@gmail.com> wrote:
+>>
+>> > When using `tcp_drop(struct sock *sk, struct sk_buff *skb)` we can
+>> > not tell why we need to delete `skb`. To solve this problem I updated =
+the
+>> > method `tcp_drop(struct sock *sk, struct sk_buff *skb, enum tcp_drop_r=
+eason reason)`
+>> > to include the source of the deletion when it is done, so you can
+>> > get an idea of the reason for the deletion based on the source.
+>> >
+>> > The current purpose is mainly derived from the suggestions
+>> > of `Yonghong Song` and `brendangregg`:
+>> >
+>> > https://github.com/iovisor/bcc/issues/3533.
+>> >
+>> > "It is worthwhile to mention the context/why we want to this
+>> > tracepoint with bcc issue https://github.com/iovisor/bcc/issues/3533.
+>> > Mainly two reasons: (1). tcp_drop is a tiny function which
+>> > may easily get inlined, a tracepoint is more stable, and (2).
+>> > tcp_drop does not provide enough information on why it is dropped.
+>> > " by Yonghong Song
+>> >
+>> > Signed-off-by: Zhongya Yan <yan2228598786@gmail.com>
+>> > ---
+>> >  include/net/tcp.h          | 11 ++++++++
+>> >  include/trace/events/tcp.h | 56 +++++++++++++++++++++++++++++++++++++=
++
+>> >  net/ipv4/tcp_input.c       | 34 +++++++++++++++--------
+>> >  3 files changed, 89 insertions(+), 12 deletions(-)
+>> >
+>> > diff --git a/include/net/tcp.h b/include/net/tcp.h
+>> > index 784d5c3ef1c5..dd8cd8d6f2f1 100644
+>> > --- a/include/net/tcp.h
+>> > +++ b/include/net/tcp.h
+>> > @@ -254,6 +254,17 @@ extern atomic_long_t tcp_memory_allocated;
+>> >  extern struct percpu_counter tcp_sockets_allocated;
+>> >  extern unsigned long tcp_memory_pressure;
+>> >
+>> > +enum tcp_drop_reason {
+>> > +     TCP_OFO_QUEUE =3D 1,
+>> > +     TCP_DATA_QUEUE_OFO =3D 2,
+>> > +     TCP_DATA_QUEUE =3D 3,
+>> > +     TCP_PRUNE_OFO_QUEUE =3D 4,
+>> > +     TCP_VALIDATE_INCOMING =3D 5,
+>> > +     TCP_RCV_ESTABLISHED =3D 6,
+>> > +     TCP_RCV_SYNSENT_STATE_PROCESS =3D 7,
+>> > +     TCP_RCV_STATE_PROCESS =3D 8
+>>
+>> As enums increase by one, you could save yourself the burden of
+>> updating the numbers and just have:
+>>
+>> enum tcp_drop_reason {
+>>         TCP_OFO_QUEUE =3D 1,
+>>         TCP_DATA_QUEUE_OFO,
+>>         TCP_DATA_QUEUE,
+>>         TCP_PRUNE_OFO_QUEUE,
+>>         TCP_VALIDATE_INCOMING,
+>>         TCP_RCV_ESTABLISHED,
+>>         TCP_RCV_SYNSENT_STATE_PROCESS,
+>>         TCP_RCV_STATE_PROCESS
+>> };
+>>
+>> Which would do the same.
+>>
+>>
+>> > +};
+>> > +
+>> >  /* optimized version of sk_under_memory_pressure() for TCP sockets */
+>> >  static inline bool tcp_under_memory_pressure(const struct sock *sk)
+>> >  {
+>> > diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
+>> > index 521059d8dc0a..a0d3d31eb591 100644
+>> > --- a/include/trace/events/tcp.h
+>> > +++ b/include/trace/events/tcp.h
+>> > @@ -371,6 +371,62 @@ DEFINE_EVENT(tcp_event_skb, tcp_bad_csum,
+>> >       TP_ARGS(skb)
+>> >  );
+>> >
+>>
+>> If you would like to see the english translation of what these
+>> "reasons" are and not have to remember which number is which, you can
+>> do the following:
+>>
+>> #define TCP_DROP_REASON                                                 =
+\
+>>         EM(TCP_OFO_QUEUE,               ofo_queue)                      =
+\
+>>         EM(TCP_DATA_QUEUE_OFO,          data_queue_ofo)                 =
+\
+>>         EM(TCP_DATA_QUEUE,              data_queue)                     =
+\
+>>         EM(TCP_PRUNE_OFO_QUEUE,         prune_ofo_queue)                =
+\
+>>         EM(TCP_VALIDATE_INCOMING,       validate_incoming)              =
+\
+>>         EM(TCP_RCV_ESTABLISHED,         rcv_established)                =
+\
+>>         EM(TCP_RCV_SYNSENT_STATE_PROCESS, rcv_synsent_state_process)    =
+\
+>>         EMe(TCP_RCV_STATE_PROCESS,      rcv_state_proces)
+>>
+>> #undef EM
+>> #undef EMe
+>>
+>> #define EM(a,b) { a, #b },
+>> #define EMe(a, b) { a, #b }
+>>
+>>
+>> > +TRACE_EVENT(tcp_drop,
+>> > +             TP_PROTO(struct sock *sk, struct sk_buff *skb, enum tcp_=
+drop_reason reason),
+>> > +
+>> > +             TP_ARGS(sk, skb, reason),
+>> > +
+>> > +             TP_STRUCT__entry(
+>> > +                     __array(__u8, saddr, sizeof(struct sockaddr_in6)=
+)
+>> > +                     __array(__u8, daddr, sizeof(struct sockaddr_in6)=
+)
+>> > +                     __field(__u16, sport)
+>> > +                     __field(__u16, dport)
+>> > +                     __field(__u32, mark)
+>> > +                     __field(__u16, data_len)
+>> > +                     __field(__u32, snd_nxt)
+>> > +                     __field(__u32, snd_una)
+>> > +                     __field(__u32, snd_cwnd)
+>> > +                     __field(__u32, ssthresh)
+>> > +                     __field(__u32, snd_wnd)
+>> > +                     __field(__u32, srtt)
+>> > +                     __field(__u32, rcv_wnd)
+>> > +                     __field(__u64, sock_cookie)
+>> > +                     __field(__u32, reason)
+>> > +                     ),
+>> > +
+>> > +             TP_fast_assign(
+>> > +                             const struct tcphdr *th =3D (const struc=
+t tcphdr *)skb->data;
+>> > +                             const struct inet_sock *inet =3D inet_sk=
+(sk);
+>> > +                             const struct tcp_sock *tp =3D tcp_sk(sk)=
+;
+>> > +
+>> > +                             memset(__entry->saddr, 0, sizeof(struct =
+sockaddr_in6));
+>> > +                             memset(__entry->daddr, 0, sizeof(struct =
+sockaddr_in6));
+>> > +
+>> > +                             TP_STORE_ADDR_PORTS(__entry, inet, sk);
+>> > +
+>> > +                             __entry->sport =3D ntohs(inet->inet_spor=
+t);
+>> > +                             __entry->dport =3D ntohs(inet->inet_dpor=
+t);
+>> > +                             __entry->mark =3D skb->mark;
+>> > +
+>> > +                             __entry->data_len =3D skb->len - __tcp_h=
+drlen(th);
+>> > +                             __entry->snd_nxt =3D tp->snd_nxt;
+>> > +                             __entry->snd_una =3D tp->snd_una;
+>> > +                             __entry->snd_cwnd =3D tp->snd_cwnd;
+>> > +                             __entry->snd_wnd =3D tp->snd_wnd;
+>> > +                             __entry->rcv_wnd =3D tp->rcv_wnd;
+>> > +                             __entry->ssthresh =3D tcp_current_ssthre=
+sh(sk);
+>> > +             __entry->srtt =3D tp->srtt_us >> 3;
+>> > +             __entry->sock_cookie =3D sock_gen_cookie(sk);
+>> > +             __entry->reason =3D reason;
+>> > +             ),
+>> > +
+>> > +             TP_printk("src=3D%pISpc dest=3D%pISpc mark=3D%#x data_le=
+n=3D%d snd_nxt=3D%#x snd_una=3D%#x snd_cwnd=3D%u ssthresh=3D%u snd_wnd=3D%u=
+ srtt=3D%u rcv_wnd=3D%u sock_cookie=3D%llx reason=3D%d",
+>>
+>> Then above you can have: "reason=3D%s"
+>>
+>> > +                             __entry->saddr, __entry->daddr, __entry-=
+>mark,
+>> > +                             __entry->data_len, __entry->snd_nxt, __e=
+ntry->snd_una,
+>> > +                             __entry->snd_cwnd, __entry->ssthresh, __=
+entry->snd_wnd,
+>> > +                             __entry->srtt, __entry->rcv_wnd, __entry=
+->sock_cookie, __entry->reason)
+>>
+>> And here:
+>>
+>>         __print_symbolic(__entry->reason, TCP_DROP_REASON)
+>>
+>> -- Steve
+>>
+>>
+>> > +);
+>> > +
+>> >  #endif /* _TRACE_TCP_H */
+>> >
+>> >  /* This part must be outside protection */
+>> >
