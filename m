@@ -2,137 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0FF3F72EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519443F72FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239784AbhHYKYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:24:49 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:52244
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238879AbhHYKYr (ORCPT
+        id S239886AbhHYK0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239889AbhHYK0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:24:47 -0400
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9908F40779
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:24:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629887041;
-        bh=qYITTzx6yoJ6ZEWqnLVDWr60hdYOB+VLMXO/GfrPW6E=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=bBDFlLh/FVbPtyzH626a+rWYco4PA6F+ggcREJ3813qbh8SND9LZKTWK4u9UkZjVm
-         XINbDuaR6aFZc6qVYGbcLrKo8wL183daMaoDXfuK7CjCwFpvcqafckSzMs/2DyelyH
-         l4rOEV1hkmBbbEF2710698QHWMjn15+yOtKy+JDt8HLjHI8KWGr5ZrttLzmBU6HBu/
-         +Z3cwp+ckMu5oJOrkzOBfGl5fWRSOaVUt8nEunh7xIYwDZLZ+GDaSbwhDcQIqDrU8l
-         mTqeuYLZwj2KEZA+s0O03x6JkUoEHR8LO8hE5CyMf/+auWkNt3lsiWzF/sY1ANW/F5
-         5Bp2+zaoO5h7g==
-Received: by mail-wm1-f72.google.com with SMTP id n20-20020a05600c4f9400b002e6dc6a99b9so1773297wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:24:01 -0700 (PDT)
+        Wed, 25 Aug 2021 06:26:42 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DE5C061757;
+        Wed, 25 Aug 2021 03:25:56 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id oc2-20020a17090b1c0200b00179e56772d6so3823765pjb.4;
+        Wed, 25 Aug 2021 03:25:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ba/aDvD1tkluhQ4EKS9mJop10MbwBdBq8p8q4FF7hME=;
+        b=ERW9eAq0Yrphg27JkPRPoE9hi5ScahnBoNwNuz7HulCP62HFkrhXWI0nyJcIddIFn7
+         x9v/kxVidsNMcf+nTHom40evTH/p8ND8jqD3OS/vQtRzDdVvNsMuKCG9sUqIQL4To3EM
+         hyNb7khUoqPlL/5qNG61XXHvm2smKgPyXj9NR5qFeSi1SnMGy9MQRa1ZpfuctgFw9rIP
+         1Jsx2sSz2YPUYO45juwlfJo3Q15Etj0c7enDb+styb1YpHQBOE2wQWJRUVQDwp4vNLDq
+         6yfvMoboiwSdcOp4nBSoEYBiUtH5IxObynxBbd5Nc6qiWjduuECQxYvcb2PLgL7buvOL
+         BZ5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qYITTzx6yoJ6ZEWqnLVDWr60hdYOB+VLMXO/GfrPW6E=;
-        b=kcSrTPHCqHm0DLS9HK8tgiEjRK+XbROgid44J3i036icQChHi7y0WOGvPZRsBsnbcy
-         vRuXiv+JyWxKV6Vhb7EhBrW5wxCpx0Paywdt4tD5SuO+93S0FAEaKg4gr98pWsx+XFPT
-         dKMGaOUwijH1yFjtIpIU8VzRfzztUt91OAryYt0fi1baQ4KwQCrVfJuCyjuduzmRex/f
-         mcdh/wXImcSmmzmTj8b3lqyVMsOM5kuzr7H/siotFH3OLNg17CV00O0jcrRCDKuYOy5d
-         xj6j1+QWl1sLWt+J/j8tJOvCfv5MR4ISI9seqbSX8qOXM9/D4QdB3AUKWqX/bY8SGEbG
-         vBcg==
-X-Gm-Message-State: AOAM531kCK7gEFF7HAaJ0s1pp1DY6X+oPMgtpGScsMWrFUyEWliZZnQr
-        qQlbenYMTd8iVlpBVlgT5NAamT6Cn6TGzWee1XsIPJysEevEjIvEYJ5sjSIzj6NE63P4vKyzK9u
-        7UtYkqWDhyQ+mlMJ446PZ71u8IN/8n5563Leul6EASA==
-X-Received: by 2002:a05:600c:2186:: with SMTP id e6mr8343922wme.71.1629887041299;
-        Wed, 25 Aug 2021 03:24:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZl4aXEEOHtVrDkJpoJdrZEGBLxXtojjTiCSLJimIRXhBRaRAZsLhEFLPW4n3A7i3jPsLicw==
-X-Received: by 2002:a05:600c:2186:: with SMTP id e6mr8343908wme.71.1629887041135;
-        Wed, 25 Aug 2021 03:24:01 -0700 (PDT)
-Received: from [192.168.0.103] ([79.98.113.15])
-        by smtp.gmail.com with ESMTPSA id o21sm5225953wms.32.2021.08.25.03.24.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 03:24:00 -0700 (PDT)
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     CGEL <cgel.zte@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210825063739.70260-1-deng.changcheng@zte.com.cn>
- <344b7b12-4134-883c-1e0a-cdab7800067f@canonical.com>
- <20210825100149.GR7722@kadam>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH linux-next] memory:tegra210-emc-core: replace
- DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-Message-ID: <b6d32023-e3ac-3ccc-e683-076768124bde@canonical.com>
-Date:   Wed, 25 Aug 2021 12:23:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=Ba/aDvD1tkluhQ4EKS9mJop10MbwBdBq8p8q4FF7hME=;
+        b=bfCsCOqnnldpTItdWKcz4lASbGZqLZE8cv6MgCUU4Wv3c50gCML3RT9n5uSkJWXreK
+         ctQOeLRyn1Ce+2JuBXVqI79B5aWeokp9Jt2Pt/O+wM9RnunLDuC6WoUtoLxDkglwzs+G
+         OmxsS4xM21wny0zP8VepsqS8bNMk1cKH05p/kG3RTcht4Nu8f0lCmqvIRGEBUfSlHB4N
+         /Fa1/3Qv5vizURDC2VfyKsGJo6D0Q/eAI/0cRLxC68O2pR9egN262Q2goichQpLdt567
+         DucPRT6iVp4TzLJeDvgiooIb0DWQ0byiZnyNjVnX88M+SSBli5tlb2hJVQREBbtAS5cj
+         pJzw==
+X-Gm-Message-State: AOAM533oip1Gzqm3wyW0XCYvPzcFXv32431jDiAWDUqigtQDphZcSMeE
+        9a5pFADBcnnIprxtuaeuEz8=
+X-Google-Smtp-Source: ABdhPJxh+Vt9oDZRXNiLgQBph5qkOp3i9zD+1yOu+rnkCFbGG36RMeKJz2sTzFwpPEwsICDPT2HhbQ==
+X-Received: by 2002:a17:90a:f696:: with SMTP id cl22mr4536225pjb.216.1629887156307;
+        Wed, 25 Aug 2021 03:25:56 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id t42sm10228377pfg.30.2021.08.25.03.25.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 03:25:55 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
+        ville.syrjala@linux.intel.com, matthew.auld@intel.com,
+        dan.carpenter@oracle.com, tvrtko.ursulin@intel.com,
+        matthew.d.roper@intel.com, lucas.demarchi@intel.com,
+        karthik.b.s@intel.com, jose.souza@intel.com,
+        manasi.d.navare@intel.com, airlied@redhat.com,
+        aditya.swarup@intel.com, andrescj@chromium.org,
+        linux-graphics-maintainer@vmware.com, zackr@vmware.com
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v6 0/7] drm: update locking for modesetting
+Date:   Wed, 25 Aug 2021 18:24:04 +0800
+Message-Id: <20210825102411.1084220-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210825100149.GR7722@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2021 12:01, Dan Carpenter wrote:
-> On Wed, Aug 25, 2021 at 11:45:58AM +0200, Krzysztof Kozlowski wrote:
->> On 25/08/2021 08:37, CGEL wrote:
->>> From: Jing Yangyang <jing.yangyang@zte.com.cn>
->>>
->>> Fix the following coccicheck warning:
->>> ./drivers/memory/tegra/tegra210-emc-core.c:1665:0-23:WARNING
->>> tegra210_emc_debug_min_rate_fops should be defined
->>>  with DEFINE_DEBUGFS_ATTRIBUTE
->>> ./drivers/memory/tegra/tegra210-emc-core.c:1726:0-23:WARNING
->>> tegra210_emc_debug_temperature_fops should be defined
->>>  with DEFINE_DEBUGFS_ATTRIBUTE
->>
->> Thanks for the patch.
->>
->> One error message is enough. They are the same.
->>
->>>
->>> Reported-by: Zeal Robot <zealci@zte.com.cn>
->>
->> Where is the report? We work here in a public, so if there is a report I
->> assume we can reach it? In case the report does not exist, anyone can
->> run checkpatch, coccinelle, smatch and sparse, so how does this differs
->> from me running checkpatch?
-> 
-> Someone asked for these tags when it was Huawei sending patches from
-> the Hulk Robot so no everyone adds them and Hulk Robot is the #1 bug
-> reporter.  Hulk Robot just crossed the 2000 tag mark recently.
+Hi,
 
-Yes, I know, my questions where rather rhetorical. :) Hulk Robot reports
-are ridiculous, in my opinion.
+Updated the series again to avoid recursive locking caught by the
+Intel-gfx CI. Patch 5 touches a number of files, including the Intel and
+VMware drivers, but most changes are simply switching a function call to
+the appropriate locked/unlocked version.
 
-The tool (checkpatch) used to detect warning is public, so from
-community perspective this does not differ from John Smith sending a fix
-for a checkpatch issue.
-However I do not expect tags like:
-  From: John Smith
-  ...
-  Reported-by: John Smith
-  Signed-off-by: John Smith
+Overall, this series fixes races with modesetting rights, converts
+drm_device.master_mutex into master_rwsem, and removes
+drm_file.master_lookup_lock.
 
-How does it look? Neither I expect some unknown, hidden, secret reports
-like:
-  Reported-by: foo bar
-  Signed-off-by: John Smith
+- Patch 1: Fix a potential null ptr dereference in drm_master_release
 
-Simply the credit of running the tool (e.g. checkpatch) is already in
-the patch authorship. The Reported-by is for crediting additional work
-related to the report.
+- Patch 2: Convert master_mutex into rwsem (avoids creating a new lock)
 
-No report, no credit. Otherwise the value of Reported-by cease to exist...
+- Patch 3: Update global mutex locking in the ioctl handler (avoids
+deadlock when grabbing read lock on master_rwsem in drm_ioctl_kernel)
 
-Best regards,
-Krzysztof
+- Patch 4: Plug races with drm modesetting rights
+
+- Patch 5: Modify drm_mode_object_find to fix potential recursive
+locking of master_rwsem and lock inversions between modeset_mutex and
+master_rwsem
+
+- Patch 6: Remove remaining potential lock inversions between
+modeset_mutex and master_rwsem
+
+- Patch 7: Replace master_lookup_lock with master_rwsem
+
+v5 -> v6:
+- Fix recursive locking on master_rwsem, caught by the Intel-gfx CI
+(only current patch 5 & 6 changed)
+
+v4 -> v5:
+- Avoid calling drm_file_get_master while holding on to the modeset
+mutex, caught by the Intel-gfx CI
+
+v3 -> v4 (suggested by Daniel Vetter):
+- Drop a patch that added an unnecessary master_lookup_lock in
+drm_master_release
+- Drop a patch that addressed a non-existent race in
+drm_is_current_master_locked
+- Remove fixes for non-existent null ptr dereferences
+- Protect drm_master.magic_map,unique{_len} with master_rwsem instead of
+master_lookup_lock
+- Drop the patch that moved master_lookup_lock into struct drm_device
+- Drop a patch to export task_work_add
+- Revert the check for the global mutex in the ioctl handler to use
+drm_core_check_feature instead of drm_dev_needs_global_mutex
+- Push down master_rwsem locking for selected ioctls to avoid lock
+hierarchy inversions, and to allow us to hold write locks on
+master_rwsem instead of flushing readers
+- Remove master_lookup_lock by replacing it with master_rwsem
+
+v2 -> v3:
+- Unexport drm_master_flush, as suggested by Daniel Vetter.
+- Merge master_mutex and master_rwsem, as suggested by Daniel Vetter.
+- Export task_work_add, reported by kernel test robot.
+- Make master_flush static, reported by kernel test robot.
+- Move master_lookup_lock into struct drm_device.
+- Add a missing lock on master_lookup_lock in drm_master_release.
+- Fix a potential race in drm_is_current_master_locked.
+- Fix potential null ptr dereferences in drm_{auth, ioctl}.
+- Protect magic_map,unique{_len} with  master_lookup_lock.
+- Convert master_mutex into a rwsem.
+- Update global mutex locking in the ioctl handler.
+
+v1 -> v2 (suggested by Daniel Vetter):
+- Address an additional race when drm_open runs.
+- Switch from SRCU to rwsem to synchronise readers and writers.
+- Implement drm_master_flush with task_work so that flushes can be
+queued to run before returning to userspace without creating a new
+DRM_MASTER_FLUSH ioctl flag.
+
+Best wishes,
+Desmond
+
+Desmond Cheong Zhi Xi (7):
+  drm: fix null ptr dereference in drm_master_release
+  drm: convert drm_device.master_mutex into a rwsem
+  drm: lock drm_global_mutex earlier in the ioctl handler
+  drm: avoid races with modesetting rights
+  drm: avoid circular locks in drm_mode_object_find
+  drm: avoid circular locks with modeset_mutex and master_rwsem
+  drm: remove drm_file.master_lookup_lock
+
+ drivers/gpu/drm/drm_atomic_uapi.c            |  7 +-
+ drivers/gpu/drm/drm_auth.c                   | 57 ++++++------
+ drivers/gpu/drm/drm_color_mgmt.c             |  2 +-
+ drivers/gpu/drm/drm_crtc.c                   |  5 +-
+ drivers/gpu/drm/drm_debugfs.c                |  4 +-
+ drivers/gpu/drm/drm_drv.c                    |  3 +-
+ drivers/gpu/drm/drm_encoder.c                |  7 +-
+ drivers/gpu/drm/drm_file.c                   |  7 +-
+ drivers/gpu/drm/drm_framebuffer.c            |  2 +-
+ drivers/gpu/drm/drm_internal.h               |  1 +
+ drivers/gpu/drm/drm_ioctl.c                  | 48 ++++++----
+ drivers/gpu/drm/drm_lease.c                  | 94 ++++++++++----------
+ drivers/gpu/drm/drm_mode_object.c            | 13 ++-
+ drivers/gpu/drm/drm_plane.c                  | 22 +++--
+ drivers/gpu/drm/drm_property.c               |  6 +-
+ drivers/gpu/drm/i915/display/intel_overlay.c |  2 +-
+ drivers/gpu/drm/i915/display/intel_sprite.c  |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c          |  2 +-
+ include/drm/drm_auth.h                       |  6 +-
+ include/drm/drm_connector.h                  | 23 +++++
+ include/drm/drm_crtc.h                       | 22 +++++
+ include/drm/drm_device.h                     | 15 +++-
+ include/drm/drm_file.h                       | 17 ++--
+ include/drm/drm_lease.h                      |  2 +
+ include/drm/drm_mode_object.h                |  3 +
+ include/drm/drm_plane.h                      | 20 +++++
+ 26 files changed, 249 insertions(+), 143 deletions(-)
+
+-- 
+2.25.1
+
