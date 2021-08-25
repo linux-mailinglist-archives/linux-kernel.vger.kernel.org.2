@@ -2,167 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4895E3F7484
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AEFB3F748E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240216AbhHYLqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 07:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
+        id S240289AbhHYLtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 07:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbhHYLqq (ORCPT
+        with ESMTP id S239331AbhHYLtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 07:46:46 -0400
-Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E505BC061757;
-        Wed, 25 Aug 2021 04:45:58 -0700 (PDT)
-Received: from localhost (unknown [127.0.0.1])
-        by ha0.nfschina.com (Postfix) with ESMTP id 9AD0AAE0DC7;
-        Wed, 25 Aug 2021 19:45:17 +0800 (CST)
-X-Virus-Scanned: amavisd-new at test.com
-Received: from ha0.nfschina.com ([127.0.0.1])
-        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id bZVhb-isVgmc; Wed, 25 Aug 2021 19:44:56 +0800 (CST)
-Received: from [172.30.18.174] (unknown [180.167.10.98])
-        (Authenticated sender: liqiong@nfschina.com)
-        by ha0.nfschina.com (Postfix) with ESMTPA id 6768FAE0D1B;
-        Wed, 25 Aug 2021 19:44:56 +0800 (CST)
-Subject: Re: [PATCH] ima: fix deadlock within RCU list of ima_rules
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     THOBY Simon <Simon.THOBY@viveris.fr>,
-        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210819101529.28001-1-liqiong@nfschina.com>
- <20210824085747.23604-1-liqiong@nfschina.com>
- <e720e88e-ebfa-56df-6048-f2da0b8fa2a0@viveris.fr>
- <3ba4da9d-fa7b-c486-0c48-67cee4d5de6d@nfschina.com>
- <2c4f61ff68544b2627fc4a38ad1e4109184ec68a.camel@linux.ibm.com>
- <d502623a-7a49-04f8-1672-6521ceef260b@nfschina.com>
-From:   liqiong <liqiong@nfschina.com>
-Message-ID: <5a032a1b-f763-a0e4-8ea2-803872bd7174@nfschina.com>
-Date:   Wed, 25 Aug 2021 19:45:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        Wed, 25 Aug 2021 07:49:21 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA502C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:48:35 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:91f7:1ea1:147b:586f])
+        by laurent.telenet-ops.be with bizsmtp
+        id lnoW2500N34CCxU01noWjW; Wed, 25 Aug 2021 13:48:34 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mIrOQ-005kYQ-JW; Wed, 25 Aug 2021 13:48:30 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mIrOQ-00DDKB-59; Wed, 25 Aug 2021 13:48:30 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Simon Horman <horms@verge.net.au>,
+        Tony Luck <tony.luck@intel.com>, Jay Lan <jlan@sgi.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/3] ia64: Miscellaneous fixes and cleanups
+Date:   Wed, 25 Aug 2021 13:48:26 +0200
+Message-Id: <cover.1629884459.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <d502623a-7a49-04f8-1672-6521ceef260b@nfschina.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mimi,
+	Hi Andrew,
 
-This copy may be better.
+This patch series contains some miscellaneous fixes and cleanups for
+ia64.  The second patch fixes a naming conflict triggered by a patch for
+the FDT code.
 
+This has been compile-tested only, due to lack of hardware.
 
-subject: ima: fix deadlock when iterating over the init "ima_rules" list.
+Thanks!
 
+Geert Uytterhoeven (3):
+  ia64: Fix #endif comment for reserve_elfcorehdr()
+  ia64: Make reserve_elfcorehdr() static
+  ia64: Make num_rsvd_regions static
 
+ arch/ia64/include/asm/meminit.h |  2 --
+ arch/ia64/kernel/setup.c        | 53 ++++++++++++++++-----------------
+ 2 files changed, 26 insertions(+), 29 deletions(-)
 
-When traversing back to head, the init "ima_rules" list can't exit
-iterating if "ima_rules" has been updated to "ima_policy_rules".
-It causes soft lockup and RCU stalls. So we can introduce a duplicate
-of "ima_rules" for each "ima_rules" list loop.
+-- 
+2.25.1
 
-Signed-off-by: liqiong <liqiong@nfschina.com>
----
- This problem can happen in practice: updating the IMA policy
- in the boot process while systemd-services are being checked.
+Gr{oetje,eeting}s,
 
- security/integrity/ima/ima_policy.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+						Geert
 
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index fd5d46e511f1..e92b197bfd3c 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-Regards,
-
-liqiong
-
-
-
-在 2021年08月25日 15:05, liqiong 写道:
-> Hi Mimi,
->
-> Thanks for the advice，maybe i should trim the message,
-> here is a new copy:
->
->
-> subject: ima: fix deadlock when iterating over the init "ima_rules" list.
->
-> The init "ima_rules" list can't traverse back to head, if "ima_rules"
-> is being updated to "ima_policy_rules". It causes soft lockup and RCU stalls.
-> So we can introduce a duplicate of "ima_rules" for each "ima_rules" list loop.
->
-> Signed-off-by: liqiong <liqiong@nfschina.com>
-> ---
->  This problem can happen in practice: updating the IMA policy
->  in the boot process while systemd-services are being checked.
->
->  security/integrity/ima/ima_policy.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
->
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index fd5d46e511f1..e92b197bfd3c 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
->
->
-> Regards,
->
-> liqiong
->
-> 在 2021年08月24日 20:38, Mimi Zohar 写道:
->> On Tue, 2021-08-24 at 20:09 +0800, liqiong wrote:
->>> Hi Simon :
->>>
->>> ima: fix deadlock within RCU list of ima_rules.
->>>
->> Before the following paragraph, an introductory sentence is needed. 
->> Try adding a sentence to the affect that "ima_rules" initially points
->> to the "ima_default_rules", but after loading a custom policy points to
->> the "ima_policy_rules".   Then describe the bug at a high level,
->> something like - transitioning to the "ima_policy_rules" isn't being
->> done safely.
->>
->> Followed by the details.
->>
->>> ima_match_policy() is looping on the policy ruleset while
->>> ima_update_policy() updates the variable "ima_rules". This can
->>> lead to a situation where ima_match_policy() can't exit the
->>> 'list_for_each_entry_rcu' loop, causing RCU stalls
->>> ("rcu_sched detected stall on CPU ...").
->>>
->>> This problem can happen in practice: updating the IMA policy
->>> in the boot process while systemd-services are being checked.
->>>
->>> In addition to ima_match_policy(), other function with 
->>> "list_for_each_entry_rcu" should happen too. Fix locking by 
->>> introducing a duplicate of "ima_rules" for each 
->>> "list_for_each_entry_rcu".
->>>
->>>
->>> How about this commit message ?
->>>
->>> I have tested this patch in lab, we can reproduced this error case, 
->>> have done reboot test many times. This patch should work. 
->> The above comment doesn't belong in the commit message, but is a
->> message to the reviewers/maintainers and goes after the patch
->> descriptions three dashes line.
->>
->> thanks,
->>
->> Mimi
->>
->>
->
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
