@@ -2,131 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F7B3F78C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B603F794C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241744AbhHYPfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:35:03 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:52206 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhHYPfA (ORCPT
+        id S241049AbhHYPnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 11:43:04 -0400
+Received: from codesynthesis.com ([188.40.148.39]:44846 "EHLO
+        codesynthesis.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240878AbhHYPnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:35:00 -0400
-Received: from localhost.localdomain (unknown [IPv6:2600:8800:8c06:1000::c8f3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Wed, 25 Aug 2021 11:43:02 -0400
+X-Greylist: delayed 453 seconds by postgrey-1.27 at vger.kernel.org; Wed, 25 Aug 2021 11:43:01 EDT
+Received: from brak.codesynthesis.com (197-255-152-207.static.adept.co.za [197.255.152.207])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: alyssa)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E51971F43868;
-        Wed, 25 Aug 2021 16:34:05 +0100 (BST)
-From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/panfrost: Use upper/lower_32_bits helpers
-Date:   Wed, 25 Aug 2021 11:33:48 -0400
-Message-Id: <20210825153348.4980-1-alyssa.rosenzweig@collabora.com>
-X-Mailer: git-send-email 2.30.2
+        by codesynthesis.com (Postfix) with ESMTPSA id EC3275F7CB;
+        Wed, 25 Aug 2021 15:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codesynthesis.com;
+        s=mail1; t=1629905681;
+        bh=njRimGOIAbqbKx/5ZrZSGnm8dBTrS6TRY3ucp7C/bzU=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:From;
+        b=M4Zeq9iy/BsSsC3ucqhrc8i/ZaAxdzH10P5jgmpgL4PwLblF/Fp947GMfSBXeNsjq
+         NuVIW50/nTWLqphqH0bmluRAxc0xwe2C4oPm8c3f82SB7NkwrgSfclPFXG73pD0L0h
+         BXOpQO6Icl3wl7OePxAFtZ7q+2CMRU9b3Qt4+Lm1L2wJkxTOQ3DpJExmWuUMQyAheR
+         kyHK+EDh37gLQ1jZZ8I0aj6iXvXQ9trqsiJeiZDTSWqktv5++p/YTyknMZMmxFNd7P
+         pNCo5LQJUmP3rmiNyTGDZjJtNKJ5AnGpM3Qc/HQWkVB6YyRtxYHeF5BjZsSZXaAbiu
+         PCHHvOofYHbwQ==
+Received: by brak.codesynthesis.com (Postfix, from userid 1000)
+        id 1A3B11A800C4; Wed, 25 Aug 2021 17:34:37 +0200 (SAST)
+Date:   Wed, 25 Aug 2021 17:34:37 +0200
+From:   Boris Kolpackov <boris@codesynthesis.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] kconfig: forbid symbols that end with '_MODULE'
+Message-ID: <boris.20210825172545@codesynthesis.com>
+References: <20210825041637.365171-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825041637.365171-1-masahiroy@kernel.org>
+Organization: Code Synthesis
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use upper_32_bits/lower_32_bits helpers instead of open-coding them.
-This is easier to scan quickly compared to bitwise manipulation, and it
-is pleasingly symmetric. I noticed this when debugging lock_region,
-which had a particularly "creative" way of writing upper_32_bits.
+Masahiro Yamada <masahiroy@kernel.org> writes:
 
-v2: Use helpers for one more call site and add review tag (Steven).
+> Kconfig (syncconfig) generates include/generated/autoconf.h to make
+> CONFIG options available to the pre-processor.
+> 
+> The macros are suffixed with '_MODULE' for symbols with the value 'm'.
+> 
+> Here is a conflict; CONFIG_FOO=m results in '#define CONFIG_FOO_MODULE 1',
+> but CONFIG_FOO_MODULE=y also results in the same define.
+> 
+> fixdep always assumes CONFIG_FOO_MODULE comes from CONFIG_FOO=m, so the
+> dependency is not properly tracked for symbols that end with '_MODULE'.
 
-Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Reviewed-by: Rob Herring <robh@kernel.org> (v1)
-Reviewed-by: Steven Price <steven.price@arm.com>
----
- drivers/gpu/drm/panfrost/panfrost_job.c     |  8 ++++----
- drivers/gpu/drm/panfrost/panfrost_mmu.c     | 12 ++++++------
- drivers/gpu/drm/panfrost/panfrost_perfcnt.c |  4 ++--
- 3 files changed, 12 insertions(+), 12 deletions(-)
+It seem to me the problem is in autoconf.h/fixdep, not in the Kconfig
+language.
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-index 71a72fb50e6b..763b7abfc88e 100644
---- a/drivers/gpu/drm/panfrost/panfrost_job.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-@@ -137,8 +137,8 @@ static void panfrost_job_write_affinity(struct panfrost_device *pfdev,
- 	 */
- 	affinity = pfdev->features.shader_present;
- 
--	job_write(pfdev, JS_AFFINITY_NEXT_LO(js), affinity & 0xFFFFFFFF);
--	job_write(pfdev, JS_AFFINITY_NEXT_HI(js), affinity >> 32);
-+	job_write(pfdev, JS_AFFINITY_NEXT_LO(js), lower_32_bits(affinity));
-+	job_write(pfdev, JS_AFFINITY_NEXT_HI(js), upper_32_bits(affinity));
- }
- 
- static u32
-@@ -203,8 +203,8 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
- 
- 	cfg = panfrost_mmu_as_get(pfdev, job->file_priv->mmu);
- 
--	job_write(pfdev, JS_HEAD_NEXT_LO(js), jc_head & 0xFFFFFFFF);
--	job_write(pfdev, JS_HEAD_NEXT_HI(js), jc_head >> 32);
-+	job_write(pfdev, JS_HEAD_NEXT_LO(js), lower_32_bits(jc_head));
-+	job_write(pfdev, JS_HEAD_NEXT_HI(js), upper_32_bits(jc_head));
- 
- 	panfrost_job_write_affinity(pfdev, job->requirements, js);
- 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-index 0da5b3100ab1..c3fbe0ad9090 100644
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -80,8 +80,8 @@ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
- 	region |= region_width;
- 
- 	/* Lock the region that needs to be updated */
--	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), region & 0xFFFFFFFFUL);
--	mmu_write(pfdev, AS_LOCKADDR_HI(as_nr), (region >> 32) & 0xFFFFFFFFUL);
-+	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), lower_32_bits(region));
-+	mmu_write(pfdev, AS_LOCKADDR_HI(as_nr), upper_32_bits(region));
- 	write_cmd(pfdev, as_nr, AS_COMMAND_LOCK);
- }
- 
-@@ -123,14 +123,14 @@ static void panfrost_mmu_enable(struct panfrost_device *pfdev, struct panfrost_m
- 
- 	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0UL, AS_COMMAND_FLUSH_MEM);
- 
--	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), transtab & 0xffffffffUL);
--	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), transtab >> 32);
-+	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), lower_32_bits(transtab));
-+	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), upper_32_bits(transtab));
- 
- 	/* Need to revisit mem attrs.
- 	 * NC is the default, Mali driver is inner WT.
- 	 */
--	mmu_write(pfdev, AS_MEMATTR_LO(as_nr), memattr & 0xffffffffUL);
--	mmu_write(pfdev, AS_MEMATTR_HI(as_nr), memattr >> 32);
-+	mmu_write(pfdev, AS_MEMATTR_LO(as_nr), lower_32_bits(memattr));
-+	mmu_write(pfdev, AS_MEMATTR_HI(as_nr), upper_32_bits(memattr));
- 
- 	write_cmd(pfdev, as_nr, AS_COMMAND_UPDATE);
- }
-diff --git a/drivers/gpu/drm/panfrost/panfrost_perfcnt.c b/drivers/gpu/drm/panfrost/panfrost_perfcnt.c
-index 5ab03d605f57..e116a4d9b8e5 100644
---- a/drivers/gpu/drm/panfrost/panfrost_perfcnt.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_perfcnt.c
-@@ -51,8 +51,8 @@ static int panfrost_perfcnt_dump_locked(struct panfrost_device *pfdev)
- 
- 	reinit_completion(&pfdev->perfcnt->dump_comp);
- 	gpuva = pfdev->perfcnt->mapping->mmnode.start << PAGE_SHIFT;
--	gpu_write(pfdev, GPU_PERFCNT_BASE_LO, gpuva);
--	gpu_write(pfdev, GPU_PERFCNT_BASE_HI, gpuva >> 32);
-+	gpu_write(pfdev, GPU_PERFCNT_BASE_LO, lower_32_bits(gpuva));
-+	gpu_write(pfdev, GPU_PERFCNT_BASE_HI, upper_32_bits(gpuva));
- 	gpu_write(pfdev, GPU_INT_CLEAR,
- 		  GPU_IRQ_CLEAN_CACHES_COMPLETED |
- 		  GPU_IRQ_PERFCNT_SAMPLE_COMPLETED);
--- 
-2.30.2
 
+> This commit makes Kconfig error out if it finds a symbol suffixed with
+> '_MODULE'.
+
+I know you don't care, but I will voice my objection, for the record:
+Kconfig is used by projects other than the Linux kernel and some of
+them do not use the autoconf.h functionality. For such projects this
+restriction seems arbitrary and potentially backwards-incompatible.
