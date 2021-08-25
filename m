@@ -2,82 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A573F6F19
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14823F6F1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238229AbhHYF6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 01:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232480AbhHYF6u (ORCPT
+        id S237993AbhHYGAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:00:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55470 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232442AbhHYGAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 01:58:50 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF626C061757;
-        Tue, 24 Aug 2021 22:58:04 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id x12so34547709wrr.11;
-        Tue, 24 Aug 2021 22:58:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=06re+8WkU5VebI6jGZJpR94faNEVrf1aGvqVrEKuNZ8=;
-        b=pQ5mfYQkyicvUv+HmDsuJldwQaLH4mo5OLOFTL+ou3qR9/qkYRqQLEtalhbzKA7Hvk
-         zkdUJORyKDHVh/pN1pAl8Tes20DF9t/fkmvrffnEDNMj3UZupTHh5hugmCC9nvwd9J6M
-         o7zg83Ev+48a43qas7JNev+EclyLIPQqMMS6g7fYQjUOZiidfnwDXz/OvTzI197RwSSb
-         0ByJH/Upur4ciZ7OVuIhFSb0cNmK87NyAqf51QEirytBxNM9NeG7PFXtyZq9qCfTZOoQ
-         kOfCGspePDSdNqOWrL06N0sOcU6pDkYs3QUenSMtBuQXTPWygircD58JyJz1EQkXg52N
-         Gx2A==
+        Wed, 25 Aug 2021 02:00:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629871174;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hZq8ux83RWRAGT7dU7S94nIBykQroT633MHGxDAPovQ=;
+        b=a91Zf2iAt/CNyQpw44Nx1QIWEk5odZ5GYQ1s8jK5JMmka94/yqBsfRvuIZ9yW7HmgWp+Xa
+        rhBt4bvyjLBxRVK4cC2vrUTGocWCksRpeQqhq4zWj8g87U/YojRHNtyDA5cYOsKxu/4ttU
+        CfUFo7EOEWNrRRYSeMg555TuWs/e2Gc=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-flwWYNxcPIqeqd6Y9fJcqw-1; Wed, 25 Aug 2021 01:59:32 -0400
+X-MC-Unique: flwWYNxcPIqeqd6Y9fJcqw-1
+Received: by mail-yb1-f197.google.com with SMTP id e137-20020a25698f000000b0059b84c50006so3977599ybc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 22:59:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=06re+8WkU5VebI6jGZJpR94faNEVrf1aGvqVrEKuNZ8=;
-        b=lKevcdkc2o3/tLZbp0bJESIonaA4cCne1AickdO8UqZKA2WTedIs5v5DaoYHfSpXWA
-         zF4rIpvJrfNycZMQJPNrjOAxqoq35yyMiBZWxIv81fYUQKxI5L+Lv1t4M7j+WTmskDCe
-         zuk0WLSV3gDzMt6Wm7SOE5DE58CDBqoFdWl03J8qtR+R/8hy6HIbuh87JyYRQ9syeH1J
-         6uJuZJwi9YZmftiBmNdMV4UP2VgUtzKQkC/+RNzQ2pXn9Tf+PPsnIxjzMLA0lUBq8m5T
-         9ukr/rD9r3Y4prb/p8WuwGa2erLSAG6ttrfNHfloCSzyIxdIOuEisbx3fgYzirxf61x1
-         YVfA==
-X-Gm-Message-State: AOAM532PTFUoY75c9xFWqeFgk8VqcWWNFHVNjxdHejm7jE2kF+u73l05
-        v4ciIHGnpTrgmjtJ9ser+cVpiv9XXEbRXootIt8=
-X-Google-Smtp-Source: ABdhPJzwzxF8orbHe3jSD7Uncwqg+1GJSzVyQKn+14id/SsYjNHfF5dA6n7ltPp7GgPDmJqj53j5yWUhmkjN8MIsKpw=
-X-Received: by 2002:adf:e6c5:: with SMTP id y5mr18746301wrm.198.1629871083425;
- Tue, 24 Aug 2021 22:58:03 -0700 (PDT)
+        bh=hZq8ux83RWRAGT7dU7S94nIBykQroT633MHGxDAPovQ=;
+        b=rdamfgYKLUTBr/jKDdJ7gbMxh9vHUvx9kNlzVrpwODO5IlXbj5+GodsHzopg2Yz2zp
+         LOmNZKGX4xcZH+bchmO3yJ4v7aIFweZ9kNGJWDPVmfsyvFZgX0mXWn/x4R7PeF3icQcl
+         UvNdYQKGqvgcj6PbQt5FlJJA41q+5J6PtAXQw0B0Opfm+NjSugSKzo9Aqk0mo424h5u9
+         LSN/fFS+rrafT7BByEto0JeQr9x+j5ieHatI5pFl18EeySlqotR7G5kpc31YtVH2J1zC
+         ShdWxV5kouiFdFKpY2/a+pI0u31rzqat3C4goEsps8aB1BJQuptYgFzRu3/DKu1JkXBl
+         MOxg==
+X-Gm-Message-State: AOAM5331dHR6gCSYKA/X9YJOwSWB1cN1u4vula+73O5AIJUK8rX4t7DQ
+        Odueuxg507fCzNEGxrcYjIf/ICLYFaagMPz467bH1bhk1jvY8CF9gpGnMHeZ/91UPCxOnh5aR1e
+        rpdCVC9pPooPzhMHiq12DS+2PHEcxlXWdPqa3r3+c
+X-Received: by 2002:a25:cb11:: with SMTP id b17mr17075074ybg.438.1629871172167;
+        Tue, 24 Aug 2021 22:59:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwU6u2ecWhLicWmFg6FwEcsOJ/sHApqkz1nmY/9nb65gcMxPrdb8Dmgi6eXH0NLTjyMcu4XKdYt5m2iVC1FVJ0=
+X-Received: by 2002:a25:cb11:: with SMTP id b17mr17075057ybg.438.1629871171995;
+ Tue, 24 Aug 2021 22:59:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210824092745.2093640-1-zhang.lyra@gmail.com>
- <20210824092745.2093640-3-zhang.lyra@gmail.com> <20210824155823.GE4393@sirena.org.uk>
-In-Reply-To: <20210824155823.GE4393@sirena.org.uk>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Wed, 25 Aug 2021 13:57:09 +0800
-Message-ID: <CAAfSe-v3uJRu2qZ_zNeR-WRdy2U-BBtOdznHfL8k0QqGuXHscQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt-bindings: spi: Convert sprd ADI bindings to yaml
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
-        DTML <devicetree@vger.kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Luting Guo <luting.guo@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <00000000000072e53a05c983ab22@google.com> <20210816091041.3313-1-hdanton@sina.com>
+ <20210816093336.GA3950@lst.de> <yt9dim01iz69.fsf@linux.ibm.com>
+ <20210819090510.GA12194@lst.de> <yt9dr1eph96a.fsf@linux.ibm.com>
+ <20210819135308.GB3395@lst.de> <CAHj4cs-S7sTEMZ=zSreW5_PgQQVxvf-4netHy-paPR2kfY=-hQ@mail.gmail.com>
+ <20210824072340.GA25108@lst.de>
+In-Reply-To: <20210824072340.GA25108@lst.de>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Date:   Wed, 25 Aug 2021 13:59:19 +0800
+Message-ID: <CAHj4cs_Q=sL640Yb7C3=r-d4zfAPsfYT+xY5iGxd6vbyHczb2Q@mail.gmail.com>
+Subject: Re: [syzbot] general protection fault in wb_timer_fn
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+aa0801b6b32dca9dda82@syzkaller.appspotmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-On Tue, 24 Aug 2021 at 23:58, Mark Brown <broonie@kernel.org> wrote:
+On Tue, Aug 24, 2021 at 3:23 PM Christoph Hellwig <hch@lst.de> wrote:
 >
-> On Tue, Aug 24, 2021 at 05:27:44PM +0800, Chunyan Zhang wrote:
-> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> >
-> > Convert spi-sprd-adi.txt to yaml.
+> On Sat, Aug 21, 2021 at 03:48:01PM +0800, Yi Zhang wrote:
+> > I also met similar issue with blktests, I tried to apply the patchset
+> > but with no luck to apply them, any suggestions to fix it.
 >
-> It's better to put DT binding conversion patches as the last patch in a
-> series, there's often a bit of a backlog on reviews for them so putting
-> them after other changes means that the other changes can proceed while
-> waiting for the review of the YAML conversion.
+> Please just retests the latest for-5.15/block or for-next branch in
+> Jens' tree.
+>
+Yeah, the issue was fixed with for-5.15/block
 
-Yes, the last two patches are DT bindings, the last one is based on this.
-Thanks for telling me, I didn't notice this indeed :)
+-- 
+Best Regards,
+  Yi Zhang
+
