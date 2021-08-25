@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0243F7791
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2253F7793
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240723AbhHYOmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:42:16 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8774 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhHYOmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 10:42:06 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GvpYl0PgdzYrGg;
-        Wed, 25 Aug 2021 22:40:43 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 22:41:16 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 22:41:16 +0800
-Subject: Re: [PATCH 3/3] amba: Properly handle device probe without IRQ domain
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     Saravana Kannan <saravanak@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        <devicetree@vger.kernel.org>, Russell King <linux@armlinux.org.uk>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Ruizhe Lin <linruizhe@huawei.com>
-References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
- <20210816074619.177383-4-wangkefeng.wang@huawei.com>
- <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
- <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
- <ee649111-dc07-d6db-8872-dcb692802236@huawei.com>
- <CAL_Jsq+0rq6u5d7itETOnQWx_V+J3aP1m1Zgehi5QKVoKvdbvQ@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <d7a1d3a8-bda4-7a29-b66d-22ed4926f9c8@huawei.com>
-Date:   Wed, 25 Aug 2021 22:41:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S241784AbhHYOms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:42:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229553AbhHYOmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 10:42:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D225E610CE;
+        Wed, 25 Aug 2021 14:42:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629902521;
+        bh=ql8zOf6SWyHcPUHzLv8yiojTzRm97Kk+Xup2MMUoHd8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ALkrXQh6kxQEO8lynHf/jpPmLCwpfLgxOMK1gN3YCDlxeK+H6w/5OB+rQEr6/ixPO
+         c5/eUQTb5/+37iD6QOBG+Dmlafm3tcx/x7RmnxzDsP17jtD8XzQR50L3EvxwUDPbDh
+         U8AiXnGlKO8CLluIVSjfndDAUU5UO63RkoJST+uJHQYk3smLIp8cwThd7WxwQP1jSm
+         e6ADECyz5WD1WyGc0aGInv6QS0eEhBH+wfV+oHD+4HM1nYiE7AWJlcd9sh/Qf3yOaY
+         s+u5zLHm3WziE4j5xl065f3lgmg1DJGqpIa7hZzCZzbvvFmfWJRs2MFomS/hnfqIfP
+         Ngzz+1fFr3otg==
+Date:   Wed, 25 Aug 2021 15:41:33 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        sailues@pendragon.ideasonboard.com
+Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
+Message-ID: <20210825144133.GH5186@sirena.org.uk>
+References: <20210824230620.1003828-1-djrscally@gmail.com>
+ <20210824230620.1003828-2-djrscally@gmail.com>
+ <20210825103301.GC5186@sirena.org.uk>
+ <CAHp75VdHpjbjz4biTP11TKT6J+7WQi-a1Ru3VLuSxM5tSLCB3Q@mail.gmail.com>
+ <20210825113013.GD5186@sirena.org.uk>
+ <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
+ <20210825131139.GG5186@sirena.org.uk>
+ <YSZMxxJ76vF316Pi@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+0rq6u5d7itETOnQWx_V+J3aP1m1Zgehi5QKVoKvdbvQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Hlh2aiwFLCZwGcpw"
+Content-Disposition: inline
+In-Reply-To: <YSZMxxJ76vF316Pi@pendragon.ideasonboard.com>
+X-Cookie: MY income is ALL disposable!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/8/25 20:33, Rob Herring wrote:
-> On Tue, Aug 24, 2021 at 11:05 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+--Hlh2aiwFLCZwGcpw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-...
+On Wed, Aug 25, 2021 at 04:59:35PM +0300, Laurent Pinchart wrote:
 
->>> Similar to other resources the AMBA bus "gets" for the device, I think
->>> this should be moved into amba_probe() and not here. There's no reason
->>> to delay the addition of the device (and loading its module) because
->>> the IRQ isn't ready yet.
->> The following code in the amba_device_try_add() will be called, it uses irq[0]
->> and irq[1], so I put of_amba_device_decode_irq() into amba_device_try_add().
->>
->> 470         if (dev->irq[0])
->> 471                 ret = device_create_file(&dev->dev, &dev_attr_irq0);
->> 472         if (ret == 0 && dev->irq[1])
->> 473                 ret = device_create_file(&dev->dev, &dev_attr_irq1);
->> 474         if (ret == 0)
->> 475                 return ret;
-> I wonder if we could just remove these. Why does userspace need them
-> in the first place? It's only an ABI if someone notices. Looking at
-> the history, AMBA bus was added in 2003 with just 'irq' and then
-> changed (ABI break) in 2004 to 'irq0' and 'irq1'.
->
-> Rob
+> From a camera sensor point of view, we want to avoid code duplication.
+> Having to look for regulators using OF lookups *and* platform data in
+> every single sensor driver is not a good solution. This means that, from
+> a camera sensor driver point of view, we want to call regulator_get()
+> (or the devm_ version) with a name, without caring about who establishes
+> the mapping and how the lookup is performed. I don't care much
+> personally if this would be implemented through swnode or a different
+> mechanism, as long as the implementation can be centralized.
 
-Ok, I will kill all irq parts,
+That's all orthogonal to this discussion, it's about how we configure
+the regulators not how clients use the regulators - as you say anything
+to do with how the regulator is configured should be totally transparent
+there.
 
-diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-index 962041148482..c08e8b30e02c 100644
---- a/drivers/amba/bus.c
-+++ b/drivers/amba/bus.c
-@@ -20,8 +20,6 @@
-  #include <linux/platform_device.h>
-  #include <linux/reset.h>
+--Hlh2aiwFLCZwGcpw
+Content-Type: application/pgp-signature; name="signature.asc"
 
--#include <asm/irq.h>
--
-  #define to_amba_driver(d)      container_of(d, struct amba_driver, drv)
+-----BEGIN PGP SIGNATURE-----
 
-  /* called on periphid match and class 0x9 coresight device. */
-@@ -135,8 +133,6 @@ static ssize_t name##_show(struct device 
-*_dev,                             \
-  static DEVICE_ATTR_RO(name)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEmVp0ACgkQJNaLcl1U
+h9COmwf6AuRM1KNBdP2rhbsFwYapLGNLyNAdZT8vknC6v8R+9H8ugllh252UUD3J
+8oQiPuzB6m5ZmoSEKLYRVGRGewUPe5AV98iQBW6e1xlbnsOkARxBxyi7NonnqtUC
+X+pg5jvl63VE6WXrNlO3n4HHLr48hoc/jpCJloXAdlPASvqrkNoz0Dv3B0/kVDxZ
+FTcqHDCl9l99ZDk/rUI3zQnRFTJKxZWxSeQB2nePQNWmGtRUiGfhSgG1GKkyFec9
+I5Lo0V8KJZDSxnCLXC5KP9VvDnwubM0ad7HM2WghAuIeaKDhVIxUAfZMSwx83dsp
+4ZSZ066rqThyuwcOw/G8SwPC3B9/Og==
+=5Wq4
+-----END PGP SIGNATURE-----
 
-  amba_attr_func(id, "%08x\n", dev->periphid);
--amba_attr_func(irq0, "%u\n", dev->irq[0]);
--amba_attr_func(irq1, "%u\n", dev->irq[1]);
-  amba_attr_func(resource, "\t%016llx\t%016llx\t%016lx\n",
-          (unsigned long long)dev->res.start, (unsigned long 
-long)dev->res.end,
-          dev->res.flags);
-@@ -467,10 +463,6 @@ static int amba_device_try_add(struct amba_device 
-*dev, struct resource *parent)
-         if (ret)
-                 goto err_release;
-
--       if (dev->irq[0])
--               ret = device_create_file(&dev->dev, &dev_attr_irq0);
--       if (ret == 0 && dev->irq[1])
--               ret = device_create_file(&dev->dev, &dev_attr_irq1);
-
-and do some cleanup about error handling in the next version.
-
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/log/arch/arm/common/amba.c
-> .
->
+--Hlh2aiwFLCZwGcpw--
