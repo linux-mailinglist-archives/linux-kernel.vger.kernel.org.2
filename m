@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062A23F6F52
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60323F6F53
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238814AbhHYGTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
+        id S238962AbhHYGTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238555AbhHYGTc (ORCPT
+        with ESMTP id S238555AbhHYGTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:19:32 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6553C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:18:46 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id e3so12770145qth.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:18:46 -0700 (PDT)
+        Wed, 25 Aug 2021 02:19:34 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C62AC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:18:49 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso31839964otv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:18:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=RH75lEDDDtdHGfWOp59zoFXd45mrorIx2kgTRLpTbwg=;
-        b=nAWtbhlDL430J8B/4kvp6bShpNDqABPji9ShP0MSsnf2wbEeYbQm0b9oUmHiuJrflY
-         WRXf5+AIR3HPESJliYuDLkcCXsGB0Oy5ZvLRl+dHxR74uq41vbJawQta7/PVvhUyozGg
-         eCdC89A0G47F0lytna7M9271XA6BzdlpGZds0wGY0Slehz9FlnPGRbMa4lU9OJIKDNsL
-         1tC8gZLd/s6HxbLSbpLoGZ/Kqq+CbZJAEAXQJn6hZj+p6EyKJVxTVRKQVbxJ19aXlshI
-         qd1iOrWmyBl+a2TwikYOf2iRM+EdSG4sCq1xukfYmb3j3dvBkNaQ7yzx+lupWkjThZr/
-         6aSQ==
+        bh=pq8QdcgdNxjJmg61r8dPGvWyeowRsap/Qds2NQHbQZA=;
+        b=BKcgTZvgXNHK7lRkIgzhas7zlHZYNoye/LJTNjER+8dflsWM1EWEP7htQAQEEoG/9K
+         ZwrM5F3AJMvMyJUEHC5S9XI9J6ikQhn3RUUnk8+36fs6+3lCm0D5xW/J+Ipo7TcsQ/lg
+         X5tqnkoTJhE/ncMbcOUHh5URLnRtSVQ132Kkv11Yc2PAehRXhPjej8qc6NwKaLMBl7qb
+         JtyI1Cp8K776rVnHNBLpFDLzxFPc/C1MaNwp8Mu9dQCq8eERwjeY7qSle8W+89zQvake
+         4wvfib63bKZQfEIAzdmrN9w+OimKM2HCSfflucf97NcbyMGAmWH5Ud3g20sMR4BKBXzd
+         JtcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RH75lEDDDtdHGfWOp59zoFXd45mrorIx2kgTRLpTbwg=;
-        b=Zw1Mfe7zz8eVufCjXCA9D+ZplZwb/aeYTOoOfKDI6MwJp6PCn2Dwanlpq2BSpsifEl
-         mTAzv8GYYs3CVyCd5gCg1MUszKMIBETpZ9pWxyck1ZHhaSlLJkppIQhUBTmanPVhVhOL
-         GRadFlAZEsLlOwkqc5CmtYE/v6rlUcu4pyTwQGqNomyaJ7Dt11mxa3FS9mFUkB4XZlUf
-         dKQFBGey/axlhFlTzFh0C5LGNzD0uoODw7oWl1zwE80BWuk4R82/L14bys3HeXgUw0sw
-         FWxWGXjzMPcnkdusRH4V1OLjsTvr7myb4ZSPt8B/P21X1BJNlz/8P8Cwn0rW6SdbCmd9
-         AuTQ==
-X-Gm-Message-State: AOAM5301prQfjVOkGZBuWd9BsnwOlDc3TMPbQOCIoIyIhuLiWri4U/dD
-        MJPeetfKad7Y2cYtHLNBkFwd0Imil3g=
-X-Google-Smtp-Source: ABdhPJwmzEBWa+zihl+e6mx3w/fX3IuWaWfFvusi0wr+NcVEl+S9m9UKjOKLNiP63XIdPDzTf1L2/g==
-X-Received: by 2002:ac8:4e96:: with SMTP id 22mr31192996qtp.242.1629872326050;
-        Tue, 24 Aug 2021 23:18:46 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id k9sm9532555qtj.12.2021.08.24.23.18.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 23:18:45 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Wang Wensheng <wangwensheng4@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] drivers:smu: fix warning comparing pointer to 0
-Date:   Tue, 24 Aug 2021 23:18:38 -0700
-Message-Id: <20210825061838.69746-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=pq8QdcgdNxjJmg61r8dPGvWyeowRsap/Qds2NQHbQZA=;
+        b=E9PSvY4fMMG8Kw/055OxLM1stpFe7pPaErNDKxpQH50ZSxg9cDEjO5T8tjtIzxK5+2
+         N355S2vheIJO6kovbbmXpLOQ5bDtWNk+aMhEiidiZCfb1mqzxs9/ok3IH0czCxIVYJOy
+         f7aNzO479U+EBwRZMdX+b9LJgg/9jfKu+5ua3t7kfEFpkUidMCBahS0Tg99Z/lgap8qp
+         Dn0jGyVbF+88pEal2iHDI84+fbjMjldiaiStUK/W8vBISRhJLywa6Yn5oF5g6p1+6dw2
+         h41ets7sSkXL7DQs5zVAI/IQN5iZZNdXA/JkKzkyUUZ8J3u8F6gIpzMHZBjsbxJGU76R
+         p6Ig==
+X-Gm-Message-State: AOAM532w0yEho3LYsEAW85qUK8ChV2jeG/UBSjz9P6ESuqpSGLuMd/c5
+        8vMTOThOE1QOK0+KbKGiEiYcA7qwdHLR1pDCLQk=
+X-Google-Smtp-Source: ABdhPJzl0bmdFd8Zo2aOgR6g8Jl5hevl7Mw0elaNg1T2FqxXsxdQeHtO2JrxhmQ2ZhbQqskIWexrZL6JNhVMN20xClE=
+X-Received: by 2002:a9d:de1:: with SMTP id 88mr36729492ots.60.1629872326867;
+ Tue, 24 Aug 2021 23:18:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Reply-To: bouchetb@yandex.com
+Sender: cc918561@gmail.com
+Received: by 2002:a9d:6854:0:0:0:0:0 with HTTP; Tue, 24 Aug 2021 23:18:46
+ -0700 (PDT)
+From:   Dr Bryan Bouchet <drbryanbouchet52@gmail.com>
+Date:   Wed, 25 Aug 2021 07:18:46 +0100
+X-Google-Sender-Auth: aF_P61mz83I2ZZcje_8P5oJlyJ0
+Message-ID: <CAL5z9Peh92B8-zYJr2+yemBs4vSphVvkdrru03_AqumcZGrxXQ@mail.gmail.com>
+Subject: PLEASE RESPOND VERY URGENTLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+Dear Friend,
 
-Fix the following coccicheck warning:
-./drivers/macintosh/smu.c:1089: 11-12:
- WARNING comparing pointer to 0, suggest !E
-./drivers/macintosh/smu.c:1256:11-12:
-WARNING comparing pointer to 0
+With due respect, i have decided to contact you on a business
+transaction that will be beneficial to both of us. At the bank last
+account and auditing evaluation, my staffs came across an old account
+which was being maintained by a foreign client who we learn was among
+the deceased passengers of motor accident on November.2003, the
+deceased was unable to run this account since his death. The account
+has remained dormant without the knowledge of his family since it was
+put in a safe deposit account in the bank for future investment by the clie=
+nt.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- drivers/macintosh/smu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit account
+until i discovered that it cannot be claimed since our client is a
+foreign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to be done;
+I decided to seek ways through which to transfer this money out of the
+bank and out of the country too.
 
-diff --git a/drivers/macintosh/smu.c b/drivers/macintosh/smu.c
-index 94fb63a..6cd0fef 100644
---- a/drivers/macintosh/smu.c
-+++ b/drivers/macintosh/smu.c
-@@ -1086,7 +1086,7 @@ static int smu_open(struct inode *inode, struct file *file)
- 	unsigned long flags;
- 
- 	pp = kzalloc(sizeof(struct smu_private), GFP_KERNEL);
--	if (pp == 0)
-+	if (!pp)
- 		return -ENOMEM;
- 	spin_lock_init(&pp->lock);
- 	pp->mode = smu_file_commands;
-@@ -1253,7 +1253,7 @@ static __poll_t smu_fpoll(struct file *file, poll_table *wait)
- 	__poll_t mask = 0;
- 	unsigned long flags;
- 
--	if (pp == 0)
-+	if (!pp)
- 		return 0;
- 
- 	if (pp->mode == smu_file_commands) {
-@@ -1276,7 +1276,7 @@ static int smu_release(struct inode *inode, struct file *file)
- 	unsigned long flags;
- 	unsigned int busy;
- 
--	if (pp == 0)
-+	if (!pp)
- 		return 0;
- 
- 	file->private_data = NULL;
--- 
-1.8.3.1
+The total amount in the account is (18.6 million) with my positions as
+a staff of this bank, i am handicapped because i cannot operate
+foreign accounts and cannot lay benefice claim over this money. The
+client was a foreign national and you will only be asked to act as his
+next of kin and i will supply you with all the necessary information
+and bank data to assist you in being able to transfer this money to
+any bank of your choice where this money could be transferred into.
 
+The total sum will be shared as follows: 50% for me, 50% for you, and
+expenses incidental occur during the transfer will be incur by both of
+us. The transfer is risk free on both sides hence you are going to
+follow my instruction till the fund transfer to your account. Since I
+work in this bank that is why you should be confident in the success
+of this transaction because you will be updated with information=E2=80=99s =
+as
+at when desired.
 
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of
+transaction which will be when this money is safety in your account. I
+will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May god help you to help me to a restive retirement?
+
+(1) Your full name..............
+(2) Your age:................
+(3) Sex:.....................
+(4) Your telephone number:.................
+(5) Your occupation:.....................
+(6) Your country:.....................
+
+Yours sincerely,
+Dr Bryan Bouchet
