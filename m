@@ -2,198 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D243F753B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAD63F754E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240012AbhHYMnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 08:43:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49814 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhHYMnr (ORCPT
+        id S240891AbhHYMr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 08:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229873AbhHYMr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 08:43:47 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 44C5E2219D;
-        Wed, 25 Aug 2021 12:43:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629895381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=4kUx+sQ8CSqEaO7GPPLBgapAahK109tcvO/jd+AOX+Q=;
-        b=0v3D66/VWl5VwtuUVLi7azpsB5kwsB3G/qzDtq+FCviTauChbMyvmPG54jixHg2Zr4Anca
-        wAkNBH0ZOn3tnpfjZiWV8ooqrYW0eIyFukDEeEf1d95VklxiZ7nHoWoslmSeufnrK66Bqd
-        jCTRrWW7Oa1RQ6Eg54WyENa1dl/NGaE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629895381;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=4kUx+sQ8CSqEaO7GPPLBgapAahK109tcvO/jd+AOX+Q=;
-        b=eXJUomYAUbFs+cKMSJoXt65WQaqqOyls7E00EmE9HVlDq1o1MlaMoDy089wND7ahDW17PE
-        MzhyCi1qjIqv0sBg==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 3773AA3B83;
-        Wed, 25 Aug 2021 12:43:01 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id 195D8518DA06; Wed, 25 Aug 2021 14:43:01 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>, yi.he@emc.com,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v2] nvme-tcp: Do not reset transport on data digest errors
-Date:   Wed, 25 Aug 2021 14:42:59 +0200
-Message-Id: <20210825124259.28707-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
+        Wed, 25 Aug 2021 08:47:56 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947AEC061757;
+        Wed, 25 Aug 2021 05:47:10 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id t42so18599229pfg.12;
+        Wed, 25 Aug 2021 05:47:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7duThHeJjxw1i1HwqENqMgEFWO8144Pl5kuBz52Xjek=;
+        b=IN4QMy5y401zq8WXwcAwqoe67+TVk9BJmkJaaJVhPjVPsVfC0n9PkskoEVmTerVpuW
+         /8IQ/SYP/MoHImTyc8dTzcF4SUFivC8hOVDCW8wmtcpDltxxabsizcAIa5ff9LhYJHCQ
+         HWBCEchU2idveA5tp37LYYSXLT78rfSnd0XdHuNtyK9N/jDK4hnYNPbiJ4UFxJ29R+PW
+         9Z2MtBg/y0KtcDa5nWM+ebM9lD96+eMT6EisaHHgxW6cAO4OB2Vz22PS6wzFY4uLjrM0
+         y9980Qa42NbbLpJmx0iQUQgNt3X8lAgN+8lHKUfV3Oethl6v+m7/BHni7zI8g6ckwgkZ
+         vhSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=7duThHeJjxw1i1HwqENqMgEFWO8144Pl5kuBz52Xjek=;
+        b=QUPYvqWB/wfbAmo5vYQLPjP5GGd0ccLHHZUlz3v6WDoCoNqpNIlRfkEIksQUQjA+NW
+         bw8v2GmQHTrHbGMYpYq/eTqqXPsBIW81M0WsLTtWpueV6jbL3eUeaWfxcMcqmkidMKkt
+         5YErCZE8DAaj3vn3bmiH3k0VQmhohuY1aUbt1ODR9MW3vK1fuUV0Kjc4L57adRH8dYWt
+         Udpyon7kE5OVkP70TpnVLJSv0eUnZS+6bQFV8o3IcUTvcykeLxD7epjOicUoU8CFhYTR
+         DITMgnoMIApgUiQx70nrDA0C+cBgSSYI9IK3eBwMH4RVYpydjs8rqkPxMbgJ74x2/hOi
+         NeBQ==
+X-Gm-Message-State: AOAM532x83ld+9Zoax3HfNIl4SdowBczsoDhI5G4MuKoYOCSFNnQZg1Z
+        t1Zo6wAuHbBsbeCUlFNYyzw=
+X-Google-Smtp-Source: ABdhPJypUuKtzhdSbO2d/dZteEkLcdz+85GjpKa0gYpvloytIUB+dQ6faHVIrrVXF+HLNPI6y7BeiQ==
+X-Received: by 2002:a63:fd51:: with SMTP id m17mr41616827pgj.395.1629895630017;
+        Wed, 25 Aug 2021 05:47:10 -0700 (PDT)
+Received: from localhost.localdomain ([45.124.203.15])
+        by smtp.gmail.com with ESMTPSA id s16sm21511301pfk.185.2021.08.25.05.47.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 05:47:08 -0700 (PDT)
+Sender: "joel.stan@gmail.com" <joel.stan@gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        devicetree@vger.kernel.org,
+        Florent Kermarrec <florent@enjoy-digital.fr>,
+        "Gabriel L . Somlo" <gsomlo@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] net: Add LiteETH network driver
+Date:   Wed, 25 Aug 2021 22:16:53 +0930
+Message-Id: <20210825124655.3104348-1-joel@jms.id.au>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The spec says
+This adds a driver for the LiteX network device, LiteEth.
 
-  7.4.6.1 Digest Error handling
+v3 Updates the bindings to describe the slots in a way that makes more
+sense for the hardware, instead of trying to fit some existing
+properties. The driver is updated to use these bindings, and fix some
+issues pointed out by Gabriel.
 
-  When a host detects a data digest error in a C2HData PDU, that host
-  shall continue processing C2HData PDUs associated with the command and
-  when the command processing has completed, if a successful status was
-  returned by the controller, the host shall fail the command with a
-  non-fatal transport error.
+v2 Addresses feedback from Jakub, with detailed changes in each patch.
 
-Currently the transport is reseted when a data digest error is
-detected. To fix this, keep track of the final status in the queue
-object and use it when completing the request.
+It also moves to the litex register accessors so the system works on big
+endian litex platforms. I tested with mor1k on an Arty A7-100T.
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
+I have removed the mdio aspects of the driver as they are not needed for
+basic operation. I will continue to work on adding support in the
+future, but I don't think it needs to block the mac driver going in.
 
-The status member placed so that it fills up a hole in struct
-nvme_tcp_request:
+The binding describes the mdio registers, and has been fixed to not show
+any warnings against dtschema master.
 
-struct nvme_tcp_request {
-        struct nvme_request        req;                  /*     0    32 */
-        void *                     pdu;                  /*    32     8 */
-        struct nvme_tcp_queue *    queue;                /*    40     8 */
-        u32                        data_len;             /*    48     4 */
-        u32                        pdu_len;              /*    52     4 */
-        u32                        pdu_sent;             /*    56     4 */
-        u16                        ttag;                 /*    60     2 */
-        u16                        status;               /*    62     2 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        struct list_head           entry;                /*    64    16 */
-        struct llist_node          lentry;               /*    80     8 */
-        __le32                     ddgst;                /*    88     4 */
+LiteEth is a simple driver for the FPGA based Ethernet device used in various
+RISC-V, PowerPC's microwatt, OpenRISC's mor1k and other FPGA based
+systems on chip.
 
-        /* XXX 4 bytes hole, try to pack */
+Joel Stanley (2):
+  dt-bindings: net: Add bindings for LiteETH
+  net: Add driver for LiteX's LiteETH network interface
 
-        struct bio *               curr_bio;             /*    96     8 */
-        struct iov_iter            iter;                 /*   104    40 */
-        /* --- cacheline 2 boundary (128 bytes) was 16 bytes ago --- */
-        size_t                     offset;               /*   144     8 */
-        size_t                     data_sent;            /*   152     8 */
-        enum nvme_tcp_send_state   state;                /*   160     4 */
+ .../bindings/net/litex,liteeth.yaml           | 100 ++++++
+ drivers/net/ethernet/Kconfig                  |   1 +
+ drivers/net/ethernet/Makefile                 |   1 +
+ drivers/net/ethernet/litex/Kconfig            |  27 ++
+ drivers/net/ethernet/litex/Makefile           |   5 +
+ drivers/net/ethernet/litex/litex_liteeth.c    | 317 ++++++++++++++++++
+ 6 files changed, 451 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/litex,liteeth.yaml
+ create mode 100644 drivers/net/ethernet/litex/Kconfig
+ create mode 100644 drivers/net/ethernet/litex/Makefile
+ create mode 100644 drivers/net/ethernet/litex/litex_liteeth.c
 
-        /* size: 168, cachelines: 3, members: 16 */
-        /* sum members: 160, holes: 1, sum holes: 4 */
-        /* padding: 4 */
-        /* last cacheline: 40 bytes */
-};
-
-v1:
- - https://lore.kernel.org/linux-nvme/20210805121541.77613-1-dwagner@suse.de/
- - moved 'status' from nvme_tcp_queue to nvme_tcp_request.
-
- drivers/nvme/host/tcp.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index 645025620154..23a8f7e11cfa 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -45,6 +45,7 @@ struct nvme_tcp_request {
- 	u32			pdu_len;
- 	u32			pdu_sent;
- 	u16			ttag;
-+	u16			status;
- 	struct list_head	entry;
- 	struct llist_node	lentry;
- 	__le32			ddgst;
-@@ -485,7 +486,9 @@ static void nvme_tcp_error_recovery(struct nvme_ctrl *ctrl)
- static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
- 		struct nvme_completion *cqe)
- {
-+	struct nvme_tcp_request *req;
- 	struct request *rq;
-+	u16 status;
- 
- 	rq = nvme_find_rq(nvme_tcp_tagset(queue), cqe->command_id);
- 	if (!rq) {
-@@ -496,7 +499,12 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
- 		return -EINVAL;
- 	}
- 
--	if (!nvme_try_complete_req(rq, cqe->status, cqe->result))
-+	req = blk_mq_rq_to_pdu(rq);
-+	status = req->status;
-+	if (status == NVME_SC_SUCCESS)
-+		status = cqe->status;
-+
-+	if (!nvme_try_complete_req(rq, status, cqe->result))
- 		nvme_complete_rq(rq);
- 	queue->nr_cqe++;
- 
-@@ -506,6 +514,7 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
- static int nvme_tcp_handle_c2h_data(struct nvme_tcp_queue *queue,
- 		struct nvme_tcp_data_pdu *pdu)
- {
-+	struct nvme_tcp_request *req;
- 	struct request *rq;
- 
- 	rq = nvme_find_rq(nvme_tcp_tagset(queue), pdu->command_id);
-@@ -534,6 +543,8 @@ static int nvme_tcp_handle_c2h_data(struct nvme_tcp_queue *queue,
- 		return -EPROTO;
- 	}
- 
-+	req = blk_mq_rq_to_pdu(rq);
-+	req->status = NVME_SC_SUCCESS;
- 	return 0;
- }
- 
-@@ -758,7 +769,7 @@ static int nvme_tcp_recv_data(struct nvme_tcp_queue *queue, struct sk_buff *skb,
- 			queue->ddgst_remaining = NVME_TCP_DIGEST_LENGTH;
- 		} else {
- 			if (pdu->hdr.flags & NVME_TCP_F_DATA_SUCCESS) {
--				nvme_tcp_end_request(rq, NVME_SC_SUCCESS);
-+				nvme_tcp_end_request(rq, req->status);
- 				queue->nr_cqe++;
- 			}
- 			nvme_tcp_init_recv_ctx(queue);
-@@ -788,18 +799,24 @@ static int nvme_tcp_recv_ddgst(struct nvme_tcp_queue *queue,
- 		return 0;
- 
- 	if (queue->recv_ddgst != queue->exp_ddgst) {
-+		struct request *rq = nvme_cid_to_rq(nvme_tcp_tagset(queue),
-+					pdu->command_id);
-+		struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
-+
-+		req->status = NVME_SC_DATA_XFER_ERROR;
-+
- 		dev_err(queue->ctrl->ctrl.device,
- 			"data digest error: recv %#x expected %#x\n",
- 			le32_to_cpu(queue->recv_ddgst),
- 			le32_to_cpu(queue->exp_ddgst));
--		return -EIO;
- 	}
- 
- 	if (pdu->hdr.flags & NVME_TCP_F_DATA_SUCCESS) {
- 		struct request *rq = nvme_cid_to_rq(nvme_tcp_tagset(queue),
- 					pdu->command_id);
-+		struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
- 
--		nvme_tcp_end_request(rq, NVME_SC_SUCCESS);
-+		nvme_tcp_end_request(rq, req->status);
- 		queue->nr_cqe++;
- 	}
- 
 -- 
-2.29.2
+2.33.0
 
