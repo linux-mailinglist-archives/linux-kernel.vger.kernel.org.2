@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C769A3F6F3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53113F6F40
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238925AbhHYGPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:15:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47632 "EHLO mail.kernel.org"
+        id S238956AbhHYGPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:15:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238897AbhHYGP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:15:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3036B61181;
-        Wed, 25 Aug 2021 06:14:41 +0000 (UTC)
+        id S238897AbhHYGPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 02:15:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AB006138B;
+        Wed, 25 Aug 2021 06:14:58 +0000 (UTC)
 From:   Huacai Chen <chenhuacai@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
         Huacai Chen <chenhuacai@gmail.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH V3 07/10] irqchip/loongson-liointc: Add ACPI init support
-Date:   Wed, 25 Aug 2021 14:11:49 +0800
-Message-Id: <20210825061152.3396398-8-chenhuacai@loongson.cn>
+Subject: [PATCH V3 08/10] irqchip: Add LoongArch CPU interrupt controller support
+Date:   Wed, 25 Aug 2021 14:11:50 +0800
+Message-Id: <20210825061152.3396398-9-chenhuacai@loongson.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210825061152.3396398-1-chenhuacai@loongson.cn>
 References: <20210825061152.3396398-1-chenhuacai@loongson.cn>
@@ -32,280 +32,131 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 We are preparing to add new Loongson (based on LoongArch, not MIPS)
-support. LoongArch use ACPI other than DT as its boot protocol, so
-add ACPI init support.
+support. This patch add LoongArch CPU interrupt controller support.
 
 Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- drivers/irqchip/irq-loongson-liointc.c | 197 +++++++++++++++----------
- 1 file changed, 117 insertions(+), 80 deletions(-)
+ drivers/irqchip/Kconfig             | 10 ++++
+ drivers/irqchip/Makefile            |  1 +
+ drivers/irqchip/irq-loongarch-cpu.c | 76 +++++++++++++++++++++++++++++
+ 3 files changed, 87 insertions(+)
+ create mode 100644 drivers/irqchip/irq-loongarch-cpu.c
 
-diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
-index 649c58391618..8b9b0dc325bc 100644
---- a/drivers/irqchip/irq-loongson-liointc.c
-+++ b/drivers/irqchip/irq-loongson-liointc.c
-@@ -16,10 +16,10 @@
- #include <linux/smp.h>
- #include <linux/irqchip/chained_irq.h>
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 084bc4c2eebd..443c3a7a0cc1 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -528,6 +528,16 @@ config EXYNOS_IRQ_COMBINER
+ 	  Say yes here to add support for the IRQ combiner devices embedded
+ 	  in Samsung Exynos chips.
  
--#include <loongson.h>
-+#include <asm/loongson.h>
- 
- #define LIOINTC_CHIP_IRQ	32
--#define LIOINTC_NUM_PARENT 4
-+#define LIOINTC_NUM_PARENT	4
- #define LIOINTC_NUM_CORES	4
- 
- #define LIOINTC_INTC_CHIP_START	0x20
-@@ -41,6 +41,7 @@ struct liointc_handler_data {
- };
- 
- struct liointc_priv {
-+	struct fwnode_handle		*domain_handle;
- 	struct irq_chip_generic		*gc;
- 	struct liointc_handler_data	handler[LIOINTC_NUM_PARENT];
- 	void __iomem			*core_isr[LIOINTC_NUM_CORES];
-@@ -53,7 +54,7 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
- 	struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
- 	struct irq_chip *chip = irq_desc_get_chip(desc);
- 	struct irq_chip_generic *gc = handler->priv->gc;
--	int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
-+	int core = cpu_logical_map(smp_processor_id()) % LIOINTC_NUM_CORES;
- 	u32 pending;
- 
- 	chained_irq_enter(chip, desc);
-@@ -143,97 +144,61 @@ static void liointc_resume(struct irq_chip_generic *gc)
- 	irq_gc_unlock_irqrestore(gc, flags);
- }
- 
--static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
--static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
-+static int parent_irq[LIOINTC_NUM_PARENT];
-+static u32 parent_int_map[LIOINTC_NUM_PARENT];
-+static const char *const parent_names[] = {"int0", "int1", "int2", "int3"};
-+static const char *const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
- 
--static void __iomem *liointc_get_reg_byname(struct device_node *node,
--						const char *name)
--{
--	int index = of_property_match_string(node, "reg-names", name);
--
--	if (index < 0)
--		return NULL;
--
--	return of_iomap(node, index);
--}
--
--static int __init liointc_of_init(struct device_node *node,
--				  struct device_node *parent)
-+static int liointc_init(phys_addr_t addr, unsigned long size, int revision,
-+		struct fwnode_handle *domain_handle, struct device_node *node)
- {
-+	int i, index, err;
-+	void __iomem *base;
-+	struct irq_chip_type *ct;
- 	struct irq_chip_generic *gc;
- 	struct irq_domain *domain;
--	struct irq_chip_type *ct;
- 	struct liointc_priv *priv;
--	void __iomem *base;
--	u32 of_parent_int_map[LIOINTC_NUM_PARENT];
--	int parent_irq[LIOINTC_NUM_PARENT];
--	bool have_parent = FALSE;
--	int sz, i, err = 0;
- 
- 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
- 
--	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
--		base = liointc_get_reg_byname(node, "main");
--		if (!base) {
--			err = -ENODEV;
--			goto out_free_priv;
--		}
-+	base = ioremap(addr, size);
-+	if (!base)
-+		goto out_free_priv;
- 
--		for (i = 0; i < LIOINTC_NUM_CORES; i++)
--			priv->core_isr[i] = liointc_get_reg_byname(node, core_reg_names[i]);
--		if (!priv->core_isr[0]) {
--			err = -ENODEV;
--			goto out_iounmap_base;
--		}
--	} else {
--		base = of_iomap(node, 0);
--		if (!base) {
--			err = -ENODEV;
--			goto out_free_priv;
--		}
-+	priv->domain_handle = domain_handle;
- 
--		for (i = 0; i < LIOINTC_NUM_CORES; i++)
--			priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
--	}
-+	for (i = 0; i < LIOINTC_NUM_CORES; i++)
-+		priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
- 
--	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
--		parent_irq[i] = of_irq_get_byname(node, parent_names[i]);
--		if (parent_irq[i] > 0)
--			have_parent = TRUE;
--	}
--	if (!have_parent) {
--		err = -ENODEV;
--		goto out_iounmap_isr;
--	}
-+	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
-+		priv->handler[i].parent_int_map = parent_int_map[i];
- 
--	sz = of_property_read_variable_u32_array(node,
--						"loongson,parent_int_map",
--						&of_parent_int_map[0],
--						LIOINTC_NUM_PARENT,
--						LIOINTC_NUM_PARENT);
--	if (sz < 4) {
--		pr_err("loongson-liointc: No parent_int_map\n");
--		err = -ENODEV;
--		goto out_iounmap_isr;
--	}
-+#ifdef CONFIG_OF
-+	if (revision > 1) {
-+		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
-+			index = of_property_match_string(node, "reg-names", core_reg_names[i]);
- 
--	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
--		priv->handler[i].parent_int_map = of_parent_int_map[i];
-+			if (index < 0)
-+				return -EINVAL;
++config IRQ_LOONGARCH_CPU
++	bool
++	select GENERIC_IRQ_CHIP
++	select IRQ_DOMAIN
++	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
++	help
++	  Support for the LoongArch CPU Interrupt Controller. For details of
++	  irq chip hierarchy on LoongArch platforms please read the document
++	  Documentation/loongarch/irq-chip-model.rst.
 +
-+			priv->core_isr[i] = of_iomap(node, index);
-+		}
-+	}
-+#endif
- 
- 	/* Setup IRQ domain */
--	domain = irq_domain_add_linear(node, 32,
-+	domain = irq_domain_create_linear(domain_handle, LIOINTC_CHIP_IRQ,
- 					&irq_generic_chip_ops, priv);
- 	if (!domain) {
- 		pr_err("loongson-liointc: cannot add IRQ domain\n");
--		err = -EINVAL;
--		goto out_iounmap_isr;
-+		goto out_iounmap;
- 	}
- 
--	err = irq_alloc_domain_generic_chips(domain, 32, 1,
--					node->full_name, handle_level_irq,
--					IRQ_NOPROBE, 0, 0);
-+	err = irq_alloc_domain_generic_chips(domain, LIOINTC_CHIP_IRQ, 1,
-+					(node ? node->full_name : "LIOINTC"),
-+					handle_level_irq, 0, IRQ_NOPROBE, 0);
- 	if (err) {
- 		pr_err("loongson-liointc: unable to register IRQ domain\n");
- 		goto out_free_domain;
-@@ -293,20 +258,92 @@ static int __init liointc_of_init(struct device_node *node,
- 
- out_free_domain:
- 	irq_domain_remove(domain);
--out_iounmap_isr:
--	for (i = 0; i < LIOINTC_NUM_CORES; i++) {
--		if (!priv->core_isr[i])
--			continue;
--		iounmap(priv->core_isr[i]);
--	}
--out_iounmap_base:
-+out_iounmap:
- 	iounmap(base);
- out_free_priv:
- 	kfree(priv);
- 
--	return err;
-+	return -EINVAL;
+ config LOONGSON_LIOINTC
+ 	bool "Loongson Local I/O Interrupt Controller"
+ 	depends on MACH_LOONGSON64
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index f88cbf36a9d2..4e34eebe180b 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -105,6 +105,7 @@ obj-$(CONFIG_LS1X_IRQ)			+= irq-ls1x.o
+ obj-$(CONFIG_TI_SCI_INTR_IRQCHIP)	+= irq-ti-sci-intr.o
+ obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)	+= irq-ti-sci-inta.o
+ obj-$(CONFIG_TI_PRUSS_INTC)		+= irq-pruss-intc.o
++obj-$(CONFIG_IRQ_LOONGARCH_CPU)		+= irq-loongarch-cpu.o
+ obj-$(CONFIG_LOONGSON_LIOINTC)		+= irq-loongson-liointc.o
+ obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
+ obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
+diff --git a/drivers/irqchip/irq-loongarch-cpu.c b/drivers/irqchip/irq-loongarch-cpu.c
+new file mode 100644
+index 000000000000..8e9e8d39cb22
+--- /dev/null
++++ b/drivers/irqchip/irq-loongarch-cpu.c
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
++ */
++
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/irqchip.h>
++#include <linux/irqdomain.h>
++
++#include <asm/loongarch.h>
++#include <asm/setup.h>
++
++static struct irq_domain *irq_domain;
++
++static inline void enable_loongarch_irq(struct irq_data *d)
++{
++	set_csr_ecfg(ECFGF(d->hwirq));
 +}
 +
-+#ifdef CONFIG_OF
++#define eoi_loongarch_irq enable_loongarch_irq
 +
-+static int __init liointc_of_init(struct device_node *node,
-+				  struct device_node *parent)
++static inline void disable_loongarch_irq(struct irq_data *d)
 +{
-+	bool have_parent = FALSE;
-+	int sz, i, index, revision, err = 0;
-+	struct resource res;
++	clear_csr_ecfg(ECFGF(d->hwirq));
++}
 +
-+	if (!of_device_is_compatible(node, "loongson,liointc-2.0")) {
-+		index = 0;
-+		revision = 1;
-+	} else {
-+		index = of_property_match_string(node, "reg-names", "main");
-+		revision = 2;
-+	}
++#define ack_loongarch_irq disable_loongarch_irq
 +
-+	if (of_address_to_resource(node, index, &res))
-+		return -EINVAL;
++static struct irq_chip loongarch_cpu_irq_controller = {
++	.name		= "LoongArch",
++	.irq_ack	= ack_loongarch_irq,
++	.irq_eoi	= eoi_loongarch_irq,
++	.irq_enable	= enable_loongarch_irq,
++	.irq_disable	= disable_loongarch_irq,
++};
 +
-+	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
-+		parent_irq[i] = of_irq_get_byname(node, parent_names[i]);
-+		if (parent_irq[i] > 0)
-+			have_parent = TRUE;
-+	}
-+	if (!have_parent)
-+		return -ENODEV;
++asmlinkage void default_handle_irq(int irq)
++{
++	do_IRQ(irq_linear_revmap(irq_domain, irq));
++}
 +
-+	sz = of_property_read_variable_u32_array(node,
-+						"loongson,parent_int_map",
-+						&parent_int_map[0],
-+						LIOINTC_NUM_PARENT,
-+						LIOINTC_NUM_PARENT);
-+	if (sz < 4) {
-+		pr_err("loongson-liointc: No parent_int_map\n");
-+		return -ENODEV;
-+	}
++static int loongarch_cpu_intc_map(struct irq_domain *d, unsigned int irq,
++			     irq_hw_number_t hwirq)
++{
++	struct irq_chip *chip;
 +
-+	err = liointc_init(res.start, resource_size(&res),
-+			revision, of_node_to_fwnode(node), node);
-+	if (err < 0)
-+		return err;
++	irq_set_noprobe(irq);
++	chip = &loongarch_cpu_irq_controller;
++	set_vi_handler(EXCCODE_INT_START + hwirq, default_handle_irq);
++	irq_set_chip_and_handler(irq, chip, handle_percpu_irq);
 +
 +	return 0;
- }
- 
- IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_init);
- IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of_init);
- IRQCHIP_DECLARE(loongson_liointc_2_0, "loongson,liointc-2.0", liointc_of_init);
-+
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+
-+struct fwnode_handle *liointc_acpi_init(struct acpi_madt_lio_pic *acpi_liointc)
-+{
-+	int ret;
-+	struct fwnode_handle *domain_handle;
-+
-+	parent_int_map[0] = acpi_liointc->cascade_map[0];
-+	parent_int_map[1] = acpi_liointc->cascade_map[1];
-+
-+	parent_irq[0] = LOONGSON_CPU_IRQ_BASE + acpi_liointc->cascade[0];
-+	if (!cpu_has_extioi)
-+		parent_irq[1] = LOONGSON_CPU_IRQ_BASE + acpi_liointc->cascade[1];
-+
-+	domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)acpi_liointc);
-+	if (!domain_handle) {
-+		pr_err("Unable to allocate domain handle\n");
-+		return NULL;
-+	}
-+
-+	ret = liointc_init(acpi_liointc->address, acpi_liointc->size,
-+			   1, domain_handle, NULL);
-+	if (ret < 0)
-+		return NULL;
-+
-+	return domain_handle;
 +}
 +
-+#endif
++static const struct irq_domain_ops loongarch_cpu_intc_irq_domain_ops = {
++	.map = loongarch_cpu_intc_map,
++	.xlate = irq_domain_xlate_onecell,
++};
++
++int __init loongarch_cpu_irq_init(void)
++{
++	/* Mask interrupts. */
++	clear_csr_ecfg(ECFG0_IM);
++	clear_csr_estat(ESTATF_IP);
++
++	irq_domain = irq_domain_add_simple(NULL, EXCCODE_INT_NUM,
++		     LOONGSON_CPU_IRQ_BASE, &loongarch_cpu_intc_irq_domain_ops, NULL);
++
++	if (!irq_domain)
++		panic("Failed to add irqdomain for LoongArch CPU");
++
++	return 0;
++}
 -- 
 2.27.0
 
