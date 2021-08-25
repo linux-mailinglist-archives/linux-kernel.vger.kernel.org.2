@@ -2,120 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE293F75A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5263F75A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240634AbhHYNMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 09:12:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhHYNMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 09:12:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C894361101;
-        Wed, 25 Aug 2021 13:12:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629897127;
-        bh=vb6zlF1GgtQtao0qLGE24EzkOC2L1Rd7nI7ZvWXvlPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=usJ8mFB/sj/sibWICxDGAIVmLfO19jadVac7bNbETo07f52t+Q1070PNnX7dCGzG6
-         jc+T78jDPsXX/sG2mI5BAvK04emqpf3BZQSKHsvRx142bRPv396pi6ze+3HQ2y6rKf
-         I5ulspPpLlI0Bzd3dcbEkxWSv9O3CZC7c2kzlkJzczfkUtsUQf2Naw42BgLc7lKZzN
-         TFK69UZorXG8DokFa1beGf8clJ3G0TcmOJ/OJWuZ2WutM1I3PKorKredSV8XjaffcN
-         JLsVxbn/hv9u75Pw1tlCst30dxg5FYytQT2+JhaozjTqrzmw2/wJzAIRQtIg6FultK
-         A4Bq8aiJef9WA==
-Date:   Wed, 25 Aug 2021 14:11:39 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
-Message-ID: <20210825131139.GG5186@sirena.org.uk>
-References: <20210824230620.1003828-1-djrscally@gmail.com>
- <20210824230620.1003828-2-djrscally@gmail.com>
- <20210825103301.GC5186@sirena.org.uk>
- <CAHp75VdHpjbjz4biTP11TKT6J+7WQi-a1Ru3VLuSxM5tSLCB3Q@mail.gmail.com>
- <20210825113013.GD5186@sirena.org.uk>
- <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
+        id S241115AbhHYNNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 09:13:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52370 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhHYNM6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 09:12:58 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C9D641FE12;
+        Wed, 25 Aug 2021 13:12:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629897131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LxY8SdeZ9ccE4S5/gTB1BNedry+daUdc+q/RjqZjnWU=;
+        b=cgSQVIJeMYN41UF3tsUe3TV+0fH+L6HRfatlMDEPhRSF9Z7lbGed4hTSbrErm9+O9wehsh
+        wowrmSbluSqglBe0F0yHoCHkXqz72bElxDCNq7/RhACYw0vwC71ZyX9CEjKxHndW/E3QC/
+        LOmy75M3EdG7pGg5eGl4G7XT/2rMm58=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 70DBB13887;
+        Wed, 25 Aug 2021 13:12:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id hEtkGatBJmF1NwAAGKfGzw
+        (envelope-from <jgross@suse.com>); Wed, 25 Aug 2021 13:12:11 +0000
+Subject: Re: [PATCH] x86: xen: platform-pci-unplug: use pr_err() and pr_warn()
+ instead of raw printk()
+To:     zhaoxiao <zhaoxiao@uniontech.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org
+Cc:     hpa@zytor.com, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
+        sstabellini@kernel.org
+References: <20210825114111.29009-1-zhaoxiao@uniontech.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <8f96f0db-a846-14db-1b7d-89d2d6ba3383@suse.com>
+Date:   Wed, 25 Aug 2021 15:12:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Fnm8lRGFTVS/3GuM"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
-X-Cookie: MY income is ALL disposable!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210825114111.29009-1-zhaoxiao@uniontech.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="2zr2U4bJtYS3VgTOehSeGa4TPEyF8apf9"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--2zr2U4bJtYS3VgTOehSeGa4TPEyF8apf9
+Content-Type: multipart/mixed; boundary="6YIPJ1uKnsFbkzwEXYl7dgPhmRp5Ztu3k";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: zhaoxiao <zhaoxiao@uniontech.com>, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, x86@kernel.org
+Cc: hpa@zytor.com, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
+ sstabellini@kernel.org
+Message-ID: <8f96f0db-a846-14db-1b7d-89d2d6ba3383@suse.com>
+Subject: Re: [PATCH] x86: xen: platform-pci-unplug: use pr_err() and pr_warn()
+ instead of raw printk()
+References: <20210825114111.29009-1-zhaoxiao@uniontech.com>
+In-Reply-To: <20210825114111.29009-1-zhaoxiao@uniontech.com>
 
---Fnm8lRGFTVS/3GuM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--6YIPJ1uKnsFbkzwEXYl7dgPhmRp5Ztu3k
+Content-Type: multipart/mixed;
+ boundary="------------6947D488E4C0CC97EEEAA6BE"
+Content-Language: en-US
 
-On Wed, Aug 25, 2021 at 03:26:37PM +0300, Andy Shevchenko wrote:
-> On Wed, Aug 25, 2021 at 2:30 PM Mark Brown <broonie@kernel.org> wrote:
+This is a multi-part message in MIME format.
+--------------6947D488E4C0CC97EEEAA6BE
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-> > No, what was proposed for regulator was to duplicate all the the DT
-> > binding code in the regulator framework so it parses fwnodes then have
-> > an API for encoding fwnodes from C data structures at runtime.  The bit
-> > where the data gets joined up with the devices isn't the problem, it's
-> > the duplication and fragility introduced by encoding everything into
-> > an intermediate representation that has no purpose and passing that
-> > around which is the problem.
+On 25.08.21 13:41, zhaoxiao wrote:
+> Since we have the nice helpers pr_err() and pr_warn(), use them instead=
 
-> The whole exercise with swnode is to minimize the driver intrusion and
-> evolving a unified way for (some) of the device properties. V4L2 won't
+> of raw printk().
+>=20
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
 
-The practical implementation for regulators was to duplicate a
-substantial amount of code in the core in order to give us a less type
-safe and more indirect way of passing data from onen C file in the
-kernel to another.  This proposal is a lot better in that it uses the
-existing init_data and avoids the huge amounts of duplication, it's just
-not clear from the changelog why it's doing this in a regulator specific
-manner.
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
-*Please* stop trying to force swnodes in everywhere, take on board the
-feedback about why the swnode implementation is completely inappropriate
-for regulators.  I don't understand why you continue to push this so
-hard.  swnodes and fwnodes are a solution to a specific problem, they're
-not the answer to every problem out there and having to rehash this
-continually is getting in the way of actually discussing practical
-workarounds for these poorly implemented ACPI platforms.
 
-> like what you are suggesting exactly because they don't like the idea
-> of spreading the board code over the drivers. In some cases it might
-> even be not so straightforward and easy.
+Juergen
 
-> Laurent, do I understand correctly the v4l2 expectations?
+--------------6947D488E4C0CC97EEEAA6BE
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-There will be some cases where swnodes make sense, for example where the
-data is going to be read through the fwnode API since the binding is
-firmware neutral which I think is the v4l case.  On the other hand
-having a direct C representation is a very common way of implementing
-DMI quirk tables, and we have things like the regulator API where
-there's off the shelf platform data support and we actively don't want
-to support fwnode.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
---Fnm8lRGFTVS/3GuM
-Content-Type: application/pgp-signature; name="signature.asc"
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------6947D488E4C0CC97EEEAA6BE--
+
+--6YIPJ1uKnsFbkzwEXYl7dgPhmRp5Ztu3k--
+
+--2zr2U4bJtYS3VgTOehSeGa4TPEyF8apf9
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEmQYsACgkQJNaLcl1U
-h9ANAwf/S6zYJSnp+10kaaC/6OAkXKT6uQv/eFL/gT8c/DjiGe755qgji1k8fsm4
-X4tGbb8AE3mRGaTOdjQXjEsLNfTbrU/sWDOyZnFUv6U0uLEje+2hBdxqZ77XI9Uj
-OK91Bq4IK9NFRO8yf18m6kP3prF3Fcl3VY4CIHxYMiCLf425F71PkJ23Nry+YQ7/
-ERC/tv0yw+1TrTEu9m5nFoQS6PBe6t3iMMeiOcgh/WOVB2VsW6yc0XKgKt9IKfPf
-HqtRuNTb9lJ94cU1vh1ZF209+cl9zpBSDQ/p0F64BVIbeBMRMSizgWwYNBJeekqq
-n/bwINS/S8djAWxsi97Aeurv5Kcaiw==
-=LW9S
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmEmQaoFAwAAAAAACgkQsN6d1ii/Ey/c
+jggAkuestmC14PBCkodIH8fzYFDIuZJLOLZIxYtg1yhcoQX35FMybtvIZxrKIQ3ZwK+EqehGFR0k
+2KbpRexkd8+pBetfY/7Q80G8f28/fvfKf0JC6YfMTb6mD6ty0QCOSRHZkY42tr5uX3CYWiNmnP8n
+dHT8JEJDoKya8lQrwCUkIqbJxOeps0AazlGIbL8UnZakXw16/szf3wV/ZRgjIZo420oL1bF1qjzW
+Erl5UbWvO3Het9LYYfBl3PajM9YkYRHIs4I2LiTMSyLA3lnlYoRs16ujLV/0nPd3Tp4TbxJcA8iV
+QvgLeF0ZkXonkAaHhaCF0xl50y72zqnGggMSWBkrRQ==
+=H4Mv
 -----END PGP SIGNATURE-----
 
---Fnm8lRGFTVS/3GuM--
+--2zr2U4bJtYS3VgTOehSeGa4TPEyF8apf9--
