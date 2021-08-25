@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503803F7A8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682BB3F7A96
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241168AbhHYQcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
+        id S241260AbhHYQct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238543AbhHYQcJ (ORCPT
+        with ESMTP id S240303AbhHYQcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:32:09 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A509C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:31:23 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id j2so10239826pll.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:31:23 -0700 (PDT)
+        Wed, 25 Aug 2021 12:32:45 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739EBC0613CF;
+        Wed, 25 Aug 2021 09:31:59 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id n27so20839261eja.5;
+        Wed, 25 Aug 2021 09:31:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=XJkAc9QmQEswaIUvQz6Upf/2ilMQ7WGC8GTDpVgEOXk=;
-        b=aYURodus3dsc5aroLaWgMkC3f3F8qX2V+toSTyJs1kqGCXES5/gZleGG8eC3tteYlp
-         0Af3Zq/nIvkJkSmmEAnLaOVYhe8eLKNwelyXSiBKk96W/k8j65upqn3KWze95OmLn3g/
-         ajooETd09pd16QAS/ujr0PuBGDNMPY1aJtJ1ODrdGnbsUpZYuDq03hbeMkAad52iX9pM
-         l7Nsy5Rm61aXMWBYfDdrXPY7MvCy/2o/NZQGNGebIbYuBGyCnCPf9bWgmCf2rt0xrkO8
-         roFpfm+bsMO5HLfeajB4eBTOVihKdunVFxtkjr3+aD53A5YcurhYC3T4u7GpYjX/DdEm
-         GMVw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wMkJXZoogesNm5JJZvMGG6cJlR5rgjyot4jq2nzi3Aw=;
+        b=XULmqv9aBdS0Fee5y/TVfH7zm0Ki8Fr9H6xJYbd0rgvjJtLfgAxop9scK+vLa5YF7Q
+         ukSf92YyYuuQd/O8ZZsjGI9hE1j+oCpd+hr3dAHN3kkyZGA6gwGLU83U1lOgfLD8UqP8
+         8L0bsVwbZ1o3hbubchyuRfG94vhOJq3fimjwrPyi81k0fIXjklnca92aKj3WQoj4fn5v
+         Ws9+UJMA2uevL8VA2/+8ZeYGLy2p7aZwhafF+9t2DhnRkJ/PFfOY/aRf+dVBG4sRCmtU
+         CV6orFj5J2Ba/ezTejHEBAHrDkMSCv/KF844Hk+jogvV7mtmKSQ3UiXLcMn0F00vBA2b
+         vrcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=XJkAc9QmQEswaIUvQz6Upf/2ilMQ7WGC8GTDpVgEOXk=;
-        b=TWyL6DfsC0qsUW2kaUNz1BDIpHUAvSVw1DGrLQtMNeWwgT4cTSJcgDBuMPIEaGgkMV
-         HbwLZIDf85OcRIfN0HvtYS8dfqclBTHQ5wobapB3vTKwdSAghek7hyOc1mXrExPO4PSc
-         8itIKQQPNczmtXc58hepYW2tVsKaHTEpferXcqcpBxYsJwJw7AXGtjfHQ6gT/lCiaPJT
-         M7O4ESfZigc0H9wKJT0+Nmpmf82HFVJITcm1S1Mtzb8oA/BXqS8nQNB/RoBYaskmxQrO
-         JqkjF+jgAAzGj9oa2HffTVItV1nrHG3zEywHKfSHtVIP8Qa61vNT4H9KHK+yZVBbXJ//
-         pZXA==
-X-Gm-Message-State: AOAM530P2VLG0fJ4mh8EL0aaiZNQ7ppQartzZrnMeuOQYRc4qAdTt9HE
-        Xkvb8jja8EEeepDQ7GtCni0=
-X-Google-Smtp-Source: ABdhPJzaBjPTAJlgDbwfVWYZc0TGI0lgTxS+HjZIVFXZlhja8fXlrGnqzpU2aBlhdlO6AteBsn2PDQ==
-X-Received: by 2002:a17:902:8685:b0:12d:7f02:f7a6 with SMTP id g5-20020a170902868500b0012d7f02f7a6mr38798442plo.49.1629909082617;
-        Wed, 25 Aug 2021 09:31:22 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with UTF8SMTPSA id l6sm290590pff.74.2021.08.25.09.31.16
+        bh=wMkJXZoogesNm5JJZvMGG6cJlR5rgjyot4jq2nzi3Aw=;
+        b=jOaRvfG4CdG7+5hAwusJDmL8egOvWnWliM5KV8QsKS+zIe+5gc1Eb/Rpkd1Z0WZ4N6
+         qiZeW2ZShhoARBysCwH9uAXcIBMb+l5diDxbGjfsvywQgprA/MG3AvOeNGyROcAbhi3C
+         2yqW6Oxyxc2nUrg0eXJ4DKaINO7IaWVgqViib8H6fo6eofDPVS8WQUU1cS5pDkYCPXDp
+         u3y3WSoeam6YH2KS/GAiziVCx+iN+DTcexrf7PpTqhvX+gPGtow+yEP8WGoCb9DEPJRX
+         2aR66g9G6X3Rg2BPRTnkPPDrNONFB2Ie2SsxLRCxP4uI/o3a9l9PX1+p1CP2WFetTgMF
+         yacw==
+X-Gm-Message-State: AOAM530cRMvKYQ28xdtIE4RdxyTt4KaebeyKDQoJZHuqcCquhy5Ot15S
+        kVYSKX0p8Y9SvGH64WW5hB57wSxuswMM1A==
+X-Google-Smtp-Source: ABdhPJyjhFW8we3pTfnvc4pI+Xrp2mFk6xfZ9gm2T2OaD4xNkrY/og4kroIQQpaA9fsSUNaUm683XQ==
+X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr9640191ejc.247.1629909118029;
+        Wed, 25 Aug 2021 09:31:58 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:502:1d80:f02c:a1bd:70b1:fe95? ([2a04:241e:502:1d80:f02c:a1bd:70b1:fe95])
+        by smtp.gmail.com with ESMTPSA id y21sm302048edu.13.2021.08.25.09.31.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 09:31:22 -0700 (PDT)
-Message-ID: <2ffa7d65-21ef-433b-8a86-068df13950d2@gmail.com>
-Date:   Wed, 25 Aug 2021 18:31:13 +0200
+        Wed, 25 Aug 2021 09:31:57 -0700 (PDT)
+Subject: Re: [RFCv3 05/15] tcp: authopt: Add crypto initialization
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <netdev@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1629840814.git.cdleonard@gmail.com>
+ <abb720b34b9eef1cc52ef68017334e27a2af83c6.1629840814.git.cdleonard@gmail.com>
+ <30f73293-ea03-d18f-d923-0cf499d4b208@gmail.com>
+ <20210825080817.GA19149@gondor.apana.org.au>
+ <CAMj1kXE_sDZJjmkoqHcLz=9fDqLPBNbyfH4zxN2s2RdgKO=eSw@mail.gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <c8f254e8-e241-8aad-4211-14c4da4e211c@gmail.com>
+Date:   Wed, 25 Aug 2021 19:31:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.2
-Subject: Re: [PATCH v4 05/12] firmware: arm_scmi: Use new trace event
- scmi_xfer_response_wait
+In-Reply-To: <CAMj1kXE_sDZJjmkoqHcLz=9fDqLPBNbyfH4zxN2s2RdgKO=eSw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-References: <20210824135941.38656-1-cristian.marussi@arm.com>
- <20210824135941.38656-6-cristian.marussi@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210824135941.38656-6-cristian.marussi@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -74,13 +96,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 8/24/2021 3:59 PM, Cristian Marussi wrote:
-> Use new trace event to mark start of waiting for response section.
+On 8/25/21 7:04 PM, Ard Biesheuvel wrote:
+> On Wed, 25 Aug 2021 at 10:08, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>>
+>> On Tue, Aug 24, 2021 at 04:34:58PM -0700, Eric Dumazet wrote:
+>>>
+>>> On 8/24/21 2:34 PM, Leonard Crestez wrote:
+>>>> The crypto_shash API is used in order to compute packet signatures. The
+>>>> API comes with several unfortunate limitations:
+>>>>
+>>>> 1) Allocating a crypto_shash can sleep and must be done in user context.
+>>>> 2) Packet signatures must be computed in softirq context
+>>>> 3) Packet signatures use dynamic "traffic keys" which require exclusive
+>>>> access to crypto_shash for crypto_setkey.
+>>>>
+>>>> The solution is to allocate one crypto_shash for each possible cpu for
+>>>> each algorithm at setsockopt time. The per-cpu tfm is then borrowed from
+>>>> softirq context, signatures are computed and the tfm is returned.
+>>>>
+>>>
+>>> I could not see the per-cpu stuff that you mention in the changelog.
+>>
+>> Perhaps it's time we moved the key information from the tfm into
+>> the request structure for hashes? Or at least provide a way for
+>> the key to be in the request structure in addition to the tfm as
+>> the tfm model still works for IPsec.  Ard/Eric, what do you think
+>> about that?
+>>
 > 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> I think it makes sense for a shash desc to have the ability to carry a
+> key, which will be used instead of the TFM key, but this seems like
+> quite a lot of work, given that all implementations will need to be
+> updated. Also, setkey() can currently sleep, so we need to check
+> whether the existing key manipulation code can actually execute during
+> init/update/final if sleeping is not permitted.
 
-Might be worth squashing into patch 4?
+Are you sure that setkey can sleep? The documentation is not clear, 
+maybe it only applies to certain hardware implementations?
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+The TCP Authentication Option needs dynamic keys for SYN and SYNACK 
+packets, all of which happens in BH context.
+
+--
+Regards,
+Leonard
