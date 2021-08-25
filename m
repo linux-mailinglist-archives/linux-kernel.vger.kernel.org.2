@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FF13F7C00
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C913F7C01
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbhHYSEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 14:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
+        id S235251AbhHYSFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 14:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhHYSEA (ORCPT
+        with ESMTP id S229599AbhHYSF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 14:04:00 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA281C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:03:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Zp6w6glVdR7AU7wqwEOZ1YXWoEKYHTmoZwp8Fkv4Ees=; b=edQt73ezfZEPy89A3qClEXcFAX
-        a23RTfUuFQMQbVahY+y4fA/aqTbgebmWRWqbwp4D3xxqwxtlIFcxSrPss4Mz3ZaOB3pSEVMj3MboD
-        ZJOiWfuIobVnaVkIYebVMr21kgR3ifv55z0SVkRXJQYthL31MTUq2by5rovLcrteHndihe6sWGvFO
-        oJAq3t/sMiMQ9iFI3SCaKsJKki5bkHoGayMDTKzaX6/K/ZaQrn3THKXY1Fl7aK9xY+yJGtW7puSpX
-        PXEv9f5jtkmQa4FJTVrBI3aZBn/rcgE0rrC8iG1JGVkSxDA3tP1Uk+3Pt+t5KO6RvAf/meRgqIgG2
-        U+Wi5uFg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIxEt-00CyeV-7F; Wed, 25 Aug 2021 18:03:03 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3DCB1981362; Wed, 25 Aug 2021 19:18:50 +0200 (CEST)
-Date:   Wed, 25 Aug 2021 19:18:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Li,Rongqing" <lirongqing@baidu.com>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        "dbueso@suse.de" <dbueso@suse.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?562U5aSN?= =?utf-8?Q?=3A?= [PATCH] rbtree: stop
- iteration early in rb_find_first
-Message-ID: <20210825171850.GD17784@worktop.programming.kicks-ass.net>
-References: <1629885588-10590-1-git-send-email-lirongqing@baidu.com>
- <YSYr7nqql825rHol@hirez.programming.kicks-ass.net>
- <20210825115332.GA4645@lespinasse.org>
- <20210825115859.GB4645@lespinasse.org>
- <YSZD6suya8fR/2uY@hirez.programming.kicks-ass.net>
- <90ea3457ddc7485fbc8db5f7ca5b07ab@baidu.com>
+        Wed, 25 Aug 2021 14:05:29 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01134C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:04:43 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id i28so796003lfl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:04:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9wrLUVOsTqglV2Xzx4erL5Og3Y1IS5KOd0x84apt/WE=;
+        b=k3mApXxLneXt/o1Z4H2Gv2Tu808fcXf4gz96j9KDvDbqAiwSFX6cxJzxNlhErtFz9f
+         2py309ewVYe/DQi+nTV4h2d2MX+S59XastHYweQxuzG5jkANV7HBlg/7hWrMUjcYMIlA
+         FP8u72S1t5648NphnrxPlY+BHTLLf0IKLX5uaWLJDgUZ1OL3YIvGj8gW69C28+39lHQT
+         Rl+SjuCyCi0AcmaOls5g1MVvk6YJYeJaGxRx4EClM4c/OU5z+ozIpmka3u8+Q9Z1vRfO
+         MOyZ7OUnc8C247aX2mbXC6htSfFImtGU9d72bBBE69wzYbVjUZAWbbmIxu+bUMtS6IOg
+         V7HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9wrLUVOsTqglV2Xzx4erL5Og3Y1IS5KOd0x84apt/WE=;
+        b=kQj4pWoFk6QWqt4bHmTCc2MUIJEfo3Aoa2OvqnLlKd6NrGejejqCjBov8HyYkUHKFQ
+         BRRCItJkD8LP7EzYlbElsO/GHvEbk47oSYNJ6lrY9odnqgeox4gJva+ILOKik/bvx6D7
+         vhbTuKQ0B+tdivpxnfwq2J6zkBXhU6dPcT3714rUHLuST9YbpIakWVviG/nlW3Q9TiDO
+         iho3btwR8HG8Mzmqy6HW/4+fUXMFMHAk/5+OKGg+h/wpMmtJjpkK1nR7yuHJVTGwyjt2
+         FBanWOFoIF+qUWv3RrDWop4ePA8cEgnojlSPE/e4Xngh0He4qWt8QGQ693/MFuBghPu6
+         xrBw==
+X-Gm-Message-State: AOAM530JOHs3RwQ1NSDvWSHB3z+dASWOIYcR7fnPOuSyKA7pdfJj9mMZ
+        pHFtmSQ3lM0lko7rIVp0zGo=
+X-Google-Smtp-Source: ABdhPJxqBMSmPh5+PnIFzk8Oa0lxdZwudEQWpWnL+IlGEQJXuoTrL52iH6ntMsgoQkw6+T4mxQD/ew==
+X-Received: by 2002:a05:6512:ac7:: with SMTP id n7mr34446858lfu.479.1629914681355;
+        Wed, 25 Aug 2021 11:04:41 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id z13sm75946ljo.37.2021.08.25.11.04.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 11:04:40 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 21:04:39 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/ntfs3: Use kernel ALIGN macros over driver specific
+Message-ID: <20210825180439.ctyxdhykrqtl55rj@kari-VirtualBox>
+References: <20210824182059.1007387-1-kari.argillander@gmail.com>
+ <20210825043715.GP7722@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <90ea3457ddc7485fbc8db5f7ca5b07ab@baidu.com>
+In-Reply-To: <20210825043715.GP7722@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 04:01:53PM +0000, Li,Rongqing wrote:
+On Wed, Aug 25, 2021 at 07:37:15AM +0300, Dan Carpenter wrote:
+> On Tue, Aug 24, 2021 at 09:20:59PM +0300, Kari Argillander wrote:
+> > Prefer built in ALIGN macros over special made ones. This can be
+> > helpful for some static analyzing tools.
+> > 
 > 
-> >>
-> >>
-> >>                         10
-> >>                       /
-> >>                      5
-> >>                       \
-> >>                        10
-> >>
-> >> The search would stop after visiting node 5, and miss the leaf which
-> >> is the expected node to be returned.
-> 
-> thanks for explanation.
-> 
-> >Just to clarify; the current code *does* work here. The proposed patch
-> >breaks it.
-> 
-> 
-> true, my patch is wrong.
-> 
-> but rb_find_first seems have other issue.  when the key is equal, we should search right leaf, not left leaf
+> The patch is fine but the commit message is not clear that this fixes
+> a runtime bug.
 
-That again breaks the above case.
+Is below better? Will send V2 if this is ok to you.
+
+
+fs/ntfs3: Use kernel ALIGN macros over driver specific
+
+The static checkers (Smatch) were complaining because QuadAlign() was
+buggy.  If you try to align something higher than UINT_MAX it got
+truncated to a u32.
+
+Smatch warning was:
+	fs/ntfs3/attrib.c:383 attr_set_size_res()
+	warn: was expecting a 64 bit value instead of '~7'
+
+So that this will not happen again we will change all these macros to
+kernel made ones. This can also help some other static analyzing tools
+to give us better warnings.
+
+Patch was generated with Coccinelle script and after that some style
+issue was hand fixed.
+
+<insert coccinelle script >
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+
+
+> 
+> The static checkers (Smatch) were complaining because QuadAlign() was
+> buggy.  If you try to align something higher than UINT_MAX it got
+> truncated to a u32.
+> 
+> regards,
+> dan carpenter
