@@ -2,204 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4913F7B09
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19A13F7B0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240948AbhHYRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhHYRA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:00:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B70161056;
-        Wed, 25 Aug 2021 16:59:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629910781;
-        bh=8svIy2DRVAvuqk85qjTGG0b4XCqSnyOm8NGC7jWY43s=;
-        h=Date:From:To:Cc:Subject:From;
-        b=V52Fw0cLMHnWjAoVMx0L7zHx0026uWghVh43nB/nZnIuE8v4YLlvuN6Hs6TuwgNyu
-         GVbjz9NbvOoIcK/EFeG9Guxj7WW3hk/EIuz6cn4lsIQ4tPxY34ImIx0E5SitxkUMwg
-         P1YQefnq1Pg7YAyyoGFeLCn0vpbHt6RyP9qimPCNU0vszrfgR5pPtO2IEWc+u7+b1N
-         P0Vf077jyqT+t/JN3ue+jTNSPQ5F5HB79vNjOQ2ByVY2vo+spzsQxdmBc9gvG2YZF4
-         XkR8KoYRb9o9CQOD/BD6ObUZhosO+5taJEYhHF4tgXWizoBkseaO6O8uOKLq0MOIYp
-         zwRDcC5KXKksw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D0D834007E; Wed, 25 Aug 2021 13:59:37 -0300 (-03)
-Date:   Wed, 25 Aug 2021 13:59:37 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH 1/1] perf bench inject-buildid: Handle writen() errors
-Message-ID: <YSZ2+Wvt2Kjq6twd@kernel.org>
+        id S242063AbhHYRA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhHYRA4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 13:00:56 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC662C061757;
+        Wed, 25 Aug 2021 10:00:10 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id n12so3272443plk.10;
+        Wed, 25 Aug 2021 10:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GARRipU4tyoOX/kFKAVGnwwP9gM0vSl86b0lA7JfjhI=;
+        b=X/VZuzNzm0CgfQ4VwwxFY8Slrtmu0eULlo8vIR7KJ7y0Gg0sVIE7Q9jEnZOMuFi9su
+         gz9uqofnnm0dZUestG4p7Y0l0hPc47o2suzXpNZ9a5ojvg8Y1QE3q7+eMUk/9Yr1m+vX
+         NxUtnkA7NVshg881J73mw+PIgA10AfmPyKZWyVunTGSHReaYXNiVgWlXFc2ryB7aj4DT
+         rwR9JyjltdyifCgXsjKLiXHtRiMr1y82FxPd3fnkPf6+sqWeEhWgozGBJNZ2u5+mmT+B
+         WOSYiQb7Jc1x9zWqo35H/WZFDETOydL8dzF/aFUYAwLqRqNr99K4AEMTHAxBcJAP2P9w
+         Q2jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GARRipU4tyoOX/kFKAVGnwwP9gM0vSl86b0lA7JfjhI=;
+        b=cdalV7Q3OCZIVVxQ3ZZ6y/r9zunayRWIMB2tUb7j2/+RrtdnhF6aVcnIoFAGSnWtsW
+         3oh1fs5iZ4pX78GbI94QKhFeSlJJ5DYga/weBAxncE4S9s89uihSf2t9YYmN0rhTq3sl
+         V69G97bXVGyyVFvuNq1N1v4HgLVbM/xaNZdpOVgiKQOux7718J3YGdDxCIpYlNn6W3Yw
+         9gooGBtfxCnfuc/Nn8WGFVujpzTpwcb+t7LEuONTp2ZMuN9aURxOT63CkWhZf+TU+qnu
+         5BeXz9f+CzJ8E/Q1mZv/83E2TW+nzV5qJbW46xWdXHT8DwYQ/22bMdrsD1dvf9BE2JVX
+         1b0Q==
+X-Gm-Message-State: AOAM530rRoejwXcV36gy1D77Wo/VXjJjmq6OEsbMYFkr4+poW4sKxgu9
+        z6p6IKA/o6cm8bpbu+zejo1j7Ave0ku1a6jc
+X-Google-Smtp-Source: ABdhPJzt4KydQMfivZ4TtsHXZGOnnEGOITz6dZoGewEs79/um0mmV7/DeNAfZsNSlK20h4ByZa5lew==
+X-Received: by 2002:a17:90b:1749:: with SMTP id jf9mr2939837pjb.212.1629910809917;
+        Wed, 25 Aug 2021 10:00:09 -0700 (PDT)
+Received: from skynet-linux.local ([106.201.63.141])
+        by smtp.googlemail.com with ESMTPSA id v17sm338508pff.6.2021.08.25.10.00.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 10:00:09 -0700 (PDT)
+From:   Sireesh Kodali <sireeshkodali1@gmail.com>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Vladimir Lypak <vladimir.lypak@gmail.com>,
+        Adam Skladowski <a_skl39@protonmail.com>,
+        Sireesh Kodali <sireeshkodali1@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kathiravan T <kathirav@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/4] dt-bindings: soc: qcom: smd-rpm: Add compatible for MSM8953 SoC
+Date:   Wed, 25 Aug 2021 22:29:42 +0530
+Message-Id: <20210825165943.19415-1-sireeshkodali1@gmail.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210825165251.18358-1-sireeshkodali1@gmail.com>
+References: <20210825165251.18358-1-sireeshkodali1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Namhyung,
+From: Vladimir Lypak <vladimir.lypak@gmail.com>
 
-	Please check and ack,
+Document compatible for MSM8953 SoC.
 
-- Arnaldo
-
-From 4e5caa5fbe6955dd26336a0b106c52b98c793f3b Mon Sep 17 00:00:00 2001
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date: Wed, 25 Aug 2021 11:50:37 -0300
-Subject: [PATCH 1/2] perf bench inject-buildid: Handle writen() errors
-
-The build on fedora:35 and fedora:rawhide with clang is failing with:
-
-  49    41.00 fedora:35                     : FAIL clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
-    bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
-            u64 len = 0;
-                ^
-    1 error generated.
-    make[3]: *** [/git/perf-5.14.0-rc7/tools/build/Makefile.build:139: bench] Error 2
-  50    41.11 fedora:rawhide                : FAIL clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
-    bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
-            u64 len = 0;
-                ^
-    1 error generated.
-    make[3]: *** [/git/perf-5.14.0-rc7/tools/build/Makefile.build:139: bench] Error 2
-
-That 'len' variable is not used at all, so just make sure all the
-synthesize_RECORD() routines return ssize_t to propagate the writen()
-return, as it may fail, ditch the 'ret' var and bail out if those
-routines fail.
-
-Fixes: 0bf02a0d80427f26 ("perf bench: Add build-id injection benchmark")
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+Signed-off-by: Adam Skladowski <a_skl39@protonmail.com>
+Signed-off-by: Sireesh Kodali <sireeshkodali1@gmail.com>
 ---
- tools/perf/bench/inject-buildid.c | 52 ++++++++++++++++++-------------
- 1 file changed, 30 insertions(+), 22 deletions(-)
+ Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
-index 55d373b75791b0e4..17672790f1231acc 100644
---- a/tools/perf/bench/inject-buildid.c
-+++ b/tools/perf/bench/inject-buildid.c
-@@ -133,7 +133,7 @@ static u64 dso_map_addr(struct bench_dso *dso)
- 	return 0x400000ULL + dso->ino * 8192ULL;
- }
- 
--static u32 synthesize_attr(struct bench_data *data)
-+static ssize_t synthesize_attr(struct bench_data *data)
- {
- 	union perf_event event;
- 
-@@ -151,7 +151,7 @@ static u32 synthesize_attr(struct bench_data *data)
- 	return writen(data->input_pipe[1], &event, event.header.size);
- }
- 
--static u32 synthesize_fork(struct bench_data *data)
-+static ssize_t synthesize_fork(struct bench_data *data)
- {
- 	union perf_event event;
- 
-@@ -169,8 +169,7 @@ static u32 synthesize_fork(struct bench_data *data)
- 	return writen(data->input_pipe[1], &event, event.header.size);
- }
- 
--static u32 synthesize_mmap(struct bench_data *data, struct bench_dso *dso,
--			   u64 timestamp)
-+static ssize_t synthesize_mmap(struct bench_data *data, struct bench_dso *dso, u64 timestamp)
- {
- 	union perf_event event;
- 	size_t len = offsetof(struct perf_record_mmap2, filename);
-@@ -198,23 +197,25 @@ static u32 synthesize_mmap(struct bench_data *data, struct bench_dso *dso,
- 
- 	if (len > sizeof(event.mmap2)) {
- 		/* write mmap2 event first */
--		writen(data->input_pipe[1], &event, len - bench_id_hdr_size);
-+		if (writen(data->input_pipe[1], &event, len - bench_id_hdr_size) < 0)
-+			return -1;
- 		/* zero-fill sample id header */
- 		memset(id_hdr_ptr, 0, bench_id_hdr_size);
- 		/* put timestamp in the right position */
- 		ts_idx = (bench_id_hdr_size / sizeof(u64)) - 2;
- 		id_hdr_ptr[ts_idx] = timestamp;
--		writen(data->input_pipe[1], id_hdr_ptr, bench_id_hdr_size);
--	} else {
--		ts_idx = (len / sizeof(u64)) - 2;
--		id_hdr_ptr[ts_idx] = timestamp;
--		writen(data->input_pipe[1], &event, len);
-+		if (writen(data->input_pipe[1], id_hdr_ptr, bench_id_hdr_size) < 0)
-+			return -1;
-+
-+		return len;
- 	}
--	return len;
-+
-+	ts_idx = (len / sizeof(u64)) - 2;
-+	id_hdr_ptr[ts_idx] = timestamp;
-+	return writen(data->input_pipe[1], &event, len);
- }
- 
--static u32 synthesize_sample(struct bench_data *data, struct bench_dso *dso,
--			     u64 timestamp)
-+static ssize_t synthesize_sample(struct bench_data *data, struct bench_dso *dso, u64 timestamp)
- {
- 	union perf_event event;
- 	struct perf_sample sample = {
-@@ -233,7 +234,7 @@ static u32 synthesize_sample(struct bench_data *data, struct bench_dso *dso,
- 	return writen(data->input_pipe[1], &event, event.header.size);
- }
- 
--static u32 synthesize_flush(struct bench_data *data)
-+static ssize_t synthesize_flush(struct bench_data *data)
- {
- 	struct perf_event_header header = {
- 		.size = sizeof(header),
-@@ -348,14 +349,16 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
- 	int status;
- 	unsigned int i, k;
- 	struct rusage rusage;
--	u64 len = 0;
- 
- 	/* this makes the child to run */
- 	if (perf_header__write_pipe(data->input_pipe[1]) < 0)
- 		return -1;
- 
--	len += synthesize_attr(data);
--	len += synthesize_fork(data);
-+	if (synthesize_attr(data) < 0)
-+		return -1;
-+
-+	if (synthesize_fork(data) < 0)
-+		return -1;
- 
- 	for (i = 0; i < nr_mmaps; i++) {
- 		int idx = rand() % (nr_dsos - 1);
-@@ -363,13 +366,18 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
- 		u64 timestamp = rand() % 1000000;
- 
- 		pr_debug2("   [%d] injecting: %s\n", i+1, dso->name);
--		len += synthesize_mmap(data, dso, timestamp);
-+		if (synthesize_mmap(data, dso, timestamp) < 0)
-+			return -1;
- 
--		for (k = 0; k < nr_samples; k++)
--			len += synthesize_sample(data, dso, timestamp + k * 1000);
-+		for (k = 0; k < nr_samples; k++) {
-+			if (synthesize_sample(data, dso, timestamp + k * 1000) < 0)
-+				return -1;
-+		}
- 
--		if ((i + 1) % 10 == 0)
--			len += synthesize_flush(data);
-+		if ((i + 1) % 10 == 0) {
-+			if (synthesize_flush(data) < 0)
-+				return -1;
-+		}
- 	}
- 
- 	/* this makes the child to finish */
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
+index cc3fe5ed7421..77963b86b714 100644
+--- a/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
+@@ -34,6 +34,7 @@ properties:
+       - qcom,rpm-ipq6018
+       - qcom,rpm-msm8226
+       - qcom,rpm-msm8916
++      - qcom,rpm-msm8953
+       - qcom,rpm-msm8974
+       - qcom,rpm-msm8976
+       - qcom,rpm-msm8996
+@@ -57,6 +58,7 @@ if:
+           - qcom,rpm-apq8084
+           - qcom,rpm-msm8916
+           - qcom,rpm-msm8974
++          - qcom,rpm-msm8953
+ then:
+   required:
+     - qcom,smd-channels
 -- 
-2.31.1
+2.33.0
 
