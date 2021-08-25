@@ -2,175 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5E83F721A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375343F721E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237109AbhHYJoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:44:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43552 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235088AbhHYJob (ORCPT
+        id S239622AbhHYJou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237274AbhHYJot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:44:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629884625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VDB3aoy5vP8AQ/06F9afgv21i9+28hAv1v7LqW0YHDY=;
-        b=SQGXVvBiB99lQ2dNono6OgbtvEbwzcJ0wrEMHEV2OsKNTyHrRXuR/YAmI56RUNBWOxLkLt
-        4JSPrKb8s1j3+EyUpa3wJHSj7Rkk0KgTkKyLhRPHDJP7P5Jf02I0pvbem+Ss7EU2JHsQbQ
-        4FQgct5rTt0q03ISCGFRLA8S2PHuL2g=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-yaWgLdI-PUa6YrHjakcE2w-1; Wed, 25 Aug 2021 05:43:44 -0400
-X-MC-Unique: yaWgLdI-PUa6YrHjakcE2w-1
-Received: by mail-wr1-f70.google.com with SMTP id b7-20020a5d4d87000000b001575d1053d2so1602172wru.23
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:43:44 -0700 (PDT)
+        Wed, 25 Aug 2021 05:44:49 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9535C0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:44:03 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id o10so51622902lfr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=mVBCLMrmtNi0cBtd2h0yR4rj69aPWXuUyL2zj6muVGc=;
+        b=nvhJO0jOM9EWIg+YirpaPwyNot5o45tv1yCyrmltHv0cBZhd17TNcCrZ4atxwswTl4
+         5uhYYq3S9cLZPs9WAV3wSBKLyJwPW/XfLAlH1kvqTSTPi58I/oU36SmUuST6bOGHp4Qb
+         yh3p+qfKpVDwWAggGmGVFa8olBj3vQF2keIu4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=VDB3aoy5vP8AQ/06F9afgv21i9+28hAv1v7LqW0YHDY=;
-        b=MDK7sVrJGYRxThs+cS8Cyylduu+9Q/D4KhVhdqqFDItQl/jXmiNQpg2z9t3xj4yH48
-         lLc3fl/McT/S4Dlk70eazpLdZ/z6AChpbWWIxTYtRhOdJz17f6R588w5pZukMNgNqv+u
-         2WlVqelThM+5mvbkjTYc/jxe68E5vOl9BCnpHrVBqtDJxYM3rUGIVBopiElct+hp0T0+
-         ze2uw7SdDNNbYd2xLkRHb1GsTTNibqzx4FxSkemI7u1Q8hOK9EQjn1Zkzl4q9djwdz25
-         /tzUTVuWEaHcUTyBgPPOtqr4X3/WVzHaRne2zPt/0vJC7aK6ir6mxVCavZZbd7xLMZo4
-         FysA==
-X-Gm-Message-State: AOAM5330LLd1312F11xEp8Rl/mRS2P2UnBjL6h3fKCVc1cDUHFh/670N
-        2m1M5KISnPwcl58pyA45Spj1RXdpiclylKKjsO5rhGomBgquAUXhAXLRf7dQ6wuZ3bFKRNdvY/u
-        fWzPiGb1FOjDR0+bJZYlRA/lh
-X-Received: by 2002:a7b:c351:: with SMTP id l17mr8464205wmj.120.1629884623224;
-        Wed, 25 Aug 2021 02:43:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTpYUVjyjaViaR9Bny71ISb1iVTVjlxcE78AUpnA73nLcrH/COjHmR9+63GEWBR6NzVBXOKQ==
-X-Received: by 2002:a7b:c351:: with SMTP id l17mr8464193wmj.120.1629884622944;
-        Wed, 25 Aug 2021 02:43:42 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id g76sm4735096wme.16.2021.08.25.02.43.41
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=mVBCLMrmtNi0cBtd2h0yR4rj69aPWXuUyL2zj6muVGc=;
+        b=t41Ac5NMWencS+twf3Qk0976/tjgbuf05XmWC4m/O7SfI7C3s4qcCIqZYizoq4tQrI
+         liXbOyyGSgqO06uDIVBA8lZWl+Neu3cDzkeiPjAyDZ8UV76Hqh4CbNjVZY8k0c2k1Vah
+         WKgUnAT+wRqn3sB1nfJyLPQPaFRc6+Sm7AB4cMXxIzPLn4NNl2660k1NfIdVord/sXE9
+         8qGHxR4xDlHpRVw8yURqdylgSChzT9oD2BlQiJMhmV+PIaKetosbPf6MDFl3tviC+RDI
+         eksskmD/1vi+SEUuLPJNpsJYG9X1uCeC4351PLpB7Hon2EhSipQ5gUi7A7wmGQd49tHY
+         4YiA==
+X-Gm-Message-State: AOAM531jyR+6XGo4dtML1KAagQejSNmleC9xs+/Ldf7ueyUwx7RlK5Z/
+        I4CcyDY/ryNnVFKIoTvL9igFTg==
+X-Google-Smtp-Source: ABdhPJzCdAERMdrEjkk3bVyLtyl+jMyTKe5MEdSUZQWrko89ztd+kwzLWjgykYkketLnht4xsCSQ0Q==
+X-Received: by 2002:ac2:4d52:: with SMTP id 18mr32810334lfp.550.1629884642112;
+        Wed, 25 Aug 2021 02:44:02 -0700 (PDT)
+Received: from cloudflare.com ([2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
+        by smtp.gmail.com with ESMTPSA id g25sm691895lfv.62.2021.08.25.02.44.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 02:43:42 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, Eduardo Habkost <ehabkost@redhat.com>
-Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
- from ioapic_write_indirect()
-In-Reply-To: <36b6656637d1e6aaa2ab5098f7ebc27644466294.camel@redhat.com>
-References: <20210823143028.649818-1-vkuznets@redhat.com>
- <20210823143028.649818-5-vkuznets@redhat.com>
- <20210823185841.ov7ejn2thwebcwqk@habkost.net>
- <87mtp7jowv.fsf@vitty.brq.redhat.com>
- <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
- <87k0kakip9.fsf@vitty.brq.redhat.com>
- <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
- <87h7fej5ov.fsf@vitty.brq.redhat.com>
- <36b6656637d1e6aaa2ab5098f7ebc27644466294.camel@redhat.com>
-Date:   Wed, 25 Aug 2021 11:43:41 +0200
-Message-ID: <87bl5lkgfm.fsf@vitty.brq.redhat.com>
+        Wed, 25 Aug 2021 02:44:01 -0700 (PDT)
+References: <20210823030143.29937-1-po-hsu.lin@canonical.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Po-Hsu Lin <po-hsu.lin@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        hawk@kernel.org, kuba@kernel.org, davem@davemloft.net,
+        kpsingh@kernel.org, john.fastabend@gmail.com, yhs@fb.com,
+        songliubraving@fb.com, kafai@fb.com, andrii@kernel.org,
+        daniel@iogearbox.net, ast@kernel.org, skhan@linuxfoundation.org
+Subject: Re: [PATCH] selftests/bpf: Use kselftest skip code for skipped tests
+In-reply-to: <20210823030143.29937-1-po-hsu.lin@canonical.com>
+Date:   Wed, 25 Aug 2021 11:44:00 +0200
+Message-ID: <87h7fdg8pr.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
-
-> On Wed, 2021-08-25 at 10:21 +0200, Vitaly Kuznetsov wrote:
->> Maxim Levitsky <mlevitsk@redhat.com> writes:
->> 
->> > On Tue, 2021-08-24 at 16:42 +0200, Vitaly Kuznetsov wrote:
->> ...
->> > Not a classical review but,
->> > I did some digital archaeology with this one, trying to understand what is going on:
->> > 
->> > 
->> > I think that 16 bit vcpu bitmap is due to the fact that IOAPIC spec states that
->> > it can address up to 16 cpus in physical destination mode.
->> >  
->> > In logical destination mode, assuming flat addressing and that logical id = 1 << physical id
->> > which KVM hardcodes, it is also only possible to address 8 CPUs.
->> >  
->> > However(!) in flat cluster mode, the logical apic id is split in two.
->> > We have 16 clusters and each have 4 CPUs, so it is possible to address 64 CPUs,
->> > and unlike the logical ID, the KVM does honour cluster ID, 
->> > thus one can stick say cluster ID 0 to any vCPU.
->> >  
->> >  
->> > Let's look at ioapic_write_indirect.
->> > It does:
->> >  
->> >     -> bitmap_zero(&vcpu_bitmap, 16);
->> >     -> kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq, &vcpu_bitmap);
->> >     -> kvm_make_scan_ioapic_request_mask(ioapic->kvm, &vcpu_bitmap); // use of the above bitmap
->> >  
->> >  
->> > When we call kvm_bitmap_or_dest_vcpus, we can already overflow the bitmap,
->> > since we pass all 8 bit of the destination even when it is physical.
->> >  
->> >  
->> > Lets examine the kvm_bitmap_or_dest_vcpus:
->> >  
->> >   -> It calls the kvm_apic_map_get_dest_lapic which 
->> >  
->> >        -> for physical destinations, it just sets the bitmap, which can overflow
->> >           if we pass it 8 bit destination (which basically includes reserved bits + 4 bit destination).
->> >  
->> >  
->> >        -> For logical apic ID, it seems to truncate the result to 16 bit, which isn't correct as I explained
->> >           above, but should not overflow the result.
->> >  
->> >   
->> >    -> If call to kvm_apic_map_get_dest_lapic fails, it goes over all vcpus and tries to match the destination
->> >        This can overflow as well.
->> >  
->> >  
->> > I also don't like that ioapic_write_indirect calls the kvm_bitmap_or_dest_vcpus twice,
->> > and second time with 'old_dest_id'
->> >  
->> > I am not 100%  sure why old_dest_id/old_dest_mode are needed as I don't see anything in the
->> > function changing them.
->> > I think only the guest can change them, so maybe the code deals with the guest changing them
->> > while the code is running from a different vcpu?
->> >  
->> > The commit that introduced this code is 7ee30bc132c683d06a6d9e360e39e483e3990708
->> > Nitesh Narayan Lal, maybe you remember something about it?
->> >  
->> 
->> Before posting this patch I've contacted Nitesh privately, he's
->> currently on vacation but will take a look when he gets back.
->> 
->> > Also I worry a lot about other callers of kvm_apic_map_get_dest_lapic
->> >  
->> > It is also called from kvm_irq_delivery_to_apic_fast, and from kvm_intr_is_single_vcpu_fast
->> > and both seem to also use 'unsigned long' for bitmap, and then only use 16 bits of it.
->> >  
->> > I haven't dug into them, but these don't seem to be IOAPIC related and I think
->> > can overwrite the stack as well.
->> 
->> I'm no expert in this code but when writing the patch I somehow
->> convinced myself that a single unsigned long is always enough. I think
->> that for cluster mode 'bitmap' needs 64-bits (and it is *not* a
->> vcpu_bitmap, we need to convert). I may be completely wrong of course
->> but in any case this is a different issue. In ioapic_write_indirect() we
->> have 'vcpu_bitmap' which should certainly be longer than 64 bits.
+On Mon, Aug 23, 2021 at 05:01 AM CEST, Po-Hsu Lin wrote:
+> There are several test cases in the bpf directory are still using
+> exit 0 when they need to be skipped. Use kselftest framework skip
+> code instead so it can help us to distinguish the return status.
 >
+> Criterion to filter out what should be fixed in bpf directory:
+>   grep -r "exit 0" -B1 | grep -i skip
 >
-> This code which I mentioned in 'other callers' as far as I see is not IOAPIC related.
-> For regular local APIC all bets are off, any vCPU and apic ID are possible 
-> (xapic I think limits apic id to 255 but x2apic doesn't).
+> This change might cause some false-positives if people are running
+> these test scripts directly and only checking their return codes,
+> which will change from 0 to 4. However I think the impact should be
+> small as most of our scripts here are already using this skip code.
+> And there will be no such issue if running them with the kselftest
+> framework.
 >
-> I strongly suspect that this code can overflow as well.
+> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> ---
+>  tools/testing/selftests/bpf/test_bpftool_build.sh | 5 ++++-
+>  tools/testing/selftests/bpf/test_xdp_meta.sh      | 5 ++++-
+>  tools/testing/selftests/bpf/test_xdp_vlan.sh      | 7 +++++--
+>  3 files changed, 13 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_bpftool_build.sh b/tools/testing/selftests/bpf/test_bpftool_build.sh
+> index ac349a5..b6fab1e 100755
+> --- a/tools/testing/selftests/bpf/test_bpftool_build.sh
+> +++ b/tools/testing/selftests/bpf/test_bpftool_build.sh
+> @@ -1,6 +1,9 @@
+>  #!/bin/bash
+>  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  
+> +# Kselftest framework requirement - SKIP code is 4.
+> +ksft_skip=4
+> +
+>  case $1 in
+>  	-h|--help)
+>  		echo -e "$0 [-j <n>]"
+> @@ -22,7 +25,7 @@ KDIR_ROOT_DIR=$(realpath $PWD/$SCRIPT_REL_DIR/../../../../)
+>  cd $KDIR_ROOT_DIR
+>  if [ ! -e tools/bpf/bpftool/Makefile ]; then
+>  	echo -e "skip:    bpftool files not found!\n"
+> -	exit 0
+> +	exit $ksft_skip
+>  fi
+>  
+>  ERROR=0
 
-I've probably missed something but I don't see how
-kvm_apic_map_get_dest_lapic() can set bits above 64 in 'bitmap'. If it
-can, then we have a problem indeed.
+This bit has been fixed a couple days ago by a similar change:
 
--- 
-Vitaly
+https://lore.kernel.org/bpf/20210820025549.28325-1-lizhijian@cn.fujitsu.com
 
+> diff --git a/tools/testing/selftests/bpf/test_xdp_meta.sh b/tools/testing/selftests/bpf/test_xdp_meta.sh
+> index 637fcf4..fd3f218 100755
+> --- a/tools/testing/selftests/bpf/test_xdp_meta.sh
+> +++ b/tools/testing/selftests/bpf/test_xdp_meta.sh
+> @@ -1,5 +1,8 @@
+>  #!/bin/sh
+>  
+> +# Kselftest framework requirement - SKIP code is 4.
+> +ksft_skip=4
+> +
+>  cleanup()
+>  {
+>  	if [ "$?" = "0" ]; then
+
+Would consider making it read-only:
+
+  readonly KSFT_SKIP=4
+
+[...]
