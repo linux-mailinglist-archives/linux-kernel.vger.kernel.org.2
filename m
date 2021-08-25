@@ -2,108 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B95C3F7E2F
+	by mail.lfdr.de (Postfix) with ESMTP id E72AB3F7E30
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhHYWJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
+        id S230382AbhHYWJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhHYWJR (ORCPT
+        with ESMTP id S230074AbhHYWJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:09:17 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC2AC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:08:30 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id z2so2107002lft.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:08:30 -0700 (PDT)
+        Wed, 25 Aug 2021 18:09:27 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F85C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:08:41 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id y11so841520pfl.13
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:08:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8QrabiuUOL5RpIB2bUJcrd5bYgE/GbNoTnPnvGmMIGY=;
-        b=pLFAvdXocaGKnG+CfhM8QZSjEylRHuAJ/wcaiGOKcdmAWl3I0FLe8qo3HS+7htgfYv
-         LlOeJ2rkbeRn07sqbP6eLa58NOAmAHWKlZYJR7tAbDTWfmPnpU10CnGT0owsSCYzjgdV
-         BLmINhIp2eqcvvxT4f8OSzmt0U/pJ20nhQ6juJLDK0inGbJT8pd1876hvRhhuusqOv0q
-         IHLv5fScRhF/d6gt4q0+9M+qlyrejDDevvNkFP1wbYei96ZsrC6Gnfkm3bDRQrvY5VWr
-         BEj25dAD9RDL334c8gA2RO5Sg59GqGKqxDa2pTn+U8Je6VwInaBUJJZyhk2B2bjpH7h+
-         ZJ+g==
+        bh=7NZNUzkwqV8FV6bts50PDqCVbYsdeI9DWpW3UuuSetQ=;
+        b=H9bYH617YjERR4qzzuhHKRD1sRRQFu+Q1Jh64kJ1djlfDal40fY+iY87u0l9uJoll9
+         qKsSebVBrXVCpOAl8hvLF4LtB9qq5pdwDXayqDjbt2sUyexsxQbLG62BB3WNpfD87xZG
+         IVyDddf9ZPTBcoPNghKtAs9E6jlQ28nDWusY81EErhC9J7IxJxP7uwjAdgVMD8py+u1P
+         nxTuWeiGOBc+Tfc1qeRQ2kq5o5K9WUw6NdaVl+u6l7blBulIUS1a0b8Q01jOTrYRv73M
+         znQKQv6MK8THCvnQOstYHUHj9L24gqn6pk51HjKJEQG0bWnijVmLYjUAaUC1yNQfLkfP
+         bq2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8QrabiuUOL5RpIB2bUJcrd5bYgE/GbNoTnPnvGmMIGY=;
-        b=odmqRZtvmFCarc4TpeLQaZbDVlFWW87oKC3iq1bLx+UUJeikhB6wA9UvpOByUirmO5
-         tRa8NmRl9p7500uW90P3qdmXQR4oLGXnv3S9O1fcK8OZnNd+7lQ0LpleAhYJggKPSo7M
-         WEY4Syi4HcmrMZiV3gN0pJbBBgEOGXK3o/xKskCRXekTl/TM9Dzri2ahOz/vmPguVqWW
-         BCnnOCU9rKLJ3IxGGnuHWWrFgPwR1cUh+eT9UN6Q97pa182qi0w395PqzHNYlgSB2yYq
-         7U1UawB8D5dvmqFxRWclTuOe/vPMmHyw5BiglbO8b8gwA50BPIble3wRaHHAAICUW2Hr
-         3yKA==
-X-Gm-Message-State: AOAM530jg2Wfq0NOC17K0aWO1Jt7a3p3BEqpxxasxVSW49UsbpLHa+QE
-        OxjBlDEVpvgj51l67R1ymiFhMzKZLvhnEvP9V/WdTw==
-X-Google-Smtp-Source: ABdhPJzkDhuzFozlwVe+wwa3G0o4eRmWm94JJUo0qfChZJ4MBNgoDxcylGBnRz0GykDHDpVeeGPBWeyS89G60wPCLSk=
-X-Received: by 2002:a05:6512:3a84:: with SMTP id q4mr205725lfu.543.1629929308804;
- Wed, 25 Aug 2021 15:08:28 -0700 (PDT)
+        bh=7NZNUzkwqV8FV6bts50PDqCVbYsdeI9DWpW3UuuSetQ=;
+        b=IUTCdwRhhKG42xwhjaDFiNMl6n4e20vOhPLaBv2ouwj4dgIDw5l1K7oUomrzKdsR64
+         MOSaa2hWNRgLh7Bs/l9IeExij4CgLzrw+TSgS69HYMcvSh76bLIi/P6A7KkrN747WhyM
+         /rs+mZKGIig1wwm5i3Uf1ggOQw+hpj5OH7VARAcY5bIm7JERQ5SO1C4/dX7T7T046uYt
+         Buzk3y8czsP4pXYdw8f70TUcCGoojr6Fw3b80YuIbVAnVRCrkZofyawyUTQV2E97r2qH
+         1naBIjCWnbP/Icdx8ls5j3MBN9z1KKynwyS5ygBZwr8ps0Ok4H6fwHrhGwonzUWuO05j
+         iUnQ==
+X-Gm-Message-State: AOAM532eM7lfjLdH4+XzPASzUQfDJAsNwQwOV+Qiqkxe24tzZ+qtX/bN
+        xcgurxt+1ECEFA2AEis8/NbNy6qmnh1zhfrQIGYf3A==
+X-Google-Smtp-Source: ABdhPJw2KP0i89pMalH0wosmc6VWGByLDHoPtHP3Rvh3Nqhuz6fCxv+quhVvh9yLawfYIETYtZ7Iyp0W5bbg6cwoq38=
+X-Received: by 2002:a65:6642:: with SMTP id z2mr353069pgv.240.1629929320968;
+ Wed, 25 Aug 2021 15:08:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210825211823.6406-1-nathan@kernel.org>
-In-Reply-To: <20210825211823.6406-1-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 25 Aug 2021 15:08:17 -0700
-Message-ID: <CAKwvOdn_3T+sz-5u1Eb8gXDvC3VNyx1vu=1_dxdk30Ucgzqmsw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] MAINTAINERS: Update ClangBuiltLinux mailing list
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        clang-built-linux@googlegroups.com
+References: <20210726060855.108250-1-pankaj.gupta.linux@gmail.com>
+ <20210726060855.108250-2-pankaj.gupta.linux@gmail.com> <CAPcyv4inCFFXmg0r5+h0O6cADpt9HdboVDEL00XX-wGroy-7LQ@mail.gmail.com>
+ <CAM9Jb+hqPBFUh9X4sKb9TUGXX1P0mC1xcuCNQx1BYvAvoP9uQg@mail.gmail.com>
+ <CAPcyv4gUG1-y1u0ZyUkSGXg0eER_oTdexb8n-CYgb_rURvr8LA@mail.gmail.com> <CALzYo32AnNzENe414GDVivaF5wXQ7azaysBYkN9wHVYEW27NPw@mail.gmail.com>
+In-Reply-To: <CALzYo32AnNzENe414GDVivaF5wXQ7azaysBYkN9wHVYEW27NPw@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 25 Aug 2021 15:08:30 -0700
+Message-ID: <CAPcyv4idY7GDYjXsvjduQ4rjfKo-qDgQoj5r6=Rr9poXqHEzeg@mail.gmail.com>
+Subject: Re: [RFC v2 1/2] virtio-pmem: Async virtio-pmem flush
+To:     Pankaj Gupta <pankaj.gupta@ionos.com>
+Cc:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        jmoyer <jmoyer@redhat.com>, David Hildenbrand <david@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 2:18 PM Nathan Chancellor <nathan@kernel.org> wrote:
+On Wed, Aug 25, 2021 at 3:01 PM Pankaj Gupta <pankaj.gupta@ionos.com> wrote:
 >
-> We are now at llvm@lists.linux.dev.
+> > > Hi Dan,
+> > >
+> > > Thank you for the review. Please see my reply inline.
+> > >
+> > > > > Implement asynchronous flush for virtio pmem using work queue
+> > > > > to solve the preflush ordering issue. Also, coalesce the flush
+> > > > > requests when a flush is already in process.
+> > > > >
+> > > > > Signed-off-by: Pankaj Gupta <pankaj.gupta@ionos.com>
+> > > > > ---
+> > > > >  drivers/nvdimm/nd_virtio.c   | 72 ++++++++++++++++++++++++++++--------
+> > > > >  drivers/nvdimm/virtio_pmem.c | 10 ++++-
+> > > > >  drivers/nvdimm/virtio_pmem.h | 14 +++++++
+> > > > >  3 files changed, 79 insertions(+), 17 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/nvdimm/nd_virtio.c b/drivers/nvdimm/nd_virtio.c
+> > > > > index 10351d5b49fa..61b655b583be 100644
+> > > > > --- a/drivers/nvdimm/nd_virtio.c
+> > > > > +++ b/drivers/nvdimm/nd_virtio.c
+> > > > > @@ -97,29 +97,69 @@ static int virtio_pmem_flush(struct nd_region *nd_region)
+> > > > >         return err;
+> > > > >  };
+> > > > >
+> > > > > +static void submit_async_flush(struct work_struct *ws);
+> > > > > +
+> > > > >  /* The asynchronous flush callback function */
+> > > > >  int async_pmem_flush(struct nd_region *nd_region, struct bio *bio)
+> > > > >  {
+> > > > > -       /*
+> > > > > -        * Create child bio for asynchronous flush and chain with
+> > > > > -        * parent bio. Otherwise directly call nd_region flush.
+> > > > > +       /* queue asynchronous flush and coalesce the flush requests */
+> > > > > +       struct virtio_device *vdev = nd_region->provider_data;
+> > > > > +       struct virtio_pmem *vpmem  = vdev->priv;
+> > > > > +       ktime_t req_start = ktime_get_boottime();
+> > > > > +
+> > > > > +       spin_lock_irq(&vpmem->lock);
+> > > > > +       /* flush requests wait until ongoing flush completes,
+> > > > > +        * hence coalescing all the pending requests.
+> > > > >          */
+> > > > > -       if (bio && bio->bi_iter.bi_sector != -1) {
+> > > > > -               struct bio *child = bio_alloc(GFP_ATOMIC, 0);
+> > > > > -
+> > > > > -               if (!child)
+> > > > > -                       return -ENOMEM;
+> > > > > -               bio_copy_dev(child, bio);
+> > > > > -               child->bi_opf = REQ_PREFLUSH;
+> > > > > -               child->bi_iter.bi_sector = -1;
+> > > > > -               bio_chain(child, bio);
+> > > > > -               submit_bio(child);
+> > > > > -               return 0;
+> > > > > +       wait_event_lock_irq(vpmem->sb_wait,
+> > > > > +                           !vpmem->flush_bio ||
+> > > > > +                           ktime_before(req_start, vpmem->prev_flush_start),
+> > > > > +                           vpmem->lock);
+> > > > > +       /* new request after previous flush is completed */
+> > > > > +       if (ktime_after(req_start, vpmem->prev_flush_start)) {
+> > > > > +               WARN_ON(vpmem->flush_bio);
+> > > > > +               vpmem->flush_bio = bio;
+> > > > > +               bio = NULL;
+> > > > > +       }
+> > > >
+> > > > Why the dance with ->prev_flush_start vs just calling queue_work()
+> > > > again. queue_work() is naturally coalescing in that if the last work
+> > > > request has not started execution another queue attempt will be
+> > > > dropped.
+> > >
+> > > How parent flush request will know when corresponding flush is completed?
+> >
+> > The eventual bio_endio() is what signals upper layers that the flush
+> > completed...
+> >
+> >
+> > Hold on... it's been so long that I forgot that you are copying
+> > md_flush_request() here. It would help immensely if that was mentioned
+> > in the changelog and at a minimum have a comment in the code that this
+> > was copied from md. In fact it would be extra helpful if you
 >
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> My bad. I only mentioned this in the cover letter.
 
-Acked-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->  MAINTAINERS | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c6b8a720c0bc..8e36f55430de 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4504,7 +4504,7 @@ F:        .clang-format
->  CLANG/LLVM BUILD SUPPORT
->  M:     Nathan Chancellor <nathan@kernel.org>
->  M:     Nick Desaulniers <ndesaulniers@google.com>
-> -L:     clang-built-linux@googlegroups.com
-> +L:     llvm@lists.linux.dev
->  S:     Supported
->  W:     https://clangbuiltlinux.github.io/
->  B:     https://github.com/ClangBuiltLinux/linux/issues
-> @@ -4519,7 +4519,7 @@ M:        Sami Tolvanen <samitolvanen@google.com>
->  M:     Kees Cook <keescook@chromium.org>
->  R:     Nathan Chancellor <nathan@kernel.org>
->  R:     Nick Desaulniers <ndesaulniers@google.com>
-> -L:     clang-built-linux@googlegroups.com
-> +L:     llvm@lists.linux.dev
->  S:     Supported
->  B:     https://github.com/ClangBuiltLinux/linux/issues
->  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/clang/features
->
-> base-commit: e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
-> --
-> 2.33.0
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Yeah, sorry about that. Having come back to this after so long I just
+decided to jump straight into the patches, but even if I had read that
+cover I still would have given the feedback that md_flush_request()
+heritage should also be noted with a comment in the code.
