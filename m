@@ -2,69 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92833F7020
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9213F701F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239071AbhHYHJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:09:10 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14415 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238318AbhHYHJE (ORCPT
+        id S239063AbhHYHIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:08:19 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:9597 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238318AbhHYHIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:09:04 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GvcRF245pzbdSx;
-        Wed, 25 Aug 2021 15:04:25 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 15:08:15 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 15:08:15 +0800
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH] locking/lockdep: Cleanup the repeated declaration
-Date:   Wed, 25 Aug 2021 15:07:04 +0800
-Message-ID: <1629875224-32751-1-git-send-email-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 25 Aug 2021 03:08:16 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec6125ec23ade-1e8a3; Wed, 25 Aug 2021 15:07:15 +0800 (CST)
+X-RM-TRANSID: 2eec6125ec23ade-1e8a3
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea6125ec1ede0-4e93f;
+        Wed, 25 Aug 2021 15:07:15 +0800 (CST)
+X-RM-TRANSID: 2eea6125ec1ede0-4e93f
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     mkl@pengutronix.de, wg@grandegger.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH v2] can: mscan: mpc5xxx_can: Remove useless BUG_ON()
+Date:   Wed, 25 Aug 2021 15:07:52 +0800
+Message-Id: <20210825070752.18724-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'struct task_struct' has been decleared twice, so keep the top one and
-cleanup the repeated one.
+In the function mpc5xxx_can_probe(), the variable 'data'
+has already been determined in the above code, so the
+BUG_ON() in this place is useless, remove it.
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- include/linux/debug_locks.h | 2 --
- 1 file changed, 2 deletions(-)
+Changes to v1
+ - Fix the commit message for typo
+---
+ drivers/net/can/mscan/mpc5xxx_can.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/debug_locks.h b/include/linux/debug_locks.h
-index 3f49e65169c6..dbb409d77d4f 100644
---- a/include/linux/debug_locks.h
-+++ b/include/linux/debug_locks.h
-@@ -47,8 +47,6 @@ extern int debug_locks_off(void);
- # define locking_selftest()	do { } while (0)
- #endif
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+index 3b7465acd..35892c1ef 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -317,7 +317,6 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
  
--struct task_struct;
--
- #ifdef CONFIG_LOCKDEP
- extern void debug_show_all_locks(void);
- extern void debug_show_held_locks(struct task_struct *task);
+ 	clock_name = of_get_property(np, "fsl,mscan-clock-source", NULL);
+ 
+-	BUG_ON(!data);
+ 	priv->type = data->type;
+ 	priv->can.clock.freq = data->get_clock(ofdev, clock_name,
+ 					       &mscan_clksrc);
 -- 
-2.7.4
+2.20.1.windows.1
+
+
 
