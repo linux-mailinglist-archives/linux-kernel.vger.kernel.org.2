@@ -2,185 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A471C3F70B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84F93F70A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238955AbhHYHyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:54:18 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:37550 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238693AbhHYHyN (ORCPT
+        id S238793AbhHYHrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238651AbhHYHrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:54:13 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210825075321epoutp0429a45765d704d55c11ad2011548d108f~efWgWhkgE0351503515epoutp043
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:53:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210825075321epoutp0429a45765d704d55c11ad2011548d108f~efWgWhkgE0351503515epoutp043
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629878001;
-        bh=71vWhwe2flu3e5boPEXBoFmh4b7WoTyiazdFG47+sXU=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=OHuqdHK2mgTU8SFyljM55f0DQfDkwZzCCsnghcSaFpxT9PXfa3n2YecbMu+ezDj3y
-         jVozmfIcp+KOZ4kTtleoBDmmJaIucO5FEfKsYDtxY8yz3gh6ebBKqZEnG0+In0HWbY
-         MFmbb40fHX2/RGlPK5N0p5XHpeXqGZ05fXkgqEwQ=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210825075315epcas1p180e884c93b29252d4a25a37e70513500~efWbcBZlH2233722337epcas1p1l;
-        Wed, 25 Aug 2021 07:53:15 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.38.247]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4GvdWX6yDvz4x9Px; Wed, 25 Aug
-        2021 07:53:12 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        04.EA.09752.8E6F5216; Wed, 25 Aug 2021 16:53:12 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210825075311epcas1p4b64d6a5a824983c91f7d5d1dc24a4cc2~efWXKr4s70097500975epcas1p4K;
-        Wed, 25 Aug 2021 07:53:11 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210825075311epsmtrp1c5db99575b262ebe26909032f9483ef9~efWXJx-742901129011epsmtrp1E;
-        Wed, 25 Aug 2021 07:53:11 +0000 (GMT)
-X-AuditID: b6c32a39-6a7ff70000002618-48-6125f6e86a9c
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8A.81.09091.7E6F5216; Wed, 25 Aug 2021 16:53:11 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210825075310epsmtip2a781ef6031c697cf1e2d23b353a8e75a~efWW3g1RD2912529125epsmtip2d;
-        Wed, 25 Aug 2021 07:53:10 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        cw9316.lee@samsung.com, colyli@suse.de, axboe@kernel.dk,
-        ebiggers@google.com, pcc@google.com, porzio@gmail.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com
-Subject: [PATCH v2] mmc: queue: Remove unused parameters(request_queue)
-Date:   Wed, 25 Aug 2021 16:46:01 +0900
-Message-Id: <20210825074601.8881-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Wed, 25 Aug 2021 03:47:16 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469E3C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:46:31 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id d6so35648496edt.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7D1/WS0zTlYHIFesaw9k9oY822cAZCcAzswuvk/STN8=;
+        b=Fn5OTYgKC1XDw0fsZCNL5rK8nh3Yw6q69Py4rAti5bRuYxtnF+M7ZWk75l25Rq+Uea
+         4qw9w1qItY3JzNN9LgaucWg5NR4YlSM4yHAP6HWraNA3H0nY3AWIQaT/hc2bn9qM0uBc
+         domES/aD32d842L/fI5nO6pRBe8ZZ5xKYz1/RL/xqs3c61Q1jLCr2PoFl2HuTO+aJCYs
+         0gKDDxxl5hQp1bLHn5we/hoL/hu8TNf2iMCCuDKd64HZaKHonkoCmKO+94+/DBll+DdY
+         BpF9vucnALM2gghb0Xu0pt2Bt/sbxCOi+xHFDNlOhckzQPlD/Bl16X0Lyr/NsjbMItCm
+         KStA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=7D1/WS0zTlYHIFesaw9k9oY822cAZCcAzswuvk/STN8=;
+        b=RMKKwdi2dsS/cTvvUYpvkLkoegPkm1LwgXET1RD2Wo/VNKNTlexTaPHaXcxArkKLYU
+         lI8jVbdx+VVnYNi9G5OP0/CfBAHnF+pD/XbvxoO+iYh4/NtdoxTSbv47J03eiw/UFLY5
+         YszdRje/nVHpOUEhvwNvovm1qxs1Zgti4Esu2qlBGEWS6C5TL9ua8Qp0fJv3GBop8lA1
+         31PJ6MJwOknLM+BnO5WtYreONwWY01KGDXMFkQavrCB3g9IXclWcdhcpGlkMolNdFSFr
+         Sz8VXcZZhebbBgQtMr059ykZCRMGE5mLRMY1wSQo+0s1GF8Frqq2V6MoZYnZHnNL7Fe6
+         wBvQ==
+X-Gm-Message-State: AOAM532kgd+ClasdU7GAllvEUooAAhjI2+g3H08gwpp952DEg2j5zM9z
+        PKHnfgQU8MYMVNavVLYJ7j/K55CPfeXcqdJD
+X-Google-Smtp-Source: ABdhPJyG/jvLMmIrbWGFryX+KzJyGx1fCLqz+gM1ewCG9/7rjU6A1V6bNX+Pwdr1vKLcAGaLTQU9dA==
+X-Received: by 2002:aa7:cb0f:: with SMTP id s15mr47452079edt.190.1629877589680;
+        Wed, 25 Aug 2021 00:46:29 -0700 (PDT)
+Received: from localhost ([2a02:768:2307:40d6::e05])
+        by smtp.gmail.com with ESMTPSA id p8sm6664854ejo.2.2021.08.25.00.46.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 25 Aug 2021 00:46:29 -0700 (PDT)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     Daniel Palmer <daniel@0x0f.com>, Hao Fang <fanghao11@huawei.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Max Merchel <Max.Merchel@tq-group.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH] dt-bindings: Add vendor prefix for Topic Embedded Systems
+Date:   Wed, 25 Aug 2021 09:46:28 +0200
+Message-Id: <b6e42012977876c421672a84bdb7636be819d664.1629877585.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPJsWRmVeSWpSXmKPExsWy7bCmge6Lb6qJBoumWVicfLKGzWL13X42
-        i+mN59ktZpxqY7XYd+0ku8XF1S2sFr/+rme32PH8DLvF5V1z2CyO/O9ntOi/c53N4tWyi2wW
-        TX/2sVgcXxvuwOexc9Zddo8Fm0o9Fu95yeRx+Wypx51re9g8+rasYvTYfLra4/MmuQCOqGyb
-        jNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKCjlRTKEnNK
-        gUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkFZgV6xYm5xaV56Xp5qSVWhgYGRqZAhQnZGXe6
-        FrAUrBKu2LLpEGsD4zf+LkZODgkBE4mbT3cwdzFycQgJ7GCU2DBpOZTziVHi4b7fLBDON0aJ
-        /1PuMcG0zDvzCKpqL6PEt5MroZwvjBIf5s8Bcjg42AS0JG4f8waJiwg8YJRYdWAOO0g3s0CK
-        xKuedywgtrCAu8TN22/BprIIqEr8ezIFrIZXwEqi7c8PNoht8hJ/7vcwQ8QFJU7OfMICMUde
-        onnrbLDFEgJTOSQuHP3FDNHgInH38H1WCFtY4tXxLewQtpTEy/42doiGZkaJU7PPQTktjBKv
-        r9yAqjKW+PT5MyPIC8wCmhLrd+lDhBUldv6eywixmU/i3dceVpASCQFeiY42IYgSFYk5XefY
-        YHZ9vPEYqsRD4lufK0hYSCBWouX7CeYJjPKzkLwzC8k7sxD2LmBkXsUollpQnJueWmxYYAqP
-        1uT83E2M4JSrZbmDcfrbD3qHGJk4GA8xSnAwK4nw/mVSThTiTUmsrEotyo8vKs1JLT7EaAoM
-        4InMUqLJ+cCkn1cSb2hiaWBiZmRiYWxpbKYkzsv4SiZRSCA9sSQ1OzW1ILUIpo+Jg1OqganQ
-        4Cnrx6yzlelb3/p/crsxb8vhcztYpJ3PPDSX8PMqDHy0MaPUQUJJ10nme4aCe8Yfz6nXMg6r
-        69y5XShTaMolM9noN7dH2Oy1/X/nLrXbVXCuak+w0Eo3Y+XeT0LnTSqdw/f1HmXN2ra453/O
-        jlhnjuvnD12PzFJexRn7SCjjWsS6Zduya0WcV+zz2bmYe5H8haxZor8P7O+wzFz7/ryap+/5
-        mG1L9dJk5U2/tASdzOC/2jv7kdXmyGS+9uMs19LeKyj/Oda0/EXsnb87WidJVgfN3LnztGDC
-        1PzCzUeDrJQkBAtWnmP6Umh6YMrha71utu8833vYW8on7FVqerwkWV/EQE9xksC77wk6Ikos
-        xRmJhlrMRcWJAL9J0ENCBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNLMWRmVeSWpSXmKPExsWy7bCSvO7zb6qJBn/3sFmcfLKGzWL13X42
-        i+mN59ktZpxqY7XYd+0ku8XF1S2sFr/+rme32PH8DLvF5V1z2CyO/O9ntOi/c53N4tWyi2wW
-        TX/2sVgcXxvuwOexc9Zddo8Fm0o9Fu95yeRx+Wypx51re9g8+rasYvTYfLra4/MmuQCOKC6b
-        lNSczLLUIn27BK6MO10LWApWCVds2XSItYHxG38XIyeHhICJxLwzj5i7GLk4hAR2M0p8/d7K
-        BJGQkti9/zxbFyMHkC0scfhwMUhYSOATUM25apAwm4CWxO1j3iCtIgLvGCV2vP8N1soskCHx
-        7eMJMFtYwF3i5u23YDaLgKrEvydT2EFsXgEribY/P9ggVslL/LnfwwwRF5Q4OfMJC8QceYnm
-        rbOZJzDyzUKSmoUktYCRaRWjZGpBcW56brFhgWFearlecWJucWleul5yfu4mRnD4a2nuYNy+
-        6oPeIUYmDsZDjBIczEoivH+ZlBOFeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKa
-        nZpakFoEk2Xi4JRqYJq5wrnu/5MHy39veSIyRZRvXsG/2Ud7L+S/ypyW5Pn+Oku03hOPCcJ+
-        f5qXrBNR899/9omftNdZhtW9hgGNnultFoFNEbs+CAWlmARXy/HfSPGZMa8nelLlA4k1DHPZ
-        3D+uufG/QqRYoea5nUaxckxRn6uEVUXrP9ukCZMmSgW+XGAbv/jfQfmlcVOXHZxrvO0tx684
-        rd1sq9dEPl92YGr0Yh6DD2rnFP/bvt1x947MyeVzJa+dV5y3Tfw8n0Nt4EP+xwc3XX3RWPYs
-        TOYhR+QEEVelqZcYGV61GN8T23zpnNmuzVKP2fM8P7nLeQp4+p4vNuCo1Lu/4880Xl4bu6m5
-        QgkKGpk6ezrnxy9f2aXEUpyRaKjFXFScCACbHXkH7gIAAA==
-X-CMS-MailID: 20210825075311epcas1p4b64d6a5a824983c91f7d5d1dc24a4cc2
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210825075311epcas1p4b64d6a5a824983c91f7d5d1dc24a4cc2
-References: <CGME20210825075311epcas1p4b64d6a5a824983c91f7d5d1dc24a4cc2@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
+Add vendor prefix for Topic Embedded Systems (http://topic.nl).
 
-In function mmc_exit_request, the request_queue structure(*q) is not used.
-I remove the unnecessary code related to the request_queue structure.
-
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
-
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
-v1->v2:
- * Put the code directly into mmc_mq_init_reuqest()/mmc_mq_exit_request().
----
- drivers/mmc/core/queue.c | 30 ++++++------------------------
- 1 file changed, 6 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index cc3261777637..5526e4ca2834 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -199,27 +199,23 @@ static unsigned int mmc_get_max_segments(struct mmc_host *host)
- 					 host->max_segs;
- }
- 
--/**
-- * mmc_init_request() - initialize the MMC-specific per-request data
-- * @mq: the request queue
-- * @req: the request
-- * @gfp: memory allocation policy
-- */
--static int __mmc_init_request(struct mmc_queue *mq, struct request *req,
--			      gfp_t gfp)
-+static int mmc_mq_init_request(struct blk_mq_tag_set *set, struct request *req,
-+			       unsigned int hctx_idx, unsigned int numa_node)
- {
- 	struct mmc_queue_req *mq_rq = req_to_mmc_queue_req(req);
-+	struct mmc_queue *mq = set->driver_data;
- 	struct mmc_card *card = mq->card;
- 	struct mmc_host *host = card->host;
- 
--	mq_rq->sg = mmc_alloc_sg(mmc_get_max_segments(host), gfp);
-+	mq_rq->sg = mmc_alloc_sg(mmc_get_max_segments(host), GFP_KERNEL);
- 	if (!mq_rq->sg)
- 		return -ENOMEM;
- 
- 	return 0;
- }
- 
--static void mmc_exit_request(struct request_queue *q, struct request *req)
-+static void mmc_mq_exit_request(struct blk_mq_tag_set *set, struct request *req,
-+				unsigned int hctx_idx)
- {
- 	struct mmc_queue_req *mq_rq = req_to_mmc_queue_req(req);
- 
-@@ -227,20 +223,6 @@ static void mmc_exit_request(struct request_queue *q, struct request *req)
- 	mq_rq->sg = NULL;
- }
- 
--static int mmc_mq_init_request(struct blk_mq_tag_set *set, struct request *req,
--			       unsigned int hctx_idx, unsigned int numa_node)
--{
--	return __mmc_init_request(set->driver_data, req, GFP_KERNEL);
--}
--
--static void mmc_mq_exit_request(struct blk_mq_tag_set *set, struct request *req,
--				unsigned int hctx_idx)
--{
--	struct mmc_queue *mq = set->driver_data;
--
--	mmc_exit_request(mq->queue, req);
--}
--
- static blk_status_t mmc_mq_queue_rq(struct blk_mq_hw_ctx *hctx,
- 				    const struct blk_mq_queue_data *bd)
- {
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 07fb0d25fc15..d3d7e109f1bd 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1165,6 +1165,8 @@ patternProperties:
+     description: Tecon Microprocessor Technologies, LLC.
+   "^topeet,.*":
+     description: Topeet
++  "^topic,.*":
++    description: Topic Embedded Systems
+   "^toppoly,.*":
+     description: TPO (deprecated, use tpo)
+     deprecated: true
 -- 
-2.29.0
+2.33.0
 
