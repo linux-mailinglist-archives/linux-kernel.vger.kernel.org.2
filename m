@@ -2,114 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BF03F6FE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E4E3F6FE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238539AbhHYG4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:56:55 -0400
-Received: from ozlabs.org ([203.11.71.1]:54381 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232273AbhHYG4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:56:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GvcFc43ytz9sRf;
-        Wed, 25 Aug 2021 16:56:04 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1629874565;
-        bh=jSlsrM1HwMJvkNNLTTYatOR6fzYRjXvzYjOwr9yNskQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=aCB2aXtlQfFCgiUkftH6/Do/ODK3fAMwydmKyqU4Qs/jlULSY4ST4uY/SN7FgNRZf
-         D2VriOe51K+kzhkcDehiISDHUD1T3NltEfnSI0gslH8WXsZoimlPZ0/eII3DO/1slt
-         gnbd1P3fZuPKP3dRxX0xEKu4nZYG82nmfaRm8YWXq921tg6+KAacsjqQUM36jT1vaS
-         9JW8ScwrUy8UUJ1/JPjfmspves05/kq1sDkCXhrCWBmJxHNsTQ1rItG/dis+Yw+5CG
-         Zpa/1JiUMbKQSvIY02jLgn0sxQx1EmZeKh485JNT9peMbi7v8SQnYRxuk8B0+xwCYG
-         phIfScszNAVzw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 1/3] powerpc: Remove MSR_PR check in
- interrupt_exit_{user/kernel}_prepare()
-In-Reply-To: <f5f598a5-3830-ee21-aff5-cba06deeb959@csgroup.eu>
-References: <385ead49ccb66a259b25fee3eebf0bd4094068f3.1629707037.git.christophe.leroy@csgroup.eu>
- <87zgt6aybp.fsf@mpe.ellerman.id.au>
- <f5f598a5-3830-ee21-aff5-cba06deeb959@csgroup.eu>
-Date:   Wed, 25 Aug 2021 16:56:01 +1000
-Message-ID: <87wnoaau7y.fsf@mpe.ellerman.id.au>
+        id S238575AbhHYHAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232273AbhHYHA2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 03:00:28 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75557C061757;
+        Tue, 24 Aug 2021 23:59:43 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id j4-20020a17090a734400b0018f6dd1ec97so4050673pjs.3;
+        Tue, 24 Aug 2021 23:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EUcLGmwSrg5CUVW3cqmxP8IfXwkpbSUpFunpQ1DtuQ=;
+        b=V0lsWCCAyNxu/GvucVEHeGUtPCj/C2fggn06fuN6e1BRCZ0B7jgSZUsnib26Hnt1YF
+         maUxEqnfccrj3WgkebyFm2gMxo2WpqYIG+abFWBH96UG4LhX3lq6m+GTk4mYeVdsQ5+3
+         EdoQ9+WlqgJJHMX06O5sSD3RllcmZhtU3gK/fJ+WRz6q5bZSM7lnhIyD1a3UVw4EbmIz
+         otws2JNdJ0nIDd7ByqBel+pyUZlT2flnQ2SKnpCtsZX1Bzy3nbIWiOXJ7frO0vRqj6TM
+         O7yrd6I2V9uAM+W1aJoE6bjQt1icM5ADeu5vzLbdyLigagBGcKl0s/MM5ualE7JkIpZ3
+         zkqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EUcLGmwSrg5CUVW3cqmxP8IfXwkpbSUpFunpQ1DtuQ=;
+        b=VIzrgNQGLdEoa3eGTAwBIZ/HD65zKA4r/EgY/Ce5sk/kxun9OxWqQsL9+t7ZqlnGAS
+         6SkH8jBdcByAI49mLVbBnxxBkhgIWPAnRHlisGltmKbmqTbZqR9MSXbDTdFtmEUGoAMa
+         SfQx8eSLOq2cU28Q1m5ehkh2kXShdktUnKaFfAI5HZ6aUb3mx9czC/B6UOFEZNsx8Vh/
+         K+R+Doi21Li0X1TasSsQLxMOAGLLHqTULKtttW0y7fyEaU5YAu8JlAY13ZMoba3wARN8
+         Ft2itFX/QQwGWpAg6+NXbXBPkxikkBpJc8YFENiZLbMeG4PzRecu7BPddVWWIEgp4vFE
+         Zd+Q==
+X-Gm-Message-State: AOAM532BVedx5B3cRsOsnwrgAg/bTQfKBcPcEP18/ms3NLAzbkMge8Nj
+        pPUwSb9aywVKhIEyBd6GQas=
+X-Google-Smtp-Source: ABdhPJzejSoaekb3fb6cFFIcZhHJLMkWmrmn9/7N8LwK6O5yQq6vSUSsax80msUXQga+XL2fD05Efg==
+X-Received: by 2002:a17:902:ab4e:b0:134:fd88:725d with SMTP id ij14-20020a170902ab4e00b00134fd88725dmr10912843plb.46.1629874782668;
+        Tue, 24 Aug 2021 23:59:42 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id q102sm4443109pjq.54.2021.08.24.23.59.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 23:59:41 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Luting Guo <luting.guo@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH V2 0/3] Add sprd ADI r3 support
+Date:   Wed, 25 Aug 2021 14:59:28 +0800
+Message-Id: <20210825065931.2111159-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 25/08/2021 =C3=A0 07:27, Michael Ellerman a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>> In those hot functions that are called at every interrupt, any saved
->>> cycle is worth it.
->>>
->>> interrupt_exit_user_prepare() and interrupt_exit_kernel_prepare() are
->>> called from three places:
->>> - From entry_32.S
->>> - From interrupt_64.S
->>> - From interrupt_exit_user_restart() and interrupt_exit_kernel_restart()
->>>
->>> In entry_32.S, there are inambiguously called based on MSR_PR:
->>>
->>> 	interrupt_return:
->>> 		lwz	r4,_MSR(r1)
->>> 		addi	r3,r1,STACK_FRAME_OVERHEAD
->>> 		andi.	r0,r4,MSR_PR
->>> 		beq	.Lkernel_interrupt_return
->>> 		bl	interrupt_exit_user_prepare
->>> 	...
->>> 	.Lkernel_interrupt_return:
->>> 		bl	interrupt_exit_kernel_prepare
->>>
->>> In interrupt_64.S, that's similar:
->>>
->>> 	interrupt_return_\srr\():
->>> 		ld	r4,_MSR(r1)
->>> 		andi.	r0,r4,MSR_PR
->>> 		beq	interrupt_return_\srr\()_kernel
->>> 	interrupt_return_\srr\()_user: /* make backtraces match the _kernel va=
-riant */
->>> 		addi	r3,r1,STACK_FRAME_OVERHEAD
->>> 		bl	interrupt_exit_user_prepare
->>> 	...
->>> 	interrupt_return_\srr\()_kernel:
->>> 		addi	r3,r1,STACK_FRAME_OVERHEAD
->>> 		bl	interrupt_exit_kernel_prepare
->>>
->>> In interrupt_exit_user_restart() and interrupt_exit_kernel_restart(),
->>> MSR_PR is verified respectively by BUG_ON(!user_mode(regs)) and
->>> BUG_ON(user_mode(regs)) prior to calling interrupt_exit_user_prepare()
->>> and interrupt_exit_kernel_prepare().
->>>
->>> The verification in interrupt_exit_user_prepare() and
->>> interrupt_exit_kernel_prepare() are therefore useless and can be remove=
-d.
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> Acked-by: Nicholas Piggin <npiggin@gmail.com>
->>> ---
->>>   arch/powerpc/kernel/interrupt.c | 2 --
->>>   1 file changed, 2 deletions(-)
->>=20
->> I'll pick this one up independent of the other two patches.
->
-> Second patch should be ok as well, no ?
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-Yeah I guess.
+This patchset adds new ADI version (r3) support which used on sc9863 and
+some other Unisoc's SoCs.
 
-I'm not sure if we'll want to keep cpu_has_msr_ri() if we have a
-CONFIG_PPC_MSR_RI, but that's a pretty minor detail.
+since v1:
+* Address comments from Rob.
+- Rewrote schema for 'sprd,hw-channels' and hwlocks.
 
-So yeah I'll take patch 2 as well.
+Chunyan Zhang (3):
+  spi: sprd: Add ADI r3 support
+  dt-bindings: spi: Convert sprd ADI bindings to yaml
+  dt-bindings: spi: add sprd ADI for sc9863 and ums512
 
-cheers
+ .../devicetree/bindings/spi/spi-sprd-adi.txt  |  63 -----
+ .../devicetree/bindings/spi/sprd,spi-adi.yaml | 104 +++++++++
+ drivers/spi/spi-sprd-adi.c                    | 218 ++++++++++++++----
+ 3 files changed, 271 insertions(+), 114 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-sprd-adi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
+
+-- 
+2.25.1
+
