@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174B93F79AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DBF3F79B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242059AbhHYQC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:02:27 -0400
-Received: from mga17.intel.com ([192.55.52.151]:36228 "EHLO mga17.intel.com"
+        id S242213AbhHYQCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:02:36 -0400
+Received: from mga02.intel.com ([134.134.136.20]:25526 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241796AbhHYQBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:01:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="197791842"
+        id S241981AbhHYQBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 12:01:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="204750095"
 X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="197791842"
+   d="scan'208";a="204750095"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 09:00:48 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 09:00:49 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="494317325"
+   d="scan'208";a="494317335"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by fmsmga008.fm.intel.com with ESMTP; 25 Aug 2021 09:00:47 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -27,10 +27,10 @@ To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
 Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
         thiago.macieira@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, linux-pm@vger.kernel.org
-Subject: [PATCH v10 26/28] intel_idle/amx: Add SPR support with XTILEDATA capability
-Date:   Wed, 25 Aug 2021 08:54:11 -0700
-Message-Id: <20210825155413.19673-27-chang.seok.bae@intel.com>
+        chang.seok.bae@intel.com
+Subject: [PATCH v10 27/28] x86/fpu/xstate: Add a sanity check for XFD state when saving XSTATE
+Date:   Wed, 25 Aug 2021 08:54:12 -0700
+Message-Id: <20210825155413.19673-28-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210825155413.19673-1-chang.seok.bae@intel.com>
 References: <20210825155413.19673-1-chang.seok.bae@intel.com>
@@ -38,185 +38,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a custom Sapphire Rapids (SPR) C-state table to intel_idle driver. The
-parameters in this table are preferred over those supplied by ACPI.
+Add a DEBUG sanity check that XFD state matches with XINUSE state.
 
-SPR supports AMX, and so this custom table uses idle entry points that know
-how to initialize AMX TMM state, if necessary.
+Instead of reading MSR IA32_XFD directly, read a per-cpu value that is
+recorded at every MSR write.
 
-This guarantees that AMX TMM state will never be the cause of hardware
-C-state demotion from C6 to C1E. Under some conditions this may result in
-improved power savings, and thus higher available turbo frequency budget.
-
-[ Based on patch by Artem Bityutskiy <artem.bityutskiy@linux.intel.com>. ]
-
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
 ---
 Changes from v9:
-* Add a comment to use tile_release() after preempt_disable(). (Dave
-  Hansen)
+* Re-introduce xfd_write() to record every XFD write.
 * Use cpu_feature_enabled() instead of boot_cpu_has(). (Borislav Petkov)
-* Add a Suggested-by tag.
-
-Changes from v6:
-* Update the changelog and function description. (Rafael J. Wysocki)
 
 Changes from v5:
-* Moved the code to intel_idle. (Peter Zijlstra)
-* Fixed to deactivate fpregs. (Andy Lutomirski and Dave Hansen)
-* Updated the code comment. (Dave Hansen)
-
-Changes from v4:
-* Added as a new patch. (Thomas Gleixner)
+* Added as a new patch. (Dave Hansen)
 ---
- arch/x86/include/asm/special_insns.h |  6 ++
- drivers/idle/intel_idle.c            | 82 ++++++++++++++++++++++++++++
- 2 files changed, 88 insertions(+)
+ arch/x86/include/asm/fpu/internal.h | 22 +++++++++++++++++++++-
+ arch/x86/kernel/fpu/core.c          | 13 +++++++++++++
+ arch/x86/kernel/fpu/xstate.c        | 12 +++++-------
+ arch/x86/kernel/traps.c             |  7 +++----
+ 4 files changed, 42 insertions(+), 12 deletions(-)
 
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index f3fbb84ff8a7..fada1bb82c7b 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -294,6 +294,12 @@ static inline int enqcmds(void __iomem *dst, const void *src)
- 	return 0;
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index 0225ab63e5d1..8b1833243d4a 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -568,6 +568,26 @@ static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
+  * Misc helper functions:
+  */
+ 
++#ifdef CONFIG_X86_DEBUG_FPU
++DECLARE_PER_CPU(u64, xfd_shadow);
++static inline u64 xfd_debug_shadow(void)
++{
++	return this_cpu_read(xfd_shadow);
++}
++
++static inline void xfd_write(u64 value)
++{
++	wrmsrl_safe(MSR_IA32_XFD, value);
++	this_cpu_write(xfd_shadow, value);
++}
++#else
++#define xfd_debug_shadow()	0
++static inline void xfd_write(u64 value)
++{
++	wrmsrl_safe(MSR_IA32_XFD, value);
++}
++#endif
++
+ /**
+  * xfd_switch - Switches the MSR IA32_XFD context if needed.
+  * @prev:	The previous task's struct fpu pointer
+@@ -584,7 +604,7 @@ static inline void xfd_switch(struct fpu *prev, struct fpu *next)
+ 	next_xfd_mask = next->state_mask & xfeatures_mask_user_dynamic;
+ 
+ 	if (unlikely(prev_xfd_mask != next_xfd_mask))
+-		wrmsrl_safe(MSR_IA32_XFD, xfeatures_mask_user_dynamic ^ next_xfd_mask);
++		xfd_write(xfeatures_mask_user_dynamic ^ next_xfd_mask);
  }
  
-+static inline void tile_release(void)
-+{
-+	/* Instruction opcode for TILERELEASE; supported in binutils >= 2.36. */
-+	asm volatile(".byte 0xc4, 0xe2, 0x78, 0x49, 0xc0");
-+}
-+
- #endif /* __KERNEL__ */
- 
- #endif /* _ASM_X86_SPECIAL_INSNS_H */
-diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-index e6c543b5ee1d..72b72fa0e072 100644
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -54,6 +54,8 @@
- #include <asm/intel-family.h>
- #include <asm/mwait.h>
- #include <asm/msr.h>
-+#include <asm/fpu/internal.h>
-+#include <asm/special_insns.h>
- 
- #define INTEL_IDLE_VERSION "0.5.1"
- 
-@@ -155,6 +157,58 @@ static __cpuidle int intel_idle_s2idle(struct cpuidle_device *dev,
- 	return 0;
+ /*
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index 02681cce1d4e..43f04b97d080 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -82,6 +82,10 @@ bool irq_fpu_usable(void)
  }
+ EXPORT_SYMBOL(irq_fpu_usable);
  
-+/**
-+ * idle_tile - Initialize TILE registers in INIT-state
-+ *
-+ * Leaving state in the dirty TILE registers may prevent the processor from
-+ * entering lower-power idle states. Use TILERELEASE to initialize the
-+ * state. Destroying fpregs state is safe after the fpstate update.
-+ *
-+ * WARNING: It should be called after preemption is disabled; otherwise,
-+ * reschedule is possible with the destroyed state.
-+ */
-+static inline void idle_tile(void)
-+{
-+	if (cpu_feature_enabled(X86_FEATURE_XGETBV1) && (xgetbv(1) & XFEATURE_MASK_XTILE)) {
-+		tile_release();
-+		fpregs_deactivate(&current->thread.fpu);
-+	}
-+}
-+
-+/**
-+ * intel_idle_tile - Ask the processor to enter the given idle state.
-+ * @dev: cpuidle device of the target CPU.
-+ * @drv: cpuidle driver (assumed to point to intel_idle_driver).
-+ * @index: Target idle state index.
-+ *
-+ * Ensure TILE registers in INIT-state before using intel_idle() to
-+ * enter the idle state.
-+ */
-+static __cpuidle int intel_idle_tile(struct cpuidle_device *dev,
-+				     struct cpuidle_driver *drv, int index)
-+{
-+	idle_tile();
-+
-+	return intel_idle(dev, drv, index);
-+}
-+
-+/**
-+ * intel_idle_s2idle_tile - Ask the processor to enter the given idle state.
-+ * @dev: cpuidle device of the target CPU.
-+ * @drv: cpuidle driver (assumed to point to intel_idle_driver).
-+ * @index: Target idle state index.
-+ *
-+ * Ensure TILE registers in INIT-state before using intel_idle_s2idle() to
-+ * enter the idle state.
-+ */
-+static __cpuidle int intel_idle_s2idle_tile(struct cpuidle_device *dev,
-+					    struct cpuidle_driver *drv, int index)
-+{
-+	idle_tile();
-+
-+	return intel_idle_s2idle(dev, drv, index);
-+}
++#ifdef CONFIG_X86_DEBUG_FPU
++DEFINE_PER_CPU(u64, xfd_shadow);
++#endif
 +
  /*
-  * States are indexed by the cstate number,
-  * which is also the index into the MWAIT hint array.
-@@ -752,6 +806,27 @@ static struct cpuidle_state icx_cstates[] __initdata = {
- 		.enter = NULL }
- };
- 
-+static struct cpuidle_state spr_cstates[] __initdata = {
-+	{
-+		.name = "C1",
-+		.desc = "MWAIT 0x00",
-+		.flags = MWAIT2flg(0x00),
-+		.exit_latency = 1,
-+		.target_residency = 1,
-+		.enter = &intel_idle,
-+		.enter_s2idle = intel_idle_s2idle, },
-+	{
-+		.name = "C6",
-+		.desc = "MWAIT 0x20",
-+		.flags = MWAIT2flg(0x20) | CPUIDLE_FLAG_TLB_FLUSHED,
-+		.exit_latency = 128,
-+		.target_residency = 384,
-+		.enter = &intel_idle_tile,
-+		.enter_s2idle = intel_idle_s2idle_tile, },
-+	{
-+		.enter = NULL }
-+};
+  * Save the FPU register state in fpu->state. The register state is
+  * preserved.
+@@ -99,6 +103,15 @@ EXPORT_SYMBOL(irq_fpu_usable);
+ void save_fpregs_to_fpstate(struct fpu *fpu)
+ {
+ 	if (likely(use_xsave())) {
++		/*
++		 * If XFD is armed for an xfeature, XSAVE* will not save
++		 * its state. Verify XFD is clear for all features that
++		 * are in use before XSAVE*.
++		 */
++		if (IS_ENABLED(CONFIG_X86_DEBUG_FPU) && cpu_feature_enabled(X86_FEATURE_XFD) &&
++		    cpu_feature_enabled(X86_FEATURE_XGETBV1))
++			WARN_ON_FPU(xgetbv(1) & xfd_debug_shadow());
 +
- static struct cpuidle_state atom_cstates[] __initdata = {
- 	{
- 		.name = "C1E",
-@@ -1095,6 +1170,12 @@ static const struct idle_cpu idle_cpu_icx __initconst = {
- 	.use_acpi = true,
- };
+ 		os_xsave(&fpu->state->xsave, fpu->state_mask);
  
-+static const struct idle_cpu idle_cpu_spr __initconst = {
-+	.state_table = spr_cstates,
-+	.disable_promotion_to_c1e = true,
-+	.use_acpi = true,
-+};
-+
- static const struct idle_cpu idle_cpu_avn __initconst = {
- 	.state_table = avn_cstates,
- 	.disable_promotion_to_c1e = true,
-@@ -1157,6 +1238,7 @@ static const struct x86_cpu_id intel_idle_ids[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,		&idle_cpu_skx),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&idle_cpu_icx),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&idle_cpu_icx),
-+	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&idle_cpu_spr),
- 	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL,	&idle_cpu_knl),
- 	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,	&idle_cpu_knl),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT,	&idle_cpu_bxt),
+ 		/*
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index 375577d38f95..2c62872e4fef 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -268,7 +268,7 @@ void fpu__init_cpu_xstate(void)
+ 	}
+ 
+ 	if (boot_cpu_has(X86_FEATURE_XFD))
+-		wrmsrl(MSR_IA32_XFD, xfeatures_mask_user_dynamic);
++		xfd_write(xfeatures_mask_user_dynamic);
+ }
+ 
+ static bool xfeature_enabled(enum xfeature xfeature)
+@@ -1093,9 +1093,8 @@ void fpu__resume_cpu(void)
+ 	}
+ 
+ 	if (cpu_feature_enabled(X86_FEATURE_XFD))
+-		wrmsrl_safe(MSR_IA32_XFD, (current->thread.fpu.state_mask &
+-					   xfeatures_mask_user_dynamic) ^
+-					  xfeatures_mask_user_dynamic);
++		xfd_write((current->thread.fpu.state_mask & xfeatures_mask_user_dynamic) ^
++			  xfeatures_mask_user_dynamic);
+ }
+ 
+ /**
+@@ -1353,9 +1352,8 @@ void reset_dynamic_state_perm(struct task_struct *tsk)
+ 	if (cpu_feature_enabled(X86_FEATURE_XSAVES))
+ 		fpstate_init_xstate(&fpu->state->xsave, fpu->state_mask);
+ 
+-	wrmsrl_safe(MSR_IA32_XFD,
+-		    (fpu->state_mask & xfeatures_mask_user_dynamic) ^
+-		    xfeatures_mask_user_dynamic);
++	xfd_write((fpu->state_mask & xfeatures_mask_user_dynamic) ^
++		  xfeatures_mask_user_dynamic);
+ 
+ 	fpu->dynamic_state_perm = 0;
+ }
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 334dd5dc1ed2..459ce7baa39b 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -1129,7 +1129,7 @@ static __always_inline bool handle_xfd_event(struct fpu *fpu, struct pt_regs *re
+ 			 * unblock the task.
+ 			 */
+ 			rdmsrl_safe(MSR_IA32_XFD, &value);
+-			wrmsrl_safe(MSR_IA32_XFD, value & ~xfd_err);
++			xfd_write(value & ~xfd_err);
+ 		} else {
+ 			struct fpu *fpu = &current->thread.fpu;
+ 			int err = -1;
+@@ -1143,9 +1143,8 @@ static __always_inline bool handle_xfd_event(struct fpu *fpu, struct pt_regs *re
+ 			    !WARN_ON(in_interrupt())) {
+ 				err = realloc_xstate_buffer(fpu, xfd_event);
+ 				if (!err)
+-					wrmsrl_safe(MSR_IA32_XFD, (fpu->state_mask &
+-								   xfeatures_mask_user_dynamic) ^
+-								  xfeatures_mask_user_dynamic);
++					xfd_write((fpu->state_mask & xfeatures_mask_user_dynamic) ^
++						  xfeatures_mask_user_dynamic);
+ 			}
+ 
+ 			/* Raise a signal when it failed to handle. */
 -- 
 2.17.1
 
