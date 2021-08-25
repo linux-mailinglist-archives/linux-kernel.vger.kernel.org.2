@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E133F6DEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 05:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBFC3F6DF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 05:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238147AbhHYDzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 23:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        id S237229AbhHYD4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 23:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237945AbhHYDzC (ORCPT
+        with ESMTP id S235816AbhHYD4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 23:55:02 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AE0C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 20:54:17 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id m26so20137674pff.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 20:54:17 -0700 (PDT)
+        Tue, 24 Aug 2021 23:56:41 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526D5C061757;
+        Tue, 24 Aug 2021 20:55:56 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id fz10so4259564pjb.0;
+        Tue, 24 Aug 2021 20:55:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CVEoBZ/UnTo6nLZUccYHUvCMvIcxl/WBSnIq60Ivb00=;
-        b=heeEu0ku4/ofb/JqTrjFVArqpzXSELI9PpG8iyH2oUVcapzxZ4F6eUSll21FaFoEHG
-         rEOcs1p1bjAZ6S0EXDsLYSwpCHJKPlc9FWoJjw6SwmZs/gZDa2QZFfDm6hoPj4zMG2KQ
-         63KYFn007p3fCw3teQ2BiiRzNgdDBrbMOK4YQklMkupPtNZ7Gew5Okrt0YKmu7yc0EN+
-         P31EcfDqEGGIWNLVq90dVWeRu59B+W0L962bFxO8PV0pRntWkNobSK0Gc2R9c/loIIk8
-         bRWQLUrdSeSWepgA1KbFuOHRm3qcScANquXK6KhPjSLwF0rL9T70YGWQUDaaDJtoO64Z
-         m45A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=rIAtfGj5qvVENV9WWVZMFVGBJuT4wuu3+yhzjBnrODs=;
+        b=FFLev3F07ILuAs83PdrenjINmyoPq0n77COtk2VIQDbIdEIeXPxZuh6I0B7OU+4Tt1
+         /E2LjvMMHnXZrAtRJc68INgHwY+om8QEUIereki+erzJLc59mmv0+1E4hb+pliTjsmta
+         ndeTK1oMki5pOWNxKSvJzaJsxln2TScgQ5SamfpiNJoXpv3KMxIBerlRqClBYSqdCooB
+         U8lLIVYl7tisFR0hGB6gNqVn0ZCbM4B+L/PJxhQg/O5q8o6fwNJUUyiw2WLrhxzP8wc0
+         2Cpx0nIq0CB10pBWCp0R5uPg16kAk9b44mmjvPweTdxHy3yQnIEoIZKrKj6BApCD6lhS
+         O8ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CVEoBZ/UnTo6nLZUccYHUvCMvIcxl/WBSnIq60Ivb00=;
-        b=CwmPxzt/p4jUt4Szm4guWJma9YYYyfJv+BekdL0JTfF5xRAbfoVr8HrMzU4WbmLy3y
-         MnQ1ZUbl+tONBPRpcqgFcxa4hYLQv4N/86SLHTzyc3227V6vpeBMjrPtjDi4jfh+D4ty
-         dtgzR3ajwFjFwhEEASBeKOms5/z+UURApzLXwfNOe/9N/IoylYzMTgEbSwaWUEXq0dsc
-         jWpEurK2b/qKMoH7820V/Wa3yhMmm4oW9nrZZVHv3vYWPOJMk0yCFCeMNrXGP8O7HVqI
-         VHsU69FycLxKFl9OYNAajhw+7jTdArNEj4LLGDHtQvYjtoSq8Z0Mz8YGfrUGSl7T7aj7
-         zRkQ==
-X-Gm-Message-State: AOAM530cUkxaZKN9/PfJ0MH7Gmv3laISoKZZIS0eQIFNYE9wc/WjVhLV
-        Ytl8KJt+0Kq8xBJdDLJ9Xig=
-X-Google-Smtp-Source: ABdhPJyfIo5M/sa9StAar1/4CefQWSbehUpQcoL0gNc4p1Jr9nqXEIqqpaaMlJjYqnxXC/a2ilaFig==
-X-Received: by 2002:a63:535f:: with SMTP id t31mr4818786pgl.270.1629863656844;
-        Tue, 24 Aug 2021 20:54:16 -0700 (PDT)
-Received: from user ([122.175.21.197])
-        by smtp.gmail.com with ESMTPSA id h9sm4138369pjg.9.2021.08.24.20.54.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=rIAtfGj5qvVENV9WWVZMFVGBJuT4wuu3+yhzjBnrODs=;
+        b=SLThGdUJpMb5UI5c0/7Pl7lsnOPQetayGyiseigS+6jSs7I2sfsmamBV+1mvhdj9VK
+         dYlPDrdxzxs2w8jzE/M8T5hA/jSLN30Pa3EuaFYJhI60G6FYqKUWfDmVM2tp4Zix6gI3
+         wPXRQLtbdgXJFght3GI5c7EHjbKPbHIAcurD5+2dFJMvhdWwb7y8XE7GHcY33GzXP38G
+         CfA8a2x4jIu1a47zvObLiiOLoUwqdJEQKvH/RraEovpDwcuJfOzXFy44ck3IkCjPC/PY
+         HJ0m8oklP5riOJ7Wvd3dlW79rB/Dd97TtWPxR2XaTf3w+rvIkLG4sqrvmOaWUkjx8vIh
+         8MaA==
+X-Gm-Message-State: AOAM5332q9Jtq+5AcfUd9ToGiUmoBzAXJi7QFqpZi/j08M3h3ODGUFIm
+        jZ04/cQ/dJaKEp2bA7+p9kM=
+X-Google-Smtp-Source: ABdhPJzGY1gLl625kG0Emo3PW5/KunYn2jQ8ZmvIFLtams9OGpbD31KTB44Cic0fv4r3bexeCiy9bA==
+X-Received: by 2002:a17:90b:4a82:: with SMTP id lp2mr8271118pjb.103.1629863755885;
+        Tue, 24 Aug 2021 20:55:55 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id a4sm21298248pfk.0.2021.08.24.20.55.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 20:54:16 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 09:24:10 +0530
-From:   SAURAV GIREPUNJE <saurav.girepunje@gmail.com>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: r8188eu: core: remove condition with no effect
-Message-ID: <YSW+4iq1hhFPQI3R@user>
-References: <YSFgrLUfXzgcT6k4@user>
- <1821445.fzUCeO1EU3@localhost.localdomain>
- <CAA=Fs0mu4m04_Be4-f=W+=_hhGn5oJ2q=KOmZdRrMyGhMgqc-Q@mail.gmail.com>
- <18734228.Nv2I6EOGHm@localhost.localdomain>
- <CAA=Fs0kZvkSmf9vH_Z1rUbDMYYd5SWbQQXhGpMxDbfvWQs338A@mail.gmail.com>
+        Tue, 24 Aug 2021 20:55:55 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: dsa: mt7530: manually set up VLAN ID 0
+Date:   Wed, 25 Aug 2021 11:55:45 +0800
+Message-Id: <20210825035545.1836274-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210824173714.cgpt2addxyjzlbyy@skbuf>
+References: <20210824165253.1691315-1-dqfext@gmail.com> <20210824165742.xvkb3ke7boryfoj4@skbuf> <20210824173237.1691654-1-dqfext@gmail.com> <20210824173714.cgpt2addxyjzlbyy@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA=Fs0kZvkSmf9vH_Z1rUbDMYYd5SWbQQXhGpMxDbfvWQs338A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23 Aug 2021 00:58, Phillip Potter wrote:
-> On Sun, 22 Aug 2021 at 17:24, Fabio M. De Francesco
-> <fmdefrancesco@gmail.com> wrote:
-> >
-> >
-> > Dear Philip,
-> >
-> > I didn't mean to be harsh with you, I apologize if this is the message
-> > I conveyed. Really!
->
-> Dear Fabio,
->
-> No apology necessary :-)
->
-> >
-> >
-> > Now it is clearer to me what acking means. I've given only a handful of
-> > acks because I thought I should also check if they applied and if they
-> > build. It takes time. Now I understand it is not required. Thanks.
-> >
->
-> Yeah I try to ack as many as I can now, but couldn't possibly do as
-> many as I do if I had to build test them all, especially with my own
-> code to write and a family/full time non-kernel dev role. It is
-> certainly desirable for the majority, but if the code looks
-> good/correct and is a simple patch then in my mind an Acked-by is fine
-> to give in any case. That said, I will no doubt make mistakes on that.
->
-> >
-> > Please, don't ever think I'm not more than sure that you give a lot
-> > of your _unpaid_ time to the kernel and I thank you very much
-> > I know what it means, because I too have other commitments :-)
->
-> Thank you, and I appreciate your involvement so keep up the good work :-)
->
-> Regards,
-> Phil
+On Tue, Aug 24, 2021 at 08:37:14PM +0300, Vladimir Oltean wrote:
+> On Wed, Aug 25, 2021 at 01:32:37AM +0800, DENG Qingfang wrote:
+> > Okay. So the Fixes tag should be 6087175b7991, which initially adds the
+> > software fallback support for mt7530.
+> 
+> Ok. Did the old code not need VLAN 0 for VLAN-unaware ports, or are you
+> saying that since the VLAN table lookup was bypassed completely in the
+> old code, 'no VLAN 0' was an inconsequential error?
+> 
+> I think it's the latter. Just wanted to make sure. So that means, either
+> this Fixes: tag or the other, the patch still belongs to net-next. From
+> my side you shouldn't need to resend.
 
+You're right. The old code does not use VLAN table lookup for VLAN-unaware
+ports, and the current code set VLAN-unaware ports to fallback mode so
+missing VLAN 0 will only make them fallback to SVL.
 
-Thanks Michael, Phil, Fabio for review.
+> 
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
