@@ -2,131 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EBD3F79F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C16A3F79FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235978AbhHYQQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
+        id S235063AbhHYQRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235166AbhHYQQO (ORCPT
+        with ESMTP id S229952AbhHYQRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:16:14 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC9CC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:15:28 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id v2so49595ilg.12
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:15:28 -0700 (PDT)
+        Wed, 25 Aug 2021 12:17:21 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB82C061757;
+        Wed, 25 Aug 2021 09:16:35 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id c10so25621653qko.11;
+        Wed, 25 Aug 2021 09:16:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ojab.ru; s=ojab;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HBQ7/GEOmYXjqJRDQP512nK1xmzb2LUIy5CzP7HmLLc=;
-        b=Le+0CERPASqTwIsSfzVaah29zkhbQegc50elIeB//BGmKeq/nqrS+dWxbohxzVbCsT
-         h8M54sG98n2ayYPHa7thQjLg244JEA9OQVIK+USUQvYoNrBXzGcB0QAIuTt5UZalOgWI
-         7WYNIMxhzOj2PVBzbH04wbIAYcwDPMwFLOQrs7VwyRB7sznMSKDrRXtkSReIu0C5x58S
-         wj6+fI5ROlCLW+2Kz0GN4/lzi0U9sH+C2mTI38hRN+z7NqqVdhlWBT6FnMXwahRf8wyh
-         7C7L95dflKKXVg/Q1fbUL/cZsyfdhMxmYSyiJA6YfoKwwCJ+RCjnvdSomgDJ5Uy8OPHY
-         7v2g==
+        bh=TEQBsqRyBKrTFBEPEYSxWovzrDerhiDO3jnvE5gA0hc=;
+        b=dkEhirQbFi+P4MfCY/vhSeQNGFw50cEEsSmOJDF1L1KmnoJS/HcJpHqk3gEZCdNms7
+         yOcrsQP7UO7X/HFlX3p/E4kSlWX/99FwcYRiSfKR9kThTgvyk/l+5pwPxTnQqBaRtLsj
+         vSS6XNcevFHbW/GZ4PIED7ZwMSvri8am8nUNo+wgUvxJGDJWMcNrJ/Fnv2DHHKp4Dzp8
+         B0u4kvA7VfQNxoEY3+R3HkITKYdAHQr5z+GkRe5/FqiOsS9z89IG9u6x1yhIfsAY03w6
+         XfJoRE/u2u7gr3DSn2q12bkSJs45v6pXmZioiQFe2GVPFzxmMqPojUXEfZZFd+BgwcR4
+         W2pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HBQ7/GEOmYXjqJRDQP512nK1xmzb2LUIy5CzP7HmLLc=;
-        b=OZyOIcn13ufUXnaaGZEFzmTLuRtKCTk84YZM7sdMnGPda21b3+KxSsle5Mu5hotlgS
-         sDDLJ3Rx4HauUXvVix2Krr3a6QxxR+QPoRSZUyi5h8cxXmIOZfF89ClAEjafTOhY11QQ
-         TXNG6Jp2J+6X6hzKsqUdZhoMytKrIHb7f0bIaGLR/kcPFbOAWQIUEqYQO1fYONqvbeLr
-         XIT9P5nrS56y6VLqgKEV04SoIGUjjZ8whdfDddpiAeIbfyLB2xgI44kq5PYoaq3h0k5w
-         t1uHoS9swG8S49GBTNe+F/ozQ5MHEhRmRxkhRZ+9RnqgbVV2Z4RRKMads55y86UCGaQV
-         APFA==
-X-Gm-Message-State: AOAM533lblswOqoNaJAQC4fhrky/rwyVYagZB3JU0dkv7rleJjF5cyFm
-        P3LnSoI0tsUb0UzpWEFWZ3Nff0ix8pV3kme8TErQ5A==
-X-Google-Smtp-Source: ABdhPJyadvErapiS94DOEhvjeAXjHPr6wwH/FOcNWNYsGlyYK8iYlTrYsnOCICA7ZuQRZDvHJbiSP+9lePQkbVIw4vY=
-X-Received: by 2002:a92:a008:: with SMTP id e8mr30590006ili.187.1629908127732;
- Wed, 25 Aug 2021 09:15:27 -0700 (PDT)
+        bh=TEQBsqRyBKrTFBEPEYSxWovzrDerhiDO3jnvE5gA0hc=;
+        b=eJ/V5THA9vvF2PFsRdZ+n+2p1j1q/3qAIMahZj9trqU94xJoeuX/nexd1QFDbPJQni
+         EKF9a9J98SRTdeCK/y+moqDLNPAjeHDeev+OS33LV3jbc935qeMvcVGwMkG7wSWoE1yz
+         4GWi/dtv6PlJc4TNsdO6WZg51El3yhGAWCffydu+t9mgXavwvi9cgV5DjNTE4RY9yCWG
+         qf8MZlEsY5AZoLM5b+0b1a0lSTCT8Rz4889qZXuNlBJ2SAaSafGNq6BQyVhg/NiDvwbo
+         LtVfWq8eCsPBNm84+AdvzyFF9U0XxrArAPftfSj8ZRK8kgE2QggyUWttk1SV4Mwp3RkD
+         3g8A==
+X-Gm-Message-State: AOAM532061GXPjy9RHId4FNVniVFZ96wnzwbZmxea3gYGIT8VGJ8YlXf
+        1P3yZrVSJZiXLt8bzXOuxmc2at9m9mBMDsg8QnA=
+X-Google-Smtp-Source: ABdhPJzcBtYuOj4wv/5r0j9cBksb+FtL2rzRrdG1mqv1SQ5fr+oEej31lJJkd/ne4JcPCp6372WLNDBDi0MMnGBcI7E=
+X-Received: by 2002:a25:f20a:: with SMTP id i10mr57500863ybe.236.1629908194363;
+ Wed, 25 Aug 2021 09:16:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210722193459.7474-1-ojab@ojab.ru>
-In-Reply-To: <20210722193459.7474-1-ojab@ojab.ru>
-From:   "ojab //" <ojab@ojab.ru>
-Date:   Wed, 25 Aug 2021 19:15:16 +0300
-Message-ID: <CAKzrAgRt0jRFyFNjF-uq=feG-9nhCx=tTztCgCEitj1cpMk_Xg@mail.gmail.com>
-Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     ath10k@lists.infradead.org,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de> <20210819133128.45ef4353@coco.lan>
+ <c56ec571-2278-95e9-2028-990e03159c3f@web.de> <20210822194709.4b9d33d4@coco.lan>
+ <be6ac929-2443-ff55-3e11-6a86d6472e0e@web.de> <CAHk-=wjSadWPfzQ_hOqbjq6c_xwJs8GLHTyznhXRvDF5Yrs4FA@mail.gmail.com>
+ <CAHFNz9L29LK+L8LjqyTyqq3LsvzeA6iYFHwP9n3uNBbqbbm1bg@mail.gmail.com> <20210825083305.562eba48@coco.lan>
+In-Reply-To: <20210825083305.562eba48@coco.lan>
+From:   Manu Abraham <abraham.manu@gmail.com>
+Date:   Wed, 25 Aug 2021 21:46:23 +0530
+Message-ID: <CAHFNz9L6W=zMjMZJRgtmiAwY9xHiM06Cp52GS0swy5awUoxpOQ@mail.gmail.com>
+Subject: Re: [Regression 5.14] media: dvb userspace api
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Soeren Moch <smoch@web.de>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can I haz it merged?
+On Wed, Aug 25, 2021 at 12:03 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Em Wed, 25 Aug 2021 08:25:57 +0530
+> Manu Abraham <abraham.manu@gmail.com> escreveu:
+>
+> > On Mon, Aug 23, 2021 at 10:30 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > I have reverted the header file move. But I would also heartily
+> > > recommend that whatever user program includes those headers (VDR -
+> > > anything else?) should take snapshots of these specific kernel
+> > > headers.
+> > >
+> > > I'm not convinced that it makes sense to move the av7110 driver back
+> > > from staging - it may continue to work, but it _is_ old and there is
+> > > no maintenance - and I would certainly suggest that any other
+> > > out-of-tree driver that uses these old interfaces that nothing else
+> > > implements shouldn't do so, considering that nothing else implements
+> > > them.
+> >
+> > Sorry for barging in between your discussion, but it seemed like you really
+> > missed some perspective and hence.
+> >
+> > My 2 cents worth:
+> > * Revert the header changes.
+> >
+> > * Let someone else with knowledge of it take over the maintenance
+> > of the av7110 driver.
+> >
+> >   - This would allow other hardware also to be easily accommodated
+> > in a similar manner.
+> >
+> > * Pull the out of tree drivers and allocate maintenance of those, to
+> > someone who understands them. Don't you want more hardware to be
+> > supported out of the box ?
+> >
+> > Should there be no driver for those DVB output hardware, but only for
+> > V4L2 output devices ?
+> >
+> > There exists other hardware which As a person who worked on another
+> > av7110 like driver (saa716x based s2 6400), which I can confirm.
+> > The API is supposed to simplify life, not make it even more complex.
+> > These devices would need lot of workarounds to work with the API that
+> > which Mauro advocates, which might even break those drivers given
+> > their complexity and size.
+> >
+> > It would make life a lot easier for the users, Mauro himself and
+> > this long never ending discussion can be put to rest.
+>
+> The "full-featured" API that it is implemented on av7110 always had
+> troubles. This is not only my view, but also the view of the
+> original API authors,as can be seen at the DVBv4 WIP documentation:
+>
+>         https://www.linuxtv.org/downloads/legacy/linux-dvb-api-v4/linux-dvb-api-v4-0-3.pdf
+>
+> It clearly says that, on chapter 2.2:
+>
+>         "2.2 Linux DVB API Version 3 problems
 
-//wbr ojab
 
-On Thu, 22 Jul 2021 at 22:36, ojab <ojab@ojab.ru> wrote:
+That's very misleading ! In fact, the legacy V3 API was upgraded to 3.1 and 3.2
+and those issues were ironed out. You are talking about V3 while V3.2
+fixed those
+issues. The V4 API documentation is legacy and was there even before the
+V3.2 API existed. It was even upgraded to V5, skipping V4 !
+
+
 >
-> After reboot with kernel & firmware updates I found `failed to copy
-> target iram contents:` in dmesg and missing wlan interfaces for both
-> of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
-> it, so while I have no idea what's actually happening, I don't see why
-> we should fail in this case, looks like some optional firmware ability
-> that could be skipped.
+>          The Linux DVB API Version 3 has very limited support for
+>          modern hardware."
 >
-> Also with additional logging there is
-> ```
-> [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
-> [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-> [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
-> [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
-> ```
-> so exact branch could be seen.
+> The "modern" there refers to hardware back in 2005!
+
+
+This is exactly what I wrote just above.
+
+
+> I worked on a project back 8 years ago that tried to use it for TV
+> sets. It didn't work, because the API assumed a 1:1 mapping between
+> tuners and A/V codecs, which works for simpler embedded hardware,
+> but didn't cover smart TV hardware, where the number of frontends,
+> demods and A/V codecs were different. You may even have multiple
+> channels being displayed at the same time (Picture in Picture).
 >
-> Signed-off-by: Slava Kardakov <ojab@ojab.ru>
-> ---
->  Of course I forgot to sing off, since I don't use it by default because I
->  hate my real name and kernel requires it
+> On today's embedded hardware, you need something like the media
+> controller, in order to dynamically re-configure the hardware
+> pipelines between:
 >
->  drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+>         - multiple tuners (DVB-C, DVB-T/T2, DVB-S/S2);
+>         - multiple demods[1];
+>         - multiple A/V decoders;
+>         - display compositor;
+>         - audio I/O;
+>         - CA modules;
+>         - encrypt/decrypt hardware (required on some Countries in order
+>           to allow recording programs on storage);
+>         - storage.
+
+
+Multiple frontends, tuners/demods, CAM's were already supported
+There is no encrypt/decrypt hardware, either you have hardware
+CAM's or SoftCAM's, which do the decryption for DVB streams.
+These already exist with the old API itself.
+The S2 6400, KNC S2 Twin and most others do have multiple first
+and second generation frontends.
+
+The DVB demux provides multiple PID's, you can have multiple PiP's
+whatever you want.
+
+For some SoC's with A/V codecs what you are saying is true.
+It does not make sense for PCTV hardware to use the pipelines
+you apparently describe. Such SoC's make use the extended API that
+you advocate, but the standard PCTV, or standard STB hardware
+we all are used to need not use the convoluted API being advocated.
+For those SoC's one may use the V4L2 output. But for DVB output
+devices, it makes no sense but going many steps backwards to use
+the V4L2 output.
+
+
+> From driver's perspective, it makes no sense to keep support for av7110,
+> as TI stopped production of TMS320AV7110 a very long time ago. They
+> don't even mention this product number anymore on their website.
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 2f9be182fbfb..d9fd5294e142 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
->         u32 len, remaining_len;
->
->         hw_mem = ath10k_coredump_get_mem_layout(ar);
-> -       if (!hw_mem)
-> +       if (!hw_mem) {
-> +               ath10k_warn(ar, "No hardware memory");
->                 return -ENOMEM;
-> +       }
->
->         for (i = 0; i < hw_mem->region_table.size; i++) {
->                 tmp = &hw_mem->region_table.regions[i];
-> @@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
->                 }
->         }
->
-> -       if (!mem_region)
-> +       if (!mem_region) {
-> +               ath10k_warn(ar, "No memory region");
->                 return -ENOMEM;
-> +       }
->
->         for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
->                 if (ar->wmi.mem_chunks[i].req_id ==
-> @@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
->                 if (status) {
->                         ath10k_warn(ar, "failed to copy target iram contents: %d",
->                                     status);
-> -                       goto err_hif_stop;
->                 }
->         }
->
-> --
-> 2.32.0
+
+What I meant: If there are some users for some hardware, it is impolite
+to rip them out, especially when someone is volunteering to maintain them.
+Rather than impolite, that's quite rude and arrogant.
+
+I believe that is the de facto Linux kernel principle still, unless
+there is some
+real reason to rip it out.
+
+FWIW, my 2c worth:
+a) leave the headers where they belong, already done by Linus.
+
+b) av7110: hand over the maintenance to someone who is happy and has
+time to fiddle around with
+
+c) Pull in the saa716x driver. I wrote the saa716x driver with NXP support
+and with additional help from the community. It would be good to maintain
+the credits to the original developers though.
+
+You can pull the saa716x driver from Soeren, if he needs some help,
+I can chip in whatever possible way. Let him have some fun with the driver.
+
+Mauro: Look, it's not good to convolute and pollute the discussion with stuff
+that are not relevant. Please! Have a heart; Don't do this drama..
+People will just hate you for eons, for no good reason !
+
+Friendly Regards,
+MA
