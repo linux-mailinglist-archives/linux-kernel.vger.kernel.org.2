@@ -2,64 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09ECE3F76E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678D43F76EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240231AbhHYOKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
+        id S240786AbhHYOMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbhHYOKx (ORCPT
+        with ESMTP id S229760AbhHYOMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 10:10:53 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BEDC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:10:07 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so55027078otf.6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:10:07 -0700 (PDT)
+        Wed, 25 Aug 2021 10:12:08 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB41C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:11:23 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id z1so31057054ioh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:11:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=iU1rsp8f4WEyRjVQen8cK8pLVpmFCkwcMnSe6eN1WVU=;
-        b=DhtjpcBhigYqQeti7bUqc/EGrYE4mIsXZ//Umw51JVTFoLL+0DNywzoK9aUPrSXj0W
-         mCiRPhL2nypgt+i3spV4dKKhrxYZ6WzHfGut2GZIExfu7zSgaaB8ocHr/aVqGthjw/NX
-         HR37QsfDbQgOX/pSqzztV1CM/jpUpIwzpzKfLAc1tFSG0ueH/SAEoYKDUoDievP5Fq0i
-         ot4WJSlAZViPBdn7k840FzswRm1gioRLMJ6cB3bwn0IzkhAFMIZM+e4i6XEyYQe7uiYN
-         4qCdxXdOByPCvNbe9G04sU/krAi0WYck6W47RWEt7OV5wXE9ZOlxHQDvwkX1DSI5e56Q
-         5mig==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rAZ2PSpb5uNN5FzzHlrzAuRUdIpWiic98EAha6BxBOA=;
+        b=Y7l6cYQgM5Wl6xcD9oI3x+2l5lb/U5fD1JzyPRVVKoUVBvpY7q02yBEX19UiQQmDm7
+         9puLcgi+gwxguRFPxzvYXICrS/lL2eF4sPS08ZcQJQFC7imt9HhCzGFlTLLW6ibgKixl
+         npc8ru5540oDXyGuoodJTJakDDMT9Sdzme2lH1gAWOTsfFsP21YeReWq4OBmdXYfQcht
+         wgaWltVvhD1svaRq2akOf23UHT+cL1mUSSInA2OYjlBNZtM4ex9pdVNMgIwzFNpZPb6d
+         EU4MG3GwVi5aycDbTP9N+wzBS+glwzlpDDDXYN1UTDWP5hM+/35LlDvsI5O8+FDEtu2R
+         UxFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=iU1rsp8f4WEyRjVQen8cK8pLVpmFCkwcMnSe6eN1WVU=;
-        b=Um+2k9Tb4bU4BWspW5uGB3RURmt8txQEdptLkyfUiDx+RqU4l/E8/uD2Cpt7a5nTIi
-         riDvViIRxyTSyxHIWuuHiLfWRtKIyfJZTIS9ee1jktYX5RqPGQlWkx8WTTetTSGV78uk
-         MjzMmLAGy2zZM/aYdMSZ8GdPNd+wHI1x8YbNwbABHJIFmRVI4OcR1KR9WRiu5S4A9HWl
-         ZytC0Yg7PgNIqxTh406efX1n8yJjfPFN71qC/97UltzlaJ278eteEqWpmgX4zTOG6Uia
-         Kbh3oyuFSCvtwsbo/6/B3yCJVX0zgcxMoloG4PfVMsK0ft8BKB2Zf67UNIzNxg4YcsRg
-         STMw==
-X-Gm-Message-State: AOAM532F6Fo66/d7GilVeEIRduilvY1qSQCPpEOTaV+ZkSfrVf980DoR
-        oLTPHDb/AtYapMVto/nsUqQ2pBKBQx3Q+MnPfQY=
-X-Google-Smtp-Source: ABdhPJw1KRVMPQ3uP5drwQUeOfEWO2enXwV7Xi/k1iaK+6aYhQQZFDgSB+h60dZ3k7e3bVV5uIAHos0xx/z5hgCPETE=
-X-Received: by 2002:a9d:654b:: with SMTP id q11mr1792741otl.184.1629900606521;
- Wed, 25 Aug 2021 07:10:06 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rAZ2PSpb5uNN5FzzHlrzAuRUdIpWiic98EAha6BxBOA=;
+        b=a5QKqeeKIhh8L40mQgNVVFArrXqJMgTr+mYJnmf+cQ9YM3mCFCBmUS9b9pysg1osyg
+         +o9jTv9uzyFDsTYBDFBfKkmfmk5ICah/5s/cErrrQf5TMF3si0+XJRbqi0oV9446mTGt
+         QUDlgYgVulu6yJEAtJmR8S3iMGLeF33up3v8d8tqJQTGUza8PlXKvYNrI1xKgKdIJQVx
+         UMQGugOSezPuqsoW/Fb544GMKDZAzASwpX7yMToXELqQlxCCVnD8xcMkQQSM7nIXuprB
+         C8jvLn6RaTv/XcXE+Y5gJmb9VrQ4izNbWlpN56HHX4+h2bmMY94rgXoE4O3gnafTn9Jf
+         LAPQ==
+X-Gm-Message-State: AOAM532lgxWtRLX0QokZqEbAyCle0iFz7O+BW/gBNTFAcsKAHrQyAefp
+        PEPXdBHxv7f7zK7LxnKkjjVGLURTgnBJw1okwQ==
+X-Google-Smtp-Source: ABdhPJyFq9GhH17ZazNFQDDbxDFMdHLvR6eWMzuzEIJ/IOMC5cjlRjRm/0YMrYIT6mioCDh2kD66PR7CaLDG9cQdQWA=
+X-Received: by 2002:a02:5442:: with SMTP id t63mr9987402jaa.7.1629900682674;
+ Wed, 25 Aug 2021 07:11:22 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a4a:2c82:0:0:0:0:0 with HTTP; Wed, 25 Aug 2021 07:10:06
- -0700 (PDT)
-Reply-To: abrahamamesse@outlook.com
-From:   Abraham Amesse <markgeorge904@gmail.com>
-Date:   Wed, 25 Aug 2021 14:10:06 +0000
-Message-ID: <CAEme3VdGfdfZSYn42OR6U0XDprNk-EWJ=YBXMNZVDFUrHeAhCw@mail.gmail.com>
-Subject: =?UTF-8?B?Ly8vLy8vLy8vLy8vQnVlbm9zIGTDrWFzLA==?=
-To:     undisclosed-recipients:;
+References: <20210824070707.5731-1-kernelfans@gmail.com> <20210825065000.GA11343@in.ibm.com>
+In-Reply-To: <20210825065000.GA11343@in.ibm.com>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Wed, 25 Aug 2021 22:11:11 +0800
+Message-ID: <CAFgQCTtW1fapRLWwXzWE2Y3903SGeqJbBre=8jZt9NEzPcybkg@mail.gmail.com>
+Subject: Re: [PATCH] kernel/cpu: fix spelling mistake of cpuhp_thread_run()
+To:     ego@linux.vnet.ibm.com
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Por la presente solicito su consentimiento para ayudar a repatriar el
-patrimonio de mi cliente fallecido.en el banco. Necesitar=C3=A9 su
-confirmaci=C3=B3n para poder iniciar los procedimientos legales para el
-proyecto humanitario.
+On Wed, Aug 25, 2021 at 2:50 PM Gautham R Shenoy <ego@linux.vnet.ibm.com> wrote:
+>
+> Hello Pingfan,
+>
+> On Tue, Aug 24, 2021 at 03:07:07PM +0800, Pingfan Liu wrote:
+> > According to the name of cpuhp_should_run(), cpuhp_thread_fun() should
+> > be a spelling mistake.
+>
+> I think cpuhp_thread_fun() is short for "CPU Hotplug thread
+> function". It seems correct since the function pointer "thread_fn"
+> (short for "Thread function") in the struct "smp_hotplug_thread
+> cpuhp_threads" is assigned the value cpuhp_thread_fun().
+>
+This makes sense to me.
+
+Thank you very much.
+
+Regards,
+Pingfan
