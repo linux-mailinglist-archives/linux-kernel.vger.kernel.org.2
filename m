@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824FD3F7583
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DB43F7587
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240610AbhHYNEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 09:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241024AbhHYNEM (ORCPT
+        id S240659AbhHYNFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 09:05:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55068 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240538AbhHYNFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 09:04:12 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA5FC061757;
-        Wed, 25 Aug 2021 06:03:26 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id d22-20020a1c1d16000000b002e7777970f0so4241763wmd.3;
-        Wed, 25 Aug 2021 06:03:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ajoObTpBOMq0HG6JcMfkwvfTBeAFH7pnhMJZIOox90Y=;
-        b=iidePI8/ErhARNUitKfra37DTcNrGi8trDUpXw8kl5DOJSLKA1o2ZOeEwTvW9yUDAi
-         mNOz0OA/03uRMqx9SzN/SdRQqffLZvJe4l8I65NjDHTaRD/3px9TQ/W0bft+A9CzqJU1
-         uhUCY0mES//qQZL66wvyYOX8AWuPgOc42ilzhvkilKts71Vquo1WXTvvg47R6sEQ37FE
-         YeFvgwjsxBqZ1y7e26S4wKH+7Xn7k8X0/VynT1T4i1VmAeGzjEFq4AsNOM3R7e10ZTlm
-         zHc+B2Un91bnnT5tCUYVsj6uC1BDWLsOdrNYu4oNIuyjDoWocj7SnU3fZm8Uw25lIjM0
-         NQaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ajoObTpBOMq0HG6JcMfkwvfTBeAFH7pnhMJZIOox90Y=;
-        b=c+DT51jjiv+M2gfsj9B1hVOoKen9+B489GbolGfSLIyd1zftxx1x6DHNWl3B69JUR0
-         Y4QFI141ryWrFPOOXGCK6xCu5wlUUJ4GwuoLH+hHP71X3tig4bnN5dUcl+ko1ItRPT7y
-         Bki6zt0m678xn15Ur88+sRFSjZd6QzJoXc0WmJxKuAKgioA2Nerka4fmi4wj2lT3ZnuZ
-         pdwcQ+MLEgB9DdbJcyRCTogZvPq3wH3PCQN7CTToHdDL5QTJinYon+7tReG7x/JJRVG2
-         N+JxXV+eQ1JX8oA96fm1k9pgSgxwil3gpTLLdOwSj+somnkfCuSIsuBIPvFgAsLXn3Ja
-         BhFA==
-X-Gm-Message-State: AOAM533jCiSvfIOP7twia5lcSQkuwceVlOuxBS7xi2MHWlPaQlxrXkNL
-        eg37Zycbvk/Lpu/pxA+6ijk=
-X-Google-Smtp-Source: ABdhPJwBJ1eonlShCcYY5lreMLwyvX3XBf0OChuN2ZsTI19ZKJwHgFx3nZ9mlRzIQCjaqkO+WhqYEw==
-X-Received: by 2002:a1c:4e16:: with SMTP id g22mr9192676wmh.55.1629896605275;
-        Wed, 25 Aug 2021 06:03:25 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id f23sm5067597wmc.3.2021.08.25.06.03.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 06:03:24 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 14:03:23 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de
-Subject: Re: [PATCH 5.4 00/61] 5.4.143-rc1 review
-Message-ID: <YSY/m/h1AmTEKHXP@debian>
-References: <20210824170106.710221-1-sashal@kernel.org>
+        Wed, 25 Aug 2021 09:05:10 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C7C63221A6;
+        Wed, 25 Aug 2021 13:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629896663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ihsN4xOKUhY3bLwnMqowm8Mza45SPZ5/Nz1hzigkS5E=;
+        b=Q4heCSpauOFtmTxA1j8v01hm93NGSHPEoSkME7BXMvXSYMBzhddDXB+eH90A5T+0rvvpx1
+        jCyW4gtQ9eGpJeUd0fPeHU8W/SaJTY8wwdRt0f56++NjsWlmf3inxAEOcl4GgU6OxM7A6R
+        qeFHtyZG1OzfP01ldtbBGUZHvlU4KnA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629896663;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ihsN4xOKUhY3bLwnMqowm8Mza45SPZ5/Nz1hzigkS5E=;
+        b=BEj/qJuDaLlxNbgQhHSvcOzi1ix9No6GdBxuPJ7zxPUFo4h4NLx1snItJJBMKlVgRZp/JN
+        Ek0vZa3B0jlb+tCg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B740513887;
+        Wed, 25 Aug 2021 13:04:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 93OOLNc/JmGFNQAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Wed, 25 Aug 2021 13:04:23 +0000
+Date:   Wed, 25 Aug 2021 15:04:23 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>, Hannes Reinecke <hare@suse.de>,
+        Wen Xiong <wenxiong@us.ibm.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        James Smart <jsmart2021@gmail.com>
+Subject: Re: [PATCH v6 3/3] nvme-fc: Remove freeze/unfreeze around
+ update_nr_hw_queues
+Message-ID: <20210825130423.7tpeysh4xtcy2ark@carbon.lan>
+References: <20210823112351.82899-1-dwagner@suse.de>
+ <20210823112351.82899-4-dwagner@suse.de>
+ <025942a6-4f57-b005-eb77-e9eed143522c@grimberg.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210824170106.710221-1-sashal@kernel.org>
+In-Reply-To: <025942a6-4f57-b005-eb77-e9eed143522c@grimberg.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha,
-
-On Tue, Aug 24, 2021 at 01:00:05PM -0400, Sasha Levin wrote:
+On Tue, Aug 24, 2021 at 01:38:20PM -0700, Sagi Grimberg wrote:
+> > freeze before calling update_hr_hw_queues". It's not an exact revert as
+> > it leaves the adjusting of hw queues only if the count changes.
 > 
-> This is the start of the stable review cycle for the 5.4.143 release.
-> There are 61 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu 26 Aug 2021 05:01:01 PM UTC.
-> Anything received after that time might be too late.
+> I see that fc doesn't freeze the queues, so it obviously wrong to
+> unfreeze them. But is it correct to not freeze the queues?
 
-Build test:
-mips (gcc version 11.1.1 20210816): 65 configs -> no new failure
-arm (gcc version 11.1.1 20210816): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210816): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+nvme-fc is draining the queues in the error recovery path
+(__nvme_fc_abort_outstanding_ios). There are no request in the queues
+hence we don't have to freeze.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/54
-
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+The only reason to keep the freeze/unfreeze in this path would be to
+make it look alike the other transport. But it would be a no-op.
