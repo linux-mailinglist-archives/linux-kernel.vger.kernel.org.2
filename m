@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CEA3F7428
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6207D3F7426
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240275AbhHYLNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 07:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
+        id S239945AbhHYLMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 07:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236783AbhHYLNL (ORCPT
+        with ESMTP id S236783AbhHYLMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 07:13:11 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F9CC061757;
-        Wed, 25 Aug 2021 04:12:26 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id t1so22736217pgv.3;
-        Wed, 25 Aug 2021 04:12:26 -0700 (PDT)
+        Wed, 25 Aug 2021 07:12:35 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4856BC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:11:50 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id r19so36317488eds.13
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:11:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e0F6iaDXcOKyU/pgsdS91D2Ie1N9JY978bJ/8n6uXIY=;
-        b=I1g2YLn/hnmv7T70rIzmVIGbBd63AuAPeXuL549CFaoX13s4es4rXLOqG2XTKcpuTR
-         aCAEqXBa2hX9csDMowkOsqT7XXe2KHtM6Q76wOSuLNivQmRb5i321Weu4d1DBjeJbrnT
-         QoM1BGjzr3uEdpdd7nYLYfS7V/h6oN0EWjFCHJHfgZLbH0co2upfemYy5sdSH7ePL0SW
-         IN+YONtfRhlPEVlfG4Q2Uccr3PL6bjgK2fPaIz5yexhlNuhpBxaxrh8WhdNK7FvrFPZI
-         QZ9cIjHbqaHizG2SgdeeT9S8H1aU9BaLuZOOkJYqi4Qn8fmJCpUnk1/huzJ61cwLlM7c
-         gW4w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=drTM0WfZLehebID8ZvXHYymXTQAeWPGMCig2l0ICemA=;
+        b=a8Wr/lZ79NHuj3dA7FHdltJZF+rpS+aL4IoHN+k3ICoK5ZnIuoFL+WOty0TyEXSHWh
+         UPPPJ7nYVS4Kvpzh8T4Phhy0yC1zhuem92ffi1ETpGu+XL9rkYGGJ1SQ3ildBnx8WoZY
+         vP4k3RKO4Wif7INJQgSyI+TychQ65m4eOz7gV+2jgpTJpXQbUPGzrpGpTdK2LV9UQ6fa
+         SWnV21UuIE2+Z+jVP9Y6dX3lNnTueqkSXA1VT0MrrhCYd5xMIt/5EvddIhbfKRIF1bqc
+         WdagNlB9WRnea23SqkmXK6U0sq8+Czf/22sVaY+6ou9Z05KaqZpXHYN0/a7xtbEJv4/h
+         EsQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e0F6iaDXcOKyU/pgsdS91D2Ie1N9JY978bJ/8n6uXIY=;
-        b=jQT3K36ytZrZ5hrAU8sbvTwaxMwKm9MjSiNX+XmbQYKjM1eu8zVPPiX7JIgTac2ioH
-         SUenf0eDZ8qVd2VL74gFE823faK51iD+n59FFeyG1aqEVxjkzXtnJs0d/LDo5mNs3XQK
-         VLaHFMLl4OKGLDuxIN1nldoUgGSqetZLwtAlHqtY/HDv8zmDpH+feY7F+5mJO1A8KgYu
-         dqcRg6V+UuL2XzzTAU+LUp2IeZsydu2kCStO/PUPg+nTqqL9iLbUNcJgoJ0qa2SkG+XB
-         And6mxrqvFFwX9LmAHaBESuUFPCTPXgCgYALUshEs3kCmk27uSKu16s3IH+fk96eWu39
-         ivzA==
-X-Gm-Message-State: AOAM531WMAmfFUnf9GiaRl5dbRi7TRUsV8x217/3E0Qqsn7Y9Crm6K/5
-        q11YvtJ9iETSKNhg7I/JI1xpxPdHLWyQQxGS66k=
-X-Google-Smtp-Source: ABdhPJyeFx80oUz8NgoOS4scmsMrlTtxpkKj93s/4LfwYFNmg7EA3PITg+KB4O5JwDk2w04WALnpSPM1oBCqLL1QyBg=
-X-Received: by 2002:a62:6384:0:b0:3eb:13e7:18c with SMTP id
- x126-20020a626384000000b003eb13e7018cmr21415624pfb.73.1629889945850; Wed, 25
- Aug 2021 04:12:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=drTM0WfZLehebID8ZvXHYymXTQAeWPGMCig2l0ICemA=;
+        b=Wnna4TvaMR+kjSNBQfDzEc4ZcpdOCGRXL3r2LwrghOudB08f/A25dwHEJEQlPyxa3g
+         OnCbrFv5p7MOmlF85ZlAYO/CU5hoel20DWZkZQw+Jl0BYwe5Oe7n4uxuvN/SKEPmMOZz
+         c176ZMrhtboLYnQvMXM5P0vSBifRxIJcQNsbDXJHrR7ycpmNhFiwj/XljaOVnn0F8mI1
+         nEIT4J6Lo/KoHbOUIWfjMFkUjDdv5HgdLv6YkFePxyLfIGvdk29E8vVlM43w+5Fkbj4j
+         /7HuHWHbDrj3LvIwy5Icbbir9OVHUbb13bfh/fpKX6wddu0/Vax8qnUU3Jh+l6UIQdfl
+         WICQ==
+X-Gm-Message-State: AOAM532LyFv539VWCmklsnID2nJi7dyEsB1vsqn9QdKMr+aMzN/4kEgM
+        mUwzgzW98ZhURJvgXoAcNas=
+X-Google-Smtp-Source: ABdhPJz+ZP8qmqPd1rI+TIpI1Nnyzsf5AAkvTpuifTdBOvrpR5F8zH9OEfJV6cRM6ERapuz29lpK7Q==
+X-Received: by 2002:aa7:dd12:: with SMTP id i18mr6700248edv.368.1629889908967;
+        Wed, 25 Aug 2021 04:11:48 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id b5sm10897790ejq.56.2021.08.25.04.11.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 04:11:48 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] staging: r8188eu: add error handling of rtw_read16
+Date:   Wed, 25 Aug 2021 13:11:47 +0200
+Message-ID: <1656520.BsXvRA5gNX@localhost.localdomain>
+In-Reply-To: <3494498.825kMHXWDN@localhost.localdomain>
+References: <cover.1629789580.git.paskripkin@gmail.com> <20210825103802.GS7722@kadam> <3494498.825kMHXWDN@localhost.localdomain>
 MIME-Version: 1.0
-References: <20210823093222.19544-1-andriy.shevchenko@linux.intel.com>
- <20210823093222.19544-3-andriy.shevchenko@linux.intel.com> <CAAd53p6pQcura_tejtW7osiHfSnn6pCcxfm1e13==qmQA8C1bw@mail.gmail.com>
-In-Reply-To: <CAAd53p6pQcura_tejtW7osiHfSnn6pCcxfm1e13==qmQA8C1bw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 25 Aug 2021 14:11:46 +0300
-Message-ID: <CAHp75VfZaV6WAddmscgTkyfRoq9cvcvL2A6A1kA6uBvZ3F=dgg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] platform/x86: hp_accel: Convert to be a platform driver
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Eric Piel <eric.piel@tremplin-utc.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 1:42 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> On Mon, Aug 23, 2021 at 5:32 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > ACPI core in conjunction with platform driver core provides
-> > an infrastructure to enumerate ACPI devices. Use it in order
-> > to remove a lot of boilerplate code.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> The lis3lv02d still works with this patch.
->
-> Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+On Wednesday, August 25, 2021 1:06:40 PM CEST Fabio M. De Francesco wrote:
+> On Wednesday, August 25, 2021 12:38:02 PM CEST Dan Carpenter wrote:
 
-Thank you, Kai-Heng!
+> > That's a bug then.  The patch should be rejected.  You're not allowed to
+> > break the code.
+> 
+> Sorry Dan, I disagree. It's not a bug. No one intend to break the code. 
+> How could anyone know that someone else is working simultaneously on 
+> some code that is not compatible with the work of the other developer?
+> 
+> Pavel and I worked simultaneously on code based on the current Greg's tree.
+> 
+> We incidentally got to know that mine breaks his.
+> 
+> I suppose that Greg will take Pavel's work first, because it was submitted few 
+> hours before mine and then will ask me to take into account Pavel's patches, 
+> rebase, fix and resend mine.
+> 
+> Each series is self contained and does not introduce bugs to the current tree.
+> The bugs will arise when Greg will have applied one of the two series as usually 
+> in a FIFO order.
+> 
+> There's no practical means to know who is working to what just by reading all 
+> the messages of the lists. Who reads all the messages before deciding to work 
+> on something? This issue will be solved a way or the other, I really don't think it 
+> is a big problem, it's unavoidable when a lot of people work on the same 
+> driver or subsystem.
+> 
+> Regards,
+> 
+> Fabio  
 
-Hans, I think it's good to go.
+For sake of completeness I want to say that when Pavel had only submitted RFC v2
+my code didn't break his. It was only with his v3 that the bug went out. But v3 was 
+submitted just few hours before mine.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Fabio
+
+
