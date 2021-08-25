@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685D83F757A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05BD3F757C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240915AbhHYM6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 08:58:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34755 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229547AbhHYM6j (ORCPT
+        id S241033AbhHYM7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 08:59:08 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:43963 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhHYM7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 08:58:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629896270;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ofpBn7OPoa/qED0CwXqSoNO7Orrei4dP7CZWPoRhlw8=;
-        b=gTFC/dJ66JaXCn38JXp9uJYzywwpBYajOTAETnepfKbMJuNxh13ZwwjTmPorPuGdGNm330
-        3GPwnkwvznIGWO7Aix1GIin9rw+BvILtfhor+Y8x7sEDYTVlD4VW75DE9buX+Dv21mMZng
-        pwL9lX2ULrZz/CfBPIDJVxLSabz7CCc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-rY4UtSuPO8qKfvIoxkOVZA-1; Wed, 25 Aug 2021 08:57:48 -0400
-X-MC-Unique: rY4UtSuPO8qKfvIoxkOVZA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42E9E107ACF5;
-        Wed, 25 Aug 2021 12:57:47 +0000 (UTC)
-Received: from prarit.bos.redhat.com (prarit-guest.7a2m.lab.eng.bos.redhat.com [10.16.222.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C12486788B;
-        Wed, 25 Aug 2021 12:57:46 +0000 (UTC)
-From:   Prarit Bhargava <prarit@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Prarit Bhargava <prarit@redhat.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "David E . Box" <david.e.box@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH] mfd: intel_pmt: Only compile on x86
-Date:   Wed, 25 Aug 2021 08:57:35 -0400
-Message-Id: <20210825125735.621799-1-prarit@redhat.com>
+        Wed, 25 Aug 2021 08:59:07 -0400
+Received: by mail-wr1-f54.google.com with SMTP id b6so862009wrh.10;
+        Wed, 25 Aug 2021 05:58:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wwe/J8mBY/TaPRtsNckUmhHBlK7cRB4Yt9ENNgx5/do=;
+        b=jc0aIDWF09V19rFF5D2rzZ0RCeqeekYMhlZ2H8iMiZo2RZtdOjR/H0tkrqphHKOfXB
+         f3qs1xIW9cd/6LmcK5ztJoSi9/16iiCu/Iuls0mSD9qOocJbt3qdEAgGB86MA/mJjPSS
+         lW/Bx7Ijpg/OGH8I3lac5Fn5GbL0BdS0vzfYneV0g+QcXdQNMF+5pUeszc3Tgq0cvGCM
+         xiPyanYgTgTnlQo8YxAzqqQqWVTh++6QTiefizvbixjl0JnJA32zrr5DCc1xgV6+g/RA
+         P0nIkEwk6uP2uUjoJSvW3CZJZ7a+U6hfeW7Y2kFQL7V6muaW4xSmHBubJ0Vi8Bg7aiCr
+         BNuw==
+X-Gm-Message-State: AOAM5318DUoErhxoHhoJns0aNM4Vbsf89BBB/BTYzPRNuEV3lTCPlsVo
+        XLlAmXfJa2gGA5iP1DWdsZUvXWkK5FE=
+X-Google-Smtp-Source: ABdhPJxRW9u1MKQNTmOCi0t0QdAaBYxnEq8z+07rGLF/myKh+hb5XMeuDkcnyuWw+vxihpCpwWVskA==
+X-Received: by 2002:adf:e68b:: with SMTP id r11mr25284553wrm.394.1629896300511;
+        Wed, 25 Aug 2021 05:58:20 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id t7sm18563460wrq.90.2021.08.25.05.58.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 05:58:20 -0700 (PDT)
+Subject: Re: [PATCH] tty: moxa: use semi-colons instead of commas
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20210825072405.GA13013@kili>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <67c7047a-93eb-d5fe-514d-6545b5899991@kernel.org>
+Date:   Wed, 25 Aug 2021 14:58:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210825072405.GA13013@kili>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The intel_pmt driver shows up as a compile option for all arches but is
-32-bit and 64-bit x86 specific.
+On 25. 08. 21, 9:24, Dan Carpenter wrote:
+> This code works but it's cleaner to use a semi-colon to end a statement
+> instead of a comma.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Add a CONFIG dependency on X86 for intel_pmt.
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
 
-Signed-off-by: Prarit Bhargava <prarit@redhat.com>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: David E. Box <david.e.box@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
----
- drivers/mfd/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I just wonder why:
+   tty: moxa:
+vs
+   mxser:
+with no "tty: "
+...
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 6a3fd2d75f96..0f12b00955b4 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -676,7 +676,7 @@ config MFD_INTEL_PMC_BXT
- 
- config MFD_INTEL_PMT
- 	tristate "Intel Platform Monitoring Technology (PMT) support"
--	depends on PCI
-+	depends on X86 && PCI
- 	select MFD_CORE
- 	help
- 	  The Intel Platform Monitoring Technology (PMT) is an interface that
+> ---
+>   drivers/tty/moxa.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/tty/moxa.c b/drivers/tty/moxa.c
+> index 776f78de0f82..bf17e90858b8 100644
+> --- a/drivers/tty/moxa.c
+> +++ b/drivers/tty/moxa.c
+> @@ -2034,10 +2034,10 @@ static int moxa_get_serial_info(struct tty_struct *tty,
+>   	if (!info)
+>   		return -ENODEV;
+>   	mutex_lock(&info->port.mutex);
+> -	ss->type = info->type,
+> -	ss->line = info->port.tty->index,
+> -	ss->flags = info->port.flags,
+> -	ss->baud_base = 921600,
+> +	ss->type = info->type;
+> +	ss->line = info->port.tty->index;
+> +	ss->flags = info->port.flags;
+> +	ss->baud_base = 921600;
+>   	ss->close_delay = jiffies_to_msecs(info->port.close_delay) / 10;
+>   	mutex_unlock(&info->port.mutex);
+>   	return 0;
+> 
+
+
 -- 
-2.31.1
-
+js
+suse labs
