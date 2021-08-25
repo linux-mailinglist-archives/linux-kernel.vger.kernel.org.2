@@ -2,85 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39443F6FA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0500E3F6F87
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239000AbhHYGgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239293AbhHYGgW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:36:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2228C061757;
-        Tue, 24 Aug 2021 23:35:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2XLmr3mig5i7hFsrhfybeAZVxu1dPFwBTiqJmo2ZjDs=; b=Y/vL5A1XzYQGjecTWV5ZlubPWZ
-        GTZIZXOm9XJO0Be7zs+Aj9ueGAGEfnmZxexw/PUD7kF5QYnOLhKGqh6ujtUIll2y3crONRFnfjkGn
-        XEu2lb0XgzN21b5//QSf3Sv9zeguPFet/OyzEGBOr15LkzC0jf9WMzGNFJcV1sbUOfakeh/IJIu0t
-        4vy3wCYV2ew5sq+yeoArOQi4ZTTkE3L1TxQPPwlnCJztnkkQ/YGQhC9FaGF6hdJlYrGnvNWebM0Ii
-        RTsykyka9MLAs4Hll6kzSOxoIXa7sdJc6rVZLftLKAjjpWr85iqzHgOf5apapcyTgtQ7/qrAkuPm+
-        4hrxNGVw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mImSq-00ByML-7A; Wed, 25 Aug 2021 06:32:54 +0000
-Date:   Wed, 25 Aug 2021 07:32:44 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YSXkDFNkgAhQGB0E@infradead.org>
-References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
- <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YSQSkSOWtJCE4g8p@cmpxchg.org>
- <1957060.1629820467@warthog.procyon.org.uk>
- <YSUy2WwO9cuokkW0@casper.infradead.org>
- <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
- <YSVCAJDYShQke6Sy@casper.infradead.org>
- <CAHk-=wisF580D_g+wFt0B_uijSX+mCgz6tRRT5KADnO7Y97t-g@mail.gmail.com>
- <YSVHI9iaamxTGmI7@casper.infradead.org>
- <YSVMMMrzqxyFjHlw@mit.edu>
+        id S239001AbhHYGeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:34:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237102AbhHYGeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 02:34:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBBD961245;
+        Wed, 25 Aug 2021 06:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629873195;
+        bh=8nUxXjK+Nf8pu/MbCW5HdPdSgz67sIv3Sj1bynaf/Tk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=o5vyHmc8ZfxLZN3Tqb+wkLCA7p7rFAC0srKpFlzh1SDdRmlD2QJMnwh8l0NtnwDjG
+         RyaRYxI1CaR2Sik5wdjvXRX6WGaBzS/tUo7GxPXGIfRmdssQ0gYc7+Q5KUa7klsGyU
+         boutA43YWqM9AP1O/+daTD1AuBLyHgduSBW8UApTcRB/khk/fc2wp0jZQsDEq8n3YP
+         3m9tRk8rxKILKjTb+2oIw9QpUqKiZtPEvK5vR4yUwI0kQXLvtXIcSzZZ2EdrGdot7N
+         Ox2evOp0buW5C9WIySnO74sNrNgPZHpHu6rpgKeIM+Z0zcTl14OH8kbv79Oe2MXFjW
+         HsogwotANZAig==
+Date:   Wed, 25 Aug 2021 08:33:05 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Manu Abraham <abraham.manu@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Soeren Moch <smoch@web.de>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [Regression 5.14] media: dvb userspace api
+Message-ID: <20210825083305.562eba48@coco.lan>
+In-Reply-To: <CAHFNz9L29LK+L8LjqyTyqq3LsvzeA6iYFHwP9n3uNBbqbbm1bg@mail.gmail.com>
+References: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de>
+        <20210819133128.45ef4353@coco.lan>
+        <c56ec571-2278-95e9-2028-990e03159c3f@web.de>
+        <20210822194709.4b9d33d4@coco.lan>
+        <be6ac929-2443-ff55-3e11-6a86d6472e0e@web.de>
+        <CAHk-=wjSadWPfzQ_hOqbjq6c_xwJs8GLHTyznhXRvDF5Yrs4FA@mail.gmail.com>
+        <CAHFNz9L29LK+L8LjqyTyqq3LsvzeA6iYFHwP9n3uNBbqbbm1bg@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSVMMMrzqxyFjHlw@mit.edu>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 03:44:48PM -0400, Theodore Ts'o wrote:
-> The problem is whether we use struct head_page, or folio, or mempages,
-> we're going to be subsystem users' faces.  And people who are using it
-> every day will eventually get used to anything, whether it's "folio"
-> or "xmoqax", we sould give a thought to newcomers to Linux file system
-> code.  If they see things like "read_folio()", they are going to be
-> far more confused than "read_pages()" or "read_mempages()".
+Em Wed, 25 Aug 2021 08:25:57 +0530
+Manu Abraham <abraham.manu@gmail.com> escreveu:
 
-Are they?  It's not like page isn't some randomly made up term
-as well, just one that had a lot more time to spread.
+> On Mon, Aug 23, 2021 at 10:30 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > I have reverted the header file move. But I would also heartily
+> > recommend that whatever user program includes those headers (VDR -
+> > anything else?) should take snapshots of these specific kernel
+> > headers.
+> >
+> > I'm not convinced that it makes sense to move the av7110 driver back
+> > from staging - it may continue to work, but it _is_ old and there is
+> > no maintenance - and I would certainly suggest that any other
+> > out-of-tree driver that uses these old interfaces that nothing else
+> > implements shouldn't do so, considering that nothing else implements
+> > them. =20
+>=20
+> Sorry for barging in between your discussion, but it seemed like you real=
+ly
+> missed some perspective and hence.
+>=20
+> My 2 cents worth:
+> * Revert the header changes.
+>=20
+> * Let someone else with knowledge of it take over the maintenance
+> of the av7110 driver.
+>=20
+>   - This would allow other hardware also to be easily accommodated
+> in a similar manner.
+>=20
+> * Pull the out of tree drivers and allocate maintenance of those, to
+> someone who understands them. Don't you want more hardware to be
+> supported out of the box ?
+>=20
+> Should there be no driver for those DVB output hardware, but only for
+> V4L2 output devices ?
+>=20
+> There exists other hardware which As a person who worked on another
+> av7110 like driver (saa716x based s2 6400), which I can confirm.
+> The API is supposed to simplify life, not make it even more complex.
+> These devices would need lot of workarounds to work with the API that
+> which Mauro advocates, which might even break those drivers given
+> their complexity and size.
+>=20
+> It would make life a lot easier for the users, Mauro himself and
+> this long never ending discussion can be put to rest.
 
-> So if someone sees "kmem_cache_alloc()", they can probably make a
-> guess what it means, and it's memorable once they learn it.
-> Similarly, something like "head_page", or "mempages" is going to a bit
-> more obvious to a kernel newbie.  So if we can make a tiny gesture
-> towards comprehensibility, it would be good to do so while it's still
-> easier to change the name.
+The "full-featured" API that it is implemented on av7110 always had=20
+troubles. This is not only my view, but also the view of the
+original API authors,as can be seen at the DVBv4 WIP documentation:
 
-All this sounds really weird to me.  I doubt there is any name that
-nicely explains "structure used to manage arbitrary power of two
-units of memory in the kernel" very well.  So I agree with willy here,
-let's pick something short and not clumsy.  I initially found the folio
-name a little strange, but working with it I got used to it quickly.
-And all the other uggestions I've seen s far are significantly worse,
-especially all the odd compounds with page in it.
+	https://www.linuxtv.org/downloads/legacy/linux-dvb-api-v4/linux-dvb-api-v4=
+-0-3.pdf
+
+It clearly says that, on chapter 2.2:
+
+	"2.2 Linux DVB API Version 3 problems
+
+	...
+
+	 The Linux DVB API Version 3 has very limited support for
+	 modern hardware."
+
+The "modern" there refers to hardware back in 2005!
+
+I worked on a project back 8 years ago that tried to use it for TV
+sets. It didn't work, because the API assumed a 1:1 mapping between
+tuners and A/V codecs, which works for simpler embedded hardware,
+but didn't cover smart TV hardware, where the number of frontends,
+demods and A/V codecs were different. You may even have multiple
+channels being displayed at the same time (Picture in Picture).
+
+On today's embedded hardware, you need something like the media
+controller, in order to dynamically re-configure the hardware=20
+pipelines between:
+
+	- multiple tuners (DVB-C, DVB-T/T2, DVB-S/S2);
+	- multiple demods[1];
+	- multiple A/V decoders;
+	- display compositor;
+	- audio I/O;
+	- CA modules;
+	- encrypt/decrypt hardware (required on some Countries in order
+          to allow recording programs on storage);=20
+	- storage.
+
+[1] There are even some demods that can dynamically change the
+    maximum number of PIDs it can filter. Modern hardware can
+    have, let's say, a max of 4 input MPEG-TS, and a max of=20
+    512 filters, which works like 4 independent demods, where
+    the number of filters per demod is adjusted dynamically.
+    This is currently problem for DVB subsystem, as it allocates
+    statically the PID filters for the max number of PIDs, meaning
+    that a large amount of RAM would be wasted if one would reserve
+    space for the maximum possible capacity per demod (it would
+    require space for 4x512 buffers on such hardware, meaning that
+    3/4 of buffer memory would be wasted).
+
+As I always said, I'm open to discuss an API that would properly
+address what's needed, but such API should support modern embedded=20
+hardware, and should be designed to allow it to be extended to
+support to future needs. That's not the case of the DVBv3 "full-feat"
+API, which was developed to support a hardware component developed
+more than 23 years ago[2].
+
+[2] The Rev 3.1 datasheet of av7110 was written in June, 1998:
+
+    https://pdf1.alldatasheet.com/datasheet-pdf/view/130554/TI/TMS320AV7110=
+.html
+
+-
+
+=46rom driver's perspective, it makes no sense to keep support for av7110,=20
+as TI stopped production of TMS320AV7110 a very long time ago. They
+don't even mention this product number anymore on their website.
+
+Thanks,
+Mauro
