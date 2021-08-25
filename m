@@ -2,112 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E8A3F6EE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110323F6EE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbhHYFkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 01:40:00 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:29200 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231816AbhHYFj6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 01:39:58 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17OISDxC024916;
-        Tue, 24 Aug 2021 22:39:11 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=d/KVUIZQvTBpVdMdgmztVhrhEsaFPHlnmaRjkvWDdvY=;
- b=dNB2zINxV8k82uiFVtgQM1tm0XWhr33+DCt06wzufEkfyMAhGrvo2LQ0RtTKcsXsl42g
- 7vtcSRd44eTjhqWej4kFTHcNoiRe1dEDtZ8OAZRAZtoFQftoQ9nVcRPHYUGQ/TYjrKWl
- BaO+zbR4rNN3bAmqUhuJ8lBdt/u7oca5Vc6LMT6YbybdH+UqeNb2ozyAHNX4typac9c2
- GHBWNE1iFisy42MP55mI2k4iQS70g/bUdRYwFa7mdmvO8v9ul9vu1kYQP2okopX8qCdd
- G8tqYFS3HiXH6ck1Q6zRwueZ7GwNZHAYHHu6ngk4RlKj6exylcEDuf/+7G2BcsU7U2ju 9g== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3an62ksxkn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 24 Aug 2021 22:39:10 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 24 Aug
- 2021 22:39:08 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Tue, 24 Aug 2021 22:39:08 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 9BBBA3F7051;
-        Tue, 24 Aug 2021 22:39:05 -0700 (PDT)
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        <ndabilpuram@marvell.com>
-Subject: [PATCH] octeontx2-af: Change the order of queue work and interrupt disable
-Date:   Wed, 25 Aug 2021 11:09:04 +0530
-Message-ID: <20210825053904.3700-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        id S232480AbhHYFpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 01:45:16 -0400
+Received: from mga02.intel.com ([134.134.136.20]:47616 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231816AbhHYFpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 01:45:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="204653390"
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="204653390"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 22:44:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="685941192"
+Received: from lkp-server02.sh.intel.com (HELO 181e7be6f509) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Aug 2021 22:44:26 -0700
+Received: from kbuild by 181e7be6f509 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mIli5-0001Do-MV; Wed, 25 Aug 2021 05:44:25 +0000
+Date:   Wed, 25 Aug 2021 13:44:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Allison Collins <allison.henderson@oracle.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: [allisonhenderson-xfs_work:delayed_attrs_v24_extended 6/27]
+ fs/xfs/libxfs/xfs_attr.c: xfs_attr.h is included more than once.
+Message-ID: <202108251318.k75imb22-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: vh4VEJwn96OYWjzz9V_DS0X4RAufnOsf
-X-Proofpoint-GUID: vh4VEJwn96OYWjzz9V_DS0X4RAufnOsf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-08-25_01,2021-08-25_01,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nithin Dabilpuram <ndabilpuram@marvell.com>
+tree:   https://github.com/allisonhenderson/xfs_work.git delayed_attrs_v24_extended
+head:   65b46be2f965591671441cfd63f02f38befbec24
+commit: 466619b962947151034f21a865f127a3bedcb101 [6/27] xfs: Add xfs_attr_set_deferred and xfs_attr_remove_deferred
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-Clear and disable interrupt before queueing work as there might be
-a chance that work gets completed on other core faster and
-interrupt enable as a part of the work completes before
-interrupt disable in the interrupt context. This leads to
-permanent disable of interrupt.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Signed-off-by: Nithin Dabilpuram <ndabilpuram@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+
+includecheck warnings: (new ones prefixed by >>)
+>> fs/xfs/libxfs/xfs_attr.c: xfs_attr.h is included more than once.
+
+Please review and possibly fold the followup patch.
+
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-index 84f0aaa8665d..5bdeed250089 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-@@ -2447,11 +2447,12 @@ static void rvu_afvf_queue_flr_work(struct rvu *rvu, int start_vf, int numvfs)
- 	for (vf = 0; vf < numvfs; vf++) {
- 		if (!(intr & BIT_ULL(vf)))
- 			continue;
--		dev = vf + start_vf + rvu->hw->total_pfs;
--		queue_work(rvu->flr_wq, &rvu->flr_wrk[dev].work);
- 		/* Clear and disable the interrupt */
- 		rvupf_write64(rvu, RVU_PF_VFFLR_INTX(reg), BIT_ULL(vf));
- 		rvupf_write64(rvu, RVU_PF_VFFLR_INT_ENA_W1CX(reg), BIT_ULL(vf));
-+
-+		dev = vf + start_vf + rvu->hw->total_pfs;
-+		queue_work(rvu->flr_wq, &rvu->flr_wrk[dev].work);
- 	}
- }
- 
-@@ -2467,14 +2468,14 @@ static irqreturn_t rvu_flr_intr_handler(int irq, void *rvu_irq)
- 
- 	for (pf = 0; pf < rvu->hw->total_pfs; pf++) {
- 		if (intr & (1ULL << pf)) {
--			/* PF is already dead do only AF related operations */
--			queue_work(rvu->flr_wq, &rvu->flr_wrk[pf].work);
- 			/* clear interrupt */
- 			rvu_write64(rvu, BLKADDR_RVUM, RVU_AF_PFFLR_INT,
- 				    BIT_ULL(pf));
- 			/* Disable the interrupt */
- 			rvu_write64(rvu, BLKADDR_RVUM, RVU_AF_PFFLR_INT_ENA_W1C,
- 				    BIT_ULL(pf));
-+			/* PF is already dead do only AF related operations */
-+			queue_work(rvu->flr_wq, &rvu->flr_wrk[pf].work);
- 		}
- 	}
- 
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
