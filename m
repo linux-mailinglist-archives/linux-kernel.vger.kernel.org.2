@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6B63F774D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A743F7750
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240355AbhHYO0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:26:43 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60334
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241571AbhHYO0f (ORCPT
+        id S241704AbhHYO0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:26:48 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37572
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241582AbhHYO0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 25 Aug 2021 10:26:35 -0400
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 64E1A4076C
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:25:43 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4B514407A2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:25:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629901543;
-        bh=xADZ5MR3j2UoJgl2B5VMNlWhMMlwmkQewYypsYcTAYw=;
+        s=20210705; t=1629901544;
+        bh=/Sti3d7dTsAvFFog+hxbk2kz5ugUXJNgSZrotBprAFw=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=TLejc506X+y5tBxBhOGMInvJZjganvJAIVesk9T8Em65Rq3yrBVWJ76uHoak+mc1Q
-         Z+UwNB7Vlag/hrRqADVfKbTSoow4S6rpfc0f9fkLoVbrk02OaQ8bX23oBgsfkNQM1H
-         6TNN9PvWp/PJi1OBDxOogW5k64Q58thVFmjW9W0zOZh9eVH/Mav//XICBzJLUIVgle
-         0crA4/1a93gKn+VTi1rh6C+fQfnukUNwiSSnM8VQYw7mNqE1OojkNHVl0sRQhF0P0u
-         N8bwGHRba4ir9FNUB1FktrC8sIBcp07jm15otkYUKrB82CfpraPXS+M4gkoAxE6qnV
-         27p6pTTsPFCdw==
-Received: by mail-wr1-f69.google.com with SMTP id b7-20020a5d4d87000000b001575d1053d2so1855220wru.23
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:25:43 -0700 (PDT)
+        b=WWpJ20v0MS0PpUdRnaoVkD6soYjRUz6qwZ+i/xt+SfTomU0Icqfph7Si81KC8qkO2
+         jv74gyzFZadn5GVJsWADF9UvJaPvXS2ynj31pqoVfP3gHleLrFZou4XFxX7ZNJuZQc
+         9aBE80gl4uQYRFCNwa9p+KJm4ARXetqKTP1nWgM7OclbQ6fW8BbRu18FtTt5//qYOa
+         +hl0tc2W7+uPZjCOFwHiQo9GaYjGElF/QbH5Mds2xgePV59+LftJifDlmdjdyisNRx
+         d/LDyXNw5gdeUcakMu3WfVytpyR3ts2IaDExLecoz7UvhN4p5zRAonCKvC9jJevc5d
+         eOKCJ1DWdKU/A==
+Received: by mail-wm1-f71.google.com with SMTP id 201-20020a1c01d2000000b002e72ba822dcso2905884wmb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:25:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xADZ5MR3j2UoJgl2B5VMNlWhMMlwmkQewYypsYcTAYw=;
-        b=sfqKOlHfnPmlS/lcYZVhtbvzPgDU9+78e9IoFvwfPhQrsyKvoI0eTy6MJCiR+9mcDJ
-         DbhST1EV/LULuOoUJB+PvYOMGJSrcF3tL8eu7nnKLNWEh0roGw2gp1DhdalyF6zdcdmL
-         Q/fsXcBK5D+bEZ0yiDAKzBx2ckezVDFsEhhxEdgXEcd2+xG7gJLXmDtFRqbwI11m21Ei
-         fQpo0TA+viz4EyX+w7/6pVFPTt+Mv0CIsnbKUs/00Sb4bwesJrm36xa555eUPMW1XTVH
-         ULfCi49YIoJFEvKzVYNKcY6XfCfcOqrKVyhDYiZIrWGiKEDY3ZsPNNG6GaER7DgUjvQC
-         Tpbg==
-X-Gm-Message-State: AOAM533f7L0CvEZ46cbwPlHnhsOAadmfFOkpACs5YB6AU2mvC5MLrJbE
-        SI+3ptrLFwY6NAJm6xlBfx3yNy0X/KEcSR680NVrCF31Jlz2xfIgeQF70P9sAbUJzQdvw0zkQ7V
-        5dMPsyQxddA9xTGrIhqx66yt0adAOW1qBRmB+PT6cWg==
-X-Received: by 2002:adf:ea09:: with SMTP id q9mr25607295wrm.64.1629901542943;
-        Wed, 25 Aug 2021 07:25:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxug4tswqoivqT7ijzKJIPir03HLyMSYUse/bfkgOkUwy2/0691p92fR8CeB10092meUcEfnw==
-X-Received: by 2002:adf:ea09:: with SMTP id q9mr25607278wrm.64.1629901542827;
-        Wed, 25 Aug 2021 07:25:42 -0700 (PDT)
+        bh=/Sti3d7dTsAvFFog+hxbk2kz5ugUXJNgSZrotBprAFw=;
+        b=fX4hOhNnm2lMvsQEiNyKLptEO2i9RI+m5KlbOTXmG1ipQteZ4IKXf62c6i7ivwzJZs
+         peM5WNvkxSAr6S0yCmvATB+9QTKYAOCuvgOk8WqeRLK6qhtKAsOJ0IxUELANYP7GyyfB
+         lb2oEF2/NgUQvo6gZz9ncuEZUQITlyxxJ3bXMemwQN0GrTGNZAnkcu/EdIPbDAanY8lK
+         9G0kuQw0YdOMSUd+0zrtNlfQdnDjC3KOehb6dwzoEw5YnjvfkVWXixftIjNDkCj/quxT
+         1pnyDncUtUhFRGmp1TRVEUh3gHhx0rPV/5Cv8uRveW4olww0/LhLOz914UOJh8JrRWtd
+         JmUA==
+X-Gm-Message-State: AOAM531rLMeICNjn0Bf5+3nK+i9A5M4BuXqFdjLuZUvry5CBXdqs+5zO
+        IEODEsDkMFFeLIPhmY59m0UlF51c+Dp+OgJILV447U7Ifl9cRZSDFyita0z+MMeoVQCbDPv3UJb
+        s09747QzFt5/UBotXF+zbJHTTD11blwd+NNGe5ryIRg==
+X-Received: by 2002:adf:f743:: with SMTP id z3mr18233458wrp.211.1629901544047;
+        Wed, 25 Aug 2021 07:25:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwpfqvpRdkvZvU3MkWbfHGPyUtkfWdIQce42bWzJoCqPmksHWSzq/AF1H2GKY6BtbSsA66n2A==
+X-Received: by 2002:adf:f743:: with SMTP id z3mr18233446wrp.211.1629901543956;
+        Wed, 25 Aug 2021 07:25:43 -0700 (PDT)
 Received: from localhost.localdomain ([79.98.113.233])
-        by smtp.gmail.com with ESMTPSA id i68sm60375wri.26.2021.08.25.07.25.41
+        by smtp.gmail.com with ESMTPSA id i68sm60375wri.26.2021.08.25.07.25.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 07:25:42 -0700 (PDT)
+        Wed, 25 Aug 2021 07:25:43 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] nfc: mrvl: remove unused header includes
-Date:   Wed, 25 Aug 2021 16:24:55 +0200
-Message-Id: <20210825142459.226168-2-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 3/6] nfc: pn544: remove unused header includes
+Date:   Wed, 25 Aug 2021 16:24:56 +0200
+Message-Id: <20210825142459.226168-3-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210825142459.226168-1-krzysztof.kozlowski@canonical.com>
 References: <20210825142459.226168-1-krzysztof.kozlowski@canonical.com>
@@ -75,43 +75,21 @@ Do not include unnecessary headers.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/nfc/nfcmrvl/i2c.c | 3 ---
- drivers/nfc/nfcmrvl/spi.c | 3 ---
- 2 files changed, 6 deletions(-)
+ drivers/nfc/pn544/pn544.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/nfc/nfcmrvl/i2c.c b/drivers/nfc/nfcmrvl/i2c.c
-index c38b228006fd..ceef81d93ac9 100644
---- a/drivers/nfc/nfcmrvl/i2c.c
-+++ b/drivers/nfc/nfcmrvl/i2c.c
-@@ -8,12 +8,9 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/i2c.h>
--#include <linux/pm_runtime.h>
- #include <linux/nfc.h>
--#include <linux/gpio.h>
- #include <linux/delay.h>
- #include <linux/of_irq.h>
--#include <linux/of_gpio.h>
- #include <net/nfc/nci.h>
- #include <net/nfc/nci_core.h>
- #include "nfcmrvl.h"
-diff --git a/drivers/nfc/nfcmrvl/spi.c b/drivers/nfc/nfcmrvl/spi.c
-index b182ab2e03c0..5b833a9a83f8 100644
---- a/drivers/nfc/nfcmrvl/spi.c
-+++ b/drivers/nfc/nfcmrvl/spi.c
-@@ -7,11 +7,8 @@
+diff --git a/drivers/nfc/pn544/pn544.c b/drivers/nfc/pn544/pn544.c
+index 092f03b80a78..32a61a185142 100644
+--- a/drivers/nfc/pn544/pn544.c
++++ b/drivers/nfc/pn544/pn544.c
+@@ -13,7 +13,6 @@
  
- #include <linux/module.h>
- #include <linux/interrupt.h>
--#include <linux/pm_runtime.h>
  #include <linux/nfc.h>
--#include <linux/gpio.h>
- #include <linux/of_irq.h>
--#include <linux/of_gpio.h>
- #include <net/nfc/nci.h>
- #include <net/nfc/nci_core.h>
- #include <linux/spi/spi.h>
+ #include <net/nfc/hci.h>
+-#include <net/nfc/llc.h>
+ 
+ #include "pn544.h"
+ 
 -- 
 2.30.2
 
