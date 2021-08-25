@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A403F6FB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44A33F6FC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239148AbhHYGnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
+        id S239170AbhHYGqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239141AbhHYGnW (ORCPT
+        with ESMTP id S239085AbhHYGqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:43:22 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E1DC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:42:37 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id b64so12143768qkg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:42:37 -0700 (PDT)
+        Wed, 25 Aug 2021 02:46:17 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDE5C061757;
+        Tue, 24 Aug 2021 23:45:31 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id 22so26004613qkg.2;
+        Tue, 24 Aug 2021 23:45:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bFYGx05HsHjbbBDCITQXjISDYjMAJovwLRHhmmvHL2Y=;
-        b=euqwfrYJBAHrHzaLF3oDa3/4omT5QOIXAyafgBruf3Xedb/rmYSzGfG/PV6NfpCPwQ
-         0CG27TLdcu7qSxrBJ4HwvC0ZGqlyV1a/rWqo/VrQSbIfdLmdnLHHJWxIL0vTFlhr9P5K
-         qx0F0XB0e+3o8IetQpE5Es6+iBTbosKW1sKciKoU5BIWrkCbge0an+mXMd/DIDawQX5K
-         lWPOL5Owek9t/uWyJYBXdL8ludDazIH/o4Jmla1tutAgEXCPp+n1/+IKOgV48g0kwbVW
-         Ee9gDGsMenc4SGKQwPkVMFniG9Z4Xzhx72GJqxP498ix/eBUILvvYpfIubkCrClaCoww
-         WFTg==
+        bh=gPVMfJmF5apelHRJsHy850+Wr5DdBmlIDaqFUXSeNXo=;
+        b=RYfjZT+pPeLG/c6H+4FuVfXOD8rE5zIrlBwgxKiY3KLG8/O/bhxpPtsa38f6/Xm5cX
+         hH9gpHpJWJgXpOHpNDFkttMfb7Wma3tsgEhe1ZY7JT12btulwFOtMhY2f29ampKsLDVx
+         FZ3lOcqh5LXmx0qpdS4eZSsruFoNw2JQO4sktAeaVK8hxd9uMNrrpT+KCqojI0GHDRO8
+         L92No8jMYeGNeH2z9h0FyTrctB+HKd5wpCJexxOp/pcc4jek6cMd9bDglsIEpffr5iXo
+         zp+kxV62H4hbgBeapIdYjlJFEBLbzreiNJR4xx/AaqJYLsolKMDaDAIhi2sgfL1FBVLe
+         MIAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bFYGx05HsHjbbBDCITQXjISDYjMAJovwLRHhmmvHL2Y=;
-        b=jz9DldrqJMxolxi5Yc5isyYwWoYmDi3DmYKibdoyT1SBrb2Wo7VSDK2VKXvaHGWiOw
-         JQS9cMljcvdwh/Fs84HdoV48Lv70OTyYn5+YrnAmRAgKzZYJ5JNf40gPqh9JPoZghCqf
-         y2a4eL92WzEYnr7VTAUstZ41bZVR832CLwYstclUiBVzMkle8ONOMudlE8LGdot3xViw
-         y+B+JWAjQ9DdPebZqX6oMg4o8S3BN9jVkAo2KA1aubxdM+LgqhwLbcmEoIEI7/U6z6AK
-         d/GWqODIWvk0f8LX/glvdHTtRR5Beir/E59n2gjiiNb7PH+OiNUuTVYspp/mWMptI02y
-         M5jg==
-X-Gm-Message-State: AOAM533B/cqvW/gXLY+ElnqRs+MiENGw/5tqE4P9wyQb55+WTNriSKq/
-        JOQhxTcQJFIPAbh8EKpzbmhFHt4R6SU=
-X-Google-Smtp-Source: ABdhPJz9cuBhiCQl3AhOKS9j6zyMvbY8uDFjCZBxlL+ObcXfzsmQUB25tMZKfMq+U2pclfye7g/S3g==
-X-Received: by 2002:ae9:eb91:: with SMTP id b139mr30275671qkg.149.1629873756642;
-        Tue, 24 Aug 2021 23:42:36 -0700 (PDT)
+        bh=gPVMfJmF5apelHRJsHy850+Wr5DdBmlIDaqFUXSeNXo=;
+        b=j/RpFnurqp1VmQnSurX8+VCYD1FrlLcLkMO3yM8867J9PHc3kXpwJ++h8BLQED+OG7
+         enbfCPi0aTKiNqVZdSIXrUe++JPQpmVQuTnB9AmA82uKyRkSUIlvN73wXbQHru6RJMzI
+         RvGg+wK+XKY5JoK9xgEDT21x1sewBijvCDo0kcrQbg52TQCAiWtFreF8VzTz4AEbaeZ3
+         VhKmOBkPqCz4Ob1jfV4JlLkI566ekmKXaPibnz9e0DY+ri5M8lpiv64N+bMSptcXMcWx
+         0tprvvWkWP3z5foefgBtFzdpMYmGEfTUJj+/3AnsLQc1ijy8MEAQmyxF4Iu3Ht6SJIC5
+         89rg==
+X-Gm-Message-State: AOAM532xRSnC8csbELk/nqTz3MlSM8YqbeQ3x+ZgxZr7WRjkL1HjruEb
+        I9BpJmW9z4RAkDmYrIcoT5U=
+X-Google-Smtp-Source: ABdhPJx6r2y0Qz2o9dTE8QuwbDQ9c8mqvBudP4+JQ74RMeYZSmD0MwH8+K/5/Ztr6ZY9w3mRDrS0OA==
+X-Received: by 2002:a05:620a:95e:: with SMTP id w30mr28881016qkw.157.1629873930774;
+        Tue, 24 Aug 2021 23:45:30 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id c2sm5413442qte.22.2021.08.24.23.42.33
+        by smtp.gmail.com with ESMTPSA id w185sm12663265qkd.30.2021.08.24.23.45.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 23:42:36 -0700 (PDT)
+        Tue, 24 Aug 2021 23:45:30 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Jing Yangyang <jing.yangyang@zte.com.cn>,
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] power:pkeys: fix bugon.cocci warnings
-Date:   Tue, 24 Aug 2021 23:42:28 -0700
-Message-Id: <20210825064228.70487-1-deng.changcheng@zte.com.cn>
+Subject: [PATCH linux-next] s390:raw3270: Convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Tue, 24 Aug 2021 23:45:23 -0700
+Message-Id: <20210825064523.70563-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,45 +67,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+From: jing yangyang <jing.yangyang@zte.com.cn>
 
-Use BUG_ON instead of a if condition followed by BUG.
-
-./arch/powerpc/include/asm/book3s/64/pkeys.h:21:2-5:WARNING
-Use BUG_ON instead of if condition followed by BUG.
-./arch/powerpc/include/asm/book3s/64/pkeys.h:14:2-5:WARNING
-Use BUG_ON instead of if condition followed by BUG.
-
-Generated by: scripts/coccinelle/misc/bugon.cocci
+Fix the following coccicheck warning:
+./drivers/s390/char/raw3270.c:1066:8-16: WARNING: use scnprintf or sprintf
+./drivers/s390/char/raw3270.c:1050:8-16: WARNING:use scnprintf or sprintf
+./drivers/s390/char/raw3270.c:1058:8-16: WARNING:use scnprintf or sprintf
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 ---
- arch/powerpc/include/asm/book3s/64/pkeys.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/s390/char/raw3270.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/pkeys.h b/arch/powerpc/include/asm/book3s/64/pkeys.h
-index 5b17813..5f74f0c 100644
---- a/arch/powerpc/include/asm/book3s/64/pkeys.h
-+++ b/arch/powerpc/include/asm/book3s/64/pkeys.h
-@@ -10,15 +10,13 @@ static inline u64 vmflag_to_pte_pkey_bits(u64 vm_flags)
- 	if (!mmu_has_feature(MMU_FTR_PKEY))
- 		return 0x0UL;
- 
--	if (radix_enabled())
--		BUG();
-+	BUG_ON(radix_enabled());
- 	return hash__vmflag_to_pte_pkey_bits(vm_flags);
- }
- 
- static inline u16 pte_to_pkey_bits(u64 pteflags)
+diff --git a/drivers/s390/char/raw3270.c b/drivers/s390/char/raw3270.c
+index 646ec79..be8529f 100644
+--- a/drivers/s390/char/raw3270.c
++++ b/drivers/s390/char/raw3270.c
+@@ -1047,7 +1047,7 @@ struct raw3270_view *
+ static ssize_t
+ raw3270_model_show(struct device *dev, struct device_attribute *attr, char *buf)
  {
--	if (radix_enabled())
--		BUG();
-+	BUG_ON(radix_enabled());
- 	return hash__pte_to_pkey_bits(pteflags);
+-	return snprintf(buf, PAGE_SIZE, "%i\n",
++	return sysfs_emit(buf, "%i\n",
+ 			((struct raw3270 *) dev_get_drvdata(dev))->model);
  }
- 
+ static DEVICE_ATTR(model, 0444, raw3270_model_show, NULL);
+@@ -1055,7 +1055,7 @@ struct raw3270_view *
+ static ssize_t
+ raw3270_rows_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%i\n",
++	return sysfs_emit(buf, "%i\n",
+ 			((struct raw3270 *) dev_get_drvdata(dev))->rows);
+ }
+ static DEVICE_ATTR(rows, 0444, raw3270_rows_show, NULL);
+@@ -1063,7 +1063,7 @@ struct raw3270_view *
+ static ssize_t
+ raw3270_columns_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%i\n",
++	return sysfs_emit(buf, "%i\n",
+ 			((struct raw3270 *) dev_get_drvdata(dev))->cols);
+ }
+ static DEVICE_ATTR(columns, 0444, raw3270_columns_show, NULL);
 -- 
 1.8.3.1
 
