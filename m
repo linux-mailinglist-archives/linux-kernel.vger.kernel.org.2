@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883173F7573
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFBE3F7576
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240915AbhHYM5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 08:57:39 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33940
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240078AbhHYM5i (ORCPT
+        id S240972AbhHYM6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 08:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240078AbhHYM55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 08:57:38 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8D2F540793
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629896212;
-        bh=J/tSZXGbbVX7jq/a3ssqSdjqxH4DgxG+yQPijZgaVeg=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=qK2zxW07oVUKSM30tMetlfFFQwiZPNf97uO/7VTd0LhNpmwCFPcnc41KtXGAORyvF
-         Y1m8423oIma0suhOOt7MisvPqmUuNOiwEOpKbfdeYUWPbMkJ5UcdUm1lAUvJ8vqOrV
-         rgpztMO2/x5KFrKh3u3s41Whcrf+dVHhRCeSuspNWncgDlq7d5wnJ/M69r8NPNxA1W
-         d268r00obI0K22jFuBp1I3SKUuBRLh5wpWnkbaJ3wrHIQ3yK+l6C/Rcy5UX0RaVrWC
-         ikt6fu/YaMmHqdLX89P1VNjzm8lPnaZ7ovMgnxYcrKuyQ7NNnfp09YHntZYorIXn4W
-         EumEt8LAXnanw==
-Received: by mail-wr1-f72.google.com with SMTP id h14-20020a056000000e00b001575b00eb08so1981981wrx.13
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 05:56:52 -0700 (PDT)
+        Wed, 25 Aug 2021 08:57:57 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCC2C061757;
+        Wed, 25 Aug 2021 05:57:11 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id j14-20020a1c230e000000b002e748b9a48bso3627100wmj.0;
+        Wed, 25 Aug 2021 05:57:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QmVDDYgRM3rmT7pBD0Z2AcNxKTq+p7zdTiT/aiEkjp8=;
+        b=rqp5tdwa7EhPna3M48xW5ek6aaNBvlZDKNrGhAcBgfQl00z8p0l8qP4Sbi+HpD+COp
+         vGWUOK8n+Tpj0bUiZ1SmGwLOC9bX0t8RSuqDc8M5bPoofejjyNkulxxf4CosvWM+N3Xt
+         SgGQgE/odZz2G6vvmq3sW21RGgrixThh7u0INK5r2ExaBvwxSH5H4T+XwVDWpiDN4+Nb
+         YeO+8Q7Ud/iIH5zujg4c0dpE7p+SQwgAYXgr34yCrAw9yg8s8lJrfO2+MkS/FtkK/AeV
+         Kd0bxWMax9vsKvCt4zZMXs7hNkEYD/P8M4wOCqTPITruPse9Jz/Y65J/iz184eJ44cb8
+         sYGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J/tSZXGbbVX7jq/a3ssqSdjqxH4DgxG+yQPijZgaVeg=;
-        b=cdVNcirbYRT/ickadq4MHeU8WbCG8smWgFLCbdu+wFhcDDwgZfpsxPDNJHyysQn6hn
-         hziyQ91ysfdpFigbxXAMx9MUNoDDh8IjqBCRT2diccP6buDT5nJxVVOpoLNLyuYc1Qj+
-         Ir+7c/CWY0hAV7PIL2DDA023TXc3mNvoEg+EZ/CHtJizfvZuUXeQ7bCF9DAsPysifkCt
-         OavDhCjqsaDo9yNJ4YD/JVHW9oOEmNR1Y3ACHhvnNnTk9o7GbTt2VbKyRy7tpZBUixYr
-         RoKWMAyXdmuXmoCdFfo+pbdpcgQUMuSut4PHHflXhnLSAJOQyLISF3TsGg/M5vSlD9Y6
-         rZ7w==
-X-Gm-Message-State: AOAM530Qayr9ObtIbPKf/FfqCyvd1KckA/x+XvlAFFUS1+jou2IU/xhL
-        Od0jZp+kVR6aEEVXx8ONoqv6w1NGnheSgAnWEu+LPBmUJtkGDvj+INcL0whTNDnOym1k4M1ED5t
-        eh50REN59uaVtx0KRsuh2YB3XE2hgBSwUhrBnNVNPrg==
-X-Received: by 2002:a1c:2702:: with SMTP id n2mr9151059wmn.78.1629896212258;
-        Wed, 25 Aug 2021 05:56:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx19exlQXFyThlRhadSTOudioZ5LJmmgmFwb5+25rV2AcBZRK30aXzWxi2nBrwdS83mcw53+g==
-X-Received: by 2002:a1c:2702:: with SMTP id n2mr9151037wmn.78.1629896212095;
-        Wed, 25 Aug 2021 05:56:52 -0700 (PDT)
-Received: from [192.168.0.103] ([79.98.113.15])
-        by smtp.gmail.com with ESMTPSA id k18sm5294991wmi.25.2021.08.25.05.56.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 05:56:51 -0700 (PDT)
-Subject: Re: [PATCH 1/5] dt-bindings: mtd: jedec,spi-nor: document
- issi,is25wp256
-To:     Tudor.Ambarus@microchip.com, p.yadav@ti.com
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, atish.patra@wdc.com, sagar.kadam@sifive.com,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <20210819165908.135591-1-krzysztof.kozlowski@canonical.com>
- <20210819172852.b26mybrdr33wso62@ti.com>
- <5bff5a0c-48e5-3721-5595-836ce0562c6f@canonical.com>
- <ae4c58fe-0af5-3f1d-cc16-27b78772cbb5@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <abd7496d-7aaa-7f23-bdae-441906277577@canonical.com>
-Date:   Wed, 25 Aug 2021 14:56:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QmVDDYgRM3rmT7pBD0Z2AcNxKTq+p7zdTiT/aiEkjp8=;
+        b=LODHn5mQ68QCQrtPKEqWBaOzR2YkEmRbD/iQbRjH/PFCgdShTFvWt7MCIoAbYtS31F
+         bq1LCDEziis/0kLv+S93R0DL1/OkBF4GuWxAnIzgcpmQpqXhYpkrX/M0hjpeY3JooENz
+         olwknNEAF12kgRSBT/qfccSJohkq0W2jr7s0gJnTtGP9NlqfSGTdJpQ/2Yf1D4XEo/eb
+         M4V1XkTdKcPfhMmIfrSvTvmtzVS7xUJ+WM6oEIE57jDMwCeCIGtt1AxaPn6H/2kx+nT5
+         iOgSrDFKq7lpIOrNKQsngJq6kq3xv1QzCFfS7wNFcw7DE8NS3UuBlaDsUPcTrBCrfBwF
+         +B0Q==
+X-Gm-Message-State: AOAM532C7kioDr5grxJf28qJ4dvSofFcTpliGzx72EMRFPJtdibOV4jO
+        d3u0HGnnfFbsBIGPJ0BvZNhoV9R3naacDg==
+X-Google-Smtp-Source: ABdhPJxhnfzPU9DYg8h8Gf4TdxcVDsry3xEUttXwCG/KFH98QTQOFQBh7F7DJHYMkM3Ij5nwZUOkHQ==
+X-Received: by 2002:a7b:cb89:: with SMTP id m9mr9201607wmi.123.1629896229647;
+        Wed, 25 Aug 2021 05:57:09 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id r25sm906747wra.12.2021.08.25.05.57.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 05:57:09 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 13:57:07 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: Re: [PATCH 4.19 00/84] 4.19.205-rc1 review
+Message-ID: <YSY+I4cSO6ESRSF0@debian>
+References: <20210824170250.710392-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ae4c58fe-0af5-3f1d-cc16-27b78772cbb5@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824170250.710392-1-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/2021 15:28, Tudor.Ambarus@microchip.com wrote:
-> On 8/19/21 8:36 PM, Krzysztof Kozlowski wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 19/08/2021 19:28, Pratyush Yadav wrote:
->>> + Tudor (you should be listed as a maintainer for this file IMO)
->>>
->>> On 19/08/21 06:59PM, Krzysztof Kozlowski wrote:
->>>> Document bindings for the issi,is25wp256 SPI NOR flash.
->>>>
->>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>>> ---
->>>>  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 1 +
->>>>  1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
->>>> index ed590d7c6e37..0db64ac7dc33 100644
->>>> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
->>>> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
->>>> @@ -33,6 +33,7 @@ properties:
->>>>        - items:
->>>>            - enum:
->>>>                - issi,is25lp016d
->>>> +              - issi,is25wp256
->>>
->>> I don't think we want to add any new flash specific compatibles. Why is
->>> "jedec,spi-nor" not enough for you?
->>
->> It's fine for me. I had impression that specific compatibles are still
->> preferred and one of boards is using this one. The other way is to
->> remove this compatible from the board DTS.
->>
+Hi Sasha,
+
+On Tue, Aug 24, 2021 at 01:01:26PM -0400, Sasha Levin wrote:
 > 
-> Pratyush is right, we prefer to bind just to the generic "jedec,spi-nor"
-> compatible whenever possible.
+> This is the start of the stable review cycle for the 4.19.205 release.
+> There are 84 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu 26 Aug 2021 05:02:47 PM UTC.
+> Anything received after that time might be too late.
 
-Thanks for confirming this. I'll fixup the dts.
+Build test:
+mips (gcc version 11.1.1 20210816): 63 configs -> no failure
+arm (gcc version 11.1.1 20210816): 116 configs -> no new failure
+arm64 (gcc version 11.1.1 20210816): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/53
 
 
-Best regards,
-Krzysztof
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
+
