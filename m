@@ -2,117 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72C33F7BB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD77B3F7BB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242350AbhHYRuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
+        id S242329AbhHYRug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbhHYRuI (ORCPT
+        with ESMTP id S242356AbhHYRuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:50:08 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E1DC061757;
-        Wed, 25 Aug 2021 10:49:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=PrWkaC3oZYQq319udCsme3fnU3/flYB0GPD+uh3jvX4=; b=wtOcjZOEdZQ8ep3ZcYzHWcrXub
-        5hEd8Zyu8gXYp1BYRSdDXTTZHtuuKeZViyzK/LmNqRTuKiv4Aemff/9zrCZaVDiU38wf6H/hLEqBH
-        uTRaSakaYpjO8+YF9zU3VRT5DldJjLyQAkxN1Xk3mPL7etQ77Tr7vPmLye2vKhiwGl7VbiXZ8Z92Y
-        nACvT082cTh7HamOeIcGySzrnIkfmpHWZy6n57jWu7CmcQmceH+BaKO2AfonB6HOXGf6HTfnRYgVV
-        4SAFtNM8n1QCBca+XRFQZemAoo9UbJ/RNjyFlIs4IpB2+4ZJt4Cxn/W3ymVyD9/12dO3DV3Wo2tgs
-        v3GQw4Tw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIx1d-0087sf-39; Wed, 25 Aug 2021 17:49:21 +0000
-Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
-To:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-References: <20210820192615.23e2e617@canb.auug.org.au>
- <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
- <202108202248.921E8C66@keescook>
- <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
- <20210823203742.5169ad54@canb.auug.org.au>
- <66615de5-4acb-8d85-6d69-ddd0b9609348@infradead.org>
- <20210824115859.187f272f@canb.auug.org.au> <202108250959.CD734CED@keescook>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1d7780f0-424b-71d4-732b-c28a796d1166@infradead.org>
-Date:   Wed, 25 Aug 2021 10:49:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 25 Aug 2021 13:50:35 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AB6C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:49:49 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id y14-20020a0568302a0e00b0051acbdb2869so49023otu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=IHLTZuGBoBlIFXswVu7bXC/9iKMJE13qU6Y1SgFjzlc=;
+        b=KOn72M/be1SVIlEd8SkIJsZJ97/eGvxHtqGd4iwCylW1lrZ85kbyU90MVU9O3ZDdxU
+         IZom4HK739dYulYJMozQ+TkGBDLOuq+uCZDciXjLmMduA1hSsyahSyzY5WY+JXaJO4d3
+         zTxV04LhDNnqD8IxBRwE81AIw7TYp+OiPklG4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=IHLTZuGBoBlIFXswVu7bXC/9iKMJE13qU6Y1SgFjzlc=;
+        b=HvvtPmKm/QFD/JCxWhffTXCKkHVRZt0uin7h7qhCCKMtQGF6KHLpWtu+TfaE37rbuP
+         E7+b8wG6DoKZxj6gn1STnjoXYjh4nCkRjCxe1whrA9M0LtAbSgEbcgKq8KRpjvfTCd2V
+         OtWNcok774ocAMK6mGs9fgbuPvdR2EI7LK3j8RxIOm09abxEsS9EnIpy+Eef8c5ElVZd
+         gSUyCt+FhnMa0FfMSo70smK8qDZokdmlQrp9mWns+9ZnSLgjFdTdd11rRkiyJBdyc1aA
+         dmuw1cORW8C5kq2cu+NaDv2ivORLw/5DzU2Pn6X1ud9aldmpHzTC8yQjxkl8xSYfXHMQ
+         7E9w==
+X-Gm-Message-State: AOAM532R0PWbn6GvoTsko/1CLKM7JnpQdP1bbOqt/Y1P9anudBGSHdOr
+        uIP7bGUjidtcM4ejnT/0RLbzRI/Kla1XNvMyZH9Ccg==
+X-Google-Smtp-Source: ABdhPJxW5wHzEiRPZArcpHDa60XkS4gMZuHdU4SRDUo0pRaGJR5599SJE1ynpdZmPBns6PhWB8W+Ii3SYlSa1hgLSao=
+X-Received: by 2002:a05:6830:2473:: with SMTP id x51mr31144560otr.34.1629913788390;
+ Wed, 25 Aug 2021 10:49:48 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 25 Aug 2021 17:49:47 +0000
 MIME-Version: 1.0
-In-Reply-To: <202108250959.CD734CED@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1629847775-16767-1-git-send-email-khsieh@codeaurora.org>
+References: <1629847775-16767-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 25 Aug 2021 17:49:47 +0000
+Message-ID: <CAE-0n52obotsMwXLHm8Fkd3+7QnXCEZgVhO_FNSY7RsbC+pbcA@mail.gmail.com>
+Subject: Re: [PATCH] phy: qcom-qmp: add support for voltage and pre emphesis swing
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        robdclark@gmail.com, robh+dt@kernel.org, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kishon@ti.com, p.zabel@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/21 10:04 AM, Kees Cook wrote:
-> On Tue, Aug 24, 2021 at 11:58:59AM +1000, Stephen Rothwell wrote:
->> On Mon, 23 Aug 2021 18:24:44 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
->>>
->>> This is just weird. What I am seeing is that for every source file
->>> where gcc emits a warning: it then follows that up with this
->>>>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
->>
->> I see the same, as well as:
->>
->> <stdin>:1515:2: warning: #warning syscall clone3 not implemented [-Wcpp]
->> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
->>
->> But only on my gcc 7.3.1 builds (the rest are gcc 10).
->>
->>> Smells like a gcc bug to me.
->>
->> Yes
->>
->> Also noted here: https://github.com/DynamoRIO/drmemory/issues/2099 (second comment)
-> 
-> Okay, I think this work-around should work. I've been able to reproduce
-> the weird conditions, and this seems to behave correctly. Andrew, can
-> you fixup the fixup with this?
-> 
-> 
-> diff --git a/Makefile b/Makefile
-> index 26640899e7ca..c1842014a5de 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1094,8 +1094,13 @@ endif
->   
->   ifdef CONFIG_CC_IS_GCC
->   # The allocators already balk at large sizes, so silence the compiler
-> -# warnings for bounds checks involving those possible values.
-> -KBUILD_CFLAGS += $(call cc-option, -Wno-alloc-size-larger-than)
-> +# warnings for bounds checks involving those possible values. While
-> +# -Wno-alloc-size-larger-than would normally be used here, some versions
-> +# of gcc (<9.1) weirdly don't handle the option correctly when _other_
-> +# warnings are produced (?!), so instead use SIZE_MAX to effectively
-> +# disable it.
-> +# https://lore.kernel.org/lkml/20210824115859.187f272f@canb.auug.org.au
-> +KBUILD_CFLAGS += $(call cc-option, -Walloc-size-larger-than=SIZE_MAX)
->   endif
->   
->   # disable invalid "can't wrap" optimizations for signed / pointers
-> 
+Quoting Kuogee Hsieh (2021-08-24 16:29:35)
+> Add voltage and pre emphesis swing tables so that voltage and
 
-Hi Kees,
+Is it "pre-emphasis"?
 
-I get a lot of these:
+> pre emphsis swing level can be configured base on link rate.
 
-../include/linux/slab.h: In function ‘keyctl_instantiate_key_common’:
-cc1: warning: invalid argument ‘SIZE_MAX’ to ‘-Walloc-size-larger-than=’
+This one is also different.
 
+>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 
+Presumably
 
--- 
-~Randy
+Fixes: aff188feb5e1 ("phy: qcom-qmp: add support for sm8250-usb3-dp phy")
 
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp.c | 95 ++++++++++++++++++++++++++++++++-----
+>  1 file changed, 82 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> index 31036aa..52bab6e 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> @@ -1916,7 +1916,7 @@ static const struct qmp_phy_init_tbl qmp_v4_dp_tx_tbl[] = {
+>         QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_OFFSET_RX, 0x11),
+>         QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_BAND, 0x4),
+>         QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_POL_INV, 0x0a),
+> -       QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_DRV_LVL, 0x2a),
+> +       QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_DRV_LVL, 0x22),
+
+Is 0x22 the better "default"? Can that be described in the commit text?
+
+>         QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_EMP_POST1_LVL, 0x20),
+>  };
+>
+> @@ -3727,6 +3727,81 @@ static int qcom_qmp_v3_dp_phy_calibrate(struct qmp_phy *qphy)
+>
+>         return 0;
+>  }
+
+Nitpick: Newline here please.
+
+> +/*
+> + * 0x20 deducted from tables
+> + *
+> + * swing_value |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
+> + * pre_emphasis_value |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
+> +*/
+> +static const u8 qmp_dp_v4_pre_emphasis_hbr3_hbr2[4][4] = {
+> +       /* p0    p1    p2    p3 */
+> +       { 0x00, 0x0c, 0x15, 0x1b },     /* s0 */
+> +       { 0x02, 0x0e, 0x16, 0xff },     /* s1 */
+> +       { 0x02, 0x11, 0xff, 0xff },     /* s2 */
+> +       { 0x04, 0xff, 0xff, 0xff }      /* s3 */
+> +};
+> +
+> +static const u8 qmp_dp_v4_voltage_swing_hbr3_hbr2[4][4] = {
+
+This looks the same as qmp_dp_v3_voltage_swing_hbr3_hbr2. Can that be
+used?
+
+> +       /* p0    p1    p2    p3 */
+> +       { 0x02, 0x12, 0x16, 0x1a },     /* s0 */
+> +       { 0x09, 0x19, 0x1f, 0xff },     /* s1 */
+> +       { 0x10, 0x1f, 0xff, 0xff },     /* s2 */
+> +       { 0x1f, 0xff, 0xff, 0xff }      /* s3 */
+> +};
+> +
+> +static const u8 qmp_dp_v4_pre_emphasis_hbr_rbr[4][4] = {
+> +       /* p0    p1    p2    p3 */
+> +       { 0x00, 0x0e, 0x15, 0x1b },     /* s0 */
+> +       { 0x00, 0x0e, 0x15, 0xff },     /* s1 */
+> +       { 0x00, 0x0e, 0xff, 0xff },     /* s2 */
+> +       { 0x04, 0xff, 0xff, 0xff }      /* s3 */
+> +};
+> +
+> +static const u8 qmp_dp_v4_voltage_swing_hbr_rbr[4][4] = {
+> +       /* p0    p1    p2    p3 */
+> +       { 0x08, 0x0f, 0x16, 0x1f },     /* s0 */
+> +       { 0x11, 0x1e, 0x1f, 0xff },     /* s1 */
+> +       { 0x16, 0x1f, 0xff, 0xff },     /* s2 */
+> +       { 0x1f, 0xff, 0xff, 0xff }      /* s3 */
+
+Do these comments add any value? Can we drop them?
+
+> +};
+> +
+> +static int qcom_qmp_v4_phy_configure_dp_swing(struct qmp_phy *qphy,
+> +               unsigned int drv_lvl_reg, unsigned int emp_post_reg)
+> +{
+> +       const struct phy_configure_opts_dp *dp_opts = &qphy->dp_opts;
+> +       unsigned int v_level = 0, p_level = 0;
+> +       u8 voltage_swing_cfg, pre_emphasis_cfg;
+> +       int i;
+> +
+> +       for (i = 0; i < dp_opts->lanes; i++) {
+> +               v_level = max(v_level, dp_opts->voltage[i]);
+> +               p_level = max(p_level, dp_opts->pre[i]);
+> +       }
+> +
+> +
+
+Nitpick: Drop extra newline.
+
+> +       if (dp_opts->link_rate <= 2700) {
+> +               voltage_swing_cfg = qmp_dp_v4_voltage_swing_hbr_rbr[v_level][p_level];
+> +               pre_emphasis_cfg = qmp_dp_v4_pre_emphasis_hbr_rbr[v_level][p_level];
+> +       } else {
+> +               voltage_swing_cfg = qmp_dp_v4_voltage_swing_hbr3_hbr2[v_level][p_level];
+> +               pre_emphasis_cfg = qmp_dp_v4_pre_emphasis_hbr3_hbr2[v_level][p_level];
+> +       }
+> +
+> +       /* TODO: Move check to config check */
+> +       if (voltage_swing_cfg == 0xFF && pre_emphasis_cfg == 0xFF)
+> +               return -EINVAL;
+> +
+> +       /* Enable MUX to use Cursor values from these registers */
+> +       voltage_swing_cfg |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
+> +       pre_emphasis_cfg |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
+> +
+> +       writel(voltage_swing_cfg, qphy->tx + drv_lvl_reg);
+> +       writel(pre_emphasis_cfg, qphy->tx + emp_post_reg);
+> +       writel(voltage_swing_cfg, qphy->tx2 + drv_lvl_reg);
+> +       writel(pre_emphasis_cfg, qphy->tx2 + emp_post_reg);
+
+This is copy/pasted from qcom_qmp_phy_configure_dp_swing() right? How
+about making a function
+
+static int
+__qcom_qmp_phy_configure_dp_swing(struct qmp_phy *qphy,
+				  unsigned int drv_lvl_reg,
+				  unsigned int emp_post_reg,
+				  const u8 **voltage_rbr_hbr,
+				  const u8 **pre_emphasis_rbr_hbr,
+				  const u8 **voltage_hbr3_hbr2,
+				  const u8 **pre_emphasis_hbr3_hbr2)
+
+that does the same stuff but allows the tables to be different.
+
+> +
+> +       return 0;
+> +}
+>
+>  static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
+>  {
+> @@ -3757,14 +3832,7 @@ static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
+>
+>  static void qcom_qmp_v4_phy_configure_dp_tx(struct qmp_phy *qphy)
+>  {
+> -       /* Program default values before writing proper values */
+> -       writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+> -       writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+> -
+> -       writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> -       writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> -
+> -       qcom_qmp_phy_configure_dp_swing(qphy,
+> +       qcom_qmp_v4_phy_configure_dp_swing(qphy,
+>                         QSERDES_V4_TX_TX_DRV_LVL,
+>                         QSERDES_V4_TX_TX_EMP_POST1_LVL);
+>  }
+> @@ -3885,6 +3953,9 @@ static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
+>         writel(drvr1_en, qphy->tx2 + QSERDES_V4_TX_HIGHZ_DRVR_EN);
+>         writel(bias1_en, qphy->tx2 + QSERDES_V4_TX_TRANSCEIVER_BIAS_EN);
+>
+> +       writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
+> +       writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
+
+Is this mentioned in the commit text? Is this fixing the sequence?
+It doesn't look like we're adding tables.
+
+> +
+>         writel(0x18, qphy->pcs + QSERDES_DP_PHY_CFG);
+>         udelay(2000);
+>         writel(0x19, qphy->pcs + QSERDES_DP_PHY_CFG);
+> @@ -3896,11 +3967,9 @@ static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
+>                         10000))
+>                 return -ETIMEDOUT;
+>
+> -       writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
+> -       writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
+>
+> -       writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+> -       writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+> +       writel(0x22, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+> +       writel(0x22, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+>
+>         writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+>         writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
