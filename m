@@ -2,171 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFE33F764D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096A33F764F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240608AbhHYNvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 09:51:06 -0400
-Received: from mail-dm3nam07on2081.outbound.protection.outlook.com ([40.107.95.81]:41632
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        id S240708AbhHYNvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 09:51:42 -0400
+Received: from mail-bn8nam12on2076.outbound.protection.outlook.com ([40.107.237.76]:12512
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237799AbhHYNvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 09:51:03 -0400
+        id S240646AbhHYNvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 09:51:35 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y/vagrbM/RvmfHhJalLKKIHivSRpq7bfAJ56ZV//MIIgbYnGYg4X/m1CmkyybGQe709HnkdXMaYLLwC541RndXBSYt7tVoYyqdLq/+m+nC/uPP78WSjmkrxSdXOLCY7KJAjYvqtauXal2d/7rKK1hZiV8at2HHnWeVqsKxctoL1yDw7yjdTNEh6dLtNUCmRQUqjNRpVr4FzPH6YX3WvWC4Fk9r4aY/lRNE9flkbwQ84sOqRKNqSf9uXqJbggtA0oBTXLH+bd+nw3V8Jz4Jw3QJd92/G3LH5lPG/v6EDKVFAiS3SMGPEDQ+VIa0Racd5b6oMMpSyw5qLz9V7atKsocQ==
+ b=RiYGllf/5gcC42c6GA1ye93CM1JYlqF3xICifzNK/OnEWp5+dxJ562PT3eCmtk6MCJ2t2IPjKPU23mtRydGDimtgX705Iz8eknvT2rwSS6jNixBkdb6dDskMP8nF9OD6OnM9T3P5zD4jGFkTBc109UMuzcAU5P4oXRB24R5im1Et0iGG3YdZasw21vSHh0NaPjyu2RtJqlxric+8PmpWPZqc5AEhe+cP74rdMfPw+87OmEp5eoIXs5YA2z3gKZel4xa+mbn586SZn1lqbwnqaVdt/KSxs3AYPfgjh0QbNQ39wQMxGOdozflUmbtf+I0HQXWSZ2tu3RJGJvCLtv+KsA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zwgJyZjTlByZgyJipd8xiHMYLZhCJeRlNDBEN4L/T3w=;
- b=cBsxwwUSj43JKL88w+N4vnVxPyQPh0Ws+3ui1S6OvqAn3CWtLicpK0zuGc7Z/x563UbyQYBt43+kuuO3x2kmui1t3e8yo6I1ynSB4u2rZFWjvN8K4Mst2K7e0BTQGa5BlPbS74OMi1ifZbFhMdb9xnC5XowHbI+giJgcSize7Fvvb8ZGsZKjSsIZCweapZtRpR+6e9aOXfXJyPRCxpDrgKYXBgU+0kyAURTjLwAOS8sy+zKOVezefrDWzvqukVU4t6Q33f216tAAnyOUFzoNvSJTvbLH4ux7zWQj77FZrEhI4a2GvEG76OgeeFOXWZ2+y/xXOD1E4jTKtD30X2SQwQ==
+ bh=7o9qmJbDtrj5n3bgt1Sugx9z8Df8TU1jOVwqBjU+CeY=;
+ b=WopsUGD9v3Ik9bKOvoI74zr4GpYAD09iTejspIT0qzbBYwJGoLakXSkU/fw4qOE2jE4nuHYtkO8grsWkWA+uFkok6TXuCB7SNC2J9NF6T+1+G5KY5c5wjEGdmRA6Uu4zzAbb0hf4QwF0xy79f27mPi0yqxTWUpkpt8LvXutoaSCzECBpPAs2Ujfunqqr46yyULhyGK/2ihsO8cz25RKkEMVVBXvHy7IpDDt7L+FmC0hTk+8uiD4UVSnftRBbABCpurwj+0NVSFaBBv7TxUMMFZhC9Uwn5b+1MOdcvjKTLbdQ6zie5UFzmMRHpgQG+Vvok0d/S5s+LwAUuBUsQ2D3Gw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zwgJyZjTlByZgyJipd8xiHMYLZhCJeRlNDBEN4L/T3w=;
- b=uSB0wy9GaK6qv/jLwmsT/SC9cZtB0AUwAE+jFHIO9d/2wpW8eWRUUd+rk8hWUvYNkci1VBjd9dSGJmRnhTO8gJRZnt/4XgdhmuHMv67juwiTdJyELoR9gGf+RoWMcG8ktOKhQpl84x/2gk3cX7/qYX1/6OiHsCAHEXaUjFBlncE=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM6PR12MB5568.namprd12.prod.outlook.com (2603:10b6:5:20c::8) with
+ bh=7o9qmJbDtrj5n3bgt1Sugx9z8Df8TU1jOVwqBjU+CeY=;
+ b=aTuhZrmPE1Yk8oT4G8S8e/9FT1igF9BWsIw69E8rNOl4Oco2vNOuI7ejsxJHdNxQZf+ZGYdrUdtHkbb+9gapAja7pxmwokd5qvZNHGtEhwRJQjPVdC+UAASDHM3533cwvC+UBNqUXIvFAguTtnd/1XTrCs8qgvCMn7tHhbzv+zg=
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6)
+ by BL1PR12MB5269.namprd12.prod.outlook.com (2603:10b6:208:30b::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Wed, 25 Aug
- 2021 13:50:15 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418%6]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
- 13:50:15 +0000
-Subject: Re: [PATCH Part2 v5 08/45] x86/fault: Add support to handle the RMP
- fault for user address
-To:     Vlastimil Babka <vbabka@suse.cz>, Joerg Roedel <jroedel@suse.de>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        Mike Kravetz <mike.kravetz@oracle.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-9-brijesh.singh@amd.com>
- <f6d778a0-840d-8c9c-392d-5c9ffcc0bdc6@intel.com>
- <19599ede-9fc5-25e1-dcb3-98aafd8b7e87@amd.com>
- <3f426ef8-060e-ccc9-71b9-2448f2582a30@intel.com> <YSUhg/87jZPocLDP@suse.de>
- <c5a8f7e8-7146-0737-81a1-1faceb6992ab@suse.cz>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <3a82fd1d-c801-840b-afe8-63d000efe7cd@amd.com>
-Date:   Wed, 25 Aug 2021 08:50:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <c5a8f7e8-7146-0737-81a1-1faceb6992ab@suse.cz>
-Content-Type: text/plain; charset=utf-8
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Wed, 25 Aug
+ 2021 13:50:48 +0000
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::5dfc:ea54:4a18:89f5]) by BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::5dfc:ea54:4a18:89f5%4]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
+ 13:50:48 +0000
+From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>
+CC:     "Shah, Nehal-bakulchandra" <Nehal-bakulchandra.Shah@amd.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Liu, Kun" <Kun.Liu2@amd.com>
+Subject: RE: [RESEND PATCH 2/2] usb: dwc3: pci add property to allow user
+ space role switch
+Thread-Topic: [RESEND PATCH 2/2] usb: dwc3: pci add property to allow user
+ space role switch
+Thread-Index: AQHXmR2YdRDA9Lmp5UiDkYimjN6dIauDuXCAgAASRoCAAAcAAIAAanig
+Date:   Wed, 25 Aug 2021 13:50:48 +0000
+Message-ID: <BL1PR12MB51443C94208DDE0AEBCB91A6F7C69@BL1PR12MB5144.namprd12.prod.outlook.com>
+References: <20210824192337.3100288-1-Nehal-Bakulchandra.shah@amd.com>
+ <87ilzu5ap0.fsf@kernel.org> <YSXqsXmuom2fFiKN@kuha.fi.intel.com>
+ <YSXwkKJ53d/uwnhy@kuha.fi.intel.com>
+In-Reply-To: <YSXwkKJ53d/uwnhy@kuha.fi.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0031.namprd04.prod.outlook.com
- (2603:10b6:806:120::6) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2021-08-25T13:50:42Z;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP 2.0;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=178e2769-45e8-4a5f-9478-47c20cbe0fc9;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=1
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f3654468-1a41-4f4e-aae4-08d967cf580d
+x-ms-traffictypediagnostic: BL1PR12MB5269:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL1PR12MB5269AA6E3F751022858D1A11F7C69@BL1PR12MB5269.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hiRPHo9ZaRdpVlnQCAXaubh+mL0bW9MvA/ZOHcDSyJ0oPHe/aR92iZnYDUzB0LnonN4WVW50CFScEEJZR1CNubiGzQF7hTIEi8xlDNgO6WzkKIKsZU5gh2z8GRbDEYDfbV6ZtOGz/18XRUTDjGuRU0Or02KVY/ARcB90QJOmwJWHBM3gaiHCm18of/JwOSZbx50nls3mNKi4Ew4yHV0948XHb/3d8qM0BacGrwHqSND5ajvw0AI7YMd3RhhMG3vghe9/LomxBzXyO5ZYOG0Sm3CVqUhEdQ/JfGvqEJfMwQmwRjG/hW5fER7hUN+RB6w1hv+sOKqlpJOwKIoj3H/PByxtu3zlsMklfu00vZsuTUuV0/9OMEueS+kQ5+UraFix4W6vkeGxLji1DHNTj9RIOdOtKDuasIg+cLOuGWJkBtkaNCecJ0jM67YFHvjjnyhjpd4UAp1OiSdpPMTXeqSyttw2pA5ecVRQseFd+lIMnBCjFjyksFNOOPnJoqlHH3gak7cl9FxUcjrlplOnIAT4/hcTGnqJ6Cq2RNjihjg5mZv2YebFZxOHOyq9IsNpTuQQlAlYfffG5CivhU8yLIKDYA7ewnnkPGg3UjLZE9H0c1IWq+AaqQAuaxxwhu0VUFSnWpPv34/yZ9k0M34++KzViPtxhX0/YoqotDNepibDMqtTWuLfz6r3a1fj0bIIu09zTw0v3ri/5uU5wakI5r6S+A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5144.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(136003)(39860400002)(376002)(6506007)(83380400001)(76116006)(55016002)(66946007)(9686003)(64756008)(122000001)(53546011)(26005)(66476007)(2906002)(66446008)(38100700002)(66556008)(54906003)(86362001)(8676002)(71200400001)(33656002)(4326008)(186003)(316002)(478600001)(8936002)(38070700005)(5660300002)(7696005)(110136005)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?6B7EaWZ1PPzjqe4KC7EEZOlTJ4AiV0DJrFOu8rrifMeivJPrCSik+gsyBhcK?=
+ =?us-ascii?Q?emcvUrKSvOxsh8jTi3rai/CZ2MA3wS+FEqbeurKvZVPAk7M7cVIRP2VcXVfS?=
+ =?us-ascii?Q?7Gv6R1rR9b1M2kPypkmDJW1TZdaS7yejiD/Tx127q8K6Qy+BliPck0LcBQDY?=
+ =?us-ascii?Q?uwWuQ55JaxPaEC8Li6hFtbUlJfnfFmLTGgiRhxrdeRI5fxtLMQmCr52Gd4Uh?=
+ =?us-ascii?Q?bxAx5DK4jtS/GY+AihtAwcW+Ate4pVVfzzagG3NAKL22otllqAUVcMG1/dTJ?=
+ =?us-ascii?Q?OMgPchwWNraUryRm2OGPgKx/w4JkmOOpkcfvB5szzJhU1xnp/81xM1m13vdS?=
+ =?us-ascii?Q?568GzCK2lWQWoH9uVZU6A5xJ1O1UwB6B6gwjNp9iat5PhN/5tU8e/7B8Bmq1?=
+ =?us-ascii?Q?Dysh9FGs9efCiS/dvlcxJYRg496ffuHvNGp8g0lE+vbhm2GJ9aI4v+HTI7eK?=
+ =?us-ascii?Q?CRrIUCLrIqlVmisItoO39VM8HR5tePOniDvfNq+dIXc77i8nr7pFcgIfmIND?=
+ =?us-ascii?Q?/1Xvk0BBQVbvBy9ax/uk2TubmXcthY3H1md/RgSS/Bzlgksp8lvDTUJMmku2?=
+ =?us-ascii?Q?uGzoq4v6+vtNVSgOpcSz+Qwh/vwb/q2NpZwvaMA6GTnSEAvJmhYrhRkmahlT?=
+ =?us-ascii?Q?X526LOrNIvSLDl+RgHkjNphnj20s+UYBtOgv6z/kunVZWqfw4ewG5M3vt8sk?=
+ =?us-ascii?Q?i6Q7X8UhHdwef4VhDjiJDMxbmIPCMNVQT3znp+T7Jugj0/2RQVA61XAkkS0s?=
+ =?us-ascii?Q?KhMX3CNnkpof16G91k3P6SEkivJSxNeGdlbQ88+g14GLZRD/IskGqyUI5XUV?=
+ =?us-ascii?Q?ft0EHESsDyp/xkiU4/zqatkq229kRy7HaA6O5oS4QDkzQ6O3jFrKD3wS5K8N?=
+ =?us-ascii?Q?tNXymLif4F2vCQZatuPIW6C/LsIcPDhX/ccIvEvyBxritpDRUN0ofTD46tCS?=
+ =?us-ascii?Q?gO99W9e2hGYJVD9f9B1ea4RlD1QRexZGLthKgRgcmrwNeOCR2ioMcRR6Sr00?=
+ =?us-ascii?Q?lpDXOy0OyRTXYgcxUa3gcu+33lDrSyeISDhIF6SKZ7JfZVvMWsh90Ho9Zw0m?=
+ =?us-ascii?Q?eMDlbqjpse8lv9w8pn9b43S4R5fKhk6oxc2lsZM0j+Q8y/KugMqqA0+yVVL5?=
+ =?us-ascii?Q?O+WKGPA5SL5jAvOhcL7c/Hve/qXDghSLNpvs2FMEUfq61diCoHoy5avDZJQX?=
+ =?us-ascii?Q?07Dbb47xs9UqZkyhWPwT1AHoaVaq6lxiuDU7ut/QcVkorcCnjN+x5J1+Xxte?=
+ =?us-ascii?Q?+/iW071cX0sYE1B+mof/sKDcrMH5UQDmBj9/GTWJ5pOzEVATbYROWKoJUM5D?=
+ =?us-ascii?Q?M4TiOENLRDnw79gKQBQ+0ftq?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.241] (165.204.77.1) by SN7PR04CA0031.namprd04.prod.outlook.com (2603:10b6:806:120::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Wed, 25 Aug 2021 13:50:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 605c1b0b-35e0-4a23-9af8-08d967cf441e
-X-MS-TrafficTypeDiagnostic: DM6PR12MB5568:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB556868D8FA7760E01A7452AEECC69@DM6PR12MB5568.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xeLCStfkEf0l7VMbsB/anRekrdE3QW8MA1wkxk2/wNA6W/py7+UA/jcBHeCbkpiA+W7Pq38rBwBETdRPqP7d25hN0/8rKojRkkITXcoao25+8FTwHCaj6ESjlBmQwegQATjtqX5XeYs90Av33cN8JhEPo+cL7fTC6j0YleXrivZYOMaWFrw8B4muu1p8WBSFjozbwTVu+TWIBIvQesEBB6ePJFDemxCKDbhs2tc2rqcf+Q33kYatu/797fsDs8hMI06eoJ/R43tF1y7x9i1FO4J++99d5E7FnruV98Fiu1H7ObG6uhnxReJKSJVzWfvLyfgqcb6fZq7ltPHvRj6yp58IvZz1JtV9tS0WwVtpffjP+0NS+7f5mdfqXUVdxggkNJd7AIlcjxDDgWyN5Vze+KyrRLGwr60Vh7X/zD0gmJ2Z1Nr/gA/rLXB2OsXQ9cB2dKJDelJtYyI35jM8nK+nDfy/+i6X+4us3zANTIrk6kxNcBCUF96TfKXvh1hkwJMkG7INpa2E32W8pK88ROTHexRf5u2pf3dM1+sp3FczoHiYOeiyMFdu/sBBYAAZucD5J3Kvr2f8oZm/Of6/0qwPEAn7KuwZ2r3lwyKO/OLHNLArdy3WsX8BSAtQ1tfa7GZTvDsE5b0rgNiKy3QqM3KIDoBPQHGj7/ANhC65xM60gQ4vEr6OX7orTloYRbGmEQi37Kyd1aJ9wi6WZz8zGvjAZTJRkkz2x8sAwLtvNZu4nF2oEgTU4vXwIhyifbREtw/Nfkqr36uSay70r/BEovSHQPCy7MGq5O0vK13m+ANK7DOZTuwGokTIXa5pBabDVQyr
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(396003)(366004)(7416002)(16576012)(31686004)(2906002)(53546011)(966005)(316002)(38100700002)(7406005)(4326008)(5660300002)(45080400002)(8676002)(110136005)(54906003)(26005)(478600001)(86362001)(8936002)(31696002)(66476007)(186003)(956004)(2616005)(36756003)(66946007)(6486002)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: WVvowln/HdWy7KTO+joE9ZFo2xC8XNrkKFZpMYZPLfQZGTogdZprqS+l04ADzE987pHa4fXFfOkp961eCotzgkiYq0wiSVBHBy1Y2kYtX2vMf5pro/CgSQn+IN7/tFelFK51a3QSrl2MvaMtmTLKWuNDGrDcTscUxCltxOzKeX1DQcb6BW/Q4k3f0NN6KNuUiQnfsoVgaROz+zuHGwM+c9F+4THGTQuzAJQi/sS9PF0AlQNFbFST/N1wW3/QeEHJVFRB2OXZ7xye+hUlto/H2tC+RvUObVJYK23BMpOjMUxiBsVWPKX7iD8UgsFdqn5nVa8uTcY3m+YsB55i/4Uph26PNpNmTr+W/4plrkitV1KUZ266jHHqusUQI7wTzPFZq2AkLEysH5N8mwSt7a9A3tLIdMHExdcFqhHFdGLaf0w4p0F3Jx/TT5YHKCBmkDpd690VEEo+fkWIegCkqqzlS5Dg++SP3kRCLwM+ozkbKJ32uAvE6LI0u1Jv6Nswdy4n1ZIjNCo68cl9lug4i0U1Brzaahx8hDLyi3M/odm6VVC6puU4AS5aG9AmIGq214BkFAHoDz37sskgmjd85LGz99n1yuQPaBOV1DPXyxzjrKoooQQlt07lzXgw6PQQdsX6SQZEVQJp4Q9BPehVFLIpECh1769QQeKGO0cHsCrnQ3gwkUW2ilbl/LhG7bAum6DYJNuT6m9r7jJhW50wEnBQCIHgimLduZyvilb0/Bh1FV2zRrcCiT5mQlTj5LxpPFBq
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 605c1b0b-35e0-4a23-9af8-08d967cf441e
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 13:50:15.0862
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5144.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3654468-1a41-4f4e-aae4-08d967cf580d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2021 13:50:48.1075
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pOveZbmb+c0NZEHqDgEZOQjBrbwKMnGbk5sWmBb5O4ojIe7n4Rw6HkH+DDyHdd/wYeAXyx2yG6m5kEY29LKiWw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5568
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: O0tNeFl8A1Yqp+8vYsVRgjQQCVEL4xK+zmREi7M6Ge3duOyRH5j2KKXG9vNPxUtXD2aD84F2EIu7yC1m2BwQOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5269
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/21 4:16 AM, Vlastimil Babka wrote:
-> On 8/24/21 18:42, Joerg Roedel wrote:
->> On Mon, Aug 23, 2021 at 07:50:22AM -0700, Dave Hansen wrote:
->>> It *has* to be done in KVM, IMNHO.
->>>
->>> The core kernel really doesn't know much about SEV.  It *really* doesn't
->>> know when its memory is being exposed to a virtualization architecture
->>> that doesn't know how to split TLBs like every single one before it.
->>>
->>> This essentially *must* be done at the time that the KVM code realizes
->>> that it's being asked to shove a non-splittable page mapping into the
->>> SEV hardware structures.
->>>
->>> The only other alternative is raising a signal from the fault handler
->>> when the page can't be split.  That's a *LOT* nastier because it's so
->>> much later in the process.
->>>
->>> It's either that, or figure out a way to split hugetlbfs (and DAX)
->>> mappings in a failsafe way.
->>
->> Yes, I agree with that. KVM needs a check to disallow HugeTLB pages in
->> SEV-SNP guests, at least as a temporary workaround. When HugeTLBfs
->> mappings can be split into smaller pages the check can be removed.
-> 
-> FTR, this is Sean's reply with concerns in v4:
-> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flinux-coco%2FYPCuTiNET%252FhJHqOY%40google.com%2F&amp;data=04%7C01%7Cthomas.lendacky%40amd.com%7C692ea2e8bfd744e7ab5d08d967a918d3%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637654798234874418%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=leZuMY0%2FX8xbHA%2FOrxkXNoLCGNoVUQpY5eB3EInM55A%3D&amp;reserved=0
-> 
-> I think there are two main arguments there:
-> - it's not KVM business to decide
-> - guest may do all page state changes with 2mb granularity so it might be fine
-> with hugetlb
-> 
-> The latter might become true, but I think it's more probable that sooner
-> hugetlbfs will learn to split the mappings to base pages - I know people plan to
-> work on that. At that point qemu will have to recognize if the host kernel is
-> the new one that can do this splitting vs older one that can't. Preferably
-> without relying on kernel version number, as backports exist. Thus, trying to
-> register a hugetlbfs range that either is rejected (kernel can't split) or
-> passes (kernel can split) seems like a straightforward way. So I'm also in favor
-> of adding that, hopefuly temporary, check.
+[Public]
 
-If that's the direction taken, I think we'd be able to use a KVM_CAP_
-value that can be queried by the VMM to make the determination.
+> -----Original Message-----
+> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Sent: Wednesday, August 25, 2021 3:26 AM
+> To: Felipe Balbi <balbi@kernel.org>
+> Cc: Shah, Nehal-bakulchandra <Nehal-bakulchandra.Shah@amd.com>;
+> gregkh@linuxfoundation.org; linux-usb@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Liu, Kun <Kun.Liu2@amd.com>; Deucher,
+> Alexander <Alexander.Deucher@amd.com>
+> Subject: Re: [RESEND PATCH 2/2] usb: dwc3: pci add property to allow user
+> space role switch
+>=20
+> On Wed, Aug 25, 2021 at 10:01:05AM +0300, Heikki Krogerus wrote:
+> > On Wed, Aug 25, 2021 at 08:55:41AM +0300, Felipe Balbi wrote:
+> > >
+> > > Hi,
+> > >
+> > > Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com> writes:
+> > >
+> > > > For AMD platform there is a requirement to enable user space role
+> > > > switch from host to device and device to host as customer platform
+> > > > is not completely capable of OTG i.e. with type C controller it
+> > > > does not have PD to support role switching. Hence, based ACPI/EC
+> > > > interrupt role switch is triggered by the usemode script running in
+> background.
+> > >                    usermode ?
+> >
+> > Couldn't you capture that ACPI/EC interrupt in kernel?
+> >
+> > > > Signed-off-by: Nehal Bakulchandra Shah
+> > > > <Nehal-Bakulchandra.shah@amd.com>
+> > >
+> > > I'm okay with this, just wondering if we need to Document the
+> > > property somewhere.
+> > >
+> > > @Heikki, is there a place to document these private properties
+> > > that's not on DT binding document?
+> >
+> > The build-in properties are not documented separately. I've always
+> > tried to supply DT bindings for all new properties I've proposed.
+> >
+> > In this case though, do we need the new property at all? Why not just
+> > register a normal USB role switch on this platform? It can be either a
+> > dummy role switch that only passes the user space input to dwc3, or,
+> > perhaps ideally, it would also be a driver that captures that ACPI/EC
+> > event/notification and then passes the information from it to dwc3.
+>=20
+> Please ignore the above question. Sorry. Let me try again...
+>=20
+> The question is: why not just capture that ACPI/EC "interrupt" in kernel =
+and
+> then just use that information to set the dwc3 role switch?
+> No extra properties needed.
 
-Thanks,
-Tom
+I'm not a USB expert, but I think the idea was to pop up a message asking t=
+he user what role they wanted when they plugged in USB cable?  Then based o=
+n their input, the role could be changed.
 
-> 
-> Vlastimil
-> 
->> Regards,
->>
->> 	Joerg
->>
-> 
+Alex
