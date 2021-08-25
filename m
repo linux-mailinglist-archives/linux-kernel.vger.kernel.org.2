@@ -2,241 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66DC3F7A6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D163A3F7A6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240595AbhHYQW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
+        id S230519AbhHYQYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235078AbhHYQW1 (ORCPT
+        with ESMTP id S241442AbhHYQYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:22:27 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA531C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:21:41 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id c79so66998oib.11
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:21:41 -0700 (PDT)
+        Wed, 25 Aug 2021 12:24:12 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB9DC061757;
+        Wed, 25 Aug 2021 09:23:24 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id u15so14606540plg.13;
+        Wed, 25 Aug 2021 09:23:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8fQvfIZZ8pqSEhGTsBpi6VyqU2V9n2LFFeq+H7l97f0=;
-        b=b8CGPZ5tvfjvdRG4BxmX9KLWApAyIplyR9glm/HtpUHAkjAW2VvZOLSD01LjYz/I8J
-         OxvKh57p4gG72QsQPDy/SrgwJgoJOSGTr5F4uTaqg3afgwH+ES1z2Z/8CV2Hxv6o+xJ6
-         r64d8a5zauoTjuBugFbleqD84WocBwIaxtMDSHsmt7IzMg0ZJPDe4R8JbDlMUCodTEel
-         1dE1NR43wxzfCXmdXzXOpPssKKD3tVLWPYq5RL5cigYBznRpniSCw/5doC0z7i/pcE7Y
-         XpdjoSnoEGanMz+ra/Po0CKEGlNXPVPbn40Ihe7x/tAIVIriud2UoQVEarUwT2OktgyK
-         9hGQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=PKWtw3U+UAUIlk82lhY86yQppmBBebN7/0wf9fkM/TM=;
+        b=LcbJEgmfAcWBsIFGNxsT4YAFF/iY91iJ/cjmUVAft5d9auKBNuvawkczAJt3Wm/kxe
+         Tbl8fI4YIw2rispLnKgQ5triWpaHynfv4dUtaTs9Qe0HHulLpPcxCv9g2z/41Gdn1+OW
+         y2xzmMB7h1soJ/A9uQ/miCshHBVjdSJ4fQBFhdJSVEiP5LkeOLUw9arBmkaykX9ihEOD
+         Qrm+wT4DZ2K87ZHMInJCX3buTh9pcR2aAiJBFzmfAh33o4kJ0tP9wBYdWgPgDvy0wKMH
+         aQVBYKB88j0BfyVbqY1hXBsusWxBOUNKq13uoO9HaUJaNIIByEMoeZEOKBc+vb25T/3D
+         Z2mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8fQvfIZZ8pqSEhGTsBpi6VyqU2V9n2LFFeq+H7l97f0=;
-        b=IJ5S1AzwHNoNG+L/Fy/sHzOe3PIDOtBdREoUCMXpw2D6z9GLYo1BYxcjjbjw0EVo3H
-         T9GVzsQrSC2WN+Jc3L54S5ePoKaqWEzkCCfrTuV8QryGu4eYx39LEah7CDiXcZMicS+Z
-         Xp6kjjgPeNB+gSt9JPo6WpWHkH74HYCKqFALE9DHQSYqIdXpqzb3ZAwh7fKSRwHanxLM
-         OvW+4l8HWa9rWqJKSPbMZw8X1+YCyKmecvKNzstBRfvorkpurum69R1/F88ZyXIEJWzN
-         loEXVCG9DVTvTSAdlNTtLusn2+5ryBtzyekly06AQsyEbpyL1BwLUCaW9cXpIxYFeWcN
-         nepw==
-X-Gm-Message-State: AOAM533CYFpxebp4cUyo6/MyIivd6RFiKrbD7b0VC/0LbSH7A3PjkoVx
-        3XX9epAUPrGHW2gPvLgDPIxHbg==
-X-Google-Smtp-Source: ABdhPJz/xaEApaYOhAS3r2WU6AYrV1Fk6qUOCI9fTu85pNj+1nuMfnv5L9jfluc2KneklpTAJtzQew==
-X-Received: by 2002:aca:4509:: with SMTP id s9mr7552187oia.38.1629908501134;
-        Wed, 25 Aug 2021 09:21:41 -0700 (PDT)
-Received: from [192.168.17.50] ([189.219.75.147])
-        by smtp.gmail.com with ESMTPSA id q5sm67286ooa.1.2021.08.25.09.21.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 09:21:40 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/127] 5.13.13-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de
-References: <20210824165607.709387-1-sashal@kernel.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <b4bef2f4-0c5b-527d-4f24-788d3265f5bf@linaro.org>
-Date:   Wed, 25 Aug 2021 11:21:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210824165607.709387-1-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=PKWtw3U+UAUIlk82lhY86yQppmBBebN7/0wf9fkM/TM=;
+        b=nE/Gu0QdLRfPINYCeai+ddbhUO5NPYraxzBMcZuTtyzkzMxeX1har2Tcg26ujWoz4+
+         J7aObcO/WQjoL7RLix6qtAzAvIDVsS6WTR6JcTXvG6cHvjHxXOdZyFeCsY8916USaIMn
+         kmaZzw7g11VREFPWPm4EZ4H95ukg46QDsJ8uUBJ++fjSA+Lxd6D/OkrXYqQ9Rg5FgBe2
+         6tj4tprs3jiwiigufB2NYbdc6IeR728luzK3MfQceEyYtdy2DJMvvQ6iLCh6ElEMVegr
+         su5fjeAs54sw1dbQMKAs6g+tbYpe4fvo9EYktB10oubiC6BvRlj/Ld0thlk+G3SGK46l
+         VhBw==
+X-Gm-Message-State: AOAM530AFvK4/6lDVPQOmH72UImUd6pfAGknTLjctaym+S/+0NjOFzjZ
+        tYJPcAmkPePD0HP4/F7pQqc=
+X-Google-Smtp-Source: ABdhPJz1Wfwuc9LqXitN++W5gC/AfmWmT/IX7qsiX5DUtd8mX67KCGiaHfM118JEqnKRl9hVDUOoYA==
+X-Received: by 2002:a17:902:c406:b0:12d:d0ff:4be with SMTP id k6-20020a170902c40600b0012dd0ff04bemr38703069plk.24.1629908604185;
+        Wed, 25 Aug 2021 09:23:24 -0700 (PDT)
+Received: from localhost.localdomain ([49.36.209.183])
+        by smtp.googlemail.com with ESMTPSA id t15sm489685pgk.13.2021.08.25.09.23.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 09:23:23 -0700 (PDT)
+From:   Utkarsh Verma <utkarshverma294@gmail.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Utkarsh Verma <utkarshverma294@gmail.com>
+Subject: [PATCH v2] USB: serial: Replace symbolic permissions by octal permissions
+Date:   Wed, 25 Aug 2021 21:53:02 +0530
+Message-Id: <20210825162302.16243-1-utkarshverma294@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <YSYMXNvfjk0HdYr3@hovoldconsulting.com>
+References: <YSYMXNvfjk0HdYr3@hovoldconsulting.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Replace symbolic permission macros with octal permission numbers
+because, octal permission numbers are easier to read and understand
+instead of their symbolic macro names.
 
-On 8/24/21 11:54 AM, Sasha Levin wrote:
-> This is the start of the stable review cycle for the 5.13.13 release.
-> There are 127 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu 26 Aug 2021 04:55:18 PM UTC.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.13.y&id2=v5.13.12
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+No functional change.
 
-Results from Linaro’s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+---
+ drivers/usb/serial/cypress_m8.c  |  6 +++---
+ drivers/usb/serial/ftdi_sio.c    |  2 +-
+ drivers/usb/serial/garmin_gps.c  |  2 +-
+ drivers/usb/serial/io_ti.c       |  4 ++--
+ drivers/usb/serial/ipaq.c        |  4 ++--
+ drivers/usb/serial/iuu_phoenix.c | 10 +++++-----
+ drivers/usb/serial/sierra.c      |  2 +-
+ 7 files changed, 15 insertions(+), 15 deletions(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.13.13-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-5.13.y
-* git commit: b85f43f33b05cc36ebcb5b64122a56c9fb949a79
-* git describe: v5.13.12-127-gb85f43f33b05
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13.12-127-gb85f43f33b05
-
-## No regressions (compared to v5.13.12)
-
-## No fixes (compared to v5.13.12)
-
-## Test result summary
-total: 80677, pass: 67984, fail: 1034, skip: 10884, xfail: 775
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 226 total, 226 passed, 0 failed
-* arm64: 32 total, 32 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 31 total, 31 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 48 total, 48 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 21 total, 21 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 33 total, 33 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-t[
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
+diff --git a/drivers/usb/serial/cypress_m8.c b/drivers/usb/serial/cypress_m8.c
+index 6b18990258c3..6924fa95f6bd 100644
+--- a/drivers/usb/serial/cypress_m8.c
++++ b/drivers/usb/serial/cypress_m8.c
+@@ -1199,9 +1199,9 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL");
+ 
+-module_param(stats, bool, S_IRUGO | S_IWUSR);
++module_param(stats, bool, 0644);
+ MODULE_PARM_DESC(stats, "Enable statistics or not");
+-module_param(interval, int, S_IRUGO | S_IWUSR);
++module_param(interval, int, 0644);
+ MODULE_PARM_DESC(interval, "Overrides interrupt interval");
+-module_param(unstable_bauds, bool, S_IRUGO | S_IWUSR);
++module_param(unstable_bauds, bool, 0644);
+ MODULE_PARM_DESC(unstable_bauds, "Allow unstable baud rates");
+diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+index 33bbb3470ca3..99d19828dae6 100644
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -2938,5 +2938,5 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL");
+ 
+-module_param(ndi_latency_timer, int, S_IRUGO | S_IWUSR);
++module_param(ndi_latency_timer, int, 0644);
+ MODULE_PARM_DESC(ndi_latency_timer, "NDI device latency timer override");
+diff --git a/drivers/usb/serial/garmin_gps.c b/drivers/usb/serial/garmin_gps.c
+index 756d1ac7e96f..e5c75944ebb7 100644
+--- a/drivers/usb/serial/garmin_gps.c
++++ b/drivers/usb/serial/garmin_gps.c
+@@ -1444,5 +1444,5 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL");
+ 
+-module_param(initial_mode, int, S_IRUGO);
++module_param(initial_mode, int, 0444);
+ MODULE_PARM_DESC(initial_mode, "Initial mode");
+diff --git a/drivers/usb/serial/io_ti.c b/drivers/usb/serial/io_ti.c
+index 84b848d2794e..a7b3c15957ba 100644
+--- a/drivers/usb/serial/io_ti.c
++++ b/drivers/usb/serial/io_ti.c
+@@ -2746,9 +2746,9 @@ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL");
+ MODULE_FIRMWARE("edgeport/down3.bin");
+ 
+-module_param(ignore_cpu_rev, bool, S_IRUGO | S_IWUSR);
++module_param(ignore_cpu_rev, bool, 0644);
+ MODULE_PARM_DESC(ignore_cpu_rev,
+ 			"Ignore the cpu revision when connecting to a device");
+ 
+-module_param(default_uart_mode, int, S_IRUGO | S_IWUSR);
++module_param(default_uart_mode, int, 0644);
+ MODULE_PARM_DESC(default_uart_mode, "Default uart_mode, 0=RS232, ...");
+diff --git a/drivers/usb/serial/ipaq.c b/drivers/usb/serial/ipaq.c
+index f81746c3c26c..e11441bac44f 100644
+--- a/drivers/usb/serial/ipaq.c
++++ b/drivers/usb/serial/ipaq.c
+@@ -599,10 +599,10 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL");
+ 
+-module_param(connect_retries, int, S_IRUGO|S_IWUSR);
++module_param(connect_retries, int, 0644);
+ MODULE_PARM_DESC(connect_retries,
+ 		"Maximum number of connect retries (one second each)");
+ 
+-module_param(initial_wait, int, S_IRUGO|S_IWUSR);
++module_param(initial_wait, int, 0644);
+ MODULE_PARM_DESC(initial_wait,
+ 		"Time to wait before attempting a connection (in seconds)");
+diff --git a/drivers/usb/serial/iuu_phoenix.c b/drivers/usb/serial/iuu_phoenix.c
+index 19753611e7b0..0be3b5e1eaf3 100644
+--- a/drivers/usb/serial/iuu_phoenix.c
++++ b/drivers/usb/serial/iuu_phoenix.c
+@@ -1188,20 +1188,20 @@ MODULE_AUTHOR("Alain Degreffe eczema@ecze.com");
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL");
+ 
+-module_param(xmas, bool, S_IRUGO | S_IWUSR);
++module_param(xmas, bool, 0644);
+ MODULE_PARM_DESC(xmas, "Xmas colors enabled or not");
+ 
+-module_param(boost, int, S_IRUGO | S_IWUSR);
++module_param(boost, int, 0644);
+ MODULE_PARM_DESC(boost, "Card overclock boost (in percent 100-500)");
+ 
+-module_param(clockmode, int, S_IRUGO | S_IWUSR);
++module_param(clockmode, int, 0644);
+ MODULE_PARM_DESC(clockmode, "Card clock mode (1=3.579 MHz, 2=3.680 MHz, "
+ 		"3=6 Mhz)");
+ 
+-module_param(cdmode, int, S_IRUGO | S_IWUSR);
++module_param(cdmode, int, 0644);
+ MODULE_PARM_DESC(cdmode, "Card detect mode (0=none, 1=CD, 2=!CD, 3=DSR, "
+ 		 "4=!DSR, 5=CTS, 6=!CTS, 7=RING, 8=!RING)");
+ 
+-module_param(vcc_default, int, S_IRUGO | S_IWUSR);
++module_param(vcc_default, int, 0644);
+ MODULE_PARM_DESC(vcc_default, "Set default VCC (either 3 for 3.3V or 5 "
+ 		"for 5V). Default to 5.");
+diff --git a/drivers/usb/serial/sierra.c b/drivers/usb/serial/sierra.c
+index 4b49b7c33364..9d56138133a9 100644
+--- a/drivers/usb/serial/sierra.c
++++ b/drivers/usb/serial/sierra.c
+@@ -1056,5 +1056,5 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL v2");
+ 
+-module_param(nmea, bool, S_IRUGO | S_IWUSR);
++module_param(nmea, bool, 0644);
+ MODULE_PARM_DESC(nmea, "NMEA streaming");
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.17.1
+
