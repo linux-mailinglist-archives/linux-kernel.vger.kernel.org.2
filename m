@@ -2,235 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F44A3F715F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4069E3F7162
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239467AbhHYJCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:02:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:33943 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239405AbhHYJBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:01:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="215640271"
-X-IronPort-AV: E=Sophos;i="5.84,350,1620716400"; 
-   d="scan'208";a="215640271"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 02:01:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,350,1620716400"; 
-   d="scan'208";a="455971134"
-Received: from louislifei-optiplex-7050.sh.intel.com ([10.239.154.151])
-  by fmsmga007.fm.intel.com with ESMTP; 25 Aug 2021 02:01:08 -0700
-From:   Fei Li <fei1.li@intel.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, fei1.li@intel.com,
-        yu1.wang@intel.com, shuox.liu@gmail.com
-Subject: [PATCH v2 3/3] virt: acrn: Introduce interface to fetch platform info from the hypervisor
-Date:   Wed, 25 Aug 2021 17:01:42 +0800
-Message-Id: <20210825090142.4418-4-fei1.li@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210825090142.4418-1-fei1.li@intel.com>
-References: <20210825090142.4418-1-fei1.li@intel.com>
+        id S237508AbhHYJEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232302AbhHYJEG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:04:06 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FD4C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:03:20 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id i21so8782355ejd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:03:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4LUZQEf1FWhO8/L5Pn1dteozC/zUI7RffyG6+EOHYI0=;
+        b=BYRvLO1nT5wfq/PdSUipimEcyMAshc+sOEO/dZAMCffuCi7w/4mwNtbPO6ktjrMR6C
+         Y9rkT2N12HKVsHDjGvpa6Z/6OUbK/4g+0FiKscVZj+5m4Mdvo8ZUdw5rPIUhCRDL5NNz
+         C0eLUhlCEthvhgxIfUAKPGhpQ/cAER2LDkuoVOfAONYgeFwvZgjz3E9OLr/8VfZkD288
+         +2eynglMPmuoeUt2meeC9HZ2Lo1KaOL7dP5k2bH+r55ASJZNfIZtgZTQf+sgXR7AoCC/
+         qe32/dM2gDrCec0HNCraBS5V2NN9icNBG4z+/MVRNfAZQmI/tjv0XdCFY9qh1NPHeSnD
+         JKLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4LUZQEf1FWhO8/L5Pn1dteozC/zUI7RffyG6+EOHYI0=;
+        b=p5RWpio727YHtym0eJ+tVUD40VNlFHEvVLHkaTfW5sTZJoqDqO/IQdYBtj/yGLxdsY
+         Piu+na1exjyD+l4+cyjDOPUk87ntjkjLXpGJzGbevukuKqEp2PrOW2DyPjOiNfuoMjPf
+         e8l91A2CFpN14bRXcPwZN3rjS3mTCbXgyoquvLgi2cJPhK7sdKA62dy1c0S7Ml8nTgsa
+         Om7UKtOoBseI5RePs1cheK1/0SyRGv3lZJaKDqh5+aWrU6xWTTlW8iOjOo1ft1P9yueJ
+         OlUvTgh2HmFvwvWQA0pI9F70o8+m6vdash6C7/6/iF12P2n/QLy4eUIZgBh/9j1sfGOY
+         YtNw==
+X-Gm-Message-State: AOAM531Jp+pTcVGcQpM+feEDNpX+4b9YlaP8NvGAUZOEaQNerGNsHwtq
+        a1fD4zSLbBrqJdrX/6mZoP9V+Q==
+X-Google-Smtp-Source: ABdhPJy0bQdYxtuwPyYk7aB1tnv5xSrALpyHjrcIY0eAgxDYVpz/TnEg34bRCu6QFb1yXU+EVCu6NA==
+X-Received: by 2002:a17:907:4cf:: with SMTP id vz15mr32598299ejb.543.1629882199383;
+        Wed, 25 Aug 2021 02:03:19 -0700 (PDT)
+Received: from ?IPv6:2a02:768:2307:40d6::e05? ([2a02:768:2307:40d6::e05])
+        by smtp.gmail.com with ESMTPSA id o6sm6261838eju.91.2021.08.25.02.03.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 02:03:19 -0700 (PDT)
+Subject: Re: [PATCH v4 07/10] microblaze: snapshot thread flags
+To:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org
+Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
+        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
+        ink@jurassic.park.msu.ru, jonas@southpole.se,
+        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
+        mattst88@gmail.com, mingo@redhat.com, mpe@ellerman.id.au,
+        paulmck@kernel.org, paulus@samba.org, peterz@infradead.org,
+        rth@twiddle.net, shorne@gmail.com,
+        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
+        vincent.guittot@linaro.org, will@kernel.org
+References: <20210803095428.17009-1-mark.rutland@arm.com>
+ <20210803095428.17009-8-mark.rutland@arm.com>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <d62b4ccf-505d-e8e2-1195-48327ba4a4eb@monstr.eu>
+Date:   Wed, 25 Aug 2021 11:03:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210803095428.17009-8-mark.rutland@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuo Liu <shuo.a.liu@intel.com>
 
-The ACRN hypervisor configures the guest VMs information statically and
-builds guest VM configurations within the hypervisor. There are also
-some hardware information are stored in the hypervisor in boot stage.
-The ACRN userspace needs platform information to do the orchestration.
 
-The HSM provides the following interface for the ACRN userspace to fetch
-platform info:
- - ACRN_IOCTL_GET_PLATFORM_INFO
-   Exchange the basic information by a struct acrn_platform_info. If the
-   ACRN userspace provides a userspace buffer (whose vma filled in
-   vm_configs_addr), the HSM creates a bounce buffer (kmalloced for
-   continuous memory region) to fetch VM configurations data from the
-   hypervisor.
+On 8/3/21 11:54 AM, Mark Rutland wrote:
+> Some thread flags can be set remotely, and so even when IRQs are
+> disabled, the flags can change under our feet. Generally this is
+> unlikely to cause a problem in practice, but it is somewhat unsound, and
+> KCSAN will legitimately warn that there is a data race.
+> 
+> To avoid such issues, a snapshot of the flags has to be taken prior to
+> using them. Some places already use READ_ONCE() for that, others do not.
+> 
+> Convert them all to the new flag accessor helpers.
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Michal Simek <monstr@monstr.eu>
+> ---
+>  arch/microblaze/kernel/signal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/microblaze/kernel/signal.c b/arch/microblaze/kernel/signal.c
+> index fc61eb0eb8dd..23e8a9336a29 100644
+> --- a/arch/microblaze/kernel/signal.c
+> +++ b/arch/microblaze/kernel/signal.c
+> @@ -283,7 +283,7 @@ static void do_signal(struct pt_regs *regs, int in_syscall)
+>  #ifdef DEBUG_SIG
+>  	pr_info("do signal: %p %d\n", regs, in_syscall);
+>  	pr_info("do signal2: %lx %lx %ld [%lx]\n", regs->pc, regs->r1,
+> -			regs->r12, current_thread_info()->flags);
+> +			regs->r12, read_thread_flags());
+>  #endif
+>  
+>  	if (get_signal(&ksig)) {
+> 
 
-Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-Signed-off-by: Fei Li <fei1.li@intel.com>
----
- drivers/virt/acrn/hsm.c       | 53 +++++++++++++++++++++++++++++++++++
- drivers/virt/acrn/hypercall.h | 12 ++++++++
- include/uapi/linux/acrn.h     | 44 +++++++++++++++++++++++++++++
- 3 files changed, 109 insertions(+)
+Tested-by: Michal Simek <michal.simek@xilinx.com>
 
-diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-index 5419794fccf1..eb824a1a86a0 100644
---- a/drivers/virt/acrn/hsm.c
-+++ b/drivers/virt/acrn/hsm.c
-@@ -108,6 +108,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 			   unsigned long ioctl_param)
- {
- 	struct acrn_vm *vm = filp->private_data;
-+	struct acrn_platform_info *plat_info;
- 	struct acrn_vm_creation *vm_param;
- 	struct acrn_vcpu_regs *cpu_regs;
- 	struct acrn_ioreq_notify notify;
-@@ -115,9 +116,12 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 	struct acrn_ioeventfd ioeventfd;
- 	struct acrn_vm_memmap memmap;
- 	struct acrn_mmiodev *mmiodev;
-+	void __user *vm_configs_user;
- 	struct acrn_msi_entry *msi;
- 	struct acrn_pcidev *pcidev;
- 	struct acrn_irqfd irqfd;
-+	void *vm_configs = NULL;
-+	size_t vm_configs_size;
- 	struct acrn_vdev *vdev;
- 	struct page *page;
- 	u64 cstate_cmd;
-@@ -130,6 +134,55 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 	}
- 
- 	switch (cmd) {
-+	case ACRN_IOCTL_GET_PLATFORM_INFO:
-+		plat_info = memdup_user((void __user *)ioctl_param,
-+					sizeof(struct acrn_platform_info));
-+		if (IS_ERR(plat_info))
-+			return PTR_ERR(plat_info);
-+
-+		for (i = 0; i < ARRAY_SIZE(plat_info->sw.reserved); i++)
-+			if (plat_info->sw.reserved[i])
-+				return -EINVAL;
-+
-+		for (i = 0; i < ARRAY_SIZE(plat_info->hw.reserved); i++)
-+			if (plat_info->hw.reserved[i])
-+				return -EINVAL;
-+
-+		vm_configs_size = plat_info->sw.vm_config_size *
-+						plat_info->sw.max_vms;
-+		if (plat_info->sw.vm_configs_addr && vm_configs_size) {
-+			vm_configs_user = plat_info->sw.vm_configs_addr;
-+			vm_configs = kzalloc(vm_configs_size, GFP_KERNEL);
-+			if (IS_ERR(vm_configs)) {
-+				kfree(plat_info);
-+				return PTR_ERR(vm_configs);
-+			}
-+			plat_info->sw.vm_configs_addr =
-+					(void __user *)virt_to_phys(vm_configs);
-+		}
-+
-+		ret = hcall_get_platform_info(virt_to_phys(plat_info));
-+		if (ret < 0) {
-+			kfree(vm_configs);
-+			kfree(plat_info);
-+			dev_dbg(acrn_dev.this_device,
-+				"Failed to get info of VM %u!\n", vm->vmid);
-+			break;
-+		}
-+
-+		if (vm_configs) {
-+			if (copy_to_user(vm_configs_user, vm_configs,
-+					 vm_configs_size))
-+				ret = -EFAULT;
-+			plat_info->sw.vm_configs_addr = vm_configs_user;
-+		}
-+		if (!ret && copy_to_user((void __user *)ioctl_param, plat_info,
-+					 sizeof(*plat_info)))
-+			ret = -EFAULT;
-+
-+		kfree(vm_configs);
-+		kfree(plat_info);
-+		break;
- 	case ACRN_IOCTL_CREATE_VM:
- 		vm_param = memdup_user((void __user *)ioctl_param,
- 				       sizeof(struct acrn_vm_creation));
-diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
-index 71d300821a18..440e204d731a 100644
---- a/drivers/virt/acrn/hypercall.h
-+++ b/drivers/virt/acrn/hypercall.h
-@@ -15,6 +15,7 @@
- 
- #define HC_ID_GEN_BASE			0x0UL
- #define HC_SOS_REMOVE_CPU		_HC_ID(HC_ID, HC_ID_GEN_BASE + 0x01)
-+#define HC_GET_PLATFORM_INFO		_HC_ID(HC_ID, HC_ID_GEN_BASE + 0x03)
- 
- #define HC_ID_VM_BASE			0x10UL
- #define HC_CREATE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x00)
-@@ -60,6 +61,17 @@ static inline long hcall_sos_remove_cpu(u64 cpu)
- 	return acrn_hypercall1(HC_SOS_REMOVE_CPU, cpu);
- }
- 
-+/**
-+ * hcall_get_platform_info() - Get platform information from the hypervisor
-+ * @platform_info: Service VM GPA of the &struct acrn_platform_info
-+ *
-+ * Return: 0 on success, <0 on failure
-+ */
-+static inline long hcall_get_platform_info(u64 platform_info)
-+{
-+	return acrn_hypercall1(HC_GET_PLATFORM_INFO, platform_info);
-+}
-+
- /**
-  * hcall_create_vm() - Create a User VM
-  * @vminfo:	Service VM GPA of info of User VM creation
-diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-index 1408d1063339..2675d17bc803 100644
---- a/include/uapi/linux/acrn.h
-+++ b/include/uapi/linux/acrn.h
-@@ -580,12 +580,56 @@ struct acrn_irqfd {
- 	struct acrn_msi_entry	msi;
- };
- 
-+#define ACRN_PLATFORM_LAPIC_IDS_MAX	64
-+/**
-+ * struct acrn_platform_info - Information of a platform from hypervisor
-+ * @hw.cpu_num:			Physical CPU number of the platform
-+ * @hw.version:			Version of this structure
-+ * @hw.l2_cat_shift:		Order of the number of threads sharing L2 cache
-+ * @hw.l3_cat_shift:		Order of the number of threads sharing L3 cache
-+ * @hw.lapic_ids:		IDs of LAPICs of all threads
-+ * @hw.reserved:		Reserved for alignment and should be 0
-+ * @sw.max_vcpus_per_vm:	Maximum number of vCPU of a VM
-+ * @sw.max_vms:			Maximum number of VM
-+ * @sw.vm_config_size:		Size of configuration of a VM
-+ * @sw.vm_configss_addr:	Memory address which user space provided to
-+ *				store the VM configurations
-+ * @sw.max_kata_containers:	Maximum number of VM for Kata containers
-+ * @sw.reserved:		Reserved for alignment and should be 0
-+ *
-+ * If vm_configs_addr is provided, the driver uses a bounce buffer (kmalloced
-+ * for continuous memory region) to fetch VM configurations data from the
-+ * hypervisor.
-+ */
-+struct acrn_platform_info {
-+	struct {
-+		__u16	cpu_num;
-+		__u16	version;
-+		__u32	l2_cat_shift;
-+		__u32	l3_cat_shift;
-+		__u8	lapic_ids[ACRN_PLATFORM_LAPIC_IDS_MAX];
-+		__u8	reserved[52];
-+	} hw;
-+
-+	struct {
-+		__u16	max_vcpus_per_vm;
-+		__u16	max_vms;
-+		__u32	vm_config_size;
-+		void	__user *vm_configs_addr;
-+		__u64	max_kata_containers;
-+		__u8	reserved[104];
-+	} sw;
-+};
-+
- /* The ioctl type, documented in ioctl-number.rst */
- #define ACRN_IOCTL_TYPE			0xA2
- 
- /*
-  * Common IOCTL IDs definition for ACRN userspace
-  */
-+#define ACRN_IOCTL_GET_PLATFORM_INFO	\
-+	_IOR(ACRN_IOCTL_TYPE, 0x03, struct acrn_platform_info)
-+
- #define ACRN_IOCTL_CREATE_VM		\
- 	_IOWR(ACRN_IOCTL_TYPE, 0x10, struct acrn_vm_creation)
- #define ACRN_IOCTL_DESTROY_VM		\
+Thanks,
+Michal
+
+
 -- 
-2.25.1
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
