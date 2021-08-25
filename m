@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D9C3F76A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9F93F76AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241036AbhHYN41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 09:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229760AbhHYN4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 09:56:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BDE261181;
-        Wed, 25 Aug 2021 13:55:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629899740;
-        bh=CMOIWCczQT4MgFaI6GqXH+oiMJf1br9qrx50dqeRq5I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=V3SgFiNhC0R9bdoddbTu5Pg06dVEss6l1c+OfOQj39ExOPiFGwoZ4QgvxQ9MdvZLv
-         4ZOJpIMkj+bMESUXcbMUSUW+FEuX3pJGnltEGwJ4wzuUhxq4ECJs1SBY93mvu4a4xe
-         NX+99v5e/UHzDjzEGBuFvKEvNE0LUkgLSMPeH85rmuA++6rzMHhPH3FOPkJnzvg5F4
-         +l+R4TBt3otnnjQvcuRRLhq+LaU8Qt5PTb3czhhIeLOQ6Lw0gblTcZqXQh514JEuTM
-         CgPqVo1Oi1BGPP05lcWoOr3oKnQr0PLs6ds/GaVF/bwhEbH63IlV0NYzb2awvuifNx
-         PzyKP8N51W5Nw==
-Received: by mail-ed1-f46.google.com with SMTP id y5so6270704edp.8;
-        Wed, 25 Aug 2021 06:55:40 -0700 (PDT)
-X-Gm-Message-State: AOAM532NZuShtGh6hlBurYSuOCYm20sCxfmSOMjVgGPoiRDFXB7FK4VO
-        AaY2b3uG+iw9BOP5dQ6OJjy9An38PHRdu3f2MQ==
-X-Google-Smtp-Source: ABdhPJyovIqS10mCF1OXQh8B8tpgcX65+nKq32xtqbR1AtrPh00wtS6rwINBkiF8zOk6WoNntaaBmmAmO3DZuJhOBYk=
-X-Received: by 2002:a50:eb8a:: with SMTP id y10mr5724315edr.137.1629899738846;
- Wed, 25 Aug 2021 06:55:38 -0700 (PDT)
+        id S240704AbhHYN7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 09:59:47 -0400
+Received: from esa3.mentor.iphmx.com ([68.232.137.180]:53856 "EHLO
+        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232058AbhHYN7q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 09:59:46 -0400
+IronPort-SDR: 5c3Zyep2JLRD8+wLRpZVe3AoaXiLoTYnLk1kGRSOHiomBfUl3qMxGc/6Q9AjDUO0GcE0Yhj5xQ
+ V58EHPUh3hx17ryLq966sNgnuZSrZeva57bz7xuwfmCGJ8AiwE1EABDBe+cXHOJyVpzOlWBW9h
+ Vo2naqeJyQjuVTq8AHWs5FRbQ626HGEvpEl3kBFcr99rF3IB2UDbYZSc70GirR5idh32bgsxtM
+ WfI0BxQHGZ0KZ28N8mxYbvtgOuthaTVz1JtGIuNGgRieJ3wCi9KB26ANsBNPjx86oF3POYJI77
+ tcOubP/b0M8X4JgHdSpsRAV3
+X-IronPort-AV: E=Sophos;i="5.84,350,1620720000"; 
+   d="scan'208";a="65095157"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa3.mentor.iphmx.com with ESMTP; 25 Aug 2021 05:59:01 -0800
+IronPort-SDR: DA+BhndMeNe0SoZixKpNKA6Ap9wxyrw+2VEhDQpoiTYNDaOj6zyP8bSOGZSDPnP/Ip4ygW5ElQ
+ kQ7jR94Yo1NrSqZx/SqCPjhpLbd1XNgjy6Lt6ijBw7F+r0n+cIPWnCCmxC9UKJN2yDlPBV8hQn
+ 9o48U8Za8hSxV7CBLmvWCV09rwMNwPe+I1v8A62P9GEAsDR1qKkVCg1Sy7OMLtQZI48q/vfz3o
+ oqn0UmOUAtY1/M+6clbmuhbDIJKuJhbKo1vTtptDHPmUzYl3fM1esqmgNrt2eAjzPJSppqgzrN
+ kA8=
+From:   "George G. Davis" <george_davis@mentor.com>
+To:     Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     <george_davis@mentor.com>, Eugeniu Rosca <erosca@de.adit-jv.com>,
+        "George G. Davis" <davis.george@siemens.com>
+Subject: [RFC][PATCH] selftests/vm/transhuge-stress: fix ram size thinko
+Date:   Wed, 25 Aug 2021 09:58:43 -0400
+Message-ID: <20210825135843.29052-1-george_davis@mentor.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210825083425.32740-1-yajun.deng@linux.dev>
-In-Reply-To: <20210825083425.32740-1-yajun.deng@linux.dev>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 25 Aug 2021 08:55:24 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJ4731w_0rYCSBC_Mma-rn4nUUbKnSwhymGZyh8E7xoWg@mail.gmail.com>
-Message-ID: <CAL_JsqJ4731w_0rYCSBC_Mma-rn4nUUbKnSwhymGZyh8E7xoWg@mail.gmail.com>
-Subject: Re: [PATCH linux-next] PCI: Fix the order in unregister path
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-ClientProxiedBy: svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201) To
+ svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 3:34 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->
-> device_del() should be called first and then called put_device() in
-> unregister path, becase if that the final reference count, the device
-> will be cleaned up via device_release() above. So use device_unregister()
-> instead.
->
-> Fixes: 9885440b16b8 (PCI: Fix pci_host_bridge struct device release/free handling)
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  drivers/pci/probe.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+From: "George G. Davis" <davis.george@siemens.com>
 
-NAK.
+When executing transhuge-stress with an argument to specify the virtual
+memory size for testing, the ram size is reported as 0, e.g.
 
-The current code is correct. Go read the comments for device_add/device_del.
+transhuge-stress 384
+thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 0 MiB of ram
+thp-mmap: 0.184 s/loop, 0.957 ms/page,   2090.265 MiB/s  192 succeed,    0 failed
 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 0ec5c792c27d..abd481a15a17 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -994,9 +994,7 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
->         return 0;
->
->  unregister:
+This appears to be due to a thinko in commit 0085d61fe05e
+("selftests/vm/transhuge-stress: stress test for memory compaction"),
+where, at a guess, the intent was to base "xyz MiB of ram" on `ram`
+size. Here are results after using `ram` size:
 
-We get here if device_register() failed. Calling device_unregister()
-in that case is never right.
+thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 14 MiB of ram
 
-> -       put_device(&bridge->dev);
+Fixes: 0085d61fe05e ("selftests/vm/transhuge-stress: stress test for memory compaction")
+Signed-off-by: George G. Davis <davis.george@siemens.com>
+---
+ tools/testing/selftests/vm/transhuge-stress.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is for the get_device() we do above, not the get the driver core does.
+diff --git a/tools/testing/selftests/vm/transhuge-stress.c b/tools/testing/selftests/vm/transhuge-stress.c
+index fd7f1b4a96f9..5e4c036f6ad3 100644
+--- a/tools/testing/selftests/vm/transhuge-stress.c
++++ b/tools/testing/selftests/vm/transhuge-stress.c
+@@ -79,7 +79,7 @@ int main(int argc, char **argv)
+ 
+ 	warnx("allocate %zd transhuge pages, using %zd MiB virtual memory"
+ 	      " and %zd MiB of ram", len >> HPAGE_SHIFT, len >> 20,
+-	      len >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
++	      ram >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
+ 
+ 	pagemap_fd = open("/proc/self/pagemap", O_RDONLY);
+ 	if (pagemap_fd < 0)
+-- 
+2.17.1
 
-> -       device_del(&bridge->dev);
-
-This undoes the device_add() we do following the comment: "NOTE: this
-should be called manually _iff_ device_add() was also called
-manually."
-
-> -
-> +       device_unregister(&bridge->dev);
->  free:
->         kfree(bus);
->         return err;
-> --
-> 2.32.0
->
