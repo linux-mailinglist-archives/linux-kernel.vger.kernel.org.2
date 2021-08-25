@@ -2,74 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CF43F71AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DCF3F71B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239465AbhHYJZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50150 "EHLO mail.kernel.org"
+        id S239466AbhHYJ2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:28:20 -0400
+Received: from verein.lst.de ([213.95.11.211]:55442 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232774AbhHYJZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:25:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC94610E9;
-        Wed, 25 Aug 2021 09:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629883488;
-        bh=Xk06BbM25q7nxyadva5lBrMQabJjtthqr6TzjMZcHRo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QR7vzBQt5ofzBvDNNGSUx6xgic/6bf4JZE9mcvBV1/kWBsYkf4X+QnNYWVgySJKQ5
-         FvucNTiMRGBoU6KpVuWrmHey2uLt52+FaXdaj8XEKn/gzUhq55jdqtzlQy6E/3q1b7
-         O4r9wVg3c4T/tXxaC/sjlBnXha/+GDJ3mdP8mMdscxFVSUdVKJ3wcD46pL1l1WMw/j
-         uvOwnNJu5GY8z6v08hNzjwrNOXB06NTvhnFNlHNRXkwP8bShZzV8CYXRaBFnJa+Nco
-         Ydg94ImGXN980Y24N/JypVS7ytKeKdHlZVhrA7+BcLaDpXAiyKApgr+Q8sk1QSOqDI
-         XbHiPJ0MfeHAA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mIp9I-00019n-Kc; Wed, 25 Aug 2021 11:24:44 +0200
-Date:   Wed, 25 Aug 2021 11:24:44 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Utkarsh Verma <utkarshverma294@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH] USB: serial: iuu_phoenix: Replace symbolic permissions
- by octal permissions
-Message-ID: <YSYMXNvfjk0HdYr3@hovoldconsulting.com>
-References: <20210820190306.18149-1-utkarshverma294@gmail.com>
- <YST6XZ/XJkTDm6rV@hovoldconsulting.com>
- <20210824191537.GA6181@uver-laptop>
+        id S236399AbhHYJ2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:28:19 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 85C3B67357; Wed, 25 Aug 2021 11:27:31 +0200 (CEST)
+Date:   Wed, 25 Aug 2021 11:27:31 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+2c98885bcd769f56b6d6@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        nbd@other.debian.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: use-after-free Read in nbd_genl_connect (2)
+Message-ID: <20210825092731.GA1328@lst.de>
+References: <0000000000007900bd05ca5cf80b@google.com> <20210825085525.2147-1-hdanton@sina.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210824191537.GA6181@uver-laptop>
+In-Reply-To: <20210825085525.2147-1-hdanton@sina.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 12:45:37AM +0530, Utkarsh Verma wrote:
-> On Tue, Aug 24, 2021 at 03:55:41PM +0200, Johan Hovold wrote:
-> > On Sat, Aug 21, 2021 at 12:33:06AM +0530, Utkarsh Verma wrote:
-> > > This fixed the below checkpatch issue:
-> > > WARNING: Symbolic permissions 'S_IRUGO | S_IWUSR' are not preferred.
-> > > Consider using octal permissions '0644'.
-> > 
-> > Please do not run checkpatch.pl on code that's already in the tree. Use
-> > it for your own patches before submitting them and always use your own
-> > judgement when considering its suggestions.
-> > 
+On Wed, Aug 25, 2021 at 04:55:25PM +0800, Hillf Danton wrote:
+> Because no nbd is kfreed without being removed from the nbd idr, finding
+> a freed nbd in the idr with nbd_index_mutex held means the nbd is not a
+> valid pointer, and fix the uaf by cutting the chance for invalid nbd.
 > 
-> Okay, I will not run checkpatch on the code that's already in the tree.
-> 
-> > This code does not need to be changed.
-> 
-> But using the octal permission bits makes the code more readable. So I
-> made the change.
+> Only for thoughts now.
 
-Then put that in the commit message since that may be a valid motivation
-for the change (unlike shutting up checkpatch.pl).
-
-But if you want to do this then do it subsystem wide in one patch rather
-than change only one of the seven usb-serial drivers that use the
-permission macros.
-
-Johan
+That is a bug, but not really the problem here.  I think the issue
+is the completion issue that Tetsuo reported.  Looking into that at
+the moment.
