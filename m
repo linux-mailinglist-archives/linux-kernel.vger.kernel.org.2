@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8553F7A8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FC23F7A8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240886AbhHYQba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbhHYQb3 (ORCPT
+        id S240935AbhHYQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:32:01 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:44707 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233395AbhHYQb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:31:29 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE483C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:30:43 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id b9so10282583plx.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=9o4/lhXj53HVrFMmmxcMuI8W2T6ZHUGbZ9ml9X67reY=;
-        b=sh5Gvg4q+ulN5UDkn8pGbV4CnaIezY8BC8mMlcpUKqPGTelqOVw6emE5dGeOVJrzb0
-         /CVdbkAYhxr10BEOafT3/z0TWLW8ph6en/aWvIi7YxNa3CmlJ4YSnM3h5r9V/mMtDnQ0
-         SM9hM5LAUUk9MtlRByNYwSKuhiqkqtm2K1fk0sObChaorbEt3mxz0P5C9rPcexqmDUeU
-         1xazzkDcHW/xXwBKSaSV+zLX/kIfBRe7B4kRa68cITXfPijDBNa89VI4hrs9UM5EipiZ
-         xays/lpQl6fCK6ji+91qGf0mug3A7MMfPyyuVNieyJ3/mYhYX5rGOudY9eRhDEafpT8w
-         7Zfw==
+        Wed, 25 Aug 2021 12:31:59 -0400
+Received: by mail-ot1-f45.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so47102492otg.11;
+        Wed, 25 Aug 2021 09:31:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=9o4/lhXj53HVrFMmmxcMuI8W2T6ZHUGbZ9ml9X67reY=;
-        b=BTb7GQfjggO5zWHfqNGZi7pBp4luUzGCajkyHXwOJ4DHFZIKLAzsJlrbO5kD19+Wvh
-         9uaEXcEZ5hVRqpdtyhXqj1XvMDfjqG2kGoF2j0IwDs4sQGWcuyumcISug+VhsHhLA+cC
-         G4q2I43xCi/ncym2ENd+b4D0PtAuPPPPWIL3iSDbcuDbLXGDS9JG83jmd3tme9/EfNYC
-         /OsgUp4mg3zsra6ZoeVnNdFI8IBxwdFu2C2FM5EcmPXiKn8h9JkWqeC4e88yMFg1/NzY
-         KdJ83mVLI2M/AvRokklj3y3fj9oDYQHMykmjbCANj0HyV4L1oE5rdk9xYcEyljvsqhUe
-         uCfw==
-X-Gm-Message-State: AOAM5336pdGWcuttJGtNw0aR9RqybNWDtaEotD/ZDcb/oruakj51Qhc6
-        k+bezY5gMHcnXAieuGjzR4g=
-X-Google-Smtp-Source: ABdhPJxZPb01VRk4XggiJ4QiswyhS6P9lqlF0RCdEtfwwmGm3gT2DYGvSIPc4O4o6gbtb+74dPveLg==
-X-Received: by 2002:a17:90a:9292:: with SMTP id n18mr11471481pjo.120.1629909042758;
-        Wed, 25 Aug 2021 09:30:42 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with UTF8SMTPSA id n1sm493439pgt.63.2021.08.25.09.30.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 09:30:42 -0700 (PDT)
-Message-ID: <c108fd89-2b72-33a2-d6b9-13a20773bbe2@gmail.com>
-Date:   Wed, 25 Aug 2021 18:30:33 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tMEQ5rSS37SXZ86EXg6wb4SRLylx3WacUr1VwiLL/Ng=;
+        b=Kf/5zzAhvWOIr+h1x/fWWoMGDkOWt2xQbkuJ2aSI93CUvtLBazWZHgMGFRoSBHpNLe
+         rp91Oe4as8RBftXZNx5pHAbDx04eGlMAHbBVxNYst8F5PxgFk8VZgKszH3inVB1Vk6Ss
+         SwTHqZkdisuec8l+aGwP/R3wbYBgMvoLrXg2Jo69mv+N+/zAuggqBle5wN8hNsCDf+Gi
+         yqfVHfBNAz46Z4/MBliWO7srsPRKcnS390X7c8YATkHzcgHv7+1NshC75oNgQbp5x70h
+         sxTk6Vjtp9qsgCLnmi62oxUmaYazLukGF4px/h4e5L02k9sWNxGTmv7CtVpoSmtZpOEW
+         02HA==
+X-Gm-Message-State: AOAM530MEq5/zHhSujOBP1wXlo980swr0SroF7FaIxSXdbkJ7n0uVGuV
+        25/HgA2sZQAO0E0gsXHJzA==
+X-Google-Smtp-Source: ABdhPJxfTu0ee+tYGYmnlkF+0uBzIVdwz+W40xhaEOvLrBXPblsCrnPz+qZSsntwz86pKMcuTxI+sA==
+X-Received: by 2002:a9d:6e0a:: with SMTP id e10mr34241962otr.259.1629909073115;
+        Wed, 25 Aug 2021 09:31:13 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r20sm66162oot.16.2021.08.25.09.31.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 09:31:12 -0700 (PDT)
+Received: (nullmailer pid 2904615 invoked by uid 1000);
+        Wed, 25 Aug 2021 16:31:11 -0000
+Date:   Wed, 25 Aug 2021 11:31:11 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
+        jitao.shi@mediatek.com, eizan@chromium.org,
+        linux-arm-kernel@lists.infradead.org, matthias.bgg@gmail.com,
+        Fabien Parent <fparent@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, chunkuang.hu@kernel.org,
+        hsinyi@chromium.org, devicetree@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, drinkcat@chromium.org
+Subject: Re: [PATCH v3 2/7] dt-bindings: mediatek: Add #reset-cells to mmsys
+ system controller
+Message-ID: <YSZwT8QahCfWE5N3@robh.at.kernel.org>
+References: <20210825102632.601614-1-enric.balletbo@collabora.com>
+ <20210825122613.v3.2.I3f7f1c9a8e46be07d1757ddf4e0097535f3a7d41@changeid>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.2
-Subject: Re: [PATCH v4 04/12] include: trace: Add new scmi_xfer_response_wait
- event
-Content-Language: en-US
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-References: <20210824135941.38656-1-cristian.marussi@arm.com>
- <20210824135941.38656-5-cristian.marussi@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210824135941.38656-5-cristian.marussi@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825122613.v3.2.I3f7f1c9a8e46be07d1757ddf4e0097535f3a7d41@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/24/2021 3:59 PM, Cristian Marussi wrote:
-> Having a new step to trace SCMI stack while it waits for synchronous
-> responses is useful to analyze system performance when changing waiting
-> mode between polling and interrupt completion.
+On Wed, 25 Aug 2021 12:26:27 +0200, Enric Balletbo i Serra wrote:
+> The mmsys system controller exposes a set of memory client resets and
+> needs to specify the #reset-cells property in order to advertise the
+> number of cells needed to describe each of the resets.
 > 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+> 
+> Changes in v3:
+> - Based on top of the patch that converts mmsys to schema
+> 
+>  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml      | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Acked-by: Rob Herring <robh@kernel.org>
