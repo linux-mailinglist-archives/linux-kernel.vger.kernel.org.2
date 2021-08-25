@@ -2,181 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFB23F7135
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F533F7136
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239428AbhHYIkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 04:40:45 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8926 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbhHYIkn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 04:40:43 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GvfSf4Qz5z8tlr;
-        Wed, 25 Aug 2021 16:35:46 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 16:39:49 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 16:39:49 +0800
-Subject: Re: [PATCH 3/3] amba: Properly handle device probe without IRQ domain
-To:     Saravana Kannan <saravanak@google.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        <devicetree@vger.kernel.org>, Russell King <linux@armlinux.org.uk>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Ruizhe Lin <linruizhe@huawei.com>
-References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
- <20210816074619.177383-4-wangkefeng.wang@huawei.com>
- <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
- <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
- <ee649111-dc07-d6db-8872-dcb692802236@huawei.com>
- <CAGETcx9drOdE_vfn-nhDZM9MbgxGxYJN6ydiAVxo_Ltqve9eTg@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <eb7f0980-f735-dd3b-fd66-63c8cd69cc58@huawei.com>
-Date:   Wed, 25 Aug 2021 16:39:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAGETcx9drOdE_vfn-nhDZM9MbgxGxYJN6ydiAVxo_Ltqve9eTg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+        id S239452AbhHYIlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 04:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231765AbhHYIlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 04:41:15 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA3B461176;
+        Wed, 25 Aug 2021 08:40:29 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mIoSR-0075y6-Kp; Wed, 25 Aug 2021 09:40:27 +0100
+Date:   Wed, 25 Aug 2021 09:40:27 +0100
+Message-ID: <87pmu1q5ms.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH V3 08/10] irqchip: Add LoongArch CPU interrupt controller support
+In-Reply-To: <20210825061152.3396398-9-chenhuacai@loongson.cn>
+References: <20210825061152.3396398-1-chenhuacai@loongson.cn>
+        <20210825061152.3396398-9-chenhuacai@loongson.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: chenhuacai@loongson.cn, tglx@linutronix.de, linux-kernel@vger.kernel.org, lixuefeng@loongson.cn, chenhuacai@gmail.com, jiaxun.yang@flygoat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 25 Aug 2021 07:11:50 +0100,
+Huacai Chen <chenhuacai@loongson.cn> wrote:
+> 
+> We are preparing to add new Loongson (based on LoongArch, not MIPS)
 
-On 2021/8/25 16:04, Saravana Kannan wrote:
-> On Tue, Aug 24, 2021 at 9:05 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->>
->> On 2021/8/25 4:08, Saravana Kannan wrote:
->>> On Tue, Aug 24, 2021 at 1:05 PM Rob Herring <robh+dt@kernel.org> wrote:
->>>> +Saravana
->>>>
->>>> Saravana mentioned to me there may be some issues with this one...
->>>>
->>>>
->>>> On Mon, Aug 16, 2021 at 2:43 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->>>>> of_amba_device_create() uses irq_of_parse_and_map() to translate
->>>>> a DT interrupt specification into a Linux virtual interrupt number.
->>>>>
->>>>> But it doesn't properly handle the case where the interrupt controller
->>>>> is not yet available, eg, when pl011 interrupt is connected to MBIGEN
->>>>> interrupt controller, because the mbigen initialization is too late,
->>>>> which will lead to no IRQ due to no IRQ domain found, log is shown below,
->>>>>     "irq: no irq domain found for uart0 !"
->>>>>
->>>>> use of_irq_get() to return -EPROBE_DEFER as above, and in the function
->>>>> amba_device_try_add()/amba_device_add(), it will properly handle in such
->>>>> case, also return 0 in other fail cases to be consistent as before.
->>>>>
->>>>> Cc: Russell King <linux@armlinux.org.uk>
->>>>> Cc: Rob Herring <robh+dt@kernel.org>
->>>>> Cc: Frank Rowand <frowand.list@gmail.com>
->>>>> Reported-by: Ruizhe Lin <linruizhe@huawei.com>
->>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>>> ---
->>>>>    drivers/amba/bus.c    | 27 +++++++++++++++++++++++++++
->>>>>    drivers/of/platform.c |  6 +-----
->>>>>    2 files changed, 28 insertions(+), 5 deletions(-)
->>>>>
->>>>> diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
->>>>> index 36f2f42c8014..720aa6cdd402 100644
->>>>> --- a/drivers/amba/bus.c
->>>>> +++ b/drivers/amba/bus.c
->>>>> @@ -19,6 +19,7 @@
->>>>>    #include <linux/clk/clk-conf.h>
->>>>>    #include <linux/platform_device.h>
->>>>>    #include <linux/reset.h>
->>>>> +#include <linux/of_irq.h>
->>>>>
->>>>>    #include <asm/irq.h>
->>>>>
->>>>> @@ -371,12 +372,38 @@ static void amba_device_release(struct device *dev)
->>>>>           kfree(d);
->>>>>    }
->>>>>
->>>>> +static int of_amba_device_decode_irq(struct amba_device *dev)
->>>>> +{
->>>>> +       struct device_node *node = dev->dev.of_node;
->>>>> +       int i, irq = 0;
->>>>> +
->>>>> +       if (IS_ENABLED(CONFIG_OF_IRQ) && node) {
->>>>> +               /* Decode the IRQs and address ranges */
->>>>> +               for (i = 0; i < AMBA_NR_IRQS; i++) {
->>>>> +                       irq = of_irq_get(node, i);
->>>>> +                       if (irq < 0) {
->>>>> +                               if (irq == -EPROBE_DEFER)
->>>>> +                                       return irq;
->>>>> +                               irq = 0;
->>>>> +                       }
->>>>> +
->>>>> +                       dev->irq[i] = irq;
->>>>> +               }
->>>>> +       }
->>>>> +
->>>>> +       return 0;
->>>>> +}
->>>>> +
->>>>>    static int amba_device_try_add(struct amba_device *dev, struct resource *parent)
->>>>>    {
->>>>>           u32 size;
->>>>>           void __iomem *tmp;
->>>>>           int i, ret;
->>>>>
->>>>> +       ret = of_amba_device_decode_irq(dev);
->>>>> +       if (ret)
->>>>> +               goto err_out;
->>>>> +
->>> Similar to other resources the AMBA bus "gets" for the device, I think
->>> this should be moved into amba_probe() and not here. There's no reason
->>> to delay the addition of the device (and loading its module) because
->>> the IRQ isn't ready yet.
->> The following code in the amba_device_try_add() will be called, it uses irq[0]
->> and irq[1], so I put of_amba_device_decode_irq() into amba_device_try_add().
->>
->> 470         if (dev->irq[0])
->> 471                 ret = device_create_file(&dev->dev, &dev_attr_irq0);
->> 472         if (ret == 0 && dev->irq[1])
->> 473                 ret = device_create_file(&dev->dev, &dev_attr_irq1);
->> 474         if (ret == 0)
->> 475                 return ret;
->>
->> of_amba_device_decode_irq() in amba_device_try_add() won't lead to issue,
->> only delay the device add, right?
-> But delaying the device add is the issue. For example, adding a device
-> could trigger the loading of the corresponding module using uevents.
-> But now this change would delay that step. That can have other
-> unintended consequences -- slowing down boot, what if the driver was
-> working fine without the IRQ, etc.
->
->> If make it into amba_probe(), the above code should be moved too, could we
->> make a new patch to move both of them, or don't move them?
-> I'd say move them both. If Russell hasn't already picked this up, then
-> I'd say redo your Patch 3/3.
+You keep saying "not MIPS", and yet all I see is a blind copy of the
+MIPS code.
 
+> support. This patch add LoongArch CPU interrupt controller support.
+> 
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> ---
+>  drivers/irqchip/Kconfig             | 10 ++++
+>  drivers/irqchip/Makefile            |  1 +
+>  drivers/irqchip/irq-loongarch-cpu.c | 76 +++++++++++++++++++++++++++++
+>  3 files changed, 87 insertions(+)
+>  create mode 100644 drivers/irqchip/irq-loongarch-cpu.c
+> 
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index 084bc4c2eebd..443c3a7a0cc1 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -528,6 +528,16 @@ config EXYNOS_IRQ_COMBINER
+>  	  Say yes here to add support for the IRQ combiner devices embedded
+>  	  in Samsung Exynos chips.
+>  
+> +config IRQ_LOONGARCH_CPU
+> +	bool
+> +	select GENERIC_IRQ_CHIP
+> +	select IRQ_DOMAIN
+> +	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
+> +	help
+> +	  Support for the LoongArch CPU Interrupt Controller. For details of
+> +	  irq chip hierarchy on LoongArch platforms please read the document
+> +	  Documentation/loongarch/irq-chip-model.rst.
+> +
+>  config LOONGSON_LIOINTC
+>  	bool "Loongson Local I/O Interrupt Controller"
+>  	depends on MACH_LOONGSON64
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index f88cbf36a9d2..4e34eebe180b 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -105,6 +105,7 @@ obj-$(CONFIG_LS1X_IRQ)			+= irq-ls1x.o
+>  obj-$(CONFIG_TI_SCI_INTR_IRQCHIP)	+= irq-ti-sci-intr.o
+>  obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)	+= irq-ti-sci-inta.o
+>  obj-$(CONFIG_TI_PRUSS_INTC)		+= irq-pruss-intc.o
+> +obj-$(CONFIG_IRQ_LOONGARCH_CPU)		+= irq-loongarch-cpu.o
+>  obj-$(CONFIG_LOONGSON_LIOINTC)		+= irq-loongson-liointc.o
+>  obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
+>  obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
+> diff --git a/drivers/irqchip/irq-loongarch-cpu.c b/drivers/irqchip/irq-loongarch-cpu.c
+> new file mode 100644
+> index 000000000000..8e9e8d39cb22
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-loongarch-cpu.c
+> @@ -0,0 +1,76 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqchip.h>
+> +#include <linux/irqdomain.h>
+> +
+> +#include <asm/loongarch.h>
+> +#include <asm/setup.h>
+> +
+> +static struct irq_domain *irq_domain;
+> +
+> +static inline void enable_loongarch_irq(struct irq_data *d)
 
-Sure，I will update it and resend.
+Why 'inline' given that it is used as a function pointer?
 
->
-> Btw, I've been working on [1] cleaning up the one-off deferred probe
-> solution that we have for amba devices. That causes a bunch of other
-> headaches. Your patch 3/3 takes us further in the wrong direction by
-> adding more reasons for delaying the addition of the device.
-Thanks for your explanation.
-> -Saravana
->
-> [1] - https://lore.kernel.org/lkml/CAGETcx8b228nDUho3cX9AAQ-pXOfZTMv8cj2vhdx9yc_pk8q+A@mail.gmail.com/
-> .
->
+> +{
+> +	set_csr_ecfg(ECFGF(d->hwirq));
+> +}
+> +
+> +#define eoi_loongarch_irq enable_loongarch_irq
+
+NAK. EOI and enable cannot be the same operation.
+
+> +
+> +static inline void disable_loongarch_irq(struct irq_data *d)
+> +{
+> +	clear_csr_ecfg(ECFGF(d->hwirq));
+> +}
+> +
+> +#define ack_loongarch_irq disable_loongarch_irq
+
+Same thing. Either you have different operations, or this only
+supports mask/unmask.
+
+> +
+> +static struct irq_chip loongarch_cpu_irq_controller = {
+> +	.name		= "LoongArch",
+> +	.irq_ack	= ack_loongarch_irq,
+> +	.irq_eoi	= eoi_loongarch_irq,
+> +	.irq_enable	= enable_loongarch_irq,
+> +	.irq_disable	= disable_loongarch_irq,
+> +};
+> +
+> +asmlinkage void default_handle_irq(int irq)
+> +{
+> +	do_IRQ(irq_linear_revmap(irq_domain, irq));
+
+This looks both wrong and short sighted:
+
+- irq_linear_revmap() is now another name for irq_find_mapping().
+  Which means it uses a RCU read critical section. If, as I expect,
+  this is just a blind copy of the MIPS code, do_IRQ() will not do
+  anything with respect to irq_enter()/irq_exit(), which will result
+  in something pretty bad on the exit from idle path. Lockdep will
+  probably shout at you pretty loudly.
+
+- A single root interrupt controller is, in my modest experience,
+  something that rarely happen. You will eventually have a variety of
+  them, and you will have to join the other arches such as arm, arm64,
+  riscv and csky that use CONFIG_GENERIC_IRQ_MULTI_HANDLER instead of
+  following the existing MIPS model.
+
+You can solve this by:
+
+- Move over to CONFIG_GENERIC_IRQ_MULTI_HANDLER so that the interrupt
+  controller can register itself with the core, rather than being
+  defined at compile time.
+
+- Drop the do_IRQ() madness. Perform whenever stuff you need to do in
+  the arch code *before* calling into the interrupt controller code.
+
+- Use generic_handle_irq() to call into the irq stack. It will handle
+  all the irq_enter()/irq_exit() correctly. It will also avoid the
+  silly double lookup of the irq_desc on interrupt handling.
+
+> +}
+> +
+> +static int loongarch_cpu_intc_map(struct irq_domain *d, unsigned int irq,
+> +			     irq_hw_number_t hwirq)
+> +{
+> +	struct irq_chip *chip;
+> +
+> +	irq_set_noprobe(irq);
+> +	chip = &loongarch_cpu_irq_controller;
+> +	set_vi_handler(EXCCODE_INT_START + hwirq, default_handle_irq);
+
+What is that? Yet another MIPS legacy? Why does it have to be per
+interrupt if it obviously apply to each and every root interrupt?
+
+Given that 'vi' probably stands for "vectored interrupt", why isn't
+that the irq_enable() code?
+
+> +	irq_set_chip_and_handler(irq, chip, handle_percpu_irq);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct irq_domain_ops loongarch_cpu_intc_irq_domain_ops = {
+> +	.map = loongarch_cpu_intc_map,
+> +	.xlate = irq_domain_xlate_onecell,
+> +};
+> +
+> +int __init loongarch_cpu_irq_init(void)
+> +{
+> +	/* Mask interrupts. */
+> +	clear_csr_ecfg(ECFG0_IM);
+> +	clear_csr_estat(ESTATF_IP);
+> +
+> +	irq_domain = irq_domain_add_simple(NULL, EXCCODE_INT_NUM,
+> +		     LOONGSON_CPU_IRQ_BASE, &loongarch_cpu_intc_irq_domain_ops, NULL);
+
+NAK. You still obviously have some static partitioning of the
+interrupt space, which is not acceptable for a new architecture.
+
+> +
+> +	if (!irq_domain)
+> +		panic("Failed to add irqdomain for LoongArch CPU");
+> +
+> +	return 0;
+> +}
+
+I haven't seen much progress from the first version I reviewed. This
+is still the same antiquated, broken MIPS code, only with a different
+name.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
