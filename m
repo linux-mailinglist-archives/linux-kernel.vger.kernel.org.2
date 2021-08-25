@@ -2,265 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CECD63F6EEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79B73F6EF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237766AbhHYFrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 01:47:24 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:28806 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232096AbhHYFrU (ORCPT
+        id S237933AbhHYFtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 01:49:01 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:59330 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231754AbhHYFsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 01:47:20 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17OISFYo024969;
-        Tue, 24 Aug 2021 22:46:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=ZtN16GHhUt+sHil6bIAPuHuO4p5ULFUOZK9szr+tuz0=;
- b=apoDS8FQyfMnBQlV5hGURtR+VWVdoYnLulsOkWgod8m09k6wxXGqNcmAqKSfUXTJk8QK
- ReGQ1bSKpuDJqwK9SKw1XOE3Ko2Mp3I7uNdOin9l7ix5cjQxzDVRpBjXpGPBqIzpbyEK
- t+bh2+5v18AiWDdb6NbT1EX+noYRw69bPsrsrIogk1ELWut0eQFRAkuX/DXT0a4WXOZE
- 2ewI4ZY4mwVW36uUmFzfY82ZQyDtGPejmd3hK3u66MC4kJ2lP/hq4wNHlChenmXTPvte
- I53oI97ydoU6gZX0G3TDJMGyPJRAXOnHZ5VKjcppPkGnPleWPehIPin7fS4kuJa3LZHZ QA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3an62ksy8m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 24 Aug 2021 22:46:28 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 24 Aug
- 2021 22:46:26 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Tue, 24 Aug 2021 22:46:26 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id E90823F7051;
-        Tue, 24 Aug 2021 22:46:22 -0700 (PDT)
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        <ndabilpuram@marvell.com>
-Subject: [PATCH] octeontx2-af: Wait for TX link idle for credits change
-Date:   Wed, 25 Aug 2021 11:16:21 +0530
-Message-ID: <20210825054621.3863-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 25 Aug 2021 01:48:52 -0400
+X-UUID: 4229238561b54d798107e7163b9e7bd5-20210825
+X-UUID: 4229238561b54d798107e7163b9e7bd5-20210825
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 571421875; Wed, 25 Aug 2021 13:48:04 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 25 Aug 2021 13:48:03 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkcas07.mediatek.inc
+ (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 25 Aug
+ 2021 13:48:03 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 25 Aug 2021 13:48:02 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+CC:     Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH RESEND v3 1/2] PM / wakeirq: support enabling wake-up irq after runtime_suspend called
+Date:   Wed, 25 Aug 2021 13:47:57 +0800
+Message-ID: <1629870478-11813-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 8LuBmQZVTjaCeuUevRagJzd8kOkdySis
-X-Proofpoint-GUID: 8LuBmQZVTjaCeuUevRagJzd8kOkdySis
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-08-25_01,2021-08-25_01,2020-04-07_01
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nithin Dabilpuram <ndabilpuram@marvell.com>
+When the dedicated wake-irq is level trigger, and it uses the
+consumer's sleep status as the wakeup source, that means if the
+consumer is not in sleep state, the wake-irq will be triggered
+when enable it; For this case, need enable the wake-irq after
+invoking the consumer's runtime_suspend() which make the consumer
+enter sleep state.
 
-NIX_AF_TX_LINKX_NORM_CREDIT holds running counter of
-tx credits available per link. But, tx credits should be
-configured based on MTU config. So MTU change needs tx
-credit count update.
+e.g.
+Assume the wake-irq is a low level trigger type, and the wakeup
+signal comes from the sleep status of consumer.
+The wakeup signal is low level at running time (0), and becomes
+high level when the consumer enters sleep state (runtime_suspend
+(1) is called), a wakeup event at (2) make the consumer exit sleep
+state, then the wakeup signal also becomes low level.
 
-An issue exists whereby when both PF & VF are enabled and
-PF traffic is flowing, if VF requests for MTU update,
-updating the NORM_CREDIT register will lead to corruption
-of credit count and subsequent deadlock of tx link as
-the NORM_CREDIT register holds running count.
+                ------------------
+               |           ^     ^|
+----------------           |     | --------------
+ |<---(0)--->|<--(1)--|   (3)   (2)    (4)
 
-This patch provides workaround by pausing link traffic
-using NIX_AF_TL1X_SW_XOFF, waiting for existing packets to
-drain, and used credits be returned before updating new
-credit count.
+if enable the wake-irq before calling runtime_suspend during (0),
+an interrupt will arise, it causes resume immediately;
+it works if enable wake-irq ( e.g. at (3) or (4)) after calling
+runtime_suspend.
 
-Signed-off-by: Nithin Dabilpuram <ndabilpuram@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+This patch introduces a new status WAKE_IRQ_DEDICATED_LATE_ENABLED
+to optionally support enabling wake-irq after calling runtime_suspend().
+
+Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- .../net/ethernet/marvell/octeontx2/af/rvu.h   |   1 +
- .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 102 ++++++++++++++++--
- 2 files changed, 92 insertions(+), 11 deletions(-)
+v3: add new status suggested by Rafael
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-index d88f595e63b0..d86c6b366547 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-@@ -314,6 +314,7 @@ struct nix_hw {
- 	struct nix_lso lso;
- 	struct nix_txvlan txvlan;
- 	struct nix_ipolicer *ipolicer;
-+	u64    *tx_credits;
- };
+v2: add more commit message
+
+  Use the falling edge trigger interrupt suggested by Ikjoon [1], it
+works well at firstly when only use this related wakeup source, but
+encounter issues if use other wakeup sources to wakeup platform as
+below steps:
+1. use another wakeup source to wake up the suspended system;
+2. the consumer's resume() will be called, and exits sleep state;
+3. the consumer's wakeup signal will fall into low level, due to
+   currently the wakeup irq is disabled, the wake-irq is pending;
+4. the consumer tries to enter runtime suspend, but there is a
+   pending wakeup irq, so will resume again, this will repeat
+   endlessly.
+
+  Send out the patch again for further discussion.
+
+[1]: https://patchwork.kernel.org/patch/12190407
+
+---
+ drivers/base/power/power.h   |  7 ++++--
+ drivers/base/power/runtime.c |  6 +++--
+ drivers/base/power/wakeirq.c | 49 +++++++++++++++++++++++++++++++++---
+ include/linux/pm_wakeirq.h   |  5 ++++
+ 4 files changed, 60 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/base/power/power.h b/drivers/base/power/power.h
+index 54292cdd7808..2d5dfc886f0b 100644
+--- a/drivers/base/power/power.h
++++ b/drivers/base/power/power.h
+@@ -25,8 +25,10 @@ extern u64 pm_runtime_active_time(struct device *dev);
  
- /* RVU block's capabilities or functionality,
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-index c5e3f90e562d..a5c8067c8aef 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-@@ -3457,6 +3457,77 @@ static void nix_find_link_frs(struct rvu *rvu,
- 		req->minlen = minlen;
+ #define WAKE_IRQ_DEDICATED_ALLOCATED	BIT(0)
+ #define WAKE_IRQ_DEDICATED_MANAGED	BIT(1)
++#define WAKE_IRQ_DEDICATED_LATE_ENABLED	BIT(2)
+ #define WAKE_IRQ_DEDICATED_MASK		(WAKE_IRQ_DEDICATED_ALLOCATED | \
+-					 WAKE_IRQ_DEDICATED_MANAGED)
++					 WAKE_IRQ_DEDICATED_MANAGED | \
++					 WAKE_IRQ_DEDICATED_LATE_ENABLED)
+ 
+ struct wake_irq {
+ 	struct device *dev;
+@@ -39,7 +41,8 @@ extern void dev_pm_arm_wake_irq(struct wake_irq *wirq);
+ extern void dev_pm_disarm_wake_irq(struct wake_irq *wirq);
+ extern void dev_pm_enable_wake_irq_check(struct device *dev,
+ 					 bool can_change_status);
+-extern void dev_pm_disable_wake_irq_check(struct device *dev);
++extern void dev_pm_disable_wake_irq_check(struct device *dev, bool skip_enable_late);
++extern void dev_pm_enable_wake_irq_complete(struct device *dev);
+ 
+ #ifdef CONFIG_PM_SLEEP
+ 
+diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+index 8a66eaf731e4..97646aa11376 100644
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -645,6 +645,8 @@ static int rpm_suspend(struct device *dev, int rpmflags)
+ 	if (retval)
+ 		goto fail;
+ 
++	dev_pm_enable_wake_irq_complete(dev);
++
+  no_callback:
+ 	__update_runtime_status(dev, RPM_SUSPENDED);
+ 	pm_runtime_deactivate_timer(dev);
+@@ -690,7 +692,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
+ 	return retval;
+ 
+  fail:
+-	dev_pm_disable_wake_irq_check(dev);
++	dev_pm_disable_wake_irq_check(dev, false);
+ 	__update_runtime_status(dev, RPM_ACTIVE);
+ 	dev->power.deferred_resume = false;
+ 	wake_up_all(&dev->power.wait_queue);
+@@ -873,7 +875,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
+ 
+ 	callback = RPM_GET_CALLBACK(dev, runtime_resume);
+ 
+-	dev_pm_disable_wake_irq_check(dev);
++	dev_pm_disable_wake_irq_check(dev, true);
+ 	retval = rpm_callback(callback, dev);
+ 	if (retval) {
+ 		__update_runtime_status(dev, RPM_SUSPENDED);
+diff --git a/drivers/base/power/wakeirq.c b/drivers/base/power/wakeirq.c
+index 3bad3266a2ad..a612f5c26c6c 100644
+--- a/drivers/base/power/wakeirq.c
++++ b/drivers/base/power/wakeirq.c
+@@ -215,6 +215,24 @@ int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq)
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_set_dedicated_wake_irq);
+ 
++/**
++ * dev_pm_wake_irq_set_late_enabled_status - set status WAKE_IRQ_DEDICATED_LATE_ENABLED
++ * @dev: Device
++ *
++ * Set the status of WAKE_IRQ_DEDICATED_LATE_ENABLED to tell rpm_suspend()
++ * to enable dedicated wake-up interrupt after invoking the runtime_suspend(),
++ *
++ * Should be called after setting dedicated wake-up interrupt.
++ */
++void dev_pm_wake_irq_set_late_enabled_status(struct device *dev)
++{
++	struct wake_irq *wirq = dev->power.wakeirq;
++
++	if (wirq && (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED))
++		wirq->status |= WAKE_IRQ_DEDICATED_LATE_ENABLED;
++}
++EXPORT_SYMBOL_GPL(dev_pm_wake_irq_set_late_enabled_status);
++
+ /**
+  * dev_pm_enable_wake_irq - Enable device wake-up interrupt
+  * @dev: Device
+@@ -285,27 +303,52 @@ void dev_pm_enable_wake_irq_check(struct device *dev,
+ 	return;
+ 
+ enable:
+-	enable_irq(wirq->irq);
++	if (!can_change_status || !(wirq->status & WAKE_IRQ_DEDICATED_LATE_ENABLED))
++		enable_irq(wirq->irq);
  }
  
-+static int
-+nix_config_link_credits(struct rvu *rvu, int blkaddr, int link,
-+			u16 pcifunc, u64 tx_credits)
+ /**
+  * dev_pm_disable_wake_irq_check - Checks and disables wake-up interrupt
+  * @dev: Device
++ * @skip_late_enabled_status: skip checking WAKE_IRQ_DEDICATED_LATE_ENABLED
+  *
+  * Disables wake-up interrupt conditionally based on status.
+  * Should be only called from rpm_suspend() and rpm_resume() path.
+  */
+-void dev_pm_disable_wake_irq_check(struct device *dev)
++void dev_pm_disable_wake_irq_check(struct device *dev, bool skip_late_enabled_status)
+ {
+ 	struct wake_irq *wirq = dev->power.wakeirq;
+ 
+ 	if (!wirq || !(wirq->status & WAKE_IRQ_DEDICATED_MASK))
+ 		return;
+ 
+-	if (wirq->status & WAKE_IRQ_DEDICATED_MANAGED)
++	if (wirq->status & WAKE_IRQ_DEDICATED_MANAGED &&
++	    (skip_late_enabled_status ||
++	     !(wirq->status & WAKE_IRQ_DEDICATED_LATE_ENABLED)))
+ 		disable_irq_nosync(wirq->irq);
+ }
+ 
++/**
++ * dev_pm_enable_wake_irq_complete - enable wake irq based on status
++ * @dev: Device
++ *
++ * Enable wake-up interrupt conditionally based on status, mainly for
++ * enabling wake-up interrupt after runtime_suspend() is called.
++ *
++ * Should be only called from rpm_suspend() path.
++ */
++void dev_pm_enable_wake_irq_complete(struct device *dev)
 +{
-+	struct rvu_hwinfo *hw = rvu->hw;
-+	int pf = rvu_get_pf(pcifunc);
-+	u8 cgx_id = 0, lmac_id = 0;
-+	unsigned long poll_tmo;
-+	bool restore_tx_en = 0;
-+	struct nix_hw *nix_hw;
-+	u64 cfg, sw_xoff = 0;
-+	u32 schq = 0;
-+	u32 credits;
-+	int rc;
++	struct wake_irq *wirq = dev->power.wakeirq;
 +
-+	nix_hw = get_nix_hw(rvu->hw, blkaddr);
-+	if (!nix_hw)
-+		return NIX_AF_ERR_INVALID_NIXBLK;
++	if (!wirq || !(wirq->status & WAKE_IRQ_DEDICATED_MASK))
++		return;
 +
-+	if (tx_credits == nix_hw->tx_credits[link])
-+		return 0;
-+
-+	/* Enable cgx tx if disabled for credits to be back */
-+	if (is_pf_cgxmapped(rvu, pf)) {
-+		rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
-+		restore_tx_en = !cgx_lmac_tx_enable(rvu_cgx_pdata(cgx_id, rvu),
-+						    lmac_id, true);
-+	}
-+
-+	mutex_lock(&rvu->rsrc_lock);
-+	/* Disable new traffic to link */
-+	if (hw->cap.nix_shaping) {
-+		schq = nix_get_tx_link(rvu, pcifunc);
-+		sw_xoff = rvu_read64(rvu, blkaddr, NIX_AF_TL1X_SW_XOFF(schq));
-+		rvu_write64(rvu, blkaddr,
-+			    NIX_AF_TL1X_SW_XOFF(schq), BIT_ULL(0));
-+	}
-+
-+	rc = -EBUSY;
-+	poll_tmo = jiffies + usecs_to_jiffies(10000);
-+	/* Wait for credits to return */
-+	do {
-+		if (time_after(jiffies, poll_tmo))
-+			goto exit;
-+		usleep_range(100, 200);
-+
-+		cfg = rvu_read64(rvu, blkaddr,
-+				 NIX_AF_TX_LINKX_NORM_CREDIT(link));
-+		credits = (cfg >> 12) & 0xFFFFFULL;
-+	} while (credits != nix_hw->tx_credits[link]);
-+
-+	cfg &= ~(0xFFFFFULL << 12);
-+	cfg |= (tx_credits << 12);
-+	rvu_write64(rvu, blkaddr, NIX_AF_TX_LINKX_NORM_CREDIT(link), cfg);
-+	rc = 0;
-+
-+	nix_hw->tx_credits[link] = tx_credits;
-+
-+exit:
-+	/* Enable traffic back */
-+	if (hw->cap.nix_shaping && !sw_xoff)
-+		rvu_write64(rvu, blkaddr, NIX_AF_TL1X_SW_XOFF(schq), 0);
-+
-+	/* Restore state of cgx tx */
-+	if (restore_tx_en)
-+		cgx_lmac_tx_enable(rvu_cgx_pdata(cgx_id, rvu), lmac_id, false);
-+
-+	mutex_unlock(&rvu->rsrc_lock);
-+	return rc;
++	if (wirq->status & WAKE_IRQ_DEDICATED_MANAGED &&
++	    wirq->status & WAKE_IRQ_DEDICATED_LATE_ENABLED)
++		enable_irq(wirq->irq);
 +}
 +
- int rvu_mbox_handler_nix_set_hw_frs(struct rvu *rvu, struct nix_frs_cfg *req,
- 				    struct msg_rsp *rsp)
+ /**
+  * dev_pm_arm_wake_irq - Arm device wake-up
+  * @wirq: Device wake-up interrupt
+diff --git a/include/linux/pm_wakeirq.h b/include/linux/pm_wakeirq.h
+index cd5b62db9084..92f814d583f8 100644
+--- a/include/linux/pm_wakeirq.h
++++ b/include/linux/pm_wakeirq.h
+@@ -22,6 +22,7 @@ extern int dev_pm_set_dedicated_wake_irq(struct device *dev,
+ extern void dev_pm_clear_wake_irq(struct device *dev);
+ extern void dev_pm_enable_wake_irq(struct device *dev);
+ extern void dev_pm_disable_wake_irq(struct device *dev);
++extern void dev_pm_wake_irq_set_late_enabled_status(struct device *dev);
+ 
+ #else	/* !CONFIG_PM */
+ 
+@@ -47,5 +48,9 @@ static inline void dev_pm_disable_wake_irq(struct device *dev)
  {
-@@ -3545,11 +3616,8 @@ int rvu_mbox_handler_nix_set_hw_frs(struct rvu *rvu, struct nix_frs_cfg *req,
- 	lmac_fifo_len =
- 		rvu_cgx_get_fifolen(rvu) /
- 		cgx_get_lmac_cnt(rvu_cgx_pdata(cgx, rvu));
--	cfg = rvu_read64(rvu, blkaddr, NIX_AF_TX_LINKX_NORM_CREDIT(link));
--	cfg &= ~(0xFFFFFULL << 12);
--	cfg |=  ((lmac_fifo_len - req->maxlen) / 16) << 12;
--	rvu_write64(rvu, blkaddr, NIX_AF_TX_LINKX_NORM_CREDIT(link), cfg);
--	return 0;
-+	return nix_config_link_credits(rvu, blkaddr, link, pcifunc,
-+				       (lmac_fifo_len - req->maxlen) / 16);
  }
  
- int rvu_mbox_handler_nix_set_rx_cfg(struct rvu *rvu, struct nix_rx_cfg *req,
-@@ -3593,12 +3661,13 @@ static u64 rvu_get_lbk_link_credits(struct rvu *rvu, u16 lbk_max_frs)
- 	return 1600; /* 16 * max LBK datarate = 16 * 100Gbps */
- }
- 
--static void nix_link_config(struct rvu *rvu, int blkaddr)
-+static void nix_link_config(struct rvu *rvu, int blkaddr,
-+			    struct nix_hw *nix_hw)
- {
- 	struct rvu_hwinfo *hw = rvu->hw;
- 	int cgx, lmac_cnt, slink, link;
- 	u16 lbk_max_frs, lmac_max_frs;
--	u64 tx_credits;
-+	u64 tx_credits, cfg;
- 
- 	rvu_get_lbk_link_max_frs(rvu, &lbk_max_frs);
- 	rvu_get_lmac_link_max_frs(rvu, &lmac_max_frs);
-@@ -3629,15 +3698,18 @@ static void nix_link_config(struct rvu *rvu, int blkaddr)
- 	 */
- 	for (cgx = 0; cgx < hw->cgx; cgx++) {
- 		lmac_cnt = cgx_get_lmac_cnt(rvu_cgx_pdata(cgx, rvu));
-+		/* Skip when cgx is not available or lmac cnt is zero */
-+		if (lmac_cnt <= 0)
-+			continue;
- 		tx_credits = ((rvu_cgx_get_fifolen(rvu) / lmac_cnt) -
- 			       lmac_max_frs) / 16;
- 		/* Enable credits and set credit pkt count to max allowed */
--		tx_credits =  (tx_credits << 12) | (0x1FF << 2) | BIT_ULL(1);
-+		cfg =  (tx_credits << 12) | (0x1FF << 2) | BIT_ULL(1);
- 		slink = cgx * hw->lmac_per_cgx;
- 		for (link = slink; link < (slink + lmac_cnt); link++) {
-+			nix_hw->tx_credits[link] = tx_credits;
- 			rvu_write64(rvu, blkaddr,
--				    NIX_AF_TX_LINKX_NORM_CREDIT(link),
--				    tx_credits);
-+				    NIX_AF_TX_LINKX_NORM_CREDIT(link), cfg);
- 		}
- 	}
- 
-@@ -3645,6 +3717,7 @@ static void nix_link_config(struct rvu *rvu, int blkaddr)
- 	slink = hw->cgx_links;
- 	for (link = slink; link < (slink + hw->lbk_links); link++) {
- 		tx_credits = rvu_get_lbk_link_credits(rvu, lbk_max_frs);
-+		nix_hw->tx_credits[link] = tx_credits;
- 		/* Enable credits and set credit pkt count to max allowed */
- 		tx_credits =  (tx_credits << 12) | (0x1FF << 2) | BIT_ULL(1);
- 		rvu_write64(rvu, blkaddr,
-@@ -3908,8 +3981,13 @@ static int rvu_nix_block_init(struct rvu *rvu, struct nix_hw *nix_hw)
- 		if (err)
- 			return err;
- 
-+		nix_hw->tx_credits = kcalloc(hw->cgx_links + hw->lbk_links,
-+					     sizeof(u64), GFP_KERNEL);
-+		if (!nix_hw->tx_credits)
-+			return -ENOMEM;
++static inline void dev_pm_wake_irq_set_late_enabled_status(struct device *dev)
++{
++}
 +
- 		/* Initialize CGX/LBK/SDP link credits, min/max pkt lengths */
--		nix_link_config(rvu, blkaddr);
-+		nix_link_config(rvu, blkaddr, nix_hw);
- 
- 		/* Enable Channel backpressure */
- 		rvu_write64(rvu, blkaddr, NIX_AF_RX_CFG, BIT_ULL(0));
-@@ -3965,6 +4043,8 @@ static void rvu_nix_block_freemem(struct rvu *rvu, int blkaddr,
- 			kfree(txsch->schq.bmap);
- 		}
- 
-+		kfree(nix_hw->tx_credits);
-+
- 		nix_ipolicer_freemem(rvu, nix_hw);
- 
- 		vlan = &nix_hw->txvlan;
+ #endif	/* CONFIG_PM */
+ #endif	/* _LINUX_PM_WAKEIRQ_H */
 -- 
-2.17.1
+2.25.1
 
