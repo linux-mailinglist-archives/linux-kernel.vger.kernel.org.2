@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF62F3F6F3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D85C3F6F3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238844AbhHYGOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:14:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47122 "EHLO mail.kernel.org"
+        id S238873AbhHYGOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:14:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238833AbhHYGOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:14:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D6E961181;
-        Wed, 25 Aug 2021 06:13:45 +0000 (UTC)
+        id S238753AbhHYGOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 02:14:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FAC661181;
+        Wed, 25 Aug 2021 06:14:00 +0000 (UTC)
 From:   Huacai Chen <chenhuacai@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
         Huacai Chen <chenhuacai@gmail.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH V3 04/10] irqchip/loongson-pch-msi: Add ACPI init support
-Date:   Wed, 25 Aug 2021 14:11:46 +0800
-Message-Id: <20210825061152.3396398-5-chenhuacai@loongson.cn>
+Subject: [PATCH V3 05/10] irqchip/loongson-htvec: Add ACPI init support
+Date:   Wed, 25 Aug 2021 14:11:47 +0800
+Message-Id: <20210825061152.3396398-6-chenhuacai@loongson.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210825061152.3396398-1-chenhuacai@loongson.cn>
 References: <20210825061152.3396398-1-chenhuacai@loongson.cn>
@@ -37,191 +37,180 @@ add ACPI init support.
 
 Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- drivers/irqchip/irq-loongson-pch-msi.c | 126 ++++++++++++++++---------
- 1 file changed, 84 insertions(+), 42 deletions(-)
+ drivers/irqchip/irq-loongson-htvec.c | 120 +++++++++++++++++++--------
+ 1 file changed, 86 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-pch-msi.c b/drivers/irqchip/irq-loongson-pch-msi.c
-index 32562b7e681b..1ecb15f8745b 100644
---- a/drivers/irqchip/irq-loongson-pch-msi.c
-+++ b/drivers/irqchip/irq-loongson-pch-msi.c
-@@ -21,6 +21,7 @@ struct pch_msi_data {
- 	u32		irq_first;	/* The vector number that MSIs starts */
- 	u32		num_irqs;	/* The number of vectors for MSIs */
- 	unsigned long	*msi_map;
-+	struct fwnode_handle *domain_handle;
+diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
+index 60a335d7e64e..e969e4588600 100644
+--- a/drivers/irqchip/irq-loongson-htvec.c
++++ b/drivers/irqchip/irq-loongson-htvec.c
+@@ -20,7 +20,6 @@
+ /* Registers */
+ #define HTVEC_EN_OFF		0x20
+ #define HTVEC_MAX_PARENT_IRQ	8
+-
+ #define VEC_COUNT_PER_REG	32
+ #define VEC_REG_IDX(irq_id)	((irq_id) / VEC_COUNT_PER_REG)
+ #define VEC_REG_BIT(irq_id)	((irq_id) % VEC_COUNT_PER_REG)
+@@ -30,8 +29,11 @@ struct htvec {
+ 	void __iomem		*base;
+ 	struct irq_domain	*htvec_domain;
+ 	raw_spinlock_t		htvec_lock;
++	struct fwnode_handle	*domain_handle;
  };
  
- static void pch_msi_mask_msi_irq(struct irq_data *d)
-@@ -154,12 +155,14 @@ static const struct irq_domain_ops pch_msi_middle_domain_ops = {
- };
- 
- static int pch_msi_init_domains(struct pch_msi_data *priv,
--				struct device_node *node,
--				struct irq_domain *parent)
-+				struct irq_domain *parent,
-+				struct fwnode_handle *domain_handle)
- {
- 	struct irq_domain *middle_domain, *msi_domain;
- 
--	middle_domain = irq_domain_create_linear(of_node_to_fwnode(node),
-+	priv->domain_handle = domain_handle;
++struct htvec *htvec_priv;
 +
-+	middle_domain = irq_domain_create_linear(priv->domain_handle,
- 						priv->num_irqs,
- 						&pch_msi_middle_domain_ops,
- 						priv);
-@@ -171,7 +174,7 @@ static int pch_msi_init_domains(struct pch_msi_data *priv,
- 	middle_domain->parent = parent;
- 	irq_domain_update_bus_token(middle_domain, DOMAIN_BUS_NEXUS);
- 
--	msi_domain = pci_msi_create_irq_domain(of_node_to_fwnode(node),
-+	msi_domain = pci_msi_create_irq_domain(priv->domain_handle,
- 					       &pch_msi_domain_info,
- 					       middle_domain);
- 	if (!msi_domain) {
-@@ -183,19 +186,11 @@ static int pch_msi_init_domains(struct pch_msi_data *priv,
- 	return 0;
+ static void htvec_irq_dispatch(struct irq_desc *desc)
+ {
+ 	int i;
+@@ -155,64 +157,114 @@ static void htvec_reset(struct htvec *priv)
+ 	}
  }
  
--static int pch_msi_init(struct device_node *node,
--			    struct device_node *parent)
-+static int pch_msi_init(phys_addr_t msg_address, int irq_base, int irq_count,
-+			struct irq_domain *parent_domain, struct fwnode_handle *domain_handle)
+-static int htvec_of_init(struct device_node *node,
+-				struct device_node *parent)
++static int htvec_init(phys_addr_t addr, unsigned long size,
++		int num_parents, int parent_irq[], struct fwnode_handle *domain_handle)
  {
--	struct pch_msi_data *priv;
--	struct irq_domain *parent_domain;
--	struct resource res;
- 	int ret;
--
--	parent_domain = irq_find_host(parent);
--	if (!parent_domain) {
--		pr_err("Failed to find the parent domain\n");
--		return -ENXIO;
--	}
-+	struct pch_msi_data *priv;
++	int i;
+ 	struct htvec *priv;
+-	int err, parent_irq[8], i;
  
  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
  	if (!priv)
-@@ -203,38 +198,18 @@ static int pch_msi_init(struct device_node *node,
+ 		return -ENOMEM;
  
- 	mutex_init(&priv->msi_map_lock);
- 
--	ret = of_address_to_resource(node, 0, &res);
--	if (ret) {
--		pr_err("Failed to allocate resource\n");
--		goto err_priv;
++	priv->num_parents = num_parents;
++	priv->base = ioremap(addr, size);
++	priv->domain_handle = domain_handle;
+ 	raw_spin_lock_init(&priv->htvec_lock);
+-	priv->base = of_iomap(node, 0);
+-	if (!priv->base) {
+-		err = -ENOMEM;
+-		goto free_priv;
 -	}
 -
--	priv->doorbell = res.start;
+-	/* Interrupt may come from any of the 8 interrupt lines */
+-	for (i = 0; i < HTVEC_MAX_PARENT_IRQ; i++) {
+-		parent_irq[i] = irq_of_parse_and_map(node, i);
+-		if (parent_irq[i] <= 0)
+-			break;
 -
--	if (of_property_read_u32(node, "loongson,msi-base-vec",
--				&priv->irq_first)) {
--		pr_err("Unable to parse MSI vec base\n");
--		ret = -EINVAL;
--		goto err_priv;
+-		priv->num_parents++;
+-	}
+ 
+-	if (!priv->num_parents) {
+-		pr_err("Failed to get parent irqs\n");
+-		err = -ENODEV;
+-		goto iounmap_base;
 -	}
 -
--	if (of_property_read_u32(node, "loongson,msi-num-vecs",
--				&priv->num_irqs)) {
--		pr_err("Unable to parse MSI vec number\n");
--		ret = -EINVAL;
--		goto err_priv;
--	}
-+	priv->doorbell = msg_address;
-+	priv->irq_first = irq_base;
-+	priv->num_irqs = irq_count;
+-	priv->htvec_domain = irq_domain_create_linear(of_node_to_fwnode(node),
++	/* Setup IRQ domain */
++	priv->htvec_domain = irq_domain_create_linear(priv->domain_handle,
+ 					(VEC_COUNT_PER_REG * priv->num_parents),
+ 					&htvec_domain_ops, priv);
+ 	if (!priv->htvec_domain) {
+-		pr_err("Failed to create IRQ domain\n");
+-		err = -ENOMEM;
+-		goto irq_dispose;
++		pr_err("loongson-htvec: cannot add IRQ domain\n");
++		goto iounmap_base;
+ 	}
  
- 	priv->msi_map = bitmap_zalloc(priv->num_irqs, GFP_KERNEL);
--	if (!priv->msi_map) {
--		ret = -ENOMEM;
-+	if (!priv->msi_map)
- 		goto err_priv;
--	}
+ 	htvec_reset(priv);
  
- 	pr_debug("Registering %d MSIs, starting at %d\n",
- 		 priv->num_irqs, priv->irq_first);
- 
--	ret = pch_msi_init_domains(priv, node, parent_domain);
-+	ret = pch_msi_init_domains(priv, parent_domain, domain_handle);
- 	if (ret)
- 		goto err_map;
- 
-@@ -244,7 +219,74 @@ static int pch_msi_init(struct device_node *node,
- 	kfree(priv->msi_map);
- err_priv:
- 	kfree(priv);
--	return ret;
+-	for (i = 0; i < priv->num_parents; i++)
++	for (i = 0; i < priv->num_parents; i++) {
+ 		irq_set_chained_handler_and_data(parent_irq[i],
+ 						 htvec_irq_dispatch, priv);
++	}
 +
++	htvec_priv = priv;
+ 
+ 	return 0;
+ 
+-irq_dispose:
+-	for (; i > 0; i--)
+-		irq_dispose_mapping(parent_irq[i - 1]);
+ iounmap_base:
+ 	iounmap(priv->base);
+-free_priv:
++	priv->domain_handle = NULL;
+ 	kfree(priv);
+ 
+-	return err;
 +	return -EINVAL;
 +}
 +
 +#ifdef CONFIG_OF
 +
-+int pch_msi_of_init(struct device_node *node, struct device_node *parent)
++static int htvec_of_init(struct device_node *node,
++				struct device_node *parent)
 +{
-+	int err;
-+	int irq_base, irq_count;
++	int i, err;
++	int num_parents, parent_irq[8];
 +	struct resource res;
-+	struct irq_domain *parent_domain;
 +
-+	parent_domain = irq_find_host(parent);
-+	if (!parent_domain) {
-+		pr_err("Failed to find the parent domain\n");
-+		return -ENXIO;
-+	}
-+
-+	if (of_address_to_resource(node, 0, &res)) {
-+		pr_err("Failed to allocate resource\n");
++	if (of_address_to_resource(node, 0, &res))
 +		return -EINVAL;
++
++	/* Interrupt may come from any of the 8 interrupt lines */
++	for (i = 0; i < HTVEC_MAX_PARENT_IRQ; i++) {
++		parent_irq[i] = irq_of_parse_and_map(node, i);
++		if (parent_irq[i] <= 0)
++			break;
++
++		num_parents++;
 +	}
 +
-+	if (of_property_read_u32(node, "loongson,msi-base-vec", &irq_base)) {
-+		pr_err("Unable to parse MSI vec base\n");
-+		return -EINVAL;
-+	}
-+
-+	if (of_property_read_u32(node, "loongson,msi-num-vecs", &irq_count)) {
-+		pr_err("Unable to parse MSI vec number\n");
-+		return -EINVAL;
-+	}
-+
-+	err = pch_msi_init(res.start, irq_base, irq_count, parent_domain, of_node_to_fwnode(node));
++	err = htvec_init(res.start, resource_size(&res),
++			num_parents, parent_irq, of_node_to_fwnode(node));
 +	if (err < 0)
 +		return err;
 +
 +	return 0;
-+}
-+
-+IRQCHIP_DECLARE(pch_msi, "loongson,pch-msi-1.0", pch_msi_of_init);
+ }
+ 
+ IRQCHIP_DECLARE(htvec, "loongson,htvec-1.0", htvec_of_init);
 +
 +#endif
 +
 +#ifdef CONFIG_ACPI
 +
-+struct fwnode_handle *pch_msi_acpi_init(struct fwnode_handle *parent,
-+					struct acpi_madt_msi_pic *acpi_pchmsi)
++struct fwnode_handle *htvec_acpi_init(struct fwnode_handle *parent,
++					struct acpi_madt_ht_pic *acpi_htvec)
 +{
-+	int ret;
-+	struct irq_domain *parent_domain;
++	int i, ret;
++	int num_parents, parent_irq[8];
++	struct irq_fwspec fwspec;
 +	struct fwnode_handle *domain_handle;
 +
-+	parent_domain = irq_find_matching_fwnode(parent, DOMAIN_BUS_ANY);
-+	if (!parent_domain) {
-+		pr_err("Failed to find the parent domain\n");
++	num_parents = HTVEC_MAX_PARENT_IRQ;
++
++	/* Interrupt may come from any of the 8 interrupt lines */
++	for (i = 0; i < HTVEC_MAX_PARENT_IRQ; i++) {
++		fwspec.fwnode = parent;
++		fwspec.param[0] = acpi_htvec->cascade[i];
++		fwspec.param_count = 1;
++		parent_irq[i] = irq_create_fwspec_mapping(&fwspec);
++	}
++
++	domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)acpi_htvec);
++	if (!domain_handle) {
++		pr_err("Unable to allocate domain handle\n");
 +		return NULL;
 +	}
 +
-+	domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)acpi_pchmsi);
-+
-+	ret = pch_msi_init(acpi_pchmsi->msg_address, acpi_pchmsi->start,
-+			acpi_pchmsi->count, parent_domain, domain_handle);
++	ret = htvec_init(acpi_htvec->address, acpi_htvec->size,
++			num_parents, parent_irq, domain_handle);
 +	if (ret < 0)
 +		return NULL;
 +
 +	return domain_handle;
- }
- 
--IRQCHIP_DECLARE(pch_msi, "loongson,pch-msi-1.0", pch_msi_init);
++}
++
 +#endif
 -- 
 2.27.0
