@@ -2,197 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5165D3F7A67
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FDA3F7A69
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241387AbhHYQV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
+        id S240791AbhHYQWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241442AbhHYQVu (ORCPT
+        with ESMTP id S235078AbhHYQVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:21:50 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98654C0611C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:20:38 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 17so225995pgp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:20:38 -0700 (PDT)
+        Wed, 25 Aug 2021 12:21:52 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16B2C0611C6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:20:50 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id e14so28209625qkg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:20:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=WfApXgIAJKG8HDMpDxeWIJ0g5a0zCGdRTXnLP/N3w6w=;
-        b=yNWmLg4D3MPNwz3iBAd040R8jR3mwmiT7/OveoBUnx9MNH0mZGUVD5U24u+11fAfKu
-         a91IZ8N7rdaeM0orJk9dy3N0mjCx0Yu0Sfpiog/Q0vvp5SjYBYa+qB5aucbHlPvnFQxg
-         ELDRto3TAI3GsKS4J5a7nQHfFBCd8MS8Em89BuJD8j8ZUk/ROgeXYelhYWzO9Ynho1mq
-         Db15kqUQUWEeBPBAI9ezdNAxXbSzajoKJWmZTScnNGMZvCjyw6jXoE8XpGD3UA0+LVPF
-         B1qo2b1h/VoOZgU61Jjek+nZEIIsBbUB2TYNMi/CBZ7lLCGLRI69QP+7/KPDIMTjF+5X
-         ZxBg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7HEJVL6vS0URIXz+R1rpadDnrKkkkmIihS3Y5sG4WlI=;
+        b=ngOwM2o0ybZwCcD6lZ+0y5TYEwPRYDq6uZwJqDulv0Zy/ZeECFCo+28MuhV+77gHot
+         IXnJL3y1Bsj/pU5OE+KuLltaH4lyZoq8buXPDgggoVPPhq88tQLWwklWMUyBJXb4I7pP
+         yPzX8OurKEATEwA7rLTuxe6sM+tJ65Q/X9boM31iYtDiXdoGVKFeNv4JEO2W1dlSVAu4
+         LnyfEDWqIhMweKdUseaXF4YZTFVOr6TIivN9lnRcO2RcEWyKtSqAgWa1oeVqytiN9LK8
+         LeQKT8asU94d/YeSp8M5VyWXRSS86/u66YQQpQZ+x8uMi6HZCzXtrXR9iT8s4WtnS0W9
+         /AXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=WfApXgIAJKG8HDMpDxeWIJ0g5a0zCGdRTXnLP/N3w6w=;
-        b=jsooj+mEJ09TiCjUMCCjGS2g21XFS5V4odzhZJ7T9hhT6pMoWcoUgj+lGeLdrB0PyT
-         jDcqKPIxwJFDaZ7eBpDr+QmVS/KrYHhbR24VJrK7HC0oMlMILaLM4ecYT8wLdGeExSi2
-         jnwi+/NZK5JLLU49F1s3nW8EnODDWegORjeTe/t7ko5EqkLPrAMrZJtFsjsQuqyLvPzg
-         X4nvuJKQuCM1pHBDynOxYd4Wor2hNj2n4IvPsJVKLxP0UMlP5++eU+3Uw47Ya5tWix4m
-         aV8TWCwMnYabt1M8mpN22FInoya2YrcxAYVJFOTt3pKjYzsjVC1BtHDXCge+6fZ0YJ5P
-         mcgg==
-X-Gm-Message-State: AOAM530LycJ+UhhTS1hvKld+ELG0N1npELRfQ7tBn+F4PAICtp7jrKYQ
-        Rtqpr/iHHQ3rqM2Qyy1gpqb1Mg==
-X-Google-Smtp-Source: ABdhPJwrAL8hgbvN02uYYKtBnE1DUYV7Xq1vYTj0mWjw2e7+NUaM6k7pyNoflK0khzA8RTUOnBiSQQ==
-X-Received: by 2002:a63:2242:: with SMTP id t2mr41795283pgm.111.1629908438181;
-        Wed, 25 Aug 2021 09:20:38 -0700 (PDT)
-Received: from [10.255.189.11] ([139.177.225.249])
-        by smtp.gmail.com with ESMTPSA id t13sm121019pjg.25.2021.08.25.09.20.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 09:20:37 -0700 (PDT)
-Subject: Re: [PATCH v2 1/9] mm: introduce pmd_install() helper
-To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
-        mika.penttila@nextfour.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
- <20210819031858.98043-2-zhengqi.arch@bytedance.com>
- <edd82170-7149-1abf-6204-f1d665a5fca2@redhat.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-Message-ID: <c650ef29-0f9e-02a0-9426-b406a4608c8f@bytedance.com>
-Date:   Thu, 26 Aug 2021 00:20:31 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7HEJVL6vS0URIXz+R1rpadDnrKkkkmIihS3Y5sG4WlI=;
+        b=iefXkxeLU3E7JGFY5ZHcVOerVlPz8/dmSMkoI34J++jcNkkEx4fAAAKXZDAPQwdPbh
+         FLLTPJqVeP/z8TcZO8Bb/PDmTilRVrK85213P9i8CxtI/l6YZEZ726YefCgx5gu3AYzV
+         43VkXKmMe3zPZjGQr5y0CTR/stmvsJ/qhEQvbMil8FntkQr2c6kdmDwINBhEbMOGxi3V
+         aeBq57ludM8c0Iq/Kdbw0nV63T0w4eZKRfJX4tbI0i2AAGDXpwNlE/F0EvICreCBzfqb
+         cfNzP46mubdjhrDxycHPnxevoeCsrhbQEqP9GvGaymVHhPknAv6kgwg1Su5aS9VYp4PB
+         xmBw==
+X-Gm-Message-State: AOAM530o+yoOals5qYeDRYSJl7bvuAYJWTsL1GoxWu8cs1IMP+jw2N2Z
+        3OfuDcu+rVrUFNl+PvERnC9qf9DvuM68y4ut3TC9LA==
+X-Google-Smtp-Source: ABdhPJw9e/9xv+EJVkpFFB3A16VUA8QTZQwQz17yaBy3MDsjXiqap7ZkCevB4HVgau08nc4qsazA14VSZYNrmifEmvg=
+X-Received: by 2002:a25:bec2:: with SMTP id k2mr61019188ybm.234.1629908448906;
+ Wed, 25 Aug 2021 09:20:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <edd82170-7149-1abf-6204-f1d665a5fca2@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20210825154043.247764-1-yan2228598786@gmail.com>
+ <CANn89iJO8jzjFWvJ610TPmKDE8WKi8ojTr_HWXLz5g=4pdQHEA@mail.gmail.com> <20210825090418.57fd7d2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210825090418.57fd7d2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 25 Aug 2021 09:20:37 -0700
+Message-ID: <CANn89iKkjtj68yksMg6fhpv2tZ9j2k0xgNK7S-wWi3e=XUrXmw@mail.gmail.com>
+Subject: Re: [PATCH] net: tcp_drop adds `reason` parameter for tracing v2
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Zhongya Yan <yan2228598786@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, hengqi.chen@gmail.com,
+        Yonghong Song <yhs@fb.com>, Neil Spring <ntspring@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 25, 2021 at 9:04 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 25 Aug 2021 08:47:46 -0700 Eric Dumazet wrote:
+> > On Wed, Aug 25, 2021 at 8:41 AM Zhongya Yan <yan2228598786@gmail.com> wrote:
+> > > @@ -5703,15 +5700,15 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
+> > >                         TCP_INC_STATS(sock_net(sk), TCP_MIB_INERRS);
+> > >                 NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPSYNCHALLENGE);
+> > >                 tcp_send_challenge_ack(sk, skb);
+> > > -               goto discard;
+> > > +               tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_VALIDATE_INCOMING));
+> >
+> > I'd rather use a string. So that we can more easily identify _why_ the
+> > packet was drop, without looking at the source code
+> > of the exact kernel version to locate line number 1057
+>
+> Yeah, the line number seems like a particularly bad idea. Hopefully
+> strings won't be problematic, given we can expect most serious users
+> to feed the tracepoints via BPF. enum would be more convenient there,
+> I'd think.
+>
+> > You can be sure that we will get reports in the future from users of
+> > heavily modified kernels.
+> > Having to download a git tree, or apply semi-private patches is a no go.
+>
+> I'm slightly surprised by this angle. Are there downstream kernels with
+> heavily modified TCP other than Google's?
 
+Not sure why Google is mentioned here ?
+Have you ever received a public report about TCP behavior in a Google kernel ?
 
-On 2021/8/25 AM12:26, David Hildenbrand wrote:
-> On 19.08.21 05:18, Qi Zheng wrote:
->> Currently we have three times the same few lines repeated in the
->> code. Deduplicate them by newly introduced pmd_install() helper.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   include/linux/mm.h |  1 +
->>   mm/filemap.c       | 11 ++---------
->>   mm/memory.c        | 34 ++++++++++++++++------------------
->>   3 files changed, 19 insertions(+), 27 deletions(-)
->>
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index ce8fc0fd6d6e..57e48217bd71 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -2471,6 +2471,7 @@ static inline spinlock_t *pud_lock(struct 
->> mm_struct *mm, pud_t *pud)
->>       return ptl;
->>   }
->> +extern void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t 
->> *pte);
->>   extern void __init pagecache_init(void);
->>   extern void __init free_area_init_memoryless_node(int nid);
->>   extern void free_initmem(void);
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index 53913fced7ae..9f773059c6dc 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -3210,15 +3210,8 @@ static bool filemap_map_pmd(struct vm_fault 
->> *vmf, struct page *page)
->>           }
->>       }
->> -    if (pmd_none(*vmf->pmd)) {
->> -        vmf->ptl = pmd_lock(mm, vmf->pmd);
->> -        if (likely(pmd_none(*vmf->pmd))) {
->> -            mm_inc_nr_ptes(mm);
->> -            pmd_populate(mm, vmf->pmd, vmf->prealloc_pte);
->> -            vmf->prealloc_pte = NULL;
->> -        }
->> -        spin_unlock(vmf->ptl);
->> -    }
->> +    if (pmd_none(*vmf->pmd))
->> +        pmd_install(mm, vmf->pmd, &vmf->prealloc_pte);
->>       /* See comment in handle_pte_fault() */
->>       if (pmd_devmap_trans_unstable(vmf->pmd)) {
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 39e7a1495c3c..ef7b1762e996 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -433,9 +433,20 @@ void free_pgtables(struct mmu_gather *tlb, struct 
->> vm_area_struct *vma,
->>       }
->>   }
->> +void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
->> +{
->> +    spinlock_t *ptl = pmd_lock(mm, pmd);
->> +
->> +    if (likely(pmd_none(*pmd))) {    /* Has another populated it ? */
->> +        mm_inc_nr_ptes(mm);
->> +        pmd_populate(mm, pmd, *pte);
->> +        *pte = NULL;
->> +    }
->> +    spin_unlock(ptl);
->> +}
->> +
->>   int __pte_alloc(struct mm_struct *mm, pmd_t *pmd)
->>   {
->> -    spinlock_t *ptl;
->>       pgtable_t new = pte_alloc_one(mm);
->>       if (!new)
->>           return -ENOMEM;
->> @@ -455,13 +466,7 @@ int __pte_alloc(struct mm_struct *mm, pmd_t *pmd)
->>        */
->>       smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
->> -    ptl = pmd_lock(mm, pmd);
->> -    if (likely(pmd_none(*pmd))) {    /* Has another populated it ? */
->> -        mm_inc_nr_ptes(mm);
->> -        pmd_populate(mm, pmd, new);
->> -        new = NULL;
->> -    }
->> -    spin_unlock(ptl);
->> +    pmd_install(mm, pmd, &new);
->>       if (new)
->>           pte_free(mm, new);
->>       return 0;
->> @@ -4027,17 +4032,10 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
->>                   return ret;
->>           }
->> -        if (vmf->prealloc_pte) {
->> -            vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
->> -            if (likely(pmd_none(*vmf->pmd))) {
->> -                mm_inc_nr_ptes(vma->vm_mm);
->> -                pmd_populate(vma->vm_mm, vmf->pmd, vmf->prealloc_pte);
->> -                vmf->prealloc_pte = NULL;
->> -            }
->> -            spin_unlock(vmf->ptl);
->> -        } else if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd))) {
->> +        if (vmf->prealloc_pte)
->> +            pmd_install(vma->vm_mm, vmf->pmd, &vmf->prealloc_pte);
->> +        else if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd)))
->>               return VM_FAULT_OOM;
->> -        }
->>       }
->>       /* See comment in handle_pte_fault() */
->>
-> 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-
-Thanks for your review, I will add this to the patch v3.
-
-> 
-> That's mostly unrelated to the remaining part of the series and can be 
-> picked up early.
-
-The implementation of subsequent patches depends on pmd_install().
-So I am worried that if this patch is submitted as a separate patch,
-subsequent patches will not be updated until this patch is merged.
-What do you think?
-
-> 
-
-
+Over the years, we received hundreds of TCP bug reports on
+netdev@vger, where users claim to use  kernel version 4.19 (or other),
+when in fact they use 4.19.xxx
+It takes in general multiple emails exchange before we get a more
+realistic version number.
+Not to mention distro kernels, or even worse private kernels, which
+are not exactly easy to track for us upstream developers.
