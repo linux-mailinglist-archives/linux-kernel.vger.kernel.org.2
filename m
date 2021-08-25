@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FA23F7358
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779E13F735E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239693AbhHYKd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:33:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42372 "EHLO mail.kernel.org"
+        id S239882AbhHYKed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:34:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237180AbhHYKdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:33:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8BC561139;
-        Wed, 25 Aug 2021 10:32:39 +0000 (UTC)
+        id S237971AbhHYKeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 06:34:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB4F361214;
+        Wed, 25 Aug 2021 10:33:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629887560;
-        bh=riIUKt2+jXTF9OV5PivRYHe4RIB9mskvpwhkELCFFzs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=NgEHl53QL1cXNSyGNVT7rkSdYOtwQyFr3rZmUDMWELpYVDmjrd0eoiB43FFuHCo/F
-         44VZ+YaJofRXqzZQygrdtc6G8O7gxHWFcHTJ2ABrGkMZGn79nseCxioPqSLvZvF9JQ
-         CmJzB/XqTDYMuDjTAjEWUM/odBNaLb7LQcOsYLE/cBqqtFCVQgdGTbHcWCviOLKgQn
-         +sE1HvhOkV2CEjkejdQX2f3k9AIn2xpN8FaNsUm4O7BEALAp8cOknCbh6kTML9npKr
-         l1d3BbHq2Kh/YXipK7a2oMYi8myPb/HH0CMSVO/s3LufiPXIMAGAVp068Zjf/Cs3mL
-         pT1Fv6ROk2PCw==
-Message-ID: <cf358b73cbda90fd6c023f3a59a8df94698cf0bc.camel@kernel.org>
-Subject: Re: [fs]  f7e33bdbd6: ltp.ftruncate04_64.fail
-From:   Jeff Layton <jlayton@kernel.org>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ltp@lists.linux.it
-Date:   Wed, 25 Aug 2021 06:32:38 -0400
-In-Reply-To: <20210825051710.GA5358@xsang-OptiPlex-9020>
-References: <20210825051710.GA5358@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        s=k20201202; t=1629887609;
+        bh=wpR0x/DbCtzYvxVpAGBYbFkMbJDqJjri+N2gUn9scXs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N0OdyuPJX4hjJSFcJllXWw6Efd+i3Z166AH0j5r9rTGPM+leDzRnsmYXarOis0NfO
+         ZXYbImyuh5m8rHg8YN94sugOIJbhTAmd3ddhlHwldfLBgMV4JaGlLea75pJrdwsyyr
+         rWUqQmmgOyciIamfLzQT4YKVA8GdQFjcC+xOu1axkFSqf3eLda7VyKjKCMYeuDw7EU
+         FSyoW+KtP2B6PwR0zmxx+zWfGX46KEJ7DLWGlOfoVlsdP3FPCgD0i5IRQKm+AoHChA
+         TVjUyNEN+XI2zPYFW1zEr9q67nUg1LGq08bxGOogZffgWjnzqKQcKvsoqng17dACMa
+         M8iU/lwSdHYgA==
+Date:   Wed, 25 Aug 2021 11:33:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
+Message-ID: <20210825103301.GC5186@sirena.org.uk>
+References: <20210824230620.1003828-1-djrscally@gmail.com>
+ <20210824230620.1003828-2-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z4+8/lEcDcG5Ke9S"
+Content-Disposition: inline
+In-Reply-To: <20210824230620.1003828-2-djrscally@gmail.com>
+X-Cookie: MY income is ALL disposable!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-25 at 13:17 +0800, kernel test robot wrote:
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: f7e33bdbd6d1bdf9c3df8bba5abcf3399f957ac3 ("fs: remove mandatory file locking support")
-> https://git.kernel.org/cgit/linux/kernel/git/jlayton/linux.git locks-next
-> 
-> 
-> in testcase: ltp
-> version: ltp-x86_64-14c1f76-1_20210821
-> with following parameters:
-> 
-> 	disk: 1HDD
-> 	fs: ext4
-> 	test: syscalls-07
-> 	ucode: 0xe2
-> 
-> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
-> 
-> 
-> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> 
 
-[...]
+--z4+8/lEcDcG5Ke9S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> <<<test_start>>>
-> tag=ftruncate04_64 stime=1629792639
-> cmdline="ftruncate04_64"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
-> tst_test.c:916: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-> mke2fs 1.44.5 (15-Dec-2018)
-> tst_test.c:1348: TINFO: Timeout per run is 0h 25m 00s
-> ftruncate04.c:116: TINFO: Child locks file
-> ftruncate04.c:49: TFAIL: ftruncate() offset before lock succeeded unexpectedly
-> ftruncate04.c:49: TFAIL: ftruncate() offset in lock succeeded unexpectedly
-> ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
-> ftruncate04.c:127: TINFO: Child unlocks file
-> ftruncate04.c:84: TPASS: ftruncate() offset in lock succeded
-> ftruncate04.c:84: TPASS: ftruncate() offset before lock succeded
-> ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
-> 
-> Summary:
-> passed   4
-> failed   2
-> broken   0
-> skipped  0
-> warnings 0
+On Wed, Aug 25, 2021 at 12:06:18AM +0100, Daniel Scally wrote:
+> In some situations regulator devices can be enumerated via either
+> devicetree or ACPI and bound to regulator drivers but without any
+> init data being provided in firmware. This leaves their consumers
+> unable to acquire them via regulator_get().
+>=20
+> To fix the issue, add the ability to register a lookup table to a
+> list within regulator core, which will allow board files to provide
+> init data via matching against the regulator name and device name in
+> the same fashion as the gpiod lookup table.
 
-I think this failed because of the above, which is expected now that we
-ignore the "mand" mount option (and mandatory locking support is gone).
+This is the wrong level to do this I think, this is a generic problem
+that affects all kinds of platform data so if we're not going to scatter
+DMI quirks throughout the drivers like we currently do then we should
+have a way for boards to just store generic platform data for a device
+and then have that platform data joined up with the device later.  This
+could for example also be used by all the laptop audio subsystems which
+need DMI quirk tables in drivers for their components to figure out how
+they're wired up and avoids the need to go through subsystems adding new
+APIs.
 
-Oliver, you may need to update the expected test output for this test.
+--z4+8/lEcDcG5Ke9S
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
--- 
-Jeff Layton <jlayton@kernel.org>
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEmHFwACgkQJNaLcl1U
+h9DhbQf+JVF0IbSOLaQ9QFIb+znRpgHurw1v9h1lSfyCc1opK/J6aW26UYlclEqs
+FfyJyvUF7F4aM5xeEKRSJgk/39Kv2lrfuEhAoLXBMpOusVX1vREi9+tmAyzjceQD
+ZQUvU+MK318weCDlFY8YzoqsEqdeVyO6KxILsTvS+mgYndDqfSzO4fleAmxJuhR6
+0tqYW3pdJeCgXxRUsCPCeMOGaV1YsGphWDfIHikWDVwMnI6sTROVKM6fBnSfiT0Y
+zUOgAkCV2Ak0Z50O+Rn8qhQvAFQkRkoODJje/8pH8sxdTaWlL2QRXKauLvufhKi1
+O7qlrHmGuzctC+aeCntP8bXBMMzc5w==
+=Dppf
+-----END PGP SIGNATURE-----
+
+--z4+8/lEcDcG5Ke9S--
