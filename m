@@ -2,272 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AFC3F6CD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 02:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87F83F6CEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 03:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236930AbhHYA7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 20:59:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234058AbhHYA7N (ORCPT
+        id S237001AbhHYBFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 21:05:45 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39946 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236920AbhHYBFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 20:59:13 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0F0C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 17:58:28 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id c4so13312223plh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 17:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ob71979d90MnjOj85r+vOA9BYCgvaQIkyLQCHH+jqss=;
-        b=lFFRGGzjrWGffuC8/K65BQQRki3zaQoEIJJxn/JB8Z9FJCYIyv21SAyBd8wMvprRpz
-         39S3+pYiU0YP7bSg1qvuKs537qZy4BCcwyyNH1MPWoftDDHbwk7gZfYOI7bNJ3YtIc6T
-         cuGaW7xPWpGZK41lD4UKG2TuLU/VI7iH4zVJ9l4ha4Zuwo1SEhwNXNynYDXdA0++zZ8s
-         KjuDGm5qTckmXAaOLVt0cqYac4UZPkjQFSkrz8HvbW0wXVU5LskmmhXjT3jkeS33IQDt
-         bFny6TgBjzOeaT7cMEA60GRacuVSU8Rd/e6d3FDTqGYjIWgl+CswTQQXmqVBZTcg4TqX
-         hTig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ob71979d90MnjOj85r+vOA9BYCgvaQIkyLQCHH+jqss=;
-        b=cKaERZHSUSe2eawRTyiJ0FAKH3Jvpe49oUbxbGPEnertU8VJUmlrEXricYt7y7xVV1
-         qUFmpYxOEDbYUrzMxhj6+KCAcgl/3JTVf6bBBb5wyBAuIAxZ1uLc1JvimlUiUakn4Swe
-         Czo54uRe+U0/gIB7ZBQ04llF2OhPh6QG07gZ9FJ5Liq6Din0PTB7b7QRxGvfDui7WbbI
-         Ges46TnpVe/BIadXM5HBByjWhrw/x1CPkvII6bcilalvrxAlmaCvDUsejK4qGrkcQCAD
-         Du+czzdi0gJSOgZM4rgigNTeTCdCJ1djUsPjG22bB605ldu6bU+1+Grnux677PrzbJaU
-         q58A==
-X-Gm-Message-State: AOAM5319JgPj5tD7XzEi155zezKXeucS4xlRacQlbC+2+OOJ0Y8nuxVH
-        O9asb5d/pQ0l0EMnDlPZMs6GDZWuP/uFZuVFYRBT4g==
-X-Google-Smtp-Source: ABdhPJxuZMTAhxvYtO4b94zLojEvlooMoigU04ezc3LW3HHFIgnsCDKSpuGuZRfSdRqkCYTPvvJxJGUOfUHf9APl8R4=
-X-Received: by 2002:a17:902:edd0:b0:135:b351:bd5a with SMTP id
- q16-20020a170902edd000b00135b351bd5amr7583692plk.52.1629853108334; Tue, 24
- Aug 2021 17:58:28 -0700 (PDT)
+        Tue, 24 Aug 2021 21:05:41 -0400
+X-UUID: 35f9c4e6bc0948a68bd0895e82daf7de-20210825
+X-UUID: 35f9c4e6bc0948a68bd0895e82daf7de-20210825
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1798344261; Wed, 25 Aug 2021 09:04:53 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 25 Aug 2021 09:04:52 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 25 Aug 2021 09:04:51 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Subject: [v5] arm64: dts: mediatek: Add mt8192 power domains controller
+Date:   Wed, 25 Aug 2021 09:04:26 +0800
+Message-ID: <20210825010426.30303-1-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20210816142505.28359-1-david@redhat.com> <20210816142505.28359-2-david@redhat.com>
-In-Reply-To: <20210816142505.28359-2-david@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 24 Aug 2021 17:58:17 -0700
-Message-ID: <CAPcyv4jfPSanWFNopzShtGiMDjwRuaci2n6hF3FCxsm1cG-ydg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] /dev/mem: disallow access to explicitly excluded
- system RAM regions
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        virtualization@lists.linux-foundation.org,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 7:25 AM David Hildenbrand <david@redhat.com> wrote:
->
-> virtio-mem dynamically exposes memory inside a device memory region as
-> system RAM to Linux, coordinating with the hypervisor which parts are
-> actually "plugged" and consequently usable/accessible. On the one hand, the
-> virtio-mem driver adds/removes whole memory blocks, creating/removing busy
-> IORESOURCE_SYSTEM_RAM resources, on the other hand, it logically (un)plugs
-> memory inside added memory blocks, dynamically either exposing them to
-> the buddy or hiding them from the buddy and marking them PG_offline.
->
-> virtio-mem wants to make sure that in a sane environment, nobody
-> "accidentially" accesses unplugged memory inside the device managed
-> region. After /proc/kcore has been sanitized and /dev/kmem has been
-> removed, /dev/mem is the remaining interface that still allows uncontrolled
-> access to the device-managed region of virtio-mem devices from user
-> space.
->
-> There is no known sane use case for mapping virtio-mem device memory
-> via /dev/mem while virtio-mem driver concurrently (un)plugs memory inside
-> that region. So once the driver was loaded and detected the device
-> along the device-managed region, we just want to disallow any access via
-> /dev/mem to it.
->
-> Let's add the basic infrastructure to exclude some physical memory
-> regions completely from /dev/mem access, on any architecture and under
-> any system configuration (independent of CONFIG_STRICT_DEVMEM and
-> independent of "iomem=").
+Add power domains controller node for SoC mt8192
 
-I'm certainly on team "/dev/mem considered harmful", but this approach
-feels awkward. It feels wrong for being non-committal about whether
-CONFIG_STRICT_DEVMEM is in wide enough use that the safety can be
-turned on all the time, and the configuration option dropped, or there
-are users clinging onto /dev/mem where they expect to be able to build
-a debug kernel to turn all of these restrictions off, even the
-virtio-mem ones. This splits the difference and says some /dev/mem
-accesses are always disallowed for "reasons", but I could say the same
-thing about pmem, there's no sane reason to allow /dev/mem which has
-no idea about the responsibilities of properly touching pmem to get
-access to it.
+Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+---
+This patch is base on v5.14-rc1,
+series "Mediatek MT8192 clock support"[1] and [2].
+No changes compare v4
 
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=521127
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/20210727023205.20319-2-chun-jie.chen@mediatek.com/
+---
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi | 201 +++++++++++++++++++++++
+ 1 file changed, 201 insertions(+)
 
->
-> Any range marked with "IORESOURCE_SYSTEM_RAM | IORESOURCE_EXCLUSIVE"
-> will be excluded, even if not busy. For now, there are no applicable
-> ranges and we'll modify virtio-mem next to properly set
-> IORESOURCE_EXCLUSIVE on the parent resource.
->
-> As next_resource() will iterate over children although we might want to
-> skip a certain range completely, let's add and use
-> next_range_skip_children() and for_each_resource(), to optimize that case,
-> avoding having to traverse subtrees that are not of interest.
->
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  drivers/char/mem.c     | 22 ++++++++------------
->  include/linux/ioport.h |  1 +
->  kernel/resource.c      | 47 ++++++++++++++++++++++++++++++++++++++++++
->  lib/Kconfig.debug      |  4 +++-
->  4 files changed, 60 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-> index 1c596b5cdb27..1829dc6a1f29 100644
-> --- a/drivers/char/mem.c
-> +++ b/drivers/char/mem.c
-> @@ -60,13 +60,18 @@ static inline int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
->  }
->  #endif
->
-> -#ifdef CONFIG_STRICT_DEVMEM
->  static inline int page_is_allowed(unsigned long pfn)
->  {
-> -       return devmem_is_allowed(pfn);
-> +#ifdef CONFIG_STRICT_DEVMEM
-> +       if (!devmem_is_allowed(pfn))
-> +               return 0;
-> +#endif /* CONFIG_STRICT_DEVMEM */
-> +       return !iomem_range_contains_excluded_devmem(PFN_PHYS(pfn), PAGE_SIZE);
->  }
-> +
->  static inline int range_is_allowed(unsigned long pfn, unsigned long size)
->  {
-> +#ifdef CONFIG_STRICT_DEVMEM
->         u64 from = ((u64)pfn) << PAGE_SHIFT;
->         u64 to = from + size;
->         u64 cursor = from;
-> @@ -77,18 +82,9 @@ static inline int range_is_allowed(unsigned long pfn, unsigned long size)
->                 cursor += PAGE_SIZE;
->                 pfn++;
->         }
-> -       return 1;
-> -}
-> -#else
-> -static inline int page_is_allowed(unsigned long pfn)
-> -{
-> -       return 1;
-> -}
-> -static inline int range_is_allowed(unsigned long pfn, unsigned long size)
-> -{
-> -       return 1;
-> +#endif /* CONFIG_STRICT_DEVMEM */
-> +       return !iomem_range_contains_excluded_devmem(PFN_PHYS(pfn), size);
->  }
-> -#endif
->
->  #ifndef unxlate_dev_mem_ptr
->  #define unxlate_dev_mem_ptr unxlate_dev_mem_ptr
-> diff --git a/include/linux/ioport.h b/include/linux/ioport.h
-> index 8359c50f9988..d31f83281327 100644
-> --- a/include/linux/ioport.h
-> +++ b/include/linux/ioport.h
-> @@ -308,6 +308,7 @@ extern struct resource * __devm_request_region(struct device *dev,
->  extern void __devm_release_region(struct device *dev, struct resource *parent,
->                                   resource_size_t start, resource_size_t n);
->  extern int iomem_map_sanity_check(resource_size_t addr, unsigned long size);
-> +extern bool iomem_range_contains_excluded_devmem(u64 addr, u64 size);
->  extern bool iomem_is_exclusive(u64 addr);
->
->  extern int
-> diff --git a/kernel/resource.c b/kernel/resource.c
-> index ca9f5198a01f..f57a14617c49 100644
-> --- a/kernel/resource.c
-> +++ b/kernel/resource.c
-> @@ -73,6 +73,18 @@ static struct resource *next_resource(struct resource *p)
->         return p->sibling;
->  }
->
-> +static struct resource *next_resource_skip_children(struct resource *p)
-> +{
-> +       while (!p->sibling && p->parent)
-> +               p = p->parent;
-> +       return p->sibling;
-> +}
-> +
-> +#define for_each_resource(_root, _p, _skip_children) \
-> +       for ((_p) = (_root)->child; (_p); \
-> +            (_p) = (_skip_children) ? next_resource_skip_children(_p) : \
-> +                                      next_resource(_p))
-> +
->  static void *r_next(struct seq_file *m, void *v, loff_t *pos)
->  {
->         struct resource *p = v;
-> @@ -1700,6 +1712,41 @@ int iomem_map_sanity_check(resource_size_t addr, unsigned long size)
->         return err;
->  }
->
-> +/*
-> + * Check if a physical memory range is completely excluded from getting
-> + * mapped/accessed via /dev/mem.
-> + */
-> +bool iomem_range_contains_excluded_devmem(u64 addr, u64 size)
-> +{
-> +       const unsigned int flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_EXCLUSIVE;
-> +       bool skip_children = false, excluded = false;
-> +       struct resource *p;
-> +
-> +       read_lock(&resource_lock);
-> +       for_each_resource(&iomem_resource, p, skip_children) {
-> +               if (p->start >= addr + size)
-> +                       break;
-> +               if (p->end < addr) {
-> +                       skip_children = true;
-> +                       continue;
-> +               }
-> +               skip_children = false;
-> +
-> +               /*
-> +                * A system RAM resource is excluded if IORESOURCE_EXCLUSIVE
-> +                * is set, even if not busy and even if we don't have strict
-> +                * checks enabled -- no ifs or buts.
-> +                */
-> +               if ((p->flags & flags) == flags) {
-> +                       excluded = true;
-> +                       break;
-> +               }
-> +       }
-> +       read_unlock(&resource_lock);
-> +
-> +       return excluded;
-> +}
-> +
->  #ifdef CONFIG_STRICT_DEVMEM
->  static int strict_iomem_checks = 1;
->  #else
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 5ddd575159fb..d0ce6e23a6db 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1780,7 +1780,9 @@ config STRICT_DEVMEM
->           access to this is obviously disastrous, but specific access can
->           be used by people debugging the kernel. Note that with PAT support
->           enabled, even in this case there are restrictions on /dev/mem
-> -         use due to the cache aliasing requirements.
-> +         use due to the cache aliasing requirements. Further, some drivers
-> +         will still restrict access to some physical memory regions either
-> +         already used or to be used in the future as system RAM.
->
->           If this option is switched on, and IO_STRICT_DEVMEM=n, the /dev/mem
->           file only allows userspace access to PCI space and the BIOS code and
-> --
-> 2.31.1
->
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+index c7c7d4e017ae..a0084a7a5bcd 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+@@ -9,6 +9,7 @@
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/pinctrl/mt8192-pinfunc.h>
++#include <dt-bindings/power/mt8192-power.h>
+ 
+ / {
+ 	compatible = "mediatek,mt8192";
+@@ -301,6 +302,206 @@
+ 			#interrupt-cells = <2>;
+ 		};
+ 
++		scpsys: syscon@10006000 {
++			compatible = "syscon", "simple-mfd";
++			reg = <0 0x10006000 0 0x1000>;
++			#power-domain-cells = <1>;
++
++			/* System Power Manager */
++			spm: power-controller {
++				compatible = "mediatek,mt8192-power-controller";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				#power-domain-cells = <1>;
++
++				/* power domain of the SoC */
++				power-domain@MT8192_POWER_DOMAIN_AUDIO {
++					reg = <MT8192_POWER_DOMAIN_AUDIO>;
++					clocks = <&topckgen CLK_TOP_AUD_INTBUS_SEL>,
++						 <&infracfg CLK_INFRA_AUDIO_26M_B>,
++						 <&infracfg CLK_INFRA_AUDIO>;
++					clock-names = "audio", "audio1", "audio2";
++					mediatek,infracfg = <&infracfg>;
++					#power-domain-cells = <0>;
++				};
++
++				power-domain@MT8192_POWER_DOMAIN_CONN {
++					reg = <MT8192_POWER_DOMAIN_CONN>;
++					clocks = <&infracfg CLK_INFRA_PMIC_CONN>;
++					clock-names = "conn";
++					mediatek,infracfg = <&infracfg>;
++					#power-domain-cells = <0>;
++				};
++
++				power-domain@MT8192_POWER_DOMAIN_MFG0 {
++					reg = <MT8192_POWER_DOMAIN_MFG0>;
++					clocks = <&topckgen CLK_TOP_MFG_PLL_SEL>;
++					clock-names = "mfg";
++					#address-cells = <1>;
++					#size-cells = <0>;
++					#power-domain-cells = <1>;
++
++					power-domain@MT8192_POWER_DOMAIN_MFG1 {
++						reg = <MT8192_POWER_DOMAIN_MFG1>;
++						mediatek,infracfg = <&infracfg>;
++						#address-cells = <1>;
++						#size-cells = <0>;
++						#power-domain-cells = <1>;
++
++						power-domain@MT8192_POWER_DOMAIN_MFG2 {
++							reg = <MT8192_POWER_DOMAIN_MFG2>;
++							#power-domain-cells = <0>;
++						};
++
++						power-domain@MT8192_POWER_DOMAIN_MFG3 {
++							reg = <MT8192_POWER_DOMAIN_MFG3>;
++							#power-domain-cells = <0>;
++						};
++
++						power-domain@MT8192_POWER_DOMAIN_MFG4 {
++							reg = <MT8192_POWER_DOMAIN_MFG4>;
++							#power-domain-cells = <0>;
++						};
++
++						power-domain@MT8192_POWER_DOMAIN_MFG5 {
++							reg = <MT8192_POWER_DOMAIN_MFG5>;
++							#power-domain-cells = <0>;
++						};
++
++						power-domain@MT8192_POWER_DOMAIN_MFG6 {
++							reg = <MT8192_POWER_DOMAIN_MFG6>;
++							#power-domain-cells = <0>;
++						};
++					};
++				};
++
++				power-domain@MT8192_POWER_DOMAIN_DISP {
++					reg = <MT8192_POWER_DOMAIN_DISP>;
++					clocks = <&topckgen CLK_TOP_DISP_SEL>,
++						 <&mmsys CLK_MM_SMI_INFRA>,
++						 <&mmsys CLK_MM_SMI_COMMON>,
++						 <&mmsys CLK_MM_SMI_GALS>,
++						 <&mmsys CLK_MM_SMI_IOMMU>;
++					clock-names = "disp", "disp-0", "disp-1", "disp-2",
++						      "disp-3";
++					mediatek,infracfg = <&infracfg>;
++					#address-cells = <1>;
++					#size-cells = <0>;
++					#power-domain-cells = <1>;
++
++					power-domain@MT8192_POWER_DOMAIN_IPE {
++						reg = <MT8192_POWER_DOMAIN_IPE>;
++						clocks = <&topckgen CLK_TOP_IPE_SEL>,
++							 <&ipesys CLK_IPE_LARB19>,
++							 <&ipesys CLK_IPE_LARB20>,
++							 <&ipesys CLK_IPE_SMI_SUBCOM>,
++							 <&ipesys CLK_IPE_GALS>;
++						clock-names = "ipe", "ipe-0", "ipe-1", "ipe-2",
++							      "ipe-3";
++						mediatek,infracfg = <&infracfg>;
++						#power-domain-cells = <0>;
++					};
++
++					power-domain@MT8192_POWER_DOMAIN_ISP {
++						reg = <MT8192_POWER_DOMAIN_ISP>;
++						clocks = <&topckgen CLK_TOP_IMG1_SEL>,
++							 <&imgsys CLK_IMG_LARB9>,
++							 <&imgsys CLK_IMG_GALS>;
++						clock-names = "isp", "isp-0", "isp-1";
++						mediatek,infracfg = <&infracfg>;
++						#power-domain-cells = <0>;
++					};
++
++					power-domain@MT8192_POWER_DOMAIN_ISP2 {
++						reg = <MT8192_POWER_DOMAIN_ISP2>;
++						clocks = <&topckgen CLK_TOP_IMG2_SEL>,
++							 <&imgsys2 CLK_IMG2_LARB11>,
++							 <&imgsys2 CLK_IMG2_GALS>;
++						clock-names = "isp2", "isp2-0", "isp2-1";
++						mediatek,infracfg = <&infracfg>;
++						#power-domain-cells = <0>;
++					};
++
++					power-domain@MT8192_POWER_DOMAIN_MDP {
++						reg = <MT8192_POWER_DOMAIN_MDP>;
++						clocks = <&topckgen CLK_TOP_MDP_SEL>,
++							 <&mdpsys CLK_MDP_SMI0>;
++						clock-names = "mdp", "mdp-0";
++						mediatek,infracfg = <&infracfg>;
++						#power-domain-cells = <0>;
++					};
++
++					power-domain@MT8192_POWER_DOMAIN_VENC {
++						reg = <MT8192_POWER_DOMAIN_VENC>;
++						clocks = <&topckgen CLK_TOP_VENC_SEL>,
++							 <&vencsys CLK_VENC_SET1_VENC>;
++						clock-names = "venc", "venc-0";
++						mediatek,infracfg = <&infracfg>;
++						#power-domain-cells = <0>;
++					};
++
++					power-domain@MT8192_POWER_DOMAIN_VDEC {
++						reg = <MT8192_POWER_DOMAIN_VDEC>;
++						clocks = <&topckgen CLK_TOP_VDEC_SEL>,
++							 <&vdecsys_soc CLK_VDEC_SOC_VDEC>,
++							 <&vdecsys_soc CLK_VDEC_SOC_LAT>,
++							 <&vdecsys_soc CLK_VDEC_SOC_LARB1>;
++						clock-names = "vdec", "vdec-0", "vdec-1", "vdec-2";
++						mediatek,infracfg = <&infracfg>;
++						#address-cells = <1>;
++						#size-cells = <0>;
++						#power-domain-cells = <1>;
++
++						power-domain@MT8192_POWER_DOMAIN_VDEC2 {
++							reg = <MT8192_POWER_DOMAIN_VDEC2>;
++							clocks = <&vdecsys CLK_VDEC_VDEC>,
++								 <&vdecsys CLK_VDEC_LAT>,
++								 <&vdecsys CLK_VDEC_LARB1>;
++							clock-names = "vdec2-0", "vdec2-1",
++								      "vdec2-2";
++							#power-domain-cells = <0>;
++						};
++					};
++
++					power-domain@MT8192_POWER_DOMAIN_CAM {
++						reg = <MT8192_POWER_DOMAIN_CAM>;
++						clocks = <&topckgen CLK_TOP_CAM_SEL>,
++							 <&camsys CLK_CAM_LARB13>,
++							 <&camsys CLK_CAM_LARB14>,
++							 <&camsys CLK_CAM_CCU_GALS>,
++							 <&camsys CLK_CAM_CAM2MM_GALS>;
++						clock-names = "cam", "cam-0", "cam-1", "cam-2",
++							      "cam-3";
++						mediatek,infracfg = <&infracfg>;
++						#address-cells = <1>;
++						#size-cells = <0>;
++						#power-domain-cells = <1>;
++
++						power-domain@MT8192_POWER_DOMAIN_CAM_RAWA {
++							reg = <MT8192_POWER_DOMAIN_CAM_RAWA>;
++							clocks = <&camsys_rawa CLK_CAM_RAWA_LARBX>;
++							clock-names = "cam_rawa-0";
++							#power-domain-cells = <0>;
++						};
++
++						power-domain@MT8192_POWER_DOMAIN_CAM_RAWB {
++							reg = <MT8192_POWER_DOMAIN_CAM_RAWB>;
++							clocks = <&camsys_rawb CLK_CAM_RAWB_LARBX>;
++							clock-names = "cam_rawb-0";
++							#power-domain-cells = <0>;
++						};
++
++						power-domain@MT8192_POWER_DOMAIN_CAM_RAWC {
++							reg = <MT8192_POWER_DOMAIN_CAM_RAWC>;
++							clocks = <&camsys_rawc CLK_CAM_RAWC_LARBX>;
++							clock-names = "cam_rawc-0";
++							#power-domain-cells = <0>;
++						};
++					};
++				};
++			};
++		};
++
+ 		apmixedsys: syscon@1000c000 {
+ 			compatible = "mediatek,mt8192-apmixedsys", "syscon";
+ 			reg = <0 0x1000c000 0 0x1000>;
+-- 
+2.18.0
+
