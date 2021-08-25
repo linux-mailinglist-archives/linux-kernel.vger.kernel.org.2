@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781013F7F21
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D609B3F7F25
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbhHYXmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 19:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55248 "EHLO
+        id S233907AbhHYXmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 19:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234119AbhHYXmM (ORCPT
+        with ESMTP id S233730AbhHYXmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 25 Aug 2021 19:42:12 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755D4C061796
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:41:25 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 6so1778303oiy.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:41:25 -0700 (PDT)
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618B1C0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:41:26 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id h133so1783551oib.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:41:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4Qbn6rk6sj87tSTKdnnYPYuRTniKiqOezdw+dFrRZCg=;
-        b=Vm4G3uftCW/T6dCqbkA7vokLZMlA9pX5RbXLwF33YGHY9/epjZ2UZRq5k7X3sXH2RQ
-         4+j+0+P2XLOlMPSqqzjNNRFMB/sIERKlX72b+Eeou62AjSWYpl4HwXsgkShSu/ocFCP0
-         +fTSaHJTwWznLYOaQMKHxMmyAQobljjla/3hbvDh73lP2ApfNpf5ph3Ie/ucWtBwQ2S0
-         NbkVeJQAvKsCUMKHe1xLa8liMwqfwWgkzF68oUGavZjOxTIfdwFnnqEC1VggZpcwu56V
-         1feLQBw5xIKHNORbnU9/8AMfk3UdSZUHrO+707Wz1k9Vp00gj+Wf+qCj312VNn0EXzzh
-         BmZg==
+        bh=zmkhJZgxUoBYEWfmUUPtlawWDiOOQTnvHmBTREcB0I8=;
+        b=JyWNsF0Fao+n3iA7RF4tPiWMJ8n2MZ2mYJoFDYpVaqi9ikZqme6UoCEL5AL6XWV8+b
+         7j87fGb8hvJLvdo6yIJZGnmE8E4AXI+nFHBd1vgw/ziftZGciRFPiNm6JyxoKk4XqR8R
+         WZf76jy/wYt9SI4BubN6PAu11atHjFJc6O5BLQ/wS52aA2uWAtwaI3YInYvWOgACsamN
+         lerEgJOmm6aVh2+Wsj1TQGiWtR6jEXRCBgn32lvkpTeYUci5pjr1cWJmIX6WHVJjzKoz
+         j9cQiPlS9DuiiKiFzshN54SQEfYOJxDMmAKpOJLwvJXhgE/NrZVmiItvzv6iUdhqFKc8
+         RcTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4Qbn6rk6sj87tSTKdnnYPYuRTniKiqOezdw+dFrRZCg=;
-        b=E9S587jZZo3bE87Zhssypu8putNK/ddli03kG3etEEVdSUC4d3oPOVZhCWT0/353rB
-         hufCSFjXLehPR9mnelsgLtva1kWBKE2W1EsjvhRdwTpYaP2pXj/aDjGF/x9auYqGTwMD
-         19mMpbTATtO8bFMb58DFcjE1+m+6axiSwuxqEFIMJXzWBet4nsgj5FWKB9ldfRhUWoD0
-         rXZ43BaAOpfIwePJsyAgM/DTq1k1EqxSZ0UFFN61oO41Ej0wYWV/M1uZI1Wf1KKqWLsr
-         KYNuVV0Ttwst0d5AuzkPx1FVrNDkul+R48yiTwQH2MJqUuizEX0dg/G1LGIEQFlS5UXn
-         l30w==
-X-Gm-Message-State: AOAM530XDh/O0TIURCu0b8b4KCLBS6NZA2DmcY30Hd9pr/Mn4UiPX0tK
-        7qbHFwn3/QYXG391O8dypmHFOg==
-X-Google-Smtp-Source: ABdhPJyFkHXrqo/1gbNpklgbgydgMUEHj+c+RHwxsH9rWtBe4qTlWfvRrH5wOgrgwP5OTelW+GQ8rw==
-X-Received: by 2002:a05:6808:2ca:: with SMTP id a10mr427499oid.44.1629934884855;
-        Wed, 25 Aug 2021 16:41:24 -0700 (PDT)
+        bh=zmkhJZgxUoBYEWfmUUPtlawWDiOOQTnvHmBTREcB0I8=;
+        b=LCAN8l0n3DHN0btoIPuT5cmUlwPjj6oYkvz9wAEf58PmtEYRpskHzMuta3BrTE7vaN
+         tAJxPyb7AmLp/C73vwtEXXiFVUSEt6JifjDmlND/p7m+VrqoARJOl7286J7Y1TK1EJ2x
+         rtKqFtXUKHAdVu05ygBsQt5Z2l0E9uFCGdG96WULbEOXIYHIzJYqMMWoPTSkB+KKPQso
+         KQtKXhjMHgl+OQvNMl7YOPhQDARVEsnsmjLxH6UQk6J8x45ALqCfN9otO/ELUNziSlSk
+         KbMMPD5EeDTFYf1/I4lBIOC9KVbBvWx6y7XZPTF/QTowTkvbHAvDkctaRpG/zX5LGJuW
+         oSBw==
+X-Gm-Message-State: AOAM531lLVh1gX5u4v2fc3bfOJ51iPRac2VZYztK4XjMHookoB/fxu62
+        3qbUePBWR74L2jROW7SvwCq/mw==
+X-Google-Smtp-Source: ABdhPJz6tjCEJEeOJPotO0Zqa9gAx16HRWTqIQ4PQRuPnenQfro7aG6soUq54MIbZLfLl+BS50n8vA==
+X-Received: by 2002:a05:6808:95:: with SMTP id s21mr418519oic.80.1629934885805;
+        Wed, 25 Aug 2021 16:41:25 -0700 (PDT)
 Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g10sm267136oof.37.2021.08.25.16.41.23
+        by smtp.gmail.com with ESMTPSA id g10sm267136oof.37.2021.08.25.16.41.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 16:41:24 -0700 (PDT)
+        Wed, 25 Aug 2021 16:41:25 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         David Airlie <airlied@linux.ie>,
@@ -60,9 +60,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Stephen Boyd <swboyd@chromium.org>,
         linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
         freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/5] dt-bindings: msm/dp: Add SC8180x compatibles
-Date:   Wed, 25 Aug 2021 16:42:32 -0700
-Message-Id: <20210825234233.1721068-5-bjorn.andersson@linaro.org>
+Subject: [PATCH v2 5/5] drm/msm/dp: Add sc8180x DP controllers
+Date:   Wed, 25 Aug 2021 16:42:33 -0700
+Message-Id: <20210825234233.1721068-6-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210825234233.1721068-1-bjorn.andersson@linaro.org>
 References: <20210825234233.1721068-1-bjorn.andersson@linaro.org>
@@ -72,32 +72,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm SC8180x has 2 DP controllers and 1 eDP controller, add
-compatibles for these to the msm/dp binding.
+The sc8180x has 2 DP and 1 eDP controllers, add support for these to the
+DP driver.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
 
 Changes since v1:
-- Picked up Stephen's R-b
+- Squashed DP and eDP data, as there's no reason to keep them separate today
 
- .../devicetree/bindings/display/msm/dp-controller.yaml          | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/msm/dp/dp_display.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-index f915dc080cbc..b36d74c1da7c 100644
---- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-@@ -17,6 +17,8 @@ properties:
-   compatible:
-     enum:
-       - qcom,sc7180-dp
-+      - qcom,sc8180x-dp
-+      - qcom,sc8180x-edp
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 4a6132c18e57..c1307230dc47 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -128,8 +128,15 @@ static const struct msm_dp_config sc7180_dp_cfg = {
+ 	.num_dp = 1,
+ };
  
-   reg:
-     items:
++static const struct msm_dp_config sc8180x_dp_cfg = {
++	.io_start = { 0xae90000, 0xae98000, 0xae9a000 },
++	.num_dp = 3,
++};
++
+ static const struct of_device_id dp_dt_match[] = {
+ 	{ .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
++	{ .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
++	{ .compatible = "qcom,sc8180x-edp", .data = &sc8180x_dp_cfg },
+ 	{}
+ };
+ 
 -- 
 2.29.2
 
