@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A153F7D3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 22:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E6A3F7D42
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 22:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241515AbhHYUj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 16:39:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231745AbhHYUjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 16:39:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF503610D1;
-        Wed, 25 Aug 2021 20:39:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629923946;
-        bh=Al3fzVCYqH1H1gq7uGZbNi/LPmkT9JqI42bjuOzxe6w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=j6yDQ7pwwSG8g9gbk1KgH07t9czWeOSU/SP2dFbqaqf6RU2zLEq0e+Q0+P8I7pjvy
-         NTSsSjMawDRL52KBtsS+p6kxM/Lb/esTSH9g4Azp/L3bILW1ui+EIiu3KlpZsLxSGu
-         0L8U/o/9W5ECU+IBtldwOueaxgCsWF33ar09tp7eCi67H3jAMUavH/vL7QIkAaCVL0
-         8xQlfTlyx2nuqv258ofDjNFv8eE2WL+qS4rrJqr0c8sV4Se5Bruaph/SKivFWLBEgv
-         lYm91dBy1sQZkMGCvow0idg6RKH9H60V4g1E0phTRmdQHcKY5wecwxgzLcSoiyIIt4
-         PRBTRbPN3HASw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] crypto: sm4 - Do not change section of ck and sbox
-Date:   Wed, 25 Aug 2021 13:38:59 -0700
-Message-Id: <20210825203859.416449-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0
+        id S241634AbhHYUl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 16:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231873AbhHYUlz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 16:41:55 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120B6C061757;
+        Wed, 25 Aug 2021 13:41:08 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 060D824F;
+        Wed, 25 Aug 2021 22:41:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1629924065;
+        bh=H1EdrY52ZkovQX2rp32ISCsBuUB4CKaTX2F6hJeT4lY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fT5+2Us2Zo2Zf3bjBJh0ixlLn80fqIIGpoHrZwIOOp4TLjsR7S9gEoNnTSZvIZaeB
+         gjM15bmSSGG+tLTS6sj6WdmT/S/8UWUhgQYOQnmLkm9n1dh2FPDXMh8YDHU9jqHZTj
+         lrBPbr1vhv1z5NZ3NnHuAZLtYhthG3rKvreJRYkM=
+Date:   Wed, 25 Aug 2021 23:40:53 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
+Message-ID: <YSaq1R6kp6tYeRAJ@pendragon.ideasonboard.com>
+References: <20210824230620.1003828-1-djrscally@gmail.com>
+ <20210824230620.1003828-2-djrscally@gmail.com>
+ <20210825103301.GC5186@sirena.org.uk>
+ <cc65098e-b459-b20a-f6e2-ee521fc20ca7@redhat.com>
+ <20210825152735.GJ5186@sirena.org.uk>
+ <YSZk5tyAxZoosXS3@pendragon.ideasonboard.com>
+ <a5421695-803a-52fd-ea2e-edd9ef548892@redhat.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a5421695-803a-52fd-ea2e-edd9ef548892@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with clang and GNU as, there is a warning about ignored
-changed section attributes:
+Hi Hans,
 
-/tmp/sm4-c916c8.s: Assembler messages:
-/tmp/sm4-c916c8.s:677: Warning: ignoring changed section attributes for
-.data..cacheline_aligned
+On Wed, Aug 25, 2021 at 10:25:23PM +0200, Hans de Goede wrote:
+> On 8/25/21 5:42 PM, Laurent Pinchart wrote:
+> > On Wed, Aug 25, 2021 at 04:27:35PM +0100, Mark Brown wrote:
+> >> On Wed, Aug 25, 2021 at 04:48:15PM +0200, Hans de Goede wrote:
+> >>
+> >>> Daniel, I believe that what Mark wants here is something similar to what
+> >>> we already do for the 5v boost converter regulator in the TI bq24190 charger
+> >>> chip used on some Cherry Trail devices.
+> >>
+> >> Yeah, that or something like a generalized version of it which lets a
+> >> separate quirk file like they seem to have register the data to insert -
+> >> I'd be happy enough with the simple thing too given that it's not
+> >> visible to anything, or with DMI quirks in the regulator driver too for
+> >> that matter if it's just one or two platforms but there do seem to be
+> >> rather a lot of these platforms which need quirks.
+> > 
+> > Let's also remember that we have to handle not just regulators, but also
+> > GPIOs and clocks. And I'm pretty sure there will be more. We could have
+> > a mechanism specific to the tps68470 driver to pass platform data from
+> > the board file to the driver, and replicate that mechanism in different
+> > drivers (for other regulators, clocks and GPIOs), but I really would
+> > like to avoid splitting the DMI-conditioned platform data in those
+> > drivers directly. I'd like to store all the init data for a given
+> > platform in a single "board" file.
+> 
+> I agree, but so far all the handling for clks/gpios for IPU3 (+ IPU4 (*))
+> laptops is done in the drivers/platform/x86/intel/int3472 code and the
+> passing of platform_data with regulator init-data would also happen in
+> the mfd-cell instantiation code living there. IOW if we just go with
+> that then we will already have everything in one place. At least
+> for the IPU3 case.
 
-"static const" places the data in .rodata but __cacheline_aligned has
-the section attribute to place it in .data..cacheline_aligned, in
-addition to the aligned attribute.
+If the GPIOs are also hooked up to the TPS68470 and not to GPIOs of the
+SoC, then I suppose that would be fine in this case.
 
-To keep the alignment but avoid attempting to change sections, use the
-____cacheline_aligned attribute, which is just the aligned attribute.
+Do you have any plan to work on IPU4 support ? ;-)
 
-Fixes: 2b31277af577 ("crypto: sm4 - create SM4 library based on sm4 generic code")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1441
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- lib/crypto/sm4.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> *) IPU4 also used the INT3472 ACPI devices and what we have for discrete
+> IO devices seems to match.
 
-diff --git a/lib/crypto/sm4.c b/lib/crypto/sm4.c
-index 633b59fed9db..284e62576d0c 100644
---- a/lib/crypto/sm4.c
-+++ b/lib/crypto/sm4.c
-@@ -15,7 +15,7 @@ static const u32 fk[4] = {
- 	0xa3b1bac6, 0x56aa3350, 0x677d9197, 0xb27022dc
- };
- 
--static const u32 __cacheline_aligned ck[32] = {
-+static const u32 ____cacheline_aligned ck[32] = {
- 	0x00070e15, 0x1c232a31, 0x383f464d, 0x545b6269,
- 	0x70777e85, 0x8c939aa1, 0xa8afb6bd, 0xc4cbd2d9,
- 	0xe0e7eef5, 0xfc030a11, 0x181f262d, 0x343b4249,
-@@ -26,7 +26,7 @@ static const u32 __cacheline_aligned ck[32] = {
- 	0x10171e25, 0x2c333a41, 0x484f565d, 0x646b7279
- };
- 
--static const u8 __cacheline_aligned sbox[256] = {
-+static const u8 ____cacheline_aligned sbox[256] = {
- 	0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7,
- 	0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c, 0x05,
- 	0x2b, 0x67, 0x9a, 0x76, 0x2a, 0xbe, 0x04, 0xc3,
-
-base-commit: abfc7fad63940b8dfdfd25da6f0fa813d9561645
 -- 
-2.33.0
+Regards,
 
+Laurent Pinchart
