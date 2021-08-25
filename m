@@ -2,149 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB263F796A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2123F7970
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241188AbhHYPuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:50:02 -0400
-Received: from mail-co1nam11on2054.outbound.protection.outlook.com ([40.107.220.54]:32224
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241145AbhHYPuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:50:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dpPIZMZPQtwxZ+ULNCBicoRmHIxwoAwtmpJlAKU8MXT1SBKxLwlGTBlRuPKBK5nQbW52TWtfvXTUk6YfLV6xDaEGh05ZismMx/dtF7DdyTV0XZenPKje/1DzKjcqww32gZRvCmuglcjBp5O7Uw63nEzZlC187pk6qtpEHv9CwF06t7XCMK1y6l9dDv54wmJ46cQS/gf/G5ypyndcZRIDTDLVQLMr4L60yKZsYFXSN4n+XTeQRObEaotZMsSsY3yIgJtpsxlF4HH5HBeFXRXz2npXapS4q/pvHhtZt/swYUfYs3JQyE2wnTnhqbXcE0KOPADhTdnw8Nsw0jUoDTM54Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DB8ls7PhLBIagBD9GH0qEPAo/4hnjUlWRITxP+EVhLI=;
- b=CpSWDsyfOIB/UmmWMlxkpn5ZNjj1ymxsP83vY4aUZdFPUq9HAg8b5pFfY1FM66/KAHTpoTUzRT8ZfFX7ywKt726hhKe1PhvIDV6XZudDdwl8duib9TWSv8SXe0e2gpyw72ZdXieQndOGb8UWp8xwsOGovUBgDtz4yMMRbYPhqQCtAjDqyj/j+KPVC6HTcEsgsDIQP+YeBD6jvqta6lJpzWtCjDvi7OQRaaz2z8TMp+3jKythsz47Xcu5TTYEkwmZSXph9UBCDM56OatqcaGfx2+lG4GhrKuVyNj8fXi2D+hb1A7iG3wSyz5YcrELn+xU2FNKqt5dOOi/3F+dEwp55g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DB8ls7PhLBIagBD9GH0qEPAo/4hnjUlWRITxP+EVhLI=;
- b=iTXPOke+W3cfEHwi2EuP0BlUaAENwtXyZkh3o3drptJk0YOsXlu0BHm6gxaZ20MOsbiV8/7gshJcTCb19tFtuft4gpO3xIQEQI5kS34xmmFMH/VKzofUigQ0NF6DmZrCWD++cH10QcRfWnqWMTySYiqCdJtPsaFJQqNjIX2UF/8wTzZKy67xDsoood5h+KiuY2eIqOHKrjzd+p3z8CdOVkXdsBbx34ntGASXKVxuKU3/E8m/If70yvCXmpAcEdfipv+HmtQV1jNDMcITCxas6NYd6j2bY533F11Xa+jOqqwkZKpsSLC7Z/QrDmjWSriN0VTM/KF9Xe+OfK/ZscIsHA==
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5238.namprd12.prod.outlook.com (2603:10b6:208:31e::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Wed, 25 Aug
- 2021 15:49:09 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
- 15:49:09 +0000
-Date:   Wed, 25 Aug 2021 12:49:08 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>
-Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
-Message-ID: <20210825154908.GH1721383@nvidia.com>
-References: <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com>
- <a9604a39-d08f-6263-4c5b-a2bc9a70583d@nvidia.com>
- <20210824173228.GE543798@ziepe.ca>
- <a716ae41-2d8c-c75a-a779-cc85b189fea2@amd.com>
- <20210825121832.GA1162709@nvidia.com>
- <fa22a1f9-fee6-21ea-3377-3ba99e9eb309@amd.com>
- <20210825123802.GD1721383@nvidia.com>
- <9c9ebc3b-44d0-0a81-04cc-d500e7f6da8d@amd.com>
- <20210825144736.GG1721383@nvidia.com>
- <92ae1a45-3903-8228-c299-7ba1506079bb@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <92ae1a45-3903-8228-c299-7ba1506079bb@amd.com>
-X-ClientProxiedBy: MN2PR01CA0014.prod.exchangelabs.com (2603:10b6:208:10c::27)
- To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+        id S241311AbhHYPuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 11:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241145AbhHYPug (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 11:50:36 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF62C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 08:49:50 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id a10so18948922qka.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 08:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CmSiaPcuPj0OC9Van/3kI9pixgS7KKx7iRvuRFfLqzs=;
+        b=Peytc/M3TMIW68kU/Omye5ggz9Bylqxo7fyeD68yNutz2S+6ay5EYPu7yQ3JqOPsct
+         v6PHrI6gnq21/DRdmRK1EjWGe2EAgpMQDgl0fZVcf2k6MZ3f26Td9rW8hylsGfYla+x3
+         RaolUpZ7wE+vDOTZioGMJiqLlp28toWmx51FXkQKFUuIpXe9eJTWO/+V32MNvR8NyTDV
+         z0vCxHETT8GlVOrFL9ktJCpnAT0e+yofwCKuBWy8VbK8BnUVegAH+xwYVbERlOeHjV8H
+         Tc75arrREfM3h8vYwUt88DhQkgKezV2KMf9+UGBpezev0Zt8HP7Bs0nQSFDzAkqJQyuc
+         sgXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CmSiaPcuPj0OC9Van/3kI9pixgS7KKx7iRvuRFfLqzs=;
+        b=QOtILWlJNGnCJPE6hTZhHpWr4e4VrGrWaBRn8cymiHIPYSgfRWm7DjWaL4b34uLUF6
+         Z7jNKq0CeaonoqeYC0ZQvgRPcvh7caqtgVcE+ySmD3FboqnUTcxGfAGXyNxSR6pxbWRH
+         WJF4JuGkUKg9w8zrSWlFMeHMLbkp1OfmMIjxgn6BwcCzZZAPvC0Mb6uksOYTTYscl0yG
+         4aAkpHg2gGvko+cYEt/EQ2BYzso368nfdh7XVS410ziA7Mn4uOIgKtcIiy4p1J/dkV7q
+         92MXl3QHr6W2QUlHMjv1pkDBPJO3EhNa+5FJAuCMlnPNza21JRXQU/0LxVZS/HvXaRfL
+         yT8Q==
+X-Gm-Message-State: AOAM5320dag+AzFCiqGRi/jABDTksDXV7EtB46L6dKsLAO88PtUutzer
+        LHfVFtcQbG/2WtdiKA1VO1j1FvPtNWNWmc2kq6c68Q==
+X-Google-Smtp-Source: ABdhPJwQVu63W9aHw3TO7zXAD18CuId8RDe6E2d9TXvBk4mp4GXO5wUOiyUvqupxM+yu3qibM810UjpEIpNOFtEEvdA=
+X-Received: by 2002:a25:1c06:: with SMTP id c6mr10632452ybc.498.1629906587436;
+ Wed, 25 Aug 2021 08:49:47 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR01CA0014.prod.exchangelabs.com (2603:10b6:208:10c::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Wed, 25 Aug 2021 15:49:09 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIv9I-004xtS-49; Wed, 25 Aug 2021 12:49:08 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1e7f1947-307f-42c7-41d9-08d967dfe06f
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5238:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5238F9866DDAD6711D878203C2C69@BL1PR12MB5238.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /zKsNangZ3okG8NAiUKr8sDvYzSLupyVgc+gLQnbmefBuMhyQtzUL7Va3ngUWcJiMNP6HG8f1dwaHjOkMmpW9MDKnJ0oY6UlV7o6R6bG7EHfkJBe87erlmrjuX9nCXFzG+2ceClGimi0MZNFbwyPRLyZG32Ca109t/nIiL/rLeMiZBwh4E9NY0ni9PQM1BmBDCwYFDS+k5z5FwGEtGQDWfweoL/jCHAOszPSAOIDlD5cToj62GiEmfdG5UC/x/BpGxN2QePF/i+W2v0G2iAyXqjil02CnskXVNi7wZovYaKb9y15pkReXRLz5bauoHCD08rUW59SUPWThsFI0CwYZuri4ek15UQqsTmA4nZTYI1JiDzjbmny+KgYKJoqdHvWUtTzNQOMGi7ze2rwGkQjtEMs9txuDto78LEiDuZw1csP5LeM+5dt/cYjXavfWVVaCFESJCFFU6XJwRQ7tonTY4tmUSr/73FYu6oPZNZzMFedslPI8NYsTUf3TRDIRJJIO050At0B45pHXsoEeWUavWO+BuLDtbCOWMgDjZR8f7AiCHgpoPMETV+N6omT47w6ZcEOrRdBNd/RMmhmLWTRIFgKd9tzmTyWIezeII5oo2wErKg45eb0+IlZXjeyfIgkp4VuI4cwLCH5LFB420mZgQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(26005)(186003)(508600001)(38100700002)(9746002)(9786002)(8676002)(36756003)(8936002)(426003)(1076003)(7416002)(83380400001)(4744005)(4326008)(2616005)(316002)(5660300002)(54906003)(33656002)(6916009)(2906002)(66556008)(66476007)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VHNjS0M1a3VualVQQjNUczNFY1hEOGRrSzRWVkNPWUxraGo1OURXeXFPSlZL?=
- =?utf-8?B?R2xWTVIzUHg4TnNTWUtGWE1QUEFYSlBxZTZtUWdXVjdOVlJZd0ZrRFBuZnRS?=
- =?utf-8?B?UEN2WCs2MjIydWdsTlB5UnBYUlcxWU5uUVc4ZU9mNWZGajZhUTJVWUJHV01T?=
- =?utf-8?B?elJ0YnlqT05UUDVwQ2VsLzAzaUg0NUd1MXJqK25nZk5Cd1RMK1c2T0ZLZXUr?=
- =?utf-8?B?TGUrek1hazI4S0xTVGVFaldCNE9wLzBia2VZdHRCcUt5akVTUGN0OVU0YUVL?=
- =?utf-8?B?Um5ubzBXMWNnNEdqS0Z2aG54OGpHSVJXNWhDWGt4YjF5ZTVwM0RLVUpmei9W?=
- =?utf-8?B?bFUzb0dMcXl2UldOeWc4eDNobFdSa0VSZnpvaUY0WFhudmpkVHdQRlZvdkNB?=
- =?utf-8?B?d2QrMUdJM3Irc0ZBZ1dmNVdHY1VMSWErM0tzd2ExaVRLU1F0YmE2dGV5YWIx?=
- =?utf-8?B?clBJN0ttekI4RlVrbWJtZlQ0aFRsTlJUSkdxcEkraTFKRFVsMERUZDhrbXB0?=
- =?utf-8?B?UDdBQlJrZlZJZ1BxQmd1MndmeFhLRHY5amlsODZNeDduOCtXMTMwOGRSVllT?=
- =?utf-8?B?ejVEa25ub2FGck5HODUwNGt0NzBOcTZCRXpnMit5KzJ5WmNSZW5YbUFHeWVO?=
- =?utf-8?B?aWJQTFhuaTJoV09ab01ZNjh4QkxHbjA4MEMxSFBTYVAvQ0dKLzdFR01sS0My?=
- =?utf-8?B?SXNJSjJtbWVOd0R3bzVkRFdId05Jc1NUM0wwbUdiZ0FvQkIxMVU2VldjaG01?=
- =?utf-8?B?QUhpUFNvU00yeExzd3NnOGlGUjhUK002bWJ3cCtmK2ZCWUhkdjhzaGdPUHpO?=
- =?utf-8?B?M283ZE5FT1AyYzJ4OEdSVVZzZEw0SUdNS05VZUxHV0pjV3JYQ0lDMTgyc25G?=
- =?utf-8?B?LzA2MGNqeWNDUWY3M2JYM0tVVFpnVGl3cS9OcjBmbTJxTHpxSjU2eDdYZmk0?=
- =?utf-8?B?bnY3U0szUWNtMWNTdE4xOExadWg1dk53MmdzdHpQWWdQYk9mMkNoWTBWTlJN?=
- =?utf-8?B?a2F3NTcyYzNkTmZDSk9wMGU5Yi9ZaEFZZ25XRFJSNjBjS3VTK2hjdi9QTXJC?=
- =?utf-8?B?dnV1ZjZ5U0QvdE80anMxUXN5ZGtNQ09Sb2pJOG1NVy9sMkwvcThTaU84SlNC?=
- =?utf-8?B?enJNUUg5ZmIvZTNpVUU2c093S3V5bkdyeFFJQTV2NVRvb0Z0Qm9rNWRxTmJl?=
- =?utf-8?B?WEQrbExvYUtWNjRzTTd0a2pLblNKdTRObk45MDRDNGV5MnlJSXVteTlYV0ha?=
- =?utf-8?B?UGM0OVRNdDZUVlZKZHA0a1ViM1pUTnRKN2EzaE9iVXMvdS9WUDBrSlBBZDhv?=
- =?utf-8?B?NUZzcEF3bXhkdFdHVjlLVU56V25hdUVpQlRGbHUxdS9ZMWRDeWNrYVM4Q1Iy?=
- =?utf-8?B?NlNoNmd6OThFd1hlUC9YVUNjQUYrN1lWclRnRTdPU3N4U25oUUMzdGd1cFB5?=
- =?utf-8?B?R3VhU2tyWlV0NHlHUVZDTmRQOWd1Qnh0UTAvdU1tdXQ4Ynk0MXFJNUdlczJp?=
- =?utf-8?B?SkpUcnZwWTZXb3Z4YUZSQkUyelFXVDQ0NmwzV0ZnbHBqSnpKczFaN1ZFZHhN?=
- =?utf-8?B?Rk5IdjVkV1BPK2EwRFB3Z3M1V0dSYXkxSTdBeE0vWHlpSTIyOHJSWVpRVHFP?=
- =?utf-8?B?cFlKVWtXZGU1bm1OOHJXbld0WFpibEt6Tk1sdVBvNVJpYU81NytyUzM3VG1x?=
- =?utf-8?B?azdrdkFPWDA2WmlwWGtibE5XRnZ6VGlseFhhVUt2UWpIWEFScGpzUHRSaHoz?=
- =?utf-8?Q?rH+ucSYOMtEqvKoTtE7jBgoitVFTQ/bH38lHsAT?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e7f1947-307f-42c7-41d9-08d967dfe06f
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 15:49:09.3348
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ecP/WlWvbnUCDejauyDVNQkgDmWuVG8cRgXattUGbZY4D7R5QUP6pE1zP3uWBLHC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5238
+References: <20210823171318.2801096-1-samitolvanen@google.com> <20210824194652.GB17784@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210824194652.GB17784@worktop.programming.kicks-ass.net>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 25 Aug 2021 08:49:36 -0700
+Message-ID: <CABCJKud6JBk0QP0aSqM3ptRqbZLfKpfsHNF0RcTq4L-rbc7+uw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/14] x86: Add support for Clang CFI
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 05:14:06PM +0200, Christian König wrote:
+On Tue, Aug 24, 2021 at 12:47 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Aug 23, 2021 at 10:13:04AM -0700, Sami Tolvanen wrote:
+> > This series adds support for Clang's Control-Flow Integrity (CFI)
+> > checking to x86_64. With CFI, the compiler injects a runtime
+> > check before each indirect function call to ensure the target is
+> > a valid function with the correct static type. This restricts
+> > possible call targets and makes it more difficult for an attacker
+> > to exploit bugs that allow the modification of stored function
+> > pointers. For more details, see:
+>
+> If I understand this right; tp_stub_func() in kernel/tracepoint.c
+> violates this (as would much of the HAVE_STATIC_CALL=n code, luckily
+> that is not a valid x86_64 configuration).
+>
+> Specifically, we assign &tp_stub_func to tracepoint_func::func, but that
+> function pointer is only ever indirectly called when cast to the
+> tracepoint prototype:
+>
+>   ((void(*)(void *, proto))(it_func))(__data, args);
+>
+> (see DEFINE_TRACE_FN() in linux/tracepoint.h)
+>
+> This means the indirect function type and the target function type
+> mismatch, resulting in that runtime check you added to trigger.
 
-> Yeah, that's exactly what I'm talking about by adding cgroup or similar. You
-> need a knob to control this.
+Thanks for pointing this out. Yes, that would clearly trip CFI.
 
-We have the pinned memory ulimit today.
+Any concerns about just writing a magic value to the slot instead of
+pointing it to a stub function, and checking for it before the call?
 
-A pinned memory cgroup might be interesting, but even containrs are
-covered under the ulimit (IIRC), so the driver to do this work might
-not be so strong.
+> Hitting tp_stub_func() at runtime is exceedingly rare, but possible.
+>
+> I realize this is strictly UB per C, but realistically any CDECL ABI
+> requires that any function with arbitrary signature:
+>
+>   void foo(...)
+>   {
+>   }
+>
+> translates to the exact same code. Specifically on x86-64, the super
+> impressive:
+>
+> foo:
+>         RET
+>
+> And as such this works just fine. Except now you wrecked it.
 
-Jason
+Sure. Another option is to disable CFI for the functions that perform
+the call, but I would rather avoid that whenever possible.
+
+Sami
