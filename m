@@ -2,180 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6446A3F7DAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C913F7DBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbhHYV0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 17:26:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33338 "EHLO mail.kernel.org"
+        id S229707AbhHYV0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 17:26:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232665AbhHYV0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 17:26:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FA79610A1;
-        Wed, 25 Aug 2021 21:25:18 +0000 (UTC)
+        id S229923AbhHYV0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 17:26:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79419610A1;
+        Wed, 25 Aug 2021 21:25:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629926719;
-        bh=CeaJGcL5TPB/VT6KtN5ovF2oKKTE6SyCZvsi7/rIFac=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JFqjPb4YCOxJ3F/skQ4AkEBps8jk75StB3LkrUJR8feAcsRe5Me1TUncHxQsy1gRd
-         Flmf5hWWVMn3MBcinFB0+0tZkp6AnwnslcOEdckuU6qrpsDp1vZ5mBP3dDEuCJMJpj
-         dcgb2RI2Fv0Ixi8aC8YjVEyrz77AgfnMBBuBhG0F1DHBCGrQ2BgTzCXUigTcARAE2b
-         W6VHz+TPKL6iW17twl/nHji5rRLuwL/P6XekIWjeRpMQHHVpdX3bVOY/nLuNa+sl6V
-         uyrMitUvlt6dCeC9QidrWNJ51xqGJciS9zlamUD4L2HKiStAJAwzLNz6XYqW/4vw+n
-         IZso0669nQ2TA==
-Date:   Wed, 25 Aug 2021 14:25:15 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        clang-built-linux@googlegroups.com, llvm@list.linux.dev
-Subject: Re: [PATCH v2 2/2] powerpc/bug: Provide better flexibility to
- WARN_ON/__WARN_FLAGS() with asm goto
-Message-ID: <YSa1O4fcX1nNKqN/@Ryzen-9-3900X.localdomain>
-References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
- <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
+        s=k20201202; t=1629926750;
+        bh=xQDrtgT6uthmEGov/Ldo+EaOEsSjtEqV6roEUR4U2co=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=fASCj+Go18/tQH72Frrh86vQVUhFBKTCcQ9o3Ad3urEcD8hJY/IVjmN/1OlNCuXM4
+         7JHmj+5rcXAer/IJ5s5nNiWQN44+Wzp2sr83a87R1CCPRsMKBGBQIH+6UKRHirnyas
+         wPVtWIKNENPU02jJD6GFFXh1J0YuLxlengl+em2Gt5AdRTxcLXm3lq/u+SnHoFANyy
+         GAemNjEbynsA+w9EusA1aYNMqsnfKT/CgqIfBhQLMN3yeqoGmDtCXqtkzI8KNCv7iO
+         +a/vZ9eADe/hwGSLkGP6I/AoRwgMGYHBduxWGD42U57kaBGxpBic1W/I8SmgF28hOe
+         Vrciu66nkn5+g==
+Date:   Wed, 25 Aug 2021 16:25:49 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+Message-ID: <20210825212549.GA3609092@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <CAE-0n50cnWf_3LQ6P9KMaT4dnryWW9JemP95JDZt5WE1G4mZuQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+[+cc linux-pci; patches to drivers/pci/ should always be cc'd there]
 
-On Tue, Apr 13, 2021 at 04:38:10PM +0000, Christophe Leroy wrote:
-> Using asm goto in __WARN_FLAGS() and WARN_ON() allows more
-> flexibility to GCC.
+On Wed, Aug 25, 2021 at 07:30:09PM +0000, Stephen Boyd wrote:
+> Quoting Prasad Malisetty (2021-08-24 01:10:48)
+> > On 2021-08-17 22:56, Prasad Malisetty wrote:
+> > > On 2021-08-10 09:38, Prasad Malisetty wrote:
+> > >> On the SC7280, By default the clock source for pcie_1_pipe is
+> > >> TCXO for gdsc enable. But after the PHY is initialized, the clock
+> > >> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
+> > >>
+> > >> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> > >> ---
+> > >>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
+> > >>  1 file changed, 18 insertions(+)
+> > >>
+> > >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
+> > >> b/drivers/pci/controller/dwc/pcie-qcom.c
+> > >> index 8a7a300..39e3b21 100644
+> > >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > >> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
+> > >>      struct regulator_bulk_data supplies[2];
+> > >>      struct reset_control *pci_reset;
+> > >>      struct clk *pipe_clk;
+> > >> +    struct clk *gcc_pcie_1_pipe_clk_src;
+> > >> +    struct clk *phy_pipe_clk;
+> > >>  };
+> > >>
+> > >>  union qcom_pcie_resources {
+> > >> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct
+> > >> qcom_pcie *pcie)
+> > >>      if (ret < 0)
+> > >>              return ret;
+> > >>
+> > >> +    if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+> > >> +            res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
+> > >> +            if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+> > >> +                    return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+> > >> +
+> > >> +            res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+> > >> +            if (IS_ERR(res->phy_pipe_clk))
+> > >> +                    return PTR_ERR(res->phy_pipe_clk);
+> > >> +    }
+> > >
+> > > I would like to check is there any other better approach instead of
+> > > compatible method here as well or is it fine to use compatible method.
 > 
-> For that add an entry to the exception table so that
-> program_check_exception() knowns where to resume execution
-> after a WARNING.
-> 
-> Here are two exemples. The first one is done on PPC32 (which
-> benefits from the previous patch), the second is on PPC64.
-> 
-> 	unsigned long test(struct pt_regs *regs)
-> 	{
-> 		int ret;
-> 
-> 		WARN_ON(regs->msr & MSR_PR);
-> 
-> 		return regs->gpr[3];
-> 	}
-> 
-> 	unsigned long test9w(unsigned long a, unsigned long b)
-> 	{
-> 		if (WARN_ON(!b))
-> 			return 0;
-> 		return a / b;
-> 	}
-> 
-> Before the patch:
-> 
-> 	000003a8 <test>:
-> 	 3a8:	81 23 00 84 	lwz     r9,132(r3)
-> 	 3ac:	71 29 40 00 	andi.   r9,r9,16384
-> 	 3b0:	40 82 00 0c 	bne     3bc <test+0x14>
-> 	 3b4:	80 63 00 0c 	lwz     r3,12(r3)
-> 	 3b8:	4e 80 00 20 	blr
-> 
-> 	 3bc:	0f e0 00 00 	twui    r0,0
-> 	 3c0:	80 63 00 0c 	lwz     r3,12(r3)
-> 	 3c4:	4e 80 00 20 	blr
-> 
-> 	0000000000000bf0 <.test9w>:
-> 	 bf0:	7c 89 00 74 	cntlzd  r9,r4
-> 	 bf4:	79 29 d1 82 	rldicl  r9,r9,58,6
-> 	 bf8:	0b 09 00 00 	tdnei   r9,0
-> 	 bfc:	2c 24 00 00 	cmpdi   r4,0
-> 	 c00:	41 82 00 0c 	beq     c0c <.test9w+0x1c>
-> 	 c04:	7c 63 23 92 	divdu   r3,r3,r4
-> 	 c08:	4e 80 00 20 	blr
-> 
-> 	 c0c:	38 60 00 00 	li      r3,0
-> 	 c10:	4e 80 00 20 	blr
-> 
-> After the patch:
-> 
-> 	000003a8 <test>:
-> 	 3a8:	81 23 00 84 	lwz     r9,132(r3)
-> 	 3ac:	71 29 40 00 	andi.   r9,r9,16384
-> 	 3b0:	40 82 00 0c 	bne     3bc <test+0x14>
-> 	 3b4:	80 63 00 0c 	lwz     r3,12(r3)
-> 	 3b8:	4e 80 00 20 	blr
-> 
-> 	 3bc:	0f e0 00 00 	twui    r0,0
-> 
-> 	0000000000000c50 <.test9w>:
-> 	 c50:	7c 89 00 74 	cntlzd  r9,r4
-> 	 c54:	79 29 d1 82 	rldicl  r9,r9,58,6
-> 	 c58:	0b 09 00 00 	tdnei   r9,0
-> 	 c5c:	7c 63 23 92 	divdu   r3,r3,r4
-> 	 c60:	4e 80 00 20 	blr
-> 
-> 	 c70:	38 60 00 00 	li      r3,0
-> 	 c74:	4e 80 00 20 	blr
-> 
-> In the first exemple, we see GCC doesn't need to duplicate what
-> happens after the trap.
-> 
-> In the second exemple, we see that GCC doesn't need to emit a test
-> and a branch in the likely path in addition to the trap.
-> 
-> We've got some WARN_ON() in .softirqentry.text section so it needs
-> to be added in the OTHER_TEXT_SECTIONS in modpost.c
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> I'd prefer the compatible method. If nobody is responding then it's best
+> to just resend the patches with the approach you prefer instead of
+> waiting for someone to respond to a review comment.
 
-This patch as commit 1e688dd2a3d6 ("powerpc/bug: Provide better
-flexibility to WARN_ON/__WARN_FLAGS() with asm goto") cause a WARN_ON in
-klist_add_tail to trigger over and over on boot when compiling with
-clang:
+I'm missing some context here, so I'm not exactly sure what your
+question is, Prasad, but IMO drivers generally should not need to use
+of_device_is_compatible() if they've already called
+of_device_get_match_data() (as qcom_pcie_probe() has).
 
-[    2.177416][    T1] WARNING: CPU: 0 PID: 1 at lib/klist.c:62 .klist_add_tail+0x3c/0x110
-[    2.177456][    T1] Modules linked in:
-[    2.177481][    T1] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.14.0-rc7-next-20210825 #1
-[    2.177520][    T1] NIP:  c0000000007ff81c LR: c00000000090a038 CTR: 0000000000000000
-[    2.177557][    T1] REGS: c0000000073c32a0 TRAP: 0700   Tainted: G        W          (5.14.0-rc7-next-20210825)
-[    2.177593][    T1] MSR:  8000000002029032 <SF,VEC,EE,ME,IR,DR,RI>  CR: 22000a40  XER: 00000000
-[    2.177667][    T1] CFAR: c00000000090a034 IRQMASK: 0
-[    2.177667][    T1] GPR00: c00000000090a038 c0000000073c3540 c000000001be3200 0000000000000001
-[    2.177667][    T1] GPR04: c0000000072d65c0 0000000000000000 c0000000091ba798 c0000000091bb0a0
-[    2.177667][    T1] GPR08: 0000000000000001 0000000000000000 c000000008581918 fffffffffffffc00
-[    2.177667][    T1] GPR12: 0000000044000240 c000000001dd0000 c000000000012300 0000000000000000
-[    2.177667][    T1] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-[    2.177667][    T1] GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-[    2.177667][    T1] GPR24: 0000000000000000 c0000000017e3200 0000000000000000 c000000001a0e778
-[    2.177667][    T1] GPR28: c0000000072d65b0 c0000000072d65a8 c000000007de72c8 c0000000073c35d0
-[    2.178019][    T1] NIP [c0000000007ff81c] .klist_add_tail+0x3c/0x110
-[    2.178058][    T1] LR [c00000000090a038] .bus_add_driver+0x148/0x290
-[    2.178088][    T1] Call Trace:
-[    2.178105][    T1] [c0000000073c3540] [c0000000073c35d0] 0xc0000000073c35d0 (unreliable)
-[    2.178150][    T1] [c0000000073c35d0] [c00000000090a038] .bus_add_driver+0x148/0x290
-[    2.178190][    T1] [c0000000073c3670] [c00000000090fae8] .driver_register+0xb8/0x190
-[    2.178234][    T1] [c0000000073c3700] [c000000000be55c0] .__hid_register_driver+0x70/0xd0
-[    2.178275][    T1] [c0000000073c37a0] [c00000000116955c] .redragon_driver_init+0x34/0x58
-[    2.178314][    T1] [c0000000073c3820] [c000000000011ae0] .do_one_initcall+0x130/0x3b0
-[    2.178357][    T1] [c0000000073c3bb0] [c0000000011065e0] .do_initcall_level+0xd8/0x188
-[    2.178403][    T1] [c0000000073c3c50] [c0000000011064a8] .do_initcalls+0x7c/0xdc
-[    2.178445][    T1] [c0000000073c3ce0] [c000000001106238] .kernel_init_freeable+0x178/0x21c
-[    2.178491][    T1] [c0000000073c3d90] [c000000000012334] .kernel_init+0x34/0x220
-[    2.178530][    T1] [c0000000073c3e10] [c00000000000cf50] .ret_from_kernel_thread+0x58/0x60
-[    2.178569][    T1] Instruction dump:
-[    2.178592][    T1] fba10078 7c7d1b78 38600001 fb810070 3b9d0008 fbc10080 7c9e2378 389d0018
-[    2.178662][    T1] fb9d0008 fb9d0010 90640000 fbdd0000 <0b1e0000> e87e0018 28230000 41820024
-[    2.178728][    T1] ---[ end trace 52ed3431f58f1847 ]---
+of_device_is_compatible() does basically the same work of looking for
+a match in qcom_pcie_match[] that of_device_get_match_data() does, so
+it seems pointless to repeat it.
 
-Is this a bug with clang or is there something wrong with the patch? The
-vmlinux image is available at [1] if you want to inspect it and our QEMU
-command and the warning at boot can be viewed at [2]. If there is any
-other information I can provide, please let me know.
+I am a little confused because while [1] adds "qcom,pcie-sc7280" to
+qcom,pcie.txt, I don't see a patch that adds it to qcom_pcie_match[].
 
-[1] https://builds.tuxbuild.com/1xDcmp3Tvno0TTGxDVPedRKIKM2/
-[2] https://github.com/ClangBuiltLinux/continuous-integration2/commit/cee159b66a58eb57fa2359e7888074b9da24126c/checks/3422232736/logs
+Bjorn
 
-Cheers,
-Nathan
+[1] https://lore.kernel.org/linux-arm-msm/1628568516-24155-2-git-send-email-pmaliset@codeaurora.org/
