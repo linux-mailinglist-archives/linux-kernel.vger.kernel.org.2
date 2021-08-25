@@ -2,117 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DC63F7E64
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBD63F7E89
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhHYWZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
+        id S232723AbhHYW0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:26:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhHYWZ1 (ORCPT
+        with ESMTP id S232756AbhHYW0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:25:27 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17C7C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:24:40 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id w4so1263784ljh.13
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:24:40 -0700 (PDT)
+        Wed, 25 Aug 2021 18:26:05 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36585C0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:25:19 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id f34-20020a05622a1a2200b0029c338949c1so615559qtb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pefv3vqeuX4St3jq1M8WoFYRA23I6Vantt927BxIQWs=;
-        b=BP2XN95TUO4FCewyvtBSKoUYV91MsxpU7QgGaCD8hT4gXyDLb7kDO2ZfMsI+o6H6uT
-         cGujPLV11zoBwI+6fSX5RqN6E6pMYPmbgdvZw/qW2Ceoq3yhpO+TFh1gbpwudDndGhRQ
-         f8VDUVrrlMiDt3klbqiesvqgz4Dod5LHAg6XC/inw8ieM9rmeq3U16BO8c0Ek5I3Y6ac
-         jMr9lur+B9S78rtq8scQZah6tVGPrFXHRh+grDxsCfrtuOQHX+ZSdmrCltFNo23eo9YI
-         R/ZdZwf1Yt7N0dVwz/2kZj9Y237lH8Xb1UYCsCuyMZXU7m1b83YOEtjHVXEEnS/yMAwg
-         FhcA==
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=fT/uiX9DJiKWLSrGSaUNQbEmdVHwY+0Iq88fa/vtsiw=;
+        b=SnTQ1ly+r0hm+ryHx+ivlRgBcYtv2HN0O/wMKbA6Plz8rGu8wDd/AWD4Z0QgcIl/ME
+         0BrG5+grIN4eYXURMHvCWiHQdIPFwamLf6FSFlN8N4JqIbTJ2npI1ikFCOzTWeF76pon
+         062ZuXCHX6/0CBPUVlllMqqHi0LRdV+iROcoXZ4snvAB4SQqKQziDOX+mEqY6JZ0aHAS
+         pGsN9drTuW3pMIRpXsKyfWYrwrX7Zt4c7/ifMEolUUaLU7ISGI5FkJFlqg7rMzY4tyjU
+         GbUpwsoKimW8t51tIV4zbZpmpmxEjVlPyFc5Zzqt3kd1DdCdOuoj79nDmpnosUJ5FD6P
+         T3rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pefv3vqeuX4St3jq1M8WoFYRA23I6Vantt927BxIQWs=;
-        b=OHUMuZJtynhmD/6PHrT1xmCUWaRq5kSdGrGG82GA0NG0P35EdxLWrrkD1xw7YS0jIN
-         JaJul1Guo1MbCzGO32EcesyfLEburMHTww/k8ynARNefN/O83MmGzo0NdCvBrspGW/pV
-         BFgrEJYfcZivXiFcBLPvEoSI0iKo/45/UTB/inGq7Vlh6xkbZoFWQpdN1u3Is95qTxu7
-         RrT1UFnQpIHA5cRemU7ISppr9ijuUzhL8PsFA/8RjKeCuOs9e5HR5Mqj457PvJ//+bci
-         CKy57DjLd7vbIURdE0yGcb11hvfMvdStfXz1P9Af0b/TjDZJgehwUV+8eD0+ZKxNHlDD
-         1KTw==
-X-Gm-Message-State: AOAM530+VH0JVGJiVq1997rnQyY5jdwnGLS61okr+5pyFmA/tlz+iyL5
-        IZFPoc9BOrnlgBetTLdTCoTficOv34y3zssMNSQ0JA==
-X-Google-Smtp-Source: ABdhPJx+FeHmFusBrwqx+OAc5/miMkJd27ZcnkZ41M9LlffmghNx66RVZdIkPMCYD61NPk+oQjdmqd+mdM+X1Z3/b2E=
-X-Received: by 2002:a2e:a788:: with SMTP id c8mr401858ljf.116.1629930279047;
- Wed, 25 Aug 2021 15:24:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210822103107.28974-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210822103107.28974-1-lukas.bulwahn@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 25 Aug 2021 15:24:27 -0700
-Message-ID: <CAKwvOdk4iqT0pW7eLQyQggWMkfeJENTeavehexeCO86yjDcXyw@mail.gmail.com>
-Subject: Re: [PATCH] crypto: sha512: remove imaginary and mystifying clearing
- of variables
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=fT/uiX9DJiKWLSrGSaUNQbEmdVHwY+0Iq88fa/vtsiw=;
+        b=rS/lU/YMxUMU7i3kx2/nBvOHztrlqFNjXOhv2+8qQKwmMtQJBRi5lOUAQjxkPURZyV
+         lJHO16975Jxf9457PDgI2lg3vXZIo7udqh6iPPBUvoWGmvm2s4dtcfLWqOh/mH7Ilnjz
+         qa1Chmj7jxi5N9AIvx45ax7jxJ6GOEf1JlEgH2mbPJDKHejWUMHYaRvYzx0V0B89D0qF
+         eWXf0J8OV8kCy/uEJl9kNv9uqyuL4VZSCyuRMA5wj+422+5Hbfn8HkUdupwrhykpyUsF
+         7j9CvHm5bqmJwpD4wQcMF1nK4EP1g/ESnIP3oRAwBiZvtmPgcVRL4iX1DfnS6WB3GfMa
+         OMEA==
+X-Gm-Message-State: AOAM533IJapS6wtWkul0zJ9wc7CdShmtdnP18yFNB5SYiOVIJJSkwEUx
+        a+yioMuovzmvWIUzk3mRKs+jpxyTiJk+
+X-Google-Smtp-Source: ABdhPJyTdeHC1yoxT0gpFRpMe2/9Nq4odvgwxIxMLPY5smJiapxFejusCW/e4+cxbKVi8bGMObu4dZAKKpSL
+X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:200:3664:f78f:3b89:adc6])
+ (user=jiancai job=sendgmr) by 2002:a0c:f351:: with SMTP id
+ e17mr605774qvm.21.1629930318275; Wed, 25 Aug 2021 15:25:18 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 15:25:14 -0700
+Message-Id: <20210825222514.2107728-1-jiancai@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH] coresight: syscfg: fix compiler warnings
+From:   Jian Cai <jiancai@google.com>
+Cc:     mike.leach@linaro.org, dianders@chromium.org, mka@chromium.org,
+        linux@roeck-us.net, manojgupta@google.com, llozano@google.com,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 3:31 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> The function sha512_transform() assigns all local variables to 0 before
-> returning to its caller with the intent to erase sensitive data.
->
-> However, make clang-analyzer warns that all these assignments are dead
-> stores, and as commit 7a4295f6c9d5 ("crypto: lib/sha256 - Don't clear
-> temporary variables") already points out for sha256_transform():
->
->   The assignments to clear a through h and t1/t2 are optimized out by the
->   compiler because they are unused after the assignments.
->
->   Clearing individual scalar variables is unlikely to be useful, as they
->   may have been assigned to registers, and even if stack spilling was
->   required, there may be compiler-generated temporaries that are
->   impossible to clear in any case.
->
-> This applies here again as well. Drop meaningless clearing of local
-> variables and avoid this way that the code suggests that data is erased,
-> which simply does not happen.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+This fixes warnings with -Wimplicit-function-declaration, e.g.
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+^[[1m/mnt/host/source/src/third_party/kernel/v5.4/drivers/hwtracing/coresight/coresight-syscfg.c:455:15: ^[[0m^[[0;1;31merror: ^[[0m^[[1mimplicit declaration of function 'kzalloc' [-Werror,-Wimplicit-function-declaration]^[[0m
+        csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev), GFP_KERNEL);
+^[[0;1;32m                     ^
 
-> ---
->  crypto/sha512_generic.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/crypto/sha512_generic.c b/crypto/sha512_generic.c
-> index c72d72ad828e..be70e76d6d86 100644
-> --- a/crypto/sha512_generic.c
-> +++ b/crypto/sha512_generic.c
-> @@ -143,9 +143,6 @@ sha512_transform(u64 *state, const u8 *input)
->
->         state[0] += a; state[1] += b; state[2] += c; state[3] += d;
->         state[4] += e; state[5] += f; state[6] += g; state[7] += h;
-> -
-> -       /* erase our data */
-> -       a = b = c = d = e = f = g = h = t1 = t2 = 0;
->  }
->
->  static void sha512_generic_block_fn(struct sha512_state *sst, u8 const *src,
-> --
-> 2.26.2
->
+Signed-off-by: Jian Cai <jiancai@google.com>
+---
+ drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
+diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
+index fc0760f55c53..43054568430f 100644
+--- a/drivers/hwtracing/coresight/coresight-syscfg.c
++++ b/drivers/hwtracing/coresight/coresight-syscfg.c
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include <linux/platform_device.h>
++#include <linux/slab.h>
+ 
+ #include "coresight-config.h"
+ #include "coresight-etm-perf.h"
 -- 
-Thanks,
-~Nick Desaulniers
+2.33.0.259.gc128427fd7-goog
+
