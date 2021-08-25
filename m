@@ -2,104 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525FC3F79F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EBD3F79F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbhHYQQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:16:02 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60754 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhHYQQB (ORCPT
+        id S235978AbhHYQQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235166AbhHYQQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:16:01 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17PGF6GP126733;
-        Wed, 25 Aug 2021 11:15:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629908106;
-        bh=NhOMSA/IyBpG0GANEr+mpRgHHqSD773oASYsgzAIcnE=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=g5L/OxmiLTynIiHv06C/YLAa1Vn6x58E0Qb3J/BXTfmWEJU0vdOmQ3xIraU2rXv1t
-         fKIDtdZFKC7JFHHMR1/VTRqTk6zpENQdVnWXJcovyPY1xl0DkijuqJfb7LQWxAZ4w2
-         SxdPfcH3SzfVVHFL2Pu7jfuU9GWLIxc5H5wsx/ts=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17PGF6U6057518
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 25 Aug 2021 11:15:06 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 25
- Aug 2021 11:15:04 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 25 Aug 2021 11:15:03 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17PGF319048958;
-        Wed, 25 Aug 2021 11:15:03 -0500
-Date:   Wed, 25 Aug 2021 11:15:02 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Roger Quadros <rogerq@kernel.org>
-CC:     <nsekhar@ti.com>, <bgolaszewski@baylibre.com>,
-        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] ARM: dts: da850-evm: Change aemif node status from
- "ok" to "okay"
-Message-ID: <20210825161502.ap2clalwfljezoqk@perfume>
-References: <20210824105512.19242-1-rogerq@kernel.org>
+        Wed, 25 Aug 2021 12:16:14 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC9CC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:15:28 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id v2so49595ilg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:15:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ojab.ru; s=ojab;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HBQ7/GEOmYXjqJRDQP512nK1xmzb2LUIy5CzP7HmLLc=;
+        b=Le+0CERPASqTwIsSfzVaah29zkhbQegc50elIeB//BGmKeq/nqrS+dWxbohxzVbCsT
+         h8M54sG98n2ayYPHa7thQjLg244JEA9OQVIK+USUQvYoNrBXzGcB0QAIuTt5UZalOgWI
+         7WYNIMxhzOj2PVBzbH04wbIAYcwDPMwFLOQrs7VwyRB7sznMSKDrRXtkSReIu0C5x58S
+         wj6+fI5ROlCLW+2Kz0GN4/lzi0U9sH+C2mTI38hRN+z7NqqVdhlWBT6FnMXwahRf8wyh
+         7C7L95dflKKXVg/Q1fbUL/cZsyfdhMxmYSyiJA6YfoKwwCJ+RCjnvdSomgDJ5Uy8OPHY
+         7v2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HBQ7/GEOmYXjqJRDQP512nK1xmzb2LUIy5CzP7HmLLc=;
+        b=OZyOIcn13ufUXnaaGZEFzmTLuRtKCTk84YZM7sdMnGPda21b3+KxSsle5Mu5hotlgS
+         sDDLJ3Rx4HauUXvVix2Krr3a6QxxR+QPoRSZUyi5h8cxXmIOZfF89ClAEjafTOhY11QQ
+         TXNG6Jp2J+6X6hzKsqUdZhoMytKrIHb7f0bIaGLR/kcPFbOAWQIUEqYQO1fYONqvbeLr
+         XIT9P5nrS56y6VLqgKEV04SoIGUjjZ8whdfDddpiAeIbfyLB2xgI44kq5PYoaq3h0k5w
+         t1uHoS9swG8S49GBTNe+F/ozQ5MHEhRmRxkhRZ+9RnqgbVV2Z4RRKMads55y86UCGaQV
+         APFA==
+X-Gm-Message-State: AOAM533lblswOqoNaJAQC4fhrky/rwyVYagZB3JU0dkv7rleJjF5cyFm
+        P3LnSoI0tsUb0UzpWEFWZ3Nff0ix8pV3kme8TErQ5A==
+X-Google-Smtp-Source: ABdhPJyadvErapiS94DOEhvjeAXjHPr6wwH/FOcNWNYsGlyYK8iYlTrYsnOCICA7ZuQRZDvHJbiSP+9lePQkbVIw4vY=
+X-Received: by 2002:a92:a008:: with SMTP id e8mr30590006ili.187.1629908127732;
+ Wed, 25 Aug 2021 09:15:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210824105512.19242-1-rogerq@kernel.org>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210722193459.7474-1-ojab@ojab.ru>
+In-Reply-To: <20210722193459.7474-1-ojab@ojab.ru>
+From:   "ojab //" <ojab@ojab.ru>
+Date:   Wed, 25 Aug 2021 19:15:16 +0300
+Message-ID: <CAKzrAgRt0jRFyFNjF-uq=feG-9nhCx=tTztCgCEitj1cpMk_Xg@mail.gmail.com>
+Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     ath10k@lists.infradead.org,
+        Linux Wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13:55-20210824, Roger Quadros wrote:
-> As per Device Tree Specification [1], the status parameter of nodes can
-> be "okay", "disabled", etc. "ok" is not a valid parameter.
-> 
-> U-boot Driver Model does not recognize status="ok" either and treats
-> the node as disabled.
+Can I haz it merged?
 
-^^ the above comment might be fine to indicate the side effect of
-non-compliance
+//wbr ojab
 
-> 
-> [1] https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
-> 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-
-Reviewed-by: Nishanth Menon <nm@ti.com>
-
+On Thu, 22 Jul 2021 at 22:36, ojab <ojab@ojab.ru> wrote:
+>
+> After reboot with kernel & firmware updates I found `failed to copy
+> target iram contents:` in dmesg and missing wlan interfaces for both
+> of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
+> it, so while I have no idea what's actually happening, I don't see why
+> we should fail in this case, looks like some optional firmware ability
+> that could be skipped.
+>
+> Also with additional logging there is
+> ```
+> [    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
+> [    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
+> [    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
+> [    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
+> ```
+> so exact branch could be seen.
+>
+> Signed-off-by: Slava Kardakov <ojab@ojab.ru>
 > ---
-> Changelog:
-> v2
-> -refer to DT spec instead of schema in commit log.
-> 
->  arch/arm/boot/dts/da850-evm.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/da850-evm.dts b/arch/arm/boot/dts/da850-evm.dts
-> index 87c517d65f62..9dc79b5977bf 100644
-> --- a/arch/arm/boot/dts/da850-evm.dts
-> +++ b/arch/arm/boot/dts/da850-evm.dts
-> @@ -415,7 +415,7 @@
->  &aemif {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&nand_pins>;
-> -	status = "ok";
-> +	status = "okay";
->  	cs3 {
->  		#address-cells = <2>;
->  		#size-cells = <1>;
-> -- 
-> 2.17.1
-> 
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+>  Of course I forgot to sing off, since I don't use it by default because I
+>  hate my real name and kernel requires it
+>
+>  drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 2f9be182fbfb..d9fd5294e142 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
+>         u32 len, remaining_len;
+>
+>         hw_mem = ath10k_coredump_get_mem_layout(ar);
+> -       if (!hw_mem)
+> +       if (!hw_mem) {
+> +               ath10k_warn(ar, "No hardware memory");
+>                 return -ENOMEM;
+> +       }
+>
+>         for (i = 0; i < hw_mem->region_table.size; i++) {
+>                 tmp = &hw_mem->region_table.regions[i];
+> @@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
+>                 }
+>         }
+>
+> -       if (!mem_region)
+> +       if (!mem_region) {
+> +               ath10k_warn(ar, "No memory region");
+>                 return -ENOMEM;
+> +       }
+>
+>         for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
+>                 if (ar->wmi.mem_chunks[i].req_id ==
+> @@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+>                 if (status) {
+>                         ath10k_warn(ar, "failed to copy target iram contents: %d",
+>                                     status);
+> -                       goto err_hif_stop;
+>                 }
+>         }
+>
+> --
+> 2.32.0
