@@ -2,202 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7BB3F7ECC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C213F7ED3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhHYWzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:55:22 -0400
-Received: from mga04.intel.com ([192.55.52.120]:30160 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231270AbhHYWzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:55:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="215781553"
-X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="215781553"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 15:54:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="686502400"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 25 Aug 2021 15:54:33 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mJ1my-0000au-Uq; Wed, 25 Aug 2021 22:54:32 +0000
-Date:   Thu, 26 Aug 2021 06:53:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/build] BUILD SUCCESS
- 081551266d2fbf6ce69a30c13a355ee476b2e745
-Message-ID: <6126ca07.XNWWPFBreB9nFZ7R%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231920AbhHYW7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhHYW7u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 18:59:50 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AB1C061757;
+        Wed, 25 Aug 2021 15:59:04 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id j15so1260771ila.1;
+        Wed, 25 Aug 2021 15:59:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4r6q20ZzFp9z+4hlR+432aUUYLC+se4vGKW1iv6AjMw=;
+        b=MgR9suPRTXbbK1Xk3yV+T3zm9ZnjRmS1G1DvVh/hLru7NwLJzrximcqqnmP8QUza99
+         AirZbGJobTSdjynwZAKv9LOO8akpV/5tA3k69nBIsQo6wWtCZUfeqZDxcOdyAgQgX+Sr
+         R3emz/pNyTr2Jca3Et8un3VhuLJfzlCxnBMOAkZ1uqWmHclkhrJ7cTK8aKwBW/4w7NgD
+         VMlJftfiNOBKWhHDFZj5d2qSo/z/g52UnGlRAJDj1dwKKV2tuvY3dZFbKaYMwhw3FGHr
+         OqwGgz8hO2dvLObBvcxV8+hkVHDF1oQ4piajDOPcBcF+U5dWYar5fHTjoHV2gZFK3BYn
+         BZ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4r6q20ZzFp9z+4hlR+432aUUYLC+se4vGKW1iv6AjMw=;
+        b=XE83mg+7uUPvf3wNpR9RbPriSkfknFywcJreHD4IflvR4LlymNPpUgL+wCQg9cCmWs
+         l6l/LobMsI7BkvB6KusNhc8/qUnFbEwU7dbJJwSmoRkBSsMjXDDEZPyZSXoqDuJ43izR
+         +1rdfCxBiVWI0sp7rLEkuMOKbgqhIFGzi5ExMi10E1WA5UNGp1gZPhGWerAnG5dmEi9z
+         NyDfbWFYwPR17rsDg1EGkczCbPWg7cYK6aHvcrpmDslvJcVW9RAsipGzbBNloQbRZesE
+         5hd7ab6Hvyi2ySZzbvHBMelwfaqoUy9J6F3K4KKyGgn+gGxqjylsoosYs8vW4nYlYvr6
+         +euQ==
+X-Gm-Message-State: AOAM532cw8wPx5eDHsoHnHouEXtoBoE6rFUj0VUPXyCC+nKgdLwoUPFX
+        U9kxgCiO1HZdWUfEHbqPvgy7AbOpb/fCcm7ghfhkISiw
+X-Google-Smtp-Source: ABdhPJxCrb8RRTlwN43XkfgEEYad1OiQO6/sbWXhQ07BKf6OwboeUnUhPS1+Izpp03mzM70UqLPBerTZJ0Iuj0cHZj4=
+X-Received: by 2002:a92:c26f:: with SMTP id h15mr489051ild.47.1629932343859;
+ Wed, 25 Aug 2021 15:59:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210824075524.3354-1-jiangshanlai@gmail.com> <20210824075524.3354-8-jiangshanlai@gmail.com>
+ <YSZfUqPuhENCDa9z@google.com>
+In-Reply-To: <YSZfUqPuhENCDa9z@google.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Thu, 26 Aug 2021 06:58:52 +0800
+Message-ID: <CAJhGHyBXFUquvKM0Y84b0KQgDHMVbykkD4Osnw4yFCAciUYDig@mail.gmail.com>
+Subject: Re: [PATCH 7/7] KVM: X86: Also prefetch the last range in __direct_pte_prefetch().
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/build
-branch HEAD: 081551266d2fbf6ce69a30c13a355ee476b2e745  x86/build: Move the install rule to arch/x86/Makefile
+On Wed, Aug 25, 2021 at 11:18 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Aug 24, 2021, Lai Jiangshan wrote:
+> > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> >
+> > __direct_pte_prefetch() skips prefetching the last range.
+> >
+> > The last range are often the whole range after the faulted spte when
+> > guest is touching huge-page-mapped(in guest view) memory forwardly
+> > which means prefetching them can reduce pagefault.
+> >
+> > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index e5932af6f11c..ac260e01e9d8 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -2847,8 +2847,9 @@ static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
+> >       i = (sptep - sp->spt) & ~(PTE_PREFETCH_NUM - 1);
+> >       spte = sp->spt + i;
+> >
+> > -     for (i = 0; i < PTE_PREFETCH_NUM; i++, spte++) {
+> > -             if (is_shadow_present_pte(*spte) || spte == sptep) {
+> > +     for (i = 0; i <= PTE_PREFETCH_NUM; i++, spte++) {
+> > +             if (i == PTE_PREFETCH_NUM ||
+> > +                 is_shadow_present_pte(*spte) || spte == sptep) {
+>
+> Heh, I posted a fix just a few days ago.  I prefer having a separate call after
+> the loop.  The "<= PTE_PREFETCH_NUM" is subtle, and a check at the ends avoids
+> a CMP+Jcc in the loop, though I highly doubt that actually affects performance.
+>
+> https://lkml.kernel.org/r/20210818235615.2047588-1-seanjc@google.com
 
-elapsed time: 736m
+Thanks!
 
-configs tested: 143
-configs skipped: 88
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210825
-powerpc                      pasemi_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                     loongson1c_defconfig
-x86_64                              defconfig
-m68k                        mvme147_defconfig
-arm                           sunxi_defconfig
-powerpc                       ebony_defconfig
-arm                           sama5_defconfig
-m68k                          amiga_defconfig
-m68k                          sun3x_defconfig
-xtensa                       common_defconfig
-h8300                               defconfig
-arm                       aspeed_g4_defconfig
-mips                      bmips_stb_defconfig
-arm                            xcep_defconfig
-arm                            mps2_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                      ep88xc_defconfig
-alpha                            alldefconfig
-sh                          r7780mp_defconfig
-powerpc                     tqm5200_defconfig
-arm                           tegra_defconfig
-mips                      fuloong2e_defconfig
-sh                        sh7763rdp_defconfig
-sh                          sdk7786_defconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                         axm55xx_defconfig
-mips                         tb0219_defconfig
-arm                          moxart_defconfig
-mips                     decstation_defconfig
-powerpc                 mpc8560_ads_defconfig
-sh                            migor_defconfig
-arm                          pcm027_defconfig
-mips                      loongson3_defconfig
-mips                        nlm_xlp_defconfig
-m68k                                defconfig
-arc                          axs103_defconfig
-sh                               j2_defconfig
-powerpc                      arches_defconfig
-arc                            hsdk_defconfig
-mips                         tb0226_defconfig
-arm                        neponset_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                     ksi8560_defconfig
-arm                             pxa_defconfig
-powerpc                     tqm8540_defconfig
-microblaze                      mmu_defconfig
-arm                       netwinder_defconfig
-arm                         assabet_defconfig
-arm                          imote2_defconfig
-powerpc                    adder875_defconfig
-sh                           se7751_defconfig
-mips                       capcella_defconfig
-arm                          pxa910_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                     tqm8541_defconfig
-sh                   sh7770_generic_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                        icon_defconfig
-m68k                          multi_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a014-20210825
-x86_64               randconfig-a015-20210825
-x86_64               randconfig-a016-20210825
-x86_64               randconfig-a013-20210825
-x86_64               randconfig-a012-20210825
-x86_64               randconfig-a011-20210825
-i386                 randconfig-a011-20210825
-i386                 randconfig-a016-20210825
-i386                 randconfig-a012-20210825
-i386                 randconfig-a014-20210825
-i386                 randconfig-a013-20210825
-i386                 randconfig-a015-20210825
-arc                  randconfig-r043-20210825
-riscv                randconfig-r042-20210825
-s390                 randconfig-r044-20210825
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-s390                 randconfig-c005-20210825
-i386                 randconfig-c001-20210825
-arm                  randconfig-c002-20210825
-riscv                randconfig-c006-20210825
-powerpc              randconfig-c003-20210825
-x86_64               randconfig-c007-20210825
-x86_64               randconfig-a005-20210825
-x86_64               randconfig-a001-20210825
-x86_64               randconfig-a006-20210825
-x86_64               randconfig-a003-20210825
-x86_64               randconfig-a004-20210825
-x86_64               randconfig-a002-20210825
-i386                 randconfig-a006-20210825
-i386                 randconfig-a001-20210825
-i386                 randconfig-a002-20210825
-i386                 randconfig-a005-20210825
-i386                 randconfig-a004-20210825
-i386                 randconfig-a003-20210825
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> >                       if (!start)
+> >                               continue;
+> >                       if (direct_pte_prefetch_many(vcpu, sp, start, spte) < 0)
+> > --
+> > 2.19.1.6.gb485710b
+> >
