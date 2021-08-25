@@ -2,147 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5671B3F7EE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC473F7EE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbhHYXIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 19:08:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231535AbhHYXIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 19:08:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C7EC610C7;
-        Wed, 25 Aug 2021 23:07:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629932871;
-        bh=/oV5vifeAsDt2n4hLOIWlI4IWQvQxrjGqtyQT9n8jvI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=JpYeWiCC4KMCvNENg2fv2bOj8trKKz9oiYLQsqevnKexyZJTE0KqsemGDOEoAiU+j
-         g+X6dnhU9dMZmVwDw9mjjacmKqGRAjeSoh4XJqvPpwPNI7MD5wTH9T1h/d8pRcQMlu
-         o4YdQVXZqeYjakCMUJICySoBqgR2uruJ6VsouscfAQGCtEmUgTYJy5mlLuSlZE6Jfd
-         CIBxm3qTXkKa8halFjNbtAMBElGpirlhaUoUSoPolxPWNucUXT292yKJcEE/g8nOmN
-         EINqYVEwFmMYb4hkMfnNl7BZJ40bOPdEMk0v6iQCg0SIqWZ+L/EF8nEEZIXP1N9JC5
-         v8CChbPcaUaOQ==
-Subject: Re: [PATCH] drm/i915: Clean up disabled warnings
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        llvm@lists.linux.dev
-References: <20210824232237.2085342-1-nathan@kernel.org>
- <CAKwvOdk2mLem4w05o5cdr0Mz62M2CWeW+5LFnKE5L+pMPqa7WA@mail.gmail.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <b8ff7ced-3e5e-603f-6e59-915c97a8f88d@kernel.org>
-Date:   Wed, 25 Aug 2021 16:07:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233291AbhHYXMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 19:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231535AbhHYXMP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 19:12:15 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4123C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:11:28 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id w6so505210plg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:11:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=auQsiU026YRcUJDBrDCigbKQFMyBdgrRl4yQyRusVVE=;
+        b=KsYDraaCmX1B7uNInfhFu+xYYZW0V2Gz972uL5UYRPpWaK5WAawbOGfWtd42arLjEY
+         JpjHKQMIyUD72LoPfBoxBSL5ZwOG4UAebUC7GIlLE+GJbw9Nn17615fqWok1AV8s+UKa
+         WyyEcIlgtbE1M0DSpXT7BY7BWrBqMg6HwcqlQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=auQsiU026YRcUJDBrDCigbKQFMyBdgrRl4yQyRusVVE=;
+        b=awacF7TXY4SF3z/bqPc0pQIhRLQfsOttDS8W9ywGBGYZmR0HBbZkNhVXg0r/swyHAW
+         I8YyLHhgPknnapZuCkFvZCNNU0DIB7fCLIb0TKr6zHr8s86a5KLQbSIKOQr+49N6XHje
+         925Vt77Ih+BOsRGMgyG4b3j6G74WYaEku4p+nbjIGesHntfO3aIwJXzYtzRJV6dxc58S
+         wJUqRi76M3jNl2iawBrwseaMT26cGxhz+fMFGd6rD62pc7ykWTKhDkIzYeLmndVvjB4S
+         G0m43zdu4Czqrakivk7zQKj+kPFLIg+dmGnD+5ZZ2B8Fy60my6gwLKERCG0EJq2fEis+
+         uTRg==
+X-Gm-Message-State: AOAM531v7PNlxqQDQUrl6YCA7ozq0ffAsd4Iwbzlb4GfGJbAV0tNkukv
+        N9w5WWp0NJWU4mwiqZ8gN7CMFJIJ1ssOA46qzfugMQ==
+X-Google-Smtp-Source: ABdhPJzNUEKVFIv6N8mYQAYQ3A0+DYTB+NOni0Zp//TmiXJA3uI7jGbvj5rAJzumaKzWnPD9VN5+tmK5NYMi16924hc=
+X-Received: by 2002:a17:90a:8801:: with SMTP id s1mr755065pjn.166.1629933088041;
+ Wed, 25 Aug 2021 16:11:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdk2mLem4w05o5cdr0Mz62M2CWeW+5LFnKE5L+pMPqa7WA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210825084434.32309-1-mansur@codeaurora.org>
+In-Reply-To: <20210825084434.32309-1-mansur@codeaurora.org>
+From:   Nathan Hebert <nhebert@chromium.org>
+Date:   Wed, 25 Aug 2021 16:11:17 -0700
+Message-ID: <CANHAJhE4h+WPL+uRCqZ=CdaqWr9SVuLtK9SXnP3PTkk-A0rZZQ@mail.gmail.com>
+Subject: Re: [PATCH] venus: vdec: update output buffer size during vdec_s_fmt()
+To:     Mansur Alisha Shaik <mansur@codeaurora.org>
+Cc:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/2021 4:03 PM, Nick Desaulniers wrote:
-> On Tue, Aug 24, 2021 at 4:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
->>
->> i915 enables a wider set of warnings with '-Wall -Wextra' then disables
->> several with cc-disable-warning. If an unknown flag gets added to
->> KBUILD_CFLAGS when building with clang, all subsequent calls to
->> cc-{disable-warning,option} will fail, meaning that all of these
->> warnings do not get disabled [1].
->>
->> A separate series will address the root cause of the issue by not adding
->> these flags when building with clang [2]; however, the symptom of these
->> extra warnings appearing can be addressed separately by just removing
->> the calls to cc-disable-warning, which makes the build ever so slightly
->> faster because the compiler does not need to be called as much before
->> building.
->>
->> The following warnings are supported by GCC 4.9 and clang 10.0.1, which
->> are the minimum supported versions of these compilers so the call to
->> cc-disable-warning is not necessary. Masahiro cleaned this up for the
->> reset of the kernel in commit 4c8dd95a723d ("kbuild: add some extra
->> warning flags unconditionally").
->>
->> * -Wmissing-field-initializers
->> * -Wsign-compare
->> * -Wtype-limits
->> * -Wunused-parameter
->>
->> -Wunused-but-set-variable was implemented in clang 13.0.0 and
->> -Wframe-address was implemented in clang 12.0.0 so the
->> cc-disable-warning calls are kept for these two warnings.
->>
->> Lastly, -Winitializer-overrides is clang's version of -Woverride-init,
->> which is disabled for the specific files that are problematic. clang
->> added a compatibility alias in clang 8.0.0 so -Winitializer-overrides
->> can be removed.
->>
->> [1]: https://lore.kernel.org/r/202108210311.CBtcgoUL-lkp@intel.com/
->> [2]: https://lore.kernel.org/r/20210824022640.2170859-1-nathan@kernel.org/
->>
->> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> 
-> Thanks for the patch! Do you need to re-ping, rebase, or resend that
-> other series?
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Hi Mansur,
 
-I assume you mean the series below rather than above? I sent this patch 
-right after that series and it has one set of reviews so I am hoping the 
-i915 maintainers will pick them up soon so this one can be applied 
-afterwards or resent.
+I tested the patch on kernel 5.4 on an Acer Chromebook Spin 513 based
+on the Qualcomm Snapdragon 7c platform.
 
-Thank you for the review!
+VP8 test vectors [0] were able to be decoded and decoded picture MD5's
+matched the vpxdec reference decoder. Prior to this patch, three files
+failed to decode. I didn't see any regressions with VP9 Profile 0
+(8-bit) test vectors [1] using the same decode and checksum test
+methods.
 
-Cheers,
-Nathan
+[0] https://chromium.googlesource.com/webm/vp8-test-vectors
+[1] https://www.webmproject.org/vp9/levels/#test-bitstreams
 
->> ---
->>
->> NOTE: This is based on my series to enable -Wsometimes-initialized here:
->>
->> https://lore.kernel.org/r/20210824225427.2065517-1-nathan@kernel.org/
->>
->> I sent it separately as this can go into whatever release but I would
->> like for that series to go into 5.15.
->>
->>   drivers/gpu/drm/i915/Makefile | 10 ++++------
->>   1 file changed, 4 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
->> index 335ba9f43d8f..6b38547543b1 100644
->> --- a/drivers/gpu/drm/i915/Makefile
->> +++ b/drivers/gpu/drm/i915/Makefile
->> @@ -13,13 +13,11 @@
->>   # will most likely get a sudden build breakage... Hopefully we will fix
->>   # new warnings before CI updates!
->>   subdir-ccflags-y := -Wall -Wextra
->> -subdir-ccflags-y += $(call cc-disable-warning, unused-parameter)
->> -subdir-ccflags-y += $(call cc-disable-warning, type-limits)
->> -subdir-ccflags-y += $(call cc-disable-warning, missing-field-initializers)
->> +subdir-ccflags-y += -Wno-unused-parameter
->> +subdir-ccflags-y += -Wno-type-limits
->> +subdir-ccflags-y += -Wno-missing-field-initializers
->> +subdir-ccflags-y += -Wno-sign-compare
->>   subdir-ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
->> -# clang warnings
->> -subdir-ccflags-y += $(call cc-disable-warning, sign-compare)
->> -subdir-ccflags-y += $(call cc-disable-warning, initializer-overrides)
->>   subdir-ccflags-y += $(call cc-disable-warning, frame-address)
->>   subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
->>
->>
->> base-commit: fb43ebc83e069625cfeeb2490efc3ffa0013bfa4
->> prerequisite-patch-id: 31c28450ed7e8785dce967a16db6d52eff3d7d6d
->> prerequisite-patch-id: 372dfa0e07249f207acc1942ab0e39b13ff229b2
->> prerequisite-patch-id: 1a585fa6cda50c32ad1e3ac8235d3cff1b599978
->> --
->> 2.33.0
->>
-> 
-> 
+Tested-by: Nathan Hebert <nhebert@chromium.org>
+
+Best regards,
+Nathan Hebert
+
+On Wed, Aug 25, 2021 at 1:44 AM Mansur Alisha Shaik
+<mansur@codeaurora.org> wrote:
+>
+> Video driver maintains an internal context for the output buffer size.
+> During S_fmt() on capture plane, the output buffer size is not updated
+> in driver context. As a result, during buf_prepare(), the size of the
+> vb2_plane and internal size of the buffer, as maintained by the driver,
+> does not match. This leads to buf_prepare() failure.
+> Update the instance context for the output buffer size during s_fmt().
+>
+> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> ---
+>  drivers/media/platform/qcom/venus/vdec.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index 198e47eb63f4..c129b061a325 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -332,8 +332,11 @@ static int vdec_s_fmt(struct file *file, void *fh, struct v4l2_format *f)
+>
+>         if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+>                 inst->fmt_out = fmt;
+> -       else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+> +       else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+>                 inst->fmt_cap = fmt;
+> +               inst->output2_buf_size =
+> +                       venus_helper_get_framesz(pixfmt_cap, orig_pixmp.width, orig_pixmp.height);
+> +       }
+>
+>         return 0;
+>  }
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
