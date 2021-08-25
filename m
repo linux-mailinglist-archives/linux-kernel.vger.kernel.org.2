@@ -2,86 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81F63F7BC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1751A3F7BC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242398AbhHYRvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
+        id S242408AbhHYRvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234115AbhHYRvo (ORCPT
+        with ESMTP id S242350AbhHYRvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:51:44 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B340AC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:50:58 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so104553oti.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:50:58 -0700 (PDT)
+        Wed, 25 Aug 2021 13:51:48 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45D2C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:51:01 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id w19so446630oik.10
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:51:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=joeEMSfwbKFOWf42c6X25rE4u+SwXoFheY/55rlm6LU=;
-        b=KQ/HOnYdFw+ZF7qnp9jzF+z2MCLSv7IKlKnFCKpkaTpBdl0IV/CWYsbPjRASTs3VWj
-         C8D+/SNYVY9IGiA27L3o8j3qjmjjMV97Yu49ksmzJ38yL5BetbwX6MhIAwcJao+hAYSH
-         jTyNQJKSx3VVVhDdnWLkrTjoCNTbzOFv6mOCk=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5D1tw3Md08WYLyG5LlUraIj8yn5OS2EuisWDpXs7Tm0=;
+        b=IJmgjd1SrVJsVytUowWHxX+s8xRMvY+d97fCybXk+axf5m41xtnE89Hmso4IjQwuL4
+         J5nG79B02u+RWaBPXvn7jQ3npVjw8znZNBtKL0cId4o9NEbkVfOGi7J5qpzpuZOvRib0
+         WSoqsoZW149123bpcJDlvF3+0y/q6OMu7kapqb19t7wsEx3Ww/ywx3n/JLBMT1DUX3O9
+         uFtyLjM7Ue+Ex5mIy7llFg5jPl9vhl5LcB4/S9/zAvC2F4se0xm3DrDl1DUt3rr+vFpr
+         BIXomHp8kw1XR0zM3lOvawgfYApCBwgCJll36+eSwmTPaUW/av1QBNUVuOHGMjmrNYPN
+         9IUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=joeEMSfwbKFOWf42c6X25rE4u+SwXoFheY/55rlm6LU=;
-        b=oV1612ChZi6N1XdvQzuoYkvf5RCYsI06bAAjJCorI2BlzDIKsv3maVJJyln1QgavS6
-         Nt6dV679UaEE3EGuMiEfzk8pR2wdac9gwMMf6sD7vNA2EW8Q8nK8q6DUG1K28LnInYbf
-         qMCxE5h4R+D2kPU4KOznWjVwXXQYeE2iJzhwA7qTEP5i5g0gUKdveEUo+SmeJk9KB+Ds
-         BruHAfguizjryQcFLOerVHwz5crc1FPhGhKShGaKT0f4LldPVW+xToYXO+Y0E7oAS4Jl
-         UQLmr/Mj2u0UQzYiuaQIqftzlEigQPFthBocYfFTuJB70SX1pi+Wj5aalSl6hjGixSS1
-         wazA==
-X-Gm-Message-State: AOAM530y+CkxMUCHTA6diIMoNbnWhfLFR00SwGXOsG3Y1+PwtsujN9L9
-        u1I6Rl9/r4yH/QzCwRRGJKZNUFl5c6G3hu6jvzOBGQ==
-X-Google-Smtp-Source: ABdhPJymKW+Q9r5NjGs3NkVet38E9V3EJHm+kKtdiXNkSMyDOfTN6qr7Dk5rQ6mPq/5GfCmqKJ5umNsFLQNCvxojzg8=
-X-Received: by 2002:a05:6830:2b24:: with SMTP id l36mr21464418otv.25.1629913858077;
- Wed, 25 Aug 2021 10:50:58 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 25 Aug 2021 17:50:57 +0000
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5D1tw3Md08WYLyG5LlUraIj8yn5OS2EuisWDpXs7Tm0=;
+        b=sAC1vWY2hnyTMIKb65Sn1dsOHlEE6kEOQHJi+bHz7cYCglGHxarldIlIUZ/SRDpEtR
+         hEVw8+nCwfujfWziSiQHR6LtgeNdP6cynTOxYVqezQOpUyhn3u3wS3T3mTJ/H0j2wCWA
+         nZATIjhbZHn4vqK+uLxVWlFsiTbWxVlXTAyqCoPzfZbBHU5Eb+R7u8UlfSTuiPz+W04v
+         B+EqBduGqKt58IoM0++AGHyHnAeitgUGq6eDUpqFpXhgOLZnrXVpa36PLaPs0WKYZPBg
+         sL1d4M2BPG9hlT/w7h9YUjwWFCHfPTiQ4eoflPuW4TM/eHNgsv7787aWIjXDjnF+5ewP
+         gmvQ==
+X-Gm-Message-State: AOAM530PK8o5kA9foxpOj9K/uUUjeVQXVIqxl+7QfFTMYTbxssXUNIfw
+        24V0GXts89eKFSLvYdpiGpwlsw==
+X-Google-Smtp-Source: ABdhPJwq88TjIsr+7R11vG5jSL3rxRRZDUnTAvts3GR0h3Zr+Xu4HcRzWgpsQe3VCOhB1MTSOFSXIA==
+X-Received: by 2002:aca:1304:: with SMTP id e4mr7927432oii.89.1629913861316;
+        Wed, 25 Aug 2021 10:51:01 -0700 (PDT)
+Received: from [192.168.17.50] ([189.219.75.147])
+        by smtp.gmail.com with ESMTPSA id c14sm88610otd.62.2021.08.25.10.51.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 10:51:00 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/98] 5.10.61-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        akpm@linux-foundation.org, shuah@kernel.org, linux@roeck-us.net
+References: <20210824165908.709932-1-sashal@kernel.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <51db1aba-4035-d7c6-948d-18aaa93c64ca@linaro.org>
+Date:   Wed, 25 Aug 2021 12:50:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1628726882-27841-3-git-send-email-sbillaka@codeaurora.org>
-References: <1628726882-27841-1-git-send-email-sbillaka@codeaurora.org> <1628726882-27841-3-git-send-email-sbillaka@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 25 Aug 2021 17:50:57 +0000
-Message-ID: <CAE-0n536PraSR4oqGNtxcDnR0+H-N3eQTpsgTt84oU3NAXEjeA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] dt-bindings: Add SC7280 compatible string
-To:     Sankeerth Billakanti <sbillaka@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     robdclark@gmail.com, seanpaul@chromium.org,
-        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
-        dianders@chromium.org, khsieh@codeaurora.org,
-        mkrishn@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210824165908.709932-1-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sankeerth Billakanti (2021-08-11 17:08:02)
-> The Qualcomm SC7280 platform supports an eDP controller, add
-> compatible string for it to msm/binding.
->
-> Signed-off-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> index 64d8d9e..23b78ac 100644
-> --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> @@ -17,6 +17,9 @@ properties:
->    compatible:
->      enum:
->        - qcom,sc7180-dp
-> +      - qcom,sc8180x-dp
-> +      - qcom,sc8180x-edp
-> +      - qcom,sc7280-edp
+Hello!
 
-Also add qcom,sc7280-dp here?
+On 8/24/21 11:57 AM, Sasha Levin wrote:
+> This is the start of the stable review cycle for the 5.10.61 release.
+> There are 98 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu 26 Aug 2021 04:58:25 PM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.10.y&id2=v5.10.60
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.10.61-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-5.10.y
+* git commit: bd3eb40a9de703ab9ab65f9c583e40d185d6aaad
+* git describe: v5.10.60-98-gbd3eb40a9de7
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.60-98-gbd3eb40a9de7
+
+## No regressions (compared to v5.10.60)
+
+## No fixes (compared to v5.10.60)
+
+## Test result summary
+total: 78086, pass: 66126, fail: 526, skip: 10629, xfail: 805
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 226 total, 226 passed, 0 failed
+* arm64: 32 total, 32 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 31 total, 31 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 48 total, 48 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 21 total, 21 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 33 total, 33 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
+--
+Linaro LKFT
+https://lkft.linaro.org
