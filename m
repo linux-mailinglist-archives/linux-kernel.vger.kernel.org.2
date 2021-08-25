@@ -2,83 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C303F7098
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFDB3F7099
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239005AbhHYHow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:44:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
+        id S239208AbhHYHo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:44:57 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:38737 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235922AbhHYHou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:44:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 146596127B;
-        Wed, 25 Aug 2021 07:44:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629877444;
-        bh=wVU9GLKhq2p6ukezJvevgnRgWmpzPM5Lh6hx13awvCo=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=NGpKUNQ6oSgrgb1v2TMRw9Ddobcwpjz7nUAx0YJwoBAdEZQqgINe8XsKIN6JPXeVB
-         ZdYqzG0qoTTpuBWB30J6+YfgPOwhhLXamWWF6HY96Oujq0UBhyBcNyRj2RyzAUOrnw
-         VlYL7CarRbFVY/spLXsR3e1LY7fHHGA7rwicDIPcelou1HQmj1zIz0dLtJ42pnEGu9
-         ua36zxbo3e6Npz4ggYU6LZ7Uikp5oI5mZxCzgd2v05X4eR+ZJw8OlNW+X5W02hT47W
-         1WKOJTPfSr0C+WIxGTA5bXjVJoX0r6Wms2rFbHXhljFKW3viStjbdgNUQBrv5o8zCx
-         cbafdrsD/jojA==
-References: <20210824192337.3100288-1-Nehal-Bakulchandra.shah@amd.com>
- <87ilzu5ap0.fsf@kernel.org> <YSXqsXmuom2fFiKN@kuha.fi.intel.com>
-User-agent: mu4e 1.6.4; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kun.liu2@amd.com,
-        alexander.deucher@amd.com
-Subject: Re: [RESEND PATCH 2/2] usb: dwc3: pci add property to allow user
- space role switch
-Date:   Wed, 25 Aug 2021 10:43:38 +0300
-In-reply-to: <YSXqsXmuom2fFiKN@kuha.fi.intel.com>
-Message-ID: <87zgt69dfj.fsf@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S239131AbhHYHo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 03:44:56 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GvdK57084z9sV5;
+        Wed, 25 Aug 2021 09:44:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ZqwCJz_SePGa; Wed, 25 Aug 2021 09:44:09 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GvdK55q9gz9sTL;
+        Wed, 25 Aug 2021 09:44:09 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 832058B83B;
+        Wed, 25 Aug 2021 09:44:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id FpgDAUI6KbCv; Wed, 25 Aug 2021 09:44:09 +0200 (CEST)
+Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 34C788B76A;
+        Wed, 25 Aug 2021 09:44:09 +0200 (CEST)
+Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 01BC86BC7B; Wed, 25 Aug 2021 07:44:08 +0000 (UTC)
+Message-Id: <8ea2d4065ec5a0137e5ad9b75773ed27c03bfc91.1629877436.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v4 1/2] powerpc/perf: Use PVR rather than oprofile field to
+ determine CPU version
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 25 Aug 2021 07:44:08 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rashmica Gupta <rashmica.g@gmail.com>
 
-Heikki Krogerus <heikki.krogerus@linux.intel.com> writes:
+Currently the perf CPU backend drivers detect what CPU they're on using
+cur_cpu_spec->oprofile_cpu_type.
 
-> On Wed, Aug 25, 2021 at 08:55:41AM +0300, Felipe Balbi wrote:
->> 
->> Hi,
->> 
->> Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com> writes:
->> 
->> > For AMD platform there is a requirement to enable user space role
->> > switch from host to device and device to host as customer platform is not
->> > completely capable of OTG i.e. with type C controller it does not have PD
->> > to support role switching. Hence, based ACPI/EC interrupt role switch is
->> > triggered by the usemode script running in background.
->>                    usermode ?
->
-> Couldn't you capture that ACPI/EC interrupt in kernel?
->
->> > Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
->> 
->> I'm okay with this, just wondering if we need to Document the property
->> somewhere.
->> 
->> @Heikki, is there a place to document these private properties that's
->> not on DT binding document?
->
-> The build-in properties are not documented separately. I've always
-> tried to supply DT bindings for all new properties I've proposed.
->
-> In this case though, do we need the new property at all? Why not just
-> register a normal USB role switch on this platform? It can be either a
-> dummy role switch that only passes the user space input to dwc3, or,
-> perhaps ideally, it would also be a driver that captures that ACPI/EC
-> event/notification and then passes the information from it to dwc3.
+Although that works, it's a bit crufty to be using oprofile related fields,
+especially seeing as oprofile is more or less unused these days.
 
-I like the actual driver responding to EC IRQ idea.
+It also means perf is reliant on the fragile logic in setup_cpu_spec()
+which detects when we're using a logical PVR and copies back the PMU
+related fields from the raw CPU entry. So lets check the PVR directly.
 
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Rashmica Gupta <rashmica.g@gmail.com>
+Reviewed-by: Madhavan Srinivasan <maddy@linux.vnet.ibm.com>
+[chleroy: Added power10 and fixed checkpatch issues]
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-and-tested-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Reviewed-and-tested-By: Kajol Jain <kjain@linux.ibm.com> [For 24x7 side changes]
+---
+v4:
+- No change to the series
+- Added additional Reviewed-by/Tested-by.
+- Rebased
+- Resending to get some CI result this time
+---
+ arch/powerpc/perf/e500-pmu.c    | 9 +++++----
+ arch/powerpc/perf/e6500-pmu.c   | 5 +++--
+ arch/powerpc/perf/hv-24x7.c     | 6 +++---
+ arch/powerpc/perf/mpc7450-pmu.c | 5 +++--
+ arch/powerpc/perf/power10-pmu.c | 6 ++----
+ arch/powerpc/perf/power5+-pmu.c | 6 +++---
+ arch/powerpc/perf/power5-pmu.c  | 5 +++--
+ arch/powerpc/perf/power6-pmu.c  | 5 +++--
+ arch/powerpc/perf/power7-pmu.c  | 7 ++++---
+ arch/powerpc/perf/power8-pmu.c  | 5 +++--
+ arch/powerpc/perf/power9-pmu.c  | 4 +---
+ arch/powerpc/perf/ppc970-pmu.c  | 7 ++++---
+ 12 files changed, 37 insertions(+), 33 deletions(-)
+
+diff --git a/arch/powerpc/perf/e500-pmu.c b/arch/powerpc/perf/e500-pmu.c
+index a59c33bed32a..e3e1a68eb1d5 100644
+--- a/arch/powerpc/perf/e500-pmu.c
++++ b/arch/powerpc/perf/e500-pmu.c
+@@ -118,12 +118,13 @@ static struct fsl_emb_pmu e500_pmu = {
+ 
+ static int init_e500_pmu(void)
+ {
+-	if (!cur_cpu_spec->oprofile_cpu_type)
+-		return -ENODEV;
++	unsigned int pvr = mfspr(SPRN_PVR);
+ 
+-	if (!strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc/e500mc"))
++	/* ec500mc */
++	if (PVR_VER(pvr) == PVR_VER_E500MC || PVR_VER(pvr) == PVR_VER_E5500)
+ 		num_events = 256;
+-	else if (strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc/e500"))
++	/* e500 */
++	else if (PVR_VER(pvr) != PVR_VER_E500V1 && PVR_VER(pvr) != PVR_VER_E500V2)
+ 		return -ENODEV;
+ 
+ 	return register_fsl_emb_pmu(&e500_pmu);
+diff --git a/arch/powerpc/perf/e6500-pmu.c b/arch/powerpc/perf/e6500-pmu.c
+index 44ad65da82ed..bd779a2338f8 100644
+--- a/arch/powerpc/perf/e6500-pmu.c
++++ b/arch/powerpc/perf/e6500-pmu.c
+@@ -107,8 +107,9 @@ static struct fsl_emb_pmu e6500_pmu = {
+ 
+ static int init_e6500_pmu(void)
+ {
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-		strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc/e6500"))
++	unsigned int pvr = mfspr(SPRN_PVR);
++
++	if (PVR_VER(pvr) != PVR_VER_E6500)
+ 		return -ENODEV;
+ 
+ 	return register_fsl_emb_pmu(&e6500_pmu);
+diff --git a/arch/powerpc/perf/hv-24x7.c b/arch/powerpc/perf/hv-24x7.c
+index 1816f560a465..63e84075fd64 100644
+--- a/arch/powerpc/perf/hv-24x7.c
++++ b/arch/powerpc/perf/hv-24x7.c
+@@ -1718,16 +1718,16 @@ static int hv_24x7_init(void)
+ {
+ 	int r;
+ 	unsigned long hret;
++	unsigned int pvr = mfspr(SPRN_PVR);
+ 	struct hv_perf_caps caps;
+ 
+ 	if (!firmware_has_feature(FW_FEATURE_LPAR)) {
+ 		pr_debug("not a virtualized system, not enabling\n");
+ 		return -ENODEV;
+-	} else if (!cur_cpu_spec->oprofile_cpu_type)
+-		return -ENODEV;
++	}
+ 
+ 	/* POWER8 only supports v1, while POWER9 only supports v2. */
+-	if (!strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power8"))
++	if (PVR_VER(pvr) == PVR_POWER8)
+ 		interface_version = 1;
+ 	else {
+ 		interface_version = 2;
+diff --git a/arch/powerpc/perf/mpc7450-pmu.c b/arch/powerpc/perf/mpc7450-pmu.c
+index e39b15b79a83..552d51a925d3 100644
+--- a/arch/powerpc/perf/mpc7450-pmu.c
++++ b/arch/powerpc/perf/mpc7450-pmu.c
+@@ -417,8 +417,9 @@ struct power_pmu mpc7450_pmu = {
+ 
+ static int __init init_mpc7450_pmu(void)
+ {
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc/7450"))
++	unsigned int pvr = mfspr(SPRN_PVR);
++
++	if (PVR_VER(pvr) != PVR_7450)
+ 		return -ENODEV;
+ 
+ 	return register_power_pmu(&mpc7450_pmu);
+diff --git a/arch/powerpc/perf/power10-pmu.c b/arch/powerpc/perf/power10-pmu.c
+index f9d64c63bb4a..53b14deda088 100644
+--- a/arch/powerpc/perf/power10-pmu.c
++++ b/arch/powerpc/perf/power10-pmu.c
+@@ -579,12 +579,10 @@ int init_power10_pmu(void)
+ 	unsigned int pvr;
+ 	int rc;
+ 
+-	/* Comes from cpu_specs[] */
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power10"))
++	pvr = mfspr(SPRN_PVR);
++	if (PVR_VER(pvr) != PVR_POWER10)
+ 		return -ENODEV;
+ 
+-	pvr = mfspr(SPRN_PVR);
+ 	/* Add the ppmu flag for power10 DD1 */
+ 	if ((PVR_CFG(pvr) == 1))
+ 		power10_pmu.flags |= PPMU_P10_DD1;
+diff --git a/arch/powerpc/perf/power5+-pmu.c b/arch/powerpc/perf/power5+-pmu.c
+index 18732267993a..a79eae40ef6d 100644
+--- a/arch/powerpc/perf/power5+-pmu.c
++++ b/arch/powerpc/perf/power5+-pmu.c
+@@ -679,9 +679,9 @@ static struct power_pmu power5p_pmu = {
+ 
+ int init_power5p_pmu(void)
+ {
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-	    (strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power5+")
+-	     && strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power5++")))
++	unsigned int pvr = mfspr(SPRN_PVR);
++
++	if (PVR_VER(pvr) != PVR_POWER5p)
+ 		return -ENODEV;
+ 
+ 	return register_power_pmu(&power5p_pmu);
+diff --git a/arch/powerpc/perf/power5-pmu.c b/arch/powerpc/perf/power5-pmu.c
+index cb611c1e7abe..35a9d7f3b4b9 100644
+--- a/arch/powerpc/perf/power5-pmu.c
++++ b/arch/powerpc/perf/power5-pmu.c
+@@ -620,8 +620,9 @@ static struct power_pmu power5_pmu = {
+ 
+ int init_power5_pmu(void)
+ {
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power5"))
++	unsigned int pvr = mfspr(SPRN_PVR);
++
++	if (PVR_VER(pvr) != PVR_POWER5)
+ 		return -ENODEV;
+ 
+ 	return register_power_pmu(&power5_pmu);
+diff --git a/arch/powerpc/perf/power6-pmu.c b/arch/powerpc/perf/power6-pmu.c
+index 69ef38216418..8aa220c712a7 100644
+--- a/arch/powerpc/perf/power6-pmu.c
++++ b/arch/powerpc/perf/power6-pmu.c
+@@ -541,8 +541,9 @@ static struct power_pmu power6_pmu = {
+ 
+ int init_power6_pmu(void)
+ {
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power6"))
++	unsigned int pvr = mfspr(SPRN_PVR);
++
++	if (PVR_VER(pvr) != PVR_POWER6)
+ 		return -ENODEV;
+ 
+ 	return register_power_pmu(&power6_pmu);
+diff --git a/arch/powerpc/perf/power7-pmu.c b/arch/powerpc/perf/power7-pmu.c
+index 894c17f9a762..ca7373143b02 100644
+--- a/arch/powerpc/perf/power7-pmu.c
++++ b/arch/powerpc/perf/power7-pmu.c
+@@ -447,11 +447,12 @@ static struct power_pmu power7_pmu = {
+ 
+ int init_power7_pmu(void)
+ {
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power7"))
++	unsigned int pvr = mfspr(SPRN_PVR);
++
++	if (PVR_VER(pvr) != PVR_POWER7 && PVR_VER(pvr) != PVR_POWER7p)
+ 		return -ENODEV;
+ 
+-	if (pvr_version_is(PVR_POWER7p))
++	if (PVR_VER(pvr) == PVR_POWER7p)
+ 		power7_pmu.flags |= PPMU_SIAR_VALID;
+ 
+ 	return register_power_pmu(&power7_pmu);
+diff --git a/arch/powerpc/perf/power8-pmu.c b/arch/powerpc/perf/power8-pmu.c
+index 5282e8415ddf..5a396ba8bf58 100644
+--- a/arch/powerpc/perf/power8-pmu.c
++++ b/arch/powerpc/perf/power8-pmu.c
+@@ -381,9 +381,10 @@ static struct power_pmu power8_pmu = {
+ int init_power8_pmu(void)
+ {
+ 	int rc;
++	unsigned int pvr = mfspr(SPRN_PVR);
+ 
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power8"))
++	if (PVR_VER(pvr) != PVR_POWER8E && PVR_VER(pvr) != PVR_POWER8NVL &&
++	    PVR_VER(pvr) != PVR_POWER8)
+ 		return -ENODEV;
+ 
+ 	rc = register_power_pmu(&power8_pmu);
+diff --git a/arch/powerpc/perf/power9-pmu.c b/arch/powerpc/perf/power9-pmu.c
+index ff3382140d7e..147767ca0039 100644
+--- a/arch/powerpc/perf/power9-pmu.c
++++ b/arch/powerpc/perf/power9-pmu.c
+@@ -457,9 +457,7 @@ int init_power9_pmu(void)
+ 	int rc = 0;
+ 	unsigned int pvr = mfspr(SPRN_PVR);
+ 
+-	/* Comes from cpu_specs[] */
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power9"))
++	if (PVR_VER(pvr) != PVR_POWER9)
+ 		return -ENODEV;
+ 
+ 	/* Blacklist events */
+diff --git a/arch/powerpc/perf/ppc970-pmu.c b/arch/powerpc/perf/ppc970-pmu.c
+index 1f8263785286..39a0a4d7841c 100644
+--- a/arch/powerpc/perf/ppc970-pmu.c
++++ b/arch/powerpc/perf/ppc970-pmu.c
+@@ -491,9 +491,10 @@ static struct power_pmu ppc970_pmu = {
+ 
+ int init_ppc970_pmu(void)
+ {
+-	if (!cur_cpu_spec->oprofile_cpu_type ||
+-	    (strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/970")
+-	     && strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/970MP")))
++	unsigned int pvr = mfspr(SPRN_PVR);
++
++	if (PVR_VER(pvr) != PVR_970 && PVR_VER(pvr) != PVR_970MP &&
++	    PVR_VER(pvr) != PVR_970FX && PVR_VER(pvr) != PVR_970GX)
+ 		return -ENODEV;
+ 
+ 	return register_power_pmu(&ppc970_pmu);
 -- 
-balbi
+2.25.0
+
