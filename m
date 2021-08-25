@@ -2,243 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F533F7A65
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5165D3F7A67
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241302AbhHYQV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
+        id S241387AbhHYQV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240602AbhHYQVs (ORCPT
+        with ESMTP id S241442AbhHYQVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:21:48 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33CBC0698C2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:20:00 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id q21so5647649plq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:20:00 -0700 (PDT)
+        Wed, 25 Aug 2021 12:21:50 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98654C0611C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:20:38 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 17so225995pgp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:20:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N9XhY8p7G+0bDyMlbnytdHLPofSqK0+HvIRX3QNft6U=;
-        b=er5jXCwFvNHmPXCLmHbM9lgRrgRCxgG1opusLq2zieJBNo77QgyOCSKYRVXtfsQ7oi
-         k+L/TFn+Cgt5x4X3lQu+kAkG0XCM8G1fU8xVhlBZMClibfRNT8rfyCbV1bWD/NWn/qGQ
-         cnLRWzWVgnoe9Nrf2hU/7dyApLfH1yGuGU9X0=
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=WfApXgIAJKG8HDMpDxeWIJ0g5a0zCGdRTXnLP/N3w6w=;
+        b=yNWmLg4D3MPNwz3iBAd040R8jR3mwmiT7/OveoBUnx9MNH0mZGUVD5U24u+11fAfKu
+         a91IZ8N7rdaeM0orJk9dy3N0mjCx0Yu0Sfpiog/Q0vvp5SjYBYa+qB5aucbHlPvnFQxg
+         ELDRto3TAI3GsKS4J5a7nQHfFBCd8MS8Em89BuJD8j8ZUk/ROgeXYelhYWzO9Ynho1mq
+         Db15kqUQUWEeBPBAI9ezdNAxXbSzajoKJWmZTScnNGMZvCjyw6jXoE8XpGD3UA0+LVPF
+         B1qo2b1h/VoOZgU61Jjek+nZEIIsBbUB2TYNMi/CBZ7lLCGLRI69QP+7/KPDIMTjF+5X
+         ZxBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N9XhY8p7G+0bDyMlbnytdHLPofSqK0+HvIRX3QNft6U=;
-        b=FhRVFophOcCAlwccq1XZWECNQQOn7/3asJ94wfgB9b3B8zAOZz8jyb4g0tR2wnsSyB
-         iGYJuWrsnp3aztZTGr7L8EAMbODVtRTZHZHig+dqYGhqX0ScdRXt5oIboVWGAf3tq6Qi
-         0Z9MpYud1r8iOtpcUgXI3SRLASJlhEMG/48uKMle+2+Ow6HCvqZbUXlVUkf+3SkWMrem
-         cai4hUfznvmUEYbcFb1cRQeUGLKX+/rSmjaqje0vqFcwJCXkNt1HeCFU1MzwUZS0bdCw
-         XlkN4sbRJY50kMkpi4aEPYvFTy1bp2FFldijJ7jxaQkZYYCeWDU1n8rDvAFDTf44m/Kn
-         hdwA==
-X-Gm-Message-State: AOAM5324Z+PcQH8+6RHUpCrubLUh9FM34QsTJKySD/9mpZeUnq9g4l/L
-        KVYwj9CIyQvUtBXX9fI8ZsyhYA==
-X-Google-Smtp-Source: ABdhPJxLw35PQJptMjCd//eeBe1KjTkohZdpaMBavFZprJQ6S+Pbpoi+JNSD0gcZPFFZBT++CNzxRQ==
-X-Received: by 2002:a17:90a:4093:: with SMTP id l19mr11481974pjg.118.1629908400185;
-        Wed, 25 Aug 2021 09:20:00 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x19sm286030pfo.40.2021.08.25.09.19.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 09:19:59 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Feifei Xu <Feifei.Xu@amd.com>, Likun Gao <Likun.Gao@amd.com>,
-        Jiawei Gu <Jiawei.Gu@amd.com>, Evan Quan <evan.quan@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Lijo Lazar <lijo.lazar@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Sathishkumar S <sathishkumar.sundararaju@amd.com>,
-        Jonathan Kim <jonathan.kim@amd.com>,
-        Darren Powell <darren.powell@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Ryan Taylor <Ryan.Taylor@amd.com>,
-        Graham Sider <Graham.Sider@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        David M Nieto <David.Nieto@amd.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        John Clements <john.clements@amd.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v2] drm/amd/pm: And destination bounds checking to struct copy
-Date:   Wed, 25 Aug 2021 09:19:57 -0700
-Message-Id: <20210825161957.3904130-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=WfApXgIAJKG8HDMpDxeWIJ0g5a0zCGdRTXnLP/N3w6w=;
+        b=jsooj+mEJ09TiCjUMCCjGS2g21XFS5V4odzhZJ7T9hhT6pMoWcoUgj+lGeLdrB0PyT
+         jDcqKPIxwJFDaZ7eBpDr+QmVS/KrYHhbR24VJrK7HC0oMlMILaLM4ecYT8wLdGeExSi2
+         jnwi+/NZK5JLLU49F1s3nW8EnODDWegORjeTe/t7ko5EqkLPrAMrZJtFsjsQuqyLvPzg
+         X4nvuJKQuCM1pHBDynOxYd4Wor2hNj2n4IvPsJVKLxP0UMlP5++eU+3Uw47Ya5tWix4m
+         aV8TWCwMnYabt1M8mpN22FInoya2YrcxAYVJFOTt3pKjYzsjVC1BtHDXCge+6fZ0YJ5P
+         mcgg==
+X-Gm-Message-State: AOAM530LycJ+UhhTS1hvKld+ELG0N1npELRfQ7tBn+F4PAICtp7jrKYQ
+        Rtqpr/iHHQ3rqM2Qyy1gpqb1Mg==
+X-Google-Smtp-Source: ABdhPJwrAL8hgbvN02uYYKtBnE1DUYV7Xq1vYTj0mWjw2e7+NUaM6k7pyNoflK0khzA8RTUOnBiSQQ==
+X-Received: by 2002:a63:2242:: with SMTP id t2mr41795283pgm.111.1629908438181;
+        Wed, 25 Aug 2021 09:20:38 -0700 (PDT)
+Received: from [10.255.189.11] ([139.177.225.249])
+        by smtp.gmail.com with ESMTPSA id t13sm121019pjg.25.2021.08.25.09.20.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 09:20:37 -0700 (PDT)
+Subject: Re: [PATCH v2 1/9] mm: introduce pmd_install() helper
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
+ <20210819031858.98043-2-zhengqi.arch@bytedance.com>
+ <edd82170-7149-1abf-6204-f1d665a5fca2@redhat.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+Message-ID: <c650ef29-0f9e-02a0-9426-b406a4608c8f@bytedance.com>
+Date:   Thu, 26 Aug 2021 00:20:31 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7050; h=from:subject; bh=vF67s6QnU0fC5nISbg7n5vHeCrbf4UxTJE11PW86ehA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhJm2sqJLOuF3URRcTav9BLmXNiA7slPCKTLtLOLI5 ImHjN5GJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSZtrAAKCRCJcvTf3G3AJivOD/ wNaiUJ5ux73lmKYESY4bT3EXBpHilQ9p5V+3lwyxKfURqdki00w311PXX4vMM1L+hfQHL6TKPoiuc5 nzlR+CMZIshnglKxUWjttBLiAFLdZM9FAsusFb6JVISf9gGGRmapAG43us+wPX0T1YzNx6LWpkMU07 yh2xJ6QmFtrhgBe7S3ktSizAI4T32hGhOJ+Woh+YZxZw6psrqr+l6zEKRd9q8kOG7w+TEw6P1rx7O0 wWG+1jg8pSPk5KUVzLC/3FsSkEgaTpDNtTLkmMQayLKgi0MCQnRjseQ0VncXswyYwOni9Mn1Hu/En3 BPZyozNulGMZDtNEtMOygZZHXjx3hl2jwjMMkabwWZ2/J4Lt3XsZzQVN4POqDNEKGhQ+EcljGBNucY UrSIgQMYd17/Q1K8fJHRX4g5NGzDEBGyJu9TmpMj9d19HjpKZZ8Axsj55vcvVX8JoAokiziT8gjIho 6Jlvg9JAobQYZtLfBNzK4Ca3beMXk5vt+k1c7deuag4aAxohkNzXwtCtIW3qYtmgXWU2F0m5HDVA3G 9xBrdCFp83WAMTYNmxIgS7h3Rkkcyx5YvfbgxevaCg1QN5HZZzPW30x33v9YXgsTrXIjX7S+sX2LUt 66ZuedhDRBHLBDh0lwK7gJh40hnlcGPO2QduiNB5L3AYFQ3fqCPG/7GsYGxw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+In-Reply-To: <edd82170-7149-1abf-6204-f1d665a5fca2@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
 
-The "Board Parameters" members of the structs:
-	struct atom_smc_dpm_info_v4_5
-	struct atom_smc_dpm_info_v4_6
-	struct atom_smc_dpm_info_v4_7
-	struct atom_smc_dpm_info_v4_10
-are written to the corresponding members of the corresponding PPTable_t
-variables, but they lack destination size bounds checking, which means
-the compiler cannot verify at compile time that this is an intended and
-safe memcpy().
 
-Since the header files are effectively immutable[1] and a struct_group()
-cannot be used, nor a common struct referenced by both sides of the
-memcpy() arguments, add a new helper, amdgpu_memcpy_trailing(), to
-perform the bounds checking at compile time. Replace the open-coded
-memcpy()s with amdgpu_memcpy_trailing() which includes enough context
-for the bounds checking.
+On 2021/8/25 AM12:26, David Hildenbrand wrote:
+> On 19.08.21 05:18, Qi Zheng wrote:
+>> Currently we have three times the same few lines repeated in the
+>> code. Deduplicate them by newly introduced pmd_install() helper.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   include/linux/mm.h |  1 +
+>>   mm/filemap.c       | 11 ++---------
+>>   mm/memory.c        | 34 ++++++++++++++++------------------
+>>   3 files changed, 19 insertions(+), 27 deletions(-)
+>>
+>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>> index ce8fc0fd6d6e..57e48217bd71 100644
+>> --- a/include/linux/mm.h
+>> +++ b/include/linux/mm.h
+>> @@ -2471,6 +2471,7 @@ static inline spinlock_t *pud_lock(struct 
+>> mm_struct *mm, pud_t *pud)
+>>       return ptl;
+>>   }
+>> +extern void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t 
+>> *pte);
+>>   extern void __init pagecache_init(void);
+>>   extern void __init free_area_init_memoryless_node(int nid);
+>>   extern void free_initmem(void);
+>> diff --git a/mm/filemap.c b/mm/filemap.c
+>> index 53913fced7ae..9f773059c6dc 100644
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -3210,15 +3210,8 @@ static bool filemap_map_pmd(struct vm_fault 
+>> *vmf, struct page *page)
+>>           }
+>>       }
+>> -    if (pmd_none(*vmf->pmd)) {
+>> -        vmf->ptl = pmd_lock(mm, vmf->pmd);
+>> -        if (likely(pmd_none(*vmf->pmd))) {
+>> -            mm_inc_nr_ptes(mm);
+>> -            pmd_populate(mm, vmf->pmd, vmf->prealloc_pte);
+>> -            vmf->prealloc_pte = NULL;
+>> -        }
+>> -        spin_unlock(vmf->ptl);
+>> -    }
+>> +    if (pmd_none(*vmf->pmd))
+>> +        pmd_install(mm, vmf->pmd, &vmf->prealloc_pte);
+>>       /* See comment in handle_pte_fault() */
+>>       if (pmd_devmap_trans_unstable(vmf->pmd)) {
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 39e7a1495c3c..ef7b1762e996 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -433,9 +433,20 @@ void free_pgtables(struct mmu_gather *tlb, struct 
+>> vm_area_struct *vma,
+>>       }
+>>   }
+>> +void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
+>> +{
+>> +    spinlock_t *ptl = pmd_lock(mm, pmd);
+>> +
+>> +    if (likely(pmd_none(*pmd))) {    /* Has another populated it ? */
+>> +        mm_inc_nr_ptes(mm);
+>> +        pmd_populate(mm, pmd, *pte);
+>> +        *pte = NULL;
+>> +    }
+>> +    spin_unlock(ptl);
+>> +}
+>> +
+>>   int __pte_alloc(struct mm_struct *mm, pmd_t *pmd)
+>>   {
+>> -    spinlock_t *ptl;
+>>       pgtable_t new = pte_alloc_one(mm);
+>>       if (!new)
+>>           return -ENOMEM;
+>> @@ -455,13 +466,7 @@ int __pte_alloc(struct mm_struct *mm, pmd_t *pmd)
+>>        */
+>>       smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
+>> -    ptl = pmd_lock(mm, pmd);
+>> -    if (likely(pmd_none(*pmd))) {    /* Has another populated it ? */
+>> -        mm_inc_nr_ptes(mm);
+>> -        pmd_populate(mm, pmd, new);
+>> -        new = NULL;
+>> -    }
+>> -    spin_unlock(ptl);
+>> +    pmd_install(mm, pmd, &new);
+>>       if (new)
+>>           pte_free(mm, new);
+>>       return 0;
+>> @@ -4027,17 +4032,10 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+>>                   return ret;
+>>           }
+>> -        if (vmf->prealloc_pte) {
+>> -            vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
+>> -            if (likely(pmd_none(*vmf->pmd))) {
+>> -                mm_inc_nr_ptes(vma->vm_mm);
+>> -                pmd_populate(vma->vm_mm, vmf->pmd, vmf->prealloc_pte);
+>> -                vmf->prealloc_pte = NULL;
+>> -            }
+>> -            spin_unlock(vmf->ptl);
+>> -        } else if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd))) {
+>> +        if (vmf->prealloc_pte)
+>> +            pmd_install(vma->vm_mm, vmf->pmd, &vmf->prealloc_pte);
+>> +        else if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd)))
+>>               return VM_FAULT_OOM;
+>> -        }
+>>       }
+>>       /* See comment in handle_pte_fault() */
+>>
+> 
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-"objdump -d" shows no object code changes.
+Thanks for your review, I will add this to the patch v3.
 
-[1] https://lore.kernel.org/lkml/e56aad3c-a06f-da07-f491-a894a570d78f@amd.com
+> 
+> That's mostly unrelated to the remaining part of the series and can be 
+> picked up early.
 
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Hawking Zhang <Hawking.Zhang@amd.com>
-Cc: Feifei Xu <Feifei.Xu@amd.com>
-Cc: Likun Gao <Likun.Gao@amd.com>
-Cc: Jiawei Gu <Jiawei.Gu@amd.com>
-Cc: Evan Quan <evan.quan@amd.com>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v2:
-- rename and move helper to drivers/gpu/drm/amd/pm/inc/amdgpu_smu.h
-- add reviews/acks
-v1: https://lore.kernel.org/lkml/20210819201441.3545027-1-keescook@chromium.org/
----
- drivers/gpu/drm/amd/amdgpu/amdgpu.h           |  1 +
- drivers/gpu/drm/amd/pm/inc/amdgpu_smu.h       | 24 +++++++++++++++++++
- .../gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c |  6 ++---
- .../gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c   |  8 +++----
- .../drm/amd/pm/swsmu/smu13/aldebaran_ppt.c    |  5 ++--
- 5 files changed, 33 insertions(+), 11 deletions(-)
+The implementation of subsequent patches depends on pmd_install().
+So I am worried that if this patch is submitted as a separate patch,
+subsequent patches will not be updated until this patch is merged.
+What do you think?
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index dc3c6b3a00e5..c911387045e2 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -1452,4 +1452,5 @@ static inline int amdgpu_in_reset(struct amdgpu_device *adev)
- {
- 	return atomic_read(&adev->in_gpu_reset);
- }
-+
- #endif
-diff --git a/drivers/gpu/drm/amd/pm/inc/amdgpu_smu.h b/drivers/gpu/drm/amd/pm/inc/amdgpu_smu.h
-index 715b4225f5ee..29031eb11d39 100644
---- a/drivers/gpu/drm/amd/pm/inc/amdgpu_smu.h
-+++ b/drivers/gpu/drm/amd/pm/inc/amdgpu_smu.h
-@@ -1335,6 +1335,30 @@ enum smu_cmn2asic_mapping_type {
- #define WORKLOAD_MAP(profile, workload) \
- 	[profile] = {1, (workload)}
- 
-+/**
-+ * amdgpu_memcpy_trailing - Copy the end of one structure into the middle of another
-+ *
-+ * @dst: Pointer to destination struct
-+ * @first_dst_member: The member name in @dst where the overwrite begins
-+ * @last_dst_member: The member name in @dst where the overwrite ends after
-+ * @src: Pointer to the source struct
-+ * @first_src_member: The member name in @src where the copy begins
-+ *
-+ */
-+#define amdgpu_memcpy_trailing(dst, first_dst_member, last_dst_member,	   \
-+			       src, first_src_member)			   \
-+({									   \
-+	size_t __src_offset = offsetof(typeof(*(src)), first_src_member);  \
-+	size_t __src_size = sizeof(*(src)) - __src_offset;		   \
-+	size_t __dst_offset = offsetof(typeof(*(dst)), first_dst_member);  \
-+	size_t __dst_size = offsetofend(typeof(*(dst)), last_dst_member) - \
-+			    __dst_offset;				   \
-+	BUILD_BUG_ON(__src_size != __dst_size);				   \
-+	__builtin_memcpy((u8 *)(dst) + __dst_offset,			   \
-+			 (u8 *)(src) + __src_offset,			   \
-+			 __dst_size);					   \
-+})
-+
- #if !defined(SWSMU_CODE_LAYER_L2) && !defined(SWSMU_CODE_LAYER_L3) && !defined(SWSMU_CODE_LAYER_L4)
- int smu_get_power_limit(void *handle,
- 			uint32_t *limit,
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-index 273df66cac14..bda8fc12c91f 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-@@ -483,10 +483,8 @@ static int arcturus_append_powerplay_table(struct smu_context *smu)
- 
- 	if ((smc_dpm_table->table_header.format_revision == 4) &&
- 	    (smc_dpm_table->table_header.content_revision == 6))
--		memcpy(&smc_pptable->MaxVoltageStepGfx,
--		       &smc_dpm_table->maxvoltagestepgfx,
--		       sizeof(*smc_dpm_table) - offsetof(struct atom_smc_dpm_info_v4_6, maxvoltagestepgfx));
--
-+		amdgpu_memcpy_trailing(smc_pptable, MaxVoltageStepGfx, BoardReserved,
-+				       smc_dpm_table, maxvoltagestepgfx);
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-index f96681700c41..88a4a2aed48e 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-@@ -431,16 +431,16 @@ static int navi10_append_powerplay_table(struct smu_context *smu)
- 
- 	switch (smc_dpm_table->table_header.content_revision) {
- 	case 5: /* nv10 and nv14 */
--		memcpy(smc_pptable->I2cControllers, smc_dpm_table->I2cControllers,
--			sizeof(*smc_dpm_table) - sizeof(smc_dpm_table->table_header));
-+		amdgpu_memcpy_trailing(smc_pptable, I2cControllers, BoardReserved,
-+				       smc_dpm_table, I2cControllers);
- 		break;
- 	case 7: /* nv12 */
- 		ret = amdgpu_atombios_get_data_table(adev, index, NULL, NULL, NULL,
- 					      (uint8_t **)&smc_dpm_table_v4_7);
- 		if (ret)
- 			return ret;
--		memcpy(smc_pptable->I2cControllers, smc_dpm_table_v4_7->I2cControllers,
--			sizeof(*smc_dpm_table_v4_7) - sizeof(smc_dpm_table_v4_7->table_header));
-+		amdgpu_memcpy_trailing(smc_pptable, I2cControllers, BoardReserved,
-+				       smc_dpm_table_v4_7, I2cControllers);
- 		break;
- 	default:
- 		dev_err(smu->adev->dev, "smc_dpm_info with unsupported content revision %d!\n",
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-index ec8c30daf31c..d46b892846f6 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-@@ -409,9 +409,8 @@ static int aldebaran_append_powerplay_table(struct smu_context *smu)
- 
- 	if ((smc_dpm_table->table_header.format_revision == 4) &&
- 	    (smc_dpm_table->table_header.content_revision == 10))
--		memcpy(&smc_pptable->GfxMaxCurrent,
--		       &smc_dpm_table->GfxMaxCurrent,
--		       sizeof(*smc_dpm_table) - offsetof(struct atom_smc_dpm_info_v4_10, GfxMaxCurrent));
-+		amdgpu_memcpy_trailing(smc_pptable, GfxMaxCurrent, reserved,
-+				       smc_dpm_table, GfxMaxCurrent);
- 	return 0;
- }
- 
--- 
-2.30.2
+> 
+
 
