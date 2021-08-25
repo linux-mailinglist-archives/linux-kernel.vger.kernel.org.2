@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782A43F7D36
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 22:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A153F7D3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 22:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239932AbhHYUfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 16:35:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51986 "EHLO mail.kernel.org"
+        id S241515AbhHYUj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 16:39:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239539AbhHYUfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 16:35:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2D48610CE;
-        Wed, 25 Aug 2021 20:35:04 +0000 (UTC)
+        id S231745AbhHYUjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 16:39:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF503610D1;
+        Wed, 25 Aug 2021 20:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629923705;
-        bh=pKxV3Y1gj1zvl4VJobY0n84pnugy7uATtX3Mw6lQk/0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=mo9moASupIP6Ot2g1MAmqf+8nG1VNt11U7C9nGTzDfW8klvtVOcKk5U5dK+KURiTF
-         3rKWo8jK2oK2IdtBFmQEVEAZfqDkQX2P5fiY2q5OxbQH5nbOF94ydwL8+tO66AT4zE
-         4SQel/ZHclyNL4Z7mwc2psTvfj00k2V2wNlIVBIqTeYwZdYxe83oJg6utcweCDLOTM
-         nKA6QLUt418rPP6X+A0d6ws8M93aRhV+CTLfFvVPZAKMtwmFBAFsjHD3u/Y0D4aaSP
-         WGgb322jONUuPNJgoKAirnPiZ08pfMLQpbBGTSjSk/jtK4DpkcjCnLj+vPiqVnhckK
-         0+s+PVMm4CWlw==
-Message-ID: <5fcd083a31f876fdc97c7438f41e2c2fcc41c35f.camel@kernel.org>
-Subject: Re: [PATCH v2 1/2] x86/sgx: Add the missing ifdef for
- sgx_set_attribute()
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-sgx@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org
-Date:   Wed, 25 Aug 2021 23:35:02 +0300
-In-Reply-To: <YR6Bs2twT4EK/jUK@google.com>
-References: <20210819124824.52169-1-jarkko@kernel.org>
-         <YR6Bs2twT4EK/jUK@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        s=k20201202; t=1629923946;
+        bh=Al3fzVCYqH1H1gq7uGZbNi/LPmkT9JqI42bjuOzxe6w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j6yDQ7pwwSG8g9gbk1KgH07t9czWeOSU/SP2dFbqaqf6RU2zLEq0e+Q0+P8I7pjvy
+         NTSsSjMawDRL52KBtsS+p6kxM/Lb/esTSH9g4Azp/L3bILW1ui+EIiu3KlpZsLxSGu
+         0L8U/o/9W5ECU+IBtldwOueaxgCsWF33ar09tp7eCi67H3jAMUavH/vL7QIkAaCVL0
+         8xQlfTlyx2nuqv258ofDjNFv8eE2WL+qS4rrJqr0c8sV4Se5Bruaph/SKivFWLBEgv
+         lYm91dBy1sQZkMGCvow0idg6RKH9H60V4g1E0phTRmdQHcKY5wecwxgzLcSoiyIIt4
+         PRBTRbPN3HASw==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] crypto: sm4 - Do not change section of ck and sbox
+Date:   Wed, 25 Aug 2021 13:38:59 -0700
+Message-Id: <20210825203859.416449-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-19 at 16:07 +0000, Sean Christopherson wrote:
-> On Thu, Aug 19, 2021, Jarkko Sakkinen wrote:
-> > Similarly as sgx_virt_*, decorate sgx_set_attribute() with ifdef, so th=
-at
-> > calling it without appropraite config flags, will cause a compilation
-> > error, and not a linking error.
-> >=20
-> > Fixes: b3754e5d3da3 ("x86/sgx: Move provisioning device creation out of=
- SGX driver")
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> >  arch/x86/include/asm/sgx.h | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-> > index 05f3e21f01a7..38c397ef35a8 100644
-> > --- a/arch/x86/include/asm/sgx.h
-> > +++ b/arch/x86/include/asm/sgx.h
-> > @@ -365,6 +365,11 @@ struct sgx_sigstruct {
-> >   * comment!
-> >   */
-> > =20
-> > +#if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
->=20
-> X86_SGX_KVM depends on X86_SGX
->=20
-> And rather than shuffle code, you can wrap all of the prototypes, which h=
-as the
-> added bonus of "documenting" the aformentioned dependency, e.g.
->=20
-> diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-> index 05f3e21f01a7..d5f3e617cc38 100644
-> --- a/arch/x86/include/asm/sgx.h
-> +++ b/arch/x86/include/asm/sgx.h
-> @@ -365,6 +365,7 @@ struct sgx_sigstruct {
->   * comment!
->   */
->=20
-> +#ifdef CONFIG_X86_SGX
->  #ifdef CONFIG_X86_SGX_KVM
->  int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void __user *secs,
->                      int *trapnr);
-> @@ -374,5 +375,6 @@ int sgx_virt_einit(void __user *sigstruct, void __use=
-r *token,
->=20
->  int sgx_set_attribute(unsigned long *allowed_attributes,
->                       unsigned int attribute_fd);
-> +#endif /* CONFIG_X86_SGX */
->=20
->  #endif /* _ASM_X86_SGX_H */
+When building with clang and GNU as, there is a warning about ignored
+changed section attributes:
 
-Right, makes sense.
+/tmp/sm4-c916c8.s: Assembler messages:
+/tmp/sm4-c916c8.s:677: Warning: ignoring changed section attributes for
+.data..cacheline_aligned
 
-A bit off from this patch set, but I'm wondering if there would be any bene=
-fit to
-have a compile time flag for just the allocator part, since KVM depends onl=
-y that.
+"static const" places the data in .rodata but __cacheline_aligned has
+the section attribute to place it in .data..cacheline_aligned, in
+addition to the aligned attribute.
 
-I.e. you could compile a kernel with just KVM required bits for SGX.
+To keep the alignment but avoid attempting to change sections, use the
+____cacheline_aligned attribute, which is just the aligned attribute.
 
-/Jarkko
+Fixes: 2b31277af577 ("crypto: sm4 - create SM4 library based on sm4 generic code")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1441
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ lib/crypto/sm4.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/crypto/sm4.c b/lib/crypto/sm4.c
+index 633b59fed9db..284e62576d0c 100644
+--- a/lib/crypto/sm4.c
++++ b/lib/crypto/sm4.c
+@@ -15,7 +15,7 @@ static const u32 fk[4] = {
+ 	0xa3b1bac6, 0x56aa3350, 0x677d9197, 0xb27022dc
+ };
+ 
+-static const u32 __cacheline_aligned ck[32] = {
++static const u32 ____cacheline_aligned ck[32] = {
+ 	0x00070e15, 0x1c232a31, 0x383f464d, 0x545b6269,
+ 	0x70777e85, 0x8c939aa1, 0xa8afb6bd, 0xc4cbd2d9,
+ 	0xe0e7eef5, 0xfc030a11, 0x181f262d, 0x343b4249,
+@@ -26,7 +26,7 @@ static const u32 __cacheline_aligned ck[32] = {
+ 	0x10171e25, 0x2c333a41, 0x484f565d, 0x646b7279
+ };
+ 
+-static const u8 __cacheline_aligned sbox[256] = {
++static const u8 ____cacheline_aligned sbox[256] = {
+ 	0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7,
+ 	0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c, 0x05,
+ 	0x2b, 0x67, 0x9a, 0x76, 0x2a, 0xbe, 0x04, 0xc3,
+
+base-commit: abfc7fad63940b8dfdfd25da6f0fa813d9561645
+-- 
+2.33.0
 
