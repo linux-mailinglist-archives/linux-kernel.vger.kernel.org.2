@@ -2,140 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010723F74D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033223F74D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240636AbhHYMMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 08:12:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39717 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232681AbhHYMMQ (ORCPT
+        id S240650AbhHYMMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 08:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232681AbhHYMMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 08:12:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629893490;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k7kAFTtN5GyCnNiW5FdL7RXkuMBaRh4yIij8fQrjUPE=;
-        b=Jn/jUwEbL1MLUhqENchwujGHu/saYtOnsUhO0qeRffHHG/zbN9jRf/kp802D0xs/giJsdQ
-        wYIIdVGJBqjR8DJMcYEwImvNtXndHVTiDjZPY+sInSdhZtEtl1sJrUXicfDFRB1fG6FyF4
-        t5HM6/bUVePlND/LSJ9AvK+PTLgebUw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-_qIRcz-oO9ax3NjAUWw97Q-1; Wed, 25 Aug 2021 08:11:26 -0400
-X-MC-Unique: _qIRcz-oO9ax3NjAUWw97Q-1
-Received: by mail-wm1-f71.google.com with SMTP id m33-20020a05600c3b2100b002e87a0542efso1169580wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 05:11:26 -0700 (PDT)
+        Wed, 25 Aug 2021 08:12:18 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFE6C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 05:11:32 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id z10so1760816edb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 05:11:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=78fuDtGdiJkSRp2noeoObedntOADJ5PLukyaDoEGYms=;
+        b=fVAd9ZUYnHE7ghmyI04wX0XnRWSbVy1rZl96lrl6AqhKJDQNea3gdxCyGnetcCdHvB
+         /xqZ2PSK4gRInyWAvDC82DqneRN6IxDiTQY0i1nrx3SFOqjBnXD2sG8zaw+B1JG2B/yf
+         NdHzUbDk04whbfj2r6FG4+yBCa/3InQ47JMRx9BqWK7DSQqc1s/CZJ6rP7xwF3mo775C
+         UxPdkNroJr48FE7Z3SZ2hVzY383Z68pvDnlZ5KUGWe6r18ZDH295xFL2Bz9UNaOhdoO5
+         ECHQbRRIxFDOfypkgnTKLRNY2h/rjfWNedA2dN55rao2gWiJsEuVxgJa1NC1zzaFKRoz
+         FGWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=k7kAFTtN5GyCnNiW5FdL7RXkuMBaRh4yIij8fQrjUPE=;
-        b=UjSR2KP55AQ90LAHw7X1YdcivM2efV1gR0mhtiSFgi5VsqPQsGajr4yzPfhpNnUnVM
-         uPfmllz2ulqKNJJ2wraJpdKu1I+DTsk6FOrWzjcAuJMYYwuuurglh03LbqOeHbeNmstt
-         LNI2l77lw+IPz69DWDrRHyiVtQTeYQ3O91YuZpNvuNtsfIBtEwFQH6Yd63D3Ez9zRp6Q
-         1JblhhBS5ej75izKePn9P3sV67hcu9JzRBKTKuUs3uoWhTWMRgR56LhYGkmy7kXNzmVf
-         FykMEK97blRZRAX4tO9bNawfpSfCeNQA0267PmplaynfgYnFO6XYS8Idm1Unb8sUGQE7
-         i6lQ==
-X-Gm-Message-State: AOAM532FWXXJIwUxalKTgKGH1B8Q9ERSWR/bAhdg47k/e+Kob87wEAYw
-        ZbgUB5R0JntWHDRyywyRgQ6Vf6DMCkDJigp0zfuLKoWKqdZ7PUPdIoYIyQFFiULw7WtfSnhzj2+
-        TuWtIREHLPvwRty34DvGnJIIi
-X-Received: by 2002:a05:6000:1241:: with SMTP id j1mr25794376wrx.338.1629893485392;
-        Wed, 25 Aug 2021 05:11:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyUWxbQ6sYbcNx3xboKyyUCEav3TMI8aWyQFtR0PKawKvnU4oRlAimZ8U28nYS6NVFVY6bxGg==
-X-Received: by 2002:a05:6000:1241:: with SMTP id j1mr25794344wrx.338.1629893485099;
-        Wed, 25 Aug 2021 05:11:25 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23d6b.dip0.t-ipconnect.de. [79.242.61.107])
-        by smtp.gmail.com with ESMTPSA id g11sm6329219wrx.30.2021.08.25.05.11.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 05:11:24 -0700 (PDT)
-Subject: Re: [PATCH 1/4] mm/page_alloc: always initialize memory map for the
- holes
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Simek <monstr@monstr.eu>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210714123739.16493-1-rppt@kernel.org>
- <20210714123739.16493-2-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <175e0e1e-90cd-5c69-69a3-9f44462679e3@redhat.com>
-Date:   Wed, 25 Aug 2021 14:11:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=78fuDtGdiJkSRp2noeoObedntOADJ5PLukyaDoEGYms=;
+        b=ew4Xfmsz7t7ci4gGe0DNg+KA/8KWInDRluT9Mrt+eBrxPDIOWvA6Is0I7lwe8p5HcG
+         CFeYmfX7vtr0D0KwVZEyngr7OSPL++g6tC81GYOIupt5l6YuRb6qnSHB+B5AcuznzZwx
+         LTXso+OlbU98zjcqygi/cRVA5X0DZ0Xir/+OF6fCNjWz2+g+YORrjoLi5jea/Jnfwa98
+         RjzYwhJOCLPYmBHvG3klySws3KJW04m01afiSYHtZ3kGww3x7mOT/wDfck4NDx7E97qv
+         p11ELgeGvqN1uK4/6uA9LrZnVnv9KORCkY+h57iRflLEzUyGg3k3n4jakbsdelrd0hPT
+         H1+A==
+X-Gm-Message-State: AOAM530O2rtTKDLpKEMLVgy5+UwAjdttUzCo4BkHEneTSjRnNWYZ3aPk
+        5LaAZsI7UhVMG2JPPX0r2QU=
+X-Google-Smtp-Source: ABdhPJwtj0rB0CpGYG5QvGGgd3o7WMrJPtpJ04lLDb4itQRxG/vMdxZjJ+XvTVtu6Q9JYcHVizvEsg==
+X-Received: by 2002:a05:6402:4303:: with SMTP id m3mr48991271edc.379.1629893491486;
+        Wed, 25 Aug 2021 05:11:31 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id d23sm13607473edt.39.2021.08.25.05.11.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 05:11:31 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] staging: r8188eu: add error handling of rtw_read16
+Date:   Wed, 25 Aug 2021 14:11:29 +0200
+Message-ID: <46570925.meDeiM9PHE@localhost.localdomain>
+In-Reply-To: <20210825113122.GT7722@kadam>
+References: <cover.1629789580.git.paskripkin@gmail.com> <3494498.825kMHXWDN@localhost.localdomain> <20210825113122.GT7722@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20210714123739.16493-2-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.21 14:37, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Wednesday, August 25, 2021 1:31:22 PM CEST Dan Carpenter wrote:
+> On Wed, Aug 25, 2021 at 01:06:40PM +0200, Fabio M. De Francesco wrote:
+> > On Wednesday, August 25, 2021 12:38:02 PM CEST Dan Carpenter wrote:
+> > > On Wed, Aug 25, 2021 at 01:13:54PM +0300, Pavel Skripkin wrote:
+> > > > Both series are pending right now and made on top of staging-next branch.
+> > > > Who needs to rebase? I think, applying these series as-is can broke the
+> > > > driver, since error handling will be broken
+> > > 
+> > > That's a bug then.  The patch should be rejected.  You're not allowed to
+> > > break the code.
+> > 
+> > Sorry Dan, I disagree. It's not a bug. No one intend to break the code. 
+> > How could anyone know that someone else is working simultaneously on 
+> > some code that is not compatible with the work of the other developer?
 > 
-> Currently memory map for the holes is initialized only when SPARSEMEM
-> memory model is used. Yet, even with FLATMEM there could be holes in the
-> physical memory layout that have memory map entries.
+> Okay, I haven't been following the discussion closely.  If these patches
+> introduce a known bug, then I am going to be cross.
 > 
-> For instance, the memory reserved using e820 API on i386 or
-> "reserved-memory" nodes in device tree would not appear in memblock.memory
-> and hence the struct pages for such holes will be skipped during memory map
-> initialization.
+> I'm really stressed out right now.  If you at all suspect that your
+> patches are going to introduce bugs then just go back and say "Sorry,
+> don't take this one, the way it conflicts with Pavel's ends up
+> introducing a bug.  I'll resend after Pavel's patches are applied."
 > 
-> These struct pages will be zeroed because the memory map for FLATMEM
-> systems is allocated with memblock_alloc_node() that clears the allocated
-> memory. While zeroed struct pages do not cause immediate problems, the
-> correct behaviour is to initialize every page using __init_single_page().
-> Besides, enabling page poison for FLATMEM case will trigger
-> PF_POISONED_CHECK() unless the memory map is properly initialized.
+> regards,
+> dan carpenter
 > 
-> Make sure init_unavailable_range() is called for both SPARSEMEM and FLATMEM
-> so that struct pages representing memory holes would appear as PG_Reserved
-> with any memory layout.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->   mm/page_alloc.c | 8 --------
->   1 file changed, 8 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3b97e17806be..878d7af4403d 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6624,7 +6624,6 @@ static void __meminit zone_init_free_lists(struct zone *zone)
->   	}
->   }
->   
-> -#if !defined(CONFIG_FLATMEM)
->   /*
->    * Only struct pages that correspond to ranges defined by memblock.memory
->    * are zeroed and initialized by going through __init_single_page() during
-> @@ -6669,13 +6668,6 @@ static void __init init_unavailable_range(unsigned long spfn,
->   		pr_info("On node %d, zone %s: %lld pages in unavailable ranges",
->   			node, zone_names[zone], pgcnt);
->   }
-> -#else
-> -static inline void init_unavailable_range(unsigned long spfn,
-> -					  unsigned long epfn,
-> -					  int zone, int node)
-> -{
-> -}
-> -#endif
->   
->   static void __init memmap_init_zone_range(struct zone *zone,
->   					  unsigned long start_pfn,
-> 
+Dear Dan,
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Yours is a nice solution to this problem. 
 
--- 
-Thanks,
+I had thought that I should have waited for Greg to ask to take into account Pavel's 
+series, change some lines of his code (because they are the only users of the new 
+version of the helper function, that is my work - as suggested by Greg himself), 
+rebase and resend, I really think that your idea is better.
 
-David / dhildenb
+I'll do as you suggest ASAP, within the end of the day (now I have to go).
+
+Thanks very much.
+
+Fabio
+
 
