@@ -2,218 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5413D3F7B73
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8894D3F7B76
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233665AbhHYRU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbhHYRU6 (ORCPT
+        id S231685AbhHYRWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:22:12 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:51015 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233276AbhHYRWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:20:58 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1469CC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:20:12 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id n27so726673oij.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cl05HjhOd4YjlawD0/p56yGpJ35axAZhOs6i5BBeFOs=;
-        b=IhrkRAxV6XDDOu79mzcgeT8qDfmZhTxIAlDLXuoWFuDqRpVvMC8ums2jYYy1Ml3qoX
-         ct5HuR+qX2hlJAXYF1i8rex/Cookm2QeZ2YlXq4inhKuCU5sg8/VwZ+WAPpU7gvoaBtc
-         pGJMDe9jzdg1xpnfp7JIjJAGeRLUCO+9zYzXcOUYSvnKE7fjNz6L4uwREIQBqm9vYr+z
-         emOZLJHeGMcc72/6iBByHcBzA/MfXf96iZk0i+hLEwWHAwlMq365V2DmRjxpAde1KbQT
-         tZbGTR+NwuF7GM+hk7AGBiTPGtujiqVI3S/xn7HIKxuQPFTo7tOMRZvc1PWrMkfzB2Cp
-         9hxA==
+        Wed, 25 Aug 2021 13:22:08 -0400
+Received: by mail-il1-f199.google.com with SMTP id c2-20020a92c8c2000000b002246dcb2b5dso138158ilq.17
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:21:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cl05HjhOd4YjlawD0/p56yGpJ35axAZhOs6i5BBeFOs=;
-        b=miWhil//FTYT3D6tU4luSX/Px0rM2zICbv7iy2SZ7zSW9TYe6+U40sKL7d1qypamMd
-         5glIrPwGhThhvyYrRg4akS93dxlwLU/Lmj4L5H9mYiNJCoB12VBT4b/iCC4v9Ha3j7D1
-         uWQGxs5sBE3e/H1GkKvX0/P8LTegc1n0Fvp74W4cA6h0/vGApplADimSXMBDkt4VtGe8
-         cvgBHXncHMbD28c30T/NCnFDqod3Zi12j9mlGqNEdMo8xHYAbScDd4hVaVNRgL/Q/reJ
-         Uf9pjY/l4hUQksOPbr64AuSKID2MggFIbCE2Go+eHwsnSLcE4ElerVvrsJNz3UJgUxQN
-         drsA==
-X-Gm-Message-State: AOAM533LqSzkuqp+/FjPp043Yv2lDkmP5yIWrulV2sPKCDWFNZyBf5RD
-        7IxboTdhJ1mjzfEJzKfnlD/qIA==
-X-Google-Smtp-Source: ABdhPJz3tTVdfYPXKQ/Qw1UbGw+AufFf+Sce6P0LgePO8uCxsQ1RBzuS8Eq4iuiJIyT4uOvnd3kSBA==
-X-Received: by 2002:aca:bfc6:: with SMTP id p189mr7638738oif.167.1629912011375;
-        Wed, 25 Aug 2021 10:20:11 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v5sm85699oos.17.2021.08.25.10.20.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 10:20:11 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 12:20:09 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        angelogioacchino.delregno@somainline.org
-Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Replace usage of parent_names
-Message-ID: <YSZ7yQLasmTMWBaK@builder.lan>
-References: <20210824150606.678666-1-bjorn.andersson@linaro.org>
- <386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org>
- <YSV0/bFiPgY3fjPF@ripper>
- <ed5d27eb-5a54-04c4-dbc4-63da80df1638@somainline.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Mloyvwemb1SpqsP3Dg11cFkPPufZ+GS36X4XhnDfSTs=;
+        b=miJ9HzOhzc5BFBgUILd1iQanmZJQF/vJA6GCNzLZylaknc2C46vn9KoO9qn9knDy55
+         FrIK3bmojB8mjHHzdJYftjQ1Cmw9edxWnXuHcQ5OTSKoh62myUgNZ0JbRzaufw3F1sN8
+         OZsHDnodwIU2PvTU3AALZkHpwmJ9wOuuXSdlWVQbkmNc98PKJpvPbrbiOQpNeF77dZV8
+         0Ru+zivUnj0pAMeZG77A1i1FP6fqPqInh69gFfHJcBBu0V3yP6u7lGNiya0fHprrrGvu
+         ALCTo39pGFKJFK3NVDGwjixv+nGhiKHOlCUaRknauyZZWlPWf2wtGQoR6nBwNfaN1jns
+         ogcQ==
+X-Gm-Message-State: AOAM530JQEtzFIxRmgUdnNDpm5jyxHeONOiioaopCP5zD1ZFXnqV6WQ/
+        XIl5Gm0Q81br9lyjhFMYMUBiYps5nix0z3ZVjBlNt9u8WSQZ
+X-Google-Smtp-Source: ABdhPJyC1doROmxuD1XsSGxuQ+bqAaCQdUrXWFPA6eu1KADQEUP+KZbzDARu0ukdydb6MSVo7x4kb+ocnhrm1aMC2t7xRzIvoA4u
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed5d27eb-5a54-04c4-dbc4-63da80df1638@somainline.org>
+X-Received: by 2002:a05:6e02:130e:: with SMTP id g14mr31724876ilr.81.1629912081894;
+ Wed, 25 Aug 2021 10:21:21 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 10:21:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a814c505ca657a4e@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in netlbl_catmap_walk
+From:   syzbot <syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        paul@paul-moore.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 25 Aug 11:00 CDT 2021, Marijn Suijten wrote:
+Hello,
 
-> Hi Bjorn,
-> 
-> On 8/25/21 12:38 AM, Bjorn Andersson wrote:
-> > On Tue 24 Aug 13:46 PDT 2021, Marijn Suijten wrote:
-> > 
-> > > Hi Bjorn,
-> > > 
-> > > Thanks for this cleanup, that's needed and much appreciated!
-> > > 
-> > > On 8/24/21 5:06 PM, Bjorn Andersson wrote:
-> > > > Using parent_data and parent_hws, instead of parent_names, does protect
-> > > > against some cases of incompletely defined clock trees. While it turns
-> > > > out that the bug being chased this time was totally unrelated, this
-> > > > patch converts the SDM660 GCC driver to avoid such issues.
-> > > > 
-> > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > 
-> > > 
-> > > Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > 
-> > > On the Sony Xperia XA2 Ultra, bar the necessary change in the 14NM DSI PHY
-> > > driver commented below.
-> > > 
-> > > > [..]
-> > > > -
-> > > > -static struct clk_fixed_factor xo = {
-> > > > -	.mult = 1,
-> > > > -	.div = 1,
-> > > > -	.hw.init = &(struct clk_init_data){
-> > > > -		.name = "xo",
-> > > > -		.parent_names = (const char *[]){ "xo_board" },
-> > > > -		.num_parents = 1,
-> > > > -		.ops = &clk_fixed_factor_ops,
-> > > > -	},
-> > > > -};
-> > > 
-> > > 
-> > > Removing the global "xo" clock makes it so that our 14nm DSI PHY does not
-> > > have a parent clock anymore, as the clock is called "xo_board" nowadays
-> > > ("xo" in the position of fw_name is, as you know, only local to this driver
-> > > because it is named that way in the clock-names property). We (SoMainline)
-> > > suffer the same DSI PHY hardcoding issue on many other boards and are at
-> > > this point investigating whether to provide &xo_board in DT like any other
-> > > sane driver.  Do you happen to know if work is already underway to tackle
-> > > this?
-> > > 
-> > 
-> > As far as I can tell most other platforms doesn't define "xo" either.
-> > E.g. according to debugfs dsi0vco_clk doesn't have a parent on sdm845...
-> > 
-> > Sounds like we should update the dsi phys to specify a fw_name and
-> > update binding and dts to provide this...
-> 
-> 
-> I'm all for using .fw_name there, and I hope we all agree that clock
-> dependencies based on global names should become a thing of the past; every
-> such inter-driver dependency should be clearly visible in the DT.  We
-> (SoMainline) can tackle this DSI side if no-one else is working on it yet.
-> 
-> > Does this cause a noticeable regression or it's just that we have a
-> > dangling clock?
-> 
-> 
-> Unfortunately this regresses yes, starting with:
-> 
->     dsi0n1_postdiv_clk: Zero divisor and CLK_DIVIDER_ALLOW_ZERO not set
-> 
-> And proceeding with more such errors on different clocks, clocks getting
-> stuck or failing to update, and the panel never showing anything at all.
-> 
-> Should we fix DSI PHYs first and let this patch sit for a while, or keep the
-> implicit global "xo" clock just a little while longer until that's over
-> with?
-> 
+syzbot found the following issue on:
 
-Thanks, should have read your email as well before replying to the
-other.
+HEAD commit:    6e764bcd1cf7 Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=124e77c5300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
+dashboard link: https://syzkaller.appspot.com/bug?extid=3f91de0b813cc3d19a80
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13f72f16300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=133e338d300000
 
-I will respin this with "xo" intact, then once we've fixed up the DSI
-code we can drop it.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in _netlbl_catmap_getnode net/netlabel/netlabel_kapi.c:564 [inline]
+BUG: KASAN: use-after-free in netlbl_catmap_walk+0x28b/0x2e0 net/netlabel/netlabel_kapi.c:615
+Read of size 4 at addr ffff8880161c9800 by task syz-executor742/8768
+
+CPU: 0 PID: 8768 Comm: syz-executor742 Not tainted 5.14.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
+ print_address_description+0x66/0x3b0 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report+0x163/0x210 mm/kasan/report.c:436
+ _netlbl_catmap_getnode net/netlabel/netlabel_kapi.c:564 [inline]
+ netlbl_catmap_walk+0x28b/0x2e0 net/netlabel/netlabel_kapi.c:615
+ cipso_seq_show+0x15f/0x280 security/smack/smackfs.c:789
+ traverse+0x1dc/0x530 fs/seq_file.c:111
+ seq_lseek+0x12b/0x240 fs/seq_file.c:323
+ vfs_llseek fs/read_write.c:300 [inline]
+ ksys_lseek fs/read_write.c:313 [inline]
+ __do_sys_lseek fs/read_write.c:324 [inline]
+ __se_sys_lseek fs/read_write.c:322 [inline]
+ __x64_sys_lseek+0x15b/0x1e0 fs/read_write.c:322
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445889
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9a9cff0318 EFLAGS: 00000246 ORIG_RAX: 0000000000000008
+RAX: ffffffffffffffda RBX: 00000000004ca408 RCX: 0000000000445889
+RDX: 0000000000000000 RSI: 0000000100000001 RDI: 0000000000000003
+RBP: 00000000004ca400 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca40c
+R13: 00007ffead4e31bf R14: 00007f9a9cff0400 R15: 0000000000022000
+
+Allocated by task 8768:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc+0xcd/0x100 mm/kasan/common.c:513
+ kasan_kmalloc include/linux/kasan.h:264 [inline]
+ kmem_cache_alloc_trace+0x96/0x340 mm/slub.c:2986
+ kmalloc include/linux/slab.h:591 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ netlbl_catmap_alloc include/net/netlabel.h:317 [inline]
+ _netlbl_catmap_getnode net/netlabel/netlabel_kapi.c:582 [inline]
+ netlbl_catmap_setbit+0x1cb/0x3f0 net/netlabel/netlabel_kapi.c:782
+ smk_netlbl_mls+0x103/0x5e0 security/smack/smack_access.c:505
+ smk_set_cipso+0x621/0x810 security/smack/smackfs.c:921
+ vfs_write+0x289/0xc90 fs/read_write.c:603
+ ksys_write+0x171/0x2a0 fs/read_write.c:658
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 8769:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
+ kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:360
+ ____kasan_slab_free+0x10d/0x150 mm/kasan/common.c:366
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:1628 [inline]
+ slab_free_freelist_hook+0x1e8/0x2a0 mm/slub.c:1653
+ slab_free mm/slub.c:3213 [inline]
+ kfree+0xcf/0x2e0 mm/slub.c:4267
+ netlbl_catmap_free include/net/netlabel.h:335 [inline]
+ smk_set_cipso+0x682/0x810 security/smack/smackfs.c:923
+ vfs_write+0x289/0xc90 fs/read_write.c:603
+ ksys_write+0x171/0x2a0 fs/read_write.c:658
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff8880161c9800
+ which belongs to the cache kmalloc-64 of size 64
+The buggy address is located 0 bytes inside of
+ 64-byte region [ffff8880161c9800, ffff8880161c9840)
+The buggy address belongs to the page:
+page:ffffea0000587240 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x161c9
+flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000200 0000000000000000 0000000b00000001 ffff888011041640
+raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 6484, ts 27339779214, free_ts 27310944203
+ prep_new_page mm/page_alloc.c:2436 [inline]
+ get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4168
+ __alloc_pages+0x26c/0x5f0 mm/page_alloc.c:5390
+ alloc_slab_page mm/slub.c:1691 [inline]
+ allocate_slab+0xf1/0x540 mm/slub.c:1831
+ new_slab mm/slub.c:1894 [inline]
+ new_slab_objects mm/slub.c:2640 [inline]
+ ___slab_alloc+0x1cf/0x350 mm/slub.c:2803
+ __slab_alloc mm/slub.c:2843 [inline]
+ slab_alloc_node mm/slub.c:2925 [inline]
+ __kmalloc_node+0x310/0x430 mm/slub.c:4159
+ kmalloc_node include/linux/slab.h:614 [inline]
+ kvmalloc_node+0x81/0xf0 mm/util.c:587
+ kvmalloc include/linux/mm.h:806 [inline]
+ simple_xattr_alloc+0x3f/0xa0 fs/xattr.c:951
+ shmem_initxattrs+0x91/0x1e0 mm/shmem.c:3142
+ security_inode_init_security+0x37a/0x3c0 security/security.c:1099
+ shmem_mknod+0xb0/0x1b0 mm/shmem.c:2822
+ lookup_open fs/namei.c:3228 [inline]
+ open_last_lookups fs/namei.c:3298 [inline]
+ path_openat+0x13b7/0x36b0 fs/namei.c:3504
+ do_filp_open+0x253/0x4d0 fs/namei.c:3534
+ do_sys_openat2+0x124/0x460 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_open fs/open.c:1228 [inline]
+ __se_sys_open fs/open.c:1224 [inline]
+ __x64_sys_open+0x221/0x270 fs/open.c:1224
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1346 [inline]
+ free_pcp_prepare+0xc29/0xd20 mm/page_alloc.c:1397
+ free_unref_page_prepare mm/page_alloc.c:3332 [inline]
+ free_unref_page+0x7e/0x550 mm/page_alloc.c:3411
+ __vunmap+0x926/0xa70 mm/vmalloc.c:2587
+ free_work+0x66/0x90 mm/vmalloc.c:82
+ process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
+ worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
+ kthread+0x453/0x480 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Memory state around the buggy address:
+ ffff8880161c9700: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+ ffff8880161c9780: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>ffff8880161c9800: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+                   ^
+ ffff8880161c9880: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff8880161c9900: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+==================================================================
 
 
-But I still don't understand why we don't have this problem on e.g.
-sdm845. I must be missing something...
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> Either way, feel free to attach my:
-> 
-> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
-> 
-> After that.
-> 
-> > > >    static struct clk_alpha_pll gpll0_early = {
-> > > >    	.offset = 0x0,
-> > > >    	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
-> > > > @@ -158,7 +35,9 @@ static struct clk_alpha_pll gpll0_early = {
-> > > >    		.enable_mask = BIT(0),
-> > > >    		.hw.init = &(struct clk_init_data){
-> > > >    			.name = "gpll0_early",
-> > > > -			.parent_names = (const char *[]){ "xo" },
-> > > > +			.parent_data = &(const struct clk_parent_data){
-> > > > +				.fw_name = "xo",
-> > > > +			},
-> > > 
-> > > 
-> > > I wish we could use .parent_names for a list of .fw_name's too
-> > 
-> > Afaict specifying "name" in struct clk_parent_data is the same as using
-> > parent_names. But I'm not up to speed on the details of how to migrate
-> > the dsi phys.
-> 
-> 
-> Yes it is, both do _not_ look at clocks specified in DT before "falling
-> back" to global names (that only happens when both .name and .fw_name are
-> specified).  I'm sort of expressing the desire for .parent_fw_names here in
-> hopes of phasing out global clock names on DT platforms altogether.  We
-> definitely shouldn't rework .parent_names to support both, that only causes
-> confusion and an implicit fallback to global clocks when the DT is
-> under-specifying the required clocks is exactly what we're trying to avoid.
-> 
-> > > > [..]
-> > > > @@ -265,7 +270,7 @@ static struct clk_rcg2 blsp1_qup1_i2c_apps_clk_src = {
-> > > >    	.freq_tbl = ftbl_blsp1_qup1_i2c_apps_clk_src,
-> > > >    	.clkr.hw.init = &(struct clk_init_data){
-> > > >    		.name = "blsp1_qup1_i2c_apps_clk_src",
-> > > > -		.parent_names = gcc_parent_names_xo_gpll0_gpll0_early_div,
-> > > > +		.parent_data = gcc_parent_data_xo_gpll0_gpll0_early_div,
-> > > >    		.num_parents = 3,
-> > > 
-> > > 
-> > > How about using ARRAY_SIZE(gcc_parent_data_xo_gpll0_gpll0_early_div) now?
-> > > Same for every other occurrence of this pattern.
-> > > 
-> > 
-> > I omitted that because it felt unrelated to the change I was doing, but
-> > it could certainly be done.
-> 
-> 
-> Fair, if done at all it should end up in a separate (2/2) patch or I'll take
-> care of this in a followup.
-> 
-
-Sounds good, I'd be happy to give you a review on that patch :)
-
-Regards,
-Bjorn
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
