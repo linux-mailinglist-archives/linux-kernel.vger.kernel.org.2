@@ -2,145 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0033F7B6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21B53F7B74
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242258AbhHYRTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
+        id S242271AbhHYRVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233720AbhHYRTj (ORCPT
+        with ESMTP id S231685AbhHYRVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:19:39 -0400
-Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80BAC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:18:52 -0700 (PDT)
-Received: from pps.filterd (m0122331.ppops.net [127.0.0.1])
-        by mx0b-00190b01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17PG73hK003607;
-        Wed, 25 Aug 2021 18:18:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=4yn0oy8JsEetkmJH1qt8+NeoPl5RpCvCkxTeymmkeu8=;
- b=VlSK6+1hH5l2Yb77fXnQ6g4ksZO1d0TBYf1qvwgSU6kOcYivw5WUQpb1N4/JRm2EUt9G
- e3bJGL8LjDRfjN+sc1kVN7e+SJ9gnGiCCjByBjf0O61aMIJPcXtckb22/h0ysDYPbROW
- PrifL86bLPPSwczHgflnC5RQoElyVJFQHwbXP0qA7p8n6WyLapMMGk844M55b3tkq1KL
- 9CGSpZvt0ClRxJQRGgz6xLTVcuwuL51DPkTee47Ox3zyiSICIIyEY+z61FsdaDQfgTfE
- vjB29jUgnqHXmZzDPcLKTSGf+Ihs3KmVDRkzb0tJPT6NwnukpDy1Upoju77GiS2lK2mZ yg== 
-Received: from prod-mail-ppoint7 (a72-247-45-33.deploy.static.akamaitechnologies.com [72.247.45.33] (may be forged))
-        by mx0b-00190b01.pphosted.com with ESMTP id 3anhh8mpsu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Aug 2021 18:18:48 +0100
-Received: from pps.filterd (prod-mail-ppoint7.akamai.com [127.0.0.1])
-        by prod-mail-ppoint7.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 17PHCpZk029748;
-        Wed, 25 Aug 2021 13:18:48 -0400
-Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
-        by prod-mail-ppoint7.akamai.com with ESMTP id 3an3v2fbq9-1;
-        Wed, 25 Aug 2021 13:18:48 -0400
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id C8B9A6007A;
-        Wed, 25 Aug 2021 17:18:44 +0000 (GMT)
-Subject: Re: [PATCH v6 00/11] use DYNAMIC_DEBUG to implement DRM.debug
-To:     Jim Cromie <jim.cromie@gmail.com>, gregkh@linuxfoundation.org,
-        seanpaul@chromium.org, jeyu@kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-References: <20210822222009.2035788-1-jim.cromie@gmail.com>
-From:   Jason Baron <jbaron@akamai.com>
-Message-ID: <7017599d-8e11-7bda-90df-3cbf39ef8f3b@akamai.com>
-Date:   Wed, 25 Aug 2021 13:18:44 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 25 Aug 2021 13:21:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4262C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zp6w6glVdR7AU7wqwEOZ1YXWoEKYHTmoZwp8Fkv4Ees=; b=VUHTaHKYlk3MxAwhFt1+FoFlHT
+        2Ve4Util9CT6Nk9mrTrXIyG6O5j1cCqQs9bj/hOmwAu4VbtrUQz3JA2BYykmyE9DrCLLj/qnPBfQP
+        3u8tD+XSBtG6a/3VWwP+dXfatWU8H0qT0dPRteV8V3GaPwnr4jtY4hWX6U9ZiwJSTgZ+OGRo5IgSL
+        RiXT4Gt+4l6mBjOU6oE4OmPbjtymUjxextnzhDBny/KZA8bqxezvlwGLjxvQLnxRjDuit2eTJtW3y
+        47p/gbYutA0c5Ft4eRc+0MEbtH2MfQlih6j53gsAD3/gNqeZWtQD2RvRutTAbTIMvFazfrjwea9dj
+        sxNHKKYg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIwY7-00CVzK-CT; Wed, 25 Aug 2021 17:19:03 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3DCB1981362; Wed, 25 Aug 2021 19:18:50 +0200 (CEST)
+Date:   Wed, 25 Aug 2021 19:18:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Li,Rongqing" <lirongqing@baidu.com>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        "dbueso@suse.de" <dbueso@suse.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?562U5aSN?= =?utf-8?Q?=3A?= [PATCH] rbtree: stop
+ iteration early in rb_find_first
+Message-ID: <20210825171850.GD17784@worktop.programming.kicks-ass.net>
+References: <1629885588-10590-1-git-send-email-lirongqing@baidu.com>
+ <YSYr7nqql825rHol@hirez.programming.kicks-ass.net>
+ <20210825115332.GA4645@lespinasse.org>
+ <20210825115859.GB4645@lespinasse.org>
+ <YSZD6suya8fR/2uY@hirez.programming.kicks-ass.net>
+ <90ea3457ddc7485fbc8db5f7ca5b07ab@baidu.com>
 MIME-Version: 1.0
-In-Reply-To: <20210822222009.2035788-1-jim.cromie@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-25_06:2021-08-25,2021-08-25 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 malwarescore=0
- spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108250101
-X-Proofpoint-GUID: UoSSdnztWs5A6UFnB2lJ-dGQhhers6zK
-X-Proofpoint-ORIG-GUID: UoSSdnztWs5A6UFnB2lJ-dGQhhers6zK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-08-25_07,2021-08-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108250102
-X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.33)
- smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <90ea3457ddc7485fbc8db5f7ca5b07ab@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/22/21 6:19 PM, Jim Cromie wrote:
-> This patchset does 3 main things.
+On Wed, Aug 25, 2021 at 04:01:53PM +0000, Li,Rongqing wrote:
 > 
-> Adds DEFINE_DYNAMIC_DEBUG_CATEGORIES to define bitmap => category
-> control of pr_debugs, and to create their sysfs entries.
+> >>
+> >>
+> >>                         10
+> >>                       /
+> >>                      5
+> >>                       \
+> >>                        10
+> >>
+> >> The search would stop after visiting node 5, and miss the leaf which
+> >> is the expected node to be returned.
 > 
-> Uses it in amdgpu, i915 to control existing pr_debugs according to
-> their ad-hoc categorizations.
+> thanks for explanation.
 > 
-> Plugs dyndbg into drm-debug framework, in a configurable manner.
+> >Just to clarify; the current code *does* work here. The proposed patch
+> >breaks it.
 > 
-> v6: cleans up per v5 feedback, and adds RFC stuff:
 > 
-> - test_dynamic_debug.ko: uses tracer facility added in v5:8/9
-> - prototype print-once & rate-limiting
+> true, my patch is wrong.
 > 
-> Hopefully adding RFC stuff doesnt distract too much.
+> but rb_find_first seems have other issue.  when the key is equal, we should search right leaf, not left leaf
 
-
-Hi Jim,
-
-Yeah, I feel like the RFC patches should be in a separate series
-unless there is a drm dependency for them?
-
-Thanks,
-
--Jason
-
-
-> 
-> Jim Cromie (11):
->   moduleparam: add data member to struct kernel_param
->   dyndbg: add DEFINE_DYNAMIC_DEBUG_CATEGORIES and callbacks
->   i915/gvt: remove spaces in pr_debug "gvt: core:" etc prefixes
->   i915/gvt: use DEFINE_DYNAMIC_DEBUG_CATEGORIES to create "gvt:core:"
->     etc categories
->   amdgpu: use DEFINE_DYNAMIC_DEBUG_CATEGORIES to control categorized
->     pr_debugs
->   drm_print: add choice to use dynamic debug in drm-debug
->   drm_print: instrument drm_debug_enabled
->   amdgpu_ucode: reduce number of pr_debug calls
->   nouveau: fold multiple DRM_DEBUG_DRIVERs together
->   dyndbg: RFC add debug-trace callback, selftest with it. RFC
->   dyndbg: RFC add print-once and print-ratelimited features. RFC.
-> 
->  drivers/gpu/drm/Kconfig                       |  13 +
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c     | 293 ++++++++-------
->  .../gpu/drm/amd/display/dc/core/dc_debug.c    |  44 ++-
->  drivers/gpu/drm/drm_print.c                   |  49 ++-
->  drivers/gpu/drm/i915/gvt/Makefile             |   4 +
->  drivers/gpu/drm/i915/gvt/debug.h              |  18 +-
->  drivers/gpu/drm/i915/i915_params.c            |  35 ++
->  drivers/gpu/drm/nouveau/nouveau_drm.c         |  36 +-
->  include/drm/drm_print.h                       | 148 ++++++--
->  include/linux/dynamic_debug.h                 |  81 ++++-
->  include/linux/moduleparam.h                   |  11 +-
->  lib/Kconfig.debug                             |  11 +
->  lib/Makefile                                  |   1 +
->  lib/dynamic_debug.c                           | 336 ++++++++++++++++--
->  lib/test_dynamic_debug.c                      | 279 +++++++++++++++
->  15 files changed, 1117 insertions(+), 242 deletions(-)
->  create mode 100644 lib/test_dynamic_debug.c
-> 
+That again breaks the above case.
