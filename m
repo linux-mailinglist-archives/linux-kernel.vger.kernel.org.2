@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B403F6F83
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39443F6FA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238956AbhHYGcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
+        id S239000AbhHYGgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238362AbhHYGc1 (ORCPT
+        with ESMTP id S239293AbhHYGgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:32:27 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA7DC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:31:42 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id u21so16012759qtw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qlvI1z1fCV6l+6vZ2EyAPBZvTPzpiJMGsKK1eVy8PQQ=;
-        b=W+Fq67tVvnUH5XoQoUWgccp4wrUWsWBzxbQ6Qw6vc1jQoPFpFFjXEHcnXEqGVCv63J
-         +73EVwbkOZr+RSR4qwElM8xDbuJvJWpxPClNmeFUfDE/T5C2mii6lyfch5T154WtsPlF
-         48FEj7NzzqCCTjaeWLreGa5oyhd34oC5tzmMu/Mjiq60WeVY8iiGlWuqF/kveWIOqveu
-         ghCAE93QbUcTwUQ5gI5xjxQzmxO/CdmwZnYBkc/W0Ls7xF6J/eXIqPW4yX7blA9GDjga
-         PUKCHld+FmnL0saS9Oxb6j+OIWRummYRXWPekV8IrF5hezA0x/7N1PMA10xjiph/zSYp
-         Nd8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qlvI1z1fCV6l+6vZ2EyAPBZvTPzpiJMGsKK1eVy8PQQ=;
-        b=bXo3fo3FzuHYiCR0m6FJXDF23zujoPjBEi9MqsVK/f4DrW1ggpQpdFG+SCS8QuE0S9
-         sDxFlqPpItn7viIkXH3DYCfyAZDxyrWt7jddgvavoHspDT9T9tyBOB1rpGX96CETb+N1
-         vKsxuZ0rBDXzddZvw87Ub8u4BGAX65lY9u3rK/onQs2BT3Q8/PcKcg8iXBJYxMRe24Jn
-         MVuajECuA2xg89GeMlrWBFJBBIG+340hPLosx8uVqBP/KC7xvr2Cn5+5vYRA9zSufnfs
-         ogWGzrPZg4Vt+qif0xWLhTSq2Tg2vWjIc++ne6Px6rH5UG6yQ3OgUgPhVYH7KG4sHPpm
-         XRfA==
-X-Gm-Message-State: AOAM530q2jE6XozJQ50w3zNdJZNTbXw0gbcr3AKm92Prf+thsI9z//P7
-        x06c05ywpkHsqYnVKxcpenM=
-X-Google-Smtp-Source: ABdhPJxOvyzwq6k4wkXWf3bH2J10C0gjxNnf+JrfUPKAK2tIHlB2s6dEK67no4+GfSExe+eBeBi/Ng==
-X-Received: by 2002:a05:622a:2cc:: with SMTP id a12mr37952327qtx.115.1629873101895;
-        Tue, 24 Aug 2021 23:31:41 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id m19sm9247058qtx.84.2021.08.24.23.31.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 23:31:41 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Mark Fasheh <mark@fasheh.com>
-Cc:     Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] fs/ocfs2/dlm/dlmmaster.c: fix bugon.cocci warnings
-Date:   Tue, 24 Aug 2021 23:31:25 -0700
-Message-Id: <20210825063125.70192-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 25 Aug 2021 02:36:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2228C061757;
+        Tue, 24 Aug 2021 23:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2XLmr3mig5i7hFsrhfybeAZVxu1dPFwBTiqJmo2ZjDs=; b=Y/vL5A1XzYQGjecTWV5ZlubPWZ
+        GTZIZXOm9XJO0Be7zs+Aj9ueGAGEfnmZxexw/PUD7kF5QYnOLhKGqh6ujtUIll2y3crONRFnfjkGn
+        XEu2lb0XgzN21b5//QSf3Sv9zeguPFet/OyzEGBOr15LkzC0jf9WMzGNFJcV1sbUOfakeh/IJIu0t
+        4vy3wCYV2ew5sq+yeoArOQi4ZTTkE3L1TxQPPwlnCJztnkkQ/YGQhC9FaGF6hdJlYrGnvNWebM0Ii
+        RTsykyka9MLAs4Hll6kzSOxoIXa7sdJc6rVZLftLKAjjpWr85iqzHgOf5apapcyTgtQ7/qrAkuPm+
+        4hrxNGVw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mImSq-00ByML-7A; Wed, 25 Aug 2021 06:32:54 +0000
+Date:   Wed, 25 Aug 2021 07:32:44 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSXkDFNkgAhQGB0E@infradead.org>
+References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+ <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <1957060.1629820467@warthog.procyon.org.uk>
+ <YSUy2WwO9cuokkW0@casper.infradead.org>
+ <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
+ <YSVCAJDYShQke6Sy@casper.infradead.org>
+ <CAHk-=wisF580D_g+wFt0B_uijSX+mCgz6tRRT5KADnO7Y97t-g@mail.gmail.com>
+ <YSVHI9iaamxTGmI7@casper.infradead.org>
+ <YSVMMMrzqxyFjHlw@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSVMMMrzqxyFjHlw@mit.edu>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Tue, Aug 24, 2021 at 03:44:48PM -0400, Theodore Ts'o wrote:
+> The problem is whether we use struct head_page, or folio, or mempages,
+> we're going to be subsystem users' faces.  And people who are using it
+> every day will eventually get used to anything, whether it's "folio"
+> or "xmoqax", we sould give a thought to newcomers to Linux file system
+> code.  If they see things like "read_folio()", they are going to be
+> far more confused than "read_pages()" or "read_mempages()".
 
-Use BUG_ON instead of a if condition followed by BUG.
+Are they?  It's not like page isn't some randomly made up term
+as well, just one that had a lot more time to spread.
 
-Generated by: scripts/coccinelle/misc/bugon.cocci
+> So if someone sees "kmem_cache_alloc()", they can probably make a
+> guess what it means, and it's memorable once they learn it.
+> Similarly, something like "head_page", or "mempages" is going to a bit
+> more obvious to a kernel newbie.  So if we can make a tiny gesture
+> towards comprehensibility, it would be good to do so while it's still
+> easier to change the name.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- fs/ocfs2/dlm/dlmmaster.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ocfs2/dlm/dlmmaster.c b/fs/ocfs2/dlm/dlmmaster.c
-index 227da5b..afaf9a7 100644
---- a/fs/ocfs2/dlm/dlmmaster.c
-+++ b/fs/ocfs2/dlm/dlmmaster.c
-@@ -2181,8 +2181,7 @@ static int dlm_pre_master_reco_lockres(struct dlm_ctxt *dlm,
- 		ret = dlm_do_master_requery(dlm, res, nodenum, &master);
- 		if (ret < 0) {
- 			mlog_errno(ret);
--			if (!dlm_is_host_down(ret))
--				BUG();
-+			BUG_ON(!dlm_is_host_down(ret));
- 			/* host is down, so answer for that node would be
- 			 * DLM_LOCK_RES_OWNER_UNKNOWN.  continue. */
- 			ret = 0;
-@@ -2238,8 +2237,7 @@ int dlm_drop_lockres_ref(struct dlm_ctxt *dlm, struct dlm_lock_resource *res)
- 		mlog(ML_ERROR, "%s: res %.*s, DEREF to node %u got %d\n",
- 		     dlm->name, namelen, lockname, res->owner, r);
- 		dlm_print_one_lock_resource(res);
--		if (r == -ENOMEM)
--			BUG();
-+		BUG_ON(r == -ENOMEM);
- 	} else
- 		ret = r;
- 
--- 
-1.8.3.1
-
-
+All this sounds really weird to me.  I doubt there is any name that
+nicely explains "structure used to manage arbitrary power of two
+units of memory in the kernel" very well.  So I agree with willy here,
+let's pick something short and not clumsy.  I initially found the folio
+name a little strange, but working with it I got used to it quickly.
+And all the other uggestions I've seen s far are significantly worse,
+especially all the odd compounds with page in it.
