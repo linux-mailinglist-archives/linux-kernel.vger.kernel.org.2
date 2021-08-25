@@ -2,137 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53BA63F6CE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 03:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921FD3F6CD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 02:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236765AbhHYBDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 21:03:10 -0400
-Received: from mga04.intel.com ([192.55.52.120]:2753 "EHLO mga04.intel.com"
+        id S236854AbhHYA6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 20:58:33 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:40849 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234058AbhHYBDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 21:03:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="215583432"
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="215583432"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 18:02:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="507828430"
-Received: from siang-ilbpg0.png.intel.com ([10.88.227.28])
-  by orsmga001.jf.intel.com with ESMTP; 24 Aug 2021 18:02:18 -0700
-From:   Song Yoong Siang <yoong.siang.song@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: [PATCH net v2 1/1] net: stmmac: fix kernel panic due to NULL pointer dereference of xsk_pool
-Date:   Wed, 25 Aug 2021 08:55:29 +0800
-Message-Id: <20210825005529.980109-1-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S231552AbhHYA6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 20:58:32 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GvSJ66YyZz9sWl;
+        Wed, 25 Aug 2021 10:57:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629853063;
+        bh=LKzzNu1B6oO7OWbw8m1pg0b96ufNvNad45RG+/Gy9O4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Z9MuQTFcaHOk+Hy83IEpUTt3ydqjo3yEMcH3aGEdWtVhyR7tYMIkycQHrblm0viMS
+         B8HJvaB00oA5VbgJCZTkCguUffHVi428/UvrgHp5b0lS4ezMUSNUSLf/Gij7RzzYcT
+         bjFpJBczR2EQvVOmRiFJyU1DlXf1w0qX5hS/F2OuSeSCTeDHaQEU3f0TIw3ofsjEvh
+         rGopMmAA3qnVZf5+ksFTodzdlqUTAarWV6vf98viyVbDEOhpkGqXZzP34ISMVJjZjt
+         VP4AgnhiVw2secQz5SOBGWOvQIlvjMqzPHQoXA3vB4eA0lOiHlP2DnESJP/WCkVxcm
+         /2qg5ckBHbScw==
+Date:   Wed, 25 Aug 2021 10:57:41 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rahul Tanwar <rtanwar@maxlinear.com>,
+        Srikanth Thokala <srikanth.thokala@intel.com>,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+Subject: linux-next: manual merge of the pci tree with Linus' tree
+Message-ID: <20210825105741.4ee2fa1f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/jFu=OuqXXYt.e=cyn4P6Azj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After free xsk_pool, there is possibility that napi polling is still
-running in the middle, thus causes a kernel crash due to kernel NULL
-pointer dereference of rx_q->xsk_pool and tx_q->xsk_pool.
+--Sig_/jFu=OuqXXYt.e=cyn4P6Azj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fix this by changing the XDP pool setup sequence to:
- 1. disable napi before free xsk_pool
- 2. enable napi after init xsk_pool
+Hi all,
 
-The following kernel panic is observed without this patch:
+Today's linux-next merge of the pci tree got a conflict in:
 
-RIP: 0010:xsk_uses_need_wakeup+0x5/0x10
-Call Trace:
-stmmac_napi_poll_rxtx+0x3a9/0xae0 [stmmac]
-__napi_poll+0x27/0x130
-net_rx_action+0x233/0x280
-__do_softirq+0xe2/0x2b6
-run_ksoftirqd+0x1a/0x20
-smpboot_thread_fn+0xac/0x140
-? sort_range+0x20/0x20
-kthread+0x124/0x150
-? set_kthread_struct+0x40/0x40
-ret_from_fork+0x1f/0x30
----[ end trace a77c8956b79ac107 ]---
+  MAINTAINERS
 
-Fixes: bba2556efad6 ("net: stmmac: Enable RX via AF_XDP zero-copy")
-Cc: <stable@vger.kernel.org> # 5.13.x
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
----
-v2 changelog:
- - Add stable@vger.kernel.org in email cc list.
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+between commit:
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
-index 105821b53020..2a616c6f7cd0 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
-@@ -34,18 +34,18 @@ static int stmmac_xdp_enable_pool(struct stmmac_priv *priv,
- 	need_update = netif_running(priv->dev) && stmmac_xdp_is_enabled(priv);
- 
- 	if (need_update) {
--		stmmac_disable_rx_queue(priv, queue);
--		stmmac_disable_tx_queue(priv, queue);
- 		napi_disable(&ch->rx_napi);
- 		napi_disable(&ch->tx_napi);
-+		stmmac_disable_rx_queue(priv, queue);
-+		stmmac_disable_tx_queue(priv, queue);
- 	}
- 
- 	set_bit(queue, priv->af_xdp_zc_qps);
- 
- 	if (need_update) {
--		napi_enable(&ch->rxtx_napi);
- 		stmmac_enable_rx_queue(priv, queue);
- 		stmmac_enable_tx_queue(priv, queue);
-+		napi_enable(&ch->rxtx_napi);
- 
- 		err = stmmac_xsk_wakeup(priv->dev, queue, XDP_WAKEUP_RX);
- 		if (err)
-@@ -72,10 +72,10 @@ static int stmmac_xdp_disable_pool(struct stmmac_priv *priv, u16 queue)
- 	need_update = netif_running(priv->dev) && stmmac_xdp_is_enabled(priv);
- 
- 	if (need_update) {
-+		napi_disable(&ch->rxtx_napi);
- 		stmmac_disable_rx_queue(priv, queue);
- 		stmmac_disable_tx_queue(priv, queue);
- 		synchronize_rcu();
--		napi_disable(&ch->rxtx_napi);
- 	}
- 
- 	xsk_pool_dma_unmap(pool, STMMAC_RX_DMA_ATTR);
-@@ -83,10 +83,10 @@ static int stmmac_xdp_disable_pool(struct stmmac_priv *priv, u16 queue)
- 	clear_bit(queue, priv->af_xdp_zc_qps);
- 
- 	if (need_update) {
--		napi_enable(&ch->rx_napi);
--		napi_enable(&ch->tx_napi);
- 		stmmac_enable_rx_queue(priv, queue);
- 		stmmac_enable_tx_queue(priv, queue);
-+		napi_enable(&ch->rx_napi);
-+		napi_enable(&ch->tx_napi);
- 	}
- 
- 	return 0;
--- 
-2.25.1
+  e2f55370b422 ("MAINTAINERS: Add Rahul Tanwar as Intel LGM Gateway PCIe ma=
+intainer")
 
+from Linus' tree and commit:
+
+  0c87f90b4c13 ("PCI: keembay: Add support for Intel Keem Bay")
+
+from the pci tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc MAINTAINERS
+index 0e03d2903c07,23e614e9c669..000000000000
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@@ -14463,13 -14422,13 +14463,20 @@@ S:	Maintaine
+  F:	Documentation/devicetree/bindings/pci/hisilicon-histb-pcie.txt
+  F:	drivers/pci/controller/dwc/pcie-histb.c
+ =20
++ PCIE DRIVER FOR INTEL KEEM BAY
++ M:	Srikanth Thokala <srikanth.thokala@intel.com>
++ L:	linux-pci@vger.kernel.org
++ S:	Supported
++ F:	Documentation/devicetree/bindings/pci/intel,keembay-pcie*
++ F:	drivers/pci/controller/dwc/pcie-keembay.c
++=20
+ +PCIE DRIVER FOR INTEL LGM GW SOC
+ +M:	Rahul Tanwar <rtanwar@maxlinear.com>
+ +L:	linux-pci@vger.kernel.org
+ +S:	Maintained
+ +F:	Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
+ +F:	drivers/pci/controller/dwc/pcie-intel-gw.c
+ +
+  PCIE DRIVER FOR MEDIATEK
+  M:	Ryder Lee <ryder.lee@mediatek.com>
+  M:	Jianjun Wang <jianjun.wang@mediatek.com>
+
+--Sig_/jFu=OuqXXYt.e=cyn4P6Azj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEllYUACgkQAVBC80lX
+0GxwWAf/WYi4pDc/xU6oDQkul7a80hZytXM7u8hfavwR/UNNFycsenCVnk4GIKpt
+XnB+1uy0QHvaAsKfcQ9nmoeqRZ+MUIskiriXHvRwM0W7m1Ex7alSwfumhorGWlRL
+oJSTxS92r6N8o4QYY6dDkV26cKh2kKMOZex+GetbTi29hN4rf+MCoxmJYSUadsRU
+oL6g+yL5yLZVmHRoQ5hwswmZ+t0/B8A1ZCvb4W1+lvHE+KDgrsuEllZzjb41zPh+
+HOsu0Kefm3qLeUEJIK2IryM++OMK2+nNZOks4am8vzQWAzZENBPfGPfFRehatNrl
+A38lZqIT3jYSLf3hB5LwKUJoMsk2zw==
+=C/Wc
+-----END PGP SIGNATURE-----
+
+--Sig_/jFu=OuqXXYt.e=cyn4P6Azj--
