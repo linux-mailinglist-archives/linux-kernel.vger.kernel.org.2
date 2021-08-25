@@ -2,246 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4B93F781E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACCF3F781B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241327AbhHYPTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:19:10 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:60932 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237968AbhHYPTG (ORCPT
+        id S241008AbhHYPSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 11:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233997AbhHYPSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:19:06 -0400
-X-UUID: 232abbacc72143919fd6bbc527f269dc-20210825
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=AvZ/1szMK7QPpc3wUkxkUpWTIZXC+pUg9drjZUKq8Jc=;
-        b=uwYTQkR21g/Kt750m8J0sJkhwmwj+zsOuM55g7W7u+IScjCwFhKAKuxzYSvO5MqHMvV4tJpTpW4ns8R8y6BFww0I3FSYibfgopC/Yn+wKPh4dkdNj8Oqb1+kWNJ8sE08mx9YcA/+WFxkPUP2G+6JIbHEOo9ET9CMtKf/BGDj9ss=;
-X-UUID: 232abbacc72143919fd6bbc527f269dc-20210825
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <houlong.wei@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 703267072; Wed, 25 Aug 2021 23:18:20 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs05n2.mediatek.inc
- (172.21.101.140) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 25 Aug
- 2021 23:18:18 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 25 Aug 2021 23:18:17 +0800
-Message-ID: <1629904697.15752.11.camel@mhfsdcap03>
-Subject: Re: [PATCH v7 7/7] media: mtk-mdp: use mdp-rdma0 alias to point to
- MDP master
-From:   houlong wei <houlong.wei@mediatek.com>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-CC:     Eizan Miyamoto <eizan@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        Yong Wu =?UTF-8?Q?=28=E5=90=B4=E5=8B=87=29?= 
-        <Yong.Wu@mediatek.com>, "wenst@chromium.org" <wenst@chromium.org>,
-        "CK Hu =?UTF-8?Q?=28=E8=83=A1=E4=BF=8A=E5=85=89=29?=" 
-        <ck.hu@mediatek.com>,
-        "Yongqiang Niu =?UTF-8?Q?=28=E7=89=9B=E6=B0=B8=E5=BC=BA=29?=" 
-        <yongqiang.niu@mediatek.com>,
-        "Andrew-CT Chen =?UTF-8?Q?=28=E9=99=B3=E6=99=BA=E8=BF=AA=29?=" 
-        <Andrew-CT.Chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Minghsiu Tsai =?UTF-8?Q?=28=E8=94=A1=E6=98=8E=E4=BF=AE=29?=" 
-        <Minghsiu.Tsai@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>, <houlong.wei@mediatek.com>
-Date:   Wed, 25 Aug 2021 23:18:17 +0800
-In-Reply-To: <0c9fa482-57dd-d4ef-c65b-01f137c57359@collabora.com>
-References: <20210825063323.3607738-1-eizan@chromium.org>
-         <20210825163247.v7.7.I2049e180dca12e0d1b3178bfc7292dcf9e05ac28@changeid>
-         <1629880999.12893.17.camel@mhfsdcap03>
-         <0c9fa482-57dd-d4ef-c65b-01f137c57359@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 25 Aug 2021 11:18:35 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DB5C061757;
+        Wed, 25 Aug 2021 08:17:49 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ea700924cc147a25a6e09.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a700:924c:c147:a25a:6e09])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1125B1EC0372;
+        Wed, 25 Aug 2021 17:17:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629904664;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=FO6+ye2ARhv37fblyN9kntHmslFURj6Br/6bURSaFA8=;
+        b=XyEZq224JnonmaHJCMuvIm1afOxBA6JMKYardJR/DD8BjMEzKlaXDzBrtr6FBv1M1Enw4/
+        gxke1+tpIrJkpQxDa+eTmkP/F8GA0PqztXpalXYfwIGV6tcSdziceBXAUq0etCE22HJ2Jk
+        vr+PcoGTNdWNIMSsWJFatz4uosM6v94=
+Date:   Wed, 25 Aug 2021 17:18:20 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 26/38] x86/compressed/acpi: move EFI config
+ table access to common code
+Message-ID: <YSZfPFrzXv0dImsv@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-27-brijesh.singh@amd.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820151933.22401-27-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA4LTI1IGF0IDE3OjA3ICswODAwLCBFbnJpYyBCYWxsZXRibyBpIFNlcnJh
-IHdyb3RlOg0KPiBIaSBIb3Vsb25nLA0KPiANCj4gVGhhbmsgeW91IGZvciBmb2xsb3dpbmcgdXAg
-dGhpcyBwYXRjaHNldC4gSSBoYXZlIHNvbWUgcXVlc3Rpb25zIHRvIHRyeSB0bw0KPiB1bmRlcnN0
-YW5kIGJldHRlciB0aGUgaGFyZHdhcmUgdGhvdWdoLg0KPiANCj4gT24gMjUvOC8yMSAxMDo0Mywg
-aG91bG9uZyB3ZWkgd3JvdGU6DQo+ID4gSGkgRWl6YW4sDQo+ID4gDQo+ID4gVGhhbmtzIGZvciB5
-b3UgcGF0Y2guIEkgaGF2ZSBpbmxpbmUgY29tbWVudCBiZWxvdy4NCj4gPiANCj4gPiBSZWdhcmRz
-LA0KPiA+IEhvdWxvbmcNCj4gPiANCj4gPiBPbiBXZWQsIDIwMjEtMDgtMjUgYXQgMTQ6MzMgKzA4
-MDAsIEVpemFuIE1peWFtb3RvIHdyb3RlOg0KPiA+PiAuLi4gSW5zdGVhZCBvZiBkZXBlbmRpbmcg
-b24gdGhlIHByZXNlbmNlIG9mIGEgbWVkaWF0ZWssdnB1IHByb3BlcnR5IGluDQo+ID4+IHRoZSBk
-ZXZpY2Ugbm9kZS4NCj4gPj4NCj4gPj4gVGhhdCBwcm9wZXJ0eSB3YXMgb3JpZ2luYWxseSBhZGRl
-ZCB0byBsaW5rIHRvIHRoZSB2cHUgbm9kZSBzbyB0aGF0IHRoZQ0KPiA+PiBtdGtfbWRwX2NvcmUg
-ZHJpdmVyIGNvdWxkIHBhc3MgdGhlIHJpZ2h0IGRldmljZSB0bw0KPiA+PiB2cHVfd2R0X3JlZ19o
-YW5kbGVyKCkuIEhvd2V2ZXIgaW4gYSBwcmV2aW91cyBwYXRjaCBpbiB0aGlzIHNlcmllcywNCj4g
-Pj4gdGhlIGRyaXZlciBoYXMgYmVlbiBtb2RpZmllZCB0byBzZWFyY2ggdGhlIGRldmljZSB0cmVl
-IGZvciB0aGF0IG5vZGUNCj4gPj4gaW5zdGVhZC4NCj4gPj4NCj4gPj4gVGhhdCBwcm9wZXJ0eSB3
-YXMgYWxzbyB1c2VkIHRvIGluZGljYXRlIHRoZSBwcmltYXJ5IE1EUCBkZXZpY2UsIHNvIHRoYXQN
-Cj4gPj4gaXQgY2FuIGJlIHBhc3NlZCB0byB0aGUgVjRMMiBzdWJzeXN0ZW0gYXMgd2VsbCBhcyBy
-ZWdpc3RlciBpdCB0byBiZQ0KPiA+PiB1c2VkIHdoZW4gc2V0dGluZyB1cCBxdWV1ZXMgaW4gdGhl
-IG9wZW4oKSBjYWxsYmFjayBmb3IgdGhlIGZpbGVzeXN0ZW0NCj4gPj4gZGV2aWNlIG5vZGUgdGhh
-dCBpcyBjcmVhdGVkLiBJbiB0aGlzIGNhc2UsIGFzc3VtaW5nIHRoYXQgdGhlIHByaW1hcnkNCj4g
-Pj4gTURQIGRldmljZSBpcyB0aGUgb25lIHdpdGggYSBzcGVjaWZpYyBhbGlhcyBzZWVtcyB1c2Vh
-YmxlIGJlY2F1c2UgdGhlDQo+ID4+IGFsdGVybmF0aXZlIGlzIHRvIGFkZCBhIHByb3BlcnR5IHRv
-IHRoZSBkZXZpY2UgdHJlZSB3aGljaCBkb2Vzbid0DQo+ID4+IGFjdHVhbGx5IHJlcHJlc2VudCBh
-bnkgZmFjZXQgb2YgaGFyZHdhcmUgKGkuZS4sIHRoaXMgYmVpbmcgdGhlIHByaW1hcnkNCj4gPj4g
-TURQIGRldmljZSBpcyBhIHNvZnR3YXJlIGRlY2lzaW9uKS4gSW4gb3RoZXIgd29yZHMsIHRoaXMg
-c29sdXRpb24gaXMNCj4gPj4gZXF1YWxseSBhcyBhcmJpdHJhcnksIGJ1dCBhdCBsZWFzdCBpdCBk
-b2Vzbid0IGFkZCBhIHByb3BlcnR5IHRvIGENCj4gPj4gZGV2aWNlIG5vZGUgd2hlcmUgc2FpZCBw
-cm9wZXJ0eSBpcyB1bnJlbGF0ZWQgdG8gdGhlIGhhcmR3YXJlIHByZXNlbnQuDQo+ID4+DQo+ID4+
-IFNpZ25lZC1vZmYtYnk6IEVpemFuIE1peWFtb3RvIDxlaXphbkBjaHJvbWl1bS5vcmc+DQo+ID4+
-IFJldmlld2VkLWJ5OiBFbnJpYyBCYWxsZXRibyBpIFNlcnJhIDxlbnJpYy5iYWxsZXRib0Bjb2xs
-YWJvcmEuY29tPg0KPiA+PiAtLS0NCj4gPj4NCj4gPj4gKG5vIGNoYW5nZXMgc2luY2UgdjEpDQo+
-ID4+DQo+ID4+ICBkcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1tZHAvbXRrX21kcF9jb21wLmMg
-fCA1NiArKysrKysrKysrKysrLS0tLS0tDQo+ID4+ICBkcml2ZXJzL21lZGlhL3BsYXRmb3JtL210
-ay1tZHAvbXRrX21kcF9jb3JlLmMgfCAzNiArKysrKysrKy0tLS0NCj4gPj4gIDIgZmlsZXMgY2hh
-bmdlZCwgNjQgaW5zZXJ0aW9ucygrKSwgMjggZGVsZXRpb25zKC0pDQo+ID4+DQo+ID4+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1tZHAvbXRrX21kcF9jb21wLmMgYi9k
-cml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1tZHAvbXRrX21kcF9jb21wLmMNCj4gPj4gaW5kZXgg
-ODVlZjI3NDg0MWEzLi45NTI3NjQ5ZGU5OGUgMTAwNjQ0DQo+ID4+IC0tLSBhL2RyaXZlcnMvbWVk
-aWEvcGxhdGZvcm0vbXRrLW1kcC9tdGtfbWRwX2NvbXAuYw0KPiA+PiArKysgYi9kcml2ZXJzL21l
-ZGlhL3BsYXRmb3JtL210ay1tZHAvbXRrX21kcF9jb21wLmMNCj4gPj4gQEAgLTE1MSwyOSArMTUx
-LDUwIEBAIHZvaWQgbXRrX21kcF9jb21wX2Nsb2NrX29mZihzdHJ1Y3QgbXRrX21kcF9jb21wICpj
-b21wKQ0KPiA+PiAgCQltdGtfc21pX2xhcmJfcHV0KGNvbXAtPmxhcmJfZGV2KTsNCj4gPj4gIH0N
-Cj4gPj4gIA0KPiA+PiAtc3RhdGljIGludCBtdGtfbWRwX2NvbXBfYmluZChzdHJ1Y3QgZGV2aWNl
-ICpkZXYsIHN0cnVjdCBkZXZpY2UgKm1hc3Rlciwgdm9pZCAqZGF0YSkNCj4gPj4gKy8qDQo+ID4+
-ICsgKiBUaGUgTURQIG1hc3RlciBkZXZpY2Ugbm9kZSBpcyBpZGVudGlmaWVkIGJ5IHRoZSBkZXZp
-Y2UgdHJlZSBhbGlhcw0KPiA+PiArICogIm1kcC1yZG1hMCIuDQo+ID4+ICsgKi8NCj4gPj4gK3N0
-YXRpYyBib29sIGlzX21kcF9tYXN0ZXIoc3RydWN0IGRldmljZSAqZGV2KQ0KPiA+PiArew0KPiA+
-PiArCXN0cnVjdCBkZXZpY2Vfbm9kZSAqYWxpYXNlcywgKm1kcF9yZG1hMF9ub2RlOw0KPiA+PiAr
-CWNvbnN0IGNoYXIgKm1kcF9yZG1hMF9wYXRoOw0KPiA+PiArDQo+ID4+ICsJaWYgKCFkZXYtPm9m
-X25vZGUpDQo+ID4+ICsJCXJldHVybiBmYWxzZTsNCj4gPj4gKw0KPiA+PiArCWFsaWFzZXMgPSBv
-Zl9maW5kX25vZGVfYnlfcGF0aCgiL2FsaWFzZXMiKTsNCj4gPj4gKwlpZiAoIWFsaWFzZXMpIHsN
-Cj4gPj4gKwkJZGV2X2VycihkZXYsICJubyBhbGlhc2VzIGZvdW5kIGZvciBtZHAtcmRtYTAiKTsN
-Cj4gPj4gKwkJcmV0dXJuIGZhbHNlOw0KPiA+PiArCX0NCj4gPj4gKw0KPiA+PiArCW1kcF9yZG1h
-MF9wYXRoID0gb2ZfZ2V0X3Byb3BlcnR5KGFsaWFzZXMsICJtZHAtcmRtYTAiLCBOVUxMKTsNCj4g
-Pj4gKwlpZiAoIW1kcF9yZG1hMF9wYXRoKSB7DQo+ID4+ICsJCWRldl9lcnIoZGV2LCAiZ2V0IG1k
-cC1yZG1hMCBwcm9wZXJ0eSBvZiAvYWxpYXNlcyBmYWlsZWQiKTsNCj4gPj4gKwkJcmV0dXJuIGZh
-bHNlOw0KPiA+PiArCX0NCj4gPj4gKw0KPiA+PiArCW1kcF9yZG1hMF9ub2RlID0gb2ZfZmluZF9u
-b2RlX2J5X3BhdGgobWRwX3JkbWEwX3BhdGgpOw0KPiA+PiArCWlmICghbWRwX3JkbWEwX25vZGUp
-IHsNCj4gPj4gKwkJZGV2X2VycihkZXYsICJwYXRoIHJlc29sdXRpb24gZmFpbGVkIGZvciAlcyIs
-IG1kcF9yZG1hMF9wYXRoKTsNCj4gPj4gKwkJcmV0dXJuIGZhbHNlOw0KPiA+PiArCX0NCj4gPj4g
-Kw0KPiA+PiArCXJldHVybiBkZXYtPm9mX25vZGUgPT0gbWRwX3JkbWEwX25vZGU7DQo+ID4gDQo+
-ID4gDQo+ID4gQWJvdXQgaG93IHRvIGRldGVybWluZSB0aGUgbWFzdGVyIG1kcCBkcml2ZXIsIHdl
-IGFsc28gY2FuDQo+ID4ganVkZ2UgdGhlIGNvbXBvbmVudCB0eXBlLiBUaGUgY29tcG9uZW50IHR5
-cGUgY2FuIGJlIGdvdHRlbiBieSBjYWxsaW5nDQo+ID4gb2ZfZGV2aWNlX2dldF9tYXRjaF9kYXRh
-KGRldikuIElmIHRoZSBjb21wb25lbnQgaXMgTVRLX01EUF9SRE1BLCBpdCBpcw0KPiA+IHRoZSBt
-YXN0ZXIgZHJpdmVyLiBObyBtYXR0ZXIgaXQgaXMgbWRwX3JkbWEwIG9yIG1kcF9yZG1hMS4NCj4g
-DQo+IA0KPiBJJ20gY29uZnVzZWQsIHlvdSBtZWFuIHRoYXQgdGhlIGNvbXBvbmVudCB0eXBlLCBh
-a2EgTVRLX01EUF9SRE1BIGlzIG9ubHkgc2V0IGZvcg0KPiBtdGtfbWRwX3JkbWEwPyBpc24ndCBt
-dGtfZG1wX3JkbWExIGFsc28gYSBNVEtfTURQX1JETUEgdHlwZT8gQmVjYXVzZSBsb29rcyB3ZWly
-ZA0KPiB0byBtZSB0aGF0IHR3byByZG1hIGhhdmUgZGlmZmVudCB0eXBlcy4NCj4gDQpIaSBFbnJp
-YywNCg0KSSBjYW4gdW5kZXJzdGFuZCB5b3VyIGRvdWJ0cy4gRm9yIG10ay1tZHAgZGlydmVyLCBp
-dCBpcyByZWFsbHkgZGlmZmljdWx0DQp0byB1bmRlcnN0YW5kIHRoZSByZWxhdGlvbnNoaXAgYW1v
-bmcgdGhlIGNvbXBvbmVudHMuIEJlY2F1c2UgdGhlIE1EUA0KaGFyZHdhcmUgcGF0aCBpcyBjb25m
-aWd1cmVkIGFuZCBjb25uZWN0ZWQgaW4gdGhlIFZQVSBmaXJtd2FyZS4NCkZvciBNVDgxNzMsIHRo
-ZSBjb21wb25lbnQgdHlwZSBvZiBtdGtfbWRwX3JkbWEwIGFuZCBtdGtfbWRwX3JkbWExIGFyZQ0K
-Ym90aCBNVEtfTURQX1JETUEuIEV2ZW4gdGhvdWdoIHRoZSBtdGstbWRwIGRyaXZlcidzIGNvbXBv
-bmVudCBsaXN0DQpjb250YWlucyBib3RoIG9mIHRoZW0sIG9ubHkgb25lIGNvcnJlc3BvbmRpbmcg
-aGFyZHdhcmUgY29tcG9uZW50IHRha2VzDQplZmZlY3QgZHVyaW5nIHRoZSBwcm9jZXNzaW5nIG9m
-IGEgZnJhbWUsIHRoZSBWUFUgZGVjaWRlcyBpdC4NCg0KUmVnYXJkcywNCkhvdWxvbmcNCj4gDQo+
-ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW1lZGlhdGVrLzIw
-MjEtQXVndXN0LzAyODUzMy5odG1sDQo+ID4gDQo+ID4gSU1PLCBqdWRnaW5nIGl0IGJ5IGNvbXBv
-bmVudCB0eXBlIGlzIG1vcmUgZmxleGlibGUgYmVjYXVzZSBpdCBkb2VzIG5vdA0KPiA+IGxpbWl0
-IHRvICdtZHBfcmRtYTAnLg0KPiA+IA0KPiANCj4gVXNpbmcgYW4gYWxpYXMgbGlrZSBFaXphbiBk
-aWQgaXMgYWxzbyBmbGV4aWJsZSwgeW91IG9ubHkgbmVlZCB0byBzZXQgbWRwLXJkbWEwDQo+IHRv
-IHBvaW50IHRoZSBtZHBfcmRtYTEgbm9kZS4NCj4gDQo+IFdoYXQgSSBhbSByZWFsbHkgaW50ZXJl
-c3RlZCB0byBrbm93IGlzIHRoZSBkaWZmZXJlbmNlcyBiZXR3ZWVuIHRoZSBwbGF0Zm9ybXMgdG8N
-Cj4gdW5kZXJzdGFuZCBpZiB0aGlzIGlzIHJlYWxseSBhIHBsYXRmb3JtIGhhcmR3YXJlIHByb3Bl
-cnR5IG9yIGEgc29mdHdhcmUNCj4gY29uZmlndXJhYmxlIHRoaW5nLCBzbyB3b3VsZCBoZWxwIGlm
-IHlvdSBjYW4gZ2l2ZSB1c2UgdGhlIGRpZmZlcmVudCB1c2UgY2FzZXMNCj4gZm9yIGRpZmZlcmVu
-dCBTb0NzLg0KPiANCj4gRm9yIE1UODE3MyB3aGljaCBpcyB0aGUgbWFzdGVyIGRldmljZT8gaXMg
-X2Fsd2F5c18gcmRtYTAgb3IgY2FuIGFsc28gYmUgcmRtYTE/DQo+IA0KPiBPciBtYXliZSB3aGF0
-IGlzIG5vdCBjbGVhciBoZXJlIGlzIHdoYXQgZXhhY3RseSBtZWFucyBiZSBhIG1hc3RlciBkZXZp
-Y2U/DQo+IA0KPiBXaGF0IGFib3V0IE1UODE4MyBhbmQgb3RoZXIgU29Dcz8NCj4gDQo+IFRoYW5r
-cywNCj4gICBFbnJpYw0KPiANCkhpIEVucmljLA0KDQpCZWZvcmUgYW5zd2VyIHlvdXIgcXVlc3Rp
-b25zLCBsZXQncyB1bmlmeSB0aGUgY29uY2VwdCBvZiB0aGUgbWFzdGVyDQpkZXZpY2UuSWYgYW4g
-TURQIGRldmljZS10cmVlIG5vZGUgY2FuIG5vdCBvbmx5IGdlbmVyYXRlIGEgL2Rldi92aWRlbw0K
-ZGV2aWNlIG5vZGUsIGJ1dCBhbHNvIGNhbiBnZW5lcmF0ZSBhIG10ayBjb21wb25lbnQgZGV2aWNl
-IG5vZGUsIHRoZW4NCnRoaXMgY29tcG9uZW50IGRldmljZSBpcyB0aGUgbWFzdGVyIGRldmljZS4N
-CkZyb20gdGhlIHBlcnNwZWN0aXZlIG9mIHRoZSBkZXZpY2UgdHJlZSBub2RlLCB0aGUgY29tcGF0
-aWJsZSBvZiBhIE1EUA0KZGV2aWNlIHRyZWUgbm9kZSBjb250YWlucyBib3RoICJtZWRpYXRlayxt
-dDgxNzMtbWRwLXJkbWEiIGFuZA0KIm1lZGlhdGVrLG10ODE3My1tZHAiLCB0aGVuIGl0cyBjb3Jy
-ZXNwb25kaW5nIG10ayBjb21wb25lbnQgZGV2aWNlIGlzDQp0aGUgbWFzdGVyIGRldmljZS4NClNp
-bmNlIHRoaXMgY29uY2VwdCBjb21lcyBmcm9tIEVpemFuJ3MgcGF0Y2hlcywgaWYgbXkgdW5kZXJz
-dGFuZGluZyBpcw0KZGlmZmVyZW50IGZyb20geW91cnMsIHBsZWFzZSBsZXQgbWUga25vdywgdGhh
-bmtzLg0KDQpJZiB0aGVyZSBpcyBvbmx5IG9uZSBtYXN0ZXIgZGV2aWNlLCBJIGZ1bGx5IGFncmVl
-IHdpdGggeW91LiBGb3IgTVQ4MTczLA0KYm90aCBtZHBfcmRtYTAgYW5kIG1kcF9yZG1hMSBjYW4g
-YmUgbWFzdGVyIGRldmljZSBhdCB0aGUgc2FtZSB0aW1lLg0KQnV0IG5vdyBvbmx5IG1kcF9yZG1h
-MCB0YWtlcyB0aGlzIHJvbGUsIHBlcmhhcHMgYmVjYXVzZSBvbmUgTURQIGhhcmR3YXJlDQpwYXRo
-IGNvdWxkIG1lZXQgdGhlIHByb2plY3QncyB0aGUgcmVxdWlyZW1lbnQgc2l4IHllYXJzIGFnby4N
-CkluIHNvbWUgcHJvamVjdCwgd2UgaGF2ZSB0d28gb3IgbW9yZSBNRFAgaGFyZHdhcmUgcGF0aHMs
-IHdlIGNhbg0KY29uZmlndXJlIGFsbCB0aGUgbWRwX3JkbWEgY29tcG9uZW50cyBhcyBtYXN0ZXIg
-ZGV2aWNlcywgYW5kIHRoZXJlIHdpbGwNCmJlIHNldmVyYWwgL2Rldi92aWRlbyBkZXZpY2Ugbm9k
-ZXMuIFRoZSB1c2VyIGNhbiBjb250cm9sIHRoZW0NCmNvbmN1cnJlbnRseS4NCg0KUmVnYXJkcywN
-CkhvdWxvbmcNCg0KPiANCj4gPj4gK30NCj4gPj4gKw0KPiA+PiArc3RhdGljIGludCBtdGtfbWRw
-X2NvbXBfYmluZChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZpY2UgKm1hc3RlciwNCj4g
-Pj4gKwkJCXZvaWQgKmRhdGEpDQo+ID4+ICB7DQo+ID4+ICAJc3RydWN0IG10a19tZHBfY29tcCAq
-Y29tcCA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiA+PiAgCXN0cnVjdCBtdGtfbWRwX2RldiAq
-bWRwID0gZGF0YTsNCj4gPj4gLQlzdHJ1Y3QgZGV2aWNlX25vZGUgKnZwdV9ub2RlOw0KPiA+PiAg
-DQo+ID4+ICAJbXRrX21kcF9yZWdpc3Rlcl9jb21wb25lbnQobWRwLCBjb21wKTsNCj4gPj4gIA0K
-PiA+PiAtCS8qDQo+ID4+IC0JICogSWYgdGhpcyBjb21wb25lbnQgaGFzIGEgIm1lZGlhdGVrLXZw
-dSIgcHJvcGVydHksIGl0IGlzIHJlc3BvbnNpYmxlIGZvcg0KPiA+PiAtCSAqIG5vdGlmeWluZyB0
-aGUgbWRwIG1hc3RlciBkcml2ZXIgYWJvdXQgaXQgc28gaXQgY2FuIGJlIGZ1cnRoZXIgaW5pdGlh
-bGl6ZWQNCj4gPj4gLQkgKiBsYXRlci4NCj4gPj4gLQkgKi8NCj4gPj4gLQl2cHVfbm9kZSA9IG9m
-X3BhcnNlX3BoYW5kbGUoZGV2LT5vZl9ub2RlLCAibWVkaWF0ZWssdnB1IiwgMCk7DQo+ID4+IC0J
-aWYgKHZwdV9ub2RlKSB7DQo+ID4+ICsJaWYgKGlzX21kcF9tYXN0ZXIoZGV2KSkgew0KPiA+PiAg
-CQlpbnQgcmV0Ow0KPiA+PiAgDQo+ID4+IC0JCW1kcC0+dnB1X2RldiA9IG9mX2ZpbmRfZGV2aWNl
-X2J5X25vZGUodnB1X25vZGUpOw0KPiA+PiAtCQlpZiAoV0FSTl9PTighbWRwLT52cHVfZGV2KSkg
-ew0KPiA+PiAtCQkJZGV2X2VycihkZXYsICJ2cHUgcGRldiBmYWlsZWRcbiIpOw0KPiA+PiAtCQkJ
-b2Zfbm9kZV9wdXQodnB1X25vZGUpOw0KPiA+PiAtCQl9DQo+ID4+IC0NCj4gPj4gIAkJcmV0ID0g
-djRsMl9kZXZpY2VfcmVnaXN0ZXIoZGV2LCAmbWRwLT52NGwyX2Rldik7DQo+ID4+ICAJCWlmIChy
-ZXQpIHsNCj4gPj4gIAkJCWRldl9lcnIoZGV2LCAiRmFpbGVkIHRvIHJlZ2lzdGVyIHY0bDIgZGV2
-aWNlXG4iKTsNCj4gPj4gQEAgLTE4Nyw5ICsyMDgsOCBAQCBzdGF0aWMgaW50IG10a19tZHBfY29t
-cF9iaW5kKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IGRldmljZSAqbWFzdGVyLCB2b2lkICpk
-YQ0KPiA+PiAgCQl9DQo+ID4+ICANCj4gPj4gIAkJLyoNCj4gPj4gLQkJICogcHJlc2VuY2Ugb2Yg
-dGhlICJtZWRpYXRlayx2cHUiIHByb3BlcnR5IGluIGEgZGV2aWNlIG5vZGUNCj4gPj4gLQkJICog
-aW5kaWNhdGVzIHRoYXQgaXQgaXMgdGhlIHByaW1hcnkgTURQIHJkbWEgZGV2aWNlIGFuZCBNRFAg
-RE1BDQo+ID4+IC0JCSAqIG9wcyBzaG91bGQgYmUgaGFuZGxlZCBieSBpdHMgRE1BIGNhbGxiYWNr
-cy4NCj4gPj4gKwkJICogTURQIERNQSBvcHMgd2lsbCBiZSBoYW5kbGVkIGJ5IHRoZSBETUEgY2Fs
-bGJhY2tzIGFzc29jaWF0ZWQgd2l0aCB0aGlzDQo+ID4+ICsJCSAqIGRldmljZTsNCj4gPj4gIAkJ
-ICovDQo+ID4+ICAJCW1kcC0+cmRtYV9kZXYgPSBkZXY7DQo+ID4+ICAJfQ0KPiA+PiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstbWRwL210a19tZHBfY29yZS5jIGIvZHJp
-dmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstbWRwL210a19tZHBfY29yZS5jDQo+ID4+IGluZGV4IDUw
-ZWFmY2M5OTkzZC4uNmE3NzU0NjMzOTljIDEwMDY0NA0KPiA+PiAtLS0gYS9kcml2ZXJzL21lZGlh
-L3BsYXRmb3JtL210ay1tZHAvbXRrX21kcF9jb3JlLmMNCj4gPj4gKysrIGIvZHJpdmVycy9tZWRp
-YS9wbGF0Zm9ybS9tdGstbWRwL210a19tZHBfY29yZS5jDQo+ID4+IEBAIC0xNTAsOCArMTUwLDkg
-QEAgc3RhdGljIHZvaWQgcmVsZWFzZV9vZihzdHJ1Y3QgZGV2aWNlICpkZXYsIHZvaWQgKmRhdGEp
-DQo+ID4+ICANCj4gPj4gIHN0YXRpYyBpbnQgbXRrX21kcF9tYXN0ZXJfYmluZChzdHJ1Y3QgZGV2
-aWNlICpkZXYpDQo+ID4+ICB7DQo+ID4+IC0JaW50IHN0YXR1czsNCj4gPj4gIAlzdHJ1Y3QgbXRr
-X21kcF9kZXYgKm1kcCA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiA+PiArCXN0cnVjdCBkZXZp
-Y2Vfbm9kZSAqdnB1X25vZGU7DQo+ID4+ICsJaW50IHN0YXR1czsNCj4gPj4gIA0KPiA+PiAgCXN0
-YXR1cyA9IGNvbXBvbmVudF9iaW5kX2FsbChkZXYsIG1kcCk7DQo+ID4+ICAJaWYgKHN0YXR1cykg
-ew0KPiA+PiBAQCAtMTU5LDE1ICsxNjAsMzAgQEAgc3RhdGljIGludCBtdGtfbWRwX21hc3Rlcl9i
-aW5kKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gPj4gIAkJZ290byBlcnJfY29tcG9uZW50X2JpbmRf
-YWxsOw0KPiA+PiAgCX0NCj4gPj4gIA0KPiA+PiAtCWlmIChtZHAtPnZwdV9kZXYpIHsNCj4gPj4g
-LQkJaW50IHJldCA9IHZwdV93ZHRfcmVnX2hhbmRsZXIobWRwLT52cHVfZGV2LCBtdGtfbWRwX3Jl
-c2V0X2hhbmRsZXIsIG1kcCwNCj4gPj4gLQkJCQkJICBWUFVfUlNUX01EUCk7DQo+ID4+IC0JCWlm
-IChyZXQpIHsNCj4gPj4gLQkJCWRldl9lcnIoZGV2LCAiRmFpbGVkIHRvIHJlZ2lzdGVyIHJlc2V0
-IGhhbmRsZXJcbiIpOw0KPiA+PiAtCQkJZ290byBlcnJfd2R0X3JlZzsNCj4gPj4gLQkJfQ0KPiA+
-PiAtCX0gZWxzZSB7DQo+ID4+IC0JCWRldl9lcnIoZGV2LCAibm8gdnB1X2RldiBmb3VuZFxuIik7
-DQo+ID4+ICsJaWYgKG1kcC0+cmRtYV9kZXYgPT0gTlVMTCkgew0KPiA+PiArCQlkZXZfZXJyKGRl
-diwgIlByaW1hcnkgTURQIGRldmljZSBub3QgZm91bmQiKTsNCj4gPj4gKwkJc3RhdHVzID0gLUVO
-T0RFVjsNCj4gPj4gKwkJZ290byBlcnJfY29tcG9uZW50X2JpbmRfYWxsOw0KPiA+PiArCX0NCj4g
-Pj4gKw0KPiA+PiArCXZwdV9ub2RlID0gb2ZfZmluZF9ub2RlX2J5X25hbWUoTlVMTCwgInZwdSIp
-Ow0KPiA+PiArCWlmICghdnB1X25vZGUpIHsNCj4gPj4gKwkJZGV2X2VycihkZXYsICJ1bmFibGUg
-dG8gZmluZCB2cHUgbm9kZSIpOw0KPiA+PiArCQlzdGF0dXMgPSAtRU5PREVWOw0KPiA+PiArCQln
-b3RvIGVycl93ZHRfcmVnOw0KPiA+PiArCX0NCj4gPj4gKw0KPiA+PiArCW1kcC0+dnB1X2RldiA9
-IG9mX2ZpbmRfZGV2aWNlX2J5X25vZGUodnB1X25vZGUpOw0KPiA+IA0KPiA+IFRoZSAndnB1X25v
-ZGUnIHNob3VsZCBiZSBwdXQgYnkgY2FsbGluZyAnb2Zfbm9kZV9wdXQodnB1X25vZGUpJyB3aGVu
-IGl0DQo+ID4gaXMgbm90IHVzZWQuDQo+ID4gDQo+ID4+ICsJaWYgKCFtZHAtPnZwdV9kZXYpIHsN
-Cj4gPj4gKwkJZGV2X2VycihkZXYsICJ1bmFibGUgdG8gZmluZCB2cHUgZGV2aWNlIik7DQo+ID4+
-ICsJCXN0YXR1cyA9IC1FTk9ERVY7DQo+ID4+ICsJCWdvdG8gZXJyX3dkdF9yZWc7DQo+ID4+ICsJ
-fQ0KPiA+PiArDQo+ID4+ICsJc3RhdHVzID0gdnB1X3dkdF9yZWdfaGFuZGxlcihtZHAtPnZwdV9k
-ZXYsIG10a19tZHBfcmVzZXRfaGFuZGxlciwgbWRwLCBWUFVfUlNUX01EUCk7DQo+ID4+ICsJaWYg
-KHN0YXR1cykgew0KPiA+PiArCQlkZXZfZXJyKGRldiwgIkZhaWxlZCB0byByZWdpc3RlciByZXNl
-dCBoYW5kbGVyXG4iKTsNCj4gPj4gKwkJZ290byBlcnJfd2R0X3JlZzsNCj4gPj4gIAl9DQo+ID4+
-ICANCj4gPj4gIAlzdGF0dXMgPSBtdGtfbWRwX3JlZ2lzdGVyX20ybV9kZXZpY2UobWRwKTsNCj4g
-PiANCg0K
+On Fri, Aug 20, 2021 at 10:19:21AM -0500, Brijesh Singh wrote:
+> From: Michael Roth <michael.roth@amd.com>
+> 
+> Future patches for SEV-SNP-validated CPUID will also require early
+> parsing of the EFI configuration. Move the related code into a set of
+> helpers that can be re-used for that purpose.
+> 
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/boot/compressed/Makefile |   1 +
+>  arch/x86/boot/compressed/acpi.c   | 113 +++++--------------
+>  arch/x86/boot/compressed/efi.c    | 178 ++++++++++++++++++++++++++++++
+>  arch/x86/boot/compressed/misc.h   |  43 ++++++++
+>  4 files changed, 251 insertions(+), 84 deletions(-)
+>  create mode 100644 arch/x86/boot/compressed/efi.c
 
+Ok, better, but this patch needs splitting. And I have a good idea how:
+in at least three patches:
+
+1. Add efi_get_system_table() and use it
+2. Add efi_get_conf_table() and use it
+3. Add efi_find_vendor_table() and use it
+
+This will facilitate review immensely.
+
+Also, here's a diff ontop of what to do also, style-wise.
+
+- change how you look for the preferred vendor table along with commenting what you do
+- shorten variable names so that you don't have so many line breaks.
+
+Thx.
+
+diff --git a/arch/x86/boot/compressed/acpi.c b/arch/x86/boot/compressed/acpi.c
+index 3a3f997d7210..c22b21e94a95 100644
+--- a/arch/x86/boot/compressed/acpi.c
++++ b/arch/x86/boot/compressed/acpi.c
+@@ -20,27 +20,29 @@
+  */
+ struct mem_vector immovable_mem[MAX_NUMNODES*2];
+ 
+-/*
+- * Search EFI system tables for RSDP.  If both ACPI_20_TABLE_GUID and
+- * ACPI_TABLE_GUID are found, take the former, which has more features.
+- */
+ static acpi_physical_address
+-__efi_get_rsdp_addr(unsigned long config_table_pa,
+-		    unsigned int config_table_len, bool efi_64)
++__efi_get_rsdp_addr(unsigned long cfg_tbl_pa, unsigned int cfg_tbl_len, bool efi_64)
+ {
+ 	acpi_physical_address rsdp_addr = 0;
++
+ #ifdef CONFIG_EFI
+ 	int ret;
+ 
+-	ret = efi_find_vendor_table(config_table_pa, config_table_len,
+-				    ACPI_20_TABLE_GUID, efi_64,
+-				    (unsigned long *)&rsdp_addr);
+-	if (ret == -ENOENT)
+-		ret = efi_find_vendor_table(config_table_pa, config_table_len,
+-					    ACPI_TABLE_GUID, efi_64,
+-					    (unsigned long *)&rsdp_addr);
++	/*
++	 * Search EFI system tables for RSDP. Preferred is ACPI_20_TABLE_GUID to
++	 * ACPI_TABLE_GUID because it has more features.
++	 */
++	ret = efi_find_vendor_table(cfg_tbl_pa, cfg_tbl_len, ACPI_20_TABLE_GUID,
++				    efi_64, (unsigned long *)&rsdp_addr);
++	if (!ret)
++		return rsdp_addr;
++
++	/* No ACPI_20_TABLE_GUID found, fallback to ACPI_TABLE_GUID. */
++	ret = efi_find_vendor_table(cfg_tbl_pa, cfg_tbl_len, ACPI_TABLE_GUID,
++				    efi_64, (unsigned long *)&rsdp_addr);
+ 	if (ret)
+ 		debug_putstr("Error getting RSDP address.\n");
++
+ #endif
+ 	return rsdp_addr;
+ }
+@@ -100,18 +102,16 @@ static acpi_physical_address kexec_get_rsdp_addr(void) { return 0; }
+ static acpi_physical_address efi_get_rsdp_addr(void)
+ {
+ #ifdef CONFIG_EFI
+-	unsigned long config_table_pa = 0;
+-	unsigned int config_table_len;
++	unsigned long cfg_tbl_pa = 0;
++	unsigned int cfg_tbl_len;
+ 	bool efi_64;
+ 	int ret;
+ 
+-	ret = efi_get_conf_table(boot_params, &config_table_pa,
+-				 &config_table_len, &efi_64);
+-	if (ret || !config_table_pa)
++	ret = efi_get_conf_table(boot_params, &cfg_tbl_pa, &cfg_tbl_len, &efi_64);
++	if (ret || !cfg_tbl_pa)
+ 		error("EFI config table not found.");
+ 
+-	return __efi_get_rsdp_addr(config_table_pa, config_table_len,
+-				   efi_64);
++	return __efi_get_rsdp_addr(cfg_tbl_pa, cfg_tbl_len, efi_64);
+ #else
+ 	return 0;
+ #endif
+diff --git a/arch/x86/boot/compressed/efi.c b/arch/x86/boot/compressed/efi.c
+index 16ff5cb9a1fb..7ed31b943c04 100644
+--- a/arch/x86/boot/compressed/efi.c
++++ b/arch/x86/boot/compressed/efi.c
+@@ -12,14 +12,14 @@
+ #include <asm/efi.h>
+ 
+ /* Get vendor table address/guid from EFI config table at the given index */
+-static int get_vendor_table(void *conf_table, unsigned int idx,
++static int get_vendor_table(void *cfg_tbl, unsigned int idx,
+ 			    unsigned long *vendor_table_pa,
+ 			    efi_guid_t *vendor_table_guid,
+ 			    bool efi_64)
+ {
+ 	if (efi_64) {
+ 		efi_config_table_64_t *table_entry =
+-			(efi_config_table_64_t *)conf_table + idx;
++			(efi_config_table_64_t *)cfg_tbl + idx;
+ 
+ 		if (!IS_ENABLED(CONFIG_X86_64) &&
+ 		    table_entry->table >> 32) {
+@@ -32,7 +32,7 @@ static int get_vendor_table(void *conf_table, unsigned int idx,
+ 
+ 	} else {
+ 		efi_config_table_32_t *table_entry =
+-			(efi_config_table_32_t *)conf_table + idx;
++			(efi_config_table_32_t *)cfg_tbl + idx;
+ 
+ 		*vendor_table_pa = table_entry->table;
+ 		*vendor_table_guid = table_entry->guid;
+@@ -45,27 +45,25 @@ static int get_vendor_table(void *conf_table, unsigned int idx,
+  * Given EFI config table, search it for the physical address of the vendor
+  * table associated with GUID.
+  *
+- * @conf_table:        pointer to EFI configuration table
+- * @conf_table_len:    number of entries in EFI configuration table
++ * @cfg_tbl:        pointer to EFI configuration table
++ * @cfg_tbl_len:    number of entries in EFI configuration table
+  * @guid:              GUID of vendor table
+  * @efi_64:            true if using 64-bit EFI
+  * @vendor_table_pa:   location to store physical address of vendor table
+  *
+  * Returns 0 on success. On error, return params are left unchanged.
+  */
+-int
+-efi_find_vendor_table(unsigned long conf_table_pa, unsigned int conf_table_len,
+-		      efi_guid_t guid, bool efi_64,
+-		      unsigned long *vendor_table_pa)
++int efi_find_vendor_table(unsigned long cfg_tbl_pa, unsigned int cfg_tbl_len,
++			  efi_guid_t guid, bool efi_64, unsigned long *vendor_table_pa)
+ {
+ 	unsigned int i;
+ 
+-	for (i = 0; i < conf_table_len; i++) {
++	for (i = 0; i < cfg_tbl_len; i++) {
+ 		unsigned long vendor_table_pa_tmp;
+ 		efi_guid_t vendor_table_guid;
+ 		int ret;
+ 
+-		if (get_vendor_table((void *)conf_table_pa, i,
++		if (get_vendor_table((void *)cfg_tbl_pa, i,
+ 				     &vendor_table_pa_tmp,
+ 				     &vendor_table_guid, efi_64))
+ 			return -EINVAL;
+@@ -88,9 +86,8 @@ efi_find_vendor_table(unsigned long conf_table_pa, unsigned int conf_table_len,
+  *
+  * Returns 0 on success. On error, return params are left unchanged.
+  */
+-int
+-efi_get_system_table(struct boot_params *boot_params,
+-		     unsigned long *sys_table_pa, bool *is_efi_64)
++int efi_get_system_table(struct boot_params *boot_params, unsigned long *sys_table_pa,
++			 bool *is_efi_64)
+ {
+ 	unsigned long sys_table;
+ 	struct efi_info *ei;
+@@ -137,22 +134,19 @@ efi_get_system_table(struct boot_params *boot_params,
+  * address EFI configuration table.
+  *
+  * @boot_params:        pointer to boot_params
+- * @conf_table_pa:      location to store physical address of config table
+- * @conf_table_len:     location to store number of config table entries
++ * @cfg_tbl_pa:      location to store physical address of config table
++ * @cfg_tbl_len:     location to store number of config table entries
+  * @is_efi_64:          location to store whether using 64-bit EFI or not
+  *
+  * Returns 0 on success. On error, return params are left unchanged.
+  */
+-int
+-efi_get_conf_table(struct boot_params *boot_params,
+-		   unsigned long *conf_table_pa,
+-		   unsigned int *conf_table_len,
+-		   bool *is_efi_64)
++int efi_get_conf_table(struct boot_params *boot_params, unsigned long *cfg_tbl_pa,
++		       unsigned int *cfg_tbl_len, bool *is_efi_64)
+ {
+ 	unsigned long sys_table_pa = 0;
+ 	int ret;
+ 
+-	if (!conf_table_pa || !conf_table_len || !is_efi_64)
++	if (!cfg_tbl_pa || !cfg_tbl_len || !is_efi_64)
+ 		return -EINVAL;
+ 
+ 	ret = efi_get_system_table(boot_params, &sys_table_pa, is_efi_64);
+@@ -164,14 +158,14 @@ efi_get_conf_table(struct boot_params *boot_params,
+ 		efi_system_table_64_t *stbl =
+ 			(efi_system_table_64_t *)sys_table_pa;
+ 
+-		*conf_table_pa	= stbl->tables;
+-		*conf_table_len	= stbl->nr_tables;
++		*cfg_tbl_pa	= stbl->tables;
++		*cfg_tbl_len	= stbl->nr_tables;
+ 	} else {
+ 		efi_system_table_32_t *stbl =
+ 			(efi_system_table_32_t *)sys_table_pa;
+ 
+-		*conf_table_pa	= stbl->tables;
+-		*conf_table_len	= stbl->nr_tables;
++		*cfg_tbl_pa	= stbl->tables;
++		*cfg_tbl_len	= stbl->nr_tables;
+ 	}
+ 
+ 	return 0;
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
