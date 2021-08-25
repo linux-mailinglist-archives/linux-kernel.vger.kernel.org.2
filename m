@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0693F7262
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D613F7267
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239755AbhHYJ4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:56:49 -0400
-Received: from mga07.intel.com ([134.134.136.100]:17563 "EHLO mga07.intel.com"
+        id S239628AbhHYJ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:57:28 -0400
+Received: from mga09.intel.com ([134.134.136.24]:19636 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234372AbhHYJ4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:56:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="281207662"
+        id S234372AbhHYJ50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:57:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="217495633"
 X-IronPort-AV: E=Sophos;i="5.84,350,1620716400"; 
-   d="scan'208";a="281207662"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 02:56:02 -0700
+   d="scan'208";a="217495633"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 02:56:41 -0700
 X-IronPort-AV: E=Sophos;i="5.84,350,1620716400"; 
-   d="scan'208";a="507952381"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 02:55:59 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mIpdS-00DWAR-0Q; Wed, 25 Aug 2021 12:55:54 +0300
-Date:   Wed, 25 Aug 2021 12:55:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Dan Scally <djrscally@gmail.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v1 2/3] lib/sort: Introduce rotate() to circular shift an
- array of elements
-Message-ID: <YSYTqU6jVA4bPgSp@smile.fi.intel.com>
-References: <20210824133351.88179-1-andriy.shevchenko@linux.intel.com>
- <20210824133351.88179-2-andriy.shevchenko@linux.intel.com>
- <4078b7a3-2ec2-ba87-d23c-b8daed7386fe@rasmusvillemoes.dk>
- <20210825080832.GN3@paasikivi.fi.intel.com>
- <8bc8d977-5204-6f5b-8a1c-f2338c141993@rasmusvillemoes.dk>
+   d="scan'208";a="426393046"
+Received: from pjthomps-mobl1.ger.corp.intel.com (HELO [10.249.254.76]) ([10.249.254.76])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 02:56:37 -0700
+Subject: Re: [PATCH 1/3] drm/i915/selftests: Do not use import_obj
+ uninitialized
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Jason Ekstrand <jason@jlekstrand.net>,
+        Matthew Auld <matthew.auld@intel.com>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        llvm@lists.linux.dev, Dan Carpenter <dan.carpenter@oracle.com>
+References: <20210824225427.2065517-1-nathan@kernel.org>
+ <20210824225427.2065517-2-nathan@kernel.org>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+Message-ID: <ef38255f-fe4a-3ba5-e828-bac4d9957cdb@linux.intel.com>
+Date:   Wed, 25 Aug 2021 11:56:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8bc8d977-5204-6f5b-8a1c-f2338c141993@rasmusvillemoes.dk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210824225427.2065517-2-nathan@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 11:29:12AM +0200, Rasmus Villemoes wrote:
-> On 25/08/2021 10.08, Sakari Ailus wrote:
 
-...
+On 8/25/21 12:54 AM, Nathan Chancellor wrote:
+> Clang warns a couple of times:
+>
+> drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c:63:6: warning:
+> variable 'import_obj' is used uninitialized whenever 'if' condition is
+> true [-Wsometimes-uninitialized]
+>          if (import != &obj->base) {
+>              ^~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c:80:22: note:
+> uninitialized use occurs here
+>          i915_gem_object_put(import_obj);
+>                              ^~~~~~~~~~
+> drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c:63:2: note: remove
+> the 'if' if its condition is always false
+>          if (import != &obj->base) {
+>          ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c:38:46: note:
+> initialize the variable 'import_obj' to silence this warning
+>          struct drm_i915_gem_object *obj, *import_obj;
+>                                                      ^
+>                                                       = NULL
+>
+> Shuffle the import_obj initialization above these if statements so that
+> it is not used uninitialized.
+>
+> Fixes: d7b2cb380b3a ("drm/i915/gem: Correct the locking and pin pattern for dma-buf (v8)")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-> Well, Andy hasn't actually shown that it would be useful anywhere else.
-> I think I'd like to see another user.
+Patch looks good to me.
 
-I have found another potential user, but in their case (it's networking)
-the simple for-loop with swap() in use seems efficient enough (the element size
-is 8 bytes there).
-
-I haven't check for really custom implementations of entire rotate (where no
-swap() macro is in use), it might be another user lurking around.
-
-> Just doing "move this helper to
-> lib/ because we can reuse choose-a-proper-swap-func and thus implement
-> this perhaps a tiny bit faster" without considering whether it's even
-> performance-critical in the sole user is not a good idea IMO.
-
-I agree with you.
-
-> Especially since it can affect code generation of the much more
-> important (at least, has many more users) sort() function - the
-> do_swap() function grows another user, so could make the compiler end up
-> choosing not to inline it anymore.
-
-This can be fixed by always inlining?
-
-> There's another slightly simpler way to implement rotate(), which might
-> end up having more users (though I can't find any currently): Add a
-> reverse() helper, then rotate() can be done as reverse(a, 0, n);
-> reverse(a, 0, k); reverse(a, k, n-k);. If my math is right, the current
-> suggested rotate() ends up doing n-gcd(n,k) swaps, while the
-> implementation in terms of a reverse() would do n-1 if either n or k is
-> odd, otherwise n, calls to swap().
-
-Interesting idea. And this, btw, may have more users per se.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
 
 
