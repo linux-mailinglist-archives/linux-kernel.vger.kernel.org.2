@@ -2,68 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457E83F7169
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E343F716E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239465AbhHYJFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:05:14 -0400
-Received: from verein.lst.de ([213.95.11.211]:55365 "EHLO verein.lst.de"
+        id S239517AbhHYJGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:06:48 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:57176 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232302AbhHYJFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:05:12 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 0FB9D67357; Wed, 25 Aug 2021 11:04:25 +0200 (CEST)
-Date:   Wed, 25 Aug 2021 11:04:24 +0200
-From:   "hch@lst.de" <hch@lst.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     sasaki tatsuya <tatsuya6.sasaki@kioxia.com>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] nvme: update keep alive interval when kato is
- modified
-Message-ID: <20210825090424.GA468@lst.de>
-References: <526a1a756d6c4643b15b1b305cc32817@kioxia.com> <05033836-83b9-c060-0348-774a02b60d01@grimberg.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <05033836-83b9-c060-0348-774a02b60d01@grimberg.me>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S239389AbhHYJGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:06:46 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B02271A07D8;
+        Wed, 25 Aug 2021 11:05:56 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A0E881A073E;
+        Wed, 25 Aug 2021 11:05:56 +0200 (CEST)
+Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 45A6B203BA;
+        Wed, 25 Aug 2021 11:05:56 +0200 (CEST)
+From:   Diana Craciun <diana.craciun@oss.nxp.com>
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Li Yang <leoyang.li@nxp.com>, linux-arm-kernel@lists.infradead.org,
+        Diana Craciun <diana.craciun@oss.nxp.com>
+Subject: [PATCH 1/2] bus/fsl-mc: Add generic implementation for open/reset/close commands
+Date:   Wed, 25 Aug 2021 12:05:37 +0300
+Message-Id: <20210825090538.4860-1-diana.craciun@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 01:41:44PM -0700, Sagi Grimberg wrote:
->> +{
->> +	/*
->> +	 * Keep alive commands interval on the host should be updated
->> +	 * when KATO is modified by Set Features commands.
->> +	 */
->> +	if (cmd->opcode == nvme_admin_set_features &&
->> +	    (cmd->cdw10 & 0xFF) == NVME_FEAT_KATO) {
->> +		/* ms -> s */
->
-> no need for this comment.
->
->> +		unsigned int new_kato = DIV_ROUND_UP(cmd->cdw11, 1000);
->> +
->> +		nvme_update_keep_alive(ctrl, new_kato);
->
-> I think you can now inline nvme_update_keep_alive here, no need to keep
-> it in a function.
+The open/reset/close commands format is similar for all objects.
+Currently there are multiple implementations for these commands
+scattered through various drivers. The code is cavsi-identical.
+Create a generic implementation for the open/reset/close commands.
+One of the consumer will be the VFIO driver which needs to
+be able to reset a device.
 
-Actually, іf thinking ahead I think one helper per fixup would be really
-useful to keep the code organized.  But the DIV_ROUND_UP should move into
-nvme_update_keep_alive to keep it self-contained.
-We can then restructure the caller a bit to make it easier to expand:
+Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+---
+ drivers/bus/fsl-mc/Makefile         |   3 +-
+ drivers/bus/fsl-mc/fsl-mc-private.h |  39 +++++++++--
+ drivers/bus/fsl-mc/obj-api.c        | 104 ++++++++++++++++++++++++++++
+ include/linux/fsl/mc.h              |  14 ++++
+ 4 files changed, 155 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/bus/fsl-mc/obj-api.c
 
-	switch (cmd->opcode) {
-	case nvme_admin_set_features:
-		switch (cmd->cdw10 & 0xff) {
-		case NVME_FEAT_KATO:
-			nvme_update_keep_alive(ctrl, cmd);
-			break;
-		}
-	}
+diff --git a/drivers/bus/fsl-mc/Makefile b/drivers/bus/fsl-mc/Makefile
+index 4ae292a30e53..892946245527 100644
+--- a/drivers/bus/fsl-mc/Makefile
++++ b/drivers/bus/fsl-mc/Makefile
+@@ -15,7 +15,8 @@ mc-bus-driver-objs := fsl-mc-bus.o \
+ 		      dprc-driver.o \
+ 		      fsl-mc-allocator.o \
+ 		      fsl-mc-msi.o \
+-		      dpmcp.o
++		      dpmcp.o \
++		      obj-api.o
+ 
+ # MC userspace support
+ obj-$(CONFIG_FSL_MC_UAPI_SUPPORT) += fsl-mc-uapi.o
+diff --git a/drivers/bus/fsl-mc/fsl-mc-private.h b/drivers/bus/fsl-mc/fsl-mc-private.h
+index 1958fa065360..6055ef3e9e02 100644
+--- a/drivers/bus/fsl-mc/fsl-mc-private.h
++++ b/drivers/bus/fsl-mc/fsl-mc-private.h
+@@ -48,7 +48,6 @@ struct dpmng_rsp_get_version {
+ 
+ /* DPMCP command IDs */
+ #define DPMCP_CMDID_CLOSE		DPMCP_CMD(0x800)
+-#define DPMCP_CMDID_OPEN		DPMCP_CMD(0x80b)
+ #define DPMCP_CMDID_RESET		DPMCP_CMD(0x005)
+ 
+ struct dpmcp_cmd_open {
+@@ -91,7 +90,6 @@ int dpmcp_reset(struct fsl_mc_io *mc_io,
+ 
+ /* DPRC command IDs */
+ #define DPRC_CMDID_CLOSE                        DPRC_CMD(0x800)
+-#define DPRC_CMDID_OPEN                         DPRC_CMD(0x805)
+ #define DPRC_CMDID_GET_API_VERSION              DPRC_CMD(0xa05)
+ 
+ #define DPRC_CMDID_GET_ATTR                     DPRC_CMD(0x004)
+@@ -453,7 +451,6 @@ int dprc_get_connection(struct fsl_mc_io *mc_io,
+ 
+ /* Command IDs */
+ #define DPBP_CMDID_CLOSE		DPBP_CMD(0x800)
+-#define DPBP_CMDID_OPEN			DPBP_CMD(0x804)
+ 
+ #define DPBP_CMDID_ENABLE		DPBP_CMD(0x002)
+ #define DPBP_CMDID_DISABLE		DPBP_CMD(0x003)
+@@ -492,7 +489,6 @@ struct dpbp_rsp_get_attributes {
+ 
+ /* Command IDs */
+ #define DPCON_CMDID_CLOSE			DPCON_CMD(0x800)
+-#define DPCON_CMDID_OPEN			DPCON_CMD(0x808)
+ 
+ #define DPCON_CMDID_ENABLE			DPCON_CMD(0x002)
+ #define DPCON_CMDID_DISABLE			DPCON_CMD(0x003)
+@@ -524,6 +520,41 @@ struct dpcon_cmd_set_notification {
+ 	__le64 user_ctx;
+ };
+ 
++/*
++ * Generic FSL MC API
++ */
++
++/* generic command versioning */
++#define OBJ_CMD_BASE_VERSION		1
++#define OBJ_CMD_ID_OFFSET		4
++
++#define OBJ_CMD(id)	(((id) << OBJ_CMD_ID_OFFSET) | OBJ_CMD_BASE_VERSION)
++
++/* open command codes */
++#define DPRTC_CMDID_OPEN		OBJ_CMD(0x810)
++#define DPNI_CMDID_OPEN		OBJ_CMD(0x801)
++#define DPSW_CMDID_OPEN		OBJ_CMD(0x802)
++#define DPIO_CMDID_OPEN		OBJ_CMD(0x803)
++#define DPBP_CMDID_OPEN		OBJ_CMD(0x804)
++#define DPRC_CMDID_OPEN		OBJ_CMD(0x805)
++#define DPDMUX_CMDID_OPEN		OBJ_CMD(0x806)
++#define DPCI_CMDID_OPEN		OBJ_CMD(0x807)
++#define DPCON_CMDID_OPEN		OBJ_CMD(0x808)
++#define DPSECI_CMDID_OPEN		OBJ_CMD(0x809)
++#define DPAIOP_CMDID_OPEN		OBJ_CMD(0x80a)
++#define DPMCP_CMDID_OPEN		OBJ_CMD(0x80b)
++#define DPMAC_CMDID_OPEN		OBJ_CMD(0x80c)
++#define DPDCEI_CMDID_OPEN		OBJ_CMD(0x80d)
++#define DPDMAI_CMDID_OPEN		OBJ_CMD(0x80e)
++#define DPDBG_CMDID_OPEN		OBJ_CMD(0x80f)
++
++/* Generic object command IDs */
++#define OBJ_CMDID_CLOSE		OBJ_CMD(0x800)
++#define OBJ_CMDID_RESET		OBJ_CMD(0x005)
++
++struct obj_cmd_open {
++	__le32 obj_id;
++};
+ 
+ /**
+  * struct fsl_mc_resource_pool - Pool of MC resources of a given
+diff --git a/drivers/bus/fsl-mc/obj-api.c b/drivers/bus/fsl-mc/obj-api.c
+new file mode 100644
+index 000000000000..8eee28c7f86a
+--- /dev/null
++++ b/drivers/bus/fsl-mc/obj-api.c
+@@ -0,0 +1,104 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
++/*
++ * Copyright 2021 NXP
++ *
++ */
++#include <linux/kernel.h>
++#include <linux/fsl/mc.h>
++
++#include "fsl-mc-private.h"
++
++static int fsl_mc_get_open_cmd_id(const char *type)
++{
++	static const struct {
++		int cmd_id;
++		const char *type;
++	} dev_ids[] = {
++		{ DPRTC_CMDID_OPEN, "dprtc" },
++		{ DPRC_CMDID_OPEN, "dprc" },
++		{ DPNI_CMDID_OPEN, "dpni" },
++		{ DPIO_CMDID_OPEN, "dpio" },
++		{ DPSW_CMDID_OPEN, "dpsw" },
++		{ DPBP_CMDID_OPEN, "dpbp" },
++		{ DPCON_CMDID_OPEN, "dpcon" },
++		{ DPMCP_CMDID_OPEN, "dpmcp" },
++		{ DPMAC_CMDID_OPEN, "dpmac" },
++		{ DPSECI_CMDID_OPEN, "dpseci" },
++		{ DPDMUX_CMDID_OPEN, "dpdmux" },
++		{ DPDCEI_CMDID_OPEN, "dpdcei" },
++		{ DPAIOP_CMDID_OPEN, "dpaiop" },
++		{ DPCI_CMDID_OPEN, "dpci" },
++		{ DPDMAI_CMDID_OPEN, "dpdmai" },
++		{ DPDBG_CMDID_OPEN, "dpdbg" },
++		{ 0, NULL }
++	};
++	int i;
++
++	for (i = 0; dev_ids[i].type; i++)
++		if (!strcmp(dev_ids[i].type, type))
++			return dev_ids[i].cmd_id;
++
++	return -1;
++}
++
++int fsl_mc_obj_open(struct fsl_mc_io *mc_io,
++		    u32 cmd_flags,
++		    int obj_id,
++		    char *obj_type,
++		    u16 *token)
++{
++	struct fsl_mc_command cmd = { 0 };
++	struct obj_cmd_open *cmd_params;
++	int err = 0;
++	int cmd_id = fsl_mc_get_open_cmd_id(obj_type);
++
++	if (cmd_id == -1)
++		return -ENODEV;
++
++	/* prepare command */
++	cmd.header = mc_encode_cmd_header(cmd_id, cmd_flags, 0);
++	cmd_params = (struct obj_cmd_open *)cmd.params;
++	cmd_params->obj_id = cpu_to_le32(obj_id);
++
++	/* send command to mc*/
++	err = mc_send_command(mc_io, &cmd);
++	if (err)
++		return err;
++
++	/* retrieve response parameters */
++	*token = mc_cmd_hdr_read_token(&cmd);
++
++	return err;
++}
++EXPORT_SYMBOL_GPL(fsl_mc_obj_open);
++
++int fsl_mc_obj_close(struct fsl_mc_io *mc_io,
++		     u32 cmd_flags,
++		     u16 token)
++{
++	struct fsl_mc_command cmd = { 0 };
++
++	/* prepare command */
++	cmd.header = mc_encode_cmd_header(OBJ_CMDID_CLOSE, cmd_flags,
++					  token);
++
++	/* send command to mc*/
++	return mc_send_command(mc_io, &cmd);
++}
++EXPORT_SYMBOL_GPL(fsl_mc_obj_close);
++
++int fsl_mc_obj_reset(struct fsl_mc_io *mc_io,
++		     u32 cmd_flags,
++		     u16 token)
++{
++	struct fsl_mc_command cmd = { 0 };
++
++	/* prepare command */
++	cmd.header = mc_encode_cmd_header(OBJ_CMDID_RESET, cmd_flags,
++					  token);
++
++	/* send command to mc*/
++	return mc_send_command(mc_io, &cmd);
++}
++EXPORT_SYMBOL_GPL(fsl_mc_obj_reset);
++
+diff --git a/include/linux/fsl/mc.h b/include/linux/fsl/mc.h
+index 63b56aba925a..fafea154242d 100644
+--- a/include/linux/fsl/mc.h
++++ b/include/linux/fsl/mc.h
+@@ -619,6 +619,20 @@ int dpcon_reset(struct fsl_mc_io *mc_io,
+ 		u32 cmd_flags,
+ 		u16 token);
+ 
++int fsl_mc_obj_open(struct fsl_mc_io *mc_io,
++		    u32 cmd_flags,
++		    int obj_id,
++		    char *obj_type,
++		    u16 *token);
++
++int fsl_mc_obj_close(struct fsl_mc_io *mc_io,
++		     u32 cmd_flags,
++		     u16 token);
++
++int fsl_mc_obj_reset(struct fsl_mc_io *mc_io,
++		     u32 cmd_flags,
++		     u16 token);
++
+ /**
+  * struct dpcon_attr - Structure representing DPCON attributes
+  * @id: DPCON object ID
+-- 
+2.17.1
+
