@@ -2,253 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875023F7D6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 22:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B676C3F7D72
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234250AbhHYU5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 16:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
+        id S232665AbhHYVCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 17:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbhHYU5Y (ORCPT
+        with ESMTP id S230455AbhHYVCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 16:57:24 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C536AC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 13:56:37 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso686081otp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 13:56:37 -0700 (PDT)
+        Wed, 25 Aug 2021 17:02:42 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34944C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:01:56 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id x9-20020a056830278900b0051b8be1192fso667289otu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:01:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ezxYJuB5+DPwLQMhcOC4dJ+od4nl/giL4m1EpPE7Y2M=;
-        b=rHQbo1MnEf8p6biTTcw6ebRelV9inX4oWWUMM8/t01OqgbpiCZny3ZdI6CE1FBiE3K
-         sTWqCbR7gh3WGzyEEHbQKqeO9fxgs1j2cFsj4HesEj0TUAO+x98xPn0cNB0mR/iGHfy4
-         8C/lIo0ljkdiToLnICz2KE2YGPLxrSmq2G7KEtCMbBOOu9aV0NORXYDoeeRMtRn8WRUP
-         oqVzQuWSj+3Q3MAs+kgllJgFt7zv691TR8HuZ17WcLnoIr0mY1Uo2EGU4L/IqshhyxtS
-         N3jKEXDfnvJqduVAzFawbLmUTtvLP0gt7TwFBqw2ib43OE3/WWJN8sGKxIo0TCvB/PfF
-         0ZZQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l7QZIuqoxh5rDUWPchzZzHS9/CL3/b/d6Vx0THL5INM=;
+        b=SpIyuAOzDflRfjfOemc0rtSYDKS23Jtekv6Sai2edqlVzmWe5N0eQkAihtHNQoScIk
+         OBQkGxr/kPgOl1RBmoeAPjl+5SXbAukXUtg9DF+7VVfUeUT7lIAE59v9CMsVb0Dxl/gO
+         eJUkElni0S2SN9k41zGfs7I3ywL0RB41leB56iUKja5YTZbFvbv0f0BslgCXYTbap0Pc
+         WqXQvKqdHW6C6vztVkfTwISRLQb2H9idgA+FazL1sBKqil8Tvnq6GD57NVSZMtPxLIDC
+         nu2ve9t+xuz7Zh1mRadiRnz+lM8zuZjMyw2Fi4uZIpdCrQ6S/F4Kp9vuTDu2yIAO21oG
+         JN7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ezxYJuB5+DPwLQMhcOC4dJ+od4nl/giL4m1EpPE7Y2M=;
-        b=bIKqgaek7ZWtBwRc5yaBGdk9iRR6xcuqDaXjEhjiHxGi/uUU3HDMKLv//MElQ5MZRn
-         cBKnh1Q38tc7hgpQW8OELltEbuutJLvqhhvIGVK7InL12AREeQNk9O4Jm3MS6guEQaMI
-         ENfmUjn7qhwdQpbQJvHfIrYn9znAWGgRek1cBiFhVroMjAqcyjGORusFSq5ZEEtslWkO
-         VIbFRBB+6adBJhkOIUapWzLQ2ZKKdWfHQDOp3WldVrCb7nDRPrJWTWak5aKGNwebNQwY
-         GkajGeCbRerxY438bXfTY/UXN6sLL/n4Q+nCQxVzyLxlJcfH8zJy1U7Qj047KCdsL5Kr
-         rJzg==
-X-Gm-Message-State: AOAM533lPRwZ4K2BiZA3KaTWIjqMF+B/aLnRjR2jn4+lY6tz7DrV7QHn
-        2x0M49Z+/QzvcnYAikvfhCl3Vw==
-X-Google-Smtp-Source: ABdhPJwfMEkSmISvoitevz6s3lkfvIwiZ22UHmmWIow+l4jG2ft/Yhhn7RD281SJu+FbYrURwujnDw==
-X-Received: by 2002:a9d:4104:: with SMTP id o4mr321206ote.139.1629924997078;
-        Wed, 25 Aug 2021 13:56:37 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b3sm220878oie.1.2021.08.25.13.56.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 13:56:36 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 13:57:52 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Kuogee Hsieh <khsieh@codeaurora.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kishon@ti.com, p.zabel@pengutronix.de
-Subject: Re: [PATCH] phy: qcom-qmp: add support for voltage and pre emphesis
- swing
-Message-ID: <YSau0HrLMZOAu2Nx@ripper>
-References: <1629847775-16767-1-git-send-email-khsieh@codeaurora.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l7QZIuqoxh5rDUWPchzZzHS9/CL3/b/d6Vx0THL5INM=;
+        b=eibpASFVP+PzthFAfZ3SfDJm37C0VMeH/jMxTY7qk7AkNxbOmEKV9b77jaj/PyAQiG
+         /JLXfEdlgjDDP3XH3J70ITR2afA8jxKapEQPvDpEwNjnVT1ITFIB5j2eST5qSF/zvJy1
+         eQmm+K//JKaP19ec18qz2l0+LPmC8TIp4hD1/NnllvpfesWmalFmUSXyBWagybFAiRsG
+         lqBSm4+TOUsRsgT6E/MvHE6j6iFe4ddjCVDz1250HF/Vci0Fm4xMB4ak+Zb/LxK/BCyQ
+         q5zMwY3ce0Opmz+9DoVJLUiCgyjnLP0xawAi7mBOd911E75U4kMvQvrBtlRtclEMixsN
+         SQOA==
+X-Gm-Message-State: AOAM532NR7cBOgMGqi323rpE6Tpzl9UUTUj21agwmLJmXVX+jPMy32Sb
+        DiucFbBgg2eynlMeppWJbs2dPA==
+X-Google-Smtp-Source: ABdhPJwYgJPesOMMXkD0jzC/1j5+TakMPBMvL+gEl5KTCOIsPQFtxYV9cIQwEKTBzSaDai7hmgPtQA==
+X-Received: by 2002:a05:6830:2007:: with SMTP id e7mr353198otp.80.1629925315439;
+        Wed, 25 Aug 2021 14:01:55 -0700 (PDT)
+Received: from [192.168.17.50] ([189.219.75.147])
+        by smtp.gmail.com with ESMTPSA id t1sm171620ooa.42.2021.08.25.14.01.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 14:01:54 -0700 (PDT)
+Subject: Re: [PATCH 4.19 00/84] 4.19.205-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        akpm@linux-foundation.org, shuah@kernel.org, linux@roeck-us.net
+References: <20210824170250.710392-1-sashal@kernel.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <f2aa7056-3949-306c-8a00-b11590339e9f@linaro.org>
+Date:   Wed, 25 Aug 2021 16:01:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1629847775-16767-1-git-send-email-khsieh@codeaurora.org>
+In-Reply-To: <20210824170250.710392-1-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24 Aug 16:29 PDT 2021, Kuogee Hsieh wrote:
+Hello!
 
-> Add voltage and pre emphesis swing tables so that voltage and
-> pre emphsis swing level can be configured base on link rate.
+On 8/24/21 12:01 PM, Sasha Levin wrote:
+> This is the start of the stable review cycle for the 4.19.205 release.
+> There are 84 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-
-I think it would be nice if $subject, or at least the commit message
-mentioned that this relates to the DisplayPort part of the QMP driver.
-
-Also the commit message states that this allows someone/something to
-configure the properties based on link rate. But it doesn't state why
-this is needed.
-
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp.c | 95 ++++++++++++++++++++++++++++++++-----
->  1 file changed, 82 insertions(+), 13 deletions(-)
+> Responses should be made by Thu 26 Aug 2021 05:02:47 PM UTC.
+> Anything received after that time might be too late.
 > 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> index 31036aa..52bab6e 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> @@ -1916,7 +1916,7 @@ static const struct qmp_phy_init_tbl qmp_v4_dp_tx_tbl[] = {
->  	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_OFFSET_RX, 0x11),
->  	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_BAND, 0x4),
->  	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_POL_INV, 0x0a),
-> -	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_DRV_LVL, 0x2a),
-> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_DRV_LVL, 0x22),
-
-Why is this initial value changed in order to make the swing and
-emphasis configurable?
-
->  	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_EMP_POST1_LVL, 0x20),
->  };
->  
-> @@ -3727,6 +3727,81 @@ static int qcom_qmp_v3_dp_phy_calibrate(struct qmp_phy *qphy)
->  
->  	return 0;
->  }
-> +/*
-> + * 0x20 deducted from tables
-> + *
-> + * swing_value |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
-> + * pre_emphasis_value |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
-
-How about rewriting this as something like
-  "The values in these tables are given without MUX_EN (0x20) bit set"
-
-?
-
-> +*/
-> +static const u8 qmp_dp_v4_pre_emphasis_hbr3_hbr2[4][4] = {
-> +	/* p0    p1    p2    p3 */
-> +	{ 0x00, 0x0c, 0x15, 0x1b },	/* s0 */
-> +	{ 0x02, 0x0e, 0x16, 0xff },	/* s1 */
-> +	{ 0x02, 0x11, 0xff, 0xff },	/* s2 */
-> +	{ 0x04, 0xff, 0xff, 0xff }	/* s3 */
-> +};
-> +
-> +static const u8 qmp_dp_v4_voltage_swing_hbr3_hbr2[4][4] = {
-> +	/* p0    p1    p2    p3 */
-> +	{ 0x02, 0x12, 0x16, 0x1a },	/* s0 */
-> +	{ 0x09, 0x19, 0x1f, 0xff },	/* s1 */
-> +	{ 0x10, 0x1f, 0xff, 0xff },	/* s2 */
-> +	{ 0x1f, 0xff, 0xff, 0xff }	/* s3 */
-> +};
-> +
-> +static const u8 qmp_dp_v4_pre_emphasis_hbr_rbr[4][4] = {
-> +	/* p0    p1    p2    p3 */
-> +	{ 0x00, 0x0e, 0x15, 0x1b },	/* s0 */
-> +	{ 0x00, 0x0e, 0x15, 0xff },	/* s1 */
-> +	{ 0x00, 0x0e, 0xff, 0xff },	/* s2 */
-> +	{ 0x04, 0xff, 0xff, 0xff }	/* s3 */
-> +};
-> +
-> +static const u8 qmp_dp_v4_voltage_swing_hbr_rbr[4][4] = {
-> +	/* p0    p1    p2    p3 */
-> +	{ 0x08, 0x0f, 0x16, 0x1f },	/* s0 */
-> +	{ 0x11, 0x1e, 0x1f, 0xff },	/* s1 */
-> +	{ 0x16, 0x1f, 0xff, 0xff },	/* s2 */
-> +	{ 0x1f, 0xff, 0xff, 0xff }	/* s3 */
-> +};
-> +
-> +static int qcom_qmp_v4_phy_configure_dp_swing(struct qmp_phy *qphy,
-> +		unsigned int drv_lvl_reg, unsigned int emp_post_reg)
-> +{
-> +	const struct phy_configure_opts_dp *dp_opts = &qphy->dp_opts;
-> +	unsigned int v_level = 0, p_level = 0;
-> +	u8 voltage_swing_cfg, pre_emphasis_cfg;
-
-The "_cfg" suffix on these variables doesn't really add any value.
-Frankly, calling them "voltage" (or "swing") and "emphasis" seems just
-as expressive, but easier to read.
-
-> +	int i;
-> +
-> +	for (i = 0; i < dp_opts->lanes; i++) {
-> +		v_level = max(v_level, dp_opts->voltage[i]);
-> +		p_level = max(p_level, dp_opts->pre[i]);
-> +	}
-> +
-> +
-> +	if (dp_opts->link_rate <= 2700) {
-> +		voltage_swing_cfg = qmp_dp_v4_voltage_swing_hbr_rbr[v_level][p_level];
-> +		pre_emphasis_cfg = qmp_dp_v4_pre_emphasis_hbr_rbr[v_level][p_level];
-> +	} else {
-> +		voltage_swing_cfg = qmp_dp_v4_voltage_swing_hbr3_hbr2[v_level][p_level];
-> +		pre_emphasis_cfg = qmp_dp_v4_pre_emphasis_hbr3_hbr2[v_level][p_level];
-> +	}
-> +
-> +	/* TODO: Move check to config check */
-> +	if (voltage_swing_cfg == 0xFF && pre_emphasis_cfg == 0xFF)
-
-Why is this && and not || ? 
-
-> +		return -EINVAL;
-> +
-> +	/* Enable MUX to use Cursor values from these registers */
-> +	voltage_swing_cfg |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
-> +	pre_emphasis_cfg |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
-> +
-> +	writel(voltage_swing_cfg, qphy->tx + drv_lvl_reg);
-> +	writel(pre_emphasis_cfg, qphy->tx + emp_post_reg);
-> +	writel(voltage_swing_cfg, qphy->tx2 + drv_lvl_reg);
-> +	writel(pre_emphasis_cfg, qphy->tx2 + emp_post_reg);
-> +
-
-This function is called once, so why is drv_lvl_reg and emp_post_reg
-variables passed to the function, rather than just using the defines
-directly?
-
-Regards,
-Bjorn
-
-> +	return 0;
-> +}
->  
->  static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
->  {
-> @@ -3757,14 +3832,7 @@ static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
->  
->  static void qcom_qmp_v4_phy_configure_dp_tx(struct qmp_phy *qphy)
->  {
-> -	/* Program default values before writing proper values */
-> -	writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
-> -	writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
-> -
-> -	writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
-> -	writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
-> -
-> -	qcom_qmp_phy_configure_dp_swing(qphy,
-> +	qcom_qmp_v4_phy_configure_dp_swing(qphy,
->  			QSERDES_V4_TX_TX_DRV_LVL,
->  			QSERDES_V4_TX_TX_EMP_POST1_LVL);
->  }
-> @@ -3885,6 +3953,9 @@ static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
->  	writel(drvr1_en, qphy->tx2 + QSERDES_V4_TX_HIGHZ_DRVR_EN);
->  	writel(bias1_en, qphy->tx2 + QSERDES_V4_TX_TRANSCEIVER_BIAS_EN);
->  
-> +	writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
-> +	writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
-> +
->  	writel(0x18, qphy->pcs + QSERDES_DP_PHY_CFG);
->  	udelay(2000);
->  	writel(0x19, qphy->pcs + QSERDES_DP_PHY_CFG);
-> @@ -3896,11 +3967,9 @@ static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
->  			10000))
->  		return -ETIMEDOUT;
->  
-> -	writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
-> -	writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
->  
-> -	writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
-> -	writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
-> +	writel(0x22, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
-> +	writel(0x22, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
->  
->  	writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
->  	writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.19.y&id2=v4.19.204
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
 > 
+> Thanks,
+> Sasha
+
+Results from Linaro’s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+## Build
+* kernel: 4.19.205-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-4.19.y
+* git commit: c1eea862e3bb2aec599f5b1b2aaaa1ee48e709b8
+* git describe: v4.19.204-84-gc1eea862e3bb
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19.204-84-gc1eea862e3bb
+
+## No regressions (compared to v4.19.204)
+
+## No fixes (compared to v4.19.204)
+
+## Test result summary
+total: 69147, pass: 56533, fail: 531, skip: 10703, xfail: 1380
+
+## Build Summary
+* arm: 98 total, 98 passed, 0 failed
+* arm64: 30 total, 30 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 15 total, 15 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 40 total, 40 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 17 total, 17 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
