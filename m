@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D609B3F7F25
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641A63F7F26
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233907AbhHYXmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 19:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
+        id S233812AbhHYXqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 19:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233730AbhHYXmM (ORCPT
+        with ESMTP id S231535AbhHYXqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 19:42:12 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618B1C0617A8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:41:26 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id h133so1783551oib.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:41:26 -0700 (PDT)
+        Wed, 25 Aug 2021 19:46:37 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D47C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:45:51 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id u14so1934446ejf.13
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:45:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zmkhJZgxUoBYEWfmUUPtlawWDiOOQTnvHmBTREcB0I8=;
-        b=JyWNsF0Fao+n3iA7RF4tPiWMJ8n2MZ2mYJoFDYpVaqi9ikZqme6UoCEL5AL6XWV8+b
-         7j87fGb8hvJLvdo6yIJZGnmE8E4AXI+nFHBd1vgw/ziftZGciRFPiNm6JyxoKk4XqR8R
-         WZf76jy/wYt9SI4BubN6PAu11atHjFJc6O5BLQ/wS52aA2uWAtwaI3YInYvWOgACsamN
-         lerEgJOmm6aVh2+Wsj1TQGiWtR6jEXRCBgn32lvkpTeYUci5pjr1cWJmIX6WHVJjzKoz
-         j9cQiPlS9DuiiKiFzshN54SQEfYOJxDMmAKpOJLwvJXhgE/NrZVmiItvzv6iUdhqFKc8
-         RcTg==
+        bh=kv1+3PF8NoBjdGENhso7cF1mXXZBYI7ik/JgLEIWEFY=;
+        b=I9g8+mQ5rKWvAzdrQlNKi/je8uoX4tqgS0TbgFbhvZ4T97rLTo2hFzqVn3SmxREX4Y
+         S++l3DYcSCuyaf1cK83t/nuMCHI6S85HPv5MQToG2zNIol9k/oKTwkndE6wNUDGnHVct
+         2Sj+gXedYg4s1atCrUZYrJLkB1mwBNiv9MhylJkZifxFP5F7MhZ1+efByjvYIkyWrpQU
+         1D8AP76CpkjRAj7Gc5J3umyH8BwCMIyIwGUUZFWfYW6DqC+HSxkprQzO4ewaRunBh+Xa
+         BwCdN0mhaMu76d7F3MlKoHE6q20CndzLGeGYGU2siHrn4oeDAoYBKQ8NQ1Zh/hCPHifm
+         odIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zmkhJZgxUoBYEWfmUUPtlawWDiOOQTnvHmBTREcB0I8=;
-        b=LCAN8l0n3DHN0btoIPuT5cmUlwPjj6oYkvz9wAEf58PmtEYRpskHzMuta3BrTE7vaN
-         tAJxPyb7AmLp/C73vwtEXXiFVUSEt6JifjDmlND/p7m+VrqoARJOl7286J7Y1TK1EJ2x
-         rtKqFtXUKHAdVu05ygBsQt5Z2l0E9uFCGdG96WULbEOXIYHIzJYqMMWoPTSkB+KKPQso
-         KQtKXhjMHgl+OQvNMl7YOPhQDARVEsnsmjLxH6UQk6J8x45ALqCfN9otO/ELUNziSlSk
-         KbMMPD5EeDTFYf1/I4lBIOC9KVbBvWx6y7XZPTF/QTowTkvbHAvDkctaRpG/zX5LGJuW
-         oSBw==
-X-Gm-Message-State: AOAM531lLVh1gX5u4v2fc3bfOJ51iPRac2VZYztK4XjMHookoB/fxu62
-        3qbUePBWR74L2jROW7SvwCq/mw==
-X-Google-Smtp-Source: ABdhPJz6tjCEJEeOJPotO0Zqa9gAx16HRWTqIQ4PQRuPnenQfro7aG6soUq54MIbZLfLl+BS50n8vA==
-X-Received: by 2002:a05:6808:95:: with SMTP id s21mr418519oic.80.1629934885805;
-        Wed, 25 Aug 2021 16:41:25 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g10sm267136oof.37.2021.08.25.16.41.24
+        bh=kv1+3PF8NoBjdGENhso7cF1mXXZBYI7ik/JgLEIWEFY=;
+        b=h1/9TAl6lL+ESiE8hc8TZ4PqhmAFFPc744xzJcDoNPS9h4IMlXON0uHaZbuFV2b+Sn
+         ELIa5dDp4ME3TLr93JGkHVJysVq/YvA0irt0FILIjcBDubXLeslXOLzWWrN6JQ3xm+TV
+         8GWoxJPCEwXfspJvjoB+dXFoeRIIBT7AhDgTpQSYnu0xZ2okEnpZdHdNhOddgV5o4Mh0
+         orpiYRp4yrdrYG9IgMnP+0x6ntov1lMMHy6gH5+fL8aQVY68n/JBOh5p2PxIEkUEY9LI
+         5k4KYRG+CE4SdXEZM99AA39AOitH87v2lXD/liZjcqlug5zS3zDnojofCKHMmaLGGYpf
+         RAeg==
+X-Gm-Message-State: AOAM533X1WbHqOV9Lh2oeGa4VPsL50h8xF070kSv5G5iehkRwJH7VMc+
+        ebBMoMSxE/nV7nvcj8RdLSw=
+X-Google-Smtp-Source: ABdhPJxADK5L+azPcbkWSGJuU3YC9SPUcS4q3XWCss7G/UGZ3RFuy4PW/J6QsImPpB8WY2dU1GnJvw==
+X-Received: by 2002:a17:906:9401:: with SMTP id q1mr1183144ejx.313.1629935150013;
+        Wed, 25 Aug 2021 16:45:50 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id x9sm649417edj.95.2021.08.25.16.45.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 16:41:25 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] drm/msm/dp: Add sc8180x DP controllers
-Date:   Wed, 25 Aug 2021 16:42:33 -0700
-Message-Id: <20210825234233.1721068-6-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210825234233.1721068-1-bjorn.andersson@linaro.org>
-References: <20210825234233.1721068-1-bjorn.andersson@linaro.org>
+        Wed, 25 Aug 2021 16:45:49 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
+Date:   Thu, 26 Aug 2021 01:45:47 +0200
+Message-ID: <3591772.nrefL38gfN@localhost.localdomain>
+In-Reply-To: <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
+References: <cover.1629789580.git.paskripkin@gmail.com> <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sc8180x has 2 DP and 1 eDP controllers, add support for these to the
-DP driver.
+On Tuesday, August 24, 2021 9:27:27 AM CEST Pavel Skripkin wrote:
+> _rtw_read8 function can fail in case of usb transfer failure. But
+> previous function prototype wasn't designed to return an error to
+> caller. It can cause a lot uninit value bugs all across the driver code,
+> since rtw_read8() returns local stack variable to caller.
+>=20
+> Fix it by changing the prototype of this function. Now it returns an
+> int: 0 on success, negative error value on failure and callers should pass
+> the pointer to storage location for register value.
+>=20
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+Dear Pavel,
 
-Changes since v1:
-- Squashed DP and eDP data, as there's no reason to keep them separate today
+I have to inform you that building patch v3 3/6 with gcc (version 11.1.1 20=
+210721=20
+[revision 076930b9690ac3564638636f6b13bbb6bc608aea] (SUSE Linux)), gives
+the following warning:
 
- drivers/gpu/drm/msm/dp/dp_display.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+drivers/staging/r8188eu/os_dep/ioctl_linux.c:2258:13: warning: variable =E2=
+=80=98error=E2=80=99 set but not used [-Wunused-but-set-variable]
+ 2258 |         int error;
+      |             ^~~~~
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 4a6132c18e57..c1307230dc47 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -128,8 +128,15 @@ static const struct msm_dp_config sc7180_dp_cfg = {
- 	.num_dp = 1,
- };
- 
-+static const struct msm_dp_config sc8180x_dp_cfg = {
-+	.io_start = { 0xae90000, 0xae98000, 0xae9a000 },
-+	.num_dp = 3,
-+};
-+
- static const struct of_device_id dp_dt_match[] = {
- 	{ .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
-+	{ .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
-+	{ .compatible = "qcom,sc8180x-edp", .data = &sc8180x_dp_cfg },
- 	{}
- };
- 
--- 
-2.29.2
+I'm sorry, but I guess that for some reason previously I had only built v2 =
+of your patch=20
+which had no warnings at all.=20
+
+Unfortunately, introducing warnings is not allowed.
+
+While we are at this, I can also confirm that GCC 11.1.1 _does_ _not_ emit =
+the warning=20
+that has been reported by the kernel test robot.=20
+
+Regards,
+
+=46abio
+
+=20
+
 
