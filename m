@@ -2,83 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B603F794C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735443F792C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241049AbhHYPnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:43:04 -0400
-Received: from codesynthesis.com ([188.40.148.39]:44846 "EHLO
-        codesynthesis.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240878AbhHYPnC (ORCPT
+        id S239899AbhHYPi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 11:38:27 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:52353 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233573AbhHYPi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:43:02 -0400
-X-Greylist: delayed 453 seconds by postgrey-1.27 at vger.kernel.org; Wed, 25 Aug 2021 11:43:01 EDT
-Received: from brak.codesynthesis.com (197-255-152-207.static.adept.co.za [197.255.152.207])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by codesynthesis.com (Postfix) with ESMTPSA id EC3275F7CB;
-        Wed, 25 Aug 2021 15:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codesynthesis.com;
-        s=mail1; t=1629905681;
-        bh=njRimGOIAbqbKx/5ZrZSGnm8dBTrS6TRY3ucp7C/bzU=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:From;
-        b=M4Zeq9iy/BsSsC3ucqhrc8i/ZaAxdzH10P5jgmpgL4PwLblF/Fp947GMfSBXeNsjq
-         NuVIW50/nTWLqphqH0bmluRAxc0xwe2C4oPm8c3f82SB7NkwrgSfclPFXG73pD0L0h
-         BXOpQO6Icl3wl7OePxAFtZ7q+2CMRU9b3Qt4+Lm1L2wJkxTOQ3DpJExmWuUMQyAheR
-         kyHK+EDh37gLQ1jZZ8I0aj6iXvXQ9trqsiJeiZDTSWqktv5++p/YTyknMZMmxFNd7P
-         pNCo5LQJUmP3rmiNyTGDZjJtNKJ5AnGpM3Qc/HQWkVB6YyRtxYHeF5BjZsSZXaAbiu
-         PCHHvOofYHbwQ==
-Received: by brak.codesynthesis.com (Postfix, from userid 1000)
-        id 1A3B11A800C4; Wed, 25 Aug 2021 17:34:37 +0200 (SAST)
-Date:   Wed, 25 Aug 2021 17:34:37 +0200
-From:   Boris Kolpackov <boris@codesynthesis.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] kconfig: forbid symbols that end with '_MODULE'
-Message-ID: <boris.20210825172545@codesynthesis.com>
-References: <20210825041637.365171-1-masahiroy@kernel.org>
+        Wed, 25 Aug 2021 11:38:26 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CD8E9581083;
+        Wed, 25 Aug 2021 11:37:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 25 Aug 2021 11:37:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=/0eVR1LO8zbGReZXGH8OHCw0mxS
+        kJRrqtSARXT+ndjE=; b=jOJoLOZJ7qqIkWp6K7FpTOChGd2qZmIRXLmSWjlJqRO
+        dQblvhua/6eE+Jt9fE8sbongC2crCLUSrfuLXEB24ESruSTwCM6CkhnUwcqxFNbY
+        uLP9YHVAyfzCcWG+EIQhcp4XXa+lSkJJKk4rjvtDFC9tW1sGxP547FTA3wqVH3oZ
+        1G2tZSQ9oJPKob+ToTi4396mjeDSANBauZTG3jeP5W/cn+S9jH8E1UOCFz8dxq7w
+        TJNjnyrayo3vrTs2Bvik7r/XDcTHOEQSCPb0GLhJlqE/X2fiuBeTRIO/dnbGMW1P
+        jLvoagU4A2J7qAWmzRahj4zGv1aCzrMIijvELcGYBPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=/0eVR1
+        LO8zbGReZXGH8OHCw0mxSkJRrqtSARXT+ndjE=; b=ChzAkc6XRxFFWDxmLe9OTf
+        nhPLQSPOH9FW3yTzhJFXc3LYrqPB6yuDnV+al0sLOpcSX92N9q2oGnlw1AqpeKHn
+        arPkznBwpy9V2HgIYM1ZZFRFcpukVoEXEv4bHZbFglsX4UquxVwhEfuZWBPjIvF/
+        90eCztKUJjttdPPh7slJPAr3JT+L3543JmGeCrezchXTnQsg4B07Nd/45Sw+SHo4
+        QCIfzLIWlRg99+seytJOe1aEpBtF+krEw0WAK8OdqVsAOG/sfLTu+7odouUQeoVl
+        pUOHlb2+WsK15GyK0BwWS9ad6dmV+IE8arI3ZmpVyXbX8jwOPjG3ncQEfIBxjv8g
+        ==
+X-ME-Sender: <xms:wGMmYaOx6PU9g5zpPTMk0xavlo2KZrCYc7MjBG-E5dxsZenG3J4LMg>
+    <xme:wGMmYY8w5ieXwOZSGWLwYLWqgEQykpIc1HJWdb5BlG_7wtsRlz2zYQHeJUpMs6zpT
+    dzIoeNoIqfgOx-TX0Y>
+X-ME-Received: <xmr:wGMmYRR_14ki0BgOD3QDXfE-sTab2EUT9bmzCk_R66UtJpPeiPeVCnH2fmsj4zyXpVd6CAhtkBiFzl_Q9IqDBnsOV4fp8AOip9wQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddtledgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:wGMmYat_QBC7cfDUTgFkenPs_zYq0rJu85JLMSP_htH1Xjgah0MHSg>
+    <xmx:wGMmYSfCERYHwBrYVDj_5JPoCbF_WOJgINH0pXCIfNofHeBo6WKN8w>
+    <xmx:wGMmYe1Q2ahKsgSOwaiB-6YhJC6UqRTz1SGN3NJ3SgfJEWOcFVL69w>
+    <xmx:w2MmYe14yVuP9zsqrKPxmCVDC-XVE0jny2BzZCLuShtq3cHkrCbaiA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Aug 2021 11:37:36 -0400 (EDT)
+Date:   Wed, 25 Aug 2021 17:37:34 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc:     Icenowy Zheng <icenowy@sipeed.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Samuel Holland <samuel@sholland.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/17] clk: sunxi=ng: add support for R329 R-CCU
+Message-ID: <20210825153734.3cwlufietc63ma3m@gilmour>
+References: <20210802062212.73220-1-icenowy@sipeed.com>
+ <5432230.1UTMcGJKg4@jernej-laptop>
+ <20210825145027.ixc7wnh3x5w6wzny@gilmour>
+ <3221818.pD4rYpbbZ1@jernej-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ujvj4sh6srxe5rru"
 Content-Disposition: inline
-In-Reply-To: <20210825041637.365171-1-masahiroy@kernel.org>
-Organization: Code Synthesis
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <3221818.pD4rYpbbZ1@jernej-laptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro Yamada <masahiroy@kernel.org> writes:
 
-> Kconfig (syncconfig) generates include/generated/autoconf.h to make
-> CONFIG options available to the pre-processor.
-> 
-> The macros are suffixed with '_MODULE' for symbols with the value 'm'.
-> 
-> Here is a conflict; CONFIG_FOO=m results in '#define CONFIG_FOO_MODULE 1',
-> but CONFIG_FOO_MODULE=y also results in the same define.
-> 
-> fixdep always assumes CONFIG_FOO_MODULE comes from CONFIG_FOO=m, so the
-> dependency is not properly tracked for symbols that end with '_MODULE'.
+--ujvj4sh6srxe5rru
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It seem to me the problem is in autoconf.h/fixdep, not in the Kconfig
-language.
+On Wed, Aug 25, 2021 at 05:03:30PM +0200, Jernej =C5=A0krabec wrote:
+> Dne sreda, 25. avgust 2021 ob 16:50:27 CEST je Maxime Ripard napisal(a):
+> > Hi,
+> >=20
+> > On Fri, Aug 20, 2021 at 06:34:38AM +0200, Jernej =C5=A0krabec wrote:
+> > > > > +static void __init sun50i_r329_r_ccu_setup(struct device_node *n=
+ode)
+> > > > > +{
+> > > > > +	void __iomem *reg;
+> > > > > +	u32 val;
+> > > > > +	int i;
+> > > > > +
+> > > > > +	reg =3D of_io_request_and_map(node, 0, of_node_full_name(node));
+> > > > > +	if (IS_ERR(reg)) {
+> > > > > +		pr_err("%pOF: Could not map clock registers\n", node);
+> > > > > +		return;
+> > > > > +	}
+> > > > > +
+> > > > > +	/* Enable the lock bits and the output enable bits on all PLLs =
+*/
+> > > > > +	for (i =3D 0; i < ARRAY_SIZE(pll_regs); i++) {
+> > > > > +		val =3D readl(reg + pll_regs[i]);
+> > > > > +		val |=3D BIT(29) | BIT(27);
+> > > > > +		writel(val, reg + pll_regs[i]);
+> > > > > +	}
+> > > > > +
+> > > > > +	/*
+> > > > > +	 * Force the I/O dividers of PLL-AUDIO1 to reset default value
+> > > > > +	 *
+> > > > > +	 * See the comment before pll-audio1 definition for the reason.
+> > > > > +	 */
+> > > > > +
+> > > > > +	val =3D readl(reg + SUN50I_R329_PLL_AUDIO1_REG);
+> > > > > +	val &=3D ~BIT(1);
+> > > > > +	val |=3D BIT(0);
+> > > > > +	writel(val, reg + SUN50I_R329_PLL_AUDIO1_REG);
+> > > > > +
+> > > > > +	i =3D sunxi_ccu_probe(node, reg, &sun50i_r329_r_ccu_desc);
+> > > > > +	if (i)
+> > > > > +		pr_err("%pOF: probing clocks fails: %d\n", node, i);
+> > > > > +}
+> > > > > +
+> > > > > +CLK_OF_DECLARE(sun50i_r329_r_ccu, "allwinner,sun50i-r329-r-ccu",
+> > > > > +	       sun50i_r329_r_ccu_setup);
+> > > >=20
+> > > > Please make this a platform driver. There is no particular reason w=
+hy it
+> > > > needs to be an early OF clock provider.
+> > >=20
+> > > Why? It's good to have it as early clock provider. It has no dependen=
+cies
+> > > and other drivers that depends on it, like IR, can be deferred, if th=
+is
+> > > is loaded later.
+> >=20
+> > No, Samuel is right, we should make them regular drivers as much as we
+> > can.
+> >=20
+> > The reason we had CLK_OF_DECLARE in the first place is that timers
+> > usually have a parent clock, and you need the timers before the device
+> > model is set up.
+> >=20
+> > Fortunately for us, since the A20, the architected timers don't require
+> > a parent clock from us, and we can thus boot up fine.
+>=20
+> There are other timers. A lot of SoCs, newer than A20 (like H6), have Hig=
+h=20
+> Speed Timer, which requires parent clock to be enabled. We just choose no=
+t to=20
+> add node for it to DT, even if it's there and driver already exists.
 
+Yeah, I know. The thing is, we just need one timer in order to boot to
+the point where the DM is there. We can totally have a timer driver
+probing just like any other driver, through the DM, later on.
 
-> This commit makes Kconfig error out if it finds a symbol suffixed with
-> '_MODULE'.
+Maxime
 
-I know you don't care, but I will voice my objection, for the record:
-Kconfig is used by projects other than the Linux kernel and some of
-them do not use the autoconf.h functionality. For such projects this
-restriction seems arbitrary and potentially backwards-incompatible.
+--ujvj4sh6srxe5rru
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYSZjvgAKCRDj7w1vZxhR
+xX+TAP0WGHG2s4yHamp+fjkYZIyN3blRmTbmA8bbbYAZDDpWPAD8D3b0gM0/5VYF
+c22yVcU2bytiqTiat5LMPSwOhQzTCQo=
+=zJhK
+-----END PGP SIGNATURE-----
+
+--ujvj4sh6srxe5rru--
