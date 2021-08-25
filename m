@@ -2,105 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE023F7C3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E509E3F7C40
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238242AbhHYScJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 14:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236971AbhHYSbx (ORCPT
+        id S238052AbhHYSeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 14:34:16 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:56878 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237633AbhHYScI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 14:31:53 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F0EC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:31:06 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id c4so93670plh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E6dOXUoSPTypGPQDCucOQV34a6rWJR5EWTqmODKV08s=;
-        b=YiOVAxh8heSMZTuQdsY3Rn90r7ckvGRPSgw6gusedwKl6hrqXtX+qL+HGrRI83QgZs
-         m3pFCruNZauUuMVhH9M7YBc4vS7vGwyUtquoBBPcvoFTOF56RwP1TntNfwtSRIAZJIpT
-         NU7ofXdsneBIS8e7YjQ6MdkdiWmzTxtzM7Mls=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E6dOXUoSPTypGPQDCucOQV34a6rWJR5EWTqmODKV08s=;
-        b=kLTR5pbqs+fysKlz33A/TlLmEViFzM6J5II1anSWZEkDwEW+gCV4IxfvbDl+DCasMp
-         UrEuR24JKQtBPAnVY1B35vDKmYaxHQPAQNf2mrAUJ+SAnouGZ/tED4CFJDtU9zwNuWnP
-         M6qT2+8FHTph7WSvnDHG7qDjKddKSgw/9wi2Sfqh5UrycyWDGsDHm2ohbP5UHDWYiMCf
-         hdGrAhG9IHe+V0GK7ScJAQnmDqx59pdeLfu+PlslucE+9Tb7OXvLsYxpugzUz8lF4vls
-         a5pqgJXXOule+NGZIxA+xXcBz8bd2bhyGOiiXPYWyoAbrdr9y4eSdAHcXbtUv76xDXJM
-         7tWA==
-X-Gm-Message-State: AOAM531PJspOl5xrvGpudL1hlLW8u5Ep+P/wFg3Z6cHJLSBNvCqEhYs5
-        1ZW3xnj1McuAe0QvSVLsEpSKkQ==
-X-Google-Smtp-Source: ABdhPJwuW+8E9IwXrJ6Bs6gnlyFZ9HmMjLjxedAJoqQTnZPubi7HPwA1Bb216qD2OnMWatoJkBD3jQ==
-X-Received: by 2002:a17:90b:3547:: with SMTP id lt7mr11866220pjb.23.1629916266354;
-        Wed, 25 Aug 2021 11:31:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j9sm700035pgl.1.2021.08.25.11.31.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 11:31:05 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Ping-Ke Shih <pkshih@realtek.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Joe Perches <joe@perches.com>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] rtlwifi: rtl8192de: Restore channel index initialization
-Date:   Wed, 25 Aug 2021 11:31:03 -0700
-Message-Id: <20210825183103.1142909-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Wed, 25 Aug 2021 14:32:08 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id bd8eaabcade34f46; Wed, 25 Aug 2021 20:31:12 +0200
+Received: from kreacher.localnet (unknown [213.134.181.157])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 899F566A28D;
+        Wed, 25 Aug 2021 20:31:11 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ACPI: power: Drop name from struct acpi_power_resource
+Date:   Wed, 25 Aug 2021 20:31:10 +0200
+Message-ID: <2616419.mvXUDI8C0e@kreacher>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1333; h=from:subject; bh=Hw85ADjil8Tyn+cbVzUlabg2wwgY/mlYBNlLCrYximo=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhJoxntp7RbQ9YdoPTLDiD6nyn1nZUuZgcd7qA8AzQ LoTbsfyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSaMZwAKCRCJcvTf3G3AJq0HD/ 9kc+5/HXPayu+LgCjEUEG+dTqq6bkKPnXVRQ7zWMCkT7ihzaUHCBEw9UZgcjMucAZ1HQsofxZomolf RtboXmrxE9/bTSbjHONDVtTo6ZZynqTyU7IbQ6aENortHOR4BCZ7/jWQ2yH9+AknPWve4A5hA7c1ZD 9ga3HHTctJ00csVbZ9x0ozOUTBRGcM69jDEu8vkQ+NY/nC7ls9VxYwTupGS73eWPUFfG1ctJz+gVBu INp+vEu7vgYFYDf7VrUeWSkm1QkXLTGdFFi9tivY0cLe74OqBTZutg/zHBARRjIku9HdPxf4KTTEce 84MK03bpAcIwsXzzAgGvj/nss7LHAEeYmyVqbryEU391TpScdAXCKIZlHORqlQYjLF3f+/KH0llJAS w6BU3q4mo/wYKs5Fe17Rt6bY3s1RsC/Ypphuy2h22H0GzoL9nWO5L6iihaNTddnULj+kflTswWTw2Y ++I69b2Otse7z07SuogA/eERasbX6Gxivt4Dz321weCd3CONopR9jUS/wAq63us7l5pzB2atCBZckG dHLBRsjWmp4ydQu+p6JJsbUJDD0LS1S+FeOhsbRRS5ZuemQzQswrTD/oR5p6HJBLZqSM1dgJ/txu8n B6TwEq4+ZOaw+CHavUlgovoQcx3SpUk00B1V3xJgfYTHWBvbAH94/GknfxQg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.181.157
+X-CLIENT-HOSTNAME: 213.134.181.157
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddtledguddvjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppedvudefrddufeegrddukedurdduheejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudekuddrudehjedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2G channel indexes still need "place" to be initialized, since it is
-returned from this function when channel is less than 14.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Fixes: 369956ae5720 ("rtlwifi: rtl8192de: Remove redundant variable initializations")
-Cc: Ping-Ke Shih <pkshih@realtek.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Larry Finger <Larry.Finger@lwfinger.net>
-Cc: Colin Ian King <colin.king@canonical.com>
-Cc: Kaixu Xia <kaixuxia@tencent.com>
-Cc: Joe Perches <joe@perches.com>
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Drop the name field (that only is used in diagnostic messages) from
+struct acpi_power_resource and use the name of the power resource
+device object instead of it.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/power.c |   14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-index 8ae69d914312..b32fa7a75f17 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-@@ -896,7 +896,7 @@ static void _rtl92d_ccxpower_index_check(struct ieee80211_hw *hw,
+Index: linux-pm/drivers/acpi/power.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/power.c
++++ linux-pm/drivers/acpi/power.c
+@@ -48,7 +48,6 @@ struct acpi_power_dependent_device {
+ struct acpi_power_resource {
+ 	struct acpi_device device;
+ 	struct list_head list_node;
+-	char *name;
+ 	u32 system_level;
+ 	u32 order;
+ 	unsigned int ref_count;
+@@ -70,6 +69,11 @@ static DEFINE_MUTEX(power_resource_list_
+                              Power Resource Management
+    -------------------------------------------------------------------------- */
  
- static u8 _rtl92c_phy_get_rightchnlplace(u8 chnl)
++static inline const char *resource_dev_name(struct acpi_power_resource *pr)
++{
++	return dev_name(&pr->device.dev);
++}
++
+ static inline
+ struct acpi_power_resource *to_power_resource(struct acpi_device *device)
  {
--	u8 place;
-+	u8 place = chnl;
+@@ -264,7 +268,8 @@ acpi_power_resource_add_dependent(struct
  
- 	if (chnl > 14) {
- 		for (place = 14; place < sizeof(channel5g); place++) {
--- 
-2.30.2
+ 	dep->dev = dev;
+ 	list_add_tail(&dep->node, &resource->dependents);
+-	dev_dbg(dev, "added power dependency to [%s]\n", resource->name);
++	dev_dbg(dev, "added power dependency to [%s]\n",
++		resource_dev_name(resource));
+ 
+ unlock:
+ 	mutex_unlock(&resource->resource_lock);
+@@ -283,7 +288,7 @@ acpi_power_resource_remove_dependent(str
+ 			list_del(&dep->node);
+ 			kfree(dep);
+ 			dev_dbg(dev, "removed power dependency to [%s]\n",
+-				resource->name);
++				resource_dev_name(resource));
+ 			break;
+ 		}
+ 	}
+@@ -381,7 +386,7 @@ static int __acpi_power_on(struct acpi_p
+ 
+ 	list_for_each_entry(dep, &resource->dependents, node) {
+ 		dev_dbg(dep->dev, "runtime resuming because [%s] turned on\n",
+-			resource->name);
++			resource_dev_name(resource));
+ 		pm_request_resume(dep->dev);
+ 	}
+ 
+@@ -953,7 +958,6 @@ struct acpi_device *acpi_add_power_resou
+ 	mutex_init(&resource->resource_lock);
+ 	INIT_LIST_HEAD(&resource->list_node);
+ 	INIT_LIST_HEAD(&resource->dependents);
+-	resource->name = device->pnp.bus_id;
+ 	strcpy(acpi_device_name(device), ACPI_POWER_DEVICE_NAME);
+ 	strcpy(acpi_device_class(device), ACPI_POWER_CLASS);
+ 	device->power.state = ACPI_STATE_UNKNOWN;
+
+
 
