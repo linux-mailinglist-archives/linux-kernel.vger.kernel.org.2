@@ -2,104 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DB53F6FE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8616B3F6FD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239102AbhHYGyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbhHYGyg (ORCPT
+        id S238816AbhHYGvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:51:16 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46354 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238276AbhHYGvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:54:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A676C061757;
-        Tue, 24 Aug 2021 23:53:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=1enB9YVobt+Zl/ChJzBQuQLDnWStDIIhYMzFIU7dnz8=; b=lYAvNUIrtrZKwUtVm2gWzmP2Hb
-        maeX4PocszdSQERsixb6AkIB5feBGzryi8fi+qtMosZ7/X9Pv/qhDzn0Wr9O+8hRIElDADJMkRNoQ
-        8WLXNesonRkJbLWCywkVtAEKM4ccuNzcov3dVtAsA9JCrtEZHylK/1l3RuFvVp5Pgjugo2ECCvo08
-        dtcl41Zwzg9fDTfcT5x7PR0+2yEOFWS8eltqe8af6Tt//Im7Pk2LvI3gxsNK9rLhOgprLWYASDExJ
-        1tbpEamlQAdlCT5GvsUNBrSGnyrNO4nu49F7qQwXj7mOAT/2OmZE9ch5IrQihR3zYGemcH5XkYtpj
-        z7c7bW0A==;
-Received: from [2001:4bb8:193:fd10:ce54:74a1:df3f:e6a9] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mImmH-00Bzib-Tv; Wed, 25 Aug 2021 06:52:59 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Joel Becker <jlbec@evilplan.org>
-Cc:     Sishuai Gong <sishuai@purdue.edu>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 4/4] configfs: fix a race in configfs_lookup()
-Date:   Wed, 25 Aug 2021 08:49:06 +0200
-Message-Id: <20210825064906.1694233-5-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210825064906.1694233-1-hch@lst.de>
-References: <20210825064906.1694233-1-hch@lst.de>
+        Wed, 25 Aug 2021 02:51:13 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17P6Y8Zm186841;
+        Wed, 25 Aug 2021 02:50:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=la4vEtQ0bjUYtyFdwToE8Kr64UtTJADQ4kxTUtKVsCs=;
+ b=Qdvr29Zs0TEeWRdP0wssLbJehRXpOFP2yQyWISzKrf8BYXJAEKugN/zkUpsxTXRoq2ds
+ jTOxBCUA6O6mz+T2i4Tj68W3C0NYHzDah/DK9FLmMnEKdsslVQBKt25FjJc08FUDloDn
+ +oSPv31tBjf0kEPNg3AlfolexEdkqzQrX2yewlbmr4ZLE3jhyMdgR4VeDFm4l2WoMZsU
+ 4IxnnTWeUbPCaiTMVMEHVvMMAdfT+JSUfP4KnGUy8KXoUf+ciixCFcVKxbkMxK87RKrz
+ kaQYUURhW/zJE6FieMpvVNDvNRwlg5F/LbvMq4j6hCqqrsEn9WQg+ziyZFa1ob9zP0Px JA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3anfse9mca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Aug 2021 02:50:09 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17P6Y9Rq187036;
+        Wed, 25 Aug 2021 02:50:08 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3anfse9mb0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Aug 2021 02:50:08 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17P6iTKP028948;
+        Wed, 25 Aug 2021 06:50:07 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma04dal.us.ibm.com with ESMTP id 3ajs4e3e92-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Aug 2021 06:50:07 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17P6o62e36504008
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Aug 2021 06:50:06 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B86B42805A;
+        Wed, 25 Aug 2021 06:50:06 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7E00228058;
+        Wed, 25 Aug 2021 06:50:03 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.43.79.237])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with SMTP;
+        Wed, 25 Aug 2021 06:50:03 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 20ECE2E318C; Wed, 25 Aug 2021 12:20:00 +0530 (IST)
+Date:   Wed, 25 Aug 2021 12:20:00 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+Subject: Re: [PATCH] kernel/cpu: fix spelling mistake of cpuhp_thread_run()
+Message-ID: <20210825065000.GA11343@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20210824070707.5731-1-kernelfans@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824070707.5731-1-kernelfans@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: hIDqC8bP71wHmzMQYv1qxwGcany3hw85
+X-Proofpoint-GUID: UE4zXinWaKNB0OAdARSCvudNcWtFI3jh
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-25_02:2021-08-25,2021-08-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1011 mlxlogscore=999 impostorscore=0 adultscore=0 phishscore=0
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108250038
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sishuai Gong <sishuai@purdue.edu>
+Hello Pingfan,
 
-When configfs_lookup() is executing list_for_each_entry(),
-it is possible that configfs_dir_lseek() is calling list_del().
-Some unfortunate interleavings of them can cause a kernel NULL
-pointer dereference error
+On Tue, Aug 24, 2021 at 03:07:07PM +0800, Pingfan Liu wrote:
+> According to the name of cpuhp_should_run(), cpuhp_thread_fun() should
+> be a spelling mistake.
 
-Thread 1                  Thread 2
-//configfs_dir_lseek()    //configfs_lookup()
-list_del(&cursor->s_sibling);
-                         list_for_each_entry(sd, ...)
+I think cpuhp_thread_fun() is short for "CPU Hotplug thread
+function". It seems correct since the function pointer "thread_fn"
+(short for "Thread function") in the struct "smp_hotplug_thread
+cpuhp_threads" is assigned the value cpuhp_thread_fun().
 
-Fix this by grabbing configfs_dirent_lock in configfs_lookup()
-while iterating ->s_children.
 
-Signed-off-by: Sishuai Gong <sishuai@purdue.edu>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/configfs/dir.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
-index fc20bd8a6337..1466b5d01cbb 100644
---- a/fs/configfs/dir.c
-+++ b/fs/configfs/dir.c
-@@ -439,13 +439,13 @@ static struct dentry * configfs_lookup(struct inode *dir,
- 	if (!configfs_dirent_is_ready(parent_sd))
- 		return ERR_PTR(-ENOENT);
- 
-+	spin_lock(&configfs_dirent_lock);
- 	list_for_each_entry(sd, &parent_sd->s_children, s_sibling) {
- 		if ((sd->s_type & CONFIGFS_NOT_PINNED) &&
- 		    !strcmp(configfs_get_name(sd), dentry->d_name.name)) {
- 			struct configfs_attribute *attr = sd->s_element;
- 			umode_t mode = (attr->ca_mode & S_IALLUGO) | S_IFREG;
- 
--			spin_lock(&configfs_dirent_lock);
- 			dentry->d_fsdata = configfs_get(sd);
- 			sd->s_dentry = dentry;
- 			spin_unlock(&configfs_dirent_lock);
-@@ -462,10 +462,11 @@ static struct dentry * configfs_lookup(struct inode *dir,
- 				inode->i_size = PAGE_SIZE;
- 				inode->i_fop = &configfs_file_operations;
- 			}
--			break;
-+			goto done;
- 		}
- 	}
--
-+	spin_unlock(&configfs_dirent_lock);
-+done:
- 	d_add(dentry, inode);
- 	return NULL;
- }
--- 
-2.30.2
-
+> 
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Vincent Donnefort <vincent.donnefort@arm.com>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+> To: linux-kernel@vger.kernel.org
+> ---
+>  kernel/cpu.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 804b847912dc..581d08c0efb6 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -521,7 +521,7 @@ static void __cpuhp_kick_ap(struct cpuhp_cpu_state *st)
+>  	st->result = 0;
+>  	/*
+>  	 * Make sure the above stores are visible before should_run becomes
+> -	 * true. Paired with the mb() above in cpuhp_thread_fun()
+> +	 * true. Paired with the mb() above in cpuhp_thread_run()
+>  	 */
+>  	smp_mb();
+>  	st->should_run = true;
+> @@ -723,7 +723,7 @@ static int cpuhp_should_run(unsigned int cpu)
+>   *
+>   * When complete or on error, should_run is cleared and the completion is fired.
+>   */
+> -static void cpuhp_thread_fun(unsigned int cpu)
+> +static void cpuhp_thread_run(unsigned int cpu)
+>  {
+>  	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
+>  	bool bringup = st->bringup;
+> @@ -863,7 +863,7 @@ static struct smp_hotplug_thread cpuhp_threads = {
+>  	.store			= &cpuhp_state.thread,
+>  	.create			= &cpuhp_create,
+>  	.thread_should_run	= cpuhp_should_run,
+> -	.thread_fn		= cpuhp_thread_fun,
+> +	.thread_fn		= cpuhp_thread_run,
+>  	.thread_comm		= "cpuhp/%u",
+>  	.selfparking		= true,
+>  };
+> -- 
+> 2.29.2
+> 
