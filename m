@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02033F749C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054AC3F749E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240397AbhHYLyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 07:54:03 -0400
-Received: from mga17.intel.com ([192.55.52.151]:16989 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239257AbhHYLyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 07:54:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="197749106"
-X-IronPort-AV: E=Sophos;i="5.84,350,1620716400"; 
-   d="scan'208";a="197749106"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 04:53:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,350,1620716400"; 
-   d="scan'208";a="527231434"
-Received: from um.fi.intel.com (HELO um) ([10.237.72.62])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Aug 2021 04:53:05 -0700
-From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        alexander.shishkin@linux.intel.com
-Subject: Re: [PATCH 3/5] KVM: VMX: RTIT_CTL_BRANCH_EN has no dependency on
- other CPUID bit
-In-Reply-To: <ed18e08f-1ea6-4ffa-91a7-9d8706a1b781@intel.com>
-References: <20210824110743.531127-1-xiaoyao.li@intel.com>
- <20210824110743.531127-4-xiaoyao.li@intel.com>
- <711265db-f634-36ac-40d2-c09cea825df6@gmail.com>
- <b80a91db-cb35-ba6d-ab36-a0fa1ca051e7@intel.com>
- <6dddf3c0-fa8f-f70c-bd5d-b43c7140ed9a@gmail.com>
- <ed18e08f-1ea6-4ffa-91a7-9d8706a1b781@intel.com>
-Date:   Wed, 25 Aug 2021 14:53:04 +0300
-Message-ID: <87pmu1ivvj.fsf@ashishki-desk.ger.corp.intel.com>
+        id S240434AbhHYLyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 07:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240405AbhHYLyT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 07:54:19 -0400
+Received: from server.lespinasse.org (server.lespinasse.org [IPv6:2001:470:82ab::100:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BE8C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-30-ed;
+ t=1629892412; h=date : from : to : cc : subject : message-id :
+ references : mime-version : content-type : in-reply-to : from;
+ bh=F52fen2ss8GLg3DqmHwQUgF1KeZ9yP3yjDp0L7IYMzA=;
+ b=cCzKgH+ETPVMW8IvDXAajwFev9kHvEnBserO0HqSXr+WkGyVjngBwEl9xKzBGXChv7EF9
+ qdXP5Iw6xciYfeQDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
+ i=@lespinasse.org; q=dns/txt; s=srv-30-rsa; t=1629892412; h=date :
+ from : to : cc : subject : message-id : references : mime-version :
+ content-type : in-reply-to : from;
+ bh=F52fen2ss8GLg3DqmHwQUgF1KeZ9yP3yjDp0L7IYMzA=;
+ b=I6UGMBHWVdxSlFMi9DGx8Mt+//KROxs0BqUv7KCyjDDeKf7htPZZIH0ZYOuerKXKdvwTc
+ ovotaDdVCVJDxWU6QOf8yQ4iQQblAa5iD/eiuYs1+JPCPOHpYePtxPf74ePkJDPERY+njT3
+ xKbmsTOghq1QkSJZaxAqDdSX3LdxJ+7y3oJzMhGLhFYrl8wkMYa648nzuliouSb2y6FGdcU
+ Wj2LmdQ2L4znC2he0DntiLFySyYx+j2mTPnnbuVY9w1j7dzlgugFS0S2Du9/HHOeq0u793E
+ KdRDN2odw3A9JnwpZOUgNwoRlO2raKMYkODM636j6nimwsCJi75FqbRfvInA==
+Received: by server.lespinasse.org (Postfix, from userid 1000)
+        id A48EE16099D; Wed, 25 Aug 2021 04:53:32 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 04:53:32 -0700
+From:   Michel Lespinasse <michel@lespinasse.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Li RongQing <lirongqing@baidu.com>, dbueso@suse.de,
+        mingo@kernel.org, michel@lespinasse.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rbtree: stop iteration early in rb_find_first
+Message-ID: <20210825115332.GA4645@lespinasse.org>
+References: <1629885588-10590-1-git-send-email-lirongqing@baidu.com>
+ <YSYr7nqql825rHol@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSYr7nqql825rHol@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiaoyao Li <xiaoyao.li@intel.com> writes:
+On Wed, Aug 25, 2021 at 01:39:26PM +0200, Peter Zijlstra wrote:
+> On Wed, Aug 25, 2021 at 05:59:48PM +0800, Li RongQing wrote:
+> > stop iteration if match is not NULL and result of cmp is
+> > not zero, this means the matched node has been found, and
+> > the node with same key has been passed
+> > 
+> > Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> > ---
+> >  include/linux/rbtree.h | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/include/linux/rbtree.h b/include/linux/rbtree.h
+> > index d31ecaf4fdd3..2689771df9bb 100644
+> > --- a/include/linux/rbtree.h
+> > +++ b/include/linux/rbtree.h
+> > @@ -324,6 +324,9 @@ rb_find_first(const void *key, const struct rb_root *tree,
+> >  		} else if (c > 0) {
+> >  			node = node->rb_right;
+> >  		}
+> > +
+> > +		if (match && c)
+> > +			break;
+> >  	}
+> >  
+> >  	return match;
+> 
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-> On 8/25/2021 2:08 PM, Like Xu wrote:
->> On 25/8/2021 12:19 pm, Xiaoyao Li wrote:
->>> On 8/25/2021 11:30 AM, Like Xu wrote:
->>> BranchEn should be always supported if PT is available. Per "31.2.7.2 
->> 
->> Check d35869ba348d3f1ff3e6d8214fe0f674bb0e404e.
->
-> This commit shows BranchEn is supported on BDW, and must be enabled on 
-> BDW. This doesn't conflict the description above that BranchEn should be 
-> always supported.
+NAK. This looked slightly wrong before, and is more wrong after.
 
-It's the *not* setting BranchEn that's not supported on BDW. The point
-of BranchEn is to allow the user to not set it and filter out all the
-branch trace related packets. The main point of PT, however, is the
-branch trace, so in the first implementation BranchEn was reserved as
-1.
+Before:
+there was this weird condition  if (c <= 0) {} else if (c > 0) {} ,
+making you wonder what the third possibility may be. Easy fix would be
+to remove the second condition.
 
-IOW, it's always available, doesn't depend on CPUID, but on BDW,
-BranchEn==0 should throw a #GP, if I remember right. Check BDM106 for
-details.
+After:
+say the key is equal the root, so the code sets match=root and goes left.
+Then it stops searching because match is set and c<0.
+This doesn't work, the code needs to keep searching for the leftmost match.
 
-Regards,
 --
-Alex
+Michel "walken" Lespinasse
