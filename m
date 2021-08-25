@@ -2,96 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A7E3F77D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE2B3F77D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240566AbhHYOzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:55:16 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:38482 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234380AbhHYOzP (ORCPT
+        id S240864AbhHYOzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:55:25 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:60719 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234380AbhHYOzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 10:55:15 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:58038)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mIuIO-00BAd0-0H; Wed, 25 Aug 2021 08:54:28 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:54606 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mIuIN-00D901-5O; Wed, 25 Aug 2021 08:54:27 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     <linux-kernel@vger.kernel.org>, Alexey Gladkov <legion@kernel.org>,
-        "Ma\, XinjianX" <xinjianx.ma@intel.com>
-Date:   Wed, 25 Aug 2021 09:54:20 -0500
-Message-ID: <871r6ho9r7.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 25 Aug 2021 10:55:24 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4942D581075;
+        Wed, 25 Aug 2021 10:54:38 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 25 Aug 2021 10:54:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=IqJM9t4viIksZpN3cNv1P81kyYI
+        WsJz+PszGrJJmalk=; b=q0s2segFpoUph9ozZyNmF175KEKs6Jw9GmRitRQibTD
+        KlsRtCsrwUtITeiUXVIfefFSqFR3WHjhdv4GY5lNJ0fQyzm9Yjk+ph/jw3r3Lp4m
+        STdFxzfQiXSnaekbeA3dt5p46YqG+HKHP2favJ5qegt9vXNl9THGVKk9ADU9C5k1
+        c3QCpVRB8H8Hr+RLBETaTXFB0/cYwOwtdH5xAfn8/eaiGExCqc0vvMMwbAlTGj6R
+        nGsJ+9csqoAj8FejrSwPy1SW7fBKvp2fBks9YKvio8zCHTfJCVLNJoP2MRZWlQAS
+        0tELQsIMTZmCUVgDeXZHOh4pAU6d/mcGoLSjKO0zMfw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=IqJM9t
+        4viIksZpN3cNv1P81kyYIWsJz+PszGrJJmalk=; b=noD1zg8iL2XnTLBPh+0OWT
+        MVo4oaUJFG8knVLYoYtfJQkKl2Ih59G5GFOGPZBJxwBBSSY5M7/WUg5TWY+8ZA4h
+        kAKInzBShxqjWyeNlFEGR22jgmdiwoE5W0VvhvvXbtu1muMV3VMnboZQNvQtwoaj
+        8mM4OvMrWxiGPuyxO/l8LEAw7VWQPwYVweMXMsX3h/IZkwFAU6qr3lrjhNK0UABj
+        ST9ps2d697SGL7Mb9jSHlIObLoyBBqwVL8Wf64Z346LQvH888nBAtyP7jQFYi1iM
+        +zxjijY1REKfu0Mt0oRTYYz0RzSWWqZDcOllr+ilWzynP/GAa0vfuZM9f2gKxR6w
+        ==
+X-ME-Sender: <xms:rFkmYSMV0JB1vBFiDtusGG3tX6WrCQD0ew2UiLk349WsVA00J_xBQQ>
+    <xme:rFkmYQ-O0LlivwPriktmL0hPlgSlwJvMBExUlz8iwByS8OXFi3BRCemQsuT8Aa5OL
+    MBlljn6HwijPlwDvpA>
+X-ME-Received: <xmr:rFkmYZROomxG6Q9lU4m2nB26ZW4HxflpoKPLIeT3mGVroMcpWn1q_73cVKy8qMQClX8J127Il8D10AKyFqcW_PC4qjRrkdQJ0dRc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddtledgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:rFkmYSvZByGSCuHIEr1Wd9vWY6OlBG3GZ5u1W80CjZlXkfWzL8d3nQ>
+    <xmx:rFkmYafdW9dNvgVrYVcGc0tIDVyVIeVH4UsLfUDxsBlQceUVQLURjg>
+    <xmx:rFkmYW0GHOQhCUeuFLRgJHNzN27jieRrsRngYMJyKXwc5lbo-rJtjg>
+    <xmx:rlkmYW2OJCvYMC4APBf6mcrQ1_930_A78G9qUVVtSxA19XL34fj9Kg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Aug 2021 10:54:36 -0400 (EDT)
+Date:   Wed, 25 Aug 2021 16:54:34 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Icenowy Zheng <icenowy@sipeed.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/17] clk: sunxi-ng: add support for Allwinner R329 CCU
+Message-ID: <20210825145434.vdrhgrgblnnmvmve@gilmour>
+References: <20210802062212.73220-1-icenowy@sipeed.com>
+ <20210802062212.73220-12-icenowy@sipeed.com>
+ <3e56e53f-e6df-50cf-5545-e9132e521ed1@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mIuIN-00D901-5O;;;mid=<871r6ho9r7.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+AXkxzxj1ZAa4HQNgApbm3PwqpXf2lU84=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,XMSubMetaSxObfu_03,XMSubMetaSx_00
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.2607]
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 316 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 3.7 (1.2%), b_tie_ro: 2.6 (0.8%), parse: 0.60
-        (0.2%), extract_message_metadata: 2.0 (0.6%), get_uri_detail_list:
-        0.65 (0.2%), tests_pri_-1000: 2.7 (0.9%), tests_pri_-950: 1.02 (0.3%),
-        tests_pri_-900: 0.84 (0.3%), tests_pri_-90: 120 (37.8%), check_bayes:
-        118 (37.5%), b_tokenize: 3.4 (1.1%), b_tok_get_all: 4.3 (1.4%),
-        b_comp_prob: 1.08 (0.3%), b_tok_touch_all: 107 (33.9%), b_finish: 0.70
-        (0.2%), tests_pri_0: 171 (54.0%), check_dkim_signature: 0.34 (0.1%),
-        check_dkim_adsp: 3.3 (1.0%), poll_dns_idle: 1.38 (0.4%), tests_pri_10:
-        2.7 (0.8%), tests_pri_500: 7 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: [GIT PULL] ucount fixes for v5.14
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jd6omazv7t4jt7hs"
+Content-Disposition: inline
+In-Reply-To: <3e56e53f-e6df-50cf-5545-e9132e521ed1@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Please pull the for-v5.14 branch from the git tree:
+--jd6omazv7t4jt7hs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git for-v5.14
+On Thu, Aug 19, 2021 at 09:41:26PM -0500, Samuel Holland wrote:
+> On 8/2/21 1:22 AM, Icenowy Zheng wrote:
+> > Allwinner R329 has a CCU that is similar to the H616 one, but it's cut
+> > down and have PLLs moved out.
+> >=20
+> > Add support for it.
+> >=20
+> > Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
+> > ---
+> >  drivers/clk/sunxi-ng/Kconfig                |   5 +
+> >  drivers/clk/sunxi-ng/Makefile               |   1 +
+> >  drivers/clk/sunxi-ng/ccu-sun50i-r329.c      | 526 ++++++++++++++++++++
+> >  drivers/clk/sunxi-ng/ccu-sun50i-r329.h      |  32 ++
+> >  include/dt-bindings/clock/sun50i-r329-ccu.h |  73 +++
+> >  include/dt-bindings/reset/sun50i-r329-ccu.h |  45 ++
+> >  6 files changed, 682 insertions(+)
+> >  create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-r329.c
+> >  create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-r329.h
+> >  create mode 100644 include/dt-bindings/clock/sun50i-r329-ccu.h
+> >  create mode 100644 include/dt-bindings/reset/sun50i-r329-ccu.h
+> >=20
+> > diff --git a/drivers/clk/sunxi-ng/Kconfig b/drivers/clk/sunxi-ng/Kconfig
+> > index e49b2c2fa5b7..4b32d5f81ea8 100644
+> > --- a/drivers/clk/sunxi-ng/Kconfig
+> > +++ b/drivers/clk/sunxi-ng/Kconfig
+> > @@ -42,6 +42,11 @@ config SUN50I_H6_R_CCU
+> >  	default ARM64 && ARCH_SUNXI
+> >  	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+> > =20
+> > +config SUN50I_R329_CCU
+> > +	bool "Support for the Allwinner R329 CCU"
+> > +	default ARM64 && ARCH_SUNXI
+> > +	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+> > +
+> >  config SUN50I_R329_R_CCU
+> >  	bool "Support for the Allwinner R329 PRCM CCU"
+> >  	default ARM64 && ARCH_SUNXI
+> > diff --git a/drivers/clk/sunxi-ng/Makefile b/drivers/clk/sunxi-ng/Makef=
+ile
+> > index db338a2188fd..62f3c5bf331c 100644
+> > --- a/drivers/clk/sunxi-ng/Makefile
+> > +++ b/drivers/clk/sunxi-ng/Makefile
+> > @@ -28,6 +28,7 @@ obj-$(CONFIG_SUN50I_A100_R_CCU)	+=3D ccu-sun50i-a100-=
+r.o
+> >  obj-$(CONFIG_SUN50I_H6_CCU)	+=3D ccu-sun50i-h6.o
+> >  obj-$(CONFIG_SUN50I_H616_CCU)	+=3D ccu-sun50i-h616.o
+> >  obj-$(CONFIG_SUN50I_H6_R_CCU)	+=3D ccu-sun50i-h6-r.o
+> > +obj-$(CONFIG_SUN50I_R329_CCU)	+=3D ccu-sun50i-r329.o
+> >  obj-$(CONFIG_SUN50I_R329_R_CCU)	+=3D ccu-sun50i-r329-r.o
+> >  obj-$(CONFIG_SUN4I_A10_CCU)	+=3D ccu-sun4i-a10.o
+> >  obj-$(CONFIG_SUN5I_CCU)		+=3D ccu-sun5i.o
+> > diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-r329.c b/drivers/clk/sunxi=
+-ng/ccu-sun50i-r329.c
+> > new file mode 100644
+> > index 000000000000..a0b4cfd6e1db
+> > --- /dev/null
+> > +++ b/drivers/clk/sunxi-ng/ccu-sun50i-r329.c
+> > @@ -0,0 +1,526 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Based on the H616 CCU driver, which is:
+> > + *   Copyright (c) 2020 Arm Ltd.
+> > + */
+> > +
+> > +#include <linux/clk-provider.h>
+> > +#include <linux/io.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_address.h>
+> > +#include <linux/platform_device.h>
+> > +
+> > +#include "ccu_common.h"
+> > +#include "ccu_reset.h"
+> > +
+> > +#include "ccu_div.h"
+> > +#include "ccu_gate.h"
+> > +#include "ccu_mp.h"
+> > +#include "ccu_mult.h"
+> > +#include "ccu_nk.h"
+> > +#include "ccu_nkm.h"
+> > +#include "ccu_nkmp.h"
+> > +#include "ccu_nm.h"
+> > +
+> > +#include "ccu-sun50i-r329.h"
+> > +
+> > +/*
+> > + * An external divider of PLL-CPUX is controlled here. As it's similar=
+ to
+> > + * the external divider of PLL-CPUX on previous SoCs (only usable under
+> > + * 288MHz}, ignore it.
+>=20
+> Mismatched (braces} here
+>=20
+> > + */
+> > +static const char * const cpux_parents[] =3D { "osc24M", "osc32k", "io=
+sc",
+> > +					     "pll-cpux", "pll-periph",
+> > +					     "pll-periph-2x",
+> > +					     "pll=3Dperiph-800m" };
+>=20
+> =3D should be a -.
+>=20
+> Now that these PLLs are in a different device, how is this supposed to af=
+fect
+> the DT binding? Do we put all of them in the clocks property?
+>=20
+> If so, we can use .fw_name at some point. If not, why bother with the clo=
+cks
+> property at all? This is another part of the "let's get the clock tree ri=
+ght
+> from the start" discussion.
 
-  HEAD: bbb6d0f3e1feb43d663af089c7dedb23be6a04fb ucounts: Increase ucounts reference counter before the security hook
+Agreed
 
-This branch fixes a regression that made it impossible to increase
-rlimits that had been converted to the ucount infrastructure, and also
-fixes a reference counting bug where the reference was not incremented
-soon enough.
+Maxime
 
-The fixes are trivial and the bugs have been encountered in the wild,
-and the fixes have been tested. 
+--jd6omazv7t4jt7hs
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Alexey Gladkov (1):
-      ucounts: Increase ucounts reference counter before the security hook
+-----BEGIN PGP SIGNATURE-----
 
-Eric W. Biederman (1):
-      ucounts: Fix regression preventing increasing of rlimits in init_user_ns
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYSZZqgAKCRDj7w1vZxhR
+xf7MAQCaA0w3oNAOvdQ5ITxY5Ab2GivujOLUDDhU3UcM2ZnHEAEAxNsnCPVFwlPY
+bfCv++67RwNPa1FPsCUxvKudlvWfWQc=
+=Z5kK
+-----END PGP SIGNATURE-----
 
- kernel/cred.c | 12 ++++++------
- kernel/fork.c |  8 ++++----
- 2 files changed, 10 insertions(+), 10 deletions(-)
-
-Thank you,
-Eric
+--jd6omazv7t4jt7hs--
