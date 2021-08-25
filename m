@@ -2,57 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E94D3F7272
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58663F7277
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239525AbhHYKAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:00:41 -0400
-Received: from mx316.baidu.com ([180.101.52.236]:17311 "EHLO
-        njjs-sys-mailin05.njjs.baidu.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237077AbhHYKAj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:00:39 -0400
-Received: from bjhw-sys-rpm015653cc5.bjhw.baidu.com (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
-        by njjs-sys-mailin05.njjs.baidu.com (Postfix) with ESMTP id 01996CF8003A;
-        Wed, 25 Aug 2021 17:59:49 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by bjhw-sys-rpm015653cc5.bjhw.baidu.com (Postfix) with ESMTP id CFBF0D9932;
-        Wed, 25 Aug 2021 17:59:48 +0800 (CST)
-From:   Li RongQing <lirongqing@baidu.com>
-To:     peterz@infradead.org, dbueso@suse.de, mingo@kernel.org,
-        michel@lespinasse.org, linux-kernel@vger.kernel.org,
-        lirongqing@baidu.com
-Subject: [PATCH] rbtree: stop iteration early in rb_find_first
-Date:   Wed, 25 Aug 2021 17:59:48 +0800
-Message-Id: <1629885588-10590-1-git-send-email-lirongqing@baidu.com>
-X-Mailer: git-send-email 1.7.1
+        id S239770AbhHYKBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237574AbhHYKA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 06:00:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 78B5861181;
+        Wed, 25 Aug 2021 10:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629885613;
+        bh=/j7V0rHN5mvkR3PCKNqygqm9JTsHOAgX7rRf0HZfO2E=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=o0WmhyakyWd+GT0TLgfyHN5honhXpJ+lsSLrdO/zX8G0cLrHrhKlSI7CryVGSy6n5
+         DrnJj0HDTzPpTWw9v5PVu116H0EXyZ8VJmmfoMYk1tOC84uyK/ew+JSwUdBuQ4QTuE
+         qBrCbw6M7zMITEu3CXArGWYTHdYEAPJV1TMfK+MpOcNwP8eKNtyDa1b3UfJ5r8yfP/
+         8YAFVXPDb0CNwy09JIqOPncaDJ8PX1EwxtU0Di4R84FVc3VOQIh4lyzeiUngapo6Xv
+         2Epug1LDx7/Oyb+tKYZsXLTIaEVe0re9b9yTJx/ku0dLau49WwZGxTR0v50wK78+30
+         LYo3JxTxLJfIA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6BCC460A0C;
+        Wed, 25 Aug 2021 10:00:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 0/4] xen: harden netfront against malicious backends
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162988561343.31154.5658614827184945239.git-patchwork-notify@kernel.org>
+Date:   Wed, 25 Aug 2021 10:00:13 +0000
+References: <20210824102809.26370-1-jgross@suse.com>
+In-Reply-To: <20210824102809.26370-1-jgross@suse.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
+        sstabellini@kernel.org, davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-stop iteration if match is not NULL and result of cmp is
-not zero, this means the matched node has been found, and
-the node with same key has been passed
+Hello:
 
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
----
- include/linux/rbtree.h | 3 +++
- 1 file changed, 3 insertions(+)
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/include/linux/rbtree.h b/include/linux/rbtree.h
-index d31ecaf4fdd3..2689771df9bb 100644
---- a/include/linux/rbtree.h
-+++ b/include/linux/rbtree.h
-@@ -324,6 +324,9 @@ rb_find_first(const void *key, const struct rb_root *tree,
- 		} else if (c > 0) {
- 			node = node->rb_right;
- 		}
-+
-+		if (match && c)
-+			break;
- 	}
- 
- 	return match;
--- 
-2.33.0.69.gc420321.dirty
+On Tue, 24 Aug 2021 12:28:05 +0200 you wrote:
+> Xen backends of para-virtualized devices can live in dom0 kernel, dom0
+> user land, or in a driver domain. This means that a backend might
+> reside in a less trusted environment than the Xen core components, so
+> a backend should not be able to do harm to a Xen guest (it can still
+> mess up I/O data, but it shouldn't be able to e.g. crash a guest by
+> other means or cause a privilege escalation in the guest).
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,1/4] xen/netfront: read response from backend only once
+    https://git.kernel.org/netdev/net-next/c/8446066bf8c1
+  - [v2,2/4] xen/netfront: don't read data from request on the ring page
+    https://git.kernel.org/netdev/net-next/c/162081ec33c2
+  - [v2,3/4] xen/netfront: disentangle tx_skb_freelist
+    https://git.kernel.org/netdev/net-next/c/21631d2d741a
+  - [v2,4/4] xen/netfront: don't trust the backend response data blindly
+    https://git.kernel.org/netdev/net-next/c/a884daa61a7d
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
