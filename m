@@ -2,59 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A0D3F6EC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3693F6EC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhHYFT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 01:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
+        id S232273AbhHYFUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 01:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhHYFT4 (ORCPT
+        with ESMTP id S229457AbhHYFUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 01:19:56 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60530C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 22:19:11 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIlJY-00FqEt-Gy; Wed, 25 Aug 2021 05:19:04 +0000
-Date:   Wed, 25 Aug 2021 05:19:04 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Gong, Sishuai" <sishuai@purdue.edu>,
-        "jlbec@evilplan.org" <jlbec@evilplan.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] configfs: fix a race in configfs_lookup()
-Message-ID: <YSXSyGliOy9BCLkj@zeniv-ca.linux.org.uk>
-References: <20210820214458.14087-1-sishuai@purdue.edu>
- <20210823074636.GA23822@lst.de>
- <AFABA8B1-0523-4F8C-A9DD-DDC5638DEAF7@purdue.edu>
- <20210823170847.GA617@lst.de>
+        Wed, 25 Aug 2021 01:20:51 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB10CC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 22:20:05 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id r19so35077646eds.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 22:20:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jY+zZq2r8622JGPGrLQZJIpbL7Iz4oXWiLOi7adzQ3I=;
+        b=d3VK8Dr+N1GcxePH0NDEA/LUKnGHqOzFVRvHyqvlvLRjdab0F5RBZSkaRcFP+u/K09
+         uiH56ralxHS7LlBSnXE5P0ZxGg/2Uz4BVLuIybN3/zGGBLikmhz76wRbSgH+oiaalfHe
+         pFgLD6HJpgIw9uAAduHl3AYor9LRSUcore814fan6T6HU5i3U9sZ1FTtncAySl9T9dOS
+         YRME256okfHhxzUn5jkRUoWIdNn/m8QqwtjAMY6G7T40PgOwCG+BVZCv+cYbzUwvK6cI
+         NIHWc6MDnC/YQl+A7HEUDEVIDjy3BY40GJHI9o7PvYhsheR1uzjWgUvbyfFT69wxy8zz
+         QaUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jY+zZq2r8622JGPGrLQZJIpbL7Iz4oXWiLOi7adzQ3I=;
+        b=Exnh2vTfBrECeNcj3yPr1qoMIfwhsa7vl4h58dFwmVh3CS525G1YmlRop+LbNheFlq
+         XG/L3NvB0DyVnaznF9Isu1CT8f6aV7AQvaCVldgbGTjqI7evjfE6+XplM//SnZCv9ZOv
+         l2YhV/wK9rlOd+T8TfvtioralcwV6WzV5xmv8IGQG6kQdsXf62XmjH303gm7MNQ/Fr27
+         Zg4Hrj+mIPLwW0BtgyKyypUDHrgErwCyvhpWpLPH5SQPL+TLTk6sZftMm1KKVwcQPZun
+         GzYUtNj2AO7JD30ih3ZUwXQeqTmIPoQp8eXpGNr0XY3MRa2uUnMqpcyhq8TIW/HpQidl
+         Iz6A==
+X-Gm-Message-State: AOAM530Ibw6RCzu8ZFD4BV7mMMom0B1CvZ7Xv2l3mKAsqhGo+qMDSHc5
+        ow83CQO3BiZAgvJgsO/DWJw=
+X-Google-Smtp-Source: ABdhPJxSBd0ordI8c1npA88Ina6r+eyPMV31ugVml+px3ybGjsc5RHWR97LuxgY4kk2x4CJ0L41Q+g==
+X-Received: by 2002:a05:6402:22d0:: with SMTP id dm16mr45386460edb.107.1629868804079;
+        Tue, 24 Aug 2021 22:20:04 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id n15sm12854669edw.70.2021.08.24.22.20.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 22:20:03 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Alex Elder <elder@ieee.org>
+Cc:     kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] staging: greybus: Convert uart.c from IDR to XArray
+Date:   Wed, 25 Aug 2021 07:20:02 +0200
+Message-ID: <1838037.Ul9q4Z07vA@localhost.localdomain>
+In-Reply-To: <5541b638-db1e-26f2-2682-81f35504c9a3@ieee.org>
+References: <20210814181130.21383-1-fmdefrancesco@gmail.com> <5541b638-db1e-26f2-2682-81f35504c9a3@ieee.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823170847.GA617@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 07:08:47PM +0200, Christoph Hellwig wrote:
+On Monday, August 16, 2021 4:46:08 PM CEST Alex Elder wrote:
+> On 8/14/21 1:11 PM, Fabio M. De Francesco wrote:
+> > Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
+> > is more memory-efficient, parallelisable, and cache friendly. It takes
+> > advantage of RCU to perform lookups without locking. Furthermore, IDR is
+> > deprecated because XArray has a better (cleaner and more consistent) API.
+> 
+> I haven't verified the use of the new API (yet) but I have a few
+> comments on your patch, below.
+> 
+> 					-Alex
 
-> We can't hold a spinlock over inode allocation.  So it would have to be
-> something like this:
+Dear Alex,
 
-Check for -ENAMETOOLONG first; easier for analysis that way.
+On August 16th I submitted the v3 of my patch ("staging: greybus: Convert uart.c 
+from IDR to XArray"), with changes based on the comments you provided.
 
-> +			dentry->d_fsdata = configfs_get(sd);
-> +			sd->s_dentry = dentry;
-> +			spin_unlock(&configfs_dirent_lock);
->  
-> -			found = 1;
-> -			err = configfs_attach_attr(sd, dentry);
-> -			break;
-> +			inode = configfs_create(dentry, mode);
-> +			if (IS_ERR(inode)) {
-> +				configfs_put(sd);
-> +				return ERR_CAST(inode);
+Could you please take a few minutes to review this too? I would really appreciate it.
 
-Er...  Won't that leave dentry with dangling ->d_fsdata?
+The v3 patch is at https://lore.kernel.org/lkml/20210816195000.736-1-fmdefrancesco@gmail.com/
+
+Thanks,
+
+Fabio
+
+P.S.: I'd also like to know if you think it's worth converting IDA to XArray in order 
+to improve the Greybus driver in staging.
+
+  
+
+
