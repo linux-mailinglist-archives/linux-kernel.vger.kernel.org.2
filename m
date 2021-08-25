@@ -2,218 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC003F7CFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 22:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541593F7CFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 22:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242548AbhHYUDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 16:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
+        id S242551AbhHYUFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 16:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbhHYUC7 (ORCPT
+        with ESMTP id S231421AbhHYUFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 16:02:59 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985ACC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 13:02:13 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id n24so552901ion.10
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 13:02:13 -0700 (PDT)
+        Wed, 25 Aug 2021 16:05:01 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3643EC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 13:04:15 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id i3-20020a056830210300b0051af5666070so489526otc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 13:04:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pNxxVhiR1+voUK1H9WsDHS3laxNpVdBw3hSCKXm8Xpo=;
-        b=m/2DnAFMByvXGaU+RM65ZGFo3fjcnLNrj1WDfqsy0NMHNW6HRmkJSa60qwznpcp5VX
-         hgZmDqpJOxpkf3Hyj7Vw6hVi9aDZZpjJi7BQeqVy8uFaTR3jtcLA3Eyl8MA7saKwDBOO
-         K3Rc+ykJRqagSUr34/RlpLO8F7aBRlHAmt0dn7TkvzLsOWLgeIIeuwaOtG/KY73S1QXj
-         x2dFXZiKsUTJ77ZJP1FbRGHw9TjubLX5WHKLMT066OuWLsQ8M8qrUrOQgftGFRmJBYEX
-         AzV68U/5u32W5BOA7Yu+K43C0VF21hTF25Tff2pCKiXNcJ7zoy6NOiNqnEiY9w3YL9qL
-         ctJA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RA3M/vOsIOYIXJH3RoPts4CCXAW9QCJKSqu44COBkGE=;
+        b=Guns7hjNARkbdBWWVfuXj8IHvqOauZbeRkUMHXr9kdt5Dl0jza/oJbe/srdRZziPGQ
+         nYO4sVnbMFzp5TaJ9o/Te5FMnxnw5yhkPWh+ZBUFjjWL7qIOdSBsu+SqYnPlLDyq4Sgx
+         9YMTQqeyDsQ/7d4S5HlTB6b4dyQ/rA7NrLNHs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pNxxVhiR1+voUK1H9WsDHS3laxNpVdBw3hSCKXm8Xpo=;
-        b=SffTVtUy/2dhyEccdC/N2W4wjuiPpHPYGqroYTKCUBuPH4uiWdz96UmyFuQ6D9Kl/9
-         Jnk8SuUI0cRdgXz8PjTdKbmTeKxSZIQdttsgX0USc1dyvbBoHBwJ43GPh8vrViyb6y74
-         Dp1hyuPouHKb73uz6EhP522K86Ky7O1A88iiAlzbGfw2mof4VLtSTQjFxN4O0BzEmPrp
-         ZxGIC2sK9rFVkTABX4uTPGfVBANUD2+5ao7gAeTm+Gc7hlJ176WWICaPP9LjFrpqRPnH
-         ChmJHcdjwsUfFNbgay40rpuRcRU3v1Ld1ouAWtupZGkL5pAjTK9zRvg/Iasak6ELu22G
-         7q2Q==
-X-Gm-Message-State: AOAM5303Uxo4FBjm+wuN77XQbTTV4J2vvzrzcpAHkvWrWpcNWRx7TTgN
-        JwN20Y2HadEggs7A0RIjdpGCqvmeWb2FocLM0bI=
-X-Google-Smtp-Source: ABdhPJxnkWzzAQCQCqmIWDMi2WUN42Lb6RvKGvVeTLhg+esvzOx7gaOVUJjzi/Awgh9Rn5LOmq3g1ozNVJIYRcPRxFc=
-X-Received: by 2002:a6b:f416:: with SMTP id i22mr177674iog.162.1629921730223;
- Wed, 25 Aug 2021 13:02:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RA3M/vOsIOYIXJH3RoPts4CCXAW9QCJKSqu44COBkGE=;
+        b=a8NGOE1Tv5zv3Tm2MKC68p99jJVN4kcHpIw+DAgUNbmx3xvg4ap/pL/jsqcyvSjCI1
+         cl6ArCTZcyBz8uFFz8k3Pp/9ztrZS/m/B6+59F0VmMw807r2wTKvhCalIfV4kYMFIQ5B
+         aLwMc/J/igHp8ElGhCg7kMj0ePIc6s26Nn2PZ4XU60C7FYcCYkwWwKuuruev+ypDNqTP
+         ne64hkJ1pbqB96zLcEZAC22uj4c4BqNsO9KJ3H9AgQQ0Y50fl9rCJ//NG4xBE7HWm22g
+         iwpU5jBHmlJoQDP9GSo+2aGQOT4NE4tAJre/McMKwHc6mBP4R0syhgeeCVO0nB/FOspC
+         R4hA==
+X-Gm-Message-State: AOAM533r5em1TvT+/c1ppcuNsgaLP9JTt4/pLiwrEgCNMszVtcvZmk6/
+        g6zcxHRAOQLqeLvFXgGNcLs6xQ==
+X-Google-Smtp-Source: ABdhPJx4sKPp6OJaXzeb91suWooqUYST0b36LI0gHjt3MFO7BAtYEk/OSEzGS4gNQOfFvqJaByWX1w==
+X-Received: by 2002:a9d:4042:: with SMTP id o2mr174980oti.332.1629921854542;
+        Wed, 25 Aug 2021 13:04:14 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 97sm159738otv.26.2021.08.25.13.04.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 13:04:14 -0700 (PDT)
+Subject: Re: [PATCH linux-next] tools:signal: fix boolreturn.cocci warnings
+To:     CGEL <cgel.zte@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210824065131.60346-1-deng.changcheng@zte.com.cn>
+ <16561a4f-6043-cc5b-7a50-5be1ff10bfa5@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <de79e084-705e-c23d-08cc-c102af6b2dae@linuxfoundation.org>
+Date:   Wed, 25 Aug 2021 14:04:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210726060855.108250-1-pankaj.gupta.linux@gmail.com>
- <20210726060855.108250-2-pankaj.gupta.linux@gmail.com> <CAPcyv4inCFFXmg0r5+h0O6cADpt9HdboVDEL00XX-wGroy-7LQ@mail.gmail.com>
-In-Reply-To: <CAPcyv4inCFFXmg0r5+h0O6cADpt9HdboVDEL00XX-wGroy-7LQ@mail.gmail.com>
-From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Date:   Wed, 25 Aug 2021 22:01:59 +0200
-Message-ID: <CAM9Jb+hqPBFUh9X4sKb9TUGXX1P0mC1xcuCNQx1BYvAvoP9uQg@mail.gmail.com>
-Subject: Re: [RFC v2 1/2] virtio-pmem: Async virtio-pmem flush
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jmoyer <jmoyer@redhat.com>, David Hildenbrand <david@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Pankaj Gupta <pankaj.gupta@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <16561a4f-6043-cc5b-7a50-5be1ff10bfa5@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+On 8/24/21 8:39 AM, Shuah Khan wrote:
+> On 8/24/21 12:51 AM, CGEL wrote:
+>> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+>>
+>> ./tools/testing/selftests/arm64/signal/test_signals_utils.h:112:9-10
+>> WARNING: return of 0/1 in function 'get_current_context' with
+>> return type bool
+>>
+>> Return statements in functions returning bool should use true/false
+>> instead of 1/0.
+>>
+>> Generated by: scripts/coccinelle/misc/boolreturn.cocci
+>>
+>> Reported-by: Zeal Robot <zealci@zte.com.cn>
+>> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+>> ---
+>>   tools/testing/selftests/arm64/signal/test_signals_utils.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/arm64/signal/test_signals_utils.h b/tools/testing/selftests/arm64/signal/test_signals_utils.h
+>> index 6772b5c..66122e6 100644
+>> --- a/tools/testing/selftests/arm64/signal/test_signals_utils.h
+>> +++ b/tools/testing/selftests/arm64/signal/test_signals_utils.h
+>> @@ -109,7 +109,7 @@ static __always_inline bool get_current_context(struct tdescr *td,
+>>       if (seen_already) {
+>>           fprintf(stdout,
+>>               "Unexpected successful sigreturn detected: live_uc is stale !\n");
+>> -        return 0;
+>> +        return false;
 
-Thank you for the review. Please see my reply inline.
+The change is fine. However, the function doc references to return 1/0
+needs updates as well.
 
-> > Implement asynchronous flush for virtio pmem using work queue
-> > to solve the preflush ordering issue. Also, coalesce the flush
-> > requests when a flush is already in process.
-> >
-> > Signed-off-by: Pankaj Gupta <pankaj.gupta@ionos.com>
-> > ---
-> >  drivers/nvdimm/nd_virtio.c   | 72 ++++++++++++++++++++++++++++--------
-> >  drivers/nvdimm/virtio_pmem.c | 10 ++++-
-> >  drivers/nvdimm/virtio_pmem.h | 14 +++++++
-> >  3 files changed, 79 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/drivers/nvdimm/nd_virtio.c b/drivers/nvdimm/nd_virtio.c
-> > index 10351d5b49fa..61b655b583be 100644
-> > --- a/drivers/nvdimm/nd_virtio.c
-> > +++ b/drivers/nvdimm/nd_virtio.c
-> > @@ -97,29 +97,69 @@ static int virtio_pmem_flush(struct nd_region *nd_region)
-> >         return err;
-> >  };
-> >
-> > +static void submit_async_flush(struct work_struct *ws);
-> > +
-> >  /* The asynchronous flush callback function */
-> >  int async_pmem_flush(struct nd_region *nd_region, struct bio *bio)
-> >  {
-> > -       /*
-> > -        * Create child bio for asynchronous flush and chain with
-> > -        * parent bio. Otherwise directly call nd_region flush.
-> > +       /* queue asynchronous flush and coalesce the flush requests */
-> > +       struct virtio_device *vdev = nd_region->provider_data;
-> > +       struct virtio_pmem *vpmem  = vdev->priv;
-> > +       ktime_t req_start = ktime_get_boottime();
-> > +
-> > +       spin_lock_irq(&vpmem->lock);
-> > +       /* flush requests wait until ongoing flush completes,
-> > +        * hence coalescing all the pending requests.
-> >          */
-> > -       if (bio && bio->bi_iter.bi_sector != -1) {
-> > -               struct bio *child = bio_alloc(GFP_ATOMIC, 0);
-> > -
-> > -               if (!child)
-> > -                       return -ENOMEM;
-> > -               bio_copy_dev(child, bio);
-> > -               child->bi_opf = REQ_PREFLUSH;
-> > -               child->bi_iter.bi_sector = -1;
-> > -               bio_chain(child, bio);
-> > -               submit_bio(child);
-> > -               return 0;
-> > +       wait_event_lock_irq(vpmem->sb_wait,
-> > +                           !vpmem->flush_bio ||
-> > +                           ktime_before(req_start, vpmem->prev_flush_start),
-> > +                           vpmem->lock);
-> > +       /* new request after previous flush is completed */
-> > +       if (ktime_after(req_start, vpmem->prev_flush_start)) {
-> > +               WARN_ON(vpmem->flush_bio);
-> > +               vpmem->flush_bio = bio;
-> > +               bio = NULL;
-> > +       }
->
-> Why the dance with ->prev_flush_start vs just calling queue_work()
-> again. queue_work() is naturally coalescing in that if the last work
-> request has not started execution another queue attempt will be
-> dropped.
+  * 1. grab a valid sigcontext into td->live_uc for result analysis: in
+  * such case it returns 1.
+  *
+  * 2. detect if, somehow, a previously grabbed live_uc context has been
+  * used actively with a sigreturn: in such a case the execution would have
+  * magically resumed in the middle of this function itself (seen_already==1):
+  * in such a case return 0, since in fact we have not just simply grabbed
+  * the context.
 
-How parent flush request will know when corresponding flush is completed?
-
->
-> > +       spin_unlock_irq(&vpmem->lock);
-> > +
-> > +       if (!bio) {
-> > +               INIT_WORK(&vpmem->flush_work, submit_async_flush);
->
-> I expect this only needs to be initialized once at driver init time.
-
-yes, will fix this.
->
-> > +               queue_work(vpmem->pmem_wq, &vpmem->flush_work);
-> > +               return 1;
-> > +       }
-> > +
-> > +       /* flush completed in other context while we waited */
-> > +       if (bio && (bio->bi_opf & REQ_PREFLUSH)) {
-> > +               bio->bi_opf &= ~REQ_PREFLUSH;
-> > +               submit_bio(bio);
-> > +       } else if (bio && (bio->bi_opf & REQ_FUA)) {
-> > +               bio->bi_opf &= ~REQ_FUA;
-> > +               bio_endio(bio);
->
-> It's not clear to me how this happens, shouldn't all flush completions
-> be driven from the work completion?
-
-Requests should progress after notified by ongoing flush completion
-event.
-
->
-> >         }
-> > -       if (virtio_pmem_flush(nd_region))
-> > -               return -EIO;
-> >
-> >         return 0;
-> >  };
-> >  EXPORT_SYMBOL_GPL(async_pmem_flush);
-> > +
-> > +static void submit_async_flush(struct work_struct *ws)
-> > +{
-> > +       struct virtio_pmem *vpmem = container_of(ws, struct virtio_pmem, flush_work);
-> > +       struct bio *bio = vpmem->flush_bio;
-> > +
-> > +       vpmem->start_flush = ktime_get_boottime();
-> > +       bio->bi_status = errno_to_blk_status(virtio_pmem_flush(vpmem->nd_region));
-> > +       vpmem->prev_flush_start = vpmem->start_flush;
-> > +       vpmem->flush_bio = NULL;
-> > +       wake_up(&vpmem->sb_wait);
-> > +
-> > +       /* Submit parent bio only for PREFLUSH */
-> > +       if (bio && (bio->bi_opf & REQ_PREFLUSH)) {
-> > +               bio->bi_opf &= ~REQ_PREFLUSH;
-> > +               submit_bio(bio);
-> > +       } else if (bio && (bio->bi_opf & REQ_FUA)) {
-> > +               bio->bi_opf &= ~REQ_FUA;
-> > +               bio_endio(bio);
-> > +       }
->
-> Shouldn't the wait_event_lock_irq() be here rather than in
-> async_pmem_flush()? That will cause the workqueue to back up and flush
-> requests to coalesce.
-
-but this is coalesced flush request?
-
-> > +}
-> >  MODULE_LICENSE("GPL");
-> > diff --git a/drivers/nvdimm/virtio_pmem.c b/drivers/nvdimm/virtio_pmem.c
-> > index 726c7354d465..56780a6140c7 100644
-> > --- a/drivers/nvdimm/virtio_pmem.c
-> > +++ b/drivers/nvdimm/virtio_pmem.c
-> > @@ -24,6 +24,7 @@ static int init_vq(struct virtio_pmem *vpmem)
-> >                 return PTR_ERR(vpmem->req_vq);
-> >
-> >         spin_lock_init(&vpmem->pmem_lock);
-> > +       spin_lock_init(&vpmem->lock);
->
-> Why 2 locks?
-
-One lock is for work queue and other for virtio flush completion.
-
-Thanks,
-Pankaj
+thanks,
+-- Shuah
