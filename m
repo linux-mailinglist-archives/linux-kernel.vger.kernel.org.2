@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420463F7C33
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE023F7C3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237177AbhHYSby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 14:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
+        id S238242AbhHYScJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 14:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236451AbhHYSbv (ORCPT
+        with ESMTP id S236971AbhHYSbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 14:31:51 -0400
+        Wed, 25 Aug 2021 14:31:53 -0400
 Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F490C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:31:05 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id j2so113029pll.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:31:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F0EC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:31:06 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id c4so93670plh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:31:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Qfk6BSvcgBI7Pc/jE3YW7xZmx9KCBB6EdbOOmvrD6Qc=;
-        b=o/kwIS9r/jytIoTEBqNyRfm1IR4OcGddRWAo+yF9fpQLIb+9crwAo912mpdNTPka7k
-         jEua+cYFJcUHhwXbdudbENPFHXpuVrdJGkBWbMgP8Yv3O9J1NT+qE4YQBsMDrHss0aZZ
-         mATbCEQd0H2F5LDvP/Q+3vnLxXjVKghXtt5BkXNTr5o5yFTuj94hQvHvGCIfSZVCb4mK
-         0ADz6SCGJEbjL0NoMsqBC2DXVteR88Zr8uklUMYOT1vFoR1QGC+VhR9OuTG6p8+OIto0
-         BtmIqhLO9WQ4QLXP+gcM1TbJmvC7qhoC8xFqXKlb3PObbxREqOe3oodksIkkajQ6e2ku
-         nR+Q==
+        bh=E6dOXUoSPTypGPQDCucOQV34a6rWJR5EWTqmODKV08s=;
+        b=YiOVAxh8heSMZTuQdsY3Rn90r7ckvGRPSgw6gusedwKl6hrqXtX+qL+HGrRI83QgZs
+         m3pFCruNZauUuMVhH9M7YBc4vS7vGwyUtquoBBPcvoFTOF56RwP1TntNfwtSRIAZJIpT
+         NU7ofXdsneBIS8e7YjQ6MdkdiWmzTxtzM7Mls=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Qfk6BSvcgBI7Pc/jE3YW7xZmx9KCBB6EdbOOmvrD6Qc=;
-        b=IcYFMBwX5kOFeDmq96uRbjlMiMsQKOR3iS0KHA43H1dzaApUmZXq8UKnVpApD+xCsc
-         aHvId8R27DDcvi6dmGauP86FwGnVy7aLyJO5SAZ/Mh1AkBDVqkI6oUU/EcRYK1bXNhLM
-         AnRSFKsbh21rZJxr3QSjnrC+/L2D+0/q/1rfRQTvqUUf78qRT7XNRFds3L/Tpa6m4iPc
-         pIQVUYRuC0DSerT9NcMA7B5mDJdrCc3AbKm4ADemI1atMcrEsLPWFVfBhZXm4WGsPGTg
-         RmjuzZohzLbGvNdOulhAxTAk8NvtmS+yIpjlIK4h2rLv2qNs6a798a+2rtsO5HCTGCqv
-         sL8Q==
-X-Gm-Message-State: AOAM530I10CNCNrsv3L8HSf8vOpi4xxuaNbvEJjyFPdwVZ/wHSzSOoRp
-        qn2kJHeaxiW1KsbFg4+4SmUnxjDfs2gNEw==
-X-Google-Smtp-Source: ABdhPJxVRQSxOVe/2e9Ph5nzkeeO5xcy1nbYxdf35mJm41j0UOFiUOzNVz5K4WJ/FtwIgoSYLxNmiA==
-X-Received: by 2002:a17:90a:eb0d:: with SMTP id j13mr10470703pjz.163.1629916263928;
-        Wed, 25 Aug 2021 11:31:03 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id x20sm382813pfh.188.2021.08.25.11.31.02
+        bh=E6dOXUoSPTypGPQDCucOQV34a6rWJR5EWTqmODKV08s=;
+        b=kLTR5pbqs+fysKlz33A/TlLmEViFzM6J5II1anSWZEkDwEW+gCV4IxfvbDl+DCasMp
+         UrEuR24JKQtBPAnVY1B35vDKmYaxHQPAQNf2mrAUJ+SAnouGZ/tED4CFJDtU9zwNuWnP
+         M6qT2+8FHTph7WSvnDHG7qDjKddKSgw/9wi2Sfqh5UrycyWDGsDHm2ohbP5UHDWYiMCf
+         hdGrAhG9IHe+V0GK7ScJAQnmDqx59pdeLfu+PlslucE+9Tb7OXvLsYxpugzUz8lF4vls
+         a5pqgJXXOule+NGZIxA+xXcBz8bd2bhyGOiiXPYWyoAbrdr9y4eSdAHcXbtUv76xDXJM
+         7tWA==
+X-Gm-Message-State: AOAM531PJspOl5xrvGpudL1hlLW8u5Ep+P/wFg3Z6cHJLSBNvCqEhYs5
+        1ZW3xnj1McuAe0QvSVLsEpSKkQ==
+X-Google-Smtp-Source: ABdhPJwuW+8E9IwXrJ6Bs6gnlyFZ9HmMjLjxedAJoqQTnZPubi7HPwA1Bb216qD2OnMWatoJkBD3jQ==
+X-Received: by 2002:a17:90b:3547:: with SMTP id lt7mr11866220pjb.23.1629916266354;
+        Wed, 25 Aug 2021 11:31:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j9sm700035pgl.1.2021.08.25.11.31.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 11:31:03 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, Leo Yan <leo.yan@linaro.org>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [RFC][PATCH] dma-buf: system_heap: Avoid warning on mid-order allocations
-Date:   Wed, 25 Aug 2021 18:30:59 +0000
-Message-Id: <20210825183059.1085561-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 25 Aug 2021 11:31:05 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Ping-Ke Shih <pkshih@realtek.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Joe Perches <joe@perches.com>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] rtlwifi: rtl8192de: Restore channel index initialization
+Date:   Wed, 25 Aug 2021 11:31:03 -0700
+Message-Id: <20210825183103.1142909-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1333; h=from:subject; bh=Hw85ADjil8Tyn+cbVzUlabg2wwgY/mlYBNlLCrYximo=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhJoxntp7RbQ9YdoPTLDiD6nyn1nZUuZgcd7qA8AzQ LoTbsfyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSaMZwAKCRCJcvTf3G3AJq0HD/ 9kc+5/HXPayu+LgCjEUEG+dTqq6bkKPnXVRQ7zWMCkT7ihzaUHCBEw9UZgcjMucAZ1HQsofxZomolf RtboXmrxE9/bTSbjHONDVtTo6ZZynqTyU7IbQ6aENortHOR4BCZ7/jWQ2yH9+AknPWve4A5hA7c1ZD 9ga3HHTctJ00csVbZ9x0ozOUTBRGcM69jDEu8vkQ+NY/nC7ls9VxYwTupGS73eWPUFfG1ctJz+gVBu INp+vEu7vgYFYDf7VrUeWSkm1QkXLTGdFFi9tivY0cLe74OqBTZutg/zHBARRjIku9HdPxf4KTTEce 84MK03bpAcIwsXzzAgGvj/nss7LHAEeYmyVqbryEU391TpScdAXCKIZlHORqlQYjLF3f+/KH0llJAS w6BU3q4mo/wYKs5Fe17Rt6bY3s1RsC/Ypphuy2h22H0GzoL9nWO5L6iihaNTddnULj+kflTswWTw2Y ++I69b2Otse7z07SuogA/eERasbX6Gxivt4Dz321weCd3CONopR9jUS/wAq63us7l5pzB2atCBZckG dHLBRsjWmp4ydQu+p6JJsbUJDD0LS1S+FeOhsbRRS5ZuemQzQswrTD/oR5p6HJBLZqSM1dgJ/txu8n B6TwEq4+ZOaw+CHavUlgovoQcx3SpUk00B1V3xJgfYTHWBvbAH94/GknfxQg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When trying to do mid-order allocations, set __GFP_NOWARN to
-avoid warning messages if the allocation fails, as we will
-still fall back to single page allocatitions in that case.
-This is the similar to what we already do for large order
-allocations.
+2G channel indexes still need "place" to be initialized, since it is
+returned from this function when channel is less than 14.
 
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
+Fixes: 369956ae5720 ("rtlwifi: rtl8192de: Remove redundant variable initializations")
+Cc: Ping-Ke Shih <pkshih@realtek.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Larry Finger <Larry.Finger@lwfinger.net>
+Cc: Colin Ian King <colin.king@canonical.com>
+Cc: Kaixu Xia <kaixuxia@tencent.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/dma-buf/heaps/system_heap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 23a7e74ef966..f57a39ddd063 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -40,11 +40,12 @@ struct dma_heap_attachment {
- 	bool mapped;
- };
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
+index 8ae69d914312..b32fa7a75f17 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
+@@ -896,7 +896,7 @@ static void _rtl92d_ccxpower_index_check(struct ieee80211_hw *hw,
  
-+#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
-+#define MID_ORDER_GFP (LOW_ORDER_GFP | __GFP_NOWARN)
- #define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
- 				| __GFP_NORETRY) & ~__GFP_RECLAIM) \
- 				| __GFP_COMP)
--#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
--static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
-+static gfp_t order_flags[] = {HIGH_ORDER_GFP, MID_ORDER_GFP, LOW_ORDER_GFP};
- /*
-  * The selection of the orders used for allocation (1MB, 64K, 4K) is designed
-  * to match with the sizes often found in IOMMUs. Using order 4 pages instead
+ static u8 _rtl92c_phy_get_rightchnlplace(u8 chnl)
+ {
+-	u8 place;
++	u8 place = chnl;
+ 
+ 	if (chnl > 14) {
+ 		for (place = 14; place < sizeof(channel5g); place++) {
 -- 
-2.25.1
+2.30.2
 
