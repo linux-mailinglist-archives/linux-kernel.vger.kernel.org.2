@@ -2,116 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44A33F6FC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0AC3F6FCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239170AbhHYGqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239085AbhHYGqR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:46:17 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDE5C061757;
-        Tue, 24 Aug 2021 23:45:31 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id 22so26004613qkg.2;
-        Tue, 24 Aug 2021 23:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gPVMfJmF5apelHRJsHy850+Wr5DdBmlIDaqFUXSeNXo=;
-        b=RYfjZT+pPeLG/c6H+4FuVfXOD8rE5zIrlBwgxKiY3KLG8/O/bhxpPtsa38f6/Xm5cX
-         hH9gpHpJWJgXpOHpNDFkttMfb7Wma3tsgEhe1ZY7JT12btulwFOtMhY2f29ampKsLDVx
-         FZ3lOcqh5LXmx0qpdS4eZSsruFoNw2JQO4sktAeaVK8hxd9uMNrrpT+KCqojI0GHDRO8
-         L92No8jMYeGNeH2z9h0FyTrctB+HKd5wpCJexxOp/pcc4jek6cMd9bDglsIEpffr5iXo
-         zp+kxV62H4hbgBeapIdYjlJFEBLbzreiNJR4xx/AaqJYLsolKMDaDAIhi2sgfL1FBVLe
-         MIAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gPVMfJmF5apelHRJsHy850+Wr5DdBmlIDaqFUXSeNXo=;
-        b=j/RpFnurqp1VmQnSurX8+VCYD1FrlLcLkMO3yM8867J9PHc3kXpwJ++h8BLQED+OG7
-         enbfCPi0aTKiNqVZdSIXrUe++JPQpmVQuTnB9AmA82uKyRkSUIlvN73wXbQHru6RJMzI
-         RvGg+wK+XKY5JoK9xgEDT21x1sewBijvCDo0kcrQbg52TQCAiWtFreF8VzTz4AEbaeZ3
-         VhKmOBkPqCz4Ob1jfV4JlLkI566ekmKXaPibnz9e0DY+ri5M8lpiv64N+bMSptcXMcWx
-         0tprvvWkWP3z5foefgBtFzdpMYmGEfTUJj+/3AnsLQc1ijy8MEAQmyxF4Iu3Ht6SJIC5
-         89rg==
-X-Gm-Message-State: AOAM532xRSnC8csbELk/nqTz3MlSM8YqbeQ3x+ZgxZr7WRjkL1HjruEb
-        I9BpJmW9z4RAkDmYrIcoT5U=
-X-Google-Smtp-Source: ABdhPJx6r2y0Qz2o9dTE8QuwbDQ9c8mqvBudP4+JQ74RMeYZSmD0MwH8+K/5/Ztr6ZY9w3mRDrS0OA==
-X-Received: by 2002:a05:620a:95e:: with SMTP id w30mr28881016qkw.157.1629873930774;
-        Tue, 24 Aug 2021 23:45:30 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id w185sm12663265qkd.30.2021.08.24.23.45.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 23:45:30 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] s390:raw3270: Convert sysfs sprintf/snprintf family to sysfs_emit
-Date:   Tue, 24 Aug 2021 23:45:23 -0700
-Message-Id: <20210825064523.70563-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+        id S238640AbhHYGsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:48:42 -0400
+Received: from mail-dm6nam08on2078.outbound.protection.outlook.com ([40.107.102.78]:2272
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235678AbhHYGsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 02:48:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Oc2WCOSCaIXJ1xjI7eJZ51vn+AlOWl8+rWABf4NPAiupSyEJ5EZDvD0tdvcd0ebl9aoIfrVzLQ1j1nlH3xbrrgFHNbr01pgNqeIBW+xC0PF20yArHz64xZBqJZpQS3WlgJdaETKHkbJPTDBQb5psqiyrcPVkVtv2e6aPHbNyui7QyPHud4ba+PZAYMfl8hfKOG7LpAvQHhntCr9oW2asiIa8Yu3bizQBmmb9Fb3BAzfMy9Q7PA2dDPV03H/YI6y8f35EqW8bVzCkNwzx5GdiaJSzP/HPiEkYb0v37DBQjG8A+6UxFpnsKEhIojYbuUQ5qDvM2sSJW1yzUujzjinYbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8jkzmLS6A2CtthwGFYf3FY+2iFL5t9qG8W7HBgliJIQ=;
+ b=j9RehBZPXgkcz9NTj3KLuFf0qjh8KBCaoDMzDdDKB1jZT3D7i3LA5/A1BNnhfRg31gVPKxxuSj6aBR88kEmOZ05TJ9esruAUmHbCm7cw7E/jXkAuPxajU2V2n2nenhb6cC031j9nNG9XcneOvtrs6KIvIleWLtCOSVDQQMMD7zlbtFo2GlOwCXlTzonKCxPtnJD49ZJkaCi7XUxqD0KPt3Sc64y3QfHEWrXAOEDAiAzIDHucjQHxi5HGAL8lP6BJgFo3jWDDvIk1WAo/jreupwU4X9JZv/txfHnTEQeBGHGOlqkZGdxZceKuL7FlzVV5Vf6Cj+35A7aH/ifwLrZd5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8jkzmLS6A2CtthwGFYf3FY+2iFL5t9qG8W7HBgliJIQ=;
+ b=jdXncMVS9GZmwaMa0PTXb4ioRGm2cc6ey7iBWHGdv4lJL2/hB33L6tWhjtxKV26HJqZvzEOsM9xoKt80Z6/YgdTlFb0CXuOZKm7a+EOmJLBpvrGQF73PtsReG70sVyA7T7OQqZYZYAA8Z4ZssPUv657NCp9Rp46YJ2FGFl17eGj8Ph7X6c5+ScWdxEtoy4Gge/riw6ojlgBAU1/G+mrO8fq66MpHI0bg0jx+wNbwcQMmL2yB8ciC2VY3A2X8hRK4ZY/qkpO6DNPtbKGMTq+GAC3mIRsEdu5cgPPFU+s1Va9mCm4y1N8EBeUo92Dwg+fI+MFL2a6IzbbFCMJ3aix2bw==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
+ by BY5PR12MB3892.namprd12.prod.outlook.com (2603:10b6:a03:1a2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Wed, 25 Aug
+ 2021 06:47:52 +0000
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::c557:5e37:2390:beb8]) by BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::c557:5e37:2390:beb8%7]) with mapi id 15.20.4436.019; Wed, 25 Aug 2021
+ 06:47:52 +0000
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Gal Pressman <galpress@amazon.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
+References: <20210819230602.GU543798@ziepe.ca>
+ <CAKMK7uGgQWcs4Va6TGN9akHSSkmTs1i0Kx+6WpeiXWhJKpasLA@mail.gmail.com>
+ <20210820123316.GV543798@ziepe.ca>
+ <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
+ <20210820143248.GX543798@ziepe.ca>
+ <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
+ <fa124990-ee0c-7401-019e-08109e338042@amd.com>
+ <e2c47256-de89-7eaa-e5c2-5b96efcec834@amazon.com>
+ <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com>
+ <a9604a39-d08f-6263-4c5b-a2bc9a70583d@nvidia.com>
+ <20210824173228.GE543798@ziepe.ca>
+ <a716ae41-2d8c-c75a-a779-cc85b189fea2@amd.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <f049576e-4f36-6407-883d-24fac47c4491@nvidia.com>
+Date:   Tue, 24 Aug 2021 23:47:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <a716ae41-2d8c-c75a-a779-cc85b189fea2@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR03CA0136.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::21) To BY5PR12MB4130.namprd12.prod.outlook.com
+ (2603:10b6:a03:20b::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.2.54.195] (216.228.112.22) by SJ0PR03CA0136.namprd03.prod.outlook.com (2603:10b6:a03:33c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Wed, 25 Aug 2021 06:47:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6e4603a3-1c54-4b77-13a4-08d9679442e6
+X-MS-TrafficTypeDiagnostic: BY5PR12MB3892:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR12MB3892EA27BC553043919EAF31A8C69@BY5PR12MB3892.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1Di3fx/oeIo+HIwZPYQJx1yDZXjcTaxAFBsazhL43erqLRmL4Sjkt3Mdsp8wfYQrE0fpYSVoJ/VU6gz9w1JwAq3k7dm+KkYtpth0gzJGji/tSQi8URkIQaFnxmPTkGkmAVQY4tGJqZ6YAd7WQk5u2HTbN9CCNOQvPLGiC/ySNcV3AJsBFux/MIaAFkg+5f3HL9Bb/ic33xS4vIbqHja9WJ8BIBHPkCKo75tuLgFnz65R6gHeGgaBY71eQQ5Ays1lWQ0TH5H4QfRB0RwMmwA444OEPDYq5YBzC6Wc+8z1vg6xbiuyBDaUD5+8eiHLMyrMkdG+0L5ppSWcOcX9ihB7c2+Ajb+cuczXzWvDmtfGJ3M2hDW5446wVOuMy6DUR6J1ZkemUGUbLABCujMPvkm01/HUqluqaysMUy+5bCSZRMV6sj3hXn81rCOi4QXXXETTGQn+KkxOqV83nJ/Ygji5TwwH05KX3HoYnWLd3KmiJdT/KWGlDr9hwiL8fgg5T2nRFh4YPQn/529zNIjcorwg/R+5ZkjiH6/SyV93jD3s5PQGJn8LuwOfGqcP9F4wGu+W7GNQ6+JTBJ3o4AMVtdiybZ37YGzwmcmvrBSQGfFtpnkb9TE5neC75C/XAQ5Wc3CtjHNmjrBd/C9K4QCjzZbbPQIgs2HhE7p7fLL+XBAxk+X74c5xZ0wPRQ2uW9JFZfQ2Lcjv6xdc5ZmIuF0zYPTAFE0MnxDojvNv5TeVPOMXG/I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(136003)(396003)(346002)(316002)(54906003)(110136005)(66556008)(86362001)(66946007)(2616005)(16576012)(31696002)(956004)(31686004)(7416002)(66476007)(8676002)(8936002)(5660300002)(2906002)(26005)(83380400001)(6486002)(38100700002)(478600001)(66574015)(186003)(36756003)(4326008)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZUdEczQxMDZ5VmU4SVBDV09rRnhXdUIwbmNnc2thRCtlM2dha1YxeVRUM2VR?=
+ =?utf-8?B?VmlCWFNnelVMSVRiN3RjaENQWitqQnd3Ump0YUg0aU51aWdUZXl5WGxqUFEv?=
+ =?utf-8?B?OUtxelE2T2h5S2lHTnNYSFZaUFdPdXJ0blVyYUI1YytWeTh6WHAzdU1iNjJl?=
+ =?utf-8?B?ZkY5T0Y2N1oxdE1Ic1MzSG9mb2ZCWHl6d0RXWUIzNy9Fdm1XSmh3eDByc2Zn?=
+ =?utf-8?B?Z0x0YzROZGFjbGM5TVNISnJpRHpOSkRhQ1pWemtkc2pLRXhsaUVYRGloSVBw?=
+ =?utf-8?B?ZTBCZG8rc0VGclVRbmxqbmVzVjhqblV1c2Z0VnR6RWgwZ1Q2M1o5NXpyaG04?=
+ =?utf-8?B?UFo2bEMwSy83YjlBWE51bmtQbG1MM0VPalo5c0dQYWVQWnl2dXNJenFxT2hh?=
+ =?utf-8?B?c3RTQnV2dWdEU28wam1saDJLQW5KcXN6Q2I2UzhSVjRseXREdVJ3UjlOQy9Q?=
+ =?utf-8?B?eDAybkFsenBnN3Ziam5TZzAralZ6MVVZZEtKUS9RUFFMRnpCRXY4WWVvekRF?=
+ =?utf-8?B?TDZaTHRpcWZFYllQcFdRZHkyZVJkdlhJcHVnUFBDeTVyWXhYL0hqb2xYN3ZV?=
+ =?utf-8?B?RVpnbTFidWJzbmtla1pDNWlRWE9yczArelVSM1J3cFFiNmswU2JUS3VwQktI?=
+ =?utf-8?B?bXdpUEVpeHRuZWYrUFo5THM2YjlPU2xtNjNuLzY1RHpUb3N4RTAycGFGMU5J?=
+ =?utf-8?B?NHdkQnVMMWxqNDVYTmlOVnZFdTZDcC9KcjFpT3JvdlQrYWIxM3pnOHNDTnZt?=
+ =?utf-8?B?SmtDa253ZjlwUjBXVUVzYnorK21ocnBTK3J0OGFFWGdWblFmak9tdVZlc0sv?=
+ =?utf-8?B?NEQ1VG95Sy84SlFSdkt5M0ZmQXoweFNNL0xBL1BnSUozUzEwNUpPb2pEVjhL?=
+ =?utf-8?B?T0RjVVNMR2FoeUJCeFNMYXA0aXFHMkJvalpqQXpDczBWbXhyaFZUd2NUd2FG?=
+ =?utf-8?B?dlhOeXVHRkY0TE5pYjdWaXV5S2VMNCtXRDlaWXgxUWhtcVMwb1NYNmpLOStG?=
+ =?utf-8?B?VUVLbWxVNERSYWhaSkg5eVNXSzFnV2pkdFljVHp2NTJwTVhGMnB6Sk1xTWZx?=
+ =?utf-8?B?N3p5TmtCNkQ1Z2VYaU5SWDRPd0ljRWJuWGVuS2NIdEd3Vi9lZ0lwVG8yemdq?=
+ =?utf-8?B?WlpNNk1MT1RGRTBYQkpNQng5SmRBVE42TlRFc3hLd24rZ0k5SkJxMjF1S3FX?=
+ =?utf-8?B?eGRaTmNkMExOak14RDV4anI0UWdOY1B0bS9uUEFMQ3NsK3JqT0VXOXpWNFlG?=
+ =?utf-8?B?cEYvcGt0MVJwbis5Ym05dTNQcnh6bHltYUVrNGlOcHVqc3RFOW1LUXNRdG93?=
+ =?utf-8?B?N2Y3T0phQXZEaDNMRVBoYmtmZEhFRFNVRkFGUUFsblltT2IrMWRCVTF3aG1N?=
+ =?utf-8?B?K0FMeTM3b21mWEd0ZFJiLzdYczI5cmlqQ08vbUZ1T3FwZnVZVlhFNXlDT2xy?=
+ =?utf-8?B?bytOOWFzZEFUdzlQQXdRdlk3bTVZUkZCVEprQ1JWZldPTmtZenlWUXdzU2I4?=
+ =?utf-8?B?QTJqR21rRUdkNjJpbkJKM1VqQkJwMFRyQ3JjUUc3RGpzSlMwckdGUXJpVHo0?=
+ =?utf-8?B?MmR6WnhWdTUrUGxBQmg3dC83Z0hlWHNlaGpUNEthK2R1TW91My84MVpGekxI?=
+ =?utf-8?B?dUV4a25Pd1FrRDViYlJFUUZSZXRaRG03K0NONDV1ZmZ5TzRQTkZrajhWMGZG?=
+ =?utf-8?B?Zm9iK2hZQ0Q2ZktSdHFBU2hKdzNnK1dGVHUwdTh3dVM5NW8rNFFibmFPczl0?=
+ =?utf-8?Q?qH+gdr6paSCh7q2ANk9De9q6bHsdXq63gH66sJL?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e4603a3-1c54-4b77-13a4-08d9679442e6
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 06:47:52.6274
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a9EOX1rEodAlJaI06Rp+bZHsWmw+mleqkl8N/bkAyvBvNm0AAAmYdVr4pDNS3ZO5sZM0qSvyTGiONk0b27ULDg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3892
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jing yangyang <jing.yangyang@zte.com.cn>
+On 8/24/21 11:17 PM, Christian König wrote:
+...
+>> I think it depends on the user, if the user creates memory which is
+>> permanently located on the GPU then it should be pinnable in this way
+>> without force migration. But if the memory is inherently migratable
+>> then it just cannot be pinned in the GPU at all as we can't
+>> indefinately block migration from happening eg if the CPU touches it
+>> later or something.
+> 
+> Yes, exactly that's the point. Especially GPUs have a great variety of setups.
+> 
+> For example we have APUs where the local memory is just stolen system memory and all buffers must be 
+> migrate-able because you might need all of this stolen memory for scanout or page tables. In this 
+> case P2P only makes sense to avoid the migration overhead in the first place.
+> 
+> Then you got dGPUs where only a fraction of the VRAM is accessible from the PCIe BUS. Here you also 
+> absolutely don't want to pin any buffers because that can easily crash when we need to migrate 
+> something into the visible window for CPU access.
+> 
+> The only real option where you could do P2P with buffer pinning are those compute boards where we 
+> know that everything is always accessible to everybody and we will never need to migrate anything. 
+> But even then you want some mechanism like cgroups to take care of limiting this. Otherwise any 
+> runaway process can bring down your whole system.
+> 
+> Key question at least for me as GPU maintainer is if we are going to see modern compute boards 
+> together with old non-ODP setups. Since those compute boards are usually used with new hardware 
+> (like PCIe v4 for example) the answer I think is most likely "no".
+> 
 
-Fix the following coccicheck warning:
-./drivers/s390/char/raw3270.c:1066:8-16: WARNING: use scnprintf or sprintf
-./drivers/s390/char/raw3270.c:1050:8-16: WARNING:use scnprintf or sprintf
-./drivers/s390/char/raw3270.c:1058:8-16: WARNING:use scnprintf or sprintf
+That is a really good point. Times have changed and I guess ODP is on most (all?) of
+the new Infiniband products now, and maybe we don't need to worry so much about
+providing first-class support for non-ODP setups.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
----
- drivers/s390/char/raw3270.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I've got to drag my brain into 2021+! :)
 
-diff --git a/drivers/s390/char/raw3270.c b/drivers/s390/char/raw3270.c
-index 646ec79..be8529f 100644
---- a/drivers/s390/char/raw3270.c
-+++ b/drivers/s390/char/raw3270.c
-@@ -1047,7 +1047,7 @@ struct raw3270_view *
- static ssize_t
- raw3270_model_show(struct device *dev, struct device_attribute *attr, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%i\n",
-+	return sysfs_emit(buf, "%i\n",
- 			((struct raw3270 *) dev_get_drvdata(dev))->model);
- }
- static DEVICE_ATTR(model, 0444, raw3270_model_show, NULL);
-@@ -1055,7 +1055,7 @@ struct raw3270_view *
- static ssize_t
- raw3270_rows_show(struct device *dev, struct device_attribute *attr, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%i\n",
-+	return sysfs_emit(buf, "%i\n",
- 			((struct raw3270 *) dev_get_drvdata(dev))->rows);
- }
- static DEVICE_ATTR(rows, 0444, raw3270_rows_show, NULL);
-@@ -1063,7 +1063,7 @@ struct raw3270_view *
- static ssize_t
- raw3270_columns_show(struct device *dev, struct device_attribute *attr, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%i\n",
-+	return sysfs_emit(buf, "%i\n",
- 			((struct raw3270 *) dev_get_drvdata(dev))->cols);
- }
- static DEVICE_ATTR(columns, 0444, raw3270_columns_show, NULL);
+thanks,
 -- 
-1.8.3.1
-
-
+John Hubbard
+NVIDIA
