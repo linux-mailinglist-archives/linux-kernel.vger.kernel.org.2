@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FE73F7257
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0613F7259
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239219AbhHYJzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236405AbhHYJzK (ORCPT
+        id S239583AbhHYJz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:55:57 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14418 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236737AbhHYJz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:55:10 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266A3C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:54:25 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id i3-20020a056830210300b0051af5666070so44308839otc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u292+T+PmNvvzzkHWgQqQyq2ET9S9Sd8vOWw3NIaxU8=;
-        b=fdYoLhyAPa70zFflHkbc0jPuLAmarJelaiV3EHuGBC/x6BSW9INC3reopeOhNwOrqd
-         fOuDF0G5YMfSVhbcXIhd6XIm2wtPJXNq9DU4g52Dh2vMTXdN1l3feSj1mDkAAxuIVwqL
-         d52eeW/FPCDLsePj1vTohQn63Z621mFMjkrwxrHKPmiXQyiVlF4TBSa6MHkAyNX3WplF
-         QsljTBxdjH02ED28l/YVKOwF0vcI4bYx3sPmZ+LiGc3ib75jm5RDYFaHEEYxRq5K/2iN
-         fDtAACYtC3OrjCoPrmfvB0Wbz18jEgiBYBuL3ewMzNNccpQPqSP9ro42Il0zkqr5fCok
-         aK5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u292+T+PmNvvzzkHWgQqQyq2ET9S9Sd8vOWw3NIaxU8=;
-        b=eqkzdWGNUk1Kz6CjBZjbWvFttmJZmpulrBc6SipXDixtV+ik5nP2zWmiWt38PCr4xF
-         o7ALiTAPGk2BS/IZp58Mmp6SoyvAngwNYl26doAhcHY2X9ePP7nMioYlX1Px8MIZPee5
-         Qk9jumRpqNXt0fuHz1oxcXkKahnL/dka7LQu93NnHEM/cJHGtetDL9jz1Wqv7lCPNT1+
-         UewwGKt4stL2S+hAvRycYlhK02BR02O7wmCgY2EubAt0IaPRLQiSpeNH4GlfVMeVcqi4
-         Qj5NubCPbLD4/6NPZQq/nKTYJP7fkYPLt5/wI3LKgjvGcKWOc9q+qRrb+xAp0SOa+k6J
-         y76A==
-X-Gm-Message-State: AOAM532J9vHw+5sEIw22oUTeP15S5LZvHlMB4TOazqQEZE5rpAdfXEI/
-        1kiaDd0hwnpWMYeH8YR5lG1BvjZlmnu+oFx61ngTUQ==
-X-Google-Smtp-Source: ABdhPJw06OWfSSBQZ90EY4CXd+Zmvqbypk7F8T9q6crqFZCrAOl83adjr3qFW1g6VdvZOZGe1cBQw2A+a5HSTLvCuTY=
-X-Received: by 2002:a05:6830:88:: with SMTP id a8mr36303165oto.233.1629885264254;
- Wed, 25 Aug 2021 02:54:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210825092116.149975-1-wangkefeng.wang@huawei.com>
- <20210825092116.149975-5-wangkefeng.wang@huawei.com> <CAG_fn=X9oaw0zJrcmShNcvd3UsNSFKsH3kSdD5Yx=4Sk_WtNrQ@mail.gmail.com>
-In-Reply-To: <CAG_fn=X9oaw0zJrcmShNcvd3UsNSFKsH3kSdD5Yx=4Sk_WtNrQ@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 25 Aug 2021 11:54:12 +0200
-Message-ID: <CANpmjNN4=ckdTcSKJNurmW3BNyU-V4QTJbR0cm4s-whW3ykRHw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mm: kfence: Only load kfence_test when kfence is enabled
+        Wed, 25 Aug 2021 05:55:56 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gvh7q53XLzbddf;
+        Wed, 25 Aug 2021 17:51:19 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 25 Aug 2021 17:55:02 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 25 Aug 2021 17:55:02 +0800
+Subject: Re: [PATCH 4/4] mm: kfence: Only load kfence_test when kfence is
+ enabled
 To:     Alexander Potapenko <glider@google.com>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
+CC:     Russell King <linux@armlinux.org.uk>,
+        Marco Elver <elver@google.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
         kasan-dev <kasan-dev@googlegroups.com>,
         Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210825092116.149975-1-wangkefeng.wang@huawei.com>
+ <20210825092116.149975-5-wangkefeng.wang@huawei.com>
+ <CAG_fn=X9oaw0zJrcmShNcvd3UsNSFKsH3kSdD5Yx=4Sk_WtNrQ@mail.gmail.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <99daf260-76af-8316-fa9a-a649c8a8d1ab@huawei.com>
+Date:   Wed, 25 Aug 2021 17:55:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <CAG_fn=X9oaw0zJrcmShNcvd3UsNSFKsH3kSdD5Yx=4Sk_WtNrQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021 at 11:31, Alexander Potapenko <glider@google.com> wrote:
+
+On 2021/8/25 17:31, Alexander Potapenko wrote:
 > On Wed, Aug 25, 2021 at 11:17 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-> >
-> > Provide kfence_is_enabled() helper, only load kfence_test module
-> > when kfence is enabled.
->
+>> Provide kfence_is_enabled() helper, only load kfence_test module
+>> when kfence is enabled.
 > What's wrong with the current behavior?
 > I think we need at least some way to tell the developer that KFENCE
 > does not work, and a failing test seems to be the perfect one.
 
-Like Alex said, this is working as intended. The KFENCE test verifies
-that everything is working as expected, *including* that KFENCE was
-enabled, and has already helped us identify issues where we expected
-it to be enabled! Trying to run the test when KFENCE was intentionally
-disabled is therefore not a useful usecase.
+If the kfence is not enabled, eg kfence.sample_interval=0, kfence_test 
+spend too much time,
 
-Please drop this patch.
+and all tests will fails. It is meaningless. so better to just skip it ;)
+
+>> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
+>> index eb6307c199ea..4087f9f1497e 100644
+>> --- a/mm/kfence/kfence_test.c
+>> +++ b/mm/kfence/kfence_test.c
+>> @@ -847,6 +847,8 @@ static void unregister_tracepoints(struct tracepoint *tp, void *ignore)
+>>    */
+>>   static int __init kfence_test_init(void)
+>>   {
+>> +       if (!kfence_is_enabled())
+
+Add a print info here?
+
+>> +               return 0;
+>>          /*
+>>           * Because we want to be able to build the test as a module, we need to
+>>           * iterate through all known tracepoints, since the static registration
+>> --
+>> 2.26.2
+>>
+>> --
+>> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+>> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+>> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210825092116.149975-5-wangkefeng.wang%40huawei.com.
+>
+>
