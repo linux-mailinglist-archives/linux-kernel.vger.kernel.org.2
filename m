@@ -2,74 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFB93F7735
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C80A3F7749
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241543AbhHYOZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241544AbhHYOZX (ORCPT
+        id S241624AbhHYO0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:26:38 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60336
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241569AbhHYO0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 10:25:23 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC62C06129F
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:24:22 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id h1so10798600pjs.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:24:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=J5Z8JMGF48sbqWwmrXZXBXKI8PpiUwWnrshfPRtuNs4=;
-        b=lJwwOBHWX8O8kAm1DAoSLMlqqRu09Em3m13Dzpu/2c0togyz959Mv0ecbImoENHnP0
-         1psWoen9eJyqWmANzYBrFGNMmsKQ9HlRcgrM+ozIzYZzb/A6dkUbAAsME1mN7cIhgQkw
-         YdBKTxP/CaIWEAao43vvasRsG5X6khm27OTQ1eOaIIqmzuaBi9uQJ54kgcgdVqmmcmaj
-         871ft79QE76kQXcWNRmMuF/OuJs155sfD9szaEF4SwGglBczXrqMTtPf0gaD71P8uxtI
-         ktMsGrCKfUgysYLMfccHrnUigxl3AswNDwEdGi4Tml4HQs3zjGpFEAgfGT+TmQAEbLcs
-         lmvg==
+        Wed, 25 Aug 2021 10:26:35 -0400
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 359864075F
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:25:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629901542;
+        bh=dWQld40HyyuNpw/n+LSy4FsBoxLQ4dmEUGnFzO1qgBs=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=q2LiEPDCrhumr2PIp5St7d+Xak8KLY0KqjvZYJmlNucM34HFc/aPqByx8eujWHh7y
+         kbf2HTYXH+6gBcHChms3LUz2pT/RHjbA/5G04Xf9UKTdAyfJOHj/qFoVGhXXtTxJJJ
+         mhgxzQfTjtQoteIT2xg3MYiV5GpIwwuLqM2l8kXDGZOp4F1V8birxO88EDIywJi2I7
+         p2kWIYjp3QHawU7xlIDId+seYJD6bGmwME69Al3FsAG02ThTx9uY4hBL0UC3nE9fle
+         VIOqzAzzZzn1+h7zOEsAUJsFTeAD0bnasmesE3K70F2Wraxeudmvv4F6nUzdpNBqLa
+         e6Bwb2qmq7RsQ==
+Received: by mail-wm1-f71.google.com with SMTP id r125-20020a1c2b830000b0290197a4be97b7so1904733wmr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:25:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=J5Z8JMGF48sbqWwmrXZXBXKI8PpiUwWnrshfPRtuNs4=;
-        b=oi2u3IlqXyWuzNrRrTYB3hjwLMXDem2K/AiIIHpVpYuPNp7QvIfY8ugkjQFeQpUbet
-         99G5tc92TobnsOcW6RI/xC0el9MrFuIrHuZ1F/I3FI8Uo3Xas0KWKzi9YUVrR1GSkpYm
-         t6J0CoQIS6vs44zEsWOlW1Je9BGLgS+xfyGMEhKoQn5SptOvLxya9RNfRI6GxTYdwS2R
-         VcOSYrPticwoie3LFcebTI5zizMHmqNVy1EH3guTB4xG7oVOxKmwd/19Ex0CMMjbyMtu
-         syBaoVnDNGQQ/UayR/yWv8O0XjGPRPq+wxIKIYsmMUguSqTWa+aVtCLOgEkl12S6wG65
-         Cfiw==
-X-Gm-Message-State: AOAM530J2WxvOfYK/oHCqeeEj9hDXbFbVBuus6V32PM0rAJTigvaK2qb
-        cUAsfWElf4aGuWY7p2c7YcFYrObI0EIT5lDRfgk=
-X-Google-Smtp-Source: ABdhPJwED8gA3IjMcHyDwlG+AhNjBB7UnRCLqKG/c7pdLh8IrTk+DEy/7jLzoUVkev5KBdJbQpW7PYAxU1x5TC/hqik=
-X-Received: by 2002:a17:90b:206:: with SMTP id fy6mr7625401pjb.73.1629901461243;
- Wed, 25 Aug 2021 07:24:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dWQld40HyyuNpw/n+LSy4FsBoxLQ4dmEUGnFzO1qgBs=;
+        b=KgfC46wUpGdJdZdP21JjOR/uPTs9WGAj49zmAce/l1Y8SFXqR9OyMW+8c1rAOQqSpA
+         eSygA3YVGoIr4Sj9ZF6hU8+C4l2Eub+lYWO07HCzF+zJaDM2NkjSarZyvrw1ujrO5HU5
+         FDEUrYge0uXUJj6tDVwwnyjAHhM0p+1evDGBhw00k/d+2sJduNvbQWttOeQ+BeYAMC2r
+         +XgL04CBpBEUSHElQQMEZmsPjyY9731eS3cjAbvUtKmf24Xg71TyCouWMIJY9UUUS3lp
+         zFAtJ+OOwCgjGFRZipJTIOoO4PEduiKLHE/4KDBlhi8DisFrKaK9JP0l49VDqTs104mj
+         9nkw==
+X-Gm-Message-State: AOAM532imsVQhQXLRJsAYBe61EulBRneSRxmbeq5jf49qAsphgwvXpZ3
+        MGrSB1bMDYxYCUyJ5EIHdJX3iiKguA9V3PeTF7k/B4ftaI4PNudoZQm3TSSm3YXMUZzCk660Mul
+        Sf+dKyVYAwJeVRO1hRC4nk5LueovSJBl+hH5+9AAXYw==
+X-Received: by 2002:adf:e702:: with SMTP id c2mr25237467wrm.397.1629901541927;
+        Wed, 25 Aug 2021 07:25:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxj7bYleGjuqJyKTtF7fT9/tz8jCKodiT+pN+DKFXdQTP4xquIQjc6L3KH5sb45BRycXVFuEA==
+X-Received: by 2002:adf:e702:: with SMTP id c2mr25237449wrm.397.1629901541768;
+        Wed, 25 Aug 2021 07:25:41 -0700 (PDT)
+Received: from localhost.localdomain ([79.98.113.233])
+        by smtp.gmail.com with ESMTPSA id i68sm60375wri.26.2021.08.25.07.25.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 07:25:41 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/6] nfc: microread: remove unused header includes
+Date:   Wed, 25 Aug 2021 16:24:54 +0200
+Message-Id: <20210825142459.226168-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a05:7300:4282:b029:34:2a15:83d9 with HTTP; Wed, 25 Aug 2021
- 07:24:20 -0700 (PDT)
-Reply-To: ahmadmustafa.7800@gmail.com
-From:   Ahmad Mustafa <rubenherbert789@gmail.com>
-Date:   Wed, 25 Aug 2021 15:24:20 +0100
-Message-ID: <CAOTeY0=DPeV6abebZ8=7SXt+Hj1Uzod8ZDmqwz3Lyb0zX3=3RQ@mail.gmail.com>
-Subject: =?UTF-8?B?5o+Q6K2wIFTDrXnDrC9Qcm9wb3NhbA==?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-6Kaq5oSb55qE5pyL5Y+L77yMDQoNCuaIkeWvq+S/oemAmuefpeS9oOaIkeacieS4gOWAi+WVhual
-reioiOWKg+abuO+8jOaIkeaDs+WSjOS9oOS4gOi1t+iZleeQhuOAgg0K5raJ5Y+K5LqU5Y2D6JCs
-576O5YWD44CC6KuL5pS+5b+D77yM5LiA5YiH6YO95piv5ZCI5rOV5LiU54Sh6aKo6Zqq55qE44CC
-DQroq4vooajmmI7mgqjnmoToiIjotqPjgIINCg0K6YKB5YWL54i+wrfmi4nluIzlvrfjgIINCg0K
-UcSrbifDoGkgZGUgcMOpbmd5x5J1LA0KDQp3x5IgeGnEmyB4w6xuIHTFjW5nemjEqyBux5Agd8eS
-IHnHknUgecSrZ8OoIHNoxIFuZ3nDqCBqw6xodcOgIHNoxassIHfHkiB4aceObmcgaMOpIG7HkCB5
-xKtxx5AgY2jHlGzHkC4NClNow6hqw60gd8eUcWnEgW4gd8OgbiBtxJtpeXXDoW4uIFHHkG5nIGbD
-oG5neMSrbiwgecSrcWnDqCBkxY11IHNow6wgaMOpZseOIHFpxJsgd8O6IGbEk25neGnHjm4gZGUu
-DQpRx5BuZyBiaceOb23DrW5nIG7DrW4gZGUgeMOsbmdxw7kuDQoNCk3DoGlrw6gnxJtywrdsxIEg
-eMSrIGTDqS4NCg0KDQpEZWFyIGZyaWVuZCwNCg0KSSB3cml0ZSB0byBpbmZvcm0geW91IGFib3V0
-IGEgYnVzaW5lc3MgcHJvcG9zYWwgSSBoYXZlIHdoaWNoIEkgd291bGQNCmxpa2UgdG8gaGFuZGxl
-IHdpdGggeW91Lg0KRmlmdHkgbWlsbGlvbiBkb2xsYXJzIGlzIGludm9sdmVkLiBCZSByZXN0IGFz
-c3VyZWQgdGhhdCBldmVyeXRoaW5nIGlzDQpsZWdhbCBhbmQgcmlzayBmcmVlLg0KS2luZGx5IGlu
-ZGljYXRlIHlvdXIgaW50ZXJlc3QuDQoNCk1pY2hhZWwgUmFjaGlkLg0K
+Do not include unnecessary headers.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/nfc/microread/mei.c       | 1 -
+ drivers/nfc/microread/microread.c | 1 -
+ 2 files changed, 2 deletions(-)
+
+diff --git a/drivers/nfc/microread/mei.c b/drivers/nfc/microread/mei.c
+index 8fa7771085eb..8edf761a6b2a 100644
+--- a/drivers/nfc/microread/mei.c
++++ b/drivers/nfc/microread/mei.c
+@@ -10,7 +10,6 @@
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/nfc.h>
+-#include <net/nfc/hci.h>
+ #include <net/nfc/llc.h>
+ 
+ #include "../mei_phy.h"
+diff --git a/drivers/nfc/microread/microread.c b/drivers/nfc/microread/microread.c
+index 9d83ccebd434..bb4d029bb888 100644
+--- a/drivers/nfc/microread/microread.c
++++ b/drivers/nfc/microread/microread.c
+@@ -15,7 +15,6 @@
+ #include <linux/nfc.h>
+ #include <net/nfc/nfc.h>
+ #include <net/nfc/hci.h>
+-#include <net/nfc/llc.h>
+ 
+ #include "microread.h"
+ 
+-- 
+2.30.2
+
