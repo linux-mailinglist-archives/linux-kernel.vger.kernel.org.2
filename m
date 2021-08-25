@@ -2,110 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B323F7118
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8F03F7119
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239005AbhHYI1U convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Aug 2021 04:27:20 -0400
-Received: from mo-csw1515.securemx.jp ([210.130.202.154]:45876 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbhHYI1T (ORCPT
+        id S238561AbhHYI1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 04:27:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41619 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232199AbhHYI1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 04:27:19 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 17P8Q6qo007365; Wed, 25 Aug 2021 17:26:06 +0900
-X-Iguazu-Qid: 34trdvrI6vzHvSyZzn
-X-Iguazu-QSIG: v=2; s=0; t=1629879965; q=34trdvrI6vzHvSyZzn; m=WoRiB9Flbt8BP4+3OyJxp3/Bi6CQzfmha+qyqhldvUA=
-Received: from CNN1EMTA03.test.kioxia.com ([202.248.33.144])
-        by relay.securemx.jp (mx-mr1510) id 17P8Q4cs021625;
-        Wed, 25 Aug 2021 17:26:04 +0900
-Received: from Switcher-Post_Send (gateway [10.232.20.1])
-        by CNN1EMTA03.test.kioxia.com (Postfix) with ESMTP id 7C1E631B1F;
-        Wed, 25 Aug 2021 17:26:04 +0900 (JST)
-Received: from CNN1ESTR04.kioxia.com (localhost [127.0.0.1])
-        by Switcher-Post_Send (Postfix) with ESMTP id 709B3190579710;
-        Wed, 25 Aug 2021 17:22:41 +0900 (JST)
-Received: from localhost [127.0.0.1] 
-         by CNN1ESTR04.kioxia.com with ESMTP id 0003TAAAAAA0271F;
-         Wed, 25 Aug 2021 17:22:41 +0900
-Received: from CNN1EXMB03.r1.kioxia.com (CNN1EXMB03.r1.kioxia.com [10.232.20.152])
-        by Switcher-Pre_Send (Postfix) with ESMTP id 65A1DA00617EA;
-        Wed, 25 Aug 2021 17:22:41 +0900 (JST)
-Received: from CNN1EXMB02.r1.kioxia.com (10.232.20.151) by
- CNN1EXMB03.r1.kioxia.com (10.232.20.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 25 Aug 2021 17:26:03 +0900
-Received: from CNN1EXMB02.r1.kioxia.com ([10.13.100.21]) by
- CNN1EXMB02.r1.kioxia.com ([10.13.100.21]) with mapi id 15.01.2242.010; Wed,
- 25 Aug 2021 17:26:03 +0900
-From:   sasaki tatsuya <tatsuya6.sasaki@kioxia.com>
-To:     Sagi Grimberg <sagi@grimberg.me>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] nvme: update keep alive interval when kato is modified
-Thread-Topic: [PATCH v2] nvme: update keep alive interval when kato is
- modified
-Thread-Index: AdeYqq0GYCdtylBoR8GOhZA2v9EjoAAMlYwAACq71yA=
-Date:   Wed, 25 Aug 2021 08:26:03 +0000
-Message-ID: <ad3ea07be9174fb68c06c516192bf05e@kioxia.com>
-References: <526a1a756d6c4643b15b1b305cc32817@kioxia.com>
- <05033836-83b9-c060-0348-774a02b60d01@grimberg.me>
-In-Reply-To: <05033836-83b9-c060-0348-774a02b60d01@grimberg.me>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.211.44.200]
-x-tm-as-product-ver: ISME-14.0.0.2080-8.5.1020-26364.007
-x-tm-as-result: No-10--3.456500-8.000000
-x-tmase-matchedrid: 6E41RGmUyPrUL3YCMmnG4h3Pziq4eLUfPknazlXMVpVYC5LPd7BvbbLs
-        vs6J0rHdqH/x4QEYOK+w49/KRoE2DmJY9i/8SxOHrZZaiLezul0L8TGleseLPHls69bzQG/gjUQ
-        jwBaLDpQVgI0fS7eHxWFV3cuPc/KP9bPHgjnnomBwju9EALAXQiIk3dpe5X+h7FgZhHZ4fUTzPv
-        RcNNSOxtwDtnxW7PKIhVaMx/vKxVShmj3mg7kbBW/6CCblACLhTFQnI+epPIYRQQ4kFqjjJAtBe
-        8tVCKUeoi+ZsUmcLQSzaFs1abK0x5soi2XrUn/JIq95DjCZh0zOjM6qu6GAtwfSeK1uwILztO9r
-        zDWbK3wqtq5d3cxkNffvWahKfRU4ZJrYsGIvodVf/Sgxp6O06oaDRBK+cuxquIenSbtVLhWeNA7
-        blM9Pflr0nVq8TX+O5MhWtwfCk2x9s5ZA7ZT2jkei6YdY6OruPJXcPkgxEwmbYLZwudds349pbp
-        RrbisdIMW4USIcKqueqD9WtJkSIw==
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--3.456500-8.000000
-x-tmase-version: ISME-14.0.0.2080-8.5.1020-26364.007
-x-tm-snts-smtp: F0A5A65516F857071B5E67CE998DA067AF24CBAAC98F78215503956817D67AA52000:8
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        Wed, 25 Aug 2021 04:27:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629880008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hw2zPmIxOckhD41uqS/X7JqPhnbQ+Fo/eKabxGOh6b8=;
+        b=WlODoCfSOmbYT6rmur0nPr1GVgNjJP5T+LrQCLy7NyRIar0eGVsZQaEqxvRtSV/rBVEIch
+        8fBalyD1L+NNQRCZghUg6XwSJXNTf3fy7lAlJUgl+p8GDtPo5ob6q3X7jK5M5+kldURb01
+        DBAhgIg58QRnfE89B+4oNPn4eV0QrV0=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-2Mc1pwgJPSCaVp898Rqu5Q-1; Wed, 25 Aug 2021 04:26:47 -0400
+X-MC-Unique: 2Mc1pwgJPSCaVp898Rqu5Q-1
+Received: by mail-wr1-f69.google.com with SMTP id v6-20020adfe4c6000000b001574f9d8336so2388555wrm.15
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 01:26:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=hw2zPmIxOckhD41uqS/X7JqPhnbQ+Fo/eKabxGOh6b8=;
+        b=CrUc4b1szw10LmL70wpdDucUFu5dUN7dwUm4cRbaZIZxGcy9J7TZ4vuqq6p3Rnb+KO
+         qytbUoYH/7bnutck/R0CJJw+86yxVD31BSPgIg0vvVkGVpKX3aLGPlxaphJxC8uMIm88
+         6Yg8xlmZktoaMKsfFJ7HXHt+Zq1Chy7C49xJu/WNlJr80pW8MQEujlSebtru9OnNWnL9
+         yEEQ4sS/sptZpzc9Txk2STmwQzvjmKk+puuCmeS3HoKtXdN4mkLkzssxrEjPLEHeqWH4
+         3Tz4YJkvKWUkBSsSBAEy1Y9kO/azGzoguGrIGW6tkmU6NCZSG+ffsE/0e7BkhMH4IBRV
+         QgLg==
+X-Gm-Message-State: AOAM531Zx+GaCvbNGAapf/2l2PTr6BBB+2RmG2PZQYPB5XhBmRskLQ83
+        FpqqHQPceFHwWD5EfudU2xWWBO0dRD5CsN50n+grcnqijhGtTZeBVLVDBtHEvOirXabLzEB4CNz
+        UhdcXwPCAYJbyfQ8MUouZfPZw+pQhSzAGzNQvWo2bjouZ0XU1w6XOxRJCwQMWWzhRJdFbHnIMzQ
+        gY
+X-Received: by 2002:adf:c506:: with SMTP id q6mr789748wrf.78.1629880005922;
+        Wed, 25 Aug 2021 01:26:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6A5hiH3U/43h6cOiMSnLit5EgFI1b0pDXuQx1QTuJr31niaj9920rv40BxROGgkMGDI5wDQ==
+X-Received: by 2002:adf:c506:: with SMTP id q6mr789715wrf.78.1629880005568;
+        Wed, 25 Aug 2021 01:26:45 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id f23sm4484806wmc.3.2021.08.25.01.26.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 01:26:45 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Eduardo Habkost <ehabkost@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
+ from ioapic_write_indirect()
+In-Reply-To: <YSUvESHcms6B3+DA@google.com>
+References: <20210823143028.649818-1-vkuznets@redhat.com>
+ <20210823143028.649818-5-vkuznets@redhat.com>
+ <20210823185841.ov7ejn2thwebcwqk@habkost.net>
+ <87mtp7jowv.fsf@vitty.brq.redhat.com>
+ <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
+ <87k0kakip9.fsf@vitty.brq.redhat.com>
+ <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
+ <YSUvESHcms6B3+DA@google.com>
+Date:   Wed, 25 Aug 2021 10:26:44 +0200
+Message-ID: <87eeaij5ff.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-X-CrossPremisesHeadersFilteredBySendConnector: CNN1EXMB03.r1.kioxia.com
-X-OrganizationHeadersPreserved: CNN1EXMB03.r1.kioxia.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/21 5:42 AM JST, Sagi Grimberg wrote:
-> > +	if (cmd->opcode == nvme_admin_set_features &&
-> > +	    (cmd->cdw10 & 0xFF) == NVME_FEAT_KATO) {
-> > +		/* ms -> s */
-> 
-> no need for this comment.
+Sean Christopherson <seanjc@google.com> writes:
 
-Thanks for your comments. I will remove this /* ms -> s*/ comment.
+> On Tue, Aug 24, 2021, Maxim Levitsky wrote:
+>> On Tue, 2021-08-24 at 16:42 +0200, Vitaly Kuznetsov wrote:
+>> > Eduardo Habkost <ehabkost@redhat.com> writes:
+>> > 
+>> > > On Tue, Aug 24, 2021 at 3:13 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>> > > > Eduardo Habkost <ehabkost@redhat.com> writes:
+>> > > > 
+>> > > > > On Mon, Aug 23, 2021 at 04:30:28PM +0200, Vitaly Kuznetsov wrote:
+>> > > > > > diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
+>> > > > > > index ff005fe738a4..92cd4b02e9ba 100644
+>> > > > > > --- a/arch/x86/kvm/ioapic.c
+>> > > > > > +++ b/arch/x86/kvm/ioapic.c
+>> > > > > > @@ -319,7 +319,7 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
+>> > > > > >      unsigned index;
+>> > > > > >      bool mask_before, mask_after;
+>> > > > > >      union kvm_ioapic_redirect_entry *e;
+>> > > > > > -    unsigned long vcpu_bitmap;
+>> > > > > > +    unsigned long vcpu_bitmap[BITS_TO_LONGS(KVM_MAX_VCPUS)];
+>
+> The preferred pattern is:
+>
+> 	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
+>
 
-> > +		unsigned int new_kato = DIV_ROUND_UP(cmd->cdw11, 1000);
-> > +
-> > +		nvme_update_keep_alive(ctrl, new_kato);
-> 
-> I think you can now inline nvme_update_keep_alive here, no need to keep
-> it in a function.
+Yes, thanks!
 
-Does this mean the section below needs to be moved from core routine
-to nvme_user_cmd_post function?
-> > +	dev_info(ctrl->device,
-> > +		 "keep alive commands interval on the host is updated from %u ms to %u ms\n",
-> > +		 ctrl->kato * 1000 / 2, new_kato * 1000 / 2);
-> > +
-> > +	nvme_stop_keep_alive(ctrl);
-> > +	ctrl->kato = new_kato;
-> > +	nvme_start_keep_alive(ctrl);
+>> > > > > 
+>> > > > > Is there a way to avoid this KVM_MAX_VCPUS-sized variable on the
+>> > > > > stack?  This might hit us back when we increase KVM_MAX_VCPUS to
+>> > > > > a few thousand VCPUs (I was planning to submit a patch for that
+>> > > > > soon).
+>> > > > 
+>> > > > What's the short- or mid-term target?
+>> > > 
+>> > > Short term target is 2048 (which was already tested). Mid-term target
+>> > > (not tested yet) is 4096, maybe 8192.
+>> > > 
+>> > > > Note, we're allocating KVM_MAX_VCPUS bits (not bytes!) here, this means
+>> > > > that for e.g. 2048 vCPUs we need 256 bytes of the stack only. In case
+>> > > > the target much higher than that, we will need to either switch to
+>> > > > dynamic allocation or e.g. use pre-allocated per-CPU variables and make
+>> > > > this a preempt-disabled region. I, however, would like to understand if
+>> > > > the problem with allocating this from stack is real or not first.
+>> > > 
+>> > > Is 256 bytes too much here, or would that be OK?
+>> > > 
+>> > 
+>> > AFAIR, on x86_64 stack size (both reqular and irq) is 16k, eating 256
+>
+> Don't forget i386!  :-)
+>
 
-Thanks.
+I'm not forgetting, I'm deliberately ignoring its existence :-)
+
+Whoever tries to raise KVM_MAX_VCPUS from '288' may limit the change to
+x86_64, I seriosly doubt 32bit users want to run guests with thouthands
+of CPUs.
+
+>> > bytes of it is probably OK. I'd start worrying when we go to 1024 (8k
+>> > vCPUs) and above (but this is subjective of course).
+>
+> 256 is fine, 1024 would indeed be problematic, e.g. CONFIG_FRAME_WARN defaults to
+> 1024 on 32-bit kernels.  That's not a hard limit per se, but ideally KVM will stay
+> warn-free on all flavors of x86.
+
+Thanks for the CONFIG_FRAME_WARN pointer, I said '1024' out of top of my
+head but it seems the number wasn't random after all)
+
+>
+>> On the topic of enlarging these bitmaps to cover all vCPUs.
+>> 
+>> I also share the worry of having the whole bitmap on kernel stack for very
+>> large number of vcpus.
+>> Maybe we need to abstract and use a bitmap for a sane number of vcpus, 
+>> and use otherwise a 'kmalloc'ed buffer?
+>
+> That's a future problem.  More specifically, it's the problem of whoever wants to
+> push KVM_MAX_VCPUS > ~2048.  There are a lot of ways to solve the problem, e.g.
+> this I/O APIC code runs under a spinlock so a dedicated bitmap in struct kvm_ioapic
+> could be used to avoid a large stack allocation.
+
++1
+
+>
+>> Also in theory large bitmaps might affect performance a bit.
+>
+> Maybe.  The only possible degredation for small VMs, i.e. VMs that don't need the
+> full bitmap, is if the compiler puts other variables below the bitmap and causes
+> sub-optimal cache line usage.  But I suspect/hope the compiler is smart enough to
+> use GPRs and/or organize the local variables on the stack so that doesn't happen.
+>
+
+-- 
+Vitaly
 
