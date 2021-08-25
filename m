@@ -2,101 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF2C3F710E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8247B3F710A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239358AbhHYIW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 04:22:29 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:5489 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhHYIW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 04:22:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1629879702; x=1661415702;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=igfSvgjpM/C/zVr0wQV00L4OB0xMED/drnFhbg6ckWk=;
-  b=E1F5LYB6x/NTz9Xdt99Hm1wt3SROVOe5mG4qb3zKPi+Irpl26rCOvPdu
-   38+WMDrRVBOgRNRj6tap+7fp2oy7/XbJhG4FZULJae5QeFm9wAaJZnjrz
-   jSCqSdDu+Lykn5nvvUbfQWW8ATqYOimq1dO+Lmgixwfm5sZo/xspx4I66
-   r102pnNAeCk9VqbqDZ13pquvV0iZVaH8U66yXKgDfMb8E6LAqoitccfry
-   LWAoXTaIy4J5DqBm28JTKMwZdJ0Sv46LGLo+CiyQc9rFRuczGVzaNdwlY
-   CUGhaONn/OIjzhjhihfwLMW2lYkOTMvkOR79TitHAW70YEs7pTrj3/Pn1
-   w==;
-IronPort-SDR: jT4aWIwQ9QuqQaptXXMxCF7sKsB6G49hf6FB1Huw+BBM/cPlX1nPqG3VCn71AJTVesGfU0caEc
- mkUobKh2ZpQSTj4ljFFQOV4KNmf5duUuEGal6kyrLSROYZhY9lBy3At5Vxw1ZetMUTom0yPoNd
- gYDDHhS0vhDYJ36155ibBspuGUsS6VRjMG4YpqO38Q0W9jLjV+aNvOicfW+m1zIt+bJR9iUUil
- UI01OGCt8++etKng/ZxAqOBFx33578ObPTd3UommAUfSGKge77Vsi2irIcnbnC+Y/NWqJT90Tk
- ZYZl9I/LlNhMpZGtj7NUH0fF
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="133549470"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Aug 2021 01:21:41 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 25 Aug 2021 01:21:39 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Wed, 25 Aug 2021 01:21:34 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <ulf.hansson@linaro.org>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
-        kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] mmc: pwrseq: sd8787: fix compilation warning
-Date:   Wed, 25 Aug 2021 11:19:31 +0300
-Message-ID: <20210825081931.598934-1-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        id S238830AbhHYIVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 04:21:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230426AbhHYIV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 04:21:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B8F3610F7;
+        Wed, 25 Aug 2021 08:20:39 +0000 (UTC)
+Date:   Wed, 25 Aug 2021 10:20:37 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: Re: [smfrench-smb3-kernel:pr/65 143/143] fs/ksmbd/smb2pdu.c:5640:6:
+ warning: variable 'user_ns' is used uninitialized whenever 'if' condition is
+ true
+Message-ID: <20210825082037.iuy5gndi4n2uyep7@wittgenstein>
+References: <202108251550.SXFHPzdJ-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202108251550.SXFHPzdJ-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed compilation warning "cast from pointer to integer of
-different size [-Wpointer-to-int-cast]"
+On Wed, Aug 25, 2021 at 03:14:01PM +0800, kernel test robot wrote:
+> tree:   git://github.com/smfrench/smb3-kernel.git pr/65
+> head:   4b499755e1024f97e75411920a404b357af6e153
+> commit: 4b499755e1024f97e75411920a404b357af6e153 [143/143] ksmbd: fix lookup on idmapped mounts
+> config: hexagon-randconfig-r041-20210824 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project d26000e4cc2bc65e207a84fa26cb6e374d60aa12)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/smfrench/smb3-kernel/commit/4b499755e1024f97e75411920a404b357af6e153
+>         git remote add smfrench-smb3-kernel git://github.com/smfrench/smb3-kernel.git
+>         git fetch --no-tags smfrench-smb3-kernel pr/65
+>         git checkout 4b499755e1024f97e75411920a404b357af6e153
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Fixes: b2832b96fcf5 ("mmc: pwrseq: sd8787: add support for wilc1000")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/mmc/core/pwrseq_sd8787.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Thanks for the report but this is outdated and requires a patch that
+sits in David Sterba's for-next tree. So this is safe to ignore.
+Feels like this probably should only go to the authors, kbuild-all and
+clang-built-linux lists similar to what the intel built bot does.
+Otherwise this generates a lot of unneeded noise. Just my 2 cents.
 
-diff --git a/drivers/mmc/core/pwrseq_sd8787.c b/drivers/mmc/core/pwrseq_sd8787.c
-index 264e48067af2..2e120ad83020 100644
---- a/drivers/mmc/core/pwrseq_sd8787.c
-+++ b/drivers/mmc/core/pwrseq_sd8787.c
-@@ -56,9 +56,12 @@ static const struct mmc_pwrseq_ops mmc_pwrseq_sd8787_ops = {
- 	.power_off = mmc_pwrseq_sd8787_power_off,
- };
- 
-+static const u32 sd8787_delay_ms = 300;
-+static const u32 wilc1000_delay_ms = 5;
-+
- static const struct of_device_id mmc_pwrseq_sd8787_of_match[] = {
--	{ .compatible = "mmc-pwrseq-sd8787", .data = (void *)300 },
--	{ .compatible = "mmc-pwrseq-wilc1000", .data = (void *)5 },
-+	{ .compatible = "mmc-pwrseq-sd8787", .data = &sd8787_delay_ms },
-+	{ .compatible = "mmc-pwrseq-wilc1000", .data = &wilc1000_delay_ms },
- 	{/* sentinel */},
- };
- MODULE_DEVICE_TABLE(of, mmc_pwrseq_sd8787_of_match);
-@@ -74,7 +77,7 @@ static int mmc_pwrseq_sd8787_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	match = of_match_node(mmc_pwrseq_sd8787_of_match, pdev->dev.of_node);
--	pwrseq->reset_pwrdwn_delay_ms = (u32)match->data;
-+	pwrseq->reset_pwrdwn_delay_ms = *(u32 *)match->data;
- 
- 	pwrseq->pwrdn_gpio = devm_gpiod_get(dev, "powerdown", GPIOD_OUT_LOW);
- 	if (IS_ERR(pwrseq->pwrdn_gpio))
--- 
-2.25.1
-
+Christian
