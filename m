@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503D23F7E4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49E73F7E51
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhHYWVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        id S232444AbhHYWWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbhHYWVo (ORCPT
+        with ESMTP id S229922AbhHYWWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:21:44 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C8BC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:20:57 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id j9-20020a2581490000b02905897d81c63fso1012239ybm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:20:57 -0700 (PDT)
+        Wed, 25 Aug 2021 18:22:07 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE03C061757;
+        Wed, 25 Aug 2021 15:21:21 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id fs6so729706pjb.4;
+        Wed, 25 Aug 2021 15:21:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=BXmW2RjvQEh9Bli/X6dqHjbl1+e3RPnk9A5yhhpZXUk=;
-        b=VWNy4eOvlQFRZ8qoPA8z1o2whMkIDETXh0On6H5qn9bqrDUxbp3yqRbzaHI8VB+6Cp
-         mcNSoEm2cJEIP5tU16FVLKnVKT3NEegWiGqFcB1hfiG+QhHqTHP/K9vzTKqVDDQ+QHuB
-         fl6i2hYMPFefpjNwiKdFZys6rvaOK1TE0JMP4mUVtw+WEC6xoPI18CYF+6EmbfHQVpwJ
-         mRdne2iRaOeNlGuFoC46ugE5WyD9MiOsD0m+IzwzVL++FWgYD1sWmDsMJABgX4MCrfAE
-         wvLxIr1FVRohOGaRkod7V5nz+EegDGuT5TYNZ4y12Eb7OblDTOsp92pNDEzFSCeukgA9
-         bo8g==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ONTV/6h5S1vU2l9ga1yxEklvXb8skQWdW4raGQOKihQ=;
+        b=pRD6NGgr5fLidDjGLVX9x0mmzMIPyIvpPkH/0rzsBuwf8IKLRk9wT+DHAeSGQitfbw
+         eR73SAO1ZI9yvLixJGRzbg4y3uo7uYUZwT+KmwzGvyaKNDY5zF7Qk6TwXwWq4B38HZrx
+         y0Q9VYjdtfcRfnCM9iCYXLZB884ijpafS+RAS3xmgRTaO3NGbNAQILtuVVekkYny/S+u
+         057dC4Ogur3QL932IHoTAQ1BUIzocurCnEppcs+rKLwZ2Y1n8hvzy4RkcnPZOLt7z0Um
+         B6kPrKlEBJw6QqKztPWSxkMWAIp/rW0iTqYB/4QDHYu/ePZxqdz6zyXEg1eT1xengejd
+         wJdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=BXmW2RjvQEh9Bli/X6dqHjbl1+e3RPnk9A5yhhpZXUk=;
-        b=mPzcWYMGBd4s1YdwQitURw1g5HqjcdGOLkVdKMswn+D1B2es8T0CEbfC5Hy0nwbpq/
-         9S8QSbVcj5qGYRix4/u/MzVh3i7tR3bGT37VQ9TdEd+Qd8nYtrVa4VvADuqe8rjIWrdS
-         c3dwgHy8SXHyA72v3BeMz0FkH0SRSavj4ou195leDLDOR1ojOWSxdythMxt5mo/uRO9N
-         0R8LrKhqj2KCzyf768pEpjXXRYJnliTG90oWat0xx1pKCJtch9sYfWQQcKH9SyFbluVl
-         TvsuL5rv6PHSUprcu79hCzQyU4jhY51OWZgGP3kiztDAieq7PKLZvXVx3AYwRQDLFNoH
-         qptg==
-X-Gm-Message-State: AOAM532CZnZgHLmKEv1JayhV0Ntq18GhxS9YEWTx6M3rYaTCCwSQOONF
-        naaLNLqU3d/nzC7eS2ReThZ+f2ttuYNl
-X-Google-Smtp-Source: ABdhPJxwufwuJAmpO0WZBSg2a2VQJCB9UUVcMfvAIVyk4vya9nq4VlYMEahAVdg/VZFnIegN55UZpAtwka2u
-X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:200:3664:f78f:3b89:adc6])
- (user=jiancai job=sendgmr) by 2002:a25:ea52:: with SMTP id
- o18mr1346886ybe.150.1629930057109; Wed, 25 Aug 2021 15:20:57 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 15:20:51 -0700
-Message-Id: <20210825222051.2106481-1-jiancai@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH] coresight: syscfg: Add initial configfs support
-From:   Jian Cai <jiancai@google.com>
-Cc:     mike.leach@linaro.org, dianders@chromium.org, mka@chromium.org,
-        linux@roeck-us.net, manojgupta@google.com, llozano@google.com,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ONTV/6h5S1vU2l9ga1yxEklvXb8skQWdW4raGQOKihQ=;
+        b=VBo61h27mOyjwoyy6Fm/CSnTAVGjaqDV21vB3qa3LKg9nhyULsYWq6czf+fvRw3WSa
+         pAw1krbAtD/eP5JWGh5IVC6C4qLD3mgPyFwtnabiadsYnLq7rm8YlPKJx7ZapjMmN2u2
+         iABtiyescsvrqGdksgOZ8V48iyGr0VYFY4NqL+MTmEd5KgiznPTsAmc2wcdJzCZ1DW6A
+         +VGaiJ/b1YUxBNOvm6ctNaOy/lEJ07Uv8n+C5FGKvoI45HG0sE3VjZJyhTP0Ini6ZdCd
+         ha6ECAmrao4DDYhTMBbn/iHP/tdSQJtqY5JbZFfQXZ0zTrU0kwA79mESVofKon/dyyIE
+         Ygaw==
+X-Gm-Message-State: AOAM533j+wKSp7NhPv9w3ctxwlow/NS0FuadQEjX8USFBE1+3VMwUS0t
+        oImxgUqBJi/InNoKsE9uhkY=
+X-Google-Smtp-Source: ABdhPJw3q9VkEKB6hZRPgxIBZrExC2fQ43L5rDzF3RBzS24b/Uw823jbEROn21RJbnNM8VpKF317Xg==
+X-Received: by 2002:a17:90a:7e8b:: with SMTP id j11mr591137pjl.210.1629930080858;
+        Wed, 25 Aug 2021 15:21:20 -0700 (PDT)
+Received: from localhost.localdomain ([45.124.203.15])
+        by smtp.gmail.com with ESMTPSA id t18sm616227pfg.111.2021.08.25.15.21.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 15:21:20 -0700 (PDT)
+Sender: "joel.stan@gmail.com" <joel.stan@gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        devicetree@vger.kernel.org,
+        Florent Kermarrec <florent@enjoy-digital.fr>,
+        "Gabriel L . Somlo" <gsomlo@gmail.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+Subject: [PATCH v4 0/2] net: Add LiteETH network driver
+Date:   Thu, 26 Aug 2021 07:51:04 +0930
+Message-Id: <20210825222106.3113287-1-joel@jms.id.au>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes build failures with -Wimplicit-function-declaration, e.g.
+This adds a driver for the LiteX network device, LiteEth.
 
-^[[1m/mnt/host/source/src/third_party/kernel/v5.4/drivers/hwtracing/coresight/coresight-syscfg.c:455:15: ^[[0m^[[0;1;31merror: ^[[0m^[[1mimplicit declaration of function 'kzalloc' [-Werror,-Wimplicit-function-declaration]^[[0m
-        csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev), GFP_KERNEL);
-^[[0;1;32m                     ^
+v4 Fixes the bindings and adds r-b tags from Gabriel and Rob.
 
-Signed-off-by: Jian Cai <jiancai@google.com>
----
- drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
- 1 file changed, 1 insertion(+)
+v3 Updates the bindings to describe the slots in a way that makes more
+sense for the hardware, instead of trying to fit some existing
+properties. The driver is updated to use these bindings, and fix some
+issues pointed out by Gabriel.
 
-diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
-index fc0760f55c53..43054568430f 100644
---- a/drivers/hwtracing/coresight/coresight-syscfg.c
-+++ b/drivers/hwtracing/coresight/coresight-syscfg.c
-@@ -5,6 +5,7 @@
-  */
- 
- #include <linux/platform_device.h>
-+#include <linux/slab.h>
- 
- #include "coresight-config.h"
- #include "coresight-etm-perf.h"
+v2 Addresses feedback from Jakub, with detailed changes in each patch.
+
+It also moves to the litex register accessors so the system works on big
+endian litex platforms. I tested with mor1k on an Arty A7-100T.
+
+I have removed the mdio aspects of the driver as they are not needed for
+basic operation. I will continue to work on adding support in the
+future, but I don't think it needs to block the mac driver going in.
+
+The binding describes the mdio registers, and has been fixed to not show
+any warnings against dtschema master.
+
+LiteEth is a simple driver for the FPGA based Ethernet device used in various
+RISC-V, PowerPC's microwatt, OpenRISC's mor1k and other FPGA based
+systems on chip.
+
+Joel Stanley (2):
+  dt-bindings: net: Add bindings for LiteETH
+  net: Add driver for LiteX's LiteETH network interface
+
+ .../bindings/net/litex,liteeth.yaml           |  98 ++++++
+ drivers/net/ethernet/Kconfig                  |   1 +
+ drivers/net/ethernet/Makefile                 |   1 +
+ drivers/net/ethernet/litex/Kconfig            |  27 ++
+ drivers/net/ethernet/litex/Makefile           |   5 +
+ drivers/net/ethernet/litex/litex_liteeth.c    | 317 ++++++++++++++++++
+ 6 files changed, 449 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/litex,liteeth.yaml
+ create mode 100644 drivers/net/ethernet/litex/Kconfig
+ create mode 100644 drivers/net/ethernet/litex/Makefile
+ create mode 100644 drivers/net/ethernet/litex/litex_liteeth.c
+
 -- 
-2.33.0.259.gc128427fd7-goog
+2.33.0
 
