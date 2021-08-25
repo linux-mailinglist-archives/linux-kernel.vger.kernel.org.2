@@ -2,84 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B303F70E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B6A3F70E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239329AbhHYIJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 04:09:39 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:54326 "EHLO deadmen.hmeau.com"
+        id S239006AbhHYIJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 04:09:36 -0400
+Received: from mga01.intel.com ([192.55.52.88]:60512 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230124AbhHYIJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 04:09:35 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mInxZ-0004dm-Th; Wed, 25 Aug 2021 16:08:33 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mInxJ-00051r-IH; Wed, 25 Aug 2021 16:08:17 +0800
-Date:   Wed, 25 Aug 2021 16:08:17 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     Leonard Crestez <cdleonard@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFCv3 05/15] tcp: authopt: Add crypto initialization
-Message-ID: <20210825080817.GA19149@gondor.apana.org.au>
-References: <cover.1629840814.git.cdleonard@gmail.com>
- <abb720b34b9eef1cc52ef68017334e27a2af83c6.1629840814.git.cdleonard@gmail.com>
- <30f73293-ea03-d18f-d923-0cf499d4b208@gmail.com>
+        id S229542AbhHYIJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 04:09:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="239654055"
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="239654055"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 01:08:36 -0700
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="684440179"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 01:08:34 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 83959201ED;
+        Wed, 25 Aug 2021 11:08:32 +0300 (EEST)
+Date:   Wed, 25 Aug 2021 11:08:32 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Dan Scally <djrscally@gmail.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v1 2/3] lib/sort: Introduce rotate() to circular shift an
+ array of elements
+Message-ID: <20210825080832.GN3@paasikivi.fi.intel.com>
+References: <20210824133351.88179-1-andriy.shevchenko@linux.intel.com>
+ <20210824133351.88179-2-andriy.shevchenko@linux.intel.com>
+ <4078b7a3-2ec2-ba87-d23c-b8daed7386fe@rasmusvillemoes.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30f73293-ea03-d18f-d923-0cf499d4b208@gmail.com>
+In-Reply-To: <4078b7a3-2ec2-ba87-d23c-b8daed7386fe@rasmusvillemoes.dk>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 04:34:58PM -0700, Eric Dumazet wrote:
-> 
-> On 8/24/21 2:34 PM, Leonard Crestez wrote:
-> > The crypto_shash API is used in order to compute packet signatures. The
-> > API comes with several unfortunate limitations:
-> > 
-> > 1) Allocating a crypto_shash can sleep and must be done in user context.
-> > 2) Packet signatures must be computed in softirq context
-> > 3) Packet signatures use dynamic "traffic keys" which require exclusive
-> > access to crypto_shash for crypto_setkey.
-> > 
-> > The solution is to allocate one crypto_shash for each possible cpu for
-> > each algorithm at setsockopt time. The per-cpu tfm is then borrowed from
-> > softirq context, signatures are computed and the tfm is returned.
-> > 
-> 
-> I could not see the per-cpu stuff that you mention in the changelog.
+Hi Rasmus, Andy,
 
-Perhaps it's time we moved the key information from the tfm into
-the request structure for hashes? Or at least provide a way for
-the key to be in the request structure in addition to the tfm as
-the tfm model still works for IPsec.  Ard/Eric, what do you think
-about that?
+On Wed, Aug 25, 2021 at 09:05:19AM +0200, Rasmus Villemoes wrote:
+> On 24/08/2021 15.33, Andy Shevchenko wrote:
+> > In some cases we want to circular shift an array of elements.
+> > Introduce rotate() helper for that.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> >  include/linux/sort.h |  3 +++
+> >  lib/sort.c           | 61 ++++++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 64 insertions(+)
+> > 
+> > diff --git a/include/linux/sort.h b/include/linux/sort.h
+> > index b5898725fe9d..c881acb12ffc 100644
+> > --- a/include/linux/sort.h
+> > +++ b/include/linux/sort.h
+> > @@ -13,4 +13,7 @@ void sort(void *base, size_t num, size_t size,
+> >  	  cmp_func_t cmp_func,
+> >  	  swap_func_t swap_func);
+> >  
+> > +void rotate(void *base, size_t num, size_t size, size_t by,
+> > +	    swap_func_t swap_func);
+> > +
+> >  #endif
+> > diff --git a/lib/sort.c b/lib/sort.c
+> > index d9b2f5b73620..b9243f8db34b 100644
+> > --- a/lib/sort.c
+> > +++ b/lib/sort.c
+> > @@ -14,6 +14,7 @@
+> >  
+> >  #include <linux/types.h>
+> >  #include <linux/export.h>
+> > +#include <linux/minmax.h>
+> >  #include <linux/sort.h>
+> >  
+> >  /**
+> > @@ -275,3 +276,63 @@ void sort(void *base, size_t num, size_t size,
+> >  	return sort_r(base, num, size, _CMP_WRAPPER, swap_func, cmp_func);
+> >  }
+> >  EXPORT_SYMBOL(sort);
+> > +
+> > +/**
+> > + * rotate - rotate an array of elements by a number of elements
+> > + * @base: pointer to data to sort
+> 
+> sort?
+> 
+> > + * @num: number of elements
+> > + * @size: size of each element
+> > + * @by: number of elements to rotate by
+> 
+> Perhaps add (0 <= @by < @num) or something like that, and/or start the
+> implementation with "if (num <= 1) return; if (by >= num) by %= num;"
 
-Thanks,
+The latter could be done unconditionally.
+
+> 
+> > + * @swap_func: pointer to swap function or NULL
+> > + *
+> > + * Helper function to advance all the elements of a circular buffer by
+> > + * @by positions.
+> > + */
+> > +void rotate(void *base, size_t num, size_t size, size_t by,
+> > +	    swap_func_t swap_func)
+> > +{
+> > +	struct {
+> > +		size_t begin, end;
+> > +	} arr[2] = {
+> > +		{ .begin = 0, .end = by - 1 },
+> > +		{ .begin = by, .end = num - 1 },
+> > +	};
+> 
+> I see you just copied-and-adapted, but I think the code would be much
+> easier to read without all those plus/minus ones all over.
+
+Now that I think about it, they can be just removed. In that case end
+refers to the element following end, rather than the last element.
+
+> 
+> > +	swap_func = choose_swap_func(swap_func, base, size);
+> > +
+> > +#define CHUNK_SIZE(a) ((a)->end - (a)->begin + 1)
+> > +
+> > +	/* Loop as long as we have out-of-place entries */
+> > +	while (CHUNK_SIZE(&arr[0]) && CHUNK_SIZE(&arr[1])) {
+> > +		size_t size0, i;
+> > +
+> > +		/*
+> > +		 * Find the number of entries that can be arranged on this
+> > +		 * iteration.
+> > +		 */
+> > +		size0 = min(CHUNK_SIZE(&arr[0]), CHUNK_SIZE(&arr[1]));
+> > +
+> > +		/* Swap the entries in two parts of the array */
+> > +		for (i = 0; i < size0; i++) {
+> > +			void *a = base + size * (arr[0].begin + i);
+> > +			void *b = base + size * (arr[1].begin + i);
+> > +
+> > +			do_swap(a, b, size, swap_func);
+> > +		}
+> > +
+> > +		if (CHUNK_SIZE(&arr[0]) > CHUNK_SIZE(&arr[1])) {
+> > +			/* The end of the first array remains unarranged */
+> > +			arr[0].begin += size0;
+> > +		} else {
+> > +			/*
+> > +			 * The first array is fully arranged so we proceed
+> > +			 * handling the next one.
+> > +			 */
+> > +			arr[0].begin = arr[1].begin;
+> > +			arr[0].end = arr[1].begin + size0 - 1;
+> > +			arr[1].begin += size0;
+> > +		}
+> > +	}
+> 
+> Perhaps add a small self-test, it's not at all obvious how this works
+> (perhaps it's some standard CS101 algorithm for rotating in-place, I
+> don't know, but even then an implementation can have off-by-ones and
+> corner cases).
+
+I don't know, I wrote this to fix a bug in the ipu3-cio2 driver. ;-) The
+hardware, and so the arguments, were static. Nice to see it would be useful
+elsewhere almost as-is.
+
+> 
+> for (len = 1; len < 15; ++len) {
+>   for (by = 0; by <= len; ++by) {
+>     for (i = 0; i < len; ++i)
+>       arr[i] = i;
+>     rotate(arr, len, sizeof(int), by);
+>     for (i = 0; i < len; ++i)
+>       if (arr[i] != (i + by) % len)
+>         error();
+>   }
+> }
+
+Makes sense to add something like that.
+
+After addressing the comments, for patches from 1 to 3:
+
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Kind regards,
+
+Sakari Ailus
