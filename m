@@ -2,110 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2949E3F6F37
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822413F6F43
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238800AbhHYGN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
+        id S239001AbhHYGQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238618AbhHYGN4 (ORCPT
+        with ESMTP id S238514AbhHYGQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:13:56 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4F1C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:13:10 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mIm9l-0005zz-AR; Wed, 25 Aug 2021 08:13:01 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-b509-65fb-e781-8611.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:b509:65fb:e781:8611])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 827D366E7B5;
-        Wed, 25 Aug 2021 06:12:56 +0000 (UTC)
-Date:   Wed, 25 Aug 2021 08:12:55 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     davem@davemloft.net, wg@grandegger.com, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] can: mscan: mpc5xxx_can: Remove useless BUG_ON()
-Message-ID: <20210825061255.nhkg3yobirnn75c7@pengutronix.de>
-References: <20210823141033.17876-1-tangbin@cmss.chinamobile.com>
+        Wed, 25 Aug 2021 02:16:28 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DBBC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:15:42 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id ay33so14436798qkb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:15:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PHpfJ/+giY//PTSV9hmjgFnWiFlaULLHw5pVUFnZXjI=;
+        b=JZp+aGqCxDPf0C2vqWl3gA2RSraLRFI1hV70cyMpIkRx5EsSHupFwyXuMRF2sY0o/V
+         3exx9IPtaTXNJZVSFYan6mqnNA3KxqBC39RXykjscq3IDmE5Y7Kn42/Ja3Bh8zpCrLun
+         UXeuRCwGzg16JxZxt25nL/DDN/mACvf4wGIQUnn9/ZFUZSZA30xAMXSfzzDc0p5apHyT
+         vE4GEL5gRgXaljlWZGFfto19WbDSj7ZLqTbDeoCF1hr7bTvUcu8cGDvRqEwRDQa7HDoN
+         Xn6YqpqUF4yUpuf5h5jQVz2yv4JUWpZCXdOOeaqjtvmnQyF1bMr+VYZZyHofB4ZDHPjh
+         VJgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PHpfJ/+giY//PTSV9hmjgFnWiFlaULLHw5pVUFnZXjI=;
+        b=Wit6kudsG+ydXiWJ7xit+DdgUQR3L8bxGykXrGww2Roj/9A4KbFGd1MMsO537P2FgH
+         JBTVS9TV1sBAYKlBBp/VNCl+PjqT9Y9Z48+j5zBw3+yFBN32B0QfJxom505EDGyTxSJs
+         e9dXf/xHpM8NUf9JVZ7qdL6vJITDSuY7JsGuSNDNYAvzJ8V/OUirhKhagBcgOPjTuF7n
+         k4yUtzBjHtR+PoRQpT4IJZt7xjPVSlWaJ5YWfD7Z3JEUSdhnKbJtXhJDxtAmSR6mJouE
+         0LM1drFNQpK6Wd6DAMNx+3kcMsMJ5UNSImVocDd36aqmAkKVYik78tD/wZxCo9Ik4vdN
+         l9eA==
+X-Gm-Message-State: AOAM53353becJTNJfpmfTl8HBNAZT6dQ2fUBcVj/E1tSyQiddkTFSub1
+        9gyEpAX895zOexTiqsGIiiQ=
+X-Google-Smtp-Source: ABdhPJwhUJUOg82ro0dDkyiSwfBWb+7ycl9aLnNjwi6aXYf1eB3dwg9mrOqQkoLySuxT66fAme/wCw==
+X-Received: by 2002:a05:620a:14ad:: with SMTP id x13mr30242912qkj.172.1629872141200;
+        Tue, 24 Aug 2021 23:15:41 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id x8sm9397102qts.69.2021.08.24.23.15.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 23:15:40 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        Martin Kaiser <martin@kaiser.cx>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] drivers:r8188eu: remove unneeded variable
+Date:   Tue, 24 Aug 2021 23:15:31 -0700
+Message-Id: <20210825061531.69678-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kwyhwexn7jes4aja"
-Content-Disposition: inline
-In-Reply-To: <20210823141033.17876-1-tangbin@cmss.chinamobile.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
---kwyhwexn7jes4aja
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Eliminate the following coccicheck warning:
+./drivers/staging/r8188eu/os_dep/os_intfs.c:505:6-12:
+ Unneeded variable "status". Return "_SUCCESS" on line 577
+./drivers/staging/r8188eu/os_dep/os_intfs.c:772: 4-7:
+  Unneeded variable "ret". Return "_SUCCESS" on line 818
+./drivers/staging/r8188eu/os_dep/os_intfs.c:823:4-8:
+Unneeded variable "ret8". Return "_SUCCESS" on line 849
 
-On 23.08.2021 22:10:33, Tang Bin wrote:
-> In the function mpc5xxx_can_probe(), the variale 'data'
-                                               ^b
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+---
+ drivers/staging/r8188eu/os_dep/os_intfs.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-Fixed typo while applying.
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index 9d7d2b9..8436a43 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -502,7 +502,6 @@ void rtw_proc_remove_one(struct net_device *dev)
+ 
+ static uint loadparam(struct adapter *padapter,  struct  net_device *pnetdev)
+ {
+-	uint status = _SUCCESS;
+ 	struct registry_priv  *registry_par = &padapter->registrypriv;
+ 
+ 	GlobalDebugLevel = rtw_debug;
+@@ -574,7 +573,7 @@ static uint loadparam(struct adapter *padapter,  struct  net_device *pnetdev)
+ 	snprintf(registry_par->if2name, 16, "%s", if2name);
+ 	registry_par->notch_filter = (u8)rtw_notch_filter;
+ 
+-	return status;
++	return _SUCCESS;
+ }
+ 
+ static int rtw_net_set_mac_address(struct net_device *pnetdev, void *p)
+@@ -751,7 +750,6 @@ void rtw_stop_drv_threads(struct adapter *padapter)
+ 
+ static u8 rtw_init_default_value(struct adapter *padapter)
+ {
+-	u8 ret  = _SUCCESS;
+ 	struct registry_priv *pregistrypriv = &padapter->registrypriv;
+ 	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+@@ -797,12 +795,11 @@ static u8 rtw_init_default_value(struct adapter *padapter)
+ #ifdef CONFIG_88EU_P2P
+ 	padapter->bShowGetP2PState = 1;
+ #endif
+-	return ret;
++	return _SUCCESS;
+ }
+ 
+ u8 rtw_reset_drv_sw(struct adapter *padapter)
+ {
+-	u8	ret8 = _SUCCESS;
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct pwrctrl_priv *pwrctrlpriv = &padapter->pwrctrlpriv;
+ 
+@@ -828,7 +825,7 @@ u8 rtw_reset_drv_sw(struct adapter *padapter)
+ 
+ 	rtw_set_signal_stat_timer(&padapter->recvpriv);
+ 
+-	return ret8;
++	return _SUCCESS;
+ }
+ 
+ u8 rtw_init_drv_sw(struct adapter *padapter)
+-- 
+1.8.3.1
 
-> has already been determined in the above code, so the
-> BUG_ON() in this place is useless, remove it.
->=20
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->  drivers/net/can/mscan/mpc5xxx_can.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/=
-mpc5xxx_can.c
-> index 3b7465acd..35892c1ef 100644
-> --- a/drivers/net/can/mscan/mpc5xxx_can.c
-> +++ b/drivers/net/can/mscan/mpc5xxx_can.c
-> @@ -317,7 +317,6 @@ static int mpc5xxx_can_probe(struct platform_device *=
-ofdev)
-> =20
->  	clock_name =3D of_get_property(np, "fsl,mscan-clock-source", NULL);
-> =20
-> -	BUG_ON(!data);
->  	priv->type =3D data->type;
->  	priv->can.clock.freq =3D data->get_clock(ofdev, clock_name,
->  					       &mscan_clksrc);
 
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---kwyhwexn7jes4aja
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEl32QACgkQqclaivrt
-76mchAf+NffU83nHOfdrqDPqYDX7v53Hf3NOoRhQNfP+vK8QKW5ZQymf7bYzdYBp
-LpwVyT1Udgu48ldFLIe0MJtD4JV5RWVtmnnrX1dh8+58xxjrul2l1zEhRWWieQ6p
-8QA0782HJdUk9UXDNiUnRNOUcWKkKjlwSERyaQE/1YVKaZv4ZnFo5DXhdkKtZYW6
-7wqDpkq5V2puoWIvHHqf3MGSowz/y9AruLLEPfhGTLI+t4DNAjPC9pcmpMNg7f1d
-CeNmzEzUg5qmcXEQGziytWt1ECBzS/A9ihhAJVwp2tjIiQXT/HSeoypcx+uCozzM
-4eH69CYs6kuPC1OUkp+DMehqeLV1sA==
-=ft+K
------END PGP SIGNATURE-----
-
---kwyhwexn7jes4aja--
