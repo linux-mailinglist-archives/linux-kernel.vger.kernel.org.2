@@ -2,154 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38863F7E83
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46033F7E96
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbhHYWZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232806AbhHYWZh (ORCPT
+        id S232892AbhHYW2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:28:08 -0400
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:33404 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231860AbhHYW2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:25:37 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F36FC06179A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:24:50 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id t35so1504002oiw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CHbqQ8fRCnVK3Idr6RNjSXsfz0ngq03w7usVXN+ejos=;
-        b=y461vBwFD8A1katLlj19BbJOG+zm5UUGx6Kv7yQ8JQH7MR93Lly/X/EiiBNPnjUmp/
-         ni4CuiYEZeMcJ0TdiNITkeSYdkhodx9vwZSHs49IBEQr9m2+xQE22Js2kJ65Nt2YUd46
-         jwY0GOyJ7Dim2KqwA6VBq0rdhS3LgazL9QiZrOMd3lkLKZI4INefz5UYCrq5ymi0z21E
-         3J3iYreIG7aNnv1fPvAsUaDWtyNwaMeyKsF3wmm51CXzv72FOoVIZrMdzRda4HEtS/i9
-         kgHJ/UZ9GYdx9gCFMfQxpMQNu8dsXo3JddGkMobI0J8xS19YTGWvPghZ3G/YloC0+M2Y
-         pVFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CHbqQ8fRCnVK3Idr6RNjSXsfz0ngq03w7usVXN+ejos=;
-        b=Hjn/hwJtA336OgX0NHenRVfXbPSu1sMhhftzixcsnDiGk9YFwR2VN+MgB+Jh4KvcrC
-         bWk6Do0THRSgvfMjVqDGciiXzCb9J7KzOav58qAZ7Zkgd5YOxEWO6PTyDpgNA8VDG4EI
-         LMSW5hbxYtCaxoZ3jo5ao6EHNfFk7FccLBdtQ0QGqgaqldpeN3gkVCBXrsMEEgE3zRTI
-         YqquXeo9XlN17XPlQ7BXQDmxTfoRosj+UQSeBWLBi6luRRL828pqsJZgQV3SJUq0YN9E
-         tz+iWzfQODgNtj4T2xgqJBWqG38VvuYVZlvf5VZoGIZ2+nzE2cXROzOIskjpTifyZj6e
-         RnBg==
-X-Gm-Message-State: AOAM533RnDmMgfAlLAm+jEISvao7d2q5ZUmXegAEGOXJaG1moSFZ7JPC
-        VmucJ+dXOCYv5oNepZLokpN4pQ==
-X-Google-Smtp-Source: ABdhPJxcDn3dYTNjUYYiv97lr2KPu3aGjOEXExc9zRZ5IXoHWFlf4F40fIRQNIhuK7UuTXuPK9wN8g==
-X-Received: by 2002:aca:e0d7:: with SMTP id x206mr8616473oig.64.1629930289816;
-        Wed, 25 Aug 2021 15:24:49 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id u19sm263721oiv.28.2021.08.25.15.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 15:24:49 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] drm/msm/dp: Allow sub-regions to be specified in DT
-Date:   Wed, 25 Aug 2021 15:25:57 -0700
-Message-Id: <20210825222557.1499104-6-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210825222557.1499104-1-bjorn.andersson@linaro.org>
-References: <20210825222557.1499104-1-bjorn.andersson@linaro.org>
+        Wed, 25 Aug 2021 18:28:07 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id B4ADB128068E;
+        Wed, 25 Aug 2021 15:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1629930440;
+        bh=oQYEQOogMz5Gfo91atBBq4LHIkEOCquaBh2axi4crBw=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=K1i57TmkoGJRAi6MVpAWAAJXtz1y4xeEBhZkD3QJPv+Z0SOW9YUJ3RxDvKjmSTLhH
+         M1DCAO8uV86YCgUtblcoBNW4O1oVzfiI4CsabxTSyRqmuC+pSNHnOyVojMVla8s/0/
+         WQZAOf8q7Uk0RsESHO8ZWblwLLN4Zh+Ygj/si3VM=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pF26J98Wob8H; Wed, 25 Aug 2021 15:27:20 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 58704128068C;
+        Wed, 25 Aug 2021 15:27:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1629930440;
+        bh=oQYEQOogMz5Gfo91atBBq4LHIkEOCquaBh2axi4crBw=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=K1i57TmkoGJRAi6MVpAWAAJXtz1y4xeEBhZkD3QJPv+Z0SOW9YUJ3RxDvKjmSTLhH
+         M1DCAO8uV86YCgUtblcoBNW4O1oVzfiI4CsabxTSyRqmuC+pSNHnOyVojMVla8s/0/
+         WQZAOf8q7Uk0RsESHO8ZWblwLLN4Zh+Ygj/si3VM=
+Message-ID: <bc37d1da3ef5aae16e69eeda25d6ce6fe6a51a77.camel@HansenPartnership.com>
+Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna <nayna@linux.vnet.ibm.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org, pjones@redhat.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        Patrick Uiterwijk <patrick@puiterwijk.org>
+Date:   Wed, 25 Aug 2021 15:27:18 -0700
+In-Reply-To: <9067ff7142d097698b827f3c1630a751898a76bf.camel@kernel.org>
+References: <20210819002109.534600-1-eric.snowberg@oracle.com>
+         <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
+         <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
+         <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
+         <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
+         <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
+         <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
+         <9526a4e0be9579a9e52064dd590a78c6496ee025.camel@linux.ibm.com>
+         <9067ff7142d097698b827f3c1630a751898a76bf.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not all platforms has P0 at an offset of 0x1000 from the base address,
-so add support for specifying each sub-region in DT. The code falls back
-to the predefined offsets in the case that only a single reg is
-specified, in order to support existing DT.
+On Thu, 2021-08-26 at 01:21 +0300, Jarkko Sakkinen wrote:
+> On Tue, 2021-08-24 at 10:34 -0400, Mimi Zohar wrote:
+> > > > > Jarkko, I think the emphasis should not be on "machine" from
+> > > > > Machine Owner Key (MOK), but on "owner".  Whereas Nayna is
+> > > > > focusing more on the "_ca" aspect of the name.   Perhaps
+> > > > > consider naming it "system_owner_ca" or something along those
+> > > > > lines.
+> > > > What do you gain such overly long identifier? Makes no sense.
+> > > > What is "ca aspect of the name" anyway?
+> > > 
+> > > As I mentioned previously, the main usage of this new keyring is
+> > > that it should contain only CA keys which can be later used to
+> > > vouch for user keys loaded onto secondary or IMA keyring at
+> > > runtime. Having ca in the  name like .xxxx_ca, would make the
+> > > keyring name self-describing. Since you preferred .system, we can
+> > > call it .system_ca.
+> > 
+> > Sounds good to me.  Jarkko?
+> > 
+> > thanks,
+> > 
+> > Mimi
+> 
+> I just wonder what you exactly gain with "_ca"?
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+Remember, a CA cert is a self signed cert with the CA:TRUE basic
+constraint.  Pretty much no secure boot key satisfies this (secure boot
+chose deliberately NOT to use CA certificates, so they're all some type
+of intermediate or leaf), so the design seems to be only to pick out
+the CA certificates you put in the MOK keyring.  Adding the _ca suffix
+may deflect some of the "why aren't all my MOK certificates in the
+keyring" emails ...
 
-Changes since v1:
-- Reworked on top of changes in 4/5
+James
 
- drivers/gpu/drm/msm/dp/dp_parser.c | 49 +++++++++++++++++++++++-------
- 1 file changed, 38 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
-index 4a7dad86159f..a5412ddade53 100644
---- a/drivers/gpu/drm/msm/dp/dp_parser.c
-+++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-@@ -53,18 +53,45 @@ static int dp_parser_ctrl_res(struct dp_parser *parser)
- 	if (IS_ERR(dss->ahb.base))
- 		return PTR_ERR(dss->ahb.base);
- 
--	if (dss->ahb.len < DP_DEFAULT_P0_OFFSET + DP_DEFAULT_P0_SIZE) {
--		DRM_ERROR("legacy memory region not large enough\n");
--		return -EINVAL;
--	}
-+	dss->aux.base = dp_ioremap(pdev, 1, &dss->aux.len);
-+	if (IS_ERR(dss->aux.base)) {
-+		/*
-+		 * The initial binding had a single reg, but in order to
-+		 * support variation in the sub-region sizes this was split.
-+		 * dp_ioremap() will fail with -ENODEV here if only a single
-+		 * reg is specified, so fill in the sub-region offsets and
-+		 * lengths based on this single region.
-+		 */
-+		if (PTR_ERR(dss->aux.base) == -ENODEV) {
-+			if (dss->ahb.len < DP_DEFAULT_P0_OFFSET + DP_DEFAULT_P0_SIZE) {
-+				DRM_ERROR("legacy memory region not large enough\n");
-+				return -EINVAL;
-+			}
-+
-+			dss->ahb.len = DP_DEFAULT_AHB_SIZE;
-+			dss->aux.base = dss->ahb.base + DP_DEFAULT_AUX_OFFSET;
-+			dss->aux.len = DP_DEFAULT_AUX_SIZE;
-+			dss->link.base = dss->ahb.base + DP_DEFAULT_LINK_OFFSET;
-+			dss->link.len = DP_DEFAULT_LINK_SIZE;
-+			dss->p0.base = dss->ahb.base + DP_DEFAULT_P0_OFFSET;
-+			dss->p0.len = DP_DEFAULT_P0_SIZE;
-+		} else {
-+			DRM_ERROR("unable to remap aux region: %pe\n", dss->aux.base);
-+			return PTR_ERR(dss->aux.base);
-+		}
-+	} else {
-+		dss->link.base = dp_ioremap(pdev, 2, &dss->link.len);
-+		if (IS_ERR(dss->link.base)) {
-+			DRM_ERROR("unable to remap link region: %pe\n", dss->link.base);
-+			return PTR_ERR(dss->link.base);
-+		}
- 
--	dss->ahb.len = DP_DEFAULT_AHB_SIZE;
--	dss->aux.base = dss->ahb.base + DP_DEFAULT_AUX_OFFSET;
--	dss->aux.len = DP_DEFAULT_AUX_SIZE;
--	dss->link.base = dss->ahb.base + DP_DEFAULT_LINK_OFFSET;
--	dss->link.len = DP_DEFAULT_LINK_SIZE;
--	dss->p0.base = dss->ahb.base + DP_DEFAULT_P0_OFFSET;
--	dss->p0.len = DP_DEFAULT_P0_SIZE;
-+		dss->p0.base = dp_ioremap(pdev, 3, &dss->p0.len);
-+		if (IS_ERR(dss->p0.base)) {
-+			DRM_ERROR("unable to remap p0 region: %pe\n", dss->p0.base);
-+			return PTR_ERR(dss->p0.base);
-+		}
-+	}
- 
- 	io->phy = devm_phy_get(&pdev->dev, "dp");
- 	if (IS_ERR(io->phy))
--- 
-2.29.2
 
