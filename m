@@ -2,237 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8783F7E47
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9503F7E46
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhHYWQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:16:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21704 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229890AbhHYWQB (ORCPT
+        id S232006AbhHYWPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhHYWPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:16:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629929714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nWpEmsqJr39w6Xc+i4JNDnieFbRONi2PhdcIf8fhsDA=;
-        b=VlvX/euCVfiX/7AwKRl7FAjaWrnWvIB+LJ/lfxg1uGQrZRTPdy5j+dPYQWkSvjSffqzjq+
-        81+8FmwXUEE8xhTXBZVbS9Vh8zXONrBkO7PeGguqmQrnCSx4Sqs8JpyQq42HZFBoR/S2dn
-        X6PKVwumipiWhU7XUV5VI4G42ezzitI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-427-75Cztv9NMgGug4q5RvhRag-1; Wed, 25 Aug 2021 18:15:12 -0400
-X-MC-Unique: 75Cztv9NMgGug4q5RvhRag-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1C35180FCCC;
-        Wed, 25 Aug 2021 22:15:10 +0000 (UTC)
-Received: from optiplex-fbsd (unknown [10.3.128.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DA73069320;
-        Wed, 25 Aug 2021 22:15:08 +0000 (UTC)
-Date:   Wed, 25 Aug 2021 18:15:06 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Waiman Long <llong@redhat.com>, 1vier1@web.de
-Subject: Re: [PATCH] ipc: replace costly bailout check in sysvipc_find_ipc()
-Message-ID: <YSbA6n9kTXmAcUyh@optiplex-fbsd>
-References: <20210809203554.1562989-1-aquini@redhat.com>
- <127e0132-50b7-9759-722c-3dea079877e5@colorfullife.com>
+        Wed, 25 Aug 2021 18:15:34 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5888C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:14:47 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id u25so1512685oiv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:14:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z9KfVIzSyARslEPzlWZ8hh6ldkUq9egIVeeue+74TGI=;
+        b=ITzmM5liOlmDv1jNESayxrPaXDKEoynVgEb83OyUmfZqz/MihFr8TjWhFLuBD9Tf9U
+         6jZPC2ebwpeWzbSS2Cja9vEQ724iMj9G8zNReBtFW8abTdzjLxggGO5fmimW8JQ8N5Qi
+         2x/9hfwA2AVr0Xa6RhQPMH0xu8t2bB+olH2MVcQ98RRbB2D+0OFsDj4wDCytyKzFzWjB
+         ZOkNlz2zasL+KTGjS4x712NRYoZ1JNxrX2oT7sB+/CLxKboTqq+PFgVvC/eIKLFpLdUg
+         HRAhZ8/sP6srU4eotd9QdgI3i8xAwwFxigb7AWoeHGkq4WBZlw30Lb9+EB4CRadKqewe
+         pXXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z9KfVIzSyARslEPzlWZ8hh6ldkUq9egIVeeue+74TGI=;
+        b=SZb6JEZdeVA9ttVp+diAEyp4dCpN+wYw2jG4ouUVN2CXOU2/xBMOZEG11Gr26zhvW4
+         17yahHQORO0RkeGUYMI5ONLkEzq5mA3sG6Jzfh6K9zgxTOQOrGFondudfswFaAn+Y0fG
+         sNCBfF6h3VGqluSaWwHX1WOgordvN3ad0iU+FyhrkfSpDOAQs6jwsRYS/g1Z2xVP7x+x
+         HX+8FtHIURSmHVBbNAf7tiXKwyBqNj3imrd0rEIpPc3shcJP6TgHtHd77VMGTJozy3fz
+         C1fTVWVhGThlC0bGIbKItFHAM5A9qQMXdJToBX2RAG4+Wp5FsuD+mkJDItlSTDj1eQez
+         SAIQ==
+X-Gm-Message-State: AOAM530FLpZd1CwRLE0krr67EBvP1dYfjHNDk+msddBbbxRctbPvb4Hv
+        G8WQpE5QXedqri7EaxIGGt9nmA==
+X-Google-Smtp-Source: ABdhPJy2QRYWjpe68bSy5Bb2HgWYJp3XPgH6YequU/fxVvw+YKVQmaaE9aToPhLmY6gI4X53aK6qkA==
+X-Received: by 2002:aca:bf84:: with SMTP id p126mr184869oif.154.1629929687080;
+        Wed, 25 Aug 2021 15:14:47 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id i1sm235983oiy.25.2021.08.25.15.14.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 15:14:46 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH] arm64: dts: qcom: sm8350: Add CPU topology and idle-states
+Date:   Wed, 25 Aug 2021 15:16:00 -0700
+Message-Id: <20210825221600.1498939-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <127e0132-50b7-9759-722c-3dea079877e5@colorfullife.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 09:41:32PM +0200, Manfred Spraul wrote:
-> Hi Rafael,
-> 
-> On 8/9/21 10:35 PM, Rafael Aquini wrote:
-> > sysvipc_find_ipc() was left with a costly way to check if the offset
-> > position fed to it is bigger than the total number of IPC IDs in use.
-> > So much so that the time it takes to iterate over /proc/sysvipc/* files
-> > grows exponentially for a custom benchmark that creates "N" SYSV shm
-> > segments and then times the read of /proc/sysvipc/shm (milliseconds):
-> >
-> >      12 msecs to read   1024 segs from /proc/sysvipc/shm
-> >      18 msecs to read   2048 segs from /proc/sysvipc/shm
-> >      65 msecs to read   4096 segs from /proc/sysvipc/shm
-> >     325 msecs to read   8192 segs from /proc/sysvipc/shm
-> >    1303 msecs to read  16384 segs from /proc/sysvipc/shm
-> >    5182 msecs to read  32768 segs from /proc/sysvipc/shm
-> >
-> > The root problem lies with the loop that computes the total amount of ids
-> > in use to check if the "pos" feeded to sysvipc_find_ipc() grew bigger than
-> > "ids->in_use". That is a quite inneficient way to get to the maximum index
-> > in the id lookup table, specially when that value is already provided by
-> > struct ipc_ids.max_idx.
-> >
-> > This patch follows up on the optimization introduced via commit 15df03c879836
-> > ("sysvipc: make get_maxid O(1) again") and gets rid of the aforementioned
-> > costly loop replacing it by a simpler checkpoint based on ipc_get_maxidx()
-> > returned value, which allows for a smooth linear increase in time complexity
-> > for the same custom benchmark:
-> >
-> >       2 msecs to read   1024 segs from /proc/sysvipc/shm
-> >       2 msecs to read   2048 segs from /proc/sysvipc/shm
-> >       4 msecs to read   4096 segs from /proc/sysvipc/shm
-> >       9 msecs to read   8192 segs from /proc/sysvipc/shm
-> >      19 msecs to read  16384 segs from /proc/sysvipc/shm
-> >      39 msecs to read  32768 segs from /proc/sysvipc/shm
-> 
-> Could you run your test with the attached patch?
->
+Add CPU topology and define the idle states for the silver and gold
+cores as well as the cluster.
 
-Manfred, 
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi | 141 +++++++++++++++++++++++++++
+ 1 file changed, 141 insertions(+)
 
-Sorry it took me a while to get back to you here. (coming back from a short
-leave). I'll take a look into your approach and report back in a few days.
-
-Cheers,
--- Rafael
-
-> The patch switches the code to idr_get_next(), and I see a speedup of 
-> factor 400 for this test:
-> 
-> - boot with ipcmni_extend
-> 
-> - create ipc object
-> 
-> - echo 16000000 > /proc/sys/kernel/msg_next_id
-> 
-> - create ipc object
-> 
-> - time cat /proc/sysvipc/msg
-> 
-> with current mainline: 8.65 seconds
-> 
-> with the patch: 0.02 seconds
-> 
-> 
-> If there are no gaps, then I would assume there is no speed-up compared 
-> to your patch, but it would be create if you could check
-> 
-> [and check that there is no slow-down]
-> 
-> 
-> Thanks,
-> 
-> --
-> 
->      Manfred
-> 
-
-> From 4b7975d712db27c3d08731e0ebe4efd684256ca4 Mon Sep 17 00:00:00 2001
-> From: Manfred Spraul <manfred@colorfullife.com>
-> Date: Fri, 20 Aug 2021 21:08:12 +0200
-> Subject: [PATCH] [PATCH] Improve sysvipc_find_ipc()
-> 
-> Initially noticed by Rafael Aquini, see
-> https://lore.kernel.org/lkml/20210809203554.1562989-1-aquini@redhat.com/
-> 
-> The algorithm used in sysvipc_find_ipc() is highly inefficient.
-> It actually needs to find the next used index in an idr, and it uses
-> a for loop to locate that entry.
-> 
-> But: The IDR API contains idr_get_next(), thus switch the code to use
-> idr_get_next().
-> 
-> In addition: Update a few comments.
-> 
-> Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
-> ---
->  ipc/util.c | 43 ++++++++++++++++++++-----------------------
->  1 file changed, 20 insertions(+), 23 deletions(-)
-> 
-> diff --git a/ipc/util.c b/ipc/util.c
-> index 0027e47626b7..083fd6dba1a1 100644
-> --- a/ipc/util.c
-> +++ b/ipc/util.c
-> @@ -783,35 +783,32 @@ struct pid_namespace *ipc_seq_pid_ns(struct seq_file *s)
->  }
->  
->  /*
-> - * This routine locks the ipc structure found at least at position pos.
-> + * This routine locks the ipc structure found at least at index pos.
->   */
->  static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
->  					      loff_t *new_pos)
->  {
-> +	int tmpidx;
->  	struct kern_ipc_perm *ipc;
-> -	int total, id;
-> -
-> -	total = 0;
-> -	for (id = 0; id < pos && total < ids->in_use; id++) {
-> -		ipc = idr_find(&ids->ipcs_idr, id);
-> -		if (ipc != NULL)
-> -			total++;
-> -	}
->  
-> -	ipc = NULL;
-> -	if (total >= ids->in_use)
-> -		goto out;
-> +	tmpidx = pos;
->  
-> -	for (; pos < ipc_mni; pos++) {
-> -		ipc = idr_find(&ids->ipcs_idr, pos);
-> -		if (ipc != NULL) {
-> -			rcu_read_lock();
-> -			ipc_lock_object(ipc);
-> -			break;
-> -		}
-> +	ipc = idr_get_next(&ids->ipcs_idr, &tmpidx);
-> +	if (ipc != NULL) {
-> +		rcu_read_lock();
-> +		ipc_lock_object(ipc);
-> +		/*
-> +		 * We found the object with the index tmpidx.
-> +		 * For next search, start with tmpidx+1
-> +		 */
-> +		*new_pos = tmpidx + 1;
-> +	} else {
-> +		/*
-> +		 * EOF. seq_file can't notice that, thus
-> +		 * move the offset by one.
-> +		 */
-> +		*new_pos = pos + 1;
->  	}
-> -out:
-> -	*new_pos = pos + 1;
->  	return ipc;
->  }
->  
-> @@ -829,7 +826,7 @@ static void *sysvipc_proc_next(struct seq_file *s, void *it, loff_t *pos)
->  }
->  
->  /*
-> - * File positions: pos 0 -> header, pos n -> ipc id = n - 1.
-> + * File positions: pos 0 -> header, pos n -> ipc idx = n - 1.
->   * SeqFile iterator: iterator value locked ipc pointer or SEQ_TOKEN_START.
->   */
->  static void *sysvipc_proc_start(struct seq_file *s, loff_t *pos)
-> @@ -854,7 +851,7 @@ static void *sysvipc_proc_start(struct seq_file *s, loff_t *pos)
->  	if (*pos == 0)
->  		return SEQ_START_TOKEN;
->  
-> -	/* Find the (pos-1)th ipc */
-> +	/* Find the ipc object with the index >= (pos-1) */
->  	return sysvipc_find_ipc(ids, *pos - 1, pos);
->  }
->  
-> -- 
-> 2.31.1
-> 
-> 
+diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+index c6e1febaee46..35e8935bc1fa 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+@@ -48,6 +48,8 @@ CPU0: cpu@0 {
+ 			enable-method = "psci";
+ 			next-level-cache = <&L2_0>;
+ 			qcom,freq-domain = <&cpufreq_hw 0>;
++			power-domains = <&CPU_PD0>;
++			power-domain-names = "psci";
+ 			#cooling-cells = <2>;
+ 			L2_0: l2-cache {
+ 			      compatible = "cache";
+@@ -65,6 +67,8 @@ CPU1: cpu@100 {
+ 			enable-method = "psci";
+ 			next-level-cache = <&L2_100>;
+ 			qcom,freq-domain = <&cpufreq_hw 0>;
++			power-domains = <&CPU_PD1>;
++			power-domain-names = "psci";
+ 			#cooling-cells = <2>;
+ 			L2_100: l2-cache {
+ 			      compatible = "cache";
+@@ -79,6 +83,8 @@ CPU2: cpu@200 {
+ 			enable-method = "psci";
+ 			next-level-cache = <&L2_200>;
+ 			qcom,freq-domain = <&cpufreq_hw 0>;
++			power-domains = <&CPU_PD2>;
++			power-domain-names = "psci";
+ 			#cooling-cells = <2>;
+ 			L2_200: l2-cache {
+ 			      compatible = "cache";
+@@ -93,6 +99,8 @@ CPU3: cpu@300 {
+ 			enable-method = "psci";
+ 			next-level-cache = <&L2_300>;
+ 			qcom,freq-domain = <&cpufreq_hw 0>;
++			power-domains = <&CPU_PD3>;
++			power-domain-names = "psci";
+ 			#cooling-cells = <2>;
+ 			L2_300: l2-cache {
+ 			      compatible = "cache";
+@@ -107,6 +115,8 @@ CPU4: cpu@400 {
+ 			enable-method = "psci";
+ 			next-level-cache = <&L2_400>;
+ 			qcom,freq-domain = <&cpufreq_hw 1>;
++			power-domains = <&CPU_PD4>;
++			power-domain-names = "psci";
+ 			#cooling-cells = <2>;
+ 			L2_400: l2-cache {
+ 			      compatible = "cache";
+@@ -121,6 +131,8 @@ CPU5: cpu@500 {
+ 			enable-method = "psci";
+ 			next-level-cache = <&L2_500>;
+ 			qcom,freq-domain = <&cpufreq_hw 1>;
++			power-domains = <&CPU_PD5>;
++			power-domain-names = "psci";
+ 			#cooling-cells = <2>;
+ 			L2_500: l2-cache {
+ 			      compatible = "cache";
+@@ -136,6 +148,8 @@ CPU6: cpu@600 {
+ 			enable-method = "psci";
+ 			next-level-cache = <&L2_600>;
+ 			qcom,freq-domain = <&cpufreq_hw 1>;
++			power-domains = <&CPU_PD6>;
++			power-domain-names = "psci";
+ 			#cooling-cells = <2>;
+ 			L2_600: l2-cache {
+ 			      compatible = "cache";
+@@ -150,12 +164,86 @@ CPU7: cpu@700 {
+ 			enable-method = "psci";
+ 			next-level-cache = <&L2_700>;
+ 			qcom,freq-domain = <&cpufreq_hw 2>;
++			power-domains = <&CPU_PD7>;
++			power-domain-names = "psci";
+ 			#cooling-cells = <2>;
+ 			L2_700: l2-cache {
+ 			      compatible = "cache";
+ 			      next-level-cache = <&L3_0>;
+ 			};
+ 		};
++
++		cpu-map {
++			cluster0 {
++				core0 {
++					cpu = <&CPU0>;
++				};
++
++				core1 {
++					cpu = <&CPU1>;
++				};
++
++				core2 {
++					cpu = <&CPU2>;
++				};
++
++				core3 {
++					cpu = <&CPU3>;
++				};
++
++				core4 {
++					cpu = <&CPU4>;
++				};
++
++				core5 {
++					cpu = <&CPU5>;
++				};
++
++				core6 {
++					cpu = <&CPU6>;
++				};
++
++				core7 {
++					cpu = <&CPU7>;
++				};
++			};
++		};
++
++		idle-states {
++			entry-method = "psci";
++
++			LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
++				compatible = "arm,idle-state";
++				idle-state-name = "silver-rail-power-collapse";
++				arm,psci-suspend-param = <0x40000004>;
++				entry-latency-us = <355>;
++				exit-latency-us = <909>;
++				min-residency-us = <3934>;
++				local-timer-stop;
++			};
++
++			BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
++				compatible = "arm,idle-state";
++				idle-state-name = "gold-rail-power-collapse";
++				arm,psci-suspend-param = <0x40000004>;
++				entry-latency-us = <241>;
++				exit-latency-us = <1461>;
++				min-residency-us = <4488>;
++				local-timer-stop;
++			};
++		};
++
++		domain-idle-states {
++			CLUSTER_SLEEP_0: cluster-sleep-0 {
++				compatible = "domain-idle-state";
++				idle-state-name = "cluster-power-collapse";
++				arm,psci-suspend-param = <0x4100c344>;
++				entry-latency-us = <3263>;
++				exit-latency-us = <6562>;
++				min-residency-us = <9987>;
++				local-timer-stop;
++			};
++		};
+ 	};
+ 
+ 	firmware {
+@@ -179,6 +267,59 @@ pmu {
+ 	psci {
+ 		compatible = "arm,psci-1.0";
+ 		method = "smc";
++
++		CPU_PD0: cpu0 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&LITTLE_CPU_SLEEP_0>;
++		};
++
++		CPU_PD1: cpu1 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&LITTLE_CPU_SLEEP_0>;
++		};
++
++		CPU_PD2: cpu2 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&LITTLE_CPU_SLEEP_0>;
++		};
++
++		CPU_PD3: cpu3 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&LITTLE_CPU_SLEEP_0>;
++		};
++
++		CPU_PD4: cpu4 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&BIG_CPU_SLEEP_0>;
++		};
++
++		CPU_PD5: cpu5 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&BIG_CPU_SLEEP_0>;
++		};
++
++		CPU_PD6: cpu6 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&BIG_CPU_SLEEP_0>;
++		};
++
++		CPU_PD7: cpu7 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&BIG_CPU_SLEEP_0>;
++		};
++
++		CLUSTER_PD: cpu-cluster0 {
++			#power-domain-cells = <0>;
++			domain-idle-states = <&CLUSTER_SLEEP_0>;
++		};
+ 	};
+ 
+ 	reserved_memory: reserved-memory {
+-- 
+2.29.2
 
