@@ -2,60 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07EF3F7083
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA36B3F7033
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239284AbhHYHhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:37:45 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:38874 "EHLO inva021.nxp.com"
+        id S239146AbhHYHRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:17:15 -0400
+Received: from out1.migadu.com ([91.121.223.63]:50786 "EHLO out1.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238651AbhHYHho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:37:44 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7DCCD200ACB;
-        Wed, 25 Aug 2021 09:36:57 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4609F20262C;
-        Wed, 25 Aug 2021 09:36:57 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id A4006183AC72;
-        Wed, 25 Aug 2021 15:36:52 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: imx-rpmsg: change dev_err to dev_err_probe for -EPROBE_DEFER
-Date:   Wed, 25 Aug 2021 15:14:41 +0800
-Message-Id: <1629875681-16373-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S238606AbhHYHRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 03:17:14 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1629875787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qZDfge9JkGpMNd2PzfnbUn2iPJxkyxvkteeaxzl9liY=;
+        b=wUBKVMzKbWsBvVeKNeV9rNn1HZJiRAbQwALHx0mYcGZqwg+PtP7vJYmHlD2xzN2VM/gNDS
+        yBlJprBT82rSi2HZDkbpQPhvsloZslacMy+PrV71rTnDMj7dKDKp0AWH4g0JTF/b6OpD7d
+        6t5wewA94U1B9wkiqqRMERR04+y+5Jg=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH linux-next] arm64: PCI: Introduce pcibios_free_irq() helper function
+Date:   Wed, 25 Aug 2021 15:16:12 +0800
+Message-Id: <20210825071612.21543-1-yajun.deng@linux.dev>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change dev_err to dev_err_probe for no need print error message
-when defer probe happens.
+Introduce pcibios_free_irq() to free irq in pci_device_probe() and
+pci_device_remove() that in drivers/pci/pci-driver.c.
 
-Fixes: 39f8405c3e50 ("ASoC: imx-rpmsg: Add machine driver for audio base on rpmsg")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- sound/soc/fsl/imx-rpmsg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/kernel/pci.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
-index f0cae8c59d54..f96fe4ff8425 100644
---- a/sound/soc/fsl/imx-rpmsg.c
-+++ b/sound/soc/fsl/imx-rpmsg.c
-@@ -125,7 +125,7 @@ static int imx_rpmsg_probe(struct platform_device *pdev)
- 	snd_soc_card_set_drvdata(&data->card, data);
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
- 	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		dev_err_probe(&pdev->dev, ret, "snd_soc_register_card failed\n");
- 		goto fail;
- 	}
+diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
+index 1006ed2d7c60..40da5aff4548 100644
+--- a/arch/arm64/kernel/pci.c
++++ b/arch/arm64/kernel/pci.c
+@@ -25,10 +25,18 @@
+ int pcibios_alloc_irq(struct pci_dev *dev)
+ {
+ 	if (!acpi_disabled)
+-		acpi_pci_irq_enable(dev);
++		return acpi_pci_irq_enable(dev);
  
+ 	return 0;
+ }
++
++void pcibios_free_irq(struct pci_dev *dev)
++{
++	if (!acpi_disabled)
++		acpi_pci_irq_disable(dev);
++
++}
++
+ #endif
+ 
+ /*
 -- 
-2.17.1
+2.32.0
 
