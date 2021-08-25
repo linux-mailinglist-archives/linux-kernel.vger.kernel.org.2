@@ -2,125 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDE83F72AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9194D3F72B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235904AbhHYKKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239628AbhHYKKe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:10:34 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D27C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:09:48 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id i21so9144189ejd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:09:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lTM6ISsEymRSdxqbfbjQ9nbYtaTqxueWlZIn8/Cn8Fw=;
-        b=A6clfGDTpE1XV0m3hWY2qjpn2irid8WDQi/ySOnXTlo3MEf6IRyJUdFW4TP6xXuTrQ
-         IvU6SWKhSDFJ3GHRSOU9ku+OyJIIKJTAebrk7kzYI23XBkMf2v3Jdx0UzEMvcgQiikgr
-         JnrLs8j4KtBXpNhblXWBLk1MNsRW4mwqCdYqg+Cjb+Sm3pzBofa7sXXN7vb+P+/3+vN7
-         sdzARspP7+BuCuHqBM5N9jhFJD+4xgwf9pnLhNBvidbj1KjcfiVwxywWeycLFo8A8hsp
-         qjVuocULa6rPyFZX4ucztQr6CEe6bYn1EfvSzCOO1/bEH2MhjtJfROuQ7fqbnxeqxIyG
-         X8CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lTM6ISsEymRSdxqbfbjQ9nbYtaTqxueWlZIn8/Cn8Fw=;
-        b=M0fodRmzb7dFNnZLe5DqYdkTIKroP7pWj2tck335NXyw0O+i7XMZwJWaXs3pmO2g1s
-         FqlvTvfHLsPOZjfH42jpIbGe+s1sIzrqxA4hAb7TL5Q7s1tXjjRMS4bQbev8SEg2tEnq
-         Tx245/heMBXRRMtgUT5h/PwFid2bCNTIjepOyA9jOESoQAnKCPiJ8vJOyCtjuv0RS9/5
-         IhuCr0076FDMyVlCzr5rSdRkH/J6tV+6T6KvLwXfhgNHngkgnMo7WCPUoD9JeoMdgOP6
-         mULXSQtpmUKgwcltllLP2HXSKDfdmzzzJq4g565S0RqS7spOJdwugGZ+90GrnfEgvHhW
-         lKqA==
-X-Gm-Message-State: AOAM531AbYql/UA4KRv1NZogY8qJh2gdW13C79zGs9zZ7s0yQanGhT3F
-        GUimof7mOwZ9mRM/n5DLxHgMoDKvO+nWT8tT
-X-Google-Smtp-Source: ABdhPJxEqu+4q/oK+dOodY3REvmNZlaxOAS1g55GEriLq0b6y+wQ7eSA58Yob89Vc0+Ss6zv5hsFBg==
-X-Received: by 2002:a17:906:f8c4:: with SMTP id lh4mr44842845ejb.542.1629886187395;
-        Wed, 25 Aug 2021 03:09:47 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::e05? ([2a02:768:2307:40d6::e05])
-        by smtp.gmail.com with ESMTPSA id k15sm4509166ejb.92.2021.08.25.03.09.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 03:09:47 -0700 (PDT)
-Subject: Re: [PATCH] microblaze: move core-y in arch/microblaze/Makefile to
- arch/microblaze/Kbuild
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210811164518.187497-1-masahiroy@kernel.org>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <5a401a6f-4f3a-43f0-50be-2bc4005ed46f@monstr.eu>
-Date:   Wed, 25 Aug 2021 12:09:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239846AbhHYKKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238949AbhHYKKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 06:10:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 70E7861183;
+        Wed, 25 Aug 2021 10:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629886206;
+        bh=65p/TIA87p7eJYjLp0QTn1JuyKk95BTYSGbqHgZY5Qw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=k7iDOMivV62EC7EAlkOReOOg+q9yvXot4CH2A7q3TTMptJ+bq63IYHWTmnWcQ3E96
+         AgJnrzIdrXwvx1mVxOPiJ0iScY4sK2egYotLzkLp6IwhC/+BzCy9KAqDxK3hEUSfhE
+         5QOLCu0TK9pxF4/RFTxb5lDAQeB3k0ikabURBLxAlr9AN4HRIde6CWe0S5JPtOiUaJ
+         CDIDQNYml/+nC8JInsBee7hXJsf7FrQFpwXRqps6TBe7+QqtRj74kdW8pXkk6ihKIU
+         B/JlBPr+1+GQy4ukz/UvgbmZO0r/0iLvjNNu2WlMkO/Cg0nFZXDyWNb4AqpcDnuTUB
+         0lpK6X+uob/eQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 671C360A0C;
+        Wed, 25 Aug 2021 10:10:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210811164518.187497-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2 1/1] net: stmmac: fix kernel panic due to NULL pointer
+ dereference of xsk_pool
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162988620641.3256.15807737014421094725.git-patchwork-notify@kernel.org>
+Date:   Wed, 25 Aug 2021 10:10:06 +0000
+References: <20210825005529.980109-1-yoong.siang.song@intel.com>
+In-Reply-To: <20210825005529.980109-1-yoong.siang.song@intel.com>
+To:     Song Yoong Siang <yoong.siang.song@intel.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
+        boon.leong.ong@intel.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On 8/11/21 6:45 PM, Masahiro Yamada wrote:
-> Use obj-y to clean up Makefile.
+On Wed, 25 Aug 2021 08:55:29 +0800 you wrote:
+> After free xsk_pool, there is possibility that napi polling is still
+> running in the middle, thus causes a kernel crash due to kernel NULL
+> pointer dereference of rx_q->xsk_pool and tx_q->xsk_pool.
 > 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+> Fix this by changing the XDP pool setup sequence to:
+>  1. disable napi before free xsk_pool
+>  2. enable napi after init xsk_pool
 > 
->  arch/microblaze/Kbuild   | 4 ++++
->  arch/microblaze/Makefile | 5 -----
->  2 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/microblaze/Kbuild b/arch/microblaze/Kbuild
-> index a4e40e534e6a..a1c597889319 100644
-> --- a/arch/microblaze/Kbuild
-> +++ b/arch/microblaze/Kbuild
-> @@ -1 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0-only
-> +obj-y			+= kernel/
-> +obj-y			+= mm/
-> +obj-$(CONFIG_PCI)	+= pci/
-> +obj-y			+= boot/dts/
-> diff --git a/arch/microblaze/Makefile b/arch/microblaze/Makefile
-> index 6d4af39e3890..9adc6b6434df 100644
-> --- a/arch/microblaze/Makefile
-> +++ b/arch/microblaze/Makefile
-> @@ -50,17 +50,12 @@ KBUILD_CFLAGS += -ffixed-r31 $(CPUFLAGS-y) $(CPUFLAGS-1) $(CPUFLAGS-2)
->  
->  head-y := arch/microblaze/kernel/head.o
->  libs-y += arch/microblaze/lib/
-> -core-y += arch/microblaze/kernel/
-> -core-y += arch/microblaze/mm/
-> -core-$(CONFIG_PCI) += arch/microblaze/pci/
->  
->  boot := arch/microblaze/boot
->  
->  # Are we making a simpleImage.<boardname> target? If so, crack out the boardname
->  DTB:=$(subst simpleImage.,,$(filter simpleImage.%, $(MAKECMDGOALS)))
->  
-> -core-y	+= $(boot)/dts/
-> -
->  export DTB
->  
->  all: linux.bin
-> 
+> [...]
 
-Applied.
-M
+Here is the summary with links:
+  - [net,v2,1/1] net: stmmac: fix kernel panic due to NULL pointer dereference of xsk_pool
+    https://git.kernel.org/netdev/net/c/a6451192da26
 
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
