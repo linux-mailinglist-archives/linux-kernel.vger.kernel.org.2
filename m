@@ -2,76 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEBC3F7841
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDB83F7802
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241030AbhHYP2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:28:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240735AbhHYP2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:28:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07C24610FD;
-        Wed, 25 Aug 2021 15:27:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629905252;
-        bh=m7p6daCSPgaKes4En6UWW7yVDDqC2Pu4GbLK9AYNzPA=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=pwqs1G+F8QgIMdzNMMHzE0kJbxkJNt+b1ROTl740x1V4KaRL8HKLsoRgtYHCuOq8B
-         NSMyx+YhZ4l1jYSxxc2S3/u8PWayvsRd9sr9AsTZOEbk0oJ6qrTJZRXEFA/G+a1+XZ
-         A1bUiridukYUIdmppaUUNtYamjRmRwJVZlp+Zdb6VO4nWeikhSJKSEjZzJJd0wG4ty
-         HloV2VjYfH8l8063pC3RT7AEB4QYNxMIYYYnlk5PrkQRE1GkZzTT6lGB35Ov+I1C2M
-         5/967vfvf2+L2ReL6C8bXjyOqX/1NacOO4v6+4FiB/94v4GXQ9n5yoeiH0kb9Xh4hA
-         CXg394utPd6Ng==
-From:   Mark Brown <broonie@kernel.org>
-To:     nicoleotsuka@gmail.com, festevam@gmail.com, tiwai@suse.com,
-        Xiubo.Lee@gmail.com, timur@kernel.org, alsa-devel@alsa-project.org,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1629875681-16373-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1629875681-16373-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: imx-rpmsg: change dev_err to dev_err_probe for -EPROBE_DEFER
-Message-Id: <162990401497.56501.6446443015923932557.b4-ty@kernel.org>
-Date:   Wed, 25 Aug 2021 16:06:54 +0100
+        id S240355AbhHYPI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 11:08:29 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44856 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231995AbhHYPIR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 11:08:17 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BC62A2220A;
+        Wed, 25 Aug 2021 15:07:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629904049; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/d2RSJXoiYvwpdqa3PewAfBc2yP4smGwYb0V6Y+Upzo=;
+        b=TnJjPPz5sXKClNliDjj4T4y6yB7BO3Bnlji44QSDi6x9FmXeHnuOl2sw2OT7lHgAFFMR1H
+        nvXRGufQSECWgwOALkzxELpxvuYmk1PMMKiRVIWRU5rCa0ee71bnhrInvklZyqdKSMURhW
+        V138+hugf8845aj1TAlhbsJ2PIN3ja8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629904049;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/d2RSJXoiYvwpdqa3PewAfBc2yP4smGwYb0V6Y+Upzo=;
+        b=oSObJPLqgQ8+K13tqXXWh+49QBGbp+vhvWoO7oX+EBb3fzHcO9HiouywQud9QIG8HYHAQu
+        mrZcEQgt8+sd4CDw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 91F4113A85;
+        Wed, 25 Aug 2021 15:07:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id xVtWIbBcJmGIVAAAGKfGzw
+        (envelope-from <jroedel@suse.de>); Wed, 25 Aug 2021 15:07:28 +0000
+Date:   Wed, 25 Aug 2021 17:07:26 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 23/38] x86/head/64: set up a startup %gs for
+ stack protector
+Message-ID: <YSZcrtqExehVwvhf@suse.de>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-24-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820151933.22401-24-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021 15:14:41 +0800, Shengjiu Wang wrote:
-> Change dev_err to dev_err_probe for no need print error message
-> when defer probe happens.
-> 
-> 
-> 
-> 
+On Fri, Aug 20, 2021 at 10:19:18AM -0500, Brijesh Singh wrote:
+>  void __head startup_64_setup_env(unsigned long physbase)
+>  {
+> +	u64 gs_area = (u64)fixup_pointer(startup_gs_area, physbase);
+> +
 
-Applied to
+This breaks as soon as the compiler decides that startup_64_setup_env()
+needs stack protection too.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+And the startup_gs_area is also not needed, there is initial_gs for
+that. 
 
-Thanks!
+What you need is something along these lines (untested):
 
-[1/1] ASoC: imx-rpmsg: change dev_err to dev_err_probe for -EPROBE_DEFER
-      commit: a8946f032eeace6eeb4e51e518275010e5528660
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index d8b3ebd2bb85..3c7c59bc9903 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -65,6 +65,16 @@ SYM_CODE_START_NOALIGN(startup_64)
+ 	leaq	(__end_init_task - FRAME_SIZE)(%rip), %rsp
+ 
+ 	leaq	_text(%rip), %rdi
++
++	movl	$MSR_GS_BASE, %ecx
++	movq	initial_gs(%rip), %rax
++	movq	$_text, %rdx
++	subq	%rdx, %rax
++	addq	%rdi, %rax
++	movq	%rax, %rdx
++	shrq	$32,  %rdx
++	wrmsr
++
+ 	pushq	%rsi
+ 	call	startup_64_setup_env
+ 	popq	%rsi
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+It loads the initial_gs pointer, applies the fixup on it and loads it
+into MSR_GS_BASE. 
