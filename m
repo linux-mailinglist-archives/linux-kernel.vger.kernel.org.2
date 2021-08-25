@@ -2,152 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F35363F77AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337B23F77BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241831AbhHYOtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:49:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60845 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229553AbhHYOtF (ORCPT
+        id S241846AbhHYOvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:51:20 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:47657 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229553AbhHYOvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 10:49:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629902899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O84UPSzLyTlxpKY8kgA2dxz7W797Ma61Zj/oAUQaZog=;
-        b=UraUkJOXm/+2eeZFAAKzwoqTRGpj45jR5Ur9VoJ6nLezFOuUXkUKLG6Lq8TaR9HlgAIKsf
-        FegayT2i8gfe/BddLc8kf9p6s0MV0m7RfY12cfRE7bFZqj9+ShHQXpZLAyrwgs3WLKoaaO
-        tGo8erm7BQv9JV3O7kg42nl1XPJOpk8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-5O5LTM-zMvOE2-i8iKGHkw-1; Wed, 25 Aug 2021 10:48:18 -0400
-X-MC-Unique: 5O5LTM-zMvOE2-i8iKGHkw-1
-Received: by mail-ed1-f69.google.com with SMTP id s8-20020a508dc8000000b003c19f7fe952so6948853edh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:48:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O84UPSzLyTlxpKY8kgA2dxz7W797Ma61Zj/oAUQaZog=;
-        b=b5njFawxbDR5BI2hRvqqXuuGjguq6aQO4xYcx/Qj7hW4TQE9E6LSYje2AzC2I2la35
-         gW7hqxvsohsV2R+o0/YOqefYfpdb69O9GgtoNQORNV5DHUE1uAywAKwnNXZSyDsqIVv1
-         K6xmHU6MXlEMlnrrZspQ5vkytpTKFb8MzpQm051aOtJbO77f49UsBfWfrStx7J9EIZP6
-         QoTvIMIIicWyc4+cZ9sKjCeNsUKgKmiTerAAn5+fMLkyJKpLBSAIiKKY7xEkp/ws9hBh
-         +E6xGuEVsKy2odmy9EEzA/veG6DYmtcLSJitCxEWU0+0SuDDv34NU+MbT8dhpGOV/xwf
-         FCSg==
-X-Gm-Message-State: AOAM531gZr9CfNKjZIJLkSpD1IFTU4EZ4mkZ+qxFJdORkWeh0FI0y33y
-        M2tsVb46wUh1dYK31EGY6n/7xcLDI0LTrwKsx5i4BnTl246FvtH1mcKpDu84Rm2p9VaAYPKtPRg
-        SQ1k/IwDNhmzcrsHIz0Fx60ey
-X-Received: by 2002:a17:906:8257:: with SMTP id f23mr15284101ejx.509.1629902896651;
-        Wed, 25 Aug 2021 07:48:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzg+YMXzP7rZDSk5lLyGAzNNAie8tuqLLPImw3zzrzt/HJXoa38SKWj/gfei0a8pgYgXHQrPg==
-X-Received: by 2002:a17:906:8257:: with SMTP id f23mr15284081ejx.509.1629902896417;
-        Wed, 25 Aug 2021 07:48:16 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id i19sm108277edx.54.2021.08.25.07.48.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 07:48:15 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
-To:     Mark Brown <broonie@kernel.org>,
-        Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20210824230620.1003828-1-djrscally@gmail.com>
- <20210824230620.1003828-2-djrscally@gmail.com>
- <20210825103301.GC5186@sirena.org.uk>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <cc65098e-b459-b20a-f6e2-ee521fc20ca7@redhat.com>
-Date:   Wed, 25 Aug 2021 16:48:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 25 Aug 2021 10:51:18 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id EA6975810A7;
+        Wed, 25 Aug 2021 10:50:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 25 Aug 2021 10:50:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=j25qG8ukGnHu+GbG45H46dChMEe
+        xlabwoRMynBr2xQU=; b=wVFPjE3MTevKsL7NaaHJE9zSwMBfgYJGOnMnoreO3AX
+        vk1O/cfAFCBEQJW2L9B8JoYEWYLQJdAI5KIn4Wg4+x4Y6VlmlZ1BG6ImYNx542zv
+        G9T3VKCY9v0TxTqVkaKuI9D6W5CzAES/W6iKJXWy+ui7nmoZ609OH5ERQx1YR8ur
+        IPK0UfMgEY7knOBO2qJFN+mEVcht6sgiSWRUXEqMbskGagO0qAWnIzACvD3rdzwg
+        hplhXB+FqckBRoNI7rpurBpEmzK2IrbzRdxy6UVNdeO+AQJSrqU03pZ2i1Ng969p
+        sXX5jhsWfUrDhqt+EuPTH+Dab1Oom9Axy7O7U1ap0pw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=j25qG8
+        ukGnHu+GbG45H46dChMEexlabwoRMynBr2xQU=; b=R7bAv9tR+HlbzPrN/rR+Nk
+        o3C5o2WqYYqhlDyY0BUR3xrz6jhciIJtYchoOWaGZISQJV9tT4QuDUg1q5M9tMVK
+        kE9+M2AkV0jm96CSBGUbRXkT2bzpY5A4IXwZBymVzbzFYdihxl3D1mXgRgQbU6P9
+        C5j+yrHrEmdyME9iGbZWXAVvNpFdmanHTeyJyQwFirpHBic8r1/9wNlRpl0xdCxR
+        MUYEndKm8tEeJJpwiTJ90h3zj+wm6Hc1wdKKjM9vnG9MMHVI1+OPS4vHuLS4t4MP
+        BejePOQa9MjVVxP9ClMomsjXLLKU49bts241TRraMaauZvT/6Qu8nOB4j36+bgfg
+        ==
+X-ME-Sender: <xms:tVgmYdVgF9flf2GSdFBmL7HcJupf808NuWROnLgOJ1wC7TcMUbkiSw>
+    <xme:tVgmYdm0Rdipl-dI3gZWe3-KmIp00lMpX4lb1vfiKkgjldDhYfH39AEiNs6CwWC7H
+    Dlyt89bpJ93xIpK-n4>
+X-ME-Received: <xmr:tVgmYZZOlZNlU_aP1H4ifQDVubyL06XATXfR5GbO0CMUin_TZoHFzI70QKCCogLzTgD0TLQhXewSQbXB2KysJLceCtiXKCyvSybr>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddtledgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:tVgmYQWmWMZ8XdEcYmO4Mb1LLHGBOQtGGUpVrfmZuJEkUK-X2ZYS5A>
+    <xmx:tVgmYXnyxrdWekkYo6Y50byHM6awvwK4hsM1JVpD6BV9Z0rQpqm0nw>
+    <xmx:tVgmYdePAPRyJRQLp4E4wnhL3Yts9Ci-RhXNvTnK8dCrovnH9_esPQ>
+    <xmx:t1gmYVdGRgEdEgnktFIjj6c_5IXTieARkO9Y1WDKEmbzFNbYS9djug>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Aug 2021 10:50:29 -0400 (EDT)
+Date:   Wed, 25 Aug 2021 16:50:27 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc:     Icenowy Zheng <icenowy@sipeed.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Samuel Holland <samuel@sholland.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/17] clk: sunxi=ng: add support for R329 R-CCU
+Message-ID: <20210825145027.ixc7wnh3x5w6wzny@gilmour>
+References: <20210802062212.73220-1-icenowy@sipeed.com>
+ <20210802062212.73220-11-icenowy@sipeed.com>
+ <99a74950-fdc0-ecfe-e5f0-ba4a7d8751f0@sholland.org>
+ <5432230.1UTMcGJKg4@jernej-laptop>
 MIME-Version: 1.0
-In-Reply-To: <20210825103301.GC5186@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="l3qwbvgcz3gjr7tn"
+Content-Disposition: inline
+In-Reply-To: <5432230.1UTMcGJKg4@jernej-laptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
 
-On 8/25/21 12:33 PM, Mark Brown wrote:
-> On Wed, Aug 25, 2021 at 12:06:18AM +0100, Daniel Scally wrote:
->> In some situations regulator devices can be enumerated via either
->> devicetree or ACPI and bound to regulator drivers but without any
->> init data being provided in firmware. This leaves their consumers
->> unable to acquire them via regulator_get().
->>
->> To fix the issue, add the ability to register a lookup table to a
->> list within regulator core, which will allow board files to provide
->> init data via matching against the regulator name and device name in
->> the same fashion as the gpiod lookup table.
-> 
-> This is the wrong level to do this I think, this is a generic problem
-> that affects all kinds of platform data so if we're not going to scatter
-> DMI quirks throughout the drivers like we currently do then we should
-> have a way for boards to just store generic platform data for a device
-> and then have that platform data joined up with the device later.  This
-> could for example also be used by all the laptop audio subsystems which
-> need DMI quirk tables in drivers for their components to figure out how
-> they're wired up and avoids the need to go through subsystems adding new
-> APIs.
+--l3qwbvgcz3gjr7tn
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Daniel, I believe that what Mark wants here is something similar to what
-we already do for the 5v boost converter regulator in the TI bq24190 charger
-chip used on some Cherry Trail devices.
+Hi,
 
-There the entire i2c-client is instantiated by platform code here:
-drivers/i2c/busses/i2c-cht-wc.c
+On Fri, Aug 20, 2021 at 06:34:38AM +0200, Jernej =C5=A0krabec wrote:
+> > > +static void __init sun50i_r329_r_ccu_setup(struct device_node *node)
+> > > +{
+> > > +	void __iomem *reg;
+> > > +	u32 val;
+> > > +	int i;
+> > > +
+> > > +	reg =3D of_io_request_and_map(node, 0, of_node_full_name(node));
+> > > +	if (IS_ERR(reg)) {
+> > > +		pr_err("%pOF: Could not map clock registers\n", node);
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	/* Enable the lock bits and the output enable bits on all PLLs */
+> > > +	for (i =3D 0; i < ARRAY_SIZE(pll_regs); i++) {
+> > > +		val =3D readl(reg + pll_regs[i]);
+> > > +		val |=3D BIT(29) | BIT(27);
+> > > +		writel(val, reg + pll_regs[i]);
+> > > +	}
+> > > +
+> > > +	/*
+> > > +	 * Force the I/O dividers of PLL-AUDIO1 to reset default value
+> > > +	 *
+> > > +	 * See the comment before pll-audio1 definition for the reason.
+> > > +	 */
+> > > +
+> > > +	val =3D readl(reg + SUN50I_R329_PLL_AUDIO1_REG);
+> > > +	val &=3D ~BIT(1);
+> > > +	val |=3D BIT(0);
+> > > +	writel(val, reg + SUN50I_R329_PLL_AUDIO1_REG);
+> > > +
+> > > +	i =3D sunxi_ccu_probe(node, reg, &sun50i_r329_r_ccu_desc);
+> > > +	if (i)
+> > > +		pr_err("%pOF: probing clocks fails: %d\n", node, i);
+> > > +}
+> > > +
+> > > +CLK_OF_DECLARE(sun50i_r329_r_ccu, "allwinner,sun50i-r329-r-ccu",
+> > > +	       sun50i_r329_r_ccu_setup);
+> >=20
+> > Please make this a platform driver. There is no particular reason why it
+> > needs to be an early OF clock provider.
+>=20
+> Why? It's good to have it as early clock provider. It has no dependencies=
+ and=20
+> other drivers that depends on it, like IR, can be deferred, if this is lo=
+aded=20
+> later.
 
-This attaches a struct bq24190_platform_data as platform data to
-the i2c-client, this struct contains a single 
+No, Samuel is right, we should make them regular drivers as much as we
+can.
 
-const struct regulator_init_data *regulator_init_data
+The reason we had CLK_OF_DECLARE in the first place is that timers
+usually have a parent clock, and you need the timers before the device
+model is set up.
 
-member which then gets consumed (if there is platform data set) by
-the regulator code in:
+Fortunately for us, since the A20, the architected timers don't require
+a parent clock from us, and we can thus boot up fine.
 
-drivers/power/supply/bq24190_charger.c
+Since the dependencies are minimal, it should probe fairly early and
+with the on-demand probing from the device links you might not even tell
+the difference for most consumers.
 
-For the tps68470 regulator code the platform_data then would need to
-have 3 const struct regulator_init_data * members one for each of the
-3 regulators.
+Maxime
 
-This platform_data could then be directly set (based on a DMI match table)
-from intel_skl_int3472_tps68470.c avoiding probe-ordering issues (1) with
-the lookup solution and will allow the code containing the DMI and
-regulator_init_data tables to be build as a module.
+--l3qwbvgcz3gjr7tn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-So all in all I think that this will be a better solution.
+-----BEGIN PGP SIGNATURE-----
 
-Regards,
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYSZYswAKCRDj7w1vZxhR
+xSPEAP9Zhi9W1anVqHAPOuCAL6FS67fx29ak4D6qwqqA9LiJzgEApDVyVFqkg5H3
+IG8aBvBUnCeV6HIK+MZOyJENIasJwQM=
+=NwLi
+-----END PGP SIGNATURE-----
 
-Hans
-
-
-1) You are forcing the DMI matching driver adding the lookups to be builtin
-but what if the tps68740-MFD + regulatorcode is also builtin, then there
-still is no guarantee the lookups will be added before the regulator drivers'
-probe function runs
-
-
-p.s.
-
-I see that you mention something similar later in the thread referring to
-the tps65023-regulator driver. I did not check, but assuming that uses what
-I describe above; then yes the idea would be to do something similar for
-the tps68740-code, setting the platform_data when (just before) the MFD-cells
-are instantiated from intel_skl_int3472_tps68470.c
-
-
-
+--l3qwbvgcz3gjr7tn--
