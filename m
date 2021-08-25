@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0FD3F6C96
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 02:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F013F6C9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 02:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbhHYA0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 20:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        id S236337AbhHYA37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 20:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236548AbhHYAZ5 (ORCPT
+        with ESMTP id S231552AbhHYA36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 20:25:57 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D3DC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 17:25:12 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id 14so25302115qkc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 17:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ANXgq7I+Kfs3G3EW5qqi7r/ttOA7bI0HweQUsRUv3dk=;
-        b=ZjSwu0cl3qEfdJymDqUezMTnF3slC6OhdfEpaFdDPaDguthmZG/GNTLa5DzfHsgM0l
-         3qfIxU9H0UZb8w03z5Lm/l/MGuuPeKx9oYgwY6+VyQ8PaZLholNcc84m7JRxfi0J8IUi
-         vTkHjW9fog6LuFlCcfwUb6xcc8TmTiW9VOUzwPoXla0dtsfHwLYTeVtP1t6slUsNFuJc
-         CL6mN3Bc4GlUJb6PWQezC7N1UKxL8dWh4Asg4V/ZHapcbCxuXfMhqW26mrHSgN3v/3+4
-         vyTnDNNACmhn053E52srwfo0ooYwfBzFKZf2G4D4Rcf/AjmeecuoFaXjHDT/QMS5BZcH
-         HPoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ANXgq7I+Kfs3G3EW5qqi7r/ttOA7bI0HweQUsRUv3dk=;
-        b=XSqxmqSAY+RVSHcX+0Rs+6wyj9T96ZthRAupNwpyN/XjUcQGw5i2eSq+5PYgLKoY7O
-         jU3PNsud+t/r8dBThR1YV864dgxMxOcCFc60+DdbTu6DNaNRFJ2i3kj1iPTXWQ5UoUtE
-         2T2F1goiBfB5j8MzCO+ct5VNU1/aE43ku38NG45vTX/cRwlJHfTwZ4Nbvh3R46T/pohb
-         OgZKFDdgYLKieeW+IqX664JRbAoNSwqtqIvzlEB9r6kEYvOco3u0BYeiEzy+fbfMV0WH
-         kgHWsXRs4h0bpue4LcsKzqaJnpEmsFsgODBwehaDuMVAFtiiiU1CWl5U5i1/WJzxUVFo
-         ecyw==
-X-Gm-Message-State: AOAM532+NAPt6fkgucP4peo4e8SweSPaTnUFJPY7yfH6Drps3WJLB82k
-        4qVKcGLCzhfa+meYQtDzP5TQyQ==
-X-Google-Smtp-Source: ABdhPJz7iGo0dcUaTNUt15qfQDGTaS+1yrc7YhOmadg2z9sjI0e29wWm8boa+jvcSddXCpm9ikHUmA==
-X-Received: by 2002:a37:b7c1:: with SMTP id h184mr29883530qkf.65.1629851112111;
-        Tue, 24 Aug 2021 17:25:12 -0700 (PDT)
-Received: from localhost.localdomain ([190.2.102.85])
-        by smtp.gmail.com with ESMTPSA id d7sm9443191qth.70.2021.08.24.17.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 17:25:11 -0700 (PDT)
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To:     linux-media@vger.kernel.org
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: [PATCH] media: Request API is no longer experimental
-Date:   Tue, 24 Aug 2021 21:23:37 -0300
-Message-Id: <20210825002337.6561-1-ezequiel@vanguardiasur.com.ar>
-X-Mailer: git-send-email 2.31.1
+        Tue, 24 Aug 2021 20:29:58 -0400
+Received: from scorn.kernelslacker.org (scorn.kernelslacker.org [IPv6:2600:3c03:e000:2fb::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E22C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 17:29:13 -0700 (PDT)
+Received: from [2601:196:4600:6634:ae9e:17ff:feb7:72ca] (helo=wopr.kernelslacker.org)
+        by scorn.kernelslacker.org with esmtp (Exim 4.92)
+        (envelope-from <davej@codemonkey.org.uk>)
+        id 1mIgmy-0001eD-O3; Tue, 24 Aug 2021 20:29:08 -0400
+Received: by wopr.kernelslacker.org (Postfix, from userid 1026)
+        id 48C3056006F; Tue, 24 Aug 2021 20:29:08 -0400 (EDT)
+Date:   Tue, 24 Aug 2021 20:29:08 -0400
+From:   Dave Jones <davej@codemonkey.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: 5.14-rc breaks iotop swap io monitoring.
+Message-ID: <20210825002908.GA16064@codemonkey.org.uk>
+Mail-Followup-To: Dave Jones <davej@codemonkey.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+References: <20210824031648.GA2725@codemonkey.org.uk>
+ <YSSuVO47ieWDfWMQ@hirez.programming.kicks-ass.net>
+ <20210824151943.GA386@codemonkey.org.uk>
+ <CAHk-=wiRe=JBK85HG7xtXH1XbOWcO1KYW8csuWfLuFoHKTqF0w@mail.gmail.com>
+ <20210824213342.GA1708@codemonkey.org.uk>
+ <CAHk-=wg8XonsSN1SXjpSh3pO3-+EMZvdkb1xwJbLpZxCT2=thQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg8XonsSN1SXjpSh3pO3-+EMZvdkb1xwJbLpZxCT2=thQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Note: SpamAssassin invocation failed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Request API is currently used and specified as part of the
-Memory-to-memory Stateless Video Decoder Interface [1].
+On Tue, Aug 24, 2021 at 04:26:59PM -0700, Linus Torvalds wrote:
+ > >  > What happens if you boot with the 'delayacct' kernel parameter.
+ > >  >
+ > > Yeah that boot option does make iotop work again.
+ > 
+ > Ok, so it's that delay allocation thing is it.
+ > 
+ > I'm inclined to let it be and see if somebody else notices, and how
+ > big of a deal it is.
+ >
+ > The 'delayacct' kernel command line is an acceptable workaround if
+ > this is something only a few people will even notice or care about.
+ > 
+ > I wonder how much people care about some statistics and iotop these days.
+ > 
+ > I also assume the swap stats still show up in "vmstat" etc, and that
+ > it's just that iotop ended up using fancier interfaces?
 
-This can now be considered as non-experimental and stable, given
-the decoder API has been used by products since a couple years,
-supported by several drivers and userspace frameworks,
+afaict, vmstat is fine (though none of my machines are using swap, so
+they're just reporting 0)
 
-[1] Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
-
-Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
- drivers/media/mc/Kconfig | 8 --------
- 1 file changed, 8 deletions(-)
-
-diff --git a/drivers/media/mc/Kconfig b/drivers/media/mc/Kconfig
-index 4815b9dde9af..375b09612981 100644
---- a/drivers/media/mc/Kconfig
-+++ b/drivers/media/mc/Kconfig
-@@ -16,13 +16,5 @@ config MEDIA_CONTROLLER_REQUEST_API
- 	bool
- 	depends on MEDIA_CONTROLLER
- 	help
--	  DO NOT ENABLE THIS OPTION UNLESS YOU KNOW WHAT YOU'RE DOING.
--
- 	  This option enables the Request API for the Media controller and V4L2
- 	  interfaces. It is currently needed by a few stateless codec drivers.
--
--	  There is currently no intention to provide API or ABI stability for
--	  this new API as of yet.
--
--comment "Please notice that the enabled Media controller Request API is EXPERIMENTAL"
--	depends on MEDIA_CONTROLLER_REQUEST_API
--- 
-2.31.1
+	Dave
 
