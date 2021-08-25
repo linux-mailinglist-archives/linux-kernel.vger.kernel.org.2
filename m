@@ -2,136 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2273E3F780B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDA03F780F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241271AbhHYPLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:11:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240864AbhHYPLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:11:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3F9D61100;
-        Wed, 25 Aug 2021 15:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629904231;
-        bh=jT6lH15jkUwPsIoMKnlswllzB45QQFJk2KpE+PMlXfw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M1CJGrl2szqPHShOnBn3w+hUT7AbxeLLu3G3HSUfQUwsW/EiCG+7hnizAWrRVedCN
-         Y3gj/HqZeZ+KH3tAPLP7B+1QE8N0uyQRKNZ/q+i3Myjr7LvvbLCGM9Nim+naitYgGm
-         XLqGE5RJSxD0PWcS/xWYlvSp+ISoFzWNMHhh2ywuwOOU6dLYgnsoPtCkh8Wvr9Bh5T
-         3l/royS6IRE71vE25oQzx2vE4+ilajYNXytFlL0nmOhYDIGruvDhuDYVxh4/zC80DG
-         KxmHdEi6CpNZpie5jCgeXtclwUeri3CuriFopVUg9xskcXD7UfLD1l3iKf+mSFvGaE
-         djMNl+K8fw7hw==
-Received: by pali.im (Postfix)
-        id 6F5B55F1; Wed, 25 Aug 2021 17:10:28 +0200 (CEST)
-Date:   Wed, 25 Aug 2021 17:10:28 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/3] dt-bindings: Add 'slot-power-limit' PCIe port
- property
-Message-ID: <20210825151028.hwhibrtqcrslhjsq@pali>
-References: <20210820160023.3243-1-pali@kernel.org>
- <20210820160023.3243-2-pali@kernel.org>
- <YSURxtc7UAaSEfSy@robh.at.kernel.org>
- <20210824161409.2mxzpy5r32tm3kgu@pali>
- <CAL_JsqL1NzTp8v+kw1M_aS5OmJMuRiuys4RKYTT2yYy4pKNzJA@mail.gmail.com>
+        id S241297AbhHYPMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 11:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240844AbhHYPMt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 11:12:49 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC06C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 08:12:03 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id eh1so9264qvb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 08:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mj5FKDpZtARuNjGaKT/9KEErn1IgwP8kS9Oc4Re7I24=;
+        b=k/RQVvcx5SIwxF8wBq16jv12cDzmiDOY1IcL680EqUKbEC9J6vK1S3oB+/f0S7+djP
+         FtAyHUXfSo/tfov98sWEwtGUbovkafOElV+b16JUewRVkW7JB7G4GSsxenS9U4YqocYC
+         Z4jYFNVzGuLgpS4lb9Oqi78f9fwFwFUWjYw3LDL8DRVnpgJPCU3drMJGR685/aTOExB2
+         xmLAhkJ26ODTdYsVd4ZGbeFJUDoMaVFKHYgnlbbdnNsnlFevCgUWlVmLf51fv7LCj0AJ
+         SG0eylCvS2nkRty59gVAukFj46awubG4XZfk3gk1QwriIbJaG0ZqOboPBDUu4wm5XVZ/
+         d1Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mj5FKDpZtARuNjGaKT/9KEErn1IgwP8kS9Oc4Re7I24=;
+        b=jc/uGYA3XVlMWFlBlwd60UvGyZu84GTh447dhay4nCOEzw4GAvQ2YI3OZxnwm1f9w0
+         VHNaGQ5WL96yd0N0iJ1NSNOS1pE5v/YlgFdvUorcjG5FeKHqwe1ZfMp/lvgWfYqUkzAu
+         3iCV6HVS6+YrZ+/rvIUiUVIgTZZUEsOcEmVg68rRE8I7VhPf3BcgWn2vywliU8E1YI4n
+         dsDgcXYKbzNMqtAdhDB7bEuKB1O8qkXj/GKj6Rwymi9zWX4HzJ6BYSf6NsLfgEBalUiV
+         lfANdFF8LtOOS06muCgmkug7fM/ut8aqc+UHA+T9g817lCaFq/smDp+Kh1vHOvpmkKqm
+         BG6A==
+X-Gm-Message-State: AOAM531JfWRMyJbYO6mZT+8aDU/avRAzd9CaCXYy9+DtFqqGrhzG0rOk
+        9BlYr8pQ2y4mRCV2b6gmb1wdlQ==
+X-Google-Smtp-Source: ABdhPJz5vV5lCWpSZNPYqg+nzU7pxw6dkh0wFxjV9r/kaYRnJjMhQuDzPj7vevroqE5PbU6KV5wVCQ==
+X-Received: by 2002:a05:6214:1809:: with SMTP id o9mr18543448qvw.58.1629904322383;
+        Wed, 25 Aug 2021 08:12:02 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id u189sm188619qkh.14.2021.08.25.08.12.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 08:12:01 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 11:13:45 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSZeKfHxOkEAri1q@cmpxchg.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <YSQeFPTMn5WpwyAa@casper.infradead.org>
+ <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
+ <YSVMAS2pQVq+xma7@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqL1NzTp8v+kw1M_aS5OmJMuRiuys4RKYTT2yYy4pKNzJA@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <YSVMAS2pQVq+xma7@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 25 August 2021 09:57:52 Rob Herring wrote:
-> On Tue, Aug 24, 2021 at 11:14 AM Pali Rohár <pali@kernel.org> wrote:
-> >
-> > On Tuesday 24 August 2021 10:35:34 Rob Herring wrote:
-> > > On Fri, Aug 20, 2021 at 06:00:21PM +0200, Pali Rohár wrote:
-> > > > This property specifies slot power limit in mW unit. It is form-factor and
-> > > > board specific value and must be initialized by hardware.
-> > > >
-> > > > Some PCIe controllers delegates this work to software to allow hardware
-> > > > flexibility and therefore this property basically specifies what should
-> > > > host bridge programs into PCIe Slot Capabilities registers.
-> > > >
-> > > > Property needs to be specified in mW unit, and not in special format
-> > > > defined by Slot Capabilities (which encodes scaling factor or different
-> > > > unit). Host drivers should convert value from mW unit to their format.
-> > > >
-> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/pci/pci.txt | 6 ++++++
-> > > >  1 file changed, 6 insertions(+)
-> > >
-> > > This needs to be in dtschema schemas/pci/pci-bus.yaml instead.
-> > >
-> > > (pci.txt is still here because it needs to be relicensed to move all the
-> > > descriptions to pci-bus.yaml.)
-> >
-> > Ok, this is just a proposal for a new DTS property. So documentation
-> > issues will be fixed in real patch.
-> >
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/pci/pci.txt b/Documentation/devicetree/bindings/pci/pci.txt
-> > > > index 6a8f2874a24d..e67d5db21514 100644
-> > > > --- a/Documentation/devicetree/bindings/pci/pci.txt
-> > > > +++ b/Documentation/devicetree/bindings/pci/pci.txt
-> > > > @@ -32,6 +32,12 @@ driver implementation may support the following properties:
-> > > >     root port to downstream device and host bridge drivers can do programming
-> > > >     which depends on CLKREQ signal existence. For example, programming root port
-> > > >     not to advertise ASPM L1 Sub-States support if there is no CLKREQ signal.
-> > > > +- slot-power-limit:
-> > > > +   If present this property specifies slot power limit in mW unit. Host drivers
-> > >
-> > > As mentioned, this should have a unit suffix. I'm not sure it is
-> > > beneficial to share with SFP in this case though.
-> > >
-> > > > +   can parse this slot power limit and use it for programming Root Port or host
-> > > > +   bridge, or for composing and sending PCIe Set_Slot_Power_Limit message
-> > > > +   through the Root Port or host bridge when transitioning PCIe link from a
-> > > > +   non-DL_Up Status to a DL_Up Status.
-> > >
-> > > I no nothing about how this mechanism works, but I think this belongs in
-> > > the next section as for PCIe, a slot is always below a PCI-PCI bridge.
-> > > If we have N slots, then there's N bridges and needs to be N
-> > > slot-power-limit properties, right?
-> > >
-> > > (The same is probably true for all the properties here except
-> > > linux,pci-domain.) There's no distinction between host and PCI bridges
-> > > in pci-bus.yaml though.
-> > >
-> > > Rob
-> >
-> > This slot-power-limit property belongs to same place where are also
-> > other slot properties (link speed, reset gpios, clkreq). So I put it in
-> > place where others are.
-> >
-> > But I'm not sure where it should be as it affects link/slot. Because
-> > link has two sides. I guess that link speed and slot power limit could
-> > belong to the root/downstream port and reset gpio to the endpoint card
-> > or upstream port...
+On Tue, Aug 24, 2021 at 08:44:01PM +0100, Matthew Wilcox wrote:
+> On Tue, Aug 24, 2021 at 02:32:56PM -0400, Johannes Weiner wrote:
+> > The folio doc says "It is at least as large as %PAGE_SIZE";
+> > folio_order() says "A folio is composed of 2^order pages";
+> > page_folio(), folio_pfn(), folio_nr_pages all encode a N:1
+> > relationship. And yes, the name implies it too.
+> > 
+> > This is in direct conflict with what I'm talking about, where base
+> > page granularity could become coarser than file cache granularity.
 > 
-> I wasn't debating whether it goes upstream or downstream, but just
-> that it can apply to more than just the host bridge or root port(s).
-> We have that now already with reset-gpios. Look at the hikey970 case
-> that's queued for 5.15. It's got RP -> switch -> slots/devices with
-> reset gpio on each slot.
-> 
-> As for upstream vs. downstream side, this is one of those cases where
-> we didn't represent the downstream side in DT, so everything gets
-> stuffed in the upstream side. As PCIe is point to point, it doesn't
-> matter so much. It would be a bigger issue on old PCI.
+> That doesn't make any sense.  A page is the fundamental unit of the
+> mm.  Why would we want to increase the granularity of page allocation
+> and not increase the granularity of the file cache?
 
-Upstream vs downstream matters for hotplugging PCIe cases. Upstream
-part (endpoint card) can be unplugged from hotplugging PCIe bridge and
-so does not have any node in sysfs (or lspci output). But downstream
-part (or root port) of PCIe bridge is always present.
+I'm not sure why one should be tied to the other. The folio itself is
+based on the premise that a cache entry doesn't have to correspond to
+exactly one struct page. And I agree with that. I'm just wondering why
+it continues to imply a cache entry is at least one full page, rather
+than saying a cache entry is a set of bytes that can be backed however
+the MM sees fit. So that in case we do bump struct page size in the
+future we don't have to redo the filesystem interface again.
+
+I've listed reasons why 4k pages are increasingly the wrong choice for
+many allocations, reclaim and paging. We also know there is a need to
+maintain support for 4k cache entries.
+
+> > Are we going to bump struct page to 2M soon? I don't know. Here is
+> > what I do know about 4k pages, though:
+> > 
+> > - It's a lot of transactional overhead to manage tens of gigs of
+> >   memory in 4k pages. We're reclaiming, paging and swapping more than
+> >   ever before in our DCs, because flash provides in abundance the
+> >   low-latency IOPS required for that, and parking cold/warm workload
+> >   memory on cheap flash saves expensive RAM. But we're continously
+> >   scanning thousands of pages per second to do this. There was also
+> >   the RWF_UNCACHED thread around reclaim CPU overhead at the higher
+> >   end of buffered IO rates. There is the fact that we have a pending
+> >   proposal from Google to replace rmap because it's too CPU-intense
+> >   when paging into compressed memory pools.
+> 
+> This seems like an argument for folios, not against them.  If user
+> memory (both anon and file) is being allocated in larger chunks, there
+> are fewer pages to scan, less book-keeping to do, and all you're paying
+> for that is I/O bandwidth.
+
+Well, it's an argument for huge pages, and we already have those in
+the form of THP.
+
+The problem with THP today is that the page allocator fragments the
+physical address space at the 4k granularity per default, and groups
+random allocations with no type information and rudimentary
+lifetime/reclaimability hints together.
+
+I'm having a hard time seeing 2M allocations scale as long as we do
+this. As opposed to making 2M the default block and using slab-style
+physical grouping by type and instantiation time for smaller cache
+entries - to improve the chances of physically contiguous reclaim.
+
+But because folios are compound/head pages first and foremost, they
+are inherently tied to being multiples of PAGE_SIZE.
+
+> > - It's a lot of internal fragmentation. Compaction is becoming the
+> >   default method for allocating the majority of memory in our
+> >   servers. This is a latency concern during page faults, and a
+> >   predictability concern when we defer it to khugepaged collapsing.
+> 
+> Again, the more memory that we allocate in higher-order chunks, the
+> better this situation becomes.
+
+It only needs 1 unfortunately placed 4k page out of 512 to mess up a
+2M block indefinitely. And the page allocator has little awareness
+whether the 4k page it's handing out to somebody pairs well with the
+4k page adjacent to it in terms of type and lifetime.
+
+> > - struct page is statically eating gigs of expensive memory on every
+> >   single machine, when only some of our workloads would require this
+> >   level of granularity for some of their memory. And that's *after*
+> >   we're fighting over every bit in that structure.
+> 
+> That, folios does not help with.  I have post-folio ideas about how
+> to address that, but I can't realistically start working on them
+> until folios are upstream.
+
+How would you reduce the memory overhead of struct page without losing
+necessary 4k granularity at the cache level? As long as folio implies
+that cache entries can't be smaller than a struct page?
+
+I appreciate folio is a big patchset and I don't mean to get too much
+into speculation about the future.
+
+But we're here in part because the filesystems have been too exposed
+to the backing memory implementation details. So all I'm saying is, if
+you're touching all the file cache interface now anyway, why not use
+the opportunity to properly disconnect it from the reality of pages,
+instead of making the compound page the new interface for filesystems.
+
+What's wrong with the idea of a struct cache_entry which can be
+embedded wherever we want: in a page, a folio or a pageset. Or in the
+future allocated on demand for <PAGE_SIZE entries, if need be. But
+actually have it be just a cache entry for the fs to read and write,
+not also a compound page and an anon page etc. all at the same time.
+
+Even today that would IMO delineate more clearly between the file
+cache data plane and the backing memory plane. It doesn't get in the
+way of also fixing the base-or-compound mess inside MM code with
+folio/pageset, either.
+
+And if down the line we change how the backing memory is implemented,
+the changes would be a more manageable scope inside MM proper.
+
+Anyway, I think I've asked all this before and don't mean to harp on
+it if people generally disagree that this is a concern.
