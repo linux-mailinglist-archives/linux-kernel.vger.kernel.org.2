@@ -2,167 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0237A3F6E80
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EF93F6E83
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhHYEjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 00:39:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49733 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhHYEjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 00:39:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9564761246;
-        Wed, 25 Aug 2021 04:39:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629866346;
-        bh=DyJlqtTO+nFr0UnDA22UPSMLbTJ+DzvuMl9//OXkwzE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qPEay1hYiUr55ZMZUrxsSndXmclPRr9OIYk4pCIV24HBrV0SgRNe8QBlZ6yKyfnyN
-         L5dT0c9rHRIEHLS29zCHtSti+dzEcrBncirZiitQofLip9UDhzN8tDcrL1KzJ7T4P0
-         EW9FkMJr44oatqBJJ8QrDEOxAcAvB1hdmGMt2Yx3mKMD6xCvG/zK1AKBkzqPRjwca0
-         XuTj4wwcckO5axQG9XVj0Ftv5H+hwMQVTy/+KdZ095uuGf5UE5m+tbh0uAjglMPIY+
-         vgnCloEWZX1T2HJKlhGcZ2Gx/G5EUPvEZ7O1dGgeUemqWQtLbjlP0FSI48ArNgoyz+
-         D4AihaLgGRUnA==
-Date:   Wed, 25 Aug 2021 07:39:00 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [BUG 5.14] arm64/mm: dma memory mapping fails (in some cases)
-Message-ID: <YSXJZBKeka5U7VN+@kernel.org>
-References: <d3a3c828-b777-faf8-e901-904995688437@gmail.com>
- <20210824173741.GC623@arm.com>
- <YSU6NVZ3j0XCurWC@kernel.org>
- <b37fc109-06d3-0c86-a3c8-e5d7f21f296b@gmail.com>
+        id S230423AbhHYElZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 00:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhHYElX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 00:41:23 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688DCC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 21:40:38 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id me10so20513876ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 21:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=DVs+REb065XqkXSI+Yu50Se8g0p/Fqtt0gWQBb3WmuQ=;
+        b=FG0vFRLE2hJ4UIWorO3vLdb5chKPQM/8JffhiDTMnSlH4j018y5+QL2z2cWKTomNKA
+         NjToakFX9B2UT7Ol3WaYlrmQ56eTRFycjcTxkvNvEqqgNDN/L48rTUsIGCJ1chpYHyzO
+         KF8WGu8MZAfA09jVXgVmNInfhcUzM3jdiol1tJ6zOTq9vLEkCh3aN4P3IjVgn54E09SE
+         MR0g3+RCqFKHbJ3nvvybzJcChTSLVPksAfIpTzLnojQwtFIVwk/dqy3PElvKLG38q9fK
+         FvgUD/mk5cszTZIigR74znk/Lohjr+AtJ4pHTDTCyVPkJzKV8sy/y/uTIz7dT53Mumtn
+         kGbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=DVs+REb065XqkXSI+Yu50Se8g0p/Fqtt0gWQBb3WmuQ=;
+        b=f8ywxWfekOrpygbTJEjXRHI+aiTowVq/G4+sqiyuDWGDzl3jBMgbekWFjb2tIVEH73
+         w3SKqSKnz4d3T5X43qjxj+rP8Kf9Jb/xA6ohkfIaf2MDBcxhoHvIJG1QGRQgYwWLP+d8
+         Y5kRtJtggaPwWssQsK98adubZl6PwxiuYb1Lcq6y1cuBWa2NnJvX/Mq6VnWOSA7ikLV3
+         gELKHcqV1mms6rR32AbphIfGybpz+vNnq4dW6kSJz92aKsn3Mc1OV8RTjPhu90YPydb8
+         /e30xub9csw+v5LaQVqo8WRMy9bQTuiiex7Dlx7uujPh3KxV3z+vjbqr4XsiCJGzqOJX
+         t55A==
+X-Gm-Message-State: AOAM533U5/Yi+VXgAeC44OLAoFn8oEbO3vJveDdX6UYeb0Vib63Rw8R2
+        8o9JTJ6oMWIUyaOKzJHJU54=
+X-Google-Smtp-Source: ABdhPJzuSuiWJk2oISMQEFPsrG1mJrQw4UdH+A6YJ30gbnlMC8R6YvZMqu3o5FxzZNnKx7nKPVFFkg==
+X-Received: by 2002:a17:907:10cc:: with SMTP id rv12mr9552230ejb.423.1629866437030;
+        Tue, 24 Aug 2021 21:40:37 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id h10sm12718423edb.74.2021.08.24.21.40.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 21:40:36 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH v3 5/6] staging: r8188eu: add error handling of rtw_read32
+Date:   Wed, 25 Aug 2021 06:40:35 +0200
+Message-ID: <4686124.Q29LyLEoG2@localhost.localdomain>
+In-Reply-To: <93bf46ce2d0ce12e94672acf28b64dc341fde038.1629789580.git.paskripkin@gmail.com>
+References: <cover.1629789580.git.paskripkin@gmail.com> <93bf46ce2d0ce12e94672acf28b64dc341fde038.1629789580.git.paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b37fc109-06d3-0c86-a3c8-e5d7f21f296b@gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:14:01PM +0200, Alex Bee wrote:
-> Hi Mike,
+On Tuesday, August 24, 2021 9:27:42 AM CEST Pavel Skripkin wrote:
+> _rtw_read32 function can fail in case of usb transfer failure. But
+> previous function prototype wasn't designed to return an error to
+> caller. It can cause a lot uninit value bugs all across the driver code,
+> since rtw_read32() returns local stack variable to caller.
 > 
-> thanks for your reply
+> Fix it by changing the prototype of this function. Now it returns an
+> int: 0 on success, negative error value on failure and callers should pass
+> the pointer to storage location for register value.
 > 
-> Am 24.08.21 um 20:28 schrieb Mike Rapoport:
-> > On Tue, Aug 24, 2021 at 06:37:41PM +0100, Catalin Marinas wrote:
-> > > Hi Alex,
-> > > 
-> > > Thanks for the report.
-> > > 
-> > > On Tue, Aug 24, 2021 at 03:40:47PM +0200, Alex Bee wrote:
-> > > > it seems there is a regression in arm64 memory mapping in 5.14, since it
-> > > > fails on Rockchip RK3328 when the pl330 dmac tries to map with:
-> > > > 
-> > > > [    8.921909] ------------[ cut here ]------------
-> > > > [    8.921940] WARNING: CPU: 2 PID: 373 at kernel/dma/mapping.c:235 dma_map_resource+0x68/0xc0
-> > > > [    8.921973] Modules linked in: spi_rockchip(+) fuse
-> > > > [    8.921996] CPU: 2 PID: 373 Comm: systemd-udevd Not tainted 5.14.0-rc7 #1
-> > > > [    8.922004] Hardware name: Pine64 Rock64 (DT)
-> > > > [    8.922011] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-> > > > [    8.922018] pc : dma_map_resource+0x68/0xc0
-> > > > [    8.922026] lr : pl330_prep_slave_fifo+0x78/0xd0
-> > > > [    8.922040] sp : ffff800012102ae0
-> > > > [    8.922043] x29: ffff800012102ae0 x28: ffff000005c94800 x27: 0000000000000000
-> > > > [    8.922056] x26: ffff000000566bd0 x25: 0000000000000001 x24: 0000000000000001
-> > > > [    8.922067] x23: 0000000000000002 x22: ffff000000628c00 x21: 0000000000000001
-> > > > [    8.922078] x20: ffff000000566bd0 x19: 0000000000000001 x18: 0000000000000000
-> > > > [    8.922089] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-> > > > [    8.922100] x14: 0000000000000277 x13: 0000000000000001 x12: 0000000000000000
-> > > > [    8.922111] x11: 0000000000000001 x10: 00000000000008e0 x9 : ffff800012102a80
-> > > > [    8.922123] x8 : ffff000000d14b80 x7 : ffff0000fe7b12f0 x6 : ffff0000fe7b1100
-> > > > [    8.922134] x5 : fffffc000000000f x4 : 0000000000000000 x3 : 0000000000000001
-> > > > [    8.922145] x2 : 0000000000000001 x1 : 00000000ff190800 x0 : ffff000000628c00
-> > > > [    8.922158] Call trace:
-> > > > [    8.922163]  dma_map_resource+0x68/0xc0
-> > > > [    8.922173]  pl330_prep_slave_sg+0x58/0x220
-> > > > [    8.922181]  rockchip_spi_prepare_dma+0xd8/0x2c0 [spi_rockchip]
-> > > > [    8.922208]  rockchip_spi_transfer_one+0x294/0x3d8 [spi_rockchip]
-> > > [...]
-> > > > Note: This does not relate to the spi driver - when disabling this device in
-> > > > the device tree it fails for any other (i2s, for instance) which uses dma.
-> > > > Commenting out the failing check at [1], however, helps and the mapping
-> > > > works again.
-> > > Do you know which address dma_map_resource() is trying to map (maybe
-> > > add some printk())? It's not supposed to map RAM, hence the warning.
-> > > Random guess, the address is 0xff190800 (based on the x1 above but the
-> > > regs might as well be mangled).
-> > 0xff190800 will cause this warning for sure. It has a memory map, but it is
-> > not RAM so old version of pfn_valid() would return 0 and the new one
-> > returns 1.
-> > > > I tried to follow the recent changes for arm64 mm which could relate to the
-> > > > check failing at [1] and reverting
-> > > >    commit 16c9afc77660 ("arm64/mm: drop HAVE_ARCH_PFN_VALID")
-> > > > helps and makes it work again, but I'm 100% uncertain if that commit is
-> > > > really the culprit.
-> > > > 
-> > > > Note, that the firmware (legacy u-boot) injects memory configuration in the
-> > > > device tree as follows:
-> > > > 
-> > > > /memreserve/    0x00000000fcefc000 0x000000000000d000;
-> > > > / {
-> > > > ..
-> > > >      compatible = "pine64,rock64\0rockchip,rk3328";
-> > > > ..
-> > > >      memory {
-> > > >          reg = <0x00 0x200000 0x00 0xfee00000 0x00 0x00 0x00 0x00>;
-> > > >          device_type = "memory";
-> > > >      };
-> > > > 
-> > > > ..
-> > > > }
-> > > Either pfn_valid() gets confused in 5.14 or something is wrong with the
-> > > DT. I have a suspicion it's the former since reverting the above commit
-> > > makes it disappear.
-> > I think pfn_valid() actually behaves as expected but the caller is wrong
-> > because pfn_valid != RAM (this applies btw to !arm64 as well).
-> > 
-> > 	/* Don't allow RAM to be mapped */
-> > 	if (WARN_ON_ONCE(pfn_valid(PHYS_PFN(phys_addr))))
-> > 		return DMA_MAPPING_ERROR;
-> > 
-> > Alex, can you please try this patch:
-> > 
-> > diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> > index 2b06a809d0b9..4715e9641a29 100644
-> > --- a/kernel/dma/mapping.c
-> > +++ b/kernel/dma/mapping.c
-> > @@ -232,7 +232,7 @@ dma_addr_t dma_map_resource(struct device *dev, phys_addr_t phys_addr,
-> >   		return DMA_MAPPING_ERROR;
-> >   	/* Don't allow RAM to be mapped */
-> > -	if (WARN_ON_ONCE(pfn_valid(PHYS_PFN(phys_addr))))
-> > +	if (WARN_ON_ONCE(!memblock_is_memory(phys_addr)))
-> >   		return DMA_MAPPING_ERROR;
-> >   	if (dma_map_direct(dev, ops))
-> 
-> Nope, doesn't help:
-> 
-> [    8.353879] dma_map_resource Failed to map address 0xff190800
-> [    8.353886] dma_map_resource pfn_valid(PHYS_PFN(0xff190800)): 1
-> [    8.353892] dma_map_resource memblock_is_memory(0xff190800): 0
-> 
-> If understand the comment for that check correct, that we _don't_ want RAM
-> to be mapped - shoudn't that be:
-> 
-> +	if (WARN_ON_ONCE(memblock_is_memory(phys_addr)))
-> 
-> ?
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+>
+> [...]
+>  
+> -static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
+> +static int usb_read32(struct intf_hdl *pintfhdl, u32 addr, u32 *data)
+>  {
+>  	u8 requesttype;
+>  	u16 wvalue;
+>  	u16 len;
+> -	__le32 data;
+> +	int res;
+> +	__le32 tmp;
+> +
+> +	if (WARN_ON(unlikely(!data)))
+> +		return -EINVAL;
+>  
+>  	requesttype = 0x01;/* read_in */
+>  
+>  	wvalue = (u16)(addr & 0x0000ffff);
+>  	len = 4;
+>  
+> -	usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
+> +	res = usbctrl_vendorreq(pintfhdl, wvalue, &tmp, len, requesttype);
+> +	if (res < 0) {
+> +		dev_err(dvobj_to_dev(pintfhdl->pintf_dev), "Failed to read 32 bytes: %d\n", res);
+> +		return res;
+> +	} else if (res != len) {
 
-Right, we don't want RAM to be mapped, the negation was wrong and it should
-be 
+Dear Pavel,
 
-	if (WARN_ON_ONCE(memblock_is_memory(phys_addr)))
- 
--- 
-Sincerely yours,
-Mike.
+Please note that if and when my patch "Use usb_control_msg_recv / send () in 
+usbctrl_vendorreq ()" will be merged, "if (res! = len)" will always evaluate 'true' 
+and usb_read32() will always return -EIO even if usbctrl_vendorreq () succeeds.
+
+> +		dev_err(dvobj_to_dev(pintfhdl->pintf_dev),
+> +			"Failed to read 32 bytes, could read only %d bytes\n", res);
+> +		return -EIO;
+> +	}
+> +
+> +	*data = le32_to_cpu(tmp);
+>  
+> -	return le32_to_cpu(data);
+> +	return 0;
+>  }
+>  
+> [...]
+>
+Regards,
+
+Fabio
+
+
+
