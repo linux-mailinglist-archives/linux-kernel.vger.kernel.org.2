@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3EC3F72F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5DD3F731A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237307AbhHYK0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        id S240053AbhHYK1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238303AbhHYK0l (ORCPT
+        with ESMTP id S239975AbhHYK10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:26:41 -0400
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B766AC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:25:55 -0700 (PDT)
-Received: from [10.0.20.3] (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 82FFC1F5F9;
-        Wed, 25 Aug 2021 12:25:50 +0200 (CEST)
-Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add Display Port node
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, vkoul@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        mkrishn@codeaurora.org, kalyan_t@codeaurora.org,
-        rajeevny@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-References: <1629847226-10112-1-git-send-email-khsieh@codeaurora.org>
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-Message-ID: <668c5297-56c3-101a-1490-36fe48d0b6e4@somainline.org>
-Date:   Wed, 25 Aug 2021 12:25:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 25 Aug 2021 06:27:26 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EF5C061757;
+        Wed, 25 Aug 2021 03:26:40 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 14CAE1F436E0
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     matthias.bgg@gmail.com, hsinyi@chromium.org,
+        linux-mediatek@lists.infradead.org, jitao.shi@mediatek.com,
+        eizan@chromium.org, drinkcat@chromium.org, chunkuang.hu@kernel.org,
+        kernel@collabora.com, Crystal Guo <crystal.guo@mediatek.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Fabien Parent <fparent@baylibre.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v3 0/7] Add support to the mmsys driver to be a reset controller
+Date:   Wed, 25 Aug 2021 12:26:25 +0200
+Message-Id: <20210825102632.601614-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1629847226-10112-1-git-send-email-khsieh@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kuogee,
+Dear all,
 
-On 8/25/21 1:20 AM, Kuogee Hsieh wrote:
-> [..]
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index c29226b..a350d84 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> [..]
-> +			msm_dp: displayport-controller@ae90000 {
-> +				status = "disabled";
-> +				compatible = "qcom,sc7180-dp";
-> +
-> +				reg = <0 0x0ae90000 0 0x1400>;
-> +
-> +				interrupt-parent = <&mdss>;
-> +				interrupts = <12 IRQ_TYPE_NONE>;
-> +
-> +				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
-> +				clock-names = "core_iface", "core_aux", "ctrl_link",
-> +					      "ctrl_link_iface", "stream_pixel";
-> +				#clock-cells = <1>;
-> +				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
-> +						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
-> +				assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
-> +				phys = <&dp_phy>;
-> +				phy-names = "dp";
-> +
-> +				operating-points-v2 = <&dp_opp_table>;
-> +				power-domains = <&rpmhpd SC7180_CX>;
+The following patchset is a reimplementation of the patch sent by Jitao
+Shi [1] some time ago. As suggested by Chun-Kuang Hu, this time the
+reset is done using the reset API, where the mmsys driver is the reset
+controller and the mtk_dsi driver is the reset consumer.
+
+Note that the first patch is kind of unrelated change, it's just a
+cleanup but is needed if you want to apply all the following patches
+cleanly.
+
+This patchset is important in order to have the DSI panel working on some
+kukui MT8183 Chromebooks (i.e Lenovo IdeaPad Duet). Without it, you just
+get a black screen.
+
+Best regards,
+  Enric
+
+[1] https://lore.kernel.org/linux-arm-kernel/20210420132614.150242-4-jitao.shi@mediatek.com/
 
 
-Despite having the same value as SC7180_CX, you may want to use 
-SC7280_CX here.
+Changes in v3:
+- Based on top of the patch that converts mmsys to schema
+- Fix typo in the commit description
 
-- Marijn
+Changes in v2:
+- Fix build test ERROR Reported-by: kernel test robot <lkp@intel.com>
+- Added a new patch to describe the dsi reset optional property.
+
+Enric Balletbo i Serra (7):
+  arm64: dts: mediatek: Move reset controller constants into common
+    location
+  dt-bindings: mediatek: Add #reset-cells to mmsys system controller
+  dt-bindings: display: mediatek: add dsi reset optional property
+  arm64: dts: mt8173: Add the mmsys reset bit to reset the dsi0
+  arm64: dts: mt8183: Add the mmsys reset bit to reset the dsi0
+  soc: mediatek: mmsys: Add reset controller support
+  drm/mediatek: mtk_dsi: Reset the dsi0 hardware
+
+ .../bindings/arm/mediatek/mediatek,mmsys.yaml |  4 ++
+ .../display/mediatek/mediatek,dsi.txt         |  6 ++
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      |  2 +
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  5 +-
+ drivers/gpu/drm/mediatek/mtk_dsi.c            |  5 +-
+ drivers/soc/mediatek/mtk-mmsys.c              | 69 +++++++++++++++++++
+ drivers/soc/mediatek/mtk-mmsys.h              |  2 +
+ drivers/watchdog/mtk_wdt.c                    |  6 +-
+ .../mt2712-resets.h                           |  0
+ include/dt-bindings/reset/mt8173-resets.h     |  2 +
+ .../mt8183-resets.h                           |  3 +
+ .../mt8192-resets.h                           |  0
+ 12 files changed, 98 insertions(+), 6 deletions(-)
+ rename include/dt-bindings/{reset-controller => reset}/mt2712-resets.h (100%)
+ rename include/dt-bindings/{reset-controller => reset}/mt8183-resets.h (98%)
+ rename include/dt-bindings/{reset-controller => reset}/mt8192-resets.h (100%)
+
+-- 
+2.30.2
+
