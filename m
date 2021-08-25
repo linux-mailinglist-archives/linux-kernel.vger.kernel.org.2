@@ -2,85 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5843F7845
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DED3F7870
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241133AbhHYP2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:28:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240735AbhHYP2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:28:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1198C61027;
-        Wed, 25 Aug 2021 15:28:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629905282;
-        bh=UXG/9B0dxNUKG1o93UdkxmcN2LyXV1JOlgRgyr1YEus=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l3OZbx3a24jw9ulVpPwToBebd524Qs76xf3E4E+Tnnh1m+78nMKS3hn3dbgGPDRP1
-         exO4HJgMdte3i5H1lPALpOY5AxzADwoe8mp98clb7SYwBrUn+N7UpC7KwFrPOocj6Z
-         C8qCaszVBKICXTMHgI+TWTIMwbu59ogHndHspqH8+q4lp8XH36rZoTX8B6cKeT/63r
-         FdQ6Lm+jRu47epsUCf7U8bBVH0/YRvUHQQUgIFDZ1Kx+Pm/TNqKAbdhz0Cw4LEN2P3
-         +vDftAAvEnctrcfbAi5qyjrq0em0HL+SO1schocGvdFAqmoBQ+ynFH9XulrviQ+Ztd
-         S4G6IPbX4541w==
-Date:   Wed, 25 Aug 2021 16:27:35 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
-Message-ID: <20210825152735.GJ5186@sirena.org.uk>
-References: <20210824230620.1003828-1-djrscally@gmail.com>
- <20210824230620.1003828-2-djrscally@gmail.com>
- <20210825103301.GC5186@sirena.org.uk>
- <cc65098e-b459-b20a-f6e2-ee521fc20ca7@redhat.com>
+        id S241567AbhHYPcE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Aug 2021 11:32:04 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:52355 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240878AbhHYPcD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 11:32:03 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 2819EC0002;
+        Wed, 25 Aug 2021 15:31:16 +0000 (UTC)
+Date:   Wed, 25 Aug 2021 17:31:14 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Kestrel seventyfour <kestrelseventyfour@gmail.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
+ device tree setting
+Message-ID: <20210825173114.04ae2b20@xps13>
+In-Reply-To: <CAE9cyGRuoaiTu40Yu0po3dykk1fTq_VkqwNfrQkJq8DR6FPRpw@mail.gmail.com>
+References: <20210808072643.GA5084@ubuntu>
+        <20210816093126.442f74a1@xps13>
+        <CAE9cyGQ+Bb3rQxiF4My9zXwg_+QYifaCckE=C6spAtN9_4dBFQ@mail.gmail.com>
+        <20210819100334.6af2d86e@xps13>
+        <CAE9cyGSF2vTCptSZd3uMFaZPD=as=PwZY14S+zDhzjWCmsfmpQ@mail.gmail.com>
+        <20210823172413.0bc4ab3a@xps13>
+        <CAE9cyGTKFcMuxePo2SgxkBe_cWvP5nZ_SDcnuUtwaE5o9oVq3g@mail.gmail.com>
+        <20210824192203.076df55e@xps13>
+        <CAE9cyGQ9_--=+MGc4_vTV1BkR6jv2RZcixyfLtCozXo349+6KA@mail.gmail.com>
+        <20210825105126.4c1c15cb@xps13>
+        <CAE9cyGRuoaiTu40Yu0po3dykk1fTq_VkqwNfrQkJq8DR6FPRpw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MzdA25v054BPvyZa"
-Content-Disposition: inline
-In-Reply-To: <cc65098e-b459-b20a-f6e2-ee521fc20ca7@redhat.com>
-X-Cookie: MY income is ALL disposable!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> > > > > > > thank you for your response.
+> > > > > > > If I remove the nand-ecc-xxx properties in the device tree, the device with
+> > > > > > > the Toshiba NAND chip is working. However, the device with the Micron
+> > > > > > > NAND fails with NO ECC functions supplied; hardware ECC not possible,
+> > > > > > > seems to be at line 5367 or equivalent.
+> > > > > > > https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_base.c#L5367
+> > > > > > >
+> > > > > > > It looks like the micron nand driver supports on die only if its
+> > > > > > > specified int the
+> > > > > > > Device tree:
+> > > > > > > https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_micron.c#L511
+> > > > > > > The Micron NAND driver probably needs to set the ECC type to ON DIE if the
+> > > > > > > variable ondie contains the supported attribute?!  
+> > > > > >
+> > > > > > You're right but I don't see any easy upstream-able solution here.
+> > > > > > Changing the behavior in the Xway driver would certainly break users,
+> > > > > > changing the behavior in the Micron driver would certainly break even
+> > > > > > more users. The root cause being an absence of proper description (the
+> > > > > > integration changed). Honestly I feel stuck, maybe you can try to
+> > > > > > register your device, if it fails, change the integration in the driver
+> > > > > > (to an ondie ecc engine) then retry?
+> > > > > >
+> > > > > > Thanks,
+> > > > > > Miquèl  
+> > > > >
+> > > > > Do you think adding something like below at the following location
+> > > > > https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/xway_nand.c#L223
+> > > > > would be upstreamable (with or without device tree property?)?
+> > > > >
+> > > > >         err = nand_scan(&data->chip, 1);
+> > > > >         if (err /* && of_property_read_bool(np, "lantiq,retry-on-die") */) {
+> > > > >                 data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_DIE;
+> > > > >                 err = nand_scan(&data->chip, 1);
+> > > > >                 if (err) return err;
+> > > > >         }
+> > > > >
+> > > > > It still throws the kernel warning on first try, but the second try then works.  
+> > > >
+> > > > Can you please remind me what is xway/lantiq/your setup/how public it
+> > > > is/who's using this driver?
+> > > >
+> > > > Thanks,
+> > > > Miquèl  
+> > >
+> > > Its for Openwrt, I would like to add support for 3 more devices
+> > > AVM fritzbox 3490/5490 and 7490. They all have varying NAND chips.
+> > > I have initially created a PR to have my initial patch tested:
+> > > https://github.com/openwrt/openwrt/pull/4426
+> > > There is already one device supported which has two DTBs one for
+> > > Micron and one for non Micron (3370), but its not very straight forward.
+> > > Without having this issue solved, flashing those devices would be
+> > > possibly having issues depending on NAND chip or the awkward
+> > > workaround of flashing one image and if it does not boot, boot the
+> > > other one. Without self soldered serial console, it would not very
+> > > easy to figure out the NAND manufacturer.
+> > > The AVM stock firmware is old kernel and does not use device
+> > > tree for NAND, they just query all possible manufacturers and set
+> > > up NAND based on manufacturer query.  
+> >
+> > But in this case can't you check the 'root' compatible against certain
+> > values and and some kind of quirk in the ->attach() hook to update the
+> > ECC engine to the right one?
+> >
+> > Thanks,
+> > Miquèl  
+> 
+> maybe I wrote the wrong thing, but what do you mean with root compatible.
+> The controller is always NAND xway and I think there are 4 different
+> NAND chip types. But the stock firmware just queries the NAND
+> manufacturer name, not a date or type/model of the devices. E.g. 7490 can
+> have Micron or Macronix NAND, but querying the Micron id or Macronix
+> id requires a change to the xway driver?
+> Do you mean something like in the first patch do query the manufacturer
+> but just for all the 4?
+> 
+> Thanks, Daniel.
 
---MzdA25v054BPvyZa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You were talking about new boards, if, on each of these boards, you
+know what is the NAND chip, you could retrieve the root compatible (by
+root I mean the one at the root of the tree / { } in the DT) and
+depending on it change the ECC engine that must be used from the driver
+itself.
 
-On Wed, Aug 25, 2021 at 04:48:15PM +0200, Hans de Goede wrote:
 
-> Daniel, I believe that what Mark wants here is something similar to what
-> we already do for the 5v boost converter regulator in the TI bq24190 charger
-> chip used on some Cherry Trail devices.
-
-Yeah, that or something like a generalized version of it which lets a
-separate quirk file like they seem to have register the data to insert -
-I'd be happy enough with the simple thing too given that it's not
-visible to anything, or with DMI quirks in the regulator driver too for
-that matter if it's just one or two platforms but there do seem to be
-rather a lot of these platforms which need quirks.
-
---MzdA25v054BPvyZa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEmYWYACgkQJNaLcl1U
-h9AN0Qf9GZXR6MRcgZLrLwXX9NdTHOuh35/SlGHOp95zERw3wce7RqgcszLL4olD
-9lV3JpkwB78vwF819b9hxbGjIAqyoqK0kpTcwlctaVEpHylRPYhvHXkpekCVMFY6
-A4uroOX1rYOrWvPwhcnUBKfUAa3o2SoW8wm40LIvfFoOB638MBGx4lvsB2PhqK0g
-upRHkmceCgo/B/OBxvuzhiwcJdYxZ48UcBuyisiG6plQZY+JFtRPj/MTKcfiq+ip
-OSVL+44MuUGws4rR6YPJXvAiHZJgmyfpnLyufbBQv7i7XievCgw8AaDyHikeNpjd
-sS3FSvj/+l42fzIImV8TEAZwZeQODw==
-=o1zp
------END PGP SIGNATURE-----
-
---MzdA25v054BPvyZa--
+Thanks,
+Miquèl
