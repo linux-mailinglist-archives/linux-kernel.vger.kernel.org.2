@@ -2,125 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA343F7B80
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D033F7B82
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242310AbhHYRZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:25:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        id S242315AbhHYRZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242260AbhHYRZc (ORCPT
+        with ESMTP id S242249AbhHYRZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:25:32 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AC1C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:24:46 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id r4so384137ybp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:24:46 -0700 (PDT)
+        Wed, 25 Aug 2021 13:25:51 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9863C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:25:05 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id z18so342654ybg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6hxzd8O3VlCz6kAL/KkQZYZdKqB4hI56gVYyGD+e43I=;
-        b=qfIar4g3sZ36toPxiA2u9pWqR1Z+yBhgQWLbZAD7jiEoGrFXST+WnZ5iiZKuKaDmXX
-         qC8sgxtAde0Q7/n/eBAxZ7sTeZvHsf3qxx+o0SWD7KXWgi/XGOhjIBGj2e9q0kr3eyij
-         ZN3Q8QeSPDmvi8FYdecJh1FkJoIA2AHILSIZat87h4EeI/uPpK258s/3d64/wtydBu9B
-         NrrWM/3G2XA9fkB62qrhCK19es2DDQoDE8euOvh8gukl890eBZPEBj9bmLLldfoPWZOd
-         arpVK1EpOgYeWhIao+qA8L5PTMeeIaDCP4NwLaYfliQ67BBI4rcaKOclpdYN7yW3kv04
-         ZOZA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=5S9mfrS0X7ko6yT+H36WCU7OzgfKsxXFb/MMc+YrttA=;
+        b=kvb6azyZ8YiEFelV6aNFfDoSgmExgEoZuQU833NUjVBzb8ObB10h7hmqQVJ5kIso4p
+         Es2pTyUlpr2q92U4Crs0XrmY0KzqWE4RwAFRN4QHEhtEyQzjBvjOlFScooFIMSzPa6sK
+         IP7XwBQCp5URWyXRepMBgOLE5RNuMbmHieFoKb4HFRyOwNbJ16uYnGvej75ySWx2qWTi
+         9fgodTAIrPTihzgbxY7JLl/DzfFUeXoMTaH9eo64eoTTVTDo9pekGJQpJ0AbWFD9YFlj
+         D/FtnTmOO60HDxnbqnXjJP/xGtZQJsoZVDGl4BhaWCg2BLhgwqbmytJrCOP4+nu6oRW0
+         k8Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6hxzd8O3VlCz6kAL/KkQZYZdKqB4hI56gVYyGD+e43I=;
-        b=KDticyGO9avDUc1eHGBtCE3X/WlWpU9FVO5f3jwMNqOvnTQzWusL9r5QhizIQGz7YC
-         QCMAzCR5//CJ4PYfYJbzWerLhDnxEoHXlwxt2m9gyrVA9z3SiW5Y1w9L0pxJMu6IRHLt
-         3z3MXkK7PQexOXiLlgE6DKnqMEtuLNTU0L6m8JFvMEAL1xyKaY6ql9oVPHFaVRGDW5o3
-         bL3f3utTwN6/Hfzz7VGaf2YoLVkUgyWEM8Bhjj4fA5z2ye8HdBGEkJrBO2Tdx6xlYqPM
-         a21bhiXqbeJjOVC+1bmuJjcPnLjHn75FZC4DTj6zhA1hbgwIRdwEI3Ux4T48KLMUkZ9f
-         YYKA==
-X-Gm-Message-State: AOAM531SmI2p1TYTFVkjlAbfbBO6gEYz99W+u9QgynNKRW4+UPy9svSY
-        fDX/MgC+L3lsIiNBVhu5DJs0XzJuKH77mXRBuw0zSQ==
-X-Google-Smtp-Source: ABdhPJzti3UMwG6MIVQx6Dc6zModS9Z/b3mfM9EsFhReXQhsE1W3U6jgcpmRgBZucvhDLyRoz0xBuESLDlxVuOQeSaU=
-X-Received: by 2002:a25:2cd5:: with SMTP id s204mr11111254ybs.452.1629912285606;
- Wed, 25 Aug 2021 10:24:45 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=5S9mfrS0X7ko6yT+H36WCU7OzgfKsxXFb/MMc+YrttA=;
+        b=tgBZbjPxPLGoCdxTRQUgtnmzKfk0SQOXjx0dbg0RUX0DxLz/D7XqTlqPycHa5dij35
+         KiroQs7jLoHKDEE7iudw+APVi9+g9vHfF2E/kfc89zGuOBodhdcif75Ahe338Rlf/m+g
+         3Wbha1jvet/WZObk821jHNRPmm4Ol2KHFL65DXeqSQAfNIImxrzq08TZcEXYN726Tu3f
+         fhOXM7Q8bwHaJeCbwFvzf71ddRI00hPSQRTBXc5j7z8Zb5rRRqIvsCjuq0vAk1uFqTJP
+         oKaKhBuBQ5nbfx1+H0kYcdE7zw+N6Ow9RmXenVbod+iccgooN6QKJfp3Ka0IykAfdgYG
+         VkcA==
+X-Gm-Message-State: AOAM532SOyherlx2g91tYOuyARLWfvC4t/5c4DJPb4cPqfReqssB0oDF
+        jMYxFVqgGIAz4jNzS52J0q8VHyFKZUEDqRxxkjk=
+X-Google-Smtp-Source: ABdhPJwCfmCYC9oLuOsvi+o4jNwdhPKpVGF2GwTRDQE/BqUR0UrJBDv3jeqU2adJSzSn1O7YddXmdBjCst4Uqc7kCPs=
+X-Received: by 2002:a25:31c5:: with SMTP id x188mr60106083ybx.185.1629912305158;
+ Wed, 25 Aug 2021 10:25:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
- <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
- <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com> <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
- <CANn89iK0nMG3qq226aL-urrtPF5jBN6UQCV=ckTmAFqWgy5kiA@mail.gmail.com>
- <5fdc5223-7d67-fed7-f691-185dcb2e3d80@gmail.com> <CANn89iKqijGU_0dQMeyMJ2h2MJE3=fLm8qb456G3ZD_7TrLt_A@mail.gmail.com>
- <2d2154f4-c735-a9b3-7940-f8830fee6229@gmail.com>
-In-Reply-To: <2d2154f4-c735-a9b3-7940-f8830fee6229@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 25 Aug 2021 10:24:34 -0700
-Message-ID: <CANn89iLa4QnA-hOJVVrAZLZs-pLr66-K+fRjB9vTjqgz_aAmnA@mail.gmail.com>
-Subject: Re: [Linuxarm] Re: [PATCH RFC 0/7] add socket to netdev page frag
- recycling support
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        "Tang, Feng" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        mcroce@microsoft.com, Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        chenhao288@hisilicon.com,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, memxor@gmail.com,
-        linux@rempel-privat.de, Antoine Tenart <atenart@kernel.org>,
-        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        aahringo@redhat.com, ceggers@arri.de, yangbo.lu@nxp.com,
-        Florian Westphal <fw@strlen.de>, xiangxia.m.yue@gmail.com,
-        linmiaohe <linmiaohe@huawei.com>, Christoph Hellwig <hch@lst.de>
+Received: by 2002:a05:7108:5053:0:0:0:0 with HTTP; Wed, 25 Aug 2021 10:25:04
+ -0700 (PDT)
+Reply-To: lindaben666@gmail.com
+From:   Linda Ben <lindaben798@gmail.com>
+Date:   Wed, 25 Aug 2021 17:25:04 +0000
+Message-ID: <CAHQWx9=bH1_NZQz5_KRo28Q2o4N5r2t7OxHJ2PGxMFdcCDgSiQ@mail.gmail.com>
+Subject: Hello to you
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 9:39 AM David Ahern <dsahern@gmail.com> wrote:
->
-> On 8/25/21 9:32 AM, Eric Dumazet wrote:
-
-> >
->
-> thanks for the pointer. I need to revisit my past attempt to get iperf3
-> working with hugepages.
-
-ANother pointer, just in case this helps.
-
-commit 72653ae5303c626ca29fcbcbb8165a894a104adf
-Author: Eric Dumazet <edumazet@google.com>
-Date:   Thu Aug 20 10:11:17 2020 -0700
-
-    selftests: net: tcp_mmap: Use huge pages in send path
+Please I need your help and assistance in the transfer of my
+inheritance fund to your bank account,
+I will give you full details on why i want to do this, please reply to my email
+From Linda Ben
