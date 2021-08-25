@@ -2,112 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448593F7E0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630A43F7E0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhHYV4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 17:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59452 "EHLO
+        id S233455AbhHYV62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 17:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhHYV4S (ORCPT
+        with ESMTP id S231708AbhHYV61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 17:56:18 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150A2C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:55:31 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id s12so1298925ljg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:55:30 -0700 (PDT)
+        Wed, 25 Aug 2021 17:58:27 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D892EC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:57:40 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id y23so1030867pgi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jxSZH2j2eaq7YbJpNkogw+OvVkZIag0gCuTap1CAdjw=;
-        b=kPYP3C82a/M7SugtamQJkWGW6tsr0GCoZasJjWGPGWn/2mFy0X292UYyt2jDo6E1HW
-         SXiuK2kkURpEO3A4GKL/UNLg2p2nKC3s35L36EfI9HTEp9JqipvY2CbrnkSXWAgpvyJD
-         byjSrQCBb+63UpNYs2OaAM0Qax3/FIjsbcHrEZhU3eHFhxlF48LMEH8wD0EikY1S86+n
-         5Ob8nqqP5DQ9N8GGMObnSVbNyOpphaxEYMAdt02FxxFuTTObWvVAQ/6lfCJUQrwH4wvh
-         Qkxo3dv0IGM9C18cW1YXfYjbsM6X5U8mp7ejd+iDiF+/U7vb83w1+0C7qiguX6TQ+eIU
-         a6PA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aY2Omr8i3Z9RwPbY54XXhXLRfUqWVte3e22E3NiG+6A=;
+        b=FNb6SF3dWu5bz3CZwYjIHyp/Ad372Ye+fDKa95pqLlnZVKUBrBChVl4trOAAEsnfCs
+         ynmibgEKUJ/jyhCDTvIQeHjFSVj45VngNJLjfy6ovC2CU1BMQ9iCaxehKxrX5VGPnO6A
+         oFsiqLkv31ymPKBE4kHFicXJckjQ4JoKUsCqp+Sy/QApqhgwC596vQEi2e93ZoMUHkVJ
+         P8IwujeB2vSyfuE3boY73apirKocGkCEKg8JNq6OHja9w6HozdsW22fzzAwrICtH2BS9
+         gx0jnwyQsa/eAS/1jowbZ6cjvVSRFsbQ68pKxMRx9sPVflJqOM4LlkukjAuz8zu9W170
+         NLkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jxSZH2j2eaq7YbJpNkogw+OvVkZIag0gCuTap1CAdjw=;
-        b=aKhTSKHm8PUBZM7HYeGT/Qi1/hA374a7qkNv5vjk80SMV3jf18j96fYFyF1uCFISJT
-         NyzRFlvCSX4wki75gcN1X15fMW3UZIVMt0XHtB2oDBBgMYAZXLrq9at5frxLfZePjIXE
-         KkQ7eW0bONx7Bwx2E0alBuqcsfu3K11lm+3EK84mRFQ0olRxhKIxDLPZQEaFYBvjKzC9
-         BVcxIlZaSg1E1tZp62UiUo7Uo3bBfNZW5ybzIbmU+1c8j0cQ1eZA8NLlfD74Dv+L7Q1I
-         llTUjWSvujHzv9W1o0oky0MocQJgBaFOx3BgKP6M1AexlpYEfZqXxphvXb2X0P1rUzx3
-         8xZw==
-X-Gm-Message-State: AOAM530T8Fd/V7q8VDH/cXvOhPzcA+QLojnhIizQ5rkDce16NALTyMjD
-        ZU1h7BN6cqFzFXXDNpIykIUYrKKBKzwW6m5s977IdA==
-X-Google-Smtp-Source: ABdhPJxaGr9ffS+ETTZWl7jSA9yzFobVViTrobQlYBli7DBKBt0Qu750YeW7cWfUe4RwlxfOeeNAhe7MJaSJIgKZ/7g=
-X-Received: by 2002:a2e:a788:: with SMTP id c8mr321743ljf.116.1629928529265;
- Wed, 25 Aug 2021 14:55:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aY2Omr8i3Z9RwPbY54XXhXLRfUqWVte3e22E3NiG+6A=;
+        b=rcuOuXmgw8oTubBRw0XTzFGzKw2XMyo+SL1Scw2EcoIm7MF3vWcRt1UD66LVs5KiMD
+         GW67LRpJSHUHvPJ5FuOQUim8VhKmUk6gG+Kl+SqnvBnpRYeXYie5IMmPNlpPGdUfhJAR
+         L35cHEyz4xoVTxAowTIbilAErabQgX+AkAIq5qXAS5Wpmg5pMP8x/2fZ0UI3JbZfymuf
+         xhnxaix4s+DQF2ykz+XVQ7fx9UGy+zL8SZql1H0KkfV3INlL2/gSPXbaEt1BFFXadH9m
+         I+T4HB/0sPAHv9W4lFs1R1bxjvr7v5PMNoGUKZb38ZakEOzQdUSrLIWHC9FuClRDugrn
+         eEHQ==
+X-Gm-Message-State: AOAM530szilc/eRGS8ghVGXBtWilFHA2RfOOGYM8IMLncwrat40HQsdA
+        xBh12a5qK4vrSGPREN4B/XpcGw==
+X-Google-Smtp-Source: ABdhPJx35HhsxvEq8d26HAearzhLATVZmQWASK01NsxB79Vfv7kp3LIb0fMMn26+jwwn+WXje9OZzA==
+X-Received: by 2002:a63:62c7:: with SMTP id w190mr295791pgb.105.1629928660133;
+        Wed, 25 Aug 2021 14:57:40 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v63sm918511pgv.59.2021.08.25.14.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 14:57:39 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 21:57:35 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Venkatesh Srinivas <venkateshs@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: Guard cpusmask NULL check with
+ CONFIG_CPUMASK_OFFSTACK
+Message-ID: <YSa8z5vQKbFuLtew@google.com>
+References: <20210821000501.375978-1-seanjc@google.com>
+ <20210821000501.375978-3-seanjc@google.com>
+ <CAJhGHyB1RjBLRLtaS80XQSTb0g35smxnBQPjEp-BwieKu1cwXw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210822075122.864511-1-keescook@chromium.org> <20210822075122.864511-18-keescook@chromium.org>
-In-Reply-To: <20210822075122.864511-18-keescook@chromium.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 25 Aug 2021 14:55:18 -0700
-Message-ID: <CAKwvOdnjaBZiPOD35hxb3SLVpV59mYcDBs=YZBz0KrTisULi9Q@mail.gmail.com>
-Subject: Re: [PATCH for-next 17/25] fortify: Fix dropped strcpy() compile-time
- write overflow check
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Daniel Axtens <dja@axtens.net>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        David Gow <davidgow@google.com>, linux-mm@kvack.org,
-        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyB1RjBLRLtaS80XQSTb0g35smxnBQPjEp-BwieKu1cwXw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 12:57 AM Kees Cook <keescook@chromium.org> wrote:
->
-> The implementation for intra-object overflow in str*-family functions
-> accidentally dropped compile-time write overflow checking in strcpy(),
-> leaving it entirely to run-time. Add back the intended check.
->
-> Fixes: 6a39e62abbaf ("lib: string.h: detect intra-object overflow in fortified string functions")
-> Cc: Daniel Axtens <dja@axtens.net>
-> Cc: Francis Laniel <laniel_francis@privacyrequired.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Wed, Aug 25, 2021, Lai Jiangshan wrote:
+> On Sat, Aug 21, 2021 at 8:09 AM Sean Christopherson <seanjc@google.com> wrote:
+> > @@ -277,6 +277,14 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+> >                 if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
+> >                         continue;
+> >
+> > +               /*
+> > +                * tmp can be NULL if cpumasks are allocated off stack, as
+> > +                * allocation of the mask is deliberately not fatal and is
+> > +                * handled by falling back to kicking all online CPUs.
+> > +                */
+> > +               if (IS_ENABLED(CONFIG_CPUMASK_OFFSTACK) && !tmp)
+> > +                       continue;
+> > +
+> 
+> Hello, Sean
+> 
+> I don't think it is a good idea to reinvent the cpumask_available().
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Using cpumask_available() is waaaay better, thanks!
 
-> ---
->  include/linux/fortify-string.h | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
-> index 7e67d02764db..68bc5978d916 100644
-> --- a/include/linux/fortify-string.h
-> +++ b/include/linux/fortify-string.h
-> @@ -287,7 +287,10 @@ __FORTIFY_INLINE char *strcpy(char *p, const char *q)
->         if (p_size == (size_t)-1 && q_size == (size_t)-1)
->                 return __underlying_strcpy(p, q);
->         size = strlen(q) + 1;
-> -       /* test here to use the more stringent object size */
-> +       /* Compile-time check for const size overflow. */
-> +       if (__builtin_constant_p(size) && p_size < size)
-> +               __write_overflow();
-> +       /* Run-time check for dynamic size overflow. */
->         if (p_size < size)
->                 fortify_panic(__func__);
->         memcpy(p, q, size);
-> --
-> 2.30.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210822075122.864511-18-keescook%40chromium.org.
+Vitaly / Paolo, take this one instead?
 
+From deff3e168c0612a2947d1ef29e488282631a788c Mon Sep 17 00:00:00 2001
+From: Sean Christopherson <seanjc@google.com>
+Date: Fri, 20 Aug 2021 13:36:21 -0700
+Subject: [PATCH] KVM: Use cpumask_available() to check for NULL cpumask when
+ kicking vCPUs
 
+Check for a NULL cpumask_var_t when kicking multiple vCPUs via
+cpumask_available(), which performs a !NULL check if and only if cpumasks
+are configured to be allocated off-stack.  This is a meaningless
+optimization, e.g. avoids a TEST+Jcc and TEST+CMOV on x86, but more
+importantly helps document that the NULL check is necessary even though
+all callers pass in a local variable.
 
--- 
-Thanks,
-~Nick Desaulniers
+No functional change intended.
+
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ virt/kvm/kvm_main.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 786b914db98f..2082aceffbf6 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -245,9 +245,13 @@ static void ack_flush(void *_completed)
+ {
+ }
+
+-static inline bool kvm_kick_many_cpus(const struct cpumask *cpus, bool wait)
++static inline bool kvm_kick_many_cpus(cpumask_var_t tmp, bool wait)
+ {
+-	if (unlikely(!cpus))
++	const struct cpumask *cpus;
++
++	if (likely(cpumask_available(tmp)))
++		cpus = tmp;
++	else
+ 		cpus = cpu_online_mask;
+
+ 	if (cpumask_empty(cpus))
+@@ -277,6 +281,14 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+ 		if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
+ 			continue;
+
++		/*
++		 * tmp can be "unavailable" if cpumasks are allocated off stack
++		 * as allocation of the mask is deliberately not fatal and is
++		 * handled by falling back to kicking all online CPUs.
++		 */
++		if (!cpumask_available(tmp))
++			continue;
++
+ 		/*
+ 		 * Note, the vCPU could get migrated to a different pCPU at any
+ 		 * point after kvm_request_needs_ipi(), which could result in
+@@ -288,7 +300,7 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+ 		 * were reading SPTEs _before_ any changes were finalized.  See
+ 		 * kvm_vcpu_kick() for more details on handling requests.
+ 		 */
+-		if (tmp != NULL && kvm_request_needs_ipi(vcpu, req)) {
++		if (kvm_request_needs_ipi(vcpu, req)) {
+ 			cpu = READ_ONCE(vcpu->cpu);
+ 			if (cpu != -1 && cpu != me)
+ 				__cpumask_set_cpu(cpu, tmp);
+--
