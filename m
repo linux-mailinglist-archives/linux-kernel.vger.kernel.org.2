@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B005C3F72C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDF03F72CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239770AbhHYKPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37986 "EHLO
+        id S239832AbhHYKSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239654AbhHYKPh (ORCPT
+        with ESMTP id S238223AbhHYKSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:15:37 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46469C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:14:52 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso49111468otp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ex9BVVFADdOQoNAST2PICmKZlAuG8UXgh5xdQmKSPzE=;
-        b=UfV7KZLIX0IHqDWQWMtq6etSMh8CW/SmOIIQh+/JSfNIlakrP2NbX1XRziwQ4EXv+C
-         HIpRfFgs+UL2qYAk3cWDwmR+MZ/qNitZk/8xptk4XDlAkxAFf+zKqNdYIMunxR/FfSFr
-         oMhD4y8xWeMtF31ZBlui5yTV44QnscFPJP28iw2L1yG7khcELZ9k5FIX601iEbsDKhXK
-         UBQu2y9r4a2g+C+q8bLYzfLBS2Y8aQn6rQlpOQD/+NlBYdD9HxyQxyxthjvmVAXe0bu3
-         PgpBRcyUjYyiUoYSoO5saxHAMYqWusuYcnhAGsGghRY1m2RMsx6DAybLWiJztg1mrAFi
-         LzJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ex9BVVFADdOQoNAST2PICmKZlAuG8UXgh5xdQmKSPzE=;
-        b=m3VBPDiNpVcnQZLm5cfpwjhmJDkTGQ3URXGyBu1aa+I4wbvDa1PbmJrvPLksCAfmqv
-         QjMWlIxbS0S4x3c047YjEBE8d1iA+z1IeHw0bs2o/MGSXO8uJohEdYqkAbNq/8oOnped
-         59p3xmdJSceifZBerpwoEheSoQy70syhL0aofRfPqRkqc5rIDEoeqUqwM3gkyuEXMBWt
-         913njB1pxrEyje2ADq7QIOiwVKne4dy6Z3zwAPa1L1NOaKyF48eEIfoX2ib8aS/MqQlj
-         jmiFF0g4YOdLzf3lj84M+9ziGWz0KlUJImYEmR6PiVKh/osuVvJeVPxGC7+aVyb+XPWR
-         NG2w==
-X-Gm-Message-State: AOAM531PqMNquhZCNUa1KgQEqYO81X5KO9POtoH/rekk6E0RVGxFOE5q
-        fgM85l0rRIAtn/PvhnuvLOxxUzt3hkttbP7DJXgJ3A==
-X-Google-Smtp-Source: ABdhPJxSew18MfiAoXwSPwPzfLYPIZcMkg+5tvv4NchP9NYLMV9ufqzmPcFrrvWWqEKA4vqImmMnPrELh9RVoqj4er4=
-X-Received: by 2002:aca:4589:: with SMTP id s131mr6177609oia.121.1629886491492;
- Wed, 25 Aug 2021 03:14:51 -0700 (PDT)
+        Wed, 25 Aug 2021 06:18:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536B0C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:18:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EhRIH/0qX5VzThjt44q0kraCg2KffpE06A8rCuJykTE=; b=uvMG+pDNNI6VW9nC9Zfzy6i620
+        2NC7YPqK+pVvFhM6yFntpvobnb8oDt8Lb7QXU1+00QOygBq8V3zbI4d2EtW1niLL3mF+dn+fbdFhy
+        zuHcNOGIK3ejUAEdGNJKqrzNQsMNlPdswdWfXsDRc2NmNHneJ3t4oz4ZNT+xn9yGSxeTOD4PihhEV
+        ZZ31Dm7FxvjcqWSXr35Q8PxwhogirYIYhzPDht3Z+APqzPRsde4kCItyoXii4i0ATJplwLRFROP0W
+        hVzw3/1Xtb6UUeOJT4w5aaJA/yugsZ6a8HK0lH0WvcyqkpXEwdTK8sDsccnyMWtU6q7bw3m4NS6Ru
+        4s5czBSg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIpw2-00CBb3-4E; Wed, 25 Aug 2021 10:15:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B10AE3005AD;
+        Wed, 25 Aug 2021 12:15:05 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9FEF3200E4A2F; Wed, 25 Aug 2021 12:15:05 +0200 (CEST)
+Date:   Wed, 25 Aug 2021 12:15:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, joro@8bytes.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, x86@kernel.org,
+        mbenes@suse.com, rostedt@goodmis.org, dvyukov@google.com,
+        elver@google.com, Andi Kleen <andi@firstfloor.org>
+Subject: Re: [PATCH v2 02/24] objtool: Introduce CFI hash
+Message-ID: <YSYYKUHHK+dRa7g7@hirez.programming.kicks-ass.net>
+References: <20210624094059.886075998@infradead.org>
+ <20210624095147.756759107@infradead.org>
+ <20210820222755.sqtlzframoz7k5cb@treble>
 MIME-Version: 1.0
-References: <20210825092116.149975-1-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210825092116.149975-1-wangkefeng.wang@huawei.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 25 Aug 2021 12:14:40 +0200
-Message-ID: <CANpmjNMnU5P9xsDhgeBKQR7Tg-3cHPkMNx7906yYwEAj85sNWg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] ARM: Support KFENCE feature
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820222755.sqtlzframoz7k5cb@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021 at 11:17, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-> The patch 1~3 is to support KFENCE feature on ARM.
->
-> NOTE:
-> The context of patch2/3 changes in arch/arm/mm/fault.c is based on link[1],
-> which make some refactor and cleanup about page fault.
->
-> kfence_test is not useful when kfence is not enabled, skip kfence test
-> when kfence not enabled in patch4.
->
-> I tested the kfence_test on ARM QEMU with or without ARM_LPAE and all passed.
+On Fri, Aug 20, 2021 at 03:27:55PM -0700, Josh Poimboeuf wrote:
 
-Thank you for enabling KFENCE on ARM -- I'll leave arch-code review to
-an ARM maintainer.
+> > @@ -2725,15 +2820,24 @@ static int validate_branch(struct objtoo
+> >  
+> >  			if (insn->visited & visited)
+> >  				return 0;
+> > -		}
+> > +		} else
+> > +			nr_visited++;
+> >  
+> >  		if (state.noinstr)
+> >  			state.instr += insn->instr;
+> >  
+> > -		if (insn->hint)
+> > -			state.cfi = insn->cfi;
+> > -		else
+> > -			insn->cfi = state.cfi;
+> > +		if (insn->hint) {
+> > +			state.cfi = *insn->cfip;
+> > +		} else {
+> > +			/* XXX track if we actually changed state.cfi */
+> 
+> Why would we do that?
 
-However, as said on the patch, please drop the change to the
-kfence_test and associated changes. This is working as intended; while
-you claim that it takes a long time to run when disabled, when running
-manually you just should not run it when disabled. There are CI
-systems that rely on the KUnit test output and the fact that the
-various test cases say "not ok" etc. Changing that would mean such CI
-systems would no longer fail if KFENCE was accidentally disabled (once
-KFENCE is enabled on various CI, which we'd like to do at some point).
-There are ways to fail the test faster, but they all complicate the
-test for no good reason. (And the addition of a new exported function
-that is essentially useless.)
+Saves on the memcmp()..
 
-Thanks,
--- Marco
+> > +++ b/tools/objtool/include/objtool/check.h
+> > @@ -60,9 +60,11 @@ struct instruction {
+> >  	struct list_head alts;
+> >  	struct symbol *func;
+> >  	struct list_head stack_ops;
+> > -	struct cfi_state cfi;
+> > +	struct cfi_state *cfip;
+> 
+> Not sure about this rename.  Pointers generally don't need a 'p' postfix.
+
+It was a dev thing, meant I typically rename a member when I change
+type; easy for compiler and grep.
+
+I can s/cfip/cfi/ on the patch, no biggie.
