@@ -2,151 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07D13F76FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966AE3F7706
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241278AbhHYOR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
+        id S240824AbhHYOXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240866AbhHYORz (ORCPT
+        with ESMTP id S240148AbhHYOXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 10:17:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE51C061757;
-        Wed, 25 Aug 2021 07:17:09 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 14:17:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629901028;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OjZRz5GpND4C2QQLkBoMW6v9l0o1wD7lGmvVCM7yq24=;
-        b=1en4p1oU0euAF1NMP5d0hPnHLp2Dr6iXB4j+S9lWIlYGw2j+u6tOg9oOtiLndXIv/2nEB+
-        1FHj5Z1Y/5nNupVS7wlh5P+EgGkVmbu9s8PfXEHV2K8yAyObajsbzAFY5Gx8j/A2qYxwkJ
-        0hgDA6qkbCVbONTK1rv/6ULW4q8QWmw8zQgXHipDmlcySmcyMowFWHsS3NZC0IB9YqtVFb
-        9a/G6X3p2aUiqBwbEojjeY/Or7wTGXpkKg6vxfVmFcifQ2KwmFf1wMasDVPwxqsZfx+Q3t
-        dB9e5eL+FlX86XYvK/ojyp7dHiKCRFsSLteFZX+Fg4+FVaCwfDMJePzowKuvdQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629901028;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OjZRz5GpND4C2QQLkBoMW6v9l0o1wD7lGmvVCM7yq24=;
-        b=I6fjvHmNBVllBJ8SzOHDvB/zDvnFgY9z8xyrsidPYwJAUgnLd9lKfehc2CdzfOAz+Q3GDc
-        s56akePSbfe0nPCg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/rtmutex: Dont dereference waiter lockless
-Cc:     Sebastian Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210825102453.981720644@linutronix.de>
-References: <20210825102453.981720644@linutronix.de>
+        Wed, 25 Aug 2021 10:23:36 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007C0C061757;
+        Wed, 25 Aug 2021 07:22:50 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id oa17so16662726pjb.1;
+        Wed, 25 Aug 2021 07:22:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PyEUKLbqZIq1NMqrQWfaTXN/Z5gCejfRXXNJ7X/27zI=;
+        b=Otb4pO56XogV3OPnTsbSnwXqDcs6r0tKYcZR1iNssiuYkYcMQ8PckQQk5CD/miFvvB
+         YZnG4332bu9ZsuemG388tzhNs61duJY0Y/KMjR5S08oDCI/f54z5swJSvVfKtWrPVs6T
+         OuNoyKyH75/wKOeVDs9BPzGZoaW4WgmwokdZAk10r16AriZK8yWzshiJ7QPD1tIiR4j4
+         QzPkHke0ApkC7BmIel9NpOhZX6skVucQ5cDWBE1sEkxud+kBXt03CWPE54DZpYbaPcNZ
+         CGpeksEdBwtBmUERj/lWgptGdsYMR8NniWurGI+HmBGYyKp86SYp3LYEv8Bwuy5BttNW
+         kemw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PyEUKLbqZIq1NMqrQWfaTXN/Z5gCejfRXXNJ7X/27zI=;
+        b=rnk2BeJdCOQajkxcX5TeN6A5djhZH/SO2YT5hIzTg1VtVCdAsYtjzudE0AfvBa8ZlJ
+         spvT35lR7dxPCmuuyn3pn2ZydkFUU2u8CrqNtyrJodTDEYRqysYm3adXdjKOau4y63+o
+         mLgbzk/esbL+BaU708GCHJ0hbFXBskXh1eE1iGAJ9aQN19Km4PbtgQRUaoM+4K5FLckW
+         CSR+20BIxxVvR4BvB9rMBz1Uwgkt9LyHdMBzbyWA4soH32WY8S+H0qFr7ERe4GRAX5ob
+         zikG9ZcWfL5cc7qow0NV+VKOtS9iFExfH/3yngXkbJzCWdnR+o1hQ0rPWXNgJIfQRfZr
+         zIDw==
+X-Gm-Message-State: AOAM532YIOvk856dLmgtt6kBwBNAd2a4+GZkZyQaEjke9Tp8NvNNysHd
+        +Z2CePTZvXA/lL2X6hURxzU=
+X-Google-Smtp-Source: ABdhPJxehXmLzPU7JznTC/D2Rq9/EqmHv+0cvyHdGLCWoO8H0/6/JPBhLtcGKA9lw/2OCfOujrZx3w==
+X-Received: by 2002:a17:90a:ae18:: with SMTP id t24mr9049661pjq.92.1629901370243;
+        Wed, 25 Aug 2021 07:22:50 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id n3sm54431pfo.101.2021.08.25.07.22.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 07:22:49 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
+        ville.syrjala@linux.intel.com, matthew.auld@intel.com,
+        dan.carpenter@oracle.com, tvrtko.ursulin@intel.com,
+        matthew.d.roper@intel.com, lucas.demarchi@intel.com,
+        karthik.b.s@intel.com, jose.souza@intel.com,
+        manasi.d.navare@intel.com, airlied@redhat.com,
+        aditya.swarup@intel.com, andrescj@chromium.org,
+        linux-graphics-maintainer@vmware.com, zackr@vmware.com
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v7 0/7] drm: update locking for modesetting
+Date:   Wed, 25 Aug 2021 22:21:58 +0800
+Message-Id: <20210825142205.1376789-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <162990102782.25758.7299742638535703516.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+Sorry for the noise. Sending out a new version because the Intel-gfx CI
+caught that __drm_mode_object_find has to be exported for loadable
+modules like the Intel and VMware DRM drivers.
 
-Commit-ID:     c3123c431447da99db160264506de9897c003513
-Gitweb:        https://git.kernel.org/tip/c3123c431447da99db160264506de9897c003513
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 25 Aug 2021 12:33:12 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 25 Aug 2021 15:42:32 +02:00
+Hi,
 
-locking/rtmutex: Dont dereference waiter lockless
+Updated the series again to avoid recursive locking caught by the
+Intel-gfx CI. Patch 5 touches a number of files, including the Intel and
+VMware drivers, but most changes are simply switching a function call to
+the appropriate locked/unlocked version.
 
-The new rt_mutex_spin_on_onwer() loop checks whether the spinning waiter is
-still the top waiter on the lock by utilizing rt_mutex_top_waiter(), which
-is broken because that function contains a sanity check which dereferences
-the top waiter pointer to check whether the waiter belongs to the
-lock. That's wrong in the lockless spinwait case:
+Overall, this series fixes races with modesetting rights, converts
+drm_device.master_mutex into master_rwsem, and removes
+drm_file.master_lookup_lock.
 
- CPU 0							CPU 1
- rt_mutex_lock(lock)					rt_mutex_lock(lock);
-   queue(waiter0)
-   waiter0 == rt_mutex_top_waiter(lock)
-   rt_mutex_spin_on_onwer(lock, waiter0) {		queue(waiter1)
-   					 		waiter1 == rt_mutex_top_waiter(lock)
-   							...
-     top_waiter = rt_mutex_top_waiter(lock)
-       leftmost = rb_first_cached(&lock->waiters);
-							-> signal
-							dequeue(waiter1)
-							destroy(waiter1)
-       w = rb_entry(leftmost, ....)
-       BUG_ON(w->lock != lock)	 <- UAF
+- Patch 1: Fix a potential null ptr dereference in drm_master_release
 
-The BUG_ON() is correct for the case where the caller holds lock->wait_lock
-which guarantees that the leftmost waiter entry cannot vanish. For the
-lockless spinwait case it's broken.
+- Patch 2: Convert master_mutex into rwsem (avoids creating a new lock)
 
-Create a new helper function which avoids the pointer dereference and just
-compares the leftmost entry pointer with current's waiter pointer to
-validate that currrent is still elegible for spinning.
+- Patch 3: Update global mutex locking in the ioctl handler (avoids
+deadlock when grabbing read lock on master_rwsem in drm_ioctl_kernel)
 
-Fixes: 992caf7f1724 ("locking/rtmutex: Add adaptive spinwait mechanism")
-Reported-by: Sebastian Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210825102453.981720644@linutronix.de
----
- kernel/locking/rtmutex.c        |  5 +++--
- kernel/locking/rtmutex_common.h | 13 +++++++++++++
- 2 files changed, 16 insertions(+), 2 deletions(-)
+- Patch 4: Plug races with drm modesetting rights
 
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index 8aaa352..b3c0961 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1329,8 +1329,9 @@ static bool rtmutex_spin_on_owner(struct rt_mutex_base *lock,
- 		 *    for CONFIG_PREEMPT_RCU=y)
- 		 *  - the VCPU on which owner runs is preempted
- 		 */
--		if (!owner->on_cpu || waiter != rt_mutex_top_waiter(lock) ||
--		    need_resched() || vcpu_is_preempted(task_cpu(owner))) {
-+		if (!owner->on_cpu || need_resched() ||
-+		    rt_mutex_waiter_is_top_waiter(lock, waiter) ||
-+		    vcpu_is_preempted(task_cpu(owner))) {
- 			res = false;
- 			break;
- 		}
-diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
-index 61256de..c47e836 100644
---- a/kernel/locking/rtmutex_common.h
-+++ b/kernel/locking/rtmutex_common.h
-@@ -95,6 +95,19 @@ static inline int rt_mutex_has_waiters(struct rt_mutex_base *lock)
- 	return !RB_EMPTY_ROOT(&lock->waiters.rb_root);
- }
- 
-+/*
-+ * Lockless speculative check whether @waiter is still the top waiter on
-+ * @lock. This is solely comparing pointers and not derefencing the
-+ * leftmost entry which might be about to vanish.
-+ */
-+static inline bool rt_mutex_waiter_is_top_waiter(struct rt_mutex_base *lock,
-+						 struct rt_mutex_waiter *waiter)
-+{
-+	struct rb_node *leftmost = rb_first_cached(&lock->waiters);
-+
-+	return rb_entry(leftmost, struct rt_mutex_waiter, tree_entry) == waiter;
-+}
-+
- static inline struct rt_mutex_waiter *rt_mutex_top_waiter(struct rt_mutex_base *lock)
- {
- 	struct rb_node *leftmost = rb_first_cached(&lock->waiters);
+- Patch 5: Modify drm_mode_object_find to fix potential recursive
+locking of master_rwsem and lock inversions between modeset_mutex and
+master_rwsem
+
+- Patch 6: Remove remaining potential lock inversions between
+modeset_mutex and master_rwsem
+
+- Patch 7: Replace master_lookup_lock with master_rwsem
+
+v6 -> v7:
+- Export __drm_mode_object_find for loadable modules, caught by the
+Intel-gfx CI (patch 5)
+
+v5 -> v6:
+- Fix recursive locking on master_rwsem, caught by the Intel-gfx CI
+(patch 5 & 6)
+
+v4 -> v5:
+- Avoid calling drm_file_get_master while holding on to the modeset
+mutex, caught by the Intel-gfx CI (patch 5 & 6)
+
+v3 -> v4 (suggested by Daniel Vetter):
+- Drop a patch that added an unnecessary master_lookup_lock in
+drm_master_release
+- Drop a patch that addressed a non-existent race in
+drm_is_current_master_locked
+- Remove fixes for non-existent null ptr dereferences
+- Protect drm_master.magic_map,unique{_len} with master_rwsem instead of
+master_lookup_lock
+- Drop the patch that moved master_lookup_lock into struct drm_device
+- Drop a patch to export task_work_add
+- Revert the check for the global mutex in the ioctl handler to use
+drm_core_check_feature instead of drm_dev_needs_global_mutex
+- Push down master_rwsem locking for selected ioctls to avoid lock
+hierarchy inversions, and to allow us to hold write locks on
+master_rwsem instead of flushing readers
+- Remove master_lookup_lock by replacing it with master_rwsem
+
+v2 -> v3:
+- Unexport drm_master_flush, as suggested by Daniel Vetter.
+- Merge master_mutex and master_rwsem, as suggested by Daniel Vetter.
+- Export task_work_add, reported by kernel test robot.
+- Make master_flush static, reported by kernel test robot.
+- Move master_lookup_lock into struct drm_device.
+- Add a missing lock on master_lookup_lock in drm_master_release.
+- Fix a potential race in drm_is_current_master_locked.
+- Fix potential null ptr dereferences in drm_{auth, ioctl}.
+- Protect magic_map,unique{_len} with  master_lookup_lock.
+- Convert master_mutex into a rwsem.
+- Update global mutex locking in the ioctl handler.
+
+v1 -> v2 (suggested by Daniel Vetter):
+- Address an additional race when drm_open runs.
+- Switch from SRCU to rwsem to synchronise readers and writers.
+- Implement drm_master_flush with task_work so that flushes can be
+queued to run before returning to userspace without creating a new
+DRM_MASTER_FLUSH ioctl flag.
+
+Best wishes,
+Desmond
+
+Desmond Cheong Zhi Xi (7):
+  drm: fix null ptr dereference in drm_master_release
+  drm: convert drm_device.master_mutex into a rwsem
+  drm: lock drm_global_mutex earlier in the ioctl handler
+  drm: avoid races with modesetting rights
+  drm: avoid circular locks in drm_mode_object_find
+  drm: avoid circular locks with modeset_mutex and master_rwsem
+  drm: remove drm_file.master_lookup_lock
+
+ drivers/gpu/drm/drm_atomic_uapi.c            |  7 +-
+ drivers/gpu/drm/drm_auth.c                   | 57 ++++++------
+ drivers/gpu/drm/drm_color_mgmt.c             |  2 +-
+ drivers/gpu/drm/drm_crtc.c                   |  5 +-
+ drivers/gpu/drm/drm_debugfs.c                |  4 +-
+ drivers/gpu/drm/drm_drv.c                    |  3 +-
+ drivers/gpu/drm/drm_encoder.c                |  7 +-
+ drivers/gpu/drm/drm_file.c                   |  7 +-
+ drivers/gpu/drm/drm_framebuffer.c            |  2 +-
+ drivers/gpu/drm/drm_internal.h               |  1 +
+ drivers/gpu/drm/drm_ioctl.c                  | 48 ++++++----
+ drivers/gpu/drm/drm_lease.c                  | 94 ++++++++++----------
+ drivers/gpu/drm/drm_mode_object.c            | 28 +++++-
+ drivers/gpu/drm/drm_plane.c                  | 22 +++--
+ drivers/gpu/drm/drm_property.c               |  6 +-
+ drivers/gpu/drm/i915/display/intel_overlay.c |  2 +-
+ drivers/gpu/drm/i915/display/intel_sprite.c  |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c          |  2 +-
+ include/drm/drm_auth.h                       |  6 +-
+ include/drm/drm_connector.h                  | 23 +++++
+ include/drm/drm_crtc.h                       | 22 +++++
+ include/drm/drm_device.h                     | 15 +++-
+ include/drm/drm_file.h                       | 17 ++--
+ include/drm/drm_lease.h                      |  2 +
+ include/drm/drm_mode_object.h                |  3 +
+ include/drm/drm_plane.h                      | 20 +++++
+ 26 files changed, 264 insertions(+), 143 deletions(-)
+
+-- 
+2.25.1
+
