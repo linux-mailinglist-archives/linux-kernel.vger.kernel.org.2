@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53113F6F40
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527613F6F41
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238956AbhHYGPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:15:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47808 "EHLO mail.kernel.org"
+        id S238964AbhHYGQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:16:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238897AbhHYGPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:15:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AB006138B;
-        Wed, 25 Aug 2021 06:14:58 +0000 (UTC)
+        id S238326AbhHYGQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 02:16:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2001961181;
+        Wed, 25 Aug 2021 06:15:22 +0000 (UTC)
 From:   Huacai Chen <chenhuacai@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
         Huacai Chen <chenhuacai@gmail.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH V3 08/10] irqchip: Add LoongArch CPU interrupt controller support
-Date:   Wed, 25 Aug 2021 14:11:50 +0800
-Message-Id: <20210825061152.3396398-9-chenhuacai@loongson.cn>
+Subject: [PATCH V3 09/10] irqchip: Add Loongson Extended I/O interrupt controller support
+Date:   Wed, 25 Aug 2021 14:11:51 +0800
+Message-Id: <20210825061152.3396398-10-chenhuacai@loongson.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210825061152.3396398-1-chenhuacai@loongson.cn>
 References: <20210825061152.3396398-1-chenhuacai@loongson.cn>
@@ -32,131 +32,394 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 We are preparing to add new Loongson (based on LoongArch, not MIPS)
-support. This patch add LoongArch CPU interrupt controller support.
+support. This patch add Loongson Extended I/O CPU interrupt controller
+support.
 
 Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- drivers/irqchip/Kconfig             | 10 ++++
- drivers/irqchip/Makefile            |  1 +
- drivers/irqchip/irq-loongarch-cpu.c | 76 +++++++++++++++++++++++++++++
- 3 files changed, 87 insertions(+)
- create mode 100644 drivers/irqchip/irq-loongarch-cpu.c
+ drivers/irqchip/Kconfig                |   9 +
+ drivers/irqchip/Makefile               |   1 +
+ drivers/irqchip/irq-loongson-eiointc.c | 326 +++++++++++++++++++++++++
+ include/linux/cpuhotplug.h             |   1 +
+ 4 files changed, 337 insertions(+)
+ create mode 100644 drivers/irqchip/irq-loongson-eiointc.c
 
 diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 084bc4c2eebd..443c3a7a0cc1 100644
+index 443c3a7a0cc1..895b19fcea59 100644
 --- a/drivers/irqchip/Kconfig
 +++ b/drivers/irqchip/Kconfig
-@@ -528,6 +528,16 @@ config EXYNOS_IRQ_COMBINER
- 	  Say yes here to add support for the IRQ combiner devices embedded
- 	  in Samsung Exynos chips.
+@@ -547,6 +547,15 @@ config LOONGSON_LIOINTC
+ 	help
+ 	  Support for the Loongson Local I/O Interrupt Controller.
  
-+config IRQ_LOONGARCH_CPU
-+	bool
++config LOONGSON_EIOINTC
++	bool "Loongson Extend I/O Interrupt Controller"
++	depends on MACH_LOONGSON64
++	default MACH_LOONGSON64
++	select IRQ_DOMAIN_HIERARCHY
 +	select GENERIC_IRQ_CHIP
-+	select IRQ_DOMAIN
-+	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
 +	help
-+	  Support for the LoongArch CPU Interrupt Controller. For details of
-+	  irq chip hierarchy on LoongArch platforms please read the document
-+	  Documentation/loongarch/irq-chip-model.rst.
++	  Support for the Loongson3 Extend I/O Interrupt Vector Controller.
 +
- config LOONGSON_LIOINTC
- 	bool "Loongson Local I/O Interrupt Controller"
- 	depends on MACH_LOONGSON64
+ config LOONGSON_HTPIC
+ 	bool "Loongson3 HyperTransport PIC Controller"
+ 	depends on (MACH_LOONGSON64 && MIPS)
 diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index f88cbf36a9d2..4e34eebe180b 100644
+index 4e34eebe180b..eb3fdc6fe808 100644
 --- a/drivers/irqchip/Makefile
 +++ b/drivers/irqchip/Makefile
-@@ -105,6 +105,7 @@ obj-$(CONFIG_LS1X_IRQ)			+= irq-ls1x.o
- obj-$(CONFIG_TI_SCI_INTR_IRQCHIP)	+= irq-ti-sci-intr.o
- obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)	+= irq-ti-sci-inta.o
+@@ -107,6 +107,7 @@ obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)	+= irq-ti-sci-inta.o
  obj-$(CONFIG_TI_PRUSS_INTC)		+= irq-pruss-intc.o
-+obj-$(CONFIG_IRQ_LOONGARCH_CPU)		+= irq-loongarch-cpu.o
+ obj-$(CONFIG_IRQ_LOONGARCH_CPU)		+= irq-loongarch-cpu.o
  obj-$(CONFIG_LOONGSON_LIOINTC)		+= irq-loongson-liointc.o
++obj-$(CONFIG_LOONGSON_EIOINTC)		+= irq-loongson-eiointc.o
  obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
  obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
-diff --git a/drivers/irqchip/irq-loongarch-cpu.c b/drivers/irqchip/irq-loongarch-cpu.c
+ obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
+diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
 new file mode 100644
-index 000000000000..8e9e8d39cb22
+index 000000000000..184e5f845400
 --- /dev/null
-+++ b/drivers/irqchip/irq-loongarch-cpu.c
-@@ -0,0 +1,76 @@
++++ b/drivers/irqchip/irq-loongson-eiointc.c
+@@ -0,0 +1,326 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
++ * Loongson Extend I/O Interrupt Controller support
++ *
 + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
 + */
 +
-+#include <linux/init.h>
-+#include <linux/kernel.h>
++#define pr_fmt(fmt) "eiointc: " fmt
++
 +#include <linux/interrupt.h>
 +#include <linux/irq.h>
 +#include <linux/irqchip.h>
 +#include <linux/irqdomain.h>
++#include <linux/irqchip/chained_irq.h>
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++#include <linux/of_platform.h>
++#include <linux/syscore_ops.h>
 +
-+#include <asm/loongarch.h>
-+#include <asm/setup.h>
++#define EIOINTC_REG_NODEMAP	0x14a0
++#define EIOINTC_REG_IPMAP	0x14c0
++#define EIOINTC_REG_ENABLE	0x1600
++#define EIOINTC_REG_BOUNCE	0x1680
++#define EIOINTC_REG_ISR		0x1800
++#define EIOINTC_REG_ROUTE	0x1c00
 +
-+static struct irq_domain *irq_domain;
++#define VEC_REG_COUNT		4
++#define VEC_COUNT_PER_REG	64
++#define VEC_COUNT		(VEC_REG_COUNT * VEC_COUNT_PER_REG)
++#define VEC_REG_IDX(irq_id)	((irq_id) / VEC_COUNT_PER_REG)
++#define VEC_REG_BIT(irq_id)     ((irq_id) % VEC_COUNT_PER_REG)
 +
-+static inline void enable_loongarch_irq(struct irq_data *d)
-+{
-+	set_csr_ecfg(ECFGF(d->hwirq));
-+}
-+
-+#define eoi_loongarch_irq enable_loongarch_irq
-+
-+static inline void disable_loongarch_irq(struct irq_data *d)
-+{
-+	clear_csr_ecfg(ECFGF(d->hwirq));
-+}
-+
-+#define ack_loongarch_irq disable_loongarch_irq
-+
-+static struct irq_chip loongarch_cpu_irq_controller = {
-+	.name		= "LoongArch",
-+	.irq_ack	= ack_loongarch_irq,
-+	.irq_eoi	= eoi_loongarch_irq,
-+	.irq_enable	= enable_loongarch_irq,
-+	.irq_disable	= disable_loongarch_irq,
++struct eiointc_priv {
++	struct fwnode_handle	*domain_handle;
++	struct irq_domain	*eiointc_domain;
++	u32			eiointc_en[VEC_COUNT/32];
 +};
 +
-+asmlinkage void default_handle_irq(int irq)
++struct eiointc_priv *eiointc_priv;
++
++static void eiointc_set_irq_route(int pos, unsigned int cpu)
 +{
-+	do_IRQ(irq_linear_revmap(irq_domain, irq));
++	int node, cpu_node, route_node;
++	unsigned char coremap[MAX_NUMNODES];
++	uint32_t pos_off, data, data_byte, data_mask;
++
++	pos_off = pos & ~3;
++	data_byte = pos & 3;
++	data_mask = ~BIT_MASK(data_byte) & 0xf;
++
++	memset(coremap, 0, sizeof(unsigned char) * MAX_NUMNODES);
++
++	/* Calculate node and coremap of target irq */
++	cpu_node = cpu_to_node(cpu);
++	coremap[cpu_node] |= (1 << (topology_core_id(cpu)));
++
++	for_each_online_node(node) {
++		data = 0ULL;
++
++		/* Node 0 is in charge of inter-node interrupt dispatch */
++		route_node = (node == 0) ? cpu_node : node;
++		data |= ((coremap[node] | (route_node << 4)) << (data_byte * 8));
++
++		csr_any_send(EIOINTC_REG_ROUTE + pos_off, data, data_mask, node);
++	}
 +}
 +
-+static int loongarch_cpu_intc_map(struct irq_domain *d, unsigned int irq,
-+			     irq_hw_number_t hwirq)
-+{
-+	struct irq_chip *chip;
++static DEFINE_SPINLOCK(affinity_lock);
 +
-+	irq_set_noprobe(irq);
-+	chip = &loongarch_cpu_irq_controller;
-+	set_vi_handler(EXCCODE_INT_START + hwirq, default_handle_irq);
-+	irq_set_chip_and_handler(irq, chip, handle_percpu_irq);
++static int eiointc_set_irq_affinity(struct irq_data *d, const struct cpumask *affinity,
++			  bool force)
++{
++	unsigned int cpu;
++	unsigned long flags;
++	uint32_t vector, pos_off;
++
++	if (!IS_ENABLED(CONFIG_SMP))
++		return -EPERM;
++
++	spin_lock_irqsave(&affinity_lock, flags);
++
++	if (!cpumask_intersects(affinity, cpu_online_mask)) {
++		spin_unlock_irqrestore(&affinity_lock, flags);
++		return -EINVAL;
++	}
++	cpu = cpumask_first_and(affinity, cpu_online_mask);
++
++	/*
++	 * Control interrupt enable or disalbe through cpu 0
++	 * which is reponsible for dispatching interrupts.
++	 */
++	vector = d->hwirq;
++	pos_off = vector >> 5;
++
++	csr_any_send(EIOINTC_REG_ENABLE + (pos_off << 2),
++		     eiointc_priv->eiointc_en[pos_off] & (~((1 << (vector & 0x1F)))), 0x0, 0);
++
++	eiointc_set_irq_route(vector, cpu);
++	csr_any_send(EIOINTC_REG_ENABLE + (pos_off << 2),
++		     eiointc_priv->eiointc_en[pos_off], 0x0, 0);
++	irq_data_update_effective_affinity(d, cpumask_of(cpu));
++
++	spin_unlock_irqrestore(&affinity_lock, flags);
++
++	return IRQ_SET_MASK_OK;
++}
++
++static int eiointc_router_init(unsigned int cpu)
++{
++	int i, bit;
++	uint32_t data;
++	uint32_t node = cpu_to_node(cpu);
++
++	if (cpu == cpumask_first(cpumask_of_node(node))) {
++		eiointc_enable();
++
++		for (i = 0; i < VEC_COUNT / 32; i++) {
++			data = (((1 << (i * 2 + 1)) << 16) | (1 << (i * 2)));
++			iocsr_writel(data, EIOINTC_REG_NODEMAP + i * 4);
++		}
++
++		for (i = 0; i < VEC_COUNT / 32 / 4; i++) {
++			data = 0x02020202; /* Route to IP3 */
++			iocsr_writel(data, EIOINTC_REG_IPMAP + i * 4);
++		}
++
++		for (i = 0; i < VEC_COUNT / 4; i++) {
++			/* Route to Node-0 Core-0 */
++			bit = BIT(cpu_logical_map(0));
++			data = bit | (bit << 8) | (bit << 16) | (bit << 24);
++			iocsr_writel(data, EIOINTC_REG_ROUTE + i * 4);
++		}
++
++		for (i = 0; i < VEC_COUNT / 32; i++) {
++			data = 0xffffffff;
++			iocsr_writel(data, EIOINTC_REG_ENABLE + i * 4);
++			iocsr_writel(data, EIOINTC_REG_BOUNCE + i * 4);
++		}
++	}
 +
 +	return 0;
 +}
 +
-+static const struct irq_domain_ops loongarch_cpu_intc_irq_domain_ops = {
-+	.map = loongarch_cpu_intc_map,
-+	.xlate = irq_domain_xlate_onecell,
++static void eiointc_irq_dispatch(struct irq_desc *desc)
++{
++	int i;
++	u64 pending;
++	bool handled = false;
++	struct irq_chip *chip = irq_desc_get_chip(desc);
++	struct eiointc_priv *priv = irq_desc_get_handler_data(desc);
++
++	chained_irq_enter(chip, desc);
++
++	for (i = 0; i < VEC_REG_COUNT; i++) {
++		pending = iocsr_readq(EIOINTC_REG_ISR + (i << 3));
++		iocsr_writeq(pending, EIOINTC_REG_ISR + (i << 3));
++		while (pending) {
++			int bit = __ffs(pending);
++			int virq = irq_linear_revmap(priv->eiointc_domain, bit + VEC_COUNT_PER_REG * i);
++
++			generic_handle_irq(virq);
++			pending &= ~BIT(bit);
++			handled = true;
++		}
++	}
++
++	if (!handled)
++		spurious_interrupt();
++
++	chained_irq_exit(chip, desc);
++}
++
++static void eiointc_ack_irq(struct irq_data *d)
++{
++}
++
++static void eiointc_mask_irq(struct irq_data *d)
++{
++}
++
++static void eiointc_unmask_irq(struct irq_data *d)
++{
++}
++
++static struct irq_chip eiointc_irq_chip = {
++	.name			= "EIOINTC",
++	.irq_ack		= eiointc_ack_irq,
++	.irq_mask		= eiointc_mask_irq,
++	.irq_unmask		= eiointc_unmask_irq,
++	.irq_set_affinity	= eiointc_set_irq_affinity,
 +};
 +
-+int __init loongarch_cpu_irq_init(void)
++static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
++				unsigned int nr_irqs, void *arg)
 +{
-+	/* Mask interrupts. */
-+	clear_csr_ecfg(ECFG0_IM);
-+	clear_csr_estat(ESTATF_IP);
++	int ret;
++	unsigned int i, type;
++	unsigned long hwirq = 0;
++	struct eiointc *priv = domain->host_data;
 +
-+	irq_domain = irq_domain_add_simple(NULL, EXCCODE_INT_NUM,
-+		     LOONGSON_CPU_IRQ_BASE, &loongarch_cpu_intc_irq_domain_ops, NULL);
++	ret = irq_domain_translate_onecell(domain, arg, &hwirq, &type);
++	if (ret)
++		return ret;
 +
-+	if (!irq_domain)
-+		panic("Failed to add irqdomain for LoongArch CPU");
++	for (i = 0; i < nr_irqs; i++) {
++		irq_domain_set_info(domain, virq + i, hwirq + i, &eiointc_irq_chip,
++					priv, handle_edge_irq, NULL, NULL);
++	}
 +
 +	return 0;
 +}
++
++static void eiointc_domain_free(struct irq_domain *domain, unsigned int virq,
++				unsigned int nr_irqs)
++{
++	int i;
++
++	for (i = 0; i < nr_irqs; i++) {
++		struct irq_data *d = irq_domain_get_irq_data(domain, virq + i);
++
++		irq_set_handler(virq + i, NULL);
++		irq_domain_reset_irq_data(d);
++	}
++}
++
++static const struct irq_domain_ops eiointc_domain_ops = {
++	.translate	= irq_domain_translate_onecell,
++	.alloc		= eiointc_domain_alloc,
++	.free		= eiointc_domain_free,
++};
++
++static int eiointc_suspend(void)
++{
++	return 0;
++}
++
++static bool is_eiointc_irq(struct irq_data *irq_data)
++{
++	struct irq_domain *parent;
++
++	for (parent = irq_data->domain; parent; parent = parent->parent) {
++		if (parent == eiointc_priv->eiointc_domain)
++			return true;
++	}
++
++	return false;
++}
++
++static void eiointc_resume(void)
++{
++	int i;
++	struct irq_desc *desc;
++	struct irq_data *irq_data;
++
++	/* init irq en bitmap */
++	for (i = 0; i < VEC_COUNT / 32; i++)
++		eiointc_priv->eiointc_en[i] = 0xffffffff;
++
++	eiointc_router_init(0);
++
++	for (i = 0; i < NR_IRQS; i++) {
++		desc = irq_to_desc(i);
++		if (desc && desc->handle_irq && desc->handle_irq != handle_bad_irq) {
++			irq_data = &desc->irq_data;
++			if (!is_eiointc_irq(irq_data))
++				continue;
++
++			eiointc_set_irq_affinity(irq_data, irq_data->common->affinity, 0);
++		}
++	}
++}
++
++static struct syscore_ops eiointc_syscore_ops = {
++	.suspend = eiointc_suspend,
++	.resume = eiointc_resume,
++};
++
++struct fwnode_handle *eiointc_acpi_init(struct acpi_madt_eio_pic *acpi_eiointc)
++{
++	int i, parent_irq;
++	struct eiointc_priv *priv;
++
++	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return NULL;
++
++	priv->domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)acpi_eiointc);
++	if (!priv->domain_handle) {
++		pr_err("Unable to allocate domain handle\n");
++		goto out_free_priv;
++	}
++
++	/* Setup IRQ domain */
++	priv->eiointc_domain = irq_domain_create_linear(priv->domain_handle, VEC_COUNT,
++					&eiointc_domain_ops, priv);
++	if (!priv->eiointc_domain) {
++		pr_err("loongson-eiointc: cannot add IRQ domain\n");
++		goto out_free_priv;
++	}
++
++	/* init irq en bitmap */
++	for (i = 0; i < VEC_COUNT/32; i++)
++		priv->eiointc_en[i] = 0xffffffff;
++
++	eiointc_priv = priv;
++
++	eiointc_router_init(0);
++
++	parent_irq = LOONGSON_CPU_IRQ_BASE + acpi_eiointc->cascade;
++	irq_set_chained_handler_and_data(parent_irq, eiointc_irq_dispatch, priv);
++
++	register_syscore_ops(&eiointc_syscore_ops);
++	cpuhp_setup_state_nocalls(CPUHP_AP_IRQ_LOONGARCH_STARTING,
++				  "irqchip/loongarch/intc:starting",
++				  eiointc_router_init, NULL);
++
++	return eiointc_priv->domain_handle;
++
++out_free_priv:
++	priv->domain_handle = NULL;
++	kfree(priv);
++
++	return NULL;
++}
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index f39b34b13871..34599ce0b18b 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -105,6 +105,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_IRQ_BCM2836_STARTING,
+ 	CPUHP_AP_IRQ_MIPS_GIC_STARTING,
+ 	CPUHP_AP_IRQ_RISCV_STARTING,
++	CPUHP_AP_IRQ_LOONGARCH_STARTING,
+ 	CPUHP_AP_IRQ_SIFIVE_PLIC_STARTING,
+ 	CPUHP_AP_ARM_MVEBU_COHERENCY,
+ 	CPUHP_AP_MICROCODE_LOADER,
 -- 
 2.27.0
 
