@@ -2,39 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0526B3F6F02
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC6D3F6F09
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 07:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237421AbhHYFw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 01:52:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37448 "EHLO mail.kernel.org"
+        id S238072AbhHYFyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 01:54:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232420AbhHYFwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 01:52:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 049396120A;
-        Wed, 25 Aug 2021 05:51:26 +0000 (UTC)
+        id S232420AbhHYFy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 01:54:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9130661212;
+        Wed, 25 Aug 2021 05:53:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629870688;
-        bh=EkE46jl8gJG1dqg3qD9AbJi+AfleBAOlIUcWmS/5YLo=;
+        s=k20201202; t=1629870821;
+        bh=OuVdKfR/MOuYBuzNycEWQRB8+cfvT8D53yuzUluBSe0=;
         h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=tD/CeEVXnGHCUDjGQJjhgBbYJFEiOqqI00YOi1gEFuReyH9Z42oWRm8i4DbQQ8CpK
-         nFn97Ljhz2IeWNJ1yTDndwjXnRLm0atAxN2r3u3np/rXh2IGYxhQ4DBD0DC9YKJxY6
-         NCcR/yhkNjDW6ggu+3cWIcNr0MqdyrjZMmag/79kE3IpiAQhrD5upiw2tOuG2uEVpm
-         Cr4dHxbV9q5Q4kyl/ukTCyujpvBtYY+C73VPnJnZfNuTvYm7eySgbjMNw+Y8Ibnqrg
-         12mfKAkqEogMS6s7zug3Q5SPW+m6AQ37ryyXrcNj1fDL/qZyb1F8fnwovuThW3ortb
-         6GVfVtIr3Rqtw==
-References: <20210825042855.7977-1-wcheng@codeaurora.org>
+        b=lWfGGAtXommJm8HbFE7PK3rWnM2Ku1enbbQBZExVftmvW7IhIE6tr/zNYRuBci8a0
+         pTAudCS2VqAdfDTwNCoEyN73YqFS2GQfQPHpcSkdLMRHMOO3Jsu43pJAnPW6uqA6SM
+         mBgbiONurHm0CQ7/dkaj2UfhtoP80hRDF9mAXCe82rdbPCW5w4J9P8u1S6cEp9HZbB
+         VHvGXDMnnIhj0lukvuGZ/6f1mGoNgxtwknJ3d2U0+euK31ZQac/B+any40wHaWfBn2
+         A/8un0oTT1Z555PAO9tZRKi1rViVHR0SSWy0qFexWt10xBLWpPAUodoLvahpgSMBp8
+         Y4GTib4ywAPwg==
+References: <20210824201433.11385-1-ftoth@exalondelft.nl>
 User-agent: mu4e 1.6.4; emacs 27.2
 From:   Felipe Balbi <balbi@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, stable@vger.kernel.org
-Subject: Re: [PATCH v5] usb: dwc3: gadget: Stop EP0 transfers during pullup
- disable
-Date:   Wed, 25 Aug 2021 08:51:08 +0300
-In-reply-to: <20210825042855.7977-1-wcheng@codeaurora.org>
-Message-ID: <874kbe6pib.fsf@kernel.org>
+To:     Ferry Toth <ftoth@exalondelft.nl>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Jack Pham <jackp@codeaurora.org>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        Wesley Cheng <wcheng@codeaurora.org>, robh+dt@kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        frowand.list@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Hofman <pavel.hofman@ivitera.com>,
+        Ferry Toth <fntoth@gmail.com>
+Subject: Re: [PATCH v1 1/3] Revert "usb: gadget: u_audio: add real feedback
+ implementation"
+Date:   Wed, 25 Aug 2021 08:53:23 +0300
+In-reply-to: <20210824201433.11385-1-ftoth@exalondelft.nl>
+Message-ID: <87v93u5au9.fsf@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
@@ -42,29 +58,41 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Wesley Cheng <wcheng@codeaurora.org> writes:
+Ferry Toth <ftoth@exalondelft.nl> writes:
 
-> During a USB cable disconnect, or soft disconnect scenario, a pending
-> SETUP transaction may not be completed, leading to the following
-> error:
+> This reverts commit e89bb4288378b85c82212b60dc98ecda6b3d3a70.
 >
->     dwc3 a600000.dwc3: timed out waiting for SETUP phase
+> The commit is part of a series with commit
+> 24f779dac8f3efb9629adc0e486914d93dc45517 causing a BUG on dwc3
+> hardware, at least on Intel Merrifield platform when configured
+> through configfs:
+> BUG: kernel NULL pointer dereference, address: 0000000000000008
+> ...
+> RIP: 0010:dwc3_gadget_del_and_unmap_request+0x19/0xe0
+> ...
+> Call Trace:
+>  dwc3_remove_requests.constprop.0+0x12f/0x170
+>  __dwc3_gadget_ep_disable+0x7a/0x160
+>  dwc3_gadget_ep_disable+0x3d/0xd0
+>  usb_ep_disable+0x1c/0x70
+>  u_audio_stop_capture+0x79/0x120 [u_audio]
+>  afunc_set_alt+0x73/0x80 [usb_f_uac2]
+>  composite_setup+0x224/0x1b90 [libcomposite]
 >
-> If this occurs, then the entire pullup disable routine is skipped and
-> proper cleanup and halting of the controller does not complete.
+> Pavel's suggestion to add
+> `echo "adaptive" > functions/uac2.usb0/c_sync` to the configfs script
+> resolves the issue.
+> Thinh suggests "the crash is probably because of f_uac2 prematurely
+> freeing feedback request before its completion. usb_ep_dequeue() is
+> asynchronous. dwc2() may treat it as a synchronous call so you didn't
+> get a crash."
 >
-> Instead of returning an error (which is ignored from the UDC
-> perspective), allow the pullup disable routine to continue, which
-> will also handle disabling of EP0/1.  This will end any active
-> transfers as well.  Ensure to clear any delayed_status also, as the
-> timeout could happen within the STATUS stage.
+> Revert as this is a regression and the kernel shouldn't crash depending
+> on configuration parameters.
 >
-> Cc: <stable@vger.kernel.org>
-> Fixes: bb0147364850 ("usb: dwc3: gadget: don't clear RUN/STOP when it's invalid to do so")
-> Reviewed-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> Reported-by: Ferry Toth <fntoth@gmail.com>
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+this should be Signed-off-by ;-)
 
 -- 
 balbi
