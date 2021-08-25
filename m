@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B676C3F7D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFE93F7D76
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbhHYVCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 17:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
+        id S233512AbhHYVFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 17:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbhHYVCm (ORCPT
+        with ESMTP id S230477AbhHYVFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 17:02:42 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34944C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:01:56 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id x9-20020a056830278900b0051b8be1192fso667289otu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:01:56 -0700 (PDT)
+        Wed, 25 Aug 2021 17:05:36 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FDEC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:04:50 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso699317otv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:04:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l7QZIuqoxh5rDUWPchzZzHS9/CL3/b/d6Vx0THL5INM=;
-        b=SpIyuAOzDflRfjfOemc0rtSYDKS23Jtekv6Sai2edqlVzmWe5N0eQkAihtHNQoScIk
-         OBQkGxr/kPgOl1RBmoeAPjl+5SXbAukXUtg9DF+7VVfUeUT7lIAE59v9CMsVb0Dxl/gO
-         eJUkElni0S2SN9k41zGfs7I3ywL0RB41leB56iUKja5YTZbFvbv0f0BslgCXYTbap0Pc
-         WqXQvKqdHW6C6vztVkfTwISRLQb2H9idgA+FazL1sBKqil8Tvnq6GD57NVSZMtPxLIDC
-         nu2ve9t+xuz7Zh1mRadiRnz+lM8zuZjMyw2Fi4uZIpdCrQ6S/F4Kp9vuTDu2yIAO21oG
-         JN7A==
+        bh=36Q0ofkarUnJnasxqh9o7dRjOpQp4XtGsHLoQ13K/cU=;
+        b=kenzZ4CaHQobjrh5fP5Fvb/w370ER+9E6MBxFPIYmN922+5zScpqsivh+7h0F1dpK7
+         +R8xRFaL3SWIBcFSUDDNWXXCzEqXPvHg4J1WbfSFhkhXg+Yg/HC6jrtI9xORlQMH1Nus
+         iKmMoX9Tmm6pbf2OzG8Ir0kJC46/Ty/Trt/exLP3AZWBDe7GzzrSZb9O1zwnOFcvtM94
+         6rSqW4SNwPaKFZjSoVYn1TV+D5i4dbYlE50EyZo50QEir877/CHHuVOFfybqPfKb2NHl
+         /QI60urtFYcoZkEVPHVsQKhhhqnKpcugOIfCtz3ec0wCyUeBuf4s6UNiw9NX9l7d2kKp
+         +Q+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=l7QZIuqoxh5rDUWPchzZzHS9/CL3/b/d6Vx0THL5INM=;
-        b=eibpASFVP+PzthFAfZ3SfDJm37C0VMeH/jMxTY7qk7AkNxbOmEKV9b77jaj/PyAQiG
-         /JLXfEdlgjDDP3XH3J70ITR2afA8jxKapEQPvDpEwNjnVT1ITFIB5j2eST5qSF/zvJy1
-         eQmm+K//JKaP19ec18qz2l0+LPmC8TIp4hD1/NnllvpfesWmalFmUSXyBWagybFAiRsG
-         lqBSm4+TOUsRsgT6E/MvHE6j6iFe4ddjCVDz1250HF/Vci0Fm4xMB4ak+Zb/LxK/BCyQ
-         q5zMwY3ce0Opmz+9DoVJLUiCgyjnLP0xawAi7mBOd911E75U4kMvQvrBtlRtclEMixsN
-         SQOA==
-X-Gm-Message-State: AOAM532NR7cBOgMGqi323rpE6Tpzl9UUTUj21agwmLJmXVX+jPMy32Sb
-        DiucFbBgg2eynlMeppWJbs2dPA==
-X-Google-Smtp-Source: ABdhPJwYgJPesOMMXkD0jzC/1j5+TakMPBMvL+gEl5KTCOIsPQFtxYV9cIQwEKTBzSaDai7hmgPtQA==
-X-Received: by 2002:a05:6830:2007:: with SMTP id e7mr353198otp.80.1629925315439;
-        Wed, 25 Aug 2021 14:01:55 -0700 (PDT)
+        bh=36Q0ofkarUnJnasxqh9o7dRjOpQp4XtGsHLoQ13K/cU=;
+        b=dffxWodMD6L4Hsk4WkYHCcytP7UQuvzRekmeCUKmaQ72Ou58m54srwvXlnPszh3q2f
+         d6F1T50uLl/Tt4MdFlSGT7CARVpNtdpn6zVaiFiL7LKB81VG32f93uQAXptO9WsvnrXy
+         h2O/BpZIypp8NW9H5P5yLO0xXgpGNPg0Rj11D4LrCyFMrZkuvDI13lXpuFyfYEOPXpNZ
+         XX9UQT8T8GrYB64frgI9SqeM38gJBjzhX40lD74I0flVA+a1Kn+r5wm1pZijq5Nyxvps
+         O4COyOPo8JE7hVAmRXHmJwUQX33dKw2/h2dn/MA8liEczUUxXcvAaiVlDtdPpnXQ/dNd
+         I8ZQ==
+X-Gm-Message-State: AOAM532pcJXFu++hedWc29QhqjJyKIzNEeiDbTaubDrJw4WtHQa0Ej/S
+        NEJxDXpIDJqHTKdMD0QwFpo6nowuGZ1jMw1M
+X-Google-Smtp-Source: ABdhPJyV9BpFyupdvgbeGmXPlyP30XWPbBhiEOHeNRsGn2qnaIM+GvSzMK2zixJeysZcBB2fo5FbdA==
+X-Received: by 2002:a05:6830:40c3:: with SMTP id h3mr362666otu.198.1629925490188;
+        Wed, 25 Aug 2021 14:04:50 -0700 (PDT)
 Received: from [192.168.17.50] ([189.219.75.147])
-        by smtp.gmail.com with ESMTPSA id t1sm171620ooa.42.2021.08.25.14.01.54
+        by smtp.gmail.com with ESMTPSA id u194sm222292oie.37.2021.08.25.14.04.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 14:01:54 -0700 (PDT)
-Subject: Re: [PATCH 4.19 00/84] 4.19.205-rc1 review
+        Wed, 25 Aug 2021 14:04:49 -0700 (PDT)
+Subject: Re: [PATCH 4.14 00/64] 4.14.245-rc1 review
 To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org
 Cc:     torvalds@linux-foundation.org, patches@kernelci.org,
         lkft-triage@lists.linaro.org, pavel@denx.de,
         akpm@linux-foundation.org, shuah@kernel.org, linux@roeck-us.net
-References: <20210824170250.710392-1-sashal@kernel.org>
+References: <20210824170457.710623-1-sashal@kernel.org>
 From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <f2aa7056-3949-306c-8a00-b11590339e9f@linaro.org>
-Date:   Wed, 25 Aug 2021 16:01:53 -0500
+Message-ID: <5f617100-b060-b176-f26b-00871cbb1834@linaro.org>
+Date:   Wed, 25 Aug 2021 16:04:48 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210824170250.710392-1-sashal@kernel.org>
+In-Reply-To: <20210824170457.710623-1-sashal@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -72,55 +72,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello!
 
-On 8/24/21 12:01 PM, Sasha Levin wrote:
-> This is the start of the stable review cycle for the 4.19.205 release.
-> There are 84 patches in this series, all will be posted as a response
+On 8/24/21 12:03 PM, Sasha Levin wrote:
+> This is the start of the stable review cycle for the 4.14.245 release.
+> There are 64 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
-> Responses should be made by Thu 26 Aug 2021 05:02:47 PM UTC.
+> Responses should be made by Thu 26 Aug 2021 05:04:55 PM UTC.
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.19.y&id2=v4.19.204
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.14.y&id2=v4.14.244
 > or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
 > and the diffstat can be found below.
 > 
 > Thanks,
 > Sasha
 
-Results from Linaro’s test farm.
+Results from Linaro's test farm.
 No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
 ## Build
-* kernel: 4.19.205-rc1
+* kernel: 4.14.245-rc1
 * git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-4.19.y
-* git commit: c1eea862e3bb2aec599f5b1b2aaaa1ee48e709b8
-* git describe: v4.19.204-84-gc1eea862e3bb
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19.204-84-gc1eea862e3bb
+* git branch: linux-4.14.y
+* git commit: 156fc46e6ef4f9c0821f84a6b7e5f60647b6cbf1
+* git describe: v4.14.244-64-g156fc46e6ef4
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14.244-64-g156fc46e6ef4
 
-## No regressions (compared to v4.19.204)
+## No regressions (compared to v4.14.244)
 
-## No fixes (compared to v4.19.204)
+## No fixes (compared to v4.14.244)
 
 ## Test result summary
-total: 69147, pass: 56533, fail: 531, skip: 10703, xfail: 1380
+total: 65609, pass: 53110, fail: 525, skip: 10267, xfail: 1707
 
 ## Build Summary
 * arm: 98 total, 98 passed, 0 failed
-* arm64: 30 total, 30 passed, 0 failed
+* arm64: 28 total, 28 passed, 0 failed
 * dragonboard-410c: 1 total, 1 passed, 0 failed
 * hi6220-hikey: 1 total, 1 passed, 0 failed
 * i386: 15 total, 15 passed, 0 failed
 * juno-r2: 1 total, 1 passed, 0 failed
-* mips: 40 total, 40 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
 * sparc: 9 total, 9 passed, 0 failed
 * x15: 1 total, 1 passed, 0 failed
 * x86: 1 total, 1 passed, 0 failed
-* x86_64: 17 total, 17 passed, 0 failed
+* x86_64: 15 total, 15 passed, 0 failed
 
 ## Test suites summary
 * fwts
@@ -175,6 +176,7 @@ total: 69147, pass: 56533, fail: 531, skip: 10703, xfail: 1380
 * kselftest-static_keys
 * kselftest-sync
 * kselftest-sysctl
+* kselftest-tc-testing
 * kselftest-timens
 * kselftest-timers
 * kselftest-tmpfs
@@ -219,8 +221,6 @@ total: 69147, pass: 56533, fail: 531, skip: 10703, xfail: 1380
 * ssuite
 * v4l2-compliance
 
-
-Greetings!
 
 Daniel Díaz
 daniel.diaz@linaro.org
