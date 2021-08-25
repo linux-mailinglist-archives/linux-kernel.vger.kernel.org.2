@@ -2,111 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4463F6FAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957E13F6FAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238956AbhHYGih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238342AbhHYGif (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:38:35 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A77C061757;
-        Tue, 24 Aug 2021 23:37:49 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id c10so23426631qko.11;
-        Tue, 24 Aug 2021 23:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ti3ow6XOAA0EcZ2VnjUhaEC17DERoyJVWJqCxnbtLyA=;
-        b=X7DlbPvwM5grdI6wcAvVj2zDdi6T64bIfwyYifhPAsNdIbqrvtj4KEnhuDP1tzk40v
-         b648efOQfS9S0ketINqnjTmrfUkkdvEW/WfeiuHszgq0EYftdUtbq0speyk9vqgJHx4X
-         qsqXrmLMWA1K6W8N+4RvkxhSJrkvsaBNu7sS/NU9SAVXlFtXJjHd5H6iVxTMUEyQCM6F
-         cyVVkRE8ikDSw4ydiU7nAyW641m12o6biN6CMgaidiY58sqD681K5KuGbplkQ03ANy3F
-         drGnNWAcIBeZTOeXevq5blZ6WKbaJBmsjI1grUnQLUvP+g8Kw7O1weLLXa1IOk+jVOZR
-         4s7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ti3ow6XOAA0EcZ2VnjUhaEC17DERoyJVWJqCxnbtLyA=;
-        b=rQmayixJWavwbBS7MF+OjOAAW1SXgEJQ5sSbvZskCKL74sUKkulpmcrIiVDtOTwHHl
-         sIf7g7NhNj133Wn+bKHFOT4M1rCCivqX17sLCCCcdSLF7xkiUbTSmLE7UykH2Dy/RjPG
-         s2wJVz7+5yiXtm7noWXWa8SimRa4IJ/uHgErFa/fs2J6KP9mOQdihHBggam4rhTI/iPs
-         Ni1FquuOkmFHNGbPVCgYjAAjEYVRup97q1MbaOz5rt7eyg8F8CHLJlS0ayShkw1pqNrR
-         XgZ/KoYgZ0U3Rg/TKM4BNkf+uzx44bBCh/cj1wBAcfnCXs5H2Mski7vlSdMxjvWr86P1
-         C97g==
-X-Gm-Message-State: AOAM532Me7uMPc0Z2zMDn4tNM6bp/E+wYA01ffWlb+2n/UNsx/jYn61S
-        TJjh6RaNOJgYaZT3NwC2gQ0=
-X-Google-Smtp-Source: ABdhPJy3aeYc0Sx50Sp/d1V34TbrQqBhV7JUYqWBjq3GBmjHcR909H0/YPmsqiTWRMsVkZiIfXr8iw==
-X-Received: by 2002:a05:620a:1495:: with SMTP id w21mr30134830qkj.443.1629873469175;
-        Tue, 24 Aug 2021 23:37:49 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id s69sm12566556qka.102.2021.08.24.23.37.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 23:37:48 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     Jing Yangyang <jing.yangyang@zte.com.cn>,
+        id S239030AbhHYGjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:39:16 -0400
+Received: from mout.gmx.net ([212.227.17.20]:44581 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239038AbhHYGjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 02:39:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629873496;
+        bh=uoCj8ETCxAaS3r9Ofoxl3BGiNpOBBkm1QsIh4BwbbSc=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=KUbyJFmR3lg+qJEhBCspDdQn8w8zZ8YbKLJe+ikr2Aeuc+mQFk+bChJXXVlCOtcKK
+         eJeH4qlgHgPit9Iw7i7DMPMDSocNgt+zxcxbPekHfowSVdSNQBwz7w7YPExY8eMdiO
+         SZJnBwsB2LYtvdXw59b6NE9tb06u4hBmeDmQYPnY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeCtj-1mr0yH49lX-00bNq8; Wed, 25
+ Aug 2021 08:38:15 +0200
+Subject: Re: [PATCH linux-next] fs:disk-io: emove unneeded variable
+To:     CGEL <cgel.zte@gmail.com>, Chris Mason <clm@fb.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] memory:tegra210-emc-core: replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-Date:   Tue, 24 Aug 2021 23:37:39 -0700
-Message-Id: <20210825063739.70260-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+References: <20210825062717.70060-1-deng.changcheng@zte.com.cn>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <cf66c150-5587-9537-051a-b80cf81df245@gmx.com>
+Date:   Wed, 25 Aug 2021 14:38:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210825062717.70060-1-deng.changcheng@zte.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HxCRVG4Y9Ahkw8UVC0qIZ/sVlzeea7kdTYwWCtsjaDNt7hpd/Ie
+ sV7RPQd1FcqA14hau48Y8XMvVBLtv7JlQLfpFG3OPHC/wvymsXnmoDKNLvdQTS57s9Vr1IH
+ /ZVCV0FJhSklxqKZ9tDFW3lXtrrbRdhxGmZZtnO2o5mD+tkw53hsv/VcYLECZ+KDiRERV3Q
+ sv3E5PE4relQhF23O/clg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SH1AuHbgyLI=:ac0SJb7Qrt/Z3WaHGnSk8o
+ pbhFaasq+KGUW2Z4QhTgd1xZaZnvU6dsp2wvvrUHreQ6f/AmzGk3ckqBVJ1Wx5ABY4yenkbaw
+ vQ/I3fd+mcFo5TTNCKmuIz+vdy3xZJE4IT5tSOi0djcr7VI4bDM+hunsYKonkMSgUh19m21wb
+ UmHJ0715HTDIppIN52sf+61Fv93kxK+fX9NqyVLNmxrCAUJKnzSieGKc2/VpLU9H4kw8Sq8hj
+ 28O/t+JoqxpCjK91RkPrGS9g2IAucUV1U1tKFX238k8tn6yiNRQ6v2PzKRDCpW5C//YDEJNdH
+ aahO62O1v0EKMHxzQGPr6rVLI5bkKFLzSY5yug+nzbIO/3fSYmn7CA/VkfH/t6TL5SSyaZBfx
+ hraQW+alENZ/B7St+7fO7uVE5w+PsDPSy4eF5R16IWrXATPmspB4BUUK9H85cWx+DH+Gcssh1
+ 3GShBht/L2egDyjgvH1fd8NVd3bJQUWGZTonHYQFYBY5Yqxdv2FPFn0hBSivdySUFzElU9O/2
+ bElfpfPkO1dDYmVdbE2LOmaGKC2uWLzjUx95QLTfxUE1S+/Q9sxFHupv//NAmDxnHEs5I4L/2
+ CcPEal0E7MrOUs0P3YKyMSBoghjwF2rLGpDTR+lEp58jig4BsG7CzYQzvBzs2I2o2Yy9MMJKs
+ F1RABRxXWzpocU04tv9DEGcRcyFKPCOcMxgS/59BSDwfo/GsqK0yGpy0yEDd2JU+Uh7vIJ1/D
+ RDAj4YAsgicwr4TiCxVaaD2a0CxjPoVtqQdaEAd0ltcbQfnYaJOUN8sHfzjXXGm08YLn5S9vu
+ zQZ+zKBPGMnL01lMd98pZmuIMHaAmInyBh4NFNIarSvtR2wm5BjEaykam2AHcLCi0BMZrMaXo
+ cCkXEiPBg+D/vJDlWPZirPX5Xiu926FYCzIgRz1AAGMOfrecL9AwMq5AnA9/F+Yy0Ama7SRbE
+ /VEOpXYP1DP1nMzERtgIly/8p7FkkFN5xxW9A7b9eywIcTiZr3NkJNdyDJzr/2aubUYsh6s8X
+ /bxId+lnASLq7jTPrZ2Z/tUE13qjjqxWs0Ocq+A3ka74eNXyboLo/m1pZG7joO/fCjdWPmUHz
+ V3pN1qlXV5Nn4pk7gQTx8J3gxtglTDJOdDQE+bDMCf6NXiu3si+dcfe1fA84+ZMIV/nz6CnB6
+ /S6z8wDZlREs0qt9BAOOApe3VITEsSqVkJgfNuswHyY6eETnzBqlj2ga7SoVT3gur16i/7fdg
+ L8hfwHgvc9gvEs7Hc8FxpR1q8ec2E2DpaAxvAS5Zi5aeNSm2ZuXV/Yj8FGmrPC3M1HM0XKyj+
+ Co00w405UcSZG6UHW8Dof6/TIrJJvg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
-
-Fix the following coccicheck warning:
-./drivers/memory/tegra/tegra210-emc-core.c:1665:0-23:WARNING
-tegra210_emc_debug_min_rate_fops should be defined
- with DEFINE_DEBUGFS_ATTRIBUTE
-./drivers/memory/tegra/tegra210-emc-core.c:1726:0-23:WARNING
-tegra210_emc_debug_temperature_fops should be defined
- with DEFINE_DEBUGFS_ATTRIBUTE
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- drivers/memory/tegra/tegra210-emc-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/memory/tegra/tegra210-emc-core.c b/drivers/memory/tegra/tegra210-emc-core.c
-index 06c0f17..3b8284c 100644
---- a/drivers/memory/tegra/tegra210-emc-core.c
-+++ b/drivers/memory/tegra/tegra210-emc-core.c
-@@ -1692,7 +1692,7 @@ static int tegra210_emc_debug_max_rate_set(void *data, u64 rate)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(tegra210_emc_debug_max_rate_fops,
-+DEFINE_DEBUGFS_ATTRIBUTE(tegra210_emc_debug_max_rate_fops,
- 			tegra210_emc_debug_max_rate_get,
- 			tegra210_emc_debug_max_rate_set, "%llu\n");
- 
-@@ -1723,7 +1723,7 @@ static int tegra210_emc_debug_temperature_set(void *data, u64 temperature)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(tegra210_emc_debug_temperature_fops,
-+DEFINE_DEBUGFS_ATTRIBUTE(tegra210_emc_debug_temperature_fops,
- 			tegra210_emc_debug_temperature_get,
- 			tegra210_emc_debug_temperature_set, "%llu\n");
- 
--- 
-1.8.3.1
 
 
+On 2021/8/25 =E4=B8=8B=E5=8D=882:27, CGEL wrote:
+> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+>
+> Eliminate the following coccicheck warning:
+> ./fs/btrfs/disk-io.c:4630: 5-8:
+>   Unneeded variable  "ret". Return "0" on line 4638
+>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+
+There is a big BUG_ON() in the code, indicating missing error handling.
+
+Ignoring it and just removing the @ret is never a real fix, please add
+proper error handling first.
+
+Thanks,
+Qu
+> ---
+>   fs/btrfs/disk-io.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index a66e2cb..e531c4c 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4627,7 +4627,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>   	struct rb_node *node;
+>   	struct btrfs_delayed_ref_root *delayed_refs;
+>   	struct btrfs_delayed_ref_node *ref;
+> -	int ret =3D 0;
+>
+>   	delayed_refs =3D &trans->delayed_refs;
+>
+> @@ -4635,7 +4634,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>   	if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
+>   		spin_unlock(&delayed_refs->lock);
+>   		btrfs_debug(fs_info, "delayed_refs has NO entry");
+> -		return ret;
+> +		return 0;
+>   	}
+>
+>   	while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL=
+) {
+> @@ -4698,7 +4697,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>
+>   	spin_unlock(&delayed_refs->lock);
+>
+> -	return ret;
+> +	return 0;
+>   }
+>
+>   static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
+>
