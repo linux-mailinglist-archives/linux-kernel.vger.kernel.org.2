@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A743F7750
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DC43F774B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241704AbhHYO0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:26:48 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37572
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241582AbhHYO0f (ORCPT
+        id S241643AbhHYO0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:26:39 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60330
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241577AbhHYO0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 25 Aug 2021 10:26:35 -0400
 Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4B514407A2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:25:44 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0FCCE40779
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629901544;
-        bh=/Sti3d7dTsAvFFog+hxbk2kz5ugUXJNgSZrotBprAFw=;
+        s=20210705; t=1629901546;
+        bh=lRHNkLEWcITIq9BTwsdkr00e4mkdm7zBYjY+jga9Eao=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=WWpJ20v0MS0PpUdRnaoVkD6soYjRUz6qwZ+i/xt+SfTomU0Icqfph7Si81KC8qkO2
-         jv74gyzFZadn5GVJsWADF9UvJaPvXS2ynj31pqoVfP3gHleLrFZou4XFxX7ZNJuZQc
-         9aBE80gl4uQYRFCNwa9p+KJm4ARXetqKTP1nWgM7OclbQ6fW8BbRu18FtTt5//qYOa
-         +hl0tc2W7+uPZjCOFwHiQo9GaYjGElF/QbH5Mds2xgePV59+LftJifDlmdjdyisNRx
-         d/LDyXNw5gdeUcakMu3WfVytpyR3ts2IaDExLecoz7UvhN4p5zRAonCKvC9jJevc5d
-         eOKCJ1DWdKU/A==
-Received: by mail-wm1-f71.google.com with SMTP id 201-20020a1c01d2000000b002e72ba822dcso2905884wmb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:25:44 -0700 (PDT)
+        b=el/CTzzK7Uz91iMvCL7+O7MhF5oWG0+OyfiX/nASb5lJSHMNGdmeR9+s7HF0OxhXY
+         OK92mKDg0de6rnDtAZ2CD0uS+cujsUNGUm/Ly+XfbCNqr3bMopRPqcXRBJKYekYZXe
+         6H/9R2w9Xr9I6BNgYuV2JvlFAyd97z8n/RENUKEbVz2gBjEBAzkydIdgj+1g6hW6J8
+         OfXMgjjCfQuZfBxxqL+VH3U/oo3GH5I+SWNWbB2xKNCfzH5jvq27g3POrifsjQeUkn
+         Nwt7ZVu/dO3Ar6XauvMHr5A9yn3lAmGmhWkGkO54C/Ftnqvqj4TJ/8A3qEYOiWWYCZ
+         lG2Dm0KsGi5YQ==
+Received: by mail-wm1-f71.google.com with SMTP id x125-20020a1c3183000000b002e73f079eefso1594840wmx.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 07:25:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/Sti3d7dTsAvFFog+hxbk2kz5ugUXJNgSZrotBprAFw=;
-        b=fX4hOhNnm2lMvsQEiNyKLptEO2i9RI+m5KlbOTXmG1ipQteZ4IKXf62c6i7ivwzJZs
-         peM5WNvkxSAr6S0yCmvATB+9QTKYAOCuvgOk8WqeRLK6qhtKAsOJ0IxUELANYP7GyyfB
-         lb2oEF2/NgUQvo6gZz9ncuEZUQITlyxxJ3bXMemwQN0GrTGNZAnkcu/EdIPbDAanY8lK
-         9G0kuQw0YdOMSUd+0zrtNlfQdnDjC3KOehb6dwzoEw5YnjvfkVWXixftIjNDkCj/quxT
-         1pnyDncUtUhFRGmp1TRVEUh3gHhx0rPV/5Cv8uRveW4olww0/LhLOz914UOJh8JrRWtd
-         JmUA==
-X-Gm-Message-State: AOAM531rLMeICNjn0Bf5+3nK+i9A5M4BuXqFdjLuZUvry5CBXdqs+5zO
-        IEODEsDkMFFeLIPhmY59m0UlF51c+Dp+OgJILV447U7Ifl9cRZSDFyita0z+MMeoVQCbDPv3UJb
-        s09747QzFt5/UBotXF+zbJHTTD11blwd+NNGe5ryIRg==
-X-Received: by 2002:adf:f743:: with SMTP id z3mr18233458wrp.211.1629901544047;
-        Wed, 25 Aug 2021 07:25:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwpfqvpRdkvZvU3MkWbfHGPyUtkfWdIQce42bWzJoCqPmksHWSzq/AF1H2GKY6BtbSsA66n2A==
-X-Received: by 2002:adf:f743:: with SMTP id z3mr18233446wrp.211.1629901543956;
-        Wed, 25 Aug 2021 07:25:43 -0700 (PDT)
+        bh=lRHNkLEWcITIq9BTwsdkr00e4mkdm7zBYjY+jga9Eao=;
+        b=OUQu4etSSzuFgsR85gphvouJm6OG0oZF2f9yJo5c/nOsycZwkyXAkhxBTEQAgqxHeL
+         VvBSedgzkArkkU4+BEb8btAfZ3026EginjipRADguk5cEPo3p1CoXcqGu1AoOjsFTDij
+         P44RrDHCJV/x2sGzloN0rzLS0/nqDSasHwtawJhQ2YPHjtH7n7PdYbk62F+o1cyi4Sji
+         Eg7qq17BNTIwvsZrdkHpr4HaVjbRO/cdq1HlXF8f0LCHjLT6ni0Mc76WZCEC2M14PZRp
+         OvvKm9ztFusVePYjGdGDfOjYM8u8avaT1cam1ePZHxWb5GuLrwqOn747BMkYGcDfJgAr
+         q34w==
+X-Gm-Message-State: AOAM531vKr+aM2umSA28K7Ng7NMQabw/ihDuOwKfpqLzdrvlFE7p+T7o
+        HCAFzaOkXeCo2WbDUCHoIGOO/oskxG1YtWMefRYuG0Fdjx9zqZki2zWrKSNC/ygdpwzEu9yGfmI
+        /unNtsBb7VEU7G08HiUTzrwTMRYnBn7xpbvhMv7ZUwA==
+X-Received: by 2002:adf:c506:: with SMTP id q6mr2585027wrf.78.1629901545222;
+        Wed, 25 Aug 2021 07:25:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9h6tV76fJDoGPVoO6pO3iRtwkAZF73BAzecjKNib/5DLYsyj/NjVU59vWpxchWluq9DoRhQ==
+X-Received: by 2002:adf:c506:: with SMTP id q6mr2585022wrf.78.1629901545111;
+        Wed, 25 Aug 2021 07:25:45 -0700 (PDT)
 Received: from localhost.localdomain ([79.98.113.233])
-        by smtp.gmail.com with ESMTPSA id i68sm60375wri.26.2021.08.25.07.25.42
+        by smtp.gmail.com with ESMTPSA id i68sm60375wri.26.2021.08.25.07.25.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 07:25:43 -0700 (PDT)
+        Wed, 25 Aug 2021 07:25:44 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/6] nfc: pn544: remove unused header includes
-Date:   Wed, 25 Aug 2021 16:24:56 +0200
-Message-Id: <20210825142459.226168-3-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 4/6] nfc: st-nci: remove unused header includes
+Date:   Wed, 25 Aug 2021 16:24:57 +0200
+Message-Id: <20210825142459.226168-4-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210825142459.226168-1-krzysztof.kozlowski@canonical.com>
 References: <20210825142459.226168-1-krzysztof.kozlowski@canonical.com>
@@ -75,20 +75,21 @@ Do not include unnecessary headers.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/nfc/pn544/pn544.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/nfc/st-nci/core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/nfc/pn544/pn544.c b/drivers/nfc/pn544/pn544.c
-index 092f03b80a78..32a61a185142 100644
---- a/drivers/nfc/pn544/pn544.c
-+++ b/drivers/nfc/pn544/pn544.c
-@@ -13,7 +13,6 @@
- 
+diff --git a/drivers/nfc/st-nci/core.c b/drivers/nfc/st-nci/core.c
+index 72bb51efdf9c..a367136d4330 100644
+--- a/drivers/nfc/st-nci/core.c
++++ b/drivers/nfc/st-nci/core.c
+@@ -9,8 +9,6 @@
  #include <linux/nfc.h>
- #include <net/nfc/hci.h>
--#include <net/nfc/llc.h>
+ #include <net/nfc/nci.h>
+ #include <net/nfc/nci_core.h>
+-#include <linux/gpio.h>
+-#include <linux/delay.h>
  
- #include "pn544.h"
+ #include "st-nci.h"
  
 -- 
 2.30.2
