@@ -2,114 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FBB3F7167
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457E83F7169
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239471AbhHYJFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:05:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:46250 "EHLO foss.arm.com"
+        id S239465AbhHYJFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:05:14 -0400
+Received: from verein.lst.de ([213.95.11.211]:55365 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239464AbhHYJE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:04:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 639BF31B;
-        Wed, 25 Aug 2021 02:04:11 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51B5F3F66F;
-        Wed, 25 Aug 2021 02:04:10 -0700 (PDT)
-Subject: Re: [PATCH v2 4/4] drm/panfrost: Handle non-aligned lock addresses
-To:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
-References: <20210824173028.7528-1-alyssa.rosenzweig@collabora.com>
- <20210824173028.7528-5-alyssa.rosenzweig@collabora.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <6fe675c4-d22b-22da-ba3c-f6d33419b9ed@arm.com>
-Date:   Wed, 25 Aug 2021 10:04:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232302AbhHYJFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:05:12 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0FB9D67357; Wed, 25 Aug 2021 11:04:25 +0200 (CEST)
+Date:   Wed, 25 Aug 2021 11:04:24 +0200
+From:   "hch@lst.de" <hch@lst.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     sasaki tatsuya <tatsuya6.sasaki@kioxia.com>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] nvme: update keep alive interval when kato is
+ modified
+Message-ID: <20210825090424.GA468@lst.de>
+References: <526a1a756d6c4643b15b1b305cc32817@kioxia.com> <05033836-83b9-c060-0348-774a02b60d01@grimberg.me>
 MIME-Version: 1.0
-In-Reply-To: <20210824173028.7528-5-alyssa.rosenzweig@collabora.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <05033836-83b9-c060-0348-774a02b60d01@grimberg.me>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2021 18:30, Alyssa Rosenzweig wrote:
-> When locking memory, the base address is rounded down to the nearest
-> page. The current code does not adjust the size in this case,
-> truncating the lock region:
-> 
-> 	Input:      [----size----]
-> 	Round: [----size----]
-> 
-> To fix the truncation, extend the lock region by the amount rounded off.
-> 
-> 	Input:      [----size----]
-> 	Round: [-------size------]
-> 
-> This bug is difficult to hit under current assumptions: since the size
-> of the lock region is stored as a ceil(log2), the truncation must cause
-> us to cross a power-of-two boundary. This is possible, for example if
-> the caller tries to lock 65535 bytes starting at iova 0xCAFE0010. The
-> existing code rounds down the iova to 0xCAFE0000 and rounds up the lock
-> region to 65536 bytes, locking until 0xCAFF0000. This fails to lock the
-> last 15 bytes.
-> 
-> In practice, the current callers pass PAGE_SIZE aligned inputs, avoiding
-> the bug. Therefore this doesn't need to be backported. Still, that's a
-> happy accident and not a precondition of lock_region, so we let's do the
-> right thing to future proof.
+On Tue, Aug 24, 2021 at 01:41:44PM -0700, Sagi Grimberg wrote:
+>> +{
+>> +	/*
+>> +	 * Keep alive commands interval on the host should be updated
+>> +	 * when KATO is modified by Set Features commands.
+>> +	 */
+>> +	if (cmd->opcode == nvme_admin_set_features &&
+>> +	    (cmd->cdw10 & 0xFF) == NVME_FEAT_KATO) {
+>> +		/* ms -> s */
+>
+> no need for this comment.
+>
+>> +		unsigned int new_kato = DIV_ROUND_UP(cmd->cdw11, 1000);
+>> +
+>> +		nvme_update_keep_alive(ctrl, new_kato);
+>
+> I think you can now inline nvme_update_keep_alive here, no need to keep
+> it in a function.
 
-Actually it's worse than that due to the hardware behaviour, the spec
-states (for LOCKADDR_BASE):
+Actually, іf thinking ahead I think one helper per fixup would be really
+useful to keep the code organized.  But the DIV_ROUND_UP should move into
+nvme_update_keep_alive to keep it self-contained.
+We can then restructure the caller a bit to make it easier to expand:
 
-> Only the upper bits of the address are used. The address is aligned to a
-> multiple of the region size, so a variable number of low-order bits are
-> ignored, depending on the selected region size. It is recommended that software
-> ensures that these low bits in the address are cleared, to avoid confusion.
-
-It appears that indeed this has caused confusion ;)
-
-So for a simple request like locking from 0xCAFE0000 - 0xCB010000 (size
-= 0x30000) the region width gets rounded up (to 0x40000) which causes
-the start address to be effectively rounded down (by the hardware) to
-0xCAFC0000 and we fail to lock 0xCB000000-0xCB010000.
-
-Interestingly (unless my reading of this is wrong) that means to lock
-0xFFFF0000-0x100010000 (i.e. crossing the 4GB boundary) requires locking
-*at least* 0x00000000-0x200000000 (i.e. locking the first 8GB).
-
-This appears to be broken in kbase (which actually does zero out the low
-bits of the address) - I've raised a bug internally so hopefully someone
-will tell me if I've read the spec completely wrong here.
-
-Steve
-
-> Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-> Reported-by: Steven Price <steven.price@arm.com>
-> ---
->  drivers/gpu/drm/panfrost/panfrost_mmu.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> index dfe5f1d29763..14be32497ec3 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> @@ -63,6 +63,9 @@ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
->  	u8 region_width;
->  	u64 region = iova & PAGE_MASK;
->  
-> +	/* After rounding the address down, extend the size to lock the end. */
-> +	size += (region - iova);
-> +
->  	/* The size is encoded as ceil(log2) minus(1), which may be calculated
->  	 * with fls. The size must be clamped to hardware bounds.
->  	 */
-> 
-
+	switch (cmd->opcode) {
+	case nvme_admin_set_features:
+		switch (cmd->cdw10 & 0xff) {
+		case NVME_FEAT_KATO:
+			nvme_update_keep_alive(ctrl, cmd);
+			break;
+		}
+	}
