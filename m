@@ -2,239 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3233F7B8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C173F7B8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242337AbhHYR2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:28:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35731 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242258AbhHYR2K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:28:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629912444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AXaz0tPc7fZtJBb/dPevEF5ap0GWQE6Dpk8ZPpRNA/I=;
-        b=WiIS/AD0e850d6Qbu5WFDBUsR1tKIj8amCunegNvGqTOUq0HJNTix4N/QCW7AK9wyWnDIM
-        4jFnrZSyDDGVs9KVyRyDYt7bj36kqNRBTvsAwpH0yYQl/VCux5qKGkF9hfmWEbvmbsKTF5
-        5TQz47SklMHVhC5SKHPopkwXVDAFqUQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-0em9idgiPmis4nOL4gPGGw-1; Wed, 25 Aug 2021 13:27:23 -0400
-X-MC-Unique: 0em9idgiPmis4nOL4gPGGw-1
-Received: by mail-wr1-f71.google.com with SMTP id z15-20020adff74f000000b001577d70c98dso78770wrp.12
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:27:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=AXaz0tPc7fZtJBb/dPevEF5ap0GWQE6Dpk8ZPpRNA/I=;
-        b=Gf6zgd2Kwn0wxLvMZiK158te26mVZheihGZE0FMCtLgPo2B0Bbd7sx95UoQ7feCrCY
-         6WKcMZcDYQtvNP7a++99X8FfY3pjgXk0kIA+ebcr0rgPFKLR6DdSfrxtEBF4GRzOgDGH
-         8x0qIkwnGPqu1JYox5l2gkhzIAy/SX7iMZ5pJwbIqZTqk66FXFpivkn7QrZ3f8jXgFYs
-         H5IXGkTRxvIvATMdfbakXoeBKgNXX3SG2bQxsdajFX89ceJvv54/Nshvk2eLytUIerqH
-         55Fz+DFfvBqBHpsdn9c1T2x0a5onNjLM5dF0YPI9HwVHm/T0JfCqRv0xAAOrMQHdt7iR
-         /snQ==
-X-Gm-Message-State: AOAM53150lPTfdJJ8Af5gpMyXZ6+ns4wtIgOn+xkApCWSv1QahZX5d0N
-        wMeGwitQ6Pu5SyI2nfiZyh6Ci/SUa7/xMN2gEzRArD+Ut2vFrYqZSo7VgIBV9qWgOOowtng04sS
-        JNb6i88kP1Gbk7uXErb8/c2PF
-X-Received: by 2002:a05:6000:1375:: with SMTP id q21mr22001452wrz.41.1629912441873;
-        Wed, 25 Aug 2021 10:27:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzstO6fv4t/9anZzviPu7bKujAkZrZHhfA3pIWg39sTZMi/ePcEnlXG2Gdkj6lY2fgt85/EZQ==
-X-Received: by 2002:a05:6000:1375:: with SMTP id q21mr22001426wrz.41.1629912441574;
-        Wed, 25 Aug 2021 10:27:21 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23d6b.dip0.t-ipconnect.de. [79.242.61.107])
-        by smtp.gmail.com with ESMTPSA id r129sm260673wmr.7.2021.08.25.10.27.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 10:27:21 -0700 (PDT)
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        virtualization@lists.linux-foundation.org,
-        Linux MM <linux-mm@kvack.org>
-References: <20210816142505.28359-1-david@redhat.com>
- <20210816142505.28359-2-david@redhat.com>
- <CAPcyv4jfPSanWFNopzShtGiMDjwRuaci2n6hF3FCxsm1cG-ydg@mail.gmail.com>
- <bece6d48-57a3-e7d3-9b26-7faccfbcc7a8@redhat.com>
- <CAPcyv4h9ikp3fSaAc132DV=zrG-OJJ9-6ct8KZ3XhMZ-jbAR=Q@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v2 1/3] /dev/mem: disallow access to explicitly excluded
- system RAM regions
-Message-ID: <e1ac08b0-a8fe-2668-9233-db85b918d7d5@redhat.com>
-Date:   Wed, 25 Aug 2021 19:27:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S242347AbhHYR3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:29:33 -0400
+Received: from mail-co1nam11on2076.outbound.protection.outlook.com ([40.107.220.76]:46752
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S242301AbhHYR3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 13:29:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UIfBMuQjLzQYXYa1QlJGIBjcGFjT5dQOylaObDHsukv89MG+PFmk9keXQGyo6k3DNmSwsk7O0o7mFMWsePpSPsRuALCkSFIW97qAvVlKpLNvo+tnPF0LjiGadbC9ns/PB/rFPegTj1n+HaSrCvUlr1lHWoSs5c9Lj41PhuwpqIMJeS671/rTfN4jauLOqfjzNgcV2UM3PO3qAMoLy/ibsJKjTTkn0NkzEZi6RwRq07g4x/9LfunYa3fBImyh9bGz6MCUqiwOGLqUTKQqFUzj8T5Hb87fDg0eCVklG7BGf0rtVrH+VTCpajapkYV4PUo/6r/Qs9CMJhR//eWddo1Uvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tbZvyqs7lCpCcAPiYTkSld3j5ot54S+Sn+xSYnVB5uE=;
+ b=hxBcNJBe/kSjMs+loq0Sb7EnG5Smg4zy6xcSMA84v1dJwaufeKiM5WqGB2YNtYcu1jKkHD/qYp8QnxaQ51OD5pqNP9NKCJNvm3mQMzYb5BAoNOnlzOPDdICdBVmTkxT8lGFQUh2zw2M0ftZOGSrGeJwpWDiYOSIEA/wsY0uw5fF7QzWTTxwJTh3VvEPtUvaJcgQkDCoM7DvKDVBA5eSNmTSKhD7wrN57Ms/YuZNy0vbF0z3bjqIeoBXHuutDHi9/EniTdP2DAIhzngj1te2/oym8+PbtNexAy838klgYcZWPw1w5jrOmFeToJLD/kI8FrIzb5GQtWY35LJp+BLBc/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tbZvyqs7lCpCcAPiYTkSld3j5ot54S+Sn+xSYnVB5uE=;
+ b=UsUjmw8lJHXPMS/cfQjyODzenZz/LRNEWqPH6p7wxElCxJoSwlK66lumGAW6IHgRIwcu5ey0aCqH5B7W/+iCSkTewwiHwbAIDZ57D73wCapIZ4un5KXFf2FApP/n6HiExo2SGYUW0K27BbSAWaT43HY126Lq7GqDhIlEm72rIVGgqU/rWNHfgOTgC9t/26NVn7lrg6NKOGKrbIjawJ/N8MVtjDOARgWlRpfTzkURnU/J0aUKJgK9g7VzMNz3NcNioqCUNAL6LKD66c2M8aCRtWBKtf+p02/jFkr8Iu6T+sRA1GipAx56UTr3XsLN1Jb8p+a8SwNzloHBdn4HWLhcyQ==
+Authentication-Results: cn.fujitsu.com; dkim=none (message not signed)
+ header.d=none;cn.fujitsu.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5271.namprd12.prod.outlook.com (2603:10b6:208:315::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Wed, 25 Aug
+ 2021 17:28:45 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
+ 17:28:45 +0000
+Date:   Wed, 25 Aug 2021 14:28:44 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
+Message-ID: <20210825172844.GK1721383@nvidia.com>
+References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
+ <20210803162507.GA2892108@nvidia.com>
+ <YQmDZpbCy3uTS5jv@unreal>
+ <20210803181341.GE1721383@nvidia.com>
+ <YQonIu3VMTlGj0TJ@unreal>
+ <20210804185022.GM1721383@nvidia.com>
+ <YQuIlUT9jZLeFPNH@unreal>
+ <6b372500-ebc5-bc42-11c5-99de381b2e50@fujitsu.com>
+ <7b930773-0071-5b96-2a85-718d0ca07bfa@cn.fujitsu.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7b930773-0071-5b96-2a85-718d0ca07bfa@cn.fujitsu.com>
+X-ClientProxiedBy: BL0PR02CA0026.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::39) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4h9ikp3fSaAc132DV=zrG-OJJ9-6ct8KZ3XhMZ-jbAR=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR02CA0026.namprd02.prod.outlook.com (2603:10b6:207:3c::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.19 via Frontend Transport; Wed, 25 Aug 2021 17:28:45 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIwhg-0051lJ-1d; Wed, 25 Aug 2021 14:28:44 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 88c25641-8f4f-4f82-d6c5-08d967edca74
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5271:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB527166D8B22D137E06223460C2C69@BL1PR12MB5271.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kcvJMGg8vUyFBUqKuZgrI5fr6KLb6xDcx8Qd0ks0IQOfij7BNJsH1psq6qVITZj2G32shCWmFootM19nbGnB1SzYB3rrHH6FeIzdQC7EQxCRJBBoNGTaYO3Ju0qQBiVvL+l2VwPEhGudqhyLMUMma/RnIqwM32Iie8Ao/rWvT3m5yo/sxEYsvVC/dpfLiqHjIuNAdcFxql/BdigECp6KbOe9QQ697u/V7Z7todoFcCdgIClxr6sRygbjnDkKomIXf+6tg6qPxpZRLXLZ6q1FTtg2smvXz9TQkUWi9EbpApGwafn3cu11y4YkVwU941ZZQGfO9X04ytMmpuB+nYt6YS5ixSHhMTC5jdguQg/qXmgX+1vgNEdTrY8oHP1Ui0qYamUEkwPWCEkZFIGKNFm47Rxa3PXF8wmbaFchk/Nl1KKvh7S+W1zqWmOvmu24lda7ubG1H/RbjEJMUBz8OPXXdB/mrTgOnf5rBEevzugWjD2Kyh/cvzH3CzfEQvBppLazRPKlTL25Fkku2y21th0y0711g3tIcWCaUaFKcCRUX0u50vFBMWN0wXh+UahLcRWmK9jsOADgr/ReIi+eoqLVUt6XRrapYEO3asnot6rlJ/0eO879SbXWPiKRr2l3snfO2wYNaKAPodVIYG5HKUCxRA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(6916009)(316002)(33656002)(54906003)(426003)(66556008)(66476007)(1076003)(8676002)(8936002)(86362001)(38100700002)(5660300002)(4326008)(66946007)(2616005)(9786002)(2906002)(9746002)(36756003)(4744005)(186003)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8KfUA0fXoGCzPA5dE1HbM9aOkG2Ky1Y/IDcfTKI6+rUc/rt1DUP66BkBi+wx?=
+ =?us-ascii?Q?wmcPD+XhPO/fhuxyrTsoZlsECaMnMucmFIMOFRX/SNpuXUdLZLCZqv86Jeph?=
+ =?us-ascii?Q?osOnqW/PRF9LveYBqnoWbY1cNLNg5hsDUbWhEkAZeTuOckeaj/RqUx9f2t2S?=
+ =?us-ascii?Q?pWbH4F3xNROYCLUDpS/wb55kO6364OdleoIrPgfTu11gG6nNX1PP7n2SXilO?=
+ =?us-ascii?Q?lNn/c+ManBkH0HNsIVFisHMfgo4aDNWCL+AtjAqx2jO17nRh1I73AFrNU5tU?=
+ =?us-ascii?Q?rietccBjJ4utr+ROQCnRPgMgljMqKpS7gVxcsnxMC/ndq9qNvZUIC3YkmAxa?=
+ =?us-ascii?Q?82qgWp6OSyI6Jb906WSnyU6C01mZe9XsNMlVZd550MaceR7lSIs1nUbFThPO?=
+ =?us-ascii?Q?N8e8j0ZM9xqzxXoNMhZJA2TFaT6Vd7Nory82G4CzklBjMhmNltUk3fC6DCp4?=
+ =?us-ascii?Q?b+F8ipr4BRBlov65lFeM/p8nzObDhTrfY1i5xKfDXk64NTNGDdtU2LO7qyMt?=
+ =?us-ascii?Q?GK8TqUh0j8azOSldW2VkOKEfSG+wQw3WM0pw46YUfsWFm+iUdKGoVfwG0jQy?=
+ =?us-ascii?Q?kg6jSlsG/G/GQ2lr4zRyNR0vkFtBdzQTSmY2kXxZrLsSwEaJ6y5ZwdGBA+c7?=
+ =?us-ascii?Q?aIcBsSVnEK7IbdgZNzj5xGk4hnJqPj7PFTczrRLqXKUdJevMDR5fpTlY1gdw?=
+ =?us-ascii?Q?+N974kkxFyELddYsvKJfq+2egzdm1ceVW1co4VevtHOlmeXx+bneYuohKEO2?=
+ =?us-ascii?Q?wJgu9r5wI3gtJeIIYz0QUFtpIhZo6hXDsFeH5C7KWCQT2bmPOo7xHdsUc0TQ?=
+ =?us-ascii?Q?T0dCmJXzxvynaEU5g2Jpz4/707iA+mfT65vyLA0RIok8TTwYtz2pn1RLvYKR?=
+ =?us-ascii?Q?OCZol/0o50BT0r9ZnB5C3ZsYuuJW8oZcVpQ3w6r6eV1nUlfQ6rdj03HBSxNk?=
+ =?us-ascii?Q?6hCWzrcif57Fev2zL8alGtqsr96GIc+RIGOUF8cNPw+USH5ZrG7K29wXIAIt?=
+ =?us-ascii?Q?Fi/nye6JsQ46Cs9HnNFk0V/h2cxC4ml8WZgUxwg3HvtnVE65zJHI3YOpYJUR?=
+ =?us-ascii?Q?FT9IGPv2Q9+k8kIGxvzOli7lruQXFigG+uvMGdwxSuZZPzkKyW0u4SF5m8Gz?=
+ =?us-ascii?Q?FctpUxXf+WI/raFl9ySGcKgLdvJ4D6Vw6pr/Q3y4RFmZ5SJZJWF4BdEesNn8?=
+ =?us-ascii?Q?Tnpvs4dO3zlM0Dq2xkXq4RsK4SemZTc5rxwu0568tq+inc98CK4GTJjYloJM?=
+ =?us-ascii?Q?e9t3BB6iDv8abMckRcj35XptDLlS1odOWUvgallNzW+Hj7GzmseyV35uyuTH?=
+ =?us-ascii?Q?APsXAKCSsXFAmBnvYTTvopLK?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88c25641-8f4f-4f82-d6c5-08d967edca74
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 17:28:45.2724
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7oz/dPHsZGoJwRCR21q8s9hspymzxgVx92+3boHbJi2Fza4PW176FWS4+RGNzYcW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5271
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.08.21 19:07, Dan Williams wrote:
-> On Wed, Aug 25, 2021 at 12:23 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 25.08.21 02:58, Dan Williams wrote:
->>> On Mon, Aug 16, 2021 at 7:25 AM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> virtio-mem dynamically exposes memory inside a device memory region as
->>>> system RAM to Linux, coordinating with the hypervisor which parts are
->>>> actually "plugged" and consequently usable/accessible. On the one hand, the
->>>> virtio-mem driver adds/removes whole memory blocks, creating/removing busy
->>>> IORESOURCE_SYSTEM_RAM resources, on the other hand, it logically (un)plugs
->>>> memory inside added memory blocks, dynamically either exposing them to
->>>> the buddy or hiding them from the buddy and marking them PG_offline.
->>>>
->>>> virtio-mem wants to make sure that in a sane environment, nobody
->>>> "accidentially" accesses unplugged memory inside the device managed
->>>> region. After /proc/kcore has been sanitized and /dev/kmem has been
->>>> removed, /dev/mem is the remaining interface that still allows uncontrolled
->>>> access to the device-managed region of virtio-mem devices from user
->>>> space.
->>>>
->>>> There is no known sane use case for mapping virtio-mem device memory
->>>> via /dev/mem while virtio-mem driver concurrently (un)plugs memory inside
->>>> that region. So once the driver was loaded and detected the device
->>>> along the device-managed region, we just want to disallow any access via
->>>> /dev/mem to it.
->>>>
->>>> Let's add the basic infrastructure to exclude some physical memory
->>>> regions completely from /dev/mem access, on any architecture and under
->>>> any system configuration (independent of CONFIG_STRICT_DEVMEM and
->>>> independent of "iomem=").
->>>
->>> I'm certainly on team "/dev/mem considered harmful", but this approach
->>> feels awkward. It feels wrong for being non-committal about whether
->>> CONFIG_STRICT_DEVMEM is in wide enough use that the safety can be
->>> turned on all the time, and the configuration option dropped, or there
->>> are users clinging onto /dev/mem where they expect to be able to build
->>> a debug kernel to turn all of these restrictions off, even the
->>> virtio-mem ones. This splits the difference and says some /dev/mem
->>> accesses are always disallowed for "reasons", but I could say the same
->>> thing about pmem, there's no sane reason to allow /dev/mem which has
->>> no idea about the responsibilities of properly touching pmem to get
->>> access to it.
->>
->> For virtio-mem, there is no use case *and* access could be harmful; I
->> don't even want to allow if for debugging purposes. If you want to
->> inspect virtio-mem device memory content, use /proc/kcore, which
->> performs proper synchronized access checks. Modifying random virtio-mem
->> memory via /dev/mem in a debug kernel will not be possible: if you
->> really have to play with fire, use kdb or better don't load the
->> virtio-mem driver during boot, such that the kernel won't even be making
->> use of device memory.
->>
->> I don't want people disabling CONFIG_STRICT_DEVMEM, or booting with
->> "iomem=relaxed", and "accidentally" accessing any of virtio-mem memory
->> via /dev/mem, while it gets concurrently plugged/unplugged by the
->> virtio-mem driver. Not even for debugging purposes.
+On Sat, Aug 21, 2021 at 05:44:43PM +0800, Li, Zhijian wrote:
+> convert to text and send again
 > 
-> That sounds more an argument that all of the existing "kernel is using
-> this region" cases should become mandatory exclusions. If unloading
-> the driver removes the exclusion then that's precisely
-> CONFIG_IO_STRICT_DEVMEM. Why is the virtio-mem driver more special
-> than any other driver that expects this integrity guarantee?
-
-Unloading the driver will only remove exclusion if the driver can be 
-unloaded cleanly -- if there is no memory added to Linux. Similar to 
-force-unbinding dax/kmem without offlining memory, the whole device 
-range will remain excluded.
-
-(unloading the driver is only even implemented because there is no way 
-to not implement it; there is no sane use case for virtio-mem to do that)
-
-There are 2 things that are relevant for virtio-mem memory in regards of 
-this series:
-
-1. Kernel is currently using it (added virtio-mem memory). Don't allow 
-access. Pretty much like most other things we want to exclude, I agree.
-
-2. Kernel is currently not using it (not yet added virtio-mem memory), 
-or not using it right now any more (removed virtio-mem memory). In 
-contrast to other devices (DIMM, PMEM, ...) there is no sane use case 
-for this memory, because the VM must not use it (as defined in the 
-virtio-spec).
-
-
-I care about 2) a lot because I don't want people looking at 
-/proc/iomem, figuring out that there is something to map. And by the 
-time they try to map it via /dev/mem, virtio-mem emoved that memory, yet 
-a /dev/mem mapping happened and we have invalid memory access.
-
-Mapping /dev/mem and accidentally being able to read/write virtio-mem 
-memory has to be forbidden in sane environments. Force unloading a 
-driver or preventing it from loading just to touch virtio-mem memory via 
-/dev/mem is not a sane environment, someone is explicitly is asking for 
-trouble, which is fine.
-
 > 
->> We disallow mapping to some other regions independent of
->> CONFIG_STRICT_DEVMEM already, so the idea to ignore CONFIG_STRICT_DEVMEM
->> is not completely new:
->>
->> "Note that with PAT support enabled, even in this case there are
->> restrictions on /dev/mem use due to the cache aliasing requirements."
->>
->> Maybe you even want to do something similar with PMEM now that there is
->> infrastructure for it and just avoid having to deal with revoking
->> /dev/mem mappings later.
+> Hi Jason & Leon
 > 
-> That would be like blocking writes to /dev/sda just because a
-> filesytem might later be mounted on it. If the /dev/mem access is not
-> actively colliding with other kernel operations what business does the
-> kernel have saying no?
-
-That the spec defines that that memory must not be read/written, because 
-there might not be any memory after all anymore backing the virtio-mem 
-device, or there is and the hypervisor will flag you as "malicious" and 
-eventually zap the VM. That's different to most physical devices I am 
-aware of.
-
+> It reminds me that ibv_advise_mr doesn't mention ENOENT any more which value the API actually returns now.
+> the ENOENT cases/situations returned by kernel mlx5 implementation is most likely same with EINVALL as its manpage[1].
 > 
-> I'm pushing on this topic because I am also considering an exclusion
-> on PCI configuration access to the "DOE mailbox" since it can disrupt
-> the kernel's operation, at the same time, root can go change PCI BARs
-> to nonsensical values whenever it wants which is also in the category
-> of "has no use case && could be harmful".
+> So shall we return EINVAL instead of ENOENT in kernel side when get_prefetchable_mr returns NULL?
 
-Right.
+No, the man page should be fixed
 
-> 
->> I think there are weird debugging/educational setups [1] that still
->> require CONFIG_STRICT_DEVMEM=n even with iomem=relaxed. Take a look at
->> lib/devmem_is_allowed.c:devmem_is_allowed(), it disallows any access to
->> (what's currently added as) System RAM. It might just do what people
->> want when dealing with system RAM that doesn't suddenly vanish , so I
->> don't ultimately see why we should remove CONFIG_STRICT_DEVMEM=n.
-> 
-> Yes, I wanted to tease out more of your rationale on where the line
-> should be drawn, I think a mostly unfettered /dev/mem mode is here to
-> stay.
-
-I could most certainly be convinced to
-
-a) Leave CONFIG_STRICT_DEVMEM=n untouched
-b) Restrict what I propose to CONFIG_STRICT_DEVMEM=y.
-
-I could even go ahead and require CONFIG_STRICT_DEVMEM for virtio-mem.
-
--- 
-Thanks,
-
-David / dhildenb
-
+Jason
