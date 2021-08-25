@@ -2,178 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 827123F7B58
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8851E3F7B32
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242249AbhHYRQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:16:01 -0400
-Received: from mail-dm6nam10on2058.outbound.protection.outlook.com ([40.107.93.58]:20833
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233392AbhHYRQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:16:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g1EwZ1reRU5rF1YqtqesJx8DnN3Xnp2w1CTGNK8DMdsDkEJc9bhfuOvOI0LxE72tVX7KH9cBMV2N9hU4/BiRLnejRZSlZLdf+AE0v9732hpI2QxZm2kVUP1RvMUcLdGZNHhEnbEsYyyQSEVxYsSdmlQ06MUK5ADBpDBQe8kn0V6XBOHleVPu1WEzj+nvRloU+pMUHQ2sca2KdxPeC9H4TyhegOw5bfJXOjiVWZM2AcPp5HWXXemph/Oq+JZuWsySfyHc7+VeYjgMUw4V5xDWAwsnutzDFx/Etkh9q7PqJ6nKgo3v5vHLwz7SUpTX7stnaDK67VEWa6Z6vCKwVg03vQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9TNCBN9eVnSrNPIxe1AsrGA0cgt4fl+Sfainf4t/Df0=;
- b=VSarmY9svIITTcBMg9M6QQTwC7Yki5CUkdbCQEJpn4HR4uczAnk1pllMTM+tnRYIko506PfzcLRtRz7Ng8MykEiy7OhH4MFLqiFpH0KghVxMLjeWwiqKHUHE7+m9wagZFfPfyDA/bn9+Vx2TJ4shJviFNDQTinTCj7brDwainsy69gqNAHo6lVT2xLfQ0wskGPgNPbemwxKKjJMFLzwaXwnq22OCjiiXnWUXexIVsE+ECBNvkjX9cIzN/eXVk7SKSz6q9LAaaY/e12ClxWK3L166yAFnN32QskW9dfVk71p7FlpMmsiypEl6kqcaNUo5qZlrtS59Dt9Bg3nmIddzjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9TNCBN9eVnSrNPIxe1AsrGA0cgt4fl+Sfainf4t/Df0=;
- b=vxitHEBmPwhvOyRmzRU/HFjzQYnyJFqecIgtoVCHrsEuEOg6j1ZI6uc/PCiz+Ga7ptsImeutSuagnFl4lWN0M/3RA3nhsDKBXt92/pwHJcNQFSP63SDS7jGWMKH0N41zThOBzJD19qdTxNgpXUR5vLIYGSnQ96C1I1t3dZDURbE=
-Authentication-Results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=amd.com;
-Received: from CH2PR12MB4133.namprd12.prod.outlook.com (2603:10b6:610:7a::13)
- by CH2PR12MB4923.namprd12.prod.outlook.com (2603:10b6:610:6a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Wed, 25 Aug
- 2021 17:15:12 +0000
-Received: from CH2PR12MB4133.namprd12.prod.outlook.com
- ([fe80::d19e:b657:5259:24d0]) by CH2PR12MB4133.namprd12.prod.outlook.com
- ([fe80::d19e:b657:5259:24d0%8]) with mapi id 15.20.4436.019; Wed, 25 Aug 2021
- 17:15:11 +0000
-Date:   Wed, 25 Aug 2021 12:07:19 -0500
-From:   Michael Roth <michael.roth@amd.com>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 23/38] x86/head/64: set up a startup %gs for
- stack protector
-Message-ID: <20210825170719.lygfpbhyvmenohxq@amd.com>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-24-brijesh.singh@amd.com>
- <YSZcrtqExehVwvhf@suse.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSZcrtqExehVwvhf@suse.de>
-X-ClientProxiedBy: SN4PR0501CA0131.namprd05.prod.outlook.com
- (2603:10b6:803:42::48) To CH2PR12MB4133.namprd12.prod.outlook.com
- (2603:10b6:610:7a::13)
+        id S242178AbhHYRIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229711AbhHYRIa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 13:08:30 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56981C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:07:44 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id y190so281602pfg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9UW6pSpJ4FLqQ4wBMuO+kq8Bqfp9+2FRMMWJSAkncAI=;
+        b=I9y2FdMrrmYyf94isIAJ1/5++twpxEF/rRiEBCII1BWzsHJnYRoj4J7VE0NAm3JrRd
+         HZYC/xbPm39a37i+d8l6sLgmTRhu5G5LlK1sPZII33IlQRyvuu6GS1Has8ou6QawOcwp
+         rDofaFIRlOHM8MxbvIgoV84p1SC8mN/fFj6OcEhcnECQBx404gZNxvVSuGolzSCYHHna
+         34LC/7CRu0SYTVFQmimM8xjMTOJ9K4mqNBCk+k7Xua5TUH0k3mWEcv5Km/r003ZRf2GP
+         GlBoPGiXMeNGfSQBDSEPlj1yTudVNpllYYqGkEfTQvpsy/sLQpzuYaDRdgxkZrHtGBz5
+         omoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9UW6pSpJ4FLqQ4wBMuO+kq8Bqfp9+2FRMMWJSAkncAI=;
+        b=dfY+6/NY6DLsidmsbAcRUPzwaTnGDyIJkFCoGjED71l4adiGIbQ4Y0gg0Wc1i529G2
+         F6bKWWXezt5rHhLL/8hOFdmLGMC8MTDhfdxSiIwWOXdOuVyYtc0P8/EiYvuRxFjKrsAa
+         pIYlCllSt/bQ4hJEfu4sfcaJDIcqcsb4eFG9QluWAwHLChmZZgXb/724jeRQ3jjV/tZ8
+         0Czs1ZMFLaGxQR39wQfzMeYafAmS0rv+HHaa7V5pmBEN2cYwsAB96vD0IiN6Ow5sFIuK
+         DQI+Svqp7EjzVax6HPz+TpAeX9n3D5Cn+tubWR6PEd6YPR22IxU8znqgylTAB7AoMYCA
+         kXRg==
+X-Gm-Message-State: AOAM533orH6gtoRhebTcjHqcGoaM2gtx88dexCa4JFP2PAldu2ZLB2OC
+        nWy27+5MpAJJcKGFmTvpIjJZdnD3StzPTyD4Eoj67A==
+X-Google-Smtp-Source: ABdhPJwpAUb3DagTRG4rQPoXjjmsHuDpGOzTn60ItEUkm1r3QamAN4U8gPHCNvLoVfY+hbSdObCYXuRqad33dVsk3Wg=
+X-Received: by 2002:a65:6642:: with SMTP id z2mr30617563pgv.240.1629911263764;
+ Wed, 25 Aug 2021 10:07:43 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (165.204.77.11) by SN4PR0501CA0131.namprd05.prod.outlook.com (2603:10b6:803:42::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.8 via Frontend Transport; Wed, 25 Aug 2021 17:15:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f0d04090-f2ee-4652-d66c-08d967ebe572
-X-MS-TrafficTypeDiagnostic: CH2PR12MB4923:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CH2PR12MB4923181EE528B6C3BA937A0295C69@CH2PR12MB4923.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Pirwj41rOafb/zeBF4zjtoWM6yqArALQb2hrR7e6rqfZXbAcO3Skl22D7Z44WnYjWXwmextMBC7rCrAF3Lj552oj03W8l9QrXYRhnp7sYhv5bsu7dQh9pGWD+ns/XiQh7nR5l46vsFQZOvDLyE/02pEnT6lJxkYjXtYwZ07R64x+h52t4je2gIIxyxSS0g34/fCdyUUUqzc+2EhAfzuBrPgvJJ3E6+JoAY1EhWryr+1Z0kRuheoYWBGAOANASL2VucogA6NVe5nzNyLsiFOhw+6qAJ8bhUOPykJQJfP/veDbotsCDA/BVMkNOstLY8M3Kbfl/9b7Pj8lkDEw8Xkchg1mwOpjFKhQzIdAmLg10DoeOzg/OAFFEYIX4YAz4GseuLbUDm3ZHnWD6kl7jzk6Ocaqk8mJGet1Ou0bWDOXzPTiuQ4Pk9Rc4uAztjK+Q9qNvX1Tvo9xeiNAApbl2XIUATPFTB8MkfIYndFT7p23641pR1FQJdz9pi3EdJd0nQeJC5xHf5V6KvBlhvUM7JF5c9ECf8wl/pF0b6NMpJJsZ/SAJYtZFC5AoxNplWbr/dmGWm7RxPvKFhmRJIkoTQeGZgMHNeD0r6XGX1gQxIV5Ck2wdtiZVGVGFm+R/lzpvNMhoai75FrR8gwmaiB9fOkJ8ZiJ7O+qvi8B1F6yH8HFbjKeD/m0y9zobU4cfc6GPq0inEXF1oc75thOiCx0UmUXJQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB4133.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(39860400002)(376002)(346002)(3716004)(66476007)(4326008)(5660300002)(8676002)(2906002)(44832011)(1076003)(52116002)(6486002)(83380400001)(54906003)(8936002)(38100700002)(38350700002)(7406005)(66556008)(86362001)(478600001)(6916009)(2616005)(66946007)(36756003)(186003)(26005)(956004)(7416002)(316002)(6496006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2vnn0Wrcyxy8j/CpJEbJFs+hVzsE7iLtL9pKFLLmPVyCjA4O7SCWCtyw6cou?=
- =?us-ascii?Q?Xev37/k2WRmlBVWWeIuDHdO2FqHg2TW2tz1318Gb5UQ3Ig/05SftKyZS3+JM?=
- =?us-ascii?Q?L84TS2vmAWO4ZBRID8WSUPRifg43RH1pPKsqZ0CS1apz5gbzP9++hKeU65N3?=
- =?us-ascii?Q?/ZfI+YwjS/TL8OINLuML/WsB4HsMY3R98cZ1geANcewEiLMhRvcTgRXKYH3k?=
- =?us-ascii?Q?9CUuPf2sweDhjCfU/QAceu2LkcuD1encfRGp0D6pU37QYry8hc0AkCYyuFya?=
- =?us-ascii?Q?8RZ+Az2c2RasT215P1Q9ATDI8jiyD7bzmRX7I8ldDabZOqEWcSfoTRON0SKy?=
- =?us-ascii?Q?EY4ZpI+tD1hsfj11RU5Yw555LP1EZoCF88ge+E8VMTdT5phD0ClQW4R64s72?=
- =?us-ascii?Q?RxDRiLcHGnfsG9VVKL4Ucbh/WOvKLF2Keulf5X59+Fb5ZJP4h463a3VbND8I?=
- =?us-ascii?Q?HLB3SgrmxzrI5BS3uv10TK3hWkSYNEntwA8HFwwxBytTdsZ+x58bkWvD7JH/?=
- =?us-ascii?Q?qqDnudU9ybWcIzJ/4064GncvR1REEP1E2N8FXcBWLFr6ybTOsDvwW8xfLTee?=
- =?us-ascii?Q?dPOgUuSM1QhyKkSBQOl7TAQ5Mc00vOxtwRCjR5hEi3LXcuYV3Po+3PlYjD+F?=
- =?us-ascii?Q?2E3HyJusTt5I0u1gRRmnPwyERudYkntDc98es5beVwp9M/7jSns6aUBrxf9k?=
- =?us-ascii?Q?/xDJ6/35AAuobQpO1cfXulnw1ShbLnbH0TiADSsXkDYoRJy+2jgBW65CiNXf?=
- =?us-ascii?Q?Z1vmUY9qPLENmv2nWcEFWJLiVNK5+llGuwIBwd7JY1a0n0gYKYkXQVwGILSG?=
- =?us-ascii?Q?VBQdpiE87wBPVEG7Kyd+cT7R8pWXUN87StAxcvjQXllGr+af/kifEP+Q1vVH?=
- =?us-ascii?Q?u5r1isB+b2wNNFQLGC8jxjK2XcT4e/ZxZJ1q9FaSRi4ENeXAsuKUaXgQQ5TL?=
- =?us-ascii?Q?aCyK+JtmSSSaMiW5Har/y6dl+of7Vk8za9zNZ7qmOQojgmw11YDUMHabeIxF?=
- =?us-ascii?Q?N1wt+Vv0lZbFCuZ19ze3SVcoe4XTM6B1TeSgTwuWMapOGQ3owPkXU4EEWt1U?=
- =?us-ascii?Q?GplPl0kmxZ5kIKYxVvd4pPtgaUoe84dxFGBTsCLWwTWp0qxyOkV9b3t9f2Vy?=
- =?us-ascii?Q?8lCvxB8pi2MZ+vkzvz0FOY3vt7nMct2NPN30dw0DFfjJ/tLA3cbmFcB+g5Yo?=
- =?us-ascii?Q?a+a7kwm7qXSMu+4UI4NFaVg95ItVhhBVY6BmYfSS8IDMf8YptnOZYy4wd4mi?=
- =?us-ascii?Q?oTxmw8PP1y+mg0NT8knZ1EN9jFvwM01HjLZUt58B9fd1bMfCHjm2qSTu/208?=
- =?us-ascii?Q?HJULRbBtWyTczzjnJiE/uHWB?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f0d04090-f2ee-4652-d66c-08d967ebe572
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB4133.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 17:15:11.7504
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Gv8YvDulgfxQJkSwqM0kjCtv5drPl+wpmMc4lsjqmml9rmKHxn6Z2SMNIctD8fBY6OwCd5OBcytoK6U0+1z9tA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4923
+References: <20210816142505.28359-1-david@redhat.com> <20210816142505.28359-2-david@redhat.com>
+ <CAPcyv4jfPSanWFNopzShtGiMDjwRuaci2n6hF3FCxsm1cG-ydg@mail.gmail.com> <bece6d48-57a3-e7d3-9b26-7faccfbcc7a8@redhat.com>
+In-Reply-To: <bece6d48-57a3-e7d3-9b26-7faccfbcc7a8@redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 25 Aug 2021 10:07:33 -0700
+Message-ID: <CAPcyv4h9ikp3fSaAc132DV=zrG-OJJ9-6ct8KZ3XhMZ-jbAR=Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] /dev/mem: disallow access to explicitly excluded
+ system RAM regions
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        virtualization@lists.linux-foundation.org,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 05:07:26PM +0200, Joerg Roedel wrote:
-> On Fri, Aug 20, 2021 at 10:19:18AM -0500, Brijesh Singh wrote:
-> >  void __head startup_64_setup_env(unsigned long physbase)
-> >  {
-> > +	u64 gs_area = (u64)fixup_pointer(startup_gs_area, physbase);
-> > +
-> 
-> This breaks as soon as the compiler decides that startup_64_setup_env()
-> needs stack protection too.
+On Wed, Aug 25, 2021 at 12:23 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 25.08.21 02:58, Dan Williams wrote:
+> > On Mon, Aug 16, 2021 at 7:25 AM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> virtio-mem dynamically exposes memory inside a device memory region as
+> >> system RAM to Linux, coordinating with the hypervisor which parts are
+> >> actually "plugged" and consequently usable/accessible. On the one hand, the
+> >> virtio-mem driver adds/removes whole memory blocks, creating/removing busy
+> >> IORESOURCE_SYSTEM_RAM resources, on the other hand, it logically (un)plugs
+> >> memory inside added memory blocks, dynamically either exposing them to
+> >> the buddy or hiding them from the buddy and marking them PG_offline.
+> >>
+> >> virtio-mem wants to make sure that in a sane environment, nobody
+> >> "accidentially" accesses unplugged memory inside the device managed
+> >> region. After /proc/kcore has been sanitized and /dev/kmem has been
+> >> removed, /dev/mem is the remaining interface that still allows uncontrolled
+> >> access to the device-managed region of virtio-mem devices from user
+> >> space.
+> >>
+> >> There is no known sane use case for mapping virtio-mem device memory
+> >> via /dev/mem while virtio-mem driver concurrently (un)plugs memory inside
+> >> that region. So once the driver was loaded and detected the device
+> >> along the device-managed region, we just want to disallow any access via
+> >> /dev/mem to it.
+> >>
+> >> Let's add the basic infrastructure to exclude some physical memory
+> >> regions completely from /dev/mem access, on any architecture and under
+> >> any system configuration (independent of CONFIG_STRICT_DEVMEM and
+> >> independent of "iomem=").
+> >
+> > I'm certainly on team "/dev/mem considered harmful", but this approach
+> > feels awkward. It feels wrong for being non-committal about whether
+> > CONFIG_STRICT_DEVMEM is in wide enough use that the safety can be
+> > turned on all the time, and the configuration option dropped, or there
+> > are users clinging onto /dev/mem where they expect to be able to build
+> > a debug kernel to turn all of these restrictions off, even the
+> > virtio-mem ones. This splits the difference and says some /dev/mem
+> > accesses are always disallowed for "reasons", but I could say the same
+> > thing about pmem, there's no sane reason to allow /dev/mem which has
+> > no idea about the responsibilities of properly touching pmem to get
+> > access to it.
+>
+> For virtio-mem, there is no use case *and* access could be harmful; I
+> don't even want to allow if for debugging purposes. If you want to
+> inspect virtio-mem device memory content, use /proc/kcore, which
+> performs proper synchronized access checks. Modifying random virtio-mem
+> memory via /dev/mem in a debug kernel will not be possible: if you
+> really have to play with fire, use kdb or better don't load the
+> virtio-mem driver during boot, such that the kernel won't even be making
+> use of device memory.
+>
+> I don't want people disabling CONFIG_STRICT_DEVMEM, or booting with
+> "iomem=relaxed", and "accidentally" accessing any of virtio-mem memory
+> via /dev/mem, while it gets concurrently plugged/unplugged by the
+> virtio-mem driver. Not even for debugging purposes.
 
-Good point.
+That sounds more an argument that all of the existing "kernel is using
+this region" cases should become mandatory exclusions. If unloading
+the driver removes the exclusion then that's precisely
+CONFIG_IO_STRICT_DEVMEM. Why is the virtio-mem driver more special
+than any other driver that expects this integrity guarantee?
 
-> 
-> And the startup_gs_area is also not needed, there is initial_gs for
-> that. 
-> 
-> What you need is something along these lines (untested):
-> 
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index d8b3ebd2bb85..3c7c59bc9903 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -65,6 +65,16 @@ SYM_CODE_START_NOALIGN(startup_64)
->  	leaq	(__end_init_task - FRAME_SIZE)(%rip), %rsp
->  
->  	leaq	_text(%rip), %rdi
-> +
-> +	movl	$MSR_GS_BASE, %ecx
-> +	movq	initial_gs(%rip), %rax
-> +	movq	$_text, %rdx
-> +	subq	%rdx, %rax
-> +	addq	%rdi, %rax
-> +	movq	%rax, %rdx
-> +	shrq	$32,  %rdx
-> +	wrmsr
-> +
->  	pushq	%rsi
->  	call	startup_64_setup_env
->  	popq	%rsi
-> 
-> 
-> It loads the initial_gs pointer, applies the fixup on it and loads it
-> into MSR_GS_BASE. 
+> We disallow mapping to some other regions independent of
+> CONFIG_STRICT_DEVMEM already, so the idea to ignore CONFIG_STRICT_DEVMEM
+> is not completely new:
+>
+> "Note that with PAT support enabled, even in this case there are
+> restrictions on /dev/mem use due to the cache aliasing requirements."
+>
+> Maybe you even want to do something similar with PMEM now that there is
+> infrastructure for it and just avoid having to deal with revoking
+> /dev/mem mappings later.
 
-This seems to do the trick, and is probably closer to what the 32-bit
-version would look like. Thanks for the suggestion!
+That would be like blocking writes to /dev/sda just because a
+filesytem might later be mounted on it. If the /dev/mem access is not
+actively colliding with other kernel operations what business does the
+kernel have saying no?
+
+I'm pushing on this topic because I am also considering an exclusion
+on PCI configuration access to the "DOE mailbox" since it can disrupt
+the kernel's operation, at the same time, root can go change PCI BARs
+to nonsensical values whenever it wants which is also in the category
+of "has no use case && could be harmful".
+
+> I think there are weird debugging/educational setups [1] that still
+> require CONFIG_STRICT_DEVMEM=n even with iomem=relaxed. Take a look at
+> lib/devmem_is_allowed.c:devmem_is_allowed(), it disallows any access to
+> (what's currently added as) System RAM. It might just do what people
+> want when dealing with system RAM that doesn't suddenly vanish , so I
+> don't ultimately see why we should remove CONFIG_STRICT_DEVMEM=n.
+
+Yes, I wanted to tease out more of your rationale on where the line
+should be drawn, I think a mostly unfettered /dev/mem mode is here to
+stay.
