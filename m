@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9533F736C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0627F3F736F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238303AbhHYKi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:38:28 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:48059 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237638AbhHYKi0 (ORCPT
+        id S239716AbhHYKjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:39:22 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:22226 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239838AbhHYKjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:38:26 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629887861; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=mfxDi7TPC7GKCBS2MnbXyato/IpTITHEBXZ+qax5Hxc=; b=cjCeGly4yfvjDh49qAzXmnnxBvX2wnRNoHArCqcbX4pbxMyJ2NhYcwVyCzlfml41Z0CHph/L
- mA/fQtKYEzSJtcFkDr8PX2AYoRvO2BhyD89QRTKSKXbISiALjllAhbfzYw6Z0ihwCAAXpOk/
- Eplfzre+7lp8fgWWCO3SCf/zcAU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 61261d64b52e91333c8a6095 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Aug 2021 10:37:24
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A4807C43618; Wed, 25 Aug 2021 10:37:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 648DEC4360D;
-        Wed, 25 Aug 2021 10:37:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 648DEC4360D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        swboyd@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH] arm64: dts: qcom: sc7280: Define CPU topology
-Date:   Wed, 25 Aug 2021 16:06:58 +0530
-Message-Id: <1629887818-28489-1-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 25 Aug 2021 06:39:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UlnIh7o_1629887828;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UlnIh7o_1629887828)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 25 Aug 2021 18:38:27 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     corentin.chary@gmail.com
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com, jdelvare@suse.com,
+        linux@roeck-us.net, acpi4asus-user@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] asus-wmi: Fix "unsigned 'retval' is never less than zero" smatch warning
+Date:   Wed, 25 Aug 2021 18:37:02 +0800
+Message-Id: <1629887822-23918-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sc7280 has 8 big.LITTLE CPUs setup with DynamIQ, so all cores are
-within the same CPU cluster. Add cpu-map to define the CPU topology.
+Eliminate the follow smatch warnings:
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+drivers/platform/x86/asus-wmi.c:478 panel_od_write() warn: unsigned
+'retval' is never less than zero.
+
+drivers/platform/x86/asus-wmi.c:566 panel_od_write() warn: unsigned
+'retval' is never less than zero.
+
+drivers/platform/x86/asus-wmi.c:1451 panel_od_write() warn: unsigned
+'retval' is never less than zero.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: 98829e84dc67 ("asus-wmi: Add dgpu disable method")
+Fixes: 382b91db8044 ("asus-wmi: Add egpu enable method")
+Fixes: ca91ea34778f ("asus-wmi: Add panel overdrive functionality")
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ drivers/platform/x86/asus-wmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 53a21d0..05bf748 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -219,6 +219,42 @@
- 			};
- 		};
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index cc58118..22af431 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -475,7 +475,7 @@ static int dgpu_disable_write(struct asus_wmi *asus)
+ 		return err;
+ 	}
  
-+		cpu-map {
-+			cluster0 {
-+				core0 {
-+					cpu = <&CPU0>;
-+				};
-+
-+				core1 {
-+					cpu = <&CPU1>;
-+				};
-+
-+				core2 {
-+					cpu = <&CPU2>;
-+				};
-+
-+				core3 {
-+					cpu = <&CPU3>;
-+				};
-+
-+				core4 {
-+					cpu = <&CPU4>;
-+				};
-+
-+				core5 {
-+					cpu = <&CPU5>;
-+				};
-+
-+				core6 {
-+					cpu = <&CPU6>;
-+				};
-+
-+				core7 {
-+					cpu = <&CPU7>;
-+				};
-+			};
-+		};
-+
- 		idle-states {
- 			entry-method = "psci";
+-	if (retval > 1 || retval < 0) {
++	if (retval > 1) {
+ 		pr_warn("Failed to set dgpu disable (retval): 0x%x\n", retval);
+ 		return -EIO;
+ 	}
+@@ -563,7 +563,7 @@ static int egpu_enable_write(struct asus_wmi *asus)
+ 		return err;
+ 	}
  
+-	if (retval > 1 || retval < 0) {
++	if (retval > 1) {
+ 		pr_warn("Failed to set egpu disable (retval): 0x%x\n", retval);
+ 		return -EIO;
+ 	}
+@@ -1448,7 +1448,7 @@ static int panel_od_write(struct asus_wmi *asus)
+ 		return err;
+ 	}
+ 
+-	if (retval > 1 || retval < 0) {
++	if (retval > 1) {
+ 		pr_warn("Failed to set panel overdrive (retval): 0x%x\n", retval);
+ 		return -EIO;
+ 	}
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+1.8.3.1
 
