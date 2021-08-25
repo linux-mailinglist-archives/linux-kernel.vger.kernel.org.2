@@ -2,198 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D163A3F7A6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B857D3F7A71
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhHYQYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
+        id S234737AbhHYQYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241442AbhHYQYM (ORCPT
+        with ESMTP id S229599AbhHYQYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:24:12 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB9DC061757;
-        Wed, 25 Aug 2021 09:23:24 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id u15so14606540plg.13;
-        Wed, 25 Aug 2021 09:23:24 -0700 (PDT)
+        Wed, 25 Aug 2021 12:24:47 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC0FC061757;
+        Wed, 25 Aug 2021 09:24:00 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id qe12-20020a17090b4f8c00b00179321cbae7so196279pjb.2;
+        Wed, 25 Aug 2021 09:24:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=PKWtw3U+UAUIlk82lhY86yQppmBBebN7/0wf9fkM/TM=;
-        b=LcbJEgmfAcWBsIFGNxsT4YAFF/iY91iJ/cjmUVAft5d9auKBNuvawkczAJt3Wm/kxe
-         Tbl8fI4YIw2rispLnKgQ5triWpaHynfv4dUtaTs9Qe0HHulLpPcxCv9g2z/41Gdn1+OW
-         y2xzmMB7h1soJ/A9uQ/miCshHBVjdSJ4fQBFhdJSVEiP5LkeOLUw9arBmkaykX9ihEOD
-         Qrm+wT4DZ2K87ZHMInJCX3buTh9pcR2aAiJBFzmfAh33o4kJ0tP9wBYdWgPgDvy0wKMH
-         aQVBYKB88j0BfyVbqY1hXBsusWxBOUNKq13uoO9HaUJaNIIByEMoeZEOKBc+vb25T/3D
-         Z2mQ==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=uE3J8XQoOGr0ebXuCoHJ9Ffm9rvxHwZfnIkLXfJVSo4=;
+        b=sdvJCmILzHOSTUhdFGCbYlzRnuovYxN1Z1w8Xi0YKdkPqZn9RaMMiq2pLK/M5pLJxV
+         5Idix/UO0RERCkIHyiVhqthJUyHbpuw3CQfSLSixr8ZeUG7xlBAm3kwOM+LiFpMKlWTm
+         UPE2jVcU2Q+HPa3yAZxwCMYf5kYUjn3SkbbWlkMCgWkeBeimHdCoaCJM8uJdp7C6+Ts0
+         lTBFUu/mdGYdcxXlTFudrfAdMTeK/WepQZvT7Oj34VtShZUNrO0FgJa6S5jFALdRx+dM
+         Jl9GAiAyE75o7kZmqWu4lmIS/jLKRapj7TctiRZo+TWOpR+q/sgkBhJz5ktESgLK/VzU
+         xw3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=PKWtw3U+UAUIlk82lhY86yQppmBBebN7/0wf9fkM/TM=;
-        b=nE/Gu0QdLRfPINYCeai+ddbhUO5NPYraxzBMcZuTtyzkzMxeX1har2Tcg26ujWoz4+
-         J7aObcO/WQjoL7RLix6qtAzAvIDVsS6WTR6JcTXvG6cHvjHxXOdZyFeCsY8916USaIMn
-         kmaZzw7g11VREFPWPm4EZ4H95ukg46QDsJ8uUBJ++fjSA+Lxd6D/OkrXYqQ9Rg5FgBe2
-         6tj4tprs3jiwiigufB2NYbdc6IeR728luzK3MfQceEyYtdy2DJMvvQ6iLCh6ElEMVegr
-         su5fjeAs54sw1dbQMKAs6g+tbYpe4fvo9EYktB10oubiC6BvRlj/Ld0thlk+G3SGK46l
-         VhBw==
-X-Gm-Message-State: AOAM530AFvK4/6lDVPQOmH72UImUd6pfAGknTLjctaym+S/+0NjOFzjZ
-        tYJPcAmkPePD0HP4/F7pQqc=
-X-Google-Smtp-Source: ABdhPJz1Wfwuc9LqXitN++W5gC/AfmWmT/IX7qsiX5DUtd8mX67KCGiaHfM118JEqnKRl9hVDUOoYA==
-X-Received: by 2002:a17:902:c406:b0:12d:d0ff:4be with SMTP id k6-20020a170902c40600b0012dd0ff04bemr38703069plk.24.1629908604185;
-        Wed, 25 Aug 2021 09:23:24 -0700 (PDT)
-Received: from localhost.localdomain ([49.36.209.183])
-        by smtp.googlemail.com with ESMTPSA id t15sm489685pgk.13.2021.08.25.09.23.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 09:23:23 -0700 (PDT)
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Utkarsh Verma <utkarshverma294@gmail.com>
-Subject: [PATCH v2] USB: serial: Replace symbolic permissions by octal permissions
-Date:   Wed, 25 Aug 2021 21:53:02 +0530
-Message-Id: <20210825162302.16243-1-utkarshverma294@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <YSYMXNvfjk0HdYr3@hovoldconsulting.com>
-References: <YSYMXNvfjk0HdYr3@hovoldconsulting.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=uE3J8XQoOGr0ebXuCoHJ9Ffm9rvxHwZfnIkLXfJVSo4=;
+        b=kcz0XJivSc6AFTvDIRAxfowtSFS3tgt2e8KcrSus37A+fpOeq7dV3zlJ+FI6JU0+67
+         sz6OpZaTUhSLqESRD8CqsSzHstXakUwKzri26GCHmLCg0knLdyr+cerpLaC0nkMFWO23
+         aXEwOeCB9QOu6uNYHlhZzrIaKp+ybplPPGDaYh6w7NmRcIvq7qA827duy4LYMuKnuR3D
+         Q29payyebEWeypKCUBBdWi/KuRhrm35Ddl7TKWDpoUkP0Om0tts3ZNc2RwWZrUpyiMLX
+         CsHVhg+IFW27e2cyrTeWKyaNTCgr105I1uKxiZmSpE15DemPaeOSPod6h4T9un/sEPPF
+         IQpA==
+X-Gm-Message-State: AOAM533ntvDFDYUgCzrmNLhkjKUxzsEhJtaEXFocnWA9odfJsghsgtrP
+        e2BfWmC9ORuAaMZPAe1UeIE=
+X-Google-Smtp-Source: ABdhPJw4or/kJhUyzwtXF1xhp2MI7DcbP5ad8eWFOmCpqQqVK8l9X+ehU0dZdCphnqZ78TN7B+WCww==
+X-Received: by 2002:a17:90a:d686:: with SMTP id x6mr11481460pju.227.1629908640380;
+        Wed, 25 Aug 2021 09:24:00 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with UTF8SMTPSA id u21sm252802pfh.163.2021.08.25.09.23.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 09:23:59 -0700 (PDT)
+Message-ID: <0f21622f-2651-d1ca-7b47-4a3060a9539c@gmail.com>
+Date:   Wed, 25 Aug 2021 18:23:47 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.2
+Subject: Re: [PATCH v2 3/4] PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
+Content-Language: en-US
+To:     Jeremy Linton <jeremy.linton@arm.com>, linux-pci@vger.kernel.org
+Cc:     lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
+        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        sdonthineni@nvidia.com, stefan.wahren@i2se.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210819215655.84866-1-jeremy.linton@arm.com>
+ <20210819215655.84866-4-jeremy.linton@arm.com>
+ <9796674a-5870-135c-2fdc-fb0d5347d7c7@gmail.com>
+ <ddffee4b-8136-9ca1-85f7-bfdbac07bfe7@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <ddffee4b-8136-9ca1-85f7-bfdbac07bfe7@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace symbolic permission macros with octal permission numbers
-because, octal permission numbers are easier to read and understand
-instead of their symbolic macro names.
 
-No functional change.
 
-Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
----
- drivers/usb/serial/cypress_m8.c  |  6 +++---
- drivers/usb/serial/ftdi_sio.c    |  2 +-
- drivers/usb/serial/garmin_gps.c  |  2 +-
- drivers/usb/serial/io_ti.c       |  4 ++--
- drivers/usb/serial/ipaq.c        |  4 ++--
- drivers/usb/serial/iuu_phoenix.c | 10 +++++-----
- drivers/usb/serial/sierra.c      |  2 +-
- 7 files changed, 15 insertions(+), 15 deletions(-)
+On 8/24/2021 11:39 PM, Jeremy Linton wrote:
+> Hi,
+> 
+> On 8/22/21 3:53 AM, Florian Fainelli wrote:
+>>
+>>
+>> On 8/19/2021 11:56 PM, Jeremy Linton wrote:
+>>> Now that there is a bcm2711 quirk, it needs to be enabled when the
+>>> MCFG is missing. Use an ACPI namespace _DSD property
+>>> "linux-ecam-quirk-id" as an alternative to the MCFG OEM.
+>>>
+>>> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+>>> ---
+>>>   drivers/acpi/pci_mcfg.c | 13 +++++++++++++
+>>>   1 file changed, 13 insertions(+)
+>>>
+>>> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
+>>> index 53cab975f612..4b991ee5c66c 100644
+>>> --- a/drivers/acpi/pci_mcfg.c
+>>> +++ b/drivers/acpi/pci_mcfg.c
+>>> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
+>>>       ALTRA_ECAM_QUIRK(1, 13),
+>>>       ALTRA_ECAM_QUIRK(1, 14),
+>>>       ALTRA_ECAM_QUIRK(1, 15),
+>>> +
+>>> +    { "bcm2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
+>>> +      DEFINE_RES_MEM(0xFD500000, 0xA000) },
+>>>   };
+>>>   static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
+>>> @@ -198,8 +201,18 @@ static void pci_mcfg_apply_quirks(struct 
+>>> acpi_pci_root *root,
+>>>       u16 segment = root->segment;
+>>>       struct resource *bus_range = &root->secondary;
+>>>       struct mcfg_fixup *f;
+>>> +    const char *soc;
+>>>       int i;
+>>> +    /*
+>>> +     * This may be a machine with a PCI/SMC conduit, which means it 
+>>> doesn't
+>>> +     * have an MCFG. Use an ACPI namespace definition instead.
+>>> +     */
+>>> +    if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
+>>> +                     "linux-ecam-quirk-id", &soc)) {
+>>> +        memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
+>>
+>> Being super paranoid here, can we use one of the "safe" string copy 
+>> routines here just in case?
+> 
+> Hmm, I went around with this a bit when I first wrote it, because the 
+> OEM fields in the ACPI tables are fixed len and don't have null 
+> termination. Maybe the right thing to do here is verify the string size 
+> is at least as long as the OEM_ID_SIZE and then continue to use the memcpy.
 
-diff --git a/drivers/usb/serial/cypress_m8.c b/drivers/usb/serial/cypress_m8.c
-index 6b18990258c3..6924fa95f6bd 100644
---- a/drivers/usb/serial/cypress_m8.c
-+++ b/drivers/usb/serial/cypress_m8.c
-@@ -1199,9 +1199,9 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
- 
--module_param(stats, bool, S_IRUGO | S_IWUSR);
-+module_param(stats, bool, 0644);
- MODULE_PARM_DESC(stats, "Enable statistics or not");
--module_param(interval, int, S_IRUGO | S_IWUSR);
-+module_param(interval, int, 0644);
- MODULE_PARM_DESC(interval, "Overrides interrupt interval");
--module_param(unstable_bauds, bool, S_IRUGO | S_IWUSR);
-+module_param(unstable_bauds, bool, 0644);
- MODULE_PARM_DESC(unstable_bauds, "Allow unstable baud rates");
-diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
-index 33bbb3470ca3..99d19828dae6 100644
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -2938,5 +2938,5 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
- 
--module_param(ndi_latency_timer, int, S_IRUGO | S_IWUSR);
-+module_param(ndi_latency_timer, int, 0644);
- MODULE_PARM_DESC(ndi_latency_timer, "NDI device latency timer override");
-diff --git a/drivers/usb/serial/garmin_gps.c b/drivers/usb/serial/garmin_gps.c
-index 756d1ac7e96f..e5c75944ebb7 100644
---- a/drivers/usb/serial/garmin_gps.c
-+++ b/drivers/usb/serial/garmin_gps.c
-@@ -1444,5 +1444,5 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
- 
--module_param(initial_mode, int, S_IRUGO);
-+module_param(initial_mode, int, 0444);
- MODULE_PARM_DESC(initial_mode, "Initial mode");
-diff --git a/drivers/usb/serial/io_ti.c b/drivers/usb/serial/io_ti.c
-index 84b848d2794e..a7b3c15957ba 100644
---- a/drivers/usb/serial/io_ti.c
-+++ b/drivers/usb/serial/io_ti.c
-@@ -2746,9 +2746,9 @@ MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
- MODULE_FIRMWARE("edgeport/down3.bin");
- 
--module_param(ignore_cpu_rev, bool, S_IRUGO | S_IWUSR);
-+module_param(ignore_cpu_rev, bool, 0644);
- MODULE_PARM_DESC(ignore_cpu_rev,
- 			"Ignore the cpu revision when connecting to a device");
- 
--module_param(default_uart_mode, int, S_IRUGO | S_IWUSR);
-+module_param(default_uart_mode, int, 0644);
- MODULE_PARM_DESC(default_uart_mode, "Default uart_mode, 0=RS232, ...");
-diff --git a/drivers/usb/serial/ipaq.c b/drivers/usb/serial/ipaq.c
-index f81746c3c26c..e11441bac44f 100644
---- a/drivers/usb/serial/ipaq.c
-+++ b/drivers/usb/serial/ipaq.c
-@@ -599,10 +599,10 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
- 
--module_param(connect_retries, int, S_IRUGO|S_IWUSR);
-+module_param(connect_retries, int, 0644);
- MODULE_PARM_DESC(connect_retries,
- 		"Maximum number of connect retries (one second each)");
- 
--module_param(initial_wait, int, S_IRUGO|S_IWUSR);
-+module_param(initial_wait, int, 0644);
- MODULE_PARM_DESC(initial_wait,
- 		"Time to wait before attempting a connection (in seconds)");
-diff --git a/drivers/usb/serial/iuu_phoenix.c b/drivers/usb/serial/iuu_phoenix.c
-index 19753611e7b0..0be3b5e1eaf3 100644
---- a/drivers/usb/serial/iuu_phoenix.c
-+++ b/drivers/usb/serial/iuu_phoenix.c
-@@ -1188,20 +1188,20 @@ MODULE_AUTHOR("Alain Degreffe eczema@ecze.com");
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
- 
--module_param(xmas, bool, S_IRUGO | S_IWUSR);
-+module_param(xmas, bool, 0644);
- MODULE_PARM_DESC(xmas, "Xmas colors enabled or not");
- 
--module_param(boost, int, S_IRUGO | S_IWUSR);
-+module_param(boost, int, 0644);
- MODULE_PARM_DESC(boost, "Card overclock boost (in percent 100-500)");
- 
--module_param(clockmode, int, S_IRUGO | S_IWUSR);
-+module_param(clockmode, int, 0644);
- MODULE_PARM_DESC(clockmode, "Card clock mode (1=3.579 MHz, 2=3.680 MHz, "
- 		"3=6 Mhz)");
- 
--module_param(cdmode, int, S_IRUGO | S_IWUSR);
-+module_param(cdmode, int, 0644);
- MODULE_PARM_DESC(cdmode, "Card detect mode (0=none, 1=CD, 2=!CD, 3=DSR, "
- 		 "4=!DSR, 5=CTS, 6=!CTS, 7=RING, 8=!RING)");
- 
--module_param(vcc_default, int, S_IRUGO | S_IWUSR);
-+module_param(vcc_default, int, 0644);
- MODULE_PARM_DESC(vcc_default, "Set default VCC (either 3 for 3.3V or 5 "
- 		"for 5V). Default to 5.");
-diff --git a/drivers/usb/serial/sierra.c b/drivers/usb/serial/sierra.c
-index 4b49b7c33364..9d56138133a9 100644
---- a/drivers/usb/serial/sierra.c
-+++ b/drivers/usb/serial/sierra.c
-@@ -1056,5 +1056,5 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL v2");
- 
--module_param(nmea, bool, S_IRUGO | S_IWUSR);
-+module_param(nmea, bool, 0644);
- MODULE_PARM_DESC(nmea, "NMEA streaming");
+Sure, sounds entirely reasonable to me.
 -- 
-2.17.1
-
+Florian
