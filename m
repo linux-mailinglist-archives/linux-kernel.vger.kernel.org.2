@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55D73F7B38
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0880D3F7B3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242201AbhHYRJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:09:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47812 "EHLO mail.kernel.org"
+        id S242218AbhHYRJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:09:58 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:54946 "EHLO mail.ispras.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229711AbhHYRJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:09:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5884161058;
-        Wed, 25 Aug 2021 17:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629911335;
-        bh=UtxyPyMT37B3hC/Zps+12oz+PHhGWMUtosdIzv2AlJI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CUIR+LzgUQUS/73QoYREpFX/k17oouO/BV0xZ/iYPiMVJI1yzsG2/g7VmpogGvWnQ
-         DsGTfQI1X3XPqgDITcKJMbNMA8o2HljIqjerv6uVCyoD7IBMKkLyX91EQthbPDGTIz
-         T5W3nzHqwRsA/Vo+wgQxgY6MhBo5tbbakyFXOXRbZnL5c+vhkqsWMYfrPvnRgY+FK+
-         RXbBDT5BK54EMhmLUGBH871+TW1HO8bd+pNn6zbr3sOcyFMtrqv2FQSXhQ5LC8nONh
-         gXkmg0ALPNr8ds/UV4A7yHHozoDoqXINZE6/0f4T3Bob7+X0XaNQp/a/x4hdnX01ZP
-         9BstLZQZyQCZg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 14DB35C0399; Wed, 25 Aug 2021 10:08:55 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 10:08:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        frederic@kernel.org, boqun.feng@gmail.com
-Subject: Re: [PATCH v2 4/5] rcu-tasks: Fix read-side primitives comment for
- call_rcu_tasks_trace
-Message-ID: <20210825170855.GJ4156@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <1629875451-20628-1-git-send-email-neeraju@codeaurora.org>
- <1629875451-20628-5-git-send-email-neeraju@codeaurora.org>
+        id S229711AbhHYRJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 13:09:57 -0400
+Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPS id 93EB240A2BC8;
+        Wed, 25 Aug 2021 17:09:03 +0000 (UTC)
+From:   Evgeny Novikov <novikov@ispras.ru>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Mike Turquette <mturquette@linaro.org>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: [PATCH] usb: ehci-orion: Handle errors of clk_prepare_enable() in probe
+Date:   Wed, 25 Aug 2021 20:09:02 +0300
+Message-Id: <20210825170902.11234-1-novikov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1629875451-20628-5-git-send-email-neeraju@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 12:40:50PM +0530, Neeraj Upadhyay wrote:
-> call_rcu_tasks_trace() does have read-side primitives - rcu_read_lock_trace()
-> and rcu_read_unlock_trace(). Fix this information in the comments.
-> 
-> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+ehci_orion_drv_probe() did not account for possible errors of
+clk_prepare_enable() that in particular could cause invocation of
+clk_disable_unprepare() on clocks that were not prepared/enabled yet,
+e.g. in remove or on handling errors of usb_add_hcd() in probe. Though,
+there were several patches fixing different issues with clocks in this
+driver, they did not solve this problem.
 
-Queued for v5.16, thank you very much!
+Add handling of errors of clk_prepare_enable() in ehci_orion_drv_probe()
+to avoid calls of clk_disable_unprepare() without previous successful
+invocation of clk_prepare_enable().
 
-(The other four patches are already queued.)
+Found by Linux Driver Verification project (linuxtesting.org).
 
-							Thanx, Paul
+Fixes: 8c869edaee07 ("ARM: Orion: EHCI: Add support for enabling clocks")
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+---
+ drivers/usb/host/ehci-orion.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> ---
->  kernel/rcu/tasks.h | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 244e06a..c5f1c2f 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1212,15 +1212,11 @@ static void exit_tasks_rcu_finish_trace(struct task_struct *t)
->   * @rhp: structure to be used for queueing the RCU updates.
->   * @func: actual callback function to be invoked after the grace period
->   *
-> - * The callback function will be invoked some time after a full grace
-> - * period elapses, in other words after all currently executing RCU
-> - * read-side critical sections have completed. call_rcu_tasks_trace()
-> - * assumes that the read-side critical sections end at context switch,
-> - * cond_resched_rcu_qs(), or transition to usermode execution.  As such,
-> - * there are no read-side primitives analogous to rcu_read_lock() and
-> - * rcu_read_unlock() because this primitive is intended to determine
-> - * that all tasks have passed through a safe state, not so much for
-> - * data-structure synchronization.
-> + * The callback function will be invoked some time after a trace rcu-tasks
-> + * grace period elapses, in other words after all currently executing
-> + * trace rcu-tasks read-side critical sections have completed. These
-> + * read-side critical sections are delimited by calls to rcu_read_lock_trace()
-> + * and rcu_read_unlock_trace().
->   *
->   * See the description of call_rcu() for more detailed information on
->   * memory ordering guarantees.
-> @@ -1236,7 +1232,7 @@ EXPORT_SYMBOL_GPL(call_rcu_tasks_trace);
->   *
->   * Control will return to the caller some time after a trace rcu-tasks
->   * grace period has elapsed, in other words after all currently executing
-> - * rcu-tasks read-side critical sections have elapsed.  These read-side
-> + * trace rcu-tasks read-side critical sections have elapsed. These read-side
->   * critical sections are delimited by calls to rcu_read_lock_trace()
->   * and rcu_read_unlock_trace().
->   *
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-> hosted by The Linux Foundation
-> 
+diff --git a/drivers/usb/host/ehci-orion.c b/drivers/usb/host/ehci-orion.c
+index a319b1df3011..3626758b3e2a 100644
+--- a/drivers/usb/host/ehci-orion.c
++++ b/drivers/usb/host/ehci-orion.c
+@@ -264,8 +264,11 @@ static int ehci_orion_drv_probe(struct platform_device *pdev)
+ 	 * the clock does not exists.
+ 	 */
+ 	priv->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (!IS_ERR(priv->clk))
+-		clk_prepare_enable(priv->clk);
++	if (!IS_ERR(priv->clk)) {
++		err = clk_prepare_enable(priv->clk);
++		if (err)
++			goto err_put_hcd;
++	}
+ 
+ 	priv->phy = devm_phy_optional_get(&pdev->dev, "usb");
+ 	if (IS_ERR(priv->phy)) {
+@@ -311,6 +314,7 @@ static int ehci_orion_drv_probe(struct platform_device *pdev)
+ err_dis_clk:
+ 	if (!IS_ERR(priv->clk))
+ 		clk_disable_unprepare(priv->clk);
++err_put_hcd:
+ 	usb_put_hcd(hcd);
+ err:
+ 	dev_err(&pdev->dev, "init %s fail, %d\n",
+-- 
+2.26.2
+
