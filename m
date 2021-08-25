@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1AA3F7AB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAE73F7AB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241872AbhHYQgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:36:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233004AbhHYQga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:36:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0107061183;
-        Wed, 25 Aug 2021 16:35:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629909344;
-        bh=lXnkq/OxLTvjEhU15v7KYQcknr43nW72rX7brdtLXAY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KiY+yrJSkj+aong9SNv67r9yIm2BsATM7hlZWQ7pyLel9yHNa1vvZW/fdryuzkuLS
-         3InxG/fuRu4gO+Aohy5ZlejFOi4w7nBnxXf+gsGmt68Szo+w+ZTI0QORVtfsrqDEhG
-         rY5J1JijSd5QHWtlBrIvdQIFmOwbUxl91O+2KvCWq1tMlkHvg7CWJYsqml0ny4QHNG
-         sZsCijA7X0g3fjRuy7UEJSPBsp065ypkCZhJf3EAnBkgOIMXTUQATKhNmDMaIyW4+g
-         NdInZYOrlGFuCvODe8eKoqrHVx6sgrXLKf/FL4/a7mSFcw5Ut9qyvxNJXJyyKvsLKV
-         KyE4/eJgvSl3w==
-Date:   Wed, 25 Aug 2021 17:35:16 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: "BUG: Invalid wait context" in ls_extirq_set_type
-Message-ID: <20210825163516.GM5186@sirena.org.uk>
-References: <20210825135438.ubcuxm5vctt6ne2q@skbuf>
- <20210825155427.GK5186@sirena.org.uk>
- <20210825160334.zffm2ctcklo66qkx@skbuf>
+        id S242066AbhHYQgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233004AbhHYQgc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 12:36:32 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93E7C061757;
+        Wed, 25 Aug 2021 09:35:45 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id i21so11569079ejd.2;
+        Wed, 25 Aug 2021 09:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oB+gyP5iMcMqw9Ky0nyzgG868F6WdIo6LMQb39S8Z9E=;
+        b=pudzFZzN9DKM6ytg4NKy0f7hjl6/BWg5HXWlsO2fZUjza2apr4vizt7h5MT/E6vUZk
+         XDp4IjT5hvwnoG1PttePRIQJbpMurFX1Rsoqt7+ONvC+Xge8TneYzitJ2f7xfyvZ3XO+
+         bRbq9Vm5u6OoAVXFUQIy2HHpDGlgTOY/yyTE/ibtSSoUTSpKyUxCq47Tkg5kpC165NtZ
+         I3G7toluQm55HSD8EVFbja4ax8qY/9nzGXtPzuWrC3dolsFM75bQBMI3FtqJg6DPZtdx
+         yD4DL7mVxn4L/3CP4BR6Ql44ZyJVh6UTRi5F48+jkuYLjrgvK9UgqGp439+k0dA/Zv1N
+         SaAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oB+gyP5iMcMqw9Ky0nyzgG868F6WdIo6LMQb39S8Z9E=;
+        b=LOfDfS/1iJK+dm7Q6tTEmumDnqp7zBxdC3PPFpm5eFwi4HgKe2SRO6p5vaElOyxWqc
+         E356rI2suiE3dHtwt7Hz3mWYpuYdzyyGaOHFn8kRDaGldnXZXqRsQ7NPOVJ3ug945YvN
+         L59EmXcEjUYA3ZKrvB4hnM0Qx4vbyiShS63l9Uc6TKbkxP921OxfLgK2q6/TGp/iKf8w
+         HwTI0/p/EFSXB5T0CAvbrfBcgbVPDPdV3pY4XNJMuEg+xX+tlZmue5VxEf+jT23ZXGwP
+         2CsH6CGeJMmj6ye+PNbHeVwoHB9vEcVaATWG/MfDEsBV1qsarGmE2M/+7ZbE4gojgL+8
+         3yEA==
+X-Gm-Message-State: AOAM531UTfHIC21nBF2pfNIWGZc8oyLZD2/2SuwnkTI3Fl9R7jUy/OW3
+        qAiFKWPkfrsWhkiktJXy3wA=
+X-Google-Smtp-Source: ABdhPJyrX1Bh3v6ARE48EfSRHa7EneDL31j+w/IPXjowHQFGs88jW8HA8j2zkqr41Ao/ivOXg5fsjw==
+X-Received: by 2002:a17:906:114c:: with SMTP id i12mr10962653eja.207.1629909344442;
+        Wed, 25 Aug 2021 09:35:44 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:502:1d80:f02c:a1bd:70b1:fe95? ([2a04:241e:502:1d80:f02c:a1bd:70b1:fe95])
+        by smtp.gmail.com with ESMTPSA id o3sm72797eju.123.2021.08.25.09.35.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 09:35:43 -0700 (PDT)
+From:   Leonard Crestez <cdleonard@gmail.com>
+Subject: Re: [RFCv3 05/15] tcp: authopt: Add crypto initialization
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>
+References: <cover.1629840814.git.cdleonard@gmail.com>
+ <abb720b34b9eef1cc52ef68017334e27a2af83c6.1629840814.git.cdleonard@gmail.com>
+ <30f73293-ea03-d18f-d923-0cf499d4b208@gmail.com>
+Message-ID: <27e56f61-3267-de50-0d49-5fcfc59af93c@gmail.com>
+Date:   Wed, 25 Aug 2021 19:35:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XbHSybK3LHOYQtWI"
-Content-Disposition: inline
-In-Reply-To: <20210825160334.zffm2ctcklo66qkx@skbuf>
-X-Cookie: MY income is ALL disposable!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <30f73293-ea03-d18f-d923-0cf499d4b208@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25.08.2021 02:34, Eric Dumazet wrote:
+> On 8/24/21 2:34 PM, Leonard Crestez wrote:
+>> The crypto_shash API is used in order to compute packet signatures. The
+>> API comes with several unfortunate limitations:
+>>
+>> 1) Allocating a crypto_shash can sleep and must be done in user context.
+>> 2) Packet signatures must be computed in softirq context
+>> 3) Packet signatures use dynamic "traffic keys" which require exclusive
+>> access to crypto_shash for crypto_setkey.
+>>
+>> The solution is to allocate one crypto_shash for each possible cpu for
+>> each algorithm at setsockopt time. The per-cpu tfm is then borrowed from
+>> softirq context, signatures are computed and the tfm is returned.
+>>
+> 
+> I could not see the per-cpu stuff that you mention in the changelog.
 
---XbHSybK3LHOYQtWI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That's a little embarrasing, I forgot to implement the actual per-cpu 
+stuff. tcp_authopt_alg_imp.tfm is meant to be an array up to NR_CPUS and 
+tcp_authopt_alg_get_tfm needs no locking other than preempt_disable 
+(which should already be the case).
 
-On Wed, Aug 25, 2021 at 07:03:34PM +0300, Vladimir Oltean wrote:
-> On Wed, Aug 25, 2021 at 04:54:27PM +0100, Mark Brown wrote:
+The reference counting would still only happen from very few places: 
+setsockopt, close and openreq. This would only impact request/response 
+traffic and relatively little.
 
-> > No problem with adding raw spinlocks to regmap, I think it's just nobody
-> > needed them before.  I've not looked at the problem in sufficient detail
-> > to figure out if that's actually the best solution here but from an initial
-> > pass through it looks reasonableit looks reasonable
+Performance was not a major focus so far. Preventing impact on non-AO 
+connections is important but typical AO usecases are long-lived 
+low-traffic connections.
 
-> The question becomes how will syscon be told that one of its consumers
-> needs the regmap to use raw spinlock locking? The syscon regmap is
-> initialized before any of its consumers probe, AFAIU.
-
-I'd expect it to figure this out based on the compatible string for the
-syscon device.
-
---XbHSybK3LHOYQtWI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEmcUQACgkQJNaLcl1U
-h9A7iAf/fDYYVBLqSBzkmVn3Eu5qODLHv6s4wdNkyEbIfARpFsDUQUyed+umqmUA
-i4v3VaAWK1vPZPH1ejsN/n/QhQWln2NEm/ejfDZiNt1rQzbbHtUliAOmJhlpePB5
-kP9jhXlJsqMmvx3JbExGFEw7hTqUVAmDUZxz8oSWTcQlB+5ZElbhb8xUIJm6yC23
-MBy0fYFZ4V73u2g+oMYaLgABFChmIYOIE33VnO1diskIOwi5IHPfvbie/TtwRia6
-V957WLNnCHjW2gHMoayAeUq9ThhKqRhVq5Pqwrgk9rhh+LS3QbzeSnwTzgm9xVty
-B5z47m5NGyr14KkXi6xMlcqRqnQNcw==
-=oO38
------END PGP SIGNATURE-----
-
---XbHSybK3LHOYQtWI--
+--
+Regards,
+Leonard
