@@ -2,292 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44DC3F7ED4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8CF3F7EDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233291AbhHYW7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45818 "EHLO
+        id S233129AbhHYXEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 19:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232217AbhHYW7v (ORCPT
+        with ESMTP id S231535AbhHYXEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:59:51 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17506C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:59:05 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id m4so532783pll.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:59:05 -0700 (PDT)
+        Wed, 25 Aug 2021 19:04:39 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB79CC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:03:52 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id j12so1437160ljg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 16:03:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Jjpd+6Tkj8BgAWV6v+XCBx0rlbb+NUWeFyE7jkLpQ1k=;
-        b=iAh988u8pEDhR1u1+NwvQuyLrnH1m2WLNKg8/J7jmqi87o50icpHKwaWVCiqODTY0P
-         tb3Fjl2lTTItneH7R8xNYg3W2YPW6gSNEWTT5xbX+keJ8Ld7xfr7JJzAtCpAUrnaR7wL
-         u+APYHoIUU3TdXYmUjnL7N0CsvF2Q1UOullJ0zPV8KiIW468cy0gPObegFFsmc94pvvi
-         FOZ0MlYWDjr0PpROP6UIiwqBt3gQYhJq83HduPbWWo5jm/WLXCgM4JQ4yFlXypyziRKO
-         7dd+lcVcZnQTajm02jMrK4ygLPx+LvALFNIXwni0kVJ6qJN8wpcdd5hCOEo97PUy6LR+
-         bwYg==
+        bh=2OfbLRqwAnGB5jDnDWm7vnODC+VKBMH0mApM9uNShXs=;
+        b=LeHOXdGVlnEmXHRIBXzAJY8asTZDf++bfQ3M1qvvWJLxgDDVv78avIB9l1Jyz0qOMo
+         u9umdFPvNW+PyMkEHAKEeda/6q0JI9t81cT6CUfsYnFa2lKx0Iz8nTpXGcnrGQRBCrW9
+         wtytfUNZfGift6JaGL0FR9QLm39/oABYK5aZOHv2XKW1MjVkcY6SDpYRxHpxEZrQynXm
+         DCsKT0d7/7nkZLNmsICj2HgXPS+fhxcDFG5LXBYnqq62SgMfTnda6O4vcraEod8LJNyc
+         qOswtuUh/LwGb4ujrXvLe2kNG0UvSp9h8KDCra4ANOlDgSU9+8m/jxmE3e7EpL4VBsbz
+         fkbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Jjpd+6Tkj8BgAWV6v+XCBx0rlbb+NUWeFyE7jkLpQ1k=;
-        b=n38dlv1ty5/AuEbf90lEAuseitCQ4hKU+DPRM2xMZg8LR4nYx+VmXynTMm9d93sstK
-         60B45CatyUn3aGTHbIYOF716YiOYt8QFH6MzS18VacZsSKZ9r2KMY6gziPy3jDQS/6j+
-         G4hZrWfciAsDXziBakIPuBlffNAMtU10gs4j7jwScpwJ8fVBFlwtivGfUyDdnzNPb4EU
-         WcMB/hSWbh7nUl9UwVJLQrB7M4uPfpSGfLu70u4iChl90YMH3Jpe2gPBDReTEaDc5nFU
-         UH+wG5MiVUMMJKx1PBrQ42mljRrH0hE6V2Al4EP2fmzlDGPqPk8KyvwYc7WT4/aeW5iC
-         wU3Q==
-X-Gm-Message-State: AOAM531rxBPRYssc4D6N+gE1oMUYGlZzN7Brvj+FcPN39oo6CnhH3H5Y
-        AIyRBqCbEj35fnXa6bAb+ShHEOd5J9MFqRftc7zF+w==
-X-Google-Smtp-Source: ABdhPJx+NsBGX+c8+wggJKsFYh0kOCsfhHj0McL3arbWNJl4J7SNXCvWTZH3iT1Dl4y5DfRHyE86J/48TBUJkj3j1wI=
-X-Received: by 2002:a17:90a:708c:: with SMTP id g12mr13271794pjk.13.1629932344184;
- Wed, 25 Aug 2021 15:59:04 -0700 (PDT)
+        bh=2OfbLRqwAnGB5jDnDWm7vnODC+VKBMH0mApM9uNShXs=;
+        b=Uh8/ZqRgLvtn/q193hfV4iZuPk4mM864R5v7mIjbZr7oAN0AsiPTZyz5uSLspmGQ24
+         YPZhVTXx/Z/Pcxo5awEUoyYxlLL0QRfUsILyF2o4HH7UpFnSr2MMFRosile+z/ZnHsFv
+         25UYPPMjjJmzTyWUl1y31I7VfiXec2NwyWsLP5djWuehAIdsyJUmUodBJYEHNC8/PwMv
+         2yIK2zLfTgGzJmpvz2LIpCZzEvRz2/u3PPxXP6NGAxq4tI2HW+XSRf768ApkupREtxXJ
+         sVsLW36XnCcJ6PcG78cxN1RY6ONjdyDdgJAde+Bt+yJHpOc56jD4e6ksWc8SnhE+FXM4
+         qjXQ==
+X-Gm-Message-State: AOAM533ZDaORGesNBZ/vvjyVnyvEc2gJz5YSqFq038pRiUR0PN0eJSKH
+        feTdeco8NLCT8bUidOD8V+tOgosyaazFyKpuyDje1+oe+xnDWA==
+X-Google-Smtp-Source: ABdhPJwuDzns8qSLGm1dasF+52Y74fFiLN3vxGsN+IOwR3ac0gDzerXkqEQR/u7zlZ5f6A/hy0UYuL7SX3C1NJzPL6U=
+X-Received: by 2002:a05:651c:83:: with SMTP id 3mr477952ljq.341.1629932630932;
+ Wed, 25 Aug 2021 16:03:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210803113134.2262882-1-iwona.winiarska@intel.com> <20210803113134.2262882-7-iwona.winiarska@intel.com>
-In-Reply-To: <20210803113134.2262882-7-iwona.winiarska@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 25 Aug 2021 15:58:53 -0700
-Message-ID: <CAPcyv4giVBjZWjXO2H+vYSR29Vapi6_FvMwO7nvts-JXmCHcOA@mail.gmail.com>
-Subject: Re: [PATCH v2 06/15] peci: Add core infrastructure
-To:     Iwona Winiarska <iwona.winiarska@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        openbmc@lists.ozlabs.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        X86 ML <x86@kernel.org>,
-        Device Tree <devicetree@vger.kernel.org>,
-        linux-aspeed@lists.ozlabs.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zev Weiss <zweiss@equinix.com>,
-        David Muller <d.mueller@elsoft.ch>,
-        Jason M Bills <jason.m.bills@linux.intel.com>
+References: <20210824232237.2085342-1-nathan@kernel.org>
+In-Reply-To: <20210824232237.2085342-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 25 Aug 2021 16:03:39 -0700
+Message-ID: <CAKwvOdk2mLem4w05o5cdr0Mz62M2CWeW+5LFnKE5L+pMPqa7WA@mail.gmail.com>
+Subject: Re: [PATCH] drm/i915: Clean up disabled warnings
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 4:35 AM Iwona Winiarska
-<iwona.winiarska@intel.com> wrote:
+On Tue, Aug 24, 2021 at 4:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> Intel processors provide access for various services designed to support
-> processor and DRAM thermal management, platform manageability and
-> processor interface tuning and diagnostics.
-> Those services are available via the Platform Environment Control
-> Interface (PECI) that provides a communication channel between the
-> processor and the Baseboard Management Controller (BMC) or other
-> platform management device.
+> i915 enables a wider set of warnings with '-Wall -Wextra' then disables
+> several with cc-disable-warning. If an unknown flag gets added to
+> KBUILD_CFLAGS when building with clang, all subsequent calls to
+> cc-{disable-warning,option} will fail, meaning that all of these
+> warnings do not get disabled [1].
 >
-> This change introduces PECI subsystem by adding the initial core module
-> and API for controller drivers.
+> A separate series will address the root cause of the issue by not adding
+> these flags when building with clang [2]; however, the symptom of these
+> extra warnings appearing can be addressed separately by just removing
+> the calls to cc-disable-warning, which makes the build ever so slightly
+> faster because the compiler does not need to be called as much before
+> building.
 >
-> Co-developed-by: Jason M Bills <jason.m.bills@linux.intel.com>
-> Signed-off-by: Jason M Bills <jason.m.bills@linux.intel.com>
-> Co-developed-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-> Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> The following warnings are supported by GCC 4.9 and clang 10.0.1, which
+> are the minimum supported versions of these compilers so the call to
+> cc-disable-warning is not necessary. Masahiro cleaned this up for the
+> reset of the kernel in commit 4c8dd95a723d ("kbuild: add some extra
+> warning flags unconditionally").
+>
+> * -Wmissing-field-initializers
+> * -Wsign-compare
+> * -Wtype-limits
+> * -Wunused-parameter
+>
+> -Wunused-but-set-variable was implemented in clang 13.0.0 and
+> -Wframe-address was implemented in clang 12.0.0 so the
+> cc-disable-warning calls are kept for these two warnings.
+>
+> Lastly, -Winitializer-overrides is clang's version of -Woverride-init,
+> which is disabled for the specific files that are problematic. clang
+> added a compatibility alias in clang 8.0.0 so -Winitializer-overrides
+> can be removed.
+>
+> [1]: https://lore.kernel.org/r/202108210311.CBtcgoUL-lkp@intel.com/
+> [2]: https://lore.kernel.org/r/20210824022640.2170859-1-nathan@kernel.org/
+>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+
+Thanks for the patch! Do you need to re-ping, rebase, or resend that
+other series?
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
 > ---
->  MAINTAINERS             |   9 +++
->  drivers/Kconfig         |   3 +
->  drivers/Makefile        |   1 +
->  drivers/peci/Kconfig    |  15 ++++
->  drivers/peci/Makefile   |   5 ++
->  drivers/peci/core.c     | 155 ++++++++++++++++++++++++++++++++++++++++
->  drivers/peci/internal.h |  16 +++++
->  include/linux/peci.h    |  99 +++++++++++++++++++++++++
->  8 files changed, 303 insertions(+)
->  create mode 100644 drivers/peci/Kconfig
->  create mode 100644 drivers/peci/Makefile
->  create mode 100644 drivers/peci/core.c
->  create mode 100644 drivers/peci/internal.h
->  create mode 100644 include/linux/peci.h
 >
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7cdab7229651..d411974aaa5e 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14503,6 +14503,15 @@ L:     platform-driver-x86@vger.kernel.org
->  S:     Maintained
->  F:     drivers/platform/x86/peaq-wmi.c
+> NOTE: This is based on my series to enable -Wsometimes-initialized here:
 >
-> +PECI SUBSYSTEM
-> +M:     Iwona Winiarska <iwona.winiarska@intel.com>
-> +R:     Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-> +L:     openbmc@lists.ozlabs.org (moderated for non-subscribers)
-> +S:     Supported
-> +F:     Documentation/devicetree/bindings/peci/
-> +F:     drivers/peci/
-> +F:     include/linux/peci.h
-> +
->  PENSANDO ETHERNET DRIVERS
->  M:     Shannon Nelson <snelson@pensando.io>
->  M:     drivers@pensando.io
-> diff --git a/drivers/Kconfig b/drivers/Kconfig
-> index 8bad63417a50..f472b3d972b3 100644
-> --- a/drivers/Kconfig
-> +++ b/drivers/Kconfig
-> @@ -236,4 +236,7 @@ source "drivers/interconnect/Kconfig"
->  source "drivers/counter/Kconfig"
+> https://lore.kernel.org/r/20210824225427.2065517-1-nathan@kernel.org/
 >
->  source "drivers/most/Kconfig"
-> +
-> +source "drivers/peci/Kconfig"
-> +
->  endmenu
-> diff --git a/drivers/Makefile b/drivers/Makefile
-> index 27c018bdf4de..8d96f0c3dde5 100644
-> --- a/drivers/Makefile
-> +++ b/drivers/Makefile
-> @@ -189,3 +189,4 @@ obj-$(CONFIG_GNSS)          += gnss/
->  obj-$(CONFIG_INTERCONNECT)     += interconnect/
->  obj-$(CONFIG_COUNTER)          += counter/
->  obj-$(CONFIG_MOST)             += most/
-> +obj-$(CONFIG_PECI)             += peci/
-> diff --git a/drivers/peci/Kconfig b/drivers/peci/Kconfig
-> new file mode 100644
-> index 000000000000..71a4ad81225a
-> --- /dev/null
-> +++ b/drivers/peci/Kconfig
-> @@ -0,0 +1,15 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +menuconfig PECI
-> +       tristate "PECI support"
-> +       help
-> +         The Platform Environment Control Interface (PECI) is an interface
-> +         that provides a communication channel to Intel processors and
-> +         chipset components from external monitoring or control devices.
-> +
-> +         If you are building a Baseboard Management Controller (BMC) kernel
-> +         for Intel platform say Y here and also to the specific driver for
-> +         your adapter(s) below. If unsure say N.
-> +
-> +         This support is also available as a module. If so, the module
-> +         will be called peci.
-> diff --git a/drivers/peci/Makefile b/drivers/peci/Makefile
-> new file mode 100644
-> index 000000000000..e789a354e842
-> --- /dev/null
-> +++ b/drivers/peci/Makefile
-> @@ -0,0 +1,5 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +# Core functionality
-> +peci-y := core.o
-> +obj-$(CONFIG_PECI) += peci.o
-> diff --git a/drivers/peci/core.c b/drivers/peci/core.c
-> new file mode 100644
-> index 000000000000..7b3938af0396
-> --- /dev/null
-> +++ b/drivers/peci/core.c
-> @@ -0,0 +1,155 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +// Copyright (c) 2018-2021 Intel Corporation
-> +
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> I sent it separately as this can go into whatever release but I would
+> like for that series to go into 5.15.
+>
+>  drivers/gpu/drm/i915/Makefile | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+> index 335ba9f43d8f..6b38547543b1 100644
+> --- a/drivers/gpu/drm/i915/Makefile
+> +++ b/drivers/gpu/drm/i915/Makefile
+> @@ -13,13 +13,11 @@
+>  # will most likely get a sudden build breakage... Hopefully we will fix
+>  # new warnings before CI updates!
+>  subdir-ccflags-y := -Wall -Wextra
+> -subdir-ccflags-y += $(call cc-disable-warning, unused-parameter)
+> -subdir-ccflags-y += $(call cc-disable-warning, type-limits)
+> -subdir-ccflags-y += $(call cc-disable-warning, missing-field-initializers)
+> +subdir-ccflags-y += -Wno-unused-parameter
+> +subdir-ccflags-y += -Wno-type-limits
+> +subdir-ccflags-y += -Wno-missing-field-initializers
+> +subdir-ccflags-y += -Wno-sign-compare
+>  subdir-ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
+> -# clang warnings
+> -subdir-ccflags-y += $(call cc-disable-warning, sign-compare)
+> -subdir-ccflags-y += $(call cc-disable-warning, initializer-overrides)
+>  subdir-ccflags-y += $(call cc-disable-warning, frame-address)
+>  subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
+>
+>
+> base-commit: fb43ebc83e069625cfeeb2490efc3ffa0013bfa4
+> prerequisite-patch-id: 31c28450ed7e8785dce967a16db6d52eff3d7d6d
+> prerequisite-patch-id: 372dfa0e07249f207acc1942ab0e39b13ff229b2
+> prerequisite-patch-id: 1a585fa6cda50c32ad1e3ac8235d3cff1b599978
+> --
+> 2.33.0
+>
 
-This looks like overkill for only one print statement in this module,
-especially when the dev_ print helpers offer more detail.
 
-> +
-> +#include <linux/bug.h>
-> +#include <linux/device.h>
-> +#include <linux/export.h>
-> +#include <linux/idr.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/peci.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/property.h>
-> +#include <linux/slab.h>
-> +
-> +#include "internal.h"
-> +
-> +static DEFINE_IDA(peci_controller_ida);
-> +
-> +static void peci_controller_dev_release(struct device *dev)
-> +{
-> +       struct peci_controller *controller = to_peci_controller(dev);
-> +
-> +       pm_runtime_disable(&controller->dev);
-
-This seems late to be disabling power management, the device is about
-to be freed. Keep in mind the lifetime of the this object can be
-artificially prolonged. I expect this to be done when the device is
-unregistered from the bus.
-
-> +
-> +       mutex_destroy(&controller->bus_lock);
-> +       ida_free(&peci_controller_ida, controller->id);
-> +       fwnode_handle_put(controller->dev.fwnode);
-
-Shouldn't the get / put of this handle reference be bound to specific
-accesses not held for the entire lifetime of the object? At a minimum
-it seems to be a reference that can taken at registration and dropped
-at unregistration.
-
-> +       kfree(controller);
-> +}
-> +
-> +struct device_type peci_controller_type = {
-> +       .release        = peci_controller_dev_release,
-> +};
-> +
-> +static struct peci_controller *peci_controller_alloc(struct device *dev,
-> +                                                    struct peci_controller_ops *ops)
-> +{
-> +       struct fwnode_handle *node = fwnode_handle_get(dev_fwnode(dev));
-> +       struct peci_controller *controller;
-> +       int ret;
-> +
-> +       if (!ops->xfer)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       controller = kzalloc(sizeof(*controller), GFP_KERNEL);
-> +       if (!controller)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       ret = ida_alloc_max(&peci_controller_ida, U8_MAX, GFP_KERNEL);
-> +       if (ret < 0)
-> +               goto err;
-> +       controller->id = ret;
-> +
-> +       controller->ops = ops;
-> +
-> +       controller->dev.parent = dev;
-> +       controller->dev.bus = &peci_bus_type;
-> +       controller->dev.type = &peci_controller_type;
-> +       controller->dev.fwnode = node;
-> +       controller->dev.of_node = to_of_node(node);
-> +
-> +       device_initialize(&controller->dev);
-> +
-> +       mutex_init(&controller->bus_lock);
-> +
-> +       pm_runtime_no_callbacks(&controller->dev);
-> +       pm_suspend_ignore_children(&controller->dev, true);
-> +       pm_runtime_enable(&controller->dev);
-
-Per above, are you sure unregistered devices need pm_runtime enabled?
-
-Rest looks ok to me.
+-- 
+Thanks,
+~Nick Desaulniers
