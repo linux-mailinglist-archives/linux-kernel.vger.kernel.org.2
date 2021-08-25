@@ -2,65 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E23C3F7084
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E4A3F708B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239308AbhHYHhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239301AbhHYHhs (ORCPT
+        id S238702AbhHYHjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:39:22 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:14319 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234058AbhHYHjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:37:48 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDAC3C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3uEKHtHIaZKrON6DnoPhOrv9fCzcWdgeFV8c5xRWWBo=; b=XKyU0wp5N3gmk6boCZ3EzMQVth
-        ByFhjdQadehvps/EmcDaj9+JZe5PtMK7ZHRuOQn2qI2P8m835EnB7qEDF52qvkD1mJYZUOR+f0EUw
-        CK1UFsjA7mPuEk/9N/Y7suV5fWHbZKyg5zAOVMUtE6kArxvN0semTzkDzk9Apf0cAb7i7X91pWual
-        G+S8i5XiIXgASW0JuCN0YtbsAU6L+fBARB0zfr9GL2Qru1SlngBwhAYFMzkEdkpmRvfvTu6SsdLYw
-        eZeHeS9yIxImUZlKVbiUrl7l4H5fLGCFYJYt/3z8jmDVlq+SSzvqcgVRbAVFjR0QuYwyrK/uIIzzi
-        ++a9F+pQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mInSy-00Cqg1-Lv; Wed, 25 Aug 2021 07:36:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 64EAB300399;
-        Wed, 25 Aug 2021 09:36:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 23DAC2BE7DC94; Wed, 25 Aug 2021 09:36:55 +0200 (CEST)
-Date:   Wed, 25 Aug 2021 09:36:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Jones <davej@codemonkey.org.uk>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: 5.14-rc breaks iotop swap io monitoring.
-Message-ID: <YSXzF/svehIO8SzO@hirez.programming.kicks-ass.net>
-References: <20210824031648.GA2725@codemonkey.org.uk>
- <YSSuVO47ieWDfWMQ@hirez.programming.kicks-ass.net>
- <20210824151943.GA386@codemonkey.org.uk>
- <CAHk-=wiRe=JBK85HG7xtXH1XbOWcO1KYW8csuWfLuFoHKTqF0w@mail.gmail.com>
- <20210824213342.GA1708@codemonkey.org.uk>
- <CAHk-=wg8XonsSN1SXjpSh3pO3-+EMZvdkb1xwJbLpZxCT2=thQ@mail.gmail.com>
+        Wed, 25 Aug 2021 03:39:21 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GvdBL1cQXz89xG;
+        Wed, 25 Aug 2021 15:38:18 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 25 Aug 2021 15:38:32 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 25 Aug 2021 15:38:31 +0800
+Subject: Re: [PATCH 5.4 00/61] 5.4.143-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>
+References: <20210824170106.710221-1-sashal@kernel.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <297c4759-32f7-118a-7d0b-441b00a82146@huawei.com>
+Date:   Wed, 25 Aug 2021 15:38:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg8XonsSN1SXjpSh3pO3-+EMZvdkb1xwJbLpZxCT2=thQ@mail.gmail.com>
+In-Reply-To: <20210824170106.710221-1-sashal@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 04:26:59PM -0700, Linus Torvalds wrote:
-> I also assume the swap stats still show up in "vmstat" etc, and that
-> it's just that iotop ended up using fancier interfaces?
 
-vmstat still works; I just started a fair number of stupid large
-programs and I see swpd si and so changing.
+
+On 2021/8/25 1:00, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 5.4.143 release.
+> There are 61 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu 26 Aug 2021 05:01:01 PM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.142
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
+
+Tested on arm64 and x86 for 5.4.143-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.143-rc1
+Commit: 3b97ed8d226facd9905f634982238e5a93b4481c
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
