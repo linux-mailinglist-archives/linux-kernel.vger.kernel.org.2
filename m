@@ -2,128 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957E13F6FAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EC73F6FAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239030AbhHYGjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:39:16 -0400
-Received: from mout.gmx.net ([212.227.17.20]:44581 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239038AbhHYGjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:39:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629873496;
-        bh=uoCj8ETCxAaS3r9Ofoxl3BGiNpOBBkm1QsIh4BwbbSc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=KUbyJFmR3lg+qJEhBCspDdQn8w8zZ8YbKLJe+ikr2Aeuc+mQFk+bChJXXVlCOtcKK
-         eJeH4qlgHgPit9Iw7i7DMPMDSocNgt+zxcxbPekHfowSVdSNQBwz7w7YPExY8eMdiO
-         SZJnBwsB2LYtvdXw59b6NE9tb06u4hBmeDmQYPnY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeCtj-1mr0yH49lX-00bNq8; Wed, 25
- Aug 2021 08:38:15 +0200
-Subject: Re: [PATCH linux-next] fs:disk-io: emove unneeded variable
-To:     CGEL <cgel.zte@gmail.com>, Chris Mason <clm@fb.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210825062717.70060-1-deng.changcheng@zte.com.cn>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <cf66c150-5587-9537-051a-b80cf81df245@gmx.com>
-Date:   Wed, 25 Aug 2021 14:38:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239077AbhHYGld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238560AbhHYGla (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 02:41:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE461C061757;
+        Tue, 24 Aug 2021 23:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wwqc+zlpZGVWv443QpD/4AYHkmaNpxQkxiVuNbJuNzY=; b=WHUZ/i1haxgYWOz/PEBlGBLX++
+        ghSazm9VoZ/t+9OplOg6sDgUbKJu5h6aKxmGAiFnJeqWpcYpgS8Yq2yvZGEzzexoZd4NQx2Si4qsZ
+        spEMZATV2k6j74ih9qBI4JpKg1fPh0fYN7EiphdjD7IKDpvP4YhCUYvFn0MYDX059LOxNcwm6REd6
+        SsFz1xZppsSvJJTHaZeCA3k8YX0TlH9SNSf1M23MoYYBnBPd8wzmQVVjSzSZmrcDnq61POMRZlWfU
+        UiJ1yq24wmlAkg0of1QvBzXo1eTXC6EAgkwww4NLJmLSSt42ScqO4Q/9W+8rj/QWIGy/p6fX0n4fp
+        CdTUsV1Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mImZ5-00Bz9a-22; Wed, 25 Aug 2021 06:39:25 +0000
+Date:   Wed, 25 Aug 2021 07:39:11 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSXljxYnKg+6P1At@infradead.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <YSQeFPTMn5WpwyAa@casper.infradead.org>
+ <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
+ <CAHk-=wgkA=RKJ-vke0EoOUK19Hv1f=47Da6pWAWQZPhjKD6WOg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210825062717.70060-1-deng.changcheng@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HxCRVG4Y9Ahkw8UVC0qIZ/sVlzeea7kdTYwWCtsjaDNt7hpd/Ie
- sV7RPQd1FcqA14hau48Y8XMvVBLtv7JlQLfpFG3OPHC/wvymsXnmoDKNLvdQTS57s9Vr1IH
- /ZVCV0FJhSklxqKZ9tDFW3lXtrrbRdhxGmZZtnO2o5mD+tkw53hsv/VcYLECZ+KDiRERV3Q
- sv3E5PE4relQhF23O/clg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SH1AuHbgyLI=:ac0SJb7Qrt/Z3WaHGnSk8o
- pbhFaasq+KGUW2Z4QhTgd1xZaZnvU6dsp2wvvrUHreQ6f/AmzGk3ckqBVJ1Wx5ABY4yenkbaw
- vQ/I3fd+mcFo5TTNCKmuIz+vdy3xZJE4IT5tSOi0djcr7VI4bDM+hunsYKonkMSgUh19m21wb
- UmHJ0715HTDIppIN52sf+61Fv93kxK+fX9NqyVLNmxrCAUJKnzSieGKc2/VpLU9H4kw8Sq8hj
- 28O/t+JoqxpCjK91RkPrGS9g2IAucUV1U1tKFX238k8tn6yiNRQ6v2PzKRDCpW5C//YDEJNdH
- aahO62O1v0EKMHxzQGPr6rVLI5bkKFLzSY5yug+nzbIO/3fSYmn7CA/VkfH/t6TL5SSyaZBfx
- hraQW+alENZ/B7St+7fO7uVE5w+PsDPSy4eF5R16IWrXATPmspB4BUUK9H85cWx+DH+Gcssh1
- 3GShBht/L2egDyjgvH1fd8NVd3bJQUWGZTonHYQFYBY5Yqxdv2FPFn0hBSivdySUFzElU9O/2
- bElfpfPkO1dDYmVdbE2LOmaGKC2uWLzjUx95QLTfxUE1S+/Q9sxFHupv//NAmDxnHEs5I4L/2
- CcPEal0E7MrOUs0P3YKyMSBoghjwF2rLGpDTR+lEp58jig4BsG7CzYQzvBzs2I2o2Yy9MMJKs
- F1RABRxXWzpocU04tv9DEGcRcyFKPCOcMxgS/59BSDwfo/GsqK0yGpy0yEDd2JU+Uh7vIJ1/D
- RDAj4YAsgicwr4TiCxVaaD2a0CxjPoVtqQdaEAd0ltcbQfnYaJOUN8sHfzjXXGm08YLn5S9vu
- zQZ+zKBPGMnL01lMd98pZmuIMHaAmInyBh4NFNIarSvtR2wm5BjEaykam2AHcLCi0BMZrMaXo
- cCkXEiPBg+D/vJDlWPZirPX5Xiu926FYCzIgRz1AAGMOfrecL9AwMq5AnA9/F+Yy0Ama7SRbE
- /VEOpXYP1DP1nMzERtgIly/8p7FkkFN5xxW9A7b9eywIcTiZr3NkJNdyDJzr/2aubUYsh6s8X
- /bxId+lnASLq7jTPrZ2Z/tUE13qjjqxWs0Ocq+A3ka74eNXyboLo/m1pZG7joO/fCjdWPmUHz
- V3pN1qlXV5Nn4pk7gQTx8J3gxtglTDJOdDQE+bDMCf6NXiu3si+dcfe1fA84+ZMIV/nz6CnB6
- /S6z8wDZlREs0qt9BAOOApe3VITEsSqVkJgfNuswHyY6eETnzBqlj2ga7SoVT3gur16i/7fdg
- L8hfwHgvc9gvEs7Hc8FxpR1q8ec2E2DpaAxvAS5Zi5aeNSm2ZuXV/Yj8FGmrPC3M1HM0XKyj+
- Co00w405UcSZG6UHW8Dof6/TIrJJvg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgkA=RKJ-vke0EoOUK19Hv1f=47Da6pWAWQZPhjKD6WOg@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 24, 2021 at 11:59:52AM -0700, Linus Torvalds wrote:
+> But it is a lot of churn. And it basically duplicates all our page
+> functions, just to have those simplified versions. And It's very core
+> code, and while I appreciate the cleverness of the "folio" name, I do
+> think it makes the end result perhaps subtler than it needs to be.
 
+Maybe I'm biassed by looking at the file system and pagecache side
+mostly, but if you look at the progress willy has been making a lot
+of the relevant functionality will exist in either folio or page
+versions, not both.  A lot of the duplication is to support the
+following:
 
-On 2021/8/25 =E4=B8=8B=E5=8D=882:27, CGEL wrote:
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
->
-> Eliminate the following coccicheck warning:
-> ./fs/btrfs/disk-io.c:4630: 5-8:
->   Unneeded variable  "ret". Return "0" on line 4638
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
-
-There is a big BUG_ON() in the code, indicating missing error handling.
-
-Ignoring it and just removing the @ret is never a real fix, please add
-proper error handling first.
-
-Thanks,
-Qu
-> ---
->   fs/btrfs/disk-io.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index a66e2cb..e531c4c 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -4627,7 +4627,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
-_transaction *trans,
->   	struct rb_node *node;
->   	struct btrfs_delayed_ref_root *delayed_refs;
->   	struct btrfs_delayed_ref_node *ref;
-> -	int ret =3D 0;
->
->   	delayed_refs =3D &trans->delayed_refs;
->
-> @@ -4635,7 +4634,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
-_transaction *trans,
->   	if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
->   		spin_unlock(&delayed_refs->lock);
->   		btrfs_debug(fs_info, "delayed_refs has NO entry");
-> -		return ret;
-> +		return 0;
->   	}
->
->   	while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL=
-) {
-> @@ -4698,7 +4697,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
-_transaction *trans,
->
->   	spin_unlock(&delayed_refs->lock);
->
-> -	return ret;
-> +	return 0;
->   }
->
->   static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
->
+> The one thing I do like about it is how it uses the type system to be
+> incremental.
