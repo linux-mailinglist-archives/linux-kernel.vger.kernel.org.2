@@ -2,217 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F1E3F7BD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CF03F7BD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242381AbhHYR4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        id S234816AbhHYR4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhHYR4V (ORCPT
+        with ESMTP id S235032AbhHYR4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:56:21 -0400
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4B8C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:55:34 -0700 (PDT)
-Received: from [10.0.20.3] (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id B8BA41F73F;
-        Wed, 25 Aug 2021 19:55:21 +0200 (CEST)
-Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Replace usage of parent_names
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-References: <20210824150606.678666-1-bjorn.andersson@linaro.org>
- <386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org>
- <YSV0/bFiPgY3fjPF@ripper>
- <ed5d27eb-5a54-04c4-dbc4-63da80df1638@somainline.org>
- <YSZ7yQLasmTMWBaK@builder.lan>
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-Message-ID: <5eff6991-77c1-9d59-0f90-60923e3766dd@somainline.org>
-Date:   Wed, 25 Aug 2021 19:55:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 25 Aug 2021 13:56:47 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDC2C0613D9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:56:01 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id q70so506185ybg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fx2qkPqDeREwxSopnWcjB1GCzK8MBh8mRC5Q/NQ22aI=;
+        b=O/CUHdrLiJ6O7rxUOG4hBQ7TFTwBLuhTlSrZgBQd5wpnDEAl3/RRINc47fHCxofqDt
+         Gk1K1H+WIWlFbz2x/95RZbZF6zY2T0i0K10hlYkqCy83IiYX0RlWk8FPP860yq5QK/pn
+         AZklAgrLEmCa2VfG+KI9vqFNqhrnccHnKhyXf4jq9OayxTyK9WaPkzlVxRnzzSfoXueo
+         k5CNeeYg3Y4+WhtMXmlXLmzjat1ycxEx2ypsjsku/k9RGzbEk/pQ37JseXFbGiT9hFQz
+         Mx4g7c7OKIoEEzMGooqLVfc0uk/UV0Pp9GTc7fv8CwjlSV4RlZviucdinirrM/SgUwbq
+         qMgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fx2qkPqDeREwxSopnWcjB1GCzK8MBh8mRC5Q/NQ22aI=;
+        b=uWBXuLijZ+6XZPpSmkF1wHTuDOXVEyQYm5sonw33VM9zbQ2TZJfVJymv95zuKtH2ej
+         645iNNU442XOGpCaUy+aLM0+xq1A2aPj1L7QQCV9TvmPnl7GIjwcal3B0Vb9Oq//9wH/
+         P2iKo/MCqCRafpKrgJK+U5FxLfxPqecHQIUSbeK7JjMmcaX1wThu9A3DT17TP6cVkVGS
+         f1hLP3NXjgVtHU9v55Frqu0jkVuwqub9CgpEgOhhzctU3mW811W23JFxPSLc85erICOZ
+         d0pkOok2CF0f0Y3uYpZc4hfU/D1baU2W3j6Yo6BmQMaHUOcUC0LeAPAwCXOUcQMe9I8r
+         8e4A==
+X-Gm-Message-State: AOAM532zBHjDjmQzq5lQyvKndgcCeQ2a2W3AWqDLNDbSLOkh8X/vpCLi
+        xu702q+oUcoU9CiqwbM16vFS/Z+Ro5b2eDHRRXiE4g==
+X-Google-Smtp-Source: ABdhPJwKRB3q/uwwiPtTgdHTJ5OwhyTkhxDgLtYRjV02T0AARc/QuUllh7pJ+IPbZoD3iMH+oFK3DfMIjXn26rlEQ2o=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr57803506ybj.504.1629914160647;
+ Wed, 25 Aug 2021 10:56:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YSZ7yQLasmTMWBaK@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1629840814.git.cdleonard@gmail.com> <abb720b34b9eef1cc52ef68017334e27a2af83c6.1629840814.git.cdleonard@gmail.com>
+ <30f73293-ea03-d18f-d923-0cf499d4b208@gmail.com> <27e56f61-3267-de50-0d49-5fcfc59af93c@gmail.com>
+In-Reply-To: <27e56f61-3267-de50-0d49-5fcfc59af93c@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 25 Aug 2021 10:55:49 -0700
+Message-ID: <CANn89iJPyQpJTxrDMGszEOrgKwaEdYz1xaRK7vKbS4qj9tV23g@mail.gmail.com>
+Subject: Re: [RFCv3 05/15] tcp: authopt: Add crypto initialization
+To:     Leonard Crestez <cdleonard@gmail.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Wed, Aug 25, 2021 at 9:35 AM Leonard Crestez <cdleonard@gmail.com> wrote:
+>
+> On 25.08.2021 02:34, Eric Dumazet wrote:
+> > On 8/24/21 2:34 PM, Leonard Crestez wrote:
+> >> The crypto_shash API is used in order to compute packet signatures. The
+> >> API comes with several unfortunate limitations:
+> >>
+> >> 1) Allocating a crypto_shash can sleep and must be done in user context.
+> >> 2) Packet signatures must be computed in softirq context
+> >> 3) Packet signatures use dynamic "traffic keys" which require exclusive
+> >> access to crypto_shash for crypto_setkey.
+> >>
+> >> The solution is to allocate one crypto_shash for each possible cpu for
+> >> each algorithm at setsockopt time. The per-cpu tfm is then borrowed from
+> >> softirq context, signatures are computed and the tfm is returned.
+> >>
+> >
+> > I could not see the per-cpu stuff that you mention in the changelog.
+>
+> That's a little embarrasing, I forgot to implement the actual per-cpu
+> stuff. tcp_authopt_alg_imp.tfm is meant to be an array up to NR_CPUS and
+> tcp_authopt_alg_get_tfm needs no locking other than preempt_disable
+> (which should already be the case).
 
-On 8/25/21 7:20 PM, Bjorn Andersson wrote:
-> On Wed 25 Aug 11:00 CDT 2021, Marijn Suijten wrote:
-> 
->> Hi Bjorn,
->>
->> On 8/25/21 12:38 AM, Bjorn Andersson wrote:
->>> On Tue 24 Aug 13:46 PDT 2021, Marijn Suijten wrote:
->>>
->>>> Hi Bjorn,
->>>>
->>>> Thanks for this cleanup, that's needed and much appreciated!
->>>>
->>>> On 8/24/21 5:06 PM, Bjorn Andersson wrote:
->>>>> Using parent_data and parent_hws, instead of parent_names, does protect
->>>>> against some cases of incompletely defined clock trees. While it turns
->>>>> out that the bug being chased this time was totally unrelated, this
->>>>> patch converts the SDM660 GCC driver to avoid such issues.
->>>>>
->>>>> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->>>>
->>>>
->>>> Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
->>>>
->>>> On the Sony Xperia XA2 Ultra, bar the necessary change in the 14NM DSI PHY
->>>> driver commented below.
->>>>
->>>>> [..]
->>>>> -
->>>>> -static struct clk_fixed_factor xo = {
->>>>> -	.mult = 1,
->>>>> -	.div = 1,
->>>>> -	.hw.init = &(struct clk_init_data){
->>>>> -		.name = "xo",
->>>>> -		.parent_names = (const char *[]){ "xo_board" },
->>>>> -		.num_parents = 1,
->>>>> -		.ops = &clk_fixed_factor_ops,
->>>>> -	},
->>>>> -};
->>>>
->>>>
->>>> Removing the global "xo" clock makes it so that our 14nm DSI PHY does not
->>>> have a parent clock anymore, as the clock is called "xo_board" nowadays
->>>> ("xo" in the position of fw_name is, as you know, only local to this driver
->>>> because it is named that way in the clock-names property). We (SoMainline)
->>>> suffer the same DSI PHY hardcoding issue on many other boards and are at
->>>> this point investigating whether to provide &xo_board in DT like any other
->>>> sane driver.  Do you happen to know if work is already underway to tackle
->>>> this?
->>>>
->>>
->>> As far as I can tell most other platforms doesn't define "xo" either.
->>> E.g. according to debugfs dsi0vco_clk doesn't have a parent on sdm845...
->>>
->>> Sounds like we should update the dsi phys to specify a fw_name and
->>> update binding and dts to provide this...
->>
->>
->> I'm all for using .fw_name there, and I hope we all agree that clock
->> dependencies based on global names should become a thing of the past; every
->> such inter-driver dependency should be clearly visible in the DT.  We
->> (SoMainline) can tackle this DSI side if no-one else is working on it yet.
->>
->>> Does this cause a noticeable regression or it's just that we have a
->>> dangling clock?
->>
->>
->> Unfortunately this regresses yes, starting with:
->>
->>      dsi0n1_postdiv_clk: Zero divisor and CLK_DIVIDER_ALLOW_ZERO not set
->>
->> And proceeding with more such errors on different clocks, clocks getting
->> stuck or failing to update, and the panel never showing anything at all.
->>
->> Should we fix DSI PHYs first and let this patch sit for a while, or keep the
->> implicit global "xo" clock just a little while longer until that's over
->> with?
->>
-> 
-> Thanks, should have read your email as well before replying to the
-> other.
+Well, do not use arrays of NR_CPUS and instead use normal per_cpu
+accessors (as in __tcp_alloc_md5sig_pool)
 
+>
+> The reference counting would still only happen from very few places:
+> setsockopt, close and openreq. This would only impact request/response
+> traffic and relatively little.
 
-No biggie, Angelo was first to reply after all :)
+What I meant is that __tcp_alloc_md5sig_pool() allocates stuff one time,
+we do not care about tcp_md5sig_pool_populated going back to false.
 
-> I will respin this with "xo" intact, then once we've fixed up the DSI
-> code we can drop it.
+Otherwise, a single user application constantly allocating a socket,
+enabling MD5 (or authopt), then closing the socket would incur
+a big cost on hosts with a lot of cpus.
 
-
-Sounds good, thanks!
-
-> But I still don't understand why we don't have this problem on e.g.
-> sdm845. I must be missing something...
-
-
-It is strange indeed.  On MSM89[57]6 (Sony Xperia Loire, 28nm DSI 
-PHY/PLL) we don't have this parent hooked up either because of the same 
-issue, and it's not a problem there either.  I bet it all comes down to 
-slight differences between the various DSI PHY/PLL implementations.
-
->> Either way, feel free to attach my:
->>
->> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
->>
->> After that.
->>
->>>>>     static struct clk_alpha_pll gpll0_early = {
->>>>>     	.offset = 0x0,
->>>>>     	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
->>>>> @@ -158,7 +35,9 @@ static struct clk_alpha_pll gpll0_early = {
->>>>>     		.enable_mask = BIT(0),
->>>>>     		.hw.init = &(struct clk_init_data){
->>>>>     			.name = "gpll0_early",
->>>>> -			.parent_names = (const char *[]){ "xo" },
->>>>> +			.parent_data = &(const struct clk_parent_data){
->>>>> +				.fw_name = "xo",
->>>>> +			},
->>>>
->>>>
->>>> I wish we could use .parent_names for a list of .fw_name's too
->>>
->>> Afaict specifying "name" in struct clk_parent_data is the same as using
->>> parent_names. But I'm not up to speed on the details of how to migrate
->>> the dsi phys.
->>
->>
->> Yes it is, both do _not_ look at clocks specified in DT before "falling
->> back" to global names (that only happens when both .name and .fw_name are
->> specified).  I'm sort of expressing the desire for .parent_fw_names here in
->> hopes of phasing out global clock names on DT platforms altogether.  We
->> definitely shouldn't rework .parent_names to support both, that only causes
->> confusion and an implicit fallback to global clocks when the DT is
->> under-specifying the required clocks is exactly what we're trying to avoid.
->>
->>>>> [..]
->>>>> @@ -265,7 +270,7 @@ static struct clk_rcg2 blsp1_qup1_i2c_apps_clk_src = {
->>>>>     	.freq_tbl = ftbl_blsp1_qup1_i2c_apps_clk_src,
->>>>>     	.clkr.hw.init = &(struct clk_init_data){
->>>>>     		.name = "blsp1_qup1_i2c_apps_clk_src",
->>>>> -		.parent_names = gcc_parent_names_xo_gpll0_gpll0_early_div,
->>>>> +		.parent_data = gcc_parent_data_xo_gpll0_gpll0_early_div,
->>>>>     		.num_parents = 3,
->>>>
->>>>
->>>> How about using ARRAY_SIZE(gcc_parent_data_xo_gpll0_gpll0_early_div) now?
->>>> Same for every other occurrence of this pattern.
->>>>
->>>
->>> I omitted that because it felt unrelated to the change I was doing, but
->>> it could certainly be done.
->>
->>
->> Fair, if done at all it should end up in a separate (2/2) patch or I'll take
->> care of this in a followup.
->>
-> 
-> Sounds good, I'd be happy to give you a review on that patch :)
-
-
-I'll spin that patch as soon as v2 is merged (preventing 
-ordering/dependency issues?), feel free to CC me.
-
+>
+> Performance was not a major focus so far. Preventing impact on non-AO
+> connections is important but typical AO usecases are long-lived
+> low-traffic connections.
+>
+> --
 > Regards,
-> Bjorn
-> 
-
-- Marijn
+> Leonard
