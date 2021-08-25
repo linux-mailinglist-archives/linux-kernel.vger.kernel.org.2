@@ -2,160 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2506E3F7BCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 789C53F7BBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242375AbhHYRzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:55:51 -0400
-Received: from mail-mw2nam12on2070.outbound.protection.outlook.com ([40.107.244.70]:29793
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231962AbhHYRzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:55:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MSh/dkXBwgA6dd+51xQkTV+SNI+RRHyFFmywpiEAMJwWX3N8K1eOUEd7mX5L7D0yvpFs4M0PTV3gIRd1Up5PwbGRlOA8pA5DiVbQd8BNVvOUD3QZ2SnmAF9EF7SUXdxE0wV6kwxJTTgzir2r/J+TSOjxMX8Kzs0sbxrNhBY3wooHqzx5zn8e/yuzEQZGsjpVPa1Mj308aOyGlsZ4i6SXiEdVftbHtyfwEjzGT0SthjAFlMacXKYySMJNga/PnSn2n15THOpxDSQvopXrt5sr3Xn1/S2qnxd3ePhnCHAvCNOKdTBG4o/yvp4QmLpuvLT1Flu0/U8ZOJu2R12MT7dQEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=05G6t89M7rkpUGglHdTRMwP2FNjlpXGNK8DYQYEmPew=;
- b=fy0pndyyTj7nv4z3gkfy24ticxfkixZXK6+i+fJwGB8/EQyVBnMwhr1aSO02E47UVJPWcgCdALa/dQ338O5YZ5KfJOg2LPiAGXyY0eIIvcxwTp+IU5UiU0+S0dD/7wx2Qb2UlIHIT6TMs7q/Ferzg5O+Vvwo3l6mr0brioiHwcPozRv+/rpGkhzKfvmbTHLLidT6nuUDatNfbBz7i9dDz1M4kxkjpKfkXSai7GW+o8dFk16RdiV6Fg81UBBz9+xOcRf+DRHBUZTva5OETVoktIiY3m/hmbhJX8lqFfAsqUlAGrDI1FjYqQ+laUdodxulWMSbNc7qFo7kPLqnnMzjJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=05G6t89M7rkpUGglHdTRMwP2FNjlpXGNK8DYQYEmPew=;
- b=CIESgVBMcU81JhzjnkWNFkBd5RnLrkBX51XaN8ybNQsv87EBrWf/f9+Wo+6lHI9BvvdHvGjgyqPEebWuFqTB93ngQq25CM4xXZWtHC82oDxR64E+9+Rl3Z2Wg3OoUsaTovTbIGw9UdS2BcYQ29KemouR6rfzp0l3BS04vfiSyrwWVdbXrNXSZQ2QlnJzBoGfi7F+TJxeZsGz7FP8Ne3+2k11TITW1sxswPlAIG3xYiYxTPqaLlLJejx+iqtMTFaPF9e7XjBzTa13kXJZ+b0xqKLtR0v0fsr4YueHfgd6T5hpvEOU1215l1Ox18xwkEVugV44HotAZMW+qHdjjUaiZw==
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5111.namprd12.prod.outlook.com (2603:10b6:208:31b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Wed, 25 Aug
- 2021 17:54:57 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
- 17:54:57 +0000
-Date:   Wed, 25 Aug 2021 14:49:56 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next v2] RDMA/core/sa_query: Retry SA queries
-Message-ID: <20210825174956.GA1200145@nvidia.com>
-References: <1628784755-28316-1-git-send-email-haakon.bugge@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1628784755-28316-1-git-send-email-haakon.bugge@oracle.com>
-X-ClientProxiedBy: BLAPR03CA0121.namprd03.prod.outlook.com
- (2603:10b6:208:32e::6) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S242390AbhHYRvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:51:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:56998 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242258AbhHYRvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 13:51:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1273DD6E;
+        Wed, 25 Aug 2021 10:50:18 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 982043F66F;
+        Wed, 25 Aug 2021 10:50:16 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 18:50:13 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        etienne.carriere@linaro.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Subject: Re: [PATCH v4 03/12] firmware: arm_scmi: Add support for atomic
+ transports
+Message-ID: <20210825175013.GG13160@e120937-lin>
+References: <20210824135941.38656-1-cristian.marussi@arm.com>
+ <20210824135941.38656-4-cristian.marussi@arm.com>
+ <CA+-6iNzTN6UHVX4qRssrqv6YVKeg97+Lz1KDcEcw6saMC0tubw@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BLAPR03CA0121.namprd03.prod.outlook.com (2603:10b6:208:32e::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Wed, 25 Aug 2021 17:54:56 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIx2C-0052Ft-2H; Wed, 25 Aug 2021 14:49:56 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 13d797c6-516c-421e-c7f5-08d967f17350
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5111:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB51112A0B2DFCEBE026179D22C2C69@BL1PR12MB5111.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M0bDVOSQMHrzOBZobGks7/BvlmNeKbnshBB+Y1XE+pqR4TwiXqwrHT7A+FCXdMVeTCGNo8xX3Uz5kKIEBiGs+Dxb4tseD4q8p4twIN5Hj7Xb5uc3ZUljPSjcCX7wDX59fl0GL+UxjVUqgWfRKIs85i6R86TfgCxxOwdv/98yXdYq8DFk8z76IQBrcCxUAqoQicfo60HpdQ400+Oo0YgaBkXB1p56g0R+IkTE/Zfj+Rq0HjOu05H/8U2x2eL1pcDPOOmAVs5O8efmP/S57o+3gM9N8ZyEIg0FdJjxKpCBAuCNbqtC/iVF4uUU7YZ06luU2GLw3VatUpLNEVjg9i8N9YbhG8L+7lP0WiBdBh2SCgTS2X8U7gI94clkOpNG41HAZwlKhTkRU5xPd09s5h95T+YYcg3lUj6hflZiqrx+TiC6d0LtIG9PnkA9JwHfLjQV94/RCEVz+6g7Wt3VN/ePvelSVSpsn/chdedrvvGLARh44o3UWRdIbn21atHAHgMICkKn7w6qbCozoSsbYTFCygSr6WxXVDmRYGddEGRTV5lGoftgXY7fpgrbGGmILVHXBeEHzN8tt8pxDkoQna68mfznsSaoxpDjr2SyoTJsoEtR0DlyxBBPW+hyUkO+OmIeDOh1ZbxD2GTHzhXA3bp+bw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(1076003)(6916009)(8676002)(2906002)(2616005)(66556008)(9746002)(9786002)(54906003)(5660300002)(66476007)(8936002)(38100700002)(33656002)(36756003)(86362001)(66946007)(186003)(66574015)(83380400001)(426003)(26005)(508600001)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VWNCTytkYm1HNHVua3E5NDR2TzIyRWtXU1BsbHNtcm0vMEhPWTZ0MUtuZDlI?=
- =?utf-8?B?eU9zRHNTYkEzN1QrSHF5RTV6MTdjQmJvdCtqNW02RzFZbitXdk5UMG5KNmVu?=
- =?utf-8?B?Wm9YMDRNVE00ZXl3aUV3R3NaZVNnR3VvU3o2L0pSUG04SmdVb2FDdlVxL05R?=
- =?utf-8?B?Kzh2aGJhRGdrQXpBbXdRWUdvNFZBOWszaWp0UU9jaFBQZUlvQzZGcFNRL2gz?=
- =?utf-8?B?ZnRNVjlmcVh2V0w3MGc1TGQyaVBiWFNoMk8xckxqTWZrNVAvbjViUFhwOFFj?=
- =?utf-8?B?d3F0enVxM2pyVklRRGJBMWIvamRqSTJZb3BOaGhNbzUyOEhFMVpTc1phMms5?=
- =?utf-8?B?dk12NHJ2d1FFaGI5dm9yK2hCaGxTZHRqR25ndFlzVml6bXF0NWduSk50eGc2?=
- =?utf-8?B?TzVnRTUraXEvc0RWcGViMVRvVDdHdnNsQmU3Szczd1RtWTAySkRtTnZ2SkFQ?=
- =?utf-8?B?cW90S3dZaFZDVENBN1ppYUpKMXJZTmJOMlEwQU1YV3g5NnhhQnhIUlFYSjYx?=
- =?utf-8?B?MUU0Y0tBOUo2dlgyQ28vcWVtYm5nTXZaeFdQSHFHWGtDLzhGT2RyamRmNWh1?=
- =?utf-8?B?ajQzVFhmY1BDVDBONzhwc003NGQ4d0hxYlRaSGpCUWt4Zk1OVGZ3QVNEWjJR?=
- =?utf-8?B?UENuRHBYTTVSS1lPcXE4WmRtYnNIVmJRamkwL3dKQ3hTTnNHMjJqdzlkd3RP?=
- =?utf-8?B?MnBIMkhOMTFCN01uUFFZblMyQkZpdUFpZEJHTWRlT3Jrb0w0SjMzbWlqUEVv?=
- =?utf-8?B?SmhBaUpDejNMaEMvNnpBV2ZkTWE3dFJBMytRUjdGVGJrTTdKR2E2YzZKQXR0?=
- =?utf-8?B?R0hHb0hyaWpIQ1dBSThDUms5U2g3cHZhaWtyVmt3a00yRlpMZ2JGb0x3RGlu?=
- =?utf-8?B?RXNRdFVzc3h0bmxJdGhHQWh6blRtVG96ZUdhR3dvenAwTEdtdlNFM3BIVG5k?=
- =?utf-8?B?SVR4K3FieFErZHZqY1JHWU5WaFN5dmIvUk9qVXkySEVrTFAwbHF1TzM3YjRK?=
- =?utf-8?B?d2tqYVBoVzluSncyTFlVRXRENzE2bHh6eXhuY0lObkc1YXA4akV0aEw1NEpN?=
- =?utf-8?B?TUJJTDkvMlZWcStydEVWOFpqZ3FrQVJ6L0dLanMvNVREdjdBNjRFQTJGRVp6?=
- =?utf-8?B?QzlrYjVwcE0rQ253d1hVNHZTQ0krcmROOW9LMy9xVFQvdmJoUlhaZ1JFSm5P?=
- =?utf-8?B?OTVCY0NoMW9hdit6UUxsV0ZMOVVmWWhmTUk3Tk9MY0JPR2VNSldrVXRtSHlj?=
- =?utf-8?B?LzkyWE03NnowUE1Kbm4zdFBqRTcvc2tGa3JlUmhjczlkcFFZVkNKUWVYVjNE?=
- =?utf-8?B?VUNzeTU1QlVWSEVpSlA2WlQvVC83MzVwZXZRSmhxa3ZUcmswOWxmT1k4SnEv?=
- =?utf-8?B?VWZLemtuOWtzd2kyT3JmL0xQSDg5VFFXUENLSUF6YVQ2N0VVemxITW91ZjM5?=
- =?utf-8?B?K2pRTnZNMW5pSDBDQ1ZjVmk3TUFnM2FJaEczU2JOTWxUUjhsbXlCQ0swVmNu?=
- =?utf-8?B?Sy9Zeis0WTZpMnY2TTZtcllGOVRxYkRxaHhzQkhSU1BTU1ZGZFhCN3Z6cVJt?=
- =?utf-8?B?c01rKy9NSXdMc0dxSS81ZVRJNHJhalVOVEFCd2wydWxuck1HaERXSFVQZ1da?=
- =?utf-8?B?NDB0T1NYOElXdTg4YlJnemhEZzVZQmZLVUphV2tYZ2hmZjNTYUpESHAvVlBD?=
- =?utf-8?B?K0ZCUVZJQm9Ibk12cHRoNVJyZUdQeEJrK1JJc0N0VU5LT0tPRG1xcUlDdEV1?=
- =?utf-8?Q?XAP1Hdse1VTh9t8jg5hz9ItxrFiITJMnlgpabRk?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13d797c6-516c-421e-c7f5-08d967f17350
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 17:54:57.1140
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FSQE79W3F+E5c3gDkkqph0z2ChWp4go3kxYk6MgeIc8HeEqnK/p0wsNAdFya+NwZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5111
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+-6iNzTN6UHVX4qRssrqv6YVKeg97+Lz1KDcEcw6saMC0tubw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 06:12:35PM +0200, Håkon Bugge wrote:
-> A MAD packet is sent as an unreliable datagram (UD). SA requests are
-> sent as MAD packets. As such, SA requests or responses may be silently
-> dropped.
+On Wed, Aug 25, 2021 at 12:18:31PM -0400, Jim Quinlan wrote:
+> Hi Christian,
 > 
-> IB Core's MAD layer has a timeout and retry mechanism, which amongst
-> other, is used by RDMA CM. But it is not used by SA queries. The lack
-> of retries of SA queries leads to long specified timeout, and error
-> being returned in case of packet loss. The ULP or user-land process
-> has to perform the retry.
-> 
-> Fix this by taking advantage of the MAD layer's retry mechanism.
-> 
-> First, a check against a zero timeout is added in
-> rdma_resolve_route(). In send_mad(), we set the MAD layer timeout to
-> one tenth of the specified timeout and the number of retries to
-> 10. The special case when timeout is less than 10 is handled.
-> 
-> With this fix:
-> 
->  # ucmatose -c 1000 -S 1024 -C 1
-> 
-> runs stable on an Infiniband fabric. Without this fix, we see an
-> intermittent behavior and it errors out with:
-> 
-> cmatose: event: RDMA_CM_EVENT_ROUTE_ERROR, error: -110
-> 
-> (110 is ETIMEDOUT)
-> 
-> Fixes: f75b7a529494 ("[PATCH] IB: Add automatic retries to MAD layer")
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> ---
->  drivers/infiniband/core/cma.c      | 3 +++
->  drivers/infiniband/core/sa_query.c | 9 ++++++++-
->  2 files changed, 11 insertions(+), 1 deletion(-)
 
-I'm nervous about this, mostly because the mad layer is very
-complicated, but it does seem aligned with the spec.
+Hi Jim,
 
-However, it seems quite wrong that the timeout comes in from outside,
-the SA timeout should be integral to the SA layer..
+thanks for the review first of all.
 
-Anyhow, applied to for-next
+> On Tue, Aug 24, 2021 at 10:00 AM Cristian Marussi
+> <cristian.marussi@arm.com> wrote:
+> >
+> > An SCMI transport can declare itself as .atomic_capable in order to signal
+> > to the SCMI core that all its transmit path can be executed in atomic
+> > context: the core as a consequence will take care not to sleep to in the
+> > corresponding rx path while waiting for a response or a delayed response.
+> >
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >  drivers/firmware/arm_scmi/common.h |   3 +
+> >  drivers/firmware/arm_scmi/driver.c | 167 ++++++++++++++++++++++-------
+> >  2 files changed, 132 insertions(+), 38 deletions(-)
+> >
+> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> > index 67c761141a48..4ab310c2eae5 100644
+> > --- a/drivers/firmware/arm_scmi/common.h
+> > +++ b/drivers/firmware/arm_scmi/common.h
+> > @@ -412,6 +412,8 @@ struct scmi_device *scmi_child_dev_find(struct device *parent,
+> >   * @max_msg_size: Maximum size of data per message that can be handled.
+> >   * @force_polling: Flag to force this whole transport to use SCMI core polling
+> >   *                mechanism instead of completion interrupts even if available.
+> > + * @atomic_capable: Flag to indicate that this transport is assured not to sleep
+> > + *                 on the TX path.
+> >   */
+> >  struct scmi_desc {
+> >         int (*transport_init)(void);
+> > @@ -421,6 +423,7 @@ struct scmi_desc {
+> >         int max_msg;
+> >         int max_msg_size;
+> >         bool force_polling;
+> > +       bool atomic_capable;
+> >  };
+> >
+> >  #ifdef CONFIG_ARM_SCMI_TRANSPORT_MAILBOX
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index a3700f49e8ac..2ca1602afd80 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -681,6 +681,10 @@ static void scmi_handle_response(struct scmi_chan_info *cinfo,
+> >                 scmi_clear_channel(info, cinfo);
+> >                 complete(xfer->async_done);
+> >         } else {
+> > +               /*
+> > +                * This same xfer->done completion is used in atomic mode as a
+> > +                * flag for polling.
+> > +                */
+> >                 complete(&xfer->done);
+> >         }
+> >
+> > @@ -733,8 +737,6 @@ static void xfer_put(const struct scmi_protocol_handle *ph,
+> >         __scmi_xfer_put(&info->tx_minfo, xfer);
+> >  }
+> >
+> > -#define SCMI_MAX_POLL_TO_NS    (100 * NSEC_PER_USEC)
+> > -
+> >  static bool scmi_xfer_done_no_timeout(struct scmi_chan_info *cinfo,
+> >                                       struct scmi_xfer *xfer, ktime_t stop)
+> >  {
+> > @@ -749,6 +751,90 @@ static bool scmi_xfer_done_no_timeout(struct scmi_chan_info *cinfo,
+> >                ktime_after(ktime_get(), stop);
+> >  }
+> >
+> > +static bool xfer_complete_or_timeout(struct completion *done, ktime_t stop)
+> > +{
+> > +       return try_wait_for_completion(done) || ktime_after(ktime_get(), stop);
+> > +}
+> > +
+> > +static int spin_for_completion_timeout(struct completion *done, int timeout_ms)
+> > +{
+> > +       ktime_t stop = ktime_add_ms(ktime_get(), timeout_ms);
+> > +
+> > +       spin_until_cond(xfer_complete_or_timeout(done, stop));
+> > +       if (ktime_after(ktime_get(), stop))
+> > +               return -ETIMEDOUT;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +/**
+> > + * scmi_wait_for_message_response  - An helper to group all the possible ways of
+> > + * waiting for a synchronous message response.
+> > + *
+> > + * @cinfo: SCMI channel info
+> > + * @xfer: Reference to the transfer being waited for.
+> > + *
+> > + * Chooses waiting strategy (sleep-waiting vs busy-waiting) depending on flags
+> > + * configuration like xfer->hdr.poll_completion and scmi_desc.atomic.capable.
+> > + *
+> > + * Return: 0 on Success, error otherwise.
+> > + */
+> > +static int scmi_wait_for_message_response(struct scmi_chan_info *cinfo,
+> > +                                         struct scmi_xfer *xfer)
+> > +{
+> > +       struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
+> > +       struct device *dev = info->dev;
+> > +       int ret = 0, timeout_ms = info->desc->max_rx_timeout_ms;
+> > +
+> > +       if (!xfer->hdr.poll_completion) {
+> > +               if (!info->desc->atomic_capable) {
+> > +                       if (!wait_for_completion_timeout(&xfer->done,
+> > +                                                        msecs_to_jiffies(timeout_ms))) {
+> > +                               dev_err(dev, "timed out in resp(caller: %pS)\n",
+> > +                                       (void *)_RET_IP_);
+> > +                               ret = -ETIMEDOUT;
+> > +                       }
+> > +               } else {
+> > +                       /* Poll on xfer->done waiting for completion by interrupt */
+> > +                       ret = spin_for_completion_timeout(&xfer->done,
+> > +                                                         timeout_ms);
+> We use the SMC transport with a completion interrupt but would prefer
+> for the above to use wait_for_completion(...) instead of  using
+> spin_for_completion().  A few of our SCMI commands can take a while to
+> complete execution so we do not want to be spinning or polling while
+> waiting.
 
-Jason
+Busy-waiting when using a completion IRQ is used indeed only if the
+transport has been declared .atomic_capable: the idea was that if
+the specific transport does not sleep, the core can avoid sleeping too
+and so enable users like the clock framework to switch to 'atomic' mode
+and being called from atomic context.
+
+So if you drop indeed the SMC patch later in the series that mmake it
+atomic
+
+[PATCH v4 10/12] [RFC] firmware: arm_scmi: Make smc transport atomic
+
+you'll end up using the wait_for here when completion IRQ is used.
+(instead to avoid any polling while in polling mode (O_o) the idea was
+to use the new .sync_cmds_atomic_replies) 
+
+BUT the problem is that some other partner could possibly want to use
+instead this same transport in atomic mode, so maybe it could be worth
+introducing some sort of configurability so that atomic operations are
+enabled only if (say) .atomic_capable && .atomic_enable.
+
+Maybe this could be done on a per-channel base, so you could dedicate a
+channel to a protocol and ask only for it to be atomic_enable (if the
+whole transport is atomic_capable); mixing atomic/non_atomic behaviour
+inside the same protocol/channel across different messages seems a bit
+of a hell (...and I think a previous attempt led to a lot of issues in
+the past)
+
+Anyway, not sure really where to put this possible configuration bit
+though...this not being really a FW config/description seems likely to
+be a NACK for a placement in the DT :D
+
+> 
+> We could probably go back to a mailbox-based transport and use delayed
+> messages here for these "long" SCMI messages,  but we do not have full
+> control over the platform FW (plus there are backwards compatibility
+> issues).  FWIW, the platform FW was setup before SCMI on Linux
+> implemented delayed/async  messages.
+> 
+
+Having a completion IRQ couldn't you use it to send delayed responses or
+notification even in this smc transport ? (well it'd need FW to be
+updated in fact and maybe I'm missing something here)
+
+Thanks a lot for the feedback, may I assume this initial series it sort
+of worked (beside noted limitations) in your SMC test setup :D ?
+
+Thanks,
+Cristian
