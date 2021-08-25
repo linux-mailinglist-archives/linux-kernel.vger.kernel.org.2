@@ -2,104 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8243F7B47
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E520E3F7B4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242201AbhHYRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:13:54 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:2116 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229540AbhHYRNx (ORCPT
+        id S242226AbhHYROa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:14:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242218AbhHYRON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:13:53 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17P9iXw3031375;
-        Wed, 25 Aug 2021 12:13:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=llkaasdAN1hOhFdw2pARFyPRCn0QPaBxbtHFpjeUiPw=;
- b=gqQg93O1f4Iw7nlEQyVs9SYtzrbr+gro/7f1AFvLAtBUvHkhgI/VUV364D1DxwxG/Wsy
- ryQEbKFf3v0kNtxXMRdzR/TIIEe28+EURU7jGuBZqVeeIaiekxDBigGaEV0WFOvYQehb
- dGnxjIUOqj9efikf4LYJszh96GGcwPN/w71xu7jB3zyqHYHPS0+A66zvCOYMolEwPk54
- yTJoJ/0FZxWrOs2j9nsfmTTRKyIlLVqBKpYWjgF5RifU8iHP83tTiZAhvKQvb75aT+fD
- 2n0acSSwIZtpen7V7+BENNRsBKQubqqgaJqay1nRdnEqOI2M1uFVqebYiYaXiMlk3uTI dA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3ankg98knh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 25 Aug 2021 12:13:03 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 25 Aug
- 2021 18:13:01 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Wed, 25 Aug 2021 18:13:01 +0100
-Received: from [198.61.65.58] (unknown [198.61.65.58])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7849B2BA;
-        Wed, 25 Aug 2021 17:13:01 +0000 (UTC)
-Subject: Re: [PATCH 3/9] regmap: spi: SPI_CONTROLLER_CS_PER_TRANSFER affects
- max read/write
-To:     Mark Brown <broonie@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-References: <20210824104041.708945-1-tanureal@opensource.cirrus.com>
- <20210824104041.708945-4-tanureal@opensource.cirrus.com>
- <20210824163721.GF4393@sirena.org.uk>
-From:   Lucas tanure <tanureal@opensource.cirrus.com>
-Message-ID: <4c604d13-f177-ff75-d21f-27613e1b763f@opensource.cirrus.com>
-Date:   Wed, 25 Aug 2021 18:13:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 25 Aug 2021 13:14:13 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FEEC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:13:27 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id x10-20020a056830408a00b004f26cead745so55770821ott.10
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=UCTcnsSbnb2BZPV5ZPemMMiSns8GwhF8Z8WDFU9MAlI=;
+        b=Ibh57Mm8xpQqtAjHZeGcPf8lxPMd2widHCoILjnCYnTqer/uKN4ADjUsOUz/d8yeOn
+         JSABs5wZGdIApigvNsHdWChYLvkAAtKABlqdFHzntcL38IXkoEf5VBY9P0iet573RMyT
+         0mRFTWy4GCeiC1ANUzQ3PzLdIqEpqXZRaGZlo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=UCTcnsSbnb2BZPV5ZPemMMiSns8GwhF8Z8WDFU9MAlI=;
+        b=QV8PfOy4Oepl5bJ/Iz5kDZ/gYy3ogMyYzt6p0MytXvEPJhxrmh/JsDcc2t5zuJK11S
+         gmMJ9hScv6Qxqi2QVXkvoHgUXm987qRuV/jlS77GV1p5j4MMxcGhqpn8qnKtLm2nDYEa
+         QIjEQnsp8gAmWBRK+6p0m+MipocabvNJYswMPCYmoyD1amkthZyMnuuf2Sa9n+swZm1r
+         d7sSR0M3URBMSLjA+kvSHpCbELvCODbpQ4YaDFSt31kbqty4zKjQadnyf1bVJBRfw9jm
+         5vevZQsjzs7tlaAATWxVXafR6tY+bLT15VSG33HlWkGIAAdf9Drq0PDU+CaKOM2xhx6f
+         +/VA==
+X-Gm-Message-State: AOAM533DPMc45lIoF36dDwjYT14hgFP78p/ybNd5IkXS+lTKNN0Iv5ZJ
+        tW8Yh7OWFSsPWKBma0ClNXJIEuLAkp2CZhhzo9vK9Q==
+X-Google-Smtp-Source: ABdhPJzUAvvASSSNhBU6e1q+DsAdjQ//tA+JJPp3BoOFd00NZu2mdaPhv4bOdOq7WiLeweSJGe5V1lDrezdQ5NtyZMU=
+X-Received: by 2002:a05:6830:2473:: with SMTP id x51mr31010415otr.34.1629911607276;
+ Wed, 25 Aug 2021 10:13:27 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 25 Aug 2021 17:13:26 +0000
 MIME-Version: 1.0
-In-Reply-To: <20210824163721.GF4393@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: nJe50VVKS_yd58r8vr9qjluG_Q2aoqNE
-X-Proofpoint-ORIG-GUID: nJe50VVKS_yd58r8vr9qjluG_Q2aoqNE
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <1629847226-10112-1-git-send-email-khsieh@codeaurora.org>
+References: <1629847226-10112-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 25 Aug 2021 17:13:26 +0000
+Message-ID: <CAE-0n50Yp00hzAhSET8txib3BhTzz2ptOaLhERoF-ggUGU6ChQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add Display Port node
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        robdclark@gmail.com, robh+dt@kernel.org, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        mkrishn@codeaurora.org, kalyan_t@codeaurora.org,
+        rajeevny@codeaurora.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 5:37 PM, Mark Brown wrote:
-> On Tue, Aug 24, 2021 at 11:40:35AM +0100, Lucas Tanure wrote:
->> regmap-spi will split data and address between two transfers in the
->> same message so use addr_affects_max_raw_rw to flag that the number
->> bytes to read or write should be a little less (address + padding size),
->> so that the SPI controller can merge the entire message into a single
->> CS period
-> 
-> This should be handled by the SPI core, it's already relying on being
-> able to do multiple transfers to handle message size limits and in any
-> case this is a super standard thing to do so many clients would require
-> special code.  The core should transparently coalesce things where it
-> can, or error out if it can't, like it currently does when splitting
-> transfers up.
-> 
-__spi_validate seems a good candidate, but I don't think spi have enough
-information to merge two transfers into a single one.
+Quoting Kuogee Hsieh (2021-08-24 16:20:26)
+> Add display port supported node for sc7280. Also correct dp-phy node
+> tx/rx/pcs/tx2/rx2 base reg address to fix aux channel read/write
+> failure issue.
+>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280-idp2.dts |  9 +++
 
-For a message with N transfers how can spi core decide what to merge or 
-what not merge. If mergers everything and is less than max_transfer_size 
-success, but if bigger will need to stop merging and add an address in 
-front of the next not merged transfer, but spi core is not aware of 
-addresses
-And in the case of multiple addresses and data transfers, how it will 
-know doesn't need to be merged?
+Please split the idp diff from the sc7280.dts diff so that there are two
+patches instead of one. It helps with ignoring the idp diff.
 
-For me seems more reasonable for the regmap-spi stop splitting address
-and data. Or at least if the controller has some flag change the bus for
-one where it uses different functions for gather_write, async_write etc
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi     | 98 +++++++++++++++++++++++++++++---
+>  2 files changed, 100 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> index b1cf70e..4aea369 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> @@ -202,3 +202,12 @@ ap_h1_spi: &spi14 {};
+>                 backlight = <&backlight>;
+>         };
+>  };
+> +
+> +&msm_dp {
+> +       status = "okay";
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&dp_hot_plug_det>;
+> +       data-lanes = <0 1>;
+> +       vdda-1p2-supply = <&vreg_l6b_1p2>;
+> +       vdda-0p9-supply = <&vreg_l1b_0p8>;
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index c29226b..a350d84 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -2918,15 +2918,11 @@
+>                         dp_phy: dp-phy@88ea200 {
+>                                 reg = <0 0x088ea200 0 0x200>,
+>                                       <0 0x088ea400 0 0x200>,
+> -                                     <0 0x088eac00 0 0x400>,
+> +                                     <0 0x088eaa00 0 0x200>,
+>                                       <0 0x088ea600 0 0x200>,
+> -                                     <0 0x088ea800 0 0x200>,
+> -                                     <0 0x088eaa00 0 0x100>;
+> +                                     <0 0x088ea800 0 0x200>;
 
-Can you point which way you think the code should go? Investigate more 
-spi core to coalesce transfers or change regmap-spi to not split address 
-and data anymore?
+So this was wrong? Best to split that out into another patch with the
+appropriate Fixes tag.
 
-Thanks
-Lucas
+>                                 #phy-cells = <0>;
+>                                 #clock-cells = <1>;
+> -                               clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
+> -                               clock-names = "pipe0";
+> -                               clock-output-names = "usb3_phy_pipe_clk_src";
+
+And then mention this part in the commit text of the fixing patch.
+
+>                         };
+>                 };
+>
+> @@ -3389,6 +3392,74 @@
+>                                         };
+>                                 };
+>                         };
+> +
+> +                       msm_dp: displayport-controller@ae90000 {
+> +                               status = "disabled";
+> +                               compatible = "qcom,sc7180-dp";
+
+Can we add qcom,sc7280-dp as well? Just in case anything is wrong with
+sc7280 specifically.
+
+> +
+> +                               reg = <0 0x0ae90000 0 0x1400>;
+> +
+> +                               interrupt-parent = <&mdss>;
+> +                               interrupts = <12 IRQ_TYPE_NONE>;
+
+Drop IRQ_TYPE_NONE per the binding it is one cell, not two.
+
+> +
+> +                               clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
+> +                                        <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
+> +                                        <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
+> +                                        <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
+> +                                        <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
+> +                               clock-names = "core_iface", "core_aux", "ctrl_link",
+> +                                             "ctrl_link_iface", "stream_pixel";
+
+Can we get clock-names on one line matching the clocks property please?
+That makes it easier to match it up between the two properties.
+
+> +                               #clock-cells = <1>;
+> +                               assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
+> +                                                 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
+> +                               assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
+> +                               phys = <&dp_phy>;
+> +                               phy-names = "dp";
+> +
+> +                               operating-points-v2 = <&dp_opp_table>;
+> +                               power-domains = <&rpmhpd SC7180_CX>;
+> +
+> +                               #sound-dai-cells = <0>;
+
+Nitpick: Newline here.
+
+> +                               ports {
+> +                                       #address-cells = <1>;
+> +                                       #size-cells = <0>;
+> +                                       port@0 {
+> +                                               reg = <0>;
+> +                                               dp_in: endpoint {
+> +                                                       remote-endpoint = <&dpu_intf0_out>;
+> +                                               };
+> +                                       };
+> +
+> +                                       port@1 {
+> +                                               reg = <1>;
+> +                                               dp_out: endpoint { };
+> +                                       };
+> +                               };
+> +
+> +                               dp_opp_table: dp-opp-table {
+
+dp_opp_table: opp-table {
+
+> +                                       compatible = "operating-points-v2";
+> +
+> +                                       opp-160000000 {
+> +                                               opp-hz = /bits/ 64 <160000000>;
+> +                                               required-opps = <&rpmhpd_opp_low_svs>;
+> +                                       };
+> +
+> +                                       opp-270000000 {
+> +                                               opp-hz = /bits/ 64 <270000000>;
+> +                                               required-opps = <&rpmhpd_opp_svs>;
+> +                                       };
+> +
+> +                                       opp-540000000 {
+> +                                               opp-hz = /bits/ 64 <540000000>;
+> +                                               required-opps = <&rpmhpd_opp_svs_l1>;
+> +                                       };
+> +
+> +                                       opp-810000000 {
+> +                                               opp-hz = /bits/ 64 <810000000>;
+> +                                               required-opps = <&rpmhpd_opp_nom>;
+> +                                       };
+> +                               };
+> +                       };
+>                 };
+>
+>                 dispcc: clock-controller@af00000 {
+> @@ -3398,7 +3469,8 @@
+>                                  <&gcc GCC_DISP_GPLL0_CLK_SRC>,
+>                                  <&dsi_phy 0>,
+>                                  <&dsi_phy 1>,
+> -                                <0>, <0>,
+> +                                <&dp_phy 0>,
+> +                                <&dp_phy 1>,
+>                                  <&msm_edp 0>,
+>                                  <&msm_edp 1>;
+>                         clock-names = "bi_tcxo", "gcc_disp_gpll0_clk",
+> @@ -3525,6 +3597,18 @@
+>                                  };
+>                          };
+>
+> +                       dp_hot_plug_det: dp-hot-plug-det {
+> +                                pinmux {
+> +                                        pins = "gpio47";
+> +                                        function = "dp_hot";
+> +                                };
+> +
+> +                               pinconf {
+> +                                       pins = "gpio47";
+> +                                       bias-disable;
+> +                               };
+
+Combine these two nodes (pinmux and pinconf) into one please.
+
+                         dp_hot_plug_det: dp-hot-plug-det {
+                                  pins = "gpio47";
+                                  function = "dp_hot";
+                                  bias-disable;
+			 };
+
+> +                        };
+> +
+>                         qspi_clk: qspi-clk {
+>                                 pins = "gpio14";
+>                                 function = "qspi_clk";
