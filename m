@@ -2,100 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5811A3F6D3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 03:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBAF3F6D42
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 04:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237041AbhHYCAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 22:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhHYCAR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 22:00:17 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E9AC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 18:59:32 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id j187so19947712pfg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 18:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XsgT98Ef1PFv4QYUD3OhXp4FkD4LKke0u8lQs/ffn8Q=;
-        b=DcDV8C8M3T2uUhg8nOJpVsUxw+cJcIjseorOM1zBj41KvGzri0N2++qgnw6tDho5F2
-         m7+ij+2L1gJCgnBm5mi44PjcJkNlq0OWott45dddW5hL9WVyZfaVxSowcxlEYqvxk2qn
-         wa4IwawFk2HIAUZW5ELhDCIzPMp6Z3mG9cXbI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XsgT98Ef1PFv4QYUD3OhXp4FkD4LKke0u8lQs/ffn8Q=;
-        b=KpFTqHPV+L3Z7syZhsl1i+GYWvlMQPDHMmhKaotusGyouP8rB4PIegtx4701mLmhIQ
-         Ts5N54G5csfDyw6Zy/3h+61dWvGZpU9QnHeNQmN74/0CTVJBrkUAz/CjbqfQgAKeJBDY
-         FI64LE7fiEA8R8rqNAquANo/6ZUjXcUNdSvl+Z83Th1rDRWze1RSMugJhThR3AhrsNFU
-         t0gI7ynakvPoo3+CSRXeFuN9Xyn54U2ECumEo4CePLWqgLwFrWspNPH9+FmtCBZfYB9g
-         3C2OKv8Fz1ZgZqSAtD6LE70AdApWjc/ciLvTtvoYMc3jl8lkbplU8Owg7JA9uAC/J0eb
-         CxBA==
-X-Gm-Message-State: AOAM533ps2mkgFxltnMKirmFwPeK+PpHOPLGP4YCy80mEaOUDZjyafC3
-        5ENJ2EIQueldqRwYLlCEFgInL8KE3LoC9g==
-X-Google-Smtp-Source: ABdhPJxOeAVwClgTWACcAF9l0rUSeBXNU4Dxyecx84D2J9hQuBfaO7kafkVhde3oIo4ITr5kHqGg2w==
-X-Received: by 2002:a65:690c:: with SMTP id s12mr39938967pgq.401.1629856771855;
-        Tue, 24 Aug 2021 18:59:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 20sm20893700pfi.170.2021.08.24.18.59.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 18:59:31 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 18:59:30 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
-Message-ID: <202108241858.63C1FBC1@keescook>
-References: <20210820192615.23e2e617@canb.auug.org.au>
- <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
- <202108202248.921E8C66@keescook>
- <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
- <20210823203742.5169ad54@canb.auug.org.au>
- <66615de5-4acb-8d85-6d69-ddd0b9609348@infradead.org>
- <20210824115859.187f272f@canb.auug.org.au>
+        id S237090AbhHYCBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 22:01:09 -0400
+Received: from mga06.intel.com ([134.134.136.31]:8688 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229800AbhHYCBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 22:01:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="278445588"
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="278445588"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 19:00:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="515935484"
+Received: from lkp-server02.sh.intel.com (HELO 181e7be6f509) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Aug 2021 19:00:21 -0700
+Received: from kbuild by 181e7be6f509 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mIiDE-00011x-GS; Wed, 25 Aug 2021 02:00:20 +0000
+Date:   Wed, 25 Aug 2021 10:00:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Allison Henderson <allison.henderson@oracle.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [allisonhenderson-xfs_work:delayed_attrs_v24_extended 3/27]
+ fs/xfs/xfs_attr_item.c: xfs_shared.h is included more than once.
+Message-ID: <202108251000.9bcZ9XAN-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210824115859.187f272f@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:58:59AM +1000, Stephen Rothwell wrote:
-> Hi Randy,
-> 
-> On Mon, 23 Aug 2021 18:24:44 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
-> >
-> > This is just weird. What I am seeing is that for every source file
-> > where gcc emits a warning: it then follows that up with this
-> > >> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'  
-> 
-> I see the same, as well as:
-> 
-> <stdin>:1515:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
-> 
-> But only on my gcc 7.3.1 builds (the rest are gcc 10).
-> 
-> > Smells like a gcc bug to me.
-> 
-> Yes
-> 
-> Also noted here: https://github.com/DynamoRIO/drmemory/issues/2099 (second comment)
+tree:   https://github.com/allisonhenderson/xfs_work.git delayed_attrs_v24_extended
+head:   65b46be2f965591671441cfd63f02f38befbec24
+commit: e6fffbbe5c47b7497dd0c8fe248bf8de4806ccc9 [3/27] xfs: Set up infrastructure for log atrribute replay
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-Wow, this is really weird. Okay, thanks for the pointers. I'll keep
-investigating. I may need to version-limit the use of __alloc_size,
-though I'd rather not. We've been able to depend on has_builtin() nicely
-for a while now. :P
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
--- 
-Kees Cook
+
+includecheck warnings: (new ones prefixed by >>)
+>> fs/xfs/xfs_attr_item.c: xfs_shared.h is included more than once.
+>> /kbuild/src/consumer/fs/xfs/xfs_attr_item.c: xfs_inode.h is included more than once.
+
+Please review and possibly fold the followup patch.
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
