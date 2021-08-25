@@ -2,163 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E4B3F72AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695A23F72AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238626AbhHYKKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
+        id S237516AbhHYKKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235904AbhHYKKa (ORCPT
+        with ESMTP id S235904AbhHYKJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:10:30 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7446EC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:09:44 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id d22-20020a1c1d16000000b002e7777970f0so3859446wmd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:09:44 -0700 (PDT)
+        Wed, 25 Aug 2021 06:09:57 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09288C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:09:12 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id i21so9141271ejd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:09:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+eEKN9KrLV15komXvvogOZxKMISFsI5tmxYyQHSYLRQ=;
-        b=BOG0eqG1b7xIzdC5C7PHnW0lrCRGCryZGUclMfK0J+rMmw7Uap44aOyE4WkJObjNR0
-         /spH6lHBMFJeCLERhhWC+gTVCTtdMw9HDgSGXxp51sBQQG80kb9HvUkP2L/c1vFyaf4p
-         X/FZM5Rj4s+2c+TLKC+3UpqAtUR9hN+D/84qkIwaRYXD2aud7GhsDdNlOz9pW+VPCSaj
-         6GC1MYbRZb3Q/sWIdXcgrrXbsvjVn2CzhN8FVwXJcZi//II8YBm3aJRxMsfpsYnYaHa3
-         n034Tc6eijpC2fFo5iMVEKUAH67X91qxyW8L2GMtElDdSCVk8MnR6Wf2Tw0Fp0b+Mir3
-         3xHA==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gm/7T3DPPaEUAIQ4BZFY1GxdtYYv7S8x+8TSo/3yiV8=;
+        b=Q6uBBCg2JR9FfJgv/mAMTDC2NIteNz82noKcyzDkKM1BeehCq5hQDrUrHxAOXKReYA
+         +Oe5LJnLxItPz2MAdGPERGKdk5An1LqnGKnk24Mz3Di53LdmzX30w+jf1D3x4RtQ3EWt
+         N44yBZJ5MjJG7nGjptI1q63YUkxyBXD3Y+KqJHOksB21v0foBmNoNTe/lv3zYkMJaNtr
+         BzDQH2r6ItdxOlD718xGyUgnVdjEotkD1Ja0Tr/4yGIvsf0nPzGppwkmjoAYj4w4w+MA
+         HtYQuF6ut0zta0AW4IpAeMIxXgIXd7W0C8l8o3khpxLuCp5lnOz4YkygDxa1LxaJoeZE
+         6hsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=+eEKN9KrLV15komXvvogOZxKMISFsI5tmxYyQHSYLRQ=;
-        b=Ersqk3I+8Br03b+QxKq7yQBOAilWQibitzE09S88yEiL1ydDpy2R/ZYnQ/pmF2bcbx
-         pV/Vj1J08w+Y87RY2xhFHfT4hGdZf8Bk6OEnx5/fkvkMzZDXiWtX0N1qEAm+QxPmw4Kg
-         ttrdQf/pp369wygpAqWDrcHaUpOEAMOb5OYCYDJBMIRxo0pZjUyNPgmiXjAF7M56x5Bd
-         Gc8dzD1TuT8ehF2TFqAVNtwnIGBV9RSpK56dLXwK/jX0xtf/xZQRElYjJZi/vTBC37G5
-         mjgJVFtBY91v9ppyzihDh9DeKFPCmlYny2HOdfha1Tz7RSWadg9BKeR648t/U+xNEKNA
-         a1hQ==
-X-Gm-Message-State: AOAM533sROuPVtDbDjLx+6qrWLW/Lbh24HL2o6L/Y88bvdvR/fea20np
-        bTsCzyX7CCC5fx6HF7Bw2LQ=
-X-Google-Smtp-Source: ABdhPJzKhTH+KbG0ANUkbnN3LjAc6WTnWvPStRd7r4hswHqLyQ/DRGWWuQf4f5JZaTx6ptelAbAtFA==
-X-Received: by 2002:a7b:cc16:: with SMTP id f22mr8333057wmh.99.1629886182878;
-        Wed, 25 Aug 2021 03:09:42 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::5d87])
-        by smtp.gmail.com with ESMTPSA id n10sm20444546wrw.76.2021.08.25.03.09.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 03:09:42 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: rtl8723bs: remove header file ethernet.h
-Date:   Wed, 25 Aug 2021 12:08:42 +0200
-Message-Id: <20210825100842.13217-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        bh=gm/7T3DPPaEUAIQ4BZFY1GxdtYYv7S8x+8TSo/3yiV8=;
+        b=qZ9L5sR9HDeiDbu01qdZtllKtIbHBm7UO+bU9Lx0vXBrw6BLWkboz7hDVRy4lRNgnD
+         nbnDpY8qbKeFkc+TQk30eBhCe4ge8MsGreoB824/xpU/0tma2zwsuU2wAolX429qeM89
+         dZFusQcR/aaaQ08i9N/1ZQFtaQxU4n9/whmNBDcE/hPYJEioz5qG2K7dDVWP6Md6IqQy
+         sMUxE1SkFqWX9QjqXhpFT+RCZ+K1j8lAQIOu61C+34PsRK+swURBcu0OkBVtN9tGL0e9
+         jEq9/46WMflHCZtd3juLOQDYUcP9AdQKDDKvQTNVBJjVT9LcQGB2vHIVnQoqW8kNXXPX
+         F9yA==
+X-Gm-Message-State: AOAM531nVRQ1uwNn+VZQU1MYO7wTIT9jw+9A3FxgnTbyrjcLGLawxDg6
+        iW1AlfUC1C8n5vUp5KuuxYD6bw==
+X-Google-Smtp-Source: ABdhPJxBjm4UXGqykbN84zJa2RTllcDyQSlDDCxd3R3rYhZnZZ/dJ7SafWbQ8JPnEOCLMwkVRlOPYg==
+X-Received: by 2002:a17:906:a044:: with SMTP id bg4mr45626743ejb.312.1629886150645;
+        Wed, 25 Aug 2021 03:09:10 -0700 (PDT)
+Received: from ?IPv6:2a02:768:2307:40d6::e05? ([2a02:768:2307:40d6::e05])
+        by smtp.gmail.com with ESMTPSA id v12sm10773425ejq.36.2021.08.25.03.09.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 03:09:10 -0700 (PDT)
+Subject: Re: [PATCH 2/4] microblaze: simplify pte_alloc_one_kernel()
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210714123739.16493-1-rppt@kernel.org>
+ <20210714123739.16493-3-rppt@kernel.org>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <30ca98c1-25ff-a18a-ea03-afa7a4b35ad5@monstr.eu>
+Date:   Wed, 25 Aug 2021 12:09:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210714123739.16493-3-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The header file ehternet.h defines only two constants.
 
-#define ETHERNET_HEADER_SIZE   14          /*  Ethernet Header Length */
-#define LLC_HEADER_SIZE         6          /*  LLC Header Length */
 
-Both are only used in the file core/rtw_recv.c and ETHERNET_HEADER_SIZE
-just duplicates the in-kernel constant ETH_HLEN. Replace the usage of
-ETHERNET_HEADER_SIZE with ETH_HLEN, move the definition of LLC_HEADER_SIZE
-into rtw_rev.h (renamed to LLC_HEADER_LENGTH) and remove the now unused
-header file ethernet.h.
+On 7/14/21 2:37 PM, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> The microblaze's implementation of pte_alloc_one_kernel() used
+> memblock_alloc_try_nid_raw() along with clear_page() to allocated a zeroed
+> page during early setup.
+> 
+> Replace calls of these functions with a call to memblock_alloc_try_nid()
+> that already returns zeroed page and respects the same allocation limits as
+> memblock_alloc_try_nid_raw().
+> 
+> While on it drop early_get_page() wrapper that was only used in
+> pte_alloc_one_kernel().
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  arch/microblaze/include/asm/pgtable.h |  2 --
+>  arch/microblaze/mm/init.c             | 12 ------------
+>  arch/microblaze/mm/pgtable.c          | 17 ++++++++---------
+>  3 files changed, 8 insertions(+), 23 deletions(-)
+> 
+> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
+> index 71cd547655d9..c136a01e467e 100644
+> --- a/arch/microblaze/include/asm/pgtable.h
+> +++ b/arch/microblaze/include/asm/pgtable.h
+> @@ -443,8 +443,6 @@ extern int mem_init_done;
+>  
+>  asmlinkage void __init mmu_init(void);
+>  
+> -void __init *early_get_page(void);
+> -
+>  #endif /* __ASSEMBLY__ */
+>  #endif /* __KERNEL__ */
+>  
+> diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+> index ab55c70380a5..952f35b335b2 100644
+> --- a/arch/microblaze/mm/init.c
+> +++ b/arch/microblaze/mm/init.c
+> @@ -265,18 +265,6 @@ asmlinkage void __init mmu_init(void)
+>  	dma_contiguous_reserve(memory_start + lowmem_size - 1);
+>  }
+>  
+> -/* This is only called until mem_init is done. */
+> -void __init *early_get_page(void)
+> -{
+> -	/*
+> -	 * Mem start + kernel_tlb -> here is limit
+> -	 * because of mem mapping from head.S
+> -	 */
+> -	return memblock_alloc_try_nid_raw(PAGE_SIZE, PAGE_SIZE,
+> -				MEMBLOCK_LOW_LIMIT, memory_start + kernel_tlb,
+> -				NUMA_NO_NODE);
+> -}
+> -
+>  void * __ref zalloc_maybe_bootmem(size_t size, gfp_t mask)
+>  {
+>  	void *p;
+> diff --git a/arch/microblaze/mm/pgtable.c b/arch/microblaze/mm/pgtable.c
+> index 38ccb909bc9d..c1833b159d3b 100644
+> --- a/arch/microblaze/mm/pgtable.c
+> +++ b/arch/microblaze/mm/pgtable.c
+> @@ -33,6 +33,7 @@
+>  #include <linux/init.h>
+>  #include <linux/mm_types.h>
+>  #include <linux/pgtable.h>
+> +#include <linux/memblock.h>
+>  
+>  #include <asm/pgalloc.h>
+>  #include <linux/io.h>
+> @@ -242,15 +243,13 @@ unsigned long iopa(unsigned long addr)
+>  
+>  __ref pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+>  {
+> -	pte_t *pte;
+> -	if (mem_init_done) {
+> -		pte = (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+> -	} else {
+> -		pte = (pte_t *)early_get_page();
+> -		if (pte)
+> -			clear_page(pte);
+> -	}
+> -	return pte;
+> +	if (mem_init_done)
+> +		return (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+> +	else
+> +		return memblock_alloc_try_nid(PAGE_SIZE, PAGE_SIZE,
+> +					      MEMBLOCK_LOW_LIMIT,
+> +					      memory_start + kernel_tlb,
+> +					      NUMA_NO_NODE);
+>  }
+>  
+>  void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t flags)
+> 
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_recv.c     |  6 +++---
- drivers/staging/rtl8723bs/include/drv_types.h |  1 -
- drivers/staging/rtl8723bs/include/ethernet.h  | 14 --------------
- drivers/staging/rtl8723bs/include/rtw_recv.h  |  2 ++
- 4 files changed, 5 insertions(+), 18 deletions(-)
- delete mode 100644 drivers/staging/rtl8723bs/include/ethernet.h
+I have tested 1/4 with/without the fix from Guenter
+and also 2/4 and I can't see any issue on real HW.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_recv.c b/drivers/staging/rtl8723bs/core/rtw_recv.c
-index d4c1725718d9..5b0a596eefb7 100644
---- a/drivers/staging/rtl8723bs/core/rtw_recv.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_recv.c
-@@ -480,7 +480,7 @@ static union recv_frame *portctrl(struct adapter *adapter, union recv_frame *pre
- 			prtnframe = precv_frame;
- 
- 			/* get ether_type */
--			ptr = ptr+pfhdr->attrib.hdrlen+pfhdr->attrib.iv_len+LLC_HEADER_SIZE;
-+			ptr = ptr + pfhdr->attrib.hdrlen + pfhdr->attrib.iv_len + LLC_HEADER_LENGTH;
- 			memcpy(&be_tmp, ptr, 2);
- 			ether_type = ntohs(be_tmp);
- 
-@@ -1485,7 +1485,7 @@ static signed int validate_recv_frame(struct adapter *adapter, union recv_frame
- 			/*  dump eapol */
- 			rtw_hal_get_def_var(adapter, HAL_DEF_DBG_DUMP_RXPKT, &(bDumpRxPkt));
- 			/*  get ether_type */
--			memcpy(&eth_type, ptr + pattrib->hdrlen + pattrib->iv_len + LLC_HEADER_SIZE, 2);
-+			memcpy(&eth_type, ptr + pattrib->hdrlen + pattrib->iv_len + LLC_HEADER_LENGTH, 2);
- 			eth_type = ntohs((unsigned short) eth_type);
- #endif
- 		}
-@@ -1588,7 +1588,7 @@ static int amsdu_to_msdu(struct adapter *padapter, union recv_frame *prframe)
- 		/* Offset 12 denote 2 mac address */
- 		nSubframe_Length = get_unaligned_be16(pdata + 12);
- 
--		if (a_len < (ETHERNET_HEADER_SIZE + nSubframe_Length))
-+		if (a_len < ETH_HLEN + nSubframe_Length)
- 			break;
- 
- 		sub_pkt = rtw_os_alloc_msdu_pkt(prframe, nSubframe_Length, pdata);
-diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
-index 580028d28c42..c192b5a1a067 100644
---- a/drivers/staging/rtl8723bs/include/drv_types.h
-+++ b/drivers/staging/rtl8723bs/include/drv_types.h
-@@ -57,7 +57,6 @@
- 
- #include <linux/ip.h>
- #include <linux/if_ether.h>
--#include <ethernet.h>
- 
- #define SPEC_DEV_ID_NONE BIT(0)
- #define SPEC_DEV_ID_DISABLE_HT BIT(1)
-diff --git a/drivers/staging/rtl8723bs/include/ethernet.h b/drivers/staging/rtl8723bs/include/ethernet.h
-deleted file mode 100644
-index 59899ab52aab..000000000000
---- a/drivers/staging/rtl8723bs/include/ethernet.h
-+++ /dev/null
-@@ -1,14 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-- *
-- ******************************************************************************/
--/*! \file */
--#ifndef __INC_ETHERNET_H
--#define __INC_ETHERNET_H
--
--#define ETHERNET_HEADER_SIZE	14		/*  Ethernet Header Length */
--#define LLC_HEADER_SIZE		6		/*  LLC Header Length */
--
--#endif /*  #ifndef __INC_ETHERNET_H */
-diff --git a/drivers/staging/rtl8723bs/include/rtw_recv.h b/drivers/staging/rtl8723bs/include/rtw_recv.h
-index 9c3cdcc990fa..a88b7c088a86 100644
---- a/drivers/staging/rtl8723bs/include/rtw_recv.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_recv.h
-@@ -35,6 +35,8 @@
- 
- #define MAX_SUBFRAME_COUNT	64
- 
-+#define LLC_HEADER_LENGTH	6
-+
- /* for Rx reordering buffer control */
- struct recv_reorder_ctrl {
- 	struct adapter	*padapter;
+That's why feel free to add my
+Tested-by: Michal Simek <michal.simek@xilinx.com>
+
+Thanks,
+Michal
+
 -- 
-2.32.0
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
 
