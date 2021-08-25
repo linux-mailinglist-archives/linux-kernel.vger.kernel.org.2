@@ -2,156 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72AB3F7E30
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834A43F7E32
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhHYWJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
+        id S231367AbhHYWJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhHYWJ1 (ORCPT
+        with ESMTP id S230074AbhHYWJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:09:27 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F85C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:08:41 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id y11so841520pfl.13
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:08:41 -0700 (PDT)
+        Wed, 25 Aug 2021 18:09:58 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C20C061757;
+        Wed, 25 Aug 2021 15:09:11 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id h4so1609609wro.7;
+        Wed, 25 Aug 2021 15:09:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7NZNUzkwqV8FV6bts50PDqCVbYsdeI9DWpW3UuuSetQ=;
-        b=H9bYH617YjERR4qzzuhHKRD1sRRQFu+Q1Jh64kJ1djlfDal40fY+iY87u0l9uJoll9
-         qKsSebVBrXVCpOAl8hvLF4LtB9qq5pdwDXayqDjbt2sUyexsxQbLG62BB3WNpfD87xZG
-         IVyDddf9ZPTBcoPNghKtAs9E6jlQ28nDWusY81EErhC9J7IxJxP7uwjAdgVMD8py+u1P
-         nxTuWeiGOBc+Tfc1qeRQ2kq5o5K9WUw6NdaVl+u6l7blBulIUS1a0b8Q01jOTrYRv73M
-         znQKQv6MK8THCvnQOstYHUHj9L24gqn6pk51HjKJEQG0bWnijVmLYjUAaUC1yNQfLkfP
-         bq2A==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=HgSYLkAP+VjT/goIhd/z4sYO3yeXDg14TVtIyAVKrxg=;
+        b=gx5n10z1MucqZio6cXa9TrIkaimFOV9IjWBEW0HuzBDyL776ERlcoglh5rtEICUcNl
+         jfHb/9dCvy2GSCeJpuFaFy+ho8dEK+qnXgmlnVTy9UpAj09MPwl4rjp1yXaQpm3t97rA
+         828WabpU/cvGpUezLDvCvgLs8edYhb0urOzWoLXwzB5Pydbr/3+DdM90hdCp+lJ//An8
+         FBPwK73VHvaiNKHtsPy1EfJq8wyj8MzEJZAiwSs8Vli5siMGR2PUboUzvURCEFMW4E7C
+         Wma422JCItjjKjl56zeXxNxl2TfYKklc9yfxxo2ZnEPFCh3AP4/8bKgrRvYZUkXWg8Tk
+         ATRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7NZNUzkwqV8FV6bts50PDqCVbYsdeI9DWpW3UuuSetQ=;
-        b=IUTCdwRhhKG42xwhjaDFiNMl6n4e20vOhPLaBv2ouwj4dgIDw5l1K7oUomrzKdsR64
-         MOSaa2hWNRgLh7Bs/l9IeExij4CgLzrw+TSgS69HYMcvSh76bLIi/P6A7KkrN747WhyM
-         /rs+mZKGIig1wwm5i3Uf1ggOQw+hpj5OH7VARAcY5bIm7JERQ5SO1C4/dX7T7T046uYt
-         Buzk3y8czsP4pXYdw8f70TUcCGoojr6Fw3b80YuIbVAnVRCrkZofyawyUTQV2E97r2qH
-         1naBIjCWnbP/Icdx8ls5j3MBN9z1KKynwyS5ygBZwr8ps0Ok4H6fwHrhGwonzUWuO05j
-         iUnQ==
-X-Gm-Message-State: AOAM532eM7lfjLdH4+XzPASzUQfDJAsNwQwOV+Qiqkxe24tzZ+qtX/bN
-        xcgurxt+1ECEFA2AEis8/NbNy6qmnh1zhfrQIGYf3A==
-X-Google-Smtp-Source: ABdhPJw2KP0i89pMalH0wosmc6VWGByLDHoPtHP3Rvh3Nqhuz6fCxv+quhVvh9yLawfYIETYtZ7Iyp0W5bbg6cwoq38=
-X-Received: by 2002:a65:6642:: with SMTP id z2mr353069pgv.240.1629929320968;
- Wed, 25 Aug 2021 15:08:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210726060855.108250-1-pankaj.gupta.linux@gmail.com>
- <20210726060855.108250-2-pankaj.gupta.linux@gmail.com> <CAPcyv4inCFFXmg0r5+h0O6cADpt9HdboVDEL00XX-wGroy-7LQ@mail.gmail.com>
- <CAM9Jb+hqPBFUh9X4sKb9TUGXX1P0mC1xcuCNQx1BYvAvoP9uQg@mail.gmail.com>
- <CAPcyv4gUG1-y1u0ZyUkSGXg0eER_oTdexb8n-CYgb_rURvr8LA@mail.gmail.com> <CALzYo32AnNzENe414GDVivaF5wXQ7azaysBYkN9wHVYEW27NPw@mail.gmail.com>
-In-Reply-To: <CALzYo32AnNzENe414GDVivaF5wXQ7azaysBYkN9wHVYEW27NPw@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 25 Aug 2021 15:08:30 -0700
-Message-ID: <CAPcyv4idY7GDYjXsvjduQ4rjfKo-qDgQoj5r6=Rr9poXqHEzeg@mail.gmail.com>
-Subject: Re: [RFC v2 1/2] virtio-pmem: Async virtio-pmem flush
-To:     Pankaj Gupta <pankaj.gupta@ionos.com>
-Cc:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HgSYLkAP+VjT/goIhd/z4sYO3yeXDg14TVtIyAVKrxg=;
+        b=AU+zSekKgDuPeJd5DzR/69UZoE/+F8WcYH8r1rtiynUp/C7dZVgPyCqWr11ddGnbIG
+         dSU9B1i63BFcV4pBJd4zHoLpSzjGgeew3MUOhAxwh8kOEnlLbF/cLzOhNjbAliYMEaU8
+         0Iduq9lGTbDUAY+SZV1RCifmVd1/aSEwHov5TBerlgSYC/V0JU/aYOwSLii2W2UqtVIc
+         xCilNaMFYCIhiTeJXADJxrqyKd9N9dR14yDxQs2KlqR18v5z2cYz5svwdvEZks74c+T8
+         dj0EHClBPCEgV93hiASzKTt4/Dgd4owNtzh9+/UFpowisCEd9vNVZm3D5aNMO7xFJ3mH
+         4dsA==
+X-Gm-Message-State: AOAM5317L0sJzWYeoz4iUmTHNNn6YOX3qB39Q2DU4EomFZB3oPOrSYH0
+        rQvzLAA6r4JagXg7ia9ICiQ=
+X-Google-Smtp-Source: ABdhPJxKHfnKYHyK8j6YFQkRj8qqFAFogEfVkkqbuVKS0RynnrB+5vpK5iRloiSE/m8fHAGNgF9ESw==
+X-Received: by 2002:adf:804a:: with SMTP id 68mr355370wrk.236.1629929350508;
+        Wed, 25 Aug 2021 15:09:10 -0700 (PDT)
+Received: from [192.168.0.14] (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net. [86.13.91.161])
+        by smtp.gmail.com with ESMTPSA id c3sm1178229wrd.34.2021.08.25.15.09.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 15:09:10 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
+To:     Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jmoyer <jmoyer@redhat.com>, David Hildenbrand <david@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>
+References: <20210824230620.1003828-1-djrscally@gmail.com>
+ <20210824230620.1003828-2-djrscally@gmail.com>
+ <20210825103301.GC5186@sirena.org.uk>
+ <CAHp75VdHpjbjz4biTP11TKT6J+7WQi-a1Ru3VLuSxM5tSLCB3Q@mail.gmail.com>
+ <20210825113013.GD5186@sirena.org.uk>
+ <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
+ <20210825131139.GG5186@sirena.org.uk>
+ <YSZMxxJ76vF316Pi@pendragon.ideasonboard.com>
+ <4ac0acb9-83ea-7fcd-cde3-669ba3b699c6@gmail.com>
+ <YSZSOZXxSac307/A@pendragon.ideasonboard.com>
+ <20210825145232.GI5186@sirena.org.uk>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <bce63128-3dde-f4c6-b0cd-00818293ebc3@gmail.com>
+Date:   Wed, 25 Aug 2021 23:09:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210825145232.GI5186@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 3:01 PM Pankaj Gupta <pankaj.gupta@ionos.com> wrote:
->
-> > > Hi Dan,
-> > >
-> > > Thank you for the review. Please see my reply inline.
-> > >
-> > > > > Implement asynchronous flush for virtio pmem using work queue
-> > > > > to solve the preflush ordering issue. Also, coalesce the flush
-> > > > > requests when a flush is already in process.
-> > > > >
-> > > > > Signed-off-by: Pankaj Gupta <pankaj.gupta@ionos.com>
-> > > > > ---
-> > > > >  drivers/nvdimm/nd_virtio.c   | 72 ++++++++++++++++++++++++++++--------
-> > > > >  drivers/nvdimm/virtio_pmem.c | 10 ++++-
-> > > > >  drivers/nvdimm/virtio_pmem.h | 14 +++++++
-> > > > >  3 files changed, 79 insertions(+), 17 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/nvdimm/nd_virtio.c b/drivers/nvdimm/nd_virtio.c
-> > > > > index 10351d5b49fa..61b655b583be 100644
-> > > > > --- a/drivers/nvdimm/nd_virtio.c
-> > > > > +++ b/drivers/nvdimm/nd_virtio.c
-> > > > > @@ -97,29 +97,69 @@ static int virtio_pmem_flush(struct nd_region *nd_region)
-> > > > >         return err;
-> > > > >  };
-> > > > >
-> > > > > +static void submit_async_flush(struct work_struct *ws);
-> > > > > +
-> > > > >  /* The asynchronous flush callback function */
-> > > > >  int async_pmem_flush(struct nd_region *nd_region, struct bio *bio)
-> > > > >  {
-> > > > > -       /*
-> > > > > -        * Create child bio for asynchronous flush and chain with
-> > > > > -        * parent bio. Otherwise directly call nd_region flush.
-> > > > > +       /* queue asynchronous flush and coalesce the flush requests */
-> > > > > +       struct virtio_device *vdev = nd_region->provider_data;
-> > > > > +       struct virtio_pmem *vpmem  = vdev->priv;
-> > > > > +       ktime_t req_start = ktime_get_boottime();
-> > > > > +
-> > > > > +       spin_lock_irq(&vpmem->lock);
-> > > > > +       /* flush requests wait until ongoing flush completes,
-> > > > > +        * hence coalescing all the pending requests.
-> > > > >          */
-> > > > > -       if (bio && bio->bi_iter.bi_sector != -1) {
-> > > > > -               struct bio *child = bio_alloc(GFP_ATOMIC, 0);
-> > > > > -
-> > > > > -               if (!child)
-> > > > > -                       return -ENOMEM;
-> > > > > -               bio_copy_dev(child, bio);
-> > > > > -               child->bi_opf = REQ_PREFLUSH;
-> > > > > -               child->bi_iter.bi_sector = -1;
-> > > > > -               bio_chain(child, bio);
-> > > > > -               submit_bio(child);
-> > > > > -               return 0;
-> > > > > +       wait_event_lock_irq(vpmem->sb_wait,
-> > > > > +                           !vpmem->flush_bio ||
-> > > > > +                           ktime_before(req_start, vpmem->prev_flush_start),
-> > > > > +                           vpmem->lock);
-> > > > > +       /* new request after previous flush is completed */
-> > > > > +       if (ktime_after(req_start, vpmem->prev_flush_start)) {
-> > > > > +               WARN_ON(vpmem->flush_bio);
-> > > > > +               vpmem->flush_bio = bio;
-> > > > > +               bio = NULL;
-> > > > > +       }
-> > > >
-> > > > Why the dance with ->prev_flush_start vs just calling queue_work()
-> > > > again. queue_work() is naturally coalescing in that if the last work
-> > > > request has not started execution another queue attempt will be
-> > > > dropped.
-> > >
-> > > How parent flush request will know when corresponding flush is completed?
-> >
-> > The eventual bio_endio() is what signals upper layers that the flush
-> > completed...
-> >
-> >
-> > Hold on... it's been so long that I forgot that you are copying
-> > md_flush_request() here. It would help immensely if that was mentioned
-> > in the changelog and at a minimum have a comment in the code that this
-> > was copied from md. In fact it would be extra helpful if you
->
-> My bad. I only mentioned this in the cover letter.
+Hi Mark
 
-Yeah, sorry about that. Having come back to this after so long I just
-decided to jump straight into the patches, but even if I had read that
-cover I still would have given the feedback that md_flush_request()
-heritage should also be noted with a comment in the code.
+On 25/08/2021 15:52, Mark Brown wrote:
+> On Wed, Aug 25, 2021 at 05:22:49PM +0300, Laurent Pinchart wrote:
+>
+>> a very large number of regulators, it may not be too bad in practice. If
+>> I were to maintain the regulator subsystem I'd probably want a
+>> centralized implementation there, but that's certainly a personal
+>> preference, at least partly.
+> We already have some generic platform data for regulators so if it
+> doesn't want to define anything custom all a driver has to do is forward
+> that struct on to the core for handling, otherwise it just has to pick
+> the generic struct out of whatever custom thing it defines.
+>
+>> On a side note, this RFC looks quite similar to what the GPIO subsystem
+>> does, which I personally consider nice as differences between regulator
+>> and GPIO in these areas are confusing for users.
+> My pushback here is that if all we're doing is providing a mechanism to
+> match platform data with firmware provided devices we shouldn't be
+> implementing it per API in the first place, we should have a generic
+> mechanism for system level quirking to pass platform data to devices
+> which works with anything - it could also absorb a lot of the DMI based
+> quirking we have in drivers already which boil down to using a DMI match
+> to pick some platform data.
+
+
+Alright; and what about parsing the platform data into a struct
+regulator_init_data then...at the moment that's left up to the
+individual regulator drivers. In my mind that's something better left to
+core, so rather than finding the right instance of struct
+regulator_init_data from the regulator_lookup_list the
+regulator_lookup_init_data() function would be finding the right
+instance of the struct from cfg->dev->platform_data instead...what are
+your thoughts on that?
+
