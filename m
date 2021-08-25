@@ -2,124 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4069E3F7162
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9147A3F7164
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237508AbhHYJEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbhHYJEG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:04:06 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FD4C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:03:20 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id i21so8782355ejd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 02:03:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4LUZQEf1FWhO8/L5Pn1dteozC/zUI7RffyG6+EOHYI0=;
-        b=BYRvLO1nT5wfq/PdSUipimEcyMAshc+sOEO/dZAMCffuCi7w/4mwNtbPO6ktjrMR6C
-         Y9rkT2N12HKVsHDjGvpa6Z/6OUbK/4g+0FiKscVZj+5m4Mdvo8ZUdw5rPIUhCRDL5NNz
-         C0eLUhlCEthvhgxIfUAKPGhpQ/cAER2LDkuoVOfAONYgeFwvZgjz3E9OLr/8VfZkD288
-         +2eynglMPmuoeUt2meeC9HZ2Lo1KaOL7dP5k2bH+r55ASJZNfIZtgZTQf+sgXR7AoCC/
-         qe32/dM2gDrCec0HNCraBS5V2NN9icNBG4z+/MVRNfAZQmI/tjv0XdCFY9qh1NPHeSnD
-         JKLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4LUZQEf1FWhO8/L5Pn1dteozC/zUI7RffyG6+EOHYI0=;
-        b=p5RWpio727YHtym0eJ+tVUD40VNlFHEvVLHkaTfW5sTZJoqDqO/IQdYBtj/yGLxdsY
-         Piu+na1exjyD+l4+cyjDOPUk87ntjkjLXpGJzGbevukuKqEp2PrOW2DyPjOiNfuoMjPf
-         e8l91A2CFpN14bRXcPwZN3rjS3mTCbXgyoquvLgi2cJPhK7sdKA62dy1c0S7Ml8nTgsa
-         Om7UKtOoBseI5RePs1cheK1/0SyRGv3lZJaKDqh5+aWrU6xWTTlW8iOjOo1ft1P9yueJ
-         OlUvTgh2HmFvwvWQA0pI9F70o8+m6vdash6C7/6/iF12P2n/QLy4eUIZgBh/9j1sfGOY
-         YtNw==
-X-Gm-Message-State: AOAM531Jp+pTcVGcQpM+feEDNpX+4b9YlaP8NvGAUZOEaQNerGNsHwtq
-        a1fD4zSLbBrqJdrX/6mZoP9V+Q==
-X-Google-Smtp-Source: ABdhPJy0bQdYxtuwPyYk7aB1tnv5xSrALpyHjrcIY0eAgxDYVpz/TnEg34bRCu6QFb1yXU+EVCu6NA==
-X-Received: by 2002:a17:907:4cf:: with SMTP id vz15mr32598299ejb.543.1629882199383;
-        Wed, 25 Aug 2021 02:03:19 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::e05? ([2a02:768:2307:40d6::e05])
-        by smtp.gmail.com with ESMTPSA id o6sm6261838eju.91.2021.08.25.02.03.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 02:03:19 -0700 (PDT)
-Subject: Re: [PATCH v4 07/10] microblaze: snapshot thread flags
-To:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org
-Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
-        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
-        ink@jurassic.park.msu.ru, jonas@southpole.se,
-        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
-        mattst88@gmail.com, mingo@redhat.com, mpe@ellerman.id.au,
-        paulmck@kernel.org, paulus@samba.org, peterz@infradead.org,
-        rth@twiddle.net, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
-        vincent.guittot@linaro.org, will@kernel.org
-References: <20210803095428.17009-1-mark.rutland@arm.com>
- <20210803095428.17009-8-mark.rutland@arm.com>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <d62b4ccf-505d-e8e2-1195-48327ba4a4eb@monstr.eu>
-Date:   Wed, 25 Aug 2021 11:03:17 +0200
+        id S239417AbhHYJEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:04:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:46236 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232302AbhHYJEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:04:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDFB131B;
+        Wed, 25 Aug 2021 02:04:05 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 802A73F66F;
+        Wed, 25 Aug 2021 02:04:04 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] drm/panfrost: Simplify lock_region calculation
+To:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        Chris Morgan <macromorgan@hotmail.com>, stable@vger.kernel.org
+References: <20210824173028.7528-1-alyssa.rosenzweig@collabora.com>
+ <20210824173028.7528-2-alyssa.rosenzweig@collabora.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <698bbb98-5fd8-d6cd-b8cd-0ff29573314c@arm.com>
+Date:   Wed, 25 Aug 2021 10:03:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210803095428.17009-8-mark.rutland@arm.com>
+In-Reply-To: <20210824173028.7528-2-alyssa.rosenzweig@collabora.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/08/2021 18:30, Alyssa Rosenzweig wrote:
+> In lock_region, simplify the calculation of the region_width parameter.
+> This field is the size, but encoded as ceil(log2(size)) - 1.
+> ceil(log2(size)) may be computed directly as fls(size - 1). However, we
+> want to use the 64-bit versions as the amount to lock can exceed
+> 32-bits.
+> 
+> This avoids undefined (and completely wrong) behaviour when locking all
+> memory (size ~0). In this case, the old code would "round up" ~0 to the
+> nearest page, overflowing to 0. Since fls(0) == 0, this would calculate
+> a region width of 10 + 0 = 10. But then the code would shift by
+> (region_width - 11) = -1. As shifting by a negative number is undefined,
+> UBSAN flags the bug. Of course, even if it were defined the behaviour is
+> wrong, instead of locking all memory almost none would get locked.
+> 
+> The new form of the calculation corrects this special case and avoids
+> the undefined behaviour.
+> 
+> Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+> Reported-and-tested-by: Chris Morgan <macromorgan@hotmail.com>
+> Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+> Cc: <stable@vger.kernel.org>
 
+Reviewed-by: Steven Price <steven.price@arm.com>
 
-On 8/3/21 11:54 AM, Mark Rutland wrote:
-> Some thread flags can be set remotely, and so even when IRQs are
-> disabled, the flags can change under our feet. Generally this is
-> unlikely to cause a problem in practice, but it is somewhat unsound, and
-> KCSAN will legitimately warn that there is a data race.
-> 
-> To avoid such issues, a snapshot of the flags has to be taken prior to
-> using them. Some places already use READ_ONCE() for that, others do not.
-> 
-> Convert them all to the new flag accessor helpers.
-> 
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Michal Simek <monstr@monstr.eu>
 > ---
->  arch/microblaze/kernel/signal.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c | 19 +++++--------------
+>  1 file changed, 5 insertions(+), 14 deletions(-)
 > 
-> diff --git a/arch/microblaze/kernel/signal.c b/arch/microblaze/kernel/signal.c
-> index fc61eb0eb8dd..23e8a9336a29 100644
-> --- a/arch/microblaze/kernel/signal.c
-> +++ b/arch/microblaze/kernel/signal.c
-> @@ -283,7 +283,7 @@ static void do_signal(struct pt_regs *regs, int in_syscall)
->  #ifdef DEBUG_SIG
->  	pr_info("do signal: %p %d\n", regs, in_syscall);
->  	pr_info("do signal2: %lx %lx %ld [%lx]\n", regs->pc, regs->r1,
-> -			regs->r12, current_thread_info()->flags);
-> +			regs->r12, read_thread_flags());
->  #endif
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> index 0da5b3100ab1..f6e02d0392f4 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> @@ -62,21 +62,12 @@ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
+>  {
+>  	u8 region_width;
+>  	u64 region = iova & PAGE_MASK;
+> -	/*
+> -	 * fls returns:
+> -	 * 1 .. 32
+> -	 *
+> -	 * 10 + fls(num_pages)
+> -	 * results in the range (11 .. 42)
+> -	 */
+> -
+> -	size = round_up(size, PAGE_SIZE);
 >  
->  	if (get_signal(&ksig)) {
+> -	region_width = 10 + fls(size >> PAGE_SHIFT);
+> -	if ((size >> PAGE_SHIFT) != (1ul << (region_width - 11))) {
+> -		/* not pow2, so must go up to the next pow2 */
+> -		region_width += 1;
+> -	}
+> +	/* The size is encoded as ceil(log2) minus(1), which may be calculated
+> +	 * with fls. The size must be clamped to hardware bounds.
+> +	 */
+> +	size = max_t(u64, size, PAGE_SIZE);
+> +	region_width = fls64(size - 1) - 1;
+>  	region |= region_width;
+>  
+>  	/* Lock the region that needs to be updated */
 > 
-
-Tested-by: Michal Simek <michal.simek@xilinx.com>
-
-Thanks,
-Michal
-
-
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
