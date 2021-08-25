@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690DC3F73CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EC43F73D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240155AbhHYK43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
+        id S240198AbhHYK6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240037AbhHYK40 (ORCPT
+        with ESMTP id S240180AbhHYK6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:56:26 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944CBC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:55:39 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id u14-20020a7bcb0e0000b0290248831d46e4so1778438wmj.6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:55:39 -0700 (PDT)
+        Wed, 25 Aug 2021 06:58:16 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A322C061796
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:57:30 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id o39-20020a05600c512700b002e74638b567so4278049wms.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:57:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=FT34ZQ0Ankpx01UihRk2kfWuKXz7jz0lwTbW9XPKkoM=;
-        b=EmPROQ7nz/pu/qgiO2t2bijHUR+Q/OThafpTk4NCpu0jFMJ48jvwy6gtN3TTIXusXw
-         l9EH2nSd1lWvOMCxUUBHxv4CpdCYj2eeyuiNTQ2pFAYJ08MRI0qBCZ49rpsDbgkoUa7A
-         MiKttpVTrZ7dDTnjOy5rdtXyBvgNdFH0MOsy0o+gEIjDFqLT6afw3oOBi3ppF+acGutW
-         0hVcSzySLhRochEnevooivVK6jsOjAKPzQS87uM0qEidjlELbKPAGMrks//Tr+hLkOmJ
-         Zh67h+99c9wpR84EWUBwCCTxOuNZiQDwzvAg+v30WraHBzN2w9sgw+ZhUKAXUhZtqQ4F
-         hHPw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QtpP3tcoZvxE8r2Ab9yioe6Y4u6iLyGn82K3C5J43jA=;
+        b=CPnzfp/h86yWtxXjXiARoCfboSHpnNns3MBtX2+WLiCh15sHR9FVS60aDreNw7trqM
+         jAjVTq1lHZRfI5zL97BUq9RiWGF9vY6wq1ASTwB8icgWyTAeo4/U3L0W9YWSDO/0tnIC
+         SfnOKdAetryslQfcfdjO9D75yoKrGQJ+JoE1sXl+a/O1N1wlhKP1bYtwDjOeRpOUXnO7
+         ywuGY37MTEmpCJ1Xtoc/c4mm+9LldgHEAR+oh6PttRrlPwKtE4y0LaMv3QJiZNbMs88n
+         YHkwGZhysNLjTwHPNZ9Iqjt4jIEaBgPc0UjvFqqadTJYTt5cIbrlNbiwQVEWt1wfv3tJ
+         yV2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=FT34ZQ0Ankpx01UihRk2kfWuKXz7jz0lwTbW9XPKkoM=;
-        b=Q+sZ+ekvdiOL4D2IO/qE9AOsVjBCAWUKUqCkQ72WDFnFI+jox8WoKKR84FbVTgQCSg
-         ZtV4Nso/JpTpc82QaNJrfM9O8nUNM0bTcRDTiKDNtn+e5j35tsfq/EM1mtKtMjwwb1hJ
-         V/PL9SH5jdCLSkXkuQBPhNRmhN+FtffQ66dhoLCcn2LGYgRWPVLHsJPQpm16RgtBY7Il
-         6uBkgPz5Vd9gkCqLVv0KQt9S3mMT9BSZgnfTbo1mvo9wkn6qjfiwMmnMdNu7dpzRS82b
-         rPzkyfk7B1QTgK85CA9IAk6tr3XJ99sXdXdrXT2sR0WvQKg24uDczFGugu4VsmNOVrvH
-         sT4g==
-X-Gm-Message-State: AOAM531bmxPxsYdj/lbEGXdg5OHDpKQY/FPTV6kJL7ye3AqWZRPK0Rlb
-        mCnIk8t3Caq4WS0c1VASh9p5/MNyVQ==
-X-Google-Smtp-Source: ABdhPJwjv+hvsAexdUgXkmtXRGs+/Rg39W3ggk80Z2T4h/fTl7Zd2bQJnR16Dpt76+ox6JnqCUof/Y/31Q==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:2fcd:1452:4b71:155d])
- (user=elver job=sendgmr) by 2002:a05:600c:3b0d:: with SMTP id
- m13mr74661wms.1.1629888937741; Wed, 25 Aug 2021 03:55:37 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 12:55:33 +0200
-Message-Id: <20210825105533.1247922-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH] kfence: test: fail fast if disabled at boot
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QtpP3tcoZvxE8r2Ab9yioe6Y4u6iLyGn82K3C5J43jA=;
+        b=R20Y63qtaw/mlgvW7YZZzyDrzXeiqhRJ0vDQGtZMZtxZECMIPiqgDq0NCIAB39oiYy
+         qJFMJDkPYtOv8h753ZbfFqfEMkdaoTqEpxGxXd+NlyDY7mUY3/sCN0pFCAbS4MKR3mlM
+         Qpk6G7hJZIzexU8S5F10d+3p/yS2L2icxdi2N+EVKcde+tZFJBybsvgg8B/OvDI+PgyL
+         sfWxodZH2zZOlpRgcyU38kHZGcc7JWZQdPxIXdZ9M+64INyqVcwrXelK198hd9rT4NkI
+         r54e1ft10miau6TesxXkrmKG8EDwtpn1uNAlXRTkDigt7iNj8NdvMMIAjRy5HKmXr5JV
+         EA4A==
+X-Gm-Message-State: AOAM530ZKnz05uFB7a0pOoVqRRNkzbRki45VG/e1qZeV1hLhOOvVLtPD
+        nwC48NgbfkrqYsOA9enwm9QdWA==
+X-Google-Smtp-Source: ABdhPJzrj4+3MI11jLaGBq0hL07XTV+UItEI1ZTgzm6xno7sNLnnF9Le1KkUIoPefOoMqAoC/DTFQQ==
+X-Received: by 2002:a05:600c:4fc6:: with SMTP id o6mr8926193wmq.122.1629889048587;
+        Wed, 25 Aug 2021 03:57:28 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:2fcd:1452:4b71:155d])
+        by smtp.gmail.com with ESMTPSA id d7sm21305866wrs.39.2021.08.25.03.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 03:57:27 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 12:57:22 +0200
 From:   Marco Elver <elver@google.com>
-To:     elver@google.com, akpm@linux-foundation.org
-Cc:     glider@google.com, dvyukov@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kasan-dev@googlegroups.com,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 0/4] ARM: Support KFENCE feature
+Message-ID: <YSYiEgEcW1Ln3+9P@elver.google.com>
+References: <20210825092116.149975-1-wangkefeng.wang@huawei.com>
+ <CANpmjNMnU5P9xsDhgeBKQR7Tg-3cHPkMNx7906yYwEAj85sNWg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMnU5P9xsDhgeBKQR7Tg-3cHPkMNx7906yYwEAj85sNWg@mail.gmail.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fail kfence_test fast if KFENCE was disabled at boot, instead of each
-test case trying several seconds to allocate from KFENCE and failing.
-KUnit will fail all test cases if kunit_suite::init returns an error.
+On Wed, Aug 25, 2021 at 12:14PM +0200, Marco Elver wrote:
+> On Wed, 25 Aug 2021 at 11:17, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+> > The patch 1~3 is to support KFENCE feature on ARM.
+> >
+> > NOTE:
+> > The context of patch2/3 changes in arch/arm/mm/fault.c is based on link[1],
+> > which make some refactor and cleanup about page fault.
+> >
+> > kfence_test is not useful when kfence is not enabled, skip kfence test
+> > when kfence not enabled in patch4.
+> >
+> > I tested the kfence_test on ARM QEMU with or without ARM_LPAE and all passed.
+> 
+> Thank you for enabling KFENCE on ARM -- I'll leave arch-code review to
+> an ARM maintainer.
+> 
+> However, as said on the patch, please drop the change to the
+> kfence_test and associated changes. This is working as intended; while
+> you claim that it takes a long time to run when disabled, when running
+> manually you just should not run it when disabled. There are CI
+> systems that rely on the KUnit test output and the fact that the
+> various test cases say "not ok" etc. Changing that would mean such CI
+> systems would no longer fail if KFENCE was accidentally disabled (once
+> KFENCE is enabled on various CI, which we'd like to do at some point).
+> There are ways to fail the test faster, but they all complicate the
+> test for no good reason. (And the addition of a new exported function
+> that is essentially useless.)
 
-Even if KFENCE was disabled, we still want the test to fail, so that CI
-systems that parse KUnit output will alert on KFENCE being disabled
-(accidentally or otherwise).
+I spoke too soon -- we export __kfence_pool, and that's good enough to
+fail the test fast if KFENCE was disabled at boot:
 
-Reported-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Marco Elver <elver@google.com>
----
- mm/kfence/kfence_test.c | 3 +++
- 1 file changed, 3 insertions(+)
+	https://lkml.kernel.org/r/20210825105533.1247922-1-elver@google.com
 
-diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-index eb6307c199ea..f1690cf54199 100644
---- a/mm/kfence/kfence_test.c
-+++ b/mm/kfence/kfence_test.c
-@@ -800,6 +800,9 @@ static int test_init(struct kunit *test)
- 	unsigned long flags;
- 	int i;
- 
-+	if (!__kfence_pool)
-+		return -EINVAL;
-+
- 	spin_lock_irqsave(&observed.lock, flags);
- 	for (i = 0; i < ARRAY_SIZE(observed.lines); i++)
- 		observed.lines[i][0] = '\0';
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
+will do the trick. So please drop your patch 4/4 here.
 
+Thanks,
+-- Marco
