@@ -2,98 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2373F6F56
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866913F6F58
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238513AbhHYGUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:20:32 -0400
-Received: from mx439.baidu.com ([119.249.100.103]:26052 "EHLO mx419.baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237993AbhHYGUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:20:31 -0400
-Received: from bjhw-sys-rpm015653cc5.bjhw.baidu.com (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
-        by mx419.baidu.com (Postfix) with ESMTP id 5620118183D37;
-        Wed, 25 Aug 2021 14:19:43 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by bjhw-sys-rpm015653cc5.bjhw.baidu.com (Postfix) with ESMTP id 4A87AD9932;
-        Wed, 25 Aug 2021 14:19:43 +0800 (CST)
-From:   Li RongQing <lirongqing@baidu.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        lirongqing@baidu.com
-Subject: 
-Date:   Wed, 25 Aug 2021 14:19:43 +0800
-Message-Id: <1629872383-2505-1-git-send-email-lirongqing@baidu.com>
-X-Mailer: git-send-email 1.7.1
+        id S238873AbhHYGUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237993AbhHYGUj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 02:20:39 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F1FC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:19:54 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id c4so13689372plh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:19:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
+        b=tpJTocA41Qml+Cs8XyVU28gtZZcnhnKinnda3Ce3X9cQ/L6uTQjwLUDH++HLfGOdrX
+         0manMLsedsBD36T72eMp5HTPgSjsKSD7/WcUle7b2nU3E1eBuHA+koPxi4WK0bZ+bU4i
+         jFnO+IcH6VnQgagw3KFwQiqWVWbneEQyCnQnxhrIeva6BJ3LBrLaHBKVy9aIj53BEnWC
+         TmNjofFHIx/CsH4qjnobj2q9c6SwgSTEHMR+/Yk85rIbZklbkoIwls9qXPNAkwFPAnAy
+         jXdf7I4RfTw4ju7vd0R2D/xIZKv9bP3IeNAZEcG7POILOaLp5Tvgfl8iqcQbrwVV/5lc
+         +mCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
+        b=moIiCZxBLfjPDPFvyjoF2DNq+QBuk28aCar694TOcuvtQMLYRJZBb+eTFVdn7y/NC4
+         O9faj/ilOYo/5UIj854qG9LejmmdotWv3b+OmfEo8vpoB1QVyKGZterbFs8LO4rtQije
+         11NNHRETrQTEAK0IOv2/L+8LfvJzJT2lIuwLeoAFw3zmpRA3ugCCxzzsMpNEckhBzH5z
+         1btCWmDrHkWT8TLFJXdtfIBCj5mk8eyJMhyOk2IAaoARFAFejScIi4j9u9ump+ETAzDn
+         1bzEZe+sm+EuSU0OgJSd+xhIC6+djTOa0HY+BgQVYzxPlfxf+4serKMFLKzKHyLJgojH
+         Eutg==
+X-Gm-Message-State: AOAM530IhCVfj9xnmn8BV9Pnr88sDnEeW6Xnfb2zXRxZ6ibArpg31DKg
+        I0InQbNHR1jAw32dL0fHwofoKzqiPIncVr8mvhU=
+X-Google-Smtp-Source: ABdhPJxkBukUdfSaXCpRXbg/0GsHGssa258fKQjwj08jsk/Oo9YDx+2OKe7rJPDX4agMeQdHVHh7kXwglir2O6C1iHc=
+X-Received: by 2002:a17:902:fe81:b0:133:851e:5923 with SMTP id
+ x1-20020a170902fe8100b00133851e5923mr14991519plm.25.1629872393427; Tue, 24
+ Aug 2021 23:19:53 -0700 (PDT)
+MIME-Version: 1.0
+Reply-To: godwinppter@gmail.com
+Sender: dr.nikitarehan@gmail.com
+Received: by 2002:a05:6a10:f491:0:0:0:0 with HTTP; Tue, 24 Aug 2021 23:19:52
+ -0700 (PDT)
+From:   Godwin Pete <godwinnpeter@gmail.com>
+Date:   Wed, 25 Aug 2021 08:19:52 +0200
+X-Google-Sender-Auth: QMsPVY0gUlzIpfR263icErRrdO8
+Message-ID: <CALd83H0UmMKQsbd_4erC0v5RFcCwcNWCYb55aQReHPH4j9ZbZg@mail.gmail.com>
+Subject: Important message to you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only check the skip buddy when next buddy and last buddy
-are not picked up, this can save the cycles of checking
-the skip buddy and computation of the second buddy, when
-next and last buddy will be picked up
-for example, yield_to_task_fair() set both next and skip
-buddy
+My good friend,
 
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
----
- kernel/sched/fair.c | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
+I just want to know if you, can help me to transfer the amount of
+($6Million). After the transfer we have to share it, 50% for me, and
+50% for you. Please let me know if you can help me for more
+information in regards with the transfer. I hope you can work with me
+honestly?
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 44c452072a1b..9c6569ddf3eb 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4503,11 +4503,22 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
- 
- 	se = left; /* ideally we run the leftmost entity */
- 
--	/*
--	 * Avoid running the skip buddy, if running something else can
--	 * be done without getting too unfair.
--	 */
--	if (cfs_rq->skip && cfs_rq->skip == se) {
-+
-+	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
-+		/*
-+		 * Someone really wants this to run. If it's not unfair, run it.
-+		 */
-+		se = cfs_rq->next;
-+	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
-+		/*
-+		 * Prefer last buddy, try to return the CPU to a preempted task.
-+		 */
-+		se = cfs_rq->last;
-+	} else if (cfs_rq->skip && cfs_rq->skip == se) {
-+		/*
-+		 * Avoid running the skip buddy, if running something else can
-+		 * be done without getting too unfair.
-+		 */
- 		struct sched_entity *second;
- 
- 		if (se == curr) {
-@@ -4522,18 +4533,6 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
- 			se = second;
- 	}
- 
--	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
--		/*
--		 * Someone really wants this to run. If it's not unfair, run it.
--		 */
--		se = cfs_rq->next;
--	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
--		/*
--		 * Prefer last buddy, try to return the CPU to a preempted task.
--		 */
--		se = cfs_rq->last;
--	}
--
- 	return se;
- }
- 
--- 
-2.33.0.69.gc420321.dirty
 
+Thanks.
+
+Godwin Peter,
