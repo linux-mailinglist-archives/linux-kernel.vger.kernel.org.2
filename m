@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9F93F76AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946AD3F76B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240704AbhHYN7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 09:59:47 -0400
-Received: from esa3.mentor.iphmx.com ([68.232.137.180]:53856 "EHLO
-        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232058AbhHYN7q (ORCPT
+        id S240571AbhHYOAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232058AbhHYOAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 09:59:46 -0400
-IronPort-SDR: 5c3Zyep2JLRD8+wLRpZVe3AoaXiLoTYnLk1kGRSOHiomBfUl3qMxGc/6Q9AjDUO0GcE0Yhj5xQ
- V58EHPUh3hx17ryLq966sNgnuZSrZeva57bz7xuwfmCGJ8AiwE1EABDBe+cXHOJyVpzOlWBW9h
- Vo2naqeJyQjuVTq8AHWs5FRbQ626HGEvpEl3kBFcr99rF3IB2UDbYZSc70GirR5idh32bgsxtM
- WfI0BxQHGZ0KZ28N8mxYbvtgOuthaTVz1JtGIuNGgRieJ3wCi9KB26ANsBNPjx86oF3POYJI77
- tcOubP/b0M8X4JgHdSpsRAV3
-X-IronPort-AV: E=Sophos;i="5.84,350,1620720000"; 
-   d="scan'208";a="65095157"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
-  by esa3.mentor.iphmx.com with ESMTP; 25 Aug 2021 05:59:01 -0800
-IronPort-SDR: DA+BhndMeNe0SoZixKpNKA6Ap9wxyrw+2VEhDQpoiTYNDaOj6zyP8bSOGZSDPnP/Ip4ygW5ElQ
- kQ7jR94Yo1NrSqZx/SqCPjhpLbd1XNgjy6Lt6ijBw7F+r0n+cIPWnCCmxC9UKJN2yDlPBV8hQn
- 9o48U8Za8hSxV7CBLmvWCV09rwMNwPe+I1v8A62P9GEAsDR1qKkVCg1Sy7OMLtQZI48q/vfz3o
- oqn0UmOUAtY1/M+6clbmuhbDIJKuJhbKo1vTtptDHPmUzYl3fM1esqmgNrt2eAjzPJSppqgzrN
- kA8=
-From:   "George G. Davis" <george_davis@mentor.com>
-To:     Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     <george_davis@mentor.com>, Eugeniu Rosca <erosca@de.adit-jv.com>,
-        "George G. Davis" <davis.george@siemens.com>
-Subject: [RFC][PATCH] selftests/vm/transhuge-stress: fix ram size thinko
-Date:   Wed, 25 Aug 2021 09:58:43 -0400
-Message-ID: <20210825135843.29052-1-george_davis@mentor.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 25 Aug 2021 10:00:36 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558AEC061757;
+        Wed, 25 Aug 2021 06:59:50 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6440C24F;
+        Wed, 25 Aug 2021 15:59:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1629899987;
+        bh=lAmUs2tEJMT77bx/hltss4KbUysanylpuQF7pGqzjI8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W/KpBlPGtnBk7vh4xNcqJn+SPcuecSu9D8RHULsAnQOfc7Byhh2czJeuH1ioEeBSi
+         XvGveC5Arnp8bgsmcMIQyHs3xmjKNF9NH/YvI6SPSJ3aviDmCkh7mSer25sEjE0Old
+         9lejdGCJD4QLhkuKtKwqRql2hDb3sRICevYNpW0M=
+Date:   Wed, 25 Aug 2021 16:59:35 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        sailues@pendragon.ideasonboard.com
+Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
+Message-ID: <YSZMxxJ76vF316Pi@pendragon.ideasonboard.com>
+References: <20210824230620.1003828-1-djrscally@gmail.com>
+ <20210824230620.1003828-2-djrscally@gmail.com>
+ <20210825103301.GC5186@sirena.org.uk>
+ <CAHp75VdHpjbjz4biTP11TKT6J+7WQi-a1Ru3VLuSxM5tSLCB3Q@mail.gmail.com>
+ <20210825113013.GD5186@sirena.org.uk>
+ <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
+ <20210825131139.GG5186@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201) To
- svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210825131139.GG5186@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "George G. Davis" <davis.george@siemens.com>
+Hello,
 
-When executing transhuge-stress with an argument to specify the virtual
-memory size for testing, the ram size is reported as 0, e.g.
+CC'ing Sakari.
 
-transhuge-stress 384
-thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 0 MiB of ram
-thp-mmap: 0.184 s/loop, 0.957 ms/page,   2090.265 MiB/s  192 succeed,    0 failed
+On Wed, Aug 25, 2021 at 02:11:39PM +0100, Mark Brown wrote:
+> On Wed, Aug 25, 2021 at 03:26:37PM +0300, Andy Shevchenko wrote:
+> > On Wed, Aug 25, 2021 at 2:30 PM Mark Brown <broonie@kernel.org> wrote:
+> 
+> > > No, what was proposed for regulator was to duplicate all the the DT
+> > > binding code in the regulator framework so it parses fwnodes then have
+> > > an API for encoding fwnodes from C data structures at runtime.  The bit
+> > > where the data gets joined up with the devices isn't the problem, it's
+> > > the duplication and fragility introduced by encoding everything into
+> > > an intermediate representation that has no purpose and passing that
+> > > around which is the problem.
+> 
+> > The whole exercise with swnode is to minimize the driver intrusion and
+> > evolving a unified way for (some) of the device properties. V4L2 won't
+> 
+> The practical implementation for regulators was to duplicate a
+> substantial amount of code in the core in order to give us a less type
+> safe and more indirect way of passing data from onen C file in the
+> kernel to another.  This proposal is a lot better in that it uses the
+> existing init_data and avoids the huge amounts of duplication, it's just
+> not clear from the changelog why it's doing this in a regulator specific
+> manner.
+> 
+> *Please* stop trying to force swnodes in everywhere, take on board the
+> feedback about why the swnode implementation is completely inappropriate
+> for regulators.  I don't understand why you continue to push this so
+> hard.  swnodes and fwnodes are a solution to a specific problem, they're
+> not the answer to every problem out there and having to rehash this
+> continually is getting in the way of actually discussing practical
+> workarounds for these poorly implemented ACPI platforms.
+> 
+> > like what you are suggesting exactly because they don't like the idea
+> > of spreading the board code over the drivers. In some cases it might
+> > even be not so straightforward and easy.
+> 
+> > Laurent, do I understand correctly the v4l2 expectations?
+> 
+> There will be some cases where swnodes make sense, for example where the
+> data is going to be read through the fwnode API since the binding is
+> firmware neutral which I think is the v4l case.  On the other hand
+> having a direct C representation is a very common way of implementing
+> DMI quirk tables, and we have things like the regulator API where
+> there's off the shelf platform data support and we actively don't want
+> to support fwnode.
 
-This appears to be due to a thinko in commit 0085d61fe05e
-("selftests/vm/transhuge-stress: stress test for memory compaction"),
-where, at a guess, the intent was to base "xyz MiB of ram" on `ram`
-size. Here are results after using `ram` size:
+From a camera sensor point of view, we want to avoid code duplication.
+Having to look for regulators using OF lookups *and* platform data in
+every single sensor driver is not a good solution. This means that, from
+a camera sensor driver point of view, we want to call regulator_get()
+(or the devm_ version) with a name, without caring about who establishes
+the mapping and how the lookup is performed. I don't care much
+personally if this would be implemented through swnode or a different
+mechanism, as long as the implementation can be centralized.
 
-thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 14 MiB of ram
-
-Fixes: 0085d61fe05e ("selftests/vm/transhuge-stress: stress test for memory compaction")
-Signed-off-by: George G. Davis <davis.george@siemens.com>
----
- tools/testing/selftests/vm/transhuge-stress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/vm/transhuge-stress.c b/tools/testing/selftests/vm/transhuge-stress.c
-index fd7f1b4a96f9..5e4c036f6ad3 100644
---- a/tools/testing/selftests/vm/transhuge-stress.c
-+++ b/tools/testing/selftests/vm/transhuge-stress.c
-@@ -79,7 +79,7 @@ int main(int argc, char **argv)
- 
- 	warnx("allocate %zd transhuge pages, using %zd MiB virtual memory"
- 	      " and %zd MiB of ram", len >> HPAGE_SHIFT, len >> 20,
--	      len >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
-+	      ram >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
- 
- 	pagemap_fd = open("/proc/self/pagemap", O_RDONLY);
- 	if (pagemap_fd < 0)
 -- 
-2.17.1
+Regards,
 
+Laurent Pinchart
