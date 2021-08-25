@@ -2,146 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B483F6CAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 02:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5E93F6CC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 02:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236497AbhHYAlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 20:41:36 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:58504 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbhHYAlf (ORCPT
+        id S236690AbhHYAxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 20:53:15 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:45912 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231552AbhHYAxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 20:41:35 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210825004048epoutp015683af2e64ada56bc39804bd93218b1b~eZc2LXtY22032620326epoutp01K
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:40:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210825004048epoutp015683af2e64ada56bc39804bd93218b1b~eZc2LXtY22032620326epoutp01K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629852048;
-        bh=unTxR2PJHykOCdGTf9IQjXBkO7hDDOb5l/Ye/+bTnQk=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=WY0BLvVit1Were4cRZ0Otc7mbtZjLAjv+Mv7T2dvu4bjxaRUfVbLK5ku+Ey+UsRVa
-         CUpeP6+/Nn11NGM8KyHcWtyXnPeNZ+5N3ehKeErUQdjdEhRvwu/bxApLhnGMm9OdWG
-         nddBKcYxdG/+/pYdM/KubC6e3VAmGOHgdkHrQ/70=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210825004047epcas1p41075151ef676e546e56554fdce7fc1e4~eZc1OJnSA0206102061epcas1p40;
-        Wed, 25 Aug 2021 00:40:47 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.38.247]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4GvRwX14yfz4x9Pr; Wed, 25 Aug
-        2021 00:40:44 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        23.4D.09752.B8195216; Wed, 25 Aug 2021 09:40:44 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210825004043epcas1p33ca4a682a765e1270258bba083fe66d6~eZcxbH5s82036720367epcas1p3m;
-        Wed, 25 Aug 2021 00:40:43 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210825004043epsmtrp1e6f7adcb57297853da7fd7b0711d7ca0~eZcxaQBAV0321603216epsmtrp1h;
-        Wed, 25 Aug 2021 00:40:43 +0000 (GMT)
-X-AuditID: b6c32a39-691ff70000002618-80-6125918bb7a7
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        70.EC.09091.B8195216; Wed, 25 Aug 2021 09:40:43 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210825004043epsmtip26ce69c83e15ab0079cca7a4641b1c8b5~eZcxLZsN_0285502855epsmtip24;
-        Wed, 25 Aug 2021 00:40:43 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        cw9316.lee@samsung.com, colyli@suse.de, axboe@kernel.dk,
-        ebiggers@google.com, pcc@google.com, porzio@gmail.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com
-Subject: [PATCH] mmc: queue: Remove unused parameters(request_queue)
-Date:   Wed, 25 Aug 2021 09:33:18 +0900
-Message-Id: <20210825003318.31574-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Tue, 24 Aug 2021 20:53:13 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 16DF924F;
+        Wed, 25 Aug 2021 02:52:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1629852747;
+        bh=JSX+eIc5qupFysL0niEfUn0bVolKk25/tqbDq21qDC8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XJwA3TbwGuTcQ8wpT8x+qefdiCudHy7/ygQFFieciR6uEo5qL6AnlSC7TrxIK5xPr
+         Hs/J9c45REr3P9IQMlxM0+8E0o0zQYCC7Up8qAw6w6CoDj0e7zIipoDDsvaMifFa45
+         54OtTUUxrlLuwr6yFF6G2od1UBsuR8V7hj9VMLeU=
+Date:   Wed, 25 Aug 2021 03:52:16 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     linux-media@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: Request API is no longer experimental
+Message-ID: <YSWUQJfbucB5jQga@pendragon.ideasonboard.com>
+References: <20210825002337.6561-1-ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPJsWRmVeSWpSXmKPExsWy7bCmrm7PRNVEg9ZrzBYnn6xhs1h9t5/N
-        YnrjeXaLGafaWC32XTvJbnFxdQurxa+/69ktdjw/w25xedccNosj//sZLfrvXGezeLXsIptF
-        0599LBbH14Y78HnsnHWX3WPBplKPxXteMnlcPlvqcefaHjaPvi2rGD02n672+LxJLoAjKtsm
-        IzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJxSdA1y0zB+hoJYWyxJxS
-        oFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BWYFecWJucWleul5eaomVoYGBkSlQYUJ2xrH2
-        l4wF1zkrzn9fyN7AOI2ji5GTQ0LARGLBjsUsXYxcHEICOxgl/s+bxQrhfGKUuNj2Fcr5xihx
-        clE/E0zLzUP7mSESexkl7h9rg3K+MEo82dsO5HBwsAloSdw+5g0SFxF4wCix6sAcdpBuZoEU
-        iVc971hAbGEBF4mpR5pYQWwWAVWJK5NWgvXyClhLfFgZALFMXuLP/R5mEJtXQFDi5MwnLBBj
-        5CWat84G2yshMJVDovXSXXaIBheJt7272CBsYYlXx7dAxaUkXva3sUM0NDNKnJp9DsppYZR4
-        feUGVJWxxKfPnxlBrmAW0JRYv0sfIqwosfP3XEaIzXwS7772sIKUSAjwSnS0CUGUqEjM6TrH
-        BrPr443HrBC2h8SCC+1gDwgJxEqsPPKSfQKj/Cwk/8xC8s8shMULGJlXMYqlFhTnpqcWGxaY
-        wqM1OT93EyM45WpZ7mCc/vaD3iFGJg7GQ4wSHMxKIrx/mZQThXhTEiurUovy44tKc1KLDzGa
-        AgN4IrOUaHI+MOnnlcQbmlgamJgZmVgYWxqbKYnzMr6SSRQSSE8sSc1OTS1ILYLpY+LglGpg
-        WpttqZnG2lwS/9xZ8/AK80dfrJ5MPvjj/g3PpVy5D5MjPKcc4OXcc7Pd7ahiw0SXtyVmW360
-        tE1f9UR3S+GGS13ukutOTkjlPWBTWBQoek7NdXpJTmp0o3D09Ri5Bd77Aj33flMWvro6cbev
-        a0vmmYubg15ZFxxjlmfVX5syxYozZtuuT9OEPptP+GaX0VJ++qTMxC3Kb7uncIfstttyZT97
-        fpNN1s53f6QOJRyNS/juPaelXmONcvutNzov3/ysEJq+fhuPHB+zdfpcjwT3lS+l4h8VfbL6
-        1D97nmV/0m/GMP5bc7reFbvM/M+pl7x71kPOn2fvh6w8Fc4/92ZWnirjg2YjnkWh7/02bFmU
-        qcRSnJFoqMVcVJwIAB9GjJBCBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNLMWRmVeSWpSXmKPExsWy7bCSvG73RNVEg/s3JS1OPlnDZrH6bj+b
-        xfTG8+wWM061sVrsu3aS3eLi6hZWi19/17Nb7Hh+ht3i8q45bBZH/vczWvTfuc5m8WrZRTaL
-        pj/7WCyOrw134PPYOesuu8eCTaUei/e8ZPK4fLbU4861PWwefVtWMXpsPl3t8XmTXABHFJdN
-        SmpOZllqkb5dAlfGsfaXjAXXOSvOf1/I3sA4jaOLkZNDQsBE4uah/cxdjFwcQgK7GSV+7fjG
-        BpGQkti9/zyQzQFkC0scPlwMUfOJUeLQ34ssIHE2AS2J28e8QeIiAu8YJXa8/80E0ssskCHx
-        7eMJMFtYwEVi6pEmVhCbRUBV4sqklcwgvbwC1hIfVgZArJKX+HO/hxnE5hUQlDg58wkLxBh5
-        ieats5knMPLNQpKahSS1gJFpFaNkakFxbnpusWGBYV5quV5xYm5xaV66XnJ+7iZGcPhrae5g
-        3L7qg94hRiYOxkOMEhzMSiK8f5mUE4V4UxIrq1KL8uOLSnNSiw8xSnOwKInzXug6GS8kkJ5Y
-        kpqdmlqQWgSTZeLglGpgirKW8r0XWj91rt/27SJfNPbaWq1ROPrBXHz5GyvrZKG+rTVC5uvN
-        33SkV9q0rnlZs8HKd/vb1EqOrPfHTZeUPtqtsbtKttAgYupN7vsrFDwFvvSUv1y5f8ndrAv/
-        /vgeXa/Xw693Ys6x2UY9tzJ6OC01pp9tvLloLm+T4bnty6zmnzCfMf3NTEuta62ZbS8VZz2L
-        8dk8Z3N709mt3And+fuubonzvXDQ8jqL5Js9BRrWTLffnjLy15m97MOOH9ecvLSjFHKteeIj
-        2Vk2bY8qjXVZr8BvqVVkpBD1dfrUU6zbJ3i+mik9dYPyxyu6mWL8mcq5Nf/aBcsEpHWVVI8I
-        b33Ssntmxsz1HeKrnNp3KLEUZyQaajEXFScCADOvghTuAgAA
-X-CMS-MailID: 20210825004043epcas1p33ca4a682a765e1270258bba083fe66d6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210825004043epcas1p33ca4a682a765e1270258bba083fe66d6
-References: <CGME20210825004043epcas1p33ca4a682a765e1270258bba083fe66d6@epcas1p3.samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210825002337.6561-1-ezequiel@vanguardiasur.com.ar>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
+Hi Ezequiel,
 
-In function mmc_exit_request, the request_queue structure(*q) is not used.
-I remove the unnecessary code related to the request_queue structure.
+Thank you for the patch.
 
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
----
- drivers/mmc/core/queue.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On Tue, Aug 24, 2021 at 09:23:37PM -0300, Ezequiel Garcia wrote:
+> The Request API is currently used and specified as part of the
+> Memory-to-memory Stateless Video Decoder Interface [1].
+> 
+> This can now be considered as non-experimental and stable, given
+> the decoder API has been used by products since a couple years,
+> supported by several drivers and userspace frameworks,
 
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index cc3261777637..b742385361e4 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -219,7 +219,7 @@ static int __mmc_init_request(struct mmc_queue *mq, struct request *req,
- 	return 0;
- }
- 
--static void mmc_exit_request(struct request_queue *q, struct request *req)
-+static void mmc_exit_request(struct request *req)
- {
- 	struct mmc_queue_req *mq_rq = req_to_mmc_queue_req(req);
- 
-@@ -236,9 +236,7 @@ static int mmc_mq_init_request(struct blk_mq_tag_set *set, struct request *req,
- static void mmc_mq_exit_request(struct blk_mq_tag_set *set, struct request *req,
- 				unsigned int hctx_idx)
- {
--	struct mmc_queue *mq = set->driver_data;
--
--	mmc_exit_request(mq->queue, req);
-+	mmc_exit_request(req);
- }
- 
- static blk_status_t mmc_mq_queue_rq(struct blk_mq_hw_ctx *hctx,
+This effectively aligns the kernel with the de facto situation, so
+
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> [1] Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> ---
+>  drivers/media/mc/Kconfig | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/drivers/media/mc/Kconfig b/drivers/media/mc/Kconfig
+> index 4815b9dde9af..375b09612981 100644
+> --- a/drivers/media/mc/Kconfig
+> +++ b/drivers/media/mc/Kconfig
+> @@ -16,13 +16,5 @@ config MEDIA_CONTROLLER_REQUEST_API
+>  	bool
+>  	depends on MEDIA_CONTROLLER
+>  	help
+> -	  DO NOT ENABLE THIS OPTION UNLESS YOU KNOW WHAT YOU'RE DOING.
+> -
+>  	  This option enables the Request API for the Media controller and V4L2
+>  	  interfaces. It is currently needed by a few stateless codec drivers.
+> -
+> -	  There is currently no intention to provide API or ABI stability for
+> -	  this new API as of yet.
+> -
+> -comment "Please notice that the enabled Media controller Request API is EXPERIMENTAL"
+> -	depends on MEDIA_CONTROLLER_REQUEST_API
+
 -- 
-2.29.0
+Regards,
 
+Laurent Pinchart
