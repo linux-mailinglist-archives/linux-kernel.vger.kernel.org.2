@@ -2,162 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B609A3F74F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B413F750D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240831AbhHYMTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 08:19:31 -0400
-Received: from mail-bn1nam07on2059.outbound.protection.outlook.com ([40.107.212.59]:8162
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240680AbhHYMT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 08:19:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=STl1Vk4FlnptiZzgjxT0GRGzzb8mpwxUjFc2f4XskTOxPosMMPnW69SJRUyqJZK/NUJ6cfA7LHSV5xG4QPN62l6phrItZZ4RMRtqoHgKIVgd8jvVG8UTYuL+Vs/r1kJT11Wk+fzIKGK48q2GiBBrKny8J7mRel/x6+NCTA70A/h8hryujXycyr2vdJI/KEz43zN8qBALG3sL9WfJh0B+s0n5VcfP/WgBca+HurcgAqjXw/qBwatEonYrd/g2XX5AEANTDwXHBQPx6whPELXbNQAJtoL10p8B+1enIuRhLZkQNybNuokd1tXy3erHgLsJ9B5hkoeemLkD/LLKSboDhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+ml52sVTKQvbTnRZ9M+5hW9T/l85b2oSs8TP//zrJRM=;
- b=BeS1s8WTL6S2rHkJCchLDliA/oi6UCPm6caohLPyzD6Dz29PZ8PDi2//WzddBoj0yxzygbSDN9+/zp1eSbqAR5cy7kvxF9cF7hX7nsGfY7gN0X3Q+2CSbZlDrQrNvPlSkuKjN+suXYIhjpK1lEtFOVgrVYCoWuahaEwUPPWo75yomjkHntKZ9D97WgaOoHAw3Sb0PMkTuOEA2u3QAxCY+t2If5xXrIDkbwKy9kBKT+OR9yHPj+tQdndyAv6fBWrGdkp71mVe5hDrktx9ZmuhmbfCLrl5Q4sMXuoRzRaHvZFD8ZQfeFhZd39ahtQAproFnpCWWuaZFn3w9LKcnuVMYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+ml52sVTKQvbTnRZ9M+5hW9T/l85b2oSs8TP//zrJRM=;
- b=U3fcnB0ELx5zQ5THggDV+qrXbK3pyixYVUlEMCtXRMbOurXdZQu/uKv9lz3ZBWOmhRRE8DbcCUo8APfM3UoP85ErkTUwzn0uifIGdUmTTQtXN/1mDbDM4/WuUJ/OEZjNCPz5xyjt0OanwY6REYF1zKYoHd4r8TZyGewdfBNVR2eR1uJR4Yed7zO0xTXInUVXE+x6q8maj0faqfi7XZQktvdaZ6S2FUEAzU4tRBBPRgdKJyigRmQYC92hx6tRbLoBuf3yqTwaXPxhWozpZMjeZ+WWGRcxMv5Snk2oSHMn9K1jXHudl4ugweu9gPrBIpvSTFT4ep9a8CkVQJeHJYE/bg==
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5159.namprd12.prod.outlook.com (2603:10b6:208:318::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Wed, 25 Aug
- 2021 12:18:34 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
- 12:18:34 +0000
-Date:   Wed, 25 Aug 2021 09:18:32 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>
-Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
-Message-ID: <20210825121832.GA1162709@nvidia.com>
-References: <20210820123316.GV543798@ziepe.ca>
- <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
- <20210820143248.GX543798@ziepe.ca>
- <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
- <fa124990-ee0c-7401-019e-08109e338042@amd.com>
- <e2c47256-de89-7eaa-e5c2-5b96efcec834@amazon.com>
- <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com>
- <a9604a39-d08f-6263-4c5b-a2bc9a70583d@nvidia.com>
- <20210824173228.GE543798@ziepe.ca>
- <a716ae41-2d8c-c75a-a779-cc85b189fea2@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a716ae41-2d8c-c75a-a779-cc85b189fea2@amd.com>
-X-ClientProxiedBy: BL1P222CA0014.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:208:2c7::19) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S240372AbhHYM2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 08:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238179AbhHYM2C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 08:28:02 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C42C061757;
+        Wed, 25 Aug 2021 05:27:17 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so4087328pjb.0;
+        Wed, 25 Aug 2021 05:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iNKX6kte1iNRhPEzpqLRtyhooTzsRJn7cqOtbK5zh1o=;
+        b=RrHIJG9yv2DEEvyh5gfGeLkFD8bxdojR0zv4glu2F3MiBzpcIyPeeO1G5FLpHQCAod
+         V0ELxjK+cQmjNz4oVzR1NUIjdWle+fR9z8z9vcJZbqbcQyaRB35vrpT3AJtqzbqbajOg
+         UDXq/8OkUn9UD2Fbt7VRwdbXQJFDg083KQEOUvHJzAkjEoaiES7drHAzd/wh53SqK/0g
+         9iJoDqukGQCOr3Bxx+4w3QatwzBqIT0jboklH0s/q76nTpxB66T58C/v/T4dLjB4ifmM
+         gpY+0dJNgWKIZuw2syQ1GmLq/vo7LnhX2aAc36M9prHFYbjMsh4Q0xpqc5ZxjcyW43JI
+         KQ5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iNKX6kte1iNRhPEzpqLRtyhooTzsRJn7cqOtbK5zh1o=;
+        b=Mkb41DoiFFl5uKjAt+4N2Qdzc7yWSnv7iI1NxNIiRVmx8MLuhEykN7B8MfrtcZjY+5
+         NC+H3QZ4gkQUGGnM1TXs5dGHc8Np3AEt7ICRpj9pw72CGwuKqmsF1KVFWGJ45HJqRunD
+         bntoIr5u9tevtNQAX2azZABL2JMP8xaC9+z1TfQT6bXap76H3yylsfWZMGysVQz5GG/K
+         A2gy49csWaC9LUdbif9s7SAQv/7kZMMrL31QKi6JXJHkwaVsqMfAz4qwqm+Q6p4E+VMs
+         cDCn5/VH4K4AejLyxjoTL64gyecA9c/6M2Vhp6kdY01H9LNmy90gAi9W4I1bXfm9iDiy
+         tlZg==
+X-Gm-Message-State: AOAM531Q47+v0EvvGtmOp//I1VeI52eHjC8iC8ojkqGAqh+SAIEkj57W
+        K4Y52d5Gbfp+zf7N4a0CKJ1KRXBP2Y43A8o0RR0=
+X-Google-Smtp-Source: ABdhPJy+++7Qxj9HojT3j1mXVW91uKkfhtM0CxpsjyZwE6itRoElj7WqxGhQimB+XgdGNp1KvcGUJ1H3b2fk0E8Z5X4=
+X-Received: by 2002:a17:902:ced0:b029:12d:4ce1:ce3a with SMTP id
+ d16-20020a170902ced0b029012d4ce1ce3amr37854408plg.0.1629894436695; Wed, 25
+ Aug 2021 05:27:16 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1P222CA0014.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Wed, 25 Aug 2021 12:18:33 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIrrU-004sY9-Mi; Wed, 25 Aug 2021 09:18:32 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a0a6bf21-0972-4e60-c0d6-08d967c27525
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5159:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB515904A4BFF8876199914058C2C69@BL1PR12MB5159.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jafOpewWunYo3aVUJXRi40/2w3WTqVaotCsRR09TJw8Cv7dzrQYLrq+2/Y/1ZhOZoxlGBVYKRHi0FckAtTrmaOR8EI+ZW8YoZGv+THTPVksNTvlYMNmjQUyjZO2nS9U1VxGuqRUV/9NmWE+HT9WqBuW599zqcE1sa2JyH9Lahx0CqACs4Ez4lLdnD5qitMsGy09qiM6ifJA0F0gyIiKwUOAbgYh2oDikfh/O4fEACA8XLNNzRsilcxIg69Ld4pqnO4uvhKo8s7oxr7e0BYzj/pGNSEVWE2yHZGBkxfP7+di7zQXO7uGjQyYs32voxsCj0JfegGgoEGI1lRxjToJ7nUbSju2IeZVFtfYTZ7275cDcCONQaZL/D1d3VLKWe15EjOYASsDOmQQQFR9SLNWqq2v9o2cCF5iB4B8HQ3V5gfcZWo2N3NbwKAU5Z4e0QDydSC8IsApl3mW1wtglydy1xSD3M/26YNdRT6wiJVcwc18z1dtYPNZ/LERbih89cs4VWE0ldfsVjXf27WFnPxVv2KxxaXHDwuKpLstRCSeFZbqts9+pNAn7ffUgTVQDyg44SIrJ6GyUSmou0zitphdtykoy4pt3dNfQZiISZ5bhz7F7igPzvj1Cwd8BI3l3NgYVuEh6pS7DsbQRkgDnro+t5w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(366004)(1076003)(54906003)(316002)(8936002)(2906002)(9786002)(7416002)(83380400001)(8676002)(36756003)(66476007)(9746002)(26005)(6916009)(2616005)(38100700002)(4326008)(66946007)(426003)(478600001)(186003)(86362001)(5660300002)(66556008)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z0lHRTZLSnFhNFdvVmU3MWFSRUdLVERrNmlaSEh1bmVMc3l4NFZMTHVYbUlj?=
- =?utf-8?B?bm4zL3pmZS9qdnhjeWpYSTBNUDFLRjJweVlPVmhXVG4rWUJBS0t0VDA4Zith?=
- =?utf-8?B?MHozL1VlM1NVWHBlWUZJa3kxQjk4MGlxWWhUbXlPam0yRjdWMFU1cTM2UG5D?=
- =?utf-8?B?Uk5UU09SOEpuMmtiVlZZSFhvWThIbzlXZGRhcXJWc0lFZnhib0N4eFRIemFM?=
- =?utf-8?B?OCtta3k3S3ZKNDVXMTdBVlVjRnhnSVpTLzRzZk1raWR0T0V5am5KdS9BRGF0?=
- =?utf-8?B?a0FyWmRDYW5aT09sbmp0WEhFZHRoT0s4T0xPL1owMDBiSHljdFdldjJFc1h5?=
- =?utf-8?B?cjdrRmYrY2U0SXJYblExdVNOaUppOFd3djJGN3NjWVlwTGZXbTNtYldXeXJx?=
- =?utf-8?B?QzR4ZmVqT3h6SzFyRitGa1poMyt6bnhFWGFQYldpV2hMSkJRTmVEMzBWUVlD?=
- =?utf-8?B?SFZpRzZVZWxKQ1dRQ0dOOEc0L2ZISXRMaFltcXE0NVUyd24zaWNNeklOaXY1?=
- =?utf-8?B?cmtzdXJJQzJFOE0xcDlxOUdIZGpVWFVNS0F5a09ISkc3c1dmMVdSd0ZVYjdz?=
- =?utf-8?B?UnpuL0tkbG1UeUlyVkxLNDhwSEFvNDZpcWNraXdBRTAyQ3BqOE9EcWs5MnFm?=
- =?utf-8?B?NUl2QzZuR0kzeWdYOVNXZitDbUIrTURybndiU2dXS3drQ296SWdaNE9zZkpV?=
- =?utf-8?B?NGlVVnk1cGdud0owODZRK3loR2pRYWFZZTRiakFla1BuMjQxQU5tOWlmc2ll?=
- =?utf-8?B?Yk4ybGNjL3BPcXkzeHVaUy8vR045UEFVMGRWUUsxZTdsdkx1ZDJINXBTMVlF?=
- =?utf-8?B?TEJoTUZrb0M0Vm83SHJjRllYL1NUeU53dGJXRExZaEFhU0xpbTFUQmlJVy9h?=
- =?utf-8?B?TSt2aHM0TG5mRHRTc2pZbnEvZ2U2cmpVVk51Mlhsck1pZG5YelluVlVmaGh6?=
- =?utf-8?B?QmU5a1JEa2JZNjY2cWVRNGdDQ25HcUxaZkRNLzAvWnNJTHBxT1RJK0k2UXNL?=
- =?utf-8?B?T05zSlF2eDFwZ25YOTBtODQyKzRJb2pjakU0akxkSzh6ME14dE1WRlFMUFN1?=
- =?utf-8?B?SFRtc0VFUE0zWWRZUVE2Y3FPR3RLdGk1aDVFa0FQYzZhZWJKOVNweG04U3Yw?=
- =?utf-8?B?ZWdOMUtZaFAyWnQyTGJKeFdUSE5EdHdhYzliaW85SmV5Y2RrNENzUFQ5bGd2?=
- =?utf-8?B?Y3RTTi90RFB4bzBhN0Jyei9ERW1DM2FDcS9JeHBEZVcva2tDTVQ1WFExUlcz?=
- =?utf-8?B?TktodHd5ZnNIODBEZWE2bmNxL054SzdrSmlVWitweTFoTTRldFQ0VE5jWkRj?=
- =?utf-8?B?eDUxRDZBMTg5V0s2UVByWjN2SHZYbmpGWVdEY2Y2UlpKQWFXWjYyRG1VQ01v?=
- =?utf-8?B?TVdGQ1M2UnYwZDRrTEduck1DM1prM0ViejZHcVRTejBHRkk0MEJtajlBZHBt?=
- =?utf-8?B?bFJIQTJoU25SdnJFcktPbzhobml1ejlyV2lvclpXU041SVhXeWxTaUdmZHo5?=
- =?utf-8?B?ZUg1REtOV0hPbmNYN3FZTW1Nc3YzdFNHZ1cycjVEL1BEcFNmUTl2NEFZdm1w?=
- =?utf-8?B?eGZkZ0hqK0toVk54YmVqNmZhbEdUZW9OOE5uNzlOZUsxMFBrTVNZallyQkNt?=
- =?utf-8?B?dlRGQXFnRWF0Tnl4VzdIMzRYMXVmb0xGdVk2VmZjenNwZ3RkOFFBZ2ZaZ2Fj?=
- =?utf-8?B?WmQ1cExHMml0SHEwNi90b1JLaXQvN1Z4amNwbisxTVZCeExsSUNWWSsyN1cz?=
- =?utf-8?Q?3DIoJs18aTMHZXc+Ymu38IYpGEotM5kro4q1MEf?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0a6bf21-0972-4e60-c0d6-08d967c27525
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 12:18:34.1567
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YMBCd4sE+h1evta+0jXNpG9YmlPFLMildPIZuAozEN4SLXpCr6wdiOdQf7W/tpr/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5159
+References: <20210824230620.1003828-1-djrscally@gmail.com> <20210824230620.1003828-2-djrscally@gmail.com>
+ <20210825103301.GC5186@sirena.org.uk> <CAHp75VdHpjbjz4biTP11TKT6J+7WQi-a1Ru3VLuSxM5tSLCB3Q@mail.gmail.com>
+ <20210825113013.GD5186@sirena.org.uk>
+In-Reply-To: <20210825113013.GD5186@sirena.org.uk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 25 Aug 2021 15:26:37 +0300
+Message-ID: <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 08:17:51AM +0200, Christian König wrote:
+On Wed, Aug 25, 2021 at 2:30 PM Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Aug 25, 2021 at 02:10:05PM +0300, Andy Shevchenko wrote:
+> > On Wed, Aug 25, 2021 at 1:34 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> > > DMI quirks throughout the drivers like we currently do then we should
+> > > have a way for boards to just store generic platform data for a device
+> > > and then have that platform data joined up with the device later.  This
+>
+> > What you are describing sounds similar to what we have, i.e. fwnode graph.
+> > That's how v4l2 describes complex connections between devices in the
+> > camera world.
+>
+> > But IIRC you don't like this idea to be present with regulators (as
+> > per v1 of this series).
+>
+> No, what was proposed for regulator was to duplicate all the the DT
+> binding code in the regulator framework so it parses fwnodes then have
+> an API for encoding fwnodes from C data structures at runtime.  The bit
+> where the data gets joined up with the devices isn't the problem, it's
+> the duplication and fragility introduced by encoding everything into
+> an intermediate representation that has no purpose and passing that
+> around which is the problem.
 
-> The only real option where you could do P2P with buffer pinning are those
-> compute boards where we know that everything is always accessible to
-> everybody and we will never need to migrate anything. But even then you want
-> some mechanism like cgroups to take care of limiting this. Otherwise any
-> runaway process can bring down your whole system.
- 
-Why? It is not the pin that is the problem, it was allocating GPU
-dedicated memory in the first place. pinning it just changes the
-sequence to free it. No different than CPU memory.
+The whole exercise with swnode is to minimize the driver intrusion and
+evolving a unified way for (some) of the device properties. V4L2 won't
+like what you are suggesting exactly because they don't like the idea
+of spreading the board code over the drivers. In some cases it might
+even be not so straightforward and easy.
 
-> Key question at least for me as GPU maintainer is if we are going to see
-> modern compute boards together with old non-ODP setups. 
+Laurent, do I understand correctly the v4l2 expectations?
 
-You should stop thinking about it as 'old non-ODP setups'.  ODP is
-very much a special case that allows a narrow set of functionality to
-work in a narrow situation. It has a high performance penalty and
-narrow HW support.
+> > So, what do you propose then?
+>
+> I propose what I suggested above, providing a way to attach platform
+> data to firmware provided devices.  Don't bother with an intermediate
+> encoding, just use platform data.  Or just put quirks in the drivers
+> like all the other systems using ACPI for platforms where it's not a
+> good fit.
 
-So yes, compute boards are routinely used in scenarios where ODP is
-not available, today and for the foreseeable future.
-
-Jason
+-- 
+With Best Regards,
+Andy Shevchenko
