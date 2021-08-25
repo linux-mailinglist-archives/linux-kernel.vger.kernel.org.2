@@ -2,121 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921FD3F6CD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 02:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACD33F6CE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 03:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236854AbhHYA6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 20:58:33 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40849 "EHLO ozlabs.org"
+        id S236854AbhHYBFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 21:05:23 -0400
+Received: from mga12.intel.com ([192.55.52.136]:4245 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231552AbhHYA6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 20:58:32 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GvSJ66YyZz9sWl;
-        Wed, 25 Aug 2021 10:57:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629853063;
-        bh=LKzzNu1B6oO7OWbw8m1pg0b96ufNvNad45RG+/Gy9O4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Z9MuQTFcaHOk+Hy83IEpUTt3ydqjo3yEMcH3aGEdWtVhyR7tYMIkycQHrblm0viMS
-         B8HJvaB00oA5VbgJCZTkCguUffHVi428/UvrgHp5b0lS4ezMUSNUSLf/Gij7RzzYcT
-         bjFpJBczR2EQvVOmRiFJyU1DlXf1w0qX5hS/F2OuSeSCTeDHaQEU3f0TIw3ofsjEvh
-         rGopMmAA3qnVZf5+ksFTodzdlqUTAarWV6vf98viyVbDEOhpkGqXZzP34ISMVJjZjt
-         VP4AgnhiVw2secQz5SOBGWOvQIlvjMqzPHQoXA3vB4eA0lOiHlP2DnESJP/WCkVxcm
-         /2qg5ckBHbScw==
-Date:   Wed, 25 Aug 2021 10:57:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rahul Tanwar <rtanwar@maxlinear.com>,
-        Srikanth Thokala <srikanth.thokala@intel.com>,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-Subject: linux-next: manual merge of the pci tree with Linus' tree
-Message-ID: <20210825105741.4ee2fa1f@canb.auug.org.au>
+        id S234210AbhHYBFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 21:05:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="196997639"
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="196997639"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 18:04:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="473679256"
+Received: from siang-ilbpg0.png.intel.com ([10.88.227.28])
+  by orsmga008.jf.intel.com with ESMTP; 24 Aug 2021 18:04:31 -0700
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net v2 1/1] net: stmmac: fix kernel panic due to NULL pointer dereference of buf->xdp
+Date:   Wed, 25 Aug 2021 08:57:42 +0800
+Message-Id: <20210825005742.980267-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jFu=OuqXXYt.e=cyn4P6Azj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jFu=OuqXXYt.e=cyn4P6Azj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Ensure a valid XSK buffer before proceed to free the xdp buffer.
 
-Hi all,
+The following kernel panic is observed without this patch:
 
-Today's linux-next merge of the pci tree got a conflict in:
+RIP: 0010:xp_free+0x5/0x40
+Call Trace:
+stmmac_napi_poll_rxtx+0x332/0xb30 [stmmac]
+? stmmac_tx_timer+0x3c/0xb0 [stmmac]
+net_rx_action+0x13d/0x3d0
+__do_softirq+0xfc/0x2fb
+? smpboot_register_percpu_thread+0xe0/0xe0
+run_ksoftirqd+0x32/0x70
+smpboot_thread_fn+0x1d8/0x2c0
+kthread+0x169/0x1a0
+? kthread_park+0x90/0x90
+ret_from_fork+0x1f/0x30
+---[ end trace 0000000000000002 ]---
 
-  MAINTAINERS
+Fixes: bba2556efad6 ("net: stmmac: Enable RX via AF_XDP zero-copy")
+Cc: <stable@vger.kernel.org> # 5.13.x
+Suggested-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+---
+v2 changelog:
+ - Add stable@vger.kernel.org in email cc list.
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-between commit:
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 7b8404a21544..fa90bcdf4e45 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -4914,6 +4914,10 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+ 
+ 		prefetch(np);
+ 
++		/* Ensure a valid XSK buffer before proceed */
++		if (!buf->xdp)
++			break;
++
+ 		if (priv->extend_desc)
+ 			stmmac_rx_extended_status(priv, &priv->dev->stats,
+ 						  &priv->xstats,
+@@ -4934,10 +4938,6 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+ 			continue;
+ 		}
+ 
+-		/* Ensure a valid XSK buffer before proceed */
+-		if (!buf->xdp)
+-			break;
+-
+ 		/* XSK pool expects RX frame 1:1 mapped to XSK buffer */
+ 		if (likely(status & rx_not_ls)) {
+ 			xsk_buff_free(buf->xdp);
+-- 
+2.25.1
 
-  e2f55370b422 ("MAINTAINERS: Add Rahul Tanwar as Intel LGM Gateway PCIe ma=
-intainer")
-
-from Linus' tree and commit:
-
-  0c87f90b4c13 ("PCI: keembay: Add support for Intel Keem Bay")
-
-from the pci tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc MAINTAINERS
-index 0e03d2903c07,23e614e9c669..000000000000
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@@ -14463,13 -14422,13 +14463,20 @@@ S:	Maintaine
-  F:	Documentation/devicetree/bindings/pci/hisilicon-histb-pcie.txt
-  F:	drivers/pci/controller/dwc/pcie-histb.c
- =20
-+ PCIE DRIVER FOR INTEL KEEM BAY
-+ M:	Srikanth Thokala <srikanth.thokala@intel.com>
-+ L:	linux-pci@vger.kernel.org
-+ S:	Supported
-+ F:	Documentation/devicetree/bindings/pci/intel,keembay-pcie*
-+ F:	drivers/pci/controller/dwc/pcie-keembay.c
-+=20
- +PCIE DRIVER FOR INTEL LGM GW SOC
- +M:	Rahul Tanwar <rtanwar@maxlinear.com>
- +L:	linux-pci@vger.kernel.org
- +S:	Maintained
- +F:	Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
- +F:	drivers/pci/controller/dwc/pcie-intel-gw.c
- +
-  PCIE DRIVER FOR MEDIATEK
-  M:	Ryder Lee <ryder.lee@mediatek.com>
-  M:	Jianjun Wang <jianjun.wang@mediatek.com>
-
---Sig_/jFu=OuqXXYt.e=cyn4P6Azj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEllYUACgkQAVBC80lX
-0GxwWAf/WYi4pDc/xU6oDQkul7a80hZytXM7u8hfavwR/UNNFycsenCVnk4GIKpt
-XnB+1uy0QHvaAsKfcQ9nmoeqRZ+MUIskiriXHvRwM0W7m1Ex7alSwfumhorGWlRL
-oJSTxS92r6N8o4QYY6dDkV26cKh2kKMOZex+GetbTi29hN4rf+MCoxmJYSUadsRU
-oL6g+yL5yLZVmHRoQ5hwswmZ+t0/B8A1ZCvb4W1+lvHE+KDgrsuEllZzjb41zPh+
-HOsu0Kefm3qLeUEJIK2IryM++OMK2+nNZOks4am8vzQWAzZENBPfGPfFRehatNrl
-A38lZqIT3jYSLf3hB5LwKUJoMsk2zw==
-=C/Wc
------END PGP SIGNATURE-----
-
---Sig_/jFu=OuqXXYt.e=cyn4P6Azj--
