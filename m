@@ -2,186 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C214B3F7B6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8ED3F7B68
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242249AbhHYRSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
+        id S242231AbhHYRSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:18:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242237AbhHYRSp (ORCPT
+        with ESMTP id S233276AbhHYRSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:18:45 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C607DC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:17:59 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso4803807wmg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:17:59 -0700 (PDT)
+        Wed, 25 Aug 2021 13:18:42 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF46CC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:17:56 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id v2so347280oie.6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:17:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/f463DvLr/calLiNDLjjt5FVZTkgEt9zc8bsS269TX4=;
-        b=RxRikHdqw6b+lKNARRx5dCX2F0IAkiWmxrlJeJZAKxRWT8yPks8zcoHz0bioTrDxFc
-         BZhXiLKQNxU60sHlNvEZq6/1UcojlvGaPPMXkCzlHhbc8RoxIrXw/bEHmGleQ4JufsXB
-         647rvgHOiBUxbdjfv/zqvUjB4s3bl+9DseREk=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M/sU0CU7x+4zcBgKHZ1x1BhVQLsUMGGMN8tY9Wv96W8=;
+        b=Mmg/23v9r01eEz7kGLuYbdxyrhadb91CE2h7h7fHk01+AnHWwYzaFp6PMvnOVJxxUX
+         Ko9wmTCiiU8wi4Vznv44yZtu5BFOrEitzGcYI451pUKshXXXyriE3ELAEeVbjhUolc9F
+         WixZpAckRRxXSfMl4SdG/QwNbSLSqhh7/jnIp5I2u9CqV/GPkbWiutr8WJqYjxNgiTLL
+         yKc3raE7Eal8CvCALzYXtm9sjS9a6A8m4XZRy7hyZHN5q7EIWiF16/V+zkpFTjMcUcOY
+         8cnYv1iAHL2AsXAxIGDhwFob0SVxKn5QsxrsbRxvfSKl/S3bERbaZekvRUEEwRb/JRN5
+         pgSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/f463DvLr/calLiNDLjjt5FVZTkgEt9zc8bsS269TX4=;
-        b=dLoF/I5WVUVANPjylhufC0TDc8mE00sldQAW9sTaXpODY1aG2lCptfkMNZa09W7JfB
-         5j2mzCqREOF9IK3LmOPlWbAIJZYQ8wQf5faScWi9F1oGopSOqzdvNE1ZMnjSg4+kcbCI
-         QD471MlpILb4WaaJ1qBFjYv0H+Z4OJDHe1FAHGaZsFAbdGmb7c6duJx3hhA0FT7lKERZ
-         ofGLakgpnQhM1Fmn1iUGJKhfUlChoAoRgovx2PpoB3ESkg0+SDNvUTOdE/SnqCTurOAb
-         6dhMqld1B6CcDKf/JNwI6ta0LE5AHKeWfUiduyRyvBn/3Xm3tNHiWWZAt3dAEYTJ46k2
-         Bl+A==
-X-Gm-Message-State: AOAM530/XdPq+D+8NzvyGaAIPj+BWXrIZBZ9HXwy0BAL++vZZriMCh1v
-        mLieUSN/oJhYmOq98odotlhzZqRClTmBZGcGCDSlxw==
-X-Google-Smtp-Source: ABdhPJzI9RrfjwzTOtGiWMbqXx7vP1XByzV71h+90EGK5unVPWdIf36Ze521g0NSBr859KeELBJYfaTZ7AgEsaN9gcg=
-X-Received: by 2002:a1c:3182:: with SMTP id x124mr3157462wmx.35.1629911878352;
- Wed, 25 Aug 2021 10:17:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M/sU0CU7x+4zcBgKHZ1x1BhVQLsUMGGMN8tY9Wv96W8=;
+        b=Xgl3wfdtLIci7Zgrujvwmj7F/LMaVBXmsXCdgAuDcd5MGOgQR7KlXIsh6Ob3S5K7hX
+         HzwTFHTnKOAILY+N2GwAOUJinehhL0+zf3kCrZ4B1HVyLYChr/DHkTiy+AkUZUDHwIyj
+         4hNhMbNFE4p9lDcituclbnDUTBKIA5TAo8xbQ7EbkODukZR2LMVGSi7iyJhTK2n9cOeX
+         NT8BtaXJvpVihk1jU9JNAQwc47hvuhDQu2M2fky4JsdwpONTyPgQUe7FS05mRo9dx1V9
+         6bTtrZq2E9N8LyrBQOX7wYpb78zp89YCoNffrX7M8Ytfafj3anxgUQQDMNdErJjjejut
+         XxgQ==
+X-Gm-Message-State: AOAM532dpHeVy97k/XhX8Cl5kIR4eXAmIORfxyyUUBrSqWgVmTi/QBN/
+        QmU0m0u5hFVfxjyY8fxIdwolCg==
+X-Google-Smtp-Source: ABdhPJzgMHbGXTHN17OnIlh1FgpR9m5QhY7tvBle8B1TJrt03iC696uUzuMmKIZVy0s0A3mHINzCPw==
+X-Received: by 2002:a05:6808:690:: with SMTP id k16mr7757663oig.43.1629911876258;
+        Wed, 25 Aug 2021 10:17:56 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r25sm95305oic.13.2021.08.25.10.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 10:17:55 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 12:17:54 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Replace usage of parent_names
+Message-ID: <YSZ7Qi93T4u8cKH/@builder.lan>
+References: <20210824150606.678666-1-bjorn.andersson@linaro.org>
+ <386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org>
+ <YSV0/bFiPgY3fjPF@ripper>
+ <bc2fd17a-66f4-7f60-cdbd-e3548fa4f1a4@somainline.org>
 MIME-Version: 1.0
-References: <20210824135941.38656-1-cristian.marussi@arm.com>
- <20210824135941.38656-12-cristian.marussi@arm.com> <7a2f972d-fdd0-d0f7-cac2-1989980ed872@gmail.com>
-In-Reply-To: <7a2f972d-fdd0-d0f7-cac2-1989980ed872@gmail.com>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Wed, 25 Aug 2021 13:17:47 -0400
-Message-ID: <CA+-6iNw-_VXcntU_UE8kTiPb8Sq28KkZG1__N7rE4ezo=VqQVQ@mail.gmail.com>
-Subject: Re: [PATCH v4 11/12] [RFC] firmware: arm_scmi: Add
- sync_cmds_atomic_replies transport flag
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        etienne.carriere@linaro.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Souvik Chakravarty <souvik.chakravarty@arm.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000089cbfe05ca656e6a"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc2fd17a-66f4-7f60-cdbd-e3548fa4f1a4@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000089cbfe05ca656e6a
-Content-Type: text/plain; charset="UTF-8"
+On Wed 25 Aug 05:39 CDT 2021, AngeloGioacchino Del Regno wrote:
 
-On Wed, Aug 25, 2021 at 12:38 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
->
->
-> On 8/24/2021 3:59 PM, Cristian Marussi wrote:
-> > A flag is added to let the transport signal the core that its handling of
-> > synchronous command messages implies that, after .send_message has returned
-> > successfully, the requested command can be assumed to be fully and
-> > completely executed on SCMI platform side so that any possible response
-> > value is already immediately available to be retrieved by a .fetch_reponse:
-> > in other words the polling phase can be skipped in such a case and the
-> > response values accessed straight away.
-> >
-> > Note that all of the above applies only when polling mode of operation was
-> > selected by the core: if instead a completion IRQ was found to be available
-> > the normal response processing path based on completions will still be
-> > followed.
->
-> This might actually have to be settable on a per-message basis ideally
-> since we may be transporting short lived SCMI messages for which the
-> completion can be done at SMC time, and long lived SCMI messages (e.g.:
-> involving a voltage change) for which we would prefer a completion
-> interrupt. Jim, what do you think?
-Even if the SCMI main driver could be configured this way in an
-elegant manner, I'm not sure that there is a clean way of specifying
-this  attribute on a per-message basis.  Certainly we could do this
-with our own protocols, but  many of our "long lived" messages are the
-Perf protocol's set_level command.  At any rate, let me give it some
-thought.
+> Il 25/08/21 00:38, Bjorn Andersson ha scritto:
+> > On Tue 24 Aug 13:46 PDT 2021, Marijn Suijten wrote:
+> > 
+> > > Hi Bjorn,
+> > > 
+> > > Thanks for this cleanup, that's needed and much appreciated!
+> > > 
+> > > On 8/24/21 5:06 PM, Bjorn Andersson wrote:
+> > > > Using parent_data and parent_hws, instead of parent_names, does protect
+> > > > against some cases of incompletely defined clock trees. While it turns
+> > > > out that the bug being chased this time was totally unrelated, this
+> > > > patch converts the SDM660 GCC driver to avoid such issues.
+> > > > 
+> > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > 
+> > > 
+> > > Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > > 
+> > > On the Sony Xperia XA2 Ultra, bar the necessary change in the 14NM DSI PHY
+> > > driver commented below.
+> > > 
+> > > > [..]
+> > > > -
+> > > > -static struct clk_fixed_factor xo = {
+> > > > -	.mult = 1,
+> > > > -	.div = 1,
+> > > > -	.hw.init = &(struct clk_init_data){
+> > > > -		.name = "xo",
+> > > > -		.parent_names = (const char *[]){ "xo_board" },
+> > > > -		.num_parents = 1,
+> > > > -		.ops = &clk_fixed_factor_ops,
+> > > > -	},
+> > > > -};
+> > > 
+> > > 
+> > > Removing the global "xo" clock makes it so that our 14nm DSI PHY does not
+> > > have a parent clock anymore, as the clock is called "xo_board" nowadays
+> > > ("xo" in the position of fw_name is, as you know, only local to this driver
+> > > because it is named that way in the clock-names property). We (SoMainline)
+> > > suffer the same DSI PHY hardcoding issue on many other boards and are at
+> > > this point investigating whether to provide &xo_board in DT like any other
+> > > sane driver.  Do you happen to know if work is already underway to tackle
+> > > this?
+> > > 
+> > 
+> > As far as I can tell most other platforms doesn't define "xo" either.
+> > E.g. according to debugfs dsi0vco_clk doesn't have a parent on sdm845...
+> > 
+> > Sounds like we should update the dsi phys to specify a fw_name and
+> > update binding and dts to provide this...
+> > 
+> > 
+> > Does this cause a noticeable regression or it's just that we have a
+> > dangling clock?
+> > 
+> 
+> Both, actually... but sincerely I would be more for updating the DSI PHY
+> drivers instead of keeping a "mock" crystal clock in there (since we do
+> always specify one in DT), also because, as Marijn pointed out and as I
+> can also confirm, we're seeing the same situation on multiple platforms.
+> 
+> That would allow us to solve the issue simply with DT, and would make us
+> able to switch platforms one by one to the RPM/RPMh XO in a perfect future
+> where we will be able to perform XO shutdown on selected platforms.
+> 
 
-Regards,
-Jim
-> --
-> Florian
+Fixing the DSI PHY to properly acquire the reference clock using
+.fw_name is the right solution in the end. But afaict sdm845, sm8150 and
+sm8250 doesn't have a "xo" clock.
 
---00000000000089cbfe05ca656e6a
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+So that's why I'm wondering if there's a functional regression caused by
+this...and hence if I need to respin this patch with the clock
+remaining.
 
-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
-LeylbuEJGL9I80yqq8e6Z+Q6ulLxa6SopzpoysJe/vEVHgp9jPNppZzwKngVd2iDBRqpKlCngIAM
-DXgVGyEojXnuEbRs3NlB7wq1kJGlYysrnDug55ncJM8CAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
-BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
-VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFCeTeUYv84Mo3T1V+OyDdxib
-DDLvMA0GCSqGSIb3DQEBCwUAA4IBAQCCqR1PBVtHPvQHuG8bjMFQ94ZB7jmFEGhgfAsFJMaSMLov
-qyt8DKr8suCYF4dKGzqalbxo5QU9mmZXdLifqceHdt/Satxb+iGJjBhZg4E0cDds24ofYq+Lbww2
-YlIKC2HHxIN+JX2mFpavSXkshR5GT29B9EIJ8hgSjbs61XXeAcrmVIDfYbXQEmGbsnwqxdq+DJpQ
-S2kM2wvSlgSWDb6pL7myuKR5lCkQhj7piGSgrVLJRDRrMPw1L4MvnV9DjUFMlGCB40Hm6xqn/jm0
-8FCLlWhxve5mj+hgUOPETiKbjhCxJhhAPDdCvDRkZtJlQ8oxUVvXHugG8jm1YqB5AWx7MYICbTCC
-AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
-AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMI+Aj9XRk/wFexb9/
-MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCVN64LJAWxmqAoWlQP++xnRdGH3owy
-xZ+EcKeAs5EStjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMTA4
-MjUxNzE3NThaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
-hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
-AgEwDQYJKoZIhvcNAQEBBQAEggEAkLp65/WK3ztv1oEP8DJ/oedLBy6Bw2rkFkjGs7hf3aPgBGlE
-L49Jb4/kgdWMsavmdG/Se1QtZl6kwb4JJ5US3iyD4+rY+P1Aq7xez66d0A4/c8wnGQlQG1JCidUo
-VLXtwenR3JGLfvdUu9qRFOrJiL0IUHYwMQltCZibe7uh18vY8suQFttfRLGhLajfq8VsM6ss4koV
-n7Q1QiRY8kF7KCfQhzJIYRjDbjzi2Q4t6L6Rv1Du0DGxC3faoIUONcvk/gDuOUTb6jjb3PszyBfC
-Sixsyw0b0Ea/YIHY9r8t6ufJ9ztkvOEEkplxCiF8MR2u3p/OaTCNhZxZ5qZt8y1bIQ==
---00000000000089cbfe05ca656e6a--
+> > > >    static struct clk_alpha_pll gpll0_early = {
+> > > >    	.offset = 0x0,
+> > > >    	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
+> > > > @@ -158,7 +35,9 @@ static struct clk_alpha_pll gpll0_early = {
+> > > >    		.enable_mask = BIT(0),
+> > > >    		.hw.init = &(struct clk_init_data){
+> > > >    			.name = "gpll0_early",
+> > > > -			.parent_names = (const char *[]){ "xo" },
+> > > > +			.parent_data = &(const struct clk_parent_data){
+> > > > +				.fw_name = "xo",
+> > > > +			},
+> > > 
+> > > 
+> > > I wish we could use .parent_names for a list of .fw_name's too
+> > 
+> > Afaict specifying "name" in struct clk_parent_data is the same as using
+> > parent_names. But I'm not up to speed on the details of how to migrate
+> > the dsi phys.
+> > 
+> > > > [..]
+> > > > @@ -265,7 +270,7 @@ static struct clk_rcg2 blsp1_qup1_i2c_apps_clk_src = {
+> > > >    	.freq_tbl = ftbl_blsp1_qup1_i2c_apps_clk_src,
+> > > >    	.clkr.hw.init = &(struct clk_init_data){
+> > > >    		.name = "blsp1_qup1_i2c_apps_clk_src",
+> > > > -		.parent_names = gcc_parent_names_xo_gpll0_gpll0_early_div,
+> > > > +		.parent_data = gcc_parent_data_xo_gpll0_gpll0_early_div,
+> > > >    		.num_parents = 3,
+> > > 
+> > > 
+> > > How about using ARRAY_SIZE(gcc_parent_data_xo_gpll0_gpll0_early_div) now?
+> > > Same for every other occurrence of this pattern.
+> > > 
+> > 
+> > I omitted that because it felt unrelated to the change I was doing, but
+> > it could certainly be done.
+> > 
+> 
+> Totally fair and I totally agree.
+> 
+> By the way,
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> 
+
+Thanks,
+Bjorn
