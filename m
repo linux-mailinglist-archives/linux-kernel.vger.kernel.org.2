@@ -2,71 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AE33F7D9C
+	by mail.lfdr.de (Postfix) with ESMTP id AE7583F7D9D
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhHYVTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 17:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234224AbhHYVTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 17:19:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF668610CB;
-        Wed, 25 Aug 2021 21:18:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629926327;
-        bh=wUO6p5vjJOLqGlIsoKDDeG3mUuzZMCt3eI8cwxSaPlE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RPAfDw/9TFXzzRAHGo5fFgUSX2nI7aovTjQ01kSMWV29fEqAGomONOclW5K6EIvwd
-         akg2AB2UX8G+Aj6cKf0yeMjGekS1dlSJ+8tJY84JZ8QywzCFk8yItnvHlMqHwBhfPY
-         5Bt2Kc8St042OSjp2gPbS3XYeaIVcOaEUgz+2r8rKtJ9L65TzfBzzRlkHVzM51ySng
-         WpJfqAxYeyNgv0qHBR8aEdQf8eeBk0NNjNMFQ+7IhDdMXhvSovKr6jWofuQCPzoQmZ
-         AIhTEKk9CGPIoatnzxVfj6/sd4vsoz9ftuAHnlg6iEKypXwWuxsksTQnXE5y/Tawvf
-         OHQBTbQBAgAwA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH 3/3] Documentation/llvm: Update IRC location
-Date:   Wed, 25 Aug 2021 14:18:23 -0700
-Message-Id: <20210825211823.6406-3-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210825211823.6406-1-nathan@kernel.org>
-References: <20210825211823.6406-1-nathan@kernel.org>
+        id S235182AbhHYVTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 17:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234250AbhHYVTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 17:19:36 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34400C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:18:50 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso677600ott.13
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:18:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hOF+sh5G76VmHpf/N2MkHcBuycy7v0DHca5nZVaJcW4=;
+        b=RjCUI+jkYOpC2vwRld2S6qi2H12Y/Sa3KD/3HKULno+qBXsWZL0wyDnG3lJYWe5cZu
+         3k+HB9EhiymTAjmbjwOg+RAcV9rk0ENMzOGsM6eJjKUsI2MQGdouSIvCgCc2MifsI24K
+         0MnGiwIU7C8Bn1vN2wcThJvaSXdsKIbd9sT3yfYpafIL89Aq304Ri0Ryj+FDFlqxI1/j
+         hg72Kq3WX/M8MXfsZvFC8Snu82XwvJ7L/s83pramPmLoyl7w4OVP9cpsBuNZAEyadwrL
+         DS3BqqaqT+3wCSaCrLm8k6vtWFtH/F2H2Z6JArZhM4y5k59on7XgtRL4We2gaAwW2FoS
+         ktfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hOF+sh5G76VmHpf/N2MkHcBuycy7v0DHca5nZVaJcW4=;
+        b=lXueZAKSq/MtlH4+G5RSKzzyWIZbCB2NJbKHzCTVUkoHrIkV7FrcECDiV8KaEuxS5Q
+         yP+UoZCHkJ2COxMmTJVJgsDUX5PwRjBP2l7JxeaRqaS5K7jPcaf0I05+wU/ZycscB9Xa
+         mZhWa2Lm99kjz/j3exr4bf2b1gI/TgTz5xJl5BNL8uFax2l/wl77atTMUlK6gBfmA7Dx
+         wUDpCn+EktxzJEK5C6JjJL+fUx4UPnpFoRPoZOroYQbB0Fs0AUzsU5RrYfbh8kbmdM7Y
+         04284cKb7GY3xtSmmpUWqHRTTyZGnhOlkWpsiRDmrIShameotX9/3ydlkF9DCMeco7wo
+         +J5Q==
+X-Gm-Message-State: AOAM533IXi5CIyBItzHp96Zh1pb+SkXtUNIFYEGGGX8GctDa9FGEqyu6
+        5xkcG6zwBm/xMVY6IDQv6c7l/w==
+X-Google-Smtp-Source: ABdhPJzeXxOFFpeP1yhl0b9ZhJv12CduQnJjx/ToXvAmZG5iFS2vs4YJUMwb+UNTThCZB0X0KYgF5Q==
+X-Received: by 2002:a05:6830:402c:: with SMTP id i12mr368736ots.287.1629926329596;
+        Wed, 25 Aug 2021 14:18:49 -0700 (PDT)
+Received: from [192.168.17.50] ([189.219.75.147])
+        by smtp.gmail.com with ESMTPSA id s206sm234326oif.44.2021.08.25.14.18.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 14:18:49 -0700 (PDT)
+Subject: Re: [PATCH 4.4 00/31] 4.4.282-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        akpm@linux-foundation.org, shuah@kernel.org, linux@roeck-us.net
+References: <20210824170743.710957-1-sashal@kernel.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <c8d7c5e6-a503-3628-f044-a44181fefd47@linaro.org>
+Date:   Wed, 25 Aug 2021 16:18:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
+In-Reply-To: <20210824170743.710957-1-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This should have been done with commit 91ed3ed0f798 ("MAINTAINERS:
-update ClangBuiltLinux IRC chat") but I did not realize it was in two
-separate spots.
+Hello!
 
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- Documentation/kbuild/llvm.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 8/24/21 12:07 PM, Sasha Levin wrote:
+> This is the start of the stable review cycle for the 4.4.282 release.
+> There are 31 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu 26 Aug 2021 05:07:41 PM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.4.y&id2=v4.4.281
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
 
-diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-index 06b8f826e1a3..683f8b7cca0b 100644
---- a/Documentation/kbuild/llvm.rst
-+++ b/Documentation/kbuild/llvm.rst
-@@ -114,7 +114,7 @@ Getting Help
- - `Mailing List <https://lore.kernel.org/llvm/>`_: <llvm@lists.linux.dev>
- - `Old Mailing List Archives <https://groups.google.com/g/clang-built-linux>`_
- - `Issue Tracker <https://github.com/ClangBuiltLinux/linux/issues>`_
--- IRC: #clangbuiltlinux on chat.freenode.net
-+- IRC: #clangbuiltlinux on irc.libera.chat
- - `Telegram <https://t.me/ClangBuiltLinux>`_: @ClangBuiltLinux
- - `Wiki <https://github.com/ClangBuiltLinux/linux/wiki>`_
- - `Beginner Bugs <https://github.com/ClangBuiltLinux/linux/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22>`_
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.4.282-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-4.4.y
+* git commit: a11850845e9394a250678b2ec8b714825343f776
+* git describe: v4.4.281-31-ga11850845e93
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.281-31-ga11850845e93
+
+## No regressions (compared to v4.4.281)
+
+## No fixes (compared to v4.4.281)
+
+## Test result summary
+total: 41546, pass: 33742, fail: 202, skip: 6656, xfail: 946
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
 -- 
-2.33.0
-
+Linaro LKFT
+https://lkft.linaro.org
