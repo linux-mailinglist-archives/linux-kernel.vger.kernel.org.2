@@ -2,120 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DCF3F7CBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 21:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DE63F7CBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 21:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241667AbhHYTa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 15:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
+        id S242473AbhHYTbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 15:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhHYTa4 (ORCPT
+        with ESMTP id S231445AbhHYTbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 15:30:56 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFA5C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:30:10 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 6so872606oiy.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:30:10 -0700 (PDT)
+        Wed, 25 Aug 2021 15:31:21 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF6DC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:30:35 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id g13so1142504lfj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=JLcefyKSKqjrSJBjDwRPhSlprne7V+zJmYbnypztomQ=;
-        b=H0Ernshf//ofwPK9XKjTZSg/dMtEYnrdSaZ+jw/BmPdPeTLAS9z5nLjtKaxufq8vS5
-         6HOhqHwXWnQz/p9BxLauB9gVo9Usz+VMM99fOO5Xi2EeTqjgJgIN3F/o/EvmsqfpFevu
-         +drnbaTMTdKMLtbyJ0J40Ulep22EhtrAza9fY=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v2pHeCpwfvnRqsL6uTqKSV63IADJ4kNuQWG8CitRMGo=;
+        b=fecS0rU8+RB4TFzaTbO+BqmPyZoQtmyc2FzUYWhEp1fVnQMlfAm0+1dA4jI6wVXzS9
+         OlRkFtjZd7ZqSJyNsxWSsIApeDgsyp8OdqvZhPSxKcEEQ4LLLPnhiUJZxV/FnkgLKTp3
+         TKDan1JoIch7J669aKAgkE3XjCDtMOfT1t9eaiN89sMCyp6AgJZ9CdqNiSg2OmtrLcVI
+         DEy/6sb7q8I3Wsem/+TsVPWMeurtf+TdT6GaWF5AhzXHhvqOgjLLKnBJTOTmUaneWMq/
+         yPDS7Rd8T0ISmMFOdfPfeAHbrCORnoCZM6rTJW009ev+C3wG1XWFJV7AqaNrpJNI7ctX
+         iXVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=JLcefyKSKqjrSJBjDwRPhSlprne7V+zJmYbnypztomQ=;
-        b=BmlUWuJU7JavnsSepfSmqt0czA3P1feXQ5ZORid2MYU4jnzxrdfr0Fe8MjrfMj6CPK
-         96yQSr1dosOklVjceBH6LNFouIE8KUdqFHpDOrHDYYa6ASQTyCpzVCas+g4zRP4tmQpB
-         YEmpZ2pCDFlEQmF7cMn5gKUMADslgdbJJtUiU7V1Tq3FFlZIFzWQJesAOLEbWIXsIITb
-         pughUfcArQc4i3BBZYsQ6O2XZJdAvbLbH23yxIqfPF6eQ+vd/FairjHeu7K4zemtBJFW
-         Ud5dmkyqt6SjU9ZQHfUk7cYI1Js25kdJ2RvqCf9VEOUX79Snh0DxDqBSIBU25ipbXC/H
-         q4iA==
-X-Gm-Message-State: AOAM533UfzSS3ecWcmq61UdhbgPl1yMQB0eJx67sXl8maUeAOEf0JB/c
-        dJVpqZDWrYoa6IZcHMFPq/8AArsRQ9vxLFFssYE2MQ==
-X-Google-Smtp-Source: ABdhPJz5kKrkvonN2F69o4kqTbjRO+SWZp3mHOvfJVqkOn6Guyq9jgCetnKtG3j0rp8HaNWPw8iPPt7s22TDjDpBZPA=
-X-Received: by 2002:a54:468d:: with SMTP id k13mr8278136oic.125.1629919810210;
- Wed, 25 Aug 2021 12:30:10 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 25 Aug 2021 19:30:09 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v2pHeCpwfvnRqsL6uTqKSV63IADJ4kNuQWG8CitRMGo=;
+        b=AWiFvS0RkGcW/dX2ER5Si4AJns9lsQdZ/g9Kwo0J2SqHFrbN5fqPzZfyRImrBvxqTX
+         5iZUvnY3Yb44N6SNzKSusdXjlEONQRTBZ2DR3yJtsN8/fhGjranz4vcZyO1E4MtlqS52
+         3lgFwt8ZsmjR2suD4xywaVdMqDdXK0EQCaf0Ryu7iZcPvbNlkAkLXdv+RwZ0cStoNnND
+         L51cahJs6h9O9nNQl9HnMzjGEbNLBCrTxuRX1y5SyrHB/7HEvC7fV7UcUe5O/Pfvsz2K
+         sUf90LfIWeDQ2ZzHtpxlUreGL2+Oj+Z/hYS1YLSsL7tw/UytOj7RsZBhp96WduZbgglJ
+         nqOg==
+X-Gm-Message-State: AOAM531LyeJR8mD2XjpvCL4jLV8TvT3sdo2IVerFIeVBJwOeBYji6nC0
+        5h4OpwT8ZhYFVHY/Zn0/iwBC28GNRpY6B3fGG85Ojw==
+X-Google-Smtp-Source: ABdhPJybZDeI5WklJY6h/QxXjN7+6cGF0weNj4VLWMVNYCyAtzqqhbVZp6n1lV+VPaLXl/tlmJwY9v2n35yJqsz5WOk=
+X-Received: by 2002:a05:6512:3991:: with SMTP id j17mr27029396lfu.374.1629919833510;
+ Wed, 25 Aug 2021 12:30:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e54b4f62dbcd670a0e0658598e045051@codeaurora.org>
-References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
- <1628568516-24155-5-git-send-email-pmaliset@codeaurora.org>
- <349b1178f071407dfad8ba3050482772@codeaurora.org> <e54b4f62dbcd670a0e0658598e045051@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 25 Aug 2021 19:30:09 +0000
-Message-ID: <CAE-0n50cnWf_3LQ6P9KMaT4dnryWW9JemP95JDZt5WE1G4mZuQ@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
- init in SC7280
-To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bhelgaas@google.com, bjorn.andersson@linaro.org,
-        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org
+References: <20210824071846.61488-1-deng.changcheng@zte.com.cn>
+In-Reply-To: <20210824071846.61488-1-deng.changcheng@zte.com.cn>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 25 Aug 2021 12:30:21 -0700
+Message-ID: <CAKwvOd=hoC3dM4cK0jLjPS1OUQ2k-nub5H4tQtDb3hB8NZnVzg@mail.gmail.com>
+Subject: Re: [PATCH linux-next] x86:uaccess: fix boolreturn.cocci warnings
+To:     CGEL <cgel.zte@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Prasad Malisetty (2021-08-24 01:10:48)
-> On 2021-08-17 22:56, Prasad Malisetty wrote:
-> > On 2021-08-10 09:38, Prasad Malisetty wrote:
-> >> On the SC7280, By default the clock source for pcie_1_pipe is
-> >> TCXO for gdsc enable. But after the PHY is initialized, the clock
-> >> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
-> >>
-> >> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> >> ---
-> >>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
-> >>  1 file changed, 18 insertions(+)
-> >>
-> >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
-> >> b/drivers/pci/controller/dwc/pcie-qcom.c
-> >> index 8a7a300..39e3b21 100644
-> >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> >> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
-> >>      struct regulator_bulk_data supplies[2];
-> >>      struct reset_control *pci_reset;
-> >>      struct clk *pipe_clk;
-> >> +    struct clk *gcc_pcie_1_pipe_clk_src;
-> >> +    struct clk *phy_pipe_clk;
-> >>  };
-> >>
-> >>  union qcom_pcie_resources {
-> >> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct
-> >> qcom_pcie *pcie)
-> >>      if (ret < 0)
-> >>              return ret;
-> >>
-> >> +    if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-> >> +            res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-> >> +            if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
-> >> +                    return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
-> >> +
-> >> +            res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-> >> +            if (IS_ERR(res->phy_pipe_clk))
-> >> +                    return PTR_ERR(res->phy_pipe_clk);
-> >> +    }
-> >> +
-> >
-> > Hi All,
-> >
-> > Greetings!
-> >
-> > I would like to check is there any other better approach instead of
-> > compatible method here as well or is it fine to use compatible method.
-> >
+On Tue, Aug 24, 2021 at 12:18 AM CGEL <cgel.zte@gmail.com> wrote:
+>
+> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+>
+> ./arch/x86/include/asm/uaccess.h:477:9-10:WARNING:return of 0/1 in
+> function 'user_access_begin' with return type bool
+>
+> Return statements in functions returning bool should use true/false
+> instead of 1/0.
+>
+> Generated by: scripts/coccinelle/misc/boolreturn.cocci
+>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-I'd prefer the compatible method. If nobody is responding then it's best
-to just resend the patches with the approach you prefer instead of
-waiting for someone to respond to a review comment.
+Fixes: 594cc251fdd0 ("make 'user_access_begin()' do 'access_ok()'")
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
+>  arch/x86/include/asm/uaccess.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+> index c9fa7be..e3b6f4f 100644
+> --- a/arch/x86/include/asm/uaccess.h
+> +++ b/arch/x86/include/asm/uaccess.h
+> @@ -474,9 +474,9 @@ static inline bool __chk_range_not_ok(unsigned long addr, unsigned long size, un
+>  static __must_check __always_inline bool user_access_begin(const void __user *ptr, size_t len)
+>  {
+>         if (unlikely(!access_ok(ptr,len)))
+> -               return 0;
+> +               return false;
+>         __uaccess_begin_nospec();
+> -       return 1;
+> +       return true;
+>  }
+>  #define user_access_begin(a,b) user_access_begin(a,b)
+>  #define user_access_end()      __uaccess_end()
+> --
+> 1.8.3.1
+>
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
