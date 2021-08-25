@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DE63F7CBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 21:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE223F7CBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 21:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242473AbhHYTbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 15:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
+        id S242485AbhHYTbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 15:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhHYTbV (ORCPT
+        with ESMTP id S231445AbhHYTbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 15:31:21 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF6DC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:30:35 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id g13so1142504lfj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:30:35 -0700 (PDT)
+        Wed, 25 Aug 2021 15:31:49 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7503C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:31:03 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id y34so1190522lfa.8
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 12:31:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v2pHeCpwfvnRqsL6uTqKSV63IADJ4kNuQWG8CitRMGo=;
-        b=fecS0rU8+RB4TFzaTbO+BqmPyZoQtmyc2FzUYWhEp1fVnQMlfAm0+1dA4jI6wVXzS9
-         OlRkFtjZd7ZqSJyNsxWSsIApeDgsyp8OdqvZhPSxKcEEQ4LLLPnhiUJZxV/FnkgLKTp3
-         TKDan1JoIch7J669aKAgkE3XjCDtMOfT1t9eaiN89sMCyp6AgJZ9CdqNiSg2OmtrLcVI
-         DEy/6sb7q8I3Wsem/+TsVPWMeurtf+TdT6GaWF5AhzXHhvqOgjLLKnBJTOTmUaneWMq/
-         yPDS7Rd8T0ISmMFOdfPfeAHbrCORnoCZM6rTJW009ev+C3wG1XWFJV7AqaNrpJNI7ctX
-         iXVg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8ci8RsGCUHfQz7nmoHgVgYoNhxkkZ9gzkCCxPYWj1Kw=;
+        b=YPTMaBTqCggdBkLCMMZEIi33gvKL6fqCAK93ss8pGeknbOaA/+JbrcCnkIU2jc8p5O
+         1CrJaqe8upu7Ms5/ZcMGP2E3QnwD8aTf66I19j/5gDuuenCauWQcw7mgFBrRZqv+gReD
+         CnLUQ9kwpMSGHaC0YgsmqiRhLhvUx8mGGn6yJXr8hC1FyoG8ntnT3WthyGorfBDHDwkA
+         kV07G28ZaDjV4qGlS1j+/cb+yYtttoMRqVxCQdkQjnoSyCioffDgQDPuPpe67gY/sIn8
+         GiCg+taD7mbDwEshYcwDLJwZCllOggYBq0f9jTkG6DSu8MCe5W0vT80L97po8wXGR9YT
+         tk7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v2pHeCpwfvnRqsL6uTqKSV63IADJ4kNuQWG8CitRMGo=;
-        b=AWiFvS0RkGcW/dX2ER5Si4AJns9lsQdZ/g9Kwo0J2SqHFrbN5fqPzZfyRImrBvxqTX
-         5iZUvnY3Yb44N6SNzKSusdXjlEONQRTBZ2DR3yJtsN8/fhGjranz4vcZyO1E4MtlqS52
-         3lgFwt8ZsmjR2suD4xywaVdMqDdXK0EQCaf0Ryu7iZcPvbNlkAkLXdv+RwZ0cStoNnND
-         L51cahJs6h9O9nNQl9HnMzjGEbNLBCrTxuRX1y5SyrHB/7HEvC7fV7UcUe5O/Pfvsz2K
-         sUf90LfIWeDQ2ZzHtpxlUreGL2+Oj+Z/hYS1YLSsL7tw/UytOj7RsZBhp96WduZbgglJ
-         nqOg==
-X-Gm-Message-State: AOAM531LyeJR8mD2XjpvCL4jLV8TvT3sdo2IVerFIeVBJwOeBYji6nC0
-        5h4OpwT8ZhYFVHY/Zn0/iwBC28GNRpY6B3fGG85Ojw==
-X-Google-Smtp-Source: ABdhPJybZDeI5WklJY6h/QxXjN7+6cGF0weNj4VLWMVNYCyAtzqqhbVZp6n1lV+VPaLXl/tlmJwY9v2n35yJqsz5WOk=
-X-Received: by 2002:a05:6512:3991:: with SMTP id j17mr27029396lfu.374.1629919833510;
- Wed, 25 Aug 2021 12:30:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8ci8RsGCUHfQz7nmoHgVgYoNhxkkZ9gzkCCxPYWj1Kw=;
+        b=BMPOyAx+axzQBbXn7qaTPIWkxhO+X10AXRZ61Nc2VrZUgaoddYRq2iH4HXVnPO6UEt
+         YHNceMFKjlBGK3GE9CTQUXzRCqy6IL+HbDRIYCWsAswcwGP3RpPER/mCKVC2efxkurYw
+         Ahy7ZLTzA1Wr9G6c3g0ujz41xQ3z/ZpyyEdaPG/jaOmSgukeuT1oneFWiET5edxSN1qb
+         QyL0ate+LJ4aYN87Pf+UNOvZQW/mUUv1eCr4Mo0RXo5rX1zAxBv3NHaAs+OPy4WFJeoK
+         9pzVK2e+EtwLFitTZrbs9T2OG6LOuyHR6YlJFrUvQBqLPvkdUpjzlzN7L6vVefaXdJ9g
+         CiGQ==
+X-Gm-Message-State: AOAM531Jcjen6LfT155UnjcjFwAD0R9E6IkHW5sWsHM2QAQG2IDdyecF
+        H/rIgjKFiBbqDC1rT6QgwH0=
+X-Google-Smtp-Source: ABdhPJwCTVJ7Pbr7mOv2KUJCeiKaehlnS7v7SEIiGOr6TmwoXcfdlPlRDgFsEWrl21KSsOdOYrr26A==
+X-Received: by 2002:a05:6512:96f:: with SMTP id v15mr5698347lft.455.1629919862077;
+        Wed, 25 Aug 2021 12:31:02 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id o20sm91400lfu.148.2021.08.25.12.31.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 12:31:01 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 22:31:00 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/ntfs3: Remove unnecessary condition checking from
+ ntfs_file_read_iter
+Message-ID: <20210825193100.fix4o2p7swifru5o@kari-VirtualBox>
+References: <20210825182522.1367594-1-kari.argillander@gmail.com>
+ <20210825191757.GW7722@kadam>
 MIME-Version: 1.0
-References: <20210824071846.61488-1-deng.changcheng@zte.com.cn>
-In-Reply-To: <20210824071846.61488-1-deng.changcheng@zte.com.cn>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 25 Aug 2021 12:30:21 -0700
-Message-ID: <CAKwvOd=hoC3dM4cK0jLjPS1OUQ2k-nub5H4tQtDb3hB8NZnVzg@mail.gmail.com>
-Subject: Re: [PATCH linux-next] x86:uaccess: fix boolreturn.cocci warnings
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825191757.GW7722@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:18 AM CGEL <cgel.zte@gmail.com> wrote:
->
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
->
-> ./arch/x86/include/asm/uaccess.h:477:9-10:WARNING:return of 0/1 in
-> function 'user_access_begin' with return type bool
->
-> Return statements in functions returning bool should use true/false
-> instead of 1/0.
->
-> Generated by: scripts/coccinelle/misc/boolreturn.cocci
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Wed, Aug 25, 2021 at 10:17:57PM +0300, Dan Carpenter wrote:
+> On Wed, Aug 25, 2021 at 09:25:22PM +0300, Kari Argillander wrote:
+> > This check will be also performed in generic_file_read_iter() so we do
+> > not want to check this two times in a row.
+> > 
+> > This was founded with Smatch
+> > 	fs/ntfs3/file.c:803 ntfs_file_read_iter()
+> > 	warn: unused return: count = iov_iter_count()
+> > 
+> > Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+> > ---
+> > I cc Dan also because I am happy that I finally managed to install
+> > Smack and straight away I found something with it. Thank you for
+> > this great tool.
+> 
+> Thanks!
+> 
+> You got a bit lucky, because you're using the --two-passes and the truth
+> is I haven't looked at that in years so I'm worried it's probably not
+> great.  You probably be better off not using the --two-passes option.  :/
+> I should remove it.
 
-Fixes: 594cc251fdd0 ("make 'user_access_begin()' do 'access_ok()'")
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Haha no I need it :D I was just testing what this tool can do. I also
+notice that --two-passes seems quite bad to read. But hey I found
+something! :D Good to know that you are not using it. I will not use it
+then. Thanks.
 
-> ---
->  arch/x86/include/asm/uaccess.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-> index c9fa7be..e3b6f4f 100644
-> --- a/arch/x86/include/asm/uaccess.h
-> +++ b/arch/x86/include/asm/uaccess.h
-> @@ -474,9 +474,9 @@ static inline bool __chk_range_not_ok(unsigned long addr, unsigned long size, un
->  static __must_check __always_inline bool user_access_begin(const void __user *ptr, size_t len)
->  {
->         if (unlikely(!access_ok(ptr,len)))
-> -               return 0;
-> +               return false;
->         __uaccess_begin_nospec();
-> -       return 1;
-> +       return true;
->  }
->  #define user_access_begin(a,b) user_access_begin(a,b)
->  #define user_access_end()      __uaccess_end()
-> --
-> 1.8.3.1
->
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+> 
+> regards,
+> dan carpenter
+> 
+> 
