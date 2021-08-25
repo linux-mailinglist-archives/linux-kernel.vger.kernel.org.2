@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908313F6D8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 04:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6726F3F6D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 04:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238814AbhHYCwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 22:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
+        id S237229AbhHYC4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 22:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238835AbhHYCwH (ORCPT
+        with ESMTP id S230021AbhHYC4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 22:52:07 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFC0C06179A;
-        Tue, 24 Aug 2021 19:51:20 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GvVq75hBkz9sWl;
-        Wed, 25 Aug 2021 12:51:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629859876;
-        bh=knKjxsyznS4IE1GXjcLUhTL3fKLtXd+Srj38s+xqkr8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nAh4QQXSJb+hXJ8hob6lzPXg8XTtv7t5D/jrH1QgBaumrkqnaFxDwdb/d/NkEew6C
-         n6H+ZpFvcfA2bmduJl5wFiE/LFaYo+GDxrH+V8elBmiBqR3xD0os+2JS4ai1cOalq2
-         aHPujjYkKjZiEcfWCV6oZIb5FXmt8POxZmcgPxmD4br58apvxI5NcZUhtC4vnP3yxa
-         aLVBMPjat0dgsHYD3Uk7tOA3ExoVRW7R8zbytFKVerC8tml6TcqtcqwsZmlpJtp2JB
-         KiV7dANokqmfuY7vLtD1gUTDRqRIgCugFzIai/DdgPhVYL08FclP6++0AKs8kQ2cJ3
-         W7OM1LXEVJRsA==
-Date:   Wed, 25 Aug 2021 12:51:14 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Fangzhi Zuo <Jerry.Zuo@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20210825125114.498e2a61@canb.auug.org.au>
+        Tue, 24 Aug 2021 22:56:52 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BABDC061757;
+        Tue, 24 Aug 2021 19:56:07 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id f15so16717597ybg.3;
+        Tue, 24 Aug 2021 19:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pxKw4tRuZtKuPCdNSY/EysbIdH1gs3HBF9BpV8F9Ogk=;
+        b=uehHByBLfMYSppbrT9JQ0EwN0xsr9EgnNqtXsWJh3aLa9jBY5ujxZPtkifnmn9E0Zv
+         HqsVTK4+yq+OZFCkN4gfmZKCqObAeSNuf+iwltqG64kNLM8SZdE4TEl1gQgXBklysRVo
+         E5jQNY1blHfLIJUoocRLbbyhV3L1BW5ZBmig2d6n+qnvGvSCXgqQbChh8p6xicVqqlYS
+         3Wazq/nHOPZAqNcYkEzs2dqAR3XYMk0X3WU8zQYBaHW8MuhPteP1BacykT8h/0fZgo3d
+         7W3iof1VMY1lOsqYYF9bU/+3DvY17ZM3+F8h3CDz5QH1UCB8qm/aabof0ELAagNhUNUm
+         cICA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pxKw4tRuZtKuPCdNSY/EysbIdH1gs3HBF9BpV8F9Ogk=;
+        b=dJP/REluS6Wrvld1iIJHlXwE4VMGkKtCARX7gg2XdFKg2yPlRxHXOiXnW928JEIMzg
+         tK0RGj2yFU+95U91gOWyn/a3iWpQ83U8GoF7yx1/Ov8+8KehrlZPR+RqsEyroGk4P1+7
+         nBR+R2LfT3EnQvA9TwamXf3yeV4Sqr/Nj0iGB8AXDrBnkRYF6iGVID60S2P/l1K88lnU
+         66PpBMEojKd2P4t/+UI/gzX+NqAZ1B8+Ngbr0b1FHiOEVVu8n39VFmCecKFOQQWe8yYp
+         9bf/vvVy5ZGdeM9Hv0iGXOJL6VOHQ2Kpj2mO0JwoFRS9Y5e2PhJ4strW/f/b9PGePjLW
+         W5yA==
+X-Gm-Message-State: AOAM532H3/kr+9+H7eER40KKgx2jW9AdpCtBoL31mkgbIYtzvka8iWB9
+        QOy/uOy5VsU3oXcoP3huD5zEP9udT4gjhSRJga4=
+X-Google-Smtp-Source: ABdhPJxttWTWhhNXOIbqVzytpGheVCCSEsWFn7/PRD/Jddj1cGxqcjzcvdDAGEM5a3XBv7NjRt7J6cgkEvbpasBjXHk=
+X-Received: by 2002:a25:b991:: with SMTP id r17mr27740903ybg.92.1629860166328;
+ Tue, 24 Aug 2021 19:56:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BD=SuAckv1DE9tzzZX_2=pj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de> <20210819133128.45ef4353@coco.lan>
+ <c56ec571-2278-95e9-2028-990e03159c3f@web.de> <20210822194709.4b9d33d4@coco.lan>
+ <be6ac929-2443-ff55-3e11-6a86d6472e0e@web.de> <CAHk-=wjSadWPfzQ_hOqbjq6c_xwJs8GLHTyznhXRvDF5Yrs4FA@mail.gmail.com>
+In-Reply-To: <CAHk-=wjSadWPfzQ_hOqbjq6c_xwJs8GLHTyznhXRvDF5Yrs4FA@mail.gmail.com>
+From:   Manu Abraham <abraham.manu@gmail.com>
+Date:   Wed, 25 Aug 2021 08:25:57 +0530
+Message-ID: <CAHFNz9L29LK+L8LjqyTyqq3LsvzeA6iYFHwP9n3uNBbqbbm1bg@mail.gmail.com>
+Subject: Re: [Regression 5.14] media: dvb userspace api
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Soeren Moch <smoch@web.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BD=SuAckv1DE9tzzZX_2=pj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Aug 23, 2021 at 10:30 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> I have reverted the header file move. But I would also heartily
+> recommend that whatever user program includes those headers (VDR -
+> anything else?) should take snapshots of these specific kernel
+> headers.
+>
+> I'm not convinced that it makes sense to move the av7110 driver back
+> from staging - it may continue to work, but it _is_ old and there is
+> no maintenance - and I would certainly suggest that any other
+> out-of-tree driver that uses these old interfaces that nothing else
+> implements shouldn't do so, considering that nothing else implements
+> them.
 
-Hi all,
+Sorry for barging in between your discussion, but it seemed like you really
+missed some perspective and hence.
 
-After merging the amdgpu tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+My 2 cents worth:
+* Revert the header changes.
 
-drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_hw_sequencer.c: In f=
-unction 'apply_single_controller_ctx_to_hw':
-drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_hw_sequencer.c:1495:=
-20: warning: unused variable 'params' [-Wunused-variable]
- 1495 |  struct drr_params params =3D {0};
-      |                    ^~~~~~
+* Let someone else with knowledge of it take over the maintenance
+of the av7110 driver.
 
-Introduced by commit
+  - This would allow other hardware also to be easily accommodated
+in a similar manner.
 
-  5de27e1d6755 ("drm/amd/display: Add DP 2.0 SST DC Support")
+* Pull the out of tree drivers and allocate maintenance of those, to
+someone who understands them. Don't you want more hardware to be
+supported out of the box ?
 
---=20
-Cheers,
-Stephen Rothwell
+Should there be no driver for those DVB output hardware, but only for
+V4L2 output devices ?
 
---Sig_/BD=SuAckv1DE9tzzZX_2=pj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+There exists other hardware which As a person who worked on another
+av7110 like driver (saa716x based s2 6400), which I can confirm.
+The API is supposed to simplify life, not make it even more complex.
+These devices would need lot of workarounds to work with the API that
+which Mauro advocates, which might even break those drivers given
+their complexity and size.
 
------BEGIN PGP SIGNATURE-----
+It would make life a lot easier for the users, Mauro himself and
+this long never ending discussion can be put to rest.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmElsCIACgkQAVBC80lX
-0GzKhgf9HwypSqQYnqZxjgpz4lU+UcDJbsd0+LRsQFxVt906KUEJ9oxLfIFr8ln/
-hTjZmlLyYrVfo6VaSNT+DF3DZ34Gi0xzVzIOozwr1iq91uzArbiXM4cSdTYIsRG7
-I19hSlv60Or24Y0+4fo1fn+zHzWYi4WXXDn/QyEpk3rdANAndkb4NxZq7qFwZmwO
-0nhymak/n12CoU+j7I7GRG0pL/roWhw3tMvrQpcJT95Sfevn6TWJmrQd4fUMEOLk
-MNLzHL5saJOdiU9RS8JGUoUMwp8Ru10yf/X/wApMI2v5clIxqD8zP867xeQxlUbq
-/HvseUD7sIwhozgj3+Q0+ULlfaZYPA==
-=KhEu
------END PGP SIGNATURE-----
-
---Sig_/BD=SuAckv1DE9tzzZX_2=pj--
+Thanks,
+MA
