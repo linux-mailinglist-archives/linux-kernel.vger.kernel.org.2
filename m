@@ -2,122 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F7B3F6FFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB753F7018
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239245AbhHYHDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
+        id S238533AbhHYHGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239118AbhHYHCu (ORCPT
+        with ESMTP id S238318AbhHYHGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:02:50 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1393DC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:02:05 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id h9so49458822ejs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:02:05 -0700 (PDT)
+        Wed, 25 Aug 2021 03:06:08 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F75C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:05:23 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id p38so50912932lfa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 00:05:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ejMs/5dhUynEVzAUaCGRN6F3/ti7cOnDiR6ZoSB0tPA=;
-        b=c6O3dXO8+ghpyR+PV4yUq7w3PTw2Fcv8Vj3CAjBPWFm1MseFK0FGPNEAVTn1TMBHpf
-         EpDM301+y1CLdQzjhUJpbpSOzfpc2PPgd//dLeGG9xxxJfLBobunVwZrjo5SJjy0Oaf3
-         Z+bmvXnhDnBqtUTzLko+DVHYth9nmYf4U//4D7ZnOa/hm0QSuyOkdyLQ2+Cq8vYUNLY6
-         qjUyb0WCenrIuDS0QTkT5T2yE7hAsknBz1Sbi9dE61qbqRnTaE9UjXe9DJZeCdw6YMXm
-         422oCbOPAcESpoaGo8qbqrWy3DjTz570+d1MYaVNEj0hpbf2nkFyQdE264D8aFemHH/v
-         kwPA==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=f86vSlR0HZBwJ5uNol8AYek8un6SmRQ/aA/u93m5SF4=;
+        b=OD++ZxlOA6qFnEjvx3fiHE7yGKsJpc2jMtGSjxuErnAThPWZs0JHuAHNjJfr6CaKBR
+         bhwnji7i1q76GWFU49oNMbpbG7TJZlNzL3DYLnE4J6MHG9DfwC480QRkmUUaNZb30vg9
+         ge9w0C2f9UXv6arlqSXuoyVeBaTN2LSgMr3RQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ejMs/5dhUynEVzAUaCGRN6F3/ti7cOnDiR6ZoSB0tPA=;
-        b=Uhjx9CteTkmUEaCVRT2KHuXXDx1tFMCgHN62nfv/9NZEofRiTiso8ZC+HIAsHr1kWu
-         vmOcO+ME0IfYbOUjcD6i1HO6+glkOR7eWzmXiQuzAcbOht2iFo8My46/peHNAK0W/HPa
-         r/Wny3EZU9p7N2qrEoh3RYJxKVY/rMMgraG0qbTxulGOKbIbtMPzZbNyu/LeWPb02im8
-         7X2MyqwHJ01/gmLrf9/glgE2AFLz5GRVD0t7Aiz5dMllFiZiAmU0jk4mImyqGi7FNYda
-         ZoCAUhfmwmZk7UEXFfXBgEP6AdeiRtVSJ1hWI+7fzto9XVlfuXnQ5f8WpwVgrKKd6zo+
-         vUDw==
-X-Gm-Message-State: AOAM533suFajKYoyTs6Ywki4c/P6KJzLTO8dakrFIm7X3zA8hDcj0IqD
-        L4XW7GvIuyvh+XFVbcDtsfJE8w==
-X-Google-Smtp-Source: ABdhPJwzLOe3KIOxj0DYLa9cbtZTe9lqRd7Rux32hJcSUztznRZBHnJ7R6x/KxM9NtFQR1PSrCH7dw==
-X-Received: by 2002:a17:906:354a:: with SMTP id s10mr4807156eja.357.1629874923308;
-        Wed, 25 Aug 2021 00:02:03 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id w13sm13755183ede.24.2021.08.25.00.02.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 00:02:02 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bgolaszewski@baylibre.com, linus.walleij@linaro.org,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH v2] gpio: viperboard: remove platform_set_drvdata() call in probe
-Date:   Wed, 25 Aug 2021 10:01:25 +0300
-Message-Id: <20210825070125.32918-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210707135144.191567-1-aardelean@deviqon.com>
-References: <20210707135144.191567-1-aardelean@deviqon.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=f86vSlR0HZBwJ5uNol8AYek8un6SmRQ/aA/u93m5SF4=;
+        b=AQGhkUHfc5z2UN4vZisfXVDB0cIsnYuNhUMLG+AKWGcSS0LWTXQmyn/0yNQ8CDDrKo
+         Zaw9GFBygbHFDfRj84RpYZjrQStTzvywoEIBwNmQw4ejiNaSV9Hqv8CVUfVk7svd+Q2/
+         YRZ4HSWpSPFA+VBeLf1xR04+ti5c/WRoUczYkAZpyH4MHtsmYrAe/sFsR1iHmdIMfSF6
+         6FFn+ytXVKmI1tByl7oyaw1V0Z5/dEm0bjJlTGaiJcSnziBUDfgEL9gCv7QKXBiDbeQh
+         UdJnKaQTJM0tsZQsNTnhjyA0qrMSTSyB6QUq/1njZMCXmQohWrAkMvUzutRJTL2fAq8s
+         WklA==
+X-Gm-Message-State: AOAM531GkDWqto7fAgoO6j3Fdu6NbMGAWN7wEqNjLftgevrNJkct9nlR
+        pRcw04MhMNcWzovgNPBnnPWbqQ==
+X-Google-Smtp-Source: ABdhPJwBXL975V1sNeyA/63o0iwcSaMRAj2hesFnpLYv/vE2NeyIR1QxsC8gtkh9fN+rAwAYBK/3yQ==
+X-Received: by 2002:ac2:508d:: with SMTP id f13mr27866203lfm.576.1629875121527;
+        Wed, 25 Aug 2021 00:05:21 -0700 (PDT)
+Received: from [172.16.11.1] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id l11sm1966960lfg.39.2021.08.25.00.05.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 00:05:20 -0700 (PDT)
+Subject: Re: [PATCH v1 2/3] lib/sort: Introduce rotate() to circular shift an
+ array of elements
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Yong Zhi <yong.zhi@intel.com>, Bingbu Cao <bingbu.cao@intel.com>,
+        Dan Scally <djrscally@gmail.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210824133351.88179-1-andriy.shevchenko@linux.intel.com>
+ <20210824133351.88179-2-andriy.shevchenko@linux.intel.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <4078b7a3-2ec2-ba87-d23c-b8daed7386fe@rasmusvillemoes.dk>
+Date:   Wed, 25 Aug 2021 09:05:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210824133351.88179-2-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The platform_set_drvdata() call is only useful if we need to retrieve back
-the private information.
-Since the driver doesn't do that, it's not useful to have it.
+On 24/08/2021 15.33, Andy Shevchenko wrote:
+> In some cases we want to circular shift an array of elements.
+> Introduce rotate() helper for that.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/sort.h |  3 +++
+>  lib/sort.c           | 61 ++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 64 insertions(+)
+> 
+> diff --git a/include/linux/sort.h b/include/linux/sort.h
+> index b5898725fe9d..c881acb12ffc 100644
+> --- a/include/linux/sort.h
+> +++ b/include/linux/sort.h
+> @@ -13,4 +13,7 @@ void sort(void *base, size_t num, size_t size,
+>  	  cmp_func_t cmp_func,
+>  	  swap_func_t swap_func);
+>  
+> +void rotate(void *base, size_t num, size_t size, size_t by,
+> +	    swap_func_t swap_func);
+> +
+>  #endif
+> diff --git a/lib/sort.c b/lib/sort.c
+> index d9b2f5b73620..b9243f8db34b 100644
+> --- a/lib/sort.c
+> +++ b/lib/sort.c
+> @@ -14,6 +14,7 @@
+>  
+>  #include <linux/types.h>
+>  #include <linux/export.h>
+> +#include <linux/minmax.h>
+>  #include <linux/sort.h>
+>  
+>  /**
+> @@ -275,3 +276,63 @@ void sort(void *base, size_t num, size_t size,
+>  	return sort_r(base, num, size, _CMP_WRAPPER, swap_func, cmp_func);
+>  }
+>  EXPORT_SYMBOL(sort);
+> +
+> +/**
+> + * rotate - rotate an array of elements by a number of elements
+> + * @base: pointer to data to sort
 
-This change removes it.
-Also removing with this change is some logging about the failure to init
-the gpio chip data. There are other logging methods to view that this
-failed.
+sort?
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
+> + * @num: number of elements
+> + * @size: size of each element
+> + * @by: number of elements to rotate by
 
-Changelog v1 -> v2:
-* remove dev_err() prints
-* [styling] added empty line before first devm_gpiochip_add_data()
+Perhaps add (0 <= @by < @num) or something like that, and/or start the
+implementation with "if (num <= 1) return; if (by >= num) by %= num;"
 
- drivers/gpio/gpio-viperboard.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+> + * @swap_func: pointer to swap function or NULL
+> + *
+> + * Helper function to advance all the elements of a circular buffer by
+> + * @by positions.
+> + */
+> +void rotate(void *base, size_t num, size_t size, size_t by,
+> +	    swap_func_t swap_func)
+> +{
+> +	struct {
+> +		size_t begin, end;
+> +	} arr[2] = {
+> +		{ .begin = 0, .end = by - 1 },
+> +		{ .begin = by, .end = num - 1 },
+> +	};
 
-diff --git a/drivers/gpio/gpio-viperboard.c b/drivers/gpio/gpio-viperboard.c
-index c301c1d56dd2..e55d28a8a66f 100644
---- a/drivers/gpio/gpio-viperboard.c
-+++ b/drivers/gpio/gpio-viperboard.c
-@@ -404,11 +404,10 @@ static int vprbrd_gpio_probe(struct platform_device *pdev)
- 	vb_gpio->gpioa.get = vprbrd_gpioa_get;
- 	vb_gpio->gpioa.direction_input = vprbrd_gpioa_direction_input;
- 	vb_gpio->gpioa.direction_output = vprbrd_gpioa_direction_output;
-+
- 	ret = devm_gpiochip_add_data(&pdev->dev, &vb_gpio->gpioa, vb_gpio);
--	if (ret < 0) {
--		dev_err(vb_gpio->gpioa.parent, "could not add gpio a");
-+	if (ret < 0)
- 		return ret;
--	}
- 
- 	/* registering gpio b */
- 	vb_gpio->gpiob.label = "viperboard gpio b";
-@@ -421,15 +420,8 @@ static int vprbrd_gpio_probe(struct platform_device *pdev)
- 	vb_gpio->gpiob.get = vprbrd_gpiob_get;
- 	vb_gpio->gpiob.direction_input = vprbrd_gpiob_direction_input;
- 	vb_gpio->gpiob.direction_output = vprbrd_gpiob_direction_output;
--	ret = devm_gpiochip_add_data(&pdev->dev, &vb_gpio->gpiob, vb_gpio);
--	if (ret < 0) {
--		dev_err(vb_gpio->gpiob.parent, "could not add gpio b");
--		return ret;
--	}
--
--	platform_set_drvdata(pdev, vb_gpio);
- 
--	return ret;
-+	return devm_gpiochip_add_data(&pdev->dev, &vb_gpio->gpiob, vb_gpio);
- }
- 
- static struct platform_driver vprbrd_gpio_driver = {
--- 
-2.31.1
+I see you just copied-and-adapted, but I think the code would be much
+easier to read without all those plus/minus ones all over.
 
+> +	swap_func = choose_swap_func(swap_func, base, size);
+> +
+> +#define CHUNK_SIZE(a) ((a)->end - (a)->begin + 1)
+> +
+> +	/* Loop as long as we have out-of-place entries */
+> +	while (CHUNK_SIZE(&arr[0]) && CHUNK_SIZE(&arr[1])) {
+> +		size_t size0, i;
+> +
+> +		/*
+> +		 * Find the number of entries that can be arranged on this
+> +		 * iteration.
+> +		 */
+> +		size0 = min(CHUNK_SIZE(&arr[0]), CHUNK_SIZE(&arr[1]));
+> +
+> +		/* Swap the entries in two parts of the array */
+> +		for (i = 0; i < size0; i++) {
+> +			void *a = base + size * (arr[0].begin + i);
+> +			void *b = base + size * (arr[1].begin + i);
+> +
+> +			do_swap(a, b, size, swap_func);
+> +		}
+> +
+> +		if (CHUNK_SIZE(&arr[0]) > CHUNK_SIZE(&arr[1])) {
+> +			/* The end of the first array remains unarranged */
+> +			arr[0].begin += size0;
+> +		} else {
+> +			/*
+> +			 * The first array is fully arranged so we proceed
+> +			 * handling the next one.
+> +			 */
+> +			arr[0].begin = arr[1].begin;
+> +			arr[0].end = arr[1].begin + size0 - 1;
+> +			arr[1].begin += size0;
+> +		}
+> +	}
+
+Perhaps add a small self-test, it's not at all obvious how this works
+(perhaps it's some standard CS101 algorithm for rotating in-place, I
+don't know, but even then an implementation can have off-by-ones and
+corner cases).
+
+for (len = 1; len < 15; ++len) {
+  for (by = 0; by <= len; ++by) {
+    for (i = 0; i < len; ++i)
+      arr[i] = i;
+    rotate(arr, len, sizeof(int), by);
+    for (i = 0; i < len; ++i)
+      if (arr[i] != (i + by) % len)
+        error();
+  }
+}
+
+Rasmus
