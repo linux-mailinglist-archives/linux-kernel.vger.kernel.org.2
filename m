@@ -2,99 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5398C3F7D8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E2C3F7D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 23:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhHYVST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 17:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
+        id S231927AbhHYVSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 17:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhHYVSS (ORCPT
+        with ESMTP id S231245AbhHYVSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 17:18:18 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A661C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:17:32 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id x27so1805532lfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:17:32 -0700 (PDT)
+        Wed, 25 Aug 2021 17:18:33 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C58C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:17:47 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id x10-20020a056830408a00b004f26cead745so697348ott.10
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 14:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cAlJBNQn16JjUkHYdCuHXibhY5cJqMeU9e15H1wH+kQ=;
-        b=Twvb5JwGXq7g8xGxqMloGmKOTKjL4Cpr7Hrkzmdj1rM9cAtIDoJQlHk/FubuEVlXUS
-         3YA89nJqolCmBl0X+218EiNXgod3K2tHKBNueNTJp2dhWHaoQEjCYliDGM3Jp+P8jrp1
-         U6incOxlb5XMQ5WLp+xztlf+F7edMQ0aSrHv9TPi+Ll75CedhDDQBSBjY3vID9LJG8lU
-         IceClHUlaGxSZPYAuCqKx7xqyW9uslzP4Lp0rDx9Yl7618mw5Og/JVlsPgflydKIzjRW
-         nTv08AP6n7WDSJXmhx0111VHP64plhof0Gy4X0XfGmjg63JF8AVQ1FVrFBTQ5ppldxFD
-         DVgQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ph3rbd3VZXkqD2O3S/ggsw10ocnIzOxhUeRpv/iKwKs=;
+        b=w5wZgYEvyCpFTUqoknGXeK7NuNTB+3nVFB5umpYtjM5kcJhOjC/Amub1fvuMnsMptl
+         tDUDoSwqZc7DKeXPssZ09h4zLBMOJVOnMJO82X1pUBKMJk2eOfLlolSLsaSk4XpCZqHn
+         A/lHnNCyEdcglE2WXuxYsn9PuPTNcNzMVn7aQBjJ+D4hZ0Q4pkTzPwNWTTKM3jI3Prf5
+         NgzDgR2iVKZ+x++VnfWIfLBLGPep95SY9NGAeOOH9pXaBiJ+2k5khENfmUvLV8hQsC6E
+         mLmFat55WLquc8dV9VpI1NgmfFiv4gjuYtXfUn9/m85cZLljimDv1fMaf2U6oBu3j5wN
+         Vj6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cAlJBNQn16JjUkHYdCuHXibhY5cJqMeU9e15H1wH+kQ=;
-        b=eLFWnZaMKuVCkF5QZMNMqybZUN9348nwHoKGOZddr/0Z9BrsoYPmLgqqaBxPhgy3T7
-         OxxZcymhcnjorxSbXP+xGIUrHtE3NkgYuzRP+lmpZah753cLZYrZ9TrdsPwK+1BcwlIb
-         yUcr/uPh5sHDBmt4bbKfZVlDO3XUHGogWQXJn9wRY22zIFwH2rcPtJdEB8JDqFtzKzoW
-         9QWYLGEPhEVNYQt+S2edAyYI5aSMSVQcNfEZryFdj4G01/P4JvUg0SsjF4V6tGalwn40
-         ec33/cwY9Uz1VvHOFrgcWiY+kd4amwNDxZtfGKaq+GbXgxRqp5wx/7wwaWv9wvr5BIQp
-         6vbg==
-X-Gm-Message-State: AOAM531ZOIWI7kbxHP5TLSFzoLoTj4JTcS1oLXUpGaT/AQ3rxYJfPWgb
-        CtiuHs0wa3Ocv032Cil93CV8mZJbJ1jLDX/yRTcgeA==
-X-Google-Smtp-Source: ABdhPJwfpYIvlODDHiRHyf2+aTCddGrNRBCe0ubiEEwEmq1swxye6qx60WEAreo9vIgjPwwCEf++BetmgbXXELUhpN8=
-X-Received: by 2002:a19:5f04:: with SMTP id t4mr88603lfb.297.1629926250176;
- Wed, 25 Aug 2021 14:17:30 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ph3rbd3VZXkqD2O3S/ggsw10ocnIzOxhUeRpv/iKwKs=;
+        b=fAapOlltGsgDwLzPqzRYLdvEnBfzGUL51/1CWmfekMuHriLbLf+78LHubogpkxFDrZ
+         gR33SE1dew3GwG2ldreZ2fZRN1c4CQOR2b0BkTgli0NK56wzGIli9KRU+IhpyxxxIaO2
+         P6O26SYXckaUBP98Q6IF2CiyzRX8AU3LSoYKcM6zBQ3Uj6FP01EnlU51m5Z8yf2Ql7nz
+         hmO9Zek+4dc1tUqHqvQ7jTnlkAiG9UCRNUuPIacHjuUlB/U0ZQ0BKazHBcKmvzlvmGJ/
+         jKOVbUwiMrDQDYFFTX1QLGyDgVSPwOeBWmQNeBLpfpSElbXILtYyVxhKQJ4C9M4tVooE
+         6gNw==
+X-Gm-Message-State: AOAM533swnX6F9mQ3KfJjcCT6bgtG5cnALwJiGqfZO3iy8eea9QuJnqL
+        nygE+lyL3KOUwhoMsJoF36dYXg==
+X-Google-Smtp-Source: ABdhPJyLm3BEwhZDTBiECPFilhJF/AHauFPb+kSxoHGC5Ef8Nkki9ZUdG3beghSMRFJqG1PgBDUktw==
+X-Received: by 2002:a05:6830:20cf:: with SMTP id z15mr386535otq.7.1629926266540;
+        Wed, 25 Aug 2021 14:17:46 -0700 (PDT)
+Received: from [192.168.17.50] ([189.219.75.147])
+        by smtp.gmail.com with ESMTPSA id y16sm192315otq.1.2021.08.25.14.17.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 14:17:46 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/43] 4.9.281-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        akpm@linux-foundation.org, shuah@kernel.org, linux@roeck-us.net
+References: <20210824170614.710813-1-sashal@kernel.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <334c0d43-2c48-4445-a7cf-d7d480cb0609@linaro.org>
+Date:   Wed, 25 Aug 2021 16:17:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210818081118.1667663-1-keescook@chromium.org> <20210818081118.1667663-6-keescook@chromium.org>
-In-Reply-To: <20210818081118.1667663-6-keescook@chromium.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 25 Aug 2021 14:17:18 -0700
-Message-ID: <CAKwvOd=bcs5W6eEDXGn5ROR2EuMiSp_2e6sLFxak=KK6yLWcvA@mail.gmail.com>
-Subject: Re: [PATCH 5/5] Makefile: Enable -Wzero-length-bounds
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210824170614.710813-1-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 1:11 AM Kees Cook <keescook@chromium.org> wrote:
->
-> With all known internal zero-length accesses fixed, it is possible to
-> enable -Wzero-length-bounds globally. Since this is included by default
-> in -Warray-bounds, we just need to stop disabling it.
->
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: linux-kbuild@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Hello!
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+On 8/24/21 12:05 PM, Sasha Levin wrote:
+> This is the start of the stable review cycle for the 4.9.281 release.
+> There are 43 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu 26 Aug 2021 05:06:11 PM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.9.y&id2=v4.9.280
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
 
-> ---
->  Makefile | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index af22b83cede7..3b6fb740584e 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1071,7 +1071,6 @@ KBUILD_CFLAGS += -Wno-pointer-sign
->  KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
->
->  # We'll want to enable this eventually, but it's not going away for 5.7 at least
-> -KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
->  KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
->
->  # Another good warning that we'll want to enable eventually
-> --
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.9.281-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-4.9.y
+* git commit: 3d204357a2ed1b927c75e0166f31aa67a5d99c4e
+* git describe: v4.9.280-43-g3d204357a2ed
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.280-43-g3d204357a2ed
+
+## No regressions (compared to v4.9.280)
+
+## No fixes (compared to v4.9.280)
+
+## Test result summary
+total: 63783, pass: 51053, fail: 476, skip: 10349, xfail: 1905
+
+## Build Summary
+* arm: 98 total, 98 passed, 0 failed
+* arm64: 28 total, 28 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 15 total, 15 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 15 total, 15 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
 
 -- 
-Thanks,
-~Nick Desaulniers
+Linaro LKFT
+https://lkft.linaro.org
