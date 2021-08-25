@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAE13F7C68
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3B03F7C6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242424AbhHYSsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 14:48:02 -0400
-Received: from mga14.intel.com ([192.55.52.115]:30027 "EHLO mga14.intel.com"
+        id S242434AbhHYSuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 14:50:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:57966 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241704AbhHYSsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 14:48:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="217310518"
-X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="217310518"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 11:47:14 -0700
-X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="444286725"
-Received: from cschaef-mobl1.amr.corp.intel.com (HELO [10.212.141.45]) ([10.212.141.45])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 11:47:13 -0700
-Subject: Re: [PATCH v2] x86/mm: fix kern_addr_valid to cope with existing but
- not present entries
-To:     Mike Rapoport <rppt@kernel.org>, x86@kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, stable@vger.kernel.org
-References: <20210819132717.19358-1-rppt@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <35f4a263-1001-5ba5-7b6c-3fcc5f93cc30@intel.com>
-Date:   Wed, 25 Aug 2021 11:47:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240322AbhHYSuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 14:50:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4EC431B;
+        Wed, 25 Aug 2021 11:49:24 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB3B03F66F;
+        Wed, 25 Aug 2021 11:49:22 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 19:49:15 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        etienne.carriere@linaro.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Subject: Re: [PATCH v4 11/12] [RFC] firmware: arm_scmi: Add
+ sync_cmds_atomic_replies transport flag
+Message-ID: <20210825184915.GI13160@e120937-lin>
+References: <20210824135941.38656-1-cristian.marussi@arm.com>
+ <20210824135941.38656-12-cristian.marussi@arm.com>
+ <7a2f972d-fdd0-d0f7-cac2-1989980ed872@gmail.com>
+ <CA+-6iNw-_VXcntU_UE8kTiPb8Sq28KkZG1__N7rE4ezo=VqQVQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210819132717.19358-1-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+-6iNw-_VXcntU_UE8kTiPb8Sq28KkZG1__N7rE4ezo=VqQVQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 6:27 AM, Mike Rapoport wrote:
-> Such PMDs are created when free_kernel_image_pages() frees regions larger
-> than 2Mb. In this case a part of the freed memory is mapped with PMDs and
-> the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
-> mark the PMD as not present rather than wipe it completely.
-> 
-> Make kern_addr_valid() to check whether higher level page table entries are
-> present before trying to dereference them to fix this issue and to avoid
-> similar issues in the future.
-> 
-> Reported-by: Jiri Olsa <jolsa@redhat.com>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: <stable@vger.kernel.org>	# 4.4...
->  	pmd = pmd_offset(pud, addr);
-> -	if (pmd_none(*pmd))
-> +	if (!pmd_present(*pmd))
->  		return 0;
+On Wed, Aug 25, 2021 at 01:17:47PM -0400, Jim Quinlan wrote:
+> On Wed, Aug 25, 2021 at 12:38 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >
+> >
+> >
 
-Yeah, that seems like the right fix.  The one kern_addr_valid() user is
-going to touch the memory so it *better* be present.  p*d_none() was
-definitely the wrong check.
+Hi Florian and Jim,
 
-Acked-by: Dave Hansen <dave.hansen@intel.com>
+> > On 8/24/2021 3:59 PM, Cristian Marussi wrote:
+> > > A flag is added to let the transport signal the core that its handling of
+> > > synchronous command messages implies that, after .send_message has returned
+> > > successfully, the requested command can be assumed to be fully and
+> > > completely executed on SCMI platform side so that any possible response
+> > > value is already immediately available to be retrieved by a .fetch_reponse:
+> > > in other words the polling phase can be skipped in such a case and the
+> > > response values accessed straight away.
+> > >
+> > > Note that all of the above applies only when polling mode of operation was
+> > > selected by the core: if instead a completion IRQ was found to be available
+> > > the normal response processing path based on completions will still be
+> > > followed.
+> >
+> > This might actually have to be settable on a per-message basis ideally
+> > since we may be transporting short lived SCMI messages for which the
+> > completion can be done at SMC time, and long lived SCMI messages (e.g.:
+> > involving a voltage change) for which we would prefer a completion
+> > interrupt. Jim, what do you think?
+> Even if the SCMI main driver could be configured this way in an
+> elegant manner, I'm not sure that there is a clean way of specifying
+> this  attribute on a per-message basis.  Certainly we could do this
+> with our own protocols, but  many of our "long lived" messages are the
+> Perf protocol's set_level command.  At any rate, let me give it some
+> thought.
+> 
+
+The new flag .sync_cmds_atomic_replies applies only when polling mode
+has been selected for a specific cmd transaction, which means when no
+completion IRQ was found available OR if xfer.poll_completion was
+excplicitly set for a specific command.
+
+At the moment in this series (unknown bugs apart :D), if you have a
+channel configured with a completion IRQ and the .sync_cmds_atomic_replies
+set for the transport, this latter flag would be generally ignored and a
+wait_for_completion() will be normally used upon reception of the
+completionIRQ, UNLESS you specify that one specific command has to be
+polled using the per message xfer.poll_completion flag: so you should be
+already able to selectively use a polling which immediately returns after
+the smc by setting xfer.poll_completion for that specific short lived
+message (since sync_cmds_atomic_replies is set and applies to pollmode).
+On the other side any other LONG lived message will be naturally handled
+via completionIRQ + wait_for_completion. (at least that was the aim..)
+
+!!! NOTE that you'll have also to drop
+
+ [PATCH v4 10/12] [RFC] firmware: arm_scmi: Make smc transport atomic
+
+from this series for the wait_completion to happen as you wish.
+
+As said I'm not sure that this whole mixing of polling and IRQs on the
+same channel on a regular won't cause any issues: any feedback on this
+from your setup is much appreciated.
+(maybe it's fine for SMC transport, but it led to a bit of hell in the
+past with mboxes AFAIK...)
+
+Thanks a lot again for your feedback, I'll have to chat with Sudeep
+about the various issues/configs possibility that we discussed and I'll
+keep you in the loop.
+
+Thanks,
+Cristian
+
+P.S.: I'll be off for a few weeks, so even though I'll keep an eye on
+the mail, I cannot guarantee any responsiveness :D
