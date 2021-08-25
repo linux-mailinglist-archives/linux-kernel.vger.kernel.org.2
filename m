@@ -2,158 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E523F737B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8743F737E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238882AbhHYKkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237638AbhHYKkp (ORCPT
+        id S240073AbhHYKlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:41:20 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:53026
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239992AbhHYKlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:40:45 -0400
-Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74459C0613C1;
-        Wed, 25 Aug 2021 03:39:59 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+        Wed, 25 Aug 2021 06:41:15 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 05D041F968;
-        Wed, 25 Aug 2021 12:39:58 +0200 (CEST)
-Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Replace usage of parent_names
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-References: <20210824150606.678666-1-bjorn.andersson@linaro.org>
- <386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org>
- <YSV0/bFiPgY3fjPF@ripper>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <bc2fd17a-66f4-7f60-cdbd-e3548fa4f1a4@somainline.org>
-Date:   Wed, 25 Aug 2021 12:39:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3BA0B40767
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629888029;
+        bh=BomR5qRxPE9FmaYF/P5LDWKwqrGGLdAmhXQWLWzg0l0=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=irwJaa1CZdNMQt35wuXupM5ZtSeC7ydcKu+p/c1GNoydmvApzkAqlMXiAoFS/NVdx
+         LL8ej2/RLC1HsPl6v237wuWLPWklaqgJEd7RAxtl/+fulqiV3hHmpwwnfllIr3XXZx
+         53E8mrVCdkGC2IS8QgaBuku80E117j8i+09WQTufJVcE7UBOVkBciC7Kg64dETHTJQ
+         dJWaelXrzoUkEImlOtEi1zIOQeHWkjZq1ixeTxqSLQM6NFC8swmM2OtXc5vjqSnvL2
+         sMAxBQiLO0qsK/Jxk71jnbfJuMIPkVkyyDx4aq+/h9cjzDnXN5CTyk5OVpMh5AD+7T
+         FE1acWH6P6WMA==
+Received: by mail-ed1-f72.google.com with SMTP id e18-20020a0564020892b02903be9702d63eso3430724edy.17
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:40:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BomR5qRxPE9FmaYF/P5LDWKwqrGGLdAmhXQWLWzg0l0=;
+        b=lwgzOoZ3h556/MdYdgJjRS0af9oIMlUZ9J0LehUl9MSm0dws09CilREdRLDcb1Rkb4
+         aREBbseaKH8+q9JshUzRZ4l2wDKwixKNeRa6vnabEaqC8BYWEB/v3XRR3DTTTfR8ymkG
+         wRXk1ObUvL42Ex3KDvK6NA09mrjYAwvHjZAm3IgYwoWo116IrfAWwHQbxRM0kpl3uUKh
+         lArtjfPSmGa9XgPd1o6+TMm1EYRVXnMFP8R6CNsrjiQPsn5WlWMcXgns6wUBaiO88lNW
+         j2nNHDEoRS8KSHeq/Su+0D0sXbW6K/PF8RQ3sf5I8bsEDDVuhPGMLj2+zNPJ9tJ8WaQW
+         3muw==
+X-Gm-Message-State: AOAM532/SBjQcZROCldbTYMONwovRyiluzr/cu+TFHbmuvVZ/FEsvxpg
+        wCzwpBlBlSe2kEq/rm7s4i3XurTMbW9+TV/zYLvS71HJ28ih2fqlfVxXCA8vaYWOQp2YR6a4IyF
+        gfYGPlmv4UjxzIcPAw+J06xp8aONlV2Z5whBTtRFPBym3z/keEKb6FOLyiw==
+X-Received: by 2002:a05:6402:2806:: with SMTP id h6mr7230490ede.259.1629888028886;
+        Wed, 25 Aug 2021 03:40:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw3J92grIs8eAex3JG6UT4nm5rpzCKGGwTa2YeXadSKAkBhivX3M5tMV45HAAIGsp70yCKOBhAU9PMdDoSl8Nc=
+X-Received: by 2002:a05:6402:2806:: with SMTP id h6mr7230476ede.259.1629888028645;
+ Wed, 25 Aug 2021 03:40:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YSV0/bFiPgY3fjPF@ripper>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210823093222.19544-1-andriy.shevchenko@linux.intel.com> <20210823093222.19544-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210823093222.19544-2-andriy.shevchenko@linux.intel.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 25 Aug 2021 18:40:17 +0800
+Message-ID: <CAAd53p5V2BcjG=Sds==qdOomZpCJON94B93DRU+fPkzTffGCyQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] platform/x86: hp_accel: Remove _INI method call
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Eric Piel <eric.piel@tremplin-utc.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 25/08/21 00:38, Bjorn Andersson ha scritto:
-> On Tue 24 Aug 13:46 PDT 2021, Marijn Suijten wrote:
-> 
->> Hi Bjorn,
->>
->> Thanks for this cleanup, that's needed and much appreciated!
->>
->> On 8/24/21 5:06 PM, Bjorn Andersson wrote:
->>> Using parent_data and parent_hws, instead of parent_names, does protect
->>> against some cases of incompletely defined clock trees. While it turns
->>> out that the bug being chased this time was totally unrelated, this
->>> patch converts the SDM660 GCC driver to avoid such issues.
->>>
->>> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->>
->>
->> Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
->>
->> On the Sony Xperia XA2 Ultra, bar the necessary change in the 14NM DSI PHY
->> driver commented below.
->>
->>> [..]
->>> -
->>> -static struct clk_fixed_factor xo = {
->>> -	.mult = 1,
->>> -	.div = 1,
->>> -	.hw.init = &(struct clk_init_data){
->>> -		.name = "xo",
->>> -		.parent_names = (const char *[]){ "xo_board" },
->>> -		.num_parents = 1,
->>> -		.ops = &clk_fixed_factor_ops,
->>> -	},
->>> -};
->>
->>
->> Removing the global "xo" clock makes it so that our 14nm DSI PHY does not
->> have a parent clock anymore, as the clock is called "xo_board" nowadays
->> ("xo" in the position of fw_name is, as you know, only local to this driver
->> because it is named that way in the clock-names property). We (SoMainline)
->> suffer the same DSI PHY hardcoding issue on many other boards and are at
->> this point investigating whether to provide &xo_board in DT like any other
->> sane driver.  Do you happen to know if work is already underway to tackle
->> this?
->>
-> 
-> As far as I can tell most other platforms doesn't define "xo" either.
-> E.g. according to debugfs dsi0vco_clk doesn't have a parent on sdm845...
-> 
-> Sounds like we should update the dsi phys to specify a fw_name and
-> update binding and dts to provide this...
-> 
-> 
-> Does this cause a noticeable regression or it's just that we have a
-> dangling clock?
-> 
+On Mon, Aug 23, 2021 at 5:32 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> According to ACPI specification the _INI method must be called
+> when device is enumerated first time. After that there is no need
+> to repeat the procedure. Convert the lis3lv02d_acpi_init() to be
+> a stub (Note, we may not remove it because it is called unconditionally
+> by the accelerometer main driver).
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Both, actually... but sincerely I would be more for updating the DSI PHY
-drivers instead of keeping a "mock" crystal clock in there (since we do
-always specify one in DT), also because, as Marijn pointed out and as I
-can also confirm, we're seeing the same situation on multiple platforms.
+The lis3lv02d still works after boot and after resume.
 
-That would allow us to solve the issue simply with DT, and would make us
-able to switch platforms one by one to the RPM/RPMh XO in a perfect future
-where we will be able to perform XO shutdown on selected platforms.
+Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
->>>    static struct clk_alpha_pll gpll0_early = {
->>>    	.offset = 0x0,
->>>    	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
->>> @@ -158,7 +35,9 @@ static struct clk_alpha_pll gpll0_early = {
->>>    		.enable_mask = BIT(0),
->>>    		.hw.init = &(struct clk_init_data){
->>>    			.name = "gpll0_early",
->>> -			.parent_names = (const char *[]){ "xo" },
->>> +			.parent_data = &(const struct clk_parent_data){
->>> +				.fw_name = "xo",
->>> +			},
->>
->>
->> I wish we could use .parent_names for a list of .fw_name's too
-> 
-> Afaict specifying "name" in struct clk_parent_data is the same as using
-> parent_names. But I'm not up to speed on the details of how to migrate
-> the dsi phys.
-> 
->>> [..]
->>> @@ -265,7 +270,7 @@ static struct clk_rcg2 blsp1_qup1_i2c_apps_clk_src = {
->>>    	.freq_tbl = ftbl_blsp1_qup1_i2c_apps_clk_src,
->>>    	.clkr.hw.init = &(struct clk_init_data){
->>>    		.name = "blsp1_qup1_i2c_apps_clk_src",
->>> -		.parent_names = gcc_parent_names_xo_gpll0_gpll0_early_div,
->>> +		.parent_data = gcc_parent_data_xo_gpll0_gpll0_early_div,
->>>    		.num_parents = 3,
->>
->>
->> How about using ARRAY_SIZE(gcc_parent_data_xo_gpll0_gpll0_early_div) now?
->> Same for every other occurrence of this pattern.
->>
-> 
-> I omitted that because it felt unrelated to the change I was doing, but
-> it could certainly be done.
-> 
-
-Totally fair and I totally agree.
-
-By the way,
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-
-> Regards,
-> Bjorn
-> 
-
+> ---
+>  drivers/misc/lis3lv02d/lis3lv02d.h |  1 -
+>  drivers/platform/x86/hp_accel.c    | 14 +-------------
+>  2 files changed, 1 insertion(+), 14 deletions(-)
+>
+> diff --git a/drivers/misc/lis3lv02d/lis3lv02d.h b/drivers/misc/lis3lv02d/lis3lv02d.h
+> index 7ac788fae1b8..c394c0b08519 100644
+> --- a/drivers/misc/lis3lv02d/lis3lv02d.h
+> +++ b/drivers/misc/lis3lv02d/lis3lv02d.h
+> @@ -271,7 +271,6 @@ struct lis3lv02d {
+>         int                     regs_size;
+>         u8                      *reg_cache;
+>         bool                    regs_stored;
+> -       bool                    init_required;
+>         u8                      odr_mask;  /* ODR bit mask */
+>         u8                      whoami;    /* indicates measurement precision */
+>         s16 (*read_data) (struct lis3lv02d *lis3, int reg);
+> diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
+> index 8c0867bda828..54a4addc7903 100644
+> --- a/drivers/platform/x86/hp_accel.c
+> +++ b/drivers/platform/x86/hp_accel.c
+> @@ -78,23 +78,14 @@ static const struct acpi_device_id lis3lv02d_device_ids[] = {
+>  };
+>  MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
+>
+> -
+>  /**
+> - * lis3lv02d_acpi_init - ACPI _INI method: initialize the device.
+> + * lis3lv02d_acpi_init - initialize the device for ACPI
+>   * @lis3: pointer to the device struct
+>   *
+>   * Returns 0 on success.
+>   */
+>  static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
+>  {
+> -       struct acpi_device *dev = lis3->bus_priv;
+> -       if (!lis3->init_required)
+> -               return 0;
+> -
+> -       if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
+> -                                NULL, NULL) != AE_OK)
+> -               return -EINVAL;
+> -
+>         return 0;
+>  }
+>
+> @@ -359,7 +350,6 @@ static int lis3lv02d_add(struct acpi_device *device)
+>         }
+>
+>         /* call the core layer do its init */
+> -       lis3_dev.init_required = true;
+>         ret = lis3lv02d_init_device(&lis3_dev);
+>         if (ret)
+>                 return ret;
+> @@ -407,14 +397,12 @@ static int lis3lv02d_suspend(struct device *dev)
+>
+>  static int lis3lv02d_resume(struct device *dev)
+>  {
+> -       lis3_dev.init_required = false;
+>         lis3lv02d_poweron(&lis3_dev);
+>         return 0;
+>  }
+>
+>  static int lis3lv02d_restore(struct device *dev)
+>  {
+> -       lis3_dev.init_required = true;
+>         lis3lv02d_poweron(&lis3_dev);
+>         return 0;
+>  }
+> --
+> 2.32.0
+>
