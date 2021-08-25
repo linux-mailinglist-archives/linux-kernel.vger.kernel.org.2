@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089D33F7422
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CEA3F7428
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239394AbhHYLLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 07:11:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239348AbhHYLKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 07:10:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B728A61176;
-        Wed, 25 Aug 2021 11:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629889806;
-        bh=MW6WfsVF/MBHVUSWsNSjGMbloXBquDJfpjTU7Qwxtsk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dZuWjHedMm91y/t5yzNzWcQTmG0HXhMiEPj8iAvSGR1lB4av3Gl06nZZIB0cDx51s
-         +9c/dd9HheVWRxavvl6h+WBWXyQojhZ7ahy3vYED3ongjlnUTavEDPKrOVVRKLPVeF
-         yjhWk+80u6zscbQUt4lC0UM42b6YZdV/K/Wkx1Is6QAOUGYjEA9PYGIqN5CXpngXs/
-         7Oag0sbw8BF/Kqm1krB2R/vtH2XWcOZTEzJjD3yiqEs8wLr2Z8a0REBQesuEeBc0Kw
-         7V/gyeU/Gr0lj0Bnw0+VMRCe0z0jurJ5+Uf5kWuCXrogRygPS1DUflLMMeOzO+oK19
-         ST0T9RITQLjCg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AF45D60A12;
-        Wed, 25 Aug 2021 11:10:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S240275AbhHYLNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 07:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236783AbhHYLNL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 07:13:11 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F9CC061757;
+        Wed, 25 Aug 2021 04:12:26 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id t1so22736217pgv.3;
+        Wed, 25 Aug 2021 04:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e0F6iaDXcOKyU/pgsdS91D2Ie1N9JY978bJ/8n6uXIY=;
+        b=I1g2YLn/hnmv7T70rIzmVIGbBd63AuAPeXuL549CFaoX13s4es4rXLOqG2XTKcpuTR
+         aCAEqXBa2hX9csDMowkOsqT7XXe2KHtM6Q76wOSuLNivQmRb5i321Weu4d1DBjeJbrnT
+         QoM1BGjzr3uEdpdd7nYLYfS7V/h6oN0EWjFCHJHfgZLbH0co2upfemYy5sdSH7ePL0SW
+         IN+YONtfRhlPEVlfG4Q2Uccr3PL6bjgK2fPaIz5yexhlNuhpBxaxrh8WhdNK7FvrFPZI
+         QZ9cIjHbqaHizG2SgdeeT9S8H1aU9BaLuZOOkJYqi4Qn8fmJCpUnk1/huzJ61cwLlM7c
+         gW4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e0F6iaDXcOKyU/pgsdS91D2Ie1N9JY978bJ/8n6uXIY=;
+        b=jQT3K36ytZrZ5hrAU8sbvTwaxMwKm9MjSiNX+XmbQYKjM1eu8zVPPiX7JIgTac2ioH
+         SUenf0eDZ8qVd2VL74gFE823faK51iD+n59FFeyG1aqEVxjkzXtnJs0d/LDo5mNs3XQK
+         VLaHFMLl4OKGLDuxIN1nldoUgGSqetZLwtAlHqtY/HDv8zmDpH+feY7F+5mJO1A8KgYu
+         dqcRg6V+UuL2XzzTAU+LUp2IeZsydu2kCStO/PUPg+nTqqL9iLbUNcJgoJ0qa2SkG+XB
+         And6mxrqvFFwX9LmAHaBESuUFPCTPXgCgYALUshEs3kCmk27uSKu16s3IH+fk96eWu39
+         ivzA==
+X-Gm-Message-State: AOAM531WMAmfFUnf9GiaRl5dbRi7TRUsV8x217/3E0Qqsn7Y9Crm6K/5
+        q11YvtJ9iETSKNhg7I/JI1xpxPdHLWyQQxGS66k=
+X-Google-Smtp-Source: ABdhPJyeFx80oUz8NgoOS4scmsMrlTtxpkKj93s/4LfwYFNmg7EA3PITg+KB4O5JwDk2w04WALnpSPM1oBCqLL1QyBg=
+X-Received: by 2002:a62:6384:0:b0:3eb:13e7:18c with SMTP id
+ x126-20020a626384000000b003eb13e7018cmr21415624pfb.73.1629889945850; Wed, 25
+ Aug 2021 04:12:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH] octeontx2-af: cn10k: Set cache lines for NPA batch
- alloc
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162988980671.32654.4066360381521838364.git-patchwork-notify@kernel.org>
-Date:   Wed, 25 Aug 2021 11:10:06 +0000
-References: <20210825053503.3506-1-gakula@marvell.com>
-In-Reply-To: <20210825053503.3506-1-gakula@marvell.com>
-To:     Geetha sowjanya <gakula@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
-        lcherian@marvell.com, jerinj@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com
+References: <20210823093222.19544-1-andriy.shevchenko@linux.intel.com>
+ <20210823093222.19544-3-andriy.shevchenko@linux.intel.com> <CAAd53p6pQcura_tejtW7osiHfSnn6pCcxfm1e13==qmQA8C1bw@mail.gmail.com>
+In-Reply-To: <CAAd53p6pQcura_tejtW7osiHfSnn6pCcxfm1e13==qmQA8C1bw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 25 Aug 2021 14:11:46 +0300
+Message-ID: <CAHp75VfZaV6WAddmscgTkyfRoq9cvcvL2A6A1kA6uBvZ3F=dgg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] platform/x86: hp_accel: Convert to be a platform driver
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Eric Piel <eric.piel@tremplin-utc.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Aug 25, 2021 at 1:42 PM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> On Mon, Aug 23, 2021 at 5:32 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > ACPI core in conjunction with platform driver core provides
+> > an infrastructure to enumerate ACPI devices. Use it in order
+> > to remove a lot of boilerplate code.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> The lis3lv02d still works with this patch.
+>
+> Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Thank you, Kai-Heng!
 
-On Wed, 25 Aug 2021 11:05:03 +0530 you wrote:
-> Set NPA batch allocation engine to process 35 cache lines
-> per turn on CN10k platform.
-> 
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/octeontx2/af/mbox.h    |  1 +
->  drivers/net/ethernet/marvell/octeontx2/af/rvu_npa.c | 11 +++++++++++
->  drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h |  1 +
->  3 files changed, 13 insertions(+)
+Hans, I think it's good to go.
 
-Here is the summary with links:
-  - [net-next] octeontx2-af: cn10k: Set cache lines for NPA batch alloc
-    https://git.kernel.org/netdev/net-next/c/ae2c341eb010
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-- 
+With Best Regards,
+Andy Shevchenko
