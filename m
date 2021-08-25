@@ -2,59 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89D23F7115
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F503F7117
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbhHYI0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 04:26:25 -0400
-Received: from mga14.intel.com ([192.55.52.115]:1525 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229780AbhHYI0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 04:26:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="217199744"
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="217199744"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 01:25:39 -0700
-X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
-   d="scan'208";a="527128771"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 01:25:37 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 58598201ED;
-        Wed, 25 Aug 2021 11:25:35 +0300 (EEST)
-Date:   Wed, 25 Aug 2021 11:25:35 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     linux-media@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: Request API is no longer experimental
-Message-ID: <20210825082535.GP3@paasikivi.fi.intel.com>
-References: <20210825002337.6561-1-ezequiel@vanguardiasur.com.ar>
+        id S239361AbhHYI0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 04:26:31 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:58754 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239005AbhHYI0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 04:26:30 -0400
+Received: from BC-Mail-HQEX01.internal.baidu.com (unknown [172.31.51.57])
+        by Forcepoint Email with ESMTPS id 1E71A41DADF01886D878;
+        Wed, 25 Aug 2021 16:25:43 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-HQEX01.internal.baidu.com (172.31.51.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Wed, 25 Aug 2021 16:25:42 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 25 Aug 2021 16:25:42 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <linus.walleij@linaro.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Cai Huoqing <caihuoqing@baidu.com>
+Subject: [PATCH] pinctrl: nomadik: Kconfig: Remove repeated config dependency
+Date:   Wed, 25 Aug 2021 16:25:36 +0800
+Message-ID: <20210825082536.2547-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210825002337.6561-1-ezequiel@vanguardiasur.com.ar>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 09:23:37PM -0300, Ezequiel Garcia wrote:
-> The Request API is currently used and specified as part of the
-> Memory-to-memory Stateless Video Decoder Interface [1].
-> 
-> This can now be considered as non-experimental and stable, given
-> the decoder API has been used by products since a couple years,
-> supported by several drivers and userspace frameworks,
-> 
-> [1] Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+remove it because "if (ARCH_U8500 || ARCH_NOMADIK)" is already used
 
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/pinctrl/nomadik/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/pinctrl/nomadik/Kconfig b/drivers/pinctrl/nomadik/Kconfig
+index d6d849e51c74..0fea167c283f 100644
+--- a/drivers/pinctrl/nomadik/Kconfig
++++ b/drivers/pinctrl/nomadik/Kconfig
+@@ -22,7 +22,6 @@ if (ARCH_U8500 || ARCH_NOMADIK)
+ 
+ config PINCTRL_NOMADIK
+ 	bool "Nomadik pin controller driver"
+-	depends on ARCH_U8500 || ARCH_NOMADIK
+ 	depends on OF && GPIOLIB
+ 	select PINMUX
+ 	select PINCONF
 -- 
-Sakari Ailus
+2.25.1
+
