@@ -2,170 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0833F722B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2278A3F722D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239681AbhHYJp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236314AbhHYJpu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:45:50 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74419C0613C1;
-        Wed, 25 Aug 2021 02:45:04 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id g13so51592399lfj.12;
-        Wed, 25 Aug 2021 02:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E7cNoLLVAVafjNCc4brMRUN01zZAHm0abXpnMpPuTt4=;
-        b=XcByKSJRdga/HRYU9DdYIrJkJ5aCKCn6sFPQhJpp+zqLBFptssdthmbwTTqrJU2O1y
-         Fh9T4cOSANuA0NBWqKrxyE6rpE3VUg9YurSVTT9N3ewKp/QELYAgj+C6HkBCJMlVTiOb
-         M7DocgSIXf8gWx7DP6hz+XSoX32UueKJZitZdD1fhIKA/N5U6YwHLEpd41Qt4bCHL0G4
-         ZtJc+vpaJ07T3DdXx/qHSdSN5QI3+K4IqS5ki+/rdR5v1sPFOYpfj0rw4qkKgMj2ioo3
-         hQKDnoVXbW3M/+9DGxJ8r4dLnR6TG4RgZNyl3L7PnWj5GlgkD82og3xcltkjAKoMzhav
-         ZUNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E7cNoLLVAVafjNCc4brMRUN01zZAHm0abXpnMpPuTt4=;
-        b=kX4mhi2MEArMqlWwXAvwxKRSEGu+orZ+Tb20DbE0/SOUaNzKWrsE/Cfehguc/rRhAx
-         5wg+NHNHglmQxJ/xrBtTAa6NKP6vSBhpeOYYAna1nYPg8RJPLP9VwIFWyfByBDZ8bWT1
-         qIGnMJpK/7dNAliMmJWJ4MjLjoc/dCHFg9i2BEwNUjkL45XqirzVQXiFLAnybxVFBbE0
-         BtuMCnZ9i+BhxsXFlDe2MmFHhaaBT8ShJQP23ucacRTknPY93RcwHNL1j4lLNbWRLFDp
-         DpY5qorjFG/sdu3Yjd3mYpe4j+WqkBHXrHibLHIOiXEuChK8vvobOqMiMSIjiX7t6NCr
-         dcQA==
-X-Gm-Message-State: AOAM531C/U/yonuXTKSRver+ew/62xRu4iNGbFSP/+qgAQLozoW8b3KW
-        Cv2O9UMmJdQ27ENyPf+g4NIBuVpHmus=
-X-Google-Smtp-Source: ABdhPJxxgQwWKc4KlfaiaB2F9L+jo3PpEaZtT5gXKDmMvuZmO5i5+f3TfZJ4xZuLO6DnWagwNOSZkQ==
-X-Received: by 2002:a05:6512:3190:: with SMTP id i16mr32170681lfe.340.1629884702691;
-        Wed, 25 Aug 2021 02:45:02 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-17-251.dynamic.spd-mgts.ru. [94.29.17.251])
-        by smtp.googlemail.com with ESMTPSA id z13sm2103349ljj.43.2021.08.25.02.45.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 02:45:02 -0700 (PDT)
-Subject: Re: [PATCH v8 20/34] mmc: sdhci-tegra: Add runtime PM and OPP support
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210817012754.8710-1-digetx@gmail.com>
- <20210817012754.8710-21-digetx@gmail.com> <YR6O9Om+HzMMG8AR@orome.fritz.box>
- <05b7ff28-4c01-fb56-deeb-595a5797394b@gmail.com>
- <YR+TgfCHKOPS3Ng8@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5a15647c-bc6a-294d-61c8-91efa33c681e@gmail.com>
-Date:   Wed, 25 Aug 2021 12:45:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YR+TgfCHKOPS3Ng8@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S239707AbhHYJqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:46:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236314AbhHYJqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:46:16 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CDCA61100;
+        Wed, 25 Aug 2021 09:45:31 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mIpTN-0076h0-FZ; Wed, 25 Aug 2021 10:45:29 +0100
+Date:   Wed, 25 Aug 2021 10:45:28 +0100
+Message-ID: <87lf4pq2mf.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Barry Song <21cnbao@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jonathan.Cameron@huawei.com,
+        bilbao@vt.edu, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Linuxarm <linuxarm@huawei.com>,
+        luzmaximilian@gmail.com, mchehab+huawei@kernel.org,
+        schnelle@linux.ibm.com, Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 1/2] PCI/MSI: Fix the confusing IRQ sysfs ABI for MSI-X
+In-Reply-To: <20210824193438.GA3486820@bjorn-Precision-5520>
+References: <CAGsJ_4zceLLBk1K_9Bmiju54CvGYySoEN4Kgy4yATst_E9c68A@mail.gmail.com>
+        <20210824193438.GA3486820@bjorn-Precision-5520>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: helgaas@kernel.org, 21cnbao@gmail.com, bhelgaas@google.com, corbet@lwn.net, Jonathan.Cameron@huawei.com, bilbao@vt.edu, gregkh@linuxfoundation.org, leon@kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, linuxarm@huawei.com, luzmaximilian@gmail.com, mchehab+huawei@kernel.org, schnelle@linux.ibm.com, song.bao.hua@hisilicon.com, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-20.08.2021 14:35, Thierry Reding пишет:
-> On Fri, Aug 20, 2021 at 01:37:13AM +0300, Dmitry Osipenko wrote:
->> 19.08.2021 20:03, Thierry Reding пишет:
->>> On Tue, Aug 17, 2021 at 04:27:40AM +0300, Dmitry Osipenko wrote:
->>>> The SDHCI on Tegra belongs to the core power domain and we're going to
->>>> enable GENPD support for the core domain. Now SDHCI must be resumed using
->>>> runtime PM API in order to initialize the SDHCI power state. The SDHCI
->>>> clock rate must be changed using OPP API that will reconfigure the power
->>>> domain performance state in accordance to the rate. Add runtime PM and OPP
->>>> support to the SDHCI driver.
->>>>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  drivers/mmc/host/sdhci-tegra.c | 146 ++++++++++++++++++++++++---------
->>>>  1 file changed, 105 insertions(+), 41 deletions(-)
->>>>
->>>> diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
->>>> index 387ce9cdbd7c..a3583359c972 100644
->>>> --- a/drivers/mmc/host/sdhci-tegra.c
->>>> +++ b/drivers/mmc/host/sdhci-tegra.c
->>>> @@ -15,6 +15,8 @@
->>>>  #include <linux/of.h>
->>>>  #include <linux/of_device.h>
->>>>  #include <linux/pinctrl/consumer.h>
->>>> +#include <linux/pm_opp.h>
->>>> +#include <linux/pm_runtime.h>
->>>>  #include <linux/regulator/consumer.h>
->>>>  #include <linux/reset.h>
->>>>  #include <linux/mmc/card.h>
->>>> @@ -24,6 +26,8 @@
->>>>  #include <linux/gpio/consumer.h>
->>>>  #include <linux/ktime.h>
->>>>  
->>>> +#include <soc/tegra/common.h>
->>>> +
->>>>  #include "sdhci-pltfm.h"
->>>>  #include "cqhci.h"
->>>>  
->>>> @@ -123,6 +127,12 @@
->>>>  					 SDHCI_TRNS_BLK_CNT_EN | \
->>>>  					 SDHCI_TRNS_DMA)
->>>>  
->>>> +enum {
->>>> +	TEGRA_CLK_BULK_SDHCI,
->>>> +	TEGRA_CLK_BULK_TMCLK,
->>>> +	TEGRA_CLK_BULK_NUM,
->>>> +};
->>>> +
->>>>  struct sdhci_tegra_soc_data {
->>>>  	const struct sdhci_pltfm_data *pdata;
->>>>  	u64 dma_mask;
->>>> @@ -171,6 +181,8 @@ struct sdhci_tegra {
->>>>  	bool enable_hwcq;
->>>>  	unsigned long curr_clk_rate;
->>>>  	u8 tuned_tap_delay;
->>>> +
->>>> +	struct clk_bulk_data clocks[TEGRA_CLK_BULK_NUM];
->>>
->>> This doesn't seem worth it to me. There's a lot of churn in this driver
->>> that's only needed to convert this to the clk_bulk API and it makes the
->>> code a lot more difficult to read, in my opinion.
->>>
->>> It looks like the only benefit that this gives us is that runtime
->>> suspend and resume become a few lines shorter.
->>
->> The driver probe code looks cleaner with that. You should be looking at
->> the final result and not at the patch to see it.
+On Tue, 24 Aug 2021 20:34:38 +0100,
+Bjorn Helgaas <helgaas@kernel.org> wrote:
 > 
-> I did look at the final result and didn't find it cleaner at all. =)
+> On Tue, Aug 24, 2021 at 10:46:59AM +1200, Barry Song wrote:
+> > On Mon, Aug 23, 2021 at 11:28 PM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Mon, 23 Aug 2021 12:03:08 +0100,
+> > > Barry Song <21cnbao@gmail.com> wrote:
+> 
+> > +static ssize_t irq_show(struct device *dev,
+> > +                                        struct device_attribute *attr,
+> > +                                        char *buf)
+> > +{
+> > +       struct pci_dev *pdev = to_pci_dev(dev);
+> > +#ifdef CONFIG_PCI_MSI
+> > +       struct msi_desc *desc = first_pci_msi_entry(pdev);
+> > +
+> > +       /* for MSI, return the 1st IRQ in IRQ vector */
+> > +       if (desc && !desc->msi_attrib.is_msix)
+> > +               return sysfs_emit(buf, "%u\n", desc->irq);
+> > +#endif
+> > +
+> > +       return sysfs_emit(buf, "%u\n", pdev->irq);
+> > +}
+> > +static DEVICE_ATTR_RO(irq);
+> 
+> Makes sense to me.  And with Marc's patch maybe we could get rid of
+> default_irq, which also seems nice.
+> 
+> > > > if we don't want to change the behaviour of any existing ABI, it
+> > > > seems the only thing we can do here to document it well in ABI
+> > > > doc. i actually doubt anyone has really understood what the irq
+> > > > entry is really showing.
+> > >
+> > > Given that we can't prove that it is actually the case, I believe this
+> > > is the only option.
+> > 
+> > we have to document the ABI like below though it seems quite annoying.
+> > 
+> > 1. for devices which don't support MSI and MSI-X, show legacy INTx
+> > 2. for devices which support MSI
+> >     a. if CONFIG_PCI_MSI is not enabled,  show legacy INTx
+> >     b. if CONFIG_PCI_MSI is enabled and devices are using MSI at this
+> > moment, show 1st IRQ in the vector
+> >     c. if CONFIG_PCI_MSI is enabled, but we shutdown its MSI before
+> > the users call sysfs entry,
+> >         so at this moment, devices are not using MSI,  show legacy INTx
+> > 3. for devices which support MSI-X, no matter if it is using MSI-X,
+> >     show legacy INTx
+> > 4. In Addition, INTx might be broken due to incomplete firmware or
+> > hardware design for MSI and MSI-X cases
+> > 
+> > To be honest, it sounds like a disaster :-) but if this is what we
+> > have to do, I'd like to try it in v3.
+> 
+> It doesn't seem necessary to me to get into the gory details of
+> CONFIG_PCI_MSI -- if that's not enabled, drivers can't use MSI anyway.
+> 
+> I don't understand 3.  If a device supports both MSI and MSI-X and a
+> driver enables MSI, msi_capability_init() writes dev->irq, so it looks
+> like "irq" should contain the first MSI vector.
+> 
+> I don't understand 4, either.  Is the possibility of broken hardware
+> or firmware something we need to document?  
+> 
+> What about something like this?
+> 
+>   If a driver has enabled MSI (not MSI-X), "irq" contains the IRQ of
+>   the first MSI vector.  Otherwise "irq" contains the IRQ of the
+>   legacy INTx interrupt.
+> 
 
-There is UAF bug in this patch that was spotted by kasan. The
-sdhci_tegra_soc_data isn't resource-managed, but clk_bulk_data is. I'm
-now thinking that it should be okay to keep tmclk always-on, so I'll
-replace the bulk clks back with the sdhci clk in v9.
+I think that pretty much nails it. CONFIG_MSI is not something that
+userspace can (nor should) discover anyway.
+
+For (4), you may want to add that
+
+  "irq" being set to 0 indicates that the device isn't capable of
+  generating legacy INTx interrupts.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
