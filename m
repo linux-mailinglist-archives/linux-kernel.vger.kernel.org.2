@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8D13F724E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB213F7251
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 11:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239801AbhHYJuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 05:50:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56778 "EHLO mail.kernel.org"
+        id S237638AbhHYJx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 05:53:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239513AbhHYJuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 05:50:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E37A6610FD;
-        Wed, 25 Aug 2021 09:50:05 +0000 (UTC)
+        id S236405AbhHYJx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 05:53:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCBE561153;
+        Wed, 25 Aug 2021 09:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629885005;
-        bh=G9W19wcM7scN5TQI5aCEGctxyPWqb76aI4QghIn1k44=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=T2Rd6S2Y6qeStlduHD6EE0+u4FNeu23Pg6ejMu5pFTLW9GWCCHnAP63t1j9/7zO2f
-         i79zpmRX57TPJWgjo+iLJmDsDGqPciyWNXnYh5wgw9gzqDkw9GRcnFcynfO934GMcU
-         B69aFjXC7ORzbHcOrwl0p7JjISS/ROb6zZBBBrchirvRdILedFW9Q53UF7r0ajbxXA
-         3XWPKCPKRz8p/0bMN0hJyXjLGGyU6mCAFKNcQFabqLy3VrWm2F1d6gii4FDSTbwZhE
-         jl6XlQY0ovXdWomHJXYDke2e+fBUu0/IbQjkOH3jGK27PNIWVGXpmWueQ0P/XVWCgb
-         lWB9Rr5HzNuUg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D0A6760A12;
-        Wed, 25 Aug 2021 09:50:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1629885161;
+        bh=k4qW2MGVv6lsjTMeqsBszx1sWAWurkEnyKnzQikbJaI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fiSY+43j4Yih7SIz3JeRfD7Rgrum1vl+IBCXizvIdRvKFNbHORmNquKph2O/mZFRh
+         nfnkwO0kk+g94JiI/lke5bRCFWyWnrIK2d4F+V7PIa8e93uvD2jszET7/qYhjEfpdo
+         6RVHYPzGKhojaacCwIneU6t45qN5FSjx/KJ0r6uhLXYutK6/mb6n2iw/s5fKCVVIkJ
+         3t5qOjE/JSk0EW0Pu3xauaJjN5JX2mdk9BD9Md6HwFdcwryA36HC+f2ttCR0T4Sz2c
+         6zX+eNo+YOTQblU2vYu91g/NBewiko35f4e1YrxSY9K6jEkVvIFv7SueGGGs6gGvSf
+         VxQUkq1/zAe6g==
+Date:   Wed, 25 Aug 2021 10:52:14 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] kconfig: forbid symbols that end with '_MODULE'
+Message-ID: <20210825095214.GA5186@sirena.org.uk>
+References: <20210825041637.365171-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: stmmac: dwmac-rk: fix unbalanced pm_runtime_enable
- warnings
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162988500584.26256.659865970373423632.git-patchwork-notify@kernel.org>
-Date:   Wed, 25 Aug 2021 09:50:05 +0000
-References: <20210823143754.14294-1-michael.riesch@wolfvision.net>
-In-Reply-To: <20210823143754.14294-1-michael.riesch@wolfvision.net>
-To:     Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
+Content-Disposition: inline
+In-Reply-To: <20210825041637.365171-1-masahiroy@kernel.org>
+X-Cookie: MY income is ALL disposable!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+--mYCpIKhGyMATD0i+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, 23 Aug 2021 16:37:54 +0200 you wrote:
-> This reverts commit 2c896fb02e7f65299646f295a007bda043e0f382
-> "net: stmmac: dwmac-rk: add pd_gmac support for rk3399" and fixes
-> unbalanced pm_runtime_enable warnings.
-> 
-> In the commit to be reverted, support for power management was
-> introduced to the Rockchip glue code. Later, power management support
-> was introduced to the stmmac core code, resulting in multiple
-> invocations of pm_runtime_{enable,disable,get_sync,put_sync}.
-> 
-> [...]
+On Wed, Aug 25, 2021 at 01:16:37PM +0900, Masahiro Yamada wrote:
+> Kconfig (syncconfig) generates include/generated/autoconf.h to make
+> CONFIG options available to the pre-processor.
 
-Here is the summary with links:
-  - net: stmmac: dwmac-rk: fix unbalanced pm_runtime_enable warnings
-    https://git.kernel.org/netdev/net/c/2d26f6e39afb
+Acked-by: Mark Brown <broonie@kernel.org>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+--mYCpIKhGyMATD0i+
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEmEs0ACgkQJNaLcl1U
+h9Aq4Af+OUuZSvmzbZyoTGGCofB/L+N5Ehn/9iHBJTZBr46S9ip0Zv7RZXiHqhtu
+yJO2Gq1P6j1xVYtqqPCDOvNgaeEghTvLtpukroOGR/uA/S21Xobqhy6F3Tb/jrPm
+KTrf5LWtRKS0I2sxbgteQRvOOjPIELQv8Lr0Y2ykO+yL+UEtNDJH4OsuNdXhdbh5
+t2jZ7OgZ/Ot/6AB78YWbaZTZZHqfGM/jzeUpWG6kCdItSPXam0Q5LyYheMGn7MBb
+6zAG6O+2Napi31AkH6Pyx18+hzh4XhnBLSX9ZPNP8ZM5iRQZjLHt1sYdukoFEATI
+zkcxGg7hM8LCp7KGuyMcTafl0ikf4A==
+=yeET
+-----END PGP SIGNATURE-----
+
+--mYCpIKhGyMATD0i+--
