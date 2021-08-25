@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9213F701F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615893F7022
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 09:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239063AbhHYHIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 03:08:19 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:9597 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238318AbhHYHIQ (ORCPT
+        id S238764AbhHYHMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 03:12:02 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:34032 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238536AbhHYHMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:08:16 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec6125ec23ade-1e8a3; Wed, 25 Aug 2021 15:07:15 +0800 (CST)
-X-RM-TRANSID: 2eec6125ec23ade-1e8a3
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
-        by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea6125ec1ede0-4e93f;
-        Wed, 25 Aug 2021 15:07:15 +0800 (CST)
-X-RM-TRANSID: 2eea6125ec1ede0-4e93f
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     mkl@pengutronix.de, wg@grandegger.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH v2] can: mscan: mpc5xxx_can: Remove useless BUG_ON()
-Date:   Wed, 25 Aug 2021 15:07:52 +0800
-Message-Id: <20210825070752.18724-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 25 Aug 2021 03:12:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629875475; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=sWhAYxAL7TT2/0TBaegjVGuh0rk6amExECv1CD+bCpg=; b=GUYly0wv/Cm1hFaIHlAxfg1aoHyGyJWI9hWLrsL0TDwn8amFYcmVJ3ZaODU1tskQXd+cVNNG
+ Iu6i93bMuM2iN7fMxCLRUTwfezd8oeHItyYX3+yTy6SwQCoOdG/kkRX6gJ6zaVqWNSBKTYVJ
+ /n8rWQ/nixt5m2JD38X2DvAwnsk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6125ed06fc1f4cb692ec55b0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Aug 2021 07:11:02
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7B797C4360C; Wed, 25 Aug 2021 07:11:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from localhost (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0029CC4338F;
+        Wed, 25 Aug 2021 07:11:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0029CC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        urezki@gmail.com, frederic@kernel.org, boqun.feng@gmail.com,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH v2 0/5] rcu-tasks miscellaneous fixes
+Date:   Wed, 25 Aug 2021 12:40:46 +0530
+Message-Id: <1629875451-20628-1-git-send-email-neeraju@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function mpc5xxx_can_probe(), the variable 'data'
-has already been determined in the above code, so the
-BUG_ON() in this place is useless, remove it.
+Minor typos in comments and fixes for rcu-tasks.
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
-Changes to v1
- - Fix the commit message for typo
----
- drivers/net/can/mscan/mpc5xxx_can.c | 1 -
- 1 file changed, 1 deletion(-)
+V1 -> V2:
+- Update comment in patch 4/5, as suggested by Paul.
 
-diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
-index 3b7465acd..35892c1ef 100644
---- a/drivers/net/can/mscan/mpc5xxx_can.c
-+++ b/drivers/net/can/mscan/mpc5xxx_can.c
-@@ -317,7 +317,6 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
- 
- 	clock_name = of_get_property(np, "fsl,mscan-clock-source", NULL);
- 
--	BUG_ON(!data);
- 	priv->type = data->type;
- 	priv->can.clock.freq = data->get_clock(ofdev, clock_name,
- 					       &mscan_clksrc);
+Neeraj Upadhyay (5):
+  rcu-tasks: Fix s/rcu_add_holdout/trc_add_holdout/ typo in comment
+  rcu-tasks: Correct firstreport usage in check_all_holdout_tasks_trace
+  rcu-tasks: Correct check for no_hz_full cpu in show_stalled_task_trace
+  rcu-tasks: Fix read-side primitives comment for call_rcu_tasks_trace
+  rcu-tasks: Clarify read side section info for rcu_tasks_rude GP
+    primitives
+
+ kernel/rcu/tasks.h | 36 ++++++++++++++++--------------------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
+
 -- 
-2.20.1.windows.1
-
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+hosted by The Linux Foundation
 
