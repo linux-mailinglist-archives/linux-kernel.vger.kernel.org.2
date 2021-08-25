@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FF03F7A18
+	by mail.lfdr.de (Postfix) with ESMTP id CC98C3F7A1A
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241088AbhHYQSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:18:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:54778 "EHLO foss.arm.com"
+        id S241590AbhHYQSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:18:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:54788 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240964AbhHYQSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:18:23 -0400
+        id S239986AbhHYQSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 12:18:25 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4B271063;
-        Wed, 25 Aug 2021 09:17:37 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 734691435;
+        Wed, 25 Aug 2021 09:17:39 -0700 (PDT)
 Received: from monolith.cable.virginm.net (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84A1A3F66F;
-        Wed, 25 Aug 2021 09:17:36 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23D673F66F;
+        Wed, 25 Aug 2021 09:17:38 -0700 (PDT)
 From:   Alexandru Elisei <alexandru.elisei@arm.com>
 To:     maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
         linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         will@kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v4 16/39] KVM: arm64: Make SPE available when at least one CPU supports it
-Date:   Wed, 25 Aug 2021 17:17:52 +0100
-Message-Id: <20210825161815.266051-17-alexandru.elisei@arm.com>
+Subject: [RFC PATCH v4 17/39] KVM: arm64: Set the VCPU SPE feature bit when SPE is available
+Date:   Wed, 25 Aug 2021 17:17:53 +0100
+Message-Id: <20210825161815.266051-18-alexandru.elisei@arm.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210825161815.266051-1-alexandru.elisei@arm.com>
 References: <20210825161815.266051-1-alexandru.elisei@arm.com>
@@ -33,129 +33,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM SPE emulation requires at least one physical CPU to support SPE.
-Initialize the cpumask of PEs that support SPE the first time
-KVM_CAP_ARM_SPE is queried or when the first virtual machine is created,
-whichever comes first.
+Check that KVM SPE emulation is supported before allowing userspace to set
+the KVM_ARM_VCPU_SPE feature.
+
+According to ARM DDI 0487G.a, page D9-2946 the Profiling Buffer is disabled
+if the owning Exception level is 32 bit, reject the SPE feature if the
+VCPU's execution state at EL1 is aarch32.
 
 Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
 ---
- arch/arm64/include/asm/kvm_spe.h | 26 ++++++++++++++++++++++++++
- arch/arm64/kvm/Makefile          |  1 +
- arch/arm64/kvm/arm.c             |  4 ++++
- arch/arm64/kvm/spe.c             | 32 ++++++++++++++++++++++++++++++++
- 4 files changed, 63 insertions(+)
- create mode 100644 arch/arm64/include/asm/kvm_spe.h
- create mode 100644 arch/arm64/kvm/spe.c
+ arch/arm64/include/asm/kvm_host.h |  3 +++
+ arch/arm64/kvm/reset.c            | 23 +++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/arch/arm64/include/asm/kvm_spe.h b/arch/arm64/include/asm/kvm_spe.h
-new file mode 100644
-index 000000000000..328115ce0b48
---- /dev/null
-+++ b/arch/arm64/include/asm/kvm_spe.h
-@@ -0,0 +1,26 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2021 - ARM Ltd
-+ */
-+
-+#ifndef __ARM64_KVM_SPE_H__
-+#define __ARM64_KVM_SPE_H__
-+
-+#ifdef CONFIG_KVM_ARM_SPE
-+DECLARE_STATIC_KEY_FALSE(kvm_spe_available);
-+
-+static __always_inline bool kvm_supports_spe(void)
-+{
-+	return static_branch_likely(&kvm_spe_available);
-+}
-+
-+void kvm_spe_init_supported_cpus(void);
-+void kvm_spe_vm_init(struct kvm *kvm);
-+#else
-+#define kvm_supports_spe()	(false)
-+
-+static inline void kvm_spe_init_supported_cpus(void) {}
-+static inline void kvm_spe_vm_init(struct kvm *kvm) {}
-+#endif /* CONFIG_KVM_ARM_SPE */
-+
-+#endif /* __ARM64_KVM_SPE_H__ */
-diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
-index 989bb5dad2c8..86092a0f8367 100644
---- a/arch/arm64/kvm/Makefile
-+++ b/arch/arm64/kvm/Makefile
-@@ -25,3 +25,4 @@ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
- 	 vgic/vgic-its.o vgic/vgic-debug.o
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 1f3b46a6df81..948adb152104 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -807,6 +807,9 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
+ #define kvm_vcpu_has_pmu(vcpu)					\
+ 	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
  
- kvm-$(CONFIG_HW_PERF_EVENTS)  += pmu-emul.o
-+kvm-$(CONFIG_KVM_ARM_SPE)     += spe.o
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 22544eb367f3..82cb7b5b3b45 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -35,6 +35,7 @@
- #include <asm/kvm_arm.h>
++#define kvm_vcpu_has_spe(vcpu)					\
++	(test_bit(KVM_ARM_VCPU_SPE, (vcpu)->arch.features))
++
+ int kvm_trng_call(struct kvm_vcpu *vcpu);
+ #ifdef CONFIG_KVM
+ extern phys_addr_t hyp_mem_base;
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index cba7872d69a8..17b9f1b29c24 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -27,6 +27,7 @@
  #include <asm/kvm_asm.h>
+ #include <asm/kvm_emulate.h>
  #include <asm/kvm_mmu.h>
 +#include <asm/kvm_spe.h>
- #include <asm/kvm_emulate.h>
- #include <asm/sections.h>
+ #include <asm/virt.h>
  
-@@ -180,6 +181,8 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ /* Maximum phys_shift supported for any VM on this host */
+@@ -189,6 +190,21 @@ static bool vcpu_allowed_register_width(struct kvm_vcpu *vcpu)
+ 	return true;
+ }
  
- 	set_default_spectre(kvm);
- 
-+	kvm_spe_vm_init(kvm);
++static int kvm_vcpu_enable_spe(struct kvm_vcpu *vcpu)
++{
++	if (!kvm_supports_spe())
++		return -EINVAL;
 +
- 	return ret;
- out_free_stage2_pgd:
- 	kvm_free_stage2_pgd(&kvm->arch.mmu);
-@@ -305,6 +308,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		r = 1;
- 		break;
- 	case KVM_CAP_ARM_SPE:
-+		kvm_spe_init_supported_cpus();
- 		r = 0;
- 		break;
++	/*
++	 * The Profiling Buffer is disabled if the owning Exception level is
++	 * aarch32.
++	 */
++	if (vcpu_has_feature(vcpu, KVM_ARM_VCPU_EL1_32BIT))
++		return -EINVAL;
++
++	return 0;
++}
++
+ /**
+  * kvm_reset_vcpu - sets core registers and sys_regs to reset value
+  * @vcpu: The VCPU pointer
+@@ -245,6 +261,13 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ 		goto out;
+ 	}
+ 
++	if (kvm_vcpu_has_spe(vcpu)) {
++		if (kvm_vcpu_enable_spe(vcpu)) {
++			ret = -EINVAL;
++			goto out;
++		}
++	}
++
+ 	switch (vcpu->arch.target) {
  	default:
-diff --git a/arch/arm64/kvm/spe.c b/arch/arm64/kvm/spe.c
-new file mode 100644
-index 000000000000..83f92245f881
---- /dev/null
-+++ b/arch/arm64/kvm/spe.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2021 - ARM Ltd
-+ */
-+
-+#include <linux/cpumask.h>
-+#include <linux/kvm_host.h>
-+#include <linux/perf/arm_pmu.h>
-+
-+#include <asm/kvm_spe.h>
-+
-+DEFINE_STATIC_KEY_FALSE(kvm_spe_available);
-+
-+static const cpumask_t *supported_cpus;
-+
-+void kvm_spe_init_supported_cpus(void)
-+{
-+	if (likely(supported_cpus))
-+		return;
-+
-+	supported_cpus = arm_spe_pmu_supported_cpus();
-+	BUG_ON(!supported_cpus);
-+
-+	if (!cpumask_empty(supported_cpus))
-+		static_branch_enable(&kvm_spe_available);
-+}
-+
-+void kvm_spe_vm_init(struct kvm *kvm)
-+{
-+	/* Set supported_cpus if it isn't already initialized. */
-+	kvm_spe_init_supported_cpus();
-+}
+ 		if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features)) {
 -- 
 2.33.0
 
