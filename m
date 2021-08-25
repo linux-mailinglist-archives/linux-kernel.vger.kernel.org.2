@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21E73F758D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E753F7591
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 15:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241074AbhHYNG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 09:06:27 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34328
+        id S241091AbhHYNHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 09:07:39 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34412
         "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241024AbhHYNGW (ORCPT
+        by vger.kernel.org with ESMTP id S229547AbhHYNHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 09:06:22 -0400
+        Wed, 25 Aug 2021 09:07:38 -0400
 Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 0BDB5407A1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 13:05:36 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C992B40658
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 13:06:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629896736;
+        s=20210705; t=1629896811;
         bh=UfizrBJBT6h793qifWAMSREo4JNWpi+qoZht6aRmJGE=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=ZM4WRgEKiFu4emREJsvcpdegETCZbnTLHsMvMgsj4DUKF4e+E8tXzsBYqs8a4bpYj
-         gBZZyIbV9Z0Nt8G9TzuiWRNMIna3E442zJRjcpuMr4oZ6+N7fJ3JD6CP0xt6OGCLgF
-         uoh5UCwvR067+lUeBzVTNQ8kbC8BEfGMoM1cOCu+KwxiqoaHocsD5wYVcUZEIXM1kJ
-         Bow4mbyrC2l1CYUU2WAcmG1fWBZ+T+yU1L6/1Elsrxl2YorXojo4QtkJynsl1HrDs+
-         pEr+Ej7N/IUERoAangvQO10m/0is/wQk3iyW0TL7DRbqJVC64iUKCVEYnArWoMyCTT
-         PazJpyJWlwAsA==
-Received: by mail-wr1-f69.google.com with SMTP id p10-20020adfce0a000000b001572d05c970so4448431wrn.21
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 06:05:36 -0700 (PDT)
+        b=A2W4AryX4NTH0WVxK6QsedWktL33EOVUmb8UfSxS1efmWnuG6aWHzZR6jB/4Ud1fQ
+         Q16yGLR7j8bNtFIxO3KcqbjOhlC4b75poK7s+Z76i9JV75i7mDmvUbGZzxIK+2EOJE
+         IvBo0mjd8pEgoYBE1io5lQVKE1uL4ojgdry8Yq80+CgdzcXn0zKcgkAvKHkHMEKIwx
+         ayBSGVynKHVe1DfmOB+y0IM0fap/d7V3yL398PwqIpGAZyewpY73lr0KvktfTpfjjD
+         1b9nTNNwKyQMY+E0DqGPvbTMKOi0LYC0PjMkRn2B5GUu8xNr8xjbiya90BtQFKf4sp
+         sBdaPTGQu9OLg==
+Received: by mail-wr1-f69.google.com with SMTP id d12-20020a056000186cb02901548bff164dso6608280wri.18
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 06:06:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
         bh=UfizrBJBT6h793qifWAMSREo4JNWpi+qoZht6aRmJGE=;
-        b=LngHbAAZ9UK/Lq0IUOVwqVoFKmPQemkVNKGRdbNmaJ1Ux7HHL9ATBZLWcPrCYVRJae
-         p6CQ2caVTvsEzBupa788eqfqE5+biH9dr87vevkw2YRWPw6sKGo3ToimKPeD9mI5nsZ2
-         0jEGTkzjHnuR2CSGVfm7HjYcAGq+WtoL4k+Gg1xWlLLCkq+aGREiwNU0eygL85lebEOi
-         pn1SSg+quUO/UPWRhQqqsHNtU6gA8TFl/G9MD9Hq6dOHsUCEdAWDJuzbY79MxPbkIbPi
-         v1al380qbBHcTpULdL40xlDXi7rbwghrLWuYfQV006CixIAUTRgH/IQO7ad5wzC2KMp+
-         hPBQ==
-X-Gm-Message-State: AOAM530f3KzavVk64cUIZ03FUFoRRWbwUt1/PPqZIE6nczuCsatJTKNR
-        2KfNtDbmpInpdjLJm3jJcSB2ped43VEtxuaiPH9btrFR1AkxD8J58GCg6tBZKyrL9V9+mVDy6cg
-        KY7T2IwtoAt6nB8o6h2lYUAVB6CwyF67iJCcUs1jRQA==
-X-Received: by 2002:a05:6000:92:: with SMTP id m18mr18711696wrx.293.1629896734660;
-        Wed, 25 Aug 2021 06:05:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwLGSV31y+kVM+3CidhWNxCQ29UIuSq21ADvfXfOGHO2Gp5VvBVX5SwObpLHLgExu1hCrgJxw==
-X-Received: by 2002:a05:6000:92:: with SMTP id m18mr18711663wrx.293.1629896734471;
-        Wed, 25 Aug 2021 06:05:34 -0700 (PDT)
-Received: from localhost.localdomain ([79.98.113.233])
-        by smtp.gmail.com with ESMTPSA id 11sm5338828wmi.15.2021.08.25.06.05.33
+        b=sLXNmzgKYiBkl+tSKpDQ6uhVeIhIjFDhYCcO4k7o0cbPJVRhatk3JvTDKDsasw3VEO
+         +LxVxO3JtA1KPkQYdRt6DflGTDvJLBJwRpAJ+Y6Y3Mp41g/11xYMs+vhXb4ecNmSCS98
+         5l3ZRD8LpRrByDYFW78JfIvZjNqJXdoLcj7bmcrgavMNoOyKLPLSHTiKKCWrpeaCKtNE
+         LkurNdY+F+8AsLY6k1GIlRpDN7+IL5hJbbJLppNiggRKFKbShjUSN4yn0UZRO8TBLOS3
+         5rpaEcbRYiSAuhnYlvEOX1cgAWlb+ZmoghJZfrFDV/s6wrX/V/DcyxJ1WtFKwmqs3+eO
+         TiKA==
+X-Gm-Message-State: AOAM530SDSLvv9PX/I9unVV1xqxmB1sPJ3VAPny4dmD4En834xWxoJqP
+        HcfBkiGkrW1qRieJ8x8dYKvLqj676/TOikByUtYR12XpSfFGvKG/rIveU502vtlOvSYvAJlX8MH
+        uaq7dRn2wQc8OCwi7PBd3nIcUnKpJV763mPbmMUU8Vg==
+X-Received: by 2002:a1c:40c:: with SMTP id 12mr9149928wme.158.1629896811090;
+        Wed, 25 Aug 2021 06:06:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzixd6QysPlsvWL7nertMLrUP2YTQueOD1OTVHyup8rVWyTa/PXx9YKm+yhpgfRrSNjfxxakQ==
+X-Received: by 2002:a1c:40c:: with SMTP id 12mr9149906wme.158.1629896810959;
+        Wed, 25 Aug 2021 06:06:50 -0700 (PDT)
+Received: from localhost.localdomain ([79.98.113.15])
+        by smtp.gmail.com with ESMTPSA id r20sm13300842wrr.47.2021.08.25.06.06.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 06:05:34 -0700 (PDT)
+        Wed, 25 Aug 2021 06:06:50 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
@@ -65,8 +65,8 @@ To:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Subject: [PATCH v2 3/5] riscv: dts: sifive: drop duplicated nodes and properties in sifive
-Date:   Wed, 25 Aug 2021 15:04:50 +0200
-Message-Id: <20210825130452.203407-3-krzysztof.kozlowski@canonical.com>
+Date:   Wed, 25 Aug 2021 15:06:04 +0200
+Message-Id: <20210825130604.203601-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210825130452.203407-1-krzysztof.kozlowski@canonical.com>
 References: <20210825130452.203407-1-krzysztof.kozlowski@canonical.com>
