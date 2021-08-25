@@ -2,163 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F2C3F6D7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 04:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C153F6D7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 04:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238413AbhHYCqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 22:46:15 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:12526 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237739AbhHYCqN (ORCPT
+        id S237913AbhHYCs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 22:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236811AbhHYCsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 22:46:13 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17ONrlWA030422;
-        Wed, 25 Aug 2021 02:45:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=C+PZH6b4poOjOTWuqwf+dWfgCHD1bRyr+U9S4AAf+dI=;
- b=mXJ+tgFpn+PAgnuZnXQaGy32bD3oxDukJdO9DjW43ZbDNYo0I+Id0AviT/dRCGWAWfsc
- EK8nUHBt/paA/bVJG5leDOnAWFZea+btgNtZF5qkLSsuSA/XBqQITBXEEOFS5g2eDVT6
- uk7UgZr+I6mPgRphhRTOY+ehe8Y6H68pV4QvAMWMhuDrZMzbU0L6Bg1P5J5ucermZmoM
- 9pp51R0/LuKI8QK8K4+5UQIuRIaAKb8IuuMEpHEzz5yf4xJfSLPu3uyRfVvpTOdHq//Y
- znULHvb3E2qMW0t9+Ky2LFDqpDCSU9jNe0lQQA9moMXH5nEt2stRMtK/LeEFT8/7pryc 2w== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=C+PZH6b4poOjOTWuqwf+dWfgCHD1bRyr+U9S4AAf+dI=;
- b=APxbBRlv8e8pkt4H2PTREO4JhGlOcMV1OFBztFPsPM4SY/3rFQ3dZBqBUQpfO+4xUnE6
- 1QnVA3Ue/1SVJTZbiga7yWF12v2QNzKphsgy1dWOfG4cLwDGMYNvmbyY/H73T05ufzw3
- 2FSfEwGPSPXW8tx6RYPmbtSAqyEJMVDeN3b4m1DVNZc3pjHxbk5g6V0UXMomDaQyHk/D
- q08RhFmk5jYTWbhWbeequXr7ixoCje/bIfroiau+OEW6Bd2liltpl/b0Xk0eARGvuofj
- 8mKjen92k52ZXSMVSan1CaT2CEQQeX8mfejRXHhrSVzp38IndtaqvjVXDYHqbg2qvhX1 KQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3amv67agsk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Aug 2021 02:45:12 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17P2fZJj042293;
-        Wed, 25 Aug 2021 02:45:11 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2177.outbound.protection.outlook.com [104.47.56.177])
-        by userp3030.oracle.com with ESMTP id 3ajpkyeqcg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Aug 2021 02:45:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IS4Q5E1X+ebKKNTKL9kUkYKNKjFoWdh5pX0tfKiw0r42J6iFIPvXN9wsI76qya93XGGUJmfLdcq3SBluZf/JXMPchEMF7Z+/2Jofp5RHGn+41ZuFN1VoXi+ctI+uj4L61LWjbxcao7d9gUH/caecPwVXnLLKs2Cr3ZNJW2EaGT1M3hXdpunrAQkgRILOyym8u92yaOuy8teHy+xlOdZ/qxV13+CqnOuDWOckP1E3WgGjUZl+svDsyY/78TK0a1fLkUi6HrN27XkyfACTI/SCrEoHPfP0AJURexOGuUoRXClQxgkhvZdeA3OtxuBWkd2lVjAnTyU5ZgUH0m4VXV6Lkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C+PZH6b4poOjOTWuqwf+dWfgCHD1bRyr+U9S4AAf+dI=;
- b=FOOoib9nIvRNZbcfaM1Q30PC795DmvJLfN7HSQJT8b7gzEaUbchf8/DduNtGPFnFPyrLAC5sMsGcf5oHGkYp2W8crEhxfJoGXvvAA8JT+sIiaXu+ktlUWfLn3YhiaUrvXTqA2zF5EwiM6ngZ18mW+Gx7QZrNAVa0VzmN7G0urc9Yd5ql248AyRfzbkjqT4XKWuNpdVY4D9PumDC7WvNKXXO0uodyfltkJwL9SwM5BFlV2g7ymyZypQDVIekdpWhjpFTktKusf0+vYxF3GJ6cx4JYAdLTQ64iGxsEA9gQfXVKnKJha1VGnbTWe94T55uohHZEXgXk846uuwJ3kTitRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 24 Aug 2021 22:48:55 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304D3C061757;
+        Tue, 24 Aug 2021 19:48:10 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a25so21745365ejv.6;
+        Tue, 24 Aug 2021 19:48:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C+PZH6b4poOjOTWuqwf+dWfgCHD1bRyr+U9S4AAf+dI=;
- b=rRhONw2kW2IPowWFuPFoYJKPGuCYmOTwfdFCJQZE+wdMBVq/ok1seHFo6VBpYY3ujOfGjXVdl8Z1KHLT5itQgBDrQc3ye3lmCU2E6FfwCls+ehX1H1Io6yEvfStS+kO/AyHimO5xn6XOlAAdfFahXmTf1TGg1wiuWTI1719jrMQ=
-Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
- header.d=none;canb.auug.org.au; dmarc=none action=none
- header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4552.namprd10.prod.outlook.com (2603:10b6:510:42::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Wed, 25 Aug
- 2021 02:45:07 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc%7]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
- 02:45:07 +0000
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the scsi-mkp tree
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1y28qb6c1.fsf@ca-mkp.ca.oracle.com>
-References: <20210824163435.429d389a@canb.auug.org.au>
-Date:   Tue, 24 Aug 2021 22:45:04 -0400
-In-Reply-To: <20210824163435.429d389a@canb.auug.org.au> (Stephen Rothwell's
-        message of "Tue, 24 Aug 2021 16:34:35 +1000")
-Content-Type: text/plain
-X-ClientProxiedBy: SA0PR11CA0180.namprd11.prod.outlook.com
- (2603:10b6:806:1bb::35) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AJp2E9OwwxI977I3kKRlxPn5ABslKa7GmHyTOVcgaBg=;
+        b=R+Y7MdXNHywssS0JS6aE5GvxlQq4ciNztCdfZ+HzjPt4OPV6/LcBvKiro7u5NGNPGo
+         krOZg8VOL+mML+7QRysJdqzBU3XWqy1SvAdU/Oghaz23yNmApOtpegTcuQ18VINrwnz1
+         f6RD9cyauGq3J7SJyTLTWR3zzYqLZBwMGLWnBJ41gLSiTEEdXZ0I7FDduNVxgVargBdM
+         OkV8sDJ7Fi9cgeoFhLbjMmWeeKQP6B2D/hp2qoHkEm0wAtiOPnqZCUvLkWbweri/ruHW
+         pERQ2bjSEbSyIlA0xgmdweVriRP2jvFpvvct9R1Iexu3Lo6G8V0yMDaxZ7KpuGtPn5sQ
+         d9iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AJp2E9OwwxI977I3kKRlxPn5ABslKa7GmHyTOVcgaBg=;
+        b=advKUOsqprmDksKLjbh3DEVD19eMAk+HghwpXcsVJ5ySvN/5PqAoRTVlD8JBFP3c88
+         ifihTlzB5ZQn0O74SCAYwV9pj1XBbnkalg/cPU3K+PNWMOZmtbEFGGjUpujP+DHNvYpr
+         T9Nbqa+ePLEQNSE5AxKmQHfxpwZ8EgCgzBdVmxZ99Vwy/Y3Fw/bauAULSU+/2F7NsTSD
+         D2ftDXqv+5MD7lk3g7ZpK5HFg6ODma2U/QGtaNi/P+dBeZIO05irKcwEo/i5GzlsVQV1
+         y00RKMe1cmwozceo5a37PkvuLCpeLtjySjfVUA0hkN1gVK3vrFNV5BILcOkDNiaEsHlF
+         PFQQ==
+X-Gm-Message-State: AOAM531aqrDtF4x1k/8mXVFfXPvF9g4sgTxJ4/7Bx3hKKWbspAewj6kj
+        v56c92tXqIfzwm4Cd+eHpHsrgBBfmYaqWhVOsns=
+X-Google-Smtp-Source: ABdhPJxZsiisl/BlhZi1frP0+qNbSGZtYdtDijemQi1c/p3/YdsBlYk5+IOurfIh+WZqtCF4cdlbWMwREIkYM+xVESc=
+X-Received: by 2002:a17:906:8257:: with SMTP id f23mr12533188ejx.509.1629859688626;
+ Tue, 24 Aug 2021 19:48:08 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA0PR11CA0180.namprd11.prod.outlook.com (2603:10b6:806:1bb::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Wed, 25 Aug 2021 02:45:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 63ae3ab1-25d3-4209-f17a-08d96772595c
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4552:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB45520AF8D7FBF3660FEDD9328EC69@PH0PR10MB4552.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PTYECeOkSKQTBqz27So9e68YDxNvtMwg6fqd1NYgrtLzkfgmaquYqcPfEm8h6P/sYuwRjeAB6wyRmWt2LWmpIIEhsoeYctFkyqj5LaJaj+dVmgpSLQ5ZR25X85WqbeV60MSkz2Ire8oJIWAkqiEg0n8d3vubPjO1lNBJ4rCbW3PzBLgtjWAXLTtqJKBkl82wVbDXAi+4doGiXk/Rxd4c90bGYHaIRMYLZSCgFNdP4fQgZN+BShlx8PDNIqga7KbEFDgeDUfg4uxWvuDp5j7tmSDN8urTvA1quq2Gnd/g+m4pwe/H9F6BCe4LkF1v9Ll6J2Prs42gE2+nm0ofQyEfnf0zp3YcvB8KN/ZxdLhZ2PwxAFy8qsUmVhE7JuCuEL0Dmuq7p4ydx6mJtRcSPkGF+UR4E7uS80BRAkcVZkz+OU4udoePbeOUe3vgOQbmHn3mIcfai1MNSrjE8xM1xgUKa1MLeV0TiaR8HlGh/KCOytGFRxwWhkp21jjnscjjGcF/CbieqYJol66LYg3XKNaMjWQ7OSF6CBJ6vwldpdj7I4FdWuwpAhfsmiWrtTJImKTighpVpJ9T2MKi1oP4KWyznLY6s+xpylxicjU46yvCtUN9XGOH+xp9DqIQPR45y8Z9AdqwjtWIjxAhIoUqQcysujcvIbFmy4XNUb/zu20YKUSsmlAgcNmEcqRJZR3AaqdGjk1ryXIvLe0VTA0/AuRmqg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(136003)(376002)(346002)(66556008)(478600001)(5660300002)(55016002)(86362001)(66476007)(66946007)(186003)(4326008)(26005)(558084003)(956004)(8936002)(54906003)(2906002)(36916002)(52116002)(7696005)(6916009)(8676002)(38350700002)(38100700002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MRtIJNpVcHN8VaeJzzPjz7lyyDrTKquqMxJXPC1JPZxcVgTNNEQZa6psnyWv?=
- =?us-ascii?Q?Z6DLWJK4L3A/zDygazbzB7nLBdeXzv45HP4FgKRj5ytwUPbyOoCHUj4BQSHM?=
- =?us-ascii?Q?b7nPfTLpNRBxAyHmzC0vVmCz0fg2+6ZZPc6bEyNqHh2f0dEizD0BkmmZmENy?=
- =?us-ascii?Q?RFTokXW3jsDYSg3tuUPQrCF+UVd8HUnaSvBgJxjmp65FlsspsY5f4zrR2ODC?=
- =?us-ascii?Q?P5+4bXcD/H76NG/MwmxzUleG1I7qfwHzRVKgJ0oMZCCoWse0qI++T+ZXb/ST?=
- =?us-ascii?Q?Dh27CND/rlRYefjKnec8d+KnVEIimfyY8FANi7dr1dM+Th3SdsfA15Ni4eGN?=
- =?us-ascii?Q?J7CB1SfAR2DrYls7Kzg7Se7DKsbZKKeEXk4gbgVsT47+BpciQSCuwsx1r4hV?=
- =?us-ascii?Q?ubfiYH84KxkAUWmNVe34mhhEbyBgLQE2rusyh2ZJ6+++PXcQyZTApJPxAg5O?=
- =?us-ascii?Q?JX6yhipGI6arMncUTPoXYuAfFPmAME98NwCsanWhcf3lEsrkWc1bhPRKKz+x?=
- =?us-ascii?Q?5fHBxy1B2ccfnZShpWmp3LJ4gYqhveXB1FQ+ULv31WGIMG9Xp2sdUMdhZoxS?=
- =?us-ascii?Q?LQ9FjnqUGqIMw2KpdBko9ECsXv1RjFfFC2Kg+gsSC1gi/aThwCjzKK+DyNbc?=
- =?us-ascii?Q?oEgliwC7HTox+71wM0kiviXU4buFHaGhyibfrLHomsfJ9VB9H8T9imSQT2TT?=
- =?us-ascii?Q?e4PsNgp15fO4KSqcD6gBaU/aFHxmti36ZP01TKfrK3J7B4VEIJ5mQhSg+G2n?=
- =?us-ascii?Q?zGZb42k6CCoALlnfbYnkIM7/QF20nnqQu6/BhCv6zYb1EUvJRUA+6UoMXelW?=
- =?us-ascii?Q?otCBUUWc9UD91fMR8Mve1ygOh/0JrCR+8tNom4y88Y+PbR0szDzWoGsEbTB/?=
- =?us-ascii?Q?kWtieNBUSY2/dt54cYP5141ig7kREv0jnocCzL/0I1HG8cuI35AQkzJPnjI1?=
- =?us-ascii?Q?e/5v26nPAXY1fjChuTOBksu6YrgL74j6m9AQsQ90UXEpQCiCgPLT//5Rw+v1?=
- =?us-ascii?Q?uqyzZPaacav0YVWmbspM15EHQF8o18Ryp5Biz9PNJwcId/yG0xHMU4ELxpj5?=
- =?us-ascii?Q?87QvlFU8UnsB6qEpu7zmb0DKI15uKBFx/d7PRGEpfpev7aQJRuRbnEN+LEek?=
- =?us-ascii?Q?W/LLQgYvTa9eoqkkkOooYg99N8oruF3ilURWJluwkbHA2ShHWddXguocZBMJ?=
- =?us-ascii?Q?LvoVLd6I4sVYo5KKCSLV8sMZaAUoHQe0LLckOyyt1Lgv6WCi5aKO7yL1IxXs?=
- =?us-ascii?Q?xrlFh+trqf/66RVozIi85nzLL7Qxt/44hbfRgrsc2juUeON61wiT2zMs5sD9?=
- =?us-ascii?Q?u230WJF4H3mLJzn8vOdt4aIv?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63ae3ab1-25d3-4209-f17a-08d96772595c
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 02:45:07.4942
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o70fYf3tS5tBntO8WBXUQWql1lFDTpPxBUw0cfAwCmiE97Q2ujBGytejDI7KuRQXqvCbGUBnD+UjFRtJ1iEdwy8k7+IhIsrDdM6nfe90Gkg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4552
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10086 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108250014
-X-Proofpoint-ORIG-GUID: HBo_1sVWreYSOyXfIEBoOoGcWIcApZuM
-X-Proofpoint-GUID: HBo_1sVWreYSOyXfIEBoOoGcWIcApZuM
+References: <1629859428-5906-1-git-send-email-konishi.ryusuke@gmail.com>
+In-Reply-To: <1629859428-5906-1-git-send-email-konishi.ryusuke@gmail.com>
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Wed, 25 Aug 2021 11:47:56 +0900
+Message-ID: <CAKFNMokz-rQsR8-XH+k-c-=GZszkf4DYk1dA3fsWvasT9zMqEA@mail.gmail.com>
+Subject: Re: [PATCH] nilfs2: use refcount_dec_and_lock() to fix potential UAF
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andrew,
 
-Stephen,
+Please queue this patch additionally for the next merge window.
 
->   Fixes: 55f4b1f73631: "scsi: ufs: ufs-exynos: Add UFS host support for Exynos SoCs"
+Thanks,
+Ryusuke Konishi
 
-My validation hook didn't catch this, the regex wasn't expecting a ':'
-trailing the [[:xdigit:]]+.
-
-Tweaked my script and fixed the tag.
-
-Thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+On Wed, Aug 25, 2021 at 11:43 AM Ryusuke Konishi
+<konishi.ryusuke@gmail.com> wrote:
+>
+> From: Zhen Lei <thunder.leizhen@huawei.com>
+>
+> When the refcount is decreased to 0, the resource reclamation branch is
+> entered. Before CPU0 reaches the race point (1), CPU1 may obtain the
+> spinlock and traverse the rbtree to find 'root', see nilfs_lookup_root().
+> Although CPU1 will call refcount_inc() to increase the refcount, it is
+> obviously too late. CPU0 will release 'root' directly, CPU1 then accesses
+> 'root' and triggers UAF.
+>
+> Use refcount_dec_and_lock() to ensure that both the operations of decrease
+> refcount to 0 and link deletion are lock protected eliminates this risk.
+>
+>      CPU0                      CPU1
+> nilfs_put_root():
+>                             <-------- (1)
+> spin_lock(&nilfs->ns_cptree_lock);
+> rb_erase(&root->rb_node, &nilfs->ns_cptree);
+> spin_unlock(&nilfs->ns_cptree_lock);
+>
+> kfree(root);
+>                             <-------- use-after-free
+>
+> ========================================================================
+> refcount_t: underflow; use-after-free.
+> WARNING: CPU: 2 PID: 9476 at lib/refcount.c:28 \
+> refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
+> Modules linked in:
+> CPU: 2 PID: 9476 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
+> RIP: 0010:refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
+> ... ...
+> Call Trace:
+>  __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+>  __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+>  refcount_dec_and_test include/linux/refcount.h:333 [inline]
+>  nilfs_put_root+0xc1/0xd0 fs/nilfs2/the_nilfs.c:795
+>  nilfs_segctor_destroy fs/nilfs2/segment.c:2749 [inline]
+>  nilfs_detach_log_writer+0x3fa/0x570 fs/nilfs2/segment.c:2812
+>  nilfs_put_super+0x2f/0xf0 fs/nilfs2/super.c:467
+>  generic_shutdown_super+0xcd/0x1f0 fs/super.c:464
+>  kill_block_super+0x4a/0x90 fs/super.c:1446
+>  deactivate_locked_super+0x6a/0xb0 fs/super.c:335
+>  deactivate_super+0x85/0x90 fs/super.c:366
+>  cleanup_mnt+0x277/0x2e0 fs/namespace.c:1118
+>  __cleanup_mnt+0x15/0x20 fs/namespace.c:1125
+>  task_work_run+0x8e/0x110 kernel/task_work.c:151
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+>  exit_to_user_mode_prepare+0x13c/0x170 kernel/entry/common.c:191
+>  syscall_exit_to_user_mode+0x16/0x30 kernel/entry/common.c:266
+>  do_syscall_64+0x45/0x80 arch/x86/entry/common.c:56
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> There is no reproduction program, and the above is only theoretical
+> analysis.
+>
+> Fixes: ba65ae4729bf ("nilfs2: add checkpoint tree to nilfs object")
+> Link: https://lkml.kernel.org/r/20210723012317.4146-1-thunder.leizhen@huawei.com
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+> ---
+>  fs/nilfs2/the_nilfs.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/nilfs2/the_nilfs.c b/fs/nilfs2/the_nilfs.c
+> index 8b7b01a380ce..c8bfc01da5d7 100644
+> --- a/fs/nilfs2/the_nilfs.c
+> +++ b/fs/nilfs2/the_nilfs.c
+> @@ -792,14 +792,13 @@ struct nilfs_root *
+>
+>  void nilfs_put_root(struct nilfs_root *root)
+>  {
+> -       if (refcount_dec_and_test(&root->count)) {
+> -               struct the_nilfs *nilfs = root->nilfs;
+> +       struct the_nilfs *nilfs = root->nilfs;
+>
+> -               nilfs_sysfs_delete_snapshot_group(root);
+> -
+> -               spin_lock(&nilfs->ns_cptree_lock);
+> +       if (refcount_dec_and_lock(&root->count, &nilfs->ns_cptree_lock)) {
+>                 rb_erase(&root->rb_node, &nilfs->ns_cptree);
+>                 spin_unlock(&nilfs->ns_cptree_lock);
+> +
+> +               nilfs_sysfs_delete_snapshot_group(root);
+>                 iput(root->ifile);
+>
+>                 kfree(root);
+> --
+> 1.8.3.1
+>
