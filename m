@@ -2,290 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9503F7E46
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995BB3F7E4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbhHYWPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhHYWPe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:15:34 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5888C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:14:47 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id u25so1512685oiv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z9KfVIzSyARslEPzlWZ8hh6ldkUq9egIVeeue+74TGI=;
-        b=ITzmM5liOlmDv1jNESayxrPaXDKEoynVgEb83OyUmfZqz/MihFr8TjWhFLuBD9Tf9U
-         6jZPC2ebwpeWzbSS2Cja9vEQ724iMj9G8zNReBtFW8abTdzjLxggGO5fmimW8JQ8N5Qi
-         2x/9hfwA2AVr0Xa6RhQPMH0xu8t2bB+olH2MVcQ98RRbB2D+0OFsDj4wDCytyKzFzWjB
-         ZOkNlz2zasL+KTGjS4x712NRYoZ1JNxrX2oT7sB+/CLxKboTqq+PFgVvC/eIKLFpLdUg
-         HRAhZ8/sP6srU4eotd9QdgI3i8xAwwFxigb7AWoeHGkq4WBZlw30Lb9+EB4CRadKqewe
-         pXXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z9KfVIzSyARslEPzlWZ8hh6ldkUq9egIVeeue+74TGI=;
-        b=SZb6JEZdeVA9ttVp+diAEyp4dCpN+wYw2jG4ouUVN2CXOU2/xBMOZEG11Gr26zhvW4
-         17yahHQORO0RkeGUYMI5ONLkEzq5mA3sG6Jzfh6K9zgxTOQOrGFondudfswFaAn+Y0fG
-         sNCBfF6h3VGqluSaWwHX1WOgordvN3ad0iU+FyhrkfSpDOAQs6jwsRYS/g1Z2xVP7x+x
-         HX+8FtHIURSmHVBbNAf7tiXKwyBqNj3imrd0rEIpPc3shcJP6TgHtHd77VMGTJozy3fz
-         C1fTVWVhGThlC0bGIbKItFHAM5A9qQMXdJToBX2RAG4+Wp5FsuD+mkJDItlSTDj1eQez
-         SAIQ==
-X-Gm-Message-State: AOAM530FLpZd1CwRLE0krr67EBvP1dYfjHNDk+msddBbbxRctbPvb4Hv
-        G8WQpE5QXedqri7EaxIGGt9nmA==
-X-Google-Smtp-Source: ABdhPJy2QRYWjpe68bSy5Bb2HgWYJp3XPgH6YequU/fxVvw+YKVQmaaE9aToPhLmY6gI4X53aK6qkA==
-X-Received: by 2002:aca:bf84:: with SMTP id p126mr184869oif.154.1629929687080;
-        Wed, 25 Aug 2021 15:14:47 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i1sm235983oiy.25.2021.08.25.15.14.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 15:14:46 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert Foss <robert.foss@linaro.org>
-Subject: [PATCH] arm64: dts: qcom: sm8350: Add CPU topology and idle-states
-Date:   Wed, 25 Aug 2021 15:16:00 -0700
-Message-Id: <20210825221600.1498939-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        id S231651AbhHYWVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:21:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229922AbhHYWVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 18:21:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B18610A6;
+        Wed, 25 Aug 2021 22:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629930021;
+        bh=EdxC7NvY8PGaN7XBJ+O0ooR81Ip9IFKy1jLH2LAc2a4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=HSWCPTZpOecKEQj33udn7+/MiCUCmJJ4vArZlzdD0OFISMlmoEKIadcXLjwruOf3Q
+         rJJ1mDwCD1bjEus0XWuy2ZcKzi7cVNILUGU5RJeDa37XjcRy5PhKZMtQty6GQ+CJt0
+         MrVMTDfrn7jlbRltQQZsczPdBnZjaPMsA3q/+SA5sW+18Bx23JFuvF4zRsOSKgeB3W
+         AivmDLJdc/tMzNrWem85x8XVq+z4idRyeXFVSTxVGzxPlTD9OcxvxdnMru+pI45TaY
+         s5d7Q9zLr11yu3HY+/mq2dHc9/dnBXg11IoWIFWbe4mEWvAZtolm14K+0t6sLYLMy2
+         kksi+gd3oYkGw==
+Message-ID: <c497b3055c49733a10a25e0356090d593874e2ea.camel@kernel.org>
+Subject: Re: [PATCH] tpm: tis: Kconfig: Add helper dependency on COMPILE_TEST
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>, peterhuewe@gmx.de, jgg@ziepe.ca
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 26 Aug 2021 01:20:18 +0300
+In-Reply-To: <20210825062617.2435-1-caihuoqing@baidu.com>
+References: <20210825062617.2435-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add CPU topology and define the idle states for the silver and gold
-cores as well as the cluster.
+On Wed, 2021-08-25 at 14:26 +0800, Cai Huoqing wrote:
+> it's helpful for complie test in other platform(e.g.X86)
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 141 +++++++++++++++++++++++++++
- 1 file changed, 141 insertions(+)
+You need to write a proper long description, starting from that
+sentences start with capital letter and end with a period.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index c6e1febaee46..35e8935bc1fa 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -48,6 +48,8 @@ CPU0: cpu@0 {
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-+			power-domains = <&CPU_PD0>;
-+			power-domain-names = "psci";
- 			#cooling-cells = <2>;
- 			L2_0: l2-cache {
- 			      compatible = "cache";
-@@ -65,6 +67,8 @@ CPU1: cpu@100 {
- 			enable-method = "psci";
- 			next-level-cache = <&L2_100>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-+			power-domains = <&CPU_PD1>;
-+			power-domain-names = "psci";
- 			#cooling-cells = <2>;
- 			L2_100: l2-cache {
- 			      compatible = "cache";
-@@ -79,6 +83,8 @@ CPU2: cpu@200 {
- 			enable-method = "psci";
- 			next-level-cache = <&L2_200>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-+			power-domains = <&CPU_PD2>;
-+			power-domain-names = "psci";
- 			#cooling-cells = <2>;
- 			L2_200: l2-cache {
- 			      compatible = "cache";
-@@ -93,6 +99,8 @@ CPU3: cpu@300 {
- 			enable-method = "psci";
- 			next-level-cache = <&L2_300>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-+			power-domains = <&CPU_PD3>;
-+			power-domain-names = "psci";
- 			#cooling-cells = <2>;
- 			L2_300: l2-cache {
- 			      compatible = "cache";
-@@ -107,6 +115,8 @@ CPU4: cpu@400 {
- 			enable-method = "psci";
- 			next-level-cache = <&L2_400>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-+			power-domains = <&CPU_PD4>;
-+			power-domain-names = "psci";
- 			#cooling-cells = <2>;
- 			L2_400: l2-cache {
- 			      compatible = "cache";
-@@ -121,6 +131,8 @@ CPU5: cpu@500 {
- 			enable-method = "psci";
- 			next-level-cache = <&L2_500>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-+			power-domains = <&CPU_PD5>;
-+			power-domain-names = "psci";
- 			#cooling-cells = <2>;
- 			L2_500: l2-cache {
- 			      compatible = "cache";
-@@ -136,6 +148,8 @@ CPU6: cpu@600 {
- 			enable-method = "psci";
- 			next-level-cache = <&L2_600>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-+			power-domains = <&CPU_PD6>;
-+			power-domain-names = "psci";
- 			#cooling-cells = <2>;
- 			L2_600: l2-cache {
- 			      compatible = "cache";
-@@ -150,12 +164,86 @@ CPU7: cpu@700 {
- 			enable-method = "psci";
- 			next-level-cache = <&L2_700>;
- 			qcom,freq-domain = <&cpufreq_hw 2>;
-+			power-domains = <&CPU_PD7>;
-+			power-domain-names = "psci";
- 			#cooling-cells = <2>;
- 			L2_700: l2-cache {
- 			      compatible = "cache";
- 			      next-level-cache = <&L3_0>;
- 			};
- 		};
-+
-+		cpu-map {
-+			cluster0 {
-+				core0 {
-+					cpu = <&CPU0>;
-+				};
-+
-+				core1 {
-+					cpu = <&CPU1>;
-+				};
-+
-+				core2 {
-+					cpu = <&CPU2>;
-+				};
-+
-+				core3 {
-+					cpu = <&CPU3>;
-+				};
-+
-+				core4 {
-+					cpu = <&CPU4>;
-+				};
-+
-+				core5 {
-+					cpu = <&CPU5>;
-+				};
-+
-+				core6 {
-+					cpu = <&CPU6>;
-+				};
-+
-+				core7 {
-+					cpu = <&CPU7>;
-+				};
-+			};
-+		};
-+
-+		idle-states {
-+			entry-method = "psci";
-+
-+			LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
-+				compatible = "arm,idle-state";
-+				idle-state-name = "silver-rail-power-collapse";
-+				arm,psci-suspend-param = <0x40000004>;
-+				entry-latency-us = <355>;
-+				exit-latency-us = <909>;
-+				min-residency-us = <3934>;
-+				local-timer-stop;
-+			};
-+
-+			BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
-+				compatible = "arm,idle-state";
-+				idle-state-name = "gold-rail-power-collapse";
-+				arm,psci-suspend-param = <0x40000004>;
-+				entry-latency-us = <241>;
-+				exit-latency-us = <1461>;
-+				min-residency-us = <4488>;
-+				local-timer-stop;
-+			};
-+		};
-+
-+		domain-idle-states {
-+			CLUSTER_SLEEP_0: cluster-sleep-0 {
-+				compatible = "domain-idle-state";
-+				idle-state-name = "cluster-power-collapse";
-+				arm,psci-suspend-param = <0x4100c344>;
-+				entry-latency-us = <3263>;
-+				exit-latency-us = <6562>;
-+				min-residency-us = <9987>;
-+				local-timer-stop;
-+			};
-+		};
- 	};
- 
- 	firmware {
-@@ -179,6 +267,59 @@ pmu {
- 	psci {
- 		compatible = "arm,psci-1.0";
- 		method = "smc";
-+
-+		CPU_PD0: cpu0 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+			domain-idle-states = <&LITTLE_CPU_SLEEP_0>;
-+		};
-+
-+		CPU_PD1: cpu1 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+			domain-idle-states = <&LITTLE_CPU_SLEEP_0>;
-+		};
-+
-+		CPU_PD2: cpu2 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+			domain-idle-states = <&LITTLE_CPU_SLEEP_0>;
-+		};
-+
-+		CPU_PD3: cpu3 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+			domain-idle-states = <&LITTLE_CPU_SLEEP_0>;
-+		};
-+
-+		CPU_PD4: cpu4 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+			domain-idle-states = <&BIG_CPU_SLEEP_0>;
-+		};
-+
-+		CPU_PD5: cpu5 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+			domain-idle-states = <&BIG_CPU_SLEEP_0>;
-+		};
-+
-+		CPU_PD6: cpu6 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+			domain-idle-states = <&BIG_CPU_SLEEP_0>;
-+		};
-+
-+		CPU_PD7: cpu7 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+			domain-idle-states = <&BIG_CPU_SLEEP_0>;
-+		};
-+
-+		CLUSTER_PD: cpu-cluster0 {
-+			#power-domain-cells = <0>;
-+			domain-idle-states = <&CLUSTER_SLEEP_0>;
-+		};
- 	};
- 
- 	reserved_memory: reserved-memory {
--- 
-2.29.2
+What is "it"?
+
+
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/char/tpm/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
+> index d6ba644f6b00..4a5516406c22 100644
+> --- a/drivers/char/tpm/Kconfig
+> +++ b/drivers/char/tpm/Kconfig
+> @@ -76,7 +76,7 @@ config TCG_TIS_SPI_CR50
+> =20
+>  config TCG_TIS_SYNQUACER
+>  	tristate "TPM Interface Specification 1.2 Interface / TPM 2.0 FIFO Inte=
+rface (MMIO - SynQuacer)"
+> -	depends on ARCH_SYNQUACER
+> +	depends on ARCH_SYNQUACER || COMPILE_TEST
+>  	select TCG_TIS_CORE
+>  	help
+>  	  If you have a TPM security chip that is compliant with the
+
+/Jarkko
 
