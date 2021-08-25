@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE5A3F794E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619153F795E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 17:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241083AbhHYPnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 11:43:35 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:42458 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241121AbhHYPna (ORCPT
+        id S241103AbhHYPsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 11:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241083AbhHYPsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:43:30 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6B18424F;
-        Wed, 25 Aug 2021 17:42:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1629906162;
-        bh=z+pGs7ptzS2pWN5a//5s422Ig5ykca/VKKLgcOkqcck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HpLVDgUyv9p+Lvjvv4W3jq+s+YF5NoVGTMRTEAFR8Og9jXeyuVgvon699aTEJaokF
-         K2ymO/VhXZYP0OPhh/UBw06ZdbF1S9lIeQ9tVvRbVqyjnOZVeY5zirFMySSE2/XiVq
-         KqiF5WvtuLk5k3lzpgciLmUimBzgzS8tBKOg6RME=
-Date:   Wed, 25 Aug 2021 18:42:30 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
-Message-ID: <YSZk5tyAxZoosXS3@pendragon.ideasonboard.com>
-References: <20210824230620.1003828-1-djrscally@gmail.com>
- <20210824230620.1003828-2-djrscally@gmail.com>
- <20210825103301.GC5186@sirena.org.uk>
- <cc65098e-b459-b20a-f6e2-ee521fc20ca7@redhat.com>
- <20210825152735.GJ5186@sirena.org.uk>
+        Wed, 25 Aug 2021 11:48:45 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A440BC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 08:47:59 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id 14so27827695qkc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 08:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TyXbzbfKOZ2ktu22gQKsofdIYZHzHFuZobIG77fyCcY=;
+        b=tZoh19hIzrOZ2ezahl8c9mrXstZt3Vpr49rMu41rgyeCBgPXFkQoLeyMyU6qxzt9zz
+         GAujAcoL5tMX2bEjDybWDgrgBdT/w0qlcF+LgSuTeJQffaAC+bHM0LbPFmaZalsk5F3V
+         BaWhgyN2NwlhU0yHbKtsziByYbs6u7KplQrweghoZiXDZwQx5lDZvTYLQugWscF9g6zw
+         +6kiRXw5zH8Yee6yYcVTu1QbZZib84i8TqFL0hqKvPtlI3Ahg1OjVmaT43D4vdJiKBkx
+         sYjLx2BZ8iv6EB4E7a9p6j61d82Z5/4kKRlK3rzqAnNXFKY+7G0Fk+t2x21MMLsDEJYn
+         0gVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TyXbzbfKOZ2ktu22gQKsofdIYZHzHFuZobIG77fyCcY=;
+        b=D1Q3yNiNyqRGfVkZkMErRUI48Cz9gXk9hlsA7lBXFdLOxc1MPFB0Ho4BdjBMp4YRnK
+         SjwR4FIONRtgOsTySuJ7aDktt+5LA0ukE6S14n4dbHgQ3ZCxkzIrBkmWYtZnsGD+dXG8
+         dUqLWuWNz0dRJaSdsJRfsU8WqK3HWh6uYPKmdaQk0Q5ApjRBhoHT264T9jp39btDqFj1
+         aiPM0PH+MNnArTDs1vjdzVe/pQz9WD7nVO7sIrD3RPVnqlYEhAKBYe7FkER4+ZpgGz6a
+         hI7ZA0zS7BOb+8m1R39is2GwQEZte8AjQFfxkNlsFWpXjw2YgMySBjWUBgcNrFC8mszj
+         sVXw==
+X-Gm-Message-State: AOAM532w6Qxvzdl6XTQZFx/hydpoM4faJ+DEcsw/kHDyQZYxsyuUxZd3
+        IiR6lF+nCAoF4OxSbUB+1ry6uPFXHcus/YIWcDOgsg==
+X-Google-Smtp-Source: ABdhPJy/CFaCu4ML6Pz8FwJBDv90dUXouGQdF3bYsTK9W+GqTFd3ySKOZvJPG8bZNpADEP1dN29tjWPW0Iy7ewlvvpE=
+X-Received: by 2002:a25:2cd5:: with SMTP id s204mr10547135ybs.452.1629906477320;
+ Wed, 25 Aug 2021 08:47:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210825152735.GJ5186@sirena.org.uk>
+References: <20210825154043.247764-1-yan2228598786@gmail.com>
+In-Reply-To: <20210825154043.247764-1-yan2228598786@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 25 Aug 2021 08:47:46 -0700
+Message-ID: <CANn89iJO8jzjFWvJ610TPmKDE8WKi8ojTr_HWXLz5g=4pdQHEA@mail.gmail.com>
+Subject: Re: [PATCH] net: tcp_drop adds `reason` parameter for tracing v2
+To:     Zhongya Yan <yan2228598786@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, hengqi.chen@gmail.com,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 04:27:35PM +0100, Mark Brown wrote:
-> On Wed, Aug 25, 2021 at 04:48:15PM +0200, Hans de Goede wrote:
-> 
-> > Daniel, I believe that what Mark wants here is something similar to what
-> > we already do for the 5v boost converter regulator in the TI bq24190 charger
-> > chip used on some Cherry Trail devices.
-> 
-> Yeah, that or something like a generalized version of it which lets a
-> separate quirk file like they seem to have register the data to insert -
-> I'd be happy enough with the simple thing too given that it's not
-> visible to anything, or with DMI quirks in the regulator driver too for
-> that matter if it's just one or two platforms but there do seem to be
-> rather a lot of these platforms which need quirks.
+On Wed, Aug 25, 2021 at 8:41 AM Zhongya Yan <yan2228598786@gmail.com> wrote:
+>
+> In this version, fix and modify some code issues. Changed the reason for `tcp_drop` from an enumeration to a mask and enumeration usage in the trace output.
+> By shifting `__LINE__` left by 6 bits to accommodate the `tcp_drop` call method source, 6 bits are enough to use. This allows for a more granular identification of the reason for calling `tcp_drop` without conflicts and essentially without overflow.
+> Example.
+> ```
 
-Let's also remember that we have to handle not just regulators, but also
-GPIOs and clocks. And I'm pretty sure there will be more. We could have
-a mechanism specific to the tps68470 driver to pass platform data from
-the board file to the driver, and replicate that mechanism in different
-drivers (for other regulators, clocks and GPIOs), but I really would
-like to avoid splitting the DMI-conditioned platform data in those
-drivers directly. I'd like to store all the init data for a given
-platform in a single "board" file.
 
--- 
-Regards,
+...
 
-Laurent Pinchart
+*/
+> @@ -5703,15 +5700,15 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
+>                         TCP_INC_STATS(sock_net(sk), TCP_MIB_INERRS);
+>                 NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPSYNCHALLENGE);
+>                 tcp_send_challenge_ack(sk, skb);
+> -               goto discard;
+> +               tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_VALIDATE_INCOMING));
+
+I'd rather use a string. So that we can more easily identify _why_ the
+packet was drop, without looking at the source code
+of the exact kernel version to locate line number 1057
+
+You can be sure that we will get reports in the future from users of
+heavily modified kernels.
+Having to download a git tree, or apply semi-private patches is a no go.
+
+If you really want to include __FILE__ and __LINE__, these both can be
+stringified and included in the report, with the help of macros.
