@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763D33F7EA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD3C3F7EAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 00:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbhHYWeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 18:34:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
+        id S232756AbhHYWfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 18:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhHYWeF (ORCPT
+        with ESMTP id S229642AbhHYWfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 18:34:05 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81751C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:33:19 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id z5so1937536ybj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:33:19 -0700 (PDT)
+        Wed, 25 Aug 2021 18:35:43 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B257C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:34:57 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id u25so1582607oiv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 15:34:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=Kgp5GiEz4WmpnGVoTlE6arLJUO3fxcnpVDrKqn7lWLw=;
-        b=HPFOPzBy6SGiYGP6n7007s+8XxhBCV9CfvtBH7fphvvbQzrKNdcVz4b6rSJdP2Bg/9
-         2m7RCr7FuGNXyJiuMbVhjF9BO+JzG+K2q27BduY1+O9H++gmpSZeEsNP6DUseQW2bfSc
-         AJWEEAnSXAAU/FP/rk/LIYRwuOf9ExaQkCPTeSS8swjluq/BVlnessP0ezYTuVZmIdFn
-         bIQR9OvbSfef7PAFgO6NeUoRJ0XAPIdXlhS8Pwphw+6sHoHhJHvl1sVt1/9QI5kmbmqg
-         rFM1d3qu7JvjL/WOawUvElCIN6Q45tWSqddqvpZrtjWX4bWBc9OYIaGrK7MJooOMzQkb
-         zFLA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VcwbgpFB5257a/tKAipZOB8IAHDgar0MdJDHoygDOow=;
+        b=Yw10ev+ijpGPnZuuy5kfJtFGdzNp3uInUo7ZpQErkk/wEtfEcQec3oQc+JA89S5MUy
+         N2VkRCaGKk9dKEHoyd9pbl8+6Db/tV1h+G0P9nnhm9i1radl2sVzWrSscaYKWEjQPIC9
+         HKAUzl2rN6mhg1hXkNmKoui3xXpMm5Kt5x1ek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=Kgp5GiEz4WmpnGVoTlE6arLJUO3fxcnpVDrKqn7lWLw=;
-        b=qd9XQEr8P5lCcooPH9wUP2YwIkHiLxxmQjjmJR74JYLgdiAyCuZgewlrePfwyFGkw2
-         oEF+1Z0GImChZPLnsShZNjOAnthFHnC7/t27zur2Ae6EQxznuQWK8uAFvbtCm8jtX6y9
-         s6K+9JqwbWobpLlNoDGV1rzvOc088ebKqbO9R8xcYD6GzsSpTSO1yl+E8dPo7nRcp0S6
-         bmpixkeSepSFf5/tkJwD+S/k4yraBBHbHveJUpB7UWnG/xU3mbyXKDYo2VYcj457o+yW
-         tgRvwKdsxTNMwmPkh2A9nedUNN/PJdmdXjO0D72Yi09acMD/yyYsmNa1JH6YV1iMedtN
-         j8EQ==
-X-Gm-Message-State: AOAM531t21hi4gEV81W0r15yLwXbUOmdWKPbY2+KZmXJ4IvUIIJQUks5
-        24GJBoDEs3LDYbhG/qcKHVkED+JtodP3Euw0ri2sJA==
-X-Received: by 2002:a25:9847:: with SMTP id k7mt1238946ybo.170.1629930798648;
- Wed, 25 Aug 2021 15:33:18 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VcwbgpFB5257a/tKAipZOB8IAHDgar0MdJDHoygDOow=;
+        b=CtM8G/Sp4pJH37S07ijCanodZboogyS/AVAhojFZgswld3DMWxgb+zeg1Scy2rtG4v
+         dH0LwmMFEkzXuEw/xPzEzcmxJTqLLS5QT1SVKXKiRi2vBAvEeW4+rkO5X9yiAQuQ9CzT
+         zw/NcphowXwcVLTcNq/7GN/ReqqmCr5whpx/Yo4iSLucIhQ738ORb4pzGtw9dDv7nU5Q
+         3VeWwT5tQaMyJLbuL0yHrB+g7XmmGT32hgxGklSi09bjZkx+b22xYBOQ/n+7lYC8tzcs
+         47Kx2tbH3oZ6SA3SGi5aC3nR94dnkD6cHvnIsdz+yEauPvKY+iQJglNYGoYUSBQYfAiX
+         CjdQ==
+X-Gm-Message-State: AOAM532pFnL9iJXKveXJKLU7RpS6BaIQyWjFb3KT9mCemO/AY1D+fQFo
+        yD36iyxXbJWO+h4o8f7seF3eYQ==
+X-Google-Smtp-Source: ABdhPJwCPYpXVbwtH2YsEKHQAFLkiXeOygfreyIxe7l0h2/PmcvkgWnElRMJoSXm0Ezq79KrHHjshQ==
+X-Received: by 2002:a05:6808:6d2:: with SMTP id m18mr240825oih.120.1629930896636;
+        Wed, 25 Aug 2021 15:34:56 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id j2sm272443oia.21.2021.08.25.15.34.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 15:34:56 -0700 (PDT)
+Subject: Re: [PATCH 5.13 000/127] 5.13.13-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210824165607.709387-1-sashal@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <1d26e6ba-29d1-15ce-093e-5cda076b76c7@linuxfoundation.org>
+Date:   Wed, 25 Aug 2021 16:34:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210825222514.2107728-1-jiancai@google.com> <CA+SOCLLyKaEmCSrSNUKfpgPmUxcu8RyZLqZxpmw87BiO=m84Mg@mail.gmail.com>
-In-Reply-To: <CA+SOCLLyKaEmCSrSNUKfpgPmUxcu8RyZLqZxpmw87BiO=m84Mg@mail.gmail.com>
-From:   Jian Cai <jiancai@google.com>
-Date:   Wed, 25 Aug 2021 15:33:06 -0700
-Message-ID: <CA+SOCLKS=C6rNHXbbro+qHE2P-_M+nGg9kCdAuZPuZq0-VMLMQ@mail.gmail.com>
-Subject: Re: [PATCH] coresight: syscfg: fix compiler warnings
-Cc:     mike.leach@linaro.org, dianders@chromium.org, mka@chromium.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>, coresight@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210824165607.709387-1-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The last message was meant for the wrong patch. Please ignore. Sorry
-for the noise.
+On 8/24/21 10:54 AM, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 5.13.13 release.
+> There are 127 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu 26 Aug 2021 04:55:18 PM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.13.y&id2=v5.13.12
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
 
-On Wed, Aug 25, 2021 at 3:27 PM Jian Cai <jiancai@google.com> wrote:
->
-> Please ignore this patch. The title is incorrect, I've updated and resented it at https://lore.kernel.org/lkml/20210825222514.2107728-1-jiancai@google.com/. Sorry for any inconvenience.
->
-> On Wed, Aug 25, 2021 at 3:25 PM Jian Cai <jiancai@google.com> wrote:
->>
->> This fixes warnings with -Wimplicit-function-declaration, e.g.
->>
->> ^[[1m/mnt/host/source/src/third_party/kernel/v5.4/drivers/hwtracing/coresight/coresight-syscfg.c:455:15: ^[[0m^[[0;1;31merror: ^[[0m^[[1mimplicit declaration of function 'kzalloc' [-Werror,-Wimplicit-function-declaration]^[[0m
->>         csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev), GFP_KERNEL);
->> ^[[0;1;32m                     ^
->>
->> Signed-off-by: Jian Cai <jiancai@google.com>
->> ---
->>  drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
->> index fc0760f55c53..43054568430f 100644
->> --- a/drivers/hwtracing/coresight/coresight-syscfg.c
->> +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
->> @@ -5,6 +5,7 @@
->>   */
->>
->>  #include <linux/platform_device.h>
->> +#include <linux/slab.h>
->>
->>  #include "coresight-config.h"
->>  #include "coresight-etm-perf.h"
->> --
->> 2.33.0.259.gc128427fd7-goog
->>
+Compiled and booted on my test system. No dmesg regressions.
+
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
