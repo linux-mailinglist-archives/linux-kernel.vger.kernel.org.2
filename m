@@ -2,92 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70483F7BD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218703F7BE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242417AbhHYR5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:57:11 -0400
-Received: from mga03.intel.com ([134.134.136.65]:42586 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235032AbhHYR5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:57:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="217614869"
-X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="217614869"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 10:56:24 -0700
-X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
-   d="scan'208";a="527422217"
-Received: from jambrizm-mobl1.amr.corp.intel.com ([10.212.224.56])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 10:56:23 -0700
-Date:   Wed, 25 Aug 2021 10:56:14 -0700 (PDT)
-From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
-To:     Jiang Biao <benbjiang@gmail.com>
-cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        mptcp@lists.linux.dev, linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Jiang Biao <tcs_robot@tencent.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH] ipv4/mptcp: fix divide error
-In-Reply-To: <CAPJCdBmTPW5gcO6DO5i=T+R2TNypzbaA666krk=7Duf2mt1yBw@mail.gmail.com>
-Message-ID: <f9b97b7f-cb48-f0bf-2dfb-a13bf1296b19@linux.intel.com>
-References: <20210824071926.68019-1-benbjiang@gmail.com> <fe512c8b-6f5a-0210-3f23-2c1fc75cd6e5@tessares.net> <CAPJCdBmTPW5gcO6DO5i=T+R2TNypzbaA666krk=7Duf2mt1yBw@mail.gmail.com>
+        id S235032AbhHYSAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 14:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230112AbhHYSAI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 14:00:08 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718E6C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:59:22 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id fz10so373103pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:59:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pABGAmR7jsnbAFg+kdSfi8m+nL0fOQgbOWkA56++kO8=;
+        b=Yi5vdPb2dNIZhdtUXom1jAQNDEKLkpIC16r/bpEol95mYCxR8NHcbYIOhVEUOc0/K1
+         Axj09rhFcBCD4Dqsl0LuAFmAQ6Y7k7uKq7sUNEq8MDRkjuwEBCw+iUDoB5Mmmp9srV4g
+         /pT7jUpWRWK6/pleo7LhM+nh11LXyXH3wKkqE20DVugplAHNM7dQUTnmOh4kVtALc118
+         C+VLoMKiPcNJXoR+0fFOzrjxGY4U0yR6+sqgNP8Sqk8RUYKraIKaan5cDZQArKhpdnBJ
+         TVuqAZhR6WwimPWKN7AXKd/GqEo8506xsrggaRc32v1zqylBTOW4yPpTzqLTSFqqeAZt
+         8axw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pABGAmR7jsnbAFg+kdSfi8m+nL0fOQgbOWkA56++kO8=;
+        b=rOri//w9W72o29q4p4iSiDNy+xgnOYI5GcAT680b42vyRyGemMinMo/7G7iyjnZeeR
+         va4nRSd8cjg72J+8W9eM6c4FDWuxKt1gqGeT4NYwSWSoFgXVJ6eSTo7ntxQhG1EDrLCf
+         oCCjpT37jh+PMgEvVcPqYK9OlnuXBSO+wgcGm1uN9rKe+qgVy1ffoefW4Hyn0RWj55+3
+         nnqdm5IZ0kJervjvudiA1q0wHhvw1UTELIDRjwwKw1RF0Szj2Br80bxf9qV4J9gNnyH2
+         XQgceENZWbBEbeAFjuzmY+hu/ySq4buRt2/Hpre7fEDlosHk476GjB5beEH3SrldE+KK
+         LUiQ==
+X-Gm-Message-State: AOAM531nVyQyKrgQaeZjjLvQp7F00XyJGvutBzRld9O7oy38osFUIDBh
+        CjTR0wRz8NaLs3GySurC+yzlvA==
+X-Google-Smtp-Source: ABdhPJxcO9mzExRWn0q9Z7VP9IVEQJ9iWCOeQRY0pgkynO+vHIb5PFgctevVD6XoIHyteP4SuDgq0w==
+X-Received: by 2002:a17:902:7892:b0:133:a1a4:5917 with SMTP id q18-20020a170902789200b00133a1a45917mr17321952pll.17.1629914361705;
+        Wed, 25 Aug 2021 10:59:21 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id q21sm624602pgk.71.2021.08.25.10.59.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 10:59:21 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 17:59:17 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     CGEL <cgel.zte@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] x86:mmu: fix boolreturn.cocci warnings
+Message-ID: <YSaE9Umzb33B12kY@google.com>
+References: <20210824071052.61304-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824071052.61304-1-deng.changcheng@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"KVM: x86/mmu" in the shortlog please.
 
-On Tue, 24 Aug 2021, Jiang Biao wrote:
+On Tue, Aug 24, 2021, CGEL wrote:
+> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+> 
+> ./arch/x86/kvm/mmu/mmu.c:1501: 9-10:WARNING:return of 0/1 in
+> function 'kvm_set_pte_rmapp' with return type bool
+> ./arch/x86/kvm/mmu/mmu.c:1642:10-11:WARNING:return of 0/1 in
+> function 'kvm_test_age_rmapp' with return type bool
 
-> Hi,
->
-> On Tue, 24 Aug 2021 at 15:36, Matthieu Baerts
-> <matthieu.baerts@tessares.net> wrote:
->>
->> Hi Jiang,
->>
->> On 24/08/2021 09:19, Jiang Biao wrote:
->>
->> (...)
->>
->>> There is a fix divide error reported,
->>> divide error: 0000 [#1] PREEMPT SMP KASAN
->>> RIP: 0010:tcp_tso_autosize build/../net/ipv4/tcp_output.c:1975 [inline]
->>> RIP: 0010:tcp_tso_segs+0x14f/0x250 build/../net/ipv4/tcp_output.c:1992
->>
->> Thank you for this patch and validating MPTCP on your side!
->>
->> This issue is actively tracked on our Github project [1] and a patch is
->> already in our tree [2] but still under validation.
->>> It's introduced by non-initialized info->mss_now in __mptcp_push_pending.
->>> Fix it by adding protection in mptcp_push_release.
->>
->> Indeed, you are right, info->mss_now can be set to 0 in some cases but
->> that's not normal.
->>
->> Instead of adding a protection here, we preferred fixing the root cause,
->> see [2]. Do not hesitate to have a look at the other patch and comment
->> there if you don't agree with this version.
->> Except if [2] is difficult to backport, I think we don't need your extra
->> protection. WDYT?
->>
-> Agreed, fixing the root cause is much better.
-> Thanks for the reply.
->
+Huh, I could have sworn this was fixed, but obviously not.
 
-Hi Jiang -
+> Return statements in functions returning bool should use true/false
+> instead of 1/0.
+> 
+> Generated by: scripts/coccinelle/misc/boolreturn.cocci
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index c5232a0..78025e0 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -1498,7 +1498,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>  
+>  	if (need_flush && kvm_available_flush_tlb_with_range()) {
+>  		kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
+> -		return 0;
+> +		return false;
 
-Could you try cherry-picking this commit to see if it eliminates the error 
-in your system?
+Please also fix need_flush in this function, e.g. 
 
-https://github.com/multipath-tcp/mptcp_net-next/commit/9ef5aea5a794f4a369e26ed816e9c80cdc5a5f86
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 4853c033e6ce..0a275d988c7d 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1456,7 +1456,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+ {
+        u64 *sptep;
+        struct rmap_iterator iter;
+-       int need_flush = 0;
++       bool need_flush = false;
+        u64 new_spte;
+        kvm_pfn_t new_pfn;
 
+@@ -1468,7 +1468,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+                rmap_printk("spte %p %llx gfn %llx (%d)\n",
+                            sptep, *sptep, gfn, level);
 
-Thanks!
+-               need_flush = 1;
++               need_flush = true;
 
---
-Mat Martineau
-Intel
+                if (pte_write(pte)) {
+                        pte_list_remove(kvm, rmap_head, sptep);
+
+>  	}
+>  
+>  	return need_flush;
+> @@ -1639,8 +1639,8 @@ static bool kvm_test_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>  
+>  	for_each_rmap_spte(rmap_head, &iter, sptep)
+>  		if (is_accessed_spte(*sptep))
+> -			return 1;
+> -	return 0;
+> +			return true;
+> +	return false;
+>  }
+>  
+>  #define RMAP_RECYCLE_THRESHOLD 1000
+> -- 
+> 1.8.3.1
+> 
+> 
