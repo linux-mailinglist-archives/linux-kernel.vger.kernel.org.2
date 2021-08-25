@@ -2,172 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FE03F7531
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4EE3F7538
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 14:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240531AbhHYMiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 08:38:54 -0400
-Received: from mail-dm6nam12on2051.outbound.protection.outlook.com ([40.107.243.51]:60641
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229873AbhHYMiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 08:38:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WVKSjxoyAilNmnDXrwahENGZoVSuPrVJgJbU8z1LQyWGfi+EfGQpx4Y1FpQjgX0N7cEZrPgyj3fM98WX+od8U+eE4w2FOW8Mr5Plhq0BTUC2lfiF5ToSMaC4Z6LKK3Nud7Ax++imYMBZybopW4Ynr9gE5Tv9HIxeg/CXt4ZXjVOgTUQ+KpkNAUzUwKkJelAEqlvqVYX6ikTqS42tQR0+6S3H78F7QmcaoaB7O2o29ryLxUxzuOgLcabBecqJAq5TQ6whRwoz+FCyCCCl1LHijLOoDTMyra2Kmel5rQw6K+Ta7+GovPm65oEQodr4gDKYMhSsBEXpu23nExpMOPaxFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6wA/QykVxwmbJScSmGXv9PeBBKbGZF31oOssGPfINyc=;
- b=iONJ3kDoIdVJjXap/7c7wxZN0NMdDhZl5aForahYmihBjtwaHn/l+zRw9I5lJcbh1Qi78yTYjKF+6thKDl7//yyQL88pnrrAv453Zo52xqd/soUjt6Rat9tpzLAUxGhhaVJcufBKpXVNeZtpILO1oMJp8KznKtoFoAA0nt+Ov6jSHZKFPSmvtkJjKVSzDfrSp1uS+3ievmCbFlKzJM7KjF+rAVRv9wzockUpH5WDdkuRxZdZe6TSv+wYeNovwpOl9gVRzHQGspbuP4zl5TU4V+MRCORKPE5eual3MEDpGliFYxwwA3RoL0LJjxkWU8yK6f1iu8MbFoay5zA2MvhdBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6wA/QykVxwmbJScSmGXv9PeBBKbGZF31oOssGPfINyc=;
- b=BFOWB4WCpBH1SgG1l9xXIsXpFtijRgikeIS5d/R7D2jikqzYq3fPHN+v0BKa/udqjCqWzpYNH5NczXbnLJ7YiEUePZ1LKvYdMCSWMGnHxsvgeZura+HQLn9XjsLZIheHR5TPxyWbmAmYGmrVxppPFGLKxDfJOKVs4iYRSmJYt9/Ua8pT60VUFUyciI9RKPUR0ZxlGzFNVPCUYMs+pOJoLXis3ISOmXk3ZXUNR6JAAeiHn64VX0Ad60d+CuanIyG1B9aLqeOSOWTkWHou46hSUEBVlzEUVIWOS8AIl2YLZO5TaBkUpA9TI0P/+7NvvLQiP8yF1HJXNl/4KT2iIDT59g==
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5555.namprd12.prod.outlook.com (2603:10b6:208:1c2::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Wed, 25 Aug
- 2021 12:38:04 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
- 12:38:04 +0000
-Date:   Wed, 25 Aug 2021 09:38:02 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>
-Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
-Message-ID: <20210825123802.GD1721383@nvidia.com>
-References: <20210820143248.GX543798@ziepe.ca>
- <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
- <fa124990-ee0c-7401-019e-08109e338042@amd.com>
- <e2c47256-de89-7eaa-e5c2-5b96efcec834@amazon.com>
- <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com>
- <a9604a39-d08f-6263-4c5b-a2bc9a70583d@nvidia.com>
- <20210824173228.GE543798@ziepe.ca>
- <a716ae41-2d8c-c75a-a779-cc85b189fea2@amd.com>
- <20210825121832.GA1162709@nvidia.com>
- <fa22a1f9-fee6-21ea-3377-3ba99e9eb309@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fa22a1f9-fee6-21ea-3377-3ba99e9eb309@amd.com>
-X-ClientProxiedBy: BL0PR0102CA0023.prod.exchangelabs.com
- (2603:10b6:207:18::36) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S240751AbhHYMlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 08:41:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25254 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234577AbhHYMli (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 08:41:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629895252;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xMyxtwEUZlb94aN0/T0jpLFJOu6zgJORs466FBZFQMw=;
+        b=JHcfdiJW45GvgBf7PkOHCVpSHReYWX4VYjRdMwePIUrClKqnQQYWps2gXxbgd5RwDWZLU/
+        nqKzXebioCuRFGHWEpRt0TV9RGEAuMEmt0CHHwf2kFO3C1/9ftyLPcTxq7Ab6YtBHVlq/e
+        AuZ5dyJw7qacZnTU8SeYLUtddOd3hi8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-dO95EYCPNhePn4wXw8QUEQ-1; Wed, 25 Aug 2021 08:40:51 -0400
+X-MC-Unique: dO95EYCPNhePn4wXw8QUEQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so5259376wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 05:40:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xMyxtwEUZlb94aN0/T0jpLFJOu6zgJORs466FBZFQMw=;
+        b=BKTLpX06zOCG3iuRbruTokeZ1fVeHTzivdpZDzZw6hXyZA0mOvjrfN5TtGkDpCB6C/
+         D9K/yJKxxcBN/wbIg/tHm7Im0kwjxAAFsr51DwX8c6LfVdqeklrbe8Xqzz3MuQzwZloG
+         b7RK9+IfivrKW9tWl0yvz/MSaT6coWCql0sMW5FEQQJVBTIDro49vGBxOw4uycHjOlfj
+         vOiDC3+o4yKiQ1TgvGA/Pe8ig6IoK9amSeslRGPeGzEuyS0m0BlsxBHuEZ9YO0N2naGQ
+         nzs1FKPGV+yFLnAJTLqy3Z5YqbpXMtZs7Gr50Pg/PhkyPd5fp8DH4RUuMz3TzmhN7rbt
+         dXuw==
+X-Gm-Message-State: AOAM530ksLwMes9k+xRPI/rqL1CNwXBNQbPuXdc6Vg+tnb2RzcTIGBY1
+        k5WuIvqqrmJyrBjnbNQnrG/EHH5er/hQm29KSZ8QjSrjtuGKV+ausSHfwh+K3rLdu297coS4wjv
+        Q2Tkd9WZjxRt22W2bCISdOvNKD5H1KgcZl9n4kLDkpb7RflxF2crGtmYQYxNt7KM9WFC3AEC8WC
+        Ww
+X-Received: by 2002:a05:600c:350c:: with SMTP id h12mr9124326wmq.88.1629895249797;
+        Wed, 25 Aug 2021 05:40:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxl0zbETwjnqK0gsPbIDchodFh6iUVTfzjMdtxa8gI7eXonXM3sT5+eQy7XWPqLCaAGoP2fZA==
+X-Received: by 2002:a05:600c:350c:: with SMTP id h12mr9124290wmq.88.1629895249514;
+        Wed, 25 Aug 2021 05:40:49 -0700 (PDT)
+Received: from localhost.localdomain ([2a04:ee41:4:31cb:e591:1e1e:abde:a8f1])
+        by smtp.gmail.com with ESMTPSA id d8sm22293469wrv.20.2021.08.25.05.40.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 05:40:47 -0700 (PDT)
+Subject: Re: [PATCH 2/2] KVM: nSVM: temporarly save vmcb12's efer, cr0 and cr4
+ to avoid TOC/TOU races
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+References: <20210809145343.97685-1-eesposit@redhat.com>
+ <20210809145343.97685-3-eesposit@redhat.com>
+ <21b14e5711dff386ced705a385f85301761b50a5.camel@redhat.com>
+ <YRRcYvLoE+q5/Gbx@google.com>
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Message-ID: <a47d4ba6-dada-72de-e6be-fb0e50324aaf@redhat.com>
+Date:   Wed, 25 Aug 2021 14:40:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR0102CA0023.prod.exchangelabs.com (2603:10b6:207:18::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18 via Frontend Transport; Wed, 25 Aug 2021 12:38:03 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIsAM-004spl-J5; Wed, 25 Aug 2021 09:38:02 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e0fe0ee7-128f-408b-8d27-08d967c52e83
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5555:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB55554895F7D15E8534E15014C2C69@BL0PR12MB5555.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YRKLJ4QwYs0MJ6Ji1MKFUtGPiZ1xUmmiFTMQGQYF9tTNQNlgaLHwXRWu74FQvHDCmLjdceAf71g8IIsBFGhpjkod83KFLxZYMJcDcDYdVHYtb/fKjT2MQ2l1OrtXSCqO2C9cpv4mZtuuwqo5gpCyLMc7hI/HrzT3KITizuQSJrKmnGS5VVl8KOnX0APIdOMH9p56UiQa2UoHKEkggdeWj1Oi4rmiDUzwzYtP25Az//u03+6X1SqbnEhU270JGD7zGIlJCsImsKNaLBaNuUyurinowfyc94NkMpp70nSuFdxiGksC83UNuRsnQbRPgux55v68/OoXCQ4IQ9iX3ABw0NLQvVt74TOEKB2u+RMnaGM9gD76kQXvYOVxD6NNJ2dPRxlFQTqAFDXGEzs8tA3IsyoHjaSBqdTJ4J8LFOQ9j75O3xNT54pIVTYh2asSNLCz0mJNiNXTZ4CtH4u0zRTdwedXE0B9cGlBjRJiEv1BWWBMt64/aW1WbpangJVxIKP+75KBZWPmbEWJqLqleEmpjkmPU9WbRufRwYnGRdTWdn8zayEvBuWnOE0SjlJdpvKXJjkGdMZOc/nmi5u7QYp8BW9AIJyvBrI4MYU1VrkI0H6760butoOB2EcRgu8k3EWdNOl0MAkGKORVD+x0tOFbGw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39860400002)(376002)(366004)(38100700002)(66476007)(66556008)(8936002)(8676002)(86362001)(426003)(26005)(316002)(66574015)(66946007)(9786002)(9746002)(2906002)(186003)(5660300002)(478600001)(2616005)(4326008)(83380400001)(36756003)(54906003)(1076003)(6916009)(7416002)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bHZPdlB6NjVRZE54SldHbkJjY2xZd0c4dFZwVUNyK3ZEOVRVWTRJa3dCdnpG?=
- =?utf-8?B?U2NjeC9MN1lWWS9LbEM3MW4zVEhnR2lyWVZ2U2doTmdEMVQrNlNMU1Z3dzBx?=
- =?utf-8?B?RndOQWpIckl1MkpxdzlqU0RSYmVMdVdYZWtWZzlINUZxV2MzdXRkdnh6UEUz?=
- =?utf-8?B?NDEwUGtCRHZFQW9PZUxKdTBseVpQMWhEcEsyRWhPZGFkRXlkcVFHNWNsbzVI?=
- =?utf-8?B?U3hORzJQZ3FuZXJkdlJ5alMyci9tNEg0dk03aEJqc0ZETlJEM01RYU0zNmxW?=
- =?utf-8?B?eld2a2JSSkdOekhjbzZhWlM4a29ncjNleHJ6bHlJaEJ0MVhNTjJZb1NENFZ1?=
- =?utf-8?B?QUFXRVc1NFVrU2p0dDNaZjNPbjNhdVBCWFh0cVBFb1IySjZLRGVwcW9mME9j?=
- =?utf-8?B?clNaeFVEOVAxbzk3VVRyMUp1dXVUUC92Wlk2VnlmcW03aCszcmlVTHM1QUpF?=
- =?utf-8?B?T1hsd3R1VS9rUjE0QWJWT2VaUmU2a2psVEJPcUk4Zzc4TjIwRkRYZUtJOGZo?=
- =?utf-8?B?MEErRStwdUVyU2s3WFJFcHZScE5UQ3V0SmswN3FhUW9CbkNHQUNFV2owVkxm?=
- =?utf-8?B?L1RlcDhGak5QdHRxRmxTQzl5TGE2ZUVDN0RMbkpWdFJOeUswcWhSR2YrVVJu?=
- =?utf-8?B?bUQ4amRRdU5ESGNjSUs1bFUrY0xielBnTXE2MFlzalZoRmJjR1UvdTJZc1dK?=
- =?utf-8?B?aFBiT3grbjM0NnpoVFZxaW9EenN3MkRMbnNRY3RSK1BmNXYza0xibjBPV0NC?=
- =?utf-8?B?QXlJRVc2ZDlQczZQd2lrOHdXVXoxY2d3bGdtcllzOXlKT212Ym9UUXptakN2?=
- =?utf-8?B?TFRkVVIza1M1TW1reDUrSzhRbXlHUGpoM2htN1I4RFdGTFZiNHV0UjdnaUlk?=
- =?utf-8?B?ZFF6dlB6d3NqY0crZ1NiUldRR0Q0TkNtaUhyNjRBWGVkakZuWVZodXZKdVNH?=
- =?utf-8?B?Z1B1cW1OYy9xTDZ2b0xTbGRYUndHRkMySDliQWtMQnh2dXY4OHhrWENiMm5y?=
- =?utf-8?B?U0t2N0xqc0d2dHROcnRad2oveU9jTkN1R29iU08zUzhDRTlFdFp5Ujc2d2hw?=
- =?utf-8?B?VGR4L0hKZzVOTGtlb2NvSGtHNmVnN1QrVDJUQzdTdGhCcUtObUtBYVlZZEpO?=
- =?utf-8?B?dmoxZENGcjVmNVEyQURmNHp0T05pZVB3RERuUFhaUkloMGhSeWcxZU9oRnYr?=
- =?utf-8?B?ckpPc2lWQ0ZLRHd6cFV3QUsyRVdkQ0tPOWh1emRxWGZDajBTUmZhUkR2T3hV?=
- =?utf-8?B?Q1k1QXlZV1hadXJVTkU5MlQ1V3ZXQ0xrQU9XRHVjLzFUUTYvNXNaNE9zeERl?=
- =?utf-8?B?bVMxclZqejBzT1lwOVhoY1RvTWpMZkpFM1BqYXNiUWlzWGlvNTFlNFhMWDBn?=
- =?utf-8?B?dkd1ZVJUVk5ERmV1TGVzMDZiWk9nYk5BcWF3NVAzY2JjRDJXMXIrNGVHUUJ3?=
- =?utf-8?B?RndiUU13bnBEb09pM3BzU3lhbHdVa0RrT1F5TTNvb0F6WlZEbU1zbHg1MGVw?=
- =?utf-8?B?MElSVysxTUhwd3QwZVlPTmp2N2RkUm03WWxaWkFaeHNaVGx0aXFBS0tPNGM0?=
- =?utf-8?B?NnhXc2JWYW5jc3dlazE2NkFMUmRDWkV3UjFJTkxjdndJUHdTazJ5M2tJSm5D?=
- =?utf-8?B?UHR4SSs0OU9SWkNpV1lpZmw1NzNGWnlueVA3WFdEYTFUNzVXdUN5ZmtuOE9Y?=
- =?utf-8?B?Q2NVN2ZQVW5kbHJ2eG9SOE1xNTRKR0g0WXNzbmkwQ3NXQlJHSkNDS29NRVBQ?=
- =?utf-8?Q?09U10APO8JZDab0TJ+JwX3yQ3Us0tPz5FQlGQBb?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0fe0ee7-128f-408b-8d27-08d967c52e83
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 12:38:03.9453
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zGPH/hBu4bRlgNE3C3znOAVEbv78sAbMEAJ3xJfEeJuE2STlMCrESM0UdFKLFRaZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5555
+In-Reply-To: <YRRcYvLoE+q5/Gbx@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 02:27:08PM +0200, Christian König wrote:
-> Am 25.08.21 um 14:18 schrieb Jason Gunthorpe:
-> > On Wed, Aug 25, 2021 at 08:17:51AM +0200, Christian König wrote:
-> > 
-> > > The only real option where you could do P2P with buffer pinning are those
-> > > compute boards where we know that everything is always accessible to
-> > > everybody and we will never need to migrate anything. But even then you want
-> > > some mechanism like cgroups to take care of limiting this. Otherwise any
-> > > runaway process can bring down your whole system.
-> > Why? It is not the pin that is the problem, it was allocating GPU
-> > dedicated memory in the first place. pinning it just changes the
-> > sequence to free it. No different than CPU memory.
+Hi Sean,
+
+(Spoiler alert: I am new on all this stuff, so I would like to have some 
+clarifications about your suggestion. Thank you in advance)
+
+On 12/08/2021 01:25, Sean Christopherson wrote:
+> On Wed, Aug 11, 2021, Maxim Levitsky wrote:
+>> On Mon, 2021-08-09 at 16:53 +0200, Emanuele Giuseppe Esposito wrote:
+>>> @@ -1336,7 +1335,8 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>>>   	if (!(save->cr0 & X86_CR0_PG) ||
+>>>   	    !(save->cr0 & X86_CR0_PE) ||
+>>>   	    (save->rflags & X86_EFLAGS_VM) ||
+>>> -	    !nested_vmcb_valid_sregs(vcpu, save))
+>>> +	    !nested_vmcb_valid_sregs(vcpu, save, save->efer, save->cr0,
+>>> +				     save->cr4))
+>>>   		goto out_free;
+>>>   
+>>>   	/*
+>> The disadvantage of my approach is that fields are copied twice, once from
+>> vmcb12 to its local copy, and then from the local copy to vmcb02, however
+>> this approach is generic in such a way that TOC/TOI races become impossible.
+>>
+>> The disadvantage of your approach is that only some fields are copied and
+>> there is still a chance of TOC/TOI race in the future.
 > 
-> Pinning makes the memory un-evictable.
+> The partial copy makes me nervous too.  I also don't like pulling out select
+> registers and passing them by value; IMO the resulting code is harder to follow
+> and will be more difficult to maintain, e.g. it won't scale if the list of regs
+> to check grows.
 > 
-> In other words as long as we don't pin anything we can support as many
-> processes as we want until we run out of swap space. Swapping sucks badly
-> because your applications become pretty much unuseable, but you can easily
-> recover from it by killing some process.
+> But I don't think we need to copy _everything_.   There's also an opportunity to
+> clean up svm_set_nested_state(), though the ABI ramifications may be problematic.
 > 
-> With pinning on the other hand somebody sooner or later receives an -ENOMEM
-> or -ENOSPC and there is no guarantee that this goes to the right process.
+> Instead of passing vmcb_control_area and vmcb_save_area to nested_vmcb_valid_sregs()
+> and nested_vmcb_valid_sregs(), pass svm_nested_state and force the helpers to extract
+> the save/control fields from the nested state.  If a new check is added to KVM, it
+> will be obvious (and hopefully fail) if the state being check is not copied from vmcb12.
 
-It is not really different - you have the same failure mode once the
-system runs out of swap.
+I think I understood what you mean here, so basically you propose of 
+having svm->nested.save and its helpers similar to copy_vmcb_save_area,
+but for now just copy the fields that we want to protect, ie only efer, 
+cr0, cr4 and maybe also cr3 (to be consistent with VMCB_CR of clean 
+bits). Then pass svm->nested.save instead of vmcb12->save to 
+nested_vmcb_valid_sregs() and use it also for 
+nested_vmcb02_prepare_save(), to avoid TOC/TOU issues.
+At least that's how I understood it.
 
-This is really the kernel side trying to push a policy to the user
-side that the user side doesn't want..
+> 
+> Regarding svm_set_nested_state(), if we can clobber svm->nested.ctl and svm->nested.save
+> (doesn't exist currently) on a failed ioctl(), then the temporary allocations for those
+> can be replaced with using svm->nested as the buffer.
 
-Dedicated systems are a significant use case here and should be
-supported, even if the same solution wouldn't be applicable to someone
-running a desktop.
+I am not sure what you mean with failed ioctl(), but I guess the meaning 
+here is to replace the kzalloc'ed ctl and save variables with these two 
+states (nested.save and nested.ctl).
 
-Jason
+> 
+> And to mitigate the cost of copying to a kernel-controlled cache, we should use
+> the VMCB Clean bits as they're intended.
+> 
+>    Each set bit in the VMCB Clean field allows the processor to load one guest
+>    register or group of registers from the hardware cache;
+> 
+> E.g. copy from vmcb12 iff the clean bit is clear.  Then we could further optimize
+> nested VMRUN to skip checks based on clean bits.
+> 
+I looked up the clean fields, so my understanding is that if we do set 
+EFER/CR0/CR4 in nested_vmcb02_prepare_save() with nested.save, we don't 
+need to check the clean bits because
+
+"The guest's execution can cause cached state to be updated, but the 
+hypervisor is not responsible for setting VMCB Clean bits corresponding 
+to any state changes caused by guest execution."
+
+and setting the VMCB_CR after copying the vmcb12 save fields into the 
+nested state. But I don't think this is what you mean here, especially 
+when saying
+> copy from vmcb12 iff the clean bit is clear
+
+Thank you,
+Emanuele
+
