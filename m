@@ -2,141 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D57A3F77CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A7E3F77D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 16:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241869AbhHYOxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 10:53:40 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:57063 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S240395AbhHYOxj (ORCPT
+        id S240566AbhHYOzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 10:55:16 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:38482 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234380AbhHYOzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 10:53:39 -0400
-Received: (qmail 193484 invoked by uid 1000); 25 Aug 2021 10:52:52 -0400
-Date:   Wed, 25 Aug 2021 10:52:52 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chris.chiu@canonical.com, lokeshvutla@ti.com
-Subject: Re: [PATCH 2/3] usb: core: hcd: Add support for deferring roothub
- registration
-Message-ID: <20210825145252.GB192480@rowland.harvard.edu>
-References: <20210825105132.10420-1-kishon@ti.com>
- <20210825105132.10420-3-kishon@ti.com>
+        Wed, 25 Aug 2021 10:55:15 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:58038)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mIuIO-00BAd0-0H; Wed, 25 Aug 2021 08:54:28 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:54606 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mIuIN-00D901-5O; Wed, 25 Aug 2021 08:54:27 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>, Alexey Gladkov <legion@kernel.org>,
+        "Ma\, XinjianX" <xinjianx.ma@intel.com>
+Date:   Wed, 25 Aug 2021 09:54:20 -0500
+Message-ID: <871r6ho9r7.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210825105132.10420-3-kishon@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-XM-SPF: eid=1mIuIN-00D901-5O;;;mid=<871r6ho9r7.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+AXkxzxj1ZAa4HQNgApbm3PwqpXf2lU84=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,XMSubMetaSxObfu_03,XMSubMetaSx_00
+        autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.2607]
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 316 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 3.7 (1.2%), b_tie_ro: 2.6 (0.8%), parse: 0.60
+        (0.2%), extract_message_metadata: 2.0 (0.6%), get_uri_detail_list:
+        0.65 (0.2%), tests_pri_-1000: 2.7 (0.9%), tests_pri_-950: 1.02 (0.3%),
+        tests_pri_-900: 0.84 (0.3%), tests_pri_-90: 120 (37.8%), check_bayes:
+        118 (37.5%), b_tokenize: 3.4 (1.1%), b_tok_get_all: 4.3 (1.4%),
+        b_comp_prob: 1.08 (0.3%), b_tok_touch_all: 107 (33.9%), b_finish: 0.70
+        (0.2%), tests_pri_0: 171 (54.0%), check_dkim_signature: 0.34 (0.1%),
+        check_dkim_adsp: 3.3 (1.0%), poll_dns_idle: 1.38 (0.4%), tests_pri_10:
+        2.7 (0.8%), tests_pri_500: 7 (2.2%), rewrite_mail: 0.00 (0.0%)
+Subject: [GIT PULL] ucount fixes for v5.14
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 04:21:31PM +0530, Kishon Vijay Abraham I wrote:
-> It has been observed with certain PCIe USB cards (like Inateck connected
-> to AM64 EVM or J7200 EVM) that as soon as the primary roothub is
-> registered, port status change is handled even before xHC is running
-> leading to cold plug USB devices not detected. For such cases, registering
-> both the root hubs along with the second HCD is required. Add support for
-> deferring roothub registration in usb_add_hcd(), so that both primary and
-> secondary roothubs are registered along with the second HCD.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> Suggested-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-> ---
->  drivers/usb/core/hcd.c  | 28 +++++++++++++++++++++++-----
->  include/linux/usb/hcd.h |  2 ++
->  2 files changed, 25 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-> index 775f0456f0ad..ba0493d22d13 100644
-> --- a/drivers/usb/core/hcd.c
-> +++ b/drivers/usb/core/hcd.c
-> @@ -2795,6 +2795,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
->  {
->  	int retval;
->  	struct usb_device *rhdev;
-> +	struct usb_hcd *shared_hcd;
->  
->  	if (!hcd->skip_phy_initialization && usb_hcd_is_primary_hcd(hcd)) {
->  		hcd->phy_roothub = usb_phy_roothub_alloc(hcd->self.sysdev);
-> @@ -2956,17 +2957,34 @@ int usb_add_hcd(struct usb_hcd *hcd,
->  	}
->  
->  	/* starting here, usbcore will pay attention to this root hub */
 
-That comment is now wrong.  This is the point in the code where 
-usbcore will start paying attention to the _shared_ (primary) hcd's 
-roothub (if its HCD_DEFER_PRI_RH_REGISTER flag is set).
+Please pull the for-v5.14 branch from the git tree:
 
-> -	retval = register_root_hub(hcd);
-> -	if (retval != 0)
-> -		goto err_register_root_hub;
-> +	shared_hcd = hcd->shared_hcd;
-> +	if (!usb_hcd_is_primary_hcd(hcd) && shared_hcd &&
-> +	    HCD_DEFER_RH_REGISTER(shared_hcd)) {
-> +		retval = register_root_hub(shared_hcd);
-> +		if (retval != 0)
-> +			goto err_register_shared_root_hub;
->  
-> -	if (hcd->uses_new_polling && HCD_POLL_RH(hcd))
-> -		usb_hcd_poll_rh_status(hcd);
-> +		if (shared_hcd->uses_new_polling && HCD_POLL_RH(shared_hcd))
-> +			usb_hcd_poll_rh_status(shared_hcd);
-> +	}
-> +
+  git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git for-v5.14
 
-_This_ is where usbcore will start paying attention to the hcd's own 
-root hub (if its HCD_DEFER_PRI_RH_REGISTER flag isn't set).
+  HEAD: bbb6d0f3e1feb43d663af089c7dedb23be6a04fb ucounts: Increase ucounts reference counter before the security hook
 
-> +	if (!HCD_DEFER_RH_REGISTER(hcd)) {
-> +		retval = register_root_hub(hcd);
-> +		if (retval != 0)
-> +			goto err_register_root_hub;
-> +
-> +		if (hcd->uses_new_polling && HCD_POLL_RH(hcd))
-> +			usb_hcd_poll_rh_status(hcd);
-> +	}
->  
->  	return retval;
->  
->  err_register_root_hub:
->  	usb_stop_hcd(hcd);
-> +err_register_shared_root_hub:
-> +	if (!usb_hcd_is_primary_hcd(hcd) && shared_hcd &&
-> +	    shared_hcd->flags & HCD_FLAG_DEFER_PRI_RH_REGISTER)
-> +		usb_stop_hcd(shared_hcd);
->  err_hcd_driver_start:
->  	if (usb_hcd_is_primary_hcd(hcd) && hcd->irq > 0)
->  		free_irq(irqnum, hcd);
-> diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
-> index 548a028f2dab..6a357ba72f5d 100644
-> --- a/include/linux/usb/hcd.h
-> +++ b/include/linux/usb/hcd.h
-> @@ -124,6 +124,7 @@ struct usb_hcd {
->  #define HCD_FLAG_RH_RUNNING		5	/* root hub is running? */
->  #define HCD_FLAG_DEAD			6	/* controller has died? */
->  #define HCD_FLAG_INTF_AUTHORIZED	7	/* authorize interfaces? */
-> +#define HCD_FLAG_DEFER_PRI_RH_REGISTER	8	/* Defer roothub registration */
->  
->  	/* The flags can be tested using these macros; they are likely to
->  	 * be slightly faster than test_bit().
-> @@ -134,6 +135,7 @@ struct usb_hcd {
->  #define HCD_WAKEUP_PENDING(hcd)	((hcd)->flags & (1U << HCD_FLAG_WAKEUP_PENDING))
->  #define HCD_RH_RUNNING(hcd)	((hcd)->flags & (1U << HCD_FLAG_RH_RUNNING))
->  #define HCD_DEAD(hcd)		((hcd)->flags & (1U << HCD_FLAG_DEAD))
-> +#define HCD_DEFER_RH_REGISTER(hcd) ((hcd)->flags & (1U << HCD_FLAG_DEFER_PRI_RH_REGISTER))
+This branch fixes a regression that made it impossible to increase
+rlimits that had been converted to the ucount infrastructure, and also
+fixes a reference counting bug where the reference was not incremented
+soon enough.
 
-It's awkward to have slightly different names for the flag and the 
-test.  How about getting rid of the "_PRI" part of the flag name?  It 
-isn't really needed, because we obviously won't defer registering the 
-secondary hcd's root hub -- there's no place to defer it to.
+The fixes are trivial and the bugs have been encountered in the wild,
+and the fixes have been tested. 
 
-Alan Stern
+Alexey Gladkov (1):
+      ucounts: Increase ucounts reference counter before the security hook
 
->  	 * Specifies if interfaces are authorized by default
-> -- 
-> 2.17.1
-> 
+Eric W. Biederman (1):
+      ucounts: Fix regression preventing increasing of rlimits in init_user_ns
+
+ kernel/cred.c | 12 ++++++------
+ kernel/fork.c |  8 ++++----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
+
+Thank you,
+Eric
