@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E833F79C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F86C3F79D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237216AbhHYQFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:05:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232081AbhHYQFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:05:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9BBC61423;
-        Wed, 25 Aug 2021 16:04:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629907498;
-        bh=DaGsaCXXMEaJVHJDUEzQa5k0dv8atCixW2ZNnqxcsWE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Hg0JbfCUqVGPE1Utc3XvHT2ZzmwhuzauXDTMQT2bg0Ip3+FLII4GI6ZWUjPDnjPfF
-         M7RzD76tXFraOz1XVubXfFD1foCgTS2rmLMFAdjzJTeAchBuGiJ8DNuzxpjb9Oyuw9
-         K73UgSv8J9dUObTEx+7S6T/nJ6t5O20iLzjbbQOlbcUSL+GIQ6qpjm6dz0or7qUrK5
-         CiA+mlBO4yxQywjuQ9f1Y6FKeZeMu87Sbfk1kqUHlxVt4cxxxu9anecBEv+bQdi6Hx
-         klPqNTADkiRAwFhy2Iap/IILPm1FVl01v57ITdwVID37P++NR1Frw+phAuEFjyihaq
-         ao1/IxVW64apw==
-Received: by mail-ot1-f41.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso40671568ota.8;
-        Wed, 25 Aug 2021 09:04:57 -0700 (PDT)
-X-Gm-Message-State: AOAM530ym4mNxDQSzBmX8FwHo2B+a1GjfxQ6XPn1Z93+psNSaCSaJEca
-        uAXiyrzPM/+3i3ZI+zy8yeaFgSy2KEWDscBBzgY=
-X-Google-Smtp-Source: ABdhPJzmlzK7LAvef8jbDy6p7UNkjEVB1dgSKHHKPZQG94aNN8fvddSxhazPzywPle3BYA5ZzcpcGjEz4CbQKhGhtII=
-X-Received: by 2002:a9d:5c2:: with SMTP id 60mr36449769otd.77.1629907497260;
- Wed, 25 Aug 2021 09:04:57 -0700 (PDT)
+        id S239559AbhHYQGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:06:01 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:42982 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237877AbhHYQF6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 12:05:58 -0400
+Received: by mail-oi1-f176.google.com with SMTP id t35so8421oiw.9;
+        Wed, 25 Aug 2021 09:05:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IqpEITfkV4Wt3cISCrksmZlI+boyCTVaH8b3BA4buIg=;
+        b=cjbUkgkMUI6Bq7zZaUwzWTT+1pucBFioL1BMW4OIBrntzg8UMAfNFFZ8TraWnmMhuQ
+         8symo8BszlsafiCoL1lTOMOhb4ZbFV19JirWYOrQmPRYxl1TitUBCQW9kbIelkzpKR+f
+         XByTSN6TH2zQiKrsoOlLRJDYSFD7bYpBZzZ6Yhel2ctM+XmTl85j+bK07+sm8vxrvjfz
+         1vqChOT+Ucvf0IzcPvH/tyOjjeXcJFvzBsMY4/IDTg13MyHXCRx15rIYjRe59qXdv/qX
+         s6xjn0KfQCHuyLsfuDADwFsRNpv+/grNZPpGSaf0XPkYaFGccjKKBiDeLz/NJNPmtZym
+         VYpQ==
+X-Gm-Message-State: AOAM5305zRnpxJBeTKxQB3wvj1BqfmVEmyeH74GV84RgxYcs4ZX21C40
+        nJNh7zQNEgNIO2QAhOueHA==
+X-Google-Smtp-Source: ABdhPJzCPpYtm6/iGvl+r1ybnHX0Bv8WDdpUA/RqvixAyG6vfBXb37UAinwFxeulWsgm+g8poW8cog==
+X-Received: by 2002:aca:918:: with SMTP id 24mr7613654oij.58.1629907512282;
+        Wed, 25 Aug 2021 09:05:12 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s198sm44906oie.47.2021.08.25.09.05.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 09:05:11 -0700 (PDT)
+Received: (nullmailer pid 2870703 invoked by uid 1000);
+        Wed, 25 Aug 2021 16:05:10 -0000
+Date:   Wed, 25 Aug 2021 11:05:10 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        Orson Zhai <orsonzhai@gmail.com>, linux-spi@vger.kernel.org,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Luting Guo <luting.guo@unisoc.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Subject: Re: [PATCH V2 2/3] dt-bindings: spi: Convert sprd ADI bindings to
+ yaml
+Message-ID: <YSZqNsnvtIfhLbOT@robh.at.kernel.org>
+References: <20210825065931.2111159-1-zhang.lyra@gmail.com>
+ <20210825065931.2111159-3-zhang.lyra@gmail.com>
 MIME-Version: 1.0
-References: <cover.1629840814.git.cdleonard@gmail.com> <abb720b34b9eef1cc52ef68017334e27a2af83c6.1629840814.git.cdleonard@gmail.com>
- <30f73293-ea03-d18f-d923-0cf499d4b208@gmail.com> <20210825080817.GA19149@gondor.apana.org.au>
-In-Reply-To: <20210825080817.GA19149@gondor.apana.org.au>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 25 Aug 2021 18:04:46 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE_sDZJjmkoqHcLz=9fDqLPBNbyfH4zxN2s2RdgKO=eSw@mail.gmail.com>
-Message-ID: <CAMj1kXE_sDZJjmkoqHcLz=9fDqLPBNbyfH4zxN2s2RdgKO=eSw@mail.gmail.com>
-Subject: Re: [RFCv3 05/15] tcp: authopt: Add crypto initialization
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Leonard Crestez <cdleonard@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825065931.2111159-3-zhang.lyra@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021 at 10:08, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Tue, Aug 24, 2021 at 04:34:58PM -0700, Eric Dumazet wrote:
-> >
-> > On 8/24/21 2:34 PM, Leonard Crestez wrote:
-> > > The crypto_shash API is used in order to compute packet signatures. The
-> > > API comes with several unfortunate limitations:
-> > >
-> > > 1) Allocating a crypto_shash can sleep and must be done in user context.
-> > > 2) Packet signatures must be computed in softirq context
-> > > 3) Packet signatures use dynamic "traffic keys" which require exclusive
-> > > access to crypto_shash for crypto_setkey.
-> > >
-> > > The solution is to allocate one crypto_shash for each possible cpu for
-> > > each algorithm at setsockopt time. The per-cpu tfm is then borrowed from
-> > > softirq context, signatures are computed and the tfm is returned.
-> > >
-> >
-> > I could not see the per-cpu stuff that you mention in the changelog.
->
-> Perhaps it's time we moved the key information from the tfm into
-> the request structure for hashes? Or at least provide a way for
-> the key to be in the request structure in addition to the tfm as
-> the tfm model still works for IPsec.  Ard/Eric, what do you think
-> about that?
->
+On Wed, 25 Aug 2021 14:59:30 +0800, Chunyan Zhang wrote:
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> 
+> Convert spi-sprd-adi.txt to yaml.
+> 
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> ---
+>  .../devicetree/bindings/spi/spi-sprd-adi.txt  |  63 -----------
+>  .../devicetree/bindings/spi/sprd,spi-adi.yaml | 102 ++++++++++++++++++
+>  2 files changed, 102 insertions(+), 63 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/spi-sprd-adi.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
+> 
 
-I think it makes sense for a shash desc to have the ability to carry a
-key, which will be used instead of the TFM key, but this seems like
-quite a lot of work, given that all implementations will need to be
-updated. Also, setkey() can currently sleep, so we need to check
-whether the existing key manipulation code can actually execute during
-init/update/final if sleeping is not permitted.
+Reviewed-by: Rob Herring <robh@kernel.org>
