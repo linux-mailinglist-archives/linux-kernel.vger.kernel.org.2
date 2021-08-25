@@ -2,108 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C9A3F6E41
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFFD3F6E76
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhHYEXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 00:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230407AbhHYEXJ (ORCPT
+        id S229797AbhHYEaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 00:30:06 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42175 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhHYE37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 00:23:09 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17871C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 21:22:24 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mIkQU-00040Z-Cl; Wed, 25 Aug 2021 06:22:10 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mIkQR-0000tw-UG; Wed, 25 Aug 2021 06:22:07 +0200
-Date:   Wed, 25 Aug 2021 06:22:07 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Colin Ian King <colin.king@canonical.com>,
-        Grant Grundler <grundler@chromium.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: usb: asix: ax88772: fix boolconv.cocci warnings
-Message-ID: <20210825042207.GC14337@pengutronix.de>
-References: <202108250651.uuW5Q2Rg-lkp@intel.com>
- <20210824221716.GA23759@2b586af07b64>
+        Wed, 25 Aug 2021 00:29:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629865749; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=0+985ZB1bZ2Xt57BgaCKAO5yH9ewmG5YTGZdFzukfIw=; b=SMrTgYZPIhxyC1TOh8WQe8olqCXIMGW/yoEBiOanD1pOB7gjDA+xu6Y+pVfvLCv6LPYCe9AN
+ Th7A7e1K48brtsKWVALSVbI2slzhesGw4841mbrrjZvBAuQZBDPPC+xdEIeqzTYh3Uf+X0wr
+ E8gsqVkI80gqDOQkmqOtR3faLbo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6125c70c1567234b8cb458a5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Aug 2021 04:29:00
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D0314C43616; Wed, 25 Aug 2021 04:28:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5A39EC4338F;
+        Wed, 25 Aug 2021 04:28:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5A39EC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        Thinh.Nguyen@synopsys.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>,
+        stable@vger.kernel.org
+Subject: [PATCH v5] usb: dwc3: gadget: Stop EP0 transfers during pullup disable
+Date:   Tue, 24 Aug 2021 21:28:55 -0700
+Message-Id: <20210825042855.7977-1-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210824221716.GA23759@2b586af07b64>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 06:08:53 up 188 days,  7:32, 79 users,  load average: 0.06, 0.23,
- 0.30
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 06:17:16AM +0800, kernel test robot wrote:
-> From: kernel test robot <lkp@intel.com>
-> 
-> drivers/net/usb/asix_devices.c:757:60-65: WARNING: conversion to bool not needed here
-> 
->  Remove unneeded conversion to bool
-> 
-> Semantic patch information:
->  Relational and logical operators evaluate to bool,
->  explicit conversion is overly verbose and unneeded.
-> 
-> Generated by: scripts/coccinelle/misc/boolconv.cocci
-> 
-> Fixes: 7a141e64cf14 ("net: usb: asix: ax88772: move embedded PHY detection as early as possible")
-> CC: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
+During a USB cable disconnect, or soft disconnect scenario, a pending
+SETUP transaction may not be completed, leading to the following
+error:
 
-Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+    dwc3 a600000.dwc3: timed out waiting for SETUP phase
 
-> ---
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> head:   372b2891c15acbf7b90d948b08ac174bde77102c
-> commit: 7a141e64cf14099d84e530db0e86fcb2c489e341 [9154/10077] net: usb: asix: ax88772: move embedded PHY detection as early as possible
-> :::::: branch date: 12 hours ago
-> :::::: commit date: 35 hours ago
-> 
->  asix_devices.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/drivers/net/usb/asix_devices.c
-> +++ b/drivers/net/usb/asix_devices.c
-> @@ -754,7 +754,7 @@ static int ax88772_bind(struct usbnet *d
->  		return ret;
->  
->  	priv->phy_addr = ret;
-> -	priv->embd_phy = ((priv->phy_addr & 0x1f) == 0x10 ? true : false);
-> +	priv->embd_phy = ((priv->phy_addr & 0x1f) == 0x10);
->  
->  	asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG, 0, 0, 1, &chipcode, 0);
->  	chipcode &= AX_CHIPCODE_MASK;
-> 
+If this occurs, then the entire pullup disable routine is skipped and
+proper cleanup and halting of the controller does not complete.
 
+Instead of returning an error (which is ignored from the UDC
+perspective), allow the pullup disable routine to continue, which
+will also handle disabling of EP0/1.  This will end any active
+transfers as well.  Ensure to clear any delayed_status also, as the
+timeout could happen within the STATUS stage.
+
+Cc: <stable@vger.kernel.org>
+Fixes: bb0147364850 ("usb: dwc3: gadget: don't clear RUN/STOP when it's invalid to do so")
+Reviewed-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+---
+Changes in v5:
+ - Added Cc stable and fixes tag
+
+Changes in v4:
+ - Fixed formatting and typos in commit text
+ - Removed braces due to the removal of the return statement
+
+Changes in v3:
+ - Added suggestion by Thinh to change dev_err to dev_warn
+
+Changes in v2:
+ - Removed calls to dwc3_ep0_end_control_data() and just allow the ep disables
+   on EP0 handle the proper ending of transfers.
+ - Ensure that delayed_status is cleared, as ran into enumeration issues if the
+   SETUP transaction fails on a STATUS stage.  Saw delayed_status == TRUE on the
+   next connect, which blocked further SETUP transactions to be handled.
+
+ drivers/usb/dwc3/gadget.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 5d084542718d..63f6d9f2a692 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -2428,10 +2428,8 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+ 
+ 		ret = wait_for_completion_timeout(&dwc->ep0_in_setup,
+ 				msecs_to_jiffies(DWC3_PULL_UP_TIMEOUT));
+-		if (ret == 0) {
+-			dev_err(dwc->dev, "timed out waiting for SETUP phase\n");
+-			return -ETIMEDOUT;
+-		}
++		if (ret == 0)
++			dev_warn(dwc->dev, "timed out waiting for SETUP phase\n");
+ 	}
+ 
+ 	/*
+@@ -2643,6 +2641,7 @@ static int __dwc3_gadget_start(struct dwc3 *dwc)
+ 	/* begin to receive SETUP packets */
+ 	dwc->ep0state = EP0_SETUP_PHASE;
+ 	dwc->link_state = DWC3_LINK_STATE_SS_DIS;
++	dwc->delayed_status = false;
+ 	dwc3_ep0_out_start(dwc);
+ 
+ 	dwc3_gadget_enable_irq(dwc);
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
