@@ -2,115 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347F83F6FB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A403F6FB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 08:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239052AbhHYGnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 02:43:17 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:35243 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238416AbhHYGnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:43:16 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Gvbxy1fXhz9sVG;
-        Wed, 25 Aug 2021 08:42:30 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4y7WKXTVXuup; Wed, 25 Aug 2021 08:42:30 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gvbxy0f1Vz9sV9;
-        Wed, 25 Aug 2021 08:42:30 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EC0218B76A;
-        Wed, 25 Aug 2021 08:42:29 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 8_K7q7wLCYoh; Wed, 25 Aug 2021 08:42:29 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5388A8B83C;
-        Wed, 25 Aug 2021 08:42:29 +0200 (CEST)
-Subject: Re: [PATCH linux-next] powerpc:security: replace
- DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-To:     CGEL <cgel.zte@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        id S239148AbhHYGnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 02:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239141AbhHYGnW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 02:43:22 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E1DC0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:42:37 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id b64so12143768qkg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 23:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bFYGx05HsHjbbBDCITQXjISDYjMAJovwLRHhmmvHL2Y=;
+        b=euqwfrYJBAHrHzaLF3oDa3/4omT5QOIXAyafgBruf3Xedb/rmYSzGfG/PV6NfpCPwQ
+         0CG27TLdcu7qSxrBJ4HwvC0ZGqlyV1a/rWqo/VrQSbIfdLmdnLHHJWxIL0vTFlhr9P5K
+         qx0F0XB0e+3o8IetQpE5Es6+iBTbosKW1sKciKoU5BIWrkCbge0an+mXMd/DIDawQX5K
+         lWPOL5Owek9t/uWyJYBXdL8ludDazIH/o4Jmla1tutAgEXCPp+n1/+IKOgV48g0kwbVW
+         Ee9gDGsMenc4SGKQwPkVMFniG9Z4Xzhx72GJqxP498ix/eBUILvvYpfIubkCrClaCoww
+         WFTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bFYGx05HsHjbbBDCITQXjISDYjMAJovwLRHhmmvHL2Y=;
+        b=jz9DldrqJMxolxi5Yc5isyYwWoYmDi3DmYKibdoyT1SBrb2Wo7VSDK2VKXvaHGWiOw
+         JQS9cMljcvdwh/Fs84HdoV48Lv70OTyYn5+YrnAmRAgKzZYJ5JNf40gPqh9JPoZghCqf
+         y2a4eL92WzEYnr7VTAUstZ41bZVR832CLwYstclUiBVzMkle8ONOMudlE8LGdot3xViw
+         y+B+JWAjQ9DdPebZqX6oMg4o8S3BN9jVkAo2KA1aubxdM+LgqhwLbcmEoIEI7/U6z6AK
+         d/GWqODIWvk0f8LX/glvdHTtRR5Beir/E59n2gjiiNb7PH+OiNUuTVYspp/mWMptI02y
+         M5jg==
+X-Gm-Message-State: AOAM533B/cqvW/gXLY+ElnqRs+MiENGw/5tqE4P9wyQb55+WTNriSKq/
+        JOQhxTcQJFIPAbh8EKpzbmhFHt4R6SU=
+X-Google-Smtp-Source: ABdhPJz9cuBhiCQl3AhOKS9j6zyMvbY8uDFjCZBxlL+ObcXfzsmQUB25tMZKfMq+U2pclfye7g/S3g==
+X-Received: by 2002:ae9:eb91:: with SMTP id b139mr30275671qkg.149.1629873756642;
+        Tue, 24 Aug 2021 23:42:36 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id c2sm5413442qte.22.2021.08.24.23.42.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 23:42:36 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Li Huafei <lihuafei1@huawei.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Jing Yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-References: <20210825064016.70421-1-deng.changcheng@zte.com.cn>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <9521dd23-34f6-837e-a397-ee2771675967@csgroup.eu>
-Date:   Wed, 25 Aug 2021 08:42:24 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: [PATCH linux-next] power:pkeys: fix bugon.cocci warnings
+Date:   Tue, 24 Aug 2021 23:42:28 -0700
+Message-Id: <20210825064228.70487-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210825064016.70421-1-deng.changcheng@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-Le 25/08/2021 à 08:40, CGEL a écrit :
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
-> 
-> Fix the following coccicheck warning:
-> ./arch/powerpc/kernel/security.c:807:0-23: WARNING:
->   fops_entry_flush should be defined with DEFINE_DEBUGFS_ATTRIBUTE
-> ./arch/powerpc/kernel/security.c:781:0-23:WARNING:
-> fops_rfi_flush should be defined with DEFINE_DEBUGFS_ATTRIBUTE
-> ./arch/powerpc/kernel/security.c:833:0-23:WARNING:
-> fops_uaccess_flush should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+Use BUG_ON instead of a if condition followed by BUG.
 
-Can you give a few more details why the suggestion from coccicheck is a good suggestion ?
+./arch/powerpc/include/asm/book3s/64/pkeys.h:21:2-5:WARNING
+Use BUG_ON instead of if condition followed by BUG.
+./arch/powerpc/include/asm/book3s/64/pkeys.h:14:2-5:WARNING
+Use BUG_ON instead of if condition followed by BUG.
 
-Thanks
-Christophe
+Generated by: scripts/coccinelle/misc/bugon.cocci
 
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
-> ---
->   arch/powerpc/kernel/security.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/security.c b/arch/powerpc/kernel/security.c
-> index 1a99849..cf8ce24 100644
-> --- a/arch/powerpc/kernel/security.c
-> +++ b/arch/powerpc/kernel/security.c
-> @@ -778,7 +778,7 @@ static int rfi_flush_get(void *data, u64 *val)
->   	return 0;
->   }
->   
-> -DEFINE_SIMPLE_ATTRIBUTE(fops_rfi_flush, rfi_flush_get, rfi_flush_set, "%llu\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(fops_rfi_flush, rfi_flush_get, rfi_flush_set, "%llu\n");
->   
->   static int entry_flush_set(void *data, u64 val)
->   {
-> @@ -804,7 +804,7 @@ static int entry_flush_get(void *data, u64 *val)
->   	return 0;
->   }
->   
-> -DEFINE_SIMPLE_ATTRIBUTE(fops_entry_flush, entry_flush_get, entry_flush_set, "%llu\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(fops_entry_flush, entry_flush_get, entry_flush_set, "%llu\n");
->   
->   static int uaccess_flush_set(void *data, u64 val)
->   {
-> @@ -830,7 +830,7 @@ static int uaccess_flush_get(void *data, u64 *val)
->   	return 0;
->   }
->   
-> -DEFINE_SIMPLE_ATTRIBUTE(fops_uaccess_flush, uaccess_flush_get, uaccess_flush_set, "%llu\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(fops_uaccess_flush, uaccess_flush_get, uaccess_flush_set, "%llu\n");
->   
->   static __init int rfi_flush_debugfs_init(void)
->   {
-> 
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+---
+ arch/powerpc/include/asm/book3s/64/pkeys.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/book3s/64/pkeys.h b/arch/powerpc/include/asm/book3s/64/pkeys.h
+index 5b17813..5f74f0c 100644
+--- a/arch/powerpc/include/asm/book3s/64/pkeys.h
++++ b/arch/powerpc/include/asm/book3s/64/pkeys.h
+@@ -10,15 +10,13 @@ static inline u64 vmflag_to_pte_pkey_bits(u64 vm_flags)
+ 	if (!mmu_has_feature(MMU_FTR_PKEY))
+ 		return 0x0UL;
+ 
+-	if (radix_enabled())
+-		BUG();
++	BUG_ON(radix_enabled());
+ 	return hash__vmflag_to_pte_pkey_bits(vm_flags);
+ }
+ 
+ static inline u16 pte_to_pkey_bits(u64 pteflags)
+ {
+-	if (radix_enabled())
+-		BUG();
++	BUG_ON(radix_enabled());
+ 	return hash__pte_to_pkey_bits(pteflags);
+ }
+ 
+-- 
+1.8.3.1
+
+
