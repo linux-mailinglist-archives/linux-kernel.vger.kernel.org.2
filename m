@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FB73F6D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 03:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5811A3F6D3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 03:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbhHYBta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 21:49:30 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:60252 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229800AbhHYBt3 (ORCPT
+        id S237041AbhHYCAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 22:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229800AbhHYCAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 21:49:29 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UlfaEaR_1629856121;
-Received: from 30.21.164.83(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UlfaEaR_1629856121)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 25 Aug 2021 09:48:42 +0800
-Subject: Re: [PATCH] selftests: openat2: Fix testing failure for O_LARGEFILE
- flag
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Aleksa Sarai <cyphar@cyphar.com>
-Cc:     shuah@kernel.org, Christian Brauner <christian@brauner.io>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1627475340-128057-1-git-send-email-baolin.wang@linux.alibaba.com>
- <01184d9e-477d-cbe4-c936-62b92e915911@linux.alibaba.com>
- <9411d418-567b-78f0-0e4d-30f08371c55a@linux.alibaba.com>
- <a9dc1616-61b9-c010-950c-521693c74247@linuxfoundation.org>
- <20210824112129.2t6lzqyf2dxllw4a@senku>
- <20210824113619.a3gyxlerst7tumzn@wittgenstein>
- <11702c81-8b7c-bbe6-705a-f0fed5f10ba5@linuxfoundation.org>
- <15672b09-e4fc-78ec-7415-1ff7b777cc15@linuxfoundation.org>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <b9c0725e-8261-77d3-2f73-434f64bf6468@linux.alibaba.com>
-Date:   Wed, 25 Aug 2021 09:49:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 24 Aug 2021 22:00:17 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E9AC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 18:59:32 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id j187so19947712pfg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 18:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XsgT98Ef1PFv4QYUD3OhXp4FkD4LKke0u8lQs/ffn8Q=;
+        b=DcDV8C8M3T2uUhg8nOJpVsUxw+cJcIjseorOM1zBj41KvGzri0N2++qgnw6tDho5F2
+         m7+ij+2L1gJCgnBm5mi44PjcJkNlq0OWott45dddW5hL9WVyZfaVxSowcxlEYqvxk2qn
+         wa4IwawFk2HIAUZW5ELhDCIzPMp6Z3mG9cXbI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XsgT98Ef1PFv4QYUD3OhXp4FkD4LKke0u8lQs/ffn8Q=;
+        b=KpFTqHPV+L3Z7syZhsl1i+GYWvlMQPDHMmhKaotusGyouP8rB4PIegtx4701mLmhIQ
+         Ts5N54G5csfDyw6Zy/3h+61dWvGZpU9QnHeNQmN74/0CTVJBrkUAz/CjbqfQgAKeJBDY
+         FI64LE7fiEA8R8rqNAquANo/6ZUjXcUNdSvl+Z83Th1rDRWze1RSMugJhThR3AhrsNFU
+         t0gI7ynakvPoo3+CSRXeFuN9Xyn54U2ECumEo4CePLWqgLwFrWspNPH9+FmtCBZfYB9g
+         3C2OKv8Fz1ZgZqSAtD6LE70AdApWjc/ciLvTtvoYMc3jl8lkbplU8Owg7JA9uAC/J0eb
+         CxBA==
+X-Gm-Message-State: AOAM533ps2mkgFxltnMKirmFwPeK+PpHOPLGP4YCy80mEaOUDZjyafC3
+        5ENJ2EIQueldqRwYLlCEFgInL8KE3LoC9g==
+X-Google-Smtp-Source: ABdhPJxOeAVwClgTWACcAF9l0rUSeBXNU4Dxyecx84D2J9hQuBfaO7kafkVhde3oIo4ITr5kHqGg2w==
+X-Received: by 2002:a65:690c:: with SMTP id s12mr39938967pgq.401.1629856771855;
+        Tue, 24 Aug 2021 18:59:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 20sm20893700pfi.170.2021.08.24.18.59.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 18:59:31 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 18:59:30 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
+Message-ID: <202108241858.63C1FBC1@keescook>
+References: <20210820192615.23e2e617@canb.auug.org.au>
+ <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
+ <202108202248.921E8C66@keescook>
+ <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
+ <20210823203742.5169ad54@canb.auug.org.au>
+ <66615de5-4acb-8d85-6d69-ddd0b9609348@infradead.org>
+ <20210824115859.187f272f@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <15672b09-e4fc-78ec-7415-1ff7b777cc15@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824115859.187f272f@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/8/25 0:50, Shuah Khan wrote:
-> On 8/24/21 8:33 AM, Shuah Khan wrote:
->> On 8/24/21 5:36 AM, Christian Brauner wrote:
->>> On Tue, Aug 24, 2021 at 09:21:29PM +1000, Aleksa Sarai wrote:
->>>> On 2021-08-23, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>> Hi Baolin,
->>>>>
->>>>> On 8/22/21 8:40 PM, Baolin Wang wrote:
->>>>>> Hi Shuah,
->>>>>>
->>>>>> On 2021/7/28 20:32, Baolin Wang wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>>> When running the openat2 test suite on ARM64 platform, we got 
->>>>>>>> below failure,
->>>>>>>> since the definition of the O_LARGEFILE is different on ARM64. 
->>>>>>>> So we can
->>>>>>>> set the correct O_LARGEFILE definition on ARM64 to fix this issue.
->>>>>>>
->>>>>>> Sorry, I forgot to copy the failure log:
->>>>>>>
+On Tue, Aug 24, 2021 at 11:58:59AM +1000, Stephen Rothwell wrote:
+> Hi Randy,
 > 
-> Please send me v2 with failure log included in the commit log.
+> On Mon, 23 Aug 2021 18:24:44 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
+> >
+> > This is just weird. What I am seeing is that for every source file
+> > where gcc emits a warning: it then follows that up with this
+> > >> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'  
+> 
+> I see the same, as well as:
+> 
+> <stdin>:1515:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+> 
+> But only on my gcc 7.3.1 builds (the rest are gcc 10).
+> 
+> > Smells like a gcc bug to me.
+> 
+> Yes
+> 
+> Also noted here: https://github.com/DynamoRIO/drmemory/issues/2099 (second comment)
 
-Sure. Thanks for reviewing.
+Wow, this is really weird. Okay, thanks for the pointers. I'll keep
+investigating. I may need to version-limit the use of __alloc_size,
+though I'd rather not. We've been able to depend on has_builtin() nicely
+for a while now. :P
+
+-- 
+Kees Cook
