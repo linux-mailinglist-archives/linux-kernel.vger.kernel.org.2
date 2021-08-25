@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147CF3F7C06
+	by mail.lfdr.de (Postfix) with ESMTP id A712F3F7C08
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242059AbhHYSId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 14:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235503AbhHYSIc (ORCPT
+        id S242407AbhHYSIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 14:08:39 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:42642 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242375AbhHYSIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 14:08:32 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CE0C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:07:46 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a25so285955ejv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EcYKVqQSFav1GX+z3dOkJIc4nB4fMZOFfEayNc3CdZA=;
-        b=MWBegt9r0CkqgxFcqDtewibUSNsZ1bQl+pb0B6BQvvhIgHW+/lZ7gHh802g+Ho3zjw
-         gqQp4+Vh2WP08rW72lYsSWVa8dVfodLMVnFAbO0DgNrkuE/ROW2Buu5GzX8gX0VHY3gJ
-         yJ0XuUt7P4yWx9MFK/pFwP4pYtBZFlCl+UKpE=
+        Wed, 25 Aug 2021 14:08:38 -0400
+Received: by mail-ot1-f49.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so68830otk.9;
+        Wed, 25 Aug 2021 11:07:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EcYKVqQSFav1GX+z3dOkJIc4nB4fMZOFfEayNc3CdZA=;
-        b=KSsO5n25In9KMAbK1FnHTKrwTzOo9r/3rUdvwC29bZAtGY5K0EmjWTif31ywJa/Lja
-         1hijsXAr5Vt8IzX1TjEzTNA1wG2kocuP3bS4Tojb5Cnu3RnpXL6ftWovpXH0w12onWnb
-         UmZh4Nm1i/mni+GpA3dLKJS/lQgk8sU/FIbFAuwnzYCEvSR5fchYiw3fBNhqa9UgfasZ
-         3qvdqjcQGVAo2uMqOcIlMsDrnpj2kJh2CsXq3614mbxTKfjY/17nQiD5sRiF2J9sFPWC
-         hjwICkmWSEbI9IIuUV+143Xo6FfrRFglYlutVQpyypy4BBkNZEIJLs2PADyY7DHSLW6e
-         1eGg==
-X-Gm-Message-State: AOAM533AdepWz06lqZcSoKN3WE/qV5uTcyAiROw2jwqYT06ttnb1qC6S
-        ACqaItSWrealwok5ywfibdgMZExhhQ/Bn6PEbHlJ7g==
-X-Google-Smtp-Source: ABdhPJxNfrBB4SRP7AEr2PstKyZ1UcKE7jB+fsPlnc3d+DtyMYlgpBb8XNigBy9JNwuG2+WzeSMznGaq1/298lXOJ/g=
-X-Received: by 2002:a17:907:2126:: with SMTP id qo6mr19587033ejb.476.1629914864682;
- Wed, 25 Aug 2021 11:07:44 -0700 (PDT)
+        bh=cBhKgJXwtRuKkyuUOozNOA3zhnnr2AaXGBgtEDyTnPY=;
+        b=StjvTQvsEWt5kZP318jc43xnXg14GS1Wp4NgeNWCUDNUkstjjbjC1hIma3LTjkPlLw
+         irbU6P6Ulshr2m4sZjT3LpvpejK5KvJRMR7mbdyZUU0QOkSkK+vuDhqh1vIWQGcgXYYX
+         mDSYaN1Q+yxV8VymOjINybXLILvtiwniOkUsYGqAnR1uNsRvAFkaFdaWDmdK0Qn2TcAL
+         vy8Rb9enmu5K6ghXyajflZ/8Ruyh17VPJbLZmbWWqbcA6UeVdW4dqm5oW19KPxzbgrR3
+         GreJpWdWxH3P4B/JXT9+hkkx1aqInmaxOm0r2j6cpDLKVEnNZZqV0m+uNy3HIHv5jNrL
+         jjSg==
+X-Gm-Message-State: AOAM530mAcvSFvFJ+OojKSYbfEH4QVIAIAA+r0PyQt/R0HyO+9wgSr/b
+        GSYq2Rg/CVGgQFxJ0XO4WjCLRhvis1AxARcs+cY=
+X-Google-Smtp-Source: ABdhPJz0Zho6TQi3O0gMD6uj30AOc12BMXUDSb4gbn3p6TNX0wN22JdeML9eibp94h64829FmT+iYJScjZ/WZ0Ic9X8=
+X-Received: by 2002:a05:6830:1f59:: with SMTP id u25mr39030356oth.321.1629914871814;
+ Wed, 25 Aug 2021 11:07:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210702223155.1981510-1-jforbes@fedoraproject.org>
- <CGME20210709173244epcas1p3ea6488202595e182d45f59fcba695e0a@epcas1p3.samsung.com>
- <CAFxkdApGUeGdg4=rH=iC2SK58FO6yzbFiq3uSFMFTyZsDQ5j5w@mail.gmail.com>
- <8c55c7c9-a5ae-3b0e-8a0f-8954a8da7e7b@samsung.com> <94edb3c4-43a6-1031-8431-2befb0eca2bf@samsung.com>
- <87ilzyudk0.fsf@codeaurora.org>
-In-Reply-To: <87ilzyudk0.fsf@codeaurora.org>
-From:   Justin Forbes <jmforbes@linuxtx.org>
-Date:   Wed, 25 Aug 2021 13:07:33 -0500
-Message-ID: <CAFxkdArjsp4YxYWYZ_qW7UsNobzodKOaNJqKTHpPf5RmtT+Rww@mail.gmail.com>
-Subject: Re: [PATCH] iwlwifi Add support for ax201 in Samsung Galaxy Book
- Flex2 Alpha
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Jaehoon Chung <jh80.chung@samsung.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matti Gottlieb <matti.gottlieb@intel.com>,
-        ybaruch <yaara.baruch@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Ihab Zhaika <ihab.zhaika@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        linux-wireless@vger.kernel.org,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        yj99.shin@samsung.com
+References: <20210819004305.20203-1-deepak.sharma@amd.com>
+In-Reply-To: <20210819004305.20203-1-deepak.sharma@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 25 Aug 2021 20:07:40 +0200
+Message-ID: <CAJZ5v0jWX=H=aZ25PzHdH05bRJvtYbGHfyTgH_68k4kfYkZc5A@mail.gmail.com>
+Subject: Re: [PATCH] x86/ACPI/State: Optimize C3 entry on AMD CPUs
+To:     Deepak Sharma <deepak.sharma@amd.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 8:34 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+On Thu, Aug 19, 2021 at 2:43 AM Deepak Sharma <deepak.sharma@amd.com> wrote:
 >
-> Jaehoon Chung <jh80.chung@samsung.com> writes:
+> AMD CPU which support C3 shares cache. Its not necessary to flush the
+> caches in software before entering C3. This will cause performance drop
+> for the cores which share some caches. ARB_DIS is not used with current
+> AMD C state implementation. So set related flags correctly.
 >
-> > Hi
-> >
-> > On 8/9/21 8:09 AM, Jaehoon Chung wrote:
-> >> Hi
-> >>
-> >> On 7/10/21 2:32 AM, Justin Forbes wrote:
-> >>> On Fri, Jul 2, 2021 at 5:32 PM Justin M. Forbes
-> >>> <jforbes@fedoraproject.org> wrote:
-> >>>>
-> >>>> The Samsung Galaxy Book Flex2 Alpha uses an ax201 with the ID a0f0/6074.
-> >>>> This works fine with the existing driver once it knows to claim it.
-> >>>> Simple patch to add the device.
-> >>>>
-> >>>> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
-> >
-> > If this patch is merged, can this patch be also applied on stable tree?
+> Signed-off-by: Deepak Sharma <deepak.sharma@amd.com>
+
+Applied as 5.15 material under the edited subject "x86: ACPI: cstate:
+Optimize C3 entry on AMD CPUs", thanks!
+
+> ---
+>  arch/x86/kernel/acpi/cstate.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
 >
-> Luca, what should we do with this patch?
+> diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
+> index 7de599eba7f0..62a5986d625a 100644
+> --- a/arch/x86/kernel/acpi/cstate.c
+> +++ b/arch/x86/kernel/acpi/cstate.c
+> @@ -79,6 +79,21 @@ void acpi_processor_power_init_bm_check(struct acpi_processor_flags *flags,
+>                  */
+>                 flags->bm_control = 0;
+>         }
+> +       if (c->x86_vendor == X86_VENDOR_AMD) {
+> +               /*
+> +                * For all AMD CPUs that support C3, caches should not be
+> +                * flushed by software while entering C3 type state. Set
+> +                * bm->check to 1 so that kernel doesn't need to execute
+> +                * cache flush operation.
+> +                */
+> +               flags->bm_check = 1;
+> +               /*
+> +                * In current AMD C state implementation ARB_DIS is no longer
+> +                * used. So set bm_control to zero to indicate ARB_DIS is not
+> +                * required while entering C3 type state.
+> +                */
+> +               flags->bm_control = 0;
+> +       }
+>  }
+>  EXPORT_SYMBOL(acpi_processor_power_init_bm_check);
 >
 > --
-> https://patchwork.kernel.org/project/linux-wireless/list/
+> 2.25.1
 >
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-Is that to imply that there is an issue with the submission?  Happy to
-fix any problems, but it would nice to get this in soon.  I know the
-5.14 merge window was already opened when I sent it, but the 5.15 MR
-is opening soon.  Hardware is definitely shipping and in users hands.
-
-Justin
