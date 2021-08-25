@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BC83F734A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD733F7350
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239099AbhHYKaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:30:52 -0400
-Received: from smtprelay0219.hostedemail.com ([216.40.44.219]:40234 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237244AbhHYKau (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:30:50 -0400
-Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id CA66B837F24A;
-        Wed, 25 Aug 2021 10:30:03 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id A579C1A29FA;
-        Wed, 25 Aug 2021 10:30:01 +0000 (UTC)
-Message-ID: <53afc244281b6a76aecf4a5565d7e6395e376d4e.camel@perches.com>
-Subject: Re: [PATCH] mxser: use semi-colons instead of commas
-From:   Joe Perches <joe@perches.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Date:   Wed, 25 Aug 2021 03:30:00 -0700
-In-Reply-To: <20210825072435.GB13013@kili>
-References: <20210825072435.GB13013@kili>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S239889AbhHYKa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:30:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239832AbhHYKaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 06:30:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D0BDD613E8;
+        Wed, 25 Aug 2021 10:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629887409;
+        bh=QxNPND8whzJZmLWkGIhNxzjS74KIwRCbePGXSXtZ9rA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=NJdk/ZIyx/KVVtKNSY5FtyKDN8uYaDVg97f/ZH11MqEMH52akXhcTog4Gwg+ok7h4
+         mUn1hBro2hPnBJHAZxze22761fvidfZslHsXDPg4atOp4jdgVTs8MyN0gTqsLzgaYb
+         m/BnUDlJLflLP9juNFKlAwHBug95gKfwLDRZF4Ozx+X5UDJqNYginVwCF2ivbmuOgH
+         y7kz4YB31GtCvvOV8/9Fz2yESl/FTXG3X9ePHzk4xqioXAn83kTSOVslRecAy/ScnO
+         jGrN5BkYO1XdsApmEdHbaMmVUKYncssTh/wvt6MzMRM5QHnAPbsewF3OFFVASAChMT
+         acB5yg7dBhHYA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C7BBF6097B;
+        Wed, 25 Aug 2021 10:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Stat-Signature: fhz34dbq4brzn9e34cqdugwpe39kmw6f
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: A579C1A29FA
-X-Spam-Status: No, score=-0.57
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+5U8rMBtJFv9T/N4vofemkm0kOCT7Z/2Y=
-X-HE-Tag: 1629887401-102061
+Subject: Re: [PATCH v2] can: mscan: mpc5xxx_can: Remove useless BUG_ON()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162988740981.13655.329309070918965320.git-patchwork-notify@kernel.org>
+Date:   Wed, 25 Aug 2021 10:30:09 +0000
+References: <20210825070752.18724-1-tangbin@cmss.chinamobile.com>
+In-Reply-To: <20210825070752.18724-1-tangbin@cmss.chinamobile.com>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     mkl@pengutronix.de, wg@grandegger.com, davem@davemloft.net,
+        kuba@kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-25 at 10:24 +0300, Dan Carpenter wrote:
-> This code works, but it's cleaner to use semi-colons at the end of
-> a statement instead of a comma.
+Hello:
 
-There are still multiple dozens of this type of comma use
-in the kernel.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Julia Lawall created a cocci script to convert the commas
-to semicolons that worked pretty well.
-
-https://lore.kernel.org/lkml/alpine.DEB.2.22.394.2008201856110.2524@hadrien/
-
-> diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-[]
-> @@ -1039,12 +1039,12 @@ static int mxser_get_serial_info(struct tty_struct *tty,
->  	if (closing_wait != ASYNC_CLOSING_WAIT_NONE)
->  		closing_wait = jiffies_to_msecs(closing_wait) / 10;
->  
+On Wed, 25 Aug 2021 15:07:52 +0800 you wrote:
+> In the function mpc5xxx_can_probe(), the variable 'data'
+> has already been determined in the above code, so the
+> BUG_ON() in this place is useless, remove it.
 > 
-> -	ss->type = info->type,
-> -	ss->line = tty->index,
-> -	ss->port = info->ioaddr,
-> -	ss->irq = info->board->irq,
-> -	ss->flags = info->port.flags,
-> -	ss->baud_base = MXSER_BAUD_BASE,
-> +	ss->type = info->type;
-> +	ss->line = tty->index;
-> +	ss->port = info->ioaddr;
-> +	ss->irq = info->board->irq;
-> +	ss->flags = info->port.flags;
-> +	ss->baud_base = MXSER_BAUD_BASE;
->  	ss->close_delay = close_delay;
->  	ss->closing_wait = closing_wait;
->  	ss->custom_divisor = MXSER_CUSTOM_DIVISOR,
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
+> Changes to v1
+>  - Fix the commit message for typo
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] can: mscan: mpc5xxx_can: Remove useless BUG_ON()
+    https://git.kernel.org/netdev/net-next/c/cbe8cd7d83e2
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
