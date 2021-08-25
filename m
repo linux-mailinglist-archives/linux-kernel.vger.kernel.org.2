@@ -2,99 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D553E3F7111
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89D23F7115
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 10:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239374AbhHYIYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 04:24:02 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:56130 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229780AbhHYIXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 04:23:49 -0400
-Received: from BJHW-Mail-Ex14.internal.baidu.com (unknown [10.127.64.37])
-        by Forcepoint Email with ESMTPS id 1D08B6A8A7C0864D0D51;
-        Wed, 25 Aug 2021 16:23:00 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex14.internal.baidu.com (10.127.64.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 25 Aug 2021 16:22:59 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 25 Aug 2021 16:22:59 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <aisheng.dong@nxp.com>, <festevam@gmail.com>,
-        <shawnguo@kernel.org>, <stefan@agner.ch>,
-        <linus.walleij@linaro.org>
-CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>
-Subject: [PATCH] pinctrl: freescale: Add helper dependency on COMPILE_TEST
-Date:   Wed, 25 Aug 2021 16:22:51 +0800
-Message-ID: <20210825082251.2484-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S232304AbhHYI0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 04:26:25 -0400
+Received: from mga14.intel.com ([192.55.52.115]:1525 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229780AbhHYI0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 04:26:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="217199744"
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="217199744"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 01:25:39 -0700
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="527128771"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 01:25:37 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 58598201ED;
+        Wed, 25 Aug 2021 11:25:35 +0300 (EEST)
+Date:   Wed, 25 Aug 2021 11:25:35 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     linux-media@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: Request API is no longer experimental
+Message-ID: <20210825082535.GP3@paasikivi.fi.intel.com>
+References: <20210825002337.6561-1-ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex14_2021-08-25 16:23:00:057
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825002337.6561-1-ezequiel@vanguardiasur.com.ar>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-it's helpful for complie test in other platform(e.g.X86)
+On Tue, Aug 24, 2021 at 09:23:37PM -0300, Ezequiel Garcia wrote:
+> The Request API is currently used and specified as part of the
+> Memory-to-memory Stateless Video Decoder Interface [1].
+> 
+> This can now be considered as non-experimental and stable, given
+> the decoder API has been used by products since a couple years,
+> supported by several drivers and userspace frameworks,
+> 
+> [1] Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/pinctrl/freescale/Kconfig | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-diff --git a/drivers/pinctrl/freescale/Kconfig b/drivers/pinctrl/freescale/Kconfig
-index 21fa21c6547b..defc1f38efc7 100644
---- a/drivers/pinctrl/freescale/Kconfig
-+++ b/drivers/pinctrl/freescale/Kconfig
-@@ -119,28 +119,28 @@ config PINCTRL_IMX7ULP
- 
- config PINCTRL_IMX8MM
- 	tristate "IMX8MM pinctrl driver"
--	depends on ARCH_MXC
-+	depends on ARCH_MXC || (COMPILE_TEST && OF)
- 	select PINCTRL_IMX
- 	help
- 	  Say Y here to enable the imx8mm pinctrl driver
- 
- config PINCTRL_IMX8MN
- 	tristate "IMX8MN pinctrl driver"
--	depends on ARCH_MXC
-+	depends on ARCH_MXC || (COMPILE_TEST && OF)
- 	select PINCTRL_IMX
- 	help
- 	  Say Y here to enable the imx8mn pinctrl driver
- 
- config PINCTRL_IMX8MP
- 	tristate "IMX8MP pinctrl driver"
--	depends on ARCH_MXC
-+	depends on ARCH_MXC || (COMPILE_TEST && OF)
- 	select PINCTRL_IMX
- 	help
- 	  Say Y here to enable the imx8mp pinctrl driver
- 
- config PINCTRL_IMX8MQ
- 	tristate "IMX8MQ pinctrl driver"
--	depends on ARCH_MXC
-+	depends on ARCH_MXC || (COMPILE_TEST && OF)
- 	select PINCTRL_IMX
- 	help
- 	  Say Y here to enable the imx8mq pinctrl driver
-@@ -168,7 +168,7 @@ config PINCTRL_IMX8DXL
- 
- config PINCTRL_IMX8ULP
- 	tristate "IMX8ULP pinctrl driver"
--	depends on ARCH_MXC
-+	depends on ARCH_MXC || (COMPILE_TEST && OF)
- 	select PINCTRL_IMX
- 	help
- 	  Say Y here to enable the imx8ulp pinctrl driver
 -- 
-2.25.1
-
+Sakari Ailus
