@@ -2,203 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C6C3F7B84
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5145E3F7B87
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242329AbhHYR0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233612AbhHYR0i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:26:38 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE353C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:25:51 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id t1so427220pgv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 10:25:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sj7GUDQcswnsxUUBQiJcqcPuahUiS9pendzNxfz9P+E=;
-        b=WJ/UrbpI0YJkC285XB8Nlg+fhssrNyru45tAxB634992PgM1oeVP/qPL2yHU5VIoUT
-         oOZWXbg8si8Xf3he/NjPajcLKGZp5/CHiDHYC9pRa+W+3PiLh1RrG2GZ9ino7csx2/PB
-         l1xnsMxxpeUT5l1rcp9ZWBCgsx2zclm6S2eUW7voqyi22BxQOEAF0D6huJp9fLuMo/Qt
-         YGLrcsVOUBXa9cSOTBK1GtWfc5qMculhTAk8QoOYpEKUqefikS9ypUhLHKkF8/paqNx/
-         KJ17YxHwGYtpPlpqSuZ+kLfQVCrxodpYPTXj/XKmOS8nuD6wJLjVD1BFOQzNCvuh2lYE
-         q+Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sj7GUDQcswnsxUUBQiJcqcPuahUiS9pendzNxfz9P+E=;
-        b=HJSHCZ6RZb8/Whz746/peod1vCIGsOAy8JUHXrLwTyTb1PFCStc2vr88Gi4qWWN3YO
-         tNnb8fk8LmCn8Xi5+kB7oOwvFF7xBXXfRy4GPLO9D3uDU3ovfrUJ3C2wRd2d7EdTx73Y
-         cE32aBvgYPgn+7XyVzAPg5tS5Lh/9D62kKTe4ZBfSqbr0+nkTvX/XPw8c4Px9E4cdSoQ
-         ywFX5vs2bip9cChKqdgaFyKOpVS5TVUWbEY4Nc/VXhAwTZRfgBMiSOue3DY+x39c6z5X
-         HUZ8+7KsIP+2Domfm/KTHUXkFuOum8hrZ+ftEL6YoPHMrOh+HNFJ7AyZAYABSXYXpssI
-         fLsA==
-X-Gm-Message-State: AOAM533R1znQ4s6X0YcwHEGxwEu95rFcfOe5ne7WUUa/tseat5OZdPO7
-        vOXS2Nd1OTKSBqGwG1h06LUG+WVbuYkI0aKqbHdA8g==
-X-Google-Smtp-Source: ABdhPJzjYgw77mxlVRuaXmQjnnSMYS1lOq6aES/ohqV+ity7k3w2NEUk6h5kSv/M+prVDmvdnlXGhanbUQBL7U+UQgU=
-X-Received: by 2002:a05:6a00:9a4:b0:3e2:f6d0:c926 with SMTP id
- u36-20020a056a0009a400b003e2f6d0c926mr38613921pfg.31.1629912351396; Wed, 25
- Aug 2021 10:25:51 -0700 (PDT)
+        id S242333AbhHYR1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:27:19 -0400
+Received: from mail-dm6nam12on2082.outbound.protection.outlook.com ([40.107.243.82]:31712
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233612AbhHYR1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 13:27:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lns4/46jsx3aT4/T0LUVko2wFuzlly/ICfPs2msSFpJ7S+I543/pHhtKEAZhzidLTLfXNL5S3hiQFV6vORJTwWyO27zD0cdxdcRWmhKuzW6b8szlAZQHuw56Y3+rd2TbjQC08LiB0gJmuq2LqsoRC4WnTHQWKE9qgZOTrQ2q7MSCnS8Xbi0CS8ljojBEhCopiBhvKf/foEtzo+/Vzhy63WqkwjF9CS/oHyEkqBa3sDfA1luTQTrtcTMGc0YawVflODCVpcTupkInJlqhd+PiPrf3y6P6YmiyyPGlgSK7+pERVi2p+SDn5mGYQUq5CswZUUgs+OT73A7xBZlDJBiyPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39s6GmlAeaGF6lZtMqYvb88eQyCTN1HOL54RRwsmIg0=;
+ b=O1I4dF2L1NypahM7r76NuoslKxbx7mFT4cT1P2MXFRw75V4UlvSo6HtUx+Z8SU2z6EIBeBxIfA58jcc2wMSc2YxN8klkf4ADVkIYnkoccVe5bFRtOcrmumCo6zhRXrFXk25XB5Uzj35/hCLEDYjjEWO48VfvDD9N8n9Vs61yqcc+jb/VEgqBwjxeRrXaspWZPblRAhOHaJAVr14tiP1X46gq0SCcPyvUDCmLwbs4pueWgZ7zDNK+94rhyWNeMb7mtFQACPppm9YMcd4orVRANMe5j+coiADApAfuRbHWujs6Ke6ApPu1TxK5aw24aslVE9Ydu1NiAX5+zPYiFek53A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39s6GmlAeaGF6lZtMqYvb88eQyCTN1HOL54RRwsmIg0=;
+ b=qLAnjrvLu0CdFic+sXs1y+vljs7+bT9lrY4JKM39n7k0DF1u0ulvVND1OfC2GX2qT1QCmhHOvteb8E4LK0VdBQmMiMgqSrP9G4sejm/rCPJsdUBn25qQDOodZSzqjnzFEClvNvuSFaKHhSfrm7gQeKPgN78WqDydFNItF3P6lG9WXrpVxM6tuRsKJgaX/7peAYvCdTSPE78i7tefMQ5lC2xgW9omJL9HldbiK6uHSoh5Jt8aSpunHOb+pXFOfWlAuzxh4030bqmgjHj8piDe4jlmxXF60XskXIbwOGrTl3qgGT4nHyvBIUcpgBCm+jg+0SjOm47QisGJlEj+TyVpVg==
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5301.namprd12.prod.outlook.com (2603:10b6:208:31f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Wed, 25 Aug
+ 2021 17:26:30 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
+ 17:26:30 +0000
+Date:   Wed, 25 Aug 2021 14:26:29 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Divya Indi <divya.indi@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Gerd Rausch <gerd.rausch@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>
+Subject: Re: [PATCH v4] IB/sa: Resolving use-after-free in ib_nl_send_msg
+Message-ID: <20210825172629.GJ1721383@nvidia.com>
+References: <1592964789-14533-1-git-send-email-divya.indi@oracle.com>
+ <20200702190738.GA759483@nvidia.com>
+ <d078d705-9930-7abd-84c8-9b7d41aad722@oracle.com>
+ <20200708011227.GM23676@nvidia.com>
+ <842DBB6A-9563-4629-B829-329DD344284E@oracle.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <842DBB6A-9563-4629-B829-329DD344284E@oracle.com>
+X-ClientProxiedBy: MN2PR19CA0005.namprd19.prod.outlook.com
+ (2603:10b6:208:178::18) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-References: <20210726060855.108250-1-pankaj.gupta.linux@gmail.com> <20210726060855.108250-2-pankaj.gupta.linux@gmail.com>
-In-Reply-To: <20210726060855.108250-2-pankaj.gupta.linux@gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 25 Aug 2021 10:25:40 -0700
-Message-ID: <CAPcyv4inCFFXmg0r5+h0O6cADpt9HdboVDEL00XX-wGroy-7LQ@mail.gmail.com>
-Subject: Re: [RFC v2 1/2] virtio-pmem: Async virtio-pmem flush
-To:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc:     Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jmoyer <jmoyer@redhat.com>, David Hildenbrand <david@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Pankaj Gupta <pankaj.gupta@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR19CA0005.namprd19.prod.outlook.com (2603:10b6:208:178::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Wed, 25 Aug 2021 17:26:30 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIwfV-0051id-Q2; Wed, 25 Aug 2021 14:26:29 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ea3abce2-39d8-41c5-c809-08d967ed7a4c
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5301:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5301A98A0F2CCE374CBC0F4DC2C69@BL1PR12MB5301.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xNA3p4CGerReErEBf0vP9aysp4nQJVSm2D/4DRoWMYSqVghSK0ac0b8Lon/vyvmKurEEbHezaFlZqnAXXwVZdwy2tnFaKo2inN6eDuJU51DYM+DQS4NWDDdckAqAdsTOKL+OM9+0KxsKxvIMV0J9Q/GB7Hq1KgLVCcosnWQukpyS9xj3GSsttMQnBQJGUM6zjURq811cwT/NwwVuW5WGqh1WGGSZsR5QzSaaHo92qNz4uN7OZF3z1y/XZWc9nX4K99j+JXvlf+bgRDjbiUm0kTvNM5B1ybKOyBi8oHBCYnBUQZYwchtc8c0qwjdmH2eIkhiSSDhFh0cad+ov3qtRI6Ze+IK4JTa9ECs1KTUuCSR1wK3nJCN/DcPooD7ZTKQR4PM34Chc+3BAixx3KUMtOwxF2Ei4XqXDGc2Y5SA39EkeydYDzsuOO9Q6REvQZlLFl45XL2xtyV8ySeuP+/RUDyIFREPl2LCv/xzSUsR/2H9Dw0ae7m1S7NlH8ldwo12mdxeflC/wpfyQN0PXdB5GLMUjZPi2gO6rXReG4fXoA2/TAJ3lfAQr6AjzWXcIW7PO+sc1JRC5C5Nalqx6uJMOa5z5icjRnus5VdsHWcml8WoZ9HxPub1CCqf/KkhtpkauKRD952SMM0cKLNlfsBn5mSlv36MnHHEg/CosinKq7zYj9dodtlNG/LZb3uRzb3u0ZgEHoUoc23n30bzQTyvHgCxFNeP4gQ903CWvxNxBL1k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(366004)(346002)(396003)(2616005)(426003)(186003)(83380400001)(1076003)(478600001)(86362001)(8676002)(54906003)(33656002)(26005)(38100700002)(966005)(53546011)(66476007)(316002)(9746002)(6916009)(9786002)(36756003)(2906002)(7416002)(8936002)(5660300002)(4326008)(66946007)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FmLETMsr9P65sditlXWYXRHxGJUzJc2qOmcvyKkrKNbXhxmQkl1efXPNBVI6?=
+ =?us-ascii?Q?Nl3YgjYdDtcNQ3ita8rLe2VfGnPz/0LcfGZpdMi8ymKC7nAUVtd+iH7wUb68?=
+ =?us-ascii?Q?0p2EZG2opG4NU3yeZdk8FbpKXV1s60npmNQhgSFavHWh42hvLzzclVt4TPjq?=
+ =?us-ascii?Q?vgvAipxb+oh4jcrQ44ak74hCA/OZkWBYQS+maJLh8qTeUQiG/vVxaOpoTabF?=
+ =?us-ascii?Q?kTlNj0BbbPYEqmM+nv+wN0ZzCdoLHRXQR133eQ+BF52Vsb4BsJmtIVtcmmRL?=
+ =?us-ascii?Q?AkIk2hoIobF1SpzWMjNuORAwqKbcQbpjMe41oiOxbrOU0kp2IulRcAkOuYTe?=
+ =?us-ascii?Q?+PDg3NtPUYczIWJTTbD6VPMdIjGz0Kwj7KfdMABdu2woElHG4k9UewfLX7j0?=
+ =?us-ascii?Q?qkxblEx4l/HWG9YL0XUcj1a2nSrzNmA1maO40OzxFyYj6XgHAVPcZAGRJifY?=
+ =?us-ascii?Q?SAv3OoDHZeu76CZsWt+AmsSf97XFxXanYDn74j2+UDqImEe+GmaGQUUObswS?=
+ =?us-ascii?Q?t2nyVGdiR1XiFvkBfDkxo8YWetxe3rCX4QBwZx3v55AibvJbq9J58+LoVsGN?=
+ =?us-ascii?Q?f2uUSEj+iclIcgX2ZWHvSzGtTw2c1aGrbS8tqdMFIStMXXPSKpCTFOVUFmbe?=
+ =?us-ascii?Q?t0bv4J9D6tSEXJr9aVl5MgwV9YK2fJuOgnDs97+G7GOQNKADhUaX4+Q4m2HC?=
+ =?us-ascii?Q?3qsGOHJRP8wZBffR4Vkz8F+Ri4+PwCB/o++3yHA8qyz78pkusqkM7f64+OMr?=
+ =?us-ascii?Q?02Srs+8Dy39r8LN0f/kQrMQFjtRoAi6mtZbvGxrKNKFDYMsn51PsbFpu22D8?=
+ =?us-ascii?Q?N8ZU2XYxP+8R7BoddjZq7Gq/eCFNEk61HDrdnLseiqXaiL8u4Run9JMTYoIe?=
+ =?us-ascii?Q?xmcWtXf7IXzQ8oWMaiYEGo4n1oyoNlWzh3OtVXMORiGuWJEmyrSV+ZcBws+7?=
+ =?us-ascii?Q?lPozcMJCrQpShBiiQW7OF5PUJPRxPdpwtIk1i53pPadCHM1lAFI0Lyp++kbV?=
+ =?us-ascii?Q?9Ir3kyI4Hb81VkQUxtiq4MnR6DBHqkTH+Hll7nn0iCewDYm4CCG6Q9Lt0gPf?=
+ =?us-ascii?Q?2cJgrWuZjdviAYufSHziDYtLYziDwiAqVhWNOXr+d/MGoe0Tq+3E8kzRYjFc?=
+ =?us-ascii?Q?ZpOWxIdnG1K1DE0FD5jqbrPr9hr0VxzQd06i1LMQutlyqDZ/PSgU78pLF7NP?=
+ =?us-ascii?Q?Qfqkz35pR7FZ7K12ORwFTs13snc8qajF88vU63zNfn3mJ7N4+EL4R5YNgAJz?=
+ =?us-ascii?Q?18fm1zR8/ifEzHj6uLj1U98oDSFBRACVVS7cP8Bj185nbsWE2rWnLjRKPhY1?=
+ =?us-ascii?Q?4o3Yjuyb03p6obgRFD/eUD3G?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea3abce2-39d8-41c5-c809-08d967ed7a4c
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 17:26:30.7821
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JsGMZzhB3iHJtfeSqdNN+YZzk0tlaVWc1i5NTTz9VHivcaH5cpWwb/ZV+z44nzIi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5301
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 25, 2021 at 11:09 PM Pankaj Gupta
-<pankaj.gupta.linux@gmail.com> wrote:
->
-> From: Pankaj Gupta <pankaj.gupta@ionos.com>
->
-> Implement asynchronous flush for virtio pmem using work queue
-> to solve the preflush ordering issue. Also, coalesce the flush
-> requests when a flush is already in process.
->
-> Signed-off-by: Pankaj Gupta <pankaj.gupta@ionos.com>
-> ---
->  drivers/nvdimm/nd_virtio.c   | 72 ++++++++++++++++++++++++++++--------
->  drivers/nvdimm/virtio_pmem.c | 10 ++++-
->  drivers/nvdimm/virtio_pmem.h | 14 +++++++
->  3 files changed, 79 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/nvdimm/nd_virtio.c b/drivers/nvdimm/nd_virtio.c
-> index 10351d5b49fa..61b655b583be 100644
-> --- a/drivers/nvdimm/nd_virtio.c
-> +++ b/drivers/nvdimm/nd_virtio.c
-> @@ -97,29 +97,69 @@ static int virtio_pmem_flush(struct nd_region *nd_region)
->         return err;
->  };
->
-> +static void submit_async_flush(struct work_struct *ws);
-> +
->  /* The asynchronous flush callback function */
->  int async_pmem_flush(struct nd_region *nd_region, struct bio *bio)
->  {
-> -       /*
-> -        * Create child bio for asynchronous flush and chain with
-> -        * parent bio. Otherwise directly call nd_region flush.
-> +       /* queue asynchronous flush and coalesce the flush requests */
-> +       struct virtio_device *vdev = nd_region->provider_data;
-> +       struct virtio_pmem *vpmem  = vdev->priv;
-> +       ktime_t req_start = ktime_get_boottime();
-> +
-> +       spin_lock_irq(&vpmem->lock);
-> +       /* flush requests wait until ongoing flush completes,
-> +        * hence coalescing all the pending requests.
->          */
-> -       if (bio && bio->bi_iter.bi_sector != -1) {
-> -               struct bio *child = bio_alloc(GFP_ATOMIC, 0);
-> -
-> -               if (!child)
-> -                       return -ENOMEM;
-> -               bio_copy_dev(child, bio);
-> -               child->bi_opf = REQ_PREFLUSH;
-> -               child->bi_iter.bi_sector = -1;
-> -               bio_chain(child, bio);
-> -               submit_bio(child);
-> -               return 0;
-> +       wait_event_lock_irq(vpmem->sb_wait,
-> +                           !vpmem->flush_bio ||
-> +                           ktime_before(req_start, vpmem->prev_flush_start),
-> +                           vpmem->lock);
-> +       /* new request after previous flush is completed */
-> +       if (ktime_after(req_start, vpmem->prev_flush_start)) {
-> +               WARN_ON(vpmem->flush_bio);
-> +               vpmem->flush_bio = bio;
-> +               bio = NULL;
-> +       }
+On Mon, Aug 23, 2021 at 04:54:16PM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 8 Jul 2020, at 03:12, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > 
+> > On Tue, Jul 07, 2020 at 06:05:02PM -0700, Divya Indi wrote:
+> >> Thanks Jason.
+> >> 
+> >> Appreciate your help and feedback for fixing this issue.
+> >> 
+> >> Would it be possible to access the edited version of the patch?
+> >> If yes, please share a pointer to the same.
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=for-rc&id=f427f4d6214c183c474eeb46212d38e6c7223d6a
+> 
+> Hi Jason,
+> 
+> 
+> At first glanse, this commit calls rdma_nl_multicast() whilst
+> holding a spinlock. Since rdma_nl_multicast() is called with a
+> gfp_flag parameter, one could assume it supports an atomic
+> context. rdma_nl_multicast() ends up in
+> netlink_broadcast_filtered(). This function calls
+> netlink_lock_table(), which calls read_unlock_irqrestore(), which
+> ends up calling _raw_read_unlock_irqrestore(). And here
+> preempt_enable() is called :-(
 
-Why the dance with ->prev_flush_start vs just calling queue_work()
-again. queue_work() is naturally coalescing in that if the last work
-request has not started execution another queue attempt will be
-dropped.
+I don't understand. This:
 
-> +       spin_unlock_irq(&vpmem->lock);
-> +
-> +       if (!bio) {
-> +               INIT_WORK(&vpmem->flush_work, submit_async_flush);
+	unsigned long flags;
 
-I expect this only needs to be initialized once at driver init time.
+	read_lock_irqsave(&nl_table_lock, flags);
+	atomic_inc(&nl_table_users);
+	read_unlock_irqrestore(&nl_table_lock, flags);
 
-> +               queue_work(vpmem->pmem_wq, &vpmem->flush_work);
-> +               return 1;
-> +       }
-> +
-> +       /* flush completed in other context while we waited */
-> +       if (bio && (bio->bi_opf & REQ_PREFLUSH)) {
-> +               bio->bi_opf &= ~REQ_PREFLUSH;
-> +               submit_bio(bio);
-> +       } else if (bio && (bio->bi_opf & REQ_FUA)) {
-> +               bio->bi_opf &= ~REQ_FUA;
-> +               bio_endio(bio);
+Is perfectly fine in an atomic context.
 
-It's not clear to me how this happens, shouldn't all flush completions
-be driven from the work completion?
+preempt_enable is implemented as a nesting counter, so it is fine to
+call it from inside an atomic region so long as it is balanced.
 
->         }
-> -       if (virtio_pmem_flush(nd_region))
-> -               return -EIO;
->
->         return 0;
->  };
->  EXPORT_SYMBOL_GPL(async_pmem_flush);
-> +
-> +static void submit_async_flush(struct work_struct *ws)
-> +{
-> +       struct virtio_pmem *vpmem = container_of(ws, struct virtio_pmem, flush_work);
-> +       struct bio *bio = vpmem->flush_bio;
-> +
-> +       vpmem->start_flush = ktime_get_boottime();
-> +       bio->bi_status = errno_to_blk_status(virtio_pmem_flush(vpmem->nd_region));
-> +       vpmem->prev_flush_start = vpmem->start_flush;
-> +       vpmem->flush_bio = NULL;
-> +       wake_up(&vpmem->sb_wait);
-> +
-> +       /* Submit parent bio only for PREFLUSH */
-> +       if (bio && (bio->bi_opf & REQ_PREFLUSH)) {
-> +               bio->bi_opf &= ~REQ_PREFLUSH;
-> +               submit_bio(bio);
-> +       } else if (bio && (bio->bi_opf & REQ_FUA)) {
-> +               bio->bi_opf &= ~REQ_FUA;
-> +               bio_endio(bio);
-> +       }
-
-Shouldn't the wait_event_lock_irq() be here rather than in
-async_pmem_flush()? That will cause the workqueue to back up and flush
-requests to coalesce.
-
-> +}
->  MODULE_LICENSE("GPL");
-> diff --git a/drivers/nvdimm/virtio_pmem.c b/drivers/nvdimm/virtio_pmem.c
-> index 726c7354d465..56780a6140c7 100644
-> --- a/drivers/nvdimm/virtio_pmem.c
-> +++ b/drivers/nvdimm/virtio_pmem.c
-> @@ -24,6 +24,7 @@ static int init_vq(struct virtio_pmem *vpmem)
->                 return PTR_ERR(vpmem->req_vq);
->
->         spin_lock_init(&vpmem->pmem_lock);
-> +       spin_lock_init(&vpmem->lock);
-
-Why 2 locks?
+Jason
