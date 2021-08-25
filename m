@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49753F7A9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12F43F7A9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 18:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241411AbhHYQdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 12:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241387AbhHYQdF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:33:05 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B62C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:32:19 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id n18so216803pgm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 09:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=1c/E6S94RHlOGKT1GFeAHquF3lWu1k2W+Vl//G6kIy0=;
-        b=k9HbZk87d66ZL3ED0i9Az4AYP03EEqqtjy+NuP4yGCi8QAr2uN5sE2WB5Hj5yh1TAl
-         NCNTtbkWL9U8MayMY7zDtoBOYiT94j+1dNyjDrSTaF87+MzeLHCcxTOmeTrE0Vw6li8M
-         jDtYTEywhOW48r8G2KQS2/kpKsKXHbWpBCi/twmYCCUNKjT+5OfBXvGIKUSO8oMZoBqC
-         iENMCyF87HAeHc/RB4glNvXQ9tDjQiJUcHRXQJHjfBrOgtr6J9nw/u5ytP6SQIyy2rh7
-         sWEoyZRJmDeQen0Q3MZn0SW1s7VWUycCk2fGyL/2tL7cnyZ2cowncG5JzyIou03XXe0I
-         422w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=1c/E6S94RHlOGKT1GFeAHquF3lWu1k2W+Vl//G6kIy0=;
-        b=dkwdmOAMzzmqRivQV0AsK+TtjfhOhjS4tHYeHF+2PGmu0/PDznlDwF+VYQOZaewg2Z
-         YRtlf4bplNw1E9cy+OPr8N8uTGyZP/kRMIdTt4I3AWZ6b5UWvT2MILLKeX9OkIoV6+la
-         v4PMnRcZJLdr64e23iQVSTEryTe/2kvml0A7FKf9DxaqbrupjPgi74bxy0EVKQfD9y8E
-         QIYIQOzFuW3m2osukDhMjps4Ek/aiAD7u3bNWyWapDzSqsD75NIV3Ec7RQG3IpxDdVE0
-         khm37SWysuY3Dz4x5snl4BMm4h0V/x4Bfqy0sXIIPvOHYKER8e81HEARsCPKXEo9XWq+
-         EphA==
-X-Gm-Message-State: AOAM5330OiV46zuaH/GTMEhVPSkz9Z5WqEUAAyGY7w7Ahmfr/Lj84pKa
-        zU4FYc3NAYUELtic6VODvN8=
-X-Google-Smtp-Source: ABdhPJwYS2g9JJYQkz/Tm+krYp9Rf9RJqwcyAAHTZHmclqbWOtbPPcbV9uRN4wOVl6hcFk4aR2fYPQ==
-X-Received: by 2002:a65:6553:: with SMTP id a19mr43039094pgw.8.1629909139020;
-        Wed, 25 Aug 2021 09:32:19 -0700 (PDT)
-Received: from [192.168.1.22] (amarseille-551-1-7-65.w92-145.abo.wanadoo.fr. [92.145.152.65])
-        by smtp.gmail.com with UTF8SMTPSA id y7sm272866pff.206.2021.08.25.09.32.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 09:32:18 -0700 (PDT)
-Message-ID: <aa60f50e-0250-dd4b-69d3-4f42f14166e3@gmail.com>
-Date:   Wed, 25 Aug 2021 18:32:13 +0200
+        id S241666AbhHYQdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 12:33:35 -0400
+Received: from mga11.intel.com ([192.55.52.93]:42301 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241680AbhHYQdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 12:33:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="214436722"
+X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
+   d="scan'208";a="214436722"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 09:32:38 -0700
+X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
+   d="scan'208";a="684573153"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 09:32:35 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mIvpF-00DdMk-M1; Wed, 25 Aug 2021 19:32:29 +0300
+Date:   Wed, 25 Aug 2021 19:32:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Dell.Client.Kernel@dell.com,
+        platform-driver-x86@vger.kernel.org,
+        Andy Lavr <andy.lavr@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][RFC] platform/x86: dell-smbios-wmi: Avoid false-positive
+ memcpy() warning
+Message-ID: <YSZwnXqIaIo+hG37@smile.fi.intel.com>
+References: <20210825160749.3891090-1-keescook@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.2
-Subject: Re: [PATCH v4 06/12] firmware: arm_scmi: Add is_transport_atomic()
- handle method
-Content-Language: en-US
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-References: <20210824135941.38656-1-cristian.marussi@arm.com>
- <20210824135941.38656-7-cristian.marussi@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210824135941.38656-7-cristian.marussi@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825160749.3891090-1-keescook@chromium.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/24/2021 3:59 PM, Cristian Marussi wrote:
-> Add a method to check if the underlying transport configured for an SCMI
-> instance is configured to support atomic transaction of SCMI commands.
+On Wed, Aug 25, 2021 at 09:07:49AM -0700, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy(), memmove(), and memset(), avoid
+> intentionally writing across neighboring fields.
 > 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> Since all the size checking has already happened, use input.pointer
+> (void *) so memcpy() doesn't get confused about how much is being
+> written.
+> 
+> Avoids this false-positive warning when run-time memcpy() strict
+> bounds checking is enabled:
+> 
+> memcpy: detected field-spanning write (size 4096) of single field (size 36)
+> WARNING: CPU: 0 PID: 357 at drivers/platform/x86/dell/dell-smbios-wmi.c:74 run_smbios_call+0x110/0x1e0 [dell_smbios]
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> Note: is there a missed kfree() in the marked error path?
+
+Seems so.
+
+* Note: The caller should use acpi_os_free to free this
+* buffer created via ACPI_ALLOCATE_BUFFER.
+
+
 -- 
-Florian
+With Best Regards,
+Andy Shevchenko
+
+
