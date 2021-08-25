@@ -2,254 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9B13F7C39
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866373F7C3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 20:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237887AbhHYScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 14:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237350AbhHYScJ (ORCPT
+        id S237840AbhHYSeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 14:34:10 -0400
+Received: from mail-centralus02namln2008.outbound.protection.outlook.com ([40.93.8.8]:12175
+        "EHLO outbound.mail.eo.outlook.com" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236317AbhHYSeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 14:32:09 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7898EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:31:22 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id g21so546929edw.4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 11:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OkVgvSFIqQjxFX6O/44tvA1y96obgSkMblAfYjNAM+Q=;
-        b=VEAst761rEFxOzS3vGndIuBfVZA3B0nR83J5n4aHfNShla6cQTfPfAjHY7fdLjDfDD
-         IndRhcjBoR4OAlAE+KwtxodIzM9r/DwSfe3DVuPRq3biU7kLD80kKiStZvVpJ2QLh1Gh
-         vDBm0O6SpIgXamGiHOe0mXbeYw4RnSl+QZLJPLeyvOdhCIXpI0v4ZP1T/vca+9btPzwI
-         c3qEHp6A++h6som5obQn0DFko3hRziz253hOKPsDQjy6rnaa77YFXHnsFxls8IL6XbWh
-         zVo9oVoR1UeLSzoru3kVCpwR+qxWF8Q3EShfRvlk2jHWHye4mF5uiQ26Uh/yuoRyPqOD
-         1Gzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OkVgvSFIqQjxFX6O/44tvA1y96obgSkMblAfYjNAM+Q=;
-        b=QZRHS/epwXe+hlgdHEKFDPb6u15t5+66mxz4lJeFYHnynSGl9Z8MZfKU+ihRJ+JoxW
-         mvyCxNFNODd+oYNdLzuWt7G713hPgEsmj43OdHqDRPCEOmKxxN0Klp3PqsIF8xNzAcid
-         se/LVK38tY0j6QvYq2z5M+/StEwf6IC2v0XhBnTRyO/Qclgaz7c0FutIheib5GzBsH4L
-         ee0BubEJgSRbqXsjF/NtYVKWNB4ZmbtVTeOi2jtzeS8anfz00BzIB+o7hW4Id2qR0Vcu
-         +mL9NhbMOPYLZuULNiit8AEXWi13ROIc31u+9Ly6w/DevMtUxsVE/mHDrgopmlifjc9g
-         S8sw==
-X-Gm-Message-State: AOAM532eRLF79AarHQh6v9rRhckQZnYPXFTtV4rGQatLgNAYd7o5AV7P
-        vp57Z9oOdAXE3i84TR/PWGOHYpQDHpj1XJ3kgVVDewdjlA==
-X-Google-Smtp-Source: ABdhPJyQY9Kpw07nmgdoHCfWV7TAiMssMZqHv1HaIcoAMcYvT9mkokr9JheuMmLJ5d7rzdgpIL7UkG3SBCV9YBz08Xc=
-X-Received: by 2002:a05:6402:1642:: with SMTP id s2mr25395939edx.135.1629916280869;
- Wed, 25 Aug 2021 11:31:20 -0700 (PDT)
+        Wed, 25 Aug 2021 14:34:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EezlsqbE/D78WxGt4d5YVBfdV3NJUfJAa3GxMUCLeyydM9iKdJtUh6PaEX9a7rDsDUETw+6aAqoGdMNo923SurmYqLbu4A2dkUkx9E3Cz1mT4gLbWYfGdOEaYcGGIW6YdK4jZ5+IiTluGpb0ksK9RgxwY9eLN37arAjfedHSfjfWWK7HPlR3xPEoh2kerVUdEzmhlQ7QupwwiNp/RcKv6Vt6miTxumIq9DOZMttQhy05oaveURxkClW2yaR/+eWs0E/p+QBYjksqAX/M409QZyqhpdB92NGOqCgTu2bnIFtxXffeBpGQAy7TbsMFxEdffyEQiaIzLZ5iVJNiqK3LOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=NkSt4M/b1Uuu7Bj/SN9fHAtHozhqTh6vf+EToAGXpLM=;
+ b=NYoAabbmAXARX9cXT+j43ataoG5UROfjY8wYI5+lqctU0uVC6RYErxpET0hVOQBSjt/Byr2tWErscuxzdcVWWMwjXiTinEeFKle09QjFX+XfEqxlJWfEc6YLXFlRJrYsLP1ojTHGYYHLzSAKlQO+z5PVIwa7+9hqb4cJocU2jwKXtpI9qIy+WEGyAZO3ub04s77Dr2crftw0RFd4whsiDd68fJEQo/JBU0E08RDF3KzLkb4J7RayG1LoHvyy/RBYxwIY8LgD0ix+7EUyxm3kWsh3+tSYp+Q+xUO3ZwJMXOveP6wj3cGpYFsiVHrE+KJRo1zARS42oxK8JUZdRvLO9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NkSt4M/b1Uuu7Bj/SN9fHAtHozhqTh6vf+EToAGXpLM=;
+ b=QAB7yKvcQw1orHgsuA0/ZRh/3VG+mrdfCp1LzVl+ZOsiamYfRrNw5GpMvfQ+iBi6XLuJ2jvFsLDxl3sxzpokebSgEzsNomV30SGHaEo5CEzZxrDuoeNFUtkVNDjkZx4XbB6Ss4fPfR+FrAn2UNKALDTJ116eda9ZmujyE7R1f0I=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by CO1PR21MB1313.namprd21.prod.outlook.com (2603:10b6:303:150::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.5; Wed, 25 Aug
+ 2021 18:33:11 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c8b:6387:cd5:7d86]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c8b:6387:cd5:7d86%8]) with mapi id 15.20.4478.004; Wed, 25 Aug 2021
+ 18:33:10 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     vkuznets <vkuznets@redhat.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+CC:     Andres Beltran <lkmlabelt@gmail.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] hv_utils: Set the maximum packet size for VSS driver to
+ the length of the receive buffer
+Thread-Topic: [PATCH] hv_utils: Set the maximum packet size for VSS driver to
+ the length of the receive buffer
+Thread-Index: AQHXmbaUNIgJapnVhU6HmoUvQ6T8zquEi4Bg
+Date:   Wed, 25 Aug 2021 18:33:10 +0000
+Message-ID: <MWHPR21MB15931C94B84D62C451163BAFD7C69@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210825133857.847866-1-vkuznets@redhat.com>
+In-Reply-To: <20210825133857.847866-1-vkuznets@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=870d5b01-07eb-4486-bc77-c5f0a810d72d;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-08-25T18:31:47Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8f47d3c8-2074-4508-9446-08d967f6caaa
+x-ms-traffictypediagnostic: CO1PR21MB1313:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <CO1PR21MB13132FE4DBD3CF13CF4D73B9D7C69@CO1PR21MB1313.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: iTKdgYjceGtgtEXZ/idrv5aYV1QPNSSiQDsrLDLbFXZeBkptTIhfx3OnY10h3CMtsS71moCUliIPGY5UeEwOM3pJ+Pu4Jm9M03rQPiVA+WJtOXiCVrcqdLx7+BYz7mS2RFQ7LH14IzKXUv2xLikenzO6LrCFqd8WPx/9+4A5UaASJXCP5TQLLT+ORuJniti0AxLLsTeV6I2ERePGMp6cIUBf+lxFuvyNfQXak4x15tG89HSlcaU9iIdOa2z8fGQJ2Tkam1YdndemcyQ3DTs2C/eRkL7iq4GMQfHUxA+cjT9Qd2e3Lf0LcL9g5rGSueRY0mFyh0oxfdwq3Ma2WqwqX498r/xx0r9k1/KvWLMRXkIExXO3c7H1th1PZPSCPuxoFkTqpiGguL+HdcME2RU9qPsnP67dfh8BsxM8QCNskS8YJ/HBznXgIJxEUtIFtmRcEOypWXf/ybEM33C8FeCUmUCIdajJCQGDca0VGpagranjSxPZciOmycSY6t8SIv6KceMjqk3d5BVpPX9kgipi9nRiYlXKAFWUFrCfwBb6cxeIjpro9QD95IiNb9W1ogqAUT1LTX61pIxWjrtdcCI2uLnTxlVj8tkz5BfONywolrCWIpZIYD+j6dohy3Ba19jxzGE+EfdENYlaCYMR6rL7JbqdVci7w+qOaJ3ptP9lngWMt2GpZ3f2rwphYdNBAOz98qMnwVIOYBJAXAM6uHICeQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(316002)(82950400001)(110136005)(82960400001)(26005)(2906002)(9686003)(66476007)(508600001)(52536014)(54906003)(33656002)(76116006)(8936002)(8990500004)(71200400001)(5660300002)(38070700005)(66446008)(64756008)(66556008)(86362001)(7696005)(6506007)(10290500003)(83380400001)(4326008)(122000001)(8676002)(186003)(38100700002)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+UfbcWVvYIfROQpOuASOzJJdocPj3bdQ/DLAo6QZEpXxa+9jV7fDnr5ggCCX?=
+ =?us-ascii?Q?4EHJZD7N+v39WbOt2BsWp1Mr+qgD86SMnenn1cr5SgufCB8Fk8xMMmLjyXW0?=
+ =?us-ascii?Q?CbL42yWj6SDGPH3rWstPheiAyJ+EM7qlyzhU4jWRBXijSshV7iUb/0J/CWQQ?=
+ =?us-ascii?Q?aLTraXV3Qfo4BJmzlPKQ4zP/ewTqZ1XPQUzvhjLXCjEzQwwntrQohSwWp9u8?=
+ =?us-ascii?Q?OglqNmVSHq7WHL1yzy7dNw5v/VzQDkdYFv6XV1dH5VFEhkn8a5CusFg04bHO?=
+ =?us-ascii?Q?r6FPQJ3o2ZAj55F1cBOWIob537m0WBgDGy1ZOtwdvQauEQKWrMqYk/obRvOi?=
+ =?us-ascii?Q?5fLY8MzgI3uXAIXznY5TTi6V8N0YIJcLolQJR+5Gfq1n/EBXSbe9SSohiex3?=
+ =?us-ascii?Q?PDHNfn/JZ/0JBx6AGEiFlwGUZ4qj/xH8AjlGQvkP4+JOFbg4eTVJgULCBBBH?=
+ =?us-ascii?Q?KMxavDXtiFZCl92PEmGTlyNZCm0P12+SmJNi0ZF16g5eE5qFcDHon68qC/uS?=
+ =?us-ascii?Q?xi1HAeQmbIWwyj1iuNR5JnD6V56NwAnEZGYzzcLbsETOgkgJa4Uk1Yzu3XgV?=
+ =?us-ascii?Q?MAe8l2fd4AHyDp5adtk1bntwEyBoJRaKf8jAogcAJB6UY5Kn9tGDD/4gCRtL?=
+ =?us-ascii?Q?m1Q3vd8Qqmmmc3f6DPIvALJPWDE7zIeRcxmTwVEUAFZTPZNp01DzuOikAiM9?=
+ =?us-ascii?Q?Br1n6cLNs+Gt6/vxOPqKPmOhyqqGHd0lyF9nOP8dS5qRvSdkvmlzpe9Qi7l2?=
+ =?us-ascii?Q?w8feVRg2CU1zCNKMj/JXq//e7/74Rb5AEkLkfyTjS56X/PCx0VtBvD5ur45d?=
+ =?us-ascii?Q?kIxr6CjVlSN059E2PESQ0HgyEcoi8INaOq50G9xAHVV/UVlGIDDgQ0DrFNIJ?=
+ =?us-ascii?Q?L2mIjVf5mJGi8zhn43k9Xc2AuZPgZBN4ohuH01Bhtpu3JKO/n7tGGz+kx/A4?=
+ =?us-ascii?Q?t2xSbRGy88B5d/RtLFrxUXN2YlI5h18e3IElfn2LXdy4FYGcZXu0D1Yz9sc4?=
+ =?us-ascii?Q?L83WjJ9eKAGlRlpFkCjStAkwKG18YvB7856pFfLsXzgO2XNEtp1QaUCzAoZd?=
+ =?us-ascii?Q?+j8AE9qgkFD18JDoG28MbCMZIH2pIsFzcyH3t1KWPFiuoOtXfOiUs8lpbHIX?=
+ =?us-ascii?Q?5vQl0rZfFM5+10CGvB71ttVWUwzdfe7nE3zWMsyEZv8moNBtbY1Z6/02S6wB?=
+ =?us-ascii?Q?cxg9l6DGp4A0mb/mzz59JXbxk9yotvKULqX9rcLkxtQs+pqO+2MLnbJ8b/PF?=
+ =?us-ascii?Q?3tEH5fliDcOGLIUQKHwK8w5OhB15gCErEgbSJWotkSTjGAuLL7llfFXme/un?=
+ =?us-ascii?Q?f1DLhaHAXCWn2G8GTnqGxKjN?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <000000000000a814c505ca657a4e@google.com>
-In-Reply-To: <000000000000a814c505ca657a4e@google.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 25 Aug 2021 14:31:10 -0400
-Message-ID: <CAHC9VhSUnq-+bMYCBvc4yyw9bkMNTChdn1m2b4Vn2i0e54AxxQ@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in netlbl_catmap_walk
-To:     casey@schaufler-ca.com
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f47d3c8-2074-4508-9446-08d967f6caaa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Aug 2021 18:33:10.7809
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q3bK1sCLylyhFdfZdHbyqAOV14TQ7iGOF9VEPwAFPhdy7utLpx/SvRj3PhFBKf8vj2DqbMDlNHXXAOz4yNGcuDveV5NZrk7+e4uUS52FiAc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR21MB1313
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 1:21 PM syzbot
-<syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    6e764bcd1cf7 Merge tag 'for-linus' of git://git.kernel.org..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=124e77c5300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3f91de0b813cc3d19a80
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13f72f16300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=133e338d300000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: use-after-free in _netlbl_catmap_getnode net/netlabel/netlabel_kapi.c:564 [inline]
-> BUG: KASAN: use-after-free in netlbl_catmap_walk+0x28b/0x2e0 net/netlabel/netlabel_kapi.c:615
-> Read of size 4 at addr ffff8880161c9800 by task syz-executor742/8768
->
-> CPU: 0 PID: 8768 Comm: syz-executor742 Not tainted 5.14.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
->  print_address_description+0x66/0x3b0 mm/kasan/report.c:233
->  __kasan_report mm/kasan/report.c:419 [inline]
->  kasan_report+0x163/0x210 mm/kasan/report.c:436
->  _netlbl_catmap_getnode net/netlabel/netlabel_kapi.c:564 [inline]
->  netlbl_catmap_walk+0x28b/0x2e0 net/netlabel/netlabel_kapi.c:615
->  cipso_seq_show+0x15f/0x280 security/smack/smackfs.c:789
->  traverse+0x1dc/0x530 fs/seq_file.c:111
->  seq_lseek+0x12b/0x240 fs/seq_file.c:323
->  vfs_llseek fs/read_write.c:300 [inline]
->  ksys_lseek fs/read_write.c:313 [inline]
->  __do_sys_lseek fs/read_write.c:324 [inline]
->  __se_sys_lseek fs/read_write.c:322 [inline]
->  __x64_sys_lseek+0x15b/0x1e0 fs/read_write.c:322
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x445889
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f9a9cff0318 EFLAGS: 00000246 ORIG_RAX: 0000000000000008
-> RAX: ffffffffffffffda RBX: 00000000004ca408 RCX: 0000000000445889
-> RDX: 0000000000000000 RSI: 0000000100000001 RDI: 0000000000000003
-> RBP: 00000000004ca400 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca40c
-> R13: 00007ffead4e31bf R14: 00007f9a9cff0400 R15: 0000000000022000
->
-> Allocated by task 8768:
->  kasan_save_stack mm/kasan/common.c:38 [inline]
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:434 [inline]
->  ____kasan_kmalloc+0xcd/0x100 mm/kasan/common.c:513
->  kasan_kmalloc include/linux/kasan.h:264 [inline]
->  kmem_cache_alloc_trace+0x96/0x340 mm/slub.c:2986
->  kmalloc include/linux/slab.h:591 [inline]
->  kzalloc include/linux/slab.h:721 [inline]
->  netlbl_catmap_alloc include/net/netlabel.h:317 [inline]
->  _netlbl_catmap_getnode net/netlabel/netlabel_kapi.c:582 [inline]
->  netlbl_catmap_setbit+0x1cb/0x3f0 net/netlabel/netlabel_kapi.c:782
->  smk_netlbl_mls+0x103/0x5e0 security/smack/smack_access.c:505
->  smk_set_cipso+0x621/0x810 security/smack/smackfs.c:921
->  vfs_write+0x289/0xc90 fs/read_write.c:603
->  ksys_write+0x171/0x2a0 fs/read_write.c:658
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Freed by task 8769:
->  kasan_save_stack mm/kasan/common.c:38 [inline]
->  kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
->  kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:360
->  ____kasan_slab_free+0x10d/0x150 mm/kasan/common.c:366
->  kasan_slab_free include/linux/kasan.h:230 [inline]
->  slab_free_hook mm/slub.c:1628 [inline]
->  slab_free_freelist_hook+0x1e8/0x2a0 mm/slub.c:1653
->  slab_free mm/slub.c:3213 [inline]
->  kfree+0xcf/0x2e0 mm/slub.c:4267
->  netlbl_catmap_free include/net/netlabel.h:335 [inline]
->  smk_set_cipso+0x682/0x810 security/smack/smackfs.c:923
->  vfs_write+0x289/0xc90 fs/read_write.c:603
->  ksys_write+0x171/0x2a0 fs/read_write.c:658
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> The buggy address belongs to the object at ffff8880161c9800
->  which belongs to the cache kmalloc-64 of size 64
-> The buggy address is located 0 bytes inside of
->  64-byte region [ffff8880161c9800, ffff8880161c9840)
-> The buggy address belongs to the page:
-> page:ffffea0000587240 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x161c9
-> flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000000200 0000000000000000 0000000b00000001 ffff888011041640
-> raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 6484, ts 27339779214, free_ts 27310944203
->  prep_new_page mm/page_alloc.c:2436 [inline]
->  get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4168
->  __alloc_pages+0x26c/0x5f0 mm/page_alloc.c:5390
->  alloc_slab_page mm/slub.c:1691 [inline]
->  allocate_slab+0xf1/0x540 mm/slub.c:1831
->  new_slab mm/slub.c:1894 [inline]
->  new_slab_objects mm/slub.c:2640 [inline]
->  ___slab_alloc+0x1cf/0x350 mm/slub.c:2803
->  __slab_alloc mm/slub.c:2843 [inline]
->  slab_alloc_node mm/slub.c:2925 [inline]
->  __kmalloc_node+0x310/0x430 mm/slub.c:4159
->  kmalloc_node include/linux/slab.h:614 [inline]
->  kvmalloc_node+0x81/0xf0 mm/util.c:587
->  kvmalloc include/linux/mm.h:806 [inline]
->  simple_xattr_alloc+0x3f/0xa0 fs/xattr.c:951
->  shmem_initxattrs+0x91/0x1e0 mm/shmem.c:3142
->  security_inode_init_security+0x37a/0x3c0 security/security.c:1099
->  shmem_mknod+0xb0/0x1b0 mm/shmem.c:2822
->  lookup_open fs/namei.c:3228 [inline]
->  open_last_lookups fs/namei.c:3298 [inline]
->  path_openat+0x13b7/0x36b0 fs/namei.c:3504
->  do_filp_open+0x253/0x4d0 fs/namei.c:3534
->  do_sys_openat2+0x124/0x460 fs/open.c:1204
->  do_sys_open fs/open.c:1220 [inline]
->  __do_sys_open fs/open.c:1228 [inline]
->  __se_sys_open fs/open.c:1224 [inline]
->  __x64_sys_open+0x221/0x270 fs/open.c:1224
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> page last free stack trace:
->  reset_page_owner include/linux/page_owner.h:24 [inline]
->  free_pages_prepare mm/page_alloc.c:1346 [inline]
->  free_pcp_prepare+0xc29/0xd20 mm/page_alloc.c:1397
->  free_unref_page_prepare mm/page_alloc.c:3332 [inline]
->  free_unref_page+0x7e/0x550 mm/page_alloc.c:3411
->  __vunmap+0x926/0xa70 mm/vmalloc.c:2587
->  free_work+0x66/0x90 mm/vmalloc.c:82
->  process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
->  worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
->  kthread+0x453/0x480 kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
->
-> Memory state around the buggy address:
->  ffff8880161c9700: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
->  ffff8880161c9780: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-> >ffff8880161c9800: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->                    ^
->  ffff8880161c9880: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->  ffff8880161c9900: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-> ==================================================================
->
->
+From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Wednesday, August 25, 20=
+21 6:39 AM
+>=20
+> Commit adae1e931acd ("Drivers: hv: vmbus: Copy packets sent by Hyper-V ou=
+t
+> of the ring buffer") introduced a notion of maximum packet size and for
+> KVM and FCOPY drivers set it to the length of the receive buffer. VSS
+> driver wasn't updated, this means that the maximum packet size is now
+> VMBUS_DEFAULT_MAX_PKT_SIZE (4k). Apparently, this is not enough. I'm
+> observing a packet of 6304 bytes which is being truncated to 4096. When
+> VSS driver tries to read next packet from ring buffer it starts from the
+> wrong offset and receives garbage.
+>=20
+> Set the maximum packet size to 'HV_HYP_PAGE_SIZE * 2' in VSS driver. This
+> matches the length of the receive buffer and is in line with other utils
+> drivers.
+>=20
+> Fixes: adae1e931acd ("Drivers: hv: vmbus: Copy packets sent by Hyper-V ou=
+t of the ring buffer")
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+>  drivers/hv/hv_snapshot.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/hv/hv_snapshot.c b/drivers/hv/hv_snapshot.c
+> index 2267bd4c3472..6018b9d1b1fb 100644
+> --- a/drivers/hv/hv_snapshot.c
+> +++ b/drivers/hv/hv_snapshot.c
+> @@ -375,6 +375,7 @@ hv_vss_init(struct hv_util_service *srv)
+>  	}
+>  	recv_buffer =3D srv->recv_buffer;
+>  	vss_transaction.recv_channel =3D srv->channel;
+> +	vss_transaction.recv_channel->max_pkt_size =3D HV_HYP_PAGE_SIZE * 2;
+>=20
+>  	/*
+>  	 * When this driver loads, the user level daemon that
+> --
+> 2.31.1
 
-Adding Casey to the To/CC line as I think this issue lies with Smack
-and not NetLabel, although if someone believes otherwise please let me
-know.
-
-It looks like the problem is near the bottom of smk_set_cipso(), right
-after smk_netlbl_mls() successfully creates the netlabel category
-bitmap and attempts to free any old existing category bitmaps before
-assigning the new value.  As I see it the problem is that the
-smack_known pointer, @skp, which is host to the bitmap is located from
-a RCU protected list meaning that it is possible for other tasks to be
-accessing the category bitmap while it is being freed, or directly
-afterwards given they may still be pointing at the old/freed data.
-
-Casey obviously knows Smack much better than I do so I'll refrain from
-going to far with a solution here in the likelihood that I'm off the
-mark, but I suspect the right solution here would be to either
-duplicate and replace the entry in the smack_known list using the
-normal RCU list manipulation approach (easiest?), manage the
-smack_known->smk_netlabel field as it's own RCU protected pointer
-(less easy?), or something else entirely (wildcard!).  I'm not sure
-this is a problem we can, or want to, solve at the NetLabel layer.
-
--- 
-paul moore
-www.paul-moore.com
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
