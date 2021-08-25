@@ -2,89 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8207F3F72C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9AE3F72DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239784AbhHYKST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:18:19 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47912 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239525AbhHYKST (ORCPT
+        id S239029AbhHYKV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239735AbhHYKVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:18:19 -0400
-Received: from guri.fritz.box (unknown [IPv6:2a02:810a:880:f54:c5f4:b90c:545d:197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DAAC61F436B4;
-        Wed, 25 Aug 2021 11:17:31 +0100 (BST)
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        dafna.hirschfeld@collabora.com, kernel@collabora.com,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        hverkuil@xs4all.nl, dafna3@gmail.com, mchehab@kernel.org,
-        tfiga@chromium.org, minghsiu.tsai@mediatek.com,
-        houlong.wei@mediatek.com, andrew-ct.chen@mediatek.com,
-        tiffany.lin@mediatek.com, matthias.bgg@gmail.com,
-        courbot@chromium.org, hsinyi@chromium.org, eizan@chromium.org
-Subject: [PATCH v3] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
-Date:   Wed, 25 Aug 2021 12:17:17 +0200
-Message-Id: <20210825101717.18075-1-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 25 Aug 2021 06:21:07 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E8EC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 03:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/BUsftWLYUFbAVcNCxOeiIICKCu2cQABxz+Pxz0KUR4=; b=rZ+iuTO2TXyrfSjdLCY40uUSqk
+        xgMrf9PZcy1IuzB1RX2tL7puFuAPeilu/3DN9Q1sQCW9yYxJ9rzaxrJ62g4V66Gm8eG+jQyCgN6FI
+        nmQUZOk5K5L9qp8CV9kqWbgep8+zfbyCJDYRF/TXVMwFlxMwSZwFfwuEAvQUQRLKvHJDOgF88Iz7w
+        Jbr4hGmx9022PeeW8M4+qxHcQ1saXRqksCemdGzCZmb0pjLqdEhHKeP5t40y8GvjEt/0yhjdVCt0A
+        6YSFpy1/Vy8K/rhSgsBs0ijGGQzAeKyWncliBtgb79SYVIzqQFTychv2ysPGSWNDhU2/4Yt5UpF8Z
+        TSGjzsOg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIq0Z-00CshA-VT; Wed, 25 Aug 2021 10:19:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E766300399;
+        Wed, 25 Aug 2021 12:19:47 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E3FBD200E4A2F; Wed, 25 Aug 2021 12:19:46 +0200 (CEST)
+Date:   Wed, 25 Aug 2021 12:19:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, joro@8bytes.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, x86@kernel.org,
+        mbenes@suse.com, rostedt@goodmis.org, dvyukov@google.com,
+        elver@google.com
+Subject: Re: [PATCH v2 03/24] objtool: Handle __sanitize_cov*() tail calls
+Message-ID: <YSYZQsS5MA6BTyfj@hirez.programming.kicks-ass.net>
+References: <20210624094059.886075998@infradead.org>
+ <20210624095147.818783799@infradead.org>
+ <20210820231744.76clopxwcqeum4k7@treble>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820231744.76clopxwcqeum4k7@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Courbot <acourbot@chromium.org>
+On Fri, Aug 20, 2021 at 04:17:44PM -0700, Josh Poimboeuf wrote:
+> On Thu, Jun 24, 2021 at 11:41:02AM +0200, Peter Zijlstra wrote:
+> > +	if (insn->sec->noinstr &&
+> > +	    !strncmp(insn->call_dest->name, "__sanitizer_cov_", 16)) {
+> > +		if (reloc) {
+> > +			reloc->type = R_NONE;
+> > +			elf_write_reloc(file->elf, reloc);
+> > +		}
+> > +
+> > +		elf_write_insn(file->elf, insn->sec,
+> > +			       insn->offset, insn->len,
+> > +			       sibling ? arch_ret_insn(insn->len)
+> > +			               : arch_nop_insn(insn->len));
+> > +
+> > +		insn->type = sibling ? INSN_RETURN : INSN_NOP;
+> > +	}
+> 
+> It'd be nice to keep the comment for this case that was in
+> add_call_destinations().
 
-When running memcpy_toio:
-memcpy_toio(send_obj->share_buf, buf, len);
-it was found that errors appear if len is not a multiple of 8:
-
-[58.350841] mtk-mdp 14001000.rdma: processing failed: -22
-
-This patch ensures the copy of a multile of 8 size by calling
-round_up(len, 8) when copying
-
-Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access to DTCM buffer.")
-Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
-changes since v2:
-1. do the extra copy only if len is not multiple of 8
-
-changes since v1:
-1. change sign-off-by tags
-2. change values to memset
-
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index ec290dde59cf..658161ee3e4e 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -349,7 +349,16 @@ int vpu_ipi_send(struct platform_device *pdev,
- 		}
- 	} while (vpu_cfg_readl(vpu, HOST_TO_VPU));
- 
--	memcpy_toio(send_obj->share_buf, buf, len);
-+	if (len % 8 != 0) {
-+		unsigned char data[SHARE_BUF_SIZE];
-+
-+		memset(data + len, 0, sizeof(data) - len);
-+		memcpy(data, buf, len);
-+		memcpy_toio(send_obj->share_buf, data, round_up(len, 8));
-+	} else {
-+		memcpy_toio(send_obj->share_buf, buf, len);
-+	}
-+
- 	writel(len, &send_obj->len);
- 	writel(id, &send_obj->id);
- 
--- 
-2.17.1
-
+Done!
