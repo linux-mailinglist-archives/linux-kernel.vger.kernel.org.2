@@ -2,249 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1733F7BB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72C33F7BB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 19:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242378AbhHYRuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 13:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
+        id S242350AbhHYRuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 13:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242363AbhHYRuO (ORCPT
+        with ESMTP id S231602AbhHYRuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:50:14 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB992C061757;
-        Wed, 25 Aug 2021 10:49:27 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id mf2so144811ejb.9;
-        Wed, 25 Aug 2021 10:49:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hcEebA36vr8enUaVJqJ/pvS0MfHmb+Qb5dVsVqdn6SI=;
-        b=qeVnSVC2VFOawDIl4VJUnBt7I+eyjPHB6gI1dLk2vsVExMlaKKyzA58m08KnPF8P4+
-         SO5XoQx7vublw6h1frTjJKNJde+DzlY+FbK75JqUHFKuvy3ba4+F4QesPe1G6ris4wBh
-         551YS6jzbiyrfXjuNMG4GuNqYqkeiXwpW2UH2igIL2qiaPpT2hbmgPoh9//5rrHYra1N
-         JOcCzqZiAV1HDAUfZhEbFY8gqJHo/SVeSsskfegBqwyqzXOZgTpfX4dQJDKxYJOE1i55
-         xgJ5eD9jO+stEnziX+KkyZ4iOYn0tH8LU/NdnbENl+1tTDgTjPQ4hJNNDfc717uM1GHd
-         Fzdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hcEebA36vr8enUaVJqJ/pvS0MfHmb+Qb5dVsVqdn6SI=;
-        b=DIF38t9wmbIeuLN0eH+lfVdCu/6048aUxY4Ic9J9TskRC3bAyADy30RAw+pFHSmZJJ
-         1jG2EbQofXqpxB1g/rOF1elnjtuXn66iGVJnpXorD2jeivxpbav6uQ4Xjo4KhflxTnb5
-         F4BGwtIk/jihVzPVIiNfFp6NtqprlfkLKhQZ8z16BPcWaNi89nhfeNq+KhbmNRCgAfc+
-         4gQgrTC2c3k4HQgRIDjr2Pe5iTkBq5JPz8eUBC3+y3XN40ikZMu7Sb1n/8IrZIjxfM52
-         lpToaSZUrUNUXGzW+hxhmu9LOm0gmgVqRDyoOk1A1lnsccmJrp4To8BXoo5byv35wKk+
-         FnNw==
-X-Gm-Message-State: AOAM530AXoVZ2zXb95N2D0Qz/vn4azW0DXy122BLE3Qeod5Vjemsj4lk
-        9pFxizEIK3r2CEECp6NDXSGdgq8q1hWhUyi0eRo=
-X-Google-Smtp-Source: ABdhPJyXrmGoMw3Z7YelYdJMRHtsSgUSLbfBfB6xokDzz2dtvZt7EkW5Uf/nq+E04QPsbsGQahrrmv6ErdhszRt7Q08=
-X-Received: by 2002:a17:906:b0b:: with SMTP id u11mr18606689ejg.458.1629913766413;
- Wed, 25 Aug 2021 10:49:26 -0700 (PDT)
+        Wed, 25 Aug 2021 13:50:08 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E1DC061757;
+        Wed, 25 Aug 2021 10:49:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=PrWkaC3oZYQq319udCsme3fnU3/flYB0GPD+uh3jvX4=; b=wtOcjZOEdZQ8ep3ZcYzHWcrXub
+        5hEd8Zyu8gXYp1BYRSdDXTTZHtuuKeZViyzK/LmNqRTuKiv4Aemff/9zrCZaVDiU38wf6H/hLEqBH
+        uTRaSakaYpjO8+YF9zU3VRT5DldJjLyQAkxN1Xk3mPL7etQ77Tr7vPmLye2vKhiwGl7VbiXZ8Z92Y
+        nACvT082cTh7HamOeIcGySzrnIkfmpHWZy6n57jWu7CmcQmceH+BaKO2AfonB6HOXGf6HTfnRYgVV
+        4SAFtNM8n1QCBca+XRFQZemAoo9UbJ/RNjyFlIs4IpB2+4ZJt4Cxn/W3ymVyD9/12dO3DV3Wo2tgs
+        v3GQw4Tw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIx1d-0087sf-39; Wed, 25 Aug 2021 17:49:21 +0000
+Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
+To:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+References: <20210820192615.23e2e617@canb.auug.org.au>
+ <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
+ <202108202248.921E8C66@keescook>
+ <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
+ <20210823203742.5169ad54@canb.auug.org.au>
+ <66615de5-4acb-8d85-6d69-ddd0b9609348@infradead.org>
+ <20210824115859.187f272f@canb.auug.org.au> <202108250959.CD734CED@keescook>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1d7780f0-424b-71d4-732b-c28a796d1166@infradead.org>
+Date:   Wed, 25 Aug 2021 10:49:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
- <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com> <CALMXkpZkW+ULMMFgeY=cag1F0=891F-v9NEVcdn7Tyd-VUWGYA@mail.gmail.com>
- <1c12b056-79d2-126a-3f78-64629f072345@gmail.com> <2d8a102a-d641-c6c1-b417-7a35efa4e5da@gmail.com>
- <bd90616e-8e86-016b-0979-c4f4167b8bc2@gmail.com> <4fe6edb4-a364-0e59-f902-9a362dd998d4@virtuozzo.com>
- <61da35a1-e609-02d5-609d-5228e184e43f@virtuozzo.com>
-In-Reply-To: <61da35a1-e609-02d5-609d-5228e184e43f@virtuozzo.com>
-From:   Christoph Paasch <christoph.paasch@gmail.com>
-Date:   Wed, 25 Aug 2021 10:49:15 -0700
-Message-ID: <CALMXkpZYGC5HNkJAi4wCuawC-9CVNjN1LqO073YJvUF5ONwupA@mail.gmail.com>
-Subject: Re: [PATCH NET-NEXT] ipv6: skb_expand_head() adjust skb->truesize incorrectly
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
-        Julian Wiedmann <jwi@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202108250959.CD734CED@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:22 AM Vasily Averin <vvs@virtuozzo.com> wrote:
->
-> On 8/24/21 11:50 AM, Vasily Averin wrote:
-> > On 8/24/21 1:23 AM, Eric Dumazet wrote:
-> >> On 8/23/21 2:51 PM, Eric Dumazet wrote:
-> >>> On 8/23/21 2:45 PM, Eric Dumazet wrote:
-> >>>> On 8/23/21 10:25 AM, Christoph Paasch wrote:
-> >>>>> Hello,
-> >>>>>
-> >>>>> On Mon, Aug 23, 2021 at 12:56 AM Vasily Averin <vvs@virtuozzo.com> wrote:
-> >>>>>>
-> >>>>>> Christoph Paasch reports [1] about incorrect skb->truesize
-> >>>>>> after skb_expand_head() call in ip6_xmit.
-> >>>>>> This happen because skb_set_owner_w() for newly clone skb is called
-> >>>>>> too early, before pskb_expand_head() where truesize is adjusted for
-> >>>>>> (!skb-sk) case.
-> >>>>>>
-> >>>>>> [1] https://lkml.org/lkml/2021/8/20/1082
-> >>>>>>
-> >>>>>> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-> >>>>>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> >>>>>> ---
-> >>>>>>  net/core/skbuff.c | 24 +++++++++++++-----------
-> >>>>>>  1 file changed, 13 insertions(+), 11 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> >>>>>> index f931176..508d5c4 100644
-> >>>>>> --- a/net/core/skbuff.c
-> >>>>>> +++ b/net/core/skbuff.c
-> >>>>>> @@ -1803,6 +1803,8 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
-> >>>>>>
-> >>>>>>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
-> >>>>>>  {
-> >>>>>> +       struct sk_buff *oskb = skb;
-> >>>>>> +       struct sk_buff *nskb = NULL;
-> >>>>>>         int delta = headroom - skb_headroom(skb);
-> >>>>>>
-> >>>>>>         if (WARN_ONCE(delta <= 0,
-> >>>>>> @@ -1811,21 +1813,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
-> >>>>>>
-> >>>>>>         /* pskb_expand_head() might crash, if skb is shared */
-> >>>>>>         if (skb_shared(skb)) {
-> >>>>>> -               struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
-> >>>>>> -
-> >>>>>> -               if (likely(nskb)) {
-> >>>>>> -                       if (skb->sk)
-> >>>>>> -                               skb_set_owner_w(nskb, skb->sk);
-> >>>>>> -                       consume_skb(skb);
-> >>>>>> -               } else {
-> >>>>>> -                       kfree_skb(skb);
-> >>>>>> -               }
-> >>>>>> +               nskb = skb_clone(skb, GFP_ATOMIC);
-> >>>>>>                 skb = nskb;
-> >>>>>>         }
-> >>>>>>         if (skb &&
-> >>>>>> -           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-> >>>>>> -               kfree_skb(skb);
-> >>>>>> +           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC))
-> >>>>>>                 skb = NULL;
-> >>>>>> +
-> >>>>>> +       if (!skb) {
-> >>>>>> +               kfree_skb(oskb);
-> >>>>>> +               if (nskb)
-> >>>>>> +                       kfree_skb(nskb);
-> >>>>>> +       } else if (nskb) {
-> >>>>>> +               if (oskb->sk)
-> >>>>>> +                       skb_set_owner_w(nskb, oskb->sk);
-> >>>>>> +               consume_skb(oskb);
-> >>>>>
-> >>>>> sorry, this does not fix the problem. The syzkaller repro still
-> >>>>> triggers the WARN.
-> >>>>>
-> >>>>> When it happens, the skb in ip6_xmit() is not shared as it comes from
-> >>>>> __tcp_transmit_skb, where it is skb_clone()'d.
-> >>>>>
-> >>>>>
-> >>>>
-> >>>> Old code (in skb_realloc_headroom())
-> >>>> was first calling skb2 = skb_clone(skb, GFP_ATOMIC);
-> >>>>
-> >>>> At this point, skb2->sk was NULL
-> >>>> So pskb_expand_head(skb2, SKB_DATA_ALIGN(delta), 0, ...) was able to tweak skb2->truesize
-> >>>>
-> >>>> I would try :
-> >>>>
-> >>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> >>>> index f9311762cc475bd38d87c33e988d7c983b902e56..326749a8938637b044a616cc33b6a19ed191ac41 100644
-> >>>> --- a/net/core/skbuff.c
-> >>>> +++ b/net/core/skbuff.c
-> >>>> @@ -1804,6 +1804,7 @@ EXPORT_SYMBOL(skb_realloc_headroom);
-> >>>>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
-> >>>>  {
-> >>>>         int delta = headroom - skb_headroom(skb);
-> >>>> +       struct sk_buff *oskb = NULL;
-> >>>>
-> >>>>         if (WARN_ONCE(delta <= 0,
-> >>>>                       "%s is expecting an increase in the headroom", __func__))
-> >>>> @@ -1813,19 +1814,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
-> >>>>         if (skb_shared(skb)) {
-> >>>>                 struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
-> >>>>
-> >>>> -               if (likely(nskb)) {
-> >>>> -                       if (skb->sk)
-> >>>> -                               skb_set_owner_w(nskb, skb->sk);
-> >>>> -                       consume_skb(skb);
-> >>>> -               } else {
-> >>>> +               if (unlikely(!nskb)) {
-> >>>>                         kfree_skb(skb);
-> >>>> +                       return NULL;
-> >>>>                 }
-> >>>> +               oskb = skb;
-> >>>>                 skb = nskb;
-> >>>>         }
-> >>>> -       if (skb &&
-> >>>> -           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-> >>>> +       if (pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-> >>>>                 kfree_skb(skb);
-> >>>> -               skb = NULL;
-> >>>> +               kfree_skb(oskb);
-> >>>> +               return NULL;
-> >>>> +       }
-> >>>> +       if (oskb) {
-> >>>> +               skb_set_owner_w(skb, oskb->sk);
-> >>>> +               consume_skb(oskb);
-> >>>>         }
-> >>>>         return skb;
-> >>>>  }
-> >>>
-> >>>
-> >>> Oh well, probably not going to work.
-> >>>
-> >>> We have to find a way to properly increase skb->truesize, even if skb_clone() is _not_ called.
-> >
-> > Can we adjust truesize outside pskb_expand_head()?
-> > Could you please explain why it can be not safe?
->
-> Do you mean truesize change should not break balance of sk->sk_wmem_alloc?
+On 8/25/21 10:04 AM, Kees Cook wrote:
+> On Tue, Aug 24, 2021 at 11:58:59AM +1000, Stephen Rothwell wrote:
+>> On Mon, 23 Aug 2021 18:24:44 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>
+>>> This is just weird. What I am seeing is that for every source file
+>>> where gcc emits a warning: it then follows that up with this
+>>>>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>
+>> I see the same, as well as:
+>>
+>> <stdin>:1515:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>
+>> But only on my gcc 7.3.1 builds (the rest are gcc 10).
+>>
+>>> Smells like a gcc bug to me.
+>>
+>> Yes
+>>
+>> Also noted here: https://github.com/DynamoRIO/drmemory/issues/2099 (second comment)
+> 
+> Okay, I think this work-around should work. I've been able to reproduce
+> the weird conditions, and this seems to behave correctly. Andrew, can
+> you fixup the fixup with this?
+> 
+> 
+> diff --git a/Makefile b/Makefile
+> index 26640899e7ca..c1842014a5de 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1094,8 +1094,13 @@ endif
+>   
+>   ifdef CONFIG_CC_IS_GCC
+>   # The allocators already balk at large sizes, so silence the compiler
+> -# warnings for bounds checks involving those possible values.
+> -KBUILD_CFLAGS += $(call cc-option, -Wno-alloc-size-larger-than)
+> +# warnings for bounds checks involving those possible values. While
+> +# -Wno-alloc-size-larger-than would normally be used here, some versions
+> +# of gcc (<9.1) weirdly don't handle the option correctly when _other_
+> +# warnings are produced (?!), so instead use SIZE_MAX to effectively
+> +# disable it.
+> +# https://lore.kernel.org/lkml/20210824115859.187f272f@canb.auug.org.au
+> +KBUILD_CFLAGS += $(call cc-option, -Walloc-size-larger-than=SIZE_MAX)
+>   endif
+>   
+>   # disable invalid "can't wrap" optimizations for signed / pointers
+> 
 
-AFAICS, that's the problem around adjusting truesize. So, maybe "just"
-refcount_add the increase of the truesize.
+Hi Kees,
 
-The below does fix the syzkaller bug for me and seems to do the right
-thing overall. But I honestly think that this is becoming too hacky
-and not worth it... and who knows what other corner-cases this now
-exposes...
+I get a lot of these:
 
-Maybe a revert is a better course of action?
+../include/linux/slab.h: In function ‘keyctl_instantiate_key_common’:
+cc1: warning: invalid argument ‘SIZE_MAX’ to ‘-Walloc-size-larger-than=’
 
----
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index f9311762cc47..9cc18a0fdd1c 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -71,6 +71,7 @@
- #include <net/mpls.h>
- #include <net/mptcp.h>
- #include <net/page_pool.h>
-+#include <net/tcp.h>
 
- #include <linux/uaccess.h>
- #include <trace/events/skb.h>
-@@ -1756,9 +1757,14 @@ int pskb_expand_head(struct sk_buff *skb, int
-nhead, int ntail,
-  * For the moment, we really care of rx path, or
-  * when skb is orphaned (not attached to a socket).
-  */
-- if (!skb->sk || skb->destructor == sock_edemux)
-+ if (!skb->sk || skb->destructor == sock_edemux || skb->destructor ==
-tcp_wfree) {
-  skb->truesize += size - osize;
 
-+ if (skb->sk && skb->destructor == tcp_wfree) {
-+ refcount_add(size - osize, &skb->sk->sk_wmem_alloc);
-+ }
-+ }
-+
-  return 0;
+-- 
+~Randy
 
- nofrags:
