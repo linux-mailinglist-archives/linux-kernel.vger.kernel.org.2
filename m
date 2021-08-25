@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044533F7356
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FA23F7358
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 12:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238882AbhHYKdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 06:33:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42242 "EHLO mail.kernel.org"
+        id S239693AbhHYKd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 06:33:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237180AbhHYKdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 06:33:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE2FF61139;
-        Wed, 25 Aug 2021 10:32:26 +0000 (UTC)
+        id S237180AbhHYKdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 06:33:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8BC561139;
+        Wed, 25 Aug 2021 10:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629887548;
-        bh=LBkEVhXk6nP+PCt46F0eZs1fuqXceK0E7MqW8V2Hc8U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i/W8C9NRzVDY6t5f5deJdUpGbBfcDy5CEjRlBFvhSZ7Vo7ehuzLwapvfO7Ob5lnCk
-         /ZQpwFPe1VDf2kihwnsKuQ3UkqehyM6Fq2/Z9zhiMnQh6A2BYuEDnrdFDQ6Mda5JV7
-         G47H96SylwEZ5Ae9Lx+2V1zkc/AKdhzRrI1Am6mAM8SBGLlgvc+SQBcc9UcgS2r+S4
-         ct+8jWCrHWG9UXjn6fTAfqCZjcjlVABTUXkkk65rESQqx1ftwYJsL0W6k1rQGI47/g
-         PjsO6YYgU10R16U5oeZmMM7IFdN35oCYGB/11A5SgFecabqKQQ6E9uei2zLwv4Zh5Y
-         qZZm5bUUkgOrw==
-Date:   Wed, 25 Aug 2021 11:32:23 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Alex Bee <knaerzche@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [BUG 5.14] arm64/mm: dma memory mapping fails (in some cases)
-Message-ID: <20210825103223.GE24546@willie-the-truck>
-References: <d3a3c828-b777-faf8-e901-904995688437@gmail.com>
- <20210824173741.GC623@arm.com>
- <YSU6NVZ3j0XCurWC@kernel.org>
- <0908ce39-7e30-91fa-68ef-11620f9596ae@arm.com>
- <60a11eba-2910-3b5f-ef96-97d4556c1596@redhat.com>
- <20210825102044.GA3420@arm.com>
- <20210825102856.GD24546@willie-the-truck>
+        s=k20201202; t=1629887560;
+        bh=riIUKt2+jXTF9OV5PivRYHe4RIB9mskvpwhkELCFFzs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=NgEHl53QL1cXNSyGNVT7rkSdYOtwQyFr3rZmUDMWELpYVDmjrd0eoiB43FFuHCo/F
+         44VZ+YaJofRXqzZQygrdtc6G8O7gxHWFcHTJ2ABrGkMZGn79nseCxioPqSLvZvF9JQ
+         CmJzB/XqTDYMuDjTAjEWUM/odBNaLb7LQcOsYLE/cBqqtFCVQgdGTbHcWCviOLKgQn
+         +sE1HvhOkV2CEjkejdQX2f3k9AIn2xpN8FaNsUm4O7BEALAp8cOknCbh6kTML9npKr
+         l1d3BbHq2Kh/YXipK7a2oMYi8myPb/HH0CMSVO/s3LufiPXIMAGAVp068Zjf/Cs3mL
+         pT1Fv6ROk2PCw==
+Message-ID: <cf358b73cbda90fd6c023f3a59a8df94698cf0bc.camel@kernel.org>
+Subject: Re: [fs]  f7e33bdbd6: ltp.ftruncate04_64.fail
+From:   Jeff Layton <jlayton@kernel.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ltp@lists.linux.it
+Date:   Wed, 25 Aug 2021 06:32:38 -0400
+In-Reply-To: <20210825051710.GA5358@xsang-OptiPlex-9020>
+References: <20210825051710.GA5358@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210825102856.GD24546@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 11:28:56AM +0100, Will Deacon wrote:
-> On Wed, Aug 25, 2021 at 11:20:46AM +0100, Catalin Marinas wrote:
-> > Given how later we are in the -rc cycle, I suggest we revert Anshuman's
-> > commit 16c9afc77660 ("arm64/mm: drop HAVE_ARCH_PFN_VALID") and try to
-> > assess the implications in 5.15 (the patch doesn't seem to have the
-> > arm64 maintainers' ack anyway ;)).
+On Wed, 2021-08-25 at 13:17 +0800, kernel test robot wrote:
 > 
-> I'll stick the revert (below) into kernelci now so we can get some coverage
-> in case it breaks something else.
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: f7e33bdbd6d1bdf9c3df8bba5abcf3399f957ac3 ("fs: remove mandatory file locking support")
+> https://git.kernel.org/cgit/linux/kernel/git/jlayton/linux.git locks-next
+> 
+> 
+> in testcase: ltp
+> version: ltp-x86_64-14c1f76-1_20210821
+> with following parameters:
+> 
+> 	disk: 1HDD
+> 	fs: ext4
+> 	test: syscalls-07
+> 	ucode: 0xe2
+> 
+> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> test-url: http://linux-test-project.github.io/
+> 
+> 
+> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> 
 
-Bah, having said that...
+[...]
 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index fcb535560028..ee70f21a79d5 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -1463,15 +1463,6 @@ static inline int pfn_valid(unsigned long pfn)
->  {
->  	struct mem_section *ms;
->  
-> -	/*
-> -	 * Ensure the upper PAGE_SHIFT bits are clear in the
-> -	 * pfn. Else it might lead to false positives when
-> -	 * some of the upper bits are set, but the lower bits
-> -	 * match a valid pfn.
-> -	 */
-> -	if (PHYS_PFN(PFN_PHYS(pfn)) != pfn)
-> -		return 0;
-> -
+> <<<test_start>>>
+> tag=ftruncate04_64 stime=1629792639
+> cmdline="ftruncate04_64"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+> tst_test.c:916: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+> mke2fs 1.44.5 (15-Dec-2018)
+> tst_test.c:1348: TINFO: Timeout per run is 0h 25m 00s
+> ftruncate04.c:116: TINFO: Child locks file
+> ftruncate04.c:49: TFAIL: ftruncate() offset before lock succeeded unexpectedly
+> ftruncate04.c:49: TFAIL: ftruncate() offset in lock succeeded unexpectedly
+> ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
+> ftruncate04.c:127: TINFO: Child unlocks file
+> ftruncate04.c:84: TPASS: ftruncate() offset in lock succeded
+> ftruncate04.c:84: TPASS: ftruncate() offset before lock succeded
+> ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
+> 
+> Summary:
+> passed   4
+> failed   2
+> broken   0
+> skipped  0
+> warnings 0
 
-I suppose we should leave this bit as-is, since the whole point here is
-trying to minimise the impact on other architectures.
+I think this failed because of the above, which is expected now that we
+ignore the "mand" mount option (and mandatory locking support is gone).
 
-Will
+Oliver, you may need to update the expected test output for this test.
+
+Thanks,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
