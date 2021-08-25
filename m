@@ -2,156 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE6B3F6E12
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524EC3F6E15
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 06:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbhHYEGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 00:06:02 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14412 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhHYEGB (ORCPT
+        id S229718AbhHYEGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 00:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229379AbhHYEGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 00:06:01 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GvXN50KX5zbdcY;
-        Wed, 25 Aug 2021 12:01:25 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 12:05:14 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 25 Aug 2021 12:05:14 +0800
-Subject: Re: [PATCH 3/3] amba: Properly handle device probe without IRQ domain
-To:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Frank Rowand" <frowand.list@gmail.com>,
-        <devicetree@vger.kernel.org>, Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Ruizhe Lin <linruizhe@huawei.com>, <wangkefeng.wang@huawei.com>
-References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
- <20210816074619.177383-4-wangkefeng.wang@huawei.com>
- <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
- <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <ee649111-dc07-d6db-8872-dcb692802236@huawei.com>
-Date:   Wed, 25 Aug 2021 12:05:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 25 Aug 2021 00:06:43 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBCCC061757;
+        Tue, 24 Aug 2021 21:05:58 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id a21so29150136ioq.6;
+        Tue, 24 Aug 2021 21:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NZoI/2t89xBZsKpePuesqEGL96FIMPFUNLVpR72Rozg=;
+        b=EegF7oqbZkc2syS4cXBmSapTwbjI4P79ZFnOvmTcRGDf1kVVRrqdOELBgYukAMVcRF
+         E5L0A65z7uT82650RwrmS3opolb9Z0mBUOg4LsgLiDhQldz++hVRAipq2bIJghRVUEHd
+         wN+ZgZFdXl7G+cbp2HlnKij+sP9dWtX9h1sr6fh+Thp2l4oajwXETlk4CL3tjSQP95Kq
+         JRg1F4lVdlrkiu7JvQ6zV4mvbwfrJinel9BV6bjsC9Wwo2t8Dtfov7YT27pmbBuQz/jf
+         Hp0lXMS5ZggnkGmfhrAjIkOhfyJr3MU4MyRLSGqJ78LkVbcAv6TxYqsGfoRd66ksCdF9
+         w3mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NZoI/2t89xBZsKpePuesqEGL96FIMPFUNLVpR72Rozg=;
+        b=e7BDFNsQjNKMBlkhlgs+E2MkH0GQtsfAKecuhwxinEiairYO5cTkEdsYGQYvs8PT3Y
+         HnCV/aDiflBVJCKLWF25AyFe7qa6jvGekpEsXqQHJLBU1XqFa0aAzzEwhK3uJm8tcC7o
+         AI4BIjnFKnOqaZRcnEa5ynpVeMsM/SWKPJafpELh65R1HbSkGOwHXksJQwoVHHAHj1F4
+         6mptRVpIdEbG7sfDck3EnIu3WgK77QdsdGUWlxxDU74jnjhPKNa8Y4c3WQ4xxkFID1zi
+         /DMooDkcuq9+Xj26cTIGdzOP3etaSV7VOFoNy7NkDAlRLppH+xB+xpItk9Vs7oYYRLy0
+         0U0g==
+X-Gm-Message-State: AOAM530yZB4GoHFjq3K5kU2G7ZqUOcoSak80UdEZhX5iXF3ZibUEgJAY
+        B+f4V3qc7E7yUoEsh4HkUFSSa60nwRIeeTfAdHY=
+X-Google-Smtp-Source: ABdhPJyBMWkZD2uYn2FqafJci0TEl6KsEXYS9GefAs47Rcnz5EruGKrU3wGb07bVNKki4a1w4hfLPGSN8iSuh7e6ies=
+X-Received: by 2002:a5d:96da:: with SMTP id r26mr34232231iol.47.1629864357564;
+ Tue, 24 Aug 2021 21:05:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+References: <20210821000501.375978-1-seanjc@google.com> <20210821000501.375978-3-seanjc@google.com>
+In-Reply-To: <20210821000501.375978-3-seanjc@google.com>
+From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Date:   Wed, 25 Aug 2021 12:05:45 +0800
+Message-ID: <CAJhGHyB1RjBLRLtaS80XQSTb0g35smxnBQPjEp-BwieKu1cwXw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] KVM: Guard cpusmask NULL check with CONFIG_CPUMASK_OFFSTACK
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Venkatesh Srinivas <venkateshs@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Aug 21, 2021 at 8:09 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Check for a NULL cpumask_var_t when kicking multiple vCPUs if and only if
+> cpumasks are configured to be allocated off-stack.  This is a meaningless
+> optimization, e.g. avoids a TEST+Jcc and TEST+CMOV on x86, but more
+> importantly helps document that the NULL check is necessary even though
+> all callers pass in a local variable.
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  virt/kvm/kvm_main.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 786b914db98f..82c5280dd5ce 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -247,7 +247,7 @@ static void ack_flush(void *_completed)
+>
+>  static inline bool kvm_kick_many_cpus(const struct cpumask *cpus, bool wait)
+>  {
+> -       if (unlikely(!cpus))
+> +       if (IS_ENABLED(CONFIG_CPUMASK_OFFSTACK) && unlikely(!cpus))
+>                 cpus = cpu_online_mask;
+>
+>         if (cpumask_empty(cpus))
+> @@ -277,6 +277,14 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+>                 if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
+>                         continue;
+>
+> +               /*
+> +                * tmp can be NULL if cpumasks are allocated off stack, as
+> +                * allocation of the mask is deliberately not fatal and is
+> +                * handled by falling back to kicking all online CPUs.
+> +                */
+> +               if (IS_ENABLED(CONFIG_CPUMASK_OFFSTACK) && !tmp)
+> +                       continue;
+> +
 
-On 2021/8/25 4:08, Saravana Kannan wrote:
-> On Tue, Aug 24, 2021 at 1:05 PM Rob Herring <robh+dt@kernel.org> wrote:
->> +Saravana
->>
->> Saravana mentioned to me there may be some issues with this one...
->>
->>
->> On Mon, Aug 16, 2021 at 2:43 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->>> of_amba_device_create() uses irq_of_parse_and_map() to translate
->>> a DT interrupt specification into a Linux virtual interrupt number.
->>>
->>> But it doesn't properly handle the case where the interrupt controller
->>> is not yet available, eg, when pl011 interrupt is connected to MBIGEN
->>> interrupt controller, because the mbigen initialization is too late,
->>> which will lead to no IRQ due to no IRQ domain found, log is shown below,
->>>    "irq: no irq domain found for uart0 !"
->>>
->>> use of_irq_get() to return -EPROBE_DEFER as above, and in the function
->>> amba_device_try_add()/amba_device_add(), it will properly handle in such
->>> case, also return 0 in other fail cases to be consistent as before.
->>>
->>> Cc: Russell King <linux@armlinux.org.uk>
->>> Cc: Rob Herring <robh+dt@kernel.org>
->>> Cc: Frank Rowand <frowand.list@gmail.com>
->>> Reported-by: Ruizhe Lin <linruizhe@huawei.com>
->>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>> ---
->>>   drivers/amba/bus.c    | 27 +++++++++++++++++++++++++++
->>>   drivers/of/platform.c |  6 +-----
->>>   2 files changed, 28 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
->>> index 36f2f42c8014..720aa6cdd402 100644
->>> --- a/drivers/amba/bus.c
->>> +++ b/drivers/amba/bus.c
->>> @@ -19,6 +19,7 @@
->>>   #include <linux/clk/clk-conf.h>
->>>   #include <linux/platform_device.h>
->>>   #include <linux/reset.h>
->>> +#include <linux/of_irq.h>
->>>
->>>   #include <asm/irq.h>
->>>
->>> @@ -371,12 +372,38 @@ static void amba_device_release(struct device *dev)
->>>          kfree(d);
->>>   }
->>>
->>> +static int of_amba_device_decode_irq(struct amba_device *dev)
->>> +{
->>> +       struct device_node *node = dev->dev.of_node;
->>> +       int i, irq = 0;
->>> +
->>> +       if (IS_ENABLED(CONFIG_OF_IRQ) && node) {
->>> +               /* Decode the IRQs and address ranges */
->>> +               for (i = 0; i < AMBA_NR_IRQS; i++) {
->>> +                       irq = of_irq_get(node, i);
->>> +                       if (irq < 0) {
->>> +                               if (irq == -EPROBE_DEFER)
->>> +                                       return irq;
->>> +                               irq = 0;
->>> +                       }
->>> +
->>> +                       dev->irq[i] = irq;
->>> +               }
->>> +       }
->>> +
->>> +       return 0;
->>> +}
->>> +
->>>   static int amba_device_try_add(struct amba_device *dev, struct resource *parent)
->>>   {
->>>          u32 size;
->>>          void __iomem *tmp;
->>>          int i, ret;
->>>
->>> +       ret = of_amba_device_decode_irq(dev);
->>> +       if (ret)
->>> +               goto err_out;
->>> +
-> Similar to other resources the AMBA bus "gets" for the device, I think
-> this should be moved into amba_probe() and not here. There's no reason
-> to delay the addition of the device (and loading its module) because
-> the IRQ isn't ready yet.
+Hello, Sean
 
-The following code in the amba_device_try_add() will be called, it uses irq[0]
-and irq[1], so I put of_amba_device_decode_irq() into amba_device_try_add().
+I don't think it is a good idea to reinvent the cpumask_available().
+You can rework the patch as the following code if cpumask_available()
+fits for you.
 
-470         if (dev->irq[0])
-471                 ret = device_create_file(&dev->dev, &dev_attr_irq0);
-472         if (ret == 0 && dev->irq[1])
-473                 ret = device_create_file(&dev->dev, &dev_attr_irq1);
-474         if (ret == 0)
-475                 return ret;
+Thanks
+Lai
 
-of_amba_device_decode_irq() in amba_device_try_add() won't lead to issue,
-only delay the device add, right?
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 3e67c93ca403..ca043ec7ed74 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -245,9 +245,11 @@ static void ack_flush(void *_completed)
+ {
+ }
 
-If make it into amba_probe(), the above code should be moved too, could we
-make a new patch to move both of them, or don't move them?
+-static inline bool kvm_kick_many_cpus(const struct cpumask *cpus, bool wait)
++static inline bool kvm_kick_many_cpus(cpumask_var_t tmp, bool wait)
+ {
+-       if (unlikely(!cpus))
++       const struct cpumask *cpus = tmp;
++
++       if (unlikely(!cpumask_available(tmp)))
+                cpus = cpu_online_mask;
 
+        if (cpumask_empty(cpus))
+@@ -278,7 +280,7 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm,
+unsigned int req,
+                if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
+                        continue;
+
+-               if (tmp != NULL && cpu != -1 && cpu != me &&
++               if (cpumask_available(tmp) && cpu != -1 && cpu != me &&
+                    kvm_request_needs_ipi(vcpu, req))
+                        __cpumask_set_cpu(cpu, tmp);
+        }
+
+>                 /*
+>                  * Note, the vCPU could get migrated to a different pCPU at any
+>                  * point after kvm_request_needs_ipi(), which could result in
+> @@ -288,7 +296,7 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+>                  * were reading SPTEs _before_ any changes were finalized.  See
+>                  * kvm_vcpu_kick() for more details on handling requests.
+>                  */
+> -               if (tmp != NULL && kvm_request_needs_ipi(vcpu, req)) {
+> +               if (kvm_request_needs_ipi(vcpu, req)) {
+>                         cpu = READ_ONCE(vcpu->cpu);
+>                         if (cpu != -1 && cpu != me)
+>                                 __cpumask_set_cpu(cpu, tmp);
+> --
+> 2.33.0.rc2.250.ged5fa647cd-goog
+>
