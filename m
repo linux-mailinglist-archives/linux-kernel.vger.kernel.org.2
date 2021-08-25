@@ -2,172 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186913F7479
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16D23F747D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 13:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240007AbhHYLk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 07:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
+        id S240154AbhHYLmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 07:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbhHYLky (ORCPT
+        with ESMTP id S232199AbhHYLma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 07:40:54 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236CDC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:40:08 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id m4so8290796ljq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EBZuV88pzuw+Utaj04PasP/41EJ4vd/yd+gwCxY9UrU=;
-        b=mZa9ODjFAlloFGduYEqaTO902w+oDyx3AX1SSokAkNLaVDfKLBrLXZbRbxaKd2VsNX
-         CLf9p8nVSdT4Bj8/5mV2PzNe9XR1Gd9xy9RYjvSk3UiHCLUGpRvJX4l3Vq259dcrtmhL
-         8/0MXnNb5kz9KLlqjOPN3SB33PNFiNdXspKaU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EBZuV88pzuw+Utaj04PasP/41EJ4vd/yd+gwCxY9UrU=;
-        b=gK/BYIZ7ZBf5cyHRbrPN5QZhx0AptlomYvUsCJavET/QeA9zdCXuaxKrkxQN3M/3Zc
-         7pYeRXzDNwLIpkcuuvFR1xQO9oJlYzlWoSNRT9LIk1tqvQelewOggr0EyL5my2lNeeQi
-         SkponD0C/PPU5OBLfTCvaxNZVkiBfsOAjW90VvAzeL0JheQ1t5satUabwtCaUywL5g7Y
-         7Kk8mMyE3Um3kw3ZUYSr3FVi2EJ31pR3Zi7yCmyQBnoFrZ73wZ4VHEEjyLH8oVZhZpT1
-         FW5sc0jzRYZEoa9JDMXw14gcSgpggAmH0s8yVS9QzvR08NvJSUUfOvwmg4xNzaapUjSI
-         B8CQ==
-X-Gm-Message-State: AOAM533MdPq581yS8i3qBENbvPR7stZLKRY83jObmV5p8YUkpX2JjSKA
-        fOB+D4rCNEKjrPt3/gtr4IqjdoNlYtvYNCuTioZ4kw==
-X-Google-Smtp-Source: ABdhPJzCtvn8fAS4/q6M3YBoqbcAFrN7nTepCa+MUbbEZGiTzZRCqQ+Z7ipvuJp8aEquToQ/qlt7CrzkIDbTsII0zEs=
-X-Received: by 2002:a2e:8546:: with SMTP id u6mr24817270ljj.185.1629891605061;
- Wed, 25 Aug 2021 04:40:05 -0700 (PDT)
+        Wed, 25 Aug 2021 07:42:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639DBC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 04:41:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5AGmS7Eto84KUFGC/AvW0gjgsXpaZ6zscw0Pb6A8pag=; b=bk17sYXHoy2Kam2mQ+T3GH6ox0
+        bk9tX7PigMoy3fek63Rzuk7af2j4iTv8x7nQUEh+n0h3Jpa7LrJibOmNSC2Dr8Mnlog5SxEmSABrH
+        uDT3lIKwfKd+J0VR16z50udX2Qj9KD0wPk53d8T44WSrC2nuvtgZkovBneJpp7d//o8qOT10UUEYC
+        4FvgtxDTqLUKUCtJnfCv/jMwlt/Fv0OCfpcGNQk2qW/kCP3DU8MEL6R+AwPwPl92lss+MK4TCoiFt
+        7hqh7Qjdzev04H+FAXnFPp0JscekRGNFTfldo9dTisv8Mo1euwikfUvH6TlWhjhdpGomwvzI5eXFF
+        shUbrd/g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIrGb-00CFtA-MM; Wed, 25 Aug 2021 11:40:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 628D7300252;
+        Wed, 25 Aug 2021 13:40:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1E06120EEFE50; Wed, 25 Aug 2021 13:40:24 +0200 (CEST)
+Date:   Wed, 25 Aug 2021 13:40:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [patch 0/2] locking/rtmutex: Cure two subtle bugs
+Message-ID: <YSYsKMlkEIpRBv34@hirez.programming.kicks-ass.net>
+References: <20210825101857.420032248@linutronix.de>
 MIME-Version: 1.0
-References: <20210820111504.350-1-chun-jie.chen@mediatek.com> <20210820111504.350-3-chun-jie.chen@mediatek.com>
-In-Reply-To: <20210820111504.350-3-chun-jie.chen@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 25 Aug 2021 19:39:54 +0800
-Message-ID: <CAGXv+5Eb4ZiXZXURvoApSEk_myhNpEugOhr2DrzvkxGfDKJneg@mail.gmail.com>
-Subject: Re: [v2 02/24] clk: mediatek: Add dt-bindings of MT8195 clocks
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
-        Devicetree List <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825101857.420032248@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 7:17 PM Chun-Jie Chen
-<chun-jie.chen@mediatek.com> wrote:
->
-> Add MT8195 clock dt-bindings, include topckgen, apmixedsys,
-> infracfg_ao, pericfg_ao and subsystem clocks.
->
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> ---
->  include/dt-bindings/clock/mt8195-clk.h | 864 +++++++++++++++++++++++++
->  1 file changed, 864 insertions(+)
->  create mode 100644 include/dt-bindings/clock/mt8195-clk.h
->
-> diff --git a/include/dt-bindings/clock/mt8195-clk.h b/include/dt-bindings/clock/mt8195-clk.h
-> new file mode 100644
-> index 000000000000..95cf812a0b37
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/mt8195-clk.h
-> @@ -0,0 +1,864 @@
+On Wed, Aug 25, 2021 at 12:33:11PM +0200, Thomas Gleixner wrote:
+> The recent updates to rtmutex introduced two subtle bugs:
+> 
+>   1) The spinwait mechanism added a UAF which triggers a BUG_ON()
+> 
+>   2) The ww_mutex addition leaves a waiter queued in the error exit path
+>      resulting in rb tree corruption
+> 
+> The fixes are straight forward, but the rtmutex based ww_mutex
+> implementation still has some more rough egdes which need to be ironed out.
 
-[...]
-
-> +/* WPESYS_VPP0 */
-> +
-> +#define CLK_WPE_VPP0_VECI              0
-> +#define CLK_WPE_VPP0_VEC2I             1
-> +#define CLK_WPE_VPP0_VEC3I             2
-> +#define CLK_WPE_VPP0_WPEO              3
-> +#define CLK_WPE_VPP0_MSKO              4
-> +#define CLK_WPE_VPP0_VGEN              5
-> +#define CLK_WPE_VPP0_EXT               6
-> +#define CLK_WPE_VPP0_VFC               7
-> +#define CLK_WPE_VPP0_CACH0_TOP         8
-> +#define CLK_WPE_VPP0_CACH0_DMA         9
-> +#define CLK_WPE_VPP0_CACH1_TOP         10
-> +#define CLK_WPE_VPP0_CACH1_DMA         11
-> +#define CLK_WPE_VPP0_CACH2_TOP         12
-> +#define CLK_WPE_VPP0_CACH2_DMA         13
-> +#define CLK_WPE_VPP0_CACH3_TOP         14
-> +#define CLK_WPE_VPP0_CACH3_DMA         15
-> +#define CLK_WPE_VPP0_PSP               16
-> +#define CLK_WPE_VPP0_PSP2              17
-> +#define CLK_WPE_VPP0_SYNC              18
-> +#define CLK_WPE_VPP0_C24               19
-> +#define CLK_WPE_VPP0_MDP_CROP          20
-> +#define CLK_WPE_VPP0_ISP_CROP          21
-> +#define CLK_WPE_VPP0_TOP               22
-> +#define CLK_WPE_VPP0_NR_CLK            23
-> +
-> +/* WPESYS_VPP1 */
-> +
-> +#define CLK_WPE_VPP1_VECI              0
-> +#define CLK_WPE_VPP1_VEC2I             1
-> +#define CLK_WPE_VPP1_VEC3I             2
-> +#define CLK_WPE_VPP1_WPEO              3
-> +#define CLK_WPE_VPP1_MSKO              4
-> +#define CLK_WPE_VPP1_VGEN              5
-> +#define CLK_WPE_VPP1_EXT               6
-> +#define CLK_WPE_VPP1_VFC               7
-> +#define CLK_WPE_VPP1_CACH0_TOP         8
-> +#define CLK_WPE_VPP1_CACH0_DMA         9
-> +#define CLK_WPE_VPP1_CACH1_TOP         10
-> +#define CLK_WPE_VPP1_CACH1_DMA         11
-> +#define CLK_WPE_VPP1_CACH2_TOP         12
-> +#define CLK_WPE_VPP1_CACH2_DMA         13
-> +#define CLK_WPE_VPP1_CACH3_TOP         14
-> +#define CLK_WPE_VPP1_CACH3_DMA         15
-> +#define CLK_WPE_VPP1_PSP               16
-> +#define CLK_WPE_VPP1_PSP2              17
-> +#define CLK_WPE_VPP1_SYNC              18
-> +#define CLK_WPE_VPP1_C24               19
-> +#define CLK_WPE_VPP1_MDP_CROP          20
-> +#define CLK_WPE_VPP1_ISP_CROP          21
-> +#define CLK_WPE_VPP1_TOP               22
-> +#define CLK_WPE_VPP1_NR_CLK            23
-
-If WPE_VPP0 and WPE_VPP1 end up being identical hardware, then there's
-no need to have two separate lists.
-
-[...]
-
-> +/* VENCSYS */
-> +
-> +#define CLK_VENC_LARB                  0
-> +#define CLK_VENC_VENC                  1
-> +#define CLK_VENC_JPGENC                        2
-> +#define CLK_VENC_JPGDEC                        3
-> +#define CLK_VENC_JPGDEC_C1             4
-> +#define CLK_VENC_GALS                  5
-> +#define CLK_VENC_NR_CLK                        6
-> +
-> +/* VENCSYS_CORE1 */
-> +
-> +#define CLK_VENC_CORE1_LARB            0
-> +#define CLK_VENC_CORE1_VENC            1
-> +#define CLK_VENC_CORE1_JPGENC          2
-> +#define CLK_VENC_CORE1_JPGDEC          3
-> +#define CLK_VENC_CORE1_JPGDEC_C1       4
-> +#define CLK_VENC_CORE1_GALS            5
-> +#define CLK_VENC_CORE1_NR_CLK          6
-
-Same for VENC and VENC_CORE1.
-
-
-ChenYu
+Thanks!
