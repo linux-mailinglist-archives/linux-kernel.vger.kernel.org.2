@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C853F834F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441153F8344
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240576AbhHZHqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 03:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50518 "EHLO
+        id S240334AbhHZHqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 03:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240420AbhHZHqW (ORCPT
+        with ESMTP id S240179AbhHZHqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 03:46:22 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5ADC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 00:45:35 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id z8-20020a25ad88000000b0059a94ada16fso2240115ybi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 00:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=YHIgrK6tAkKZGZR6Q2TwdOpVzreK8GCVzLPUG55+FFA=;
-        b=rhStSsGxbaIR0MHB9CmSlbRSYrPUet7tGgyJ+OcOlMCUMLgbNQjDUbORc7FcHe1ros
-         eyJjNPIteE6dcBbFrVV4sAG1CfkyctKtYXFUFJFjILiWA67roZgtqUY+kW//6sWFQBuL
-         XJneAy7Kdqhg2gB58jMjQkZIStv8T7VXpY87t6vptrNXwrmktfKWgyxFIcrm88KDaTC2
-         aAKaQZvxNsln4iUtVENNv4blcCIXXIYkyPCXiSrYsxpAC6a0evyoY0kjbsFKYs3rbNcx
-         1GFyICXzmkbexbA2W7BfkCml5A0a+cfdXbMtdQMvqkdvurKKGhfD2RUL/jmX5CZ73WBN
-         TKEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=YHIgrK6tAkKZGZR6Q2TwdOpVzreK8GCVzLPUG55+FFA=;
-        b=MAJwrYOk44Q1AjD119Uv7t0YGkB2vkSZTkueSpIp900eaUenE5Vhv12f0ty9/RuvBZ
-         nBF+ANcNJQun1YzvF9mE8NCxTWlp4QDNgeMXXl70KL83ymgp5f1dB5OIJBD+izeupwjE
-         FmyALPG7LrD5/QBREl9f8mj8i0092M7DVqb4rVpWE+Dpt6bv2G51s0ANXCM9+0m7s+Us
-         09ku/oxcJ/M88PeZVBzSTtH+BQOxWKF69ODe1Xk7YP/MurzDe86KfibWgGYM941/1cOP
-         bU/iZb/e8fM4YJtmjFgHBVyf1Qj7DyZcgJ1atksU3OggspMlb2yuX7fFXLI9IKjKOw9I
-         DNog==
-X-Gm-Message-State: AOAM530hP3RsdSHsBh8DRLR4b0TDHjasYDxAaA/O+QyIQuUbfyMiSSvk
-        lb4wGWjuBYl9Dk11k1pmfj8l2pmei2GWQ4k=
-X-Google-Smtp-Source: ABdhPJycNYDqto2n3MH4BgrRVXIGSmkVWlpLM27lpYHQFpoOpL13Ca6ZU3KzJ3Auys6ImZMCuoSNk0Dqns2CdFc=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:5b7b:56e7:63bf:9b3c])
- (user=saravanak job=sendgmr) by 2002:a25:5ed7:: with SMTP id
- s206mr3728540ybb.387.1629963935137; Thu, 26 Aug 2021 00:45:35 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 00:45:25 -0700
-In-Reply-To: <20210826074526.825517-1-saravanak@google.com>
-Message-Id: <20210826074526.825517-3-saravanak@google.com>
-Mime-Version: 1.0
-References: <20210826074526.825517-1-saravanak@google.com>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH v1 2/2] net: dsa: rtl8366rb: Quick fix to work with fw_devlink=on
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 26 Aug 2021 03:46:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94781C061757;
+        Thu, 26 Aug 2021 00:45:28 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 07:45:25 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629963926;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QQipVrCy1IUbXan70wnQxvoPiTbKRdUwkk2dkrVHTNg=;
+        b=xvbfIWzFiIrC/cBJCZYeDO1x78UcEhi0fK3GvCVmQaf/A/hRnxFcEfH2FFcj+vYT3KPfSr
+        69NCnYzhfSp91z+Y8bNnqbIbUPVFebozpspWkiUx/Cs89LYXAx0aIxRQg+wP8ME6bRUIpr
+        4p6B897g4Ud72hPf0fAqj+Ykotil45yzAX3gfVXZfqb/lYBPzH+5HMaG8okZcLPB2+JMox
+        MpwFDi7qzX53gW7pGcW0/cj4CL1CQqnJBkcCWF3A+pY8aPOubnfvgPbWZ+aWa/+YmcIQGG
+        n1A73TgfkbenMpWx8bRaYNnF8A1Es4wWF+c5SiFTJZeo2+8CUDYZO+3w3mpiNg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629963926;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QQipVrCy1IUbXan70wnQxvoPiTbKRdUwkk2dkrVHTNg=;
+        b=UyUdeGl9GfEmJQoLBCp5fSnUr8roiHdVqCHtFO0z9UrVDB9ZOefK1cOutFWrA82PX0ubru
+        ZDZPDRW+qxZShGDQ==
+From:   "tip-bot2 for Kim Phillips" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] perf/x86/amd/ibs: Extend PERF_PMU_CAP_NO_EXCLUDE to IBS Op
+Cc:     Kim Phillips <kim.phillips@amd.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210817221048.88063-2-kim.phillips@amd.com>
+References: <20210817221048.88063-2-kim.phillips@amd.com>
+MIME-Version: 1.0
+Message-ID: <162996392554.25758.14013242861301575176.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is just a quick fix to make this driver work with fw_devlink=on.
-The proper fix might need a significant amount of rework of the driver
-of the framework to use a component device model.
+The following commit has been merged into the perf/urgent branch of tip:
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
+Commit-ID:     f11dd0d80555cdc8eaf5cfc9e19c9e198217f9f1
+Gitweb:        https://git.kernel.org/tip/f11dd0d80555cdc8eaf5cfc9e19c9e198217f9f1
+Author:        Kim Phillips <kim.phillips@amd.com>
+AuthorDate:    Tue, 17 Aug 2021 17:10:41 -05:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 26 Aug 2021 08:58:02 +02:00
+
+perf/x86/amd/ibs: Extend PERF_PMU_CAP_NO_EXCLUDE to IBS Op
+
+Commit:
+
+   2ff40250691e ("perf/core, arch/x86: Use PERF_PMU_CAP_NO_EXCLUDE for exclusion incapable PMUs")
+
+neglected to do so.
+
+Fixes: 2ff40250691e ("perf/core, arch/x86: Use PERF_PMU_CAP_NO_EXCLUDE for exclusion incapable PMUs")
+Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210817221048.88063-2-kim.phillips@amd.com
 ---
- drivers/net/dsa/realtek-smi-core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/events/amd/ibs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/dsa/realtek-smi-core.c b/drivers/net/dsa/realtek-smi-core.c
-index 8e49d4f85d48..f79c174f4954 100644
---- a/drivers/net/dsa/realtek-smi-core.c
-+++ b/drivers/net/dsa/realtek-smi-core.c
-@@ -394,6 +394,13 @@ static int realtek_smi_probe(struct platform_device *pdev)
- 	var = of_device_get_match_data(dev);
- 	np = dev->of_node;
- 
-+	/* This driver assumes the child PHYs would be probed successfully
-+	 * before this functions returns. That's not a valid assumption, but
-+	 * let fw_devlink know so that this driver continues to function with
-+	 * fw_devlink=on.
-+	 */
-+	np->fwnode.flags |= FWNODE_FLAG_BROKEN_PARENT;
-+
- 	smi = devm_kzalloc(dev, sizeof(*smi) + var->chip_data_sz, GFP_KERNEL);
- 	if (!smi)
- 		return -ENOMEM;
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
-
+diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
+index 921f47b..ccc9ee1 100644
+--- a/arch/x86/events/amd/ibs.c
++++ b/arch/x86/events/amd/ibs.c
+@@ -571,6 +571,7 @@ static struct perf_ibs perf_ibs_op = {
+ 		.start		= perf_ibs_start,
+ 		.stop		= perf_ibs_stop,
+ 		.read		= perf_ibs_read,
++		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
+ 	},
+ 	.msr			= MSR_AMD64_IBSOPCTL,
+ 	.config_mask		= IBS_OP_CONFIG_MASK,
