@@ -2,127 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAB83F8837
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A423F883B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242485AbhHZNAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:00:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:29966 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232667AbhHZNAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:00:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629982783; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=vNEMBaGIbgQu53uZUr40P4nXthIpVErA1efIhAAM6Sg=;
- b=BiK+kSPo6mHYbo39xZs7FQLvrQOQe9vMo645haDqoJPOeXgUhuWrW33bHdJVTWz1uhbYH3cj
- hPlgwZq8T0tOc95gTtQ0gjojIBy2aqylJ2mpCt+aMGTaYlgZXvayp8be0bhOqpH0sSn6dIwC
- HagmHWSt9Wa6ajXT5bFbvnY2alQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6127903e096d475c7c85a7bd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Aug 2021 12:59:42
- GMT
-Sender: rajpat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 88886C4360C; Thu, 26 Aug 2021 12:59:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajpat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D70EAC43460;
-        Thu, 26 Aug 2021 12:59:41 +0000 (UTC)
+        id S242511AbhHZNBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242494AbhHZNA5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 09:00:57 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344CFC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:00:10 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id g18so818801vkq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ocFFaMnpP/NK5k6jGasl64HMse3t1Sh2zr+zn0SwV+M=;
+        b=MKdgsD3skHusjl9BNP/Q3G/9e20/iXnmW0VTMNm31s2zKx3/EqdUj3fwoNAsi/G3s+
+         yKi3kFV4DzuNUImg5s8PfOD6inHbj/5N00EC1fy4Ri6GislaYs0uFkucQ4RH8VIiiYX7
+         DhHWuH0bIeXdXtcPSDoXHWP0Sqpk5xbyYnbp0APV85I9EAwb+vVk96FFMvafuntQtd2v
+         vwLei9S9sMdtlIe4yedOC4NjT04WjNkCCs6sEtGd+NYhjFioLxLnHVPSUNJwSi0R7163
+         YGqpBuy1DSNxcFHZTUk9K32tkPegiVCF6ojaIaIoiEFsu8Atywmy06oBOEA4u3P7EnCW
+         9Asg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ocFFaMnpP/NK5k6jGasl64HMse3t1Sh2zr+zn0SwV+M=;
+        b=PzWJQIzFx1Ecbc963n+iLstm2qQmHKpkm6flwBKRNbvq+ZNOSOWMrrpegMwxWBn0He
+         6WS7ZJ3TSi93s1AVJlPO2OeH+xI+sQM0tbtEsk01bsAD/nij0hty05c3LKljEbxkMNBV
+         9JL/O17qay+XNdGJzb58KfqzZZ5t0ifO6w8sIw9XIySqWiJ9zfJ9px9Ixn44d3IGfG+g
+         TnubPFiJDkpEGjyYhy0BPQFtdrFgTff089pEr3mUWoOXvER2TIok97Nz/PUDL7CE9+iM
+         yrBYmQcvVbQsSwZF1B2Aw9OmhV2gsbaIXE5SfWWvvxAnSwEJo4aE+7anRHDkuFagJIS4
+         TaHA==
+X-Gm-Message-State: AOAM532nX/cHXV/PZeZsSV/t4Yhl+sCMHp7ZhrbKMQe16fBL/RhptsLx
+        UWpQS/xcrqBfdcC6IKi7HuN4sxVd6gyBho4W4OU=
+X-Google-Smtp-Source: ABdhPJw3aw85jut73xut5Y2i6V/6gxTcFzKq2kOS6bgJFbpSwBicdQkFyh7ayj+OYPNpfBvqMtHwF512RYxlTaGstBI=
+X-Received: by 2002:a1f:90cd:: with SMTP id s196mr1638807vkd.5.1629982808785;
+ Thu, 26 Aug 2021 06:00:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 26 Aug 2021 18:29:41 +0530
-From:   rajpat@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org
-Subject: Re: [PATCH V5 1/7] arm64: dts: sc7280: Add QSPI node
-In-Reply-To: <YRUdccjvf+ivbqor@google.com>
-References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
- <1628754078-29779-2-git-send-email-rajpat@codeaurora.org>
- <YRUdccjvf+ivbqor@google.com>
-Message-ID: <d271d1dafe56cbb58d35a63ec6944b14@codeaurora.org>
-X-Sender: rajpat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210826121006.685257-1-michael@walle.cc> <20210826121006.685257-2-michael@walle.cc>
+In-Reply-To: <20210826121006.685257-2-michael@walle.cc>
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+Date:   Thu, 26 Aug 2021 14:59:57 +0200
+Message-ID: <CAH9NwWcFdt=C=aEp48462wXA6Q47CvTVoRQawyZMuPwwgVzzUA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] drm/etnaviv: use PLATFORM_DEVID_NONE
+To:     Michael Walle <michael@walle.cc>
+Cc:     The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Lukas F . Hartmann" <lukas@mntre.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-12 18:39, Matthias Kaehlcke wrote:
-> On Thu, Aug 12, 2021 at 01:11:12PM +0530, Rajesh Patil wrote:
->> From: Roja Rani Yarubandi <rojay@codeaurora.org>
->> 
->> Add QSPI DT node and qspi_opp_table for SC7280 SoC.
->> 
->> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
->> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 62 
->> ++++++++++++++++++++++++++++++++++++
->>  1 file changed, 62 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 53a21d0..f8dd5ff 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -415,6 +415,25 @@
->>  		method = "smc";
->>  	};
->> 
->> +	qspi_opp_table: qspi-opp-table {
->> +		compatible = "operating-points-v2";
->> +
->> +		opp-75000000 {
->> +			opp-hz = /bits/ 64 <75000000>;
->> +			required-opps = <&rpmhpd_opp_low_svs>;
->> +		};
->> +
->> +		opp-150000000 {
->> +			opp-hz = /bits/ 64 <150000000>;
->> +			required-opps = <&rpmhpd_opp_svs>;
->> +		};
->> +
->> +		opp-300000000 {
->> +			opp-hz = /bits/ 64 <300000000>;
->> +			required-opps = <&rpmhpd_opp_nom>;
->> +		};
->> +	};
->> +
-> 
-> From v3:
-> 
-> roja> Can we move this "qspi_opp_table" to / from /soc?
-> 
-> bjorn> If you have made a proper attempt to convince Rob and Mark that
-> bjorn> a child "opp-table" in a SPI master is not a SPI device - and 
-> the
-> bjorn> conclusion is that this is not a good idea...then yes it should 
-> live
-> bjorn> outside /soc.
-> 
-> I didn't see a follow up on this, was such an attempt made? Is there a
-> link to the discussion?
+Am Do., 26. Aug. 2021 um 14:10 Uhr schrieb Michael Walle <michael@walle.cc>:
+>
+> There is already a macro for the magic value. Use it.
+>
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-For now I am keeping qspi_opp_table  and qup_opp_table outside the SoC 
-and posting V6.
-I will continue the discussion with DT folks and once concluded I will 
-update as required.
+Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+
+I will wait for v2 for the rest of the changes to review.
+
+> ---
+>  drivers/gpu/drm/etnaviv/etnaviv_drv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> index 7dcc6392792d..2509b3e85709 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> @@ -653,7 +653,7 @@ static int __init etnaviv_init(void)
+>                 if (!of_device_is_available(np))
+>                         continue;
+>
+> -               pdev = platform_device_alloc("etnaviv", -1);
+> +               pdev = platform_device_alloc("etnaviv", PLATFORM_DEVID_NONE);
+>                 if (!pdev) {
+>                         ret = -ENOMEM;
+>                         of_node_put(np);
+> --
+> 2.30.2
+>
+
+
+-- 
+greets
+--
+Christian Gmeiner, MSc
+
+https://christian-gmeiner.info/privacypolicy
