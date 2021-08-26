@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CF03F8E4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0764E3F8E83
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243467AbhHZS6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:58:13 -0400
-Received: from mga02.intel.com ([134.134.136.20]:14395 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243427AbhHZS6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:58:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="205021944"
-X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
-   d="scan'208";a="205021944"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 11:57:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
-   d="scan'208";a="444679450"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 26 Aug 2021 11:57:24 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
-        by linux.intel.com (Postfix) with ESMTP id A374F5808BC;
-        Thu, 26 Aug 2021 11:57:24 -0700 (PDT)
-Message-ID: <6e7f25a8a4c46ebf19238d9ad6708b490a157784.camel@linux.intel.com>
-Subject: Re: [PATCH] mfd: intel_pmt: Only compile on x86
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Prarit Bhargava <prarit@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>
-Date:   Thu, 26 Aug 2021 11:57:24 -0700
-In-Reply-To: <b075d481-f1a3-22d5-24b7-0b170d2908a1@redhat.com>
-References: <20210825125735.621799-1-prarit@redhat.com>
-         <b075d481-f1a3-22d5-24b7-0b170d2908a1@redhat.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S243339AbhHZTPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 15:15:02 -0400
+Received: from mailfilter04-out40.webhostingserver.nl ([195.211.73.157]:61551
+        "EHLO mailfilter04-out40.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237981AbhHZTO4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 15:14:56 -0400
+X-Greylist: delayed 963 seconds by postgrey-1.27 at vger.kernel.org; Thu, 26 Aug 2021 15:14:56 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=exalondelft.nl; s=whs1;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+         from;
+        bh=67cnWy3rW/WRnFpQePp6vVIJLxw7FP6uaLsSK01XjKk=;
+        b=LkpAVlIBxEC0Tl02Rax81B/yHLLCoLYqsROgvkNUu1r75o3tmc1N0/SOg0G4ZwtdARAFQ7ES0Lvpf
+         rYiwxxXvztzsmoeDTA4dV9vBDUoWZbdWnGJKYadL+aZGlZLVtTa4kBVGuk9Eo//1+mqpVdzqkCjdpw
+         xZfqeGX3yQ7/H/KEtrDVKdg0jdQkhacaLxonW/0ktY/+snjRRKBkFm3f7mrzScexeoISLsJyIBhncS
+         tbW4yqKOqZRJALibjYS90HNnqhMx1UI44OShRAI5Pi0KXo3tsq7LSiHQmWRgkGa35EJbEifMlKjVxG
+         nY1ylJoJqSdiENSsubR7W7ln9vMx2mA==
+X-Halon-ID: 8ac6b3ea-069f-11ec-8938-001a4a4cb95f
+Received: from s198.webhostingserver.nl (s198.webhostingserver.nl [141.138.168.154])
+        by mailfilter04.webhostingserver.nl (Halon) with ESMTPSA
+        id 8ac6b3ea-069f-11ec-8938-001a4a4cb95f;
+        Thu, 26 Aug 2021 20:58:04 +0200 (CEST)
+Received: from [2001:981:6fec:1:f9ad:97f3:2f9b:d8ba] (helo=localhost.localdomain)
+        by s198.webhostingserver.nl with esmtpa (Exim 4.94.2)
+        (envelope-from <ftoth@exalondelft.nl>)
+        id 1mJKZh-009E4p-KA; Thu, 26 Aug 2021 20:58:03 +0200
+From:   Ferry Toth <ftoth@exalondelft.nl>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ferry Toth <ftoth@exalondelft.nl>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Jack Pham <jackp@codeaurora.org>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     Lorenzo Colitti <lorenzo@google.com>,
+        Wesley Cheng <wcheng@codeaurora.org>, robh+dt@kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        frowand.list@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: [PATCH v2 0/3] Revert "usb: gadget: u_audio: add real feedback implementation"
+Date:   Thu, 26 Aug 2021 20:57:36 +0200
+Message-Id: <20210826185739.3868-1-ftoth@exalondelft.nl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-26 at 15:19 +0200, Hans de Goede wrote:
-> Hi,
-> 
-> On 8/25/21 2:57 PM, Prarit Bhargava wrote:
-> > The intel_pmt driver shows up as a compile option for all arches
-> > but is
-> > 32-bit and 64-bit x86 specific.
-> > 
-> > Add a CONFIG dependency on X86 for intel_pmt.
-> > 
-> > Signed-off-by: Prarit Bhargava <prarit@redhat.com>
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > Cc: David E. Box <david.e.box@linux.intel.com>
-> > Cc: Hans de Goede <hdegoede@redhat.com>
-> 
-> Thanks, patch looks good to me:
-> 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> Regards,
-> 
-> Hans
+Although there is a patch resolving this issue (see 
+https://lore.kernel.org/linux-usb/1jilzsy8g7.fsf@starbuckisacylon.baylibre.com/T/#u)
+it needs a little work and will not be ready for v5.14.0 release. Until then
+revert the series.
 
-Okay by me.
+v2:
+- Added SoB (Balbi)
 
-Reviewed-by: David E. Box <david.e.box@linux.intel.com>
 
-> 
-> 
-> 
-> > ---
-> >  drivers/mfd/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > index 6a3fd2d75f96..0f12b00955b4 100644
-> > --- a/drivers/mfd/Kconfig
-> > +++ b/drivers/mfd/Kconfig
-> > @@ -676,7 +676,7 @@ config MFD_INTEL_PMC_BXT
-> >  
-> >  config MFD_INTEL_PMT
-> >         tristate "Intel Platform Monitoring Technology (PMT)
-> > support"
-> > -       depends on PCI
-> > +       depends on X86 && PCI
-> >         select MFD_CORE
-> >         help
-> >           The Intel Platform Monitoring Technology (PMT) is an
-> > interface that
-> > 
-> 
+Ferry Toth (3):
+  Revert "usb: gadget: u_audio: add real feedback implementation"
+  Revert "usb: gadget: f_uac2: add adaptive sync support for capture"
+  Revert "usb: gadget: f_uac2/u_audio: add feedback endpoint support"
 
+ .../ABI/testing/configfs-usb-gadget-uac2      |   2 -
+ Documentation/usb/gadget-testing.rst          |   2 -
+ drivers/usb/gadget/function/f_uac2.c          | 144 +----------
+ drivers/usb/gadget/function/u_audio.c         | 225 +-----------------
+ drivers/usb/gadget/function/u_audio.h         |  12 -
+ drivers/usb/gadget/function/u_uac2.h          |   4 -
+ 6 files changed, 6 insertions(+), 383 deletions(-)
+
+-- 
+2.30.2
 
