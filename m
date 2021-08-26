@@ -2,107 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34353F8002
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBD13F8008
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236103AbhHZBrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 21:47:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229514AbhHZBrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 21:47:05 -0400
-Received: from rorschach.local.home (unknown [24.94.146.150])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D07660FDC;
-        Thu, 26 Aug 2021 01:46:17 +0000 (UTC)
-Date:   Wed, 25 Aug 2021 21:45:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: [ANNOUNCE] 5.10.59-rt52
-Message-ID: <20210825214556.00baf202@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236746AbhHZBtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 21:49:45 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:48309 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231628AbhHZBtn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 21:49:43 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id D04365C01E8;
+        Wed, 25 Aug 2021 21:48:56 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 25 Aug 2021 21:48:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=m1lhmJms4+1nndgAIYcXtKFwc8
+        ZBa3GzL0GQeQRINrQ=; b=wCAA+DKJw0HSE5MO+I0vSxOUa//r8fqQKyNiw5kxKB
+        21mc3JsBdZVaNq/KxssjHaKbGCZ1YGFu6De+WwYwetXP5MoGBdcGoU2cFotUH24Q
+        T63ha/R/uAWYqR/MOwn54sHYicsL26/NcPzNm6j0K9u/bXyXPDzVFLSPev1Cto70
+        6LUM4lgHyYuhOyPaOfKZwNe2wyr4tJmDsP1upKojYwtE3X7LwVg4Vo5zxTmFud3M
+        /kFuPAwAScw66jqy94iEVMrrNW+MEfMnis4isUvKy6lUm18dnAv0+YAW4CNXwDir
+        9TNaFhcVVGtbQIK57dNjmPlrN9wUW2ON132+PCLOoHBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=m1lhmJms4+1nndgAI
+        YcXtKFwc8ZBa3GzL0GQeQRINrQ=; b=NkqyHTzt3y/NltV8r1EfBcadIu9GYhiiq
+        dbkb7P1Ohu4sF6tOInmq+7RoZ2X/cqdEFh6h/1w698WfuZD7GZuPwHIkYcD+P0Or
+        Hcxg+mtIlszhZzfXLwR9pDO/M7PSHsrMMcmgY7pusU+9i4+yL6vYq5KMtykT9dQC
+        BhnslSqnXJhf8u3p3446yUlff5VLIG34+q9nXH4BuBzM5RqHFzGEIu2p/IqJl0Oq
+        Ju+f+NppwGoJEvnYH3P4wQaO4dlUb9ivWpeBqPljAipPZySWmJLSEgGmvewVtH6P
+        ZeoMGph/RD8uHCB9oLUiIL49rlz+26EtIpmN8g9jolcsZoERLX6EA==
+X-ME-Sender: <xms:CPMmYWlpICjsl-k8Q9b4nIYMkNXjDluD0wNh2AV0l1pyVDbKocfGLw>
+    <xme:CPMmYd1TQ7eLKuCp5DHR118cdMpb8m76cdjtLmtIFuUokocBBbJtn5qqEfRt7HOjZ
+    KL7nioHE2Ykmf0G0w>
+X-ME-Received: <xmr:CPMmYUqbH3L72Wo8Cs6DZEl61i1oWDQIqVOeQXlBl5zbWdzir24ejENeqN7NTYoCc19YJnOBpGAVSAEbX6ycBFWjKGyk_i74n8PB4zSNHXYFhw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddutddghedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
+    effeeivdefheeiveevjeduieeigfetieevieffffenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:CPMmYakGFZZ4zi-P6s3LQL-notcKtDCq3oL6b8OvyKlJhWJPuoh0Ig>
+    <xmx:CPMmYU1w_7htRstqMGxbINUQ2SS7mNaD7mTfxGQMQxDX75VOoN6szQ>
+    <xmx:CPMmYRubihF0SXrC6DVhQRsgLnJogYJCFQ7omaxCdBjrMRDL1JwcxA>
+    <xmx:CPMmYXRIa4ZlL_Fovgika4-cIAsbZ82QAluV4raC7YMDg3VI1i--rg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Aug 2021 21:48:55 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, ast@kernel.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH bpf-next] bpf: Fix bpf-next builds without CONFIG_BPF_EVENTS
+Date:   Wed, 25 Aug 2021 18:48:31 -0700
+Message-Id: <05d94748d9f4b3eecedc4fddd6875418a396e23c.1629942444.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This commit fixes linker errors along the lines of:
 
-Dear RT Folks,
+    s390-linux-ld: task_iter.c:(.init.text+0xa4): undefined reference to `btf_task_struct_ids'`
 
-I'm pleased to announce the 5.10.59-rt52 stable release.
+Fix by defining btf_task_struct_ids unconditionally in kernel/bpf/btf.c
+since there exists code that unconditionally uses btf_task_struct_ids.
 
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v5.10-rt
-  Head SHA1: da75d2161ca1104184e4f903e2753cd41b90fbc3
-
-
-Or to build 5.10.59-rt52 directly, the following patches should be applied:
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.59.xz
-
-  http://www.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.59-rt52.patch.xz
-
-
-
-You can also build from 5.10.59-rt51 by applying the incremental patch:
-
-  http://www.kernel.org/pub/linux/kernel/projects/rt/5.10/incr/patch-5.10.59-rt51-rt52.patch.xz
-
-
-
-Enjoy,
-
--- Steve
-
-
-Changes from v5.10.59-rt51:
-
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
+ include/linux/btf_ids.h  | 1 +
+ kernel/bpf/btf.c         | 2 ++
+ kernel/trace/bpf_trace.c | 2 --
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
-Andrew Halaney (1):
-      locking/rwsem-rt: Remove might_sleep() in __up_read()
-
-Steven Rostedt (VMware) (1):
-      Linux 5.10.59-rt52
-
-----
- kernel/locking/rwsem-rt.c | 1 -
- localversion-rt           | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
----------------------------
-diff --git a/kernel/locking/rwsem-rt.c b/kernel/locking/rwsem-rt.c
-index 274172d5bb3a..b61edc4dcb73 100644
---- a/kernel/locking/rwsem-rt.c
-+++ b/kernel/locking/rwsem-rt.c
-@@ -198,7 +198,6 @@ void __up_read(struct rw_semaphore *sem)
- 	if (!atomic_dec_and_test(&sem->readers))
- 		return;
+diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+index 93d881ab0d48..47d9abfbdb55 100644
+--- a/include/linux/btf_ids.h
++++ b/include/linux/btf_ids.h
+@@ -151,6 +151,7 @@ extern struct btf_id_set name;
+ #define BTF_ID_UNUSED
+ #define BTF_ID_LIST_GLOBAL(name) u32 name[1];
+ #define BTF_ID_LIST_SINGLE(name, prefix, typename) static u32 name[1];
++#define BTF_ID_LIST_GLOBAL_SINGLE(name, prefix, typename) u32 name[1];
+ #define BTF_SET_START(name) static struct btf_id_set name = { 0 };
+ #define BTF_SET_START_GLOBAL(name) static struct btf_id_set name = { 0 };
+ #define BTF_SET_END(name)
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index c395024610ed..dfe61df4f974 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6213,3 +6213,5 @@ const struct bpf_func_proto bpf_btf_find_by_name_kind_proto = {
+ 	.arg3_type	= ARG_ANYTHING,
+ 	.arg4_type	= ARG_ANYTHING,
+ };
++
++BTF_ID_LIST_GLOBAL_SINGLE(btf_task_struct_ids, struct, task_struct)
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 580e14ee7ff9..8e2eb950aa82 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -714,8 +714,6 @@ BPF_CALL_0(bpf_get_current_task_btf)
+ 	return (unsigned long) current;
+ }
  
--	might_sleep();
- 	raw_spin_lock_irq(&m->wait_lock);
- 	/*
- 	 * Wake the writer, i.e. the rtmutex owner. It might release the
-diff --git a/localversion-rt b/localversion-rt
-index 75493460c41f..66a5ed8bf3d7 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt51
-+-rt52
+-BTF_ID_LIST_GLOBAL_SINGLE(btf_task_struct_ids, struct, task_struct)
+-
+ const struct bpf_func_proto bpf_get_current_task_btf_proto = {
+ 	.func		= bpf_get_current_task_btf,
+ 	.gpl_only	= true,
+-- 
+2.33.0
+
