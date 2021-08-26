@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB0E3F8E11
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCF63F8E12
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243394AbhHZSoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:44:08 -0400
-Received: from smtprelay0046.hostedemail.com ([216.40.44.46]:54980 "EHLO
+        id S243416AbhHZSoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:44:11 -0400
+Received: from smtprelay0104.hostedemail.com ([216.40.44.104]:57314 "EHLO
         smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S243393AbhHZSoG (ORCPT
+        by vger.kernel.org with ESMTP id S243403AbhHZSoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:44:06 -0400
+        Thu, 26 Aug 2021 14:44:07 -0400
 Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 008ED837F27E;
-        Thu, 26 Aug 2021 18:43:17 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 054AB1D42F7;
-        Thu, 26 Aug 2021 18:43:16 +0000 (UTC)
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A710A1803007D;
+        Thu, 26 Aug 2021 18:43:19 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id BBE1E1D42F9;
+        Thu, 26 Aug 2021 18:43:18 +0000 (UTC)
 From:   Joe Perches <joe@perches.com>
-To:     Don Brace <don.brace@microchip.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        storagedev@microchip.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] scsi: smartpqi: Use vsprintf %phNX extension
-Date:   Thu, 26 Aug 2021 11:43:04 -0700
-Message-Id: <31db4db01d24e5178188f48adc5acba6c8047316.1630003183.git.joe@perches.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev
+Subject: [PATCH 5/5] staging: r8188eu: Use vsprintf extension %phCX to format a copy_to_user string
+Date:   Thu, 26 Aug 2021 11:43:05 -0700
+Message-Id: <152e1b8f84c4686ea38182ca55344ed7f2cede65.1630003183.git.joe@perches.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <cover.1630003183.git.joe@perches.com>
 References: <cover.1630003183.git.joe@perches.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=4.61
-X-Stat-Signature: dkghw7fcxo96pwthgsbw3xud47jefwut
+X-Spam-Status: No, score=4.66
+X-Stat-Signature: ab6nzgakbqugzjeurgc7cy4cu8dz1on6
 X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 054AB1D42F7
+X-Rspamd-Queue-Id: BBE1E1D42F9
 X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18aJ2uDYrib1nqIWyemTIPTjkSl3+EHeeo=
-X-HE-Tag: 1630003396-209518
+X-Session-ID: U2FsdGVkX1+N6Mu0fGd+avw1CnU4q7RlWdcsdUObJS4=
+X-HE-Tag: 1630003398-525352
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce object size by using the %phNX extension to format a sysfs output
-buffer with identical output.
+This reduces object size without changing the string content.
 
-compiled x86-64 defconfig w/ smartpqi and gcc 10.3.0
+compiled x86-64 defconfig w/ r8188eu and gcc 10.3.0
 
-$ size drivers/scsi/smartpqi/smartpqi_init.o*
+$ size drivers/staging/r8188eu/os_dep/ioctl_linux.o*
    text	   data	    bss	    dec	    hex	filename
-  69791	   2205	     48	  72044	  1196c	drivers/scsi/smartpqi/smartpqi_init.o.new
-  69950	   2205	     48	  72203	  11a0b	drivers/scsi/smartpqi/smartpqi_init.o.old
+  72556	   1548	      0	  74104	  12178	drivers/staging/r8188eu/os_dep/ioctl_linux.o.new
+  72758	   1548	      0	  74306	  12242	drivers/staging/r8188eu/os_dep/ioctl_linux.o.old
 
 Signed-off-by: Joe Perches <joe@perches.com>
 ---
- drivers/scsi/smartpqi/smartpqi_init.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-index ecb2af3f43ca3..eb39490b196cc 100644
---- a/drivers/scsi/smartpqi/smartpqi_init.c
-+++ b/drivers/scsi/smartpqi/smartpqi_init.c
-@@ -6674,13 +6674,7 @@ static ssize_t pqi_unique_id_show(struct device *dev,
+diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+index ab4a9200f0791..048164659d872 100644
+--- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+@@ -2907,10 +2907,8 @@ static int rtw_p2p_get_groupid(struct net_device *dev,
+ 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
+ 	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
  
- 	spin_unlock_irqrestore(&ctrl_info->scsi_device_list_lock, flags);
+-	sprintf(extra, "\n%.2X:%.2X:%.2X:%.2X:%.2X:%.2X %s",
+-		pwdinfo->groupid_info.go_device_addr[0], pwdinfo->groupid_info.go_device_addr[1],
+-		pwdinfo->groupid_info.go_device_addr[2], pwdinfo->groupid_info.go_device_addr[3],
+-		pwdinfo->groupid_info.go_device_addr[4], pwdinfo->groupid_info.go_device_addr[5],
++	sprintf(extra, "\n%pM %s",
++		pwdinfo->groupid_info.go_device_addr,
+ 		pwdinfo->groupid_info.ssid);
+ 	wrqu->data.length = strlen(extra);
+ 	return ret;
+@@ -3075,8 +3073,7 @@ static int rtw_p2p_get_go_device_address(struct net_device *dev,
+ 	if (!blnMatch)
+ 		sprintf(go_devadd_str, "\n\ndev_add = NULL");
+ 	else
+-		sprintf(go_devadd_str, "\ndev_add =%.2X:%.2X:%.2X:%.2X:%.2X:%.2X",
+-			attr_content[0], attr_content[1], attr_content[2], attr_content[3], attr_content[4], attr_content[5]);
++		sprintf(go_devadd_str, "\ndev_add =%6phCX", attr_content);
  
--	return scnprintf(buffer, PAGE_SIZE,
--		"%02X%02X%02X%02X%02X%02X%02X%02X"
--		"%02X%02X%02X%02X%02X%02X%02X%02X\n",
--		unique_id[0], unique_id[1], unique_id[2], unique_id[3],
--		unique_id[4], unique_id[5], unique_id[6], unique_id[7],
--		unique_id[8], unique_id[9], unique_id[10], unique_id[11],
--		unique_id[12], unique_id[13], unique_id[14], unique_id[15]);
-+	return scnprintf(buffer, PAGE_SIZE, "%16phNX\n", unique_id);
- }
- 
- static ssize_t pqi_lunid_show(struct device *dev,
+ 	if (copy_to_user(wrqu->data.pointer, go_devadd_str, 10 + 17))
+ 		return -EFAULT;
 -- 
 2.30.0
 
