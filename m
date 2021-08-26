@@ -2,140 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678C43F82F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35533F82FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240242AbhHZHQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 03:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240109AbhHZHQs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S240362AbhHZHQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 03:16:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:40270 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240111AbhHZHQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 26 Aug 2021 03:16:48 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695CDC061757;
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8674E1042;
         Thu, 26 Aug 2021 00:16:01 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id 2so1969959pfo.8;
-        Thu, 26 Aug 2021 00:16:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ABjNhP2gy40aUcdUMsv9ukpTDQl/Hf7OG0QTpeYrhCY=;
-        b=jiL6os6V6Maudeg+konCqokW7+3CdtOmCY4XhejQXcPxW11lEBdzStFTi18fv1+pF8
-         EObhGbcf/6FRI8H572DKJKOtWWOFvGxqq1LZ8+ul12ikdkgvyCYXC/IbMQ15aHz5kkv6
-         Yvf4SOma5/hop3OOnPpgtEZmoulQoqcZi1fn6FqMni2R9W8kPkH939iCihFPeqsR87Uh
-         iExH//M+XlBBQ02c2E3jWS4Jf8D88panUOC64lGZWoQRF4OKDtVEXobfMUDMlHLIvWdm
-         b90gV1tl1/Sx56yaLHBeJMuM84ouS41RcOXb1qCJAzMbd5cH6iLleQ15cs9IFAwJ4+96
-         VFRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ABjNhP2gy40aUcdUMsv9ukpTDQl/Hf7OG0QTpeYrhCY=;
-        b=L8CKgtpIBktpgwRTEfJT41hL0eN+yxbNLZllEgmaqWUH2tHaTsM/bPr+cmXpDfePE4
-         TCb7/bP1qxKCryck7K0Ci84ywBWoIjJqGwB44Xhwuo03mnnhyPwzjqMcSoyWOQ4AlrRE
-         86atPyS7JRyV3urj/vBUc/QULVXQ9r33F4vjwHS2AbbpW4bNSWr/mos4xc1G25TlQpIv
-         rOKFkEdmClOL6Y7eN3aq+HkEPFmQi6D3ELOzMDyiZsewTK+cW9ZUj/gopvEqomDblSY9
-         XYV5VDKkzUzjbd5ar3m0PGZds1f/MukaN3Dv1hFPdu70oM+HpyFOACuq69t8wI30dwpw
-         NDyA==
-X-Gm-Message-State: AOAM532RXe5fxHiSqNp6JdUuW5gq/GLmCiPFuiDXr05mbCdTtt+5jLTr
-        /dSkxKfrU8bXzSSE+g6xJUI=
-X-Google-Smtp-Source: ABdhPJyIDsYfXofx6NjbJNU4vScDzfiLT5YUKj52vpA5jIoerwylz8GT6fAYvM0o5ONvE/fD+f9YaA==
-X-Received: by 2002:a65:6084:: with SMTP id t4mr2145300pgu.25.1629962160271;
+Received: from u200856.usa.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 084753F5A1;
         Thu, 26 Aug 2021 00:16:00 -0700 (PDT)
-Received: from jianchwadeMacBook-Pro.local ([162.219.34.243])
-        by smtp.gmail.com with ESMTPSA id w16sm1911352pff.130.2021.08.26.00.15.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 00:15:59 -0700 (PDT)
-Subject: Re: [PATCH V3 4/5] ext4: get discard out of jbd2 commit kthread
- contex
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-5-jianchao.wan9@gmail.com>
- <20210804154530.GL4578@quack2.suse.cz>
-From:   Wang Jianchao <jianchao.wan9@gmail.com>
-Message-ID: <6621227f-e710-2fa2-bc09-c4c66c34eb14@gmail.com>
-Date:   Thu, 26 Aug 2021 15:15:55 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+From:   Jeremy Linton <jeremy.linton@arm.com>
+To:     linux-pci@vger.kernel.org
+Cc:     lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
+        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jeremy Linton <jeremy.linton@arm.com>
+Subject: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
+Date:   Thu, 26 Aug 2021 02:15:55 -0500
+Message-Id: <20210826071557.29239-3-jeremy.linton@arm.com>
+X-Mailer: git-send-email 2.26.3
+In-Reply-To: <20210826071557.29239-1-jeremy.linton@arm.com>
+References: <20210826071557.29239-1-jeremy.linton@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210804154530.GL4578@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Pi Firmware Task Force (PFTF: https://github.com/pftf) Compute
+Module 4 (CM4: an embedded form factor RPi4) is an ACPI platform that
+isn't ECAM compliant. Its config space is in two parts. One part is for
+the root port registers and a second moveable window pointing at a
+device's 4K config space. Thus it doesn't have an MCFG, and any MCFG
+provided would be nonsense anyway.
 
+Instead, a custom pci_ecam_ops quirk is created. The custom ops override
+the .init and .map_bus functions. The former to assure that cfg->win
+points at a single mapping that contains the root port registers and the
+device config window, as well as disabling MSIs due to lack of a
+GICv2M. map_bus() then provides the address of either the standard
+portion of the root port registers or to the device config window after
+it has been moved.
 
-On 2021/8/4 11:45 PM, Jan Kara wrote:
-> On Sat 24-07-21 15:41:23, Wang Jianchao wrote:
->> From: Wang Jianchao <wangjianchao@kuaishou.com>
->>
->> Right now, discard is issued and waited to be completed in jbd2
->> commit kthread context after the logs are committed. When large
->> amount of files are deleted and discard is flooding, jbd2 commit
->> kthread can be blocked for long time. Then all of the metadata
->> operations can be blocked to wait the log space.
->>
->> One case is the page fault path with read mm->mmap_sem held, which
->> wants to update the file time but has to wait for the log space.
->> When other threads in the task wants to do mmap, then write mmap_sem
->> is blocked. Finally all of the following read mmap_sem requirements
->> are blocked, even the ps command which need to read the /proc/pid/
->> -cmdline. Our monitor service which needs to read /proc/pid/cmdline
->> used to be blocked for 5 mins.
->>
->> This patch frees the blocks back to buddy after commit and then do
->> discard in a async kworker context in fstrim fashion, namely,
->>  - mark blocks to be discarded as used if they have not been allocated
->>  - do discard
->>  - mark them free
->> After this, jbd2 commit kthread won't be blocked any more by discard
->> and we won't get NOSPC even if the discard is slow or throttled.
->>
->> Link: https://marc.info/?l=linux-kernel&m=162143690731901&w=2
->> Suggested-by: Theodore Ts'o <tytso@mit.edu>
->> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
-> 
-> Looks good to me. Just one small comment below. With that addressed feel
-> free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> 
->> @@ -3474,6 +3530,14 @@ int ext4_mb_release(struct super_block *sb)
->>  	struct kmem_cache *cachep = get_groupinfo_cache(sb->s_blocksize_bits);
->>  	int count;
->>  
->> +	if (test_opt(sb, DISCARD)) {
->> +		/*
->> +		 * wait the discard work to drain all of ext4_free_data
->> +		 */
->> +		queue_work(ext4_discard_wq, &sbi->s_discard_work);
-> 
-> Do we really need to queue the work here? The filesystem should be
-> quiescent by now, we take care to queue the work whenever we add item to
-> empty list. So it should be enough to have flush_work() here and then
-> possibly
-> 
-> 	WARN_ON_ONCE(!list_empty(&sbi->s_discard_list))
-> 
-> Or am I missing something?
+Additionally, some basic bus/device filtering exist to avoid sending
+config transactions to invalid devices on the RP's primary or
+secondary bus. A basic link check is also made to assure that
+something is operational on the secondary side before probing the
+remainder of the config space. If either of these constraints are
+violated and a config operation is lost in the ether because an EP
+doesn't respond an unrecoverable SERROR is raised.
 
-queue_work here is indeed redundant.
+Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+---
+ drivers/pci/controller/Makefile            |  1 +
+ drivers/pci/controller/pcie-brcmstb-acpi.c | 79 ++++++++++++++++++++++
+ include/linux/pci-ecam.h                   |  1 +
+ 3 files changed, 81 insertions(+)
+ create mode 100644 drivers/pci/controller/pcie-brcmstb-acpi.c
 
-Thanks so much for you point out this.
-Jianchao
+diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
+index aaf30b3dcc14..65aa6fd3ed89 100644
+--- a/drivers/pci/controller/Makefile
++++ b/drivers/pci/controller/Makefile
+@@ -57,5 +57,6 @@ ifdef CONFIG_PCI_QUIRKS
+ obj-$(CONFIG_ARM64) += pci-thunder-ecam.o
+ obj-$(CONFIG_ARM64) += pci-thunder-pem.o
+ obj-$(CONFIG_ARM64) += pci-xgene.o
++obj-$(CONFIG_ARM64) += pcie-brcmstb-acpi.o
+ endif
+ endif
+diff --git a/drivers/pci/controller/pcie-brcmstb-acpi.c b/drivers/pci/controller/pcie-brcmstb-acpi.c
+new file mode 100644
+index 000000000000..528b2b3ffbd2
+--- /dev/null
++++ b/drivers/pci/controller/pcie-brcmstb-acpi.c
+@@ -0,0 +1,79 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * ACPI quirks for Brcm2711 PCIe host controller
++ * As used on the Raspberry Pi Compute Module 4
++ *
++ * Copyright (C) 2021 Arm Ltd.
++ */
++
++#include <linux/io.h>
++#include <linux/pci.h>
++#include <linux/pci-ecam.h>
++#include "../pci.h"
++#include "pcie-brcmstb.h"
++
++static int brcm_acpi_init(struct pci_config_window *cfg)
++{
++	/*
++	 * This platform doesn't technically have anything that could be called
++	 * ECAM. Its config region has root port specific registers between
++	 * standard PCIe defined config registers. Thus the region setup by the
++	 * generic ECAM code needs to be adjusted. The HW can access bus 0-ff
++	 * but the footprint isn't a nice power of 2 (40k). For purposes of
++	 * mapping the config region we are just going to squash the standard
++	 * and nonstandard registers together rather than mapping them separately.
++	 */
++	iounmap(cfg->win);
++	cfg->win = pci_remap_cfgspace(cfg->res.start, resource_size(&cfg->res));
++	if (!cfg->win)
++		goto err_exit;
++
++	/* MSI is nonstandard as well */
++	pci_no_msi();
++
++	return 0;
++err_exit:
++	dev_err(cfg->parent, "PCI: Failed to remap config\n");
++	return -ENOMEM;
++}
++
++static void __iomem *brcm_pcie_map_conf2(struct pci_bus *bus,
++					unsigned int devfn, int where)
++{
++	struct pci_config_window *cfg = bus->sysdata;
++	void __iomem *base = cfg->win;
++	int idx;
++	u32 up;
++
++	/* Accesses to the RC go right to the RC registers if slot==0 */
++	if (pci_is_root_bus(bus))
++		return PCI_SLOT(devfn) ? NULL : base + where;
++
++	/*
++	 * Assure the link is up before sending requests downstream. This is done
++	 * to avoid sending transactions to EPs that don't exist. Link flap
++	 * conditions/etc make this race more probable. The resulting unrecoverable
++	 * SERRORs will result in the machine crashing.
++	 */
++	up = readl(base + PCIE_MISC_PCIE_STATUS);
++	if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_DL_ACTIVE_MASK))
++		return NULL;
++
++	if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_PHYLINKUP_MASK))
++		return NULL;
++
++	/* For devices, write to the config space index register */
++	idx = PCIE_ECAM_OFFSET(bus->number, devfn, 0);
++	writel(idx, base + PCIE_EXT_CFG_INDEX);
++	return base + PCIE_EXT_CFG_DATA + where;
++}
++
++const struct pci_ecam_ops bcm2711_pcie_ops = {
++	.init		= brcm_acpi_init,
++	.bus_shift	= 1,
++	.pci_ops	= {
++		.map_bus	= brcm_pcie_map_conf2,
++		.read		= pci_generic_config_read,
++		.write		= pci_generic_config_write,
++	}
++};
+diff --git a/include/linux/pci-ecam.h b/include/linux/pci-ecam.h
+index adea5a4771cf..a5de0285bb7f 100644
+--- a/include/linux/pci-ecam.h
++++ b/include/linux/pci-ecam.h
+@@ -87,6 +87,7 @@ extern const struct pci_ecam_ops xgene_v1_pcie_ecam_ops; /* APM X-Gene PCIe v1 *
+ extern const struct pci_ecam_ops xgene_v2_pcie_ecam_ops; /* APM X-Gene PCIe v2.x */
+ extern const struct pci_ecam_ops al_pcie_ops;	/* Amazon Annapurna Labs PCIe */
+ extern const struct pci_ecam_ops tegra194_pcie_ops; /* Tegra194 PCIe */
++extern const struct pci_ecam_ops bcm2711_pcie_ops; /* Bcm2711 PCIe */
+ #endif
+ 
+ #if IS_ENABLED(CONFIG_PCI_HOST_COMMON)
+-- 
+2.31.1
 
-> 
-> 								Honza
-> 
->> +		flush_work(&sbi->s_discard_work);
->> +	}
->> +
