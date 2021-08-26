@@ -2,144 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39223F8A9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA0D3F8AA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242870AbhHZPBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:01:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:48570 "EHLO foss.arm.com"
+        id S232136AbhHZPEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:04:21 -0400
+Received: from mga03.intel.com ([134.134.136.65]:43599 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231458AbhHZPBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:01:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D46F31B;
-        Thu, 26 Aug 2021 08:00:24 -0700 (PDT)
-Received: from [10.57.15.112] (unknown [10.57.15.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 635F03F66F;
-        Thu, 26 Aug 2021 08:00:22 -0700 (PDT)
-Subject: Re: [PATCH 2/3] drm/etnaviv: fix dma configuration of the virtual
- device
-To:     Michael Walle <michael@walle.cc>, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     "Lukas F . Hartmann" <lukas@mntre.com>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20210826121006.685257-1-michael@walle.cc>
- <20210826121006.685257-3-michael@walle.cc>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <df806090-8a21-33e8-1e01-bd03b6ed64cf@arm.com>
-Date:   Thu, 26 Aug 2021 16:00:15 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231793AbhHZPEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 11:04:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="217796075"
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="217796075"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 08:03:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="465151649"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 26 Aug 2021 08:03:21 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id B23C1D1; Thu, 26 Aug 2021 18:03:22 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [resend, PATCH v2 1/1] x86/platform: Increase maximum GPIO number for X86_64
+Date:   Thu, 26 Aug 2021 18:03:17 +0300
+Message-Id: <20210826150317.29435-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210826121006.685257-3-michael@walle.cc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-26 13:10, Michael Walle wrote:
-> The DMA configuration of the virtual device is inherited from the first
-> actual etnaviv device. Unfortunately, this doesn't work with an IOMMU:
-> 
-> [    5.191008] Failed to set up IOMMU for device (null); retaining platform DMA ops
-> 
-> This is because there is no associated iommu_group with the device. The
-> group is set in iommu_group_add_device() which is eventually called by
-> device_add() via the platform bus:
->    device_add()
->      blocking_notifier_call_chain()
->        iommu_bus_notifier()
->          iommu_probe_device()
->            __iommu_probe_device()
->              iommu_group_get_for_dev()
->                iommu_group_add_device()
-> 
-> Move of_dma_configure() into the probe function, which is called after
-> device_add(). Normally, the platform code will already call it itself
-> if .of_node is set. Unfortunately, this isn't the case here.
-> 
-> Also move the dma mask assignemnts to probe() to keep all DMA related
-> settings together.
+By default the 512 GPIOs is the maximum on any x86 platform.
+With, for example, Intel Tiger Lake-H the SoC based controller
+occupies up to 480 pins. This leaves only 32 available for
+GPIO expanders or other drivers, like PMIC. Hence, bump the
+maximum GPIO number to 1024 for X86_64 and leave 512 for X86_32.
 
-I assume the driver must already keep track of the real GPU platform 
-device in order to map registers, request interrupts, etc. correctly - 
-can't it also correctly use that device for DMA API calls and avoid the 
-need for these shenanigans altogether?
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+---
+v2 resend: actually added Rafael and linux-acpi@ to Cc list
+v2: dropped confusing comment and help, simplified defaults (Rafael)
+    added Rb tag (Linus)
+ arch/x86/Kconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-FYI, IOMMU configuration is really supposed to *only* run at 
-add_device() time as above - the fact that it's currently hooked in to 
-be retriggered by of_dma_configure() on DT platforms actually turns out 
-to lead to various issues within the IOMMU API, and the plan to change 
-that is slowly climbing up my to-do list.
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 858ce2736bd6..25960fe242bd 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -338,6 +338,11 @@ config NEED_PER_CPU_PAGE_FIRST_CHUNK
+ config ARCH_HIBERNATION_POSSIBLE
+ 	def_bool y
+ 
++config ARCH_NR_GPIO
++	int
++	default 1024 if X86_64
++	default 512
++
+ config ARCH_SUSPEND_POSSIBLE
+ 	def_bool y
+ 
+-- 
+2.32.0
 
-Robin.
-
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->   drivers/gpu/drm/etnaviv/etnaviv_drv.c | 24 +++++++++++++++---------
->   1 file changed, 15 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> index 2509b3e85709..ff6425f6ebad 100644
-> --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> @@ -589,6 +589,7 @@ static int compare_str(struct device *dev, void *data)
->   static int etnaviv_pdev_probe(struct platform_device *pdev)
->   {
->   	struct device *dev = &pdev->dev;
-> +	struct device_node *first_node = NULL;
->   	struct component_match *match = NULL;
->   
->   	if (!dev->platform_data) {
-> @@ -598,6 +599,9 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
->   			if (!of_device_is_available(core_node))
->   				continue;
->   
-> +			if (!first_node)
-> +				first_node = core_node;
-> +
->   			drm_of_component_match_add(&pdev->dev, &match,
->   						   compare_of, core_node);
->   		}
-> @@ -609,6 +613,17 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
->   			component_match_add(dev, &match, compare_str, names[i]);
->   	}
->   
-> +	pdev->dev.coherent_dma_mask = DMA_BIT_MASK(40);
-> +	pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
-> +
-> +	/*
-> +	 * Apply the same DMA configuration to the virtual etnaviv
-> +	 * device as the GPU we found. This assumes that all Vivante
-> +	 * GPUs in the system share the same DMA constraints.
-> +	 */
-> +	if (first_node)
-> +		of_dma_configure(&pdev->dev, first_node, true);
-> +
->   	return component_master_add_with_match(dev, &etnaviv_master_ops, match);
->   }
->   
-> @@ -659,15 +674,6 @@ static int __init etnaviv_init(void)
->   			of_node_put(np);
->   			goto unregister_platform_driver;
->   		}
-> -		pdev->dev.coherent_dma_mask = DMA_BIT_MASK(40);
-> -		pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
-> -
-> -		/*
-> -		 * Apply the same DMA configuration to the virtual etnaviv
-> -		 * device as the GPU we found. This assumes that all Vivante
-> -		 * GPUs in the system share the same DMA constraints.
-> -		 */
-> -		of_dma_configure(&pdev->dev, np, true);
->   
->   		ret = platform_device_add(pdev);
->   		if (ret) {
-> 
