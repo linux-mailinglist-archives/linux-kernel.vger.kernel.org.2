@@ -2,72 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FED3F8CBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9833F8CC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243168AbhHZRMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        id S243082AbhHZRPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232694AbhHZRMk (ORCPT
+        with ESMTP id S232694AbhHZRPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:12:40 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C23C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:11:52 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g22so5683180edy.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:11:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=LGCeyfC6vEKfLae19fP8mn/WuTKX4Jw7bG4cIvDmLso=;
-        b=Rtzh8jhxZ5Yxl8R6SBKzrEuUw+ZNj5wziWEl9oBKeHkmUvCD5taI3L0/uGCMp4TfCg
-         bNSlgOpTQWV3y2fpxqPkkIf3Joyxceb/szO5rZHwkmBmvoKumoltAMw28+9Q5XN3p60a
-         D2Kd1Msw1ACN5DYKW+sR3FuNhyqLEYPa+RMX4uQvsOGuUOuCyYqegU9LZ6lhoOg2P39j
-         JsFvdipm3GRcujTIIoeazbDtavcVU/30vJJzI8v7ILPwap+dc2XvXHZI5WFo9soJT+fW
-         RXq1OaNpxZUIjdgkXAvo5kdtZcHxfWTZO9zDPQrlYgvv7xkY3PWFKn78DtBJrroWU47C
-         bYpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=LGCeyfC6vEKfLae19fP8mn/WuTKX4Jw7bG4cIvDmLso=;
-        b=FT2vBzsoBNQKE9fRPp+6XL7cqR0jlSAnSr5HuuOzg0YyOkc1gkwUy/QIODRG80KSUf
-         KLOdxDUznbthkWyuCWaFRkVgw8OoOw9yxhxmbnZTAKW5QOBhiQ1Mpn0oV6AsKBsUxVTm
-         EAFBlG//j1ELk9L9+LDvriWluI9pZZ5eg6FqrGw6wfrEHbkJ0lss3LrnfzH0DfNS5fpY
-         ER9XpnXUvHDqkr12pL+uWkdi4q8Y9zX7ZB+PMpCcHf42jteDE++AOeIWnvs7+IB7Mks/
-         f1FNf+TH1A7fE5R6EQ7ietqygZgQmp1lK01DQGcx7TBB/LhODsLS0+Y/KxqqHdEHFDBJ
-         3aSw==
-X-Gm-Message-State: AOAM531Fh42u+YeWFs6r5CoMueN6xazmxBa1mxQ3nsvaWFHfRZhCDFFx
-        QSMGTk3bzKAePab0uGB6bkQ6I+W9KwIZERJltYU=
-X-Google-Smtp-Source: ABdhPJwP3270oSAPb+4mWdrAqTH91hayUp9Rx+NLrFrjP4ypZMXsJPUMJE7CHo8I/J8UbmM8a9ZLKhjjN0p9bBQXVVk=
-X-Received: by 2002:a50:9b52:: with SMTP id a18mr5226069edj.165.1629997911441;
- Thu, 26 Aug 2021 10:11:51 -0700 (PDT)
+        Thu, 26 Aug 2021 13:15:14 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4330C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:14:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2pCN7FQrk4lL/jfCos2t4Y0DYWNruWk+mo0K2UjcJ1U=; b=KZLXdbWWVkiUoDDUHMKT5xE8fk
+        3jPvxDVYhDIHK5luzOIivN3WChLnXdkkjkjWZ5tnZYYX3SuIeOJNV/+95MP1leagLHpP3T47SB+rQ
+        L1jqKn+kottPYZghh5Dt78kOEZ1fuYAOIHjA8PyTH17eIVIGXN/arbXO4kWmS/tkqr/dIpLzRjObe
+        7wY/QuC7lOckO8On+S+Ovi/3+ZKxm39yxvwRdYtqCdCeWhnM4zoX6EVheVLjrVV39AuSFFa/Sc2DP
+        M8EAL7wyBpp8dN8eFseaFH9x2sJr9E2+n9kRqQNMzXNxAbqrEgHAw9tJmuYFZ8ijh8wx00ukbmcW+
+        2hDreciw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJIx6-00DF2m-Bp; Thu, 26 Aug 2021 17:14:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF1E3300024;
+        Thu, 26 Aug 2021 19:14:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8CD012C596C79; Thu, 26 Aug 2021 19:14:06 +0200 (CEST)
+Date:   Thu, 26 Aug 2021 19:14:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] sched: Switch wait_task_inactive to HRTIMER_MODE_REL_HARD
+Message-ID: <YSfL3vdbuXWvI/Ya@hirez.programming.kicks-ass.net>
+References: <20210826170408.vm7rlj7odslshwch@linutronix.de>
 MIME-Version: 1.0
-Received: by 2002:a17:906:3113:0:0:0:0 with HTTP; Thu, 26 Aug 2021 10:11:50
- -0700 (PDT)
-Reply-To: ms.lisahugh000@gmail.com
-From:   MS LISA HUGH <safi.kabore360@gmail.com>
-Date:   Thu, 26 Aug 2021 19:11:50 +0200
-Message-ID: <CAAoJS3_yVVEJ0A-JyFith72=gfKv7==s_aER4iVrTrNcFXQgsA@mail.gmail.com>
-Subject: YOUR ATTENTION FROM >>MS LISA HUGH.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826170408.vm7rlj7odslshwch@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Thu, Aug 26, 2021 at 07:04:08PM +0200, Sebastian Andrzej Siewior wrote:
+> With PREEMPT_RT enabled all hrtimers callbacks will be invoked in
+> softirq mode unless they are explicitly marked as HRTIMER_MODE_HARD.
+> During boot kthread_bind() is used for the creation of per-CPU threads
+> and then hangs in wait_task_inactive() if the ksoftirqd is not
+> yet up and running.
+> The hang disappeared since commit
+>    26c7295be0c5e ("kthread: Do not preempt current task if it is going to call schedule()")
+> 
+> but enabling function trace on boot reliably leads to the freeze on boot
+> behaviour again.
+> The timer in wait_task_inactive() can not be directly used by a user
+> interface to abuse it and create a mass wake up of several tasks at the
+> same time leading to long sections with disabled interrupts.
+> Therefore it is safe to make the timer HRTIMER_MODE_REL_HARD.
+> 
+> Switch the timer to HRTIMER_MODE_REL_HARD.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-I am Ms Lisa Hugh, work in the department of Audit and accounting
-manager here in the Bank.
-
-I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
-bank account with your co-operation
-
-Please send the follow below,
-
-1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
-
-Thanks.
-Ms Lisa Hugh
+Thanks!
