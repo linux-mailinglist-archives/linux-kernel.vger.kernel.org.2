@@ -2,209 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA363F8095
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 04:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2073F809D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 04:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237584AbhHZCmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 22:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237068AbhHZCmW (ORCPT
+        id S237504AbhHZCqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 22:46:14 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:14322 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232441AbhHZCqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 22:42:22 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A160BC061796
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 19:41:33 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 5D78B891B0;
-        Thu, 26 Aug 2021 14:41:32 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1629945692;
-        bh=FKUIf618/0Dsx0Yu/eMexmQN3G1FO6P7em4iAA4toFA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=UKjvXXoGfOelfvd3Sgrl7WQi3W5eywsf2IxVIuzV12iFKOPKZKt+ci3dBljHcl3gi
-         FJh05oJ37XAHA05g2c8J9Ubyz0213ODqjhy2iDGm7F3xB4qkpFvOYZyoNuBg2FPskH
-         FhnZk3xWoIHNLg4hOpP03st1HHj3w307Yap8LTf8I8AQ2tVxGTaCye94qMBez362r4
-         BFn71rhZxLhfbu1Ae7ezQQqGaN8GLRdTH3Hr6R1SGrukrhcwnGv6n6QdLzGdNsP/TS
-         njg+63xvbQYQTyOa6X0mHGXcFOnYlCcO6f5cuqlEvbiQA4xIMUkzNiIjPaDCA+yeT5
-         /lQP/oQSDw50A==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B6126ff540003>; Thu, 26 Aug 2021 14:41:24 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by pat.atlnz.lc (Postfix) with ESMTP id AB57113ED4A;
-        Thu, 26 Aug 2021 14:41:24 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id A9C13284585; Thu, 26 Aug 2021 14:41:24 +1200 (NZST)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     jdelvare@suse.com, linux@roeck-us.net
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v2 4/4] hwmon: (adt7470) Use standard update_interval property
-Date:   Thu, 26 Aug 2021 14:41:21 +1200
-Message-Id: <20210826024121.15665-5-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210826024121.15665-1-chris.packham@alliedtelesis.co.nz>
-References: <20210826024121.15665-1-chris.packham@alliedtelesis.co.nz>
+        Wed, 25 Aug 2021 22:46:12 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Gw6db6Pf1z89TW;
+        Thu, 26 Aug 2021 10:45:07 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 26 Aug 2021 10:45:23 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 26 Aug 2021 10:45:22 +0800
+Subject: Re: [PATCH 3/3] amba: Properly handle device probe without IRQ domain
+To:     Saravana Kannan <saravanak@google.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        <devicetree@vger.kernel.org>, Russell King <linux@armlinux.org.uk>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Ruizhe Lin <linruizhe@huawei.com>
+References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
+ <20210816074619.177383-4-wangkefeng.wang@huawei.com>
+ <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
+ <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
+ <ee649111-dc07-d6db-8872-dcb692802236@huawei.com>
+ <CAGETcx9drOdE_vfn-nhDZM9MbgxGxYJN6ydiAVxo_Ltqve9eTg@mail.gmail.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <b5eb935f-26e1-6475-63af-e7f6101eb017@huawei.com>
+Date:   Thu, 26 Aug 2021 10:45:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=aqTM9hRV c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=MhDmnRu9jo8A:10 a=IseJ_u6kMGNTh8ES06MA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+In-Reply-To: <CAGETcx9drOdE_vfn-nhDZM9MbgxGxYJN6ydiAVxo_Ltqve9eTg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of the non-standard auto_update_interval make use of the
-update_interval property that is supported by the hwmon core.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+On 2021/8/25 16:04, Saravana Kannan wrote:
+> On Tue, Aug 24, 2021 at 9:05 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>>
+>> On 2021/8/25 4:08, Saravana Kannan wrote:
+>>> On Tue, Aug 24, 2021 at 1:05 PM Rob Herring <robh+dt@kernel.org> wrote:
+>>>> +Saravana
+>>>>
+>>>> Saravana mentioned to me there may be some issues with this one...
+>>>>
+>>>>
+>>>> On Mon, Aug 16, 2021 at 2:43 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>>>>> of_amba_device_create() uses irq_of_parse_and_map() to translate
+>>>>> a DT interrupt specification into a Linux virtual interrupt number.
+>>>>>
+>>>>> But it doesn't properly handle the case where the interrupt controller
+>>>>> is not yet available, eg, when pl011 interrupt is connected to MBIGEN
+>>>>> interrupt controller, because the mbigen initialization is too late,
+>>>>> which will lead to no IRQ due to no IRQ domain found, log is shown below,
+>>>>>     "irq: no irq domain found for uart0 !"
+>>>>>
+>>>>> use of_irq_get() to return -EPROBE_DEFER as above, and in the function
+>>>>> amba_device_try_add()/amba_device_add(), it will properly handle in such
+>>>>> case, also return 0 in other fail cases to be consistent as before.
+>>>>>
+>>>>> Cc: Russell King <linux@armlinux.org.uk>
+>>>>> Cc: Rob Herring <robh+dt@kernel.org>
+>>>>> Cc: Frank Rowand <frowand.list@gmail.com>
+>>>>> Reported-by: Ruizhe Lin <linruizhe@huawei.com>
+>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>>>> ---
+>>>>>    drivers/amba/bus.c    | 27 +++++++++++++++++++++++++++
+>>>>>    drivers/of/platform.c |  6 +-----
+>>>>>    2 files changed, 28 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+>>>>> index 36f2f42c8014..720aa6cdd402 100644
+>>>>> --- a/drivers/amba/bus.c
+>>>>> +++ b/drivers/amba/bus.c
+>>>>> @@ -19,6 +19,7 @@
+>>>>>    #include <linux/clk/clk-conf.h>
+>>>>>    #include <linux/platform_device.h>
+>>>>>    #include <linux/reset.h>
+>>>>> +#include <linux/of_irq.h>
+>>>>>
+>>>>>    #include <asm/irq.h>
+>>>>>
+>>>>> @@ -371,12 +372,38 @@ static void amba_device_release(struct device *dev)
+>>>>>           kfree(d);
+>>>>>    }
+>>>>>
+>>>>> +static int of_amba_device_decode_irq(struct amba_device *dev)
+>>>>> +{
+>>>>> +       struct device_node *node = dev->dev.of_node;
+>>>>> +       int i, irq = 0;
+>>>>> +
+>>>>> +       if (IS_ENABLED(CONFIG_OF_IRQ) && node) {
+>>>>> +               /* Decode the IRQs and address ranges */
+>>>>> +               for (i = 0; i < AMBA_NR_IRQS; i++) {
+>>>>> +                       irq = of_irq_get(node, i);
+>>>>> +                       if (irq < 0) {
+>>>>> +                               if (irq == -EPROBE_DEFER)
+>>>>> +                                       return irq;
+>>>>> +                               irq = 0;
+>>>>> +                       }
+>>>>> +
+>>>>> +                       dev->irq[i] = irq;
+>>>>> +               }
+>>>>> +       }
+>>>>> +
+>>>>> +       return 0;
+>>>>> +}
+>>>>> +
+>>>>>    static int amba_device_try_add(struct amba_device *dev, struct resource *parent)
+>>>>>    {
+>>>>>           u32 size;
+>>>>>           void __iomem *tmp;
+>>>>>           int i, ret;
+>>>>>
+>>>>> +       ret = of_amba_device_decode_irq(dev);
+>>>>> +       if (ret)
+>>>>> +               goto err_out;
+>>>>> +
+>>> Similar to other resources the AMBA bus "gets" for the device, I think
+>>> this should be moved into amba_probe() and not here. There's no reason
+>>> to delay the addition of the device (and loading its module) because
+>>> the IRQ isn't ready yet.
+>> The following code in the amba_device_try_add() will be called, it uses irq[0]
+>> and irq[1], so I put of_amba_device_decode_irq() into amba_device_try_add().
+>>
+>> 470         if (dev->irq[0])
+>> 471                 ret = device_create_file(&dev->dev, &dev_attr_irq0);
+>> 472         if (ret == 0 && dev->irq[1])
+>> 473                 ret = device_create_file(&dev->dev, &dev_attr_irq1);
+>> 474         if (ret == 0)
+>> 475                 return ret;
+>>
+>> of_amba_device_decode_irq() in amba_device_try_add() won't lead to issue,
+>> only delay the device add, right?
+> But delaying the device add is the issue. For example, adding a device
+> could trigger the loading of the corresponding module using uevents.
+> But now this change would delay that step. That can have other
+> unintended consequences -- slowing down boot, what if the driver was
+> working fine without the IRQ, etc.
+>
+>> If make it into amba_probe(), the above code should be moved too, could we
+>> make a new patch to move both of them, or don't move them?
+> I'd say move them both. If Russell hasn't already picked this up, then
+> I'd say redo your Patch 3/3.
+I will resend with put it into amba_probe.
+>
+> Btw, I've been working on [1] cleaning up the one-off deferred probe
+> solution that we have for amba devices. That causes a bunch of other
+> headaches. Your patch 3/3 takes us further in the wrong direction by
+> adding more reasons for delaying the addition of the device.
 
-Notes:
-    I kind of anticipate a NAK on this because it affects the ABI. But I =
-figured
-    I'd run it past the ML to see if moving towards the hwmon core is wor=
-th the hit
-    in ABI compatibility.
-   =20
-    Changes in v2:
-    - none
+Got it,  and I could resend all combine your patch(due to context conflict
 
- drivers/hwmon/adt7470.c | 64 +++++++++++++++++++++++++----------------
- 1 file changed, 39 insertions(+), 25 deletions(-)
+when changing same function) if you no object.
 
-diff --git a/drivers/hwmon/adt7470.c b/drivers/hwmon/adt7470.c
-index db19a52b13de..7afbd1e4721e 100644
---- a/drivers/hwmon/adt7470.c
-+++ b/drivers/hwmon/adt7470.c
-@@ -469,35 +469,37 @@ static struct adt7470_data *adt7470_update_device(s=
-truct device *dev)
- 	return err < 0 ? ERR_PTR(err) : data;
- }
-=20
--static ssize_t auto_update_interval_show(struct device *dev,
--					 struct device_attribute *devattr,
--					 char *buf)
--{
--	struct adt7470_data *data =3D adt7470_update_device(dev);
--
--	if (IS_ERR(data))
--		return PTR_ERR(data);
--
--	return sprintf(buf, "%d\n", data->auto_update_interval);
--}
--
--static ssize_t auto_update_interval_store(struct device *dev,
--					  struct device_attribute *devattr,
--					  const char *buf, size_t count)
-+static int adt7470_chip_read(struct device *dev, u32 attr, long *val)
- {
- 	struct adt7470_data *data =3D dev_get_drvdata(dev);
--	long temp;
-=20
--	if (kstrtol(buf, 10, &temp))
--		return -EINVAL;
-+	switch (attr) {
-+	case hwmon_chip_update_interval:
-+		*val =3D data->auto_update_interval;
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-=20
--	temp =3D clamp_val(temp, 0, 60000);
-+	return 0;
-+}
-=20
--	mutex_lock(&data->lock);
--	data->auto_update_interval =3D temp;
--	mutex_unlock(&data->lock);
-+static int adt7470_chip_write(struct device *dev, u32 attr, long val)
-+{
-+	struct adt7470_data *data =3D dev_get_drvdata(dev);
-=20
--	return count;
-+	switch (attr) {
-+	case hwmon_chip_update_interval:
-+		val =3D clamp_val(val, 0, 60000);
-+		mutex_lock(&data->lock);
-+		data->auto_update_interval =3D val;
-+		mutex_unlock(&data->lock);
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
- }
-=20
- static ssize_t num_temp_sensors_show(struct device *dev,
-@@ -1034,7 +1036,6 @@ static ssize_t pwm_auto_temp_store(struct device *d=
-ev,
-=20
- static DEVICE_ATTR_RW(alarm_mask);
- static DEVICE_ATTR_RW(num_temp_sensors);
--static DEVICE_ATTR_RW(auto_update_interval);
-=20
- static SENSOR_DEVICE_ATTR_RW(force_pwm_max, force_pwm_max, 0);
-=20
-@@ -1066,7 +1067,6 @@ static SENSOR_DEVICE_ATTR_RW(pwm4_auto_channels_tem=
-p, pwm_auto_temp, 3);
- static struct attribute *adt7470_attrs[] =3D {
- 	&dev_attr_alarm_mask.attr,
- 	&dev_attr_num_temp_sensors.attr,
--	&dev_attr_auto_update_interval.attr,
- 	&sensor_dev_attr_force_pwm_max.dev_attr.attr,
- 	&sensor_dev_attr_pwm1_auto_point1_pwm.dev_attr.attr,
- 	&sensor_dev_attr_pwm2_auto_point1_pwm.dev_attr.attr,
-@@ -1097,6 +1097,8 @@ static int adt7470_read(struct device *dev, enum hw=
-mon_sensor_types type, u32 at
- 			int channel, long *val)
- {
- 	switch (type) {
-+	case hwmon_chip:
-+		return adt7470_chip_read(dev, attr, val);
- 	case hwmon_temp:
- 		return adt7470_temp_read(dev, attr, channel, val);
- 	case hwmon_fan:
-@@ -1112,6 +1114,8 @@ static int adt7470_write(struct device *dev, enum h=
-wmon_sensor_types type, u32 a
- 			int channel, long val)
- {
- 	switch (type) {
-+	case hwmon_chip:
-+		return adt7470_chip_write(dev, attr, val);
- 	case hwmon_temp:
- 		return adt7470_temp_write(dev, attr, channel, val);
- 	case hwmon_fan:
-@@ -1129,6 +1133,15 @@ static umode_t adt7470_is_visible(const void *_dat=
-a, enum hwmon_sensor_types typ
- 	umode_t mode =3D 0;
-=20
- 	switch (type) {
-+	case hwmon_chip:
-+		switch (attr) {
-+		case hwmon_chip_update_interval:
-+			mode =3D 0644;
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
- 	case hwmon_temp:
- 		switch (attr) {
- 		case hwmon_temp:
-@@ -1187,6 +1200,7 @@ static const struct hwmon_ops adt7470_hwmon_ops =3D=
- {
- };
-=20
- static const struct hwmon_channel_info *adt7470_info[] =3D {
-+	HWMON_CHANNEL_INFO(chip, HWMON_C_UPDATE_INTERVAL),
- 	HWMON_CHANNEL_INFO(temp,
- 			HWMON_T_INPUT | HWMON_T_MIN | HWMON_T_MAX | HWMON_T_ALARM,
- 			HWMON_T_INPUT | HWMON_T_MIN | HWMON_T_MAX | HWMON_T_ALARM,
---=20
-2.32.0
 
+>
+> -Saravana
+>
+> [1] - https://lore.kernel.org/lkml/CAGETcx8b228nDUho3cX9AAQ-pXOfZTMv8cj2vhdx9yc_pk8q+A@mail.gmail.com/
+> .
+>
