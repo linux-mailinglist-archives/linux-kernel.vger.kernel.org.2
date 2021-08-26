@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7343F8A10
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892943F8A16
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242853AbhHZO13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242737AbhHZO1W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:27:22 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49FBC0613C1;
-        Thu, 26 Aug 2021 07:26:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwQBt1DP4z9sWS;
-        Fri, 27 Aug 2021 00:26:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1629987991;
-        bh=8REjizoyXa6lG5/G29mltG5ReN+I4Z6Qc6NDe7l49QM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=kNmPLfrBKi04ZkPkGpmV7+/oJadisLEfK1+pFTyhStOvkRxkseTXEN8PdArVzP5Cm
-         kRFq1EOMrB1WoWaQM79CrgGuwALLpz0MEZ80j82uHAeJM7KH14mHCJe8RKd5QD59pD
-         UwSTK0ac1IZh5fpEewtwXUQqfRCiMgd+3yS5aId8VihS4/jPW17sOR1u+PvmKSd71C
-         zDJ82ruv1AKxXlOA9+KYj9lYzK16CK1h6NaLa2QRw9bBx+5ov8BwzUSXR2Xb+fiR6p
-         g2Jp0Qbd3DsZAR4wswp/IsCbTULnB48hNjOEMRrnrZolEFW68ftEX+vJ6/Tdpb9SWa
-         w/P035zUTKlnQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Shuah Khan <skhan@linuxfoundation.org>, cgel.zte@gmail.com
-Cc:     yong.yiran@zte.com.cn, Zeal Robot <zealci@zte.com.cn>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        paulus@samba.org, linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH linux-next] powerpc/tm: remove duplicate include in
- tm-poison.c
-In-Reply-To: <4bc97c33-7fc0-ff9d-041b-e773f682c5d2@csgroup.eu>
-References: <20210805065255.628170-1-yong.yiran@zte.com.cn>
- <c5e9900b-1c2d-8e72-ad83-a6024b876fd2@linuxfoundation.org>
- <4bc97c33-7fc0-ff9d-041b-e773f682c5d2@csgroup.eu>
-Date:   Fri, 27 Aug 2021 00:26:29 +1000
-Message-ID: <87wno89t9m.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S242864AbhHZO2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:28:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242737AbhHZO2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 10:28:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7E9060F58;
+        Thu, 26 Aug 2021 14:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629988073;
+        bh=rmgSFvnVYQ6/fJk/PtsVp+kA+k9vpwcUD6eCn4s7mIQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j8ewU2LQwOArbyRke6JdGC59MsfDGPcODk9CvQcMJbPROwrJMJfDx258QD13koStV
+         Qfk/+SJL/EcpMhhtJM8juOO1hP8rfYrxZch/8PdwffXEjtt3WDe81dswrxFV/ORF3g
+         QOWQQ3QPk761VateDMtuMbtocfLXoptH9gepjlJ3qYnLzxuDOAXrKZRZ81VcaQwZXr
+         smfw6zAdSe0n2KFn0IQMZri06hym3j8yvhPrauc5+DrYLE3cFGJDS+0QYEYMkiEjOj
+         /3h7dOXtfe2bS7xTUEHwjGGw9UQ364vEvUMQZcu3xqst/bYTMapfrYb4feQZx93e6X
+         BaVjrDzEKRlFQ==
+Date:   Thu, 26 Aug 2021 23:27:51 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] init: bootconfig: Remove all bootconfig data when
+ the init memory is removed
+Message-Id: <20210826232751.614f9be6c5ea0a48c5cebd04@kernel.org>
+In-Reply-To: <162996912688.236535.4047855429538984099.stgit@devnote2>
+References: <162996911932.236535.7533708592332223449.stgit@devnote2>
+        <162996912688.236535.4047855429538984099.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 24/08/2021 =C3=A0 16:40, Shuah Khan a =C3=A9crit=C2=A0:
->> On 8/5/21 12:52 AM, cgel.zte@gmail.com wrote:
->>> From: yong yiran <yong.yiran@zte.com.cn>
->>>
->>> 'inttypes.h' included in 'tm-poison.c' is duplicated.
->>> Remove all but the first include of inttypes.h from tm-poison.c.
->>>
->>> Reported-by: Zeal Robot <zealci@zte.com.cn>
->>> Signed-off-by: yong yiran <yong.yiran@zte.com.cn>
->>> ---
->>> =C2=A0 tools/testing/selftests/powerpc/tm/tm-poison.c | 1 -
->>> =C2=A0 1 file changed, 1 deletion(-)
->>>
->>> diff --git a/tools/testing/selftests/powerpc/tm/tm-poison.c=20
->>> b/tools/testing/selftests/powerpc/tm/tm-poison.c
->>> index 29e5f26af7b9..27c083a03d1f 100644
->>> --- a/tools/testing/selftests/powerpc/tm/tm-poison.c
->>> +++ b/tools/testing/selftests/powerpc/tm/tm-poison.c
->>> @@ -20,7 +20,6 @@
->>> =C2=A0 #include <sched.h>
->>> =C2=A0 #include <sys/types.h>
->>> =C2=A0 #include <signal.h>
->>> -#include <inttypes.h>
->>> =C2=A0 #include "tm.h"
->>>
->>=20
->> We can't accept this patch. The from and Signed-off-by don't match.
->>=20
->
-> As far as I can see they match. You have:
->
-> From: yong yiran <yong.yiran@zte.com.cn>
-> Signed-off-by: yong yiran <yong.yiran@zte.com.cn>
+On Thu, 26 Aug 2021 18:12:07 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Regardless I already have a patch queued to fix this, from a different
-CI bot.
+> Since the bootconfig is used only in the init functions,
+> it doesn't need to keep the data after boot. Free it when
+> the init memory is removed.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  init/main.c |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/init/main.c b/init/main.c
+> index 8d97aba78c3a..d9b0a99bb2dd 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -1493,6 +1493,7 @@ static int __ref kernel_init(void *unused)
+>  	kprobe_free_init_mem();
+>  	ftrace_free_init_mem();
+>  	kgdb_free_init_mem();
+> +	xbc_destroy_all();
 
-cheers
+Oops, xbc_destroy_all() is not defined if CONFIG_BOOT_CONFIG=n.
+Let me fix that.
+
+Thanks,
+
+>  	free_initmem();
+>  	mark_readonly();
+>  
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
