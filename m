@@ -2,512 +2,525 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D57A3F88BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A783F88C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242505AbhHZNYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:24:53 -0400
-Received: from mga01.intel.com ([192.55.52.88]:53500 "EHLO mga01.intel.com"
+        id S242579AbhHZN00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:26:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhHZNYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:24:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="239936124"
-X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
-   d="scan'208";a="239936124"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 06:24:04 -0700
-X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
-   d="scan'208";a="527876578"
-Received: from xcai11-mobl1.ccr.corp.intel.com (HELO localhost) ([10.255.29.178])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 06:23:55 -0700
-Date:   Thu, 26 Aug 2021 21:23:55 +0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
- private memory
-Message-ID: <20210826132355.nmfdqgiblpuwsksp@linux.intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <20210824104821.gwbxdvu43lhviuwl@linux.intel.com>
- <YSbhydC0rleRRyU6@google.com>
+        id S230288AbhHZN0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 09:26:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B5F4610A3;
+        Thu, 26 Aug 2021 13:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629984338;
+        bh=W6xJzzVg0n1fXC8dxzcmts6C8kReTRl4HdJ+0nCHrOY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fFw7zCk2G10MPmyyuXr74NGuCjq97fQ+TH/6GovdI38UB2Om+RZ9xNze9ZYKJ3cj5
+         JYoFm7eueuw/Wx+wnnWFb4jt9iOzEWHxjaxTllAc/hAw5mUKLES9YIcJukJUVmfGXY
+         rDPt/sORQkxv/SRtNisLHGzKK+KGa+VIvPtOlcqHiY4fYcEPRPIru3jVQbL7L4/Z4x
+         4crDkxAlUUIauyYfUMS6fB9TwkT9M+styQK1DLWlMPn6xhJEPezc5+b6n/VjLNvMI6
+         LFlSEtj5dtp50Sr4v8o65+n4YSEy8hlvR2sJEYta4XPErCxuAELho7mXqHatWjyW2Y
+         Vw2UScnnnDqxA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org
+Cc:     lwn@lwn.net, jslaby@suse.cz, gregkh@linuxfoundation.org
+Subject: Linux 5.13.13
+Date:   Thu, 26 Aug 2021 09:25:35 -0400
+Message-Id: <20210826132536.804538-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSbhydC0rleRRyU6@google.com>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks a lot for your explaination, Sean.
-Still many questions below. :)
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-On Thu, Aug 26, 2021 at 12:35:21AM +0000, Sean Christopherson wrote:
-> On Tue, Aug 24, 2021, Yu Zhang wrote:
-> > On Mon, Aug 23, 2021 at 05:52:48PM -0700, Sean Christopherson wrote:
-> > 
-> > Thanks a lot for sharing these ideas. Lots of questions are inlined below. :)
-> > 
-> > > The goal of this RFC is to try and align KVM, mm, and anyone else with skin in the
-> > > game, on an acceptable direction for supporting guest private memory, e.g. for
-> > > Intel's TDX.  The TDX architectural effectively allows KVM guests to crash the
-> > > host if guest private memory is accessible to host userspace, and thus does not
-> > 
-> > What about incorrect/malicious accesses from host kernel? Should the direct mapping
-> > also be removed for guest private memory?
-> 
-> I would say that's out of scope for this RFC as it should not require any
-> coordination between KVM and MM.
+I'm announcing the release of the 5.13.13 kernel.
 
-So Linux MM still has choice to unmap the private memory in direct mapping, right?
+All users of the 5.13 kernel series must upgrade.
 
-> 
-> > > play nice with KVM's existing approach of pulling the pfn and mapping level from
-> > > the host page tables.
-> > > 
-> > > This is by no means a complete patch; it's a rough sketch of the KVM changes that
-> > > would be needed.  The kernel side of things is completely omitted from the patch;
-> > > the design concept is below.
-> > > 
-> > > There's also fair bit of hand waving on implementation details that shouldn't
-> > > fundamentally change the overall ABI, e.g. how the backing store will ensure
-> > > there are no mappings when "converting" to guest private.
-> > > 
-> > > Background
-> > > ==========
-> > > 
-> > > This is a loose continuation of Kirill's RFC[*] to support TDX guest private
-> > > memory by tracking guest memory at the 'struct page' level.  This proposal is the
-> > > result of several offline discussions that were prompted by Andy Lutomirksi's
-> > > concerns with tracking via 'struct page':
-> > > 
-> > >   1. The kernel wouldn't easily be able to enforce a 1:1 page:guest association,
-> > >      let alone a 1:1 pfn:gfn mapping.
-> > 
-> > May I ask why? Doesn't FOLL_GUEST in Kirill's earlier patch work? Or just
-> > because traversing the host PT to get a PFN(for a PageGuest(page)) is too
-> > heavy?
-> 
-> To ensure a 1:1 page:guest, 'struct page' would need to track enough information
-> to uniquely identify which guest owns the page.  With TDX, one can argue that the
-> kernel can rely on the TDX-Module to do that tracking (I argued this :-)), but
-> for SEV and pure software implementations there is no third party that's tracking
-> who owns what.  In other words, without stashing an identifier in 'struct page',
-> the kernel would only know that _a_ guest owns the page, it couldn't identify which
-> guest owns the page.  And allocating that much space in 'struct page' would be
-> painfully expensive.
+The updated 5.13.y git tree can be found at:
+        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.13.y
+and can be browsed at the normal kernel.org git web browser:
+        https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-So it's to make sure a private page can only be assigned to one guest.
-I thought PAMT in TDX and RMP in SEV-SNP can do this, is this understanding
-correct?
 
-But for pure software implementations, it's a problem indeed.
+Thanks,
+Sasha
 
-And why would using a specific fd can achieve this? I saw requirement
-to only bind the fd to one guest, but is this enough to guarantee the
-1:1 page:guest binding?
+- ------------
 
-> 
-> 1:1 pfn:gfn is even worse.  E.g. if userspace maps the same file as MAP_GUEST at
-> multiple host virtual adddress, then configures KVM's memslots to have multiple
-> regions, one for each alias, the guest will end up with 1:N pfn:gfn mappings.
-> Preventing that would be nigh impossible without ending up with a plethora of
-> races.
 
-You mean different memslots(in one address space) may contain the same
-gfn? IIUC, gfn overlap is not allowed: kvm_set_memory_region() will just
-return -EEXIST.
+ Makefile                                           |   2 +-
+ arch/arm/boot/dts/am43x-epos-evm.dts               |   2 +-
+ arch/arm/boot/dts/ste-nomadik-stn8815.dtsi         |   4 +-
+ arch/arm64/Makefile                                |   2 +
+ .../boot/dts/qcom/msm8992-bullhead-rev-101.dts     |  12 ++
+ .../arm64/boot/dts/qcom/msm8994-angler-rev-101.dts |   4 +
+ .../arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi |   4 +-
+ .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts      |   4 +-
+ arch/powerpc/include/asm/book3s/32/kup.h           |  41 +++++
+ arch/powerpc/include/asm/book3s/32/mmu-hash.h      |  27 +++
+ arch/powerpc/include/asm/kup.h                     |   5 +-
+ arch/powerpc/mm/book3s32/Makefile                  |   1 +
+ arch/powerpc/mm/book3s32/kuap.c                    |  11 ++
+ arch/powerpc/mm/book3s32/kuep.c                    |  37 +---
+ arch/powerpc/mm/book3s32/mmu.c                     |  20 ---
+ arch/riscv/kernel/setup.c                          |   4 +-
+ arch/s390/pci/pci.c                                |   6 +
+ arch/s390/pci/pci_bus.h                            |   5 +
+ arch/x86/events/core.c                             |  12 +-
+ block/kyber-iosched.c                              |   2 +-
+ drivers/bus/ti-sysc.c                              |   4 +-
+ drivers/clk/imx/clk-imx6q.c                        |   2 +-
+ drivers/clk/qcom/gdsc.c                            |  54 ++++--
+ drivers/cpufreq/armada-37xx-cpufreq.c              |   6 +-
+ drivers/cpufreq/scmi-cpufreq.c                     |   2 +-
+ drivers/dma/of-dma.c                               |   9 +-
+ drivers/dma/sh/usb-dmac.c                          |   2 +-
+ drivers/dma/xilinx/xilinx_dma.c                    |  12 ++
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c              |  21 ++-
+ .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c  |   4 +-
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_optc.c  |   2 +-
+ .../drm/amd/display/dc/dcn301/dcn301_resource.c    |  96 +---------
+ drivers/gpu/drm/i915/display/intel_display_power.c |  16 +-
+ drivers/gpu/drm/i915/i915_irq.c                    |  60 ++++---
+ drivers/gpu/drm/mediatek/mtk_disp_color.c          |   2 +
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c            |   2 +
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c        |   2 +
+ drivers/iommu/dma-iommu.c                          |   1 +
+ drivers/iommu/intel/pasid.c                        |  10 +-
+ drivers/iommu/intel/pasid.h                        |   6 +
+ drivers/iommu/iommu.c                              |   3 +
+ drivers/ipack/carriers/tpci200.c                   |  60 ++++---
+ drivers/mmc/host/dw_mmc.c                          |   6 +-
+ drivers/mmc/host/mmci_stm32_sdmmc.c                |   7 +-
+ drivers/mmc/host/sdhci-iproc.c                     |  21 ++-
+ drivers/mmc/host/sdhci-msm.c                       |  18 ++
+ drivers/mtd/chips/cfi_cmdset_0002.c                |   2 +-
+ drivers/mtd/nand/raw/nand_base.c                   |  10 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c          | 113 ++++++++----
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h          |   1 +
+ .../net/ethernet/freescale/dpaa2/dpaa2-switch.c    |  36 ++--
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c        |   3 +-
+ drivers/net/ethernet/intel/iavf/iavf.h             |   1 +
+ drivers/net/ethernet/intel/iavf/iavf_main.c        |   1 +
+ drivers/net/ethernet/intel/iavf/iavf_virtchnl.c    |  47 ++++-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |   5 +-
+ drivers/net/ethernet/mscc/ocelot.c                 |   1 +
+ drivers/net/ethernet/qlogic/qede/qede.h            |   1 +
+ drivers/net/ethernet/qlogic/qede/qede_main.c       |   8 +
+ .../net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c    |   4 +-
+ drivers/net/hamradio/6pack.c                       |   6 +
+ drivers/net/mdio/mdio-mux.c                        |  36 ++--
+ drivers/net/usb/asix.h                             |   3 +-
+ drivers/net/usb/asix_common.c                      |  31 ++--
+ drivers/net/usb/asix_devices.c                     |  15 +-
+ drivers/net/usb/ax88172a.c                         |   5 +
+ drivers/net/usb/lan78xx.c                          |  16 +-
+ drivers/net/usb/pegasus.c                          | 108 ++++++++----
+ drivers/net/usb/r8152.c                            |  23 ++-
+ drivers/net/virtio_net.c                           |  14 +-
+ drivers/net/vrf.c                                  |   4 +
+ drivers/net/wireless/mediatek/mt76/mt7915/mcu.c    |   2 +-
+ drivers/net/wireless/mediatek/mt76/mt7915/mcu.h    |   3 +-
+ drivers/net/wireless/mediatek/mt76/mt7921/mcu.c    |   2 +-
+ drivers/net/wireless/mediatek/mt76/mt7921/mcu.h    |   3 +-
+ drivers/opp/core.c                                 |  15 --
+ drivers/pci/pci-sysfs.c                            |   2 +-
+ drivers/pci/quirks.c                               |   1 +
+ drivers/ptp/Kconfig                                |   3 +-
+ drivers/scsi/device_handler/scsi_dh_rdac.c         |   4 +-
+ drivers/scsi/megaraid/megaraid_mm.c                |  21 ++-
+ drivers/scsi/pm8001/pm8001_sas.c                   |  32 ++--
+ drivers/scsi/scsi_scan.c                           |   3 +-
+ drivers/scsi/scsi_sysfs.c                          |   9 +-
+ drivers/slimbus/messaging.c                        |   7 +-
+ drivers/slimbus/qcom-ngd-ctrl.c                    |  22 ++-
+ drivers/soc/fsl/qe/qe_ic.c                         |  84 +++++----
+ drivers/spi/spi-cadence-quadspi.c                  |  21 ++-
+ drivers/spi/spi-mux.c                              |   8 +
+ drivers/usb/core/devio.c                           |   2 +-
+ drivers/usb/core/message.c                         |   6 +
+ drivers/usb/typec/tcpm/tcpm.c                      |  13 +-
+ drivers/vdpa/ifcvf/ifcvf_main.c                    |   4 +-
+ drivers/vdpa/mlx5/core/mr.c                        |   9 -
+ drivers/vdpa/mlx5/net/mlx5_vnet.c                  |  14 +-
+ drivers/vdpa/vdpa_sim/vdpa_sim.c                   |   4 +-
+ drivers/vdpa/virtio_pci/vp_vdpa.c                  |   4 +-
+ drivers/vhost/vdpa.c                               |   3 +-
+ drivers/vhost/vhost.c                              |  10 +-
+ drivers/virtio/virtio.c                            |   1 +
+ drivers/virtio/virtio_ring.c                       |   8 +
+ fs/btrfs/inode.c                                   |  10 +-
+ fs/io_uring.c                                      |  37 ++--
+ fs/namespace.c                                     |   6 +-
+ include/linux/kfence.h                             |   7 +-
+ include/linux/memcontrol.h                         |  29 +--
+ include/linux/mlx5/mlx5_ifc_vdpa.h                 |  10 +-
+ include/linux/virtio.h                             |   1 +
+ include/net/flow_offload.h                         |  12 +-
+ kernel/bpf/verifier.c                              |   1 +
+ kernel/cfi.c                                       |   8 +-
+ kernel/trace/Kconfig                               |   5 +
+ kernel/trace/trace.c                               |  18 +-
+ kernel/trace/trace.h                               |  32 ----
+ kernel/trace/trace_events_hist.c                   |   2 +
+ mm/hugetlb.c                                       |  21 ++-
+ mm/memory-failure.c                                | 196 ++++++++++++---------
+ mm/vmscan.c                                        |  27 ++-
+ net/dccp/dccp.h                                    |   6 +-
+ net/mac80211/main.c                                |   2 +
+ net/mptcp/options.c                                |  10 +-
+ net/mptcp/pm_netlink.c                             |  44 ++---
+ net/openvswitch/vport.c                            |   1 +
+ net/sched/sch_cake.c                               |   2 +-
+ net/xfrm/xfrm_ipcomp.c                             |   2 +-
+ sound/pci/hda/hda_generic.c                        |  10 +-
+ sound/pci/hda/patch_realtek.c                      |  12 +-
+ sound/pci/hda/patch_via.c                          |   1 +
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c       |   2 +-
+ 129 files changed, 1190 insertions(+), 771 deletions(-)
 
-> 
-> > >   2. Does not work for memory that isn't backed by 'struct page', e.g. if devices
-> > >      gain support for exposing encrypted memory regions to guests.
-> > 
-> > Do you mean that a page not backed by 'struct page' might be mapped to other
-> > user space? I thought the VM_GUEST flags for the VMA could prevent that(though
-> > I may possiblely be wrong). Could you explain more? Thanks!
-> 
-> It's about enabling, not preventing.  If in the future there is some form of memory
-> that is not backed by 'struct page' (CXL memory?), that can also be mapped into
-> a protected KVM guest, relying on 'struct page' to ensure that only the owning KVM
-> guest has access to that memory would not work.
+Adrian Larumbe (1):
+      dmaengine: xilinx_dma: Fix read-after-free bug when terminating transfers
 
-Oh. Keeping the page owner info in 'struct page' is not a good choice.
-But still, my quesions are:
+Alan Stern (2):
+      USB: core: Avoid WARNings for 0-length descriptor requests
+      USB: core: Fix incorrect pipe calculation in do_proc_control()
 
-1> If TDX module/ SEV-SNP can do this, do we still need to enforce a 1:1
-page:guest association in host kernel - if we are not so ambitious to also
-make this work as a pure software design? :-)
+Andreas Persson (1):
+      mtd: cfi_cmdset_0002: fix crash when erasing/writing AMD cards
 
-2> Besides, could you please explain how this design achieves the 1:1
-association? 
+Andrew Delgadillo (1):
+      arm64: clean vdso & vdso32 files
 
-> 
-> > >   3. Does not help march toward page migration or swap support (though it doesn't
-> > >      hurt either).
-> > > 
-> > > [*] https://lkml.kernel.org/r/20210416154106.23721-1-kirill.shutemov@linux.intel.com
-> > > 
-> > > Concept
-> > > =======
-> > > 
-> > > Guest private memory must be backed by an "enlightened" file descriptor, where
-> > > "enlightened" means the implementing subsystem supports a one-way "conversion" to
-> > > guest private memory and provides bi-directional hooks to communicate directly
-> > > with KVM.  Creating a private fd doesn't necessarily have to be a conversion, e.g. it
-> > > could also be a flag provided at file creation, a property of the file system itself,
-> > > etc...
-> > > 
-> > > Before a private fd can be mapped into a KVM guest, it must be paired 1:1 with a
-> > > KVM guest, i.e. multiple guests cannot share a fd.  At pairing, KVM and the fd's
-> > > subsystem exchange a set of function pointers to allow KVM to call into the subsystem,
-> > > e.g. to translate gfn->pfn, and vice versa to allow the subsystem to call into KVM,
-> > > e.g. to invalidate/move/swap a gfn range.
-> > 
-> > So the gfn->pfn translation is done by the fd's subsystem? Again, could you
-> > please elaborate how?
-> 
-> Rats, I meant to capture this in the "patch" and did not.  The memslot would hold
-> the base offset into the file instead of a host virtual address.  I.e. instead of
-> gfn -> hva -> pfn, it would roughly be gfn -> offset -> pfn.
-> 
+Andy Shevchenko (1):
+      ptp_pch: Restore dependency on PCI
 
-And the offset just equals gfn?
+Anshuman Gupta (1):
+      drm/i915: Tweaked Wa_14010685332 for all PCHs
 
-> > And each private memory region would need a seperate group of callbacks?
-> 
-> Each private memslot would have its own pointer to a virtual function table, but
-> there would only be a single table per backing store implementation.
-> 
+Apurva Nandan (1):
+      spi: cadence-quadspi: Fix check condition for DTR ops
 
-Hmm. So we can have various backing stores for different memslots? And Qemu would
-inform KVM about this for each memslot?
+Arkadiusz Kubalewski (1):
+      i40e: Fix ATR queue selection
 
-> > > Mapping a private fd in host userspace is disallowed, i.e. there is never a host
-> > > virtual address associated with the fd and thus no userspace page tables pointing
-> > > at the private memory.
-> > > 
-> > > Pinning _from KVM_ is not required.  If the backing store supports page migration
-> > > and/or swap, it can query the KVM-provided function pointers to see if KVM supports
-> > > the operation.  If the operation is not supported (this will be the case initially
-> > > in KVM), the backing store is responsible for ensuring correct functionality.
-> > > 
-> > > Unmapping guest memory, e.g. to prevent use-after-free, is handled via a callback
-> > > from the backing store to KVM.  KVM will employ techniques similar to those it uses
-> > > for mmu_notifiers to ensure the guest cannot access freed memory.
-> > > 
-> > > A key point is that, unlike similar failed proposals of the past, e.g. /dev/mktme,
-> > > existing backing stores can be englightened, a from-scratch implementations is not
-> > > required (though would obviously be possible as well).
-> > > 
-> > > One idea for extending existing backing stores, e.g. HugeTLBFS and tmpfs, is
-> > > to add F_SEAL_GUEST, which would convert the entire file to guest private memory
-> > > and either fail if the current size is non-zero or truncate the size to zero.
-> > 
-> > Have you discussed memfd_secret(if host direct mapping is also to be removed)? 
-> 
-> No.  From a userspace perspective, the two would be mutually exclusive
-> 
+Arnd Bergmann (1):
+      mt76: fix enum type mismatch
 
-Sorry? By "mutually exclusive", do you mean we can NOT remove both userspace
-mappings and kernel direct mappings at the same time?
+Bing Guo (1):
+      drm/amd/display: Fix Dynamic bpp issue with 8K30 with Navi 1X
 
-> > And how does this F_SEAL_GUEST work?
-> 
-> Are you asking about semantics or implementation?  If it's implementation, that's
-> firmly in the handwaving part :-)  Semantically, once F_SEAL_GUEST is set it can't
-> be removed, i.e. the file is forever "guest private".  In a way it's destructive,
-> e.g. the host can't ever read out the memory, but that's really just a reflection
-> of the hardware, e.g. even with SEV, the host can read the memory but it can never
-> decrypt the memory.
-> 
+Bjorn Andersson (1):
+      clk: qcom: gdsc: Ensure regulator init state matches GDSC state
 
-Acctually, I am asking both. :-)
+Caleb Connolly (1):
+      arm64: dts: qcom: sdm845-oneplus: fix reserved-mem
 
-E.g., what do we expect of this fd. For now, my understandings are:
-1> It's a dedicated fd, and can not be shared between different processes.
-2> mmap() shall fail on this fd.
-3> With F_SEAL_GUEST, size of this file is set to 0, or need be truncated
-   to 0.
+Christophe Kerello (1):
+      mmc: mmci: stm32: Check when the voltage switch procedure should be done
 
-But when should this fd be created?
-What operations do we expect this fd to offer? 
-And how does this fd function as a channel between MM and KVM?
+Christophe Leroy (3):
+      powerpc/32s: Move setup_{kuep/kuap}() into {kuep/kuap}.c
+      powerpc/32s: Refactor update of user segment registers
+      powerpc/32s: Fix random crashes by adding isync() after locking/unlocking KUEP
 
-> > > 
-> > > KVM
-> > > ===
-> > > 
-> > > Guest private memory is managed as a new address space, i.e. as a different set of
-> > > memslots, similar to how KVM has a separate memory view for when a guest vCPU is
-> > > executing in virtual SMM.  SMM is mutually exclusive with guest private memory.
-> > > 
-> > > The fd (the actual integer) is provided to KVM when a private memslot is added
-> > > via KVM_SET_USER_MEMORY_REGION.  This is when the aforementioned pairing occurs.
-> > 
-> > My understanding of KVM_SET_USER_MEMORY_REGION is that, this ioctl is to
-> > facilitate the binding of HVA and GPA ranges. But if there's no HVAs for
-> > a private region at all, why do we need a memslot for it? Besides to keep
-> > track of the private GFN ranges, and provide the callbacks, is there any
-> > other reason?
-> 
-> The short answer is that something in KVM needs to translate gfn->pfn.  Using just
-> the gfn isn't feasible because there's no anchor (see above regarding the base file
-> offset).  And even if the offset weren't needed, KVM still needs a lot of the same
-> metadata, e.g. some day there may be read-only private memsots, dirty logging of
-> private memslots, etc...  Implementing something else entirely would also require
-> an absurd amount of code churn as all of KVM revolves around gfn -> slot -> pfn.
-> 
+Dan Carpenter (1):
+      mtd: rawnand: Add a check in of_get_nand_secure_regions()
 
-Yes. Thanks!
+Dave Gerlach (1):
+      ARM: dts: am43x-epos-evm: Reduce i2c0 bus speed for tps65218
 
-> > Another question is: why do we need a whole new address space, instead of
-> > one address space accommodating memslot types?
-> 
-> Either way could be made to work, and there isn't thaaat much code difference.  My
-> initial thoughts were to use a flag, but there are some niceties that a separate
-> address space provides (more below).
-> 
-> > > By default, KVM memslot lookups will be "shared", only specific touchpoints will
-> > > be modified to work with private memslots, e.g. guest page faults.  All host
-> > > accesses to guest memory, e.g. for emulation, will thus look for shared memory
-> > > and naturally fail without attempting copy_to/from_user() if the guest attempts
-> > 
-> > Becasue gfn_to_hva() will fail first?
-> 
-> Yes.  More precisely, gfn_to_hva() will fail because there is no memslot for the
-> current address space (shared).  This is one advantage over a flag, e.g. there's no
-> need to check a flag after getting a memslot.  It's somewhat superficial as it
-> wouldn't be too difficult to add low level helpers to default to "shared", but there
-> are multiple instances of those types of patterns, so I do hope/think it will yield
-> to cleaner code.
-> 
-> > > to coerce KVM into access private memory.  Note, avoiding copy_to/from_user() and
-> > > friends isn't strictly necessary, it's more of a happy side effect.
-> > > 
-> > > A new KVM exit reason, e.g. KVM_EXIT_MEMORY_ERROR, and data struct in vcpu->run
-> > > is added to propagate illegal accesses (see above) and implicit conversions
-> > 
-> > Sorry, illegal accesses from VM?
-> 
-> Illegal accesses from the host, e.g. attempting to read/write guest private memory
-> via gfn_to_hva().
-> 
+Dinghao Liu (1):
+      net: qlcnic: add missed unlock in qlcnic_83xx_flash_read32
 
-Sorry, I do not get it. Without a valid HVA, how would the host perform
-such illegal accesses?
+Dmitry Osipenko (1):
+      opp: Drop empty-table checks from _put functions
 
-> > Do you actually mean a KVM page fault caused by private access from VM, which
-> > implicitly notifies KVM to mark it as private(e.g. by bouncing to Qemu, which
-> > then creates a private memory region and ioctls into KVM)?
-> > 
-> > If the answer is yes, how about naming the exit reason as KVM_EXIT_MEMORY_PRIVATE?
-> > Meanwhile, is Qemu also supposed to invoke some system call into host kernel
-> > before ioctls into KVM? I'm still confused where the kernel callbacks like
-> > the gfn_to_pfn() come from(and how they function)... :)
-> 
-> I would like the exit to be generic so that it can be reused for other, completely
-> unrelated (yet similar) scenarios (see links below).
-> 
-> > > to userspace (see below).  Note, the new exit reason + struct can also be to
-> > > support several other feature requests in KVM[1][2].
-> > > 
-> > > The guest may explicitly or implicity request KVM to map a shared/private variant
-> > > of a GFN.  An explicit map request is done via hypercall (out of scope for this
-> > > proposal as both TDX and SNP ABIs define such a hypercall).  An implicit map request
-> > > is triggered simply by the guest accessing the shared/private variant, which KVM
-> > > sees as a guest page fault (EPT violation or #NPF).  Ideally only explicit requests
-> > > would be supported, but neither TDX nor SNP require this in their guest<->host ABIs.
-> > 
-> > Well, I am wondering, should we assume all guest pages as shared or private by
-> > default? I mean, if all guest pages are private when the VM is created, maybe
-> > the private memslots can be initialized in VM creation time, and be deleted/splited
-> > later(e.g. in response to guest sharing  hypercalls)?
-> 
-> Define "we".  I absolutely expect the userspace VMM to assume all guest pages are
-> private by default.  But I feel very strongly that KVM should not be involved in
-> the control logic for decided when to convert a given page between shared and
-> private.  Thus, deciding the default state is not KVM's responsibility.
-> 
+Dong Aisheng (1):
+      clk: imx6q: fix uart earlycon unwork
 
-Could qemu just tell KVM this is a protected VM when creating it?
+Dongliang Mu (2):
+      ipack: tpci200: fix many double free issues in tpci200_pci_probe
+      ipack: tpci200: fix memory leak in the tpci200_register
 
-For runtime conversion, KVM can handle hypercalls from guest, and forward to Qemu,
-just like what Kirill did in previous RFC patches.
+Eli Cohen (2):
+      vdpa/mlx5: Avoid destroying MR on empty iotlb
+      vdpa/mlx5: Fix queue type selection logic
 
-> > It may simplify the logic, but may also restrict the VM type(e.g. to be TD guest).
-> > 
-> > > 
-> > > For implicit or explicit mappings, if a memslot is found that fully covers the
-> > > requested range (which is a single gfn for implicit mappings), KVM's normal guest
-> > > page fault handling works with minimal modification.
-> > > 
-> > > If a memslot is not found, for explicit mappings, KVM will exit to userspace with
-> > > the aforementioned dedicated exit reason.  For implict _private_ mappings, KVM will
-> > > also immediately exit with the same dedicated reason.  For implicit shared mappings,
-> > > an additional check is required to differentiate between emulated MMIO and an
-> > > implicit private->shared conversion[*].  If there is an existing private memslot
-> > > for the gfn, KVM will exit to userspace, otherwise KVM will treat the access as an
-> > > emulated MMIO access and handle the page fault accordingly.
-> > > 
-> > > [1] https://lkml.kernel.org/r/YKxJLcg/WomPE422@google.com
-> > > [2] https://lkml.kernel.org/r/20200617230052.GB27751@linux.intel.com
-> > > 
-> > > Punching Holes
-> > > ==============
-> > > 
-> > > The expected userspace memory model is that mapping requests will be handled as
-> > > conversions, e.g. on a shared mapping request, first unmap the private gfn range,
-> > > then map the shared gfn range.  A new KVM ioctl() will likely be needed to allow
-> > > userspace to punch a hole in a memslot, as expressing such an operation isn't
-> > > possible with KVM_SET_USER_MEMORY_REGION.  While userspace could delete the
-> > > memslot, then recreate three new memslots, doing so would be destructive to guest
-> > > data as unmapping guest private memory (from the EPT/NPT tables) is destructive
-> > > to the data for both TDX and SEV-SNP guests.
-> > 
-> > May I ask why? Thanks!
-> 
-> Hmm, for SNP it might not actually be destructive, I forget the exact flows for
-> unmapping memory.
-> 
-> Anyways, for TDX it's most certainly destructive.  When mapping private pages into
-> the guest (ignore pre-boot), the guest must accept a page before accessing the page,
-> as a #VE will occur if the page is not accepted.  This holds true even if the host
-> unmaps and remaps the same PFN -> GFN.  The TDX module also explicitly zeroes the
-> page when installing a new mapping.
-> 
-> And to prevent use-after-free, KVM must fully unmap a page if its corresponding
-> memslot is deleted, e.g. it can't trust userspace to remap the memory at the exact
-> gfn:pfn combo.
-> 
-> Without a new API to punch a hole, deleting private memslots to create two smaller,
-> discontiguous memslots would destroy the data in the two remaining/new memslots.
-> 
+Elliot Berman (1):
+      cfi: Use rcu_read_{un}lock_sched_notrace
 
-So that's because deleting a memslot will inevitably zeros guest private pages?
+Ezequiel Garcia (1):
+      iommu/dma: Fix leak in non-contiguous API
 
-> > > Pros (vs. struct page)
-> > > ======================
-> > > 
-> > > Easy to enforce 1:1 fd:guest pairing, as well as 1:1 gfn:pfn mapping.
-> > > 
-> > > Userspace page tables are not populated, e.g. reduced memory footprint, lower
-> > > probability of making private memory accessible to userspace.
-> > > 
-> > > Provides line of sight to supporting page migration and swap.
-> > > 
-> > > Provides line of sight to mapping MMIO pages into guest private memory.
-> > > 
-> > > Cons (vs. struct page)
-> > > ======================
-> > > 
-> > > Significantly more churn in KVM, e.g. to plumb 'private' through where needed,
-> > > support memslot hole punching, etc...
-> > > 
-> > > KVM's MMU gets another method of retrieving host pfn and page size.
-> > 
-> > And the method is provided by host kernel? How does this method work?
-> 
-> It's a function callback provided by the backing store.  The details of the
-> function would be likely specific to the backing store's implementation, e.g.
-> HugeTLBFS would likely have its own implementation.
-> 
+Frank Wunderlich (1):
+      iommu: Check if group is NULL before remove device
 
-HugeTLBFS is a nice-to-have, not a must, right?
-Is there any other backing store we need support first?
+Hans de Goede (1):
+      usb: typec: tcpm: Fix VDMs sometimes not being forwarded to alt-mode drivers
 
-> > [...]
-> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > > index a272ccbddfa1..771080235b2d 100644
-> > > --- a/arch/x86/kvm/mmu/mmu.c
-> > > +++ b/arch/x86/kvm/mmu/mmu.c
-> > > @@ -2896,6 +2896,9 @@ int kvm_mmu_max_mapping_level(struct kvm *kvm,
-> > >  	if (max_level == PG_LEVEL_4K)
-> > >  		return PG_LEVEL_4K;
-> > >  
-> > > +	if (memslot_is_private(slot))
-> > > +		return slot->private_ops->pfn_mapping_level(...);
-> > > +
-> > 
-> > Oh, any suggestion how host kernel decides the mapping level here?
-> 
-> That decision comes from the backing store.  E.g. HugeTLBFS would simply return
-> its static/configured size/level.
->  
-> > >  	host_level = host_pfn_mapping_level(kvm, gfn, pfn, slot);
-> > >  	return min(host_level, max_level);
-> > >  }
-> > > @@ -3835,9 +3838,11 @@ static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> > >  
-> > >  static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault, int *r)
-> > >  {
-> > > -	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, fault->gfn);
-> > > +	struct kvm_memory_slot *slot;
-> > >  	bool async;
-> > >  
-> > > +	slot = __kvm_vcpu_gfn_to_memslot(vcpu, fault->gfn, fault->private);
-> > > +
-> > >  	/*
-> > >  	 * Retry the page fault if the gfn hit a memslot that is being deleted
-> > >  	 * or moved.  This ensures any existing SPTEs for the old memslot will
-> > > @@ -3846,8 +3851,19 @@ static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
-> > >  	if (slot && (slot->flags & KVM_MEMSLOT_INVALID))
-> > >  		goto out_retry;
-> > >  
-> > > +	/*
-> > > +	 * Exit to userspace to map the requested private/shared memory region
-> > > +	 * if there is no memslot and (a) the access is private or (b) there is
-> > > +	 * an existing private memslot.  Emulated MMIO must be accessed through
-> > > +	 * shared GPAs, thus a memslot miss on a private GPA is always handled
-> > > +	 * as an implicit conversion "request".
-> > > +	 */
-> > 
-> > For (b), do you mean this fault is for a GFN which marked as private, but now
-> > converted to a shared?
-> 
-> Yes.
-> 
-> > If true, could we just disallow it if no explict sharing hypercall is triggered?
-> 
-> Sadly, no.  Even if all hardware vendor specs _required_ such behavior, KVM has no
-> recourse but to exit to userspace because there's no way to communicate to the
-> guest that it accessed a "bad" address.  E.g. KVM can't inject exceptions in TDX,
-> and it can't touch guest register state to "return" an error code,  Not to mention
-> that the guest would be in some random flow accessing memory.
+Harshvardhan Jha (2):
+      net: xfrm: Fix end of loop tests for list_for_each_entry
+      scsi: megaraid_mm: Fix end of loop tests for list_for_each_entry()
 
-So, guest can just use a shared GPA(with shared-bit set) directly, without the
-need to explicitly ask KVM to convert the private one?
+Hayes Wang (2):
+      r8152: fix writing USB_BP2_EN
+      r8152: fix the maximum number of PLA bp for RTL8153C
 
-> 
-> Happily for KVM, it's userspace's problem^Wdecision.
-> 
+Ido Schimmel (1):
+      Revert "flow_offload: action should not be NULL when it is referenced"
 
-And with KVM_EXIT_MAP_MEMORY returned, qemu should trigger a new ioctl into KVM,
-which puches holes in KVM private address space's memslots? 
+Igor Pylypiv (1):
+      scsi: pm80xx: Fix TMF task completion race condition
 
-B.R.
-Yu
+Ilya Leoshkevich (1):
+      bpf: Clear zext_dst of dead insns
+
+Ivan T. Ivanov (1):
+      net: usb: lan78xx: don't modify phy_device state concurrently
+
+Jakub Kicinski (4):
+      bnxt: don't lock the tx queue from napi poll
+      bnxt: disable napi before canceling DIM
+      bnxt: make sure xmit_more + errors does not miss doorbells
+      bnxt: count Tx drops
+
+Jaroslav Kysela (1):
+      ALSA: hda - fix the 'Capture Switch' value change notifications
+
+Jason Wang (1):
+      virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
+
+Jeff Layton (1):
+      fs: warn about impending deprecation of mandatory locks
+
+Jens Axboe (2):
+      io_uring: only assign io_uring_enter() SQPOLL error in actual error case
+      io_uring: fix xa_alloc_cycle() error return value check
+
+Johannes Berg (1):
+      mac80211: fix locking in ieee80211_restart_work()
+
+Johannes Weiner (1):
+      mm: memcontrol: fix occasional OOMs due to proportional memory.low reclaim
+
+José Roberto de Souza (1):
+      drm/i915: Skip display interruption setup when display is not available
+
+Kai-Heng Feng (1):
+      ALSA: hda/realtek: Limit mic boost on HP ProBook 445 G8
+
+Kristin Paget (1):
+      ALSA: hda/realtek: Enable 4-speaker output for Dell XPS 15 9510 laptop
+
+Krzysztof Wilczyński (1):
+      PCI/sysfs: Use correct variable for the legacy_mem sysfs object
+
+Lahav Schlesinger (1):
+      vrf: Reset skb conntrack connection on VRF rcv
+
+Liu Yi L (1):
+      iommu/vt-d: Fix incomplete cache flush in intel_pasid_tear_down_entry()
+
+Lukas Bulwahn (1):
+      tracing: define needed config DYNAMIC_FTRACE_WITH_ARGS
+
+Lukasz Luba (1):
+      cpufreq: arm_scmi: Fix error path when allocation failed
+
+Manivannan Sadhasivam (1):
+      mtd: rawnand: Fix probe failure due to of_get_nand_secure_regions()
+
+Marcin Bachry (1):
+      PCI: Increase D3 delay for AMD Renoir/Cezanne XHCI
+
+Marco Elver (1):
+      kfence: fix is_kfence_address() for addresses below KFENCE_POOL_SIZE
+
+Marek Behún (1):
+      cpufreq: armada-37xx: forbid cpufreq for 1.2 GHz variant
+
+Matthieu Baerts (1):
+      mptcp: full fully established support after ADD_ADDR
+
+Maxim Kochetkov (2):
+      soc: fsl: qe: convert QE interrupt controller to platform_device
+      soc: fsl: qe: fix static checker warning
+
+Michael Chan (2):
+      bnxt_en: Disable aRFS if running on 212 firmware
+      bnxt_en: Add missing DMA memory barriers
+
+Mike Kravetz (1):
+      hugetlb: don't pass page cache pages to restore_reserve_on_error
+
+Nadav Amit (1):
+      io_uring: Use WRITE_ONCE() when writing to sq_flags
+
+Naoya Horiguchi (2):
+      mm,hwpoison: make get_hwpoison_page() call get_any_page()
+      mm/hwpoison: retry with shake_page() for unhandlable pages
+
+NeilBrown (1):
+      btrfs: prevent rename2 from exchanging a subvol with a directory from different parents
+
+Nicolas Saenz Julienne (2):
+      mmc: sdhci-iproc: Cap min clock frequency on BCM2711
+      mmc: sdhci-iproc: Set SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN on BCM2711
+
+Niklas Schnelle (1):
+      s390/pci: fix use after free of zpci_dev
+
+Oleksij Rempel (1):
+      net: usb: asix: refactor asix_read_phy_addr() and handle errors on return
+
+Paolo Abeni (1):
+      mptcp: fix memory leak on address flush
+
+Parav Pandit (1):
+      virtio: Protect vqs list access
+
+Pavel Begunkov (1):
+      io_uring: fix code style problems
+
+Pavel Skripkin (1):
+      net: 6pack: fix slab-out-of-bounds in decode_data
+
+Peter Ujfalusi (1):
+      dmaengine: of-dma: router_xlate to return -EPROBE_DEFER if controller is not yet available
+
+Peter Zijlstra (1):
+      perf/x86: Fix out of bound MSR access
+
+Petko Manolov (1):
+      net: usb: pegasus: Check the return value of get_geristers() and friends;
+
+Petr Pavlu (1):
+      riscv: Fix a number of free'd resources in init_resources()
+
+Petr Vorel (3):
+      arm64: dts: qcom: msm8992-bullhead: Remove PSCI
+      arm64: dts: qcom: msm8992-bullhead: Fix cont_splash_mem mapping
+      arm64: dts: qcom: msm8994-angler: Disable cont_splash_mem
+
+Pingfan Liu (1):
+      tracing: Apply trace filters on all output channels
+
+Prabhakar Kushwaha (1):
+      qede: fix crash in rmmod qede while automatic debug collection
+
+Qingqing Zhuo (1):
+      drm/amd/display: workaround for hard hang on HPD on native DP
+
+Randy Dunlap (1):
+      dccp: add do-while-0 stubs for dccp_pr_debug macros
+
+Saravana Kannan (2):
+      net: mdio-mux: Don't ignore memory allocation errors
+      net: mdio-mux: Handle -EPROBE_DEFER correctly
+
+Sasha Levin (1):
+      Linux 5.13.13
+
+Shaik Sajida Bhanu (1):
+      mmc: sdhci-msm: Update the software timeout value for sdhc
+
+Sreekanth Reddy (1):
+      scsi: core: Avoid printing an error if target_alloc() returns -ENXIO
+
+Srinivas Kandagatla (5):
+      arm64: dts: qcom: c630: fix correct powerdown pin for WSA881x
+      slimbus: messaging: start transaction ids from 1 instead of zero
+      slimbus: messaging: check for valid transaction id
+      slimbus: ngd: set correct device for pm
+      slimbus: ngd: reset dma setup during runtime pm
+
+Steven Rostedt (VMware) (1):
+      tracing / histogram: Fix NULL pointer dereference on strcmp() on NULL event name
+
+Sudeep Holla (1):
+      ARM: dts: nomadik: Fix up interrupt controller node names
+
+Sylwester Dziedziuch (1):
+      iavf: Fix ping is lost after untrusted VF had tried to change MAC
+
+Takashi Iwai (2):
+      ALSA: hda/via: Apply runtime PM workaround for ASUS B23E
+      ASoC: intel: atom: Fix breakage for PCM buffer address setup
+
+Toke Høiland-Jørgensen (1):
+      sch_cake: fix srchost/dsthost hashing mode
+
+Tony Lindgren (1):
+      bus: ti-sysc: Fix error handling for sysc_check_active_timer()
+
+Uwe Kleine-König (1):
+      spi: spi-mux: Add module info needed for autoloading
+
+Vincent Fu (1):
+      kyber: make trace_block_rq call consistent with documentation
+
+Vincent Whitchurch (1):
+      mmc: dw_mmc: Fix hang on data CRC error
+
+Vladimir Oltean (2):
+      net: mscc: ocelot: allow forwarding from bridge ports to the tag_8021q CPU port
+      net: dpaa2-switch: disable the control interface on error path
+
+Wang Hai (1):
+      ixgbe, xsk: clean up the resources in ixgbe_xsk_pool_enable error path
+
+Xie Yongji (5):
+      vhost-vdpa: Fix integer overflow in vhost_vdpa_process_iotlb_update()
+      vhost: Fix the calculation in vhost_overflow()
+      vdpa_sim: Fix return value check for vdpa_alloc_device()
+      vp_vdpa: Fix return value check for vdpa_alloc_device()
+      vDPA/ifcvf: Fix return value check for vdpa_alloc_device()
+
+Ye Bin (1):
+      scsi: scsi_dh_rdac: Avoid crash during rdac_bus_attach()
+
+Yifan Zhang (1):
+      drm/amdgpu: fix the doorbell missing when in CGPG issue for renoir.
+
+Yu Kuai (1):
+      dmaengine: usb-dmac: Fix PM reference leak in usb_dmac_probe()
+
+Zhan Liu (1):
+      drm/amd/display: Use DCN30 watermark calc for DCN301
+
+jason-jh.lin (2):
+      drm/mediatek: Add AAL output size configuration
+      drm/mediatek: Add component_del in OVL and COLOR remove function
+
+kaixi.fan (1):
+      ovs: clear skb->tstamp in forwarding path
+
+lijinlin (1):
+      scsi: core: Fix capacity set to zero after offlinining device
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE4n5dijQDou9mhzu83qZv95d3LNwFAmEnliQACgkQ3qZv95d3
+LNy7sw/+IaMODMfhfgjotr9kTJ3HlSgxSo7R79dYPZPwK8Lr4M8UpMuIKVkrDVEz
+ItDNGt9x3FeG34LeLzMWla/qpigYcf2oyL2W3ESDkWAicZ99BOMNMiUE+3zjHzs2
+6QUOYPMrQKMv6Rp53ALnsMdq2MZ90DW22jOKgMOUp2MkR+V4wL+RrKCFuPxmC7DE
+gN1sEWVBJeOUtMLyMCJ5sOIOpQ7bObGhMG14BrJQ4MYFhaROiXQt6TdMJnKMNCfD
+Ip42h7F8pI4gj2MQMXJmAU0mrxXDJ1DHyhkfbkI/wLAR+/JZUZvg0J9PWeMaIiJ1
+CbCDEEz/iTQbKoGe/av4eQaPxw6i5W8patIQob/dOqVeSsqBMzk49TT6m4NfD2qg
+gPCGKG/Fee0N6fqboGANTTJ4xxIn5PiGEGklQD4/YTPQzU8fmHPpWgnEh1JUgfSm
+12s9kN/BK5MUBtCkPCePsy8OTfYwGoHwlxyhJ4hnCbtfLS24KWSthGDUesPmBD+c
+3L1vIH6cJ0M2cWul9ZqftJe/O5MJSYiUjSo5bZRcKxSQy6LcI8kWHGDXxTQPdEd2
+Xg8ujhNAC4Ub80+Z52SmMoQ2jvTfQm9c28L5qsWQyL9arRQMWPuRdCK12eijmf3R
+EALUtIrge3PGfNgAL+1oBVCCtxCNdDrEBVacqUd48zHHMOyUS0Y=
+=+THc
+-----END PGP SIGNATURE-----
