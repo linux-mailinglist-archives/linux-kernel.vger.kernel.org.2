@@ -2,84 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1F83F86D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220383F86E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242400AbhHZL6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:58:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242307AbhHZL6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:58:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B82B6102A;
-        Thu, 26 Aug 2021 11:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629979068;
-        bh=VqrmZfvdySGGpRkZfJ9sTmMn3wWb3fwMDv/A6XRJ5g0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lzvupKGm6DHeJEI0TqRmS03OkixQqyNvn5fHICulBulOAdMBqEccYq8nc5D2E6XhM
-         gWy/yQjptw7v0BYdQVMP3sXyUlMzJb2TDV9Ccg4Kg4G1aHaVRKNtLVfFwr83vd5wme
-         FgPiaOq7JB0o7euja3GB3WosZG/JyuK67iUcwAk8=
-Date:   Thu, 26 Aug 2021 13:57:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Vignesh R <vigneshr@ti.com>, Marc Zyngier <maz@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-serial@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Use 'enum' instead of 'oneOf' plus 'const'
- entries
-Message-ID: <YSeBuMtUa77AR7Tn@kroah.com>
-References: <20210824202014.978922-1-robh@kernel.org>
+        id S242361AbhHZMBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242147AbhHZMBI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 08:01:08 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CE6C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 05:00:21 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id i1so1830071vsk.8
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 05:00:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ls2ypno4o2WXx/qIUwwal89wxoQGs4dCDmma7F8fOas=;
+        b=wnqoAHJLnXB6H7zSmKlyAT7GoPufCt1zOyAKr2MLn/KjEvkfL8FNLCIrTN0lokpW/G
+         aOZY5Zj8eHKkoJyiwlFw0wHcY0VIjnuoIn3pdtAIpLErNygqI/3W1rSlrJOoKcEEUT+i
+         xmbrfxvjKVNZANJ/6XkQbiUWa1HxPpYvtf/xXVkBdLXbNn3V/bhlRB7F9PC3GWI1lYBJ
+         mxedbJ7+2O/I4M0AJUJ72a8eMits+rhFVxAFVYzQHTElMkd1D4eMDHyv0Rk6EL25uu2m
+         bxfXr0EGK2jU2n10mhlhqccklMzkGyviG2EAb+R5OFRZ0L95bGdMcoHvDUHwQQNWISmJ
+         4pcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ls2ypno4o2WXx/qIUwwal89wxoQGs4dCDmma7F8fOas=;
+        b=LFlJAeSWTK25VZY73Ny6LOr1hiv63yVdRUhPAzqhNqgUlNEdKkdm1z/yn83O5vBX7Q
+         Z/NnUSaO4JpQRppiqecWgc7GIwAtuC38J2lexnoCx84iTFGRL/+EWQgNhXfluTPqtTXn
+         o5cZFS7oyUt3sSlzWZNLYyfXJW89u6vG3JHuIJoa5Qo9zwn1yOnftLtIVGXHmHTrZoHL
+         fXBgFh/3DEVyxKzBPa8crm1XQ1zAg0/YtO+FvlP7fwhT8P/xggUhIs+tnAPvb/7xMHBI
+         f1z0ClJfFQg3pe0P3ugPr53oUgmbABXjtdaH7WkjIzgQFIE/pJGQJ31KYvLwhzoxLzWF
+         fnTQ==
+X-Gm-Message-State: AOAM5330JhafnoOCRQxfVwsPn7q1CO408oVCcpSW6f11uJQ099sUKCGq
+        AFWkcpXJBJkQOWt5I4pri2GEsNSHXFlYW1UYj4X3
+X-Google-Smtp-Source: ABdhPJxl1t8cPnYP7bde8aXk2a6tsl/I44XcfcVvB/2t/hON9zl/ZkiYAEA5BoInYFUmxsAyHBqm7EFNZeVolv/D5pQ=
+X-Received: by 2002:a05:6102:3ed6:: with SMTP id n22mr1667398vsv.24.1629979220306;
+ Thu, 26 Aug 2021 05:00:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824202014.978922-1-robh@kernel.org>
+References: <20210824170743.710957-1-sashal@kernel.org> <20210824170743.710957-26-sashal@kernel.org>
+In-Reply-To: <20210824170743.710957-26-sashal@kernel.org>
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Date:   Thu, 26 Aug 2021 20:59:53 +0900
+Message-ID: <CABMQnVJrxqB8koLO9-mBCZgRyQydU7x7B8aHgRPjpxw92hBWjQ@mail.gmail.com>
+Subject: Re: [PATCH 4.4 25/31] mmc: dw_mmc: Wait for data transfer after
+ response errors.
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Doug Anderson <dianders@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Alim Akhtar <alim.akhtar@gmail.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 03:20:14PM -0500, Rob Herring wrote:
-> 'enum' is equivalent to 'oneOf' with a list of 'const' entries, but 'enum'
-> is more concise and yields better error messages.
-> 
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Vignesh R <vigneshr@ti.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-i2c@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-pci@vger.kernel.org
-> Cc: linux-phy@lists.infradead.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-spi@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Hi,
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+2021=E5=B9=B48=E6=9C=8825=E6=97=A5(=E6=B0=B4) 2:39 Sasha Levin <sashal@kern=
+el.org>:
+>
+> From: Doug Anderson <dianders@chromium.org>
+>
+> [ Upstream commit 46d179525a1f6d16957dcb4624517bc04142b3e7 ]
+>
+> According to the DesignWare state machine description, after we get a
+> "response error" or "response CRC error" we move into data transfer
+> mode. That means that we don't necessarily need to special case
+> trying to deal with the failure right away. We can wait until we are
+> notified that the data transfer is complete (with or without errors)
+> and then we can deal with the failure.
+>
+> It may sound strange to defer dealing with a command that we know will
+> fail anyway, but this appears to fix a bug. During tuning (CMD19) on
+> a specific card on an rk3288-based system, we found that we could get
+> a "response CRC error". Sending the stop command after the "response
+> CRC error" would then throw the system into a confused state causing
+> all future tuning phases to report failure.
+>
+> When in the confused state, the controller would show these (hex codes
+> are interrupt status register):
+>  CMD ERR: 0x00000046 (cmd=3D19)
+>  CMD ERR: 0x0000004e (cmd=3D12)
+>  DATA ERR: 0x00000208
+>  DATA ERR: 0x0000020c
+>  CMD ERR: 0x00000104 (cmd=3D19)
+>  CMD ERR: 0x00000104 (cmd=3D12)
+>  DATA ERR: 0x00000208
+>  DATA ERR: 0x0000020c
+>  ...
+>  ...
+>
+> It is inherently difficult to deal with the complexity of trying to
+> correctly send a stop command while a data transfer is taking place
+> since you need to deal with different corner cases caused by the fact
+> that the data transfer could complete (with errors or without errors)
+> during various places in sending the stop command (dw_mci_stop_dma,
+> send_stop_abort, etc)
+>
+> Instead of adding a bunch of extra complexity to deal with this, it
+> seems much simpler to just use the more straightforward (and less
+> error-prone) path of letting the data transfer finish. There
+> shouldn't be any huge benefit to sending the stop command slightly
+> earlier, anyway.
+>
+> Signed-off-by: Doug Anderson <dianders@chromium.org>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Cc: Alim Akhtar <alim.akhtar@gmail.com>
+> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+This commit also requires the following modifications:
+  ba2d139b02ba68: mmc: dw_mmc: Fix occasional hang after tuning on eMMC
+
+Please apply this commit too.
+
+Best regards,
+  Nobuhiro
+
+
+> ---
+>  drivers/mmc/host/dw_mmc.c | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>
+> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+> index 581f5d0271f4..afdf539e06e9 100644
+> --- a/drivers/mmc/host/dw_mmc.c
+> +++ b/drivers/mmc/host/dw_mmc.c
+> @@ -1744,6 +1744,33 @@ static void dw_mci_tasklet_func(unsigned long priv=
+)
+>                         }
+>
+>                         if (cmd->data && err) {
+> +                               /*
+> +                                * During UHS tuning sequence, sending th=
+e stop
+> +                                * command after the response CRC error w=
+ould
+> +                                * throw the system into a confused state
+> +                                * causing all future tuning phases to re=
+port
+> +                                * failure.
+> +                                *
+> +                                * In such case controller will move into=
+ a data
+> +                                * transfer state after a response error =
+or
+> +                                * response CRC error. Let's let that fin=
+ish
+> +                                * before trying to send a stop, so we'll=
+ go to
+> +                                * STATE_SENDING_DATA.
+> +                                *
+> +                                * Although letting the data transfer tak=
+e place
+> +                                * will waste a bit of time (we already k=
+now
+> +                                * the command was bad), it can't cause a=
+ny
+> +                                * errors since it's possible it would ha=
+ve
+> +                                * taken place anyway if this tasklet got
+> +                                * delayed. Allowing the transfer to take=
+ place
+> +                                * avoids races and keeps things simple.
+> +                                */
+> +                               if ((err !=3D -ETIMEDOUT) &&
+> +                                   (cmd->opcode =3D=3D MMC_SEND_TUNING_B=
+LOCK)) {
+> +                                       state =3D STATE_SENDING_DATA;
+> +                                       continue;
+> +                               }
+> +
+>                                 dw_mci_stop_dma(host);
+>                                 send_stop_abort(host, data);
+>                                 state =3D STATE_SENDING_STOP;
+> --
+> 2.30.2
+>
+
+
+--=20
+Nobuhiro Iwamatsu
+   iwamatsu at {nigauri.org / debian.org}
+   GPG ID: 40AD1FA6
