@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCC53F7F58
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2183F7F63
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235201AbhHZAkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 20:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
+        id S235149AbhHZApi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 20:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234396AbhHZAkV (ORCPT
+        with ESMTP id S232139AbhHZAph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 20:40:21 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09911C061757;
-        Wed, 25 Aug 2021 17:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=C0yArHI7YCKOdFeU9MrU43lT26WcYZTK9a+SMxGE7N4=; b=seHL30GOXPqdjT0RBLOtzZhVXk
-        Aqyj0cmAYleyAheZlHzcYNdO2/dYiDlkfGwMkmFyp5EVqv0ZvT+3ly/y3gHzK7GWOTZmivM9Le2xB
-        vUluDx7jzV1S5FVSZIkteBzqplPkij7kr9nKVTgho1vo31hSqa9uLko+Ms8+wslLJRIwU1/FlO1vM
-        rE2jfuQX1QjI03e97r45xnoOX5N1OQeKxdKjzZI5x1z61tY/Xe4hwkouQprmBrET/mN/IzshJsY50
-        jcXfuVemhNBhu14B52RFpgpVuPv7cg1DCklbmlBtia+tdrL7t3P3BII90z8RQP2SRJxoM09vVxTtO
-        dOyUHtuQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJ3Qb-008o2s-1K; Thu, 26 Aug 2021 00:39:33 +0000
-Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20210825235234.153013-1-jarkko@kernel.org>
- <20210825235234.153013-2-jarkko@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ba483b7e-19a3-d4d3-56c0-3371a77341cb@infradead.org>
-Date:   Wed, 25 Aug 2021 17:39:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 25 Aug 2021 20:45:37 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE179C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 17:44:50 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id r4so2460409ybp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 17:44:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=UWVukDYpnouo2TmAsoiK3YFI/UCntBVDF8OdhEqH+sQ=;
+        b=sD6sFPuzowcLL/VYyKY457KT/TENpGnTd49Uge+Qg7E8JozmjvftXC65JJfc0ycUJV
+         bsLvFcKgElrZSwGXmIhr4fS2yNxyGT87KPRrx/CegEkdoQkwgDpNf7ZsAG5wkQakuNMU
+         CklzowNLsAwqEHfytxp2KX6X4vHcsGEWMhEJpaYP0UAhbe90eQl0BQICey6kFPLDYrsm
+         kKUS+fWyZtJGDS/6vgIHzwUVYkjq3aerHS0mkvNiToXAV0XOIQ0lxJ/d200LmKBe/t49
+         6FOvXm/GaSN5nWlkgsQpN/obPVR4JRhRDqDGZfUxA+i5OOkySeWtI00m9SfcWKD702Rh
+         y7iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=UWVukDYpnouo2TmAsoiK3YFI/UCntBVDF8OdhEqH+sQ=;
+        b=EPtdhdBI3OeJ5mDgIJvhx0TPFq6gMlE/NHuGEqIqGIopzAFiB7ZkcAHOJJKSLusLwh
+         lOr7T+2DMoySNiFu3NFlBhB5IkZKQmTneErJXR7kpmvLIgCaIOBxkBYIwpweifWNqWz/
+         oRX1vifcNPjH2hlhjixe/AoVAy9bGc1HwpVzYms6NK4jgoFg1Vj3nW3L/TPXYdUI/EbL
+         SeIzUxRGZgTivmwoVlb+M//CElXYO9xY0dwbZm3U7fhMSjkbDDk0mt4lP2s9yEPO2JHP
+         ALrenF2YH9XgmY3mkaI4aV1tQf9DKj8G5z0SfWJKJ2FKygKv1whF7m4KLSVfWTddTsDt
+         DHKg==
+X-Gm-Message-State: AOAM53263oc1JTCiDG+AkwAhZszgi+neWhKO6fAmjjncKGCReGIVKuOM
+        mpHWWcZzwEw2DUkcvQ8RhJxYSX7MF4WUlWZwUoM=
+X-Google-Smtp-Source: ABdhPJw1RVccRi25TueYwl/hgWl4/dHpvqu7zE6vtytq3lK7sJ+8yahHvslLUvkEZI/1diJfDcmA3zO7dRmz8R8nC8Q=
+X-Received: by 2002:a25:5b44:: with SMTP id p65mr1887995ybb.336.1629938689759;
+ Wed, 25 Aug 2021 17:44:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210825235234.153013-2-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Reply-To: aliuhuadams@gmail.com
+Sender: judgechief5@gmail.com
+Received: by 2002:a25:340c:0:0:0:0:0 with HTTP; Wed, 25 Aug 2021 17:44:48
+ -0700 (PDT)
+From:   Aliuhu Adams <aliuhuadamss@gmail.com>
+Date:   Thu, 26 Aug 2021 00:44:48 +0000
+X-Google-Sender-Auth: TaTPWhVHQXromjmb2URp7IrO1Xg
+Message-ID: <CAJJkcgBMS3tW0vv2Ot+UCA1a1x4KD2-if72PL4NUX7iBbOhfQg@mail.gmail.com>
+Subject: From Aliuhu Adams
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/21 4:52 PM, Jarkko Sakkinen wrote:
-> The amount of SGX memory on the system is determined by the BIOS and it
-> varies wildly between systems.  It can be from dozens of MB's on desktops
-> or VM's, up to many GB's on servers.  Just like for regular memory, it is
-> sometimes useful to know the amount of usable SGX memory in the system.
-> 
-> Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
-> usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
-> BIOS, the printout would be:
-> 
-> SGX_MemTotal:      22528 kB
-> 
-> It is less than 32 MB because some of the space is reserved for Enclave
-> Page Cache Metadata (EPCM), which contains state variables for all the
-> pages in the Enclave Page Cache (EPC).  The latter contains the pages,
-> which applications can use to create enclaves.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> ---
-> v2:
-> * Move ifdef fix for sgx_set_attribute() to a separate patch.
-> ---
->   Documentation/x86/sgx.rst      | 6 ++++++
->   arch/x86/include/asm/sgx.h     | 2 ++
->   arch/x86/kernel/cpu/sgx/main.c | 7 ++++++-
->   arch/x86/mm/pat/set_memory.c   | 5 +++++
->   4 files changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-> index dd0ac96ff9ef..68ee171e1d8f 100644
-> --- a/Documentation/x86/sgx.rst
-> +++ b/Documentation/x86/sgx.rst
-> @@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the host and in guests
->   on the same machine, the user should reserve enough EPC (by taking out
->   total virtual EPC size of all SGX VMs from the physical EPC size) for
->   host SGX applications so they can run with acceptable performance.
-> +
-> +Supplemental fields for /proc/meminfo
-> +=====================================
-> +
-> +SGX_MemTotal
-> +	The total usable SGX protected memory in kilobytes.
-
-Hi,
-
-I would prefer to see this listed in Documentation/filesystems/proc.rst
-as an optional field, depending on CONFIG_X86_SGX.
-Or at least put a reference in proc.rst to this doc file and its
-supplemental fields.
-
-thanks.
-
 -- 
-~Randy
+From Aliuhu Adams,
 
+My name is Aliuhu Adams, from Burkina Faso
+
+Please, I am contacting you for urgent assistance to help me move my
+inheritance to your country and help me to invest in your country.
+
+The amount is 14 million dollars and I want this money to be moved to your
+country urgently with me because of the fear of the killer of my parents.
+
+I shall give you more details when I hear from you.
+
+Thank you,
+
+Aliuhu Adams
