@@ -2,140 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561C73F87AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809AB3F87A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242241AbhHZMiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:38:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241261AbhHZMiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:38:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45AB7610C8;
-        Thu, 26 Aug 2021 12:38:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629981483;
-        bh=oYW580H2r0Vk0cbC8cBai0zFZz3y1uoZPGESg1qexXU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f0HZaSS4gtmS+SL34ztpsapPiRtEUGKYJWcRETMfuNr3cIG1p7DW3QaXCLGId7yHd
-         VCko2KGBxLk35kGtU4GYr76WUOBaH9xAF13YuP0YP/07m2YdiPncHssgftkP8jZVWX
-         aQF637zpXaqpRuqfM3+RR6hfDlAX2Ykqy+6kK4clPbOIiwxXKM0LDHj6LoDlDjqPAH
-         TjeTHVnwhhMYjkB5lNWiHnbaJRSb+ljSAhQlLKsnxwmMwUX9YmZwrtkWUEY1gctJEv
-         QLbEx8Sp+qk/SCNRdoPkZKILlg4XNC7H6tdp0pzfLdCmQExm6NWRzYLk7utjzAaFg+
-         CoSIWmfhVSC4g==
-Received: by mail-ej1-f44.google.com with SMTP id ia27so5919378ejc.10;
-        Thu, 26 Aug 2021 05:38:03 -0700 (PDT)
-X-Gm-Message-State: AOAM532WtF1M7Kj4MkwX6t+QaoGKTUjQLolB6Q2k/rtQYV33BW+ds1Hl
-        jbicPnpbymbCZ2BQDaDIHvc5g/rUQhfrRKa3/A==
-X-Google-Smtp-Source: ABdhPJzPmphkjNnES72zf5E0Tys8QPVr6+4jD+sFXoKYqUfYojDMBajfSo+1uGlz0Bet8TS24XzxfR5NSH1HPcQKtQI=
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr3993295ejb.108.1629981481805;
- Thu, 26 Aug 2021 05:38:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210825212549.GA3609092@bjorn-Precision-5520> <1795efc94a7b87fb4d9f769e03ce21c6@codeaurora.org>
-In-Reply-To: <1795efc94a7b87fb4d9f769e03ce21c6@codeaurora.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 26 Aug 2021 07:37:48 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+4RZejPcgX3J5JDGnHB6Lgx54BVgwfaZrNuY759wm9ig@mail.gmail.com>
-Message-ID: <CAL_Jsq+4RZejPcgX3J5JDGnHB6Lgx54BVgwfaZrNuY759wm9ig@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
- init in SC7280
-To:     Prasad Malisetty <pmaliset@codeaurora.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bhelgaas@google.com, bjorn.andersson@linaro.org,
-        lorenzo.pieralisi@arm.com, svarbanov@mm-sol.com,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S242161AbhHZMik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:38:40 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56544 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241261AbhHZMij (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 08:38:39 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4B4F5222ED;
+        Thu, 26 Aug 2021 12:37:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629981471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kr+MnY6WWZjhMXduEXDacA8DlN3E7yY7WMNS2gQoetY=;
+        b=l4gVQquU5+i/UjLtkIyNIZAw39izi2/yrPABFAwF+mLCXaUbB4Z07H3T9bvVviTvOkPHMo
+        Cl18jOzAOGTwR/70FA57MV0DX9ZXbzTc5DgGjvD5GC8YmoQ0eELY2an8dfzzkpVlmUpdwz
+        q0gXo+eJTCBmG2dkcrO2qAWS+LAXczE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629981471;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kr+MnY6WWZjhMXduEXDacA8DlN3E7yY7WMNS2gQoetY=;
+        b=9MxZjeFeLMC7lYUS6tiiiY2C/CrpMeYfyuygZeJqNeOJABhUUhnwcwa7OUy6ZBs6+alSIi
+        VsVdyPv6LYxHwIBg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 3D48AA3B8D;
+        Thu, 26 Aug 2021 12:37:51 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 14:37:51 +0200
+Message-ID: <s5h35qwwfds.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Moritz Fischer <mdf@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: renesas-xhci: Prefer firmware loading on unknown ROM state
+In-Reply-To: <YSeHWusVwn9XMHMg@kroah.com>
+References: <20210819113427.1166-1-tiwai@suse.de>
+        <YSd/9clcNN547vre@kroah.com>
+        <s5h8s0owhbp.wl-tiwai@suse.de>
+        <YSeHWusVwn9XMHMg@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 2:22 AM Prasad Malisetty
-<pmaliset@codeaurora.org> wrote:
->
-> On 2021-08-26 02:55, Bjorn Helgaas wrote:
-> > [+cc linux-pci; patches to drivers/pci/ should always be cc'd there]
-> >
-> > On Wed, Aug 25, 2021 at 07:30:09PM +0000, Stephen Boyd wrote:
-> >> Quoting Prasad Malisetty (2021-08-24 01:10:48)
-> >> > On 2021-08-17 22:56, Prasad Malisetty wrote:
-> >> > > On 2021-08-10 09:38, Prasad Malisetty wrote:
-> >> > >> On the SC7280, By default the clock source for pcie_1_pipe is
-> >> > >> TCXO for gdsc enable. But after the PHY is initialized, the clock
-> >> > >> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
-> >> > >>
-> >> > >> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> >> > >> ---
-> >> > >>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
-> >> > >>  1 file changed, 18 insertions(+)
-> >> > >>
-> >> > >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
-> >> > >> b/drivers/pci/controller/dwc/pcie-qcom.c
-> >> > >> index 8a7a300..39e3b21 100644
-> >> > >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> >> > >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> >> > >> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
-> >> > >>      struct regulator_bulk_data supplies[2];
-> >> > >>      struct reset_control *pci_reset;
-> >> > >>      struct clk *pipe_clk;
-> >> > >> +    struct clk *gcc_pcie_1_pipe_clk_src;
-> >> > >> +    struct clk *phy_pipe_clk;
-> >> > >>  };
-> >> > >>
-> >> > >>  union qcom_pcie_resources {
-> >> > >> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct
-> >> > >> qcom_pcie *pcie)
-> >> > >>      if (ret < 0)
-> >> > >>              return ret;
-> >> > >>
-> >> > >> +    if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-> >> > >> +            res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-> >> > >> +            if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
-> >> > >> +                    return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
-> >> > >> +
-> >> > >> +            res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-> >> > >> +            if (IS_ERR(res->phy_pipe_clk))
-> >> > >> +                    return PTR_ERR(res->phy_pipe_clk);
-> >> > >> +    }
-> >> > >
-> >> > > I would like to check is there any other better approach instead of
-> >> > > compatible method here as well or is it fine to use compatible method.
-> >>
-> >> I'd prefer the compatible method. If nobody is responding then it's
-> >> best
-> >> to just resend the patches with the approach you prefer instead of
-> >> waiting for someone to respond to a review comment.
-> >
-> > I'm missing some context here, so I'm not exactly sure what your
-> > question is, Prasad, but IMO drivers generally should not need to use
-> > of_device_is_compatible() if they've already called
-> > of_device_get_match_data() (as qcom_pcie_probe() has).
-> >
-> > of_device_is_compatible() does basically the same work of looking for
-> > a match in qcom_pcie_match[] that of_device_get_match_data() does, so
-> > it seems pointless to repeat it.
+On Thu, 26 Aug 2021 14:21:46 +0200,
+Greg Kroah-Hartman wrote:
+> 
+> On Thu, Aug 26, 2021 at 01:55:54PM +0200, Takashi Iwai wrote:
+> > On Thu, 26 Aug 2021 13:50:13 +0200,
+> > Greg Kroah-Hartman wrote:
+> > > 
+> > > On Thu, Aug 19, 2021 at 01:34:27PM +0200, Takashi Iwai wrote:
+> > > > The recent attempt to handle an unknown ROM state in the commit
+> > > > d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
+> > > > resulted in a regression and reverted later by the commit 44cf53602f5a
+> > > > ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"").
+> > > > The problem of the former fix was that it treated the failure of
+> > > > firmware loading as a fatal error.  Since the firmware files aren't
+> > > > included in the standard linux-firmware tree, most users don't have
+> > > > them, hence they got the non-working system after that.  The revert
+> > > > fixed the regression, but also it didn't make the firmware loading
+> > > > triggered even on the devices that do need it.  So we need still a fix
+> > > > for them.
+> > > > 
+> > > > This is another attempt to handle the unknown ROM state.  Like the
+> > > > previous fix, this also tries to load the firmware when ROM shows
+> > > > unknown state.  In this patch, however, the failure of a firmware
+> > > > loading (such as a missing firmware file) isn't handled as a fatal
+> > > > error any longer when ROM has been already detected, but it falls back
+> > > > to the ROM mode like before.  The error is returned only when no ROM
+> > > > is detected and the firmware loading failed.
+> > > > 
+> > > > Along with it, for simplifying the code flow, the detection and the
+> > > > check of ROM is factored out from renesas_fw_check_running() and done
+> > > > in the caller side, renesas_xhci_check_request_fw().  It avoids the
+> > > > redundant ROM checks.
+> > > > 
+> > > > The patch was tested on Lenovo Thinkpad T14 gen (BIOS 1.34).  Also it
+> > > > was confirmed that no regression is seen on another Thinkpad T14
+> > > > machine that has worked without the patch, too.
+> > > > 
+> > > > Fixes: 44cf53602f5a ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"")
+> > > > BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1189207
+> > > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > > ---
+> > > >  drivers/usb/host/xhci-pci-renesas.c | 35 +++++++++++++++++++----------
+> > > >  1 file changed, 23 insertions(+), 12 deletions(-)
+> > > 
+> > > This does not apply to my usb-linus branch, are you sure it is still
+> > > needed in Linus's tree right now?
+> > 
+> > I guess we can postpone for 5.15.  The patch was written for the code
+> > on linux-next, and I see there have been a few code clean up there.
+> > 
+> > But the patch itself could be applied to Linus tree with a slight
+> > fuzz, so the stable backport should be fine.
+> > 
+> > If it's still not cleanly applicable, let me know.  I'll refresh the
+> > patch for whatever preferred branch.
+> 
+> It was not cleanly applicable, 'git am' did not like it against my
+> usb-linus branch (which is 5.14-rc7 + a few other USB patches not in
+> this driver).
+> 
+> So if you want to rebase it against that, I will be glad to take it for
+> 5.14-final to resolve this issue.
 
-+1
+OK, then let me resubmit.  Wait for a minute...
 
-> > I am a little confused because while [1] adds "qcom,pcie-sc7280" to
-> > qcom,pcie.txt, I don't see a patch that adds it to qcom_pcie_match[].
 
-Either that's missing or there's a fallback to 8250 that's not documented.
-> >
-> > Bjorn
-> >
-> Hi Bjorn,
->
-> I agree on your point, but the main reason is to use compatible in
-> get_resources_2_7_0 is same hardware version. For SM8250 & SC7280
-> platforms, the hw version is same. Since we can't have a separate ops
-> for SC7280, we are using compatible method in get_resources_2_7_0 to
-> differentiate SM8250 and SC7280.
+thanks,
 
-Then fix the match data to be not just ops, but ops and the flag you need here.
-
-Rob
+Takashi
