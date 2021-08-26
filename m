@@ -2,61 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEC03F8E4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CF03F8E4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243462AbhHZS5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:57:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36684 "EHLO mail.kernel.org"
+        id S243467AbhHZS6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:58:13 -0400
+Received: from mga02.intel.com ([134.134.136.20]:14395 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243375AbhHZS5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:57:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D603961037;
-        Thu, 26 Aug 2021 18:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630004213;
-        bh=w4Uab4AooAYn0N9kq1geOud3mJ+cZq68EOwvt0u2rQo=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=mnwhPIb9BXNGirjTKiFTcKNebA5vOZ+gV1j/kpiFHadoBWBJrLeszaECJOSWVjUaB
-         JxBqJtUPRCpKdeNU4YyGLqsHDKErd0nlPm0QJOHv5xXFpCVO+7SA3qwZ3mrzSzK3zx
-         KIkF6/4OJjyI4WnEE3z3uGF4Uh3cS2ySmLt/1j/3dx9P2IHO/1LewRfY759HDBq82V
-         TJU2NBxr8la5Dk31hnM5Ui7gt3Ngs1iXEXxOVGgC1G1zbg9jegVUAqV8ZPo+W5VHY0
-         enrmfgnKL7zOU4QJlDudK9eeD+P2DuVjExZCgJCAF8DTzCpYJLyWvb/V0inXJxBUGA
-         sxn1DpBXsM/NA==
-Content-Type: text/plain; charset="utf-8"
+        id S243427AbhHZS6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 14:58:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="205021944"
+X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
+   d="scan'208";a="205021944"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 11:57:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
+   d="scan'208";a="444679450"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP; 26 Aug 2021 11:57:24 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
+        by linux.intel.com (Postfix) with ESMTP id A374F5808BC;
+        Thu, 26 Aug 2021 11:57:24 -0700 (PDT)
+Message-ID: <6e7f25a8a4c46ebf19238d9ad6708b490a157784.camel@linux.intel.com>
+Subject: Re: [PATCH] mfd: intel_pmt: Only compile on x86
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Prarit Bhargava <prarit@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>
+Date:   Thu, 26 Aug 2021 11:57:24 -0700
+In-Reply-To: <b075d481-f1a3-22d5-24b7-0b170d2908a1@redhat.com>
+References: <20210825125735.621799-1-prarit@redhat.com>
+         <b075d481-f1a3-22d5-24b7-0b170d2908a1@redhat.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <IPvVnyRWbHuQFswiFz0W08Kj1dKoH55ddQVyIIPhMJw@cp7-web-043.plabs.ch>
-References: <IPvVnyRWbHuQFswiFz0W08Kj1dKoH55ddQVyIIPhMJw@cp7-web-043.plabs.ch>
-Subject: Re: [PATCH RESEND 2/2] clk: qcom: Add Global Clock Controller driver for MSM8953
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     agross@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Vladimir Lypak <junak.pub@gmail.com>,
-        Adam Skladowski <a_skl39@protonmail.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Sireesh Kodali <sireeshkodali@protonmail.com>
-To:     Sireesh Kodali <sireeshkodali@protonmail.com>,
-        bjorn.andersson@linaro.org
-Date:   Thu, 26 Aug 2021 11:56:52 -0700
-Message-ID: <163000421272.1317818.15533893617596305776@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sireesh Kodali (2021-08-05 02:06:57)
-> From: Vladimir Lypak <junak.pub@gmail.com>
->=20
-> This driver provides clocks, resets and power domains for MSM8953
-> and compatible SoCs: APQ8053, SDM450, SDA450, SDM632, SDA632.
->=20
-> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
-> Signed-off-by: Adam Skladowski <a_skl39@protonmail.com>
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> Signed-off-by: Sireesh Kodali <sireeshkodali@protonmail.com>
-> ---
+On Thu, 2021-08-26 at 15:19 +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 8/25/21 2:57 PM, Prarit Bhargava wrote:
+> > The intel_pmt driver shows up as a compile option for all arches
+> > but is
+> > 32-bit and 64-bit x86 specific.
+> > 
+> > Add a CONFIG dependency on X86 for intel_pmt.
+> > 
+> > Signed-off-by: Prarit Bhargava <prarit@redhat.com>
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: David E. Box <david.e.box@linux.intel.com>
+> > Cc: Hans de Goede <hdegoede@redhat.com>
+> 
+> Thanks, patch looks good to me:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Regards,
+> 
+> Hans
 
-Applied to clk-next
+Okay by me.
+
+Reviewed-by: David E. Box <david.e.box@linux.intel.com>
+
+> 
+> 
+> 
+> > ---
+> >  drivers/mfd/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > index 6a3fd2d75f96..0f12b00955b4 100644
+> > --- a/drivers/mfd/Kconfig
+> > +++ b/drivers/mfd/Kconfig
+> > @@ -676,7 +676,7 @@ config MFD_INTEL_PMC_BXT
+> >  
+> >  config MFD_INTEL_PMT
+> >         tristate "Intel Platform Monitoring Technology (PMT)
+> > support"
+> > -       depends on PCI
+> > +       depends on X86 && PCI
+> >         select MFD_CORE
+> >         help
+> >           The Intel Platform Monitoring Technology (PMT) is an
+> > interface that
+> > 
+> 
+
+
