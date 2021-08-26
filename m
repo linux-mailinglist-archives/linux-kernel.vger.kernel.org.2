@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261B63F89E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182103F89EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242737AbhHZORC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:17:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38562 "EHLO mail.kernel.org"
+        id S242820AbhHZORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:17:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhHZORB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:17:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5AA860698;
-        Thu, 26 Aug 2021 14:16:13 +0000 (UTC)
+        id S229451AbhHZORE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 10:17:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9776660698;
+        Thu, 26 Aug 2021 14:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629987374;
-        bh=DuJ2W3REU3NLJFssNU3Hkqe0EHU+JM+a4Ilo5RFXqCw=;
+        s=k20201202; t=1629987377;
+        bh=19+SFriioNrfn3fwOrICbeSKe/bS5e7OWPAEUGfvvhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B5OK4Xrh544uN7uhK6/gcNaCTP6DBT/qlgPn18eJ9BFmW/20SK4b0tFv24tqdGMQh
-         1oHZPMqddR1Vo3J0TMRbfponTetGbGYTRamJpVjzeCYu5ERnnjBenk71wWRACvIwYe
-         rTgMAQ37Fb7e/c2mhFBdl99i8Lo7zoD6kpLnQqSYJaoTyLcG0gqk0lbPwKkUZ/oXLJ
-         RGHeqDJfE8FAT8zTO/rL9zLsQ11UgMPE4mJP5TP/PyQG9GrVSnSRkU3BE83MFOhlFL
-         Rzgf/sCOnn3T2rS7CFFXtQlvbhUZeQov4QMusXHXFw+OJxVQ+6NlqypzJgO3U+hjPY
-         S1ksazmOusW5w==
+        b=MiooJBf9vLHfA09AxSvssoyn5b3Bc2xmYjYaAxykMO2iKnb2iN9ekqCwAlZxQHzEK
+         uLLysvFtjaJz84LAO+B2tysgq/eWeVtlYPJQWV5FmVRl2hcavEa2U9T8t+r3DD20BY
+         mGbPAbnc2UoF6ISLRcF5HDPi4g8AYCPTOyQgUjDG0vULCorsXNgbJsMoNBliliFYPg
+         gkREbGYP1VB/nBgfTH3RRipsuUJ/+qM72Ar8Nu2v0LV97tN/2u/6vtTsAsDtg+GgVI
+         m5VSOy9qqqn8E42UYKYiXKQ7QqozvBfuN6QmgNHqc47ozhekbZwfIXUN8CUTyNMCbN
+         iKagMWY1z60Jw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>,
-        quanyang.wang@windriver.com,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND][PATCH] spi: spi-zynq-qspi: use wait_for_completion_timeout to make zynq_qspi_exec_mem_op not interruptible
-Date:   Thu, 26 Aug 2021 15:15:42 +0100
-Message-Id: <162998730427.6164.15239399096939120382.b4-ty@kernel.org>
+To:     heiko@sntech.de, Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-rockchip@lists.infradead.org,
+        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/4] Patches to update for rockchip spdif
+Date:   Thu, 26 Aug 2021 15:15:43 +0100
+Message-Id: <162998707937.5647.10936208575135633257.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210826005930.20572-1-quanyang.wang@windriver.com>
-References: <20210826005930.20572-1-quanyang.wang@windriver.com>
+In-Reply-To: <1629800162-12824-1-git-send-email-sugar.zhang@rock-chips.com>
+References: <1629800162-12824-1-git-send-email-sugar.zhang@rock-chips.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,26 +45,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Aug 2021 08:59:30 +0800, quanyang.wang@windriver.com wrote:
-> From: Quanyang Wang <quanyang.wang@windriver.com>
+On Tue, 24 Aug 2021 18:15:58 +0800, Sugar Zhang wrote:
+> These patches fixup or update for rockchip spdif.
 > 
-> The function wait_for_completion_interruptible_timeout will return
-> -ERESTARTSYS immediately when receiving SIGKILL signal which is sent
-> by "jffs2_gcd_mtd" during umounting jffs2. This will break the SPI memory
-> operation because the data transmitting may begin before the command or
-> address transmitting completes. Use wait_for_completion_timeout to prevent
-> the process from being interruptible.
+> 
+> Sugar Zhang (4):
+>   ASoC: rockchip: spdif: Mark SPDIF_SMPDR as volatile
+>   ASoC: rockchip: spdif: Fix some coding style
+>   ASoC: rockchip: spdif: Add support for rk3568 spdif
+>   ASoC: dt-bindings: rockchip: Add compatible for rk3568 spdif
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] spi: spi-zynq-qspi: use wait_for_completion_timeout to make zynq_qspi_exec_mem_op not interruptible
-      commit: 26cfc0dbe43aae60dc03af27077775244f26c167
+[1/4] ASoC: rockchip: spdif: Mark SPDIF_SMPDR as volatile
+      commit: 023a3f3a1c4f9be9cc1ae92579ba816120fb5807
+[2/4] ASoC: rockchip: spdif: Fix some coding style
+      commit: acc8b9d117912c2d5952868fba0d4fca49cde3c8
+[3/4] ASoC: rockchip: spdif: Add support for rk3568 spdif
+      commit: c5d4f09feb9f74e704d87a304f0c20001488fe10
+[4/4] ASoC: dt-bindings: rockchip: Add compatible for rk3568 spdif
+      commit: e79ef3c2cfe0b39878496eac87450698a2e84e3f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
