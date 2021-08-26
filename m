@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759513F86B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056803F86BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242341AbhHZLvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:51:09 -0400
-Received: from mga07.intel.com ([134.134.136.100]:45624 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242100AbhHZLvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:51:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="281443945"
-X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
-   d="scan'208";a="281443945"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 04:50:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
-   d="scan'208";a="465099620"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 26 Aug 2021 04:50:21 -0700
-Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 719855805A3;
-        Thu, 26 Aug 2021 04:50:17 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 19:50:14 +0800
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] net: pcs: xpcs: enable skip xPCS soft reset
-Message-ID: <20210826115014.GA5112@linux.intel.com>
-References: <20210809102229.933748-1-vee.khee.wong@linux.intel.com>
- <20210809102229.933748-2-vee.khee.wong@linux.intel.com>
- <YREvDRkiuScyN8Ws@lunn.ch>
- <20210810235529.GB30818@linux.intel.com>
- <f2a1f135-b77a-403d-5d2e-c497efc99df7@gmail.com>
- <YRPcyHTc2FJeEoqk@lunn.ch>
+        id S242278AbhHZLxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233829AbhHZLxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 07:53:53 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0635C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:53:05 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id f2so4640575ljn.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:53:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hBxBPr3Kmhx+gtlKVfwmBEiG03qJgZIhVmQgwh7w3cs=;
+        b=FB0fHEaVXvKluHgvDlnT+jczLkZlGErjJJcgRmo6eZQTf8xdHEvDAuWFcB/QkxF4am
+         7sLfKCqAoC/rjaaZHeVT2p9sjEtnFNvrhixpDYcebthv5V3m1B5T6dFAzyInBteoOSNd
+         y9P1RkLqYOd5FxhAiqyQxxXLQBsMJMWpioS0KfxUkaik13asCvQy42uEp/vg36WtcETW
+         oHKYlfRq4qtHu5Lycp66zFgKzPZ7iorXB4UMbRosPksChFZByPmFLl8EsXkWmWG6hv6h
+         LImOeUz3lp8A2xT7OPoa+JpAxsfvM8+5SVf5hb3uUjEoDbQoU/rBuk342Bvys2IgoDKu
+         uZeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hBxBPr3Kmhx+gtlKVfwmBEiG03qJgZIhVmQgwh7w3cs=;
+        b=jkxidXz8RXklZiBun5YsEclclv95G2AM8/XU81seekHle4yFzRMKl4jBo0Nn9Bkigs
+         22ir6Fdu5FtPai6AsDvFbSru8CdFAtilYs+9TMy9ck0+1cONTPg76XVmFOLs+B1iNhBO
+         RDrV5WqG8qPcbY0vvUcHRQjCreuzGCEvCQtDxHmBW5vKKsC2MfxD02UYY9sltRUVBAk9
+         /I5EIRKAzUFEk5aL1y9GwgeEMN0UbSXcVSTFgiYaj5haTp/FqC/h14bS3qGumLG/HTP7
+         x90o2JIlRGyE6nvAnG2z737yrCcyf+eB7dpQVg+3HX9IEyyVNJ6NbToJVIE+kEaDkx6e
+         Wviw==
+X-Gm-Message-State: AOAM5306S8i3UBtfb0MABYWAbbHlfwOuwSPRlWI9rhz2bpmBIn/S6eQy
+        k17udvqB1PH9seVHBEb2sH3GIGsBMnY98jSALvM=
+X-Google-Smtp-Source: ABdhPJz7/MeHPulwySfsZ/IqdizUu7xk9XmvlQXItyDL8PXG0Cim011tjNevkpfh3ADXQSZ3F7nxSBrSo9s72Oey3Go=
+X-Received: by 2002:a2e:a903:: with SMTP id j3mr2694040ljq.347.1629978784221;
+ Thu, 26 Aug 2021 04:53:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRPcyHTc2FJeEoqk@lunn.ch>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1629975460-17990-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1629975460-17990-1-git-send-email-shengjiu.wang@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 26 Aug 2021 08:52:53 -0300
+Message-ID: <CAOMZO5BCsTMjJJPtLN6_seVcWb24A2ms11FP3HzR0i7t3GLSuA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: fsl_rpmsg: add soc specific data structure
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 04:20:56PM +0200, Andrew Lunn wrote:
-> > > BIOS does configured the SerDes. The problem here is that all the
-> > > configurations done by BIOS are being reset at xpcs_create().
-> > > 
-> > > We would want user of the pcs-xpcs module (stmmac, sja1105) to have
-> > > control whether or not we need to perform to the soft reset in the
-> > > xpcs_create() call.
-> > 
-> > I understood Andrew's response as suggesting to introduce the ability for
-> > xpcs_create() to make a BIOS call which would configure the SerDes after
-> > xpcs_soft_reset().
-> 
-> Yes. Exactly. That is what ACPI is for, so we should use it for this.
-> 
->      Andrew
+Hi Shengjiu,
 
-Thanks Florian for the explaination.
+On Thu, Aug 26, 2021 at 8:19 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
 
-I have checked with the BIOS developers and they did not implmenet a
-method to this at the kernel level.
+> +       rpmsg->soc_data = of_device_get_match_data(&pdev->dev);
+> +       if (rpmsg->soc_data) {
 
-Also, Intel AlderLake has both UEFI BIOS and Slim Bootloader which
-make it least feasible to go for the ACPI method as per suggested.
+This check is not necessary, because rpmsg->soc_data is always non-NULL.
 
+Other than that:
 
-Regards,
-  VK
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
