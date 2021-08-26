@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4BB3F86E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB7C3F86E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242462AbhHZMCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:02:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242147AbhHZMCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4151C60EBA;
-        Thu, 26 Aug 2021 12:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629979281;
-        bh=O99YQ+TsybHzsga5F3D+tnXvUZcw1ANvaDzlHxFeSBM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Uu3ex+pPv7Hr8a23oL6UmINhYFVLjCSrg0mHaQId9fTLk5tm9DDPxsVoqZa6hWsk9
-         z9RIqBU3x1eQBYtAzAhnLRkYaqAibOBBVpefjLPqxO3ly04tCUyzmdN4jsydAd648w
-         bavC8sjpwjuckvLdX8R08FvqCW3/aGV4w59u6PyjJXCeh2zfISbBWGY29zgW4wT22z
-         X19FbZpmjnVUZAOSYq/bfWz4EiydUNCJ0COsgjvfjr2gOGQ6DXjEdoSvJw0Pa2XpsM
-         0y1xLzwm7qwv19p+PrsT4YLAkZctNfwKLVPiJ9Cb9XbkzymJ040SKVxkRP6Qw9e2kH
-         DQuqwelYNv4Kg==
-Received: by mail-ed1-f42.google.com with SMTP id b7so4302768edu.3;
-        Thu, 26 Aug 2021 05:01:21 -0700 (PDT)
-X-Gm-Message-State: AOAM533uDzGQ3Bw33SGdwlv8mtX22Ja0ENdgzpodnQVkjC9rK0MWmYbD
-        PdcgezNdedmwrj9XrAsmF5trZCkWiOa/vp2xpw==
-X-Google-Smtp-Source: ABdhPJwB+G4XAaWoEo5Rz8zYLWc8aNyl+hXqJx+b5eopNgdxsY8IpYedFtIkujyQXyBA3LH5TRqoGw6KOBgwFxGwQC0=
-X-Received: by 2002:aa7:cb19:: with SMTP id s25mr3926073edt.194.1629979279871;
- Thu, 26 Aug 2021 05:01:19 -0700 (PDT)
+        id S242421AbhHZMB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:01:57 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53182
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242147AbhHZMB4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 08:01:56 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 726BA3F0FE;
+        Thu, 26 Aug 2021 12:01:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629979268;
+        bh=KnpgV2xTLsJXZFsLZiu4Yqmo2tltx6SvFXsrlXiHOnQ=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=kAjjLih9ZUaZ76EW+l4wJzEVvc0322mL3oyLbr6ZuG9kHQ9r4jUnYEAEBkvpZJcA+
+         +86JI0HdnLBU9zwP8JIiYuPts0cHcYn8VmrAe+l+6AjxtXppeDP21Sa3HvYvQso6sx
+         rciF/QWEGfmcIH4inZ81kExJraW+M5WvGRHidZMFuidDPxLgqQiZFLVVkgpbxMRHmm
+         iWQZWvofIrADLAUTLSFTIJ4JDeW21D51Nl+JVMJNSwTLIJp1w/oBP3tTfv3AHJzC2c
+         sCKh6wvpvUbb7enNdmDbIoCxrhxDFpdgNpqpEmNx+Fh5KrZwH4zrB4ReRYhUWEgewV
+         dfB75zvy7j+Bw==
+From:   Colin King <colin.king@canonical.com>
+To:     Raju Rangoju <rajur@chelsio.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] cxgb4: clip_tbl: Fix spelling mistake "wont" -> "won't"
+Date:   Thu, 26 Aug 2021 13:01:08 +0100
+Message-Id: <20210826120108.12185-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210825083425.32740-1-yajun.deng@linux.dev> <CAL_JsqJ4731w_0rYCSBC_Mma-rn4nUUbKnSwhymGZyh8E7xoWg@mail.gmail.com>
- <63e1e9ea1e4b74b56aeafcc6695ecfa8@linux.dev>
-In-Reply-To: <63e1e9ea1e4b74b56aeafcc6695ecfa8@linux.dev>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 26 Aug 2021 07:01:06 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+rRFJUO3SVLdkQV62dQPymPigiikM05Xipgfbvg_oeqw@mail.gmail.com>
-Message-ID: <CAL_Jsq+rRFJUO3SVLdkQV62dQPymPigiikM05Xipgfbvg_oeqw@mail.gmail.com>
-Subject: Re: [PATCH linux-next] PCI: Fix the order in unregister path
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 10:57 PM <yajun.deng@linux.dev> wrote:
->
-> August 25, 2021 9:55 PM, "Rob Herring" <robh@kernel.org> wrote:
->
-> > On Wed, Aug 25, 2021 at 3:34 AM Yajun Deng <yajun.deng@linux.dev> wrote:
-> >
-> >> device_del() should be called first and then called put_device() in
-> >> unregister path, becase if that the final reference count, the device
-> >> will be cleaned up via device_release() above. So use device_unregister()
-> >> instead.
-> >>
-> >> Fixes: 9885440b16b8 (PCI: Fix pci_host_bridge struct device release/free handling)
-> >> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> >> ---
-> >> drivers/pci/probe.c | 4 +---
-> >> 1 file changed, 1 insertion(+), 3 deletions(-)
-> >
-> > NAK.
-> >
-> > The current code is correct. Go read the comments for device_add/device_del.
->
-> But the device_unregister() is only contains device_del() and put_device(). It just put
-> device_del() before put_device().
+From: Colin Ian King <colin.king@canonical.com>
 
-And that is the wrong order as we want to undo what the code above
-did. The put_device here is for the get_device we did. The put_device
-in device_unregister is for the get_device that device_register did
-(on success only).
+There are spelling mistakes in dev_err and dev_info messages. Fix them.
 
-Logically, it is wrong too to call unregister if register failed. That
-would be like doing this:
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-p = malloc(1);
-if (!p)
-  free(p);
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
+index 163efab27e9b..5060d3998889 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
+@@ -120,7 +120,7 @@ int cxgb4_clip_get(const struct net_device *dev, const u32 *lip, u8 v6)
+ 				write_unlock_bh(&ctbl->lock);
+ 				dev_err(adap->pdev_dev,
+ 					"CLIP FW cmd failed with error %d, "
+-					"Connections using %pI6c wont be "
++					"Connections using %pI6c won't be "
+ 					"offloaded",
+ 					ret, ce->addr6.sin6_addr.s6_addr);
+ 				return ret;
+@@ -133,7 +133,7 @@ int cxgb4_clip_get(const struct net_device *dev, const u32 *lip, u8 v6)
+ 	} else {
+ 		write_unlock_bh(&ctbl->lock);
+ 		dev_info(adap->pdev_dev, "CLIP table overflow, "
+-			 "Connections using %pI6c wont be offloaded",
++			 "Connections using %pI6c won't be offloaded",
+ 			 (void *)lip);
+ 		return -ENOMEM;
+ 	}
+-- 
+2.32.0
 
-Rob
