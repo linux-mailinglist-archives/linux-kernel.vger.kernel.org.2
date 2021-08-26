@@ -2,210 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4533F84F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FA03F84FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241207AbhHZKB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 06:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35920 "EHLO mail.kernel.org"
+        id S241221AbhHZKDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 06:03:19 -0400
+Received: from mx.socionext.com ([202.248.49.38]:26560 "EHLO mx.socionext.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241085AbhHZKBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 06:01:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAADF60FDA;
-        Thu, 26 Aug 2021 10:01:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629972068;
-        bh=aBkNesMqvbH7PzlPklFkGTRo82VXoOZrWukyGg5zmgk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0TZIGZ6ilntOAA5Vy+88jsU2oXA4xJa+hAZtzNtj08DKsb39Yj8kyw/ZXdSdCUBWK
-         5YuBrPb+Q8mXpsIfk/6G+BuvewMhUVIHhLvKmSjO3r/6e8jd0zD8n46+Lrd1zV+5qw
-         nCowxPqAHqV5Npi85sjUfToxptVMdt1mWTa3HdaA=
-Date:   Thu, 26 Aug 2021 12:01:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Woody Lin <woodylin@google.com>
-Cc:     Todd Kjos <tkjos@android.com>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] ANDROID: staging: add userpanic-dev driver
-Message-ID: <YSdmX956TESnJDey@kroah.com>
-References: <20210826092854.58694-1-woodylin@google.com>
+        id S234682AbhHZKDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 06:03:18 -0400
+Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 26 Aug 2021 19:02:31 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id EBBE6205902A;
+        Thu, 26 Aug 2021 19:02:30 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Thu, 26 Aug 2021 19:02:30 +0900
+Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id 9FA85B62B7;
+        Thu, 26 Aug 2021 19:02:30 +0900 (JST)
+Received: from [10.212.31.206] (unknown [10.212.31.206])
+        by yuzu2.css.socionext.com (Postfix) with ESMTP id 5908BB62B3;
+        Thu, 26 Aug 2021 19:02:14 +0900 (JST)
+Subject: Re: [PATCH] PCI: uniphier: Serialize INTx masking/unmasking
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <1629717500-19396-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <20210823150927.jhobzfxy6e4s663r@pali> <87zgt8p09n.wl-maz@kernel.org>
+ <f4d13190-facf-55ca-58c5-cd0d68e377d7@socionext.com>
+ <87o89lq4eb.wl-maz@kernel.org>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <7a7ed6c9-53b6-0bd9-c8e2-5eea7b5c1c24@socionext.com>
+Date:   Thu, 26 Aug 2021 19:02:11 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826092854.58694-1-woodylin@google.com>
+In-Reply-To: <87o89lq4eb.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 05:28:54PM +0800, Woody Lin wrote:
-> Add char device driver 'userpanic-dev' that exposes an interface to
-> userspace processes to request a system panic with customized panic
-> message.
+Hi Marc,
 
-Some comments on the code now:
+On 2021/08/25 18:07, Marc Zyngier wrote:
+> On Wed, 25 Aug 2021 01:01:08 +0100,
+> Kunihiko Hayashi <hayashi.kunihiko@socionext.com> wrote:
+>>
+>> Hi Marc,
+>>
+>> On 2021/08/24 1:57, Marc Zyngier wrote:
+>>> On Mon, 23 Aug 2021 16:09:27 +0100,
+>>> Pali Rohár <pali@kernel.org> wrote:
+>>>>
+>>>> + Marc (who originally reported this issue)
+>>>>
+>>>> On Monday 23 August 2021 20:18:20 Kunihiko Hayashi wrote:
+>>>>> The condition register PCI_RCV_INTX is used in irq_mask(), irq_unmask()
+>>>>> and irq_ack() callbacks. Accesses to register can occur at the same time
+>>>>> without a lock.
+>>>>> Add a lock into each callback to prevent the issue.
+>>>>>
+>>>>> Fixes: 7e6d5cd88a6f ("PCI: uniphier: Add UniPhier PCIe host controller support")
+>>>>> Suggested-by: Pali Rohár <pali@kernel.org>
+>>>>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>>>>
+>>>> Acked-by: Pali Rohár <pali@kernel.org>
+>>>>
+>>>>> ---
+>>>>>    drivers/pci/controller/dwc/pcie-uniphier.c | 15 +++++++++++++++
+>>>>>    1 file changed, 15 insertions(+)
+>>>>>
+>>>>> The previous patch is as follows:
+>>>>> https://lore.kernel.org/linux-pci/1629370566-29984-1-git-send-email-hayashi.kunihiko@socionext.com/
+>>>>>
+>>>>> Changes in the previous patch:
+>>>>> - Change the subject and commit message
+>>>>>
+>>>>> diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
+>>>>> index ebe43e9..5075714 100644
+>>>>> --- a/drivers/pci/controller/dwc/pcie-uniphier.c
+>>>>> +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
+>>>>> @@ -186,12 +186,17 @@ static void uniphier_pcie_irq_ack(struct irq_data *d)
+>>>>>    	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+>>>>>    	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>>>>    	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+>>>>> +	unsigned long flags;
+>>>>>    	u32 val;
+>>>>>    +	raw_spin_lock_irqsave(&pp->lock, flags);
+>>>>> +
+>>>>>    	val = readl(priv->base + PCL_RCV_INTX);
+>>>>>    	val &= ~PCL_RCV_INTX_ALL_STATUS;
+>>>>>    	val |= BIT(irqd_to_hwirq(d) + PCL_RCV_INTX_STATUS_SHIFT);
+>>>>>    	writel(val, priv->base + PCL_RCV_INTX);
+>>>>> +
+>>>>> +	raw_spin_unlock_irqrestore(&pp->lock, flags);
+>>>>>    }
+>>>>>      static void uniphier_pcie_irq_mask(struct irq_data *d)
+>>>>> @@ -199,12 +204,17 @@ static void uniphier_pcie_irq_mask(struct irq_data *d)
+>>>>>    	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+>>>>>    	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>>>>    	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+>>>>> +	unsigned long flags;
+>>>>>    	u32 val;
+>>>>>    +	raw_spin_lock_irqsave(&pp->lock, flags);
+>>>>> +
+>>>>>    	val = readl(priv->base + PCL_RCV_INTX);
+>>>>>    	val &= ~PCL_RCV_INTX_ALL_MASK;
+>>>>>    	val |= BIT(irqd_to_hwirq(d) + PCL_RCV_INTX_MASK_SHIFT);
+>>>
+>>> This looks extremely suspicious. You clear all the INTX mask bits, and
+>>> only set the one you need. How about the pre-existing bits?
+>>
+>> Thanks for pointing out. No need to clear all INTX mask bits.
+>> The pre-existing bits should be preserved.
+>>
+>>>
+>>>>>    	writel(val, priv->base + PCL_RCV_INTX);
+>>>>> +
+>>>>> +	raw_spin_unlock_irqrestore(&pp->lock, flags);
+>>>>>    }
+>>>>>      static void uniphier_pcie_irq_unmask(struct irq_data *d)
+>>>>> @@ -212,12 +222,17 @@ static void uniphier_pcie_irq_unmask(struct irq_data *d)
+>>>>>    	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+>>>>>    	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>>>>    	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+>>>>> +	unsigned long flags;
+>>>>>    	u32 val;
+>>>>>    +	raw_spin_lock_irqsave(&pp->lock, flags);
+>>>>> +
+>>>>>    	val = readl(priv->base + PCL_RCV_INTX);
+>>>>>    	val &= ~PCL_RCV_INTX_ALL_MASK;
+>>>>>    	val &= ~BIT(irqd_to_hwirq(d) + PCL_RCV_INTX_MASK_SHIFT);
+>>>
+>>> And by the same token, this second line is totally useless.
+>>>
+>>> I think masking/unmasking is broken in this driver, locking or not.
+>>
+>> Yes, this second line should be removed, too.
+> 
+> You mean the *first* line, right? The one clearing all the INTx
+> bits. If you remove the second line, you won't fix anything.
+This is ambiguous. I mean that I will remove the following line:
 
->  obj-$(CONFIG_ASHMEM)			+= ashmem.o
-> +obj-$(CONFIG_USERPANIC_CHARDEV)	+= userpanic-dev.o
+     	val &= ~PCL_RCV_INTX_ALL_MASK;
 
-Why CHARDEV?
+So the fixed unmasking code is as follows.
 
-> diff --git a/drivers/staging/android/userpanic-dev.c b/drivers/staging/android/userpanic-dev.c
-> new file mode 100644
-> index 000000000000..b9a0f0c01826
-> --- /dev/null
-> +++ b/drivers/staging/android/userpanic-dev.c
-> @@ -0,0 +1,110 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* userpanic-dev.c
-> + *
-> + * User-panic Device Interface
-> + *
-> + * Copyright 2021 Google LLC
-> + */
-> +
-> +#define pr_fmt(fmt) KBUILD_MODNAME ":%s: " fmt, __func__
+     	val = readl(priv->base + PCL_RCV_INTX);
+     	val &= ~BIT(irqd_to_hwirq(d) + PCL_RCV_INTX_STATUS_SHIFT);
+     	writel(val, priv->base + PCL_RCV_INTX);
 
-Why is this needed?
+Thank you,
 
-> +
-> +#include <linux/slab.h>
-> +#include <linux/module.h>
-> +#include <linux/string.h>
-> +#include <linux/miscdevice.h>
-> +
-> +struct userpanic_crash_info {
-> +	void __user *title_uaddr;
-> +	void __user *msg_uaddr;
-> +};
-
-If this is a user/kernel api, it can not be burried in a .c file,
-otherwise it will be wrong over time.
-
-And this is NOT how to handle user/kernel pointers at all, please fix.
-
-> +
-> +#define CRASH_INFO		(_IOW('U', 179, struct userpanic_crash_info))
-
-Why does this have to be an ioctl at all?
-
-Why do you have to have a char device for this?
-
-> +
-> +static int do_userpanic(const char *title, const char *msg)
-> +{
-> +	const size_t msgbuf_sz = PAGE_SIZE;
-> +	char *msgbuf;
-> +
-> +	msgbuf = kmalloc(msgbuf_sz, GFP_KERNEL);
-> +	if (!msgbuf)
-> +		return -ENOMEM;
-> +
-> +	pr_emerg("User process '%.*s' %d requesting kernel panic\n",
-> +		 sizeof(current->comm), current->comm, current->pid);
-
-You have a pointer to a struct device, always use it for this and all
-other messages, it should be dev_*(), right?
-
-
-> +	if (msg)
-> +		pr_emerg("   with message: %s\n", msg);
-
-Multi line messages?  Why?
-
-> +
-> +	/* Request panic with customized panic title. */
-> +	snprintf(msgbuf, msgbuf_sz, "U: %s: %s", current->comm, title);
-> +	panic(msgbuf);
-> +	kfree(msgbuf);
-
-Nice, you cleaned up after panicing?  Why?
-
-> +	return -EFAULT;
-> +}
-> +
-> +static long userpanic_device_ioctl(struct file *file, u_int cmd, u_long arg)
-> +{
-> +	struct userpanic_crash_info crash_info;
-> +	char *title;
-> +	char *msg = NULL;
-> +	int ret;
-> +
-> +	switch (cmd) {
-> +	case CRASH_INFO:
-> +		if (copy_from_user(&crash_info, (void __user *)arg, sizeof(crash_info)))
-> +			return -EFAULT;
-> +
-> +		if (!crash_info.title_uaddr)
-> +			return -EINVAL;
-> +
-> +		title = strndup_user(crash_info.title_uaddr, PAGE_SIZE);
-
-What if the string was bigger?
-
-> +		if (IS_ERR(title)) {
-> +			pr_err("failed to strndup .title_uaddr: %d\n", PTR_ERR(title));
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (crash_info.msg_uaddr) {
-> +			msg = strndup_user(crash_info.msg_uaddr, PAGE_SIZE);
-> +			if (IS_ERR(msg)) {
-> +				kfree(title);
-> +				pr_err("failed to strndup .msg_uaddr: %d\n", PTR_ERR(msg));
-> +				return -EINVAL;
-> +			}
-> +		}
-> +
-> +		ret = do_userpanic(title, msg);
-> +		kfree(msg);
-> +		kfree(title);
-> +		return ret;
-
-This can never be hit, right?
-
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static const struct file_operations userpanic_device_fops = {
-> +	.owner          = THIS_MODULE,
-> +	.unlocked_ioctl = userpanic_device_ioctl,
-> +	.compat_ioctl   = compat_ptr_ioctl,
-
-No need for the compat ioctl, do it right the first time.
-
-> +};
-> +
-> +static struct miscdevice userpanic_device = {
-> +	.minor = MISC_DYNAMIC_MINOR,
-> +	.name  = "userspace_panic",
-> +	.fops  = &userpanic_device_fops,
-> +};
-> +
-> +static int __init userspace_panic_dev_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = misc_register(&userpanic_device);
-> +	if (ret)
-> +		pr_err("misc_register failed for userspace_panic device\n");
-> +
-> +	return ret;
-> +}
-
-Use the correct misc macro here, no need for an init or exit function.
-Wait, where is your exit function?
-
-> +device_initcall(userspace_panic_dev_init);
-
-Why this init call level?  Why not the normal one?
-
-thanks,
-
-greg k-h
+---
+Best Regards
+Kunihiko Hayashi
