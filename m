@@ -2,57 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510AA3F862F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49F23F8631
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241886AbhHZLOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:14:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233961AbhHZLOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:14:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB7716109F;
-        Thu, 26 Aug 2021 11:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629976441;
-        bh=R3+zOTYnzWSKqvKSLGGkpOD2vXvF+hXaLxX3Au6E5Ys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dv7IkdXaqE+okpU9nbnP0i0e7gbo51Zz29i8e75jBiPJclocGPZ03lfV2lCZmgGgG
-         tVxN+H2CzUjQfDV7S8Cxn/OTdayHIuJ6NmR2jynJvlqeupxt3pXRoYYsnxYS8unXNi
-         54qToR1du6dws/p3PBH+O/cd3ZIhnsNnBqBzmXew=
-Date:   Thu, 26 Aug 2021 13:13:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kun.liu2@amd.com,
-        alexander.deucher@amd.com
-Subject: Re: [RESEND PATCH 2/2] usb: dwc3: pci add property to allow user
- space role switch
-Message-ID: <YSd3c/57V0/xpLYq@kroah.com>
-References: <20210824192337.3100288-1-Nehal-Bakulchandra.shah@amd.com>
+        id S241954AbhHZLPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:15:25 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34888 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233961AbhHZLPY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 07:15:24 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17QBEVOK023451;
+        Thu, 26 Aug 2021 06:14:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629976471;
+        bh=Rm6viFhQnwzHijJ6vB5Rhbtxd/A4Bh8mIogxI7joTB4=;
+        h=From:To:CC:Subject:Date;
+        b=tAipZCfQezZi0V0dyoDNlRWY6hfdZ2LWa//hRSr1gMUy0DOHCDblhtWKb10gCDaGM
+         R6WYksxcP8C1e0jylGn3g64K5DkbmCCYQZRxJXWg4a1xl2RjYv5fFnYbo0gPuyih+o
+         RmdcAphz6NEoXPoxJJ+B1WLDZfwtLyS+/eXQQzfk=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17QBEVKD129141
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 26 Aug 2021 06:14:31 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 26
+ Aug 2021 06:14:31 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 26 Aug 2021 06:14:31 -0500
+Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17QBERXf053369;
+        Thu, 26 Aug 2021 06:14:28 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chris.chiu@canonical.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+        <lokeshvutla@ti.com>
+Subject: [PATCH v2 0/3] Fix cold plugged USB device on certain PCIe USB cards
+Date:   Thu, 26 Aug 2021 16:44:23 +0530
+Message-ID: <20210826111426.751-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824192337.3100288-1-Nehal-Bakulchandra.shah@amd.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 12:53:37AM +0530, Nehal Bakulchandra Shah wrote:
-> For AMD platform there is a requirement to enable user space role
-> switch from host to device and device to host as customer platform is not
-> completely capable of OTG i.e. with type C controller it does not have PD
-> to support role switching. Hence, based ACPI/EC interrupt role switch is
-> triggered by the usemode script running in background.
-> 
-> Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-> ---
->  drivers/usb/dwc3/drd.c      | 2 ++
->  drivers/usb/dwc3/dwc3-pci.c | 1 +
->  2 files changed, 3 insertions(+)
+Cold plugged USB device was not detected on certain PCIe USB cards
+(like Inateck card connected to AM64 EVM or connected to J7200 EVM).
 
-Why is just patch 2/2 resent?
+Re-plugging the USB device always gets it enumerated.
 
-confused,
+This issue was discussed in
+https://lore.kernel.org/r/772e4001-178e-4918-032c-6e625bdded24@ti.com
+and
+https://bugzilla.kernel.org/show_bug.cgi?id=214021
 
-greg k-h
+So the suggested solution is to register both root hubs along with the
+second hcd for xhci.
+
+RFC Patch series can be found at [1]
+v1 Patch series can be found at [3]
+
+Changes from RFC:
+1) Mathias identified potential issues with the RFC patch [2] and suggested
+   the solution to use HCD flags. This series implements it.
+
+Changes from v1:
+1) Fixed code comments pointed out by Alan Stern
+2) Renamed the HCD flag variable to "HCD_FLAG_DEFER_RH_REGISTER" from
+   "HCD_FLAG_DEFER_PRI_RH_REGISTER"
+
+[1] -> https://lore.kernel.org/linux-usb/20210824105302.25382-1-kishon@ti.com/
+[2] -> https://lore.kernel.org/linux-usb/06693934-28f2-d59e-b004-62cabd3f9e8e@linux.intel.com
+[3] -> https://lore.kernel.org/r/20210825105132.10420-1-kishon@ti.com
+
+Kishon Vijay Abraham I (3):
+  usb: core: hcd: Modularize HCD stop configuration in usb_stop_hcd()
+  usb: core: hcd: Add support for deferring roothub registration
+  xhci: Set HCD flag to defer primary roothub registration
+
+ drivers/usb/core/hcd.c  | 66 +++++++++++++++++++++++++++--------------
+ drivers/usb/host/xhci.c |  1 +
+ include/linux/usb/hcd.h |  2 ++
+ 3 files changed, 47 insertions(+), 22 deletions(-)
+
+-- 
+2.17.1
+
