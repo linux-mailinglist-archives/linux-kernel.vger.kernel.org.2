@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6323F90B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F0B3F90C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243792AbhHZW2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 18:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243782AbhHZW2D (ORCPT
+        id S234234AbhHZWdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 18:33:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34798 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231159AbhHZWdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 18:28:03 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFF8C0613C1;
-        Thu, 26 Aug 2021 15:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=NmGVEeD4f8GyoVLFzkkr+SOsTZSFXpPD5NNKXMPh4iI=; b=BEfzKtSSzenCGG8PcnTcDRY7ka
-        2EhoRY1gg1xloqLf0gyivyjnhKX/7/GxC1Oipx8t04nznYASqPUTPp0uzV1LnA0sc33N1aHH3nsDe
-        bzzFf5pkvTZG+5UUwOETdLytj+5k3hjIYocA3KzpZop13YWHoLWYE+isMO+BKA44fMaHdqrXE75v1
-        FrNGb/UZYgSXVojqkQOvW4ZXX5ZJkbx+t4JDxe5S6H6MVyE4SPUoply1T/AQVKriHg5ym4JZ0oOsU
-        AML4LTaadXfoXYpxYauPsAsvukACTeM4yhwqnwxbhDudDwQ7pb+Wo3r7A91mBXzkWpEUU5YRzTix9
-        LrEAEEUg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJNq5-00B0BZ-0A; Thu, 26 Aug 2021 22:27:13 +0000
-Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20210825235234.153013-1-jarkko@kernel.org>
- <20210825235234.153013-2-jarkko@kernel.org>
- <ba483b7e-19a3-d4d3-56c0-3371a77341cb@infradead.org>
- <e1ff36db0e7ed909653b6adb45094cc459dbad0b.camel@kernel.org>
- <e87c5c8f-dead-ebdc-62f1-aa635288671c@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <124ad6ff-ee0d-5d59-0857-f1355578b59b@infradead.org>
-Date:   Thu, 26 Aug 2021 15:27:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 26 Aug 2021 18:33:16 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630017146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YrtmNfUSKMqaI+mdWROUQzgaQyI2+Ot0/64zhKsNsy4=;
+        b=HWdq1l+E3txuC+pIXxkNAB9C/+BPFn/N+dYoCZF4xGKZmVmGtYWYEp6yV+gDhE9EMgfvjd
+        j/Nb9xY3TLaGyYo5AHUWVkF1hvmR+bj7B/iAvVvY+x4Hj1UXzxs9DbExcWV1HOpgrpdC9X
+        5TVBO46/VflRRb9JvvtPjlZzJAO0LgORpRTiISUyD0Bi5D/lmvo0P7NnINU+F1ROypanp7
+        +/e8E0sKzfoyA0uAigmUkkqe6o/D3YfoUMu8L9zzU0LbrpiXAF5eD9VmS6B5uLZ5tJJ28n
+        w+tLYlQQKl4UbsyaxfmQHn/W77qp0ojuURzvwZRUmUBk49GU6Me3TbS/oXT3xQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630017146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YrtmNfUSKMqaI+mdWROUQzgaQyI2+Ot0/64zhKsNsy4=;
+        b=yBOsLH9d/uO5VvCwgdD96uOPW1x0JeRRgGxJeJ2j0N+VRU3ewIBmvXRdHKkpmp5oWoj8xn
+        TLNSR0hjZRftp7Dg==
+To:     kernel report robot <oliver.sang@intel.com>
+Cc:     Marc Zyngier <maz@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        feng.tang@intel.com, zhengjun.xing@linux.intel.com
+Subject: Re: [PCI/MSI]  77e89afc25:  will-it-scale.per_process_ops -2.6%
+ regression
+In-Reply-To: <20210818145122.GC1721@xsang-OptiPlex-9020>
+References: <20210818145122.GC1721@xsang-OptiPlex-9020>
+Date:   Fri, 27 Aug 2021 00:32:26 +0200
+Message-ID: <87eeaf3khx.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <e87c5c8f-dead-ebdc-62f1-aa635288671c@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/21 1:27 PM, Dave Hansen wrote:
-> On 8/26/21 9:17 AM, Jarkko Sakkinen wrote:
->>> I would prefer to see this listed in Documentation/filesystems/proc.rst
->>> as an optional field, depending on CONFIG_X86_SGX.
->>> Or at least put a reference in proc.rst to this doc file and its
->>> supplemental fields.
->>>
->>> thanks.
->> I *can* put it there but I did have reason not to, i.e. these attributes
->> are neither there:
->>
->> DirectMap4k:     3930904 kB
->> DirectMap2M:    29440000 kB
->> DirectMap1G:     1048576 kB
->>
->> And they are implemented in arch specific code.
->>
->> Actually they are undocumented, e.g.
->>
->> $ git grep DirectMap4k
->> arch/powerpc/mm/book3s64/pgtable.c:     seq_printf(m, "DirectMap4k:    %8lu kB\n",
->> arch/s390/mm/pageattr.c:        seq_printf(m, "DirectMap4k:    %8lu kB\n",
->> arch/x86/mm/pat/set_memory.c:   seq_printf(m, "DirectMap4k:    %8lu kB\n",
-> 
-> Yeah, we need to add some arch-specific sections to the documentation.
-> That *could* just be a reference over to a new file:
-> 
-> 	Documentation/x86/meminfo.rst
-> 
-> along with whatever other arches provide their own fields too.
-> 
+On Wed, Aug 18 2021 at 22:51, kernel report robot wrote:
 
-Yes, either way works. Thanks.
+> Greeting,
+>
+> FYI, we noticed a -2.6% regression of will-it-scale.per_process_ops due to commit:
+>
+>
+> commit: 77e89afc25f30abd56e76a809ee2884d7c1b63ce ("PCI/MSI: Protect msi_desc::masked for multi-MSI")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>
+>
+> in testcase: will-it-scale
+> on test machine: 128 threads 2 sockets Intel(R) Xeon(R) Gold 6338 CPU @ 2.00GHz with 256G memory
+> with following parameters:
+>
+> 	nr_task: 100%
+> 	mode: process
+> 	test: lseek2
+> 	cpufreq_governor: performance
+> 	ucode: 0xd000280
+>
+> test-description: Will It Scale takes a testcase and runs it from 1 through to n parallel copies to see if the testcase will scale. It builds both a process and threads based test in order to see any differences between the two.
+> test-url: https://github.com/antonblanchard/will-it-scale
+>
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
 
--- 
-~Randy
+There is nothing to fix. The commit cures an incorrectness. Comparing
+buggy code to correct code is futile.
 
+Thanks,
+
+        tglx
