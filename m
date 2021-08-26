@@ -2,72 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088723F839B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E673F839E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240399AbhHZIPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:15:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239817AbhHZIPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:15:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52A336102A;
-        Thu, 26 Aug 2021 08:15:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629965705;
-        bh=xxuJPpqWR33GkXkTcT4Nz+r/pSZoMmVFYscBwDiQ3L8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KVEuhHStdZzgpT4M3TAHho/U69D9/fLddhNDn5g68ASaxKgw+NOr5N+CPJy1AtVAE
-         DSBdRYSsBJHU+wwh0zhkeaPjAlgDUcCx2MDItDtt0JO+37wrVIBEVyZMv5S5BL5/PR
-         cnsELZadPotEjTGaNl2np6nSwhRAp0tln8Oe/o4PAJtnIQ645SHMHj56ViDRscunMo
-         RtNfWlwT5ieX10hhREQH50MvSzl2JddaoR4eOp3h2XiKholeik8wU+66NPbctEe6LB
-         lemXVyNtm0QB7A8+xT3r6kgu1l3DfofN5MW0OLPSjaloxrCS74L62q0VPcRV3CgleZ
-         wQfZGNZGCEdjg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mJAXN-0007Hs-8C; Thu, 26 Aug 2021 10:15:01 +0200
-Date:   Thu, 26 Aug 2021 10:15:01 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] USB-serial fixes for 5.14-rc8
-Message-ID: <YSdNhWruPcclFUu9@hovoldconsulting.com>
+        id S240397AbhHZIRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232992AbhHZIRC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 04:17:02 -0400
+Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF2F4C061757;
+        Thu, 26 Aug 2021 01:16:14 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by ha0.nfschina.com (Postfix) with ESMTP id 8D16BAE0DC7;
+        Thu, 26 Aug 2021 16:15:23 +0800 (CST)
+X-Virus-Scanned: amavisd-new at test.com
+Received: from ha0.nfschina.com ([127.0.0.1])
+        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id PqZdW8WS1aF3; Thu, 26 Aug 2021 16:15:03 +0800 (CST)
+Received: from [172.30.18.174] (unknown [180.167.10.98])
+        (Authenticated sender: liqiong@nfschina.com)
+        by ha0.nfschina.com (Postfix) with ESMTPA id 7B218AE0DB6;
+        Thu, 26 Aug 2021 16:15:03 +0800 (CST)
+From:   liqiong <liqiong@nfschina.com>
+Subject: Re: [PATCH] ima: fix deadlock within RCU list of ima_rules
+To:     THOBY Simon <Simon.THOBY@viveris.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210819101529.28001-1-liqiong@nfschina.com>
+ <20210824085747.23604-1-liqiong@nfschina.com>
+ <e720e88e-ebfa-56df-6048-f2da0b8fa2a0@viveris.fr>
+ <3ba4da9d-fa7b-c486-0c48-67cee4d5de6d@nfschina.com>
+ <2c4f61ff68544b2627fc4a38ad1e4109184ec68a.camel@linux.ibm.com>
+ <d502623a-7a49-04f8-1672-6521ceef260b@nfschina.com>
+ <5a032a1b-f763-a0e4-8ea2-803872bd7174@nfschina.com>
+ <eb9921ff-2d4b-136f-b7a7-924e61a0651b@viveris.fr>
+Message-ID: <1e464ae0-28e1-6511-ab89-52b5cd1a0841@nfschina.com>
+Date:   Thu, 26 Aug 2021 16:15:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <eb9921ff-2d4b-136f-b7a7-924e61a0651b@viveris.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
+Hi Simon,
 
-  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
+Thanks for your help, your advice is clear, can i just use it,
+how about this:
 
-are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-5.14-rc8
+The current IMA ruleset is identified by the variable "ima_rules",
+and the pointer starts pointing at the list "ima_default_rules".
+When loading a custom policy for the first time, the variable is
+updated to point to the list "ima_policy_rules" instead. That update
+isn't RCU-safe, and deadlocks are possible.
 
-for you to fetch changes up to df7b16d1c00ecb3da3a30c999cdb39f273c99a2f:
+Introduce a temporary value for "ima_rules" when iterating over
+the ruleset to avoid the deadlocks.
 
-  Revert "USB: serial: ch341: fix character loss at high transfer rates" (2021-08-25 09:13:33 +0200)
 
-----------------------------------------------------------------
-USB-serial fixes for 5.14-rc8
+Signed-off-by: liqiong <liqiong@nfschina.com>
+---
+ security/integrity/ima/ima_policy.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-Here's a fix for a regression in 5.14 (also backported to stable) which
-caused reads to stall for ch341 devices.
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index fd5d46e511f1..e92b197bfd3c 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
 
-Included is also a new modem device id.
 
-All but the revert have been in linux-next, and with no reported issues.
 
-----------------------------------------------------------------
-Johan Hovold (1):
-      Revert "USB: serial: ch341: fix character loss at high transfer rates"
+Thanks
 
-Zhengjun Zhang (1):
-      USB: serial: option: add new VID/PID to support Fibocom FG150
+liqiong
 
- drivers/usb/serial/ch341.c  | 1 -
- drivers/usb/serial/option.c | 2 ++
- 2 files changed, 2 insertions(+), 1 deletion(-)
+在 2021年08月25日 20:03, THOBY Simon 写道:
+> Hi Liqiong,
+>
+> On 8/25/21 1:45 PM, liqiong wrote:
+>> Hi Mimi,
+>>
+>> This copy may be better.
+>>
+>>
+>> subject: ima: fix deadlock when iterating over the init "ima_rules" list.
+>>
+>>
+> As Mimi said, consider adding an introducing paragraph, like:
+> 'The current IMA ruleset is identified by the variable "ima_rules",
+> and the pointer starts pointing at the list "ima_default_rules". When
+> loading a custom policy for the first time, the variable is
+> updated to point to the list "ima_policy_rules" instead. That update
+> isn't RCU-safe, and deadlocks are possible.'
+>
+>> When traversing back to head, the init "ima_rules" list can't exit
+>> iterating if "ima_rules" has been updated to "ima_policy_rules".
+>> It causes soft lockup and RCU stalls. So we can introduce a duplicate
+>> of "ima_rules" for each "ima_rules" list loop.
+> Per the process (see 'Documentation/process/submitting-patches.rst'),
+> please prefer an imperative style (written in another paragraph):
+> 'Introduce a temporary value for "ima_rules" when iterating over the ruleset.'
+>
+>
+> Thanks,
+> Simon
+
