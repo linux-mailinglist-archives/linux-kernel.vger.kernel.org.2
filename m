@@ -2,153 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81FD3F7F2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 01:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9BC3F7F2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234589AbhHYXx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 19:53:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231535AbhHYXx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 19:53:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A784D61101;
-        Wed, 25 Aug 2021 23:52:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629935560;
-        bh=2J2pSA9thXsSjhup1CAV2YxmdPx4Eg9gANJwKe6Itpc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W6G0XMtprnOLvrnCs/I5fQkmK469SX5c9DbwQLQdSliinv57v+wiQ0KstFal1DRVk
-         GcYGdwmGCgV+ge03tUp8DyRELVlJHqLkUWeA/Lpq9pYj5d/Th0yA7pQEB6ZD+3EcTK
-         gKfKas4HVFa7f4LqWwm2r2VQMSIgYH6j0I015uzXIOENODOH56tiDSCEU6usWxILRb
-         w0hxUv4k9hXoDC2IjnrAmpOcoeuvXbNhkmT0184DcG5PfEL7GmjPsTq7x5mBj5y7tD
-         8eGRuC9xTNEcDl6P0nKNbHMKYmF3hWA1Az3X3u7uqkps5GyYr4SoYZQzdHZdn5g6KE
-         led5s3UH4f1kw==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-sgx@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-Date:   Thu, 26 Aug 2021 02:52:33 +0300
-Message-Id: <20210825235234.153013-2-jarkko@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210825235234.153013-1-jarkko@kernel.org>
-References: <20210825235234.153013-1-jarkko@kernel.org>
+        id S234411AbhHZABU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 20:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231535AbhHZABT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 20:01:19 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269B1C061757;
+        Wed, 25 Aug 2021 17:00:33 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id x2-20020a1c7c02000000b002e6f1f69a1eso5536185wmc.5;
+        Wed, 25 Aug 2021 17:00:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0Tchv2oY6Cx3fLEGg+fdfAoeAssl1qaeHYeW6E4lQ7Q=;
+        b=gc3Iy7HEp9wXG/mB+BJp5EG4H4Pwz07bMEwIxJKOWfozIYqXvlCbd4eKuaCXzmrzVT
+         sGKEOZPjrfSgCkPbZpyrmx30hdBuQ/7fZQxP6sI82h3VYrJZqCWYNiBlavh4jdyDUtRR
+         IbUt0LxHq/RkPTuJzyStLFdOmHiu3Fo1SFzG5kYZdDBwdLsEPFFZ2qS8mIB+QABG7azh
+         L1ldkFxCxhAvPLCMHfIbIwOY+sSONktD3FtlBVVHoxT0tnv4zISg8XaCvhNw+ToQcfme
+         Ic/nCsex1MTo4vLATBUG4RkW2QYHbSYf/w2r1wWghna6sYoE4JXHzXsKgjubfU8N3Uqn
+         HDBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0Tchv2oY6Cx3fLEGg+fdfAoeAssl1qaeHYeW6E4lQ7Q=;
+        b=ARkESKLnZx7oAB6TAAgJJ6Dc9mI7PYlFWZDkBetzcsg0q+Kbl2D3ra90M6JnyKWEBm
+         lA6xgeNGBq0Dx8+rSK9qSzbGAUQMtUXGc3yP3blbM8Ygt1QRoE1nmD3RKOtXa+G1jz1K
+         Be2fn8XzPBLWfWV7JE3qglgjJTNSGU2E1NBXEqISN7QbAK0v6yTkJBKTuVArmvJJCTZg
+         g3wJwebcy2hhvCQm0RvVM+nHq2HOpmId3Su3/MfBW9RLRfCdS9Ao1tX4xtUvzO85PuGh
+         Oh+5768+bxHjkjj5eXiV/QafOEumRDLDGdG6KjJFj+CKJiw3JN7zZFOWScCnQRMGT118
+         O83w==
+X-Gm-Message-State: AOAM5338s6q0p2UfR1Ylko6plK8MhJbHwz8gO5CgQ5woI2vx7C9a3DdM
+        PAH1zyhTryKsjq1bYamWWz/wHsFsPqs=
+X-Google-Smtp-Source: ABdhPJxDv4UaIWb/Mq2+rTcw8JbYo2WHdxTa485C/RXoXJrSJcf0XsuVcHphfM7W6O/0DfrBU4FcYg==
+X-Received: by 2002:a7b:c041:: with SMTP id u1mr808506wmc.95.1629936031747;
+        Wed, 25 Aug 2021 17:00:31 -0700 (PDT)
+Received: from skbuf ([82.78.148.104])
+        by smtp.gmail.com with ESMTPSA id q11sm1281281wrx.85.2021.08.25.17.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 17:00:31 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 03:00:30 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 0/2] DSA slave with customise netdev features
+Message-ID: <20210826000030.dhiwv4puqiqyh3re@skbuf>
+References: <20210825083832.2425886-1-dqfext@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825083832.2425886-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The amount of SGX memory on the system is determined by the BIOS and it
-varies wildly between systems.  It can be from dozens of MB's on desktops
-or VM's, up to many GB's on servers.  Just like for regular memory, it is
-sometimes useful to know the amount of usable SGX memory in the system.
+On Wed, Aug 25, 2021 at 04:38:29PM +0800, DENG Qingfang wrote:
+> Some taggers, such as tag_dsa.c, combine VLAN tags with DSA tags, which
+> currently has a few problems:
+>
+> 1. Unnecessary reallocation on TX:
+>
+> A central TX reallocation has been used since commit a3b0b6479700
+> ("net: dsa: implement a central TX reallocation procedure"), but for
+> VLAN-tagged frames, the actual headroom required for DSA taggers which
+> combine with VLAN tags is smaller.
 
-Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
-usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
-BIOS, the printout would be:
+If true, this would be a major failure of the central TX reallocation idea.
 
-SGX_MemTotal:      22528 kB
+However, for this to fail, it would mean that there is a code path in
+the network stack that routinely allocates skbs with skb_needed_headroom(skb)
+smaller than dev->needed_headroom. That's the only thing that would trigger
+reallocs (beside cloned skbs).
 
-It is less than 32 MB because some of the space is reserved for Enclave
-Page Cache Metadata (EPCM), which contains state variables for all the
-pages in the Enclave Page Cache (EPC).  The latter contains the pages,
-which applications can use to create enclaves.
+The fact that we ask for a dev->needed_headroom that is a bit larger
+than what is needed in some cases is not an issue. We should declare the
+largest dev->needed_headroom that should cover all cases.
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Would you please let me know what is the stack trace when you apply this
+patch?
 
----
-v2:
-* Move ifdef fix for sgx_set_attribute() to a separate patch.
----
- Documentation/x86/sgx.rst      | 6 ++++++
- arch/x86/include/asm/sgx.h     | 2 ++
- arch/x86/kernel/cpu/sgx/main.c | 7 ++++++-
- arch/x86/mm/pat/set_memory.c   | 5 +++++
- 4 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index dd0ac96ff9ef..68ee171e1d8f 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the host and in guests
- on the same machine, the user should reserve enough EPC (by taking out
- total virtual EPC size of all SGX VMs from the physical EPC size) for
- host SGX applications so they can run with acceptable performance.
+-----------------------------[ cut here ]-----------------------------
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index 6d6f1aebf1ca..1924025ac136 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -600,6 +600,10 @@ static int dsa_realloc_skb(struct sk_buff *skb, struct net_device *dev)
+ 		/* No reallocation needed, yay! */
+ 		return 0;
+ 
++	netdev_err(dev, "%s: skb realloc: headroom %u, tailroom %u, cloned %d, needed_headroom %d, needed_tailroom %d\n",
++		  __func__, skb_headroom(skb), skb_tailroom(skb), skb_cloned(skb), needed_headroom, needed_tailroom);
++	WARN_ON(!skb_cloned(skb));
 +
-+Supplemental fields for /proc/meminfo
-+=====================================
-+
-+SGX_MemTotal
-+	The total usable SGX protected memory in kilobytes.
-diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-index 996e56590a10..d8e526b5487b 100644
---- a/arch/x86/include/asm/sgx.h
-+++ b/arch/x86/include/asm/sgx.h
-@@ -367,6 +367,8 @@ struct sgx_sigstruct {
- 
- #ifdef CONFIG_X86_SGX
- 
-+extern unsigned long sgx_nr_all_pages;
-+
- int sgx_set_attribute(unsigned long *allowed_attributes,
- 		      unsigned int attribute_fd);
- 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 63d3de02bbcc..1fe26a8e80dc 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -28,7 +28,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
- static LIST_HEAD(sgx_active_page_list);
- static DEFINE_SPINLOCK(sgx_reclaimer_lock);
- 
--/* The free page list lock protected variables prepend the lock. */
-+/* The number of usable EPC pages in the system. */
-+unsigned long sgx_nr_all_pages;
-+
-+/* The number of free EPC pages in all nodes. */
- static unsigned long sgx_nr_free_pages;
- 
- /* Nodes with one or more EPC sections. */
-@@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
- 		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
- 	}
- 
-+	sgx_nr_all_pages += nr_pages;
-+
- 	return true;
+ 	return pskb_expand_head(skb, needed_headroom, needed_tailroom,
+ 				GFP_ATOMIC);
  }
- 
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index ad8a5c586a35..82bb09c298de 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -29,6 +29,7 @@
- #include <asm/proto.h>
- #include <asm/memtype.h>
- #include <asm/set_memory.h>
-+#include <asm/sgx.h>
- 
- #include "../mm_internal.h"
- 
-@@ -116,6 +117,10 @@ void arch_report_meminfo(struct seq_file *m)
- 	if (direct_gbpages)
- 		seq_printf(m, "DirectMap1G:    %8lu kB\n",
- 			direct_pages_count[PG_LEVEL_1G] << 20);
-+
-+#if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
-+	seq_printf(m, "SGX_MemTotal:   %8lu kB\n", sgx_nr_all_pages << 2);
-+#endif
- }
- #else
- static inline void split_page_count(int level) { }
--- 
-2.25.1
+-----------------------------[ cut here ]-----------------------------
 
+>
+> 2. Repeated memmoves:
+>
+> If a both Marvell EDSA and VLAN tagged frame is received, the current
+> code will move the (DA,SA) twice: the first in dsa_rcv_ll to convert the
+> frame to a normal 802.1Q frame, and the second to strip off the 802.1Q
+> tag. The similar thing happens on TX.
+
+I don't think a lot of people use 8021q uppers with mv88e6xxx. At least
+the error messages I've seen during the few times when I've booted the
+Turris Mox would seem to suggest that.
+
+The code that converts DSA 'tagged' frames to VLAN tags originates from
+Lennert Buytenhek himself.
+
+>
+> For these tags, it is better to handle DSA and VLAN tags at the same time
+> in DSA taggers.
+
+No objection there.
+
+>
+> This patch set allows taggers to add custom netdev features to DSA
+> slaves so they can advertise VLAN offload, and converts tag_mtk to use
+> the TX VLAN offload.
+>
+> DENG Qingfang (2):
+>   net: dsa: allow taggers to customise netdev features
+>   net: dsa: tag_mtk: handle VLAN tag insertion on TX
+>
+>  include/net/dsa.h |  2 ++
+>  net/dsa/slave.c   |  3 ++-
+>  net/dsa/tag_mtk.c | 46 ++++++++++++++++++++++------------------------
+>  3 files changed, 26 insertions(+), 25 deletions(-)
+>
+> --
+> 2.25.1
+>
