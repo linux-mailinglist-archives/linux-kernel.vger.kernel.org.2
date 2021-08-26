@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD023F8876
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5743F889C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242582AbhHZNOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:14:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25751 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242457AbhHZNOX (ORCPT
+        id S242752AbhHZNRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:17:18 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:34909 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242691AbhHZNRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:14:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629983615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8RPnshDEQ3mW6HcBjYV6tIMWhsB6P2M9YaadavMQia0=;
-        b=GasQLc3MzXPCUp/UEGMjZF58gtLMZ/bKgjNopKv+mdj84q0R++1A22nwyBlnYDfDwqmsHr
-        5Yxeh8ZRHNRieIbvORvaT25xp2jhlA+tbt/nxkbfdTi/F7uPFIkwdMXdgilYEYw/UbUTKt
-        G4vVYB2FJ/9syyQanZ3lpipVvdc21xg=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-WI1dcZlJPJmJPDdgXpd_Jw-1; Thu, 26 Aug 2021 09:13:34 -0400
-X-MC-Unique: WI1dcZlJPJmJPDdgXpd_Jw-1
-Received: by mail-ed1-f70.google.com with SMTP id v13-20020a056402174d00b003c25d6b2f13so1507060edx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:13:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8RPnshDEQ3mW6HcBjYV6tIMWhsB6P2M9YaadavMQia0=;
-        b=jiezJFse8FcgKP9ZX9qCjmTkHARZZ6Oajyz6I5G5JHRTRjiyITdy9m47VYWuCDvCou
-         E4bYMcZNiCKdobPsUEf6DyKhhUVFRbP+e1jmpZIbvBfG+Xs/bZhohD7igAFX/XPEPVz+
-         qE4yiXkgnBwVEdjyc59Yu1eTgItLHfvdyrZ8Io6FDEhVEHMBoWxwq/hoydPtr/+e8OF8
-         YMBcQpQmSoIYF/PdoqVdpeydPAE2xu60XjgPzL+Z+dKm6aYFORmAgYOl4n7b/VLgIluU
-         b+ThiwSkE7dMSkKMOyT3ZLrK1kqPnU2S5QVobXqHDlEnImW4gzUDBwLDt2iQ/pvzWHMq
-         RD8g==
-X-Gm-Message-State: AOAM533pyMW3E/r5P1zc6qHInM78DTOz0i4B3pfFbEbD68zvErmtLiwB
-        7rx1Ip1CrL0qQ5NRRjEhkUlket0YH3FyN2l2IC0gZbHdFP1SjMIv2+fWxvBE6K5N0SRln2fTiAc
-        wzau0jm3mYeMrrcQH0uiWwlEJ
-X-Received: by 2002:a17:906:9a04:: with SMTP id ai4mr4359106ejc.453.1629983612907;
-        Thu, 26 Aug 2021 06:13:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHtHoZUIPL2TeOuH0U4DCMPSC7TYCviF7IQchIv+kccoowEOZSeAcqycZhZIO9zVJ6uAI59Q==
-X-Received: by 2002:a17:906:9a04:: with SMTP id ai4mr4359085ejc.453.1629983612762;
-        Thu, 26 Aug 2021 06:13:32 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id y32sm1890655ede.22.2021.08.26.06.13.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 06:13:31 -0700 (PDT)
-Subject: Re: [RFT, PATCH v2 0/2] platform/x86: hp_accel: Clean up and convert
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Cc:     Eric Piel <eric.piel@tremplin-utc.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Gross <mgross@linux.intel.com>
-References: <20210823093222.19544-1-andriy.shevchenko@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <2da3faa8-b642-bb58-32f4-6aea8bbfd291@redhat.com>
-Date:   Thu, 26 Aug 2021 15:13:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210823093222.19544-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 26 Aug 2021 09:17:03 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 26 Aug 2021 06:16:16 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Aug 2021 06:16:14 -0700
+X-QCInternal: smtphost
+Received: from rajpat-linux.qualcomm.com ([10.206.21.0])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 26 Aug 2021 18:45:39 +0530
+Received: by rajpat-linux.qualcomm.com (Postfix, from userid 2344945)
+        id 0577421288; Thu, 26 Aug 2021 18:45:39 +0530 (IST)
+From:   Rajesh Patil <rajpat@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, sboyd@kernel.org,
+        Rajesh Patil <rajpat@codeaurora.org>
+Subject: [PATCH V6 0/7] Add QSPI and QUPv3 DT nodes for SC7280 SoC
+Date:   Thu, 26 Aug 2021 18:45:24 +0530
+Message-Id: <1629983731-10595-1-git-send-email-rajpat@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Changes in V6:
+ - As per Matthias' comments,
+   1. Squashed "Update QUPv3 UART5 DT node" and "Configure debug uart for sc7280-idp"
+   2. Moved qup_opp_table from /soc to /
+   3. Changed convention "clocks" followed by "clock-names"
 
-On 8/23/21 11:32 AM, Andy Shevchenko wrote:
-> The pure ACPI drivers are not needed since we have a platform glue layer in
-> place. This allow to drop a lot of boiler plate code and duplication.
-> 
-> Patch 1 remove confusing call to _INI method and citing myself from v1:
->   "Not sure what buys us to run _INI on PM calls. It's against the spec
->    AFAICT. In any case ACPICA runs _INI as per specification when devices are
->    instantiated."
-> 
-> Patch 2 converts to platform driver.
+ - As per Doug comments, added aliases for i2c and spi
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Changes in V5:
+ - As per Matthias' comments, I've split the patches as below:
+   1. Add QSPI node
+   2. Configure SPI-NOR FLASH for sc7280-idp
+   3. Add QUPv3 wrapper_0 nodes
+   4. Update QUPv3 UART5 DT node
+   5. Configure debug uart for sc7280-idp
+   6. Configure uart7 to support bluetooth on sc7280-idp
+   7. Add QUPv3 wrapper_1 nodes
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+Changes in V4:
+ - As per Stephen's comment updated spi-max-frequency to 37.5MHz, moved
+   qspi_opp_table from /soc to / (root).
+ - As per Bjorn's comment, added QUP Wrapper_0 nodes
+   as separate patch and debug-uart node as separate patch.
+ - Dropped interconnect votes for wrapper_0 and wrapper_1 node
+ - Corrected QUP Wrapper_1 SE node's pin control functions like below
+        QUP Wrapper_0: SE0-SE7 uses qup00 - qup07 pin-cntrl functions.
+        QUP Wrapper_1: SE0-SE7 uses qup10 - qup17 pin-cntrl functions.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+Changes in V3:
+ - Broken the huge V2 patch into 3 smaller patches.
+   1. QSPI DT nodes
+   2. QUP wrapper_0 DT nodes
+   3. QUP wrapper_1 DT nodes
 
-Regards,
+Changes in V2:
+ - As per Doug's comments removed pinmux/pinconf subnodes.
+ - As per Doug's comments split of SPI, UART nodes has been done.
+ - Moved QSPI node before aps_smmu as per the order.
 
-Hans
+Rajesh Patil (3):
+  arm64: dts: sc7280: Configure SPI-NOR FLASH for sc7280-idp
+  arm64: dts: sc7280: Configure uart7 to support bluetooth on sc7280-idp
+  arm64: dts: sc7280: Add aliases for I2C and SPI
+
+Roja Rani Yarubandi (4):
+  arm64: dts: sc7280: Add QSPI node
+  arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+  arm64: dts: sc7280: Update QUPv3 UART5 DT node
+  arm64: dts: sc7280: Add QUPv3 wrapper_1 nodes
+
+ arch/arm64/boot/dts/qcom/sc7280-idp.dtsi |  129 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi     | 3197 ++++++++++++++++++++++--------
+ 2 files changed, 2511 insertions(+), 815 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
