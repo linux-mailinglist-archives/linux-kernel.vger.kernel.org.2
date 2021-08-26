@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE323F8136
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11383F8131
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237999AbhHZDne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 23:43:34 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:17988 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231720AbhHZDnc (ORCPT
+        id S236708AbhHZDiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 23:38:04 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15217 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231720AbhHZDiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 23:43:32 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Um0c2GM_1629949362;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Um0c2GM_1629949362)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 26 Aug 2021 11:42:43 +0800
-To:     Paul Moore <paul@paul-moore.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Subject: [PATCH] net: fix NULL pointer reference in cipso_v4_doi_free
-Message-ID: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com>
-Date:   Thu, 26 Aug 2021 11:42:42 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Wed, 25 Aug 2021 23:38:02 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gw7n35vNFz19Vdw
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:36:39 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 26 Aug 2021 11:37:13 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 26 Aug
+ 2021 11:37:13 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <dan.j.williams@intel.com>, <ben.widawsky@intel.com>
+Subject: [PATCH -next] tools/testing/cxl: Fix error return code in cxl_test_init()
+Date:   Thu, 26 Aug 2021 11:42:52 +0800
+Message-ID: <20210826034252.3373142-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In netlbl_cipsov4_add_std() when 'doi_def->map.std' alloc
-failed, we sometime observe panic:
+Return a negative error code when platform_device_alloc() or
+alloc_memdev() fail.
 
-  BUG: kernel NULL pointer dereference, address:
-  ...
-  RIP: 0010:cipso_v4_doi_free+0x3a/0x80
-  ...
-  Call Trace:
-   netlbl_cipsov4_add_std+0xf4/0x8c0
-   netlbl_cipsov4_add+0x13f/0x1b0
-   genl_family_rcv_msg_doit.isra.15+0x132/0x170
-   genl_rcv_msg+0x125/0x240
-
-This is because in cipso_v4_doi_free() there is no check
-on 'doi_def->map.std' when 'doi_def->type' equal 1, which
-is possibe, since netlbl_cipsov4_add_std() haven't initialize
-it before alloc 'doi_def->map.std'.
-
-This patch just add the check to prevent panic happen for similar
-cases.
-
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
+ tools/testing/cxl/test/cxl.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
- net/ipv4/cipso_ipv4.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
-index 099259f..7fbd0b5 100644
---- a/net/ipv4/cipso_ipv4.c
-+++ b/net/ipv4/cipso_ipv4.c
-@@ -465,14 +465,16 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def)
- 	if (!doi_def)
- 		return;
-
--	switch (doi_def->type) {
--	case CIPSO_V4_MAP_TRANS:
--		kfree(doi_def->map.std->lvl.cipso);
--		kfree(doi_def->map.std->lvl.local);
--		kfree(doi_def->map.std->cat.cipso);
--		kfree(doi_def->map.std->cat.local);
--		kfree(doi_def->map.std);
--		break;
-+	if (doi_def->map.std) {
-+		switch (doi_def->type) {
-+		case CIPSO_V4_MAP_TRANS:
-+			kfree(doi_def->map.std->lvl.cipso);
-+			kfree(doi_def->map.std->lvl.local);
-+			kfree(doi_def->map.std->cat.cipso);
-+			kfree(doi_def->map.std->cat.local);
-+			kfree(doi_def->map.std);
-+			break;
+diff --git a/tools/testing/cxl/test/cxl.c b/tools/testing/cxl/test/cxl.c
+index 314b09d40333..92735e2e7146 100644
+--- a/tools/testing/cxl/test/cxl.c
++++ b/tools/testing/cxl/test/cxl.c
+@@ -472,8 +472,10 @@ static __init int cxl_test_init(void)
+ 		struct platform_device *pdev;
+ 
+ 		pdev = platform_device_alloc("cxl_host_bridge", i);
+-		if (!pdev)
++		if (!pdev) {
++			rc = -ENOMEM;
+ 			goto err_bridge;
 +		}
+ 
+ 		mock_companion(adev, &pdev->dev);
+ 		rc = platform_device_add(pdev);
+@@ -490,8 +492,10 @@ static __init int cxl_test_init(void)
+ 		struct platform_device *pdev;
+ 
+ 		pdev = platform_device_alloc("cxl_root_port", i);
+-		if (!pdev)
++		if (!pdev) {
++			rc = -ENOMEM;
+ 			goto err_port;
++		}
+ 		pdev->dev.parent = &bridge->dev;
+ 
+ 		rc = platform_device_add(pdev);
+@@ -508,8 +512,10 @@ static __init int cxl_test_init(void)
+ 		struct platform_device *pdev;
+ 
+ 		pdev = alloc_memdev(i);
+-		if (!pdev)
++		if (!pdev) {
++			rc = -ENOMEM;
+ 			goto err_mem;
++		}
+ 		pdev->dev.parent = &port->dev;
+ 
+ 		rc = platform_device_add(pdev);
+@@ -521,8 +527,10 @@ static __init int cxl_test_init(void)
  	}
- 	kfree(doi_def);
- }
+ 
+ 	cxl_acpi = platform_device_alloc("cxl_acpi", 0);
+-	if (!cxl_acpi)
++	if (!cxl_acpi) {
++		rc = -ENOMEM;
+ 		goto err_mem;
++	}
+ 
+ 	mock_companion(&acpi0017_mock, &cxl_acpi->dev);
+ 	acpi0017_mock.dev.bus = &platform_bus_type;
 -- 
-1.8.3.1
+2.25.1
 
