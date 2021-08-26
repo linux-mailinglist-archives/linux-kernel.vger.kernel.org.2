@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA123F8D03
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F823F8D00
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243168AbhHZR1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
+        id S243196AbhHZR1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhHZR1a (ORCPT
+        with ESMTP id S229817AbhHZR1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:27:30 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530C8C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:26:43 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id p83so5358773yba.7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:26:43 -0700 (PDT)
+        Thu, 26 Aug 2021 13:27:11 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7387DC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:26:23 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id x11so8067029ejv.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yYQs+t0EIVXNcJL/e7NXnt1eBliiSLI4KWvdYpv5yJE=;
-        b=o5jF20zdFw4F7zlv6LWM4oAoDDwZcvpgD+hTrp8c1IKC+kbOpwiFoC5oZrmlXisWUr
-         +bVFWBKQGVxN13QABD3DJkrBE5wBlKq1Wl68f12WRKy6c8zsll/DQrQHMrBLIQQwWSvh
-         um1bA3vYFc5rDOa0+3QkrKyQrobizWzajT9YqYCwlieb5yBbTGFXj6UylPVd8J0z4SRF
-         2LvQRQJ0W2TiRhY2gSwlh9gU2Nastn5DFAzidfuushv4T1u5e+S3BOlSaDkRfHN8FCcT
-         GX3j1zK7QHZhi08aMfPYCcr1CKNlk++sTh1WUTWsT/zh/jiHPdDcD9gSh9EQWbE5JBTn
-         h7EA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jE7DamTNtM9yVeZiZkcNIYqg+6bAnPLAukyz2XQ5Wis=;
+        b=mszcHJtkElXz7RAmjoO61YPQcPvCladR7zf8yBVf42gyMYZWPCZ2x7VkPpuag8Yzs8
+         PaBtnpOyjI+Igih79l2EQZFwid7oGxUGJeU0PhNzK8Mm8FtEQtg24uBUhNIUAftw/g+i
+         z/FZ4QqK9a/j3rbiloyhVRhUng5IwUwo9l0cDf20//evvxdGU0oMpBAY6XFlYuCf82Aj
+         fE8j4Clf4t01DHE03yB1K4caY0EerdvcermNfUwlPczjMtY6m187rZBkBk8QzTVR24Rl
+         o+U+I/MVk2oFDTzZ6h66k9579/86DqGc/G277XGr17lUzSTGXDECOqLMKMerDh+EVuB0
+         j1+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yYQs+t0EIVXNcJL/e7NXnt1eBliiSLI4KWvdYpv5yJE=;
-        b=JXJ1Y+fMYQQb3+Lx6Ia1DmA9GF2j7gZsCPmE3qMthnq4p1XXw+5X1TCOhV9vOQWQSq
-         fckFlDxx4YBO31fV+fOEs/mzZhjfEbtc7u5xLiMN02R5LdogJ+t4ReCtqf1iojXpqtDQ
-         hm2tpkYJp5MfgzhaWtWvyLluSf87J9Rg3w5ssRBZCbQ40KceV5d4Jf0WpmPhH5g6BKFi
-         IVgdEUD6v8Fb8o51/oXMZBRsZpxueAK8ZT4YF1b5KspkUjrkZNitxaHOyR9iTxcG0Lgk
-         5OlBwq8kALYAtqbbaMtvZUxTDBY9Ak8ugscY69wWOy1RlqlvJGMqn0VOKK6yRqmbXZuh
-         Lliw==
-X-Gm-Message-State: AOAM5338HylMU+DUUzuesetJdL1vJKC2AtB9AqEfgNeETEcnwSWvxX0u
-        czfoD+2mR7Pj1UoFOAOVgU/mYFvXqyr2WvRhoTMk7w==
-X-Google-Smtp-Source: ABdhPJyq3Jew02iw5aPHXfc0ByWrxWyeFxGJb4Vo6/uSB293XxWewwqPv2hse5fVx2VzJ3gyHUYZTWhcgmcTiGeFweQ=
-X-Received: by 2002:a25:d213:: with SMTP id j19mr4894695ybg.20.1629998802409;
- Thu, 26 Aug 2021 10:26:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jE7DamTNtM9yVeZiZkcNIYqg+6bAnPLAukyz2XQ5Wis=;
+        b=G9+s/+49dVrfkE2YalwdMZWfn8JDd7WX7/7fGdQ0vXpno0PoGMh3YhEolnH2N0iVGX
+         B7nWoPwrzRy8iTxBA4j7Ef0oSxBFuJUMMrQKyGyaeGIOY0IeigJCqiU+wE1PnF5iO/cy
+         Y2KBP2QrJwrxDF69LFrqaAJkpqCRi4pNz/WYFBwJiyyUkHXDaOf78esNB62UE2N8Ubi7
+         g5S7kPruEvrt1hdYiQH+ScLA1FwBINz4Kv9yJ4CAYi5VpCEIRvuqpo46G1cZM1biF+6Y
+         tMPQ6b6UYxgz2RqT5tFJQDQMeuR/mPsaDrHGf0WwhBAGVaBXJbAT0tjnZrRxVrPVgUPv
+         8iMw==
+X-Gm-Message-State: AOAM531a2+y0vJ4dFsyV7PagpzaEPbob7c5DATniYfi+a47ceRtIKBmG
+        bzscCvAbDws0Kyy7h7FZrjI=
+X-Google-Smtp-Source: ABdhPJyasEgfR0ftrGXNvT3OziNyemY97gHEb3ZKKyEXEI9t0Qq0gG4iNYE1AGc4ethcbGJR7htoSQ==
+X-Received: by 2002:a17:906:660b:: with SMTP id b11mr5284103ejp.427.1629998782083;
+        Thu, 26 Aug 2021 10:26:22 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.9])
+        by smtp.gmail.com with ESMTPSA id s20sm1639041ejx.82.2021.08.26.10.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 10:26:21 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 19:26:19 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Wenlong Zhang <yixiaonn@gmail.com>
+Cc:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        marcocesati@gmail.com, insafonov@gmail.com, cyruscyliu@gmail.com,
+        yajin@vm-kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: rtl8723bs: prevent ->ssid overflow in
+ rtw_wx_set_scan()
+Message-ID: <20210826172618.GB1423@agape.jhs>
+References: <20210826154622.55361-1-yixiaonn@gmail.com>
 MIME-Version: 1.0
-References: <20210826074526.825517-1-saravanak@google.com> <20210826074526.825517-3-saravanak@google.com>
- <455824c8-51bf-9517-98fd-1f6b2a21261d@bang-olufsen.dk>
-In-Reply-To: <455824c8-51bf-9517-98fd-1f6b2a21261d@bang-olufsen.dk>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 26 Aug 2021 10:26:06 -0700
-Message-ID: <CAGETcx8yhH8o791=DNP3kUAqY+3xyH-Mem717hADqak==qpUtw@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] net: dsa: rtl8366rb: Quick fix to work with fw_devlink=on
-To:     =?UTF-8?Q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826154622.55361-1-yixiaonn@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 4:29 AM Alvin =C5=A0ipraga <ALSI@bang-olufsen.dk> w=
-rote:
->
-> Hi Saravana,
->
->  From looking at the code, the Marvell DSA driver mv88e6xxx may also
-> suffer from the same problem if fw_devlink=3Don. Maybe somebody (Andrew?)
-> could test so that you know whether include a simlar patch to that
-> driver in your series.
->
-> Other drivers may be effected too - as Andrew said in the other thread,
-> this is not an uncommon pattern for DSA drivers.
->
-> On 8/26/21 9:45 AM, Saravana Kannan wrote:
-> > This is just a quick fix to make this driver work with fw_devlink=3Don.
-> > The proper fix might need a significant amount of rework of the driver
-> > of the framework to use a component device model.
-> >
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
->
-> With the caveat that it's a test with my RFC rtl8365mb subdriver...
->
-> Tested-by: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
+Hello Welong,
 
-Thanks for testing. And just to be sure we are all on the same page:
-Without this patch the PHYs get handled by the Generic PHY driver.
-With this patch, the PHYs are handled by their specific driver.
-Correct?
+(Added commit reference)
 
--Saravana
+On Thu, Aug 26, 2021 at 11:46:22PM +0800, Wenlong Zhang wrote:
+> Commit 74b6b20df8cf ("staging: rtl8188eu: prevent ->ssid overflow in rtw_wx_set_scan()")
+> fixed up the staging driver rtl8188eu by adding another check 
+> to prevent writing beyond the end of the ->ssid[] array.
+> 
+> Resolve this by properly fixing up the rtl8723bs driver's version of
+> rtw_wx_set_scan() 
+> 
+> Reported-by: Wenlong Zhang(iLifetruth) <yixiaonn@gmail.com>
+> Fixes: 74b6b20df8cf ("staging: rtl8188eu: prevent ->ssid overflow in rtw_wx_set_scan()")
+> 
+> Signed-off-by: Wenlong Zhang <yixiaonn@gmail.com>
+> 
+> ---
+>  drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+> index 902ac8169948..6fc1020cea11 100644
+> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+> @@ -1351,9 +1351,9 @@ static int rtw_wx_set_scan(struct net_device *dev, struct iw_request_info *a,
+>  
+>  					sec_len = *(pos++); len -= 1;
+>  
+> -					if (sec_len > 0 && sec_len <= len) {
+> +					if (sec_len > 0 && sec_len <= len && sec_len <= 32) {
+>  						ssid[ssid_index].SsidLength = sec_len;
+> -						memcpy(ssid[ssid_index].Ssid, pos, ssid[ssid_index].SsidLength);
+> +						memcpy(ssid[ssid_index].Ssid, pos, sec_len);
+>  						/* DBG_871X("%s COMBO_SCAN with specific ssid:%s, %d\n", __func__ */
+>  						/* 	, ssid[ssid_index].Ssid, ssid[ssid_index].SsidLength); */
+>  						ssid_index++;
+> -- 
+> 2.15.0
+> 
 
->
-> Kind regards,
-> Alvin
->
-> > ---
-> >   drivers/net/dsa/realtek-smi-core.c | 7 +++++++
-> >   1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/net/dsa/realtek-smi-core.c b/drivers/net/dsa/realt=
-ek-smi-core.c
-> > index 8e49d4f85d48..f79c174f4954 100644
-> > --- a/drivers/net/dsa/realtek-smi-core.c
-> > +++ b/drivers/net/dsa/realtek-smi-core.c
-> > @@ -394,6 +394,13 @@ static int realtek_smi_probe(struct platform_devic=
-e *pdev)
-> >       var =3D of_device_get_match_data(dev);
-> >       np =3D dev->of_node;
-> >
-> > +     /* This driver assumes the child PHYs would be probed successfull=
-y
-> > +      * before this functions returns. That's not a valid assumption, =
-but
-> > +      * let fw_devlink know so that this driver continues to function =
-with
-> > +      * fw_devlink=3Don.
-> > +      */
-> > +     np->fwnode.flags |=3D FWNODE_FLAG_BROKEN_PARENT;
-> > +
-> >       smi =3D devm_kzalloc(dev, sizeof(*smi) + var->chip_data_sz, GFP_K=
-ERNEL);
-> >       if (!smi)
-> >               return -ENOMEM;
-> >
+today the patch which removes wext handlers has been accepted
+(commit 174ac41a7aafb31041cba3fe54ccd89b9daeef5d)
+in staging-testing so maybe rtw_wx_set_scan is going to disappear.
+
+thank you,
+
+fabio
