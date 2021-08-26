@@ -2,102 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974183F8FA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 22:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46673F8FAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 22:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243527AbhHZUa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 16:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbhHZUaz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 16:30:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC227C061757;
-        Thu, 26 Aug 2021 13:30:07 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630009805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h8UXnJqPBl9bMR7bNHfiVLEP7x645Ey89EezN1ntlwU=;
-        b=VBDa1tFsXe3DqTVCacj049KMyZFprQiq4GNZQNzWOCZRh2mgNzkNX0rQpbNqCcFAJx3bQ/
-        FodfJMXO3kwXbcOm70JewzN3eD33hey2tKLu6ZmYflB54tAunBXxXcagF8S8SucSoMv+X7
-        QnvXDU6T2EsJUtz7+cBI456GbZef4JbcGLz4Yq7/7fLTfqHwmkPW4zrj/wwZm+wwZDIfr9
-        Czlx6bo745bb0Sr2hZhSc1AUK20REbNLHHIj4Fd7noyTbe6c2fKcMmXjIRggq/baAYqcSQ
-        jlnT0Z9iCwkgrdQpcfmAobZYrGmVPJg+C0M2Ixs16TGYtR9JQ3AJ8iPedkCVbA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630009805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h8UXnJqPBl9bMR7bNHfiVLEP7x645Ey89EezN1ntlwU=;
-        b=lFhSfpUR+uySctN+5nkUrDE69qo5W5DZ2G3nUJtNFcALX+aeVlnapEIcok/XVCRN62Fsmz
-        sif3Vhs4lRee6bDA==
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [RFC PATCH -RT] epoll: Fix eventpoll read-lock not writer-fair in PREEMPT_RT
-In-Reply-To: <20210826115340.jzm3dicvporgrelp@linutronix.de>
-References: <20210825132754.GA895675@lothringen> <20210826115340.jzm3dicvporgrelp@linutronix.de>
-Date:   Thu, 26 Aug 2021 22:36:04 +0206
-Message-ID: <87v93srltf.fsf@jogness.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S243551AbhHZUep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 16:34:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229916AbhHZUeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 16:34:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DC9A260F91;
+        Thu, 26 Aug 2021 20:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630010036;
+        bh=HcJnSY3xITwzNO2duOVAGRP0zMYM1V/J9YMW/ut7EuE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=L6jEDJ62hPX8QqgmBTbgddsn/DMCkC3os2G2/Wx1yJ4uzmXZ+TdYY44Q3BJbdn0Z+
+         /sBO7H7WcrM0xAhMmjbTfXJaL/wP4mJwPvl4Cn6TKE2JhIZIktiYTyFUGFf31cx0g9
+         6csU6VVSS+irlqo2fBO8Zu9aZNTQuESJp5bxxloIFVg4ykmMJVdVpzWX9QDLkj1VcR
+         0IjfvWvOUO0bi+m48AGFPC4Jm/II4YoyOhwpHCRDdRBojTEXhUrsQm345maXbbaAE/
+         saG0I75w1fOfiTeB0LPsednG2B8uyAw/Q1NAD5np2M+rqrad7MaynCcRgAU0gZSDxv
+         iWjnX5GSWmAfA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D0F7260972;
+        Thu, 26 Aug 2021 20:33:56 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.14-rc8
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210826191017.1345100-1-kuba@kernel.org>
+References: <20210826191017.1345100-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210826191017.1345100-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc8
+X-PR-Tracked-Commit-Id: 9ebc2758d0bbed951511d1709be0717178ec2660
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8a2cb8bd064ecb089995469076f3055fbfd0a4c9
+Message-Id: <163001003679.31497.10308151113469684476.pr-tracker-bot@kernel.org>
+Date:   Thu, 26 Aug 2021 20:33:56 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-can@vger.kernel.org, kvalo@codeaurora.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-26, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
-> On 2021-08-25 15:27:54 [+0200], Frederic Weisbecker wrote:
->> Hi,
->> 
->> Ok the patch is gross but at least this lets me start a discussion
->> about the issue.
->> 
->> ---
->> From d9d66d650b3dac8947a34464dd2e0b546a8c6b63 Mon Sep 17 00:00:00 2001
->> From: Frederic Weisbecker <frederic@kernel.org>
->> Date: Wed, 25 Aug 2021 14:24:54 +0200
->> Subject: [RFC PATCH -RT] epoll: Fix eventpoll read-lock not writer-fair in PREEMPT_RT
->> 
->> The eventpoll lock has been converted to an rwlock some time ago with:
->> 
->> 	a218cc491420 (epoll: use rwlock in order to reduce ep_poll
->> 					callback() contention)
->> 
->> Unfortunately this can result in scenarios where a high priority caller
->> of epoll_wait() need to wait for the completion of lower priority wakers.
->> 
->> The typical scenario is:
->> 
->> 1) epoll_wait() waits and sleeps for new events in the ep_poll() loop.
->> 
->> 2) new events arrive in ep_poll_callback(), the waiter is awaken while
->>    ep->lock is read-acquired.
->> 
->> 3) The high priority waiter preempts the waker but it can't acquire the
->>    write lock in epoll_wait() so it blocks waiting for the low prio waker
->>    without priority inheritance.
->> 
->> I guess making readlock writer fair is still not the plan so all I can
->> propose is to make that rwlock build-conditional.
->
-> It is writer fair in a sense that once a writer attempts to acquire
-> the lock no new reader are allowed in.
->
-> What you want is that the writer pi-boosts each reader which is what
-> is not done (multi reader boost). Long ago there was an attempt to
-> make this happen (I think with rwsem) but it turned out to be
-> problematic.  There was a workaround by only allowing one reader and
-> doing PI as usual.
+The pull request you sent on Thu, 26 Aug 2021 12:10:17 -0700:
 
-This patch is essentially forcing that exact workaround for eventpoll.
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc8
 
-John Ogness
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8a2cb8bd064ecb089995469076f3055fbfd0a4c9
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
