@@ -2,117 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B30D3F8AE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CCF3F8AC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242914AbhHZPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:20:22 -0400
-Received: from lb2.peda.net ([130.234.6.153]:56235 "EHLO lb2.peda.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242913AbhHZPUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:20:18 -0400
-X-Greylist: delayed 534 seconds by postgrey-1.27 at vger.kernel.org; Thu, 26 Aug 2021 11:20:18 EDT
-Received: from [84.251.221.37] (dsl-jklbng12-54fbdd-37.dhcp.inet.fi [84.251.221.37])
-        by lb2.peda.net (Postfix) with ESMTPSA id 949AFD60119;
-        Thu, 26 Aug 2021 18:10:34 +0300 (EEST)
-To:     linux-kernel@vger.kernel.org
-From:   Mikko Rantalainen <mikko.rantalainen@peda.net>
-Subject: How about making oom_score_adj smarter?
-Message-ID: <fb16b0e3-2470-3f38-6b71-881bda21df13@peda.net>
-Date:   Thu, 26 Aug 2021 18:10:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S242911AbhHZPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:13:16 -0400
+Received: from mail-eopbgr130044.outbound.protection.outlook.com ([40.107.13.44]:34195
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232291AbhHZPNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 11:13:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rz/Wz96101k5MPpW5d+PvPKhpc3XEJucER/SP1sjs5+O5GJ4+9b9FO9F+K8MfNsjWhc/zB80yMpJ2hfyYhA856DyWNw1rdqcIK1O8JJh+/wxZpGPxnKyQzcSlYU318O8MHBQfNQtO2/VtEGDCvvtT4UQc04Jas3lW7akO3aie3y7zwDNwwZXy5jQqvtmB33bDmB97rC6EtOV3ulmNjLLZJqVf1ym9T0feP6/qc+q5nZ73Fc9CjP936uKpnBmzi01aYwjKSS8agGFS98zOckHjfkGX6F+vAtqN9x6ciVgoHG829pAJRnJ8SlHNPa3NhA8nyuu+YGmPFWTI+ct+S2yZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S7XhnFs/UzXkH4U9c0b/38G50rBwvBh73kbO3muZrZw=;
+ b=G3p2KUmkUzV0strAfQjZw1VRL1DN6RHdJRDyyhNzXDcUkDVpI1A8x1HAH+buTvSUigm/9PrfaWGsIHrMpB8X55FyVvNLl+lOExX3caqf9Bvpe7uSHZGrU9KnRz5SKmmt7OJbbIfzsWRwfFsiV8JNjXmHKVQDlaeXQhL/n49waf51Iy4orSMbi0VUBrBeEmlQ3do76XjBHcot1dpsdMov5c9Rh4YaBS4tDQVOGe6SLZS4SvakI6pimunhSrOC7YIFhYlXELHQpjuPcf7dllSF3aFbMUjnkxhRbJIMRW8Wr4gpBXT+ysZtEWMaeMGAkjYfuB09U3QB0RFigE8mbnGhhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S7XhnFs/UzXkH4U9c0b/38G50rBwvBh73kbO3muZrZw=;
+ b=kY4ltzVECPyGMkdnLt0JFCbjZe7qezYYoI9ju3rN0hJ5VPxwB87xmvQpPiVlcRnqH2Dtb81/7yNSUDkHSVc3mWQa22qI7HfVrM3oetInPDnEMWxkX8eLw02B4aJSCSw9ZKTNzHrfngFsHvp1x1MyFmBjvweZu0V/1DO3yneT8mo=
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
+ by DB6PR10MB1845.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:6:39::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Thu, 26 Aug
+ 2021 15:12:24 +0000
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9058:2eaa:5414:d29c]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9058:2eaa:5414:d29c%5]) with mapi id 15.20.4436.025; Thu, 26 Aug 2021
+ 15:12:24 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Colin King <colin.king@canonical.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] usb: typec: tcpm: Fix spelling mistake "atleast" -> "at
+ least"
+Thread-Topic: [PATCH] usb: typec: tcpm: Fix spelling mistake "atleast" -> "at
+ least"
+Thread-Index: AQHXmneCGOHtRUkrskypVodARC2UxKuF5Cbw
+Date:   Thu, 26 Aug 2021 15:12:24 +0000
+Message-ID: <DB9PR10MB46526F54459472C249DA397480C79@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+References: <20210826123959.14838-1-colin.king@canonical.com>
+In-Reply-To: <20210826123959.14838-1-colin.king@canonical.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 576b4837-7b11-45f3-b7e0-08d968a3e8e2
+x-ms-traffictypediagnostic: DB6PR10MB1845:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-microsoft-antispam-prvs: <DB6PR10MB1845F859B452F246C979CF66A7C79@DB6PR10MB1845.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vu/6qRefHe6alyLfuC7KR5aj5TELnBBEG48gijDm/WEzkFtXVLXeHzDb9HIsrOqvBCO9YLYIKGlT4b8bYAoUVxHPtEjyVT9e7a8ps++OaiVJBHjUdbjzzsebdrsybrRrz56v2sWWdEEMnVnzM4B1yDpXgzSfCtXEIU0VP3OQhNlgFk877JJ37ctcfljlxZIpH+AHi83mTR3lm1b0oijWmU6IE795Gu2XgUprbaEdQhlQ89mnGWn/kY1dJZaon8Y1GAJr1fnOzJGEWoRoFz2uyIIchQmOw0o6a0Q/F0CZnxO93kD64WpJxo+yCatG58ADtOyJlLjwFZg4bnHNU4aInG4AAMuh4Qr9uBt+5AIhB0TiWHKZEigMdAN5R5/NhxrL0ttf5SeAA03Au78oZQpL7TN9k8CRJt2BhmYFDHAAZvS1ef7jWVuM5KqVcXWrg+qoySbzgSC8WWatPByx02jjpy6iysCbeo334Qr9L/Hy8+CZoH9Wdzg/4J0B5/3NsVtHsYzwda7/fuxELUKNBWHZOTUiXSMgvYRXtEcZCiTSJVQ+8VRjW0wvaRBZVr/IVkVLdY2IXkloCfs+uu5dycVr1yRYZetbEr/jlvY7gptYvHF8m7r26+X2YWTND9vNWjxbXxMFH78ZP0yInZaVbKKPiG9n4Zf9M8eAcYFUO6UoavVRJpWR43IWUxMR8/pffFDYy0CS8Dk9ntfgfWWViH8KmA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39850400004)(366004)(136003)(376002)(8676002)(86362001)(7696005)(478600001)(54906003)(26005)(6506007)(66556008)(76116006)(2906002)(8936002)(53546011)(110136005)(38100700002)(66946007)(122000001)(4326008)(71200400001)(64756008)(66476007)(186003)(5660300002)(38070700005)(52536014)(55016002)(83380400001)(9686003)(316002)(33656002)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ai9iSy83bUJzWDZnejhRUWhmQXMrQ0E0bENESGpxd1JrVmJOOFhwMzRITU5q?=
+ =?utf-8?B?UnBoellXcWlhQU03T25ZUWdlNEZzNWJrS3RaU3A4ZEFJbk9uMGUzNlFWTWFk?=
+ =?utf-8?B?RmNLcE5FOGVWdTRQMzAwdTVFNjZqQitoamFta20vazRkaUFmQVN5R21pTnBn?=
+ =?utf-8?B?RWpVaDkxdnJQTUlLOUczam42TlVoenhvelJxQ2VSdkFtOXRiOEZZR05tcFp4?=
+ =?utf-8?B?ak1yUVQzU29uUEdkanVyWGxDMEwzUGljdUNuWlAwZ1JOeDU2V3BJQ0p5cS9W?=
+ =?utf-8?B?ckJUK1VMbHhtZVdEanByQUZQZjk2QnF4RUhPcWJWakVZUkRDVjB3Ky8yalZ5?=
+ =?utf-8?B?NG9FZEdveVlRSUJsVW5pQ1oxL0RPbzZ3N0dZbWJVR1Rtei8vaXBYcHNyMXhZ?=
+ =?utf-8?B?UzFrbTRPNkZLNHB4cnRmMzhKeVl0M0x3b21hcVd3bXc1Rk9DaGhBRS81a3lO?=
+ =?utf-8?B?WGlwajlkOTFKL0pPSmZsRCsyTGpwMTg5RjBPdlViZ1U0OW5LNjBIWHM2WUZv?=
+ =?utf-8?B?TkdCajlYQlZzRVhFTi9NTFc5Nmx5VzVNMFBlUVllYU84U2lRQ1hKVjVyM05Q?=
+ =?utf-8?B?WmFxUmFMdlRlemN5eEFsNWhTZUZSUHZydTJQOWVRVm9xK2t6OUlRbDVTTnIy?=
+ =?utf-8?B?VXQ3WG1zRDBIY21uWWszZ0FRMmU5OWx0N2gyTi9LTWJ2T0I4azVxcVdkRXBM?=
+ =?utf-8?B?MnVSNFJWZ0RNV3Z5a3laNit4eVY3UnZWMEp3TUZmS1dCNzBrdjlBWGRVQlpX?=
+ =?utf-8?B?dDcxLzlVN3FCZlR2YkZTQ2RES0xXajNiYjdFTzZzNGUweXd2L3p2Y20xMFhv?=
+ =?utf-8?B?RnFsZTl0aFg3eXVnc0FJb3hDd0VqT3RxWkFmMTlBZUxWMGdQSkx5emdxTUoz?=
+ =?utf-8?B?dVlaL2dudGdVWTVDSVRjVXZRUzNSV2FzY1FFSmtrSXlrOFh6KzhOVFdIV3Qx?=
+ =?utf-8?B?azNmWk1pQWhSenIrb0w1KzNDRUgwaG5NaXFLRms0TmVlQlFDSFFMTnVQRURH?=
+ =?utf-8?B?Y1hHOXY3V1ZrQUhsc2xoUEpmaGlWRHIybWlFdTdYcVdiWENGMGI0YUtHU3pl?=
+ =?utf-8?B?L3k1ajdIbDFoU3E1VWI3c0tNL2dQa2Y2QzFPMmQyZW83VVcyM0c1Ly91OXBD?=
+ =?utf-8?B?QWtKUncwYkNleFE0RGpKUGl0d1k5SHhlWmp4Q0dXQVREaENYNWs1TnAxcThj?=
+ =?utf-8?B?bHhvcXlDSmhlOHFCdlljUHdyaDlqalhjd0F3RlZMZGdJT0FkalRRN1NnT1Bq?=
+ =?utf-8?B?aGlROEN4b1k3cXd5SFZ4WTZOaGxOMFRYcXFKc2w3Ylh6YXVHQVYwWHVZUUI0?=
+ =?utf-8?B?dkUwb0hwYUJPa1lxaTJpN1NKNHBLWTZBVURzZjFyNUhNNWlMamY0dDBnaC9w?=
+ =?utf-8?B?WU0yVjFKVzY4d24rTHJpbWRubXJWYWp5Ylc1VzIveWRoaWk1RzJreXFML2pJ?=
+ =?utf-8?B?MW9Gd3BzWGM5TktHOGNYVE9ldVJWZENOOG9tcjRpZGRwbjdGOHAzWXJyTVFt?=
+ =?utf-8?B?VDQ1T0MyeWdqZG4rWXFpRWp0dTJaUi9Zc3d5b0kwRHcraEFzWHMwZzJIQkJ1?=
+ =?utf-8?B?QkdvRlliNlhKdGY0TUxPWFZ6bWdUMWhaalMrd3lUNmRYZ0t1VXhtMEtLQ2NL?=
+ =?utf-8?B?TXNENktnOTcvU0xnRnRVK1pacVN3TVJYRTh3YkVCTlB3QjNjeTRKa1V1R0Yy?=
+ =?utf-8?B?NnJPcjJXMHB6a2JzczByREdzRnJDVi90Y0RVUmw0UFFRZExHbFJEUHN1SHVD?=
+ =?utf-8?Q?vyixPgvi3Y94lpzS336E1UZAu9d4Jrh0trZy59h?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 576b4837-7b11-45f3-b7e0-08d968a3e8e2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2021 15:12:24.5288
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: n0/MIJt52pn3UKAnOLaHzsw4vBV2SLMUzaS/HV+wwjEmaQpxsXQq2KLF4fUQALtBIn8BWRP9akk4XEwCGL7521oE2HJi5tqwAMMtyStuWjA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR10MB1845
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[I don't subscribe LKML so I'd prefer being CC'd in replies.]
-
-Whenever OOM Killer is activated, it selects the victim by calling
-oom_badness() in oom_kill.c. The logic in this function basicallytakes
-actual memory usage of a process and adds (total_memory_in_system *
-(oom_score_adj / 1000)) as extra RSS usage for the process while trying
-to figure out the correct victim.
-
-This results in poor selections for positive oom_score_adj values when
-system has lots of RAM because this is in practice just a static amount
-of extra memory with no smarts of any kind. The oom_score_adj is
-basically same as "static_extra_rss_for_oom_selection_in_weird_unit".
-
-
-How about doing following instead?
-
-New definition: oom_score_adj is a non-linear multiplier that scales the
-badness score, but the special value 1000 means select every time (as
-currently) and -1000 means never select. Other values change the weight
-for the actually used memory when selecting the process to be killed to
-free RAM. Value zero means that the actual memory usage is counted for
-the given process, values below zero discount the memory usage with
--1000 counted as not using memory at all and -500 meaning only half of
-the actual memory usage is accounted for. However, the positive values
-have non-linear effect with higher values having more effect.
-
-
-I'd suggest that the code
-https://github.com/torvalds/linux/blob/28e92f990337b8b4c5fdec47667f8b96089c503e/mm/oom_kill.c#L236
-
-	/* Normalize to oom_score_adj units */
-	adj *= totalpages / 1000;
-	points += adj;
-
-were replaced with
-
-	/* Apply oom_score_adj as non-linear multiplier */
-	if (adj >= 0)
-		points *= 1.0 + adj * adj / 10000.0;
-	else
-		points *= 1.0 + adj/1000.0;
-
-
-This would change negative oom_score_adj values to represent linear
-multiplier under zero (0 being no change, -100 meaning taking 10% off
-from the actual badness, -900 meaning taking 90% off).
-
-However on the positive side the behavior would be non-linear with
-values closer to 0 having less effect and higher values resulting in
-greater multipliers. The value 999 would result in badness multiplied by
-100.8 but value 500 would result in multiplier 26 and value 100 would
-result in multiplier 2 (logically +100% badness). I would assume that
-having 100x multiplier for the memory usage would be good enough to
-correctly volunteer processes to be killed when system is running out of
-RAM.
-
-This would allow marking less important processes with high
-oom_score_adj values without similar problems as currently. If such
-process is well behaving and is using say 0.1% of the RAM, it doesn't
-make sense to kill it even if it had oom_score_adj value of 800. With
-current implementation such a process would get killed nearly every time.
-
-For example, Google Chrome nowadays uses oom_score_adj value of 300 for
-all non-critical child processes and those would get overcharged 9x
-instead of current state where each process has static overcharged
-overhead of 30% of the total system memory. With the above change Chrome
-children would be charged according to real memory usage times 9 which
-should result in correct child getting selected as victim more often.
-
-If floating point math is not acceptable here, the above computation can
-be re-ordered to avoid losing accuracy for oom_score_adj values close to
-zero.
-
-For example:
-
-	if (adj >= 0)
-		points += points * adj * adj / 10000;
-	else
-		points += points * adj / 1000;
-
-As an additional optimization, the divider could be replaced with a bit
-shift in roughly similar scale. I don't know if points * adj * adj could
-overflow with real world values.
-
--- 
-Mikko
+T24gMjYgQXVndXN0IDIwMjEgMTM6NDAsIENvbGluIEtpbmcgd3JvdGU6DQoNCj4gRnJvbTogQ29s
+aW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gDQo+IFRoZXJlIGFyZSBz
+cGVsbGluZyBtaXN0YWtlcyBpbiBhIGNvbW1lbnQgYW5kIGEgbGl0ZXJhbCBzdHJpbmcuDQo+IEZp
+eCB0aGVtLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdA
+Y2Fub25pY2FsLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL3VzYi90eXBlYy90Y3BtL3RjcG0uYyB8
+IDQgKystLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMo
+LSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi90eXBlYy90Y3BtL3RjcG0uYyBiL2Ry
+aXZlcnMvdXNiL3R5cGVjL3RjcG0vdGNwbS5jDQo+IGluZGV4IDA0OWY0YzYxZWU4Mi4uYjk4MWZj
+MzlmYTNjIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3VzYi90eXBlYy90Y3BtL3RjcG0uYw0KPiAr
+KysgYi9kcml2ZXJzL3VzYi90eXBlYy90Y3BtL3RjcG0uYw0KPiBAQCAtMjc4LDcgKzI3OCw3IEBA
+IHN0cnVjdCBwZF9tb2RlX2RhdGEgew0KPiAgICogQHJlcV9tYXhfY3VycjogUmVxdWVzdGVkIG1h
+eCBjdXJyZW50IG9mIHRoZSBwb3J0IHBhcnRuZXINCj4gICAqIEByZXFfb3V0X3ZvbHQ6IFJlcXVl
+c3RlZCBvdXRwdXQgdm9sdGFnZSB0byB0aGUgcG9ydCBwYXJ0bmVyDQo+ICAgKiBAcmVxX29wX2N1
+cnI6IFJlcXVlc3RlZCBvcGVyYXRpbmcgY3VycmVudCB0byB0aGUgcG9ydCBwYXJ0bmVyDQo+IC0g
+KiBAc3VwcG9ydGVkOiBQYXJ0ZXIgaGFzIGF0bGVhc3Qgb25lIEFQRE8gaGVuY2Ugc3VwcG9ydHMg
+UFBTDQo+ICsgKiBAc3VwcG9ydGVkOiBQYXJ0ZXIgaGFzIGF0IGxlYXN0IG9uZSBBUERPIGhlbmNl
+IHN1cHBvcnRzIFBQUw0KDQpBY3R1YWxseSAnUGFydGVyJyBzaG91bGQgYmUgJ1BhcnRuZXInIGhl
+cmUgYXMgd2VsbC4NCg0KPiAgICogQGFjdGl2ZTogUFBTIG1vZGUgaXMgYWN0aXZlDQo+ICAgKi8N
+Cj4gIHN0cnVjdCBwZF9wcHNfZGF0YSB7DQo+IEBAIC0yMDUwLDcgKzIwNTAsNyBAQCBlbnVtIHBk
+b19lcnIgew0KPiANCj4gIHN0YXRpYyBjb25zdCBjaGFyICogY29uc3QgcGRvX2Vycl9tc2dbXSA9
+IHsNCj4gIAlbUERPX0VSUl9OT19WU0FGRTVWXSA9DQo+IC0JIiBlcnI6IHNvdXJjZS9zaW5rIGNh
+cHMgc2hvdWxkIGF0bGVhc3QgaGF2ZSB2U2FmZTVWIiwNCj4gKwkiIGVycjogc291cmNlL3Npbmsg
+Y2FwcyBzaG91bGQgYXQgbGVhc3QgaGF2ZSB2U2FmZTVWIiwNCj4gIAlbUERPX0VSUl9WU0FGRTVW
+X05PVF9GSVJTVF0gPQ0KPiAgCSIgZXJyOiB2U2FmZTVWIEZpeGVkIFN1cHBseSBPYmplY3QgU2hh
+bGwgYWx3YXlzIGJlIHRoZSBmaXJzdCBvYmplY3QiLA0KPiAgCVtQRE9fRVJSX1BET19UWVBFX05P
+VF9JTl9PUkRFUl0gPQ0KPiAtLQ0KPiAyLjMyLjANCg0K
