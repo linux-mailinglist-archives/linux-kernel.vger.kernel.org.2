@@ -2,211 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6D13F80AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 04:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139F83F80B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 04:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238546AbhHZCxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 22:53:03 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:42604 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237996AbhHZCwv (ORCPT
+        id S237393AbhHZCzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 22:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234193AbhHZCzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 22:52:51 -0400
-X-UUID: 1411f0387bf64cd59aaacbe44349d2d4-20210826
-X-UUID: 1411f0387bf64cd59aaacbe44349d2d4-20210826
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1407219757; Thu, 26 Aug 2021 10:52:01 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 26 Aug 2021 10:52:01 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Thu, 26 Aug 2021 10:52:00 +0800
-Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 26 Aug 2021 10:52:00 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Ikjoon Jang <ikjn@chromium.org>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Yaqii wu <yaqii.wu@mediatek.com>
-Subject: [PATCH next v2 6/6] usb: xhci-mtk: allow bandwidth table rollover
-Date:   Thu, 26 Aug 2021 10:51:44 +0800
-Message-ID: <20210826025144.51992-6-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210826025144.51992-1-chunfeng.yun@mediatek.com>
-References: <20210826025144.51992-1-chunfeng.yun@mediatek.com>
+        Wed, 25 Aug 2021 22:55:19 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FE6C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 19:54:32 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso1299834pjq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 19:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zY5JqCFiL9ajwRDJE9ra9rr5h/8lLdU1bpaSqHW2cUY=;
+        b=zBbl6+vdhsHvJNmzRzPXjUjbZjS1JrIbTs8BWJQyR5yrjQ0NIdbYJbf6GP5pApFCVp
+         QwHpr9xoOjbWOHQbf9w84qKF6hnSDYRTcKs92IQ4JEXvC49dJwGf73JNm9e6WL0CaiJ3
+         5m6NOPRUdzpMEkdzaTnJgAib8c7/I1cWyzCPMW9eSlXIY9pGdD3717L7Hz3AuL6VwDK4
+         N4OzVhpVgELJBvWYnrW5vu5o6L3KYwE3MnqcLvfRQ8BGGYt0siZaxfeUknn6gUpgr0d+
+         DOZnGFD+Kfi4FkVDiCh75RoA6R1huFUJmi6KO1t34IILBc+ygQJ2sBcVh+9gAmmY5SNn
+         0pYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zY5JqCFiL9ajwRDJE9ra9rr5h/8lLdU1bpaSqHW2cUY=;
+        b=btMs89YiBIXs6TmV3b6WUOleWtsIzSkaU2su+uGEm7f47t/n8q4gGp9NZAWrLCyd44
+         4nwPfbNdwzAElhqkIiWHtDiIVzYOD/edzb6EDffNgA8qvi3ICptoE4EAQH2g9z0rBHA5
+         vsDmO+xdHp7/Tr4jZVYN/BySh4ATqflzlkPte6FSVOFhud6KMoI6AWxKD7+FKIBCXhUu
+         CPXGOqHJmrY1/4F2itW6rbISWy25nnACoZJLifI/qtD13s6T+T0gD9JlaOa3tRhWg/Ic
+         KZxFxQ6oc4d//NZpZMPDsdVq6WPc7zzMLkPRahtC73p4JXzjxcTwhAIp7V4UzucOhng5
+         /34g==
+X-Gm-Message-State: AOAM532KH2p94bZHLTV6vnWpizB0LgTB0yycjoMcLnYDEntHB0Tq0zBn
+        5+eUdWKQp9eNWJzbfCf8EaTPmw==
+X-Google-Smtp-Source: ABdhPJwJ9pkRHq/CTCcQjTYNpLDk2RhglIYRZ3ZolL1qTMxvdQiuO7bqSMhmqzPibKf11tEWAM5bLQ==
+X-Received: by 2002:a17:903:31d6:b0:133:9932:6998 with SMTP id v22-20020a17090331d600b0013399326998mr1459044ple.45.1629946472125;
+        Wed, 25 Aug 2021 19:54:32 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id nl9sm7142139pjb.33.2021.08.25.19.54.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 19:54:31 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 08:24:27 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+Message-ID: <20210826025427.exdinwkuavyfcp3f@vireshk-i7>
+References: <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+ <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
+ <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
+ <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
+ <CAPDyKFpg8ixT4AEjzVLTwQR7Nn9CctjnLCDS5GwkOrAERquyxw@mail.gmail.com>
+ <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
+ <b887de8c-a40b-a62e-8abf-698e67cdb70c@gmail.com>
+ <ed70e422-e0e9-8c2a-7ce6-e39cb6fd8108@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed70e422-e0e9-8c2a-7ce6-e39cb6fd8108@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xhci-mtk has 64 slots for periodic bandwidth calculations and each
-slot represents byte budgets on a microframe. When an endpoint's
-allocation sits on the boundary of the table, byte budgets' slot
-can be rolled over but the current implementation doesn't.
+On 25-08-21, 18:41, Dmitry Osipenko wrote:
+> Thinking a bit more about this, I got a nicer variant which actually works in all cases for Tegra.
+> 
+> Viresh / Ulf, what do you think about this:
 
-This patch allows the microframe index rollover and prevent
-out-of-bounds array access.
+This is what I have been suggesting from day 1 :)
 
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v2: new patch
----
- drivers/usb/host/xhci-mtk-sch.c | 51 +++++++++++----------------------
- drivers/usb/host/xhci-mtk.h     |  3 +-
- 2 files changed, 18 insertions(+), 36 deletions(-)
+https://lore.kernel.org/linux-staging/20210818055849.ybfajzu75ecpdrbn@vireshk-i7/
 
-diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-index f3c6f078f82d..134f4789bd89 100644
---- a/drivers/usb/host/xhci-mtk-sch.c
-+++ b/drivers/usb/host/xhci-mtk-sch.c
-@@ -416,15 +416,14 @@ static u32 get_max_bw(struct mu3h_sch_bw_info *sch_bw,
- {
- 	u32 max_bw = 0;
- 	u32 bw;
--	int i;
--	int j;
-+	int i, j, k;
- 
- 	for (i = 0; i < sch_ep->num_esit; i++) {
- 		u32 base = offset + i * sch_ep->esit;
- 
- 		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
--			bw = sch_bw->bus_bw[base + j] +
--					sch_ep->bw_budget_table[j];
-+			k = XHCI_MTK_BW_INDEX(base + j);
-+			bw = sch_bw->bus_bw[k] + sch_ep->bw_budget_table[j];
- 			if (bw > max_bw)
- 				max_bw = bw;
- 		}
-@@ -436,18 +435,16 @@ static void update_bus_bw(struct mu3h_sch_bw_info *sch_bw,
- 	struct mu3h_sch_ep_info *sch_ep, bool used)
- {
- 	u32 base;
--	int i;
--	int j;
-+	int i, j, k;
- 
- 	for (i = 0; i < sch_ep->num_esit; i++) {
- 		base = sch_ep->offset + i * sch_ep->esit;
- 		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
-+			k = XHCI_MTK_BW_INDEX(base + j);
- 			if (used)
--				sch_bw->bus_bw[base + j] +=
--					sch_ep->bw_budget_table[j];
-+				sch_bw->bus_bw[k] += sch_ep->bw_budget_table[j];
- 			else
--				sch_bw->bus_bw[base + j] -=
--					sch_ep->bw_budget_table[j];
-+				sch_bw->bus_bw[k] -= sch_ep->bw_budget_table[j];
- 		}
- 	}
- }
-@@ -457,7 +454,7 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
- 	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
- 	u32 tmp;
- 	int base;
--	int i, j;
-+	int i, j, k;
- 
- 	for (i = 0; i < sch_ep->num_esit; i++) {
- 		base = offset + i * sch_ep->esit;
-@@ -467,7 +464,8 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
- 		 * the hub will always delay one uframe to send data
- 		 */
- 		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
--			tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_budget_table[j];
-+			k = XHCI_MTK_BW_INDEX(base + j);
-+			tmp = tt->fs_bus_bw[k] + sch_ep->bw_budget_table[j];
- 			if (tmp > FS_PAYLOAD_MAX)
- 				return -ESCH_BW_OVERFLOW;
- 		}
-@@ -542,16 +540,18 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
- {
- 	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
- 	u32 base;
--	int i, j;
-+	int i, j, k;
- 
- 	for (i = 0; i < sch_ep->num_esit; i++) {
- 		base = sch_ep->offset + i * sch_ep->esit;
- 
--		for (j = 0; j < sch_ep->num_budget_microframes; j++)
-+		for (j = 0; j < sch_ep->num_budget_microframes; j++) {
-+			k = XHCI_MTK_BW_INDEX(base + j);
- 			if (used)
--				tt->fs_bus_bw[base + j] += sch_ep->bw_budget_table[j];
-+				tt->fs_bus_bw[k] += sch_ep->bw_budget_table[j];
- 			else
--				tt->fs_bus_bw[base + j] -= sch_ep->bw_budget_table[j];
-+				tt->fs_bus_bw[k] -= sch_ep->bw_budget_table[j];
-+		}
- 	}
- 
- 	if (used)
-@@ -573,25 +573,9 @@ static int load_ep_bw(struct mu3h_sch_bw_info *sch_bw,
- 	return 0;
- }
- 
--static u32 get_esit_boundary(struct mu3h_sch_ep_info *sch_ep)
--{
--	u32 boundary = sch_ep->esit;
--
--	if (sch_ep->sch_tt) { /* LS/FS with TT */
--		/* tune for CS */
--		if (sch_ep->ep_type != ISOC_OUT_EP)
--			boundary++;
--		else if (boundary > 1) /* normally esit >= 8 for FS/LS */
--			boundary--;
--	}
--
--	return boundary;
--}
--
- static int check_sch_bw(struct mu3h_sch_ep_info *sch_ep)
- {
- 	struct mu3h_sch_bw_info *sch_bw = sch_ep->bw_info;
--	const u32 esit_boundary = get_esit_boundary(sch_ep);
- 	const u32 bw_boundary = get_bw_boundary(sch_ep->speed);
- 	u32 offset;
- 	u32 worst_bw;
-@@ -608,9 +592,6 @@ static int check_sch_bw(struct mu3h_sch_ep_info *sch_ep)
- 		if (ret)
- 			continue;
- 
--		if ((offset + sch_ep->num_budget_microframes) > esit_boundary)
--			break;
--
- 		worst_bw = get_max_bw(sch_bw, sch_ep, offset);
- 		if (worst_bw > bw_boundary)
- 			continue;
-diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
-index dc5e83f5c5cc..7cc0123eada0 100644
---- a/drivers/usb/host/xhci-mtk.h
-+++ b/drivers/usb/host/xhci-mtk.h
-@@ -25,7 +25,8 @@
-  * round down to the limit value, that means allocating more
-  * bandwidth to it.
-  */
--#define XHCI_MTK_MAX_ESIT	64
-+#define XHCI_MTK_MAX_ESIT	(1 << 6)
-+#define XHCI_MTK_BW_INDEX(x)	((x) & (XHCI_MTK_MAX_ESIT - 1))
- 
- /**
-  * @fs_bus_bw: array to keep track of bandwidth already used for FS
+ "
+  And if it is all about just syncing the genpd core, then can the
+  genpd core do something like what clk framework does? i.e. allow a
+  new optional genpd callback, get_performance_state() (just like
+  set_performance_state()), which can be called initially by the core
+  to get the performance to something other than zero.
+ "
+
+Looks good to me :)
+
 -- 
-2.18.0
-
+viresh
