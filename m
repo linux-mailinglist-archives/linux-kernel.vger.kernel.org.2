@@ -2,86 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DDE3F8508
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436733F8519
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241261AbhHZKIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 06:08:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233880AbhHZKIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 06:08:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C3FE610D1;
-        Thu, 26 Aug 2021 10:07:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629972468;
-        bh=x8NVmE1BdD+ZN1w2mIzfik5Ryle5HXnB166iXxfhU5Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SRDq68V/Z1MGrS0XStZqwlyZjkgSq8gWIW7aVijN9XhROYEXvkJ/9qvE6GRu3XbR9
-         D3cfJ/GreJmwT4KhEYL5Ka8jqCkbflBV+/7OHwms0Vymr6ke8/5hzHDGN7CeZGIQ5L
-         DXtSyMNOt2CR416I2/qnr9ijveu78Lfykrhhp7jg=
-Date:   Thu, 26 Aug 2021 12:07:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: rtl8723bs: remove sdio_osintf.h
-Message-ID: <YSdn6vLOo/WG/9rS@kroah.com>
-References: <20210823221156.3353972-1-hello@bryanbrattlof.com>
+        id S241336AbhHZKLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 06:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233880AbhHZKLU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 06:11:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2146CC061757;
+        Thu, 26 Aug 2021 03:10:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P3fBlJbN4Wwlgb2DErBDbg3h8KlOq0J2kHfaCvG4BKg=; b=Q3PVQyfU3McP68Q5nf6qKSOj3t
+        aVpL1YMtIr/9ywlDCEkOiiL+9ZuqLIqkHjLAXM83SYk25HPDaeQ1I0QFFbWgQv5sYz3m7do7Imomc
+        vlWahbutQZ0eThYMuM1i98DplU4BGqK+ekOopzYJT8Se0/vMx9noN+Mxo4JcmVcURivFhr53X/1P6
+        5x/S4EPCEdzzbsNvKhSBobjYtjfjYNO9PN5fcFmrvw+6sryjNay3GFU39qODUKLFFvjINaZM4DgRV
+        z6s8EUFk1mIDkF9HcXTrzEqzo1Q23pPFSsvyyrqRB4qxMNkpYXLSAcjVSSdWYztyIkeA3METPe11G
+        6aqwdHHA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJCJd-00DBDt-Tj; Thu, 26 Aug 2021 10:09:25 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7A31498629D; Thu, 26 Aug 2021 12:08:56 +0200 (CEST)
+Date:   Thu, 26 Aug 2021 12:08:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        hca@linux.ibm.com
+Subject: Re: crash on s390 with SCHED_CORE=y
+Message-ID: <20210826100856.GA4353@worktop.programming.kicks-ass.net>
+References: <yt9d35qwa82w.fsf@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210823221156.3353972-1-hello@bryanbrattlof.com>
+In-Reply-To: <yt9d35qwa82w.fsf@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 10:12:21PM +0000, Bryan Brattlof wrote:
-> All definitions inside sdio_osintf.h are unused. Remove it.
-> 
-> Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
-> ---
->  drivers/staging/rtl8723bs/include/drv_types.h   |  1 -
->  drivers/staging/rtl8723bs/include/sdio_osintf.h | 16 ----------------
->  2 files changed, 17 deletions(-)
->  delete mode 100644 drivers/staging/rtl8723bs/include/sdio_osintf.h
-> 
-> diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
-> index 580028d28c42..0e6741db95bf 100644
-> --- a/drivers/staging/rtl8723bs/include/drv_types.h
-> +++ b/drivers/staging/rtl8723bs/include/drv_types.h
-> @@ -489,7 +489,6 @@ static inline u8 *myid(struct eeprom_priv *peepriv)
->  }
-> 
->  /*  HCI Related header file */
-> -#include <sdio_osintf.h>
->  #include <sdio_ops.h>
->  #include <sdio_hal.h>
-> 
-> diff --git a/drivers/staging/rtl8723bs/include/sdio_osintf.h b/drivers/staging/rtl8723bs/include/sdio_osintf.h
-> deleted file mode 100644
-> index 146b44f95e29..000000000000
-> --- a/drivers/staging/rtl8723bs/include/sdio_osintf.h
-> +++ /dev/null
-> @@ -1,16 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -/******************************************************************************
-> - *
-> - * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-> - *
-> - ******************************************************************************/
-> -#ifndef __SDIO_OSINTF_H__
-> -#define __SDIO_OSINTF_H__
-> -
-> -
-> -
-> -u8 sd_hal_bus_init(struct adapter *padapter);
-> -u8 sd_hal_bus_deinit(struct adapter *padapter);
-> -void sd_c2h_hdl(struct adapter *padapter);
+On Thu, Aug 26, 2021 at 11:06:31AM +0200, Sven Schnelle wrote:
+> [   25.044234]  [<00000001655b7534>] raw_spin_rq_lock_nested+0x5c/0xb8
+> [   25.044241]  [<00000001655d2cfc>] online_fair_sched_group+0x9c/0x1c0
+> [   25.044248]  [<00000001655e481c>] sched_autogroup_create_attach+0xdc/0x210
 
-What about the instances in
-drivers/staging/rtl8723bs/include/sdio_hal.h?  Please remove them at the
-same time.
+Does:
 
-thanks,
+  https://lkml.kernel.org/r/162970967846.25758.333277155824309635.tip-bot2@tip-bot2
 
-greg k-h
+help?
