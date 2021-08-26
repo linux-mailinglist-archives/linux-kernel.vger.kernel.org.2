@@ -2,407 +2,484 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6443F8331
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67493F8337
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240149AbhHZHha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 03:37:30 -0400
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:45938 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234415AbhHZHh3 (ORCPT
+        id S240043AbhHZHnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 03:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232223AbhHZHnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 03:37:29 -0400
-Received: by mail-lj1-f179.google.com with SMTP id l18so3377818lji.12;
-        Thu, 26 Aug 2021 00:36:40 -0700 (PDT)
+        Thu, 26 Aug 2021 03:43:13 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68306C061757;
+        Thu, 26 Aug 2021 00:42:26 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id g11so1737794qtk.5;
+        Thu, 26 Aug 2021 00:42:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WihNO3SdNsQPqC8PdKEXPllzBXphuV9NufeaR7yQu44=;
+        b=IYct1rK+PMUp9bnHFRcMCKZ7x2F7b1i4WWNB9T0n9ZoTjBUFcv7sflidz76KpkLWLC
+         7rAbnf5IWVTkc9SQMwaV//L/cN6Ft3eB+XYtncOi2lisu/+PsoEYCsjD8WW6hiTEx42Z
+         c5GrwYpIHYvCRH040sy6Ut0jOtdIgcHJJj99Kvr2U/SuqgomRLYCKX9tejM3VH3Xz8aP
+         4EefUPYR1f6catkEwu4MIXVNZrNAt2rCGNw/HPHDLCkM1VnlxwvC0qZvi0AlVSqhFKjH
+         HYS5CqSLz4k8MR4vtGcDyR00JRBCgLV6FCIxIlVmZr946SXC6jGkBCVbn38UNFdzbMjo
+         b7iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HnjLxhUNIWZvkLUKzMIl5VOMjiHDtN+g+OZIODPZSWw=;
-        b=ZDssSQ148jxkbrzsXc7gNxzZTjA+ih46mNc+WBP/H9GC5u7c4IvXlJk6/YYul/Z3yV
-         VqAf6GA+strBtseysmtM9ZAGRf1P5aP0qfABYcxVXosOY+ZwNDnHKQk8RF4LgNGlopm5
-         ZiFzUCa0b9QnPTWzi51a9EdzDxdg741zoFzZZL2XIwZ+FB6sOriF1qaFga/ZkOnnLlm8
-         cK0TiKsixR5B64sj32+ORs2Ylo3lmNab3KMDvSSV/D6H/P/amYPPVh8VXmzduoD/FWtT
-         a9ZOJEMSWVHzUizUSQ5zuWArMS2MhJgdqqlICD3gxHXdtOz26UhCn747rV74A5WY9N3J
-         PMUw==
-X-Gm-Message-State: AOAM530oqB7PLcZsRovVrlvY9YQiJtH8O9rLsqaxsBho/RooZd0fGKws
-        qMao3F1CF6p2CcVB0uBzY6F1b1ggSujhXv6ZgS4=
-X-Google-Smtp-Source: ABdhPJzSDUJSDxLdEFb1eMAVGgt+i41FW2lx9CpKD5VEZPSfI0UC1YRtyvuOyMDveI9a5QWPpe5/j5im2YRYY1btgVw=
-X-Received: by 2002:a2e:9999:: with SMTP id w25mr1845833lji.359.1629963399624;
- Thu, 26 Aug 2021 00:36:39 -0700 (PDT)
+        bh=WihNO3SdNsQPqC8PdKEXPllzBXphuV9NufeaR7yQu44=;
+        b=CVBOcPHemM4h2WLcofDNtvl18WomqpsNh+cS+6Bg46NoO2ZoUOC8Fwrs6dxhzJwbvz
+         ehacrcwMKa7U/WNOhRW0tlW2UgsNSKIUnjdHhNJygOJfD4Al0am6zZyj3vhFYF7iAiuU
+         uBJ9S+zdhuj+PLq4hivVzkv1zGZp9aIHy9qS6ipvGyBWabZYkCPuAnPxOTY+tiZzjC1Z
+         lA1FjGWHM3VH60lhVXZXjQZAlMbIlwk6ZXfN8o15PobDdQWt8WXdFcVi94k72vOjvQhN
+         1FEp7v8hKLL2m8WuD0wxUVCwalNV+dTUh6fThtAj64o5PfcVrbUazD8VhR3Tp+U8+G5n
+         p1zg==
+X-Gm-Message-State: AOAM533FU3wWIcNwrNlJnYIDnIrLwDuq13yu39SqAjmYTQBU5CNcuLF2
+        kEINK4wrUkgCHdcf9/nTCnWUJsfC0U13NV15GGgDCbW6NlYybQ==
+X-Google-Smtp-Source: ABdhPJy0ZP7mNi4Nslvcs7cP40ddP5RmWMxNHWpQkjJv3YVoaVSBm5DWk/vWWgZNG4whqnWjRH1hSo3+8K7m/LlY1WI=
+X-Received: by 2002:ac8:1493:: with SMTP id l19mr1955663qtj.43.1629963745411;
+ Thu, 26 Aug 2021 00:42:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210826050458.1540622-1-keescook@chromium.org> <20210826050458.1540622-3-keescook@chromium.org>
-In-Reply-To: <20210826050458.1540622-3-keescook@chromium.org>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Thu, 26 Aug 2021 16:36:27 +0900
-Message-ID: <CAMZ6RqJMWaRCB3sZa-it804Sv6aFyZ9J3aQyAStMY-1GAwR1Jg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] treewide: Replace open-coded flex arrays in unions
-To:     Kees Cook <keescook@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        linux-crypto@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        linux-scsi@vger.kernel.org, linux-can <linux-can@vger.kernel.org>,
-        bpf@vger.kernel.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Keith Packard <keithp@keithp.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+References: <20210825065931.2111159-1-zhang.lyra@gmail.com> <20210825065931.2111159-2-zhang.lyra@gmail.com>
+In-Reply-To: <20210825065931.2111159-2-zhang.lyra@gmail.com>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Thu, 26 Aug 2021 15:42:44 +0800
+Message-ID: <CADBw62pD0K_f0FjjCYkBAAsQuSY-QgGM_i-fr4aVcom0eG+bFA@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] spi: sprd: Add ADI r3 support
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-spi@vger.kernel.org,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Luting Guo <luting.guo@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu. 26 Aug 2021 at 14:04, Kees Cook <keescook@chromium.org> wrote:
-> In support of enabling -Warray-bounds and -Wzero-length-bounds and
-> correctly handling run-time memcpy() bounds checking, replace all
-> open-coded flexible arrays (i.e. 0-element arrays) in unions with the
-> flex_array() helper macro.
+Hi Chunyan,
 
-Nitpick: the commit description says flex_array() but the code is
-actually DECLARE_FLEX_ARRAY() or __DECLARE_FLEX_ARRAY().
-
-> This fixes warnings such as:
+On Wed, Aug 25, 2021 at 2:59 PM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
 >
-> fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
-> fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-length-bounds]
->   209 |    anode->btree.u.internal[0].down = cpu_to_le32(a);
->       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
-> In file included from fs/hpfs/hpfs_fn.h:26,
->                  from fs/hpfs/anode.c:10:
-> fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
->   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
->       |                                ^~~~~~~~
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 >
-> drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-> drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
->   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
->       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
->                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-> drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
->   231 |   u8 raw_msg[0];
->       |      ^~~~~~~
+> ADI r3p0 is used on SC9863 and UMS512 SoCs.
 >
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Ayush Sawal <ayush.sawal@chelsio.com>
-> Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
-> Cc: Rohit Maheshwari <rohitm@chelsio.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Stanislaw Gruszka <stf_xl@wp.pl>
-> Cc: Luca Coelho <luciano.coelho@intel.com>
-> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Johannes Berg <johannes.berg@intel.com>
-> Cc: Mordechay Goodstein <mordechay.goodstein@intel.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-> Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-> Cc: linux-crypto@vger.kernel.org
-> Cc: ath10k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-scsi@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > ---
->  drivers/crypto/chelsio/chcr_crypto.h              | 14 +++++++++-----
->  drivers/net/can/usb/etas_es58x/es581_4.h          |  2 +-
->  drivers/net/can/usb/etas_es58x/es58x_fd.h         |  2 +-
->  drivers/net/wireless/ath/ath10k/htt.h             |  7 +++++--
->  drivers/net/wireless/intel/iwlegacy/commands.h    |  6 ++++--
->  drivers/net/wireless/intel/iwlwifi/dvm/commands.h |  6 ++++--
->  drivers/net/wireless/intel/iwlwifi/fw/api/tx.h    |  6 ++++--
->  drivers/scsi/aic94xx/aic94xx_sds.c                |  6 ++++--
->  fs/hpfs/hpfs.h                                    |  8 ++++----
->  include/linux/filter.h                            |  6 ++++--
->  include/scsi/sas.h                                | 12 ++++++++----
->  include/uapi/rdma/rdma_user_rxe.h                 |  4 ++--
->  include/uapi/sound/asoc.h                         |  4 ++--
->  13 files changed, 52 insertions(+), 31 deletions(-)
+>  drivers/spi/spi-sprd-adi.c | 218 ++++++++++++++++++++++++++++---------
+>  1 file changed, 167 insertions(+), 51 deletions(-)
 >
-> diff --git a/drivers/crypto/chelsio/chcr_crypto.h b/drivers/crypto/chelsio/chcr_crypto.h
-> index e89f9e0094b4..c7816c83e324 100644
-> --- a/drivers/crypto/chelsio/chcr_crypto.h
-> +++ b/drivers/crypto/chelsio/chcr_crypto.h
-> @@ -222,8 +222,10 @@ struct chcr_authenc_ctx {
->  };
->
->  struct __aead_ctx {
-> -       struct chcr_gcm_ctx gcm[0];
-> -       struct chcr_authenc_ctx authenc[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct chcr_gcm_ctx, gcm);
-> +               DECLARE_FLEX_ARRAY(struct chcr_authenc_ctx, authenc);
-> +       };
->  };
->
->  struct chcr_aead_ctx {
-> @@ -245,9 +247,11 @@ struct hmac_ctx {
->  };
->
->  struct __crypto_ctx {
-> -       struct hmac_ctx hmacctx[0];
-> -       struct ablk_ctx ablkctx[0];
-> -       struct chcr_aead_ctx aeadctx[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct hmac_ctx, hmacctx);
-> +               DECLARE_FLEX_ARRAY(struct ablk_ctx, ablkctx);
-> +               DECLARE_FLEX_ARRAY(struct chcr_aead_ctx, aeadctx);
-> +       };
->  };
->
->  struct chcr_context {
-> diff --git a/drivers/net/can/usb/etas_es58x/es581_4.h b/drivers/net/can/usb/etas_es58x/es581_4.h
-> index 4bc60a6df697..667ecb77168c 100644
-> --- a/drivers/net/can/usb/etas_es58x/es581_4.h
-> +++ b/drivers/net/can/usb/etas_es58x/es581_4.h
-> @@ -192,7 +192,7 @@ struct es581_4_urb_cmd {
->                 struct es581_4_rx_cmd_ret rx_cmd_ret;
->                 __le64 timestamp;
->                 u8 rx_cmd_ret_u8;
-> -               u8 raw_msg[0];
-> +               DECLARE_FLEX_ARRAY(u8, raw_msg);
->         } __packed;
->
->         __le16 reserved_for_crc16_do_not_use;
-> diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.h b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> index ee18a87e40c0..e33003f96e5e 100644
-> --- a/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.h
-> @@ -228,7 +228,7 @@ struct es58x_fd_urb_cmd {
->                 struct es58x_fd_tx_ack_msg tx_ack_msg;
->                 __le64 timestamp;
->                 __le32 rx_cmd_ret_le32;
-> -               u8 raw_msg[0];
-> +               DECLARE_FLEX_ARRAY(u8, raw_msg);
->         } __packed;
->
->         __le16 reserved_for_crc16_do_not_use;
-> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-> index ec689e3ce48a..a6de08d3bf4a 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt.h
-> +++ b/drivers/net/wireless/ath/ath10k/htt.h
-> @@ -1674,8 +1674,11 @@ struct htt_tx_fetch_ind {
->         __le32 token;
->         __le16 num_resp_ids;
->         __le16 num_records;
-> -       __le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-> -       struct htt_tx_fetch_record records[];
-> +       union {
-> +               /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-> +               DECLARE_FLEX_ARRAY(__le32, resp_ids);
-> +               DECLARE_FLEX_ARRAY(struct htt_tx_fetch_record, records);
-> +       };
->  } __packed;
->
->  static inline void *
-> diff --git a/drivers/net/wireless/intel/iwlegacy/commands.h b/drivers/net/wireless/intel/iwlegacy/commands.h
-> index 89c6671b32bc..4a97310f8fee 100644
-> --- a/drivers/net/wireless/intel/iwlegacy/commands.h
-> +++ b/drivers/net/wireless/intel/iwlegacy/commands.h
-> @@ -1408,8 +1408,10 @@ struct il3945_tx_cmd {
->          * MAC header goes here, followed by 2 bytes padding if MAC header
->          * length is 26 or 30 bytes, followed by payload data
->          */
-> -       u8 payload[0];
-> -       struct ieee80211_hdr hdr[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, payload);
-> +               DECLARE_FLEX_ARRAY(struct ieee80211_hdr, hdr);
-> +       };
->  } __packed;
+> diff --git a/drivers/spi/spi-sprd-adi.c b/drivers/spi/spi-sprd-adi.c
+> index 07f11b17bf20..5ec1845d8e5b 100644
+> --- a/drivers/spi/spi-sprd-adi.c
+> +++ b/drivers/spi/spi-sprd-adi.c
+> @@ -52,10 +52,20 @@
 >
 >  /*
-> diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/commands.h b/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
-> index 235c7a2e3483..75a4b8e26232 100644
-> --- a/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
-> +++ b/drivers/net/wireless/intel/iwlwifi/dvm/commands.h
-> @@ -1251,8 +1251,10 @@ struct iwl_tx_cmd {
->          * MAC header goes here, followed by 2 bytes padding if MAC header
->          * length is 26 or 30 bytes, followed by payload data
+>   * ADI slave devices include RTC, ADC, regulator, charger, thermal and so on.
+> - * The slave devices address offset is always 0x8000 and size is 4K.
+> + * ADI supports 12/14bit address for r2p0, and additional 17bit for r3p0 or
+> + * later versions. Since bit[1:0] are zero, so the spec describe them as
+> + * 10/12/15bit address mode.
+> + * The 10bit mode supports sigle slave, 12/15bit mode supports 3 slave, the
+> + * high two bits is slave_id.
+> + * The slave devices address offset is 0x8000 for 10/12bit address mode,
+> + * and 0x20000 for 15bit mode.
+>   */
+> -#define ADI_SLAVE_ADDR_SIZE            SZ_4K
+> -#define ADI_SLAVE_OFFSET               0x8000
+> +#define ADI_10BIT_SLAVE_ADDR_SIZE      SZ_4K
+> +#define ADI_10BIT_SLAVE_OFFSET         0x8000
+> +#define ADI_12BIT_SLAVE_ADDR_SIZE      SZ_16K
+> +#define ADI_12BIT_SLAVE_OFFSET         0x8000
+> +#define ADI_15BIT_SLAVE_ADDR_SIZE      SZ_128K
+> +#define ADI_15BIT_SLAVE_OFFSET         0x20000
+>
+>  /* Timeout (ms) for the trylock of hardware spinlocks */
+>  #define ADI_HWSPINLOCK_TIMEOUT         5000
+> @@ -67,24 +77,35 @@
+>
+>  #define ADI_FIFO_DRAIN_TIMEOUT         1000
+>  #define ADI_READ_TIMEOUT               2000
+> -#define REG_ADDR_LOW_MASK              GENMASK(11, 0)
+> +
+> +/*
+> + * Read back address from REG_ADI_RD_DATA bit[30:16] which maps to:
+> + * REG_ADI_RD_CMD bit[14:0] for r2p0
+> + * REG_ADI_RD_CMD bit[16:2] for r3p0
+> + */
+> +#define RDBACK_ADDR_MASK_R2            GENMASK(14, 0)
+> +#define RDBACK_ADDR_MASK_R3            GENMASK(16, 2)
+> +#define RDBACK_ADDR_SHIFT_R3           2
+>
+>  /* Registers definitions for PMIC watchdog controller */
+> -#define REG_WDG_LOAD_LOW               0x80
+> -#define REG_WDG_LOAD_HIGH              0x84
+> -#define REG_WDG_CTRL                   0x88
+> -#define REG_WDG_LOCK                   0xa0
+> +#define REG_WDG_LOAD_LOW               0x0
+> +#define REG_WDG_LOAD_HIGH              0x4
+> +#define REG_WDG_CTRL                   0x8
+> +#define REG_WDG_LOCK                   0x20
+>
+>  /* Bits definitions for register REG_WDG_CTRL */
+>  #define BIT_WDG_RUN                    BIT(1)
+>  #define BIT_WDG_NEW                    BIT(2)
+>  #define BIT_WDG_RST                    BIT(3)
+>
+> +/* Bits definitions for register REG_MODULE_EN */
+> +#define BIT_WDG_EN                     BIT(2)
+> +
+>  /* Registers definitions for PMIC */
+>  #define PMIC_RST_STATUS                        0xee8
+>  #define PMIC_MODULE_EN                 0xc08
+>  #define PMIC_CLK_EN                    0xc18
+> -#define BIT_WDG_EN                     BIT(2)
+> +#define PMIC_WDG_BASE                  0x80
+>
+>  /* Definition of PMIC reset status register */
+>  #define HWRST_STATUS_SECURITY          0x02
+> @@ -103,10 +124,26 @@
+>  #define HWRST_STATUS_WATCHDOG          0xf0
+>
+>  /* Use default timeout 50 ms that converts to watchdog values */
+> -#define WDG_LOAD_VAL                   ((50 * 1000) / 32768)
+> +#define WDG_LOAD_VAL                   ((50 * 32768) / 1000)
+
+If this is an incorrect formula, it deserves a stable patch with some
+explanation.
+
+>  #define WDG_LOAD_MASK                  GENMASK(15, 0)
+>  #define WDG_UNLOCK_KEY                 0xe551
+>
+> +struct sprd_adi_wdg {
+> +       u32 base;
+> +       u32 rst_sts;
+> +       u32 wdg_en;
+> +       u32 wdg_clk;
+> +};
+> +
+> +struct sprd_adi_data {
+> +       u32 slave_offset;
+> +       u32 slave_addr_size;
+> +       int (*read_check)(u32 val, u32 reg);
+> +       int (*restart)(struct notifier_block *this,
+> +                      unsigned long mode, void *cmd);
+> +       void (*wdg_rst)(void *p);
+> +};
+> +
+>  struct sprd_adi {
+>         struct spi_controller   *ctlr;
+>         struct device           *dev;
+> @@ -115,11 +152,12 @@ struct sprd_adi {
+>         unsigned long           slave_vbase;
+>         unsigned long           slave_pbase;
+>         struct notifier_block   restart_handler;
+> +       const struct sprd_adi_data *data;
+>  };
+>
+>  static int sprd_adi_check_addr(struct sprd_adi *sadi, u32 reg)
+>  {
+> -       if (reg >= ADI_SLAVE_ADDR_SIZE) {
+> +       if (reg >= sadi->data->slave_addr_size) {
+>                 dev_err(sadi->dev,
+>                         "slave address offset is incorrect, reg = 0x%x\n",
+>                         reg);
+> @@ -155,11 +193,35 @@ static int sprd_adi_fifo_is_full(struct sprd_adi *sadi)
+>         return readl_relaxed(sadi->base + REG_ADI_ARM_FIFO_STS) & BIT_FIFO_FULL;
+>  }
+>
+> +static int sprd_adi_read_check(u32 val, u32 addr)
+> +{
+> +       u32 rd_addr;
+> +
+> +       rd_addr = (val & RD_ADDR_MASK) >> RD_ADDR_SHIFT;
+> +
+> +       if (rd_addr != addr) {
+> +               pr_err("ADI read error, addr = 0x%x, val = 0x%x\n", addr, val);
+> +               return -EIO;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int sprd_adi_read_check_r2(u32 val, u32 reg)
+> +{
+> +       return sprd_adi_read_check(val, reg & RDBACK_ADDR_MASK_R2);
+> +}
+> +
+> +static int sprd_adi_read_check_r3(u32 val, u32 reg)
+> +{
+> +       return sprd_adi_read_check(val, (reg & RDBACK_ADDR_MASK_R3) >> RDBACK_ADDR_SHIFT_R3);
+> +}
+> +
+>  static int sprd_adi_read(struct sprd_adi *sadi, u32 reg, u32 *read_val)
+>  {
+>         int read_timeout = ADI_READ_TIMEOUT;
+>         unsigned long flags;
+> -       u32 val, rd_addr;
+> +       u32 val;
+>         int ret = 0;
+>
+>         if (sadi->hwlock) {
+> @@ -203,18 +265,15 @@ static int sprd_adi_read(struct sprd_adi *sadi, u32 reg, u32 *read_val)
+>         }
+>
+>         /*
+> -        * The return value includes data and read register address, from bit 0
+> -        * to bit 15 are data, and from bit 16 to bit 30 are read register
+> -        * address. Then we can check the returned register address to validate
+> -        * data.
+> +        * The return value before adi r5p0 includes data and read register
+> +        * address, from bit 0to bit 15 are data, and from bit 16 to bit 30
+> +        * are read register address. Then we can check the returned register
+> +        * address to validate data.
 >          */
-> -       u8 payload[0];
-> -       struct ieee80211_hdr hdr[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, payload);
-> +               DECLARE_FLEX_ARRAY(struct ieee80211_hdr, hdr);
-> +       };
->  } __packed;
+> -       rd_addr = (val & RD_ADDR_MASK) >> RD_ADDR_SHIFT;
+> -
+> -       if (rd_addr != (reg & REG_ADDR_LOW_MASK)) {
+> -               dev_err(sadi->dev, "read error, reg addr = 0x%x, val = 0x%x\n",
+> -                       reg, val);
+> -               ret = -EIO;
+> -               goto out;
+> +       if (sadi->data->read_check) {
+> +               ret = sadi->data->read_check(val, reg);
+> +               if (ret < 0)
+> +                       goto out;
+>         }
 >
->  /*
-> diff --git a/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h b/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
-> index 24e4a82a55da..66c5487e857e 100644
-> --- a/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
-> +++ b/drivers/net/wireless/intel/iwlwifi/fw/api/tx.h
-> @@ -713,8 +713,10 @@ struct iwl_mvm_compressed_ba_notif {
->         __le32 tx_rate;
->         __le16 tfd_cnt;
->         __le16 ra_tid_cnt;
-> -       struct iwl_mvm_compressed_ba_ratid ra_tid[0];
-> -       struct iwl_mvm_compressed_ba_tfd tfd[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct iwl_mvm_compressed_ba_ratid, ra_tid);
-> +               DECLARE_FLEX_ARRAY(struct iwl_mvm_compressed_ba_tfd, tfd);
-> +       };
->  } __packed; /* COMPRESSED_BA_RES_API_S_VER_4 */
+>         *read_val = val & RD_VALUE_MASK;
+> @@ -299,20 +358,22 @@ static int sprd_adi_transfer_one(struct spi_controller *ctlr,
+>         return ret;
+>  }
 >
->  /**
-> diff --git a/drivers/scsi/aic94xx/aic94xx_sds.c b/drivers/scsi/aic94xx/aic94xx_sds.c
-> index 46815e65f7a4..5def83c88f13 100644
-> --- a/drivers/scsi/aic94xx/aic94xx_sds.c
-> +++ b/drivers/scsi/aic94xx/aic94xx_sds.c
-> @@ -517,8 +517,10 @@ struct asd_ms_conn_map {
->         u8    num_nodes;
->         u8    usage_model_id;
->         u32   _resvd;
-> -       struct asd_ms_conn_desc conn_desc[0];
-> -       struct asd_ms_node_desc node_desc[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct asd_ms_conn_desc, conn_desc);
-> +               DECLARE_FLEX_ARRAY(struct asd_ms_node_desc, node_desc);
-> +       };
->  } __attribute__ ((packed));
+> -static void sprd_adi_set_wdt_rst_mode(struct sprd_adi *sadi)
+> +static void sprd_adi_set_wdt_rst_mode(void *p)
+>  {
+>  #if IS_ENABLED(CONFIG_SPRD_WATCHDOG)
+>         u32 val;
+> +       struct sprd_adi *sadi = (struct sprd_adi *)p;
 >
->  struct asd_ctrla_phy_entry {
-> diff --git a/fs/hpfs/hpfs.h b/fs/hpfs/hpfs.h
-> index d92c4af3e1b4..281dec8f636b 100644
-> --- a/fs/hpfs/hpfs.h
-> +++ b/fs/hpfs/hpfs.h
-> @@ -409,10 +409,10 @@ struct bplus_header
->    __le16 first_free;                   /* offset from start of header to
->                                            first free node in array */
->    union {
-> -    struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
-> -                                              subtree pointers */
-> -    struct bplus_leaf_node external[0];            /* (external) 3-word entries giving
-> -                                              sector runs */
-> +       /* (internal) 2-word entries giving subtree pointers */
-> +       DECLARE_FLEX_ARRAY(struct bplus_internal_node, internal);
-> +       /* (external) 3-word entries giving sector runs */
-> +       DECLARE_FLEX_ARRAY(struct bplus_leaf_node, external);
->    } u;
+> -       /* Set default watchdog reboot mode */
+> +
+
+Remove the redundant blank line. Otherwise looks good to me.
+
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+
+> +       /* Init watchdog reset mode */
+>         sprd_adi_read(sadi, PMIC_RST_STATUS, &val);
+>         val |= HWRST_STATUS_WATCHDOG;
+>         sprd_adi_write(sadi, PMIC_RST_STATUS, val);
+>  #endif
+>  }
+>
+> -static int sprd_adi_restart_handler(struct notifier_block *this,
+> -                                   unsigned long mode, void *cmd)
+> +static int sprd_adi_restart(struct notifier_block *this, unsigned long mode,
+> +                                 void *cmd, struct sprd_adi_wdg *wdg)
+>  {
+>         struct sprd_adi *sadi = container_of(this, struct sprd_adi,
+>                                              restart_handler);
+> @@ -348,40 +409,40 @@ static int sprd_adi_restart_handler(struct notifier_block *this,
+>                 reboot_mode = HWRST_STATUS_NORMAL;
+>
+>         /* Record the reboot mode */
+> -       sprd_adi_read(sadi, PMIC_RST_STATUS, &val);
+> +       sprd_adi_read(sadi, wdg->rst_sts, &val);
+>         val &= ~HWRST_STATUS_WATCHDOG;
+>         val |= reboot_mode;
+> -       sprd_adi_write(sadi, PMIC_RST_STATUS, val);
+> +       sprd_adi_write(sadi, wdg->rst_sts, val);
+>
+>         /* Enable the interface clock of the watchdog */
+> -       sprd_adi_read(sadi, PMIC_MODULE_EN, &val);
+> +       sprd_adi_read(sadi, wdg->wdg_en, &val);
+>         val |= BIT_WDG_EN;
+> -       sprd_adi_write(sadi, PMIC_MODULE_EN, val);
+> +       sprd_adi_write(sadi, wdg->wdg_en, val);
+>
+>         /* Enable the work clock of the watchdog */
+> -       sprd_adi_read(sadi, PMIC_CLK_EN, &val);
+> +       sprd_adi_read(sadi, wdg->wdg_clk, &val);
+>         val |= BIT_WDG_EN;
+> -       sprd_adi_write(sadi, PMIC_CLK_EN, val);
+> +       sprd_adi_write(sadi, wdg->wdg_clk, val);
+>
+>         /* Unlock the watchdog */
+> -       sprd_adi_write(sadi, REG_WDG_LOCK, WDG_UNLOCK_KEY);
+> +       sprd_adi_write(sadi, wdg->base + REG_WDG_LOCK, WDG_UNLOCK_KEY);
+>
+> -       sprd_adi_read(sadi, REG_WDG_CTRL, &val);
+> +       sprd_adi_read(sadi, wdg->base + REG_WDG_CTRL, &val);
+>         val |= BIT_WDG_NEW;
+> -       sprd_adi_write(sadi, REG_WDG_CTRL, val);
+> +       sprd_adi_write(sadi, wdg->base + REG_WDG_CTRL, val);
+>
+>         /* Load the watchdog timeout value, 50ms is always enough. */
+> -       sprd_adi_write(sadi, REG_WDG_LOAD_HIGH, 0);
+> -       sprd_adi_write(sadi, REG_WDG_LOAD_LOW,
+> +       sprd_adi_write(sadi, wdg->base + REG_WDG_LOAD_HIGH, 0);
+> +       sprd_adi_write(sadi, wdg->base + REG_WDG_LOAD_LOW,
+>                        WDG_LOAD_VAL & WDG_LOAD_MASK);
+>
+>         /* Start the watchdog to reset system */
+> -       sprd_adi_read(sadi, REG_WDG_CTRL, &val);
+> +       sprd_adi_read(sadi, wdg->base + REG_WDG_CTRL, &val);
+>         val |= BIT_WDG_RUN | BIT_WDG_RST;
+> -       sprd_adi_write(sadi, REG_WDG_CTRL, val);
+> +       sprd_adi_write(sadi, wdg->base + REG_WDG_CTRL, val);
+>
+>         /* Lock the watchdog */
+> -       sprd_adi_write(sadi, REG_WDG_LOCK, ~WDG_UNLOCK_KEY);
+> +       sprd_adi_write(sadi, wdg->base + REG_WDG_LOCK, ~WDG_UNLOCK_KEY);
+>
+>         mdelay(1000);
+>
+> @@ -389,6 +450,19 @@ static int sprd_adi_restart_handler(struct notifier_block *this,
+>         return NOTIFY_DONE;
+>  }
+>
+> +static int sprd_adi_restart_sc9860(struct notifier_block *this,
+> +                                          unsigned long mode, void *cmd)
+> +{
+> +       struct sprd_adi_wdg wdg = {
+> +               .base = PMIC_WDG_BASE,
+> +               .rst_sts = PMIC_RST_STATUS,
+> +               .wdg_en = PMIC_MODULE_EN,
+> +               .wdg_clk = PMIC_CLK_EN,
+> +       };
+> +
+> +       return sprd_adi_restart(this, mode, cmd, &wdg);
+> +}
+> +
+>  static void sprd_adi_hw_init(struct sprd_adi *sadi)
+>  {
+>         struct device_node *np = sadi->dev->of_node;
+> @@ -440,10 +514,11 @@ static void sprd_adi_hw_init(struct sprd_adi *sadi)
+>  static int sprd_adi_probe(struct platform_device *pdev)
+>  {
+>         struct device_node *np = pdev->dev.of_node;
+> +       const struct sprd_adi_data *data;
+>         struct spi_controller *ctlr;
+>         struct sprd_adi *sadi;
+>         struct resource *res;
+> -       u32 num_chipselect;
+> +       u16 num_chipselect;
+>         int ret;
+>
+>         if (!np) {
+> @@ -451,6 +526,12 @@ static int sprd_adi_probe(struct platform_device *pdev)
+>                 return -ENODEV;
+>         }
+>
+> +       data = of_device_get_match_data(&pdev->dev);
+> +       if (!data) {
+> +               dev_err(&pdev->dev, "no matching driver data found\n");
+> +               return -EINVAL;
+> +       }
+> +
+>         pdev->id = of_alias_get_id(np, "spi");
+>         num_chipselect = of_get_child_count(np);
+>
+> @@ -468,10 +549,12 @@ static int sprd_adi_probe(struct platform_device *pdev)
+>                 goto put_ctlr;
+>         }
+>
+> -       sadi->slave_vbase = (unsigned long)sadi->base + ADI_SLAVE_OFFSET;
+> -       sadi->slave_pbase = res->start + ADI_SLAVE_OFFSET;
+> +       sadi->slave_vbase = (unsigned long)sadi->base +
+> +                           data->slave_offset;
+> +       sadi->slave_pbase = res->start + data->slave_offset;
+>         sadi->ctlr = ctlr;
+>         sadi->dev = &pdev->dev;
+> +       sadi->data = data;
+>         ret = of_hwspin_lock_get_id(np, 0);
+>         if (ret > 0 || (IS_ENABLED(CONFIG_HWSPINLOCK) && ret == 0)) {
+>                 sadi->hwlock =
+> @@ -492,7 +575,9 @@ static int sprd_adi_probe(struct platform_device *pdev)
+>         }
+>
+>         sprd_adi_hw_init(sadi);
+> -       sprd_adi_set_wdt_rst_mode(sadi);
+> +
+> +       if (sadi->data->wdg_rst)
+> +               sadi->data->wdg_rst(sadi);
+>
+>         ctlr->dev.of_node = pdev->dev.of_node;
+>         ctlr->bus_num = pdev->id;
+> @@ -507,12 +592,14 @@ static int sprd_adi_probe(struct platform_device *pdev)
+>                 goto put_ctlr;
+>         }
+>
+> -       sadi->restart_handler.notifier_call = sprd_adi_restart_handler;
+> -       sadi->restart_handler.priority = 128;
+> -       ret = register_restart_handler(&sadi->restart_handler);
+> -       if (ret) {
+> -               dev_err(&pdev->dev, "can not register restart handler\n");
+> -               goto put_ctlr;
+> +       if (sadi->data->restart) {
+> +               sadi->restart_handler.notifier_call = sadi->data->restart;
+> +               sadi->restart_handler.priority = 128;
+> +               ret = register_restart_handler(&sadi->restart_handler);
+> +               if (ret) {
+> +                       dev_err(&pdev->dev, "can not register restart handler\n");
+> +                       goto put_ctlr;
+> +               }
+>         }
+>
+>         return 0;
+> @@ -531,9 +618,38 @@ static int sprd_adi_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> +static struct sprd_adi_data sc9860_data = {
+> +       .slave_offset = ADI_10BIT_SLAVE_OFFSET,
+> +       .slave_addr_size = ADI_10BIT_SLAVE_ADDR_SIZE,
+> +       .read_check = sprd_adi_read_check_r2,
+> +       .restart = sprd_adi_restart_sc9860,
+> +       .wdg_rst = sprd_adi_set_wdt_rst_mode,
+> +};
+> +
+> +static struct sprd_adi_data sc9863_data = {
+> +       .slave_offset = ADI_12BIT_SLAVE_OFFSET,
+> +       .slave_addr_size = ADI_12BIT_SLAVE_ADDR_SIZE,
+> +       .read_check = sprd_adi_read_check_r3,
+> +};
+> +
+> +static struct sprd_adi_data ums512_data = {
+> +       .slave_offset = ADI_15BIT_SLAVE_OFFSET,
+> +       .slave_addr_size = ADI_15BIT_SLAVE_ADDR_SIZE,
+> +       .read_check = sprd_adi_read_check_r3,
+> +};
+> +
+>  static const struct of_device_id sprd_adi_of_match[] = {
+>         {
+>                 .compatible = "sprd,sc9860-adi",
+> +               .data = &sc9860_data,
+> +       },
+> +       {
+> +               .compatible = "sprd,sc9863-adi",
+> +               .data = &sc9863_data,
+> +       },
+> +       {
+> +               .compatible = "sprd,ums512-adi",
+> +               .data = &ums512_data,
+>         },
+>         { },
 >  };
->
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 472f97074da0..5ca52bfa5868 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -572,8 +572,10 @@ struct bpf_prog {
->         struct bpf_prog_aux     *aux;           /* Auxiliary fields */
->         struct sock_fprog_kern  *orig_prog;     /* Original BPF program */
->         /* Instructions for interpreter */
-> -       struct sock_filter      insns[0];
-> -       struct bpf_insn         insnsi[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(struct sock_filter, insns);
-> +               DECLARE_FLEX_ARRAY(struct bpf_insn, insnsi);
-> +       };
->  };
->
->  struct sk_filter {
-> diff --git a/include/scsi/sas.h b/include/scsi/sas.h
-> index 4726c1bbec65..64154c1fed02 100644
-> --- a/include/scsi/sas.h
-> +++ b/include/scsi/sas.h
-> @@ -323,8 +323,10 @@ struct ssp_response_iu {
->         __be32 sense_data_len;
->         __be32 response_data_len;
->
-> -       u8     resp_data[0];
-> -       u8     sense_data[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, resp_data);
-> +               DECLARE_FLEX_ARRAY(u8, sense_data);
-> +       };
->  } __attribute__ ((packed));
->
->  struct ssp_command_iu {
-> @@ -554,8 +556,10 @@ struct ssp_response_iu {
->         __be32 sense_data_len;
->         __be32 response_data_len;
->
-> -       u8     resp_data[0];
-> -       u8     sense_data[];
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, resp_data);
-> +               DECLARE_FLEX_ARRAY(u8, sense_data);
-> +       };
->  } __attribute__ ((packed));
->
->  struct ssp_command_iu {
-> diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-> index e283c2220aba..040752c99ec9 100644
-> --- a/include/uapi/rdma/rdma_user_rxe.h
-> +++ b/include/uapi/rdma/rdma_user_rxe.h
-> @@ -141,8 +141,8 @@ struct rxe_dma_info {
->         __u32                   sge_offset;
->         __u32                   reserved;
->         union {
-> -               __u8            inline_data[0];
-> -               struct rxe_sge  sge[0];
-> +               __DECLARE_FLEX_ARRAY(u8, inline_data);
-> +               __DECLARE_FLEX_ARRAY(struct rxe_sge, sge);
->         };
->  };
->
-> diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-> index da61398b1f8f..053949287ce8 100644
-> --- a/include/uapi/sound/asoc.h
-> +++ b/include/uapi/sound/asoc.h
-> @@ -240,8 +240,8 @@ struct snd_soc_tplg_vendor_array {
->  struct snd_soc_tplg_private {
->         __le32 size;    /* in bytes of private data */
->         union {
-> -               char data[0];
-> -               struct snd_soc_tplg_vendor_array array[0];
-> +               __DECLARE_FLEX_ARRAY(char, data);
-> +               __DECLARE_FLEX_ARRAY(struct snd_soc_tplg_vendor_array, array);
->         };
->  } __attribute__((packed));
->
 > --
-> 2.30.2
+> 2.25.1
 >
+
+
+-- 
+Baolin Wang
