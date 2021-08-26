@@ -2,176 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210493F8AD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAB63F8AD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242913AbhHZPSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
+        id S242914AbhHZPTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232291AbhHZPSI (ORCPT
+        with ESMTP id S234068AbhHZPTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:18:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0573AC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:17:21 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1mJH80-0000dH-7o; Thu, 26 Aug 2021 17:17:16 +0200
-Message-ID: <b8e3f7c6bec4d01ba05861de6a25c0b7fd432d0a.camel@pengutronix.de>
-Subject: Re: [PATCH 2/3] drm/etnaviv: fix dma configuration of the virtual
- device
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Michael Walle <michael@walle.cc>,
-        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Lukas F . Hartmann" <lukas@mntre.com>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 26 Aug 2021 17:17:13 +0200
-In-Reply-To: <df806090-8a21-33e8-1e01-bd03b6ed64cf@arm.com>
-References: <20210826121006.685257-1-michael@walle.cc>
-         <20210826121006.685257-3-michael@walle.cc>
-         <df806090-8a21-33e8-1e01-bd03b6ed64cf@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        Thu, 26 Aug 2021 11:19:19 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25C7C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:18:31 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id v26so2339601vsa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:18:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=4+JJ75JWVkq5ZOMhPvZAqJUQ4/2oSB+1YyuKCcdYdck=;
+        b=EPPG5enffS5cgrkmhluaDjMYjChuZMzntoRq/y2CkHvtoXm5vCcxPz/DDyJlDyMRR9
+         6CIAXycEhASh0vTw/kOyMiLGcQ9J2972Eul3saHPh22lH3Kwshc8M2ARnktxF2eAG/9W
+         +NgHMG3HFhdxtRox19sX7HH0lEpQZnO2ppyq79XIWu9IQT5g+MXXMOzdhRB7qM1F0Yg4
+         Lh/fqW/1/Bm8yopoB4nBFJrLgv+biDsqOmL5jDtKIlOSgGuSMpRBu0k52Lg5EGytYvsV
+         0a0/sxoaN2HbqYx8Nqm6HvDX6qfnYRtyEiEnOA3leWLPgA/+YFSp0BIjmmH5Vvo0hKP2
+         gtWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=4+JJ75JWVkq5ZOMhPvZAqJUQ4/2oSB+1YyuKCcdYdck=;
+        b=V/66chfD/vnkjhoEfn6Ztc9YLx2IMPi0CkZThzG50kJJefMnunSkzugo4NVR/StTtA
+         nXJT0oKUU0Im3WVaDSHh5WWHhVQLY6z3wvPNyfaIx4u8FBMR97OT//+rCB4BsBgoW5q4
+         hygLASVWtfuGUlShZRnR+pxJDBUmFbFcxV5unbZXB7W6OToRpFPr2Oa/6NbN+NP2Uplt
+         MHUztmBnHpEOjCiKuPaxN3tPKOJJcmxs1Gcvk2d7qGghSg0A9cQibtqSKxtUkzDPI/7j
+         xqIb+VvDMl2eFTGJL8MDSWDvRX5mV13vvtGfELc6QEc68MfXuvLPcPAIOywE1hv7hRoE
+         5Y8g==
+X-Gm-Message-State: AOAM531CsT1clydZ76QmPWHE9JAhhZJgLx8mjC8PPCGpGGOndLb2hdN6
+        RimxNrR0BtwyIAh5RnUpMuRTEaDPDIfSdgHQoY8=
+X-Google-Smtp-Source: ABdhPJwIQ5SKy3HHZ4Q3RS2Ge2OOD9XM8W5qsFj8nNjEfNUTYNeqX+mcGyw5ys0I+WUqq5ye0k/Ke5laFl3e6yvFae8=
+X-Received: by 2002:a67:c307:: with SMTP id r7mr2990070vsj.47.1629991110757;
+ Thu, 26 Aug 2021 08:18:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Received: by 2002:a59:cea4:0:b029:200:6655:e518 with HTTP; Thu, 26 Aug 2021
+ 08:18:30 -0700 (PDT)
+Reply-To: mrs.jessicamojoh03@gmail.com
+From:   Martial Akakpo <bankubabank9@gmail.com>
+Date:   Thu, 26 Aug 2021 08:18:30 -0700
+Message-ID: <CAGFjWamB5kr5+mnSBTuLeXpDuET7Qtqu7ekrk7RWb+jFEVf0Vg@mail.gmail.com>
+Subject: Dear Good Friend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, dem 26.08.2021 um 16:00 +0100 schrieb Robin Murphy:
-> On 2021-08-26 13:10, Michael Walle wrote:
-> > The DMA configuration of the virtual device is inherited from the first
-> > actual etnaviv device. Unfortunately, this doesn't work with an IOMMU:
-> > 
-> > [    5.191008] Failed to set up IOMMU for device (null); retaining platform DMA ops
-> > 
-> > This is because there is no associated iommu_group with the device. The
-> > group is set in iommu_group_add_device() which is eventually called by
-> > device_add() via the platform bus:
-> >    device_add()
-> >      blocking_notifier_call_chain()
-> >        iommu_bus_notifier()
-> >          iommu_probe_device()
-> >            __iommu_probe_device()
-> >              iommu_group_get_for_dev()
-> >                iommu_group_add_device()
-> > 
-> > Move of_dma_configure() into the probe function, which is called after
-> > device_add(). Normally, the platform code will already call it itself
-> > if .of_node is set. Unfortunately, this isn't the case here.
-> > 
-> > Also move the dma mask assignemnts to probe() to keep all DMA related
-> > settings together.
-> 
-> I assume the driver must already keep track of the real GPU platform 
-> device in order to map registers, request interrupts, etc. correctly - 
-> can't it also correctly use that device for DMA API calls and avoid the 
-> need for these shenanigans altogether?
-> 
-Not without a bigger rework. There's still quite a bit of midlayer
-issues in DRM, where dma-buf imports are dma-mapped and cached via the
-virtual DRM device instead of the real GPU device. Also etnaviv is able
-to coalesce multiple Vivante GPUs in a single system under one virtual
-DRM device, which is used on i.MX6 where the 2D and 3D GPUs are
-separate peripherals, but have the same DMA constraints.
+Dear Good Friend.
 
-Effectively we would need to handle N devices for the dma-mapping in a
-lot of places instead of only dealing with the one virtual DRM device.
-It would probably be the right thing to anyways, but it's not something
-that can be changed short-term. I'm also not yet sure about the
-performance implications, as we might run into some cache maintenance
-bottlenecks if we dma synchronize buffers to multiple real device
-instead of doing it a single time with the virtual DRM device. I know,
-I know, this has a lot of assumptions baked in that could fall apart if
-someone builds a SoC with multiple Vivante GPUs that have differing DMA
-constraints, but up until now hardware designers have not been *that*
-crazy, fortunately.
-
-Regards,
-Lucas
-
-> FYI, IOMMU configuration is really supposed to *only* run at 
-> add_device() time as above - the fact that it's currently hooked in to 
-> be retriggered by of_dma_configure() on DT platforms actually turns out 
-> to lead to various issues within the IOMMU API, and the plan to change 
-> that is slowly climbing up my to-do list.
-> 
-> Robin.
-> 
-> > Signed-off-by: Michael Walle <michael@walle.cc>
-> > ---
-> >   drivers/gpu/drm/etnaviv/etnaviv_drv.c | 24 +++++++++++++++---------
-> >   1 file changed, 15 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> > index 2509b3e85709..ff6425f6ebad 100644
-> > --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> > +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> > @@ -589,6 +589,7 @@ static int compare_str(struct device *dev, void *data)
-> >   static int etnaviv_pdev_probe(struct platform_device *pdev)
-> >   {
-> >   	struct device *dev = &pdev->dev;
-> > +	struct device_node *first_node = NULL;
-> >   	struct component_match *match = NULL;
-> >   
-> >   	if (!dev->platform_data) {
-> > @@ -598,6 +599,9 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
-> >   			if (!of_device_is_available(core_node))
-> >   				continue;
-> >   
-> > +			if (!first_node)
-> > +				first_node = core_node;
-> > +
-> >   			drm_of_component_match_add(&pdev->dev, &match,
-> >   						   compare_of, core_node);
-> >   		}
-> > @@ -609,6 +613,17 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
-> >   			component_match_add(dev, &match, compare_str, names[i]);
-> >   	}
-> >   
-> > +	pdev->dev.coherent_dma_mask = DMA_BIT_MASK(40);
-> > +	pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
-> > +
-> > +	/*
-> > +	 * Apply the same DMA configuration to the virtual etnaviv
-> > +	 * device as the GPU we found. This assumes that all Vivante
-> > +	 * GPUs in the system share the same DMA constraints.
-> > +	 */
-> > +	if (first_node)
-> > +		of_dma_configure(&pdev->dev, first_node, true);
-> > +
-> >   	return component_master_add_with_match(dev, &etnaviv_master_ops, match);
-> >   }
-> >   
-> > @@ -659,15 +674,6 @@ static int __init etnaviv_init(void)
-> >   			of_node_put(np);
-> >   			goto unregister_platform_driver;
-> >   		}
-> > -		pdev->dev.coherent_dma_mask = DMA_BIT_MASK(40);
-> > -		pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
-> > -
-> > -		/*
-> > -		 * Apply the same DMA configuration to the virtual etnaviv
-> > -		 * device as the GPU we found. This assumes that all Vivante
-> > -		 * GPUs in the system share the same DMA constraints.
-> > -		 */
-> > -		of_dma_configure(&pdev->dev, np, true);
-> >   
-> >   		ret = platform_device_add(pdev);
-> >   		if (ret) {
-> > 
+I am happy to inform you about my success in getting those funds
+transferred under the cooperation of a new partner from Indonesia.
+Presently I am in Indonesia for investment projects with my own share
+of the total sum. Meanwhile, I didn=E2=80=99t forget your past efforts and
+attempts to assist me in transferring those funds despite the fact
+that it failed us somehow. Now contact my secretary in Togo Lome his
+name is Mrs.Jessica Mojoh
 
 
+Mrs.Jessica Mojoh.
+
+Email: { mrs.jessicamojoh03@gmail.com  }
+
+ Contact him and ask him to send you the total of $920.000.00.{Nine
+Hundred And Twenty Thousand United States Dollars} which I kept for
+your past efforts and attempts to assist me in this matter. I
+appreciate your efforts at that time very much. So feel free and get
+in touch with my Secretary Mrs.Jessica Mojoh and instruct him where to
+send the amount to you. Please do let me know immediately you receive
+it so that we can share the joy after all the suffering at that time.
+Do send to  Mrs.Jessica Mojoh, your contact details.
+
+Your Full Names=E2=80=A6...........................................
+
+You=E2=80=99re Address=E2=80=A6............................................=
+..
+
+Cell Phone Number=E2=80=A6........................................
+
+Your occupation................................................
+
+Your Age=E2=80=A6.....................................................
+
+To enable him to submit your details to my paying bank the Ned Bank
+Togo Lome to wire your compensation money to your nominated bank
+account/Bank Check or they can send to you an authorized bank atm
+master card to your address for you to withdraw the money from any
+bank atm machine in your country.
+
+In the moment, I am very busy here because of the investment projects
+which me and the new partner are having at hand, finally, remember
+that I had forwarded instruction to my secretary on your behalf to
+receive that money, so feel free to get in touch with Mrs.Jessica
+Mojoh he will send the amount to you without any delay.
+
+Thanks and God bless you.
+Mrs.Jessica Mojoh
