@@ -2,81 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00C33F8931
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6A83F8947
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242681AbhHZNmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:42:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242241AbhHZNlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:41:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E5F060ED3;
-        Thu, 26 Aug 2021 13:41:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629985268;
-        bh=d6cWKlulQYuYbLxO50RwaiPqpKO52JhiP3U7TXUlBuo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tjXw4uS6+K3PFT5NV7+MocAxwQO3NA1gfwxtmz+SkfzyWhZcbX11TEwbyMEisRM90
-         0GZte+c/egAUU7vifTlb9Qwio1AgFKouKAQSuTY10Iw618uvwuFthJFAyS/VwOxEy/
-         klTkEEcbHuIDWnQ6al8BXF/HAhpQWo2AerGgvY0pQBhFJADjRFNy0N4sk6Ykq0WN9N
-         oHx5jYjThslXfgHlrJJCqO8q6JkJzTFWjrMRjTLNZ3KMyrYKcR6V99pFfiQ1QxSzUI
-         eLp53NPSnGTGhmEQw2PnCbHx5TX+ALDe26JVjlxVNLWsvYzwgwG35fUZhGpY86s4a5
-         wJzNmBWLYIbUw==
-Date:   Thu, 26 Aug 2021 14:40:39 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
+        id S242708AbhHZNpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:45:03 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:48773 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237433AbhHZNpC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 09:45:02 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id E976B320091E;
+        Thu, 26 Aug 2021 09:44:12 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 26 Aug 2021 09:44:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=WXkphg
+        Sznvbe0cwinig1Log1T5d//3hovaBCb47o4oA=; b=v5BfsVUM1wAk/pHl5RGehs
+        NUC7chBUMMZZ3qSXN/EF4YmzrildowrB8+xsW+ElYfd0lxvcnlybMP8EN9wybGQh
+        t36rqG/KMHpcZi3+9Ts53VPwJgVi7Aqh3dvcSco999mjBnRJ/ps0c0wKQ7XJCOzp
+        mSi6W7Y2NcUZV3TZ8BY5U39833R+z+s+t1evcJq6O7P6ylmeboglqhnCeT20dLUl
+        oueq/zwOIkvBNr/1Ui0p0N/FHcAn4xNg3fXkSqGI5QSSS57pmzz1r+EFNzoxrzxN
+        R3y2hWakKPfaiRKPgbL6kkO7jQ2uSBwEo3k+ez2jUZRo2AiQnk1i2kjFSmYZzxeQ
+        ==
+X-ME-Sender: <xms:q5onYW5cyE3UTFAaYFISaosi_ShZ-5Nc42e1bn3rZPIg-TMUE_l4DQ>
+    <xme:q5onYf5KuALetlGf6KxkdRykU7IWxM3qF9LtoIDg1xgkyGYaa_ZpG6SlnUqaJbVCR
+    Tu6nEGAfiiSvQ>
+X-ME-Received: <xmr:q5onYVd6YBmcEgQ8Dxx4toyFe-D1tPpUPEWL19PSTHfDKjATSnASkRvhvxDfHBxm8ytSC4txXhJYREbUMyUxr74-fYCeZZcibsLJUvdrvR3Rshw7yg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduuddgieeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffogggtohfgsehtkeertdertdejnecuhfhrohhmpeforghrvghk
+    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
+    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpeetgeet
+    keeukeffhfejueeludehtedtkeeuiedtgffgtdfhveefueeiiefhudehgeenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrghrmhgrrhgvkhes
+    ihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
+X-ME-Proxy: <xmx:q5onYTKtFfvgVY5slAcG3Tfj_ZSBp34r0g6gwnv1MKKmwa1309Up1w>
+    <xmx:q5onYaJuMaTC4YcyU80j7HP_CAEbqM5HVnPQYTb8_Fq7Hl6Qgeq6uQ>
+    <xmx:q5onYUxDsEyiT47N3Ne0RiO5sJuD63DlSNbvgHMo-EQDg1OxhAYucg>
+    <xmx:rJonYcg3ZnjlxxIep_3zVTyFHTJ5AIaSqpYIO7OBDFrRz4d19cqfrQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 26 Aug 2021 09:44:10 -0400 (EDT)
+From:   =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>, stable@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Esben Haabendal <esben@geanix.com>
-Subject: Re: "BUG: Invalid wait context" in ls_extirq_set_type
-Message-ID: <20210826134039.GG4148@sirena.org.uk>
-References: <20210825135438.ubcuxm5vctt6ne2q@skbuf>
- <26de7b85-e466-e9af-077a-9d1dc087e061@rasmusvillemoes.dk>
+        linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM)
+Subject: [PATCH] PCI/MSI: skip masking MSI on Xen PV
+Date:   Thu, 26 Aug 2021 15:43:37 +0200
+Message-Id: <20210826134337.134767-1-marmarek@invisiblethingslab.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gKijDXBCEH69PxaN"
-Content-Disposition: inline
-In-Reply-To: <26de7b85-e466-e9af-077a-9d1dc087e061@rasmusvillemoes.dk>
-X-Cookie: /earth: file system full.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Organization: Invisible Things Lab
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When running as Xen PV guest, masking MSI is a responsibility of the
+hypervisor. Guest has no write access to relevant BAR at all - when it
+tries to, it results in a crash like this:
 
---gKijDXBCEH69PxaN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+    BUG: unable to handle page fault for address: ffffc9004069100c
+    #PF: supervisor write access in kernel mode
+    #PF: error_code(0x0003) - permissions violation
+    PGD 18f1c067 P4D 18f1c067 PUD 4dbd067 PMD 4fba067 PTE 80100000febd4075
+    Oops: 0003 [#1] SMP NOPTI
+    CPU: 0 PID: 234 Comm: kworker/0:2 Tainted: G        W         5.14.0-rc7-1.fc32.qubes.x86_64 #15
+    Workqueue: events work_for_cpu_fn
+    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
+    Code: 2f 96 ff 48 89 44 24 28 48 89 c7 48 85 c0 0f 84 f6 01 00 00 45 0f b7 f6 48 8d 40 0c ba 01 00 00 00 49 c1 e6 04 4a 8d 4c 37 1c <89> 10 48 83 c0 10 48 39 c1 75 f5 41 0f b6 44 24 6a 84 c0 0f 84 48
+    RSP: e02b:ffffc9004018bd50 EFLAGS: 00010212
+    RAX: ffffc9004069100c RBX: ffff88800ed412f8 RCX: ffffc9004069105c
+    RDX: 0000000000000001 RSI: 00000000000febd4 RDI: ffffc90040691000
+    RBP: 0000000000000003 R08: 0000000000000000 R09: 00000000febd404f
+    R10: 0000000000007ff0 R11: ffff88800ee8ae40 R12: ffff88800ed41000
+    R13: 0000000000000000 R14: 0000000000000040 R15: 00000000feba0000
+    FS:  0000000000000000(0000) GS:ffff888018400000(0000) knlGS:0000000000000000
+    CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: ffff8000007f5ea0 CR3: 0000000012f6a000 CR4: 0000000000000660
+    Call Trace:
+     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
+     e1000_probe+0x41f/0xdb0 [e1000e]
+     local_pci_probe+0x42/0x80
+    (...)
 
-On Thu, Aug 26, 2021 at 11:01:31AM +0200, Rasmus Villemoes wrote:
+There is pci_msi_ignore_mask variable for bypassing MSI masking on Xen
+PV, but msix_mask_all() missed checking it. Add the check there too.
 
-> I don't know what the right fix is. Am I right when a say that for !RT,
-> spinlock==raw_spinlock? If so, switching regmap's spinlock to
-> raw_spinlock would be nop for !RT and fix this issue, but would of
-> course have quite far-reaching effects on RT kernels.
+Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
+Cc: stable@vger.kernel.org
+Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+---
+Cc: xen-devel@lists.xenproject.org
+---
+ drivers/pci/msi.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Note that regmap doesn't have a fixed kind of locking used for all
-regmaps, the individual regmaps can select which (if any) kind of lock
-they want to use on a per-regmap basis.  Adding raw_spinlock support
-wouldn't affect any regmap that doesn't actively select raw spinlocks.
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index e5e75331b415..3a9f4f8ad8f9 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -776,6 +776,9 @@ static void msix_mask_all(void __iomem *base, int tsize)
+ 	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+ 	int i;
+ 
++	if (pci_msi_ignore_mask)
++		return;
++
+ 	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+ 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ }
+-- 
+2.31.1
 
---gKijDXBCEH69PxaN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEnmdcACgkQJNaLcl1U
-h9AU2Af/ekGEj8EBgJMNI7xxeCic0QVbCCGNrEEZ8sXZSI2YQtLNB4l4SGYB+Rk0
-WUr8+toFR2kDw9GjaRKr0/Ny9Jrj8W+sWwJ270cvPkk+pU4txB/ZG+w5XEEi2jDG
-9qDbJT7SN8WKrgt3JGYaeygOrlVxFjru7aSo8wwCrJ6GrTfgS58Ih+srtxBIK0ed
-lzoBrGz1xYb60+iMFO20kJGlL2/bGhUWUbsPOHEoZqo6JQqNDCQEglJi4NxBiqKb
-XO7aD16X0MZkYt8nDMjhcxBofQPGPRJRqh4KdAU5eD7JgEGeo+fzYnnpwSgcF4yM
-C6B0qEzrxWmC/2U0BTWioAPvvBUwtw==
-=DooY
------END PGP SIGNATURE-----
-
---gKijDXBCEH69PxaN--
