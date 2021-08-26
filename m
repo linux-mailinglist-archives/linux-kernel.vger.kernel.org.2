@@ -2,135 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6D53F827A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A703F823C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239257AbhHZGcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 02:32:00 -0400
-Received: from mga14.intel.com ([192.55.52.115]:8904 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238228AbhHZGb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 02:31:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="217399083"
-X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="asc'?scan'208";a="217399083"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 23:31:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="asc'?scan'208";a="494944170"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
-  by fmsmga008.fm.intel.com with ESMTP; 25 Aug 2021 23:31:08 -0700
-Date:   Thu, 26 Aug 2021 14:08:09 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210826060809.GC9942@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210728175925.GU1721383@nvidia.com>
- <20210729072022.GB31896@lst.de>
- <20210803094315.GF13928@zhen-hp.sh.intel.com>
- <20210803143058.GA1721383@nvidia.com>
- <20210804052606.GG13928@zhen-hp.sh.intel.com>
- <20210816173458.GA9183@lst.de>
- <20210817010851.GW13928@zhen-hp.sh.intel.com>
- <20210817052203.GX13928@zhen-hp.sh.intel.com>
- <20210819082929.GB13928@zhen-hp.sh.intel.com>
- <20210820141724.GA29034@lst.de>
+        id S238506AbhHZGKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 02:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235644AbhHZGKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 02:10:23 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9438AC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 23:09:36 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id u9so3107506wrg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 23:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=dyDctEcCFTQWagrKchtGj45MTWx5J7OGfGIXDOq+f1k=;
+        b=yDEYk+/bvtYSqQ2ThliPo9BtTAK30Rp/czWjIF0CYLT1jl9raDqySDNSqJSNL7d2mV
+         Nvh+nUK6rBW7KfairwHa9wv1x7kF/AUElFAquILSv/q6Qc9I2OwvkuvTtdxQQGdJUXjM
+         DTFX/ZE99rNg5o6JlxWz5GzioZ43R59N/mH2k5z6PL03tZ01dk6cYIcp1KEO4ZgvZ8yd
+         vjjL5y9wAfMLeNpPOhc5RhLHnN6QdZ62RTcC6Wy5O727aqbZ/8oOdESol31t15wpQ/aW
+         mBFxeT5Wm52VHElXXfhvF5kFO0Au1RIVY/UycHPiJUnwHl58b0cCExZcw15ZJxACO7L5
+         7Hiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=dyDctEcCFTQWagrKchtGj45MTWx5J7OGfGIXDOq+f1k=;
+        b=rQX0IyYUgJaFRQ9vAmDl+JBK6owSds/2UM6GOpuJkxgo4vUAq7b5zvuaJNFDjSkslm
+         wNCdaNFnfXPW+i5MlWjQbbEk4YTF8+hoJdQwcKkw6nYXgiuPNKxV/6/OzsTuDrKerp8e
+         dlHGkIcvJpc5kNiyImmRi3hF7xKKXMov7hyowdXUlxn3VMChkZlRtvIDJuzD4d4lstWX
+         JWaMcQm0hvoIjrvfLNUiGKi1tJ06tO9NdXrVVEsSwpW6h3nVxQtVPEHWVVwFR4oApAc8
+         1IApO4wD9YF6n1lKNMZjmF5bGvlOHnk1i4uTbLssv9Vgo9+5Vs5V7fVmEiilhIo1fH7n
+         iA0Q==
+X-Gm-Message-State: AOAM530mWPvU4XRqtNgFqWjm7U9hj5HOSkkENapTIVCX0T9KrVpRzMkE
+        eGCaZTz+JGRKdjmX7/eYsrgXUiYOHV/KV8Vd
+X-Google-Smtp-Source: ABdhPJxQJX/06bX18ERlziYqTFfcIFghw3b0KcT5wMnJ6G2mPwBdXqm8EazEkC4+1C0cLZGO2dxIsw==
+X-Received: by 2002:adf:f750:: with SMTP id z16mr1794604wrp.384.1629958173996;
+        Wed, 25 Aug 2021 23:09:33 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:a490:371:4cff:9501? ([2a01:e34:ed2f:f020:a490:371:4cff:9501])
+        by smtp.googlemail.com with ESMTPSA id e3sm2065448wrv.65.2021.08.25.23.09.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 23:09:33 -0700 (PDT)
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Fengquan Chen <Fengquan.Chen@mediatek.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Phong Hoang <phong.hoang.wz@renesas.com>,
+        Will Deacon <Will.Deacon@arm.com>,
+        Zhou Yanjie <zhouyanjie@wanyeetech.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [GIT PULL] timers driver for v5.15
+Message-ID: <c14ad27a-b1c6-6043-0f5e-71dd984bb4ba@linaro.org>
+Date:   Thu, 26 Aug 2021 08:09:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="uZ3hkaAS1mZxFaxD"
-Content-Disposition: inline
-In-Reply-To: <20210820141724.GA29034@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---uZ3hkaAS1mZxFaxD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Thomas,
 
-On 2021.08.20 16:17:24 +0200, Christoph Hellwig wrote:
-> On Thu, Aug 19, 2021 at 04:29:29PM +0800, Zhenyu Wang wrote:
-> > I'm working on below patch to resolve this. But I met a weird issue in
-> > case when building i915 as module and also kvmgt module, it caused
-> > busy wait on request_module("kvmgt") when boot, it doesn't happen if
-> > building i915 into kernel. I'm not sure what could be the reason?
->=20
-> Luis, do you know if there is a problem with a request_module from
-> a driver ->probe routine that is probably called by a module_init
-> function itself?
->=20
-> In the meantime I'll try to reproduce it locally, but I always had a
-> hard time getting useful results out of a modular i915, especially
-> when combined with module paramters. (no blame on i915, just the problem
-> with modules needed early on).
->=20
-> >=20
-> > > But the problem I see is that after moving gvt device model (gvt/*.c
-> > > except kvmgt.c) into kvmgt module, we'll have issue with initial mmio
-> > > state which current gvt relies on, that is in design supposed to get
-> > > initial HW state before i915 driver has taken any operation.  Before
-> > > we can ensure that, I think we may only remove MPT part first but
-> > > still keep gvt device model as part of i915 with config. I'll try to
-> > > split that out.
-> >=20
-> > Sorry I misread the code that as we always request kvmgt module when
-> > gvt init, so it should still apply original method that this isn't a
-> > problem. Our current validation result has shown no regression as well.
->=20
-> What does initial mmio state mean?  This is something new to me.  But
-> as you said in this mail unless I missed something very big it should
-> work the same as before.
->
+The following changes since commit f80e21489590c00f46226d5802d900e6f66e5633:
 
-It's gvt internal track for all gfx mmio state, and yes with your current
-change it should still work as before.
+  hrtimer: Unbreak hrtimer_force_reprogram() (2021-08-12 22:34:40 +0200)
 
-> > -static inline void intel_context_unpin(struct intel_context *ce)
-> > +static inline void _intel_context_unpin(struct intel_context *ce)
-> >  {
-> >  	if (!ce->ops->sched_disable) {
-> >  		__intel_context_do_unpin(ce, 1);
-> > @@ -150,6 +150,7 @@ static inline void intel_context_unpin(struct intel=
-_context *ce)
-> >  		}
-> >  	}
-> >  }
-> > +void intel_context_unpin(struct intel_context *ce);
->=20
-> Looking at intel_context_unpin/_intel_context_unpin is there really
-> a need to have this inline to start with?  It don't see much the compiler
-> could optimize by inlining it.
+are available in the Git repository at:
 
-I'll send patch to i915 for this, and get more comments there.
+  https://git.linaro.org/people/daniel.lezcano/linux.git tags/timers-v5.15
 
-thanks
+for you to fetch changes up to f196ae282070d798c9144771db65577910d58566:
 
---uZ3hkaAS1mZxFaxD
-Content-Type: application/pgp-signature; name="signature.asc"
+  dt-bindings: timer: Add ABIs for new Ingenic SoCs (2021-08-21 09:58:17
++0200)
 
------BEGIN PGP SIGNATURE-----
+----------------------------------------------------------------
+- Prioritize the ARM architected timer on Exynos platform when the
+  architecture is ARM64 (Will Deacon)
 
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYScvyQAKCRCxBBozTXgY
-Jz8KAKCJpvaz39KXtI3VDSxG4E4LXamy/gCgizdwhAP/cypZZo3OeM1RLCUmH+Q=
-=Z3tx
------END PGP SIGNATURE-----
+- Mark the Exynos timer as a per CPU timer (Will Deacon)
 
---uZ3hkaAS1mZxFaxD--
+- DT conversion to yaml for the rockchip platform (Ezequiel Garcia)
+
+- Fix IRQ setup if there are two channels on the sh_cmt timer (Phong
+  Hoang)
+
+- Use bitfield helper macros in the Ingenic timer (Zhou Yanjie)
+
+- Clear any pending interrupt to prevent an abort of the suspend on
+  the Mediatek platform (Fengquan Chen)
+
+- Add DT bindings for new Ingenic SoCs (Zhou Yanjie)
+
+----------------------------------------------------------------
+Ezequiel Garcia (1):
+      dt-bindings: timer: convert rockchip,rk-timer.txt to YAML
+
+Fengquan Chen (1):
+      clocksource/drivers/mediatek: Optimize systimer irq clear flow on
+shutdown
+
+Linus Walleij (1):
+      clocksource/drivers/fttmr010: Pass around less pointers
+
+Phong Hoang (1):
+      clocksource/drivers/sh_cmt: Fix wrong setting if don't request IRQ
+for clock source channel
+
+Will Deacon (2):
+      clocksource/drivers/exynos_mct: Prioritise Arm arch timer on arm64
+      clocksource/drivers/exynos_mct: Mark MCT device as
+CLOCK_EVT_FEAT_PERCPU
+
+周琰杰 (Zhou Yanjie) (2):
+      clocksource/drivers/ingenic: Use bitfield macro helpers
+      dt-bindings: timer: Add ABIs for new Ingenic SoCs
+
+ Documentation/devicetree/bindings/timer/rockchip,rk-timer.txt  | 27
+---------------------------
+ Documentation/devicetree/bindings/timer/rockchip,rk-timer.yaml | 64
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/clocksource/exynos_mct.c                               | 16
++++++++++++++---
+ drivers/clocksource/ingenic-sysost.c                           | 13
++++++++------
+ drivers/clocksource/sh_cmt.c                                   | 30
+++++++++++++++++++------------
+ drivers/clocksource/timer-fttmr010.c                           | 32
+++++++++++++++++----------------
+ drivers/clocksource/timer-mediatek.c                           |  8
+++++++--
+ include/dt-bindings/clock/ingenic,sysost.h                     | 19
++++++++++++++++++++
+ 8 files changed, 143 insertions(+), 66 deletions(-)
+ delete mode 100644
+Documentation/devicetree/bindings/timer/rockchip,rk-timer.txt
+ create mode 100644
+Documentation/devicetree/bindings/timer/rockchip,rk-timer.yaml
+w
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
