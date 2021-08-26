@@ -2,129 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1BD3F90D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A2D3F90D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243813AbhHZXDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 19:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
+        id S243747AbhHZXFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 19:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243728AbhHZXDa (ORCPT
+        with ESMTP id S243671AbhHZXE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 19:03:30 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398A8C061757;
-        Thu, 26 Aug 2021 16:02:42 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwdfN5V8Fz9sRf;
-        Fri, 27 Aug 2021 09:02:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630018958;
-        bh=ZELkEOQKHl9DpFrRqkIlZ9IIPILPiWW5GsJaWDSlFCY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dep8UZFmCkdgJgsEJ828AeO/kMbcaEy/h5XmqL3VrbB8uOHnfP9Hot97I/koOA6Mz
-         XW2H7dVKIh53sMxkpqTOm32sI/oe8toR+b8OVz+r2j1LRggWOoglI9osVts9Y1dj6Y
-         LOvvXNUBtbKjC+vtu7ozUR/Ep6v7JbQnp1L5SCv6ROGT7S7aiJImUAr3xv12lph6Wd
-         f7B3YiP0x0WInI26y0V/eKGm4Xg8k1k8nMVU2H6JDH2MRWDVZ37RCYmbSFKbVidTPM
-         Y8QgxX16Zw+pfNhW/bTHnZWDDIyQkXdQd9RQCQAIxg1i5kGGuVzC0iePJnVh6T+gwH
-         8+FDvDWkNykIQ==
-Date:   Fri, 27 Aug 2021 09:02:34 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Richard Weinberger <richard@nod.at>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the uml tree with the asm-generic tree
-Message-ID: <20210827090234.7aca7a2a@canb.auug.org.au>
+        Thu, 26 Aug 2021 19:04:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6580C061757;
+        Thu, 26 Aug 2021 16:04:11 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630019050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0gpa157GpPFxJE+YbjP2jHsHV1CvXem+6WSmprBT1tw=;
+        b=YxuFW6u9c7YdvOjkgChqcmtRAJAr7EMNHixFt8BU7bH/N/bJpilFUitWU7BQe6+goVcIF4
+        12uZrYGgC8boZk4MWlLLJxY8H2tpjAzRQbapFL5Rc7vvF8xbk3NqSjbKQM3eqXg1vDSuEA
+        BIfgdtW0yvFwOCFfOYsTi+0LNr1YVgE6bJBbQLTVtE9thbNVMdXRz6wnju0DcBvrenIu5m
+        yzWmQQrM8T8t3hTYMwqrI67yaNsYktynuNTHYwfRiqYBG2by2qKe/Xik14ZczawCx+48/y
+        nmYvktUcqCBQjvnn79YRsu3wRnmZuUCeAEIHMwjEMWCNalkxAAscdswg48Tr0Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630019050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0gpa157GpPFxJE+YbjP2jHsHV1CvXem+6WSmprBT1tw=;
+        b=jRiv7cHT0qRBBthC9QARpOWd/yIlzDu/QkuOQnu4r9m22gstqOmiA28e2i8F/cr95Q8oaV
+        OcopMFhMSJsEgZBA==
+To:     Deepak Sharma <deepak.sharma@amd.com>, deepak.sharma@amd.com
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/ACPI/State: Optimize C3 entry on AMD CPUs
+In-Reply-To: <20210819004305.20203-1-deepak.sharma@amd.com>
+References: <20210819004305.20203-1-deepak.sharma@amd.com>
+Date:   Fri, 27 Aug 2021 01:04:09 +0200
+Message-ID: <8735qv3j12.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3fij2OaEp0EYbkfYpvl/pkp";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/3fij2OaEp0EYbkfYpvl/pkp
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 18 2021 at 17:43, Deepak Sharma wrote:
 
-Hi all,
+> AMD CPU which support C3 shares cache. Its not necessary to flush the
+> caches in software before entering C3. This will cause performance drop
+> for the cores which share some caches. ARB_DIS is not used with current
+> AMD C state implementation. So set related flags correctly.
+>
+> Signed-off-by: Deepak Sharma <deepak.sharma@amd.com>
+> ---
+>  arch/x86/kernel/acpi/cstate.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>
+> diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
+> index 7de599eba7f0..62a5986d625a 100644
+> --- a/arch/x86/kernel/acpi/cstate.c
+> +++ b/arch/x86/kernel/acpi/cstate.c
+> @@ -79,6 +79,21 @@ void acpi_processor_power_init_bm_check(struct acpi_processor_flags *flags,
+>  		 */
+>  		flags->bm_control = 0;
+>  	}
+> +	if (c->x86_vendor == X86_VENDOR_AMD) {
+> +		/*
+> +		 * For all AMD CPUs that support C3, caches should not be
+> +		 * flushed by software while entering C3 type state. Set
+> +		 * bm->check to 1 so that kernel doesn't need to execute
+> +		 * cache flush operation.
+> +		 */
+> +		flags->bm_check = 1;
+> +		/*
+> +		 * In current AMD C state implementation ARB_DIS is no longer
 
-Today's linux-next merge of the uml tree got a conflict in:
+Fine for current implementations, but what about older implementations?
 
-  arch/um/kernel/skas/uaccess.c
+Thanks,
 
-between commit:
-
-  f27180dd63e1 ("asm-generic/uaccess.h: remove __strncpy_from_user/__strnle=
-n_user")
-
-from the asm-generic tree and commit:
-
-  043f5d3ffaf6 ("um: Remove set_fs")
-
-from the uml tree.
-
-I fixed it up (I think - see below) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/um/kernel/skas/uaccess.c
-index a509be911026,dda2439ab550..000000000000
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@@ -194,14 -184,6 +184,9 @@@ long strncpy_from_user(char *dst, cons
-  	long n;
-  	char *ptr =3D dst;
- =20
- +	if (!access_ok(src, 1))
- +		return -EFAULT;
- +
-- 	if (uaccess_kernel()) {
-- 		strncpy(dst, (__force void *) src, count);
-- 		return strnlen(dst, count);
-- 	}
--=20
-  	n =3D buffer_op((unsigned long) src, count, 0, strncpy_chunk_from_user,
-  		      &ptr);
-  	if (n !=3D 0)
-@@@ -243,12 -220,6 +223,9 @@@ long strnlen_user(const char __user *st
-  {
-  	int count =3D 0, n;
- =20
- +	if (!access_ok(str, 1))
- +		return -EFAULT;
- +
-- 	if (uaccess_kernel())
-- 		return strnlen((__force char*)str, len) + 1;
--=20
-  	n =3D buffer_op((unsigned long) str, len, 0, strnlen_chunk, &count);
-  	if (n =3D=3D 0)
-  		return count + 1;
-
---Sig_/3fij2OaEp0EYbkfYpvl/pkp
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEoHYsACgkQAVBC80lX
-0Gzplgf/cXXx4PI5BxROoicssgtM4dqc9yOJfm3As6+Bq03pUBNebhGnsBnSR3QO
-Cf6/76WvBreMsjurs3j2alj4JVP6EbiEah/77qe7sOmP1jiS5d+ffGCviyQ/OCcX
-pHg53srBED1ueE7kiHalqu1sVD6q4L5YvKzTxzyuSzLx0tcUNtNL+CBfsdOha9Du
-koa1S4CU6m4wtBq2p7tjJKNxGHeX8rheUFtNUzc52O0ZWt5i1PcPyseOxxB9zI3/
-A4aTOCCcyMgftPdLyHrhcTHn0hSqctyxr4jdQQNT+SXv2LUZw/VCFWwLMRSacB/6
-Z8vmyToIGrIdk44d2BrC4vghV64KJA==
-=vu1X
------END PGP SIGNATURE-----
-
---Sig_/3fij2OaEp0EYbkfYpvl/pkp--
+        tglx
