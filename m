@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30803F870F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2053F8712
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242372AbhHZMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234295AbhHZMPX (ORCPT
+        id S242496AbhHZMPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:15:35 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:54288
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242446AbhHZMPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:15:23 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2195BC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 05:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=TRtL4257U7HQ9HSWhs33zhviZUifqBtCKs/0jahRZT4=; b=R6rbC20zVAKo6S7NFA+v+Itej
-        uq6GQvVFmRkDKERnaO2juLauqL29bxaIVuHQmWkY09CEdNIw7jTghF1hJkES5ID7cal4+VjrYgwBb
-        l565CvpUOlOgliXUqSYMyjlS6RvSiPyudsWRmrLdB+OrPxbJwDwn0EvKV8EpGlx37wGLv4LNLZ6g0
-        3ugDKSQnne6BdP53UyN9G1bxPtnECzGFjoShV9mJrEy/FiAPCbjS0D0+pa4GI2lEFld2xqAYcZhLu
-        R0vGStupwg1DBpQJv7Fv8RcEFOYnGBaINDlV+4gZwGhiesj+GMOij7j55XhHqChiGds66EFQuLLKi
-        rOHlU/dhw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47710)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mJEH6-0007s6-TK; Thu, 26 Aug 2021 13:14:28 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mJEH4-0000o5-Lj; Thu, 26 Aug 2021 13:14:26 +0100
-Date:   Thu, 26 Aug 2021 13:14:26 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Michael Walle <michael@walle.cc>
-Cc:     etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        "Lukas F . Hartmann" <lukas@mntre.com>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 2/3] drm/etnaviv: fix dma configuration of the virtual
- device
-Message-ID: <20210826121426.GR22278@shell.armlinux.org.uk>
-References: <20210826121006.685257-1-michael@walle.cc>
- <20210826121006.685257-3-michael@walle.cc>
+        Thu, 26 Aug 2021 08:15:34 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 21CF93F365;
+        Thu, 26 Aug 2021 12:14:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629980086;
+        bh=/dJmievy+1/SfYgUqjAoPZYohmD9QSxsCNc6tg+k6gw=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=F5KJEkOYs1j0nVBSQVF9qNBSrqNZdNDwVf7Efjf7SDZNntz+QpS+S8DjF8pFDgQ3T
+         sfpwbawKS6tkrkd0o1BzHtXcLvXYKUZgpzPln12bLlu98gwgSCj5ilia/W5R8D2nCB
+         LT/tb/sxF4Ob4kl2gHVHO+0azRuJdIgG4HoF/sZLTGug2WUVYFl59za1Kz3oXqtw6Q
+         HhVOqDMnRtmmNu7z5U7ijnMj/pAj7QtL/TEH0oelSNdjPr9Kflhr/kqBQxSjCtxROm
+         ruTu0izi/7TkJSqxF44vGKPZ9XttBipkMqLxWGF9XihNshHtg8fOO9a5oNDhmoafGT
+         HZzOWnMP93k4Q==
+From:   Colin King <colin.king@canonical.com>
+To:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: safesetid: Fix spelling mistake "cant" -> "can't"
+Date:   Thu, 26 Aug 2021 13:14:45 +0100
+Message-Id: <20210826121445.13062-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826121006.685257-3-michael@walle.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 02:10:05PM +0200, Michael Walle wrote:
-> +	pdev->dev.coherent_dma_mask = DMA_BIT_MASK(40);
-> +	pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
+From: Colin Ian King <colin.king@canonical.com>
 
-Please use dma_coerce_mask_and_coherent() here instead.
+There is a spelling mistake in an error message. Fix it.
 
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ tools/testing/selftests/safesetid/safesetid-test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/safesetid/safesetid-test.c b/tools/testing/selftests/safesetid/safesetid-test.c
+index 0c4d50644c13..4b809c93ba36 100644
+--- a/tools/testing/selftests/safesetid/safesetid-test.c
++++ b/tools/testing/selftests/safesetid/safesetid-test.c
+@@ -152,7 +152,7 @@ static void write_policies(void)
+ 
+ 	fd = open(add_whitelist_policy_file, O_WRONLY);
+ 	if (fd < 0)
+-		die("cant open add_whitelist_policy file\n");
++		die("can't open add_whitelist_policy file\n");
+ 	written = write(fd, policy_str, strlen(policy_str));
+ 	if (written != strlen(policy_str)) {
+ 		if (written >= 0) {
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.32.0
+
