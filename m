@@ -2,106 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BC43F8CB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23C33F8CBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243103AbhHZRIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhHZRIh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:08:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE31C061757;
-        Thu, 26 Aug 2021 10:07:50 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 17:07:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629997666;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eLAv6LYW78MokONVcjZKx/Uxo+7iqbxuyr+edxCR5Yg=;
-        b=c3IYZvasz7yc/NWUxL4b4NAdDYO5I5cXyRY2O/KDVxN4UoD+qIZVILiaZ9iBukGB+XZw73
-        /CTx66383NdER+G23yR37PIheNJ3Dzmk1dptNqjU8uSoRTqaRWrp0EIUulz39euJwyb5CX
-        pj9lm8+sdWqP1kA/MihTAUuAytSe+MyBGDQliGz8Of7NPG3sycTEB1vQVRdJQpkiyCYUf5
-        ACqEg5RbK9Er1g+3kIbIcwSQ0lumI17zQwwkHQgDs3wqDI2QE8nRscMh9n+M9a+Dx+r0o9
-        5i8IGSIiv83oCQI2kMUsEQm/7r8XYx9b+1wFbSIQ3iN+HAXoojS0uTjwi/FsoQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629997666;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eLAv6LYW78MokONVcjZKx/Uxo+7iqbxuyr+edxCR5Yg=;
-        b=yG9eALEXOPUTPAcTUtsBRQ2RcUzMAWidQVhSA7QJ73/32FxZvm5mGaWYd46OR25gEwID0H
-        l2PDPJaaCzIWc5Bg==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched: Fix get_push_task() vs migrate_disable()
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        id S243150AbhHZRMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:12:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232694AbhHZRMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 13:12:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3713C61026;
+        Thu, 26 Aug 2021 17:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629997889;
+        bh=VZ3aS1yDrSE+BMuh2vefaRw7uQst98Pi73CImkvGDuU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=MDZHP8ujhQuuK0CVDrjZ3TMVIMqj8YxhyY4mYJCb0pNNLR4t+NlLfgQg1j/K4eVL5
+         EW44YLr6dZbb/4c2CJjpIvtMoW0covnESWcQGIaSnwWqMlZ0/IHxK+fTd1EjyjZNp0
+         Leyu+JIkfyD1nLxf+Z2Qu2iTG641DpVJH79FYUynuTiP9G0EaI/B+P+Z/POxQrrxuZ
+         I7cbI9Rq4mb9R15GWslBfhpmpSIBL/jL5CE/6SBzWlzSdpVUpFAztneFtRAYzy2X16
+         mgTR7dzt8vvL7S0c2EeNlKYahizyYrpkK5AMjNjs54VqT8QW3Ji9g4l5KFrAaW0Fp5
+         bHRQw6FgnFlgg==
+Message-ID: <5a44ada347713097eb0308e0f2f2b16cb55a635f.camel@kernel.org>
+Subject: Re: [PATCH v3 1/2] x86/sgx: Add the missing ifdef for
+ sgx_set_attribute()
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kai Huang <kai.huang@intel.com>, Shuah Khan <shuah@kernel.org>,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210826133738.yiotqbtdaxzjsnfj@linutronix.de>
-References: <20210826133738.yiotqbtdaxzjsnfj@linutronix.de>
+Date:   Thu, 26 Aug 2021 20:11:27 +0300
+In-Reply-To: <YSfC2vhMxaUY2j/H@zn.tnic>
+References: <20210825235234.153013-1-jarkko@kernel.org>
+         <YSdl16MFt/GVNGDq@zn.tnic>
+         <a006c85ef21f4dbd46a2ec1f73fa4e273afc5f6c.camel@kernel.org>
+         <YSfC2vhMxaUY2j/H@zn.tnic>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Message-ID: <162999766586.25758.3269412583101742484.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+On Thu, 2021-08-26 at 18:35 +0200, Borislav Petkov wrote:
+> On Thu, Aug 26, 2021 at 07:08:07PM +0300, Jarkko Sakkinen wrote:
+> > I made this change because I'm including the header to set_memory.c, an=
+d
+>=20
+> This is something you're doing locally, I presume. If so, you can keep
+> this patch local too.
+>=20
+> > It's also incoherent that KVM specific functions are compilation flagge=
+d
+>=20
+> They don't really have to be - they're just declarations.
 
-Commit-ID:     e681dcbaa4b284454fecd09617f8b24231448446
-Gitweb:        https://git.kernel.org/tip/e681dcbaa4b284454fecd09617f8b24231448446
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Thu, 26 Aug 2021 15:37:38 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 26 Aug 2021 19:02:00 +02:00
+Let me check.
 
-sched: Fix get_push_task() vs migrate_disable()
+Is your preference is to have in set_memory.c:
 
-push_rt_task() attempts to move the currently running task away if the
-next runnable task has migration disabled and therefore is pinned on the
-current CPU.
+#ifdef CONFIG_X86_SGX
+#include <asm/sgx.h>
+#endif
 
-The current task is retrieved via get_push_task() which only checks for
-nr_cpus_allowed == 1, but does not check whether the task has migration
-disabled and therefore cannot be moved either. The consequence is a
-pointless invocation of the migration thread which correctly observes
-that the task cannot be moved.
+instead of doing this in uapi/asm/sgx.h?
 
-Return NULL if the task has migration disabled and cannot be moved to
-another CPU.
-
-Fixes: a7c81556ec4d3 ("sched: Fix migrate_disable() vs rt/dl balancing")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210826133738.yiotqbtdaxzjsnfj@linutronix.de
----
- kernel/sched/sched.h | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index da4295f..ddefb04 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2255,6 +2255,9 @@ static inline struct task_struct *get_push_task(struct rq *rq)
- 	if (p->nr_cpus_allowed == 1)
- 		return NULL;
- 
-+	if (p->migration_disabled)
-+		return NULL;
-+
- 	rq->push_busy = true;
- 	return get_task_struct(p);
- }
+/Jarkko
