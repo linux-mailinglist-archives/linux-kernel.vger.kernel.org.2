@@ -2,42 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9593C3F821B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 07:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2A53F8229
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 07:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238082AbhHZFiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 01:38:10 -0400
-Received: from verein.lst.de ([213.95.11.211]:58081 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhHZFiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 01:38:09 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 22FC06736F; Thu, 26 Aug 2021 07:37:20 +0200 (CEST)
-Date:   Thu, 26 Aug 2021 07:37:19 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/2] mm: don't allow executable ioremap mappings
-Message-ID: <20210826053719.GA17085@lst.de>
-References: <20210824091259.1324527-1-hch@lst.de> <20210824091259.1324527-3-hch@lst.de> <1629945413.hwbzjjtfbl.astroid@bobo.none>
+        id S231134AbhHZFwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 01:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230313AbhHZFwJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 01:52:09 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AD5C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 22:51:22 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id h1so1468467pjs.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 22:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ccQ0MGCdd2sOJEH6txbJHSp3br3UWRPN7Oxkykdkfrk=;
+        b=h98ncCnoSgRO/F8RcTGwgl4lQgtwO7Z069Jg7gZwqH61LgYfFHRkVKlkk5SYejX3Qo
+         wp+dBQvMBboIKtqJi98pwPqrfc0z40lBaUNd0lecBa90rVYJ+4XjuIYSPHipBNUKEW6J
+         /Ns8wV2HFg8eY7ZT5jRFEk0xCu3jQqxN02ClQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ccQ0MGCdd2sOJEH6txbJHSp3br3UWRPN7Oxkykdkfrk=;
+        b=uF9uEpYslhbPJOcUnc6LJ6aQzehNR/rQFEhy/69OnuYQKRJE2RWS8uYNtHhVASU65n
+         oQZuY4HF6GThrn4wWDGJ4g0XDITEQC1BydR1Q8kS/kb7EusU5ugpS8PUIQAhngFfP0e+
+         Gs2FImGIYoNu8/RbERLt5HPcqOvfcUVoNWKlIm0sDrPhicxYH/eM90naKT42UGajsiRk
+         elnRDbpvJ/n7VTX4Jy2PXT4jUASOYPAe+oRALEUcs5CQILAH7uYbHdIbQF1DEU4EHoaz
+         yPTxOJMCUOMzD9XwlyT+hdcnETEYpSoKW2CGr6o1/TnrRA/uk534AnGOdLzp5lvhd2+Q
+         EQ1g==
+X-Gm-Message-State: AOAM530+fwii8U1dJX9w0E5LtmMm22tuRSJBXtryW+QWOka/6rqdd9Ro
+        o+py5lZM51OacJdXkWGTlgzAKg==
+X-Google-Smtp-Source: ABdhPJxNdpjMBaxv04Np/J/tJKVtP0qIehTtqoqEULck0k4pYP27+H3m2/MaKclQTAZAaqJQhLiqIw==
+X-Received: by 2002:a17:90a:dac2:: with SMTP id g2mr14392631pjx.45.1629957082083;
+        Wed, 25 Aug 2021 22:51:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c24sm2088939pgj.11.2021.08.25.22.51.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 22:51:21 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 22:51:20 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Keith Packard <keithp@keithp.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Ross Schmidt <ross.schm.dev@gmail.com>,
+        Marco Cesati <marcocesati@gmail.com>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] treewide: Replace 0-element memcpy() destinations
+ with flexible arrays
+Message-ID: <202108252250.C1DAEE5@keescook>
+References: <20210826050458.1540622-1-keescook@chromium.org>
+ <20210826050458.1540622-4-keescook@chromium.org>
+ <87r1egpym5.fsf@keithp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1629945413.hwbzjjtfbl.astroid@bobo.none>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <87r1egpym5.fsf@keithp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 12:46:34PM +1000, Nicholas Piggin wrote:
-> I can't see why this is a problem. powerpcs can but it seems like a bad 
-> idea anyway.
+On Wed, Aug 25, 2021 at 10:24:18PM -0700, Keith Packard wrote:
+> Kees Cook <keescook@chromium.org> writes:
 > 
-> Any point to a WARN_ON or return -EINVAL? Hmm, maybe that doesn't work 
-> for archs that don't support NX. We could add a check for ones that do 
-> support it though... But that's for another patch.
+> > In some cases, use of the flex_array() helper is needed when a flexible
+> > array is part of a union.
+> 
+> The code below seems to show that the helper is also needed when the
+> flexible array is the only member of a struct? Or is this just an
+> extension of the 'part of a union' clause?
 
-This is the same as we do for regular vmap.  I can't remember why we
-decided on this particular approach, as it's been a while.
+That's correct. I have that documented in the DECLARE_FLEX_ARRAY macro
+itself, but I mis-spoke in this changelog here (the uses were for "alone
+in a struct"). I've adjusted the changelog now. :)
+
+Thanks!
+
+-Kees
+
+> 
+> > @@ -160,7 +160,7 @@ struct bmi_cmd {
+> >  
+> >  union bmi_resp {
+> >  	struct {
+> > -		u8 payload[0];
+> > +		DECLARE_FLEX_ARRAY(u8, payload);
+> >  	} read_mem;
+> >  	struct {
+> >  		__le32 result;
+> 
+> -- 
+> -keith
+
+
+
+-- 
+Kees Cook
