@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA553F8284
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0793F824C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239398AbhHZGga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 02:36:30 -0400
-Received: from mga06.intel.com ([134.134.136.31]:22551 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238082AbhHZGg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 02:36:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="278689519"
-X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="asc'?scan'208";a="278689519"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 23:35:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="asc'?scan'208";a="527640870"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Aug 2021 23:35:18 -0700
-Date:   Thu, 26 Aug 2021 14:12:19 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210826061219.GD9942@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210729072022.GB31896@lst.de>
- <20210803094315.GF13928@zhen-hp.sh.intel.com>
- <20210803143058.GA1721383@nvidia.com>
- <20210804052606.GG13928@zhen-hp.sh.intel.com>
- <20210816173458.GA9183@lst.de>
- <20210817010851.GW13928@zhen-hp.sh.intel.com>
- <20210817052203.GX13928@zhen-hp.sh.intel.com>
- <20210819082929.GB13928@zhen-hp.sh.intel.com>
- <20210820141724.GA29034@lst.de>
- <YSAI8pKAvvW/8S2O@bombadil.infradead.org>
+        id S239046AbhHZGSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 02:18:00 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:18988 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238582AbhHZGRy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 02:17:54 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 17Q5vjo0058460;
+        Thu, 26 Aug 2021 13:57:45 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 26 Aug
+ 2021 14:16:25 +0800
+From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+To:     <joel@jms.id.au>, <robh+dt@kernel.org>, <andrew@aj.id.au>,
+        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/4] arm: aspeed: Add eSPI support
+Date:   Thu, 26 Aug 2021 14:16:19 +0800
+Message-ID: <20210826061623.6352-1-chiawei_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="GZVR6ND4mMseVXL/"
-Content-Disposition: inline
-In-Reply-To: <YSAI8pKAvvW/8S2O@bombadil.infradead.org>
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.66]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 17Q5vjo0058460
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series add the driver support for the eSPI controller
+of Aspeed 5/6th generation SoCs. This controller is a slave device
+communicating with a master over Enhanced Serial Peripheral Interface (eSPI).
+It supports all of the 4 eSPI channels, namely peripheral, virtual wire,
+out-of-band, and flash, and operates at max frequency of 66MHz.
 
---GZVR6ND4mMseVXL/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v3:
+ - remove the redundant patch "clk: aspeed: Add eSPI reset bit"
+ - fix missing header inclusion reported by test bot
+ - fix dt-bindings error reported by yamllint
 
-On 2021.08.20 12:56:34 -0700, Luis Chamberlain wrote:
-> On Fri, Aug 20, 2021 at 04:17:24PM +0200, Christoph Hellwig wrote:
-> > On Thu, Aug 19, 2021 at 04:29:29PM +0800, Zhenyu Wang wrote:
-> > > I'm working on below patch to resolve this. But I met a weird issue in
-> > > case when building i915 as module and also kvmgt module, it caused
-> > > busy wait on request_module("kvmgt") when boot, it doesn't happen if
-> > > building i915 into kernel. I'm not sure what could be the reason?
-> >=20
-> > Luis, do you know if there is a problem with a request_module from
-> > a driver ->probe routine that is probably called by a module_init
-> > function itself?
->=20
-> Generally no, but you can easily foot yourself in the feet by creating
-> cross dependencies and not dealing with them properly. I'd make sure
-> to keep module initialization as simple as possible, and run whatever
-> takes more time asynchronously, then use a state machine to allow
-> you to verify where you are in the initialization phase or query it
-> or wait for a completion with a timeout.
->=20
-> It seems the code in question is getting some spring cleaning, and its
-> unclear where the code is I can inspect. If there's a tree somewhere I
-> can take a peak I'd be happy to review possible oddities that may stick
-> out.
+v2:
+ - remove irqchip implementation
+ - merge per-channel drivers into single one to avoid the racing issue
+   among eSPI handshake process and driver probing.
 
-I tried to put current patches under test here: https://github.com/intel/gv=
-t-linux/tree/gvt-staging
-The issue can be produced with CONFIG_DRM_I915=3Dm and CONFIG_DRM_I915_GVT_=
-KVMGT=3Dm.
+Chia-Wei Wang (4):
+  dt-bindings: aspeed: Add eSPI controller
+  MAINTAINER: Add ASPEED eSPI driver entry
+  soc: aspeed: Add eSPI driver
+  ARM: dts: aspeed: Add eSPI node
 
->=20
-> My goto model for these sorts of problems is to abstract the issue
-> *outside* of the driver in question and implement new selftests to
-> try to reproduce. This serves two purposes, 1) helps with testing
-> 2) may allow you to see the problem more clearly.
->=20
+ .../devicetree/bindings/soc/aspeed/espi.yaml  | 157 +++++
+ MAINTAINERS                                   |   9 +
+ arch/arm/boot/dts/aspeed-g6.dtsi              |  17 +
+ drivers/soc/aspeed/Kconfig                    |  11 +
+ drivers/soc/aspeed/Makefile                   |   1 +
+ drivers/soc/aspeed/aspeed-espi-ctrl.c         | 205 ++++++
+ drivers/soc/aspeed/aspeed-espi-ctrl.h         | 304 +++++++++
+ drivers/soc/aspeed/aspeed-espi-flash.h        | 380 +++++++++++
+ drivers/soc/aspeed/aspeed-espi-ioc.h          | 153 +++++
+ drivers/soc/aspeed/aspeed-espi-oob.h          | 611 ++++++++++++++++++
+ drivers/soc/aspeed/aspeed-espi-perif.h        | 539 +++++++++++++++
+ drivers/soc/aspeed/aspeed-espi-vw.h           | 142 ++++
+ 12 files changed, 2529 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/aspeed/espi.yaml
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-ctrl.c
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-ctrl.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-flash.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-ioc.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-oob.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-perif.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-vw.h
 
-I'll see if can abstract that.
+-- 
+2.17.1
 
-Thanks, Luis.
-
---GZVR6ND4mMseVXL/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYScwwwAKCRCxBBozTXgY
-J4yKAJ0d9jcEa21+qw9af0hJvQT2LXk0WACggn/GD2G8nFh6SY4kc8+7qqXkpi0=
-=fIjO
------END PGP SIGNATURE-----
-
---GZVR6ND4mMseVXL/--
