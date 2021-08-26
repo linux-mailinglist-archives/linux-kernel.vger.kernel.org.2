@@ -2,639 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3E93F8404
+	by mail.lfdr.de (Postfix) with ESMTP id 3135A3F8403
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240697AbhHZI5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:57:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhHZI5m (ORCPT
+        id S240663AbhHZI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:57:40 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34085 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229785AbhHZI5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:57:42 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C562BC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 01:56:54 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id m4so3770715ljq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 01:56:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LopMwJgNojSHsSlh+VZEWYEkFQkn7mLrLysULsfB7ho=;
-        b=a+pxoR0h9BNPQW76x0sKZdQt6TRKqjJPtOUfAoahMLaf3EORxGYcFiTIH1K36m78eK
-         xqP1zzs+Er80rjOLylDEvnEL2ThFXtPMj998OZtXVzxlctf4s0bIKlE9Jak//mfIqZQq
-         nOIjeV283FAiwp5LHpu0VEgb/+/gdp3sj6FlJn9CpJ+ofjSYA8K2NzU8RHpYzMWxO1ZA
-         bUQP6hYEpVL7lYCVvbw7PDbaWPsP8PUcvx+KADl/IND9s9skwNX+wh8JVBvd7KbmoV8Y
-         e9CNBmaAbkzqtp6qcqcw41q7L2RhXMkyti0FZNd4vR/uyl6wB0d+faA3mPjFVgZRraCi
-         J4nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LopMwJgNojSHsSlh+VZEWYEkFQkn7mLrLysULsfB7ho=;
-        b=U44xItcnp2Qnuqf7QmGCU/tGmOF0IkVt3k7t/xyGAV3x1jcp512XMtdfdBYMMIbtPp
-         kpHskdHnH3ocyPUAk8uMseJhCWw/DUqxjd24uenYgAgDkbgXPMJrxedDJJ5dFMorER2H
-         m0R1SPiqQPYprmtoMcsy8MMUDQOveT1TvuRZwWcK9ZgtE91ZxNUc6PeEWBNkgbEH86GT
-         ntxS0n808QZOmKMVlsQ1PZrEHQp7LcxGlE9incdNCaOfRL3pN7NUFRpfHwuhCF+UEvcB
-         a3GyFeYKymASy+9h5kNvYahCFashbJqXbuVNjm+yU0a0IhBu6+fa3np9MgnYBzmGhwgn
-         /NOQ==
-X-Gm-Message-State: AOAM531jrhzNtj4c73FXOVbxc4Zc8bjBhTOgTmaOVHuZ41ftYxMcBX+i
-        eQKO1efOezPTag9QphjYvSg=
-X-Google-Smtp-Source: ABdhPJw5CVh4NES6OdzUq23rNMuOCRFAsjkqOHWo3ZN/tPonF/byX32PRjJUmP6SoruC8jW6C2OhyA==
-X-Received: by 2002:a2e:9cd9:: with SMTP id g25mr2115409ljj.346.1629968212979;
-        Thu, 26 Aug 2021 01:56:52 -0700 (PDT)
-Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id i5sm256829lfb.124.2021.08.26.01.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 01:56:52 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v2] fs/ntfs3: Use kernel ALIGN macros over driver specific
-Date:   Thu, 26 Aug 2021 11:56:29 +0300
-Message-Id: <20210826085629.1566449-1-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 26 Aug 2021 04:57:39 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 65270580E35;
+        Thu, 26 Aug 2021 04:56:51 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 26 Aug 2021 04:56:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=8ZqZMRxHYnjQ2uzAJrMkPBHkNou
+        kBe6k9p1sniS1y0c=; b=Jn3pmql5i/BUkYPxISEaqVtJnFkGhpi/u/AjE+0hTLa
+        v/JDM65cX/QTuMOGONVv2i2QuN+klkRGa3X7cknQzDeSvSv/yLg/fC4mcLqj8j6H
+        ad6D6qOGpFkj19ZlIcQp86PMmi4BNli4hJnfb1EYMZU2cVBFu+gH2MTS8aSjtkfJ
+        vLbaVHBUEqtWzmlTnvOWhA5YNIWAh3rjbNhddxE2kMeZoWsDRW7Ollt7b2kiGLY5
+        +bwmp3t8n5RhEnoTYsK/VWTic+KvGZwnSGI6RJg83kfK6o8ISDyqK7j466FsaTGT
+        Cp7NZLNx6obB04R2UfKgnT6+Ix2rBzQ/iMoVHOPCrzw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=8ZqZMR
+        xHYnjQ2uzAJrMkPBHkNoukBe6k9p1sniS1y0c=; b=XGBJoyHhR3DWmlyc9RZDOx
+        AfgoSfwijcJiiWIMds8+VM32IOf3AjPVCBwhpYeq8atXg/adGDVfcPlQVJ3YxP99
+        0+qHbeEoFxPLwsgROM6A86TVUbGdAqX3UIDSLlAPNP4NKVcc8ekCJvrBRUlMWskB
+        0l+wMHdzAT1qgdJsbOsp55LCkPhhkcF8xqD1XDDZp5i6nDUCx2YljrHUN7N9CySP
+        Cl3iRXQsCuUN/KBpSWL1i1UW/NuBj3xBdlv3g0OahPBGEuvgu7Z5zBqDLlXVY2jL
+        26KNA20MpMLqaAstUrvvD3ua3xtayUYJ8ctu0zT0UI9hFM3vdZ6YwS2zt5oogvxw
+        ==
+X-ME-Sender: <xms:UFcnYdgJteDE000dBm6ZWsJILsLkL2Stk6RewL0jEZDV2-IK8FWGdA>
+    <xme:UFcnYSBdA_8BLcqnD7LUlKea5bJofE8NaW1flcZhKTXTCOh-n93nZOH3fdvFSZr7P
+    llMFRRgKqDWpxxLIRw>
+X-ME-Received: <xmr:UFcnYdG--SqUiJfMZ6CFNoNnHbkvgpL8Q-8BIFTC65qrtW3tO9WZfOOPhjGk4yXla5lUELhxZOiAVI_XcPCGawWOix225dZvmehX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduuddgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepveevfeffudeviedtgeethffhteeuffetfeffvdehvedvheetteehvdelfffg
+    jedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:UFcnYSRxVRmQ_BO8DffA2O9zOrhZc7tfabpRM9SgTeVH_SpY6fVh2g>
+    <xmx:UFcnYaxIe07tQdDMMdlvPzUNIHwIMc5lX28SBIIwklK7IulH-SPhhg>
+    <xmx:UFcnYY4VP9UOWdyGiJWW3HabMKKK2VR1VRTMJEmFeZLBqK0CMPUi0Q>
+    <xmx:U1cnYVoKFt63Ne47mTAydzjn01gNIlF0gTkir8hQHwx3TYaUvyRFIg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 26 Aug 2021 04:56:48 -0400 (EDT)
+Date:   Thu, 26 Aug 2021 10:56:46 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Jonas Karlman <jonas@kwiboo.se>, Sam Ravnborg <sam@ravnborg.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v3 2/8] drm/bridge: Document the probe issue with
+ MIPI-DSI bridges
+Message-ID: <20210826085646.3mj53any74jwnjmi@gilmour>
+References: <20210823084723.1493908-1-maxime@cerno.tech>
+ <CGME20210823084750eucas1p24cd5dd54a967f63fda4184773b98c135@eucas1p2.samsung.com>
+ <20210823084723.1493908-3-maxime@cerno.tech>
+ <792b1a4b-7a82-e633-0266-787205ae279a@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dfbzll24nb43ccgk"
+Content-Disposition: inline
+In-Reply-To: <792b1a4b-7a82-e633-0266-787205ae279a@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The static checkers (Smatch) were complaining because QuadAlign() was
-buggy.  If you try to align something higher than UINT_MAX it got
-truncated to a u32.
 
-Smatch warning was:
-	fs/ntfs3/attrib.c:383 attr_set_size_res()
-	warn: was expecting a 64 bit value instead of '~7'
+--dfbzll24nb43ccgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So that this will not happen again we will change all these macros to
-kernel made ones. This can also help some other static analyzing tools
-to give us better warnings.
+Hi Andrzej,
 
-Patch was generated with Coccinelle script and after that some style
-issue was hand fixed.
+On Mon, Aug 23, 2021 at 06:32:11PM +0200, Andrzej Hajda wrote:
+> Hi Maxime,
+>=20
+> On 23.08.2021 10:47, Maxime Ripard wrote:
+>=20
+> > Interactions between bridges, panels, MIPI-DSI host and the component
+> > framework are not trivial and can lead to probing issues when
+> > implementing a display driver. Let's document the various cases we need
+> > too consider, and the solution to support all the cases.
+> >
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > ---
+> >   Documentation/gpu/drm-kms-helpers.rst |  6 +++
+> >   drivers/gpu/drm/drm_bridge.c          | 58 +++++++++++++++++++++++++++
+> >   2 files changed, 64 insertions(+)
+> >
+> > diff --git a/Documentation/gpu/drm-kms-helpers.rst b/Documentation/gpu/=
+drm-kms-helpers.rst
+> > index 10f8df7aecc0..ec2f65b31930 100644
+> > --- a/Documentation/gpu/drm-kms-helpers.rst
+> > +++ b/Documentation/gpu/drm-kms-helpers.rst
+> > @@ -157,6 +157,12 @@ Display Driver Integration
+> >   .. kernel-doc:: drivers/gpu/drm/drm_bridge.c
+> >      :doc: display driver integration
+> >  =20
+> > +Special Care with MIPI-DSI bridges
+> > +----------------------------------
+> > +
+> > +.. kernel-doc:: drivers/gpu/drm/drm_bridge.c
+> > +   :doc: special care dsi
+> > +
+> >   Bridge Operations
+> >   -----------------
+> >  =20
+> > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> > index baff74ea4a33..794654233cf5 100644
+> > --- a/drivers/gpu/drm/drm_bridge.c
+> > +++ b/drivers/gpu/drm/drm_bridge.c
+> > @@ -96,6 +96,64 @@
+> >    * documentation of bridge operations for more details).
+> >    */
+> >  =20
+> > +/**
+> > + * DOC: special care dsi
+> > + *
+> > + * The interaction between the bridges and other frameworks involved in
+> > + * the probing of the display driver and the bridge driver can be
+> > + * challenging. Indeed, there's multiple cases that needs to be
+> > + * considered:
+> > + *
+> > + * - The display driver doesn't use the component framework and isn't a
+> > + *   MIPI-DSI host. In this case, the bridge driver will probe at some
+> > + *   point and the display driver should try to probe again by returni=
+ng
+> > + *   EPROBE_DEFER as long as the bridge driver hasn't probed.
+> > + *
+> > + * - The display driver doesn't use the component framework, but is a
+> > + *   MIPI-DSI host. The bridge device uses the MIPI-DCS commands to be
+> > + *   controlled. In this case, the bridge device is a child of the
+> > + *   display device and when it will probe it's assured that the displ=
+ay
+> > + *   device (and MIPI-DSI host) is present. The display driver will be
+> > + *   assured that the bridge driver is connected between the
+> > + *   &mipi_dsi_host_ops.attach and &mipi_dsi_host_ops.detach operation=
+s.
+> > + *   Therefore, it must run mipi_dsi_host_register() in its probe
+> > + *   function, and then run drm_bridge_attach() in its
+> > + *   &mipi_dsi_host_ops.attach hook.
+> > + *
+> > + * - The display driver uses the component framework and is a MIPI-DSI
+> > + *   host. The bridge device uses the MIPI-DCS commands to be
+> > + *   controlled. This is the same situation than above, and can run
+> > + *   mipi_dsi_host_register() in either its probe or bind hooks.
+> > + *
+> > + * - The display driver uses the component framework and is a MIPI-DSI
+> > + *   host. The bridge device uses a separate bus (such as I2C) to be
+> > + *   controlled. In this case, there's no correlation between the probe
+> > + *   of the bridge and display drivers, so care must be taken to avoid
+> > + *   an endless EPROBE_DEFER loop, with each driver waiting for the
+> > + *   other to probe.
+> > + *
+> > + * The ideal pattern to cover the last item (and all the others in the
+> > + * display driver case) is to split the operations like this:
+> > + *
+> > + * - In the display driver must run mipi_dsi_host_register() and
+> > + *   component_add in its probe hook. It will make sure that the
+> > + *   MIPI-DSI host sticks around, and that the driver's bind can be
+> > + *   called.
+>=20
+> I guess component_add is leftover from previous iteration (as you wrote=
+=20
+> few lines below) component_add should be called from dsi host attach=20
+> callback.
 
-Coccinelle script:
+Indeed, I'll remove it
 
-virtual patch
+> > + *
+> > + * - In its probe hook, the bridge driver must try to find its MIPI-DSI
+> > + *   host, register as a MIPI-DSI device and attach the MIPI-DSI device
+> > + *   to its host. The bridge driver is now functional.
+> > + *
+> > + * - In its &struct mipi_dsi_host_ops.attach hook, the display driver
+> > + *   can now add its component. Its bind hook will now be called and
+> > + *   since the bridge driver is attached and registered, we can now lo=
+ok
+> > + *   for and attach it.
+> > + *
+> > + * At this point, we're now certain that both the display driver and t=
+he
+> > + * bridge driver are functional and we can't have a deadlock-like
+> > + * situation when probing.
+> > + */
+> > +
+>=20
+> Beside small mistake the whole patch looks OK for me. Maybe it would be=
+=20
+> worth to mention what is the real cause of this "special DSI case" -=20
+> there is mutual dependency between two following entities in display chai=
+n:
+>=20
+> 1. display driver - it provides DSI bus, and requires drm_bridge or=20
+> drm_panel provided by child device.
+>=20
+> 2. bridge or panel with DSI transport - it requires DSI bus provided by=
+=20
+> display driver, and provides drm_bridge or drm_panel interface required=
+=20
+> by display driver.
 
-@alloc depends on patch@
-expression x;
-@@
-(
--	#define QuadAlign(n)		(((n) + 7u) & (~7u))
-|
--	QuadAlign(x)
-+	ALIGN(x, 8)
-|
--	#define IsQuadAligned(n)	(!((size_t)(n)&7u))
-|
--	IsQuadAligned(x)
-+	IS_ALIGNED(x, 8)
-|
--	#define Quad2Align(n)		(((n) + 15u) & (~15u))
-|
--	Quad2Align(x)
-+	ALIGN(x, 16)
-|
--	#define IsQuad2Aligned(n)	(!((size_t)(n)&15u))
-|
--	IsQuad2Aligned(x)
-+	IS_ALIGNED(x, 16)
-|
--	#define Quad4Align(n)		(((n) + 31u) & (~31u))
-|
--	Quad4Align(x)
-+	ALIGN(x, 32)
-|
--	#define IsSizeTAligned(n)	(!((size_t)(n) & (sizeof(size_t) - 1)))
-|
--	IsSizeTAligned(x)
-+	IS_ALIGNED(x, sizeof(size_t))
-|
--	#define DwordAlign(n)		(((n) + 3u) & (~3u))
-|
--	DwordAlign(x)
-+	ALIGN(x, 4)
-|
--	#define IsDwordAligned(n)	(!((size_t)(n)&3u))
-|
--	IsDwordAligned(x)
-+	IS_ALIGNED(x, 4)
-|
--	#define WordAlign(n)		(((n) + 1u) & (~1u))
-|
--	WordAlign(x)
-+	ALIGN(x, 2)
-|
--	#define IsWordAligned(n)	(!((size_t)(n)&1u))
-|
--	IsWordAligned(x)
-+	IS_ALIGNED(x, 2)
-|
-)
+I was trying to explain it in the first part of this patch. Is there
+anything misleading there?
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
----
-Disgussion that these should be changed can be found here
-lore.kernel.org/ntfs3/20210824104910.v3mvpw5zb2jqmvbo@kari-VirtualBox/
+> I guess similar issues can appear with other data/control bus-es,=20
+> apparently DSI case is the most common.
 
-V2:
-	Make better commit message. Request by Dan Carpenter.
----
- fs/ntfs3/attrib.c  |  2 +-
- fs/ntfs3/debug.h   | 11 -----------
- fs/ntfs3/frecord.c | 14 +++++++-------
- fs/ntfs3/fslog.c   | 32 ++++++++++++++++----------------
- fs/ntfs3/fsntfs.c  |  4 ++--
- fs/ntfs3/index.c   |  4 ++--
- fs/ntfs3/inode.c   |  8 ++++----
- fs/ntfs3/namei.c   |  2 +-
- fs/ntfs3/ntfs.h    | 16 ++++++++--------
- fs/ntfs3/ntfs_fs.h |  2 +-
- fs/ntfs3/record.c  | 10 +++++-----
- fs/ntfs3/super.c   | 10 +++++-----
- fs/ntfs3/xattr.c   |  8 ++++----
- 13 files changed, 56 insertions(+), 67 deletions(-)
+The issue only presents itself when it's using a separate control bus
+actually. If it's controlled through DCS, the panel / bridge will be a
+children node of the DSI host and will only be probed when the host is
+registered, so we don't have this issue.
 
-diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
-index 046dc57f75f2..c15467ec12ed 100644
---- a/fs/ntfs3/attrib.c
-+++ b/fs/ntfs3/attrib.c
-@@ -380,7 +380,7 @@ static int attr_set_size_res(struct ntfs_inode *ni, struct ATTRIB *attr,
- 	u32 rsize = le32_to_cpu(attr->res.data_size);
- 	u32 tail = used - aoff - asize;
- 	char *next = Add2Ptr(attr, asize);
--	s64 dsize = QuadAlign(new_size) - QuadAlign(rsize);
-+	s64 dsize = ALIGN(new_size, 8) - ALIGN(rsize, 8);
- 
- 	if (dsize < 0) {
- 		memmove(next + dsize, next, tail);
-diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
-index dfaa4c79dc6d..fe5ed660c3b0 100644
---- a/fs/ntfs3/debug.h
-+++ b/fs/ntfs3/debug.h
-@@ -12,17 +12,6 @@
- #define PtrOffset(B, O)		((size_t)((size_t)(O) - (size_t)(B)))
- #endif
- 
--#define QuadAlign(n)		(((n) + 7u) & (~7u))
--#define IsQuadAligned(n)	(!((size_t)(n)&7u))
--#define Quad2Align(n)		(((n) + 15u) & (~15u))
--#define IsQuad2Aligned(n)	(!((size_t)(n)&15u))
--#define Quad4Align(n)		(((n) + 31u) & (~31u))
--#define IsSizeTAligned(n)	(!((size_t)(n) & (sizeof(size_t) - 1)))
--#define DwordAlign(n)		(((n) + 3u) & (~3u))
--#define IsDwordAligned(n)	(!((size_t)(n)&3u))
--#define WordAlign(n)		(((n) + 1u) & (~1u))
--#define IsWordAligned(n)	(!((size_t)(n)&1u))
--
- #ifdef CONFIG_PRINTK
- __printf(2, 3)
- void ntfs_printk(const struct super_block *sb, const char *fmt, ...);
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index c3121bf9c62f..28c471e5b098 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -1249,7 +1249,7 @@ static int ni_expand_mft_list(struct ntfs_inode *ni)
- 	if (err < 0)
- 		goto out;
- 
--	run_size = QuadAlign(err);
-+	run_size = ALIGN(err, 8);
- 	err = 0;
- 
- 	if (plen < svcn) {
-@@ -1269,7 +1269,7 @@ static int ni_expand_mft_list(struct ntfs_inode *ni)
- 	if (err < 0)
- 		goto out;
- 
--	run_size = QuadAlign(err);
-+	run_size = ALIGN(err, 8);
- 	err = 0;
- 
- 	if (plen < evcn + 1 - svcn) {
-@@ -1392,7 +1392,7 @@ int ni_insert_nonresident(struct ntfs_inode *ni, enum ATTR_TYPE type,
- 	struct ATTRIB *attr;
- 	bool is_ext =
- 		(flags & (ATTR_FLAG_SPARSED | ATTR_FLAG_COMPRESSED)) && !svcn;
--	u32 name_size = QuadAlign(name_len * sizeof(short));
-+	u32 name_size = ALIGN(name_len * sizeof(short), 8);
- 	u32 name_off = is_ext ? SIZEOF_NONRESIDENT_EX : SIZEOF_NONRESIDENT;
- 	u32 run_off = name_off + name_size;
- 	u32 run_size, asize;
-@@ -1403,7 +1403,7 @@ int ni_insert_nonresident(struct ntfs_inode *ni, enum ATTR_TYPE type,
- 	if (err < 0)
- 		goto out;
- 
--	run_size = QuadAlign(err);
-+	run_size = ALIGN(err, 8);
- 
- 	if (plen < len) {
- 		err = -EINVAL;
-@@ -1463,8 +1463,8 @@ int ni_insert_resident(struct ntfs_inode *ni, u32 data_size,
- 		       struct ATTRIB **new_attr, struct mft_inode **mi)
- {
- 	int err;
--	u32 name_size = QuadAlign(name_len * sizeof(short));
--	u32 asize = SIZEOF_RESIDENT + name_size + QuadAlign(data_size);
-+	u32 name_size = ALIGN(name_len * sizeof(short), 8);
-+	u32 asize = SIZEOF_RESIDENT + name_size + ALIGN(data_size, 8);
- 	struct ATTRIB *attr;
- 
- 	err = ni_insert_attr(ni, type, name, name_len, asize, SIZEOF_RESIDENT,
-@@ -2849,7 +2849,7 @@ static bool ni_update_parent(struct ntfs_inode *ni, struct NTFS_DUP_INFO *dup,
- 		} else if (!attr->non_res) {
- 			u32 data_size = le32_to_cpu(attr->res.data_size);
- 
--			dup->alloc_size = cpu_to_le64(QuadAlign(data_size));
-+			dup->alloc_size = cpu_to_le64(ALIGN(data_size, 8));
- 			dup->data_size = cpu_to_le64(data_size);
- 		} else {
- 			u64 new_valid = ni->i_valid;
-diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
-index 397ba6a956e7..5a118c351441 100644
---- a/fs/ntfs3/fslog.c
-+++ b/fs/ntfs3/fslog.c
-@@ -456,7 +456,7 @@ static inline bool is_rst_page_hdr_valid(u32 file_off,
- 		return false;
- 
- 	ro = le16_to_cpu(rhdr->ra_off);
--	if (!IsQuadAligned(ro) || ro > sys_page)
-+	if (!IS_ALIGNED(ro, 8) || ro > sys_page)
- 		return false;
- 
- 	end_usa = ((sys_page >> SECTOR_SHIFT) + 1) * sizeof(short);
-@@ -488,7 +488,7 @@ static inline bool is_rst_area_valid(const struct RESTART_HDR *rhdr)
- 
- 	off = le16_to_cpu(ra->client_off);
- 
--	if (!IsQuadAligned(off) || ro + off > SECTOR_SIZE - sizeof(short))
-+	if (!IS_ALIGNED(off, 8) || ro + off > SECTOR_SIZE - sizeof(short))
- 		return false;
- 
- 	off += cl * sizeof(struct CLIENT_REC);
-@@ -526,8 +526,8 @@ static inline bool is_rst_area_valid(const struct RESTART_HDR *rhdr)
- 	}
- 
- 	/* The log page data offset and record header length must be quad-aligned */
--	if (!IsQuadAligned(le16_to_cpu(ra->data_off)) ||
--	    !IsQuadAligned(le16_to_cpu(ra->rec_hdr_len)))
-+	if (!IS_ALIGNED(le16_to_cpu(ra->data_off), 8) ||
-+	    !IS_ALIGNED(le16_to_cpu(ra->rec_hdr_len), 8))
- 		return false;
- 
- 	return true;
-@@ -1355,9 +1355,9 @@ static void log_create(struct ntfs_log *log, u32 l_size, const u64 last_lsn,
- 		log->l_flags |= NTFSLOG_MULTIPLE_PAGE_IO;
- 
- 	/* Compute the log page values */
--	log->data_off = QuadAlign(
-+	log->data_off = ALIGN(
- 		offsetof(struct RECORD_PAGE_HDR, fixups) +
--		sizeof(short) * ((log->page_size >> SECTOR_SHIFT) + 1));
-+		sizeof(short) * ((log->page_size >> SECTOR_SHIFT) + 1), 8);
- 	log->data_size = log->page_size - log->data_off;
- 	log->record_header_len = sizeof(struct LFS_RECORD_HDR);
- 
-@@ -1365,9 +1365,9 @@ static void log_create(struct ntfs_log *log, u32 l_size, const u64 last_lsn,
- 	log->reserved = log->data_size - log->record_header_len;
- 
- 	/* Compute the restart page values. */
--	log->ra_off = QuadAlign(
-+	log->ra_off = ALIGN(
- 		offsetof(struct RESTART_HDR, fixups) +
--		sizeof(short) * ((log->sys_page_size >> SECTOR_SHIFT) + 1));
-+		sizeof(short) * ((log->sys_page_size >> SECTOR_SHIFT) + 1), 8);
- 	log->restart_size = log->sys_page_size - log->ra_off;
- 	log->ra_size = struct_size(log->ra, clients, 1);
- 	log->current_openlog_count = open_log_count;
-@@ -1496,7 +1496,7 @@ static int next_log_lsn(struct ntfs_log *log, const struct LFS_RECORD_HDR *rh,
- 
- 		vbo = hdr_off + log->data_off;
- 	} else {
--		vbo = QuadAlign(end);
-+		vbo = ALIGN(end, 8);
- 	}
- 
- 	/* Compute the lsn based on the file offset and the sequence count */
-@@ -2982,7 +2982,7 @@ static struct ATTRIB *attr_create_nonres_log(struct ntfs_sb_info *sbi,
- 					     __le16 flags)
- {
- 	struct ATTRIB *attr;
--	u32 name_size = QuadAlign(name_len * sizeof(short));
-+	u32 name_size = ALIGN(name_len * sizeof(short), 8);
- 	bool is_ext = flags & (ATTR_FLAG_COMPRESSED | ATTR_FLAG_SPARSED);
- 	u32 asize = name_size +
- 		    (is_ext ? SIZEOF_NONRESIDENT_EX : SIZEOF_NONRESIDENT);
-@@ -3220,7 +3220,7 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 			goto dirty_vol;
- 
- 		memmove(attr, attr2, dlen);
--		rec->used = cpu_to_le32(QuadAlign(roff + dlen));
-+		rec->used = cpu_to_le32(ALIGN(roff + dlen, 8));
- 
- 		mi->dirty = true;
- 		break;
-@@ -3231,7 +3231,7 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 		used = le32_to_cpu(rec->used);
- 
- 		if (!check_if_attr(rec, lrh) || dlen < SIZEOF_RESIDENT ||
--		    !IsQuadAligned(asize) ||
-+		    !IS_ALIGNED(asize, 8) ||
- 		    Add2Ptr(attr2, asize) > Add2Ptr(lrh, rec_len) ||
- 		    dlen > record_size - used) {
- 			goto dirty_vol;
-@@ -3296,7 +3296,7 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 		if (nsize > asize && nsize - asize > record_size - used)
- 			goto dirty_vol;
- 
--		nsize = QuadAlign(nsize);
-+		nsize = ALIGN(nsize, 8);
- 		data_off = le16_to_cpu(attr->res.data_off);
- 
- 		if (nsize < asize) {
-@@ -3341,7 +3341,7 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
- 			goto dirty_vol;
- 		}
- 
--		nsize = QuadAlign(nsize);
-+		nsize = ALIGN(nsize, 8);
- 
- 		memmove(Add2Ptr(attr, nsize), Add2Ptr(attr, asize),
- 			used - le16_to_cpu(lrh->record_off) - asize);
-@@ -5103,8 +5103,8 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
- 	rh->sys_page_size = cpu_to_le32(log->page_size);
- 	rh->page_size = cpu_to_le32(log->page_size);
- 
--	t16 = QuadAlign(offsetof(struct RESTART_HDR, fixups) +
--			sizeof(short) * t16);
-+	t16 = ALIGN(offsetof(struct RESTART_HDR, fixups) +
-+		    sizeof(short) * t16, 8);
- 	rh->ra_off = cpu_to_le16(t16);
- 	rh->minor_ver = cpu_to_le16(1); // 0x1A:
- 	rh->major_ver = cpu_to_le16(1); // 0x1C:
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index 92140050fb6c..488e47c7f670 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -1944,7 +1944,7 @@ int ntfs_security_init(struct ntfs_sb_info *sbi)
- 	sbi->security.next_id = SECURITY_ID_FIRST;
- 	/* Always write new security at the end of bucket */
- 	sbi->security.next_off =
--		Quad2Align(sds_size - SecurityDescriptorsBlockSize);
-+			ALIGN(sds_size - SecurityDescriptorsBlockSize, 16);
- 
- 	cnt = 0;
- 	off = 0;
-@@ -2099,7 +2099,7 @@ int ntfs_insert_security(struct ntfs_sb_info *sbi,
- 	struct NTFS_DE_SII sii_e;
- 	struct SECURITY_HDR *d_security;
- 	u32 new_sec_size = size_sd + SIZEOF_SECURITY_HDR;
--	u32 aligned_sec_size = Quad2Align(new_sec_size);
-+	u32 aligned_sec_size = ALIGN(new_sec_size, 16);
- 	struct SECURITY_KEY hash_key;
- 	struct ntfs_fnd *fnd_sdh = NULL;
- 	const struct INDEX_ROOT *root_sdh;
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index 6aa9540ece47..3fdec8871fab 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -701,7 +701,7 @@ static struct NTFS_DE *hdr_find_e(const struct ntfs_index *indx,
- 
- 	if (max_idx >= nslots) {
- 		u16 *ptr;
--		int new_slots = QuadAlign(2 * nslots);
-+		int new_slots = ALIGN(2 * nslots, 8);
- 
- 		ptr = ntfs_malloc(sizeof(u16) * new_slots);
- 		if (ptr)
-@@ -958,7 +958,7 @@ static struct indx_node *indx_new(struct ntfs_index *indx,
- 	index->rhdr.fix_num = cpu_to_le16(fn);
- 	index->vbn = cpu_to_le64(vbn);
- 	hdr = &index->ihdr;
--	eo = QuadAlign(sizeof(struct INDEX_BUFFER) + fn * sizeof(short));
-+	eo = ALIGN(sizeof(struct INDEX_BUFFER) + fn * sizeof(short), 8);
- 	hdr->de_off = cpu_to_le32(eo);
- 
- 	e = Add2Ptr(hdr, eo);
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index bf51e294432e..36f673857ebd 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -1336,7 +1336,7 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 	fname->dup.ea_size = fname->dup.reparse = 0;
- 
- 	dsize = le16_to_cpu(new_de->key_size);
--	asize = QuadAlign(SIZEOF_RESIDENT + dsize);
-+	asize = ALIGN(SIZEOF_RESIDENT + dsize, 8);
- 
- 	attr->type = ATTR_NAME;
- 	attr->size = cpu_to_le32(asize);
-@@ -1350,7 +1350,7 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 
- 	if (security_id == SECURITY_ID_INVALID) {
- 		/* Insert security attribute */
--		asize = SIZEOF_RESIDENT + QuadAlign(sd_size);
-+		asize = SIZEOF_RESIDENT + ALIGN(sd_size, 8);
- 
- 		attr->type = ATTR_SECURE;
- 		attr->size = cpu_to_le32(asize);
-@@ -1473,7 +1473,7 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 		attr->id = cpu_to_le16(aid++);
- 
- 		/* resident or non resident? */
--		asize = QuadAlign(SIZEOF_RESIDENT + nsize);
-+		asize = ALIGN(SIZEOF_RESIDENT + nsize, 8);
- 		t16 = PtrOffset(rec, attr);
- 
- 		if (asize + t16 + 8 > sbi->record_size) {
-@@ -1509,7 +1509,7 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 				goto out5;
- 			}
- 
--			asize = SIZEOF_NONRESIDENT + QuadAlign(err);
-+			asize = SIZEOF_NONRESIDENT + ALIGN(err, 8);
- 			inode->i_size = nsize;
- 		} else {
- 			attr->res.data_off = SIZEOF_RESIDENT_LE;
-diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
-index b1ccd66172f2..0626844e6bdc 100644
---- a/fs/ntfs3/namei.c
-+++ b/fs/ntfs3/namei.c
-@@ -57,7 +57,7 @@ int fill_name_de(struct ntfs_sb_info *sbi, void *buf, const struct qstr *name,
- 	fname->type = FILE_NAME_POSIX;
- 	data_size = fname_full_size(fname);
- 
--	e->size = cpu_to_le16(QuadAlign(data_size) + sizeof(struct NTFS_DE));
-+	e->size = cpu_to_le16(ALIGN(data_size, 8) + sizeof(struct NTFS_DE));
- 	e->key_size = cpu_to_le16(data_size);
- 	e->flags = 0;
- 	e->res = 0;
-diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
-index 40398e6c39c9..d6480845ce1f 100644
---- a/fs/ntfs3/ntfs.h
-+++ b/fs/ntfs3/ntfs.h
-@@ -390,8 +390,8 @@ static inline u64 attr_ondisk_size(const struct ATTRIB *attr)
- 	return attr->non_res ? ((attr->flags &
- 				 (ATTR_FLAG_COMPRESSED | ATTR_FLAG_SPARSED)) ?
- 					le64_to_cpu(attr->nres.total_size) :
--					le64_to_cpu(attr->nres.alloc_size)) :
--			       QuadAlign(le32_to_cpu(attr->res.data_size));
-+					le64_to_cpu(attr->nres.alloc_size))
-+			     : ALIGN(le32_to_cpu(attr->res.data_size), 8);
- }
- 
- static inline u64 attr_size(const struct ATTRIB *attr)
-@@ -527,8 +527,8 @@ static_assert(sizeof(struct ATTR_LIST_ENTRY) == 0x20);
- 
- static inline u32 le_size(u8 name_len)
- {
--	return QuadAlign(offsetof(struct ATTR_LIST_ENTRY, name) +
--			 name_len * sizeof(short));
-+	return ALIGN(offsetof(struct ATTR_LIST_ENTRY, name) +
-+		     name_len * sizeof(short), 8);
- }
- 
- /* returns 0 if 'attr' has the same type and name */
-@@ -689,10 +689,10 @@ static inline bool de_has_vcn_ex(const struct NTFS_DE *e)
- 							sizeof(__le64)));
- }
- 
--#define MAX_BYTES_PER_NAME_ENTRY					       \
--	QuadAlign(sizeof(struct NTFS_DE) +				       \
--		  offsetof(struct ATTR_FILE_NAME, name) +		       \
--		  NTFS_NAME_LEN * sizeof(short))
-+#define MAX_BYTES_PER_NAME_ENTRY \
-+	ALIGN(sizeof(struct NTFS_DE) + \
-+	      offsetof(struct ATTR_FILE_NAME, name) + \
-+	      NTFS_NAME_LEN * sizeof(short), 8)
- 
- struct INDEX_HDR {
- 	__le32 de_off;	// 0x00: The offset from the start of this structure
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index 0c3ac89c3115..69bf1edc561e 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -897,7 +897,7 @@ static inline bool run_is_empty(struct runs_tree *run)
- /* NTFS uses quad aligned bitmaps */
- static inline size_t bitmap_size(size_t bits)
- {
--	return QuadAlign((bits + 7) >> 3);
-+	return ALIGN((bits + 7) >> 3, 8);
- }
- 
- #define _100ns2seconds 10000000
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index 0d4a6251bddc..721c14f83e2b 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -206,7 +206,7 @@ struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
- 			return NULL;
- 
- 		if (off >= used || off < MFTRECORD_FIXUP_OFFSET_1 ||
--		    !IsDwordAligned(off)) {
-+		    !IS_ALIGNED(off, 4)) {
- 			return NULL;
- 		}
- 
-@@ -235,7 +235,7 @@ struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
- 
- 	/* Can we use the first field (attr->type) */
- 	if (off + 8 > used) {
--		static_assert(QuadAlign(sizeof(enum ATTR_TYPE)) == 8);
-+		static_assert(ALIGN(sizeof(enum ATTR_TYPE), 8) == 8);
- 		return NULL;
- 	}
- 
-@@ -539,7 +539,7 @@ bool mi_resize_attr(struct mft_inode *mi, struct ATTRIB *attr, int bytes)
- 	next = Add2Ptr(attr, asize);
- 
- 	if (bytes > 0) {
--		dsize = QuadAlign(bytes);
-+		dsize = ALIGN(bytes, 8);
- 		if (used + dsize > total)
- 			return false;
- 		nsize = asize + dsize;
-@@ -549,7 +549,7 @@ bool mi_resize_attr(struct mft_inode *mi, struct ATTRIB *attr, int bytes)
- 		used += dsize;
- 		rsize += dsize;
- 	} else {
--		dsize = QuadAlign(-bytes);
-+		dsize = ALIGN(-bytes, 8);
- 		if (dsize > asize)
- 			return false;
- 		nsize = asize - dsize;
-@@ -596,7 +596,7 @@ int mi_pack_runs(struct mft_inode *mi, struct ATTRIB *attr,
- 		return err;
- 	}
- 
--	new_run_size = QuadAlign(err);
-+	new_run_size = ALIGN(err, 8);
- 
- 	memmove(next + new_run_size - run_size, next + dsize, tail);
- 
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 6be13e256c1a..1f4784f8bfaf 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -808,9 +808,9 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 	sbi->attr_size_tr = (5 * record_size >> 4); // ~320 bytes
- 
- 	sbi->max_bytes_per_attr =
--		record_size - QuadAlign(MFTRECORD_FIXUP_OFFSET_1) -
--		QuadAlign(((record_size >> SECTOR_SHIFT) * sizeof(short))) -
--		QuadAlign(sizeof(enum ATTR_TYPE));
-+		record_size - ALIGN(MFTRECORD_FIXUP_OFFSET_1, 8) -
-+		ALIGN(((record_size >> SECTOR_SHIFT) * sizeof(short)), 8) -
-+		ALIGN(sizeof(enum ATTR_TYPE), 8);
- 
- 	sbi->index_size = boot->index_size < 0
- 				  ? 1u << (-boot->index_size)
-@@ -858,9 +858,9 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 	rec->rhdr.fix_off = cpu_to_le16(MFTRECORD_FIXUP_OFFSET_1);
- 	fn = (sbi->record_size >> SECTOR_SHIFT) + 1;
- 	rec->rhdr.fix_num = cpu_to_le16(fn);
--	ao = QuadAlign(MFTRECORD_FIXUP_OFFSET_1 + sizeof(short) * fn);
-+	ao = ALIGN(MFTRECORD_FIXUP_OFFSET_1 + sizeof(short) * fn, 8);
- 	rec->attr_off = cpu_to_le16(ao);
--	rec->used = cpu_to_le32(ao + QuadAlign(sizeof(enum ATTR_TYPE)));
-+	rec->used = cpu_to_le32(ao + ALIGN(sizeof(enum ATTR_TYPE), 8));
- 	rec->total = cpu_to_le32(sbi->record_size);
- 	((struct ATTRIB *)Add2Ptr(rec, ao))->type = ATTR_END;
- 
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 98871c895e77..6b17d46b9506 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -26,9 +26,9 @@
- static inline size_t unpacked_ea_size(const struct EA_FULL *ea)
- {
- 	return ea->size ? le32_to_cpu(ea->size)
--			: DwordAlign(struct_size(
--				  ea, name,
--				  1 + ea->name_len + le16_to_cpu(ea->elength)));
-+			: ALIGN(struct_size(
-+			      ea, name,
-+			      1 + ea->name_len + le16_to_cpu(ea->elength)), 4);
- }
- 
- static inline size_t packed_ea_size(const struct EA_FULL *ea)
-@@ -289,7 +289,7 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
- 		goto out;
- 	}
- 
--	add = DwordAlign(struct_size(ea_all, name, 1 + name_len + val_size));
-+	add = ALIGN(struct_size(ea_all, name, 1 + name_len + val_size), 4);
- 
- 	err = ntfs_read_ea(ni, &ea_all, add, &info);
- 	if (err)
--- 
-2.25.1
+> And one more thing - you use "display driver" term but this is also case=
+=20
+> of any bridge providing DSI bus - there are already 3 such bridges in=20
+> kernel - cdns, nwl, synopsys, tc358768, maybe "DSI host" would be better=
+=20
+> term.
 
+Good point, I'll change it.
+
+> And another thing - downstream device can be bridge or *panel*, it would=
+=20
+> be good to mention that panels also should follow this pattern.
+
+We're pretty much forced to do this with panels though. They don't have
+an attach hook unlike bridges so we don't have much other options than
+putting it in probe.
+
+> Btw this is another place where word bridge can be 1:1 replaced by word=
+=20
+> panel - it clearly suggest that DRM subsystem waits for brave men who=20
+> proposes patches unifying them, we would save lot of words, and lines of=
+=20
+> code if we could use drm_sink instead of "if (sink is bridge) do sth=20
+> else do sth-similar-but-with-drm_panel-interface".
+
+I agree. In the previous iteration I had this patch that was a step in
+this direction:
+https://lore.kernel.org/dri-devel/20210728133229.2247965-3-maxime@cerno.tec=
+h/
+
+Even though it's not relevant to this series anymore, I still plan on
+submitting it and converting as many users as possible (if my coccinelle
+skills allows me to at least).
+
+Maxime
+
+--dfbzll24nb43ccgk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYSdXTgAKCRDj7w1vZxhR
+xQTyAQDeyoP4blj3lnV14h3xpZT0ygLGV8h27f6dZz75hm4RngEA+IWYrkjnTVLs
+6ZSNtxNkmhNsKxWPxqM9FBIMfzghzQU=
+=5p/2
+-----END PGP SIGNATURE-----
+
+--dfbzll24nb43ccgk--
