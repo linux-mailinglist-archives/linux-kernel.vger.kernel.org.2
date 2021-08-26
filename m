@@ -2,167 +2,606 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85363F8869
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693333F8873
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242685AbhHZNKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:10:48 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:48912 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242671AbhHZNKq (ORCPT
+        id S242493AbhHZNOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237433AbhHZNOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:10:46 -0400
-Received: from mailhost.synopsys.com (badc-mailhost1.synopsys.com [10.192.0.17])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 6C75046745;
-        Thu, 26 Aug 2021 13:09:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1629983398; bh=1C9o89oOgmtjHJ1kHE4ygAyOUq/a4fosQv5UJU1oZcU=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=KB0HDbhavYfp4VJLV71MyxpxG+z7ZJU39XbFR1jSoZUCmEMICiydR0l7vG8Owf1XA
-         64tdmHitixZB7Hbh9Slzivn4RisyscCwcdOpnVLMMG8nzR4ZP9ijSdw5n8eiTqvcSB
-         oR5/9GUshxyjX1E6f7aJ0msrI/GlzGSkdXnxrayMW1XIAmyU+82k0wXDQbVzZxPydB
-         R+VP5ygeRcKp6CKWIesAemgas/KF5M3EfKNcz0/s6FWpuahlVhk40Fa3pnEXBXJ2nW
-         gwbVcIz4lLuggVv73E67AxHDoSnlF+DABbU/VGtUxns8uvj9pDepN0JFr3VLkgHKrP
-         cjNmw0xxRPVEA==
-Received: from o365relay-in.synopsys.com (sv2-o365relay3.synopsys.com [10.202.1.139])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
-        by mailhost.synopsys.com (Postfix) with ESMTPS id CF1ACA0071;
-        Thu, 26 Aug 2021 13:09:57 +0000 (UTC)
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 0429B40131;
-        Thu, 26 Aug 2021 13:09:56 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=hminas@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="BicuHMco";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h+MEmVTymjUIEBGezFgaMRR5ThRBZszm2Ctp/kXBDq7tXk5eHnn6PAqIfI/enAN2tDF8V+LyoLQpCGCYLKM7qIvJLY6EJlPaWzX2ugIASul7sNtekTWmUm3aneKTXYPtk3FvZk+u2CBuWDj89zHnyMkSaivrrWb9yi1xb/OfjgemMchhIIKEOQusJdULyJGvcuUNbuDuJNji+KLhtfsH1iMe1L/D3KcEEnY8J/Tvi736xaduiuQaAENWCztmaqfx9ssnvf6kggb9SLSL6M0lCa7m5oI0D8Qi+cVhD0ICo+yx71ErHzu8L9uI6O8eoNDaAZCJbdHcVyw5Oi5cOBCJ2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1C9o89oOgmtjHJ1kHE4ygAyOUq/a4fosQv5UJU1oZcU=;
- b=hXh1b9UVhbep/uuBVSlDTuUB3Z+HpiYqBsyM4/WMeYHsrrupsKI7uZFmorBDBTaLyR/UoRRnznsS6uuZjI3ZWStTqXl7KMgV8cQmgkcNuhsHymuquavhFM1z3zH2Bz1Xd2VjX3xCUxjDdXMzQnz0Z6VVjSIOrp/fzfbNKAYBggtZRRchQCAAwXnWTS8fhscULhQtb4IbiyscUuqxCzhrvYvSq04Y8InyTAS0XrgQtj/POB8J87SoQOQW7nR78gyEE1N1FPJVVwbtUrIGkcyMgns8iFcSTmotUBXfcd6CyO3PyYVcMTg7fLp8yoTrwPy2h0mWCGR4xxnBZefIR4n7CA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1C9o89oOgmtjHJ1kHE4ygAyOUq/a4fosQv5UJU1oZcU=;
- b=BicuHMco4OHj65ZwMapQ4B/1Fpt92+9kTF99jx2cB3Sp8/csHR5QEdKieAo4b5akgW/l4PG+RFdTc52cBbssVwmm2nVu26HSraykUz5QQisCQJdr/Fpn1hP3tiPVFmg0fBlaGkRDqRb6W527g0Yszlu8fBcCjRPx60OTOApHVpk=
-Received: from DM4PR12MB5390.namprd12.prod.outlook.com (2603:10b6:5:39a::12)
- by DM6PR12MB5534.namprd12.prod.outlook.com (2603:10b6:5:20b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Thu, 26 Aug
- 2021 13:09:55 +0000
-Received: from DM4PR12MB5390.namprd12.prod.outlook.com
- ([fe80::c91a:f6fc:9847:4dcd]) by DM4PR12MB5390.namprd12.prod.outlook.com
- ([fe80::c91a:f6fc:9847:4dcd%7]) with mapi id 15.20.4457.017; Thu, 26 Aug 2021
- 13:09:55 +0000
-X-SNPS-Relay: synopsys.com
-From:   Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-To:     Colin King <colin.king@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: dwc2: Fix spelling mistake "was't" -> "wasn't"
-Thread-Topic: [PATCH] usb: dwc2: Fix spelling mistake "was't" -> "wasn't"
-Thread-Index: AQHXmnUJuaBn04yDwkCpwX2md3asu6uFwmeA
-Date:   Thu, 26 Aug 2021 13:09:55 +0000
-Message-ID: <ed770aab-5ebb-edc7-1273-b0437091e9a2@synopsys.com>
-References: <20210826122223.13533-1-colin.king@canonical.com>
-In-Reply-To: <20210826122223.13533-1-colin.king@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=synopsys.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 93b8fde5-2599-4db2-bd0d-08d96892cc7a
-x-ms-traffictypediagnostic: DM6PR12MB5534:
-x-microsoft-antispam-prvs: <DM6PR12MB5534568986C66DCBFD7D43A7A7C79@DM6PR12MB5534.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:48;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TbGNJwUuz3ZQ/P7L4j8LMTb5PngndNCRrzWeefMwnCfmfW0xns16LjTFmo5lG72X1+SoyZtn4PTnp5LhYFEt1HYDCqUl6iDxWG6ql2EDX7wXGXVgcRyNvnKRlD/9kYA1RLawk+CWrdzGxQzKw2b2IGDbSDs8hSgdGJyMgWROhVt2ppXZYpV/Vkhz/iDL8ciruDrZWeinRICLZaBzrcYctL6Wd8F8sLxGOzPvKnq6r7SgAzMSXieo9AwembkcTmjwazJKcQLQCS16mTphAhYueacHLBrh9NLrN4EAgZn1aZx/J6VuHlOf0iLc+smJPVhTTX8+ClYdh4IhMY79Lko93j7VnuDcn4RmFC/zwqIzQl96BlPW0KaQnziXKkoj98U4zWMkEeGwaEwwL1MFP893Zo2prV/fHOi2fkJmZ0Fc5pc85UVMtKVKljXoqrtdI7FlgBEl10fheGMMYUgYn9Vvi9xf+s29QL68WDML4FZysE+RNSE/4qZmZyrQaOsWAVQ5tX4Gr6LH+zVzWLmIg/1iZ8ViC7K8Wrsz27Yn6zfNnEZkhloac7F1FQv1eD1Mgw/fdbvGm7bEp6SHLVJiYSUMa8kjuW57/6W/upUpop+lZ/FTVkt+UN4GLikOHcF4cceKQIAPFB/wzgF4+QUpXiy3/5f4bYI50JN+by/VKqUsT4AWWQlaRqVIGKjscdjres5x+vMwzJoDrlZCegJF5n1hbpcTIr9TdJlaupjd5eaaW5ueb656lsKII7FFqmRXygMcGdQNucPCS7FYds2bbgthTg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5390.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(396003)(346002)(366004)(136003)(2906002)(8936002)(4744005)(6512007)(186003)(66446008)(64756008)(66556008)(66476007)(71200400001)(6506007)(53546011)(316002)(83380400001)(36756003)(4326008)(86362001)(6486002)(66946007)(5660300002)(31696002)(478600001)(91956017)(54906003)(110136005)(2616005)(38100700002)(122000001)(38070700005)(26005)(8676002)(31686004)(76116006)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UVQ2ZklLcFNOdzhiOTg5eUl3SG1XTDdrNVhrbjBYWGNlVWc2Vkx3SGR5Q2o1?=
- =?utf-8?B?eitNMElaK3NvSWlmZ2NZTk1Lc2NvVkZPZmlIZTJDK2lmVFNnZ1h5Y0FYK2F3?=
- =?utf-8?B?M09Vd0JKb01yS1JvYmpTMHVYQkh6MlBQbGMvejhISzFmcFJmVUlIZGw4a2FN?=
- =?utf-8?B?RC9ZMUtYSWt1SkVjZkdkUXJad3hkV20yeDFOM3pTVU1TRnJuVUovQUdlWnN0?=
- =?utf-8?B?K01PMlprcTN4MDN6U05VUXFYdEJqTUw5UUZLWHpycjBQVW0rNHNJQUwvS1ZF?=
- =?utf-8?B?bHpIa3laQXJVTmJMaFFxWGNoRGxacTNLSDVHM294RUZLMWhCZFJya2k3cVcr?=
- =?utf-8?B?aXg2MUc0Y05UbDhKWU4zU1pwMjJQOWFzOHNvKzZhYmYrZTk5ZEY1RUNKWkQ1?=
- =?utf-8?B?Qi93d21hdlpGeDR3end5VVd4clpaSlVEOUpseERKeGMyWUd0UUpQZFFwdWNh?=
- =?utf-8?B?ZkZlS3ZqSTdhSE1HbjU2djRiajBVNXlRTnNPNlNlYmtPelVqblgvRXFaRGRi?=
- =?utf-8?B?NzhJdlkxU29Qc1pBdU5GKzEzSERJQXNxNWxjdHZLaUNvRnJRWWZnaUVOcnF4?=
- =?utf-8?B?SUcyVEZ2VTU5SDZlME1YM2g5MmRrUFc1alh0Tmd3R2tzTmhYVEsyVkFKd3po?=
- =?utf-8?B?ekE4MG5FL0MrQkRvaFVtYkhVUUtqK1EvRG5hRnNtSDgwSWxnM0YybnFad1R4?=
- =?utf-8?B?eWRjc21rd2JsK0hrQnVnZXM4aS9TSEwvUmxwc1dnbkpORFVTYUptb3NKdU1x?=
- =?utf-8?B?SG85dnVLMVBXNSs4WnVKOTc3UzNjeURvUDMrR3ZOV01LMjAxSkVDOHdJMlpw?=
- =?utf-8?B?NXVydW41d0ZtZHlyUTFtWUxISks1Njcyak1oR2Nzc1F0eVVBWTJ6OTFxUlRq?=
- =?utf-8?B?dTU2SjBNemlFZWRlT2h2d1JOQnVZVXd2S01IbEZ3UFpOb3RXNVZDTFJoUUVQ?=
- =?utf-8?B?RisyNFBabnlwbVQ4U2Fjdmx2UmFiNXZlZEFrcTFKS3dTSmlMeHF6ZGRVcDZ6?=
- =?utf-8?B?R0FueThCdWlrdThSYk9Ub3FrU1YxNWpPSDNWNmlsamJXcTRPZFhrVWlHUkh6?=
- =?utf-8?B?MXg0VGJjV3lSN1lDVHFjQ2lTUnorNVZNSmlWb3JDU2d5NHBVMUtpVjRGdStJ?=
- =?utf-8?B?V1hzTnoxMWF5Z2RVQlNrdnQzTzlPakJkaExSOXcyQ2xHeXFXUVVBRk1EYkVB?=
- =?utf-8?B?WGtKRlp2MUlrSGtLaElpK3N3UXdHMTlzcDM4V2praXh1NWxFTnZKdXhGRkJ3?=
- =?utf-8?B?RVNSSTFhTHBZSWV6WXcrWGJrMnloZnZCZ0tPRWh5anlVekpFelRqdis4azhK?=
- =?utf-8?B?TjE1YUErTTNKL2tlM09DUG4vTmNoWEVmOFhNYnhJNnNVQ21ZSXB1SE0wanBs?=
- =?utf-8?B?b2ZFVFd0OTExdkpDR3BPZ25Yc0o2TG5FRkV6MUYwbmh0ZHprcXJ0TUc1ZXk4?=
- =?utf-8?B?Wjl6Y3NncHlsdzlHa3hXZUpNdnpNaGJQZDF5VDJUR3g0UzVscVJieFAyZjVx?=
- =?utf-8?B?cU5YeTNwU3ErQ0k4U2o3Q1hpeUpnZEdsSURyWW45TTV2ekZFMUZlajRpVU5O?=
- =?utf-8?B?UG5KRjBMNTBIeTl3QnFmZTZ3ME1SdE1XS2creFBDOU1ON0hQTnBCT2xaaURl?=
- =?utf-8?B?NGlFdVpvWEN4TFV0WG41MGxVOW1HWmFTVmp3cm9ic1FHNmZrMCtNaEdiWStu?=
- =?utf-8?B?WThSR01YSkdzdFZXN1hUaS9zcG9VbVZiTlZ2UlNJYmZ5aVRNYWF5OGJhOFBo?=
- =?utf-8?Q?yHZFQo+O8MkIhuN8cA=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4C0F80B566A59948A642CC5E6B2C19E5@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 26 Aug 2021 09:14:17 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20D8C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:13:29 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a25so6176642ejv.6
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tZzwxUjfLrzYOqglDKb4EAa5fo9Lw2+YYSIeMkYsRHU=;
+        b=aD1D0sblC8GDlYWlPmTdjwvxbdaI4IKKptwL2QEt8dnz4MwgJp96CVA1mAnZbN8Wfz
+         styAhOR/G/t7lbpDwup4omSOOvIXw8ctUTlDaNuRl3igUcGuyYU1uetg3ENZXwpotpKJ
+         qQlsmi8dPs5PnyaN4NUNAeLxRLmGycXJCeVEQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=tZzwxUjfLrzYOqglDKb4EAa5fo9Lw2+YYSIeMkYsRHU=;
+        b=SkSl7o9rL6t72aWUZYrjQ6gVKhmpTFo4gHMyjzyPBk+4RICBM6erT0Mr3D8ksa4mr8
+         Z2Sf2x18RxH0CebxKonEqcOy4bXiJUOYuZceHAcwS2It/7Ny5wq3z4ILiuMu618/XbUe
+         lhmCMnWQJHCQ4yLjeZS+FfI5DX6DvYvFYcVr+YUt6gVYDK1jnYROD1gqtN53hhlbyt8A
+         O/x2tIhbq+b92Mi+4j0KCZ1qSD1HvKYi2AQmwqR2YMMT/FGLalZHLy0KB6VZ3zbxqViF
+         vLc/7FUbg17CxjOaO1pCQhkIaRlqWVLyH2VXu/E4VF888tUPS+sFCoa8BK7yg1LzG5lp
+         u9qw==
+X-Gm-Message-State: AOAM530HYIPXp29z2xkbcy5Y4eyQf0XbxPrYYkH1J0SMTmoeC5Hn+SMZ
+        ZM4sPS9HpCz3G7mnUrhij9qWhQ==
+X-Google-Smtp-Source: ABdhPJyMe3rLVFL8ZexeHBZEZ07VSLIkwCSi8yqt5r+0iTQgrtGq7KqsyhsfJ9EFF0jBdluJJ2Jutw==
+X-Received: by 2002:a17:906:93ef:: with SMTP id yl15mr4304714ejb.229.1629983608324;
+        Thu, 26 Aug 2021 06:13:28 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id v10sm1816556edt.25.2021.08.26.06.13.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 06:13:27 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 15:13:24 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
+        ville.syrjala@linux.intel.com, matthew.auld@intel.com,
+        dan.carpenter@oracle.com, tvrtko.ursulin@intel.com,
+        matthew.d.roper@intel.com, lucas.demarchi@intel.com,
+        karthik.b.s@intel.com, jose.souza@intel.com,
+        manasi.d.navare@intel.com, airlied@redhat.com,
+        aditya.swarup@intel.com, andrescj@chromium.org,
+        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v8 5/7] drm: avoid circular locks in drm_mode_object_find
+Message-ID: <YSeTdLmr7mshx4at@phenom.ffwll.local>
+Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        chris@chris-wilson.co.uk, ville.syrjala@linux.intel.com,
+        matthew.auld@intel.com, dan.carpenter@oracle.com,
+        tvrtko.ursulin@intel.com, matthew.d.roper@intel.com,
+        lucas.demarchi@intel.com, karthik.b.s@intel.com,
+        jose.souza@intel.com, manasi.d.navare@intel.com, airlied@redhat.com,
+        aditya.swarup@intel.com, andrescj@chromium.org,
+        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210826020122.1488002-1-desmondcheongzx@gmail.com>
+ <20210826020122.1488002-6-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5390.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93b8fde5-2599-4db2-bd0d-08d96892cc7a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2021 13:09:55.3182
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wiChfLnSN4cfYer4IFvgriwXYDgbRg027kChuZ1XW7Ns+aHQVsiIvTS7RVf0FeNP6hJTI1XgPhvYCnPu7PHM1w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5534
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826020122.1488002-6-desmondcheongzx@gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ29saW4sDQoNCk9uIDgvMjYvMjAyMSA0OjIyIFBNLCBDb2xpbiBLaW5nIHdyb3RlOg0KPiBG
-cm9tOiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KPiANCj4gVGhl
-cmUgaXMgYSBzcGVsbGluZyBtaXN0YWtlIGluIGEgZGViX2RiZyBtZXNzYWdlLiBGaXggaXQuDQo+
-IA0KPiBTaWduZWQtb2ZmLWJ5OiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwu
-Y29tPg0KPiAtLS0NCj4gICBkcml2ZXJzL3VzYi9kd2MyL2NvcmUuYyB8IDIgKy0NCj4gICAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL3VzYi9kd2MyL2NvcmUuYyBiL2RyaXZlcnMvdXNiL2R3YzIvY29yZS5jDQo+
-IGluZGV4IDI3MmFlNTcyMmM4Ni4uY2YwYmNkMGRjMzIwIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
-L3VzYi9kd2MyL2NvcmUuYw0KPiArKysgYi9kcml2ZXJzL3VzYi9kd2MyL2NvcmUuYw0KPiBAQCAt
-Mjk1LDcgKzI5NSw3IEBAIHZvaWQgZHdjMl9oaWJfcmVzdG9yZV9jb21tb24oc3RydWN0IGR3YzJf
-aHNvdGcgKmhzb3RnLCBpbnQgcmVtX3dha2V1cCwNCj4gICAJaWYgKGR3YzJfaHNvdGdfd2FpdF9i
-aXRfc2V0KGhzb3RnLCBHSU5UU1RTLCBHSU5UU1RTX1JFU1RPUkVET05FLA0KPiAgIAkJCQkgICAg
-MjAwMDApKSB7DQo+ICAgCQlkZXZfZGJnKGhzb3RnLT5kZXYsDQo+IC0JCQkiJXM6IFJlc3RvcmUg
-RG9uZSB3YW4ndCBnZW5lcmF0ZWQgaGVyZVxuIiwNCj4gKwkJCSIlczogUmVzdG9yZSBEb25lIHdh
-c24ndCBnZW5lcmF0ZWQgaGVyZVxuIiwNCj4gICAJCQlfX2Z1bmNfXyk7DQo+ICAgCX0gZWxzZSB7
-DQo+ICAgCQlkZXZfZGJnKGhzb3RnLT5kZXYsICJyZXN0b3JlIGRvbmUgIGdlbmVyYXRlZCBoZXJl
-XG4iKTsNCj4gDQoNClBsZWFzZSwgZml4IHlvdXIgY29tbWl0IG1lc3NhZ2UgdHlwbyBmaXJzdC4N
-Cg0KTWluYXMNCg==
+On Thu, Aug 26, 2021 at 10:01:20AM +0800, Desmond Cheong Zhi Xi wrote:
+> __drm_mode_object_find checks if the given drm file holds the required
+> lease on a object by calling _drm_lease_held. _drm_lease_held in turn
+> uses drm_file_get_master to access drm_file.master.
+> 
+> However, in a future patch, the drm_file.master_lookup_lock in
+> drm_file_get_master will be replaced by drm_device.master_rwsem. This
+> is an issue for two reasons:
+> 
+> 1. master_rwsem is sometimes already held when __drm_mode_object_find
+> is called, which leads to recursive locks on master_rwsem
+> 
+> 2. drm_mode_object_find is sometimes called with the modeset_mutex
+> held, which leads to an inversion of the master_rwsem -->
+> modeset_mutex lock hierarchy
+> 
+> To fix this, we make __drm_mode_object_find the locked version of
+> drm_mode_object_find, and wrap calls to __drm_mode_object_find with
+> locks on master_rwsem. This allows us to safely access drm_file.master
+> in _drm_lease_held (__drm_mode_object_find is its only caller) without
+> the use of drm_file_get_master.
+> 
+> Functions that already lock master_rwsem are modified to call
+> __drm_mode_object_find, whereas functions that haven't locked
+> master_rwsem should call drm_mode_object_find. These two options
+> allow us to grab master_rwsem before modeset_mutex (such as in
+> drm_mode_get_obj_get_properties_ioctl).
+> 
+> This new rule requires more extensive changes to three functions:
+> drn_connector_lookup, drm_crtc_find, and drm_plane_find. These
+> functions are only sometimes called with master_rwsem held. Hence, we
+> have to further split them into locked and unlocked versions that call
+> __drm_mode_object_find and drm_mode_object_find respectively.
+
+I think approach looks good, but the naming isn't so great. Usually __
+prefix means "do not call directly, this is only exported for static
+inline and other helpers". For these the usual rule is to add a _locked or
+_unlocked suffix. I'd leave the normal _find functions as-is (since those
+take the lock) themselves, and annotate the _locked ones.
+
+Also same for the other lookup helpers.
+
+> 
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> ---
+>  drivers/gpu/drm/drm_atomic_uapi.c            |  7 ++---
+>  drivers/gpu/drm/drm_color_mgmt.c             |  2 +-
+>  drivers/gpu/drm/drm_crtc.c                   |  5 ++--
+>  drivers/gpu/drm/drm_framebuffer.c            |  2 +-
+>  drivers/gpu/drm/drm_lease.c                  | 21 +++++----------
+>  drivers/gpu/drm/drm_mode_object.c            | 28 +++++++++++++++++---
+>  drivers/gpu/drm/drm_plane.c                  |  8 +++---
+>  drivers/gpu/drm/drm_property.c               |  6 ++---
+>  drivers/gpu/drm/i915/display/intel_overlay.c |  2 +-
+>  drivers/gpu/drm/i915/display/intel_sprite.c  |  2 +-
+>  drivers/gpu/drm/vmwgfx/vmwgfx_kms.c          |  2 +-
+>  include/drm/drm_connector.h                  | 23 ++++++++++++++++
+>  include/drm/drm_crtc.h                       | 22 +++++++++++++++
+>  include/drm/drm_mode_object.h                |  3 +++
+>  include/drm/drm_plane.h                      | 20 ++++++++++++++
+>  15 files changed, 118 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+> index 909f31833181..cda9a501cf74 100644
+> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> @@ -557,7 +557,7 @@ static int drm_atomic_plane_set_property(struct drm_plane *plane,
+>  			return -EINVAL;
+>  
+>  	} else if (property == config->prop_crtc_id) {
+> -		struct drm_crtc *crtc = drm_crtc_find(dev, file_priv, val);
+> +		struct drm_crtc *crtc = __drm_crtc_find(dev, file_priv, val);
+>  
+>  		if (val && !crtc)
+>  			return -EACCES;
+> @@ -709,7 +709,7 @@ static int drm_atomic_connector_set_property(struct drm_connector *connector,
+>  	int ret;
+>  
+>  	if (property == config->prop_crtc_id) {
+> -		struct drm_crtc *crtc = drm_crtc_find(dev, file_priv, val);
+> +		struct drm_crtc *crtc = __drm_crtc_find(dev, file_priv, val);
+>  
+>  		if (val && !crtc)
+>  			return -EACCES;
+> @@ -1385,7 +1385,8 @@ int drm_mode_atomic_ioctl(struct drm_device *dev,
+>  			goto out;
+>  		}
+>  
+> -		obj = drm_mode_object_find(dev, file_priv, obj_id, DRM_MODE_OBJECT_ANY);
+> +		obj = __drm_mode_object_find(dev, file_priv, obj_id,
+> +					     DRM_MODE_OBJECT_ANY);
+>  		if (!obj) {
+>  			ret = -ENOENT;
+>  			goto out;
+> diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
+> index bb14f488c8f6..9dcb2ccca3ab 100644
+> --- a/drivers/gpu/drm/drm_color_mgmt.c
+> +++ b/drivers/gpu/drm/drm_color_mgmt.c
+> @@ -365,7 +365,7 @@ int drm_mode_gamma_set_ioctl(struct drm_device *dev,
+>  	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+>  		return -EOPNOTSUPP;
+>  
+> -	crtc = drm_crtc_find(dev, file_priv, crtc_lut->crtc_id);
+> +	crtc = __drm_crtc_find(dev, file_priv, crtc_lut->crtc_id);
+>  	if (!crtc)
+>  		return -ENOENT;
+>  
+> diff --git a/drivers/gpu/drm/drm_crtc.c b/drivers/gpu/drm/drm_crtc.c
+> index 26a77a735905..b1279bb3fa61 100644
+> --- a/drivers/gpu/drm/drm_crtc.c
+> +++ b/drivers/gpu/drm/drm_crtc.c
+> @@ -656,7 +656,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+>  	if (crtc_req->x & 0xffff0000 || crtc_req->y & 0xffff0000)
+>  		return -ERANGE;
+>  
+> -	crtc = drm_crtc_find(dev, file_priv, crtc_req->crtc_id);
+> +	crtc = __drm_crtc_find(dev, file_priv, crtc_req->crtc_id);
+>  	if (!crtc) {
+>  		DRM_DEBUG_KMS("Unknown CRTC ID %d\n", crtc_req->crtc_id);
+>  		return -ENOENT;
+> @@ -787,7 +787,8 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+>  				goto out;
+>  			}
+>  
+> -			connector = drm_connector_lookup(dev, file_priv, out_id);
+> +			connector = __drm_connector_lookup(dev, file_priv,
+> +							   out_id);
+>  			if (!connector) {
+>  				DRM_DEBUG_KMS("Connector id %d unknown\n",
+>  						out_id);
+> diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+> index 07f5abc875e9..9c1db91b150d 100644
+> --- a/drivers/gpu/drm/drm_framebuffer.c
+> +++ b/drivers/gpu/drm/drm_framebuffer.c
+> @@ -887,7 +887,7 @@ struct drm_framebuffer *drm_framebuffer_lookup(struct drm_device *dev,
+>  	struct drm_mode_object *obj;
+>  	struct drm_framebuffer *fb = NULL;
+>  
+> -	obj = __drm_mode_object_find(dev, file_priv, id, DRM_MODE_OBJECT_FB);
+> +	obj = drm_mode_object_find(dev, file_priv, id, DRM_MODE_OBJECT_FB);
+
+I expect this to go boom, also for property and blob objects. These lookup
+functions can be called from the atomic_ioctl machinery, where we're
+already holding all kinds of locks. So grabbing the master_rwsem is not a
+good idea.
+
+We should always use the the drm_mode_object_find_unlocked for anything
+object which is not in the list of drm_mode_object_lease_required().
+
+>  	if (obj)
+>  		fb = obj_to_fb(obj);
+>  	return fb;
+> diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
+> index bed6f7636cbe..1b156c85d1c8 100644
+> --- a/drivers/gpu/drm/drm_lease.c
+> +++ b/drivers/gpu/drm/drm_lease.c
+> @@ -105,22 +105,13 @@ static bool _drm_has_leased(struct drm_master *master, int id)
+>  	return false;
+>  }
+>  
+> -/* Called with idr_mutex held */
+> +/* Called with idr_mutex and master_rwsem held */
+
+Please verify this with lockdep_assert_held.
+
+The reason is that our locking gets rather funny here, because only for
+some types of objects do we need to check master status.
+drm_mode_object_lease_required() decides that.
+
+>  bool _drm_lease_held(struct drm_file *file_priv, int id)
+>  {
+> -	bool ret;
+> -	struct drm_master *master;
+> -
+> -	if (!file_priv)
+> +	if (!file_priv || !file_priv->master)
+>  		return true;
+>  
+> -	master = drm_file_get_master(file_priv);
+> -	if (!master)
+> -		return true;
+> -	ret = _drm_lease_held_master(master, id);
+> -	drm_master_put(&master);
+> -
+> -	return ret;
+> +	return _drm_lease_held_master(file_priv->master, id);
+>  }
+>  
+>  bool drm_lease_held(struct drm_file *file_priv, int id)
+> @@ -391,9 +382,9 @@ static int fill_object_idr(struct drm_device *dev,
+>  	/* step one - get references to all the mode objects
+>  	   and check for validity. */
+>  	for (o = 0; o < object_count; o++) {
+> -		objects[o] = drm_mode_object_find(dev, lessor_priv,
+> -						  object_ids[o],
+> -						  DRM_MODE_OBJECT_ANY);
+> +		objects[o] = __drm_mode_object_find(dev, lessor_priv,
+> +						    object_ids[o],
+> +						    DRM_MODE_OBJECT_ANY);
+>  		if (!objects[o]) {
+>  			ret = -ENOENT;
+>  			goto out_free_objects;
+> diff --git a/drivers/gpu/drm/drm_mode_object.c b/drivers/gpu/drm/drm_mode_object.c
+> index 86d9e907c0b2..90c23997aa53 100644
+> --- a/drivers/gpu/drm/drm_mode_object.c
+> +++ b/drivers/gpu/drm/drm_mode_object.c
+> @@ -133,12 +133,27 @@ bool drm_mode_object_lease_required(uint32_t type)
+>  	}
+>  }
+>  
+> +/**
+> + * __drm_mode_object_find - look up a drm object with static lifetime
+> + * @dev: drm device
+> + * @file_priv: drm file
+> + * @id: id of the mode object
+> + * @type: type of the mode object
+> + *
+> + * This function is used to look up a modeset object. It will acquire a
+> + * reference for reference counted objects. This reference must be dropped
+> + * again by calling drm_mode_object_put().
+> + *
+> + * Similar to drm_mode_object_find(), but called with &drm_device.master_rwsem
+> + * held.
+> + */
+>  struct drm_mode_object *__drm_mode_object_find(struct drm_device *dev,
+>  					       struct drm_file *file_priv,
+> -					       uint32_t id, uint32_t type)
+> +					       u32 id, u32 type)
+>  {
+>  	struct drm_mode_object *obj = NULL;
+>  
+> +	lockdep_assert_held_once(&dev->master_rwsem);
+>  	mutex_lock(&dev->mode_config.idr_mutex);
+>  	obj = idr_find(&dev->mode_config.object_idr, id);
+>  	if (obj && type != DRM_MODE_OBJECT_ANY && obj->type != type)
+> @@ -158,6 +173,7 @@ struct drm_mode_object *__drm_mode_object_find(struct drm_device *dev,
+>  
+>  	return obj;
+>  }
+> +EXPORT_SYMBOL(__drm_mode_object_find);
+>  
+>  /**
+>   * drm_mode_object_find - look up a drm object with static lifetime
+> @@ -176,7 +192,9 @@ struct drm_mode_object *drm_mode_object_find(struct drm_device *dev,
+>  {
+>  	struct drm_mode_object *obj = NULL;
+>  
+> +	down_read(&dev->master_rwsem);
+>  	obj = __drm_mode_object_find(dev, file_priv, id, type);
+> +	up_read(&dev->master_rwsem);
+>  	return obj;
+>  }
+>  EXPORT_SYMBOL(drm_mode_object_find);
+> @@ -408,9 +426,12 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
+>  	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+>  		return -EOPNOTSUPP;
+>  
+> +	down_read(&dev->master_rwsem);
+>  	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>  
+> -	obj = drm_mode_object_find(dev, file_priv, arg->obj_id, arg->obj_type);
+> +	obj = __drm_mode_object_find(dev, file_priv, arg->obj_id,
+> +				     arg->obj_type);
+> +	up_read(&dev->master_rwsem);
+>  	if (!obj) {
+>  		ret = -ENOENT;
+>  		goto out;
+> @@ -534,7 +555,8 @@ int drm_mode_obj_set_property_ioctl(struct drm_device *dev, void *data,
+>  	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+>  		return -EOPNOTSUPP;
+>  
+> -	arg_obj = drm_mode_object_find(dev, file_priv, arg->obj_id, arg->obj_type);
+> +	arg_obj = __drm_mode_object_find(dev, file_priv, arg->obj_id,
+> +					 arg->obj_type);
+>  	if (!arg_obj)
+>  		return -ENOENT;
+>  
+> diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
+> index 82afb854141b..b5566167a798 100644
+> --- a/drivers/gpu/drm/drm_plane.c
+> +++ b/drivers/gpu/drm/drm_plane.c
+> @@ -971,7 +971,7 @@ int drm_mode_setplane(struct drm_device *dev, void *data,
+>  	 * First, find the plane, crtc, and fb objects.  If not available,
+>  	 * we don't bother to call the driver.
+>  	 */
+> -	plane = drm_plane_find(dev, file_priv, plane_req->plane_id);
+> +	plane = __drm_plane_find(dev, file_priv, plane_req->plane_id);
+>  	if (!plane) {
+>  		DRM_DEBUG_KMS("Unknown plane ID %d\n",
+>  			      plane_req->plane_id);
+> @@ -986,7 +986,7 @@ int drm_mode_setplane(struct drm_device *dev, void *data,
+>  			return -ENOENT;
+>  		}
+>  
+> -		crtc = drm_crtc_find(dev, file_priv, plane_req->crtc_id);
+> +		crtc = __drm_crtc_find(dev, file_priv, plane_req->crtc_id);
+>  		if (!crtc) {
+>  			drm_framebuffer_put(fb);
+>  			DRM_DEBUG_KMS("Unknown crtc ID %d\n",
+> @@ -1108,7 +1108,7 @@ static int drm_mode_cursor_common(struct drm_device *dev,
+>  	if (!req->flags || (~DRM_MODE_CURSOR_FLAGS & req->flags))
+>  		return -EINVAL;
+>  
+> -	crtc = drm_crtc_find(dev, file_priv, req->crtc_id);
+> +	crtc = __drm_crtc_find(dev, file_priv, req->crtc_id);
+>  	if (!crtc) {
+>  		DRM_DEBUG_KMS("Unknown CRTC ID %d\n", req->crtc_id);
+>  		return -ENOENT;
+> @@ -1229,7 +1229,7 @@ int drm_mode_page_flip_ioctl(struct drm_device *dev,
+>  	if ((page_flip->flags & DRM_MODE_PAGE_FLIP_ASYNC) && !dev->mode_config.async_page_flip)
+>  		return -EINVAL;
+>  
+> -	crtc = drm_crtc_find(dev, file_priv, page_flip->crtc_id);
+> +	crtc = __drm_crtc_find(dev, file_priv, page_flip->crtc_id);
+>  	if (!crtc)
+>  		return -ENOENT;
+>  
+> diff --git a/drivers/gpu/drm/drm_property.c b/drivers/gpu/drm/drm_property.c
+> index 6c353c9dc772..9f04dcb81d07 100644
+> --- a/drivers/gpu/drm/drm_property.c
+> +++ b/drivers/gpu/drm/drm_property.c
+> @@ -656,7 +656,7 @@ struct drm_property_blob *drm_property_lookup_blob(struct drm_device *dev,
+>  	struct drm_mode_object *obj;
+>  	struct drm_property_blob *blob = NULL;
+>  
+> -	obj = __drm_mode_object_find(dev, NULL, id, DRM_MODE_OBJECT_BLOB);
+> +	obj = drm_mode_object_find(dev, NULL, id, DRM_MODE_OBJECT_BLOB);
+>  	if (obj)
+>  		blob = obj_to_blob(obj);
+>  	return blob;
+> @@ -919,8 +919,8 @@ bool drm_property_change_valid_get(struct drm_property *property,
+>  		if (value == 0)
+>  			return true;
+>  
+> -		*ref = __drm_mode_object_find(property->dev, NULL, value,
+> -					      property->values[0]);
+> +		*ref = drm_mode_object_find(property->dev, NULL, value,
+> +					    property->values[0]);
+>  		return *ref != NULL;
+>  	}
+>  
+> diff --git a/drivers/gpu/drm/i915/display/intel_overlay.c b/drivers/gpu/drm/i915/display/intel_overlay.c
+> index 7e3f5c6ca484..1d4af29e31c9 100644
+> --- a/drivers/gpu/drm/i915/display/intel_overlay.c
+> +++ b/drivers/gpu/drm/i915/display/intel_overlay.c
+> @@ -1120,7 +1120,7 @@ int intel_overlay_put_image_ioctl(struct drm_device *dev, void *data,
+>  		return ret;
+>  	}
+>  
+> -	drmmode_crtc = drm_crtc_find(dev, file_priv, params->crtc_id);
+> +	drmmode_crtc = __drm_crtc_find(dev, file_priv, params->crtc_id);
+>  	if (!drmmode_crtc)
+>  		return -ENOENT;
+>  	crtc = to_intel_crtc(drmmode_crtc);
+> diff --git a/drivers/gpu/drm/i915/display/intel_sprite.c b/drivers/gpu/drm/i915/display/intel_sprite.c
+> index 4ae9a7455b23..e19ef2d90bac 100644
+> --- a/drivers/gpu/drm/i915/display/intel_sprite.c
+> +++ b/drivers/gpu/drm/i915/display/intel_sprite.c
+> @@ -1505,7 +1505,7 @@ int intel_sprite_set_colorkey_ioctl(struct drm_device *dev, void *data,
+>  	    set->flags & I915_SET_COLORKEY_DESTINATION)
+>  		return -EINVAL;
+>  
+> -	plane = drm_plane_find(dev, file_priv, set->plane_id);
+> +	plane = __drm_plane_find(dev, file_priv, set->plane_id);
+>  	if (!plane || plane->type != DRM_PLANE_TYPE_OVERLAY)
+>  		return -ENOENT;
+>  
+> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+> index 74fa41909213..d368b2bcb1fa 100644
+> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+> @@ -1862,7 +1862,7 @@ int vmw_kms_cursor_bypass_ioctl(struct drm_device *dev, void *data,
+>  		return 0;
+>  	}
+>  
+> -	crtc = drm_crtc_find(dev, file_priv, arg->crtc_id);
+> +	crtc = __drm_crtc_find(dev, file_priv, arg->crtc_id);
+>  	if (!crtc) {
+>  		ret = -ENOENT;
+>  		goto out;
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 1647960c9e50..322c823583c7 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1591,6 +1591,29 @@ static inline u32 drm_connector_mask(const struct drm_connector *connector)
+>  	return 1 << connector->index;
+>  }
+>  
+> +/**
+> + * __drm_connector_lookup - lookup connector object
+> + * @dev: DRM device
+> + * @file_priv: drm file to check for lease against.
+> + * @id: connector object id
+> + *
+> + * This function looks up the connector object specified by id
+> + * add takes a reference to it.
+> + *
+> + * Similar to drm_connector_lookup(), but called with &drm_device.master_rwsem
+> + * held.
+> + */
+> +static inline struct drm_connector *__drm_connector_lookup(struct drm_device *dev,
+> +							   struct drm_file *file_priv,
+> +							   uint32_t id)
+> +{
+> +	struct drm_mode_object *mo;
+> +
+> +	mo = __drm_mode_object_find(dev, file_priv, id,
+> +				    DRM_MODE_OBJECT_CONNECTOR);
+> +	return mo ? obj_to_connector(mo) : NULL;
+> +}
+> +
+>  /**
+>   * drm_connector_lookup - lookup connector object
+>   * @dev: DRM device
+> diff --git a/include/drm/drm_crtc.h b/include/drm/drm_crtc.h
+> index 13eeba2a750a..69df854dd322 100644
+> --- a/include/drm/drm_crtc.h
+> +++ b/include/drm/drm_crtc.h
+> @@ -1283,6 +1283,28 @@ static inline uint32_t drm_crtc_mask(const struct drm_crtc *crtc)
+>  int drm_mode_set_config_internal(struct drm_mode_set *set);
+>  struct drm_crtc *drm_crtc_from_index(struct drm_device *dev, int idx);
+>  
+> +/**
+> + * __drm_crtc_find - look up a CRTC object from its ID
+> + * @dev: DRM device
+> + * @file_priv: drm file to check for lease against.
+> + * @id: &drm_mode_object ID
+> + *
+> + * This can be used to look up a CRTC from its userspace ID. Only used by
+> + * drivers for legacy IOCTLs and interface, nowadays extensions to the KMS
+> + * userspace interface should be done using &drm_property.
+> + *
+> + * Similar to drm_crtc_find(), but called with &drm_device.master_rwsem held.
+> + */
+> +static inline struct drm_crtc *__drm_crtc_find(struct drm_device *dev,
+> +					       struct drm_file *file_priv,
+> +					       uint32_t id)
+> +{
+> +	struct drm_mode_object *mo;
+> +
+> +	mo = __drm_mode_object_find(dev, file_priv, id, DRM_MODE_OBJECT_CRTC);
+> +	return mo ? obj_to_crtc(mo) : NULL;
+> +}
+> +
+>  /**
+>   * drm_crtc_find - look up a CRTC object from its ID
+>   * @dev: DRM device
+> diff --git a/include/drm/drm_mode_object.h b/include/drm/drm_mode_object.h
+> index c34a3e8030e1..1906af9cae9b 100644
+> --- a/include/drm/drm_mode_object.h
+> +++ b/include/drm/drm_mode_object.h
+> @@ -114,6 +114,9 @@ struct drm_object_properties {
+>  		return "(unknown)";				\
+>  	}
+>  
+> +struct drm_mode_object *__drm_mode_object_find(struct drm_device *dev,
+> +					       struct drm_file *file_priv,
+> +					       u32 id, u32 type);
+>  struct drm_mode_object *drm_mode_object_find(struct drm_device *dev,
+>  					     struct drm_file *file_priv,
+>  					     uint32_t id, uint32_t type);
+> diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
+> index fed97e35626f..49e35d3724c9 100644
+> --- a/include/drm/drm_plane.h
+> +++ b/include/drm/drm_plane.h
+> @@ -842,6 +842,26 @@ int drm_mode_plane_set_obj_prop(struct drm_plane *plane,
+>  				       struct drm_property *property,
+>  				       uint64_t value);
+>  
+> +/**
+> + * __drm_plane_find - find a &drm_plane
+> + * @dev: DRM device
+> + * @file_priv: drm file to check for lease against.
+> + * @id: plane id
+> + *
+> + * Returns the plane with @id, NULL if it doesn't exist.
+> + *
+> + * Similar to drm_plane_find(), but called with &drm_device.master_rwsem held.
+> + */
+> +static inline struct drm_plane *__drm_plane_find(struct drm_device *dev,
+> +						 struct drm_file *file_priv,
+> +						 uint32_t id)
+> +{
+> +	struct drm_mode_object *mo;
+> +
+> +	mo = __drm_mode_object_find(dev, file_priv, id, DRM_MODE_OBJECT_PLANE);
+> +	return mo ? obj_to_plane(mo) : NULL;
+> +}
+> +
+>  /**
+>   * drm_plane_find - find a &drm_plane
+>   * @dev: DRM device
+
+Aside from the one area for mode objects that cannoted be leased I think
+this looks correct.
+
+Sinc the spinlock+rwsem unification is a bit tricky, maybe you want to
+split out the patch series so that we can land the initial patches
+already?
+-Daniel
+
+> -- 
+> 2.25.1
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
