@@ -2,159 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E2F3F7FBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E653F7FC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235993AbhHZBT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 21:19:57 -0400
-Received: from esa19.fujitsucc.c3s2.iphmx.com ([216.71.158.62]:19100 "EHLO
-        esa19.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236215AbhHZBTy (ORCPT
+        id S236103AbhHZBUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 21:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236070AbhHZBUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 21:19:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1629940748; x=1661476748;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=hJpCs+BVhUCsc6cWJKovqyReMhU7mPiD+g9XNiZRIQQ=;
-  b=BzPdu8wAQnyI1CqwlpNXbMHgkmb5cgB1/UBjqA1ovVdZntLB/xBsWqsr
-   WOMSWN0rLCIJYx2OcnnO3mQHdXvMbNf7opo5L7xrSmAf/JhNgK7JnUT5m
-   POWpY+Fb3qIn/Iy3v6bTs0ZT/cZy2vMvdZ0aocMJNH7x57rwVdsloKqCl
-   JFOH06io+mE4nhETtGoC2iR+k/l9XSaUKsVMR7qdjOD8X7iwCz141yBDc
-   Cz47CzksRb1KVW1GdUO5BOgEBRlgUEtjC82kgzCzDVR32XjPleADxuOnE
-   dRA+A0G7CsTrLoVci51olt+mIOsIEhd5bS7gQxEd0PrAJLTdQ0jx3Fbm6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="37499509"
-X-IronPort-AV: E=Sophos;i="5.84,352,1620658800"; 
-   d="scan'208";a="37499509"
-Received: from mail-ty1jpn01lp2050.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.50])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 10:18:50 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hH1WIeq6Qbo5UtkP8avMUHiVvAdqq3DBXkfzS4T4D68zcXtd4LXwSyaMxS6gIFTUs44jw1/k7Lpc1XqqaREQzRLMsvUcJMoyE2KK4NB+IHoCrTgh3rxZ+LoH5mHkTMnEJdZKni4uQNy/hDTYEciUsy1vvXk85Wq7uReEX99vojunPv80S0GJ59JM4hg5+z6HD8OrD8QfMoTBExYwiQvzWkEJMvhzyVFCb/XGZg3+Gj4TOwsJWploqHAoa4BL7q7YOAzNpPL3gznnT0yeC20nkucbbNpM/vEncXulM7TjplRnnTEBz00bjzjsBxXR5h7qPm1Ag+McGwJACgw61ZtXig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hJpCs+BVhUCsc6cWJKovqyReMhU7mPiD+g9XNiZRIQQ=;
- b=WEQiWzSbsRVtC0kycnlBmsrp07Pck/xYBTmW14m4cI9ErXVx0i7y5VnA9zbDsj8gXia5xLFxqb/AnM3twm1Fk6cGZW43hNtGccgwvA/2I2WQDdpZGFGkoFmCLEGErsNRY6IhBXVC2rVkOSj3KAVHRPSL3n86d4YIyiUqYuEdzQ7TLDF//84y5YBi73/kJxExDBVb/ZtXIk57CNioVsVwfV2F9Y4RtCPIWA/kkvB5wbs3cRdULkm6cGoINobdm4Y+TQGNwEPvD4EvkmCy2+8cEiQVsFPPa5d94S59rlKKDhHjD43t5BzXyTypPD2OMUgJWbr1VmB1FXWwbOoDxOV67w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
+        Wed, 25 Aug 2021 21:20:04 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934A5C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:19:17 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id o17-20020a4a64110000b0290263e1ba7ff9so405114ooc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:19:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hJpCs+BVhUCsc6cWJKovqyReMhU7mPiD+g9XNiZRIQQ=;
- b=bMqvtx9Soj3CH4k6+B8cqqEXRlbIE4eXuy6AYi22BIUtIBTeGUss3NyN5kccMGijrtD0XB6N0raTzhZa9ugV49DwmnErEKcPxTIsdDnAeO6LM1bySsKLGPmUX7NhVod+gIQOHHuv/89Jn5Ih4t9J82ss5g9GZLf6iSED6Dgj8u4=
-Received: from OS3PR01MB7650.jpnprd01.prod.outlook.com (2603:1096:604:14f::5)
- by OSAPR01MB7421.jpnprd01.prod.outlook.com (2603:1096:604:142::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18; Thu, 26 Aug
- 2021 01:18:47 +0000
-Received: from OS3PR01MB7650.jpnprd01.prod.outlook.com
- ([fe80::7407:c85b:2ea4:2ba9]) by OS3PR01MB7650.jpnprd01.prod.outlook.com
- ([fe80::7407:c85b:2ea4:2ba9%5]) with mapi id 15.20.4457.020; Thu, 26 Aug 2021
- 01:18:47 +0000
-From:   "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
-Thread-Topic: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
-Thread-Index: AQHXhrbNDgu/BY8sokOKZIxuzo0WFqth+tCAgAAZpQCAAASwgIAAvoAAgADeFQCAAMdDgIARCoCAgAhNa4CABsr5AIAAgsWA
-Date:   Thu, 26 Aug 2021 01:18:47 +0000
-Message-ID: <fb1c7505-62d3-a64e-4c57-170f9f5f86a4@fujitsu.com>
-References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
- <20210803162507.GA2892108@nvidia.com> <YQmDZpbCy3uTS5jv@unreal>
- <20210803181341.GE1721383@nvidia.com> <YQonIu3VMTlGj0TJ@unreal>
- <20210804185022.GM1721383@nvidia.com> <YQuIlUT9jZLeFPNH@unreal>
- <6b372500-ebc5-bc42-11c5-99de381b2e50@fujitsu.com>
- <7b930773-0071-5b96-2a85-718d0ca07bfa@cn.fujitsu.com>
- <20210825172844.GK1721383@nvidia.com>
-In-Reply-To: <20210825172844.GK1721383@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4c834fe0-117d-47f6-d928-08d9682f7465
-x-ms-traffictypediagnostic: OSAPR01MB7421:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <OSAPR01MB74218AAD8AD9AE12BFF83BC3A5C79@OSAPR01MB7421.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: raUET94Zk6RnLTr2Lj8D6e0EpgCiD4OuxRM/0ZTy0mhNFk1uc8htu1bSOATQOZrkma5vhzXrRYdhUct5FgFrSotEwxqAOrYAfp5HbDIN1vtOGjy5v8P/PrAvJXKwVFCpqHXp3WdDUtJ2GXkoitwLLnHbUHJUCn1RfvPbq7SFy7sNeSFpv7Ql3xmKjxO5CLZufwlAp9pL8dr0EnWiccLMmyDp63mUeLCrvAyxG6g61P0fDCZWQB6O0tm39UejEkYugif4TlBTUcoV63A4tPGmG0sGbVmhDTOaOFQmGfx7AgNMtNY9UeNbQJXziBJlwLmBQgx9bg8tooSKoXM3dxemPqRBVQaPW1N4KCFyTFtOcG2RsC3s+5kCuk7d0KVRMWHarHU0C6vrJy40lXLaWtxYa7g/uVnRb87T6tzbVqa17HknmeBWtEUvSyj9YEtRh85K6SaWdK5yiHtp/nTYSI+Jp3/5qywaFwgKAnZi0Naaw3Mr8a0SDiUsNF9530JxiUpeL6TAGtx2PbBXgVxAPnE3EWlwtrIt1edxHKA4AqqoCdfO+xsTnFKxEft9z75bAGOhnEOiZoc2/OooPVDUvA/a73it8rsu3um+RJoX1z5tzpPK/73wr3Sdahc3g9C1ptPqPfkncdQL/Gw7tR3NWlrD5AUtTWmXRFgTJTd+KWRLyD+DRd/0ENHbh4OHgAfMv1sony1BQkTenQgTpDdXeUJOqUxBW1ajOlLsiHLrFi1z+eyTTSMoK7YjfjBpXJgsdmr9Vp1PK7Vt/k1IvHrKjFAMaBqFT0ro7ofakSdRGyKcp5ZlQGZCkcx65BqaToCN2K7zhop1NcoOlut0Oip6k6Inn7mvHlQZVuGK6jYv9elXmzU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB7650.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38070700005)(966005)(36756003)(31696002)(2906002)(5660300002)(31686004)(508600001)(186003)(6486002)(316002)(54906003)(26005)(110136005)(4326008)(6506007)(85182001)(4744005)(53546011)(71200400001)(122000001)(2616005)(38100700002)(76116006)(66556008)(66476007)(91956017)(66446008)(66946007)(8676002)(8936002)(86362001)(64756008)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T0JwUjJuOHZqdHcrbjVxZzN6WDNJK21lYTlwUWM5MUVISUFMa1owRUtTRXFj?=
- =?utf-8?B?ZWhzaTBqTUJGZUtPaHl2Nm12d0xtMFp4SDZVWlo4WU5HY0xwMWhvbmxIQUdI?=
- =?utf-8?B?eDNhajJobGJsS3BJOXIxUUtzSkpMNG1hMDc2Q0NibjdNTGpmT1Z1MllHTy91?=
- =?utf-8?B?blMzNjV3elZlbjVnTXQrSWZZOWdzQWtIVHhDTVFoNnRvVFRUZFpqVXg0RGdH?=
- =?utf-8?B?MElHWmxYcnpqVVdYRnY1S1Bhd2NTOUwybEJzMW1BWHRGdTVoak9CcDg2Qklu?=
- =?utf-8?B?YWw2YTFwbXlDUnh6MW9qcFNMWjgyM0Y5M3V6ek5kekVrb20xLzR5WjBxQm5O?=
- =?utf-8?B?UWZxQy9FQUJidzlTelNDalFTVGlNdldOVk1XK0tVTXdOZE5pa3JIc2Nqc09U?=
- =?utf-8?B?K2YvOXFXcnoyaVVJbHBpTG1HVHBGVnkrQWlFa2FKUjNGejRkTkFZcENmTnB1?=
- =?utf-8?B?VXNhT1NyR0RjS0JWdm12MGVZVklvanZLb25tclRyTHdyUDJWWWUzYi9HNkRa?=
- =?utf-8?B?cTJDS1Bld0s0eDVkT0RQYWxpbldSbHd2Vmswdytmc2NJaS9FUTlwUktuNHdP?=
- =?utf-8?B?M3dyRGNaZ1RlYjlpbjNJTFdFRFdCekM2SHFpejhsWjRJSlFGZHBIM24rNC9x?=
- =?utf-8?B?THpQNjZUNlNhWis4eFRyVVdOSysyNGkwaWJoNFpuTkE4TzMzaTlCN0p5a3lm?=
- =?utf-8?B?bU9USzFTNDkwd0NGOXpXVVZtRlpPbU9JakFhOStCR1A4MUNmTkpRNVRGTzR5?=
- =?utf-8?B?Mk4xQldXcXF0SE8rUkx0cUNSNVdBZmZzdEVLQUxwSDVBQVFLYSt3YlhQcHlv?=
- =?utf-8?B?NDErQ29MZi9INTl1ZEpIMGVjYVM0UlZkNWROM0Z0dWszbEYxVEh2L0s1OWZo?=
- =?utf-8?B?Z0ZFZEJNMUIyTnlKRWFsZ1NxaXhPTkVJT24yQ1JtbXVyc0pnRE1ZRDcrWHl0?=
- =?utf-8?B?SG5lc3lrN1VLblI1UytDTXlLSUNlOWpnL25LdnhZWlphVmNCeGtUUFFCL0JE?=
- =?utf-8?B?cEVGbXpjbFVOckkzTk96S3JRd1Fsa1huZ3BhRTJhUEFaYlM2TUUycDM4WEJ4?=
- =?utf-8?B?aHZOSEVQMTgzejRSbFEyNVBZVk1ZV3JHZ0JGb1MzSlZscDM5a0cvNzYyeWJx?=
- =?utf-8?B?UHErRm0zOTBTR3J4enQvOHZ2RDYreUdjNFNEMmNhOFlBY29ieURzaUFWQmN4?=
- =?utf-8?B?N2ZTRmpUR3ZHOG85OGtLQTlyN3FmUFBPSFEvMFlJUFRoK0J1M2ZyTUsyQ0sv?=
- =?utf-8?B?SDBDbEc1Q3pVRzhlS2RTc3hBRmkybVhtZkwxNHR0bk1nWDczUkhJTzJLS2x2?=
- =?utf-8?B?cUppbEx0bDl6ZzAvRDNHd29pK2REOXQxSm1xVXR1ZWVmbmdScHMxOG9iNUZQ?=
- =?utf-8?B?aUlCYVZpVFQ4OEROd0szV3Q2dVVoQlhXcG5LZGdNK0NsWDdMU3QyNzQ3a1kx?=
- =?utf-8?B?TUlhNUdtY1ZNaTZUbnpncWErMmtMUmQvOXk1TG83MFo5TDNacmg4ZUhhTm51?=
- =?utf-8?B?M1liaURGSmZDbStTelV1SEZOaG9wd0hzbURBZW5XbGRIV0doM2VBVWMvNDJV?=
- =?utf-8?B?d1ZyYnk2OHJhNitYdVJNV0orSjBKZzk1TWVFYXFnK1pTVGs4dWsxTUlQZGpo?=
- =?utf-8?B?VkVJRC9xQjFWTkdFd296Z29mRUtFa1hYNWs4ajlabCtkdU9lOVR2QVBRM0tz?=
- =?utf-8?B?enhydXVHRVhYUXVnamVwS1RiYldhMnAxMUYybG5aRW5UOUFESGFyc0lzU0Ju?=
- =?utf-8?B?ZkxTQ2o1am5TK2xtck5RYldVNk95ZUJ6blhpN3BtL0J0Y3JIc2l5N1dGZjMy?=
- =?utf-8?B?aTcyQkFhS0YwaERscE1IUT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0C21F03472D5F94B8F56F7BEE0E2E116@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=pMEYeQ5q1Ljq7RCcgbyvAyGrNej+EFBY9zbAdIRIdF8=;
+        b=NhrGT6GzQFV+9/cdB57tP92jyn9EG5QfIpEhiPDZ4mpxnF8I9IDZ/81f0dFiujSo7b
+         JpjHlq3NazHVfSNNQMkKHmAyqxhdqgHYMxmX61QkXGCX8cM95uLVKqgXb4dNQy42IMAK
+         pB1sI1ZaWXYCep+QHy0y8K7qTwWK20ggRmViM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=pMEYeQ5q1Ljq7RCcgbyvAyGrNej+EFBY9zbAdIRIdF8=;
+        b=bPHLFkcZcQ67mwsmJrqE3IRTk+5emQpgS/H2ru5OK6BVLy9JYkeDJ/QyDzNCyX+pco
+         RgJqn6eqAWIisV+f+mtpDNmyv8v5P9ohRK3cDKUxwOIEgEJ8fUMMBcDzszcrfCb6W/uB
+         rZ6pfWECl9FmnyROqm+11t7EEPLJg/Vfs8mIfchZ/wsA2lmkj12B/cgkf7hElTDGKNFL
+         3gbWlLzrtYENyXa0vd3oli+OR3r1i+5eW2HnpzDkJF7Fy8uCohPWJqIS0dcQzE2kFGrO
+         23i1PmdgcJb9kgWCgIqaQEC/knN+PNDGivCsvsRzwN+hJgBzk1UwE8ou9yJD9gITVUiF
+         GCqQ==
+X-Gm-Message-State: AOAM531OsU2j2wWsF0GdPpZ4uyHrRTuDLAY4GQT+7oRrzQZIBXtdWbpF
+        JHP1SUSGNbxZn48g4fArbMS/kIOik5ardrE9P4iqvw==
+X-Google-Smtp-Source: ABdhPJxomUf9wQZ9jtRySIGLFv4shWsL8IPxBTC8ui4hVyxgpcgUn6qSY5GKjS1RD2eDnA8/l8osgey4KpfBW93K2J0=
+X-Received: by 2002:a4a:a841:: with SMTP id p1mr987058oom.92.1629940756961;
+ Wed, 25 Aug 2021 18:19:16 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 26 Aug 2021 01:19:16 +0000
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB7650.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c834fe0-117d-47f6-d928-08d9682f7465
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2021 01:18:47.4104
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VJ2LqKc7/vXqa1/ybVN1FOEkQdubGi1riDaNpIEsakAtzDwWY4szABB3/RF8MshM+pJuRITf32NkRXNNnyf0mg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB7421
+In-Reply-To: <20210825222557.1499104-4-bjorn.andersson@linaro.org>
+References: <20210825222557.1499104-1-bjorn.andersson@linaro.org> <20210825222557.1499104-4-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 26 Aug 2021 01:19:16 +0000
+Message-ID: <CAE-0n53ZVf7E0q_cMEmuQH7q+xytRd-pjerrNnoVHBwqGMr6ZA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] drm/msm/dp: Refactor ioremap wrapper
+To:     Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Clark <robdclark@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Sean Paul <sean@poorly.run>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCk9uIDI2LzA4LzIwMjEgMDE6MjgsIEphc29uIEd1bnRob3JwZSB3cm90ZToNCj4gT24gU2F0
-LCBBdWcgMjEsIDIwMjEgYXQgMDU6NDQ6NDNQTSArMDgwMCwgTGksIFpoaWppYW4gd3JvdGU6DQo+
-PiBjb252ZXJ0IHRvIHRleHQgYW5kIHNlbmQgYWdhaW4NCj4+DQo+Pg0KPj4gSGkgSmFzb24gJiBM
-ZW9uDQo+Pg0KPj4gSXQgcmVtaW5kcyBtZSB0aGF0IGlidl9hZHZpc2VfbXIgZG9lc24ndCBtZW50
-aW9uIEVOT0VOVCBhbnkgbW9yZSB3aGljaCB2YWx1ZSB0aGUgQVBJIGFjdHVhbGx5IHJldHVybnMg
-bm93Lg0KPj4gdGhlIEVOT0VOVCBjYXNlcy9zaXR1YXRpb25zIHJldHVybmVkIGJ5IGtlcm5lbCBt
-bHg1IGltcGxlbWVudGF0aW9uIGlzIG1vc3QgbGlrZWx5IHNhbWUgd2l0aCBFSU5WQUxMIGFzIGl0
-cyBtYW5wYWdlWzFdLg0KPj4NCj4+IFNvIHNoYWxsIHdlIHJldHVybiBFSU5WQUwgaW5zdGVhZCBv
-ZiBFTk9FTlQgaW4ga2VybmVsIHNpZGUgd2hlbiBnZXRfcHJlZmV0Y2hhYmxlX21yIHJldHVybnMg
-TlVMTD8NCj4gTm8sIHRoZSBtYW4gcGFnZSBzaG91bGQgYmUgZml4ZWQNCnRoYW5rcyBhIGxvdCwg
-aSBoYXZlIHN1Ym1pdHRlZCBhIFJQIHRvIHJkbWEtY29yZSBodHRwczovL2dpdGh1Yi5jb20vbGlu
-dXgtcmRtYS9yZG1hLWNvcmUvcHVsbC8xMDQ4DQoNClRoYW5rcw0KWmhpamlhbg0KDQo+DQo+IEph
-c29uDQo+DQo+DQo=
+Quoting Bjorn Andersson (2021-08-25 15:25:55)
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
+> index c064ced78278..215065336268 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> @@ -19,40 +19,30 @@ static const struct dp_regulator_cfg sdm845_dp_reg_cfg = {
+>         },
+>  };
+>
+> -static int msm_dss_ioremap(struct platform_device *pdev,
+> -                               struct dss_io_data *io_data)
+> +static void __iomem *dp_ioremap(struct platform_device *pdev, int idx, size_t *len)
+>  {
+> -       struct resource *res = NULL;
+> +       struct resource *res;
+>
+> -       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +       res = platform_get_resource(pdev, IORESOURCE_MEM, idx);
+>         if (!res) {
+>                 DRM_ERROR("%pS->%s: msm_dss_get_res failed\n",
+>                         __builtin_return_address(0), __func__);
+
+This error can be removed too, right? At least I thought passing in NULL
+as 'res' to devm_ioremap_resource() did that. It actually looks like we
+can use devm_platform_get_and_ioremap_resource() and then pass in &res
+
+	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+	if (!IS_ERR(base))
+		*len = resource_size(res);
+
+	return base;
+
+> -               return -ENODEV;
+> +               return ERR_PTR(-ENODEV);
+>         }
+>
+> -       io_data->len = (u32)resource_size(res);
+> -       io_data->base = devm_ioremap(&pdev->dev, res->start, io_data->len);
+> -       if (!io_data->base) {
+> -               DRM_ERROR("%pS->%s: ioremap failed\n",
+> -                       __builtin_return_address(0), __func__);
+> -               return -EIO;
+> -       }
+> -
+> -       return 0;
+> +       *len = resource_size(res);
+> +       return devm_ioremap_resource(&pdev->dev, res);
+>  }
+>
+>  static int dp_parser_ctrl_res(struct dp_parser *parser)
+>  {
+> -       int rc = 0;
+>         struct platform_device *pdev = parser->pdev;
+>         struct dp_io *io = &parser->io;
+> +       struct dss_io_data *dss = &io->dp_controller;
+>
+> -       rc = msm_dss_ioremap(pdev, &io->dp_controller);
+> -       if (rc) {
+> -               DRM_ERROR("unable to remap dp io resources, rc=%d\n", rc);
+> -               return rc;
+> -       }
+> +       dss->base = dp_ioremap(pdev, 0, &dss->len);
+> +       if (IS_ERR(dss->base))
+> +               return PTR_ERR(dss->base);
+>
+>         io->phy = devm_phy_get(&pdev->dev, "dp");
+>         if (IS_ERR(io->phy))
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.h b/drivers/gpu/drm/msm/dp/dp_parser.h
+> index 34b49628bbaf..dc62e70b1640 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.h
+> @@ -26,7 +26,7 @@ enum dp_pm_type {
+>  };
+>
+>  struct dss_io_data {
+> -       u32 len;
+> +       size_t len;
+
+len is a resource_size_t above, not sure if that really matters in
+practice to indicate it here though.
+
+>         void __iomem *base;
+>  };
+>
