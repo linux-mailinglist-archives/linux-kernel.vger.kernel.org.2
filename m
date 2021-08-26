@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FEA3F8B56
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AEF3F8B59
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243002AbhHZPu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:50:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230203AbhHZPuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:50:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B58336101A;
-        Thu, 26 Aug 2021 15:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629993007;
-        bh=0zM90CvcDSH6UFy9c0wnLu9bNk+B4Qha+Kf+kRBIj+Q=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tGtb3FErX/2LiBcuWjotgVCE1UWTTD6GJlDiwjT3X3O+OpZP5ciNtGs4JeKpJMp38
-         REaxdVuTKTQhXulkw+ZbV2rOZOqPtLFV0la1GsZXyKioFy79NZFd2+2g9+2EYsffTd
-         c9xLAbovx7CRZ3mpDEuO39sZwlBf2UWxX6CBksMHtDgdvaxgha9tdo+w+IEjhApTJR
-         oWghdQydkP8HrvHnaU08TbqEv5C/Zn/en+SEdzICkfgZXHF56d+w5gT39P6+ZNXPQo
-         aFuIUnQjLSpntsihGI8yPUqyue09sxWlPn4YlArYdU9w62Kp6sowF0sP2NfdGsIT5f
-         aazCv5kXUjIfQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A70F160A14;
-        Thu, 26 Aug 2021 15:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S243010AbhHZPwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230203AbhHZPwr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 11:52:47 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84634C061757;
+        Thu, 26 Aug 2021 08:51:59 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id z4so5827822wrr.6;
+        Thu, 26 Aug 2021 08:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wE8pOF+CHNbYLFAWyiFAE2bL1C1N8UI/VrhKuLFFvUQ=;
+        b=Cg1IjsLge76KmPcWWIdMdj4bzm2XHPccNYk4S1WCmtvcIk6ErdVSEIzRvTbqpRl+gQ
+         9ljpXWFJIAypQD1OsnAZrntDrMBHw8NgVB9TBpvmT//YgmquMVOoO+bgMqxIEr2Was0+
+         9rpFA/eFGe/AxRwzeRLPnS7FVB6fK3E80/VtTeE+y6jWcVQXIpviCowfOb6wSzu0Alnf
+         OwrDslr7eqM0iVvJBT12xJkHjtJxq7Nh1bwobBoEoBtz1ABtD3nvtXuT7N1+erLGEXRT
+         b4EZIN3I6zg19Y8tjTQOwwcf01Kgu1j9+AnlgqPYrrGrLo0j/NnzxXlfm64I93R5Qin4
+         CDNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wE8pOF+CHNbYLFAWyiFAE2bL1C1N8UI/VrhKuLFFvUQ=;
+        b=sY/8uBvOlCe/KekC94NGI5+talef5vuPnoVAkuDPIJtMUJgtE6mfQ3a+16/ekHrq0r
+         z1uLq7hakZK+P/Khwi2NnAb9YBKZZ3HEcEqo7NGq4fCokK1ZxI0A6FAJhSGUE8fYMuaj
+         wQvRtXI2I6yK+7MQwA/yiu7gXU9SAjVppCdaVxKmEnQEGHXhGI2YTDdtfYYCaUBOocXQ
+         0sx9t+PZBpLhtpyrmJ1zvx/JVrmc66YVK1Zvt0iijzNvUoU43dTKQp/yqcUvumxD5tbZ
+         z6Q+XoRxKTKGvPlxfbqaWlOqds7xvfI09K2nAzRer5kzurrnSSfN8DIaZQ3jFTCBqGvo
+         GY4w==
+X-Gm-Message-State: AOAM532DPszkgj73PtTntylBW1Ikxj8kRpKTyQf1d4WxFSS0Tx7sykUQ
+        GmbVIXEwrxE0ywcctyUHnNk=
+X-Google-Smtp-Source: ABdhPJw0cNDZ2+Fiu+u9/qgSuVqKd96nL6YFH8B32y8Cgkg2BJTHTx8MaUYW2HNRmvZ+luFGJSw0Ug==
+X-Received: by 2002:adf:fc4f:: with SMTP id e15mr4792648wrs.95.1629993118134;
+        Thu, 26 Aug 2021 08:51:58 -0700 (PDT)
+Received: from kwango.redhat.com (ip-94-112-171-183.net.upcbroadband.cz. [94.112.171.183])
+        by smtp.gmail.com with ESMTPSA id r1sm3723770wmh.17.2021.08.26.08.51.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 08:51:57 -0700 (PDT)
+From:   Ilya Dryomov <idryomov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph fixes for 5.14-rc8
+Date:   Thu, 26 Aug 2021 17:51:42 +0200
+Message-Id: <20210826155142.31960-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.19.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/7] net: hns3: add some fixes for -net
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162999300767.24975.1201669661390166290.git-patchwork-notify@kernel.org>
-Date:   Thu, 26 Aug 2021 15:50:07 +0000
-References: <1629976921-43438-1-git-send-email-huangguangbin2@huawei.com>
-In-Reply-To: <1629976921-43438-1-git-send-email-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lipeng321@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Linus,
 
-This series was applied to netdev/net.git (refs/heads/master):
+The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
 
-On Thu, 26 Aug 2021 19:21:54 +0800 you wrote:
-> This series adds some fixes for the HNS3 ethernet driver.
-> 
-> Guangbin Huang (1):
->   net: hns3: fix get wrong pfc_en when query PFC configuration
-> 
-> Guojia Liao (1):
->   net: hns3: fix duplicate node in VLAN list
-> 
-> [...]
+  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
 
-Here is the summary with links:
-  - [net,1/7] net: hns3: clear hardware resource when loading driver
-    https://git.kernel.org/netdev/net/c/1a6d281946c3
-  - [net,2/7] net: hns3: add waiting time before cmdq memory is released
-    https://git.kernel.org/netdev/net/c/a96d9330b02a
-  - [net,3/7] net: hns3: fix speed unknown issue in bond 4
-    https://git.kernel.org/netdev/net/c/b15c072a9f4a
-  - [net,4/7] net: hns3: fix duplicate node in VLAN list
-    https://git.kernel.org/netdev/net/c/94391fae82f7
-  - [net,5/7] net: hns3: change the method of getting cmd index in debugfs
-    https://git.kernel.org/netdev/net/c/55649d56541b
-  - [net,6/7] net: hns3: fix GRO configuration error after reset
-    https://git.kernel.org/netdev/net/c/3462207d2d68
-  - [net,7/7] net: hns3: fix get wrong pfc_en when query PFC configuration
-    https://git.kernel.org/netdev/net/c/8c1671e0d13d
+are available in the Git repository at:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+  https://github.com/ceph/ceph-client.git tags/ceph-for-5.14-rc8
 
+for you to fetch changes up to a9e6ffbc5b7324b6639ee89028908b1e91ceed51:
 
+  ceph: fix possible null-pointer dereference in ceph_mdsmap_decode() (2021-08-25 16:34:11 +0200)
+
+----------------------------------------------------------------
+Two memory management fixes for the filesystem.
+
+----------------------------------------------------------------
+Tuo Li (1):
+      ceph: fix possible null-pointer dereference in ceph_mdsmap_decode()
+
+Xiubo Li (1):
+      ceph: correctly handle releasing an embedded cap flush
+
+ fs/ceph/caps.c       | 21 +++++++++++++--------
+ fs/ceph/mds_client.c |  7 ++++---
+ fs/ceph/mdsmap.c     |  8 +++++---
+ fs/ceph/snap.c       |  3 +++
+ fs/ceph/super.h      |  3 ++-
+ 5 files changed, 27 insertions(+), 15 deletions(-)
