@@ -2,209 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0623B3F815C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 06:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1323F8163
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 06:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhHZECs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 00:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
+        id S230237AbhHZEDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 00:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhHZECr (ORCPT
+        with ESMTP id S230155AbhHZEDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 00:02:47 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7381CC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 21:02:00 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id b6so2697737wrh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 21:02:00 -0700 (PDT)
+        Thu, 26 Aug 2021 00:03:05 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5366DC061757;
+        Wed, 25 Aug 2021 21:02:18 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id a21so1603824pfh.5;
+        Wed, 25 Aug 2021 21:02:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3HM/bXG5zSwq9GUwco4MejfEHbVjMmT87jzrLt6TPLQ=;
-        b=QsRNc6MuUobVxBq9hrJ4hN/oUm02ypYpGftX33ffll7Gpa15Hpbh+1/cKuZ/DibU2c
-         IW9De6iNWwxeeI0V6U7vMuQ10e7Uy2aKW2p+h94sSWHcpHGNrCqceNXW48AncmkdnBh7
-         Jco37SvmqoDjwukXkktHML3wXwh4+zRCY2FzIYQhE87pirW5rzaFq1aipdL8wL/cIRCF
-         oLKlEgFezJfyUFbo/ZM63U540Nb67JTL2ORLHSmZKtAWgQOPyOvLV31ix5Q8sQ6cum2f
-         Zx5h9EYh0f5ZASyKUq/KTVpzMTWnq0mJKwd6n8T4yBZJgvRlEdYDDWdZl3DspC8d+TVV
-         5cZw==
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=Oxi9GUAjjrXy9o+mfocb/qAIFBiI2+i+SCUd2qrmcNw=;
+        b=KBWp4VV/tma8GhuwcgInEq6+v0E/KDzWIAj4q6+lCzaMwhrcTIp4CAY5KfRn6FuEj6
+         rlGE9NFn1zDx/GE3uRHKnVAckcviFbUHoxjtoGIq11g0rFx4wGGvPXYt9qSh2uo1TrTE
+         BQcrWbOo6aQ2aol/fVg1Z56EyDujPB2TfTq/mwq4FTB4CYj9WboyQcbJi8fQzhyIqP4m
+         eOskRNMFTUmun3l8A3PpKQpTPrvyJUG3m9idTpVOdNvaDQvhxavq3uMLRy3SpHRyQNf6
+         BuRRDzskc/DcMZ44tS25C4LE773m60DLYZEd4BoVLZT+xMpqeCfgL5dbxCjv3qUizz12
+         EbSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3HM/bXG5zSwq9GUwco4MejfEHbVjMmT87jzrLt6TPLQ=;
-        b=ayrr13zn4rvyvvP67SvKfgiqcfI5QhyhT/qg6xquKZK5OKrtpdJl66bVo/4SgW+L41
-         tEAFG/uLNWbohijqA/uuYtSKsDSOXIF7f2GourCmqiQeIld4oiksgJCZjneP9/PQPgbY
-         WwjHuaebtGQHzDr3TOnecKclVXaogIdW9/EkHk3aI42PLmwwRtPVggQzhMOjvhiiqGan
-         M+Q8ePWJ2kMaMDw5ZpNH1HeSBy0U9Ao7PYDXsX0z2RteLHtgY2qLfWJdX3wQ6PfH/J7X
-         Z/Fhm7+4tcQ93ft2ezao/FGxXMdrjg0djO1P8Vr9UX7uJGCOz6YKcFM9fHCk7hOmInPt
-         YuYQ==
-X-Gm-Message-State: AOAM531NrJmilae5xxoKLcWBABKlR+Uc75ULT5V8e4aSFB9s24t7JCRH
-        8e4EYL2rIOmR2YJsNlHsQOSQBeutdUyhyYSjjRGj3Q==
-X-Google-Smtp-Source: ABdhPJw+gz/u7mF0GN738G6TB5eettn1ES3QbnqEM0LQB+i4OH/RDfjmaFO8bgetCRetbIXetdYLi0e7mN9DywpcWaY=
-X-Received: by 2002:adf:8006:: with SMTP id 6mr1394954wrk.38.1629950517907;
- Wed, 25 Aug 2021 21:01:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210826012626.1163705-1-isabellabdoamaral@usp.br> <20210826012626.1163705-2-isabellabdoamaral@usp.br>
-In-Reply-To: <20210826012626.1163705-2-isabellabdoamaral@usp.br>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 26 Aug 2021 12:01:46 +0800
-Message-ID: <CABVgOS==dbwMyFcP5ZMhMWGSNTXgsCw1gm2DnoCCnhA0SRhpzw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] hash.h: remove unused define directive
-To:     Isabella Basso <isabellabdoamaral@usp.br>
-Cc:     linux@sciencehorizons.net,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        ferreiraenzoa@gmail.com, augusto.duraes33@gmail.com,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=Oxi9GUAjjrXy9o+mfocb/qAIFBiI2+i+SCUd2qrmcNw=;
+        b=CcfzUrpeOPw7BL4oW0tKnwZYzU1ti9BPupJ3CrMGqF4ERH1JvmBoABgbNiSAsqZp4P
+         I7Q/j0eBX7+scnkDQlQyyt92SPPc/8DKBgCNrJ52gY/O3IjrYF+wJsS8PJw0yng5wv9z
+         7Cz+OCir5Tn2HKuc8N4gIBeLygO/3PkOMYhUJrFs6gnWFMqEZAoS1AEZShxfBdosryfo
+         WVoc7IG6CIxJ0pkTdgyOxZ4jbBXz8JG2U1vX2SsBvE3AEFVgM5eeogei4unaE/XO5ZFk
+         4Dck8qkouryFsV9+rEyzOM5S2pB1sv5xwUyu8jgLJQbgejgqHIBBvdVWmCz3e2CyvIja
+         ZALQ==
+X-Gm-Message-State: AOAM530SR4Vh7sUiDnJZJDlmzLSZePetW5rCXkpSC/qku0eSilXdNWIO
+        fnslF0Mk9zcxxomcS1wl6sD5fbscecU=
+X-Google-Smtp-Source: ABdhPJydBAdee6sGWXe83G6Ns/w8FokBMmc8JUE3YPOEccITJ0OIC4vkV+1jKPQfauwz8oDFC0Rj9Q==
+X-Received: by 2002:a63:1504:: with SMTP id v4mr1529124pgl.151.1629950537851;
+        Wed, 25 Aug 2021 21:02:17 -0700 (PDT)
+Received: from localhost (193-116-119-33.tpgi.com.au. [193.116.119.33])
+        by smtp.gmail.com with ESMTPSA id x40sm1078266pfh.145.2021.08.25.21.02.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 21:02:17 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 14:02:11 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+To:     Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        Linux-MM <linux-mm@kvack.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>
+References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+        <YSPwmNNuuQhXNToQ@casper.infradead.org> <YSQSkSOWtJCE4g8p@cmpxchg.org>
+        <1957060.1629820467@warthog.procyon.org.uk>
+        <YSUy2WwO9cuokkW0@casper.infradead.org>
+        <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
+        <YSVCAJDYShQke6Sy@casper.infradead.org>
+        <CAHk-=wisF580D_g+wFt0B_uijSX+mCgz6tRRT5KADnO7Y97t-g@mail.gmail.com>
+        <YSVHI9iaamxTGmI7@casper.infradead.org> <YSVMMMrzqxyFjHlw@mit.edu>
+        <YSXkDFNkgAhQGB0E@infradead.org>
+In-Reply-To: <YSXkDFNkgAhQGB0E@infradead.org>
+MIME-Version: 1.0
+Message-Id: <1629948817.v8xwzejw2u.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 9:26 AM Isabella Basso <isabellabdoamaral@usp.br> w=
-rote:
->
-> The HAVE_ARCH_HASH_32 (single underscore) define hasn't been used for
-> any known supported architectures that have their own hash function
-> implementation (i.e. m68k, Microblaze, H8/300, pa-risc) since George's
-> patch [1], which introduced it.
->
-> The supported 32-bit architectures from the list above have only been
-> making use of the (more general) HAVE_ARCH__HASH_32 define, which only
-> lacks the right shift operator, that wasn't targeted for optimizations
-> so far.
->
-> [1] https://lore.kernel.org/lkml/20160525073311.5600.qmail@ns.sciencehori=
-zons.net/
->
-> Co-developed-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.com>
-> Signed-off-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.com>
-> Co-developed-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
-> Signed-off-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
-> Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
-> ---
+Excerpts from Christoph Hellwig's message of August 25, 2021 4:32 pm:
+> On Tue, Aug 24, 2021 at 03:44:48PM -0400, Theodore Ts'o wrote:
+>> The problem is whether we use struct head_page, or folio, or mempages,
+>> we're going to be subsystem users' faces.  And people who are using it
+>> every day will eventually get used to anything, whether it's "folio"
+>> or "xmoqax", we sould give a thought to newcomers to Linux file system
+>> code.  If they see things like "read_folio()", they are going to be
+>> far more confused than "read_pages()" or "read_mempages()".
+>=20
+> Are they?  It's not like page isn't some randomly made up term
+> as well, just one that had a lot more time to spread.
+>=20
+>> So if someone sees "kmem_cache_alloc()", they can probably make a
+>> guess what it means, and it's memorable once they learn it.
+>> Similarly, something like "head_page", or "mempages" is going to a bit
+>> more obvious to a kernel newbie.  So if we can make a tiny gesture
+>> towards comprehensibility, it would be good to do so while it's still
+>> easier to change the name.
+>=20
+> All this sounds really weird to me.  I doubt there is any name that
+> nicely explains "structure used to manage arbitrary power of two
+> units of memory in the kernel" very well.
 
-I'm not familiar with the hash functions here, so take this with the
-appropriate heap of salt, but it took me a little while to understand
-exactly what this is doing.
+Cluster is easily understandable to a filesystem developer as contiguous=20
+set of one or more, probably aligned and sized to power of 2.  Swap=20
+subsystem in mm uses it (maybe because it's disk adjacent, but it does=20
+have page clusters) so mm developers would be fine with it too. Sadly
+you might have to call it page_cluster to avoid confusion with block=20
+clusters in fs then it gets a bit long.
 
-As I understand it:
-- There are separate __hash_32() and hash_32() functions.
-- Both of these have generic implementations, which can optionally be
-overridden by an architecture-specific optimised version.
-- There aren't any architectures which provide an optimised hash_32()
-implementation.
-- This patch therefore removes support for architecture-specific
-hash_32() implementations, and leaves only the generic implementation.
-- This generic implementation of hash_32() itself relies on
-__hash_32(), which may still be optimised.
+Superpage could be different enough from huge page that implies one page=20
+of a particular large size (even though some other OS might use it for=20
+that), but a super set of pages, which could be 1 or more.
 
-Could the commit description be updated to make this a bit clearer?
-While we are getting rid of the HAVE_ARCH_HASH_32 #define, that seems
-to be a side-effect/implementation detail of removing support for
-architecture-specific hash_32() implementations...
-
-The other wild, out-there option would be to remove __hash_32()
-entirely and make everything use hash_32(), which then could have
-architecture-specific implementations. A quick grep reveals that
-there's only one use of __hash_32() outside of the hashing code itself
-(in fs/namei.c). This would be much more consistent with what
-hash_64() does, but also would be significantly more work, and
-potentially could have some implication (full_name_hash() performance
-maybe?) which I'm not aware of. So it's possibly not worth it.
-
-Cheers,
--- David
-
->  include/linux/hash.h       |  5 +----
->  lib/test_hash.c            | 24 +-----------------------
->  tools/include/linux/hash.h |  5 +----
->  3 files changed, 3 insertions(+), 31 deletions(-)
->
-> diff --git a/include/linux/hash.h b/include/linux/hash.h
-> index ad6fa21d977b..38edaa08f862 100644
-> --- a/include/linux/hash.h
-> +++ b/include/linux/hash.h
-> @@ -62,10 +62,7 @@ static inline u32 __hash_32_generic(u32 val)
->         return val * GOLDEN_RATIO_32;
->  }
->
-> -#ifndef HAVE_ARCH_HASH_32
-> -#define hash_32 hash_32_generic
-> -#endif
-> -static inline u32 hash_32_generic(u32 val, unsigned int bits)
-> +static inline u32 hash_32(u32 val, unsigned int bits)
->  {
->         /* High bits are more random, so use them. */
->         return __hash_32(val) >> (32 - bits);
-> diff --git a/lib/test_hash.c b/lib/test_hash.c
-> index 0ee40b4a56dd..d4b0cfdb0377 100644
-> --- a/lib/test_hash.c
-> +++ b/lib/test_hash.c
-> @@ -94,22 +94,7 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][3=
-3])
->                         pr_err("hash_32(%#x, %d) =3D %#x > %#x", h0, k, h=
-1, m);
->                         return false;
->                 }
-> -#ifdef HAVE_ARCH_HASH_32
-> -               h2 =3D hash_32_generic(h0, k);
-> -#if HAVE_ARCH_HASH_32 =3D=3D 1
-> -               if (h1 !=3D h2) {
-> -                       pr_err("hash_32(%#x, %d) =3D %#x !=3D hash_32_gen=
-eric() "
-> -                               " =3D %#x", h0, k, h1, h2);
-> -                       return false;
-> -               }
-> -#else
-> -               if (h2 > m) {
-> -                       pr_err("hash_32_generic(%#x, %d) =3D %#x > %#x",
-> -                               h0, k, h1, m);
-> -                       return false;
-> -               }
-> -#endif
-> -#endif
-> +
->                 /* Test hash_64 */
->                 hash_or[1][k] |=3D h1 =3D hash_64(h64, k);
->                 if (h1 > m) {
-> @@ -227,13 +212,6 @@ test_hash_init(void)
->  #else
->         pr_info("__hash_32() has no arch implementation to test.");
->  #endif
-> -#ifdef HAVE_ARCH_HASH_32
-> -#if HAVE_ARCH_HASH_32 !=3D 1
-> -       pr_info("hash_32() is arch-specific; not compared to generic.");
-> -#endif
-> -#else
-> -       pr_info("hash_32() has no arch implementation to test.");
-> -#endif
->  #ifdef HAVE_ARCH_HASH_64
->  #if HAVE_ARCH_HASH_64 !=3D 1
->         pr_info("hash_64() is arch-specific; not compared to generic.");
-> diff --git a/tools/include/linux/hash.h b/tools/include/linux/hash.h
-> index ad6fa21d977b..38edaa08f862 100644
-> --- a/tools/include/linux/hash.h
-> +++ b/tools/include/linux/hash.h
-> @@ -62,10 +62,7 @@ static inline u32 __hash_32_generic(u32 val)
->         return val * GOLDEN_RATIO_32;
->  }
->
-> -#ifndef HAVE_ARCH_HASH_32
-> -#define hash_32 hash_32_generic
-> -#endif
-> -static inline u32 hash_32_generic(u32 val, unsigned int bits)
-> +static inline u32 hash_32(u32 val, unsigned int bits)
->  {
->         /* High bits are more random, so use them. */
->         return __hash_32(val) >> (32 - bits);
-> --
-> 2.33.0
->
+Thanks,
+Nick
