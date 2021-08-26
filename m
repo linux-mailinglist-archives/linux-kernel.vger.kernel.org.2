@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B873F89CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F2C3F89D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbhHZOKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbhHZOKC (ORCPT
+        id S242728AbhHZOKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:10:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29692 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232876AbhHZOKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:10:02 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0AAC061757;
-        Thu, 26 Aug 2021 07:09:15 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id x4so3206769pgh.1;
-        Thu, 26 Aug 2021 07:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IHu9tR/6Cya7biP79tZOJnTzvsP2TvD1XGVXSlWQptc=;
-        b=nOxTMSOthtkjbNfMJmiDbRBqwR99W6NY3um9pitOe/YvF8Pesoqc3KYuvI4jKAq9lW
-         Mhc/Danh+eSy4aK6FNWZMrAJ/azsGr8x1yUHM4YB/R0HbBAgD/LmJbyxopQxKsUSp9la
-         8HoXUT/gI8ZK3UiSnY4xt47YDXyTiN+Q7xEmgLZXlso26skqrAHmpJBcX7r6Iu4aukXh
-         pcVbQ5R1RONsrj3/5VOVsG+FlVEgK532l/tHTgGUuap8A9h7IAWHY+1skfFGILmMFM+a
-         4bWN+iJo0wPiZHsrM5IYdlBhF9EJyZFlxfqlEaL4Ofq9Q+chfhWpi4DozZHl/+jJ+/UZ
-         IVLw==
+        Thu, 26 Aug 2021 10:10:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629986968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8G/7ZlO3OCW/oELCaVsXFVvVuQOIOXBoolUrlOFg5ds=;
+        b=T7H6w4XCPD32D4jzvKxRdfYCaXQ75H36vjDO9GQLqZapOkxmmvWvqHKcRcs7SVpFDc/m/R
+        XXvufAemqnt+B+hRTK1TGgGIi2vJEj002Hk52PFdhr/DrXaoN++zeg7DRT/f+A0+3DkNIl
+        48EYfqHnQaVEsQtVjMNVcIZshOIlGYM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-sC_xboxDO_Wm7qNQuxWBwA-1; Thu, 26 Aug 2021 10:09:27 -0400
+X-MC-Unique: sC_xboxDO_Wm7qNQuxWBwA-1
+Received: by mail-wm1-f71.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso4370718wma.9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 07:09:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IHu9tR/6Cya7biP79tZOJnTzvsP2TvD1XGVXSlWQptc=;
-        b=CRqY9FGpyuGW0szhxkIWNPS43R1ecfqAT2QVE7V5ztzUdO+dFyt9aPLU1431oGtChe
-         7iApdRMweZdSUM0kVpaGY3S8L5EcssgIuhwlVHrBmccJYuXn84EHxU7yALnxdxS+FEv3
-         i3LeaouRuOPnGyj5dWF6J1W21HvPEuPDzhudygSt7tBAeYV4mXpDVSINHGJShTLVWIi2
-         /u+fJ08LRAk/JcqCLaDTtblDXGnICdy0bdKD+6zjgoyOoLROpxN78a4DgUL+9OfpPhK3
-         RCZ/r0xVYsewMxVrAt6C9ZQX889iL+74wmKjPqP4RE2i3DNuPNHq4GlgY2aPIwZJ1TLt
-         01YQ==
-X-Gm-Message-State: AOAM5323iwAqWRcMFXW35a7kcn7aykae9PTjMhhZiMwy90e5The0fnLY
-        r89hl2s0MNt0iL8F+HvZgJJhI/xU1Iuh8J68lMaiHhjm5pd3eg==
-X-Google-Smtp-Source: ABdhPJwdW5JDTSv7/6D2pbzvuhN3sHFkC2wCg7ta7mwBvl1yqMkNzMe2+t9z1HROcwNl3zJWpalmuWHvOcP29Ak1JBo=
-X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id
- j11-20020aa7800b0000b0290330455f57a8mr3861506pfi.7.1629986955001; Thu, 26 Aug
- 2021 07:09:15 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=8G/7ZlO3OCW/oELCaVsXFVvVuQOIOXBoolUrlOFg5ds=;
+        b=HrtLIH9T0+RkKsosdXW56DKsuq8iuMuU0Y0YO3gl8GObaPkv6GJCDpTJpArarWV2ee
+         qd4I2kHNWu5t4Vw4xjbkcqxRPydjD/O8/ZC+bm7We4NI+M2b2cj36qxz/eXDcLq8qn8+
+         1m15jEsxm8F8rWBcK7yDFqBk9CJwGjafn3gQ+UDRUpWC44q4dgHd+7w/qkLAM3p2tfl6
+         qAC9x/rx/9/FxaM5LxyyPuNZ9LvAIAjKeYdxzng6j6JSoCrqrSm0QGtTG4Nl4YFn4QxD
+         olRehOsHLBO6qJDGwGz1QZl0OeW5XCGZhUugzgFYr4WxTdjnusblLsWxMQQYTwgwdOjb
+         /4MQ==
+X-Gm-Message-State: AOAM530qrpF3SQgvGK9AQSSvM5yoPPZcwhqqYzXn2A2xZUoH2tszrpE7
+        2sqos1WWkwdS/Cpr7YMe5am8y7XKNPwuV5yLpeGPy0sNa+nSR2M8KricNIWFP99YbACF3GuBqv9
+        s1bhX1NpEBpdbCUBB93abZhHn0qQo9Q/FbVCYydoMEgzzJhXU1X1gPccy9mQu6keJeiawIA6w
+X-Received: by 2002:a05:600c:4786:: with SMTP id k6mr3810302wmo.177.1629986966140;
+        Thu, 26 Aug 2021 07:09:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNZb+DI3d7hc5fu4d3o+gW7xumIsZ6ppo8lQ6GiIt4+/RCYJMTCrbeKlf8aKlmLHYchjnECQ==
+X-Received: by 2002:a05:600c:4786:: with SMTP id k6mr3810237wmo.177.1629986965829;
+        Thu, 26 Aug 2021 07:09:25 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23dec.dip0.t-ipconnect.de. [79.242.61.236])
+        by smtp.gmail.com with ESMTPSA id s7sm3255500wra.75.2021.08.26.07.09.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 07:09:25 -0700 (PDT)
+To:     SeongJae Park <sj38.park@gmail.com>, akpm@linux-foundation.org
+Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        brendanhiggins@google.com, corbet@lwn.net, dwmw@amazon.com,
+        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
+        greg@kroah.com, gthelen@google.com, guoju.fgj@alibaba-inc.com,
+        jgowans@amazon.com, joe@perches.com, mgorman@suse.de,
+        mheyne@amazon.de, minchan@kernel.org, mingo@redhat.com,
+        namhyung@kernel.org, peterz@infradead.org, riel@surriel.com,
+        rientjes@google.com, rostedt@goodmis.org, rppt@kernel.org,
+        shakeelb@google.com, shuah@kernel.org, sieberf@amazon.com,
+        snu@zelle79.org, vbabka@suse.cz, vdavydov.dev@gmail.com,
+        zgf574564920@gmail.com, linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210716081449.22187-1-sj38.park@gmail.com>
+ <20210716081449.22187-6-sj38.park@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v34 05/13] mm/damon: Implement primitives for the virtual
+ memory address spaces
+Message-ID: <358fa060-7702-d523-5169-f25a3de0c22e@redhat.com>
+Date:   Thu, 26 Aug 2021 16:09:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210817081401.3440-1-utkarshverma294@gmail.com> <YRuyoWujcSB6zKl5@kroah.com>
-In-Reply-To: <YRuyoWujcSB6zKl5@kroah.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 26 Aug 2021 17:08:35 +0300
-Message-ID: <CAHp75Vev9=mkNxi__eH3Lj+a9_rNBQ8M90EGgvsjbtQ_OqcOtg@mail.gmail.com>
-Subject: Re: [PATCH] serial: 8250_mid: Use pci_irq_vector() to get IRQ
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Utkarsh Verma <utkarshverma294@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210716081449.22187-6-sj38.park@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 3:59 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Tue, Aug 17, 2021 at 01:44:01PM +0530, Utkarsh Verma wrote:
-> > Instead of a direct assignment, use pci_irq_vector() to get the
-> > Linux IRQ number.
->
-> Why is this needed?
+> +static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
+> +{
+> +	pte_t *pte = NULL;
+> +	pmd_t *pmd = NULL;
+> +	spinlock_t *ptl;
+> +
 
-It's not.
+I just stumbled over this, sorry for the dumb questions:
 
-> > +     uart.port.irq = pci_irq_vector(pdev, 0);
->
-> What problem does this solve?
->
-> Do not describe what you are doing, but rather, _why_ you are doing it.
 
-I think I know what was the motivation here, but actually there is no
-problem with current code. Indeed, when we enable MSI we have to
-update the vIRQ line, but this is done in the platform related
-->setup() callbacks (for example, dnv_setup() does it). So we have two
-scenarios:
- 1) there is no MSI enabled and in this case pdev->irq is correct;
- 2) we have MSI enabled and we need to update previously saved pdev->irq.
+a) What do we know about that region we are messing with?
 
-What you, Utkarsh, are doing in the patch has no effect, because at
-that point MSI will never be enabled and pci_irq_vector(pdev, 0) will
-return the very same value as kept in pdev->irq.
+AFAIU, just like follow_pte() and follow_pfn(), follow_invalidate_pte() 
+should only be called on VM_IO and raw VM_PFNMAP mappings in general 
+(see the doc of follow_pte()). Do you even know that it's within a 
+single VMA and that there are no concurrent modifications?
+
+b) Which locks are we holding?
+
+I hope we're holding the mmap lock in read mode at least. Or how are you 
+making sure there are no concurrent modifications to page tables / VMA 
+layout ... ?
+
+> +	if (follow_invalidate_pte(mm, addr, NULL, &pte, &pmd, &ptl))
+
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+
+David / dhildenb
+
