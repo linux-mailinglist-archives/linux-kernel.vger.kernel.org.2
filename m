@@ -2,367 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6323F8831
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAB83F8837
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242295AbhHZNAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhHZNAB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:00:01 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E313C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 05:59:14 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id dm15so4509078edb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 05:59:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9l2OOUE09XlxnnN5BrE9RmBj7/x5XGUJNjJth0rLH1M=;
-        b=Ei9E2sHB5jiRqflPCY7aBs/1YnEabwomR6Lx9CIoy+4q4IJ1GWbgIGI5h8Z81lSRrM
-         Ic3dn6L4Rlj84egP64hYiygM5/+rxOdekuY0h3uuuHXgbU0HqDQNha4dlPBNmZBBnu3X
-         F4JZYhB0pUVWUDPuW2FcOY+aP1WVtuF+dXeMo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=9l2OOUE09XlxnnN5BrE9RmBj7/x5XGUJNjJth0rLH1M=;
-        b=fDwRT2RF89kUTWeb0BH4RXRudipC7y5ce2/FG8VRXRUY541yDoXCBgYl06nbORWZ4T
-         6NbvozoeWx1AILnHltolHuIRL33u/oHov+K6GEJkEEWf7n2q6La6p5nrRHriPR2VhTYG
-         QxqfYcY1HbFjHUMqOLqSarjLu784mSHW2Th41UlYlkaBAq5R+rkVjxYCw55RkJ2GKtE6
-         QKndg93g7/2zNjewJSiB3tce4qVDA2hHKtmqoIvlTy0ZQJtqdPFw8CvcHjb9gRisb2XM
-         lK9YitHU4botYU73X1EQlhcQO+ux4VsbtuzLUPVXwFdiQogScJ2A8E0DA3aVmD7vV8TQ
-         l3dQ==
-X-Gm-Message-State: AOAM532wtopd4a32ozyWz28qEFqi2JjNhwEDOZJoooa+TwxKlljgZNTq
-        7+XsduA8oq40t94rEj/DRDCLnQ==
-X-Google-Smtp-Source: ABdhPJxL8ltd/Qr/lqVn7DnqHxZsvtwRm1Gkw/gARKFkvBq13n0SPt510NYzOn3B5A87x9j8hTrQSw==
-X-Received: by 2002:a05:6402:40c9:: with SMTP id z9mr4155954edb.159.1629982753092;
-        Thu, 26 Aug 2021 05:59:13 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id bl16sm1362875ejb.37.2021.08.26.05.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 05:59:12 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 14:59:10 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
-        ville.syrjala@linux.intel.com, matthew.auld@intel.com,
-        dan.carpenter@oracle.com, tvrtko.ursulin@intel.com,
-        matthew.d.roper@intel.com, lucas.demarchi@intel.com,
-        karthik.b.s@intel.com, jose.souza@intel.com,
-        manasi.d.navare@intel.com, airlied@redhat.com,
-        aditya.swarup@intel.com, andrescj@chromium.org,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [PATCH v8 4/7] drm: avoid races with modesetting rights
-Message-ID: <YSeQHvagpTjlifpX@phenom.ffwll.local>
-Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        chris@chris-wilson.co.uk, ville.syrjala@linux.intel.com,
-        matthew.auld@intel.com, dan.carpenter@oracle.com,
-        tvrtko.ursulin@intel.com, matthew.d.roper@intel.com,
-        lucas.demarchi@intel.com, karthik.b.s@intel.com,
-        jose.souza@intel.com, manasi.d.navare@intel.com, airlied@redhat.com,
-        aditya.swarup@intel.com, andrescj@chromium.org,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210826020122.1488002-1-desmondcheongzx@gmail.com>
- <20210826020122.1488002-5-desmondcheongzx@gmail.com>
+        id S242485AbhHZNAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:00:31 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:29966 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232667AbhHZNAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 09:00:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629982783; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vNEMBaGIbgQu53uZUr40P4nXthIpVErA1efIhAAM6Sg=;
+ b=BiK+kSPo6mHYbo39xZs7FQLvrQOQe9vMo645haDqoJPOeXgUhuWrW33bHdJVTWz1uhbYH3cj
+ hPlgwZq8T0tOc95gTtQ0gjojIBy2aqylJ2mpCt+aMGTaYlgZXvayp8be0bhOqpH0sSn6dIwC
+ HagmHWSt9Wa6ajXT5bFbvnY2alQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6127903e096d475c7c85a7bd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Aug 2021 12:59:42
+ GMT
+Sender: rajpat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 88886C4360C; Thu, 26 Aug 2021 12:59:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajpat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D70EAC43460;
+        Thu, 26 Aug 2021 12:59:41 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826020122.1488002-5-desmondcheongzx@gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 26 Aug 2021 18:29:41 +0530
+From:   rajpat@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org
+Subject: Re: [PATCH V5 1/7] arm64: dts: sc7280: Add QSPI node
+In-Reply-To: <YRUdccjvf+ivbqor@google.com>
+References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
+ <1628754078-29779-2-git-send-email-rajpat@codeaurora.org>
+ <YRUdccjvf+ivbqor@google.com>
+Message-ID: <d271d1dafe56cbb58d35a63ec6944b14@codeaurora.org>
+X-Sender: rajpat@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 10:01:19AM +0800, Desmond Cheong Zhi Xi wrote:
-> In drm_client_modeset.c and drm_fb_helper.c,
-> drm_master_internal_{acquire,release} are used to avoid races with DRM
-> userspace. These functions hold onto drm_device.master_rwsem while
-> committing, and bail if there's already a master.
+On 2021-08-12 18:39, Matthias Kaehlcke wrote:
+> On Thu, Aug 12, 2021 at 01:11:12PM +0530, Rajesh Patil wrote:
+>> From: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> 
+>> Add QSPI DT node and qspi_opp_table for SC7280 SoC.
+>> 
+>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 62 
+>> ++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 62 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 53a21d0..f8dd5ff 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -415,6 +415,25 @@
+>>  		method = "smc";
+>>  	};
+>> 
+>> +	qspi_opp_table: qspi-opp-table {
+>> +		compatible = "operating-points-v2";
+>> +
+>> +		opp-75000000 {
+>> +			opp-hz = /bits/ 64 <75000000>;
+>> +			required-opps = <&rpmhpd_opp_low_svs>;
+>> +		};
+>> +
+>> +		opp-150000000 {
+>> +			opp-hz = /bits/ 64 <150000000>;
+>> +			required-opps = <&rpmhpd_opp_svs>;
+>> +		};
+>> +
+>> +		opp-300000000 {
+>> +			opp-hz = /bits/ 64 <300000000>;
+>> +			required-opps = <&rpmhpd_opp_nom>;
+>> +		};
+>> +	};
+>> +
 > 
-> However, there are other places where modesetting rights can race. A
-> time-of-check-to-time-of-use error can occur if an ioctl that changes
-> the modeset has its rights revoked after it validates its permissions,
-> but before it completes.
+> From v3:
 > 
-> There are four places where modesetting permissions can change:
+> roja> Can we move this "qspi_opp_table" to / from /soc?
 > 
-> - DROP_MASTER ioctl removes rights for a master and its leases
+> bjorn> If you have made a proper attempt to convince Rob and Mark that
+> bjorn> a child "opp-table" in a SPI master is not a SPI device - and 
+> the
+> bjorn> conclusion is that this is not a good idea...then yes it should 
+> live
+> bjorn> outside /soc.
 > 
-> - REVOKE_LEASE ioctl revokes rights for a specific lease
-> 
-> - SET_MASTER ioctl sets the device master if the master role hasn't
-> been acquired yet
-> 
-> - drm_open which can create a new master for a device if one does not
-> currently exist
-> 
-> These races can be avoided using drm_device.master_rwsem: users that
-> perform modesetting should hold a read lock on the new
-> drm_device.master_rwsem, and users that change these permissions
-> should hold a write lock.
-> 
-> To avoid deadlocks with master_rwsem, for ioctls that need to check
-> for modesetting permissions, but also need to hold a write lock on
-> master_rwsem to protect some other attribute (or recurses to some
-> function that holds a write lock, like drm_mode_create_lease_ioctl
-> which eventually calls drm_master_open), we remove the DRM_MASTER flag
-> and push the master_rwsem lock and permissions check into the ioctl.
-> 
-> Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> ---
->  drivers/gpu/drm/drm_auth.c  |  4 ++++
->  drivers/gpu/drm/drm_ioctl.c | 20 +++++++++++++++-----
->  drivers/gpu/drm/drm_lease.c | 35 ++++++++++++++++++++++++-----------
->  include/drm/drm_device.h    |  5 +++++
->  4 files changed, 48 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-> index 73ade0513ccb..65065f7e1499 100644
-> --- a/drivers/gpu/drm/drm_auth.c
-> +++ b/drivers/gpu/drm/drm_auth.c
-> @@ -120,6 +120,10 @@ int drm_authmagic(struct drm_device *dev, void *data,
->  	DRM_DEBUG("%u\n", auth->magic);
->  
->  	down_write(&dev->master_rwsem);
-> +	if (unlikely(!drm_is_current_master(file_priv))) {
-> +		up_write(&dev->master_rwsem);
-> +		return -EACCES;
-> +	}
->  	file = idr_find(&file_priv->master->magic_map, auth->magic);
->  	if (file) {
->  		file->authenticated = 1;
-> diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
-> index 158629d88319..8bea39ffc5c0 100644
-> --- a/drivers/gpu/drm/drm_ioctl.c
-> +++ b/drivers/gpu/drm/drm_ioctl.c
-> @@ -386,6 +386,10 @@ static int drm_setversion(struct drm_device *dev, void *data, struct drm_file *f
->  	int if_version, retcode = 0;
->  
->  	down_write(&dev->master_rwsem);
-> +	if (unlikely(!drm_is_current_master(file_priv))) {
-> +		retcode = -EACCES;
-> +		goto unlock;
-> +	}
->  	if (sv->drm_di_major != -1) {
->  		if (sv->drm_di_major != DRM_IF_MAJOR ||
->  		    sv->drm_di_minor < 0 || sv->drm_di_minor > DRM_IF_MINOR) {
-> @@ -420,8 +424,9 @@ static int drm_setversion(struct drm_device *dev, void *data, struct drm_file *f
->  	sv->drm_di_minor = DRM_IF_MINOR;
->  	sv->drm_dd_major = dev->driver->major;
->  	sv->drm_dd_minor = dev->driver->minor;
-> -	up_write(&dev->master_rwsem);
->  
-> +unlock:
-> +	up_write(&dev->master_rwsem);
->  	return retcode;
->  }
->  
-> @@ -574,12 +579,12 @@ static const struct drm_ioctl_desc drm_ioctls[] = {
->  	DRM_IOCTL_DEF(DRM_IOCTL_GET_STATS, drm_getstats, 0),
->  	DRM_IOCTL_DEF(DRM_IOCTL_GET_CAP, drm_getcap, DRM_RENDER_ALLOW),
->  	DRM_IOCTL_DEF(DRM_IOCTL_SET_CLIENT_CAP, drm_setclientcap, 0),
-> -	DRM_IOCTL_DEF(DRM_IOCTL_SET_VERSION, drm_setversion, DRM_MASTER),
-> +	DRM_IOCTL_DEF(DRM_IOCTL_SET_VERSION, drm_setversion, 0),
+> I didn't see a follow up on this, was such an attempt made? Is there a
+> link to the discussion?
 
-Random bikeshed, if you're bored: In newer code we've given ioctl
-callbacks an _ioctl suffix, so they'r easier to spot. Could do that in a
-follow-up if you want.
-
->  
->  	DRM_IOCTL_DEF(DRM_IOCTL_SET_UNIQUE, drm_invalid_op, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
->  	DRM_IOCTL_DEF(DRM_IOCTL_BLOCK, drm_noop, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
->  	DRM_IOCTL_DEF(DRM_IOCTL_UNBLOCK, drm_noop, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
-> -	DRM_IOCTL_DEF(DRM_IOCTL_AUTH_MAGIC, drm_authmagic, DRM_MASTER),
-> +	DRM_IOCTL_DEF(DRM_IOCTL_AUTH_MAGIC, drm_authmagic, 0),
->  
->  	DRM_LEGACY_IOCTL_DEF(DRM_IOCTL_ADD_MAP, drm_legacy_addmap_ioctl, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
->  	DRM_LEGACY_IOCTL_DEF(DRM_IOCTL_RM_MAP, drm_legacy_rmmap_ioctl, DRM_AUTH),
-> @@ -706,10 +711,10 @@ static const struct drm_ioctl_desc drm_ioctls[] = {
->  		      DRM_RENDER_ALLOW),
->  	DRM_IOCTL_DEF(DRM_IOCTL_CRTC_GET_SEQUENCE, drm_crtc_get_sequence_ioctl, 0),
->  	DRM_IOCTL_DEF(DRM_IOCTL_CRTC_QUEUE_SEQUENCE, drm_crtc_queue_sequence_ioctl, 0),
-> -	DRM_IOCTL_DEF(DRM_IOCTL_MODE_CREATE_LEASE, drm_mode_create_lease_ioctl, DRM_MASTER),
-> +	DRM_IOCTL_DEF(DRM_IOCTL_MODE_CREATE_LEASE, drm_mode_create_lease_ioctl, 0),
->  	DRM_IOCTL_DEF(DRM_IOCTL_MODE_LIST_LESSEES, drm_mode_list_lessees_ioctl, DRM_MASTER),
->  	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GET_LEASE, drm_mode_get_lease_ioctl, DRM_MASTER),
-> -	DRM_IOCTL_DEF(DRM_IOCTL_MODE_REVOKE_LEASE, drm_mode_revoke_lease_ioctl, DRM_MASTER),
-> +	DRM_IOCTL_DEF(DRM_IOCTL_MODE_REVOKE_LEASE, drm_mode_revoke_lease_ioctl, 0),
->  };
->  
->  #define DRM_CORE_IOCTL_COUNT	ARRAY_SIZE( drm_ioctls )
-> @@ -776,6 +781,9 @@ long drm_ioctl_kernel(struct file *file, drm_ioctl_t *func, void *kdata,
->  	if (unlikely(drm_core_check_feature(dev, DRIVER_LEGACY)) && !(flags & DRM_UNLOCKED))
->  		mutex_lock(&drm_global_mutex);
->  
-> +	if (unlikely(flags & DRM_MASTER))
-> +		down_read(&dev->master_rwsem);
-> +
->  	retcode = drm_ioctl_permit(flags, file_priv);
->  	if (unlikely(retcode))
->  		goto out;
-> @@ -783,6 +791,8 @@ long drm_ioctl_kernel(struct file *file, drm_ioctl_t *func, void *kdata,
->  	retcode = func(dev, kdata, file_priv);
->  
->  out:
-> +	if (unlikely(flags & DRM_MASTER))
-> +		up_read(&dev->master_rwsem);
->  	if (unlikely(drm_core_check_feature(dev, DRIVER_LEGACY)) && !(flags & DRM_UNLOCKED))
->  		mutex_unlock(&drm_global_mutex);
->  	return retcode;
-> diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
-> index dee4f24a1808..bed6f7636cbe 100644
-> --- a/drivers/gpu/drm/drm_lease.c
-> +++ b/drivers/gpu/drm/drm_lease.c
-> @@ -500,6 +500,18 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
->  		return -EINVAL;
->  	}
->  
-> +	/* Clone the lessor file to create a new file for us */
-> +	DRM_DEBUG_LEASE("Allocating lease file\n");
-> +	lessee_file = file_clone_open(lessor_file);
-> +	if (IS_ERR(lessee_file))
-> +		return PTR_ERR(lessee_file);
-> +
-> +	down_read(&dev->master_rwsem);
-> +	if (unlikely(!drm_is_current_master(lessor_priv))) {
-> +		ret = -EACCES;
-> +		goto out_file;
-> +	}
-> +
->  	lessor = drm_file_get_master(lessor_priv);
->  	/* Do not allow sub-leases */
->  	if (lessor->lessor) {
-> @@ -547,14 +559,6 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
->  		goto out_leases;
->  	}
->  
-> -	/* Clone the lessor file to create a new file for us */
-> -	DRM_DEBUG_LEASE("Allocating lease file\n");
-> -	lessee_file = file_clone_open(lessor_file);
-> -	if (IS_ERR(lessee_file)) {
-> -		ret = PTR_ERR(lessee_file);
-> -		goto out_lessee;
-> -	}
-> -
->  	lessee_priv = lessee_file->private_data;
->  	/* Change the file to a master one */
->  	drm_master_put(&lessee_priv->master);
-> @@ -571,17 +575,19 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
->  	fd_install(fd, lessee_file);
->  
->  	drm_master_put(&lessor);
-
-Hm if we're unlucky this might be the last reference (against nasty
-userspace only), and that could then perhaps collide with us still holding
-the lock. It looks like we're fine, the only thing that drm_master_put
-might be locking is
-
-	mutex_lock(&dev->mode_config.idr_mutex);
-
-through drm_lease_destroy(). We don't care about legacy drivers and hence
-the dev->struct_mutex (plus that lock is a complete mess anyway).
-
-Maybe another patch to add a might_lock to drm_master_put, just to be
-safe?
-
-> +	up_read(&dev->master_rwsem);
->  	DRM_DEBUG_LEASE("drm_mode_create_lease_ioctl succeeded\n");
->  	return 0;
->  
-> -out_lessee:
-> -	drm_master_put(&lessee);
-> -
->  out_leases:
->  	put_unused_fd(fd);
->  
->  out_lessor:
->  	drm_master_put(&lessor);
-> +
-> +out_file:
-> +	up_read(&dev->master_rwsem);
-> +	fput(lessee_file);
->  	DRM_DEBUG_LEASE("drm_mode_create_lease_ioctl failed: %d\n", ret);
->  	return ret;
->  }
-> @@ -705,6 +711,11 @@ int drm_mode_revoke_lease_ioctl(struct drm_device *dev,
->  	if (!drm_core_check_feature(dev, DRIVER_MODESET))
->  		return -EOPNOTSUPP;
->  
-> +	down_write(&dev->master_rwsem);
-> +	if (unlikely(!drm_is_current_master(lessor_priv))) {
-> +		ret = -EACCES;
-> +		goto unlock;
-> +	}
->  	lessor = drm_file_get_master(lessor_priv);
->  	mutex_lock(&dev->mode_config.idr_mutex);
->  
-> @@ -728,5 +739,7 @@ int drm_mode_revoke_lease_ioctl(struct drm_device *dev,
->  	mutex_unlock(&dev->mode_config.idr_mutex);
->  	drm_master_put(&lessor);
->  
-> +unlock:
-> +	up_write(&dev->master_rwsem);
->  	return ret;
->  }
-> diff --git a/include/drm/drm_device.h b/include/drm/drm_device.h
-> index 142fb2f6e74d..7d32bb69e6db 100644
-> --- a/include/drm/drm_device.h
-> +++ b/include/drm/drm_device.h
-> @@ -151,6 +151,11 @@ struct drm_device {
->  	 * Lock for &drm_device.master, &drm_file.was_master,
->  	 * &drm_file.is_master, &drm_file.master, &drm_master.unique,
->  	 * &drm_master.unique_len, and &drm_master.magic_map.
-> +	 *
-> +	 * Additionally, synchronizes modesetting rights between multiple users.
-
-Current modern drives only use this for modesetting rights, but this is
-about anything which is exclusively owned by the drm_master. So maybe
-reword to "synchronizes access rights to exclusive resources like
-modesetting access".
-
-With that clarified:
-
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-The other suggestions are for follow-up patches, if you feel like.
--Daniel
-
-> +	 * Users that can change the modeset or display state must hold a read
-> +	 * lock on @master_rwsem, and users that change modesetting rights
-> +	 * should hold a write lock.
->  	 */
->  	struct rw_semaphore master_rwsem;
->  
-> -- 
-> 2.25.1
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+For now I am keeping qspi_opp_table  and qup_opp_table outside the SoC 
+and posting V6.
+I will continue the discussion with DT folks and once concluded I will 
+update as required.
