@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225593F8DF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0AB3F8DDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243330AbhHZSkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:40:13 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:41542 "EHLO
-        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231310AbhHZSkL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:40:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sirena.org.uk; s=20170815-heliosphere; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-        To:From:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=I4nxBP5jaafm6BB+agXz3TbfW0EQ6exBVO8JfJK1BFI=; b=nY0l6Yqt4WwxEbZbpVORBQZT/R
-        n9Y968HlQWW8J8///jTZSdTRjs+Jf5JojtMc/XYvDRaiTij8ADk7TjBdVpYRgAxR6LvKvsU+drnu9
-        kJ9Tt59n3OdoQOixOnGMAWfgokxKC0h9VxB1Hbu3yDc8h+vwXc5tyW1Ct/lBWfr2vj3c=;
-Received: from 188.30.109.46.threembb.co.uk ([188.30.109.46] helo=fitzroy.sirena.org.uk)
-        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <broonie@sirena.org.uk>)
-        id 1mJKHR-00FYOJ-J1; Thu, 26 Aug 2021 18:39:13 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
-        id 281A3D14302; Thu, 26 Aug 2021 19:30:25 +0100 (BST)
-From:   Mark Brown <broonie@kernel.org>
-To:     bgoswami@codeaurora.org, perex@perex.cz,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        srinivas.kandagatla@linaro.org, tiwai@suse.com, vkoul@kernel.org,
-        lgirdwood@gmail.com
-Cc:     Mark@sirena.org.uk, Brown@sirena.org.uk, broonie@kernel.org,
-        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] ASoC: wcd9335: Firx some resources leak in the probe and remove function
-Date:   Thu, 26 Aug 2021 19:30:25 +0100
-Message-Id: <163000225499.699341.15649110189101404680.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1629091028.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1629091028.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
+        id S243313AbhHZScg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:32:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232759AbhHZScf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 14:32:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9168660F45;
+        Thu, 26 Aug 2021 18:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630002707;
+        bh=sxl8vRje6pw3mYQTbT+6OnyNd0agftixyPnb0iZC2C0=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=YFynOUGS45MIcat9ll5QCVGE6K3v3Xoi3YZYMTp0kCwdLITDSO1Jp6mjK+PCM+bFM
+         OkfmGcGV3NRjkIN5evKfbkj3EdFKC1pjYOBrf8jNzG+xpxcUvxPCgPjYNcuT4gfyiE
+         BYckczGOV50RQT7rMbAqQBT+XZnykNc1NqKoMPpAURpjKjtSgOFY6suGYvRn5vja6y
+         80AzCjcXuOikm27mjmTmQ4P3F2cYU7bXDHqKFLW0PVHvOIFuN1BQQ+qRLtJqKZGtJ0
+         eV73JTvpUMS+miRRtSoSSliYfacw4mhJL9poI8xMTIWtDJyNCtgTz5sQLfij2DAz4U
+         hx85T43h4B3GA==
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210727202004.712665-1-dmitry.baryshkov@linaro.org>
+References: <20210727202004.712665-1-dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v6 0/6] clk: qcom: use power-domain for sm8250's clock controllers
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Thu, 26 Aug 2021 11:31:46 -0700
+Message-ID: <163000270629.1317818.2836576068466077505@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown,,, <broonie@kernel.org>
+Quoting Dmitry Baryshkov (2021-07-27 13:19:56)
+> On SM8250 both the display and video clock controllers are powered up by
+> the MMCX power domain. Handle this by linking clock controllers to the
+> proper power domain, and using runtime power management to enable and
+> disable the MMCX power domain.
+>=20
+> Dependencies:
+> - https://lore.kernel.org/linux-arm-msm/20210703005416.2668319-1-bjorn.an=
+dersson@linaro.org/
+>   (pending)
 
-On Mon, 16 Aug 2021 07:25:01 +0200, Christophe JAILLET wrote:
-> The first 2 patches are sraightforward and look logical to me.
-> 
-> However, the 3rd one in purely speculative. It is based on the fact that a
-> comment states that we enable some irqs on some slave ports. That said, it writes
-> 0xFF in some registers.
-> 
-> So, I guess that we should disable these irqs when the driver is removed. That
-> said, writing 0x00 at the same place looks logical to me.
-> 
-> [...]
+Does this patch series need to go through the qcom tree? Presumably the
+dependency is going through qcom -> arm-soc
 
-Applied, thanks!
-
-[1/3] ASoC: wcd9335: Fix a double irq free in the remove function
-      commit: 7a6a723e98aa45f393e6add18f7309dfffa1b0e2
-[2/3] ASoC: wcd9335: Fix a memory leak in the error handling path of the probe function
-      commit: fc6fc81caa63900cef9ebb8b2e365c3ed5a9effb
-[3/3] ASoC: wcd9335: Disable irq on slave ports in the remove function
-      commit: d3efd26af2e044ff2b48d38bb871630282d77e60
-
-Best regards,
--- 
-Mark Brown,,, <broonie@kernel.org>
+>=20
+> Changes since v5:
+>  - Dropped devm_pm_runtime_enable callback to remove extra dependency
+>=20
+> Changes since v4:
+>  - Dropped pm_runtime handling from drivers/clk/qcom/common.c Moved the
+>    code into dispcc-sm8250.c and videocc-sm8250.c
+>=20
+> Changes since v3:
+>  - Wrap gdsc_enable/gdsc_disable into pm_runtime_get/put calls rather
+>    than calling pm_runtime_get in gdsc_enabled and _put in gdsc_disable
+>  - Squash gdsc patches together to remove possible dependencies between
+>    two patches.
+>
