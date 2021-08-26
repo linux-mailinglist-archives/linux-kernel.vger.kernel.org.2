@@ -2,105 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E543F8ADF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC5D3F8AE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242936AbhHZPUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242913AbhHZPUN (ORCPT
+        id S242955AbhHZPVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:21:42 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:56490 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242904AbhHZPVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:20:13 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9883AC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:19:25 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id lc21so7078656ejc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:19:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=COuDqpujOoWFpeeNNVgXjqNNoXXP7AkxPAE3chYS1Po=;
-        b=JCyUqbkSSAxsyKHlPcDgr7bgu4xmtVHL3mMeRVZeb6qfMKAng357OP/E5hkg9aoStF
-         2YJLuXDqu3P8xCXy6icac2IuDQFk7lYkkKSmPtacGNNVUJzsX7GoF7oskqD7a9IZMhUt
-         bBjwW7mNnpLivO2nfPB1XMTWgU57F0xkiTWmn7kivQcxk42YyKKAcOVKwgGWgledhc4Y
-         BLikzeGRCKF5ZLQDxcTM+THStdh4TYnu6CeTypxB8+0Lf5md2SprTcmKwWta3ec/oXuo
-         Od6QcmkFPPgAHpo3rMTggu0bull0Ye8Uz6qc8AX4dSOoLAZsi4cilOcNWTQAqtdqV8rT
-         ev5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=COuDqpujOoWFpeeNNVgXjqNNoXXP7AkxPAE3chYS1Po=;
-        b=nYBnCrMfaABaV46NQkcKX7gs2GzGvsxPlaq5d/INmEnYVnOvX5uoV8M05LeGKuGeGb
-         oWUtrPU9sd9OZt7vYeSvB9lkD55b0hC2SVimk05w7iL43BKIxW23iBDuR6jFTw6dVqmP
-         n5s6aoyGS/j1LI4Ws65h29CAwnWoG6Ohn/eXKmKYFxRt32cxBNdY7HtGQQbBrXSTDROZ
-         GzT083M928HC4VGO5E8t/s+MwwIiEWxX8+ymX+XAJM4QRWkA3iyhAvrylN90WQ43yzsO
-         ogg1lfuSeoTWy/Up6JURAmv6NjeYBd6Bq1u7W9VnOO2IMQo0pE6APeTmJzb+0iKiP7Tt
-         bhjA==
-X-Gm-Message-State: AOAM5328yLCk7hgDF/cH1rSIg3VJtAnplgL6YqClY7WGo8Wj8WLHsP7J
-        icOdrxxM1xljhtO0T1Xtczc5fgJ3ZZdMT0JA9zOd3A==
-X-Google-Smtp-Source: ABdhPJyO9KnFCBi21tKMJtf8QVpUf6kS1Qy8yS+zGqz9k+SUvHsTRbFtGWD/dcXGWHJXHIAvJfygTp1FMgk+XX8Vjkw=
-X-Received: by 2002:a17:907:785a:: with SMTP id lb26mr4815912ejc.77.1629991163835;
- Thu, 26 Aug 2021 08:19:23 -0700 (PDT)
+        Thu, 26 Aug 2021 11:21:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1629991250; x=1632583250;
+        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=LfHR+esUZqjukvcNKRaf39fw5s9wBCQeVlt2BZrLEOk=;
+        b=t7fforA6zG/rrswdR4SY8onuqW6nrhnulxA8Uk+qTGZDqRqQ/y7UO0BTR62nqTyM
+        IU7c2iHRLMZ62dOsCUD7s7ig8+wXYwcnmnLODf/T+jJN1i4OqufyAKaSAhLhIx2X
+        FHJpBHsd3SOz2wBYAubd3S1MWeyIX3IvpKwISQvfOzk=;
+X-AuditID: c39127d2-777be70000001c5c-17-6127b1529c5c
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id EF.C0.07260.251B7216; Thu, 26 Aug 2021 17:20:50 +0200 (CEST)
+Received: from augenblix2.phytec.de ([172.16.0.56])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2021082617204983-1475685 ;
+          Thu, 26 Aug 2021 17:20:49 +0200 
+From:   Stefan Riedmueller <s.riedmueller@phytec.de>
+To:     Abel Vesa <abel.vesa@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] clk: imx: imx6ul: Move csi_sel mux to correct base register
+Date:   Thu, 26 Aug 2021 17:20:48 +0200
+Message-Id: <20210826152049.4175381-1-s.riedmueller@phytec.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a50:77d4:0:0:0:0:0 with HTTP; Thu, 26 Aug 2021 08:19:22
- -0700 (PDT)
-X-Originating-IP: [5.35.24.211]
-In-Reply-To: <6d8179f45f7139ecc8172c2d2c4988b943393c1e.camel@perches.com>
-References: <20210826120108.12185-1-colin.king@canonical.com> <6d8179f45f7139ecc8172c2d2c4988b943393c1e.camel@perches.com>
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-Date:   Thu, 26 Aug 2021 18:19:22 +0300
-Message-ID: <CAOJe8K1zCRZH-0-+ekDQ5T3mX2cGv1X-gBt1eg4co5HNPP+2vQ@mail.gmail.com>
-Subject: Re: [PATCH] cxgb4: clip_tbl: Fix spelling mistake "wont" -> "won't"
-To:     Joe Perches <joe@perches.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 26.08.2021 17:20:50,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 26.08.2021 17:20:50
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrELMWRmVeSWpSXmKPExsWyRoCBSzdoo3qiQd8SPotll44yWjy86m+x
+        aupOFotNj6+xWnzsucdq0fVrJbPF5V1z2CwunnK1+Lt9E4vFv2sbWSxebBF34PZ4f6OV3WPn
+        rLvsHptWdbJ5bF5S77Hx3Q4mj/6/Bh6fN8kFsEdx2aSk5mSWpRbp2yVwZSx9uJy94JhYRU9b
+        B3MD40PhLkZODgkBE4mOPX+Zuhi5OIQEtjFKdO+8zA7hXGCUaOpazQZSxSZgJLFgWiNYlYjA
+        dkaJF933GUESzAIdTBLzZriB2MICARLb961lAbFZBFQlPt3dyQRi8wrYSXQ9P8IIsU5eYual
+        7+wQcUGJkzOfsIAMlRC4wijR3/CLBaJISOL04rPMEAu0JZYtfM08gZFvFpKeWUhSCxiZVjEK
+        5WYmZ6cWZWbrFWRUlqQm66WkbmIEhvPhieqXdjD2zfE4xMjEwXiIUYKDWUmEd8F3tUQh3pTE
+        yqrUovz4otKc1OJDjNIcLErivPd7mBKFBNITS1KzU1MLUotgskwcnFINjOoCYTrNe5Or3quv
+        u8K273U3l/ehbt1D6sdbtINXGVZOFDHc3iIUeu+nx292M5nA2Vu4eG2fGcokGZ7elFTv1lt+
+        tf3Avmrlpi/ThAseFJ1pylTIPKQlU3qI/bmlzoo9rfIv2S9nJv++97bpeOz7v+KKZ3ZyWWqk
+        pPMLzP928sSHF+84zvSaK7EUZyQaajEXFScCAOjCzutVAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/21, Joe Perches <joe@perches.com> wrote:
-> On Thu, 2021-08-26 at 13:01 +0100, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> There are spelling mistakes in dev_err and dev_info messages. Fix them.
-> []
->> diff --git a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
->> b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
-> []
->> @@ -120,7 +120,7 @@ int cxgb4_clip_get(const struct net_device *dev, const
->> u32 *lip, u8 v6)
->>  				write_unlock_bh(&ctbl->lock);
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>  				dev_err(adap->pdev_dev,
->>  					"CLIP FW cmd failed with error %d, "
->> -					"Connections using %pI6c wont be "
->> +					"Connections using %pI6c won't be "
->>  					"offloaded",
->>  					ret, ce->addr6.sin6_addr.s6_addr);
->>  				return ret;
->> @@ -133,7 +133,7 @@ int cxgb4_clip_get(const struct net_device *dev, const
->> u32 *lip, u8 v6)
->>  	} else {
->>  		write_unlock_bh(&ctbl->lock);
->>  		dev_info(adap->pdev_dev, "CLIP table overflow, "
->> -			 "Connections using %pI6c wont be offloaded",
->> +			 "Connections using %pI6c won't be offloaded",
->>  			 (void *)lip);
->
-> This is an unnecessary cast.
-> And these could coalesce the format fragments and add newlines too.
+The csi=5Fsel mux register is located in the CCM register base and not the
+CCM=5FANALOG register base. So move it to the correct position in code.
 
-and fix the leftover in the comment:
-./t4_hw.c:7185:	 * set wont be sent when we are flashing FW.
+Otherwise changing the parent of the csi clock can lead to a complete
+system failure due to the CCM=5FANALOG=5FPLL=5FSYS=5FTOG register being fal=
+sely
+modified.
 
+Also remove the SET=5FRATE=5FPARENT flag since one possible supply for the
+csi=5Fsel mux is the system PLL which we don't want to modify.
 
->
->
->
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+---
+ drivers/clk/imx/clk-imx6ul.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/imx/clk-imx6ul.c b/drivers/clk/imx/clk-imx6ul.c
+index 5dbb6a937732..206e4c43f68f 100644
+--- a/drivers/clk/imx/clk-imx6ul.c
++++ b/drivers/clk/imx/clk-imx6ul.c
+@@ -161,7 +161,6 @@ static void =5F=5Finit imx6ul=5Fclocks=5Finit(struct de=
+vice=5Fnode *ccm=5Fnode)
+ 	hws[IMX6UL=5FPLL5=5FBYPASS] =3D imx=5Fclk=5Fhw=5Fmux=5Fflags("pll5=5Fbypa=
+ss", base + 0xa0, 16, 1, pll5=5Fbypass=5Fsels, ARRAY=5FSIZE(pll5=5Fbypass=
+=5Fsels), CLK=5FSET=5FRATE=5FPARENT);
+ 	hws[IMX6UL=5FPLL6=5FBYPASS] =3D imx=5Fclk=5Fhw=5Fmux=5Fflags("pll6=5Fbypa=
+ss", base + 0xe0, 16, 1, pll6=5Fbypass=5Fsels, ARRAY=5FSIZE(pll6=5Fbypass=
+=5Fsels), CLK=5FSET=5FRATE=5FPARENT);
+ 	hws[IMX6UL=5FPLL7=5FBYPASS] =3D imx=5Fclk=5Fhw=5Fmux=5Fflags("pll7=5Fbypa=
+ss", base + 0x20, 16, 1, pll7=5Fbypass=5Fsels, ARRAY=5FSIZE(pll7=5Fbypass=
+=5Fsels), CLK=5FSET=5FRATE=5FPARENT);
+-	hws[IMX6UL=5FCLK=5FCSI=5FSEL] =3D imx=5Fclk=5Fhw=5Fmux=5Fflags("csi=5Fsel=
+", base + 0x3c, 9, 2, csi=5Fsels, ARRAY=5FSIZE(csi=5Fsels), CLK=5FSET=5FRAT=
+E=5FPARENT);
+=20
+ 	/* Do not bypass PLLs initially */
+ 	clk=5Fset=5Fparent(hws[IMX6UL=5FPLL1=5FBYPASS]->clk, hws[IMX6UL=5FCLK=5FP=
+LL1]->clk);
+@@ -270,6 +269,7 @@ static void =5F=5Finit imx6ul=5Fclocks=5Finit(struct de=
+vice=5Fnode *ccm=5Fnode)
+ 	hws[IMX6UL=5FCLK=5FECSPI=5FSEL]	  =3D imx=5Fclk=5Fhw=5Fmux("ecspi=5Fsel",=
+	base + 0x38, 18, 1, ecspi=5Fsels, ARRAY=5FSIZE(ecspi=5Fsels));
+ 	hws[IMX6UL=5FCLK=5FLCDIF=5FPRE=5FSEL]	  =3D imx=5Fclk=5Fhw=5Fmux=5Fflags(=
+"lcdif=5Fpre=5Fsel", base + 0x38, 15, 3, lcdif=5Fpre=5Fsels, ARRAY=5FSIZE(l=
+cdif=5Fpre=5Fsels), CLK=5FSET=5FRATE=5FPARENT);
+ 	hws[IMX6UL=5FCLK=5FLCDIF=5FSEL]	  =3D imx=5Fclk=5Fhw=5Fmux("lcdif=5Fsel",=
+	base + 0x38, 9, 3, lcdif=5Fsels, ARRAY=5FSIZE(lcdif=5Fsels));
++	hws[IMX6UL=5FCLK=5FCSI=5FSEL]		  =3D imx=5Fclk=5Fhw=5Fmux("csi=5Fsel", ba=
+se + 0x3c, 9, 2, csi=5Fsels, ARRAY=5FSIZE(csi=5Fsels));
+=20
+ 	hws[IMX6UL=5FCLK=5FLDB=5FDI0=5FDIV=5FSEL]  =3D imx=5Fclk=5Fhw=5Fmux("ldb=
+=5Fdi0", base + 0x20, 10, 1, ldb=5Fdi0=5Fdiv=5Fsels, ARRAY=5FSIZE(ldb=5Fdi0=
+=5Fdiv=5Fsels));
+ 	hws[IMX6UL=5FCLK=5FLDB=5FDI1=5FDIV=5FSEL]  =3D imx=5Fclk=5Fhw=5Fmux("ldb=
+=5Fdi1", base + 0x20, 11, 1, ldb=5Fdi1=5Fdiv=5Fsels, ARRAY=5FSIZE(ldb=5Fdi1=
+=5Fdiv=5Fsels));
+--=20
+2.25.1
+
