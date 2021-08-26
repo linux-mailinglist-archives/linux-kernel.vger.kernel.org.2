@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CE93F8FA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 22:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19F53F8FA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 22:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243474AbhHZU2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 16:28:45 -0400
-Received: from mga05.intel.com ([192.55.52.43]:4380 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229916AbhHZU2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 16:28:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="303412502"
-X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
-   d="scan'208";a="303412502"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 13:27:56 -0700
-X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
-   d="scan'208";a="687140813"
-Received: from clmangi-mobl2.amr.corp.intel.com (HELO [10.209.102.110]) ([10.209.102.110])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 13:27:55 -0700
-Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20210825235234.153013-1-jarkko@kernel.org>
- <20210825235234.153013-2-jarkko@kernel.org>
- <ba483b7e-19a3-d4d3-56c0-3371a77341cb@infradead.org>
- <e1ff36db0e7ed909653b6adb45094cc459dbad0b.camel@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <e87c5c8f-dead-ebdc-62f1-aa635288671c@intel.com>
-Date:   Thu, 26 Aug 2021 13:27:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S243459AbhHZUag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 16:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232115AbhHZUaf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 16:30:35 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7AFC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 13:29:47 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id y18so5458215ioc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 13:29:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KS5bnFn8Y6gpkFwk4lSN+qMk+pSitVKJiQuPfookyLw=;
+        b=T54Mvt1OkOwZKZVC8yB84osFcFFszP3nEEnPGks9V+7ttcd8WE2PBRj6Ot7p1qMdsW
+         VSv9mCMx7aofBcB6mNmnGZjZWadQh+ektzlJapxEgZg2Dng9mfsIUQW/K8eCyu+Z58Nf
+         zby4pVnJ8OIKewOqb1HUFgKHhglU2C+pPtqcs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KS5bnFn8Y6gpkFwk4lSN+qMk+pSitVKJiQuPfookyLw=;
+        b=sInQYBtjYu1FWGNbYOyUbLPT9728yaVn5AUhGKln7hpEycW9/b2edkuX2nEJMHmE2z
+         cjpaKw/tOsY4bneT4O6ukGnlXgnTyA6eNUkSnOrFVPMfd6gaDd2GqOjGnrd3xS7HL+My
+         +lGSv03/F0jc5zN8viNARn4hSfLcUJwAqEfX1BlMubA40dQpjhYnGuxA0dxFC2fc7Klo
+         pHagznVUCvg2chW3f2rJj9jaSTFyBkLzK5UhZgsdUtqhF0TQjCXlznIp/JHJfozz1bro
+         snqGjW17eaR+YovTcmtiwjFtuazu6TVLAzOX8ID+7yz2AZx1PvphG6oxcrVU9ycV0b9A
+         hsCA==
+X-Gm-Message-State: AOAM532ITBzPa4lbX2XjonRmsgSKtmqsb/j2HKy2NWBorNAQxHwi8POH
+        ZQrleUR3sOLgHsewWIPuSBdTj4PkLd/bAQ==
+X-Google-Smtp-Source: ABdhPJy8q9l5l6c8U1EwF44NpvACg4/e/b2UPIfY+ucCaavgTkagm7Y9+LygLCR9eiavECaclDuzVw==
+X-Received: by 2002:a02:958e:: with SMTP id b14mr4940167jai.123.1630009786943;
+        Thu, 26 Aug 2021 13:29:46 -0700 (PDT)
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com. [209.85.166.175])
+        by smtp.gmail.com with ESMTPSA id l15sm2277111ilo.22.2021.08.26.13.29.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 13:29:45 -0700 (PDT)
+Received: by mail-il1-f175.google.com with SMTP id i13so4607802ilm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 13:29:45 -0700 (PDT)
+X-Received: by 2002:a92:cf4a:: with SMTP id c10mr4099123ilr.269.1630009785168;
+ Thu, 26 Aug 2021 13:29:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e1ff36db0e7ed909653b6adb45094cc459dbad0b.camel@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210726231351.655302-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20210726231351.655302-1-bjorn.andersson@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 26 Aug 2021 13:29:32 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VUeV+G30b=YOMrdNbvT8rVkA-iibeB3S36NFwOrxcfiw@mail.gmail.com>
+Message-ID: <CAD=FV=VUeV+G30b=YOMrdNbvT8rVkA-iibeB3S36NFwOrxcfiw@mail.gmail.com>
+Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/21 9:17 AM, Jarkko Sakkinen wrote:
->> I would prefer to see this listed in Documentation/filesystems/proc.rst
->> as an optional field, depending on CONFIG_X86_SGX.
->> Or at least put a reference in proc.rst to this doc file and its
->> supplemental fields.
->>
->> thanks.
-> I *can* put it there but I did have reason not to, i.e. these attributes
-> are neither there:
-> 
-> DirectMap4k:     3930904 kB
-> DirectMap2M:    29440000 kB
-> DirectMap1G:     1048576 kB
-> 
-> And they are implemented in arch specific code.
-> 
-> Actually they are undocumented, e.g.
-> 
-> $ git grep DirectMap4k
-> arch/powerpc/mm/book3s64/pgtable.c:     seq_printf(m, "DirectMap4k:    %8lu kB\n",
-> arch/s390/mm/pageattr.c:        seq_printf(m, "DirectMap4k:    %8lu kB\n",
-> arch/x86/mm/pat/set_memory.c:   seq_printf(m, "DirectMap4k:    %8lu kB\n",
+Hi,
 
-Yeah, we need to add some arch-specific sections to the documentation.
-That *could* just be a reference over to a new file:
+On Mon, Jul 26, 2021 at 4:15 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> +static int dp_parser_find_panel(struct dp_parser *parser)
+> +{
+> +       struct device_node *np = parser->pdev->dev.of_node;
+> +       int rc;
+> +
+> +       rc = drm_of_find_panel_or_bridge(np, 2, 0, &parser->drm_panel, NULL);
+> +       if (rc == -ENODEV)
+> +               rc = 0;
+> +       else if (rc)
+> +               DRM_ERROR("failed to acquire DRM panel: %d\n", rc);
+> +
+> +       return rc;
 
-	Documentation/x86/meminfo.rst
+So rather than storing the drm_panel, I suggest that you actually wrap
+it with a "panel_bridge". Follow the ideas from commit 4e5763f03e10
+("drm/bridge: ti-sn65dsi86: Wrap panel with panel-bridge") and the fix
+in commit c7782443a889 ("drm/bridge: ti-sn65dsi86: Avoid creating
+multiple connectors").
 
-along with whatever other arches provide their own fields too.
+If you do that then actually a bunch of your patch becomes
+unnecessary. You basically just have to attach the "next" bridge in
+the right place and you're good, right?
+
+-Doug
