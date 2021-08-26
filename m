@@ -2,136 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0DF3F8C90
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E1F3F8C91
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243153AbhHZQ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 12:57:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53092 "EHLO mail.kernel.org"
+        id S243162AbhHZQ5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:57:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229986AbhHZQ51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:57:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B280260F42;
-        Thu, 26 Aug 2021 16:56:39 +0000 (UTC)
+        id S243135AbhHZQ5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 12:57:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCD6760F5C;
+        Thu, 26 Aug 2021 16:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629997000;
-        bh=Sdch8X0otKtSPDpNPDcyA2dbJPDXupeY4yKkLojSNgM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PLpHEoTX8XMr7eS8sKDfSN7Wk21t5UKFAtp72cb2VF8bPUtYS3Te3k2zc69ABLQHF
-         LEUWCG9EdTEoJS3PaRxPY045Fm1iRpbSehFQP+7TC8hlyMcRErMgAgFO/V/fsmH0QR
-         KCDXJqQMf+YvkCH/FS95duDi82JSMmr0nHqYgSzsrtMPU3VQld/xBUf3tEfALHco8v
-         /8fb4PB3ps5MmsOS60KQ1eEAW+RJ8rz3lYKdRAmlpIxh6rCzKOpISemkcF9pRnnxjC
-         Tfwh3GuxflCERNdOFpY/1PWMCakkDhhUxorzIrQu4Js/bqAlA9Y6fcm5i4E70ucWLW
-         wYJX9y1kW54tg==
-Date:   Thu, 26 Aug 2021 11:56:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Marek =?iso-8859-1?Q?Marczykowski-G=F3recki?= 
-        <marmarek@invisiblethingslab.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH] PCI/MSI: skip masking MSI on Xen PV
-Message-ID: <20210826165638.GA3686936@bjorn-Precision-5520>
+        s=k20201202; t=1629997003;
+        bh=ueeV4qBK6rbUIoZOJ7roKAYMRwCGRQFtUy2UrgVXrBQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=mR4cTYFpWvhQzDtv/nQvQKLDUFm2xC+McT3K+GVpStyJ9YCgrQFNybUlz3hP2GE1J
+         14MZEa+dskBlODXgYp6bjRFsZQYDYn37g/B5lTxhakxUWZZV9S78BVBdhltQfFPljd
+         d3J9BmIW4x7feKmVDExgHUSaSRTO7pq1kcT6L2naBsGYa40BKOHn1VTZTcOv2BOfmd
+         utokdkJ6+150QFBgsG874SZQyC1V7A/W3VxaZIb6ww9ikiiTW9TI7fbEPjMcbweTV5
+         5JDwp6tmfn7z3Gc/qZPZJrJJ1IMpy7pGMsHi1WAOOE7dDXS0z9jlXWbvBbqlIBs/Yz
+         JxN6TPwaydxAQ==
+Subject: Re: [PATCH v2 08/14] x86/extable: Do not mark exception callback as
+ CFI
+To:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20210823171318.2801096-1-samitolvanen@google.com>
+ <20210823171318.2801096-9-samitolvanen@google.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <e33bdfc8-6de9-0e91-eec6-39e6aca61758@kernel.org>
+Date:   Thu, 26 Aug 2021 09:56:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YSfDIkAmTu+PM4nE@mail-itl>
+In-Reply-To: <20210823171318.2801096-9-samitolvanen@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 06:36:49PM +0200, Marek Marczykowski-Górecki wrote:
-> On Thu, Aug 26, 2021 at 09:55:32AM -0500, Bjorn Helgaas wrote:
-> > If/when you repost this, please run "git log --oneline
-> > drivers/pci/msi.c" and follow the convention of capitalizing the
-> > subject line.
-> > 
-> > Also, I think this patch refers specifically to MSI-X, not MSI, so
-> > please update the subject line and the "masking MSI" below to reflect
-> > that.
+On 8/23/21 10:13 AM, Sami Tolvanen wrote:
+> From: Kees Cook <keescook@chromium.org>
 > 
-> Sure, thanks for pointing this out. Is the patch otherwise ok? Should I
-> post v2 with just updated commit message?
+> The exception table entries are constructed out of a relative offset
+> and point to the actual function, not the CFI table entry. For now,
+> just mark the caller as not checking CFI
 
-Wouldn't hurt to post a v2.  I don't have any objections to the patch,
-but ultimately up to Thomas.
+Does this *mark* the caller as not checking CFI or does it actually make
+the caller stop checking CFI?  What are the semantics of a __nocfi function?
 
-> > On Thu, Aug 26, 2021 at 03:43:37PM +0200, Marek Marczykowski-Górecki wrote:
-> > > When running as Xen PV guest, masking MSI is a responsibility of the
-> > > hypervisor. Guest has no write access to relevant BAR at all - when it
-> > > tries to, it results in a crash like this:
-> > > 
-> > >     BUG: unable to handle page fault for address: ffffc9004069100c
-> > >     #PF: supervisor write access in kernel mode
-> > >     #PF: error_code(0x0003) - permissions violation
-> > >     PGD 18f1c067 P4D 18f1c067 PUD 4dbd067 PMD 4fba067 PTE 80100000febd4075
-> > >     Oops: 0003 [#1] SMP NOPTI
-> > >     CPU: 0 PID: 234 Comm: kworker/0:2 Tainted: G        W         5.14.0-rc7-1.fc32.qubes.x86_64 #15
-> > >     Workqueue: events work_for_cpu_fn
-> > >     RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
-> > >     Code: 2f 96 ff 48 89 44 24 28 48 89 c7 48 85 c0 0f 84 f6 01 00 00 45 0f b7 f6 48 8d 40 0c ba 01 00 00 00 49 c1 e6 04 4a 8d 4c 37 1c <89> 10 48 83 c0 10 48 39 c1 75 f5 41 0f b6 44 24 6a 84 c0 0f 84 48
-> > >     RSP: e02b:ffffc9004018bd50 EFLAGS: 00010212
-> > >     RAX: ffffc9004069100c RBX: ffff88800ed412f8 RCX: ffffc9004069105c
-> > >     RDX: 0000000000000001 RSI: 00000000000febd4 RDI: ffffc90040691000
-> > >     RBP: 0000000000000003 R08: 0000000000000000 R09: 00000000febd404f
-> > >     R10: 0000000000007ff0 R11: ffff88800ee8ae40 R12: ffff88800ed41000
-> > >     R13: 0000000000000000 R14: 0000000000000040 R15: 00000000feba0000
-> > >     FS:  0000000000000000(0000) GS:ffff888018400000(0000) knlGS:0000000000000000
-> > >     CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >     CR2: ffff8000007f5ea0 CR3: 0000000012f6a000 CR4: 0000000000000660
-> > >     Call Trace:
-> > >      e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
-> > >      e1000_probe+0x41f/0xdb0 [e1000e]
-> > >      local_pci_probe+0x42/0x80
-> > >     (...)
-> > > 
-> > > There is pci_msi_ignore_mask variable for bypassing MSI masking on Xen
-> > > PV, but msix_mask_all() missed checking it. Add the check there too.
-> > > 
-> > > Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
-> > > Cc: stable@vger.kernel.org
-> > 
-> > 7d5ec3d36123 appeared in v5.14-rc6, so if this fix is merged before
-> > v5.14, the stable tag will be unnecessary.  But we are running out of
-> > time there.
+> The failure is most visible
+> at boot with CONFIG_DEBUG_RODATA_TEST=y.
+
+What's the failure?
+
 > 
-> 7d5ec3d36123 was already backported to stable branches (at least 5.10
-> and 5.4), and in fact this is how I discovered the issue...
-
-Oh, right, of course.  Sorry :)
-
-> > > Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
-> > > ---
-> > > Cc: xen-devel@lists.xenproject.org
-> > > ---
-> > >  drivers/pci/msi.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> > > index e5e75331b415..3a9f4f8ad8f9 100644
-> > > --- a/drivers/pci/msi.c
-> > > +++ b/drivers/pci/msi.c
-> > > @@ -776,6 +776,9 @@ static void msix_mask_all(void __iomem *base, int tsize)
-> > >  	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
-> > >  	int i;
-> > >  
-> > > +	if (pci_msi_ignore_mask)
-> > > +		return;
-> > > +
-> > >  	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
-> > >  		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
-> > >  }
-> > > -- 
-> > > 2.31.1
-> > > 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> ---
+>  arch/x86/mm/extable.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> -- 
-> Best Regards,
-> Marek Marczykowski-Górecki
-> Invisible Things Lab
+> diff --git a/arch/x86/mm/extable.c b/arch/x86/mm/extable.c
+> index e1664e9f969c..d150d4d12d53 100644
+> --- a/arch/x86/mm/extable.c
+> +++ b/arch/x86/mm/extable.c
+> @@ -155,6 +155,7 @@ enum handler_type ex_get_fault_handler_type(unsigned long ip)
+>  		return EX_HANDLER_OTHER;
+>  }
+>  
+> +__nocfi
+>  int fixup_exception(struct pt_regs *regs, int trapnr, unsigned long error_code,
+>  		    unsigned long fault_addr)
+>  {
+> 
 
 
+This at least needs a comment explaining what's going on.  But maybe it
+could be fixed better by either having the extable entry resolve to the
+magic CFI table entry (can this be done?) or by marking the actual
+indirect call or the type of the variable through which the call is done
+as being a non-CFI call.
+
+--Andy
