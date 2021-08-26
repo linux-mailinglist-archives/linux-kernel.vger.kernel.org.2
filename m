@@ -2,62 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B61F3F833C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11733F834B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240257AbhHZHoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 03:44:12 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:45358
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240113AbhHZHoI (ORCPT
+        id S240457AbhHZHqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 03:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240296AbhHZHqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 03:44:08 -0400
-Received: from wittgenstein (ip5f5bd0d4.dynamic.kabel-deutschland.de [95.91.208.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id C3D263F070;
-        Thu, 26 Aug 2021 07:43:13 +0000 (UTC)
-Date:   Thu, 26 Aug 2021 09:43:11 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Laura Abbott <laura@labbott.name>, ksummit@lists.linux.dev,
-        "tech-board-discuss@lists.linuxfoundation.org" 
-        <tech-board-discuss@lists.linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [Tech-board-discuss] Linux Foundation Technical Advisory Board
- election: call for nominees
-Message-ID: <20210826074311.r2aumout2fvmncby@wittgenstein>
-References: <a52baa8b-6743-7570-aaa6-411b5b13c8aa@labbott.name>
- <CAMuHMdXMbuFww73q3QgdroEYmWXe00rKsbd9pCgYd2zsuc06FQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXMbuFww73q3QgdroEYmWXe00rKsbd9pCgYd2zsuc06FQ@mail.gmail.com>
+        Thu, 26 Aug 2021 03:46:17 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0F8C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 00:45:30 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id q13-20020a25820d000000b0059a84a55d89so2220625ybk.23
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 00:45:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=wKFLqTVWaVrcQULKv1jqscU7IEOt0JC1OsA098B/mg8=;
+        b=MgrRFJDm1nANvlgHSds/Pe4ZKKgMbmjPSzIetJqnyx7l4IeGw8CA8DOJ1MkwJ8Q1fr
+         rE471tV2WG8jVbXtNw/o04Ax9QjwrccP2Fx1QJGGRniwORpBUYKnm0DYKNaM7Pv0rgEu
+         BIQ4qLSmEknUPOFvBYuEixlESUUhGJTgXWLMmBh++7p036Y8qDdClF1Y/q5y/94SHgfX
+         0xcEEN3qr0fgB2SI/iWRtkxX1ViId6077Ue1NyGKx+RkfhRI+J1Llh/dJBzoYLaKjUy5
+         BFsRmQW+ev1BGTyj8BOxilty2S1Vz1mB/WDJjsct4nEQrrTCTYJquK/sb7ve2o0WBa0s
+         sbqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=wKFLqTVWaVrcQULKv1jqscU7IEOt0JC1OsA098B/mg8=;
+        b=k5vIxVsMlmPNv32MjBDihulpIVqAh5P19ssyaLtkTOTTLfNmsrjn+l6j/sRHV48dBa
+         1zbgAiu7AhNZ5FYdwT//BFiDEeDOrMY0QV3DTsH636V0HX+8ACyiG2opyh4Dz3vsWp4V
+         QXLK793m443CHyD7BcxZhwfPta+PCZ/gb3BOPUV9uh5sIIhAYh/Lrkp5dve6WM0tYT1m
+         j+VOhY+jy/rY6H1KlAvqBiWQLzamVoBk1CFt8lijLu5dGRbe0ZXQA+dC2tBpdp2ciNTR
+         jg6chnRf9dyjaiyb6WCnptrl1A5hm6n2oY5EP4Zpb5rW640yGopmVLHEWalVICQM1dwH
+         TCBw==
+X-Gm-Message-State: AOAM530G/iM/usX6DkddunKo4bZMsiLlfaWpZzOkbRiJmcWEatxpxCyP
+        eCqBIb4PHgMgzYnZlwKmzaqrQdpQAsgF1N0=
+X-Google-Smtp-Source: ABdhPJxz+g0Ic2ZhjBouHVwCw2zCtQ4XGrAuR6D8xhyLLvtQM7hmYzuuUc4xpmTTTvSNqfkXQX93y+AA1vZL1lg=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:5b7b:56e7:63bf:9b3c])
+ (user=saravanak job=sendgmr) by 2002:a25:1056:: with SMTP id
+ 83mr3551029ybq.52.1629963929742; Thu, 26 Aug 2021 00:45:29 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 00:45:23 -0700
+Message-Id: <20210826074526.825517-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
+Subject: [PATCH v1 0/2] Fix rtl8366rb issues with fw_devlink=on
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 06:34:53PM +0200, Geert Uytterhoeven wrote:
-> Hi Laura,
-> 
-> On Wed, Aug 25, 2021 at 4:27 PM Laura Abbott <laura@labbott.name> wrote:
-> > Over the last year, matters tended to by the TAB include proposals for
-> > developer workflow improvement, overseeing the Linux Plumbers
-> > Conference, supporting the review of the University of Minnesota
-> > patches and more.  Minutes from TAB meetings can be found here:
-> >
-> >      https://git.kernel.org/pub/scm/docs/tab/tab.git/tree/minutes
-> 
-> It seems there are no minutes more recent than October 2020?
-> Are they just missing, or were there no meetings?
+I consider Patch 2/2 to be a temporary fix that restores functionality
+while a proper fix of the driver is figured out.
 
-Hey Geert,
+Alvin,
 
-Thanks for pointing that out. There definitely were meetings. It seems
-the minutes repo simply hasn't been kept up to date.
-I just brought this up and we will update the repo soon and I'll notify
-here.
+Can you test this out? Also, sorry to drop the accents in your name.
+git-send-email was being weird about it.
 
-Thanks!
-Christian
+Thanks,
+Saravana
+Cc: Alvin Sipraga <ALSI@bang-olufsen.dk>
+
+Saravana Kannan (2):
+  driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
+  net: dsa: rtl8366rb: Quick fix to work with fw_devlink=on
+
+ drivers/base/core.c                | 22 ++++++++++++++++++++++
+ drivers/net/dsa/realtek-smi-core.c |  7 +++++++
+ include/linux/fwnode.h             |  3 +++
+ 3 files changed, 32 insertions(+)
+
+-- 
+2.33.0.rc2.250.ged5fa647cd-goog
+
