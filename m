@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6964B3F837B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628853F837C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240382AbhHZIEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:04:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240449AbhHZID6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:03:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B95D610D2;
-        Thu, 26 Aug 2021 08:03:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629964984;
-        bh=lfRfUXOGIU4YMr/zTdbR8FxwhkqufEf81zxtWDbyrto=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mp6vowKKyllc2+JJB5xlTei4338zSzOYKtJJyozcgKr6aNY0omJj5UdEONhAV2bH4
-         jjHOwxf0URkO7Ez5ukpFG5gsDnqDRwAq0dj7Nz9Gff0uxXjAKa3yieOwNjRoup9FRj
-         uE5ourq3uVh8UPQai4M2gi5FJab1AmYdVPS5CIVRtVVGZNMJvNKZL7itHN1VhC6EDO
-         vIAvSf2inIODt5HYtv0s4N73agqhsXYwkI+MUcKb4OC7tTL6orjE0rnJcEoog9tCDt
-         adib1s/Im7zxPaXy5aJqOD3tMyi9HQ1HwAfSp6zlm+EaHmb0vCHG9ZOpoX1wp4ahV7
-         RlSo4K9odDl4w==
-Date:   Thu, 26 Aug 2021 11:02:57 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 4/4] x86/mm: write protect (most) page tables
-Message-ID: <YSdKsTX3EQQqgj0y@kernel.org>
-References: <20210823132513.15836-1-rppt@kernel.org>
- <20210823132513.15836-5-rppt@kernel.org>
- <1cccc2b6-8b5b-4aee-483d-f10e64a248a5@intel.com>
+        id S240273AbhHZIFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:05:38 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36764 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232223AbhHZIFh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 04:05:37 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7C8CB1FE50;
+        Thu, 26 Aug 2021 08:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629965089; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dz4kMtmgcRiHH+eY6OlEi5nZ3aLXbNcHgM4etPf13YA=;
+        b=RaXHj+z76JhybAusnJe/l5NgRbJwuKMyClTuYWeByEJJa/3JcL7lcatSFh3wD6+BIsO7KH
+        lVKUfqGj/RN39FluYHyasW77HJs5DlJ/VQJ9i8apnUjLEz3zFh9zh7ASrPMz7HNOcUDcoj
+        Bd69K7fsaoOAiDFvrRaF8RRqaRLheHU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629965089;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dz4kMtmgcRiHH+eY6OlEi5nZ3aLXbNcHgM4etPf13YA=;
+        b=uOQW8kR7vS07Lld8N+NnGkMD3J7DCLMAXy5tHiraRSCQp1sBKlYEMVQC0k2GdVXCc9MKCk
+        Dl4GJaPW/HRM9zDA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6F15713A79;
+        Thu, 26 Aug 2021 08:04:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id L3HLGiFLJ2HhBQAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Thu, 26 Aug 2021 08:04:49 +0000
+Date:   Thu, 26 Aug 2021 10:04:49 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sagi Grimberg <sagi@grimberg.me>, yi.he@emc.com
+Subject: Re: [PATCH v2] nvme-tcp: Do not reset transport on data digest errors
+Message-ID: <20210826080449.6pzvgihxzqbsosrx@carbon.lan>
+References: <20210825124259.28707-1-dwagner@suse.de>
+ <42916ab0-2997-b19f-47ee-e20e8e868a86@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1cccc2b6-8b5b-4aee-483d-f10e64a248a5@intel.com>
+In-Reply-To: <42916ab0-2997-b19f-47ee-e20e8e868a86@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 04:50:10PM -0700, Dave Hansen wrote:
-> On 8/23/21 6:25 AM, Mike Rapoport wrote:
-> >  void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
-> >  {
-> > +	enable_pgtable_write(page_address(pte));
-> >  	pgtable_pte_page_dtor(pte);
-> >  	paravirt_release_pte(page_to_pfn(pte));
-> >  	paravirt_tlb_remove_table(tlb, pte);
-> > @@ -69,6 +73,7 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
-> >  #ifdef CONFIG_X86_PAE
-> >  	tlb->need_flush_all = 1;
-> >  #endif
-> > +	enable_pgtable_write(pmd);
-> >  	pgtable_pmd_page_dtor(page);
-> >  	paravirt_tlb_remove_table(tlb, page);
-> >  }
+On Wed, Aug 25, 2021 at 05:27:10PM +0200, Hannes Reinecke wrote:
+> > @@ -506,6 +514,7 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
+> >   static int nvme_tcp_handle_c2h_data(struct nvme_tcp_queue *queue,
+> >   		struct nvme_tcp_data_pdu *pdu)
+> >   {
+> > +	struct nvme_tcp_request *req;
+> >   	struct request *rq;
+> >   	rq = nvme_find_rq(nvme_tcp_tagset(queue), pdu->command_id);
+> > @@ -534,6 +543,8 @@ static int nvme_tcp_handle_c2h_data(struct nvme_tcp_queue *queue,
+> >   		return -EPROTO;
+> >   	}
+> > +	req = blk_mq_rq_to_pdu(rq);
+> > +	req->status = NVME_SC_SUCCESS;
+> >   	return 0;
+> >   }
 > 
-> I'm also cringing a bit at hacking this into the page allocator.   A
-> *lot* of what you're trying to do with getting large allocations out and
-> splitting them up is done very well today by the slab allocators.  It
-> might take some rearrangement of 'struct page' metadata to be more slab
-> friendly, but it does seem like a close enough fit to warrant investigating.
+> Can't you move the initialisation to nvme_tcp_setup_cmd_pdu()?
+> That'll save to to have to reference the tcp request here ...
 
-I thought more about using slab, but it seems to me the least suitable
-option. The usecases at hand (page tables, secretmem, SEV/TDX) allocate in
-page granularity and some of them use struct page metadata, so even its
-rearrangement won't help. And adding support for 2M slabs to SLUB would be
-quite intrusive.
-
-I think that better options are moving such cache deeper into buddy or
-using e.g. genalloc instead of a list to deal with higher order allocations. 
-
-The choice between these two will mostly depend of the API selection, i.e.
-a GFP flag or a dedicated alloc/free.
-
--- 
-Sincerely yours,
-Mike.
+Yes, that's a why better place to initialize it. Let me spin a new
+version.
