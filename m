@@ -2,131 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A453F8D72
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2180E3F8D77
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238014AbhHZSAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
+        id S243235AbhHZSCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbhHZSAs (ORCPT
+        with ESMTP id S230525AbhHZSCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:00:48 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EFEC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:00:00 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso4640623otp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:00:00 -0700 (PDT)
+        Thu, 26 Aug 2021 14:02:09 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660C3C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:01:20 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so6419904pje.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:01:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=RcIYF9R/pHJGqLoLVM8C2PNIjlEdG+08V6XIw2z0GXA=;
-        b=bEcMfQI7Jf4WT5ynaI3vWPhlVDv8Cva8+DmGatup6oPvlw20KIo97L2C2ScgUKHhVC
-         hdUPgZ6+b4k87ono5IHVsrFOPhC67bHf4R3Tt00XuS3+xegaCJtLSJtW8sUdyUqUBR7b
-         Ep9YqQSIAcuV+fwTcLMpIY5lLK3AD/zdnpTu8=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QgZbnxVtGJ1vU/xYWeI8fIAwGH0NNU1l0sk9BASJi3A=;
+        b=m05C5aXu8Pz/nvLpy6GaHwayrmqJ1a0LQNiWk7QGQicePlSFWGwaghG+4McxbSm/uA
+         LYz0gR0yUdFu5PZiWDKnEuWGwS3vvHlMyd5bS3rnlFQsYutpCNBW8v/D3gUzUbdG2hxp
+         LYncdVHUeJ9xl7BV7uFRCTfwRKYT9JmKaSckDYn4slA4i0UA7b91GCS6oAXm0D05Yi3d
+         NISu2BjvNbgkcTqo0jsE5poaEDLF21tzV1+hMdSjyi/3gVdvXIJcnV4EetWmHgIReyhs
+         NkOOQuxwH2oaCqTHwnpRtstgz4c2/WeUCHh2cOSRt140wh6NUGK5T2I5NyhLTP1EuLGy
+         gUWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=RcIYF9R/pHJGqLoLVM8C2PNIjlEdG+08V6XIw2z0GXA=;
-        b=R6dVVfNNFykDqsTZc6QLsTrtZel/RTXsV9HxOveP7Vonm+t/C4byP6lvblVzakhkgc
-         tqAPPeSSHedLDMYfko25aFz0hkNXe7rgiZNvr39UHpdxPyRFF7NLPp1uyYyTBBcLRurP
-         CLMDBDi9xm9VwgNOURB9L7cOmhrgNKI7E226iLqgXhwwJZrqGbkq4uCYHOqXwIDogriL
-         65NbfybgG97hTnWetQ3C51hwNfuwvdOz51+QTWeCGGI7NRGhJUZs1ux2U0Sq47cb22Vy
-         VNwxpAX07+SsyVCrGHd3hQusNK4xER++ZecuA2DE3GLrz0grYSYMrLwl27ex0NSZFHr8
-         kA8A==
-X-Gm-Message-State: AOAM5307a0s7Ci4cu8kbt9mtr7o5AWijktfZ2SgWs7C7FL/Tm3MUf6QK
-        06D5tYGkujdH+RGK0Yw9l4OtIyMFerW6MAotWNZvAQ==
-X-Google-Smtp-Source: ABdhPJyu2G2XRMt2TFHuTq1cHhTZmiAqHMH+7NXBJGNrokExA+VfOjpgGhUKc4kR5HSTLWP8EzKT6YUkZBeBKGhkVvw=
-X-Received: by 2002:a05:6830:2b24:: with SMTP id l36mr4312663otv.25.1630000799901;
- Thu, 26 Aug 2021 10:59:59 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 26 Aug 2021 17:59:59 +0000
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QgZbnxVtGJ1vU/xYWeI8fIAwGH0NNU1l0sk9BASJi3A=;
+        b=iAg3xGICsrTOVXkRN7lDbi2SONzNI5FsJcJbftOnkjGiu77zSwGlk456o4C5vMl3Zc
+         8eCpS9CR7DFekOqosGTVbVmb51y6c2ESM2CmbNK5wR26lTlm7hW4ht3v4gi3AVBahKFZ
+         KVbE6VUTcu8ELhLIgb4MG5A5Icg3pusi4X8jE9pso3Jw/YkBqMRhmbjx/6BZVqc+/BA6
+         6VCHfKJS203DpJzYA5+vY9dEZzl4+5XQt9N2LPDHuBVm9sD5IiIe08kDeqUGcCbidDXw
+         ooBLVAlOBJeXLMX3jJwGap5TLFsA4XOPrVmT4p4Gawqq77Vsq4+zuTmqhg5L1ef0m1OY
+         JgDw==
+X-Gm-Message-State: AOAM533hno34wLz+JKUU0YDK5MeeZ4zXw6YNTsgGUhJp83F+lHaAnMMS
+        qEEV+4N/xp+oX5ibaCxSqmpt5g==
+X-Google-Smtp-Source: ABdhPJxxFcXXfOWnor0WexUD6PjVXREgNNqrFllU6KFIMg9SikX544/6MYI/MJLisdURixL8YcU5Fg==
+X-Received: by 2002:a17:902:684d:b0:138:7bed:7471 with SMTP id f13-20020a170902684d00b001387bed7471mr4723273pln.68.1630000879595;
+        Thu, 26 Aug 2021 11:01:19 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u25sm3503724pfn.209.2021.08.26.11.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 11:01:19 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 18:01:15 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Eduardo Habkost <ehabkost@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
+ from ioapic_write_indirect()
+Message-ID: <YSfW62JxXXBI1/UE@google.com>
+References: <87mtp7jowv.fsf@vitty.brq.redhat.com>
+ <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
+ <87k0kakip9.fsf@vitty.brq.redhat.com>
+ <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
+ <87h7fej5ov.fsf@vitty.brq.redhat.com>
+ <36b6656637d1e6aaa2ab5098f7ebc27644466294.camel@redhat.com>
+ <87bl5lkgfm.fsf@vitty.brq.redhat.com>
+ <CAOpTY_q=0cuxXAToJrcqCRERY_sUSB1HNVBVNiEpH6Dsy0-+yA@mail.gmail.com>
+ <87tujcidka.fsf@vitty.brq.redhat.com>
+ <20210826145210.gpfbiagntwoswrzp@habkost.net>
 MIME-Version: 1.0
-In-Reply-To: <YSfH7j+24OMa3rVE@ripper>
-References: <20210825234233.1721068-1-bjorn.andersson@linaro.org>
- <20210825234233.1721068-4-bjorn.andersson@linaro.org> <CAE-0n50JXw6KL-u70csWS-9F6YhZy0pNah91h4e9a_9MnjJzmA@mail.gmail.com>
- <YSfH7j+24OMa3rVE@ripper>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 26 Aug 2021 17:59:59 +0000
-Message-ID: <CAE-0n50xdTugw_gw97b2VLXjAFp-E064_NfLJ9tzkfaUvq3UvA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] drm/msm/dp: Support up to 3 DP controllers
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826145210.gpfbiagntwoswrzp@habkost.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-08-26 09:57:18)
-> On Thu 26 Aug 00:13 PDT 2021, Stephen Boyd wrote:
-> > Quoting Bjorn Andersson (2021-08-25 16:42:31)
-> > > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> [..]
-> > > @@ -203,8 +204,8 @@ static int dpu_kms_debugfs_init(struct msm_kms *kms, struct drm_minor *minor)
-> > >         dpu_debugfs_vbif_init(dpu_kms, entry);
-> > >         dpu_debugfs_core_irq_init(dpu_kms, entry);
-> > >
-> > > -       if (priv->dp)
-> > > -               msm_dp_debugfs_init(priv->dp, minor);
-> > > +       for (i = 0; i < ARRAY_SIZE(priv->dp); i++)
-> > > +               msm_dp_debugfs_init(priv->dp[i], minor);
-> >
-> > Does this need the same if (!priv->dp) continue check like the other
-> > loops over priv->dp?
-> >
-> [..]
-> > > @@ -800,7 +809,8 @@ static int dpu_irq_postinstall(struct msm_kms *kms)
-> > >         if (!priv)
-> > >                 return -EINVAL;
-> > >
-> > > -       msm_dp_irq_postinstall(priv->dp);
-> > > +       for (i = 0; i < ARRAY_SIZE(priv->dp); i++)
-> > > +               msm_dp_irq_postinstall(priv->dp[i]);
-> >
-> > This one too? Or maybe those gained NULL pointer checks.
-> >
->
-> This already has a NULL check, that's why I added one to the adjacent
-> msm_dp_debugfs_init() as well.
+On Thu, Aug 26, 2021, Eduardo Habkost wrote:
+> > @@ -918,7 +918,7 @@ static bool kvm_apic_is_broadcast_dest(struct kvm *kvm, struct kvm_lapic **src,
+> >  static inline bool kvm_apic_map_get_dest_lapic(struct kvm *kvm,
+> >                 struct kvm_lapic **src, struct kvm_lapic_irq *irq,
+> >                 struct kvm_apic_map *map, struct kvm_lapic ***dst,
+> > -               unsigned long *bitmap)
+> > +               unsigned long *bitmap64)
+> 
+> You can communicate the expected bitmap size to the compiler
+> without typedefs if using DECLARE_BITMAP inside the function
+> parameter list is acceptable coding style (is it?).
+> 
+> For example, the following would have allowed the compiler to
+> catch the bug you are fixing:
+> 
+> Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
+> ---
+> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
+> index d7c25d0c1354..e8c64747121a 100644
+> --- a/arch/x86/kvm/lapic.h
+> +++ b/arch/x86/kvm/lapic.h
+> @@ -236,7 +236,7 @@ bool kvm_apic_pending_eoi(struct kvm_vcpu *vcpu, int vector);
+>  void kvm_wait_lapic_expire(struct kvm_vcpu *vcpu);
+>  
+>  void kvm_bitmap_or_dest_vcpus(struct kvm *kvm, struct kvm_lapic_irq *irq,
+> -			      unsigned long *vcpu_bitmap);
+> +			      DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS));
+>  
+>  bool kvm_intr_is_single_vcpu_fast(struct kvm *kvm, struct kvm_lapic_irq *irq,
+>  			struct kvm_vcpu **dest_vcpu);
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 76fb00921203..1df113894cba 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -1166,7 +1166,7 @@ static int __apic_accept_irq(struct kvm_lapic *apic, int delivery_mode,
+>   * each available vcpu to identify the same.
+>   */
+>  void kvm_bitmap_or_dest_vcpus(struct kvm *kvm, struct kvm_lapic_irq *irq,
+> -			      unsigned long *vcpu_bitmap)
+> +			      DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS))
+>  {
+>  	struct kvm_lapic **dest_vcpu = NULL;
+>  	struct kvm_lapic *src = NULL;
 
-Ok.
-
->
-> > >
-> > >         return 0;
-> > >  }
-> > > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> [..]
-> > > @@ -1194,6 +1230,10 @@ static int dp_display_probe(struct platform_device *pdev)
-> > >         if (!dp)
-> > >                 return -ENOMEM;
-> > >
-> > > +       dp->id = dp_display_get_id(pdev);
-> >
-> > Ah ok, it's signed for this error check. Maybe assign dp->id in the
-> > function and return 0 instead of assigning it here?
-> > dp_display_assign_id()
-> >
->
-> I like the fact that the "getter" doesn't have side effects, but making
-> dp->id unsigned makes sense. So let's pay the price of a local signed
-> variable here.
->
-
-Sure. If that's the only change then feel free to add
-
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-
-on the next version.
+Sadly, that would not have actually caught the bug.  In C++, an array param does
+indeed have a fixed size, but in C an array param is nothing more than syntatic
+sugar that is demoted to a plain ol' pointer.  E.g. gcc-10 and clang-11 both
+happily compile with "DECLARE_BITMAP(vcpu_bitmap, 0)" and the original single
+"unsigned long vcpu_bitmap".  Maybe there are gcc extensions to enforce array
+sizes?  But if there are, they are not (yet) enabled for kernel builds.
