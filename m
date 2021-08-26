@@ -2,137 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BBC3F8A47
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BB63F8A51
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242817AbhHZOmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:42:02 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8784 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbhHZOmB (ORCPT
+        id S242755AbhHZOnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:43:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23808 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231458AbhHZOnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:42:01 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GwQW83F7YzYsk1;
-        Thu, 26 Aug 2021 22:40:36 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 26 Aug 2021 22:41:11 +0800
-Received: from thunder-town.china.huawei.com (10.174.178.242) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 26 Aug 2021 22:41:10 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH] block/mq-deadline: Speed up the dispatch of low-priority requests
-Date:   Thu, 26 Aug 2021 22:40:39 +0800
-Message-ID: <20210826144039.2143-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Thu, 26 Aug 2021 10:43:51 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17QEXpWq144849;
+        Thu, 26 Aug 2021 10:42:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
+ : message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=pM3Vp/RMF+m5bPiP7jzhn+fl0aFW0IR3xodks46bCTA=;
+ b=n9Bp386v7p7Q68yjUff6nsEo7+Jql+mQi3TaObXO0osdF7cCvYExrhlxS6BRLdsGhlKz
+ CxQcd/4in6y/GL2MUS+x5+MeBZ26GhfMOc102ix/0W6FYHgT5Hwi7ng+aJrK15+7MFD9
+ m2AoSMIxzAMTRIpDDXUCrRbr6Ekuf60B4j8b85BVMNt7o0P6SU6wGO5rR96Hj/1CnoYt
+ BY+8S05w4zpg9JGdGLiE4bXX2jsINXu5ynPdE3Y5cdHY4z/27CrEApJvghriFeVBk3yB
+ wap/ntAAQV7eZdM5H5hLPBkrCJCsdQiPs/j3vIPd0gF5pc/ksWOvfA/nVzJTp+2P2NEQ lQ== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3apcsdrbyu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Aug 2021 10:42:59 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17QEgpXS013105;
+        Thu, 26 Aug 2021 14:42:58 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma02dal.us.ibm.com with ESMTP id 3ajs4g3qhm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Aug 2021 14:42:58 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17QEgvLb42336680
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Aug 2021 14:42:57 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DEC2B6A06B;
+        Thu, 26 Aug 2021 14:42:56 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 70D4B6A054;
+        Thu, 26 Aug 2021 14:42:54 +0000 (GMT)
+Received: from [9.43.43.241] (unknown [9.43.43.241])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 26 Aug 2021 14:42:54 +0000 (GMT)
+From:   Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+Subject: [next-20210820][ppc][nvme/raid] pci unbind WARNS at
+ fs/kernfs/dir.c:1524 kernfs_remove_by_name_ns+
+To:     linux-next <linux-next@vger.kernel.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <063e6cf0-94ab-26f2-4fed-aebf1499127c@linux.vnet.ibm.com>
+Date:   Thu, 26 Aug 2021 20:11:02 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.242]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: v6wptZ9oCHLjvDSCE2yAMK7zr5vhWcAn
+X-Proofpoint-GUID: v6wptZ9oCHLjvDSCE2yAMK7zr5vhWcAn
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-26_03:2021-08-26,2021-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=602 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 phishscore=0 adultscore=0
+ impostorscore=0 mlxscore=0 clxscore=1011 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108260085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dd_queued() traverses the percpu variable for summation. The more cores,
-the higher the performance overhead. I currently have a 128-core board and
-this function takes 2.5 us. If the number of high-priority requests is
-small and the number of low- and medium-priority requests is large, the
-performance impact is significant.
+Greeting's
 
-Let's maintain a non-percpu member variable 'nr_queued', which is
-incremented by 1 immediately following "inserted++" and decremented by 1
-immediately following "completed++". Because both the judgment dd_queued()
-in dd_dispatch_request() and operation "inserted++" in dd_insert_request()
-are protected by dd->lock, lock protection needs to be added only in
-dd_finish_request(), which is unlikely to cause significant performance
-side effects.
+Today's linux-next kernel WARN's while unbind of pci ssd flash device on 
+my powerpc box
 
-Tested on my 128-core board with two ssd disks.
-fio bs=4k rw=read iodepth=128 cpus_allowed=0-95 <others>
-Before:
-[183K/0/0 iops]
-[172K/0/0 iops]
+# lspci -nn
+001d:80:00.0 Non-Volatile memory controller [0108]: Seagate Technology 
+PLC Nytro Flash Storage [1bb1:0100]
+001e:90:00.0 Non-Volatile memory controller [0108]: Seagate Technology 
+PLC Nytro Flash Storage [1bb1:0100]
 
-After:
-[258K/0/0 iops]
-[258K/0/0 iops]
+$ echo -n 001d:80:00.0 > /sys/bus/pci/drivers/nvme/unbind
 
-Fixes: fb926032b320 ("block/mq-deadline: Prioritize high-priority requests")
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- block/mq-deadline.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+md: md127: raid0 array has a missing/failed member
+Buffer I/O error on dev md127, logical block 1498959, async page read
+Buffer I/O error on dev md127, logical block 1498959, async page read
+md127: detected capacity change from 191866880 to 0
+md: md127 stopped.
+------------[ cut here ]------------
+kernfs: can not remove 'md127', no directory
+WARNING: CPU: 21 PID: 11006 at fs/kernfs/dir.c:1524 
+kernfs_remove_by_name_ns+0xc0/0x110
 
-diff --git a/block/mq-deadline.c b/block/mq-deadline.c
-index a09761cbdf12e58..d8f6aa12de80049 100644
---- a/block/mq-deadline.c
-+++ b/block/mq-deadline.c
-@@ -79,6 +79,7 @@ struct dd_per_prio {
- 	struct list_head fifo_list[DD_DIR_COUNT];
- 	/* Next request in FIFO order. Read, write or both are NULL. */
- 	struct request *next_rq[DD_DIR_COUNT];
-+	unsigned int nr_queued;
- };
- 
- struct deadline_data {
-@@ -277,9 +278,9 @@ deadline_move_request(struct deadline_data *dd, struct dd_per_prio *per_prio,
- }
- 
- /* Number of requests queued for a given priority level. */
--static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
-+static __always_inline u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
- {
--	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
-+	return dd->per_prio[prio].nr_queued;
- }
- 
- /*
-@@ -711,6 +712,8 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
- 
- 	prio = ioprio_class_to_prio[ioprio_class];
- 	dd_count(dd, inserted, prio);
-+	per_prio = &dd->per_prio[prio];
-+	per_prio->nr_queued++;
- 
- 	if (blk_mq_sched_try_insert_merge(q, rq, &free)) {
- 		blk_mq_free_requests(&free);
-@@ -719,7 +722,6 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
- 
- 	trace_block_rq_insert(rq);
- 
--	per_prio = &dd->per_prio[prio];
- 	if (at_head) {
- 		list_add(&rq->queuelist, &per_prio->dispatch);
- 	} else {
-@@ -790,12 +792,14 @@ static void dd_finish_request(struct request *rq)
- 	const u8 ioprio_class = dd_rq_ioclass(rq);
- 	const enum dd_prio prio = ioprio_class_to_prio[ioprio_class];
- 	struct dd_per_prio *per_prio = &dd->per_prio[prio];
-+	unsigned long flags;
- 
- 	dd_count(dd, completed, prio);
-+	spin_lock_irqsave(&dd->lock, flags);
-+	per_prio->nr_queued--;
-+	spin_unlock_irqrestore(&dd->lock, flags);
- 
- 	if (blk_queue_is_zoned(q)) {
--		unsigned long flags;
--
- 		spin_lock_irqsave(&dd->zone_lock, flags);
- 		blk_req_zone_write_unlock(rq);
- 		if (!list_empty(&per_prio->fifo_list[DD_WRITE]))
+Modules linked in: dm_mod rpadlpar_io rpaphp kvm_pr kvm nf_tables 
+libcrc32c nfnetlink tcp_diag udp_diag inet_diag unix_diag af_packet_diag 
+netlink_diag bridge stp llc rfkill sg pseries_rng raid0 xts vmx_crypto 
+uio_pdrv_genirq gf128mul uio nfsd auth_rpcgss nfs_acl lockd grace sunrpc 
+binfmt_misc sch_fq_codel ip_tables ext4 mbcache jbd2 sd_mod ibmvscsi 
+ibmvnic ibmveth scsi_transport_srp nvme nvme_core t10_piCPU: 21 PID: 
+11006 Comm: mdadm Not tainted 5.14.0-rc6-next-20210820-autotest #1
+
+NIP:  c00000000056dda0 LR: c00000000056dd9c CTR: 00000000007088ec
+REGS: c000000004593680 TRAP: 0700   Not tainted 
+(5.14.0-rc6-next-20210820-autotest)
+MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 48044224  
+XER: 0000000d
+CFAR: c000000000145f00 IRQMASK: 0
+GPR00: c00000000056dd9c c000000004593920 c0000000019b3200 000000000000002c
+GPR04: 00000000ffff7fff c0000000045935f0 0000000000000027 c00000077cd07e08
+GPR08: 0000000000000023 0000000000000001 0000000000000027 c0000000018694b0
+GPR12: 0000000000004000 c00000001ec40680 00007fff84875040 ffffffffffffffff
+GPR16: 0000000000000000 0000000000000001 0000000000000000 000001001e990280
+GPR20: 0000000000000000 0000000000000000 0000000000000066 0000000000030d40
+GPR24: c00000002bc591e8 0000000000000000 c00000002bc591c8 c000000025765c00
+GPR28: c000000025765c70 c000000025765c00 0000000000000000 c000000025790640
+NIP [c00000000056dda0] kernfs_remove_by_name_ns+0xc0/0x110
+LR [c00000000056dd9c] kernfs_remove_by_name_ns+0xbc/0x110
+Call Trace:
+[c000000004593920] [c00000000056dd9c] 
+kernfs_remove_by_name_ns+0xbc/0x110 (unreliable)
+[c0000000045939b0] [c000000000572368] sysfs_remove_link+0x28/0x70
+[c0000000045939d0] [c000000000678bd4] bd_unlink_disk_holder+0xc4/0x130
+[c000000004593a10] [c00000000098e4e0] unbind_rdev_from_array+0x40/0x1b0
+[c000000004593ac0] [c0000000009921e0] do_md_stop+0x410/0x5a0
+[c000000004593bc0] [c0000000009966ac] md_ioctl+0xc6c/0x1c60
+[c000000004593cd0] [c000000000654ebc] blkdev_ioctl+0x2fc/0x740
+[c000000004593d40] [c0000000004ce284] block_ioctl+0x74/0x90
+[c000000004593d60] [c00000000047b6e8] sys_ioctl+0xf8/0x150
+[c000000004593db0] [c00000000002ff28] system_call_exception+0x158/0x2c0
+[c000000004593e10] [c00000000000c764] system_call_common+0xf4/0x258
+--- interrupt: c00 at 0x7fff84790290
+NIP:  00007fff84790290 LR: 000000013d5c2ef0 CTR: 0000000000000000
+REGS: c000000004593e80 TRAP: 0c00   Not tainted 
+(5.14.0-rc6-next-20210820-autotest)
+MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 
+28044288  XER: 00000000
+IRQMASK: 0
+GPR00: 0000000000000036 00007fffd0148020 00007fff84877300 0000000000000003
+GPR04: 0000000020000932 0000000000000000 0000000000030d40 00007fffd0148028
+GPR08: 0000000000000003 0000000000000000 0000000000000000 0000000000000000
+GPR12: 0000000000000000 00007fff8494a780 00007fff84875040 ffffffffffffffff
+GPR16: 0000000000000000 0000000000000001 0000000000000000 000001001e990280
+GPR20: 0000000000000000 0000000000000000 0000000000000066 0000000000030d40
+GPR24: 0000000020000932 000001001e992ac0 ffffffffffffffff 000001001e990a40
+GPR28: ffffffffffffffff 0000000000000018 00007fffd0148100 0000000000000003
+NIP [00007fff84790290] 0x7fff84790290
+LR [000000013d5c2ef0] 0x13d5c2ef0
+--- interrupt: c00
+Instruction dump:
+ebe10088 38210090 e8010010 ebc1fff0 7c0803a6 4e800020 60000000 60000000
+3c62ff5c 3863d168 4bbd8109 60000000 <0fe00000> fba10078 fbe10088 60000000
+---[ end trace 634fa04d6dac7dfd ]---
+
 -- 
-2.25.1
+Regard's
+
+Abdul Haleem
+IBM Linux Technology Center
 
