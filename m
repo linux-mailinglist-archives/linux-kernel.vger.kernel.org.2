@@ -2,139 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36863F86C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838B73F86C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242362AbhHZLzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242366AbhHZLzD (ORCPT
+        id S242331AbhHZL4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:56:43 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39586 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242100AbhHZL4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:55:03 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8E8C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:54:16 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id mq3so2020998pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:54:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GF9cA6HWm73PdcnhQrBWb0JMD23t4eWrYuwcNebBzhg=;
-        b=BOLP6Ete/5M3jts/uWuAymRzOu8DrhtLuaCJjWI6HJPL7OVKD5Sswq0Ir/Ml8zxiWp
-         sRpiHOy5vrltsG0dygRRhglM4AN+Tp8c5s0LpKJOFDYjOpRpq3jZK8SgY5u5aNdP+sUk
-         kPoAzc+OBpyviSNC3b3vRX0ZXey/cvs089ptA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GF9cA6HWm73PdcnhQrBWb0JMD23t4eWrYuwcNebBzhg=;
-        b=tu3rU3rwa7rBw7UXcMQNbyE2mMCTUgGx2JU7MfLzStWoHN2D1FTawpYIA7X4LyEWup
-         jZFmcIUA9aDmCjpFfX2mvBEeX+POY5xXFZx8qvBsrZ9VFquqHMHeHbDgWZiKAbEQWScA
-         m7Qi1PBu9Ex6zMrvUbg65PN+lwWUy3SQ3Y3CHuS0JoQKXbAHGtU/J8dpktoZBr2SuJfq
-         KR4wx8c2nzIWWlLjlPB4S+IOhB2Q5mMOoCpEWsgM7YbpkTb2H3HX1dGNbTFpjhbkg/gg
-         A+3q1Jifold+ljMr0Ct4hpHwmcJilw10jF/uunW+rvBylTN5nO7Ch3OF+GP4/6OeZkk2
-         zNCQ==
-X-Gm-Message-State: AOAM533IPiNG6eVp12OvGuB+pX9/SGY6yHVz30GunoZKL/ALJxR+F7RQ
-        5T/utSp79uKAR1oTdYa9diIyWpi6cFQiMMlzZJJa/w==
-X-Google-Smtp-Source: ABdhPJyPJt6SUmiZLSQD+XbEIBZ8IKTak4j4QZ8Oj8fxfMRxk7v8EqBMuHWZ5SQ/bfQzG0hm7oZTmwF44/dS0Jgya64=
-X-Received: by 2002:a17:903:32ce:b0:138:7c09:1178 with SMTP id
- i14-20020a17090332ce00b001387c091178mr3215013plr.60.1629978855791; Thu, 26
- Aug 2021 04:54:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210826025144.51992-1-chunfeng.yun@mediatek.com> <20210826025144.51992-3-chunfeng.yun@mediatek.com>
-In-Reply-To: <20210826025144.51992-3-chunfeng.yun@mediatek.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Thu, 26 Aug 2021 19:54:04 +0800
-Message-ID: <CAATdQgBD+dTtBie-cNKRJbfxEpc3haqjfUu1k26mTk8pCSOEww@mail.gmail.com>
-Subject: Re: [PATCH next v2 3/6] usb: xhci-mtk: update fs bus bandwidth by bw_budget_table
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+        Thu, 26 Aug 2021 07:56:42 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7540D2019C;
+        Thu, 26 Aug 2021 11:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629978954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QHZKyxXzpNyyh6F11roqPilYvKHVBMHNSsDRsPwRuTw=;
+        b=VdPi2sHx2INRci3Wgisahf/8srgXZ5VfoVRzY8mtfRG8E6Fm8tY9aT1AyQkn3oTolhFeW2
+        blJd59pLErVuEM6IeBjXJRecEqyMGkDqf9Ikcz/MNAzEp9THc3oWTRkkQ27R8wGf4g0lb1
+        Mw2ZMfj7T4s640JF+iqtkZQKnijdlz4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629978954;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QHZKyxXzpNyyh6F11roqPilYvKHVBMHNSsDRsPwRuTw=;
+        b=ORdREBQz/ru1rI2YVAt9eSncHmCqypQkcrcPiC8Vy2vYbx1g3rl0D0Ic3S3Ssezu3mlcyt
+        9KPJ98h00QCmXLBg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 66CD1A3B8B;
+        Thu, 26 Aug 2021 11:55:54 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 13:55:54 +0200
+Message-ID: <s5h8s0owhbp.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Yaqii wu <yaqii.wu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+        Moritz Fischer <mdf@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: renesas-xhci: Prefer firmware loading on unknown ROM state
+In-Reply-To: <YSd/9clcNN547vre@kroah.com>
+References: <20210819113427.1166-1-tiwai@suse.de>
+        <YSd/9clcNN547vre@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chunfeng,
+On Thu, 26 Aug 2021 13:50:13 +0200,
+Greg Kroah-Hartman wrote:
+> 
+> On Thu, Aug 19, 2021 at 01:34:27PM +0200, Takashi Iwai wrote:
+> > The recent attempt to handle an unknown ROM state in the commit
+> > d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
+> > resulted in a regression and reverted later by the commit 44cf53602f5a
+> > ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"").
+> > The problem of the former fix was that it treated the failure of
+> > firmware loading as a fatal error.  Since the firmware files aren't
+> > included in the standard linux-firmware tree, most users don't have
+> > them, hence they got the non-working system after that.  The revert
+> > fixed the regression, but also it didn't make the firmware loading
+> > triggered even on the devices that do need it.  So we need still a fix
+> > for them.
+> > 
+> > This is another attempt to handle the unknown ROM state.  Like the
+> > previous fix, this also tries to load the firmware when ROM shows
+> > unknown state.  In this patch, however, the failure of a firmware
+> > loading (such as a missing firmware file) isn't handled as a fatal
+> > error any longer when ROM has been already detected, but it falls back
+> > to the ROM mode like before.  The error is returned only when no ROM
+> > is detected and the firmware loading failed.
+> > 
+> > Along with it, for simplifying the code flow, the detection and the
+> > check of ROM is factored out from renesas_fw_check_running() and done
+> > in the caller side, renesas_xhci_check_request_fw().  It avoids the
+> > redundant ROM checks.
+> > 
+> > The patch was tested on Lenovo Thinkpad T14 gen (BIOS 1.34).  Also it
+> > was confirmed that no regression is seen on another Thinkpad T14
+> > machine that has worked without the patch, too.
+> > 
+> > Fixes: 44cf53602f5a ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"")
+> > BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1189207
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> >  drivers/usb/host/xhci-pci-renesas.c | 35 +++++++++++++++++++----------
+> >  1 file changed, 23 insertions(+), 12 deletions(-)
+> 
+> This does not apply to my usb-linus branch, are you sure it is still
+> needed in Linus's tree right now?
 
-On Thu, Aug 26, 2021 at 10:52 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
->
-> Use @bw_budget_table[] to update fs bus bandwidth due to
-> not all microframes consume @bw_cost_per_microframe, see
-> setup_sch_info().
->
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v2: new patch, move from another series
-> ---
->  drivers/usb/host/xhci-mtk-sch.c | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-> index cffcaf4dfa9f..83abd28269ca 100644
-> --- a/drivers/usb/host/xhci-mtk-sch.c
-> +++ b/drivers/usb/host/xhci-mtk-sch.c
-> @@ -458,8 +458,8 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
->                  * Compared with hs bus, no matter what ep type,
->                  * the hub will always delay one uframe to send data
->                  */
-> -               for (j = 0; j < sch_ep->cs_count; j++) {
-> -                       tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_cost_per_microframe;
-> +               for (j = 0; j < sch_ep->num_budget_microframes; j++) {
-> +                       tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_budget_table[j];
+I guess we can postpone for 5.15.  The patch was written for the code
+on linux-next, and I see there have been a few code clean up there.
 
-I'm worrying about this case with two endpoints,
-* EP1OUT: isochronous, maxpacket=192: bw_budget_table[] = { 188, 188, 0, ... }
-* EP2IN: interrupt, maxpacket=64: bw_budget_table[] = { 0, 0, 64, 64, ... }
-(Is this correct bw_budget_table contents for those eps?)
+But the patch itself could be applied to Linus tree with a slight
+fuzz, so the stable backport should be fine.
 
-I'm not sure if it's okay for those two endpoints to be allocated
-on the same u-frame slot.
-Can you please check if this is okay for xhci-mtk?
-(I feel like I already asked the same questions many times.)
+If it's still not cleanly applicable, let me know.  I'll refresh the
+patch for whatever preferred branch.
 
 
->                         if (tmp > FS_PAYLOAD_MAX)
->                                 return -ESCH_BW_OVERFLOW;
->                 }
-> @@ -534,21 +534,18 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
->  {
->         struct mu3h_sch_tt *tt = sch_ep->sch_tt;
->         u32 base, num_esit;
-> -       int bw_updated;
->         int i, j;
->
->         num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
->
-> -       if (used)
-> -               bw_updated = sch_ep->bw_cost_per_microframe;
-> -       else
-> -               bw_updated = -sch_ep->bw_cost_per_microframe;
-> -
->         for (i = 0; i < num_esit; i++) {
->                 base = sch_ep->offset + i * sch_ep->esit;
->
-> -               for (j = 0; j < sch_ep->cs_count; j++)
-> -                       tt->fs_bus_bw[base + j] += bw_updated;
-> +               for (j = 0; j < sch_ep->num_budget_microframes; j++)
-> +                       if (used)
-> +                               tt->fs_bus_bw[base + j] += sch_ep->bw_budget_table[j];
-> +                       else
-> +                               tt->fs_bus_bw[base + j] -= sch_ep->bw_budget_table[j];
->         }
->
->         if (used)
-> --
-> 2.18.0
->
+thanks,
+
+Takashi
