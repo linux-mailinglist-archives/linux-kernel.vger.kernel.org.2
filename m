@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4F03F90DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81A03F90E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243758AbhHZXKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 19:10:40 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:40355 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243730AbhHZXKj (ORCPT
+        id S243730AbhHZXT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 19:19:59 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:36022 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234555AbhHZXT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 19:10:39 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id DD0A73200913;
-        Thu, 26 Aug 2021 19:09:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 26 Aug 2021 19:09:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=WicrDQ
-        NMFtRrmhlxsbtDEgZ4d37oA1zORnCzZCHcbYc=; b=nXA6mtfDfGYlyZnVkRJwtX
-        C230gfwRghY8M6+/Nptf7P8+eV/pvJL11p85L4JVoQ4WZx2QapwSAo70XROffnC5
-        e8ubifjuAm61oAtFR5ikIJkdwIITEfIE+hH87pgBkowG74uXRHAGMivR2Q2CQq40
-        hzAddlWE9gTRLEZ3eNi5aTbcx0Rx1pAeYYssYReKqB5P4kqKX539DlPTW+qGh2Tj
-        eKuOpNTaqc50Qt+tbRb0GoekfFi2O3/HaiUqCHgzc788vLMshDljGlT1fvgYnfux
-        SV6iMokOhP08TJAzG0fOo5egl7EaqpcfWsl7lXVClcb6DHtftxq8yPbLhNoHHTfA
-        ==
-X-ME-Sender: <xms:PR8oYULVKSAFQc_ybe3-HCGpxvRMUnanRUgdG0nzvIZKp-nYv14c5Q>
-    <xme:PR8oYUI1N2Q1Wj8mmL1LhfyJQhoS9q9zWNvoP8LcwggmlIsNWJ04uHr9MI1H78Ed7
-    ocuw-0JObUWp8wbU9A>
-X-ME-Received: <xmr:PR8oYUtRk5FfxX1H5YpptaDdCiJ2oNJhIkm64_q4TZ6h6SQLNIraEyIEFvqmhldfL1ZMXQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduvddgudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffuvffkjghfofggtgesthdtre
-    dtredtvdenucfhrhhomhepnfhukhgvucflohhnvghsuceolhhukhgvsehljhhonhgvshdr
-    uggvvheqnecuggftrfgrthhtvghrnhepgfeffedufffhgfeuheegffffgeegveeifeeute
-    fhieejffetudfgueevteehtdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:PR8oYRZrypY01sx6KyXwGA8Ah5tR_LO3or6DSqWvmR2qzdoCfTS4zA>
-    <xmx:PR8oYbYg8RhAlEYQ4w5ioZNr5nV83oNtg_28sCIKU_0U73vYESEhjA>
-    <xmx:PR8oYdANvb64DhbFNZtwsMdtVR2I6tYzHy5-NVHa57eQe6mUVfObdQ>
-    <xmx:Ph8oYSyDH2gV8qwXLIjKIg_4v7YbL-FlkJHqThwMNgDQZ_jXBLftDA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 26 Aug 2021 19:09:45 -0400 (EDT)
-Date:   Fri, 27 Aug 2021 11:09:28 +1200
-From:   Luke Jones <luke@ljones.dev>
-Subject: Re: [PATCH v4 0/1] asus-wmi: Add support for custom fan curves
-To:     linux-kernel@vger.kernel.org
-Cc:     hdegoede@redhat.com, hadess@hadess.net,
-        platform-driver-x86@vger.kernel.org
-Message-Id: <SZYGYQ.22JW11Y1CJIC3@ljones.dev>
-In-Reply-To: <20210820095726.14131-1-luke@ljones.dev>
-References: <20210820095726.14131-1-luke@ljones.dev>
-X-Mailer: geary/40.0
+        Thu, 26 Aug 2021 19:19:57 -0400
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8A5A420B861E;
+        Thu, 26 Aug 2021 16:19:08 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8A5A420B861E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1630019949;
+        bh=TNk71oULKpnJVXpIAkpW4dxCRZZFfi0WY/GV0rQ4Blw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=sDrPH0DIYqzWljDeynFQ2cHN8Shft6uXuyS4L8KXZr4/VtcLamVAxWh5cQW0bRTzZ
+         jRY4voAsLQE2MfrL7Lxe/Oqs/DQ0JxZFajO2NvhnOok99Bv9D9JJvywU8FT7g7p6vD
+         vtYq3ii0I1E1jMYUrrV4jbhwRbx90qfjp7fFyjq4=
+Subject: Re: [RFC PATCH v8 2/4] arm64: Reorganize the unwinder code for better
+ consistency and maintenance
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
+ <20210812190603.25326-1-madvenka@linux.microsoft.com>
+ <20210812190603.25326-3-madvenka@linux.microsoft.com>
+ <YSe3WogpFIu97i/7@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <ecf0e4d1-7c47-426e-1350-fe5dc8bd88a5@linux.microsoft.com>
+Date:   Thu, 26 Aug 2021 18:19:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+In-Reply-To: <YSe3WogpFIu97i/7@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I will be submitting a V5 later today. While prepping for v5 I've done 
-my best to minimise potential blockers in review according to what I've 
-learned through past reviews :)
-
-On Fri, Aug 20 2021 at 21:57:25 +1200, Luke D. Jones <luke@ljones.dev> 
-wrote:
-> Add support for custom fan curves found on some ASUS ROG laptops.
-> 
-> The patch has gone through a few revisions as others tested it and
-> requested bahaviour changes or reported issues. V4 should be 
-> considered
-> finalised for now and I won't submit a new version until V4 has been
-> reviewed.
-> 
-> - V1
->   + Initial patch work
-> - V2
->   + Don't fail and remove wmi driver if error from
->     asus_wmi_evaluate_method_buf() if error is -ENODEV
-> - V3
->   + Store the "default" fan curves
->   + Call throttle_thermal_policy_write() if a curve is erased to 
-> ensure
->     that the factory default for a profile is applied again
-> - V4
->   + Do not apply default curves by default. Testers have found that 
-> the
->     default curves don't quite match actual no-curve behaviours
->   + Add method to enable/disable curves for each profile
-> 
-> Luke D. Jones (1):
->   asus-wmi: Add support for custom fan curves
-> 
->  drivers/platform/x86/asus-wmi.c            | 672 
-> +++++++++++++++++++++
->  include/linux/platform_data/x86/asus-wmi.h |   2 +
->  2 files changed, 674 insertions(+)
-> 
-> --
-> 2.31.1
-> 
 
 
+On 8/26/21 10:46 AM, Mark Brown wrote:
+> On Thu, Aug 12, 2021 at 02:06:01PM -0500, madvenka@linux.microsoft.com wrote:
+> 
+>> Renaming of unwinder functions
+>> ==============================
+> 
+>> Rename unwinder functions to unwind_*() similar to other architectures
+>> for naming consistency. More on this below.
+> 
+> This feels like it could probably do with splitting up a bit for
+> reviewability, several of these headers you've got in the commit
+> logs look like they could be separate commits.  Splitting things
+> up does help with reviewability, having only one change to keep
+> in mind at once is a lot less cognative load.
+> 
+>> Replace walk_stackframe() with unwind()
+>> =======================================
+>>
+>> walk_stackframe() contains the unwinder loop that walks the stack
+>> frames. Currently, start_backtrace() and walk_stackframe() are called
+>> separately. They should be combined in the same function. Also, the
+>> loop in walk_stackframe() should be simplified and should look like
+>> the unwind loops in other architectures such as X86 and S390.
+> 
+> This definitely seems like a separate change.
+> 
+
+OK. I will take a look at splitting the patch.
+
+I am also requesting a review of the sym_code special section approach.
+I know that you have already approved it. I wanted one more vote. Then,
+I can remove the "RFC" word from the title and then it will be just a
+code review of the patch series.
+
+Mark Rutland,
+
+Do you also approve the idea of placing unreliable functions (from an unwind
+perspective) in a special section and using that in the unwinder for
+reliable stack trace?
+
+Thanks.
+
+Madhavan
