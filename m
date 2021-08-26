@@ -2,95 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0C63F8828
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0791A3F87EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236953AbhHZM40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:56:26 -0400
-Received: from gate.crashing.org ([63.228.1.57]:35383 "EHLO gate.crashing.org"
+        id S242324AbhHZMu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:50:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233687AbhHZM4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:56:25 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 17QCn2jm014844;
-        Thu, 26 Aug 2021 07:49:02 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 17QCn1dS014838;
-        Thu, 26 Aug 2021 07:49:01 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Thu, 26 Aug 2021 07:49:01 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH v2 1/2] powerpc/bug: Remove specific powerpc BUG_ON() and WARN_ON() on PPC32
-Message-ID: <20210826124901.GY1583@gate.crashing.org>
-References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu> <1628834356.pr4zgn1xf1.astroid@bobo.none> <20210818150653.GJ1583@gate.crashing.org> <1629946707.f6ptz0tgle.astroid@bobo.none>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S232506AbhHZMuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 08:50:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FB45610A1;
+        Thu, 26 Aug 2021 12:49:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629982178;
+        bh=wY9kAL/A/x13IuXAWhbR5A9aRXYch28Z15UjfZ5JJR0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=askPaqQq6PWsFoX7g4k1iJZ+zBZwjD9C9/8FjWLfVfQX1t4qNn8t16v5Y1giSd5dC
+         ChIToesQJ/GIb/eoRXbr1Mep+cKSVM2vb1i/O/eNhkxlJql2lwC3R5A6oQSdLtUCCv
+         72ojMS51aD37MjZ4BRhQRmHMsmcRc598yDNBw3Bqj76Wva3AzkxEuKnufQpzF8EYH1
+         75GCdJBvaajJVDoQfCHBmLtFNDjwngynrnAC0O94AxG41Bkn+G6IPI8lFcnMrJyQNu
+         zl7SMAf55cdV56EMmScwbmSIomV4Dm4PgFqa9031yamqaLTiOdryza0LKhJkOoGHjp
+         KSAIiRDM2Co2w==
+Date:   Thu, 26 Aug 2021 08:49:37 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: Re: [PATCH 5.13 000/127] 5.13.13-rc1 review
+Message-ID: <YSeN4bQ0FXSuQR6m@sashalap>
+References: <20210824165607.709387-1-sashal@kernel.org>
+ <b4bef2f4-0c5b-527d-4f24-788d3265f5bf@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <1629946707.f6ptz0tgle.astroid@bobo.none>
-User-Agent: Mutt/1.4.2.3i
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b4bef2f4-0c5b-527d-4f24-788d3265f5bf@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Wed, Aug 25, 2021 at 11:21:37AM -0500, Daniel Díaz wrote:
+>Hello!
+>
+>On 8/24/21 11:54 AM, Sasha Levin wrote:
+>>This is the start of the stable review cycle for the 5.13.13 release.
+>>There are 127 patches in this series, all will be posted as a response
+>>to this one.  If anyone has any issues with these being applied, please
+>>let me know.
+>>
+>>Responses should be made by Thu 26 Aug 2021 04:55:18 PM UTC.
+>>Anything received after that time might be too late.
+>>
+>>The whole patch series can be found in one patch at:
+>>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.13.y&id2=v5.13.12
+>>or in the git tree and branch at:
+>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+>>and the diffstat can be found below.
+>>
+>>Thanks,
+>>Sasha
+>
+>Results from Linaro’s test farm.
+>No regressions on arm64, arm, x86_64, and i386.
+>
+>Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-On Thu, Aug 26, 2021 at 01:26:14PM +1000, Nicholas Piggin wrote:
-> Excerpts from Segher Boessenkool's message of August 19, 2021 1:06 am:
-> > On Fri, Aug 13, 2021 at 04:08:13PM +1000, Nicholas Piggin wrote:
-> >> This one possibly the branches end up in predictors, whereas conditional 
-> >> trap is always just speculated not to hit. Branches may also have a
-> >> throughput limit on execution whereas trap could be more (1 per cycle
-> >> vs 4 per cycle on POWER9).
-> > 
-> > I thought only *taken* branches are just one per cycle?
-> 
-> Taken branches are fetched by the front end at one per cycle (assuming 
-> they hit the BTAC), but all branches have to be executed by BR at one 
-> per cycle
+Thanks for testing Daniel!
 
-This is not true.  (Simple) predicted not-taken conditional branches are
-just folded out, never hit the issue queues.  And they are fetched as
-many together as fit in a fetch group, can complete without limits as
-well.
-
-The BTAC is a frontend thing, used for target address prediction.  It
-does not limit execution.
-
-Correctly predicted simple conditional branches just get their prediction
-validated (and that is not done in the execution units).  Incorrectly
-predicted branches the same, but those cause a redirect and refetch.
-
-> > Internally *all* traps are conditional, in GCC.  It also can optimise
-> > them quite well.  There must be something in the kernel macros that
-> > prevents good optimisation.
-> 
-> I did take a look at it at one point.
-> 
-> One problem is that the kernel needs the address of the trap instruction 
-> to create the entry for it. The other problem is that __builtin_trap 
-> does not return so it can't be used for WARN. LLVM at least seems to 
-> have a __builtin_debugtrap which does return.
-
-This is <https://gcc.gnu.org/PR99299>.
-
-> The first problem seems like the show stopper though. AFAIKS it would 
-> need a special builtin support that does something to create the table
-> entry, or a guarantee that we could put an inline asm right after the
-> builtin as a recognized pattern and that would give us the instruction
-> following the trap.
-
-I'm not quite sure what this means.  Can't you always just put a
-
-bla:	asm("");
-
-in there, and use the address of "bla"?  If not, you need to say a lot
-more about what you actually want to do :-/
-
-
-Segher
+-- 
+Thanks,
+Sasha
