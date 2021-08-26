@@ -2,204 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2303F81CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 06:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4013B3F81CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 06:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238155AbhHZEtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 00:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhHZEsz (ORCPT
+        id S238100AbhHZExd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 00:53:33 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:33444 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhHZExb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 00:48:55 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A37C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 21:48:09 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id w6so1027162plg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 21:48:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CVByhjP1i2oA1KBEUJykBzcIy3uSqCrwHbgIyy+OMWM=;
-        b=zhQLVwXtUQ1F9xPIqwJobzGM3h5hp6Kb+jAqR0TufspBhPHjmVsD+AGl+hG/tYR4S0
-         LeADLT1tE+KRKccHrTnRTbTAvwjXEkHM8RT2b3peDV1kyJ243rn8yDekCV/Qsd8dAGQq
-         ndSBRt8LHCjXK131bSl7A4HgruAK5pNgjiNYHCVovnYjEPvQzTknX/2XuQ9uMo4XC/xd
-         xIN7YAx5mAIPCXP8wwVvnD5GI7aVu9w5hnqyJn1sfPsrWjK3plgphoKn3wQ7qxhzgHSe
-         sny85sDvMCZ9gZh9akVe7bXNh5clX+Amj8nHwO4mGXDK2poM77d+SKYpjToRrs5iUGJX
-         4BBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=CVByhjP1i2oA1KBEUJykBzcIy3uSqCrwHbgIyy+OMWM=;
-        b=MmkBSgZwiV002Wb+6gecuSV8GrvsUkfyZXppBJyOQxJiZgrrWBHQHcqjguQb9LH7Gv
-         Q1hYKbjmY8YHIwh4AlxSB5yLbLlqC8T4O2EZk+ImqmIEj7g5RSE6mExV+JaA1PyMSEns
-         hsR8YVeFwgYvmzwkRDRvoespgK5IKYTmIKqowUr5kysIiWsHVlmeUl5GdDJD2r8pWOHd
-         gkjz6mtMSvqnuT4KDVTM9SDe2/neVu+ZZE4OLScXvnr0pS1SreS7USWZi3IEWVS+KCAl
-         pYx9kIW2yRSTuReYdmI40tZi40XrMeRc5W8UHMfRO8lGSmyTjNL54vrWzErUXNeu0bvj
-         qGVA==
-X-Gm-Message-State: AOAM5336VCmapt5JU1ase65+ynGdEFz73XVdUIIbPnpVI+BwCiH/N2q+
-        CcdWKli7I8Q6frwpOpV7U88ZCA==
-X-Google-Smtp-Source: ABdhPJwW/hCGfEDMPcpzaroks8UhmWJ1z7TQk2gskjWvpBtS/EGSHzKUSsDiTTWuk0fFJ3MUQWGHMA==
-X-Received: by 2002:a17:902:f552:b029:12d:3d11:4ff1 with SMTP id h18-20020a170902f552b029012d3d114ff1mr1709114plf.1.1629953288396;
-        Wed, 25 Aug 2021 21:48:08 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id q3sm1655685pgf.18.2021.08.25.21.48.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 21:48:07 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 21:48:07 -0700 (PDT)
-X-Google-Original-Date: Wed, 25 Aug 2021 21:48:03 PDT (-0700)
-Subject:     Re: [PATCH -next] riscv: Enable HAVE_ARCH_HUGE_VMAP for 64BIT
-In-Reply-To: <20210805113837.805805-1-liushixin2@huawei.com>
-CC:     corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        liushixin2@huawei.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     liushixin2@huawei.com
-Message-ID: <mhng-57cbc077-dfa6-48a7-a29d-b27862e1e800@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 26 Aug 2021 00:53:31 -0400
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5568C20B8604;
+        Wed, 25 Aug 2021 21:52:43 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5568C20B8604
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1629953564;
+        bh=n6JdYPQwaIUUknX82Qe4xl+LLh1+kRteobmDoosQ8As=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NvriXn+594R8HBUv5f8rMAwwszQti2Sl2rqTXQRsixvJdM9q72FOnw9CL++4Wdm4p
+         VUzAkPKa8r/IM9assN83+hEhPCGfobOTLvI2/34W+Sm/yEKI7N1I2IhBiFBBWjKAnS
+         GG0rifO81Y+gvfStQpp4NKFkU3/k5n7cFWiSxNEk=
+Subject: Re: [RFC PATCH v8 1/4] arm64: Make all stack walking functions use
+ arch_stack_walk()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
+ <20210812190603.25326-1-madvenka@linux.microsoft.com>
+ <20210812190603.25326-2-madvenka@linux.microsoft.com>
+ <20210824131344.GE96738@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <406f7960-b7d8-f058-d055-7ca373689fba@linux.microsoft.com>
+Date:   Wed, 25 Aug 2021 23:52:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210824131344.GE96738@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Aug 2021 04:38:37 PDT (-0700), liushixin2@huawei.com wrote:
-> This sets the HAVE_ARCH_HUGE_VMAP option. Enable pmd vmap support and
-> define the required page table functions(Currently, riscv has only
-> three-level page tables support for 64BIT).
->
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  .../features/vm/huge-vmap/arch-support.txt    |  2 +-
->  arch/riscv/Kconfig                            |  1 +
->  arch/riscv/include/asm/vmalloc.h              | 12 +++++
->  arch/riscv/mm/Makefile                        |  1 +
->  arch/riscv/mm/pgtable.c                       | 53 +++++++++++++++++++
->  5 files changed, 68 insertions(+), 1 deletion(-)
->  create mode 100644 arch/riscv/mm/pgtable.c
->
-> diff --git a/Documentation/features/vm/huge-vmap/arch-support.txt b/Documentation/features/vm/huge-vmap/arch-support.txt
-> index 439fd9069b8b..0ff394acc9cf 100644
-> --- a/Documentation/features/vm/huge-vmap/arch-support.txt
-> +++ b/Documentation/features/vm/huge-vmap/arch-support.txt
-> @@ -22,7 +22,7 @@
->      |    openrisc: | TODO |
->      |      parisc: | TODO |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: | TODO |
->      |          sh: | TODO |
->      |       sparc: | TODO |
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 8fcceb8eda07..94cc2a254773 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -61,6 +61,7 @@ config RISCV
->  	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
->  	select HANDLE_DOMAIN_IRQ
->  	select HAVE_ARCH_AUDITSYSCALL
-> +	select HAVE_ARCH_HUGE_VMAP if MMU && 64BIT
->  	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
->  	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
->  	select HAVE_ARCH_KASAN if MMU && 64BIT
-> diff --git a/arch/riscv/include/asm/vmalloc.h b/arch/riscv/include/asm/vmalloc.h
-> index ff9abc00d139..8f17f421f80c 100644
-> --- a/arch/riscv/include/asm/vmalloc.h
-> +++ b/arch/riscv/include/asm/vmalloc.h
-> @@ -1,4 +1,16 @@
->  #ifndef _ASM_RISCV_VMALLOC_H
->  #define _ASM_RISCV_VMALLOC_H
->
-> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +
-> +#define IOREMAP_MAX_ORDER (PMD_SHIFT)
-> +
-> +#define arch_vmap_pmd_supported	arch_vmap_pmd_supported
-> +static inline bool __init arch_vmap_pmd_supported(pgprot_t prot)
-> +{
-> +	return true;
-> +}
-> +
-> +#endif
-> +
->  #endif /* _ASM_RISCV_VMALLOC_H */
-> diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
-> index 7ebaef10ea1b..f932b4d69946 100644
-> --- a/arch/riscv/mm/Makefile
-> +++ b/arch/riscv/mm/Makefile
-> @@ -13,6 +13,7 @@ obj-y += extable.o
->  obj-$(CONFIG_MMU) += fault.o pageattr.o
->  obj-y += cacheflush.o
->  obj-y += context.o
-> +obj-y += pgtable.o
->
->  ifeq ($(CONFIG_MMU),y)
->  obj-$(CONFIG_SMP) += tlbflush.o
-> diff --git a/arch/riscv/mm/pgtable.c b/arch/riscv/mm/pgtable.c
-> new file mode 100644
-> index 000000000000..f68dd2b71dce
-> --- /dev/null
-> +++ b/arch/riscv/mm/pgtable.c
-> @@ -0,0 +1,53 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <asm/pgalloc.h>
-> +#include <linux/gfp.h>
-> +#include <linux/kernel.h>
-> +#include <linux/pgtable.h>
-> +
-> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +
-> +int pud_set_huge(pud_t *pud, phys_addr_t phys, pgprot_t prot)
-> +{
-> +	return 0;
-> +}
-> +
-> +int pud_clear_huge(pud_t *pud)
-> +{
-> +	return 0;
-> +}
-> +
-> +int pud_free_pmd_page(pud_t *pud, unsigned long addr)
-> +{
-> +	return 0;
-> +}
+Hi Mark Rutland, Mark Brown,
 
-Do we actually need the PUD helpers?  I'd prefer to avoid adding these 
-unimplemented stubs, IIUC the other architectures are relying on the 
-generic implementations (which are themselves stubs) for configurations 
-that don't have PUDs.
+Do you have any comments on the reliability part of the patch series?
 
-> +int pmd_set_huge(pmd_t *pmd, phys_addr_t phys, pgprot_t prot)
-> +{
-> +	pmd_t new_pmd = pfn_pmd(__phys_to_pfn(phys), prot);
-> +
-> +	set_pmd(pmd, new_pmd);
-> +	return 1;
-> +}
-> +
-> +int pmd_clear_huge(pmd_t *pmd)
-> +{
-> +	if (!pmd_leaf(READ_ONCE(*pmd)))
-> +		return 0;
-> +	pmd_clear(pmd);
-> +	return 1;
-> +}
-> +
-> +int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
-> +{
-> +	pte_t *pte;
-> +
-> +	pte = (pte_t *)pmd_page_vaddr(*pmd);
-> +	pmd_clear(pmd);
-> +
-> +	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
-> +	pte_free_kernel(NULL, pte);
-> +	return 1;
-> +}
-> +
-> +#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+Madhavan
+
+On 8/24/21 8:13 AM, Mark Rutland wrote:
+> On Thu, Aug 12, 2021 at 02:06:00PM -0500, madvenka@linux.microsoft.com wrote:
+>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>
+>> Currently, there are multiple functions in ARM64 code that walk the
+>> stack using start_backtrace() and unwind_frame(). Convert all of
+>> them to use arch_stack_walk(). This makes maintenance easier.
+> 
+> It would be good to split this into a series of patches as Mark Brown
+> suggested in v7.
+> 
+>> Here is the list of functions:
+>>
+>> 	perf_callchain_kernel()
+>> 	get_wchan()
+>> 	return_address()
+>> 	dump_backtrace()
+>> 	profile_pc()
+> 
+> Note that arch_stack_walk() depends on CONFIG_STACKTRACE (which is not in
+> defconfig), so we'll need to reorganise things such that it's always defined,
+> or factor out the core of that function and add a wrapper such that we
+> can always use it.
+> 
+>> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+>> ---
+>>  arch/arm64/include/asm/stacktrace.h |  3 ---
+>>  arch/arm64/kernel/perf_callchain.c  |  5 +---
+>>  arch/arm64/kernel/process.c         | 39 ++++++++++++++++++-----------
+>>  arch/arm64/kernel/return_address.c  |  6 +----
+>>  arch/arm64/kernel/stacktrace.c      | 38 +++-------------------------
+>>  arch/arm64/kernel/time.c            | 22 +++++++++-------
+>>  6 files changed, 43 insertions(+), 70 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
+>> index 8aebc00c1718..e43dea1c6b41 100644
+>> --- a/arch/arm64/include/asm/stacktrace.h
+>> +++ b/arch/arm64/include/asm/stacktrace.h
+>> @@ -61,9 +61,6 @@ struct stackframe {
+>>  #endif
+>>  };
+>>  
+>> -extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
+>> -extern void walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+>> -			    bool (*fn)(void *, unsigned long), void *data);
+>>  extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>>  			   const char *loglvl);
+>>  
+>> diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
+>> index 4a72c2727309..2f289013c9c9 100644
+>> --- a/arch/arm64/kernel/perf_callchain.c
+>> +++ b/arch/arm64/kernel/perf_callchain.c
+>> @@ -147,15 +147,12 @@ static bool callchain_trace(void *data, unsigned long pc)
+>>  void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry,
+>>  			   struct pt_regs *regs)
+>>  {
+>> -	struct stackframe frame;
+>> -
+>>  	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
+>>  		/* We don't support guest os callchain now */
+>>  		return;
+>>  	}
+>>  
+>> -	start_backtrace(&frame, regs->regs[29], regs->pc);
+>> -	walk_stackframe(current, &frame, callchain_trace, entry);
+>> +	arch_stack_walk(callchain_trace, entry, current, regs);
+>>  }
+> 
+> We can also update callchain_trace take the return value of
+> perf_callchain_store into acount, e.g.
+> 
+> | static bool callchain_trace(void *data, unsigned long pc) 
+> | {
+> | 	struct perf_callchain_entry_ctx *entry = data;
+> | 	return perf_callchain_store(entry, pc) == 0;
+> | }
+> 
+>>  
+>>  unsigned long perf_instruction_pointer(struct pt_regs *regs)
+>> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+>> index c8989b999250..52c12fd26407 100644
+>> --- a/arch/arm64/kernel/process.c
+>> +++ b/arch/arm64/kernel/process.c
+>> @@ -544,11 +544,28 @@ __notrace_funcgraph struct task_struct *__switch_to(struct task_struct *prev,
+>>  	return last;
+>>  }
+>>  
+>> +struct wchan_info {
+>> +	unsigned long	pc;
+>> +	int		count;
+>> +};
+>> +
+>> +static bool get_wchan_cb(void *arg, unsigned long pc)
+>> +{
+>> +	struct wchan_info *wchan_info = arg;
+>> +
+>> +	if (!in_sched_functions(pc)) {
+>> +		wchan_info->pc = pc;
+>> +		return false;
+>> +	}
+>> +	wchan_info->count--;
+>> +	return !!wchan_info->count;
+>> +}
+> 
+> This will terminate one entry earlier than the old logic since we used
+> to use a post-increment (testing the prior value), and now we're
+> effectively using a pre-decrement (testing the new value).
+> 
+> I don't think that matters all that much in practice, but it might be
+> best to keep the original logic, e.g. initialize `count` to 0 and here
+> do:
+> 
+> 	return wchan_info->count++ < 16;
+> 
+>> +
+>>  unsigned long get_wchan(struct task_struct *p)
+>>  {
+>> -	struct stackframe frame;
+>> -	unsigned long stack_page, ret = 0;
+>> -	int count = 0;
+>> +	unsigned long stack_page;
+>> +	struct wchan_info wchan_info;
+>> +
+>>  	if (!p || p == current || task_is_running(p))
+>>  		return 0;
+>>  
+>> @@ -556,20 +573,12 @@ unsigned long get_wchan(struct task_struct *p)
+>>  	if (!stack_page)
+>>  		return 0;
+>>  
+>> -	start_backtrace(&frame, thread_saved_fp(p), thread_saved_pc(p));
+>> +	wchan_info.pc = 0;
+>> +	wchan_info.count = 16;
+>> +	arch_stack_walk(get_wchan_cb, &wchan_info, p, NULL);
+>>  
+>> -	do {
+>> -		if (unwind_frame(p, &frame))
+>> -			goto out;
+>> -		if (!in_sched_functions(frame.pc)) {
+>> -			ret = frame.pc;
+>> -			goto out;
+>> -		}
+>> -	} while (count++ < 16);
+>> -
+>> -out:
+>>  	put_task_stack(p);
+>> -	return ret;
+>> +	return wchan_info.pc;
+>>  }
+> 
+> Other than the comment above, this looks good to me.
+> 
+>>  unsigned long arch_align_stack(unsigned long sp)
+>> diff --git a/arch/arm64/kernel/return_address.c b/arch/arm64/kernel/return_address.c
+>> index a6d18755652f..92a0f4d434e4 100644
+>> --- a/arch/arm64/kernel/return_address.c
+>> +++ b/arch/arm64/kernel/return_address.c
+>> @@ -35,15 +35,11 @@ NOKPROBE_SYMBOL(save_return_addr);
+>>  void *return_address(unsigned int level)
+>>  {
+>>  	struct return_address_data data;
+>> -	struct stackframe frame;
+>>  
+>>  	data.level = level + 2;
+>>  	data.addr = NULL;
+>>  
+>> -	start_backtrace(&frame,
+>> -			(unsigned long)__builtin_frame_address(0),
+>> -			(unsigned long)return_address);
+>> -	walk_stackframe(current, &frame, save_return_addr, &data);
+>> +	arch_stack_walk(save_return_addr, &data, current, NULL);
+>>  
+>>  	if (!data.level)
+>>  		return data.addr;
+> 
+> Nor that arch_stack_walk() will start with it's caller, so
+> return_address() will be included in the trace where it wasn't
+> previously, which implies we need to skip an additional level.
+> 
+> That said, I'm not entirely sure why we need to skip 2 levels today; it
+> might be worth checking that's correct.
+> 
+> We should also mark return_address() as noinline to avoid surprises with
+> LTO.
+> 
+>> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+>> index 8982a2b78acf..1800310f92be 100644
+>> --- a/arch/arm64/kernel/stacktrace.c
+>> +++ b/arch/arm64/kernel/stacktrace.c
+>> @@ -151,23 +151,21 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+>>  }
+>>  NOKPROBE_SYMBOL(walk_stackframe);
+>>  
+>> -static void dump_backtrace_entry(unsigned long where, const char *loglvl)
+>> +static bool dump_backtrace_entry(void *arg, unsigned long where)
+>>  {
+>> +	char *loglvl = arg;
+>>  	printk("%s %pSb\n", loglvl, (void *)where);
+>> +	return true;
+>>  }
+>>  
+>>  void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>>  		    const char *loglvl)
+>>  {
+>> -	struct stackframe frame;
+>> -	int skip = 0;
+>> -
+>>  	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
+>>  
+>>  	if (regs) {
+>>  		if (user_mode(regs))
+>>  			return;
+>> -		skip = 1;
+>>  	}
+> 
+> We can simplifiy this to:
+> 
+> 	if (regs && user_mode(regs))
+> 		return;
+> 
+>>  
+>>  	if (!tsk)
+>> @@ -176,36 +174,8 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>>  	if (!try_get_task_stack(tsk))
+>>  		return;
+>>  
+>> -	if (tsk == current) {
+>> -		start_backtrace(&frame,
+>> -				(unsigned long)__builtin_frame_address(0),
+>> -				(unsigned long)dump_backtrace);
+>> -	} else {
+>> -		/*
+>> -		 * task blocked in __switch_to
+>> -		 */
+>> -		start_backtrace(&frame,
+>> -				thread_saved_fp(tsk),
+>> -				thread_saved_pc(tsk));
+>> -	}
+>> -
+>>  	printk("%sCall trace:\n", loglvl);
+>> -	do {
+>> -		/* skip until specified stack frame */
+>> -		if (!skip) {
+>> -			dump_backtrace_entry(frame.pc, loglvl);
+>> -		} else if (frame.fp == regs->regs[29]) {
+>> -			skip = 0;
+>> -			/*
+>> -			 * Mostly, this is the case where this function is
+>> -			 * called in panic/abort. As exception handler's
+>> -			 * stack frame does not contain the corresponding pc
+>> -			 * at which an exception has taken place, use regs->pc
+>> -			 * instead.
+>> -			 */
+>> -			dump_backtrace_entry(regs->pc, loglvl);
+>> -		}
+>> -	} while (!unwind_frame(tsk, &frame));
+>> +	arch_stack_walk(dump_backtrace_entry, (void *)loglvl, tsk, regs);
+> 
+> It turns out we currently need this skipping to get the balance the
+> ftrace call stack, and arch_stack_walk() doesn't currently do the right
+> thing when starting from regs. That balancing isn't quite right, and
+> will be wrong in some case when unwinding across exception boundaries;
+> we could implement HAVE_FUNCTION_GRAPH_RET_ADDR_PTR using the FP to
+> solve that.
+> 
+>>  
+>>  	put_task_stack(tsk);
+>>  }
+>> diff --git a/arch/arm64/kernel/time.c b/arch/arm64/kernel/time.c
+>> index eebbc8d7123e..671b3038a772 100644
+>> --- a/arch/arm64/kernel/time.c
+>> +++ b/arch/arm64/kernel/time.c
+>> @@ -32,22 +32,26 @@
+>>  #include <asm/stacktrace.h>
+>>  #include <asm/paravirt.h>
+>>  
+>> +static bool profile_pc_cb(void *arg, unsigned long pc)
+>> +{
+>> +	unsigned long *prof_pc = arg;
+>> +
+>> +	if (in_lock_functions(pc))
+>> +		return true;
+>> +	*prof_pc = pc;
+>> +	return false;
+>> +}
+>> +
+>>  unsigned long profile_pc(struct pt_regs *regs)
+>>  {
+>> -	struct stackframe frame;
+>> +	unsigned long prof_pc = 0;
+>>  
+>>  	if (!in_lock_functions(regs->pc))
+>>  		return regs->pc;
+>>  
+>> -	start_backtrace(&frame, regs->regs[29], regs->pc);
+>> -
+>> -	do {
+>> -		int ret = unwind_frame(NULL, &frame);
+>> -		if (ret < 0)
+>> -			return 0;
+>> -	} while (in_lock_functions(frame.pc));
+>> +	arch_stack_walk(profile_pc_cb, &prof_pc, current, regs);
+>>  
+>> -	return frame.pc;
+>> +	return prof_pc;
+>>  }
+>>  EXPORT_SYMBOL(profile_pc);
+> 
+> Mdoulo the problem above w.r.t. unwinding from regs, this looks good.
+> 
+> Thanks,
+> Mark.
+> 
+>>  
+>> -- 
+>> 2.25.1
+>>
