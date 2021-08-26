@@ -2,224 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11203F8273
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E673F823A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239344AbhHZG2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 02:28:31 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16238 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238952AbhHZG2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 02:28:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="204813177"
-X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="asc'?scan'208";a="204813177"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 23:27:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="asc'?scan'208";a="684786826"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
-  by fmsmga006.fm.intel.com with ESMTP; 25 Aug 2021 23:27:40 -0700
-Date:   Thu, 26 Aug 2021 14:04:41 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210826060441.GB9942@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210728175925.GU1721383@nvidia.com>
- <20210729072022.GB31896@lst.de>
- <20210803094315.GF13928@zhen-hp.sh.intel.com>
- <20210803143058.GA1721383@nvidia.com>
- <20210804052606.GG13928@zhen-hp.sh.intel.com>
- <20210816173458.GA9183@lst.de>
- <20210817010851.GW13928@zhen-hp.sh.intel.com>
- <20210817052203.GX13928@zhen-hp.sh.intel.com>
- <20210819082929.GB13928@zhen-hp.sh.intel.com>
- <162938422376.18233.1867777087725408939@jlahtine-mobl.ger.corp.intel.com>
+        id S238212AbhHZGIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 02:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232575AbhHZGIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 02:08:41 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F107DC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 23:07:54 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id s11so2158069pgr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 23:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=XSO4aTMI8L6SABu9p5nHJasdEB0/4Gj8hIYzUHhpqoI=;
+        b=uGZUttuTcwZQAXVURE4W4dhyTqswmOh9u28bv+2LfY7C5Z+u1mqJJPZ7slCgWDvnZP
+         JSFht4nC+dJSQgWNGJxAmMhAp7OBo8M8SbHl8J2N5exn+0Kygj5hM6ql0bOEh3vTHngQ
+         M/NqvIHEJMdAONtSwIxj3nDx+al1m/mCntMxggLGbdepslGiiRcd+udzkUCLTJh3RZqY
+         YfHdQV5MibWsSgWAvmvY0n9fSjn/IZNpdBI/xkr2ambsVPnjOVwpm5qJOaIAdgLmbXv1
+         +pQ+vd1hIhjRlw/bcKwRxuZPza2zqNH7QC23+S01Ts3eslpcqW2YvnQEwdgH/cdCNwC/
+         m/1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=XSO4aTMI8L6SABu9p5nHJasdEB0/4Gj8hIYzUHhpqoI=;
+        b=KusLQVF/l3R1crWR6H3PXhqHVCe18+t+mT/T0/6hW6i4FSDPgTCwNlsd+37EOAjEJP
+         IZyPvSHPDpx0rNqSBAKJLbOv7G05K7/BB9ilvFE7agAV30oI32VLRpfNSIDRl6AU9qSv
+         gx4UEXGO8h7cyXqQ7UMScfRJLLRdvGWg2+28b9SlxQ45YCwVqMTrwgyDZpH7J4US36QD
+         /FbkrW9uQsrWnIfaGfZHGfha0gXltAl/0curH6RZR+dBPv1GPLcOCdWck86alJ83csnu
+         b4aVnYCFXrtIPeIFYyB950v1BwxPXSBJ1l4gl4isZMeJP29la7Dte4HTjgii3zRloxOA
+         j12Q==
+X-Gm-Message-State: AOAM532+QJhPeDt8rfrNtwOBrMupPSTMTmxL+I9KAFIjzKDnOO5qVoBC
+        4VgyaVqGWRGRO6Rb4dqFDF9C3Q==
+X-Google-Smtp-Source: ABdhPJzW15W5p7nhvDQt3b4zFSYUvJ/8LxsZm9Z6KAltlF6bhi6uQj+Eb25pzinXJTo+sdn56L6T8w==
+X-Received: by 2002:a63:e40a:: with SMTP id a10mr1898121pgi.414.1629958074381;
+        Wed, 25 Aug 2021 23:07:54 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id t10sm7203435pji.30.2021.08.25.23.07.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 23:07:53 -0700 (PDT)
+Subject: [PATCH] RISC-V: Fix VDSO build for !MMU
+Date:   Wed, 25 Aug 2021 23:05:10 -0700
+Message-Id: <20210826060509.2470960-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
-Content-Disposition: inline
-In-Reply-To: <162938422376.18233.1867777087725408939@jlahtine-mobl.ger.corp.intel.com>
+Content-Transfer-Encoding: 8bit
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
+        penberg@kernel.org, guoren@linux.alibaba.com, abdulras@google.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:         linux-riscv@lists.infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
---45Z9DzgjV8m4Oswq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We don't have a VDSO for the !MMU configurations, so don't try to build
+one.
 
-On 2021.08.19 17:43:43 +0300, Joonas Lahtinen wrote:
-> Quoting Zhenyu Wang (2021-08-19 11:29:29)
-> > On 2021.08.17 13:22:03 +0800, Zhenyu Wang wrote:
-> > > > On 2021.08.16 19:34:58 +0200, Christoph Hellwig wrote:
-> > > > > Any updates on this?  I'd really hate to miss this merge window.
-> > > >=20
-> > > > I'm still waiting for our validation team's report on this. I'm afr=
-aid
-> > > > it might be missing for next version as i915 merge window is mostly
-> > > > till rc5...and for any change outside of gvt, it still needs to be
-> > > > acked by i915 maintainers.
-> > >=20
-> > > Looks our validation team did have problem against recent i915 change.
-> > > If you like to try, we have a gvt-staging branch on
-> > > https://github.com/intel/gvt-linux which is generated against drm-tip
-> > > with gvt changes for testing, currently it's broken.
-> > >=20
-> > > One issue is with i915 export that intel_context_unpin has been
-> > > changed into static inline function. Another is that intel_gvt.c
-> > > should be part of i915 for gvt interface instead of depending on KVMGT
-> > > config.
-> >=20
-> > I'm working on below patch to resolve this. But I met a weird issue in
-> > case when building i915 as module and also kvmgt module, it caused
-> > busy wait on request_module("kvmgt") when boot, it doesn't happen if
-> > building i915 into kernel. I'm not sure what could be the reason?
-> >=20
-> > > But the problem I see is that after moving gvt device model (gvt/*.c
-> > > except kvmgt.c) into kvmgt module, we'll have issue with initial mmio
-> > > state which current gvt relies on, that is in design supposed to get
-> > > initial HW state before i915 driver has taken any operation.
->=20
-> As mentioned in some past discussions, I think it would be best rely on
-> golden MMIO located in /lib/firmware or elsewhere. This way we will better
-> isolate the guest system from host system updates/changes.
->=20
-> This should also hopefully allow enabling kvmgt module after i915 has
-> already loaded, as the initialization would not be conditional to
-> capture the MMIO.
->=20
+Fixes: fde9c59aebaf ("riscv: explicitly use symbol offsets for VDSO")
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ arch/riscv/Makefile           | 2 ++
+ arch/riscv/include/asm/vdso.h | 9 +++++++++
+ 2 files changed, 11 insertions(+)
 
-I think the concern is that even for same GEN hw there could be many
-variant platforms e.g APL with gen9, etc. To verify golden states for
-them all might take too much effort...
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index e026b2d0a5a4..83ee0e71204c 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -108,9 +108,11 @@ PHONY += vdso_install
+ vdso_install:
+ 	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
+ 
++ifeq ($(CONFIG_MMU),y)
+ prepare: vdso_prepare
+ vdso_prepare: prepare0
+ 	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso include/generated/vdso-offsets.h
++endif
+ 
+ ifneq ($(CONFIG_XIP_KERNEL),y)
+ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
+diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
+index d8d003c2b5a3..893e47195e30 100644
+--- a/arch/riscv/include/asm/vdso.h
++++ b/arch/riscv/include/asm/vdso.h
+@@ -8,6 +8,13 @@
+ #ifndef _ASM_RISCV_VDSO_H
+ #define _ASM_RISCV_VDSO_H
+ 
++
++/*
++ * All systems with an MMU have a VDSO, but systems without an MMU don't
++ * support shared libraries and therefor don't have one.
++ */
++#ifdef CONFIG_MMU
++
+ #include <linux/types.h>
+ #include <generated/vdso-offsets.h>
+ 
+@@ -19,6 +26,8 @@ struct vdso_data {
+ #define VDSO_SYMBOL(base, name)							\
+ 	(void __user *)((unsigned long)(base) + __vdso_##name##_offset)
+ 
++#endif /* CONFIG_MMU */
++
+ asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
+ 
+ #endif /* _ASM_RISCV_VDSO_H */
+-- 
+2.33.0.259.gc128427fd7-goog
 
->=20
-> > > Before
-> > > we can ensure that, I think we may only remove MPT part first but
-> > > still keep gvt device model as part of i915 with config. I'll try to
-> > > split that out.
-> >=20
-> > Sorry I misread the code that as we always request kvmgt module when
-> > gvt init, so it should still apply original method that this isn't a
-> > problem. Our current validation result has shown no regression as well.
-> >=20
-> > ---8<---
-> > From 58ff84572f1a0f9d79ca1d7ec0cff5ecbe78d280 Mon Sep 17 00:00:00 2001
-> > From: Zhenyu Wang <zhenyuw@linux.intel.com>
-> > Date: Thu, 19 Aug 2021 16:36:33 +0800
-> > Subject: [PATCH] TESTONLY:drm/i915/gvt: potential fix for refactor agai=
-nst
-> >  current tip
-> >=20
-> > ---
-> >  drivers/gpu/drm/i915/Makefile           | 4 +++-
-> >  drivers/gpu/drm/i915/gt/intel_context.c | 5 +++++
-> >  drivers/gpu/drm/i915/gt/intel_context.h | 3 ++-
-> >  drivers/gpu/drm/i915/i915_trace.h       | 1 +
-> >  4 files changed, 11 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makef=
-ile
-> > index c4f953837f72..2248574428a1 100644
-> > --- a/drivers/gpu/drm/i915/Makefile
-> > +++ b/drivers/gpu/drm/i915/Makefile
-> > @@ -296,7 +296,9 @@ i915-$(CONFIG_DRM_I915_SELFTEST) +=3D \
-> > =20
-> >  # virtual gpu code
-> >  i915-y +=3D i915_vgpu.o
-> > -i915-$(CONFIG_DRM_I915_GVT_KVMGT) +=3D intel_gvt.o
-> > +ifneq ($(CONFIG_DRM_I915_GVT_KVMGT),)
-> > +i915-y +=3D intel_gvt.o
-> > +endif
-> > =20
-> >  kvmgt-y +=3D gvt/kvmgt.o \
-> >         gvt/gvt.o \
-> > diff --git a/drivers/gpu/drm/i915/gt/intel_context.c b/drivers/gpu/drm/=
-i915/gt/intel_context.c
-> > index 745e84c72c90..20e7522fed84 100644
-> > --- a/drivers/gpu/drm/i915/gt/intel_context.c
-> > +++ b/drivers/gpu/drm/i915/gt/intel_context.c
-> > @@ -328,6 +328,11 @@ void __intel_context_do_unpin(struct intel_context=
- *ce, int sub)
-> >         intel_context_put(ce);
-> >  }
-> > =20
-> > +void intel_context_unpin(struct intel_context *ce)
-> > +{
-> > +       _intel_context_unpin(ce);
-> > +}
-> > +
-> >  static void __intel_context_retire(struct i915_active *active)
-> >  {
-> >         struct intel_context *ce =3D container_of(active, typeof(*ce), =
-active);
-> > diff --git a/drivers/gpu/drm/i915/gt/intel_context.h b/drivers/gpu/drm/=
-i915/gt/intel_context.h
-> > index c41098950746..f942cbf6300a 100644
-> > --- a/drivers/gpu/drm/i915/gt/intel_context.h
-> > +++ b/drivers/gpu/drm/i915/gt/intel_context.h
-> > @@ -131,7 +131,7 @@ static inline void intel_context_sched_disable_unpi=
-n(struct intel_context *ce)
-> >         __intel_context_do_unpin(ce, 2);
-> >  }
-> > =20
-> > -static inline void intel_context_unpin(struct intel_context *ce)
-> > +static inline void _intel_context_unpin(struct intel_context *ce)
-> >  {
-> >         if (!ce->ops->sched_disable) {
-> >                 __intel_context_do_unpin(ce, 1);
-> > @@ -150,6 +150,7 @@ static inline void intel_context_unpin(struct intel=
-_context *ce)
-> >                 }
-> >         }
-> >  }
-> > +void intel_context_unpin(struct intel_context *ce);
-> > =20
-> >  void intel_context_enter_engine(struct intel_context *ce);
-> >  void intel_context_exit_engine(struct intel_context *ce);
-> > diff --git a/drivers/gpu/drm/i915/i915_trace.h b/drivers/gpu/drm/i915/i=
-915_trace.h
-> > index 806ad688274b..2c6a8bcef7c1 100644
-> > --- a/drivers/gpu/drm/i915/i915_trace.h
-> > +++ b/drivers/gpu/drm/i915/i915_trace.h
-> > @@ -17,6 +17,7 @@
-> > =20
-> >  #undef TRACE_SYSTEM
-> >  #define TRACE_SYSTEM i915
-> > +#undef TRACE_INCLUDE_FILE
-> >  #define TRACE_INCLUDE_FILE i915_trace
-> > =20
-> >  /* watermark/fifo updates */
-> > --=20
-> > 2.32.0
-> > ---8<---
-> >=20
-> >=20
-
---45Z9DzgjV8m4Oswq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYScu7wAKCRCxBBozTXgY
-JygfAJ4hNO0uFR8JFfs/g7AdMst3a59X6gCdELS+TO6b6bZo4R9Wrmh8BgDf+RE=
-=aua/
------END PGP SIGNATURE-----
-
---45Z9DzgjV8m4Oswq--
