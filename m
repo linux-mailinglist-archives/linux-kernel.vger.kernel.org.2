@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD713F8EE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CDC3F8EFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243562AbhHZTlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 15:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243538AbhHZTlO (ORCPT
+        id S243502AbhHZTmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 15:42:08 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:34809 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243574AbhHZTmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 15:41:14 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1677EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:40:27 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id fz10so2954691pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:40:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OL7VNOIckGPb3nTQNYkFgRyfjBAqdWJtHBvoq3i1gTA=;
-        b=XfKshZnxtsZUiDOMp3bMOOc2OZVSgGt28r5M+IgfIl7C2A/me3bc23+0fWAZu/MRRp
-         CJenvN5L4VGyJq4FqryWlvctpG561G8Fdi1ZZq5ONK7XNjqfkIbA+M72qK6ZSOA6UOT/
-         2hHLvRK/88BrqTFjLNc/ilvY+zdfaKlgFT5ek=
+        Thu, 26 Aug 2021 15:42:04 -0400
+Received: by mail-wr1-f47.google.com with SMTP id h13so6824684wrp.1;
+        Thu, 26 Aug 2021 12:41:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OL7VNOIckGPb3nTQNYkFgRyfjBAqdWJtHBvoq3i1gTA=;
-        b=FSLeT7KDcIusVMPYBz8i4nhEwCEK1ZdU0RHj5Kyx54qbLqHHPCpi1E39P8sUf5EW7Q
-         cwaS2hRWvGFamkGocWbuRMT9Huwdw5U8zypQ3NYvE+Fdd0ifwwB4s02IktKWEC7eOG9c
-         WX6l8kmkfrbWcPM+oeYeGobE7a1VfzdXo2gNDSH12ij3EEjYmpAwtQu5gIj10d/4Hm8z
-         xwMhRT9sEoQGZeh4k1V4e1y0iftzJvWKKeEDYZgOfGj1eOcCs5j3MQnrHZgp9h46+haU
-         T48aJrEYWVex/PsAhPNWTzpG3EH6MnD4maQLjfoWBxVze+WwjTIp3fhsW77VbqXwo3Ja
-         O7/g==
-X-Gm-Message-State: AOAM5325zR4ZCfYtjsWQJ4jY50rRUuDGePyMcNsSXrkbndtPqNafAKNM
-        vVVka0GDlGuBXuHqJyd6a5vRnLdmJ6DAypEI
-X-Google-Smtp-Source: ABdhPJyi8k9j/pPOsmvIKcekS344fV89wbYnuw6Xq7IVfBWNCRisIxuCXwNRp99jRUKbEV1oP07dOg==
-X-Received: by 2002:a17:90a:6ac2:: with SMTP id b2mr6279190pjm.36.1630006826558;
-        Thu, 26 Aug 2021 12:40:26 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:b65d:400d:1964:f64c])
-        by smtp.gmail.com with UTF8SMTPSA id a11sm4324637pgj.75.2021.08.26.12.40.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 12:40:25 -0700 (PDT)
-From:   Brian Norris <briannorris@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: core: resolve supply voltage deferral silently
-Date:   Thu, 26 Aug 2021 12:40:17 -0700
-Message-Id: <20210826124015.1.Iab79c6dd374ec48beac44be2fcddd165dd26476b@changeid>
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zFKJpcZRXuno0WjXg2R7y6rFWbVh+fx1jWVSUxs/tIA=;
+        b=TeStLouYxnE/wF57tZ54P/g8vv6Zgdk9Sn9wnn0Dpenzq2yNt7UgdeKjiQw7DblK/i
+         0Cnr+ciL8xvfSUfVBW0aqy4mk33HjwJAEi2ArvdUJa/4/YKob+lKG4feEH7AQ4G1pQPF
+         hu4/KICS12lWPMyi6ElGR5aVar/SFXo3cPDhAa9qTGfyKp/0cnjNDUnZJHP8GO0bnWg4
+         edhTM6GMXO7kr5/nVUrGRFivPDxoNEl7gNkagv7xwYAPzTwTS3xE1M8K9L/IysfHJzXJ
+         TaUZhPthHVsLUM7p2RTrj5/xg27Z3VGglRBMgj6bbxQ7fKjXSHsWGkjKXuDswhivY8Mu
+         kb/g==
+X-Gm-Message-State: AOAM5327Mos7ZTOp4x0Fr7E5vkHyqoUQ3flcIwc5huZcPK9ZLqBig60p
+        jf+CxptjzrFZmo2biZMFyfI=
+X-Google-Smtp-Source: ABdhPJyYQ0G4CSHB1wqw3b1I7jOBw0uYRxWgiCHEpZMCVYG6ZAqRuSkaACh+Oyc+AJvMo1InJnMM7Q==
+X-Received: by 2002:adf:f645:: with SMTP id x5mr6028408wrp.353.1630006875366;
+        Thu, 26 Aug 2021 12:41:15 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id b2sm3610591wmd.3.2021.08.26.12.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 12:41:14 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 19:41:13 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Long Li <longli@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] PCI: hv: Fix a bug on removing child devices on the bus
+Message-ID: <20210826194113.yihk7ete4n4ej4gz@liuwe-devbox-debian-v2>
+References: <1629789620-11049-1-git-send-email-longli@linuxonhyperv.com>
+ <20210824110208.xd57oqm5rii4rr4n@liuwe-devbox-debian-v2>
+ <BY5PR21MB1506270100DAE3BAFCA001E9CEC59@BY5PR21MB1506.namprd21.prod.outlook.com>
+ <MWHPR21MB15935D5B518ECA1361F2EB1BD7C69@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <BY5PR21MB1506B6865DA2DA9948CEA8ADCEC69@BY5PR21MB1506.namprd21.prod.outlook.com>
+ <MWHPR21MB1593E4B1051F96DB6E715C0CD7C79@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR21MB1593E4B1051F96DB6E715C0CD7C79@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Voltage-controlled regulators depend on their supply regulator for
-retrieving their voltage, and so they might return -EPROBE_DEFER at this
-stage. Our caller already attempts to resolve supplies and retry, so we
-shouldn't be printing this error to logs.
+On Thu, Aug 26, 2021 at 04:50:28PM +0000, Michael Kelley wrote:
+> From: Long Li <longli@microsoft.com> Sent: Wednesday, August 25, 2021 1:25 PM
+> 
+> > >
+> > > I thought list_for_each_entry_safe() is for use when list manipulation is *not*
+> > > protected by a lock and you want to safely walk the list even if an entry gets
+> > > removed.  If the list is protected by a lock or not subject to contention (as is the
+> > > case here), then
+> > > list_for_each_entry() is the simpler implementation.  The original
+> > > implementation didn't need to use the _safe version because of the spin lock.
+> > >
+> > > Or do I have it backwards?
+> > >
+> > > Michael
+> > 
+> > I think we need list_for_each_entry_safe() because we delete the list elements while going through them:
+> > 
+> > Here is the comment on list_for_each_entry_safe():
+> > /**
+> >  * Loop through the list, keeping a backup pointer to the element. This
+> >  * macro allows for the deletion of a list element while looping through the
+> >  * list.
+> >  *
+> >  * See list_for_each_entry for more details.
+> >  */
+> > 
+> 
+> Got it.  Thanks (and to Rob Herring).   I read that comment but
+> with the wrong assumptions and didn't understand it correctly.
+> 
+> Interestingly, pci-hyperv.c has another case of looping through
+> this list and removing items where the _safe version is not used.
+> See pci_devices_present_work() where the missing children are
+> moved to a list on the stack.
 
-Quiets log messages like this, on Rockchip RK3399 Gru/Kevin boards:
+That can be converted too, I think.
 
-[    1.033057] ppvar_bigcpu: failed to get the current voltage: -EPROBE_DEFER
-...
-[    1.036735] ppvar_litcpu: failed to get the current voltage: -EPROBE_DEFER
-...
-[    1.040366] ppvar_gpu: failed to get the current voltage: -EPROBE_DEFER
-...
-[    1.044086] ppvar_centerlogic: failed to get the current voltage: -EPROBE_DEFER
+The original code is not wrong per-se. It is just not as concise as
+using list_for_each_entry_safe.
 
-Fixes: 21e39809fd7c ("regulator: vctrl: Avoid lockdep warning in enable/disable ops")
-Cc: Chen-Yu Tsai <wenst@chromium.org>
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
+Wei.
 
- drivers/regulator/core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index ca6caba8a191..85783fb3aadf 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1151,9 +1151,10 @@ static int machine_constraints_voltage(struct regulator_dev *rdev,
- 		}
- 
- 		if (current_uV < 0) {
--			rdev_err(rdev,
--				 "failed to get the current voltage: %pe\n",
--				 ERR_PTR(current_uV));
-+			if (current_uV != -EPROBE_DEFER)
-+				rdev_err(rdev,
-+					 "failed to get the current voltage: %pe\n",
-+					 ERR_PTR(current_uV));
- 			return current_uV;
- 		}
- 
--- 
-2.33.0.259.gc128427fd7-goog
-
+> 
+> Michael
