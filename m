@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182103F89EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DBB3F89EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242820AbhHZORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:17:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38652 "EHLO mail.kernel.org"
+        id S242862AbhHZORP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:17:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhHZORE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:17:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9776660698;
-        Thu, 26 Aug 2021 14:16:16 +0000 (UTC)
+        id S242840AbhHZORK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 10:17:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4D4260E78;
+        Thu, 26 Aug 2021 14:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629987377;
-        bh=19+SFriioNrfn3fwOrICbeSKe/bS5e7OWPAEUGfvvhY=;
+        s=k20201202; t=1629987383;
+        bh=Id9hdMS4ZVRLE8sX6tHUAZFHZyYA74j1rQP2S76OPIs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MiooJBf9vLHfA09AxSvssoyn5b3Bc2xmYjYaAxykMO2iKnb2iN9ekqCwAlZxQHzEK
-         uLLysvFtjaJz84LAO+B2tysgq/eWeVtlYPJQWV5FmVRl2hcavEa2U9T8t+r3DD20BY
-         mGbPAbnc2UoF6ISLRcF5HDPi4g8AYCPTOyQgUjDG0vULCorsXNgbJsMoNBliliFYPg
-         gkREbGYP1VB/nBgfTH3RRipsuUJ/+qM72Ar8Nu2v0LV97tN/2u/6vtTsAsDtg+GgVI
-         m5VSOy9qqqn8E42UYKYiXKQ7QqozvBfuN6QmgNHqc47ozhekbZwfIXUN8CUTyNMCbN
-         iKagMWY1z60Jw==
+        b=h3hLyQPwalKZygt/4rARZPh/L7wWvt3/aLK27jxsyYNxuZ3pe/n4X0J3cF4UWEEMW
+         Pu7M3vDvPlvzJEwXitSWmyUJfECA7ej52IPb8x2XXL2+4GAEM2t7H5md29y4lFz5uu
+         kik/jTyhhV3+nHwQULaNcssBhRN7DaDHbrJ3wv8gno7FUicqk1D3N5un125cStujUj
+         F/cseX3ayQDm2fKaz+WY1PFapnBPus01BocUdoAtTD1g3wyc61wC9yzMtoBANnpkX+
+         6qwQBeTiVoArdogg0Iu0JnV+/sIKUiig9bb1q9Jl+FkeAlHn+UnCULPNNJnfGDnRoJ
+         Aoqfzfw+EDUHQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     heiko@sntech.de, Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Rob Herring <robh+dt@kernel.org>,
+To:     linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
         Liam Girdwood <lgirdwood@gmail.com>,
         Takashi Iwai <tiwai@suse.com>,
-        linux-rockchip@lists.infradead.org,
-        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/4] Patches to update for rockchip spdif
-Date:   Thu, 26 Aug 2021 15:15:43 +0100
-Message-Id: <162998707937.5647.10936208575135633257.b4-ty@kernel.org>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Colin King <colin.king@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        linux-mediatek@lists.infradead.org
+Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ASoC: mediatek: mt8195: Fix spelling mistake "bitwiedh" -> "bitwidth"
+Date:   Thu, 26 Aug 2021 15:15:45 +0100
+Message-Id: <162998707936.5647.1881702741528479360.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1629800162-12824-1-git-send-email-sugar.zhang@rock-chips.com>
-References: <1629800162-12824-1-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <20210826112611.10356-1-colin.king@canonical.com>
+References: <20210826112611.10356-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,15 +46,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 18:15:58 +0800, Sugar Zhang wrote:
-> These patches fixup or update for rockchip spdif.
+On Thu, 26 Aug 2021 12:26:11 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in a dev_dbg message. Fix it.
 > 
 > 
-> Sugar Zhang (4):
->   ASoC: rockchip: spdif: Mark SPDIF_SMPDR as volatile
->   ASoC: rockchip: spdif: Fix some coding style
->   ASoC: rockchip: spdif: Add support for rk3568 spdif
->   ASoC: dt-bindings: rockchip: Add compatible for rk3568 spdif
+> 
 > 
 > [...]
 
@@ -63,14 +62,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: rockchip: spdif: Mark SPDIF_SMPDR as volatile
-      commit: 023a3f3a1c4f9be9cc1ae92579ba816120fb5807
-[2/4] ASoC: rockchip: spdif: Fix some coding style
-      commit: acc8b9d117912c2d5952868fba0d4fca49cde3c8
-[3/4] ASoC: rockchip: spdif: Add support for rk3568 spdif
-      commit: c5d4f09feb9f74e704d87a304f0c20001488fe10
-[4/4] ASoC: dt-bindings: rockchip: Add compatible for rk3568 spdif
-      commit: e79ef3c2cfe0b39878496eac87450698a2e84e3f
+[1/1] ASoC: mediatek: mt8195: Fix spelling mistake "bitwiedh" -> "bitwidth"
+      commit: 11a08e05079a9328023d236b82bd7981bcde0852
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
