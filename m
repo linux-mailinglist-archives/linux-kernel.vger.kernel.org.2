@@ -2,122 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E673F839E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1793F83AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240397AbhHZIRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232992AbhHZIRC (ORCPT
+        id S240457AbhHZIWZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Aug 2021 04:22:25 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20493 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232992AbhHZIWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:17:02 -0400
-Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF2F4C061757;
-        Thu, 26 Aug 2021 01:16:14 -0700 (PDT)
-Received: from localhost (unknown [127.0.0.1])
-        by ha0.nfschina.com (Postfix) with ESMTP id 8D16BAE0DC7;
-        Thu, 26 Aug 2021 16:15:23 +0800 (CST)
-X-Virus-Scanned: amavisd-new at test.com
-Received: from ha0.nfschina.com ([127.0.0.1])
-        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PqZdW8WS1aF3; Thu, 26 Aug 2021 16:15:03 +0800 (CST)
-Received: from [172.30.18.174] (unknown [180.167.10.98])
-        (Authenticated sender: liqiong@nfschina.com)
-        by ha0.nfschina.com (Postfix) with ESMTPA id 7B218AE0DB6;
-        Thu, 26 Aug 2021 16:15:03 +0800 (CST)
-From:   liqiong <liqiong@nfschina.com>
-Subject: Re: [PATCH] ima: fix deadlock within RCU list of ima_rules
-To:     THOBY Simon <Simon.THOBY@viveris.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
+        Thu, 26 Aug 2021 04:22:24 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-43-ymAybAEpNSqWfaqB-Bjn0g-1; Thu, 26 Aug 2021 09:21:35 +0100
+X-MC-Unique: ymAybAEpNSqWfaqB-Bjn0g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Thu, 26 Aug 2021 09:21:34 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Thu, 26 Aug 2021 09:21:34 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Pavel Skripkin' <paskripkin@gmail.com>,
+        "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>,
+        "phil@philpotter.co.uk" <phil@philpotter.co.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "straube.linux@gmail.com" <straube.linux@gmail.com>,
+        "fmdefrancesco@gmail.com" <fmdefrancesco@gmail.com>
+CC:     "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210819101529.28001-1-liqiong@nfschina.com>
- <20210824085747.23604-1-liqiong@nfschina.com>
- <e720e88e-ebfa-56df-6048-f2da0b8fa2a0@viveris.fr>
- <3ba4da9d-fa7b-c486-0c48-67cee4d5de6d@nfschina.com>
- <2c4f61ff68544b2627fc4a38ad1e4109184ec68a.camel@linux.ibm.com>
- <d502623a-7a49-04f8-1672-6521ceef260b@nfschina.com>
- <5a032a1b-f763-a0e4-8ea2-803872bd7174@nfschina.com>
- <eb9921ff-2d4b-136f-b7a7-924e61a0651b@viveris.fr>
-Message-ID: <1e464ae0-28e1-6511-ab89-52b5cd1a0841@nfschina.com>
-Date:   Thu, 26 Aug 2021 16:15:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+Subject: RE: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
+Thread-Topic: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
+Thread-Index: AQHXmLmGl/+E/B1vJUGWAidfG7snbKuFdLBA
+Date:   Thu, 26 Aug 2021 08:21:34 +0000
+Message-ID: <f5c20e0f1b934e04ad11a3627d71f5db@AcuMS.aculab.com>
+References: <cover.1629789580.git.paskripkin@gmail.com>
+ <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
+In-Reply-To: <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <eb9921ff-2d4b-136f-b7a7-924e61a0651b@viveris.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon,
+From: Pavel Skripkin
+> Sent: 24 August 2021 08:27
+> 
+> _rtw_read8 function can fail in case of usb transfer failure. But
+> previous function prototype wasn't designed to return an error to
+> caller. It can cause a lot uninit value bugs all across the driver code,
+> since rtw_read8() returns local stack variable to caller.
+> 
+> Fix it by changing the prototype of this function. Now it returns an
+> int: 0 on success, negative error value on failure and callers should pass
+> the pointer to storage location for register value.
 
-Thanks for your help, your advice is clear, can i just use it,
-how about this:
+...
+> +		len += snprintf(page + len, count - len, "rtw_read8(0x%x)=0x%x\n",
+> +				proc_get_read_addr, (u8) tmp);
 
+That is broken.
 
-The current IMA ruleset is identified by the variable "ima_rules",
-and the pointer starts pointing at the list "ima_default_rules".
-When loading a custom policy for the first time, the variable is
-updated to point to the list "ima_policy_rules" instead. That update
-isn't RCU-safe, and deadlocks are possible.
+	David
 
-Introduce a temporary value for "ima_rules" when iterating over
-the ruleset to avoid the deadlocks.
-
-
-Signed-off-by: liqiong <liqiong@nfschina.com>
----
- security/integrity/ima/ima_policy.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
-
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index fd5d46e511f1..e92b197bfd3c 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-
-
-
-Thanks
-
-liqiong
-
-在 2021年08月25日 20:03, THOBY Simon 写道:
-> Hi Liqiong,
->
-> On 8/25/21 1:45 PM, liqiong wrote:
->> Hi Mimi,
->>
->> This copy may be better.
->>
->>
->> subject: ima: fix deadlock when iterating over the init "ima_rules" list.
->>
->>
-> As Mimi said, consider adding an introducing paragraph, like:
-> 'The current IMA ruleset is identified by the variable "ima_rules",
-> and the pointer starts pointing at the list "ima_default_rules". When
-> loading a custom policy for the first time, the variable is
-> updated to point to the list "ima_policy_rules" instead. That update
-> isn't RCU-safe, and deadlocks are possible.'
->
->> When traversing back to head, the init "ima_rules" list can't exit
->> iterating if "ima_rules" has been updated to "ima_policy_rules".
->> It causes soft lockup and RCU stalls. So we can introduce a duplicate
->> of "ima_rules" for each "ima_rules" list loop.
-> Per the process (see 'Documentation/process/submitting-patches.rst'),
-> please prefer an imperative style (written in another paragraph):
-> 'Introduce a temporary value for "ima_rules" when iterating over the ruleset.'
->
->
-> Thanks,
-> Simon
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
