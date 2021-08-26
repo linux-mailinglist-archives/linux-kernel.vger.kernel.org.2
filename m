@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B9C3F8668
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4FE3F8652
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242255AbhHZL04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:26:56 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8779 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242162AbhHZL0n (ORCPT
+        id S242049AbhHZLYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:24:37 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:60715 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241887AbhHZLYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:26:43 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GwL9r0wJ0zYtrx;
-        Thu, 26 Aug 2021 19:25:20 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 26 Aug 2021 19:25:53 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 26 Aug 2021 19:25:52 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
-Subject: [PATCH net 7/7] net: hns3: fix get wrong pfc_en when query PFC configuration
-Date:   Thu, 26 Aug 2021 19:22:01 +0800
-Message-ID: <1629976921-43438-8-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1629976921-43438-1-git-send-email-huangguangbin2@huawei.com>
-References: <1629976921-43438-1-git-send-email-huangguangbin2@huawei.com>
+        Thu, 26 Aug 2021 07:24:36 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id E56E45C010E;
+        Thu, 26 Aug 2021 07:23:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 26 Aug 2021 07:23:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=xhPeWgw2JhcQ2s7hwE0vCi4jbgo
+        eiwq015e2qX2II3U=; b=y8friRw+kq1I1NUdW6b4Nx/Ic6OgieoopOT1mRpmWEK
+        7aa2JYqsV66qZTlJ66hNjiwWCWjwxkv7kZz0petNudza+JQzsmDb2JUcED5QoSQl
+        oZ0Lt5n2O3sI81L9ba4HLg0o+GVnkWt7uVVxgS4HoJz0qznxFDuK2BYX7F4J/YvX
+        9PDoKipEmYN5F9qyUbJCsLCLv+n4kgYYXV8QTNV27Z7vsyRCFR89QYqDBpMf9Dyx
+        kAXU0OZbivcX8hVQDbikCg382RrbDA98ANpAXPUFAcN4jCfaDc1m4g0p3n5h2KEw
+        riwbreoXQjpDzqWLrgnClL98qgfaQdkS8y8iFNWcBwA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=xhPeWg
+        w2JhcQ2s7hwE0vCi4jbgoeiwq015e2qX2II3U=; b=X+efeJc3C7EdFdMCEZZTul
+        7hGkYj9j5UkgGwFK6t1P49NoN1vYNEJxTzlMf1Eaprs7YyZslOrbHJQHa/a3nvkM
+        ZH7B0WC3g4lyOLGR1MQb1v/gGxjFV31hvGmYXp5bnGA9f/4yJNLYGl0fRth8qWjo
+        cZQR/O6Svv1/13zalrEBPhNPQdH3z/BsFOeP6LNpabBe0XEyMfnzqnsjLKpuhpsT
+        khyI83eKl2kGBwptYguyqXhrVf7b2drqiwF9Iba0j/t/2QKKGOBe0B2yUFv/JBDl
+        MzM2BKb5d5UxW2zbmtRazYx8K+UMta3cmChtymNRFNMPf029+zF4Mj/VvEx5XApw
+        ==
+X-ME-Sender: <xms:xHknYRnDLDqXOM0ru4pUoW_9qQl2FOJvEi3Em2udy2BuqF0IXsxeIQ>
+    <xme:xHknYc2jWc3sZzxQk43_J4QnjCIJXE5oMZFZC9eub2Y4nM4Xl8CeIx4I0icYYZuvK
+    OGCIxmuqKUleQ>
+X-ME-Received: <xmr:xHknYXpEsbbVRuGu9fGubLHsj-Lqq6NKiiZn-tRgOv-EUOWykokTWDGn>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduuddgfeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:xHknYRkwWz5L6YEUM9YbXfRJvR88v8DJp0nCYi8ZMAzJFnZBczVbJQ>
+    <xmx:xHknYf20WbuWGOWKeSbXb-Y-syZEdsxcpuN8ZOORwSO9LiYlEN2qbA>
+    <xmx:xHknYQv67x1_SAfh7QfW20vc64yMmGDM_ERl62GKP7yQOHHO6ZU3Tw>
+    <xmx:xHknYYI_gsRLBFCWiLL6E8073SwHGYHoeiTTnkHFOcvhPVQ7J4oNJA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 26 Aug 2021 07:23:45 -0400 (EDT)
+Date:   Thu, 26 Aug 2021 13:23:32 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Niklas Lantau <niklaslantau@gmail.com>
+Cc:     stern@rowland.harvard.edu, linux-usb@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Usb: storage: usb: removed useless cast of void*
+Message-ID: <YSd5tKoxq2yABc+U@kroah.com>
+References: <20210821121134.23205-1-niklaslantau@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210821121134.23205-1-niklaslantau@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, when query PFC configuration by dcbtool, driver will return
-PFC enable status based on TC. As all priorities are mapped to TC0 by
-default, if TC0 is enabled, then all priorities mapped to TC0 will be
-shown as enabled status when query PFC setting, even though some
-priorities have never been set.
+On Sat, Aug 21, 2021 at 02:11:34PM +0200, Niklas Lantau wrote:
+> Removed useless cast of a void* and changed __us to data
 
-for example:
-$ dcb pfc show dev eth0
-pfc-cap 4 macsec-bypass off delay 0
-prio-pfc 0:off 1:off 2:off 3:off 4:off 5:off 6:off 7:off
-$ dcb pfc set dev eth0 prio-pfc 0:on 1:on 2:on 3:on
-$ dcb pfc show dev eth0
-pfc-cap 4 macsec-bypass off delay 0
-prio-pfc 0:on 1:on 2:on 3:on 4:on 5:on 6:on 7:on
+Why did you do two different things in the same patch?
 
-To fix this problem, just returns user's PFC config parameter saved in
-driver.
+If you want to work on coding style cleanups, I recommend starting in
+the drivers/staging/ area to gain experience before venturing out into
+the rest of the kernel.
 
-Fixes: cacde272dd00 ("net: hns3: Add hclge_dcb module for the support of DCB feature")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+thanks,
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index 5bf5db91d16c..39f56f245d84 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -255,21 +255,12 @@ static int hclge_ieee_getpfc(struct hnae3_handle *h, struct ieee_pfc *pfc)
- 	u64 requests[HNAE3_MAX_TC], indications[HNAE3_MAX_TC];
- 	struct hclge_vport *vport = hclge_get_vport(h);
- 	struct hclge_dev *hdev = vport->back;
--	u8 i, j, pfc_map, *prio_tc;
- 	int ret;
-+	u8 i;
- 
- 	memset(pfc, 0, sizeof(*pfc));
- 	pfc->pfc_cap = hdev->pfc_max;
--	prio_tc = hdev->tm_info.prio_tc;
--	pfc_map = hdev->tm_info.hw_pfc_map;
--
--	/* Pfc setting is based on TC */
--	for (i = 0; i < hdev->tm_info.num_tc; i++) {
--		for (j = 0; j < HNAE3_MAX_USER_PRIO; j++) {
--			if ((prio_tc[j] == i) && (pfc_map & BIT(i)))
--				pfc->pfc_en |= BIT(j);
--		}
--	}
-+	pfc->pfc_en = hdev->tm_info.pfc_en;
- 
- 	ret = hclge_pfc_tx_stats_get(hdev, requests);
- 	if (ret)
--- 
-2.8.1
-
+greg k-h
