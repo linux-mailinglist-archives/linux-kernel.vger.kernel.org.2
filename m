@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056803F86BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBD33F86BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242278AbhHZLxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbhHZLxx (ORCPT
+        id S242324AbhHZLyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:54:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59974 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233829AbhHZLya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:53:53 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0635C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:53:05 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id f2so4640575ljn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:53:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hBxBPr3Kmhx+gtlKVfwmBEiG03qJgZIhVmQgwh7w3cs=;
-        b=FB0fHEaVXvKluHgvDlnT+jczLkZlGErjJJcgRmo6eZQTf8xdHEvDAuWFcB/QkxF4am
-         7sLfKCqAoC/rjaaZHeVT2p9sjEtnFNvrhixpDYcebthv5V3m1B5T6dFAzyInBteoOSNd
-         y9P1RkLqYOd5FxhAiqyQxxXLQBsMJMWpioS0KfxUkaik13asCvQy42uEp/vg36WtcETW
-         oHKYlfRq4qtHu5Lycp66zFgKzPZ7iorXB4UMbRosPksChFZByPmFLl8EsXkWmWG6hv6h
-         LImOeUz3lp8A2xT7OPoa+JpAxsfvM8+5SVf5hb3uUjEoDbQoU/rBuk342Bvys2IgoDKu
-         uZeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hBxBPr3Kmhx+gtlKVfwmBEiG03qJgZIhVmQgwh7w3cs=;
-        b=jkxidXz8RXklZiBun5YsEclclv95G2AM8/XU81seekHle4yFzRMKl4jBo0Nn9Bkigs
-         22ir6Fdu5FtPai6AsDvFbSru8CdFAtilYs+9TMy9ck0+1cONTPg76XVmFOLs+B1iNhBO
-         RDrV5WqG8qPcbY0vvUcHRQjCreuzGCEvCQtDxHmBW5vKKsC2MfxD02UYY9sltRUVBAk9
-         /I5EIRKAzUFEk5aL1y9GwgeEMN0UbSXcVSTFgiYaj5haTp/FqC/h14bS3qGumLG/HTP7
-         x90o2JIlRGyE6nvAnG2z737yrCcyf+eB7dpQVg+3HX9IEyyVNJ6NbToJVIE+kEaDkx6e
-         Wviw==
-X-Gm-Message-State: AOAM5306S8i3UBtfb0MABYWAbbHlfwOuwSPRlWI9rhz2bpmBIn/S6eQy
-        k17udvqB1PH9seVHBEb2sH3GIGsBMnY98jSALvM=
-X-Google-Smtp-Source: ABdhPJz7/MeHPulwySfsZ/IqdizUu7xk9XmvlQXItyDL8PXG0Cim011tjNevkpfh3ADXQSZ3F7nxSBrSo9s72Oey3Go=
-X-Received: by 2002:a2e:a903:: with SMTP id j3mr2694040ljq.347.1629978784221;
- Thu, 26 Aug 2021 04:53:04 -0700 (PDT)
+        Thu, 26 Aug 2021 07:54:30 -0400
+Date:   Thu, 26 Aug 2021 13:53:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629978822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tzSHXovWOy07GY16PKEq30/8tac2aCHWFtSmVjaSxJ8=;
+        b=N3yHKWZFq4YkcrBx2Rvo0bPOJCoWQ9BWCgRcaoZ8mivSRAoiGL8u6m3whyJT0h12awQH4N
+        N/ihO25lj0ldHDRq1gOwI0vD2RFen9N1w/VfBAyNPTYRnKVFoM+8VnSeakCRGMHWNkSqtO
+        xxTMgFT998JZpxAsM/LIpj58OweKtvdrnBCBuWIfX0zj3LkE5bx/7D2xUFM8UWj6AkF6Z1
+        RkQaDFGuK+oWvPdw68f7BAlK2WgOoZrcXQebJtRr3Llz8h6M2IQ+i5D4deM9fqz5Jw2HP8
+        qGyOVRpM3aEszdBu3gkDBf1A6p+1vQOO/dIuF4m3ZETb7NqQbmrxNiuZ/fmC3g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629978822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tzSHXovWOy07GY16PKEq30/8tac2aCHWFtSmVjaSxJ8=;
+        b=v9r7oG4wtsyMDzJKGetxr/jQP6zCIGJuUFUxCvz2WUnPXMS9qtzKa/+S8zC3z4j598C3UV
+        IRIB8EHV/39gipAw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [RFC PATCH -RT] epoll: Fix eventpoll read-lock not writer-fair
+ in PREEMPT_RT
+Message-ID: <20210826115340.jzm3dicvporgrelp@linutronix.de>
+References: <20210825132754.GA895675@lothringen>
 MIME-Version: 1.0
-References: <1629975460-17990-1-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1629975460-17990-1-git-send-email-shengjiu.wang@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 26 Aug 2021 08:52:53 -0300
-Message-ID: <CAOMZO5BCsTMjJJPtLN6_seVcWb24A2ms11FP3HzR0i7t3GLSuA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl_rpmsg: add soc specific data structure
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210825132754.GA895675@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shengjiu,
+On 2021-08-25 15:27:54 [+0200], Frederic Weisbecker wrote:
+> Hi,
+> 
+> Ok the patch is gross but at least this lets me start a discussion
+> about the issue.
+> 
+> ---
+> From d9d66d650b3dac8947a34464dd2e0b546a8c6b63 Mon Sep 17 00:00:00 2001
+> From: Frederic Weisbecker <frederic@kernel.org>
+> Date: Wed, 25 Aug 2021 14:24:54 +0200
+> Subject: [RFC PATCH -RT] epoll: Fix eventpoll read-lock not writer-fair in PREEMPT_RT
+> 
+> The eventpoll lock has been converted to an rwlock some time ago with:
+> 
+> 	a218cc491420 (epoll: use rwlock in order to reduce ep_poll
+> 					callback() contention)
+> 
+> Unfortunately this can result in scenarios where a high priority caller
+> of epoll_wait() need to wait for the completion of lower priority wakers.
+> 
+> The typical scenario is:
+> 
+> 1) epoll_wait() waits and sleeps for new events in the ep_poll() loop.
+> 
+> 2) new events arrive in ep_poll_callback(), the waiter is awaken while
+>    ep->lock is read-acquired.
+> 
+> 3) The high priority waiter preempts the waker but it can't acquire the
+>    write lock in epoll_wait() so it blocks waiting for the low prio waker
+>    without priority inheritance.
+> 
+> I guess making readlock writer fair is still not the plan so all I can
+> propose is to make that rwlock build-conditional.
 
-On Thu, Aug 26, 2021 at 8:19 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+It is writer fair in a sense that once a writer attempts to acquire the
+lock no new reader are allowed in.
+What you want is that the writer pi-boosts each reader which is what is
+not done (multi reader boost). Long ago there was an attempt to make
+this happen (I think with rwsem) but it turned out to be problematic.
+There was a workaround by only allowing one reader and doing PI as
+usual.
+This was then dropped because multi-reader became a must have thing for
+other reasons and in the meantime the lack of pi-boosting wasn't that
+*problematic* anymore. The problematic user converted in the meantime to
+RCU having the reading side lockless and the writer had a regular lock.
 
-> +       rpmsg->soc_data = of_device_get_match_data(&pdev->dev);
-> +       if (rpmsg->soc_data) {
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-This check is not necessary, because rpmsg->soc_data is always non-NULL.
-
-Other than that:
-
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Sebastian
