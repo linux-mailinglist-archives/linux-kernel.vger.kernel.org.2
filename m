@@ -2,118 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7AF3F80E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0473F80EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237025AbhHZDXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 23:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        id S235425AbhHZD1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 23:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbhHZDXV (ORCPT
+        with ESMTP id S229533AbhHZD1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 23:23:21 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787B0C061757;
-        Wed, 25 Aug 2021 20:22:34 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so1681302otk.9;
-        Wed, 25 Aug 2021 20:22:34 -0700 (PDT)
+        Wed, 25 Aug 2021 23:27:06 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67529C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 20:26:20 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so5602174pjw.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 20:26:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bUeZZcRUwgsVKTg9hbUOFpXsEAgjIJCFQuo9JR/6uzc=;
-        b=Cd+PYR/CcyaKB2Dv5SB33p47LhOGWZXNOHn1EdmwVk1xcpzdrlZ6xHmaxnv2H1iPGf
-         RWtP8SHbN3xokld1eM/pm5ttcqP5oEVT3y2TUXHs9mzHYDOL5ViUCwYYIhEstqF70Xfp
-         WJuv/0dJdP/tOW4nFPoUoYJVY8ksZK6uTBcL2dfkCvEqvr9MPxqLKenyIHOEOED7k9fP
-         mE1OcurZBALiFsM6WDqfM97C0n+lhT/e6Q4pbTF5SCAfMxtOP/qx8KGfQiJ1ujkQVkgf
-         7i9VtdHZ42y7O9CHoQnhHn5VTuFgre5r3KC01v84y3Q2g+/0/OiXLFD9PY+X/ZGfUQCJ
-         TbtA==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=gTlQCJHQbFHWNH1/OUl4/6XKO8pY5t2nEBNZMA5JnuM=;
+        b=agl6gwgInLeQrzWMkp3jywI1vMjb4RiB+d/PJei+WDcwfCro/MnwPd4edz/dLv1ngH
+         +qQ8u7Es8xXG2FmMqiNWQHLQprou/umjrMyvj8yYPnELjsnHOyLVBN2cIxWkGjV7Skdo
+         SvQE6aCqYcKDlWVL4yNXhj/iw6eK/qFeS5eef/oTyEZoz5T/s2Dl/S832NFRhWzCMRce
+         bRraNuTJKtckKPVBjRNQ3+LOjChwXN3dGhIYlIDqODqe35NzRg4Njd8vJPdqbfZNZu0o
+         zyZRdHTSEP8q1TACyi4qu3pxdTyAMSxmQ8xDq8lHM+Tx1EaWgER4CtTUMmrR5TCycplJ
+         C/jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bUeZZcRUwgsVKTg9hbUOFpXsEAgjIJCFQuo9JR/6uzc=;
-        b=SRU+e5ThTLTMXDX4pKMR7WK33IC2oQIhNX84Ez8lTRZLi6mx6iGfRdgGSoo+MOFPBs
-         RyEnlE4e5XZr+jNQhNSKJ9NIy2bnlWtAOOC5TB0TWOZKZ+fkCjdfp391nj6ZVpmATuwb
-         dr8q+VufwfYc2IkO/HJoYTmeTWYhAtSmailOWtjjR1cS17hS8hqGvH+EAxBib9z6U1BZ
-         OnMZnHX7Ty38mJvlNAYzmUdvzWyNQSjfDU72mKjEQdapMFsNIW2VWqJdhnuTIG2TVuxc
-         J/H+75arsNBhEBPSFXscEK9PzibGU/NSJkMJpdOVXacXRQ0NgggeCs2mNH09beK6jKhC
-         936w==
-X-Gm-Message-State: AOAM530MPrf5WSBKNrF55IJnGJEvqqwsImurjUU3BHIAQIpvlC5UrAzT
-        HtClxLCYPOFGnmh+KuMpvYM711kdOTaVaC3Wj8g=
-X-Google-Smtp-Source: ABdhPJxgk1EqPZK7qA7ih/uquKPxaLzFqjR5sZ54uxK1N75LUQxoav/lMAWNN1uN0WKcEyzI+s06wNoInRxtLucaEAY=
-X-Received: by 2002:a05:6830:20d0:: with SMTP id z16mr1331201otq.330.1629948153918;
- Wed, 25 Aug 2021 20:22:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=gTlQCJHQbFHWNH1/OUl4/6XKO8pY5t2nEBNZMA5JnuM=;
+        b=bybUsG+i1kAXaPGaBmaxo+xjstNKHrtamGAXcBkncNeojsNLSD+cI9mTEuWTTU3IkR
+         sY0tDIThdpV87KtEbaSIwCwfqqQCijJkbhip/RCXCVBZ+wCylsJQL3tYa4HDLAPvnoxa
+         LZMlBa90oo4GCYD2wWpGMVGYnPVZh1hoAg5uIa3yJ5RtCPRlsRv/0cyzMiFeHsTtukoz
+         tENgcpsZi5uhlXSYvk0MdSTEPmKpGLw4Fcu5j0p8hzU/4U9Ijg19aO5ZRa+cfb9KVnVz
+         bKL6C3+6QU5kDSBWnD4E1/KeudJJNRuqXIvHirGYZbBnpIfekFpSSHW7xlfgSwMgVY2r
+         Ehnw==
+X-Gm-Message-State: AOAM532ZftXdd5uXmCDkiUFpNcykmSdROT+KGC8OXw3qkx3D9chCXcyb
+        Xvs+LWJNeqviRjYOLpYtx/ZLIBUt79A=
+X-Google-Smtp-Source: ABdhPJxICERuP2fpSTN98/UbrL/fs2rew1tUinpjIxBVcK1KJ8ykJkAd3tE39jBvlFCgtTjJK6Z4aA==
+X-Received: by 2002:a17:902:dcc9:b0:134:92c7:3cb6 with SMTP id t9-20020a170902dcc900b0013492c73cb6mr1697569pll.79.1629948379830;
+        Wed, 25 Aug 2021 20:26:19 -0700 (PDT)
+Received: from localhost (193-116-119-33.tpgi.com.au. [193.116.119.33])
+        by smtp.gmail.com with ESMTPSA id l14sm6684825pjq.13.2021.08.25.20.26.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 20:26:19 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 13:26:14 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 1/2] powerpc/bug: Remove specific powerpc BUG_ON() and
+ WARN_ON() on PPC32
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
+        <1628834356.pr4zgn1xf1.astroid@bobo.none>
+        <20210818150653.GJ1583@gate.crashing.org>
+In-Reply-To: <20210818150653.GJ1583@gate.crashing.org>
 MIME-Version: 1.0
-References: <20210824071926.68019-1-benbjiang@gmail.com> <fe512c8b-6f5a-0210-3f23-2c1fc75cd6e5@tessares.net>
- <CAPJCdBmTPW5gcO6DO5i=T+R2TNypzbaA666krk=7Duf2mt1yBw@mail.gmail.com> <f9b97b7f-cb48-f0bf-2dfb-a13bf1296b19@linux.intel.com>
-In-Reply-To: <f9b97b7f-cb48-f0bf-2dfb-a13bf1296b19@linux.intel.com>
-From:   Jiang Biao <benbjiang@gmail.com>
-Date:   Thu, 26 Aug 2021 11:22:23 +0800
-Message-ID: <CAPJCdB=MF=PY0R+a1Ka9ymDvp9EXf2HbzosAC1sUh547EcAjOA@mail.gmail.com>
-Subject: Re: [PATCH] ipv4/mptcp: fix divide error
-To:     Mat Martineau <mathew.j.martineau@linux.intel.com>
-Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        mptcp@lists.linux.dev, linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Jiang Biao <tcs_robot@tencent.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1629946707.f6ptz0tgle.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Aug 2021 at 01:56, Mat Martineau
-<mathew.j.martineau@linux.intel.com> wrote:
->
->
-> On Tue, 24 Aug 2021, Jiang Biao wrote:
->
-> > Hi,
-> >
-> > On Tue, 24 Aug 2021 at 15:36, Matthieu Baerts
-> > <matthieu.baerts@tessares.net> wrote:
-> >>
-> >> Hi Jiang,
-> >>
-> >> On 24/08/2021 09:19, Jiang Biao wrote:
-> >>
-> >> (...)
-> >>
-> >>> There is a fix divide error reported,
-> >>> divide error: 0000 [#1] PREEMPT SMP KASAN
-> >>> RIP: 0010:tcp_tso_autosize build/../net/ipv4/tcp_output.c:1975 [inline]
-> >>> RIP: 0010:tcp_tso_segs+0x14f/0x250 build/../net/ipv4/tcp_output.c:1992
-> >>
-> >> Thank you for this patch and validating MPTCP on your side!
-> >>
-> >> This issue is actively tracked on our Github project [1] and a patch is
-> >> already in our tree [2] but still under validation.
-> >>> It's introduced by non-initialized info->mss_now in __mptcp_push_pending.
-> >>> Fix it by adding protection in mptcp_push_release.
-> >>
-> >> Indeed, you are right, info->mss_now can be set to 0 in some cases but
-> >> that's not normal.
-> >>
-> >> Instead of adding a protection here, we preferred fixing the root cause,
-> >> see [2]. Do not hesitate to have a look at the other patch and comment
-> >> there if you don't agree with this version.
-> >> Except if [2] is difficult to backport, I think we don't need your extra
-> >> protection. WDYT?
-> >>
-> > Agreed, fixing the root cause is much better.
-> > Thanks for the reply.
-> >
->
-> Hi Jiang -
->
-> Could you try cherry-picking this commit to see if it eliminates the error
-> in your system?
->
-> https://github.com/multipath-tcp/mptcp_net-next/commit/9ef5aea5a794f4a369e26ed816e9c80cdc5a5f86
->
-ok, I'll try and give you feedback.
+Excerpts from Segher Boessenkool's message of August 19, 2021 1:06 am:
+> On Fri, Aug 13, 2021 at 04:08:13PM +1000, Nicholas Piggin wrote:
+>> This one possibly the branches end up in predictors, whereas conditional=
+=20
+>> trap is always just speculated not to hit. Branches may also have a
+>> throughput limit on execution whereas trap could be more (1 per cycle
+>> vs 4 per cycle on POWER9).
+>=20
+> I thought only *taken* branches are just one per cycle?
 
-Regards,
-Jiang
+Taken branches are fetched by the front end at one per cycle (assuming=20
+they hit the BTAC), but all branches have to be executed by BR at one=20
+per cycle. On POWER9 BR even has to execute some other things like mflr
+as well, but at least that's improved on POWER10.
+
+Trap is executed at 4 per cycle and will never use branch table entries=20
+or alias with a non-tagged predictor and mispredict.
+
+> And those
+> branches are only taken for the exceptional condition (or the case where
+> we do not care about performance, anyway, if we do have an error most of
+> the time ;-) )
+
+It's not that big a deal, but trap is really the best instruction for=20
+this.
+
+>=20
+>> On typical ppc32 CPUs, maybe it's a more obvious win. As you say there
+>> is the CFAR issue as well which makes it a problem for 64s. It would
+>> have been nice if it could use the same code though.
+>=20
+> On 64-bit the code looks better for the no-error path as well.
+>=20
+>> Maybe one day gcc's __builtin_trap() will become smart enough around
+>> conditional statements that it it generates better code and tries to
+>> avoid branches.
+>=20
+> Internally *all* traps are conditional, in GCC.  It also can optimise
+> them quite well.  There must be something in the kernel macros that
+> prevents good optimisation.
+
+I did take a look at it at one point.
+
+One problem is that the kernel needs the address of the trap instruction=20
+to create the entry for it. The other problem is that __builtin_trap=20
+does not return so it can't be used for WARN. LLVM at least seems to=20
+have a __builtin_debugtrap which does return.
+
+The first problem seems like the show stopper though. AFAIKS it would=20
+need a special builtin support that does something to create the table
+entry, or a guarantee that we could put an inline asm right after the
+builtin as a recognized pattern and that would give us the instruction
+following the trap.
+
+Thanks,
+Nick
