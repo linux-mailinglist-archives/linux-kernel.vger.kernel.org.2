@@ -2,190 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236803F8F54
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D228B3F8F5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhHZT5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 15:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
+        id S240521AbhHZUAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 16:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbhHZT5c (ORCPT
+        with ESMTP id S231439AbhHZUAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 15:57:32 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C8CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:56:44 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id k65so8104984yba.13
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:56:44 -0700 (PDT)
+        Thu, 26 Aug 2021 16:00:06 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39489C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:59:18 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id m26so3696213pff.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:59:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JFAHUDZyyahIcWw7Cvy/uu3QfGKT8k+W/eOL0ZhDFn8=;
-        b=c+HL58Mpu2qY6DsQ+9tdT8HIhGv/o4TXrZcytK40XxfLh9zT8seGs3u5kCCzTcU003
-         jdsJW57wCClGc++F1QNvfZVWckvIeVg0m3pgIollN6wnDlvbpKmO8/miYyJzHVAHwqkC
-         ldYQc3mdQaenCOiXecR7PJH7eRuc9AjV1o6RuGNLGz2YZSD0qVK/7TQkQxmbQ/jkgT+X
-         nmeaxdvhysNcdyvv/ANfl53RKclFCFliPC8zLxzi7YT8FGBuC4lw7koeJKvbpeSD68dK
-         4ztpfrk9xmB5hKJEKdcjcSrd9O+IUErBt0tovr4zKJC8W60FqaavUtcgHQDOAEdV9KqE
-         EGzA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xc1szHQOZDqB0AYr925levUtn3vNJA/QIKkPEhre7Pk=;
+        b=rAH1RZhEJy3MVfBUURq1C3iW4ra2alS9qAREXLkrJFEHcf7iDXDJip4aX5r35skET+
+         jo8PoQ7D1SWj6xQfgikhRkl1CH3MaymS1zddz++K76rpR+himQM4eRquOL09b9DEA3zi
+         k1GwvAYBbvUNls5+AXaN8glJCjF7KIFEFQhoKckGnN93S31/oYpDxN/8g8Ng4pR7mIlZ
+         9PgGk1EPPpJEnhqaB0anqRNL1VkcMXUzqFbZwSiDCOTTGHP0JVVcjlrSX45dE9oUOrpr
+         J6hngXVZBF1o5LZ9dJoHWVzIqoA8ysZ3JGu2pnoEjug6L81eTykL5MQK90BtvdNATJv2
+         Oyzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JFAHUDZyyahIcWw7Cvy/uu3QfGKT8k+W/eOL0ZhDFn8=;
-        b=OIAu1gtokoX8F0SLw3YCvBkyseW+N4PLzaNF1LEFnWQv7GzMWCXoC3wxoVcz99TafP
-         wte3ME3BkWrxw8jgrF73onkDmY1qzHXiW2H7JdaghgL/scVdF6tIVp+HTm8HDm5n+FMu
-         2RF/pQA2uvxhzWE4fdL2r4ANHDEa6bzqtmd4UhnqHd1IjqKuk3IHMrb9Q67HFNjK5Oj3
-         oYRZzaw0PHk62doq/k/7+FrffdPzlmn7CHaudT0JkuxQuSHTaQ6L2SUoMQoPZ+UpUeza
-         WV0D3gPa46KB/RmdZW507xZIWlSqnQ0HTY0kDjl5eQLSJRJCfzNo1Yj+PzSNoQm/dh3T
-         XKjA==
-X-Gm-Message-State: AOAM532rLd0dDxvpA87/ewA5aXjsf6V9tthH3k7yoOLBwdGErHVcdLbR
-        8k33wm5vN8WZkdMb7x9KgIxnyPra175umD0skRQiXQ==
-X-Google-Smtp-Source: ABdhPJzBanXg7oKhlkUNt9M+hgCQcqMj4csOvmzyt41Q9AP5DJSOE8icqZgGfMzxdnGjwp2AlOc5gP15GOVzMlQ6fHQ=
-X-Received: by 2002:a25:bdc6:: with SMTP id g6mr552373ybk.310.1630007803595;
- Thu, 26 Aug 2021 12:56:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xc1szHQOZDqB0AYr925levUtn3vNJA/QIKkPEhre7Pk=;
+        b=jWF1WrCCdzT8HqjnkOR6hiJoOsVOQpFj+aSohFXbNMCT8S0L44+8R18+2lRS15rBPY
+         5nRaK1XitKc35I3lxMJcbPq8+GEPtIHaMSzKLnD0lBER7Ng3Vo8zexv/l8DZSzapuPUb
+         88dGNVLmcTcf6EkUcQebykX4kSItcOlnhZjPru/vdkZdf7uNHPQJZHTTPhBKiOqZSFrg
+         7e4l1IZl7xR2RvoB2OYa3XfRBTozSK4af2l5YIGn1XvPem9uCf5FqpiLk6vnjl+LKfRK
+         28/Ift4fmvh5w+cK/aKUS8n1041U9Pil23rvb4qSgEVuGWw8mDCow4L2wPoKyzc6ZNyV
+         Nl+A==
+X-Gm-Message-State: AOAM530IGRYt8uA5n/xQ/XlxXxuwGqjWxkoqU6eWB1xUJnZR3ASh8Z97
+        DS3sG8m+HZwR3ra1QAhFM3bSRg==
+X-Google-Smtp-Source: ABdhPJw2eYzVN0czVrpB+FQtPqgZRmO7Z9UXayRPLlAY9AEDiGK/tSK4hOJrAmd1TCnyunzzfHMaVw==
+X-Received: by 2002:a62:1b97:0:b0:3ed:d347:fcac with SMTP id b145-20020a621b97000000b003edd347fcacmr5420756pfb.65.1630007957263;
+        Thu, 26 Aug 2021 12:59:17 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id o9sm4017917pfh.217.2021.08.26.12.59.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 12:59:16 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 19:59:13 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Zhu Lingshan <lingshan.zhu@intel.com>
+Cc:     peterz@infradead.org, pbonzini@redhat.com, bp@alien8.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, kan.liang@linux.intel.com, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com,
+        Like Xu <like.xu@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH V10 01/18] perf/core: Use static_call to optimize
+ perf_guest_info_callbacks
+Message-ID: <YSfykbECnC6J02Yk@google.com>
+References: <20210806133802.3528-1-lingshan.zhu@intel.com>
+ <20210806133802.3528-2-lingshan.zhu@intel.com>
 MIME-Version: 1.0
-References: <20210826074526.825517-1-saravanak@google.com> <20210826074526.825517-2-saravanak@google.com>
- <YSeTdb6DbHbBYabN@lunn.ch>
-In-Reply-To: <YSeTdb6DbHbBYabN@lunn.ch>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 26 Aug 2021 12:56:07 -0700
-Message-ID: <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806133802.3528-2-lingshan.zhu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg, Florian, Vladimir, Alvin,
+TL;DR: Please don't merge this patch, it's broken and is also built on a shoddy
+       foundation that I would like to fix.
 
-Let's continue the rest of the discussion here.
+On Fri, Aug 06, 2021, Zhu Lingshan wrote:
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 464917096e73..e466fc8176e1 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -6489,9 +6489,18 @@ static void perf_pending_event(struct irq_work *entry)
+>   */
+>  struct perf_guest_info_callbacks *perf_guest_cbs;
+>  
+> +/* explicitly use __weak to fix duplicate symbol error */
+> +void __weak arch_perf_update_guest_cbs(void)
+> +{
+> +}
+> +
+>  int perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
+>  {
+> +	if (WARN_ON_ONCE(perf_guest_cbs))
+> +		return -EBUSY;
+> +
+>  	perf_guest_cbs = cbs;
+> +	arch_perf_update_guest_cbs();
 
-On Thu, Aug 26, 2021 at 6:13 AM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Thu, Aug 26, 2021 at 12:45:24AM -0700, Saravana Kannan wrote:
-> > If a parent device is also a supplier to a child device, fw_devlink=on
-> > (correctly) delays the probe() of the child device until the probe() of
-> > the parent finishes successfully.
-> >
-> > However, some drivers of such parent devices (where parent is also a
-> > supplier) incorrectly expect the child device to finish probing
-> > successfully as soon as they are added using device_add() and before the
-> > probe() of the parent device has completed successfully.
->
-> Please can you point at the code making this assumption. It sounds
-> like we are missing some EPROBE_DEFER handling in the driver, or maybe
-> the DSA framework.
+This is horribly broken, it fails to cleanup the static calls when KVM unregisters
+the callbacks, which happens when the vendor module, e.g. kvm_intel, is unloaded.
+The explosion doesn't happen until 'kvm' is unloaded because the functions are
+implemented in 'kvm', i.e. the use-after-free is deferred a bit.
 
-For context, this was discussed and explained in [1] and subsequent
-replies. But let me summarize it here.
+  BUG: unable to handle page fault for address: ffffffffa011bb90
+  #PF: supervisor instruction fetch in kernel mode
+  #PF: error_code(0x0010) - not-present page
+  PGD 6211067 P4D 6211067 PUD 6212063 PMD 102b99067 PTE 0
+  Oops: 0010 [#1] PREEMPT SMP
+  CPU: 0 PID: 1047 Comm: rmmod Not tainted 5.14.0-rc2+ #460
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:0xffffffffa011bb90
+  Code: Unable to access opcode bytes at RIP 0xffffffffa011bb66.
+  Call Trace:
+   <NMI>
+   ? perf_misc_flags+0xe/0x50
+   ? perf_prepare_sample+0x53/0x6b0
+   ? perf_event_output_forward+0x67/0x160
+   ? kvm_clock_read+0x14/0x30
+   ? kvm_sched_clock_read+0x5/0x10
+   ? sched_clock_cpu+0xd/0xd0
+   ? __perf_event_overflow+0x52/0xf0
+   ? handle_pmi_common+0x1f2/0x2d0
+   ? __flush_tlb_all+0x30/0x30
+   ? intel_pmu_handle_irq+0xcf/0x410
+   ? nmi_handle+0x5/0x260
+   ? perf_event_nmi_handler+0x28/0x50
+   ? nmi_handle+0xc7/0x260
+   ? lock_release+0x2b0/0x2b0
+   ? default_do_nmi+0x6b/0x170
+   ? exc_nmi+0x103/0x130
+   ? end_repeat_nmi+0x16/0x1f
+   ? lock_release+0x2b0/0x2b0
+   ? lock_release+0x2b0/0x2b0
+   ? lock_release+0x2b0/0x2b0
+   </NMI>
+  Modules linked in: irqbypass [last unloaded: kvm]
 
-Alvin reported an issue that with fw_devlink=on, his downstream
-hardware which is very similar to [2] doesn't have its PHYs probed
-correctly. Instead of the PHYs being probed by the specific driver, it
-gets probed by the "Generic PHY" driver. For those who aren't very
-familiar with PHYs/networking (this is based on what Andrew explained
-to me earlier), Ethernet PHYs follow a specific standard and can have
-some extended functionality. The specific driver would give the full
-functionality, but if it's not available when the PHY needs to be
-used/connected, the generic PHY driver is force bound to the PHY and
-it gives the basic functionality.
+Even more fun, the existing perf_guest_cbs framework is also broken, though it's
+much harder to get it to fail, and probably impossible to get it to fail without
+some help.  The issue is that perf_guest_cbs is global, which means that it can
+be nullified by KVM (during module unload) while the callbacks are being accessed
+by a PMI handler on a different CPU.
 
-So upon digging into this, this is what I found and where I think we
-have some bad assumptions about the driver core are present:
+The bug has escaped notice because all dererfences of perf_guest_cbs follow the
+same "perf_guest_cbs && perf_guest_cbs->is_in_guest()" pattern, and AFAICT the
+compiler never reload perf_guest_cbs in this sequence.  The compiler does reload
+perf_guest_cbs for any future dereferences, but the ->is_in_guest() guard all but
+guarantees the PMI handler will win the race, e.g. to nullify perf_guest_cbs,
+KVM has to completely exit the guest and teardown down all VMs before it can be
+unloaded.
 
-The  DT node in [2] is probed by realtek_smi_probe() [3]. The call flow is:
-realtek_smi_probe()
-  -> dsa_register_switch()
-    -> dsa_switch_probe()
-      -> dsa_tree_setup()
-        -> dsa_tree_setup_switches()
-          -> dsa_switch_setup()
-            -> ds->ops->setup(ds)
-              -> rtl8366rb_setup()
-                -> realtek_smi_setup_mdio()
-                  -> of_mdiobus_register()
-                     This scans the MDIO bus/DT and device_add()s the PHYs
-          -> dsa_port_setup()
-            -> dsa_port_link_register_of()
-              -> dsa_port_phylink_register()
-                -> phylink_of_phy_connect()
-                  -> phylink_fwnode_phy_connect()
-                    -> phy_attach_direct()
-                       This checks if PHY device has already probed (by
-                       checking for dev->driver). If not, it forces the
-                       probe of the PHY using one of the generic PHY
-                       drivers.
+But with a help, e.g. RAED_ONCE(perf_guest_cbs), unloading kvm_intel can trigger
+a NULL pointer derference, e.g. this tweak
 
-So within dsa_register_switch() the PHY device is added and then
-expected to have probed in the same thread/calling context. As stated
-earlier, this is not guaranteed by the driver core. And this is what
-needs fixing. This works as long as the PHYs don't have dependencies
-on any other devices/suppliers and never defer probe. In the issue
-Alvin reported, the PHYs have a dependency and things fall apart. I
-don't have a strong opinion on whether this is a framework level fix
-or fixes in a few drivers.
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 1eb45139fcc6..202e5ad97f82 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2954,7 +2954,7 @@ unsigned long perf_misc_flags(struct pt_regs *regs)
+ {
+        int misc = 0;
 
-In the specific instance of [2] (providing snippet below to make it
-easier to follow), the "phy0" device [4] depends on the "switch"
-device [2] since "switch_intc" (the interrupt provider for phy0) is
-initialized by the "switch" driver. And fw_devlink=on delays the probe
-of phy0 until switch[2] finishes probing successfully (i.e. after
-dsa_register_switch() <- realtek_smi_probe() returns) -- this is the
-whole point of fw_devlink=on this is what reduces the useless deferred
-probes/probe attempts of consumers before the suppliers finish probing
-successfully.
+-       if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
++       if (READ_ONCE(perf_guest_cbs) && READ_ONCE(perf_guest_cbs)->is_in_guest()) {
+                if (perf_guest_cbs->is_user_mode())
+                        misc |= PERF_RECORD_MISC_GUEST_USER;
+                else
 
-Since dsa_register_switch() assumes the PHYs would have been probed as
-soon as they are added, but they aren't probed in this case, the PHY
-is force bound to the generic PHY driver. Which is the original issue
-Alvin reported. Hope this clears things up for everyone.
 
--Saravana
+while spamming module load/unload leads to:
 
-switch {
-        compatible = "realtek,rtl8366rb";
-...
+  BUG: kernel NULL pointer dereference, address: 0000000000000000
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 0 P4D 0
+  Oops: 0000 [#1] PREEMPT SMP
+  CPU: 6 PID: 1825 Comm: stress Not tainted 5.14.0-rc2+ #459
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:perf_misc_flags+0x1c/0x70
+  Call Trace:
+   perf_prepare_sample+0x53/0x6b0
+   perf_event_output_forward+0x67/0x160
+   __perf_event_overflow+0x52/0xf0
+   handle_pmi_common+0x207/0x300
+   intel_pmu_handle_irq+0xcf/0x410
+   perf_event_nmi_handler+0x28/0x50
+   nmi_handle+0xc7/0x260
+   default_do_nmi+0x6b/0x170
+   exc_nmi+0x103/0x130
+   asm_exc_nmi+0x76/0xbf
 
-        switch_intc: interrupt-controller {
-...
-        };
 
-        ports {
-...
-                port@0 {
-                        phy-handle = <&phy0>;
-                };
-                port@1 {
-                };
-...
-        };
+The good news is that I have a series that should fix both the existing NULL pointer
+bug and mostly obviate the need for static calls.  The bad news is that my approach,
+making perf_guest_cbs per-CPU, likely complicates turning these into static calls,
+though I'm guessing it's still a solvable problem.
 
-        mdio {
-                compatible = "realtek,smi-mdio";
-...
-                phy0: phy@0 {
-...
-                        interrupt-parent = <&switch_intc>;
-                        interrupts = <0>;
-                };
-...
-        };
-};
+Tangentially related, IMO we should make architectures opt-in to getting
+perf_guest_cbs and nuke all of the code in the below files.  Except for arm,
+which recently lost KVM support, it's all a bunch of useless copy-paste code that
+serves no purpose and just complicates cleanups like this.
 
-[1] - https://lore.kernel.org/netdev/CAGETcx_uj0V4DChME-gy5HGKTYnxLBX=TH2rag29f_p=UcG+Tg@mail.gmail.com/
-[2] - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/gemini-dlink-dir-685.dts?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n190
-[3] - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/dsa/realtek-smi-core.c?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n386
-[4] - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/gemini-dlink-dir-685.dts?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n255
+>  arch/arm/kernel/perf_callchain.c   | 16 +++++++-----
+>  arch/csky/kernel/perf_callchain.c  |  4 +--
+>  arch/nds32/kernel/perf_event_cpu.c | 16 +++++++-----
+>  arch/riscv/kernel/perf_callchain.c |  4 +--
