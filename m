@@ -2,118 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83C73F8CC1
+	by mail.lfdr.de (Postfix) with ESMTP id 36FED3F8CBF
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243191AbhHZRMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:12:43 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:43373 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243119AbhHZRMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:12:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629997915; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=3AEzHXCRF73WUOr0pkkL3X7+bnWg8BdvqsbmAMFaBDc=;
- b=LcWgSEPUXZv/90jnh2mrYVrRHodU5wTj2PcAKPuevjtDmW7YH/Zm7IUNn8KEkkW8n1NXqsxz
- LSiZSHWxMrcE4j+xt+XVmFg7ZH8HbNcFv9D1war5tWMg1S6qX9Kp1r+PYIwv6QQN/SYGoJcc
- 2RLaoGfQuKjpZT8XKpE3tSDoFJ8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6127cb51d6653df767f9ce16 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Aug 2021 17:11:45
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BC63CC4338F; Thu, 26 Aug 2021 17:11:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA794C4360D;
-        Thu, 26 Aug 2021 17:11:40 +0000 (UTC)
+        id S243168AbhHZRMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232694AbhHZRMk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 13:12:40 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C23C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:11:52 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id g22so5683180edy.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=LGCeyfC6vEKfLae19fP8mn/WuTKX4Jw7bG4cIvDmLso=;
+        b=Rtzh8jhxZ5Yxl8R6SBKzrEuUw+ZNj5wziWEl9oBKeHkmUvCD5taI3L0/uGCMp4TfCg
+         bNSlgOpTQWV3y2fpxqPkkIf3Joyxceb/szO5rZHwkmBmvoKumoltAMw28+9Q5XN3p60a
+         D2Kd1Msw1ACN5DYKW+sR3FuNhyqLEYPa+RMX4uQvsOGuUOuCyYqegU9LZ6lhoOg2P39j
+         JsFvdipm3GRcujTIIoeazbDtavcVU/30vJJzI8v7ILPwap+dc2XvXHZI5WFo9soJT+fW
+         RXq1OaNpxZUIjdgkXAvo5kdtZcHxfWTZO9zDPQrlYgvv7xkY3PWFKn78DtBJrroWU47C
+         bYpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=LGCeyfC6vEKfLae19fP8mn/WuTKX4Jw7bG4cIvDmLso=;
+        b=FT2vBzsoBNQKE9fRPp+6XL7cqR0jlSAnSr5HuuOzg0YyOkc1gkwUy/QIODRG80KSUf
+         KLOdxDUznbthkWyuCWaFRkVgw8OoOw9yxhxmbnZTAKW5QOBhiQ1Mpn0oV6AsKBsUxVTm
+         EAFBlG//j1ELk9L9+LDvriWluI9pZZ5eg6FqrGw6wfrEHbkJ0lss3LrnfzH0DfNS5fpY
+         ER9XpnXUvHDqkr12pL+uWkdi4q8Y9zX7ZB+PMpCcHf42jteDE++AOeIWnvs7+IB7Mks/
+         f1FNf+TH1A7fE5R6EQ7ietqygZgQmp1lK01DQGcx7TBB/LhODsLS0+Y/KxqqHdEHFDBJ
+         3aSw==
+X-Gm-Message-State: AOAM531Fh42u+YeWFs6r5CoMueN6xazmxBa1mxQ3nsvaWFHfRZhCDFFx
+        QSMGTk3bzKAePab0uGB6bkQ6I+W9KwIZERJltYU=
+X-Google-Smtp-Source: ABdhPJwP3270oSAPb+4mWdrAqTH91hayUp9Rx+NLrFrjP4ypZMXsJPUMJE7CHo8I/J8UbmM8a9ZLKhjjN0p9bBQXVVk=
+X-Received: by 2002:a50:9b52:: with SMTP id a18mr5226069edj.165.1629997911441;
+ Thu, 26 Aug 2021 10:11:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 26 Aug 2021 10:11:40 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     mani@kernel.org, hemantk@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
-Subject: Re: [PATCH] bus: mhi: core: Update comments on
- mhi_prepare_for_power_up
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <1629995575-32389-1-git-send-email-quic_jhugo@quicinc.com>
-References: <1629995575-32389-1-git-send-email-quic_jhugo@quicinc.com>
-Message-ID: <57b617bf9689ce3d7d04472af0cb3d5e@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Received: by 2002:a17:906:3113:0:0:0:0 with HTTP; Thu, 26 Aug 2021 10:11:50
+ -0700 (PDT)
+Reply-To: ms.lisahugh000@gmail.com
+From:   MS LISA HUGH <safi.kabore360@gmail.com>
+Date:   Thu, 26 Aug 2021 19:11:50 +0200
+Message-ID: <CAAoJS3_yVVEJ0A-JyFith72=gfKv7==s_aER4iVrTrNcFXQgsA@mail.gmail.com>
+Subject: YOUR ATTENTION FROM >>MS LISA HUGH.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-26 09:32 AM, Jeffrey Hugo wrote:
-> From: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
-> 
-> After "bus: mhi: core: Remove pre_init flag used for power purposes"
-> mhi_prepare_for_power_up() is no longer an optional API. All users
-> of MHI should call this API before power up sequence to initialize
-> MHI context. Update the comments on this API to make this clear.
-> 
-> Fixes: eee87072e2fb ("bus: mhi: core: Remove pre_init flag used for
-> power purposes")
-> Signed-off-by: Pranjal Ramajor Asha Kanojiya 
-> <quic_pkanojiy@quicinc.com>
-> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> ---
->  include/linux/mhi.h | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index 56e7934..483b852 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -617,10 +617,8 @@ int mhi_get_free_desc_count(struct mhi_device 
-> *mhi_dev,
-> 
->  /**
->   * mhi_prepare_for_power_up - Do pre-initialization before power up.
-> - *                            This is optional, call this before power 
-> up if
-> - *                            the controller does not want bus 
-> framework to
-> - *                            automatically free any allocated memory 
-> during
-> - *                            shutdown process.
-> + *                            Call this before MHI power up sequence 
-> to
-> + *                            initialize MHI context.
->   * @mhi_cntrl: MHI controller
->   */
->  int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl);
+Dear Friend,
 
-Thanks for catching this!
+I am Ms Lisa Hugh, work in the department of Audit and accounting
+manager here in the Bank.
 
-Reviewed-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
+bank account with your co-operation
 
-Adding Mani's Linaro email ID for pick-up.
+Please send the follow below,
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
+
+Thanks.
+Ms Lisa Hugh
