@@ -2,168 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE883F9012
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF42B3F901A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243687AbhHZVQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 17:16:37 -0400
-Received: from mailout2.w2.samsung.com ([211.189.100.12]:42797 "EHLO
-        mailout2.w2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243658AbhHZVQf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 17:16:35 -0400
-Received: from uscas1p2.samsung.com (unknown [182.198.245.207])
-        by mailout2.w2.samsung.com (KnoxPortal) with ESMTP id 20210826211547usoutp026c3122b6809d5753496c8dc1f33cd994~e98aKxmZG2107221072usoutp02G;
-        Thu, 26 Aug 2021 21:15:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w2.samsung.com 20210826211547usoutp026c3122b6809d5753496c8dc1f33cd994~e98aKxmZG2107221072usoutp02G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1630012547;
-        bh=8z0mOKVSmIjZ2gAb2k1jTA98o9P4G/zxpsmQ2t4GJ7o=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=eLNjYRBAS43Cd3UmPc0Y4xbP9Y5Gj3kSMlsQlKV76PxaRXvfpF9XcWZwKfjCATVL2
-         a9i0YYAl9BHaXQVk9tOW3HtyJHDVdCV3ip/iv7BkcDgG/LOiLAcF3vZmMASxJlOTt8
-         JLl5Cxya7eE0pXZdB0YGA0VhIay98n3zhpTn6520=
-Received: from ussmges3new.samsung.com (u112.gpu85.samsung.co.kr
-        [203.254.195.112]) by uscas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210826211547uscas1p14750726aad7c8df2f27f4dc01827b665~e98Z8FfcX0254002540uscas1p1N;
-        Thu, 26 Aug 2021 21:15:47 +0000 (GMT)
-Received: from uscas1p2.samsung.com ( [182.198.245.207]) by
-        ussmges3new.samsung.com (USCPEMTA) with SMTP id 2A.7A.19318.28408216; Thu,
-        26 Aug 2021 17:15:46 -0400 (EDT)
-Received: from ussmgxs1new.samsung.com (u89.gpu85.samsung.co.kr
-        [203.254.195.89]) by uscas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210826211546uscas1p1e181ca820e506c7c195b933168301dd0~e98ZpQRWB3073030730uscas1p1a;
-        Thu, 26 Aug 2021 21:15:46 +0000 (GMT)
-X-AuditID: cbfec370-c37ff70000014b76-72-612804825d42
-Received: from SSI-EX1.ssi.samsung.com ( [105.128.2.146]) by
-        ussmgxs1new.samsung.com (USCPEXMTA) with SMTP id E3.DD.47905.28408216; Thu,
-        26 Aug 2021 17:15:46 -0400 (EDT)
-Received: from SSI-EX1.ssi.samsung.com (105.128.2.226) by
-        SSI-EX1.ssi.samsung.com (105.128.2.226) with Microsoft SMTP Server
-        (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
-        15.1.2242.4; Thu, 26 Aug 2021 14:15:45 -0700
-Received: from SSI-EX1.ssi.samsung.com ([fe80::4df0:41c8:8343:b407]) by
-        SSI-EX1.ssi.samsung.com ([fe80::4df0:41c8:8343:b407%7]) with mapi id
-        15.01.2242.008; Thu, 26 Aug 2021 14:15:45 -0700
-From:   Adam Manzanares <a.manzanares@samsung.com>
-To:     "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Adam Manzanares" <a.manzanares@samsung.com>
-Subject: [PATCH 2/2] nvmet: use passthru cntrl in nvmet_init_cap
-Thread-Topic: [PATCH 2/2] nvmet: use passthru cntrl in nvmet_init_cap
-Thread-Index: AQHXmr+I7P+Y0y9860Sip666Pz8m2g==
-Date:   Thu, 26 Aug 2021 21:15:45 +0000
-Message-ID: <20210826211522.308649-3-a.manzanares@samsung.com>
-In-Reply-To: <20210826211522.308649-1-a.manzanares@samsung.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [105.128.2.176]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S243703AbhHZVTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 17:19:32 -0400
+Received: from mail-eopbgr10086.outbound.protection.outlook.com ([40.107.1.86]:60380
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230182AbhHZVTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 17:19:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MBYST5239Li6Kz2BrqHGn3dqTHyMjl+yom2PXswl/g/R8g9EBb4iiH+gIfBocn9xAy9Jvxw5OZ1kF/5lwG1XmCni6NLwl7zaURH+XvAFswIsAIhWog0jJR7i57pQIupr5ZGEk8XBbd14ub8znpadwZtz4vlZ3iUrNM9+4YhcstbFuKUVm/ch0gRk8JD5wGG0qedzUKvp47Nb8/STFK0dxe9Os7yyUdawGGeOOomVzwfUEJKk5V3f2ONarprzRGYJQhVv+GDY/lCysawseF9nqC5KTs77r9N6gDYoZt7OEl7gpOKuKuht76W6uG2hl/IFRCYkLwA9a2n+2NdRm/I/FQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FkpsHXFmnCZxjsuFlqpUXqJIWrypXB/Px1dml5a1ahM=;
+ b=KOA3OlOCFSOeIyA60edcdRsIErudf1Ne5hVk8MP+/qKIVPaDdlIpaCbAfBj7Vz0GLt1LbbsRHeW9TH8rbjfmUEvb5HJZwyj/RRStmU9wLA9zmFm4qCaDJnTugGEO7ZPvYj/aI+j7TaMdoLQjbV2y1Lu5ekRX8W9DclYl8/RmQVURY8kzZxutzVS1n89QUE+oAL/tLOonRKPTf7QSMAkpcrPPTKV+anp0+C+iiUAupAne/DhznFFZhWwFH8ZB4pPfzpK2V30QeZJm7sJvPLG7JZF/svF67zKMElLv2T4lyN6dUah89E9ACS+dar2RbFDyRt7IBSbSWdlduLbmEfDf1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FkpsHXFmnCZxjsuFlqpUXqJIWrypXB/Px1dml5a1ahM=;
+ b=N15T996vB5gLJUKc1H4MZQDd7IWbowEE25lewBKxc9Nzg4lSnVUVdCuFnfCczVeLEDyc4e0okJCNkN3JE5XWS5GHiC2IrVbN8FGZ8rP1w3GcHIurO1XZJpgSFBwgV/xoLUCLOvf4tGEtF8R/E1CAjutGxvVLLxemhIPOJ+HD/RA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=seco.com;
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
+ by DB6PR0301MB2182.eurprd03.prod.outlook.com (2603:10a6:4:49::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Thu, 26 Aug
+ 2021 21:18:40 +0000
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::dc6c:815b:2062:d1f1]) by DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::dc6c:815b:2062:d1f1%7]) with mapi id 15.20.4436.025; Thu, 26 Aug 2021
+ 21:18:40 +0000
+From:   Sean Anderson <sean.anderson@seco.com>
+To:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Alvaro Gamez <alvaro.gamez@hazent.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Lee Jones <lee.jones@linaro.org>, michal.simek@xilinx.com,
+        linux-kernel@vger.kernel.org,
+        Sean Anderson <sean.anderson@seco.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v6 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
+Date:   Thu, 26 Aug 2021 17:18:28 -0400
+Message-Id: <20210826211830.3311140-1-sean.anderson@seco.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR06CA0016.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::21) To DB7PR03MB4523.eurprd03.prod.outlook.com
+ (2603:10a6:10:19::27)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se1BMURzH59x7272lbW5J/ZQJGcaglRQ7QmVqbMNgRsZUyE13ltHL3s17
-        RlJSSwqlrsdumPSSNkWyWJsekseQ2AyNFJKJtcOa9GC720z/fX7n+z3nfM7MIXGnMhs3cke8
-        gpHH07GeAjviZuOvZ14pxGza+8QHiWRE2yiQcG/7CElJWQMmOaVvR5KXdecFElVRj1BS0fed
-        CBRKc470C6XP3msIaVVphkB648oh6R1DskBqqvKQpuuU2DphhN3SGCZ2x25GPn/5VrvthYdv
-        oMRPDnt/5bTjyeiWfSayJYHyhaaPnTYWdqJKEDSfPpiJ7P5zGgblDanYWGlYVYfxwTUEbUNH
-        ED8YERgMD4X8oEOgqbg1ukVAecPfJg1uCZwpLQZZj3+MBji1C+5eMxGZiCQnUoHwp4ayLDtT
-        IaC7VIt4FkNqRssoE9RM+Kox4xYWUcuhoevpqKstFQC9XA9hYUS5gLml3Hq8K3R0q6zajnDp
-        nBbn2QWG6z4IeJ4OneZeId8Xw5vcMwKe50JRYZ/1Lkd4VNBN8P3J8KD4DWF5C1BtJBTWXLce
-        FAznvnyyltzh1etcnC+1I7jadd6GHzoRpB0fQnzLHwoHr1tVHWBooAtloxncOHNunBU3zoob
-        Z6VGRClyTWLZOBnDLoxn9ohZOo5NipeJtyXEVaH//+nxcH1iLeroMIr1CCORHgGJezqL1OZZ
-        tJMoht63n5EnRMmTYhlWj9xJwtNVdCE8J8qJktEKZifDJDLysRQjbd2SsWj/LxvQ7Fr1NwM6
-        rPAIJDZ9bXMMUQwHmZSrjOn5wQt1JdqIsMioz1sigHuUGvC331TthuU99Tn6XKdjuTS/taX7
-        lnlVmzen+qwJo7dOrRG1FYRcXGMKYlVP9JUHw5akx4aqsbz7DSsW1GfezE73vbBxUrLsRdGK
-        y1lKxbSYWhtjR0q2u7JZNKHY3JNQPtS3f8NP+1X5fu/zGyvCq1+8th/xX5nbirU0Ry4+sNlb
-        7QIpDsQB6dFWYb1CM6U+u1IrC/1uIMQZWT4ffxes7r/3JCEyZ+a86JPvogcHzk7vLvP10hfX
-        +K0fXIpp36lSuPDGnkUxI8ZeZWJrtFfw7UrvY54Eu51eMAeXs/Q/WybVV74DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNIsWRmVeSWpSXmKPExsWS2cA0SbeJRSPR4OYZZYv/e46xWcy6/ZrF
-        YuXqo0wWkw5dY7S4vGsOm8X8ZU/ZLda9fs/iwO4xsfkdu8f5extZPDat6mTz2Lyk3mP3zQY2
-        j8+b5DzaD3QzBbBHcdmkpOZklqUW6dslcGUsbNzMWPCMr+LrxGvMDYzbeboYOTkkBEwk/s3f
-        xdTFyMUhJLCaUWLJlxMsEM5HRokpaw4zQzgHGCVu39/CCtLCJmAg8fv4RrCEiMAeJom+0x+Y
-        QBLMAoUSe9d+Bmrn4BAWcJD4sVUAJCwi4CpxYNEORghbT6Kl8xSYzSKgKvFq43dmEJtXwE7i
-        6KNzYPOFgOzOBbPB4pwC9hIvZz1lAbEZBcQkvp9aA7VKXOLWk/lMEC8ISCzZc54ZwhaVePn4
-        HyuErShx//tLdoh6PYkbU6ewQdjaEssWvobaKyhxcuYTFoh6SYmDK26wTGAUn4VkxSwk7bOQ
-        tM9C0r6AkWUVo3hpcXFuekWxYV5quV5xYm5xaV66XnJ+7iZGYPye/nc4cgfj0Vsf9Q4xMnEw
-        HmKU4GBWEuFd8F0tUYg3JbGyKrUoP76oNCe1+BCjNAeLkjivkOvEeCGB9MSS1OzU1ILUIpgs
-        EwenVAPTifUN8qvC3KozPr+4+n9q0pSsznP2t47qCv5f0Pky9FP98YVajHfS2hkX/sxVNJNI
-        WdRzb7WkL9uEb/PeaFQ/3ZsU/MCepcxS+Ez072s3U67aR/LmagexvttTz/Zg30aDdoNTMf8L
-        u0w+TDcJdjFz0rL7ef/ip+p4E7e7D+zfZohmM8+K9zH5X9K7Ye2B95MOnkldzyRxyazIyDLx
-        cOa0R5/Frn3ODt854UyuU5CebtyeBQsyKhVSX5cHcgkcsPsbFX1bZ2ltdLWoSOaDwGyDN0HX
-        8lZtu9cfqr/4wtZL13atVj9oMrPl9GIVv/vrF6Scc7izhbX23YMLFZUB+aoNX75+XPRzsUNa
-        c+/RFqM2JZbijERDLeai4kQAvcdRRk4DAAA=
-X-CMS-MailID: 20210826211546uscas1p1e181ca820e506c7c195b933168301dd0
-CMS-TYPE: 301P
-X-CMS-RootMailID: 20210826211546uscas1p1e181ca820e506c7c195b933168301dd0
-References: <20210826211522.308649-1-a.manzanares@samsung.com>
-        <CGME20210826211546uscas1p1e181ca820e506c7c195b933168301dd0@uscas1p1.samsung.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from plantagenet.inhand.com (50.195.82.171) by MN2PR06CA0016.namprd06.prod.outlook.com (2603:10b6:208:23d::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.21 via Frontend Transport; Thu, 26 Aug 2021 21:18:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b58a0555-7e22-47ae-b0d6-08d968d71379
+X-MS-TrafficTypeDiagnostic: DB6PR0301MB2182:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0301MB2182E51AE0BAAD6EE78623C096C79@DB6PR0301MB2182.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oJh3Qo11Y4B2EGpGGC1z3KDSU3NnUUuyVohvlzFlitMfLzYWtXJCdQNRTu1BAO66MvU261/Waqlbn5gqFuXmC/jhl/uZE3rOovX1RMLzE3fB7sfN3NkEuEYjFP/VC3QeTcHYBvOKkFb5mS71lU1w3+AzZkRAiXASdRky78Kblkv7ycgQ2LTd/1vO06iD8lODSlmlK1QcjSD21sSoIDV3zepSSoOgF4gQc5lKLeHobJWww5IGKnC6u6gVcb/6+RKD8kqKKreZkq42UYVxl8+jlWShEmeMG7skbXhw/lLT013UrL5eQ7Dj7HFHxJuF0VnLE0jU5C2FXiDlTc6xtAA7hU8ErrKTB8wkYehbNOKI8hA/hCBloeKk/qkzx8N+0WOBDgKQjMThwt/g0gvvVkbEgP57N8Dh8iIUjLB2KQro4secB4EvEo6UiLEy5wZCkfCO1JkIWcajOCnHhoazi4KGdYzB2+23yjDGn4Eao/MQhAibKLXwVO4zFxyakf3q5bmsnolrPUddgnD4w26xXCjhnoEh1PJ/5avgM6zcboXtBtrfXCcwNsZTGjDpG4/xHvLBj5MtWT03/nj8RV/145TSuWAQKqj1K6HYMMH9AVwTSnCoxBw1gU0wqhJCv3MfqR081fLL+INlGl55f5juAcBOhDvR6XacAslvBI4NSdtjkNxOGDCywaq15gCjbuFPTS5Hu0PvhQ5KUCK/zVjhaMCYbTetzL3HzX9mEMC6U5UXJmJy0CFfoQoBVuzW9Rkvs0Mb8MayWpVBCdQNyhpc24E3KyoxaC3BC31CMxCiPNUZMkI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(366004)(136003)(39840400004)(36756003)(5660300002)(38100700002)(6506007)(38350700002)(966005)(44832011)(478600001)(83380400001)(6916009)(316002)(2616005)(26005)(86362001)(54906003)(6512007)(956004)(6486002)(66946007)(1076003)(8676002)(8936002)(6666004)(7416002)(4326008)(2906002)(186003)(66476007)(52116002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zimzdMI0k3sqcMxCNHNQzqo/WNZ8ZidkfGwxlgxnGVbXpSqLshMaoS3MvC5y?=
+ =?us-ascii?Q?WOE5Ln3Z5b/3cAdciRNG45vfs4iry016eILShxZAEBcJ3Jv4CPK8k3T7Muf2?=
+ =?us-ascii?Q?LFinZ1JUc4Z7jHR1ycutNWI+PWX+WehzUHR1dwUEqdDQ/TrfgmmeceQK03tL?=
+ =?us-ascii?Q?S2+XSMBAXzdD8REz4sfzD62FlUMb3Dm5Ok/eVXxPgYmlhvBHW8PK+UUe+HMm?=
+ =?us-ascii?Q?FoXoglsbpL0r3HNj53iJAgb2P86vpfVUH42nmkPW1Wr/g5qyrZW8w6LTOe9+?=
+ =?us-ascii?Q?XmkM9EYrgaDCqiEPU3jQcC/A8ro8j6J7Ob2KdyqdfM3g70YR+wJ2HhWsDg0y?=
+ =?us-ascii?Q?xdxrbB8d2rwharfSehMMXQ5Oeo9DkK0PpRURSfoUl+tTZTjrKgDKmhGzU9YV?=
+ =?us-ascii?Q?p1HUyNS5gKc3c6LLoQoN4zT3c9d/TyGJy6Vscjw44yKVfAjuGtPHMtGRoT3D?=
+ =?us-ascii?Q?KYq8TDunrm5nKPvyW9BYwEU2D6axB5Q4Lt3kAo1XlfOUkWFdMObo2zkoVsQ+?=
+ =?us-ascii?Q?VSkZrS2HgLZhdwke3bOnpK4O6/3cRc3iFSeS6SMiLhTwFuPhz5/f/jC0+4x4?=
+ =?us-ascii?Q?JwVv6knRxK63pgIbPJH2DEYYlUEjvHtFhFG6KrmC9lR+bJFyPx9y33+BQJE3?=
+ =?us-ascii?Q?7Wp610qn8SQ09fQRM4Sltd3PYkZtMhlf1If2ezeOD+2qL+Avu+jRKfS0hOHq?=
+ =?us-ascii?Q?SWntnXy2GC0BteAiK9OH+zJnTJ8GSdx1YCIeUchwNbcIOsU/jz2VnCxdbsrs?=
+ =?us-ascii?Q?92uvwaqtjuLdrGbC8tcOrAzrxu6PJ+0NYFU5LkJDq/zBxm3jKo+jGBNgeRrR?=
+ =?us-ascii?Q?f8yd+IY5FOSnERN5od98Vx9JqvNKt1EMP9c+35UnzR2WXmVPulJovea7+2S3?=
+ =?us-ascii?Q?UWwiP4UzCbvOQ3NcHxUHZPW1Qfr+d8C+lsmz1eAEEYAu/Sw6bxCXmJTQeKQ0?=
+ =?us-ascii?Q?BB10v+1yhsbdXRD3X5ife4GkuAmkaGyAtBKl3DcTBAH+0T/4/YxhLTiaBmY1?=
+ =?us-ascii?Q?8/s9ZVbIdDOhB3wZk/DcZHrYOtUYytzstaZ5R85A+xJsoBJWsfHotU1ZKV3k?=
+ =?us-ascii?Q?DE1deEmYUHmqmHQ+CxV2L9rkqfh0Vo2ACsUbAJfHxzuos18fuSchqH0rcZRo?=
+ =?us-ascii?Q?nS30QyMpJ3BZ/gfxm/sh2d6XO2jFssWF5s/vFjYaYTVeKmUeCGaftZpnB2MU?=
+ =?us-ascii?Q?qTeVe8XCeIaDTZjEoMG9Qc5MUexSslWpT5gLp1pBbkfA+YJP4QbFTLrPF1QJ?=
+ =?us-ascii?Q?epdeHIq/U8xd7hCUn7DKTQ9BqbJ5Bf/U4zCp9JzHNnmE1tcrNZyqXOT6+WSd?=
+ =?us-ascii?Q?+ntWTEC+f8qSPD+kVaPcoMFJ?=
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b58a0555-7e22-47ae-b0d6-08d968d71379
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2021 21:18:40.5064
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LLECfsUWBvyEZRBuQDnQas6VSMGPbFaRsD3Qpp3zS7y7hzWirUyAB446sqSMi39J6oQQjCzzV1MVkeylgi6Qbg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0301MB2182
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For a passthru controller make cap initialization dependent on the cap of
-the passthru controller.
+This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is a
+"soft" block, so it has some parameters which would not be configurable in
+most hardware. This binding is usually automatically generated by Xilinx's
+tools, so the names and values of some properties should be kept as they
+are, if possible. In addition, this binding is already in the kernel at
+arch/microblaze/boot/dts/system.dts, and in user software such as QEMU.
 
-Fixes: ab5d0b38c047 (nvmet: add Command Set Identifier support)
-Signed-off-by: Adam Manzanares <a.manzanares@samsung.com>
+The existing driver uses the clock-frequency property, or alternatively the
+/cpus/timebase-frequency property as its frequency input. Because these
+properties are deprecated, they have not been included with this schema.
+All new bindings should use the clocks/clock-names properties to specify
+the parent clock.
+
+Because we need to init timer devices so early in boot, we determine if we
+should use the PWM driver or the clocksource/clockevent driver by the
+presence/absence, respectively, of #pwm-cells. Because both counters are
+used by the PWM, there is no need for a separate property specifying which
+counters are to be used for the PWM.
+
+Signed-off-by: Sean Anderson <sean.anderson@seco.com>
 ---
- drivers/nvme/target/core.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
-index 66d05eecc2a9..220ba5ed5f3a 100644
---- a/drivers/nvme/target/core.c
-+++ b/drivers/nvme/target/core.c
-@@ -9,6 +9,7 @@
- #include <linux/rculist.h>
- #include <linux/pci-p2pdma.h>
- #include <linux/scatterlist.h>
-+#include "../host/nvme.h"
-=20
- #define CREATE_TRACE_POINTS
- #include "trace.h"
-@@ -1198,10 +1199,13 @@ void nvmet_update_cc(struct nvmet_ctrl *ctrl, u32 n=
-ew)
-=20
- static void nvmet_init_cap(struct nvmet_ctrl *ctrl)
- {
-+	struct nvme_ctrl *ptctrl =3D nvmet_passthru_ctrl(ctrl->subsys);
+Changes in v6:
+- Fix incorrect schema id
+- Enumerate possible counter widths
+
+Changes in v5:
+- Update commit message to reflect revisions
+- Fix indentation lint
+- Add example for timer binding
+- Remove xlnx,axi-timer-2.0 compatible string
+- Move schema into the timer directory
+
+Changes in v4:
+- Remove references to generate polarity so this can get merged
+- Predicate PWM driver on the presence of #pwm-cells
+- Make some properties optional for clocksource drivers
+
+Changes in v3:
+- Mark all boolean-as-int properties as deprecated
+- Add xlnx,pwm and xlnx,gen?-active-low properties.
+- Make newer replacement properties mutually-exclusive with what they
+  replace
+- Add an example with non-deprecated properties only.
+
+Changes in v2:
+- Use 32-bit addresses for example binding
+
+ .../bindings/timer/xlnx,xps-timer.yaml        | 90 +++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
+
+diff --git a/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml b/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
+new file mode 100644
+index 000000000000..5be353a642aa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
+@@ -0,0 +1,90 @@
++# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/xlnx,xps-timer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	/* command sets supported: NVMe command set: */
- 	ctrl->cap =3D (1ULL << 37);
- 	/* Controller supports one or more I/O Command Sets */
--	ctrl->cap |=3D (1ULL << 43);
-+	if ((ptctrl && nvme_multi_css(ptctrl)) || !ptctrl)
-+		ctrl->cap |=3D (1ULL << 43);
- 	/* CC.EN timeout in 500msec units: */
- 	ctrl->cap |=3D (15ULL << 24);
- 	/* maximum queue entries supported: */
-@@ -1363,8 +1367,6 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const cha=
-r *hostnqn,
- 		goto out_put_subsystem;
- 	mutex_init(&ctrl->lock);
-=20
--	nvmet_init_cap(ctrl);
--
- 	ctrl->port =3D req->port;
-=20
- 	INIT_WORK(&ctrl->async_event_work, nvmet_async_event_work);
-@@ -1378,6 +1380,7 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const cha=
-r *hostnqn,
-=20
- 	kref_init(&ctrl->ref);
- 	ctrl->subsys =3D subsys;
-+	nvmet_init_cap(ctrl);
- 	WRITE_ONCE(ctrl->aen_enabled, NVMET_AEN_CFG_OPTIONAL);
-=20
- 	ctrl->changed_ns_list =3D kmalloc_array(NVME_MAX_CHANGED_NAMESPACES,
---=20
++title: Xilinx LogiCORE IP AXI Timer Device Tree Binding
++
++maintainers:
++  - Sean Anderson <sean.anderson@seco.com>
++
++properties:
++  compatible:
++    contains:
++      const: xlnx,xps-timer-1.00.a
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: s_axi_aclk
++
++  interrupts:
++    maxItems: 1
++
++  reg:
++    maxItems: 1
++
++  xlnx,count-width:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [8, 16, 32]
++    default: 32
++    description:
++      The width of the counter(s), in bits.
++
++  xlnx,one-timer-only:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [ 0, 1 ]
++    description:
++      Whether only one timer is present in this block.
++
++required:
++  - compatible
++  - reg
++  - xlnx,one-timer-only
++
++allOf:
++  - if:
++      required:
++        - '#pwm-cells'
++    then:
++      allOf:
++        - required:
++            - clocks
++        - properties:
++            xlnx,one-timer-only:
++              const: 0
++    else:
++      required:
++        - interrupts
++  - if:
++      required:
++        - clocks
++    then:
++      required:
++        - clock-names
++
++additionalProperties: true
++
++examples:
++  - |
++    timer@800e0000 {
++        clock-names = "s_axi_aclk";
++        clocks = <&zynqmp_clk 71>;
++        compatible = "xlnx,xps-timer-1.00.a";
++        reg = <0x800e0000 0x10000>;
++        interrupts = <0 39 2>;
++        xlnx,count-width = <16>;
++        xlnx,one-timer-only = <0x0>;
++    };
++
++    timer@800f0000 {
++        #pwm-cells = <0>;
++        clock-names = "s_axi_aclk";
++        clocks = <&zynqmp_clk 71>;
++        compatible = "xlnx,xps-timer-1.00.a";
++        reg = <0x800e0000 0x10000>;
++        xlnx,count-width = <32>;
++        xlnx,one-timer-only = <0x0>;
++    };
+-- 
 2.25.1
+
