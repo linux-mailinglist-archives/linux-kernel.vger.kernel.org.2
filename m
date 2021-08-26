@@ -2,101 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC093F83D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E083F83DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240662AbhHZIhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:37:35 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38492 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240553AbhHZIhb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:37:31 -0400
-X-UUID: bcf457f132894c0184f84c3462320614-20210826
-X-UUID: bcf457f132894c0184f84c3462320614-20210826
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1107208688; Thu, 26 Aug 2021 16:36:40 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 26 Aug 2021 16:36:38 +0800
-Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 26 Aug 2021 16:36:38 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>, <stable@vger.kernel.org>
-Subject: [PATCH next 2/2] usb: mtu3: fix random remote wakeup
-Date:   Thu, 26 Aug 2021 16:36:37 +0800
-Message-ID: <20210826083637.33237-2-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210826083637.33237-1-chunfeng.yun@mediatek.com>
-References: <20210826083637.33237-1-chunfeng.yun@mediatek.com>
+        id S240434AbhHZIkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:40:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232957AbhHZIkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 04:40:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2EA860EE0;
+        Thu, 26 Aug 2021 08:39:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629967165;
+        bh=mxD89ycWqrgaSNcFKl8ha7SuLOa7/8Wvffa8cCoXtCk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bkCdsQ5gt1ZZ3MdRlneTeFmCcX/NjTfcFLyaYgAGPxLHI7N5gGMM7uw23yYs2MUov
+         hkfkbq1hmDEEjlbM0W6qItEkZeXjjXZf2RfeU3w7b5MaPbDkDxq7OX+qHCOkvIL6fx
+         ORqYefJ4KiIUVvV+7eYcAxvqRfawG/UYQWV+lP8c=
+Date:   Thu, 26 Aug 2021 10:39:20 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     linux-kernel@vger.kernel.org, kernelnewbies@kernelnewbies.org
+Subject: Re: Contributing to drivers/staging area
+Message-ID: <YSdTOBBAMPIBVFcW@kroah.com>
+References: <20210820144515.GA5479@titan>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820144515.GA5479@titan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some platforms, e.g. 8183/8192, use low level latch way to keep
-wakeup signal, it may latch a wrong signal if debounce more time,
-and enable wakeup earlier.
-                   ____________________
-ip_sleep      ____/                    \__________
-                           ___________________
-wakeup_signal ____________/                   \______
-                      _______________________________
-wakeup_en     _______/
-                      ^     ^
-                      |(1)  |(2)
-latch wakeup_signal mistakenly at (1), should latch it at (2);
+On Fri, Aug 20, 2021 at 04:45:15PM +0200, Len Baker wrote:
+> Hi Greg,
+> 
+> I am a kernel newbie in the path to find an area where to contribute
+> on. I have sent some patches before (simple ones) but I would like
+> to find some driver to contribute on and if possible mantain in the
+> future. Due to the big amount of drivers in staging, and my lack
+> of experience and specific hardware:
+> 
+> Are there any driver in the staging area that not requires specific
+> hardware? I have only access to an old laptop with 4 processors:
 
-Workaround: delay about 100us to enable wakeup, meanwhile decrease
-debounce time.
+I think all drivers in staging relate to real hardware, so I would
+recommend just buying one of the cheap devices for the drivers.  I just
+purchased one of the USB wifi devices for under 20 euros, so it is
+possible.
 
-Fixes: b1a344589eea ("usb: mtu3: support ip-sleep wakeup for MT8183")
-Cc: stable@vger.kernel.org
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
- drivers/usb/mtu3/mtu3_host.c | 2 +-
- drivers/usb/mtu3/mtu3_plat.c | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+good luck!
 
-diff --git a/drivers/usb/mtu3/mtu3_host.c b/drivers/usb/mtu3/mtu3_host.c
-index 7d528f3c2482..f3903367a6a0 100644
---- a/drivers/usb/mtu3/mtu3_host.c
-+++ b/drivers/usb/mtu3/mtu3_host.c
-@@ -62,7 +62,7 @@ static void ssusb_wakeup_ip_sleep_set(struct ssusb_mtk *ssusb, bool enable)
- 	case SSUSB_UWK_V1_1:
- 		reg = ssusb->uwk_reg_base + PERI_WK_CTRL0;
- 		msk = WC0_IS_EN | WC0_IS_C(0xf) | WC0_IS_P;
--		val = enable ? (WC0_IS_EN | WC0_IS_C(0x8)) : 0;
-+		val = enable ? (WC0_IS_EN | WC0_IS_C(0x1)) : 0;
- 		break;
- 	case SSUSB_UWK_V1_2:
- 		reg = ssusb->uwk_reg_base + PERI_WK_CTRL0;
-diff --git a/drivers/usb/mtu3/mtu3_plat.c b/drivers/usb/mtu3/mtu3_plat.c
-index 5b3f7f73cb40..f13531022f4a 100644
---- a/drivers/usb/mtu3/mtu3_plat.c
-+++ b/drivers/usb/mtu3/mtu3_plat.c
-@@ -63,6 +63,9 @@ static int wait_for_ip_sleep(struct ssusb_mtk *ssusb)
- 	if (ret) {
- 		dev_err(ssusb->dev, "ip sleep failed!!!\n");
- 		ret = -EBUSY;
-+	} else {
-+		/* workaround: avoid wrong wakeup signal latch for some soc */
-+		usleep_range(100, 200);
- 	}
- 
- 	return ret;
--- 
-2.18.0
-
+greg k-h
