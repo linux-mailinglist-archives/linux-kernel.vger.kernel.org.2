@@ -2,137 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0533F8475
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949693F847C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240986AbhHZJXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 05:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240935AbhHZJXc (ORCPT
+        id S240965AbhHZJZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 05:25:30 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:42755 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240935AbhHZJZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 05:23:32 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C63FC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:22:45 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id u9so3920662wrg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z5nGZgvsyXA2v5RBRhfghmqhLLrwrK3N/HAosQKFTGU=;
-        b=gPVYqvarTNOfAMXnLrOwhAZEMjPHA9JBmY7uaVY5mZDlUw6TWlUKedc1ZYtK0GBZ1f
-         Mwo/R9M9Fk9Fa9LVqGsfUKkr5xcapuuftVZBe4bxEQqm7oug5gtIaPjOyrnS5nc/ylnm
-         8TaYJ9AZ76dyPC/sNv1v2ua8pWaTrWYynyuNw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Z5nGZgvsyXA2v5RBRhfghmqhLLrwrK3N/HAosQKFTGU=;
-        b=ODvxfHD5c+ZvFbAi6gIJ18zzCzUQSu+lVIKqqggefRpkJsfzQf0nMKdfbHofRI1Hf2
-         sWAxmdXqiZSYsA9RRH+PS0enEC5gN6OJxfIqH9LqjMKwwi2nIj7hO9bXqcwU6UHUiFko
-         tUIY3OYBCNKAK7t8UfrieGcIuoyV7RRaga5PtY2RdECsoceC9oQ+B6jN/Gh9jrjDhFoN
-         yAlgO35A3jpDI9vIPM2IT6pmi7BEyk4AyGJd4qyaO8ZyEFVkVvHcru5u7BAwiOWkAWuY
-         M173dOWWQqeXLMe8A7Tym0BH1R6cXjSTGCyT+rEOhmPnCgOpp8jRNaFGmWfV5k0DE8cn
-         EzXQ==
-X-Gm-Message-State: AOAM533p1fP6Nc7CubrRocY/gg4b5RH2KodQWcDHFNQKe2xvrO3bXG3e
-        HAlD6IBheRt/pF+hRQnr+GNdDQ==
-X-Google-Smtp-Source: ABdhPJywIjK24u44KRC9Fyl/LBYQf/UtyuZhNV+15XNUicx6WL1eBmZ28GqU1x/tJY9ZhVWwQcJQoA==
-X-Received: by 2002:a5d:438a:: with SMTP id i10mr2650396wrq.285.1629969764058;
-        Thu, 26 Aug 2021 02:22:44 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v21sm2697421wra.92.2021.08.26.02.22.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 02:22:43 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 11:22:41 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Zenghui Yu <yuzenghui@huawei.com>, tzimmermann@suse.de,
-        Arnd Bergmann <arnd@arndb.de>, wanghaibin.wang@huawei.com,
-        Jun Nie <jun.nie@linaro.org>, airlied@linux.ie,
-        Shawn Guo <shawnguo@kernel.org>, robh+dt@kernel.org,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
-        linux-kernel@vger.kernel.org, mripard@kernel.org,
-        devicetree@vger.kernel.org, maarten.lankhorst@linux.intel.com
-Subject: Re: [PATCH] drm: remove zxdrm driver
-Message-ID: <YSddYSKvGneVKNjW@phenom.ffwll.local>
-Mail-Followup-To: Rob Herring <robh@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>, tzimmermann@suse.de,
-        Arnd Bergmann <arnd@arndb.de>, wanghaibin.wang@huawei.com,
-        Jun Nie <jun.nie@linaro.org>, airlied@linux.ie,
-        Shawn Guo <shawnguo@kernel.org>, robh+dt@kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        mripard@kernel.org, devicetree@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com
-References: <20210821031357.289-1-yuzenghui@huawei.com>
- <YSPuMqd1QgnRIVCB@robh.at.kernel.org>
+        Thu, 26 Aug 2021 05:25:28 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MQdI8-1mdRlO1714-00NgZO for <linux-kernel@vger.kernel.org>; Thu, 26 Aug
+ 2021 11:24:40 +0200
+Received: by mail-wr1-f47.google.com with SMTP id h4so3939529wro.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:24:40 -0700 (PDT)
+X-Gm-Message-State: AOAM532I4GNVznuEliXLi0UQ0Y53bWzLNjxBA1sj0Ev3JM3M8+KdLdOc
+        8QZKPwvDZ9tqwj8XRcRgVy05SwIfSms++TWpK14=
+X-Google-Smtp-Source: ABdhPJzxfVdCmNw2RZKuz6mpSUu/MVgkqui0iOiq/yr9eT5WYxf5v9z8ZhtGl7wzeRjv8qua7C+/AcCbigr+M2wawtI=
+X-Received: by 2002:adf:c390:: with SMTP id p16mr2844843wrf.105.1629969879916;
+ Thu, 26 Aug 2021 02:24:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSPuMqd1QgnRIVCB@robh.at.kernel.org>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+References: <20210825205041.927788-1-vladimir.oltean@nxp.com>
+ <20210825205041.927788-3-vladimir.oltean@nxp.com> <CAK8P3a1oDeU-S5dLqKTT3YFvGREvNt_a=PTkVoDhUJYquJGePQ@mail.gmail.com>
+ <20210825220023.rqskspy2usvleoqr@skbuf>
+In-Reply-To: <20210825220023.rqskspy2usvleoqr@skbuf>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 26 Aug 2021 11:24:24 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3FnsWbGRU7BNc8uwt0nFAHa7K4c+qpoZixwdW9kihC5w@mail.gmail.com>
+Message-ID: <CAK8P3a3FnsWbGRU7BNc8uwt0nFAHa7K4c+qpoZixwdW9kihC5w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mfd: syscon: request a regmap with raw spinlocks for
+ some devices
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Biwen Li <biwen.li@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Bdt/xbbhTFhGBtROuE7o931rhSth+lJt3hoOzyusg2WklyQhrdN
+ 82MpVpqUMTdKyMcumVBnEVRyQY0POdiSxFxo/LNIodMlyb2hmLxIGtSAewco1mFhRkGThO5
+ qiZlSnv6FFeobY30nokRTleAol/wX6Hp5Q6qyHZo/I6dUacZZFWgI0GUXRunnAvxc+tNJRP
+ 1Hod7IA7Hu1WH60Mwul5Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:trgnzm9He+8=:KQrbaRxVin1yvo8oWhY88g
+ 7GVDuoGd5lyVgFMy7wOcLGIHohZMxi3QEnR4xVPgG/uzf3ZsaJltg2hYf8LJBat22UBDp25r5
+ U/DPNOInpIoI+jQo+ZKN/OQdkySo/KlCwGlLlG3rHGvNJEVwuYHHxAlWlvN/MKarxk/IqYvkc
+ 85vNi5/cy/tVRc7Hc57Shq6ITz0EEuN/A6BO4tSxBgky8GaahUssbW/asB5nfo/3IVtCH9T4V
+ YTsThM1uzlVqG2zHhMyMjVzMZNlMjgGiISZ9VkG/n+pijjVj9sV1L6gf+IYXPij3OSFHtlLf/
+ zmxsimmyKxzwDJc49fYekxokN9M7vbftauLIqMioJJgaAa3tmibI7I4yhtOR+A41X1bSi3/js
+ bjnhIaxm0epcQuJ5Of6sYX/N2qjT4yb/z01SGRt/zvs4ng+E6SpsWMk9ZQRDQyTuCVPbDAHrT
+ iEYlUMJhqK2BwzQJljcyNWupWPvQLy6ERs++VT0ylqc9x3dQ4SaQyvQQlD71UP8EMCIxp6SdX
+ mVjgFlxIURyRvAOlWmWFBzdjnmq1fBoFZvTwsoOUMbHFSyXWC4EnIJnhHiDDqUMuMKa5oOfsU
+ KhThBBwTf23KS5EfKupwH5ME7/k3bkqn8UKCBYePP3LmlXFoHbjFUdmSdm221zfWBPqYCZhsu
+ J1ljpoC57JZTamZ0+oASStQyO1fOH4adQ39NN6YbkLwasFhihDy5ezTfXvye6vNtMppa01caP
+ eTeQlUc9DZjT9TeusYWxlVDlrYGWqUENsq457w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 01:51:30PM -0500, Rob Herring wrote:
-> On Sat, 21 Aug 2021 11:13:57 +0800, Zenghui Yu wrote:
-> > The zte zx platform had been removed in commit 89d4f98ae90d ("ARM: remove
-> > zte zx platform"), so this driver is no longer needed.
-> > 
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Jun Nie <jun.nie@linaro.org>
-> > Cc: Shawn Guo <shawnguo@kernel.org>
-> > Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> > ---
-> >  .../devicetree/bindings/display/zte,vou.txt   | 120 ---
-> >  drivers/gpu/drm/Kconfig                       |   2 -
-> >  drivers/gpu/drm/Makefile                      |   1 -
-> >  drivers/gpu/drm/zte/Kconfig                   |  10 -
-> >  drivers/gpu/drm/zte/Makefile                  |  10 -
-> >  drivers/gpu/drm/zte/zx_common_regs.h          |  28 -
-> >  drivers/gpu/drm/zte/zx_drm_drv.c              | 190 ----
-> >  drivers/gpu/drm/zte/zx_drm_drv.h              |  34 -
-> >  drivers/gpu/drm/zte/zx_hdmi.c                 | 760 ---------------
-> >  drivers/gpu/drm/zte/zx_hdmi_regs.h            |  66 --
-> >  drivers/gpu/drm/zte/zx_plane.c                | 537 ----------
-> >  drivers/gpu/drm/zte/zx_plane.h                |  26 -
-> >  drivers/gpu/drm/zte/zx_plane_regs.h           | 120 ---
-> >  drivers/gpu/drm/zte/zx_tvenc.c                | 400 --------
-> >  drivers/gpu/drm/zte/zx_tvenc_regs.h           |  27 -
-> >  drivers/gpu/drm/zte/zx_vga.c                  | 527 ----------
-> >  drivers/gpu/drm/zte/zx_vga_regs.h             |  33 -
-> >  drivers/gpu/drm/zte/zx_vou.c                  | 921 ------------------
-> >  drivers/gpu/drm/zte/zx_vou.h                  |  64 --
-> >  drivers/gpu/drm/zte/zx_vou_regs.h             | 212 ----
-> >  20 files changed, 4088 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/display/zte,vou.txt
-> >  delete mode 100644 drivers/gpu/drm/zte/Kconfig
-> >  delete mode 100644 drivers/gpu/drm/zte/Makefile
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_common_regs.h
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.c
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.h
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_hdmi.c
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_hdmi_regs.h
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_plane.c
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_plane.h
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_plane_regs.h
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_tvenc.c
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_tvenc_regs.h
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_vga.c
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_vga_regs.h
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_vou.c
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_vou.h
-> >  delete mode 100644 drivers/gpu/drm/zte/zx_vou_regs.h
-> > 
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
+On Thu, Aug 26, 2021 at 12:01 AM Vladimir Oltean <olteanv@gmail.com> wrote:
+> On Wed, Aug 25, 2021 at 11:24:52PM +0200, Arnd Bergmann wrote:
+>
+> > Are there any other users of the syscon?
+>
+> Not that I can see, but that doesn't make the fact that it uses a syscon a bad decision.
+>
+> For context, Layerscape devices have a "Misc" / "And Others" memory region
+> called "Supplemental Configuration Unit" (SCFG) which "provides the
+> chip-specific configuration and status registers for the device. It is the
+> chip-defined module for extending the device configuration unit (DCFG) module."
+> to quote the documentation.
+>
+> The ls-extirq file is a driver around _a_single_register_ of SCFG. SCFG
+> provides an option of reversing the interrupt polarity of the external IRQ
+> pins: make them active-low instead of active-high, or rising instead of
+> falling.
+>
+> The reason for the existence of the driver is that we got some pushback during
+> device tree submission: while we could describe in the device tree an interrupt
+> as "active-high" and going straight to the GIC, in reality that interrupt is
+> "active-low" but inverted by the SCFG (the inverted is enabled by default).
+> Additionally, the GIC cannot process active-low interrupts in the first place
+> AFAIR, which is why an inverter exists in front of it.
+>
+> Some other SCFG registers are (at least on LS1021A):
+>
+> Deep Sleep Control Register
+> eTSEC Clock Deep Sleep Control Register (eTSEC is our Ethernet controller)
+> Pixel Clock Control Register
+> PCIe PM Write Control Register
+> PCIe PM Read Control Register
+> USB3 parameter 1 control register
+> ETSEC MAC1 ICID
+> SATA ICID
+> QuadSPI configuration
+> Endianness Control Register
+> Snoop configuration
+> Interrupt Polarity <- this is the register controlled by ls-extirq
+> etc etc.
+>
+> Also, even if you were to convince me that we shouldn't use a syscon, I feel
+> that the implication (change the device trees for 7 SoCs) just to solve a
+> kernel splat would be like hitting a nail with an atomic bomb. I'm not going to
+> do it.
 
-I just merged another patch to delete the zte driver.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+I was not suggesting changing the DT files. The way we describe syscon
+devices is generally meant to allow replacing them with a custom driver
+as an implementation detail of the OS, you just have a driver that binds
+against the more specific compatible string as opposed to the generic
+compatible="syscon" check, and you replace all
+syscon_regmap_lookup_by_phandle() calls with direct function calls
+into exported symbols from that driver that perform high-level functions.
+
+In this particular case, I think a high-level interface from a drviers/soc/
+driver works just as well as the syscon method if there was raw_spinlock
+requirement, but with the irqchip driver needing the regmap, the custom
+driver would a better interface.
+
+        Arnd
