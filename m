@@ -2,76 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8473F8EB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FA83F8EB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243391AbhHZTZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 15:25:12 -0400
-Received: from mga18.intel.com ([134.134.136.126]:32744 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243342AbhHZTZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 15:25:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="204959550"
-X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
-   d="scan'208";a="204959550"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 12:24:23 -0700
-X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
-   d="scan'208";a="474321237"
-Received: from hjasuja-mobl.amr.corp.intel.com (HELO [10.251.134.37]) ([10.251.134.37])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 12:24:22 -0700
-Subject: Re: [RFC PATCH 1/2] ASoC: soc-pcm: protect BE dailink state changes
- in trigger
-To:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc:     Mark@sirena.org.uk, Brown@sirena.org.uk,
-        Takashi Iwai <tiwai@suse.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        liam.r.girdwood@linux.intel.com, Jaroslav Kysela <perex@perex.cz>,
-        vkoul@kernel.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        tiwai@suse.de
-References: <20210817164054.250028-1-pierre-louis.bossart@linux.intel.com>
- <20210817164054.250028-2-pierre-louis.bossart@linux.intel.com>
- <163000225499.699341.16303629557242399115.b4-ty@kernel.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <27b9fe7a-18cc-61ee-1e4d-72282d8eaa82@linux.intel.com>
-Date:   Thu, 26 Aug 2021 14:24:19 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S243445AbhHZT2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 15:28:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36624 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230307AbhHZT2R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 15:28:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630006048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G18kBJm+1QrGSDMZhX+3k2NdPp8yMmEI4I4QJxr0VkI=;
+        b=eUI68voLx7PEcQ3+0VNHRDBKUzCLHKSqtxL1GFfQ/O17KyuN83kYGRaEeED/n+Vv7jh/jZ
+        v8t+QbA25MLUlUBrKWzl5So2Ng3Z5VdyaukofHshebr+PBGQmPjeviYE8V2Mmfhx9CujVw
+        +T8zP0m24H077/c9CbQ5J9YRzs/cmm8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-qsklTeaQMUCDQh-prBESzw-1; Thu, 26 Aug 2021 15:27:27 -0400
+X-MC-Unique: qsklTeaQMUCDQh-prBESzw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E6081082923;
+        Thu, 26 Aug 2021 19:27:26 +0000 (UTC)
+Received: from localhost (unknown [10.22.10.96])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0128D60C4A;
+        Thu, 26 Aug 2021 19:27:18 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 15:27:18 -0400
+From:   Eduardo Habkost <ehabkost@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
+ from ioapic_write_indirect()
+Message-ID: <20210826192718.h6ct6pe2njaazhyh@habkost.net>
+References: <20210823143028.649818-1-vkuznets@redhat.com>
+ <20210823143028.649818-5-vkuznets@redhat.com>
+ <20210823185841.ov7ejn2thwebcwqk@habkost.net>
+ <87mtp7jowv.fsf@vitty.brq.redhat.com>
+ <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
+ <87k0kakip9.fsf@vitty.brq.redhat.com>
+ <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <163000225499.699341.16303629557242399115.b4-ty@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I'm re-reading this, and:
 
-
-On 8/26/21 1:30 PM, Mark Brown wrote:
-> From: Mark Brown,,, <broonie@kernel.org>
+On Tue, Aug 24, 2021 at 07:07:58PM +0300, Maxim Levitsky wrote:
+[...]
+> Hi,
 > 
-> On Tue, 17 Aug 2021 11:40:53 -0500, Pierre-Louis Bossart wrote:
->> When more than one FE is connected to a BE, e.g. in a mixing use case,
->> the BE can be triggered multiple times when the FE are opened/started
->> concurrently. This race condition is problematic in the case of
->> SoundWire BE dailinks, and this is not desirable in a general
->> case. The code carefully checks when the BE can be stopped or
->> hw_free'ed, but the trigger code does not use any mutual exclusion.
->>
->> [...]
+> Not a classical review but,
+> I did some digital archaeology with this one, trying to understand what is going on:
 > 
-> Applied, thanks!
 > 
-> [1/2] ASoC: soc-pcm: protect BE dailink state changes in trigger
->       commit: 0c75fc7193387776c10f7c7b440d93496e3d5e21
-> [2/2] ASoC: soc-pcm: test refcount before triggering
->       commit: 6479f7588651cbc9c91e61c20ff39119cbc8feba
+> I think that 16 bit vcpu bitmap is due to the fact that IOAPIC spec states that
+> it can address up to 16 cpus in physical destination mode.
+>  
+> In logical destination mode, assuming flat addressing and that logical id = 1 << physical id
+> which KVM hardcodes, it is also only possible to address 8 CPUs.
+>  
+> However(!) in flat cluster mode, the logical apic id is split in two.
+> We have 16 clusters and each have 4 CPUs, so it is possible to address 64 CPUs,
+> and unlike the logical ID, the KVM does honour cluster ID, 
+> thus one can stick say cluster ID 0 to any vCPU.
+>  
+>  
+> Let's look at ioapic_write_indirect.
+> It does:
+>  
+>     -> bitmap_zero(&vcpu_bitmap, 16);
+>     -> kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq, &vcpu_bitmap);
+>     -> kvm_make_scan_ioapic_request_mask(ioapic->kvm, &vcpu_bitmap); // use of the above bitmap
+>  
+>  
+> When we call kvm_bitmap_or_dest_vcpus, we can already overflow the bitmap,
+> since we pass all 8 bit of the destination even when it is physical.
+>  
+>  
+> Lets examine the kvm_bitmap_or_dest_vcpus:
+>  
+>   -> It calls the kvm_apic_map_get_dest_lapic which 
+>  
+>        -> for physical destinations, it just sets the bitmap, which can overflow
+>           if we pass it 8 bit destination (which basically includes reserved bits + 4 bit destination).
 
-Ah sorry, there were still some issues in this RFC, we did more testing
-and came up with a lot of improvements. The intent of the RFC status was
-also to make sure it wasn't applied before the merge window.
+How exactly do you think kvm_apic_map_get_dest_lapic() can
+overflow?  It never writes beyond `bitmap[0]`, as far as I can
+see.
 
-Can this be reverted in your branch Mark?
+>  
+>  
+>        -> For logical apic ID, it seems to truncate the result to 16 bit, which isn't correct as I explained
+>           above, but should not overflow the result.
+>  
+>   
+>    -> If call to kvm_apic_map_get_dest_lapic fails, it goes over all vcpus and tries to match the destination
+>        This can overflow as well.
+>  
+>  [...]
+
+-- 
+Eduardo
+
