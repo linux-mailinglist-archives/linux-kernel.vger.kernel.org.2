@@ -2,179 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DF03F8D55
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4C93F8D57
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243221AbhHZRw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:52:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:51222 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243206AbhHZRw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:52:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF38131B;
-        Thu, 26 Aug 2021 10:51:39 -0700 (PDT)
-Received: from localhost (unknown [10.1.198.34])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FD243F5A1;
-        Thu, 26 Aug 2021 10:51:39 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 18:51:38 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Sean Kelley <skelley@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 2/3] arch_topology: obtain cpu capacity using
- information from CPPC
-Message-ID: <20210826175138.GA22165@arm.com>
-References: <20210824105651.28660-1-ionela.voinescu@arm.com>
- <20210824105651.28660-3-ionela.voinescu@arm.com>
- <CAJZ5v0hkgWQqOzfdv4kr6rxz9eMsOgHkMYj0cZpO7yC+=SnQfg@mail.gmail.com>
+        id S243241AbhHZRwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:52:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25797 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231801AbhHZRws (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 13:52:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630000320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X7Lj9awqBBycYuhLJvwNIbEVGKw0TxUXZDLG3ZZOlE4=;
+        b=Rm0EYO7TCOV+JHI/v97fw4pmb9gBRXbPUKLRKPDttCgjfN86+12WWI6fCbGr9sYovuvaof
+        A2bU8t8D+lyTvwpWsPbl8agXgwDatg6jIHabL4Yie4DlVcQv+tLWyFhYkw6OVWfBhkCh/h
+        Xq9MEU0XDUGsb2zmKXOQ9I4JwG0HkOU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-_eK_NHEKN2ahpXj_Fnfe4w-1; Thu, 26 Aug 2021 13:51:59 -0400
+X-MC-Unique: _eK_NHEKN2ahpXj_Fnfe4w-1
+Received: by mail-wm1-f72.google.com with SMTP id 201-20020a1c01d2000000b002e72ba822dcso4641239wmb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:51:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=X7Lj9awqBBycYuhLJvwNIbEVGKw0TxUXZDLG3ZZOlE4=;
+        b=aECdMFuPJxsnQ4KxhdK0ftpfXH/tXpAsBX1GFN3TT4KQuQLVbgKTin4jb3MK3QFFsI
+         XW9lnkAVOqA0uD6aaf2YgB0OClzp4+d/iQiHUt2YK/QgtAWFOOno57GzydkgWLcyUGB8
+         vv31xWOlQn6QMLU0RIhTkySRw4FHQsG7NhiLX14OSgSrXYVh+8cUbIg5ZMaxqt+h6ARK
+         mUGyLG55956Gu8msPsUFGP1fJafSR9hWiGtCdJqNf70HrDYfGbHiErHEbWyXYuWxrnUy
+         X+nGYKvqAemzUWP0urWnwpTZMx56kiS+hKAV5AUixUt+aVup5gGCCCOen6BFp3O+z/3U
+         Xy3w==
+X-Gm-Message-State: AOAM531MEd9/XJsj37+3bbnDEFN5Zz1I7NphXSa3qXuC2N9qyLuEkI/m
+        qERC+Ndipmj6it0wtHRoXGBPhUparBSwUTpQKJEHOKOQYEO158ssxk0LK8NQkf33IPstwkJ9ZoT
+        bAU0UYwkSG4ZvfYP8Pw+R3Qd+
+X-Received: by 2002:adf:f08b:: with SMTP id n11mr5390004wro.176.1630000318182;
+        Thu, 26 Aug 2021 10:51:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzwD7w2aRqyemEnLCT6kDSf0JIriZ5aIvnRuoJzrU7tc/SP4mXvdW79F9rET9Lw32yvuidTxQ==
+X-Received: by 2002:adf:f08b:: with SMTP id n11mr5389983wro.176.1630000317941;
+        Thu, 26 Aug 2021 10:51:57 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id b4sm3746452wrp.33.2021.08.26.10.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 10:51:57 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Andra Paraschiv <andraprs@amazon.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Alexandru Ciobotaru <alcioa@amazon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Kamal Mostafa <kamal@canonical.com>,
+        Alexandru Vasile <lexnv@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>,
+        Andra Paraschiv <andraprs@amazon.com>
+Subject: Re: [PATCH v1 3/3] nitro_enclaves: Add fixes for checkpatch and
+ docs reports
+In-Reply-To: <20210826173451.93165-4-andraprs@amazon.com>
+References: <20210826173451.93165-1-andraprs@amazon.com>
+ <20210826173451.93165-4-andraprs@amazon.com>
+Date:   Thu, 26 Aug 2021 19:51:56 +0200
+Message-ID: <87czq0hz5v.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hkgWQqOzfdv4kr6rxz9eMsOgHkMYj0cZpO7yC+=SnQfg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review, Rafael!
+Andra Paraschiv <andraprs@amazon.com> writes:
 
-On Wednesday 25 Aug 2021 at 19:54:26 (+0200), Rafael J. Wysocki wrote:
-> On Tue, Aug 24, 2021 at 12:57 PM Ionela Voinescu
-> <ionela.voinescu@arm.com> wrote:
-> >
-> > Define topology_init_cpu_capacity_cppc() to use highest performance
-> > values from _CPC objects to obtain and set maximum capacity information
-> > for each CPU. acpi_cppc_processor_probe() is a good point at which to
-> > trigger the initialization of CPU (u-arch) capacity values, as at this
-> > point the highest performance values can be obtained from each CPU's
-> > _CPC objects. Architectures can therefore use this functionality
-> > through arch_init_invariance_cppc().
-> >
-> > The performance scale used by CPPC is a unified scale for all CPUs in
-> > the system. Therefore, by obtaining the raw highest performance values
-> > from the _CPC objects, and normalizing them on the [0, 1024] capacity
-> > scale, used by the task scheduler, we obtain the CPU capacity of each
-> > CPU.
-> >
-> > While an ACPI Notify(0x85) could alert about a change in the highest
-> > performance value, which should in turn retrigger the CPU capacity
-> > computations, this notification is not currently handled by the ACPI
-> > processor driver. When supported, a call to arch_init_invariance_cppc()
-> > would perform the update.
-> >
-> > Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> > Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-> > Cc: Sudeep Holla <sudeep.holla@arm.com>
-> > ---
-> >  drivers/base/arch_topology.c  | 37 +++++++++++++++++++++++++++++++++++
-> >  include/linux/arch_topology.h |  4 ++++
-> >  2 files changed, 41 insertions(+)
-> >
-> > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> > index 921312a8d957..358e22cd629e 100644
-> > --- a/drivers/base/arch_topology.c
-> > +++ b/drivers/base/arch_topology.c
-> > @@ -306,6 +306,43 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
-> >         return !ret;
-> >  }
-> >
-> > +#ifdef CONFIG_ACPI_CPPC_LIB
-> > +#include <acpi/cppc_acpi.h>
-> > +
-> > +void topology_init_cpu_capacity_cppc(void)
-> > +{
-> > +       struct cppc_perf_caps perf_caps;
-> > +       int cpu;
-> > +
-> > +       if (likely(acpi_disabled || !acpi_cpc_valid()))
-> > +               return;
-> > +
-> > +       raw_capacity = kcalloc(num_possible_cpus(), sizeof(*raw_capacity),
-> > +                              GFP_KERNEL);
-> > +       if (!raw_capacity)
-> > +               return;
-> > +
-> > +       for_each_possible_cpu(cpu) {
-> > +               if (!cppc_get_perf_caps(cpu, &perf_caps)) {
-> > +                       raw_capacity[cpu] = perf_caps.highest_perf;
-> 
-> From experience, I would advise doing some sanity checking on the
-> per_caps values before using them here.
-> 
+> Fix the reported issues from checkpatch and kernel-doc scripts.
+>
+> Update the copyright statements to include 2021, where changes have been
+> made over this year.
+>
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> ---
+>  drivers/virt/nitro_enclaves/ne_misc_dev.c | 17 +++++++++--------
+>  drivers/virt/nitro_enclaves/ne_pci_dev.c  |  2 +-
+>  drivers/virt/nitro_enclaves/ne_pci_dev.h  |  8 ++++++--
+>  include/uapi/linux/nitro_enclaves.h       | 10 +++++-----
+>  samples/nitro_enclaves/ne_ioctl_sample.c  |  7 +++----
+>  5 files changed, 24 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+> index e21e1e86ad15f..8939612ee0e08 100644
+> --- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
+> +++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+>   */
+>  
+>  /**
+> @@ -284,8 +284,8 @@ static int ne_setup_cpu_pool(const char *ne_cpu_list)
+>  	ne_cpu_pool.nr_parent_vm_cores = nr_cpu_ids / ne_cpu_pool.nr_threads_per_core;
+>  
+>  	ne_cpu_pool.avail_threads_per_core = kcalloc(ne_cpu_pool.nr_parent_vm_cores,
+> -					     sizeof(*ne_cpu_pool.avail_threads_per_core),
+> -					     GFP_KERNEL);
+> +						     sizeof(*ne_cpu_pool.avail_threads_per_core),
+> +						     GFP_KERNEL);
+>  	if (!ne_cpu_pool.avail_threads_per_core) {
+>  		rc = -ENOMEM;
+>  
+> @@ -735,7 +735,7 @@ static int ne_add_vcpu_ioctl(struct ne_enclave *ne_enclave, u32 vcpu_id)
+>   * * Negative return value on failure.
+>   */
+>  static int ne_sanity_check_user_mem_region(struct ne_enclave *ne_enclave,
+> -	struct ne_user_memory_region mem_region)
+> +					   struct ne_user_memory_region mem_region)
+>  {
+>  	struct ne_mem_region *ne_mem_region = NULL;
+>  
+> @@ -771,7 +771,7 @@ static int ne_sanity_check_user_mem_region(struct ne_enclave *ne_enclave,
+>  		u64 userspace_addr = ne_mem_region->userspace_addr;
+>  
+>  		if ((userspace_addr <= mem_region.userspace_addr &&
+> -		    mem_region.userspace_addr < (userspace_addr + memory_size)) ||
+> +		     mem_region.userspace_addr < (userspace_addr + memory_size)) ||
+>  		    (mem_region.userspace_addr <= userspace_addr &&
+>  		    (mem_region.userspace_addr + mem_region.memory_size) > userspace_addr)) {
+>  			dev_err_ratelimited(ne_misc_dev.this_device,
+> @@ -836,7 +836,7 @@ static int ne_sanity_check_user_mem_region_page(struct ne_enclave *ne_enclave,
+>   * * Negative return value on failure.
+>   */
+>  static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+> -	struct ne_user_memory_region mem_region)
+> +					   struct ne_user_memory_region mem_region)
+>  {
+>  	long gup_rc = 0;
+>  	unsigned long i = 0;
+> @@ -1014,7 +1014,7 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+>   * * Negative return value on failure.
+>   */
+>  static int ne_start_enclave_ioctl(struct ne_enclave *ne_enclave,
+> -	struct ne_enclave_start_info *enclave_start_info)
+> +				  struct ne_enclave_start_info *enclave_start_info)
+>  {
+>  	struct ne_pci_dev_cmd_reply cmd_reply = {};
+>  	unsigned int cpu = 0;
+> @@ -1574,7 +1574,8 @@ static int ne_create_vm_ioctl(struct ne_pci_dev *ne_pci_dev, u64 __user *slot_ui
+>  	mutex_unlock(&ne_cpu_pool.mutex);
+>  
+>  	ne_enclave->threads_per_core = kcalloc(ne_enclave->nr_parent_vm_cores,
+> -		sizeof(*ne_enclave->threads_per_core), GFP_KERNEL);
+> +					       sizeof(*ne_enclave->threads_per_core),
+> +					       GFP_KERNEL);
+>  	if (!ne_enclave->threads_per_core) {
+>  		rc = -ENOMEM;
+>  
+> diff --git a/drivers/virt/nitro_enclaves/ne_pci_dev.c b/drivers/virt/nitro_enclaves/ne_pci_dev.c
+> index 143207e9b9698..40b49ec8e30b1 100644
+> --- a/drivers/virt/nitro_enclaves/ne_pci_dev.c
+> +++ b/drivers/virt/nitro_enclaves/ne_pci_dev.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+>   */
+>  
+>  /**
+> diff --git a/drivers/virt/nitro_enclaves/ne_pci_dev.h b/drivers/virt/nitro_enclaves/ne_pci_dev.h
+> index 8bfbc66078185..7bbfd39280fec 100644
+> --- a/drivers/virt/nitro_enclaves/ne_pci_dev.h
+> +++ b/drivers/virt/nitro_enclaves/ne_pci_dev.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+>   */
+>  
+>  #ifndef _NE_PCI_DEV_H_
+> @@ -84,9 +84,13 @@
+>   */
+>  
+>  /**
+> - * NE_SEND_DATA_SIZE / NE_RECV_DATA_SIZE - 240 bytes for send / recv buffer.
+> + * NE_SEND_DATA_SIZE - 240 bytes for send buffer.
+>   */
+>  #define NE_SEND_DATA_SIZE	(240)
 
-cppc_get_perf_caps() already returns -EFAULT if highest_perf is 0, and
-I'm not sure if I can make any other assumptions about what a sane
-highest_perf value would need to be here.
+Nitpicking: "240 bytes for send buffer" comment looks a bit weird, it
+would probably be better to just state what 'NE_SEND_DATA_SIZE' defines:
 
-Did you have anything else in mind for sanity checking?
+/*
+ * NE_SEND_DATA_SIZE - size of the send buffer, in bytes
+ */
 
-> Also note that highest_perf may not be sustainable, so would using
-> highest_perf as raw_capacity[] always work as expected?
-> 
+> +
+> +/**
+> + * NE_RECV_DATA_SIZE - 240 bytes for recv buffer.
+> + */
+>  #define NE_RECV_DATA_SIZE	(240)
 
-Yes, in my opinion using it is better than the alternative, using the
-nominal performance value. This highest performance value helps obtain
-the maximum capacity of a CPU on a scale [0, 1024] when referenced to
-the highest performance of the biggest CPU in the system. There is no
-assumption in the task scheduler that this capacity is sustainable.
-Using lower values (nominal performance) would shorten the scale and
-make smaller CPUs seem bigger than they are. Also, using highest
-performance gives a better indication of micro-architectural
-differences in performance between CPUs, which plays a role in scaling
-utilization, even if some of the performance levels are not sustainable
-(which is platform dependent).
+Ditto.
 
-Thanks,
-Ionela.
+>  
+>  /**
+> diff --git a/include/uapi/linux/nitro_enclaves.h b/include/uapi/linux/nitro_enclaves.h
+> index b945073fe544d..e808f5ba124d4 100644
+> --- a/include/uapi/linux/nitro_enclaves.h
+> +++ b/include/uapi/linux/nitro_enclaves.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>  /*
+> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+>   */
+>  
+>  #ifndef _UAPI_LINUX_NITRO_ENCLAVES_H_
+> @@ -60,7 +60,7 @@
+>   *
+>   * Context: Process context.
+>   * Return:
+> - * * 0					- Logic succesfully completed.
+> + * * 0					- Logic successfully completed.
+>   * *  -1				- There was a failure in the ioctl logic.
+>   * On failure, errno is set to:
+>   * * EFAULT				- copy_from_user() / copy_to_user() failure.
+> @@ -95,7 +95,7 @@
+>   *
+>   * Context: Process context.
+>   * Return:
+> - * * 0				- Logic succesfully completed.
+> + * * 0				- Logic successfully completed.
+>   * *  -1			- There was a failure in the ioctl logic.
+>   * On failure, errno is set to:
+>   * * EFAULT			- copy_from_user() / copy_to_user() failure.
+> @@ -118,7 +118,7 @@
+>   *
+>   * Context: Process context.
+>   * Return:
+> - * * 0					- Logic succesfully completed.
+> + * * 0					- Logic successfully completed.
+>   * *  -1				- There was a failure in the ioctl logic.
+>   * On failure, errno is set to:
+>   * * EFAULT				- copy_from_user() failure.
+> @@ -161,7 +161,7 @@
+>   *
+>   * Context: Process context.
+>   * Return:
+> - * * 0					- Logic succesfully completed.
+> + * * 0					- Logic successfully completed.
+>   * *  -1				- There was a failure in the ioctl logic.
+>   * On failure, errno is set to:
+>   * * EFAULT				- copy_from_user() / copy_to_user() failure.
+> diff --git a/samples/nitro_enclaves/ne_ioctl_sample.c b/samples/nitro_enclaves/ne_ioctl_sample.c
+> index 480b763142b34..765b131c73190 100644
+> --- a/samples/nitro_enclaves/ne_ioctl_sample.c
+> +++ b/samples/nitro_enclaves/ne_ioctl_sample.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+>   */
+>  
+>  /**
+> @@ -185,7 +185,6 @@ static int ne_create_vm(int ne_dev_fd, unsigned long *slot_uid, int *enclave_fd)
+>  	return 0;
+>  }
+>  
+> -
+>  /**
+>   * ne_poll_enclave_fd() - Thread function for polling the enclave fd.
+>   * @data:	Argument provided for the polling function.
+> @@ -560,8 +559,8 @@ static int ne_add_vcpu(int enclave_fd, unsigned int *vcpu_id)
+>  
+>  		default:
+>  			printf("Error in add vcpu [%m]\n");
+> -
+>  		}
+> +
+>  		return rc;
+>  	}
+>  
+> @@ -638,7 +637,7 @@ static int ne_start_enclave(int enclave_fd,  struct ne_enclave_start_info *encla
+>  }
+>  
+>  /**
+> - * ne_start_enclave_check_booted() - Start the enclave and wait for a hearbeat
+> + * ne_start_enclave_check_booted() - Start the enclave and wait for a heartbeat
+>   *				     from it, on a newly created vsock channel,
+>   *				     to check it has booted.
+>   * @enclave_fd :	The file descriptor associated with the enclave.
 
-> > +                       pr_debug("cpu_capacity: CPU%d cpu_capacity=%u (raw).\n",
-> > +                                cpu, raw_capacity[cpu]);
-> > +               } else {
-> > +                       pr_err("cpu_capacity: CPU%d missing highest performance.\n", cpu);
-> > +                       pr_err("cpu_capacity: partial information: fallback to 1024 for all CPUs\n");
-> > +                       goto exit;
-> > +               }
-> > +       }
-> > +
-> > +       topology_normalize_cpu_scale();
-> > +       schedule_work(&update_topology_flags_work);
-> > +       pr_debug("cpu_capacity: cpu_capacity initialization done\n");
-> > +
-> > +exit:
-> > +       free_raw_capacity();
-> > +}
-> > +#endif
-> > +
-> >  #ifdef CONFIG_CPU_FREQ
-> >  static cpumask_var_t cpus_to_visit;
-> >  static void parsing_done_workfn(struct work_struct *work);
-> > diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> > index f180240dc95f..9cf1a17938f0 100644
-> > --- a/include/linux/arch_topology.h
-> > +++ b/include/linux/arch_topology.h
-> > @@ -11,6 +11,10 @@
-> >  void topology_normalize_cpu_scale(void);
-> >  int topology_update_cpu_topology(void);
-> >
-> > +#ifdef CONFIG_ACPI_CPPC_LIB
-> > +void topology_init_cpu_capacity_cppc(void);
-> > +#endif
-> > +
-> >  struct device_node;
-> >  bool topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu);
-> >
-> > --
-> > 2.29.2.dirty
-> >
+-- 
+Vitaly
+
