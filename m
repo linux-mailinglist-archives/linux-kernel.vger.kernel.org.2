@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C213F8C40
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D9D3F8C4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243128AbhHZQd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 12:33:56 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:37258 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbhHZQdy (ORCPT
+        id S243129AbhHZQf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242725AbhHZQf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:33:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1629995586; x=1661531586;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4vBxNrHrvW9Eol+s7Y1qFpDHC52cDYqjzJmQoqrhhlU=;
-  b=m/V6c/R5lNAGVxrUHtNTkPcVjFcqp5145T2zZ2dHIM64rVrykOJl+5LL
-   WK7f5U1LbFbZFGfQhHaFX47j/WoZ+KbJT+i0LiPpPBXUOTcu/5tb3T/E4
-   ybLXW8u6AdIILiVjfekW3ORe+4tGCg6zg3TKlJj1kmI2zLjMyAw/0b0jk
-   I=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 26 Aug 2021 09:33:06 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 09:33:06 -0700
-Received: from jhugo-lnx.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 26 Aug 2021 09:33:05 -0700
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-To:     <mani@kernel.org>, <hemantk@codeaurora.org>,
-        <bbhatt@codeaurora.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Pranjal Ramajor Asha Kanojiya" <quic_pkanojiy@quicinc.com>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>
-Subject: [PATCH] bus: mhi: core: Update comments on mhi_prepare_for_power_up
-Date:   Thu, 26 Aug 2021 10:32:55 -0600
-Message-ID: <1629995575-32389-1-git-send-email-quic_jhugo@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 26 Aug 2021 12:35:56 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC6EC0613C1;
+        Thu, 26 Aug 2021 09:35:08 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f131000dba9b80c472eda01.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:1000:dba9:b80c:472e:da01])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9F43D1EC05A0;
+        Thu, 26 Aug 2021 18:35:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629995702;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=PKgKlf96DymBxVz2t9hvAbLAOKR28yTAQSVMuiOKTpY=;
+        b=eqKm96j3cf+A7XmjBWU3zEWxtx+7zaJQ7JZzNFNMKQju6KSjq0sh4vXYVFsIZqQUeCyaXe
+        LZlSR6cCAkvbbUkc+jCij3zK06kLPBcCVirFrBPTjX1ImHnmhxTsFHP2ADWy2u9FIi/feN
+        85dnAQT0kldyEdXy4Hs97aaFjgwnqss=
+Date:   Thu, 26 Aug 2021 18:35:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kai Huang <kai.huang@intel.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] x86/sgx: Add the missing ifdef for
+ sgx_set_attribute()
+Message-ID: <YSfC2vhMxaUY2j/H@zn.tnic>
+References: <20210825235234.153013-1-jarkko@kernel.org>
+ <YSdl16MFt/GVNGDq@zn.tnic>
+ <a006c85ef21f4dbd46a2ec1f73fa4e273afc5f6c.camel@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a006c85ef21f4dbd46a2ec1f73fa4e273afc5f6c.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
+On Thu, Aug 26, 2021 at 07:08:07PM +0300, Jarkko Sakkinen wrote:
+> I made this change because I'm including the header to set_memory.c, and
 
-After "bus: mhi: core: Remove pre_init flag used for power purposes"
-mhi_prepare_for_power_up() is no longer an optional API. All users
-of MHI should call this API before power up sequence to initialize
-MHI context. Update the comments on this API to make this clear.
+This is something you're doing locally, I presume. If so, you can keep
+this patch local too.
 
-Fixes: eee87072e2fb ("bus: mhi: core: Remove pre_init flag used for power purposes")
-Signed-off-by: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
-Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
----
- include/linux/mhi.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> It's also incoherent that KVM specific functions are compilation flagged
 
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index 56e7934..483b852 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -617,10 +617,8 @@ int mhi_get_free_desc_count(struct mhi_device *mhi_dev,
- 
- /**
-  * mhi_prepare_for_power_up - Do pre-initialization before power up.
-- *                            This is optional, call this before power up if
-- *                            the controller does not want bus framework to
-- *                            automatically free any allocated memory during
-- *                            shutdown process.
-+ *                            Call this before MHI power up sequence to
-+ *                            initialize MHI context.
-  * @mhi_cntrl: MHI controller
-  */
- int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl);
+They don't really have to be - they're just declarations.
+
 -- 
-2.7.4
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
