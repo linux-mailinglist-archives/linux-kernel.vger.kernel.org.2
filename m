@@ -2,70 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D9D3F8C4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D198E3F8C4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243129AbhHZQf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 12:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242725AbhHZQf4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:35:56 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC6EC0613C1;
-        Thu, 26 Aug 2021 09:35:08 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f131000dba9b80c472eda01.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:1000:dba9:b80c:472e:da01])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9F43D1EC05A0;
-        Thu, 26 Aug 2021 18:35:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629995702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=PKgKlf96DymBxVz2t9hvAbLAOKR28yTAQSVMuiOKTpY=;
-        b=eqKm96j3cf+A7XmjBWU3zEWxtx+7zaJQ7JZzNFNMKQju6KSjq0sh4vXYVFsIZqQUeCyaXe
-        LZlSR6cCAkvbbUkc+jCij3zK06kLPBcCVirFrBPTjX1ImHnmhxTsFHP2ADWy2u9FIi/feN
-        85dnAQT0kldyEdXy4Hs97aaFjgwnqss=
-Date:   Thu, 26 Aug 2021 18:35:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kai Huang <kai.huang@intel.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] x86/sgx: Add the missing ifdef for
- sgx_set_attribute()
-Message-ID: <YSfC2vhMxaUY2j/H@zn.tnic>
-References: <20210825235234.153013-1-jarkko@kernel.org>
- <YSdl16MFt/GVNGDq@zn.tnic>
- <a006c85ef21f4dbd46a2ec1f73fa4e273afc5f6c.camel@kernel.org>
+        id S243148AbhHZQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:36:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229810AbhHZQgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 12:36:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74FA660FC0;
+        Thu, 26 Aug 2021 16:35:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629995752;
+        bh=1aT8/QwmjU1tYRicJpg82+xGTbbb3hHxkvrEFjdA5mY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c3LBq4IsJu99CGIHbCqUkc0t/ISfzTOEU8HL7cz9dFv+NmAfdf5/8J6d7OlHpsMpO
+         l1B/x583z0y2H37NzPfIz6SJd8HzwLn5nsjATFkPqVq1E/AwSty3rTxIvaCab68K77
+         siPxxJobzr2lFFVUTWstleEHu+6GtE7LUkIkrnZYMwwjd0pnMwhicX+2EEJkDZvpbg
+         JvOF2WOLt63sGDMVq6swkeY+sDXijoXnB9kIIJtGLwdhXhJCxG+wApsTlaz0dKHy8l
+         x4zleuPKx33O25e/9pyXDE6H0srE/BtrsD/wttl5rTNLSOmljzkI5m5+SqUDdVN9co
+         OU+xOnZ9L+UQQ==
+Date:   Thu, 26 Aug 2021 22:05:48 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>, dmaengine@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: fsl-dpaa2-qdma: Fix spelling mistake "faile"
+ -> "failed"
+Message-ID: <YSfC5GsEtFjxQT9T@matsya>
+References: <20210826122500.13743-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a006c85ef21f4dbd46a2ec1f73fa4e273afc5f6c.camel@kernel.org>
+In-Reply-To: <20210826122500.13743-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 07:08:07PM +0300, Jarkko Sakkinen wrote:
-> I made this change because I'm including the header to set_memory.c, and
+On 26-08-21, 13:25, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in a dev_err error message. Fix it.
 
-This is something you're doing locally, I presume. If so, you can keep
-this patch local too.
-
-> It's also incoherent that KVM specific functions are compilation flagged
-
-They don't really have to be - they're just declarations.
+Applied, thanks
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+~Vinod
