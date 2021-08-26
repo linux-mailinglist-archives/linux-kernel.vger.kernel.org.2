@@ -2,85 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607D93F85EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516503F85ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241822AbhHZKzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 06:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241775AbhHZKzk (ORCPT
+        id S241729AbhHZK5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 06:57:18 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:38426 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S241491AbhHZK5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 06:55:40 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09596C061757;
-        Thu, 26 Aug 2021 03:54:52 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f131000e9f5f92baa539bd3.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:1000:e9f5:f92b:aa53:9bd3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A18D11EC059D;
-        Thu, 26 Aug 2021 12:54:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629975285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=UY5DNLToKd5xwJOlrBkq9pntqa2rgUSXGZ4c4wOSBHI=;
-        b=Nf6+7JQ+1UHWWaFyXqaDwBB03jewogdeyeAnWVLy8YGitsUxVccnjivC4TlNhygdvTSHrs
-        /ivOk3s/Hnt7PeDAA5CSCp8DuxFyTUDPIAXSRKps4R/Lqhpk81GgPESNTSekB/h56US72K
-        jUj3f7muxiQsexLYbyK5/hAAY0kxI0c=
-Date:   Thu, 26 Aug 2021 12:55:23 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v29 15/32] x86/mm: Shadow Stack page fault error checking
-Message-ID: <YSdzGwzSKB5GHbDL@zn.tnic>
-References: <20210820181201.31490-1-yu-cheng.yu@intel.com>
- <20210820181201.31490-16-yu-cheng.yu@intel.com>
+        Thu, 26 Aug 2021 06:57:16 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17Q5tlP8023865;
+        Thu, 26 Aug 2021 05:56:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=rKbGnFewnvquiODNsJhrKCT/ltFar1VCwKiMo46phr4=;
+ b=mtUwhHf/r/6OPjcv+AAhRvCQEs3tHWbVXh2AZTmzcSkiw1Phc1gFDs9D5QeC+YRdjcOL
+ bkKIA7wuboYj5wYYaytGaYPbr6Xs6+gaWj1mJOkho2TAXpFS+SZLS4WQ3I7NqK+NNVMk
+ dXNkhuvQ2G4hNAKiDBWUSLlJIVZx29wA6W6TfQiuEOinercjPvHxToK48kToQpW7B2lh
+ l+5sZokVwDcxWi731BiulpxKXEAAn7n98/QrVik1vL6CMr186MzihCXyJTmiC5ZD65Sb
+ FxMBcITCoGjEJANm/hSK/5FqtRjJeeqb0+5ZIifV5fGxuApVQBCHb4Au2oUXOgaJ+kru 9g== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3anr2esha4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 26 Aug 2021 05:56:17 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 26 Aug
+ 2021 11:56:15 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Thu, 26 Aug 2021 11:56:15 +0100
+Received: from [198.90.238.186] (unknown [198.90.238.186])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 09A312BA;
+        Thu, 26 Aug 2021 10:56:14 +0000 (UTC)
+Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Prevent pops and clicks during
+ reboot
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+References: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
+ <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
+ <s5h1r6xlvrs.wl-tiwai@suse.de> <s5hczqgil3v.wl-tiwai@suse.de>
+ <6595e87d-1dae-b536-c17b-eafa07d04bbe@opensource.cirrus.com>
+ <s5hpmuce05m.wl-tiwai@suse.de>
+ <e3df5f97-bf43-7eb8-e15d-4ab11dbae7ef@opensource.cirrus.com>
+ <s5hczq0yc72.wl-tiwai@suse.de> <s5hfsuwwkew.wl-tiwai@suse.de>
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Message-ID: <2974107a-787f-8788-2ee1-86b6c8055035@opensource.cirrus.com>
+Date:   Thu, 26 Aug 2021 11:56:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820181201.31490-16-yu-cheng.yu@intel.com>
+In-Reply-To: <s5hfsuwwkew.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-GUID: SoaxBqdzVWYlswpM0hroqg8cXsUk-RLq
+X-Proofpoint-ORIG-GUID: SoaxBqdzVWYlswpM0hroqg8cXsUk-RLq
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 11:11:44AM -0700, Yu-cheng Yu wrote:
+On 26/08/2021 11:49 am, Takashi Iwai wrote:
+> On Thu, 26 Aug 2021 08:03:45 +0200,
+> Takashi Iwai wrote:
+>> On Wed, 25 Aug 2021 20:04:05 +0200,
+>> Vitaly Rodionov wrote:
+>>> Actually when codec is suspended and we do reboot from UI, then sometimes we
+>>> see suspend() calls in kernel log and no pops, but sometimes
+>>>
+>>> we still have no suspend() on reboot and we hear pops. But when we do reboot
+>>> from command line: > sudo reboot  then we always have pops and no suspend()
+>>> called.
+>>>
+>>> Then we have added extra logging and we can see that on reboot codec somehow
+>>> getting resume() call and we run jack detect on resume that causing pops.
+>> Hm, it's interesting who triggers the runtime resume.
+>>
+>>> We were thinking about possible solution for that and we would propose some
+>>> changes in generic code hda_bind.c:
+>>>
+>>> static void hda_codec_driver_shutdown(struct device *dev) { +   if (codec->
+>>> patch_ops.suspend) +      codec->patch_ops.suspend(codec);
+>>> snd_hda_codec_shutdown(dev_to_hda_codec(dev)); +  hda_codec_driver_remove
+>>> (dev_to_hda_codec(dev)); }
+>> Sorry, it's no-no.  The suspend can't be called unconditionally, and
+>> the driver unbind must not be called in the callback itself.
+>>
+>> Does the patch below work instead?
+> Sorry there was a typo.  A bit more revised patch is below.
+>
+>
+> Takashi
 
-> Subject: Re: [PATCH v29 15/32] x86/mm: Shadow Stack page fault error checking
+Hi Takashi,
 
-					 Check Shadow Stack page fault errors
+Thanks a lot for quick response. I have tested previous patch and it did 
+not fix an issue, as suspend() was not called.
 
-Needs a verb in the name.
+Now I will test new revised patch and let you know ASAP.
 
--- 
-Regards/Gruss,
-    Boris.
+I am adding some extra logging, unfortunately on reboot these messages 
+are missing from kernel log, however I managed to capture reboot screen
 
-https://people.kernel.org/tglx/notes-about-netiquette
+and I will attach an image where last messages shown.
+
+Thanks,
+
+Vitaly
+
+>
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1383,14 +1383,17 @@ static void azx_free(struct azx *chip)
+>   	hda->freed = 1;
+>   }
+>   
+> -static int azx_dev_disconnect(struct snd_device *device)
+> +static void __azx_disconnect(struct azx *chip)
+>   {
+> -	struct azx *chip = device->device_data;
+>   	struct hdac_bus *bus = azx_bus(chip);
+>   
+>   	chip->bus.shutdown = 1;
+>   	cancel_work_sync(&bus->unsol_work);
+> +}
+>   
+> +static int azx_dev_disconnect(struct snd_device *device)
+> +{
+> +	__azx_disconnect(device->device_data);
+>   	return 0;
+>   }
+>   
+> @@ -2356,8 +2359,10 @@ static void azx_shutdown(struct pci_dev *pci)
+>   	if (!card)
+>   		return;
+>   	chip = card->private_data;
+> -	if (chip && chip->running)
+> +	if (chip && chip->running) {
+> +		__azx_disconnect(chip);
+>   		azx_shutdown_chip(chip);
+> +	}
+>   }
+>   
+>   /* PCI IDs */
+
+
