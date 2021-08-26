@@ -2,86 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7353F90F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A923F90FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243770AbhHZXcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 19:32:17 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:37308 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbhHZXcQ (ORCPT
+        id S243758AbhHZXgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 19:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231509AbhHZXgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 19:32:16 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5204320B8618;
-        Thu, 26 Aug 2021 16:31:27 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5204320B8618
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1630020688;
-        bh=8v9TbhpIJoMv6rGK5bzfoY2JnYeMp9qeCuyaeZeJfRQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=pKyaAZvn1TecJCW+X412OG7vHpPkFDuUavVwfNG1/94nsn1jNsQVxnN9fxu5HqLE5
-         Fr37WTsD4sXkCecqaNCnvPJqr2MKnwe/ip942OuyKk8zKblwgnCRGCUxCjaTdrYkpq
-         cmJTLO4NJxbopAAvKZ6OhojUlYk01wHqY8buj3/8=
-Subject: Re: [RFC PATCH v8 3/4] arm64: Introduce stack trace reliability
- checks in the unwinder
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
- <20210812190603.25326-1-madvenka@linux.microsoft.com>
- <20210812190603.25326-4-madvenka@linux.microsoft.com>
- <YSe50PuWM/mjNwAj@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <77c43173-95c9-6ce5-ad11-219d38a66e34@linux.microsoft.com>
-Date:   Thu, 26 Aug 2021 18:31:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 26 Aug 2021 19:36:44 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16929C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 16:35:56 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id b6so7533343wrh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 16:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ARNGsdh18aTDUf5LQl8EpRH6zfMP8KoRGSsMRfX79lU=;
+        b=M+CRbGjPZ86DTn1ZUaToXrpieI2+ksonmJpvqW8WzRFrVU7yIpVKNt0ql+EfwjNhpp
+         npmadmc0h5obipoG+d8hnVEUED4RdgUACRjVxsW5MUGYDUx2lcVVhlkhQEAj4YctrzT1
+         jxTFEinMDK4ZsO3hmRYS3yll9gutrnhE01vIxuHatKrbfrE1ah7hLoDAV9wCJB2Wmyto
+         Lsx8Jt2qeuZ1lZQhllCSK1b1M6NktBRFAB/To+68rs3hL1TFjD9RGXl44PUMk1ntLFIa
+         euLwLeZsleKMwT8M46r5ea0WUve/BN05xbxiysSRweSJRWuaQBuXtQjkeEH6vmhIWktF
+         HWGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=ARNGsdh18aTDUf5LQl8EpRH6zfMP8KoRGSsMRfX79lU=;
+        b=ldY2LqP5uGo7u14bIgZ8rYsvWysKlC6OmLlH3u/wgnkDLx9KKiA83yXDioUBc0jdne
+         OYAA3qKlPDJOVhuG8EO7c+C1E78Hf1Af8LdBVJHc8TqhSpZ3Z8EIjl1wPSZl9QD+Ptfc
+         bh789hxsKTxjQnlge6Q+JX0jja0yTT9fnJzaZZPHg4SWLD1w6/YeqJ9StBMZSs/xaxjh
+         /EYc7ddizvKOn9w9kvJ/Zd95b4OrLGbT6ko8D6FQEmgvHK1mOBfQujEu/xQBbm9YZZbB
+         gfsMNtS8D5IN31yzhZJG263cCZk9Zf8D0vGgFQpecdYSpA3hCo0ONPwTJnWz0mUJhQdE
+         q5zA==
+X-Gm-Message-State: AOAM53196NtuYUeG7BO0XQmMrCw1J+/+cxZFVkDCpDqEYffQRbbwisnq
+        iK/UZ88o4jiD2pgLmKtRWbg988DqHbSx+MsmOSvpp3BGPLM=
+X-Google-Smtp-Source: ABdhPJwqDgrktbw2mtPvxHviQoGU6lkrV1W1sF+MdQy275y1yHxSiaANYmcV3rSaG820srM8RZojoTEOnl6VKtT2Cxk=
+X-Received: by 2002:a5d:464c:: with SMTP id j12mr6661521wrs.27.1630020954356;
+ Thu, 26 Aug 2021 16:35:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YSe50PuWM/mjNwAj@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a5d:5989:0:0:0:0:0 with HTTP; Thu, 26 Aug 2021 16:35:53
+ -0700 (PDT)
+Reply-To: IncCEisabit@gmail.com
+From:   SABIT INCE <alfaroukkhadija@gmail.com>
+Date:   Fri, 27 Aug 2021 00:35:53 +0100
+Message-ID: <CAF1Q0Jnfk89vAiQAp61JfWAxfENvjm39XCOMTD=fexi88iw85A@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cze=C5=9B=C4=87, jak si=C4=99 masz?
+
+Czy mia=C5=82e=C5=9B okazj=C4=99 przejrze=C4=87 m=C3=B3j poprzedni e-mail?
+
+Rozumiem tw=C3=B3j napi=C4=99ty harmonogram, wi=C4=99c nie martw si=C4=99.
+
+Odpowiedz jak najszybciej.
 
 
-On 8/26/21 10:57 AM, Mark Brown wrote:
-> On Thu, Aug 12, 2021 at 02:06:02PM -0500, madvenka@linux.microsoft.com wrote:
-> 
->> +	if (frame->need_reliable && !unwind_is_reliable(frame)) {
->> +		/* Cannot unwind to the next frame reliably. */
->> +		frame->failed = true;
->> +		return false;
->> +	}
-> 
-> This means we only collect reliability information in the case
-> where we're specifically doing a reliable stacktrace.  For
-> example when printing stack traces on the console it might be
-> useful to print a ? or something if the frame is unreliable as a
-> hint to the reader that the information might be misleading.
-> Could we therefore change the flag here to a reliability one and
-> our need_reliable check so that we always run
-> unwind_is_reliable()?
-> 
-> I'm not sure if we need to abandon the trace on first error when
-> doing a reliable trace but I can see it's a bit safer so perhaps
-> better to do so.  If we don't abandon then we don't require the
-> need_reliable check at all.
-> 
+Dzi=C4=99kuj=C4=99 i pozdrawiam,
 
-I think that the caller should be able to specify that the stack trace
-should be abandoned. Like Livepatch.
-
-So, we could always do the reliability check. But keep need_reliable.
-
-Thanks.
-
-Madhavan
-	
+Sabit Ince
