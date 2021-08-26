@@ -2,150 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A7C3F8E80
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538213F8E92
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243411AbhHZTN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 15:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243307AbhHZTNZ (ORCPT
+        id S243460AbhHZTPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 15:15:55 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53900 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243439AbhHZTPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 15:13:25 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2741FC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:12:38 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id f2so7077272ljn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:12:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=TvRTLyHaAWmLLRwS1K9bLxp8F5GC7i2/1t+y7IO7tIc=;
-        b=k+Y1nZQYBlSkK/bFtUEhMIaHcLvKdJrcKmmAp3yl9DrjpSVeEUhRK4H7OYUe3D0V5l
-         992lJOLIPYzY9hUc+qZI1cL8ouu73sxjG23pxM2N4JBX4XNU6am/c7w9P+AevyXpDx8J
-         gcTZHV0u8o0V9Ckyov+I/Nxh3zDDO1dqV5aIDdbOHqadVabxgSbHHF1amDb2FtSEuOwu
-         X8v+Ul4UP8hPt5zg5weICGsNjOWyWid1omp2E/Ko6OtJiVAbBGZWy9CkiDwimX0leOYn
-         uHGpTGxHxcQ+v4H7xN5r00hF0tB5YT3MqyzAqEBp+VGe/3BOS6xnFLEaM2kWSRQqDa3i
-         OSkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TvRTLyHaAWmLLRwS1K9bLxp8F5GC7i2/1t+y7IO7tIc=;
-        b=K6Gjc2ZZGItw80SaUdJCNnHTC4UPqdrlhaqcjZ5KiULqgsnSAJECiEK9Nq4qUsLA8Q
-         ufqWym7f6Q6cik7XlrV9VyzmpcnISC0rcoVObpxfK/myMYkd+d/c5XKpgyziJJqtUaK7
-         KJFpa5X4vN3yZaTWMa2/wjHgEs7xkQi0L5RrmSc8xmYXjAYxyRYL4AlE7inn9LX46Q+t
-         Wm/q2hUrR1z/Y4IgynYObKU14jYMWHNqe1Wq6Hn881VBgNTr1xFlij1Ne5SahNp3VKHO
-         A12yKmxRUEK+1diHvVi4g0tMlkH5KElpaeozI6L129b9lH0uMbptZLyU2cpzpIAAsdz4
-         +wbw==
-X-Gm-Message-State: AOAM533jtFoz40CFpjko8wktTKNEAPQ98qLlWaVZcLc5OYbbbNMU9F6Y
-        uZsY1GpQf47rNiMMWsnL6yo=
-X-Google-Smtp-Source: ABdhPJyFuAcZaeVh/2Yqg/K1ya/KDESnAiaINFpi+gsVe+RRig/PlCYYyuCHuoqmozO9smFgQz7/Bg==
-X-Received: by 2002:a2e:b24f:: with SMTP id n15mr4547207ljm.124.1630005156491;
-        Thu, 26 Aug 2021 12:12:36 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id u17sm469454lja.45.2021.08.26.12.12.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 12:12:36 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] staging: r8188eu: Use usb_control_msg_recv/send()
- in usbctrl_vendorreq()
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-References: <20210825035311.8910-1-fmdefrancesco@gmail.com>
- <20210825035311.8910-2-fmdefrancesco@gmail.com>
- <f2360c8c-e001-70d6-daeb-03ca5b718d84@gmail.com>
- <1954117.IISOP8hFdM@localhost.localdomain>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <b5507e5b-d396-f442-591e-994e2b929397@gmail.com>
-Date:   Thu, 26 Aug 2021 22:12:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 26 Aug 2021 15:15:54 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17QJErvs072522;
+        Thu, 26 Aug 2021 14:14:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1630005293;
+        bh=cDMeHEpoUq/6EEcGXaBk9jS9myQLWJT90vDpQ5XpKIw=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=tNnzDU8X2GJAAWUMcE7BuhtptkI17imBHjQINNxCV7298LQfdEVmLMuAJ0kvX8VGL
+         bRBn/x5dsR9Nvp1NW12eAalTTXbF9bs2Twr33TfdINZGETFcVRO3kAxtUpwFbaQZ8S
+         aJOKNNxG6uvuaIPj2hNbrKQcvTQthjIWLdoXM4/E=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17QJErU5120165
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 26 Aug 2021 14:14:53 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 26
+ Aug 2021 14:14:53 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 26 Aug 2021 14:14:53 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17QJEqXr028843;
+        Thu, 26 Aug 2021 14:14:52 -0500
+Date:   Fri, 27 Aug 2021 00:44:51 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>
+Subject: Re: [PATCH v4 1/6] phy: cdns-dphy: Prepare for Rx support
+Message-ID: <20210826191449.utd37kj5xkl762gx@ti.com>
+References: <20210820190346.18550-1-p.yadav@ti.com>
+ <20210820190346.18550-2-p.yadav@ti.com>
+ <YSL48RA2ksldoCyX@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <1954117.IISOP8hFdM@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YSL48RA2ksldoCyX@pendragon.ideasonboard.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/21 9:56 PM, Fabio M. De Francesco wrote:
-> On Thursday, August 26, 2021 8:18:23 PM CEST Pavel Skripkin wrote:
->> On 8/25/21 6:53 AM, Fabio M. De Francesco wrote:
->> > Replace usb_control_msg() with the new usb_control_msg_recv() and
->> > usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
->> > Remove no more needed variables. Move out of an if-else block
->> > some code that it is no more dependent on status < 0. Remove
->> > redundant code depending on status > 0 or status == len.
->> > 
->> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
->> > ---
->> 
->> FYI, I've tested this patch with TP-Link TL-WN722N v3 + qemu :)
->> 
->> 
->> Tested-by: Pavel Skripkin <paskripkin@gmail.com>
->> 
->> 
->> NOTE: I am still not able to apply 2/2, so tested tag is only for 1/2
->> 
->> 
->> With regards,
->> Pavel Skripkin
+On 23/08/21 04:25AM, Laurent Pinchart wrote:
+> Hi Pratyush,
 > 
-> Dear Pavel,
+> Thank you for the patch.
 > 
-> Thanks for testing. It was very kind from you.I'll add this to the Reviewed-tag
-> that you had already given to my patch.
+> On Sat, Aug 21, 2021 at 12:33:41AM +0530, Pratyush Yadav wrote:
+> > The Rx programming sequence differs from the Tx programming sequence.
+> > Currently only Tx mode is supported. For example, the power on and off,
+> > validation, and configuration procedures are all different between Rx
+> > and Tx DPHYs. Currently they are only written from a Tx point of view
+> > and they won't work with an Rx DPHY. Move them to cdns_dphy_ops so they
+> > can be defined by the implementation, accommodating both Rx and Tx mode
+> > DPHYs.
+> > 
+> > The clocks "psm" and "pll_ref" are not used by the Rx path so make them
+> > optional in the probe and then check if they exist in the Tx power_on()
+> > hook.
 > 
-> However, I intend to rebase and resend this 1/2 and the 2/2 of this series, because
-> (as we already found) they logically follow another patch of mine that is still in the
-> queue ("staging: r8188eu: Remove _enter/_exit_critical_mutex()").
+> I think it would be better to check them at probe time.
+
+Right. Now that we no longer switch mode dynamically, this can be done.
+
 > 
-> The patch above has already been reviewed by Greg and he found that it looks
-> good, but he cannot apply it because it is not tested (for the reasons I've already
-> explained with a couple of messages)
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > 
+> > ---
+> > 
+> > Changes in v4:
+> > - Instead of having both Rx and Tx modes in the same driver data, keep
+> >   them separate since the op selection is based on compatible now. For
+> >   that reason, the cdns_dphy_driver_data struct is no longer needed.
+> > - Rename ref_dphy_ops to tx_ref_dphy_ops to clarify their purpose.
+> > - Drop submode checks in validate() hook.
+> > 
+> >  drivers/phy/cadence/cdns-dphy.c | 123 ++++++++++++++++++++++----------
+> >  1 file changed, 87 insertions(+), 36 deletions(-)
+> > 
+> > diff --git a/drivers/phy/cadence/cdns-dphy.c b/drivers/phy/cadence/cdns-dphy.c
+> > index ba042e39cfaf..0a169d649216 100644
+> > --- a/drivers/phy/cadence/cdns-dphy.c
+> > +++ b/drivers/phy/cadence/cdns-dphy.c
+> > @@ -75,6 +75,11 @@ struct cdns_dphy;
+> >  struct cdns_dphy_ops {
+> >  	int (*probe)(struct cdns_dphy *dphy);
+> >  	void (*remove)(struct cdns_dphy *dphy);
+> > +	int (*power_on)(struct cdns_dphy *dphy);
+> > +	int (*power_off)(struct cdns_dphy *dphy);
+> > +	int (*validate)(struct cdns_dphy *dphy, enum phy_mode mode, int submode,
+> > +			union phy_configure_opts *opts);
+> > +	int (*configure)(struct cdns_dphy *dphy, union phy_configure_opts *opts);
+> >  	void (*set_psm_div)(struct cdns_dphy *dphy, u8 div);
+> >  	void (*set_clk_lane_cfg)(struct cdns_dphy *dphy,
+> >  				 enum cdns_dphy_clk_lane_cfg cfg);
+> > @@ -86,6 +91,7 @@ struct cdns_dphy_ops {
+> >  struct cdns_dphy {
+> >  	struct cdns_dphy_cfg cfg;
+> >  	void __iomem *regs;
+> > +	struct device *dev;
+> >  	struct clk *psm_clk;
+> >  	struct clk *pll_ref_clk;
+> >  	const struct cdns_dphy_ops *ops;
+> > @@ -199,20 +205,9 @@ static void cdns_dphy_ref_set_psm_div(struct cdns_dphy *dphy, u8 div)
+> >  	       dphy->regs + DPHY_PSM_CFG);
+> >  }
+> >  
+> > -/*
+> > - * This is the reference implementation of DPHY hooks. Specific integration of
+> > - * this IP may have to re-implement some of them depending on how they decided
+> > - * to wire things in the SoC.
+> > - */
+> > -static const struct cdns_dphy_ops ref_dphy_ops = {
+> > -	.get_wakeup_time_ns = cdns_dphy_ref_get_wakeup_time_ns,
+> > -	.set_pll_cfg = cdns_dphy_ref_set_pll_cfg,
+> > -	.set_psm_div = cdns_dphy_ref_set_psm_div,
+> > -};
+> > -
+> > -static int cdns_dphy_config_from_opts(struct phy *phy,
+> > -				      struct phy_configure_opts_mipi_dphy *opts,
+> > -				      struct cdns_dphy_cfg *cfg)
+> > +static int cdns_dphy_tx_config_from_opts(struct phy *phy,
+> > +					 struct phy_configure_opts_mipi_dphy *opts,
+> > +					 struct cdns_dphy_cfg *cfg)
+> >  {
+> >  	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> >  	unsigned int dsi_hfp_ext = 0;
+> > @@ -232,24 +227,13 @@ static int cdns_dphy_config_from_opts(struct phy *phy,
+> >  	return 0;
+> >  }
+> >  
+> > -static int cdns_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
+> > -			      union phy_configure_opts *opts)
+> > +static int cdns_dphy_tx_configure(struct cdns_dphy *dphy,
+> > +				  union phy_configure_opts *opts)
+> >  {
+> >  	struct cdns_dphy_cfg cfg = { 0 };
+> > -
+> > -	if (mode != PHY_MODE_MIPI_DPHY)
+> > -		return -EINVAL;
+> > -
+> > -	return cdns_dphy_config_from_opts(phy, &opts->mipi_dphy, &cfg);
+> > -}
+> > -
+> > -static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
+> > -{
+> > -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > -	struct cdns_dphy_cfg cfg = { 0 };
+> >  	int ret;
+> >  
+> > -	ret = cdns_dphy_config_from_opts(phy, &opts->mipi_dphy, &cfg);
+> > +	ret = cdns_dphy_tx_config_from_opts(dphy->phy, &opts->mipi_dphy, &cfg);
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > @@ -279,9 +263,18 @@ static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
+> >  	return 0;
+> >  }
+> >  
+> > -static int cdns_dphy_power_on(struct phy *phy)
+> > +static int cdns_dphy_tx_validate(struct cdns_dphy *dphy, enum phy_mode mode,
+> > +				 int submode, union phy_configure_opts *opts)
+> >  {
+> > -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > +	struct cdns_dphy_cfg cfg = { 0 };
+> > +
+> > +	return cdns_dphy_tx_config_from_opts(dphy->phy, &opts->mipi_dphy, &cfg);
+> > +}
+> > +
+> > +static int cdns_dphy_tx_power_on(struct cdns_dphy *dphy)
+> > +{
+> > +	if (!dphy->psm_clk || !dphy->pll_ref_clk)
+> > +		return -EINVAL;
+> >  
+> >  	clk_prepare_enable(dphy->psm_clk);
+> >  	clk_prepare_enable(dphy->pll_ref_clk);
+> > @@ -293,16 +286,73 @@ static int cdns_dphy_power_on(struct phy *phy)
+> >  	return 0;
+> >  }
+> >  
+> > -static int cdns_dphy_power_off(struct phy *phy)
+> > +static int cdns_dphy_tx_power_off(struct cdns_dphy *dphy)
+> >  {
+> > -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > -
+> >  	clk_disable_unprepare(dphy->pll_ref_clk);
+> >  	clk_disable_unprepare(dphy->psm_clk);
+> >  
+> >  	return 0;
+> >  }
+> >  
+> > +/*
+> > + * This is the reference implementation of DPHY hooks. Specific integration of
+> > + * this IP may have to re-implement some of them depending on how they decided
+> > + * to wire things in the SoC.
+> > + */
+> > +static const struct cdns_dphy_ops tx_ref_dphy_ops = {
+> > +	.power_on = cdns_dphy_tx_power_on,
+> > +	.power_off = cdns_dphy_tx_power_off,
+> > +	.validate = cdns_dphy_tx_validate,
+> > +	.configure = cdns_dphy_tx_configure,
+> > +	.get_wakeup_time_ns = cdns_dphy_ref_get_wakeup_time_ns,
+> > +	.set_pll_cfg = cdns_dphy_ref_set_pll_cfg,
+> > +	.set_psm_div = cdns_dphy_ref_set_psm_div,
+> > +};
+> > +
+> > +static int cdns_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
+> > +			      union phy_configure_opts *opts)
+> > +{
+> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > +
+> > +	if (mode != PHY_MODE_MIPI_DPHY)
+> > +		return -EINVAL;
+> > +
+> > +	if (dphy->ops->validate)
+> > +		return dphy->ops->validate(dphy, mode, submode, opts);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int cdns_dphy_power_on(struct phy *phy)
+> > +{
+> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > +
+> > +	if (dphy->ops->power_on)
+> > +		return dphy->ops->power_on(dphy);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int cdns_dphy_power_off(struct phy *phy)
+> > +{
+> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > +
+> > +	if (dphy->ops->power_off)
+> > +		return dphy->ops->power_off(dphy);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
+> > +{
+> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
+> > +
+> > +	if (dphy->ops->configure)
+> > +		return dphy->ops->configure(dphy, opts);
+> > +
+> > +	return 0;
+> > +}
+> > +
 > 
-> Unfortunately, until "Remove _enter/_exit_critical_mutex()" is not tested, Greg
-> won't apply it and the 2/2 of this series cannot be applied too.
+> Given that all of these are essentially pass-through operations, how
+> about getting rid of the indirection ? I would create a new structure:
 > 
-> Please, if you have time, do you mind to test also that? It would allow me to resend
-> it with your "Tested-by" tag and Greg will surely apply it. No worries if you have no
-> time for doing this test, otherwise you may find it at:
+> struct cdns_dphy_info {
+> 	const struct phy_ops *phy_ops;
+> 	const struct cdns_dphy_ops *dphy_ops;
+> };
 > 
-> https://lore.kernel.org/lkml/20210819221241.31987-1-fmdefrancesco@gmail.com/
+> and reference it in cdns_dphy_of_match. The cdns_dphy structure would
+> then store a pointer to cdns_dphy_info. That way you won't have to
+> extend cdns_dphy_ops, which could possibly be renamed to
+> cdns_dphy_tx_ops as you don't use those operations for rx.
+
+Ok, sounds like a good idea.
+
 > 
-> Please, if you are interested, read the whole thread. You'll see that Greg would apply
-> it, only if tested.
+> >  static const struct phy_ops cdns_dphy_ops = {
+> >  	.configure	= cdns_dphy_configure,
+> >  	.validate	= cdns_dphy_validate,
+> > @@ -320,6 +370,7 @@ static int cdns_dphy_probe(struct platform_device *pdev)
+> >  	if (!dphy)
+> >  		return -ENOMEM;
+> >  	dev_set_drvdata(&pdev->dev, dphy);
+> > +	dphy->dev = &pdev->dev;
+> >  
+> >  	dphy->ops = of_device_get_match_data(&pdev->dev);
+> >  	if (!dphy->ops)
+> > @@ -329,11 +380,11 @@ static int cdns_dphy_probe(struct platform_device *pdev)
+> >  	if (IS_ERR(dphy->regs))
+> >  		return PTR_ERR(dphy->regs);
+> >  
+> > -	dphy->psm_clk = devm_clk_get(&pdev->dev, "psm");
+> > +	dphy->psm_clk = devm_clk_get_optional(dphy->dev, "psm");
+> >  	if (IS_ERR(dphy->psm_clk))
+> >  		return PTR_ERR(dphy->psm_clk);
+> >  
+> > -	dphy->pll_ref_clk = devm_clk_get(&pdev->dev, "pll_ref");
+> > +	dphy->pll_ref_clk = devm_clk_get_optional(dphy->dev, "pll_ref");
+> >  	if (IS_ERR(dphy->pll_ref_clk))
+> >  		return PTR_ERR(dphy->pll_ref_clk);
+> >  
+> > @@ -369,7 +420,7 @@ static int cdns_dphy_remove(struct platform_device *pdev)
+> >  }
+> >  
+> >  static const struct of_device_id cdns_dphy_of_match[] = {
+> > -	{ .compatible = "cdns,dphy", .data = &ref_dphy_ops },
+> > +	{ .compatible = "cdns,dphy", .data = &tx_ref_dphy_ops },
+> >  	{ /* sentinel */ },
+> >  };
+> >  MODULE_DEVICE_TABLE(of, cdns_dphy_of_match);
 > 
-> Thanks very much for your help and kindness,
+> -- 
+> Regards,
 > 
+> Laurent Pinchart
 
-
-Hi, Fabio!
-
-
-Ok, I will test it until yesterday evening. I want to enable some debug 
-options and sanitizers and recompile the kernel :)
-
-Today I will try to automate testing by writing scripts for connect, 
-disconnect and other scenarios. I guess, it will help to test various 
-corner cases
-
-
-Simple test actually passed: I've connected to wifi + pinged google, but 
-mutexes can cause deadlock and other not cool bugs, so I will try to 
-enable as many sanitizers as possible and retest it :)
-
-
-
-
-With regards,
-Pavel Skripkin
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
