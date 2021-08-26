@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CA13F8408
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9D03F840B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240746AbhHZI7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:59:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41888 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229785AbhHZI67 (ORCPT
+        id S240760AbhHZI7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240598AbhHZI7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:58:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629968292;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cIdwTiP0NVTGucL/JR43xH/9VntQvDYubEEe+Wyv8Nc=;
-        b=V+GzbGYsdcSyCwKAk2QfCnK+UGjL1D0WU5oKGR9KxPjLkjNfZxbuN4Db8LfyuDShGBMsNu
-        b4hsDkiLHYZgzenZ/I45JA8VjbZvPXkHNILDZoc3ONdnV2wCqT1cfTPi1UfvbvkAHEIFeP
-        qYFvzlPChmMw0Y2ZeAKrbrJVQ0K5tdo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-hF47ieCuMg-5hNZcWFij9A-1; Thu, 26 Aug 2021 04:58:11 -0400
-X-MC-Unique: hF47ieCuMg-5hNZcWFij9A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C19180292B;
-        Thu, 26 Aug 2021 08:58:09 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A92D60936;
-        Thu, 26 Aug 2021 08:58:07 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YSZeKfHxOkEAri1q@cmpxchg.org>
-References: <YSZeKfHxOkEAri1q@cmpxchg.org> <YSPwmNNuuQhXNToQ@casper.infradead.org> <YSQSkSOWtJCE4g8p@cmpxchg.org> <YSQeFPTMn5WpwyAa@casper.infradead.org> <YSU7WCYAY+ZRy+Ke@cmpxchg.org> <YSVMAS2pQVq+xma7@casper.infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
+        Thu, 26 Aug 2021 04:59:19 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60561C061757;
+        Thu, 26 Aug 2021 01:58:32 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id c4so1385304plh.7;
+        Thu, 26 Aug 2021 01:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JEePIJsNKUhe8VCWtiykIc8ceuZS5oinIILlhZg2UbA=;
+        b=G4ho7MlpAuMgFCinS4rS3QXbXy6O9yPx+I6GXxm88IyfkIbdttxj/UiLjxlXXupAMo
+         7o00kawSHuOjMTXmD0lcsJtnSP86slcUiRBwzJHyM+Fva7b8yiHkLJNuDnMSfC69geoh
+         jDQ4PSf1C2SpfwhK1xwoBBQ74BKAx963fRPl/ofncpHD36oK3xbAAvKNhBkQkePue9fd
+         5+MngytfsG0Iqa8CKzq0HuHXffu9uozmlfY3R5VXtIug/JIzP17glBuzzD7jmANgz/rk
+         uZD3+e3MOrXJopF/07FsCsWJt1Qi+ef8FqKzm369aj8riFgJ28lxm3G66PpzLVhtqN+R
+         V4MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JEePIJsNKUhe8VCWtiykIc8ceuZS5oinIILlhZg2UbA=;
+        b=rb+sAiLlavQau4k3u51Ky/rPA1YHrKWAQN7uy2dat6zNv0srw0cdWf7BeYYKLn77GZ
+         O5wb96JrTEkOhN00diOIUKQxvKuXR9M8v7iiQghl1mqdFJp7+PRsYbn5p/7WQVzXU7fe
+         5hROnvKnX7wZk5mnJzj5PIFBj2GqCKTVsobLgXb8C+YAte1+EH8+X25iABmaMwfaRJO5
+         Xe6t/h6w8vU0dvMqR9cYy6af8VpGFhWnKRJfbabQHNkISRXoJisAl/2cHc2IawCsgWmZ
+         iI3zqa+HPqmQ7WIpH+WONN898s1QCD/ZLuEMPQpeAaZjCCOEhgGWl3Om5HNXPMIpNeLw
+         fP/g==
+X-Gm-Message-State: AOAM531C8fUxa7QpfPCw/7wY7WTpj/Ke1ZLdGoNZXWUgLXB+gHJ2TjTg
+        d5vzuuuVbkg3beKjncMUslE=
+X-Google-Smtp-Source: ABdhPJzFXAntZk3ub7JoKNLQ7YzwA9y0Tm8rSAuWA3X4kgXOgqIMWw0IY7TnhxVEn1NmZiKUbmU1bQ==
+X-Received: by 2002:a17:90a:5e03:: with SMTP id w3mr3137259pjf.152.1629968311951;
+        Thu, 26 Aug 2021 01:58:31 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([154.223.168.16])
+        by smtp.gmail.com with ESMTPSA id y7sm2231456pfp.102.2021.08.26.01.58.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 01:58:31 -0700 (PDT)
+Subject: Re: [PATCH V3 4/5] ext4: get discard out of jbd2 commit kthread
+ contex
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        adilger.kernel@dilger.ca
+References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
+ <20210724074124.25731-5-jianchao.wan9@gmail.com> <YRV6qqZcsNBHZzyn@mit.edu>
+ <65c6aa35-5e4c-a717-d1dc-8842e3ce0424@gmail.com>
+Message-ID: <5a3e272a-0714-4d10-d260-fc716f9438f9@gmail.com>
+Date:   Thu, 26 Aug 2021 16:58:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2101396.1629968286.1@warthog.procyon.org.uk>
-Date:   Thu, 26 Aug 2021 09:58:06 +0100
-Message-ID: <2101397.1629968286@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <65c6aa35-5e4c-a717-d1dc-8842e3ce0424@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner <hannes@cmpxchg.org> wrote:
 
-> But we're here in part because the filesystems have been too exposed
-> to the backing memory implementation details. So all I'm saying is, if
-> you're touching all the file cache interface now anyway, why not use
-> the opportunity to properly disconnect it from the reality of pages,
-> instead of making the compound page the new interface for filesystems.
+
+On 2021/8/26 3:51 PM, Wang Jianchao wrote:
+
+>>
+>>> @@ -3672,8 +3724,14 @@ int __init ext4_init_mballoc(void)
+>>>  	if (ext4_free_data_cachep == NULL)
+>>>  		goto out_ac_free;
+>>>  
+>>> +	ext4_discard_wq = alloc_workqueue("ext4discard", WQ_UNBOUND, 0);
+>>> +	if (!ext4_discard_wq)
+>>> +		goto out_free_data;
+>>> +
+>>
+>>
+>> Perhaps we should only allocate the workqueue when it's needed ---
+>> e.g., when a file system is mounted or remounted with "-o discard"?
+>>
+>> Then in ext4_exit_malloc(), we only free it if ext4_discard_wq is
+>> non-NULL.
+>>
+>> This would save a bit of memory on systems that wouldn't need the ext4
+>> discard work queue.
 > 
-> What's wrong with the idea of a struct cache_entry
+> Yes, it make sense to the system with pool memory
 
-Well, the name's already taken, though only in cifs.  And we have a *lot* of
-caches so just calling it "cache_entry" is kind of unspecific.
+s/pool/poor  :)
 
-> which can be
-> embedded wherever we want: in a page, a folio or a pageset. Or in the
-> future allocated on demand for <PAGE_SIZE entries, if need be. But
-> actually have it be just a cache entry for the fs to read and write,
-> not also a compound page and an anon page etc. all at the same time.
 > 
-> Even today that would IMO delineate more clearly between the file
-> cache data plane and the backing memory plane. It doesn't get in the
-> way of also fixing the base-or-compound mess inside MM code with
-> folio/pageset, either.
-
-One thing I like about Willy's folio concept is that, as long as everyone uses
-the proper accessor functions and macros, we can mostly ignore the fact that
-they're 2^N sized/aligned and they're composed of exact multiples of pages.
-What really matters are the correspondences between folio size/alignment and
-medium/IO size/alignment, so you could look on the folio as being a tool to
-disconnect the filesystem from the concept of pages.
-
-We could, in the future, in theory, allow the internal implementation of a
-folio to shift from being a page array to being a kmalloc'd page list or
-allow higher order units to be mixed in.  The main thing we have to stop
-people from doing is directly accessing the members of the struct.
-
-There are some tricky bits: kmap and mmapped page handling, for example.  Some
-of this can be mitigated by making iov_iters handle folios (the ITER_XARRAY
-type does, for example) and providing utilities to populate scatterlists.
-
-David
-
+> Thanks so much
+> Jianchao
+> 
+>>
+>> 					- Ted
+>>
