@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C448C3F834A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9333F835B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240355AbhHZHqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 03:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
+        id S240259AbhHZHw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 03:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240191AbhHZHqQ (ORCPT
+        with ESMTP id S232514AbhHZHw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 03:46:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567B7C0613C1;
-        Thu, 26 Aug 2021 00:45:29 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 07:45:27 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629963927;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PSS5kClsZRsYiccPEtyP9nwREbAEDG556oTNCuOIhPU=;
-        b=vKhOmIXLKnVd9vy0AGx70fA+LCYwg95R4Ck5L0eaQQ54Ztq8n1XfyTccfLnfLaE2dZxPmb
-        sdMeWcAlVraLKC/ax2O7W2sub8f6CpyvXqwq99PCw0+pTDjt9jkaS8HFBNHPpGGWj+fi0K
-        kksf5P1zA0MJFCet9BDOtFDacth/Bz0fM+fT40bm8IcnxiPlL8Ggym6f5BZBlgk03GBom2
-        7r4aU/dlD0EcLpOeTceS7FUowfN/AiYpYJHDFdbkMoUKgBz3leUH38Q7vC7dIyYFC7AkVE
-        9lGaH2LAaFexZz7WxYIhfuG8Cu3QR1PbwdMX1WkrYjEbfN+M6cC5RZ8ny3yvkg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629963927;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PSS5kClsZRsYiccPEtyP9nwREbAEDG556oTNCuOIhPU=;
-        b=ARpLU295UvbY/vGB2z/fw8YTmzU89zmJraY2V123MFfV7EGX8gEq/8AsdwoWHEaebIm30i
-        fqExDHET8GUPLkAQ==
-From:   "tip-bot2 for Colin Ian King" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf/x86/intel/uncore: Fix integer overflow on 23
- bit left shift of a u32
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210706114553.28249-1-colin.king@canonical.com>
-References: <20210706114553.28249-1-colin.king@canonical.com>
+        Thu, 26 Aug 2021 03:52:27 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353C2C061757;
+        Thu, 26 Aug 2021 00:51:41 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id m26so2073845pff.3;
+        Thu, 26 Aug 2021 00:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=U3Wk1XJH+0LscJbf87RXYjbjUTP39Lf0DsYTghO2XsQ=;
+        b=hFK1JMVoqG88JEMjWfXddA9MK5sp2LHBYqST2JwWrVl17hbL/7TVpW1saEzdKRBWG6
+         ShfxAyK8TZcppVxv7QurIf62W7CgMu0tV9OHcX9tS5ig854iLV9qGcQ1IctCtbK/obOX
+         6bkZy07lM69zBDzuMKE2tYHrDmLAxduRyP+PH4aazZG1nr2hb61lZ3rsZAJ1i0Q+ouv6
+         wgWis9uIjetjHDEAAdxd9u/Y3o85+FKkpv/qpyPAeBWwLc8Ht2s2f9iKDvgSSRLCmCgY
+         ePkrA6+9+VgQ9qdcfiF1lH71yKKAiwoY4beTDmRerKqHgGWA/74ybX6hehIkty/4xvZV
+         rQPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=U3Wk1XJH+0LscJbf87RXYjbjUTP39Lf0DsYTghO2XsQ=;
+        b=sHtB2B0JlpPDzIWXxPns4BT/ZxkiZzYuhgDJQE4CLd3eUa8cA77gb06Cr0L0elAfFA
+         WkYGgaAGkiTDotdT43Z3YO6nzQV38cUJY/0bgQ2Mkm2aN0N69BxRxC1+fl1U8x6X2VcA
+         neV37CKK4tsJ23Zx+Drj8HEHcnuy16xofcbk69USS7Yv0DeYu3G7sPCNW/qm8kooJUZJ
+         /3e9qGtm2ZOhicw2YegBpUUcpkwD8RCx0po48jZ4RNVTWk2RY5Of5E0mbw1iZbiqYYoJ
+         zWBzwzXkjNhGu8QGzkCCeSQG5ItNShGYsihXrKE1/fvQE8xdm8/jqJTM9TVWp5Jo1fGt
+         aqgA==
+X-Gm-Message-State: AOAM530wt25Mh+yzis4c7nlzNpBsXQyIguZtJ7GtT5l1fIMLEuSy3G8L
+        raLhAX72SORorigFiejiKF8=
+X-Google-Smtp-Source: ABdhPJz1wIS2yu5f830MJFo7fQihE5SCfSp1N1sUbftv7iY9TjVpi25UZFYMkMoEvLvmRDRqMFaNhw==
+X-Received: by 2002:a65:6392:: with SMTP id h18mr2230628pgv.397.1629964300739;
+        Thu, 26 Aug 2021 00:51:40 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([103.112.79.203])
+        by smtp.gmail.com with ESMTPSA id s1sm1949167pfd.13.2021.08.26.00.51.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 00:51:40 -0700 (PDT)
+Subject: Re: [PATCH V3 4/5] ext4: get discard out of jbd2 commit kthread
+ contex
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        adilger.kernel@dilger.ca
+References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
+ <20210724074124.25731-5-jianchao.wan9@gmail.com> <YRV6qqZcsNBHZzyn@mit.edu>
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+Message-ID: <65c6aa35-5e4c-a717-d1dc-8842e3ce0424@gmail.com>
+Date:   Thu, 26 Aug 2021 15:51:35 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Message-ID: <162996392716.25758.13184611014584247262.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YRV6qqZcsNBHZzyn@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     0b3a8738b76fe2087f7bc2bd59f4c78504c79180
-Gitweb:        https://git.kernel.org/tip/0b3a8738b76fe2087f7bc2bd59f4c78504c79180
-Author:        Colin Ian King <colin.king@canonical.com>
-AuthorDate:    Tue, 06 Jul 2021 12:45:53 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 26 Aug 2021 08:58:02 +02:00
 
-perf/x86/intel/uncore: Fix integer overflow on 23 bit left shift of a u32
+On 2021/8/13 3:46 AM, Theodore Ts'o wrote:
+> On Sat, Jul 24, 2021 at 03:41:23PM +0800, Wang Jianchao wrote:
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 34be2f07449d..a496509e61b7 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -3474,6 +3530,14 @@ int ext4_mb_release(struct super_block *sb)
+>>  	struct kmem_cache *cachep = get_groupinfo_cache(sb->s_blocksize_bits);
+>>  	int count;
+>>  
+>> +	if (test_opt(sb, DISCARD)) {
+>> +		/*
+>> +		 * wait the discard work to drain all of ext4_free_data
+>> +		 */
+>> +		queue_work(ext4_discard_wq, &sbi->s_discard_work);
+>> +		flush_work(&sbi->s_discard_work);
+> 
+> I agree with Jan --- it's not clear to me why the call to queue_work()
+> is needed.  After the flush_work() call returns, if s_discard_work is
+> still non-empty, there must be something terribly wrong --- are we
+> missing something?
 
-The u32 variable pci_dword is being masked with 0x1fffffff and then left
-shifted 23 places. The shift is a u32 operation,so a value of 0x200 or
-more in pci_dword will overflow the u32 and only the bottow 32 bits
-are assigned to addr. I don't believe this was the original intent.
-Fix this by casting pci_dword to a resource_size_t to ensure no
-overflow occurs.
+Yes，the queue_work() is redundant.
+I will get rid of it in next version.
 
-Note that the mask and 12 bit left shift operation does not need this
-because the mask SNR_IMC_MMIO_MEM0_MASK and shift is always a 32 bit
-value.
+> 
+>> @@ -3672,8 +3724,14 @@ int __init ext4_init_mballoc(void)
+>>  	if (ext4_free_data_cachep == NULL)
+>>  		goto out_ac_free;
+>>  
+>> +	ext4_discard_wq = alloc_workqueue("ext4discard", WQ_UNBOUND, 0);
+>> +	if (!ext4_discard_wq)
+>> +		goto out_free_data;
+>> +
+> 
+> 
+> Perhaps we should only allocate the workqueue when it's needed ---
+> e.g., when a file system is mounted or remounted with "-o discard"?
+> 
+> Then in ext4_exit_malloc(), we only free it if ext4_discard_wq is
+> non-NULL.
+> 
+> This would save a bit of memory on systems that wouldn't need the ext4
+> discard work queue.
 
-Fixes: ee49532b38dd ("perf/x86/intel/uncore: Add IMC uncore support for Snow Ridge")
-Addresses-Coverity: ("Unintentional integer overflow")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Link: https://lore.kernel.org/r/20210706114553.28249-1-colin.king@canonical.com
----
- arch/x86/events/intel/uncore_snbep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, it make sense to the system with pool memory
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 609c24a..c682b09 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -4811,7 +4811,7 @@ static void __snr_uncore_mmio_init_box(struct intel_uncore_box *box,
- 		return;
- 
- 	pci_read_config_dword(pdev, SNR_IMC_MMIO_BASE_OFFSET, &pci_dword);
--	addr = (pci_dword & SNR_IMC_MMIO_BASE_MASK) << 23;
-+	addr = ((resource_size_t)pci_dword & SNR_IMC_MMIO_BASE_MASK) << 23;
- 
- 	pci_read_config_dword(pdev, mem_offset, &pci_dword);
- 	addr |= (pci_dword & SNR_IMC_MMIO_MEM0_MASK) << 12;
+Thanks so much
+Jianchao
+
+> 
+> 					- Ted
+> 
