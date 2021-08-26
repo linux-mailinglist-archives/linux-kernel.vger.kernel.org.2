@@ -2,109 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518453F7FC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A583F7FD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235823AbhHZBWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 21:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
+        id S236628AbhHZB10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 21:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235574AbhHZBWj (ORCPT
+        with ESMTP id S236055AbhHZB1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 21:22:39 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6764C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:21:52 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id s20so2185575oiw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:21:52 -0700 (PDT)
+        Wed, 25 Aug 2021 21:27:24 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F128C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:26:36 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id b64so1761795qkg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:26:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=6nXlei/Gzl2kgJrjUypJPJMbLWWtXj8x5vv2RmtYCFk=;
-        b=Fl2zoS01SxGzy75oar1XNbzccL+NIMw8VXIazGxrv9mtTk3t4A/gX5nocJDAK3e4ym
-         2pJb0fRgXs3r/GgRnsO6IFoFzOoWgEeImeTfwI2gd+1179p6Qf16ndE5pC9YsWH29gW2
-         /n2x2Y+ste2OcTlK787bUn/Hyv9BIubrPaq7o=
+        d=usp.br; s=usp-google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W/+ETMCvbJBF2kohpmxCA7DIb230kdyeY9CvSskcveo=;
+        b=mbn7Dr7SqTOJyHCl9NpWmF0kI50k169O48pv6Geya+tbhVRMiYCH9raqLHgs6QSH9S
+         J4IDzNl7Gtv9/zeqAKQnxnQGF37aRzb11SmCvbYwtSpjr7msz5WTNlcOKXPPuBwBNCT1
+         nFcqh4H6nCikUS24WoXPRgCzdytJCd8Nif84wZqVS/DV4XdQXbUEkC6tHz0GjYHc2bXX
+         cVbOdkKCeFIa77oGCUjycyUW05wCS6kh6AusgmzXlzao4f3pdUNREaXkold+7/KtodG0
+         MywtMtsYM03J7ujcHzwUa96Cd6M4HKpcgmAY+qovBNLqqN6BGkkGo2PGQqXgThO1MhXr
+         vI3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=6nXlei/Gzl2kgJrjUypJPJMbLWWtXj8x5vv2RmtYCFk=;
-        b=maOhaykBdbuvRNb+2KPpBi9Fdaz0Sw73O89eb5lrwsUx2CWaQEKB40e7Mmoyzozoe/
-         LJgNYguxHWrDxfDxK2B7MIh/55ipSxmpmWucOCNPzgJahof9xULb6v8CTkL35nrORxQv
-         FynYY272EDmRqSgezJGY/M4owmsceWFSVKfjWn3pGWydWzEivc/0rSHkznJ0PgGsMwk+
-         nSowqFAeaRND09a5lq1g0owaby2PH2jO5R67n8X9eNjAGLnHPnnK8z1tOXw2w3Q83Cqx
-         RCpaswm895aWKJpeAd0G6ZEG6CrsJzsQKeo79K0cAwCooF435AkW2PCJ/tM4aJSU4BYz
-         757Q==
-X-Gm-Message-State: AOAM531y5wGoko5iZOb7jFCgZvbnAwrMYvYJmDh1f+ZIJ5rGUn76l1br
-        8wfH4gXalYEcFBAR/RkBKevZNUUQyo68h9QBdSca4w==
-X-Google-Smtp-Source: ABdhPJz1PrTQ46AFZgnsHo3RwaOgObBPJwNmVa81VCkWSx1FhF7a08m5xnynvSJw6aQm8FOE9v9zVAEx6nn1AokhkX4=
-X-Received: by 2002:a05:6808:181a:: with SMTP id bh26mr9465358oib.166.1629940912164;
- Wed, 25 Aug 2021 18:21:52 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 26 Aug 2021 01:21:51 +0000
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W/+ETMCvbJBF2kohpmxCA7DIb230kdyeY9CvSskcveo=;
+        b=IpGI7BtcN4VNHBQWKUGBzcxg/vj/xuEeVfl2bGJZHJ9lZll6zljAcUYKCy/GVJquJQ
+         LfH9l65ka8ltNzJhvF846fN41F1iaM7aUCU8DR5humRsMeKYzCCoqmTUzA5HvTfEZ6H5
+         gWTDdL0vmBVii9NDIUuINwT617TsmrBVxhBm7e200Mh8OQCy8yxTM8y1UbWX3b369Vd0
+         l52vTCfWUG40qLMvAxSHMBdqchndrP50o1J5MnkUIrjZFm+b68JuKw+N4fTBbNJORjCv
+         JV3m1BSm9/6WS32w9kMIw1VCw4kIzgX5qSI0GmYhD6GnHfJW0PvHyqHjxAU1loVTBpV6
+         GouQ==
+X-Gm-Message-State: AOAM533VSYYZPnDmjD8LBfsJqb1DIk3j+5Ywq16d516+pkBmjwKzeRFd
+        K/306ReNzpZ4tNxIlQEgNhycyQ==
+X-Google-Smtp-Source: ABdhPJwgbMXFrtYSoJx40VoexI1KhC6zlWHw/VAig+AVeHK4gPd/as5aWW+Btdr75zXE55BfStq1Iw==
+X-Received: by 2002:a37:bf47:: with SMTP id p68mr1519662qkf.202.1629941195453;
+        Wed, 25 Aug 2021 18:26:35 -0700 (PDT)
+Received: from aehse.localdomain (177-209-76-11.user3p.veloxzone.com.br. [177.209.76.11])
+        by smtp.gmail.com with ESMTPSA id p123sm1375053qke.94.2021.08.25.18.26.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 18:26:34 -0700 (PDT)
+From:   Isabella Basso <isabellabdoamaral@usp.br>
+To:     linux@sciencehorizons.net, geert@linux-m68k.org
+Cc:     ferreiraenzoa@gmail.com, augusto.duraes33@gmail.com,
+        brendanhiggins@google.com, dlatypov@google.com,
+        davidgow@google.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com,
+        Isabella Basso <isabellabdoamaral@usp.br>
+Subject: [PATCH 0/6] test_hash.c: refactor into KUnit
+Date:   Wed, 25 Aug 2021 22:26:20 -0300
+Message-Id: <20210826012626.1163705-1-isabellabdoamaral@usp.br>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210825222557.1499104-5-bjorn.andersson@linaro.org>
-References: <20210825222557.1499104-1-bjorn.andersson@linaro.org> <20210825222557.1499104-5-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 26 Aug 2021 01:21:51 +0000
-Message-ID: <CAE-0n53EySs6UbKrcE1x1n0S22CtzneRm4fx328UzMDy5eHADA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] drm/msm/dp: Store each subblock in the io region
-To:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rob Clark <robdclark@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Sean Paul <sean@poorly.run>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-08-25 15:25:56)
-> Not all platforms has DP_P0 at offset 0x1000 from the beginning of the
-> DP block. So split the dss_io_data memory region into a set of
-> sub-regions, to make it possible in the next patch to specify each of
-> the sub-regions individually.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+We refactored the lib/test_hash.c file into KUnit as part of the student
+group LKCAMP [1] introductory hackathon for kernel development.
 
-One nit below:
+This test was pointed to our group by Daniel Latypov [2], so its full
+conversion into a pure KUnit test was our goal in this patch series, but
+we ran into many problems relating to it not being split as unit tests,
+which complicated matters a bit, as the reasoning behind the original
+tests is quite cryptic for those unfamiliar with hash implementations.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Some interesting developments we'd like to highlight are:
 
+- In patch 1/6 we noticed that there was an unused define directive that
+  could be removed.
+- In patch 5/6 we noticed how stringhash and hash tests are all under
+  the lib/test_hash.c file, which might cause some confusion, and we
+  also broke those kernel config entries up.
 
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.h b/drivers/gpu/drm/msm/dp/dp_parser.h
-> index dc62e70b1640..a95b05dbb11c 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.h
-> @@ -25,9 +25,16 @@ enum dp_pm_type {
->         DP_MAX_PM
->  };
->
-> -struct dss_io_data {
-> -       size_t len;
-> +struct dss_io_region {
->         void __iomem *base;
-> +       size_t len;
+Overall KUnit developments have been made in the other patches in this
+series:
 
-It flip flops here. Would be nice to the diff if len was where it really
-wanted to be.
+In patches 2/6 through 4/6 and 6/6 we refactored the lib/test_hash.c
+file so as to make it more compatible with the KUnit style, whilst
+preserving the original idea of the maintainer who designed it (i.e.
+George Spelvin), which might be undesirable for unit tests, but we
+assume it is enough for a first patch.
 
-> +};
-> +
-> +struct dss_io_data {
-> +       struct dss_io_region ahb;
-> +       struct dss_io_region aux;
-> +       struct dss_io_region link;
-> +       struct dss_io_region p0;
->  };
+This is our first patch series so we hope our contributions are
+interesting and also hope to get some useful criticism from the
+community :)
+
+[1] - https://lkcamp.dev/
+[2] - https://lore.kernel.org/linux-kselftest/CAGS_qxojszgM19u=3HLwFgKX5bm5KhywvsSunuBAt5RtR+GyxQ@mail.gmail.com/
+
+Isabella Basso (6):
+  hash.h: remove unused define directive
+  test_hash.c: move common definitions to top of file
+  test_hash.c: split test_int_hash into arch-specific functions
+  test_hash.c: split test_hash_init
+  lib/Kconfig.debug: properly split hash test kernel entries
+  test_hash.c: refactor into kunit
+
+ include/linux/hash.h       |   5 +-
+ lib/Kconfig.debug          |  28 ++++-
+ lib/Makefile               |   3 +-
+ lib/test_hash.c            | 249 ++++++++++++++++---------------------
+ tools/include/linux/hash.h |   5 +-
+ 5 files changed, 136 insertions(+), 154 deletions(-)
+
+--
+2.33.0
+
