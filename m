@@ -2,64 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB6B3F837E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4473F8378
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240399AbhHZIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:06:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232223AbhHZIGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:06:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40468610A7;
-        Thu, 26 Aug 2021 08:06:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629965161;
-        bh=DpKd9QQbUDt650wor/8qnzJYHCsfKIDS1j7TLDRKy2k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FSsX2fGL/O2AY9VzVl5Zl6T8KI+ejB8v+TxGMnEzyz7VK7PrHQCGQY1scsD0RUiD5
-         QID1tlL2nYF9yzLSBcaedE745j3AvhOGrcbQ+urUceC5/ySLeqSQ8W11gi6e8VWOyx
-         THnS3SWJCtC2CQ5Q9ouHqmXcHs8uHCFxaLYh1Zbc=
-Date:   Thu, 26 Aug 2021 09:55:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] net: dsa: rtl8366rb: Quick fix to work with
- fw_devlink=on
-Message-ID: <YSdJB8CZ83dYBtTT@kroah.com>
-References: <20210826074526.825517-1-saravanak@google.com>
- <20210826074526.825517-3-saravanak@google.com>
+        id S240334AbhHZIDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:03:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55514 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232223AbhHZIDR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 04:03:17 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17Q801I6007564;
+        Thu, 26 Aug 2021 04:02:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mK1A+5LyByOOSUnEPIB7WaXfY3C+FkmHhy98NdHPdP0=;
+ b=Z+qi1zFjVCoG45z3DOnFYu4Nd1x13w6EN3QNHOt0/ffazUjF6MkPc3bChx8YBHi+yNqm
+ ArpB9Oe4JfomLBJRlovG9zX+y0/sKLkJuJKM7FdoZzaHwRJpicJ/fM14/QbpK+fuGpFV
+ sGbH8I7bLKi0v8vo+riTB6uGJ3gTnpMV8JPeUdd3KeH6l8PJam5JWr982vWQ30zmMSwv
+ nD/F6YQSggfnQ6wOkNMVlsUOa7V6/u3GcL3hWvi4Kpcnr3eJbLq6g4EHlezKpsUFjEia
+ JWEqFTZo8A2PQrl8LEAMOH98dBrWfGWpRLjQ2i9S3NIWV4AS/lLdhVpmw6XEVOh4UUE1 wQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ap6mn0sdm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Aug 2021 04:02:20 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17Q7nPil154346;
+        Thu, 26 Aug 2021 04:02:20 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ap6mn0scj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Aug 2021 04:02:20 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17Q7ugMS002987;
+        Thu, 26 Aug 2021 08:02:19 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04wdc.us.ibm.com with ESMTP id 3ajs4e5p9c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Aug 2021 08:02:19 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17Q82IBD23462372
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Aug 2021 08:02:18 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 76DCD2807D;
+        Thu, 26 Aug 2021 08:02:18 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D31222805C;
+        Thu, 26 Aug 2021 08:02:14 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.43.48.53])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 26 Aug 2021 08:02:14 +0000 (GMT)
+Subject: Re: [PATCH] perf bpf: Fix memory leak during synthesis.
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com
+References: <20210826001635.285752-1-irogers@google.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <ad17ba1f-34d8-fa5e-72fc-e05107fe2822@linux.ibm.com>
+Date:   Thu, 26 Aug 2021 13:32:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826074526.825517-3-saravanak@google.com>
+In-Reply-To: <20210826001635.285752-1-irogers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: RYv9w9DWE9rJpYhgNO7pnwkL8gQBvQLP
+X-Proofpoint-GUID: hvpMsI4_tEOvcdo4kTylG4BElxXTqzlC
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-25_09:2021-08-25,2021-08-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 mlxscore=0 clxscore=1015 spamscore=0
+ impostorscore=0 suspectscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108260044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 12:45:25AM -0700, Saravana Kannan wrote:
-> This is just a quick fix to make this driver work with fw_devlink=on.
-> The proper fix might need a significant amount of rework of the driver
-> of the framework to use a component device model.
+
+
+On 8/26/21 5:46 AM, Ian Rogers wrote:
+> BTF needs to be freed with btf_free.
 > 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  drivers/net/dsa/realtek-smi-core.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  tools/perf/util/bpf-event.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+> index cdecda1ddd36..d193104db7f7 100644
+> --- a/tools/perf/util/bpf-event.c
+> +++ b/tools/perf/util/bpf-event.c
+> @@ -296,7 +296,7 @@ static int perf_event__synthesize_one_bpf_prog(struct perf_session *session,
+>  
+>  out:
+>  	free(info_linear);
+> -	free(btf);
+> +	btf__free(btf);
 
-"quick" fixes are nice, but who is going to do the real work here to fix
-this properly if this series is accepted?
+Hi Ian,
+   Patch looks good to me. I can see in one more place we are using free(btf) in the
+same file. Can you correct that as well.
 
-thanks,
-
-greg k-h
+Thanks,
+Kajol Jain
+   
+>  	return err ? -1 : 0;
+>  }
+>  
+> 
