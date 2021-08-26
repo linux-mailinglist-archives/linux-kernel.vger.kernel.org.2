@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2F73F89DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097F73F89E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242737AbhHZOOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234875AbhHZOOS (ORCPT
+        id S242805AbhHZOQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:16:01 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39980 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhHZOQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:14:18 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4E2C061757;
-        Thu, 26 Aug 2021 07:13:31 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id i6so5356676wrv.2;
-        Thu, 26 Aug 2021 07:13:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=caYyU5A2AvEDiDoSCaNuh/yyConc6WLj0h0u8wdjUAY=;
-        b=sfdfnRDFmn99FvOvSeIqiZu3TIpbOjIpjTkWDSMeJtlSprqfChCgqmNX+yuucnUgV9
-         i6zK/gAr7uA4GITCV3DLh9/WVEtp6wrDCq6oQG+jyckvjT3+ADGUV0qEW6rSZr2LH7ph
-         FGlaDC5Org74CkvgU6zGV0GrKV5pU0kKKE4Nk35WC/1I1vkXvJa+KHP/mkCE5tdnjk8p
-         nWogC+riLx3d2o+ePUibWB3xTtU3gnmw5SmwcoSx6tKsS8kovnIp9gIwqtKUDxJvyBn6
-         eIRGhiqWGZW3pfFeGyBnFHX+oGbYmorV+PEvPfhsTHJMSpKVOntuKb41J5jkxTBfA42B
-         jktw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=caYyU5A2AvEDiDoSCaNuh/yyConc6WLj0h0u8wdjUAY=;
-        b=Xg48BEWCi2txNa1W9ZeF1jUI+xD5Gv7Is60gM87vunzpEAaVJl0GL/HnSA5FdfK4Of
-         ECAL2Ze9Q2+rRQbEfHNh/D1bxp3+jq3Mg8uHJ79g7AQj/s4B9PO+yquTICSym5cYD4Yd
-         37UgAOROR37WzcqDFXsjhtBnz7JGWAE9M+JsJDDCYNaF8W851FBY5SC0mDaMSo7lvp4H
-         7c5Cx1TKbdYnDtBVGHOXFuPE0baSELlFiCVKO2FPccXj7AeKilfsiWYidHmOtiS6Lr0I
-         7LzzlbpCpsA1vvteFK+7MFHWG5ppj3ajfwDMjUoLN/UM8gUQlQ3/WE6HHnwzfUrwLbLy
-         twFA==
-X-Gm-Message-State: AOAM530UcKfQtTScTTCbPsY6IaEvQzuQJz4Kjy8CCKQnSR1+rGFSS/u4
-        KZ37v1xu2Osv/rYjoJ9rYgU=
-X-Google-Smtp-Source: ABdhPJy9JM6BAhgGm12/qstapJvz/0SjmJEusJf+9bezqcUxqhO2JhGEOaReMpCaxTpD+2laTY1RsQ==
-X-Received: by 2002:adf:9084:: with SMTP id i4mr4333320wri.23.1629987209616;
-        Thu, 26 Aug 2021 07:13:29 -0700 (PDT)
-Received: from skbuf ([82.78.148.104])
-        by smtp.gmail.com with ESMTPSA id b24sm4369821wmj.43.2021.08.26.07.13.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 07:13:28 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 17:13:26 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 2/2] net: dsa: tag_mtk: handle VLAN tag insertion
- on TX
-Message-ID: <20210826141326.xa52776uh3r3jpg4@skbuf>
-References: <20210825083832.2425886-1-dqfext@gmail.com>
- <20210825083832.2425886-3-dqfext@gmail.com>
- <20210826000349.q3s5gjuworxtbcna@skbuf>
- <20210826052956.3101243-1-dqfext@gmail.com>
+        Thu, 26 Aug 2021 10:16:00 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C701B22311;
+        Thu, 26 Aug 2021 14:15:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629987311; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YK6hm9tLw/593E7arpJG5Cuje5/kJDaClSGQye4BMq0=;
+        b=axKtHoOTWlqihCIBRmbzGqm3o+VJALKGxrUEMLKbMEBSMTO55ouryeDauQanVIuJyJi7C1
+        w3ElGK9fmjmrGn4I842luAOMdD28IUDVgNal3rP2b9RVVRu09yDGoqw0QqwBexTPwbsliu
+        d7BtlagVchv8XGnwZ2Cwt8tgzMD3Gtg=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 2409BA3B8B;
+        Thu, 26 Aug 2021 14:15:11 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 16:15:09 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrea Merello <andrea.merello@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 17/17] vsprintf: rework bitmap_list_string
+Message-ID: <YSeh7SrwoMhWb8CO@alley>
+References: <20210814211713.180533-1-yury.norov@gmail.com>
+ <20210814211713.180533-18-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210826052956.3101243-1-dqfext@gmail.com>
+In-Reply-To: <20210814211713.180533-18-yury.norov@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 01:29:56PM +0800, DENG Qingfang wrote:
-> On Thu, Aug 26, 2021 at 03:03:49AM +0300, Vladimir Oltean wrote:
-> > 
-> > You cannot just remove the old code. Only things like 8021q uppers will
-> > send packets with the VLAN in the hwaccel area.
-> > 
-> > If you have an application that puts the VLAN in the actual AF_PACKET
-> > payload, like:
-> > 
-> > https://github.com/vladimiroltean/tsn-scripts/blob/master/isochron/send.c
-> > 
-> > then you need to handle the VLAN being in the skb payload.
+On Sat 2021-08-14 14:17:13, Yury Norov wrote:
+> bitmap_list_string() is very ineffective when printing bitmaps with long
+> ranges of set bits because it calls find_next_bit for each bit in the
+> bitmap.  We can do better by detecting ranges of set bits.
 > 
-> I've actually tested this (only apply patch 2 without .features) and it
-> still worked.
+> In my environment, before/after is 943008/31008 ns.
 > 
-> The comment says the VLAN tag need to be combined with the special tag in
-> order to perform VLAN table lookup,
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-It does say this.
+I like the patch. The new code is much easier to follow.
+Feel free to use:
 
-> so we can set its destination port vector to all zeroes and the switch
-> will forward it like a data frame (TX forward offload),
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-And it does not say this. So this is supported after all with mt7530?
-Are you looking to add support for that?
-
-> but as we allow multiple bridges which are either VLAN-unaware or
-> VLAN-aware with the same VID, there is no way to determine the
-> destination bridge unless we maintain some VLAN translation mapping.
-
-What does "VLAN translation mapping" mean, practically?
-Other drivers which cannot remap VIDs to internal VLANs just restrict a
-single VLAN-aware bridge, and potentially multiple VLAN-unaware ones.
+Best Regards,
+Petr
