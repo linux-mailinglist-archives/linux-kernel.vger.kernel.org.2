@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEF73F89D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A333F89F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242787AbhHZOKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:10:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:47624 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhHZOKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:10:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56FBA31B;
-        Thu, 26 Aug 2021 07:09:52 -0700 (PDT)
-Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36B033F66F;
-        Thu, 26 Aug 2021 07:09:52 -0700 (PDT)
-Received: by e110455-lin.cambridge.arm.com (Postfix, from userid 1000)
-        id DDBDB682B70; Thu, 26 Aug 2021 15:09:50 +0100 (BST)
-Date:   Thu, 26 Aug 2021 15:09:50 +0100
-From:   Liviu Dudau <liviu.dudau@arm.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm64: dts: arm: align watchdog and mmc node names
- with dtschema
-Message-ID: <YSegrnil/5rn/EVH@e110455-lin.cambridge.arm.com>
-References: <20210820081733.83976-1-krzysztof.kozlowski@canonical.com>
+        id S242874AbhHZORc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242867AbhHZORa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 10:17:30 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 58009C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 07:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=1D5mqM7j5AlUyq4PwMTMn72pNxWZmjR/G8aqJKeKLmo=; b=e+EhbQtUU8vG/
+        ItzK+tMjN9L1qz4EdRqkvE5wGoKA9fOFsY5l0TBSu6+rFItcARb+uuYYSLqJMWlH
+        kaIaNs77nAEZ2o1dbF4NQokCDfCdm3KOkqP3q339unFwiTg5v3tPPvXHfdMYlv0K
+        iPoTxdfnoonV6mF/QTF4FrwscYIJF0=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBH+PwnoidhaKPGAA--.59140S2;
+        Thu, 26 Aug 2021 22:16:07 +0800 (CST)
+Date:   Thu, 26 Aug 2021 22:09:52 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] riscv: improve __ex_table section handling
+Message-ID: <20210826220952.77a68a9e@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210820081733.83976-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygBH+PwnoidhaKPGAA--.59140S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5G7k0a2IF6w1UM7kC6x804xWl14x267AK
+        xVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGw
+        A2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj
+        6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gc
+        CE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxI
+        r21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87
+        Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+        1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2YiiDUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:17:31AM +0200, Krzysztof Kozlowski wrote:
-> Align the watchdog and mmc device node names with the schema to fix
-> warnings like:
-> 
->   mmci@50000: $nodename:0: 'mmci@50000' does not match '^mmc(@.*)?$'
->   wdt@f0000: $nodename:0: 'wdt@f0000' does not match '^watchdog(@.*|-[0-9a-f])?$'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Jisheng Zhang <jszhang@kernel.org>
 
-For the whole series: Acked-by: Liviu Dudau <liviu.dudau@arm.com>
+Enable BUILDTIME_TABLE_SORT to sort the exception table at build time
+then move exception table to RO_DATA segment.
 
-Many thanks,
-Liviu
+Since v1:
+  - Only enable BUILDTIME_TABLE_SORT for MMU. Thank Palmer for catching
+    tinyconfig case.
 
-> ---
->  arch/arm64/boot/dts/arm/juno-motherboard.dtsi    | 4 ++--
->  arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/arm/juno-motherboard.dtsi b/arch/arm64/boot/dts/arm/juno-motherboard.dtsi
-> index 40d95c58b55e..f45c912b2806 100644
-> --- a/arch/arm64/boot/dts/arm/juno-motherboard.dtsi
-> +++ b/arch/arm64/boot/dts/arm/juno-motherboard.dtsi
-> @@ -218,7 +218,7 @@ led7 {
->  					};
->  				};
->  
-> -				mmci@50000 {
-> +				mmc@50000 {
->  					compatible = "arm,pl180", "arm,primecell";
->  					reg = <0x050000 0x1000>;
->  					interrupts = <5>;
-> @@ -246,7 +246,7 @@ kmi@70000 {
->  					clock-names = "KMIREFCLK", "apb_pclk";
->  				};
->  
-> -				wdt@f0000 {
-> +				watchdog@f0000 {
->  					compatible = "arm,sp805", "arm,primecell";
->  					reg = <0x0f0000 0x10000>;
->  					interrupts = <7>;
-> diff --git a/arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi b/arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi
-> index 4c4a381d2c75..7260bcf4b2ab 100644
-> --- a/arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi
-> +++ b/arch/arm64/boot/dts/arm/rtsm_ve-motherboard.dtsi
-> @@ -130,7 +130,7 @@ aaci@40000 {
->  					clock-names = "apb_pclk";
->  				};
->  
-> -				mmci@50000 {
-> +				mmc@50000 {
->  					compatible = "arm,pl180", "arm,primecell";
->  					reg = <0x050000 0x1000>;
->  					interrupts = <9>, <10>;
-> @@ -190,7 +190,7 @@ v2m_serial3: serial@c0000 {
->  					clock-names = "uartclk", "apb_pclk";
->  				};
->  
-> -				wdt@f0000 {
-> +				watchdog@f0000 {
->  					compatible = "arm,sp805", "arm,primecell";
->  					reg = <0x0f0000 0x1000>;
->  					interrupts = <0>;
-> -- 
-> 2.30.2
-> 
+Jisheng Zhang (2):
+  riscv: Enable BUILDTIME_TABLE_SORT
+  riscv: Move EXCEPTION_TABLE to RO_DATA segment
+
+ arch/riscv/Kconfig                  | 1 +
+ arch/riscv/kernel/vmlinux-xip.lds.S | 1 -
+ arch/riscv/kernel/vmlinux.lds.S     | 4 ++--
+ scripts/sorttable.c                 | 1 +
+ 4 files changed, 4 insertions(+), 3 deletions(-)
 
 -- 
-====================
-| I would like to |
-| fix the world,  |
-| but they're not |
-| giving me the   |
- \ source code!  /
-  ---------------
-    ¯\_(ツ)_/¯
+2.32.0
+
+
