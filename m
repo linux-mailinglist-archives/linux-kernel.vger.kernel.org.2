@@ -2,180 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE243F9041
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA323F904A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243691AbhHZVpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 17:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243668AbhHZVpi (ORCPT
+        id S243620AbhHZVsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 17:48:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32572 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243612AbhHZVsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 17:45:38 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72840C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 14:44:50 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id bq28so9869811lfb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 14:44:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5u2sLPCG764dlCtKjjjtNZELRgckudXyv4A0JZ99TCE=;
-        b=SfSEYa4ceYcMZE2vD2nszV8PMEFaES6s3jdiDsBWEOpmGo+FrCEN0M8B+rDxByMSjY
-         u3wY9gpsHVakFG6pfrUv0HgbObKjGFR5fL/8BR9sxZMq4+C6b75Zc2ZOLqhd1diABJJ8
-         XRB8xZLCFloO4wzEddwaY5cifBFXRY3B8KZfvGRZQHsrUtyzR+FA7xFwBY+69KQLiYUR
-         Izx1vG6OcsiTzeWNfvbY972w3tYk9FFUfkj/6E8naor0bI9agoGlb51jE6Z9GieTORDs
-         QpzAXB/vPUMSCGcTHYGqK5uSEDnK+O0s1A33Che0Ioxkk0do8Kc8BMnJtGSwmLUYi4by
-         9hEg==
+        Thu, 26 Aug 2021 17:48:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630014433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K0s8bk6QfHD1VaGSzfIqDqYg0K6iJ7Ku0EqSDBa9+yo=;
+        b=apJmwZhW/m/hDBuscxMKnlE+cXDvfUXnlcaVeFhttxxHXAkUFT1esOw/UwK1O6RjUm4zq/
+        WZ0TWlp1Iy3MxG8uziMz70u8kNbQBYLk7NmDel8C4CM/42R0RE4T4yarCnhtNBbuVO+zeQ
+        51KrJEBV2ufA5JZAU+XjaR5QDxniq30=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-136-JeQIYIezNYKuKeWKDMIrjw-1; Thu, 26 Aug 2021 17:47:12 -0400
+X-MC-Unique: JeQIYIezNYKuKeWKDMIrjw-1
+Received: by mail-wr1-f70.google.com with SMTP id v6-20020adfe4c6000000b001574f9d8336so1313571wrm.15
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 14:47:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5u2sLPCG764dlCtKjjjtNZELRgckudXyv4A0JZ99TCE=;
-        b=Asa5kCz7988xdofbX2ajF2Apc8XrZAQG89RvU1yimsxALl3rfBfpS0ikzPyjlDG2Gn
-         AwjvznrxT5HaFkeX4VkjFRi96TWrVFIs3zcP6hZa3GUYF+61XXu3RxHGiOqUyat15M+f
-         um/9ZOEGWq9zOTzglFj92bbgpt20zJ2tQtvnOoZxSFzetTi6RsFl4hQ7UYFSWFlZRbw1
-         wjyeZox/NA70y4QvTym5XGe/O7z94nj+nc8QNd7SkwAUBcUt0qzf5xB/JacaA8cgWarM
-         vkzxCkREqBkMBF3+Y1Dub1qwNHyJbaNdq/lA2nNfp7qYq6sDCQQ60eSSZwovxbXOx447
-         FwIw==
-X-Gm-Message-State: AOAM533hi3p2S4OxSKjVLvAwgE6HaX78mpBGYmpyucXPBU4XyhigzpKr
-        VJRlKan/mGvHsOa8U+ehQCqafZhD0RsXaQ==
-X-Google-Smtp-Source: ABdhPJwwz38b8mBJebUOlQXwkwCI9+afKCegro4gLYqgnO51PBRpZEotn+1jI+/9sAUNWuU8yycVQw==
-X-Received: by 2002:a05:6512:21a:: with SMTP id a26mr4140030lfo.223.1630014288041;
-        Thu, 26 Aug 2021 14:44:48 -0700 (PDT)
-Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id 23sm417724lfp.47.2021.08.26.14.44.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 14:44:47 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        linux-kernel@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH] fs/ntfs3: Remove GPL boilerplates from decompress lib files
-Date:   Fri, 27 Aug 2021 00:44:41 +0300
-Message-Id: <20210826214441.1614837-1-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=K0s8bk6QfHD1VaGSzfIqDqYg0K6iJ7Ku0EqSDBa9+yo=;
+        b=DAmXpopfDj42EJd9Nlap2KgZ4Cy7CiLQ3zEWB8CAsKTzbu6IA7Qn4D4oF8/DWk9yeU
+         DRp/P5eOFUHlmW5G12BEZp+Afo3NedpFAmwB0Xmm4wAvPjRaL4gud52B5b8WbzARGQd2
+         HhzPORKPBU1EamFEyRO6kmkdfO65IQVZyAtgJWd+7wEEQhr2hsZ+MoNW2dTHBceDkRWX
+         bqnBtcfbdf7B3DvT0/h5jlfcMzDeu81kYU3A854mPK7OeBTiHtfEii4ijWfLwZiOkyI7
+         53EDWDxTPdg0/It0wK4BIP+Ri4fLyfgd24WCbDq+YkAzSLTqMeXCDWYvUi8zdPlXXV1u
+         n8iQ==
+X-Gm-Message-State: AOAM533eXUu0YnLQ3v3jXB2KnCxW3sjKHTvqTpiS4JvyzAPXt6EDn5U9
+        ySfasYkk9NrqLgcwlEAEb9r7i4j/BJEBeH5vtULOJK6dKUEnaKi9Ze9QQr+UrClYqZxktb7ouQE
+        rNLV68U04+iVdkU/Pb4YAv122
+X-Received: by 2002:a5d:690a:: with SMTP id t10mr6609903wru.304.1630014430901;
+        Thu, 26 Aug 2021 14:47:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZSDS7ykz6c0cWQQRRV6c/ocWUVA2MbQuhyj4tL0c/EqpuZXrSGG6H7whtDXAvdDs+XQeksw==
+X-Received: by 2002:a5d:690a:: with SMTP id t10mr6609835wru.304.1630014430662;
+        Thu, 26 Aug 2021 14:47:10 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23dec.dip0.t-ipconnect.de. [79.242.61.236])
+        by smtp.gmail.com with ESMTPSA id q10sm3612286wmq.12.2021.08.26.14.47.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 14:47:10 -0700 (PDT)
+Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+To:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        David Laight <David.Laight@aculab.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+ <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+ <87lf56bllc.fsf@disp2133>
+ <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+ <87eeay8pqx.fsf@disp2133> <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+ <87h7ft2j68.fsf@disp2133>
+ <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+ <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+ <CAHk-=wiJ0u33h2CXAO4b271Diik=z4jRt64=Gt6YV2jV4ef27g@mail.gmail.com>
+ <b60e9bd1-7232-472d-9c9c-1d6593e9e85e@www.fastmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <0ed69079-9e13-a0f4-776c-1f24faa9daec@redhat.com>
+Date:   Thu, 26 Aug 2021 23:47:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <b60e9bd1-7232-472d-9c9c-1d6593e9e85e@www.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Files already have SDPX identifier so no reason to keep boilerplates in
-these files anymore.
+On 26.08.21 19:48, Andy Lutomirski wrote:
+> On Fri, Aug 13, 2021, at 5:54 PM, Linus Torvalds wrote:
+>> On Fri, Aug 13, 2021 at 2:49 PM Andy Lutomirski <luto@kernel.org> wrote:
+>>>
+>>> I’ll bite.  How about we attack this in the opposite direction: remove the deny write mechanism entirely.
+>>
+>> I think that would be ok, except I can see somebody relying on it.
+>>
+>> It's broken, it's stupid, but we've done that ETXTBUSY for a _loong_ time.
+> 
+> Someone off-list just pointed something out to me, and I think we should push harder to remove ETXTBSY.  Specifically, we've all been focused on open() failing with ETXTBSY, and it's easy to make fun of anyone opening a running program for write when they should be unlinking and replacing it.
+> 
+> Alas, Linux's implementation of deny_write_access() is correct^Wabsurd, and deny_write_access() *also* returns ETXTBSY if the file is open for write.  So, in a multithreaded program, one thread does:
+> 
+> fd = open("some exefile", O_RDWR | O_CREAT | O_CLOEXEC);
+> write(fd, some stuff);
+> 
+> <--- problem is here
+> 
+> close(fd);
+> execve("some exefile");
+> 
+> Another thread does:
+> 
+> fork();
+> execve("something else");
+> 
+> In between fork and execve, there's another copy of the open file description, and i_writecount is held, and the execve() fails.  Whoops.  See, for example:
+> 
+> https://github.com/golang/go/issues/22315
+> 
+> I propose we get rid of deny_write_access() completely to solve this.
+> 
+> Getting rid of i_writecount itself seems a bit harder, since a handful of filesystems use it for clever reasons.
+> 
+> (OFD locks seem like they might have the same problem.  Maybe we should have a clone() flag to unshare the file table and close close-on-exec things?)
+> 
 
-CC: Eric Biggers <ebiggers@kernel.org>
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
----
-This is probably ok to you Eric just wanted to make sure and be polite.
----
- fs/ntfs3/lib/decompress_common.c | 13 -------------
- fs/ntfs3/lib/decompress_common.h | 14 --------------
- fs/ntfs3/lib/lzx_decompress.c    | 13 -------------
- fs/ntfs3/lib/xpress_decompress.c | 13 -------------
- 4 files changed, 53 deletions(-)
+It's not like this issue is new (^2017) or relevant in practice. So no 
+need to hurry IMHO. One step at a time: it might make perfect sense to 
+remove ETXTBSY, but we have to be careful to not break other user space 
+that actually cares about the current behavior in practice.
 
-diff --git a/fs/ntfs3/lib/decompress_common.c b/fs/ntfs3/lib/decompress_common.c
-index 83c9e93aea77..09e9e6544946 100644
---- a/fs/ntfs3/lib/decompress_common.c
-+++ b/fs/ntfs3/lib/decompress_common.c
-@@ -3,19 +3,6 @@
-  * decompress_common.c - Code shared by the XPRESS and LZX decompressors
-  *
-  * Copyright (C) 2015 Eric Biggers
-- *
-- * This program is free software: you can redistribute it and/or modify it under
-- * the terms of the GNU General Public License as published by the Free Software
-- * Foundation, either version 2 of the License, or (at your option) any later
-- * version.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-- * details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program.  If not, see <http://www.gnu.org/licenses/>.
-  */
- 
- #include "decompress_common.h"
-diff --git a/fs/ntfs3/lib/decompress_common.h b/fs/ntfs3/lib/decompress_common.h
-index 66297f398403..2d70ae42f1b5 100644
---- a/fs/ntfs3/lib/decompress_common.h
-+++ b/fs/ntfs3/lib/decompress_common.h
-@@ -1,22 +1,8 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
--
- /*
-  * decompress_common.h - Code shared by the XPRESS and LZX decompressors
-  *
-  * Copyright (C) 2015 Eric Biggers
-- *
-- * This program is free software: you can redistribute it and/or modify it under
-- * the terms of the GNU General Public License as published by the Free Software
-- * Foundation, either version 2 of the License, or (at your option) any later
-- * version.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-- * details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program.  If not, see <http://www.gnu.org/licenses/>.
-  */
- 
- #include <linux/string.h>
-diff --git a/fs/ntfs3/lib/lzx_decompress.c b/fs/ntfs3/lib/lzx_decompress.c
-index 77a381a693d1..6b16f07073c1 100644
---- a/fs/ntfs3/lib/lzx_decompress.c
-+++ b/fs/ntfs3/lib/lzx_decompress.c
-@@ -6,19 +6,6 @@
-  * this is the only size used in System Compression.
-  *
-  * Copyright (C) 2015 Eric Biggers
-- *
-- * This program is free software: you can redistribute it and/or modify it under
-- * the terms of the GNU General Public License as published by the Free Software
-- * Foundation, either version 2 of the License, or (at your option) any later
-- * version.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-- * details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program.  If not, see <http://www.gnu.org/licenses/>.
-  */
- 
- #include "decompress_common.h"
-diff --git a/fs/ntfs3/lib/xpress_decompress.c b/fs/ntfs3/lib/xpress_decompress.c
-index 3d98f36a981e..769c6d3dde67 100644
---- a/fs/ntfs3/lib/xpress_decompress.c
-+++ b/fs/ntfs3/lib/xpress_decompress.c
-@@ -5,19 +5,6 @@
-  * based on the code from wimlib.
-  *
-  * Copyright (C) 2015 Eric Biggers
-- *
-- * This program is free software: you can redistribute it and/or modify it under
-- * the terms of the GNU General Public License as published by the Free Software
-- * Foundation, either version 2 of the License, or (at your option) any later
-- * version.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-- * details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program.  If not, see <http://www.gnu.org/licenses/>.
-  */
- 
- #include "decompress_common.h"
 -- 
-2.30.2
+Thanks,
+
+David / dhildenb
 
