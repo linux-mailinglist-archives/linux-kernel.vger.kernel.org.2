@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8372E3F868D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794DC3F868F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242179AbhHZLcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:32:21 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35408
+        id S242215AbhHZLcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:32:25 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35446
         "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241905AbhHZLcT (ORCPT
+        by vger.kernel.org with ESMTP id S242190AbhHZLcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:32:19 -0400
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
+        Thu, 26 Aug 2021 07:32:23 -0400
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 03CAD4075F
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:31:31 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B9B994075F
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:31:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629977491;
-        bh=tm+TApaMbbdtK7AxcQH2rPkd4eahRVR0s8WdKGXUclE=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=d/2eOJjzg4czIPyqjGUT7nGCKiWiSH06IvkDmnBCIUEdE8a24vZJ4GN0ZZeu9AZSw
-         RG++YJrAu2rOnoWtjgZKGcLKTBHhXTfRI1YLmMGeB3TQlpOK+/b0r/wej9ww11M6/6
-         Okv9k1F61j8GXQtXUTtj2N09i+HEh2zdoTnwYwof0OlijNsmCEAQ3xIYnC+fMfrv9s
-         Sgc6p6liYk3IshtgChAsw4DKr7LbbEMAQ7s/bdoL2MCla9kT+vDHWEdPkx6EnhWfox
-         fN0JQDd4u9X2KOhKr1Gl03Wh1EwHJvYFXfD7sefuNF6wa9njI3mWPzRrNQUY7WpqJD
-         vBYOMM2WDiNXQ==
-Received: by mail-wm1-f71.google.com with SMTP id z186-20020a1c7ec30000b02902e6a27a9962so4208509wmc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:31:31 -0700 (PDT)
+        s=20210705; t=1629977495;
+        bh=/4+f3V6mfjl/IwRAcPyaEIpUuWCzLFO2MSov0Okxjyw=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=O+TjvHPnDMdCPFMFU1wYD0TjYem9XXCwidXEnhFymQJUhBp+NLekS1HDLfRzteOWt
+         OiClj4BiNSkWicftJtzYm+nUgvknKgEDYz2bIHT6pX6MmY8m5uLR4Swje/72I4OKj2
+         lI1tfkkBA6mNEDo/ZBK2e3eiKT4lAShsHnJSuIeTPcjUzihGQ5s32wgpWn5eKNcxir
+         erhscVnbo3MC4ELC4SkEuya0uv1Vx2eXmOR5QNuk+qQN9GzRMEy/u913fbqj6ufJ8U
+         imnYtQpWhher4D0vCuOFSRWBBc+oKhIVZWn9SKH0aopRcGhJIM9bgtGQt3v7dCE35b
+         +hOrGnmBDnneQ==
+Received: by mail-wr1-f72.google.com with SMTP id v6-20020adfe4c6000000b001574f9d8336so729515wrm.15
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:31:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tm+TApaMbbdtK7AxcQH2rPkd4eahRVR0s8WdKGXUclE=;
-        b=Du067zBM14BbYQqKXhLlKhemhNzGYyGQdxsxQUBB0IMcWqToQGdH06ysdWY/oAHN/J
-         tCoFGwhbiwF727yXpSnrw6UbNVe7xOgiVCCti0+nI8AWQGL3ZLvG0yfAAE9YFrO7up4/
-         a4D4VjwunqQ7b/AD82EHoA9uYqB/qN2BRznvKxPlDIw8bhoLZ5Eld5GUElmEZLdEUd6f
-         weFTKknhM3uRtTwIz2/wkfH8k4ds+3RnCkcGItVWVoTiK7J5KRPWf24sZTwpkgt/TLXv
-         iyCJH4zMLM7iYKIdbybFZi7Gpo1uq7uZNPdCuxJxw5Fl6iriGoCXcQeHTM2n+8Zk7Vsg
-         XuqQ==
-X-Gm-Message-State: AOAM531IZZLi1lxprMT1EzywyOivi1mrWMtNLsTZ5STRybtwXFSufBD0
-        SUza1TO+mSWc77VQLkG+ZtNNy/gXUUz5U26WJvcQeHsFR3RN69CZJIpr00Xo4f1CDofxDLLy09c
-        BwVw4oj5xsbbRWADKVBf10OYZAljuiNuG553+xq10ZQ==
-X-Received: by 2002:a05:600c:4e8a:: with SMTP id f10mr3235888wmq.84.1629977490625;
-        Thu, 26 Aug 2021 04:31:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/N8P+75+c7MjRhoRUtRCX5ioDyRxl1zO7CiLJw+jvClp2QzrMVI6Y/kvfatqV59zhUDZjow==
-X-Received: by 2002:a05:600c:4e8a:: with SMTP id f10mr3235874wmq.84.1629977490455;
-        Thu, 26 Aug 2021 04:31:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/4+f3V6mfjl/IwRAcPyaEIpUuWCzLFO2MSov0Okxjyw=;
+        b=hGpNcqFzPhyG/1wTwBy94ES8D2lmGWm9Edgc7doJqsO028UGH0IHwuvpjLNMBA3Rx4
+         m4I+6NaJeki9mH83eASD0ooqKar/Ur741bLm9v25ukwmk6V0fbEBQMV2VOpnqs0786Jh
+         /SZuBg8vakI6PoDLUPGk72aIjd/lG/zoIviuodZvMnn6onK/FwoV2DpFYTqXe8/7aOT9
+         XTBfVFVN5OhkvdwoWJr4LnLMsGtx39mxlpmJ7q4MerhpaUQ6XaBPwydFFL/Bzrdvk1Wy
+         XZwzxTvlA2IF4NLbvBSurf9puCdRccwQpcCdpmxR6JwBiq85fGB83cDYc/v2FEuPs+I6
+         DuTw==
+X-Gm-Message-State: AOAM532ajNrF4AtMlYDOMMtZWQSFYaBNLhXS0M02QnprP7XMlkUWlR2d
+        fFe+J/xsQi431fUzO9jPlU65E3R9dk2MRpngrzQwAPFjGrPuyMMx8Tifxv26+8AnI47Gpf/6ED/
+        zb/c89vaLLHR1RdN8k42M7gLyam+nQVGYA3f12PdF3A==
+X-Received: by 2002:a05:6000:10:: with SMTP id h16mr3378312wrx.24.1629977492394;
+        Thu, 26 Aug 2021 04:31:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxRIGILxCoA8dBlrp1p/psmbDQi+gHYZunmUGz5IxhIucSwKL/01jAubKNSedu2x99rwlJGJg==
+X-Received: by 2002:a05:6000:10:: with SMTP id h16mr3378293wrx.24.1629977492257;
+        Thu, 26 Aug 2021 04:31:32 -0700 (PDT)
 Received: from localhost.localdomain ([79.98.113.63])
-        by smtp.gmail.com with ESMTPSA id k25sm3082494wrd.42.2021.08.26.04.31.29
+        by smtp.gmail.com with ESMTPSA id k25sm3082494wrd.42.2021.08.26.04.31.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 04:31:29 -0700 (PDT)
+        Thu, 26 Aug 2021 04:31:31 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -60,154 +61,39 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Borislav Petkov <bp@alien8.de>, York Sun <york.sun@nxp.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/3] dt-bindings: memory: fsl: convert DDR controller to dtschema
-Date:   Thu, 26 Aug 2021 13:30:47 +0200
-Message-Id: <20210826113049.92962-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/3] ARM: dts: ls1021a: drop unused big-endian property from DDR controller
+Date:   Thu, 26 Aug 2021 13:30:48 +0200
+Message-Id: <20210826113049.92962-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210826113049.92962-1-krzysztof.kozlowski@canonical.com>
+References: <20210826113049.92962-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Freescale/NXP DDR memory controller bindings to DT schema format
-using json-schema.
-
-Previous bindings were not listing all compatibles, so scan through
-devicetree sources and drivers to get these.
+The big-endian is default setting for DDR controller as expressed in
+bindings and such property was never documented for Freescale DDR memory
+controller.  The driver also does not parse this property at all.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../bindings/memory-controllers/fsl/ddr.txt   | 29 -------
- .../memory-controllers/fsl/fsl,ddr.yaml       | 83 +++++++++++++++++++
- 2 files changed, 83 insertions(+), 29 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ddr.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,ddr.yaml
+ arch/arm/boot/dts/ls1021a.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/ddr.txt b/Documentation/devicetree/bindings/memory-controllers/fsl/ddr.txt
-deleted file mode 100644
-index dde6d837083a..000000000000
---- a/Documentation/devicetree/bindings/memory-controllers/fsl/ddr.txt
-+++ /dev/null
-@@ -1,29 +0,0 @@
--Freescale DDR memory controller
--
--Properties:
--
--- compatible	: Should include "fsl,chip-memory-controller" where
--		  chip is the processor (bsc9132, mpc8572 etc.), or
--		  "fsl,qoriq-memory-controller".
--- reg		: Address and size of DDR controller registers
--- interrupts	: Error interrupt of DDR controller
--- little-endian	: Specifies little-endian access to registers
--		  If omitted, big-endian will be used.
--
--Example 1:
--
--	memory-controller@2000 {
--		compatible = "fsl,bsc9132-memory-controller";
--		reg = <0x2000 0x1000>;
--		interrupts = <16 2 1 8>;
--	};
--
--
--Example 2:
--
--	ddr1: memory-controller@8000 {
--		compatible = "fsl,qoriq-memory-controller-v4.7",
--				"fsl,qoriq-memory-controller";
--		reg = <0x8000 0x1000>;
--		interrupts = <16 2 1 23>;
--	};
-diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,ddr.yaml b/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,ddr.yaml
-new file mode 100644
-index 000000000000..af5147f9da72
---- /dev/null
-+++ b/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,ddr.yaml
-@@ -0,0 +1,83 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/memory-controllers/fsl/fsl,ddr.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale DDR memory controller
-+
-+maintainers:
-+  - Borislav Petkov <bp@alien8.de>
-+  - York Sun <york.sun@nxp.com>
-+
-+properties:
-+  $nodename:
-+    pattern: "^memory-controller@[0-9a-f]+$"
-+
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - fsl,qoriq-memory-controller-v4.4
-+              - fsl,qoriq-memory-controller-v4.5
-+              - fsl,qoriq-memory-controller-v4.7
-+              - fsl,qoriq-memory-controller-v5.0
-+          - const: fsl,qoriq-memory-controller
-+      - enum:
-+          - fsl,bsc9132-memory-controller
-+          - fsl,8540-memory-controller
-+          - fsl,8541-memory-controller
-+          - fsl,8544-memory-controller
-+          - fsl,8548-memory-controller
-+          - fsl,8555-memory-controller
-+          - fsl,8568-memory-controller
-+          - fsl,mpc8536-memory-controller
-+          - fsl,mpc8540-memory-controller
-+          - fsl,mpc8541-memory-controller
-+          - fsl,mpc8544-memory-controller
-+          - fsl,mpc8548-memory-controller
-+          - fsl,mpc8555-memory-controller
-+          - fsl,mpc8560-memory-controller
-+          - fsl,mpc8568-memory-controller
-+          - fsl,mpc8569-memory-controller
-+          - fsl,mpc8572-memory-controller
-+          - fsl,mpc8349-memory-controller
-+          - fsl,p1020-memory-controller
-+          - fsl,p1021-memory-controller
-+          - fsl,p2020-memory-controller
-+          - fsl,qoriq-memory-controller
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  little-endian:
-+    description:
-+      Specifies little-endian access to registers. If omitted, big-endian will
-+      be used.
-+    type: boolean
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - interrupts
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    memory-controller@2000 {
-+        compatible = "fsl,bsc9132-memory-controller";
-+        reg = <0x2000 0x1000>;
-+        interrupts = <16 2 1 8>;
-+    };
-+
-+  - |
-+    memory-controller@8000 {
-+        compatible = "fsl,qoriq-memory-controller-v4.7",
-+                     "fsl,qoriq-memory-controller";
-+        reg = <0x8000 0x1000>;
-+        interrupts = <16 2 1 23>;
-+    };
+diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
+index 4fce81422943..0f759bc81239 100644
+--- a/arch/arm/boot/dts/ls1021a.dtsi
++++ b/arch/arm/boot/dts/ls1021a.dtsi
+@@ -136,7 +136,6 @@ ddr: memory-controller@1080000 {
+ 			compatible = "fsl,qoriq-memory-controller";
+ 			reg = <0x0 0x1080000 0x0 0x1000>;
+ 			interrupts = <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
+-			big-endian;
+ 		};
+ 
+ 		gic: interrupt-controller@1400000 {
 -- 
 2.30.2
 
