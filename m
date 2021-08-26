@@ -2,218 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA673F7FE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071BD3F7FEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237521AbhHZB2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 21:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
+        id S235803AbhHZBc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 21:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235574AbhHZB2Q (ORCPT
+        with ESMTP id S235172AbhHZBc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 21:28:16 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503C6C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:27:30 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id m66-20020a257145000000b00598282d96ceso1454886ybc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:27:30 -0700 (PDT)
+        Wed, 25 Aug 2021 21:32:29 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCA7C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:31:42 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id q39so2086918oiw.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:31:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=ezec1I4H90P09h79RVbQ3uCzdElICKnF3wN8c7nmOZk=;
-        b=iBHkey8i/T0CNWc4iUCR1opeac0+E+IlLoWBD6/iEpE//xGmQ1qFkwdvCviPV2rHdL
-         COQIG7PvgdlQscHCRQ5JN8moZvmqQXU/r4zr6mVEuoxQjNnFq/zTGo8FfJT7KcwatwCQ
-         aURduY/7LX4tBU99EOBrMIFv2f5kT3IOG0/sIamzitqzqiwchipKtBqanU0fYfnqwVte
-         PHix5nXzZPBavz90hbMhnczSdgMX5ZXtPcRkqaJRmsteP+C4j0/ohFWP+p8fF2pRVPfW
-         v9QzFodzdqKBLkGM0Qy0H4aGMu3dpX1zumru3nQG8mxeyBr0IX8jPCX62SRKS7iJNSDQ
-         NiHQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=Gg/g05c4UHis1jo3/o9kO4T0lNRRr/zY+8C1O4NlkAo=;
+        b=MuAvpb4Hnu812Gso+cfKMYOMAOkd8SRKbrPszY2qFC4onLhQQTr75dfPoV07asaL5a
+         0e+FwDK2/mZcbp04o3bidjAUL1go52LPs1mnD/6mhCvZtm6Asydvi9ABfQsCV28JnR6y
+         XwoVXUou6hQRhdwox6XFGMUROkYMWNoddlor4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=ezec1I4H90P09h79RVbQ3uCzdElICKnF3wN8c7nmOZk=;
-        b=ExyL2+AbM0wWx8r1zQ0qOWzfQd3G0vSTE2+atK9I4NJZzskUXneBO044MDscTX6+TH
-         SlrVXPcNll3Gpnsk+pKD5ywxqsmYlac26qdqUK9pup/yErOiXE6wfEWDp7fb3w66Y1bA
-         FjYtYwwc6ZkXeEOWGDxW1vAQhY9yGGpGT2sKvzC4rDcv3LJCTMEf3VyaGmr259XEVR/X
-         mZQNPMqS6nGy0xoStHlDaj4nBpIdzgjyIh3naaChQJEDbcebDkq7TIt3/Xvx08GzfK21
-         LjTPtSmqYbMvkNwywjEI5mF5GdqDgT02moHrsi+dw4PwBOhD3gwDWMNU+ioLJGk1xE5K
-         VMHQ==
-X-Gm-Message-State: AOAM533oPT0CH7Uo0R7D9WGjhKVFp1h4xrBqYWtloZkH7FsvZIUaOV8C
-        Yfx9BSPHwoOIG540KGqPJJvqgBo=
-X-Google-Smtp-Source: ABdhPJwkCu2INY1MJ3PQnt4wvzh4D2iiOlPp6ROmwjTRlZsS94P9Xz6MXcuSNH6u2JvEbZhDhfxOT8w=
-X-Received: from pcc-desktop.svl.corp.google.com ([2620:15c:2ce:200:4c58:f8bf:74a9:6e55])
- (user=pcc job=sendgmr) by 2002:a25:1456:: with SMTP id 83mr2003884ybu.440.1629941249562;
- Wed, 25 Aug 2021 18:27:29 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 18:27:22 -0700
-Message-Id: <20210826012722.3210359-1-pcc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH] net: don't unconditionally copy_from_user a struct ifreq for
- socket ioctls
-From:   Peter Collingbourne <pcc@google.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Peter Collingbourne <pcc@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=Gg/g05c4UHis1jo3/o9kO4T0lNRRr/zY+8C1O4NlkAo=;
+        b=nRhNR5hpg+/g+OgRLV+kR7OAccx5tJEmBL3SOKjMGplJ53U9c4LkKhIshg344hxDF8
+         QCHIVaHVloTp9HNiiO7nKuTWszVdYC1CYRurxC/EUwTpr2/+UgE1a+SWc9nJsQNJ4LuJ
+         QS5zc6ApBI0LZjMqPTYCcwvV0gEyqehMtOecyNvwydvqjA7OgUMnYjHgi47U//5iQQO/
+         lEG3ZLCdSbs6PkeTcrYgCK8vBjCGlVR6/Ma+zEw+vzDlj7MY8hiSqMm+w2IjTJr92NYl
+         DwtRf9g0y4RkOT+RgzvMzhj28uoYZ8zs0rXLlAjQEA/xGLE29FyPltv7RUFNNnKVj7Rh
+         1Mmg==
+X-Gm-Message-State: AOAM5318UNcmIRojrSFOmG/tQd3UwfnGgkxcpTfx+fBuA6RNffURltdV
+        z1pz2BEas/Y2+6ZvXlVKC3FUBdgELDrN5FQ4ii24TA==
+X-Google-Smtp-Source: ABdhPJy9cJMuZDBFBqUS/RvN9rZv8oug1H4dhxG7roMDR0AVWQ/Fjz6Q1qp2I6zPdZBG5w7LOV8Lv+m7o9XgTaHVDeg=
+X-Received: by 2002:a54:468d:: with SMTP id k13mr9218145oic.125.1629941501894;
+ Wed, 25 Aug 2021 18:31:41 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 26 Aug 2021 01:31:41 +0000
+MIME-Version: 1.0
+In-Reply-To: <20210726231351.655302-1-bjorn.andersson@linaro.org>
+References: <20210726231351.655302-1-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 26 Aug 2021 01:31:41 +0000
+Message-ID: <CAE-0n50HohAKisSSsNijcxgZGHdBgt=sQbLE3b7C87wPkLJ0cw@mail.gmail.com>
+Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A common implementation of isatty(3) involves calling a ioctl passing
-a dummy struct argument and checking whether the syscall failed --
-bionic and glibc use TCGETS (passing a struct termios), and musl uses
-TIOCGWINSZ (passing a struct winsize). If the FD is a socket, we will
-copy sizeof(struct ifreq) bytes of data from the argument and return
--EFAULT if that fails. The result is that the isatty implementations
-may return a non-POSIX-compliant value in errno in the case where part
-of the dummy struct argument is inaccessible, as both struct termios
-and struct winsize are smaller than struct ifreq (at least on arm64).
+Quoting Bjorn Andersson (2021-07-26 16:13:51)
+> eDP panels might need some power sequencing and backlight management,
+> so make it possible to associate a drm_panel with a DP instance and
+> prepare and enable the panel accordingly.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>
+> This solves my immediate problem on my 8cx laptops, of indirectly controlling
+> the backlight during DPMS. But my panel is powered when I boot it and as such I
+> get the hpd interrupt and I don't actually have to deal with a power on
+> sequence - so I'm posting this as an RFC, hoping to get some input on these
+> other aspects.
+>
+> If this is acceptable I'd be happy to write up an accompanying DT binding
+> change that marks port 2 of the DP controller's of_graph as a reference to the
+> attached panel.
 
-Although there is usually enough stack space following the argument
-on the stack that this did not present a practical problem up to now,
-with MTE stack instrumentation it's more likely for the copy to fail,
-as the memory following the struct may have a different tag.
+dianders@ mentioned creating a connector (and maybe a bridge) for the DP
+connector (not eDP)[1]. I'm not sure that's directly related, but I
+think with the aux bus code the panel isn't managed in the encoder
+driver. Instead the encoder sees a bridge and tries to power it up and
+then query things over the aux bus? It's all a little too fuzzy to me
+right now so I could be spewing nonsense but I think we want to take
+this bridge route if possible.
 
-Fix the problem by adding an early check for whether the ioctl is a
-valid socket ioctl, and return -ENOTTY if it isn't.
+-Stephen
 
-Fixes: 44c02a2c3dc5 ("dev_ioctl(): move copyin/copyout to callers")
-Link: https://linux-review.googlesource.com/id/I869da6cf6daabc3e4b7b82ac979683ba05e27d4d
-Signed-off-by: Peter Collingbourne <pcc@google.com>
-Cc: <stable@vger.kernel.org> # 4.19
----
- include/linux/netdevice.h |  1 +
- net/core/dev_ioctl.c      | 64 ++++++++++++++++++++++++++++++++-------
- net/socket.c              |  6 +++-
- 3 files changed, 59 insertions(+), 12 deletions(-)
+[1] https://lore.kernel.org/r/CAD=FV=Xd9fizYdxfXYOkpJ_1fZcHp3-ROJ7k4iPg0g0RQ_+A3Q@mail.gmail.com/
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index eaf5bb008aa9..481b90ef0d32 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -4012,6 +4012,7 @@ int netdev_rx_handler_register(struct net_device *dev,
- void netdev_rx_handler_unregister(struct net_device *dev);
- 
- bool dev_valid_name(const char *name);
-+bool is_dev_ioctl_cmd(unsigned int cmd);
- int dev_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr,
- 		bool *need_copyout);
- int dev_ifconf(struct net *net, struct ifconf *, int);
-diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
-index 478d032f34ac..ac807fc64da1 100644
---- a/net/core/dev_ioctl.c
-+++ b/net/core/dev_ioctl.c
-@@ -368,6 +368,54 @@ void dev_load(struct net *net, const char *name)
- }
- EXPORT_SYMBOL(dev_load);
- 
-+bool is_dev_ioctl_cmd(unsigned int cmd)
-+{
-+	switch (cmd) {
-+	case SIOCGIFNAME:
-+	case SIOCGIFHWADDR:
-+	case SIOCGIFFLAGS:
-+	case SIOCGIFMETRIC:
-+	case SIOCGIFMTU:
-+	case SIOCGIFSLAVE:
-+	case SIOCGIFMAP:
-+	case SIOCGIFINDEX:
-+	case SIOCGIFTXQLEN:
-+	case SIOCETHTOOL:
-+	case SIOCGMIIPHY:
-+	case SIOCGMIIREG:
-+	case SIOCSIFNAME:
-+	case SIOCSIFMAP:
-+	case SIOCSIFTXQLEN:
-+	case SIOCSIFFLAGS:
-+	case SIOCSIFMETRIC:
-+	case SIOCSIFMTU:
-+	case SIOCSIFHWADDR:
-+	case SIOCSIFSLAVE:
-+	case SIOCADDMULTI:
-+	case SIOCDELMULTI:
-+	case SIOCSIFHWBROADCAST:
-+	case SIOCSMIIREG:
-+	case SIOCBONDENSLAVE:
-+	case SIOCBONDRELEASE:
-+	case SIOCBONDSETHWADDR:
-+	case SIOCBONDCHANGEACTIVE:
-+	case SIOCBRADDIF:
-+	case SIOCBRDELIF:
-+	case SIOCSHWTSTAMP:
-+	case SIOCBONDSLAVEINFOQUERY:
-+	case SIOCBONDINFOQUERY:
-+	case SIOCGIFMEM:
-+	case SIOCSIFMEM:
-+	case SIOCSIFLINK:
-+	case SIOCWANDEV:
-+	case SIOCGHWTSTAMP:
-+		return true;
-+
-+	default:
-+		return cmd >= SIOCDEVPRIVATE && cmd <= SIOCDEVPRIVATE + 15;
-+	}
-+}
-+
- /*
-  *	This function handles all "interface"-type I/O control requests. The actual
-  *	'doing' part of this is dev_ifsioc above.
-@@ -521,16 +569,10 @@ int dev_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr, bool *need_c
- 	 *	Unknown or private ioctl.
- 	 */
- 	default:
--		if (cmd == SIOCWANDEV ||
--		    cmd == SIOCGHWTSTAMP ||
--		    (cmd >= SIOCDEVPRIVATE &&
--		     cmd <= SIOCDEVPRIVATE + 15)) {
--			dev_load(net, ifr->ifr_name);
--			rtnl_lock();
--			ret = dev_ifsioc(net, ifr, cmd);
--			rtnl_unlock();
--			return ret;
--		}
--		return -ENOTTY;
-+		dev_load(net, ifr->ifr_name);
-+		rtnl_lock();
-+		ret = dev_ifsioc(net, ifr, cmd);
-+		rtnl_unlock();
-+		return ret;
- 	}
- }
-diff --git a/net/socket.c b/net/socket.c
-index 0b2dad3bdf7f..e58886b1882c 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -1109,7 +1109,7 @@ static long sock_do_ioctl(struct net *net, struct socket *sock,
- 		rtnl_unlock();
- 		if (!err && copy_to_user(argp, &ifc, sizeof(struct ifconf)))
- 			err = -EFAULT;
--	} else {
-+	} else if (is_dev_ioctl_cmd(cmd)) {
- 		struct ifreq ifr;
- 		bool need_copyout;
- 		if (copy_from_user(&ifr, argp, sizeof(struct ifreq)))
-@@ -1118,6 +1118,8 @@ static long sock_do_ioctl(struct net *net, struct socket *sock,
- 		if (!err && need_copyout)
- 			if (copy_to_user(argp, &ifr, sizeof(struct ifreq)))
- 				return -EFAULT;
-+	} else {
-+		err = -ENOTTY;
- 	}
- 	return err;
- }
-@@ -3306,6 +3308,8 @@ static int compat_ifr_data_ioctl(struct net *net, unsigned int cmd,
- 	struct ifreq ifreq;
- 	u32 data32;
- 
-+	if (!is_dev_ioctl_cmd(cmd))
-+		return -ENOTTY;
- 	if (copy_from_user(ifreq.ifr_name, u_ifreq32->ifr_name, IFNAMSIZ))
- 		return -EFAULT;
- 	if (get_user(data32, &u_ifreq32->ifr_data))
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
-
+>
+>  drivers/gpu/drm/msm/dp/dp_display.c | 15 +++++++++++++--
+>  drivers/gpu/drm/msm/dp/dp_display.h |  1 +
+>  drivers/gpu/drm/msm/dp/dp_parser.c  | 19 +++++++++++++++++++
+>  drivers/gpu/drm/msm/dp/dp_parser.h  |  1 +
+>  4 files changed, 34 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 206bf7806f51..1db5a3f752d2 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/component.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/delay.h>
+> +#include <drm/drm_panel.h>
+>
+>  #include "msm_drv.h"
+>  #include "msm_kms.h"
+> @@ -252,6 +253,8 @@ static int dp_display_bind(struct device *dev, struct device *master,
+>                 goto end;
+>         }
+>
+> +       dp->dp_display.drm_panel = dp->parser->drm_panel;
+> +
+>         rc = dp_aux_register(dp->aux, drm);
+>         if (rc) {
+>                 DRM_ERROR("DRM DP AUX register failed\n");
+> @@ -867,8 +870,10 @@ static int dp_display_set_mode(struct msm_dp *dp_display,
+>         return 0;
+>  }
+>
+> -static int dp_display_prepare(struct msm_dp *dp)
+> +static int dp_display_prepare(struct msm_dp *dp_display)
+>  {
+> +       drm_panel_prepare(dp_display->drm_panel);
+> +
+>         return 0;
+>  }
+>
+> @@ -886,6 +891,8 @@ static int dp_display_enable(struct dp_display_private *dp, u32 data)
+>         if (!rc)
+>                 dp_display->power_on = true;
+>
+> +       drm_panel_enable(dp_display->drm_panel);
+> +
+>         return rc;
+>  }
+>
+> @@ -915,6 +922,8 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+>         if (!dp_display->power_on)
+>                 return 0;
+>
+> +       drm_panel_disable(dp_display->drm_panel);
+> +
+>         /* wait only if audio was enabled */
+>         if (dp_display->audio_enabled) {
+>                 /* signal the disconnect event */
+> @@ -939,8 +948,10 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+>         return 0;
+>  }
+>
+> -static int dp_display_unprepare(struct msm_dp *dp)
+> +static int dp_display_unprepare(struct msm_dp *dp_display)
+>  {
+> +       drm_panel_unprepare(dp_display->drm_panel);
+> +
+>         return 0;
+>  }
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
+> index 8b47cdabb67e..ce337824c95d 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
+> @@ -15,6 +15,7 @@ struct msm_dp {
+>         struct device *codec_dev;
+>         struct drm_connector *connector;
+>         struct drm_encoder *encoder;
+> +       struct drm_panel *drm_panel;
+>         bool is_connected;
+>         bool audio_enabled;
+>         bool power_on;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
+> index fc8a6452f641..e6a6e9007bfd 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/of_gpio.h>
+>  #include <linux/phy/phy.h>
+>
+> +#include <drm/drm_of.h>
+>  #include <drm/drm_print.h>
+>
+>  #include "dp_parser.h"
+> @@ -276,6 +277,20 @@ static int dp_parser_clock(struct dp_parser *parser)
+>         return 0;
+>  }
+>
+> +static int dp_parser_find_panel(struct dp_parser *parser)
+> +{
+> +       struct device_node *np = parser->pdev->dev.of_node;
+> +       int rc;
+> +
+> +       rc = drm_of_find_panel_or_bridge(np, 2, 0, &parser->drm_panel, NULL);
+> +       if (rc == -ENODEV)
+> +               rc = 0;
+> +       else if (rc)
+> +               DRM_ERROR("failed to acquire DRM panel: %d\n", rc);
+> +
+> +       return rc;
+> +}
+> +
+>  static int dp_parser_parse(struct dp_parser *parser)
+>  {
+>         int rc = 0;
+> @@ -297,6 +312,10 @@ static int dp_parser_parse(struct dp_parser *parser)
+>         if (rc)
+>                 return rc;
+>
+> +       rc = dp_parser_find_panel(parser);
+> +       if (rc)
+> +               return rc;
+> +
+>         /* Map the corresponding regulator information according to
+>          * version. Currently, since we only have one supported platform,
+>          * mapping the regulator directly.
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.h b/drivers/gpu/drm/msm/dp/dp_parser.h
+> index 3266b529c090..994ca9336acd 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.h
+> @@ -122,6 +122,7 @@ struct dp_parser {
+>         struct dp_display_data disp_data;
+>         const struct dp_regulator_cfg *regulator_cfg;
+>         u32 max_dp_lanes;
+> +       struct drm_panel *drm_panel;
+>
+>         int (*parse)(struct dp_parser *parser);
+>  };
+> --
