@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38C53F8067
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 04:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591963F8070
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 04:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237532AbhHZCY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 22:24:27 -0400
-Received: from smtpbgsg1.qq.com ([54.254.200.92]:57679 "EHLO smtpbgsg1.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235677AbhHZCY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 22:24:26 -0400
-X-QQ-mid: bizesmtp47t1629944600t0qbyafz
-Received: from localhost.localdomain (unknown [111.207.172.18])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Thu, 26 Aug 2021 10:23:17 +0800 (CST)
-X-QQ-SSF: 0140000000200050D000B00A0000000
-X-QQ-FEAT: zEFwFsE0FwpIbzN/rQ0seBiGJYh4ez3wZarFkHyzKOOMPDaKXKPVZqZhm5b0y
-        t00/pnVZyX/ysLQOnp7WOI4rsTD+SO4sJTbUI9ENNNpbyob2XS4/h7JPro0WSxF3ZsXsQAw
-        rl7IFbMAYbicqOR0tH8vgWz+PBQ12quXRtvIRyef67TPylwkJJHdy4AjeAg9+D/1UcIe/1V
-        Wro6ak++2HXkqwoghVz5Nj8EUw/T296TMXxfiCfyz25oQYDQf36G2FD0Od2MVXSb4iKL+89
-        qqXN+7+WkSJ+gCxSF2W4R7MJYWx8PRPz6fP55YEBNdjnX2PgZKSshjJtZSDkupye4I9ASBT
-        10Ex5ojATVXD0nKUag=
-X-QQ-GoodBg: 2
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     jordan@cosmicpenguin.net, saiprakash.ranjan@codeaurora.org,
-        jonathan@marek.ca, airlied@redhat.com, smasetty@codeaurora.org,
-        konrad.dybcio@somainline.org, akhilpo@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH v2] drm: msm: adreno_gpu.c: Add and use pr_fmt(fmt)
-Date:   Thu, 26 Aug 2021 10:23:16 +0800
-Message-Id: <20210826022316.9559-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        id S237725AbhHZC0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 22:26:09 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:27592 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237584AbhHZC0I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 22:26:08 -0400
+X-Greylist: delayed 79598 seconds by postgrey-1.27 at vger.kernel.org; Wed, 25 Aug 2021 22:26:07 EDT
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 17Q2OrdX005266;
+        Thu, 26 Aug 2021 11:24:53 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17Q2OrdX005266
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629944693;
+        bh=d+AhyAERcvxh7BiYq2ElJkN7iLAXCwUv6UgSMsPKu74=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CNgzwNhGDlLum2EBrBPzXzIdyjpIas0Y+NGmekx/BDBP1E7B39hjx6NP8GxxzN8dc
+         jxUGzqsab/nL5UXGq7eyHvnQLst1jqoH2G5HU2Z7uAqahoIiumWZL60vtzOA84ybQm
+         Uh7MHhofTbhUAgfPNROwLJsKcUGdea4vVad0tZRjN1wBEMlJHjnF7WTcEiuktq5eyk
+         ft80RzSYGRxTEeKtazr9OBbZ7buOkh/CMexm490CU+0JiQlxbZBTsQ1i5EUXbwZroa
+         Q6NEhp6o1PtbnyOkcLONBqoQt2z6Lwr84DxJcnqTUiL2jjBcNXTLAyupBjah3P3tan
+         Njey37RG80jsw==
+X-Nifty-SrcIP: [209.85.216.53]
+Received: by mail-pj1-f53.google.com with SMTP id j1so1137976pjv.3;
+        Wed, 25 Aug 2021 19:24:53 -0700 (PDT)
+X-Gm-Message-State: AOAM532MFFhPHKVuJzSVjf2J14BZSXa/b725jm2lCSagUYgRP6ywpB1E
+        jUjnsS8RlcWMZwzygyEsr4Gn3LjyIpfPLh7veQI=
+X-Google-Smtp-Source: ABdhPJw2EzwVb2S7fExRdpLksQsCs6YsBhQqntXqcomXVhX20PH/b2rdtnGXTKMbAl7GvXo5xuFBUf00afHREEkilBQ=
+X-Received: by 2002:a17:90a:a581:: with SMTP id b1mr1441813pjq.153.1629944692537;
+ Wed, 25 Aug 2021 19:24:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
-X-QQ-Bgrelay: 1
+References: <20210825041637.365171-1-masahiroy@kernel.org> <boris.20210825172545@codesynthesis.com>
+In-Reply-To: <boris.20210825172545@codesynthesis.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 26 Aug 2021 11:24:15 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS-NhR=94uHYcZUhRkdUEm=dYZSRbGKkB5zJJGNRw0z2A@mail.gmail.com>
+Message-ID: <CAK7LNAS-NhR=94uHYcZUhRkdUEm=dYZSRbGKkB5zJJGNRw0z2A@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: forbid symbols that end with '_MODULE'
+To:     Boris Kolpackov <boris@codesynthesis.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a more common logging style.
+On Thu, Aug 26, 2021 at 12:42 AM Boris Kolpackov
+<boris@codesynthesis.com> wrote:
+>
+> Masahiro Yamada <masahiroy@kernel.org> writes:
+>
+> > Kconfig (syncconfig) generates include/generated/autoconf.h to make
+> > CONFIG options available to the pre-processor.
+> >
+> > The macros are suffixed with '_MODULE' for symbols with the value 'm'.
+> >
+> > Here is a conflict; CONFIG_FOO=m results in '#define CONFIG_FOO_MODULE 1',
+> > but CONFIG_FOO_MODULE=y also results in the same define.
+> >
+> > fixdep always assumes CONFIG_FOO_MODULE comes from CONFIG_FOO=m, so the
+> > dependency is not properly tracked for symbols that end with '_MODULE'.
+>
+> It seem to me the problem is in autoconf.h/fixdep, not in the Kconfig
+> language.
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
-v2:Remove the line: #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-   drivers/gpu/drm/msm/adreno/adreno_gpu.c:23:9: warning: 'pr_fmt' macro redefined [-Wmacro-redefined]
-   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-           ^
-   include/linux/printk.h:348:9: note: previous definition is here
-   #define pr_fmt(fmt) fmt
 
- drivers/gpu/drm/msm/adreno/adreno_gpu.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Partly a Kconfig problem since autoconf.h is generated by Kconfig.
 
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index 9f5a30234b33..f10e9e04c13b 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -753,7 +753,7 @@ void adreno_dump_info(struct msm_gpu *gpu)
- 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
- 	int i;
- 
--	printk("revision: %d (%d.%d.%d.%d)\n",
-+	pr_info("revision: %d (%d.%d.%d.%d)\n",
- 			adreno_gpu->info->revn, adreno_gpu->rev.core,
- 			adreno_gpu->rev.major, adreno_gpu->rev.minor,
- 			adreno_gpu->rev.patchid);
-@@ -761,12 +761,12 @@ void adreno_dump_info(struct msm_gpu *gpu)
- 	for (i = 0; i < gpu->nr_rings; i++) {
- 		struct msm_ringbuffer *ring = gpu->rb[i];
- 
--		printk("rb %d: fence:    %d/%d\n", i,
-+		pr_info("rb %d: fence:    %d/%d\n", i,
- 			ring->memptrs->fence,
- 			ring->seqno);
- 
--		printk("rptr:     %d\n", get_rptr(adreno_gpu, ring));
--		printk("rb wptr:  %d\n", get_wptr(ring));
-+		pr_info("rptr:     %d\n", get_rptr(adreno_gpu, ring));
-+		pr_info("rb wptr:  %d\n", get_wptr(ring));
- 	}
- }
- 
-@@ -780,7 +780,7 @@ void adreno_dump(struct msm_gpu *gpu)
- 		return;
- 
- 	/* dump these out in a form that can be parsed by demsm: */
--	printk("IO:region %s 00000000 00020000\n", gpu->name);
-+	pr_info("IO:region %s 00000000 00020000\n", gpu->name);
- 	for (i = 0; adreno_gpu->registers[i] != ~0; i += 2) {
- 		uint32_t start = adreno_gpu->registers[i];
- 		uint32_t end   = adreno_gpu->registers[i+1];
-@@ -788,7 +788,7 @@ void adreno_dump(struct msm_gpu *gpu)
- 
- 		for (addr = start; addr <= end; addr++) {
- 			uint32_t val = gpu_read(gpu, addr);
--			printk("IO:R %08x %08x\n", addr<<2, val);
-+			pr_info("IO:R %08x %08x\n", addr<<2, val);
- 		}
- 	}
- }
+So, what is your suggestion for doing this correctly?
+(of course without breaking the compatibility
+because this is how the kernel is configured/built
+for more than 20 years)
+
+
+
+
+>
+> > This commit makes Kconfig error out if it finds a symbol suffixed with
+> > '_MODULE'.
+>
+> I know you don't care, but I will voice my objection, for the record:
+> Kconfig is used by projects other than the Linux kernel and some of
+> them do not use the autoconf.h functionality. For such projects this
+> restriction seems arbitrary and potentially backwards-incompatible.
+
+I am not sure what your worry is, but this check resides in
+"if (modules_sym)" conditional, so projects using Kconfig but
+not module functionality (e.g. buildroot) will not be  affected.
+
+
+
 -- 
-2.20.1
-
-
-
+Best Regards
+Masahiro Yamada
