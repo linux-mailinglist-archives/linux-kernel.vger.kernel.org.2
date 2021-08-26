@@ -2,282 +2,579 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3135A3F8403
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648C53F8407
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240663AbhHZI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:57:40 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34085 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229785AbhHZI5j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:57:39 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 65270580E35;
-        Thu, 26 Aug 2021 04:56:51 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 26 Aug 2021 04:56:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=8ZqZMRxHYnjQ2uzAJrMkPBHkNou
-        kBe6k9p1sniS1y0c=; b=Jn3pmql5i/BUkYPxISEaqVtJnFkGhpi/u/AjE+0hTLa
-        v/JDM65cX/QTuMOGONVv2i2QuN+klkRGa3X7cknQzDeSvSv/yLg/fC4mcLqj8j6H
-        ad6D6qOGpFkj19ZlIcQp86PMmi4BNli4hJnfb1EYMZU2cVBFu+gH2MTS8aSjtkfJ
-        vLbaVHBUEqtWzmlTnvOWhA5YNIWAh3rjbNhddxE2kMeZoWsDRW7Ollt7b2kiGLY5
-        +bwmp3t8n5RhEnoTYsK/VWTic+KvGZwnSGI6RJg83kfK6o8ISDyqK7j466FsaTGT
-        Cp7NZLNx6obB04R2UfKgnT6+Ix2rBzQ/iMoVHOPCrzw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=8ZqZMR
-        xHYnjQ2uzAJrMkPBHkNoukBe6k9p1sniS1y0c=; b=XGBJoyHhR3DWmlyc9RZDOx
-        AfgoSfwijcJiiWIMds8+VM32IOf3AjPVCBwhpYeq8atXg/adGDVfcPlQVJ3YxP99
-        0+qHbeEoFxPLwsgROM6A86TVUbGdAqX3UIDSLlAPNP4NKVcc8ekCJvrBRUlMWskB
-        0l+wMHdzAT1qgdJsbOsp55LCkPhhkcF8xqD1XDDZp5i6nDUCx2YljrHUN7N9CySP
-        Cl3iRXQsCuUN/KBpSWL1i1UW/NuBj3xBdlv3g0OahPBGEuvgu7Z5zBqDLlXVY2jL
-        26KNA20MpMLqaAstUrvvD3ua3xtayUYJ8ctu0zT0UI9hFM3vdZ6YwS2zt5oogvxw
-        ==
-X-ME-Sender: <xms:UFcnYdgJteDE000dBm6ZWsJILsLkL2Stk6RewL0jEZDV2-IK8FWGdA>
-    <xme:UFcnYSBdA_8BLcqnD7LUlKea5bJofE8NaW1flcZhKTXTCOh-n93nZOH3fdvFSZr7P
-    llMFRRgKqDWpxxLIRw>
-X-ME-Received: <xmr:UFcnYdG--SqUiJfMZ6CFNoNnHbkvgpL8Q-8BIFTC65qrtW3tO9WZfOOPhjGk4yXla5lUELhxZOiAVI_XcPCGawWOix225dZvmehX>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduuddgtdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepveevfeffudeviedtgeethffhteeuffetfeffvdehvedvheetteehvdelfffg
-    jedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:UFcnYSRxVRmQ_BO8DffA2O9zOrhZc7tfabpRM9SgTeVH_SpY6fVh2g>
-    <xmx:UFcnYaxIe07tQdDMMdlvPzUNIHwIMc5lX28SBIIwklK7IulH-SPhhg>
-    <xmx:UFcnYY4VP9UOWdyGiJWW3HabMKKK2VR1VRTMJEmFeZLBqK0CMPUi0Q>
-    <xmx:U1cnYVoKFt63Ne47mTAydzjn01gNIlF0gTkir8hQHwx3TYaUvyRFIg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 26 Aug 2021 04:56:48 -0400 (EDT)
-Date:   Thu, 26 Aug 2021 10:56:46 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Jonas Karlman <jonas@kwiboo.se>, Sam Ravnborg <sam@ravnborg.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v3 2/8] drm/bridge: Document the probe issue with
- MIPI-DSI bridges
-Message-ID: <20210826085646.3mj53any74jwnjmi@gilmour>
-References: <20210823084723.1493908-1-maxime@cerno.tech>
- <CGME20210823084750eucas1p24cd5dd54a967f63fda4184773b98c135@eucas1p2.samsung.com>
- <20210823084723.1493908-3-maxime@cerno.tech>
- <792b1a4b-7a82-e633-0266-787205ae279a@samsung.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dfbzll24nb43ccgk"
-Content-Disposition: inline
-In-Reply-To: <792b1a4b-7a82-e633-0266-787205ae279a@samsung.com>
+        id S240725AbhHZI6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:58:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229785AbhHZI6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 04:58:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A789860F11;
+        Thu, 26 Aug 2021 08:57:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629968256;
+        bh=zLqBrPgIwCqW6GtyhT4XOo23BxkNdQvB2zmHEpNxkb8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mHt8UPCIRb1f2OrdvSRcmvV3k0y29lFvOZEdBzPMpH2C4zpDbPYKUUUeS9vGCfBEH
+         cGaLPtKMEKybC/85UFDr2VxXAq/h9FTfxyBzcCTGnEcs2KAdcAjMetssSJH0P87EUW
+         IOCp/vo6F8MIhsL5tErLnGPOZMp30UUcoclVJuq8mYqt6nvxF2lJ+JvfdZheBlalvF
+         aJGPSrqh6lLv0ULEA8FZkhdcoJXgy3ydm372s3+OnXVydqPzI4raty6gozq+HTE8Lw
+         NtrskxnQiti6PLF8xUnulwmeLqg5JRRR0VDW/AN9jctjQ/IugjzYPfrnV8acSMHWzi
+         Ezf3E89fHDoXA==
+From:   Roger Quadros <rogerq@kernel.org>
+To:     tony@atomide.com
+Cc:     robh+dt@kernel.org, nm@ti.com, lokeshvutla@ti.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH] dt-bindings: memory-controllers: ti,gpmc: Convert to yaml
+Date:   Thu, 26 Aug 2021 11:57:31 +0300
+Message-Id: <20210826085731.15300-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert omap-gpmc.txt to ti,gpmc.yaml.
 
---dfbzll24nb43ccgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+ .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
+ .../bindings/memory-controllers/ti,gpmc.yaml  | 360 ++++++++++++++++++
+ 2 files changed, 360 insertions(+), 157 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
 
-Hi Andrzej,
+diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+deleted file mode 100644
+index c1359f4d48d7..000000000000
+--- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
++++ /dev/null
+@@ -1,157 +0,0 @@
+-Device tree bindings for OMAP general purpose memory controllers (GPMC)
+-
+-The actual devices are instantiated from the child nodes of a GPMC node.
+-
+-Required properties:
+-
+- - compatible:		Should be set to one of the following:
+-
+-			ti,omap2420-gpmc (omap2420)
+-			ti,omap2430-gpmc (omap2430)
+-			ti,omap3430-gpmc (omap3430 & omap3630)
+-			ti,omap4430-gpmc (omap4430 & omap4460 & omap543x)
+-			ti,am3352-gpmc   (am335x devices)
+-
+- - reg:			A resource specifier for the register space
+-			(see the example below)
+- - ti,hwmods:		Should be set to "ti,gpmc" until the DT transition is
+-			completed.
+- - #address-cells:	Must be set to 2 to allow memory address translation
+- - #size-cells:		Must be set to 1 to allow CS address passing
+- - gpmc,num-cs:		The maximum number of chip-select lines that controller
+-			can support.
+- - gpmc,num-waitpins:	The maximum number of wait pins that controller can
+-			support.
+- - ranges:		Must be set up to reflect the memory layout with four
+-			integer values for each chip-select line in use:
+-
+-			   <cs-number> 0 <physical address of mapping> <size>
+-
+-			Currently, calculated values derived from the contents
+-			of the per-CS register GPMC_CONFIG7 (as set up by the
+-			bootloader) are used for the physical address decoding.
+-			As this will change in the future, filling correct
+-			values here is a requirement.
+- - interrupt-controller: The GPMC driver implements and interrupt controller for
+-			the NAND events "fifoevent" and "termcount" plus the
+-			rising/falling edges on the GPMC_WAIT pins.
+-			The interrupt number mapping is as follows
+-			0 - NAND_fifoevent
+-			1 - NAND_termcount
+-			2 - GPMC_WAIT0 pin edge
+-			3 - GPMC_WAIT1 pin edge, and so on.
+- - interrupt-cells:	Must be set to 2
+- - gpio-controller:	The GPMC driver implements a GPIO controller for the
+-			GPMC WAIT pins that can be used as general purpose inputs.
+-			0 maps to GPMC_WAIT0 pin.
+- - gpio-cells:		Must be set to 2
+-
+-Required properties when using NAND prefetch dma:
+- - dmas			GPMC NAND prefetch dma channel
+- - dma-names		Must be set to "rxtx"
+-
+-Timing properties for child nodes. All are optional and default to 0.
+-
+- - gpmc,sync-clk-ps:	Minimum clock period for synchronous mode, in picoseconds
+-
+- Chip-select signal timings (in nanoseconds) corresponding to GPMC_CONFIG2:
+- - gpmc,cs-on-ns:	Assertion time
+- - gpmc,cs-rd-off-ns:	Read deassertion time
+- - gpmc,cs-wr-off-ns:	Write deassertion time
+-
+- ADV signal timings (in nanoseconds) corresponding to GPMC_CONFIG3:
+- - gpmc,adv-on-ns:	Assertion time
+- - gpmc,adv-rd-off-ns:	Read deassertion time
+- - gpmc,adv-wr-off-ns:	Write deassertion time
+- - gpmc,adv-aad-mux-on-ns:	Assertion time for AAD
+- - gpmc,adv-aad-mux-rd-off-ns:	Read deassertion time for AAD
+- - gpmc,adv-aad-mux-wr-off-ns:	Write deassertion time for AAD
+-
+- WE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
+- - gpmc,we-on-ns	Assertion time
+- - gpmc,we-off-ns:	Deassertion time
+-
+- OE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
+- - gpmc,oe-on-ns:	Assertion time
+- - gpmc,oe-off-ns:	Deassertion time
+- - gpmc,oe-aad-mux-on-ns:	Assertion time for AAD
+- - gpmc,oe-aad-mux-off-ns:	Deassertion time for AAD
+-
+- Access time and cycle time timings (in nanoseconds) corresponding to
+- GPMC_CONFIG5:
+- - gpmc,page-burst-access-ns: 	Multiple access word delay
+- - gpmc,access-ns:		Start-cycle to first data valid delay
+- - gpmc,rd-cycle-ns:		Total read cycle time
+- - gpmc,wr-cycle-ns:		Total write cycle time
+- - gpmc,bus-turnaround-ns:	Turn-around time between successive accesses
+- - gpmc,cycle2cycle-delay-ns:	Delay between chip-select pulses
+- - gpmc,clk-activation-ns: 	GPMC clock activation time
+- - gpmc,wait-monitoring-ns:	Start of wait monitoring with regard to valid
+-				data
+-
+-Boolean timing parameters. If property is present parameter enabled and
+-disabled if omitted:
+- - gpmc,adv-extra-delay:	ADV signal is delayed by half GPMC clock
+- - gpmc,cs-extra-delay:		CS signal is delayed by half GPMC clock
+- - gpmc,cycle2cycle-diffcsen:	Add "cycle2cycle-delay" between successive
+-				accesses to a different CS
+- - gpmc,cycle2cycle-samecsen:	Add "cycle2cycle-delay" between successive
+-				accesses to the same CS
+- - gpmc,oe-extra-delay:		OE signal is delayed by half GPMC clock
+- - gpmc,we-extra-delay:		WE signal is delayed by half GPMC clock
+- - gpmc,time-para-granularity:	Multiply all access times by 2
+-
+-The following are only applicable to OMAP3+ and AM335x:
+- - gpmc,wr-access-ns:		In synchronous write mode, for single or
+-				burst accesses, defines the number of
+-				GPMC_FCLK cycles from start access time
+-				to the GPMC_CLK rising edge used by the
+-				memory device for the first data capture.
+- - gpmc,wr-data-mux-bus-ns:	In address-data multiplex mode, specifies
+-				the time when the first data is driven on
+-				the address-data bus.
+-
+-GPMC chip-select settings properties for child nodes. All are optional.
+-
+-- gpmc,burst-length	Page/burst length. Must be 4, 8 or 16.
+-- gpmc,burst-wrap	Enables wrap bursting
+-- gpmc,burst-read	Enables read page/burst mode
+-- gpmc,burst-write	Enables write page/burst mode
+-- gpmc,device-width	Total width of device(s) connected to a GPMC
+-			chip-select in bytes. The GPMC supports 8-bit
+-			and 16-bit devices and so this property must be
+-			1 or 2.
+-- gpmc,mux-add-data	Address and data multiplexing configuration.
+-			Valid values are 1 for address-address-data
+-			multiplexing mode and 2 for address-data
+-			multiplexing mode.
+-- gpmc,sync-read	Enables synchronous read. Defaults to asynchronous
+-			is this is not set.
+-- gpmc,sync-write	Enables synchronous writes. Defaults to asynchronous
+-			is this is not set.
+-- gpmc,wait-pin		Wait-pin used by client. Must be less than
+-			"gpmc,num-waitpins".
+-- gpmc,wait-on-read	Enables wait monitoring on reads.
+-- gpmc,wait-on-write	Enables wait monitoring on writes.
+-
+-Example for an AM33xx board:
+-
+-	gpmc: gpmc@50000000 {
+-		compatible = "ti,am3352-gpmc";
+-		ti,hwmods = "gpmc";
+-		reg = <0x50000000 0x2000>;
+-		interrupts = <100>;
+-		dmas = <&edma 52 0>;
+-		dma-names = "rxtx";
+-		gpmc,num-cs = <8>;
+-		gpmc,num-waitpins = <2>;
+-		#address-cells = <2>;
+-		#size-cells = <1>;
+-		ranges = <0 0 0x08000000 0x10000000>; /* CS0 @addr 0x8000000, size 0x10000000 */
+-		interrupt-controller;
+-		#interrupt-cells = <2>;
+-		gpio-controller;
+-		#gpio-cells = <2>;
+-
+-		/* child nodes go here */
+-	};
+diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+new file mode 100644
+index 000000000000..6e6164f56d57
+--- /dev/null
++++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+@@ -0,0 +1,360 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/memory-controllers/ti,gpmc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments GPMC Memory Controller device-tree bindings
++
++maintainers:
++  - Tony Lindgren <tony@atomide.com>
++  - Roger Quadros <rogerq@kernel.org>
++
++description:
++  The GPMC is a unified memory controller dedicated for interfacing
++  with external memory devices like
++  - Asynchronous SRAM-like memories and ASICs
++  - Asynchronous, synchronous, and page mode burst NOR flash
++  - NAND flash
++  - Pseudo-SRAM devices
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - ti,omap2420-gpmc
++          - ti,omap2430-gpmc
++          - ti,omap3430-gpmc
++          - ti,omap4430-gpmc
++          - ti,am3352-gpmc
++
++  reg:
++    items:
++      - description:
++          Configuration registers for the controller.
++
++  interrupts: true
++
++  clocks:
++    maxItems: 1
++    description: |
++      Functional clock. Used for bus timing calculations and
++      GPMC configuration.
++
++  clock-names:
++    items:
++      - const: fck
++
++  dmas:
++    items:
++      - description: DMA channel for GPMC NAND prefetch
++
++  dma-names:
++    items:
++      - const: rxtx
++
++  "#address-cells":
++    const: 2
++
++  "#size-cells":
++    const: 1
++
++  gpmc,num-cs:
++    description: maximum number of supported chip-select lines.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  gpmc,num-waitpins:
++    description: maximum number of supported wait pins.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  ranges:
++    minItems: 1
++    description: |
++      Must be set up to reflect the memory layout with four
++      integer values for each chip-select line in use,
++      <cs-number> 0 <physical address of mapping> <size>
++
++    items:
++      - description: NAND bank 0
++      - description: NOR/SRAM bank 0
++      - description: NOR/SRAM bank 1
++
++  '#interrupt-cells':
++    const: 2
++
++  interrupt-controller:
++    description: |
++      The GPMC driver implements and interrupt controller for
++      the NAND events "fifoevent" and "termcount" plus the
++      rising/falling edges on the GPMC_WAIT pins.
++      The interrupt number mapping is as follows
++      0 - NAND_fifoevent
++      1 - NAND_termcount
++      2 - GPMC_WAIT0 pin edge
++      3 - GPMC_WAIT1 pin edge, and so on.
++
++  '#gpio-cells':
++     const: 2
++
++  gpio-controller:
++    description: |
++      The GPMC driver implements a GPIO controller for the
++      GPMC WAIT pins that can be used as general purpose inputs.
++      0 maps to GPMC_WAIT0 pin.
++
++patternProperties:
++  "@[0-3],[a-f0-9]+$":
++    type: object
++    description: |
++      The child device node represents the device connected to the GPMC
++      bus. The device can be a NAND controller, SRAM device, NOR device
++      or an ASIC.
++
++    properties:
++      compatible:
++        description:
++          Compatible of attached device.
++
++      reg:
++        items:
++          - items:
++              - description: |
++                  Chip Select number, as in the parent range property (cs-number).
++              - description: |
++                  Offset of the memory region required by the device.
++              - description: |
++                  Length of the memory region required by the device.
++
++# GPMC Timing properties for child nodes. All are optional and default to 0.
++
++      gpmc,sync-clk-ps:
++        description: Minimum clock period for synchronous mode, in picoseconds
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++# Chip-select signal timings (in nanoseconds) corresponding to GPMC_CONFIG2:
++      gpmc,cs-on-ns:
++        description: Assertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,cs-rd-off-ns:
++        description: Read deassertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,cs-wr-off-ns:
++        description: Write deassertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++# ADV signal timings (in nanoseconds) corresponding to GPMC_CONFIG3:
++      gpmc,adv-on-ns:
++        description: Assertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,adv-rd-off-ns:
++        description: Read deassertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,adv-wr-off-ns:
++        description: Write deassertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,adv-aad-mux-on-ns:
++        description: Assertion time for AAD
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,adv-aad-mux-rd-off-ns:
++        description: Read deassertion time for AAD
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,adv-aad-mux-wr-off-ns:
++        description: Write deassertion time for AAD
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++# WE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
++      gpmc,we-on-ns:
++        description: Assertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,we-off-ns:
++        description: Deassertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++# OE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
++      gpmc,oe-on-ns:
++        description: Assertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,oe-off-ns:
++        description: Deassertion time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,oe-aad-mux-on-ns:
++        description:       Assertion time for AAD
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,oe-aad-mux-off-ns:
++        description:      Deassertion time for AAD
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++# Access time and cycle time timings (in nanoseconds) corresponding to
++# GPMC_CONFIG5:
++      gpmc,page-burst-access-ns:
++        description:   Multiple access word delay
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,access-ns:
++        description:              Start-cycle to first data valid delay
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,rd-cycle-ns:
++        description:            Total read cycle time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,wr-cycle-ns:
++        description:            Total write cycle time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,bus-turnaround-ns:
++        description:      Turn-around time between successive accesses
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,cycle2cycle-delay-ns:
++        description:   Delay between chip-select pulses
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,clk-activation-ns:
++        description:      GPMC clock activation time
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,wait-monitoring-ns:
++        description:     Start of wait monitoring with regard to valid data
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++# Boolean timing parameters. If property is present, parameter is enabled
++# otherwise disabled.
++      gpmc,adv-extra-delay:
++        description:        ADV signal is delayed by half GPMC clock
++        type: boolean
++      gpmc,cs-extra-delay:
++        description:         CS signal is delayed by half GPMC clock
++        type: boolean
++      gpmc,cycle2cycle-diffcsen:
++        description: |
++          Add "cycle2cycle-delay" between successive accesses
++          to a different CS
++        type: boolean
++      gpmc,cycle2cycle-samecsen:
++        description: |
++          Add "cycle2cycle-delay" between successive accesses
++          to the same CS
++        type: boolean
++      gpmc,oe-extra-delay:
++        description:         OE signal is delayed by half GPMC clock
++        type: boolean
++      gpmc,we-extra-delay:
++        description:         WE signal is delayed by half GPMC clock
++        type: boolean
++      gpmc,time-para-granularity:
++        description:  Multiply all access times by 2
++        type: boolean
++
++# The following two properties are applicable only to OMAP3+ and AM335x:
++      gpmc,wr-access-ns:
++        description: |
++          In synchronous write mode, for single or
++          burst accesses, defines the number of
++          GPMC_FCLK cycles from start access time
++          to the GPMC_CLK rising edge used by the
++          memory device for the first data capture.
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,wr-data-mux-bus-ns:
++        description: |
++          In address-data multiplex mode, specifies
++          the time when the first data is driven on
++          the address-data bus.
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++# GPMC chip-select settings properties for child nodes. All are optional.
++
++      gpmc,burst-length:
++        description:     Page/burst length. Must be 4, 8 or 16.
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [4, 8, 16]
++      gpmc,burst-wrap:
++        description:       Enables wrap bursting
++        type: boolean
++      gpmc,burst-read:
++        description:       Enables read page/burst mode
++        type: boolean
++      gpmc,burst-write:
++        description:      Enables write page/burst mode
++        type: boolean
++      gpmc,device-width:
++        description: |
++          Total width of device(s) connected to a GPMC
++          chip-select in bytes. The GPMC supports 8-bit
++          and 16-bit devices and so this property must be
++          1 or 2.
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [1, 2]
++      gpmc,mux-add-data:
++        description: |
++          Address and data multiplexing configuration.
++          Valid values are 1 for address-address-data
++          multiplexing mode and 2 for address-data
++          multiplexing mode.
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [1, 2]
++      gpmc,sync-read:
++        description: |
++          Enables synchronous read. Defaults to asynchronous
++          is this is not set.
++        type: boolean
++      gpmc,sync-write:
++        description: |
++          Enables synchronous writes. Defaults to asynchronous
++          is this is not set.
++        type: boolean
++      gpmc,wait-pin:
++        description: |
++          Wait-pin used by client. Must be less than "gpmc,num-waitpins".
++        $ref: /schemas/types.yaml#/definitions/uint32
++      gpmc,wait-on-read:
++        description:     Enables wait monitoring on reads.
++        type: boolean
++      gpmc,wait-on-write:
++        description:    Enables wait monitoring on writes.
++        type: boolean
++
++    required:
++      - compatible
++      - reg
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - gpmc,num-cs
++  - gpmc,num-waitpins
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/gpio/gpio.h>
++
++    gpmc: memory-controller@50000000 {
++      compatible = "ti,am3352-gpmc";
++      reg = <0x50000000 0x2000>;
++      interrupts = <100>;
++      clocks = <&l3s_clkctrl>;
++      clock-names = "fck";
++      dmas = <&edma 52 0>;
++      dma-names = "rxtx";
++      gpmc,num-cs = <8>;
++      gpmc,num-waitpins = <2>;
++      #address-cells = <2>;
++      #size-cells = <1>;
++      ranges = <0 0 0x08000000 0x10000000>; /* CS0 @addr 0x8000000, size 0x10000000 */
++      interrupt-controller;
++      #interrupt-cells = <2>;
++      gpio-controller;
++      #gpio-cells = <2>;
++
++      nand0: nand-controller@0,0 {
++        compatible = "ti,omap2-nand";
++        reg = <0 0 4>;
++        interrupt-parent = <&gpmc>;
++        interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
++                     <1 IRQ_TYPE_NONE>; /* termcount */
++        rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 pin */
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++      };
++    };
+-- 
+2.17.1
 
-On Mon, Aug 23, 2021 at 06:32:11PM +0200, Andrzej Hajda wrote:
-> Hi Maxime,
->=20
-> On 23.08.2021 10:47, Maxime Ripard wrote:
->=20
-> > Interactions between bridges, panels, MIPI-DSI host and the component
-> > framework are not trivial and can lead to probing issues when
-> > implementing a display driver. Let's document the various cases we need
-> > too consider, and the solution to support all the cases.
-> >
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > ---
-> >   Documentation/gpu/drm-kms-helpers.rst |  6 +++
-> >   drivers/gpu/drm/drm_bridge.c          | 58 +++++++++++++++++++++++++++
-> >   2 files changed, 64 insertions(+)
-> >
-> > diff --git a/Documentation/gpu/drm-kms-helpers.rst b/Documentation/gpu/=
-drm-kms-helpers.rst
-> > index 10f8df7aecc0..ec2f65b31930 100644
-> > --- a/Documentation/gpu/drm-kms-helpers.rst
-> > +++ b/Documentation/gpu/drm-kms-helpers.rst
-> > @@ -157,6 +157,12 @@ Display Driver Integration
-> >   .. kernel-doc:: drivers/gpu/drm/drm_bridge.c
-> >      :doc: display driver integration
-> >  =20
-> > +Special Care with MIPI-DSI bridges
-> > +----------------------------------
-> > +
-> > +.. kernel-doc:: drivers/gpu/drm/drm_bridge.c
-> > +   :doc: special care dsi
-> > +
-> >   Bridge Operations
-> >   -----------------
-> >  =20
-> > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> > index baff74ea4a33..794654233cf5 100644
-> > --- a/drivers/gpu/drm/drm_bridge.c
-> > +++ b/drivers/gpu/drm/drm_bridge.c
-> > @@ -96,6 +96,64 @@
-> >    * documentation of bridge operations for more details).
-> >    */
-> >  =20
-> > +/**
-> > + * DOC: special care dsi
-> > + *
-> > + * The interaction between the bridges and other frameworks involved in
-> > + * the probing of the display driver and the bridge driver can be
-> > + * challenging. Indeed, there's multiple cases that needs to be
-> > + * considered:
-> > + *
-> > + * - The display driver doesn't use the component framework and isn't a
-> > + *   MIPI-DSI host. In this case, the bridge driver will probe at some
-> > + *   point and the display driver should try to probe again by returni=
-ng
-> > + *   EPROBE_DEFER as long as the bridge driver hasn't probed.
-> > + *
-> > + * - The display driver doesn't use the component framework, but is a
-> > + *   MIPI-DSI host. The bridge device uses the MIPI-DCS commands to be
-> > + *   controlled. In this case, the bridge device is a child of the
-> > + *   display device and when it will probe it's assured that the displ=
-ay
-> > + *   device (and MIPI-DSI host) is present. The display driver will be
-> > + *   assured that the bridge driver is connected between the
-> > + *   &mipi_dsi_host_ops.attach and &mipi_dsi_host_ops.detach operation=
-s.
-> > + *   Therefore, it must run mipi_dsi_host_register() in its probe
-> > + *   function, and then run drm_bridge_attach() in its
-> > + *   &mipi_dsi_host_ops.attach hook.
-> > + *
-> > + * - The display driver uses the component framework and is a MIPI-DSI
-> > + *   host. The bridge device uses the MIPI-DCS commands to be
-> > + *   controlled. This is the same situation than above, and can run
-> > + *   mipi_dsi_host_register() in either its probe or bind hooks.
-> > + *
-> > + * - The display driver uses the component framework and is a MIPI-DSI
-> > + *   host. The bridge device uses a separate bus (such as I2C) to be
-> > + *   controlled. In this case, there's no correlation between the probe
-> > + *   of the bridge and display drivers, so care must be taken to avoid
-> > + *   an endless EPROBE_DEFER loop, with each driver waiting for the
-> > + *   other to probe.
-> > + *
-> > + * The ideal pattern to cover the last item (and all the others in the
-> > + * display driver case) is to split the operations like this:
-> > + *
-> > + * - In the display driver must run mipi_dsi_host_register() and
-> > + *   component_add in its probe hook. It will make sure that the
-> > + *   MIPI-DSI host sticks around, and that the driver's bind can be
-> > + *   called.
->=20
-> I guess component_add is leftover from previous iteration (as you wrote=
-=20
-> few lines below) component_add should be called from dsi host attach=20
-> callback.
-
-Indeed, I'll remove it
-
-> > + *
-> > + * - In its probe hook, the bridge driver must try to find its MIPI-DSI
-> > + *   host, register as a MIPI-DSI device and attach the MIPI-DSI device
-> > + *   to its host. The bridge driver is now functional.
-> > + *
-> > + * - In its &struct mipi_dsi_host_ops.attach hook, the display driver
-> > + *   can now add its component. Its bind hook will now be called and
-> > + *   since the bridge driver is attached and registered, we can now lo=
-ok
-> > + *   for and attach it.
-> > + *
-> > + * At this point, we're now certain that both the display driver and t=
-he
-> > + * bridge driver are functional and we can't have a deadlock-like
-> > + * situation when probing.
-> > + */
-> > +
->=20
-> Beside small mistake the whole patch looks OK for me. Maybe it would be=
-=20
-> worth to mention what is the real cause of this "special DSI case" -=20
-> there is mutual dependency between two following entities in display chai=
-n:
->=20
-> 1. display driver - it provides DSI bus, and requires drm_bridge or=20
-> drm_panel provided by child device.
->=20
-> 2. bridge or panel with DSI transport - it requires DSI bus provided by=
-=20
-> display driver, and provides drm_bridge or drm_panel interface required=
-=20
-> by display driver.
-
-I was trying to explain it in the first part of this patch. Is there
-anything misleading there?
-
-> I guess similar issues can appear with other data/control bus-es,=20
-> apparently DSI case is the most common.
-
-The issue only presents itself when it's using a separate control bus
-actually. If it's controlled through DCS, the panel / bridge will be a
-children node of the DSI host and will only be probed when the host is
-registered, so we don't have this issue.
-
-> And one more thing - you use "display driver" term but this is also case=
-=20
-> of any bridge providing DSI bus - there are already 3 such bridges in=20
-> kernel - cdns, nwl, synopsys, tc358768, maybe "DSI host" would be better=
-=20
-> term.
-
-Good point, I'll change it.
-
-> And another thing - downstream device can be bridge or *panel*, it would=
-=20
-> be good to mention that panels also should follow this pattern.
-
-We're pretty much forced to do this with panels though. They don't have
-an attach hook unlike bridges so we don't have much other options than
-putting it in probe.
-
-> Btw this is another place where word bridge can be 1:1 replaced by word=
-=20
-> panel - it clearly suggest that DRM subsystem waits for brave men who=20
-> proposes patches unifying them, we would save lot of words, and lines of=
-=20
-> code if we could use drm_sink instead of "if (sink is bridge) do sth=20
-> else do sth-similar-but-with-drm_panel-interface".
-
-I agree. In the previous iteration I had this patch that was a step in
-this direction:
-https://lore.kernel.org/dri-devel/20210728133229.2247965-3-maxime@cerno.tec=
-h/
-
-Even though it's not relevant to this series anymore, I still plan on
-submitting it and converting as many users as possible (if my coccinelle
-skills allows me to at least).
-
-Maxime
-
---dfbzll24nb43ccgk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYSdXTgAKCRDj7w1vZxhR
-xQTyAQDeyoP4blj3lnV14h3xpZT0ygLGV8h27f6dZz75hm4RngEA+IWYrkjnTVLs
-6ZSNtxNkmhNsKxWPxqM9FBIMfzghzQU=
-=5p/2
------END PGP SIGNATURE-----
-
---dfbzll24nb43ccgk--
