@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0843F8FEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83D03F8FF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243592AbhHZUyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 16:54:04 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:43772 "EHLO vps0.lunn.ch"
+        id S243561AbhHZU5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 16:57:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243561AbhHZUyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 16:54:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=qC9/a8QwjDtxsvgwRxW0lzbEcViqsOvHK7tcWNdMLbQ=; b=zMzBLIqCfZ/pbHHDZG1oQ6Pt2v
-        HrbBiDt6y4JivV0Gvj8EA/iOEiybhzEbk+LqeG7Es/mHBDe2MtxmetfUgQS0wWsnnBDgehyNvgyC9
-        p34jvzvu2WpMJGjkvBG2OPZlfGvsW6AW8I/B7J9KdJKWvPXXWB+wf4UC6YV2pRFhu4Ps=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mJMN0-0040b5-3d; Thu, 26 Aug 2021 22:53:06 +0200
-Date:   Thu, 26 Aug 2021 22:53:06 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <YSf/Mps9E77/6kZX@lunn.ch>
-References: <20210826074526.825517-1-saravanak@google.com>
- <20210826074526.825517-2-saravanak@google.com>
- <YSeTdb6DbHbBYabN@lunn.ch>
- <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
+        id S230125AbhHZU5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 16:57:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4BAB60FDA;
+        Thu, 26 Aug 2021 20:56:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630011379;
+        bh=kkWRiiADlno9wmE5ee4PEol8ApTDqXy3BKb1qSmxOUw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=iwF7sBUZJX8hBAiLlR1geRdpV6Wn+bPa29xxNlMqewb8z6ds6bRs4UgcY8kVyXYFZ
+         qXlzqBO+FGXlWJeEj2/1TBpG3L0ogSiyE6ZCnvOzptCEdOsE6JY4ozMEkJIowAmS/A
+         usBwZh11fDYbmfXcL6XBBA2v29KR+ZLIlcd0L36wsTFcgVRQhHtC72KsUYxgFqL824
+         VivT3hMfw4IgvZW8OQHGzUF874t/UHll1z7RaktzId2Voz7c3ORr83pQ492p/BAq9Z
+         PZ/wOHKYII7HTh+6TUmmf+buELMATWEIQ/lSeqQl0IkH+61eQOQXQGI7AlbAhLCDSb
+         DOF2NN/pbGM6g==
+Date:   Thu, 26 Aug 2021 15:56:17 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Marek =?iso-8859-1?Q?Marczykowski-G=F3recki?= 
+        <marmarek@invisiblethingslab.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v2] PCI/MSI: Skip masking MSI-X on Xen PV
+Message-ID: <20210826205617.GA3716609@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210826170342.135172-1-marmarek@invisiblethingslab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The  DT node in [2] is probed by realtek_smi_probe() [3]. The call flow is:
-> realtek_smi_probe()
->   -> dsa_register_switch()
->     -> dsa_switch_probe()
->       -> dsa_tree_setup()
->         -> dsa_tree_setup_switches()
->           -> dsa_switch_setup()
->             -> ds->ops->setup(ds)
->               -> rtl8366rb_setup()
->                 -> realtek_smi_setup_mdio()
->                   -> of_mdiobus_register()
->                      This scans the MDIO bus/DT and device_add()s the PHYs
->           -> dsa_port_setup()
->             -> dsa_port_link_register_of()
->               -> dsa_port_phylink_register()
->                 -> phylink_of_phy_connect()
->                   -> phylink_fwnode_phy_connect()
->                     -> phy_attach_direct()
->                        This checks if PHY device has already probed (by
->                        checking for dev->driver). If not, it forces the
->                        probe of the PHY using one of the generic PHY
->                        drivers.
+On Thu, Aug 26, 2021 at 07:03:42PM +0200, Marek Marczykowski-Górecki wrote:
+> When running as Xen PV guest, masking MSI-X is a responsibility of the
+> hypervisor. Guest has no write access to relevant BAR at all - when it
+> tries to, it results in a crash like this:
 > 
-> So within dsa_register_switch() the PHY device is added and then
-> expected to have probed in the same thread/calling context. As stated
-> earlier, this is not guaranteed by the driver core.
+>     BUG: unable to handle page fault for address: ffffc9004069100c
+>     #PF: supervisor write access in kernel mode
+>     #PF: error_code(0x0003) - permissions violation
+>     PGD 18f1c067 P4D 18f1c067 PUD 4dbd067 PMD 4fba067 PTE 80100000febd4075
+>     Oops: 0003 [#1] SMP NOPTI
+>     CPU: 0 PID: 234 Comm: kworker/0:2 Tainted: G        W         5.14.0-rc7-1.fc32.qubes.x86_64 #15
+>     Workqueue: events work_for_cpu_fn
+>     RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
+>     Code: 2f 96 ff 48 89 44 24 28 48 89 c7 48 85 c0 0f 84 f6 01 00 00 45 0f b7 f6 48 8d 40 0c ba 01 00 00 00 49 c1 e6 04 4a 8d 4c 37 1c <89> 10 48 83 c0 10 48 39 c1 75 f5 41 0f b6 44 24 6a 84 c0 0f 84 48
+>     RSP: e02b:ffffc9004018bd50 EFLAGS: 00010212
+>     RAX: ffffc9004069100c RBX: ffff88800ed412f8 RCX: ffffc9004069105c
+>     RDX: 0000000000000001 RSI: 00000000000febd4 RDI: ffffc90040691000
+>     RBP: 0000000000000003 R08: 0000000000000000 R09: 00000000febd404f
+>     R10: 0000000000007ff0 R11: ffff88800ee8ae40 R12: ffff88800ed41000
+>     R13: 0000000000000000 R14: 0000000000000040 R15: 00000000feba0000
+>     FS:  0000000000000000(0000) GS:ffff888018400000(0000) knlGS:0000000000000000
+>     CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: ffff8000007f5ea0 CR3: 0000000012f6a000 CR4: 0000000000000660
+>     Call Trace:
+>      e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
+>      e1000_probe+0x41f/0xdb0 [e1000e]
+>      local_pci_probe+0x42/0x80
+>     (...)
+> 
+> There is pci_msi_ignore_mask variable for bypassing MSI(-X) masking on Xen
+> PV, but msix_mask_all() missed checking it. Add the check there too.
+> 
+> Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 
-Have you looked at:
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-commit 16983507742cbcaa5592af530872a82e82fb9c51
-Author: Heiner Kallweit <hkallweit1@gmail.com>
-Date:   Fri Mar 27 01:00:22 2020 +0100
-
-    net: phy: probe PHY drivers synchronously
-
-See the full commit message, but the code change is:
-
-iff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 3b8f6b0b47b5..d543df282365 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -2577,6 +2577,7 @@ int phy_driver_register(struct phy_driver *new_driver, struct module *owner)
-        new_driver->mdiodrv.driver.probe = phy_probe;
-        new_driver->mdiodrv.driver.remove = phy_remove;
-        new_driver->mdiodrv.driver.owner = owner;
-+       new_driver->mdiodrv.driver.probe_type = PROBE_FORCE_SYNCHRONOUS;
- 
-        retval = driver_register(&new_driver->mdiodrv.driver);
-        if (retval) {
-
-How does this add to the overall picture?
-
-    Andrew
+> ---
+> Cc: xen-devel@lists.xenproject.org
+> 
+> Changes in v2:
+> - update commit message (MSI -> MSI-X)
+> ---
+>  drivers/pci/msi.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index e5e75331b415..3a9f4f8ad8f9 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -776,6 +776,9 @@ static void msix_mask_all(void __iomem *base, int tsize)
+>  	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+>  	int i;
+>  
+> +	if (pci_msi_ignore_mask)
+> +		return;
+> +
+>  	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+>  		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+>  }
+> -- 
+> 2.31.1
+> 
