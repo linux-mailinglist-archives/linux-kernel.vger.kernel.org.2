@@ -2,194 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E307F3F8B43
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC1D3F8B45
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242951AbhHZPn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:43:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45236 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242931AbhHZPn2 (ORCPT
+        id S242962AbhHZPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243008AbhHZPoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:43:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629992560;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TL5u9tECP3kYBRcPbO+m/Fi77x2CBwzRUizUypmhiIA=;
-        b=G8rZn1YghAZIO7cdD5cqbQNEga+fbyDLgfTz7SAUU03Ic2ExWjstio1QZuSEd/SnTg4KH8
-        3J3En++9eI+a8czzumVqsAVBTenNjvfTHKTp1v0dwPiby25+jZg4sungTekKcYN0rPsOSX
-        XgsTIp4yTyVudiKjqmUXQ2EFqHbRuZc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-49-0-5mt3c0O1aU_yffntNg9w-1; Thu, 26 Aug 2021 11:42:38 -0400
-X-MC-Unique: 0-5mt3c0O1aU_yffntNg9w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8CA84760C4;
-        Thu, 26 Aug 2021 15:42:37 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.134])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1951A60C04;
-        Thu, 26 Aug 2021 15:42:29 +0000 (UTC)
-Date:   Thu, 26 Aug 2021 16:42:28 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        vgoyal@redhat.com, jasowang@redhat.com
-Subject: Re: [RFC PATCH 0/1] virtio: false unhandled irqs from
- vring_interrupt()
-Message-ID: <YSe2ZP53wesBFdNR@stefanha-x1.localdomain>
-References: <20210824105944.172659-1-stefanha@redhat.com>
- <20210824072622-mutt-send-email-mst@kernel.org>
+        Thu, 26 Aug 2021 11:44:22 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78715C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:43:34 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id q17so5363290edv.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=RTmjjgKNf1oCjSw/UGsuRv5cqlu6x5zYZlIgXT+yaLw=;
+        b=lJrbCB4ysWZEZarm93Wi761yWOa7QX6uuPO+ZLMF/GnkYGg5Uwp0Yomk0Vg6y9ZJk/
+         CRv9GBrp1fe2U8X2Rbq7nSiGL8GFkJolMCEvPTCwFAazvpdoFU6mMyK8w126BPWiDmWD
+         g9RlrtPyMYB/J8vrYRvtMz6KEebkG0SJl6C+g4MaU/w7FZezv4EHltZDtTrw1l1+57v+
+         fjjRqAwBwezlB1Copa/4O+ril4Hnv6xsaMxx2am8WnREGpmDWnzl+o3kXWakNPKo5Kzf
+         IVmBZjSnVl4BckAjMG/4R66jaPA5lCTBKdLmpFu07MnEfnJSrs+95sc2uhl2Fy8WDoG7
+         jbjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=RTmjjgKNf1oCjSw/UGsuRv5cqlu6x5zYZlIgXT+yaLw=;
+        b=UkQ2W9JlivMsLP2HhiOAoJxiaXJScWis9Y4a7O6KjjG/b9CmbyPPk2ga9msZF/jWXr
+         5rl1iQxAujVwAQIUfZ+TBbonkpyyVDJjQo/VQFWk3k5/0/X1wRHu9vi72PdnSmLeHYYo
+         zZ9iDTJnp94SubSnudJ/mhl8g5WQie7qiImchTkniHZ3yhhonevkqhQMq0yasY2vrN2I
+         6kbyEo5oEFtm5g8jNIn4u6mgOWz0BUp/3zqc/efngE/pp2tuN5ipaztUtcI20BhA/RWn
+         UPhySX76JZqG4CLxcWZ4orlm74yrLzf4j5nt/9ZV7VNXeCzkBu7hml6UwedfvRcU5VUL
+         ODHw==
+X-Gm-Message-State: AOAM530RXbeHAik/VkUN4MOKXAo4qv+Q+73/pV023tl6u/9A9HuQOeKI
+        qxCDTiNuF/jrBVlbbeIAERk=
+X-Google-Smtp-Source: ABdhPJwkXf1Qnwx1ulvB0BzEOAhffXq4rQNByw4ajefIueu5Z9lvMH5E2+n0wNBe02BpglytvaB3Rg==
+X-Received: by 2002:aa7:d54f:: with SMTP id u15mr4926461edr.178.1629992613045;
+        Thu, 26 Aug 2021 08:43:33 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id q6sm2025099edd.26.2021.08.26.08.43.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 08:43:32 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH v3 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
+Date:   Thu, 26 Aug 2021 17:43:31 +0200
+Message-ID: <1897490.lth8vsWHjN@localhost.localdomain>
+In-Reply-To: <YSepDdf+nHekuIxA@kroah.com>
+References: <20210825035311.8910-1-fmdefrancesco@gmail.com> <47945171.69uSEkksVi@localhost.localdomain> <YSepDdf+nHekuIxA@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="p1n432BvQg3vJsSA"
-Content-Disposition: inline
-In-Reply-To: <20210824072622-mutt-send-email-mst@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thursday, August 26, 2021 4:45:33 PM CEST Greg Kroah-Hartman wrote:
+> On Thu, Aug 26, 2021 at 04:24:35PM +0200, Fabio M. De Francesco wrote:
+> > On Thursday, August 26, 2021 12:48:37 PM CEST Greg Kroah-Hartman wrote:
+> > > On Wed, Aug 25, 2021 at 05:53:10AM +0200, Fabio M. De Francesco wrote:
+> > > > Replace usb_control_msg() with the new usb_control_msg_recv() and
+> > > > usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
+> > > > Remove no more needed variables. Move out of an if-else block
+> > > > some code that it is no more dependent on status < 0. Remove
+> > > > redundant code depending on status > 0 or status == len.
+> > > > 
+> > > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > ---
+> > > > 
+> > > > v2->v3: Restore the test for success of usb_control_message_recv/send
+> > > > that was inadvertently removed. Issue reported by Pavel Skripkin.
+> > > > 
+> > > > v1->v2: According to suggestions by Christophe JAILLET 
+> > > > <christophe.jaillet@wanadoo.fr>, remove 'pipe' and pass an explicit 0
+> > > > to the new API. According to suggestions by Pavel Skripkin 
+> > > > <paskripkin@gmail.com>, remove an extra if-else that is no more needed, 
+> > > > since status can be 0 and < 0 and there is no 3rd state, like it was before.
+> > > > Many thanks to them and also to Phillip Potter <phil@philpotter.co.uk>
+> > > > who kindly offered his time for the purpose of testing v1.
+> > > > 
+> > > >  drivers/staging/r8188eu/hal/usb_ops_linux.c | 45 ++++++++-------------
+> > > >  1 file changed, 17 insertions(+), 28 deletions(-)
+> > > 
+> > > This doesn't apply to my tree at all.  Please rebase and resend.
+> > 
+> > This series cannot apply to your tree until another one of mine is applied 
+> > ("staging: r8188eu: Remove _enter/_exit_critical_mutex()"). This series builds
+> > on the previous patch.
+> 
+> When you do that, please let me know somehow that this is the case,
+> otherwise how am I supposed to guess that?
 
---p1n432BvQg3vJsSA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Correct, my fault :( 
 
-On Tue, Aug 24, 2021 at 07:31:29AM -0400, Michael S. Tsirkin wrote:
-> On Tue, Aug 24, 2021 at 11:59:43AM +0100, Stefan Hajnoczi wrote:
-> > While investigating an unhandled irq from vring_interrupt() with virtio=
-fs I
-> > stumbled onto a possible race that also affects virtio_gpu. This theory=
- is
-> > based on code inspection and hopefully you can point out something that=
- makes
-> > this a non-issue in practice :).
-> >=20
-> > The vring_interrupt() function returns IRQ_NONE when an MSI-X interrupt=
- is
-> > taken with no used (completed) buffers in the virtqueue. The kernel dis=
-ables
-> > the irq and the driver is no longer receives irqs when this happens:
-> >=20
-> >   irq 77: nobody cared (try booting with the "irqpoll" option)
-> >   ...
-> >   handlers:
-> >   [<00000000a40a49bb>] vring_interrupt
-> >   Disabling IRQ #77
-> >=20
-> > Consider the following:
-> >=20
-> > 1. An virtiofs irq is handled and the virtio_fs_requests_done_work() wo=
-rk
-> >    function is scheduled to dequeue used buffers:
-> >    vring_interrupt() -> virtio_fs_vq_done() -> schedule_work()
-> >=20
-> > 2. The device adds more used requests and just before...
-> >=20
-> > 3. ...virtio_fs_requests_done_work() empties the virtqueue with
-> >    virtqueue_get_buf().
-> >=20
-> > 4. The device raises the irq and vring_interrupt() is called after
-> >    virtio_fs_requests_done_work emptied the virtqueue:
-> >=20
-> >    irqreturn_t vring_interrupt(int irq, void *_vq)
-> >    {
-> >        struct vring_virtqueue *vq =3D to_vvq(_vq);
-> >=20
-> >        if (!more_used(vq)) {
-> >            pr_debug("virtqueue interrupt with no work for %p\n", vq);
-> >            return IRQ_NONE;
-> >            ^^^^^^^^^^^^^^^^
-> >=20
-> > I have included a patch that switches virtiofs from spin_lock() to
-> > spin_lock_irqsave() to prevent vring_interrupt() from running while the
-> > virtqueue is processed from a work function.
-> >=20
-> > virtio_gpu has a similar case where virtio_gpu_dequeue_ctrl_func() and
-> > virtio_gpu_dequeue_cursor_func() work functions only use spin_lock().
-> > I think this can result in the same false unhandled irq problem as virt=
-iofs.
-> >=20
-> > This race condition could in theory affect all drivers. The VIRTIO
-> > specification says:
-> >=20
-> >   Neither of these notification suppression methods are reliable, as th=
-ey are
-> >   not synchronized with the device, but they serve as useful optimizati=
-ons.
-> >=20
-> > If virtqueue_disable_cb() is just a hint and might not disable virtqueu=
-e irqs
-> > then virtio_net and other drivers have a problem because because an irq=
- could
-> > be raised while the driver is dequeuing used buffers. I think we haven'=
-t seen
-> > this because software VIRTIO devices honor virtqueue_disable_cb(). Hard=
-ware
-> > devices might cache the value and not disable notifications for some ti=
-me...
-> >=20
-> > Have I missed something?
-> >=20
-> > The virtiofs patch I attached is being stress tested to see if the unha=
-ndled
-> > irqs still occur.
-> >=20
-> > Stefan Hajnoczi (1):
-> >   fuse: disable local irqs when processing vq completions
-> >=20
-> >  fs/fuse/virtio_fs.c | 15 ++++++++++-----
-> >  1 file changed, 10 insertions(+), 5 deletions(-)
->=20
-> Fundamentally it is not a problem to have an unhandled IRQ
-> once in a while. It's only a problem if this happens time
-> after time.
+To my defense I can only say that I really had forgot that there were the 
+above-mentioned previous patch still in your queue. So I didn't immediately 
+realized that I had to inform you somehow of this kind of dependence.
+I knew that only yesterday, when Pavel wanted to apply this patch to 
+his local copy of your then current tree and he couldn't. After some thoughts
+I understood that the latter depended on the former, but I guess it was too late 
+to inform you. Furthermore, yesterday I thought that you would have applied 
+in a FIFO order and that you wouldn't notice any conflict.
 
-That virtiofs patch in this series passed the stress test. We must have
-been getting too many unhandled interrupts due to processing the
-virtqueue from a work function that's not synchronized with
-vring_interrupt() irq handler.
+Actually I was wrong, because you didn't apply the former and instead asked
+me to test it (we talked about that patch some minutes ago in another message).
+ 
+> > > But first, are you sure you want to use these new functions here?  This
+> > > is a "common" function that is called from different places for
+> > > different things.  How about unwinding the callers of this function
+> > > first, to see if they really need all of the complexity in this function
+> > > at all, and if not, then call the real USB function in those locations
+> > > instead.
+> > 
+> > I think it could be fine to simply refactor usbctrl_vendorreq() to use the newer
+> > API with no necessity to directly use them at least in six different places in
+> > hal/usb_ops_linux.c. The only users of this helper are usb_read8/16/32() and
+> > usb_write8/16/32(). Why do you prefer using usb_control_msg_recv/send() 
+> > directly in the callers? I guess it would lead to redundant code, more or less
+> > the same code repeated again and again within the above-mentioned six callers.
+> > What do we improve by doing as you suggest? What am I missing?
+> 
+> If you unwind the mess, you will find that the code will be much easier
+> to understand.
+> 
+> As an example, look at usb_write8().  Where is it ever called?  Why do
+> we have it at all?  It's only used in 1 place, and then that function
+> unwinds into rtw_write8(), which is used in a lot of places, and never
+> checked at all, making the majority of the logic in this function
+> totally unneeded and useless.
+> 
+> Same for rtw_write16() and rtw_write32().  After unwinding the mess you
+> see that the logic you are working to try to clean up in this patch
+> series is pretty much not used / needed at all, right?  So why do it?
+> 
+> Unwind the mess into a useful set of functions the driver can actually
+> call that is not 2-4 function pointers deep and then we can talk about
+> unifying things, if they are really needed.  But right now, it's
+> impossible to tell.
 
-> Does the kernel you are testing include
-> commit 8d622d21d24803408b256d96463eac4574dcf067
-> Author: Michael S. Tsirkin <mst@redhat.com>
-> Date:   Tue Apr 13 01:19:16 2021 -0400
->=20
->     virtio: fix up virtio_disable_cb
->=20
-> ?
->=20
-> If not it's worth checking whether the latest kernel still
-> has the issue.
->=20
-> Note cherry picking that commit isn't trivial there are
-> a bunch of dependencies.
+Yeah, I know how is the call chain from top (rtw_read/write8/16/32()) to bottom
+(usbctrl_vendorreq()) and then to the new USB core API. 
 
-We'll test a recent kernel with just your patch to see if it solves the
-issue.
+Pavel and I have been talking about this topic while he was working on his 
+series ("r8188eu: avoid uninit value bugs").
 
-Stefan
+Aside from this, I re-thought about what you write above and I too find that
+having 2-4 function pointers deep is a bad design. Anyway I'm stuck in 
+waiting to see what Pavel will submit with his reworking, because I don't 
+desire to make patches that conflict with his.
 
---p1n432BvQg3vJsSA
-Content-Type: application/pgp-signature; name="signature.asc"
+As you often say to all us: there is no hurry! So, I'll wait to see Pavel's final
+work before changing whatever could conflict with him.
 
------BEGIN PGP SIGNATURE-----
+> good luck!
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmEntmQACgkQnKSrs4Gr
-c8iCLgf9FzorDitp2EJ1Nz3a94TT21Z/aTtXJ3OTMhz4mXV6BbmWUfMvOiP9DHkU
-tgW/TJdsPDrsjZ2C8JIPvf8w+kj+JBdMq/cviexfiVhM9YEEbBsprp5/s3mwrl6b
-QTrI9pZPBQZ66GCjnn7TgZQn/nkf7wLlmGUO6IxpKzG6a7HY2e6AGxXG+bK3GpH+
-v17xukkpq+kFW9owFqTcVy3BVLd6PAdApxTC8kdDjrZjGGuDsCgBaF7A4/O0d5wW
-pBLHCxzEuu8zTs0E8maOd7m4FSuDc5sVwevttYyELPzDguZO2ei402piFe8mKaaa
-JE8Sdv5F1JiF9izaCybwdQGTL14+dg==
-=2oR+
------END PGP SIGNATURE-----
+Thanks, I'll need it :-)
 
---p1n432BvQg3vJsSA--
+And thanks for the time you spent to clarify your thoughts about these topics.
+
+Fabio
+ 
+> greg k-h
+
+
 
