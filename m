@@ -2,384 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2268E3F89BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F043F89B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242834AbhHZOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:06:36 -0400
-Received: from mga02.intel.com ([134.134.136.20]:50723 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242769AbhHZOGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:06:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="204949281"
-X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
-   d="gz'50?scan'50,208,50";a="204949281"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 07:05:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
-   d="gz'50?scan'50,208,50";a="516631626"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Aug 2021 07:05:17 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mJG0L-0001J3-3y; Thu, 26 Aug 2021 14:05:17 +0000
-Date:   Thu, 26 Aug 2021 22:04:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     kbuild-all@lists.01.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] init: bootconfig: Remove all bootconfig data when
- the init memory is removed
-Message-ID: <202108262116.U3mQkGpT-lkp@intel.com>
-References: <162996912688.236535.4047855429538984099.stgit@devnote2>
+        id S242820AbhHZOGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242803AbhHZOGR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 10:06:17 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19ADC0613C1;
+        Thu, 26 Aug 2021 07:05:29 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id r26so4999633oij.2;
+        Thu, 26 Aug 2021 07:05:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mFI6g9juc0kBnIDemV7lQ2adsjifo5ttPrJfgHBwY/4=;
+        b=CEwiFq1Y3hA/QNNa+AKsCqfRFQyUImhYuADjDk9CHgUEKfukwvzr0C/EL2u3FEvRlq
+         ICosjARFLY2NSnDDvcWxKiA6NwyPFe1IrUwauDUhsLCHNu4rFChuxULWgw+vzFOUCLXD
+         K+mH0CZ1pw0Z0ZhsBlo9knkjhf/h67FXTVcgk1HgtKv/YVEwV0761ly8cU/H0/I6LuqV
+         FQ5KYp3z0R5MVwsKcyLQ0BkZ9eHZAVXdPW2Xgu5cvRsW6ge0CoNFOlbY2r5qMlKBDRg4
+         BQ1ztAABzF3c9Q3MAqo1nmZkaTe/xbcE35i26Fz94vOGsbbKCXH96/J1ZCagvElVO5jk
+         gp4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mFI6g9juc0kBnIDemV7lQ2adsjifo5ttPrJfgHBwY/4=;
+        b=jnVhHglIzHPggzBOTVgAFy71Ij71zXYikOD9j8Ofayu7xbY6fsnOsC7s8SKJWRFSvq
+         tyf0q6+gHKmsUJZhkICF/k1yBim0RTAoitdMM+PMkOcbagYUxUk8Iycz9QWsYPPQYTiB
+         PM1lhSdMA6jrDRlw+R/7aZvsDpvf8P00E7uYURv7Lnw9mgCPoyBKnodr/mnVZsQIcWiL
+         ftmqlFd4wlGGwozsbPZx/UEv64z8JITbB0WJ9fMSxL8XgcDIZQE4PZpzutf9b28JjdLa
+         k5YKQO7ZZHnu+0INfBXfoHisiru73Qao0fFdffxS6dFrvsnSwNs+fhyr8UXPh6J3iBhj
+         COBA==
+X-Gm-Message-State: AOAM532r7WGE7Dx4Kt5Kcsyl0eSCZFINpR2Azu3l2PCPtRGFy0K/Fop4
+        oatKFlhbEy+Mm4eTDVYcKdGs99mtK6Fhd68PLIE=
+X-Google-Smtp-Source: ABdhPJwTbhHgqTom3MhN0DTcJCapRPfMYmj3RfFsie1JUHe65ba7hVxSF9BMnHyJI4N2QyKYFqC3H5F8/WCefkqDEwo=
+X-Received: by 2002:aca:c2c6:: with SMTP id s189mr10993033oif.123.1629986728756;
+ Thu, 26 Aug 2021 07:05:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-In-Reply-To: <162996912688.236535.4047855429538984099.stgit@devnote2>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAL+tcoCrOc1L+Y_SeScYJXjn542GYvu9n7EMhN_75h-P4FQFoQ@mail.gmail.com>
+ <20210826140101.7944-1-kerneljasonxing@gmail.com>
+In-Reply-To: <20210826140101.7944-1-kerneljasonxing@gmail.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Thu, 26 Aug 2021 22:04:52 +0800
+Message-ID: <CAL+tcoBgb18JwqFTTva0eWBEM2U38222OCbdKQxFmLOpiAm+eA@mail.gmail.com>
+Subject: Re: [PATCH v3] ixgbe: let the xdpdrv work with more than 64 cpus
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 26, 2021 at 10:01 PM <kerneljasonxing@gmail.com> wrote:
+>
+> From: Jason Xing <xingwanli@kuaishou.com>
+>
+> Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
+> server is equipped with more than 64 cpus online. So it turns out that
+> the loading of xdpdrv causes the "NOMEM" failure.
+>
+> Actually, we can adjust the algorithm and then make it work, which has
+> no harm at all, only if we set the maxmium number of xdp queues.
+>
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry about the wrong v3 patch. I forgot to update the commit message.
+So I'm going to send the v4 patch.
 
-Hi Masami,
+Jason
 
-I love your patch! Yet something to improve:
-
-[auto build test ERROR on linus/master]
-[also build test ERROR on v5.14-rc7 next-20210826]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Masami-Hiramatsu/bootconfig-Cleanup-and-reorder-the-init-parameter-from-bootconfig/20210826-171355
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 73f3af7b4611d77bdaea303fb639333eb28e37d7
-config: arc-axs101_defconfig (attached as .config)
-compiler: arc-elf-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/61f0020919a35211a559e16843b94f5429b1aba3
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Masami-Hiramatsu/bootconfig-Cleanup-and-reorder-the-init-parameter-from-bootconfig/20210826-171355
-        git checkout 61f0020919a35211a559e16843b94f5429b1aba3
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   arc-elf-ld: init/main.o: in function `kernel_init':
-   main.c:(.ref.text+0xba): undefined reference to `xbc_destroy_all'
->> arc-elf-ld: main.c:(.ref.text+0xba): undefined reference to `xbc_destroy_all'
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---SUOF0GtieIMvvwua
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-
---SUOF0GtieIMvvwua--
+> Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
+> Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> ---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe.h           | 15 ++++-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c       |  9 ++-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      | 64 ++++++++++++++++------
+>  .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |  1 +
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  9 +--
+>  5 files changed, 73 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+> index a604552..5f7f181 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+> @@ -82,6 +82,8 @@
+>  #define IXGBE_2K_TOO_SMALL_WITH_PADDING \
+>  ((NET_SKB_PAD + IXGBE_RXBUFFER_1536) > SKB_WITH_OVERHEAD(IXGBE_RXBUFFER_2K))
+>
+> +DECLARE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
+> +
+>  static inline int ixgbe_compute_pad(int rx_buf_len)
+>  {
+>         int page_size, pad_size;
+> @@ -351,6 +353,7 @@ struct ixgbe_ring {
+>         };
+>         u16 rx_offset;
+>         struct xdp_rxq_info xdp_rxq;
+> +       spinlock_t tx_lock;     /* used in XDP mode */
+>         struct xsk_buff_pool *xsk_pool;
+>         u16 ring_idx;           /* {rx,tx,xdp}_ring back reference idx */
+>         u16 rx_buf_len;
+> @@ -375,7 +378,7 @@ enum ixgbe_ring_f_enum {
+>  #define IXGBE_MAX_FCOE_INDICES         8
+>  #define MAX_RX_QUEUES                  (IXGBE_MAX_FDIR_INDICES + 1)
+>  #define MAX_TX_QUEUES                  (IXGBE_MAX_FDIR_INDICES + 1)
+> -#define MAX_XDP_QUEUES                 (IXGBE_MAX_FDIR_INDICES + 1)
+> +#define IXGBE_MAX_XDP_QS               (IXGBE_MAX_FDIR_INDICES + 1)
+>  #define IXGBE_MAX_L2A_QUEUES           4
+>  #define IXGBE_BAD_L2A_QUEUE            3
+>  #define IXGBE_MAX_MACVLANS             63
+> @@ -629,7 +632,7 @@ struct ixgbe_adapter {
+>
+>         /* XDP */
+>         int num_xdp_queues;
+> -       struct ixgbe_ring *xdp_ring[MAX_XDP_QUEUES];
+> +       struct ixgbe_ring *xdp_ring[IXGBE_MAX_XDP_QS];
+>         unsigned long *af_xdp_zc_qps; /* tracks AF_XDP ZC enabled rings */
+>
+>         /* TX */
+> @@ -772,6 +775,14 @@ struct ixgbe_adapter {
+>  #endif /* CONFIG_IXGBE_IPSEC */
+>  };
+>
+> +static inline int ixgbe_determine_xdp_q_idx(int cpu)
+> +{
+> +       if (static_key_enabled(&ixgbe_xdp_locking_key))
+> +               return cpu % IXGBE_MAX_XDP_QS;
+> +       else
+> +               return cpu;
+> +}
+> +
+>  static inline u8 ixgbe_max_rss_indices(struct ixgbe_adapter *adapter)
+>  {
+>         switch (adapter->hw.mac.type) {
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+> index 0218f6c..884bf99 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+> @@ -299,7 +299,10 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
+>
+>  static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
+>  {
+> -       return adapter->xdp_prog ? nr_cpu_ids : 0;
+> +       int queues;
+> +
+> +       queues = min_t(int, IXGBE_MAX_XDP_QS, num_online_cpus());
+> +       return adapter->xdp_prog ? queues : 0;
+>  }
+>
+>  #define IXGBE_RSS_64Q_MASK     0x3F
+> @@ -947,6 +950,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
+>                 ring->count = adapter->tx_ring_count;
+>                 ring->queue_index = xdp_idx;
+>                 set_ring_xdp(ring);
+> +               spin_lock_init(&ring->tx_lock);
+>
+>                 /* assign ring to adapter */
+>                 WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
+> @@ -1032,6 +1036,9 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
+>         adapter->q_vector[v_idx] = NULL;
+>         __netif_napi_del(&q_vector->napi);
+>
+> +       if (static_key_enabled(&ixgbe_xdp_locking_key))
+> +               static_branch_dec(&ixgbe_xdp_locking_key);
+> +
+>         /*
+>          * after a call to __netif_napi_del() napi may still be used and
+>          * ixgbe_get_stats64() might access the rings on this vector,
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> index 14aea40..a878f40 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -165,6 +165,9 @@ static int ixgbe_notify_dca(struct notifier_block *, unsigned long event,
+>  MODULE_DESCRIPTION("Intel(R) 10 Gigabit PCI Express Network Driver");
+>  MODULE_LICENSE("GPL v2");
+>
+> +DEFINE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
+> +EXPORT_SYMBOL(ixgbe_xdp_locking_key);
+> +
+>  static struct workqueue_struct *ixgbe_wq;
+>
+>  static bool ixgbe_check_cfg_remove(struct ixgbe_hw *hw, struct pci_dev *pdev);
+> @@ -2422,13 +2425,10 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
+>                 xdp_do_flush_map();
+>
+>         if (xdp_xmit & IXGBE_XDP_TX) {
+> -               struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
+> +               int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
+> +               struct ixgbe_ring *ring = adapter->xdp_ring[index];
+>
+> -               /* Force memory writes to complete before letting h/w
+> -                * know there are new descriptors to fetch.
+> -                */
+> -               wmb();
+> -               writel(ring->next_to_use, ring->tail);
+> +               ixgbe_xdp_ring_update_tail_locked(ring);
+>         }
+>
+>         u64_stats_update_begin(&rx_ring->syncp);
+> @@ -6320,7 +6320,7 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
+>         if (ixgbe_init_rss_key(adapter))
+>                 return -ENOMEM;
+>
+> -       adapter->af_xdp_zc_qps = bitmap_zalloc(MAX_XDP_QUEUES, GFP_KERNEL);
+> +       adapter->af_xdp_zc_qps = bitmap_zalloc(IXGBE_MAX_XDP_QS, GFP_KERNEL);
+>         if (!adapter->af_xdp_zc_qps)
+>                 return -ENOMEM;
+>
+> @@ -8539,21 +8539,32 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
+>  int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
+>                         struct xdp_frame *xdpf)
+>  {
+> -       struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
+>         struct ixgbe_tx_buffer *tx_buffer;
+>         union ixgbe_adv_tx_desc *tx_desc;
+> +       struct ixgbe_ring *ring;
+>         u32 len, cmd_type;
+>         dma_addr_t dma;
+> +       int index, ret;
+>         u16 i;
+>
+>         len = xdpf->len;
+>
+> -       if (unlikely(!ixgbe_desc_unused(ring)))
+> -               return IXGBE_XDP_CONSUMED;
+> +       index = ixgbe_determine_xdp_q_idx(smp_processor_id());
+> +       ring = adapter->xdp_ring[index];
+> +
+> +       if (static_branch_unlikely(&ixgbe_xdp_locking_key))
+> +               spin_lock(&ring->tx_lock);
+> +
+> +       if (unlikely(!ixgbe_desc_unused(ring))) {
+> +               ret = IXGBE_XDP_CONSUMED;
+> +               goto out;
+> +       }
+>
+>         dma = dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
+> -       if (dma_mapping_error(ring->dev, dma))
+> -               return IXGBE_XDP_CONSUMED;
+> +       if (dma_mapping_error(ring->dev, dma)) {
+> +               ret = IXGBE_XDP_CONSUMED;
+> +               goto out;
+> +       }
+>
+>         /* record the location of the first descriptor for this packet */
+>         tx_buffer = &ring->tx_buffer_info[ring->next_to_use];
+> @@ -8590,7 +8601,11 @@ int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
+>         tx_buffer->next_to_watch = tx_desc;
+>         ring->next_to_use = i;
+>
+> -       return IXGBE_XDP_TX;
+> +       ret = IXGBE_XDP_TX;
+> +out:
+> +       if (static_branch_unlikely(&ixgbe_xdp_locking_key))
+> +               spin_unlock(&ring->tx_lock);
+> +       return ret;
+>  }
+>
+>  netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
+> @@ -10130,8 +10145,13 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+>                         return -EINVAL;
+>         }
+>
+> -       if (nr_cpu_ids > MAX_XDP_QUEUES)
+> +       /* if the number of cpus is much larger than the maximum of queues,
+> +        * we should stop it and then return with NOMEM like before.
+> +        */
+> +       if (num_online_cpus() > IXGBE_MAX_XDP_QS * 2)
+>                 return -ENOMEM;
+> +       else if (num_online_cpus() > IXGBE_MAX_XDP_QS)
+> +               static_branch_inc(&ixgbe_xdp_locking_key);
+>
+>         old_prog = xchg(&adapter->xdp_prog, prog);
+>         need_reset = (!!prog != !!old_prog);
+> @@ -10195,12 +10215,22 @@ void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring)
+>         writel(ring->next_to_use, ring->tail);
+>  }
+>
+> +void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring)
+> +{
+> +       if (static_branch_unlikely(&ixgbe_xdp_locking_key))
+> +               spin_lock(&ring->tx_lock);
+> +       ixgbe_xdp_ring_update_tail(ring);
+> +       if (static_branch_unlikely(&ixgbe_xdp_locking_key))
+> +               spin_unlock(&ring->tx_lock);
+> +}
+> +
+>  static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+>                           struct xdp_frame **frames, u32 flags)
+>  {
+>         struct ixgbe_adapter *adapter = netdev_priv(dev);
+>         struct ixgbe_ring *ring;
+>         int nxmit = 0;
+> +       int index;
+>         int i;
+>
+>         if (unlikely(test_bit(__IXGBE_DOWN, &adapter->state)))
+> @@ -10209,10 +10239,12 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+>         if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+>                 return -EINVAL;
+>
+> +       index = ixgbe_determine_xdp_q_idx(smp_processor_id());
+> +
+>         /* During program transitions its possible adapter->xdp_prog is assigned
+>          * but ring has not been configured yet. In this case simply abort xmit.
+>          */
+> -       ring = adapter->xdp_prog ? adapter->xdp_ring[smp_processor_id()] : NULL;
+> +       ring = adapter->xdp_prog ? adapter->xdp_ring[index] : NULL;
+>         if (unlikely(!ring))
+>                 return -ENXIO;
+>
+> @@ -10230,7 +10262,7 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+>         }
+>
+>         if (unlikely(flags & XDP_XMIT_FLUSH))
+> -               ixgbe_xdp_ring_update_tail(ring);
+> +               ixgbe_xdp_ring_update_tail_locked(ring);
+>
+>         return nxmit;
+>  }
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+> index 2aeec78..f6426d9 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+> @@ -23,6 +23,7 @@ void ixgbe_process_skb_fields(struct ixgbe_ring *rx_ring,
+>  void ixgbe_rx_skb(struct ixgbe_q_vector *q_vector,
+>                   struct sk_buff *skb);
+>  void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring);
+> +void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring);
+>  void ixgbe_irq_rearm_queues(struct ixgbe_adapter *adapter, u64 qmask);
+>
+>  void ixgbe_txrx_ring_disable(struct ixgbe_adapter *adapter, int ring);
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> index b1d22e4..82d00e4 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> @@ -334,13 +334,10 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
+>                 xdp_do_flush_map();
+>
+>         if (xdp_xmit & IXGBE_XDP_TX) {
+> -               struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
+> +               int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
+> +               struct ixgbe_ring *ring = adapter->xdp_ring[index];
+>
+> -               /* Force memory writes to complete before letting h/w
+> -                * know there are new descriptors to fetch.
+> -                */
+> -               wmb();
+> -               writel(ring->next_to_use, ring->tail);
+> +               ixgbe_xdp_ring_update_tail_locked(ring);
+>         }
+>
+>         u64_stats_update_begin(&rx_ring->syncp);
+> --
+> 1.8.3.1
+>
