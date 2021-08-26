@@ -2,53 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF70C3F8C36
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C213F8C40
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243092AbhHZQcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 12:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbhHZQcf (ORCPT
+        id S243128AbhHZQd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:33:56 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:37258 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230200AbhHZQdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:32:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CEEDC061757;
-        Thu, 26 Aug 2021 09:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vwCaRlHdeFqTGdftXcHYxGmcrUpfebbr5m9LF/gvgDk=; b=bykCvx5QsfuXXmjZrcaoBhSpUt
-        3dJb1z9QCYjDp2rreZvtVBhlWluqU3zc53DGBC6f7D5zMjjZDzjf/tWpFvLXZGIqwaIQizs/AMfFl
-        q7t/qq3NMK5DT1OPqWnpFZq6dPvTFVhtwRuE+vyos0mGT3XV5i25QKy1c9w8FeHXnxFnuQaqbmLa/
-        ohTjq/ktLWuiGjHz4UGxjDOumjISMERe509C11ppLyNfy2uokv0Fe/GbOyVJQUgjyDGzvclt4Azoy
-        AhalNIBiSQfcQytfZP+dQLgnLluue+hr8kkGW9vo/v4jYLhr6cj9G6E38Daj2PK7vy5r/dsX4a9Bq
-        /mtQaopw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJIHK-00DTRX-Vh; Thu, 26 Aug 2021 16:31:17 +0000
-Date:   Thu, 26 Aug 2021 17:30:58 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>
-Cc:     linux-next <linux-next@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Brian King <brking@linux.vnet.ibm.com>
-Subject: Re: [next-20210820][ppc][nvme/raid] pci unbind WARNS at
- fs/kernfs/dir.c:1524 kernfs_remove_by_name_ns+
-Message-ID: <YSfBwj1zo/w2GCH4@infradead.org>
-References: <063e6cf0-94ab-26f2-4fed-aebf1499127c@linux.vnet.ibm.com>
+        Thu, 26 Aug 2021 12:33:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1629995586; x=1661531586;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4vBxNrHrvW9Eol+s7Y1qFpDHC52cDYqjzJmQoqrhhlU=;
+  b=m/V6c/R5lNAGVxrUHtNTkPcVjFcqp5145T2zZ2dHIM64rVrykOJl+5LL
+   WK7f5U1LbFbZFGfQhHaFX47j/WoZ+KbJT+i0LiPpPBXUOTcu/5tb3T/E4
+   ybLXW8u6AdIILiVjfekW3ORe+4tGCg6zg3TKlJj1kmI2zLjMyAw/0b0jk
+   I=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 26 Aug 2021 09:33:06 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 09:33:06 -0700
+Received: from jhugo-lnx.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Thu, 26 Aug 2021 09:33:05 -0700
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+To:     <mani@kernel.org>, <hemantk@codeaurora.org>,
+        <bbhatt@codeaurora.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Pranjal Ramajor Asha Kanojiya" <quic_pkanojiy@quicinc.com>,
+        Jeffrey Hugo <quic_jhugo@quicinc.com>
+Subject: [PATCH] bus: mhi: core: Update comments on mhi_prepare_for_power_up
+Date:   Thu, 26 Aug 2021 10:32:55 -0600
+Message-ID: <1629995575-32389-1-git-send-email-quic_jhugo@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <063e6cf0-94ab-26f2-4fed-aebf1499127c@linux.vnet.ibm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Are you sure this is the very latest linux-next?  This should hav been
-fixed by:
+From: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
 
-    "block: add back the bd_holder_dir reference in bd_link_disk_holder"
+After "bus: mhi: core: Remove pre_init flag used for power purposes"
+mhi_prepare_for_power_up() is no longer an optional API. All users
+of MHI should call this API before power up sequence to initialize
+MHI context. Update the comments on this API to make this clear.
+
+Fixes: eee87072e2fb ("bus: mhi: core: Remove pre_init flag used for power purposes")
+Signed-off-by: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
+Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+---
+ include/linux/mhi.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index 56e7934..483b852 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -617,10 +617,8 @@ int mhi_get_free_desc_count(struct mhi_device *mhi_dev,
+ 
+ /**
+  * mhi_prepare_for_power_up - Do pre-initialization before power up.
+- *                            This is optional, call this before power up if
+- *                            the controller does not want bus framework to
+- *                            automatically free any allocated memory during
+- *                            shutdown process.
++ *                            Call this before MHI power up sequence to
++ *                            initialize MHI context.
+  * @mhi_cntrl: MHI controller
+  */
+ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl);
+-- 
+2.7.4
+
