@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530AE3F863A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3D33F863D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242057AbhHZLPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:15:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241883AbhHZLPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:15:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48A9F60F25;
-        Thu, 26 Aug 2021 11:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629976503;
-        bh=l34iZ6OiUVG6vmzegiT/WRNXQh5qJnN85muDTV61VIo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mL4+d1KRYd2xWMSSSMk4xdPCFBT/uF9nD3GvQfOqlpQqJYS6cGPpyaq17NNebjsm1
-         UYCPQYdr6c0pNbCubO8BIZLsbUjJ9cKJJgyRBqh1nhHrI3SzETz4YPd0dKbBufBnnI
-         +CTvXRD1WRnu6S/dT1F3cUnX7TpW9ARJsONXBxPE=
-Date:   Thu, 26 Aug 2021 13:14:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chris.chiu@canonical.com
-Subject: Re: [RFC PATCH 1/5] usb: core: hcd: Modularize HCD stop
- configuration in usb_stop_hcd()
-Message-ID: <YSd3sVYxptQP8WVN@kroah.com>
-References: <20210824105302.25382-1-kishon@ti.com>
- <20210824105302.25382-2-kishon@ti.com>
- <YSTu5KCQV242XuXV@kroah.com>
- <bb64fbf9-4342-7d36-de4f-0ab719b8f479@ti.com>
+        id S241491AbhHZLRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:17:40 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15218 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233736AbhHZLRj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 07:17:39 -0400
+Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GwKzM5hGwz19Vkw;
+        Thu, 26 Aug 2021 19:16:15 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by dggeme766-chm.china.huawei.com
+ (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Thu, 26
+ Aug 2021 19:16:49 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <shaggy@kernel.org>
+CC:     <jfs-discussion@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] jfs: Fix NULL pointer dereference in diFree
+Date:   Thu, 26 Aug 2021 19:16:09 +0800
+Message-ID: <20210826111609.2982685-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb64fbf9-4342-7d36-de4f-0ab719b8f479@ti.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme766-chm.china.huawei.com (10.3.19.112)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 08:48:45PM +0530, Kishon Vijay Abraham I wrote:
-> Hi Greg,
-> 
-> On 24/08/21 6:36 pm, Greg Kroah-Hartman wrote:
-> > On Tue, Aug 24, 2021 at 04:22:58PM +0530, Kishon Vijay Abraham I wrote:
-> >> No functional change. Since configuration to stop HCD is invoked from
-> >> multiple places, group all of them in usb_stop_hcd().
-> >>
-> >> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> >> ---
-> >>  drivers/usb/core/hcd.c | 42 +++++++++++++++++++++++++-----------------
-> >>  1 file changed, 25 insertions(+), 17 deletions(-)
-> >>
-> >> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-> >> index 0f8b7c93310e..c036ba5311b3 100644
-> >> --- a/drivers/usb/core/hcd.c
-> >> +++ b/drivers/usb/core/hcd.c
-> >> @@ -2760,6 +2760,29 @@ static void usb_put_invalidate_rhdev(struct usb_hcd *hcd)
-> >>  	usb_put_dev(rhdev);
-> >>  }
-> >>  
-> >> +/**
-> >> + * usb_stop_hcd - Halt the HCD
-> >> + * @hcd: the usb_hcd that has to be halted
-> >> + *
-> >> + * Stop the timer and invoke ->stop() callback on the HCD
-> >> + */
-> >> +static void usb_stop_hcd(struct usb_hcd *hcd)
-> >> +{
-> >> +	if (!hcd)
-> >> +		return;
-> > 
-> > That's impossible to hit, so no need to check for it, right?
-> 
-> Patch 3 of this series adds support for registering roothub of shared
-> HCD. So after that patch there can be a case where shared_hcd is NULL.
-> The other option would be to check for non-null value in hcd and then
-> invoke usb_stop_hcd().
+I got a NULL pointer dereference report when doing fuzz test:
 
-Then add the check when you need it please.
+ jfs_mount: diMount failed w/rc = -5
+ BUG: kernel NULL pointer dereference, address: 0000000000000004
+ [...]
+ RIP: 0010:diFree+0x5d/0xc70
+ [...]
+ jfs_evict_inode+0x136/0x180
+ jfs_write_inode+0xc0/0xc0
+ evict+0x102/0x1f0
+ iput+0x220/0x2e0
+ diFreeSpecial+0x44/0x70
+ jfs_mount+0x1b1/0x460
+ jfs_fill_super+0x1a5/0x460
+ mount_bdev+0x1d7/0x220
+ jfs_do_mount+0x39/0x50
+ legacy_get_tree+0x2f/0x80
+ vfs_get_tree+0x2f/0x100
+ path_mount+0x8e8/0xc7
+ do_mount+0x9e/0xc0
+ __x64_sys_mount+0xc5/0x140
+ do_syscall_64+0x34/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-thanks,
+Similar to commit 9d574f985fe3 ("jfs: fix GPF in diFree"),
+diFreeSpecial(ipimap)->..->diFree() will be called if diMount(ipimap)
+fails in jfs_mount(). This will result in a null pointer reference in
+diFree() because the imap is not allocated in diFreeSpecial().
 
-greg k-h
+int diFree(struct inode *ip)
+{
+	...
+	struct inomap *imap = JFS_IP(ipimap)->i_imap; // imap == NULL
+	...
+	if (iagno >= imap->im_nextiag) { // null pointer reference
+	...
+}
+
+If diFreeSpecial(ipimap) in jfs_mount() fails, there is no need to
+call diFree(), because diAlloc() is not called in the mount process.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ fs/jfs/inode.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/jfs/inode.c b/fs/jfs/inode.c
+index 57ab424c05ff..e8303d47a4a4 100644
+--- a/fs/jfs/inode.c
++++ b/fs/jfs/inode.c
+@@ -146,12 +146,14 @@ void jfs_evict_inode(struct inode *inode)
+ 		dquot_initialize(inode);
+ 
+ 		if (JFS_IP(inode)->fileset == FILESYSTEM_I) {
++			struct inode *ipimap = JFS_SBI(inode->i_sb)->ipimap;
++
+ 			truncate_inode_pages_final(&inode->i_data);
+ 
+ 			if (test_cflag(COMMIT_Freewmap, inode))
+ 				jfs_free_zero_link(inode);
+ 
+-			if (JFS_SBI(inode->i_sb)->ipimap)
++			if (ipimap && JFS_IP(ipimap)->i_imap)
+ 				diFree(inode);
+ 
+ 			/*
+-- 
+2.17.1
+
