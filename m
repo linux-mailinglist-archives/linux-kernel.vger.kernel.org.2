@@ -2,133 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B134B3F8E48
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABB23F8E49
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243451AbhHZS4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37174 "EHLO
+        id S243455AbhHZS5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243300AbhHZS4h (ORCPT
+        with ESMTP id S243319AbhHZS5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:56:37 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D689C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:55:49 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id c12so6948972ljr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:55:49 -0700 (PDT)
+        Thu, 26 Aug 2021 14:57:03 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D7CC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:56:15 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id e21so8389192ejz.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:56:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M1HBwNfaXlqSuyb+RTXcwjG+gWJfeC76x9b0o5Py3vI=;
-        b=HPqVRwc+fE0VOjGGm+xpW8Dfb1yshAiJwUoyukU+h9bbRnuLWaOh+pD0Az+4H7N4ap
-         XschrMcyE7C+AXvSGccwZ4OY7wb+fstTB1lFF3BDdTmPMUd0LaORbdgtJW4bSgKC1gux
-         M5rA6fkHnXSnxsgpiV6nHz2s7uA0mM9Umab/vmKSDpv3/WIRLjtaktsDcNQ3tXqpyhvW
-         qz/VYQD63KwKuLVB4Zs72taH2qU92JA/+/e6yNLIMIay6Y2njLM75PmOxNUz8JLJ11me
-         KZUhnGGvyuV4DZ6PQfkeBy0aEc69X8u96ZD/rfXdmg2QeacB+RCwIWmvW9osT0ND41qU
-         ZG4Q==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=KvsflDkWCpoXreowakAw0AK8LR1AdIFSNtPrQ0bbYKA=;
+        b=Iax5JdHSO25jzMdGpGlFcbTS4M1JwI/9rDANeDgNfRC0gTNsw3xctsB3T+wSsghh3I
+         KovLg45CVQFbtcmRNSSskWUkrp7Rjqj9+coIzQJiQEAn7IDPB3pp6qXFCYDbjdgjO/wA
+         7RLXeZYCeiV1Lvmja43d6amw2xjSaChiX1v8KB6vE1b0F/Bs10JpW3rYQWmk67uK7TWq
+         HFaRxh92IrGbyzlraTkYfSILab3idPhbBXSzgqUS0CuoOYvUcpLqKcYBk+wV0N1v+0GG
+         IqKRGtFsVB8ta+dXo4w6h2mICjpsPJHl61omxBk/GXUaHH4GgTmhVNXpFyOt84+jDiyb
+         6F+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M1HBwNfaXlqSuyb+RTXcwjG+gWJfeC76x9b0o5Py3vI=;
-        b=VMec37U+Evec/QVWUIV19IHoxS0zo/G/HfAGTWIYEDHIt/P/hNhOMSAlIxZQawRVa0
-         q5IN4+p2IrcZyVdCZII4aJEIeQYH1osIdMwFib9KZJywC1MT1QF8lcoWM/J4ibLfjG3g
-         GPfBgII4Ut+YYzETTt+5JQ7xZgYL3DoIAcaK1GittbyP9xgS22wuzYr1KrDuN1yC3kiH
-         QGXxyQwZ65+Nf3zhmpiAYBpKMcLYqqXRvXKanWm42j2lFbeLBzM3RtFUsZuA0LXw3yRn
-         YIbsiXKMDDEEuELJQBpHdLNCnwprya5S8QQ6VHT2/86z0hSLL+bi4zpcBKiEcj7PMG5V
-         gVFA==
-X-Gm-Message-State: AOAM532UO1MiJqwB9FExFxiaLcSXxKc6OvLeaLzbUoJczteEvA9mh9Pp
-        Vr/BJoa97wQjhLv6nKb491pjSMUuB87y3Lljf3caag==
-X-Google-Smtp-Source: ABdhPJwEztVV71UxtR+hwM2EjHPvUY6Hw/IgG3ZkguTIRJejfb82Aw2E1EI72YnPDX5IfdPAoQSUEEWmURipFzs4WTI=
-X-Received: by 2002:a2e:8008:: with SMTP id j8mr4167242ljg.233.1630004147252;
- Thu, 26 Aug 2021 11:55:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KvsflDkWCpoXreowakAw0AK8LR1AdIFSNtPrQ0bbYKA=;
+        b=mfLeZl9Zn/9zM/PLVeE0iycmcB17SFAwPBlwO4qwwkqBRptGVIZC2JW8rb53+qxLul
+         fA2xvHsoeIS8oEz2qyKHGsa92ElHXIRL9runtaFzfWiCHFv9CFu5Fj5yNpS54YgoF5Sn
+         Lfm+jtXm1WbKKrdX52z7QVKFFN3RMO3o39ZwdZdSYfS/3wUsOyg73ukkchSbRO9uoJjO
+         p6IJEhPf4NrufBDQq7nvFGLUrawyHei55Qy6BbSxoCs4rxLJY1phgTYPEuQDJ3ZKUHf/
+         5tMNa8PAmlKw2poFusYhn8CShulWiYeBAw4o3uYGRPW0V4VKuz1kXonCxW0qNZxYtr9u
+         oX1A==
+X-Gm-Message-State: AOAM531OBYKGP5OUKiPk7fzeL1n+Ij2ghcVi95csSLGZSxKKlCZJq5GB
+        h7i+SaJfZYV11wm4oHZhw+0=
+X-Google-Smtp-Source: ABdhPJydXFiZSOFxFhWFdXE6EPtNX1nsMbnIY4T03nP/8c2jVk7Vm0ANbA0yUcpGMuSXzKJKts0WzA==
+X-Received: by 2002:a17:906:3497:: with SMTP id g23mr5875986ejb.85.1630004173984;
+        Thu, 26 Aug 2021 11:56:13 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id r16sm2255443edt.15.2021.08.26.11.56.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 11:56:13 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH v3 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
+Date:   Thu, 26 Aug 2021 20:56:12 +0200
+Message-ID: <1954117.IISOP8hFdM@localhost.localdomain>
+In-Reply-To: <f2360c8c-e001-70d6-daeb-03ca5b718d84@gmail.com>
+References: <20210825035311.8910-1-fmdefrancesco@gmail.com> <20210825035311.8910-2-fmdefrancesco@gmail.com> <f2360c8c-e001-70d6-daeb-03ca5b718d84@gmail.com>
 MIME-Version: 1.0
-References: <20210812183848.1519994-1-ndesaulniers@google.com>
- <162902143957.395.7404280890417854945.tip-bot2@tip-bot2> <YSILd/Dc0dYKK2qk@gmail.com>
-In-Reply-To: <YSILd/Dc0dYKK2qk@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 26 Aug 2021 11:55:35 -0700
-Message-ID: <CAKwvOd=ML1ytp8Q10oiz8q1ERAHcGnjjCSMOHj=tq6E2vHAkQw@mail.gmail.com>
-Subject: Re: [tip: x86/build] x86/build: Remove stale cc-option checks
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 1:31 AM Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * tip-bot2 for Nick Desaulniers <tip-bot2@linutronix.de> wrote:
->
-> > The following commit has been merged into the x86/build branch of tip:
-> >
-> > Commit-ID:     1463c2a27d59c69358ad1cbd869d3a8649695d8c
-> > Gitweb:        https://git.kernel.org/tip/1463c2a27d59c69358ad1cbd869d3a8649695d8c
-> > Author:        Nick Desaulniers <ndesaulniers@google.com>
-> > AuthorDate:    Thu, 12 Aug 2021 11:38:48 -07:00
-> > Committer:     Borislav Petkov <bp@suse.de>
-> > CommitterDate: Sun, 15 Aug 2021 10:32:52 +02:00
-> >
-> > x86/build: Remove stale cc-option checks
-> >
-> > -mpreferred-stack-boundary= is specific to GCC, while -mstack-alignment=
-> > is specific to Clang. Rather than test for this three times via
-> > cc-option and __cc-option, rely on CONFIG_CC_IS_* from Kconfig.
-> >
-> > GCC did not support values less than 4 for -mpreferred-stack-boundary=
-> > until GCC 7+. Change the cc-option test to check for a value of 2,
-> > rather than 4.
->
-> > --- a/arch/x86/Makefile
-> > +++ b/arch/x86/Makefile
-> > @@ -14,10 +14,13 @@ endif
-> >
-> >  # For gcc stack alignment is specified with -mpreferred-stack-boundary,
-> >  # clang has the option -mstack-alignment for that purpose.
-> > -ifneq ($(call cc-option, -mpreferred-stack-boundary=4),)
-> > +ifdef CONFIG_CC_IS_GCC
-> > +ifneq ($(call cc-option, -mpreferred-stack-boundary=2),)
-> >        cc_stack_align4 := -mpreferred-stack-boundary=2
-> >        cc_stack_align8 := -mpreferred-stack-boundary=3
-> > -else ifneq ($(call cc-option, -mstack-alignment=16),)
-> > +endif
-> > +endif
-> > +ifdef CONFIG_CC_IS_CLANG
-> >        cc_stack_align4 := -mstack-alignment=4
-> >        cc_stack_align8 := -mstack-alignment=8
->
-> So I spent most of yesterday bisecting a hard to diagnose bug that looked
-> like a GPU driver bug - but the bisect somewhat surprisingly ended up at
-> this commit.
+On Thursday, August 26, 2021 8:18:23 PM CEST Pavel Skripkin wrote:
+> On 8/25/21 6:53 AM, Fabio M. De Francesco wrote:
+> > Replace usb_control_msg() with the new usb_control_msg_recv() and
+> > usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
+> > Remove no more needed variables. Move out of an if-else block
+> > some code that it is no more dependent on status < 0. Remove
+> > redundant code depending on status > 0 or status == len.
+> > 
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> 
+> FYI, I've tested this patch with TP-Link TL-WN722N v3 + qemu :)
+> 
+> 
+> Tested-by: Pavel Skripkin <paskripkin@gmail.com>
+> 
+> 
+> NOTE: I am still not able to apply 2/2, so tested tag is only for 1/2
+> 
+> 
+> With regards,
+> Pavel Skripkin
 
-I'm genuinely sorry about that.  Let me guess, GPF on SSE instruction
-with stack based operand from AMDGPU? (I've seen that twice so far
-related to these options.)
+Dear Pavel,
 
-I see now what went wrong....
-GCC only supports a 4B stack alignment for ***32b*** (or 16b) x86;
-`-mpreferred-stack-boundary=2` will produce an error unless -m32 or
--m16 is set; but `-mpreferred-stack-boundary=2 -m32` has been long
-supported.  It's -mpreferred-stack-boundary=3 for -m64 that wasn't
-supported until the gcc-7 release.  So the cc-option test should
-instead test -mpreferred-stack-boundary=3.
+Thanks for testing. It was very kind from you.I'll add this to the Reviewed-tag
+that you had already given to my patch.
 
->
-> Doing the partial revert below solves the regression - as the above hunk is
-> not obviously an identity transformation. I have a pretty usual GCC 10.3.0
-> build environment with nothing exotic.
->
-> I amdended the commit with the partial revert in tip:x86/build.
+However, I intend to rebase and resend this 1/2 and the 2/2 of this series, because
+(as we already found) they logically follow another patch of mine that is still in the
+queue ("staging: r8188eu: Remove _enter/_exit_critical_mutex()").
 
-No worries. I'll send a follow up.
+The patch above has already been reviewed by Greg and he found that it looks 
+good, but he cannot apply it because it is not tested (for the reasons I've already
+explained with a couple of messages)
 
--- 
-Thanks,
-~Nick Desaulniers
+Unfortunately, until "Remove _enter/_exit_critical_mutex()" is not tested, Greg 
+won't apply it and the 2/2 of this series cannot be applied too.
+
+Please, if you have time, do you mind to test also that? It would allow me to resend 
+it with your "Tested-by" tag and Greg will surely apply it. No worries if you have no
+time for doing this test, otherwise you may find it at:
+
+https://lore.kernel.org/lkml/20210819221241.31987-1-fmdefrancesco@gmail.com/
+
+Please, if you are interested, read the whole thread. You'll see that Greg would apply
+it, only if tested.
+
+Thanks very much for your help and kindness,
+
+Fabio
+
+
+
+
