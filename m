@@ -2,139 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816B63F8978
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BC83F8980
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242779AbhHZN5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238124AbhHZN5i (ORCPT
+        id S242799AbhHZN6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:58:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24247 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242749AbhHZN6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:57:38 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD97C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:56:51 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id p38so7192329lfa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:56:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=inSQQWtosadfeXbuqdhztupZ5LIFfVJTnI1NgiofxkU=;
-        b=hJAaLnSJW95gQ9a4hYnI1R9hilGcFcyVP5cxnDEI3ak2LB3BcnX4X0mhIyKYgLUfXr
-         8X5CAFC7jpEim5N2Z2grxemB2FnO+9Nyb4r7McoADFf/NdlUnBhnBcI2swBXXlnFB+ku
-         swT9VsNOXJFjSOUCQYqZNOKOuUUzhzN3qpPxc=
+        Thu, 26 Aug 2021 09:58:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629986235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SB1xZS0lLb7+YD7d9V95k8rH91VhprXycgXNPBnXe0M=;
+        b=CXWwkhcvPCAHulTviKZSZ+IVulmj9Ee6YA5Pb2KryxUNhU26H6C5HYLLjs7AD3thgpUFGB
+        zr4klXor2FbjZY+EidIFb66lLukCC/SQsqOcl14tBjmVt0v//BbSP9pQGPkIV/VRZEcLuN
+        d5R4JnxAYgtQCvUKbwJn8JuuNqUsWXY=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-556-N_ITWNkBOdKOHH5o8OYVJQ-1; Thu, 26 Aug 2021 09:57:14 -0400
+X-MC-Unique: N_ITWNkBOdKOHH5o8OYVJQ-1
+Received: by mail-ej1-f72.google.com with SMTP id jw25-20020a17090776b900b005ca775a2a00so1241711ejc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:57:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=inSQQWtosadfeXbuqdhztupZ5LIFfVJTnI1NgiofxkU=;
-        b=NVMzI2I8KEwLLmtAPxvgKA2wvjFv+fiNIFkoMd8qDs7ddxESNz9OR5WtOV808eHEo1
-         rED7su03R5CetLG/DLgDIOru2/zPRSV4m5kownRdBDiUtLeQGcfiqaDR4gr3S/PMXJfY
-         uUfa8oGt6sZ8q6xlCzm1SgB6xAswn3sEkzm+79z5RiTHCJ3/dOTmxa18rHbCOWslrAyU
-         dpF7mcXWIoqgzHtIWnRqHK7tNqX3x/FO+6GyipUDkXXNgvNpn0v5PvMF9DV8e/X8q7ua
-         hzIlTMWvMLnf3nxxo07EHLl+M6sJq4Lli2nplgWl2sl3K6HTy2PO9E7pg2wqLw271H0u
-         8lcQ==
-X-Gm-Message-State: AOAM531e4lf7XjUUzNfsLsUihbF0oDVExd915HCfwpOqWafLVC7Opaws
-        7Fh0D2zXejHgfafShO2JD0jFaw==
-X-Google-Smtp-Source: ABdhPJz1wR7YLi9e9bs39a6MDzFS0wTDZwXol9pXdx9n5BXXYbTm1pRCBsbbfzAXTfy4EqeyVBkJOg==
-X-Received: by 2002:a05:6512:1583:: with SMTP id bp3mr2879006lfb.122.1629986209710;
-        Thu, 26 Aug 2021 06:56:49 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id x26sm324208lfu.206.2021.08.26.06.56.48
+        bh=SB1xZS0lLb7+YD7d9V95k8rH91VhprXycgXNPBnXe0M=;
+        b=ZUN3rl9VkzsmMpQBevaTEAecPYmcOg/fohHg4QVFR9A7VWaU8jc5RyqcW5hPYmTLKy
+         jwo33WMuGgjd87gppas2wXAWwyU23LZEVFnGQKJyAAn18+bvWOwxwLBs8Sukq7kTSWqH
+         R86KjkA9jPHgPDaoku9/aUyaa/+Mf7YH5sEbQpEGpYyBo8MmSKwPEZysh8w6Q0o82TpW
+         h9jMf3bj7zicbR0NY9OTJkvc1ed0+wLVvBdkPW06ATuxti+x+TkoJ7f7/jf1LETnkyXq
+         NQBdHCkUEl4vjK1qCr+F52G2F2DZOFPiJx4YuZCUQvUv9OxOQFf0wgpUN3aE5YYZ1hgZ
+         UT5w==
+X-Gm-Message-State: AOAM533SPTMb9TLvD06VpbhLaiJx6okXnVRIp6tlUvEBj6yIJ5VwCZBw
+        TMB7DbU3aHNCIiScMhumjmCaMrrOY+7C1TssPupIN0vnXEQeLZQNxtpaQuWDy0CHQkUuVlsPWwB
+        KhC9ixnnAj/IPbx/sOE8gMSbq
+X-Received: by 2002:a17:907:a06c:: with SMTP id ia12mr4422678ejc.377.1629986232956;
+        Thu, 26 Aug 2021 06:57:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyT4NK/3oTiPEdb8osu2jmYpLf8dXmFzeAQwv52kaLJG3MjwBm9TByAVPQ8dI3x4YaffBuL6Q==
+X-Received: by 2002:a17:907:a06c:: with SMTP id ia12mr4422660ejc.377.1629986232778;
+        Thu, 26 Aug 2021 06:57:12 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id v1sm1544438ejd.31.2021.08.26.06.57.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 06:56:49 -0700 (PDT)
-Subject: Re: "BUG: Invalid wait context" in ls_extirq_set_type
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Esben Haabendal <esben@geanix.com>
-References: <20210825135438.ubcuxm5vctt6ne2q@skbuf>
- <26de7b85-e466-e9af-077a-9d1dc087e061@rasmusvillemoes.dk>
- <20210826133355.lbb26bdf4ov5jjyp@skbuf>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <42b39571-0c76-2cfe-20d2-6c67259117b5@rasmusvillemoes.dk>
-Date:   Thu, 26 Aug 2021 15:56:47 +0200
+        Thu, 26 Aug 2021 06:57:12 -0700 (PDT)
+Subject: Re: [PATCH][RFC] platform/x86: dell-smbios-wmi: Avoid false-positive
+ memcpy() warning
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
+        Andy Lavr <andy.lavr@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210825160749.3891090-1-keescook@chromium.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7107d06d-784e-c643-c4eb-50e9f277bd38@redhat.com>
+Date:   Thu, 26 Aug 2021 15:57:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210826133355.lbb26bdf4ov5jjyp@skbuf>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20210825160749.3891090-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/08/2021 15.33, Vladimir Oltean wrote:
-> On Thu, Aug 26, 2021 at 11:01:31AM +0200, Rasmus Villemoes wrote:
+Hi,
 
->> So, we've been using the irq-ls-extirq driver for years, on an RT
->> kernel, without seeing something like that. Does it require certain
->> debug knobs in .config? Or perhaps the sanity checks have been added
->> later, we've mostly been using it on 4.14.y and 4.19.y.
+On 8/25/21 6:07 PM, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy(), memmove(), and memset(), avoid
+> intentionally writing across neighboring fields.
 > 
-> Grepping for "BUG: Invalid wait context" in the kernel yields a single
-> hit, and answers both questions. It was added by commit
+> Since all the size checking has already happened, use input.pointer
+> (void *) so memcpy() doesn't get confused about how much is being
+> written.
 > 
-> commit de8f5e4f2dc1f032b46afda0a78cab5456974f89
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Sat Mar 21 12:26:01 2020 +0100
+> Avoids this false-positive warning when run-time memcpy() strict
+> bounds checking is enabled:
 > 
->     lockdep: Introduce wait-type checks
+> memcpy: detected field-spanning write (size 4096) of single field (size 36)
+> WARNING: CPU: 0 PID: 357 at drivers/platform/x86/dell/dell-smbios-wmi.c:74 run_smbios_call+0x110/0x1e0 [dell_smbios]
 > 
->     Extend lockdep to validate lock wait-type context.
+> Note: is there a missed kfree() in the marked error path?
 > 
-> and selectable via "config PROVE_RAW_LOCK_NESTING".
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: Mark Gross <mgross@linux.intel.com>
+> Cc: Mario Limonciello <mario.limonciello@dell.com>
+> Cc: "Pali Rohár" <pali@kernel.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+> Cc: Dell.Client.Kernel@dell.com
+> Cc: platform-driver-x86@vger.kernel.org
+> Reported-by: Andy Lavr <andy.lavr@gmail.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-OK, thanks. Yes, that explains it.
+Thank you, I've applied the patch, minus the:
 
->>
->> I don't know what the right fix is. Am I right when a say that for !RT,
->> spinlock==raw_spinlock? If so, switching regmap's spinlock to
->> raw_spinlock would be nop for !RT and fix this issue, but would of
->> course have quite far-reaching effects on RT kernels.
+/* output.pointer memory allocation leak? */
+
+Comment, instead I'll submit (and also apply right-away)
+a patch to add the missing kfree()
+
+Regards,
+
+Hans
+
+
+	
+> ---
+>  drivers/platform/x86/dell/dell-smbios-wmi.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> far-reaching? Explain?
-
-I was "suggesting" (or more accurately just considering the implications
-of) _switching_ the core regmap code to use a raw spinlock
-unconditionally for its "fast io" case. A change that would affect all
-such regmaps throughout the kernel. Thus far-reaching (though IIUC a nop
-for !RT).
-
-> It is _a_single_register_, accessed once per IRQ line, all at consumer driver probe time
-> (typically boot time).
+> diff --git a/drivers/platform/x86/dell/dell-smbios-wmi.c b/drivers/platform/x86/dell/dell-smbios-wmi.c
+> index 33f823772733..c410d6d920b8 100644
+> --- a/drivers/platform/x86/dell/dell-smbios-wmi.c
+> +++ b/drivers/platform/x86/dell/dell-smbios-wmi.c
+> @@ -69,9 +69,10 @@ static int run_smbios_call(struct wmi_device *wdev)
+>  		if (obj->type == ACPI_TYPE_INTEGER)
+>  			dev_dbg(&wdev->dev, "SMBIOS call failed: %llu\n",
+>  				obj->integer.value);
+> +		/* output.pointer memory allocation leak? */
+>  		return -EIO;
+>  	}
+> -	memcpy(&priv->buf->std, obj->buffer.pointer, obj->buffer.length);
+> +	memcpy(input.pointer, obj->buffer.pointer, obj->buffer.length);
+>  	dev_dbg(&wdev->dev, "result: [%08x,%08x,%08x,%08x]\n",
+>  		priv->buf->std.output[0], priv->buf->std.output[1],
+>  		priv->buf->std.output[2], priv->buf->std.output[3]);
 > 
 
-I know, I wrote the driver, and our platform is also a ls1021a.
-
-> We are not switching regmap from normal to raw spinlocks, we are just
-> adding the option for raw spinlocks for this one register.
-> 
->> Perhaps it's silly for the driver to use syscon's regmap to access that
->> single register, maybe it should just iomap it itself, and protect
->> access with a raw_spinlock of its own. While syscon's regmap would cover
->> that intpcr register, nobody else would ever access it, so that should
->> work fine.
-> 
-> I believe my competence ends here, I will re-read Arnd's email too, but
-> I just don't see how the syscon API gives you something that is "not a
-> regmap", something you can ioremap yourself as a consumer driver.
-
-Surely the driver could be rewritten to be completely ignorant of the
-containing scfg node and just iomap the register itself.
-
-Yes, there'd probably also be a syscon driver with a regmap covering
-                     reg = <0x0 0x1570000 0x0 0x10000>, but none of the
-potential other consumers of that regmap would write to intpcr through
-that regmap, since intpcr is solely of use to ls-extirq. So the
-ls-extirq driver could just have its own raw spinlock in "struct
-ls_extirq_data" next to a "void __iomem *" pointer, replacing the
-"struct regmap *syscon;" member.
-
-Rasmus
