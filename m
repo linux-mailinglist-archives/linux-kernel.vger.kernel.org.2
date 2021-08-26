@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609A63F8C7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F7A3F8C80
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243129AbhHZQwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 12:52:04 -0400
-Received: from mail-oo1-f41.google.com ([209.85.161.41]:33709 "EHLO
-        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232694AbhHZQwD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:52:03 -0400
-Received: by mail-oo1-f41.google.com with SMTP id v20-20020a4a2554000000b0028f8cc17378so1161613ooe.0;
-        Thu, 26 Aug 2021 09:51:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v0RS9BtmuQKC66rh7NIJggtjqQi+Y2U2nIIX3anWZFw=;
-        b=QDzxqd61yhfkQ0nFS/4uyTVVcSBmUB145qnquLR168rsnyblNf0oxPeyNxsvB3OaxG
-         MrSDuQ3q4V9ThFgLz2kdvz4QbueG/JEbo+6mkxuAeCHlqZwqji5WhKzraC5ixmv6P6I+
-         6ProOdW/jAk/+wzIT7IWvym3GuN2i1gqgIGtF0/kwe99Q/kPitPO5D4wzSZdl8VLuvSY
-         RJ7Oi/pGKx3/u+zr1MpUQJqO1vd/CGBUlZgvxCVg4yr2yqkVbIkQPQNTl422QwMKPPrb
-         BExNooHI88KBlD0m74oVdKAyHfy3mpPHGkRcpZfQ8Gqy7KispKNterN+1sjy+qHRn/eT
-         ZBtw==
-X-Gm-Message-State: AOAM532h1Hl5LYq7OL0WBnjY5jQbrACcZgms8LaVA1OIFlshbEaEzia/
-        6QqTpbwawTYD+j/5S5pZVZZnOMncrE3c2kF6vss=
-X-Google-Smtp-Source: ABdhPJwDK1TQo42dcIDi/B0EM/wdubvHTgOceWwZz7PiZIYGR2iSc53SREsnzAN5Ogu7OcPc+cD/wg7hIKLa3OIOwj4=
-X-Received: by 2002:a4a:ca83:: with SMTP id x3mr4032922ooq.2.1629996676042;
- Thu, 26 Aug 2021 09:51:16 -0700 (PDT)
+        id S243140AbhHZQxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:53:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243074AbhHZQxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 12:53:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E4B560F6F;
+        Thu, 26 Aug 2021 16:52:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629996737;
+        bh=guErEWGgIDqVdyfI48N0DvYQV67NWP3/SnLf44qfyPE=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=TWyi+FVi1qU8QTruMGbCChcl56G2e9GzyTo2mCeFA7wsMRPleNRV+awoOyDlLZZLG
+         N95jEpV1PbA7PxYp5JvewfhZTAvAbVwCRETXysbtZhrJhpjCWIXg7cEIadmrJlaydv
+         VkEMg7sfIX28Kp99UVA8dCUI5m0NuHIVtGtg6+t59neNK4ZmBt3Z3SNB6VPp3/lA/1
+         +lkrDk2yzCpCT/CTpSlYJkYAu5IIyJ3X/9N3LxEGll16F4puyRidWghvcm2aIY8n8O
+         XTJtdlR9WWwvrzlqps9asL7TnJrLlV53Yvn8Bpt77Bw6F+GkLeIN/0K1M4imY8s92a
+         6AFm9sPIyIw6Q==
+Date:   Thu, 26 Aug 2021 09:52:16 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: don't ignore writing pages on fsync
+ during checkpoint=disable
+Message-ID: <YSfGwKtGhutsTJ8x@google.com>
+References: <20210823170151.1434772-1-jaegeuk@kernel.org>
+ <YSa3DPBIFZ5P17vt@google.com>
 MIME-Version: 1.0
-References: <20210826150317.29435-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210826150317.29435-1-andriy.shevchenko@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 26 Aug 2021 18:51:05 +0200
-Message-ID: <CAJZ5v0it9vB1s2HxMtTnS8Gv=EFZq6ykoV7Z3npoh4raXLJOuQ@mail.gmail.com>
-Subject: Re: [resend, PATCH v2 1/1] x86/platform: Increase maximum GPIO number
- for X86_64
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSa3DPBIFZ5P17vt@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 5:03 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> By default the 512 GPIOs is the maximum on any x86 platform.
-> With, for example, Intel Tiger Lake-H the SoC based controller
-> occupies up to 480 pins. This leaves only 32 available for
-> GPIO expanders or other drivers, like PMIC. Hence, bump the
-> maximum GPIO number to 1024 for X86_64 and leave 512 for X86_32.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+From 64fe93a7f9c35c2b5a34cfa3cf84158852c201be Mon Sep 17 00:00:00 2001
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+Date: Thu, 19 Aug 2021 14:00:57 -0700
+Subject: [PATCH] f2fs: guarantee to write dirty data when enabling checkpoint
+ back
 
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+We must flush all the dirty data when enabling checkpoint back. Let's guarantee
+that first by adding a retry logic on sync_inodes_sb(). In addition to that,
+this patch adds to flush data in fsync when checkpoint is disabled, which can
+mitigate the sync_inodes_sb() failures in advance.
 
-> ---
-> v2 resend: actually added Rafael and linux-acpi@ to Cc list
-> v2: dropped confusing comment and help, simplified defaults (Rafael)
->     added Rb tag (Linus)
->  arch/x86/Kconfig | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 858ce2736bd6..25960fe242bd 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -338,6 +338,11 @@ config NEED_PER_CPU_PAGE_FIRST_CHUNK
->  config ARCH_HIBERNATION_POSSIBLE
->         def_bool y
->
-> +config ARCH_NR_GPIO
-> +       int
-> +       default 1024 if X86_64
-> +       default 512
-> +
->  config ARCH_SUSPEND_POSSIBLE
->         def_bool y
->
-> --
-> 2.32.0
->
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ Change log from v2:
+- repharse the patch description a bit
+- fix retry condition check
+
+ fs/f2fs/file.c  |  5 ++---
+ fs/f2fs/super.c | 11 ++++++++++-
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index cc2080866c54..3330efb41f22 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -263,8 +263,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
+ 	};
+ 	unsigned int seq_id = 0;
+ 
+-	if (unlikely(f2fs_readonly(inode->i_sb) ||
+-				is_sbi_flag_set(sbi, SBI_CP_DISABLED)))
++	if (unlikely(f2fs_readonly(inode->i_sb)))
+ 		return 0;
+ 
+ 	trace_f2fs_sync_file_enter(inode);
+@@ -278,7 +277,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
+ 	ret = file_write_and_wait_range(file, start, end);
+ 	clear_inode_flag(inode, FI_NEED_IPU);
+ 
+-	if (ret) {
++	if (ret || is_sbi_flag_set(sbi, SBI_CP_DISABLED)) {
+ 		trace_f2fs_sync_file_exit(inode, cp_reason, datasync, ret);
+ 		return ret;
+ 	}
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 49e153fd8183..b8fecf4f37e0 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2088,8 +2088,17 @@ static int f2fs_disable_checkpoint(struct f2fs_sb_info *sbi)
+ 
+ static void f2fs_enable_checkpoint(struct f2fs_sb_info *sbi)
+ {
++	int retry = DEFAULT_RETRY_IO_COUNT;
++
+ 	/* we should flush all the data to keep data consistency */
+-	sync_inodes_sb(sbi->sb);
++	do {
++		sync_inodes_sb(sbi->sb);
++		cond_resched();
++		congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
++	} while (get_pages(sbi, F2FS_DIRTY_DATA) && retry--);
++
++	if (unlikely(retry < 0))
++		f2fs_warn(sbi, "checkpoint=enable has some unwritten data.");
+ 
+ 	down_write(&sbi->gc_lock);
+ 	f2fs_dirty_to_prefree(sbi);
+-- 
+2.33.0.rc2.250.ged5fa647cd-goog
+
