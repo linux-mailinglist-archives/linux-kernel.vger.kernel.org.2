@@ -2,148 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D1D3F9030
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880903F9033
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243612AbhHZVg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 17:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhHZVgZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 17:36:25 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED06BC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 14:35:37 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id y3so4791504ilm.6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 14:35:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vjf5k/4LGu/VKE/74uCD3RNhClu4tQPAgKlOCuWM+IE=;
-        b=RdK2k7svMeppUYTFEqP3Z80P/Z/0oxZXSu0k5H3JnQ0aucPp3J/xMi3CbPvX/4pwoO
-         plEmtha7+abcpG4+UQY1za6l4uRod8L4ea6qJOL997zfnPHUXnI2niTdt7NsyxdEv5Rl
-         oM83PcwqsyvddAW2YwV6VytJx/EFB6WLpcQRFElN1u93JtThi3ICBnVA/D9+Nbg2KjiW
-         X3M+SFT5NkMEl5Xkb9guEjWQffL/EOwpU9Tmhxzh2nnouh0GoHjCsM8kwFcyCi7cGgil
-         O9xr862aswoySolE/Uce4EM23J7V8rfUrHmbIvw6Ey+UyRj5zcVVIZ7g5fSIJecWbZJ6
-         8MgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vjf5k/4LGu/VKE/74uCD3RNhClu4tQPAgKlOCuWM+IE=;
-        b=U/SLYHqauplfuOe9OlAhj1G9QNuzO57hPC9MG1uaq7dyOctPTVIHDfQ08LiNFUIjfp
-         IYxUHulrnCMYweouRl3Nw8qzFMieJnmpU25NUP2ClZnMdqrRdPpKDY6uM2QMtqPLFJsC
-         RS/Sy3GItZvQz0SkbQ3bQL2FHGypZoQoojXUs2Mvu1QAMxBVR9S7wFS+Buu/E/ije8m1
-         CLzFeHUjJTw3ab/4iQEP4FyRXVDPuY4k/pYQ/VA9AwhldAj3A0bNWILS0cDVfYho557k
-         AGIoROScV6YjensYjdUN72zJ8RJ1dEGm7oTkGATEzVsAXR4yzmhUrEkQo27FprB2o9BS
-         5ZRw==
-X-Gm-Message-State: AOAM532hk8gKXYPbc26pL5n9v2FBi5gKEVOVnAMCpUiKk+ugi9cHKPJa
-        xrL8DCRzYQNbds35roYbvjcWwUHgbEdbgrmJpANnYA==
-X-Google-Smtp-Source: ABdhPJzoYcsVq2LpOtxESPi6FhUKwj6LS4F63JAolkjEObIRKYkocWT+b8WRutOKcOqdnO/RAclr5qfvstYnY2kBh5I=
-X-Received: by 2002:a92:d586:: with SMTP id a6mr4067917iln.283.1630013737153;
- Thu, 26 Aug 2021 14:35:37 -0700 (PDT)
+        id S243647AbhHZVh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 17:37:26 -0400
+Received: from mga04.intel.com ([192.55.52.120]:5170 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230095AbhHZVhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 17:37:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="215999606"
+X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
+   d="scan'208";a="215999606"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 14:36:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
+   d="scan'208";a="687158070"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 26 Aug 2021 14:36:36 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mJN35-0001kA-BC; Thu, 26 Aug 2021 21:36:35 +0000
+Date:   Fri, 27 Aug 2021 05:36:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 366e7ad6ba5f4cb2ffd0b7316e404d6ee9c0f401
+Message-ID: <6128095f.KMWQO+CxxEalEE5Q%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210818235615.2047588-1-seanjc@google.com> <CAJhGHyDWsti6JpYmLhoDfxtaxWC3wFeWzM3NWubqmd=_4ENc3Q@mail.gmail.com>
-In-Reply-To: <CAJhGHyDWsti6JpYmLhoDfxtaxWC3wFeWzM3NWubqmd=_4ENc3Q@mail.gmail.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 26 Aug 2021 14:35:26 -0700
-Message-ID: <CANgfPd---jQ-eO3thxu4bvE+1DkuRXyhjfmZ5dLO6OUQdDsOAA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Complete prefetch for trailing SPTEs for
- direct, legacy MMU
-To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 3:49 PM Lai Jiangshan
-<jiangshanlai+lkml@gmail.com> wrote:
->
-> On Thu, Aug 19, 2021 at 7:57 AM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > Make a final call to direct_pte_prefetch_many() if there are "trailing"
-> > SPTEs to prefetch, i.e. SPTEs for GFNs following the faulting GFN.  The
-> > call to direct_pte_prefetch_many() in the loop only handles the case
-> > where there are !PRESENT SPTEs preceding a PRESENT SPTE.
-> >
-> > E.g. if the faulting GFN is a multiple of 8 (the prefetch size) and all
-> > SPTEs for the following GFNs are !PRESENT, the loop will terminate with
-> > "start = sptep+1" and not prefetch any SPTEs.
-> >
-> > Prefetching trailing SPTEs as intended can drastically reduce the number
-> > of guest page faults, e.g. accessing the first byte of every 4kb page in
-> > a 6gb chunk of virtual memory, in a VM with 8gb of preallocated memory,
-> > the number of pf_fixed events observed in L0 drops from ~1.75M to <0.27M.
-> >
-> > Note, this only affects memory that is backed by 4kb pages as KVM doesn't
-> > prefetch when installing hugepages.  Shadow paging prefetching is not
-> > affected as it does not batch the prefetches due to the need to process
-> > the corresponding guest PTE.  The TDP MMU is not affected because it
-> > doesn't have prefetching, yet...
-> >
-> > Fixes: 957ed9effd80 ("KVM: MMU: prefetch ptes when intercepted guest #PF")
-> > Cc: Sergey Senozhatsky <senozhatsky@google.com>
-> > Cc: Ben Gardon <bgardon@google.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 366e7ad6ba5f4cb2ffd0b7316e404d6ee9c0f401  sched/fair: Mark tg_is_idle() an inline in the !CONFIG_FAIR_GROUP_SCHED case
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+possible Warning in current branch (please contact us if interested):
 
-> > ---
-> >
-> > Cc'd Ben as this highlights a potential gap with the TDP MMU, which lacks
-> > prefetching of any sort.  For large VMs, which are likely backed by
-> > hugepages anyways, this is a non-issue as the benefits of holding mmu_lock
-> > for read likely masks the cost of taking more VM-Exits.  But VMs with a
-> > small number of vCPUs won't benefit as much from parallel page faults,
-> > e.g. there's no benefit at all if there's a single vCPU.
+kernel/sched/fair.c:446:21: warning: Access to field 'my_q' results in a dereference of a null pointer (loaded from variable 'se') [clang-analyzer-core.NullDereference]
 
-Yeah, that probably does represent a reduction in performance for very
-small VMs. Besides keeping read critical sections small, there's no
-reason not to do prefetching with the TDP MMU, it just needs to be
-implemented.
+Warning ids grouped by kconfigs:
 
-> >
-> >  arch/x86/kvm/mmu/mmu.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index a272ccbddfa1..daf7df35f788 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -2818,11 +2818,13 @@ static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
-> >                         if (!start)
-> >                                 continue;
-> >                         if (direct_pte_prefetch_many(vcpu, sp, start, spte) < 0)
-> > -                               break;
-> > +                               return;
-> >                         start = NULL;
-> >                 } else if (!start)
-> >                         start = spte;
-> >         }
-> > +       if (start)
-> > +               direct_pte_prefetch_many(vcpu, sp, start, spte);
+clang_recent_errors
+`-- mips-randconfig-c004-20210826
+    `-- kernel-sched-fair.c:warning:Access-to-field-my_q-results-in-a-dereference-of-a-null-pointer-(loaded-from-variable-se-)-clang-analyzer-core.NullDereference
 
-It might be worth explaining some of what you laid out in the commit
-description here. This function's implementation is not the easiest to
-read.
+elapsed time: 748m
 
-> >  }
->
->
-> Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
->
-> >
-> >  static void direct_pte_prefetch(struct kvm_vcpu *vcpu, u64 *sptep)
-> > --
-> > 2.33.0.rc1.237.g0d66db33f3-goog
-> >
+configs tested: 176
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210826
+arm                          gemini_defconfig
+mips                      fuloong2e_defconfig
+powerpc                       holly_defconfig
+m68k                            mac_defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                           se7722_defconfig
+powerpc                     powernv_defconfig
+powerpc                        warp_defconfig
+mips                      loongson3_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                         microdev_defconfig
+arm                       netwinder_defconfig
+arm                         mv78xx0_defconfig
+ia64                      gensparse_defconfig
+arm                        keystone_defconfig
+mips                        vocore2_defconfig
+sh                           se7721_defconfig
+arm                         nhk8815_defconfig
+powerpc                    amigaone_defconfig
+m68k                       m5249evb_defconfig
+arm                            mmp2_defconfig
+powerpc                       eiger_defconfig
+powerpc                 canyonlands_defconfig
+mips                     loongson1b_defconfig
+arc                 nsimosci_hs_smp_defconfig
+xtensa                           alldefconfig
+arm                        oxnas_v6_defconfig
+nds32                            alldefconfig
+powerpc                    ge_imp3a_defconfig
+sh                          rsk7269_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc832x_rdb_defconfig
+mips                          rm200_defconfig
+arm                       cns3420vb_defconfig
+powerpc                     asp8347_defconfig
+m68k                        stmark2_defconfig
+arm                        multi_v7_defconfig
+mips                     loongson2k_defconfig
+powerpc                      ep88xc_defconfig
+mips                         bigsur_defconfig
+arm                            zeus_defconfig
+h8300                     edosk2674_defconfig
+powerpc                     pq2fads_defconfig
+arm                         bcm2835_defconfig
+mips                        jmr3927_defconfig
+mips                       bmips_be_defconfig
+sh                           se7206_defconfig
+arm                          moxart_defconfig
+powerpc                      obs600_defconfig
+xtensa                generic_kc705_defconfig
+arm                         lpc18xx_defconfig
+powerpc                          g5_defconfig
+xtensa                          iss_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                      mgcoge_defconfig
+arm                          pcm027_defconfig
+arm                   milbeaut_m10v_defconfig
+sh                          lboxre2_defconfig
+arm                           corgi_defconfig
+sh                          sdk7780_defconfig
+mips                          malta_defconfig
+arm                          ep93xx_defconfig
+powerpc                        icon_defconfig
+xtensa                    xip_kc705_defconfig
+mips                        qi_lb60_defconfig
+powerpc                         wii_defconfig
+mips                           ci20_defconfig
+mips                   sb1250_swarm_defconfig
+h8300                       h8s-sim_defconfig
+powerpc                      bamboo_defconfig
+arm                            mps2_defconfig
+arm                           sunxi_defconfig
+xtensa                  cadence_csp_defconfig
+arm                         shannon_defconfig
+arm                             pxa_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                      pmac32_defconfig
+sh                        edosk7760_defconfig
+arm64                            alldefconfig
+powerpc                      ppc64e_defconfig
+mips                        bcm47xx_defconfig
+powerpc                      ppc40x_defconfig
+arm                        multi_v5_defconfig
+powerpc                     pseries_defconfig
+arm                           omap1_defconfig
+powerpc                  storcenter_defconfig
+arm                       spear13xx_defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20210826
+x86_64               randconfig-a006-20210826
+x86_64               randconfig-a001-20210826
+x86_64               randconfig-a003-20210826
+x86_64               randconfig-a004-20210826
+x86_64               randconfig-a002-20210826
+i386                 randconfig-a006-20210826
+i386                 randconfig-a001-20210826
+i386                 randconfig-a002-20210826
+i386                 randconfig-a005-20210826
+i386                 randconfig-a003-20210826
+i386                 randconfig-a004-20210826
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+i386                 randconfig-c001-20210826
+s390                 randconfig-c005-20210826
+arm                  randconfig-c002-20210826
+riscv                randconfig-c006-20210826
+powerpc              randconfig-c003-20210826
+x86_64               randconfig-c007-20210826
+mips                 randconfig-c004-20210826
+x86_64               randconfig-a014-20210826
+x86_64               randconfig-a015-20210826
+x86_64               randconfig-a016-20210826
+x86_64               randconfig-a013-20210826
+x86_64               randconfig-a012-20210826
+x86_64               randconfig-a011-20210826
+i386                 randconfig-a011-20210826
+i386                 randconfig-a016-20210826
+i386                 randconfig-a012-20210826
+i386                 randconfig-a014-20210826
+i386                 randconfig-a013-20210826
+i386                 randconfig-a015-20210826
+hexagon              randconfig-r041-20210826
+hexagon              randconfig-r045-20210826
+riscv                randconfig-r042-20210826
+s390                 randconfig-r044-20210826
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
