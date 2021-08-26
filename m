@@ -2,77 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAFE3F8C95
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0DF3F8C90
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbhHZRAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhHZRAC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:00:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2985DC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 09:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tWtbvxDbQneua8skOdhQaeTLxmG7GmsaooskC+FoSew=; b=uiXP1vdrHQiBj6mPhTBTSmUahs
-        82qkmlgnCNoN1BvUrCHw4ZefJzCUd2WSnFbBqeeUbPHrcF9orLwFU0T+ejBw0WOTHzK5qGG1vPBmh
-        nKerlNJYEmbkHYk7f7Mr3A7qEMJzKG5v/yky1dJp1MehovCv6ehgld+8Db3mSm0geCcmaax3PCJ/T
-        s8gHGWKnkXnLpBFCPqKT45kJqE7l4q1iOv1PB8l5jyOy8nYX0cVLOHDC1h4dYBgMdAruyZHihqmHI
-        wZujUx9aaKuHGpYHDsdxjVGp6LgK//1+S1rFsh+j0VTgpRwjCstTywwhyiLMr3BzSOr1IUIdvIxso
-        GIY/TcGg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJIg5-00DUZV-Nw; Thu, 26 Aug 2021 16:56:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CDF673008DE;
-        Thu, 26 Aug 2021 18:56:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A9C5C29CA38CF; Thu, 26 Aug 2021 18:56:31 +0200 (CEST)
-Date:   Thu, 26 Aug 2021 18:56:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] sched: Fix get_push_task() vs migrate_disable()
-Message-ID: <YSfHv7Ptrprccmgp@hirez.programming.kicks-ass.net>
-References: <20210826133738.yiotqbtdaxzjsnfj@linutronix.de>
+        id S243153AbhHZQ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:57:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229986AbhHZQ51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 12:57:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B280260F42;
+        Thu, 26 Aug 2021 16:56:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629997000;
+        bh=Sdch8X0otKtSPDpNPDcyA2dbJPDXupeY4yKkLojSNgM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PLpHEoTX8XMr7eS8sKDfSN7Wk21t5UKFAtp72cb2VF8bPUtYS3Te3k2zc69ABLQHF
+         LEUWCG9EdTEoJS3PaRxPY045Fm1iRpbSehFQP+7TC8hlyMcRErMgAgFO/V/fsmH0QR
+         KCDXJqQMf+YvkCH/FS95duDi82JSMmr0nHqYgSzsrtMPU3VQld/xBUf3tEfALHco8v
+         /8fb4PB3ps5MmsOS60KQ1eEAW+RJ8rz3lYKdRAmlpIxh6rCzKOpISemkcF9pRnnxjC
+         Tfwh3GuxflCERNdOFpY/1PWMCakkDhhUxorzIrQu4Js/bqAlA9Y6fcm5i4E70ucWLW
+         wYJX9y1kW54tg==
+Date:   Thu, 26 Aug 2021 11:56:38 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Marek =?iso-8859-1?Q?Marczykowski-G=F3recki?= 
+        <marmarek@invisiblethingslab.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH] PCI/MSI: skip masking MSI on Xen PV
+Message-ID: <20210826165638.GA3686936@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210826133738.yiotqbtdaxzjsnfj@linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YSfDIkAmTu+PM4nE@mail-itl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 03:37:38PM +0200, Sebastian Andrzej Siewior wrote:
-> push_rt_task() attempts to move the currently running task away if the
-> next runnable task has migration disabled and therefore is pinned on the
-> current CPU.
+On Thu, Aug 26, 2021 at 06:36:49PM +0200, Marek Marczykowski-Górecki wrote:
+> On Thu, Aug 26, 2021 at 09:55:32AM -0500, Bjorn Helgaas wrote:
+> > If/when you repost this, please run "git log --oneline
+> > drivers/pci/msi.c" and follow the convention of capitalizing the
+> > subject line.
+> > 
+> > Also, I think this patch refers specifically to MSI-X, not MSI, so
+> > please update the subject line and the "masking MSI" below to reflect
+> > that.
 > 
-> The current task is retrieved via get_push_task() which only checks for
-> nr_cpus_allowed == 1, but does not check whether the task has migration
-> disabled and therefore cannot be moved either. The consequence is a
-> pointless invocation of the migration thread which correctly observes
-> that the task cannot be moved.
-> 
-> Return NULL if the task has migration disabled and cannot be moved to
-> another CPU.
-> 
-> Fixes: a7c81556ec4d3 ("sched: Fix migrate_disable() vs rt/dl balancing")
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Sure, thanks for pointing this out. Is the patch otherwise ok? Should I
+> post v2 with just updated commit message?
 
-Thanks!
+Wouldn't hurt to post a v2.  I don't have any objections to the patch,
+but ultimately up to Thomas.
+
+> > On Thu, Aug 26, 2021 at 03:43:37PM +0200, Marek Marczykowski-Górecki wrote:
+> > > When running as Xen PV guest, masking MSI is a responsibility of the
+> > > hypervisor. Guest has no write access to relevant BAR at all - when it
+> > > tries to, it results in a crash like this:
+> > > 
+> > >     BUG: unable to handle page fault for address: ffffc9004069100c
+> > >     #PF: supervisor write access in kernel mode
+> > >     #PF: error_code(0x0003) - permissions violation
+> > >     PGD 18f1c067 P4D 18f1c067 PUD 4dbd067 PMD 4fba067 PTE 80100000febd4075
+> > >     Oops: 0003 [#1] SMP NOPTI
+> > >     CPU: 0 PID: 234 Comm: kworker/0:2 Tainted: G        W         5.14.0-rc7-1.fc32.qubes.x86_64 #15
+> > >     Workqueue: events work_for_cpu_fn
+> > >     RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
+> > >     Code: 2f 96 ff 48 89 44 24 28 48 89 c7 48 85 c0 0f 84 f6 01 00 00 45 0f b7 f6 48 8d 40 0c ba 01 00 00 00 49 c1 e6 04 4a 8d 4c 37 1c <89> 10 48 83 c0 10 48 39 c1 75 f5 41 0f b6 44 24 6a 84 c0 0f 84 48
+> > >     RSP: e02b:ffffc9004018bd50 EFLAGS: 00010212
+> > >     RAX: ffffc9004069100c RBX: ffff88800ed412f8 RCX: ffffc9004069105c
+> > >     RDX: 0000000000000001 RSI: 00000000000febd4 RDI: ffffc90040691000
+> > >     RBP: 0000000000000003 R08: 0000000000000000 R09: 00000000febd404f
+> > >     R10: 0000000000007ff0 R11: ffff88800ee8ae40 R12: ffff88800ed41000
+> > >     R13: 0000000000000000 R14: 0000000000000040 R15: 00000000feba0000
+> > >     FS:  0000000000000000(0000) GS:ffff888018400000(0000) knlGS:0000000000000000
+> > >     CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > >     CR2: ffff8000007f5ea0 CR3: 0000000012f6a000 CR4: 0000000000000660
+> > >     Call Trace:
+> > >      e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
+> > >      e1000_probe+0x41f/0xdb0 [e1000e]
+> > >      local_pci_probe+0x42/0x80
+> > >     (...)
+> > > 
+> > > There is pci_msi_ignore_mask variable for bypassing MSI masking on Xen
+> > > PV, but msix_mask_all() missed checking it. Add the check there too.
+> > > 
+> > > Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
+> > > Cc: stable@vger.kernel.org
+> > 
+> > 7d5ec3d36123 appeared in v5.14-rc6, so if this fix is merged before
+> > v5.14, the stable tag will be unnecessary.  But we are running out of
+> > time there.
+> 
+> 7d5ec3d36123 was already backported to stable branches (at least 5.10
+> and 5.4), and in fact this is how I discovered the issue...
+
+Oh, right, of course.  Sorry :)
+
+> > > Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+> > > ---
+> > > Cc: xen-devel@lists.xenproject.org
+> > > ---
+> > >  drivers/pci/msi.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> > > index e5e75331b415..3a9f4f8ad8f9 100644
+> > > --- a/drivers/pci/msi.c
+> > > +++ b/drivers/pci/msi.c
+> > > @@ -776,6 +776,9 @@ static void msix_mask_all(void __iomem *base, int tsize)
+> > >  	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+> > >  	int i;
+> > >  
+> > > +	if (pci_msi_ignore_mask)
+> > > +		return;
+> > > +
+> > >  	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+> > >  		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+> > >  }
+> > > -- 
+> > > 2.31.1
+> > > 
+> 
+> -- 
+> Best Regards,
+> Marek Marczykowski-Górecki
+> Invisible Things Lab
+
+
