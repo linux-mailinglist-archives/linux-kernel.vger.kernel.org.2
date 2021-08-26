@@ -2,217 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A351B3F87C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1BA3F87C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240767AbhHZMls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:41:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:55469 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242306AbhHZMlq (ORCPT
+        id S242068AbhHZMmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:42:24 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47484 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233687AbhHZMmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:41:46 -0400
-X-Greylist: delayed 949 seconds by postgrey-1.27 at vger.kernel.org; Thu, 26 Aug 2021 08:41:45 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629981657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xE4xBbQLIWV7pSA9/zwb6K3KpXCBnqyT+k+WD/v2u/M=;
-        b=THLzOk1quArlFUrMH0IL//0/grjoN1dDd9RZnYOOKSe/gtMt+iHMiUrV/TrE406bGu+vHZ
-        9JpuMYC1FIurkW+Te0dEeM70on9a7qkITO/icXv584o3HEBRxsbHUEIYMTmcGQTeweOrjh
-        AwN85UPK4+t5cKp35O/qIWs32z8hoV8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-BrBe8CxqNa6i4H2CciJsYQ-1; Thu, 26 Aug 2021 08:40:56 -0400
-X-MC-Unique: BrBe8CxqNa6i4H2CciJsYQ-1
-Received: by mail-wm1-f70.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so882140wmj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 05:40:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=xE4xBbQLIWV7pSA9/zwb6K3KpXCBnqyT+k+WD/v2u/M=;
-        b=E/Y2amjdNHqNgc/xfYkOeK3EGEpf0mtxPQzl//MQjVeuMcSQSvmVplfvU+arZhdxv2
-         vnA/5CX/jKhS7Nf6PoWqJXHv7JWkMCVsYkO6cicu+BwTSUvMNYNunR1e/DUIuyvQVWWZ
-         EESxWs+wvheOS+0zqqnwSbro7/02tw3gK2Q3/JRW8a7KdFtXCtToDRgLMJJ6AN1b9YyH
-         0EDGU9rITbo/a3QJden2o5Aps7Qa7y4mFOr290/weYHUGgTq13URPNVd303FCRInf8xQ
-         h9UdHrXdktAmLALsGorgpjZW1w3bUJ52NwGgta+JNkbHL5ZtdVU95CZ+aVuI6wV3G35X
-         QZPw==
-X-Gm-Message-State: AOAM533PyO3A5DB7slUlLYYTe7QJ7LpBm71NTA1ElV7yHyrVHfv2zZCh
-        MySZ0LRrIClD/KQndoG2V4VXnKGdmkRunTx+6UpaHHz5NqLU2iqrR1x6/qBl3qMrcKQVzq39lXw
-        BIsQD6nzKcvevMn1YL3qDQIiuoZkLCiTIb/rxVIAVCP4ztCnL/K/603fg4eNn4gucMEoHzGzxyP
-        eD
-X-Received: by 2002:a1c:a903:: with SMTP id s3mr3397609wme.171.1629981655078;
-        Thu, 26 Aug 2021 05:40:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwEW2HXUzAAS4S009Nj/1sGYBhwxy648FtKoZH/vwgRSBIaxgLTKQJt+096ZSqTxZHPsDd9Ag==
-X-Received: by 2002:a1c:a903:: with SMTP id s3mr3397588wme.171.1629981654839;
-        Thu, 26 Aug 2021 05:40:54 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id m39sm9332579wms.36.2021.08.26.05.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 05:40:54 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Eduardo Habkost <ehabkost@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Thu, 26 Aug 2021 08:42:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0FF49201A8;
+        Thu, 26 Aug 2021 12:41:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629981695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=yIff+2XJvrp6u1GxM0D/Wk0qpyDBh4ZSonmGJkPqpbg=;
+        b=r2crKNj1/rFDSWFPitGSZpRhlefXvnivy7+1mjJwG8z030+hYgQ6Ai0WZIHmtthMw4fjOs
+        gmDA4cgFD1ZrT1KSMiq/aGaD96vgF3N/WkMJsUvVk3cksE7Z7Ja9day3pwc6bfvYogPXE+
+        XHyDuifxOJy5h5Tg4xD1y3vBDLo8xWA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629981695;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=yIff+2XJvrp6u1GxM0D/Wk0qpyDBh4ZSonmGJkPqpbg=;
+        b=qcnpgrEUoOQNot5QgjRPSktAAzOTPIqFIfMS1KHMQ2024M7/w7zJUd5GCRbVjtSOLqvROA
+        OzF6bXzUztkH3JBw==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 07F43A3B8D;
+        Thu, 26 Aug 2021 12:41:35 +0000 (UTC)
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Moritz Fischer <mdf@kernel.org>, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
- from ioapic_write_indirect()
-In-Reply-To: <CAOpTY_q=0cuxXAToJrcqCRERY_sUSB1HNVBVNiEpH6Dsy0-+yA@mail.gmail.com>
-References: <20210823143028.649818-1-vkuznets@redhat.com>
- <20210823143028.649818-5-vkuznets@redhat.com>
- <20210823185841.ov7ejn2thwebcwqk@habkost.net>
- <87mtp7jowv.fsf@vitty.brq.redhat.com>
- <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
- <87k0kakip9.fsf@vitty.brq.redhat.com>
- <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
- <87h7fej5ov.fsf@vitty.brq.redhat.com>
- <36b6656637d1e6aaa2ab5098f7ebc27644466294.camel@redhat.com>
- <87bl5lkgfm.fsf@vitty.brq.redhat.com>
- <CAOpTY_q=0cuxXAToJrcqCRERY_sUSB1HNVBVNiEpH6Dsy0-+yA@mail.gmail.com>
-Date:   Thu, 26 Aug 2021 14:40:53 +0200
-Message-ID: <87tujcidka.fsf@vitty.brq.redhat.com>
+Subject: [PATCH v2] usb: renesas-xhci: Prefer firmware loading on unknown ROM state
+Date:   Thu, 26 Aug 2021 14:41:27 +0200
+Message-Id: <20210826124127.14789-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eduardo Habkost <ehabkost@redhat.com> writes:
+The recent attempt to handle an unknown ROM state in the commit
+d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
+resulted in a regression and reverted later by the commit 44cf53602f5a
+("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"").
+The problem of the former fix was that it treated the failure of
+firmware loading as a fatal error.  Since the firmware files aren't
+included in the standard linux-firmware tree, most users don't have
+them, hence they got the non-working system after that.  The revert
+fixed the regression, but also it didn't make the firmware loading
+triggered even on the devices that do need it.  So we need still a fix
+for them.
 
-> On Wed, Aug 25, 2021 at 5:43 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
->>
->> Maxim Levitsky <mlevitsk@redhat.com> writes:
->>
->> > On Wed, 2021-08-25 at 10:21 +0200, Vitaly Kuznetsov wrote:
->> >> Maxim Levitsky <mlevitsk@redhat.com> writes:
->> >>
->> >> > On Tue, 2021-08-24 at 16:42 +0200, Vitaly Kuznetsov wrote:
->> >> ...
->> >> > Not a classical review but,
->> >> > I did some digital archaeology with this one, trying to understand what is going on:
->> >> >
->> >> >
->> >> > I think that 16 bit vcpu bitmap is due to the fact that IOAPIC spec states that
->> >> > it can address up to 16 cpus in physical destination mode.
->> >> >
->> >> > In logical destination mode, assuming flat addressing and that logical id = 1 << physical id
->> >> > which KVM hardcodes, it is also only possible to address 8 CPUs.
->> >> >
->> >> > However(!) in flat cluster mode, the logical apic id is split in two.
->> >> > We have 16 clusters and each have 4 CPUs, so it is possible to address 64 CPUs,
->> >> > and unlike the logical ID, the KVM does honour cluster ID,
->> >> > thus one can stick say cluster ID 0 to any vCPU.
->> >> >
->> >> >
->> >> > Let's look at ioapic_write_indirect.
->> >> > It does:
->> >> >
->> >> >     -> bitmap_zero(&vcpu_bitmap, 16);
->> >> >     -> kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq, &vcpu_bitmap);
->> >> >     -> kvm_make_scan_ioapic_request_mask(ioapic->kvm, &vcpu_bitmap); // use of the above bitmap
->> >> >
->> >> >
->> >> > When we call kvm_bitmap_or_dest_vcpus, we can already overflow the bitmap,
->> >> > since we pass all 8 bit of the destination even when it is physical.
->> >> >
->> >> >
->> >> > Lets examine the kvm_bitmap_or_dest_vcpus:
->> >> >
->> >> >   -> It calls the kvm_apic_map_get_dest_lapic which
->> >> >
->> >> >        -> for physical destinations, it just sets the bitmap, which can overflow
->> >> >           if we pass it 8 bit destination (which basically includes reserved bits + 4 bit destination).
->> >> >
->> >> >
->> >> >        -> For logical apic ID, it seems to truncate the result to 16 bit, which isn't correct as I explained
->> >> >           above, but should not overflow the result.
->> >> >
->> >> >
->> >> >    -> If call to kvm_apic_map_get_dest_lapic fails, it goes over all vcpus and tries to match the destination
->> >> >        This can overflow as well.
->> >> >
->> >> >
->> >> > I also don't like that ioapic_write_indirect calls the kvm_bitmap_or_dest_vcpus twice,
->> >> > and second time with 'old_dest_id'
->> >> >
->> >> > I am not 100%  sure why old_dest_id/old_dest_mode are needed as I don't see anything in the
->> >> > function changing them.
->> >> > I think only the guest can change them, so maybe the code deals with the guest changing them
->> >> > while the code is running from a different vcpu?
->> >> >
->> >> > The commit that introduced this code is 7ee30bc132c683d06a6d9e360e39e483e3990708
->> >> > Nitesh Narayan Lal, maybe you remember something about it?
->> >> >
->> >>
->> >> Before posting this patch I've contacted Nitesh privately, he's
->> >> currently on vacation but will take a look when he gets back.
->> >>
->> >> > Also I worry a lot about other callers of kvm_apic_map_get_dest_lapic
->> >> >
->> >> > It is also called from kvm_irq_delivery_to_apic_fast, and from kvm_intr_is_single_vcpu_fast
->> >> > and both seem to also use 'unsigned long' for bitmap, and then only use 16 bits of it.
->> >> >
->> >> > I haven't dug into them, but these don't seem to be IOAPIC related and I think
->> >> > can overwrite the stack as well.
->> >>
->> >> I'm no expert in this code but when writing the patch I somehow
->> >> convinced myself that a single unsigned long is always enough. I think
->> >> that for cluster mode 'bitmap' needs 64-bits (and it is *not* a
->> >> vcpu_bitmap, we need to convert). I may be completely wrong of course
->> >> but in any case this is a different issue. In ioapic_write_indirect() we
->> >> have 'vcpu_bitmap' which should certainly be longer than 64 bits.
->> >
->> >
->> > This code which I mentioned in 'other callers' as far as I see is not IOAPIC related.
->> > For regular local APIC all bets are off, any vCPU and apic ID are possible
->> > (xapic I think limits apic id to 255 but x2apic doesn't).
->> >
->> > I strongly suspect that this code can overflow as well.
->>
->> I've probably missed something but I don't see how
->> kvm_apic_map_get_dest_lapic() can set bits above 64 in 'bitmap'. If it
->> can, then we have a problem indeed.
->
-> It would be nice if the compiler took care of validating bitmap sizes
-> for us. Shouldn't we make the function prototypes explicit about the
-> bitmap sizes they expect?
->
-> I believe some `typedef DECLARE_BITMAP(...)` or `typedef struct {
-> DECLARE_BITMAP(...) } ...` declarations would be very useful here.
+This is another attempt to handle the unknown ROM state.  Like the
+previous fix, this also tries to load the firmware when ROM shows
+unknown state.  In this patch, however, the failure of a firmware
+loading (such as a missing firmware file) isn't handled as a fatal
+error any longer when ROM has been already detected, but it falls back
+to the ROM mode like before.  The error is returned only when no ROM
+is detected and the firmware loading failed.
 
-The fundamental problem here is that bitmap in Linux has 'unsigned long
-*' type, it's supposed to be accompanied with 'int len' parameter but
-it's not always the case.
+Along with it, for simplifying the code flow, the detection and the
+check of ROM is factored out from renesas_fw_check_running() and done
+in the caller side, renesas_xhci_check_request_fw().  It avoids the
+redundant ROM checks.
 
-In KVM, we usually use 'vcpu_bitmap' (or 'dest_vcpu_bitmap') and these
-are 'KVM_MAX_VCPUS' long. Just 'bitmap' or 'mask' case is a bit more
-complicated. E.g. kvm_apic_map_get_logical_dest() uses 'u16 *mask' and
-this means that only 16 bits in the destination are supposed to be
-set. kvm_apic_map_get_dest_lapic() uses 'unsigned long *bitmap' - go
-figure.
+The patch was tested on Lenovo Thinkpad T14 gen (BIOS 1.34).  Also it
+was confirmed that no regression is seen on another Thinkpad T14
+machine that has worked without the patch, too.
 
-We could've probably used a declaration like you suggest to e.g. create
-incompatible 'bitmap16','bitmap64',... types and make the compiler do
-the checking but I'm slightly hesitant to introduce such helpers to KVM
-and not the whole kernel. Alternatively, we could've just encoded the
-length in parameters name, e.g. 
+Fixes: 44cf53602f5a ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"")
+BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1189207
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+v1->v2: just rebased to 5.14-rc7+
 
-@@ -918,7 +918,7 @@ static bool kvm_apic_is_broadcast_dest(struct kvm *kvm, struct kvm_lapic **src,
- static inline bool kvm_apic_map_get_dest_lapic(struct kvm *kvm,
-                struct kvm_lapic **src, struct kvm_lapic_irq *irq,
-                struct kvm_apic_map *map, struct kvm_lapic ***dst,
--               unsigned long *bitmap)
-+               unsigned long *bitmap64)
- {
-        int i, lowest;
+ drivers/usb/host/xhci-pci-renesas.c | 35 +++++++++++++++++++----------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
+index 5923844ed821..ef5e91a5542d 100644
+--- a/drivers/usb/host/xhci-pci-renesas.c
++++ b/drivers/usb/host/xhci-pci-renesas.c
+@@ -207,7 +207,8 @@ static int renesas_check_rom_state(struct pci_dev *pdev)
+ 			return 0;
+ 
+ 		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
+-			return 0;
++			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
++			return -ENOENT;
+ 
+ 		case RENESAS_ROM_STATUS_ERROR: /* Error State */
+ 		default: /* All other states are marked as "Reserved states" */
+@@ -224,14 +225,6 @@ static int renesas_fw_check_running(struct pci_dev *pdev)
+ 	u8 fw_state;
+ 	int err;
+ 
+-	/* Check if device has ROM and loaded, if so skip everything */
+-	err = renesas_check_rom(pdev);
+-	if (err) { /* we have rom */
+-		err = renesas_check_rom_state(pdev);
+-		if (!err)
+-			return err;
+-	}
+-
+ 	/*
+ 	 * Test if the device is actually needing the firmware. As most
+ 	 * BIOSes will initialize the device for us. If the device is
+@@ -591,21 +584,39 @@ int renesas_xhci_check_request_fw(struct pci_dev *pdev,
+ 			(struct xhci_driver_data *)id->driver_data;
+ 	const char *fw_name = driver_data->firmware;
+ 	const struct firmware *fw;
++	bool has_rom;
+ 	int err;
+ 
++	/* Check if device has ROM and loaded, if so skip everything */
++	has_rom = renesas_check_rom(pdev);
++	if (has_rom) {
++		err = renesas_check_rom_state(pdev);
++		if (!err)
++			return 0;
++		else if (err != -ENOENT)
++			has_rom = false;
++	}
++
+ 	err = renesas_fw_check_running(pdev);
+ 	/* Continue ahead, if the firmware is already running. */
+ 	if (err == 0)
+ 		return 0;
+ 
++	/* no firmware interface available */
+ 	if (err != 1)
+-		return err;
++		return has_rom ? 0 : err;
+ 
+ 	pci_dev_get(pdev);
+-	err = request_firmware(&fw, fw_name, &pdev->dev);
++	err = firmware_request_nowarn(&fw, fw_name, &pdev->dev);
+ 	pci_dev_put(pdev);
+ 	if (err) {
+-		dev_err(&pdev->dev, "request_firmware failed: %d\n", err);
++		if (has_rom) {
++			dev_info(&pdev->dev, "failed to load firmware %s, fallback to ROM\n",
++				 fw_name);
++			return 0;
++		}
++		dev_err(&pdev->dev, "failed to load firmware %s: %d\n",
++			fw_name, err);
+ 		return err;
+ 	}
+ 
 -- 
-Vitaly
+2.26.2
 
