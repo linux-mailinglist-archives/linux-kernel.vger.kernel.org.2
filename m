@@ -2,154 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90853F8485
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057FC3F8488
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240987AbhHZJ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 05:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
+        id S241021AbhHZJa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 05:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233744AbhHZJ2q (ORCPT
+        with ESMTP id S233249AbhHZJaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 05:28:46 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B6FC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:27:59 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id j12so3884077ljg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:27:59 -0700 (PDT)
+        Thu, 26 Aug 2021 05:30:18 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1DBC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:29:29 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id m6-20020ac807c6000000b0029994381c5fso1404996qth.5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:29:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=apPabyFebLBZ6Y4h4FLD74wAviXGA6FanlT1NMAG/UQ=;
-        b=EFtvrylaEy+EvAfC6iYMhbuOGOAokbnq2aTwK9FXZM2fGNmuNcAgO+fF2RFTJ/7ejO
-         QeMN/dUzePOuMVrmobwhFjPfqBqPxzEM8ZKrtkff1qncqxfTXnLJSAimFnRWQkjusEB1
-         3cMGpj9+An27WpLLsdjDqWZ0wwm3jpL4Fkf8a3AQRSFY8gSkL8dKZhrRP2eh9KbFTIFp
-         DkYHMRpS8EWuYd3Kby8666ZEyheNpRHR9wZnVNyuKQ7ya9EsoO3hFnap0W4uJHF9WfFi
-         rjbWPmMpzRxjiTrOUzn16sS5BIiIs8c+1+VDAI5DSu1A9V66WiCa4PqZgU16YUB9V0jS
-         GwCQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=EYQCvWaSOAoZfGoi/+7YMUDNib2TjNJAY1W234CWDnA=;
+        b=rYQm+h3uOmjt8Qq8qEwiUduzIY8eHzycw8u3wdyV+FmaNn9HCZxhN5Vu2jTQeAXDtI
+         FSe/cyVR5PmCG5N5PQ9d1CZlxi4AVFtSunOifs/dpNvOO1rq+xySsaI5BPX604itMgwY
+         DLiDD9G209a/PAjTOqtY5NbnrkSUZRg65uHN14ttUGa5lotlaY0T6NsLLuVQH7MW09JW
+         q4O8LaMQ9PI8AB90D5j081qhbMNgieWXNoBuGYBPMlhxELjmJbR8KYRpteA5hANi8f8f
+         gouK3+gcd3yUvPvdu0U8AiWpZ4wwofFksRZuiEEyy8i+Shq35akBOK6cxXInARsMQbT+
+         FdVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=apPabyFebLBZ6Y4h4FLD74wAviXGA6FanlT1NMAG/UQ=;
-        b=XvLfYm4/+d5xk71Hcze7X8eNY5/3vqYOtsaeGyw8FaSoIcdElVKhboWBUrujGYGLKZ
-         n8WHSnpHSHoC9FU4fzA/4oeezR6zuqIttYaY1k8Cap6ckkidMigEzHv682+NhwphFyt+
-         MpKSnqEs0UWYBl1TzVy3VcKKC3Ww9M2zbbhqhDv4Axxf7n7ZLW5gZe+yF4sB+ToJ1ngV
-         AFkxTPR8IE+sVQ0YXwzmaDh0Z766YhDnhzTz0WFkb7LE4aUUZLjnNMMYtm7cfLuJmQJx
-         6ruJezPPIWvUMhIOwJ6qtgZUm1fHJfuxDtLV63kBTnyxivwVtpYX8USrkpBan2DjEqNZ
-         667w==
-X-Gm-Message-State: AOAM532Y4CpKXXw7vh028De1LDdCTVRKSM9Px6mACMnQNrf3CMcbQ0Zi
-        JBqCgYJZ8yqlc50905fTtomn7LLUIQ4sNw==
-X-Google-Smtp-Source: ABdhPJywMS7VAG3c2EoTLO6fKMoUX4D9GqZ+5UwXT+AqYMRywKNR2yiZKrfKfvpwpDxP+loRF10Qgg==
-X-Received: by 2002:a2e:a726:: with SMTP id s38mr2173904lje.386.1629970077317;
-        Thu, 26 Aug 2021 02:27:57 -0700 (PDT)
-Received: from localhost.localdomain ([46.61.204.60])
-        by smtp.gmail.com with ESMTPSA id b2sm262001lfi.283.2021.08.26.02.27.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 02:27:56 -0700 (PDT)
-Subject: Re: [PATCH v3 5/6] staging: r8188eu: add error handling of rtw_read32
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>,
-        "phil@philpotter.co.uk" <phil@philpotter.co.uk>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "straube.linux@gmail.com" <straube.linux@gmail.com>,
-        "fmdefrancesco@gmail.com" <fmdefrancesco@gmail.com>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <cover.1629789580.git.paskripkin@gmail.com>
- <93bf46ce2d0ce12e94672acf28b64dc341fde038.1629789580.git.paskripkin@gmail.com>
- <27f5e52d520b453cbcabb3d72f0f5d15@AcuMS.aculab.com>
- <20210826122221.5d2b0f37@gmail.com>
-Message-ID: <685618ac-8de1-4eb1-57dd-9d43b96e872e@gmail.com>
-Date:   Thu, 26 Aug 2021 12:27:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210826122221.5d2b0f37@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=EYQCvWaSOAoZfGoi/+7YMUDNib2TjNJAY1W234CWDnA=;
+        b=L4jgKLosn1+JlOPI4kShf5LsGRMJXEse2imG89dXv6lGopWzZ9umltENhQp2feq7O4
+         E4iQtOUvKmAUAENS2fPlhenqu9XdoDiysrO2FYIelSbhhvPyAwWgVUefpVfJGjjKzgdG
+         VXDBAGtZH1ZPgDinBUyI+lS1Ku78HC+jZnrw6jJBeBTTYuCp/9SNDBHoobycGhxOFMkZ
+         nO92N4Gy9S9KV49+TGguRnsovdOis0iFuvQ5W/smET794pTiVvPNFgCSWSaYtNgJF1XX
+         aUKCwHfuW7bNq4htYD9Fslbqrmj71aELQLf6RuIACEWhe6tP1d0wxWeCAjel2O3XLE2w
+         00nQ==
+X-Gm-Message-State: AOAM532Cj2NHPzHOhZAybmvo57XI/nIo02bb0fYSLz6UJhlcXC5/BmP6
+        dtid00hxoUzQLMyQXH7VfvzrT38xC0rzSw==
+X-Google-Smtp-Source: ABdhPJwk9Nz9+Ki7HD7mEP9RBjDA9+hL9ifFnr6I0W+Sk0NqibIGohMPAM6P1mlDX6oQ1bGQr7VFPEJVYdMw0g==
+X-Received: from woodylin.ntc.corp.google.com ([2401:fa00:fc:202:63b:ba74:2193:40c])
+ (user=woodylin job=sendgmr) by 2002:a05:6214:5094:: with SMTP id
+ kk20mr3099143qvb.3.1629970168601; Thu, 26 Aug 2021 02:29:28 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 17:28:54 +0800
+Message-Id: <20210826092854.58694-1-woodylin@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
+Subject: [PATCH] ANDROID: staging: add userpanic-dev driver
+From:   Woody Lin <woodylin@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Todd Kjos <tkjos@android.com>
+Cc:     "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        Woody Lin <woodylin@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/21 12:22 PM, Pavel Skripkin wrote:
-> On Thu, 26 Aug 2021 08:51:23 +0000
-> David Laight <David.Laight@ACULAB.COM> wrote:
-> 
->> From: Pavel Skripkin <paskripkin@gmail.com>
->> > Sent: 24 August 2021 08:28
->> > 
->> > _rtw_read32 function can fail in case of usb transfer failure. But
->> > previous function prototype wasn't designed to return an error to
->> > caller. It can cause a lot uninit value bugs all across the driver
->> > code, since rtw_read32() returns local stack variable to caller.
->> > 
->> > Fix it by changing the prototype of this function. Now it returns an
->> > int: 0 on success, negative error value on failure and callers
->> > should pass the pointer to storage location for register value.
->> 
->> Pretty horrid API interface.
->> Functions like readl() - which can fail just return ~0u and let
->> the caller worry about whether that causes serious grief.
->> 
->> You could make all the read functions return __u64 and return ~0ull
->> on error.
->> Testing for (value & 1ull << 63) will be reasonable even on 32bit.
->> 
-> 
-> I am not the best at API related questions, so can you, please,
-> explain why your approach is better?
-> 
-> As I can see, most of the drivers in usb/ directory use smth like this
-> interface for private reading funcions. We anyway creating tmp variable
-> (but 64 bit _always_) and checking for mistery error, which we cannot
-> pass up to callers.
-> 
-> Sorry, if it's _too_ dumb question, but I really can't get your
-> point....
-> 
-> 
-> 
->   
-> 
->> ...
->> > -static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
->> > +static int usb_read32(struct intf_hdl *pintfhdl, u32 addr, u32
->> > *data) {
->> >  	u8 requesttype;
->> >  	u16 wvalue;
->> >  	u16 len;
->> > -	__le32 data;
->> > +	int res;
->> > +	__le32 tmp;
->> > +
->> > +	if (WARN_ON(unlikely(!data)))
->> > +		return -EINVAL;
->> > 
->> 
->> Kill the NULL check - it is a silly coding error.
->> An OOPS is just as easy to debug.
->> 
-> 
-> 
-> I don't think that one single driver should kill the whole system. It's
-> 100% an error, but kernel can recover from it (for example disconnect
-> the driver, since it's broken).
-> 
-> 
-> AFIAK, Greg and Linus do not like BUG_ONs in recoverable state...
-> Correct me, if I am wrong
-> 
-Oops, I thought about BUG_ON() instead of WARN_ON(), sorry for 
-confusion. My point is "we should not let the box boom".
+Add char device driver 'userpanic-dev' that exposes an interface to
+userspace processes to request a system panic with customized panic
+message.
 
+Signed-off-by: Woody Lin <woodylin@google.com>
+---
+ drivers/staging/android/Kconfig         |  12 +++
+ drivers/staging/android/Makefile        |   1 +
+ drivers/staging/android/userpanic-dev.c | 110 ++++++++++++++++++++++++
+ 3 files changed, 123 insertions(+)
+ create mode 100644 drivers/staging/android/userpanic-dev.c
 
+diff --git a/drivers/staging/android/Kconfig b/drivers/staging/android/Kconfig
+index 70498adb1575..b1968a1ee821 100644
+--- a/drivers/staging/android/Kconfig
++++ b/drivers/staging/android/Kconfig
+@@ -14,6 +14,18 @@ config ASHMEM
+ 	  It is, in theory, a good memory allocator for low-memory devices,
+ 	  because it can discard shared memory units when under memory pressure.
+ 
++config USERPANIC_CHARDEV
++	bool "User-panic device interface"
++	help
++	  Say Y here to use user-panic device for user space processes to
++	  request a system panic with customized panic message.
++
++	  A char device '/dev/userspace_panic' is created by this driver
++	  when selecting 'Y'. User processes can request panic and attach
++	  customized panic message and title by ioctl(CRASH_INFO). Later any
++	  panic handler can collect the panic message to build debugging
++	  reports.
++
+ endif # if ANDROID
+ 
+ endmenu
+diff --git a/drivers/staging/android/Makefile b/drivers/staging/android/Makefile
+index e9a55a5e6529..851efb3435ac 100644
+--- a/drivers/staging/android/Makefile
++++ b/drivers/staging/android/Makefile
+@@ -2,3 +2,4 @@
+ ccflags-y += -I$(src)			# needed for trace events
+ 
+ obj-$(CONFIG_ASHMEM)			+= ashmem.o
++obj-$(CONFIG_USERPANIC_CHARDEV)	+= userpanic-dev.o
+diff --git a/drivers/staging/android/userpanic-dev.c b/drivers/staging/android/userpanic-dev.c
+new file mode 100644
+index 000000000000..b9a0f0c01826
+--- /dev/null
++++ b/drivers/staging/android/userpanic-dev.c
+@@ -0,0 +1,110 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* userpanic-dev.c
++ *
++ * User-panic Device Interface
++ *
++ * Copyright 2021 Google LLC
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ":%s: " fmt, __func__
++
++#include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/string.h>
++#include <linux/miscdevice.h>
++
++struct userpanic_crash_info {
++	void __user *title_uaddr;
++	void __user *msg_uaddr;
++};
++
++#define CRASH_INFO		(_IOW('U', 179, struct userpanic_crash_info))
++
++static int do_userpanic(const char *title, const char *msg)
++{
++	const size_t msgbuf_sz = PAGE_SIZE;
++	char *msgbuf;
++
++	msgbuf = kmalloc(msgbuf_sz, GFP_KERNEL);
++	if (!msgbuf)
++		return -ENOMEM;
++
++	pr_emerg("User process '%.*s' %d requesting kernel panic\n",
++		 sizeof(current->comm), current->comm, current->pid);
++	if (msg)
++		pr_emerg("   with message: %s\n", msg);
++
++	/* Request panic with customized panic title. */
++	snprintf(msgbuf, msgbuf_sz, "U: %s: %s", current->comm, title);
++	panic(msgbuf);
++	kfree(msgbuf);
++	return -EFAULT;
++}
++
++static long userpanic_device_ioctl(struct file *file, u_int cmd, u_long arg)
++{
++	struct userpanic_crash_info crash_info;
++	char *title;
++	char *msg = NULL;
++	int ret;
++
++	switch (cmd) {
++	case CRASH_INFO:
++		if (copy_from_user(&crash_info, (void __user *)arg, sizeof(crash_info)))
++			return -EFAULT;
++
++		if (!crash_info.title_uaddr)
++			return -EINVAL;
++
++		title = strndup_user(crash_info.title_uaddr, PAGE_SIZE);
++		if (IS_ERR(title)) {
++			pr_err("failed to strndup .title_uaddr: %d\n", PTR_ERR(title));
++			return -EINVAL;
++		}
++
++		if (crash_info.msg_uaddr) {
++			msg = strndup_user(crash_info.msg_uaddr, PAGE_SIZE);
++			if (IS_ERR(msg)) {
++				kfree(title);
++				pr_err("failed to strndup .msg_uaddr: %d\n", PTR_ERR(msg));
++				return -EINVAL;
++			}
++		}
++
++		ret = do_userpanic(title, msg);
++		kfree(msg);
++		kfree(title);
++		return ret;
++	}
++
++	return -EINVAL;
++}
++
++static const struct file_operations userpanic_device_fops = {
++	.owner          = THIS_MODULE,
++	.unlocked_ioctl = userpanic_device_ioctl,
++	.compat_ioctl   = compat_ptr_ioctl,
++};
++
++static struct miscdevice userpanic_device = {
++	.minor = MISC_DYNAMIC_MINOR,
++	.name  = "userspace_panic",
++	.fops  = &userpanic_device_fops,
++};
++
++static int __init userspace_panic_dev_init(void)
++{
++	int ret;
++
++	ret = misc_register(&userpanic_device);
++	if (ret)
++		pr_err("misc_register failed for userspace_panic device\n");
++
++	return ret;
++}
++
++device_initcall(userspace_panic_dev_init);
++
++MODULE_DESCRIPTION("User-panic interface device driver");
++MODULE_AUTHOR("Woody Lin <woodylin@google.com>");
++MODULE_LICENSE("GPL v2");
+-- 
+2.33.0.rc2.250.ged5fa647cd-goog
 
-
-
-With regards,
-Pavel Skripkin
