@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4238F3F8B82
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18B63F8B89
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243053AbhHZQGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 12:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42374 "EHLO mail.kernel.org"
+        id S243016AbhHZQI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:08:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232555AbhHZQGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:06:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72E1C61073;
-        Thu, 26 Aug 2021 16:05:32 +0000 (UTC)
+        id S231732AbhHZQI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 12:08:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FC1960EBD;
+        Thu, 26 Aug 2021 16:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629993932;
-        bh=6EOvxsS40DWi4+3S3XPVsGwCcBBe7Jps2Wzxpeei4kU=;
+        s=k20201202; t=1629994089;
+        bh=GewD7zN2+Ps6AHo4qAH+E+QMukH8FsKbZaen88ozxRM=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=toXdmH43h5RNaLiKqEu9/Yqv/CeUG47J37KFiSCSg9OUODgfAdMFkNQhpUw0QlKJk
-         pLas5wY+devMxG3fIRxW/X4vvbv3b9UV6v8WuraGtCabsyMecdEtKWvyAxe4M16vGh
-         KG9VLNxsEQXUBg76srBRPusxtxzldhwhpyWgGCgqWr84/UyIBcQk9MG72u84b+kG80
-         40HPlCn3VZ9n3knaFQMr5JsQWi4IukZHlnLIdNPVV14mwRcbFNb6uRXvtz7MQCc6kW
-         TQ4fulAm7aop4gjiCqMo6OsuHkuX1nOG2G5ksLXXpnhZYSQvkLT/qgUG9fQlShO8+c
-         3THEKBphym0Ww==
-Message-ID: <2073010e89045054c2d9a6451e7056f257082d15.camel@kernel.org>
-Subject: Re: [PATCH v13 7/7] tpm: Add YAML schema for TPM TIS I2C options
+        b=I0z2/zdlUcAhS8LtYd1g+tDrBdZ7FW4OdVMX547zegELwpzPD1UkhGu08W9xrFGbI
+         5AmILC8fQP76ndksiIjfNgtE6DujWZj+N9DmOAjCK9s+Zc+WF8+4XhIGYpETnp6Jwu
+         CDzo8GmT4SsY37DKccvd6nYdpq2RehTAUuk7uJYobI7wvVhCGf10lpo9Pxldp8TipT
+         TC+kXNWIFEj2s9q3fsH3dlIKn2I1RQpNk3jOyCfax+BS1RsAqRzzqnmwe2WLWwBmQL
+         EeCTdeAJ7eAmRf+7tecNNv4jOsGi38MyQTyEBbq/uUr/91BA5GkRnTKTBvwiil+31o
+         ZNkYf1kfe8IeQ==
+Message-ID: <a006c85ef21f4dbd46a2ec1f73fa4e273afc5f6c.camel@kernel.org>
+Subject: Re: [PATCH v3 1/2] x86/sgx: Add the missing ifdef for
+ sgx_set_attribute()
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     amirmizi6@gmail.com, Eyal.Cohen@nuvoton.com,
-        jarkko.sakkinen@linux.intel.com, oshrialkoby85@gmail.com,
-        alexander.steffen@infineon.com, robh+dt@kernel.org,
-        mark.rutland@arm.com, peterhuewe@gmx.de, jgg@ziepe.ca,
-        arnd@arndb.de, gregkh@linuxfoundation.org, benoit.houyere@st.com,
-        eajames@linux.ibm.com, joel@jms.id.au
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
-        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
-        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
-        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
-        Rob Herring <robh@kernel.org>
-Date:   Thu, 26 Aug 2021 19:05:30 +0300
-In-Reply-To: <20210826111908.117278-8-amirmizi6@gmail.com>
-References: <20210826111908.117278-1-amirmizi6@gmail.com>
-         <20210826111908.117278-8-amirmizi6@gmail.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kai Huang <kai.huang@intel.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 26 Aug 2021 19:08:07 +0300
+In-Reply-To: <YSdl16MFt/GVNGDq@zn.tnic>
+References: <20210825235234.153013-1-jarkko@kernel.org>
+         <YSdl16MFt/GVNGDq@zn.tnic>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.36.5-0ubuntu1 
@@ -50,16 +48,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-26 at 14:19 +0300, amirmizi6@gmail.com wrote:
-> From: Amir Mizinski <amirmizi6@gmail.com>
+On Thu, 2021-08-26 at 11:58 +0200, Borislav Petkov wrote:
+> On Thu, Aug 26, 2021 at 02:52:32AM +0300, Jarkko Sakkinen wrote:
+> > Similarly as sgx_virt_*, decorate sgx_set_attribute() with ifdef, so th=
+at
+> > calling it without appropraite config flags, will cause a compilation
+> > error, and not a linking error.
 >=20
-> Added a YAML schema to support tpm tis i2c related dt-bindings for the I2=
-c
-  ~~~
-  Add
+> Please explain what exactly is this fixing. IOW, how can I reproduce the
+> failure?
 
-Using imperative form in the current time is better than describing the
-past.
+You're right, fixes tag is not necessary.
+
+I made this change because I'm including the header to set_memory.c, and
+IMHO it is better to make sure when possible that we get compilation errors
+than linker errors, if for some reason kernel did not have SGX support.
+
+It's also incoherent that KVM specific functions are compilation flagged bu=
+t
+sgx_set_attribute() is not.
 
 /Jarkko
-
