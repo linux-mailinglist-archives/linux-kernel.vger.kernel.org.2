@@ -2,76 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DD73F83DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E980E3F83E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240589AbhHZIky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:40:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229652AbhHZIkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AC8576103A;
-        Thu, 26 Aug 2021 08:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629967206;
-        bh=l4DOtfW8WE92nEO04GuUSBNgGVf0wzpGNjg9AArKnkE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EEfD35ddLrrVxfjVuMu2X+sbMYvTdo6xYgCQindmGGRCRa6JdeQptY7azEmgehj3x
-         oLbuNQQtJ71Yh+9p16c1XBX/fcqrz4lpl0tL/S5kC5B6IhGdDguccP5cjKHlrYGcBZ
-         zJ8l6vQ/FkkcBRzdmAEfnMuaKysNQayILQkNr6X2FVjICbheARgnXe2BpUXVsOgvux
-         IyFW8RFLtm3Iobk5Cyzc6aIivPCVYDEU+fS9jmums0eDpCgtdw9SRdoNbrc0VKZdRU
-         AFF6Fu/fswfyrRq9sxm2e/YBLF76O7+l2Uz+HIK1roHWZTrz1JaT19cVWk4ONpdI9M
-         EHm9GVWGNzl2Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A07D260A14;
-        Thu, 26 Aug 2021 08:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S240607AbhHZIm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:42:57 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53762 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhHZIm4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 04:42:56 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BE8B321E4D;
+        Thu, 26 Aug 2021 08:42:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629967324; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EZgR+1O6XWssyOYsYbXTDPR6fPO26fOilqbVed3JReY=;
+        b=C7b5xhZu9EbLS45AEfY/HNfUMROlwapmxOhVCC+ARu92Q3jEst9XMcoqD0gsphRd8ErdmW
+        0CF0aSb5FMeebYZYYDz5xbGHbwwImtvsPLI2crVH7xwUgdgVPAy9AloLWO8yPHQnO31lCf
+        fTetcCO6kwvu3PA7QF83fnLO6coUphQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629967324;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EZgR+1O6XWssyOYsYbXTDPR6fPO26fOilqbVed3JReY=;
+        b=nhYydRLfzI99QvT43QjU1HdPsfHsA5nbAUektEvC8WmDxIsaHtMEBD8VXKpuX4VUy00dja
+        +NcBzIhBpT0l1hAg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AED6313A0F;
+        Thu, 26 Aug 2021 08:42:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id /hyjKtxTJ2EFEAAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Thu, 26 Aug 2021 08:42:04 +0000
+Date:   Thu, 26 Aug 2021 10:42:04 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>
+Subject: Re: [ANNOUNCE] 4.4.277-rt224
+Message-ID: <20210826084204.gr7i5vundenqmmnb@carbon.lan>
+References: <162762714720.5121.4789079771844033633@beryllium.lan>
+ <20210820104328.GA30359@amd>
+ <20210820110716.zmh7te5dvmndssgm@carbon.lan>
+ <20210820175301.GA4791@amd>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 1/6] nfc: microread: remove unused header includes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162996720665.19943.14666053219399203179.git-patchwork-notify@kernel.org>
-Date:   Thu, 26 Aug 2021 08:40:06 +0000
-References: <20210825142459.226168-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210825142459.226168-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210820175301.GA4791@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Pavel,
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+On Fri, Aug 20, 2021 at 07:53:01PM +0200, Pavel Machek wrote:
+> FYI we are on 2 month cycle for -cip-rt, so we are still fine for a
+> while. We had trouble coordinating matching -cip and -rt releases, but
+> we decided to adjust -cip cycle to match -rt, so that should be solved.
 
-On Wed, 25 Aug 2021 16:24:54 +0200 you wrote:
-> Do not include unnecessary headers.
+Oh, my bad. I was aiming for about a release per month but I didn't
+really pay attention on my own schedule.
+
+> > BTW, as you certainly are aware, the v4.4 kernel is EOL soon. As I
+> > understand the CIP is going to take over the maintenance. So I assume
+> > you are going to care of the -rt version as well?
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  drivers/nfc/microread/mei.c       | 1 -
->  drivers/nfc/microread/microread.c | 1 -
->  2 files changed, 2 deletions(-)
+> We are aware, but I don't think we decided what will happen at that
+> point (and I can't really speak for the project). We plan to maintain
+> -cip and -cip-rt variants till 2027:
+> 
+> https://wiki.linuxfoundation.org/civilinfrastructureplatform/start
 
-Here is the summary with links:
-  - [1/6] nfc: microread: remove unused header includes
-    https://git.kernel.org/netdev/net-next/c/ffb239e29518
-  - [2/6] nfc: mrvl: remove unused header includes
-    https://git.kernel.org/netdev/net-next/c/d8eb4eb0ef1d
-  - [3/6] nfc: pn544: remove unused header includes
-    https://git.kernel.org/netdev/net-next/c/9b3f66bc0eca
-  - [4/6] nfc: st-nci: remove unused header includes
-    https://git.kernel.org/netdev/net-next/c/2603ca872040
-  - [5/6] nfc: st21nfca: remove unused header includes
-    https://git.kernel.org/netdev/net-next/c/994a63434133
-  - [6/6] nfc: st95hf: remove unused header includes
-    https://git.kernel.org/netdev/net-next/c/7fe2f1bc15be
+Understood.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Taking over -stable and -stable-rt maintainance, too, is something
+> that may make sense (and we probably will be considered), but it is
+> likely CIP Technical Steering Committee's (“TSC”) decision.
+> 
+> https://www.cip-project.org/about/charter
+> 
+> Actually, your input may be important here. If you (or SuSE or someone
+> else) can put some resources into 4.4-rt after February 2022, that
+> would be good to know.
 
+Speaking with my upstream hat on: I don't think this likely to
+happen. The stable-rt maintainers are happy to get rid of the older
+releases as it gets harder over time to keep it alive. That's why we
+stop maintaining the -rt variant as soon the matching stable branch hits
+EOL.
 
+With my SUSE hat on: we maintain our own version of rt on top of our
+SLES kernel. Our v4.4 based kernels (which has significant changes
+compared to the upstream stable v4.4 tree) have entered the long time
+support period (LTTS). So I fear there is little interest from our side
+to keep the upstream v4.4-rt branch alive. Obviously, the CIP project
+could talk to our business people :)
+
+Daniel
