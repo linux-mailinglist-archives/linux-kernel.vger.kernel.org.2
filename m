@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E383F7FD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2023F7FDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236803AbhHZB12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 21:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
+        id S236938AbhHZB1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 21:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236644AbhHZB10 (ORCPT
+        with ESMTP id S236861AbhHZB13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 21:27:26 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F97C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:26:39 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id t190so1618256qke.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:26:39 -0700 (PDT)
+        Wed, 25 Aug 2021 21:27:29 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427B6C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:26:43 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id bk29so1606859qkb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=usp.br; s=usp-google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2RDPNDoVhpC2D8PS/iTn00/DSRKBuu8x3HruL1SBfjE=;
-        b=jRvHoeR/shoYNO7xRWlI+t8hIou6HrapcCtwwbc1lSSeEu67RhBZapTBJ81wNEhja+
-         Lw5A+dDRgKLDZSrCINUcByak6nEBEdQUVkuyu2KqAZA/MP5f/8B0+eRsNlI7X9SUJpXH
-         hohPqHarST5l2hMM4K0h9dNaTRRhBGkyBFplNBv6NbOABJ2lKURtGMrvDPo3qQF+FS+y
-         xKukq7FuKp8/DiQ+nrdak0UHpo67AZOWW8dbcQjbEQ4ZFdDYdLQYAq7pvNWal/xCm54L
-         mm5xx4E5lYV7UZ93y9mSqzxsnvicLjN38+f4IG2RP9tDy0HzxgLtBOChEpFjp1ByJdx8
-         Z+Hw==
+        bh=hDuUPantBA5RaLY4chr+boj+alaUK90TOLcT8GmDFog=;
+        b=xUDBsaZhosklBFsDMllxdJ1Q26GXuAW0BjjO05dH7OLOQ+RGuXZZ/EVLO8aUiDtRPr
+         aaKGrjzokz6zBfJzWr8GXkX0ztaQwn51TQ5o6Tkx/D6xCmsfOgvHYlIXAm5tGQbbD52u
+         7dfBn3OOgA0Q8AYGaoy25OSC5YELbHCTXr1DBnseakkBcWFL4A9Is9PaUBMbLePupTlQ
+         Au8uNHPI3pVZJzCeqwlF8MUXRrdDxwMIOJkYdYW0Nm12YOg+w8G8kOyy6u8O0NNKd5Bn
+         K2lyZpXmBpYYyMSjcNlCzNh/bo4AgubB+gqcXl44q1MzPNHYBbqJAZer1E/f8V2gi13q
+         hM9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2RDPNDoVhpC2D8PS/iTn00/DSRKBuu8x3HruL1SBfjE=;
-        b=q2Oru5Nj+QCzlOqArU3wgtxEu7cGDP1gBleoWbKVfIMMn9CCiktApY4s77AQ97QJNk
-         VgeUwLABFucZo9Mgfu+kZntDav4IyjGTcOCcvWy4nyAIqRfhJw0qDLswOkRc37oiRixp
-         DWn80FGlz37RbzEyjwK1q3cznZGxX38MbJh78/Z3lkzZync+gHI477octrFOGUx1JcIh
-         uRG2SjplZAqwmU4s0145lIzhU3WDZNimfg1ZZVSs9Ni4CpZhpB34W0p8gSzYhlTvmzeK
-         Np8qG1jY9zfwaccACmLPFHFjJVk7zjURcxW6GQ7rHTVTKsgyROj4OWMlwSoDlDNfOHqo
-         oTmw==
-X-Gm-Message-State: AOAM532OFUJpo5tMoL3f/saxApO8ljLlOMLKblsKCb8uE3DIpRB5Gtdc
-        4HdJLLVbXohHlFs/PPmO7E0Haw==
-X-Google-Smtp-Source: ABdhPJwxv7Mi2+cX2h1K/u8wARE/mAZlTiRGK+681jGMY9EGTqS3PjqyeQYt64cryNKcFdEk1MCVpA==
-X-Received: by 2002:a37:81c2:: with SMTP id c185mr1456849qkd.446.1629941198911;
-        Wed, 25 Aug 2021 18:26:38 -0700 (PDT)
+        bh=hDuUPantBA5RaLY4chr+boj+alaUK90TOLcT8GmDFog=;
+        b=iUAqkIAlnBPZQAaaXyomaq8DYO8QDIIXgnZsnApDkDgO5hAy3FL2PjdxaQPo8XfByt
+         oGT5UjQ0e8yPYUIjWOmXJEJPM0qgQcuzDEbB0GaLTpnWAI5mQ1bsnesMvZq+fZ4K05UF
+         ms1f/B17imYe5Kf4g5Cmeon+tlD83kL6EiVpq8KFpQkNumly6OX5wxFIVyHq0yVNxJ9i
+         9+6caS7QUevP0q35xdHOZsS3SwnvTqUoPEBAhyj6BsVR+TbdkJq1fBqBNLlLb8HlaHp9
+         ZlazRo9GvT5zSUcPHcxMDLcyf+Y8F8exn+LQjO9XrTNtRXZwzWTX7rCtgA3deVU5673l
+         CBlA==
+X-Gm-Message-State: AOAM531zTY/mABjj7gHOq8f+NojpUNK6+dGE78h2MEnDmyPeuS2XZd0P
+        vos/AxtVUbbn+CcGmYldu99ehQ==
+X-Google-Smtp-Source: ABdhPJwqTbJbzCjOHPPOzcZvtSF1x/eVVApq71pKqGyGJ+LPxko/qgdrJcm3zVtAoKzhv0rWSdr3Zw==
+X-Received: by 2002:a37:2f47:: with SMTP id v68mr1485643qkh.190.1629941202408;
+        Wed, 25 Aug 2021 18:26:42 -0700 (PDT)
 Received: from aehse.localdomain (177-209-76-11.user3p.veloxzone.com.br. [177.209.76.11])
-        by smtp.gmail.com with ESMTPSA id p123sm1375053qke.94.2021.08.25.18.26.35
+        by smtp.gmail.com with ESMTPSA id p123sm1375053qke.94.2021.08.25.18.26.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 18:26:38 -0700 (PDT)
+        Wed, 25 Aug 2021 18:26:42 -0700 (PDT)
 From:   Isabella Basso <isabellabdoamaral@usp.br>
 To:     linux@sciencehorizons.net, geert@linux-m68k.org
 Cc:     ferreiraenzoa@gmail.com, augusto.duraes33@gmail.com,
@@ -56,116 +56,79 @@ Cc:     ferreiraenzoa@gmail.com, augusto.duraes33@gmail.com,
         linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
         ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com,
         Isabella Basso <isabellabdoamaral@usp.br>
-Subject: [PATCH 1/6] hash.h: remove unused define directive
-Date:   Wed, 25 Aug 2021 22:26:21 -0300
-Message-Id: <20210826012626.1163705-2-isabellabdoamaral@usp.br>
+Subject: [PATCH 2/6] test_hash.c: move common definitions to top of file
+Date:   Wed, 25 Aug 2021 22:26:22 -0300
+Message-Id: <20210826012626.1163705-3-isabellabdoamaral@usp.br>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210826012626.1163705-1-isabellabdoamaral@usp.br>
 References: <20210826012626.1163705-1-isabellabdoamaral@usp.br>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HAVE_ARCH_HASH_32 (single underscore) define hasn't been used for
-any known supported architectures that have their own hash function
-implementation (i.e. m68k, Microblaze, H8/300, pa-risc) since George's
-patch [1], which introduced it.
+Keep function signatures minimal by making common definitions static.
+This does not change any behavior.
 
-The supported 32-bit architectures from the list above have only been
-making use of the (more general) HAVE_ARCH__HASH_32 define, which only
-lacks the right shift operator, that wasn't targeted for optimizations
-so far.
-
-[1] https://lore.kernel.org/lkml/20160525073311.5600.qmail@ns.sciencehorizons.net/
-
-Co-developed-by: Augusto Durães Camargo <augusto.duraes33@gmail.com>
-Signed-off-by: Augusto Durães Camargo <augusto.duraes33@gmail.com>
-Co-developed-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
-Signed-off-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
 Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
 ---
- include/linux/hash.h       |  5 +----
- lib/test_hash.c            | 24 +-----------------------
- tools/include/linux/hash.h |  5 +----
- 3 files changed, 3 insertions(+), 31 deletions(-)
+ lib/test_hash.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/hash.h b/include/linux/hash.h
-index ad6fa21d977b..38edaa08f862 100644
---- a/include/linux/hash.h
-+++ b/include/linux/hash.h
-@@ -62,10 +62,7 @@ static inline u32 __hash_32_generic(u32 val)
- 	return val * GOLDEN_RATIO_32;
- }
- 
--#ifndef HAVE_ARCH_HASH_32
--#define hash_32 hash_32_generic
--#endif
--static inline u32 hash_32_generic(u32 val, unsigned int bits)
-+static inline u32 hash_32(u32 val, unsigned int bits)
- {
- 	/* High bits are more random, so use them. */
- 	return __hash_32(val) >> (32 - bits);
 diff --git a/lib/test_hash.c b/lib/test_hash.c
-index 0ee40b4a56dd..d4b0cfdb0377 100644
+index d4b0cfdb0377..8bcc645a7294 100644
 --- a/lib/test_hash.c
 +++ b/lib/test_hash.c
-@@ -94,22 +94,7 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
- 			pr_err("hash_32(%#x, %d) = %#x > %#x", h0, k, h1, m);
- 			return false;
- 		}
--#ifdef HAVE_ARCH_HASH_32
--		h2 = hash_32_generic(h0, k);
--#if HAVE_ARCH_HASH_32 == 1
--		if (h1 != h2) {
--			pr_err("hash_32(%#x, %d) = %#x != hash_32_generic() "
--				" = %#x", h0, k, h1, h2);
--			return false;
--		}
--#else
--		if (h2 > m) {
--			pr_err("hash_32_generic(%#x, %d) = %#x > %#x",
--				h0, k, h1, m);
--			return false;
--		}
--#endif
--#endif
+@@ -23,6 +23,11 @@
+ #include <linux/stringhash.h>
+ #include <linux/printk.h>
+ 
++#define SIZE 256 /* Run time is cubic in SIZE */
 +
- 		/* Test hash_64 */
- 		hash_or[1][k] |= h1 = hash_64(h64, k);
- 		if (h1 > m) {
-@@ -227,13 +212,6 @@ test_hash_init(void)
- #else
- 	pr_info("__hash_32() has no arch implementation to test.");
- #endif
--#ifdef HAVE_ARCH_HASH_32
--#if HAVE_ARCH_HASH_32 != 1
--	pr_info("hash_32() is arch-specific; not compared to generic.");
--#endif
--#else
--	pr_info("hash_32() has no arch implementation to test.");
--#endif
- #ifdef HAVE_ARCH_HASH_64
- #if HAVE_ARCH_HASH_64 != 1
- 	pr_info("hash_64() is arch-specific; not compared to generic.");
-diff --git a/tools/include/linux/hash.h b/tools/include/linux/hash.h
-index ad6fa21d977b..38edaa08f862 100644
---- a/tools/include/linux/hash.h
-+++ b/tools/include/linux/hash.h
-@@ -62,10 +62,7 @@ static inline u32 __hash_32_generic(u32 val)
- 	return val * GOLDEN_RATIO_32;
++static u32 string_or; /* stores or-ed string output */
++static u32 hash_or[2][33] = { { 0, } }; /* stores or-ed hash output */
++
+ /* 32-bit XORSHIFT generator.  Seed must not be zero. */
+ static u32 __init __attribute_const__
+ xorshift(u32 seed)
+@@ -66,7 +71,7 @@ fill_buf(char *buf, size_t len, u32 seed)
+  * recompile and re-test the module without rebooting.
+  */
+ static bool __init
+-test_int_hash(unsigned long long h64, u32 hash_or[2][33])
++test_int_hash(unsigned long long h64)
+ {
+ 	int k;
+ 	u32 h0 = (u32)h64, h1, h2;
+@@ -123,17 +128,15 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
+ 	return true;
  }
  
--#ifndef HAVE_ARCH_HASH_32
--#define hash_32 hash_32_generic
--#endif
--static inline u32 hash_32_generic(u32 val, unsigned int bits)
-+static inline u32 hash_32(u32 val, unsigned int bits)
+-#define SIZE 256	/* Run time is cubic in SIZE */
+-
+ static int __init
+ test_hash_init(void)
  {
- 	/* High bits are more random, so use them. */
- 	return __hash_32(val) >> (32 - bits);
+ 	char buf[SIZE+1];
+-	u32 string_or = 0, hash_or[2][33] = { { 0, } };
+ 	unsigned tests = 0;
+ 	unsigned long long h64 = 0;
+ 	int i, j;
+ 
++	string_or = 0;
+ 	fill_buf(buf, SIZE, 1);
+ 
+ 	/* Test every possible non-empty substring in the buffer. */
+@@ -161,7 +164,7 @@ test_hash_init(void)
+ 
+ 			string_or |= h0;
+ 			h64 = h64 << 32 | h0;	/* For use with hash_64 */
+-			if (!test_int_hash(h64, hash_or))
++			if (!test_int_hash(h64))
+ 				return -EINVAL;
+ 			tests++;
+ 		} /* i */
 -- 
 2.33.0
 
