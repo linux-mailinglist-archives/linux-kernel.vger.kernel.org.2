@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697FB3F8B0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3853F8B11
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242928AbhHZPcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhHZPcA (ORCPT
+        id S242954AbhHZPdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:33:24 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32884 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230203AbhHZPdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:32:00 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9AEC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:31:12 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id x4so3419370pgh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H2FXjSr4XXZh/wrLB/l+lB0NdiO6v1AP72JJN2CDrFc=;
-        b=K5kyw3BUILvXPVdRt3dr3nc9HSYp/apyOTqcN2RrYbVU2PzWjaXEF+57Z1hyNLPFFz
-         X4KrH/UmDIjk2d+/akTlAIxJuRyZPX5Xt0tSKj/gw3U6Fu3wTSVexANRNKqilFM6V7Z+
-         96n4SVw6ZXcPnXQMl3OGbW1OOo9pSLQx9KE+VtUITmR25OlinjSTNJ24V+UDAqTAa14k
-         i9DsCYhjsc5LYGAZXoKU8ihDOEzh4mbSV89QdfKYSAnHog1oyn9jzpxSaRGY3ayiHHAY
-         hQ69HnVsIhEvuSOmBhU+SOtWW8e96541G2o0Ej7ujRU6pRVIajZBLY4WVSJLJTSJkaRD
-         3Niw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H2FXjSr4XXZh/wrLB/l+lB0NdiO6v1AP72JJN2CDrFc=;
-        b=frK7Ll6gWzSwWIkkPO0X/La5vl8KeSp4bZB/IZ4Vee7bGglz/+hdpe5I1f11l1Yix6
-         /zT8reWe4KHhkSF8Q8ajw/IGTzzGNce687WWb+zFAiCRlMKDunZ7/+StWGevBA5bwaWz
-         bWwRdfk7UUgGhjaqTbi5FSW8g17ornDKzdvBjHH1ArJ7kPkBIMhOzqumVKAK0PjdyBjj
-         GnRKzXqYQjui2d9uKxG+uHOrgTWfjdeTJhALKP+dq4I52maNlvAV085MEx5pmPaugtWm
-         Ml3T8KqJpgpFqQF2NoyY84PCXuqAXex7MDjxnjKFe+NxN/B9K6k66NlPQwZrR2cJ+ZHd
-         6Szg==
-X-Gm-Message-State: AOAM531OMchkXF/gDY97YcxkowWflcSLZSRIJgFs3CoI3JTTWiV0Cb1U
-        LmxLX6KVEXmmZHgcd+JeKj82zw==
-X-Google-Smtp-Source: ABdhPJy2WGiWszoKveZseSY+6UMrzoYkhSAgEVXsEKXHspBTVcgEcbC9H6j2IthD2WINLjjpKMyEQA==
-X-Received: by 2002:a62:e90b:0:b029:30e:4530:8dca with SMTP id j11-20020a62e90b0000b029030e45308dcamr4362260pfh.17.1629991871950;
-        Thu, 26 Aug 2021 08:31:11 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g10sm3326023pfh.120.2021.08.26.08.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 08:31:10 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 15:31:07 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] KVM: x86: Fix stack-out-of-bounds memory access
- from ioapic_write_indirect()
-Message-ID: <YSezuycq/PwF5arc@google.com>
-References: <20210826122442.966977-1-vkuznets@redhat.com>
- <20210826122442.966977-5-vkuznets@redhat.com>
+        Thu, 26 Aug 2021 11:33:19 -0400
+Date:   Thu, 26 Aug 2021 17:32:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629991951;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4tQ0V/9ydkXG5X5TbtD8i9ChKFEYCqsWhakG1Wch54g=;
+        b=S8W5pA95TNHCMwKU8KsdaoOJ4AE3RuPJDPrT6NoK2ubF5rDQUyaB1BtxbF9K3xexXGHFUZ
+        iqFkr9hR7VIAT4X3unT5BwAzaPdDqRGSG6fVAOmcj/r/WBYl72q9vJGyXNT2e0lytuGFaQ
+        dNSDEgKacjpKk/vdWkcOWcudmtpn9U3HC8P+lxBwtEdRbVOynKGRae0quAaOzFXbszjPJe
+        c0nINqqb/NeM1eYt3q8cMQhH4zDpbj6zrtYdFCRRiRc28ObxRTsPCSgDmtpy9ca48ZLsss
+        n4qgOydptBRWRgHeIi4cHTAk3hby5gPCNYQACDiiFy8lv9Vi7IYAbviAzQ2TPg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629991951;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4tQ0V/9ydkXG5X5TbtD8i9ChKFEYCqsWhakG1Wch54g=;
+        b=lzIIBjzEdGotnunHs25baD9Ii1qJeX/xGmAtXvS6NelQe3K9dJM/88YzUTGdS6UTGShMr+
+        FvqDn5jLpAfgiTAA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Clark Williams <williams@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RT <linux-rt-users@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH PREEMPT_RT] i915: fix PREEMPT_RT locking splats
+Message-ID: <20210826153229.3u3wmwmsszvfzb6m@linutronix.de>
+References: <20210823150015.61ebc7d6@theseus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210826122442.966977-5-vkuznets@redhat.com>
+In-Reply-To: <20210823150015.61ebc7d6@theseus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021, Vitaly Kuznetsov wrote:
-> KASAN reports the following issue:
+On 2021-08-23 15:00:15 [-0500], Clark Williams wrote:
+> Found two separate spots where i915 was throwing "sleeping
+> function called from invalid context" when running on a
+> PREEMPT_RT kernel. In both cases it was from calling
+> local_irq_disable prior to taking a spin_lock. Since spin
+> locks are converted to rt_mutex_t on PREEMPT_RT this means
+> that we might sleep with interrupts disabled.
 > 
->  BUG: KASAN: stack-out-of-bounds in kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
->  Read of size 8 at addr ffffc9001364f638 by task qemu-kvm/4798
+> Since in both cases the calls were in threaded context on RT
+> (irq or ksoftirqd) and in no danger of reentrance, change the
+> code to only disable interrupts on non-PREEMPT_RT kernels.
 > 
->  CPU: 0 PID: 4798 Comm: qemu-kvm Tainted: G               X --------- ---
->  Hardware name: AMD Corporation DAYTONA_X/DAYTONA_X, BIOS RYM0081C 07/13/2020
->  Call Trace:
->   dump_stack+0xa5/0xe6
->   print_address_description.constprop.0+0x18/0x130
->   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
->   __kasan_report.cold+0x7f/0x114
->   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
->   kasan_report+0x38/0x50
->   kasan_check_range+0xf5/0x1d0
->   kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
->   kvm_make_scan_ioapic_request_mask+0x84/0xc0 [kvm]
->   ? kvm_arch_exit+0x110/0x110 [kvm]
->   ? sched_clock+0x5/0x10
->   ioapic_write_indirect+0x59f/0x9e0 [kvm]
->   ? static_obj+0xc0/0xc0
->   ? __lock_acquired+0x1d2/0x8c0
->   ? kvm_ioapic_eoi_inject_work+0x120/0x120 [kvm]
-> 
-> The problem appears to be that 'vcpu_bitmap' is allocated as a single long
-> on stack and it should really be KVM_MAX_VCPUS long. We also seem to clear
-> the lower 16 bits of it with bitmap_zero() for no particular reason (my
-> guess would be that 'bitmap' and 'vcpu_bitmap' variables in
-> kvm_bitmap_or_dest_vcpus() caused the confusion: while the later is indeed
-> 16-bit long, the later should accommodate all possible vCPUs).
-> 
-> Fixes: 7ee30bc132c6 ("KVM: x86: deliver KVM IOAPIC scan request to target vCPUs")
-> Fixes: 9a2ae9f6b6bb ("KVM: x86: Zero the IOAPIC scan request dest vCPUs bitmap")
-> Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Signed-off-by: Clark Williams <williams@redhat.com>
 > ---
+>  drivers/gpu/drm/i915/gt/intel_breadcrumbs.c          | 6 ++++--
+>  drivers/gpu/drm/i915/gt/intel_execlists_submission.c | 6 ++++--
+>  2 files changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
+> index 38cc42783dfb..b8bf8d6d3c61 100644
+> --- a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
+> +++ b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
+> @@ -318,9 +318,11 @@ void __intel_breadcrumbs_park(struct intel_breadcrumbs *b)
+>  	/* Kick the work once more to drain the signalers, and disarm the irq */
+>  	irq_work_sync(&b->irq_work);
+>  	while (READ_ONCE(b->irq_armed) && !atomic_read(&b->active)) {
+> -		local_irq_disable();
+> +		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +			local_irq_disable();
+>  		signal_irq_work(&b->irq_work);
+> -		local_irq_enable();
+> +		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +			local_irq_enable();
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+wouldn't it work to use irq_work_queue() + sync() instead of invoking
+the target callback itself? Given that this context is IRQ-enabled then
+it should (at least on x86) trigger right away.
+
+>  		cond_resched();
+>  	}
+>  }
+> diff --git a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
+> index fc77592d88a9..0e918831b69f 100644
+> --- a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
+> +++ b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
+> @@ -1580,9 +1580,11 @@ static void execlists_dequeue(struct intel_engine_cs *engine)
+>  
+>  static void execlists_dequeue_irq(struct intel_engine_cs *engine)
+>  {
+> -	local_irq_disable(); /* Suspend interrupts across request submission */
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +		local_irq_disable(); /* Suspend interrupts across request submission */
+>  	execlists_dequeue(engine);
+
+I've been staring at this for a while. Wouldn't it work in invoke
+execlists_dequeue() and let execlists_dequeue() do 
+	spin_lock_irq(&engine->active.lock);
+
+? This is the only invocation of the function. I don't know what the
+expected synchronisation behaviour is. The only thing that could break
+is the tail part of the function after the &engine->active.lock has been
+dropped.
+
+> -	local_irq_enable(); /* flush irq_work (e.g. breadcrumb enabling) */
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +		local_irq_enable(); /* flush irq_work (e.g. breadcrumb enabling) */
+>  }
+>  
+>  static void clear_ports(struct i915_request **ports, int count)
+
+Sebastian
