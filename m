@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE473F8B34
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697FB3F8B0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242981AbhHZPiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:38:14 -0400
-Received: from gate.crashing.org ([63.228.1.57]:41638 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242926AbhHZPiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:38:12 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 17QFUnw3025834;
-        Thu, 26 Aug 2021 10:30:49 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 17QFUmZn025833;
-        Thu, 26 Aug 2021 10:30:48 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Thu, 26 Aug 2021 10:30:48 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH v2 1/2] powerpc/bug: Remove specific powerpc BUG_ON() and WARN_ON() on PPC32
-Message-ID: <20210826153048.GD1583@gate.crashing.org>
-References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu> <1628834356.pr4zgn1xf1.astroid@bobo.none> <20210818150653.GJ1583@gate.crashing.org> <1629946707.f6ptz0tgle.astroid@bobo.none> <20210826124901.GY1583@gate.crashing.org> <1629983260.5jkx2jf0y8.astroid@bobo.none> <20210826143708.GC1583@gate.crashing.org> <1629989540.drlhb24t2w.astroid@bobo.none>
-Mime-Version: 1.0
+        id S242928AbhHZPcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230203AbhHZPcA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 11:32:00 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9AEC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:31:12 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id x4so3419370pgh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:31:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H2FXjSr4XXZh/wrLB/l+lB0NdiO6v1AP72JJN2CDrFc=;
+        b=K5kyw3BUILvXPVdRt3dr3nc9HSYp/apyOTqcN2RrYbVU2PzWjaXEF+57Z1hyNLPFFz
+         X4KrH/UmDIjk2d+/akTlAIxJuRyZPX5Xt0tSKj/gw3U6Fu3wTSVexANRNKqilFM6V7Z+
+         96n4SVw6ZXcPnXQMl3OGbW1OOo9pSLQx9KE+VtUITmR25OlinjSTNJ24V+UDAqTAa14k
+         i9DsCYhjsc5LYGAZXoKU8ihDOEzh4mbSV89QdfKYSAnHog1oyn9jzpxSaRGY3ayiHHAY
+         hQ69HnVsIhEvuSOmBhU+SOtWW8e96541G2o0Ej7ujRU6pRVIajZBLY4WVSJLJTSJkaRD
+         3Niw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H2FXjSr4XXZh/wrLB/l+lB0NdiO6v1AP72JJN2CDrFc=;
+        b=frK7Ll6gWzSwWIkkPO0X/La5vl8KeSp4bZB/IZ4Vee7bGglz/+hdpe5I1f11l1Yix6
+         /zT8reWe4KHhkSF8Q8ajw/IGTzzGNce687WWb+zFAiCRlMKDunZ7/+StWGevBA5bwaWz
+         bWwRdfk7UUgGhjaqTbi5FSW8g17ornDKzdvBjHH1ArJ7kPkBIMhOzqumVKAK0PjdyBjj
+         GnRKzXqYQjui2d9uKxG+uHOrgTWfjdeTJhALKP+dq4I52maNlvAV085MEx5pmPaugtWm
+         Ml3T8KqJpgpFqQF2NoyY84PCXuqAXex7MDjxnjKFe+NxN/B9K6k66NlPQwZrR2cJ+ZHd
+         6Szg==
+X-Gm-Message-State: AOAM531OMchkXF/gDY97YcxkowWflcSLZSRIJgFs3CoI3JTTWiV0Cb1U
+        LmxLX6KVEXmmZHgcd+JeKj82zw==
+X-Google-Smtp-Source: ABdhPJy2WGiWszoKveZseSY+6UMrzoYkhSAgEVXsEKXHspBTVcgEcbC9H6j2IthD2WINLjjpKMyEQA==
+X-Received: by 2002:a62:e90b:0:b029:30e:4530:8dca with SMTP id j11-20020a62e90b0000b029030e45308dcamr4362260pfh.17.1629991871950;
+        Thu, 26 Aug 2021 08:31:11 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g10sm3326023pfh.120.2021.08.26.08.31.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 08:31:10 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 15:31:07 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] KVM: x86: Fix stack-out-of-bounds memory access
+ from ioapic_write_indirect()
+Message-ID: <YSezuycq/PwF5arc@google.com>
+References: <20210826122442.966977-1-vkuznets@redhat.com>
+ <20210826122442.966977-5-vkuznets@redhat.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1629989540.drlhb24t2w.astroid@bobo.none>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <20210826122442.966977-5-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 01:04:36AM +1000, Nicholas Piggin wrote:
-> Excerpts from Segher Boessenkool's message of August 27, 2021 12:37 am:
-> >> No, they are all dispatched and issue to the BRU for execution. It's 
-> >> trivial to construct a test of a lot of not taken branches in a row
-> >> and time a loop of it to see it executes at 1 cycle per branch.
-> > 
-> > (s/dispatched/issued/)
+On Thu, Aug 26, 2021, Vitaly Kuznetsov wrote:
+> KASAN reports the following issue:
 > 
-> ?
-
-Dispatch is from decode to the issue queues.  Issue is from there to
-execution units.  Dispatch is in-order, issue is not.
-
-> >> How could it validate prediction without issuing? It wouldn't know when
-> >> sources are ready.
-> > 
-> > In the backend.  But that is just how it worked on older cores :-/
+>  BUG: KASAN: stack-out-of-bounds in kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>  Read of size 8 at addr ffffc9001364f638 by task qemu-kvm/4798
 > 
-> Okay. I don't know about older cores than POWER9. Backend would normally 
-> include execution though.
-> Only other place you could do it if you don't
-> issue/exec would be after it goes back in order, like completion.
-
-You do not have to do the verification in-order: the insn cannot finish
-until it is no longer speculative, that takes care of all ordering
-needed.
-
-> But that would be horrible for mispredict penalty.
-
-See the previous point.  Also, any insn known to be mispredicted can be
-flushed immediately anyway.
-
-> >> >> The first problem seems like the show stopper though. AFAIKS it would 
-> >> >> need a special builtin support that does something to create the table
-> >> >> entry, or a guarantee that we could put an inline asm right after the
-> >> >> builtin as a recognized pattern and that would give us the instruction
-> >> >> following the trap.
-> >> > 
-> >> > I'm not quite sure what this means.  Can't you always just put a
-> >> > 
-> >> > bla:	asm("");
-> >> > 
-> >> > in there, and use the address of "bla"?
-> >> 
-> >> Not AFAIKS. Put it where?
-> > 
-> > After wherever you want to know the address after.  You will have to
-> > make sure they stay together somehow.
+>  CPU: 0 PID: 4798 Comm: qemu-kvm Tainted: G               X --------- ---
+>  Hardware name: AMD Corporation DAYTONA_X/DAYTONA_X, BIOS RYM0081C 07/13/2020
+>  Call Trace:
+>   dump_stack+0xa5/0xe6
+>   print_address_description.constprop.0+0x18/0x130
+>   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>   __kasan_report.cold+0x7f/0x114
+>   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>   kasan_report+0x38/0x50
+>   kasan_check_range+0xf5/0x1d0
+>   kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>   kvm_make_scan_ioapic_request_mask+0x84/0xc0 [kvm]
+>   ? kvm_arch_exit+0x110/0x110 [kvm]
+>   ? sched_clock+0x5/0x10
+>   ioapic_write_indirect+0x59f/0x9e0 [kvm]
+>   ? static_obj+0xc0/0xc0
+>   ? __lock_acquired+0x1d2/0x8c0
+>   ? kvm_ioapic_eoi_inject_work+0x120/0x120 [kvm]
 > 
-> I still don't follow.
-
-some_thing_you_want_to_know_the_address_after_let_us_call_it_A;
-empty_asm_that_we_can_take_the_address_of_known_as_B;
-
-You have to make sure the compiler keeps A and B together, does not
-insert anything between them, does put them in the assembler output in
-the same fragment, etc.
-
-> If you could give a built in that put a label at the address of the trap 
-> instruction that could be used later by inline asm then that could work
-> too:
+> The problem appears to be that 'vcpu_bitmap' is allocated as a single long
+> on stack and it should really be KVM_MAX_VCPUS long. We also seem to clear
+> the lower 16 bits of it with bitmap_zero() for no particular reason (my
+> guess would be that 'bitmap' and 'vcpu_bitmap' variables in
+> kvm_bitmap_or_dest_vcpus() caused the confusion: while the later is indeed
+> 16-bit long, the later should accommodate all possible vCPUs).
 > 
->     __builtin_labeled_trap("1:");
->     asm ("    .section __bug_table,\"aw\"  \n\t"
->          "2:  .4byte 1b - 2b               \n\t"
->          "    .previous");
+> Fixes: 7ee30bc132c6 ("KVM: x86: deliver KVM IOAPIC scan request to target vCPUs")
+> Fixes: 9a2ae9f6b6bb ("KVM: x86: Zero the IOAPIC scan request dest vCPUs bitmap")
+> Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
 
-How could a compiler do anything like that?!
-
-
-Segher
+Reviewed-by: Sean Christopherson <seanjc@google.com>
