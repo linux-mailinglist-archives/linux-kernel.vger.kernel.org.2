@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46903F8E6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381B23F8E75
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243340AbhHZTEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 15:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243241AbhHZTEd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 15:04:33 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42252C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:03:45 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id s3so6949055ljp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pQVp2PnUA+5Zt+sP4F+QqkwU+Vh7PyB+v8DN1CEukro=;
-        b=GQbps7P/g3/96W8cwR+gYavPfVHkYrFpKsTIt1JfEz0c0mguwDWMYvgwCXVzbm5BAj
-         5UHw4denh34XoXIM4VzpmYBLSIRkUYhR29NsvNMR5UNabkaMv4gj8SBkQglfg6+ZU+rW
-         P+C42s/+iPr2VvgM+iSGEl2pVvci2jvXqQrPBOcPYzuwQeP8IzV6UKcsMQrKCxnp20na
-         fKznSiHsxbzGOkZtuMdD3FWeeOn3hvGfZzYw/QZMTBcw7y7A/bfN1X3ZDGZ02+wfxRXA
-         xz9lyY07mw7jQvXQpDmGZjWXUgSfEPnlue0ZP99D/r3xIt8vyeur2k3xjHaFMctCq/eb
-         8VdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pQVp2PnUA+5Zt+sP4F+QqkwU+Vh7PyB+v8DN1CEukro=;
-        b=CKcXwFPr2hDEGwv8W3bI3XjvayeTBaWURsOHArdFmLRg0S9LhddYalpui+sn4yKh3r
-         2t6I07q7xPk3QxFKXZ+fzI+uo6cguBmGRbCwJ8+BULG7G3TIrXsN98w0IPgQNQb+lT7/
-         UUrvstSfUIbYKSxQJh+qhY+kj0t/WgE5dCOInVaIV8O7XLUT7IFbxaQBCWVGm8v7vL9a
-         axR5XaC1NXYd2UZhE/TpFBUBlT1lZ5pbJAEiAKni2hGXfGdy1ryyunEjNZEfM+LJlnjB
-         cNMgwzNrdo7+iCEHLXNMHA0xsag6DOeh+DXHa1JwMQNckYPZyD9N0ecsOyoWLnDfUphf
-         yekA==
-X-Gm-Message-State: AOAM530DMuJmr0ca/ABHYnhU9tGi73BvAnp5PiEsWa+cAYOWksakuOAs
-        hwGkkE4rabQgmPtjgkR7F5sAd+K9BHt/tVhugwI=
-X-Google-Smtp-Source: ABdhPJx7oqIjiY4LYgkuU/889okKWI9HwxaFhGK2B+n/5jiogU3F2Jv8cr7/h9tg0f47uNliaf3CZ8nndiPRkOaeoKM=
-X-Received: by 2002:a2e:87c4:: with SMTP id v4mr4434995ljj.444.1630004623466;
- Thu, 26 Aug 2021 12:03:43 -0700 (PDT)
+        id S243342AbhHZTKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 15:10:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230442AbhHZTKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 15:10:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4D5161052;
+        Thu, 26 Aug 2021 19:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630004964;
+        bh=n+iRiPHG+mQ5MPOYWhKEq5xLaeCMPXwkshM8Phv4gEM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YlmdBnTf1WEJ/CSDKcgZSZo5LOGl/lOxpaxCBPfGWeN/ZT65COEFIf6ydN61V9QgK
+         yxzyCP/uYkccM12cAZMVlDjL+m600Wy9G9evncSRPKSCnpPeirT+PAq5leSOFv7CTA
+         zc3QdPsvOocdjH0QRS1Ev88Cd4xqLng6hMoVM9/eg0Nzi2ovlXXDQzCrqCOnPkpCSq
+         xi7bkJTrUecp+pA3dQawr/Siu/drJk54pM98puz1kqjGifqduu81aTT6+IK5XyNyqp
+         hC3Oc2IgRhdUI7t3m5b+WHqhBNRGeQLcGlfcJUjIvKZe/FrHJV43SZC3Zt6HblBmOp
+         8boPWErB9pdGQ==
+Received: by mail-ej1-f45.google.com with SMTP id me10so8483031ejb.11;
+        Thu, 26 Aug 2021 12:09:24 -0700 (PDT)
+X-Gm-Message-State: AOAM531ENHRn/nHkqGYp3RH6BYOKY+xQ98+Dyak0pH/mWN75fN+jvPoO
+        o5voHpSkE8R4rxoRNPc4V1nyLpOTZyAKfk+E4A==
+X-Google-Smtp-Source: ABdhPJzUFDpBsNWGNyiE29SIh7dKKli7aZ0R/Ozw8m0It0WdT9wJ+yjrqf2xnCrbBfbJ7thVBpF+m/Xy+TkMyPiCW6Q=
+X-Received: by 2002:a17:906:1cd0:: with SMTP id i16mr5841937ejh.360.1630004963537;
+ Thu, 26 Aug 2021 12:09:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210819140345.357167-1-marcel@ziswiler.com> <20210819140345.357167-3-marcel@ziswiler.com>
-In-Reply-To: <20210819140345.357167-3-marcel@ziswiler.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 26 Aug 2021 16:03:32 -0300
-Message-ID: <CAOMZO5B9Tb+1d1eU1huCZKNH6BjdnmvBUnkY_242L1yub=2Q9g@mail.gmail.com>
-Subject: Re: [PATCH v1 2/7] ARM: imx_v6_v7_defconfig: enable fb
-To:     Marcel Ziswiler <marcel@ziswiler.com>
-Cc:     "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Anson Huang <Anson.Huang@nxp.com>, Marek Vasut <marex@denx.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pascal Zimmermann <pzimmermann@dh-electronics.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210728230230.1911468-1-robh@kernel.org> <20210728230230.1911468-3-robh@kernel.org>
+ <d720903c-926e-f57a-0862-4e5d76db763a@kernel.org> <CAL_JsqLRv9ugKJcn4dq_ps0JMt74Y7PKA=5yySYxvftdQWzzPA@mail.gmail.com>
+ <de97454b-9b4d-492f-a435-6a5e33889219@www.fastmail.com>
+In-Reply-To: <de97454b-9b4d-492f-a435-6a5e33889219@www.fastmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 26 Aug 2021 14:09:11 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKpT93W6nBj68DykEJzjFYOPG=8PGShsh2QZVzHq5N3fQ@mail.gmail.com>
+Message-ID: <CAL_JsqKpT93W6nBj68DykEJzjFYOPG=8PGShsh2QZVzHq5N3fQ@mail.gmail.com>
+Subject: Re: [RFC 2/3] perf/x86: Control RDPMC access from .enable() hook
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
-
-On Thu, Aug 19, 2021 at 11:04 AM Marcel Ziswiler <marcel@ziswiler.com> wrote:
+On Thu, Aug 26, 2021 at 1:13 PM Andy Lutomirski <luto@kernel.org> wrote:
 >
-> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 >
-> Enable CONFIG_FB which is nowadays required for CONFIG_DRM_PANEL_LVDS,
-> CONFIG_DRM_PANEL_SIMPLE, CONFIG_DRM_PANEL_SEIKO_43WVF1G,
-> CONFIG_FB_MODE_HELPERS, CONFIG_BACKLIGHT_PWM, CONFIG_BACKLIGHT_GPIO,
-> CONFIG_FRAMEBUFFER_CONSOLE, CONFIG_LOGO, CONFIG_FONTS, CONFIG_FONT_8x8
-> and CONFIG_FONT_8x16.
 >
-> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> On Thu, Aug 12, 2021, at 11:16 AM, Rob Herring wrote:
+> > On Thu, Aug 12, 2021 at 11:50 AM Andy Lutomirski <luto@kernel.org> wrote:
+> > >
+> > > On 7/28/21 4:02 PM, Rob Herring wrote:
+> > > > Rather than controlling RDPMC access behind the scenes from switch_mm(),
+> > > > move RDPMC access controls to the PMU .enable() hook. The .enable() hook
+> > > > is called whenever the perf CPU or task context changes which is when
+> > > > the RDPMC access may need to change.
+> > > >
+> > > > This is the first step in moving the RDPMC state tracking out of the mm
+> > > > context to the perf context.
+> > >
+> > > Is this series supposed to be a user-visible change or not?  I'm confused.
+> >
+> > It should not be user-visible. Or at least not user-visible for what
+> > any user would notice. If an event is not part of the perf context on
+> > another thread sharing the mm, does that thread need rdpmc access? No
+> > access would be a user-visible change, but I struggle with how that's
+> > a useful scenario?
+> >
+>
+> This is what I mean by user-visible -- it changes semantics in a way that a user program could detect.  I'm not saying it's a problem, but I do think you need to document the new semantics.
 
-Yes, I noticed that I had no LCD output on an imx6ull-evk board and
-after selecting CONFIG_FB it works again.
+After testing some scenarios and finding perf_event_tests[1], this
+series isn't going to work for x86 unless rdpmc is restricted to task
+events only or allowed to segfault on CPU events when read on the
+wrong CPU rather than just returning garbage. It's been discussed
+before here[2].
 
-For the entire series:
+Ultimately, I'm just trying to define the behavior for arm64 where we
+don't have an existing ABI to maintain and don't have to recreate the
+mistakes of x86 rdpmc ABI. Tying the access to mmap is messy. As we
+explicitly request user access on perf_event_open(), I think it may be
+better to just enable access when the event's context is active and
+ignore mmap(). Maybe you have an opinion there since you added the
+mmap() part?
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Rob
+
+[1] https://github.com/deater/perf_event_tests
+[2] https://lore.kernel.org/lkml/alpine.DEB.2.21.1901101229010.3358@macbook-air/
