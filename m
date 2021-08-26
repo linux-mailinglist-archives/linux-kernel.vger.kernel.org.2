@@ -2,181 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12F23F8A34
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDAC3F8A3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242877AbhHZOiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:38:04 -0400
-Received: from ozlabs.org ([203.11.71.1]:44265 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231718AbhHZOiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:38:03 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        id S242888AbhHZOjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:39:46 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:60572
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234036AbhHZOjp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 10:39:45 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwQRG4Nvqz9sWc;
-        Fri, 27 Aug 2021 00:37:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1629988634;
-        bh=lo7cl1uonA1pf1xotZqGtlkiFRxBwZnWeoVot97pM0c=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=YKJXlsA8pB4LnE9qKK6tUN7LBnWjEDnZE4ijV7LpTrqh1zd68gTI2Q1g9Dt9Aj8Yj
-         V8oKEp7wVkDAUd3Zi0ZkojOj2zrx3eT2b+yvnFVPokoGaaI3kejwDLkyLcJ6eAP+zh
-         lO2F+xHtKy/n1kY1dH072Bwi5UYsaZJe2oX92jWHMgJL9mq5eRLF6v0ahgHcSqtTF4
-         x6ZdUW6tfngH8bnlkAbd3UQqTMWrLNgXEEUKX4/logpoJeRyETFeiMDODbEotiWK8D
-         VW2M+6VqesgrCuI3j4pAQjjjp9GS4RUDHMVmk5Y2dQeXPfYHMKkmNkeEQostaCu18Y
-         Vd/y/IaFrVClg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Paul Moore <paul@paul-moore.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com
-Subject: Re: [PATCH v2 RESEND] powerpc/audit: Convert powerpc to
- AUDIT_ARCH_COMPAT_GENERIC
-In-Reply-To: <CAHC9VhSG8tPAkAAz5Z77HDMKXLAiaEOanxR+oY5c1E_Xoiso9Q@mail.gmail.com>
-References: <a4b3951d1191d4183d92a07a6097566bde60d00a.1629812058.git.christophe.leroy@csgroup.eu>
- <CAHC9VhR3E6=5HmRaWMWbp4WHsua02niwnzaRGM3tLqd4Y4LA6w@mail.gmail.com>
- <5a2692b6-5077-21b4-8ebf-73b1c2b83a40@csgroup.eu>
- <CAHC9VhSG8tPAkAAz5Z77HDMKXLAiaEOanxR+oY5c1E_Xoiso9Q@mail.gmail.com>
-Date:   Fri, 27 Aug 2021 00:37:12 +1000
-Message-ID: <87tujc9srr.fsf@mpe.ellerman.id.au>
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 442FD3F36A;
+        Thu, 26 Aug 2021 14:38:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629988731;
+        bh=y1UyOyXY41QPPkZfXljOekMD9/F/CpbtWZ+iFga0D/Y=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=BoS9cyycMHrq50pDVX2Ri0j5P0RP7pcUI+sWin15sfPGShbSa4UbeKPwlmUjVzx59
+         S506291kEsFVI/glzxKu2HVib/lriW4ttZ3lbonw4BcJPW6q1WF0xIuciD4V6FyMlr
+         0LRsPe77MxoB7hPspyCSCGvRYE9kz1E2W39ca0ubuRwKWzuTsBAD+9uFz+PSZUE++I
+         DBzGyNxos9NQnmfpUUwIkwu6ARMijcDLBEjCIAKyhAl4qKlyxLzDculOgL2k8NtX64
+         LKUZLsMgmgFsH9W7ji+01lRQtvo5D7bCfSZ301bJhfKV5HHNzgxgs9fE3ETQH32OB8
+         xUHGA5Kw7X8gQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][V2] usb: dwc2: Fix spelling mistake "was't" -> "wasn't"
+Date:   Thu, 26 Aug 2021 15:38:49 +0100
+Message-Id: <20210826143849.55115-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul Moore <paul@paul-moore.com> writes:
-> On Tue, Aug 24, 2021 at 1:11 PM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->> Le 24/08/2021 =C3=A0 16:47, Paul Moore a =C3=A9crit :
->> > On Tue, Aug 24, 2021 at 9:36 AM Christophe Leroy
->> > <christophe.leroy@csgroup.eu> wrote:
->> >>
->> >> Commit e65e1fc2d24b ("[PATCH] syscall class hookup for all normal
->> >> targets") added generic support for AUDIT but that didn't include
->> >> support for bi-arch like powerpc.
->> >>
->> >> Commit 4b58841149dc ("audit: Add generic compat syscall support")
->> >> added generic support for bi-arch.
->> >>
->> >> Convert powerpc to that bi-arch generic audit support.
->> >>
->> >> Cc: Paul Moore <paul@paul-moore.com>
->> >> Cc: Eric Paris <eparis@redhat.com>
->> >> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> >> ---
->> >> Resending v2 with Audit people in Cc
->> >>
->> >> v2:
->> >> - Missing 'git add' for arch/powerpc/include/asm/unistd32.h
->> >> - Finalised commit description
->> >> ---
->> >>   arch/powerpc/Kconfig                |  5 +-
->> >>   arch/powerpc/include/asm/unistd32.h |  7 +++
->> >>   arch/powerpc/kernel/Makefile        |  3 --
->> >>   arch/powerpc/kernel/audit.c         | 84 --------------------------=
+From: Colin Ian King <colin.king@canonical.com>
+
+There is a spelling mistake in a dev_dbg message. Fix it.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
->> >>   arch/powerpc/kernel/compat_audit.c  | 44 ---------------
->> >>   5 files changed, 8 insertions(+), 135 deletions(-)
->> >>   create mode 100644 arch/powerpc/include/asm/unistd32.h
->> >>   delete mode 100644 arch/powerpc/kernel/audit.c
->> >>   delete mode 100644 arch/powerpc/kernel/compat_audit.c
->> >
->> > Can you explain, in detail please, the testing you have done to verify
->> > this patch?
->> >
->>
->> I built ppc64_defconfig and checked that the generated code is functionn=
-aly equivalent.
->>
->> ppc32_classify_syscall() is exactly the same as audit_classify_compat_sy=
-scall() except that the
->> later takes the syscall as second argument (ie in r4) whereas the former=
- takes it as first argument
->> (ie in r3).
->>
->> audit_classify_arch() and powerpc audit_classify_syscall() are slightly =
-different between the
->> powerpc version and the generic version because the powerpc version chec=
-ks whether it is
->> AUDIT_ARCH_PPC or not (ie value 20), while the generic one checks whethe=
-r it has bit
->> __AUDIT_ARCH_64BIT set or not (__AUDIT_ARCH_64BIT is the sign bit of a w=
-ord), but taking into
->> account that the abi is either AUDIT_ARCH_PPC, AUDIT_ARCH_PPC64 or AUDIT=
-_ARCH_PPC64LE, the result is
->> the same.
->>
->> If you are asking I guess you saw something wrong ?
->
-> I was asking because I didn't see any mention of testing, and when you
-> are enabling something significant like this it is nice to see that it
-> has been verified to work :)
->
-> While binary dumps and comparisons are nice, it is always good to see
-> verification from a test suite.  I don't have access to the necessary
-> hardware to test this, but could you verify that the audit-testsuite
-> passes on your test system with your patches applied?
->
->  * https://github.com/linux-audit/audit-testsuite
+V2: fix typo in commit message.
+---
+ drivers/usb/dwc2/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I tested on ppc64le. Both before and after the patch I get the result
-below.
+diff --git a/drivers/usb/dwc2/core.c b/drivers/usb/dwc2/core.c
+index 272ae5722c86..cf0bcd0dc320 100644
+--- a/drivers/usb/dwc2/core.c
++++ b/drivers/usb/dwc2/core.c
+@@ -295,7 +295,7 @@ void dwc2_hib_restore_common(struct dwc2_hsotg *hsotg, int rem_wakeup,
+ 	if (dwc2_hsotg_wait_bit_set(hsotg, GINTSTS, GINTSTS_RESTOREDONE,
+ 				    20000)) {
+ 		dev_dbg(hsotg->dev,
+-			"%s: Restore Done wan't generated here\n",
++			"%s: Restore Done wasn't generated here\n",
+ 			__func__);
+ 	} else {
+ 		dev_dbg(hsotg->dev, "restore done  generated here\n");
+-- 
+2.32.0
 
-So I guess the patch is OK, but maybe we have some existing issue.
-
-I had a bit of a look at the test code, but my perl is limited. I think
-it was running the command below, and it returned "<no matches>", but
-not really sure what that means.
-
-  $ sudo ausearch -i -m SYSCALL -p 216440 -ui 0 -gi 0 -ul 0 -su unconfined =
-_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 -ts recent
-  <no matches>
-
-cheers
-
-
-
-Running as   user    root
-        with context unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-        on   system  Fedora
-
-backlog_wait_time_actual_reset/test .. ok
-exec_execve/test ..................... ok
-exec_name/test ....................... ok
-file_create/test ..................... ok
-file_delete/test ..................... ok
-file_rename/test ..................... ok
-filter_exclude/test .................. 1/21
-# Test 20 got: "256" (filter_exclude/test at line 167)
-#    Expected: "0"
-#  filter_exclude/test line 167 is: ok( $result, 0 );
-# Test 21 got: "0" (filter_exclude/test at line 179)
-#    Expected: "1"
-#  filter_exclude/test line 179 is: ok( $found_msg, 1 );
-filter_exclude/test .................. Failed 2/21 subtests
-filter_saddr_fam/test ................ ok
-filter_sessionid/test ................ ok
-login_tty/test ....................... ok
-lost_reset/test ...................... ok
-netfilter_pkt/test ................... ok
-syscalls_file/test ................... ok
-syscall_module/test .................. ok
-time_change/test ..................... ok
-user_msg/test ........................ ok
-fanotify/test ........................ ok
-bpf/test ............................. ok
-
-Test Summary Report
--------------------
-filter_exclude/test                (Wstat: 0 Tests: 21 Failed: 2)
-  Failed tests:  20-21
-Files=3D18, Tests=3D202, 45 wallclock secs ( 0.18 usr  0.03 sys + 20.15 cus=
-r  0.92 csys =3D 21.28 CPU)
-Result: FAIL
-Failed 1/18 test programs. 2/202 subtests failed.
