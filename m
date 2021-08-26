@@ -2,112 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E813F8DAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845F43F8DB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243305AbhHZSOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243304AbhHZSO3 (ORCPT
+        id S243314AbhHZSOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:14:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38593 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232729AbhHZSOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:14:29 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B525C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:13:41 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id y18so4942261ioc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:13:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W7xOOm2Ro906d9sGCBLmweLCblYJd7cBl1kLaJZIoGk=;
-        b=RIVXgLY1Y+1EuOYpTWygSKEwamCnhnh6IFfwdpnYNcZqgOPsgVxEqmvm12kp74g0RD
-         3frK7W63lxN+b3/0rtjbkf7C0KOtIP0vOPgWi4eMlc73IDIZQqldkdbIqp1CfSTOQv0U
-         BBckPEJUHH0aV8ieUZeEWiLhS5gLvhT9fRqYlV9P3Y9CD7ul9NDhwhC5uEmB6ZBET6iX
-         LIp77LBqyDjVZXqrZq1H1g5sDn+36vkR37Nn8m3G1LPK9AdLys2uwlZNxUhOwYnAczvb
-         zfVkIP1yvecHp08d6r9V9ypz+FuxK0yRN0pMvqXm5ii7UeI3hMPky+CtloLRmZR8nRUY
-         MFrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W7xOOm2Ro906d9sGCBLmweLCblYJd7cBl1kLaJZIoGk=;
-        b=tMUmNtrB6Sz+/XbyTT3ORXsv3C5Rqajfq4j2Pbwvs7cTTkz4Wp8FLv3jH3W174TTqz
-         nCGTuo/mhMWCShyW7I/dnkiQvkdFE5aqRv7exFmbmPMbAJ940pAJApmL1816IpuSi7F7
-         doRnSCDLXEyuxFN52jXVMvm8hMfUQ5lKrPO2vVc2rZg/GS5IzeZu133UeGH0k367Xjxe
-         +BMTEamqFGUEljcEOtcOoV4ohx5/BEWPIyqNEK5JfSr7xvaXlmx2GZdCrggdOk/D0VM5
-         kYOAjkYttm9OoSbHY7eNAxZEMMoIfJEO0n9RawnkinQ+y2LBvedvpwZIaVglDmYg+20V
-         ahjw==
-X-Gm-Message-State: AOAM532Lihqmpg/+scgukqoihreNZ5bQivmizLwS5DIjGqU//YYo9+zp
-        /QDA/b4h+B/VXCC73Ib2bOH91A==
-X-Google-Smtp-Source: ABdhPJwk1MPLi2Gc7nfL+qanSwYrPj9KSu2cdstNgoqeWLHK1eAD0E9Gj6UqTwargm5DZSMDh9n6WQ==
-X-Received: by 2002:a05:6638:3898:: with SMTP id b24mr4640041jav.126.1630001620960;
-        Thu, 26 Aug 2021 11:13:40 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id k6sm2120724ilu.41.2021.08.26.11.13.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 11:13:40 -0700 (PDT)
-Subject: Re: [PATCH] block/mq-deadline: Speed up the dispatch of low-priority
- requests
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-block <linux-block@vger.kernel.org>,
+        Thu, 26 Aug 2021 14:14:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630001643;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sRuC5V6T0HI9RSkyu52RSwPk8VQRtun3hwD4VTXAwFo=;
+        b=Ls3+/dzyKAyFZf5T6W6xIqiYXIErqeplQ5VaWL1X9S+nuFb4QgU8yt8o5nhTaKYFOjotaN
+        gV08HhE1YwhROM7Z2Tj4lgKusUczIWWFmNMoWBauVOzsLfHdND/v9UaGgwdJ8q6FJV4Ihg
+        iDqlAySAL/GiHhf4c74YjpjCnBwRn3E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-7Z0Km1TOOo-84TcMbwWzYA-1; Thu, 26 Aug 2021 14:14:01 -0400
+X-MC-Unique: 7Z0Km1TOOo-84TcMbwWzYA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BABF18C89C4;
+        Thu, 26 Aug 2021 18:14:00 +0000 (UTC)
+Received: from localhost (unknown [10.22.10.96])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 52D055D9C6;
+        Thu, 26 Aug 2021 18:13:57 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 14:13:56 -0400
+From:   Eduardo Habkost <ehabkost@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
         linux-kernel@vger.kernel.org
-Cc:     Damien Le Moal <damien.lemoal@wdc.com>
-References: <20210826144039.2143-1-thunder.leizhen@huawei.com>
- <fc1f2664-fc4f-7b3e-5542-d9e4800a5bde@acm.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <537620de-646d-e78e-ccb8-4105bac398b3@kernel.dk>
-Date:   Thu, 26 Aug 2021 12:13:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
+ from ioapic_write_indirect()
+Message-ID: <20210826181356.xhsie7kkqoeukeju@habkost.net>
+References: <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
+ <87k0kakip9.fsf@vitty.brq.redhat.com>
+ <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
+ <87h7fej5ov.fsf@vitty.brq.redhat.com>
+ <36b6656637d1e6aaa2ab5098f7ebc27644466294.camel@redhat.com>
+ <87bl5lkgfm.fsf@vitty.brq.redhat.com>
+ <CAOpTY_q=0cuxXAToJrcqCRERY_sUSB1HNVBVNiEpH6Dsy0-+yA@mail.gmail.com>
+ <87tujcidka.fsf@vitty.brq.redhat.com>
+ <20210826145210.gpfbiagntwoswrzp@habkost.net>
+ <YSfW62JxXXBI1/UE@google.com>
 MIME-Version: 1.0
-In-Reply-To: <fc1f2664-fc4f-7b3e-5542-d9e4800a5bde@acm.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YSfW62JxXXBI1/UE@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/21 12:09 PM, Bart Van Assche wrote:
-> On 8/26/21 7:40 AM, Zhen Lei wrote:
->> lock protection needs to be added only in dd_finish_request(), which
->> is unlikely to cause significant performance side effects.
+On Thu, Aug 26, 2021 at 06:01:15PM +0000, Sean Christopherson wrote:
+> On Thu, Aug 26, 2021, Eduardo Habkost wrote:
+> > > @@ -918,7 +918,7 @@ static bool kvm_apic_is_broadcast_dest(struct kvm *kvm, struct kvm_lapic **src,
+> > >  static inline bool kvm_apic_map_get_dest_lapic(struct kvm *kvm,
+> > >                 struct kvm_lapic **src, struct kvm_lapic_irq *irq,
+> > >                 struct kvm_apic_map *map, struct kvm_lapic ***dst,
+> > > -               unsigned long *bitmap)
+> > > +               unsigned long *bitmap64)
+> > 
+> > You can communicate the expected bitmap size to the compiler
+> > without typedefs if using DECLARE_BITMAP inside the function
+> > parameter list is acceptable coding style (is it?).
+> > 
+> > For example, the following would have allowed the compiler to
+> > catch the bug you are fixing:
+> > 
+> > Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
+> > ---
+> > diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
+> > index d7c25d0c1354..e8c64747121a 100644
+> > --- a/arch/x86/kvm/lapic.h
+> > +++ b/arch/x86/kvm/lapic.h
+> > @@ -236,7 +236,7 @@ bool kvm_apic_pending_eoi(struct kvm_vcpu *vcpu, int vector);
+> >  void kvm_wait_lapic_expire(struct kvm_vcpu *vcpu);
+> >  
+> >  void kvm_bitmap_or_dest_vcpus(struct kvm *kvm, struct kvm_lapic_irq *irq,
+> > -			      unsigned long *vcpu_bitmap);
+> > +			      DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS));
+> >  
+> >  bool kvm_intr_is_single_vcpu_fast(struct kvm *kvm, struct kvm_lapic_irq *irq,
+> >  			struct kvm_vcpu **dest_vcpu);
+> > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> > index 76fb00921203..1df113894cba 100644
+> > --- a/arch/x86/kvm/lapic.c
+> > +++ b/arch/x86/kvm/lapic.c
+> > @@ -1166,7 +1166,7 @@ static int __apic_accept_irq(struct kvm_lapic *apic, int delivery_mode,
+> >   * each available vcpu to identify the same.
+> >   */
+> >  void kvm_bitmap_or_dest_vcpus(struct kvm *kvm, struct kvm_lapic_irq *irq,
+> > -			      unsigned long *vcpu_bitmap)
+> > +			      DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS))
+> >  {
+> >  	struct kvm_lapic **dest_vcpu = NULL;
+> >  	struct kvm_lapic *src = NULL;
 > 
-> Not sure the above is correct. Every new atomic instruction has a
-> measurable performance overhead. But I guess in this case that
-> overhead is smaller than the time needed to sum 128 per-CPU variables.
+> Sadly, that would not have actually caught the bug.  In C++, an array param does
+> indeed have a fixed size, but in C an array param is nothing more than syntatic
+> sugar that is demoted to a plain ol' pointer.  E.g. gcc-10 and clang-11 both
+> happily compile with "DECLARE_BITMAP(vcpu_bitmap, 0)" and the original single
+> "unsigned long vcpu_bitmap".  Maybe there are gcc extensions to enforce array
+> sizes?  But if there are, they are not (yet) enabled for kernel builds.
 
-perpcu counters only really work, if the summing is not in a hot path,
-or if the summing is just some "not zero" thing instead of a full sum.
-They just don't scale at all for even moderately sized systems.
+The compiler wouldn't have caught it today only because Linux is
+compiled with `-Wno-stringop-overflow`.  I have some hope that
+eventually the warning will be enabled, as indicated on the
+commit message if commit 5a76021c2eff ("gcc-10: disable
+'stringop-overflow' warning for now").
 
->> Tested on my 128-core board with two ssd disks.
->> fio bs=4k rw=read iodepth=128 cpus_allowed=0-95 <others>
->> Before:
->> [183K/0/0 iops]
->> [172K/0/0 iops]
->>
->> After:
->> [258K/0/0 iops]
->> [258K/0/0 iops]
-> 
-> Nice work!
-> 
->> Fixes: fb926032b320 ("block/mq-deadline: Prioritize high-priority requests")
-> 
-> Shouldn't the Fixes: tag be used only for patches that modify
-> functionality? I'm not sure it is appropriate to use this tag for
-> performance improvements.
-
-For a regression this big, I think it's the right thing. Anyone that may
-backport the original commit definitely should also get the followup
-fix. This isn't just a performance improvement, it's fixing a big
-performance regression.
+Even if the warning isn't enabled, the bitmap size declaration
+would be a hint for humans reading the code.
 
 -- 
-Jens Axboe
+Eduardo
 
