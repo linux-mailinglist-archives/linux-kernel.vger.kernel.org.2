@@ -2,131 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095303F80C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 04:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ED13F80CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 04:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237779AbhHZC4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 22:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
+        id S237055AbhHZC51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 22:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237930AbhHZC4m (ORCPT
+        with ESMTP id S235697AbhHZC50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 22:56:42 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C41C0617A8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 19:55:55 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id e15so864848plh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 19:55:55 -0700 (PDT)
+        Wed, 25 Aug 2021 22:57:26 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A41C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 19:56:39 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id g14so1468554pfm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 19:56:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XZJy3B7m2q1WQYxMFNJqVt+qoddOU66BMzkNgwutOWg=;
-        b=BqMyQF/pRrF5xvz5gMLvg1PjbQE0frktW1h8fThSOxAyiiCfj3dL0xTey26htEbkAU
-         qVk4YC/4pxXxGHnr1GTo9bAoMJ4eX1tti5O7V1wnRrIafIwyVqmUZ2m6I0wxB2W1enrU
-         HYOhVAex2Ke6zlvt61UNmgKkPh0dFb29lz983ZdH0aQ73RTHtAt7M1/VCP+x5TO9AjAI
-         IJ3QFiGrCxXaLSKuBsbiYJZ42RDh74ChanCbedOwOUd6kuh7jO/uAx7AqCUeER3jlnSQ
-         JtlHN1LIH4ywCIyB5pTCzFG5gUqpfLooaOTxS3rQYlWnLCOQf96ZEpwgb/6YUmVVCCWa
-         uEzw==
+         :content-disposition:in-reply-to;
+        bh=vjFyaPLJq7d41xsQ0Ub2Dz36OvdKw1xIWIuZp7vFybM=;
+        b=ZjLf16/FV8SL4+3VkdHnifcQwGNBNqy/2s8QZ7lUTTgN/vU+Cm1PAOewNKpkE3P/n4
+         cqqnWeMyIL92WRLnjgDYf8ni9mqZkb5LlRAlwAkPjQg4tNkdnuxmUmDlVjZpRbK7Oxc6
+         9FWuvdHBAjcysfo33hxE5NfUwNgwBak2B34p0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XZJy3B7m2q1WQYxMFNJqVt+qoddOU66BMzkNgwutOWg=;
-        b=A9CKTsoHSM5b30kIVebax7FwobV4QEqjfdHW5f5oUQ1IWYMEi1H60b6kh8pdo564Vx
-         qufHJuQlQKJNg084crF3Id4lCKthHuvwgONMKC1QgN9HZ/wRrxWfLzwfnYuyO/Gy3o3w
-         3M1ORYRKo3teNJR4UxF1tdasgvmwWGU8r7I9qE33yE+LF2H9Ormp9aLXNn6Gf2AICnID
-         WZOQBFD9odsI9dwVrWgWT7hrjusB3h2MCtAma9bAnuMwEsW2FKJGWL6YVgxHJoEA8uY0
-         VroUw0zT1O19A/gh8hSDJjzxVpfBb+y0brOyqvgdGUrJVqcd3z0W206zqO08j0Cjn8IF
-         HoAw==
-X-Gm-Message-State: AOAM530O97MoLVgh9HzxcquU0fn0CkgPTj04G/aNSnBICCKM//9b7gCu
-        UcAx/cafKRY/xG1sQUsc3hzN0Q==
-X-Google-Smtp-Source: ABdhPJxp/UrPyXCwFMVDb4P8xsIyAd9gtXZ72kFLG9qw2YDutl/4rgLBxJGBT6WkpyrCaGfD2F0KiA==
-X-Received: by 2002:a17:90b:3144:: with SMTP id ip4mr14265346pjb.22.1629946555282;
-        Wed, 25 Aug 2021 19:55:55 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id 22sm1308517pgn.88.2021.08.25.19.55.54
+         :mime-version:content-disposition:in-reply-to;
+        bh=vjFyaPLJq7d41xsQ0Ub2Dz36OvdKw1xIWIuZp7vFybM=;
+        b=M9VaJ55nxpHmKqs0JAD+wy3TmKJvuhv/V1F84oAwimofAhw48S3mWWHn4mN88Si66a
+         dzuZXXHdqPI1cdP3rEMWXtjDX3garNOubeqGgqlhJFh9dn9MBNaMvcVVXU/LDJY2DJzN
+         3SrBCqxQPSqmC4BERxN/wsafMmBwwk8c1lili1c84YhghgtJnY7GqcaFBCh15yLa1xL8
+         nXuFUBMfKRKFw8x4PlSZZb2LOrvBYHsI0D3u/GVyx6Odn+fghyocRRjVWpzwu+o78a1h
+         Sc0MZ/GsQ0vhkVfMIc+I1r35Y3+1ckE3cpCc6J0ROBwS0D5IAdEP2Ysng9E7EbxC/G5W
+         dUiQ==
+X-Gm-Message-State: AOAM530Xz9hk474UGprQFrtlRXDh8cirpDZfQz2O0UJuQVw46c+eX3Dk
+        NMcs0J36MYtlPTM9LOXqdc9P9g==
+X-Google-Smtp-Source: ABdhPJwbdAeN/df8R344ak31FsUULbySJGGQTp2hcnRm+4cE29aVKuu8C2p4V0YC9oRoAUkJS/7LIg==
+X-Received: by 2002:a62:8287:0:b0:3ec:f6dc:9672 with SMTP id w129-20020a628287000000b003ecf6dc9672mr1314917pfd.65.1629946599192;
+        Wed, 25 Aug 2021 19:56:39 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a2sm1383840pgb.19.2021.08.25.19.56.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 19:55:54 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 08:25:50 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210826025550.sshd7xl3gsuendoi@vireshk-i7>
-References: <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
- <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
- <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
- <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
- <CAPDyKFpg8ixT4AEjzVLTwQR7Nn9CctjnLCDS5GwkOrAERquyxw@mail.gmail.com>
- <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
- <b887de8c-a40b-a62e-8abf-698e67cdb70c@gmail.com>
- <ed70e422-e0e9-8c2a-7ce6-e39cb6fd8108@gmail.com>
- <20210826025427.exdinwkuavyfcp3f@vireshk-i7>
+        Wed, 25 Aug 2021 19:56:38 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 19:56:37 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        David Gow <davidgow@google.com>, linux-mm@kvack.org,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH for-next 19/25] fortify: Allow strlen() and strnlen() to
+ pass compile-time known lengths
+Message-ID: <202108251950.61F7A4CD@keescook>
+References: <20210822075122.864511-1-keescook@chromium.org>
+ <20210822075122.864511-20-keescook@chromium.org>
+ <CAKwvOdnrO+oagJEiBMmoHrhTJKSRwzb0DK=R_QdVjhiNzb34dg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210826025427.exdinwkuavyfcp3f@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <CAKwvOdnrO+oagJEiBMmoHrhTJKSRwzb0DK=R_QdVjhiNzb34dg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-08-21, 08:24, Viresh Kumar wrote:
-> On 25-08-21, 18:41, Dmitry Osipenko wrote:
-> > Thinking a bit more about this, I got a nicer variant which actually works in all cases for Tegra.
-> > 
-> > Viresh / Ulf, what do you think about this:
+On Wed, Aug 25, 2021 at 03:05:56PM -0700, Nick Desaulniers wrote:
+> On Sun, Aug 22, 2021 at 12:57 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Under CONFIG_FORTIFY_SOURCE, it is possible for the compiler to perform
+> > strlen() and strnlen() at compile-time when the string size is known.
+> > This is required to support compile-time overflow checking in strlcpy().
+> >
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  include/linux/fortify-string.h | 47 ++++++++++++++++++++++++++--------
+> >  1 file changed, 36 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
+> > index a3cb1d9aacce..e232a63fd826 100644
+> > --- a/include/linux/fortify-string.h
+> > +++ b/include/linux/fortify-string.h
+> > @@ -10,6 +10,18 @@ void __read_overflow(void) __compiletime_error("detected read beyond size of obj
+> >  void __read_overflow2(void) __compiletime_error("detected read beyond size of object (2nd parameter)");
+> >  void __write_overflow(void) __compiletime_error("detected write beyond size of object (1st parameter)");
+> >
+> > +#define __compiletime_strlen(p)        ({              \
+> > +       size_t ret = (size_t)-1;                        \
+> > +       size_t p_size = __builtin_object_size(p, 1);    \
+> > +       if (p_size != (size_t)-1) {                     \
+> > +               size_t p_len = p_size - 1;              \
+> > +               if (__builtin_constant_p(p[p_len]) &&   \
+> > +                   p[p_len] == '\0')                   \
+> > +                       ret = __builtin_strlen(p);      \
+> > +       }                                               \
+> > +       ret;                                            \
+> > +})
 > 
-> This is what I have been suggesting from day 1 :)
-> 
-> https://lore.kernel.org/linux-staging/20210818055849.ybfajzu75ecpdrbn@vireshk-i7/
-> 
->  "
->   And if it is all about just syncing the genpd core, then can the
->   genpd core do something like what clk framework does? i.e. allow a
->   new optional genpd callback, get_performance_state() (just like
->   set_performance_state()), which can be called initially by the core
->   to get the performance to something other than zero.
->  "
-> 
-> Looks good to me :)
+> Can this be a `static inline` function that accepts a `const char *`
+> and returns a `size_t` rather than a statement expression?
 
-When you refresh this stuff, please send only 3-4 patches to update
-the core stuff and show an example. Once we finalize with the
-interface, you can update all the users. Else this is just noise for
-everyone else.
+No because both __builtin_object_size() and __builtin_strlen() may not
+work. See:
+https://lore.kernel.org/lkml/20210818060533.3569517-64-keescook@chromium.org/
+
+Regardless, it will always collapse to a const value of either -1 or
+the length of the string.
+
+> 
+> > +
+> >  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+> >  extern void *__underlying_memchr(const void *p, int c, __kernel_size_t size) __RENAME(memchr);
+> >  extern int __underlying_memcmp(const void *p, const void *q, __kernel_size_t size) __RENAME(memcmp);
+> > @@ -60,21 +72,31 @@ extern __kernel_size_t __real_strnlen(const char *, __kernel_size_t) __RENAME(st
+> >  __FORTIFY_INLINE __kernel_size_t strnlen(const char *p, __kernel_size_t maxlen)
+> >  {
+> >         size_t p_size = __builtin_object_size(p, 1);
+> > -       __kernel_size_t ret = __real_strnlen(p, maxlen < p_size ? maxlen : p_size);
+> > +       size_t p_len = __compiletime_strlen(p);
+> > +       size_t ret;
+> > +
+> > +       /* We can take compile-time actions when maxlen is const. */
+> > +       if (__builtin_constant_p(maxlen) && p_len != (size_t)-1) {
+> > +               /* If p is const, we can use its compile-time-known len. */
+> > +               if (maxlen >= p_size)
+> > +                       return p_len;
+> > +       }
+> >
+> > +       /* Do no check characters beyond the end of p. */
+> 
+> s/no/not/
+
+Thanks!
+
+> 
+> > +       ret = __real_strnlen(p, maxlen < p_size ? maxlen : p_size);
+> >         if (p_size <= ret && maxlen != ret)
+> >                 fortify_panic(__func__);
+> >         return ret;
+> >  }
+> >
+> > +/* defined after fortified strnlen to reuse it. */
+> >  __FORTIFY_INLINE __kernel_size_t strlen(const char *p)
+> >  {
+> >         __kernel_size_t ret;
+> >         size_t p_size = __builtin_object_size(p, 1);
+> >
+> > -       /* Work around gcc excess stack consumption issue */
+> > -       if (p_size == (size_t)-1 ||
+> > -               (__builtin_constant_p(p[p_size - 1]) && p[p_size - 1] == '\0'))
+> > +       /* Give up if we don't know how large p is. */
+> > +       if (p_size == (size_t)-1)
+> >                 return __underlying_strlen(p);
+> >         ret = strnlen(p, p_size);
+> >         if (p_size <= ret)
+> > @@ -86,24 +108,27 @@ __FORTIFY_INLINE __kernel_size_t strlen(const char *p)
+> >  extern size_t __real_strlcpy(char *, const char *, size_t) __RENAME(strlcpy);
+> >  __FORTIFY_INLINE size_t strlcpy(char *p, const char *q, size_t size)
+> >  {
+> > -       size_t ret;
+> >         size_t p_size = __builtin_object_size(p, 1);
+> >         size_t q_size = __builtin_object_size(q, 1);
+> > +       size_t q_len;   /* Full count of source string length. */
+> > +       size_t len;     /* Count of characters going into destination. */
+> >
+> >         if (p_size == (size_t)-1 && q_size == (size_t)-1)
+> >                 return __real_strlcpy(p, q, size);
+> > -       ret = strlen(q);
+> > -       if (size) {
+> > -               size_t len = (ret >= size) ? size - 1 : ret;
+> > -
+> > -               if (__builtin_constant_p(len) && len >= p_size)
+> > +       q_len = strlen(q);
+> > +       len = (q_len >= size) ? size - 1 : q_len;
+> > +       if (__builtin_constant_p(size) && __builtin_constant_p(q_len) && size) {
+> > +               /* Write size is always larger than destintation. */
+> 
+> s/destintation/destination/
+
+I can't type. :)
+
+Fixed now.
+
+-Kees
+
+> 
+> > +               if (len >= p_size)
+> >                         __write_overflow();
+> > +       }
+> > +       if (size) {
+> >                 if (len >= p_size)
+> >                         fortify_panic(__func__);
+> >                 __underlying_memcpy(p, q, len);
+> >                 p[len] = '\0';
+> >         }
+> > -       return ret;
+> > +       return q_len;
+> >  }
+> >
+> >  /* defined after fortified strnlen to reuse it */
+> > --
+> > 2.30.2
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210822075122.864511-20-keescook%40chromium.org.
+> 
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
 
 -- 
-viresh
+Kees Cook
