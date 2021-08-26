@@ -2,195 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FA43F8241
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE733F8236
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238369AbhHZGQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 02:16:20 -0400
-Received: from twhmllg4.macronix.com ([211.75.127.132]:62935 "EHLO
-        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234279AbhHZGQS (ORCPT
+        id S238506AbhHZGEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 02:04:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54896 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235644AbhHZGEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 02:16:18 -0400
-X-Greylist: delayed 1915 seconds by postgrey-1.27 at vger.kernel.org; Thu, 26 Aug 2021 02:16:17 EDT
-Received: from TWHMLLG4.macronix.com (localhost [127.0.0.2] (may be forged))
-        by TWHMLLG4.macronix.com with ESMTP id 17Q5hZ8s038478
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 13:43:35 +0800 (GMT-8)
-        (envelope-from ycllin@mxic.com.tw)
-Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
-        by TWHMLLG4.macronix.com with ESMTP id 17Q5hPCW038394;
-        Thu, 26 Aug 2021 13:43:25 +0800 (GMT-8)
-        (envelope-from ycllin@mxic.com.tw)
-Received: from TWHFMNP1.macronix.com (unknown [172.17.20.86])
-        by Forcepoint Email with ESMTP id CE89578A99B7416978B4;
-        Thu, 26 Aug 2021 13:43:25 +0800 (CST)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
-        by Forcepoint Email with ESMTP id 29F2B6D9F36145202CDA;
-        Thu, 26 Aug 2021 13:09:47 +0800 (CST)
-In-Reply-To: <20210817125949.5bde9715@xps13>
-References: <20210812113800.12466-1-novikov@ispras.ru>  <CAHp75VcgqZEHBTXpNApGfRkhgjpCvbgj+yxUZbbO+=0DOvZLQg@mail.gmail.com>
-        <20210816100114.384f01b9@xps13> <246f2094-e294-73f8-8a5f-3467e987f788@ispras.ru>
-        <20210817125521.487979b9@xps13> <20210817125949.5bde9715@xps13>
-To:     "Miquel Raynal" <miquel.raynal@bootlin.com>, jaimeliao@mxic.com.tw
-Cc:     "Andy Shevchenko" <andy.shevchenko@gmail.com>,
-        "Kirill Shilimanov" <kirill.shilimanov@huawei.com>,
-        "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "Evgeny Novikov" <novikov@ispras.ru>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>
-Subject: Re: [PATCH] mtd: rawnand: mxic: Enable and prepare clocks in probe
-MIME-Version: 1.0
-X-KeepSent: 1993890F:61B3A484-4825873D:001BF93D;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
-Message-ID: <OF1993890F.61B3A484-ON4825873D.001BF93D-4825873D.001C5C8F@mxic.com.tw>
-From:   ycllin@mxic.com.tw
-Date:   Thu, 26 Aug 2021 13:09:47 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2021/08/26 PM 01:09:47,
-        Serialize complete at 2021/08/26 PM 01:09:47
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-CHECK_THIS: ___Block Start___
- Do not alter this block
- #qH^YyY
- {2;H}KEEpBS6kEDVca3B+4mTYtCQefpkw1yExEIjU+jtbFz6PInkON1fqROtlBbw
- DKDmNRjYoVPwgmwUh95d1oxgIh3tahNlyrbgrIEMcJ6EJn9GI0gpEg9POP7r6co
- mPPKeyNelB0ihbMqaH+P0DC7o0PrPHY7jsbg9b/+LVSf1l3n8=
- gggvyYy___Block End___
-X-PE_TransactionId: 12127592373663368343
-X-MAIL: TWHMLLG4.macronix.com 17Q5hPCW038394
+        Thu, 26 Aug 2021 02:04:32 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 36B7122275;
+        Thu, 26 Aug 2021 06:03:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629957825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SNpBB1riqWMDgTE3zjGmFc2HQ/tL4Dep2J1e5XaBy04=;
+        b=cu4eirSW+5hHB/QGrqiL+5zPRaYHWNOMwV7XFP2NmbGdXIDu53pBC/7mSqABuvrPFRGQcd
+        ZRVpyRmtVKjx2P49Z7tasFLO9zoMCIc3+hADXSR+Zk3qmYnntAJrp6lxNb5vhs+5AbQ8qo
+        gv/Kk/IwqK3c1GIMa/EK6Dl73w34Yy0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629957825;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SNpBB1riqWMDgTE3zjGmFc2HQ/tL4Dep2J1e5XaBy04=;
+        b=fm3uV55QwT9JRwtq/R5RU6dPv33n4R+zjz9hNhqOzhymo8Ud1e0Ujta/UJ8Y/Wl6l78pQ/
+        2V7uwIyOmXfCClDA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 2C0D6A3B89;
+        Thu, 26 Aug 2021 06:03:45 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 08:03:45 +0200
+Message-ID: <s5hczq0yc72.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Prevent pops and clicks during reboot
+In-Reply-To: <e3df5f97-bf43-7eb8-e15d-4ab11dbae7ef@opensource.cirrus.com>
+References: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
+        <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
+        <s5h1r6xlvrs.wl-tiwai@suse.de>
+        <s5hczqgil3v.wl-tiwai@suse.de>
+        <6595e87d-1dae-b536-c17b-eafa07d04bbe@opensource.cirrus.com>
+        <s5hpmuce05m.wl-tiwai@suse.de>
+        <e3df5f97-bf43-7eb8-e15d-4ab11dbae7ef@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 25 Aug 2021 20:04:05 +0200,
+Vitaly Rodionov wrote:
+> Actually when codec is suspended and we do reboot from UI, then sometimes we
+> see suspend() calls in kernel log and no pops, but sometimes
+> 
+> we still have no suspend() on reboot and we hear pops. But when we do reboot
+> from command line: > sudo reboot  then we always have pops and no suspend()
+> called.
+> 
+> Then we have added extra logging and we can see that on reboot codec somehow
+> getting resume() call and we run jack detect on resume that causing pops.
 
-SGkgTWlxdWVsLA0KDQorIEphaW1lIGZyb20gTWFjcm9uaXguDQoNCkphaW1lIHdpbGwgY2hlY2sg
-YW5kIGNvbmZpcm0gdGhpcyBpc3N1ZS4NCg0KPiBSZTogW1BBVENIXSBtdGQ6IHJhd25hbmQ6IG14
-aWM6IEVuYWJsZSBhbmQgcHJlcGFyZSBjbG9ja3MgaW4gcHJvYmUNCj4gDQo+IA0KPiBNaXF1ZWwg
-UmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZSBvbiBUdWUsIDE3IEF1ZyAy
-MDIxDQo+IDEyOjU1OjIxICswMjAwOg0KPiANCj4gPiBIaSBFdmdlbnksDQo+ID4gDQo+ID4gK01h
-c29uIGZyb20gTWFjcm9uaXgNCj4gDQo+IE1hc29uJ3MgZS1tYWlsIGJvdW5jZWQsIGluY2x1ZGlu
-ZyBZb3VDaGluZyBpbiB0aGUgZGlzY3Vzc2lvbiB3aG8gbWF5DQo+IGFsc28gaGF2ZSBhbiBhbnN3
-ZXIgb3IgcGVyaGFwcyBrbm93cyB3aG8gdG8gaW5jbHVkZSBpbiB0aGUgZGlzY3Vzc2lvbg0KPiAo
-c2VlIGJlbG93IGZvciB0aGUgY29udGV4dCBhbmQgcXVlc3Rpb24pLg0KPiANCj4gPiANCj4gPiBF
-dmdlbnkgTm92aWtvdiA8bm92aWtvdkBpc3ByYXMucnU+IHdyb3RlIG9uIFR1ZSwgMTcgQXVnIDIw
-MjEgMTM6MzY6MDMNCj4gPiArMDMwMDoNCj4gPiANCj4gPiA+IEhpIE1pcXVlbCwNCj4gPiA+IA0K
-PiA+ID4gT24gMTYuMDguMjAyMSAxMTowMSwgTWlxdWVsIFJheW5hbCB3cm90ZToNCj4gPiA+ID4g
-SGkgQW5keSwNCj4gPiA+ID4NCj4gPiA+ID4gQW5keSBTaGV2Y2hlbmtvIDxhbmR5LnNoZXZjaGVu
-a29AZ21haWwuY29tPiB3cm90ZSBvbiBUaHUsIDEyIEF1ZyANCjIwMjENCj4gPiA+ID4gMTU6MTM6
-MTAgKzAzMDA6DQo+ID4gPiA+IA0KPiA+ID4gPj4gT24gVGh1cnNkYXksIEF1Z3VzdCAxMiwgMjAy
-MSwgRXZnZW55IE5vdmlrb3YgPG5vdmlrb3ZAaXNwcmFzLnJ1PiANCndyb3RlOg0KPiA+ID4gPj4g
-DQo+ID4gPiA+Pj4gSXQgc2VlbXMgdGhhdCBteGljX25mY19wcm9iZSgpIG1pc3NlZCBpbnZvY2F0
-aW9uIG9mDQo+ID4gPiA+Pj4gbXhpY19uZmNfY2xrX2VuYWJsZSgpLiBUaGUgcGF0Y2ggZml4ZWQg
-dGhhdC4gSW4gYWRkaXRpb24sIGVycm9yIA0KaGFuZGxpbmcNCj4gPiA+ID4+PiB3YXMgcmVmaW5l
-ZCBhcHByb3ByaWF0ZWx5LiANCj4gPiA+ID4+DQo+ID4gPiA+PiBOQUsuIFVudGlsIHlvdSBwcm92
-aWRlIGEgZGVlcGVyIGFuYWx5c2lzLCBsaWtlIGhvdyB0aGlzIHdvcmtzIA0KYmVmb3JlIHlvdXIN
-Cj4gPiA+ID4+IGNoYW5nZS4NCj4gPiA+ID4+DQo+ID4gPiA+Pg0KPiA+ID4gPj4gUGxlYXNlLCBk
-b27igJl0IGJsaW5kbHkgZ2VuZXJhdGUgcGF0Y2hlcywgdGhpcyBjYW4gZXZlbiB5b3VyIGJvdCAN
-CmRvLCBqdXN0DQo+ID4gPiA+PiB0aGluayBhYm91dCBlYWNoIGNoYW5nZSBhbmQgcHJlZmVyYWJs
-ZSB0ZXN0IG9uIHRoZSByZWFsIGhhcmR3YXJlLg0KPiA+ID4gPj4NCj4gPiA+ID4+IFRoZSBhYm92
-ZSBpcyB0byBhbGwgeW91ciBsb3ZlbHkgY29udHJpYnV0aW9ucy4NCj4gPiA+ID4+DQo+ID4gPiA+
-PiANCj4gPiA+ID4+PiBGb3VuZCBieSBMaW51eCBEcml2ZXIgVmVyaWZpY2F0aW9uIHByb2plY3Qg
-KGxpbnV4dGVzdGluZy5vcmcpLg0KPiA+ID4gPj4+DQo+ID4gPiA+Pj4gU2lnbmVkLW9mZi1ieTog
-RXZnZW55IE5vdmlrb3YgPG5vdmlrb3ZAaXNwcmFzLnJ1Pg0KPiA+ID4gPj4+IENvLWRldmVsb3Bl
-ZC1ieTogS2lyaWxsIFNoaWxpbWFub3YgDQo8a2lyaWxsLnNoaWxpbWFub3ZAaHVhd2VpLmNvbT4N
-Cj4gPiA+ID4+PiBTaWduZWQtb2ZmLWJ5OiBLaXJpbGwgU2hpbGltYW5vdiA8a2lyaWxsLnNoaWxp
-bWFub3ZAaHVhd2VpLmNvbT4NCj4gPiA+ID4+PiAtLS0NCj4gPiA+ID4+PiAgIGRyaXZlcnMvbXRk
-L25hbmQvcmF3L214aWNfbmFuZC5jIHwgMTYgKysrKysrKysrKysrLS0tLQ0KPiA+ID4gPj4+ICAg
-MSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+ID4gPiA+
-Pj4NCj4gPiA+ID4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXhpY19uYW5k
-LmMgDQpiL2RyaXZlcnMvbXRkL25hbmQvcmF3L214aWNfDQo+ID4gPiA+Pj4gbmFuZC5jDQo+ID4g
-PiA+Pj4gaW5kZXggZGExMDcwOTkzOTk0Li4zN2U3NWJmNjBlZTUgMTAwNjQ0DQo+ID4gPiA+Pj4g
-LS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXhpY19uYW5kLmMNCj4gPiA+ID4+PiArKysgYi9k
-cml2ZXJzL210ZC9uYW5kL3Jhdy9teGljX25hbmQuYw0KPiA+ID4gPj4+IEBAIC01MDksOSArNTA5
-LDE1IEBAIHN0YXRpYyBpbnQgbXhpY19uZmNfcHJvYmUoc3RydWN0IA0KcGxhdGZvcm1fZGV2aWNl
-DQo+ID4gPiA+Pj4gKnBkZXYpDQo+ID4gPiA+Pj4gICAgICAgICAgaWYgKElTX0VSUihuZmMtPnNl
-bmRfZGx5X2NsaykpDQo+ID4gPiA+Pj4gICAgICAgICAgICAgICAgICByZXR1cm4gUFRSX0VSUihu
-ZmMtPnNlbmRfZGx5X2Nsayk7DQo+ID4gPiA+Pj4NCj4gPiA+ID4+PiArICAgICAgIGVyciA9IG14
-aWNfbmZjX2Nsa19lbmFibGUobmZjKTsNCj4gPiA+ID4+PiArICAgICAgIGlmIChlcnIpDQo+ID4g
-PiA+Pj4gKyAgICAgICAgICAgICAgIHJldHVybiBlcnI7IA0KPiA+ID4gPiBBcyBBbmR5IHNhaWQs
-IHRoaXMgaXMgbm90IG5lZWRlZC4NCj4gPiA+ID4gDQo+ID4gPiA+Pj4gKw0KPiA+ID4gPj4+ICAg
-ICAgICAgIG5mYy0+cmVncyA9IGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNvdXJjZShwZGV2LCAw
-KTsNCj4gPiA+ID4+PiAtICAgICAgIGlmIChJU19FUlIobmZjLT5yZWdzKSkNCj4gPiA+ID4+PiAt
-ICAgICAgICAgICAgICAgcmV0dXJuIFBUUl9FUlIobmZjLT5yZWdzKTsNCj4gPiA+ID4+PiArICAg
-ICAgIGlmIChJU19FUlIobmZjLT5yZWdzKSkgew0KPiA+ID4gPj4+ICsgICAgICAgICAgICAgICBl
-cnIgPSBQVFJfRVJSKG5mYy0+cmVncyk7DQo+ID4gPiA+Pj4gKyAgICAgICAgICAgICAgIGdvdG8g
-ZmFpbDsNCj4gPiA+ID4+PiArICAgICAgIH0NCj4gPiA+ID4+Pg0KPiA+ID4gPj4+ICAgICAgICAg
-IG5hbmRfY2hpcCA9ICZuZmMtPmNoaXA7DQo+ID4gPiA+Pj4gICAgICAgICAgbXRkID0gbmFuZF90
-b19tdGQobmFuZF9jaGlwKTsNCj4gPiA+ID4+PiBAQCAtNTI3LDggKzUzMywxMCBAQCBzdGF0aWMg
-aW50IG14aWNfbmZjX3Byb2JlKHN0cnVjdCANCnBsYXRmb3JtX2RldmljZQ0KPiA+ID4gPj4+ICpw
-ZGV2KQ0KPiA+ID4gPj4+ICAgICAgICAgIG5hbmRfY2hpcC0+Y29udHJvbGxlciA9ICZuZmMtPmNv
-bnRyb2xsZXI7DQo+ID4gPiA+Pj4NCj4gPiA+ID4+PiAgICAgICAgICBpcnEgPSBwbGF0Zm9ybV9n
-ZXRfaXJxKHBkZXYsIDApOw0KPiA+ID4gPj4+IC0gICAgICAgaWYgKGlycSA8IDApDQo+ID4gPiA+
-Pj4gLSAgICAgICAgICAgICAgIHJldHVybiBpcnE7DQo+ID4gPiA+Pj4gKyAgICAgICBpZiAoaXJx
-IDwgMCkgew0KPiA+ID4gPj4+ICsgICAgICAgICAgICAgICBlcnIgPSBpcnE7DQo+ID4gPiA+Pj4g
-KyAgICAgICAgICAgICAgIGdvdG8gZmFpbDsgDQo+ID4gPiA+IEhvd2V2ZXIgc29tZSByZXdvcmtp
-bmcgaXMgbmVlZGVkIGluIHRoZSBlcnJvciBwYXRoLg0KPiA+ID4gPg0KPiA+ID4gPiBUaGF0IGdv
-dG8gc3RhdGVtZW50IHNob3VsZCBiZSByZW5hbWVkIGFuZCBkZXZtX3JlcXVlc3RfaXJxKCkgDQpz
-aG91bGQgbm90DQo+ID4gPiA+IGp1bXAgdG8gaXQuDQo+ID4gPiA+IA0KPiA+ID4gDQo+ID4gPiBX
-ZSBzdGlsbCBuZWVkIHNvbWUgaGVscCBhbmQgY2xhcmlmaWNhdGlvbiBmcm9tIHRob3NlIHdobyBh
-cmUgdmVyeSANCmZhbWlsaWFyDQo+IHdpdGggdGhpcyBzb3J0IG9mIGRyaXZlcnMgb3IvYW5kIGNh
-biB0ZXN0IHRoaXMgcGFydGljdWxhciBkcml2ZXIuIA0KPiBteGljX25mY19jbGtfZW5hYmxlKCkg
-aXMgdGhlIGNvbXBsZW1lbnRhcnkgZnVuY3Rpb24gZm9yIA0KbXhpY19uZmNfY2xrX2Rpc2FibGUN
-Cj4gKCkuIE5vIG90aGVyIGZ1bmN0aW9ucyBpbnZva2UgDQpjbGtfcHJlcGFyZV9lbmFibGUoKS9j
-bGtfZGlzYWJsZV91bnByZXBhcmUoKSBpbiANCj4gdGhlIGRyaXZlci4gVW5saWtlbHkgc29tZWJv
-ZHkgaW4gaXRzIGVudmlyb25tZW50IGRvZXMgdGhhdCBzaW5jZSBkcml2ZXIgDQo+IHNwZWNpZmlj
-IGNsb2NrcyBhcmUgZGVhbHQgd2l0aC4gQXQgdGhlIG1vbWVudCB0aGUgZHJpdmVyIGludm9rZXMg
-DQo+IG14aWNfbmZjX2Nsa19kaXNhYmxlKCkgb24gZXJyb3IgaGFuZGxpbmcgcGF0aHMgaW4gcHJv
-YmUsIGluIHJlbW92ZSBhbmQgDQppbiANCj4gbXhpY19uZmNfc2V0X2ZyZXEoKS4gbXhpY19uZmNf
-Y2xrX2VuYWJsZSgpIGlzIGNhbGxlZCBqdXN0IGJ5IA0KbXhpY19uZmNfc2V0X2ZyZXENCj4gKCkg
-dGhhdCBtb3Jlb3ZlciBkb2VzIHRoaXMgYWZ0ZXIgY2FsbGluZyBteGljX25mY19jbGtfZGlzYWJs
-ZSgpIGZpcnN0LiANClNvLCB3ZSANCj4gZGlkIG5vdCBmaW5kIGFueSBwbGFjZSBpbiB0aGUgZHJp
-dmVyIHRoYXQgaW52b2tlcyBteGljX25mY19jbGtfZW5hYmxlKCkgDQpwcmlvciANCj4gdG8gbXhp
-Y19uZmNfY2xrX2Rpc2FibGUoKS4gQmFzaW5nIG9uIHRoaXMgd2UgYWRkZWQgbXhpY19uZmNfY2xr
-X2VuYWJsZSgpIA0KanVzdCANCj4gYWZ0ZXIgZ2V0dGluZyBjbG9ja3MuIEFzIEkgZXhwbGFpbmVk
-IGluIHRoZSBwcmV2aW91cyBsYXJnZSBlLW1haWwsIHdlIA0KbWF5IGJlIA0KPiB3cm9uZyBpbiBv
-dXIgdW5kZXJzdGFuZGluZyBvZiB0aGUgZHJpdmVyIGVudmlyb25tZW50IG9yL2FuZCBhdCANCnNw
-ZWNpZmljYXRpb24gDQo+IG9mIHJlcXVpcmVtZW50cyBiZWluZyBjaGVja2VkLiBJdCB3b3VsZCBi
-ZSBncmVhdCBpZiB5b3Ugd2lsbCBwb2ludCBvdXQgDQpvbiBvdXIgbWlzdGFrZXMuDQo+ID4gDQo+
-ID4gRW5hYmxpbmcgdGhlIGNsb2NrcyBzZWVtcyB0byBvbmx5IGJlIG5lZWRlZCB0byBhY2Nlc3Mg
-dGhlIE5BTkQgZGV2aWNlDQo+ID4gYW5kIG5vdCB0aGUgcmVnaXN0ZXJzIG9mIHRoZSBjb250cm9s
-bGVyLiBNYXNvbiwgaXMgdGhpcyBzdGF0ZW1lbnQNCj4gPiByaWdodD8gSWYgdGhpcyBzdGF0ZW1l
-bnQgaXMgd3JvbmcsIHRoZW4geW91ciBwcm9wb3NhbCBpcyBub3QgZW50aXJlbHkNCj4gPiB3cm9u
-ZyBpbiB0aGUgc2Vuc2UgdGhhdCB3ZSBtdXN0IGVuYWJsZSB0aGUgbWlzc2luZyBjbG9jayAqYmVm
-b3JlKg0KPiA+IGFjY2Vzc2luZyBhbnkgcmVnaXN0ZXIuDQo+ID4gDQo+ID4gT3RoZXJ3aXNlIGZv
-ciB0aGUgdHdvIG90aGVyIGNsb2Nrcywgd2UgZG9uJ3QgcmVhbGx5IGNhcmUgdG8gZW5hYmxlIA0K
-dGhlbQ0KPiA+IGJlZm9yZSBzZXR0aW5nIHRoZSBhY3R1YWwgZnJlcXVlbmN5IGluIC0+c2V0dXBf
-aW50ZXJmYWNlKCkgKGNhbGxlZCBieQ0KPiA+IG5hbmRfc2NhbigpKSBiZWNhdXNlIGF0IHRoaXMg
-cG9pbnQgd2UgZG9uJ3QgeWV0IGtub3cgd2hhdCB0aW1pbmcgbW9kZQ0KPiA+IGlzIGJlc3QuIERp
-c2FibGluZyB0aGUgY2xvY2sgaXMgbm90IGFuIGlzc3VlIGV2ZW4gdGhvdWdoIGl0IHdhcyBub3QN
-Cj4gPiBlbmFibGVkIGluIHRoZSBmaXN0IHBsYWNlIGFueXdheS4NCj4gPiANCj4gPiBJbiBhbGwg
-Y2FzZXMsIHRoZSBlcnJvciBwYXRoIGlzIHdyb25nLg0KPiA+IA0KPiA+IFRoYW5rcywNCj4gPiBN
-aXF1w6hsDQoNCkNPTkZJREVOVElBTElUWSBOT1RFOg0KDQpUaGlzIGUtbWFpbCBhbmQgYW55IGF0
-dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiANCmFuZC9vciBw
-ZXJzb25hbCBkYXRhLCB3aGljaCBpcyBwcm90ZWN0ZWQgYnkgYXBwbGljYWJsZSBsYXdzLiBQbGVh
-c2UgYmUgDQpyZW1pbmRlZCB0aGF0IGR1cGxpY2F0aW9uLCBkaXNjbG9zdXJlLCBkaXN0cmlidXRp
-b24sIG9yIHVzZSBvZiB0aGlzIGUtbWFpbCANCihhbmQvb3IgaXRzIGF0dGFjaG1lbnRzKSBvciBh
-bnkgcGFydCB0aGVyZW9mIGlzIHByb2hpYml0ZWQuIElmIHlvdSByZWNlaXZlIA0KdGhpcyBlLW1h
-aWwgaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdXMgaW1tZWRpYXRlbHkgYW5kIGRlbGV0ZSB0aGlz
-IG1haWwgYXMgDQp3ZWxsIGFzIGl0cyBhdHRhY2htZW50KHMpIGZyb20geW91ciBzeXN0ZW0uIElu
-IGFkZGl0aW9uLCBwbGVhc2UgYmUgDQppbmZvcm1lZCB0aGF0IGNvbGxlY3Rpb24sIHByb2Nlc3Np
-bmcsIGFuZC9vciB1c2Ugb2YgcGVyc29uYWwgZGF0YSBpcyANCnByb2hpYml0ZWQgdW5sZXNzIGV4
-cHJlc3NseSBwZXJtaXR0ZWQgYnkgcGVyc29uYWwgZGF0YSBwcm90ZWN0aW9uIGxhd3MuIA0KVGhh
-bmsgeW91IGZvciB5b3VyIGF0dGVudGlvbiBhbmQgY29vcGVyYXRpb24uDQoNCk1hY3Jvbml4IElu
-dGVybmF0aW9uYWwgQ28uLCBMdGQuDQoNCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KDQoNCg0KPT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PQ0KDQpDT05GSURFTlRJQUxJVFkgTk9URToNCg0KVGhpcyBlLW1haWwgYW5kIGFueSBh
-dHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gYW5kL29yIHBl
-cnNvbmFsIGRhdGEsIHdoaWNoIGlzIHByb3RlY3RlZCBieSBhcHBsaWNhYmxlIGxhd3MuIFBsZWFz
-ZSBiZSByZW1pbmRlZCB0aGF0IGR1cGxpY2F0aW9uLCBkaXNjbG9zdXJlLCBkaXN0cmlidXRpb24s
-IG9yIHVzZSBvZiB0aGlzIGUtbWFpbCAoYW5kL29yIGl0cyBhdHRhY2htZW50cykgb3IgYW55IHBh
-cnQgdGhlcmVvZiBpcyBwcm9oaWJpdGVkLiBJZiB5b3UgcmVjZWl2ZSB0aGlzIGUtbWFpbCBpbiBl
-cnJvciwgcGxlYXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVseSBhbmQgZGVsZXRlIHRoaXMgbWFpbCBh
-cyB3ZWxsIGFzIGl0cyBhdHRhY2htZW50KHMpIGZyb20geW91ciBzeXN0ZW0uIEluIGFkZGl0aW9u
-LCBwbGVhc2UgYmUgaW5mb3JtZWQgdGhhdCBjb2xsZWN0aW9uLCBwcm9jZXNzaW5nLCBhbmQvb3Ig
-dXNlIG9mIHBlcnNvbmFsIGRhdGEgaXMgcHJvaGliaXRlZCB1bmxlc3MgZXhwcmVzc2x5IHBlcm1p
-dHRlZCBieSBwZXJzb25hbCBkYXRhIHByb3RlY3Rpb24gbGF3cy4gVGhhbmsgeW91IGZvciB5b3Vy
-IGF0dGVudGlvbiBhbmQgY29vcGVyYXRpb24uDQoNCk1hY3Jvbml4IEludGVybmF0aW9uYWwgQ28u
-LCBMdGQuDQoNCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PQ0K
+Hm, it's interesting who triggers the runtime resume.
 
+> We were thinking about possible solution for that and we would propose some
+> changes in generic code hda_bind.c:
+> 
+> static void hda_codec_driver_shutdown(struct device *dev) { +   if (codec->
+> patch_ops.suspend) +      codec->patch_ops.suspend(codec);   
+> snd_hda_codec_shutdown(dev_to_hda_codec(dev)); +  hda_codec_driver_remove
+> (dev_to_hda_codec(dev)); }
+
+Sorry, it's no-no.  The suspend can't be called unconditionally, and
+the driver unbind must not be called in the callback itself.
+
+Does the patch below work instead?
+
+
+thanks,
+
+Takashi
+
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2356,8 +2356,11 @@ static void azx_shutdown(struct pci_dev *pci)
+ 	if (!card)
+ 		return;
+ 	chip = card->private_data;
+-	if (chip && chip->running)
++	if (chip && chip->running) {
++		chip->bus.shutdown = 1;
++		cancel_work_sync(&bus->unsol_work);
+ 		azx_shutdown_chip(chip);
++	}
+ }
+ 
+ /* PCI IDs */
