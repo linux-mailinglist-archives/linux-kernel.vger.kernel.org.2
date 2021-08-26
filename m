@@ -2,105 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A423F883B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F0D3F8840
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242511AbhHZNBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242494AbhHZNA5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:00:57 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344CFC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:00:10 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id g18so818801vkq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ocFFaMnpP/NK5k6jGasl64HMse3t1Sh2zr+zn0SwV+M=;
-        b=MKdgsD3skHusjl9BNP/Q3G/9e20/iXnmW0VTMNm31s2zKx3/EqdUj3fwoNAsi/G3s+
-         yKi3kFV4DzuNUImg5s8PfOD6inHbj/5N00EC1fy4Ri6GislaYs0uFkucQ4RH8VIiiYX7
-         DhHWuH0bIeXdXtcPSDoXHWP0Sqpk5xbyYnbp0APV85I9EAwb+vVk96FFMvafuntQtd2v
-         vwLei9S9sMdtlIe4yedOC4NjT04WjNkCCs6sEtGd+NYhjFioLxLnHVPSUNJwSi0R7163
-         YGqpBuy1DSNxcFHZTUk9K32tkPegiVCF6ojaIaIoiEFsu8Atywmy06oBOEA4u3P7EnCW
-         9Asg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ocFFaMnpP/NK5k6jGasl64HMse3t1Sh2zr+zn0SwV+M=;
-        b=PzWJQIzFx1Ecbc963n+iLstm2qQmHKpkm6flwBKRNbvq+ZNOSOWMrrpegMwxWBn0He
-         6WS7ZJ3TSi93s1AVJlPO2OeH+xI+sQM0tbtEsk01bsAD/nij0hty05c3LKljEbxkMNBV
-         9JL/O17qay+XNdGJzb58KfqzZZ5t0ifO6w8sIw9XIySqWiJ9zfJ9px9Ixn44d3IGfG+g
-         TnubPFiJDkpEGjyYhy0BPQFtdrFgTff089pEr3mUWoOXvER2TIok97Nz/PUDL7CE9+iM
-         yrBYmQcvVbQsSwZF1B2Aw9OmhV2gsbaIXE5SfWWvvxAnSwEJo4aE+7anRHDkuFagJIS4
-         TaHA==
-X-Gm-Message-State: AOAM532nX/cHXV/PZeZsSV/t4Yhl+sCMHp7ZhrbKMQe16fBL/RhptsLx
-        UWpQS/xcrqBfdcC6IKi7HuN4sxVd6gyBho4W4OU=
-X-Google-Smtp-Source: ABdhPJw3aw85jut73xut5Y2i6V/6gxTcFzKq2kOS6bgJFbpSwBicdQkFyh7ayj+OYPNpfBvqMtHwF512RYxlTaGstBI=
-X-Received: by 2002:a1f:90cd:: with SMTP id s196mr1638807vkd.5.1629982808785;
- Thu, 26 Aug 2021 06:00:08 -0700 (PDT)
+        id S242573AbhHZNCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:02:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:46482 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237214AbhHZNCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 09:02:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C7C331B;
+        Thu, 26 Aug 2021 06:01:28 -0700 (PDT)
+Received: from e123427-lin.arm.com (unknown [10.57.41.138])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D43DE3F66F;
+        Thu, 26 Aug 2021 06:01:24 -0700 (PDT)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        punit1.agrawal@toshiba.co.jp, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/3] Visconti: Add Toshiba Visconti PCIe host controller driver
+Date:   Thu, 26 Aug 2021 14:01:19 +0100
+Message-Id: <162998285902.30814.11206633831020646086.b4-ty@arm.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210811083830.784065-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+References: <20210811083830.784065-1-nobuhiro1.iwamatsu@toshiba.co.jp>
 MIME-Version: 1.0
-References: <20210826121006.685257-1-michael@walle.cc> <20210826121006.685257-2-michael@walle.cc>
-In-Reply-To: <20210826121006.685257-2-michael@walle.cc>
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-Date:   Thu, 26 Aug 2021 14:59:57 +0200
-Message-ID: <CAH9NwWcFdt=C=aEp48462wXA6Q47CvTVoRQawyZMuPwwgVzzUA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] drm/etnaviv: use PLATFORM_DEVID_NONE
-To:     Michael Walle <michael@walle.cc>
-Cc:     The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Lukas F . Hartmann" <lukas@mntre.com>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Do., 26. Aug. 2021 um 14:10 Uhr schrieb Michael Walle <michael@walle.cc>:
->
-> There is already a macro for the magic value. Use it.
->
-> Signed-off-by: Michael Walle <michael@walle.cc>
+On Wed, 11 Aug 2021 17:38:27 +0900, Nobuhiro Iwamatsu wrote:
+> This series is the PCIe driver for Toshiba's ARM SoC, Visconti[0].
+> This provides DT binding documentation, device driver, MAINTAINER files.
+> 
+> Best regards,
+>   Nobuhiro
+> 
+> [0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
+> 
+> [...]
 
-Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+Applied to pci/dwc, thanks!
 
-I will wait for v2 for the rest of the changes to review.
+[1/3] dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+      https://git.kernel.org/lpieralisi/pci/c/a655ce4000
+[2/3] PCI: visconti: Add Toshiba Visconti PCIe host controller driver
+      https://git.kernel.org/lpieralisi/pci/c/09436f819c
+[3/3] MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+      https://git.kernel.org/lpieralisi/pci/c/34af7aace1
 
-> ---
->  drivers/gpu/drm/etnaviv/etnaviv_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> index 7dcc6392792d..2509b3e85709 100644
-> --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> @@ -653,7 +653,7 @@ static int __init etnaviv_init(void)
->                 if (!of_device_is_available(np))
->                         continue;
->
-> -               pdev = platform_device_alloc("etnaviv", -1);
-> +               pdev = platform_device_alloc("etnaviv", PLATFORM_DEVID_NONE);
->                 if (!pdev) {
->                         ret = -ENOMEM;
->                         of_node_put(np);
-> --
-> 2.30.2
->
-
-
--- 
-greets
---
-Christian Gmeiner, MSc
-
-https://christian-gmeiner.info/privacypolicy
+Thanks,
+Lorenzo
