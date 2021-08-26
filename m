@@ -2,82 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FAA3F8811
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4C63F8817
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242117AbhHZMxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:53:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60304 "EHLO mail.kernel.org"
+        id S242515AbhHZMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:54:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:46324 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233687AbhHZMxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:53:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD68060184;
-        Thu, 26 Aug 2021 12:52:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629982379;
-        bh=XHhGpjY0FA2y0UYa/0RXWRkT6z4HWanfCrqmAUxRmO8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uTiaD/jEL++G5HYo4eHyvw6VjyMszGD8TQHVq2zS0Ton8am0AB5iST1JevpEsS6kK
-         vGYfEiGUbBNVDbLAXcy0brHC47rBC52Ba2jRCvPWUSS9s9Dt17Kk8tjErije2rPXLj
-         LktqGb733czXFrFPolxzku+wRqq9ecVBKxDHsLvpspbrKJfyKjnb7Pz1170OS75B/x
-         +CMA45L0SYcBCsDP+XR5yFW049hWu09HGQVPbZyicML2lTd5u1xHmcvFPLBI8h7mJx
-         6dopyD6b4IUr5DbZP4ir5YLSyzGg4/ToMbt1jwd1przuHDv6BlbqSI9SnVtunWIvjz
-         Y6resBAhV9SqA==
-Date:   Thu, 26 Aug 2021 18:22:55 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        patches@linaro.org, Haavard Skinnemoen <hskinnemoen@atmel.com>,
-        =?iso-8859-1?Q?H=E5vard?= Skinnemoen <hskinnemoen@gmail.com>
-Subject: Re: [PATCH 1/2] Documentation: dmaengine: Add a description of what
- dmatest does
-Message-ID: <YSeOpxIVJNCcKtEV@matsya>
-References: <20210818151315.9505-1-daniel.thompson@linaro.org>
- <20210818151315.9505-2-daniel.thompson@linaro.org>
- <CAHp75VdDZJ+aUtx-A3y62WQ5+OtrS47Ts6PDe1bGQ0OcRRV+7Q@mail.gmail.com>
- <20210819091328.6up4oprx4j7u5bjl@maple.lan>
+        id S237352AbhHZMyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 08:54:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B998106F;
+        Thu, 26 Aug 2021 05:53:27 -0700 (PDT)
+Received: from e123427-lin.arm.com (unknown [10.57.41.138])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA5143F766;
+        Thu, 26 Aug 2021 05:53:23 -0700 (PDT)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     robh+dt@kernel.org, bhelgaas@google.com,
+        Chuanjia Liu <chuanjia.liu@mediatek.com>,
+        matthias.bgg@gmail.com
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, yong.wu@mediatek.com,
+        devicetree@vger.kernel.org, ryder.lee@mediatek.com,
+        jianjun.wang@mediatek.com, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v12 0/6] PCI: mediatek: Spilt PCIe node to comply with hardware design
+Date:   Thu, 26 Aug 2021 13:53:12 +0100
+Message-Id: <162998235864.26306.15150607621994016843.b4-ty@arm.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210823032800.1660-1-chuanjia.liu@mediatek.com>
+References: <20210823032800.1660-1-chuanjia.liu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819091328.6up4oprx4j7u5bjl@maple.lan>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-08-21, 10:13, Daniel Thompson wrote:
-> On Wed, Aug 18, 2021 at 06:27:52PM +0300, Andy Shevchenko wrote:
-> > On Wed, Aug 18, 2021 at 6:15 PM Daniel Thompson
-> > <daniel.thompson@linaro.org> wrote:
-> > >
-> > > Currently it can difficult to determine what dmatest does without
-> > > reading the source code. Let's add a description.
-> > >
-> > > The description is taken mostly from the patch header of
-> > > commit 4a776f0aa922 ("dmatest: Simple DMA memcpy test client")
-> > > although it has been edited and updated slightly.
-> > 
-> > > Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
-> > 
-> > Not sure if you can use it like this (I mean the above SoB)
+On Mon, 23 Aug 2021 11:27:54 +0800, Chuanjia Liu wrote:
+> There are two independent PCIe controllers in MT2712 and MT7622 platform.
+> Each of them should contain an independent MSI domain.
 > 
-> I wondered about that.
+> In old dts architecture, MSI domain will be inherited from the root
+> bridge, and all of the devices will share the same MSI domain.Hence that,
+> the PCIe devices will not work properly if the irq number which required
+> is more than 32.
 > 
-> In the end I concluded that if I had picked up code from an old patch
-> and edited to this degree then I would probably consider it a new
-> patch but be clear about credit and preserve the original SoB. I saw no
-> real reason to treat the contents of a patch header much different.
-> 
-> However, I'm very happy to make the credit more informal if needed.
+> [...]
 
-It would be better if we be formal when giving credit. I am okay with
-sob by Haavard if he acks it...
-Daniel, Yes the intention is very noble, but I would have Haavard ack
-before applying a patch with his sob, if not lets drop it and give
-credit in changelog :)
+Applied to pci/mediatek, thanks!
 
--- 
-~Vinod
+[1/4] dt-bindings: PCI: mediatek: Update the Device tree bindings
+      https://git.kernel.org/lpieralisi/pci/c/aa6eca5b81
+[2/4] PCI: mediatek: Add new method to get shared pcie-cfg base address
+      https://git.kernel.org/lpieralisi/pci/c/87e8657ba9
+[3/4] PCI: mediatek: Add new method to get irq number
+      https://git.kernel.org/lpieralisi/pci/c/436960bb00
+[4/4] PCI: mediatek: Use PCI domain to handle ports detection
+      https://git.kernel.org/lpieralisi/pci/c/77216702c8
+
+Thanks,
+Lorenzo
