@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1C33F8D9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FE83F8DA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243277AbhHZSJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243259AbhHZSJs (ORCPT
+        id S243283AbhHZSK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:10:27 -0400
+Received: from mail-pj1-f51.google.com ([209.85.216.51]:39675 "EHLO
+        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243092AbhHZSK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:09:48 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C094C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:09:01 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id p15so6728713ljn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sdk8oq9F9d0RnEa7dfHJHGoL0Z5yyU5Y/fEoZ2o9vEs=;
-        b=oFaf1OcBV6BFwvxWMUemdMKSedBA9yLmq2eCG+ad7OwqaD0DiP62OtgHqbIW+StaVP
-         VddT4aGeBBKdcB+6YQiOVT6GNI7ARrjOkBRKmAU2/fCGYmPqB7KBFkirU1o2quzVOqyD
-         dFYM2M7vmIQanPHyRne5WCpOOnba+vaLR25yr2+x1D2q0IbH1jUFCvTT7LGPdrSqehFb
-         KtY+S9RhbII4vMAKnm/Gb63bmnkY8PaCXXIrrHLFrr0+f/JzC/phq3kYrUtwJL/wngqf
-         oRGQAzTOeaUoQJtayoEQ4qAuMwS+HkFfmja7WeOMv0YCv2M+JwqoUVHe62GEZLzsyhHd
-         hJfQ==
+        Thu, 26 Aug 2021 14:10:26 -0400
+Received: by mail-pj1-f51.google.com with SMTP id oc2-20020a17090b1c0200b00179e56772d6so7151541pjb.4;
+        Thu, 26 Aug 2021 11:09:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sdk8oq9F9d0RnEa7dfHJHGoL0Z5yyU5Y/fEoZ2o9vEs=;
-        b=oXo6Lo1BfSROAEI2jxUfJQqckVXot/cOA9/EPaWemnRnZ8o0PIHP5XtotdDxiqVRoc
-         orMdSPkmqa4goQGTbEBP0iAKQ7RBljmxyVFSH6tPYg4gxHxDa1bfHEbv3T1StC/4yuuQ
-         f0HZVo5IM/zP988p2C9lHkLKgq50AqVgAeaZVCZFHKWzVCYZmAlBcqUN169o464FBlwc
-         hhx5GiBbmPBGjAbUZjZ+OHYGnwIJZvoHmV6N5QNbBjFeOquOQP1jkqpP6Qdi1Ak0Rrl3
-         /ZTkXLEaKYaMCzi+UarnHi8EJcyONxKMN19NRkRmhodYTDNIG6iypf+Tsx9ja5Bu6VTs
-         OJSQ==
-X-Gm-Message-State: AOAM532VruD6B9W9lKofsgBAptYQkrzAA4T5k3KrXy1ZbFBUAyTb0FlZ
-        cICQCpDKprXbM4iOGW4eWRVRTJ9e3XZG8ZXh9CEDwQ==
-X-Google-Smtp-Source: ABdhPJzS/iKs/tjwCArh2Yfh+JVfg8cE0yOVo4BTu9i3Q7phsaRzNSlcZw5F+bAfVa5AUqVC5B4BcEZLW9JJgaQbkq4=
-X-Received: by 2002:a2e:a788:: with SMTP id c8mr4240939ljf.116.1630001338932;
- Thu, 26 Aug 2021 11:08:58 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j0mt7AWcGZvt97QcESxgo4rDmKH0RfGdg9W8LlCYkLQ=;
+        b=BVArMxorTUNQfUowQX36xKsqXt29xYa8KHRwvYfCYrPmJm+X7tg2wcPecmSBGcvKqc
+         tREEZTQAX+JuVaKzOv+LVVVJjRoPcU708CTyWGpFYFHw+ptNL5QM/Al/0h55UaKbsN8k
+         H0M6AaNk1x0IAnK0TZiOoYf9JoaEig/ZV9/hyXdUOY/+LreSbvlbL+PLhk9v4kj31Z2b
+         2ZocViT66GH56sPxNF8VxyVpHe/WlIXE492qvu0vvcD1XZfFqyyvC3shWC7ipkA85Ymk
+         cS1OzMHz3kHrW8NhS+P+ADvl222kdWyFdFLbxqD2RH/IE5amEdGPUGGvgmhtCwlzhiaR
+         HImA==
+X-Gm-Message-State: AOAM531MkX6v0GO/W63YTNzcYd8UHnJOjK6TzK1iPD6/TmFhE34okBES
+        ySBXgAZgVFR0QrsuQEAiLmE=
+X-Google-Smtp-Source: ABdhPJwsw62jBWgm4+d4gnDL12k+csfjNX1WJnG8wU7slFky9TJwv1DrkqwtpnkUvjQTbJH7GVhFeg==
+X-Received: by 2002:a17:90a:a404:: with SMTP id y4mr5929010pjp.52.1630001378136;
+        Thu, 26 Aug 2021 11:09:38 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:22e3:6079:e5ce:5e45? ([2601:647:4000:d7:22e3:6079:e5ce:5e45])
+        by smtp.gmail.com with ESMTPSA id nk17sm3539792pjb.18.2021.08.26.11.09.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 11:09:37 -0700 (PDT)
+Subject: Re: [PATCH] block/mq-deadline: Speed up the dispatch of low-priority
+ requests
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Damien Le Moal <damien.lemoal@wdc.com>
+References: <20210826144039.2143-1-thunder.leizhen@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <fc1f2664-fc4f-7b3e-5542-d9e4800a5bde@acm.org>
+Date:   Thu, 26 Aug 2021 11:09:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210822075122.864511-1-keescook@chromium.org>
- <20210822075122.864511-15-keescook@chromium.org> <CAKwvOdmY2DQbjKutcofN3zsiz_majg6UnhMjMWbamVRhaRPhsw@mail.gmail.com>
- <202108251942.26FC1B8E7@keescook>
-In-Reply-To: <202108251942.26FC1B8E7@keescook>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 26 Aug 2021 11:08:47 -0700
-Message-ID: <CAKwvOdm9GMcR8rAwaEL8Nv7xJ-gAgo1NmmihF=CG72x0qj2MKw@mail.gmail.com>
-Subject: Re: [PATCH for-next 14/25] lib/string: Move helper functions out of string.c
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        David Gow <davidgow@google.com>, linux-mm@kvack.org,
-        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210826144039.2143-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 7:47 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Aug 25, 2021 at 02:48:30PM -0700, Nick Desaulniers wrote:
-> > are memset16, memset32, and memset64 worth moving as well? Also,
-> > memscan(), check_bytes(), memchr_inv()?
->
-> All of these are implementations, so they should stay put.
+On 8/26/21 7:40 AM, Zhen Lei wrote:
+> lock protection needs to be added only in
+> dd_finish_request(), which is unlikely to cause significant performance
+> side effects.
 
-All of the functions being moved here are definitions. So what's the
-difference between moving the definitions of functions like
-strrreplace, fortify_panic, etc., but not memscan(), check_bytes(),
-memchr_inv(), etc?  ie. it looks to me like a few more functions can
-or should be moved as well.  If the point of this patch is to "move
-all the helper functions into string_helpers.c so that they gain the
-fortification coverage they had been missing" then it looks like you
-missed a few.  I don't think the compiler will recognize those
-non-libc identifiers for any fortification related transforms (unlike
-memcpy and friends which are left in place).
--- 
+Not sure the above is correct. Every new atomic instruction has a measurable
+performance overhead. But I guess in this case that overhead is smaller than
+the time needed to sum 128 per-CPU variables.
+
+> Tested on my 128-core board with two ssd disks.
+> fio bs=4k rw=read iodepth=128 cpus_allowed=0-95 <others>
+> Before:
+> [183K/0/0 iops]
+> [172K/0/0 iops]
+> 
+> After:
+> [258K/0/0 iops]
+> [258K/0/0 iops]
+
+Nice work!
+
+> Fixes: fb926032b320 ("block/mq-deadline: Prioritize high-priority requests")
+
+Shouldn't the Fixes: tag be used only for patches that modify functionality?
+I'm not sure it is appropriate to use this tag for performance improvements.
+
+>  struct deadline_data {
+> @@ -277,9 +278,9 @@ deadline_move_request(struct deadline_data *dd, struct dd_per_prio *per_prio,
+>  }
+>  
+>  /* Number of requests queued for a given priority level. */
+> -static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
+> +static __always_inline u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
+>  {
+> -	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
+> +	return dd->per_prio[prio].nr_queued;
+>  }
+
+Please leave out "__always_inline". Modern compilers are smart enough to
+inline this function without using the "inline" keyword.
+
+> @@ -711,6 +712,8 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
+>  
+>  	prio = ioprio_class_to_prio[ioprio_class];
+>  	dd_count(dd, inserted, prio);
+> +	per_prio = &dd->per_prio[prio];
+> +	per_prio->nr_queued++;
+>  
+>  	if (blk_mq_sched_try_insert_merge(q, rq, &free)) {
+>  		blk_mq_free_requests(&free);
+
+I think the above is wrong - nr_queued should not be incremented if the
+request is merged into another request. Please move the code that increments
+nr_queued past the above if-statement.
+
 Thanks,
-~Nick Desaulniers
+
+Bart.
