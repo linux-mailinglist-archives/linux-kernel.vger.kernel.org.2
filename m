@@ -2,163 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3273F8A2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E6E3F8A32
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242755AbhHZOhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbhHZOhe (ORCPT
+        id S242869AbhHZOhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:37:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46484 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242829AbhHZOho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:37:34 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32D1C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 07:36:46 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso3779578otp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 07:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D0x7kG5inCAU4odH4Ca7hH6L2dymSyP8KvC1gg8txvI=;
-        b=P0I9/WLM2kllF2CsU1LJ1VGJOKg93R3WGspayrL/kOiIA6MkG9oqhNa47EwKWRGDH4
-         ahgUV0kHqxhhwVbAjWKODDViXGRiXBM5qexE1XTinlHlts6w3lvuOxblzuHXxib+V0zE
-         PncJ6Z+0nepcixsaZQ9h0XemG/8fELyMs+gqs1dXMC2EI6fa6kbk5hdPZTCMaABedJtA
-         LyBqYLuhs2P0moxsuej5Oj8V9O2gwHeUVhBZBrrG2lB4Ai/i/4yRb0KYjXIcxm5A2jgy
-         lNg0KLQ5XDDhgeJeWQRKVMXru0Wz7MSIYBDTUO0Y4q28bDJDPNlDL2yQAuRGxhzHfeau
-         8XBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D0x7kG5inCAU4odH4Ca7hH6L2dymSyP8KvC1gg8txvI=;
-        b=MSCxUnCNndbLR2gSO75vuOf0MnB/j7cXiQUVumQ8Ja1a/QkP2pRXsIl8Iln/sGzayQ
-         k2xGzj1E0tm2lCZeMrHCX/BmFLsVhEP9w59GPfv2CccY+Ha9ussYnmiQ7z6/7j8EWBiC
-         gXKBwXv212pFg3II/RH6FYzVOndqXx9CbZoPoaT2HTTT9fAeYC2KwGsbESzGUqeFGqkw
-         zN8hNC8ZMyW8PA4K+VwyB6JbZFZvDgmkZEeonM/uHsES/AfpVR7CoVOadcpC17Rs04Hp
-         LpPq427J0yzbAwvVeiUtdKUmpeyuDihpTlyj6+9ovajcqK7CN8FGpnScmBIXg+iuLiyd
-         iqjw==
-X-Gm-Message-State: AOAM533RSdSR9YicqzC/AtuXohvDLL5t5w4TQ+S2LHEo9MoockO5JGy0
-        mhAzPWRiyk2oRpgpdJL+xlLyhb7o24DGmTVbfhBWRQ==
-X-Google-Smtp-Source: ABdhPJx8znIwtijGE5yCzihQvV6CBXxvSBuPVEbykUDFH/2TOhXQIdLMBM58CoB3+b3BFLSZpKxHsIY/LmwlfPW0oRI=
-X-Received: by 2002:a05:6830:88:: with SMTP id a8mr3470082oto.233.1629988605961;
- Thu, 26 Aug 2021 07:36:45 -0700 (PDT)
+        Thu, 26 Aug 2021 10:37:44 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id BD08822235;
+        Thu, 26 Aug 2021 14:36:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629988615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AJYi8p48Mp7c2LVCCbbs7wQvg9zHNiToSE4X8bydgEo=;
+        b=c5oNUgjCTZvPBtu/VYNVNHRoCyXWQE25wn9JKR3rEk72OLcWdhBBCIaE5V02e63f2fbcwa
+        LMJoI4VZhYdTzoBmtUnTEYou6L56if3zXxcYnYv8pTMf55zMHcOpT/EDwJS6akNBEeNayV
+        LPepd/PtGZRD6JBv9FXmYNAojRpfTEg=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 47CA0A3B8D;
+        Thu, 26 Aug 2021 14:36:55 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 16:36:55 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>,
+        Santosh Sivaraj <santosh@fossix.org>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH] kernel/watchdog: change prototype of
+ watchdog_nmi_enable()
+Message-ID: <YSenB+Rr/4OV8EHQ@alley>
+References: <20210824031435.9664-1-kernelfans@gmail.com>
 MIME-Version: 1.0
-References: <20210826012626.1163705-1-isabellabdoamaral@usp.br> <20210826012626.1163705-3-isabellabdoamaral@usp.br>
-In-Reply-To: <20210826012626.1163705-3-isabellabdoamaral@usp.br>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 26 Aug 2021 16:36:34 +0200
-Message-ID: <CANpmjNPdP4OZGE3is4twths1fejCjZeEKAweVpgdqBUc=e59ww@mail.gmail.com>
-Subject: Re: [PATCH 2/6] test_hash.c: move common definitions to top of file
-To:     Isabella Basso <isabellabdoamaral@usp.br>
-Cc:     linux@sciencehorizons.net, geert@linux-m68k.org,
-        ferreiraenzoa@gmail.com, augusto.duraes33@gmail.com,
-        brendanhiggins@google.com, dlatypov@google.com,
-        davidgow@google.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824031435.9664-1-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Aug 2021 at 03:26, 'Isabella Basso' via KUnit Development
-<kunit-dev@googlegroups.com> wrote:
-> Keep function signatures minimal by making common definitions static.
-> This does not change any behavior.
+On Tue 2021-08-24 11:14:35, Pingfan Liu wrote:
+> The only caller does not handle the return value of
+> watchdog_nmi_enable(). If there is an error, it seems to be reported by
+> arch specific code.
+> 
+> Hence changing watchdog_nmi_enable() return value from int to void.
+> 
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
 
-This seems like an odd change; if I read it right it's changing the
-out-param passed to test_int_hash() to simply be static globals.
+Looks good to me:
 
-For one, it makes the code harder to read because now test_int_hash()
-is no longer "pure" (no global side-effects ... modulo printfs), and
-what was previously an out-param, is now a global.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Unfortunately this is poor style and likely to lead to hard-to-debug
-problems. One such problem is if suddenly you have multiple threads
-involved. While this is just a test and unlikely to be a problem, I
-would recommend not introducing global state carelessly.
-
-An alternative common idiom, where a set of variables are always
-passed around to other functions, is to introduce a struct and pass a
-pointer to it along.
-
-> Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
-> ---
->  lib/test_hash.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
->
-> diff --git a/lib/test_hash.c b/lib/test_hash.c
-> index d4b0cfdb0377..8bcc645a7294 100644
-> --- a/lib/test_hash.c
-> +++ b/lib/test_hash.c
-> @@ -23,6 +23,11 @@
->  #include <linux/stringhash.h>
->  #include <linux/printk.h>
->
-> +#define SIZE 256 /* Run time is cubic in SIZE */
-> +
-> +static u32 string_or; /* stores or-ed string output */
-> +static u32 hash_or[2][33] = { { 0, } }; /* stores or-ed hash output */
-
-These now use up memory for as long as this module is loaded, vs.
-before where it would only use up stack space. (For a test that's not
-a problem, but in non-test code it might.)
-
->  /* 32-bit XORSHIFT generator.  Seed must not be zero. */
->  static u32 __init __attribute_const__
->  xorshift(u32 seed)
-> @@ -66,7 +71,7 @@ fill_buf(char *buf, size_t len, u32 seed)
->   * recompile and re-test the module without rebooting.
->   */
->  static bool __init
-> -test_int_hash(unsigned long long h64, u32 hash_or[2][33])
-> +test_int_hash(unsigned long long h64)
->  {
->         int k;
->         u32 h0 = (u32)h64, h1, h2;
-> @@ -123,17 +128,15 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
->         return true;
->  }
->
-> -#define SIZE 256       /* Run time is cubic in SIZE */
-> -
->  static int __init
->  test_hash_init(void)
->  {
->         char buf[SIZE+1];
-> -       u32 string_or = 0, hash_or[2][33] = { { 0, } };
->         unsigned tests = 0;
->         unsigned long long h64 = 0;
->         int i, j;
->
-> +       string_or = 0;
-
-That's another problem with changes like this; now the compiler has no
-chance to warn you in case the variable is not initialized correctly.
-
-Also, I don't see string_or used anywhere else. Why make it global?
-If a later change would require that, it should say so in the commit
-message. But my guess is you can avoid all that by bundling everything
-up in a struct.
-
->         fill_buf(buf, SIZE, 1);
->
->         /* Test every possible non-empty substring in the buffer. */
-> @@ -161,7 +164,7 @@ test_hash_init(void)
->
->                         string_or |= h0;
->                         h64 = h64 << 32 | h0;   /* For use with hash_64 */
-> -                       if (!test_int_hash(h64, hash_or))
-> +                       if (!test_int_hash(h64))
->                                 return -EINVAL;
->                         tests++;
->                 } /* i */
-> --
-> 2.33.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20210826012626.1163705-3-isabellabdoamaral%40usp.br.
+Best Regards,
+Petr
