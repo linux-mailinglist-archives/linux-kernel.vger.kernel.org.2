@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6733F7F4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18CF3F7F50
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhHZAcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 20:32:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52406 "EHLO mail.kernel.org"
+        id S235078AbhHZAdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 20:33:39 -0400
+Received: from mga14.intel.com ([192.55.52.115]:52390 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231210AbhHZAcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 20:32:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2297610D0;
-        Thu, 26 Aug 2021 00:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629937880;
-        bh=XFk+aK01AY+R2dj58lCttstlbncJMKuBtfKozV0XaIk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QkYeFlxOalO8NtPJPM5RhBh8j7Vk2Zi/9UTqamt6lR1JmceRcWO1Uxcmj9AJYi2WL
-         BfXUFl6Lh4/+LO6SPiNnWNR0T08/oUuWRQccKiGhq40Bw0pX5zYDYYmZHRVgUZQju1
-         RYaIUmqxl1R6iWeI8/kYNwgVsw3GogsX9cX86tdiy7WCQI62kbTW6M10B9JTOTYmRE
-         ZXLUVEbFSyEmiP2/JTA8qRcwzE7PlzW5Vuhf3imFCMVDFjcGuD9nNy/6erFSpI0OWv
-         Z0YZmFtloHBVkgv7jaPurnVS4Tg6m5skjE085rnzXbw4M2kyZft8/o1Dwm55121Q2s
-         3WhmWQENq/tzA==
-Received: by mail-ed1-f50.google.com with SMTP id s25so1892283edw.0;
-        Wed, 25 Aug 2021 17:31:20 -0700 (PDT)
-X-Gm-Message-State: AOAM533Ph60AVBBCBURm0Vmxh9+OFMrTKbb4RyEmFdUx5g9WMOhfujrH
-        6uIMwRFrWvse1A1ynlxZGkffMv51gZSILjZL9Q==
-X-Google-Smtp-Source: ABdhPJxHrEFAQXvMGytASwC6d51UlxpmRysieIO6RqrSrlKKQl0Fvx1UuUCVLhd0YlH7mrdO+2L/kgf90DT6ck//90g=
-X-Received: by 2002:aa7:ca04:: with SMTP id y4mr1341608eds.162.1629937879396;
- Wed, 25 Aug 2021 17:31:19 -0700 (PDT)
+        id S231210AbhHZAdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 20:33:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="217358695"
+X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
+   d="scan'208";a="217358695"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 17:32:46 -0700
+X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
+   d="scan'208";a="527544344"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 17:32:44 -0700
+Subject: Re: [kbuild-all] Re: [smfrench-smb3-kernel:pr/65 143/143]
+ fs/ksmbd/smb2pdu.c:5640:6: warning: variable 'user_ns' is used uninitialized
+ whenever 'if' condition is true
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Steve French <stfrench@microsoft.com>
+References: <202108251550.SXFHPzdJ-lkp@intel.com>
+ <20210825082037.iuy5gndi4n2uyep7@wittgenstein>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <14249f7e-4ca3-c980-38ef-826c3381cb04@intel.com>
+Date:   Thu, 26 Aug 2021 08:32:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210825102632.601614-1-enric.balletbo@collabora.com> <20210825122613.v3.3.Ifec72a83f224b62f24cfc967edfe78c5d276b2e3@changeid>
-In-Reply-To: <20210825122613.v3.3.Ifec72a83f224b62f24cfc967edfe78c5d276b2e3@changeid>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 26 Aug 2021 08:31:08 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9anqUZ-um4bP8Gzf4HZT5+j+yVpTq6pQzESpamrGLM8Q@mail.gmail.com>
-Message-ID: <CAAOTY_9anqUZ-um4bP8Gzf4HZT5+j+yVpTq6pQzESpamrGLM8Q@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] dt-bindings: display: mediatek: add dsi reset
- optional property
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Eizan Miyamoto <eizan@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Rob Herring <robh@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210825082037.iuy5gndi4n2uyep7@wittgenstein>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Enric:
 
-Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2021=E5=B9=
-=B48=E6=9C=8825=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=886:26=E5=AF=AB=
-=E9=81=93=EF=BC=9A
->
-> Update device tree binding documentation for the dsi to add the optional
-> property to reset the dsi controller.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+On 8/25/21 4:20 PM, Christian Brauner wrote:
+> On Wed, Aug 25, 2021 at 03:14:01PM +0800, kernel test robot wrote:
+>> tree:   git://github.com/smfrench/smb3-kernel.git pr/65
+>> head:   4b499755e1024f97e75411920a404b357af6e153
+>> commit: 4b499755e1024f97e75411920a404b357af6e153 [143/143] ksmbd: fix lookup on idmapped mounts
+>> config: hexagon-randconfig-r041-20210824 (attached as .config)
+>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project d26000e4cc2bc65e207a84fa26cb6e374d60aa12)
+>> reproduce (this is a W=1 build):
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # https://github.com/smfrench/smb3-kernel/commit/4b499755e1024f97e75411920a404b357af6e153
+>>          git remote add smfrench-smb3-kernel git://github.com/smfrench/smb3-kernel.git
+>>          git fetch --no-tags smfrench-smb3-kernel pr/65
+>>          git checkout 4b499755e1024f97e75411920a404b357af6e153
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+> Thanks for the report but this is outdated and requires a patch that
+> sits in David Sterba's for-next tree. So this is safe to ignore.
+> Feels like this probably should only go to the authors, kbuild-all and
+> clang-built-linux lists similar to what the intel built bot does.
+> Otherwise this generates a lot of unneeded noise. Just my 2 cents.
+>
+> Christian
 
->
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
->
-> (no changes since v2)
->
-> Changes in v2:
-> - Added a new patch to describe the dsi reset optional property.
->
->  .../devicetree/bindings/display/mediatek/mediatek,dsi.txt   | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-dsi.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.t=
-xt
-> index 8238a86686be..3209b700ded6 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
-> @@ -19,6 +19,11 @@ Required properties:
->    Documentation/devicetree/bindings/graph.txt. This port should be conne=
-cted
->    to the input port of an attached DSI panel or DSI-to-eDP encoder chip.
->
-> +Optional properties:
-> +- resets: list of phandle + reset specifier pair, as described in [1].
-> +
-> +[1] Documentation/devicetree/bindings/reset/reset.txt
-> +
->  MIPI TX Configuration Module
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->
-> @@ -45,6 +50,7 @@ dsi0: dsi@1401b000 {
->         clocks =3D <&mmsys MM_DSI0_ENGINE>, <&mmsys MM_DSI0_DIGITAL>,
->                  <&mipi_tx0>;
->         clock-names =3D "engine", "digital", "hs";
-> +       resets =3D <&mmsys MT8173_MMSYS_SW0_RST_B_DISP_DSI0>;
->         phys =3D <&mipi_tx0>;
->         phy-names =3D "dphy";
->
-> --
-> 2.30.2
->
+Hi Christian,
+
+Thanks for the advice, we'll send the reports to the tree's owner (Steve 
+French) next time.
+
+Best Regards,
+Rong Chen
