@@ -2,109 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83D03F8FF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10D83F8FF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243561AbhHZU5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 16:57:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230125AbhHZU5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 16:57:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4BAB60FDA;
-        Thu, 26 Aug 2021 20:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630011379;
-        bh=kkWRiiADlno9wmE5ee4PEol8ApTDqXy3BKb1qSmxOUw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=iwF7sBUZJX8hBAiLlR1geRdpV6Wn+bPa29xxNlMqewb8z6ds6bRs4UgcY8kVyXYFZ
-         qXlzqBO+FGXlWJeEj2/1TBpG3L0ogSiyE6ZCnvOzptCEdOsE6JY4ozMEkJIowAmS/A
-         usBwZh11fDYbmfXcL6XBBA2v29KR+ZLIlcd0L36wsTFcgVRQhHtC72KsUYxgFqL824
-         VivT3hMfw4IgvZW8OQHGzUF874t/UHll1z7RaktzId2Voz7c3ORr83pQ492p/BAq9Z
-         PZ/wOHKYII7HTh+6TUmmf+buELMATWEIQ/lSeqQl0IkH+61eQOQXQGI7AlbAhLCDSb
-         DOF2NN/pbGM6g==
-Date:   Thu, 26 Aug 2021 15:56:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Marek =?iso-8859-1?Q?Marczykowski-G=F3recki?= 
-        <marmarek@invisiblethingslab.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v2] PCI/MSI: Skip masking MSI-X on Xen PV
-Message-ID: <20210826205617.GA3716609@bjorn-Precision-5520>
+        id S243582AbhHZU76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 16:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhHZU75 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 16:59:57 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D37AC061757;
+        Thu, 26 Aug 2021 13:59:09 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id e14so5004056qkg.3;
+        Thu, 26 Aug 2021 13:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ldGhthI++t3w6986XDZba6Q1yZRX4odOpIMvkvePfHc=;
+        b=OheyBCur9wHxyJUrnhNfW2lfxtb3kQ6W+jYCnrD/Bu07QjycyF9xZlAaegudPBLJDn
+         8IasTBBZUwesaV7XZh07vNgJiN8jrvVWJ8J4rQc75VV7OjbAXUBZZFZl8OoOa9x+RkH8
+         a+zqgpivSYpVXoh3UyUiiRzKCsjGNKsVSvHCjBkgBRHXqUcBxnzpvPN+/JSNzmMgk/Pr
+         j+jFRlarz83iekoCTYuz3n8xJHqVv0TduhQ+s2z85F+z3T1p0x0PIlmLjvbdPN1sPfZ1
+         4W1CTRqSEXOju5Kpnsp28Ty9GYmqdRlmEeiFCGCnXrSo6Fyedw0U0GsFQSsblkbUZtjz
+         +7oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ldGhthI++t3w6986XDZba6Q1yZRX4odOpIMvkvePfHc=;
+        b=r42gHwmPFkI3T3XN4PkDiRDMkA9H+6Q05S0ADO0wdUWewxKFtlSnHm2BfPfL0WRkTN
+         hcKgPBCu1ea/wsG/PJ+M/cxbvZMLtBZGkLujRQIAPVJLXpSfb/owcv80Xn1TnZB7Wdht
+         8BGfZ8srZ6JKojPn7pZulchVGX/6Xrb3RqG/+dRB5XcFTbB5TpF6cDLS0kxBNarNWdY6
+         XyhcuanfgnKIVjXaOBr+UKFuJlf3wkxxwv3BMqemHp45O0oHCJ+K//eWtKvqF+JYFzQT
+         GrQL/HiZwz8eLPn42y4mRj2JDXushy50/ilbo/zcn6JvnvHx4yMhXdxskfPzTcpJR1+7
+         ZvUg==
+X-Gm-Message-State: AOAM533Mqiu0Cuyspej28MCPpbJmP9G910MRl54U2Bbdb6D3uAiOH2Nt
+        GR8+U3FtuAsY/tNRH3L6AGHSZHDA4h5Lqg==
+X-Google-Smtp-Source: ABdhPJxrD+K1ALRaZQSDKJ72hjbpCHhEic6Csz/W3OUeeXf3irJ5comsp24peI48bMJIZwCal3yxRA==
+X-Received: by 2002:a37:61d5:: with SMTP id v204mr5747644qkb.308.1630011547957;
+        Thu, 26 Aug 2021 13:59:07 -0700 (PDT)
+Received: from localhost ([12.28.44.171])
+        by smtp.gmail.com with ESMTPSA id p22sm3327691qkj.16.2021.08.26.13.59.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 13:59:07 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 13:59:06 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrea Merello <andrea.merello@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 17/17] vsprintf: rework bitmap_list_string
+Message-ID: <YSgAmjvwscaRb8PT@yury-ThinkPad>
+References: <20210814211713.180533-1-yury.norov@gmail.com>
+ <20210814211713.180533-18-yury.norov@gmail.com>
+ <YSeh7SrwoMhWb8CO@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210826170342.135172-1-marmarek@invisiblethingslab.com>
+In-Reply-To: <YSeh7SrwoMhWb8CO@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 07:03:42PM +0200, Marek Marczykowski-Górecki wrote:
-> When running as Xen PV guest, masking MSI-X is a responsibility of the
-> hypervisor. Guest has no write access to relevant BAR at all - when it
-> tries to, it results in a crash like this:
+On Thu, Aug 26, 2021 at 04:15:09PM +0200, Petr Mladek wrote:
+> On Sat 2021-08-14 14:17:13, Yury Norov wrote:
+> > bitmap_list_string() is very ineffective when printing bitmaps with long
+> > ranges of set bits because it calls find_next_bit for each bit in the
+> > bitmap.  We can do better by detecting ranges of set bits.
+> > 
+> > In my environment, before/after is 943008/31008 ns.
+> > 
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > 
->     BUG: unable to handle page fault for address: ffffc9004069100c
->     #PF: supervisor write access in kernel mode
->     #PF: error_code(0x0003) - permissions violation
->     PGD 18f1c067 P4D 18f1c067 PUD 4dbd067 PMD 4fba067 PTE 80100000febd4075
->     Oops: 0003 [#1] SMP NOPTI
->     CPU: 0 PID: 234 Comm: kworker/0:2 Tainted: G        W         5.14.0-rc7-1.fc32.qubes.x86_64 #15
->     Workqueue: events work_for_cpu_fn
->     RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
->     Code: 2f 96 ff 48 89 44 24 28 48 89 c7 48 85 c0 0f 84 f6 01 00 00 45 0f b7 f6 48 8d 40 0c ba 01 00 00 00 49 c1 e6 04 4a 8d 4c 37 1c <89> 10 48 83 c0 10 48 39 c1 75 f5 41 0f b6 44 24 6a 84 c0 0f 84 48
->     RSP: e02b:ffffc9004018bd50 EFLAGS: 00010212
->     RAX: ffffc9004069100c RBX: ffff88800ed412f8 RCX: ffffc9004069105c
->     RDX: 0000000000000001 RSI: 00000000000febd4 RDI: ffffc90040691000
->     RBP: 0000000000000003 R08: 0000000000000000 R09: 00000000febd404f
->     R10: 0000000000007ff0 R11: ffff88800ee8ae40 R12: ffff88800ed41000
->     R13: 0000000000000000 R14: 0000000000000040 R15: 00000000feba0000
->     FS:  0000000000000000(0000) GS:ffff888018400000(0000) knlGS:0000000000000000
->     CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
->     CR2: ffff8000007f5ea0 CR3: 0000000012f6a000 CR4: 0000000000000660
->     Call Trace:
->      e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
->      e1000_probe+0x41f/0xdb0 [e1000e]
->      local_pci_probe+0x42/0x80
->     (...)
+> I like the patch. The new code is much easier to follow.
+> Feel free to use:
 > 
-> There is pci_msi_ignore_mask variable for bypassing MSI(-X) masking on Xen
-> PV, but msix_mask_all() missed checking it. Add the check there too.
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
 > 
-> Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+> Best Regards,
+> Petr
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Thanks Petr! The patch is already in the linux-next.
 
-> ---
-> Cc: xen-devel@lists.xenproject.org
-> 
-> Changes in v2:
-> - update commit message (MSI -> MSI-X)
-> ---
->  drivers/pci/msi.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> index e5e75331b415..3a9f4f8ad8f9 100644
-> --- a/drivers/pci/msi.c
-> +++ b/drivers/pci/msi.c
-> @@ -776,6 +776,9 @@ static void msix_mask_all(void __iomem *base, int tsize)
->  	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
->  	int i;
->  
-> +	if (pci_msi_ignore_mask)
-> +		return;
-> +
->  	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
->  		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
->  }
-> -- 
-> 2.31.1
-> 
+Andrew, Stephen, can you please append Petr's reviewed-by?
+
+Thanks,
+Yury
