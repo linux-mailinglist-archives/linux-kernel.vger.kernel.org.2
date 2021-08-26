@@ -2,143 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5983F8FBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 22:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7953F8FC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 22:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243568AbhHZUiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 16:38:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56265 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243550AbhHZUiT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 16:38:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630010251;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OkzbDwHntc2mOiZybPIdS6qrY0R5yvA3NCMKaJd6k+I=;
-        b=IUmNqNq50pFGqYVDCtwCMha8ZodhGue1gThOFghpZ8tf7UJCoosNUA6XlXHsppyJpUQkM2
-        VRwPRBLbr4AB3fwPq8MXBCtjLkbSfK2GznK5oRWSXv3bWEDwuqXG4tQfAJ2TaM6/RCqlQ/
-        z4ILYJYVoewBjAFtahcjr0Cnxvmw9YI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-UFt8a_lrNXuOJrYC8aFi7g-1; Thu, 26 Aug 2021 16:37:30 -0400
-X-MC-Unique: UFt8a_lrNXuOJrYC8aFi7g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1229760CE;
-        Thu, 26 Aug 2021 20:37:28 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7A13E60C04;
-        Thu, 26 Aug 2021 20:37:22 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 974A3416D8BC; Thu, 26 Aug 2021 17:37:18 -0300 (-03)
-Date:   Thu, 26 Aug 2021 17:37:18 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Christoph Lameter <cl@gentwo.de>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [patch V3 2/8] add prctl task isolation prctl docs and samples
-Message-ID: <20210826203718.GA177929@fuller.cnet>
-References: <20210824152423.300346181@fuller.cnet>
- <20210824152646.706875395@fuller.cnet>
- <20210826095958.GA908505@lothringen>
- <20210826121131.GA152063@fuller.cnet>
- <alpine.DEB.2.22.394.2108262111200.358100@gentwo.de>
+        id S243510AbhHZUpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 16:45:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:23983 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232115AbhHZUpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 16:45:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="278851957"
+X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
+   d="scan'208";a="278851957"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 13:44:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
+   d="scan'208";a="516929765"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Aug 2021 13:44:14 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mJMEP-0001hi-NP; Thu, 26 Aug 2021 20:44:13 +0000
+Date:   Fri, 27 Aug 2021 04:43:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/urgent] BUILD SUCCESS
+ ccf26483416a339c114409f6e7cd02abdeaf8052
+Message-ID: <6127fd00.rqAfV2oe7XAEDjwn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2108262111200.358100@gentwo.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 09:15:57PM +0200, Christoph Lameter wrote:
-> On Thu, 26 Aug 2021, Marcelo Tosatti wrote:
-> 
-> > Decided on a separate prctl because the inheritance control
-> > is not a feature itself: it acts on all features (or how task isolation
-> > features are inherited across fork/clone).
-> 
-> I am having a hard time imagening use cases for such a feature since I
-> usally see special code sections optimized to run without OS jitter and
-> not whole processes. AFAICT You would not want to have any of these on
-> because they cause performance regression if you must do syscalls related
-> to process startup and termination.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/urgent
+branch HEAD: ccf26483416a339c114409f6e7cd02abdeaf8052  perf/x86/amd/power: Assign pmu.module
 
-The documentation has:
+elapsed time: 724m
 
-+==================
-+Userspace support
-+==================
-+
-+Task isolation is divided in two main steps: configuration and activation.
-+
-+Each step can be performed by an external tool or the latency sensitive
-+application itself. util-linux contains the "chisol" tool for this
-+purpose.
-+
-+This results in three combinations:
-+
-+1. Both configuration and activation performed by the
-+latency sensitive application.
-+Allows fine grained control of what task isolation
-+features are enabled and when (see samples section below).
-+
-+2. Only activation can be performed by the latency sensitive app
-+(and configuration performed by chisol).
-+This allows the admin/user to control task isolation parameters,
-+and applications have to be modified only once.
-+
-+3. Configuration and activation performed by an external tool.
-+This allows unmodified applications to take advantage of
-+task isolation. Activation is performed by the "-a" option
-+of chisol.
+configs tested: 99
+configs skipped: 93
 
-The util-linux patch changelog has:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-util-linux: add chisol tool to configure task isolation
-  
-Add chisol tool to configure task isolation. See chisol -h
-for details.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210826
+s390                          debug_defconfig
+powerpc                 mpc8272_ads_defconfig
+arc                            hsdk_defconfig
+arm                           h5000_defconfig
+arm                            mps2_defconfig
+powerpc                 mpc836x_mds_defconfig
+riscv                    nommu_k210_defconfig
+sh                          landisk_defconfig
+arm                           corgi_defconfig
+sh                ecovec24-romimage_defconfig
+mips                            e55_defconfig
+arm                        oxnas_v6_defconfig
+sh                          sdk7780_defconfig
+mips                          malta_defconfig
+arm                          ep93xx_defconfig
+ia64                             alldefconfig
+powerpc                        icon_defconfig
+arm                         shannon_defconfig
+arm                             pxa_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                      pmac32_defconfig
+mips                        vocore2_defconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20210826
+x86_64               randconfig-a006-20210826
+x86_64               randconfig-a001-20210826
+x86_64               randconfig-a003-20210826
+x86_64               randconfig-a004-20210826
+x86_64               randconfig-a002-20210826
+i386                 randconfig-a006-20210826
+i386                 randconfig-a001-20210826
+i386                 randconfig-a002-20210826
+i386                 randconfig-a005-20210826
+i386                 randconfig-a003-20210826
+i386                 randconfig-a004-20210826
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-For example, to launch a version of oslat that activates
-task isolation:
+clang tested configs:
+x86_64               randconfig-a014-20210826
+x86_64               randconfig-a015-20210826
+x86_64               randconfig-a016-20210826
+x86_64               randconfig-a013-20210826
+x86_64               randconfig-a012-20210826
+x86_64               randconfig-a011-20210826
+i386                 randconfig-a011-20210826
+i386                 randconfig-a016-20210826
+i386                 randconfig-a012-20210826
+i386                 randconfig-a014-20210826
+i386                 randconfig-a013-20210826
+i386                 randconfig-a015-20210826
+hexagon              randconfig-r041-20210826
+hexagon              randconfig-r045-20210826
+riscv                randconfig-r042-20210826
+s390                 randconfig-r044-20210826
 
-chisol -q vmstat_sync -I conf ./oslat -f 1 -c 5 -D 5m
-
--q vmstat_sync: enable quiescing of per-CPU vmstats 
--I conf: inherit task isolation configuration.
-
-====
-
-So you can _configure_ the parameters of task isolation outside 
-your application, but activation (just before the realtime loop),
-can be done inside it (which requires modification of the 
-application). See the oslat/cyclictest patches.
-
-So to answer your question: chisol allows task isolation to be
-configured and activated externally from a latency sensitive app 
-(which at this moment means every system call, after activation,
-will sync the vmstats on return to userspace... which obviously
-slow things down). But you can then run unmodified applications
-(while paying the cost of slower startup times).
-
-Activation of different features before exec'ing a new application
-will of course depend on what the feature does...
-
-> Since we are adding docs: Could we have some sample use cases for
-> when these features are useful?
-
-There is one sample at samples/task_isolation/task_isol_userloop.c,
-do you mean more samples would be useful ? (there are two i know of:
-the one you mentioned and the one Thomas mentioned).
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
