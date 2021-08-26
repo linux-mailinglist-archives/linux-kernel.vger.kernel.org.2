@@ -2,96 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81A03F90E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F903F90EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243730AbhHZXT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 19:19:59 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:36022 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234555AbhHZXT5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 19:19:57 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8A5A420B861E;
-        Thu, 26 Aug 2021 16:19:08 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8A5A420B861E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1630019949;
-        bh=TNk71oULKpnJVXpIAkpW4dxCRZZFfi0WY/GV0rQ4Blw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sDrPH0DIYqzWljDeynFQ2cHN8Shft6uXuyS4L8KXZr4/VtcLamVAxWh5cQW0bRTzZ
-         jRY4voAsLQE2MfrL7Lxe/Oqs/DQ0JxZFajO2NvhnOok99Bv9D9JJvywU8FT7g7p6vD
-         vtYq3ii0I1E1jMYUrrV4jbhwRbx90qfjp7fFyjq4=
-Subject: Re: [RFC PATCH v8 2/4] arm64: Reorganize the unwinder code for better
- consistency and maintenance
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
- <20210812190603.25326-1-madvenka@linux.microsoft.com>
- <20210812190603.25326-3-madvenka@linux.microsoft.com>
- <YSe3WogpFIu97i/7@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <ecf0e4d1-7c47-426e-1350-fe5dc8bd88a5@linux.microsoft.com>
-Date:   Thu, 26 Aug 2021 18:19:07 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YSe3WogpFIu97i/7@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S243671AbhHZXZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 19:25:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231251AbhHZXZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 19:25:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D476260E8B;
+        Thu, 26 Aug 2021 23:24:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630020253;
+        bh=vLbg/rOKXJxRQLaFHT5woV57pEypVhgBxoCpcb5Lzlg=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=iDNj0DtcrqzTaSOsN1GRUllGceWEce5c1JYSKuhVipTHim6rubdMz5jqna0S6yEIf
+         bm4bkYgpIuC/J4WXROCavLX4kJZf4ftpom6bw6OG8JwAmGBl+yKBV3oQZt70yhZPpe
+         80UpAULCFoLRzEMYy/4GdfZAcQaUUpp9ZsBsJ82sSobJAgIUKFKDRcDybMxU0/1Sj7
+         XV5SHZJUFIKviKS0xGeAsMDoNfIAxtVWyC7HvNIThCDQlRe1OTBzZJTPJTHwuUiUIj
+         8+BIjmLUsTh+oRYjiJOlk+gO1DUC3rmvoEm3e0VttTjVN5RaAHvd82pNR4ialjRYs1
+         SUe67zRjeSz0w==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id F279027C0054;
+        Thu, 26 Aug 2021 19:24:11 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute6.internal (MEProxy); Thu, 26 Aug 2021 19:24:11 -0400
+X-ME-Sender: <xms:myIoYZo4fAo3elsjBHy8-cTiskHxe0-bkPgFhCRM_Wt8U2sMfByQxA>
+    <xme:myIoYbqRrBNSQ1-qwhBCfuVKjyjXwnAoOzfG77nL_Xsk1QNYYUgejRVfjw7W_UATJ
+    1Rp0w89CrrqhmnPQ7U>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduvddgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpeegjefghfdtledvfeegfeelvedtgfevkeeugfekffdvveeffeetieeh
+    ueetveekfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:myIoYWOAPwZP0E1PVxP0KwmlFHtTf14kccot6cT81Yk1NIz7pGc75A>
+    <xmx:myIoYU4IijAVcMpV9qlR31L5vM59iko-7SciVOgQVZuFozWOfwLjiA>
+    <xmx:myIoYY5hZzZHDGH48xyrIGISNqscX_Q2xzvKVZQ3T2dRxFn9Pao23Q>
+    <xmx:myIoYatHq5kzxfR9Lpwegp7VLp9yiPw2WdLUVRYncaFuMhJgDRk3Ye5kKCk>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E7336A0378F; Thu, 26 Aug 2021 19:24:10 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1125-g685cec594c-fm-20210825.001-g685cec59
+Mime-Version: 1.0
+Message-Id: <959b3e65-97c9-4e00-87c5-f4a31c6739de@www.fastmail.com>
+In-Reply-To: <CABCJKueE=_WCLkVDmPss-Bo-1VWaX7W6SSNx33rQCO+eEv_Lzg@mail.gmail.com>
+References: <20210823171318.2801096-1-samitolvanen@google.com>
+ <20210823171318.2801096-8-samitolvanen@google.com>
+ <b2b0247a-39ad-097b-8fab-023ee378c806@kernel.org>
+ <CABCJKueE=_WCLkVDmPss-Bo-1VWaX7W6SSNx33rQCO+eEv_Lzg@mail.gmail.com>
+Date:   Thu, 26 Aug 2021 16:23:50 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Sami Tolvanen" <samitolvanen@google.com>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Josh Poimboeuf" <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        "Sedat Dilek" <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_07/14]_x86:_Use_an_opaque_type_for_functions_not?=
+ =?UTF-8?Q?_callable_from_C?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 8/26/21 10:46 AM, Mark Brown wrote:
-> On Thu, Aug 12, 2021 at 02:06:01PM -0500, madvenka@linux.microsoft.com wrote:
+On Thu, Aug 26, 2021, at 3:11 PM, Sami Tolvanen wrote:
+> On Thu, Aug 26, 2021 at 9:54 AM Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > On 8/23/21 10:13 AM, Sami Tolvanen wrote:
+> > > The kernel has several assembly functions that are not directly callable
+> > > from C. Use an opaque type for these function prototypes to make misuse
+> > > harder, and to avoid the need to annotate references to these functions
+> > > for Clang's Control-Flow Integrity (CFI).
+> >
+> > You have:
+> >
+> > typedef const u8 *asm_func_t;
+> >
+> > This is IMO a bit confusing.  asm_func_t like this is an *address* of a
+> > function, not a function.
+> >
+> > To be fair, C is obnoxious, but I think this will lead to more confusion
+> > than is idea.  For example:
+> >
+> > > -extern void __fentry__(void);
+> > > +DECLARE_ASM_FUNC_SYMBOL(__fentry__);
+> >
+> > Okay, __fentry__ is the name of a symbol, and the expression __fentry__
+> > is a pointer (or an array that decays to a pointer, thanks C), which is
+> > at least somewhat sensible.  But:
+> >
+> > > -extern void (*paravirt_iret)(void);
+> > > +extern asm_func_t paravirt_iret;
+> >
+> > Now paravirt_iret is a global variable that points to an asm func.  I
+> > bet people will read this wrong and, worse, type it wrong.
+> >
+> > I think that there a couple ways to change this that would be a bit nicer.
+> >
+> > 1. typedef const u8 asm_func_t[];
+> >
+> > This is almost nice, but asm_func_t will still be accepted as a function
+> > argument, and the automatic decay rules will probably be confusing.
+> >
+> > 2. Rename asm_func_t to asm_func_ptr.  Then it's at least a bit more clear.
+> >
+> > 3. Use an incomplete struct:
+> >
+> > struct asm_func;
+> >
+> > typedef struct asm_func asm_func;
+> >
+> > extern asm_func some_func;
+> >
+> > void *get_ptr(void)
+> > {
+> >     return &some_func;
+> > }
+> >
+> > No macros required, and I think it's quite hard to misuse this by
+> > accident.  asm_func can't be passed as an argument or used as a variable
+> > because it has incomplete type, and there are no arrays so the decay
+> > rules aren't in effect.
 > 
->> Renaming of unwinder functions
->> ==============================
-> 
->> Rename unwinder functions to unwind_*() similar to other architectures
->> for naming consistency. More on this below.
-> 
-> This feels like it could probably do with splitting up a bit for
-> reviewability, several of these headers you've got in the commit
-> logs look like they could be separate commits.  Splitting things
-> up does help with reviewability, having only one change to keep
-> in mind at once is a lot less cognative load.
-> 
->> Replace walk_stackframe() with unwind()
->> =======================================
->>
->> walk_stackframe() contains the unwinder loop that walks the stack
->> frames. Currently, start_backtrace() and walk_stackframe() are called
->> separately. They should be combined in the same function. Also, the
->> loop in walk_stackframe() should be simplified and should look like
->> the unwind loops in other architectures such as X86 and S390.
-> 
-> This definitely seems like a separate change.
+> I considered using an incomplete struct, but that would require an
+> explicit '&' when we take the address of these symbols, which I
+> thought would be unnecessary churn. Unless you strongly prefer this
+> one, I'll go with option 2 and rename asm_func_t to asm_func_ptr in
+> v3.
 > 
 
-OK. I will take a look at splitting the patch.
+Do you have a sense for how many occurrences there are that would need an &?
 
-I am also requesting a review of the sym_code special section approach.
-I know that you have already approved it. I wanted one more vote. Then,
-I can remove the "RFC" word from the title and then it will be just a
-code review of the patch series.
-
-Mark Rutland,
-
-Do you also approve the idea of placing unreliable functions (from an unwind
-perspective) in a special section and using that in the unwinder for
-reliable stack trace?
-
-Thanks.
-
-Madhavan
+> Sami
+> 
