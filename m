@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D28B3F8806
+	by mail.lfdr.de (Postfix) with ESMTP id B64563F8807
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242539AbhHZMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:52:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59848 "EHLO mail.kernel.org"
+        id S242568AbhHZMwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:52:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237292AbhHZMw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:52:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAD8060F39;
-        Thu, 26 Aug 2021 12:51:41 +0000 (UTC)
+        id S242551AbhHZMwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 08:52:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C4196103E;
+        Thu, 26 Aug 2021 12:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629982302;
-        bh=1+Q+7zZDJekdL7Sry9FDpUZ3p6I+koaJOsMtC+fWF3E=;
+        s=k20201202; t=1629982305;
+        bh=yl6Q4PT2hwmFvxlCQJtB/8ICwpoMGDhQhxIEcB4UTMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KRfsTT9HTbO59SN5m1PULDQIja7TDoBpO9GRqL9w4uo/VaXt5j7VF3pKTII/LkG1F
-         eBVgUUEMHwu4+Fgipnnz2yemdFjKYbtxZ4zJWuDFQAkA+als7rQirpi3hSgUmy8Bfa
-         Qx9y2U1D+IkYE3hvsrCgtwYs7pVV6/GvAo67TcZPsjEL3YWBY+fp2f+W100pxRX7VD
-         NyVJZ2cdhhJ0WpQrLF404tkoU64aHSnurEo38NXvqwxjbSkMbuutvVu9r7fiNf85Cz
-         tm3FA2w+zK6/iVgziZVf5fQaeN0lqIREkaygFirT2Owo0r2y8EN97q7QWIZDuP3dda
-         Me0OnAd8MJrWA==
+        b=Qm+TOzSDy8dgKN1oLULEGtxQ1UzplZXCTKdvEFzLrYrp/IvgRfnCLA2tVJw+zAU4A
+         qTjhZi0fVaSSOmUjcxApY0xj+k/y8+2U/B1vcejswAdcj+KoWatuSYdQBONat60cH5
+         YG6ZF3GFgDsAsd1WIp/ihqhB8d1p7Q54cZySpDjl8tAYZ+SV92S1f5L/SExXx2+Rqu
+         NJCogjCVsQlbHuVxPIBJUrqrw5jel6PGH3mz9ZwHhhkXMpIh4i7ez30jYdaW88A804
+         9Ua1dht+gh3OhlYlds9DGsCcay/78Os60OPx1W5HkEu+nFg1/1KuwhoVB2QXlpE51E
+         Ki/JUtvCUt8Tw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        linux-spi@vger.kernel.org,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Luting Guo <luting.guo@unisoc.com>
-Subject: Re: [PATCH V2 0/3] Add sprd ADI r3 support
-Date:   Thu, 26 Aug 2021 13:51:08 +0100
-Message-Id: <162998226397.33692.3511107237485346327.b4-ty@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Lee Jones <lee.jones@linaro.org>, Biwen Li <biwen.li@nxp.com>,
+        Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: (subset) [PATCH 0/2] Use raw spinlocks in the ls-extirq driver
+Date:   Thu, 26 Aug 2021 13:51:09 +0100
+Message-Id: <162998211486.33598.9715111275111133802.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210825065931.2111159-1-zhang.lyra@gmail.com>
-References: <20210825065931.2111159-1-zhang.lyra@gmail.com>
+In-Reply-To: <20210825205041.927788-1-vladimir.oltean@nxp.com>
+References: <20210825205041.927788-1-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -46,30 +47,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021 14:59:28 +0800, Chunyan Zhang wrote:
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Wed, 25 Aug 2021 23:50:39 +0300, Vladimir Oltean wrote:
+> The ls-extirq irqchip driver accesses regmap inside its implementation
+> of the struct irq_chip :: irq_set_type method, and currently regmap
+> only knows to lock using normal spinlocks. But the method above wants
+> raw spinlock context, so this isn't going to work and triggers a
+> "[ BUG: Invalid wait context ]" splat.
 > 
-> This patchset adds new ADI version (r3) support which used on sc9863 and
-> some other Unisoc's SoCs.
-> 
-> since v1:
-> * Address comments from Rob.
-> - Rewrote schema for 'sprd,hw-channels' and hwlocks.
+> The best we can do given the arrangement of the code is to patch regmap
+> and the syscon driver: regmap to support raw spinlocks, and syscon to
+> request them on behalf of its ls-extirq consumer.
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
 Thanks!
 
-[1/3] spi: sprd: Add ADI r3 support
-      commit: 3b66ca9783d1d1b7be7bf41e8934ca2eaf50a9c0
-[2/3] dt-bindings: spi: Convert sprd ADI bindings to yaml
-      (no commit info)
-[3/3] dt-bindings: spi: add sprd ADI for sc9863 and ums512
-      (no commit info)
+[1/2] regmap: teach regmap to use raw spinlocks if requested in the config
+      commit: 67021f25d95292d285dd213c58401642b98eaf24
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
