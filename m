@@ -2,117 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F453F90C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7460D3F90C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243838AbhHZWeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 18:34:21 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34806 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243830AbhHZWeU (ORCPT
+        id S243796AbhHZWjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 18:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243753AbhHZWjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 18:34:20 -0400
-Date:   Thu, 26 Aug 2021 22:33:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630017210;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ueYcKMjKqWc2jkgbgBjNJJRDkwkVL9Ry3yP8oZkxo18=;
-        b=32hQDMgXiq8awb9Q+9EbRxHr/MQ8y+jxZCxBhjXMhubQ6CFdRhxv0qE8CkNfzs/88VL/dv
-        3gmJL0Lyj1MX0Jl6Orxjea7Fsxwtugkqd8E1mnBhb/cudiCv2NcrSRyzBivCocCruYYz5m
-        83BJmCXl0IGhgrJH/xUI0D7ABnnNkFbF8EsjoQGKPpnQmx3gXlKAv/YAmcn3rl8unATuou
-        m/Mw1nDDpBE2BqIrHNSGFhRtc4Rh78arYF2O58OHl0s/E287wms3+jUAJWpZ9aYNbai3Le
-        Lx05DHj4GY6acis7yyTgnMuKcXEigrGlLO709ipy0iwKmPfsp+ZgMl1lQ8w38w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630017210;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ueYcKMjKqWc2jkgbgBjNJJRDkwkVL9Ry3yP8oZkxo18=;
-        b=J3dG6DYzL4s9pYScz4v8FD5D4rMzDe/JSX5NOuuP4IhqclADBQEHu9uICjeaezh7tz2Bwt
-        MqULztrYvheuSIDw==
-From:   tip-bot2 for Marek =?utf-8?q?Marczykowski-G=C3=B3recki?= 
-        <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] PCI/MSI: Skip masking MSI-X on Xen PV
-Cc:     marmarek@invisiblethingslab.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210826170342.135172-1-marmarek@invisiblethingslab.com>
-References: <20210826170342.135172-1-marmarek@invisiblethingslab.com>
+        Thu, 26 Aug 2021 18:39:09 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D5BC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 15:38:21 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id x16so1043535pll.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 15:38:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5oWRZN7Q/F2Ql6WdQHGzHjQZ7h58UYmf2jucjZtZOa0=;
+        b=TqqCLWzBog4EQCnIlkUaABLF4mvq+06MUzLuPO3zag6b1aAiFGCqg5bwfzAm5QpDwA
+         6TZv8WyrcBvpUzc1UkxdEq/HHCcv2PyYyy1S772PFeME2VkUiex/cglNoudFdx/b9u77
+         9YkZkC05kdhw98ahKecU9RbQdCVYkVbpcln6UbuHbARe+T7Z5V9f3+S44DN0H9yjUvzf
+         LPgndb/pIaiuT1nMsAm7cZkIyrHYsMTjgXWbrbBclJsBTT9/gbwSlheCr7O/uL4oSRHq
+         QOytUGXduGFtCqVD/MfYbS/RxqYa87fK9o1JllN0n9eFe0vwteXItkRSbLFB/Fw7Lcus
+         CEHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5oWRZN7Q/F2Ql6WdQHGzHjQZ7h58UYmf2jucjZtZOa0=;
+        b=RG3CkxQGE0b6a4uSEPGkNXNhr6/6UWTNgDwAMXjLJ9MGcRpMUQD8HNnVjgvmzxRV3S
+         qDRSp6Kj4u61aZ1pGZN0a89F3VFwY+wf8dWwwBDdxo3sx5VB1gzWRjxOcB2N0E3roQp0
+         FOYEUxa9iIa6IdTLThXlU/5wES9QeR8nrGUpyd37FEr71EB/q7z8kQSWsKwXeB6ALU3r
+         U5wcEEjBbv2nWo95aDotE+SkylkqLjIEGkGlaoqNE5sdSzqKPISxA9Qz2WFngnHQyUcM
+         7P4f5/yicmbmDlhp64rNhjaeVeAslcLu+PoRBHM7Awr7sCUnVTtzjkA871RUyfKEi9K0
+         GzpA==
+X-Gm-Message-State: AOAM530wgsiN1gYa05C9WM9qrr/pX5E75rqXoPMulWioMsl0KJdFktNB
+        LyNQ10kBVzoz0C8nCTAUKhhOKn2AZuw7UfFa
+X-Google-Smtp-Source: ABdhPJyL7zNA/CU0/35WOSVb0ekGEAD/Nr4Y7bhWnUrsKycz26Hy5QSCRJH5ZOuJ2LVT1919LW5XKw==
+X-Received: by 2002:a17:90a:6d47:: with SMTP id z65mr19175597pjj.62.1630017500566;
+        Thu, 26 Aug 2021 15:38:20 -0700 (PDT)
+Received: from ?IPv6:2600:380:4910:164a:b6f3:b6f:f897:c2aa? ([2600:380:4910:164a:b6f3:b6f:f897:c2aa])
+        by smtp.gmail.com with ESMTPSA id pj14sm3785089pjb.35.2021.08.26.15.38.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 15:38:20 -0700 (PDT)
+Subject: Re: [PATCH] drivers/cdrom: improved ioctl for media change detection
+To:     Lukas Prediger <lumip@lumip.de>
+Cc:     linux-kernel@vger.kernel.org
+References: <20210805194417.12439-1-lumip@lumip.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6d6c533d-465e-33ee-5801-cb7ea84924a8@kernel.dk>
+Date:   Thu, 26 Aug 2021 16:38:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <163001720943.25758.17463061644086046608.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210805194417.12439-1-lumip@lumip.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+On 8/5/21 1:44 PM, Lukas Prediger wrote:
+> The current implementation of the CDROM_MEDIA_CHANGED ioctl relies on
+> global state, meaning that only one process can detect a disc change
+> while the ioctl call will return 0 for other calling processes afterwards
+> (see bug 213267 ).
+> 
+> This introduces a new cdrom ioctl, CDROM_TIMED_MEDIA_CHANGE, that
+> works by maintaining a timestamp of the last detected disc change instead
+> of a boolean flag: Processes calling this ioctl command can provide
+> a timestamp of the last disc change known to them and receive
+> an indication whether the disc was changed since then and the updated
+> timestamp.
+> 
+> I considered fixing the buggy behavior in the original
+> CDROM_MEDIA_CHANGED ioctl but that would require maintaining state
+> for each calling process in the kernel, which seems like a worse
+> solution than introducing this new ioctl.
+> 
+> Signed-off-by: Lukas Prediger <lumip@lumip.de>
+> ---
+> This is my first patch sent to the kernel and I followed the recommended
+> process as closely as I could. If I misstepped somewhere, please let me know.
+> I also tried to find a mailing list more specific to the problem but was unable,
+> please inform me if there is one where this should be sent instead.
+> 
+> Finally, I wasn't sure whether/how to add my name to the updated docs
+> and if I should update the date on them (there have been some recent commits
+> that did not result in credits given to the commit author or updating
+> the dates in the docs, but those did not add any new content either), so
+> info in the most appropriate way would be welcome.
 
-Commit-ID:     1a519dc7a73c977547d8b5108d98c6e769c89f4b
-Gitweb:        https://git.kernel.org/tip/1a519dc7a73c977547d8b5108d98c6e769c=
-89f4b
-Author:        Marek Marczykowski-G=C3=B3recki <marmarek@invisiblethingslab.c=
-om>
-AuthorDate:    Thu, 26 Aug 2021 19:03:42 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 27 Aug 2021 00:27:15 +02:00
+Thanks for sending in the patch, appologies it's taken so long to get a
+response. CDROM isn't really actively maintained much these days,
+unfortunately. Should get a new maintainer.
 
-PCI/MSI: Skip masking MSI-X on Xen PV
+Anyway, for this patch, few comments inline.
 
-When running as Xen PV guest, masking MSI-X is a responsibility of the
-hypervisor. The guest has no write access to the relevant BAR at all - when
-it tries to, it results in a crash like this:
 
-    BUG: unable to handle page fault for address: ffffc9004069100c
-    #PF: supervisor write access in kernel mode
-    #PF: error_code(0x0003) - permissions violation
-    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
-     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
-     e1000_probe+0x41f/0xdb0 [e1000e]
-     local_pci_probe+0x42/0x80
-    (...)
+> diff --git a/Documentation/cdrom/cdrom-standard.rst b/Documentation/cdrom/cdrom-standard.rst
+> index 5845960ca382..8b219ba9b427 100644
+> --- a/Documentation/cdrom/cdrom-standard.rst
+> +++ b/Documentation/cdrom/cdrom-standard.rst
+> @@ -3,9 +3,10 @@ A Linux CD-ROM standard
+>  =======================
+>  
+>  :Author: David van Leeuwen <david@ElseWare.cistron.nl>
+> -:Date: 12 March 1999
+> +:Date: 5 August 2021
+>  :Updated by: Erik Andersen (andersee@debian.org)
+>  :Updated by: Jens Axboe (axboe@image.dk)
+> +:Updated by: Lukas Prediger (lumip@lumip.de)
 
-The recently introduced function msix_mask_all() does not check the global
-variable pci_msi_ignore_mask which is set by XEN PV to bypass the masking
-of MSI[-X] interrupts.
+Drop these changes, this is from a time from before git and revision
+history, no need to update them further.
 
-Add the check to make this function XEN PV compatible.
+> diff --git a/Documentation/userspace-api/ioctl/cdrom.rst b/Documentation/userspace-api/ioctl/cdrom.rst
+> index 3b4c0506de46..59305d04d034 100644
+> --- a/Documentation/userspace-api/ioctl/cdrom.rst
+> +++ b/Documentation/userspace-api/ioctl/cdrom.rst
+> @@ -3,8 +3,9 @@ Summary of CDROM ioctl calls
+>  ============================
+>  
+>  - Edward A. Falk <efalk@google.com>
+> +- Lukas Prediger <lumip@lumip.de>
+>  
+> -November, 2004
+> +August, 2021
 
-Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
-Signed-off-by: Marek Marczykowski-G=C3=B3recki <marmarek@invisiblethingslab.c=
-om>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210826170342.135172-1-marmarek@invisiblethi=
-ngslab.com
----
- drivers/pci/msi.c | 3 +++
- 1 file changed, 3 insertions(+)
+Ditto
 
-diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index e5e7533..3a9f4f8 100644
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -776,6 +776,9 @@ static void msix_mask_all(void __iomem *base, int tsize)
- 	u32 ctrl =3D PCI_MSIX_ENTRY_CTRL_MASKBIT;
- 	int i;
-=20
-+	if (pci_msi_ignore_mask)
-+		return;
-+
- 	for (i =3D 0; i < tsize; i++, base +=3D PCI_MSIX_ENTRY_SIZE)
- 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
- }
+> diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
+> index feb827eefd1a..af0721c96e06 100644
+> --- a/drivers/cdrom/cdrom.c
+> +++ b/drivers/cdrom/cdrom.c
+> @@ -344,6 +344,12 @@ static void cdrom_sysctl_register(void);
+>  
+>  static LIST_HEAD(cdrom_list);
+>  
+> +static void signal_media_change(struct cdrom_device_info *cdi)
+> +{
+> +	cdi->mc_flags = 0x3; /* set media changed bits, on both queues */
+> +	cdi->last_media_change_time = ktime_get_mono_fast_ns();
+> +}
+
+I'd just use jiffies for this, it's not really a case of something that
+needs a fine grained clock source. That'll give you 1-10ms resolution,
+which should be more than adequate for this. Then use jiffies_to_msecs()
+and make the API be in miliseconds.
+
+> @@ -2391,6 +2397,46 @@ static int cdrom_ioctl_media_changed(struct cdrom_device_info *cdi,
+>  	return ret;
+>  }
+>  
+> +/*
+> + * Media change detection with timing information.
+> + *
+> + * arg is a pointer to a cdrom_timed_media_change_info struct.
+> + * arg->last_media_change may be set by calling code to signal
+> + * the timestamp of the last known media change (by the caller).
+> + * Upon successful return, ioctl call will set arg->last_media_change
+> + * to the latest media change timestamp known by the kernel/driver
+> + * and set arg->has_changed to 1 if that timestamp is more recent
+> + * than the timestamp set by the caller.
+> + */
+> +static int cdrom_ioctl_timed_media_change(struct cdrom_device_info *cdi,
+> +		unsigned long arg)
+> +{
+> +	int ret;
+> +	struct cdrom_timed_media_change_info __user *info;
+> +	struct cdrom_timed_media_change_info tmp_info;
+> +
+> +	if (!CDROM_CAN(CDC_MEDIA_CHANGED))
+> +		return -ENOSYS;
+> +
+> +	info = (struct cdrom_timed_media_change_info __user *)arg;
+> +	cd_dbg(CD_DO_IOCTL, "entering CDROM_TIMED_MEDIA_CHANGE\n");
+> +
+> +	ret = cdrom_ioctl_media_changed(cdi, CDSL_CURRENT);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (copy_from_user(&tmp_info, info, sizeof(tmp_info)) != 0)
+> +		return -EFAULT;
+> +
+> +	tmp_info.has_changed = (tmp_info.last_media_change < cdi->last_media_change_time);
+
+If you make the jiffies change, you can use time_before() etc on these
+which avoids the wrap.
+
+> @@ -295,6 +297,19 @@ struct cdrom_generic_command
+>  	};
+>  };
+>  
+> +/* This struct is used by CDROM_TIMED_MEDIA_CHANGE */
+> +struct cdrom_timed_media_change_info
+> +{
+> +	__u64   last_media_change;	/* Timestamp of the last detected media
+> +					 * change. May be set by caller, updated
+> +					 * upon successful return of ioctl.
+> +					 */
+> +	__u8    has_changed;		/* Set to 1 by ioctl if last detected media
+> +					 * change was more recent than
+> +					 * last_media_change set by caller.
+> +					 */
+> +};
+
+The struct layout should be modified such that there are no holes or
+padding in it. Probably just make the has_changed a flags thing, and
+make it u64 as well. Then you can define bit 0 to be HAS_CHANGED, and
+that leaves you room to add more flags in the future. Though the latter
+probably isn't much of a concern here, but...
+
+-- 
+Jens Axboe
+
