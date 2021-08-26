@@ -2,178 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC1D3F8B45
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A973F8B4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242962AbhHZPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
+        id S242995AbhHZPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243008AbhHZPoW (ORCPT
+        with ESMTP id S231732AbhHZPpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:44:22 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78715C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:43:34 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id q17so5363290edv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:43:34 -0700 (PDT)
+        Thu, 26 Aug 2021 11:45:15 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDADC061757;
+        Thu, 26 Aug 2021 08:44:28 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id x10-20020a056830408a00b004f26cead745so4045151ott.10;
+        Thu, 26 Aug 2021 08:44:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RTmjjgKNf1oCjSw/UGsuRv5cqlu6x5zYZlIgXT+yaLw=;
-        b=lJrbCB4ysWZEZarm93Wi761yWOa7QX6uuPO+ZLMF/GnkYGg5Uwp0Yomk0Vg6y9ZJk/
-         CRv9GBrp1fe2U8X2Rbq7nSiGL8GFkJolMCEvPTCwFAazvpdoFU6mMyK8w126BPWiDmWD
-         g9RlrtPyMYB/J8vrYRvtMz6KEebkG0SJl6C+g4MaU/w7FZezv4EHltZDtTrw1l1+57v+
-         fjjRqAwBwezlB1Copa/4O+ril4Hnv6xsaMxx2am8WnREGpmDWnzl+o3kXWakNPKo5Kzf
-         IVmBZjSnVl4BckAjMG/4R66jaPA5lCTBKdLmpFu07MnEfnJSrs+95sc2uhl2Fy8WDoG7
-         jbjg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9CilpbCdLqDwsRtt52+ILqW2aW6JejKoBnd1mtCylR0=;
+        b=FzcNQfkt2j/C971eRKpM7lreK0cVnpf03VZZyUn8by0ZpPEHahykL6h1fH3x9UGIIv
+         dxU5si8y5ZtwT4ev6J0R9H2Bhd2/VC5Kkb4f4Li0HRpK8Oj8IIivjTslvIlh+U/5UGs5
+         J+kDLhBNLWaELdIn4PG7CFD0WJDa8ps+8v5vE8ArumqvosLCzIGkHPGSq6EOxrGd3HA6
+         TEWBOLZms2f5Z1O0laRm1x/scq0FtfnsZXXxvL+FSyvtT5X8dgOi/v1i5G78TWI4ZP9b
+         qDwJa71vDPnB8n+WQ/fXJdIUWGqDoWPQy0/i/eOW9EdZJ5r60e9yK5nDx5q7RmI1DDie
+         Wz6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RTmjjgKNf1oCjSw/UGsuRv5cqlu6x5zYZlIgXT+yaLw=;
-        b=UkQ2W9JlivMsLP2HhiOAoJxiaXJScWis9Y4a7O6KjjG/b9CmbyPPk2ga9msZF/jWXr
-         5rl1iQxAujVwAQIUfZ+TBbonkpyyVDJjQo/VQFWk3k5/0/X1wRHu9vi72PdnSmLeHYYo
-         zZ9iDTJnp94SubSnudJ/mhl8g5WQie7qiImchTkniHZ3yhhonevkqhQMq0yasY2vrN2I
-         6kbyEo5oEFtm5g8jNIn4u6mgOWz0BUp/3zqc/efngE/pp2tuN5ipaztUtcI20BhA/RWn
-         UPhySX76JZqG4CLxcWZ4orlm74yrLzf4j5nt/9ZV7VNXeCzkBu7hml6UwedfvRcU5VUL
-         ODHw==
-X-Gm-Message-State: AOAM530RXbeHAik/VkUN4MOKXAo4qv+Q+73/pV023tl6u/9A9HuQOeKI
-        qxCDTiNuF/jrBVlbbeIAERk=
-X-Google-Smtp-Source: ABdhPJwkXf1Qnwx1ulvB0BzEOAhffXq4rQNByw4ajefIueu5Z9lvMH5E2+n0wNBe02BpglytvaB3Rg==
-X-Received: by 2002:aa7:d54f:: with SMTP id u15mr4926461edr.178.1629992613045;
-        Thu, 26 Aug 2021 08:43:33 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id q6sm2025099edd.26.2021.08.26.08.43.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 08:43:32 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH v3 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
-Date:   Thu, 26 Aug 2021 17:43:31 +0200
-Message-ID: <1897490.lth8vsWHjN@localhost.localdomain>
-In-Reply-To: <YSepDdf+nHekuIxA@kroah.com>
-References: <20210825035311.8910-1-fmdefrancesco@gmail.com> <47945171.69uSEkksVi@localhost.localdomain> <YSepDdf+nHekuIxA@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9CilpbCdLqDwsRtt52+ILqW2aW6JejKoBnd1mtCylR0=;
+        b=Mcov0fni1NqRRI7ix0aSkP6PHQYj5qqnErDPe1nbtqXUThrrlq+DP90z83e5g1774h
+         fN5tySgmdMg2FaUnpkDSZt6Z++kknzSL2mtpjlB8iFwOPLyf2+NALxa7Fw+TPYzEprPp
+         IeqM3jabcT4Cys9dhpoQiO/24cf90+DLCRzpLso3n1h6fooG/RabbCGp5GAJbl7IKUB2
+         ucDdjR1MqxpGQuvP9h8TwJTzX0jvh3okdV0kq8WstJ2q6MgN/9v20tGGORsIA3C+f7tb
+         Ti99Dqil3uX3P9SJgs1DC6YgNUbkWkcDtRb902ITOt+wChzvXWhIRI1/OpVHZtxxWcOb
+         TaZg==
+X-Gm-Message-State: AOAM533wICgdZSfbsvITzIqAIfo61PUl0En+O518Qy6jhw8S7hbj6DPX
+        toAWP71MBH2DdhkDFdIhz8CCJlowou9Ms64k394=
+X-Google-Smtp-Source: ABdhPJz/CxqQQL7rgljSQCbYHVEkoWFgXyV0AO4VSuiXWMZSGM7Oe4gfDuKMnPS3XBk2GbuyFnklFOViI6DPsR3pLK0=
+X-Received: by 2002:a9d:75d5:: with SMTP id c21mr3739175otl.118.1629992667943;
+ Thu, 26 Aug 2021 08:44:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20210826141623.8151-1-kerneljasonxing@gmail.com> <d15a1f43-3fea-b798-7848-61faf3ca1e8c@intel.com>
+In-Reply-To: <d15a1f43-3fea-b798-7848-61faf3ca1e8c@intel.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Thu, 26 Aug 2021 23:43:52 +0800
+Message-ID: <CAL+tcoDfz3un9fvQ7c-TF=eEiFrEXQBEWV9TvgcjbyNVopMJvg@mail.gmail.com>
+Subject: Re: [PATCH v4] ixgbe: let the xdpdrv work with more than 64 cpus
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 26, 2021 4:45:33 PM CEST Greg Kroah-Hartman wrote:
-> On Thu, Aug 26, 2021 at 04:24:35PM +0200, Fabio M. De Francesco wrote:
-> > On Thursday, August 26, 2021 12:48:37 PM CEST Greg Kroah-Hartman wrote:
-> > > On Wed, Aug 25, 2021 at 05:53:10AM +0200, Fabio M. De Francesco wrote:
-> > > > Replace usb_control_msg() with the new usb_control_msg_recv() and
-> > > > usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
-> > > > Remove no more needed variables. Move out of an if-else block
-> > > > some code that it is no more dependent on status < 0. Remove
-> > > > redundant code depending on status > 0 or status == len.
-> > > > 
-> > > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > > ---
-> > > > 
-> > > > v2->v3: Restore the test for success of usb_control_message_recv/send
-> > > > that was inadvertently removed. Issue reported by Pavel Skripkin.
-> > > > 
-> > > > v1->v2: According to suggestions by Christophe JAILLET 
-> > > > <christophe.jaillet@wanadoo.fr>, remove 'pipe' and pass an explicit 0
-> > > > to the new API. According to suggestions by Pavel Skripkin 
-> > > > <paskripkin@gmail.com>, remove an extra if-else that is no more needed, 
-> > > > since status can be 0 and < 0 and there is no 3rd state, like it was before.
-> > > > Many thanks to them and also to Phillip Potter <phil@philpotter.co.uk>
-> > > > who kindly offered his time for the purpose of testing v1.
-> > > > 
-> > > >  drivers/staging/r8188eu/hal/usb_ops_linux.c | 45 ++++++++-------------
-> > > >  1 file changed, 17 insertions(+), 28 deletions(-)
-> > > 
-> > > This doesn't apply to my tree at all.  Please rebase and resend.
-> > 
-> > This series cannot apply to your tree until another one of mine is applied 
-> > ("staging: r8188eu: Remove _enter/_exit_critical_mutex()"). This series builds
-> > on the previous patch.
-> 
-> When you do that, please let me know somehow that this is the case,
-> otherwise how am I supposed to guess that?
+On Thu, Aug 26, 2021 at 11:23 PM Jesse Brandeburg
+<jesse.brandeburg@intel.com> wrote:
+>
+> On 8/26/2021 7:16 AM, kerneljasonxing@gmail.com wrote:
+> > From: Jason Xing <xingwanli@kuaishou.com>
+> >
+> > Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
+> > server is equipped with more than 64 cpus online. So it turns out that
+> > the loading of xdpdrv causes the "NOMEM" failure.
+> >
+> > Actually, we can adjust the algorithm and then make it work through
+> > mapping the current cpu to some xdp ring with the protect of @tx_lock.
+>
+> Thank you very much for working on this!
+>
+> you should put your sign off block here, and then end with a triple-dash
+> "---"
+>
+> then have your vN: updates below that, so they will be dropped from
+> final git apply. It's ok to have more than one triple-dash.
+>
 
-Correct, my fault :( 
+Thanks. Now I know much more about the submission.
 
-To my defense I can only say that I really had forgot that there were the 
-above-mentioned previous patch still in your queue. So I didn't immediately 
-realized that I had to inform you somehow of this kind of dependence.
-I knew that only yesterday, when Pavel wanted to apply this patch to 
-his local copy of your then current tree and he couldn't. After some thoughts
-I understood that the latter depended on the former, but I guess it was too late 
-to inform you. Furthermore, yesterday I thought that you would have applied 
-in a FIFO order and that you wouldn't notice any conflict.
+> >
+> > v4:
+> > - Update the wrong commit messages. (Jason)
+> >
+> > v3:
+> > - Change nr_cpu_ids to num_online_cpus() (Maciej)
+> > - Rename MAX_XDP_QUEUES to IXGBE_MAX_XDP_QS (Maciej)
+> > - Rename ixgbe_determine_xdp_cpu() to ixgbe_determine_xdp_q_idx() (Maciej)
+> > - Wrap ixgbe_xdp_ring_update_tail() with lock into one function (Maciej)
+> >
+> > v2:
+> > - Adjust cpu id in ixgbe_xdp_xmit(). (Jesper)
+> > - Add a fallback path. (Maciej)
+> > - Adjust other parts related to xdp ring.
+> >
+> > Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
+> > Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+> > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> > ---
+> >  drivers/net/ethernet/intel/ixgbe/ixgbe.h           | 15 ++++-
+> >  drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c       |  9 ++-
+> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      | 64 ++++++++++++++++------
+> >  .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |  1 +
+> >  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  9 +--
+> >  5 files changed, 73 insertions(+), 25 deletions(-)
+>
+> ...
+>
+> > @@ -8539,21 +8539,32 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
+> >  int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
+> >                       struct xdp_frame *xdpf)
+> >  {
+> > -     struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
+> >       struct ixgbe_tx_buffer *tx_buffer;
+> >       union ixgbe_adv_tx_desc *tx_desc;
+> > +     struct ixgbe_ring *ring;
+> >       u32 len, cmd_type;
+> >       dma_addr_t dma;
+> > +     int index, ret;
+> >       u16 i;
+> >
+> >       len = xdpf->len;
+> >
+> > -     if (unlikely(!ixgbe_desc_unused(ring)))
+> > -             return IXGBE_XDP_CONSUMED;
+> > +     index = ixgbe_determine_xdp_q_idx(smp_processor_id());
+> > +     ring = adapter->xdp_ring[index];
+> > +
+> > +     if (static_branch_unlikely(&ixgbe_xdp_locking_key))
+> > +             spin_lock(&ring->tx_lock);
+> > +
+> > +     if (unlikely(!ixgbe_desc_unused(ring))) {
+> > +             ret = IXGBE_XDP_CONSUMED;
+> > +             goto out;
+> > +     }
+>
+> This static key stuff is tricky code, but I guess if it works, then it's
+> better than nothing.
+>
+> As Maciej also commented, I'd like to see some before/after numbers for
+> some of the xdp sample programs to make sure this doesn't cause a huge
+> regression on the xdp transmit path. A small regression would be ok,
+> since this *is* adding overhead.
+>
 
-Actually I was wrong, because you didn't apply the former and instead asked
-me to test it (we talked about that patch some minutes ago in another message).
- 
-> > > But first, are you sure you want to use these new functions here?  This
-> > > is a "common" function that is called from different places for
-> > > different things.  How about unwinding the callers of this function
-> > > first, to see if they really need all of the complexity in this function
-> > > at all, and if not, then call the real USB function in those locations
-> > > instead.
-> > 
-> > I think it could be fine to simply refactor usbctrl_vendorreq() to use the newer
-> > API with no necessity to directly use them at least in six different places in
-> > hal/usb_ops_linux.c. The only users of this helper are usb_read8/16/32() and
-> > usb_write8/16/32(). Why do you prefer using usb_control_msg_recv/send() 
-> > directly in the callers? I guess it would lead to redundant code, more or less
-> > the same code repeated again and again within the above-mentioned six callers.
-> > What do we improve by doing as you suggest? What am I missing?
-> 
-> If you unwind the mess, you will find that the code will be much easier
-> to understand.
-> 
-> As an example, look at usb_write8().  Where is it ever called?  Why do
-> we have it at all?  It's only used in 1 place, and then that function
-> unwinds into rtw_write8(), which is used in a lot of places, and never
-> checked at all, making the majority of the logic in this function
-> totally unneeded and useless.
-> 
-> Same for rtw_write16() and rtw_write32().  After unwinding the mess you
-> see that the logic you are working to try to clean up in this patch
-> series is pretty much not used / needed at all, right?  So why do it?
-> 
-> Unwind the mess into a useful set of functions the driver can actually
-> call that is not 2-4 function pointers deep and then we can talk about
-> unifying things, if they are really needed.  But right now, it's
-> impossible to tell.
+Fine. It will take me some time. BTW, I'm wondering that, after I'm
+done with the analysis, should I just reply to this email directly or
+send the v5 patch including those numbers?
 
-Yeah, I know how is the call chain from top (rtw_read/write8/16/32()) to bottom
-(usbctrl_vendorreq()) and then to the new USB core API. 
+Thanks,
+Jason
 
-Pavel and I have been talking about this topic while he was working on his 
-series ("r8188eu: avoid uninit value bugs").
-
-Aside from this, I re-thought about what you write above and I too find that
-having 2-4 function pointers deep is a bad design. Anyway I'm stuck in 
-waiting to see what Pavel will submit with his reworking, because I don't 
-desire to make patches that conflict with his.
-
-As you often say to all us: there is no hurry! So, I'll wait to see Pavel's final
-work before changing whatever could conflict with him.
-
-> good luck!
-
-Thanks, I'll need it :-)
-
-And thanks for the time you spent to clarify your thoughts about these topics.
-
-Fabio
- 
-> greg k-h
-
-
-
+> Jesse
+>
