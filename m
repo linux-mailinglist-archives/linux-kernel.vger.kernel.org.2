@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08503F8E68
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46903F8E6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243366AbhHZTCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 15:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
+        id S243340AbhHZTEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 15:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243241AbhHZTCt (ORCPT
+        with ESMTP id S243241AbhHZTEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 15:02:49 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301C7C0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:02:02 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso4803970otv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:02:02 -0700 (PDT)
+        Thu, 26 Aug 2021 15:04:33 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42252C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:03:45 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id s3so6949055ljp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:03:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:jubject:from:user-agent:date
-         :message-id:subject:to:cc;
-        bh=+iVPuEHGBickynSlN/aspzgM+vCXS1pxLKvIBYzPHaY=;
-        b=m1Qh8c1JI8bJtMbx2zXs3H9EO3V3B24CTfDZ0E0MweKP5VXvP8ajaNkOgqAv29OW/F
-         xjby+KYB85j/qh0w1BGUe1u8LtcQThDspoEcg6Ho/K9SiquHynat2V84AQwXD9k8D+AX
-         lUHCf/zIj2pOkXaqiiOBJBZ//d85EfeL9KDEo=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pQVp2PnUA+5Zt+sP4F+QqkwU+Vh7PyB+v8DN1CEukro=;
+        b=GQbps7P/g3/96W8cwR+gYavPfVHkYrFpKsTIt1JfEz0c0mguwDWMYvgwCXVzbm5BAj
+         5UHw4denh34XoXIM4VzpmYBLSIRkUYhR29NsvNMR5UNabkaMv4gj8SBkQglfg6+ZU+rW
+         P+C42s/+iPr2VvgM+iSGEl2pVvci2jvXqQrPBOcPYzuwQeP8IzV6UKcsMQrKCxnp20na
+         fKznSiHsxbzGOkZtuMdD3FWeeOn3hvGfZzYw/QZMTBcw7y7A/bfN1X3ZDGZ02+wfxRXA
+         xz9lyY07mw7jQvXQpDmGZjWXUgSfEPnlue0ZP99D/r3xIt8vyeur2k3xjHaFMctCq/eb
+         8VdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:jubject:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=+iVPuEHGBickynSlN/aspzgM+vCXS1pxLKvIBYzPHaY=;
-        b=akOmKyQfQNnJGhgbxHfhH6jZRcNKAxVL87dSz6n/IFO0Gu8yX3WCVeivzaIFuK16xt
-         15cD2b+3i2JVCYeU0LDT5adBH0doqu8XH/U3COGMscqFkJdkri44eO5w8NtqJFvTmYGO
-         a4W/EW0LiwQeDLX6Jj5pMw1k6nFjNL3KcpEB+Wf5mrmTGA7GAyYM7cx4ibOb3h74syJX
-         PC4J+SjzcL8zj/Yt+LNlR9d+ly7V0kHfirp1KDAhvV34B9UOxTl65Ar90DglQG7Iry1E
-         wHW6ddGBXm5uic8+9JYx56/EJG+teQVnQMqGd/qtAQ+tGR5kqDe6kvaVTyVQKQDSFwT8
-         rkDw==
-X-Gm-Message-State: AOAM53140cj9Dr2XD9jYxAZx37ZLGy0yQjuFuoWOlyOyEMGJVPZUIdVq
-        9QEzameB2iMAJOxcRKGSJZLdoUBpsNZPdIb3dbdiEw==
-X-Google-Smtp-Source: ABdhPJzdZYXAXrUOl9mGtjohncFB+oGrYX4mON9av982YMT3gjRIDsaw7nD/2scpYTZBlBNfwQfReCj7diwhE7RBlNg=
-X-Received: by 2002:a05:6830:88:: with SMTP id a8mr4600325oto.233.1630004521512;
- Thu, 26 Aug 2021 12:02:01 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 26 Aug 2021 19:02:00 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pQVp2PnUA+5Zt+sP4F+QqkwU+Vh7PyB+v8DN1CEukro=;
+        b=CKcXwFPr2hDEGwv8W3bI3XjvayeTBaWURsOHArdFmLRg0S9LhddYalpui+sn4yKh3r
+         2t6I07q7xPk3QxFKXZ+fzI+uo6cguBmGRbCwJ8+BULG7G3TIrXsN98w0IPgQNQb+lT7/
+         UUrvstSfUIbYKSxQJh+qhY+kj0t/WgE5dCOInVaIV8O7XLUT7IFbxaQBCWVGm8v7vL9a
+         axR5XaC1NXYd2UZhE/TpFBUBlT1lZ5pbJAEiAKni2hGXfGdy1ryyunEjNZEfM+LJlnjB
+         cNMgwzNrdo7+iCEHLXNMHA0xsag6DOeh+DXHa1JwMQNckYPZyD9N0ecsOyoWLnDfUphf
+         yekA==
+X-Gm-Message-State: AOAM530DMuJmr0ca/ABHYnhU9tGi73BvAnp5PiEsWa+cAYOWksakuOAs
+        hwGkkE4rabQgmPtjgkR7F5sAd+K9BHt/tVhugwI=
+X-Google-Smtp-Source: ABdhPJx7oqIjiY4LYgkuU/889okKWI9HwxaFhGK2B+n/5jiogU3F2Jv8cr7/h9tg0f47uNliaf3CZ8nndiPRkOaeoKM=
+X-Received: by 2002:a2e:87c4:: with SMTP id v4mr4434995ljj.444.1630004623466;
+ Thu, 26 Aug 2021 12:03:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YSfioM5cEnvD3pGb@sashalap>
-References: <20210824025754.658394-1-sashal@kernel.org> <CAE-0n53zk0ogf=TUknMoCAPDd97=jq3Czpp6b1c9E29ormuCSQ@mail.gmail.com>
- <YSfioM5cEnvD3pGb@sashalap>
-jubject: Re: FAILED: Patch "mmc: sdhci-msm: Update the software timeout value
- for sdhc" failed to apply to 5.4-stable tree
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 26 Aug 2021 19:02:00 +0000
-Message-ID: <CAE-0n50brNnTASH8xR_jSCr0=OAQohcA4cG3HFAeDmt=4U-4Uw@mail.gmail.com>
-Subject: 
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     sbhanu@codeaurora.org, stable@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210819140345.357167-1-marcel@ziswiler.com> <20210819140345.357167-3-marcel@ziswiler.com>
+In-Reply-To: <20210819140345.357167-3-marcel@ziswiler.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 26 Aug 2021 16:03:32 -0300
+Message-ID: <CAOMZO5B9Tb+1d1eU1huCZKNH6BjdnmvBUnkY_242L1yub=2Q9g@mail.gmail.com>
+Subject: Re: [PATCH v1 2/7] ARM: imx_v6_v7_defconfig: enable fb
+To:     Marcel Ziswiler <marcel@ziswiler.com>
+Cc:     "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Anson Huang <Anson.Huang@nxp.com>, Marek Vasut <marex@denx.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pascal Zimmermann <pzimmermann@dh-electronics.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sasha Levin (2021-08-26 11:51:12)
-> On Thu, Aug 26, 2021 at 07:51:45AM +0000, Stephen Boyd wrote:
-> >From cd5d41c802f7b3e20c0c0ebd6bf0cb335954fd89 Mon Sep 17 00:00:00 2001
-> >From: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-> >Date: Fri, 16 Jul 2021 17:16:14 +0530
-> >Subject: [PATCH] mmc: sdhci-msm: Update the software timeout value for sdhc
-> >
-> >commit 67b13f3e221ed81b46a657e2b499bf8b20162476 upstream.
-> >
-> >Whenever SDHC run at clock rate 50MHZ or below, the hardware data
-> >timeout value will be 21.47secs, which is approx. 22secs and we have
-> >a current software timeout value as 10secs. We have to set software
-> >timeout value more than the hardware data timeout value to avioid seeing
-> >the below register dumps.
-> >
-> >[  332.953670] mmc2: Timeout waiting for hardware interrupt.
-> >[  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
-> >[  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
-> >[  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
-> >[  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
-> >[  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
-> >[  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
-> >[  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
-> >[  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
-> >[  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
-> >[  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
-> >[  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
-> >[  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
-> >[  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
-> >[  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
-> >[  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
-> >[  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
-> >0x0000000ffffff218
-> >[  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
-> >-----------
-> >[  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
-> >0x6000642c | DLL cfg2: 0x0020a000
-> >[  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
-> >0x00000000 | DDR cfg: 0x80040873
-> >[  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
-> >0xf88218a8 Vndr func3: 0x02626040
-> >[  333.102371] mmc2: sdhci: ============================================
-> >
-> >So, set software timeout value more than hardware timeout value.
-> >
-> >Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-> >Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> >Cc: stable@vger.kernel.org
-> >Link: https://lore.kernel.org/r/1626435974-14462-1-git-send-email-sbhanu@codeaurora.org
-> >Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> >Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> >---
-> > drivers/mmc/host/sdhci-msm.c | 18 ++++++++++++++++++
-> > 1 file changed, 18 insertions(+)
-> >
-> >diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> >index 8bed81cf03ad..8ab963055238 100644
-> >--- a/drivers/mmc/host/sdhci-msm.c
-> >+++ b/drivers/mmc/host/sdhci-msm.c
-> >@@ -1589,6 +1589,23 @@ static void sdhci_msm_set_clock(struct
-> >sdhci_host *host, unsigned int clock)
+Hi Marcel,
+
+On Thu, Aug 19, 2021 at 11:04 AM Marcel Ziswiler <marcel@ziswiler.com> wrote:
 >
-> I've queued this up, thanks!
-
-Thanks!
-
+> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 >
-> Note that the patch was linewrapped (see above).
+> Enable CONFIG_FB which is nowadays required for CONFIG_DRM_PANEL_LVDS,
+> CONFIG_DRM_PANEL_SIMPLE, CONFIG_DRM_PANEL_SEIKO_43WVF1G,
+> CONFIG_FB_MODE_HELPERS, CONFIG_BACKLIGHT_PWM, CONFIG_BACKLIGHT_GPIO,
+> CONFIG_FRAMEBUFFER_CONSOLE, CONFIG_LOGO, CONFIG_FONTS, CONFIG_FONT_8x8
+> and CONFIG_FONT_8x16.
+>
+> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-Indeed. Must be something wrong with my mailer setup. I'll look into
-fixing it. Thanks.
+Yes, I noticed that I had no LCD output on an imx6ull-evk board and
+after selecting CONFIG_FB it works again.
+
+For the entire series:
+
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
