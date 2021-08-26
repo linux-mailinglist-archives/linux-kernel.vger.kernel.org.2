@@ -2,345 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C5D3F908E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25993F9094
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243724AbhHZWON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 18:14:13 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23934 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243691AbhHZWOM (ORCPT
+        id S243730AbhHZWP0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Aug 2021 18:15:26 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:34684 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243665AbhHZWPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 18:14:12 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17QMAI6o003091
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 15:13:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=qACHS+7T1hN9TVHbhW5Hn5UE9ZQUENGGKulLuyeIKgo=;
- b=hU2nGDeOK1klJ6w+VMQ7H7kXi0V69Qftf6R6jaR4Diq78Qldc7UJ62yNj+LyNS94F16O
- KF2tQ4rfWXOltZQvYWUDxCb/DR/7zEjnEz/yNApcNZqQkz5DGTS6qtAsuZ5PPUM5qc4b
- m8KEkr41ioFJ1Jidvjw3NKpbm6W5h0gLlHQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3apc9s36xc-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 15:13:24 -0700
-Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 26 Aug 2021 15:13:21 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id BDEDEE2EC453; Thu, 26 Aug 2021 15:13:19 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <kjain@linux.ibm.com>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: add test for bpf_get_branch_snapshot
-Date:   Thu, 26 Aug 2021 15:13:06 -0700
-Message-ID: <20210826221306.2280066-4-songliubraving@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210826221306.2280066-1-songliubraving@fb.com>
-References: <20210826221306.2280066-1-songliubraving@fb.com>
+        Thu, 26 Aug 2021 18:15:24 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:43756)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mJNdh-00EQKs-GD; Thu, 26 Aug 2021 16:14:25 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:36634 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mJNdf-00HV1Y-UD; Thu, 26 Aug 2021 16:14:25 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Laight <David.Laight@aculab.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?utf-8?Q?K=C3=B6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs\@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+        <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+        <87lf56bllc.fsf@disp2133>
+        <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+        <87eeay8pqx.fsf@disp2133>
+        <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+        <87h7ft2j68.fsf@disp2133>
+        <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+        <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+        <CAHk-=wiJ0u33h2CXAO4b271Diik=z4jRt64=Gt6YV2jV4ef27g@mail.gmail.com>
+        <b60e9bd1-7232-472d-9c9c-1d6593e9e85e@www.fastmail.com>
+        <0ed69079-9e13-a0f4-776c-1f24faa9daec@redhat.com>
+Date:   Thu, 26 Aug 2021 17:13:52 -0500
+In-Reply-To: <0ed69079-9e13-a0f4-776c-1f24faa9daec@redhat.com> (David
+        Hildenbrand's message of "Thu, 26 Aug 2021 23:47:07 +0200")
+Message-ID: <87mtp3g8gv.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: nhf2BrXQy1FHgjCr1lmcFb5V3COc4xHn
-X-Proofpoint-GUID: nhf2BrXQy1FHgjCr1lmcFb5V3COc4xHn
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-26_05:2021-08-26,2021-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 phishscore=0 malwarescore=0
- suspectscore=0 bulkscore=0 impostorscore=0 adultscore=0 clxscore=1015
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108260124
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1mJNdf-00HV1Y-UD;;;mid=<87mtp3g8gv.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18m5lfQvtNAYQfGYREq2VBtg2jfskLzpXA=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XM_B_Unicode autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4992]
+        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;David Hildenbrand <david@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 612 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.3 (0.7%), b_tie_ro: 3.0 (0.5%), parse: 1.59
+        (0.3%), extract_message_metadata: 6 (0.9%), get_uri_detail_list: 3.1
+        (0.5%), tests_pri_-1000: 11 (1.9%), tests_pri_-950: 1.01 (0.2%),
+        tests_pri_-900: 0.95 (0.2%), tests_pri_-90: 101 (16.5%), check_bayes:
+        98 (16.1%), b_tokenize: 18 (2.9%), b_tok_get_all: 13 (2.1%),
+        b_comp_prob: 3.3 (0.5%), b_tok_touch_all: 61 (9.9%), b_finish: 0.81
+        (0.1%), tests_pri_0: 469 (76.6%), check_dkim_signature: 0.44 (0.1%),
+        check_dkim_adsp: 2.7 (0.4%), poll_dns_idle: 1.26 (0.2%), tests_pri_10:
+        2.4 (0.4%), tests_pri_500: 8 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This test uses bpf_get_branch_snapshot from a fexit program. The test use=
-s
-a target kernel function (bpf_fexit_loop_test1) and compares the record
-against kallsyms. If there isn't enough record matching kallsyms, the
-test fails.
+David Hildenbrand <david@redhat.com> writes:
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- net/bpf/test_run.c                            |  15 ++-
- .../bpf/prog_tests/get_branch_snapshot.c      | 106 ++++++++++++++++++
- .../selftests/bpf/progs/get_branch_snapshot.c |  41 +++++++
- tools/testing/selftests/bpf/trace_helpers.c   |  30 +++++
- tools/testing/selftests/bpf/trace_helpers.h   |   5 +
- 5 files changed, 196 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_sna=
-pshot.c
- create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot=
-.c
+> On 26.08.21 19:48, Andy Lutomirski wrote:
+>> On Fri, Aug 13, 2021, at 5:54 PM, Linus Torvalds wrote:
+>>> On Fri, Aug 13, 2021 at 2:49 PM Andy Lutomirski <luto@kernel.org> wrote:
+>>>>
+>>>> I’ll bite.  How about we attack this in the opposite direction: remove the deny write mechanism entirely.
+>>>
+>>> I think that would be ok, except I can see somebody relying on it.
+>>>
+>>> It's broken, it's stupid, but we've done that ETXTBUSY for a _loong_ time.
+>>
+>> Someone off-list just pointed something out to me, and I think we should push harder to remove ETXTBSY.  Specifically, we've all been focused on open() failing with ETXTBSY, and it's easy to make fun of anyone opening a running program for write when they should be unlinking and replacing it.
+>>
+>> Alas, Linux's implementation of deny_write_access() is correct^Wabsurd, and deny_write_access() *also* returns ETXTBSY if the file is open for write.  So, in a multithreaded program, one thread does:
+>>
+>> fd = open("some exefile", O_RDWR | O_CREAT | O_CLOEXEC);
+>> write(fd, some stuff);
+>>
+>> <--- problem is here
+>>
+>> close(fd);
+>> execve("some exefile");
+>>
+>> Another thread does:
+>>
+>> fork();
+>> execve("something else");
+>>
+>> In between fork and execve, there's another copy of the open file description, and i_writecount is held, and the execve() fails.  Whoops.  See, for example:
+>>
+>> https://github.com/golang/go/issues/22315
+>>
+>> I propose we get rid of deny_write_access() completely to solve this.
+>>
+>> Getting rid of i_writecount itself seems a bit harder, since a handful of filesystems use it for clever reasons.
+>>
+>> (OFD locks seem like they might have the same problem.  Maybe we should have a clone() flag to unshare the file table and close close-on-exec things?)
+>>
+>
+> It's not like this issue is new (^2017) or relevant in practice. So no
+> need to hurry IMHO. One step at a time: it might make perfect sense to
+> remove ETXTBSY, but we have to be careful to not break other user
+> space that actually cares about the current behavior in practice.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 2eb0e55ef54d2..6cc179a532c9c 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -231,6 +231,18 @@ struct sock * noinline bpf_kfunc_call_test3(struct s=
-ock *sk)
- 	return sk;
- }
-=20
-+noinline int bpf_fexit_loop_test1(int n)
-+{
-+	int i, sum =3D 0;
-+
-+	/* the primary goal of this test is to test LBR. Create a lot of
-+	 * branches in the function, so we can catch it easily.
-+	 */
-+	for (i =3D 0; i < n; i++)
-+		sum +=3D i;
-+	return sum;
-+}
-+
- __diag_pop();
-=20
- ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
-@@ -293,7 +305,8 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 		    bpf_fentry_test5(11, (void *)12, 13, 14, 15) !=3D 65 ||
- 		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) !=3D 111 =
-||
- 		    bpf_fentry_test7((struct bpf_fentry_test_t *)0) !=3D 0 ||
--		    bpf_fentry_test8(&arg) !=3D 0)
-+		    bpf_fentry_test8(&arg) !=3D 0 ||
-+		    bpf_fexit_loop_test1(101) !=3D 5050)
- 			goto out;
- 		break;
- 	case BPF_MODIFY_RETURN:
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c=
- b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-new file mode 100644
-index 0000000000000..9bb16826418fb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include <test_progs.h>
-+#include "get_branch_snapshot.skel.h"
-+
-+static int *pfd_array;
-+static int cpu_cnt;
-+
-+static int create_perf_events(void)
-+{
-+	struct perf_event_attr attr =3D {0};
-+	int cpu;
-+
-+	/* create perf event */
-+	attr.size =3D sizeof(attr);
-+	attr.type =3D PERF_TYPE_RAW;
-+	attr.config =3D 0x1b00;
-+	attr.sample_type =3D PERF_SAMPLE_BRANCH_STACK;
-+	attr.branch_sample_type =3D PERF_SAMPLE_BRANCH_KERNEL |
-+		PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
-+
-+	cpu_cnt =3D libbpf_num_possible_cpus();
-+	pfd_array =3D malloc(sizeof(int) * cpu_cnt);
-+	if (!pfd_array) {
-+		cpu_cnt =3D 0;
-+		return 1;
-+	}
-+
-+	for (cpu =3D 0; cpu < libbpf_num_possible_cpus(); cpu++) {
-+		pfd_array[cpu] =3D syscall(__NR_perf_event_open, &attr,
-+					 -1, cpu, -1, PERF_FLAG_FD_CLOEXEC);
-+		if (pfd_array[cpu] < 0)
-+			break;
-+	}
-+
-+	return cpu =3D=3D 0;
-+}
-+
-+static void close_perf_events(void)
-+{
-+	int cpu =3D 0;
-+	int fd;
-+
-+	while (cpu++ < cpu_cnt) {
-+		fd =3D pfd_array[cpu];
-+		if (fd < 0)
-+			break;
-+		close(fd);
-+	}
-+	free(pfd_array);
-+}
-+
-+void test_get_branch_snapshot(void)
-+{
-+	struct get_branch_snapshot *skel;
-+	int err, prog_fd;
-+	__u32 retval;
-+
-+	if (create_perf_events()) {
-+		test__skip();  /* system doesn't support LBR */
-+		goto cleanup;
-+	}
-+
-+	skel =3D get_branch_snapshot__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "get_branch_snapshot__open_and_load"))
-+		goto cleanup;
-+
-+	err =3D kallsyms_find("bpf_fexit_loop_test1", &skel->bss->address_low);
-+	if (!ASSERT_OK(err, "kallsyms_find"))
-+		goto cleanup;
-+
-+	err =3D kallsyms_find_next("bpf_fexit_loop_test1", &skel->bss->address_=
-high);
-+	if (!ASSERT_OK(err, "kallsyms_find_next"))
-+		goto cleanup;
-+
-+	err =3D get_branch_snapshot__attach(skel);
-+	if (!ASSERT_OK(err, "get_branch_snapshot__attach"))
-+		goto cleanup;
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.test1);
-+	err =3D bpf_prog_test_run(prog_fd, 1, NULL, 0,
-+				NULL, 0, &retval, NULL);
-+
-+	if (!ASSERT_OK(err, "bpf_prog_test_run"))
-+		goto cleanup;
-+
-+	if (skel->bss->total_entries < 16) {
-+		/* too few entries for the hit/waste test */
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	ASSERT_GT(skel->bss->test1_hits, 5, "find_test1_in_lbr");
-+
-+	/* Given we stop LBR in software, we will waste a few entries.
-+	 * But we should try to waste as few as possibleentries. We are at
-+	 * about 7 on x86_64 systems.
-+	 * Add a check for < 10 so that we get heads-up when something
-+	 * changes and wastes too many entries.
-+	 */
-+	ASSERT_LT(skel->bss->wasted_entries, 10, "check_wasted_entries");
-+
-+cleanup:
-+	get_branch_snapshot__destroy(skel);
-+	close_perf_events();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/get_branch_snapshot.c b/to=
-ols/testing/selftests/bpf/progs/get_branch_snapshot.c
-new file mode 100644
-index 0000000000000..9c944e7480b95
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/get_branch_snapshot.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+__u64 test1_hits =3D 0;
-+__u64 address_low =3D 0;
-+__u64 address_high =3D 0;
-+int wasted_entries =3D 0;
-+long total_entries =3D 0;
-+
-+#define MAX_LBR_ENTRIES 32
-+
-+struct perf_branch_entry entries[MAX_LBR_ENTRIES] =3D {};
-+
-+
-+static inline bool in_range(__u64 val)
-+{
-+	return (val >=3D address_low) && (val < address_high);
-+}
-+
-+SEC("fexit/bpf_fexit_loop_test1")
-+int BPF_PROG(test1, int n, int ret)
-+{
-+	long i;
-+
-+	total_entries =3D bpf_get_branch_snapshot(entries, sizeof(entries));
-+
-+	for (i =3D 0; i < MAX_LBR_ENTRIES; i++) {
-+		if (i >=3D total_entries)
-+			break;
-+		if (in_range(entries[i].from) && in_range(entries[i].to))
-+			test1_hits++;
-+		else if (!test1_hits)
-+			wasted_entries++;
-+	}
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/=
-selftests/bpf/trace_helpers.c
-index e7a19b04d4eaf..2926a3b626821 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -117,6 +117,36 @@ int kallsyms_find(const char *sym, unsigned long lon=
-g *addr)
- 	return err;
- }
-=20
-+/* find the address of the next symbol, this can be used to determine th=
-e
-+ * end of a function
-+ */
-+int kallsyms_find_next(const char *sym, unsigned long long *addr)
-+{
-+	char type, name[500];
-+	unsigned long long value;
-+	bool found =3D false;
-+	int err =3D 0;
-+	FILE *f;
-+
-+	f =3D fopen("/proc/kallsyms", "r");
-+	if (!f)
-+		return -EINVAL;
-+
-+	while (fscanf(f, "%llx %c %499s%*[^\n]\n", &value, &type, name) > 0) {
-+		if (found) {
-+			*addr =3D value;
-+			goto out;
-+		}
-+		if (strcmp(name, sym) =3D=3D 0)
-+			found =3D true;
-+	}
-+	err =3D -ENOENT;
-+
-+out:
-+	fclose(f);
-+	return err;
-+}
-+
- void read_trace_pipe(void)
- {
- 	int trace_fd;
-diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/=
-selftests/bpf/trace_helpers.h
-index d907b445524d5..bc8ed86105d94 100644
---- a/tools/testing/selftests/bpf/trace_helpers.h
-+++ b/tools/testing/selftests/bpf/trace_helpers.h
-@@ -16,6 +16,11 @@ long ksym_get_addr(const char *name);
- /* open kallsyms and find addresses on the fly, faster than load + searc=
-h. */
- int kallsyms_find(const char *sym, unsigned long long *addr);
-=20
-+/* find the address of the next symbol, this can be used to determine th=
-e
-+ * end of a function
-+ */
-+int kallsyms_find_next(const char *sym, unsigned long long *addr);
-+
- void read_trace_pipe(void);
-=20
- ssize_t get_uprobe_offset(const void *addr, ssize_t base);
---=20
-2.30.2
+It is an old enough issue that I agree there is no need to hurry.
+
+I also ran into this issue not too long ago when I refactored the
+usermode_driver code.  My challenge was not being in userspace
+the delayed fput was not happening in my kernel thread.  Which meant
+that writing the file, then closing the file, then execing the file
+consistently reported -ETXTBSY.
+
+The kernel code wound up doing:
+	/* Flush delayed fput so exec can open the file read-only */
+	flush_delayed_fput();
+	task_work_run();
+
+As I read the code the delay for userspace file descriptors is
+always done with task_work_add, so userspace should not hit
+that kind of silliness, and should be able to actually close
+the file descriptor before the exec.
+
+
+On the flip side, I don't know how anything can depend upon getting an
+-ETXTBSY.  So I don't think there is any real risk of breaking userspace
+if we remove it.
+
+Eric
 
