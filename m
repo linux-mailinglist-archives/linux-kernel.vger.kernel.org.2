@@ -2,73 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605D53F7F7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B3D3F7F85
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235675AbhHZAuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 20:50:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232139AbhHZAuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 20:50:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 539216102A;
-        Thu, 26 Aug 2021 00:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629939006;
-        bh=dvKxA5qSUlWCFnQ2eB3V6ge91h3mgauRFEKO7wCeWbI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qzGptMU6RDX5rRXauqxI1LymDrivMuklJkhIEA/ZjoE4nBGo8E7TRFEoKOxoIBHcq
-         utnTIi2DIUpTXSRF5+RWSBAolDyw8G5sZAQjGq+pc2EgYLZ0SDBiXQmwXLjh9y/xjR
-         5AwWS/VyVMZQhx+iUYXhqLggw2Z+B+9HPApRkJ343L/xWuSl/Xbfsqih/0miOyfK9Q
-         lmRLLf8mdo3uLORQPvfgndShxH+XBwMOAdbiPAd2Yh24p1iOjYhkUXP+z26ZSzr00A
-         5X6kCy06601ltEkW7ebWw38cWb835Pvhoe7Irs2W0iAw+gEouyxqnTzuoxKM6ORxd+
-         3T51ayJFq1kMg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4601160A0C;
-        Thu, 26 Aug 2021 00:50:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235705AbhHZAws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 20:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235400AbhHZAwp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 20:52:45 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B427C06179A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 17:51:59 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id x4so1504482pgh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 17:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f3PaRj0+UK3KiHBEQ/mOLHR7LbXNTGksF7paqU+Kuls=;
+        b=A6asxkjO+IhVOQFmhI2tBLQ24vNU4qbyC65KkjHK6YZEdFzhqDTuNOl/jUY0GY8BZk
+         sO21CWd5euGfV+luP8orfSSY/6R8H/lyogJvRGslTcBehiRZLI6fp4wTJHAZTkWW0Luj
+         236HN6iRo5IlditmnFRnNMm8X/Z+T2vuG5T/fkhA/TK8hHnA0ENvDZ7NczgztwdHw795
+         FBtREj4Nfnw/RApEMCNmyqeYph9H+5+VTpFwKCsOwANy6FK0VwyT/yA9+TXDqcqo4zbp
+         CBNvsaomjk9PSQ4KnFbCwLS1WZ5WBZeuC6vG5p684Rv340MRHtj/gV3n4AGPaCXS6GPY
+         fWYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f3PaRj0+UK3KiHBEQ/mOLHR7LbXNTGksF7paqU+Kuls=;
+        b=me6jAi2w/eCdLCe7qi4cw7twMOXYYkIvABZq0sxYmEGy/Z6tegHr1joWQN5EK0Fk2p
+         Pyyh05rvqAE/SHAcvE/JIdQykCHlkEf2zwxa99iIay0TmNUpeyvA2iufHmsYpieWYMWa
+         h925GveWV6FNvQbxi4JZZTzCLoGrfOMVi4/+8BPkhGaGbhgxa5JTOxTObDO8XN/le8zP
+         Zi9ss0K3wiTeT2NkDoDR8lrUBahveXH1uufogwsBC5K+5fKzMWPVnHFd4QDQU+1fnXch
+         qE3r31KBJW2rCHj1e+CIn2btrGQdRFZlq9UvBZ+rJ38QneeryWQO5itc6qosT28rJEM/
+         CZbw==
+X-Gm-Message-State: AOAM530tUN+BwXYv9FK8t8eUbF+dhXFriCRCFMhubfEKpPxKL+w25DwD
+        MsMPtrRaB5ZE7QJUGYOB+F/+lw==
+X-Google-Smtp-Source: ABdhPJz66WwJdot9pOGh7Q3Z/ZxgXoc0GykrLFcpNH6VM8KC5/c4zJUQuHeGGSWtTQv/EwVGtnL95A==
+X-Received: by 2002:a63:401:: with SMTP id 1mr926843pge.166.1629939118422;
+        Wed, 25 Aug 2021 17:51:58 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j21sm756334pfj.66.2021.08.25.17.51.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 17:51:57 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 00:51:54 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH v2 4/5] KVM: selftests: Add a test for KVM_RUN+rseq to
+ detect task migration bugs
+Message-ID: <YSblqrrpKcORzilX@google.com>
+References: <20210820225002.310652-1-seanjc@google.com>
+ <20210820225002.310652-5-seanjc@google.com>
+ <766990430.21713.1629731934069.JavaMail.zimbra@efficios.com>
+ <282257549.21721.1629732017655.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v1 1/1] net: usb: asix: ax88772: fix boolconv.cocci
- warnings
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162993900628.635.15201948072736611742.git-patchwork-notify@kernel.org>
-Date:   Thu, 26 Aug 2021 00:50:06 +0000
-References: <20210825183538.13070-1-o.rempel@pengutronix.de>
-In-Reply-To: <20210825183538.13070-1-o.rempel@pengutronix.de>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, lkp@intel.com,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <282257549.21721.1629732017655.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Wed, 25 Aug 2021 20:35:38 +0200 you wrote:
-> From: kernel test robot <lkp@intel.com>
+On Mon, Aug 23, 2021, Mathieu Desnoyers wrote:
+> [ re-send to Darren Hart ]
 > 
-> drivers/net/usb/asix_devices.c:757:60-65: WARNING: conversion to bool not needed here
+> ----- On Aug 23, 2021, at 11:18 AM, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
 > 
->  Remove unneeded conversion to bool
-> 
-> Semantic patch information:
->  Relational and logical operators evaluate to bool,
->  explicit conversion is overly verbose and unneeded.
-> 
-> [...]
+> > ----- On Aug 20, 2021, at 6:50 PM, Sean Christopherson seanjc@google.com wrote:
+> > 
+> >> Add a test to verify an rseq's CPU ID is updated correctly if the task is
+> >> migrated while the kernel is handling KVM_RUN.  This is a regression test
+> >> for a bug introduced by commit 72c3c0fe54a3 ("x86/kvm: Use generic xfer
+> >> to guest work function"), where TIF_NOTIFY_RESUME would be cleared by KVM
+> >> without updating rseq, leading to a stale CPU ID and other badness.
+> >> 
+> > 
+> > [...]
+> > 
+> > +#define RSEQ_SIG 0xdeadbeef
+> > 
+> > Is there any reason for defining a custom signature rather than including
+> > tools/testing/selftests/rseq/rseq.h ? This should take care of including
+> > the proper architecture header which will define the appropriate signature.
+> > 
+> > Arguably you don't define rseq critical sections in this test per se, but
+> > I'm wondering why the custom signature here.
 
-Here is the summary with links:
-  - [net,v1,1/1] net: usb: asix: ax88772: fix boolconv.cocci warnings
-    https://git.kernel.org/netdev/net/c/ec92e524ee91
+Partly to avoid taking a dependency on rseq.h, and partly to try to call out that
+the test doesn't actually do any rseq critical sections.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> > [...]
+> > 
+> >> +
+> >> +static void *migration_worker(void *ign)
+> >> +{
+> >> +	cpu_set_t allowed_mask;
+> >> +	int r, i, nr_cpus, cpu;
+> >> +
+> >> +	CPU_ZERO(&allowed_mask);
+> >> +
+> >> +	nr_cpus = CPU_COUNT(&possible_mask);
+> >> +
+> >> +	for (i = 0; i < 20000; i++) {
+> >> +		cpu = i % nr_cpus;
+> >> +		if (!CPU_ISSET(cpu, &possible_mask))
+> >> +			continue;
+> >> +
+> >> +		CPU_SET(cpu, &allowed_mask);
+> >> +
+> >> +		/*
+> >> +		 * Bump the sequence count twice to allow the reader to detect
+> >> +		 * that a migration may have occurred in between rseq and sched
+> >> +		 * CPU ID reads.  An odd sequence count indicates a migration
+> >> +		 * is in-progress, while a completely different count indicates
+> >> +		 * a migration occurred since the count was last read.
+> >> +		 */
+> >> +		atomic_inc(&seq_cnt);
+> > 
+> > So technically this atomic_inc contains the required barriers because the
+> > selftests implementation uses "__sync_add_and_fetch(&addr->val, 1)". But
+> > it's rather odd that the semantic differs from the kernel implementation in
+> > terms of memory barriers: the kernel implementation of atomic_inc
+> > guarantees no memory barriers, but this one happens to provide full
+> > barriers pretty much by accident (selftests futex/include/atomic.h
+> > documents no such guarantee).
 
+Yeah, I got quite lost trying to figure out what atomics the test would actually
+end up with.
 
+> > If this full barrier guarantee is indeed provided by the selftests atomic.h
+> > header, I would really like a comment stating that in the atomic.h header
+> > so the carpet is not pulled from under our feet by a future optimization.
+> > 
+> > 
+> >> +		r = sched_setaffinity(0, sizeof(allowed_mask), &allowed_mask);
+> >> +		TEST_ASSERT(!r, "sched_setaffinity failed, errno = %d (%s)",
+> >> +			    errno, strerror(errno));
+> >> +		atomic_inc(&seq_cnt);
+> >> +
+> >> +		CPU_CLR(cpu, &allowed_mask);
+> >> +
+> >> +		/*
+> >> +		 * Let the read-side get back into KVM_RUN to improve the odds
+> >> +		 * of task migration coinciding with KVM's run loop.
+> > 
+> > This comment should be about increasing the odds of letting the seqlock
+> > read-side complete. Otherwise, the delay between the two back-to-back
+> > atomic_inc is so small that the seqlock read-side may never have time to
+> > complete the reading the rseq cpu id and the sched_getcpu() call, and can
+> > retry forever.
+
+Hmm, but that's not why there's a delay.  I'm not arguing that a livelock isn't
+possible (though that syscall would have to be screaming fast), but the primary
+motivation is very much to allow the read-side enough time to get back into KVM
+proper.
+
+To encounter the bug, TIF_NOTIFY_RESUME has to be recognized by KVM in its run
+loop, i.e. sched_setaffinity() must induce task migration after the read-side has
+invoked ioctl(KVM_RUN).
+
+> > I'm wondering if 1 microsecond is sufficient on other architectures as
+> > well.
+
+I'm definitely wondering that as well :-)
+
+> > One alternative way to make this depend less on the architecture's
+> > implementation of sched_getcpu (whether it's a vDSO, or goes through a
+> > syscall) would be to read the rseq cpu id and call sched_getcpu a few times
+> > (e.g. 3 times) in the migration thread rather than use usleep, and throw
+> > away the value read. This would ensure the delay is appropriate on all
+> > architectures.
+
+As above, I think an arbitrary delay is required regardless of how fast
+sched_getcpu() can execute.  One thought would be to do sched_getcpu() _and_
+usleep() to account for sched_getcpu() overhead and to satisfy the KVM_RUN part,
+but I don't know that that adds meaningful value.
+
+The real test is if someone could see if the bug repros on non-x86 hardware...
