@@ -2,133 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAE43F88FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088F93F8909
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242696AbhHZNbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:31:20 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:47686 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242545AbhHZNbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:31:14 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPSA id D306740A2BAC;
-        Thu, 26 Aug 2021 13:30:22 +0000 (UTC)
-Subject: Re: [PATCH] usb: ehci-orion: Handle errors of clk_prepare_enable() in
- probe
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Mike Turquette <mturquette@linaro.org>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-References: <20210825170902.11234-1-novikov@ispras.ru>
- <20210825172937.GD192480@rowland.harvard.edu>
-From:   Evgeny Novikov <novikov@ispras.ru>
-Message-ID: <c22d943a-581c-c1bd-d453-3f0f6176c8a5@ispras.ru>
-Date:   Thu, 26 Aug 2021 16:30:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S242278AbhHZNes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhHZNeq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 09:34:46 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E81C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:33:59 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id n5so5052093wro.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:33:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OT2SsyZ10OYeuy7VscVaFJwl6PBRquiIV5ifXUolnFM=;
+        b=PoMFsDQMmczT1CVFz8jP/kDe8KUKNCjo8/yjmzfE7JBpEfUtPRol70KhKG8mRIwuMd
+         wVJ2+ffUTqUq/cXoFwXLAOYhrRWSV+LgUQVUEgF9/w0/f3u95zXv+jV4LclFH0eCe/bI
+         EiXdIQs2sNBtT9H9QCc1/LYvpUjJ07FgvEGQu+/HKNZC7V6cMHSFXaI1De+bn9CyLspl
+         9kZ9yDnGAAfLmV0XonBxcblkBrF5ggTWBhs3EXnu3t6HAg+u9YgCsP7x2HkbYo7KQhoG
+         ZKi3jaRNix7+ec5ulmmRfFOtxa3B7D5t/IZ63Y6kWUUdA6+qO3wsPe4w+wapgMiozhmH
+         aPvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OT2SsyZ10OYeuy7VscVaFJwl6PBRquiIV5ifXUolnFM=;
+        b=HvhAoQj0lBa1xVgabUwbb/EXCra52S/CCWZ5P/+rWesBRC4PbbIArs5rf2d9DQ8ZYV
+         MrCzQH+iKIyX0XgsRUJZSK3LwNd7Br65lDct9gO71gSS/zcUihF7g+hKoTkV0v5b3Ycs
+         OqHIx0HGRIzi1K51wnp1KPYYJbYNJ6yz9tTagbmrEVCpsT+ZVoPXUFcUl/VUZ7mwVA7D
+         FCuclmWIwqXfeAVO6xJ2PaZwaZZD2GjQOTv3BKhA8dEdOI0pTORFX/lkn7rf8QC+abUo
+         5JELSprM2WXTXh7M8fZ+4LGFZ3Gvik55rDHV5wQmzgX/TDt7asn/3GPZR3TeTUfmZHYN
+         VK6Q==
+X-Gm-Message-State: AOAM530th8y5Gt0PJ1VOu0us+NBMMzCql1tKygdyOBpma5w+HNFmAE83
+        VBXHA37qHyuTpqT9snvgKpo=
+X-Google-Smtp-Source: ABdhPJyztkmOyXTnjwrWEqUA3gbrsQ3AIhgAmCcGdTjYzNGZUNdqH6uRRXW3uKKf+XqHWygwnU0IgQ==
+X-Received: by 2002:a5d:460a:: with SMTP id t10mr4064638wrq.147.1629984837694;
+        Thu, 26 Aug 2021 06:33:57 -0700 (PDT)
+Received: from skbuf ([82.78.148.104])
+        by smtp.gmail.com with ESMTPSA id d9sm3981805wrb.36.2021.08.26.06.33.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 06:33:57 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 16:33:55 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Esben Haabendal <esben@geanix.com>
+Subject: Re: "BUG: Invalid wait context" in ls_extirq_set_type
+Message-ID: <20210826133355.lbb26bdf4ov5jjyp@skbuf>
+References: <20210825135438.ubcuxm5vctt6ne2q@skbuf>
+ <26de7b85-e466-e9af-077a-9d1dc087e061@rasmusvillemoes.dk>
 MIME-Version: 1.0
-In-Reply-To: <20210825172937.GD192480@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26de7b85-e466-e9af-077a-9d1dc087e061@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alan,
-
-On 25.08.2021 20:29, Alan Stern wrote:
-> On Wed, Aug 25, 2021 at 08:09:02PM +0300, Evgeny Novikov wrote:
->> ehci_orion_drv_probe() did not account for possible errors of
->> clk_prepare_enable() that in particular could cause invocation of
->> clk_disable_unprepare() on clocks that were not prepared/enabled yet,
->> e.g. in remove or on handling errors of usb_add_hcd() in probe. Though,
->> there were several patches fixing different issues with clocks in this
->> driver, they did not solve this problem.
->>
->> Add handling of errors of clk_prepare_enable() in ehci_orion_drv_probe()
->> to avoid calls of clk_disable_unprepare() without previous successful
->> invocation of clk_prepare_enable().
->>
->> Found by Linux Driver Verification project (linuxtesting.org).
->>
->> Fixes: 8c869edaee07 ("ARM: Orion: EHCI: Add support for enabling clocks")
->> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
->> Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
->> Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
->> ---
-> Acked-by: Alan Stern <stern@rowland.harvard.edu>
+On Thu, Aug 26, 2021 at 11:01:31AM +0200, Rasmus Villemoes wrote:
+> On 25/08/2021 15.54, Vladimir Oltean wrote:
+> > Hi,
+> >
+> > Apologies for my novice level of understanding. I see a stack trace on
+> > my system and would like to understand what is the correct way to get
+> > rid of it.
+> >
+> > I have a consumer of the drivers/irqchip/irq-ls-extirq.c driver which
+> > calls request_threaded_irq.
+> >
+> > struct irq_desc has a lock which is a raw spinlock.
+> > The __setup_irq function takes this desc->lock raw spinlock, then calls
+> > __irq_set_trigger. Finally this calls chip->irq_set_type which is
+> > implemented by ls_extirq_set_type.
+> >
+> > The problem is that ls_extirq_set_type uses regmap_update_bits, which
+> > ends up taking a non-raw spin lock, the kind that becomes sleepable on RT
+> > (this system is not RT, but still).
+> > So that's kind of bad, and this is what the stack trace below is saying:
+> >
 >
-> Do you intend to submit patches for the other EHCI drivers that don't
-> check for errors in clk_prepare_enable()?  It looks like
-> ehci-atmel.c, ehci-mv.c, and ehci-spear.c all need some attention.
->
-> The same is true for a bunch of the OHCI drivers: ohci-at91.c,
-> ohci-exynos.c, ohci-s3c2410.c, and ohci-spear.c.
->
-> Didn't the Linux Driver Verification project identify this problem in
-> all of these drivers?
-Our verification framework report numerous issues like the one for which 
-I sent the given patch. There are many warnings for different USB 
-drivers and other types of device drivers as well. We sent several 
-patches that were acknowledged by the developers already, though, after 
-the Andrew's reply [1] I have doubts that we need to treat these 
-warnings as potential bugs and fix them. The verification framework 
-performs static analysis in a way that I described before [2]. Regarding 
-the clock API it uses such models of clk_prepare() and clk_enable() that 
-can fail independently on underlying hardware since is not easy to 
-either model all such hardware or try to relate and consider 
-corresponding drivers in addition to drivers using clocks at 
-verification. Thus, potentially the verification framework can produce 
-warnings for all drivers that invoke clk_prepare(), clk_enable() or 
-clk_prepare_enable(), but do not check for their return values.
+> So, we've been using the irq-ls-extirq driver for years, on an RT
+> kernel, without seeing something like that. Does it require certain
+> debug knobs in .config? Or perhaps the sanity checks have been added
+> later, we've mostly been using it on 4.14.y and 4.19.y.
 
-I look forward whether you will confirm that it makes sense to handle 
-errors from mentioned functions anyway or it would be better not to sent 
-such bug reports unless we will be strictly sure that they can happen. 
-In the former case it would be better if somebody will teach built-in 
-Linux kernel static analyzers to detect these issues on a regular basis.
+Grepping for "BUG: Invalid wait context" in the kernel yields a single
+hit, and answers both questions. It was added by commit
 
-[1] https://lkml.org/lkml/2021/8/25/794
-[2] https://lkml.org/lkml/2021/8/17/239
+commit de8f5e4f2dc1f032b46afda0a78cab5456974f89
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Sat Mar 21 12:26:01 2020 +0100
 
-Best regards,
-Evgeny Novikov
-> Alan Stern
+    lockdep: Introduce wait-type checks
+
+    Extend lockdep to validate lock wait-type context.
+
+and selectable via "config PROVE_RAW_LOCK_NESTING".
+
 >
->>   drivers/usb/host/ehci-orion.c | 8 ++++++--
->>   1 file changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/usb/host/ehci-orion.c b/drivers/usb/host/ehci-orion.c
->> index a319b1df3011..3626758b3e2a 100644
->> --- a/drivers/usb/host/ehci-orion.c
->> +++ b/drivers/usb/host/ehci-orion.c
->> @@ -264,8 +264,11 @@ static int ehci_orion_drv_probe(struct platform_device *pdev)
->>   	 * the clock does not exists.
->>   	 */
->>   	priv->clk = devm_clk_get(&pdev->dev, NULL);
->> -	if (!IS_ERR(priv->clk))
->> -		clk_prepare_enable(priv->clk);
->> +	if (!IS_ERR(priv->clk)) {
->> +		err = clk_prepare_enable(priv->clk);
->> +		if (err)
->> +			goto err_put_hcd;
->> +	}
->>   
->>   	priv->phy = devm_phy_optional_get(&pdev->dev, "usb");
->>   	if (IS_ERR(priv->phy)) {
->> @@ -311,6 +314,7 @@ static int ehci_orion_drv_probe(struct platform_device *pdev)
->>   err_dis_clk:
->>   	if (!IS_ERR(priv->clk))
->>   		clk_disable_unprepare(priv->clk);
->> +err_put_hcd:
->>   	usb_put_hcd(hcd);
->>   err:
->>   	dev_err(&pdev->dev, "init %s fail, %d\n",
->> -- 
->> 2.26.2
->>
+> I don't know what the right fix is. Am I right when a say that for !RT,
+> spinlock==raw_spinlock? If so, switching regmap's spinlock to
+> raw_spinlock would be nop for !RT and fix this issue, but would of
+> course have quite far-reaching effects on RT kernels.
+
+far-reaching? Explain?
+It is _a_single_register_, accessed once per IRQ line, all at consumer driver probe time
+(typically boot time).
+
+We are not switching regmap from normal to raw spinlocks, we are just
+adding the option for raw spinlocks for this one register.
+
+> Perhaps it's silly for the driver to use syscon's regmap to access that
+> single register, maybe it should just iomap it itself, and protect
+> access with a raw_spinlock of its own. While syscon's regmap would cover
+> that intpcr register, nobody else would ever access it, so that should
+> work fine.
+
+I believe my competence ends here, I will re-read Arnd's email too, but
+I just don't see how the syscon API gives you something that is "not a
+regmap", something you can ioremap yourself as a consumer driver.
+
+> Then there's your suggestion. While there's nothing wrong with adding
+> raw_spinlock lock support in regmap, the fact that nobody has needed
+> that till now suggests that one should at least pause and think about
+> other options. And you point out the weaknesses of basing the
+> .use_raw_spinlock on a .compatible string yourself.
+>
+> > What to do?
+>
+> TL;DR: I don't know.
+>
+> Rasmus
