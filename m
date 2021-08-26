@@ -2,86 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C4B3F828D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1127E3F8294
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239601AbhHZGkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 02:40:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234415AbhHZGkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 02:40:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D3BE610CA;
-        Thu, 26 Aug 2021 06:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629959994;
-        bh=YDdDJ8UVx6APE79kWD1KiYfDKlzcYXXRqdvvgHhmVzk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aP1s1YHNUe+n+sZuGly73Kfys6U2PxpfwFwgeAYLORkHO7O6dD9MtMQfP356DdWGl
-         wrpN8612/+wvBVbxWHBr0wqM9pSv8bl9T4/vi+eECS1MbOCg9OAz+0F+EQNUsPQoX5
-         4tg4ywEmo8UqB0x1lnyowZ9+UsBPOWsukJYtg3Cg=
-Date:   Thu, 26 Aug 2021 08:39:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] net: don't unconditionally copy_from_user a struct ifreq
- for socket ioctls
-Message-ID: <YSc3MGVllU8qSJXV@kroah.com>
-References: <20210826012722.3210359-1-pcc@google.com>
+        id S239760AbhHZGnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 02:43:03 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:41954 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239112AbhHZGnB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 02:43:01 -0400
+X-UUID: 9a2fa85659084850ac874e9b1200f1ba-20210826
+X-UUID: 9a2fa85659084850ac874e9b1200f1ba-20210826
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 529553239; Thu, 26 Aug 2021 14:42:11 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 26 Aug 2021 14:42:10 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ MTKCAS06.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Thu, 26 Aug 2021 14:42:09 +0800
+From:   <guangming.cao@mediatek.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA-BUF HEAPS FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+CC:     <wsd_upstream@mediatek.com>, <isaacm@codeaurora.org>,
+        <sspatil@google.com>, <hridya@google.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: [PATCH] dma-buf: Add support for mapping buffers with DMA attributes
+Date:   Thu, 26 Aug 2021 14:42:33 +0800
+Message-ID: <20210826064233.69217-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210810020254.103134-1-guangming.cao@mediatek.com>
+References: <20210810020254.103134-1-guangming.cao@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826012722.3210359-1-pcc@google.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 06:27:22PM -0700, Peter Collingbourne wrote:
-> A common implementation of isatty(3) involves calling a ioctl passing
-> a dummy struct argument and checking whether the syscall failed --
-> bionic and glibc use TCGETS (passing a struct termios), and musl uses
-> TIOCGWINSZ (passing a struct winsize). If the FD is a socket, we will
-> copy sizeof(struct ifreq) bytes of data from the argument and return
-> -EFAULT if that fails. The result is that the isatty implementations
-> may return a non-POSIX-compliant value in errno in the case where part
-> of the dummy struct argument is inaccessible, as both struct termios
-> and struct winsize are smaller than struct ifreq (at least on arm64).
-> 
-> Although there is usually enough stack space following the argument
-> on the stack that this did not present a practical problem up to now,
-> with MTE stack instrumentation it's more likely for the copy to fail,
-> as the memory following the struct may have a different tag.
-> 
-> Fix the problem by adding an early check for whether the ioctl is a
-> valid socket ioctl, and return -ENOTTY if it isn't.
-> 
-> Fixes: 44c02a2c3dc5 ("dev_ioctl(): move copyin/copyout to callers")
-> Link: https://linux-review.googlesource.com/id/I869da6cf6daabc3e4b7b82ac979683ba05e27d4d
-> Signed-off-by: Peter Collingbourne <pcc@google.com>
-> Cc: <stable@vger.kernel.org> # 4.19
-> ---
->  include/linux/netdevice.h |  1 +
->  net/core/dev_ioctl.c      | 64 ++++++++++++++++++++++++++++++++-------
->  net/socket.c              |  6 +++-
->  3 files changed, 59 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index eaf5bb008aa9..481b90ef0d32 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -4012,6 +4012,7 @@ int netdev_rx_handler_register(struct net_device *dev,
->  void netdev_rx_handler_unregister(struct net_device *dev);
->  
->  bool dev_valid_name(const char *name);
-> +bool is_dev_ioctl_cmd(unsigned int cmd);
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-"is_socket_ioctl_cmd()" might be a better global name here.
+When mapping the memory represented by a dma-buf into a device's
+address space, it might be desireable to map the memory with
+certain DMA attributes. Thus, introduce the dma_mapping_attrs
+field in the dma_buf_attachment structure so that when
+the memory is mapped with dma_buf_map_attachment, it is mapped
+with the desired DMA attributes.
 
-thanks,
+Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+Signed-off-by: Sandeep Patil <sspatil@google.com>
+Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+---
+ drivers/dma-buf/heaps/cma_heap.c    | 6 ++++--
+ drivers/dma-buf/heaps/system_heap.c | 6 ++++--
+ include/linux/dma-buf.h             | 3 +++
+ 3 files changed, 11 insertions(+), 4 deletions(-)
 
-greg k-h
+diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+index 0c05b79870f9..2c9feb3bfc3e 100644
+--- a/drivers/dma-buf/heaps/cma_heap.c
++++ b/drivers/dma-buf/heaps/cma_heap.c
+@@ -99,9 +99,10 @@ static struct sg_table *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
+ 	struct sg_table *table = &a->table;
++	int attrs = attachment->dma_map_attrs;
+ 	int ret;
+ 
+-	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
++	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
+ 	if (ret)
+ 		return ERR_PTR(-ENOMEM);
+ 	a->mapped = true;
+@@ -113,9 +114,10 @@ static void cma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+ 				   enum dma_data_direction direction)
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
++	int attrs = attachment->dma_map_attrs;
+ 
+ 	a->mapped = false;
+-	dma_unmap_sgtable(attachment->dev, table, direction, 0);
++	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
+ }
+ 
+ static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 23a7e74ef966..fc7b1e02988e 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -130,9 +130,10 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
+ 	struct sg_table *table = a->table;
++	int attrs = attachment->dma_map_attrs;
+ 	int ret;
+ 
+-	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
++	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
+@@ -145,9 +146,10 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+ 				      enum dma_data_direction direction)
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
++	int attrs = attachment->dma_map_attrs;
+ 
+ 	a->mapped = false;
+-	dma_unmap_sgtable(attachment->dev, table, direction, 0);
++	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
+ }
+ 
+ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index efdc56b9d95f..4d650731766e 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -379,6 +379,8 @@ struct dma_buf_attach_ops {
+  * @importer_ops: importer operations for this attachment, if provided
+  * dma_buf_map/unmap_attachment() must be called with the dma_resv lock held.
+  * @importer_priv: importer specific attachment data.
++ * @dma_map_attrs: DMA attributes to be used when the exporter maps the buffer
++ * through dma_buf_map_attachment.
+  *
+  * This structure holds the attachment information between the dma_buf buffer
+  * and its user device(s). The list contains one attachment struct per device
+@@ -399,6 +401,7 @@ struct dma_buf_attachment {
+ 	const struct dma_buf_attach_ops *importer_ops;
+ 	void *importer_priv;
+ 	void *priv;
++	unsigned long dma_map_attrs;
+ };
+ 
+ /**
+-- 
+2.17.1
+
