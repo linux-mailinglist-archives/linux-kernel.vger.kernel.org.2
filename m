@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395E93F87F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832723F8803
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242457AbhHZMvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:51:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59444 "EHLO mail.kernel.org"
+        id S242515AbhHZMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:52:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240886AbhHZMvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:51:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D4F7610A4;
-        Thu, 26 Aug 2021 12:50:27 +0000 (UTC)
+        id S237292AbhHZMw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 08:52:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DB6660184;
+        Thu, 26 Aug 2021 12:51:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629982227;
-        bh=wZF2URXmMYj+OWy2bGz2KXh6jnmg/W1C+egqPumy4dU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PbRl4o7ajauS6zz4dE0yjdUSeyKZnbyqyQ4+C8bGQ852C5E3BvgRJsRhqX2NQD9mY
-         Yr+Mj3Ea90OVRm5HUp9Qa50CZNf4Nhq4ssPiDvwz67xwpDj5Sbzw7OeGrx8UAg9ipM
-         PmyvPb4DWQ96VDINz76mFXon+O80XnJS/basm8L0OlyemZG/YdoKiSp6yRJZCtjGNu
-         79NdhmwwGLt8ioGPZ14cJrqD2roqmvgH+629DRl+4n2miiLUbELOKSDI94W89tw00J
-         Pmvu8GoG0i57IBPE6TIkFp9LfGjoxBjyTuo5TOC9R/vQnAf0X1WsjPDt3Yfq+gaqFM
-         DGAN87uJsRB4w==
-Date:   Thu, 26 Aug 2021 08:50:26 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de
-Subject: Re: [PATCH 5.13 000/127] 5.13.13-rc1 review
-Message-ID: <YSeOEvHwlRMJJsiJ@sashalap>
-References: <20210824165607.709387-1-sashal@kernel.org>
- <1d26e6ba-29d1-15ce-093e-5cda076b76c7@linuxfoundation.org>
+        s=k20201202; t=1629982299;
+        bh=G0g5qoxtqChHUFJNJcPrQux80ciZrW4m+9nezijEiHk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=k5Xopvhpw36SdBTiAc/TE8o9kk4Baga4HvAHPNQtj4wiaaev2xmWnhYM0iuJB+//H
+         IwSulDZPMOzlTPmVSJTrVyYuu2pvwoqDa5FTvX2kQYtZZ+4OEWASGpJaKLWF+3zvh4
+         tDmEsw1kjDSolSTym5lLQJVtiJOoWZ9v01Sw/XQFvPjepN7lDga5oHLFMntJf5lSrc
+         bfzc8KQtGaknG18IrF2QQD8r7qOXEZ9mhiVoMDvJb/jxJmd2ypXLMOqGLSfAakAg2g
+         tZljomFw0E1KaOl8pAnMlsx8ni0XxoeVeRdLuYxxphs+NTDFT9KfjUUQ3kU8quj5cA
+         iphxJ/2jmrdvw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        linux-spi@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Luting Guo <luting.guo@unisoc.com>
+Subject: Re: [PATCH V3 0/4] Add sprd ADI r3 support
+Date:   Thu, 26 Aug 2021 13:51:07 +0100
+Message-Id: <162998226397.33692.16363707556815113095.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210826091549.2138125-1-zhang.lyra@gmail.com>
+References: <20210826091549.2138125-1-zhang.lyra@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1d26e6ba-29d1-15ce-093e-5cda076b76c7@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 04:34:55PM -0600, Shuah Khan wrote:
->On 8/24/21 10:54 AM, Sasha Levin wrote:
->>
->>This is the start of the stable review cycle for the 5.13.13 release.
->>There are 127 patches in this series, all will be posted as a response
->>to this one.  If anyone has any issues with these being applied, please
->>let me know.
->>
->>Responses should be made by Thu 26 Aug 2021 04:55:18 PM UTC.
->>Anything received after that time might be too late.
->>
->>The whole patch series can be found in one patch at:
->>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.13.y&id2=v5.13.12
->>or in the git tree and branch at:
->>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
->>and the diffstat can be found below.
->>
->>Thanks,
->>Sasha
->>
->
->Compiled and booted on my test system. No dmesg regressions.
->
->Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+On Thu, 26 Aug 2021 17:15:45 +0800, Chunyan Zhang wrote:
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> 
+> This patchset adds new ADI version (r3) support which used on sc9863 and
+> some other Unisoc's SoCs.
+> 
+> Since v2:
+> * Added Rob's and Baolin's Reviewed-by;
+> * Seprated a stable patch for wrong macro fix from the last version patch 1/3;
+> * Removed redundant empty line from spi-sprd-adi.c.
+> 
+> [...]
 
-Thanks for testing, Shuah!
+Applied to
 
--- 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/4] spi: sprd: Fix the wrong WDG_LOAD_VAL
+      commit: 245ca2cc212bb2a078332ec99afbfbb202f44c2d
+[2/4] spi: sprd: Add ADI r3 support
+      commit: 3b66ca9783d1d1b7be7bf41e8934ca2eaf50a9c0
+[3/4] dt-bindings: spi: Convert sprd ADI bindings to yaml
+      commit: f15e60d460391d16bdad2e446e9dca4f264ccdfe
+[4/4] dt-bindings: spi: add sprd ADI for sc9863 and ums512
+      commit: 0f887ac82971cbde59e563d6490c05c6b15aa82f
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
 Thanks,
-Sasha
+Mark
