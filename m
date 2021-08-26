@@ -2,138 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B783F875C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DA43F8752
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241376AbhHZM0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:26:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34699 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241003AbhHZM0F (ORCPT
+        id S240915AbhHZMZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:25:50 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:39816
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240725AbhHZMZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:26:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629980717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HWkB0hMCTj2XBhUtByrzWehSDaGM0wCcYJx5IgcI9F8=;
-        b=VP9DcCLUBM3d+IgVoBYKl1QPJv+bOYXygkoiNO02k36QeYLUi8db45WQy6T94rrxiptxYE
-        KT3qOn0JLXwD+3j7RVgfgqt0swYJrFePGdRMMmZrt1K7YsSd8fBrnVTYSXcfCE0hTKC7pc
-        4qH8dXGugwVZTMpljKrCAdpi+7oFoo4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-CdOrIS4KMmyBa0t-wNyriw-1; Thu, 26 Aug 2021 08:25:16 -0400
-X-MC-Unique: CdOrIS4KMmyBa0t-wNyriw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 26 Aug 2021 08:25:49 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F04ED1966322;
-        Thu, 26 Aug 2021 12:25:14 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.193.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 45BFA60877;
-        Thu, 26 Aug 2021 12:25:06 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] KVM: x86: Fix stack-out-of-bounds memory access from ioapic_write_indirect()
-Date:   Thu, 26 Aug 2021 14:24:42 +0200
-Message-Id: <20210826122442.966977-5-vkuznets@redhat.com>
-In-Reply-To: <20210826122442.966977-1-vkuznets@redhat.com>
-References: <20210826122442.966977-1-vkuznets@redhat.com>
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id D43033F051;
+        Thu, 26 Aug 2021 12:25:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629980700;
+        bh=s+hrSkGmeiLA9/GhpGpUgimq/yCOJD7q2NZj6bIs8Go=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=em2kgWn3xT3trjNWtti14jeqDNC1cJ5v1/l14oomj6FMht9ct/DSe7AyP880XB8V5
+         MawUkYO+Fe9zVq8ixNxTHlwCeAXhmU/LAEp59SA6M2PQyyuhA8ShAaBa060ydnE8FA
+         rkFoQAWyu2IW/L/XJ5mMOLUIOTJBkCfy66sPLC/HVnvjjUGDNIqbdLLyCUzD51T1Ji
+         BYsWF/AujgPSHq7vAXqUqRyktm25hvM/jiks+Iez0K80JqZtpnjQcbxYYNPmhX3ng4
+         DzPCr2ZIGYh8QdApHuAz2xfS2rP6ZMEDN/pVGwTCXrR/ELwTn6OfU+nm2AAlWgKEuT
+         VZKWWtFlTXBJQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>, dmaengine@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: fsl-dpaa2-qdma: Fix spelling mistake "faile" -> "failed"
+Date:   Thu, 26 Aug 2021 13:25:00 +0100
+Message-Id: <20210826122500.13743-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN reports the following issue:
+From: Colin Ian King <colin.king@canonical.com>
 
- BUG: KASAN: stack-out-of-bounds in kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
- Read of size 8 at addr ffffc9001364f638 by task qemu-kvm/4798
+There is a spelling mistake in a dev_err error message. Fix it.
 
- CPU: 0 PID: 4798 Comm: qemu-kvm Tainted: G               X --------- ---
- Hardware name: AMD Corporation DAYTONA_X/DAYTONA_X, BIOS RYM0081C 07/13/2020
- Call Trace:
-  dump_stack+0xa5/0xe6
-  print_address_description.constprop.0+0x18/0x130
-  ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-  __kasan_report.cold+0x7f/0x114
-  ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-  kasan_report+0x38/0x50
-  kasan_check_range+0xf5/0x1d0
-  kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-  kvm_make_scan_ioapic_request_mask+0x84/0xc0 [kvm]
-  ? kvm_arch_exit+0x110/0x110 [kvm]
-  ? sched_clock+0x5/0x10
-  ioapic_write_indirect+0x59f/0x9e0 [kvm]
-  ? static_obj+0xc0/0xc0
-  ? __lock_acquired+0x1d2/0x8c0
-  ? kvm_ioapic_eoi_inject_work+0x120/0x120 [kvm]
-
-The problem appears to be that 'vcpu_bitmap' is allocated as a single long
-on stack and it should really be KVM_MAX_VCPUS long. We also seem to clear
-the lower 16 bits of it with bitmap_zero() for no particular reason (my
-guess would be that 'bitmap' and 'vcpu_bitmap' variables in
-kvm_bitmap_or_dest_vcpus() caused the confusion: while the later is indeed
-16-bit long, the later should accommodate all possible vCPUs).
-
-Fixes: 7ee30bc132c6 ("KVM: x86: deliver KVM IOAPIC scan request to target vCPUs")
-Fixes: 9a2ae9f6b6bb ("KVM: x86: Zero the IOAPIC scan request dest vCPUs bitmap")
-Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- arch/x86/kvm/ioapic.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
-index ff005fe738a4..8c065da73f8e 100644
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -319,8 +319,8 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
- 	unsigned index;
- 	bool mask_before, mask_after;
- 	union kvm_ioapic_redirect_entry *e;
--	unsigned long vcpu_bitmap;
- 	int old_remote_irr, old_delivery_status, old_dest_id, old_dest_mode;
-+	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+index a0358f2c5cbb..8dd40d00a672 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
++++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+@@ -701,7 +701,7 @@ static int dpaa2_qdma_probe(struct fsl_mc_device *dpdmai_dev)
+ 	/* DPDMAI enable */
+ 	err = dpdmai_enable(priv->mc_io, 0, dpdmai_dev->mc_handle);
+ 	if (err) {
+-		dev_err(dev, "dpdmai_enable() faile\n");
++		dev_err(dev, "dpdmai_enable() failed\n");
+ 		goto err_enable;
+ 	}
  
- 	switch (ioapic->ioregsel) {
- 	case IOAPIC_REG_VERSION:
-@@ -384,9 +384,9 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
- 			irq.shorthand = APIC_DEST_NOSHORT;
- 			irq.dest_id = e->fields.dest_id;
- 			irq.msi_redir_hint = false;
--			bitmap_zero(&vcpu_bitmap, 16);
-+			bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
- 			kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq,
--						 &vcpu_bitmap);
-+						 vcpu_bitmap);
- 			if (old_dest_mode != e->fields.dest_mode ||
- 			    old_dest_id != e->fields.dest_id) {
- 				/*
-@@ -399,10 +399,10 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
- 				    kvm_lapic_irq_dest_mode(
- 					!!e->fields.dest_mode);
- 				kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq,
--							 &vcpu_bitmap);
-+							 vcpu_bitmap);
- 			}
- 			kvm_make_scan_ioapic_request_mask(ioapic->kvm,
--							  &vcpu_bitmap);
-+							  vcpu_bitmap);
- 		} else {
- 			kvm_make_scan_ioapic_request(ioapic->kvm);
- 		}
 -- 
-2.31.1
+2.32.0
 
