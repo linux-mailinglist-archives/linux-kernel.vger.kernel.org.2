@@ -2,123 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91BA3F7F36
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A443F7F3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234739AbhHZAEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 20:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbhHZAEj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 20:04:39 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4AAC061757;
-        Wed, 25 Aug 2021 17:03:52 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id x12so1967656wrr.11;
-        Wed, 25 Aug 2021 17:03:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KlyUydUojzLZ6p39N0u7umX9ajU71wqXxuDHFIBSfEU=;
-        b=Dv6rvcAy935B8kJHZeiXg1EHaPpGS/ccJWcMk4XgNNtcK5Oeydjb2bNPjkQd1lXaIG
-         8o+CcNDSyvnJUyWJoGzXTKOa213z8OK3xJroNWMa+lyzzv0G5+ql26itr/qPKAh/ewMU
-         wndNGicDyUXxzr10DqhQNJYmbQkzWvdTBVOYRxVc0c/cixHw8AMiC/KytLiuWuzzuJz0
-         qmjTm+1jk+qpoGEFqYso4XbtEeGp6TE+QmCUW8DDEvallXyAcVYZDkjfEAql8Kl6B1WV
-         y4i6sdlbibCViJNqRMiV8M+lhWYKXg9oQqznY2t8Nti01xPQH3jkfSnO+mHMP2cTxDjq
-         KAjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KlyUydUojzLZ6p39N0u7umX9ajU71wqXxuDHFIBSfEU=;
-        b=SqSg9PlN5ilTySqtq7Pp5IBxrX8ub03QLNBKTKht8CdsJd2pW+LVoyTdgKKMwg+V+6
-         VCouCisG6qUcyCdfK8H0hOWZ3/AZ0dKY1EBTbo+ifOTtWcSYe7RwH165W/CU3QKsQ1RL
-         EWriY6CObGT+fEAWkySHXXom7CvVDjriZ/u3QJzHd9P1zELfKIdFRIOZNIWZ6LdnWW//
-         MvV+HBWNv3ZAxU35AOHyvUv+W4I6HkMZsE/UaIsXbFLhE+2SM6rDF4ZHTSdIAwf5iqy9
-         eFgDPh1HDHwURjbd6n8WD9vPAhi0W4XNQ8EmHanSpVK44rlM0MTmOwf57CyvXALQL7Jb
-         MqEQ==
-X-Gm-Message-State: AOAM5320uQHZ95zPvs0zt4TMXFO4WTo8oWzmhxqKJGWJeQsuHetG/OAZ
-        Z0mdpf2+oR++sloRv6eeTcLjRDc9eMU=
-X-Google-Smtp-Source: ABdhPJyxsFed58Wr4UAjdzzLGAYuNMTG0LWiYGwosZW+7Y6qfu8vac/6EBVf84Ot+pbxF8R+VrpZIQ==
-X-Received: by 2002:adf:90d0:: with SMTP id i74mr637031wri.185.1629936230707;
-        Wed, 25 Aug 2021 17:03:50 -0700 (PDT)
-Received: from skbuf ([82.78.148.104])
-        by smtp.gmail.com with ESMTPSA id r8sm1353839wrj.11.2021.08.25.17.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 17:03:50 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 03:03:49 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 2/2] net: dsa: tag_mtk: handle VLAN tag insertion
- on TX
-Message-ID: <20210826000349.q3s5gjuworxtbcna@skbuf>
-References: <20210825083832.2425886-1-dqfext@gmail.com>
- <20210825083832.2425886-3-dqfext@gmail.com>
+        id S234396AbhHZAKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 20:10:22 -0400
+Received: from mga11.intel.com ([192.55.52.93]:9947 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231535AbhHZAKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 20:10:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="214510333"
+X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
+   d="scan'208";a="214510333"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 17:09:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
+   d="scan'208";a="684693185"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 25 Aug 2021 17:09:34 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mJ2xZ-0000cc-MQ; Thu, 26 Aug 2021 00:09:33 +0000
+Date:   Thu, 26 Aug 2021 08:09:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [agd5f:audio-for-next 152/153]
+ sound/soc/amd/vangogh/acp5x-nu8821-cs35l41.c: linux/module.h is included
+ more than once.
+Message-ID: <202108260818.OklsIKp1-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210825083832.2425886-3-dqfext@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 04:38:31PM +0800, DENG Qingfang wrote:
-> Advertise TX VLAN offload features, and handle VLAN tag insertion in
-> the tag_xmit function.
-> 
-> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> ---
->  net/dsa/tag_mtk.c | 46 ++++++++++++++++++++++------------------------
->  1 file changed, 22 insertions(+), 24 deletions(-)
-> 
-> diff --git a/net/dsa/tag_mtk.c b/net/dsa/tag_mtk.c
-> index 415d8ece242a..e407abefa06c 100644
-> --- a/net/dsa/tag_mtk.c
-> +++ b/net/dsa/tag_mtk.c
-> @@ -22,7 +22,6 @@ static struct sk_buff *mtk_tag_xmit(struct sk_buff *skb,
->  				    struct net_device *dev)
->  {
->  	struct dsa_port *dp = dsa_slave_to_port(dev);
-> -	u8 xmit_tpid;
->  	u8 *mtk_tag;
->  
->  	/* Build the special tag after the MAC Source Address. If VLAN header
-> @@ -31,33 +30,31 @@ static struct sk_buff *mtk_tag_xmit(struct sk_buff *skb,
->  	 * the both special and VLAN tag at the same time and then look up VLAN
->  	 * table with VID.
->  	 */
-> -	switch (skb->protocol) {
-> -	case htons(ETH_P_8021Q):
-> -		xmit_tpid = MTK_HDR_XMIT_TAGGED_TPID_8100;
-> -		break;
-> -	case htons(ETH_P_8021AD):
-> -		xmit_tpid = MTK_HDR_XMIT_TAGGED_TPID_88A8;
-> -		break;
-> -	default:
-> -		xmit_tpid = MTK_HDR_XMIT_UNTAGGED;
-> -		skb_push(skb, MTK_HDR_LEN);
-> -		dsa_alloc_etype_header(skb, MTK_HDR_LEN);
-> -	}
-> -
+tree:   https://gitlab.freedesktop.org/agd5f/linux.git audio-for-next
+head:   b50aaad40c792ec71a1d51622bc50aca608e8b55
+commit: e9922f67385913c3d2a318b4b92f6a5ea19c0b65 [152/153] ASoC: amd: add machine driver for VG platform
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-You cannot just remove the old code. Only things like 8021q uppers will
-send packets with the VLAN in the hwaccel area.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-If you have an application that puts the VLAN in the actual AF_PACKET
-payload, like:
 
-https://github.com/vladimiroltean/tsn-scripts/blob/master/isochron/send.c
+includecheck warnings: (new ones prefixed by >>)
+>> sound/soc/amd/vangogh/acp5x-nu8821-cs35l41.c: linux/module.h is included more than once.
+>> /kbuild/src/consumer/sound/soc/amd/vangogh/acp5x-nu8821-cs35l41.c: linux/io.h is included more than once.
 
-then you need to handle the VLAN being in the skb payload.
+Please review and possibly fold the followup patch.
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
