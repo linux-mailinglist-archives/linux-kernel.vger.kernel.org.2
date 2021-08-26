@@ -2,165 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22153F86C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36863F86C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242352AbhHZLy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
+        id S242362AbhHZLzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbhHZLyz (ORCPT
+        with ESMTP id S242366AbhHZLzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:54:55 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1409EC061757;
-        Thu, 26 Aug 2021 04:54:08 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 17so2864620pgp.4;
-        Thu, 26 Aug 2021 04:54:08 -0700 (PDT)
+        Thu, 26 Aug 2021 07:55:03 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8E8C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:54:16 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id mq3so2020998pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:54:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=nwwI2GDMMB3CQFNBO8bxf/2QLHbDBkcGH58C4VeBtg0=;
-        b=gKN3huvl5kcDKczpggCXGMxnuqiXWW8fyduDS4rxvGSeR1yjnVHPFptFhU99pKy7+d
-         DA7ULgOGgFPZKBA5V1glB2nsPzPXZYBf/4hKN9755PGEiwOFZfejF9SR2MVW7b260k1d
-         rwujXHowYFjJyLvFblkhll1G9Fdokh67JY/0yikyJ6L54Wy3TgDep2R1X88VDQdaZiG3
-         ftC5B17Zv3HOfaQrMwDtPt2cQizb5plbYAv3ftLxOQo5s26D31knRzhM9o4TieTPziPD
-         FHF859y+zrs4UmWZ8ieuQaYbf3hIGN6Ystn+74XikjSnJVvh6RsZ7QrDtzxnsqTSMneW
-         SORA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GF9cA6HWm73PdcnhQrBWb0JMD23t4eWrYuwcNebBzhg=;
+        b=BOLP6Ete/5M3jts/uWuAymRzOu8DrhtLuaCJjWI6HJPL7OVKD5Sswq0Ir/Ml8zxiWp
+         sRpiHOy5vrltsG0dygRRhglM4AN+Tp8c5s0LpKJOFDYjOpRpq3jZK8SgY5u5aNdP+sUk
+         kPoAzc+OBpyviSNC3b3vRX0ZXey/cvs089ptA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nwwI2GDMMB3CQFNBO8bxf/2QLHbDBkcGH58C4VeBtg0=;
-        b=QQJbda3RTst1Fy6wfVFSPO9MU+AKGmhdO0Fcu9fXA/FephXz4zzteOg9n9Npqq6kFy
-         0xnrUL69O83Qh+eqdRXv9tPSDA5nW2pOTzJtJcjkq2Cj5DTyjTvz+Nh9RdRm7lxcI2H2
-         hen4eXM4OF5nizdOorlVXdlC5fjENaVXEXNsoN2Fq2GFNEMfAI0w0y7jv4rQLCBf7M9t
-         MgRS7ETUK4nIpczJ974RhSOIQa0N/NmDSN3sfPEA3xqCc7gFTsg08oar4iiu8SeUTerQ
-         dCJI4dhiy5EcK8auF0RYDO5pB8Mb2lLiUodCUAGBwWsqqUvlb3dJbOkjyM09riLbmNmy
-         nzYw==
-X-Gm-Message-State: AOAM530T2SWAdD2NJNqXrhCSc7S+S2tVh26PAr75wrThbS6ftqSil4cK
-        tsrf9HLPP4WFmAsyGY/nkxIbwBVuHDB5h3qbMEU=
-X-Google-Smtp-Source: ABdhPJxCZDv240Y19YvqSvce73TS6qqVMaFxktjjoGbA3ZdS52AfCRasNvWnh6gtjIwm6jmT3znelQ==
-X-Received: by 2002:a05:6a00:24c2:b0:3e2:878d:7e44 with SMTP id d2-20020a056a0024c200b003e2878d7e44mr3420288pfv.22.1629978847425;
-        Thu, 26 Aug 2021 04:54:07 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id a15sm2789435pfn.219.2021.08.26.04.53.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 04:54:06 -0700 (PDT)
-Subject: Re: [PATCH v8 1/7] drm: fix null ptr dereference in
- drm_master_release
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        chris@chris-wilson.co.uk, ville.syrjala@linux.intel.com,
-        matthew.auld@intel.com, dan.carpenter@oracle.com,
-        tvrtko.ursulin@intel.com, matthew.d.roper@intel.com,
-        lucas.demarchi@intel.com, karthik.b.s@intel.com,
-        jose.souza@intel.com, manasi.d.navare@intel.com,
-        airlied@redhat.com, aditya.swarup@intel.com, andrescj@chromium.org,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210826020122.1488002-1-desmondcheongzx@gmail.com>
- <20210826020122.1488002-2-desmondcheongzx@gmail.com>
- <YSdkjvWN9RAijZJy@phenom.ffwll.local>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <05f4d472-7a76-598a-e792-a847a3e8516a@gmail.com>
-Date:   Thu, 26 Aug 2021 19:53:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GF9cA6HWm73PdcnhQrBWb0JMD23t4eWrYuwcNebBzhg=;
+        b=tu3rU3rwa7rBw7UXcMQNbyE2mMCTUgGx2JU7MfLzStWoHN2D1FTawpYIA7X4LyEWup
+         jZFmcIUA9aDmCjpFfX2mvBEeX+POY5xXFZx8qvBsrZ9VFquqHMHeHbDgWZiKAbEQWScA
+         m7Qi1PBu9Ex6zMrvUbg65PN+lwWUy3SQ3Y3CHuS0JoQKXbAHGtU/J8dpktoZBr2SuJfq
+         KR4wx8c2nzIWWlLjlPB4S+IOhB2Q5mMOoCpEWsgM7YbpkTb2H3HX1dGNbTFpjhbkg/gg
+         A+3q1Jifold+ljMr0Ct4hpHwmcJilw10jF/uunW+rvBylTN5nO7Ch3OF+GP4/6OeZkk2
+         zNCQ==
+X-Gm-Message-State: AOAM533IPiNG6eVp12OvGuB+pX9/SGY6yHVz30GunoZKL/ALJxR+F7RQ
+        5T/utSp79uKAR1oTdYa9diIyWpi6cFQiMMlzZJJa/w==
+X-Google-Smtp-Source: ABdhPJyPJt6SUmiZLSQD+XbEIBZ8IKTak4j4QZ8Oj8fxfMRxk7v8EqBMuHWZ5SQ/bfQzG0hm7oZTmwF44/dS0Jgya64=
+X-Received: by 2002:a17:903:32ce:b0:138:7c09:1178 with SMTP id
+ i14-20020a17090332ce00b001387c091178mr3215013plr.60.1629978855791; Thu, 26
+ Aug 2021 04:54:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YSdkjvWN9RAijZJy@phenom.ffwll.local>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210826025144.51992-1-chunfeng.yun@mediatek.com> <20210826025144.51992-3-chunfeng.yun@mediatek.com>
+In-Reply-To: <20210826025144.51992-3-chunfeng.yun@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Thu, 26 Aug 2021 19:54:04 +0800
+Message-ID: <CAATdQgBD+dTtBie-cNKRJbfxEpc3haqjfUu1k26mTk8pCSOEww@mail.gmail.com>
+Subject: Re: [PATCH next v2 3/6] usb: xhci-mtk: update fs bus bandwidth by bw_budget_table
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Yaqii wu <yaqii.wu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/8/21 5:53 pm, Daniel Vetter wrote:
-> On Thu, Aug 26, 2021 at 10:01:16AM +0800, Desmond Cheong Zhi Xi wrote:
->> drm_master_release can be called on a drm_file without a master, which
->> results in a null ptr dereference of file_priv->master->magic_map. The
->> three cases are:
->>
->> 1. Error path in drm_open_helper
->>    drm_open():
->>      drm_open_helper():
->>        drm_master_open():
->>          drm_new_set_master(); <--- returns -ENOMEM,
->>                                     drm_file.master not set
->>        drm_file_free():
->>          drm_master_release(); <--- NULL ptr dereference
->>                                     (file_priv->master->magic_map)
->>
->> 2. Error path in mock_drm_getfile
->>    mock_drm_getfile():
->>      anon_inode_getfile(); <--- returns error, drm_file.master not set
->>      drm_file_free():
->>        drm_master_release(); <--- NULL ptr dereference
->>                                   (file_priv->master->magic_map)
->>
->> 3. In drm_client_close, as drm_client_open doesn't set up a master
->>
->> drm_file.master is set up in drm_open_helper through the call to
->> drm_master_open, so we mirror it with a call to drm_master_release in
->> drm_close_helper, and remove drm_master_release from drm_file_free to
->> avoid the null ptr dereference.
->>
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> 
-> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> 
-> I guess we should also have a cc: stable on this one? I think this bug
-> existed since pretty much forever, but maybe more prominent with the
-> drm_client stuff added a while ago.
-> -Daniel
-> 
+Hi Chunfeng,
 
-Thanks for the reviews, Daniel.
+On Thu, Aug 26, 2021 at 10:52 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> Use @bw_budget_table[] to update fs bus bandwidth due to
+> not all microframes consume @bw_cost_per_microframe, see
+> setup_sch_info().
+>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2: new patch, move from another series
+> ---
+>  drivers/usb/host/xhci-mtk-sch.c | 17 +++++++----------
+>  1 file changed, 7 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+> index cffcaf4dfa9f..83abd28269ca 100644
+> --- a/drivers/usb/host/xhci-mtk-sch.c
+> +++ b/drivers/usb/host/xhci-mtk-sch.c
+> @@ -458,8 +458,8 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
+>                  * Compared with hs bus, no matter what ep type,
+>                  * the hub will always delay one uframe to send data
+>                  */
+> -               for (j = 0; j < sch_ep->cs_count; j++) {
+> -                       tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_cost_per_microframe;
+> +               for (j = 0; j < sch_ep->num_budget_microframes; j++) {
+> +                       tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_budget_table[j];
 
-Took a closer look. I think if we cc: stable, this fix should accompany 
-commit 7eeaeb90a6a5 ("drm/file: Don't set master on in-kernel clients") 
-which moves the drm_master_open out from drm_file_alloc into 
-drm_open_helper.
+I'm worrying about this case with two endpoints,
+* EP1OUT: isochronous, maxpacket=192: bw_budget_table[] = { 188, 188, 0, ... }
+* EP2IN: interrupt, maxpacket=64: bw_budget_table[] = { 0, 0, 64, 64, ... }
+(Is this correct bw_budget_table contents for those eps?)
 
->> ---
->>   drivers/gpu/drm/drm_file.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
->> index ed25168619fc..90b62f360da1 100644
->> --- a/drivers/gpu/drm/drm_file.c
->> +++ b/drivers/gpu/drm/drm_file.c
->> @@ -282,9 +282,6 @@ void drm_file_free(struct drm_file *file)
->>   
->>   	drm_legacy_ctxbitmap_flush(dev, file);
->>   
->> -	if (drm_is_primary_client(file))
->> -		drm_master_release(file);
->> -
->>   	if (dev->driver->postclose)
->>   		dev->driver->postclose(dev, file);
->>   
->> @@ -305,6 +302,9 @@ static void drm_close_helper(struct file *filp)
->>   	list_del(&file_priv->lhead);
->>   	mutex_unlock(&dev->filelist_mutex);
->>   
->> +	if (drm_is_primary_client(file_priv))
->> +		drm_master_release(file_priv);
->> +
->>   	drm_file_free(file_priv);
->>   }
->>   
->> -- 
->> 2.25.1
->>
-> 
+I'm not sure if it's okay for those two endpoints to be allocated
+on the same u-frame slot.
+Can you please check if this is okay for xhci-mtk?
+(I feel like I already asked the same questions many times.)
 
+
+>                         if (tmp > FS_PAYLOAD_MAX)
+>                                 return -ESCH_BW_OVERFLOW;
+>                 }
+> @@ -534,21 +534,18 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
+>  {
+>         struct mu3h_sch_tt *tt = sch_ep->sch_tt;
+>         u32 base, num_esit;
+> -       int bw_updated;
+>         int i, j;
+>
+>         num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
+>
+> -       if (used)
+> -               bw_updated = sch_ep->bw_cost_per_microframe;
+> -       else
+> -               bw_updated = -sch_ep->bw_cost_per_microframe;
+> -
+>         for (i = 0; i < num_esit; i++) {
+>                 base = sch_ep->offset + i * sch_ep->esit;
+>
+> -               for (j = 0; j < sch_ep->cs_count; j++)
+> -                       tt->fs_bus_bw[base + j] += bw_updated;
+> +               for (j = 0; j < sch_ep->num_budget_microframes; j++)
+> +                       if (used)
+> +                               tt->fs_bus_bw[base + j] += sch_ep->bw_budget_table[j];
+> +                       else
+> +                               tt->fs_bus_bw[base + j] -= sch_ep->bw_budget_table[j];
+>         }
+>
+>         if (used)
+> --
+> 2.18.0
+>
