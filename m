@@ -2,134 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1E33F84E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8573F84E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241120AbhHZJ4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 05:56:37 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:50636 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240937AbhHZJ4h (ORCPT
+        id S241129AbhHZJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 05:58:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229818AbhHZJ6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 05:56:37 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Um47hnD_1629971747;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Um47hnD_1629971747)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 26 Aug 2021 17:55:48 +0800
-Subject: Re: [PATCH] ocfs2: ocfs2_downconvert_lock failure results in deadlock
-To:     Gang He <ghe@suse.com>, mark@fasheh.com, jlbec@evilplan.org
-Cc:     linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        akpm@linux-foundation.org
-References: <20210826061038.22295-1-ghe@suse.com>
- <b3f498eb-7de5-8a7f-0f52-01c1e2caa5d8@linux.alibaba.com>
- <7795ed72-8b77-14ea-cf18-78870e58f429@suse.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <0a8db668-b6f4-4b33-086a-2b522b343cf1@linux.alibaba.com>
-Date:   Thu, 26 Aug 2021 17:55:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Thu, 26 Aug 2021 05:58:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629971882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=leoHqocZKzyqQQ9iOmg3rT9HzD1ObnwnSGi2pkc96+k=;
+        b=idykCsQC5bEF4YemT3P99VssuYLZELOfCrr4HADQpYQWHOi9yqXjA2Q+UqAdb/VhZULLzO
+        NNNIoWSg4OoL81x5hqTQ47Bt0eGZ2+dArUSsDtYd4Lr6gGfdP8d3YSbJcKX5oAKQlR76Va
+        FGNVNEvy3+erE9rWKgW9tWD5M8PccVM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-81-LK2y0rkeOZqN9w8WCRn2og-1; Thu, 26 Aug 2021 05:57:58 -0400
+X-MC-Unique: LK2y0rkeOZqN9w8WCRn2og-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C95B987D541;
+        Thu, 26 Aug 2021 09:57:55 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C123C60877;
+        Thu, 26 Aug 2021 09:57:51 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Borislav Petkov <bp@alien8.de>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)), Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 0/2] KVM: SMM fixes for nVMX
+Date:   Thu, 26 Aug 2021 12:57:48 +0300
+Message-Id: <20210826095750.1650467-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <7795ed72-8b77-14ea-cf18-78870e58f429@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/26/21 4:45 PM, Gang He wrote:
-> Hi Joseph,
-> 
-> On 2021/8/26 16:23, Joseph Qi wrote:
->>
->>
->> On 8/26/21 2:10 PM, Gang He wrote:
->>> Usually, ocfs2_downconvert_lock() function always downconverts
->>> dlm lock to the expected level for satisfy dlm bast requests
->>
->> s/for/to
->>
->>> from the other nodes.
->>> But there is a rare situation. When dlm lock conversion is being
->>> canceled, ocfs2_downconvert_lock() function will return -EBUSY.
->>> You need to be aware that ocfs2_cancel_convert() function is
->>> asynchronous in fsdlm implementation.
->>> If we does not requeue this lockres entry, ocfs2 downconvert
->>> thread no longer handles this dlm lock bast request. Then, the
->>> other nodes will not get the dlm lock again, the current node's
->>> process will be blocked when acquire this dlm lock again.
->>>
->>> Signed-off-by: Gang He <ghe@suse.com>
->>> ---
->>>   fs/ocfs2/dlmglue.c | 13 +++++++++----
->>>   1 file changed, 9 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/fs/ocfs2/dlmglue.c b/fs/ocfs2/dlmglue.c
->>> index 48fd369c29a4..c454c218fbfe 100644
->>> --- a/fs/ocfs2/dlmglue.c
->>> +++ b/fs/ocfs2/dlmglue.c
->>> @@ -3671,13 +3671,11 @@ static int ocfs2_downconvert_lock(struct ocfs2_super *osb,
->>>                    OCFS2_LOCK_ID_MAX_LEN - 1);
->>>       lockres_clear_pending(lockres, generation, osb);
->>>       if (ret) {
->>> -        ocfs2_log_dlm_error("ocfs2_dlm_lock", ret, lockres);
->>> +        if (ret != -EBUSY)
->>> +            ocfs2_log_dlm_error("ocfs2_dlm_lock", ret, lockres);
->>
->> Do we have to treat EBUSY as a normal case?
-> Yes, this return code is expected when call dlm_lock() to convert a dlm lock to another level, but this dlm lock is being cancelled.
-> As I said in another mail, for fsdlm implementation,ocfs2_cancel_convert
-> will return immediately, but the related dlm lock will(is) be cancelled in background. For o2dlm implementation,ocfs2_cancel_convert will return after the dlm lock is cancelled and it's ast is invoked, that is why o2cb based ocfs2 does not encounter -EBUSY return code in my test script, of course, this kind of implementation will block other lockres entries to be handled for a little time in down-convert thread.
-
-Better to leave this log for later issue tracking.
-I'm worrying about if there are other cases here.
-
-> 
->>
->>>           ocfs2_recover_from_dlm_error(lockres, 1);
->>> -        goto bail;
->>>       }
->>>   -    ret = 0;
->>> -bail:
->>>       return ret;
->>>   }
->>>   @@ -3912,6 +3910,13 @@ static int ocfs2_unblock_lock(struct ocfs2_super *osb,
->>>       spin_unlock_irqrestore(&lockres->l_lock, flags);
->>>       ret = ocfs2_downconvert_lock(osb, lockres, new_level, set_lvb,
->>>                        gen);
->>> +    /* ocfs2_cancel_convert() is in progress, try again later */
->>> +    if (ret == -EBUSY) {
->>> +        ctl->requeue = 1;
->>> +        mlog(ML_BASTS, "lockres %s, ReQ: Downconvert busy\n",
->>> +             lockres->l_name);
->>> +        ret = 0;
->>
->> Ditto. If EBUSY is not a normal case, I'd like just requeue it but not
->> change it to normal return code.
->> You know ML_BASTS is always switched off in production environment.
-> Since this case should be considered as a normal case, although it's rare.
-> We should not print any error message to kernel journal, but if the user
-> turn on the BASTS trace, he should watch this trace for debugging.
-> 
-
-Okay, since we leave an error message above, we can return normal to
-caller. And now caller only print a simple error which doesn't have
-much meaning.
-
-BTW, could we change it like:
-
-ret = ocfs2_downconvert_lock();
-if (ret == -EBUSY) {
-	mlog(ML_BASTS, ...);
-	/* Describe the case why we have to requeue */
-	goto requeue;
-}
-
-...
-requeue:
-	ctl->requeue = 1;
-	return 0;
-
+Those are two patches that fix SMM entries while nested guests=0D
+are active and either EPT or unrestricted guest mode is disabled=0D
+(EPT disables the later)=0D
+=0D
+1. First patch makes sure that we don't run vmx_handle_exit_irqoff=0D
+   when we emulate a handful of real mode smm instructions.=0D
+=0D
+   When in emulation mode, vmx exit reason is not updated,=0D
+   and thus this function uses outdated values and crashes.=0D
+=0D
+2. Second patch works around an incorrect restore of segment=0D
+   registers upon entry to nested guest from SMM.=0D
+=0D
+   When entering the nested guest from SMM we enter real mode,=0D
+   and from it straight to nested guest, and in particular=0D
+   once we restore L2's CR0, enter_pmode is called which=0D
+   'restores' the segment registers from real mode segment=0D
+   cache.=0D
+=0D
+   Normally this isn't a problem since after we finish entering=0D
+   the nested guest, we restore all its registers from SMRAM,=0D
+   but for the brief period when L2's segment registers are not up to date,=
+=0D
+   we trip 'vmx_guest_state_valid' check for non unrestricted guest mode, e=
+ven=0D
+   though it will be later valid.=0D
+=0D
+Note that I still am able to crash L1 by migrating a VM with a=0D
+nested guest running and smm load, on VMX.=0D
+=0D
+This even happens with normal stock settings of ept=3D1,unrestricted_guest=
+=3D1=0D
+and will soon be investigated.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (2):=0D
+  KVM: VMX: avoid running vmx_handle_exit_irqoff in case of emulation=0D
+  VMX: nSVM: enter protected mode prior to returning to nested guest=0D
+    from SMM=0D
+=0D
+ arch/x86/kvm/vmx/vmx.c | 10 ++++++++++=0D
+ 1 file changed, 10 insertions(+)=0D
+=0D
+-- =0D
+2.26.3=0D
+=0D
 
