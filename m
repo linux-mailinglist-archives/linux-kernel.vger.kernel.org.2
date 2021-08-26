@@ -2,165 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6923F8610
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454983F8612
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242037AbhHZLEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241981AbhHZLEU (ORCPT
+        id S241842AbhHZLHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:07:22 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:49878
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231406AbhHZLHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:04:20 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B64C06179A
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:03:29 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id q3so1571532plx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 04:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nxvll67J3XpmADTGvnJ8QFA4/5rp+GwPgMrOnVdNvPo=;
-        b=RMNgAF0BCNlgdvkP+UgS9c463NC4wc1kfJjxPt5iICLa828IZGrrnBm4tz0DebmFJ2
-         LWHRuoGSUzZ7jbarQDkSl8/85XFL8yCXh/ClO3BcCtknFl23Y0lKczt4oSa+6vhs29a+
-         cocWcZo8pZo1W44JIFfI8Av4lisIFU8emUqjiwTS7Y6RXJP7NEyFB7XGgGJDOJQ+SjJM
-         ve/gHAI30gxnSSBJbe3QGa1NGW9/uR4/KPu5HvQl4FkuJA1u65ef8BlnOmioXJGQQqwP
-         EkdrId7q0WiX0neBXfWTjvV5oDeJvzxEOq5/S+2ePCXHLdj88Qynmzh9jnd7OfWwlmgK
-         RuBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nxvll67J3XpmADTGvnJ8QFA4/5rp+GwPgMrOnVdNvPo=;
-        b=O3L8Bi6v4H7eii9BcBbu3JUFqlOUAQoB9wuHIO6xC6v/58l529oE+G2TsmZhThxRzl
-         YXqWhK3OMwt3jOBhteYfNFSTLn7JgEHEMlTgVRqhyKF9bygVcHigng7DIhi6OIBSHpnj
-         v14U31tVL2S/X4bpt95tybQRQ6P0r+8QZyv9IzQFbYoI+9/EUH94qggIi60RWABpF97Y
-         zl6q1YgrNeQdrdFRqbfbqmKd04mVsm5ydAjW5kiRHn3/pGtIdrJTTHJPs5TBPvUeZwPz
-         Lj7lt2hNWccLk5x8h4YQdXmrashDo4HUg1MH/R5tDjiDhaZBT+3prtYON/VWadYpTjdC
-         pjCA==
-X-Gm-Message-State: AOAM530gBj3AVQGpQ+3hXPCmTuihPDuV87fuw2n1Ll23LStuMZ9MhAID
-        jDXLXFCopb6mQDa5nEtjq5+/Jw==
-X-Google-Smtp-Source: ABdhPJw3V4LfqiuEcKFM38WlYz5CA23xYtM52p/p0VCQ2WFgXNQLy9SERQL6JEd62Y0IHjos5zfVcw==
-X-Received: by 2002:a17:902:dcc9:b0:134:92c7:3cb6 with SMTP id t9-20020a170902dcc900b0013492c73cb6mr3207476pll.79.1629975808680;
-        Thu, 26 Aug 2021 04:03:28 -0700 (PDT)
-Received: from yc.huaqin.com ([101.78.151.213])
-        by smtp.gmail.com with ESMTPSA id z12sm2655335pfe.79.2021.08.26.04.03.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 04:03:28 -0700 (PDT)
-From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
-To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch, dianders@google.com
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        yangcong <yangcong5@huaqin.corp-partner.google.com>
-Subject: [v3 2/2] dt-bindngs: display: panel: Add BOE tv110c9m-ll3 panel bindings
-Date:   Thu, 26 Aug 2021 19:03:11 +0800
-Message-Id: <20210826110311.613396-3-yangcong5@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210826110311.613396-1-yangcong5@huaqin.corp-partner.google.com>
-References: <20210826110311.613396-1-yangcong5@huaqin.corp-partner.google.com>
+        Thu, 26 Aug 2021 07:07:19 -0400
+Received: from mussarela (1.general.cascardo.us.vpn [10.172.70.58])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id D23783F36A;
+        Thu, 26 Aug 2021 11:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629975984;
+        bh=8mClFa8njHChT6sq4TnLBNQxvsYUcvl4mxEKYINgKVU=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=f2r7zfFaFqf5INf4zLQW5gtUvUx3OAeIL30pHaggICPAxGsuMV/SuupOS3dVcGMcS
+         fwJRZlhLq3vqlJ+CTEZgvi1tIv03PYfmjdtCtL5L2sKqBbH0wIkCr7N5XvwbluB4GQ
+         i/uOy0x2JOLhNagOftc6p7Qyw4vQT8jD7w1SFiLIHXJritqYZrUQIi6S4SMQK0lPoa
+         UMZmgp4E9SB+dmIY4fybrE3C1fjRUpedjSZmKST7i3MUsNeZX8iPv+Rup8SP3zlXzI
+         darrJqVRJE5YQ4hWuDbQ8kE1Ae81s45/1vB1ZGGs9weCsWdsutTkVpLlf2/5d0TaMT
+         i1y1APkgwZNNw==
+Date:   Thu, 26 Aug 2021 08:06:19 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     stable@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>,
+        daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
+        carnil@debian.org
+Subject: Re: CVE-2021-3600 aka bpf: Fix 32 bit src register truncation on
+ div/mod
+Message-ID: <YSd1q9Llm1vsWbXT@mussarela>
+References: <20210826102337.GA7362@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826102337.GA7362@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for boe tv110c9m-ll3 panel.
+On Thu, Aug 26, 2021 at 12:23:37PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> As far as I can tell, CVE-2021-3600 is still a problem for 4.14 and
+> 4.19.
+> 
+> Unfortunately, those kernels lack BPF_JMP32 support, and that support
+> is too big and intrusive to backport.
+> 
+> So I tried to come up with solution without JMP32 support... only to
+> end up with not seeing the bug in the affected code.
+> 
+> Changelog says:
+> 
+>     bpf: Fix 32 bit src register truncation on div/mod
+>     
+>     While reviewing a different fix, John and I noticed an oddity in one of the
+>     BPF program dumps that stood out, for example:
+>     
+>       # bpftool p d x i 13
+>        0: (b7) r0 = 808464450
+>        1: (b4) w4 = 808464432
+>        2: (bc) w0 = w0
+>        3: (15) if r0 == 0x0 goto pc+1
+>        4: (9c) w4 %= w0
+>       [...]
+>     
+>     In line 2 we noticed that the mov32 would 32 bit truncate the original src
+>     register for the div/mod operation. While for the two operations the dst
+>     register is typically marked unknown e.g. from adjust_scalar_min_max_vals()
+>     the src register is not, and thus verifier keeps tracking original bounds,
+>     simplified:
+> 
+> So this explains "mov32 w0, w0" is problematic, and fixes the bug by
+> replacing it with jmp32. Unfortunately, I can't do that in 4.19; plus
+> I don't really see how the bug is solved -- we avoided adding mov32
+> sequence that triggers the problem, but the problematic sequence could
+> still be produced by the userspace, no?
+> 
+> Does adjust_scalar_min_max_vals still need fixing?
+> 
+> Do you have any hints how to solve this in 4.19?
+> 
+> Best regards,
+> 								Pavel
+> -- 
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
----
- .../display/panel/boe,tv110c9m-ll3.yaml       | 81 +++++++++++++++++++
- 1 file changed, 81 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.yaml
+Hi, Pavel.
 
-diff --git a/Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.yaml b/Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.yaml
-new file mode 100644
-index 000000000000..0cf8b70c77f8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.yaml
-@@ -0,0 +1,81 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/panel/boe,tv110c9m-ll3.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: BOE TV110C9M-LL3 DSI Display Panel
-+
-+maintainers:
-+  - Thierry Reding <thierry.reding@gmail.com>
-+  - Sam Ravnborg <sam@ravnborg.org>
-+
-+allOf:
-+  - $ref: panel-common.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+        # BOE TV110C9M-LL3 10.95" WUXGA TFT LCD panel
-+      - boe,tv110c9m-ll3
-+        # INX HJ110IZ-01A 10.95" WUXGA TFT LCD panel
-+      - inx,hj110iz-01a
-+
-+  reg:
-+    description: the virtual channel number of a DSI peripheral
-+
-+  enable-gpios:
-+    description: a GPIO spec for the enable pin
-+
-+  pp1800-supply:
-+    description: core voltage supply
-+
-+  pp3300-supply:
-+    description: core voltage supply
-+
-+  avdd-supply:
-+    description: phandle of the regulator that provides positive voltage
-+
-+  avee-supply:
-+    description: phandle of the regulator that provides negative voltage
-+
-+  backlight:
-+    description: phandle of the backlight device attached to the panel
-+
-+  port: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - enable-gpios
-+  - pp1800-supply
-+  - pp3300-supply
-+  - avdd-supply
-+  - avee-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    dsi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        panel@0 {
-+            compatible = "boe,tv110c9m-ll3";
-+            reg = <0>;
-+            enable-gpios = <&tlmm 76 GPIO_ACTIVE_HIGH>;
-+            avdd-supply = <&avdd_lcd>;
-+            avee-supply = <&avee_lcd>;
-+            pp1800-supply = <&v1p8_mipi>;
-+            pp3300-supply = <&pp3300_dx_edp>;
-+            backlight = <&backlight>;
-+            status = "okay";
-+            port {
-+                panel_in: endpoint {
-+                    remote-endpoint = <&dsi_out>;
-+                };
-+            };
-+        };
-+    };
-+
-+...
--- 
-2.25.1
+We have fixed this in our 4.15 kernels with help from Daniel, John, Alexei and
+Salvatore. I am a little busy right now, but will make time to work on the
+commits we had for 4.19. 4.19 is also affected by CVE-2021-3444, IIRC.
 
+When I get back to it, I may try to answer some of your questions.
+
+Cascardo.
