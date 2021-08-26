@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCF63F8E12
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C393F8E1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243416AbhHZSoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:44:11 -0400
-Received: from smtprelay0104.hostedemail.com ([216.40.44.104]:57314 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S243403AbhHZSoH (ORCPT
+        id S243361AbhHZSqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231310AbhHZSqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:44:07 -0400
-Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A710A1803007D;
-        Thu, 26 Aug 2021 18:43:19 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id BBE1E1D42F9;
-        Thu, 26 Aug 2021 18:43:18 +0000 (UTC)
-From:   Joe Perches <joe@perches.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev
-Subject: [PATCH 5/5] staging: r8188eu: Use vsprintf extension %phCX to format a copy_to_user string
-Date:   Thu, 26 Aug 2021 11:43:05 -0700
-Message-Id: <152e1b8f84c4686ea38182ca55344ed7f2cede65.1630003183.git.joe@perches.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <cover.1630003183.git.joe@perches.com>
-References: <cover.1630003183.git.joe@perches.com>
+        Thu, 26 Aug 2021 14:46:46 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74ABEC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:45:58 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id f6so5099363iox.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:45:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7HodnaKpdk5YItu/syJf9VsSTM/fNqElFhGR0XHjm+E=;
+        b=mW+UR4nfztugFUDZ1TDSsHiQzKxoWiz3D2q43UtkfHlAarwJ8XGYRQjmlMJTzi+OdL
+         fKA8Rq+BUNsxJGbXuczGXStXXZF2wlkhFqALwEDzwjUGeDFaNstffhOfUYbwi7SNMmxS
+         PTa2ZEm29VoCfJRiQ9IEE6Q6NB/N7b4TAnodskA4GNeKqOuE883QZ37nX93CXDoTi7Iq
+         pujCccDCbuABZnvIN2sCWVusyTMaksHTmLQtXQL7gHo/BS44XeWbljRzScJ+dOT8iA6B
+         LXTtdsgw9Vjl1FiiuwjUk2OrFw5nJHGTD+n8dxDkXXJSUsSefuIheShgaerAbpeySHRT
+         rhWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7HodnaKpdk5YItu/syJf9VsSTM/fNqElFhGR0XHjm+E=;
+        b=g7kPCU5bqjCLI5XuHpAIKBOpCC8L2tEW47u2rUcQB36mECPhDLQPBbfbuDMB41EHbK
+         d8aHWsoTFhDhxq3ebrKkGw6Jmep3ln5BQlneZq7xdrVjZ3Pv8Mm9oEn0irBAFs2SVSd9
+         Rni/NlyIQC5HhfHGn4LRS1Mikh6uY25C8GQStwiH3Zctufkhl6pYeGu2ECx2kyswXk1R
+         kCOJDGFLMB5TG4pKH/Af/Na5m0Ais7fmO/Oq4/6oo9H/RODSQ50yc6vGRATrWXc1yE7P
+         TpQIPD0XyFtkBG7Hd4BhodT7o02eaev1DrOofFCvG+BzIKjigYJf5KEsGk6/lfHkhZxz
+         JFjA==
+X-Gm-Message-State: AOAM532Syx471oagjuGLAzP8KEresbUGds4wZ34wyqyw+uAksce7ME2L
+        pfv1HlUFRMJZkSuIkEaby/27/w==
+X-Google-Smtp-Source: ABdhPJytciWSIwxDuSzZOwdFxgQ26VZPz9L9xnas77WKoWWgMsyXN1m4GDBGrkOuDfRB+RY8aN+9WA==
+X-Received: by 2002:a02:c7d2:: with SMTP id s18mr627068jao.22.1630003557853;
+        Thu, 26 Aug 2021 11:45:57 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id k21sm1977805ioh.38.2021.08.26.11.45.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 11:45:57 -0700 (PDT)
+Subject: Re: [PATCH] block/mq-deadline: Speed up the dispatch of low-priority
+ requests
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Damien Le Moal <damien.lemoal@wdc.com>
+References: <20210826144039.2143-1-thunder.leizhen@huawei.com>
+ <fc1f2664-fc4f-7b3e-5542-d9e4800a5bde@acm.org>
+ <537620de-646d-e78e-ccb8-4105bac398b3@kernel.dk>
+Message-ID: <82612be1-d61e-1ad5-8fb5-d592a5bc4789@kernel.dk>
+Date:   Thu, 26 Aug 2021 12:45:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=4.66
-X-Stat-Signature: ab6nzgakbqugzjeurgc7cy4cu8dz1on6
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: BBE1E1D42F9
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+N6Mu0fGd+avw1CnU4q7RlWdcsdUObJS4=
-X-HE-Tag: 1630003398-525352
+In-Reply-To: <537620de-646d-e78e-ccb8-4105bac398b3@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reduces object size without changing the string content.
+On 8/26/21 12:13 PM, Jens Axboe wrote:
+> On 8/26/21 12:09 PM, Bart Van Assche wrote:
+>> On 8/26/21 7:40 AM, Zhen Lei wrote:
+>>> lock protection needs to be added only in dd_finish_request(), which
+>>> is unlikely to cause significant performance side effects.
+>>
+>> Not sure the above is correct. Every new atomic instruction has a
+>> measurable performance overhead. But I guess in this case that
+>> overhead is smaller than the time needed to sum 128 per-CPU variables.
+> 
+> perpcu counters only really work, if the summing is not in a hot path,
+> or if the summing is just some "not zero" thing instead of a full sum.
+> They just don't scale at all for even moderately sized systems.
 
-compiled x86-64 defconfig w/ r8188eu and gcc 10.3.0
+Ugh it's actually even worse in this case, since you do:
 
-$ size drivers/staging/r8188eu/os_dep/ioctl_linux.o*
-   text	   data	    bss	    dec	    hex	filename
-  72556	   1548	      0	  74104	  12178	drivers/staging/r8188eu/os_dep/ioctl_linux.o.new
-  72758	   1548	      0	  74306	  12242	drivers/staging/r8188eu/os_dep/ioctl_linux.o.old
+static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)               
+{                                                                               
+	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);        
+}
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/staging/r8188eu/os_dep/ioctl_linux.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+which ends up iterating possible CPUs _twice_!
 
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index ab4a9200f0791..048164659d872 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -2907,10 +2907,8 @@ static int rtw_p2p_get_groupid(struct net_device *dev,
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
- 	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
--	sprintf(extra, "\n%.2X:%.2X:%.2X:%.2X:%.2X:%.2X %s",
--		pwdinfo->groupid_info.go_device_addr[0], pwdinfo->groupid_info.go_device_addr[1],
--		pwdinfo->groupid_info.go_device_addr[2], pwdinfo->groupid_info.go_device_addr[3],
--		pwdinfo->groupid_info.go_device_addr[4], pwdinfo->groupid_info.go_device_addr[5],
-+	sprintf(extra, "\n%pM %s",
-+		pwdinfo->groupid_info.go_device_addr,
- 		pwdinfo->groupid_info.ssid);
- 	wrqu->data.length = strlen(extra);
- 	return ret;
-@@ -3075,8 +3073,7 @@ static int rtw_p2p_get_go_device_address(struct net_device *dev,
- 	if (!blnMatch)
- 		sprintf(go_devadd_str, "\n\ndev_add = NULL");
- 	else
--		sprintf(go_devadd_str, "\ndev_add =%.2X:%.2X:%.2X:%.2X:%.2X:%.2X",
--			attr_content[0], attr_content[1], attr_content[2], attr_content[3], attr_content[4], attr_content[5]);
-+		sprintf(go_devadd_str, "\ndev_add =%6phCX", attr_content);
- 
- 	if (copy_to_user(wrqu->data.pointer, go_devadd_str, 10 + 17))
- 		return -EFAULT;
+Just ran a quick test here, and I go from 3.55M IOPS to 1.23M switching
+to deadline, of which 37% of the overhead is from dd_dispatch().
+
+With the posted patch applied, it runs at 2.3M IOPS with mq-deadline,
+which is a lot better. This is on my 3970X test box, so 32 cores, 64
+threads.
+
+Bart, either we fix this up ASAP and get rid of the percpu counters in
+the hot path, or we revert this patch.
+
 -- 
-2.30.0
+Jens Axboe
 
