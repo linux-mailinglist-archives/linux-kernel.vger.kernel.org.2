@@ -2,123 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3853F8B11
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CA13F8B27
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242954AbhHZPdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:33:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32884 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhHZPdT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:33:19 -0400
-Date:   Thu, 26 Aug 2021 17:32:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629991951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4tQ0V/9ydkXG5X5TbtD8i9ChKFEYCqsWhakG1Wch54g=;
-        b=S8W5pA95TNHCMwKU8KsdaoOJ4AE3RuPJDPrT6NoK2ubF5rDQUyaB1BtxbF9K3xexXGHFUZ
-        iqFkr9hR7VIAT4X3unT5BwAzaPdDqRGSG6fVAOmcj/r/WBYl72q9vJGyXNT2e0lytuGFaQ
-        dNSDEgKacjpKk/vdWkcOWcudmtpn9U3HC8P+lxBwtEdRbVOynKGRae0quAaOzFXbszjPJe
-        c0nINqqb/NeM1eYt3q8cMQhH4zDpbj6zrtYdFCRRiRc28ObxRTsPCSgDmtpy9ca48ZLsss
-        n4qgOydptBRWRgHeIi4cHTAk3hby5gPCNYQACDiiFy8lv9Vi7IYAbviAzQ2TPg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629991951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4tQ0V/9ydkXG5X5TbtD8i9ChKFEYCqsWhakG1Wch54g=;
-        b=lzIIBjzEdGotnunHs25baD9Ii1qJeX/xGmAtXvS6NelQe3K9dJM/88YzUTGdS6UTGShMr+
-        FvqDn5jLpAfgiTAA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Clark Williams <williams@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RT <linux-rt-users@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH PREEMPT_RT] i915: fix PREEMPT_RT locking splats
-Message-ID: <20210826153229.3u3wmwmsszvfzb6m@linutronix.de>
-References: <20210823150015.61ebc7d6@theseus>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210823150015.61ebc7d6@theseus>
+        id S242977AbhHZPgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:36:50 -0400
+Received: from mga05.intel.com ([192.55.52.43]:41889 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231864AbhHZPgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 11:36:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="303345461"
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="303345461"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 08:35:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="426824654"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by orsmga003.jf.intel.com with ESMTP; 26 Aug 2021 08:35:59 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 0/7] perf/x86/intel/uncore: Various fix for ICX and SPR
+Date:   Thu, 26 Aug 2021 08:32:36 -0700
+Message-Id: <1629991963-102621-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-23 15:00:15 [-0500], Clark Williams wrote:
-> Found two separate spots where i915 was throwing "sleeping
-> function called from invalid context" when running on a
-> PREEMPT_RT kernel. In both cases it was from calling
-> local_irq_disable prior to taking a spin_lock. Since spin
-> locks are converted to rt_mutex_t on PREEMPT_RT this means
-> that we might sleep with interrupts disabled.
-> 
-> Since in both cases the calls were in threaded context on RT
-> (irq or ksoftirqd) and in no danger of reentrance, change the
-> code to only disable interrupts on non-PREEMPT_RT kernels.
-> 
-> Signed-off-by: Clark Williams <williams@redhat.com>
-> ---
->  drivers/gpu/drm/i915/gt/intel_breadcrumbs.c          | 6 ++++--
->  drivers/gpu/drm/i915/gt/intel_execlists_submission.c | 6 ++++--
->  2 files changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-> index 38cc42783dfb..b8bf8d6d3c61 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-> @@ -318,9 +318,11 @@ void __intel_breadcrumbs_park(struct intel_breadcrumbs *b)
->  	/* Kick the work once more to drain the signalers, and disarm the irq */
->  	irq_work_sync(&b->irq_work);
->  	while (READ_ONCE(b->irq_armed) && !atomic_read(&b->active)) {
-> -		local_irq_disable();
-> +		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-> +			local_irq_disable();
->  		signal_irq_work(&b->irq_work);
-> -		local_irq_enable();
-> +		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-> +			local_irq_enable();
+From: Kan Liang <kan.liang@linux.intel.com>
 
-wouldn't it work to use irq_work_queue() + sync() instead of invoking
-the target callback itself? Given that this context is IRQ-enabled then
-it should (at least on x86) trigger right away.
+The fixes in the series are to fix different issues of perf uncore.
+They can be merged separately. I just want to make them more visible
+on maintainers' radar. So I put them together.
 
->  		cond_resched();
->  	}
->  }
-> diff --git a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-> index fc77592d88a9..0e918831b69f 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-> @@ -1580,9 +1580,11 @@ static void execlists_dequeue(struct intel_engine_cs *engine)
->  
->  static void execlists_dequeue_irq(struct intel_engine_cs *engine)
->  {
-> -	local_irq_disable(); /* Suspend interrupts across request submission */
-> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-> +		local_irq_disable(); /* Suspend interrupts across request submission */
->  	execlists_dequeue(engine);
+Patch 1 is to add extra IMC channel for ICX.
+Patch 2 is to fix the missing type 0 unit 0 uncore unit.
+Patch 3-7 are to update the static event constraints table for IIO, CHA,
+M2PCIE, M3UPI on ICX and SPR.
 
-I've been staring at this for a while. Wouldn't it work in invoke
-execlists_dequeue() and let execlists_dequeue() do 
-	spin_lock_irq(&engine->active.lock);
+Kan Liang (7):
+  perf/x86/intel/uncore: Support extra IMC channel on Ice Lake server
+  perf/x86/intel/uncore: Fix invalid unit check
+  perf/x86/intel/uncore: Fix Intel ICX IIO event constraints
+  perf/x86/intel/uncore: Fix Intel SPR CHA event constraints
+  perf/x86/intel/uncore: Fix Intel SPR IIO event constraints
+  perf/x86/intel/uncore: Fix Intel SPR M2PCIE event constraints
+  perf/x86/intel/uncore: Fix Intel SPR M3UPI event constraints
 
-? This is the only invocation of the function. I don't know what the
-expected synchronisation behaviour is. The only thing that could break
-is the tail part of the function after the &engine->active.lock has been
-dropped.
+ arch/x86/events/intel/uncore_discovery.h |  2 +-
+ arch/x86/events/intel/uncore_snbep.c     | 16 ++++++++++++++--
+ 2 files changed, 15 insertions(+), 3 deletions(-)
 
-> -	local_irq_enable(); /* flush irq_work (e.g. breadcrumb enabling) */
-> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-> +		local_irq_enable(); /* flush irq_work (e.g. breadcrumb enabling) */
->  }
->  
->  static void clear_ports(struct i915_request **ports, int count)
+-- 
+2.7.4
 
-Sebastian
