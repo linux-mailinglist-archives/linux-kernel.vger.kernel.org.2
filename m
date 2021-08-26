@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAB63F8AD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E543F8ADF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242914AbhHZPTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
+        id S242936AbhHZPUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234068AbhHZPTT (ORCPT
+        with ESMTP id S242913AbhHZPUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:19:19 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25C7C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:18:31 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id v26so2339601vsa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:18:31 -0700 (PDT)
+        Thu, 26 Aug 2021 11:20:13 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9883AC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:19:25 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id lc21so7078656ejc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:19:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=4+JJ75JWVkq5ZOMhPvZAqJUQ4/2oSB+1YyuKCcdYdck=;
-        b=EPPG5enffS5cgrkmhluaDjMYjChuZMzntoRq/y2CkHvtoXm5vCcxPz/DDyJlDyMRR9
-         6CIAXycEhASh0vTw/kOyMiLGcQ9J2972Eul3saHPh22lH3Kwshc8M2ARnktxF2eAG/9W
-         +NgHMG3HFhdxtRox19sX7HH0lEpQZnO2ppyq79XIWu9IQT5g+MXXMOzdhRB7qM1F0Yg4
-         Lh/fqW/1/Bm8yopoB4nBFJrLgv+biDsqOmL5jDtKIlOSgGuSMpRBu0k52Lg5EGytYvsV
-         0a0/sxoaN2HbqYx8Nqm6HvDX6qfnYRtyEiEnOA3leWLPgA/+YFSp0BIjmmH5Vvo0hKP2
-         gtWg==
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=COuDqpujOoWFpeeNNVgXjqNNoXXP7AkxPAE3chYS1Po=;
+        b=JCyUqbkSSAxsyKHlPcDgr7bgu4xmtVHL3mMeRVZeb6qfMKAng357OP/E5hkg9aoStF
+         2YJLuXDqu3P8xCXy6icac2IuDQFk7lYkkKSmPtacGNNVUJzsX7GoF7oskqD7a9IZMhUt
+         bBjwW7mNnpLivO2nfPB1XMTWgU57F0xkiTWmn7kivQcxk42YyKKAcOVKwgGWgledhc4Y
+         BLikzeGRCKF5ZLQDxcTM+THStdh4TYnu6CeTypxB8+0Lf5md2SprTcmKwWta3ec/oXuo
+         Od6QcmkFPPgAHpo3rMTggu0bull0Ye8Uz6qc8AX4dSOoLAZsi4cilOcNWTQAqtdqV8rT
+         ev5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=4+JJ75JWVkq5ZOMhPvZAqJUQ4/2oSB+1YyuKCcdYdck=;
-        b=V/66chfD/vnkjhoEfn6Ztc9YLx2IMPi0CkZThzG50kJJefMnunSkzugo4NVR/StTtA
-         nXJT0oKUU0Im3WVaDSHh5WWHhVQLY6z3wvPNyfaIx4u8FBMR97OT//+rCB4BsBgoW5q4
-         hygLASVWtfuGUlShZRnR+pxJDBUmFbFcxV5unbZXB7W6OToRpFPr2Oa/6NbN+NP2Uplt
-         MHUztmBnHpEOjCiKuPaxN3tPKOJJcmxs1Gcvk2d7qGghSg0A9cQibtqSKxtUkzDPI/7j
-         xqIb+VvDMl2eFTGJL8MDSWDvRX5mV13vvtGfELc6QEc68MfXuvLPcPAIOywE1hv7hRoE
-         5Y8g==
-X-Gm-Message-State: AOAM531CsT1clydZ76QmPWHE9JAhhZJgLx8mjC8PPCGpGGOndLb2hdN6
-        RimxNrR0BtwyIAh5RnUpMuRTEaDPDIfSdgHQoY8=
-X-Google-Smtp-Source: ABdhPJwIQ5SKy3HHZ4Q3RS2Ge2OOD9XM8W5qsFj8nNjEfNUTYNeqX+mcGyw5ys0I+WUqq5ye0k/Ke5laFl3e6yvFae8=
-X-Received: by 2002:a67:c307:: with SMTP id r7mr2990070vsj.47.1629991110757;
- Thu, 26 Aug 2021 08:18:30 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=COuDqpujOoWFpeeNNVgXjqNNoXXP7AkxPAE3chYS1Po=;
+        b=nYBnCrMfaABaV46NQkcKX7gs2GzGvsxPlaq5d/INmEnYVnOvX5uoV8M05LeGKuGeGb
+         oWUtrPU9sd9OZt7vYeSvB9lkD55b0hC2SVimk05w7iL43BKIxW23iBDuR6jFTw6dVqmP
+         n5s6aoyGS/j1LI4Ws65h29CAwnWoG6Ohn/eXKmKYFxRt32cxBNdY7HtGQQbBrXSTDROZ
+         GzT083M928HC4VGO5E8t/s+MwwIiEWxX8+ymX+XAJM4QRWkA3iyhAvrylN90WQ43yzsO
+         ogg1lfuSeoTWy/Up6JURAmv6NjeYBd6Bq1u7W9VnOO2IMQo0pE6APeTmJzb+0iKiP7Tt
+         bhjA==
+X-Gm-Message-State: AOAM5328yLCk7hgDF/cH1rSIg3VJtAnplgL6YqClY7WGo8Wj8WLHsP7J
+        icOdrxxM1xljhtO0T1Xtczc5fgJ3ZZdMT0JA9zOd3A==
+X-Google-Smtp-Source: ABdhPJyO9KnFCBi21tKMJtf8QVpUf6kS1Qy8yS+zGqz9k+SUvHsTRbFtGWD/dcXGWHJXHIAvJfygTp1FMgk+XX8Vjkw=
+X-Received: by 2002:a17:907:785a:: with SMTP id lb26mr4815912ejc.77.1629991163835;
+ Thu, 26 Aug 2021 08:19:23 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a59:cea4:0:b029:200:6655:e518 with HTTP; Thu, 26 Aug 2021
- 08:18:30 -0700 (PDT)
-Reply-To: mrs.jessicamojoh03@gmail.com
-From:   Martial Akakpo <bankubabank9@gmail.com>
-Date:   Thu, 26 Aug 2021 08:18:30 -0700
-Message-ID: <CAGFjWamB5kr5+mnSBTuLeXpDuET7Qtqu7ekrk7RWb+jFEVf0Vg@mail.gmail.com>
-Subject: Dear Good Friend.
-To:     undisclosed-recipients:;
+Received: by 2002:a50:77d4:0:0:0:0:0 with HTTP; Thu, 26 Aug 2021 08:19:22
+ -0700 (PDT)
+X-Originating-IP: [5.35.24.211]
+In-Reply-To: <6d8179f45f7139ecc8172c2d2c4988b943393c1e.camel@perches.com>
+References: <20210826120108.12185-1-colin.king@canonical.com> <6d8179f45f7139ecc8172c2d2c4988b943393c1e.camel@perches.com>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Thu, 26 Aug 2021 18:19:22 +0300
+Message-ID: <CAOJe8K1zCRZH-0-+ekDQ5T3mX2cGv1X-gBt1eg4co5HNPP+2vQ@mail.gmail.com>
+Subject: Re: [PATCH] cxgb4: clip_tbl: Fix spelling mistake "wont" -> "won't"
+To:     Joe Perches <joe@perches.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Good Friend.
+On 8/26/21, Joe Perches <joe@perches.com> wrote:
+> On Thu, 2021-08-26 at 13:01 +0100, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> There are spelling mistakes in dev_err and dev_info messages. Fix them.
+> []
+>> diff --git a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
+>> b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
+> []
+>> @@ -120,7 +120,7 @@ int cxgb4_clip_get(const struct net_device *dev, const
+>> u32 *lip, u8 v6)
+>>  				write_unlock_bh(&ctbl->lock);
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>  				dev_err(adap->pdev_dev,
+>>  					"CLIP FW cmd failed with error %d, "
+>> -					"Connections using %pI6c wont be "
+>> +					"Connections using %pI6c won't be "
+>>  					"offloaded",
+>>  					ret, ce->addr6.sin6_addr.s6_addr);
+>>  				return ret;
+>> @@ -133,7 +133,7 @@ int cxgb4_clip_get(const struct net_device *dev, const
+>> u32 *lip, u8 v6)
+>>  	} else {
+>>  		write_unlock_bh(&ctbl->lock);
+>>  		dev_info(adap->pdev_dev, "CLIP table overflow, "
+>> -			 "Connections using %pI6c wont be offloaded",
+>> +			 "Connections using %pI6c won't be offloaded",
+>>  			 (void *)lip);
+>
+> This is an unnecessary cast.
+> And these could coalesce the format fragments and add newlines too.
 
-I am happy to inform you about my success in getting those funds
-transferred under the cooperation of a new partner from Indonesia.
-Presently I am in Indonesia for investment projects with my own share
-of the total sum. Meanwhile, I didn=E2=80=99t forget your past efforts and
-attempts to assist me in transferring those funds despite the fact
-that it failed us somehow. Now contact my secretary in Togo Lome his
-name is Mrs.Jessica Mojoh
+and fix the leftover in the comment:
+./t4_hw.c:7185:	 * set wont be sent when we are flashing FW.
 
 
-Mrs.Jessica Mojoh.
-
-Email: { mrs.jessicamojoh03@gmail.com  }
-
- Contact him and ask him to send you the total of $920.000.00.{Nine
-Hundred And Twenty Thousand United States Dollars} which I kept for
-your past efforts and attempts to assist me in this matter. I
-appreciate your efforts at that time very much. So feel free and get
-in touch with my Secretary Mrs.Jessica Mojoh and instruct him where to
-send the amount to you. Please do let me know immediately you receive
-it so that we can share the joy after all the suffering at that time.
-Do send to  Mrs.Jessica Mojoh, your contact details.
-
-Your Full Names=E2=80=A6...........................................
-
-You=E2=80=99re Address=E2=80=A6............................................=
-..
-
-Cell Phone Number=E2=80=A6........................................
-
-Your occupation................................................
-
-Your Age=E2=80=A6.....................................................
-
-To enable him to submit your details to my paying bank the Ned Bank
-Togo Lome to wire your compensation money to your nominated bank
-account/Bank Check or they can send to you an authorized bank atm
-master card to your address for you to withdraw the money from any
-bank atm machine in your country.
-
-In the moment, I am very busy here because of the investment projects
-which me and the new partner are having at hand, finally, remember
-that I had forwarded instruction to my secretary on your behalf to
-receive that money, so feel free to get in touch with Mrs.Jessica
-Mojoh he will send the amount to you without any delay.
-
-Thanks and God bless you.
-Mrs.Jessica Mojoh
+>
+>
+>
