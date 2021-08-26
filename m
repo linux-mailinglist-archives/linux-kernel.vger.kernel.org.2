@@ -2,57 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4993F8A00
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2F73F89DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242865AbhHZOUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:20:23 -0400
-Received: from gate.crashing.org ([63.228.1.57]:60012 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229832AbhHZOUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:20:17 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 17QECso4020353;
-        Thu, 26 Aug 2021 09:12:54 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 17QECseB020350;
-        Thu, 26 Aug 2021 09:12:54 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Thu, 26 Aug 2021 09:12:54 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 2/2] powerpc/bug: Provide better flexibility to WARN_ON/__WARN_FLAGS() with asm goto
-Message-ID: <20210826141254.GB1583@gate.crashing.org>
-References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu> <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu> <YSa1O4fcX1nNKqN/@Ryzen-9-3900X.localdomain> <87h7fcc2m4.fsf@mpe.ellerman.id.au>
-Mime-Version: 1.0
+        id S242737AbhHZOOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234875AbhHZOOS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 10:14:18 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4E2C061757;
+        Thu, 26 Aug 2021 07:13:31 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id i6so5356676wrv.2;
+        Thu, 26 Aug 2021 07:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=caYyU5A2AvEDiDoSCaNuh/yyConc6WLj0h0u8wdjUAY=;
+        b=sfdfnRDFmn99FvOvSeIqiZu3TIpbOjIpjTkWDSMeJtlSprqfChCgqmNX+yuucnUgV9
+         i6zK/gAr7uA4GITCV3DLh9/WVEtp6wrDCq6oQG+jyckvjT3+ADGUV0qEW6rSZr2LH7ph
+         FGlaDC5Org74CkvgU6zGV0GrKV5pU0kKKE4Nk35WC/1I1vkXvJa+KHP/mkCE5tdnjk8p
+         nWogC+riLx3d2o+ePUibWB3xTtU3gnmw5SmwcoSx6tKsS8kovnIp9gIwqtKUDxJvyBn6
+         eIRGhiqWGZW3pfFeGyBnFHX+oGbYmorV+PEvPfhsTHJMSpKVOntuKb41J5jkxTBfA42B
+         jktw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=caYyU5A2AvEDiDoSCaNuh/yyConc6WLj0h0u8wdjUAY=;
+        b=Xg48BEWCi2txNa1W9ZeF1jUI+xD5Gv7Is60gM87vunzpEAaVJl0GL/HnSA5FdfK4Of
+         ECAL2Ze9Q2+rRQbEfHNh/D1bxp3+jq3Mg8uHJ79g7AQj/s4B9PO+yquTICSym5cYD4Yd
+         37UgAOROR37WzcqDFXsjhtBnz7JGWAE9M+JsJDDCYNaF8W851FBY5SC0mDaMSo7lvp4H
+         7c5Cx1TKbdYnDtBVGHOXFuPE0baSELlFiCVKO2FPccXj7AeKilfsiWYidHmOtiS6Lr0I
+         7LzzlbpCpsA1vvteFK+7MFHWG5ppj3ajfwDMjUoLN/UM8gUQlQ3/WE6HHnwzfUrwLbLy
+         twFA==
+X-Gm-Message-State: AOAM530UcKfQtTScTTCbPsY6IaEvQzuQJz4Kjy8CCKQnSR1+rGFSS/u4
+        KZ37v1xu2Osv/rYjoJ9rYgU=
+X-Google-Smtp-Source: ABdhPJy9JM6BAhgGm12/qstapJvz/0SjmJEusJf+9bezqcUxqhO2JhGEOaReMpCaxTpD+2laTY1RsQ==
+X-Received: by 2002:adf:9084:: with SMTP id i4mr4333320wri.23.1629987209616;
+        Thu, 26 Aug 2021 07:13:29 -0700 (PDT)
+Received: from skbuf ([82.78.148.104])
+        by smtp.gmail.com with ESMTPSA id b24sm4369821wmj.43.2021.08.26.07.13.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 07:13:28 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 17:13:26 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 2/2] net: dsa: tag_mtk: handle VLAN tag insertion
+ on TX
+Message-ID: <20210826141326.xa52776uh3r3jpg4@skbuf>
+References: <20210825083832.2425886-1-dqfext@gmail.com>
+ <20210825083832.2425886-3-dqfext@gmail.com>
+ <20210826000349.q3s5gjuworxtbcna@skbuf>
+ <20210826052956.3101243-1-dqfext@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87h7fcc2m4.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <20210826052956.3101243-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 01:21:39PM +1000, Michael Ellerman wrote:
-> So there seems to be some misunderstanding with clang, it doesn't like
-> us passing an expression to the inline asm.
+On Thu, Aug 26, 2021 at 01:29:56PM +0800, DENG Qingfang wrote:
+> On Thu, Aug 26, 2021 at 03:03:49AM +0300, Vladimir Oltean wrote:
+> > 
+> > You cannot just remove the old code. Only things like 8021q uppers will
+> > send packets with the VLAN in the hwaccel area.
+> > 
+> > If you have an application that puts the VLAN in the actual AF_PACKET
+> > payload, like:
+> > 
+> > https://github.com/vladimiroltean/tsn-scripts/blob/master/isochron/send.c
+> > 
+> > then you need to handle the VLAN being in the skb payload.
 > 
-> AFAIK it is legal to pass expressions as inputs to inline asm, ie. it
-> doesn't have to just be a variable name.
+> I've actually tested this (only apply patch 2 without .features) and it
+> still worked.
+> 
+> The comment says the VLAN tag need to be combined with the special tag in
+> order to perform VLAN table lookup,
 
-It certainly is.  That is the whole point of inline asm!  This way, all
-of the C code "around" the asm can be optimised.
+It does say this.
 
-> This patch seems to fix it. Not sure if that's just papering over it though.
+> so we can set its destination port vector to all zeroes and the switch
+> will forward it like a data frame (TX forward offload),
 
-It is, and it makes less optimised code (also on GCC), as Christophe
-points out.
+And it does not say this. So this is supported after all with mt7530?
+Are you looking to add support for that?
 
+> but as we allow multiple bridges which are either VLAN-unaware or
+> VLAN-aware with the same VID, there is no way to determine the
+> destination bridge unless we maintain some VLAN translation mapping.
 
-Segher
+What does "VLAN translation mapping" mean, practically?
+Other drivers which cannot remap VIDs to internal VLANs just restrict a
+single VLAN-aware bridge, and potentially multiple VLAN-unaware ones.
