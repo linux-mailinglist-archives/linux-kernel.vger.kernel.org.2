@@ -2,147 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9653F8147
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EB53F8156
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237722AbhHZDuh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Aug 2021 23:50:37 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:37515 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhHZDuf (ORCPT
+        id S236931AbhHZDzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 23:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhHZDzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 23:50:35 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 17Q3mKQ61021020, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36501.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 17Q3mKQ61021020
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 26 Aug 2021 11:48:20 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36501.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 26 Aug 2021 11:48:19 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 26 Aug 2021 11:48:18 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Thu, 26 Aug 2021 11:48:18 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Kees Cook <keescook@chromium.org>
-CC:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Joe Perches <joe@perches.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: RE: [PATCH] rtlwifi: rtl8192de: Restore channel index initialization
-Thread-Topic: [PATCH] rtlwifi: rtl8192de: Restore channel index initialization
-Thread-Index: AQHXmd9h/5hSWDmaB0eK6ixaYO0v8quE8ftA//+aYgCAAJKPAA==
-Date:   Thu, 26 Aug 2021 03:48:18 +0000
-Message-ID: <0a292d54a2574fb486f905c1c8c94bcf@realtek.com>
-References: <20210825183103.1142909-1-keescook@chromium.org>
- <0f63064fd9f4464a87d9358e874c6b84@realtek.com>
- <202108251935.1F1CBBD3@keescook>
-In-Reply-To: <202108251935.1F1CBBD3@keescook>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.146]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/8/25_=3F=3F_11:16:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 25 Aug 2021 23:55:21 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE9DC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 20:54:35 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id w6so959854plg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 20:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=1sPzPYc/EKv0I2wYFDfjlJvR2hTdySSO3VkQ5DpfwQs=;
+        b=cE+FiLlP+4iCYjhQgAkHwz0kaR6rlqPG2oJAS1XJmXv/xTGOBoSIrHKsJnZUz4pZiC
+         oDhmTDiGEc3t305uYyOjiRGQsUxe8YAAm4Lr6xWfMK8jZ/N1N9JST8/czqEp8ptqhZkp
+         7ZTqyPL169r7Qa/Twzjw0s1sgZQOjv3KW5z9k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=1sPzPYc/EKv0I2wYFDfjlJvR2hTdySSO3VkQ5DpfwQs=;
+        b=qQ862smatKkmoAD39frnSw+Qx5N7fIJtPFDKhVZDRmsUAgA5jR4DsXzd8JjX23UPfe
+         ICBLY5vCm4zv4J2bqp+dn/dhcUNsg7cRg3YakJ/mH6Rv7lECECnHYgT6MVDNGzd1+B8A
+         e2o7FVOiBxGvjpiN+oooPe9hLBlgz4O4a4ocJZtxXQ0t6T5ngN1SzJG2E4q2n1B6iHaT
+         aA6XxWQWw/O0nUzu3dydErX5eA4cGInNff/t1wl5Xb0XeREpb4begPmJSl6+2av1wQFo
+         nATJ2QikYnnGxv4TbIJVtJyAwfCzzwQSc5nqwiKmBFdfTPq0dMOWtKYZeUyaef0J61A7
+         cNhw==
+X-Gm-Message-State: AOAM531aah07HNT30Utzp7Vl60y6dL+Zh1M/qT9+vRjijFRvRDbXMqGu
+        Y1B67e0+DDtHImeyl98iukQtAg==
+X-Google-Smtp-Source: ABdhPJxzRpKUNWXysHu4C+p0lD3QBdZHfusdZCygGhFD/Ho1EJUqcMoYDGKrLWbNIizCBITmGQT4nA==
+X-Received: by 2002:a17:90b:4b84:: with SMTP id lr4mr14397456pjb.32.1629950074801;
+        Wed, 25 Aug 2021 20:54:34 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b12sm1105596pff.63.2021.08.25.20.54.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 20:54:34 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 20:54:33 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
+Message-ID: <202108251958.4BA654453@keescook>
+References: <20210820192615.23e2e617@canb.auug.org.au>
+ <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
+ <202108202248.921E8C66@keescook>
+ <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
+ <20210823203742.5169ad54@canb.auug.org.au>
+ <66615de5-4acb-8d85-6d69-ddd0b9609348@infradead.org>
+ <20210824115859.187f272f@canb.auug.org.au>
+ <202108250959.CD734CED@keescook>
+ <1d7780f0-424b-71d4-732b-c28a796d1166@infradead.org>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36501.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/26/2021 03:28:23
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165781 [Aug 25 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 457 457 f9912fc467375383fbac52a53ade5bbe1c769e2a
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: lore.kernel.org:7.1.1;realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/26/2021 03:30:00
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1d7780f0-424b-71d4-732b-c28a796d1166@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> -----Original Message-----
-> From: Kees Cook [mailto:keescook@chromium.org]
-> Sent: Thursday, August 26, 2021 10:36 AM
-> To: Pkshih
-> Cc: Kalle Valo; David S. Miller; Jakub Kicinski; Larry Finger; Colin Ian King; Kaixu Xia; Joe Perches;
-> linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
-> linux-hardening@vger.kernel.org
-> Subject: Re: [PATCH] rtlwifi: rtl8192de: Restore channel index initialization
+On Wed, Aug 25, 2021 at 10:49:19AM -0700, Randy Dunlap wrote:
+> On 8/25/21 10:04 AM, Kees Cook wrote:
+> > On Tue, Aug 24, 2021 at 11:58:59AM +1000, Stephen Rothwell wrote:
+> > > On Mon, 23 Aug 2021 18:24:44 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
+> > > > 
+> > > > This is just weird. What I am seeing is that for every source file
+> > > > where gcc emits a warning: it then follows that up with this
+> > > > > > cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+> > > 
+> > > I see the same, as well as:
+> > > 
+> > > <stdin>:1515:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+> > > cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+> > > 
+> > > But only on my gcc 7.3.1 builds (the rest are gcc 10).
+> > > 
+> > > > Smells like a gcc bug to me.
+> > > 
+> > > Yes
+> > > 
+> > > Also noted here: https://github.com/DynamoRIO/drmemory/issues/2099 (second comment)
+> > 
+> > Okay, I think this work-around should work. I've been able to reproduce
+> > the weird conditions, and this seems to behave correctly. Andrew, can
+> > you fixup the fixup with this?
+> > 
+> > 
+> > diff --git a/Makefile b/Makefile
+> > index 26640899e7ca..c1842014a5de 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -1094,8 +1094,13 @@ endif
+> >   ifdef CONFIG_CC_IS_GCC
+> >   # The allocators already balk at large sizes, so silence the compiler
+> > -# warnings for bounds checks involving those possible values.
+> > -KBUILD_CFLAGS += $(call cc-option, -Wno-alloc-size-larger-than)
+> > +# warnings for bounds checks involving those possible values. While
+> > +# -Wno-alloc-size-larger-than would normally be used here, some versions
+> > +# of gcc (<9.1) weirdly don't handle the option correctly when _other_
+> > +# warnings are produced (?!), so instead use SIZE_MAX to effectively
+> > +# disable it.
+> > +# https://lore.kernel.org/lkml/20210824115859.187f272f@canb.auug.org.au
+> > +KBUILD_CFLAGS += $(call cc-option, -Walloc-size-larger-than=SIZE_MAX)
+> >   endif
+> >   # disable invalid "can't wrap" optimizations for signed / pointers
+> > 
 > 
-> On Thu, Aug 26, 2021 at 12:45:53AM +0000, Pkshih wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Kees Cook [mailto:keescook@chromium.org]
-> > > Sent: Thursday, August 26, 2021 2:31 AM
-> > > To: Pkshih
-> > > Cc: Kees Cook; Kalle Valo; David S. Miller; Jakub Kicinski; Larry Finger; Colin Ian King; Kaixu
-> Xia;
-> > > Joe Perches; linux-wireless@vger.kernel.org; netdev@vger.kernel.org;
-> linux-kernel@vger.kernel.org;
-> > > linux-hardening@vger.kernel.org
-> > > Subject: [PATCH] rtlwifi: rtl8192de: Restore channel index initialization
-> > >
-> > > 2G channel indexes still need "place" to be initialized, since it is
-> > > returned from this function when channel is less than 14.
-> > >
-> > > Fixes: 369956ae5720 ("rtlwifi: rtl8192de: Remove redundant variable initializations")
-> >
-> > Like the patch "rtlwifi: rtl8192de: Fix initialization of place in _rtl92c_phy_get_rightchnlplace()"
-> > you sent before, please help to correct the removal of the commit 369956ae5720.
-> > I think we can add following into this patch.
-> >
-> > --- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> > +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> > @@ -1363,7 +1363,7 @@ static void _rtl92d_phy_switch_rf_setting(struct ieee80211_hw *hw, u8 channel)
-> >
-> >  u8 rtl92d_get_rightchnlplace_for_iqk(u8 chnl)
-> >  {
-> > -       u8 place = chnl;
-> > +       u8 place;
-> >
-> >         if (chnl > 14) {
-> >                 for (place = 14; place < sizeof(channel_all); place++) {
+> Hi Kees,
 > 
-> Oh, er, it looks like Nathan found this before me, yes. I think
-> https://lore.kernel.org/linux-wireless/20210823222014.764557-1-nathan@kernel.org/
-> is the complete patch.
+> I get a lot of these:
 > 
+> ../include/linux/slab.h: In function ‘keyctl_instantiate_key_common’:
+> cc1: warning: invalid argument ‘SIZE_MAX’ to ‘-Walloc-size-larger-than=’
 
-Oops. Sorry, I misread the author who isn't you.
+O_o
+
+I love how the documentation on this option is consistently wrong. :)
+
+I haven't been able to exactly reproduce this error on godbolt.org, but
+I got close with trunk GCC:
+gcc: error: argument to '-Walloc-size-larger-than=' should be a non-negative integer optionally followed by a size unit
+
+Even though stdint.h is included. :(
+
+Okay. How about _this_ fix?
+
+diff --git a/Makefile b/Makefile
+index efa9bd36b158..141a851930e6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1096,8 +1096,17 @@ endif
+ 
+ ifdef CONFIG_CC_IS_GCC
+ # The allocators already balk at large sizes, so silence the compiler
+-# warnings for bounds checks involving those possible values.
+-KBUILD_CFLAGS += $(call cc-option, -Wno-alloc-size-larger-than)
++# warnings for bounds checks involving those possible values. While
++# -Wno-alloc-size-larger-than would normally be used here, earlier versions
++# of gcc (<9.1) weirdly don't handle the option correctly when _other_
++# warnings are produced (?!). Using -Walloc-size-larger-than=SIZE_MAX
++# doesn't work (as it is documented to), silently resolving to "0" prior to
++# version 9.1 (and producing an error more recently). Numeric values larger
++# than PTRDIFF_MAX also don't work prior to version 9.1, which are silently
++# ignored, continuing to default to PTRDIFF_MAX. So, left with no other
++# choice, we must perform a versioned check to disable this warning.
++# https://lore.kernel.org/lkml/20210824115859.187f272f@canb.auug.org.au
++KBUILD_CFLAGS += $(call cc-ifversion, -ge, 0901, -Wno-alloc-size-larger-than)
+ endif
+ 
+ # disable invalid "can't wrap" optimizations for signed / pointers
 
 
+-- 
+Kees Cook
