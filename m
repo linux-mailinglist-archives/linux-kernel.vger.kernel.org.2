@@ -2,63 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F0D3F8840
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272653F8846
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 15:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242573AbhHZNCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 09:02:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:46482 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237214AbhHZNCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:02:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C7C331B;
-        Thu, 26 Aug 2021 06:01:28 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.41.138])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D43DE3F66F;
-        Thu, 26 Aug 2021 06:01:24 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        punit1.agrawal@toshiba.co.jp, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/3] Visconti: Add Toshiba Visconti PCIe host controller driver
-Date:   Thu, 26 Aug 2021 14:01:19 +0100
-Message-Id: <162998285902.30814.11206633831020646086.b4-ty@arm.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210811083830.784065-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210811083830.784065-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        id S241003AbhHZNEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 09:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231929AbhHZNEf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 09:04:35 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9A3C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:03:48 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id e21so6054824ejz.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 06:03:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PWlNAP4uAjjXML5Q2n9AQSabtDy+TUTfzJ5X6D2qTQc=;
+        b=nmLJwMIYb4+Bxqi41+nhIFsTT8OfKCjsrxsuKBPjVvE0r28f8wmaDuF/H1cWJpSUxD
+         KPqkwQShQ0qb4sWeOkWCvgdLrspjL1Q3iJKAd9tFn9RYF8TZ+quNwn9z9K5ixuK8H5nR
+         kphe5xc9zrD5/RgOOiOcpV4wgmfEjGfrHgQN0PWwkpNc4MM5uNyhktKPZFfkNTYqfVJA
+         zuIoOujUlxKin8PPHycwP6eYunPmF17/l/OHJJOTNgEKd5jppzFFzj9UTFgvqlxV6NP0
+         X+HizFIB5i1tCp26TZkZiMAMmDZv4gEJyEOkgZ9iH1yTYMKsRepouujmrKetwrvc6TPw
+         tr0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PWlNAP4uAjjXML5Q2n9AQSabtDy+TUTfzJ5X6D2qTQc=;
+        b=RA3EfMftgSpgdMHl956MtALNfXFTUe8MlOOmy4bZW3SiRrTOZM52kQbdUMi6iOT27/
+         qkjnddVNcSmH2Rh5ZMjKwHsaHCLry9qlClWErn1rpCbqW2Z1LuR7f9j24othWO4mlM8q
+         FHAY8ZTCEhwgMdPd41ZGK/93wpXVvVki3MaGZZFgltOXTwMt7OtYTMSzU+bdWi8665KG
+         pRhUof0f0rDLpz7ZmtcK8vX20zFJ5Tu2Q8TbpLBmiC4ae50gaoFaNWBzprWGUXlimAXS
+         sl/IPXSnjiPX5L54un30V09bu78YVcrAB2OAe6AwB7GB3XDgNoe41dfd6xOFI7xG1Pbk
+         uG+g==
+X-Gm-Message-State: AOAM533hvXzsJz6Myw20Hqb9HAQVzfJu7La1qvGwQxIpzCnd0GwSR3J3
+        iPphLMWwa87Ov2DV+E1PILs=
+X-Google-Smtp-Source: ABdhPJzN1S9CVoUuQAghjzLVbmPpJgODWnrSK+IyXEQsd/Gxq5BfSF2lcGux3i8vomMNAUfn2egR6g==
+X-Received: by 2002:a17:906:3497:: with SMTP id g23mr4217118ejb.85.1629983026651;
+        Thu, 26 Aug 2021 06:03:46 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id o26sm1399916eje.24.2021.08.26.06.03.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 06:03:45 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, Fabio Aiuto <fabioaiuto83@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v2] staging: r8188eu: Provide a TODO file for this driver
+Date:   Thu, 26 Aug 2021 15:03:42 +0200
+Message-Id: <20210826130342.9552-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 17:38:27 +0900, Nobuhiro Iwamatsu wrote:
-> This series is the PCIe driver for Toshiba's ARM SoC, Visconti[0].
-> This provides DT binding documentation, device driver, MAINTAINER files.
-> 
-> Best regards,
->   Nobuhiro
-> 
-> [0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
-> 
-> [...]
+Provide a TODO file that lists the tasks that should be carried out in
+order to move this driver off drivers/staging.
 
-Applied to pci/dwc, thanks!
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-[1/3] dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
-      https://git.kernel.org/lpieralisi/pci/c/a655ce4000
-[2/3] PCI: visconti: Add Toshiba Visconti PCIe host controller driver
-      https://git.kernel.org/lpieralisi/pci/c/09436f819c
-[3/3] MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
-      https://git.kernel.org/lpieralisi/pci/c/34af7aace1
+v1->v2: According to reviews by Fabio Aiuto <fabioaiuto83@gmail.com> and Greg K-H
+	<gregkh@linuxfoundation.org>, remove "[] is currently in development...",
+	indent and properly wrap the lines, remove the unnecessary last paragraph.
 
-Thanks,
-Lorenzo
+Thanks to Phillip Potter <phil@philpotter.co.uk> for for providing the first draft.
+
+ drivers/staging/r8188eu/TODO | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+ create mode 100644 drivers/staging/r8188eu/TODO
+
+diff --git a/drivers/staging/r8188eu/TODO b/drivers/staging/r8188eu/TODO
+new file mode 100644
+index 000000000000..d2f21b35fbcb
+--- /dev/null
++++ b/drivers/staging/r8188eu/TODO
+@@ -0,0 +1,12 @@
++To-do list:
++
++* Correct the coding style according to Linux guidelines; please read the document
++  at https://www.kernel.org/doc/html/latest/process/coding-style.html.
++* Remove unnecessary debugging/printing macros; for those that are still needed
++  use the proper kernel API (pr_debug(), dev_dbg(), netdev_dbg()).
++* Remove dead code such as unusued functions, variables, fields, etc..
++* Use in-kernel API and remove unnecessary wrappers where possible.
++* Remove the HAL layer and migrate its functionality into the relevant parts of
++  the driver.
++* Switch to use LIB80211.
++* Switch to use MAC80211.
+-- 
+2.32.0
+
