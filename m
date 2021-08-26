@@ -2,176 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6892F3F8443
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240593F844B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240969AbhHZJPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 05:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
+        id S240878AbhHZJRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 05:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240933AbhHZJO7 (ORCPT
+        with ESMTP id S240674AbhHZJRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 05:14:59 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB59CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:14:11 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id f10so1394894wml.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:14:11 -0700 (PDT)
+        Thu, 26 Aug 2021 05:17:02 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F91C061757;
+        Thu, 26 Aug 2021 02:16:15 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id 7so2209465pfl.10;
+        Thu, 26 Aug 2021 02:16:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ubJENgQIOzugIH6aIzu4aa5SOJeA5cH0TBu7UkdkwRo=;
-        b=eWRM7qqism/66evB0/Z4A1uCvrnvkvTzAGwtb+rUwe1sPIN2AMyEYIn4BzeKGJqUoC
-         JGhvessjn+k+1RDfzALVQ7b/43qoTxbHmhrfxabjnYDh33tDAFwtHDmh+cc99/k9KK+t
-         5e/Btgkaw0RYWxCnueUGZR0K4Rlqxa35b/K5k=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LoWaaAteGY1zBeIqGiGUYhidikPShu+XFTkg/eebEDo=;
+        b=Y9whYsSgxNo7tuphW30gOpMpv8w9gOERTCOOPAlitCBaA7nXjA0X/F1nfxKyh7JFFG
+         rcNlMITi7y07EsWmhi7EcfBl3BEmrj1uDB14wJ6rHg3GkvqLuHCwYoGu/6RqkMC9CEcf
+         UH7YIjpCovknnjPw28nVeJX0YZYLDlaLquEDhg0YUJJJ9uCqjOgS8x2sq7GVDLPdZdZn
+         j8P/eTcpXPivpfdC+lzIo/Ono1A6fm7iPUWFRn0ia4W3b9FUDLvFaKLZPUnMlJh37Mhr
+         jhskIk/h9Iw140779ksJQdEM25gdXbRgjpYLuAMmnFqWUYHNgQ8mCy3U2dSf9Yz2XANy
+         IpBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=ubJENgQIOzugIH6aIzu4aa5SOJeA5cH0TBu7UkdkwRo=;
-        b=uXXlQk92hdIxvpGlK/MFvand0cqObpQLpr3VPSXDolnxBYYkq06oEh9wtG19UppcpR
-         +sSovio8vtkBuToip8toUPAWqdTxHbfjPbfd9MeUtXb/4cgHsC0ky5TFUCbASI1qIdiN
-         rlJFLpaW7precTCyh8c4psHO8x9De9SPQX1WLxiWyC6puE92FyEO6M8bXYuop9+Nfr5l
-         caoR/4b9r15dBLF0Llfnygc7ogj5/EPpxiudOcLapbY/qc7E/5Mugk3wCQCJrGhn5GAK
-         K6YCcOv+Gm9vohrLhZlBgZVhVMPDuHlW8zzYmbh+dOlfNurcsZiYjVPeSxB5OZ4iAzO8
-         zZOw==
-X-Gm-Message-State: AOAM532bGufMcsXDyUaDMzIDCAHrblzV/uvbGIss5txlK3cqHIhS4sB4
-        nZurcn/LyZitTXeGwU8j6IJh2w==
-X-Google-Smtp-Source: ABdhPJykiq+3RMvVzHhR2iD4afcW8Q8OoeIr3XVAh723gjD1Rvwc9Ym8gi6QoDtjdhPbP2Ip1lCUVg==
-X-Received: by 2002:a1c:a903:: with SMTP id s3mr2538905wme.171.1629969250495;
-        Thu, 26 Aug 2021 02:14:10 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z137sm7917167wmc.14.2021.08.26.02.14.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LoWaaAteGY1zBeIqGiGUYhidikPShu+XFTkg/eebEDo=;
+        b=e4MmesJpPLknyMUUCQiMOtwd1b1pCTbJELFb4ut+8YSuxTVqa+3RLnGpywH0iY3orp
+         O3NYiU3DqK3DMTnWci6uKh9yyIiW20EM7gzumH32sAt+xa0ZeQGKHRREbdAwuFif2oO9
+         9qB9EjNgZUxrCY/ctM5VD0JqMYWtF6mO/P7UGd6OCPXvsg2eyH05Bpw3BunyjCHQJ8LY
+         UgGIHbM1AY2gLUB02cnpBKiEW36e23OUroxkcMvuL7mZbI7F3BcKooDCDHA/l9eUt6cw
+         np1d4xiThOn5kjUyU8WvUIwO+oj3miodl2PWHp8plHW5Epv/f1X+xpgIRwpQ9SIjSlV1
+         gYOw==
+X-Gm-Message-State: AOAM5330HaAaCYr9CalR9cYOkiKChQeFebjuATde1K44SXGkbpr8kBHb
+        dnZ6sCOh+0jVsTogJbq/EOHqxODDc2Q=
+X-Google-Smtp-Source: ABdhPJx6M+BRAc//cAsjvfUihW3g/noSoWdGRsvxhFe9rVaVxTKXns55hdb13yYJ0bZKGNrz3PH5kA==
+X-Received: by 2002:a63:f80a:: with SMTP id n10mr2476225pgh.303.1629969375377;
+        Thu, 26 Aug 2021 02:16:15 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id j20sm2777569pgb.2.2021.08.26.02.16.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 02:14:09 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 11:14:07 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        George Sun <george.sun@mediatek.com>
-Subject: Re: [PATCH v5, 00/15] Using component framework to support multi
- hardware decode
-Message-ID: <YSdbXzCJRsj/jsnl@phenom.ffwll.local>
-Mail-Followup-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>, Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        George Sun <george.sun@mediatek.com>
-References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
- <CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com>
- <CAKMK7uFW3Z=Up=OCJO4dNR9ffaTdFjHwoND9CrUw6LHmQ4t_AQ@mail.gmail.com>
- <CAAEAJfB3CoTU7bZe08wYEfTTm6=6UPOae9u39AtdbJ9saYknBA@mail.gmail.com>
+        Thu, 26 Aug 2021 02:16:14 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Luting Guo <luting.guo@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH V3 0/4] Add sprd ADI r3 support
+Date:   Thu, 26 Aug 2021 17:15:45 +0800
+Message-Id: <20210826091549.2138125-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAEAJfB3CoTU7bZe08wYEfTTm6=6UPOae9u39AtdbJ9saYknBA@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 02:57:15PM -0300, Ezequiel Garcia wrote:
-> On Sun, 22 Aug 2021 at 13:50, Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Wed, Aug 18, 2021 at 4:12 PM Ezequiel Garcia
-> > <ezequiel@vanguardiasur.com.ar> wrote:
-> > >
-> > > +danvet
-> > >
-> > > Hi,
-> > >
-> > > On Tue, 10 Aug 2021 at 23:58, Yunfei Dong <yunfei.dong@mediatek.com> wrote:
-> > > >
-> > > > This series adds support for multi hardware decode into mtk-vcodec, by first
-> > > > adding component framework to manage each hardware information: interrupt,
-> > > > clock, register bases and power. Secondly add core thread to deal with core
-> > > > hardware message, at the same time, add msg queue for different hardware
-> > > > share messages. Lastly, the architecture of different specs are not the same,
-> > > > using specs type to separate them.
-> > > >
-> > >
-> > > I don't think it's a good idea to introduce the component API in the
-> > > media subsystem. It doesn't seem to be maintained, IRC there's not even
-> > > a maintainer for it, and it has some issues that were never addressed.
-> >
-> > Defacto dri-devel folks are maintainer component.c, but also I'm not
-> > aware of anything missing there?
-> >
-> 
-> A while ago, I tried to fix a crash in the Rockchip DRM driver
-> (I was then told there can be similar issues on the IMX driver too,
-> but I forgot the details of that).
-> 
-> I sent a patchset trying to address it and got total silence back.
-> Although you could argue the issue is in how drivers use the component
-> API, AFAICR the abuse is spreaded across a few drivers, so it felt
-> more reasonable to improve the component API itself, instead of changing
-> all the drivers.
-> 
-> See below:
-> 
-> https://patchwork.kernel.org/project/linux-rockchip/cover/20200120170602.3832-1-ezequiel@collabora.com/
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-Patches get lost on the mailing list, and rockchip is one of the lesser
-maintained drivers. You need to ping this stuff.
+This patchset adds new ADI version (r3) support which used on sc9863 and
+some other Unisoc's SoCs.
 
-For bridge/panel I still think we should work towards removing component.c
-use from them.
+Since v2:
+* Added Rob's and Baolin's Reviewed-by;
+* Seprated a stable patch for wrong macro fix from the last version patch 1/3;
+* Removed redundant empty line from spi-sprd-adi.c.
 
-> > There has been discussions that in various drm subsystems like
-> > drm_bridge or drm_panel a few things are missing, which prevent
-> > drivers from moving _away_ from component.c to the more specific
-> > solutions for panel/bridges. But nothing that's preventing them from
-> > using component.c itself.
-> >
-> > I'm happy to merge a MAINTAINERS patch to clarify the situation if
-> > that's needed.
-> 
-> Indeed, that would be good.
+Since v1:
+* Address comments from Rob.
+- Rewrote schema for 'sprd,hw-channels' and hwlocks.
 
-Ok I'm going to type something.
+Chunyan Zhang (4):
+  spi: sprd: Fix the wrong WDG_LOAD_VAL
+  spi: sprd: Add ADI r3 support
+  dt-bindings: spi: Convert sprd ADI bindings to yaml
+  dt-bindings: spi: add sprd ADI for sc9863 and ums512
+
+ .../devicetree/bindings/spi/spi-sprd-adi.txt  |  63 -----
+ .../devicetree/bindings/spi/sprd,spi-adi.yaml | 104 +++++++++
+ drivers/spi/spi-sprd-adi.c                    | 217 ++++++++++++++----
+ 3 files changed, 270 insertions(+), 114 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-sprd-adi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.25.1
+
