@@ -2,177 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BF43F7F90
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C553F7F92
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235484AbhHZA7q convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Aug 2021 20:59:46 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:47535 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234396AbhHZA7n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 20:59:43 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 17Q0wERN1006279, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36501.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 17Q0wERN1006279
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 26 Aug 2021 08:58:15 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36501.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 26 Aug 2021 08:58:14 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 26 Aug 2021 08:58:13 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Thu, 26 Aug 2021 08:58:13 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Kees Cook <keescook@chromium.org>
-CC:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: RE: [PATCH] rtlwifi: rtl8192de: Style clean-ups
-Thread-Topic: [PATCH] rtlwifi: rtl8192de: Style clean-ups
-Thread-Index: AQHXmd/DHYB2maO/lkCxyh94iMiVM6uE9bHg
-Date:   Thu, 26 Aug 2021 00:58:13 +0000
-Message-ID: <3e0b0efc0c0142bbb79cb11f927967bb@realtek.com>
-References: <20210825183350.1145441-1-keescook@chromium.org>
-In-Reply-To: <20210825183350.1145441-1-keescook@chromium.org>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.146]
-x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/8/25_=3F=3F_08:00:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S235726AbhHZBAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 21:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234396AbhHZBAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 21:00:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 636B660F6F;
+        Thu, 26 Aug 2021 00:59:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629939554;
+        bh=EXrb+gVpKlIS/8zNJQMeoK/jfDFoPwPN7MIaRo88m5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZalcFUQZA0ontYQPUcmHKUZnISqknge/El2n25Na0epoWdBEIgCMlcECF4n5nan5D
+         9rxjCAMiBuVX+E0WQvgvzkYNmSJjil/P515Ff1oLc0UrsnKXK6vEeIhzRCtIL4Ih0n
+         PYAHN/bnaEGbTEeR/8+zIrlkWphfB0+M8INYGZOSmE/mJfeljMn0TAB8UX8pesIp9S
+         ECB637/fIlSkPc5J/w+AG4bRJQ1CDut2VB6dQyOhOcka7jUovRM3EcPaUbmYU+p4QA
+         tN2yfOSZVveKrHPJwqhuM7aPvub1htWL7NcS+OzmSrAxfRdZjcHEBSkf+fnpzmCWCW
+         JhWIAXMDIApTw==
+Date:   Wed, 25 Aug 2021 17:59:14 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <20210826005914.GG12597@magnolia>
+References: <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <1957060.1629820467@warthog.procyon.org.uk>
+ <YSUy2WwO9cuokkW0@casper.infradead.org>
+ <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
+ <YSVCAJDYShQke6Sy@casper.infradead.org>
+ <CAHk-=wisF580D_g+wFt0B_uijSX+mCgz6tRRT5KADnO7Y97t-g@mail.gmail.com>
+ <YSVHI9iaamxTGmI7@casper.infradead.org>
+ <YSVMMMrzqxyFjHlw@mit.edu>
+ <YSXkDFNkgAhQGB0E@infradead.org>
+ <cf30c0e8d1eecf08b2651c5984ff09539e2266f9.camel@kernel.org>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36501.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/26/2021 00:43:02
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165781 [Aug 25 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 457 457 f9912fc467375383fbac52a53ade5bbe1c769e2a
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/26/2021 00:46:00
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf30c0e8d1eecf08b2651c5984ff09539e2266f9.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> -----Original Message-----
-> From: Kees Cook [mailto:keescook@chromium.org]
-> Sent: Thursday, August 26, 2021 2:34 AM
-> To: Pkshih
-> Cc: Kees Cook; Kalle Valo; David S. Miller; Jakub Kicinski; Larry Finger; Colin Ian King;
-> linux-wireless@vger.kernel.org; netdev@vger.kernel.org; Joe Perches; Kaixu Xia;
-> linux-kernel@vger.kernel.org; linux-hardening@vger.kernel.org
-> Subject: [PATCH] rtlwifi: rtl8192de: Style clean-ups
+On Wed, Aug 25, 2021 at 08:03:18AM -0400, Jeff Layton wrote:
+> On Wed, 2021-08-25 at 07:32 +0100, Christoph Hellwig wrote:
+> > On Tue, Aug 24, 2021 at 03:44:48PM -0400, Theodore Ts'o wrote:
+> > > The problem is whether we use struct head_page, or folio, or mempages,
+> > > we're going to be subsystem users' faces.  And people who are using it
+> > > every day will eventually get used to anything, whether it's "folio"
+> > > or "xmoqax", we sould give a thought to newcomers to Linux file system
+> > > code.  If they see things like "read_folio()", they are going to be
+> > > far more confused than "read_pages()" or "read_mempages()".
+> > 
+> > Are they?  It's not like page isn't some randomly made up term
+> > as well, just one that had a lot more time to spread.
+> > 
 > 
-> Clean up some style issues:
-> - Use ARRAY_SIZE() even though it's a u8 array.
-> - Remove redundant CHANNEL_MAX_NUMBER_2G define.
-> Additionally fix some dead code WARNs.
+> Absolutely.  "folio" is no worse than "page", we've just had more time
+> to get used to "page".
+
+I /like/ the name 'folio'.  My privileged education :P informed me (when
+Matthew talked to me the very first time about this patchset) that it's
+a wonderfully flexible word that describes both a collection of various
+pages and a single large sheet of paper folded in half.  Or in the case
+of x86, folded in half nine times.
+
+That's *exactly* the usage that Matthew is proposing.
+
+English already had a word ready for us to use, so let's use it.
+
+--D
+
+(Well, ok, the one thing I dislike is that my brain keeps typing out
+'fileio' instead of 'folio', but it's still better than struct xmoqax or
+remembering if we do camel_case or PotholeCase.)
+
+> > > So if someone sees "kmem_cache_alloc()", they can probably make a
+> > > guess what it means, and it's memorable once they learn it.
+> > > Similarly, something like "head_page", or "mempages" is going to a bit
+> > > more obvious to a kernel newbie.  So if we can make a tiny gesture
+> > > towards comprehensibility, it would be good to do so while it's still
+> > > easier to change the name.
+> > 
+> > All this sounds really weird to me.  I doubt there is any name that
+> > nicely explains "structure used to manage arbitrary power of two
+> > units of memory in the kernel" very well.  So I agree with willy here,
+> > let's pick something short and not clumsy.  I initially found the folio
+> > name a little strange, but working with it I got used to it quickly.
+> > And all the other uggestions I've seen s far are significantly worse,
+> > especially all the odd compounds with page in it.
 > 
-> Cc: Ping-Ke Shih <pkshih@realtek.com>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Larry Finger <Larry.Finger@lwfinger.net>
-> Cc: Colin Ian King <colin.king@canonical.com>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c | 8 +++-----
->  drivers/net/wireless/realtek/rtlwifi/wifi.h          | 1 -
->  2 files changed, 3 insertions(+), 6 deletions(-)
+> Same here. Compound words are especially bad, as newbies will
+> continually have to look at whether it's "page_set" or "pageset".
 > 
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> index b32fa7a75f17..9807c9e91998 100644
-> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-> @@ -899,7 +899,7 @@ static u8 _rtl92c_phy_get_rightchnlplace(u8 chnl)
->  	u8 place = chnl;
+> -- 
+> Jeff Layton <jlayton@kernel.org>
 > 
->  	if (chnl > 14) {
-> -		for (place = 14; place < sizeof(channel5g); place++) {
-> +		for (place = 14; place < ARRAY_SIZE(channel5g); place++) {
-
-There are still many places we can use ARRAY_SIZE() instead of sizeof().
-Could you fix them within this file, even this driver?
-Otherwise, this patch looks good to me.
-
-Acked-by: Ping-Ke Shih <pkshih@realtek.com>
-
->  			if (channel5g[place] == chnl) {
->  				place++;
->  				break;
-> @@ -2861,16 +2861,14 @@ u8 rtl92d_phy_sw_chnl(struct ieee80211_hw *hw)
->  	case BAND_ON_5G:
->  		/* Get first channel error when change between
->  		 * 5G and 2.4G band. */
-> -		if (channel <= 14)
-> +		if (WARN_ONCE(channel <= 14, "rtl8192de: 5G but channel<=14\n"))
->  			return 0;
-> -		WARN_ONCE((channel <= 14), "rtl8192de: 5G but channel<=14\n");
->  		break;
->  	case BAND_ON_2_4G:
->  		/* Get first channel error when change between
->  		 * 5G and 2.4G band. */
-> -		if (channel > 14)
-> +		if (WARN_ONCE(channel > 14, "rtl8192de: 2G but channel>14\n"))
->  			return 0;
-> -		WARN_ONCE((channel > 14), "rtl8192de: 2G but channel>14\n");
->  		break;
->  	default:
->  		WARN_ONCE(true, "rtl8192de: Invalid WirelessMode(%#x)!!\n",
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/wifi.h
-> b/drivers/net/wireless/realtek/rtlwifi/wifi.h
-> index aa07856411b1..31f9e9e5c680 100644
-> --- a/drivers/net/wireless/realtek/rtlwifi/wifi.h
-> +++ b/drivers/net/wireless/realtek/rtlwifi/wifi.h
-> @@ -108,7 +108,6 @@
->  #define	CHANNEL_GROUP_IDX_5GM		6
->  #define	CHANNEL_GROUP_IDX_5GH		9
->  #define	CHANNEL_GROUP_MAX_5G		9
-> -#define CHANNEL_MAX_NUMBER_2G		14
->  #define AVG_THERMAL_NUM			8
->  #define AVG_THERMAL_NUM_88E		4
->  #define AVG_THERMAL_NUM_8723BE		4
-> --
-> 2.30.2
-
