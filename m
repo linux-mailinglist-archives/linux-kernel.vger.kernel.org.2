@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301623F8CCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0926F3F8CDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243127AbhHZRSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
+        id S243173AbhHZRVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhHZRSQ (ORCPT
+        with ESMTP id S229817AbhHZRVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:18:16 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA1AC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:17:28 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id e186so4648973iof.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:17:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BME6ZBn7IF/dZ4lqKBb5Rr0F3dMtEA2Sl2OiBXFFq94=;
-        b=gnEZYksnbRTTHZAxgGoJLyFZAgueU3IxMhBMrAjtiS1hR3svlzjSi3DDhnVSjnZhtI
-         tWMYx9POOkRLFKf55pXAdfDojo+CPA5QHu/0vXsT/g2wEZ2lYT4231uzDgbRaCRZ54A0
-         6T8e2cTYL9cpffZv/sh82qCfit8qrU/ndg/ad4lEjvrppvJxRHitA8ugmufCHfrrZohD
-         myJwlh3BPHP1ySTXC1DeFVwagIHrju/0SzNukCspCp9jS/i9UEYZJTTjE/4wQeqP11QS
-         6oBwAX8/A7fjXbFW+y1Tbt1seeFovtyaSj5ssn4u73enZ3G3R+pFMHIN4ww1v3XZz4Rp
-         T/BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BME6ZBn7IF/dZ4lqKBb5Rr0F3dMtEA2Sl2OiBXFFq94=;
-        b=M/FmZdw/wKvSwc04AWqub1JpUiaWZ5YX0HF+ZQDwSP4q/Cd6v68kTWkGI2ksRoLzty
-         eoEYC37e6CZaRe4N1xXocWbZxOy9SrJGjwGby2fCS+ka9iSXXSD7WI2TskFlDSLZ1D9x
-         281uLr9pdX5KD/YBkJX5ZEyb1xm66iuSjrZWeJAYjFtEf57TZKfly0fAjEgMiStNLUFK
-         LVC41C0UHbytzZe0tyN2f+9B0/8TBKW2k3K0Y0qU95JMZtVXiuLtRRQFxM/vf2cR+qqA
-         dkm6t47ddXE8RobrS5skRjeI0Rzy5U8bJ7fqH03TDJzTjfIaMomMlQuhOLKVXyTAJoZS
-         aGIA==
-X-Gm-Message-State: AOAM530318ezYax4sVWuj3PXtcDnlClhkau/nFJJp0STkaeZ08/Ip8Nf
-        HFmV9KmX2Hcnu3MB/Ek6Kp6EkAJqJEOQ/seWYB5xSKDrQSrCP17E
-X-Google-Smtp-Source: ABdhPJxx0itgPizsz4hgdmhvsrxgzP9yB3BK2vfWMyhyRrpAwZAUYwfW4FBYXcd4HZTZkXgzxhNR371WnGrNUCpneLA=
-X-Received: by 2002:a5d:8acf:: with SMTP id e15mr3853495iot.184.1629998247904;
- Thu, 26 Aug 2021 10:17:27 -0700 (PDT)
+        Thu, 26 Aug 2021 13:21:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118E0C061757;
+        Thu, 26 Aug 2021 10:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=850eODxTDWhlzYrQXf9CJDPvv6/dK0ZOGDmXnwCIfCw=; b=WitDMPFARIeZb/2HdADSmvN0nL
+        i6qhaTu0DvVO04CFVVI77gsq453qxaOtmXZhmYH+cFfiNcwvf64mt5ng3/3dV5qEzqW4fCVa7Av8V
+        1yyz/UGTkRVk6OPTZgVasbPNmti+H2rSARy60noi5EDQMJui3yT8MDwGZLPDYsZi7jfiN0AQv6w1G
+        2WabPLTtzY9RsT6M1j1xzBfEGwLeBPykQUmKlpvC5S2Drtuweoe58tFVpEkqik5m1Z1MxXzM53p2c
+        CaOuvCZf+mxz3sTekftji0jLtGy/1ZEypJa23c5iZKpsLN1/v8pASBQvwxqOXC7syIhvRttbLuM5m
+        nP8VZoLw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJJ1l-00DVgd-Gv; Thu, 26 Aug 2021 17:19:04 +0000
+Date:   Thu, 26 Aug 2021 18:18:57 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSfNATLcGI4haI89@casper.infradead.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <1957060.1629820467@warthog.procyon.org.uk>
+ <YSUy2WwO9cuokkW0@casper.infradead.org>
+ <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
+ <CAHk-=wgRdqtpsbHkKeqpRWUsuJwsfewCL4SZN2udXVgExFZOWw@mail.gmail.com>
+ <1966106.1629832273@warthog.procyon.org.uk>
+ <CAHk-=wiZ=wwa4oAA0y=Kztafgp0n+BDTEV6ybLoH2nvLBeJBLA@mail.gmail.com>
+ <CAHk-=whd8ugrzMS-3bupkPQz9VS+dWHPpsVssrDfuFgfff+n5A@mail.gmail.com>
+ <CAHk-=wgwRW1_o6iBOxtSE+vm7uiSr98wkTLbCze9-7wW0ZhOLQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <YSPAseE6WD8dDRuz@ravnborg.org> <20210824014124.1080798-1-yangcong5@huaqin.corp-partner.google.com>
-In-Reply-To: <20210824014124.1080798-1-yangcong5@huaqin.corp-partner.google.com>
-From:   Doug Anderson <dianders@google.com>
-Date:   Thu, 26 Aug 2021 10:17:15 -0700
-Message-ID: <CAD=FV=UFDRG9TJis28Wtsz9RVhp3Xk35stpLyY5ExLx3=8yxPQ@mail.gmail.com>
-Subject: Re: [v2 0/2] Add driver for BOE tv110c9m-ll3 panel
-To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgwRW1_o6iBOxtSE+vm7uiSr98wkTLbCze9-7wW0ZhOLQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 24, 2021 at 12:48:13PM -0700, Linus Torvalds wrote:
+> On Tue, Aug 24, 2021 at 12:38 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > "pageset" is such a great name that we already use it, so I guess that
+> > doesn't work.
+> 
+> Actually, maybe I can backtrack on that a bit.
+> 
+> Maybe 'pageset' would work as a name. It's not used as a type right
+> now, but the usage where we do have those comments around 'struct
+> per_cpu_pages' are actually not that different from the folio kind of
+> thing. It has a list of "pages" that have a fixed order.
+> 
+> So that existing 'pageset' user might actually fit in conceptually.
+> The 'pageset' is only really used in comments and as part of a field
+> name, and the use does seem to be kind of consistent with the Willy's
+> use of a "aligned allocation-group of pages".
 
-On Mon, Aug 23, 2021 at 6:41 PM yangcong
-<yangcong5@huaqin.corp-partner.google.com> wrote:
->
-> Hi Sam,
->   This driver support boe tv1110c9m-ll3 and inx hj110iz-01a panel.The IC chip is used NT36523, which is a new IC.
->
-> 1: panel-boe-tv101wum-nl6.c driver cannot meet the timing requirements of the current two panel.
->
-> 2: The screen cannot be work in HS mode, panel-boe-tv101wum-nl6.c will switch to HS mode when boe_panel_enter_sleep_mode.
->
-> static int boe_panel_enter_sleep_mode(struct boe_panel *boe)
-> {
->         struct mipi_dsi_device *dsi = boe->dsi;
->         int ret;
->
->         dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
->         ...
->         ...
-> }
+The 'pageset' in use in mm/page_alloc.c really seems to be more of a
+pagelist than a pageset.  The one concern I have about renaming it is
+that we actually print the word 'pagesets' in /proc/zoneinfo.
 
-It's really up to Sam how he wants to proceed here, but certainly you
-could support things with the existing driver even if there are
-differences. In general you can add more things to the `struct
-panel_desc` in the driver and then make them different for your panel.
-Look, for instance, at `discharge_on_disable`. Not all panels
-supported by this driver do that, so you could support your "cannot
-work in HS mode" in a similar way.
+There's also some infiniband driver that uses the word "pageset"
+which really seems to mean "DMA range".
 
-For the timings, you could also add another bit to the `struct
-panel_desc` to select a different delay for your panel or (if it's
-just a small delay) you could just increase it across the board. I
-guess you need a 10 ms delay instead of a 5 ms delay in probe? I'd
-just make it 10 ms across the board and call it done. Similarly looks
-like something needs .5 ms => 1 ms. Again, this is likely fine across
-the board for all panels.
-
-Unless Sam comes back and says "no, wait, keep it two drivers!" then
-I'd suggest that you post a new version that works as Sam suggests. In
-the worst case if having it combined into one driver looks too ugly
-then we can always go back to a split driver.
-
--Doug
+So if I rename the existing mm pageset to pagelist, and then modify all
+these patches to call a folio a pageset, you'd take this patchset?
