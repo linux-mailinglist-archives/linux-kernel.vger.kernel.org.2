@@ -2,103 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AD43F823B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6D53F827A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238840AbhHZGIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 02:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238369AbhHZGIs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 02:08:48 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB90C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 23:08:02 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso5824529pjh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 23:08:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NNtuO05+8Dc6BRsSuMp/HZ2ZgToThCggAJvItaSKgr4=;
-        b=UfcKjyWt1UqNEnNoP5+DZEnZy48CAGB30gxlXK76kRWAGeQlgwXqYCj+UZkoChsnQS
-         8PZnkIkfMU/5vI7oBHWqwt3xLwzZ1lqOdfrhCUx4vULc0rqUtyWZUoJReiXkHRAj/rFB
-         pbrObz6/1zif5tvGh/T4Q81xkOHXwjAiCy0UbjdWF394gHVO0VPKFyHZ7Y4faDFdj6cO
-         0ryo8i0Dyb7ON+RVPOHlxAvkkdAuKIPU8JGXm1lODq27JjpcXA5m5RGlxtC1ny5qdhP1
-         RYAHgPpTQfE3THkwM5UgRK3xigtNRMPjJlTs4TFYxHk6cMYNMVJyyRcy+v6kki84aEOB
-         kuag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=NNtuO05+8Dc6BRsSuMp/HZ2ZgToThCggAJvItaSKgr4=;
-        b=VxuELthm0sQfFwVjugBgg93mBDJiAj6YS7IW7+3zBEyX6Ly/HvK9Py4jYPl6nG4IVW
-         YaU4Zx7mMehK6uc5WnImwaV354j6UJr80VT3BZk1Px2NT1bc6WxxTowWzb+f2EasXD/x
-         mUVNo4HbQqiQthh+ZsIVBkWLqBHXbGXkM1pGvwyi5tWmmj89p7aika3GKp9ZjKskdzss
-         2UQnLJL62+9begw7K3nvWorIhlfmmA93dTHIH9BuzVV+sKxpdScgsVxLDpA79OPFKWzE
-         1IDNTpKRRNKPm0bRKIfgjoCIkh/Id9hzivKqfaVLmtLmvKhAxC+kP8CiqhsHOSU0Z7+k
-         aFJw==
-X-Gm-Message-State: AOAM532DwhL3aUyEDBqBS1+5Z2UJBJNGNiqjzPKNbqvMSFMDnpykJP1a
-        iSUpCzLL6/WOYAcREuuJumhQjg==
-X-Google-Smtp-Source: ABdhPJx9ctMBPCljF2Xlz8amzdSmJcEDJ+3zpshuIOv0EA3RuS6bF9bVNd10PkvIt+pqrnzJRB0vCg==
-X-Received: by 2002:a17:90a:7e8b:: with SMTP id j11mr2478556pjl.210.1629958081797;
-        Wed, 25 Aug 2021 23:08:01 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id j4sm2025639pgi.6.2021.08.25.23.08.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 23:08:01 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 23:08:01 -0700 (PDT)
-X-Google-Original-Date: Wed, 25 Aug 2021 23:07:59 PDT (-0700)
-Subject:     Re: [PATCH] riscv: use strscpy to replace strlcpy
-In-Reply-To: <20210807071427.59613-1-wangborong@cdjrlc.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Anup Patel <Anup.Patel@wdc.com>, wangkefeng.wang@huawei.com,
-        mick@ics.forth.gr, alex@ghiti.fr, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, wangborong@cdjrlc.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     wangborong@cdjrlc.com
-Message-ID: <mhng-ec52f7a2-7fe9-4109-b326-a92af8b8205b@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S239257AbhHZGcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 02:32:00 -0400
+Received: from mga14.intel.com ([192.55.52.115]:8904 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238228AbhHZGb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 02:31:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="217399083"
+X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
+   d="asc'?scan'208";a="217399083"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 23:31:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
+   d="asc'?scan'208";a="494944170"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
+  by fmsmga008.fm.intel.com with ESMTP; 25 Aug 2021 23:31:08 -0700
+Date:   Thu, 26 Aug 2021 14:08:09 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: refactor the i915 GVT support
+Message-ID: <20210826060809.GC9942@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20210728175925.GU1721383@nvidia.com>
+ <20210729072022.GB31896@lst.de>
+ <20210803094315.GF13928@zhen-hp.sh.intel.com>
+ <20210803143058.GA1721383@nvidia.com>
+ <20210804052606.GG13928@zhen-hp.sh.intel.com>
+ <20210816173458.GA9183@lst.de>
+ <20210817010851.GW13928@zhen-hp.sh.intel.com>
+ <20210817052203.GX13928@zhen-hp.sh.intel.com>
+ <20210819082929.GB13928@zhen-hp.sh.intel.com>
+ <20210820141724.GA29034@lst.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="uZ3hkaAS1mZxFaxD"
+Content-Disposition: inline
+In-Reply-To: <20210820141724.GA29034@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 07 Aug 2021 00:14:27 PDT (-0700), wangborong@cdjrlc.com wrote:
-> The strlcpy should not be used because it doesn't limit the source
-> length. As linus says, it's a completely useless function if you
-> can't implicitly trust the source string - but that is almost always
-> why people think they should use it! All in all the BSD function
-> will lead some potential bugs.
->
-> But the strscpy doesn't require reading memory from the src string
-> beyond the specified "count" bytes, and since the return value is
-> easier to error-check than strlcpy()'s. In addition, the implementation
-> is robust to the string changing out from underneath it, unlike the
-> current strlcpy() implementation.
->
-> Thus, We prefer using strscpy instead of strlcpy.
->
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
-> ---
->  arch/riscv/kernel/setup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> index 18bd0e4bc36c..2dc62ebc0001 100644
-> --- a/arch/riscv/kernel/setup.c
-> +++ b/arch/riscv/kernel/setup.c
-> @@ -255,7 +255,7 @@ static void __init parse_dtb(void)
->
->  	pr_err("No DTB passed to the kernel\n");
->  #ifdef CONFIG_CMDLINE_FORCE
-> -	strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
-> +	strscpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
->  	pr_info("Forcing kernel command line to: %s\n", boot_command_line);
->  #endif
->  }
 
-Thanks, this is on for-next.
+--uZ3hkaAS1mZxFaxD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 2021.08.20 16:17:24 +0200, Christoph Hellwig wrote:
+> On Thu, Aug 19, 2021 at 04:29:29PM +0800, Zhenyu Wang wrote:
+> > I'm working on below patch to resolve this. But I met a weird issue in
+> > case when building i915 as module and also kvmgt module, it caused
+> > busy wait on request_module("kvmgt") when boot, it doesn't happen if
+> > building i915 into kernel. I'm not sure what could be the reason?
+>=20
+> Luis, do you know if there is a problem with a request_module from
+> a driver ->probe routine that is probably called by a module_init
+> function itself?
+>=20
+> In the meantime I'll try to reproduce it locally, but I always had a
+> hard time getting useful results out of a modular i915, especially
+> when combined with module paramters. (no blame on i915, just the problem
+> with modules needed early on).
+>=20
+> >=20
+> > > But the problem I see is that after moving gvt device model (gvt/*.c
+> > > except kvmgt.c) into kvmgt module, we'll have issue with initial mmio
+> > > state which current gvt relies on, that is in design supposed to get
+> > > initial HW state before i915 driver has taken any operation.  Before
+> > > we can ensure that, I think we may only remove MPT part first but
+> > > still keep gvt device model as part of i915 with config. I'll try to
+> > > split that out.
+> >=20
+> > Sorry I misread the code that as we always request kvmgt module when
+> > gvt init, so it should still apply original method that this isn't a
+> > problem. Our current validation result has shown no regression as well.
+>=20
+> What does initial mmio state mean?  This is something new to me.  But
+> as you said in this mail unless I missed something very big it should
+> work the same as before.
+>
+
+It's gvt internal track for all gfx mmio state, and yes with your current
+change it should still work as before.
+
+> > -static inline void intel_context_unpin(struct intel_context *ce)
+> > +static inline void _intel_context_unpin(struct intel_context *ce)
+> >  {
+> >  	if (!ce->ops->sched_disable) {
+> >  		__intel_context_do_unpin(ce, 1);
+> > @@ -150,6 +150,7 @@ static inline void intel_context_unpin(struct intel=
+_context *ce)
+> >  		}
+> >  	}
+> >  }
+> > +void intel_context_unpin(struct intel_context *ce);
+>=20
+> Looking at intel_context_unpin/_intel_context_unpin is there really
+> a need to have this inline to start with?  It don't see much the compiler
+> could optimize by inlining it.
+
+I'll send patch to i915 for this, and get more comments there.
+
+thanks
+
+--uZ3hkaAS1mZxFaxD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYScvyQAKCRCxBBozTXgY
+Jz8KAKCJpvaz39KXtI3VDSxG4E4LXamy/gCgizdwhAP/cypZZo3OeM1RLCUmH+Q=
+=Z3tx
+-----END PGP SIGNATURE-----
+
+--uZ3hkaAS1mZxFaxD--
