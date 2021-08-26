@@ -2,76 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AA53F82E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA383F82ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239978AbhHZHPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 03:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239913AbhHZHO7 (ORCPT
+        id S240049AbhHZHPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 03:15:37 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:13666 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238379AbhHZHPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 03:14:59 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82911C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 00:14:12 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id q39so3169430oiw.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 00:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=aRiLbWEP9NQgwwctmdG3N2zfgTjntvnVENFb+awS0zA=;
-        b=F81Cr3R6yT7asoMk0pyICvtOXoQZAXvI1ZnDNCPSezR35pdJ3glHU/05ASNiivAux1
-         fSfqjB1WU7WW801D5dDdGncQYjxSGvFnL/wsbjCe2P3mYZLuDRXxDNkfrGdnRoesZ4pm
-         DIf81ahimaKl/WhY/sF0MPtxSm6wmliMthhJI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=aRiLbWEP9NQgwwctmdG3N2zfgTjntvnVENFb+awS0zA=;
-        b=bfZKQmOuasG+VL2SVszEOonY60qjtb+bXa9kQE9S5ujQVs0Cvs3hzXY4xK1bmLLGzx
-         Pw+26MCfAFCOdBaEQa0nC5noA48+aCHcmZLqpKUzOQVDuA4ThTGUdeMQTqB4huE34dvC
-         C1oQeVeay6O6SUiUGiWAS0HOXag2CMNE//qV4SIfS1jaXa0l0IltQmPF41bNv2psky2u
-         MXJtQ8rZo46EimiO5KgaFylQFrUkcNLexGRpVunX+SGzllfogFu6gWpowrHnXFgZnUIi
-         Gzus2yPW8P5VE49i4p6Jp+8giZHBpybChDaR4U9wYGdRGCIqj5GV7JxQgz0eIo1g/s00
-         2CoQ==
-X-Gm-Message-State: AOAM533RybhheW45wf21TntRg5OhyeRt1O5asR+zBG9upz7osolny7B1
-        JmNXLS2UkcyY+9vPmxzM84hErGdKbvuafB1LAJakAw==
-X-Google-Smtp-Source: ABdhPJzUDekyoWqTfrkclEr8+8sWlzJ7PWjVoXwVhqtZb33xoA6jHZ+GqQ45EOn0Awx+UlXeZahflBl7bsDJeh8AC6Y=
-X-Received: by 2002:a05:6808:181a:: with SMTP id bh26mr10217298oib.166.1629962051961;
- Thu, 26 Aug 2021 00:14:11 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 26 Aug 2021 07:14:11 +0000
+        Thu, 26 Aug 2021 03:15:36 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 17Q6tdGm063548;
+        Thu, 26 Aug 2021 14:55:39 +0800 (GMT-8)
+        (envelope-from neal_liu@aspeedtech.com)
+Received: from NealLiu-PC01.aspeed.com (192.168.2.78) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 26 Aug
+ 2021 15:14:19 +0800
+From:   neal_liu <neal_liu@aspeedtech.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <neal_liu@aspeedtech.com>, Tao Ren <rentao.bupt@gmail.com>,
+        <BMC-SW@aspeedtech.com>
+Subject: [PATCH] usb: host: ehci: skip STS_HALT check for aspeed platform
+Date:   Thu, 26 Aug 2021 15:15:25 +0800
+Message-ID: <20210826071525.27651-1-neal_liu@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210825234233.1721068-6-bjorn.andersson@linaro.org>
-References: <20210825234233.1721068-1-bjorn.andersson@linaro.org> <20210825234233.1721068-6-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 26 Aug 2021 07:14:11 +0000
-Message-ID: <CAE-0n50FhJgE-Z3DvdhfTZxRbwCx50TT2An_i=Xorf=OBE0MYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] drm/msm/dp: Add sc8180x DP controllers
-To:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.78]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 17Q6tdGm063548
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-08-25 16:42:33)
-> The sc8180x has 2 DP and 1 eDP controllers, add support for these to the
-> DP driver.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+STS_HALT also depends on ASS/PSS status for apseed.
+Skip this check on startup.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: neal_liu <neal_liu@aspeedtech.com>
+---
+ drivers/usb/host/ehci-hcd.c      | 10 +++++++++-
+ drivers/usb/host/ehci-platform.c |  6 ++++++
+ drivers/usb/host/ehci.h          |  1 +
+ 3 files changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
+index 10b0365f3439..a539e11502ef 100644
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -634,7 +634,15 @@ static int ehci_run (struct usb_hcd *hcd)
+ 	/* Wait until HC become operational */
+ 	ehci_readl(ehci, &ehci->regs->command);	/* unblock posted writes */
+ 	msleep(5);
+-	rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT, 0, 100 * 1000);
++
++	/* For Aspeed, STS_HALT also depends on ASS/PSS status.
++	 * Skip this check on startup.
++	 */
++	if (ehci->is_aspeed)
++		rc = 0;
++	else
++		rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT,
++				    0, 100 * 1000);
+ 
+ 	up_write(&ehci_cf_port_reset_rwsem);
+ 
+diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
+index c70f2d0b4aaf..c3dc906274d9 100644
+--- a/drivers/usb/host/ehci-platform.c
++++ b/drivers/usb/host/ehci-platform.c
+@@ -297,6 +297,12 @@ static int ehci_platform_probe(struct platform_device *dev)
+ 					  "has-transaction-translator"))
+ 			hcd->has_tt = 1;
+ 
++		if (of_device_is_compatible(dev->dev.of_node,
++					    "aspeed,ast2500-ehci") ||
++		    of_device_is_compatible(dev->dev.of_node,
++					    "aspeed,ast2600-ehci"))
++			ehci->is_aspeed = 1;
++
+ 		if (soc_device_match(quirk_poll_match))
+ 			priv->quirk_poll = true;
+ 
+diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
+index 80bb823aa9fe..fdd073cc053b 100644
+--- a/drivers/usb/host/ehci.h
++++ b/drivers/usb/host/ehci.h
+@@ -219,6 +219,7 @@ struct ehci_hcd {			/* one per controller */
+ 	unsigned		need_oc_pp_cycle:1; /* MPC834X port power */
+ 	unsigned		imx28_write_fix:1; /* For Freescale i.MX28 */
+ 	unsigned		spurious_oc:1;
++	unsigned		is_aspeed:1;
+ 
+ 	/* required for usb32 quirk */
+ 	#define OHCI_CTRL_HCFS          (3 << 6)
+-- 
+2.17.1
+
