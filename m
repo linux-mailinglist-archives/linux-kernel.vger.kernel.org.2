@@ -2,381 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED203F82F7
+	by mail.lfdr.de (Postfix) with ESMTP id 678C43F82F8
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240180AbhHZHQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 03:16:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:40254 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240090AbhHZHQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 03:16:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72F7D101E;
+        id S240242AbhHZHQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 03:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240109AbhHZHQs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 03:16:48 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695CDC061757;
+        Thu, 26 Aug 2021 00:16:01 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id 2so1969959pfo.8;
+        Thu, 26 Aug 2021 00:16:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ABjNhP2gy40aUcdUMsv9ukpTDQl/Hf7OG0QTpeYrhCY=;
+        b=jiL6os6V6Maudeg+konCqokW7+3CdtOmCY4XhejQXcPxW11lEBdzStFTi18fv1+pF8
+         EObhGbcf/6FRI8H572DKJKOtWWOFvGxqq1LZ8+ul12ikdkgvyCYXC/IbMQ15aHz5kkv6
+         Yvf4SOma5/hop3OOnPpgtEZmoulQoqcZi1fn6FqMni2R9W8kPkH939iCihFPeqsR87Uh
+         iExH//M+XlBBQ02c2E3jWS4Jf8D88panUOC64lGZWoQRF4OKDtVEXobfMUDMlHLIvWdm
+         b90gV1tl1/Sx56yaLHBeJMuM84ouS41RcOXb1qCJAzMbd5cH6iLleQ15cs9IFAwJ4+96
+         VFRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ABjNhP2gy40aUcdUMsv9ukpTDQl/Hf7OG0QTpeYrhCY=;
+        b=L8CKgtpIBktpgwRTEfJT41hL0eN+yxbNLZllEgmaqWUH2tHaTsM/bPr+cmXpDfePE4
+         TCb7/bP1qxKCryck7K0Ci84ywBWoIjJqGwB44Xhwuo03mnnhyPwzjqMcSoyWOQ4AlrRE
+         86atPyS7JRyV3urj/vBUc/QULVXQ9r33F4vjwHS2AbbpW4bNSWr/mos4xc1G25TlQpIv
+         rOKFkEdmClOL6Y7eN3aq+HkEPFmQi6D3ELOzMDyiZsewTK+cW9ZUj/gopvEqomDblSY9
+         XYV5VDKkzUzjbd5ar3m0PGZds1f/MukaN3Dv1hFPdu70oM+HpyFOACuq69t8wI30dwpw
+         NDyA==
+X-Gm-Message-State: AOAM532RXe5fxHiSqNp6JdUuW5gq/GLmCiPFuiDXr05mbCdTtt+5jLTr
+        /dSkxKfrU8bXzSSE+g6xJUI=
+X-Google-Smtp-Source: ABdhPJyIDsYfXofx6NjbJNU4vScDzfiLT5YUKj52vpA5jIoerwylz8GT6fAYvM0o5ONvE/fD+f9YaA==
+X-Received: by 2002:a65:6084:: with SMTP id t4mr2145300pgu.25.1629962160271;
         Thu, 26 Aug 2021 00:16:00 -0700 (PDT)
-Received: from u200856.usa.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED1903F5A1;
+Received: from jianchwadeMacBook-Pro.local ([162.219.34.243])
+        by smtp.gmail.com with ESMTPSA id w16sm1911352pff.130.2021.08.26.00.15.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Thu, 26 Aug 2021 00:15:59 -0700 (PDT)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-pci@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
-        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH v3 1/4] PCI: brcmstb: Break register definitions into separate header
-Date:   Thu, 26 Aug 2021 02:15:54 -0500
-Message-Id: <20210826071557.29239-2-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210826071557.29239-1-jeremy.linton@arm.com>
-References: <20210826071557.29239-1-jeremy.linton@arm.com>
+Subject: Re: [PATCH V3 4/5] ext4: get discard out of jbd2 commit kthread
+ contex
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tytso@mit.edu, adilger.kernel@dilger.ca
+References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
+ <20210724074124.25731-5-jianchao.wan9@gmail.com>
+ <20210804154530.GL4578@quack2.suse.cz>
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+Message-ID: <6621227f-e710-2fa2-bc09-c4c66c34eb14@gmail.com>
+Date:   Thu, 26 Aug 2021 15:15:55 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210804154530.GL4578@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are about to create a standalone ACPI quirk module for the
-bcmstb controller. Lets move the register definitions into a separate
-file so they can be shared between the APCI quirk and the normal
-host bridge driver.
 
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 149 +------------------------
- drivers/pci/controller/pcie-brcmstb.h | 155 ++++++++++++++++++++++++++
- 2 files changed, 156 insertions(+), 148 deletions(-)
- create mode 100644 drivers/pci/controller/pcie-brcmstb.h
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index cc30215f5a43..2517735101ba 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -31,159 +31,12 @@
- #include <linux/types.h>
- 
- #include "../pci.h"
--
--/* BRCM_PCIE_CAP_REGS - Offset for the mandatory capability config regs */
--#define BRCM_PCIE_CAP_REGS				0x00ac
--
--/* Broadcom STB PCIe Register Offsets */
--#define PCIE_RC_CFG_VENDOR_VENDOR_SPECIFIC_REG1				0x0188
--#define  PCIE_RC_CFG_VENDOR_VENDOR_SPECIFIC_REG1_ENDIAN_MODE_BAR2_MASK	0xc
--#define  PCIE_RC_CFG_VENDOR_SPCIFIC_REG1_LITTLE_ENDIAN			0x0
--
--#define PCIE_RC_CFG_PRIV1_ID_VAL3			0x043c
--#define  PCIE_RC_CFG_PRIV1_ID_VAL3_CLASS_CODE_MASK	0xffffff
--
--#define PCIE_RC_CFG_PRIV1_LINK_CAPABILITY			0x04dc
--#define  PCIE_RC_CFG_PRIV1_LINK_CAPABILITY_ASPM_SUPPORT_MASK	0xc00
--
--#define PCIE_RC_DL_MDIO_ADDR				0x1100
--#define PCIE_RC_DL_MDIO_WR_DATA				0x1104
--#define PCIE_RC_DL_MDIO_RD_DATA				0x1108
--
--#define PCIE_MISC_MISC_CTRL				0x4008
--#define  PCIE_MISC_MISC_CTRL_SCB_ACCESS_EN_MASK		0x1000
--#define  PCIE_MISC_MISC_CTRL_CFG_READ_UR_MODE_MASK	0x2000
--#define  PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_MASK	0x300000
--
--#define  PCIE_MISC_MISC_CTRL_SCB0_SIZE_MASK		0xf8000000
--#define  PCIE_MISC_MISC_CTRL_SCB1_SIZE_MASK		0x07c00000
--#define  PCIE_MISC_MISC_CTRL_SCB2_SIZE_MASK		0x0000001f
--#define  SCB_SIZE_MASK(x) PCIE_MISC_MISC_CTRL_SCB ## x ## _SIZE_MASK
--
--#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LO		0x400c
--#define PCIE_MEM_WIN0_LO(win)	\
--		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LO + ((win) * 8)
--
--#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_HI		0x4010
--#define PCIE_MEM_WIN0_HI(win)	\
--		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_HI + ((win) * 8)
--
--#define PCIE_MISC_RC_BAR1_CONFIG_LO			0x402c
--#define  PCIE_MISC_RC_BAR1_CONFIG_LO_SIZE_MASK		0x1f
--
--#define PCIE_MISC_RC_BAR2_CONFIG_LO			0x4034
--#define  PCIE_MISC_RC_BAR2_CONFIG_LO_SIZE_MASK		0x1f
--#define PCIE_MISC_RC_BAR2_CONFIG_HI			0x4038
--
--#define PCIE_MISC_RC_BAR3_CONFIG_LO			0x403c
--#define  PCIE_MISC_RC_BAR3_CONFIG_LO_SIZE_MASK		0x1f
--
--#define PCIE_MISC_MSI_BAR_CONFIG_LO			0x4044
--#define PCIE_MISC_MSI_BAR_CONFIG_HI			0x4048
--
--#define PCIE_MISC_MSI_DATA_CONFIG			0x404c
--#define  PCIE_MISC_MSI_DATA_CONFIG_VAL_32		0xffe06540
--#define  PCIE_MISC_MSI_DATA_CONFIG_VAL_8		0xfff86540
--
--#define PCIE_MISC_PCIE_CTRL				0x4064
--#define  PCIE_MISC_PCIE_CTRL_PCIE_L23_REQUEST_MASK	0x1
--#define PCIE_MISC_PCIE_CTRL_PCIE_PERSTB_MASK		0x4
--
--#define PCIE_MISC_PCIE_STATUS				0x4068
--#define  PCIE_MISC_PCIE_STATUS_PCIE_PORT_MASK		0x80
--#define  PCIE_MISC_PCIE_STATUS_PCIE_DL_ACTIVE_MASK	0x20
--#define  PCIE_MISC_PCIE_STATUS_PCIE_PHYLINKUP_MASK	0x10
--#define  PCIE_MISC_PCIE_STATUS_PCIE_LINK_IN_L23_MASK	0x40
--
--#define PCIE_MISC_REVISION				0x406c
--#define  BRCM_PCIE_HW_REV_33				0x0303
--#define  BRCM_PCIE_HW_REV_3_20				0x0320
--
--#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT		0x4070
--#define  PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT_LIMIT_MASK	0xfff00000
--#define  PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT_BASE_MASK	0xfff0
--#define PCIE_MEM_WIN0_BASE_LIMIT(win)	\
--		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT + ((win) * 4)
--
--#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_HI			0x4080
--#define  PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_HI_BASE_MASK	0xff
--#define PCIE_MEM_WIN0_BASE_HI(win)	\
--		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_HI + ((win) * 8)
--
--#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LIMIT_HI			0x4084
--#define  PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LIMIT_HI_LIMIT_MASK	0xff
--#define PCIE_MEM_WIN0_LIMIT_HI(win)	\
--		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LIMIT_HI + ((win) * 8)
--
--#define PCIE_MISC_HARD_PCIE_HARD_DEBUG					0x4204
--#define  PCIE_MISC_HARD_PCIE_HARD_DEBUG_CLKREQ_DEBUG_ENABLE_MASK	0x2
--#define  PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK		0x08000000
--
--
--#define PCIE_INTR2_CPU_BASE		0x4300
--#define PCIE_MSI_INTR2_BASE		0x4500
--/* Offsets from PCIE_INTR2_CPU_BASE and PCIE_MSI_INTR2_BASE */
--#define  MSI_INT_STATUS			0x0
--#define  MSI_INT_CLR			0x8
--#define  MSI_INT_MASK_SET		0x10
--#define  MSI_INT_MASK_CLR		0x14
--
--#define PCIE_EXT_CFG_DATA				0x8000
--#define PCIE_EXT_CFG_INDEX				0x9000
--
--#define  PCIE_RGR1_SW_INIT_1_PERST_MASK			0x1
--#define  PCIE_RGR1_SW_INIT_1_PERST_SHIFT		0x0
--
--#define RGR1_SW_INIT_1_INIT_GENERIC_MASK		0x2
--#define RGR1_SW_INIT_1_INIT_GENERIC_SHIFT		0x1
--#define RGR1_SW_INIT_1_INIT_7278_MASK			0x1
--#define RGR1_SW_INIT_1_INIT_7278_SHIFT			0x0
--
--/* PCIe parameters */
--#define BRCM_NUM_PCIE_OUT_WINS		0x4
--#define BRCM_INT_PCI_MSI_NR		32
--#define BRCM_INT_PCI_MSI_LEGACY_NR	8
--#define BRCM_INT_PCI_MSI_SHIFT		0
--
--/* MSI target adresses */
--#define BRCM_MSI_TARGET_ADDR_LT_4GB	0x0fffffffcULL
--#define BRCM_MSI_TARGET_ADDR_GT_4GB	0xffffffffcULL
--
--/* MDIO registers */
--#define MDIO_PORT0			0x0
--#define MDIO_DATA_MASK			0x7fffffff
--#define MDIO_PORT_MASK			0xf0000
--#define MDIO_REGAD_MASK			0xffff
--#define MDIO_CMD_MASK			0xfff00000
--#define MDIO_CMD_READ			0x1
--#define MDIO_CMD_WRITE			0x0
--#define MDIO_DATA_DONE_MASK		0x80000000
--#define MDIO_RD_DONE(x)			(((x) & MDIO_DATA_DONE_MASK) ? 1 : 0)
--#define MDIO_WT_DONE(x)			(((x) & MDIO_DATA_DONE_MASK) ? 0 : 1)
--#define SSC_REGS_ADDR			0x1100
--#define SET_ADDR_OFFSET			0x1f
--#define SSC_CNTL_OFFSET			0x2
--#define SSC_CNTL_OVRD_EN_MASK		0x8000
--#define SSC_CNTL_OVRD_VAL_MASK		0x4000
--#define SSC_STATUS_OFFSET		0x1
--#define SSC_STATUS_SSC_MASK		0x400
--#define SSC_STATUS_PLL_LOCK_MASK	0x800
--#define PCIE_BRCM_MAX_MEMC		3
-+#include "pcie-brcmstb.h"
- 
- #define IDX_ADDR(pcie)			(pcie->reg_offsets[EXT_CFG_INDEX])
- #define DATA_ADDR(pcie)			(pcie->reg_offsets[EXT_CFG_DATA])
- #define PCIE_RGR1_SW_INIT_1(pcie)	(pcie->reg_offsets[RGR1_SW_INIT_1])
- 
--/* Rescal registers */
--#define PCIE_DVT_PMU_PCIE_PHY_CTRL				0xc700
--#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS			0x3
--#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_MASK		0x4
--#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_SHIFT	0x2
--#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_MASK		0x2
--#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_SHIFT		0x1
--#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_MASK		0x1
--#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_SHIFT		0x0
--
- /* Forward declarations */
- struct brcm_pcie;
- static inline void brcm_pcie_bridge_sw_init_set_7278(struct brcm_pcie *pcie, u32 val);
-diff --git a/drivers/pci/controller/pcie-brcmstb.h b/drivers/pci/controller/pcie-brcmstb.h
-new file mode 100644
-index 000000000000..fc20cc7ae02f
---- /dev/null
-+++ b/drivers/pci/controller/pcie-brcmstb.h
-@@ -0,0 +1,155 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/* Copyright (C) 2009 - 2021 Broadcom */
-+
-+#ifndef _PCIE_BRCMSTB_H
-+#define _PCIE_BRCMSTB_H
-+
-+/* BRCM_PCIE_CAP_REGS - Offset for the mandatory capability config regs */
-+#define BRCM_PCIE_CAP_REGS				0x00ac
-+
-+/* Broadcom STB PCIe Register Offsets */
-+#define PCIE_RC_CFG_VENDOR_VENDOR_SPECIFIC_REG1				0x0188
-+#define  PCIE_RC_CFG_VENDOR_VENDOR_SPECIFIC_REG1_ENDIAN_MODE_BAR2_MASK	0xc
-+#define  PCIE_RC_CFG_VENDOR_SPCIFIC_REG1_LITTLE_ENDIAN			0x0
-+
-+#define PCIE_RC_CFG_PRIV1_ID_VAL3			0x043c
-+#define  PCIE_RC_CFG_PRIV1_ID_VAL3_CLASS_CODE_MASK	0xffffff
-+
-+#define PCIE_RC_CFG_PRIV1_LINK_CAPABILITY			0x04dc
-+#define  PCIE_RC_CFG_PRIV1_LINK_CAPABILITY_ASPM_SUPPORT_MASK	0xc00
-+
-+#define PCIE_RC_DL_MDIO_ADDR				0x1100
-+#define PCIE_RC_DL_MDIO_WR_DATA				0x1104
-+#define PCIE_RC_DL_MDIO_RD_DATA				0x1108
-+
-+#define PCIE_MISC_MISC_CTRL				0x4008
-+#define  PCIE_MISC_MISC_CTRL_SCB_ACCESS_EN_MASK		0x1000
-+#define  PCIE_MISC_MISC_CTRL_CFG_READ_UR_MODE_MASK	0x2000
-+#define  PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_MASK	0x300000
-+
-+#define  PCIE_MISC_MISC_CTRL_SCB0_SIZE_MASK		0xf8000000
-+#define  PCIE_MISC_MISC_CTRL_SCB1_SIZE_MASK		0x07c00000
-+#define  PCIE_MISC_MISC_CTRL_SCB2_SIZE_MASK		0x0000001f
-+#define  SCB_SIZE_MASK(x) PCIE_MISC_MISC_CTRL_SCB ## x ## _SIZE_MASK
-+
-+#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LO		0x400c
-+#define PCIE_MEM_WIN0_LO(win)	\
-+		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LO + ((win) * 8)
-+
-+#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_HI		0x4010
-+#define PCIE_MEM_WIN0_HI(win)	\
-+		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_HI + ((win) * 8)
-+
-+#define PCIE_MISC_RC_BAR1_CONFIG_LO			0x402c
-+#define  PCIE_MISC_RC_BAR1_CONFIG_LO_SIZE_MASK		0x1f
-+
-+#define PCIE_MISC_RC_BAR2_CONFIG_LO			0x4034
-+#define  PCIE_MISC_RC_BAR2_CONFIG_LO_SIZE_MASK		0x1f
-+#define PCIE_MISC_RC_BAR2_CONFIG_HI			0x4038
-+
-+#define PCIE_MISC_RC_BAR3_CONFIG_LO			0x403c
-+#define  PCIE_MISC_RC_BAR3_CONFIG_LO_SIZE_MASK		0x1f
-+
-+#define PCIE_MISC_MSI_BAR_CONFIG_LO			0x4044
-+#define PCIE_MISC_MSI_BAR_CONFIG_HI			0x4048
-+
-+#define PCIE_MISC_MSI_DATA_CONFIG			0x404c
-+#define  PCIE_MISC_MSI_DATA_CONFIG_VAL_32		0xffe06540
-+#define  PCIE_MISC_MSI_DATA_CONFIG_VAL_8		0xfff86540
-+
-+#define PCIE_MISC_PCIE_CTRL				0x4064
-+#define  PCIE_MISC_PCIE_CTRL_PCIE_L23_REQUEST_MASK	0x1
-+#define PCIE_MISC_PCIE_CTRL_PCIE_PERSTB_MASK		0x4
-+
-+#define PCIE_MISC_PCIE_STATUS				0x4068
-+#define  PCIE_MISC_PCIE_STATUS_PCIE_PORT_MASK		0x80
-+#define  PCIE_MISC_PCIE_STATUS_PCIE_DL_ACTIVE_MASK	0x20
-+#define  PCIE_MISC_PCIE_STATUS_PCIE_PHYLINKUP_MASK	0x10
-+#define  PCIE_MISC_PCIE_STATUS_PCIE_LINK_IN_L23_MASK	0x40
-+
-+#define PCIE_MISC_REVISION				0x406c
-+#define  BRCM_PCIE_HW_REV_33				0x0303
-+#define  BRCM_PCIE_HW_REV_3_20				0x0320
-+
-+#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT		0x4070
-+#define  PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT_LIMIT_MASK	0xfff00000
-+#define  PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT_BASE_MASK	0xfff0
-+#define PCIE_MEM_WIN0_BASE_LIMIT(win)	\
-+		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT + ((win) * 4)
-+
-+#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_HI			0x4080
-+#define  PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_HI_BASE_MASK	0xff
-+#define PCIE_MEM_WIN0_BASE_HI(win)	\
-+		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_HI + ((win) * 8)
-+
-+#define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LIMIT_HI			0x4084
-+#define  PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LIMIT_HI_LIMIT_MASK	0xff
-+#define PCIE_MEM_WIN0_LIMIT_HI(win)	\
-+		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LIMIT_HI + ((win) * 8)
-+
-+#define PCIE_MISC_HARD_PCIE_HARD_DEBUG					0x4204
-+#define  PCIE_MISC_HARD_PCIE_HARD_DEBUG_CLKREQ_DEBUG_ENABLE_MASK	0x2
-+#define  PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK		0x08000000
-+
-+
-+#define PCIE_INTR2_CPU_BASE		0x4300
-+#define PCIE_MSI_INTR2_BASE		0x4500
-+/* Offsets from PCIE_INTR2_CPU_BASE and PCIE_MSI_INTR2_BASE */
-+#define  MSI_INT_STATUS			0x0
-+#define  MSI_INT_CLR			0x8
-+#define  MSI_INT_MASK_SET		0x10
-+#define  MSI_INT_MASK_CLR		0x14
-+
-+#define PCIE_EXT_CFG_DATA				0x8000
-+#define PCIE_EXT_CFG_INDEX				0x9000
-+
-+#define  PCIE_RGR1_SW_INIT_1_PERST_MASK			0x1
-+#define  PCIE_RGR1_SW_INIT_1_PERST_SHIFT		0x0
-+
-+#define RGR1_SW_INIT_1_INIT_GENERIC_MASK		0x2
-+#define RGR1_SW_INIT_1_INIT_GENERIC_SHIFT		0x1
-+#define RGR1_SW_INIT_1_INIT_7278_MASK			0x1
-+#define RGR1_SW_INIT_1_INIT_7278_SHIFT			0x0
-+
-+/* PCIe parameters */
-+#define BRCM_NUM_PCIE_OUT_WINS		0x4
-+#define BRCM_INT_PCI_MSI_NR		32
-+#define BRCM_INT_PCI_MSI_LEGACY_NR	8
-+#define BRCM_INT_PCI_MSI_SHIFT		0
-+
-+/* MSI target addresses */
-+#define BRCM_MSI_TARGET_ADDR_LT_4GB	0x0fffffffcULL
-+#define BRCM_MSI_TARGET_ADDR_GT_4GB	0xffffffffcULL
-+
-+/* MDIO registers */
-+#define MDIO_PORT0			0x0
-+#define MDIO_DATA_MASK			0x7fffffff
-+#define MDIO_PORT_MASK			0xf0000
-+#define MDIO_REGAD_MASK			0xffff
-+#define MDIO_CMD_MASK			0xfff00000
-+#define MDIO_CMD_READ			0x1
-+#define MDIO_CMD_WRITE			0x0
-+#define MDIO_DATA_DONE_MASK		0x80000000
-+#define MDIO_RD_DONE(x)			(((x) & MDIO_DATA_DONE_MASK) ? 1 : 0)
-+#define MDIO_WT_DONE(x)			(((x) & MDIO_DATA_DONE_MASK) ? 0 : 1)
-+#define SSC_REGS_ADDR			0x1100
-+#define SET_ADDR_OFFSET			0x1f
-+#define SSC_CNTL_OFFSET			0x2
-+#define SSC_CNTL_OVRD_EN_MASK		0x8000
-+#define SSC_CNTL_OVRD_VAL_MASK		0x4000
-+#define SSC_STATUS_OFFSET		0x1
-+#define SSC_STATUS_SSC_MASK		0x400
-+#define SSC_STATUS_PLL_LOCK_MASK	0x800
-+#define PCIE_BRCM_MAX_MEMC		3
-+
-+/* Rescal registers */
-+#define PCIE_DVT_PMU_PCIE_PHY_CTRL				0xc700
-+#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS			0x3
-+#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_MASK		0x4
-+#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_SHIFT	0x2
-+#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_MASK		0x2
-+#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_SHIFT		0x1
-+#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_MASK		0x1
-+#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_SHIFT		0x0
-+
-+#endif /* _PCIE_BRCMSTB_H */
--- 
-2.31.1
+On 2021/8/4 11:45 PM, Jan Kara wrote:
+> On Sat 24-07-21 15:41:23, Wang Jianchao wrote:
+>> From: Wang Jianchao <wangjianchao@kuaishou.com>
+>>
+>> Right now, discard is issued and waited to be completed in jbd2
+>> commit kthread context after the logs are committed. When large
+>> amount of files are deleted and discard is flooding, jbd2 commit
+>> kthread can be blocked for long time. Then all of the metadata
+>> operations can be blocked to wait the log space.
+>>
+>> One case is the page fault path with read mm->mmap_sem held, which
+>> wants to update the file time but has to wait for the log space.
+>> When other threads in the task wants to do mmap, then write mmap_sem
+>> is blocked. Finally all of the following read mmap_sem requirements
+>> are blocked, even the ps command which need to read the /proc/pid/
+>> -cmdline. Our monitor service which needs to read /proc/pid/cmdline
+>> used to be blocked for 5 mins.
+>>
+>> This patch frees the blocks back to buddy after commit and then do
+>> discard in a async kworker context in fstrim fashion, namely,
+>>  - mark blocks to be discarded as used if they have not been allocated
+>>  - do discard
+>>  - mark them free
+>> After this, jbd2 commit kthread won't be blocked any more by discard
+>> and we won't get NOSPC even if the discard is slow or throttled.
+>>
+>> Link: https://marc.info/?l=linux-kernel&m=162143690731901&w=2
+>> Suggested-by: Theodore Ts'o <tytso@mit.edu>
+>> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
+> 
+> Looks good to me. Just one small comment below. With that addressed feel
+> free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> 
+>> @@ -3474,6 +3530,14 @@ int ext4_mb_release(struct super_block *sb)
+>>  	struct kmem_cache *cachep = get_groupinfo_cache(sb->s_blocksize_bits);
+>>  	int count;
+>>  
+>> +	if (test_opt(sb, DISCARD)) {
+>> +		/*
+>> +		 * wait the discard work to drain all of ext4_free_data
+>> +		 */
+>> +		queue_work(ext4_discard_wq, &sbi->s_discard_work);
+> 
+> Do we really need to queue the work here? The filesystem should be
+> quiescent by now, we take care to queue the work whenever we add item to
+> empty list. So it should be enough to have flush_work() here and then
+> possibly
+> 
+> 	WARN_ON_ONCE(!list_empty(&sbi->s_discard_list))
+> 
+> Or am I missing something?
 
+queue_work here is indeed redundant.
+
+Thanks so much for you point out this.
+Jianchao
+
+> 
+> 								Honza
+> 
+>> +		flush_work(&sbi->s_discard_work);
+>> +	}
+>> +
