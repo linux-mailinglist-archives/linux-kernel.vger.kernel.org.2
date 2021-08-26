@@ -2,135 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70723F8C24
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F8A3F8C28
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243108AbhHZQ1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 12:27:18 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:49860 "EHLO mail.ispras.ru"
+        id S243114AbhHZQ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:27:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243061AbhHZQ1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:27:15 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 9F87A407624E;
-        Thu, 26 Aug 2021 16:26:22 +0000 (UTC)
-Subject: Re: [PATCH] usb: ehci-orion: Handle errors of clk_prepare_enable() in
- probe
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Mike Turquette <mturquette@linaro.org>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20210825170902.11234-1-novikov@ispras.ru>
- <20210825172937.GD192480@rowland.harvard.edu>
- <c22d943a-581c-c1bd-d453-3f0f6176c8a5@ispras.ru>
- <20210826152438.GB228824@rowland.harvard.edu>
-From:   Evgeny Novikov <novikov@ispras.ru>
-Message-ID: <4d91f982-99df-29d2-c335-1df0c23acbc8@ispras.ru>
-Date:   Thu, 26 Aug 2021 19:26:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S238124AbhHZQ15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 12:27:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D6C56108F;
+        Thu, 26 Aug 2021 16:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629995230;
+        bh=ri5PPlLWRy9zKXS5P/gclhNW627E4mS9121aUBqqlUw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=GZQapewu8W1pU0mgJqWFvWbfufl2G/ZL70xxx4z4/HQqJJzK6UiWP8I5tsA/BGzAp
+         yAN791sN6d8X3LWGlnN/c95VLhUVmyUgIzZXJPmIGxd30wm1hvf5ees5KDSpbRat16
+         kSYkJlis+bOQqm9oQbSr67twrbPna8q1cAJdAAiag5jNW7OFBCFNoXcnSfTkCuA6r/
+         JssqfaLn3+WNsG0z3y0t5Mq1ZDk4XTfMEDUzuxVPr3BEy8DsTqcXbPrUagLmoogt7t
+         wjWRgoqXwCbzN7A2ljwhURP+7hnLG0wxJCeNnOltkaYzSyGmGZmFpNLu4k/s8cUiHx
+         sG3jgDkv1WXYw==
+Message-ID: <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
+Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Thu, 26 Aug 2021 19:27:07 +0300
+In-Reply-To: <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
+References: <20210825235234.153013-1-jarkko@kernel.org>
+         <20210825235234.153013-2-jarkko@kernel.org>
+         <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20210826152438.GB228824@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.08.2021 18:24, Alan Stern wrote:
-> On Thu, Aug 26, 2021 at 04:30:22PM +0300, Evgeny Novikov wrote:
->> Hi Alan,
->>
->> On 25.08.2021 20:29, Alan Stern wrote:
->>> On Wed, Aug 25, 2021 at 08:09:02PM +0300, Evgeny Novikov wrote:
->>>> ehci_orion_drv_probe() did not account for possible errors of
->>>> clk_prepare_enable() that in particular could cause invocation of
->>>> clk_disable_unprepare() on clocks that were not prepared/enabled yet,
->>>> e.g. in remove or on handling errors of usb_add_hcd() in probe. Though,
->>>> there were several patches fixing different issues with clocks in this
->>>> driver, they did not solve this problem.
->>>>
->>>> Add handling of errors of clk_prepare_enable() in ehci_orion_drv_probe()
->>>> to avoid calls of clk_disable_unprepare() without previous successful
->>>> invocation of clk_prepare_enable().
->>>>
->>>> Found by Linux Driver Verification project (linuxtesting.org).
->>>>
->>>> Fixes: 8c869edaee07 ("ARM: Orion: EHCI: Add support for enabling clocks")
->>>> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
->>>> Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
->>>> Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
->>>> ---
->>> Acked-by: Alan Stern <stern@rowland.harvard.edu>
->>>
->>> Do you intend to submit patches for the other EHCI drivers that don't
->>> check for errors in clk_prepare_enable()?  It looks like
->>> ehci-atmel.c, ehci-mv.c, and ehci-spear.c all need some attention.
->>>
->>> The same is true for a bunch of the OHCI drivers: ohci-at91.c,
->>> ohci-exynos.c, ohci-s3c2410.c, and ohci-spear.c.
->>>
->>> Didn't the Linux Driver Verification project identify this problem in
->>> all of these drivers?
->> Our verification framework report numerous issues like the one for which I
->> sent the given patch. There are many warnings for different USB drivers and
->> other types of device drivers as well. We sent several patches that were
->> acknowledged by the developers already, though, after the Andrew's reply [1]
->> I have doubts that we need to treat these warnings as potential bugs and fix
->> them. The verification framework performs static analysis in a way that I
->> described before [2]. Regarding the clock API it uses such models of
->> clk_prepare() and clk_enable() that can fail independently on underlying
->> hardware since is not easy to either model all such hardware or try to
->> relate and consider corresponding drivers in addition to drivers using
->> clocks at verification. Thus, potentially the verification framework can
->> produce warnings for all drivers that invoke clk_prepare(), clk_enable() or
->> clk_prepare_enable(), but do not check for their return values.
->>
->> I look forward whether you will confirm that it makes sense to handle errors
->> from mentioned functions anyway or it would be better not to sent such bug
->> reports unless we will be strictly sure that they can happen. In the former
->> case it would be better if somebody will teach built-in Linux kernel static
->> analyzers to detect these issues on a regular basis.
-> I don't know whether these errors can occur or not.  To find out, you need to
-> ask someone who knows more about the clock framework.
->
-> On the other hand, the fact that the functions do return an error code means
-> that they expect callers to check its value.  In fact, whoever changed the API
-> should have gone through all the callers to make sure they did so.
->
-> (Let's put it this way:  If those functions can return an error, we should
-> check the return code.  If they can't return an error then they shouldn't be
-> defined to return an int, so the API should be changed.)
->
-> So on the whole, I think making these changes would be a good thing.  At the
-> very least, it will help make all the different EHCI and OHCI drivers
-> consistent with each other.
-I agree with your reasoning. Even though today these bugs can not happen 
-since appropriate hardware and its drivers do not fail in a "necessary" 
-way ever, this can suddenly change in the future. Maybe it will not be 
-so easy to track the root causes especially taking into account that 
-failures happen very seldom.
+On Thu, 2021-08-26 at 14:19 +1200, Kai Huang wrote:
+> On Thu, 26 Aug 2021 02:52:33 +0300 Jarkko Sakkinen wrote:
+> > The amount of SGX memory on the system is determined by the BIOS and it
+> > varies wildly between systems.  It can be from dozens of MB's on deskto=
+ps
+> > or VM's, up to many GB's on servers.  Just like for regular memory, it =
+is
+> > sometimes useful to know the amount of usable SGX memory in the system.
+> >=20
+> > Add SGX_MemTotal field to /proc/meminfo, which shows the total amount o=
+f
+> > usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
+> > BIOS, the printout would be:
+> >=20
+> > SGX_MemTotal:      22528 kB
+> >=20
+> > It is less than 32 MB because some of the space is reserved for Enclave
+> > Page Cache Metadata (EPCM), which contains state variables for all the
+> > pages in the Enclave Page Cache (EPC).  The latter contains the pages,
+> > which applications can use to create enclaves.
+> >=20
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> >=20
+> > ---
+> > v2:
+> > * Move ifdef fix for sgx_set_attribute() to a separate patch.
+> > ---
+> >  Documentation/x86/sgx.rst      | 6 ++++++
+> >  arch/x86/include/asm/sgx.h     | 2 ++
+> >  arch/x86/kernel/cpu/sgx/main.c | 7 ++++++-
+> >  arch/x86/mm/pat/set_memory.c   | 5 +++++
+> >  4 files changed, 19 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+> > index dd0ac96ff9ef..68ee171e1d8f 100644
+> > --- a/Documentation/x86/sgx.rst
+> > +++ b/Documentation/x86/sgx.rst
+> > @@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the h=
+ost and in guests
+> >  on the same machine, the user should reserve enough EPC (by taking out
+> >  total virtual EPC size of all SGX VMs from the physical EPC size) for
+> >  host SGX applications so they can run with acceptable performance.
+> > +
+> > +Supplemental fields for /proc/meminfo
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +SGX_MemTotal
+> > +	The total usable SGX protected memory in kilobytes.
+> > diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
+> > index 996e56590a10..d8e526b5487b 100644
+> > --- a/arch/x86/include/asm/sgx.h
+> > +++ b/arch/x86/include/asm/sgx.h
+> > @@ -367,6 +367,8 @@ struct sgx_sigstruct {
+> > =20
+> >  #ifdef CONFIG_X86_SGX
+> > =20
+> > +extern unsigned long sgx_nr_all_pages;
+> > +
+> >  int sgx_set_attribute(unsigned long *allowed_attributes,
+> >  		      unsigned int attribute_fd);
+> > =20
+> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/m=
+ain.c
+> > index 63d3de02bbcc..1fe26a8e80dc 100644
+> > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > @@ -28,7 +28,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+> >  static LIST_HEAD(sgx_active_page_list);
+> >  static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+> > =20
+> > -/* The free page list lock protected variables prepend the lock. */
+> > +/* The number of usable EPC pages in the system. */
+> > +unsigned long sgx_nr_all_pages;
+> > +
+> > +/* The number of free EPC pages in all nodes. */
+> >  static unsigned long sgx_nr_free_pages;
+> > =20
+> >  /* Nodes with one or more EPC sections. */
+> > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u64 phys_a=
+ddr, u64 size,
+> >  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+> >  	}
+> > =20
+> > +	sgx_nr_all_pages +=3D nr_pages;
+> > +
+>=20
+> EPC sections can be freed again in sgx_init() after they are successfully
+> initialized, when any further initialization fails (i.e. when fails to cr=
+eate
+> ksgxd, or fails to register /dev/sgx_provision).  In which case, I think
+> sgx_nr_all_pages should also be cleared.  But current sgx_init() seems do=
+esn't
+> reset it.  Do you need to fix that too?
 
-I am unready to make any considerable changes in the API. Also, as I 
-mentioned before, it would be better if a bunch of appropriate fixes 
-will be prepared by somebody who involved in development of the Linux 
-kernel much more than me and who can automatize the process of finding 
-such issues using static analysis tools. Most likely those tools are 
-able to find all such places very quickly even for drivers on very 
-specific architectures. I added Dan to the discussion since he is a 
-developer of one of such tools.
+sgx_nr_all_pages tells just the total pages in the system, i.e. it's a cons=
+tant.
 
-Best regards,
-Evgeny Novikov
-> Alan Stern
->
->> [1] https://lkml.org/lkml/2021/8/25/794
->> [2] https://lkml.org/lkml/2021/8/17/239
->>
->> Best regards,
->> Evgeny Novikov
+Maybe a rename to "sgx_nr_total_pages" would be a good idea? Would match wi=
+th
+the meminfo field better too.
+
+>=20
+> >  	return true;
+> >  }
+> > =20
+> > diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.=
+c
+> > index ad8a5c586a35..82bb09c298de 100644
+> > --- a/arch/x86/mm/pat/set_memory.c
+> > +++ b/arch/x86/mm/pat/set_memory.c
+> > @@ -29,6 +29,7 @@
+> >  #include <asm/proto.h>
+> >  #include <asm/memtype.h>
+> >  #include <asm/set_memory.h>
+> > +#include <asm/sgx.h>
+>=20
+> How about only include <asm/sgx.h> when CONFIG_X86_SGX is on, then you do=
+n't
+> have to do #ifdef CONFIG_X86_SGX changes to sgx.h?
+
+Why do it that way instead of doing it once in sgx.h for every site that wa=
+nts
+to include the file?
+
+/Jarkko
+
