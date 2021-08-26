@@ -2,145 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817F73F8303
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44713F8309
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239866AbhHZHUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 03:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234415AbhHZHUA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 03:20:00 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04104C061757;
-        Thu, 26 Aug 2021 00:19:14 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id r13so1591705pff.7;
-        Thu, 26 Aug 2021 00:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cfTbP5ybrHUjQ7XFW8ZJxXbueJDV7DVUr/15F0i3NDo=;
-        b=qsPLTdx3TKdjAIHR1a3Lpi29cmO2138kSw6i/7eLSZ21Qz/yj3oaVRLQybvk64OltB
-         OyFW+PGCeLztsy5DjLaxwE0F30yleyijeG2TQ3Bb7zArd4GNgAmUeOMSVVnDjuxVNJ/y
-         AyPTf8PCMdlLWS29BABilWgNSxOSeIiZyH27e3VaxuiiV3dFm8Efq/24LZXsxhwIiZ9I
-         dPYUi4LG9XplV5p1KEqZl2svhbbw3kKSCbfQv63kF83Joq4DmrRxz9DP9nczm0Q3q1AH
-         j15mLXR8hy7IuN/cmVjNfaUeNhOulF5+T2HSXgsaPJcFJQBTI4X6VtzyMvL5D8xGlJ7j
-         +FlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cfTbP5ybrHUjQ7XFW8ZJxXbueJDV7DVUr/15F0i3NDo=;
-        b=Ljy9sizGjCNlEe9E54rEIkBs3WWGAZQFcICPzyo9TEvPKcrkKQdJiDQhG51WjQjUpc
-         8ziqbeZYYlO0aOuQZ2vPDpDvSV63nWZqcLdB/p788vubQjZUkQ+PJSROGfq7/+vCzm/k
-         pZB3dnPYSeiG7B3UBAlPIN10qqZ4ZvSpWL7fWKNzSIVy2xqL6ez+lf8h5L3Yz++jxo8Z
-         Z//oe7Ng6hWB3RIgfjrTBUkwgOkjzmo0q2vnQVQH4aOGQMf3aIedZo2sXCjLfLOdeHbw
-         DBqws9Jv+5lzbrV/Hcwn4Y3kd2s2u1VIbO/FZ19BCf8cSX5/8yJ0EiwwaSKcePZ6RkfM
-         y4Yw==
-X-Gm-Message-State: AOAM532rkFYch4bO4WlYX0RdYNRoniATVoCU29WP2fvE7SV/K1jIE+n6
-        LyCU2MhH17kWojngRl5BYkg=
-X-Google-Smtp-Source: ABdhPJwjYkHzvWF/14P68/Pk5wQjZHR0hGFvjg4FXqdpP/TlcHUtLyTjUWVhyiwV+J6iR/rGPVPLWA==
-X-Received: by 2002:a65:494e:: with SMTP id q14mr2163360pgs.314.1629962353519;
-        Thu, 26 Aug 2021 00:19:13 -0700 (PDT)
-Received: from jianchwadeMacBook-Pro.local ([154.86.159.245])
-        by smtp.gmail.com with ESMTPSA id 6sm1772171pjz.8.2021.08.26.00.19.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 00:19:13 -0700 (PDT)
-Subject: Re: [PATCH V3 2/5] ext4: add new helper interface
- ext4_try_to_trim_range()
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        adilger.kernel@dilger.ca
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-3-jianchao.wan9@gmail.com> <YRVd8CCjhkpGJ/tb@mit.edu>
-From:   Wang Jianchao <jianchao.wan9@gmail.com>
-Message-ID: <43615c43-6837-dd84-c5d8-017596a59688@gmail.com>
-Date:   Thu, 26 Aug 2021 15:19:10 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S240023AbhHZHWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 03:22:47 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:34847 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234415AbhHZHWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 03:22:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629962519; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=8J143XZo6LFlAmaWmXyTY2AHmtwZhvUtLUftnRuhvRU=;
+ b=rzl/lDgjtopt/OQKKF8y8hlRK4Gc2orp624UtorapyBweWQUrDb3QCrbaGpwwKUJ3Sncrc3Z
+ EBxLV1eMDfi93cs7fJws2YZkepY49NRbhtdRrBq6jfwWxs7LrxPFnDupFbYUyuLIEZz8uckr
+ rO6QdKRfA9k4FPUJGVlWArX/5nU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 61274113825e13c54a286fb5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Aug 2021 07:21:55
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A4877C43618; Thu, 26 Aug 2021 07:21:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9B42AC4338F;
+        Thu, 26 Aug 2021 07:21:53 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <YRVd8CCjhkpGJ/tb@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 26 Aug 2021 12:51:53 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+In-Reply-To: <20210825212549.GA3609092@bjorn-Precision-5520>
+References: <20210825212549.GA3609092@bjorn-Precision-5520>
+Message-ID: <1795efc94a7b87fb4d9f769e03ce21c6@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-08-26 02:55, Bjorn Helgaas wrote:
+> [+cc linux-pci; patches to drivers/pci/ should always be cc'd there]
+> 
+> On Wed, Aug 25, 2021 at 07:30:09PM +0000, Stephen Boyd wrote:
+>> Quoting Prasad Malisetty (2021-08-24 01:10:48)
+>> > On 2021-08-17 22:56, Prasad Malisetty wrote:
+>> > > On 2021-08-10 09:38, Prasad Malisetty wrote:
+>> > >> On the SC7280, By default the clock source for pcie_1_pipe is
+>> > >> TCXO for gdsc enable. But after the PHY is initialized, the clock
+>> > >> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
+>> > >>
+>> > >> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> > >> ---
+>> > >>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
+>> > >>  1 file changed, 18 insertions(+)
+>> > >>
+>> > >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
+>> > >> b/drivers/pci/controller/dwc/pcie-qcom.c
+>> > >> index 8a7a300..39e3b21 100644
+>> > >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> > >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> > >> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
+>> > >>      struct regulator_bulk_data supplies[2];
+>> > >>      struct reset_control *pci_reset;
+>> > >>      struct clk *pipe_clk;
+>> > >> +    struct clk *gcc_pcie_1_pipe_clk_src;
+>> > >> +    struct clk *phy_pipe_clk;
+>> > >>  };
+>> > >>
+>> > >>  union qcom_pcie_resources {
+>> > >> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct
+>> > >> qcom_pcie *pcie)
+>> > >>      if (ret < 0)
+>> > >>              return ret;
+>> > >>
+>> > >> +    if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+>> > >> +            res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
+>> > >> +            if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+>> > >> +                    return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+>> > >> +
+>> > >> +            res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+>> > >> +            if (IS_ERR(res->phy_pipe_clk))
+>> > >> +                    return PTR_ERR(res->phy_pipe_clk);
+>> > >> +    }
+>> > >
+>> > > I would like to check is there any other better approach instead of
+>> > > compatible method here as well or is it fine to use compatible method.
+>> 
+>> I'd prefer the compatible method. If nobody is responding then it's 
+>> best
+>> to just resend the patches with the approach you prefer instead of
+>> waiting for someone to respond to a review comment.
+> 
+> I'm missing some context here, so I'm not exactly sure what your
+> question is, Prasad, but IMO drivers generally should not need to use
+> of_device_is_compatible() if they've already called
+> of_device_get_match_data() (as qcom_pcie_probe() has).
+> 
+> of_device_is_compatible() does basically the same work of looking for
+> a match in qcom_pcie_match[] that of_device_get_match_data() does, so
+> it seems pointless to repeat it.
+> 
+> I am a little confused because while [1] adds "qcom,pcie-sc7280" to
+> qcom,pcie.txt, I don't see a patch that adds it to qcom_pcie_match[].
+> 
+> Bjorn
+> 
+Hi Bjorn,
 
+I agree on your point, but the main reason is to use compatible in 
+get_resources_2_7_0 is same hardware version. For SM8250 & SC7280 
+platforms, the hw version is same. Since we can't have a separate ops 
+for SC7280, we are using compatible method in get_resources_2_7_0 to 
+differentiate SM8250 and SC7280.
 
-On 2021/8/13 1:44 AM, Theodore Ts'o wrote:
-> On Sat, Jul 24, 2021 at 03:41:21PM +0800, Wang Jianchao wrote:
->> From: Wang Jianchao <wangjianchao@kuaishou.com>
->>
->> There is no functional change in this patch but just split the
->> codes, which serachs free block and does trim, into a new function
->> ext4_try_to_trim_range. This is preparing for the following async
->> backgroup discard.
->>
->> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
->> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
->> ---
->>  fs/ext4/mballoc.c | 102 ++++++++++++++++++++++++++--------------------
->>  1 file changed, 57 insertions(+), 45 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index 018d5d3c6eeb..e3844152a643 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -6218,6 +6218,54 @@ __acquires(bitlock)
->>  	return ret;
->>  }
->>  
->> +static int ext4_try_to_trim_range(struct super_block *sb,
->> +		struct ext4_buddy *e4b, ext4_grpblk_t start,
->> +		ext4_grpblk_t max, ext4_grpblk_t minblocks)
->> +{
->> +	ext4_grpblk_t next, count, free_count;
->> +	void *bitmap;
->> +	int ret = 0;
->> +
->> +	bitmap = e4b->bd_bitmap;
->> +	start = (e4b->bd_info->bb_first_free > start) ?
->> +		e4b->bd_info->bb_first_free : start;
->> +	count = 0;
->> +	free_count = 0;
->> +
->> +	while (start <= max) {
->> +		start = mb_find_next_zero_bit(bitmap, max + 1, start);
->> +		if (start > max)
->> +			break;
->> +		next = mb_find_next_bit(bitmap, max + 1, start);
->> +
->> +		if ((next - start) >= minblocks) {
->> +			ret = ext4_trim_extent(sb, start, next - start, e4b);
->> +			if (ret && ret != -EOPNOTSUPP)
->> +				break;
->> +			ret = 0;
->> +			count += next - start;
->> +		}
-> 
-> "ret" is only used inside the if statement, so this might be better as:
-> 
->> +		if ((next - start) >= minblocks) {
->> +			int ret = ext4_trim_extent(sb, start, next - start, e4b);
->> +
->> +			if (ret && ret != -EOPNOTSUPP)
->> +				break;
->> +			count += next - start;
->> +		}
-> 
-> ... and then drop the "int ret = 0" above.
-> 
-> Otherwise, looks good.
-> 
-
-OK, I'll do it in next version
-
-Thanks so much
-Jianchao
-> 						- Ted
-> 
+Thanks
+-Prasad
+> [1]
+> https://lore.kernel.org/linux-arm-msm/1628568516-24155-2-git-send-email-pmaliset@codeaurora.org/
