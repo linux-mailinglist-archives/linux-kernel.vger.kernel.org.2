@@ -2,95 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971C63F843E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6892F3F8443
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240924AbhHZJOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 05:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42392 "EHLO
+        id S240969AbhHZJPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 05:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240883AbhHZJOk (ORCPT
+        with ESMTP id S240933AbhHZJO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 05:14:40 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F304C06179A
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:13:50 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id f5so3828635wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:13:50 -0700 (PDT)
+        Thu, 26 Aug 2021 05:14:59 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB59CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:14:11 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id f10so1394894wml.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:14:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LheJq9C51RQ5DWB1Tf2hPqzaPi3xdJvxhj11oVFW+lg=;
-        b=Zf5OIRF9/TmyBjplaz9MxvYQIdkgnvf7MtJWhFj3U4DxdaZe52FP/rpaCa+X/zhww/
-         GAxRNpu8FgCdRNwY0Yfo828xnw1TD6EHXup4Bqho9K7MK0NsS9KjlpPEZoDtcrZAwuue
-         blfPq4masva3VxxY0qH0n++VVXYBmFX5VD6VE=
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ubJENgQIOzugIH6aIzu4aa5SOJeA5cH0TBu7UkdkwRo=;
+        b=eWRM7qqism/66evB0/Z4A1uCvrnvkvTzAGwtb+rUwe1sPIN2AMyEYIn4BzeKGJqUoC
+         JGhvessjn+k+1RDfzALVQ7b/43qoTxbHmhrfxabjnYDh33tDAFwtHDmh+cc99/k9KK+t
+         5e/Btgkaw0RYWxCnueUGZR0K4Rlqxa35b/K5k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LheJq9C51RQ5DWB1Tf2hPqzaPi3xdJvxhj11oVFW+lg=;
-        b=SODjsQfR9GUtg+259OsqeRBolLs0MUDowtN0sU1Sld4L8EPF02rZzRxhbLYaplRiIS
-         p2O9r+rdjamZYWB5Dtd1WnrPF1Vx57vY6fFhzhAlZvgJ53W9Nc6pVEM8Gu1Wp688wzU9
-         I3kPNrrLKWsGSWxmnT3FgYW23aYRMkIK3IKOF/sg9c4UyXJMMlN0Bat8odna580WT4/4
-         07rhYoB7J/Q223tsS9LjlD8pNscLMkgkO+sRXhDHuSaurOjPLOFfmTM8OR60l0QxMAY0
-         JiwzrAwj3pb/++qLtht7imMC2I54WEzEEx3jxGp78Hjb6ddLj53dLtCH/AE/ah/eEUNO
-         Duvg==
-X-Gm-Message-State: AOAM531B5PwOAjYfLiDywufRjtkNKDUv7WX8slUrDMBegfalQoGsEWPC
-        tudQXhnyxWeRP561YiIcFMzI08hvIV3mRg==
-X-Google-Smtp-Source: ABdhPJwBwXOa9q2M+caTrLd8CrrQjpc3NJ0hbf/XOSIVErz9DzgYIndPCJz9FnAwnPEoIc2tnjqshw==
-X-Received: by 2002:adf:f646:: with SMTP id x6mr2706080wrp.0.1629969228810;
-        Thu, 26 Aug 2021 02:13:48 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=ubJENgQIOzugIH6aIzu4aa5SOJeA5cH0TBu7UkdkwRo=;
+        b=uXXlQk92hdIxvpGlK/MFvand0cqObpQLpr3VPSXDolnxBYYkq06oEh9wtG19UppcpR
+         +sSovio8vtkBuToip8toUPAWqdTxHbfjPbfd9MeUtXb/4cgHsC0ky5TFUCbASI1qIdiN
+         rlJFLpaW7precTCyh8c4psHO8x9De9SPQX1WLxiWyC6puE92FyEO6M8bXYuop9+Nfr5l
+         caoR/4b9r15dBLF0Llfnygc7ogj5/EPpxiudOcLapbY/qc7E/5Mugk3wCQCJrGhn5GAK
+         K6YCcOv+Gm9vohrLhZlBgZVhVMPDuHlW8zzYmbh+dOlfNurcsZiYjVPeSxB5OZ4iAzO8
+         zZOw==
+X-Gm-Message-State: AOAM532bGufMcsXDyUaDMzIDCAHrblzV/uvbGIss5txlK3cqHIhS4sB4
+        nZurcn/LyZitTXeGwU8j6IJh2w==
+X-Google-Smtp-Source: ABdhPJykiq+3RMvVzHhR2iD4afcW8Q8OoeIr3XVAh723gjD1Rvwc9Ym8gi6QoDtjdhPbP2Ip1lCUVg==
+X-Received: by 2002:a1c:a903:: with SMTP id s3mr2538905wme.171.1629969250495;
+        Thu, 26 Aug 2021 02:14:10 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id n10sm2411570wrw.76.2021.08.26.02.13.47
+        by smtp.gmail.com with ESMTPSA id z137sm7917167wmc.14.2021.08.26.02.14.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 02:13:48 -0700 (PDT)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH] MAINTAINERS: Add dri-devel for component.[hc]
-Date:   Thu, 26 Aug 2021 11:13:43 +0200
-Message-Id: <20210826091343.1039763-1-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.32.0
+        Thu, 26 Aug 2021 02:14:09 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 11:14:07 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        George Sun <george.sun@mediatek.com>
+Subject: Re: [PATCH v5, 00/15] Using component framework to support multi
+ hardware decode
+Message-ID: <YSdbXzCJRsj/jsnl@phenom.ffwll.local>
+Mail-Followup-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        George Sun <george.sun@mediatek.com>
+References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
+ <CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com>
+ <CAKMK7uFW3Z=Up=OCJO4dNR9ffaTdFjHwoND9CrUw6LHmQ4t_AQ@mail.gmail.com>
+ <CAAEAJfB3CoTU7bZe08wYEfTTm6=6UPOae9u39AtdbJ9saYknBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAEAJfB3CoTU7bZe08wYEfTTm6=6UPOae9u39AtdbJ9saYknBA@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dri-devel is the main user, and somehow there's been the assumption
-that component stuff is unmaintained.
+On Sun, Aug 22, 2021 at 02:57:15PM -0300, Ezequiel Garcia wrote:
+> On Sun, 22 Aug 2021 at 13:50, Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Wed, Aug 18, 2021 at 4:12 PM Ezequiel Garcia
+> > <ezequiel@vanguardiasur.com.ar> wrote:
+> > >
+> > > +danvet
+> > >
+> > > Hi,
+> > >
+> > > On Tue, 10 Aug 2021 at 23:58, Yunfei Dong <yunfei.dong@mediatek.com> wrote:
+> > > >
+> > > > This series adds support for multi hardware decode into mtk-vcodec, by first
+> > > > adding component framework to manage each hardware information: interrupt,
+> > > > clock, register bases and power. Secondly add core thread to deal with core
+> > > > hardware message, at the same time, add msg queue for different hardware
+> > > > share messages. Lastly, the architecture of different specs are not the same,
+> > > > using specs type to separate them.
+> > > >
+> > >
+> > > I don't think it's a good idea to introduce the component API in the
+> > > media subsystem. It doesn't seem to be maintained, IRC there's not even
+> > > a maintainer for it, and it has some issues that were never addressed.
+> >
+> > Defacto dri-devel folks are maintainer component.c, but also I'm not
+> > aware of anything missing there?
+> >
+> 
+> A while ago, I tried to fix a crash in the Rockchip DRM driver
+> (I was then told there can be similar issues on the IMX driver too,
+> but I forgot the details of that).
+> 
+> I sent a patchset trying to address it and got total silence back.
+> Although you could argue the issue is in how drivers use the component
+> API, AFAICR the abuse is spreaded across a few drivers, so it felt
+> more reasonable to improve the component API itself, instead of changing
+> all the drivers.
+> 
+> See below:
+> 
+> https://patchwork.kernel.org/project/linux-rockchip/cover/20200120170602.3832-1-ezequiel@collabora.com/
 
-References: https://lore.kernel.org/dri-devel/CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com/
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
----
- MAINTAINERS | 5 +++++
- 1 file changed, 5 insertions(+)
+Patches get lost on the mailing list, and rockchip is one of the lesser
+maintained drivers. You need to ping this stuff.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ac58d0032abd..7cdc19815ec4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5707,6 +5707,11 @@ F:	Documentation/admin-guide/blockdev/
- F:	drivers/block/drbd/
- F:	lib/lru_cache.c
- 
-+DRIVER COMPONENT FRAMEWORK
-+L:	dri-devel@lists.freedesktop.org
-+F:	drivers/base/component.c
-+F:	include/linux/component.h
-+
- DRIVER CORE, KOBJECTS, DEBUGFS AND SYSFS
- M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
- R:	"Rafael J. Wysocki" <rafael@kernel.org>
+For bridge/panel I still think we should work towards removing component.c
+use from them.
+
+> > There has been discussions that in various drm subsystems like
+> > drm_bridge or drm_panel a few things are missing, which prevent
+> > drivers from moving _away_ from component.c to the more specific
+> > solutions for panel/bridges. But nothing that's preventing them from
+> > using component.c itself.
+> >
+> > I'm happy to merge a MAINTAINERS patch to clarify the situation if
+> > that's needed.
+> 
+> Indeed, that would be good.
+
+Ok I'm going to type something.
 -- 
-2.32.0
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
