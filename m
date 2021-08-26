@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847483F8ED6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD713F8EE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 21:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243512AbhHZTkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 15:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47342 "EHLO
+        id S243562AbhHZTlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 15:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243505AbhHZTkf (ORCPT
+        with ESMTP id S243538AbhHZTlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 15:40:35 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE590C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:39:47 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id n27so8737803eja.5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:39:47 -0700 (PDT)
+        Thu, 26 Aug 2021 15:41:14 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1677EC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:40:27 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id fz10so2954691pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 12:40:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k0TN+1OXwj1OvOaPyWX765yOTzhznhjpBp8I73Q7icY=;
-        b=DK5zXCVzSZz/Xzh0vtV6p9he9ljx28tLWBFqdR0+QwSIivV8UKQkbM/Xepf5uR2WEE
-         0CBkjyzwc/yxlILrHDxRz6Y+1rSQDHShT1zJVolTUgsUsCRUxPBr/0xttP5oJShLmDm2
-         eahvoux1cLB92gDf3Lymyt3iT9ErfeVQ2HUds=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OL7VNOIckGPb3nTQNYkFgRyfjBAqdWJtHBvoq3i1gTA=;
+        b=XfKshZnxtsZUiDOMp3bMOOc2OZVSgGt28r5M+IgfIl7C2A/me3bc23+0fWAZu/MRRp
+         CJenvN5L4VGyJq4FqryWlvctpG561G8Fdi1ZZq5ONK7XNjqfkIbA+M72qK6ZSOA6UOT/
+         2hHLvRK/88BrqTFjLNc/ilvY+zdfaKlgFT5ek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=k0TN+1OXwj1OvOaPyWX765yOTzhznhjpBp8I73Q7icY=;
-        b=Jr0ugg47E2H38hMHIK8RigllZJYrtkTVNaCXUJDF7lcIJOVD+7gCIih4ykQ/xm2svp
-         xrPPw5Z2bX+HMHTS+eVTmogwdQcmIcJyZFJXoHW2wKelcsTIy7+wQlV5OZjDr6ivDXJ+
-         wbGDIpCqJ6vbQyHGTQIRO2w/lHHNjVW15Zl8zXVY3kuglBW88dk+aM0B/i/zQ/q2ZbpQ
-         dR1DFpgs+OY+WgUNngqz0pxI8Z4/aX1ZqGX3VqL66ptwVSRKFzmFSIrFsAvBsN9eDcqx
-         P9BVaIuaEfV6heSuDzlqyW9LzYlPcpUYlQw15StS3/eVPHLmTMS9+c7pGHnr90YZPt7F
-         gaiQ==
-X-Gm-Message-State: AOAM531y0/Cr57ltjRbxKxuB8zQYyvORTgbKKRGFj+JuKkWUXPjIjT+X
-        3si8BMALTkhwRGsy0HxsmDh1vQ==
-X-Google-Smtp-Source: ABdhPJxPHkFJzAKrlUX5R7ClfeOsL/+djIiR8g6na/Ens9JDk5nTEi4+EBYnqBdP/H5gzhu284YCAg==
-X-Received: by 2002:a17:906:704e:: with SMTP id r14mr6045015ejj.293.1630006786423;
-        Thu, 26 Aug 2021 12:39:46 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id n23sm2316314eds.41.2021.08.26.12.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 12:39:45 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 21:39:44 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH] MAINTAINERS: Add dri-devel for component.[hc]
-Message-ID: <YSfuANJ2ULizWfO6@phenom.ffwll.local>
-Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <20210826091343.1039763-1-daniel.vetter@ffwll.ch>
- <YSdzWthRL+C9/LMN@kroah.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OL7VNOIckGPb3nTQNYkFgRyfjBAqdWJtHBvoq3i1gTA=;
+        b=FSLeT7KDcIusVMPYBz8i4nhEwCEK1ZdU0RHj5Kyx54qbLqHHPCpi1E39P8sUf5EW7Q
+         cwaS2hRWvGFamkGocWbuRMT9Huwdw5U8zypQ3NYvE+Fdd0ifwwB4s02IktKWEC7eOG9c
+         WX6l8kmkfrbWcPM+oeYeGobE7a1VfzdXo2gNDSH12ij3EEjYmpAwtQu5gIj10d/4Hm8z
+         xwMhRT9sEoQGZeh4k1V4e1y0iftzJvWKKeEDYZgOfGj1eOcCs5j3MQnrHZgp9h46+haU
+         T48aJrEYWVex/PsAhPNWTzpG3EH6MnD4maQLjfoWBxVze+WwjTIp3fhsW77VbqXwo3Ja
+         O7/g==
+X-Gm-Message-State: AOAM5325zR4ZCfYtjsWQJ4jY50rRUuDGePyMcNsSXrkbndtPqNafAKNM
+        vVVka0GDlGuBXuHqJyd6a5vRnLdmJ6DAypEI
+X-Google-Smtp-Source: ABdhPJyi8k9j/pPOsmvIKcekS344fV89wbYnuw6Xq7IVfBWNCRisIxuCXwNRp99jRUKbEV1oP07dOg==
+X-Received: by 2002:a17:90a:6ac2:: with SMTP id b2mr6279190pjm.36.1630006826558;
+        Thu, 26 Aug 2021 12:40:26 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:b65d:400d:1964:f64c])
+        by smtp.gmail.com with UTF8SMTPSA id a11sm4324637pgj.75.2021.08.26.12.40.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 12:40:25 -0700 (PDT)
+From:   Brian Norris <briannorris@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: core: resolve supply voltage deferral silently
+Date:   Thu, 26 Aug 2021 12:40:17 -0700
+Message-Id: <20210826124015.1.Iab79c6dd374ec48beac44be2fcddd165dd26476b@changeid>
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSdzWthRL+C9/LMN@kroah.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 12:56:26PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Aug 26, 2021 at 11:13:43AM +0200, Daniel Vetter wrote:
-> > dri-devel is the main user, and somehow there's been the assumption
-> > that component stuff is unmaintained.
-> > 
-> > References: https://lore.kernel.org/dri-devel/CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com/
-> > Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > ---
-> >  MAINTAINERS | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index ac58d0032abd..7cdc19815ec4 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -5707,6 +5707,11 @@ F:	Documentation/admin-guide/blockdev/
-> >  F:	drivers/block/drbd/
-> >  F:	lib/lru_cache.c
-> >  
-> > +DRIVER COMPONENT FRAMEWORK
-> > +L:	dri-devel@lists.freedesktop.org
-> > +F:	drivers/base/component.c
-> > +F:	include/linux/component.h
-> 
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Voltage-controlled regulators depend on their supply regulator for
+retrieving their voltage, and so they might return -EPROBE_DEFER at this
+stage. Our caller already attempts to resolve supplies and retry, so we
+shouldn't be printing this error to logs.
 
-Will you merge this through your tree? I think merging component patches
-through driver core makes sense (or topic branch or whatever) still. This
-is just so that there's a wider reviewer pool than just you & Rafael.
--Daniel
+Quiets log messages like this, on Rockchip RK3399 Gru/Kevin boards:
+
+[    1.033057] ppvar_bigcpu: failed to get the current voltage: -EPROBE_DEFER
+...
+[    1.036735] ppvar_litcpu: failed to get the current voltage: -EPROBE_DEFER
+...
+[    1.040366] ppvar_gpu: failed to get the current voltage: -EPROBE_DEFER
+...
+[    1.044086] ppvar_centerlogic: failed to get the current voltage: -EPROBE_DEFER
+
+Fixes: 21e39809fd7c ("regulator: vctrl: Avoid lockdep warning in enable/disable ops")
+Cc: Chen-Yu Tsai <wenst@chromium.org>
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+
+ drivers/regulator/core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index ca6caba8a191..85783fb3aadf 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1151,9 +1151,10 @@ static int machine_constraints_voltage(struct regulator_dev *rdev,
+ 		}
+ 
+ 		if (current_uV < 0) {
+-			rdev_err(rdev,
+-				 "failed to get the current voltage: %pe\n",
+-				 ERR_PTR(current_uV));
++			if (current_uV != -EPROBE_DEFER)
++				rdev_err(rdev,
++					 "failed to get the current voltage: %pe\n",
++					 ERR_PTR(current_uV));
+ 			return current_uV;
+ 		}
+ 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.33.0.259.gc128427fd7-goog
+
