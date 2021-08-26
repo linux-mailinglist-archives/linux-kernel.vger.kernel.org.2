@@ -2,138 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58BA3F8CA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F18E3F8CAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243127AbhHZREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhHZREk (ORCPT
+        id S243176AbhHZRE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:04:57 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:44107 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229986AbhHZRE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:04:40 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEF2C061757;
-        Thu, 26 Aug 2021 10:03:53 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso4426459otp.1;
-        Thu, 26 Aug 2021 10:03:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ji2l8jcg46A/WnhV2rmSUQQQmyR8YuNgsAvBjZZkXgU=;
-        b=QqtVOuGeSsoKKLJCbLKp1FoCZnmv7B7IEVxL75h7iagpQfChHsJJPdIsvZQ0VQUhTO
-         i+AXhEiULKUOgE3Ez6thnLtbtueW4a6jLu2tRZ5wRxJdpuwLTrxLp6ipoxKVGv4siQEH
-         OIF2HrjvUA8nSwn/fhZ/G2v0w12dXo6stZVzNXF0YO9UuzoxyBs/J7NJecoQdtAcCtLJ
-         44WwCZEIAtnCjTAM2kq/sx1oQEyzBKC/m8D8EjA//Xv3jUnSwZB6L/f+SNzTqNwd6zM2
-         NSYL3KxqmhZcIDOrV/vjSU30MX1ag8eZrim6GkQckXo/QbAHklJie+V6LOT2HpkwJmN9
-         MilQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ji2l8jcg46A/WnhV2rmSUQQQmyR8YuNgsAvBjZZkXgU=;
-        b=beCi4mGUvb7KzsPeDv41cMMUjqJYSTe/UXQfYgBJS+2ZjEEMo2nDLyw+YO+AlAkPzt
-         0LqNzrS1NdO5ZR3CceavJ7tweuEGAAVsSg1InAPCahoeLM3dKsBAq4t+GiFl5JbHhyrT
-         XTChv+MD80ycVj28jGeXNTl8eSs4cpFy7rQs5E1+Zj+JU8oCGdYVq7GbHzfFsRLDmWz0
-         OQyGYPUnmVRiECWezPKqB7ZFNIARD3773c1ATKuFg1GCpE4y078QK7b6lhVtEF3mUomC
-         ZiIbmEOqw67ubpgqrPqb4tFDkg75NIhGp2e3x0NivAyl6Qldmwx6EMujv/DpJyUHRr9N
-         ocQw==
-X-Gm-Message-State: AOAM532O8vQQBI8N0K8Er6wRZK6XeQpGh3VAyBNJ4KkP5yYMf29F/fVB
-        toRL67EL+beew8T1tmCC5IiOBS36MtH9SG00l9Y=
-X-Google-Smtp-Source: ABdhPJxUZ5DK2PNTHVFThXjoRu1Zj+I/cMuF/0Vdmr0TCRbDvsqhzJ7hx9tXjzYK+C0GFC7ykjVjCyiZRluM/fMzEk4=
-X-Received: by 2002:a9d:75d5:: with SMTP id c21mr4084684otl.118.1629997432236;
- Thu, 26 Aug 2021 10:03:52 -0700 (PDT)
+        Thu, 26 Aug 2021 13:04:56 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id CD5D63200936;
+        Thu, 26 Aug 2021 13:04:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 26 Aug 2021 13:04:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=CTG8y+
+        c/tcgdmRwNHm6OdItlKpgJ5dHJdci3GZ1+H3o=; b=k40fEJitOfb15NIxBwIXcV
+        92cjJLnLkhxBk6uoOLfedGCU4FCwsn7Nn80dRJ/KXEV1H+/5FNfc1el4GGuwvMTL
+        d4MY4Lw5RwLLGuXKEjGRPvoAFsCoEfa2tMgEHL2CffAHNY/FPONnpu/3+AhP3P5A
+        GiH8lAT6bW6oKpmG9sLoY2iHGetQFqPjUdQNofoY2j3P8+tupzYDIOdGSnkQp1/i
+        B6i1gnK+i6tje33Bklx9sUKFRbMLb8mHXm/H7viyBBtFhslpjnthNR+8lNvAZ/6E
+        nygDJWncbuStrjCPuAWaXr4He2YLOPW2VFZXeYy93gg9OxpW5O9eGiNB8ZrYtcoA
+        ==
+X-ME-Sender: <xms:hsknYXuv_xvCmavWZRCqrxiscb13V8EM-AJDWwoXO9N-0iscL2zX1A>
+    <xme:hsknYYdV4FrDRG6BPnqy_nrkyS8BPbhX9DB7imew7V_lhAjWf9lDw3omSndhrsS_t
+    Fnf90Jwd3XvPQ>
+X-ME-Received: <xmr:hsknYawMMCCKNKbrJISYhvCSvAkmy0srQ7ueGBaKdNHYuTe3aOEhKhFsk8hAfmAjVoifNtaFmU5rYfrEWc_oxdGPK80YfcaRmIg65iN_bUsyHP_V_g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduuddguddtjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofggtghogfesthekredtredtjeenucfhrhhomhepofgrrhgv
+    khcuofgrrhgtiiihkhhofihskhhiqdfikphrvggtkhhiuceomhgrrhhmrghrvghksehinh
+    hvihhsihgslhgvthhhihhnghhslhgrsgdrtghomheqnecuggftrfgrthhtvghrnhepteeg
+    teekueekfffhjeeuleduheettdekueeitdfggfdthfevfeeuieeihfduheegnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrrhhmrghrvghk
+    sehinhhvihhsihgslhgvthhhihhnghhslhgrsgdrtghomh
+X-ME-Proxy: <xmx:hsknYWNZS_uWkRx0sXK9CwyhRwKacxQFe6tvDBLiMrDNfsmzuC77RA>
+    <xmx:hsknYX_F6y5ty83HpqEbHxsRdFZNNinOzXvuqWU9SHtkEXlbrjlFwg>
+    <xmx:hsknYWXNzYHikqRRG-5IZTRpRF2C-iTJNphOy1VmlPFFNWHW3lSpjQ>
+    <xmx:h8knYSn9S4GIuEw2YDXgeihqrcy7k3ka0ytzvuj0SnH4d82xIEmtrA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 26 Aug 2021 13:04:05 -0400 (EDT)
+From:   =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>, stable@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM)
+Subject: [PATCH v2] PCI/MSI: Skip masking MSI-X on Xen PV
+Date:   Thu, 26 Aug 2021 19:03:42 +0200
+Message-Id: <20210826170342.135172-1-marmarek@invisiblethingslab.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210826141623.8151-1-kerneljasonxing@gmail.com>
- <00890ff4-3264-337a-19cc-521a6434d1d0@gmail.com> <860ead37-87f4-22fa-e4f3-5cadd0f2c85c@intel.com>
-In-Reply-To: <860ead37-87f4-22fa-e4f3-5cadd0f2c85c@intel.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Fri, 27 Aug 2021 01:03:16 +0800
-Message-ID: <CAL+tcoCovfAQmN_c43ScmjpO9D54CKP5XFTpx6VQpwJVxZhAdg@mail.gmail.com>
-Subject: Re: [PATCH v4] ixgbe: let the xdpdrv work with more than 64 cpus
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Organization: Invisible Things Lab
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 12:41 AM Jesse Brandeburg
-<jesse.brandeburg@intel.com> wrote:
->
-> On 8/26/2021 9:18 AM, Eric Dumazet wrote:
->
-> >> +static inline int ixgbe_determine_xdp_q_idx(int cpu)
-> >> +{
-> >> +    if (static_key_enabled(&ixgbe_xdp_locking_key))
-> >> +            return cpu % IXGBE_MAX_XDP_QS;
-> >> +    else
-> >> +            return cpu;
-> >
-> > Even if num_online_cpus() is 8, the returned cpu here could be
-> >
-> > 0, 32, 64, 96, 128, 161, 197, 224
-> >
-> > Are we sure this will still be ok ?
->
-> I'm not sure about that one myself. Jason?
->
-> >
-> >> +}
-> >> +
-> >>  static inline u8 ixgbe_max_rss_indices(struct ixgbe_adapter *adapter)
-> >>  {
-> >>      switch (adapter->hw.mac.type) {
-> >> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> >> index 0218f6c..884bf99 100644
-> >> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> >> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> >> @@ -299,7 +299,10 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
-> >>
-> >>  static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
-> >>  {
-> >> -    return adapter->xdp_prog ? nr_cpu_ids : 0;
-> >> +    int queues;
-> >> +
-> >> +    queues = min_t(int, IXGBE_MAX_XDP_QS, num_online_cpus());
-> >
-> > num_online_cpus() might change later...
->
-> I saw that too, but I wonder if it doesn't matter to the driver. If a
-> CPU goes offline or comes online after the driver loads, we will use
-> this logic to try to pick an available TX queue. But this is a
-> complicated thing that is easy to get wrong, is there a common example
-> of how to get it right?
->
+When running as Xen PV guest, masking MSI-X is a responsibility of the
+hypervisor. Guest has no write access to relevant BAR at all - when it
+tries to, it results in a crash like this:
 
-Honestly, I'm a little confused right now. @nr_cpu_ids is the fixed
-number which means the total number of cpus the machine has.
-I think, using @nr_cpu_ids is safe one way or the other regardless of
-whether the cpu goes offline or not. What do you think?
+    BUG: unable to handle page fault for address: ffffc9004069100c
+    #PF: supervisor write access in kernel mode
+    #PF: error_code(0x0003) - permissions violation
+    PGD 18f1c067 P4D 18f1c067 PUD 4dbd067 PMD 4fba067 PTE 80100000febd4075
+    Oops: 0003 [#1] SMP NOPTI
+    CPU: 0 PID: 234 Comm: kworker/0:2 Tainted: G        W         5.14.0-rc7-1.fc32.qubes.x86_64 #15
+    Workqueue: events work_for_cpu_fn
+    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
+    Code: 2f 96 ff 48 89 44 24 28 48 89 c7 48 85 c0 0f 84 f6 01 00 00 45 0f b7 f6 48 8d 40 0c ba 01 00 00 00 49 c1 e6 04 4a 8d 4c 37 1c <89> 10 48 83 c0 10 48 39 c1 75 f5 41 0f b6 44 24 6a 84 c0 0f 84 48
+    RSP: e02b:ffffc9004018bd50 EFLAGS: 00010212
+    RAX: ffffc9004069100c RBX: ffff88800ed412f8 RCX: ffffc9004069105c
+    RDX: 0000000000000001 RSI: 00000000000febd4 RDI: ffffc90040691000
+    RBP: 0000000000000003 R08: 0000000000000000 R09: 00000000febd404f
+    R10: 0000000000007ff0 R11: ffff88800ee8ae40 R12: ffff88800ed41000
+    R13: 0000000000000000 R14: 0000000000000040 R15: 00000000feba0000
+    FS:  0000000000000000(0000) GS:ffff888018400000(0000) knlGS:0000000000000000
+    CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: ffff8000007f5ea0 CR3: 0000000012f6a000 CR4: 0000000000000660
+    Call Trace:
+     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
+     e1000_probe+0x41f/0xdb0 [e1000e]
+     local_pci_probe+0x42/0x80
+    (...)
 
-> A possible problem I guess is that if the "static_key_enabled" check
-> returned false in the past, we would need to update that if the number
-> of CPUs changes, do we need a notifier?
->
+There is pci_msi_ignore_mask variable for bypassing MSI(-X) masking on Xen
+PV, but msix_mask_all() missed checking it. Add the check there too.
 
-Things get complicated. If the number decreases down to
-@IXGBE_MAX_XDP_QS (which is 64), the notifier could be useful because
-we wouldn't need to use the @tx_lock. I'm wondering if we really need
-to implement one notifier for this kind of change?
+Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
+Cc: stable@vger.kernel.org
+Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+---
+Cc: xen-devel@lists.xenproject.org
 
-> Also, now that I'm asking it, I dislike the global as it would apply to
-> all ixgbe ports and each PF would increment and decrement it
-> independently. Showing my ignorance here, but I haven't seen this
-> utility in the kernel before in detail. Not sure if this is "OK" from
-> multiple device (with the same driver / global namespace) perspective.
->
+Changes in v2:
+- update commit message (MSI -> MSI-X)
+---
+ drivers/pci/msi.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index e5e75331b415..3a9f4f8ad8f9 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -776,6 +776,9 @@ static void msix_mask_all(void __iomem *base, int tsize)
+ 	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+ 	int i;
+ 
++	if (pci_msi_ignore_mask)
++		return;
++
+ 	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+ 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ }
+-- 
+2.31.1
+
