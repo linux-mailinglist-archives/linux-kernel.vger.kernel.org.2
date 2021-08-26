@@ -2,88 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9D23F904D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E7C3F9050
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243691AbhHZVtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 17:49:21 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31964 "EHLO m43-7.mailgun.net"
+        id S243673AbhHZVu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 17:50:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243662AbhHZVtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 17:49:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630014512; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=is6mojHUDMmD4gSjfFyxVscxG1gzHXWu7QH/984DVgI=; b=QP5hFf01yHdaEJF1ysNrIfJ6T7ZPHWBHft24qQpsnLuv7vbPo/+BXYGTRSCm2BdyUZGDUfcE
- cyhomdfwNeXvbkNuzGrPU98hHOSb/hkiFTphgHmh5wgIUkF11v5sekd+/zvV64mKE2/vb+Z9
- BLJI4ZFP4aFHBufOaz5WjCkGFeI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 61280c2ffc1f4cb692ca68c6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Aug 2021 21:48:31
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 45C68C43616; Thu, 26 Aug 2021 21:48:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 21DB3C4338F;
-        Thu, 26 Aug 2021 21:48:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 21DB3C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        quic_jhugo@quicinc.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH] bus: mhi: Update documentation for MHI error callbacks
-Date:   Thu, 26 Aug 2021 14:48:24 -0700
-Message-Id: <1630014504-32314-1-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S243620AbhHZVu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 17:50:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32AF760F4A;
+        Thu, 26 Aug 2021 21:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630014609;
+        bh=hC7ZzrqCtbXGsVzPqLaOoa81+2MI7Xu6zHkd5OCUP/I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A8bgQG2VYWIjLv0SfzTNOe802IG8Gezo89RDmoqzG06mPTpEceRga82osrD2gHJMX
+         R51NfJjRl95hoyX0zozzbws9S2D8WK/QUbZ0BbJuO2J6e7bhw5wRouyQn2GvecLgA4
+         tkavCAPhKLXALgnnGAxuPXKE6vAW7kS8nd34jgLe89aKR5F/kq4wuGHLw6JPS2Lqam
+         0BXO5/G30cyU2MPp0o2DU38/C3Dc1kdV0JCqwG1CfqPDKPa5USZH4xpvJYmpM7pSCY
+         WoST8Utu/YGjiNNXkCwDczUUcYwuUdqk5Y8VELPPbV1wQvgOeOoSC55XzpZ/rmecx2
+         6heM9gGC4xhxA==
+Date:   Thu, 26 Aug 2021 15:50:07 -0600
+From:   Keith Busch <kbusch@kernel.org>
+To:     Adam Manzanares <a.manzanares@samsung.com>
+Cc:     "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] Make nvmet_init_cap dependent on passthru controller
+Message-ID: <20210826215007.GA58085@C02WT3WMHTD6>
+References: <CGME20210826211546uscas1p1fc876392e5aaf990eeb480cc74508852@uscas1p1.samsung.com>
+ <20210826211522.308649-1-a.manzanares@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826211522.308649-1-a.manzanares@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Design changes prompted redefinition of the FATAL and SYSTEM
-ERROR callbacks such that FATAL ERROR should be treated as a
-callback arriving from an atomic or interrupt context and taken
-as an indication that the device has reset to one of the PBL
-execution environments. Whereas, a SYSTEM ERROR (SYS_ERROR)
-callback is sleep-capable and allowed to block such that the
-controller can pursue its clean-up before core driver handles
-further processing. Updated documentation for the same.
+On Thu, Aug 26, 2021 at 09:15:45PM +0000, Adam Manzanares wrote:
+> nvme_init_cap unconditionally sets support for one or more command sets. When
+> using a passthru controller this may cause a conventional namespace to be
+> ignored when checking the namespace identification descriptors which must
+> include the command set identifier when the cap is set to support one or more
+> command sets. Since the namespace identification descriptors come from the
+> passthru controller they may not include the command set identifier causing the
+> namespace to be ignored.
+> 
+> Adam Manzanares (2):
+>   nvme: move nvme_multi_css into nvme.h
+>   nvmet: use passthru cntrl in nvmet_init_cap
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- include/linux/mhi.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Looks good to me.
 
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index b8ca694..a8b2c25 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -31,8 +31,8 @@ struct mhi_buf_info;
-  * @MHI_CB_LPM_EXIT: MHI host about to exit low power mode
-  * @MHI_CB_EE_RDDM: MHI device entered RDDM exec env
-  * @MHI_CB_EE_MISSION_MODE: MHI device entered Mission Mode exec env
-- * @MHI_CB_SYS_ERROR: MHI device entered error state (may recover)
-- * @MHI_CB_FATAL_ERROR: MHI device entered fatal error state
-+ * @MHI_CB_SYS_ERROR: MHI device entered error state (uses non-atomic context)
-+ * @MHI_CB_FATAL_ERROR: MHI device reset to a PBL exec env (uses atomic context)
-  * @MHI_CB_BW_REQ: Received a bandwidth switch request from device
-  */
- enum mhi_callback {
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Reviewed-by: Keith Busch <kbusch@kernel.org>
