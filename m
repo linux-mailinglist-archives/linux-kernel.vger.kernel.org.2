@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C2A3F90D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1BD3F90D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243731AbhHZXC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 19:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
+        id S243813AbhHZXDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 19:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbhHZXCZ (ORCPT
+        with ESMTP id S243728AbhHZXDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 19:02:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F23C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 16:01:37 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630018896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QhAhXFtWFEQ6Fdud3DSVJ+WltS966zTxEwlJ84LG7/A=;
-        b=D31R1diY5EMMf2tOjF+6cu84KqhQ5KjS9eZ1nxjl3GKuOUhT28KjdP4VwVjzktiUynTz2n
-        hnzf3tjdblm0GLkZU4vrbOqkA5/i1+82PTLU3WS017cseiPuy7ya5miPR934n8r5W+AmG+
-        NYf4klgm8B+blGOWYDAtzBjdy0KTJU/9Tq3bqXhkkAszQHmSS5NApbLt+/jLwzUD+iGE1n
-        i141aTUPdJQXsXWNAQtxrTTuBmTOXqlImhZAE7YbPVyfpjIR5ybtfj+jS3vsDGfOkqAwcm
-        09avdmN++wpUj8gtICzLu7u13uB1DIita/QGoxl6Yb7nfKHESdVm1Ss02TINGA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630018896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QhAhXFtWFEQ6Fdud3DSVJ+WltS966zTxEwlJ84LG7/A=;
-        b=IOd1zB7uwqqmnYnXZMHPbcYVak9RPVS0waZw011OMQ8Ky2nld5qhyi1TZfkw2AKtqTOL6+
-        5Aw+UnQJxXtxkPDA==
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Biwen Li <biwen.li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] regmap: teach regmap to use raw spinlocks if
- requested in the config
-In-Reply-To: <20210825205041.927788-2-vladimir.oltean@nxp.com>
-References: <20210825205041.927788-1-vladimir.oltean@nxp.com>
- <20210825205041.927788-2-vladimir.oltean@nxp.com>
-Date:   Fri, 27 Aug 2021 01:01:35 +0200
-Message-ID: <875yvr3j5c.ffs@tglx>
+        Thu, 26 Aug 2021 19:03:30 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398A8C061757;
+        Thu, 26 Aug 2021 16:02:42 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwdfN5V8Fz9sRf;
+        Fri, 27 Aug 2021 09:02:35 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630018958;
+        bh=ZELkEOQKHl9DpFrRqkIlZ9IIPILPiWW5GsJaWDSlFCY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dep8UZFmCkdgJgsEJ828AeO/kMbcaEy/h5XmqL3VrbB8uOHnfP9Hot97I/koOA6Mz
+         XW2H7dVKIh53sMxkpqTOm32sI/oe8toR+b8OVz+r2j1LRggWOoglI9osVts9Y1dj6Y
+         LOvvXNUBtbKjC+vtu7ozUR/Ep6v7JbQnp1L5SCv6ROGT7S7aiJImUAr3xv12lph6Wd
+         f7B3YiP0x0WInI26y0V/eKGm4Xg8k1k8nMVU2H6JDH2MRWDVZ37RCYmbSFKbVidTPM
+         Y8QgxX16Zw+pfNhW/bTHnZWDDIyQkXdQd9RQCQAIxg1i5kGGuVzC0iePJnVh6T+gwH
+         8+FDvDWkNykIQ==
+Date:   Fri, 27 Aug 2021 09:02:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Richard Weinberger <richard@nod.at>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the uml tree with the asm-generic tree
+Message-ID: <20210827090234.7aca7a2a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/3fij2OaEp0EYbkfYpvl/pkp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25 2021 at 23:50, Vladimir Oltean wrote:
+--Sig_/3fij2OaEp0EYbkfYpvl/pkp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Some drivers might access regmap in a context where a raw spinlock is
-> held. An example is drivers/irqchip/irq-ls-extirq.c, which calls
-> regmap_update_bits() from struct irq_chip :: irq_set_type, which is a
-> method called by __irq_set_trigger() under the desc->lock raw spin lock.
->
-> Since desc->lock is a raw spin lock and the regmap internal lock for
-> mmio is a plain spinlock (which can become sleepable on RT), this is an
-> invalid locking scheme and we get a splat stating that this is a
-> "[ BUG: Invalid wait context ]".
->
-> It seems reasonable for regmap to have an option use a raw spinlock too,
-> so add that in the config such that drivers can request it.
+Hi all,
 
-What's reasonable about that?
+Today's linux-next merge of the uml tree got a conflict in:
 
-What exactly prevents the regmap locking to use a raw spinlock
-unconditionally?
+  arch/um/kernel/skas/uaccess.c
 
-Even for the case where the regmap is not dealing with irq chips it does
-not make any sense to protect low level operations on shared register
-with a regular spinlock. I might be missing something though...
+between commit:
 
-Thanks,
+  f27180dd63e1 ("asm-generic/uaccess.h: remove __strncpy_from_user/__strnle=
+n_user")
 
-        tglx
+from the asm-generic tree and commit:
 
+  043f5d3ffaf6 ("um: Remove set_fs")
 
+from the uml tree.
 
+I fixed it up (I think - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/um/kernel/skas/uaccess.c
+index a509be911026,dda2439ab550..000000000000
+--- a/arch/um/kernel/skas/uaccess.c
++++ b/arch/um/kernel/skas/uaccess.c
+@@@ -194,14 -184,6 +184,9 @@@ long strncpy_from_user(char *dst, cons
+  	long n;
+  	char *ptr =3D dst;
+ =20
+ +	if (!access_ok(src, 1))
+ +		return -EFAULT;
+ +
+- 	if (uaccess_kernel()) {
+- 		strncpy(dst, (__force void *) src, count);
+- 		return strnlen(dst, count);
+- 	}
+-=20
+  	n =3D buffer_op((unsigned long) src, count, 0, strncpy_chunk_from_user,
+  		      &ptr);
+  	if (n !=3D 0)
+@@@ -243,12 -220,6 +223,9 @@@ long strnlen_user(const char __user *st
+  {
+  	int count =3D 0, n;
+ =20
+ +	if (!access_ok(str, 1))
+ +		return -EFAULT;
+ +
+- 	if (uaccess_kernel())
+- 		return strnlen((__force char*)str, len) + 1;
+-=20
+  	n =3D buffer_op((unsigned long) str, len, 0, strnlen_chunk, &count);
+  	if (n =3D=3D 0)
+  		return count + 1;
+
+--Sig_/3fij2OaEp0EYbkfYpvl/pkp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEoHYsACgkQAVBC80lX
+0Gzplgf/cXXx4PI5BxROoicssgtM4dqc9yOJfm3As6+Bq03pUBNebhGnsBnSR3QO
+Cf6/76WvBreMsjurs3j2alj4JVP6EbiEah/77qe7sOmP1jiS5d+ffGCviyQ/OCcX
+pHg53srBED1ueE7kiHalqu1sVD6q4L5YvKzTxzyuSzLx0tcUNtNL+CBfsdOha9Du
+koa1S4CU6m4wtBq2p7tjJKNxGHeX8rheUFtNUzc52O0ZWt5i1PcPyseOxxB9zI3/
+A4aTOCCcyMgftPdLyHrhcTHn0hSqctyxr4jdQQNT+SXv2LUZw/VCFWwLMRSacB/6
+Z8vmyToIGrIdk44d2BrC4vghV64KJA==
+=vu1X
+-----END PGP SIGNATURE-----
+
+--Sig_/3fij2OaEp0EYbkfYpvl/pkp--
