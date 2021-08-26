@@ -2,51 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792F83F8678
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB1B3F867B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242138AbhHZL22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:28:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:44606 "EHLO foss.arm.com"
+        id S242181AbhHZL2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241887AbhHZL21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:28:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69B081042;
-        Thu, 26 Aug 2021 04:27:40 -0700 (PDT)
-Received: from bogus (unknown [10.57.18.77])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B9D93F5A1;
-        Thu, 26 Aug 2021 04:27:36 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 12:27:27 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        lukasz.luba@arm.com, Quentin Perret <qperret@google.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 9/9] cpufreq: scmi: Use .register_em() to register
- with energy model
-Message-ID: <20210826112727.67iz5lpawk6muo5u@bogus>
-References: <cover.1628742634.git.viresh.kumar@linaro.org>
- <8158488baa1ea1aebd09c8d256db7420051d05ac.1628742634.git.viresh.kumar@linaro.org>
+        id S241944AbhHZL2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 07:28:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1C26610A6;
+        Thu, 26 Aug 2021 11:27:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629977280;
+        bh=NzfEzBZoIifRLjIxopMdWAJ/cAh1A0Wp6hdf3z53P0E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RhvASHOwlnO2gywOZwLB/TT9cKMJoNP/6QYhNm8PsO6gXJWtOHV3whOM/6X3W9wDh
+         9lOmthEyR8w7bJMhOsAsB/TxycS9Iev6R/KTmTUt0eszmK7mJ2yUNZ1Z1HwKsYoXBK
+         pVzLJzVOncTtDgQhaIZzBCZAfBoGybe+zCmrFbFA=
+Date:   Thu, 26 Aug 2021 13:27:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     neal_liu <neal_liu@aspeedtech.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Tony Prisk <linux@prisktech.co.nz>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tao Ren <rentao.bupt@gmail.com>, BMC-SW@aspeedtech.com
+Subject: Re: [PATCH] usb: host: ehci: skip STS_HALT check for aspeed platform
+Message-ID: <YSd6uSfjlqmaN+us@kroah.com>
+References: <20210826071525.27651-1-neal_liu@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8158488baa1ea1aebd09c8d256db7420051d05ac.1628742634.git.viresh.kumar@linaro.org>
+In-Reply-To: <20210826071525.27651-1-neal_liu@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 10:05:22AM +0530, Viresh Kumar wrote:
-> Set the newly added .register_em() callback to register with the EM
-> after the cpufreq policy is properly initialized.
+On Thu, Aug 26, 2021 at 03:15:25PM +0800, neal_liu wrote:
+> STS_HALT also depends on ASS/PSS status for apseed.
+> Skip this check on startup.
+> 
+> Signed-off-by: neal_liu <neal_liu@aspeedtech.com>
+> ---
+>  drivers/usb/host/ehci-hcd.c      | 10 +++++++++-
+>  drivers/usb/host/ehci-platform.c |  6 ++++++
+>  drivers/usb/host/ehci.h          |  1 +
+>  3 files changed, 16 insertions(+), 1 deletion(-)
 > 
 
-Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+Hi,
 
--- 
-Regards,
-Sudeep
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch contains warnings and/or errors noticed by the
+  scripts/checkpatch.pl tool.
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
+
+- It looks like you did not use your "real" name for the patch on either
+  the Signed-off-by: line, or the From: line (both of which have to
+  match).  Please read the kernel file, Documentation/SubmittingPatches
+  for how to do this correctly.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
