@@ -2,214 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25993F9094
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BCC3F90A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 01:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243730AbhHZWP0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Aug 2021 18:15:26 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:34684 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243665AbhHZWPY (ORCPT
+        id S243756AbhHZWVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 18:21:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40522 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243750AbhHZWVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 18:15:24 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:43756)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mJNdh-00EQKs-GD; Thu, 26 Aug 2021 16:14:25 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:36634 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mJNdf-00HV1Y-UD; Thu, 26 Aug 2021 16:14:25 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Laight <David.Laight@aculab.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?utf-8?Q?K=C3=B6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs\@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
-        <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
-        <87lf56bllc.fsf@disp2133>
-        <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
-        <87eeay8pqx.fsf@disp2133>
-        <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
-        <87h7ft2j68.fsf@disp2133>
-        <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
-        <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
-        <CAHk-=wiJ0u33h2CXAO4b271Diik=z4jRt64=Gt6YV2jV4ef27g@mail.gmail.com>
-        <b60e9bd1-7232-472d-9c9c-1d6593e9e85e@www.fastmail.com>
-        <0ed69079-9e13-a0f4-776c-1f24faa9daec@redhat.com>
-Date:   Thu, 26 Aug 2021 17:13:52 -0500
-In-Reply-To: <0ed69079-9e13-a0f4-776c-1f24faa9daec@redhat.com> (David
-        Hildenbrand's message of "Thu, 26 Aug 2021 23:47:07 +0200")
-Message-ID: <87mtp3g8gv.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 26 Aug 2021 18:21:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630016459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zroasAaaMl84Lp8cGgnsSX6CLhufn7UDcF8dOmcgMyE=;
+        b=RQJ+j/tRnD5Iy48aUB3IKJ9IOmTnsZXAVbmWg22j+stZxVkzS6XunHe+3nH5KLH3KPuWxD
+        Jbpnyrh1giboRTALF1Rh8TnkXCixuggyQ9okom3AO6yQizTCYvoOKBUrsQAygN9H1KABIE
+        uMBvarPh6PiWIVpTikySA3xvlL9/Ve0=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-555-YkF4HzlAP8Ck5fb50EgIlg-1; Thu, 26 Aug 2021 18:20:58 -0400
+X-MC-Unique: YkF4HzlAP8Ck5fb50EgIlg-1
+Received: by mail-oi1-f197.google.com with SMTP id x13-20020a54400d0000b029026825ff437cso2305107oie.6
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 15:20:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zroasAaaMl84Lp8cGgnsSX6CLhufn7UDcF8dOmcgMyE=;
+        b=An9UcJoPmRvtVrp9Fi2iccALwyOgkjzX00vdR+4ZRceEUipWzqnySOgdcpfgiwDtqq
+         Zh2GN++sfy1wMYbr5Kn54ONEw4JoE+AP34pNQIcXGq1eY4EubHS3Xc5vRifKRJSVRWnM
+         16KEB8lmbsz564n/oMJpnOJWI8Ifm2sjD0lc15RntbcxB4YJ1chp0B78vTWNlJBvQnt6
+         9vOHNTQbo93dNO+KZadMct8CzPGuEumPLNQtBUh2JtiNsd03vZVQ24PMxH+kdb2oot01
+         8wAck6ar893KgAxHssG7Eo4h5wd60J3x6ILoS/+L3mizd3WePu9sucEJZwz/qtDLOLu8
+         KbQQ==
+X-Gm-Message-State: AOAM531Y4llLOoFLNsZ1oRpwEhnlnChIe7wFY8nGH7bM4Wx4SBcs15e1
+        IyxkNQSITP1wImD/1md5xoovkJ9wPwGX3UhYRTzCa9GmOaEZHmRa6PQNl38AaqsIwSRzaXgZ8/h
+        GYpdfppcxRA3xXnR7U0fJD4Mj
+X-Received: by 2002:a05:6830:441f:: with SMTP id q31mr5265953otv.204.1630016457918;
+        Thu, 26 Aug 2021 15:20:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx8TozJtnLI8oHWvST2FybzAHXy1mHRyzcLBuZjcgJQTjoQcaruPsL3DLvGDsW5daknmMQbwg==
+X-Received: by 2002:a05:6830:441f:: with SMTP id q31mr5265931otv.204.1630016457733;
+        Thu, 26 Aug 2021 15:20:57 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id u15sm862114oor.34.2021.08.26.15.20.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 15:20:57 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 16:20:56 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        kwankhede@nvidia.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com
+Subject: Re: [PATCH v2 0/2] s390/vfio-ap: do not open code locks for
+Message-ID: <20210826162056.304eb7ca.alex.williamson@redhat.com>
+In-Reply-To: <20210823212047.1476436-1-akrowiak@linux.ibm.com>
+References: <20210823212047.1476436-1-akrowiak@linux.ibm.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1mJNdf-00HV1Y-UD;;;mid=<87mtp3g8gv.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18m5lfQvtNAYQfGYREq2VBtg2jfskLzpXA=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XM_B_Unicode autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4992]
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;David Hildenbrand <david@redhat.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 612 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 4.3 (0.7%), b_tie_ro: 3.0 (0.5%), parse: 1.59
-        (0.3%), extract_message_metadata: 6 (0.9%), get_uri_detail_list: 3.1
-        (0.5%), tests_pri_-1000: 11 (1.9%), tests_pri_-950: 1.01 (0.2%),
-        tests_pri_-900: 0.95 (0.2%), tests_pri_-90: 101 (16.5%), check_bayes:
-        98 (16.1%), b_tokenize: 18 (2.9%), b_tok_get_all: 13 (2.1%),
-        b_comp_prob: 3.3 (0.5%), b_tok_touch_all: 61 (9.9%), b_finish: 0.81
-        (0.1%), tests_pri_0: 469 (76.6%), check_dkim_signature: 0.44 (0.1%),
-        check_dkim_adsp: 2.7 (0.4%), poll_dns_idle: 1.26 (0.2%), tests_pri_10:
-        2.4 (0.4%), tests_pri_500: 8 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Hildenbrand <david@redhat.com> writes:
+On Mon, 23 Aug 2021 17:20:45 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-> On 26.08.21 19:48, Andy Lutomirski wrote:
->> On Fri, Aug 13, 2021, at 5:54 PM, Linus Torvalds wrote:
->>> On Fri, Aug 13, 2021 at 2:49 PM Andy Lutomirski <luto@kernel.org> wrote:
->>>>
->>>> I’ll bite.  How about we attack this in the opposite direction: remove the deny write mechanism entirely.
->>>
->>> I think that would be ok, except I can see somebody relying on it.
->>>
->>> It's broken, it's stupid, but we've done that ETXTBUSY for a _loong_ time.
->>
->> Someone off-list just pointed something out to me, and I think we should push harder to remove ETXTBSY.  Specifically, we've all been focused on open() failing with ETXTBSY, and it's easy to make fun of anyone opening a running program for write when they should be unlinking and replacing it.
->>
->> Alas, Linux's implementation of deny_write_access() is correct^Wabsurd, and deny_write_access() *also* returns ETXTBSY if the file is open for write.  So, in a multithreaded program, one thread does:
->>
->> fd = open("some exefile", O_RDWR | O_CREAT | O_CLOEXEC);
->> write(fd, some stuff);
->>
->> <--- problem is here
->>
->> close(fd);
->> execve("some exefile");
->>
->> Another thread does:
->>
->> fork();
->> execve("something else");
->>
->> In between fork and execve, there's another copy of the open file description, and i_writecount is held, and the execve() fails.  Whoops.  See, for example:
->>
->> https://github.com/golang/go/issues/22315
->>
->> I propose we get rid of deny_write_access() completely to solve this.
->>
->> Getting rid of i_writecount itself seems a bit harder, since a handful of filesystems use it for clever reasons.
->>
->> (OFD locks seem like they might have the same problem.  Maybe we should have a clone() flag to unshare the file table and close close-on-exec things?)
->>
->
-> It's not like this issue is new (^2017) or relevant in practice. So no
-> need to hurry IMHO. One step at a time: it might make perfect sense to
-> remove ETXTBSY, but we have to be careful to not break other user
-> space that actually cares about the current behavior in practice.
+> The subject line does not necessarily encompass both patches of this
+> two-patch series, but I left it as versions 1 and 2 used this subject
+> line and I didn't want to confuse those who reviewed those patches.
+> 
+> Change log v1->v2:
+> -----------------
+> * Both of these patches were rebased on Alex's linux-vfio-next tree taken
+>   from https://github.com/awilliam/linux-vfio.git.
+>   
+> * Replaced kvm_s390_module_hook structure with a function pointer to the
+>   interception handler for the PQAP(AQIC) instruction.
+> 
+> Tony Krowiak (2):
+>   s390/vfio-ap: r/w lock for PQAP interception handler function pointer
+>   s390/vfio-ap: replace open coded locks for VFIO_GROUP_NOTIFY_SET_KVM
+>     notification
+> 
+>  arch/s390/include/asm/kvm_host.h      |   8 +-
+>  arch/s390/kvm/kvm-s390.c              |  32 ++++++-
+>  arch/s390/kvm/priv.c                  |  15 +--
+>  drivers/s390/crypto/vfio_ap_ops.c     | 127 +++++++++-----------------
+>  drivers/s390/crypto/vfio_ap_private.h |   4 +-
+>  5 files changed, 84 insertions(+), 102 deletions(-)
 
-It is an old enough issue that I agree there is no need to hurry.
+Applied to vfio next branch for v5.15.  Thanks,
 
-I also ran into this issue not too long ago when I refactored the
-usermode_driver code.  My challenge was not being in userspace
-the delayed fput was not happening in my kernel thread.  Which meant
-that writing the file, then closing the file, then execing the file
-consistently reported -ETXTBSY.
-
-The kernel code wound up doing:
-	/* Flush delayed fput so exec can open the file read-only */
-	flush_delayed_fput();
-	task_work_run();
-
-As I read the code the delay for userspace file descriptors is
-always done with task_work_add, so userspace should not hit
-that kind of silliness, and should be able to actually close
-the file descriptor before the exec.
-
-
-On the flip side, I don't know how anything can depend upon getting an
--ETXTBSY.  So I don't think there is any real risk of breaking userspace
-if we remove it.
-
-Eric
+Alex
 
