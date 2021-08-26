@@ -2,245 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880903F9033
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615793F903D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243647AbhHZVh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 17:37:26 -0400
-Received: from mga04.intel.com ([192.55.52.120]:5170 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230095AbhHZVhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 17:37:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="215999606"
-X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
-   d="scan'208";a="215999606"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 14:36:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,354,1620716400"; 
-   d="scan'208";a="687158070"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Aug 2021 14:36:36 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mJN35-0001kA-BC; Thu, 26 Aug 2021 21:36:35 +0000
-Date:   Fri, 27 Aug 2021 05:36:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 366e7ad6ba5f4cb2ffd0b7316e404d6ee9c0f401
-Message-ID: <6128095f.KMWQO+CxxEalEE5Q%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S243640AbhHZVn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 17:43:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40225 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232675AbhHZVn0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 17:43:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630014157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m2FmJSXlEr2qCecPowyaOlZhRz8GpI4FUiMuAU7OKCg=;
+        b=Y/63FrcMG1QuuX/52F569B75PDtrTEn+pL2lwxFURSNISjv/34ZBrHTDG8irD60os6G3va
+        T/QQh508iNtIxFOGq8t9SCo9vfQ9DaEpflihYw4kjJ35CFSk3OxTR9Jn0KUOjguH/uCWTe
+        JYkP2fj2fqQBfsArjhdJ78Vojbh713U=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-D4emmOqQPYOG8fVTrNUBBg-1; Thu, 26 Aug 2021 17:42:23 -0400
+X-MC-Unique: D4emmOqQPYOG8fVTrNUBBg-1
+Received: by mail-wm1-f72.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso4872582wma.9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 14:42:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=m2FmJSXlEr2qCecPowyaOlZhRz8GpI4FUiMuAU7OKCg=;
+        b=L0RAMx/2BUwky1guX9u0Tvd/eh0QPUaI+Jb51XUDaW2jAxuPoWFmyBu9ukQAHq2PXx
+         EAOdIcorrqBFzYAwAE9COCmbcQtiyeFAA3mp47bUusCRS6vk0OFSrCIZweMLxbk0O6AV
+         kMznwBbofJRjTiZWAG/gO/zdIAyjHH2PoGcsZL6rfKgjeuaifGk4iKKoZJDwQPUiRun9
+         aIpVZDjdybHRHO8CL1F1ANnP5Iik4bGh+tE2zmKRrg6qSPd+pI8hS95zkmojYvo5iP2b
+         HOSu/2gV4OZg/TGl/+XmdAcT9pfPVtnWu62eXvzS9gvpdyAFwgQKDk5TRDtED4CvisIb
+         1DWw==
+X-Gm-Message-State: AOAM533dxCx2/M7ZQqo/Z7Rg8W3zxBa4IXuWAITwKmhVecBuL++u/WRA
+        Yh8KXNsIF+1lhq58Jrk5X5YTE1vlQTyguZfKRfi9RBaZirr7Bet6BwO6FxDmR03OCdpdFI9jcoV
+        l0TqT8YLP3lxXGs3Cik+DT4w43+6Zoy/7TpWOk1CuyCBiGSzDRLCdSATQ+iCLH6MEPdC92DKC
+X-Received: by 2002:adf:9783:: with SMTP id s3mr6606223wrb.349.1630014142807;
+        Thu, 26 Aug 2021 14:42:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCkhqn+UwHShsb4JKtbEqOs0TLDQOFLz7yJC8vYxiDcumhU3BYy/FLLwouM+xIIp2eUTNUgA==
+X-Received: by 2002:adf:9783:: with SMTP id s3mr6606161wrb.349.1630014142475;
+        Thu, 26 Aug 2021 14:42:22 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23dec.dip0.t-ipconnect.de. [79.242.61.236])
+        by smtp.gmail.com with ESMTPSA id i21sm4261721wrb.62.2021.08.26.14.42.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 14:42:21 -0700 (PDT)
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     akpm@linux-foundation.org, markubo@amazon.com,
+        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        brendanhiggins@google.com, corbet@lwn.net, dwmw@amazon.com,
+        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
+        greg@kroah.com, gthelen@google.com, guoju.fgj@alibaba-inc.com,
+        jgowans@amazon.com, joe@perches.com, mgorman@suse.de,
+        mheyne@amazon.de, minchan@kernel.org, mingo@redhat.com,
+        namhyung@kernel.org, peterz@infradead.org, riel@surriel.com,
+        rientjes@google.com, rostedt@goodmis.org, rppt@kernel.org,
+        shakeelb@google.com, shuah@kernel.org, sieberf@amazon.com,
+        snu@zelle79.org, vbabka@suse.cz, vdavydov.dev@gmail.com,
+        zgf574564920@gmail.com, linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210826172920.4877-1-sjpark@amazon.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v34 05/13] mm/damon: Implement primitives for the virtual
+ memory address spaces
+Message-ID: <3b094493-9c1e-6024-bfd5-7eca66399b7e@redhat.com>
+Date:   Thu, 26 Aug 2021 23:42:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210826172920.4877-1-sjpark@amazon.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 366e7ad6ba5f4cb2ffd0b7316e404d6ee9c0f401  sched/fair: Mark tg_is_idle() an inline in the !CONFIG_FAIR_GROUP_SCHED case
+On 26.08.21 19:29, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> Hello David,
+> 
+> 
+> On Thu, 26 Aug 2021 16:09:23 +0200 David Hildenbrand <david@redhat.com> wrote:
+> 
+>>> +static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
+>>> +{
+>>> +	pte_t *pte = NULL;
+>>> +	pmd_t *pmd = NULL;
+>>> +	spinlock_t *ptl;
+>>> +
+>>
+>> I just stumbled over this, sorry for the dumb questions:
+> 
+> Appreciate for the great questions!
+> 
+>>
+>>
+>> a) What do we know about that region we are messing with?
+>>
+>> AFAIU, just like follow_pte() and follow_pfn(), follow_invalidate_pte()
+>> should only be called on VM_IO and raw VM_PFNMAP mappings in general
+>> (see the doc of follow_pte()). Do you even know that it's within a
+>> single VMA and that there are no concurrent modifications?
+> 
+> We have no idea about the region at this moment.  However, if we successfully
+> get the pte or pmd under the protection of the page table lock, we ensure the
+> page for the pte or pmd is a online LRU-page with damon_get_page(), before
+> updating the pte or pmd's PAGE_ACCESSED bit.  We release the page table lock
+> only after the update.
+> 
+> And concurrent VMA change doesn't matter here because we read and write only
+> the page table.  If the address is not mapped or not backed by LRU pages, we
+> simply treat it as not accessed.
 
-possible Warning in current branch (please contact us if interested):
+reading/writing page tables is the real problem.
 
-kernel/sched/fair.c:446:21: warning: Access to field 'my_q' results in a dereference of a null pointer (loaded from variable 'se') [clang-analyzer-core.NullDereference]
+> 
+>>
+>> b) Which locks are we holding?
+>>
+>> I hope we're holding the mmap lock in read mode at least. Or how are you
+>> making sure there are no concurrent modifications to page tables / VMA
+>> layout ... ?
+>>
+>>> +	if (follow_invalidate_pte(mm, addr, NULL, &pte, &pmd, &ptl))
+> 
+> All the operations are protected by the page table lock of the pte or pmd, so
+> no concurrent page table modification would happen.  As previously mentioned,
+> because we read and update only page table, we don't care about VMAs and
+> therefore we don't need to hold mmap lock here.
 
-Warning ids grouped by kconfigs:
+See below, that's unfortunately not sufficient.
 
-clang_recent_errors
-`-- mips-randconfig-c004-20210826
-    `-- kernel-sched-fair.c:warning:Access-to-field-my_q-results-in-a-dereference-of-a-null-pointer-(loaded-from-variable-se-)-clang-analyzer-core.NullDereference
+> 
+> Outside of this function, DAMON reads the VMAs to know which address ranges are
+> not mapped, and avoid inefficiently checking access to the area with the
+> information.  Nevertheless, it happens only occasionally (once per 60 seconds
+> by default), and it holds the mmap read lock in the case.
+> 
+> Nonetheless, I agree the usage of follow_invalidate_pte() here could make
+> readers very confusing.  It would be better to implement and use DAMON's own
+> page table walk logic.  Of course, I might missing something important.  If you
+> think so, please don't hesitate at yelling to me.
 
-elapsed time: 748m
 
-configs tested: 176
-configs skipped: 3
+I'm certainly not going to yell :) But unfortunately I'll have to tell 
+you that what you are doing is in my understanding fundamentally broken.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+See, page tables might get removed any time
+a) By munmap() code even while holding the mmap semaphore in read (!)
+b) By khugepaged holding the mmap lock in write mode
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210826
-arm                          gemini_defconfig
-mips                      fuloong2e_defconfig
-powerpc                       holly_defconfig
-m68k                            mac_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                           se7722_defconfig
-powerpc                     powernv_defconfig
-powerpc                        warp_defconfig
-mips                      loongson3_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                         microdev_defconfig
-arm                       netwinder_defconfig
-arm                         mv78xx0_defconfig
-ia64                      gensparse_defconfig
-arm                        keystone_defconfig
-mips                        vocore2_defconfig
-sh                           se7721_defconfig
-arm                         nhk8815_defconfig
-powerpc                    amigaone_defconfig
-m68k                       m5249evb_defconfig
-arm                            mmp2_defconfig
-powerpc                       eiger_defconfig
-powerpc                 canyonlands_defconfig
-mips                     loongson1b_defconfig
-arc                 nsimosci_hs_smp_defconfig
-xtensa                           alldefconfig
-arm                        oxnas_v6_defconfig
-nds32                            alldefconfig
-powerpc                    ge_imp3a_defconfig
-sh                          rsk7269_defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc832x_rdb_defconfig
-mips                          rm200_defconfig
-arm                       cns3420vb_defconfig
-powerpc                     asp8347_defconfig
-m68k                        stmark2_defconfig
-arm                        multi_v7_defconfig
-mips                     loongson2k_defconfig
-powerpc                      ep88xc_defconfig
-mips                         bigsur_defconfig
-arm                            zeus_defconfig
-h8300                     edosk2674_defconfig
-powerpc                     pq2fads_defconfig
-arm                         bcm2835_defconfig
-mips                        jmr3927_defconfig
-mips                       bmips_be_defconfig
-sh                           se7206_defconfig
-arm                          moxart_defconfig
-powerpc                      obs600_defconfig
-xtensa                generic_kc705_defconfig
-arm                         lpc18xx_defconfig
-powerpc                          g5_defconfig
-xtensa                          iss_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                      mgcoge_defconfig
-arm                          pcm027_defconfig
-arm                   milbeaut_m10v_defconfig
-sh                          lboxre2_defconfig
-arm                           corgi_defconfig
-sh                          sdk7780_defconfig
-mips                          malta_defconfig
-arm                          ep93xx_defconfig
-powerpc                        icon_defconfig
-xtensa                    xip_kc705_defconfig
-mips                        qi_lb60_defconfig
-powerpc                         wii_defconfig
-mips                           ci20_defconfig
-mips                   sb1250_swarm_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                      bamboo_defconfig
-arm                            mps2_defconfig
-arm                           sunxi_defconfig
-xtensa                  cadence_csp_defconfig
-arm                         shannon_defconfig
-arm                             pxa_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                      pmac32_defconfig
-sh                        edosk7760_defconfig
-arm64                            alldefconfig
-powerpc                      ppc64e_defconfig
-mips                        bcm47xx_defconfig
-powerpc                      ppc40x_defconfig
-arm                        multi_v5_defconfig
-powerpc                     pseries_defconfig
-arm                           omap1_defconfig
-powerpc                  storcenter_defconfig
-arm                       spear13xx_defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210826
-x86_64               randconfig-a006-20210826
-x86_64               randconfig-a001-20210826
-x86_64               randconfig-a003-20210826
-x86_64               randconfig-a004-20210826
-x86_64               randconfig-a002-20210826
-i386                 randconfig-a006-20210826
-i386                 randconfig-a001-20210826
-i386                 randconfig-a002-20210826
-i386                 randconfig-a005-20210826
-i386                 randconfig-a003-20210826
-i386                 randconfig-a004-20210826
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+The rules are (ignoring the rmap side of things)
 
-clang tested configs:
-i386                 randconfig-c001-20210826
-s390                 randconfig-c005-20210826
-arm                  randconfig-c002-20210826
-riscv                randconfig-c006-20210826
-powerpc              randconfig-c003-20210826
-x86_64               randconfig-c007-20210826
-mips                 randconfig-c004-20210826
-x86_64               randconfig-a014-20210826
-x86_64               randconfig-a015-20210826
-x86_64               randconfig-a016-20210826
-x86_64               randconfig-a013-20210826
-x86_64               randconfig-a012-20210826
-x86_64               randconfig-a011-20210826
-i386                 randconfig-a011-20210826
-i386                 randconfig-a016-20210826
-i386                 randconfig-a012-20210826
-i386                 randconfig-a014-20210826
-i386                 randconfig-a013-20210826
-i386                 randconfig-a015-20210826
-hexagon              randconfig-r041-20210826
-hexagon              randconfig-r045-20210826
-riscv                randconfig-r042-20210826
-s390                 randconfig-r044-20210826
+a) You can walk page tables inside a known VMA with the mmap semaphore 
+held in read mode. If you drop the mmap sem, you have to re-validate the 
+VMA! Anything could have changed in the meantime. This is essentially 
+what mm/pagewalk.c does.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+b) You can walk page tables ignoring VMAs with the mmap semaphore held 
+in write mode.
+
+c) You can walk page tables lockless if the architecture supports it and 
+you have interrupts disabled the hole time. But you are not allowed to 
+write.
+
+With what you're doing, you might end up reading random garbage as page 
+table pointers, or writing random garbage to pages that are no longer 
+used as page tables.
+
+Take a look at mm/gup.c:lockless_pages_from_mm() to see how difficult it 
+is to walk page tables lockless. And it only works because page table 
+freeing code synchronizes either via IPI or fake-rcu before actually 
+freeing a page table.
+
+follow_invalidate_pte() is, in general, the wrong thing to use. It's 
+specialized to VM_IO and VM_PFNMAP. take a look at the difference in 
+complexity between follow_invalidate_pte() and mm/pagewalk.c!
+
+I'm really sorry, but as far as I can tell, this is locking-wise broken 
+and follow_invalidate_pte() is the wrong interface to use here.
+
+Someone can most certainly correct me if I'm wrong, or if I'm missing 
+something regarding your implementation, but if you take a look around, 
+you won't find any code walking page tables without at least holding the 
+mmap sem in read mode -- for a good reason.
+
+-- 
+Thanks,
+
+David / dhildenb
+
