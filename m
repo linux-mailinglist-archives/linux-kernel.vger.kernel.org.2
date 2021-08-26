@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5B33F8B5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EF83F8B62
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234743AbhHZP5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        id S242974AbhHZP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhHZP5x (ORCPT
+        with ESMTP id S234972AbhHZP6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:57:53 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2998C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:57:05 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id z10so5374559edb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:57:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZXF/RHrw7uR6voIrN0yU+7iqLQE1G5atkH2gmUQ8pZk=;
-        b=RQJ9kvRCGzboqUPP5bbDLYsm7wHK3ezjmAWY1wP8SNnfLIS8HarSFZ7DJKNBFxOZyg
-         T922M3YNTNVOXO+PbK4iL9ZJdNtmDV5GCGR3QRem4nQSsD520BwsZuLH410XfjbB7EQv
-         fxg0GiydJw7Qzi/ur41bgIiyYrORoc/7NuAxot5EHb3QZUR6ae297ssxWmesAEMciV6y
-         LFU5wczmGANMvf63O9yQFiIItalWhpi8XqxwqeTTUfmWXyWsCEGp2YBSQfY5bk7oiELJ
-         Io/8CFj6cHPCYYeag+XZexMWmHNIhp29ydwdyuPOWHwfB4Z4TqgYQ9iN/r+93RjvaSHF
-         OFBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZXF/RHrw7uR6voIrN0yU+7iqLQE1G5atkH2gmUQ8pZk=;
-        b=oeBbGwp3BeWkdkb3zf70zA6yQ8x4g2SnTr+o/QqKMz6/uu5KipIgafFtpalEDt0Z14
-         DnmXof5KAN/NiDGH6QL4mP/jo+Noz8uzJ5ooZtAkHt11PsLgCwcWsJ8Juy3gV43htT5B
-         lM14DD/FX/ZUdBLKTbsNcC9bwtWRlAqJQ9eZ4691LyRuUxc2xwv2cdi1D7I02GVJJOnD
-         F8I42123wSxe5UIevVA8owOgmoV7AwfgQFuTwNqmPS5dFeT4N38+EiPrkYJ8nMfWtkdD
-         UGMnIE3CmN4BhoebCY/NCOyqn4C4eePl+XyvfzGa1/5gT0CFKdhMXpRyLj1WSWMW6y0r
-         vqAA==
-X-Gm-Message-State: AOAM532/DFl8VXNwZy2wVz538GkjV/BJMhzN9+ROqVytpyHK9dDDh8yy
-        Bl0swNBdF63Uz1fnZCHcWrBjP42tvnM=
-X-Google-Smtp-Source: ABdhPJwTDYtb8XcfblsJ7q7oQNNs+70i6Vv8+cvwvcrMtFQWph5GvGCGlXX7GD4Uq78wknF2uANqUQ==
-X-Received: by 2002:a05:6402:354c:: with SMTP id f12mr4872206edd.287.1629993424411;
-        Thu, 26 Aug 2021 08:57:04 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id q5sm2080803edt.50.2021.08.26.08.57.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 08:57:03 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Alex Elder <elder@ieee.org>,
-        Alex Elder <elder@linaro.org>
-Cc:     kernel test robot <lkp@intel.com>
-Subject: Re: [greybus-dev] [PATCH v2] staging: greybus: Convert uart.c from IDR to XArray
-Date:   Thu, 26 Aug 2021 17:57:02 +0200
-Message-ID: <8278430.GnBS7eVdlf@localhost.localdomain>
-In-Reply-To: <335f30c7-8ab4-d46a-d415-e994997a3fa5@linaro.org>
-References: <20210814181130.21383-1-fmdefrancesco@gmail.com> <1838037.Ul9q4Z07vA@localhost.localdomain> <335f30c7-8ab4-d46a-d415-e994997a3fa5@linaro.org>
+        Thu, 26 Aug 2021 11:58:21 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8159C061757;
+        Thu, 26 Aug 2021 08:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=MIME-Version:Content-Transfer-Encoding:Content-Type:References
+        :In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=ZnGe1nVJ1CjSDZDcZI0kLv7JieGOOXz8IXiGfM2vWOg=; b=vCwqW1gApWpdGNv1xOnZEngggZ
+        tapUoSvNGbDkeiGebQoMw5auiTyvm1Bf+8L2tTnwQUrcU9hKH9zEpThL0jphg8B4cCVg1zRpn3zsK
+        e5RriResuYJf+iIpnb5blFK2vNvMK/WGSq9P0ANhriDGHHVS+92EV54qoDWipGXG7oj4VMmV6L0j0
+        3Srwy3i36F8r1cam65UIgDSl3AoNAl0XSs8bwCENdQMYq6+oRVl5NpDz8AKgqlt1r6DrlqXhbGHK9
+        r/p/K5srrlj0pNAQ6iQGKjMhirW7YXhDGurLKyyUk2JT1qOVWEMr2HteoAnKECnf8dOdltGtSPx+p
+        y6tQ1MDQ==;
+Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <jarkko.sakkinen@iki.fi>)
+        id 1mJHkX-0006ux-Oe; Thu, 26 Aug 2021 18:57:05 +0300
+Message-ID: <284e47260b22b8f308a1efa6754845329f6c89a5.camel@iki.fi>
+Subject: Re: [PATCH v13 1/7] tpm: Make read{16, 32}() and write32() in 
+ tpm_tis_phy_ops optional
+From:   Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
+To:     amirmizi6@gmail.com, Eyal.Cohen@nuvoton.com,
+        jarkko.sakkinen@linux.intel.com, oshrialkoby85@gmail.com,
+        alexander.steffen@infineon.com, robh+dt@kernel.org,
+        mark.rutland@arm.com, peterhuewe@gmx.de, jgg@ziepe.ca,
+        arnd@arndb.de, gregkh@linuxfoundation.org, benoit.houyere@st.com,
+        eajames@linux.ibm.com, joel@jms.id.au
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
+        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
+        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
+        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com
+Date:   Thu, 26 Aug 2021 18:57:04 +0300
+In-Reply-To: <20210826111908.117278-2-amirmizi6@gmail.com>
+References: <20210826111908.117278-1-amirmizi6@gmail.com>
+         <20210826111908.117278-2-amirmizi6@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+X-SA-Exim-Connect-IP: 83.245.197.237
+X-SA-Exim-Mail-From: jarkko.sakkinen@iki.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, August 25, 2021 3:45:13 PM CEST Alex Elder wrote:
-> On 8/25/21 12:20 AM, Fabio M. De Francesco wrote:
-> > On Monday, August 16, 2021 4:46:08 PM CEST Alex Elder wrote:
-> >> On 8/14/21 1:11 PM, Fabio M. De Francesco wrote:
-> >>> Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
-> >>> is more memory-efficient, parallelisable, and cache friendly. It takes
-> >>> advantage of RCU to perform lookups without locking. Furthermore, IDR is
-> >>> deprecated because XArray has a better (cleaner and more consistent) API.
-> >>
-> >> I haven't verified the use of the new API (yet) but I have a few
-> >> comments on your patch, below.
-> >>
-> >> 					-Alex
-> > 
-> > Dear Alex,
-> > 
-> > On August 16th I submitted the v3 of my patch ("staging: greybus: Convert uart.c 
-> > from IDR to XArray"), with changes based on the comments you provided.
-> 
-> Yes, I intend to review version 3.  I'm sorry I didn't respond to
-> your earlier message; I am on vacation this week.
-> 
-> 					-Alex
+On Thu, 2021-08-26 at 14:19 +0300, amirmizi6@gmail.com wrote:
+> From: Amir Mizinski <amirmizi6@gmail.com>
+>=20
+> Only tpm_tis can use memory-mapped I/O, which is truly mapped into
+> the kernel's memory space. Therefore, using ioread16/ioread32/iowrite32
+> turns into a straightforward pointer dereference.
+> Every other driver requires more complicated operations to read more than
+> one byte at a time and will just fall back to read_bytes/write_bytes.
 
-Oh, there's no hurry, sorry to bother you while on vacation.
-Even kernel hackers deserve a vacation at least once a year or two... :-)
+s/Every other driver/Some drivers, such as tpm_tis_spi,/g.
 
-Thanks,
+> Therefore, move this common code out of tpm_tis_spi and into tpm_tis_core
+> so that it is used automatically when low-level drivers do not implement
+> the specialized methods.
 
-Fabio
+This does not really explain why you are moving the code.
 
-> > 
-> > Could you please take a few minutes to review this too? I would really appreciate it.
-> > 
-> > The v3 patch is at https://lore.kernel.org/lkml/20210816195000.736-1-fmdefrancesco@gmail.com/
-> > 
-> > Thanks,
-> > 
-> > Fabio
-> > 
-> > P.S.: I'd also like to know if you think it's worth converting IDA to XArray in order 
-> > to improve the Greybus driver in staging.
-> > 
-> >   
-> > 
-> > 
-> > _______________________________________________
-> > greybus-dev mailing list
-> > greybus-dev@lists.linaro.org
-> > https://lists.linaro.org/mailman/listinfo/greybus-dev
-> > 
-> 
-> 
+You are moving it so that you don't have to reimplement things both in
+SPI and I2C drivers?
 
+Perhaps:
 
+"Re-implement tpm_tis_{read, write}_{16, 32}, so that they check
+ if implementations for {read, write}_{16, 32} in tpm_tis_phys_ops
+ exist, and if not, fallback to {read, write}_bytes()."
 
+> Co-developed-by: Alexander Steffen <Alexander.Steffen@infineon.com>
+> Signed-off-by: Alexander Steffen <Alexander.Steffen@infineon.com>
+> Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
+> Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Tested-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+
+Since there's been a while, it'd be better if you dropped my tags.
+I consider them as expired by now. Please do this for all patches.
+
+/Jarkko
 
