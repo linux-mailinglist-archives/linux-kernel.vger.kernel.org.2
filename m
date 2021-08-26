@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F473F8DF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8195F3F8E03
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243347AbhHZSko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:40:44 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:41626 "EHLO
-        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243344AbhHZSki (ORCPT
+        id S243348AbhHZSmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243288AbhHZSml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:40:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DqBauNYZguy26YC5MxjDf0SISmgxD/sdSKlavWitRc4=; b=WtZVI4ez8vSSahSqKdG+DaiPN3
-        4ORAroBimZJZQ6sh2vFaN5c95MolkLoZ59ZjGFLi5Iqkl79WPrps7LZ8sV5J2tEkZJFG1Q1IGvoKp
-        5vSTGvVlhkRhbFL8g6HG6GKEbvzn5Tk3jqfc+u7hp8vm6l1glbS06HjQFJN26VZS6ca0=;
-Received: from 188.30.109.46.threembb.co.uk ([188.30.109.46] helo=fitzroy.sirena.org.uk)
-        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <broonie@sirena.org.uk>)
-        id 1mJKHs-00FYPH-M2; Thu, 26 Aug 2021 18:39:40 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
-        id 44CD4D14302; Thu, 26 Aug 2021 19:39:38 +0100 (BST)
-Date:   Thu, 26 Aug 2021 19:39:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mark Hsieh <mark_hsieh@wistron.corp-partner.google.com>
-Cc:     alsa-devel@alsa-project.org, cezary.rojewski@intel.com,
-        kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.intel.com,
-        mac.chiang@intel.com, lance.hou@intel.com, brent.lu@intel.com,
-        bard.liao@intel.com, liam.r.girdwood@linux.intel.com,
-        yang.jie@linux.intel.com, perex@perex.cz,
-        linux-kernel@vger.kernel.org, mark_hsieh@wistron.com
-Subject: Re: [PATCH] [v3] ASoC: Intel: sof_rt5682: Add support for max98390
- speaker amp
-Message-ID: <YSff6gkGN/Rk9CzU@sirena.org.uk>
-References: <20210826103032.22262-1-mark_hsieh@wistron.corp-partner.google.com>
+        Thu, 26 Aug 2021 14:42:41 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAB9C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:41:53 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id b4so8797392lfo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:41:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WSi2CT3/EAuJ8jcPqCdGVYqPPf28RMrJEFE8J6fYp1k=;
+        b=QnVjVhg8NS9rsFJf38THsE2c+locc1ye7QZAehoJy4p1/TL67fZfBLPuBZsjP8d73w
+         4RxIO/ZauUUZRulREfT1TdnBshTxlViODZwLcPA9JX/rZnznm88zub8yU7JtNy+5jSDg
+         nW9ECnoBI1ZiLfFXBT24mKJt3jAuHiJK10gBI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WSi2CT3/EAuJ8jcPqCdGVYqPPf28RMrJEFE8J6fYp1k=;
+        b=YHNLroTkvwEm3z8BzumefnFwi5SJdKyd2i/Q1Sc0VPRYeEnEzgDpCsq1OH7maTRWMl
+         qxkfN6uUUYhCEAOux7TPz4/q1EMigTAjNcsk0VUm8HFq0zImAQdubxZutzrymlUG3Exr
+         oIhfHU/R3+Pp7NtVBCLUaiZPQUN649LQiXKP+CHsbJRQBh0GHHtA3nd8hnY9cQ4d44Uk
+         lZNtfj/klMBpn48kL+QdvYTZujt8CXSGSCZJU3lN3CfUG7mUn7oYaWBIPF982q01c88O
+         n3kGw3y3zQpIpgd1YCfggEgwSvXHM9liwreL+auz2D4RIOMGig8sT/sP2aDvx+J+uka4
+         /IpQ==
+X-Gm-Message-State: AOAM5308H1ANtte7wW7gIlbgymwDOIl70OVELRQYsCflV0KxvDHzM+zq
+        Ahwxa3kZXdTn+r2LaU/ZUaqmYNGUqBtG+4Me
+X-Google-Smtp-Source: ABdhPJzHFUT1Y9p7o6DpgvLIln1eejaoEPwr1u6hSuNUjIXsF/7gvekNrglpuC3QYbKCmQNkMOcJkA==
+X-Received: by 2002:a05:6512:1293:: with SMTP id u19mr3811939lfs.86.1630003311243;
+        Thu, 26 Aug 2021 11:41:51 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id g7sm420304ljk.130.2021.08.26.11.41.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 11:41:50 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id b4so8797229lfo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:41:50 -0700 (PDT)
+X-Received: by 2002:a05:6512:2091:: with SMTP id t17mr3780432lfr.253.1630003309915;
+ Thu, 26 Aug 2021 11:41:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BMVgk7TXFPHhMYjb"
-Content-Disposition: inline
-In-Reply-To: <20210826103032.22262-1-mark_hsieh@wistron.corp-partner.google.com>
-X-Cookie: Where does it go when you flush?
+References: <20210826131747.GE26318@willie-the-truck>
+In-Reply-To: <20210826131747.GE26318@willie-the-truck>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 26 Aug 2021 11:41:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi8Wxazuq+E4_V0GG4eda0rNpZi76AYWQe7xfPZAAexAQ@mail.gmail.com>
+Message-ID: <CAHk-=wi8Wxazuq+E4_V0GG4eda0rNpZi76AYWQe7xfPZAAexAQ@mail.gmail.com>
+Subject: Re: [GIT PULL] arm64 fix for 5.14
+To:     Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 26, 2021 at 6:17 AM Will Deacon <will@kernel.org> wrote:
+>
+> Please pull this single arm64 fix for 5.14.
 
---BMVgk7TXFPHhMYjb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Pulled.
 
-On Thu, Aug 26, 2021 at 06:30:32PM +0800, Mark Hsieh wrote:
-> Configure adl_max98390_rt5682 to support the rt5682 headset codec
-> and max98390 speaker.
+But adding Christoph to the cc, since I do think the eventual fix
+needs to be in the DMA mapping code:
 
-This doesn't apply against current code, please check and resend.
+> We received a report this week
+> that the generic version of pfn_valid(), which we switched to this merge
+> window in 16c9afc77660 ("arm64/mm: drop HAVE_ARCH_PFN_VALID"), interacts
+> badly with dma_map_resource() due to the following check:
+>
+>         /* Don't allow RAM to be mapped */
+>         if (WARN_ON_ONCE(pfn_valid(PHYS_PFN(phys_addr))))
+>                 return DMA_MAPPING_ERROR;
+>
+> Since the ongoing saga to determine the semantics of pfn_valid() is
+> unlikely to be resolved this week (does it indicate valid memory, or
+> just the presence of a struct page, or whether that struct page has been
+> initialised?), just revert back to our old version of pfn_valid() for
+> 5.14.
 
---BMVgk7TXFPHhMYjb
-Content-Type: application/pgp-signature; name="signature.asc"
+I think that's the right thing for now, but yeah, that condition for
+WARN_ON_ONCE() seems very questionable.
 
------BEGIN PGP SIGNATURE-----
+"pfn_valid()" is more about whether you can do a "pfn_to_page()" lookup on it.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEn3+kACgkQJNaLcl1U
-h9BLBgf+OvWq0XpMKC11U1vR44hq1uC4BXJlWk5/1fdNBmO522bnvEn+YLni/tZa
-U+NoTKO7DUDxMEh4mAx99IGkkBQCiFyw1n1kfu/KdQMNxXtKJAM+UX7u/gFTH4fM
-8GYJSoZgmq7rZ6kLxnGic0Wgu5fsaJ3jXZxGKnzzWD2caqa/WAw8rCQkr3oEWGs7
-qrFfgxdth/mAGLa9KhNbw+Tz/qLtn3hBYLenkhyS65Pm0wpOpW1ypAioxFC+g/Vn
-8kZHPIZUABOKDMTMQmnJfms3wDdDiixgCaS3iexaJmaLY0Xdjq2o1VXhphDL9MnN
-T8IgldjErh2Rd/yxTL2ZQhF1YB7Acw==
-=pRs0
------END PGP SIGNATURE-----
+II get the feeling that the dma-mapping code should allow pages that
+are PageReserved() to be mapped - they aren't "ram" in the kernel
+sense.
 
---BMVgk7TXFPHhMYjb--
+Perhaps also make sure it's not the zero page (which is
+PageReserved(), but most definitely RAM).
+
+In a PC world that would be (for example) the legacy PCI space at
+0xa0000-0xfffff, but I could easily imagine other platforms having
+other situations.
+
+              Linus
