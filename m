@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038A53F8DCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5743F8DD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243264AbhHZS1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:27:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235411AbhHZS1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:27:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFB3160E8B;
-        Thu, 26 Aug 2021 18:26:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630002386;
-        bh=EZpMOg5uZ1atXvNVcFF6zwuiJW5v8+/QZHYkgJs2j6U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=buwDYdn5zc5hloF3bxX0SYWf2fzfQ7RzdOt11hfvqxj17/h0aMMpG8EdJZscQ6Jjh
-         Y4qp9zx8oFP4d92shWmbTOshfgKQdyH1rqeNba9uUTZJOB35GwehS28Gsaq5vNfvRo
-         zhWT+s6kXwO7uL2Eh5o59zQZVNV3FKw/ApFGxMVLC5Qcd4cnFNlQz2aVUA21o6T5Y7
-         6BGau5kyHzeh88+J60uI2R7gYOZD8oVLWyHAHBHtIYXgPCcvaDN732uczKR1h1sT0Z
-         rVxFELzRLj8MwUA8j5+raFYiFH7t+tr3K8oOQ7qsxGNbo10FnlYuFk7x9/nCDHk/Ag
-         MSss7+zGpmGOQ==
-Date:   Thu, 26 Aug 2021 13:26:24 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        jean-philippe <jean-philippe@linaro.org>,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v5 3/3] PCI: Set dma-can-stall for HiSilicon chips
-Message-ID: <20210826182624.GA3694827@bjorn-Precision-5520>
+        id S243279AbhHZS3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:29:02 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:27623 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231310AbhHZS27 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 14:28:59 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d32 with ME
+        id mJU92500D3riaq203JU9Qo; Thu, 26 Aug 2021 20:28:10 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 26 Aug 2021 20:28:10 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     jic23@kernel.org, lars@metafoo.de, ardeleanalex@gmail.com,
+        andy.shevchenko@gmail.com
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH v2] iio: adc128s052: Simplify 'adc128_probe()'
+Date:   Thu, 26 Aug 2021 20:28:08 +0200
+Message-Id: <d769321da74eea17a1260b48d4ab16f416b37c74.1630002390.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626144876-11352-4-git-send-email-zhangfei.gao@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Will, Robin, Joerg, hoping for an ack]
+Turn 'adc128_probe()' into a full resource managed function to simplify the
+code.
 
-On Tue, Jul 13, 2021 at 10:54:36AM +0800, Zhangfei Gao wrote:
-> HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
-> actually on the AMBA bus. These fake PCI devices can support SVA via
-> SMMU stall feature, by setting dma-can-stall for ACPI platforms.
-> 
-> Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
-> ---
->  drivers/pci/quirks.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 5d46ac6..03b0f98 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -1823,10 +1823,23 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI
->  
->  static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
->  {
-> +	struct property_entry properties[] = {
-> +		PROPERTY_ENTRY_BOOL("dma-can-stall"),
+This way, the .remove function can be removed.
+Doing so, the only 'spi_get_drvdata()' call is removed and the
+corresponding 'spi_set_drvdata()' can be removed as well.
 
-"dma-can-stall" is used in arm_smmu_probe_device() to help set
-master->stall_enabled.
+Suggested-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+---
+Compile tested only.
 
-I don't know the implications, so it'd be nice to get an ack from a
-maintainer of that code.
+When reviewing, pay special attention to the 'spi_set_drvdata()' call
+removal. I recently introduced a regression with a too aggressive cleanup
+like that.
 
-> +		{},
-> +	};
-> +
->  	if (pdev->revision != 0x21 && pdev->revision != 0x30)
->  		return;
->  
->  	pdev->pasid_no_tlp = 1;
-> +
-> +	/*
-> +	 * Set the dma-can-stall property on ACPI platforms. Device tree
-> +	 * can set it directly.
-> +	 */
-> +	if (!pdev->dev.of_node &&
-> +	    device_add_properties(&pdev->dev, properties))
-> +		pci_warn(pdev, "could not add stall property");
->  }
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
-> -- 
-> 2.7.4
-> 
+This patch should be applied after
+https://lore.kernel.org/linux-iio/f33069f0-601b-4bbb-3766-026f7a161912-39ZsbGIQGT5GWvitb5QawA@public.gmane.org/T/#meb792dcd6540f87d9ae041660ca4738a776e924a
+
+v1 --> v2: Simplify 'adc128_disable_regulator()'
+---
+ drivers/iio/adc/ti-adc128s052.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/iio/adc/ti-adc128s052.c b/drivers/iio/adc/ti-adc128s052.c
+index e1afdb775100..3143f35a6509 100644
+--- a/drivers/iio/adc/ti-adc128s052.c
++++ b/drivers/iio/adc/ti-adc128s052.c
+@@ -132,13 +132,6 @@ static const struct iio_info adc128_info = {
+ 	.read_raw = adc128_read_raw,
+ };
+ 
+-static void adc128_disable_regulator(void *data)
+-{
+-	struct regulator *reg = data;
+-
+-	regulator_disable(reg);
+-}
+-
+ static int adc128_probe(struct spi_device *spi)
+ {
+ 	struct iio_dev *indio_dev;
+@@ -158,6 +151,8 @@ static int adc128_probe(struct spi_device *spi)
+ 	adc = iio_priv(indio_dev);
+ 	adc->spi = spi;
+ 
++	spi_set_drvdata(spi, indio_dev);
++
+ 	indio_dev->name = spi_get_device_id(spi)->name;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	indio_dev->info = &adc128_info;
+@@ -172,13 +167,23 @@ static int adc128_probe(struct spi_device *spi)
+ 	ret = regulator_enable(adc->reg);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = devm_add_action_or_reset(&spi->dev, adc128_disable_regulator, adc->reg);
+-	if (ret)
+-		return ret;
+ 
+ 	mutex_init(&adc->lock);
+ 
+-	return devm_iio_device_register(&spi->dev, indio_dev);
++	ret = iio_device_register(indio_dev);
++
++	return ret;
++}
++
++static int adc128_remove(struct spi_device *spi)
++{
++	struct iio_dev *indio_dev = spi_get_drvdata(spi);
++	struct adc128 *adc = iio_priv(indio_dev);
++
++	iio_device_unregister(indio_dev);
++	regulator_disable(adc->reg);
++
++	return 0;
+ }
+ 
+ static const struct of_device_id adc128_of_match[] = {
+@@ -220,6 +225,7 @@ static struct spi_driver adc128_driver = {
+ 		.acpi_match_table = ACPI_PTR(adc128_acpi_match),
+ 	},
+ 	.probe = adc128_probe,
++	.remove = adc128_remove,
+ 	.id_table = adc128_id,
+ };
+ module_spi_driver(adc128_driver);
+-- 
+2.30.2
+
