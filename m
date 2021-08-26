@@ -2,129 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BC63F812C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2624E3F8132
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238002AbhHZDbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 23:31:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29505 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236891AbhHZDbI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 23:31:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629948621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eEAbeV6QhPu84KG5CC307zTKXbX2UdBwPkKc0p1KhSE=;
-        b=HxJmqVOjgeg6fTdDatI5+EB/mbUCZr+7KAmKPrx9yIG9M0/FjSB9WRBqYdQDOAORgdu+uc
-        BM0qRSSsql0xs49RL84Ps7RNfxZwzSDbMWgN0pO10UP31wbYm2NDhlMU6lZj5VGnunPRXC
-        42JDVcH69COhjNo9qzjkgCqjbv0C/+0=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-W0MUXD44P0aecKz-uO_oxA-1; Wed, 25 Aug 2021 23:30:19 -0400
-X-MC-Unique: W0MUXD44P0aecKz-uO_oxA-1
-Received: by mail-lf1-f71.google.com with SMTP id p3-20020a0565121383b0290384997a48fcso463462lfa.21
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 20:30:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eEAbeV6QhPu84KG5CC307zTKXbX2UdBwPkKc0p1KhSE=;
-        b=XszBJydApqt/i8zrqIg/vj/ds+e+32sCJqh5rh+ZbBTsd68RrtruPKBU5vUyiqIajI
-         MHxc/EzYyemATMNBkKzx/58rNjSe4/XMBefTKz7kbUtIfgJhP9M8l8TaXpakWOJ1GfL1
-         4jGtk8Xs48wHWAg3qHYlOYnFHLoywBYLwmjHfwCfE6z8zlkc+Fxk24UFFYLUS3Y7DkS2
-         NxMMGDG2DDR/h/Jt+0EjLvdnLvv2qe9TlMezu3/juDpmhf0u7N/UiZ9EhCF8H4Qu4cy7
-         UtWFEnDPLZouAgUwqMjpQW0tAgOGlgFYX3lKXXDUPXqppjZIL2xt8z6mPsUgcNfyki9j
-         E4Kg==
-X-Gm-Message-State: AOAM532N6r+TUQ0R6qWRowpkOpXNpOdFyjlfu3nLEMWLvX0iN1EmPJ/V
-        5WLnLDSPPp3g33Ur3pQamr5LdimGTQCKjNUVxHaqzp3JEgfKuspeLomMKshiQ3a/X8jel8nK6vx
-        ouRDCgU37vFOxIFrf7dJJZfG2HX5mlBucJJCvZAZB
-X-Received: by 2002:a05:651c:10a3:: with SMTP id k3mr1143746ljn.471.1629948617804;
-        Wed, 25 Aug 2021 20:30:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyovJ4/uCaZXr4m33mK988gFYVkr+C8ARZKldn+ftKy6xj/3lgAQDoaX2wc7igzKNKlWI3wDnMsLWgS4jENFjA=
-X-Received: by 2002:a05:651c:10a3:: with SMTP id k3mr1143728ljn.471.1629948617641;
- Wed, 25 Aug 2021 20:30:17 -0700 (PDT)
+        id S236931AbhHZDm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 23:42:28 -0400
+Received: from ozlabs.org ([203.11.71.1]:50059 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231720AbhHZDm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 23:42:27 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gw7tq63LGz9sWc;
+        Thu, 26 Aug 2021 13:41:39 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1629949299;
+        bh=DOw2l6Jda3DqQNHFGaITrApyDjSMpEMLIntdf1DiSP0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=jIpmv8UVeu5dr3PjzdyCas29MtHm7Yh99AmOc530xFwa+L1Oi5y3jCO+qO+rtvYsL
+         q0l5hw6pemI8mYmn7qn7j3p/GSU1rx0jDZdoyTOnHNw2M7k0D+ofKnKiYL966IwrF+
+         wBwwmE3j/otN99PTlnegLwg5bKJvDTByqGf1gploLvZoMVyX47jxlorPSjdyfvZdwq
+         kQtVesz74C6ZCYkwlam0vHnvUbHB2X1vns0QKCBLwqA91lMuJ7X2hl1Kd7SuvI+n6I
+         W39d3/5e4GPl5ljXmTt5db9z2hh6WRytOWWWw8ictlESSmv59W4iTjcpN+BaCXZgMk
+         H4cS5GIbCU/Dg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] powerpc: Make set_endian() return EINVAL when not
+ supporting little endian
+In-Reply-To: <b29c29d205737a833262df38e01c07139f1c3dec.1629899011.git.christophe.leroy@csgroup.eu>
+References: <b29c29d205737a833262df38e01c07139f1c3dec.1629899011.git.christophe.leroy@csgroup.eu>
+Date:   Thu, 26 Aug 2021 13:41:39 +1000
+Message-ID: <87bl5kc1os.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-References: <1629946187-60536-1-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1629946187-60536-1-git-send-email-linyunsheng@huawei.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 26 Aug 2021 11:30:06 +0800
-Message-ID: <CACGkMEsphZkkRv5AnXUE_86FUKHMgTXpyVVgDUb+tNdATKQsWA@mail.gmail.com>
-Subject: Re: [PATCH net-next] sock: remove one redundant SKB_FRAG_PAGE_ORDER macro
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        linuxarm@openeuler.org, mst <mst@redhat.com>,
-        Eric Dumazet <edumazet@google.com>, pabeni@redhat.com,
-        fw@strlen.de, aahringo@redhat.com,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>, yangbo.lu@nxp.com,
-        kvm <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 10:51 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> Both SKB_FRAG_PAGE_ORDER are defined to the same value in
-> net/core/sock.c and drivers/vhost/net.c.
->
-> Move the SKB_FRAG_PAGE_ORDER definition to net/core/sock.h,
-> as both net/core/sock.c and drivers/vhost/net.c include it,
-> and it seems a reasonable file to put the macro.
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> There is no point in modifying MSR_LE bit on CPUs not supporting
+> little endian.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Isn't that an ABI break?
 
->  drivers/vhost/net.c | 2 --
->  include/net/sock.h  | 1 +
->  net/core/sock.c     | 1 -
->  3 files changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-> index 6414bd5..3a249ee 100644
-> --- a/drivers/vhost/net.c
-> +++ b/drivers/vhost/net.c
-> @@ -643,8 +643,6 @@ static bool tx_can_batch(struct vhost_virtqueue *vq, size_t total_len)
->                !vhost_vq_avail_empty(vq->dev, vq);
->  }
->
-> -#define SKB_FRAG_PAGE_ORDER     get_order(32768)
-> -
->  static bool vhost_net_page_frag_refill(struct vhost_net *net, unsigned int sz,
->                                        struct page_frag *pfrag, gfp_t gfp)
+set_endian(PR_ENDIAN_BIG) should work on a big endian CPU, even if it
+does nothing useful.
+
+cheers
+
+> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+> index 185beb290580..b2b9919795a2 100644
+> --- a/arch/powerpc/kernel/process.c
+> +++ b/arch/powerpc/kernel/process.c
+> @@ -1995,6 +1995,10 @@ int set_endian(struct task_struct *tsk, unsigned int val)
 >  {
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 95b2577..66a9a90 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -2717,6 +2717,7 @@ extern int sysctl_optmem_max;
->  extern __u32 sysctl_wmem_default;
->  extern __u32 sysctl_rmem_default;
->
-> +#define SKB_FRAG_PAGE_ORDER    get_order(32768)
->  DECLARE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
->
->  static inline int sk_get_wmem0(const struct sock *sk, const struct proto *proto)
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 950f1e7..62627e8 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -2574,7 +2574,6 @@ static void sk_leave_memory_pressure(struct sock *sk)
->         }
->  }
->
-> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
->  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
->
->  /**
-> --
-> 2.7.4
->
-
+>  	struct pt_regs *regs = tsk->thread.regs;
+>  
+> +	if (!cpu_has_feature(CPU_FTR_PPC_LE) &&
+> +	    !cpu_has_feature(CPU_FTR_REAL_LE))
+> +		return -EINVAL;
+> +
+>  	if ((val == PR_ENDIAN_LITTLE && !cpu_has_feature(CPU_FTR_REAL_LE)) ||
+>  	    (val == PR_ENDIAN_PPC_LITTLE && !cpu_has_feature(CPU_FTR_PPC_LE)))
+>  		return -EINVAL;
+> -- 
+> 2.25.0
