@@ -2,121 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBD13F8008
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65D93F800A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 03:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236746AbhHZBtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 21:49:45 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:48309 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231628AbhHZBtn (ORCPT
+        id S236473AbhHZBu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 21:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhHZBu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 21:49:43 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id D04365C01E8;
-        Wed, 25 Aug 2021 21:48:56 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 25 Aug 2021 21:48:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=m1lhmJms4+1nndgAIYcXtKFwc8
-        ZBa3GzL0GQeQRINrQ=; b=wCAA+DKJw0HSE5MO+I0vSxOUa//r8fqQKyNiw5kxKB
-        21mc3JsBdZVaNq/KxssjHaKbGCZ1YGFu6De+WwYwetXP5MoGBdcGoU2cFotUH24Q
-        T63ha/R/uAWYqR/MOwn54sHYicsL26/NcPzNm6j0K9u/bXyXPDzVFLSPev1Cto70
-        6LUM4lgHyYuhOyPaOfKZwNe2wyr4tJmDsP1upKojYwtE3X7LwVg4Vo5zxTmFud3M
-        /kFuPAwAScw66jqy94iEVMrrNW+MEfMnis4isUvKy6lUm18dnAv0+YAW4CNXwDir
-        9TNaFhcVVGtbQIK57dNjmPlrN9wUW2ON132+PCLOoHBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=m1lhmJms4+1nndgAI
-        YcXtKFwc8ZBa3GzL0GQeQRINrQ=; b=NkqyHTzt3y/NltV8r1EfBcadIu9GYhiiq
-        dbkb7P1Ohu4sF6tOInmq+7RoZ2X/cqdEFh6h/1w698WfuZD7GZuPwHIkYcD+P0Or
-        Hcxg+mtIlszhZzfXLwR9pDO/M7PSHsrMMcmgY7pusU+9i4+yL6vYq5KMtykT9dQC
-        BhnslSqnXJhf8u3p3446yUlff5VLIG34+q9nXH4BuBzM5RqHFzGEIu2p/IqJl0Oq
-        Ju+f+NppwGoJEvnYH3P4wQaO4dlUb9ivWpeBqPljAipPZySWmJLSEgGmvewVtH6P
-        ZeoMGph/RD8uHCB9oLUiIL49rlz+26EtIpmN8g9jolcsZoERLX6EA==
-X-ME-Sender: <xms:CPMmYWlpICjsl-k8Q9b4nIYMkNXjDluD0wNh2AV0l1pyVDbKocfGLw>
-    <xme:CPMmYd1TQ7eLKuCp5DHR118cdMpb8m76cdjtLmtIFuUokocBBbJtn5qqEfRt7HOjZ
-    KL7nioHE2Ykmf0G0w>
-X-ME-Received: <xmr:CPMmYUqbH3L72Wo8Cs6DZEl61i1oWDQIqVOeQXlBl5zbWdzir24ejENeqN7NTYoCc19YJnOBpGAVSAEbX6ycBFWjKGyk_i74n8PB4zSNHXYFhw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddutddghedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
-    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
-    effeeivdefheeiveevjeduieeigfetieevieffffenucevlhhushhtvghrufhiiigvpedt
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:CPMmYakGFZZ4zi-P6s3LQL-notcKtDCq3oL6b8OvyKlJhWJPuoh0Ig>
-    <xmx:CPMmYU1w_7htRstqMGxbINUQ2SS7mNaD7mTfxGQMQxDX75VOoN6szQ>
-    <xmx:CPMmYRubihF0SXrC6DVhQRsgLnJogYJCFQ7omaxCdBjrMRDL1JwcxA>
-    <xmx:CPMmYXRIa4ZlL_Fovgika4-cIAsbZ82QAluV4raC7YMDg3VI1i--rg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Aug 2021 21:48:55 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, ast@kernel.org
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH bpf-next] bpf: Fix bpf-next builds without CONFIG_BPF_EVENTS
-Date:   Wed, 25 Aug 2021 18:48:31 -0700
-Message-Id: <05d94748d9f4b3eecedc4fddd6875418a396e23c.1629942444.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.33.0
+        Wed, 25 Aug 2021 21:50:56 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5715C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:50:09 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id lc21so2550995ejc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 18:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=80RKC35nU1+RD8O7RmvEN2Hh0WXweIkEFW8Ee2YLI4w=;
+        b=vNRYxUYzc07cs3ZouSO8oHGLtJNMpg1T0+c4OS+qmQ9fGctVUYfIPA16xesPj2fYUB
+         uRup2fqKKpm/AsonQ2FBN3RypC6oy7eN5GHa3SyXs7ht4/pfCPA8kpBxdNA1x02ncq/K
+         nH0lLecLnDF35cXRXYBGu+dxSq5SmIZl/25YSJ4KxAvf1PclPfd6Ygl6FamgrVEIdDQM
+         yOz0UWJ69wAWXfcPTl5Ok0OQZCo64YvxY2R3vRoGjiKbD8jowMoXkK8fas0jkRxQScqc
+         yFVehrQH+kA2v8QNDO8jUPBCiALhSs2gjITOtF09NzO5r61HdpHu2EioMLTgT+m2FK1j
+         zliQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=80RKC35nU1+RD8O7RmvEN2Hh0WXweIkEFW8Ee2YLI4w=;
+        b=au+3Jx8JrWsC4Qp5uKGZC5teNdSLtemCEY8DiHzmq1zJ8OZcW5Oaa4Itk8KFP0ja55
+         omOS3PZk2sfnwgHFjn/yC2BRdDO1R2qbikNTX3QJ76y9Jw8cy4slE1AFS0CbD78FkRxE
+         ZzRIyipR4MlAG/FDtgEAJLjvjccnGcE6rxDQ3LRk8LkJ/IrG0tcCwokcke8FtfBVtO+X
+         TSXNQkvOyrKb7+9EheFadIarLGClQOeLXXdqVd+jMCVUAucQwZDr5vYL0FIax8KFP7Tl
+         bhns/CqoMP3tYO/EkuI1Sn/JwjbdaOncxVBE5cenlTazvDiRizU2b+dqfWq67qGKMjY1
+         wXmg==
+X-Gm-Message-State: AOAM533Ry1GqTNSbZ9/WWmscDes6pQvWhe1p7gAw0xQHtPoVWY9yAMKA
+        rCqfourPrr9eSgLs5+KRHhz0r7f/nkU=
+X-Google-Smtp-Source: ABdhPJxFwcYTuMw8e9XJUjGCoAjWOF/JCHjjA/JhRYRxxUMxnFi/VoDMZzCsV3rrXVrLHREgI406eQ==
+X-Received: by 2002:a17:906:9388:: with SMTP id l8mr1589658ejx.307.1629942607754;
+        Wed, 25 Aug 2021 18:50:07 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id u9sm845358edo.37.2021.08.25.18.50.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 18:50:07 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: r8188eu: Provide a TODO file for this driver
+Date:   Thu, 26 Aug 2021 03:49:59 +0200
+Message-Id: <20210826014959.26857-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit fixes linker errors along the lines of:
+Provide a TODO file that lists the tasks that should be carried out in
+order to move this driver off drivers/staging.
 
-    s390-linux-ld: task_iter.c:(.init.text+0xa4): undefined reference to `btf_task_struct_ids'`
-
-Fix by defining btf_task_struct_ids unconditionally in kernel/bpf/btf.c
-since there exists code that unconditionally uses btf_task_struct_ids.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- include/linux/btf_ids.h  | 1 +
- kernel/bpf/btf.c         | 2 ++
- kernel/trace/bpf_trace.c | 2 --
- 3 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-index 93d881ab0d48..47d9abfbdb55 100644
---- a/include/linux/btf_ids.h
-+++ b/include/linux/btf_ids.h
-@@ -151,6 +151,7 @@ extern struct btf_id_set name;
- #define BTF_ID_UNUSED
- #define BTF_ID_LIST_GLOBAL(name) u32 name[1];
- #define BTF_ID_LIST_SINGLE(name, prefix, typename) static u32 name[1];
-+#define BTF_ID_LIST_GLOBAL_SINGLE(name, prefix, typename) u32 name[1];
- #define BTF_SET_START(name) static struct btf_id_set name = { 0 };
- #define BTF_SET_START_GLOBAL(name) static struct btf_id_set name = { 0 };
- #define BTF_SET_END(name)
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index c395024610ed..dfe61df4f974 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6213,3 +6213,5 @@ const struct bpf_func_proto bpf_btf_find_by_name_kind_proto = {
- 	.arg3_type	= ARG_ANYTHING,
- 	.arg4_type	= ARG_ANYTHING,
- };
+Thanks to Phillip Potter <phil@philpotter.co.uk> for for providing the first draft.
+
+ drivers/staging/r8188eu/TODO | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+ create mode 100644 drivers/staging/r8188eu/TODO
+
+diff --git a/drivers/staging/r8188eu/TODO b/drivers/staging/r8188eu/TODO
+new file mode 100644
+index 000000000000..4bccca69abac
+--- /dev/null
++++ b/drivers/staging/r8188eu/TODO
+@@ -0,0 +1,16 @@
++To-do list:
 +
-+BTF_ID_LIST_GLOBAL_SINGLE(btf_task_struct_ids, struct, task_struct)
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 580e14ee7ff9..8e2eb950aa82 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -714,8 +714,6 @@ BPF_CALL_0(bpf_get_current_task_btf)
- 	return (unsigned long) current;
- }
- 
--BTF_ID_LIST_GLOBAL_SINGLE(btf_task_struct_ids, struct, task_struct)
--
- const struct bpf_func_proto bpf_get_current_task_btf_proto = {
- 	.func		= bpf_get_current_task_btf,
- 	.gpl_only	= true,
++* Correct the coding style according to Linux guidelines; please read the document
++at https://www.kernel.org/doc/html/latest/process/coding-style.html.
++* Remove unnecessary debugging/printing macros; for those that are still needed
++use the proper kernel API (pr_debug(), dev_dbg(), netdev_dbg()).
++* Remove dead code such as unusued functions, variables, fields, etc..
++* Use in-kernel API and remove unnecessary wrappers where possible.
++* Remove the HAL layer and migrate its functionality into the relevant parts of
++the driver.
++* Switch to use LIB80211 (This work is currently in development by Larry Finger).
++* Switch to use MAC80211 (This work is currently in development by Larry Finger).
++
++Please send any patches to Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
++Larry Finger <Larry.Finger@lwfinger.net>, Phillip Potter <phil@philpotter.co.uk>
++and CC linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org.
 -- 
-2.33.0
+2.32.0
 
