@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2624E3F8132
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE323F8136
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236931AbhHZDm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 23:42:28 -0400
-Received: from ozlabs.org ([203.11.71.1]:50059 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231720AbhHZDm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 23:42:27 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gw7tq63LGz9sWc;
-        Thu, 26 Aug 2021 13:41:39 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1629949299;
-        bh=DOw2l6Jda3DqQNHFGaITrApyDjSMpEMLIntdf1DiSP0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jIpmv8UVeu5dr3PjzdyCas29MtHm7Yh99AmOc530xFwa+L1Oi5y3jCO+qO+rtvYsL
-         q0l5hw6pemI8mYmn7qn7j3p/GSU1rx0jDZdoyTOnHNw2M7k0D+ofKnKiYL966IwrF+
-         wBwwmE3j/otN99PTlnegLwg5bKJvDTByqGf1gploLvZoMVyX47jxlorPSjdyfvZdwq
-         kQtVesz74C6ZCYkwlam0vHnvUbHB2X1vns0QKCBLwqA91lMuJ7X2hl1Kd7SuvI+n6I
-         W39d3/5e4GPl5ljXmTt5db9z2hh6WRytOWWWw8ictlESSmv59W4iTjcpN+BaCXZgMk
-         H4cS5GIbCU/Dg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc: Make set_endian() return EINVAL when not
- supporting little endian
-In-Reply-To: <b29c29d205737a833262df38e01c07139f1c3dec.1629899011.git.christophe.leroy@csgroup.eu>
-References: <b29c29d205737a833262df38e01c07139f1c3dec.1629899011.git.christophe.leroy@csgroup.eu>
-Date:   Thu, 26 Aug 2021 13:41:39 +1000
-Message-ID: <87bl5kc1os.fsf@mpe.ellerman.id.au>
+        id S237999AbhHZDne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 23:43:34 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:17988 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231720AbhHZDnc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 23:43:32 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Um0c2GM_1629949362;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Um0c2GM_1629949362)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 26 Aug 2021 11:42:43 +0800
+To:     Paul Moore <paul@paul-moore.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Subject: [PATCH] net: fix NULL pointer reference in cipso_v4_doi_free
+Message-ID: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com>
+Date:   Thu, 26 Aug 2021 11:42:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> There is no point in modifying MSR_LE bit on CPUs not supporting
-> little endian.
+In netlbl_cipsov4_add_std() when 'doi_def->map.std' alloc
+failed, we sometime observe panic:
 
-Isn't that an ABI break?
+  BUG: kernel NULL pointer dereference, address:
+  ...
+  RIP: 0010:cipso_v4_doi_free+0x3a/0x80
+  ...
+  Call Trace:
+   netlbl_cipsov4_add_std+0xf4/0x8c0
+   netlbl_cipsov4_add+0x13f/0x1b0
+   genl_family_rcv_msg_doit.isra.15+0x132/0x170
+   genl_rcv_msg+0x125/0x240
 
-set_endian(PR_ENDIAN_BIG) should work on a big endian CPU, even if it
-does nothing useful.
+This is because in cipso_v4_doi_free() there is no check
+on 'doi_def->map.std' when 'doi_def->type' equal 1, which
+is possibe, since netlbl_cipsov4_add_std() haven't initialize
+it before alloc 'doi_def->map.std'.
 
-cheers
+This patch just add the check to prevent panic happen for similar
+cases.
 
-> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-> index 185beb290580..b2b9919795a2 100644
-> --- a/arch/powerpc/kernel/process.c
-> +++ b/arch/powerpc/kernel/process.c
-> @@ -1995,6 +1995,10 @@ int set_endian(struct task_struct *tsk, unsigned int val)
->  {
->  	struct pt_regs *regs = tsk->thread.regs;
->  
-> +	if (!cpu_has_feature(CPU_FTR_PPC_LE) &&
-> +	    !cpu_has_feature(CPU_FTR_REAL_LE))
-> +		return -EINVAL;
-> +
->  	if ((val == PR_ENDIAN_LITTLE && !cpu_has_feature(CPU_FTR_REAL_LE)) ||
->  	    (val == PR_ENDIAN_PPC_LITTLE && !cpu_has_feature(CPU_FTR_PPC_LE)))
->  		return -EINVAL;
-> -- 
-> 2.25.0
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+
+ net/ipv4/cipso_ipv4.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
+index 099259f..7fbd0b5 100644
+--- a/net/ipv4/cipso_ipv4.c
++++ b/net/ipv4/cipso_ipv4.c
+@@ -465,14 +465,16 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def)
+ 	if (!doi_def)
+ 		return;
+
+-	switch (doi_def->type) {
+-	case CIPSO_V4_MAP_TRANS:
+-		kfree(doi_def->map.std->lvl.cipso);
+-		kfree(doi_def->map.std->lvl.local);
+-		kfree(doi_def->map.std->cat.cipso);
+-		kfree(doi_def->map.std->cat.local);
+-		kfree(doi_def->map.std);
+-		break;
++	if (doi_def->map.std) {
++		switch (doi_def->type) {
++		case CIPSO_V4_MAP_TRANS:
++			kfree(doi_def->map.std->lvl.cipso);
++			kfree(doi_def->map.std->lvl.local);
++			kfree(doi_def->map.std->cat.cipso);
++			kfree(doi_def->map.std->cat.local);
++			kfree(doi_def->map.std);
++			break;
++		}
+ 	}
+ 	kfree(doi_def);
+ }
+-- 
+1.8.3.1
+
