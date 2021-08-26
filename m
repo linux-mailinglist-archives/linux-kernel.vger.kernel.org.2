@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535503F86B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759513F86B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242114AbhHZLvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:51:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42654 "EHLO mail.kernel.org"
+        id S242341AbhHZLvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:51:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:45624 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242100AbhHZLvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:51:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E23D761058;
-        Thu, 26 Aug 2021 11:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629978616;
-        bh=Vvb0F8EMBgDIIWZGx3dcWoVsp4/javT4z7Vxmap1bbc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hOe3ekE14vM0BHNJDYuRgf8UAhCtVtAcu3rp+XqRt2+6VNUmLdH3T9WwmUulsdg4t
-         i1JjIFZwdRbDCTswK113vwCxvzIu5IqASAOAMlv3VwuH67G7FULZ0VTjQC0LhugMMc
-         OeaTO4Gqi/yjoAfO9AtivvouFfOjGZJ4dicAOQO4=
-Date:   Thu, 26 Aug 2021 13:50:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Moritz Fischer <mdf@kernel.org>, linux-usb@vger.kernel.org,
+        id S242100AbhHZLvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 07:51:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="281443945"
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="281443945"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 04:50:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="465099620"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga007.jf.intel.com with ESMTP; 26 Aug 2021 04:50:21 -0700
+Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 719855805A3;
+        Thu, 26 Aug 2021 04:50:17 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 19:50:14 +0800
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: renesas-xhci: Prefer firmware loading on unknown
- ROM state
-Message-ID: <YSd/9clcNN547vre@kroah.com>
-References: <20210819113427.1166-1-tiwai@suse.de>
+Subject: Re: [PATCH net-next 1/2] net: pcs: xpcs: enable skip xPCS soft reset
+Message-ID: <20210826115014.GA5112@linux.intel.com>
+References: <20210809102229.933748-1-vee.khee.wong@linux.intel.com>
+ <20210809102229.933748-2-vee.khee.wong@linux.intel.com>
+ <YREvDRkiuScyN8Ws@lunn.ch>
+ <20210810235529.GB30818@linux.intel.com>
+ <f2a1f135-b77a-403d-5d2e-c497efc99df7@gmail.com>
+ <YRPcyHTc2FJeEoqk@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210819113427.1166-1-tiwai@suse.de>
+In-Reply-To: <YRPcyHTc2FJeEoqk@lunn.ch>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 01:34:27PM +0200, Takashi Iwai wrote:
-> The recent attempt to handle an unknown ROM state in the commit
-> d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
-> resulted in a regression and reverted later by the commit 44cf53602f5a
-> ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"").
-> The problem of the former fix was that it treated the failure of
-> firmware loading as a fatal error.  Since the firmware files aren't
-> included in the standard linux-firmware tree, most users don't have
-> them, hence they got the non-working system after that.  The revert
-> fixed the regression, but also it didn't make the firmware loading
-> triggered even on the devices that do need it.  So we need still a fix
-> for them.
+On Wed, Aug 11, 2021 at 04:20:56PM +0200, Andrew Lunn wrote:
+> > > BIOS does configured the SerDes. The problem here is that all the
+> > > configurations done by BIOS are being reset at xpcs_create().
+> > > 
+> > > We would want user of the pcs-xpcs module (stmmac, sja1105) to have
+> > > control whether or not we need to perform to the soft reset in the
+> > > xpcs_create() call.
+> > 
+> > I understood Andrew's response as suggesting to introduce the ability for
+> > xpcs_create() to make a BIOS call which would configure the SerDes after
+> > xpcs_soft_reset().
 > 
-> This is another attempt to handle the unknown ROM state.  Like the
-> previous fix, this also tries to load the firmware when ROM shows
-> unknown state.  In this patch, however, the failure of a firmware
-> loading (such as a missing firmware file) isn't handled as a fatal
-> error any longer when ROM has been already detected, but it falls back
-> to the ROM mode like before.  The error is returned only when no ROM
-> is detected and the firmware loading failed.
+> Yes. Exactly. That is what ACPI is for, so we should use it for this.
 > 
-> Along with it, for simplifying the code flow, the detection and the
-> check of ROM is factored out from renesas_fw_check_running() and done
-> in the caller side, renesas_xhci_check_request_fw().  It avoids the
-> redundant ROM checks.
-> 
-> The patch was tested on Lenovo Thinkpad T14 gen (BIOS 1.34).  Also it
-> was confirmed that no regression is seen on another Thinkpad T14
-> machine that has worked without the patch, too.
-> 
-> Fixes: 44cf53602f5a ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"")
-> BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1189207
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  drivers/usb/host/xhci-pci-renesas.c | 35 +++++++++++++++++++----------
->  1 file changed, 23 insertions(+), 12 deletions(-)
+>      Andrew
 
-This does not apply to my usb-linus branch, are you sure it is still
-needed in Linus's tree right now?
+Thanks Florian for the explaination.
 
-thanks,
+I have checked with the BIOS developers and they did not implmenet a
+method to this at the kernel level.
 
-greg k-h
+Also, Intel AlderLake has both UEFI BIOS and Slim Bootloader which
+make it least feasible to go for the ACPI method as per suggested.
+
+
+Regards,
+  VK
