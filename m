@@ -2,116 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E858A3F8289
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C4B3F828D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239542AbhHZGiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 02:38:00 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:53543 "EHLO pegase2.c-s.fr"
+        id S239601AbhHZGkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 02:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234415AbhHZGh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 02:37:59 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GwCnM01ljz9sVt;
-        Thu, 26 Aug 2021 08:37:11 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id QY9Ef38fe3qr; Thu, 26 Aug 2021 08:37:10 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GwCnL67z6z9sVc;
-        Thu, 26 Aug 2021 08:37:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B3E068B881;
-        Thu, 26 Aug 2021 08:37:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 574dur1TrPVG; Thu, 26 Aug 2021 08:37:10 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 43D718B877;
-        Thu, 26 Aug 2021 08:37:10 +0200 (CEST)
-Subject: Re: [PATCH v2 2/2] powerpc/bug: Provide better flexibility to
- WARN_ON/__WARN_FLAGS() with asm goto
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev
-References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
- <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
- <YSa1O4fcX1nNKqN/@Ryzen-9-3900X.localdomain>
- <87h7fcc2m4.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <3fad8702-278a-d9f9-1882-6958ce570bcc@csgroup.eu>
-Date:   Thu, 26 Aug 2021 08:37:09 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234415AbhHZGkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 02:40:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D3BE610CA;
+        Thu, 26 Aug 2021 06:39:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629959994;
+        bh=YDdDJ8UVx6APE79kWD1KiYfDKlzcYXXRqdvvgHhmVzk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aP1s1YHNUe+n+sZuGly73Kfys6U2PxpfwFwgeAYLORkHO7O6dD9MtMQfP356DdWGl
+         wrpN8612/+wvBVbxWHBr0wqM9pSv8bl9T4/vi+eECS1MbOCg9OAz+0F+EQNUsPQoX5
+         4tg4ywEmo8UqB0x1lnyowZ9+UsBPOWsukJYtg3Cg=
+Date:   Thu, 26 Aug 2021 08:39:44 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Peter Collingbourne <pcc@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] net: don't unconditionally copy_from_user a struct ifreq
+ for socket ioctls
+Message-ID: <YSc3MGVllU8qSJXV@kroah.com>
+References: <20210826012722.3210359-1-pcc@google.com>
 MIME-Version: 1.0
-In-Reply-To: <87h7fcc2m4.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826012722.3210359-1-pcc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 26/08/2021 à 05:21, Michael Ellerman a écrit :
-> Nathan Chancellor <nathan@kernel.org> writes:
->> On Tue, Apr 13, 2021 at 04:38:10PM +0000, Christophe Leroy wrote:
->>> Using asm goto in __WARN_FLAGS() and WARN_ON() allows more
->>> flexibility to GCC.
-> ...
->>
->> This patch as commit 1e688dd2a3d6 ("powerpc/bug: Provide better
->> flexibility to WARN_ON/__WARN_FLAGS() with asm goto") cause a WARN_ON in
->> klist_add_tail to trigger over and over on boot when compiling with
->> clang:
-
-...
-
+On Wed, Aug 25, 2021 at 06:27:22PM -0700, Peter Collingbourne wrote:
+> A common implementation of isatty(3) involves calling a ioctl passing
+> a dummy struct argument and checking whether the syscall failed --
+> bionic and glibc use TCGETS (passing a struct termios), and musl uses
+> TIOCGWINSZ (passing a struct winsize). If the FD is a socket, we will
+> copy sizeof(struct ifreq) bytes of data from the argument and return
+> -EFAULT if that fails. The result is that the isatty implementations
+> may return a non-POSIX-compliant value in errno in the case where part
+> of the dummy struct argument is inaccessible, as both struct termios
+> and struct winsize are smaller than struct ifreq (at least on arm64).
 > 
-> This patch seems to fix it. Not sure if that's just papering over it though.
+> Although there is usually enough stack space following the argument
+> on the stack that this did not present a practical problem up to now,
+> with MTE stack instrumentation it's more likely for the copy to fail,
+> as the memory following the struct may have a different tag.
 > 
-> diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
-> index 1ee0f22313ee..75fcb4370d96 100644
-> --- a/arch/powerpc/include/asm/bug.h
-> +++ b/arch/powerpc/include/asm/bug.h
-> @@ -119,7 +119,7 @@ __label_warn_on:						\
->   								\
->   			WARN_ENTRY(PPC_TLNEI " %4, 0",		\
->   				   BUGFLAG_WARNING | BUGFLAG_TAINT(TAINT_WARN),	\
-> -				   __label_warn_on, "r" (x));	\
-> +				   __label_warn_on, "r" (!!(x))); \
->   			break;					\
->   __label_warn_on:						\
->   			__ret_warn_on = true;			\
+> Fix the problem by adding an early check for whether the ioctl is a
+> valid socket ioctl, and return -ENOTTY if it isn't.
 > 
+> Fixes: 44c02a2c3dc5 ("dev_ioctl(): move copyin/copyout to callers")
+> Link: https://linux-review.googlesource.com/id/I869da6cf6daabc3e4b7b82ac979683ba05e27d4d
+> Signed-off-by: Peter Collingbourne <pcc@google.com>
+> Cc: <stable@vger.kernel.org> # 4.19
+> ---
+>  include/linux/netdevice.h |  1 +
+>  net/core/dev_ioctl.c      | 64 ++++++++++++++++++++++++++++++++-------
+>  net/socket.c              |  6 +++-
+>  3 files changed, 59 insertions(+), 12 deletions(-)
 > 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index eaf5bb008aa9..481b90ef0d32 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -4012,6 +4012,7 @@ int netdev_rx_handler_register(struct net_device *dev,
+>  void netdev_rx_handler_unregister(struct net_device *dev);
+>  
+>  bool dev_valid_name(const char *name);
+> +bool is_dev_ioctl_cmd(unsigned int cmd);
 
-But for a simple WARN_ON() call:
+"is_socket_ioctl_cmd()" might be a better global name here.
 
-void test(unsigned long b)
-{
-	WARN_ON(b);
-}
+thanks,
 
-Without your change with GCC you get:
-
-00000000000012d0 <.test>:
-     12d0:	0b 03 00 00 	tdnei   r3,0
-     12d4:	4e 80 00 20 	blr
-
-
-With the !! change you get:
-
-00000000000012d0 <.test>:
-     12d0:	31 23 ff ff 	addic   r9,r3,-1
-     12d4:	7d 29 19 10 	subfe   r9,r9,r3
-     12d8:	0b 09 00 00 	tdnei   r9,0
-     12dc:	4e 80 00 20 	blr
-
-Christophe
+greg k-h
