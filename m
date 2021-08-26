@@ -2,108 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075413F8B53
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FEA3F8B56
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243001AbhHZPt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232249AbhHZPtx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:49:53 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F028EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:49:05 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id n27so5554136oij.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Qa0fqLYy9vP/cy82c+R1T/pMSHWa/WdHi0MVUVDi4jA=;
-        b=M7jfr02E5dD4+M0dAvgKeiThaQE1g3FeQz8OCuEraAfu/zDSXYCOfXe7B6wVke9GyG
-         euM0Fc33dJym41pHswF0XjIZdfjGn6Zyw9I/ILJMjVuIm1jl1bhFwRamchltkT/AF39f
-         hN7gP0W3sRMTVDGjG7uRpvT23BayKZDDGiKSZPPIShoUyxvB31OWweaAcr5El9bftkaa
-         TT23e3EV0sOp8XHIe1zvge79EyGd6IS1KWykrDMI6p96GvPOTEkpy05zXUWIfeNOHTw6
-         48yrknZHPclaUeONFgJwPKmlJGZ1W+qQSZerQZUGSs2h6GQBgGrOUZTqyToemvU/klbv
-         3NMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Qa0fqLYy9vP/cy82c+R1T/pMSHWa/WdHi0MVUVDi4jA=;
-        b=G7DOxYwAAcPOaMW48vPeDbaHGRe/mqWDSwGh4TudKpxZ39UHhHwodC1JZ/pikH8Arp
-         GUFNTYxWo94iC1Ch5EdcXAu2d2mFKeWTvFpgdvtAiIVnaqPDw3BnNgLXmYmFgO/tyf50
-         SM6Tn1048D12HUbNWtsjZMslnce0th82qjH5ScUApOxUDN4m9YJ89e9aKofGCzMnLvY+
-         XQt7hIgLY4ueOmLc6PWdQI7vRJk0UO8Mt5H8qhBkPdIBxaO4Pc57vlNxlpRISJ4dErRH
-         c5m2K6KRrQVeYRNUU6x7/fOTKWZdlpjtzugH1ZzcyKiwM9mTwxDxCQxpc4FJ9RIyic7/
-         OrIg==
-X-Gm-Message-State: AOAM530xTY0ksVQqp7IRzhUwpcoHBN33hNl8WkKkpEOSqtY+gRi+H57U
-        MnfNBalQisn0TJNW6Fqn7oA=
-X-Google-Smtp-Source: ABdhPJwfJGNXEni2uL0E8ntXubdpiGnZunFbZdheFu0qO7DzDWdsh4gutdUf2RiFj4AHEWpPpXt7qg==
-X-Received: by 2002:a54:488c:: with SMTP id r12mr11714638oic.115.1629992945362;
-        Thu, 26 Aug 2021 08:49:05 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p4sm651325ooa.35.2021.08.26.08.49.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 08:49:04 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 26 Aug 2021 08:49:03 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jian Cai <jiancai@google.com>
-Cc:     mike.leach@linaro.org, dianders@chromium.org, mka@chromium.org,
-        manojgupta@google.com, llozano@google.com,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        clang-built-linux@googlegroups.com,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] coresight: syscfg: fix compiler warnings
-Message-ID: <20210826154903.GA4082743@roeck-us.net>
-References: <20210825222514.2107728-1-jiancai@google.com>
+        id S243002AbhHZPu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:50:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230203AbhHZPuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 11:50:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B58336101A;
+        Thu, 26 Aug 2021 15:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629993007;
+        bh=0zM90CvcDSH6UFy9c0wnLu9bNk+B4Qha+Kf+kRBIj+Q=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=tGtb3FErX/2LiBcuWjotgVCE1UWTTD6GJlDiwjT3X3O+OpZP5ciNtGs4JeKpJMp38
+         REaxdVuTKTQhXulkw+ZbV2rOZOqPtLFV0la1GsZXyKioFy79NZFd2+2g9+2EYsffTd
+         c9xLAbovx7CRZ3mpDEuO39sZwlBf2UWxX6CBksMHtDgdvaxgha9tdo+w+IEjhApTJR
+         oWghdQydkP8HrvHnaU08TbqEv5C/Zn/en+SEdzICkfgZXHF56d+w5gT39P6+ZNXPQo
+         aFuIUnQjLSpntsihGI8yPUqyue09sxWlPn4YlArYdU9w62Kp6sowF0sP2NfdGsIT5f
+         aazCv5kXUjIfQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A70F160A14;
+        Thu, 26 Aug 2021 15:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210825222514.2107728-1-jiancai@google.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/7] net: hns3: add some fixes for -net
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162999300767.24975.1201669661390166290.git-patchwork-notify@kernel.org>
+Date:   Thu, 26 Aug 2021 15:50:07 +0000
+References: <1629976921-43438-1-git-send-email-huangguangbin2@huawei.com>
+In-Reply-To: <1629976921-43438-1-git-send-email-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lipeng321@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 03:25:14PM -0700, Jian Cai wrote:
-> This fixes warnings with -Wimplicit-function-declaration, e.g.
-> 
-> ^[[1m/mnt/host/source/src/third_party/kernel/v5.4/drivers/hwtracing/coresight/coresight-syscfg.c:455:15: ^[[0m^[[0;1;31merror: ^[[0m^[[1mimplicit declaration of function 'kzalloc' [-Werror,-Wimplicit-function-declaration]^[[0m
->         csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev), GFP_KERNEL);
-> ^[[0;1;32m                     ^
+Hello:
 
-You might want to split this into multiple lines and remove the ANSI
-escape codes. Otherwise
+This series was applied to netdev/net.git (refs/heads/master):
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+On Thu, 26 Aug 2021 19:21:54 +0800 you wrote:
+> This series adds some fixes for the HNS3 ethernet driver.
+> 
+> Guangbin Huang (1):
+>   net: hns3: fix get wrong pfc_en when query PFC configuration
+> 
+> Guojia Liao (1):
+>   net: hns3: fix duplicate node in VLAN list
+> 
+> [...]
 
-Guenter
+Here is the summary with links:
+  - [net,1/7] net: hns3: clear hardware resource when loading driver
+    https://git.kernel.org/netdev/net/c/1a6d281946c3
+  - [net,2/7] net: hns3: add waiting time before cmdq memory is released
+    https://git.kernel.org/netdev/net/c/a96d9330b02a
+  - [net,3/7] net: hns3: fix speed unknown issue in bond 4
+    https://git.kernel.org/netdev/net/c/b15c072a9f4a
+  - [net,4/7] net: hns3: fix duplicate node in VLAN list
+    https://git.kernel.org/netdev/net/c/94391fae82f7
+  - [net,5/7] net: hns3: change the method of getting cmd index in debugfs
+    https://git.kernel.org/netdev/net/c/55649d56541b
+  - [net,6/7] net: hns3: fix GRO configuration error after reset
+    https://git.kernel.org/netdev/net/c/3462207d2d68
+  - [net,7/7] net: hns3: fix get wrong pfc_en when query PFC configuration
+    https://git.kernel.org/netdev/net/c/8c1671e0d13d
 
-> 
-> Signed-off-by: Jian Cai <jiancai@google.com>
-> ---
->  drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
-> index fc0760f55c53..43054568430f 100644
-> --- a/drivers/hwtracing/coresight/coresight-syscfg.c
-> +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
-> @@ -5,6 +5,7 @@
->   */
->  
->  #include <linux/platform_device.h>
-> +#include <linux/slab.h>
->  
->  #include "coresight-config.h"
->  #include "coresight-etm-perf.h"
-> -- 
-> 2.33.0.259.gc128427fd7-goog
-> 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
