@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097F73F89E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261B63F89E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 16:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242805AbhHZOQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 10:16:01 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39980 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHZOQA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:16:00 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C701B22311;
-        Thu, 26 Aug 2021 14:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629987311; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YK6hm9tLw/593E7arpJG5Cuje5/kJDaClSGQye4BMq0=;
-        b=axKtHoOTWlqihCIBRmbzGqm3o+VJALKGxrUEMLKbMEBSMTO55ouryeDauQanVIuJyJi7C1
-        w3ElGK9fmjmrGn4I842luAOMdD28IUDVgNal3rP2b9RVVRu09yDGoqw0QqwBexTPwbsliu
-        d7BtlagVchv8XGnwZ2Cwt8tgzMD3Gtg=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2409BA3B8B;
-        Thu, 26 Aug 2021 14:15:11 +0000 (UTC)
-Date:   Thu, 26 Aug 2021 16:15:09 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 17/17] vsprintf: rework bitmap_list_string
-Message-ID: <YSeh7SrwoMhWb8CO@alley>
-References: <20210814211713.180533-1-yury.norov@gmail.com>
- <20210814211713.180533-18-yury.norov@gmail.com>
+        id S242737AbhHZORC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 10:17:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38562 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhHZORB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 10:17:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5AA860698;
+        Thu, 26 Aug 2021 14:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629987374;
+        bh=DuJ2W3REU3NLJFssNU3Hkqe0EHU+JM+a4Ilo5RFXqCw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=B5OK4Xrh544uN7uhK6/gcNaCTP6DBT/qlgPn18eJ9BFmW/20SK4b0tFv24tqdGMQh
+         1oHZPMqddR1Vo3J0TMRbfponTetGbGYTRamJpVjzeCYu5ERnnjBenk71wWRACvIwYe
+         rTgMAQ37Fb7e/c2mhFBdl99i8Lo7zoD6kpLnQqSYJaoTyLcG0gqk0lbPwKkUZ/oXLJ
+         RGHeqDJfE8FAT8zTO/rL9zLsQ11UgMPE4mJP5TP/PyQG9GrVSnSRkU3BE83MFOhlFL
+         Rzgf/sCOnn3T2rS7CFFXtQlvbhUZeQov4QMusXHXFw+OJxVQ+6NlqypzJgO3U+hjPY
+         S1ksazmOusW5w==
+From:   Mark Brown <broonie@kernel.org>
+To:     Michal Simek <michal.simek@xilinx.com>,
+        quanyang.wang@windriver.com,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND][PATCH] spi: spi-zynq-qspi: use wait_for_completion_timeout to make zynq_qspi_exec_mem_op not interruptible
+Date:   Thu, 26 Aug 2021 15:15:42 +0100
+Message-Id: <162998730427.6164.15239399096939120382.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210826005930.20572-1-quanyang.wang@windriver.com>
+References: <20210826005930.20572-1-quanyang.wang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210814211713.180533-18-yury.norov@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 2021-08-14 14:17:13, Yury Norov wrote:
-> bitmap_list_string() is very ineffective when printing bitmaps with long
-> ranges of set bits because it calls find_next_bit for each bit in the
-> bitmap.  We can do better by detecting ranges of set bits.
+On Thu, 26 Aug 2021 08:59:30 +0800, quanyang.wang@windriver.com wrote:
+> From: Quanyang Wang <quanyang.wang@windriver.com>
 > 
-> In my environment, before/after is 943008/31008 ns.
+> The function wait_for_completion_interruptible_timeout will return
+> -ERESTARTSYS immediately when receiving SIGKILL signal which is sent
+> by "jffs2_gcd_mtd" during umounting jffs2. This will break the SPI memory
+> operation because the data transmitting may begin before the command or
+> address transmitting completes. Use wait_for_completion_timeout to prevent
+> the process from being interruptible.
 > 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> [...]
 
-I like the patch. The new code is much easier to follow.
-Feel free to use:
+Applied to
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Best Regards,
-Petr
+Thanks!
+
+[1/1] spi: spi-zynq-qspi: use wait_for_completion_timeout to make zynq_qspi_exec_mem_op not interruptible
+      commit: 26cfc0dbe43aae60dc03af27077775244f26c167
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
