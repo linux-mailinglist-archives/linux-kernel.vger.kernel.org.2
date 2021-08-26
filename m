@@ -2,117 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348E33F7F40
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC003F7F41
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 02:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhHZARB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 20:17:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234205AbhHZARA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 20:17:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35B3160F39;
-        Thu, 26 Aug 2021 00:16:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629936973;
-        bh=0ngJr9PpMHfpAYd6Uit3Fbbi1EtpGFDiQCW/shNirk4=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=GEDWdVTn1JAJ8v2Z18tJPMDEjntyAxEDV3AVH91IBl7pGNBI/QOBanw1L9MuRFtK1
-         3D6uFqQPhI1DMTHsshtvydeo06QPKw8Nv+fdS329n29L9pq/aITwfwzDDyheyUL0S1
-         mTQVtSMwD+Eey4MfcoG4t8JVJkzfV1gIXAqDPBTrBEIJKj4H3T/XqBM/WFpq68XnNU
-         bhC8seMC1LcESlfooRJALK0br01Gnv7Q74DeQU0yvOkBTo9KQgf2S04Qapj7J9Jcsl
-         olDzgeAlfpcPaNiFiHFI2FYXpa0yW5qLdsMTkQtAB1Kf0/C+exE/Zzy4vTDrwOu6ph
-         4Yvxr3WZoziCw==
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: don't ignore writing pages on fsync
- during checkpoint=disable
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210823170151.1434772-1-jaegeuk@kernel.org>
- <YSa3DPBIFZ5P17vt@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <bc9840f7-6fee-1ba4-ed82-b149f18934c9@kernel.org>
-Date:   Thu, 26 Aug 2021 08:16:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <YSa3DPBIFZ5P17vt@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235051AbhHZAR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 20:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234533AbhHZAR1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Aug 2021 20:17:27 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145DCC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 17:16:41 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id b198-20020a2534cf000000b0059bae206c16so1252487yba.18
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 17:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=jKpOvBSXMQrCJiT5zO1xY+EZk8vDkrov86gD8oj2C2Q=;
+        b=NpeAHgNjtm+yStWpoNqTQ3x7Xlzz/icd7LOJxn2vJfRcN6H/9c1ykD7krmgc2BEgNY
+         +KV+HVbFD3M9Pq4xLayOJYzCy2H7KvEwD+bmzEbvEG1OhRX+datgCNNSY2jCFkAji4+o
+         sbvyLW1e7nUE882dXm0As55FPIyDr73ocQOC4710N5q+csJe6WoMsLQboy3Zlb4wifDp
+         1NCNQj7ofnbYv8LpZ+Cb66jyEQNshzPzphbl7RvWWUEW/V8XGVkWuRHkvE+MoMocL73X
+         p7xUMilKuI6frKK1rAyow+MFsPng6EHu1MnkrFAYkDRZRWr25EImsWO1dDvwQgcCumpu
+         yPdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=jKpOvBSXMQrCJiT5zO1xY+EZk8vDkrov86gD8oj2C2Q=;
+        b=cedb1dd5IbjES6fl2MXS00QPF8V6ceYvYOnp+Lo+qzUhkTh0tqWiI68/PgRQAJRzWS
+         ddDMfy0S+cWDl22XRzMxxbpoxlFU5SlnVbTKXazxCU2Jpx6u/xC87WtzC28KpcJnt9CE
+         HzR3o33osXlbQv0j6SaqADRLxKSljWMhVIgvZ8xgDF4uUatBoUBGmZLh8aCCw6SKdk/F
+         IYOcZFG4jBD+XWCw1ZseIAfLqF8XUbao9/DxE7wU7Ouh4pvPCT2R0mJlf+bySGxPXUUp
+         P5LdWrgquVXYrLZ2Hd+KR3oU0CV2b4PwpVXg/kOsyYSuScgIGHn2DsYVlJ5s7Dl7DlHz
+         Me9Q==
+X-Gm-Message-State: AOAM5338QaqSNygqwxIYUZXWSUivVmZ/+VjpDq6VpD+fD+JJCO6//6Gu
+        h3YhyEKQnWCLT40+DLrP+bwhT3S3MvF/
+X-Google-Smtp-Source: ABdhPJxknXL2IQv1ORhIsgH9DLjXnjQK1sOefpzkiQe5Fq2OyH7vNUBwGCXZE2VTdxpDiq7eoEr2nRIpQBJd
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:d2f8:e3e3:cd4a:a809])
+ (user=irogers job=sendgmr) by 2002:a25:5086:: with SMTP id
+ e128mr1648317ybb.89.1629937000311; Wed, 25 Aug 2021 17:16:40 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 17:16:35 -0700
+Message-Id: <20210826001635.285752-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
+Subject: [PATCH] perf bpf: Fix memory leak during synthesis.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/26 5:33, Jaegeuk Kim wrote:
-> We must flush all the dirty data when enabling checkpoint back. Let's guarantee
-> that first. In order to mitigate any failure, let's flush data in fsync as well
-> during checkpoint=disable.
+BTF needs to be freed with btf_free.
 
-It needs to update comments a bit with respect to update part of v2?
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/bpf-event.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
-> v2 from v1:
->   - handle sync_inodes_sb() failure
-> 
->   fs/f2fs/file.c  |  5 ++---
->   fs/f2fs/super.c | 11 ++++++++++-
->   2 files changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index cc2080866c54..3330efb41f22 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -263,8 +263,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
->   	};
->   	unsigned int seq_id = 0;
->   
-> -	if (unlikely(f2fs_readonly(inode->i_sb) ||
-> -				is_sbi_flag_set(sbi, SBI_CP_DISABLED)))
-> +	if (unlikely(f2fs_readonly(inode->i_sb)))
->   		return 0;
->   
->   	trace_f2fs_sync_file_enter(inode);
-> @@ -278,7 +277,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
->   	ret = file_write_and_wait_range(file, start, end);
->   	clear_inode_flag(inode, FI_NEED_IPU);
->   
-> -	if (ret) {
-> +	if (ret || is_sbi_flag_set(sbi, SBI_CP_DISABLED)) {
->   		trace_f2fs_sync_file_exit(inode, cp_reason, datasync, ret);
->   		return ret;
->   	}
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 49e153fd8183..d2f97dfb17af 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -2088,8 +2088,17 @@ static int f2fs_disable_checkpoint(struct f2fs_sb_info *sbi)
->   
->   static void f2fs_enable_checkpoint(struct f2fs_sb_info *sbi)
->   {
-> +	int retry = DEFAULT_RETRY_IO_COUNT;
-> +
->   	/* we should flush all the data to keep data consistency */
-> -	sync_inodes_sb(sbi->sb);
-> +	do {
-> +		sync_inodes_sb(sbi->sb);
-> +		cond_resched();
-> +		congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-> +	} while (get_pages(sbi, F2FS_DIRTY_DATA) && retry--);
-> +
-> +	if (unlikely(!retry))
+diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+index cdecda1ddd36..d193104db7f7 100644
+--- a/tools/perf/util/bpf-event.c
++++ b/tools/perf/util/bpf-event.c
+@@ -296,7 +296,7 @@ static int perf_event__synthesize_one_bpf_prog(struct perf_session *session,
+ 
+ out:
+ 	free(info_linear);
+-	free(btf);
++	btf__free(btf);
+ 	return err ? -1 : 0;
+ }
+ 
+-- 
+2.33.0.rc2.250.ged5fa647cd-goog
 
-Well, if we break the loop due to retry-- == 0, value of retry will be -1 here.
-
-So should be:
-
-if (unlikely(retry < 0))
-
-Thanks,
-
-> +		f2fs_warn(sbi, "checkpoint=enable has some unwritten data.");
->   
->   	down_write(&sbi->gc_lock);
->   	f2fs_dirty_to_prefree(sbi);
-> 
