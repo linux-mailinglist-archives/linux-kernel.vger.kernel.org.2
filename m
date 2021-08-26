@@ -2,159 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C703F84EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941DF3F84EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 11:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241082AbhHZJ7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 05:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241276AbhHZJ7F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 05:59:05 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648F0C0617AF
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:58:16 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id n5so4037654wro.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 02:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K6u0Zu5YEr8y4W3P37RoD4zOuM0xcePf+NAf5fjmYUY=;
-        b=OYntDdruYT6QL81TNNqsV14R7lpWMhP5RNvBBtu2FU/YaAjcMa/NOOsp/utPM+YdQo
-         iAuUtfEyiPHywQWdOkUzyiLsNGFBqBEh/kpLbm/8ZWRZimxDXWEkTPdStN1CRJyB+2L+
-         ess4YxVwDk5SZGgcAAgBLRdOtUeFSgGL2pR80=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=K6u0Zu5YEr8y4W3P37RoD4zOuM0xcePf+NAf5fjmYUY=;
-        b=oZ4QqGfgFwlIdAuJ8npAgr+ODElfx4iaRfI4ZhEav+zCx9+qG8pSnkLHsGXWKHgWEo
-         uFIXSwFn8C8P+9ffLxvcfs1B8xxbwOglBQbx/q7ps8Prsev00bpMy6q4v7QoGvTTs8b6
-         iFcflc8lfFWBm9BgHfZbySXDsaOzE1xYmSZA8XmPDrpzVkaxD8L8nEKlUjNPXn3yNJEV
-         z67uXAXxQprbJOTJUdAr5RGf19cFlDZb5FTmW9LP30Ov2HgH+NPzI86QztkdLXSH0Xks
-         DIqDJkMLfhGk1HzcbQTxM3J7mj09FdxE5Zzi8j5ijIMiM29ITm3ZwQYCeDEkAG0YM4/u
-         /74w==
-X-Gm-Message-State: AOAM530KQS8mGfh7av2DVyIqZb+oQcTkLhrXVhpZJjMfKYqOqinzLaQQ
-        rox//38c31g7tDjymFfDzkrMH7VZ6UDX5A==
-X-Google-Smtp-Source: ABdhPJyy1AIu+N6Qrm0z0c8isGbaksnKSxYxmVOligV+SnW4ABRlEHb7NKPuhCyurRIGXrKY/cYmRg==
-X-Received: by 2002:adf:b741:: with SMTP id n1mr1668981wre.120.1629971894987;
-        Thu, 26 Aug 2021 02:58:14 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m4sm7986290wml.28.2021.08.26.02.58.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 02:58:14 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 11:58:12 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
-        ville.syrjala@linux.intel.com, matthew.auld@intel.com,
-        dan.carpenter@oracle.com, tvrtko.ursulin@intel.com,
-        matthew.d.roper@intel.com, lucas.demarchi@intel.com,
-        karthik.b.s@intel.com, jose.souza@intel.com,
-        manasi.d.navare@intel.com, airlied@redhat.com,
-        aditya.swarup@intel.com, andrescj@chromium.org,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v8 3/7] drm: lock drm_global_mutex earlier in the ioctl
- handler
-Message-ID: <YSdltHVQnIr+vkTn@phenom.ffwll.local>
-Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        chris@chris-wilson.co.uk, ville.syrjala@linux.intel.com,
-        matthew.auld@intel.com, dan.carpenter@oracle.com,
-        tvrtko.ursulin@intel.com, matthew.d.roper@intel.com,
-        lucas.demarchi@intel.com, karthik.b.s@intel.com,
-        jose.souza@intel.com, manasi.d.navare@intel.com, airlied@redhat.com,
-        aditya.swarup@intel.com, andrescj@chromium.org,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210826020122.1488002-1-desmondcheongzx@gmail.com>
- <20210826020122.1488002-4-desmondcheongzx@gmail.com>
+        id S241203AbhHZJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 05:59:08 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53386 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241259AbhHZJ7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 05:59:03 -0400
+Received: from zn.tnic (p200300ec2f131000e9f5f92baa539bd3.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:1000:e9f5:f92b:aa53:9bd3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3D7831EC051E;
+        Thu, 26 Aug 2021 11:58:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629971890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=xbX4r5EqKg8cDu/+GUe232oyiQQBaN6NPDk7h7Xak1I=;
+        b=ZzhTJ3285L0EUEd//gUs94F3JlGT+V9rsO6E4QWn1zqJoECtIWit4UwiRq8By4Lh+CnD38
+        3boipgm2CR19Q5HJ/3ZiYISkPqqRoMHLy4LkHSnNEkLwASRqQFrKyljttbBYBEiOjEQuKV
+        IkzM4Z9707X4jaNoGhF8ZtNCrc2bh70=
+Date:   Thu, 26 Aug 2021 11:58:47 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kai Huang <kai.huang@intel.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] x86/sgx: Add the missing ifdef for
+ sgx_set_attribute()
+Message-ID: <YSdl16MFt/GVNGDq@zn.tnic>
+References: <20210825235234.153013-1-jarkko@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210826020122.1488002-4-desmondcheongzx@gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210825235234.153013-1-jarkko@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 10:01:18AM +0800, Desmond Cheong Zhi Xi wrote:
-> In a future patch, a read lock on drm_device.master_rwsem is
-> held in the ioctl handler before the check for ioctl
-> permissions. However, this inverts the lock hierarchy of
-> drm_global_mutex --> master_rwsem.
-> 
-> To avoid this, we do some prep work to grab the drm_global_mutex
-> before checking for ioctl permissions.
-> 
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> ---
->  drivers/gpu/drm/drm_ioctl.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
-> index d25713b09b80..158629d88319 100644
-> --- a/drivers/gpu/drm/drm_ioctl.c
-> +++ b/drivers/gpu/drm/drm_ioctl.c
-> @@ -772,19 +772,19 @@ long drm_ioctl_kernel(struct file *file, drm_ioctl_t *func, void *kdata,
->  	if (drm_dev_is_unplugged(dev))
->  		return -ENODEV;
->  
-> +	/* Enforce sane locking for modern driver ioctls. */
-> +	if (unlikely(drm_core_check_feature(dev, DRIVER_LEGACY)) && !(flags & DRM_UNLOCKED))
+On Thu, Aug 26, 2021 at 02:52:32AM +0300, Jarkko Sakkinen wrote:
+> Similarly as sgx_virt_*, decorate sgx_set_attribute() with ifdef, so that
+> calling it without appropraite config flags, will cause a compilation
+> error, and not a linking error.
 
-Maybe have a local bool locked_ioctl for this so it's extremely clear it's
-the same condition in both?
-
-Either way: Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-> +		mutex_lock(&drm_global_mutex);
-> +
->  	retcode = drm_ioctl_permit(flags, file_priv);
->  	if (unlikely(retcode))
-> -		return retcode;
-> +		goto out;
->  
-> -	/* Enforce sane locking for modern driver ioctls. */
-> -	if (likely(!drm_core_check_feature(dev, DRIVER_LEGACY)) ||
-> -	    (flags & DRM_UNLOCKED))
-> -		retcode = func(dev, kdata, file_priv);
-> -	else {
-> -		mutex_lock(&drm_global_mutex);
-> -		retcode = func(dev, kdata, file_priv);
-> +	retcode = func(dev, kdata, file_priv);
-> +
-> +out:
-> +	if (unlikely(drm_core_check_feature(dev, DRIVER_LEGACY)) && !(flags & DRM_UNLOCKED))
->  		mutex_unlock(&drm_global_mutex);
-> -	}
->  	return retcode;
->  }
->  EXPORT_SYMBOL(drm_ioctl_kernel);
-> -- 
-> 2.25.1
-> 
+Please explain what exactly is this fixing. IOW, how can I reproduce the
+failure?
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
