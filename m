@@ -2,63 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC513F8B30
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CB23F8B37
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243034AbhHZPg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:36:58 -0400
-Received: from mga05.intel.com ([192.55.52.43]:41889 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243024AbhHZPg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:36:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="303345517"
-X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
-   d="scan'208";a="303345517"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 08:36:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
-   d="scan'208";a="426824761"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga003.jf.intel.com with ESMTP; 26 Aug 2021 08:36:09 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 7/7] perf/x86/intel/uncore: Fix Intel SPR M3UPI event constraints
-Date:   Thu, 26 Aug 2021 08:32:43 -0700
-Message-Id: <1629991963-102621-8-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629991963-102621-1-git-send-email-kan.liang@linux.intel.com>
-References: <1629991963-102621-1-git-send-email-kan.liang@linux.intel.com>
+        id S243024AbhHZPjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242968AbhHZPjH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 11:39:07 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8515C0613D9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:38:19 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so2641335pjx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:38:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:user-agent:in-reply-to:references
+         :message-id:mime-version:content-transfer-encoding;
+        bh=oUs/jjZtn2XewEttzNEDdIF8MeRUjz3cA8OEhNCVVME=;
+        b=X0L4RUK3WfnWQMs3PGdMYXHjJIkZJ1aFGbLqh5rzyeyReXL7glmsCvi6nnSLWIdYX2
+         YnjzyPyx/pRJZ5Oemf46dPUZ7VTZ1ZZXgOVxqRYGogcm1Kt1xK2sD5Akw6UqFTd1rPqL
+         KvwtvrH7+Yuch/7NswpSQVHd8K+s7uwzDOboc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
+         :references:message-id:mime-version:content-transfer-encoding;
+        bh=oUs/jjZtn2XewEttzNEDdIF8MeRUjz3cA8OEhNCVVME=;
+        b=L7ZsMyBrSlEqPiIC7UuT/QWjEgGOekzswk/IB01y8wpKoIDFpqmQnXYovH8gjBvS/W
+         idkR9f9vmUDOBlPJc5hIs6vwrwc4Z1K+CwrvMS2BH9iKmwlnBxY1Bc1hvGJamCTORDpC
+         r3hp9K0/fwFaxXoh1m9LnqK81u1hEoeglm4gNZyC/kqfmGt15rS12Xmk/CGyJ3ejvpei
+         rcF9ZQbgzIUhwI3SIXJ3hii5sPyoVxTN+6h8g/lwthxrVY3j5D6dpyPX9angPc7oPDVc
+         1+gDx4XkwIxhfHeJhfquHERqOkbgNfgMp9zi5ytYciYVIwL9qRo0oLwNX0KjneALAIyS
+         akog==
+X-Gm-Message-State: AOAM530R0p4RzASgWtBd0ezQm4MdiCrG7MxjabrXUcrkoVaCu9rgDDmu
+        dWhVm+gKh+jDqG9/IGQ6lGDzI95xAJw4dQ==
+X-Google-Smtp-Source: ABdhPJwCxQE8vAzPZcTUQkpnlPEGPRiqzmSrU4gF3yFYyq3xbOoEtWNTygyq9dWsA2jScSS+OFrghA==
+X-Received: by 2002:a17:90a:7884:: with SMTP id x4mr17939059pjk.53.1629992299294;
+        Thu, 26 Aug 2021 08:38:19 -0700 (PDT)
+Received: from ?IPv6:::1? ([2600:6c55:4b00:c768:1835:a5a0:2702:1052])
+        by smtp.gmail.com with ESMTPSA id n1sm4112693pgt.63.2021.08.26.08.38.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 08:38:18 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 08:38:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the kspp tree
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210826175205.708b88a8@canb.auug.org.au>
+References: <20210826175205.708b88a8@canb.auug.org.au>
+Message-ID: <FF1867A4-5530-4CBB-84B9-C31622B6795E@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
 
-SPR M3UPI have the exact same event constraints as ICX, so add the
-constraints.
 
-Fixes: 2a8e51eae7c8 ("perf/x86/intel/uncore: Add Sapphire Rapids server M3UPI support")
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/uncore_snbep.c | 1 +
- 1 file changed, 1 insertion(+)
+On August 26, 2021 12:52:05 AM PDT, Stephen Rothwell <sfr@canb=2Eauug=2Eor=
+g=2Eau> wrote:
+>Hi all,
+>
+>After merging the kspp tree, today's linux-next build (x86_64
+>allmodconfig) failed like this:
+>
+>In file included from =2E/usr/include/linux/posix_types=2Eh:5,
+>                 from =2E/usr/include/linux/types=2Eh:9,
+>                 from =2E/usr/include/rdma/rdma_user_rxe=2Eh:37,
+>                 from <command-line>:32:
+>=2E/usr/include/rdma/rdma_user_rxe=2Eh:134:24: error: unknown type name '=
+u8'
+>  134 |   __DECLARE_FLEX_ARRAY(u8, inline_data);
+>      |                        ^~
+>=2E/usr/include/linux/stddef=2Eh:42:3: note: in definition of macro '__DE=
+CLARE_FLEX_ARRAY'
+>   42 |   TYPE NAME[]; \
+>      |   ^~~~
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 0a8f8a6..02b926d 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -5771,6 +5771,7 @@ static struct intel_uncore_type spr_uncore_upi = {
- static struct intel_uncore_type spr_uncore_m3upi = {
- 	SPR_UNCORE_PCI_COMMON_FORMAT(),
- 	.name			= "m3upi",
-+	.constraints		= icx_uncore_m3upi_constraints,
- };
- 
- static struct intel_uncore_type spr_uncore_mdf = {
--- 
-2.7.4
+Thanks -- I've fixed this now=2E Typo in conversion=2E :)
 
+-Kees
