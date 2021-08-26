@@ -1,141 +1,203 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (unknown [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16B13F8262
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:22:50 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id E6B7F3F826C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239265AbhHZGXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 02:23:15 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14421 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239133AbhHZGXO (ORCPT
+        id S239344AbhHZG1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 02:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238082AbhHZG1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 02:23:14 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GwCMr27LMzbdKT;
-        Thu, 26 Aug 2021 14:18:32 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 26 Aug 2021 14:22:22 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 26 Aug 2021 14:22:21 +0800
-Subject: Re: [PATCH 3/3] amba: Properly handle device probe without IRQ domain
-To:     Saravana Kannan <saravanak@google.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        <devicetree@vger.kernel.org>, Russell King <linux@armlinux.org.uk>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Ruizhe Lin <linruizhe@huawei.com>
-References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
- <20210816074619.177383-4-wangkefeng.wang@huawei.com>
- <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
- <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
- <ee649111-dc07-d6db-8872-dcb692802236@huawei.com>
- <CAGETcx9drOdE_vfn-nhDZM9MbgxGxYJN6ydiAVxo_Ltqve9eTg@mail.gmail.com>
- <b5eb935f-26e1-6475-63af-e7f6101eb017@huawei.com>
- <CAGETcx9yaWZOzt=gcyNAshoHdPoYizhmrKS-kU9c2QM2+HqeEw@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <245f3ce5-1d8b-79c2-31af-4dc13536505d@huawei.com>
-Date:   Thu, 26 Aug 2021 14:22:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Thu, 26 Aug 2021 02:27:16 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06398C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 23:26:30 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mJ8pO-0006Yt-6y; Thu, 26 Aug 2021 08:25:30 +0200
+Received: from pengutronix.de (2a03-f580-87bc-d400-b2ee-1fdd-6b26-f446.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:b2ee:1fdd:6b26:f446])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id AB6A066FE3E;
+        Thu, 26 Aug 2021 06:24:53 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 08:24:52 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        linux-crypto@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-can@vger.kernel.org,
+        bpf@vger.kernel.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Keith Packard <keithp@keithp.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] treewide: Replace open-coded flex arrays in unions
+Message-ID: <20210826062452.jekmoo43f4xu5jxk@pengutronix.de>
+References: <20210826050458.1540622-1-keescook@chromium.org>
+ <20210826050458.1540622-3-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx9yaWZOzt=gcyNAshoHdPoYizhmrKS-kU9c2QM2+HqeEw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mnmsc5sxlpdvk3xn"
+Content-Disposition: inline
+In-Reply-To: <20210826050458.1540622-3-keescook@chromium.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/8/26 12:45, Saravana Kannan wrote:
-> On Wed, Aug 25, 2021 at 7:45 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->>
->> On 2021/8/25 16:04, Saravana Kannan wrote:
->>> On Tue, Aug 24, 2021 at 9:05 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->>>> On 2021/8/25 4:08, Saravana Kannan wrote:
->>>>> On Tue, Aug 24, 2021 at 1:05 PM Rob Herring <robh+dt@kernel.org> wrote:
->>>>>> +Saravana
->>>>>>
->>>>>> Saravana mentioned to me there may be some issues with this one...
->>>>>>
->>>>>>
->>>>>> On Mon, Aug 16, 2021 at 2:43 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->>>>>>> of_amba_device_create() uses irq_of_parse_and_map() to translate
->>>>>>> a DT interrupt specification into a Linux virtual interrupt number.
->>>>>>>
->>>>>>> But it doesn't properly handle the case where the interrupt controller
->>>>>>> is not yet available, eg, when pl011 interrupt is connected to MBIGEN
->>>>>>> interrupt controller, because the mbigen initialization is too late,
->>>>>>> which will lead to no IRQ due to no IRQ domain found, log is shown below,
->>>>>>>      "irq: no irq domain found for uart0 !"
->>>>>>>
->>>>>>> use of_irq_get() to return -EPROBE_DEFER as above, and in the function
->>>>>>> amba_device_try_add()/amba_device_add(), it will properly handle in such
->>>>>>> case, also return 0 in other fail cases to be consistent as before.
->>>>>>>
->>>>>>> Cc: Russell King <linux@armlinux.org.uk>
->>>>>>> Cc: Rob Herring <robh+dt@kernel.org>
->>>>>>> Cc: Frank Rowand <frowand.list@gmail.com>
->>>>>>> Reported-by: Ruizhe Lin <linruizhe@huawei.com>
->>>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>>>>> ---
-...
->>>>> Similar to other resources the AMBA bus "gets" for the device, I think
->>>>> this should be moved into amba_probe() and not here. There's no reason
->>>>> to delay the addition of the device (and loading its module) because
->>>>> the IRQ isn't ready yet.
->>>> The following code in the amba_device_try_add() will be called, it uses irq[0]
->>>> and irq[1], so I put of_amba_device_decode_irq() into amba_device_try_add().
->>>>
->>>> 470         if (dev->irq[0])
->>>> 471                 ret = device_create_file(&dev->dev, &dev_attr_irq0);
->>>> 472         if (ret == 0 && dev->irq[1])
->>>> 473                 ret = device_create_file(&dev->dev, &dev_attr_irq1);
->>>> 474         if (ret == 0)
->>>> 475                 return ret;
->>>>
->>>> of_amba_device_decode_irq() in amba_device_try_add() won't lead to issue,
->>>> only delay the device add, right?
->>> But delaying the device add is the issue. For example, adding a device
->>> could trigger the loading of the corresponding module using uevents.
->>> But now this change would delay that step. That can have other
->>> unintended consequences -- slowing down boot, what if the driver was
->>> working fine without the IRQ, etc.
->>>
->>>> If make it into amba_probe(), the above code should be moved too, could we
->>>> make a new patch to move both of them, or don't move them?
->>> I'd say move them both. If Russell hasn't already picked this up, then
->>> I'd say redo your Patch 3/3.
->> I will resend with put it into amba_probe.
->>> Btw, I've been working on [1] cleaning up the one-off deferred probe
->>> solution that we have for amba devices. That causes a bunch of other
->>> headaches. Your patch 3/3 takes us further in the wrong direction by
->>> adding more reasons for delaying the addition of the device.
->> Got it,  and I could resend all combine your patch(due to context conflict
->>
->> when changing same function) if you no object.
-> If you want to resolve the conflict with my patch and resend it while
-> keeping me as the author, I would definitely appreciate it.
-Yes, I will keep it, and rebase my patch based on it.
->
-> -Saravana
->>
->>> -Saravana
->>>
->>> [1] - https://lore.kernel.org/lkml/CAGETcx8b228nDUho3cX9AAQ-pXOfZTMv8cj2vhdx9yc_pk8q+A@mail.gmail.com/
->>> .
->>>
-> .
->
+--mnmsc5sxlpdvk3xn
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 25.08.2021 22:04:55, Kees Cook wrote:
+> In support of enabling -Warray-bounds and -Wzero-length-bounds and
+> correctly handling run-time memcpy() bounds checking, replace all
+> open-coded flexible arrays (i.e. 0-element arrays) in unions with the
+> flex_array() helper macro.
+>=20
+> This fixes warnings such as:
+>=20
+> fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
+> fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds =
+of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-le=
+ngth-bounds]
+>   209 |    anode->btree.u.internal[0].down =3D cpu_to_le32(a);
+>       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
+> In file included from fs/hpfs/hpfs_fn.h:26,
+>                  from fs/hpfs/anode.c:10:
+> fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
+>   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word =
+entries giving
+>       |                                ^~~~~~~~
+>=20
+> drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_m=
+sg':
+> drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscrip=
+t 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka=
+ 'unsigned char[]'} [-Wzero-length-bounds]
+>   360 |  tx_can_msg =3D (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[ms=
+g_len];
+>       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~
+> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
+>                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
+> drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing =
+'raw_msg'
+>   231 |   u8 raw_msg[0];
+>       |      ^~~~~~~
+>=20
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Ayush Sawal <ayush.sawal@chelsio.com>
+> Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+> Cc: Rohit Maheshwari <rohitm@chelsio.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Stanislaw Gruszka <stf_xl@wp.pl>
+> Cc: Luca Coelho <luciano.coelho@intel.com>
+> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Johannes Berg <johannes.berg@intel.com>
+> Cc: Mordechay Goodstein <mordechay.goodstein@intel.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
+> Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: ath10k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-scsi@vger.kernel.org
+> Cc: linux-can@vger.kernel.org
+> Cc: bpf@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/net/can/usb/etas_es58x/es581_4.h          |  2 +-
+>  drivers/net/can/usb/etas_es58x/es58x_fd.h         |  2 +-
+
+For the can drivers:
+
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+
+BTW: Is there opportunity for conversion, too?
+
+| drivers/net/can/peak_canfd/peak_pciefd_main.c:146:32: warning: array of f=
+lexible structures
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--mnmsc5sxlpdvk3xn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEnM7EACgkQqclaivrt
+76kN7Af/X372HVlb+QqkjppsRpwpNYqhBsuZx17Ly+If1NlY7bxjdbRsOVskRV0a
+zEmr21eyBZFMHhrQ4+CPzjkv8AMTA9dfjFViAemjlC9mP6NR63oty7R+Ae0a/pbe
+T0EDxGooHMTU7H702xrzo8CzTCJM01TTmriW+YM3pZC4DfhNfqYFVx6hgGrah9U5
+HWD8HH3NTi9GLBk8caCqNlZVNv7lJbM7ygt5hxm2EdEy+aJGezlpS4LMpZScF9c9
+p7YOev4usm+X08379kFnX7T8IympuH51b4uhaUIbsekkjACT5rJtj3cKbupp0i2X
+X8w2WKQ8P+u+4VA9+tgBqpt731LPIA==
+=1VPl
+-----END PGP SIGNATURE-----
+
+--mnmsc5sxlpdvk3xn--
