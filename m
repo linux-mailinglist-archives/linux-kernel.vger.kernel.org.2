@@ -2,116 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FE83F8DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6773F8DA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243283AbhHZSK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:10:27 -0400
-Received: from mail-pj1-f51.google.com ([209.85.216.51]:39675 "EHLO
-        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243092AbhHZSK0 (ORCPT
+        id S243290AbhHZSM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230525AbhHZSMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:10:26 -0400
-Received: by mail-pj1-f51.google.com with SMTP id oc2-20020a17090b1c0200b00179e56772d6so7151541pjb.4;
-        Thu, 26 Aug 2021 11:09:38 -0700 (PDT)
+        Thu, 26 Aug 2021 14:12:23 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7420CC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:11:35 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id x9-20020a056830278900b0051b8be1192fso4662534otu.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=nvDp+1N4DDOy+P+9GR23X4HYFYGMVy7rTGtv9w11JS4=;
+        b=SO3w8aU+e7cuS2csqcFp3/Zq/q9+72gkeWHJRFI6H1MMqOAKXcT3ERWs5Vk0o+7PRI
+         yEoubEfxSSr/sORSgWrbi/P3anHXqh3ablYC8LEDcfvXDnowkctxl0CaUUhd+UZojHTO
+         buSKtg6oW4atKNd+fvmvCE2vtf2tJXG//Ni+Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=j0mt7AWcGZvt97QcESxgo4rDmKH0RfGdg9W8LlCYkLQ=;
-        b=BVArMxorTUNQfUowQX36xKsqXt29xYa8KHRwvYfCYrPmJm+X7tg2wcPecmSBGcvKqc
-         tREEZTQAX+JuVaKzOv+LVVVJjRoPcU708CTyWGpFYFHw+ptNL5QM/Al/0h55UaKbsN8k
-         H0M6AaNk1x0IAnK0TZiOoYf9JoaEig/ZV9/hyXdUOY/+LreSbvlbL+PLhk9v4kj31Z2b
-         2ZocViT66GH56sPxNF8VxyVpHe/WlIXE492qvu0vvcD1XZfFqyyvC3shWC7ipkA85Ymk
-         cS1OzMHz3kHrW8NhS+P+ADvl222kdWyFdFLbxqD2RH/IE5amEdGPUGGvgmhtCwlzhiaR
-         HImA==
-X-Gm-Message-State: AOAM531MkX6v0GO/W63YTNzcYd8UHnJOjK6TzK1iPD6/TmFhE34okBES
-        ySBXgAZgVFR0QrsuQEAiLmE=
-X-Google-Smtp-Source: ABdhPJwsw62jBWgm4+d4gnDL12k+csfjNX1WJnG8wU7slFky9TJwv1DrkqwtpnkUvjQTbJH7GVhFeg==
-X-Received: by 2002:a17:90a:a404:: with SMTP id y4mr5929010pjp.52.1630001378136;
-        Thu, 26 Aug 2021 11:09:38 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:22e3:6079:e5ce:5e45? ([2601:647:4000:d7:22e3:6079:e5ce:5e45])
-        by smtp.gmail.com with ESMTPSA id nk17sm3539792pjb.18.2021.08.26.11.09.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 11:09:37 -0700 (PDT)
-Subject: Re: [PATCH] block/mq-deadline: Speed up the dispatch of low-priority
- requests
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Damien Le Moal <damien.lemoal@wdc.com>
-References: <20210826144039.2143-1-thunder.leizhen@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <fc1f2664-fc4f-7b3e-5542-d9e4800a5bde@acm.org>
-Date:   Thu, 26 Aug 2021 11:09:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=nvDp+1N4DDOy+P+9GR23X4HYFYGMVy7rTGtv9w11JS4=;
+        b=GNRFKkLfczNX3xD2Zr1YMehO+wrIxsYXG5N15igU4DTxEpoZa1h68MR7lEUx4uvNcE
+         1iZa+gO0mrRtkig/hjBxUjEJ2rge5ZrSBe/klcY9InedmtZSzn6CyTyQDxPS2PHz21Z3
+         N8zMZ0n+MT2BDfsZvCghaoLCZLujN/Pjua64M9uskFxXGyW9zsAIdx0TAU4pOLhMtyJq
+         ikdn0o2Tb5ZTzzdNIRmTZ51VDRCV1mtwdZNd0T7hjhwTvRHenLmvjSZdbR+EQrk1skSd
+         crtkbg5DGvNoOhNyZ6qwqpa8oBVYKxxnX5B3Zg/CGNY5xm1uIJtcJ74veqObqayYDrfV
+         GOMw==
+X-Gm-Message-State: AOAM530GTiwZdMTniKcrHlqFGBz+ZOwN6oBmPz+hCR75D8yNP/UDXvwv
+        wOk1/aUIuabDNWNpsSZB+ha2T4pwScEPAyRFAM65fg==
+X-Google-Smtp-Source: ABdhPJwQeid8OtIfq3mNA6A51XZW1jZiSUx3vos1jnf0JVqXaUwsd+hS8JjkK2tpSCWY7I7bNCT4H/g5JbP/vKPjy+I=
+X-Received: by 2002:a05:6830:2473:: with SMTP id x51mr4484691otr.34.1630001494848;
+ Thu, 26 Aug 2021 11:11:34 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 26 Aug 2021 18:11:34 +0000
 MIME-Version: 1.0
-In-Reply-To: <20210826144039.2143-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1629983731-10595-7-git-send-email-rajpat@codeaurora.org>
+References: <1629983731-10595-1-git-send-email-rajpat@codeaurora.org> <1629983731-10595-7-git-send-email-rajpat@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 26 Aug 2021 18:11:34 +0000
+Message-ID: <CAE-0n51YGqp701EzUs1Q1PG89SECVQDdUPsiJ8P95xFj0UFs=A@mail.gmail.com>
+Subject: Re: [PATCH V6 6/7] arm64: dts: sc7280: Add QUPv3 wrapper_1 nodes
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajesh Patil <rajpat@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/21 7:40 AM, Zhen Lei wrote:
-> lock protection needs to be added only in
-> dd_finish_request(), which is unlikely to cause significant performance
-> side effects.
+Quoting Rajesh Patil (2021-08-26 06:15:30)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> index 7c106c0..65126a7 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> @@ -225,6 +225,10 @@
+>         status = "okay";
+>  };
+>
+> +&qupv3_id_1 {
+> +       status = "okay";
+> +};
+> +
 
-Not sure the above is correct. Every new atomic instruction has a measurable
-performance overhead. But I guess in this case that overhead is smaller than
-the time needed to sum 128 per-CPU variables.
+Why enable this here but not any of the i2c/spi/uart devices that are a
+child? Can this hunk be split off to a different patch?
 
-> Tested on my 128-core board with two ssd disks.
-> fio bs=4k rw=read iodepth=128 cpus_allowed=0-95 <others>
-> Before:
-> [183K/0/0 iops]
-> [172K/0/0 iops]
-> 
-> After:
-> [258K/0/0 iops]
-> [258K/0/0 iops]
+>  &sdhc_1 {
+>         status = "okay";
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index a3c11b0..32f411f 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -2040,6 +2469,46 @@
+>                                 function = "qup07";
+>                         };
+>
+> +                       qup_i2c8_data_clk:qup-i2c8-data-clk {
 
-Nice work!
+Unstick please.
 
-> Fixes: fb926032b320 ("block/mq-deadline: Prioritize high-priority requests")
+> +                               pins = "gpio32", "gpio33";
+> +                               function = "qup10";
+> +                       };
+> +
+> +                       qup_i2c9_data_clk:qup-i2c9-data-clk {
+> +                               pins = "gpio36", "gpio37";
+> +                               function = "qup11";
+> +                       };
+> +
+> +                       qup_i2c10_data_clk:qup-i2c10-data-clk {
+> +                               pins = "gpio40", "gpio41";
+> +                               function = "qup12";
+> +                       };
+> +
+> +                       qup_i2c11_data_clk:qup-i2c11-data-clk {
+> +                               pins = "gpio44", "gpio45";
+> +                               function = "qup13";
+> +                       };
+> +
+> +                       qup_i2c12_data_clk:qup-i2c12-data-clk {
+> +                               pins = "gpio48", "gpio49";
+> +                               function = "qup14";
+> +                       };
+> +
+> +                       qup_i2c13_data_clk:qup-i2c13-data-clk {
+> +                               pins = "gpio52", "gpio53";
+> +                               function = "qup15";
+> +                       };
+> +
+> +                       qup_i2c14_data_clk:qup-i2c14-data-clk {
+> +                               pins = "gpio56", "gpio57";
+> +                               function = "qup16";
+> +                       };
+> +
+> +                       qup_i2c15_data_clk:qup-i2c15-data-clk {
+> +                               pins = "gpio60", "gpio61";
+> +                               function = "qup17";
+> +                       };
 
-Shouldn't the Fixes: tag be used only for patches that modify functionality?
-I'm not sure it is appropriate to use this tag for performance improvements.
+All of these.
 
->  struct deadline_data {
-> @@ -277,9 +278,9 @@ deadline_move_request(struct deadline_data *dd, struct dd_per_prio *per_prio,
->  }
->  
->  /* Number of requests queued for a given priority level. */
-> -static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
-> +static __always_inline u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
->  {
-> -	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
-> +	return dd->per_prio[prio].nr_queued;
->  }
-
-Please leave out "__always_inline". Modern compilers are smart enough to
-inline this function without using the "inline" keyword.
-
-> @@ -711,6 +712,8 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
->  
->  	prio = ioprio_class_to_prio[ioprio_class];
->  	dd_count(dd, inserted, prio);
-> +	per_prio = &dd->per_prio[prio];
-> +	per_prio->nr_queued++;
->  
->  	if (blk_mq_sched_try_insert_merge(q, rq, &free)) {
->  		blk_mq_free_requests(&free);
-
-I think the above is wrong - nr_queued should not be incremented if the
-request is merged into another request. Please move the code that increments
-nr_queued past the above if-statement.
-
-Thanks,
-
-Bart.
+> +
+>                         qup_spi0_data_clk: qup-spi0-data-clk {
+>                                 pins = "gpio0", "gpio1", "gpio2";
+>                                 function = "qup00";
