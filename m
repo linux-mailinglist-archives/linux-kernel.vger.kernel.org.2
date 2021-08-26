@@ -2,192 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57A13F8D49
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DF03F8D55
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232775AbhHZRuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:50:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40442 "EHLO mail.kernel.org"
+        id S243221AbhHZRw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:52:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:51222 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230306AbhHZRuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:50:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2043460BD3;
-        Thu, 26 Aug 2021 17:49:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630000172;
-        bh=lReqgclYIFAZnv3E1iu34NrB91WXtZu1iej15RQQIFY=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=r0D1vkve2VQ3RChfzcruMmdh48kqLDSNBDHeNxpqyreG0SiFvvBPBEZXcNMeMpM4V
-         xKmOyf19vxmVgId0s8j1S6dk3ONiMCTNbjyWAwywh5RaB8/DVSYcj5lY8zNK66Fqwj
-         DM+C7qcur26iBGD/AuVh+n+wmIKVbhSNLYrMmu864cSnu1ufovsKqsMgNN9pxngI9e
-         Yqg/MFnIOWz6aoFhpWSUJgM6Rdat8QlewEgNpNzzDo0WqGzDqBnX5fq/UEJOBN42+Z
-         kN/dQbC6HhuSHaMK2M2rgo4HpMqGlkgd1ga5HgZYhkFo5ze+VKsFb+Op77+3vC7lJU
-         MAgcdnTYcyxWA==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 35C6027C0054;
-        Thu, 26 Aug 2021 13:49:30 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute6.internal (MEProxy); Thu, 26 Aug 2021 13:49:30 -0400
-X-ME-Sender: <xms:KNQnYRbEoqC2AAJaImc1Vw5QcEgu0SopcMT4DJSNNKYNerG7b3_DLg>
-    <xme:KNQnYYZdt8GcaR_AaCPDHsQg4HkKuAXNV2JL4MmllmxjwMsQIvYGb77XMSvYiwLq2
-    sUJJNq5u_FZRJFWaM4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduuddgudduiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpefghfeiueevhfeifeetudegkeeileekhedvieeivdehkeeuuedv
-    teehkeetffdtheenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnugihodhmvghsmhhtphgr
-    uhhthhhpvghrshhonhgrlhhithihqdduudeiudekheeifedvqddvieefudeiiedtkedqlh
-    huthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuhigrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:KNQnYT-OAZybKXI6F724gh-LUdOb0dr15E-RIwztlsJ337AqLId4dQ>
-    <xmx:KNQnYfqWbdsaiU1YFHpbNhsaC0mWqINVD1jje2bb0jht_w31NsUtqg>
-    <xmx:KNQnYcqoCRpUNUvuz3K5AnhgbgEOJjGV8A2YUeXs8yKHDPEmqeS0JQ>
-    <xmx:KtQnYZgBtHuX7-z5mgYkRwqe0tCfJRGmNbKHRvqN5HhW10CC3yEmuKXUYqg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6C0B3A038A7; Thu, 26 Aug 2021 13:49:28 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1125-g685cec594c-fm-20210825.001-g685cec59
-Mime-Version: 1.0
-Message-Id: <b60e9bd1-7232-472d-9c9c-1d6593e9e85e@www.fastmail.com>
-In-Reply-To: <CAHk-=wiJ0u33h2CXAO4b271Diik=z4jRt64=Gt6YV2jV4ef27g@mail.gmail.com>
-References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
- <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
- <87lf56bllc.fsf@disp2133>
- <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133> <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
- <87h7ft2j68.fsf@disp2133>
- <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
- <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
- <CAHk-=wiJ0u33h2CXAO4b271Diik=z4jRt64=Gt6YV2jV4ef27g@mail.gmail.com>
-Date:   Thu, 26 Aug 2021 10:48:55 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        "David Laight" <David.Laight@aculab.com>,
-        "David Hildenbrand" <david@redhat.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Al Viro" <viro@zeniv.linux.org.uk>,
-        "Alexey Dobriyan" <adobriyan@gmail.com>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        "Jiri Olsa" <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        "Petr Mladek" <pmladek@suse.com>,
-        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Greg Ungerer" <gerg@linux-m68k.org>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Vlastimil Babka" <vbabka@suse.cz>,
-        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
-        "Chinwen Chang" <chinwen.chang@mediatek.com>,
-        "Michel Lespinasse" <walken@google.com>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Huang Ying" <ying.huang@intel.com>,
-        "Jann Horn" <jannh@google.com>, "Feng Tang" <feng.tang@intel.com>,
-        "Kevin Brodsky" <Kevin.Brodsky@arm.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Shawn Anastasio" <shawn@anastas.io>,
-        "Steven Price" <steven.price@arm.com>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        "Christian Brauner" <christian.brauner@ubuntu.com>,
-        "Jens Axboe" <axboe@kernel.dk>,
-        "Gabriel Krisman Bertazi" <krisman@collabora.com>,
-        "Peter Xu" <peterx@redhat.com>,
-        "Suren Baghdasaryan" <surenb@google.com>,
-        "Shakeel Butt" <shakeelb@google.com>,
-        "Marco Elver" <elver@google.com>,
-        "Daniel Jordan" <daniel.m.jordan@oracle.com>,
-        "Nicolas Viennot" <Nicolas.Viennot@twosigma.com>,
-        "Thomas Cedeno" <thomascedeno@google.com>,
-        "Collin Fijalkovich" <cfijalkovich@google.com>,
-        "Michal Hocko" <mhocko@suse.com>,
-        "Miklos Szeredi" <miklos@szeredi.hu>,
-        "Chengguang Xu" <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Florian Weimer" <fweimer@redhat.com>,
-        "Michael Kerrisk" <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S243206AbhHZRw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 13:52:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF38131B;
+        Thu, 26 Aug 2021 10:51:39 -0700 (PDT)
+Received: from localhost (unknown [10.1.198.34])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FD243F5A1;
+        Thu, 26 Aug 2021 10:51:39 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 18:51:38 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Sean Kelley <skelley@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 2/3] arch_topology: obtain cpu capacity using
+ information from CPPC
+Message-ID: <20210826175138.GA22165@arm.com>
+References: <20210824105651.28660-1-ionela.voinescu@arm.com>
+ <20210824105651.28660-3-ionela.voinescu@arm.com>
+ <CAJZ5v0hkgWQqOzfdv4kr6rxz9eMsOgHkMYj0cZpO7yC+=SnQfg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hkgWQqOzfdv4kr6rxz9eMsOgHkMYj0cZpO7yC+=SnQfg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021, at 5:54 PM, Linus Torvalds wrote:
-> On Fri, Aug 13, 2021 at 2:49 PM Andy Lutomirski <luto@kernel.org> wrot=
-e:
+Thanks for the review, Rafael!
+
+On Wednesday 25 Aug 2021 at 19:54:26 (+0200), Rafael J. Wysocki wrote:
+> On Tue, Aug 24, 2021 at 12:57 PM Ionela Voinescu
+> <ionela.voinescu@arm.com> wrote:
 > >
-> > I=E2=80=99ll bite.  How about we attack this in the opposite directi=
-on: remove the deny write mechanism entirely.
->=20
-> I think that would be ok, except I can see somebody relying on it.
->=20
-> It's broken, it's stupid, but we've done that ETXTBUSY for a _loong_ t=
-ime.
+> > Define topology_init_cpu_capacity_cppc() to use highest performance
+> > values from _CPC objects to obtain and set maximum capacity information
+> > for each CPU. acpi_cppc_processor_probe() is a good point at which to
+> > trigger the initialization of CPU (u-arch) capacity values, as at this
+> > point the highest performance values can be obtained from each CPU's
+> > _CPC objects. Architectures can therefore use this functionality
+> > through arch_init_invariance_cppc().
+> >
+> > The performance scale used by CPPC is a unified scale for all CPUs in
+> > the system. Therefore, by obtaining the raw highest performance values
+> > from the _CPC objects, and normalizing them on the [0, 1024] capacity
+> > scale, used by the task scheduler, we obtain the CPU capacity of each
+> > CPU.
+> >
+> > While an ACPI Notify(0x85) could alert about a change in the highest
+> > performance value, which should in turn retrigger the CPU capacity
+> > computations, this notification is not currently handled by the ACPI
+> > processor driver. When supported, a call to arch_init_invariance_cppc()
+> > would perform the update.
+> >
+> > Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> > Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+> > Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+> >  drivers/base/arch_topology.c  | 37 +++++++++++++++++++++++++++++++++++
+> >  include/linux/arch_topology.h |  4 ++++
+> >  2 files changed, 41 insertions(+)
+> >
+> > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> > index 921312a8d957..358e22cd629e 100644
+> > --- a/drivers/base/arch_topology.c
+> > +++ b/drivers/base/arch_topology.c
+> > @@ -306,6 +306,43 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+> >         return !ret;
+> >  }
+> >
+> > +#ifdef CONFIG_ACPI_CPPC_LIB
+> > +#include <acpi/cppc_acpi.h>
+> > +
+> > +void topology_init_cpu_capacity_cppc(void)
+> > +{
+> > +       struct cppc_perf_caps perf_caps;
+> > +       int cpu;
+> > +
+> > +       if (likely(acpi_disabled || !acpi_cpc_valid()))
+> > +               return;
+> > +
+> > +       raw_capacity = kcalloc(num_possible_cpus(), sizeof(*raw_capacity),
+> > +                              GFP_KERNEL);
+> > +       if (!raw_capacity)
+> > +               return;
+> > +
+> > +       for_each_possible_cpu(cpu) {
+> > +               if (!cppc_get_perf_caps(cpu, &perf_caps)) {
+> > +                       raw_capacity[cpu] = perf_caps.highest_perf;
+> 
+> From experience, I would advise doing some sanity checking on the
+> per_caps values before using them here.
+> 
 
-Someone off-list just pointed something out to me, and I think we should=
- push harder to remove ETXTBSY.  Specifically, we've all been focused on=
- open() failing with ETXTBSY, and it's easy to make fun of anyone openin=
-g a running program for write when they should be unlinking and replacin=
-g it.
+cppc_get_perf_caps() already returns -EFAULT if highest_perf is 0, and
+I'm not sure if I can make any other assumptions about what a sane
+highest_perf value would need to be here.
 
-Alas, Linux's implementation of deny_write_access() is correct^Wabsurd, =
-and deny_write_access() *also* returns ETXTBSY if the file is open for w=
-rite.  So, in a multithreaded program, one thread does:
+Did you have anything else in mind for sanity checking?
 
-fd =3D open("some exefile", O_RDWR | O_CREAT | O_CLOEXEC);
-write(fd, some stuff);
+> Also note that highest_perf may not be sustainable, so would using
+> highest_perf as raw_capacity[] always work as expected?
+> 
 
-<--- problem is here
+Yes, in my opinion using it is better than the alternative, using the
+nominal performance value. This highest performance value helps obtain
+the maximum capacity of a CPU on a scale [0, 1024] when referenced to
+the highest performance of the biggest CPU in the system. There is no
+assumption in the task scheduler that this capacity is sustainable.
+Using lower values (nominal performance) would shorten the scale and
+make smaller CPUs seem bigger than they are. Also, using highest
+performance gives a better indication of micro-architectural
+differences in performance between CPUs, which plays a role in scaling
+utilization, even if some of the performance levels are not sustainable
+(which is platform dependent).
 
-close(fd);
-execve("some exefile");
+Thanks,
+Ionela.
 
-Another thread does:
-
-fork();
-execve("something else");
-
-In between fork and execve, there's another copy of the open file descri=
-ption, and i_writecount is held, and the execve() fails.  Whoops.  See, =
-for example:
-
-https://github.com/golang/go/issues/22315
-
-I propose we get rid of deny_write_access() completely to solve this.
-
-Getting rid of i_writecount itself seems a bit harder, since a handful o=
-f filesystems use it for clever reasons.
-
-(OFD locks seem like they might have the same problem.  Maybe we should =
-have a clone() flag to unshare the file table and close close-on-exec th=
-ings?)
-
->=20
-> But you are right that we have removed parts of it over time (no more
-> MAP_DENYWRITE, no more uselib()) so that what we have today is a
-> fairly weak form of what we used to do.
->=20
-> And nobody really complained when we weakened it, so maybe removing it
-> entirely might be acceptable.
->=20
->               Linus
->=20
+> > +                       pr_debug("cpu_capacity: CPU%d cpu_capacity=%u (raw).\n",
+> > +                                cpu, raw_capacity[cpu]);
+> > +               } else {
+> > +                       pr_err("cpu_capacity: CPU%d missing highest performance.\n", cpu);
+> > +                       pr_err("cpu_capacity: partial information: fallback to 1024 for all CPUs\n");
+> > +                       goto exit;
+> > +               }
+> > +       }
+> > +
+> > +       topology_normalize_cpu_scale();
+> > +       schedule_work(&update_topology_flags_work);
+> > +       pr_debug("cpu_capacity: cpu_capacity initialization done\n");
+> > +
+> > +exit:
+> > +       free_raw_capacity();
+> > +}
+> > +#endif
+> > +
+> >  #ifdef CONFIG_CPU_FREQ
+> >  static cpumask_var_t cpus_to_visit;
+> >  static void parsing_done_workfn(struct work_struct *work);
+> > diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+> > index f180240dc95f..9cf1a17938f0 100644
+> > --- a/include/linux/arch_topology.h
+> > +++ b/include/linux/arch_topology.h
+> > @@ -11,6 +11,10 @@
+> >  void topology_normalize_cpu_scale(void);
+> >  int topology_update_cpu_topology(void);
+> >
+> > +#ifdef CONFIG_ACPI_CPPC_LIB
+> > +void topology_init_cpu_capacity_cppc(void);
+> > +#endif
+> > +
+> >  struct device_node;
+> >  bool topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu);
+> >
+> > --
+> > 2.29.2.dirty
+> >
