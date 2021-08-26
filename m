@@ -2,205 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074FF3F8369
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1BF3F836E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 09:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240109AbhHZH5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 03:57:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63802 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232223AbhHZH5K (ORCPT
+        id S240296AbhHZH5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 03:57:38 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:57332
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240155AbhHZH5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 03:57:10 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17Q7Z47A022345;
-        Thu, 26 Aug 2021 03:56:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=7Q2AaaJXjIMTtU6+1p90x6r2vzBYuL/tBVO/xxaX9+U=;
- b=TUdcfoFqnX6mfTUtiMHRkn1fM/vSc4eFqIQx6/O2mbvmVHsSS4s1EdCkL5nfhPihTExx
- rdqanEJYZsy9eZlkvnWfYKEEEj3vdcMgO/I+PqSLDzhCNIzQmZG0c0QfH1tyFQX/RE9r
- Mw/yrLWP6l5Cby2zKDsLDG3GsplEJASvz5peOrQxCI004DSfhzSdS0xuXswPn3oMPQ03
- RORQ7YKnSNPIB/y4jNV6FCXipnObnGSWf4vAyoXwXe95/8fyDaCCctkboj2KqS3aZOLJ
- 9WTdn+E0AYdviQqCOEpdIKL2JjG6F4Wb6kigRE85kgDT+Tap8I13nBTE/LXRVp3NtMIB DA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ap4n93g94-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Aug 2021 03:56:14 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17Q7ZF0f023904;
-        Thu, 26 Aug 2021 03:56:14 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ap4n93g8v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Aug 2021 03:56:14 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17Q7qiNY007845;
-        Thu, 26 Aug 2021 07:56:13 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma05wdc.us.ibm.com with ESMTP id 3ajs4e5fx0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Aug 2021 07:56:13 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17Q7uCv330081440
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Aug 2021 07:56:12 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 92D8F28059;
-        Thu, 26 Aug 2021 07:56:12 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 484B828058;
-        Thu, 26 Aug 2021 07:56:10 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.43.48.53])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 26 Aug 2021 07:56:09 +0000 (GMT)
-Subject: Re: [PATCH bpf-next 1/3] perf: enable branch record for software
- events
-To:     Song Liu <songliubraving@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kernel Team <Kernel-team@fb.com>
-References: <20210824060157.3889139-1-songliubraving@fb.com>
- <20210824060157.3889139-2-songliubraving@fb.com>
- <YSYy87ta1GpXCCzk@hirez.programming.kicks-ass.net>
- <19CA9F65-E45B-4AE5-9742-3D89ECF0CEF4@fb.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <71cdc0ec-1b58-69c1-eaca-631800774c13@linux.ibm.com>
-Date:   Thu, 26 Aug 2021 13:26:08 +0530
+        Thu, 26 Aug 2021 03:57:36 -0400
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3845F40788
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 07:56:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629964609;
+        bh=JkuOywfaMdggVS4bli5HwaEPziu1ePITpUpnYUIyGCI=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=kiTjAOzbS2LlTvyKP1+knww3DP21WQoTOPPl5FJh+4xLOxbPMOLwfMTyh2t5j6qdB
+         KjCWuO23qPdQoXOvneh3A+RtxmKvBgzmDdKrWca/zuPzwQuDKMIaqXX+igerNhAhXU
+         5NHjqhixaQ2ULGajIKjWXOt22RhLf6S1KUZ7ZH1GTE3SFrGJCpl2qbCXlcfo8ZgUSd
+         YLV78VxcWndCX+NkBNYak175tdKA2v+DQy07RWSEo2X5domCkR5Ye9SdddW9j5Wa2E
+         UgtHBP9t8b8lCq8kqwv0cRcAKZZsHcXbu5I2Ko6sUzb7zYqjZsl/8Vf2MQBrAyOtit
+         J32/G2pmxaJyw==
+Received: by mail-lf1-f71.google.com with SMTP id w18-20020ac25d520000b02903c5ff81b281so664549lfd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 00:56:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JkuOywfaMdggVS4bli5HwaEPziu1ePITpUpnYUIyGCI=;
+        b=ClW8LayIuSZ9DgxLzfoWOOzQ7skl2Xq33LpV6w1QSctzRmjTaIaLPhK1360mXTNLCM
+         kad2hq2QF+JG8qyBLEb02tg75IBNJlRy4QdaEvm9/l6C0bsE6ZVM21As7IA3KDGAlwq7
+         ZpgcKIfQ7wQ/daQM3ENs0J4wb4cgSMKke+QHXVaoeyBeP1LzTVxHC9TmtdfVsWkCGZQ1
+         ugeSLhAyEtpTcJUNK5VOzmt87ruiTvMAsr/647nrraZ7rbMXjLWvrdfCiUzUpdT3Niaa
+         QZ6TY4QmjjBuo8QOmiYEhSYr52R3n20WDc7wJPIjCP3Q51z+5gn3CNmagpU/ql+I+L/0
+         8gPw==
+X-Gm-Message-State: AOAM532njdUbfSwLvxFn/931pV5hr1M7728HgvMxm5B+sb93stCFJ7lF
+        U8mDgKCGzkrqqiRfjX6T38KKaQfSEPAud38sD1Wh06PE0v2b5Gtbh39vj87cHBcQ2duqvDBICYf
+        CtT6oWDiX60s2zOaGOBQ3fb627k1N12ZKnloREDzHaQ==
+X-Received: by 2002:a5d:4f8d:: with SMTP id d13mr2266830wru.315.1629964598113;
+        Thu, 26 Aug 2021 00:56:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7z+KnpYY98pYyEqMF/A3NX8jxv23cu1YJnDvJUhoXHCtlFAZyyEs+2CZ1T1jeMVjcwD6U+g==
+X-Received: by 2002:a5d:4f8d:: with SMTP id d13mr2266775wru.315.1629964597932;
+        Thu, 26 Aug 2021 00:56:37 -0700 (PDT)
+Received: from [192.168.0.103] ([79.98.113.122])
+        by smtp.gmail.com with ESMTPSA id z19sm8834614wma.0.2021.08.26.00.56.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 00:56:37 -0700 (PDT)
+Subject: Re: [PATCH v16 3/7] ARM: configs: Explicitly enable USB_XHCI_PLATFORM
+ where needed
+To:     Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>
+Cc:     devicetree@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Bastien Nocera <hadess@hadess.net>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Jens Axboe <axboe@kernel.dk>, Johan Hovold <johan@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Lionel Debieve <lionel.debieve@st.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Martin_J=c3=bccker?= <martin.juecker@gmail.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Robert Richter <rric@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Lindgren <tony@atomide.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        William Cohen <wcohen@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+References: <20210813195228.2003500-1-mka@chromium.org>
+ <20210813125146.v16.3.I010d5725652b981ebbafba0b260190fe4b995a40@changeid>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <d6f17e48-4cb5-d665-4770-a4cf0440f85b@canonical.com>
+Date:   Thu, 26 Aug 2021 09:56:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <19CA9F65-E45B-4AE5-9742-3D89ECF0CEF4@fb.com>
+In-Reply-To: <20210813125146.v16.3.I010d5725652b981ebbafba0b260190fe4b995a40@changeid>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SzTNvCcQHNKfoxd3tWSdv54057XNCK1N
-X-Proofpoint-GUID: zZUBHF8Q1fw4nIqs53Luu1esjNjqa7r-
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-26_01:2021-08-25,2021-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- mlxlogscore=999 mlxscore=0 phishscore=0 bulkscore=0 suspectscore=0
- clxscore=1011 malwarescore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108260044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/08/2021 21:52, Matthias Kaehlcke wrote:
+> The dependency of USB_DWC3 and USB_XHCI_MVEBU on USB_XHCI_PLATFORM
+> is being changed from 'select' to 'depends on' by another patch.
+> With that patch the defconfigs that enable one of these host
+> controllers also need to select USB_XHCI_PLATFORM explicitly
+> to keep the resulting config unchanged.
+> 
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+> 
+> Changes in v16:
+> - patch added to the series
+> 
+>  arch/arm/configs/exynos_defconfig    | 1 +
 
 
-On 8/25/21 8:52 PM, Song Liu wrote:
-> 
-> 
->> On Aug 25, 2021, at 5:09 AM, Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> On Mon, Aug 23, 2021 at 11:01:55PM -0700, Song Liu wrote:
->>
->>> arch/x86/events/intel/core.c |  5 ++++-
->>> arch/x86/events/intel/lbr.c  | 12 ++++++++++++
->>> arch/x86/events/perf_event.h |  2 ++
->>> include/linux/perf_event.h   | 33 +++++++++++++++++++++++++++++++++
->>> kernel/events/core.c         | 28 ++++++++++++++++++++++++++++
->>> 5 files changed, 79 insertions(+), 1 deletion(-)
->>
->> No PowerPC support :/
-> 
-> I don't have PowerPC system for testing at the moment. I guess we can decide
-> the overall framework now, and ask PowerPC folks' help on PowerPC support
-> later? 
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Hi Song,
-   I will look at powerpc side to enable this.
 
-Thanks,
-Kajol Jain
-
-> 
->>
->>> +void intel_pmu_snapshot_branch_stack(void)
->>> +{
->>> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
->>> +
->>> +	intel_pmu_lbr_disable_all();
->>> +	intel_pmu_lbr_read();
->>> +	memcpy(this_cpu_ptr(&perf_branch_snapshot_entries), cpuc->lbr_entries,
->>> +	       sizeof(struct perf_branch_entry) * x86_pmu.lbr_nr);
->>> +	*this_cpu_ptr(&perf_branch_snapshot_size) = x86_pmu.lbr_nr;
->>> +	intel_pmu_lbr_enable_all(false);
->>> +}
->>
->> Still has the layering violation and issues vs PMI.
-> 
-> Yes, this is the biggest change after I test with this more. I tested with 
-> perf_[disable|enable]_pmu(), and function pointer in "struct pmu". However,
-> all these logic consumes LBR entries. In one of the version, 22 out of the
-> 32 LBR entries are branches after the fexit event. Most of them are from
-> perf_disable_pmu(). And each function pointer consumes 1 or 2 entries. 
-> This would be worse for systems with fewer LBR entries. 
-> 
-> On the other hand, I think current version was not too bad. It may corrupt
-> some samples when there is collision between this and PMI. But it should not
-> cause serious issues. Did I miss anything more serious? 
-> 
->>
->>> +#ifdef CONFIG_HAVE_STATIC_CALL
->>> +DECLARE_STATIC_CALL(perf_snapshot_branch_stack,
->>> +		    perf_default_snapshot_branch_stack);
->>> +#else
->>> +extern void (*perf_snapshot_branch_stack)(void);
->>> +#endif
->>
->> That's weird, static call should work unconditionally, and fall back to
->> a regular function pointer exactly like you do here. Search for:
->> "Generic Implementation" in include/linux/static_call.h
-> 
-> Thanks for the pointer. Let me look into it. 
->>
->>> diff --git a/kernel/events/core.c b/kernel/events/core.c
->>> index 011cc5069b7ba..b42cc20451709 100644
->>> --- a/kernel/events/core.c
->>> +++ b/kernel/events/core.c
->>
->>> +#ifdef CONFIG_HAVE_STATIC_CALL
->>> +DEFINE_STATIC_CALL(perf_snapshot_branch_stack,
->>> +		   perf_default_snapshot_branch_stack);
->>> +#else
->>> +void (*perf_snapshot_branch_stack)(void) = perf_default_snapshot_branch_stack;
->>> +#endif
->>
->> Idem.
->>
->> Something like:
->>
->> DEFINE_STATIC_CALL_NULL(perf_snapshot_branch_stack, void (*)(void));
->>
->> with usage like: static_call_cond(perf_snapshot_branch_stack)();
->>
->> Should unconditionally work.
->>
->>> +int perf_read_branch_snapshot(void *buf, size_t len)
->>> +{
->>> +	int cnt;
->>> +
->>> +	memcpy(buf, *this_cpu_ptr(&perf_branch_snapshot_entries),
->>> +	       min_t(u32, (u32)len,
->>> +		     sizeof(struct perf_branch_entry) * MAX_BRANCH_SNAPSHOT));
->>> +	cnt =  *this_cpu_ptr(&perf_branch_snapshot_size);
->>> +
->>> +	return (cnt > 0) ? cnt : -EOPNOTSUPP;
->>> +}
->>
->> Doesn't seem used at all..
-> 
-> At the moment, we only use this from BPF side (see 2/3). We sure can use it
-> from perf side, but that would require discussions on the user interface. 
-> How about we have that discussion later? 
-> 
-> Thanks,
-> Song
-> 
+Best regards,
+Krzysztof
