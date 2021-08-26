@@ -2,75 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23C33F8CBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83C73F8CC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243150AbhHZRMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:12:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57274 "EHLO mail.kernel.org"
+        id S243191AbhHZRMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:12:43 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43373 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232694AbhHZRMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:12:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3713C61026;
-        Thu, 26 Aug 2021 17:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629997889;
-        bh=VZ3aS1yDrSE+BMuh2vefaRw7uQst98Pi73CImkvGDuU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=MDZHP8ujhQuuK0CVDrjZ3TMVIMqj8YxhyY4mYJCb0pNNLR4t+NlLfgQg1j/K4eVL5
-         EW44YLr6dZbb/4c2CJjpIvtMoW0covnESWcQGIaSnwWqMlZ0/IHxK+fTd1EjyjZNp0
-         Leyu+JIkfyD1nLxf+Z2Qu2iTG641DpVJH79FYUynuTiP9G0EaI/B+P+Z/POxQrrxuZ
-         I7cbI9Rq4mb9R15GWslBfhpmpSIBL/jL5CE/6SBzWlzSdpVUpFAztneFtRAYzy2X16
-         mgTR7dzt8vvL7S0c2EeNlKYahizyYrpkK5AMjNjs54VqT8QW3Ji9g4l5KFrAaW0Fp5
-         bHRQw6FgnFlgg==
-Message-ID: <5a44ada347713097eb0308e0f2f2b16cb55a635f.camel@kernel.org>
-Subject: Re: [PATCH v3 1/2] x86/sgx: Add the missing ifdef for
- sgx_set_attribute()
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kai Huang <kai.huang@intel.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 26 Aug 2021 20:11:27 +0300
-In-Reply-To: <YSfC2vhMxaUY2j/H@zn.tnic>
-References: <20210825235234.153013-1-jarkko@kernel.org>
-         <YSdl16MFt/GVNGDq@zn.tnic>
-         <a006c85ef21f4dbd46a2ec1f73fa4e273afc5f6c.camel@kernel.org>
-         <YSfC2vhMxaUY2j/H@zn.tnic>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S243119AbhHZRMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 13:12:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629997915; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=3AEzHXCRF73WUOr0pkkL3X7+bnWg8BdvqsbmAMFaBDc=;
+ b=LcWgSEPUXZv/90jnh2mrYVrRHodU5wTj2PcAKPuevjtDmW7YH/Zm7IUNn8KEkkW8n1NXqsxz
+ LSiZSHWxMrcE4j+xt+XVmFg7ZH8HbNcFv9D1war5tWMg1S6qX9Kp1r+PYIwv6QQN/SYGoJcc
+ 2RLaoGfQuKjpZT8XKpE3tSDoFJ8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6127cb51d6653df767f9ce16 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Aug 2021 17:11:45
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BC63CC4338F; Thu, 26 Aug 2021 17:11:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA794C4360D;
+        Thu, 26 Aug 2021 17:11:40 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 26 Aug 2021 10:11:40 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     mani@kernel.org, hemantk@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
+Subject: Re: [PATCH] bus: mhi: core: Update comments on
+ mhi_prepare_for_power_up
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <1629995575-32389-1-git-send-email-quic_jhugo@quicinc.com>
+References: <1629995575-32389-1-git-send-email-quic_jhugo@quicinc.com>
+Message-ID: <57b617bf9689ce3d7d04472af0cb3d5e@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-26 at 18:35 +0200, Borislav Petkov wrote:
-> On Thu, Aug 26, 2021 at 07:08:07PM +0300, Jarkko Sakkinen wrote:
-> > I made this change because I'm including the header to set_memory.c, an=
-d
->=20
-> This is something you're doing locally, I presume. If so, you can keep
-> this patch local too.
->=20
-> > It's also incoherent that KVM specific functions are compilation flagge=
-d
->=20
-> They don't really have to be - they're just declarations.
+On 2021-08-26 09:32 AM, Jeffrey Hugo wrote:
+> From: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
+> 
+> After "bus: mhi: core: Remove pre_init flag used for power purposes"
+> mhi_prepare_for_power_up() is no longer an optional API. All users
+> of MHI should call this API before power up sequence to initialize
+> MHI context. Update the comments on this API to make this clear.
+> 
+> Fixes: eee87072e2fb ("bus: mhi: core: Remove pre_init flag used for
+> power purposes")
+> Signed-off-by: Pranjal Ramajor Asha Kanojiya 
+> <quic_pkanojiy@quicinc.com>
+> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> ---
+>  include/linux/mhi.h | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index 56e7934..483b852 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -617,10 +617,8 @@ int mhi_get_free_desc_count(struct mhi_device 
+> *mhi_dev,
+> 
+>  /**
+>   * mhi_prepare_for_power_up - Do pre-initialization before power up.
+> - *                            This is optional, call this before power 
+> up if
+> - *                            the controller does not want bus 
+> framework to
+> - *                            automatically free any allocated memory 
+> during
+> - *                            shutdown process.
+> + *                            Call this before MHI power up sequence 
+> to
+> + *                            initialize MHI context.
+>   * @mhi_cntrl: MHI controller
+>   */
+>  int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl);
 
-Let me check.
+Thanks for catching this!
 
-Is your preference is to have in set_memory.c:
+Reviewed-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-#ifdef CONFIG_X86_SGX
-#include <asm/sgx.h>
-#endif
+Adding Mani's Linaro email ID for pick-up.
 
-instead of doing this in uapi/asm/sgx.h?
-
-/Jarkko
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
