@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525A13F85DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC92D3F85E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241644AbhHZKwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 06:52:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51922 "EHLO mail.kernel.org"
+        id S241803AbhHZKyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 06:54:21 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11478 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234296AbhHZKwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 06:52:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACE336108F;
-        Thu, 26 Aug 2021 10:51:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629975117;
-        bh=bYzoqaGaeVIa6hmFFr9DEiYpG3DMEBTslADS8rFb29A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UZgaZoo6T6k6aZeGZpa25W8XHEpScpqKI8XBJxs/eTnbvxvt5b4tU1Pwr8OkX1lQY
-         xOwCRgQv+Fwz2T3F3O7Z7VUNkY4JS9I8/82R53RIXb3UTDOZI3n/g/E88+zWj5RyNL
-         HbWAq7yP9Iw7SEiGbku3KSxGESoK8GeOzu/z3rr4=
-Date:   Thu, 26 Aug 2021 12:51:53 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Provide a TODO file for this driver
-Message-ID: <YSdySbNSHYGsXz1r@kroah.com>
-References: <20210826014959.26857-1-fmdefrancesco@gmail.com>
+        id S234296AbhHZKyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 06:54:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="197284447"
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="197284447"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 03:53:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="444514801"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 26 Aug 2021 03:53:25 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 55DA0167; Thu, 26 Aug 2021 13:53:27 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH v2 1/1] media: ipu3-cio2: Drop reference on error path in cio2_bridge_connect_sensor()
+Date:   Thu, 26 Aug 2021 13:53:24 +0300
+Message-Id: <20210826105324.36853-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826014959.26857-1-fmdefrancesco@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 03:49:59AM +0200, Fabio M. De Francesco wrote:
-> Provide a TODO file that lists the tasks that should be carried out in
-> order to move this driver off drivers/staging.
-> 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
-> 
-> Thanks to Phillip Potter <phil@philpotter.co.uk> for for providing the first draft.
-> 
->  drivers/staging/r8188eu/TODO | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->  create mode 100644 drivers/staging/r8188eu/TODO
-> 
-> diff --git a/drivers/staging/r8188eu/TODO b/drivers/staging/r8188eu/TODO
-> new file mode 100644
-> index 000000000000..4bccca69abac
-> --- /dev/null
-> +++ b/drivers/staging/r8188eu/TODO
-> @@ -0,0 +1,16 @@
-> +To-do list:
-> +
-> +* Correct the coding style according to Linux guidelines; please read the document
-> +at https://www.kernel.org/doc/html/latest/process/coding-style.html.
+The commit 71f642833284 ("ACPI: utils: Fix reference counting in
+for_each_acpi_dev_match()") moved adev assignment outside of error
+path and hence made acpi_dev_put(sensor->adev) a no-op. We still
+need to drop reference count on error path, and to achieve that,
+replace sensor->adev by locally assigned adev.
 
-Indent and properly wrap your lines at the right width please.
+Fixes: 71f642833284 ("ACPI: utils: Fix reference counting in for_each_acpi_dev_match()")
+Depends-on: fc68f42aa737 ("ACPI: fix NULL pointer dereference")
+Reported-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+---
+v2: added tag (Sakari), Cc'ed to Rafael to pick up (would be nice to push it to v5.14)
+ drivers/media/pci/intel/ipu3/cio2-bridge.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +* Remove unnecessary debugging/printing macros; for those that are still needed
-> +use the proper kernel API (pr_debug(), dev_dbg(), netdev_dbg()).
-> +* Remove dead code such as unusued functions, variables, fields, etc..
-> +* Use in-kernel API and remove unnecessary wrappers where possible.
-> +* Remove the HAL layer and migrate its functionality into the relevant parts of
-> +the driver.
-> +* Switch to use LIB80211 (This work is currently in development by Larry Finger).
-> +* Switch to use MAC80211 (This work is currently in development by Larry Finger).
+diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+index 59a36f922675..30d29b96a339 100644
+--- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
++++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+@@ -226,7 +226,7 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
+ err_free_swnodes:
+ 	software_node_unregister_nodes(sensor->swnodes);
+ err_put_adev:
+-	acpi_dev_put(sensor->adev);
++	acpi_dev_put(adev);
+ 	return ret;
+ }
+ 
+-- 
+2.32.0
 
-No need to say "is being done by XXX" anywhere, as that stops people
-from helping out on this instantly.
-
-> +Please send any patches to Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-> +Larry Finger <Larry.Finger@lwfinger.net>, Phillip Potter <phil@philpotter.co.uk>
-> +and CC linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org.
-
-As the MAINTAINERS file lists this properly, no need for this paragraph.
-That can also be removed from any remaining TODO files that have it in
-it that also have correct MAINTAINERS entries.
-
-thanks,
-
-greg k-h
