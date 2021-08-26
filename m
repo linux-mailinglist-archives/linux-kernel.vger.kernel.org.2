@@ -2,114 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE42B3F8CD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC57B3F8CDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 19:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243157AbhHZRUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 13:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
+        id S243055AbhHZRWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 13:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhHZRUs (ORCPT
+        with ESMTP id S231313AbhHZRWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:20:48 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309ADC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:20:01 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id mf2so7857710ejb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 10:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gKDMhXdQnvrNiUefbL8YYDU0RU2rIxixwkrpgN6Y9og=;
-        b=oE1G+X2nBsCr3jel92P+uJhIg6GC6JURdrcpUlOYAanMiifujQEaChfXsR4XBBs2lW
-         e0exiqokL3IWOkpp4VqLUfYy7tHIHZc+8xXFwnU9GW3GrVcJ7qAhSTwjvtxpP1iUv/fo
-         M04fzyzdvnBKod9BN2cfbNuDVF77rl9GGTlXoERqvCzrATYz9r3hV9IFY+n1a8QAb0pN
-         SzUJ3YhXNlDDS57g6P2C5fghN6DWv1/9HytOK2T2RT5q/OWk/btDDrTugYi3yg1ExLrX
-         9+IUqyhVjoNqOtOjDzgDOkxdKQO9kXlLKUmyoShoDfSyWqdbznGxdcZlkao4785HB950
-         OhoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gKDMhXdQnvrNiUefbL8YYDU0RU2rIxixwkrpgN6Y9og=;
-        b=orJPnglifYwv5aIU+YGwOt4gbECnO4g7d/npb0UQPnOYCkIaNDfEraNFh3e3InkhYF
-         JT6rfqC0Q3vJBnUAviK/xs4JKaXZHAdak3rlXzCndH0OAMNwVpstv9apf42HKaGasG4q
-         SyhMXB6FN6H40hleWsWDSoBKRo5yNtIEf8s0ldtbKwbzZ/NhGeofsYHvRTf4lAadaohK
-         GrWEuDN+6hGWyRPOTfhlhnahy7vgJdLuEzv7aLrjB2PbOa0O+wu9gp9WdDvJ8yjxflsO
-         4CIPI/gqaelsI/O3ayiyO038A8yEM0h2zSVLCooGaT4fUkOnwVj0Px3n9g3MLg9NaaN5
-         N9MA==
-X-Gm-Message-State: AOAM531ySYjsUuZU9NH0qweou4y5yQVLty/KP0ZbKh8Y5PsYdi5dYS8n
-        3W6gwPq0Zbx3mWvUEaXDja7HF5qTp+4=
-X-Google-Smtp-Source: ABdhPJxHJE+7Lidd55kajB/jmfZrqjn2YoeEFEMX8YdUhYVQoZsAIJZJARLqAtKPhPoe9Y40ulN4sQ==
-X-Received: by 2002:a17:906:39d5:: with SMTP id i21mr5428615eje.529.1629998399796;
-        Thu, 26 Aug 2021 10:19:59 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.9])
-        by smtp.gmail.com with ESMTPSA id lu4sm1594568ejb.103.2021.08.26.10.19.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 10:19:59 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 19:19:55 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Wenlong Zhang <yixiaonn@gmail.com>
-Cc:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        marcocesati@gmail.com, insafonov@gmail.com, cyruscyliu@gmail.com,
-        yajin@vm-kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: rtl8723bs: prevent ->ssid overflow in
- rtw_wx_set_scan()
-Message-ID: <20210826171954.GA1423@agape.jhs>
-References: <20210826154622.55361-1-yixiaonn@gmail.com>
+        Thu, 26 Aug 2021 13:22:02 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E654FC061757;
+        Thu, 26 Aug 2021 10:21:13 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f131000d5458c5ba0c26ca5.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:1000:d545:8c5b:a0c2:6ca5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 551FE1EC0559;
+        Thu, 26 Aug 2021 19:21:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629998468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=EonioUivdSHRImBC3PCgIPIuZ93TTqYlk6Cf+NhB2yU=;
+        b=eP67D4GBayt1luaFcnj9xg3Ewz+wWsfRCdknkAiwD96W6nie+WBgRzm8p0vkGR2ZJ2wMhf
+        A8mL/8JdYuziyw+8RBBfiC2ObnUXuq5i57KWqtvgFaExj52Rj1LFM+9C5b/gvfYe9RXtHH
+        nod0DAM/cfl0ALjAaOWXUN/g109ni6w=
+Date:   Thu, 26 Aug 2021 19:21:46 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>
+Subject: Re: [PATCH v29 26/32] x86/cet/shstk: Introduce shadow stack token
+ setup/verify routines
+Message-ID: <YSfNqo3xMBULne2a@zn.tnic>
+References: <20210820181201.31490-1-yu-cheng.yu@intel.com>
+ <20210820181201.31490-27-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210826154622.55361-1-yixiaonn@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210820181201.31490-27-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Welong,
+On Fri, Aug 20, 2021 at 11:11:55AM -0700, Yu-cheng Yu wrote:
+> A shadow stack restore token marks a restore point of the shadow stack, and
+> the address in a token must point directly above the token, which is within
+> the same shadow stack.  This is distinctively different from other pointers
+> on the shadow stack, since those pointers point to executable code area.
+> 
+> The restore token can be used as an extra protection for signal handling.
+> To deliver a signal, create a shadow stack restore token and put the token
+> and the signal restorer address on the shadow stack.  In sigreturn, verify
+> the token and restore from it the shadow stack pointer.
 
-On Thu, Aug 26, 2021 at 11:46:22PM +0800, Wenlong Zhang wrote:
-> Commit 74b6b20df8cf ("staging: rtl8188eu: prevent ->ssid overflow in rtw_wx_set_scan()")
-> fixed up the staging driver rtl8188eu by adding another check 
-> to prevent writing beyond the end of the ->ssid[] array.
+I guess this all bla about signals needs to go now too...
+
+> Introduce token setup and verify routines.  Also introduce WRUSS, which is
+> a kernel-mode instruction but writes directly to user shadow stack.  It is
+> used to construct user signal stack as described above.
 > 
-> Resolve this by properly fixing up the rtl8723bs driver's version of
-> rtw_wx_set_scan() 
-> 
-> Reported-by: Wenlong Zhang(iLifetruth) <yixiaonn@gmail.com>
-> Fixes: 74b6b20df8cf ("staging: rtl8188eu: prevent ->ssid overflow in rtw_wx_set_scan()")
-> 
-> Signed-off-by: Wenlong Zhang <yixiaonn@gmail.com>
-> 
-> ---
->  drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> index 902ac8169948..6fc1020cea11 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> @@ -1351,9 +1351,9 @@ static int rtw_wx_set_scan(struct net_device *dev, struct iw_request_info *a,
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Cc: Kees Cook <keescook@chromium.org>
+
+...
+
+> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+> index 7c1ca2476a5e..548d0552f9b3 100644
+> --- a/arch/x86/kernel/shstk.c
+> +++ b/arch/x86/kernel/shstk.c
+> @@ -20,6 +20,7 @@
+>  #include <asm/fpu/xstate.h>
+>  #include <asm/fpu/types.h>
+>  #include <asm/cet.h>
+> +#include <asm/special_insns.h>
 >  
->  					sec_len = *(pos++); len -= 1;
+>  static void start_update_msrs(void)
+>  {
+> @@ -193,3 +194,142 @@ void shstk_disable(void)
 >  
-> -					if (sec_len > 0 && sec_len <= len) {
-> +					if (sec_len > 0 && sec_len <= len && sec_len <= 32) {
->  						ssid[ssid_index].SsidLength = sec_len;
-> -						memcpy(ssid[ssid_index].Ssid, pos, ssid[ssid_index].SsidLength);
-> +						memcpy(ssid[ssid_index].Ssid, pos, sec_len);
->  						/* DBG_871X("%s COMBO_SCAN with specific ssid:%s, %d\n", __func__ */
->  						/* 	, ssid[ssid_index].Ssid, ssid[ssid_index].SsidLength); */
->  						ssid_index++;
+>  	shstk_free(current);
+>  }
+> +
+> +static unsigned long get_user_shstk_addr(void)
+> +{
+> +	struct fpu *fpu = &current->thread.fpu;
+> +	unsigned long ssp = 0;
+
+Unneeded variable init.
+
+> +
+> +	fpregs_lock();
+> +
+> +	if (fpregs_state_valid(fpu, smp_processor_id())) {
+> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
+> +	} else {
+> +		struct cet_user_state *p;
+> +
+> +		/*
+> +		 * When !fpregs_state_valid() and get_xsave_addr() returns
+
+What does "!fpregs_state_valid()" mean in English?
+
+> +		 * null, XFEAUTRE_CET_USER is in init state.  Shadow stack
+
+XFEATURE_CET_USER
+
+> +		 * pointer is null in this case, so return zero.  This can
+> +		 * happen when shadow stack is enabled, but its xstates in
+
+s/its xstates/the shadow stack component/
+
+> +		 * memory is corrupted.
+> +		 */
+> +		p = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
+> +		if (p)
+> +			ssp = p->user_ssp;
+		else
+			ssp = 0;
+
+and this way it is absolutely unambiguous what the comment says.
+
+> +	}
+> +
+> +	fpregs_unlock();
+> +
+> +	return ssp;
+> +}
+> +
+> +/*
+> + * Create a restore token on the shadow stack.  A token is always 8-byte
+> + * and aligned to 8.
+> + */
+> +static int create_rstor_token(bool ia32, unsigned long ssp,
+
+s/ia32/proc32/g
+
+> +			       unsigned long *token_addr)
+> +{
+> +	unsigned long addr;
+> +
+> +	/* Aligned to 8 is aligned to 4, so test 8 first */
+> +	if ((!ia32 && !IS_ALIGNED(ssp, 8)) || !IS_ALIGNED(ssp, 4))
+> +		return -EINVAL;
+> +
+> +	addr = ALIGN_DOWN(ssp, 8) - 8;
+> +
+> +	/* Is the token for 64-bit? */
+> +	if (!ia32)
+> +		ssp |= BIT(0);
+> +
+> +	if (write_user_shstk_64((u64 __user *)addr, (u64)ssp))
+> +		return -EFAULT;
+> +
+> +	*token_addr = addr;
+> +
+> +	return 0;
+> +}
+
+...
+
+> +/*
+> + * Verify token_addr points to a valid token, and then set *new_ssp
+
+"Verify the user shadow stack has a valid token on it, ... "
+
+> + * according to the token.
+> + */
+> +int shstk_check_rstor_token(bool proc32, unsigned long *new_ssp)
+> +{
+> +	unsigned long token_addr;
+> +	unsigned long token;
+> +	bool shstk32;
+> +
+> +	token_addr = get_user_shstk_addr();
+
+	if (!token_addr)
+		return -EINVAL;
+
+> +
+> +	if (get_user(token, (unsigned long __user *)token_addr))
+> +		return -EFAULT;
+> +
+> +	/* Is mode flag correct? */
+> +	shstk32 = !(token & BIT(0));
+> +	if (proc32 ^ shstk32)
+> +		return -EINVAL;
+> +
+> +	/* Is busy flag set? */
+> +	if (token & BIT(1))
+> +		return -EINVAL;
+> +
+> +	/* Mask out flags */
+> +	token &= ~3UL;
+> +
+> +	/*
+> +	 * Restore address aligned?
+> +	 */
+
+Single line comment works too:
+
+	/* Restore address aligned? */
+
+> +	if ((!proc32 && !IS_ALIGNED(token, 8)) || !IS_ALIGNED(token, 4))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Token placed properly?
+> +	 */
+
+Ditto.
+
+> +	if (((ALIGN_DOWN(token, 8) - 8) != token_addr) || token >= TASK_SIZE_MAX)
+> +		return -EINVAL;
+> +
+> +	*new_ssp = token;
+> +
+> +	return 0;
+> +}
 > -- 
-> 2.15.0
+> 2.21.0
 > 
 
-today the patch which removes wext handlers has been accepted
-in staging-testing so maybe rtw_wx_set_scan is going to disappear.
+-- 
+Regards/Gruss,
+    Boris.
 
-thank you,
-
-fabio
+https://people.kernel.org/tglx/notes-about-netiquette
