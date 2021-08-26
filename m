@@ -2,307 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4501E3F8DBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B79F3F8DB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243321AbhHZSTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        id S243306AbhHZSTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243287AbhHZSTY (ORCPT
+        with ESMTP id S232159AbhHZSTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:19:24 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B99C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:18:36 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id l10so4204464ilh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:18:36 -0700 (PDT)
+        Thu, 26 Aug 2021 14:19:15 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EC2C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:18:27 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id bq28so8733538lfb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BPs1AyZGIrNXd12eEgQiDnWmo2NyTAfaSuY1G7qtiYU=;
-        b=T5SdrSqXY2fF5ial/ZnJlLgTkjq35WfEB3L1DAh7azfk1CZyOeYuDOKP1Eapb1XuBx
-         TVgJ72I/AtiVpqCWLcmP9uD4L1EPOaUszhEHTTM1ve7/ETGkhyRKMwiKN6aC63c8udxX
-         +yl+euHRa6cOAEKsODYGFpwT5DlmYUDylxo5M=
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=B/VrRohepb3vSq/SMW4bQf319Jg1hMieHlLY4AnbjL4=;
+        b=PGIJZKm4VGJBN96ENsNK6Re9qNwqZoK8YVUChnl68R6y1gQmn4Mr2RkL0jHH1ScmD7
+         1/mmiyl91x0JkfLMyGwPuOKtkHSPhzbmltvfFlwKV1+o3xBXqg2Y3RBzu5zA7imrMHP9
+         kn8x/VWpD5aJ93LmXGCNQfILRhk6z07ag+D363HnYyVksYJs5ySBctk6yFH3benAgJcj
+         3oo9vliV3I4zuMCTuUxiPI2eVSmwv8gJI/gaH9RMRY3FA+B62iXCTjpmPmBkfgWjEt0r
+         D6dwIygui/i2opSFgXx27EjkkEubW3ucRKTiWwmVYsQ+7fcSUu19bch8D/Ls+geDtWuq
+         PuXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BPs1AyZGIrNXd12eEgQiDnWmo2NyTAfaSuY1G7qtiYU=;
-        b=OYrIh3bO2FVS4NJYCvZOdYRimlks0fwZIVi/K6jVZ5vn4Lmih2s6Oq/99OKJnAw0Mz
-         WRweSbdkGTNYZ8BR2F4BmIh3pVsImUuozjeEZyClY+yQrt1YC4FIuyqrM4XMUjB5s0BP
-         WJsl6MK4guqgNbs06VvOxtZXBVaug3vzs0g9ZAYFgT2KJk7yqVzIe1G3xgls7gFuvqie
-         xp+u0j0DuV/QqEYz6ROjKciJV7Mmk/WyYBHJpPGUW/o0QIPvWzPNsXXcjHh0ffgf7/Oj
-         i1PLEn7l87EhBhOGb5CCh4hFV8tJcKs0pzfGbNNAdyYbA+Vsd7gwATUkXN66nTkjDWZB
-         3b6Q==
-X-Gm-Message-State: AOAM5325Anrh3NpZTEmTMQgEAjg7HnG1/bxt34E1b2nh7Lbm6Ty+WrkJ
-        ZHgSmIhg4kQOL2G9lfXrbAYPiapeS+FnPA==
-X-Google-Smtp-Source: ABdhPJzZ5JOd7CmbwbB2Ojw72vGwxfTlwSLg94nSwAr4RarO3Q8fxAqcclkPCxWZ8BRI/vp3IUNvJA==
-X-Received: by 2002:a92:d4d1:: with SMTP id o17mr3470768ilm.43.1630001915419;
-        Thu, 26 Aug 2021 11:18:35 -0700 (PDT)
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com. [209.85.166.52])
-        by smtp.gmail.com with ESMTPSA id i14sm1885013iog.47.2021.08.26.11.18.34
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B/VrRohepb3vSq/SMW4bQf319Jg1hMieHlLY4AnbjL4=;
+        b=JbRMRVrO427ZIXakoBE72YtFn/nnEeGWT1JJ8cssFX0hS4lH0bzugsyOFY0AFm+DwZ
+         YTdSO8UKVlQAwiMWipyhNYJG33Vg37pipHrNcvhV/XPh8s7zyn9HQnmM2LH8kmkhULgC
+         hlEw6kgOOx1ZmL9DpX7s+A+iVio1DMgAkVTfOZozW0AiRNcmAEsY12KQ9jY7ubWv/7CT
+         WZF4Ka+R4pL9EKQ/i1tXRC33DbuQQipfImdpVfZWrgFfMm+SLIQ8f3yjlzF4LdLWDW1A
+         5n647Ye5cVDfJqmxygNhPPXdKa2cwFaupfm0eJY1+qlWwkGGq7U1Ao7xJL0pMWZZe4hj
+         661g==
+X-Gm-Message-State: AOAM5301F53USxaE+pJ78MKMLbVBQVOUZfEDCcEA9Ea9UKMwoB+Srcnk
+        Qr6XuzsjAFhxCljP9xXkgBw=
+X-Google-Smtp-Source: ABdhPJxLm8N1FZVZDucH+Y2mue4iEpLkmlI149tIEln0mRazK+1NxcHJ5IIW7n38uCRdmWNzjvbh7A==
+X-Received: by 2002:a05:6512:b8e:: with SMTP id b14mr3977712lfv.449.1630001905743;
+        Thu, 26 Aug 2021 11:18:25 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id x142sm378521lff.5.2021.08.26.11.18.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 11:18:34 -0700 (PDT)
-Received: by mail-io1-f52.google.com with SMTP id a21so4928433ioq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:18:34 -0700 (PDT)
-X-Received: by 2002:a6b:6603:: with SMTP id a3mr4169386ioc.68.1630001913507;
- Thu, 26 Aug 2021 11:18:33 -0700 (PDT)
+        Thu, 26 Aug 2021 11:18:25 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] staging: r8188eu: Use usb_control_msg_recv/send()
+ in usbctrl_vendorreq()
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+References: <20210825035311.8910-1-fmdefrancesco@gmail.com>
+ <20210825035311.8910-2-fmdefrancesco@gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <f2360c8c-e001-70d6-daeb-03ca5b718d84@gmail.com>
+Date:   Thu, 26 Aug 2021 21:18:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210818203502.269889-1-ribalda@chromium.org> <YR2INUYJSZCnBiC0@pendragon.ideasonboard.com>
- <CANiDSCuP3OS7Z9UmHApPMmt0X3yrAoKVShEZgZ1oCvPgYshUSA@mail.gmail.com>
- <YR4yRfEmMvsAXRfu@pendragon.ideasonboard.com> <CANiDSCvStwDkkW7FLwTmogsH45292gugAvZfuoss3aJ9RzOAQw@mail.gmail.com>
- <YR5nhmF3MXdjtCvs@pendragon.ideasonboard.com> <CANiDSCtPGCnQNuGUxDbbQPgtj3a_6eOtaABXk=39Y7b-03gQNA@mail.gmail.com>
- <YSL/q9A5F7W9r92E@pendragon.ideasonboard.com> <CANiDSCtYFRNzUio8vujd_Pppz=WUZTj4sYrJwwXwRuewWEMasw@mail.gmail.com>
- <YSNz2TY1G6uShovP@pendragon.ideasonboard.com>
-In-Reply-To: <YSNz2TY1G6uShovP@pendragon.ideasonboard.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Thu, 26 Aug 2021 20:18:22 +0200
-X-Gmail-Original-Message-ID: <CANiDSCuvRyAbf9YCNusR8bnRRJf9QE6Yb385oJ4J=OyZCVueGQ@mail.gmail.com>
-Message-ID: <CANiDSCuvRyAbf9YCNusR8bnRRJf9QE6Yb385oJ4J=OyZCVueGQ@mail.gmail.com>
-Subject: Re: [PATCH v2] media: uvcvideo: Quirk for hardware with invalid sof
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tomasz Figa <tfiga@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210825035311.8910-2-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+On 8/25/21 6:53 AM, Fabio M. De Francesco wrote:
+> Replace usb_control_msg() with the new usb_control_msg_recv() and
+> usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
+> Remove no more needed variables. Move out of an if-else block
+> some code that it is no more dependent on status < 0. Remove
+> redundant code depending on status > 0 or status == len.
+> 
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
 
-I have taken a data analysis approach to solve this discussion (I
-always wanted to say that phrase sorry :P)
-
-I have run a logitech c9222 camera for 5 minutes with yavta. And then
-I have subtracted the frame time to its previous frame time using
-three different ways to measure the frametime:
-- unchanged (the driver as it is today)
-- hacked (applying this patch)
-- software (uvc_hw_timestamps_param=0)
-
-And I get the following histograms (please note the logarithmic scale
-and the different range in the horizontal axis):
-https://ibb.co/D1HJJ4x
-https://ibb.co/8s9dBdk
-https://ibb.co/QC9MgVK
-(can share a google sheets with the raw data)
-
-Eventhough anyone can torture the numbers enough to say almost
-anything, I think in this case it is clear how, for this specific
-device, we should consider applying this patch. Because even a pure
-software solution is clearly inferior.
-
-This goes without saying that the vendor shall be pinged. (I am
-already working on that).
-
-Best regards and sorry for the stubbornness  ;)
-
-On Mon, 23 Aug 2021 at 12:09, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> On Mon, Aug 23, 2021 at 11:56:43AM +0200, Ricardo Ribalda wrote:
-> > On Mon, 23 Aug 2021 at 03:54, Laurent Pinchart wrote:
-> > > On Thu, Aug 19, 2021 at 04:46:38PM +0200, Ricardo Ribalda wrote:
-> > > > On Thu, 19 Aug 2021 at 16:15, Laurent Pinchart wrote:
-> > > > > On Thu, Aug 19, 2021 at 01:31:32PM +0200, Ricardo Ribalda wrote:
-> > > > > > On Thu, 19 Aug 2021 at 12:28, Laurent Pinchart wrote:
-> > > > > > > On Thu, Aug 19, 2021 at 08:27:00AM +0200, Ricardo Ribalda wrote:
-> > > > > > > > On Thu, 19 Aug 2021 at 00:22, Laurent Pinchart wrote:
-> > > > > > > > > On Wed, Aug 18, 2021 at 10:35:02PM +0200, Ricardo Ribalda wrote:
-> > > > > > > > > > The hardware timestamping code has the assumption than the device_sof
-> > > > > > > > > > and the host_sof run at the same frequency (1 KHz).
-> > > > > > > > > >
-> > > > > > > > > > Unfortunately, this is not the case for all the hardware. Add a quirk to
-> > > > > > > > > > support such hardware.
-> > > > > > > > > >
-> > > > > > > > > > Note on how to identify such hardware:
-> > > > > > > > > > When running with "yavta -c /dev/videoX" Look for periodic jumps of the
-> > > > > > > > > > fps. Eg:
-> > > > > > > > > >
-> > > > > > > > > > 30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
-> > > > > > > > > > 31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
-> > > > > > > > > > 32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
-> > > > > > > > > > 33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
-> > > > > > > > > > 34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
-> > > > > > > > > > 35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
-> > > > > > > > > > 36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
-> > > > > > > > > > ...
-> > > > > > > > > > 99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
-> > > > > > > > > > 100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
-> > > > > > > > > > 101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
-> > > > > > > > > > 102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
-> > > > > > > > > > 103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
-> > > > > > > > > > 104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
-> > > > > > > > > >
-> > > > > > > > > > They happen because the delta_sof calculated at
-> > > > > > > > > > uvc_video_clock_host_sof(), wraps periodically, as both clocks drift.
-> > > > > > > > >
-> > > > > > > > > That looks plain wrong. First of all, the whole purpose of the SOF clock
-> > > > > > > > > is to have a shared clock between the host and the device. It makes no
-> > > > > > > > > sense for a device to have a free-running "SOF" clock. Given the log
-> > > > > > > > > above, the issue occurs so quickly that it doesn't seem to be a mere
-> > > > > > > > > drift of a free running clock. Could you investigate this more carefully
-> > > > > > > > > ?
-> > > > > > > >
-> > > > > > > > In my test the dev_sof runs at 887.91Hz and the dev_sof at 1000.35Hz.
-> > > > > > > > If I plot the difference of both clocks host_sof - (dev_sof % 2048), I
-> > > > > > > > get this nice graph https://imgur.com/a/5fQnKa7
-> > > > > > > >
-> > > > > > > > I agree that it makes not sense to have a free-running "SOF", but the
-> > > > > > > > manufacturer thinks otherwise :)
-> > > > > > >
-> > > > > > > In that case there's no common clock between the device and the host,
-> > > > > > > which means that clock recovery is impossible. The whole timestamp
-> > > > > > > computation should be bypassed, and the driver should use the system
-> > > > > > > timestamp instead.
-> > > > > >
-> > > > > > Or said differently. The clock recovery is susceptible to the jitter
-> > > > > > in the frame acquisition.
-> > > > > >
-> > > > > > If you have no jitter, the clock recovered will match the reality, and
-> > > > > > if you have bad jitter, it will be as bad as system timestamp.
-> > > > >
-> > > > > The whole point of the clock recovery code is to convert a precise
-> > > > > timestamp, expressed using a device clock that the host has no access
-> > > > > to, to a system clock. This can only be done if the relationship between
-> > > > > the two clocks can be inferred, and the UVC specifies a mechanism to
-> > > > > allow this by using a common clock, in the form of the SOF counter. If
-> > > > > we don't have that, we're essentially screwed, and can't use the
-> > > > > algorithm implemented in the driver at all. I'd much rather skip is
-> > > > > completely in that case, instead of trying to hack the algorithm itself.
-> > > >
-> > > > Considering T(f) as the time between the usb package (f) is received
-> > > > and uvc_video_clock_decode()
-> > > > If the jitter between the different T(f)s is under one unit of our
-> > > > clock (1 msec) the accuracy of the "hacked" algorithm and the real
-> > > > algorithm is exactly the same.
-> > > >
-> > > > We can agree that 1 msec is a "lot" of time. And if our system has a
-> > > > worse latency than that, the hacked algorithm will not be worse than
-> > > > system timestamping.
-> > > >
-> > > > So in most of the situations this patch will produce better timestamps
-> > > > than the current code and never worse than now...
-> > >
-> > > How can it produce better timestamps if it's missing the crucial
-> > > information that provides the correlation of timestamps between the
-> > > device and host side ?
-> >
-> > Because in a system with a latency jitter under 1msec sof_device and
-> > sof_host you already know that information: sof_host = sof_device
->
-> Only (100 - jitter/1ms) % of the time.
->
-> Given that the kernel implementation of the clock recovery is known to
-> cause timestamps to jump back in time once in a while (with devices that
-> behave properly), and that this should be implemented in userspace, I'd
-> rather bypass the kernel-side clock recovery completely when the device
-> doesn't behave. Then, we'll discuss whether it shuold be bypassed in
-> userspace too for this device, based on mathematical evidence :-)
->
-> > It is a special case of the general problem.
-> >
-> > > > Anyway, I have tried to ping the vendor to see if there is something
-> > > > that I could be doing wrong, lets see what they reply.
-> > > >
-> > > > > On a side note, I think the whole clock recovery implementation should
-> > > > > move from the uvcvideo driver to userspace, where we'll have the ability
-> > > > > to perform floating point computation. The kernel implementation is
-> > > > > crude, it should be replaced with a linear regression.
-> > > >
-> > > > Agree, but instead of a linear regression, a resampling algorithm.
-> > >
-> > > A linear regression is likely a good enough resampling algorithm in this
-> > > case, but I'd be curious to see if someone could do better.
-> > >
-> > > > > > So this patch will still be better than nothing.
-> > > > > >
-> > > > > > > I still find it hard to believe that a Logitech camera would get this
-> > > > > > > wrong.
-> > > > > >
-> > > > > > I guess I can send you a device, or give you access to mine remotely
-> > > > > > if you do not believe me :)
-> > > > > >
-> > > > > > > > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > > > > > > > > ---
-> > > > > > > > > > v2: Fix typo in frequency
-> > > > > > > > > >
-> > > > > > > > > >  drivers/media/usb/uvc/uvc_driver.c |  9 +++++++++
-> > > > > > > > > >  drivers/media/usb/uvc/uvc_video.c  | 11 +++++++++--
-> > > > > > > > > >  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
-> > > > > > > > > >  3 files changed, 20 insertions(+), 2 deletions(-)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > > > > > index 9a791d8ef200..d1e6cba10b15 100644
-> > > > > > > > > > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > > > > > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > > > > > @@ -2771,6 +2771,15 @@ static const struct usb_device_id uvc_ids[] = {
-> > > > > > > > > >         .bInterfaceSubClass   = 1,
-> > > > > > > > > >         .bInterfaceProtocol   = 0,
-> > > > > > > > > >         .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-> > > > > > > > > > +     /* Logitech HD Pro Webcam C922 */
-> > > > > > > > > > +     { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
-> > > > > > > > > > +                             | USB_DEVICE_ID_MATCH_INT_INFO,
-> > > > > > > > > > +       .idVendor             = 0x046d,
-> > > > > > > > > > +       .idProduct            = 0x085c,
-> > > > > > > > > > +       .bInterfaceClass      = USB_CLASS_VIDEO,
-> > > > > > > > > > +       .bInterfaceSubClass   = 1,
-> > > > > > > > > > +       .bInterfaceProtocol   = 0,
-> > > > > > > > > > +       .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
-> > > > > > > > > >       /* Chicony CNF7129 (Asus EEE 100HE) */
-> > > > > > > > > >       { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
-> > > > > > > > > >                               | USB_DEVICE_ID_MATCH_INT_INFO,
-> > > > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > > > > > > > > > index 6d0e474671a2..760ab015cf9c 100644
-> > > > > > > > > > --- a/drivers/media/usb/uvc/uvc_video.c
-> > > > > > > > > > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > > > > > > > > > @@ -518,13 +518,20 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
-> > > > > > > > > >       /* To limit the amount of data, drop SCRs with an SOF identical to the
-> > > > > > > > > >        * previous one.
-> > > > > > > > > >        */
-> > > > > > > > > > -     dev_sof = get_unaligned_le16(&data[header_size - 2]);
-> > > > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-> > > > > > > > > > +             dev_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > > > > > > > > +     else
-> > > > > > > > > > +             dev_sof = get_unaligned_le16(&data[header_size - 2]);
-> > > > > > > > > > +
-> > > > > > > > > >       if (dev_sof == stream->clock.last_sof)
-> > > > > > > > > >               return;
-> > > > > > > > > >
-> > > > > > > > > >       stream->clock.last_sof = dev_sof;
-> > > > > > > > > >
-> > > > > > > > > > -     host_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-> > > > > > > > > > +             host_sof = dev_sof;
-> > > > > > > > > > +     else
-> > > > > > > > > > +             host_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > > > > > > > >       time = uvc_video_get_time();
-> > > > > > > > > >
-> > > > > > > > > >       /* The UVC specification allows device implementations that can't obtain
-> > > > > > > > > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > > > > > index cce5e38133cd..89d909661915 100644
-> > > > > > > > > > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > > > > > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > > > > > @@ -209,6 +209,8 @@
-> > > > > > > > > >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
-> > > > > > > > > >  #define UVC_QUIRK_FORCE_Y8           0x00000800
-> > > > > > > > > >  #define UVC_QUIRK_FORCE_BPP          0x00001000
-> > > > > > > > > > +#define UVC_QUIRK_INVALID_DEVICE_SOF 0x00002000
-> > > > > > > > > > +
-> > > > > > > > > >
-> > > > > > > > > >  /* Format flags */
-> > > > > > > > > >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
->
-> --
-> Regards,
->
-> Laurent Pinchart
+FYI, I've tested this patch with TP-Link TL-WN722N v3 + qemu :)
 
 
+Tested-by: Pavel Skripkin <paskripkin@gmail.com>
 
--- 
-Ricardo Ribalda
+
+NOTE: I am still not able to apply 2/2, so tested tag is only for 1/2
+
+
+With regards,
+Pavel Skripkin
