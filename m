@@ -2,121 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C2F3F8FB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 22:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5983F8FBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 22:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243534AbhHZUhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 16:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243505AbhHZUhG (ORCPT
+        id S243568AbhHZUiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 16:38:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56265 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243550AbhHZUiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 16:37:06 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E55C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 13:36:18 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id s16so4600125ilo.9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 13:36:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=of32+HsVJg8BjIpFCQkLFrsfUsAQLmJI9fq1/gQoEQc=;
-        b=VZbC9LJdjvm7jBIyQ99wpnFBXRhf/RtavRPrmiWlpnBkMX5G2PEaCCDA0eZpnirKCK
-         rYivpqDHjpUeYYuxVPPrkWyKbtMNCAR8T0WpQhagK1uWeMtJX+uXPlYF2ZPbRa0A29zC
-         YImvafN9RqYP7O0dVpcGpMgKLCwbxPpZnMZ8c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=of32+HsVJg8BjIpFCQkLFrsfUsAQLmJI9fq1/gQoEQc=;
-        b=IHGfIycUjcT2CHFCwulwdxvX5wL3VXV5INT+d8UwyuLWNnJRE+0mZMwDUHvA8KYzu5
-         +A+9MMy7eY7zhBbnbVTh8N1G8Z/6+6K5tG/eHY3Kix0uVBBV0COx442adN3i9a/4zWK5
-         /aOAa6sIMnmMEnu0iOOrPoII8n2x0OUk/OIUTVrzcRK3Q7RcU1uZHrW+GTVSHwGRJAac
-         W17/+6R6uavUo6cM8tPSu+89v4JhBBuLAnQF85ZfnZ4jaaAJCaZMGrQyWC+dXIQ8edEE
-         OHnLjS3khOoEq/7waVdSDVc3WuhdtmX+mmJA5bx9tVej0PWbyFsRhztz76TXlEhgZVC7
-         cguQ==
-X-Gm-Message-State: AOAM532ZZwJI3Y1SgtOHZfxwIYGlSwji50k6xk8rfPYtxRoYrtOuj++v
-        adfHzQuYX0yrMhR3wqjF542f6FHLGCbcKQ==
-X-Google-Smtp-Source: ABdhPJwqiSfj1+pJhIpBVPca4w9NQuRNjpSYai+8oE1IxwwyL7+bEcpMknzmBhmTHWyjk5kTvlbGhA==
-X-Received: by 2002:a92:6a05:: with SMTP id f5mr3994268ilc.140.1630010177914;
-        Thu, 26 Aug 2021 13:36:17 -0700 (PDT)
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
-        by smtp.gmail.com with ESMTPSA id b2sm2170495ioe.23.2021.08.26.13.36.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 13:36:17 -0700 (PDT)
-Received: by mail-il1-f177.google.com with SMTP id v16so4576979ilo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 13:36:16 -0700 (PDT)
-X-Received: by 2002:a92:d304:: with SMTP id x4mr4140800ila.82.1630010176526;
- Thu, 26 Aug 2021 13:36:16 -0700 (PDT)
+        Thu, 26 Aug 2021 16:38:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630010251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OkzbDwHntc2mOiZybPIdS6qrY0R5yvA3NCMKaJd6k+I=;
+        b=IUmNqNq50pFGqYVDCtwCMha8ZodhGue1gThOFghpZ8tf7UJCoosNUA6XlXHsppyJpUQkM2
+        VRwPRBLbr4AB3fwPq8MXBCtjLkbSfK2GznK5oRWSXv3bWEDwuqXG4tQfAJ2TaM6/RCqlQ/
+        z4ILYJYVoewBjAFtahcjr0Cnxvmw9YI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-UFt8a_lrNXuOJrYC8aFi7g-1; Thu, 26 Aug 2021 16:37:30 -0400
+X-MC-Unique: UFt8a_lrNXuOJrYC8aFi7g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1229760CE;
+        Thu, 26 Aug 2021 20:37:28 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7A13E60C04;
+        Thu, 26 Aug 2021 20:37:22 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 974A3416D8BC; Thu, 26 Aug 2021 17:37:18 -0300 (-03)
+Date:   Thu, 26 Aug 2021 17:37:18 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Christoph Lameter <cl@gentwo.de>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [patch V3 2/8] add prctl task isolation prctl docs and samples
+Message-ID: <20210826203718.GA177929@fuller.cnet>
+References: <20210824152423.300346181@fuller.cnet>
+ <20210824152646.706875395@fuller.cnet>
+ <20210826095958.GA908505@lothringen>
+ <20210826121131.GA152063@fuller.cnet>
+ <alpine.DEB.2.22.394.2108262111200.358100@gentwo.de>
 MIME-Version: 1.0
-References: <20210726231351.655302-1-bjorn.andersson@linaro.org> <CAE-0n50HohAKisSSsNijcxgZGHdBgt=sQbLE3b7C87wPkLJ0cw@mail.gmail.com>
-In-Reply-To: <CAE-0n50HohAKisSSsNijcxgZGHdBgt=sQbLE3b7C87wPkLJ0cw@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 26 Aug 2021 13:36:04 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VnkJqJnGHawyqNS5+p6miWd44zR7FPXZWgLk5vo9fOYQ@mail.gmail.com>
-Message-ID: <CAD=FV=VnkJqJnGHawyqNS5+p6miWd44zR7FPXZWgLk5vo9fOYQ@mail.gmail.com>
-Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2108262111200.358100@gentwo.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Aug 26, 2021 at 09:15:57PM +0200, Christoph Lameter wrote:
+> On Thu, 26 Aug 2021, Marcelo Tosatti wrote:
+> 
+> > Decided on a separate prctl because the inheritance control
+> > is not a feature itself: it acts on all features (or how task isolation
+> > features are inherited across fork/clone).
+> 
+> I am having a hard time imagening use cases for such a feature since I
+> usally see special code sections optimized to run without OS jitter and
+> not whole processes. AFAICT You would not want to have any of these on
+> because they cause performance regression if you must do syscalls related
+> to process startup and termination.
 
-On Wed, Aug 25, 2021 at 6:31 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Bjorn Andersson (2021-07-26 16:13:51)
-> > eDP panels might need some power sequencing and backlight management,
-> > so make it possible to associate a drm_panel with a DP instance and
-> > prepare and enable the panel accordingly.
-> >
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >
-> > This solves my immediate problem on my 8cx laptops, of indirectly controlling
-> > the backlight during DPMS. But my panel is powered when I boot it and as such I
-> > get the hpd interrupt and I don't actually have to deal with a power on
-> > sequence - so I'm posting this as an RFC, hoping to get some input on these
-> > other aspects.
-> >
-> > If this is acceptable I'd be happy to write up an accompanying DT binding
-> > change that marks port 2 of the DP controller's of_graph as a reference to the
-> > attached panel.
->
-> dianders@ mentioned creating a connector (and maybe a bridge) for the DP
-> connector (not eDP)[1]. I'm not sure that's directly related, but I
-> think with the aux bus code the panel isn't managed in the encoder
-> driver. Instead the encoder sees a bridge and tries to power it up and
-> then query things over the aux bus? It's all a little too fuzzy to me
-> right now so I could be spewing nonsense but I think we want to take
-> this bridge route if possible.
->
-> -Stephen
->
-> [1] https://lore.kernel.org/r/CAD=FV=Xd9fizYdxfXYOkpJ_1fZcHp3-ROJ7k4iPg0g0RQ_+A3Q@mail.gmail.com/
+The documentation has:
 
-The idea of modeling the connector as a bridge is something that makes
-sense to me, but it probably makes sense to tackle that separately. We
-don't need to block on it.
++==================
++Userspace support
++==================
++
++Task isolation is divided in two main steps: configuration and activation.
++
++Each step can be performed by an external tool or the latency sensitive
++application itself. util-linux contains the "chisol" tool for this
++purpose.
++
++This results in three combinations:
++
++1. Both configuration and activation performed by the
++latency sensitive application.
++Allows fine grained control of what task isolation
++features are enabled and when (see samples section below).
++
++2. Only activation can be performed by the latency sensitive app
++(and configuration performed by chisol).
++This allows the admin/user to control task isolation parameters,
++and applications have to be modified only once.
++
++3. Configuration and activation performed by an external tool.
++This allows unmodified applications to take advantage of
++task isolation. Activation is performed by the "-a" option
++of chisol.
 
-The whole DP AUX bus can also be tackled separately after the fact. It
-really doesn't change things very much--we still have to find/attach
-the panel. It just makes the panel probe in a slightly different way
-and as a side effect gives the panel access to the DP AUX bus.
+The util-linux patch changelog has:
 
--Doug
+util-linux: add chisol tool to configure task isolation
+  
+Add chisol tool to configure task isolation. See chisol -h
+for details.
+
+For example, to launch a version of oslat that activates
+task isolation:
+
+chisol -q vmstat_sync -I conf ./oslat -f 1 -c 5 -D 5m
+
+-q vmstat_sync: enable quiescing of per-CPU vmstats 
+-I conf: inherit task isolation configuration.
+
+====
+
+So you can _configure_ the parameters of task isolation outside 
+your application, but activation (just before the realtime loop),
+can be done inside it (which requires modification of the 
+application). See the oslat/cyclictest patches.
+
+So to answer your question: chisol allows task isolation to be
+configured and activated externally from a latency sensitive app 
+(which at this moment means every system call, after activation,
+will sync the vmstats on return to userspace... which obviously
+slow things down). But you can then run unmodified applications
+(while paying the cost of slower startup times).
+
+Activation of different features before exec'ing a new application
+will of course depend on what the feature does...
+
+> Since we are adding docs: Could we have some sample use cases for
+> when these features are useful?
+
+There is one sample at samples/task_isolation/task_isol_userloop.c,
+do you mean more samples would be useful ? (there are two i know of:
+the one you mentioned and the one Thomas mentioned).
+
