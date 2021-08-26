@@ -2,53 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC933F87CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 388633F87D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242186AbhHZMnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:43:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:46102 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233687AbhHZMnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:43:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 374111042;
-        Thu, 26 Aug 2021 05:43:06 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.41.138])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 52AE73F766;
-        Thu, 26 Aug 2021 05:43:03 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH] PCI: aardvark: Fix masking and unmasking legacy INTx interrupts
-Date:   Thu, 26 Aug 2021 13:42:55 +0100
-Message-Id: <162998176149.21706.5126859600262914131.b4-ty@arm.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210820155020.3000-1-pali@kernel.org>
-References: <20210820155020.3000-1-pali@kernel.org>
+        id S242365AbhHZMoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242201AbhHZMoP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 08:44:15 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48979C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 05:43:28 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 7201922173;
+        Thu, 26 Aug 2021 14:43:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1629981806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xSWjg7oTauzs6qyI/TdnBZKk5aEHxZIo5MLqxy6CYF0=;
+        b=rrMTNkLnhRa+waIzNGf3Obc91poG0QomCOgxK2bU14KJM1K4vto55BvWNK5n11pqT0Dj4Z
+        u9j4Vr+xs2ZlT7WpJHVxKyCbTX7jvHRN+KUabFzjfhnoaoZu+pFF9lWTRJuegH2FeLcxST
+        iIT2rrJzYPJbuL2Xq1/HqnqZSw8f4dU=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 26 Aug 2021 14:43:26 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Lukas F . Hartmann" <lukas@mntre.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 3/3] drm/etnaviv: use a 32 bit mask as coherent DMA mask
+In-Reply-To: <20210826121006.685257-4-michael@walle.cc>
+References: <20210826121006.685257-1-michael@walle.cc>
+ <20210826121006.685257-4-michael@walle.cc>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <732be3deb2a29b9d9e274ee543fa3b89@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 17:50:20 +0200, Pali Rohár wrote:
-> irq_mask and irq_unmask callbacks need to be properly guarded by raw spin
-> locks as masking/unmasking procedure needs atomic read-modify-write
-> operation on hardware register.
+Am 2021-08-26 14:10, schrieb Michael Walle:
+> The STLB and the first command buffer (which is used to set up the 
+> TLBs)
+> has a 32 bit size restriction in hardware. There seems to be no way to
+> specify addresses larger than 32 bit. Keep it simple and restict the
+> addresses to the lower 4 GiB range for all coherent DMA memory
+> allocations.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Applied to pci/aardvark, thanks!
+Suggested-by: Lucas Stach <l.stach@pengutronix.de>
 
-[1/1] PCI: aardvark: Fix masking and unmasking legacy INTx interrupts
-      https://git.kernel.org/lpieralisi/pci/c/d212dcee27
+is missing here. sorry, will add it in the next version.
 
-Thanks,
-Lorenzo
+-michael
