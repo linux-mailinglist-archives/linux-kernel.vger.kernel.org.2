@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B522C3F9013
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE883F9012
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 23:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243698AbhHZVQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 17:16:38 -0400
-Received: from mailout2.w2.samsung.com ([211.189.100.12]:42775 "EHLO
+        id S243687AbhHZVQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 17:16:37 -0400
+Received: from mailout2.w2.samsung.com ([211.189.100.12]:42797 "EHLO
         mailout2.w2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243651AbhHZVQf (ORCPT
+        with ESMTP id S243658AbhHZVQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 26 Aug 2021 17:16:35 -0400
-Received: from uscas1p1.samsung.com (unknown [182.198.245.206])
-        by mailout2.w2.samsung.com (KnoxPortal) with ESMTP id 20210826211546usoutp023ffc8fda93a663ea6147828ec62a845c~e98Z6zonl2040920409usoutp02R;
-        Thu, 26 Aug 2021 21:15:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w2.samsung.com 20210826211546usoutp023ffc8fda93a663ea6147828ec62a845c~e98Z6zonl2040920409usoutp02R
+Received: from uscas1p2.samsung.com (unknown [182.198.245.207])
+        by mailout2.w2.samsung.com (KnoxPortal) with ESMTP id 20210826211547usoutp026c3122b6809d5753496c8dc1f33cd994~e98aKxmZG2107221072usoutp02G;
+        Thu, 26 Aug 2021 21:15:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w2.samsung.com 20210826211547usoutp026c3122b6809d5753496c8dc1f33cd994~e98aKxmZG2107221072usoutp02G
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
         s=mail20170921; t=1630012547;
-        bh=r9IjyKb9NwYbgZQaqkfxsWQc9c2WZ3PG6KCBtXowDG8=;
-        h=From:To:CC:Subject:Date:References:From;
-        b=eocjVWUNELGFttxX7F6BjbuK3nbdjnkCd7hgKnL8J3ktGSuBhdd/IHzqJXzbu9F2M
-         O5CMjVq1hphS6uswg9bAHYf0xdyLbTM7d9kzfg9xGdvIhA8YqHAWiSTTxP9zvc7gTp
-         hfyh4VQ0iGR8oXRV2Qg00VfAjthrm0GHrx730acc=
-Received: from ussmges2new.samsung.com (u111.gpu85.samsung.co.kr
-        [203.254.195.111]) by uscas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210826211546uscas1p1efeaf1687f309a20b7c1c4a3dadf3068~e98ZvCrh42657926579uscas1p1G;
-        Thu, 26 Aug 2021 21:15:46 +0000 (GMT)
-Received: from uscas1p1.samsung.com ( [182.198.245.206]) by
-        ussmges2new.samsung.com (USCPEMTA) with SMTP id 8F.C4.03480.28408216; Thu,
+        bh=8z0mOKVSmIjZ2gAb2k1jTA98o9P4G/zxpsmQ2t4GJ7o=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=eLNjYRBAS43Cd3UmPc0Y4xbP9Y5Gj3kSMlsQlKV76PxaRXvfpF9XcWZwKfjCATVL2
+         a9i0YYAl9BHaXQVk9tOW3HtyJHDVdCV3ip/iv7BkcDgG/LOiLAcF3vZmMASxJlOTt8
+         JLl5Cxya7eE0pXZdB0YGA0VhIay98n3zhpTn6520=
+Received: from ussmges3new.samsung.com (u112.gpu85.samsung.co.kr
+        [203.254.195.112]) by uscas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210826211547uscas1p14750726aad7c8df2f27f4dc01827b665~e98Z8FfcX0254002540uscas1p1N;
+        Thu, 26 Aug 2021 21:15:47 +0000 (GMT)
+Received: from uscas1p2.samsung.com ( [182.198.245.207]) by
+        ussmges3new.samsung.com (USCPEMTA) with SMTP id 2A.7A.19318.28408216; Thu,
         26 Aug 2021 17:15:46 -0400 (EDT)
 Received: from ussmgxs1new.samsung.com (u89.gpu85.samsung.co.kr
         [203.254.195.89]) by uscas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210826211546uscas1p1fc876392e5aaf990eeb480cc74508852~e98ZV3HRl0263002630uscas1p1G;
+        20210826211546uscas1p1e181ca820e506c7c195b933168301dd0~e98ZpQRWB3073030730uscas1p1a;
         Thu, 26 Aug 2021 21:15:46 +0000 (GMT)
-X-AuditID: cbfec36f-edfff70000010d98-86-61280482aaf0
+X-AuditID: cbfec370-c37ff70000014b76-72-612804825d42
 Received: from SSI-EX1.ssi.samsung.com ( [105.128.2.146]) by
-        ussmgxs1new.samsung.com (USCPEXMTA) with SMTP id 53.DD.47905.28408216; Thu,
+        ussmgxs1new.samsung.com (USCPEXMTA) with SMTP id E3.DD.47905.28408216; Thu,
         26 Aug 2021 17:15:46 -0400 (EDT)
 Received: from SSI-EX1.ssi.samsung.com (105.128.2.226) by
         SSI-EX1.ssi.samsung.com (105.128.2.226) with Microsoft SMTP Server
@@ -50,15 +50,16 @@ To:     "kbusch@kernel.org" <kbusch@kernel.org>,
         "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
         "sagi@grimberg.me" <sagi@grimberg.me>,
         "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
 CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "Adam Manzanares" <a.manzanares@samsung.com>
-Subject: [PATCH 0/2] Make nvmet_init_cap dependent on passthru controller
-Thread-Topic: [PATCH 0/2] Make nvmet_init_cap dependent on passthru
-        controller
-Thread-Index: AQHXmr+Icw4LjsGPkE629HHiiLhFoQ==
+Subject: [PATCH 2/2] nvmet: use passthru cntrl in nvmet_init_cap
+Thread-Topic: [PATCH 2/2] nvmet: use passthru cntrl in nvmet_init_cap
+Thread-Index: AQHXmr+I7P+Y0y9860Sip666Pz8m2g==
 Date:   Thu, 26 Aug 2021 21:15:45 +0000
-Message-ID: <20210826211522.308649-1-a.manzanares@samsung.com>
+Message-ID: <20210826211522.308649-3-a.manzanares@samsung.com>
+In-Reply-To: <20210826211522.308649-1-a.manzanares@samsung.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -68,64 +69,101 @@ Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-CFilter-Loop: Reflected
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTYRiH+845nh2Hq+MSfZvSZaGU1bxQNCikKGIFpUFBraCOdVDLOduy
-        0oqki2lXKzWbonZbbk1L05JlmDYta2ZZbtNilmlkkrIsZqWZ21ngf8/7/X7fy/PBR+FCvZeI
-        Skjay6qSmEQxySfuN/18ueAoMYcJNxeFSMdqm0ip5l0/IdXdbsSkFxssSPrGWEhKi7W9PGl5
-        /yCxjCe7cGyAJ2u1VxCySn0WKbt344jsYUc6KRuqnC47+fg0FsOT85fuZBMT9rGqsKjt/Pjy
-        M8NE8g3ywMXGGiwdZXudQt4U0AthqNs8znxKSOsQmEzXSG44gcH7T3bsfyvfMYZxQRkC/fcs
-        ghscCDo6TDxueIygovyB+wpJh8OfpxW4K/CjszF4VWUiXQFO74FHZUOEi6fSq+F4Y7ub/egY
-        MLeYxk2ocZbAaKf7mKCD4WuFE3exgI6Cs+k6NyPaH5zPDRi3MgA6e4o9qr5wraAW59gf/ho/
-        khzPgi5nH4/rS8CWm+PRmQfaq/2e/b7QfKWH4PrToL7U5n4l0LUU1GUYkcsN6JVQeM+X6wRC
-        uzUX5zoWBLe6C724oQvBiTOjiGstgasjdzymk2H0d7dnkQAyM4TZSKyZ8AbNBD/NBD/NBL8S
-        ROhRQIparYhj1ZFJ7H6JmlGoU5LiJDuUiko0/p1e/H2irEHWToekAWEUakBA4WI/QYkzhBEK
-        djKpaaxKuU2VksiqG1AgRYgDBNimC9uEdByzl93Nssms6n+KUd6idGzNbh/DfvNMXnVru7/P
-        wKRqZ8+WPkvk3SbFcp+fvgp750Jb4EwqdP2r86W7jmus8SJj12WRcfHBAmnQ2+s3D+ItwbFZ
-        JfH2vMHr8ne/knXr2uqHXhriHrWJDGvacteHfIuo1xxLfR30warP2fSjrM7QDFstWJ3805dF
-        X5xFor5QrW1+qXY7O7z53Crlg+C1OxLmbswzjx1iLkkSfj9L69twS3RnoKkgIv/zd5WjalrG
-        kg5l9hZ7sVbOVwTM/eCITp0RG11zMy0oMlM3aFkxaaTXYYsZDpsS2LvscFC+fBY9ktla1UzO
-        /iqeLDfcbbce0b2d0qxARcIo4+bDAlqOzh4QE+p4JiIUV6mZf8zW1Iq9AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsWS2cA0SbeJRSPRoHE9n8X/PcfYLGbdfs1i
-        sXL1USaLSYeuMVpc3jWHzWL+sqfsFutev2dxYPeY2PyO3eP8vY0sHptWdbJ5bF5S77H7ZgOb
-        x+dNch7tB7qZAtijuGxSUnMyy1KL9O0SuDLW9fxgKVjCVjHp6A6mBsYJrF2MnBwSAiYSMz7+
-        Z+pi5OIQEljNKLH8wBI2COcjo8SUNYeZIZwDjBK3728Ba2ETMJD4fXwjWEJEYAKTxIUtR9hA
-        EswChRJ7135mAbGFBTwlWo5eBbNFBPwkdv85AmRzANl6En9vgYVZBFQlXm38zgxi8wrYSfQ2
-        rASzGQXEJL6fWsMEMVJc4taT+UwQpwpILNlznhnCFpV4+fgf1AuKEve/v2SHqNeTuDF1CtQ5
-        2hLLFr6Gmi8ocXLmExaIekmJgytusExgFJ2FZMUsJO2zkLTPQtK+gJFlFaN4aXFxbnpFsWFe
-        arlecWJucWleul5yfu4mRmA8nv53OHIH49FbH/UOMTJxMB5ilOBgVhLhXfBdLVGINyWxsiq1
-        KD++qDQntfgQozQHi5I4r5DrxHghgfTEktTs1NSC1CKYLBMHp1QDU5wzR3Dp50V/1v5IXr1k
-        x8TP2XFXTO7qC5gfEU+6uJ19+6zgW0lHElsT9K1vFwgvebRNzv/B4eMd9eKb8hY51Kr+OeFR
-        ob0uL7N44esdPb+ZEuIuNGf4V+/42ZPTf2115Qyb+gjzG7/cF6x7a50Vm+BocMP10GO/iZ/D
-        jmZdYdqb/mLKvj+cU1qZf1zSCmDfML3ux/9J/KckO81XrvPZYT3B//89dlb+2e3rSuYkxqWU
-        5565F+dSMm+zTXWDnVupwINwje7JZ7MjRL//ZVi6ynQB691Zse8/cEhz14cdna6309nOXeO7
-        2YM9d+fevbZNxp67ecrtKWGZy+4v/RjhpP0jedMJg0j1qXxR+5ZL7VdiKc5INNRiLipOBACY
-        fpQONgMAAA==
-X-CMS-MailID: 20210826211546uscas1p1fc876392e5aaf990eeb480cc74508852
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se1BMURzH59x7272lbW5J/ZQJGcaglRQ7QmVqbMNgRsZUyE13ltHL3s17
+        RlJSSwqlrsdumPSSNkWyWJsekseQ2AyNFJKJtcOa9GC720z/fX7n+z3nfM7MIXGnMhs3cke8
+        gpHH07GeAjviZuOvZ14pxGza+8QHiWRE2yiQcG/7CElJWQMmOaVvR5KXdecFElVRj1BS0fed
+        CBRKc470C6XP3msIaVVphkB648oh6R1DskBqqvKQpuuU2DphhN3SGCZ2x25GPn/5VrvthYdv
+        oMRPDnt/5bTjyeiWfSayJYHyhaaPnTYWdqJKEDSfPpiJ7P5zGgblDanYWGlYVYfxwTUEbUNH
+        ED8YERgMD4X8oEOgqbg1ukVAecPfJg1uCZwpLQZZj3+MBji1C+5eMxGZiCQnUoHwp4ayLDtT
+        IaC7VIt4FkNqRssoE9RM+Kox4xYWUcuhoevpqKstFQC9XA9hYUS5gLml3Hq8K3R0q6zajnDp
+        nBbn2QWG6z4IeJ4OneZeId8Xw5vcMwKe50JRYZ/1Lkd4VNBN8P3J8KD4DWF5C1BtJBTWXLce
+        FAznvnyyltzh1etcnC+1I7jadd6GHzoRpB0fQnzLHwoHr1tVHWBooAtloxncOHNunBU3zoob
+        Z6VGRClyTWLZOBnDLoxn9ohZOo5NipeJtyXEVaH//+nxcH1iLeroMIr1CCORHgGJezqL1OZZ
+        tJMoht63n5EnRMmTYhlWj9xJwtNVdCE8J8qJktEKZifDJDLysRQjbd2SsWj/LxvQ7Fr1NwM6
+        rPAIJDZ9bXMMUQwHmZSrjOn5wQt1JdqIsMioz1sigHuUGvC331TthuU99Tn6XKdjuTS/taX7
+        lnlVmzen+qwJo7dOrRG1FYRcXGMKYlVP9JUHw5akx4aqsbz7DSsW1GfezE73vbBxUrLsRdGK
+        y1lKxbSYWhtjR0q2u7JZNKHY3JNQPtS3f8NP+1X5fu/zGyvCq1+8th/xX5nbirU0Ry4+sNlb
+        7QIpDsQB6dFWYb1CM6U+u1IrC/1uIMQZWT4ffxes7r/3JCEyZ+a86JPvogcHzk7vLvP10hfX
+        +K0fXIpp36lSuPDGnkUxI8ZeZWJrtFfw7UrvY54Eu51eMAeXs/Q/WybVV74DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNIsWRmVeSWpSXmKPExsWS2cA0SbeJRSPR4OYZZYv/e46xWcy6/ZrF
+        YuXqo0wWkw5dY7S4vGsOm8X8ZU/ZLda9fs/iwO4xsfkdu8f5extZPDat6mTz2Lyk3mP3zQY2
+        j8+b5DzaD3QzBbBHcdmkpOZklqUW6dslcGUsbNzMWPCMr+LrxGvMDYzbeboYOTkkBEwk/s3f
+        xdTFyMUhJLCaUWLJlxMsEM5HRokpaw4zQzgHGCVu39/CCtLCJmAg8fv4RrCEiMAeJom+0x+Y
+        QBLMAoUSe9d+Bmrn4BAWcJD4sVUAJCwi4CpxYNEORghbT6Kl8xSYzSKgKvFq43dmEJtXwE7i
+        6KNzYPOFgOzOBbPB4pwC9hIvZz1lAbEZBcQkvp9aA7VKXOLWk/lMEC8ISCzZc54ZwhaVePn4
+        HyuErShx//tLdoh6PYkbU6ewQdjaEssWvobaKyhxcuYTFoh6SYmDK26wTGAUn4VkxSwk7bOQ
+        tM9C0r6AkWUVo3hpcXFuekWxYV5quV5xYm5xaV66XnJ+7iZGYPye/nc4cgfj0Vsf9Q4xMnEw
+        HmKU4GBWEuFd8F0tUYg3JbGyKrUoP76oNCe1+BCjNAeLkjivkOvEeCGB9MSS1OzU1ILUIpgs
+        EwenVAPTifUN8qvC3KozPr+4+n9q0pSsznP2t47qCv5f0Pky9FP98YVajHfS2hkX/sxVNJNI
+        WdRzb7WkL9uEb/PeaFQ/3ZsU/MCepcxS+Ez072s3U67aR/LmagexvttTz/Zg30aDdoNTMf8L
+        u0w+TDcJdjFz0rL7ef/ip+p4E7e7D+zfZohmM8+K9zH5X9K7Ye2B95MOnkldzyRxyazIyDLx
+        cOa0R5/Frn3ODt854UyuU5CebtyeBQsyKhVSX5cHcgkcsPsbFX1bZ2ltdLWoSOaDwGyDN0HX
+        8lZtu9cfqr/4wtZL13atVj9oMrPl9GIVv/vrF6Scc7izhbX23YMLFZUB+aoNX75+XPRzsUNa
+        c+/RFqM2JZbijERDLeai4kQAvcdRRk4DAAA=
+X-CMS-MailID: 20210826211546uscas1p1e181ca820e506c7c195b933168301dd0
 CMS-TYPE: 301P
-X-CMS-RootMailID: 20210826211546uscas1p1fc876392e5aaf990eeb480cc74508852
-References: <CGME20210826211546uscas1p1fc876392e5aaf990eeb480cc74508852@uscas1p1.samsung.com>
+X-CMS-RootMailID: 20210826211546uscas1p1e181ca820e506c7c195b933168301dd0
+References: <20210826211522.308649-1-a.manzanares@samsung.com>
+        <CGME20210826211546uscas1p1e181ca820e506c7c195b933168301dd0@uscas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nvme_init_cap unconditionally sets support for one or more command sets. Wh=
-en
-using a passthru controller this may cause a conventional namespace to be
-ignored when checking the namespace identification descriptors which must
-include the command set identifier when the cap is set to support one or mo=
-re
-command sets. Since the namespace identification descriptors come from the
-passthru controller they may not include the command set identifier causing=
- the
-namespace to be ignored.
+For a passthru controller make cap initialization dependent on the cap of
+the passthru controller.
 
-Adam Manzanares (2):
-  nvme: move nvme_multi_css into nvme.h
-  nvmet: use passthru cntrl in nvmet_init_cap
-
- drivers/nvme/host/core.c   | 5 -----
- drivers/nvme/host/nvme.h   | 5 +++++
+Fixes: ab5d0b38c047 (nvmet: add Command Set Identifier support)
+Signed-off-by: Adam Manzanares <a.manzanares@samsung.com>
+---
  drivers/nvme/target/core.c | 9 ++++++---
- 3 files changed, 11 insertions(+), 8 deletions(-)
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
+index 66d05eecc2a9..220ba5ed5f3a 100644
+--- a/drivers/nvme/target/core.c
++++ b/drivers/nvme/target/core.c
+@@ -9,6 +9,7 @@
+ #include <linux/rculist.h>
+ #include <linux/pci-p2pdma.h>
+ #include <linux/scatterlist.h>
++#include "../host/nvme.h"
+=20
+ #define CREATE_TRACE_POINTS
+ #include "trace.h"
+@@ -1198,10 +1199,13 @@ void nvmet_update_cc(struct nvmet_ctrl *ctrl, u32 n=
+ew)
+=20
+ static void nvmet_init_cap(struct nvmet_ctrl *ctrl)
+ {
++	struct nvme_ctrl *ptctrl =3D nvmet_passthru_ctrl(ctrl->subsys);
++
+ 	/* command sets supported: NVMe command set: */
+ 	ctrl->cap =3D (1ULL << 37);
+ 	/* Controller supports one or more I/O Command Sets */
+-	ctrl->cap |=3D (1ULL << 43);
++	if ((ptctrl && nvme_multi_css(ptctrl)) || !ptctrl)
++		ctrl->cap |=3D (1ULL << 43);
+ 	/* CC.EN timeout in 500msec units: */
+ 	ctrl->cap |=3D (15ULL << 24);
+ 	/* maximum queue entries supported: */
+@@ -1363,8 +1367,6 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const cha=
+r *hostnqn,
+ 		goto out_put_subsystem;
+ 	mutex_init(&ctrl->lock);
+=20
+-	nvmet_init_cap(ctrl);
+-
+ 	ctrl->port =3D req->port;
+=20
+ 	INIT_WORK(&ctrl->async_event_work, nvmet_async_event_work);
+@@ -1378,6 +1380,7 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const cha=
+r *hostnqn,
+=20
+ 	kref_init(&ctrl->ref);
+ 	ctrl->subsys =3D subsys;
++	nvmet_init_cap(ctrl);
+ 	WRITE_ONCE(ctrl->aen_enabled, NVMET_AEN_CFG_OPTIONAL);
+=20
+ 	ctrl->changed_ns_list =3D kmalloc_array(NVME_MAX_CHANGED_NAMESPACES,
 --=20
 2.25.1
