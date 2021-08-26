@@ -2,107 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB803F8398
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088723F839B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240456AbhHZINW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:13:22 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48404 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239817AbhHZINS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:13:18 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-81-EKLme1GqN6OZhnD0jFxktg-1; Thu, 26 Aug 2021 09:12:29 +0100
-X-MC-Unique: EKLme1GqN6OZhnD0jFxktg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Thu, 26 Aug 2021 09:12:27 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Thu, 26 Aug 2021 09:12:27 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Collingbourne' <pcc@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] net: don't unconditionally copy_from_user a struct ifreq
- for socket ioctls
-Thread-Topic: [PATCH] net: don't unconditionally copy_from_user a struct ifreq
- for socket ioctls
-Thread-Index: AQHXmhmeusqat7DUPUKEZ8XxUHnOHquFbtgQ
-Date:   Thu, 26 Aug 2021 08:12:27 +0000
-Message-ID: <11f72b27c12f46eb8bef1d1773980c54@AcuMS.aculab.com>
-References: <20210826012722.3210359-1-pcc@google.com>
-In-Reply-To: <20210826012722.3210359-1-pcc@google.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S240399AbhHZIPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:15:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239817AbhHZIPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 04:15:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52A336102A;
+        Thu, 26 Aug 2021 08:15:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629965705;
+        bh=xxuJPpqWR33GkXkTcT4Nz+r/pSZoMmVFYscBwDiQ3L8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KVEuhHStdZzgpT4M3TAHho/U69D9/fLddhNDn5g68ASaxKgw+NOr5N+CPJy1AtVAE
+         DSBdRYSsBJHU+wwh0zhkeaPjAlgDUcCx2MDItDtt0JO+37wrVIBEVyZMv5S5BL5/PR
+         cnsELZadPotEjTGaNl2np6nSwhRAp0tln8Oe/o4PAJtnIQ645SHMHj56ViDRscunMo
+         RtNfWlwT5ieX10hhREQH50MvSzl2JddaoR4eOp3h2XiKholeik8wU+66NPbctEe6LB
+         lemXVyNtm0QB7A8+xT3r6kgu1l3DfofN5MW0OLPSjaloxrCS74L62q0VPcRV3CgleZ
+         wQfZGNZGCEdjg==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mJAXN-0007Hs-8C; Thu, 26 Aug 2021 10:15:01 +0200
+Date:   Thu, 26 Aug 2021 10:15:01 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] USB-serial fixes for 5.14-rc8
+Message-ID: <YSdNhWruPcclFUu9@hovoldconsulting.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUGV0ZXIgQ29sbGluZ2JvdXJuZQ0KPiBTZW50OiAyNiBBdWd1c3QgMjAyMSAwMjoyNw0K
-PiANCj4gQSBjb21tb24gaW1wbGVtZW50YXRpb24gb2YgaXNhdHR5KDMpIGludm9sdmVzIGNhbGxp
-bmcgYSBpb2N0bCBwYXNzaW5nDQo+IGEgZHVtbXkgc3RydWN0IGFyZ3VtZW50IGFuZCBjaGVja2lu
-ZyB3aGV0aGVyIHRoZSBzeXNjYWxsIGZhaWxlZCAtLQ0KPiBiaW9uaWMgYW5kIGdsaWJjIHVzZSBU
-Q0dFVFMgKHBhc3NpbmcgYSBzdHJ1Y3QgdGVybWlvcyksIGFuZCBtdXNsIHVzZXMNCj4gVElPQ0dX
-SU5TWiAocGFzc2luZyBhIHN0cnVjdCB3aW5zaXplKS4gSWYgdGhlIEZEIGlzIGEgc29ja2V0LCB3
-ZSB3aWxsDQo+IGNvcHkgc2l6ZW9mKHN0cnVjdCBpZnJlcSkgYnl0ZXMgb2YgZGF0YSBmcm9tIHRo
-ZSBhcmd1bWVudCBhbmQgcmV0dXJuDQo+IC1FRkFVTFQgaWYgdGhhdCBmYWlscy4gVGhlIHJlc3Vs
-dCBpcyB0aGF0IHRoZSBpc2F0dHkgaW1wbGVtZW50YXRpb25zDQo+IG1heSByZXR1cm4gYSBub24t
-UE9TSVgtY29tcGxpYW50IHZhbHVlIGluIGVycm5vIGluIHRoZSBjYXNlIHdoZXJlIHBhcnQNCj4g
-b2YgdGhlIGR1bW15IHN0cnVjdCBhcmd1bWVudCBpcyBpbmFjY2Vzc2libGUsIGFzIGJvdGggc3Ry
-dWN0IHRlcm1pb3MNCj4gYW5kIHN0cnVjdCB3aW5zaXplIGFyZSBzbWFsbGVyIHRoYW4gc3RydWN0
-IGlmcmVxIChhdCBsZWFzdCBvbiBhcm02NCkuDQo+IA0KPiBBbHRob3VnaCB0aGVyZSBpcyB1c3Vh
-bGx5IGVub3VnaCBzdGFjayBzcGFjZSBmb2xsb3dpbmcgdGhlIGFyZ3VtZW50DQo+IG9uIHRoZSBz
-dGFjayB0aGF0IHRoaXMgZGlkIG5vdCBwcmVzZW50IGEgcHJhY3RpY2FsIHByb2JsZW0gdXAgdG8g
-bm93LA0KPiB3aXRoIE1URSBzdGFjayBpbnN0cnVtZW50YXRpb24gaXQncyBtb3JlIGxpa2VseSBm
-b3IgdGhlIGNvcHkgdG8gZmFpbCwNCj4gYXMgdGhlIG1lbW9yeSBmb2xsb3dpbmcgdGhlIHN0cnVj
-dCBtYXkgaGF2ZSBhIGRpZmZlcmVudCB0YWcuDQo+IA0KPiBGaXggdGhlIHByb2JsZW0gYnkgYWRk
-aW5nIGFuIGVhcmx5IGNoZWNrIGZvciB3aGV0aGVyIHRoZSBpb2N0bCBpcyBhDQo+IHZhbGlkIHNv
-Y2tldCBpb2N0bCwgYW5kIHJldHVybiAtRU5PVFRZIGlmIGl0IGlzbid0Lg0KLi4NCj4gK2Jvb2wg
-aXNfZGV2X2lvY3RsX2NtZCh1bnNpZ25lZCBpbnQgY21kKQ0KPiArew0KPiArCXN3aXRjaCAoY21k
-KSB7DQo+ICsJY2FzZSBTSU9DR0lGTkFNRToNCj4gKwljYXNlIFNJT0NHSUZIV0FERFI6DQo+ICsJ
-Y2FzZSBTSU9DR0lGRkxBR1M6DQo+ICsJY2FzZSBTSU9DR0lGTUVUUklDOg0KPiArCWNhc2UgU0lP
-Q0dJRk1UVToNCj4gKwljYXNlIFNJT0NHSUZTTEFWRToNCj4gKwljYXNlIFNJT0NHSUZNQVA6DQo+
-ICsJY2FzZSBTSU9DR0lGSU5ERVg6DQo+ICsJY2FzZSBTSU9DR0lGVFhRTEVOOg0KPiArCWNhc2Ug
-U0lPQ0VUSFRPT0w6DQo+ICsJY2FzZSBTSU9DR01JSVBIWToNCj4gKwljYXNlIFNJT0NHTUlJUkVH
-Og0KPiArCWNhc2UgU0lPQ1NJRk5BTUU6DQo+ICsJY2FzZSBTSU9DU0lGTUFQOg0KPiArCWNhc2Ug
-U0lPQ1NJRlRYUUxFTjoNCj4gKwljYXNlIFNJT0NTSUZGTEFHUzoNCj4gKwljYXNlIFNJT0NTSUZN
-RVRSSUM6DQo+ICsJY2FzZSBTSU9DU0lGTVRVOg0KPiArCWNhc2UgU0lPQ1NJRkhXQUREUjoNCj4g
-KwljYXNlIFNJT0NTSUZTTEFWRToNCj4gKwljYXNlIFNJT0NBRERNVUxUSToNCj4gKwljYXNlIFNJ
-T0NERUxNVUxUSToNCj4gKwljYXNlIFNJT0NTSUZIV0JST0FEQ0FTVDoNCj4gKwljYXNlIFNJT0NT
-TUlJUkVHOg0KPiArCWNhc2UgU0lPQ0JPTkRFTlNMQVZFOg0KPiArCWNhc2UgU0lPQ0JPTkRSRUxF
-QVNFOg0KPiArCWNhc2UgU0lPQ0JPTkRTRVRIV0FERFI6DQo+ICsJY2FzZSBTSU9DQk9ORENIQU5H
-RUFDVElWRToNCj4gKwljYXNlIFNJT0NCUkFERElGOg0KPiArCWNhc2UgU0lPQ0JSREVMSUY6DQo+
-ICsJY2FzZSBTSU9DU0hXVFNUQU1QOg0KPiArCWNhc2UgU0lPQ0JPTkRTTEFWRUlORk9RVUVSWToN
-Cj4gKwljYXNlIFNJT0NCT05ESU5GT1FVRVJZOg0KPiArCWNhc2UgU0lPQ0dJRk1FTToNCj4gKwlj
-YXNlIFNJT0NTSUZNRU06DQo+ICsJY2FzZSBTSU9DU0lGTElOSzoNCj4gKwljYXNlIFNJT0NXQU5E
-RVY6DQo+ICsJY2FzZSBTSU9DR0hXVFNUQU1QOg0KPiArCQlyZXR1cm4gdHJ1ZTsNCg0KVGhhdCBp
-cyBob3JyaWQuDQpDYW4ndCB5b3UgYXQgbGVhc3QgdXNlIF9JT0NfVFlQRSgpIHRvIGNoZWNrIGZv
-ciBzb2NrZXQgaW9jdGxzLg0KQ2xlYXJseSBpdCBjYW4gc3VjY2VlZCBmb3IgJ3JhbmRvbScgZHJp
-dmVyIGlvY3RscywgYnV0IHdpbGwgZmFpbA0KZm9yIHRoZSB0dHkgb25lcy4NCg0KVGhlIG90aGVy
-IHNhbmUgdGhpbmcgaXMgdG8gY2hlY2sgX0lPQ19TSVpFKCkuDQpTaW5jZSBhbGwgdGhlIFNJT0N4
-eHh4IGhhdmUgYSBjb3JyZWN0IF9JT0NfU0laRSgpIHRoYXQgY2FuIGJlDQp1c2VkIHRvIGNoZWNr
-IHRoZSB1c2VyIGNvcHkgbGVuZ3RoLg0KKFVubGlrZSBzb2NrZXQgb3B0aW9ucyB0aGUgY29ycmVj
-dCBsZW5ndGggaXMgYWx3YXlzIHN1cHBsaWVkLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
-ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
-IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
 
+  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-5.14-rc8
+
+for you to fetch changes up to df7b16d1c00ecb3da3a30c999cdb39f273c99a2f:
+
+  Revert "USB: serial: ch341: fix character loss at high transfer rates" (2021-08-25 09:13:33 +0200)
+
+----------------------------------------------------------------
+USB-serial fixes for 5.14-rc8
+
+Here's a fix for a regression in 5.14 (also backported to stable) which
+caused reads to stall for ch341 devices.
+
+Included is also a new modem device id.
+
+All but the revert have been in linux-next, and with no reported issues.
+
+----------------------------------------------------------------
+Johan Hovold (1):
+      Revert "USB: serial: ch341: fix character loss at high transfer rates"
+
+Zhengjun Zhang (1):
+      USB: serial: option: add new VID/PID to support Fibocom FG150
+
+ drivers/usb/serial/ch341.c  | 1 -
+ drivers/usb/serial/option.c | 2 ++
+ 2 files changed, 2 insertions(+), 1 deletion(-)
