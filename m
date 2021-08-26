@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589B83F87C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BE13F87C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 14:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242341AbhHZMkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 08:40:51 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:56268
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240770AbhHZMks (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:40:48 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A83393F245;
-        Thu, 26 Aug 2021 12:39:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629981599;
-        bh=TKF+42ZxrWYsLD4ysTzhSy+xn6UWr/AHBlUXLt4dSZk=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=rxUlkGiLXpfYa8vyM8fgzMeu6qaskz6I1UBFgrx0ayQmf0kAg40uEeQsusT3MY/8/
-         K+CEQDTLoV2oN14f0Z6ccV5wn1eQT4hOg8jsEr2/TwkpRKAia8+arSEl/jVHG1EArf
-         VaeWLtdT12C6m2mXgcZwzPN3zLp/CD0sNoXH7tYlGWWmZkH01ceadfHsvsq+e5Fd2B
-         24AN6b/D3jPfqQtr0uT1aKWD9X7JqnoCehsavXdpIWsNJGqTRKtbnGms5zv7fZ2+Na
-         Q8Y2CJyMMucfeRfEkDwRvYjnyQi9C0ynL6uXXBXC1frKhUHFZqUJD8ZLUPJYNil4Jt
-         lF+VvjxOJlTJA==
-From:   Colin King <colin.king@canonical.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: typec: tcpm: Fix spelling mistake "atleast" -> "at least"
-Date:   Thu, 26 Aug 2021 13:39:59 +0100
-Message-Id: <20210826123959.14838-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        id S242049AbhHZMle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 08:41:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240767AbhHZMld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 08:41:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C1B9610A3;
+        Thu, 26 Aug 2021 12:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629981646;
+        bh=v+hSZmfYSqJ7n+9tWtedIrVU3oif2Q/4V8DUmYCErMg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=clGUbmIDDT7YriArGRVJDBvYA6ERBKtrFmf48wGvm3OSFwTQ863ey8IoWaad5gtrJ
+         8HHoScPUbuKCEykeCPV/UyhEA9/5La5SHtC7bUqj+dkRSuna/iqh6lZLraenWdntLx
+         0zI+Nj+2Btv5vxvSulVzflcBqyrbcM3VPw90FwsCgRfdzidiMfMtIfyVeSkoHum44F
+         85AvLLmjo2fdteSppLXvA2LKIiWxQABRyxvNO6/SL57MCJHMpuuSVNmZFraipHGmAv
+         uA+RmubPbEIQk7B/QRkAo2WenmYdIK05db5YeeeeOgEiaBPvHA4aq2JbJss5KoTd8f
+         iAQaEfbtbNp4A==
+Date:   Thu, 26 Aug 2021 13:40:17 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [RFC PATCH v2 1/3] regulator: core: Add regulator_lookup_list
+Message-ID: <20210826124017.GC4148@sirena.org.uk>
+References: <20210825103301.GC5186@sirena.org.uk>
+ <CAHp75VdHpjbjz4biTP11TKT6J+7WQi-a1Ru3VLuSxM5tSLCB3Q@mail.gmail.com>
+ <20210825113013.GD5186@sirena.org.uk>
+ <CAHp75VfKJgux8k_mPauYB3MHcEOcnnzhSpoUDi4mVFDgtmNXeg@mail.gmail.com>
+ <20210825131139.GG5186@sirena.org.uk>
+ <YSZMxxJ76vF316Pi@pendragon.ideasonboard.com>
+ <4ac0acb9-83ea-7fcd-cde3-669ba3b699c6@gmail.com>
+ <YSZSOZXxSac307/A@pendragon.ideasonboard.com>
+ <20210825145232.GI5186@sirena.org.uk>
+ <bce63128-3dde-f4c6-b0cd-00818293ebc3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
+Content-Disposition: inline
+In-Reply-To: <bce63128-3dde-f4c6-b0cd-00818293ebc3@gmail.com>
+X-Cookie: /earth: file system full.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-There are spelling mistakes in a comment and a literal string.
-Fix them.
+--Md/poaVZ8hnGTzuv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, Aug 25, 2021 at 11:09:09PM +0100, Daniel Scally wrote:
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 049f4c61ee82..b981fc39fa3c 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -278,7 +278,7 @@ struct pd_mode_data {
-  * @req_max_curr: Requested max current of the port partner
-  * @req_out_volt: Requested output voltage to the port partner
-  * @req_op_curr: Requested operating current to the port partner
-- * @supported: Parter has atleast one APDO hence supports PPS
-+ * @supported: Parter has at least one APDO hence supports PPS
-  * @active: PPS mode is active
-  */
- struct pd_pps_data {
-@@ -2050,7 +2050,7 @@ enum pdo_err {
- 
- static const char * const pdo_err_msg[] = {
- 	[PDO_ERR_NO_VSAFE5V] =
--	" err: source/sink caps should atleast have vSafe5V",
-+	" err: source/sink caps should at least have vSafe5V",
- 	[PDO_ERR_VSAFE5V_NOT_FIRST] =
- 	" err: vSafe5V Fixed Supply Object Shall always be the first object",
- 	[PDO_ERR_PDO_TYPE_NOT_IN_ORDER] =
--- 
-2.32.0
+> Alright; and what about parsing the platform data into a struct
+> regulator_init_data then...at the moment that's left up to the
+> individual regulator drivers. In my mind that's something better left to
+> core, so rather than finding the right instance of struct
+> regulator_init_data from the regulator_lookup_list the
+> regulator_lookup_init_data() function would be finding the right
+> instance of the struct from cfg->dev->platform_data instead...what are
+> your thoughts on that?
 
+That sounds like a useful helper to have - we need to let drivers have
+custom platform data (especially for MFDs) but even there they could
+use such a helper if they can point it at an array stored elsewhere.
+
+--Md/poaVZ8hnGTzuv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEni7EACgkQJNaLcl1U
+h9BKfwf9FLJI4ZYrEANl+eLgmFTIqFp7IzuyvY9j5DNO7O/CJnO6MNKoVK123Twg
+nD+LUu4cAH3SysojkoLUwrCpk6QrhLYuzTGsadrdCzxg/Mw+XP3ap1EnKWJGlFfI
+wJ04PfxjO82h9Pk3JOZLjUF8Tz6n7+6zraAd+GcpvN49DC0n5XoapkvuwJlAsk5h
+ddq2xA+rD+KNWrs1AUV3v0pUKyFYfuR7pHqgtWeCiYEHTquW6CRHONyl7/BhwkKo
+KdeLuyre42k2XYFjQednKoy9zhcgFAwqjdR+Do/LbDhfvdvK8P3FIx3/dU6+JHPi
+/gUlEYhDHZwO5wDMfnGdFnZ5+IgpPg==
+=4/H/
+-----END PGP SIGNATURE-----
+
+--Md/poaVZ8hnGTzuv--
