@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A823F8686
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E713F8689
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 13:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242132AbhHZLap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 07:30:45 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37246 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbhHZLan (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 07:30:43 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CA87020192;
-        Thu, 26 Aug 2021 11:29:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629977395; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IN2Dtsa48cpPIFgznxW6CFNis9T0sGloZqOdQstyxAo=;
-        b=M+31mAg0zGIMPzDxcdU19Pxt7nwlp+rrH9dYqxplbi8iG3GiPB7PHCSVgk3FfheCJFRxXg
-        ulMuwr76znAH/IGQnRHgKr2k5NYpeW4BiHjWEndgG7ZBZl/bbwAi80S00H/GjH7PlxevmC
-        /esdDomCduAV0AEL4GdMz040vAT3Fag=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AB94613318;
-        Thu, 26 Aug 2021 11:29:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id y9nSKDN7J2HENwAAGKfGzw
-        (envelope-from <mkoutny@suse.com>); Thu, 26 Aug 2021 11:29:55 +0000
-Date:   Thu, 26 Aug 2021 13:29:54 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, vipinsh@google.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2] misc_cgroup: use a counter to count the number of
- failures
-Message-ID: <20210826112954.GD4520@blackbody.suse.cz>
-References: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
- <20210824164423.GA11859@blackbody.suse.cz>
- <YSVDwc/1sEmXdOK9@slm.duckdns.org>
- <4ed67493-e595-e002-69f9-1f53662ba189@gmail.com>
+        id S242171AbhHZLaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 07:30:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242243AbhHZLax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 07:30:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 74A43610C7;
+        Thu, 26 Aug 2021 11:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629977406;
+        bh=os+q9n8hc+wtS3lf32yM+RmJWjBDfWwQy4QCUNAOw0s=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=C2nkcpxzGRzHOzgmlh07zyV/pxbW1xWjltlTZwUVrkxlpyeQzYPbliew7EyNP8DW/
+         Qj0eOt/kT7oL4/ct7YcU0FqNBXGun8UTtWcSClQJar4wWuo7ZJ2RBUeFLx5K6t7qWB
+         Pd/J68DEWZBHthSXaPHfsZE3a5CHtB6iKN5qGlp4ASAMTZ77DlZIpJvg1y3DwiFBXS
+         Vh3cYP/vghUCNwK4Vf0YWh+QP0ArIEN2au0jsnONVMFzqX0mrmnsqf8JXNt6dueUmu
+         t3zhidH5NDo1+yxAFQfOEKEAx/nhTjEScsEBpp6Cf/fDuWNuG3faU23oNleEdFGFzi
+         zJKRYdBHwqsvg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 67D7E60972;
+        Thu, 26 Aug 2021 11:30:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ed67493-e595-e002-69f9-1f53662ba189@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 0/2] net: Add LiteETH network driver
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162997740642.22703.3742486992614498379.git-patchwork-notify@kernel.org>
+Date:   Thu, 26 Aug 2021 11:30:06 +0000
+References: <20210825222106.3113287-1-joel@jms.id.au>
+In-Reply-To: <20210825222106.3113287-1-joel@jms.id.au>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        kgugala@antmicro.com, mholenko@antmicro.com,
+        devicetree@vger.kernel.org, florent@enjoy-digital.fr,
+        gsomlo@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 09:34:45AM +0800, brookxu <brookxu.cn@gmail.com> wrote:
-> The core logic of pids cgroup and misc cgroup is similar.
+Hello:
 
-Yes, the latter is conceptually a generalization of the former and it can
-be tempting to use the general form. Beware that pids controller would
-need to retain its existing API (and the behavior of being an
-independent controller) and that would be IMO exceptions
-counterweighting the generalization.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-> Is it possible for us to merge pids cgroup into misc cgroup?
+On Thu, 26 Aug 2021 07:51:04 +0930 you wrote:
+> This adds a driver for the LiteX network device, LiteEth.
+> 
+> v4 Fixes the bindings and adds r-b tags from Gabriel and Rob.
+> 
+> v3 Updates the bindings to describe the slots in a way that makes more
+> sense for the hardware, instead of trying to fit some existing
+> properties. The driver is updated to use these bindings, and fix some
+> issues pointed out by Gabriel.
+> 
+> [...]
 
-Technically it might be possible but I can't see the benefit (but maybe
-you envisioned something else where my reasoning won't apply).
+Here is the summary with links:
+  - [v4,1/2] dt-bindings: net: Add bindings for LiteETH
+    https://git.kernel.org/netdev/net-next/c/b0f8d3077f8f
+  - [v4,2/2] net: Add driver for LiteX's LiteETH network interface
+    https://git.kernel.org/netdev/net-next/c/ee7da21ac4c3
 
-Michal
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
