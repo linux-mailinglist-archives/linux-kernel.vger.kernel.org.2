@@ -2,149 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9E63F8AD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210493F8AD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 17:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242905AbhHZPRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 11:17:18 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:44115 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S232291AbhHZPRQ (ORCPT
+        id S242913AbhHZPSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 11:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232291AbhHZPSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:17:16 -0400
-Received: (qmail 230172 invoked by uid 1000); 26 Aug 2021 11:16:23 -0400
-Date:   Thu, 26 Aug 2021 11:16:23 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chris.chiu@canonical.com, lokeshvutla@ti.com
-Subject: Re: [PATCH v2 2/3] usb: core: hcd: Add support for deferring roothub
- registration
-Message-ID: <20210826151623.GA228824@rowland.harvard.edu>
-References: <20210826111426.751-1-kishon@ti.com>
- <20210826111426.751-3-kishon@ti.com>
+        Thu, 26 Aug 2021 11:18:08 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0573AC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 08:17:21 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mJH80-0000dH-7o; Thu, 26 Aug 2021 17:17:16 +0200
+Message-ID: <b8e3f7c6bec4d01ba05861de6a25c0b7fd432d0a.camel@pengutronix.de>
+Subject: Re: [PATCH 2/3] drm/etnaviv: fix dma configuration of the virtual
+ device
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Michael Walle <michael@walle.cc>,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Lukas F . Hartmann" <lukas@mntre.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 26 Aug 2021 17:17:13 +0200
+In-Reply-To: <df806090-8a21-33e8-1e01-bd03b6ed64cf@arm.com>
+References: <20210826121006.685257-1-michael@walle.cc>
+         <20210826121006.685257-3-michael@walle.cc>
+         <df806090-8a21-33e8-1e01-bd03b6ed64cf@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826111426.751-3-kishon@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 04:44:25PM +0530, Kishon Vijay Abraham I wrote:
-> It has been observed with certain PCIe USB cards (like Inateck connected
-> to AM64 EVM or J7200 EVM) that as soon as the primary roothub is
-> registered, port status change is handled even before xHC is running
-> leading to cold plug USB devices not detected. For such cases, registering
-> both the root hubs along with the second HCD is required. Add support for
-> deferring roothub registration in usb_add_hcd(), so that both primary and
-> secondary roothubs are registered along with the second HCD.
+Am Donnerstag, dem 26.08.2021 um 16:00 +0100 schrieb Robin Murphy:
+> On 2021-08-26 13:10, Michael Walle wrote:
+> > The DMA configuration of the virtual device is inherited from the first
+> > actual etnaviv device. Unfortunately, this doesn't work with an IOMMU:
+> > 
+> > [    5.191008] Failed to set up IOMMU for device (null); retaining platform DMA ops
+> > 
+> > This is because there is no associated iommu_group with the device. The
+> > group is set in iommu_group_add_device() which is eventually called by
+> > device_add() via the platform bus:
+> >    device_add()
+> >      blocking_notifier_call_chain()
+> >        iommu_bus_notifier()
+> >          iommu_probe_device()
+> >            __iommu_probe_device()
+> >              iommu_group_get_for_dev()
+> >                iommu_group_add_device()
+> > 
+> > Move of_dma_configure() into the probe function, which is called after
+> > device_add(). Normally, the platform code will already call it itself
+> > if .of_node is set. Unfortunately, this isn't the case here.
+> > 
+> > Also move the dma mask assignemnts to probe() to keep all DMA related
+> > settings together.
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> Suggested-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-> Tested-by: Chris Chiu <chris.chiu@canonical.com>
-> ---
-
-I should have noticed this problem before...
-
->  drivers/usb/core/hcd.c  | 27 ++++++++++++++++++++++-----
->  include/linux/usb/hcd.h |  2 ++
->  2 files changed, 24 insertions(+), 5 deletions(-)
+> I assume the driver must already keep track of the real GPU platform 
+> device in order to map registers, request interrupts, etc. correctly - 
+> can't it also correctly use that device for DMA API calls and avoid the 
+> need for these shenanigans altogether?
 > 
-> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-> index 00d35fe1fef0..64fdfc6692c2 100644
-> --- a/drivers/usb/core/hcd.c
-> +++ b/drivers/usb/core/hcd.c
-> @@ -2795,6 +2795,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
->  {
->  	int retval;
->  	struct usb_device *rhdev;
-> +	struct usb_hcd *shared_hcd;
->  
->  	if (!hcd->skip_phy_initialization && usb_hcd_is_primary_hcd(hcd)) {
->  		hcd->phy_roothub = usb_phy_roothub_alloc(hcd->self.sysdev);
-> @@ -2955,18 +2956,34 @@ int usb_add_hcd(struct usb_hcd *hcd,
->  		goto err_hcd_driver_start;
->  	}
->  
-> +	/* starting here, usbcore will pay attention to the shared HCD roothub */
-> +	shared_hcd = hcd->shared_hcd;
-> +	if (!usb_hcd_is_primary_hcd(hcd) && shared_hcd && HCD_DEFER_RH_REGISTER(shared_hcd)) {
-> +		retval = register_root_hub(shared_hcd);
-> +		if (retval != 0)
-> +			goto err_register_shared_root_hub;
-> +
-> +		if (shared_hcd->uses_new_polling && HCD_POLL_RH(shared_hcd))
-> +			usb_hcd_poll_rh_status(shared_hcd);
-> +	}
-> +
->  	/* starting here, usbcore will pay attention to this root hub */
-> -	retval = register_root_hub(hcd);
-> -	if (retval != 0)
-> -		goto err_register_root_hub;
-> +	if (!HCD_DEFER_RH_REGISTER(hcd)) {
-> +		retval = register_root_hub(hcd);
-> +		if (retval != 0)
-> +			goto err_register_root_hub;
->  
-> -	if (hcd->uses_new_polling && HCD_POLL_RH(hcd))
-> -		usb_hcd_poll_rh_status(hcd);
-> +		if (hcd->uses_new_polling && HCD_POLL_RH(hcd))
-> +			usb_hcd_poll_rh_status(hcd);
-> +	}
->  
->  	return retval;
->  
->  err_register_root_hub:
->  	usb_stop_hcd(hcd);
-> +err_register_shared_root_hub:
-> +	if (!usb_hcd_is_primary_hcd(hcd) && shared_hcd && HCD_DEFER_RH_REGISTER(shared_hcd))
-> +		usb_stop_hcd(shared_hcd);
+Not without a bigger rework. There's still quite a bit of midlayer
+issues in DRM, where dma-buf imports are dma-mapped and cached via the
+virtual DRM device instead of the real GPU device. Also etnaviv is able
+to coalesce multiple Vivante GPUs in a single system under one virtual
+DRM device, which is used on i.MX6 where the 2D and 3D GPUs are
+separate peripherals, but have the same DMA constraints.
 
-This was added in the wrong place.  It needs to come before the 
-usb_stop_hcd(hcd) call, because usb_start_hcd(hcd) was run before we failed to 
-register the shared hcd's root hub.
+Effectively we would need to handle N devices for the dma-mapping in a
+lot of places instead of only dealing with the one virtual DRM device.
+It would probably be the right thing to anyways, but it's not something
+that can be changed short-term. I'm also not yet sure about the
+performance implications, as we might run into some cache maintenance
+bottlenecks if we dma synchronize buffers to multiple real device
+instead of doing it a single time with the virtual DRM device. I know,
+I know, this has a lot of assumptions baked in that could fall apart if
+someone builds a SoC with multiple Vivante GPUs that have differing DMA
+constraints, but up until now hardware designers have not been *that*
+crazy, fortunately.
 
-Furthermore, I don't think we need to stop the shared hcd at all.  At this 
-point, the usb_add_hcd() call for the shared hcd has already returned 
-successfully.  The usb_stop_hcd(shared_hcd) callback will be made automatically 
-when the shared hcd is unregistered later on, after this function returns an 
-error.
+Regards,
+Lucas
 
-Come to think of it, don't we also need to modify the usb_disconnect(&rhdev) 
-call in usb_remove_hcd() to handle the case where the root hub wasn't 
-registered in the first place because it was deferred?  At the very least, we 
-should test the hcd's rh_registered flag before trying to unregister the root 
-hub.
-
-Alan Stern
-
->  err_hcd_driver_start:
->  	if (usb_hcd_is_primary_hcd(hcd) && hcd->irq > 0)
->  		free_irq(irqnum, hcd);
-> diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
-> index 548a028f2dab..2c1fc9212cf2 100644
-> --- a/include/linux/usb/hcd.h
-> +++ b/include/linux/usb/hcd.h
-> @@ -124,6 +124,7 @@ struct usb_hcd {
->  #define HCD_FLAG_RH_RUNNING		5	/* root hub is running? */
->  #define HCD_FLAG_DEAD			6	/* controller has died? */
->  #define HCD_FLAG_INTF_AUTHORIZED	7	/* authorize interfaces? */
-> +#define HCD_FLAG_DEFER_RH_REGISTER	8	/* Defer roothub registration */
->  
->  	/* The flags can be tested using these macros; they are likely to
->  	 * be slightly faster than test_bit().
-> @@ -134,6 +135,7 @@ struct usb_hcd {
->  #define HCD_WAKEUP_PENDING(hcd)	((hcd)->flags & (1U << HCD_FLAG_WAKEUP_PENDING))
->  #define HCD_RH_RUNNING(hcd)	((hcd)->flags & (1U << HCD_FLAG_RH_RUNNING))
->  #define HCD_DEAD(hcd)		((hcd)->flags & (1U << HCD_FLAG_DEAD))
-> +#define HCD_DEFER_RH_REGISTER(hcd) ((hcd)->flags & (1U << HCD_FLAG_DEFER_RH_REGISTER))
->  
->  	/*
->  	 * Specifies if interfaces are authorized by default
-> -- 
-> 2.17.1
+> FYI, IOMMU configuration is really supposed to *only* run at 
+> add_device() time as above - the fact that it's currently hooked in to 
+> be retriggered by of_dma_configure() on DT platforms actually turns out 
+> to lead to various issues within the IOMMU API, and the plan to change 
+> that is slowly climbing up my to-do list.
 > 
+> Robin.
+> 
+> > Signed-off-by: Michael Walle <michael@walle.cc>
+> > ---
+> >   drivers/gpu/drm/etnaviv/etnaviv_drv.c | 24 +++++++++++++++---------
+> >   1 file changed, 15 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> > index 2509b3e85709..ff6425f6ebad 100644
+> > --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> > +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> > @@ -589,6 +589,7 @@ static int compare_str(struct device *dev, void *data)
+> >   static int etnaviv_pdev_probe(struct platform_device *pdev)
+> >   {
+> >   	struct device *dev = &pdev->dev;
+> > +	struct device_node *first_node = NULL;
+> >   	struct component_match *match = NULL;
+> >   
+> >   	if (!dev->platform_data) {
+> > @@ -598,6 +599,9 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
+> >   			if (!of_device_is_available(core_node))
+> >   				continue;
+> >   
+> > +			if (!first_node)
+> > +				first_node = core_node;
+> > +
+> >   			drm_of_component_match_add(&pdev->dev, &match,
+> >   						   compare_of, core_node);
+> >   		}
+> > @@ -609,6 +613,17 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
+> >   			component_match_add(dev, &match, compare_str, names[i]);
+> >   	}
+> >   
+> > +	pdev->dev.coherent_dma_mask = DMA_BIT_MASK(40);
+> > +	pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
+> > +
+> > +	/*
+> > +	 * Apply the same DMA configuration to the virtual etnaviv
+> > +	 * device as the GPU we found. This assumes that all Vivante
+> > +	 * GPUs in the system share the same DMA constraints.
+> > +	 */
+> > +	if (first_node)
+> > +		of_dma_configure(&pdev->dev, first_node, true);
+> > +
+> >   	return component_master_add_with_match(dev, &etnaviv_master_ops, match);
+> >   }
+> >   
+> > @@ -659,15 +674,6 @@ static int __init etnaviv_init(void)
+> >   			of_node_put(np);
+> >   			goto unregister_platform_driver;
+> >   		}
+> > -		pdev->dev.coherent_dma_mask = DMA_BIT_MASK(40);
+> > -		pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
+> > -
+> > -		/*
+> > -		 * Apply the same DMA configuration to the virtual etnaviv
+> > -		 * device as the GPU we found. This assumes that all Vivante
+> > -		 * GPUs in the system share the same DMA constraints.
+> > -		 */
+> > -		of_dma_configure(&pdev->dev, np, true);
+> >   
+> >   		ret = platform_device_add(pdev);
+> >   		if (ret) {
+> > 
+
+
