@@ -2,169 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EB53F8156
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C593F8158
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 05:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236931AbhHZDzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Aug 2021 23:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55520 "EHLO
+        id S237532AbhHZD6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Aug 2021 23:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhHZDzV (ORCPT
+        with ESMTP id S229898AbhHZD63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Aug 2021 23:55:21 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE9DC0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 20:54:35 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id w6so959854plg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Aug 2021 20:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1sPzPYc/EKv0I2wYFDfjlJvR2hTdySSO3VkQ5DpfwQs=;
-        b=cE+FiLlP+4iCYjhQgAkHwz0kaR6rlqPG2oJAS1XJmXv/xTGOBoSIrHKsJnZUz4pZiC
-         oDhmTDiGEc3t305uYyOjiRGQsUxe8YAAm4Lr6xWfMK8jZ/N1N9JST8/czqEp8ptqhZkp
-         7ZTqyPL169r7Qa/Twzjw0s1sgZQOjv3KW5z9k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1sPzPYc/EKv0I2wYFDfjlJvR2hTdySSO3VkQ5DpfwQs=;
-        b=qQ862smatKkmoAD39frnSw+Qx5N7fIJtPFDKhVZDRmsUAgA5jR4DsXzd8JjX23UPfe
-         ICBLY5vCm4zv4J2bqp+dn/dhcUNsg7cRg3YakJ/mH6Rv7lECECnHYgT6MVDNGzd1+B8A
-         e2o7FVOiBxGvjpiN+oooPe9hLBlgz4O4a4ocJZtxXQ0t6T5ngN1SzJG2E4q2n1B6iHaT
-         aA6XxWQWw/O0nUzu3dydErX5eA4cGInNff/t1wl5Xb0XeREpb4begPmJSl6+2av1wQFo
-         nATJ2QikYnnGxv4TbIJVtJyAwfCzzwQSc5nqwiKmBFdfTPq0dMOWtKYZeUyaef0J61A7
-         cNhw==
-X-Gm-Message-State: AOAM531aah07HNT30Utzp7Vl60y6dL+Zh1M/qT9+vRjijFRvRDbXMqGu
-        Y1B67e0+DDtHImeyl98iukQtAg==
-X-Google-Smtp-Source: ABdhPJxzRpKUNWXysHu4C+p0lD3QBdZHfusdZCygGhFD/Ho1EJUqcMoYDGKrLWbNIizCBITmGQT4nA==
-X-Received: by 2002:a17:90b:4b84:: with SMTP id lr4mr14397456pjb.32.1629950074801;
-        Wed, 25 Aug 2021 20:54:34 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b12sm1105596pff.63.2021.08.25.20.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 20:54:34 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 20:54:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
-Message-ID: <202108251958.4BA654453@keescook>
-References: <20210820192615.23e2e617@canb.auug.org.au>
- <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
- <202108202248.921E8C66@keescook>
- <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
- <20210823203742.5169ad54@canb.auug.org.au>
- <66615de5-4acb-8d85-6d69-ddd0b9609348@infradead.org>
- <20210824115859.187f272f@canb.auug.org.au>
- <202108250959.CD734CED@keescook>
- <1d7780f0-424b-71d4-732b-c28a796d1166@infradead.org>
+        Wed, 25 Aug 2021 23:58:29 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C39C061757;
+        Wed, 25 Aug 2021 20:57:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1d7780f0-424b-71d4-732b-c28a796d1166@infradead.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1629950260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7SHT0aOimjTS8lAne1TD1ARTfnTJ/YEGCjr9e3NeCjM=;
+        b=lkvFotwGnseccRqAR9jDUvsLyk/ZDXKVQakcC8B/K6peBcOzMLJNbfIs+JjK72d68NxuZq
+        c2rb+1n24PULFYmp9uuZ6UBeOyX//BXrQrrFqX/kRT4gXCSy9JxxywE3Ar1hixl8RNti6U
+        YuLCxoLM+99P2Ur+V1UMGExzxUqzzZk=
+Date:   Thu, 26 Aug 2021 03:57:40 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   yajun.deng@linux.dev
+Message-ID: <63e1e9ea1e4b74b56aeafcc6695ecfa8@linux.dev>
+Subject: Re: [PATCH linux-next] PCI: Fix the order in unregister path
+To:     "Rob Herring" <robh@kernel.org>
+Cc:     "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        "PCI" <linux-pci@vger.kernel.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <CAL_JsqJ4731w_0rYCSBC_Mma-rn4nUUbKnSwhymGZyh8E7xoWg@mail.gmail.com>
+References: <CAL_JsqJ4731w_0rYCSBC_Mma-rn4nUUbKnSwhymGZyh8E7xoWg@mail.gmail.com>
+ <20210825083425.32740-1-yajun.deng@linux.dev>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 10:49:19AM -0700, Randy Dunlap wrote:
-> On 8/25/21 10:04 AM, Kees Cook wrote:
-> > On Tue, Aug 24, 2021 at 11:58:59AM +1000, Stephen Rothwell wrote:
-> > > On Mon, 23 Aug 2021 18:24:44 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
-> > > > 
-> > > > This is just weird. What I am seeing is that for every source file
-> > > > where gcc emits a warning: it then follows that up with this
-> > > > > > cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
-> > > 
-> > > I see the same, as well as:
-> > > 
-> > > <stdin>:1515:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-> > > cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
-> > > 
-> > > But only on my gcc 7.3.1 builds (the rest are gcc 10).
-> > > 
-> > > > Smells like a gcc bug to me.
-> > > 
-> > > Yes
-> > > 
-> > > Also noted here: https://github.com/DynamoRIO/drmemory/issues/2099 (second comment)
-> > 
-> > Okay, I think this work-around should work. I've been able to reproduce
-> > the weird conditions, and this seems to behave correctly. Andrew, can
-> > you fixup the fixup with this?
-> > 
-> > 
-> > diff --git a/Makefile b/Makefile
-> > index 26640899e7ca..c1842014a5de 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1094,8 +1094,13 @@ endif
-> >   ifdef CONFIG_CC_IS_GCC
-> >   # The allocators already balk at large sizes, so silence the compiler
-> > -# warnings for bounds checks involving those possible values.
-> > -KBUILD_CFLAGS += $(call cc-option, -Wno-alloc-size-larger-than)
-> > +# warnings for bounds checks involving those possible values. While
-> > +# -Wno-alloc-size-larger-than would normally be used here, some versions
-> > +# of gcc (<9.1) weirdly don't handle the option correctly when _other_
-> > +# warnings are produced (?!), so instead use SIZE_MAX to effectively
-> > +# disable it.
-> > +# https://lore.kernel.org/lkml/20210824115859.187f272f@canb.auug.org.au
-> > +KBUILD_CFLAGS += $(call cc-option, -Walloc-size-larger-than=SIZE_MAX)
-> >   endif
-> >   # disable invalid "can't wrap" optimizations for signed / pointers
-> > 
-> 
-> Hi Kees,
-> 
-> I get a lot of these:
-> 
-> ../include/linux/slab.h: In function ‘keyctl_instantiate_key_common’:
-> cc1: warning: invalid argument ‘SIZE_MAX’ to ‘-Walloc-size-larger-than=’
-
-O_o
-
-I love how the documentation on this option is consistently wrong. :)
-
-I haven't been able to exactly reproduce this error on godbolt.org, but
-I got close with trunk GCC:
-gcc: error: argument to '-Walloc-size-larger-than=' should be a non-negative integer optionally followed by a size unit
-
-Even though stdint.h is included. :(
-
-Okay. How about _this_ fix?
-
-diff --git a/Makefile b/Makefile
-index efa9bd36b158..141a851930e6 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1096,8 +1096,17 @@ endif
- 
- ifdef CONFIG_CC_IS_GCC
- # The allocators already balk at large sizes, so silence the compiler
--# warnings for bounds checks involving those possible values.
--KBUILD_CFLAGS += $(call cc-option, -Wno-alloc-size-larger-than)
-+# warnings for bounds checks involving those possible values. While
-+# -Wno-alloc-size-larger-than would normally be used here, earlier versions
-+# of gcc (<9.1) weirdly don't handle the option correctly when _other_
-+# warnings are produced (?!). Using -Walloc-size-larger-than=SIZE_MAX
-+# doesn't work (as it is documented to), silently resolving to "0" prior to
-+# version 9.1 (and producing an error more recently). Numeric values larger
-+# than PTRDIFF_MAX also don't work prior to version 9.1, which are silently
-+# ignored, continuing to default to PTRDIFF_MAX. So, left with no other
-+# choice, we must perform a versioned check to disable this warning.
-+# https://lore.kernel.org/lkml/20210824115859.187f272f@canb.auug.org.au
-+KBUILD_CFLAGS += $(call cc-ifversion, -ge, 0901, -Wno-alloc-size-larger-than)
- endif
- 
- # disable invalid "can't wrap" optimizations for signed / pointers
-
-
--- 
-Kees Cook
+August 25, 2021 9:55 PM, "Rob Herring" <robh@kernel.org> wrote:=0A=0A> On=
+ Wed, Aug 25, 2021 at 3:34 AM Yajun Deng <yajun.deng@linux.dev> wrote:=0A=
+> =0A>> device_del() should be called first and then called put_device() =
+in=0A>> unregister path, becase if that the final reference count, the de=
+vice=0A>> will be cleaned up via device_release() above. So use device_un=
+register()=0A>> instead.=0A>> =0A>> Fixes: 9885440b16b8 (PCI: Fix pci_hos=
+t_bridge struct device release/free handling)=0A>> Signed-off-by: Yajun D=
+eng <yajun.deng@linux.dev>=0A>> ---=0A>> drivers/pci/probe.c | 4 +---=0A>=
+> 1 file changed, 1 insertion(+), 3 deletions(-)=0A> =0A> NAK.=0A> =0A> T=
+he current code is correct. Go read the comments for device_add/device_de=
+l.=0A=0ABut the device_unregister() is only contains device_del() and put=
+_device(). It just put=0Adevice_del() before put_device().=0A=0A> =0A>> d=
+iff --git a/drivers/pci/probe.c b/drivers/pci/probe.c=0A>> index 0ec5c792=
+c27d..abd481a15a17 100644=0A>> --- a/drivers/pci/probe.c=0A>> +++ b/drive=
+rs/pci/probe.c=0A>> @@ -994,9 +994,7 @@ static int pci_register_host_brid=
+ge(struct pci_host_bridge *bridge)=0A>> return 0;=0A>> =0A>> unregister:=
+=0A> =0A> We get here if device_register() failed. Calling device_unregis=
+ter()=0A> in that case is never right.=0A> =0A>> - put_device(&bridge->de=
+v);=0A> =0A> This is for the get_device() we do above, not the get the dr=
+iver core does.=0A> =0A>> - device_del(&bridge->dev);=0A> =0A> This undoe=
+s the device_add() we do following the comment: "NOTE: this=0A> should be=
+ called manually _iff_ device_add() was also called=0A> manually."=0A> =
+=0A>> -=0A>> + device_unregister(&bridge->dev);=0A>> free:=0A>> kfree(bus=
+);=0A>> return err;=0A>> --=0A>> 2.32.0
