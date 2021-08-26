@@ -2,157 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1127E3F8294
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8303F82AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 08:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239760AbhHZGnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 02:43:03 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41954 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239112AbhHZGnB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 02:43:01 -0400
-X-UUID: 9a2fa85659084850ac874e9b1200f1ba-20210826
-X-UUID: 9a2fa85659084850ac874e9b1200f1ba-20210826
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 529553239; Thu, 26 Aug 2021 14:42:11 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 26 Aug 2021 14:42:10 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- MTKCAS06.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Thu, 26 Aug 2021 14:42:09 +0800
-From:   <guangming.cao@mediatek.com>
-To:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
-        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA-BUF HEAPS FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-CC:     <wsd_upstream@mediatek.com>, <isaacm@codeaurora.org>,
-        <sspatil@google.com>, <hridya@google.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: [PATCH] dma-buf: Add support for mapping buffers with DMA attributes
-Date:   Thu, 26 Aug 2021 14:42:33 +0800
-Message-ID: <20210826064233.69217-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210810020254.103134-1-guangming.cao@mediatek.com>
-References: <20210810020254.103134-1-guangming.cao@mediatek.com>
+        id S239775AbhHZGq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 02:46:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239112AbhHZGq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 02:46:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B9A060FDC;
+        Thu, 26 Aug 2021 06:46:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629960370;
+        bh=J6ZcW3z82EQuJPCW19f+4Dp9f4QbeEdqv8HxFEf6j6g=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=pDN5pmmJoQCOMAFfW3j7gKvuE1OG9kRVO11hmxcB08Y/+Fl0XVL/uixTB19kCE24p
+         3Rt9TBNuMnWch4KHdzTJ3014NAula4o7cQtDjxL/cMnI20r8pluTNrpYZ5GoDO7LOI
+         KLlf32xQ4GdmN/8eOZE5Dj7DntGKvJa0dXJMbyoJp6HXTPoo8LXPSIzXZEBmB1cHjd
+         53zSa5BD+xbQlZB4SSjuHYrAKGF7S7hkIJYimJD5yK4N0ZoJcsKjjetxQxTA9ta3Rt
+         lcfwmXbm4x1yalCzKke1pVJHyEjk7AXK2cHHlh37X5dUBPyl6WbRkJV2csTJdYhAW8
+         Uc59+tR4bWtaQ==
+Subject: Re: [PATCH v16 3/7] ARM: configs: Explicitly enable USB_XHCI_PLATFORM
+ where needed
+To:     Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>
+Cc:     devicetree@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Bastien Nocera <hadess@hadess.net>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Jens Axboe <axboe@kernel.dk>, Johan Hovold <johan@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Lionel Debieve <lionel.debieve@st.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Martin_J=c3=bccker?= <martin.juecker@gmail.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Robert Richter <rric@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Lindgren <tony@atomide.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        William Cohen <wcohen@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+References: <20210813195228.2003500-1-mka@chromium.org>
+ <20210813125146.v16.3.I010d5725652b981ebbafba0b260190fe4b995a40@changeid>
+From:   Roger Quadros <rogerq@kernel.org>
+Message-ID: <bcbb80fe-950f-6ea5-0f09-a4cf5b571912@kernel.org>
+Date:   Thu, 26 Aug 2021 09:45:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210813125146.v16.3.I010d5725652b981ebbafba0b260190fe4b995a40@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-When mapping the memory represented by a dma-buf into a device's
-address space, it might be desireable to map the memory with
-certain DMA attributes. Thus, introduce the dma_mapping_attrs
-field in the dma_buf_attachment structure so that when
-the memory is mapped with dma_buf_map_attachment, it is mapped
-with the desired DMA attributes.
 
-Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
-Signed-off-by: Sandeep Patil <sspatil@google.com>
-Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
----
- drivers/dma-buf/heaps/cma_heap.c    | 6 ++++--
- drivers/dma-buf/heaps/system_heap.c | 6 ++++--
- include/linux/dma-buf.h             | 3 +++
- 3 files changed, 11 insertions(+), 4 deletions(-)
+On 13/08/2021 22:52, Matthias Kaehlcke wrote:
+> The dependency of USB_DWC3 and USB_XHCI_MVEBU on USB_XHCI_PLATFORM
+> is being changed from 'select' to 'depends on' by another patch.
+> With that patch the defconfigs that enable one of these host
+> controllers also need to select USB_XHCI_PLATFORM explicitly
+> to keep the resulting config unchanged.
+> 
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 
-diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-index 0c05b79870f9..2c9feb3bfc3e 100644
---- a/drivers/dma-buf/heaps/cma_heap.c
-+++ b/drivers/dma-buf/heaps/cma_heap.c
-@@ -99,9 +99,10 @@ static struct sg_table *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
- {
- 	struct dma_heap_attachment *a = attachment->priv;
- 	struct sg_table *table = &a->table;
-+	int attrs = attachment->dma_map_attrs;
- 	int ret;
- 
--	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
-+	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
- 	if (ret)
- 		return ERR_PTR(-ENOMEM);
- 	a->mapped = true;
-@@ -113,9 +114,10 @@ static void cma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
- 				   enum dma_data_direction direction)
- {
- 	struct dma_heap_attachment *a = attachment->priv;
-+	int attrs = attachment->dma_map_attrs;
- 
- 	a->mapped = false;
--	dma_unmap_sgtable(attachment->dev, table, direction, 0);
-+	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
- }
- 
- static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 23a7e74ef966..fc7b1e02988e 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -130,9 +130,10 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
- {
- 	struct dma_heap_attachment *a = attachment->priv;
- 	struct sg_table *table = a->table;
-+	int attrs = attachment->dma_map_attrs;
- 	int ret;
- 
--	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
-+	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
- 	if (ret)
- 		return ERR_PTR(ret);
- 
-@@ -145,9 +146,10 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
- 				      enum dma_data_direction direction)
- {
- 	struct dma_heap_attachment *a = attachment->priv;
-+	int attrs = attachment->dma_map_attrs;
- 
- 	a->mapped = false;
--	dma_unmap_sgtable(attachment->dev, table, direction, 0);
-+	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
- }
- 
- static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index efdc56b9d95f..4d650731766e 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -379,6 +379,8 @@ struct dma_buf_attach_ops {
-  * @importer_ops: importer operations for this attachment, if provided
-  * dma_buf_map/unmap_attachment() must be called with the dma_resv lock held.
-  * @importer_priv: importer specific attachment data.
-+ * @dma_map_attrs: DMA attributes to be used when the exporter maps the buffer
-+ * through dma_buf_map_attachment.
-  *
-  * This structure holds the attachment information between the dma_buf buffer
-  * and its user device(s). The list contains one attachment struct per device
-@@ -399,6 +401,7 @@ struct dma_buf_attachment {
- 	const struct dma_buf_attach_ops *importer_ops;
- 	void *importer_priv;
- 	void *priv;
-+	unsigned long dma_map_attrs;
- };
- 
- /**
--- 
-2.17.1
+Reviewed-by: Roger Quadros <rogerq@kernel.org>
 
+cheers,
+-roger
+
+> ---
+> 
+> Changes in v16:
+> - patch added to the series
+> 
+>  arch/arm/configs/exynos_defconfig    | 1 +
+>  arch/arm/configs/keystone_defconfig  | 1 +
+>  arch/arm/configs/multi_v7_defconfig  | 1 +
+>  arch/arm/configs/mvebu_v7_defconfig  | 1 +
+>  arch/arm/configs/omap2plus_defconfig | 1 +
+>  arch/arm/configs/pxa_defconfig       | 1 +
+>  6 files changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm/configs/exynos_defconfig b/arch/arm/configs/exynos_defconfig
+> index f4e1873912a3..660fccb40f34 100644
+> --- a/arch/arm/configs/exynos_defconfig
+> +++ b/arch/arm/configs/exynos_defconfig
+> @@ -255,6 +255,7 @@ CONFIG_SND_SIMPLE_CARD=y
+>  CONFIG_USB=y
+>  CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+>  CONFIG_USB_XHCI_HCD=y
+> +CONFIG_USB_XHCI_PLATFORM=y
+>  CONFIG_USB_EHCI_HCD=y
+>  CONFIG_USB_EHCI_EXYNOS=y
+>  CONFIG_USB_OHCI_HCD=y
+> diff --git a/arch/arm/configs/keystone_defconfig b/arch/arm/configs/keystone_defconfig
+> index 33c917df7b32..4f66c5a5d94d 100644
+> --- a/arch/arm/configs/keystone_defconfig
+> +++ b/arch/arm/configs/keystone_defconfig
+> @@ -164,6 +164,7 @@ CONFIG_USB=y
+>  CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+>  CONFIG_USB_MON=y
+>  CONFIG_USB_XHCI_HCD=y
+> +CONFIG_USB_XHCI_PLATFORM=y
+>  CONFIG_USB_STORAGE=y
+>  CONFIG_USB_DWC3=y
+>  CONFIG_NOP_USB_XCEIV=y
+> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+> index 52a0400fdd92..4619418e53f4 100644
+> --- a/arch/arm/configs/multi_v7_defconfig
+> +++ b/arch/arm/configs/multi_v7_defconfig
+> @@ -787,6 +787,7 @@ CONFIG_SND_AUDIO_GRAPH_CARD=m
+>  CONFIG_USB=y
+>  CONFIG_USB_OTG=y
+>  CONFIG_USB_XHCI_HCD=y
+> +CONFIG_USB_XHCI_PLATFORM=y
+>  CONFIG_USB_XHCI_MVEBU=y
+>  CONFIG_USB_XHCI_TEGRA=m
+>  CONFIG_USB_EHCI_HCD=y
+> diff --git a/arch/arm/configs/mvebu_v7_defconfig b/arch/arm/configs/mvebu_v7_defconfig
+> index cddce57fe4b9..6cb85ec4fe54 100644
+> --- a/arch/arm/configs/mvebu_v7_defconfig
+> +++ b/arch/arm/configs/mvebu_v7_defconfig
+> @@ -103,6 +103,7 @@ CONFIG_SND_SIMPLE_CARD=y
+>  CONFIG_USB=y
+>  CONFIG_USB_XHCI_HCD=y
+>  CONFIG_USB_XHCI_MVEBU=y
+> +CONFIG_USB_XHCI_PLATFORM=y
+>  CONFIG_USB_EHCI_HCD=y
+>  CONFIG_USB_EHCI_ROOT_HUB_TT=y
+>  CONFIG_USB_STORAGE=y
+> diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
+> index 2ac2418084ab..a015fb04fa25 100644
+> --- a/arch/arm/configs/omap2plus_defconfig
+> +++ b/arch/arm/configs/omap2plus_defconfig
+> @@ -562,6 +562,7 @@ CONFIG_USB=m
+>  CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+>  CONFIG_USB_MON=m
+>  CONFIG_USB_XHCI_HCD=m
+> +CONFIG_USB_XHCI_PLATFORM=m
+>  CONFIG_USB_EHCI_HCD=m
+>  CONFIG_USB_OHCI_HCD=m
+>  CONFIG_USB_ACM=m
+> diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defconfig
+> index 363f1b1b08e3..e44763fe2b23 100644
+> --- a/arch/arm/configs/pxa_defconfig
+> +++ b/arch/arm/configs/pxa_defconfig
+> @@ -524,6 +524,7 @@ CONFIG_USB=m
+>  CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+>  CONFIG_USB_MON=m
+>  CONFIG_USB_XHCI_HCD=m
+> +CONFIG_USB_XHCI_PLATFORM=m
+>  CONFIG_USB_EHCI_HCD=m
+>  CONFIG_USB_EHCI_HCD_PLATFORM=m
+>  CONFIG_USB_ISP116X_HCD=m
+> 
