@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED78B3F855B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67FC3F8562
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241470AbhHZKcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 06:32:24 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:63991 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241180AbhHZKcQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 06:32:16 -0400
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 26 Aug 2021 03:31:28 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Aug 2021 03:31:27 -0700
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 26 Aug 2021 16:01:10 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-        id 5155B22319; Thu, 26 Aug 2021 16:01:09 +0530 (IST)
-From:   Md Sadre Alam <mdalam@codeaurora.org>
-To:     miquel.raynal@bootlin.com, mani@kernel.org,
-        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
-Subject: [PATCH] mtd: rawnand: qcom: Update code word value for raw read
-Date:   Thu, 26 Aug 2021 16:01:02 +0530
-Message-Id: <1629973862-7248-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S241415AbhHZKgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 06:36:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241180AbhHZKgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 06:36:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB9DE61058;
+        Thu, 26 Aug 2021 10:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629974117;
+        bh=QaM6O1Y7m4Zhb5o0MZ7+t2h1kPiV9Wz2NzgnOqwG4Q0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wIY9LwK/dFc/gNWnp1ZPngN0x3nzPeLMxser5uFGnSduiSvYkbjZ2agRjNMIW16pU
+         gQ1MMYqazaUbUxgHTSEvKhdNko3QMDY/Di3Oe9odzN1sN9+2WiaOLYZrnqsQvLvFhy
+         oxbndY4vyW0L1R5uHMeHf+IHhxtcP3MkH7eplmoA=
+Date:   Thu, 26 Aug 2021 12:34:03 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        saurav.girepunje@hotmail.com
+Subject: Re: [PATCH] staging: r8188eu: core: remove condition with no effect
+Message-ID: <YSduG401BA80Xnsb@kroah.com>
+References: <YSFgrLUfXzgcT6k4@user>
+ <CAA=Fs0kByg1NztU+Nf__RUzTHuVh_q2hvcyh+3JqXiVgn+_VeQ@mail.gmail.com>
+ <1821445.fzUCeO1EU3@localhost.localdomain>
+ <YSJEu3sbnR6uIach@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSJEu3sbnR6uIach@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From QPIC V2 onwards there is a separate register to read
-last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
+On Sun, Aug 22, 2021 at 02:36:11PM +0200, Greg KH wrote:
+> On Sun, Aug 22, 2021 at 01:06:09PM +0200, Fabio M. De Francesco wrote:
+> > On Sunday, August 22, 2021 1:58:10 AM CEST Phillip Potter wrote:
+> > > On Sat, 21 Aug 2021 at 21:23, Saurav Girepunje
+> > > 
+> > > <saurav.girepunje@gmail.com> wrote:
+> > > > Remove the condition with no effect (if == else) in rtw_led.c
+> > > > file.
+> > > > 
+> > > > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> > > > ---
+> > > > 
+> > > >  drivers/staging/r8188eu/core/rtw_led.c | 5 +----
+> > > >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > > 
+> > > Thanks for this, looks good.
+> > > 
+> > > Acked-by: Phillip Potter <phil@philpotter.co.uk>
+> > > 
+> > > Regards,
+> > > Phil
+> > 
+> > Dear Philip,
+> > 
+> > Before acking, please check at least if it applies to the current version of 
+> > the tree and check if it compiles without adding warnings and / or errors. :-)
+> 
+> That is not necessary or needed here, I can do that when I apply the
+> patch.
 
-qcom_nandc_read_cw_raw() is used to read only one code word
-at a time. If we will configure number of code words to 1 in
-in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
-its reading the last code word, since from QPIC V2 onwards
-we are having separate register to read the last code word,
-we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
-register to fetch data from controller buffer to system
-memory.
+As proof of that, this patch applied just fine to my tree right now...
 
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+thanks,
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index ef0bade..04e6f7b 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int data_size1, data_size2, oob_size1, oob_size2;
- 	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
-+	int raw_cw = cw;
- 
- 	nand_read_page_op(chip, page, 0, NULL, 0);
- 	host->use_ecc = false;
- 
-+	if (nandc->props->qpic_v2)
-+		raw_cw = ecc->steps - 1;
-+
- 	clear_bam_transaction(nandc);
- 	set_address(host, host->cw_size * cw, page);
--	update_rw_regs(host, 1, true, cw);
-+	update_rw_regs(host, 1, true, raw_cw);
- 	config_nand_page_read(chip);
- 
- 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
-@@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
- 	}
- 
--	config_nand_cw_read(chip, false, cw);
-+	config_nand_cw_read(chip, false, raw_cw);
- 
- 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
- 	reg_off += data_size1;
--- 
-2.7.4
-
+greg k-h
