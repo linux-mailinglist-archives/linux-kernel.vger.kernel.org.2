@@ -2,164 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6063F8DB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4501E3F8DBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 20:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243269AbhHZSSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 14:18:03 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:40526 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229733AbhHZSSC (ORCPT
+        id S243321AbhHZSTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 14:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243287AbhHZSTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:18:02 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17QIEg6e022735;
-        Thu, 26 Aug 2021 18:17:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=ciZIWk1Of6npiIry0NIb89HoNuGBE60P92pDJhxT0K4=;
- b=k/ELzpDVXsIpaILhrKN2AOSOTmm3ach/IenrOpMgZGu4vCYqunDPd1xL/DeCXlvcIa71
- ip3pAQZuVkjrHCrh25z3Zz83DLaVxmVjSSH2wFZRB1Q5AcrdYb4CcqL6reKocxDwa1ou
- EnDSdlwie0f1F28jZNB8KGbcwu9IAgRJFLYPc84MLXyMWZu31mJd/bOuMKyFvR7je6OI
- UnT0yYx/cKtzch5N/rK1BwI1aYCBM129sdVHW9V/xnnnOs4zuLQ5TTo9RqeJkFuLYIxE
- +6kI4akEyQdL7Xcryev1FPcDszDTHX4Q5KyuDlrGwRnod+PH5odbeuTetvu77aU4j14B UQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=ciZIWk1Of6npiIry0NIb89HoNuGBE60P92pDJhxT0K4=;
- b=WHH8AsdE1I2Oood3Um25Xiz5J47X1+Iqj8iMl8Jl5ZNRp/9n3kIObY9b7ScCTiq6o/Uj
- /NwacZXSCiVz1l7JunQFVqpcfePkMoaBUcaRBhGrXCMTIJR1Jb75g7FW4p5NKpx2oyPF
- sKRjsP5m8QsCEesoqICQP9Qd33Ruvrxuke3DFtWi+mJN5vP5Z9vZgRta+C/xuKXwrrH6
- B3FBhYFPLOG4zs13WQ1+vPE8kIvPBsI1fcUA/Z3bW8LR1mITQxetpEozkWaZ/jj9RPwz
- q6n7mmdEiM9BAxjvDFbgeoS4KmfZwWx7KU1+rfgIz14ljXJwjOu1cRI9iI6qOOELYYNE zg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ap5529pbu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Aug 2021 18:17:09 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17QIFrd1065693;
-        Thu, 26 Aug 2021 18:17:08 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2108.outbound.protection.outlook.com [104.47.58.108])
-        by userp3020.oracle.com with ESMTP id 3akb90h5b8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Aug 2021 18:17:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Isi3pAND/GpD+ML33DVCDcLvrt9MXL23vX5yiZyI0BVEORtnS/uf8a0lHgD6fG6S8qclN8XPHXpxuKMS/zgyNpyYFr79DoIYCuw0KOIJIsSr6LYxAKE3SV2oVDbl5SzRyI5jeeaLmenkMP6RTk3fk4G2jW1d4+B+LT2AYCRS6B76+mPBuEu+XZf6mQWsYKjdQB+g/mjVujwd1dwTa4qGD0Z6nTVrLm8oHdiCH3JZdCsRJWCPxE1uAEDxjmCa2ciMGKXKVoHt6rlMMEAB/IwVPLoTu0FGAZsTfpm5/6mrLal+VLRcmisy2Xrxs/F3Rdeg9pJd4WQZmaAHwc+BMN2G9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ciZIWk1Of6npiIry0NIb89HoNuGBE60P92pDJhxT0K4=;
- b=HoevK24JtXLIgivGPBpWzuoFEQW0JIWOrHxXetypvIw0v96NOGF8l83YPS8+PN2kgarJjQSSh/rO6lMQQfSu/EXq8qvcZWZPbDWzZLnlADR+824EW3KWj/JS4KuVITOa5zq15bhMNK/ue+TQIQIZoU8mCZ33h9rY6r2M5rYvY4yCpJ+rNKBMEXP/XQOh9uvGCC6nFedl6wi1pmQ/xhpe8EByZItPgPPEPg/ZvKEgJ71T0C0aSOdsyremENMaCHyCSJ1lmUBV99bfYXb71XPHdiAbqOsqrENCxsncPt16RtmJfVgzXpELCW6R/zJA1nfHJP/HDkZlGen86FLx7Siprw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 26 Aug 2021 14:19:24 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B99C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:18:36 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id l10so4204464ilh.8
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:18:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ciZIWk1Of6npiIry0NIb89HoNuGBE60P92pDJhxT0K4=;
- b=EcuYAO2nk9cTDWhTO/NNUs6mmGHFbAO/ZZsiIm+hJDuyUlnJWYx6j/V8mZO1WYfKlMqUvBgqdjJgFkOTbRFqidTQxc7j3jDQYTbQs4ANv18keB6aOZpkScO2DSFWN43/2ZVx/Jgv5oUNutXHhzdMUQOfnT5GNOHCSRPAQ94i0xI=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO6PR10MB5410.namprd10.prod.outlook.com
- (2603:10b6:303:13d::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20; Thu, 26 Aug
- 2021 18:17:06 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4457.019; Thu, 26 Aug 2021
- 18:17:06 +0000
-Date:   Thu, 26 Aug 2021 21:16:48 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     Wenlong Zhang <yixiaonn@gmail.com>, gregkh@linuxfoundation.org,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        insafonov@gmail.com, cyruscyliu@gmail.com, yajin@vm-kernel.org,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: rtl8723bs: prevent ->ssid overflow in
- rtw_wx_set_scan()
-Message-ID: <20210826181648.GC1931@kadam>
-References: <20210826154622.55361-1-yixiaonn@gmail.com>
- <20210826172618.GB1423@agape.jhs>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826172618.GB1423@agape.jhs>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0039.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::6)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BPs1AyZGIrNXd12eEgQiDnWmo2NyTAfaSuY1G7qtiYU=;
+        b=T5SdrSqXY2fF5ial/ZnJlLgTkjq35WfEB3L1DAh7azfk1CZyOeYuDOKP1Eapb1XuBx
+         TVgJ72I/AtiVpqCWLcmP9uD4L1EPOaUszhEHTTM1ve7/ETGkhyRKMwiKN6aC63c8udxX
+         +yl+euHRa6cOAEKsODYGFpwT5DlmYUDylxo5M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BPs1AyZGIrNXd12eEgQiDnWmo2NyTAfaSuY1G7qtiYU=;
+        b=OYrIh3bO2FVS4NJYCvZOdYRimlks0fwZIVi/K6jVZ5vn4Lmih2s6Oq/99OKJnAw0Mz
+         WRweSbdkGTNYZ8BR2F4BmIh3pVsImUuozjeEZyClY+yQrt1YC4FIuyqrM4XMUjB5s0BP
+         WJsl6MK4guqgNbs06VvOxtZXBVaug3vzs0g9ZAYFgT2KJk7yqVzIe1G3xgls7gFuvqie
+         xp+u0j0DuV/QqEYz6ROjKciJV7Mmk/WyYBHJpPGUW/o0QIPvWzPNsXXcjHh0ffgf7/Oj
+         i1PLEn7l87EhBhOGb5CCh4hFV8tJcKs0pzfGbNNAdyYbA+Vsd7gwATUkXN66nTkjDWZB
+         3b6Q==
+X-Gm-Message-State: AOAM5325Anrh3NpZTEmTMQgEAjg7HnG1/bxt34E1b2nh7Lbm6Ty+WrkJ
+        ZHgSmIhg4kQOL2G9lfXrbAYPiapeS+FnPA==
+X-Google-Smtp-Source: ABdhPJzZ5JOd7CmbwbB2Ojw72vGwxfTlwSLg94nSwAr4RarO3Q8fxAqcclkPCxWZ8BRI/vp3IUNvJA==
+X-Received: by 2002:a92:d4d1:: with SMTP id o17mr3470768ilm.43.1630001915419;
+        Thu, 26 Aug 2021 11:18:35 -0700 (PDT)
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com. [209.85.166.52])
+        by smtp.gmail.com with ESMTPSA id i14sm1885013iog.47.2021.08.26.11.18.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 11:18:34 -0700 (PDT)
+Received: by mail-io1-f52.google.com with SMTP id a21so4928433ioq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 11:18:34 -0700 (PDT)
+X-Received: by 2002:a6b:6603:: with SMTP id a3mr4169386ioc.68.1630001913507;
+ Thu, 26 Aug 2021 11:18:33 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (62.8.83.99) by JNAP275CA0039.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21 via Frontend Transport; Thu, 26 Aug 2021 18:17:00 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4ef34d30-b105-49aa-07ef-08d968bdb5ea
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5410:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO6PR10MB5410737491C5E842DE36B0618EC79@CO6PR10MB5410.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NGhYe6q0XzMLz/joHRxgWXdKUphPFywOMLVGRWqc6kNNb8M0CGj3bGiXSn16K4sIyGVG/AJRnc0I2vyKstpTDiSK0ZjkNlcOZ55TyCvwfJtLbacbBc5HlfMqEx6avvpE+i5RmkpVDpzLWFTWXK0E1LLzb7B1TWAEGDNYI3iWztBqjhnlAXaosNPGvbojPcM20d/rt8X67ATi7Uk4m5ATNDds7ge13by++Eq/OiRYJjPwE2r7uZx0E7Z6JD3Wq6+B+2y0z73YbnWHcO1o1yesxgAaRaMzBSNIsxkz2+gJRIHaERDoxoqWADfHuqy8kgtHVtBZ1ItTOyFzvKORX8zdkS+klYOBiGyoO/Hj03B1ZqZkua3+CTio6/XK5Ukg/KqWyxiJt8asOiCJZGyIkpd7uR4b79eoYJ3dP1WaHlqpHh0WDeRQfb/BYkyTuwKGuoh1M0BTzqGkWhGY7jj0PAR2aIVcdGxh3IjT4sJDi+LCElckj/+aNvnMDEL3Z07hrpKU+S+TLqB4//BSMxZPJb4DxHOf3Vf/UjUGE2tZuYmEpX4O3Ii8yyOOZS5YfpNRbIEpUQ04kwREpMHMRvdgyR7QFAB0cxI2OxzdpQiYDXzuvJFCMIcU6XLWd7GnCYN3tIxRlTXxNa4WsFACdSxyyKxmjmcl1pPwYLaelax6LslhfUVM/PX2ZSOdz2z3OwZw5KtNXfF3UyHhaBzbALFhQOY5yQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(136003)(366004)(396003)(376002)(7416002)(33716001)(26005)(6666004)(66556008)(66476007)(2906002)(66946007)(55016002)(478600001)(9686003)(9576002)(186003)(52116002)(5660300002)(8936002)(86362001)(8676002)(33656002)(6496006)(316002)(1076003)(6916009)(4326008)(83380400001)(4744005)(956004)(38350700002)(38100700002)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5cswfYgb6KWqDQ3Yp72wUZ96g7mMPVwEPIKWL8D4vsAFgqpDpQM9QrX2TOdl?=
- =?us-ascii?Q?Yb7GjOSWJ2ZotJJP9AfjFG2roBufEosrHcB/FF5ubqMBuWYko8gqtEJo8xM1?=
- =?us-ascii?Q?u39iKBFqYJFMBMyITe26OQ+WiEYAqpr4j6giWqnXQlWDk8HtnhvzkQZnYqG3?=
- =?us-ascii?Q?DsWpu5oKBgRzgjc4h8MyNNVmpe9IQh75/2rL4rkK+AS7406ZCwXddUS5TW5C?=
- =?us-ascii?Q?sMVWJp5VhVgCJPFWPxWI+V1vxU1STR7Z1krKOsgXVWIOEIiktkKsY7K4KQcz?=
- =?us-ascii?Q?2SqBl7nPx3e3nmHtor7EKhIXLLmgIFFNSJuoKj3IjpXf6pvha/UDyww7TUjS?=
- =?us-ascii?Q?fJRgk8vAoJn2iAdGWo817KIBs0iLo75rQ205hfHf1swc8gtKtOFVluluDgnw?=
- =?us-ascii?Q?KG9mUvGxS+gPRCTK9ptvig0+yJ9q5L9xKKmA3uG1HuMIJ7N72jGML1Yl41ne?=
- =?us-ascii?Q?/67PER/aDwIaostgwEpYCacqJ59zuPHZfe0zbVyDBd3sG69U6QRiMJCnL3kg?=
- =?us-ascii?Q?lyKfsF+YP+iVNTm5Vns73EaWQBnR5P6CSG0lKfyhVhZVVZVDgTRMeKyeZVUp?=
- =?us-ascii?Q?umjGz9OIsrYcg/pOl7gwUg0jGGlA6x4SV/r1N4NEW988oMAHNcNqRdANX9o8?=
- =?us-ascii?Q?xrFekeBPi/qhFmGM9ye/ZnXdcouE8rIRDXLXGmNLZ7PPZTgyIyNtzBCAd293?=
- =?us-ascii?Q?tbVcG+GJV9n/YvABGDilQbeDc0cc90UC+Jr0zzYCvR+CX4iW6y4A9viV5bCv?=
- =?us-ascii?Q?u0ycOr3fXzlC4oa8/f8ItSMnXJEqQYhQtY5KrrzA3N59xICOSWOmKhkAVIhY?=
- =?us-ascii?Q?HFXvd406v1XHQ5HcVQGSEaw7VJhl8EYu6AGrm33lZe7W8aQs5tQxOnj8AJ5X?=
- =?us-ascii?Q?Cs5wQim+tscB9PBHrROprAf8rescJLzpbkBGMWFLLb6riMQv/QPUPsmYhaEt?=
- =?us-ascii?Q?mQSPEZXFmCrw6RJO9o0O35tEaf2vlL09vWe4tFDfhI+7fQf8ub3ju+ssDDf3?=
- =?us-ascii?Q?seWJUKBjNUmtmh5dkE8RF+m48NUzugk+UAUNCnThRWjAPCjo8skgUOW72z04?=
- =?us-ascii?Q?89n3c1yWAmrjP7ghJ4+nh672XfYS7m2j7WF+pkPdapImDF5/AvupbosG4Ji4?=
- =?us-ascii?Q?m4M96NQOIE4IG15+k1bpkKQ6xWSG+IN3t7UqVw/2X8IZOhmdM5AeIP61yJAA?=
- =?us-ascii?Q?SBLpmyuCwjA5cl/U3bkpQEpNIbdLSooP/JiYmRdMhmrpJImfG9Gij1jkz/nJ?=
- =?us-ascii?Q?5zCt6aBDdgNL1Y6NCdLycEFHxeJ+McNcopQ8D2CZeawU0D2abKZNElkeSb9s?=
- =?us-ascii?Q?M3mnCfGX3NHv9maXEmACsXOV?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ef34d30-b105-49aa-07ef-08d968bdb5ea
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2021 18:17:06.2117
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v4R9/GuJcUn+Y0TOICJQXQY6PEqrERvsZrw8jZP6JUtIhmhBeKkE2T2LnzgQTxbdXV6BBXcIeDuMCrywm6EvFX9K3upOifQLNiXxwaN73tI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5410
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10088 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108260101
-X-Proofpoint-GUID: kIa9l5QMMedQ6jqUTB0YN3Ze9e73IgyQ
-X-Proofpoint-ORIG-GUID: kIa9l5QMMedQ6jqUTB0YN3Ze9e73IgyQ
+References: <20210818203502.269889-1-ribalda@chromium.org> <YR2INUYJSZCnBiC0@pendragon.ideasonboard.com>
+ <CANiDSCuP3OS7Z9UmHApPMmt0X3yrAoKVShEZgZ1oCvPgYshUSA@mail.gmail.com>
+ <YR4yRfEmMvsAXRfu@pendragon.ideasonboard.com> <CANiDSCvStwDkkW7FLwTmogsH45292gugAvZfuoss3aJ9RzOAQw@mail.gmail.com>
+ <YR5nhmF3MXdjtCvs@pendragon.ideasonboard.com> <CANiDSCtPGCnQNuGUxDbbQPgtj3a_6eOtaABXk=39Y7b-03gQNA@mail.gmail.com>
+ <YSL/q9A5F7W9r92E@pendragon.ideasonboard.com> <CANiDSCtYFRNzUio8vujd_Pppz=WUZTj4sYrJwwXwRuewWEMasw@mail.gmail.com>
+ <YSNz2TY1G6uShovP@pendragon.ideasonboard.com>
+In-Reply-To: <YSNz2TY1G6uShovP@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Thu, 26 Aug 2021 20:18:22 +0200
+X-Gmail-Original-Message-ID: <CANiDSCuvRyAbf9YCNusR8bnRRJf9QE6Yb385oJ4J=OyZCVueGQ@mail.gmail.com>
+Message-ID: <CANiDSCuvRyAbf9YCNusR8bnRRJf9QE6Yb385oJ4J=OyZCVueGQ@mail.gmail.com>
+Subject: Re: [PATCH v2] media: uvcvideo: Quirk for hardware with invalid sof
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tomasz Figa <tfiga@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 07:26:19PM +0200, Fabio Aiuto wrote:
-> today the patch which removes wext handlers has been accepted
-> (commit 174ac41a7aafb31041cba3fe54ccd89b9daeef5d)
-> in staging-testing so maybe rtw_wx_set_scan is going to disappear.
-> 
+Hi Laurent
 
-From a process perspective, in staging we don't track things that might
-happen in the future.  We look at each patch in the order that they
-arrive and either apply them or reject them.
+I have taken a data analysis approach to solve this discussion (I
+always wanted to say that phrase sorry :P)
 
-And from a practical perspective this patch might be something that
-people want to backport so it would be nice to apply it.
+I have run a logitech c9222 camera for 5 minutes with yavta. And then
+I have subtracted the frame time to its previous frame time using
+three different ways to measure the frametime:
+- unchanged (the driver as it is today)
+- hacked (applying this patch)
+- software (uvc_hw_timestamps_param=0)
 
-regards,
-dan carpenter
+And I get the following histograms (please note the logarithmic scale
+and the different range in the horizontal axis):
+https://ibb.co/D1HJJ4x
+https://ibb.co/8s9dBdk
+https://ibb.co/QC9MgVK
+(can share a google sheets with the raw data)
+
+Eventhough anyone can torture the numbers enough to say almost
+anything, I think in this case it is clear how, for this specific
+device, we should consider applying this patch. Because even a pure
+software solution is clearly inferior.
+
+This goes without saying that the vendor shall be pinged. (I am
+already working on that).
+
+Best regards and sorry for the stubbornness  ;)
+
+On Mon, 23 Aug 2021 at 12:09, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> On Mon, Aug 23, 2021 at 11:56:43AM +0200, Ricardo Ribalda wrote:
+> > On Mon, 23 Aug 2021 at 03:54, Laurent Pinchart wrote:
+> > > On Thu, Aug 19, 2021 at 04:46:38PM +0200, Ricardo Ribalda wrote:
+> > > > On Thu, 19 Aug 2021 at 16:15, Laurent Pinchart wrote:
+> > > > > On Thu, Aug 19, 2021 at 01:31:32PM +0200, Ricardo Ribalda wrote:
+> > > > > > On Thu, 19 Aug 2021 at 12:28, Laurent Pinchart wrote:
+> > > > > > > On Thu, Aug 19, 2021 at 08:27:00AM +0200, Ricardo Ribalda wrote:
+> > > > > > > > On Thu, 19 Aug 2021 at 00:22, Laurent Pinchart wrote:
+> > > > > > > > > On Wed, Aug 18, 2021 at 10:35:02PM +0200, Ricardo Ribalda wrote:
+> > > > > > > > > > The hardware timestamping code has the assumption than the device_sof
+> > > > > > > > > > and the host_sof run at the same frequency (1 KHz).
+> > > > > > > > > >
+> > > > > > > > > > Unfortunately, this is not the case for all the hardware. Add a quirk to
+> > > > > > > > > > support such hardware.
+> > > > > > > > > >
+> > > > > > > > > > Note on how to identify such hardware:
+> > > > > > > > > > When running with "yavta -c /dev/videoX" Look for periodic jumps of the
+> > > > > > > > > > fps. Eg:
+> > > > > > > > > >
+> > > > > > > > > > 30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
+> > > > > > > > > > 31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
+> > > > > > > > > > 32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
+> > > > > > > > > > 33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
+> > > > > > > > > > 34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
+> > > > > > > > > > 35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
+> > > > > > > > > > 36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
+> > > > > > > > > > ...
+> > > > > > > > > > 99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
+> > > > > > > > > > 100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
+> > > > > > > > > > 101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
+> > > > > > > > > > 102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
+> > > > > > > > > > 103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
+> > > > > > > > > > 104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
+> > > > > > > > > >
+> > > > > > > > > > They happen because the delta_sof calculated at
+> > > > > > > > > > uvc_video_clock_host_sof(), wraps periodically, as both clocks drift.
+> > > > > > > > >
+> > > > > > > > > That looks plain wrong. First of all, the whole purpose of the SOF clock
+> > > > > > > > > is to have a shared clock between the host and the device. It makes no
+> > > > > > > > > sense for a device to have a free-running "SOF" clock. Given the log
+> > > > > > > > > above, the issue occurs so quickly that it doesn't seem to be a mere
+> > > > > > > > > drift of a free running clock. Could you investigate this more carefully
+> > > > > > > > > ?
+> > > > > > > >
+> > > > > > > > In my test the dev_sof runs at 887.91Hz and the dev_sof at 1000.35Hz.
+> > > > > > > > If I plot the difference of both clocks host_sof - (dev_sof % 2048), I
+> > > > > > > > get this nice graph https://imgur.com/a/5fQnKa7
+> > > > > > > >
+> > > > > > > > I agree that it makes not sense to have a free-running "SOF", but the
+> > > > > > > > manufacturer thinks otherwise :)
+> > > > > > >
+> > > > > > > In that case there's no common clock between the device and the host,
+> > > > > > > which means that clock recovery is impossible. The whole timestamp
+> > > > > > > computation should be bypassed, and the driver should use the system
+> > > > > > > timestamp instead.
+> > > > > >
+> > > > > > Or said differently. The clock recovery is susceptible to the jitter
+> > > > > > in the frame acquisition.
+> > > > > >
+> > > > > > If you have no jitter, the clock recovered will match the reality, and
+> > > > > > if you have bad jitter, it will be as bad as system timestamp.
+> > > > >
+> > > > > The whole point of the clock recovery code is to convert a precise
+> > > > > timestamp, expressed using a device clock that the host has no access
+> > > > > to, to a system clock. This can only be done if the relationship between
+> > > > > the two clocks can be inferred, and the UVC specifies a mechanism to
+> > > > > allow this by using a common clock, in the form of the SOF counter. If
+> > > > > we don't have that, we're essentially screwed, and can't use the
+> > > > > algorithm implemented in the driver at all. I'd much rather skip is
+> > > > > completely in that case, instead of trying to hack the algorithm itself.
+> > > >
+> > > > Considering T(f) as the time between the usb package (f) is received
+> > > > and uvc_video_clock_decode()
+> > > > If the jitter between the different T(f)s is under one unit of our
+> > > > clock (1 msec) the accuracy of the "hacked" algorithm and the real
+> > > > algorithm is exactly the same.
+> > > >
+> > > > We can agree that 1 msec is a "lot" of time. And if our system has a
+> > > > worse latency than that, the hacked algorithm will not be worse than
+> > > > system timestamping.
+> > > >
+> > > > So in most of the situations this patch will produce better timestamps
+> > > > than the current code and never worse than now...
+> > >
+> > > How can it produce better timestamps if it's missing the crucial
+> > > information that provides the correlation of timestamps between the
+> > > device and host side ?
+> >
+> > Because in a system with a latency jitter under 1msec sof_device and
+> > sof_host you already know that information: sof_host = sof_device
+>
+> Only (100 - jitter/1ms) % of the time.
+>
+> Given that the kernel implementation of the clock recovery is known to
+> cause timestamps to jump back in time once in a while (with devices that
+> behave properly), and that this should be implemented in userspace, I'd
+> rather bypass the kernel-side clock recovery completely when the device
+> doesn't behave. Then, we'll discuss whether it shuold be bypassed in
+> userspace too for this device, based on mathematical evidence :-)
+>
+> > It is a special case of the general problem.
+> >
+> > > > Anyway, I have tried to ping the vendor to see if there is something
+> > > > that I could be doing wrong, lets see what they reply.
+> > > >
+> > > > > On a side note, I think the whole clock recovery implementation should
+> > > > > move from the uvcvideo driver to userspace, where we'll have the ability
+> > > > > to perform floating point computation. The kernel implementation is
+> > > > > crude, it should be replaced with a linear regression.
+> > > >
+> > > > Agree, but instead of a linear regression, a resampling algorithm.
+> > >
+> > > A linear regression is likely a good enough resampling algorithm in this
+> > > case, but I'd be curious to see if someone could do better.
+> > >
+> > > > > > So this patch will still be better than nothing.
+> > > > > >
+> > > > > > > I still find it hard to believe that a Logitech camera would get this
+> > > > > > > wrong.
+> > > > > >
+> > > > > > I guess I can send you a device, or give you access to mine remotely
+> > > > > > if you do not believe me :)
+> > > > > >
+> > > > > > > > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > > > > > > > > ---
+> > > > > > > > > > v2: Fix typo in frequency
+> > > > > > > > > >
+> > > > > > > > > >  drivers/media/usb/uvc/uvc_driver.c |  9 +++++++++
+> > > > > > > > > >  drivers/media/usb/uvc/uvc_video.c  | 11 +++++++++--
+> > > > > > > > > >  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
+> > > > > > > > > >  3 files changed, 20 insertions(+), 2 deletions(-)
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > > > > > > > > > index 9a791d8ef200..d1e6cba10b15 100644
+> > > > > > > > > > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > > > > > > > > > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > > > > > > > > > @@ -2771,6 +2771,15 @@ static const struct usb_device_id uvc_ids[] = {
+> > > > > > > > > >         .bInterfaceSubClass   = 1,
+> > > > > > > > > >         .bInterfaceProtocol   = 0,
+> > > > > > > > > >         .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
+> > > > > > > > > > +     /* Logitech HD Pro Webcam C922 */
+> > > > > > > > > > +     { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+> > > > > > > > > > +                             | USB_DEVICE_ID_MATCH_INT_INFO,
+> > > > > > > > > > +       .idVendor             = 0x046d,
+> > > > > > > > > > +       .idProduct            = 0x085c,
+> > > > > > > > > > +       .bInterfaceClass      = USB_CLASS_VIDEO,
+> > > > > > > > > > +       .bInterfaceSubClass   = 1,
+> > > > > > > > > > +       .bInterfaceProtocol   = 0,
+> > > > > > > > > > +       .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
+> > > > > > > > > >       /* Chicony CNF7129 (Asus EEE 100HE) */
+> > > > > > > > > >       { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+> > > > > > > > > >                               | USB_DEVICE_ID_MATCH_INT_INFO,
+> > > > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > > > > > > > > > index 6d0e474671a2..760ab015cf9c 100644
+> > > > > > > > > > --- a/drivers/media/usb/uvc/uvc_video.c
+> > > > > > > > > > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > > > > > > > > > @@ -518,13 +518,20 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
+> > > > > > > > > >       /* To limit the amount of data, drop SCRs with an SOF identical to the
+> > > > > > > > > >        * previous one.
+> > > > > > > > > >        */
+> > > > > > > > > > -     dev_sof = get_unaligned_le16(&data[header_size - 2]);
+> > > > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
+> > > > > > > > > > +             dev_sof = usb_get_current_frame_number(stream->dev->udev);
+> > > > > > > > > > +     else
+> > > > > > > > > > +             dev_sof = get_unaligned_le16(&data[header_size - 2]);
+> > > > > > > > > > +
+> > > > > > > > > >       if (dev_sof == stream->clock.last_sof)
+> > > > > > > > > >               return;
+> > > > > > > > > >
+> > > > > > > > > >       stream->clock.last_sof = dev_sof;
+> > > > > > > > > >
+> > > > > > > > > > -     host_sof = usb_get_current_frame_number(stream->dev->udev);
+> > > > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
+> > > > > > > > > > +             host_sof = dev_sof;
+> > > > > > > > > > +     else
+> > > > > > > > > > +             host_sof = usb_get_current_frame_number(stream->dev->udev);
+> > > > > > > > > >       time = uvc_video_get_time();
+> > > > > > > > > >
+> > > > > > > > > >       /* The UVC specification allows device implementations that can't obtain
+> > > > > > > > > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > > > > > > > > > index cce5e38133cd..89d909661915 100644
+> > > > > > > > > > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > > > > > > > > > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > > > > > > > > > @@ -209,6 +209,8 @@
+> > > > > > > > > >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
+> > > > > > > > > >  #define UVC_QUIRK_FORCE_Y8           0x00000800
+> > > > > > > > > >  #define UVC_QUIRK_FORCE_BPP          0x00001000
+> > > > > > > > > > +#define UVC_QUIRK_INVALID_DEVICE_SOF 0x00002000
+> > > > > > > > > > +
+> > > > > > > > > >
+> > > > > > > > > >  /* Format flags */
+> > > > > > > > > >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
+
+-- 
+Ricardo Ribalda
