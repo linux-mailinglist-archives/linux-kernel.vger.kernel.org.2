@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F7A3F8C80
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D02F3F8C84
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243140AbhHZQxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 12:53:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51958 "EHLO mail.kernel.org"
+        id S243093AbhHZQzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:55:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243074AbhHZQxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:53:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E4B560F6F;
-        Thu, 26 Aug 2021 16:52:17 +0000 (UTC)
+        id S229986AbhHZQzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 12:55:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA38560FD9;
+        Thu, 26 Aug 2021 16:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629996737;
-        bh=guErEWGgIDqVdyfI48N0DvYQV67NWP3/SnLf44qfyPE=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=TWyi+FVi1qU8QTruMGbCChcl56G2e9GzyTo2mCeFA7wsMRPleNRV+awoOyDlLZZLG
-         N95jEpV1PbA7PxYp5JvewfhZTAvAbVwCRETXysbtZhrJhpjCWIXg7cEIadmrJlaydv
-         VkEMg7sfIX28Kp99UVA8dCUI5m0NuHIVtGtg6+t59neNK4ZmBt3Z3SNB6VPp3/lA/1
-         +lkrDk2yzCpCT/CTpSlYJkYAu5IIyJ3X/9N3LxEGll16F4puyRidWghvcm2aIY8n8O
-         XTJtdlR9WWwvrzlqps9asL7TnJrLlV53Yvn8Bpt77Bw6F+GkLeIN/0K1M4imY8s92a
-         6AFm9sPIyIw6Q==
-Date:   Thu, 26 Aug 2021 09:52:16 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: don't ignore writing pages on fsync
- during checkpoint=disable
-Message-ID: <YSfGwKtGhutsTJ8x@google.com>
-References: <20210823170151.1434772-1-jaegeuk@kernel.org>
- <YSa3DPBIFZ5P17vt@google.com>
+        s=k20201202; t=1629996854;
+        bh=klpBCF3eOV7RWryCWxBXMbfoU4bGxqdvQgWtryTGOPg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=EAJWiRYZSnbbMdKzWCPaNizrHYnsjksDCPp9AwFg7nuQbaz7N8zd9M5neTt5PKry8
+         5lQ3DLc6ithwKg29EpbGzfmID84HBXppPXLsji5katHz0i/4rLSbrusb+t0Ppy2Wnr
+         vfEDpnId106PPWYj2OK3NJr0Emvdnv4H8tRpr56nxpxG9LMeb/BNKCpjCfaVL5AAIp
+         gXtwkeUTzmHeeAn8w2DueXdcjLxDd12Ce2E+T3kCEiahQf8otkKL/fCJab/tjQZoyH
+         WfHsyeq/Tq8IiwxPLFnqFbhmw8ZBFhY3jRvuCbraMndavDv1y8/vRo2KDy21ITHYpf
+         PU3cvEjWLez7A==
+Subject: Re: [PATCH v2 07/14] x86: Use an opaque type for functions not
+ callable from C
+To:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20210823171318.2801096-1-samitolvanen@google.com>
+ <20210823171318.2801096-8-samitolvanen@google.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <b2b0247a-39ad-097b-8fab-023ee378c806@kernel.org>
+Date:   Thu, 26 Aug 2021 09:54:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSa3DPBIFZ5P17vt@google.com>
+In-Reply-To: <20210823171318.2801096-8-samitolvanen@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From 64fe93a7f9c35c2b5a34cfa3cf84158852c201be Mon Sep 17 00:00:00 2001
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-Date: Thu, 19 Aug 2021 14:00:57 -0700
-Subject: [PATCH] f2fs: guarantee to write dirty data when enabling checkpoint
- back
+On 8/23/21 10:13 AM, Sami Tolvanen wrote:
+> The kernel has several assembly functions that are not directly callable
+> from C. Use an opaque type for these function prototypes to make misuse
+> harder, and to avoid the need to annotate references to these functions
+> for Clang's Control-Flow Integrity (CFI).
 
-We must flush all the dirty data when enabling checkpoint back. Let's guarantee
-that first by adding a retry logic on sync_inodes_sb(). In addition to that,
-this patch adds to flush data in fsync when checkpoint is disabled, which can
-mitigate the sync_inodes_sb() failures in advance.
+You have:
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- Change log from v2:
-- repharse the patch description a bit
-- fix retry condition check
+typedef const u8 *asm_func_t;
 
- fs/f2fs/file.c  |  5 ++---
- fs/f2fs/super.c | 11 ++++++++++-
- 2 files changed, 12 insertions(+), 4 deletions(-)
+This is IMO a bit confusing.  asm_func_t like this is an *address* of a
+function, not a function.
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index cc2080866c54..3330efb41f22 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -263,8 +263,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
- 	};
- 	unsigned int seq_id = 0;
- 
--	if (unlikely(f2fs_readonly(inode->i_sb) ||
--				is_sbi_flag_set(sbi, SBI_CP_DISABLED)))
-+	if (unlikely(f2fs_readonly(inode->i_sb)))
- 		return 0;
- 
- 	trace_f2fs_sync_file_enter(inode);
-@@ -278,7 +277,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
- 	ret = file_write_and_wait_range(file, start, end);
- 	clear_inode_flag(inode, FI_NEED_IPU);
- 
--	if (ret) {
-+	if (ret || is_sbi_flag_set(sbi, SBI_CP_DISABLED)) {
- 		trace_f2fs_sync_file_exit(inode, cp_reason, datasync, ret);
- 		return ret;
- 	}
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 49e153fd8183..b8fecf4f37e0 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2088,8 +2088,17 @@ static int f2fs_disable_checkpoint(struct f2fs_sb_info *sbi)
- 
- static void f2fs_enable_checkpoint(struct f2fs_sb_info *sbi)
- {
-+	int retry = DEFAULT_RETRY_IO_COUNT;
-+
- 	/* we should flush all the data to keep data consistency */
--	sync_inodes_sb(sbi->sb);
-+	do {
-+		sync_inodes_sb(sbi->sb);
-+		cond_resched();
-+		congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-+	} while (get_pages(sbi, F2FS_DIRTY_DATA) && retry--);
-+
-+	if (unlikely(retry < 0))
-+		f2fs_warn(sbi, "checkpoint=enable has some unwritten data.");
- 
- 	down_write(&sbi->gc_lock);
- 	f2fs_dirty_to_prefree(sbi);
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
+To be fair, C is obnoxious, but I think this will lead to more confusion
+than is idea.  For example:
 
+> -extern void __fentry__(void);
+> +DECLARE_ASM_FUNC_SYMBOL(__fentry__);
+
+Okay, __fentry__ is the name of a symbol, and the expression __fentry__
+is a pointer (or an array that decays to a pointer, thanks C), which is
+at least somewhat sensible.  But:
+
+> -extern void (*paravirt_iret)(void);
+> +extern asm_func_t paravirt_iret;
+
+Now paravirt_iret is a global variable that points to an asm func.  I
+bet people will read this wrong and, worse, type it wrong.
+
+I think that there a couple ways to change this that would be a bit nicer.
+
+1. typedef const u8 asm_func_t[];
+
+This is almost nice, but asm_func_t will still be accepted as a function
+argument, and the automatic decay rules will probably be confusing.
+
+2. Rename asm_func_t to asm_func_ptr.  Then it's at least a bit more clear.
+
+3. Use an incomplete struct:
+
+struct asm_func;
+
+typedef struct asm_func asm_func;
+
+extern asm_func some_func;
+
+void *get_ptr(void)
+{
+    return &some_func;
+}
+
+No macros required, and I think it's quite hard to misuse this by
+accident.  asm_func can't be passed as an argument or used as a variable
+because it has incomplete type, and there are no arrays so the decay
+rules aren't in effect.
+
+--Andy
