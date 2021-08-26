@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216DF3F83D5
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC093F83D6
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 10:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240633AbhHZIhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 04:37:33 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:37886 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240327AbhHZIha (ORCPT
+        id S240662AbhHZIhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 04:37:35 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38492 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S240553AbhHZIhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 04:37:30 -0400
-X-UUID: b7d5cd35f7c14ea2af0eb9581e375b0e-20210826
-X-UUID: b7d5cd35f7c14ea2af0eb9581e375b0e-20210826
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        Thu, 26 Aug 2021 04:37:31 -0400
+X-UUID: bcf457f132894c0184f84c3462320614-20210826
+X-UUID: bcf457f132894c0184f84c3462320614-20210826
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 91827292; Thu, 26 Aug 2021 16:36:39 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 26 Aug
- 2021 16:36:38 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1107208688; Thu, 26 Aug 2021 16:36:40 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 26 Aug 2021 16:36:38 +0800
 Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
  Transport; Thu, 26 Aug 2021 16:36:38 +0800
@@ -32,11 +32,13 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH next 1/2] usb: mtu3: return successful suspend status
-Date:   Thu, 26 Aug 2021 16:36:36 +0800
-Message-ID: <20210826083637.33237-1-chunfeng.yun@mediatek.com>
+        Eddie Hung <eddie.hung@mediatek.com>, <stable@vger.kernel.org>
+Subject: [PATCH next 2/2] usb: mtu3: fix random remote wakeup
+Date:   Thu, 26 Aug 2021 16:36:37 +0800
+Message-ID: <20210826083637.33237-2-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210826083637.33237-1-chunfeng.yun@mediatek.com>
+References: <20210826083637.33237-1-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK:  N
@@ -44,27 +46,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Forgot 'return 0;' when suspend successfully, make the mistake
-when I split patches.
+Some platforms, e.g. 8183/8192, use low level latch way to keep
+wakeup signal, it may latch a wrong signal if debounce more time,
+and enable wakeup earlier.
+                   ____________________
+ip_sleep      ____/                    \__________
+                           ___________________
+wakeup_signal ____________/                   \______
+                      _______________________________
+wakeup_en     _______/
+                      ^     ^
+                      |(1)  |(2)
+latch wakeup_signal mistakenly at (1), should latch it at (2);
 
-Fixes: 6b587394c65c ("usb: mtu3: support suspend/resume for dual-role mode")
+Workaround: delay about 100us to enable wakeup, meanwhile decrease
+debounce time.
+
+Fixes: b1a344589eea ("usb: mtu3: support ip-sleep wakeup for MT8183")
+Cc: stable@vger.kernel.org
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- drivers/usb/mtu3/mtu3_plat.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/mtu3/mtu3_host.c | 2 +-
+ drivers/usb/mtu3/mtu3_plat.c | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/usb/mtu3/mtu3_host.c b/drivers/usb/mtu3/mtu3_host.c
+index 7d528f3c2482..f3903367a6a0 100644
+--- a/drivers/usb/mtu3/mtu3_host.c
++++ b/drivers/usb/mtu3/mtu3_host.c
+@@ -62,7 +62,7 @@ static void ssusb_wakeup_ip_sleep_set(struct ssusb_mtk *ssusb, bool enable)
+ 	case SSUSB_UWK_V1_1:
+ 		reg = ssusb->uwk_reg_base + PERI_WK_CTRL0;
+ 		msk = WC0_IS_EN | WC0_IS_C(0xf) | WC0_IS_P;
+-		val = enable ? (WC0_IS_EN | WC0_IS_C(0x8)) : 0;
++		val = enable ? (WC0_IS_EN | WC0_IS_C(0x1)) : 0;
+ 		break;
+ 	case SSUSB_UWK_V1_2:
+ 		reg = ssusb->uwk_reg_base + PERI_WK_CTRL0;
 diff --git a/drivers/usb/mtu3/mtu3_plat.c b/drivers/usb/mtu3/mtu3_plat.c
-index 81266f34986f..5b3f7f73cb40 100644
+index 5b3f7f73cb40..f13531022f4a 100644
 --- a/drivers/usb/mtu3/mtu3_plat.c
 +++ b/drivers/usb/mtu3/mtu3_plat.c
-@@ -502,6 +502,7 @@ static int mtu3_suspend_common(struct device *dev, pm_message_t msg)
- 	ssusb_phy_power_off(ssusb);
- 	clk_bulk_disable_unprepare(BULK_CLKS_CNT, ssusb->clks);
- 	ssusb_wakeup_set(ssusb, true);
-+	return 0;
+@@ -63,6 +63,9 @@ static int wait_for_ip_sleep(struct ssusb_mtk *ssusb)
+ 	if (ret) {
+ 		dev_err(ssusb->dev, "ip sleep failed!!!\n");
+ 		ret = -EBUSY;
++	} else {
++		/* workaround: avoid wrong wakeup signal latch for some soc */
++		usleep_range(100, 200);
+ 	}
  
- sleep_err:
- 	resume_ip_and_ports(ssusb, msg);
+ 	return ret;
 -- 
 2.18.0
 
