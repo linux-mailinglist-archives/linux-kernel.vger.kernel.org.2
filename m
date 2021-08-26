@@ -2,168 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7773F8C05
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0D23F8C08
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 18:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243072AbhHZQYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 12:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
+        id S243055AbhHZQZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 12:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233548AbhHZQYV (ORCPT
+        with ESMTP id S243044AbhHZQZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 12:24:21 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12086C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 09:23:34 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id 7so3184525pfl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 09:23:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Cr6/zwxvFT060RSzezsHpgYecFKnegANyyYpx1rGGgk=;
-        b=uNY4uwBlkIObxedN9T7czrSSQ8+WkGVy+7iyGhT2QeDpnuklcKX8rriKe6JkwQHEYH
-         R5RSvD+JfWj31OFDSZKcDqvcxL2bk12TnP46mH9tDqW2f4FPJTA/idWD1Fha49Mzkwz7
-         GkmSMPGe4APTTk4wRDKtLy0qWKpzUkE2cwMy6eBLQ7VuxvUQ+o9cPxgAV0xb6zh+ow3t
-         D6e4jkzKEpeKRgqP7Dvz8aEK9Kj599LEZEhdBA+TsMPsgqXralkZnR/sNlmchcSYX0Y8
-         nG5Ai0koCXynnxG62A8FxxdvewBzzD79RJ/wT5Zhtq+zBd1ujr5ctcYwq8Re4A3yPgjA
-         DJMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cr6/zwxvFT060RSzezsHpgYecFKnegANyyYpx1rGGgk=;
-        b=St24B9CL9q7v9AdcOlHRC7Atg8aU4LiplrwvPuGjuOubqXLAPBkwQFx32PNe5RoUyS
-         +APRSsBxrVzaWObuwLlnJjeyNtUPB2g6Q7i9xV2LZUaVJTQnqhd3dS2x/ZqlpOrxu6oo
-         Rv6d0eB28X+JzWBEuP94IO7nL37h6LZlkxjA7e2UlZkGsMKpVkrApr7pmR+0f7NYF30T
-         +M87RFmhHQr08mWZly2KRug7TJk41W1gTsaheSBRftJz/fFww/yDNc3YMvZqk7DCc3Or
-         qgcBkiNg4k9EXZwzF0MnfiICUqr+IBVqaoAUUKNkDz4vwZMyh86SbSP5O2RR+BLNZXnZ
-         /TQg==
-X-Gm-Message-State: AOAM532kfGmvXSrpyoho86iPrc5XzKF8dn8SgJTNEDK8NAGPWjBKrBDM
-        GqGpRiU+rqVci8lZ/BE5gk+6Sw==
-X-Google-Smtp-Source: ABdhPJzgUzoqaXbTLoNg7TkATbYE+7I5G/QVg9ZvB+a0/4dCbtt4U8oj73oQ/a1uhyE3aXxUmUkyWQ==
-X-Received: by 2002:a62:b414:0:b029:32e:3ef0:7735 with SMTP id h20-20020a62b4140000b029032e3ef07735mr4451329pfn.61.1629995013329;
-        Thu, 26 Aug 2021 09:23:33 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w14sm163145pge.40.2021.08.26.09.23.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 09:23:32 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 16:23:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] VMX: nSVM: enter protected mode prior to returning
- to nested guest from SMM
-Message-ID: <YSfAAYN/Ng/L1IMa@google.com>
-References: <20210826095750.1650467-1-mlevitsk@redhat.com>
- <20210826095750.1650467-3-mlevitsk@redhat.com>
+        Thu, 26 Aug 2021 12:25:04 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DE4C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 09:24:16 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 00:24:58 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1629995053;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eeA/EblnvWIy9V7dZ552OXTY1UGszfZzpi/NUgGy4SU=;
+        b=mjWiEZgVq4SEQTk+Zop2fdzgYirnncPUw/G7ra2npWRudz5plazHu9a7zPziB4Jqoh+XOe
+        MWFvwDJrn5wFWG94sKLJqLBU1LmIIv9AOYdntDz3Wkk3cjSFep7InIh6h7Z0g1PZbv40Ww
+        QMOu9pgBJM4NQ0RLXEbon/+VMea7/8k=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org, tao.zhou@linux.dev
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] sched: Fix get_push_task() vs migrate_disable()
+Message-ID: <YSfAWkWvd+4MJcvu@geo.homenetwork>
+References: <20210826133738.yiotqbtdaxzjsnfj@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210826095750.1650467-3-mlevitsk@redhat.com>
+In-Reply-To: <20210826133738.yiotqbtdaxzjsnfj@linutronix.de>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: tao.zhou@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021, Maxim Levitsky wrote:
-> SMM return code switches CPU to real mode, and
-> then the nested_vmx_enter_non_root_mode first switches to vmcs02,
-> and then restores CR0 in the KVM register cache.
-> 
-> Unfortunately when it restores the CR0, this enables the protection mode
-> which leads us to "restore" the segment registers from
-> "real mode segment cache", which is not up to date vs L2 and trips
-> 'vmx_guest_state_valid check' later, when the
-> unrestricted guest mode is not enabled.
+Hi Sebastian,
 
-I suspect this is slightly inaccurate.  When loading vmcs02, vmx_switch_vmcs()
-will do vmx_register_cache_reset(), which also causes the segment cache to be
-reset.  enter_pmode() will still load stale values, but they'll come from vmcs02,
-not KVM's segment register cache.
+On Thu, Aug 26, 2021 at 03:37:38PM +0200, Sebastian Andrzej Siewior wrote:
 
-> This happens to work otherwise, because after we enter the nested guest,
-> we restore its register state again from SMRAM with correct values
-> and that includes the segment values.
+> push_rt_task() attempts to move the currently running task away if the
+> next runnable task has migration disabled and therefore is pinned on the
+> current CPU.
 > 
-> As a workaround to this if we enter protected mode first,
-> then setting CR0 won't cause this damage.
+> The current task is retrieved via get_push_task() which only checks for
+> nr_cpus_allowed == 1, but does not check whether the task has migration
+> disabled and therefore cannot be moved either. The consequence is a
+> pointless invocation of the migration thread which correctly observes
+> that the task cannot be moved.
 > 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Return NULL if the task has migration disabled and cannot be moved to
+> another CPU.
+> 
+> Fixes: a7c81556ec4d3 ("sched: Fix migrate_disable() vs rt/dl balancing")
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > ---
->  arch/x86/kvm/vmx/vmx.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  kernel/sched/sched.h | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 0c2c0d5ae873..805c415494cf 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7507,6 +7507,13 @@ static int vmx_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
->  	}
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index e205b63d6db07..32a4945730a9b 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -2259,6 +2259,9 @@ static inline struct task_struct *get_push_task(struct rq *rq)
+>  	if (p->nr_cpus_allowed == 1)
+>  		return NULL;
 >  
->  	if (vmx->nested.smm.guest_mode) {
-> +
-> +		/*
-> +		 * Enter protected mode to avoid clobbering L2's segment
-> +		 * registers during nested guest entry
-> +		 */
-> +		vmx_set_cr0(vcpu, vcpu->arch.cr0 | X86_CR0_PE);
+> +	if (p->migration_disabled)
+> +		return NULL;
 
-I'd really, really, reaaaally like to avoid stuffing state.  All of the instances
-I've come across where KVM has stuffed state for something like this were just
-papering over one symptom of an underlying bug.
+Not much I can restore here..
 
-For example, won't this now cause the same bad behavior if L2 is in Real Mode?
+Is is_migration_disabled(p) be more correct to check migration disable.
+And get_push_task() being called in pull_rt_task() has checked migration
+disable first and then call get_push_task(). That means this check in
+get_push_task() in patch is a second repeatly check.
 
-Is the problem purely that emulation_required is stale?  If so, how is it stale?
-Every segment write as part of RSM emulation should reevaluate emulation_required
-via vmx_set_segment().
-
-Oooooh, or are you talking about the explicit vmx_guest_state_valid() in prepare_vmcs02()?
-If that's the case, then we likely should skip that check entirely.  The only part
-I'm not 100% clear on is whether or not it can/should be skipped for vmx_set_nested_state().
-
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index bc6327950657..20bd84554c1f 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -2547,7 +2547,7 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
-         * which means L1 attempted VMEntry to L2 with invalid state.
-         * Fail the VMEntry.
-         */
--       if (CC(!vmx_guest_state_valid(vcpu))) {
-+       if (from_vmentry && CC(!vmx_guest_state_valid(vcpu))) {
-                *entry_failure_code = ENTRY_FAIL_DEFAULT;
-                return -EINVAL;
-        }
+>  	rq->push_busy = true;
+>  	return get_task_struct(p);
+>  }
+> -- 
+> 2.33.0
+> 
 
 
-If we want to retain the check for the common vmx_set_nested_state() path, i.e.
-when the vCPU is truly being restored to guest mode, then we can simply exempt
-the smm.guest_mode case (which also exempts that case when its set via
-vmx_set_nested_state()).  The argument would be that RSM is going to restore L2
-state, so whatever happens to be in vmcs12/vmcs02 is stale.
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index bc6327950657..ac30ba6a8592 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -2547,7 +2547,7 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
-         * which means L1 attempted VMEntry to L2 with invalid state.
-         * Fail the VMEntry.
-         */
--       if (CC(!vmx_guest_state_valid(vcpu))) {
-+       if (!vmx->nested.smm.guest_mode && CC(!vmx_guest_state_valid(vcpu))) {
-                *entry_failure_code = ENTRY_FAIL_DEFAULT;
-                return -EINVAL;
-        }
+Thanks,
+Tao
