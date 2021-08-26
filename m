@@ -2,116 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259333F8539
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079E43F853D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Aug 2021 12:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241353AbhHZKUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 06:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234124AbhHZKUt (ORCPT
+        id S241297AbhHZKW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 06:22:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11238 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233654AbhHZKW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 06:20:49 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54064C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 03:20:02 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id x11so5256562ejv.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 03:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+kvaMj8EJUxo9/2klnChfd6kwIC9S45AjjV1Kjn+v+M=;
-        b=gAk75JrC/Yt1l+MhZuQc/J2oYzOViLo/QAADrmHo15V1YaWMk+idGOEKoU/jD6EBJv
-         iQblaavqqvZxCkAA45XOp1aHLeam5O/JTPPh5WXlL6uPp1TkaWTnQOJvHNTgzl/yiwSt
-         /oz2HVmua6gzRXonqy/G9FIU2F5/aGLjYKfEAfOYCUvx9qEmwZBKuWF8fNnKc9S5Wjfc
-         h9jCwHfWwRcllF3OJCC53Jj26H9HDmoX7kpS/AQOdrH2Cv8TzKnT7Ie21T84qkR5kVZI
-         TQxuqH7W+eRuQbyhZE6oamLqcwoe585pI4VlB7TOawHOYUeyviyMM8EmLgX2XphmjW1x
-         m8bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+kvaMj8EJUxo9/2klnChfd6kwIC9S45AjjV1Kjn+v+M=;
-        b=e29YhfunA2OumH6r1Vw+VFVDOf9GQUzSRQwwOqPtMuTcNEv12zMhb+hA7YT5HqzBQE
-         B6MbNSWXCMhbQjaZGff+mGXpaUGpKt46dBtVbjRyNVhj2LOIHZLXb5e1hNth2Ep//uw1
-         nOXYDcS7fGylmC/Pw2XUnUvRbzFdJVAcdQD9cHu3jTKDYgCLY+sFi7zOlI1utlnFr5ee
-         QBSI3m2QAYOC5u96zAOKxFBU0aEmtRQZiWnqrVI5NW0G/hQOYF+hRQSFjVhXUzklr+ci
-         bQvAPCDtB19giBKfSjfyb2xFfIOzY5P638Y8QoiHU4xNI/ZNaPoGBiF2ZowjMia/6ySr
-         I1lQ==
-X-Gm-Message-State: AOAM531iu4zAg+SfGtcMQgXNq7Fmfz0iw7co/klvhUGPIjzCCP31AsgM
-        D7fE87zzXYelYLKbLfuME3HsORD1XgA=
-X-Google-Smtp-Source: ABdhPJy6tGk/bfd8yr0ySl3vhr3cNdZliifKQEN1W2EIwz+Wu2Q/n1qplHX3ymzoYdEJAcq1SC6o+Q==
-X-Received: by 2002:a17:906:4943:: with SMTP id f3mr3442697ejt.102.1629973200918;
-        Thu, 26 Aug 2021 03:20:00 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.205])
-        by smtp.gmail.com with ESMTPSA id k3sm1095440eje.117.2021.08.26.03.19.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 03:20:00 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 12:19:57 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Provide a TODO file for this driver
-Message-ID: <20210826101956.GB1416@agape.jhs>
-References: <20210826014959.26857-1-fmdefrancesco@gmail.com>
+        Thu, 26 Aug 2021 06:22:57 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17QA3ZI2069971;
+        Thu, 26 Aug 2021 06:22:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : content-type :
+ mime-version; s=pp1; bh=BVAN/xxzPVJWRFQ6uZqBrupRzm7MY9uQ5jme3chmPW4=;
+ b=WyTz+0ymNfTalfG1BEE2ovrO210fqfWenLnzGCqWCaBVVRbDxcwETr2l239u6EytfUHI
+ lXQ0EERa0zyXLnxIB71jftUKxM6MbB4jqVocVPNMJcHqQg/0y2dx9/sPDFSGliGfI6zE
+ cj9hyh2EclUHvHF6Gar6JeVwimTVRADYp6QLL0XKNlT7SPz6e0oRuVn3q59Oc/szwNLN
+ Db96Ey9Ij+LtoXxbWuehF1qPN68b3hHJ8RZqmSkJfpmnR6eZsM+BCSAAs0AiiNigrkJ6
+ XZS8TfHRQ29u8LYlbkarf/6dcWBusp8xJXOgHDjhlSc8tX3G1rDVQmtkuSbiXBohW8XY iw== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ap72pk9bj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Aug 2021 06:22:08 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17QACsKS015509;
+        Thu, 26 Aug 2021 10:22:06 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 3ajs48h5re-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Aug 2021 10:22:05 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17QAM2Kh55116276
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Aug 2021 10:22:02 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA67011C131;
+        Thu, 26 Aug 2021 10:22:01 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EC22111C070;
+        Thu, 26 Aug 2021 10:22:00 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 26 Aug 2021 10:22:00 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        hca@linux.ibm.com
+Subject: Re: crash on s390 with SCHED_CORE=y
+References: <yt9d35qwa82w.fsf@linux.ibm.com>
+        <20210826100856.GA4353@worktop.programming.kicks-ass.net>
+Date:   Thu, 26 Aug 2021 12:21:59 +0200
+In-Reply-To: <20210826100856.GA4353@worktop.programming.kicks-ass.net> (Peter
+        Zijlstra's message of "Thu, 26 Aug 2021 12:08:56 +0200")
+Message-ID: <yt9dy28o8q0o.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: VdXlNgjOMbQv-FnGct052K5vr_K6WiLa
+X-Proofpoint-ORIG-GUID: VdXlNgjOMbQv-FnGct052K5vr_K6WiLa
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826014959.26857-1-fmdefrancesco@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-26_02:2021-08-26,2021-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ mlxlogscore=903 malwarescore=0 priorityscore=1501 spamscore=0 phishscore=0
+ adultscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108260061
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Fabio,
+Peter Zijlstra <peterz@infradead.org> writes:
 
-On Thu, Aug 26, 2021 at 03:49:59AM +0200, Fabio M. De Francesco wrote:
-> Provide a TODO file that lists the tasks that should be carried out in
-> order to move this driver off drivers/staging.
-> 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
-> 
-> Thanks to Phillip Potter <phil@philpotter.co.uk> for for providing the first draft.
-> 
->  drivers/staging/r8188eu/TODO | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->  create mode 100644 drivers/staging/r8188eu/TODO
-> 
-> diff --git a/drivers/staging/r8188eu/TODO b/drivers/staging/r8188eu/TODO
-> new file mode 100644
-> index 000000000000..4bccca69abac
-> --- /dev/null
-> +++ b/drivers/staging/r8188eu/TODO
-> @@ -0,0 +1,16 @@
-> +To-do list:
-> +
-> +* Correct the coding style according to Linux guidelines; please read the document
-> +at https://www.kernel.org/doc/html/latest/process/coding-style.html.
-> +* Remove unnecessary debugging/printing macros; for those that are still needed
-> +use the proper kernel API (pr_debug(), dev_dbg(), netdev_dbg()).
-> +* Remove dead code such as unusued functions, variables, fields, etc..
-> +* Use in-kernel API and remove unnecessary wrappers where possible.
-> +* Remove the HAL layer and migrate its functionality into the relevant parts of
-> +the driver.
-> +* Switch to use LIB80211 (This work is currently in development by Larry Finger).
-> +* Switch to use MAC80211 (This work is currently in development by Larry Finger).
+> On Thu, Aug 26, 2021 at 11:06:31AM +0200, Sven Schnelle wrote:
+>> [   25.044234]  [<00000001655b7534>] raw_spin_rq_lock_nested+0x5c/0xb8
+>> [   25.044241]  [<00000001655d2cfc>] online_fair_sched_group+0x9c/0x1c0
+>> [   25.044248]  [<00000001655e481c>] sched_autogroup_create_attach+0xdc/0x210
+>
+> Does:
+>
+>   https://lkml.kernel.org/r/162970967846.25758.333277155824309635.tip-bot2@tip-bot2
+>
+> help?
 
-Maybe I'm wrong but I think Larry is working on cfg80211 not exactly with
-lib80211 or mac80211. So I'd remove the clauses on parentheses.
+Indeed. Should have searched the ML before debugging... Feel free to add
+my
 
-> +
-> +Please send any patches to Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-> +Larry Finger <Larry.Finger@lwfinger.net>, Phillip Potter <phil@philpotter.co.uk>
-> +and CC linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org.
-> -- 
-> 2.32.0
-> 
-> 
-
-thank you,
-
-fabio
+Tested-by: Sven Schnelle <svens@linux.ibm.com>
