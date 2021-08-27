@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E523F996B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68D53F9A04
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhH0NRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60322 "EHLO
+        id S241291AbhH0NYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbhH0NRs (ORCPT
+        with ESMTP id S245129AbhH0NYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:17:48 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49428C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:16:59 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id p4so760740qki.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:16:59 -0700 (PDT)
+        Fri, 27 Aug 2021 09:24:37 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C9EC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:23:48 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id k5so14390574lfu.4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:23:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Zqlt5DZ1Ie+aRGdbfLW2zyrhesPZ9ELRKv5093QWQzY=;
-        b=A8ot+uWHG4LrZwrNa6kGY0narHhP5ggNFnjAilhm8jZpcFm2ioqX3LcFxnsDJVt+FF
-         VvwQHbSZ/tCYA9lxuRmw5JO/KG7fMKAy01yLLAFO7fGw709UTjqRb1x86xGkPUFNuJzO
-         lDrAyqzzI8iJaHo2YbTxMEbUjJc0lRCsEvMng/sjHvrqTRjS1MN6ky/CSWSIQZkh6wjV
-         +qZ/1eRUZ5Sh1aab6QVbWBdk283G9EnO+/SXrg7Ci+I3HvEE4x3EFW/KiFn+49mx8zlj
-         HyxScQm9yiId27Su4Pun7/2Kk6MZAGLpFMqN9FE+pt2L8XPClmEy7ph+tQ91sf2tcVl0
-         69WQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vVEdAtwasWkrT0f0vOq5zJOkTWOPwPdpExa1I7BhZtc=;
+        b=lFI32R63zrucrYnkIqq6iE3qq5EeU910b9somn/1eHEmLa7lyPBVXEXSvUVfHZXljx
+         TN6C7dFaRvGcV7OMzmM2Z702UqA21+p6LGiil3JBftn6N+xI5cU3ZZKXnuDMakUW+3aS
+         2JJPsdBHzh/GUX+dBrwrAKurlt2KMRM3E29qSJusmZRW6Gkawk70f92avYnixl5DMoY0
+         iRfhpFxvyjlDDWVaZC/SZpaBr+oTpnlorA3vhS0oFOUOseXOqeLPa/ulN1BaOmExMsz4
+         lKUa8NlGjOIXU4SMK755TODSTf/PrplBh65Z7qev6Iz8YtvnlSlcHUfQ1X8DX7x1gssR
+         KGTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Zqlt5DZ1Ie+aRGdbfLW2zyrhesPZ9ELRKv5093QWQzY=;
-        b=eKscZ+KWKCCCmeOs3DKlG93Un+p2e/7MCFAb+TJfPBGv9JkHCreL2g/h+oeHeTD9Gz
-         jRq6l53DReTT6LlaT99TkbwqMDBaoqdrZN1qYh1yEomz+k5blPH32dGsI8bPBIinQy9D
-         /+KoVJjCes8zU2Euz6y+OoKekp8tPcR+7/SowUIn+AP0A5lGOeEHhfda59HJvTTnYGcD
-         E9/ypU+jOrrdKxRoRaV+VvPcr6tu0tLdawPKpkpw408/riIG+ExVqiK6n0pwjCyWSBeq
-         CFmwIoqFXb9WrS/ZlaXsfWHZrbvtUOTHwE3wm6ufigue0m0J+HhJXkjU6nFMkltPh/Ng
-         CiQg==
-X-Gm-Message-State: AOAM533V4esOvgI4LO/6AYQSYThbh4176da4awt+rO4hqZ2TH//cxFfR
-        +0vXZd8pGCCoWBaqLx1fl/JtN6/7LMOBLg==
-X-Google-Smtp-Source: ABdhPJwTXS6LDXSWwyXTzKjKsscU+JjEZ5464lBBMs/dmejvN86JgWQ5uX9I9OQt4qJNt460/Ct+Lg==
-X-Received: by 2002:a05:620a:1210:: with SMTP id u16mr8837124qkj.390.1630070218370;
-        Fri, 27 Aug 2021 06:16:58 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id w18sm3322867qto.91.2021.08.27.06.16.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 06:16:57 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mJbj7-005giR-Ak; Fri, 27 Aug 2021 10:16:57 -0300
-Date:   Fri, 27 Aug 2021 10:16:57 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>
-Cc:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
-Message-ID: <20210827131657.GI1200268@ziepe.ca>
-References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
- <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
- <20210806014559.GM543798@ziepe.ca>
- <b5e6c4cd-8842-59ef-c089-2802057f3202@cn.fujitsu.com>
- <10c4bead-c778-8794-f916-80bf7ba3a56b@fujitsu.com>
- <20210827121034.GG1200268@ziepe.ca>
- <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vVEdAtwasWkrT0f0vOq5zJOkTWOPwPdpExa1I7BhZtc=;
+        b=oGPMHK0Y/d12tMNzRSOt7QLeNxr/7mRint/XRQijg3ry6Gexz+NdVzAF39rB9S7zQ5
+         sze0Vgq49784ASoZjDBj78VDMg8/vkTvRWX/XVkbBS7P0pPcLAU6UuLCZAISfJ7vbgsF
+         4lePOoyMLtYbkP9rsJMX2gNkjNAQ84CJijrhSJsuzztle9Yxsq9rD8AaA5b2HW2TJr4H
+         ULeZfIZK1O4h2LHSZLbNTZDA7zKrJXvh2hONVvlmOXY9kLlDJ5lONju1JrmMVZiWQ3Zv
+         LhjDsYlLK/6U3mBC3ipDwRkVopwH5TNQ3PgwyhL9sWGKJg1C6OSvjQuqjE7jeEdsSdQO
+         ymow==
+X-Gm-Message-State: AOAM530G9f9eOmICNXd5SOwzKNvTOMBDvtVS6G8PBtQgj0zr9L6kWIyf
+        8GUtl11RafjM04wNW76VWLPsH+wN4s/CKN7Zb3xeqQ==
+X-Google-Smtp-Source: ABdhPJz8jK79D3e6Kay83LX5n+kuJqijB53HmFK7YA4ArgShByf4lqcNzK3GCZnShdgQPw2M6e8FYqwcpSmFFVEggjE=
+X-Received: by 2002:a19:655e:: with SMTP id c30mr6648013lfj.142.1630070626804;
+ Fri, 27 Aug 2021 06:23:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
+References: <4fb42fa1b76b38c6628f056cfd804bb5b4e74d99.1629818532.git.geert+renesas@glider.be>
+In-Reply-To: <4fb42fa1b76b38c6628f056cfd804bb5b4e74d99.1629818532.git.geert+renesas@glider.be>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 27 Aug 2021 15:23:10 +0200
+Message-ID: <CAPDyKFrwxCH-AEDNnhwmoZ9aHZVzKw-=foo7F0mhMNLTCZxpYQ@mail.gmail.com>
+Subject: Re: [PATCH] PM: domains: Fix domain attach for CONFIG_PM_OPP=n
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 09:05:21PM +0800, Li, Zhijian wrote:
-> 
-> on 2021/8/27 20:10, Jason Gunthorpe wrote:
-> > On Fri, Aug 27, 2021 at 08:15:40AM +0000, lizhijian@fujitsu.com wrote:
-> > > i looked over the change-log of hmm_vma_handle_pte(), and found that before
-> > > 4055062 ("mm/hmm: add missing call to hmm_pte_need_fault in HMM_PFN_SPECIAL handling")
-> > > 
-> > > hmm_vma_handle_pte() will not check pte_special(pte) if pte_devmap(pte) is true.
-> > > 
-> > > when we reached
-> > > "if (pte_special(pte) && !is_zero_pfn(pte_pfn(pte))) {"
-> > > the pte have already presented and its pte's flag already fulfilled the request flags.
-> > > 
-> > > 
-> > > My question is that
-> > > Per https://01.org/blogs/dave/2020/linux-consumption-x86-page-table-bits,
-> > > pte_devmap(pte) and pte_special(pte) could be both true in fsdax user case, right ?
-> > How? what code creates that?
-> > 
-> > I see:
-> > 
-> > insert_pfn():
-> > 	/* Ok, finally just insert the thing.. */
-> > 	if (pfn_t_devmap(pfn))
-> > 		entry = pte_mkdevmap(pfn_t_pte(pfn, prot));
-> > 	else
-> > 		entry = pte_mkspecial(pfn_t_pte(pfn, prot));
-> > 
-> > So what code path ends up setting both bits?
-> 
->  pte_mkdevmap() will set both _PAGE_SPECIAL | PAGE_DEVMAP
-> 
->  395 static inline pte_t pte_mkdevmap(pte_t pte)
->  396 {
->  397         return pte_set_flags(pte, _PAGE_SPECIAL|_PAGE_DEVMAP);
->  398 }
-> 
-> below is a calltrace example
-> 
-> [  400.728559] Call Trace:
-> [  400.731595] dump_stack+0x6d/0x8b
-> [  400.735536] insert_pfn+0x16c/0x180
-> [  400.739596] __vm_insert_mixed+0x84/0xc0
-> [  400.744144] dax_iomap_pte_fault+0x845/0x870
-> [  400.749089] ext4_dax_huge_fault+0x171/0x1e0
-> [  400.754096] __do_fault+0x31/0xe0
-> [  400.758090]  ? pmd_devmap_trans_unstable+0x37/0x90
-> [  400.763541] handle_mm_fault+0x11b1/0x1680
-> [  400.768260] exc_page_fault+0x2f4/0x570
-> [  400.772788]  ? asm_exc_page_fault+0x8/0x30
-> [  400.777539]  asm_exc_page_fault+0x1e/0x30
-> 
-> 
-> So is my previous change reasonable ?
+On Tue, 24 Aug 2021 at 17:23, Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> If CONFIG_PM_OPP=n, of_get_required_opp_performance_state() always
+> returns -EOPNOTSUPP, and all drivers for devices that are part of a PM
+> Domain fail to probe with:
+>
+>     failed to set required performance state for power-domain foo: -95
+>     probe of bar failed with error -95
+>
+> Fix this by treating -EOPNOTSUPP the same as -ENODEV.
+>
+> Fixes: c016baf7dc58e77a ("PM: domains: Add support for 'required-opps' to set default perf state")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Yes, can you send a proper patch and include the mm mailing list?
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Jason
+Kind regards
+Uffe
+
+> ---
+>  drivers/base/power/domain.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index a10d740c4f2a1c28..7b197690e6442911 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -2760,7 +2760,7 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>
+>         /* Set the default performance state */
+>         pstate = of_get_required_opp_performance_state(dev->of_node, index);
+> -       if (pstate < 0 && pstate != -ENODEV) {
+> +       if (pstate < 0 && pstate != -ENODEV && pstate != -EOPNOTSUPP) {
+>                 ret = pstate;
+>                 goto err;
+>         } else if (pstate > 0) {
+> --
+> 2.25.1
+>
