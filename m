@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E8D3FA072
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748523FA06F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhH0UQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:16:35 -0400
-Received: from mail-dm6nam11on2051.outbound.protection.outlook.com ([40.107.223.51]:5454
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231576AbhH0UQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231523AbhH0UQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 27 Aug 2021 16:16:31 -0400
+Received: from mail-mw2nam12on2066.outbound.protection.outlook.com ([40.107.244.66]:21728
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231462AbhH0UQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 16:16:30 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dDr/n6qzna7fb4X3MtCBubLyTFWL5alX4VVnm08szVFl9rvjZNUoqgbbBbb5MSJ9W2yEKUIf33OyW5sGNGmlYX6Pl14I2yxjQcjLbkLaFbyPqvJKH8a1Q7B8HGoEuecUQWNaqR3258RoNfqBNiyOge81myk3YqZQbQYLRE4F+yfzL6I0ublhTUvqZHXpYsHu9Ty8WYlqzedwI3yQlrk4D0wgNrvUZuZFHeWvlXMk8IQu8vGAqGIsplbNsIsFzXHK2572YlnP+qveA2ft+alfmLBaGh2ne0VgjI6a/bV8ihUphdcwqNPC1I4TtPsc5Lm+s1uhUWavOpKAPGaqz0jQqA==
+ b=OSdH+1IVEIaTG0fh84uwOQAStVcddMKz9XL/8mJEUHGfTbeV3UW+Fj7NsLhnq5e5tY8Y5bqbs7F9ZhO7lT2j05mPVcXYWbyQWKPB5gdp/ZN9thPTbaHzjsirXtRKITNfM5laEocf1Sj20PEnyG3n5uzoiUZaoL1G7nPjRvOjBAP1Ch95uiRTl5FxpxNqXT+EFjR9miLpe31sNTc49CI+XwNT3tqvAFQHsDg+FfhQ6bM43qWzXOUPnpKEowlpNEhpxfwBzYn0k6KBPHVL3CL7pMaN9fzvDXt24mz9vRlaHEQ135jV3iVFF+rgNH5Lf5S9j7BHxpPjr4jRCaLYoi8X5Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jLWJyROXL1mehOjYOyq5RdtKiMcZZWxh3cq9ICX/+3I=;
- b=Ma0nXPQoWT1Y7UAMg0/W4GVBrWXJPY/Mf2FNy+izs/Y53i3x5ujgylJid02z1TWQFWnoOGML8E8gBQVm3Fkprvhw4YGNS8Tk9aLLPH0eLuafU++XEYHIixwCEkT8vjk4Byzb7J3pSqvwlsEoQtlxGJ9CfgTNgE4ghG7OPWf4J04L47nEki/wR2L2UO5EHDkTtDSphrcpKVtvIQFMru/sObF8xCf2Nz20zmClOO5Y7SDZIGoE0fwx4niSUxQmi1Cz1NAKEM97NiGZ/U/Pr6tQdr+awOB2UpWAFy4l5Yf7gsWrc5ihFSeCZHXmvTxDlARq4yoQrYRdjsPupZWvaHRa5Q==
+ bh=3MmZxqMP+H3792MRYkj4eTOuKdnr1ZF+7u8jG3Kx+dk=;
+ b=KGLl5rPTma6hTCzARCRLZxG290AgkPft3GtTs5WTbv/0ipuLjEUOPbzM1WTNXb6ENFmOvvyokkaA0p/Tc+z7It12A/WqcMqLnA66J12TXVW29DfDxPqZGkZMlKpm3NGdy0iTEara2RUUR/yTVajCb5J0dhHALLUqA180xvH8rcyxrVHsJnFc91WPhBsAZ2JbJRQ+y5Zicj9ub7jl0FlCZoRw+Gly0HKc1mTdJzrLQmYx72Dti7fVqRUC4fO5dYuRNpNDAMBZkV3NvmbpezxHs+yWgk1n+ikTwVg0IHecUI4RfCiNRwVyioyqdPtO2b0dmh1aHdpnPQtdtJtsyCMJSw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=ladisch.de smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jLWJyROXL1mehOjYOyq5RdtKiMcZZWxh3cq9ICX/+3I=;
- b=wJMwiC2EXdDxKhvv6hvpOU62P96+FvWSCYWcR/L4RneT0yhGa0ail/1/GweK8WuqzZH2mVwsSU0S3VZlC+leBzFev8wn1YrrHGAsowYvMFwETQTf86msTfoQODxhxB+uqIJhuVV1tg7tZ2N9jDf/qpF8nAbdR6athHBJ5hCmEZ8=
-Received: from DM5PR08CA0047.namprd08.prod.outlook.com (2603:10b6:4:60::36) by
- MN2PR12MB3311.namprd12.prod.outlook.com (2603:10b6:208:100::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.19; Fri, 27 Aug
- 2021 20:15:38 +0000
+ bh=3MmZxqMP+H3792MRYkj4eTOuKdnr1ZF+7u8jG3Kx+dk=;
+ b=QKxy1fZg9/3pFQMiE6trgeZOlvkqD0omryrILIjeepkdAbGSsmGWM+QH+EJzCZ1T7O1qs62OY+KizOLHGkuMwPmbCEeUM5uDjVsE0nK0Wlf6nS0BBgOm5/UgG7ZPnYQDOONW8r/LXKwONaNkeJDjbB3KdssHvGW1NAAK8lfi9NQ=
+Received: from DM5PR08CA0042.namprd08.prod.outlook.com (2603:10b6:4:60::31) by
+ DM6PR12MB4171.namprd12.prod.outlook.com (2603:10b6:5:21f::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4457.20; Fri, 27 Aug 2021 20:15:38 +0000
 Received: from DM6NAM11FT031.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:60:cafe::55) by DM5PR08CA0047.outlook.office365.com
- (2603:10b6:4:60::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend
- Transport; Fri, 27 Aug 2021 20:15:36 +0000
+ (2603:10b6:4:60:cafe::ff) by DM5PR08CA0042.outlook.office365.com
+ (2603:10b6:4:60::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18 via Frontend
+ Transport; Fri, 27 Aug 2021 20:15:38 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; ladisch.de; dkim=none (message not signed)
  header.d=none;ladisch.de; dmarc=pass action=none header.from=amd.com;
@@ -46,11 +45,11 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  DM6NAM11FT031.mail.protection.outlook.com (10.13.172.203) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4457.17 via Frontend Transport; Fri, 27 Aug 2021 20:15:36 +0000
+ 15.20.4457.17 via Frontend Transport; Fri, 27 Aug 2021 20:15:38 +0000
 Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 27 Aug
- 2021 15:15:34 -0500
+ 2021 15:15:35 -0500
 From:   Mario Limonciello <mario.limonciello@amd.com>
 To:     Clemens Ladisch <clemens@ladisch.de>
 CC:     <linux-hwmon@vger.kernel.org>,
@@ -58,20 +57,11 @@ CC:     <linux-hwmon@vger.kernel.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Wei Huang <wei.huang2@amd.com>,
         Mario Limonciello <mario.limonciello@amd.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jean Delvare <jdelvare@suse.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        David Bartley <andareed@gmail.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>
-Subject: [PATCH v2 2/3] hwmon: (k10temp): Add support for yellow carp
-Date:   Fri, 27 Aug 2021 15:15:26 -0500
-Message-ID: <20210827201527.24454-3-mario.limonciello@amd.com>
+        "Jean Delvare" <jdelvare@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 3/3] hwmon: (k10temp): Show errors failing to read
+Date:   Fri, 27 Aug 2021 15:15:27 -0500
+Message-ID: <20210827201527.24454-4-mario.limonciello@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210827201527.24454-1-mario.limonciello@amd.com>
 References: <20210827201527.24454-1-mario.limonciello@amd.com>
@@ -83,111 +73,199 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2e3c8450-5ad5-42b0-3536-08d969976e5b
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3311:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB331141B1595AE4EA2DC2C318E2C89@MN2PR12MB3311.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Office365-Filtering-Correlation-Id: a10b91f0-3554-44e1-300a-08d969976ff8
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4171:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB417119830BB293237468C278E2C89@DM6PR12MB4171.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dhoTPVE1qr3f4y6bNWXvi1HGsrbOKSz8qSwKdLzr84c101IBydSMGufvz7zOlQrQ+ewXEQt9FmkTrCYQSHk8NGnI78zWHONW7BBgyemu58IFYMITi57tqxnUb7vVqP0WrAVP5cmriovp1KZGLhu9R0dmaA5AFjxrZCaOBabIQWdkTYvQsXYS2yhE49ZVVKVn1MiX7n3E09P1a279P7dVlatJWRYZ62GPxatp3wT04L8EXsuvTDL4boCYf0DC7ewZc1Fby0Ug1/23gzMcYyir5xhJyy2eRtRsqKoBA6LtCeEsegoTZ9U6J+uwiBHRd3Ju4PdQVb/vTWd0UmDa8i8+vywsVcVL/5dH4r6nUkxlelFi2iQEdzh2HzEUvnY4YxtzfAO7vH6zOZlYAvgxeKoPhuQ+6TVSmiA1NABt2h4K302m5+Rr/v7p99ajvdA8iYzp7qMZAyicjv/PGO2QRibg9yEFD/087HCUyT5+La7BKYe2niMhxscQQSRYhx88uDG7gb6xDSL1VLerLL/HxofaL1hvAJKLGcSn0FKVy5vcBH25dMmqehXN0ZF3AQjOydeAf7Y1a7nVP4Ts6tUZWVePaUmtRxUBwgJr5zBuLcwg8X77OlYhbwEN5xXgK86Ex22jZaRbR9343wnj352H5fxtuJN5cs5x5tAcNCbf5YvXPExM/IkTXYCVxgz+MM6xmVbJfqnm/Mw2bYVxbWHZDuVgHxqVcI+ySXaD+3xyuRVuDBM=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(39860400002)(136003)(46966006)(36840700001)(7416002)(478600001)(44832011)(7696005)(4326008)(8936002)(5660300002)(316002)(54906003)(26005)(426003)(86362001)(2906002)(1076003)(2616005)(8676002)(186003)(70206006)(6916009)(82310400003)(83380400001)(36860700001)(356005)(82740400003)(81166007)(36756003)(16526019)(70586007)(336012)(47076005)(6666004)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: iDIiZB0h5N0ZRHUkEcpeRk7/O4/xrfEOg8zykF9/RTLDVVhF2HjbfZ/ApzCIbIB7Rnt6OOCTFY0j7fIcIN3wAGXvNoGJ4OJZfjgLOD76x9yM1I+YVago1ISRxy8Ni8GLCSbqVkON+hpe5ntC1pkRMvbN2XvJuQURIYeUoU/b6t9LlfCnMbATNoc3Goz9lsQ5VL0ojmQEodpVXypetA0Y5bhhaf3J/bRWeCRIqi2PjrEJIltknqdeDeUKvZLLR+g4oBGVvza5lYDCrWBOoU6SuqfmuiS6SoNRpEKyYySbt3uP/h3JdSdKGa5+KvSMICsDPbNP0Roc1GtVbk3lAFm+x3gJVjI7LDv41szzNe8ZROu4TR8Y/tmFBsiAdhLQPh+Xv4QYRHiG5JRWKpraA9f+xk+SfeA+UNGJXWsHgdDdGYG/0P7RrtO2K1xm55JZkF+TfWo1Hp7YEfkQkxb0ZoqbfgC7UxqE0s2E7nus4lcJbS/lC9dU2u9OvtessKoG2u19+Y4Tb7fpxF7PNPKnNgM09e4jDx5AatRzPHJDfboVAbu4GFFq6sn0N1BPhiUYuzs8YdzF0OJuUi5rcdDWmSK+IvNuQUA6aXD9GIrkdG1KPZN7OEOciXaGSj6sYv5K1H1nWr83LH/xUXGG4rajd6UfCnIUm7nNP6XhLjGM8frJNAhdJ2GaSyz27DLa44I4S3MUceuvc6pP1DeYiVYs7cJ2cwFf0en550oaAtB+32wHBKY=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(46966006)(36840700001)(1076003)(6666004)(356005)(8676002)(6916009)(8936002)(186003)(2906002)(16526019)(86362001)(83380400001)(7696005)(478600001)(70206006)(70586007)(81166007)(82740400003)(44832011)(316002)(36756003)(5660300002)(26005)(82310400003)(4326008)(426003)(336012)(36860700001)(2616005)(54906003)(47076005)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 20:15:36.1045
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 20:15:38.8120
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e3c8450-5ad5-42b0-3536-08d969976e5b
+X-MS-Exchange-CrossTenant-Network-Message-Id: a10b91f0-3554-44e1-300a-08d969976ff8
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT031.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3311
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4171
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yellow carp matches same behavior as green sardine and other Zen3
-products, but have different CCD offsets.
+Enabling Yellow Carp was initially not working "properly"
+because extra IDs were needed, but this wasn't obvious because fail values
+from `amd_smn_read` were ignored.
+
+Don't discard errors from any functions providing them, instead pass up
+to the caller.
 
 Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 ---
- arch/x86/kernel/amd_nb.c | 5 +++++
- drivers/hwmon/k10temp.c  | 5 +++++
- include/linux/pci_ids.h  | 1 +
- 3 files changed, 11 insertions(+)
+ drivers/hwmon/k10temp.c | 87 ++++++++++++++++++++++++-----------------
+ 1 file changed, 52 insertions(+), 35 deletions(-)
 
-diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
-index 23dda362dc0f..c92c9c774c0e 100644
---- a/arch/x86/kernel/amd_nb.c
-+++ b/arch/x86/kernel/amd_nb.c
-@@ -25,6 +25,8 @@
- #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F4 0x144c
- #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F4 0x1444
- #define PCI_DEVICE_ID_AMD_19H_DF_F4	0x1654
-+#define PCI_DEVICE_ID_AMD_19H_M40H_ROOT	0x14b5
-+#define PCI_DEVICE_ID_AMD_19H_M40H_DF_F4 0x167d
- #define PCI_DEVICE_ID_AMD_19H_M50H_DF_F4 0x166e
- 
- /* Protect the PCI config register pairs used for SMN and DF indirect access. */
-@@ -37,6 +39,7 @@ static const struct pci_device_id amd_root_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M10H_ROOT) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M30H_ROOT) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M60H_ROOT) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M40H_ROOT) },
- 	{}
- };
- 
-@@ -58,6 +61,7 @@ static const struct pci_device_id amd_nb_misc_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F3) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F3) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_DF_F3) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M40H_DF_F3) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F3) },
- 	{}
- };
-@@ -74,6 +78,7 @@ static const struct pci_device_id amd_nb_link_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M60H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_DF_F4) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M40H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F4) },
- 	{}
 diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c
-index 159dbad73d82..38bc35ac8135 100644
+index 38bc35ac8135..2edb49d39d22 100644
 --- a/drivers/hwmon/k10temp.c
 +++ b/drivers/hwmon/k10temp.c
-@@ -459,6 +459,10 @@ static int k10temp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 			data->ccd_offset = 0x154;
- 			k10temp_get_ccd_support(pdev, data, 8);
+@@ -98,8 +98,8 @@ static DEFINE_MUTEX(nb_smu_ind_mutex);
+ 
+ struct k10temp_data {
+ 	struct pci_dev *pdev;
+-	void (*read_htcreg)(struct pci_dev *pdev, u32 *regval);
+-	void (*read_tempreg)(struct pci_dev *pdev, u32 *regval);
++	int (*read_htcreg)(struct pci_dev *pdev, u32 *regval);
++	int (*read_tempreg)(struct pci_dev *pdev, u32 *regval);
+ 	int temp_offset;
+ 	u32 temp_adjust_mask;
+ 	u32 show_temp;
+@@ -129,55 +129,65 @@ static const struct tctl_offset tctl_offset_table[] = {
+ 	{ 0x17, "AMD Ryzen Threadripper 29", 27000 }, /* 29{20,50,70,90}[W]X */
+ };
+ 
+-static void read_htcreg_pci(struct pci_dev *pdev, u32 *regval)
++static int read_htcreg_pci(struct pci_dev *pdev, u32 *regval)
+ {
+-	pci_read_config_dword(pdev, REG_HARDWARE_THERMAL_CONTROL, regval);
++	return pci_read_config_dword(pdev, REG_HARDWARE_THERMAL_CONTROL, regval);
+ }
+ 
+-static void read_tempreg_pci(struct pci_dev *pdev, u32 *regval)
++static int read_tempreg_pci(struct pci_dev *pdev, u32 *regval)
+ {
+-	pci_read_config_dword(pdev, REG_REPORTED_TEMPERATURE, regval);
++	return pci_read_config_dword(pdev, REG_REPORTED_TEMPERATURE, regval);
+ }
+ 
+-static void amd_nb_index_read(struct pci_dev *pdev, unsigned int devfn,
++static int amd_nb_index_read(struct pci_dev *pdev, unsigned int devfn,
+ 			      unsigned int base, int offset, u32 *val)
+ {
++	int ret;
++
+ 	mutex_lock(&nb_smu_ind_mutex);
+-	pci_bus_write_config_dword(pdev->bus, devfn,
+-				   base, offset);
+-	pci_bus_read_config_dword(pdev->bus, devfn,
+-				  base + 4, val);
++	ret = pci_bus_write_config_dword(pdev->bus, devfn,
++					 base, offset);
++	if (ret)
++		goto out;
++	ret = pci_bus_read_config_dword(pdev->bus, devfn,
++					base + 4, val);
++out:
+ 	mutex_unlock(&nb_smu_ind_mutex);
++	return ret;
+ }
+ 
+-static void read_htcreg_nb_f15(struct pci_dev *pdev, u32 *regval)
++static int read_htcreg_nb_f15(struct pci_dev *pdev, u32 *regval)
+ {
+-	amd_nb_index_read(pdev, PCI_DEVFN(0, 0), 0xb8,
+-			  F15H_M60H_HARDWARE_TEMP_CTRL_OFFSET, regval);
++	return amd_nb_index_read(pdev, PCI_DEVFN(0, 0), 0xb8,
++				F15H_M60H_HARDWARE_TEMP_CTRL_OFFSET, regval);
+ }
+ 
+-static void read_tempreg_nb_f15(struct pci_dev *pdev, u32 *regval)
++static int read_tempreg_nb_f15(struct pci_dev *pdev, u32 *regval)
+ {
+-	amd_nb_index_read(pdev, PCI_DEVFN(0, 0), 0xb8,
+-			  F15H_M60H_REPORTED_TEMP_CTRL_OFFSET, regval);
++	return amd_nb_index_read(pdev, PCI_DEVFN(0, 0), 0xb8,
++				F15H_M60H_REPORTED_TEMP_CTRL_OFFSET, regval);
+ }
+ 
+-static void read_tempreg_nb_zen(struct pci_dev *pdev, u32 *regval)
++static int read_tempreg_nb_zen(struct pci_dev *pdev, u32 *regval)
+ {
+-	amd_smn_read(amd_pci_dev_to_node_id(pdev),
+-		     ZEN_REPORTED_TEMP_CTRL_BASE, regval);
++	return amd_smn_read(amd_pci_dev_to_node_id(pdev),
++			    ZEN_REPORTED_TEMP_CTRL_BASE, regval);
+ }
+ 
+-static long get_raw_temp(struct k10temp_data *data)
++static int get_raw_temp(struct k10temp_data *data, long *val)
+ {
+ 	u32 regval;
+-	long temp;
++	int ret;
+ 
+-	data->read_tempreg(data->pdev, &regval);
+-	temp = (regval >> ZEN_CUR_TEMP_SHIFT) * 125;
++	ret = data->read_tempreg(data->pdev, &regval);
++	if (ret)
++		return ret;
++	*val = (regval >> ZEN_CUR_TEMP_SHIFT) * 125;
+ 	if (regval & data->temp_adjust_mask)
+-		temp -= 49000;
+-	return temp;
++		*val -= 49000;
++	if (*val < 0)
++		return -EINVAL;
++	return 0;
+ }
+ 
+ static const char *k10temp_temp_label[] = {
+@@ -212,24 +222,27 @@ static int k10temp_read_temp(struct device *dev, u32 attr, int channel,
+ {
+ 	struct k10temp_data *data = dev_get_drvdata(dev);
+ 	u32 regval;
++	int ret;
+ 
+ 	switch (attr) {
+ 	case hwmon_temp_input:
+ 		switch (channel) {
+ 		case 0:		/* Tctl */
+-			*val = get_raw_temp(data);
+-			if (*val < 0)
+-				*val = 0;
++			ret = get_raw_temp(data, val);
++			if (ret)
++				return ret;
  			break;
-+		case 0x40 ... 0x4f:	/* Yellow Carp */
-+			data->ccd_offset = 0x300;
-+			k10temp_get_ccd_support(pdev, data, 8);
-+			break;
- 		}
- 	} else {
- 		data->read_htcreg = read_htcreg_pci;
-@@ -499,6 +503,7 @@ static const struct pci_device_id k10temp_id_table[] = {
- 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_17H_M60H_DF_F3) },
- 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F3) },
- 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_19H_DF_F3) },
-+	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_19H_M40H_DF_F3) },
- 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F3) },
- 	{ PCI_VDEVICE(HYGON, PCI_DEVICE_ID_AMD_17H_DF_F3) },
- 	{}
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 5356ccf1c275..e77a62fd0036 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -555,6 +555,7 @@
- #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F3 0x144b
- #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
- #define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
-+#define PCI_DEVICE_ID_AMD_19H_M40H_DF_F3 0x167c
- #define PCI_DEVICE_ID_AMD_19H_M50H_DF_F3 0x166d
- #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
- #define PCI_DEVICE_ID_AMD_LANCE		0x2000
+ 		case 1:		/* Tdie */
+-			*val = get_raw_temp(data) - data->temp_offset;
+-			if (*val < 0)
+-				*val = 0;
++			ret = get_raw_temp(data, val) - data->temp_offset;
++			if (ret)
++				return ret;
+ 			break;
+ 		case 2 ... 9:		/* Tccd{1-8} */
+-			amd_smn_read(amd_pci_dev_to_node_id(data->pdev),
++			ret = amd_smn_read(amd_pci_dev_to_node_id(data->pdev),
+ 				     ZEN_CCD_TEMP(data->ccd_offset, channel - 2),
+ 						  &regval);
++			if (ret)
++				return ret;
+ 			*val = (regval & ZEN_CCD_TEMP_MASK) * 125 - 49000;
+ 			break;
+ 		default:
+@@ -240,11 +253,15 @@ static int k10temp_read_temp(struct device *dev, u32 attr, int channel,
+ 		*val = 70 * 1000;
+ 		break;
+ 	case hwmon_temp_crit:
+-		data->read_htcreg(data->pdev, &regval);
++		ret = data->read_htcreg(data->pdev, &regval);
++		if (ret)
++			return ret;
+ 		*val = ((regval >> 16) & 0x7f) * 500 + 52000;
+ 		break;
+ 	case hwmon_temp_crit_hyst:
+-		data->read_htcreg(data->pdev, &regval);
++		ret = data->read_htcreg(data->pdev, &regval);
++		if (ret)
++			return ret;
+ 		*val = (((regval >> 16) & 0x7f)
+ 			- ((regval >> 24) & 0xf)) * 500 + 52000;
+ 		break;
 -- 
 2.25.1
 
