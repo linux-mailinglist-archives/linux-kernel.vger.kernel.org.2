@@ -2,137 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00E33F9A92
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813AA3F9A97
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245225AbhH0OD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:03:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45302 "EHLO mail.kernel.org"
+        id S245258AbhH0OFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:05:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244821AbhH0ODp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:03:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A91060F25;
-        Fri, 27 Aug 2021 14:02:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630072976;
-        bh=OyaTCDm5vZvhy4U/W+GLWVTstNRbyz9YgcJskrj8wkQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2TtPPCf+LNZnOsmLvAt9fUc5OzpV+f1ui/mrVuQC5Y7ImvGFnotOSUyq4gY/q8pre
-         GiBds2poXTHLvcaBEqnwYawae2sBQ7JnFOeI00lMERtULkhi7E5728cVkdRxH1yxEt
-         j2icDYo7tnhEa7qnCC+ZSLgzFmUwZdEFtT4D4JL8=
-Date:   Fri, 27 Aug 2021 16:02:49 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Subject: Re: [PATCH 18/20] kbuild: sh: remove unused install script
-Message-ID: <YSjwiQu1kz7CJCrq@kroah.com>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <20210407053419.449796-19-gregkh@linuxfoundation.org>
- <CAK7LNAQ07ycpjJQGwbtq1ii3k9rh2CZVN6MVxkfMb=+Vgs9zqw@mail.gmail.com>
+        id S244821AbhH0OF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 10:05:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EF0E60F25;
+        Fri, 27 Aug 2021 14:04:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630073080;
+        bh=44QU6B7UHXV3vt00RetJeW55g4tXsNAqT+PxKxmKGW0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J+6xVaYLfmFda9E6Xfhy0qs0X9nojl1N1jKgKnf29vo2E+t0XQe/kUanKV/z99W84
+         pbhJQEjZ/EhGQfrsw++H9maezou3hFkMTLrpZ0CzESHMx9i82Qj7XnV+D4JNJRwYQj
+         N3SZ8+FLL+A/ss7yv+7Nx7NTudIU9TiEytsxjEWf28PJzgTBJC8jEtUEGl4rk6hX3U
+         bPtSIpJpRMTu8SL9J2hGmHj6IUwMS2aagl80rOK6yVzU3ER2v3sKfJb28bw8zq8xDU
+         Om3H9oCwJ/EUp7qNtHNCSPpx70MQL7VTi0TfCSNnMXeDZ3cac+a9FQbQ4JkThywhpX
+         cuclQsvrluoNg==
+Received: by mail-oi1-f180.google.com with SMTP id o185so9608777oih.13;
+        Fri, 27 Aug 2021 07:04:40 -0700 (PDT)
+X-Gm-Message-State: AOAM533hDtv8pjBeRl8nZJs7FHUeqIQQN8JNGT8VsXLpwQDi2Ide76y7
+        NGsdNhUMkPIlWjJ2YccmEvYpIKdiFBbUZZpv7cg=
+X-Google-Smtp-Source: ABdhPJwl71FxMHI1K9ik8wmBUJnxFjkrkeihPqyYzOH5gE4Mtgs5Qb/AGyKRNVnOmEfMW2i9q/U9tfZP1r1/Vk7pUJA=
+X-Received: by 2002:aca:ea54:: with SMTP id i81mr6560180oih.174.1630073079708;
+ Fri, 27 Aug 2021 07:04:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQ07ycpjJQGwbtq1ii3k9rh2CZVN6MVxkfMb=+Vgs9zqw@mail.gmail.com>
+References: <20210823115654.45405-1-xueshuai@linux.alibaba.com>
+In-Reply-To: <20210823115654.45405-1-xueshuai@linux.alibaba.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 27 Aug 2021 16:04:28 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEY=kK9+LfJtemBZND_u-+nP7qu6cNJxxLfQJ6CV1Ub8Q@mail.gmail.com>
+Message-ID: <CAMj1kXEY=kK9+LfJtemBZND_u-+nP7qu6cNJxxLfQJ6CV1Ub8Q@mail.gmail.com>
+Subject: Re: [PATCH] efi: cper: check section header more appropriately
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        zhangliguang@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 12:22:03AM +0900, Masahiro Yamada wrote:
-> On Wed, Apr 7, 2021 at 2:35 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > The sh arch has a install.sh script, but no Makefile actually calls it.
-> > Remove it to keep anyone from accidentally calling it in the future.
-> >
-> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> > Cc: Rich Felker <dalias@libc.org>
-> > Cc: linux-sh@vger.kernel.org
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  arch/sh/boot/compressed/install.sh | 56 ------------------------------
-> >  1 file changed, 56 deletions(-)
-> >  delete mode 100644 arch/sh/boot/compressed/install.sh
-> >
-> > diff --git a/arch/sh/boot/compressed/install.sh b/arch/sh/boot/compressed/install.sh
-> > deleted file mode 100644
-> > index f9f41818b17e..000000000000
-> > --- a/arch/sh/boot/compressed/install.sh
-> > +++ /dev/null
-> > @@ -1,56 +0,0 @@
-> > -#!/bin/sh
-> > -#
-> > -# arch/sh/boot/install.sh
-> > -#
-> > -# This file is subject to the terms and conditions of the GNU General Public
-> > -# License.  See the file "COPYING" in the main directory of this archive
-> > -# for more details.
-> > -#
-> > -# Copyright (C) 1995 by Linus Torvalds
-> > -#
-> > -# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
-> > -# Adapted from code in arch/i386/boot/install.sh by Russell King
-> > -# Adapted from code in arch/arm/boot/install.sh by Stuart Menefy
-> > -#
-> > -# "make install" script for sh architecture
-> > -#
-> > -# Arguments:
-> > -#   $1 - kernel version
-> > -#   $2 - kernel image file
-> > -#   $3 - kernel map file
-> > -#   $4 - default install path (blank if root directory)
-> > -#
-> > -
-> > -# User may have a custom install script
-> > -
-> > -if [ -x /sbin/${INSTALLKERNEL} ]; then
-> > -  exec /sbin/${INSTALLKERNEL} "$@"
-> > -fi
-> > -
-> > -if [ "$2" = "zImage" ]; then
-> > -# Compressed install
-> > -  echo "Installing compressed kernel"
-> > -  if [ -f $4/vmlinuz-$1 ]; then
-> > -    mv $4/vmlinuz-$1 $4/vmlinuz.old
-> > -  fi
-> > -
-> > -  if [ -f $4/System.map-$1 ]; then
-> > -    mv $4/System.map-$1 $4/System.old
-> > -  fi
-> > -
-> > -  cat $2 > $4/vmlinuz-$1
-> > -  cp $3 $4/System.map-$1
-> > -else
-> > -# Normal install
-> > -  echo "Installing normal kernel"
-> > -  if [ -f $4/vmlinux-$1 ]; then
-> > -    mv $4/vmlinux-$1 $4/vmlinux.old
-> > -  fi
-> > -
-> > -  if [ -f $4/System.map ]; then
-> > -    mv $4/System.map $4/System.old
-> > -  fi
-> > -
-> > -  cat $2 > $4/vmlinux-$1
-> > -  cp $3 $4/System.map
-> > -fi
-> > --
-> > 2.31.1
-> >
-> 
-> 
-> This one is applicable independently.
-> 
-> Applied to linux-kbuild. Thanks.
+On Mon, 23 Aug 2021 at 13:57, Shuai Xue <xueshuai@linux.alibaba.com> wrote:
+>
+> When checking a generic status block, we iterate over all the generic data
+> blocks. The loop condition checks that the generic data block is valid.
+> Because the size of data blocks (excluding error data) may vary depending
+> on the revision and the revision is contained within the data block, we
+> should ensure that enough of the current data block is valid appropiriately
+> for different revision.
+>
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
 
-Hey, nice, thanks!
+Applied, thanks.
 
-I'll work on the rest of the patches in this series after the next merge
-window is over...
-
-greg k-h
+> ---
+>  drivers/firmware/efi/cper.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+> index e15d484b6a5a..e80706d9e78a 100644
+> --- a/drivers/firmware/efi/cper.c
+> +++ b/drivers/firmware/efi/cper.c
+> @@ -635,7 +635,7 @@ int cper_estatus_check(const struct acpi_hest_generic_status *estatus)
+>         data_len = estatus->data_length;
+>
+>         apei_estatus_for_each_section(estatus, gdata) {
+> -               if (sizeof(struct acpi_hest_generic_data) > data_len)
+> +               if (acpi_hest_get_size(gdata) > data_len)
+>                         return -EINVAL;
+>
+>                 record_size = acpi_hest_get_record_size(gdata);
+> --
+> 2.20.1.12.g72788fdb
+>
