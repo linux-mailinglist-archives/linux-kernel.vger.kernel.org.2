@@ -2,119 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF59F3FA184
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 00:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4283FA185
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 00:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhH0Wcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 18:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
+        id S232314AbhH0Wdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 18:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbhH0Wcw (ORCPT
+        with ESMTP id S232216AbhH0Wdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 18:32:52 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252B4C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:32:03 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id n27so11909078oij.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:32:03 -0700 (PDT)
+        Fri, 27 Aug 2021 18:33:38 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3B7C061796
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:32:48 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id i28so13997864ljm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:32:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ukwb/15l4siPzT6A1B+l6HNsnXM5tGN+HApNQXqBVe4=;
-        b=dPVMZeYChir1+H7jmFc4fIo4leX5f1ft1HRGkFRtRWiXZYag5iN4I032WPaXhUtKvs
-         9c35OXQXbyPZfb2SVHu8JYdWgbwGEbJ8E/2liKAEof+UhGtdE08iA+VO7jA88Re6tOtu
-         hTsbqad8f5hAq6SU8LBigGMns4jUFKOI9rNSghXHhuZoakQuCceYYNiwFGHfYWxKwdUa
-         lthzfIsCAzPPesb4zTFns3hLAvBcQ+90OVMIxIbmtNkDWCEvr4qo27XMktAWWJheTjGR
-         kNgr6mAAbk5/C4+HGZHVGbHT4DQWiXTpe6cp++4A14j9E51AeL1+7IRtS0sUx4k4BCq7
-         k4Jg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X+9FDw9/QHU2Wo0eFuG7huo1QGMU+3uWfi8hED0MPa4=;
+        b=Qo0VtEQt9lZ/c4e4HiAlFNwq9xr+tQMoyt3Wt7RQdgGwL6HgKUf67dATllg2noTt43
+         ebC3SuIY1bxw7zwtpsh0PwaKUvUNKNrS1E1lcuTZih1hnrP9JNGmh9U1oWei2OKqIYFS
+         ThVca1wMlnWwYP8VcFrWdXuS1iaPSbx6mtmD56wsTVuH8qmUo65InU8ka+YolKM3eSEO
+         Apv02vDyTjmJDoKoJVMR792nF69SeO2wJj7g+/twoAfIf8PmoGQCujgvOOjTo5xijnxv
+         TlL9dvx7wo4NwuhnJutyvv3B2ttUKY3nVbAczzV5SjgPWNxj0BMVu507Bu9dkLTN9fEb
+         h1SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ukwb/15l4siPzT6A1B+l6HNsnXM5tGN+HApNQXqBVe4=;
-        b=rfoviO0yjUH69OLOV0Eeule5ECyDshCUIylDVk93QUk/B0XUxBbuW95TsXNFKo8Kis
-         xCyp/bvDzV9uwuASF5zxDcMwvislS8NUGDaA60kTUCOsX06j6lcRGp6tHqzbRIy5NLQT
-         Aw8FiewDbrgDJVxmfbx/iv4rmfsJ5+DKd8Un2eRPnlzw8wMa89OY6EKbJj4Nn2mBja/D
-         +RZNr8JOiU5jrA8obFchurYXv19YTHn/XMnuF1NhBtYitBnUZtmrvwX6BAbjmyBqTKNU
-         DwWLoWcFxCpCWaMjhB/ObWM8Ygtyi7CPxTevoWjsyJUFr2PpVqDcxdxG3wtcTcyesSJG
-         Ms8A==
-X-Gm-Message-State: AOAM533u8hOdGWdLqVam0OfMaKpJNth4qeDIMRb83eBFmPj/6yNVuE5A
-        MyTwNbaLaTl7OCWsdIQtxYU=
-X-Google-Smtp-Source: ABdhPJyhYy3FGLbZP/4cwJx9dK2yDf1O0MEpPxODxC7bCIMQQvwtkGvP4GKKXrXHMXhnrSWH2afLzw==
-X-Received: by 2002:a05:6808:14c2:: with SMTP id f2mr16075737oiw.2.1630103522556;
-        Fri, 27 Aug 2021 15:32:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i5sm1494585oie.11.2021.08.27.15.32.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 15:32:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Jeffery <andrew@aj.id.au>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?C=c3=a9dric_Le_Goate?= =?UTF-8?Q?r?= <clg@kaod.org>,
-        Joel Stanley <joel@jms.id.au>
-References: <20210724224424.2085404-1-linus.walleij@linaro.org>
- <20210724224424.2085404-2-linus.walleij@linaro.org>
- <20210821042010.GA1759866@roeck-us.net>
- <CACRpkdYObGTWni3sSa21iNsgikzj7t9MA6y4TNgkBTTYQt+coA@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 2/2] clocksource/drivers/fttmr010: Be stricter on IRQs
-Message-ID: <24366a2b-787d-960f-a7cb-99f3330ffb75@roeck-us.net>
-Date:   Fri, 27 Aug 2021 15:31:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X+9FDw9/QHU2Wo0eFuG7huo1QGMU+3uWfi8hED0MPa4=;
+        b=dMy2zkrmE7IyIeJM6UoyPo+e9HDI1eoyxyiBTWryaEfu7tFro30Qia0meS/9L1rYeL
+         rA+sPKZsNCQq17ZaTEkYZE53h6WuJv/V38hQCCWAD4WwvC6S1Sz8lwLcQhRlG10YbsU7
+         AQYlQZp3eE2dfjlrpcWzMdzFyFLwc49Wp3wGu0FJ+Hi2Nnf6CEsQIyKYy9YPDlAt1HDo
+         Um5cb8y/P+oJosezbWUEjsWBzgmB7Olouj95IKfT7/v3d+EYMqX88l+VqSpxd7uNWmu6
+         Cukib8TZ7k0jOFZCfvNKj31OEf6Mc2gNbpEntP5/k4D0xik97rpPURzDiUi6UufaBh8E
+         24Zw==
+X-Gm-Message-State: AOAM533Yqmwu/cR05SEFTCE0optwNsV6Hb5/oig7tqK7qegmWS7kp6Di
+        sjqKrItEOIyz7Ny3FthEXJPxwCRY5pwjT73B1wf6DA==
+X-Google-Smtp-Source: ABdhPJw46DrzRYYB5g0PAK5nKm45fNvdCMqobT6783q1X9zEgrOyWSNtHtBiY+lX4PQM2zxUc0deGo6RdtGGOb5ANXU=
+X-Received: by 2002:a05:651c:4c7:: with SMTP id e7mr4392319lji.438.1630103567258;
+ Fri, 27 Aug 2021 15:32:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdYObGTWni3sSa21iNsgikzj7t9MA6y4TNgkBTTYQt+coA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210823112204.243255-1-aardelean@deviqon.com> <20210823112204.243255-4-aardelean@deviqon.com>
+In-Reply-To: <20210823112204.243255-4-aardelean@deviqon.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 28 Aug 2021 00:32:36 +0200
+Message-ID: <CACRpkdZRRODGR57U2308QMCf6pCoNNWRXxc0YWHW14+CX-a0Jw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] iio: st_sensors: remove st_sensors_power_disable() function
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Denis CIOCCA <denis.ciocca@st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 3:01 PM, Linus Walleij wrote:
-> On Sat, Aug 21, 2021 at 6:20 AM Guenter Roeck <linux@roeck-us.net> wrote:
->> On Sun, Jul 25, 2021 at 12:44:24AM +0200, Linus Walleij wrote:
-> 
->>> Make sure we check that the right interrupt occurred before
->>> calling the event handler for timer 1. Report spurious IRQs
->>> as IRQ_NONE.
->>>
->>> Cc: Cédric Le Goater <clg@kaod.org>
->>> Cc: Joel Stanley <joel@jms.id.au>
->>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
->>
->> This patch results in boot stalls with several qemu aspeed emulations
->> (quanta-q71l-bmc, palmetto-bmc, witherspoon-bmc, ast2500-evb,
->> romulus-bmc, g220a-bmc). Reverting this patch together with
->> "clocksource/drivers/fttmr010: Clear also overflow bit on AST2600"
->> fixes the problem. Bisect log is attached.
-> 
-> Has it been tested on real hardware?
-> 
-> We are reading register 0x34 TIMER_INTR_STATE for this.
-> So this should reflect the state of raw interrupts from the timers.
-> 
-> I looked in qemu/hw/timer/aspeed_timer.c
-> and the aspeed_timer_read() looks dubious.
-> It rather looks like this falls down to returning whatever
-> was written to this register and not reflect which IRQ
-> was fired at all.
-> 
+On Mon, Aug 23, 2021 at 1:22 PM Alexandru Ardelean
+<aardelean@deviqon.com> wrote:
 
-Interesting question. There is aspeed_timer_read(), which doesn't return
-anything useful for register 0x34, and there is aspeed_{2400,2500,2600}_timer_read,
-which does. No idea what is actually executed.
+> This change converts the st_sensors_power_enable() function to use
+> devm_add_action_or_reset() handlers to register regulator_disable hooks for
+> when the drivers get unloaded.
+>
+> The parent device of the IIO device object is used. This is based on the
+> assumption that all other devm_ calls in the ST sensors use this reference.
+>
+> This makes the st_sensors_power_disable() un-needed.
+> Removing this also changes unload order a bit, as all ST drivers would call
+> st_sensors_power_disable() first and iio_device_unregister() after that.
+>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 
-Guenter
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> Andrew: have you tested this when developing the
-> QEMU driver?
-> 
-> Yours,
-> Linus Walleij
-> 
+We should at some point add proper runtime PM to the ST sensors
+(cf drivers/iio/gyro/mpu3050-core.c) but that can certainly be built
+on top of this patch.
+
+Yours,
+Linus Walleij
