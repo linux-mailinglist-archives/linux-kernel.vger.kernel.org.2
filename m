@@ -2,120 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406F93F9783
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BB73F979F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245062AbhH0JpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245005AbhH0Joz (ORCPT
+        id S245013AbhH0Jq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:46:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24113 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244999AbhH0JpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:44:55 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241A0C0617A8
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:44:07 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id e16so4795649pfc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wayLOd5wtu3dJzrv0vfB7W5+rCLS0oWQSMlaWOVxFrU=;
-        b=fPzM/e13yE1Wk4X/95AnCYs1gtoOcunar3esJ1Lu7NfNAHPOzKErHPpS2OMUFgsHMY
-         4VSHA525OeEgwisSKsLyFKtjzk/Le0cFip7879FC5t0ZpcSrJAJBLMu7YRfDWc4fmtRC
-         fkCM7RyPFq8tPvC2yUz0TE9ZTIwCds35V0xyrzfhFCgoIC0BeeLsTfG84In43ldbMwNP
-         qJ2yDn+oGsBpbfbdxYuIQbI0zPplf54RMvshamhSHlmvUYTC+l3NTUccTGgpHVUeCVXR
-         NzlPAdLMClm9dmlXpZ38Ugz03xDgQgm8CzIAJB5IJHBdsbajebSCJWTsxrPpQsaIOQGi
-         RFmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wayLOd5wtu3dJzrv0vfB7W5+rCLS0oWQSMlaWOVxFrU=;
-        b=HjtuDE6q1hXsvCpta/1XZa5liUM8w4IXMC/b2V40qQ/IRjYU8+Hn9SkLil0vc9o/Ll
-         120A5epVtFR9MASQ/DqL7AbN/+PSJgqPlM1Dlaqu6mC7NxwhQHFbvGqv+qye42lJN9TN
-         HsQVsPGPxDnz1muydcgy2xZAiFfNQ9KycptLRSPc3W2H2xkkLIg3M+AEoMC4eaV7Uw5P
-         nfwKucyc5cD2CvWBqpleAMNSwWXjsYnyjBhnb9LWpWS573hW7++KaDco5fEAPc/hipzX
-         EBXYKkndHvkdQgChTJ1JMyN03JFXKwMkE4DHHXDSefO69QfdroN++mq/pdhu0nTgbJD8
-         cPsA==
-X-Gm-Message-State: AOAM532+wfRMmDMn07LS4i27o/7WhOEdU2k9Yt0MiMpti3wy6SZlzf5M
-        WO5/pBguoAiD1dJQWwbVGxo=
-X-Google-Smtp-Source: ABdhPJwh5DAORO+Hs5SuilH9ywntGjERJdBR+uqwKGqP9zqVoeRz0x6jq2Mc8hJU/VUOR/uc01Q++w==
-X-Received: by 2002:a63:4e65:: with SMTP id o37mr7196198pgl.202.1630057446618;
-        Fri, 27 Aug 2021 02:44:06 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.92])
-        by smtp.gmail.com with ESMTPSA id m2sm6619217pgu.15.2021.08.27.02.44.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 02:44:06 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Aditya Srivastava <yashsri421@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ipack: tpci200: change pci_iounmap to iounmap
-Date:   Fri, 27 Aug 2021 17:43:47 +0800
-Message-Id: <20210827094351.203328-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 27 Aug 2021 05:45:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630057452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iHPR3rkSbihjHvdPEgrYmv+1SJx/f/gtZMk2QO7i4cU=;
+        b=HrJQUXuS/BTNM4msuSnIDLrZ4/jKAVMckcWQ1LDhxhW3yUhscnOO9JWLDMlHQ+kXUtN4SY
+        uXtahGlqW5rVPbzPC7n4iQZOdFXlr80tWtJSK1OXktjxICCrWsX2dT8EidU1l6qk0F/P5i
+        NX0K7V9JAftxCOpxnVTLvHPNn70Fvuk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-9eK8aRFgO4KC-L8EhLU-Jg-1; Fri, 27 Aug 2021 05:44:08 -0400
+X-MC-Unique: 9eK8aRFgO4KC-L8EhLU-Jg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6F41110A0B69;
+        Fri, 27 Aug 2021 09:43:58 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CB8E15D9DC;
+        Fri, 27 Aug 2021 09:43:55 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v2 3/6] folio: Add a function to change the private data
+ attached to a folio
+From:   David Howells <dhowells@redhat.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Date:   Fri, 27 Aug 2021 10:43:54 +0100
+Message-ID: <163005743485.2472992.5100702469503007023.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163005740700.2472992.12365214290752300378.stgit@warthog.procyon.org.uk>
+References: <163005740700.2472992.12365214290752300378.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The deallocation api for ioremap should be iounmap, other than
-pci_iounmap.
+Add a function, folio_change_private(), that will change the private data
+attached to a folio, without the need to twiddle the private bit or the
+refcount.  It assumes that folio_add_private() has already been called on
+the page.
 
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lore.kernel.org/r/162981149911.1901565.17776700811659843340.stgit@warthog.procyon.org.uk/
 ---
- drivers/ipack/carriers/tpci200.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/ipack/carriers/tpci200.c b/drivers/ipack/carriers/tpci200.c
-index cbfdadecb23b..bf2ae2be5eb5 100644
---- a/drivers/ipack/carriers/tpci200.c
-+++ b/drivers/ipack/carriers/tpci200.c
-@@ -88,7 +88,7 @@ static void tpci200_unregister(struct tpci200_board *tpci200)
- {
- 	free_irq(tpci200->info->pdev->irq, (void *) tpci200);
+ include/linux/pagemap.h |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index f55d8d9001a9..c8d336e62177 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -229,6 +229,25 @@ static inline void folio_attach_private(struct folio *folio, void *data)
+ 	folio_set_private(folio);
+ }
  
--	pci_iounmap(tpci200->info->pdev, tpci200->info->interface_regs);
-+	iounmap(tpci200->info->interface_regs);
- 
- 	pci_release_region(tpci200->info->pdev, TPCI200_IP_INTERFACE_BAR);
- 	pci_release_region(tpci200->info->pdev, TPCI200_IO_ID_INT_SPACES_BAR);
-@@ -347,7 +347,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 	return 0;
- 
- err_interface_regs:
--	pci_iounmap(tpci200->info->pdev, tpci200->info->interface_regs);
-+	iounmap(tpci200->info->interface_regs);
- err_mem16_space_bar:
- 	pci_release_region(tpci200->info->pdev, TPCI200_MEM16_SPACE_BAR);
- err_mem8_space_bar:
-@@ -596,7 +596,7 @@ static int tpci200_pci_probe(struct pci_dev *pdev,
- err_tpci200_install:
- 	tpci200_uninstall(tpci200);
- err_cfg_regs:
--	pci_iounmap(tpci200->info->pdev, tpci200->info->cfg_regs);
-+	iounmap(tpci200->info->cfg_regs);
- err_request_region:
- 	pci_release_region(pdev, TPCI200_CFG_MEM_BAR);
- err_tpci200_info:
-@@ -612,7 +612,7 @@ static void __tpci200_pci_remove(struct tpci200_board *tpci200)
- 	ipack_bus_unregister(tpci200->info->ipack_bus);
- 	tpci200_uninstall(tpci200);
- 
--	pci_iounmap(tpci200->info->pdev, tpci200->info->cfg_regs);
-+	iounmap(tpci200->info->cfg_regs);
- 
- 	pci_release_region(tpci200->info->pdev, TPCI200_CFG_MEM_BAR);
- 
--- 
-2.25.1
++/**
++ * folio_change_private - Change private data on a folio.
++ * @folio: Folio to change the data on.
++ * @data: Data to set on the folio.
++ *
++ * Change the private data attached to a folio and return the old
++ * data.  The page must previously have had data attached and the data
++ * must be detached before the folio will be freed.
++ *
++ * Return: Data that was previously attached to the folio.
++ */
++static inline void *folio_change_private(struct folio *folio, void *data)
++{
++	void *old = folio_get_private(folio);
++
++	folio->private = data;
++	return old;
++}
++
+ /**
+  * folio_detach_private - Detach private data from a folio.
+  * @folio: Folio to detach data from.
+
 
