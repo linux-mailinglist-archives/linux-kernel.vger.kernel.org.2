@@ -2,151 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B553F95D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A35D3F95D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244492AbhH0IOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:14:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:41171 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231904AbhH0IOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:14:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630052022; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=k7nqBAfvjs11JfMoilWyeU5K2v0rFIQpzU1EeMLoAxA=; b=BB+9FFGCqs8YeWYdCGRX7kQLRPLYOJmwJZsNW/Yqbc6LiIca9nsiSelmYBGhB6m6lWyrO6Nn
- 00ndT4DYVyPXqbrT8hfsXx88zR9Gu1WQfQfFiqbQSDOf5NkKkiZMfVisN+F3i9rVnGDgalsG
- 3EByYvvlBTR0jquxYOKn8cdebPA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 61289eb5b52e91333cf73d2a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Aug 2021 08:13:41
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DDAD9C4338F; Fri, 27 Aug 2021 08:13:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from localhost (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B41B2C4338F;
-        Fri, 27 Aug 2021 08:13:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B41B2C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        urezki@gmail.com, frederic@kernel.org, boqun.feng@gmail.com,
-        Neeraj Upadhyay <neeraju@codeaurora.org>
-Subject: [PATCH] rcu-tasks: Correct IPI failure handling in trc_wait_for_one_reader
-Date:   Fri, 27 Aug 2021 13:43:35 +0530
-Message-Id: <1630052015-16600-1-git-send-email-neeraju@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S244510AbhH0IPC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Aug 2021 04:15:02 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:38510 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244482AbhH0IPC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 04:15:02 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-110-mwGT8myTNcm83mBe4IfVKA-1; Fri, 27 Aug 2021 09:14:10 +0100
+X-MC-Unique: mwGT8myTNcm83mBe4IfVKA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Fri, 27 Aug 2021 09:14:09 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Fri, 27 Aug 2021 09:14:08 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Dan Carpenter' <dan.carpenter@oracle.com>
+CC:     'Pavel Skripkin' <paskripkin@gmail.com>,
+        "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>,
+        "phil@philpotter.co.uk" <phil@philpotter.co.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "straube.linux@gmail.com" <straube.linux@gmail.com>,
+        "fmdefrancesco@gmail.com" <fmdefrancesco@gmail.com>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
+Thread-Topic: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
+Thread-Index: AQHXmLmGl/+E/B1vJUGWAidfG7snbKuFdLBA///xloCAAC/eAIAAAKqAgAFtSnA=
+Date:   Fri, 27 Aug 2021 08:14:08 +0000
+Message-ID: <dc133b63e1f54f45a19e67d75a6fcb40@AcuMS.aculab.com>
+References: <cover.1629789580.git.paskripkin@gmail.com>
+ <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
+ <f5c20e0f1b934e04ad11a3627d71f5db@AcuMS.aculab.com>
+ <20210826112745.5e1421ed@gmail.com>
+ <a251767ca181405b93b5ea55a26c3ff0@AcuMS.aculab.com>
+ <20210826112127.GZ1931@kadam>
+In-Reply-To: <20210826112127.GZ1931@kadam>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The trc_wait_for_one_reader() function is called at multiple stages
-of trace rcu-tasks GP function, rcu_tasks_wait_gp():
+From: Dan Carpenter
+> Sent: 26 August 2021 12:21
+...
+> > > > ...
+> > > > > +		len += snprintf(page + len, count - len,
+> > > > > "rtw_read8(0x%x)=0x%x\n",
+> > > > > +				proc_get_read_addr, (u8) tmp);
+> > > >
+> > > > That is broken.
+> > > >
+> > >
+> > > Don't get it, sorry. Previous code did exactly the same thing, but
+> > > didn't check if read() was successful.
+> >
+> > Look up the return value of snprintf().
+> >
+> 
+> It's hard to understand what you are saying.  I think you are confusing
+> libc snprintf with the kernel snprintf?  In libc the snprintf function
+> can return negatives but in the kernel it cannot.  This is not going
+> to change.  Any code which checks for negative snprintf returns in the
+> kernel is wrong and should be fixed.
+> 
+> Anyway, the code works fine.  snprintf here is going to return a number
+> between 18-32 range.  It's not going to overflow the PAGE_SIZE buffer.
 
-- First, it is called as part of per task function -
-  rcu_tasks_trace_pertask(), for all non-idle tasks. As part of per task
-  processing, this function add the task in the holdout list and if the
-  task is currently running on a CPU, it sends IPI to the task's CPU.
-  The IPI handler takes action depending on whether task is in trace
-  rcu-tasks read side critical section or not:
+IIRC it is also in a loop ...
 
-  - a. If the task is in trace rcu-tasks read side critical section
-       (t->trc_reader_nesting != 0), the IPI handler sets the task's
-       ->trc_reader_special.b.need_qs, so that this task notifies exit
-       from its outermost read side critical section (by decrementing
-       trc_n_readers_need_end) to the GP handling function.
-       trc_wait_for_one_reader() also increments trc_n_readers_need_end,
-       so that the trace rcu-tasks GP handler function waits for this
-       task's read side exit notification. The IPI handler also sets
-       t->trc_reader_checked to true, and no further IPIs are sent for
-       this task, for this trace rcu-tasks grace period and this
-       task can be removed from holdout list.
+Maybe, but the idiom is just broken.
+Largely the result of snprintf() is never the value you are looking
+for and should be ignored.
 
-  - b. If the task is in the process of exiting its trace rcu-tasks
-       read side critical section, (t->trc_reader_nesting < 0), defer
-       this task's processing to future calls to trc_wait_for_one_reader().
+Userspace fprintf() is even worse.
+If you care about the write failing you need to call fflush()
+and then ferror() (typically before fclose()).
 
-  - c. If task is not in rcu-task read side critical section,
-       t->trc_reader_nesting == 0, ->trc_reader_checked is set for this
-       task, so that, this task is removed from holdout list.
+Fortunately I've never seen a 'must check' attribute on it.
 
-- Second, trc_wait_for_one_reader() is called as part of post scan, in
-  function rcu_tasks_trace_postscan(), for all idle tasks.
+	David
 
-- Third, in function check_all_holdout_tasks_trace(), for each task in
-  the holdout list, this function is called, if there isn't a pending IPI
-  for the task (->trc_ipi_to_cpu == -1). This function removed the task
-  from holdout list, if IPI handler has completed the required work,
-  to ensure that the current trace rcu-tasks grace period either waits
-  for this task, or this task is not in a trace rcu-tasks read side
-  critical section.
-
-Now, considering the scenario where smp_call_function_single() fails in
-first case, inside rcu_tasks_trace_pertask(). In this case,
-->trc_ipi_to_cpu is set to the current CPU for that task. This will
-result in trc_wait_for_one_reader() getting skipped in third case,
-inside check_all_holdout_tasks_trace(), for this task. This further
-results in ->trc_reader_checked never getting set for this task,
-and the task not getting removed from holdout list. This can cause
-the current trace rcu-tasks grace period to stall.
-
-Fix the above problem, by resetting ->trc_ipi_to_cpu to -1, on
-smp_call_function_single() failure, so that future IPI calls can
-be send for this task. As all three callers (rcu_tasks_trace_pertask(),
-rcu_tasks_trace_postscan(), check_all_holdout_tasks_trace())
-of trc_wait_for_one_reader() run with CPU read lock held,
-smp_call_function_single() cannot race with CPU hotplug. So,
-also add a warning, to report and identify any such failure.
-
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
----
-
-Ran rcutorture TRACE01 tree for 10 hrs with below commandline, didn't
-observe warning:
-
-Command line: debug_boot_weak_hash panic=-1 selinux=0 initcall_debug debug
-console=ttyS0 rcutree.rcu_fanout_leaf=4 nohz_full=1-N rcutorture.onoff_interval=1000
-rcutorture.onoff_holdoff=30 rcutorture.n_barrier_cbs=4 rcutorture.stat_interval=15
-rcutorture.shutdown_secs=36000 rcutorture.test_no_idle_hz=1 rcutorture.verbose=1
-rcutorture.torture_type=tasks-tracing
-
- kernel/rcu/tasks.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index e6f0def..c110fd0 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1014,9 +1014,11 @@ static void trc_wait_for_one_reader(struct task_struct *t,
- 		if (smp_call_function_single(cpu, trc_read_check_handler, t, 0)) {
- 			// Just in case there is some other reason for
- 			// failure than the target CPU being offline.
-+			WARN_ONCE(1, "%s():  smp_call_function_single() failed for CPU: %d\n",
-+				  __func__, cpu);
- 			rcu_tasks_trace.n_ipis_fails++;
- 			per_cpu(trc_ipi_to_cpu, cpu) = false;
--			t->trc_ipi_to_cpu = cpu;
-+			t->trc_ipi_to_cpu = -1;
- 		}
- 	}
- }
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-hosted by The Linux Foundation
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
