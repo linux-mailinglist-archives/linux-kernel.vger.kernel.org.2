@@ -2,162 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB5F3F9C69
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820F53F9C6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhH0Q3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:29:19 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44938 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232649AbhH0Q3Q (ORCPT
+        id S233972AbhH0Q3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231854AbhH0Q3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:29:16 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RGAUvC018764;
-        Fri, 27 Aug 2021 09:28:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=nyIlUltwwWDrVS4f8s+i86AV9bRvw5d87TviSNXl40o=;
- b=JFIE1mrcyI16vR6rmp6Y1nEsJIZsF+SBAZKERYr7RIimPcF3Ft5f7KJn3CwmdJcPkDAN
- jLkUmeA2fXbcaUbeOAI3bNOtTniHIRTT1jW27F8hOjOyjJTfjW8VEYMi0bmNAKgSM6+n
- jvBcDjiYamTvAmKNHsWbQqTlyYc5aoklPC4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aq2fh0gp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 27 Aug 2021 09:28:17 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 27 Aug 2021 09:28:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dEXUbVEweQW753H+13y8GYNKN46PoNHS95UMxVeqRGOVymy7AnLX8qtxwOQ9eblxohN1BSs+V1LcW6aaUCmF0dJtHfyOmxgYlvc8hA3Rl0eSvdnqyfY/BT6h3Ijk9XjtmB5Vgw8d0AXhEVcihjxMeQFjZ1qoaeIHg2p+xUBu6fAKFMhGfPrs7TUL8YvOqP/0IZMqZVUoCnNBvlBwdddLfvVpnIp/ZVHH4JT2/nZ2sHpvLMXHuIlhmUp+XEQSsLTwy0QJl2Mf3PPYYMrowKfMwdS9PR9XrZfGvwkRA6jEHq/rxXmDTC6KAvwYd/aPbewhlUF+tYLCvz7lLPfP7WqEhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nyIlUltwwWDrVS4f8s+i86AV9bRvw5d87TviSNXl40o=;
- b=jndTsjjYzIgImeOT1SI7cpzpN0HEpEpwkUntw6cJaOVEN2FPKVoTmDEQ7ZMxtDsnztv9KekXXnRnsB2s+wQiB3tZ0ud057wqAyBRaoV7ks8IsM+MImwNOyEpyiabaFT5D3V1L2tyoZpCiV2QX1LQa0A+rB5JxbAnBw4UaEGccXh3EhL3xGFsl7lh0rjx7Ot6WIr8Vw/sqXlT9lHWo4o/dj+q5W3hyNcrYK9W9qKSep3DSC3gdCP7xsopBeis035VmdPoOp+jijSXJj1WDWJt1OcK7ObPPo82R5GtWL6Wdl34t3LkElLtU4afwe4bbfGd+Zq6ezBwinaV1HNDKCgvKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: surriel.com; dkim=none (message not signed)
- header.d=none;surriel.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2439.namprd15.prod.outlook.com (2603:10b6:a02:8e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Fri, 27 Aug
- 2021 16:28:15 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::1144:84e8:6ae1:833c]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::1144:84e8:6ae1:833c%7]) with mapi id 15.20.4436.024; Fri, 27 Aug 2021
- 16:28:15 +0000
-Date:   Fri, 27 Aug 2021 09:28:12 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Rik van Riel <riel@surriel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        <stable@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Chris Down <chris@chrisdown.name>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH] mm,vmscan: fix divide by zero in get_scan_count
-Message-ID: <YSkSnEYfrWMMgJgQ@carbon.dhcp.thefacebook.com>
-References: <20210826220149.058089c6@imladris.surriel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210826220149.058089c6@imladris.surriel.com>
-X-ClientProxiedBy: BYAPR06CA0030.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::43) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Fri, 27 Aug 2021 12:29:43 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B42CC0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:28:54 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id t4so7750510qkb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HsecH+zskpsc+sAnBqxr5ZuZz+jO6o+sSCHY/MtxvCQ=;
+        b=O1ffWDj7gAU7klyHfuCVwiedzSG5T6fkgdQCMhj0P1ar6RbFlyx71pvhEk1OKUDQGq
+         /AQ/MfTpQwfDq/xNUNkLrzBbSZbOMJudxV2IYXIRHPsYsHK9M18TcS3EslzExK2Y2aUO
+         ipvMFYA2RcVazQeT+Rk6gR0SxP8dqlXpAPDz3mLV+JwGaoQlpUqTwjrqWRaIPB1G40kV
+         ay2uWYYWefjPTGoyFqUJk/FMyA8illo3bCr41jvANHIKZXmZ5BVnRdcwMxW5TRG3M894
+         7aWMZbWdJcR/I29AcajAzsoNg6jT9xhbcHoQwvwsyv9YST2s9AQRc4SbM5KnHZXIiVgU
+         CanQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HsecH+zskpsc+sAnBqxr5ZuZz+jO6o+sSCHY/MtxvCQ=;
+        b=FXkFSZIZJHr6qGb723fWLk9O13uOFNk0e84YFobZwBy9XJl2xQkM+CwKfFSrIzcBhm
+         wX8OiEZzP4Dr0N47bkDuxkjs20JfifXDjuIKEa5urf29Ecwq2n0hEydot3IwMaFti/lu
+         hl8l/jgQI1rlP47PQ7U73sxPZXtYgHlj66xfo3iJqocgNuWd2T7PO10wck9IKNh7wyLM
+         v2kqK/xvnA15QviJ+uWMxVwjjNMWOqN/fmfPzqp0bzRS1Ss0rd0e30F+nJvxrcJbUGs2
+         eSBYMGC/CCmh8EK/J3/OA5HxKHdsvCi33SJvc/xaFKiQinLYbI2xr7DcdubIQGIS+VdL
+         WEPw==
+X-Gm-Message-State: AOAM5338uLX0TGpEF9kyc39ekoVunQAxYP0n2BGa4Jpyu/SqbxdN1zl3
+        ILzlEAa4feVe7NsPTYH/OQwpBg==
+X-Google-Smtp-Source: ABdhPJyEcY7aHVkmZaX3V0QWCBw0ZIrtvIgwijSbOHgj0i3rDzXComqPaqDsO3KbB50/gP6092KbSA==
+X-Received: by 2002:ae9:ec0f:: with SMTP id h15mr10159256qkg.224.1630081733346;
+        Fri, 27 Aug 2021 09:28:53 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id c2sm3754947qte.22.2021.08.27.09.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 09:28:52 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mJeiq-005jqI-8p; Fri, 27 Aug 2021 13:28:52 -0300
+Date:   Fri, 27 Aug 2021 13:28:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Li Zhijian <lizhijian@cn.fujitsu.com>
+Cc:     linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+        akpm@linux-foundation.org, jglisse@redhat.com, yishaih@nvidia.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mm/hmm: bypass devmap pte when all pfn requested flags
+ are fulfilled
+Message-ID: <20210827162852.GL1200268@ziepe.ca>
+References: <20210827144500.2148-1-lizhijian@cn.fujitsu.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:f86e) by BYAPR06CA0030.namprd06.prod.outlook.com (2603:10b6:a03:d4::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Fri, 27 Aug 2021 16:28:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 67928ee2-3bde-40d9-3866-08d96977ab5c
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2439:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB243935A121220D8150C4D98CBEC89@BYAPR15MB2439.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jwuyygDFqpmzsXzatIE4HYsdRcNezNpz4+dZ1P8OaBx7c8A1CzmuCQ0FHu2h+qk1tbISPWXsmLbJWClP0BDQdLuGWdsNcAj7swRIQu925FCJqqVJGkvXQvox4qbHXbzlzhxjr8VoCRixxumVSllp2xguebjBxl2OmRaYUfKAvtikaY5mA3KkGaG+wM0Eii0lKTTqE8i0oLtGD+nFhfhtf6uWjyLP2sj6vWnUlLsU/K3KRtIlXiptAh8C5DVCEneZj8l4UlD4kwGiTUb/vodFUo7bTQLvSn+UHzy9lBGR//OxYM99apRwBFJVzZ7jlh4sHnpusbhbJe5rYyWA3fjnztGGFAiTZpFi0v1bLrZAI1UbqjR/YafcohpBQH4ni5IQ5rUSlkMSp7HL7dQt0TB5+CYq3nQdmD++Mcq17PqOyyopfMH1ECmKi4TRXemSqKlYsntjrVBMpmD7m3fZjc4+Wr6cbJrW6YNwuRsoj0wBaXZrXbgLtYnosJ41PLzUBw8+uH0YXx4ITHc+ZPykwhp0OwM9+ehEnwMOfk6Z93nKmnw+Lqru7TKkQ3r7G/RRfgY2FufUzu+BsIPIbs/jcEwHsTKQRsgxO30J3UtuuG12d9cESJre2syl4DKCCjzuV+SAadtHklYM1UDNeY7jt5EqyQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(366004)(396003)(38100700002)(2906002)(4326008)(6506007)(5660300002)(83380400001)(6916009)(478600001)(9686003)(86362001)(8676002)(54906003)(55016002)(66946007)(8936002)(316002)(66476007)(52116002)(186003)(7696005)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hzUVXlfzbbTACIww8rJFc8nqcJCXxzFlvjV7fmEwKvkPuz/V/T8B+xH3BKIP?=
- =?us-ascii?Q?FFUfg8MScbr6ffg67JfOWzQ/M8fmeUiUKiAfx4299Ezlyr1jpkTFFoYJrCKS?=
- =?us-ascii?Q?9pkeim8MybRRpEKqdlnAhPOodIOTRztSSLZATX2qX/gVR87X1gShdq17SrsW?=
- =?us-ascii?Q?QtQTkR/QVrG3wxvRr1AsnKnKweCVtyNpI3SG1gOObGc2O3IdVj7900Dsyw3D?=
- =?us-ascii?Q?nB/B25YOILOvXyeLAAvuQVbRPkMQ2EjbRiXI/Tk7uQNtXiCo5mdA+rSZpN2v?=
- =?us-ascii?Q?7qCf+aS44wiMZyf7JznC5K3hWjqfFT7B8J9MFcgKjHC/RxF71NUSTyRhozSX?=
- =?us-ascii?Q?atZjGBP1TkxA/ohtsDSU+BAAqW4v2voglsBTKz7XlJYOVHdUhPCyXSMxnTWH?=
- =?us-ascii?Q?dyWyKvPyGHMEm3uHvsyYDZb/TlRJfBvfBIhLcLC6ojcublFkiwXwI2/2waDr?=
- =?us-ascii?Q?v7Vx7iZqUrM4IVX3CR+hXO9QdUxdrVZS2ekT+IOmvetx+142zU4cvPy8P1ID?=
- =?us-ascii?Q?7Qal5Kd8LipKSontymTkgrw5Is6XI6SHk61pzxbMedH618uatx9xqNpyT3lS?=
- =?us-ascii?Q?FJXZnC0539seA6OeyT7DLORqKrQSI+8hrZpJxq9GCXpH39JWMSxLA1YgFtNa?=
- =?us-ascii?Q?J4J3Li5strHtQms/Mf/BmLnsmltLAHefZ9mxXWbNJyAvlcZxy2Kfg+FR7vLe?=
- =?us-ascii?Q?fxGeQ8QfJ/UyZhwliij/n7XEGdm7kx+oECF636g9lBAdiAmEH1o2vS+OpQc0?=
- =?us-ascii?Q?kejmOXkoxDm2xQzbwjWXva1VVBjDWfQff3Z7KU2+3YiqvJWDS1694ivSVV+N?=
- =?us-ascii?Q?pPz+orFWBY0R4tvoTL1M1FNhWLz/ZZXnrmPAgCIz1AfHD9evthwjyay0snGV?=
- =?us-ascii?Q?q/ylagAZJ63pPVR3GL1Ra95++8EbxB4zUPL3uUusl2g2dN83rqyyD469Rz1X?=
- =?us-ascii?Q?HKxRmLjzEltezVDYG9vQt5jbFlQRi1gMUE975KujKE7ETBldlg2RIu169hX4?=
- =?us-ascii?Q?6JhEw7HXaGKGj9EBrY4XtrNyKvy7fRED9pBbpuWmwLXCzXxORIYS6j6a8/7n?=
- =?us-ascii?Q?m/r/YNkTeSglrVFDTKJn2SjmnUQWPHlCXPJEZayz3I1CwUPjKCwbaU8BN9E+?=
- =?us-ascii?Q?uhTHUapCdYfAt4ONIdPA29A+bhMiT44P3/f7T0QkwVdtwxZZvP5DOdu4Hyr4?=
- =?us-ascii?Q?BMccFXVbsUrjkYnYpdLIq7qRMemBAiwsG03mpen9oSe6cRWUh79fQWQtP1nO?=
- =?us-ascii?Q?LcwwL0ooXuBQU1TnbklPldDprsEpEpwgOMsoTInJXbuKb0YDQxJ//CuhPxVJ?=
- =?us-ascii?Q?gvPQTuyzh5+LC0JPngEomB21zzkfnJqXEHUabGX/CwgOdQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67928ee2-3bde-40d9-3866-08d96977ab5c
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 16:28:14.9946
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: foNmeZez/96k3icAwjbLThoz00+EL2oS3rVltfw2zUVZiV6MhldtpYIYZ7IGBztK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2439
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: RUUaRVUYH599XoQWuTT6XrbwScITRwMZ
-X-Proofpoint-ORIG-GUID: RUUaRVUYH599XoQWuTT6XrbwScITRwMZ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_05:2021-08-26,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- priorityscore=1501 bulkscore=0 clxscore=1011 malwarescore=0 mlxscore=0
- adultscore=0 mlxlogscore=542 impostorscore=0 suspectscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108270097
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827144500.2148-1-lizhijian@cn.fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 10:01:49PM -0400, Rik van Riel wrote:
-> Changeset f56ce412a59d ("mm: memcontrol: fix occasional OOMs due to
-> proportional memory.low reclaim") introduced a divide by zero corner
-> case when oomd is being used in combination with cgroup memory.low
-> protection.
+On Fri, Aug 27, 2021 at 10:45:00PM +0800, Li Zhijian wrote:
+> Previously, we noticed the one rpma example was failed[1] since 36f30e486d,
+> where it will use ODP feature to do RDMA WRITE between fsdax files.
 > 
-> When oomd decides to kill a cgroup, it will force the cgroup memory
-> to be reclaimed after killing the tasks, by writing to the memory.max
-> file for that cgroup, forcing the remaining page cache and reclaimable
-> slab to be reclaimed down to zero.
+> After digging into the code, we found hmm_vma_handle_pte() will still
+> return EFAULT even though all the its requesting flags has been
+> fulfilled. That's because a DAX page will be marked as
+> (_PAGE_SPECIAL | PAGE_DEVMAP) by pte_mkdevmap().
 > 
-> Previously, on cgroups with some memory.low protection that would result
-> in the memory being reclaimed down to the memory.low limit, or likely not
-> at all, having the page cache reclaimed asynchronously later.
+> [1]: https://github.com/pmem/rpma/issues/1142
 > 
-> With f56ce412a59d the oomd write to memory.max tries to reclaim all the
-> way down to zero, which may race with another reclaimer, to the point of
-> ending up with the divide by zero below.
-> 
-> This patch implements the obvious fix.
-> 
-> Fixes: f56ce412a59d ("mm: memcontrol: fix occasional OOMs due to proportional memory.low reclaim")
-> Signed-off-by: Rik van Riel <riel@surriel.com>
+> CC: stable@vger.kernel.org
+> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
 
-It looks like we discover a new divide-by-zero corner case after every
-functional change to the memory protection code :)
+You need to add a 
 
-Acked-by: Roman Gushchin <guro@fb.com>
+Fixes: 405506274922 ("mm/hmm: add missing call to hmm_pte_need_fault in HMM_PFN_SPECIAL handling")
 
-Thanks, Rik!
+> diff --git a/mm/hmm.c b/mm/hmm.c
+> index fad6be2bf072..4766bdefb6c3 100644
+> +++ b/mm/hmm.c
+> @@ -294,6 +294,12 @@ static int hmm_vma_handle_pte(struct mm_walk *walk, unsigned long addr,
+>  	if (required_fault)
+>  		goto fault;
+>  
+> +	/*
+> +	 * just bypass devmap pte such as DAX page when all pfn requested
+> +	 * flags(pfn_req_flags) are fulfilled.
+> +	 */
+> +	if (pte_devmap(pte))
+> +		goto out;
+
+I liked your ealier version better where this was added to the
+pte_special test - logically this is about disambiguating the
+pte_special and the devmap case as they are different things.
+
+Jason
