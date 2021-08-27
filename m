@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C2E3F9D2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EA43F9D30
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhH0RBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
+        id S231936AbhH0REk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbhH0RBh (ORCPT
+        with ESMTP id S229667AbhH0REi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:01:37 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6AFC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:00:48 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id e186so9322184iof.12
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:00:48 -0700 (PDT)
+        Fri, 27 Aug 2021 13:04:38 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8759FC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:03:49 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id i28so12583407ljm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:03:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qY4u/QSD5mvN8lZY5uxrxfQLztvCoO84v1j/fKkjLkI=;
-        b=LPqgm/9TH4nNGDCyZZ+4DPZiv/R/j2OSqWJ0xY8S5J4VYdZGOGN/5ViAHEr76dVQNK
-         g2OZnECtAoKXXulNItoW6GV6ysXWtHE3keN7i7Wz2DtBmDUEk6GslNB4PwnnthtjnF/7
-         d/fj0vixpa6PnDLxTO5HPh+6IltjOtwtnxyqw=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OMCxP1q+YWk0B2oK/6zzu3g1wQAnYnc83Q7t9pMG8V4=;
+        b=dcdbQ/RtiU7GznMTjJwU3jzPaaCUUG5bRRWP6Gzw2JWdDMqBJwKw2YyQ1XbxOdoYPA
+         +mi2ySeon5SwiDtYL6d70TlnoKwIjs1J/Ysnh3rG/ZoNCUWU/5i8Ap6Vj2KmFgtIx/XY
+         UaV9VNipYhf0f7oAT8gAeV4ukpGrJmlv6M+3A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qY4u/QSD5mvN8lZY5uxrxfQLztvCoO84v1j/fKkjLkI=;
-        b=olAl71iZW29W8mW8kfKRqqs+KEtB2wc2zGQPqw30HfI1Tw235Jbks1Cz+Q5Bh9zCfo
-         +BHOL/H04GCC7OLRauOnbLaVLZVkpwqbDXYzRpqg0tnCYWzcvmkVjOS6AVu6Y+t8iqtX
-         dYCmUva166eTILP1uoBN4+J9As5U3j4MOs3qFLoQZFy7Qymr73V1khbuH9xAL1ev9wBQ
-         jcdR+0B2A9fkqST1V6V2VC3fl3xH9t2m+aMmHFUtaN5oMePzMYm9gbffhfZD08gZUxdI
-         1RZj2+ihdI0AdaFcMZn6Zz66q5QUDvaT+5zrAHfjC9DjDrfh/T859MvphVbXucChZcPI
-         NfNg==
-X-Gm-Message-State: AOAM532nXtbuAF2J3dSts5Nn+ckORF28VuMHnRSVZS8KV2oOeNIUsW9H
-        lLjf4mM5y9dukkCM/we83fq2NQ==
-X-Google-Smtp-Source: ABdhPJwfB545VC1ov4ZmZTc67mKTH9BKIPoYlMHkgxx/oHH0ac0FXfe2j6fO1jqjoFTV3kaUhkVhjg==
-X-Received: by 2002:a5d:83c4:: with SMTP id u4mr8436013ior.21.1630083647725;
-        Fri, 27 Aug 2021 10:00:47 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o5sm3448725iow.48.2021.08.27.10.00.43
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OMCxP1q+YWk0B2oK/6zzu3g1wQAnYnc83Q7t9pMG8V4=;
+        b=Z/0GpFF6yAnQ8Ta2Vf52yBaUJ1IxtwsqYVNwnv2foMKLwKpF/FhBX7HqV31u5ANvu2
+         AEoT686ZU/O/+zx6UkwGx6/jdZ95/nEVLhiYs88hkfcfUCaOVflZm5/G5BE71C5p0psg
+         3S8Q+Zc1itGDunzHc07nLR8RHR84lBoSEx2Icz83W/euvrIM0sXQLvEMOzE1H8zChqjG
+         KC0LRXbEMTJGPNg0OYylx8rJfaGUxYBgEYLnSWYmTyjHJEubzGb4Yb4qKhxj7YoGrRoE
+         t13liUleAJd+3K42yWv5rEa+/1R2OeXNn29fA5v5erw4Cu3vyUv137qfy5LN5iBt2TFi
+         2I+w==
+X-Gm-Message-State: AOAM533YjVS7b34b4SsDDAVAN9CiJI8oPwh+Sw7vozBswj96EjHdt7pd
+        ex9ff4z1kxS3whrUOTcMv2TQuCP7pQL+nTH9
+X-Google-Smtp-Source: ABdhPJzP0/4b5/UBR8XCFOYvB7CqmhO99dQGCa0u2/dSC2uThIsN6LPaDqWcQhSS0x+EwwKhy/pN0g==
+X-Received: by 2002:a2e:bc1d:: with SMTP id b29mr9023386ljf.2.1630083827590;
+        Fri, 27 Aug 2021 10:03:47 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id bq7sm640449lfb.136.2021.08.27.10.03.46
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 10:00:45 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] selftests/sync: Remove the deprecated config SYNC
-To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Cc:     "philip.li@intel.com" <philip.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210826015847.7416-1-lizhijian@cn.fujitsu.com>
- <20210826015847.7416-2-lizhijian@cn.fujitsu.com>
- <239339d5-5626-ea04-97db-7dc070a48636@linuxfoundation.org>
- <69835666-1710-5103-fb06-2636a3a3c5bb@fujitsu.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2c141f7e-bec8-49ad-2d2b-d238a372b0e6@linuxfoundation.org>
-Date:   Fri, 27 Aug 2021 11:00:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 27 Aug 2021 10:03:47 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id j4so15705783lfg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:03:46 -0700 (PDT)
+X-Received: by 2002:a05:6512:2091:: with SMTP id t17mr7463548lfr.253.1630083825642;
+ Fri, 27 Aug 2021 10:03:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <69835666-1710-5103-fb06-2636a3a3c5bb@fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210826131747.GE26318@willie-the-truck> <CAHk-=wi8Wxazuq+E4_V0GG4eda0rNpZi76AYWQe7xfPZAAexAQ@mail.gmail.com>
+ <20210827074041.GA24309@lst.de>
+In-Reply-To: <20210827074041.GA24309@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 27 Aug 2021 10:03:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjd28sN9khO=1j6zmBk+2n4_e+SY1URjW9hzsHSAZU+7Q@mail.gmail.com>
+Message-ID: <CAHk-=wjd28sN9khO=1j6zmBk+2n4_e+SY1URjW9hzsHSAZU+7Q@mail.gmail.com>
+Subject: Re: [GIT PULL] arm64 fix for 5.14
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/26/21 7:35 PM, lizhijian@fujitsu.com wrote:
-> 
-> 
-> On 27/08/2021 05:10, Shuah Khan wrote:
->> On 8/25/21 7:58 PM, Li Zhijian wrote:
->>> SYNC was removed since aff9da10e21 ("staging/android: make sync_timeline internal to sw_sync")
->>> LKP/0Day will check if all configs listing under selftests are able to be enabled properly.
->>>
->>
->> Can you please state what you arr fxing and also keep the sentences
->> 75 chars or less.
->>
->> Where is LKP warning?
-> https://01.org/lkp
-> LKP(aka. 0Day) often reports issue related to the *recent* kernel commits/WIP patches publicly.
-> As the LKP keeping improvement, it will cover more aspects in the kernel so that more issues will be detected.
-> 
-> So in this case, which is related to too old kernel, it just reported it internally.
-> 
-> 
->> Include the warning and explain why this
->> change is necessary.
-> - it's not reasonable to keep the deprecated configs, right ?
-> 
-> - In my understanding, configs under kselftests are recommended by corresponding tests.
-> So if some configs are missing, it will impact the testing results
-> 
-> Do you mean the commit log should include above 2 reasons ?
-> 
+On Fri, Aug 27, 2021 at 12:40 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> > In a PC world that would be (for example) the legacy PCI space at
+> > 0xa0000-0xfffff, but I could easily imagine other platforms having
+> > other situations.
+>
+> So what would be the correct check for "this is not actually page backed
+> normal RAM"?
 
-Correct. I am asking the commit log to include these details.
+It would probably be interesting to have the arm people explain the
+call chain for the warning that caused that revert, so we'd have a
+very concrete example of the situation that goes wrong, but taking a
+wild stab at it, the code might be something like
 
-thanks,
--- Shuah
+            /* Don't allow RAM to be mapped */
+            if (WARN_ON_ONCE(phys_addr_is_ram(phys_addr)))
+                    return DMA_MAPPING_ERROR;
+
+and then having something like
+
+  static inline bool phys_addr_is_ram(phys_addr_t phys_addr)
+  {
+        unsigned long pfn = PHYS_PFN(phys_addr);
+
+        if (!pfn_valid(pfn))
+                return false;
+        return is_zero_pfn(pfn) || !PageReserved(pfn_to_page(pfn));
+  }
+
+might be close to right.
+
+The ARM code actually uses that complex pfn_to_section_nr() and
+memblock_is_memory() etc. That seems a bit of an overkill, since the
+memblock code should have translated all that into being reserved.
+
+But again, I don't actually know exactly what triggered the issue on
+ARM, so the above is just my "this seems to be a more proper check"
+suggestion.
+
+Will?
+
+                   Linus
