@@ -2,73 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5873F9F2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC78A3F9F39
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhH0Su4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 14:50:56 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59828
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230059AbhH0Su4 (ORCPT
+        id S230241AbhH0Sy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 14:54:26 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:42332 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230005AbhH0SyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 14:50:56 -0400
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net [80.193.200.194])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id CF9CF3F232;
-        Fri, 27 Aug 2021 18:50:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630090204;
-        bh=6DS/6l+5PcmW6BogA40VziIkdEr3BoKs9rilBqjn/18=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=PrLIcK+K9UeZcMGIqjktvzJIbSAHNDa7GA4fSxO/7p5AebXiIUbDu7eKogM8n7Vuq
-         h0OmDyUCgW6+v5c7EwLqxOkZTnnBGlN57uRefivwfNBr0uY0XHbcL5DN/J4vYOfCyo
-         1jLkHghf0ODx+D0njodSiydSq8PBvKvVMEolUoF2n5bFvWeLesQHEv/Ru9ZLZpdUTj
-         7NSxWc6P3sq4HnKwlr/bZtMf2ks7dH3DXLuBmJTNF0HFMPg8juIoQIdnABIZx8Uavs
-         y5CEgdjuuL9UCTzRdv5OQiMn9IVT/nSnVcuhhmivqOMjNlH1sVeo/nx/a7jUscQDf7
-         wAyJ7WdhfxfNg==
-From:   Colin King <colin.king@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: samsung: s3c24xx_simtec: fix spelling mistake "devicec" -> "device"
-Date:   Fri, 27 Aug 2021 19:50:03 +0100
-Message-Id: <20210827185003.507006-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 27 Aug 2021 14:54:19 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJgyi-00GZ6s-QW; Fri, 27 Aug 2021 18:53:24 +0000
+Date:   Fri, 27 Aug 2021 18:53:24 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v7 04/19] iov_iter: Turn iov_iter_fault_in_readable into
+ fault_in_iov_iter_readable
+Message-ID: <YSk0pAWx7xO/39A6@zeniv-ca.linux.org.uk>
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+ <20210827164926.1726765-5-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827164926.1726765-5-agruenba@redhat.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Aug 27, 2021 at 06:49:11PM +0200, Andreas Gruenbacher wrote:
+> Turn iov_iter_fault_in_readable into a function that returns the number
+> of bytes not faulted in (similar to copy_to_user) instead of returning a
+> non-zero value when any of the requested pages couldn't be faulted in.
+> This supports the existing users that require all pages to be faulted in
+> as well as new users that are happy if any pages can be faulted in at
+> all.
+> 
+> Rename iov_iter_fault_in_readable to fault_in_iov_iter_readable to make
+> sure that this change doesn't silently break things.
 
-There is a spelling mistake in a dev_err error message. Fix it.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/samsung/s3c24xx_simtec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/samsung/s3c24xx_simtec.c b/sound/soc/samsung/s3c24xx_simtec.c
-index 81a29d12c57d..0cc66774b85d 100644
---- a/sound/soc/samsung/s3c24xx_simtec.c
-+++ b/sound/soc/samsung/s3c24xx_simtec.c
-@@ -327,7 +327,7 @@ int simtec_audio_core_probe(struct platform_device *pdev,
- 
- 	snd_dev = platform_device_alloc("soc-audio", -1);
- 	if (!snd_dev) {
--		dev_err(&pdev->dev, "failed to alloc soc-audio devicec\n");
-+		dev_err(&pdev->dev, "failed to alloc soc-audio device\n");
- 		ret = -ENOMEM;
- 		goto err_gpio;
- 	}
--- 
-2.32.0
-
+I really disagree with these calling conventions.  "Number not faulted in"
+is bloody useless; make it "nothing could be faulted in"/"something had
+been faulted in" and it would make sense.  Failure several pages into the
+area should not be treated as a hard error, for one thing, and ANY user
+of that thing will have to cope with short copies anyway, no matter how
+much you've managed to fault in.
