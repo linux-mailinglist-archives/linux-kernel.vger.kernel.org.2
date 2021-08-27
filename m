@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DB03F9B62
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4BA3F9B60
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245400AbhH0PDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:03:15 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8790 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245369AbhH0PDI (ORCPT
+        id S245396AbhH0PDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:03:11 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14428 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245350AbhH0PDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:03:08 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gx2wv5Mn6zYthf;
-        Fri, 27 Aug 2021 23:01:35 +0800 (CST)
+        Fri, 27 Aug 2021 11:03:04 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gx2s85WmpzbdJ8;
+        Fri, 27 Aug 2021 22:58:20 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 27 Aug 2021 23:02:11 +0800
+ 15.1.2176.2; Fri, 27 Aug 2021 23:02:12 +0800
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,10 +29,11 @@ To:     <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
 CC:     <saravanak@google.com>, <linus.walleij@linaro.org>,
         <devicetree@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 3/4] amba: Kill sysfs attribute file of irq
-Date:   Fri, 27 Aug 2021 23:05:59 +0800
-Message-ID: <20210827150600.78811-4-wangkefeng.wang@huawei.com>
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Ruizhe Lin <linruizhe@huawei.com>
+Subject: [PATCH v2 4/4] amba: Properly handle device probe without IRQ domain
+Date:   Fri, 27 Aug 2021 23:06:00 +0800
+Message-ID: <20210827150600.78811-5-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210827150600.78811-1-wangkefeng.wang@huawei.com>
 References: <20210827150600.78811-1-wangkefeng.wang@huawei.com>
@@ -47,62 +48,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Rob said[1], there doesn't seem to be any users about the sysfs
-attribute file of irq[0] and irq[1]. And we don't need to include
-<asm/irq.h> as NO_IRQ has gone. Let's kill both of them.
+of_amba_device_create() uses irq_of_parse_and_map() to translate
+a DT interrupt specification into a Linux virtual interrupt number.
 
-[1] https://lkml.org/lkml/2021/8/25/461
+But it doesn't properly handle the case where the interrupt controller
+is not yet available, eg, when pl011 interrupt is connected to MBIGEN
+interrupt controller, because the mbigen initialization is too late,
+which will lead to no IRQ due to no IRQ domain found, log is shown below,
+  "irq: no irq domain found for uart0 !"
 
+use of_irq_get() to return -EPROBE_DEFER as above, and in the driver
+deferred probe, it will properly handle in such case, also return 0
+in other fail cases to be consistent as before.
+
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Reported-by: Ruizhe Lin <linruizhe@huawei.com>
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- drivers/amba/bus.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
+ drivers/amba/bus.c    | 27 +++++++++++++++++++++++++++
+ drivers/of/platform.c |  6 +-----
+ 2 files changed, 28 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-index 37fcd5592c6f..4d3a565ca079 100644
+index 4d3a565ca079..96e84ce66e9a 100644
 --- a/drivers/amba/bus.c
 +++ b/drivers/amba/bus.c
-@@ -20,8 +20,6 @@
+@@ -19,6 +19,7 @@
+ #include <linux/clk/clk-conf.h>
  #include <linux/platform_device.h>
  #include <linux/reset.h>
++#include <linux/of_irq.h>
  
--#include <asm/irq.h>
--
  #define to_amba_driver(d)	container_of(d, struct amba_driver, drv)
  
- /* called on periphid match and class 0x9 coresight device. */
-@@ -135,8 +133,6 @@ static ssize_t name##_show(struct device *_dev,				\
- static DEVICE_ATTR_RO(name)
+@@ -170,6 +171,28 @@ static int amba_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 	return retval;
+ }
  
- amba_attr_func(id, "%08x\n", dev->periphid);
--amba_attr_func(irq0, "%u\n", dev->irq[0]);
--amba_attr_func(irq1, "%u\n", dev->irq[1]);
- amba_attr_func(resource, "\t%016llx\t%016llx\t%016lx\n",
- 	 (unsigned long long)dev->res.start, (unsigned long long)dev->res.end,
- 	 dev->res.flags);
-@@ -463,20 +459,10 @@ static int amba_device_try_add(struct amba_device *dev, struct resource *parent)
++static int of_amba_device_decode_irq(struct amba_device *dev)
++{
++	struct device_node *node = dev->dev.of_node;
++	int i, irq;
++
++	if (IS_ENABLED(CONFIG_OF_IRQ) && node) {
++		/* Decode the IRQs and address ranges */
++		for (i = 0; i < AMBA_NR_IRQS; i++) {
++			irq = of_irq_get(node, i);
++			if (irq < 0) {
++				if (irq == -EPROBE_DEFER)
++					return irq;
++				irq = 0;
++			}
++
++			dev->irq[i] = irq;
++		}
++	}
++
++	return 0;
++}
++
+ /*
+  * These are the device model conversion veneers; they convert the
+  * device model structures to our more specific structures.
+@@ -182,6 +205,10 @@ static int amba_probe(struct device *dev)
+ 	int ret;
  
-  skip_probe:
- 	ret = device_add(&dev->dev);
--	if (ret)
--		goto err_release;
+ 	do {
++		ret = of_amba_device_decode_irq(pcdev);
++		if (ret)
++			break;
++
+ 		ret = of_clk_set_defaults(dev->of_node, false);
+ 		if (ret < 0)
+ 			break;
+diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+index 74afbb7a4f5e..32d5ff8df747 100644
+--- a/drivers/of/platform.c
++++ b/drivers/of/platform.c
+@@ -222,7 +222,7 @@ static struct amba_device *of_amba_device_create(struct device_node *node,
+ {
+ 	struct amba_device *dev;
+ 	const void *prop;
+-	int i, ret;
++	int ret;
+ 
+ 	pr_debug("Creating amba device %pOF\n", node);
+ 
+@@ -253,10 +253,6 @@ static struct amba_device *of_amba_device_create(struct device_node *node,
+ 	if (prop)
+ 		dev->periphid = of_read_ulong(prop, 1);
+ 
+-	/* Decode the IRQs and address ranges */
+-	for (i = 0; i < AMBA_NR_IRQS; i++)
+-		dev->irq[i] = irq_of_parse_and_map(node, i);
 -
--	if (dev->irq[0])
--		ret = device_create_file(&dev->dev, &dev_attr_irq0);
--	if (ret == 0 && dev->irq[1])
--		ret = device_create_file(&dev->dev, &dev_attr_irq1);
--	if (ret == 0)
--		return ret;
--
--	device_unregister(&dev->dev);
- 
-  err_release:
--	release_resource(&dev->res);
-+	if (ret)
-+		release_resource(&dev->res);
-  err_out:
- 	return ret;
- 
+ 	ret = of_address_to_resource(node, 0, &dev->res);
+ 	if (ret) {
+ 		pr_err("amba: of_address_to_resource() failed (%d) for %pOF\n",
 -- 
 2.18.0.huawei.25
 
