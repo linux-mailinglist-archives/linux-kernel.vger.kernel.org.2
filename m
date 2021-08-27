@@ -2,103 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8278F3F9249
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 04:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5703F924E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 04:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244006AbhH0CW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 22:22:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21750 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243961AbhH0CW1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 22:22:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630030898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=rSOjbuRdk1TZ49NvwDti2zU1kHapru68ruaxv+B72xg=;
-        b=FMZbGbXHRL/rBJFMlRdgzKoKzXlymSgBAqcPXH6wmUcRXfX3eaMgbti++vTbChzY40EGhr
-        T/4nw+CA5eTD+l3AEeWO9kdjEdjiM3Otw+i77jS69voTqUqAOM9t8rio9UFGgviDmdAPFo
-        nx1jHiyG2syooj8tTHDqOBLIeyMpHsM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-skf5Qfs7Pg-EqMt6lcsStg-1; Thu, 26 Aug 2021 22:21:35 -0400
-X-MC-Unique: skf5Qfs7Pg-EqMt6lcsStg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S244066AbhH0CXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 22:23:46 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:36781 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231613AbhH0CXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 22:23:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A1CC8015C7;
-        Fri, 27 Aug 2021 02:21:33 +0000 (UTC)
-Received: from llong.com (unknown [10.22.32.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 57B245D9DC;
-        Fri, 27 Aug 2021 02:21:28 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] rcu: Avoid unneeded function call in rcu_read_unlock()
-Date:   Thu, 26 Aug 2021 22:21:22 -0400
-Message-Id: <20210827022122.15816-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gwk5V1JX3z9sPf;
+        Fri, 27 Aug 2021 12:22:53 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630030974;
+        bh=5OKZbg1/z7zbffHv9CDZilC29dWz0b3Vl0KH7ueFMi4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pTKMbFJ4Af62VbdkHiwrTvTh9SRTTbg9+Q1hmnVurSUUq9ce9ZfeN4XsB5hCbVHJl
+         J+x4947BxyEJ7PFtgumvcsLSW0IxjDJmeXDuzqT4KGOqxQY8svIWJ1kAbOkfULyCXR
+         evWDNbUUgRBOblU/pmCs83lWTLD22OEhja1akd9hbKuat7GQSNIUa9VlC+D93cVDEb
+         5ysALepnsfLbNRZA/dbfkaCmIV6CmM/de+wotD0t2GzrS4SAY68pHXN6GlVH7+SGvm
+         ky67y/KT0VTDG8+oamN1sx4U0O5mJQCXMAYyC4GovgPHnaH6Oe2fZ97pJs8ls1nNIW
+         mpTFeExxNb5oQ==
+Date:   Fri, 27 Aug 2021 12:22:52 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210827122252.3d310dca@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/EQLn5xMvkGnCKxYXAb2gN3x";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit aa40c138cc8f3 ("rcu: Report QS for outermost
-PREEMPT=n rcu_read_unlock() for strict GPs"). A real function call
-rcu_read_unlock_strict() is added to the inlined rcu_read_unlock().
-The rcu_read_unlock_strict() call is only needed if the performance
-sagging CONFIG_RCU_STRICT_GRACE_PERIOD option is set. This config
-option isn't set for most production kernels while the function call
-overhead remains.
+--Sig_/EQLn5xMvkGnCKxYXAb2gN3x
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-To provide a slight performance improvement, the
-CONFIG_RCU_STRICT_GRACE_PERIOD config check is moved from
-rcu_read_unlock_strict() to __rcu_read_unlock() so that the function
-call can be compiled out in most cases.
+Hi all,
 
-Besides, the GPL exported rcu_read_unlock_strict() also impact the
-the compilation of non-GPL kernel modules as rcu_read_unlock() is a
-frequently used kernel API.
+After merging the net-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-Signed-off-by: Waiman Long <longman@redhat.com>
+drivers/net/wwan/mhi_wwan_mbim.c: In function 'mhi_mbim_probe':
+drivers/net/wwan/mhi_wwan_mbim.c:612:8: error: too many arguments to functi=
+on 'mhi_prepare_for_transfer'
+  612 |  err =3D mhi_prepare_for_transfer(mhi_dev, 0);
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from drivers/net/wwan/mhi_wwan_mbim.c:18:
+include/linux/mhi.h:725:5: note: declared here
+  725 | int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+
+Caused by commits
+
+  aa730a9905b7 ("net: wwan: Add MHI MBIM network driver")
+  ab996c420508 ("wwan: mhi: Fix build.")
+  a85b99ab6abb ("Revert "wwan: mhi: Fix build."")
+  0ca8d3ca4561 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev=
+/net")
+
+interacting with commit
+
+  9ebc2758d0bb ("Revert "net: really fix the build..."")
+
+from Linus' tree.
+
+I have applied the following merge fix patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 27 Aug 2021 12:02:29 +1000
+Subject: [PATCH] fix for commit 9ebc2758d0bb "Revert "net: really fix the b=
+uild...""
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- include/linux/rcupdate.h | 3 ++-
- kernel/rcu/tree_plugin.h | 3 +--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wwan/mhi_wwan_mbim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index d9680b798b21..945594770d57 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -71,7 +71,8 @@ static inline void __rcu_read_lock(void)
- static inline void __rcu_read_unlock(void)
- {
- 	preempt_enable();
--	rcu_read_unlock_strict();
-+	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
-+		rcu_read_unlock_strict();
- }
- 
- static inline int rcu_preempt_depth(void)
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index de1dc3bb7f70..7fa518bef15d 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -844,8 +844,7 @@ void rcu_read_unlock_strict(void)
- {
- 	struct rcu_data *rdp;
- 
--	if (!IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
--	   irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
-+	if (irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
- 		return;
- 	rdp = this_cpu_ptr(&rcu_data);
- 	rcu_report_qs_rdp(rdp);
--- 
-2.18.1
+diff --git a/drivers/net/wwan/mhi_wwan_mbim.c b/drivers/net/wwan/mhi_wwan_m=
+bim.c
+index 377529bbf124..71bf9b4f769f 100644
+--- a/drivers/net/wwan/mhi_wwan_mbim.c
++++ b/drivers/net/wwan/mhi_wwan_mbim.c
+@@ -609,7 +609,7 @@ static int mhi_mbim_probe(struct mhi_device *mhi_dev, c=
+onst struct mhi_device_id
+ 	INIT_DELAYED_WORK(&mbim->rx_refill, mhi_net_rx_refill_work);
+=20
+ 	/* Start MHI channels */
+-	err =3D mhi_prepare_for_transfer(mhi_dev, 0);
++	err =3D mhi_prepare_for_transfer(mhi_dev);
+ 	if (err)
+ 		return err;
+=20
+--=20
+2.32.0
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/EQLn5xMvkGnCKxYXAb2gN3x
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEoTHwACgkQAVBC80lX
+0Gx5bQf/cKqHRFJmPeU3iAS7ttQmIIWKeTCihN35XPyBlZuJmK04BLTgfbISNIFF
+PeH2dTzqyi1olhsWCCJDB5QguuD1pzyA9O1FYlGofZGso6iU3EcpgEosJKXxU92J
+dI6SuOLYciOzbli4tdpZSzmhF+AEW5oy6wz/300WF3MeSq6GLxHmryI3X4ro2kzv
+Y7A7XNstTHi1erolZPKYqZ7uz5BWhn8H1xdoXJtaVaRLeOkLazfKzD/8Qu7fJRga
+Ng4XPLrkXwNGHBdyfPMC5KLvfYddllL7g3tOBa6JsDWYhWCDSV9Ze8Esb9eYgV8P
+3vHiIrSHcuqFT9O46GnWMJu/v0deYw==
+=DxBy
+-----END PGP SIGNATURE-----
+
+--Sig_/EQLn5xMvkGnCKxYXAb2gN3x--
