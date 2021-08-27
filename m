@@ -2,235 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5BD3F9174
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 02:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5C43F9177
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 02:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243880AbhH0AxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 20:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243811AbhH0AxS (ORCPT
+        id S243894AbhH0AyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 20:54:15 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:25028 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243811AbhH0AyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 20:53:18 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F74C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 17:52:29 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id x11so10318973ejv.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 17:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kcZjG66xtA/jY29pBRQOPOds6aYeDhJ8jQhY1pZY80A=;
-        b=bk6vfNTov+ymNHAHaSlYzg+pXn1z2h9fT4GVPYxh4e4SQY71Z+fwbcXFztimoz1hRx
-         zAwLQ1RSvbuz4IRt0ig1e+XVKOZaaMxfKyoyq+Rt6S6gaf9zftZdOG7AxEarsGi3Il2O
-         B2czlprwtwo/7hHgL6EAXw4s6UpUrMvEmls2ejoH8ChoWFOu5CcXvRH1ZJUhmrh9yCov
-         QOr+bT67MTqhZcIxXeHriyMGroLP6PBDJJ+Q5AMb/5W8KyTeBJVKeIQpy0xmNRi/FRsH
-         yEHvmu62DIMfdmj7f4Y5VDYPjELEslbXVqjS0Z6fIHLehadImqvThpAD+b0KDXV31pA/
-         hGag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kcZjG66xtA/jY29pBRQOPOds6aYeDhJ8jQhY1pZY80A=;
-        b=IXYGGot1fRI8K26um5hlrKYwaEXwwDk/zvXJFWW0+FSftkBkR3tpci4bIsoSNijCIc
-         p8gwXLG8NvE9qEbFrJGL/RLBmyY5G4zONJaRuj1hEQXGIs0YwMOMgquguzyy2C5vqaXP
-         YR2oRbxFV3pp3HieV4GootgUeD9Boap8rUZD4vq/lEOdoTTNk1Fq/fFAB9lMgOYwjWbO
-         yTnzamU5cqk8wpxCZYjNQbaCb2zKHq8nEj8RVumpNmgLO6uaWsmx0pqg+4TDvuKV0bYd
-         dRjw40DHisD14f8KoLCABEgHvGZC9qVL8SpmV4Ve3jd0yAFGOrwKGCy31wSOxO0L1FMf
-         z7YA==
-X-Gm-Message-State: AOAM531EQSpgKQBCovXzxV98cq35VRTpidIjRDrLejvzPpfswBPiKYyQ
-        Z/m4tDqTKLRiG0FIyYYwYGsNK1P0535kgF3VQOXE
-X-Google-Smtp-Source: ABdhPJzNgmgA/Zd8FwouLieIWH2ENsJn+2AobXdHZoN8I7oJKtub/jVE993grloLZb9EUOCjaGUaPDPKuDihcP2ySkI=
-X-Received: by 2002:a17:906:1d59:: with SMTP id o25mr7136046ejh.431.1630025548172;
- Thu, 26 Aug 2021 17:52:28 -0700 (PDT)
+        Thu, 26 Aug 2021 20:54:08 -0400
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 17R0qumb018917;
+        Fri, 27 Aug 2021 09:52:56 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 17R0qumb018917
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1630025576;
+        bh=v5UrnPxdJDQzEP3fPOndvdGBkcAodv7VU8EbX3JopoU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ijBW58/sB0mmqZ8oXYanrbnQr72qd3d5hYs+b4+l20Qkz9960/VBdPBwqXnZgNPnK
+         m+yzs/iPwN5GpJGo9GGJ1Yx1iXGWCq+Qle66YpFzsRlJjNMVaX36WCtBxD8Mikse35
+         KanmAt5t0ogLo8LqWOkEYe9E5Yxm2E1IaNIw4KvOs4THN1TcPugJqXoqzV6/dHm36O
+         IsSxT5MN98k8wWQXLiNgZSNGXjbpQcSg/TChNfqYb8x+SlymmPFTDsViFgJ3Tb286j
+         xJBq3D/fI4lj3KdeVyLJzWqZfTo+71c9t8Wb+cFzXeU2miysX1YhjFoocoqOCkarkE
+         k84SyNYgfYyfQ==
+X-Nifty-SrcIP: [209.85.210.170]
+Received: by mail-pf1-f170.google.com with SMTP id y11so4200322pfl.13;
+        Thu, 26 Aug 2021 17:52:56 -0700 (PDT)
+X-Gm-Message-State: AOAM532bficr7KOKHzX4r389DL72Qy0lby9rpaSn46tvKXSBJXky10E8
+        TEXVUVh9gUu5Nk3zu/J/4yIGC2Vnw4dY4cAJAcA=
+X-Google-Smtp-Source: ABdhPJxTdJjeA2wMBM5dBg4ozXGqDFuPcHkZAEvFkrCDapueZUB1arFHJvgqF2Gbv5NKJhRK2+Chm8BlORSSQGi4ihY=
+X-Received: by 2002:aa7:98da:0:b029:3e0:8b98:df83 with SMTP id
+ e26-20020aa798da0000b02903e08b98df83mr6339470pfm.63.1630025575406; Thu, 26
+ Aug 2021 17:52:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <a4b3951d1191d4183d92a07a6097566bde60d00a.1629812058.git.christophe.leroy@csgroup.eu>
- <CAHC9VhR3E6=5HmRaWMWbp4WHsua02niwnzaRGM3tLqd4Y4LA6w@mail.gmail.com>
- <5a2692b6-5077-21b4-8ebf-73b1c2b83a40@csgroup.eu> <CAHC9VhSG8tPAkAAz5Z77HDMKXLAiaEOanxR+oY5c1E_Xoiso9Q@mail.gmail.com>
- <87tujc9srr.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87tujc9srr.fsf@mpe.ellerman.id.au>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 26 Aug 2021 20:52:17 -0400
-Message-ID: <CAHC9VhRAbsjifuO+fw4_KpK3ErVM0Dk0Ru3LuZKkeTZvWYc5=w@mail.gmail.com>
-Subject: Re: [PATCH v2 RESEND] powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPAT_GENERIC
-To:     Michael Ellerman <mpe@ellerman.id.au>, rgb@redhat.com
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com
+References: <20210826191330.40dc43e8@canb.auug.org.au>
+In-Reply-To: <20210826191330.40dc43e8@canb.auug.org.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 27 Aug 2021 09:52:18 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASL2JNb4zT7UFr41dLO0oEuvc6yUg__qhc59q8aNqWxEg@mail.gmail.com>
+Message-ID: <CAK7LNASL2JNb4zT7UFr41dLO0oEuvc6yUg__qhc59q8aNqWxEg@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the kbuild tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 10:37 AM Michael Ellerman <mpe@ellerman.id.au> wrot=
-e:
-> Paul Moore <paul@paul-moore.com> writes:
-> > On Tue, Aug 24, 2021 at 1:11 PM Christophe Leroy
-> > <christophe.leroy@csgroup.eu> wrote:
-> >> Le 24/08/2021 =C3=A0 16:47, Paul Moore a =C3=A9crit :
-> >> > On Tue, Aug 24, 2021 at 9:36 AM Christophe Leroy
-> >> > <christophe.leroy@csgroup.eu> wrote:
-> >> >>
-> >> >> Commit e65e1fc2d24b ("[PATCH] syscall class hookup for all normal
-> >> >> targets") added generic support for AUDIT but that didn't include
-> >> >> support for bi-arch like powerpc.
-> >> >>
-> >> >> Commit 4b58841149dc ("audit: Add generic compat syscall support")
-> >> >> added generic support for bi-arch.
-> >> >>
-> >> >> Convert powerpc to that bi-arch generic audit support.
-> >> >>
-> >> >> Cc: Paul Moore <paul@paul-moore.com>
-> >> >> Cc: Eric Paris <eparis@redhat.com>
-> >> >> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> >> >> ---
-> >> >> Resending v2 with Audit people in Cc
-> >> >>
-> >> >> v2:
-> >> >> - Missing 'git add' for arch/powerpc/include/asm/unistd32.h
-> >> >> - Finalised commit description
-> >> >> ---
-> >> >>   arch/powerpc/Kconfig                |  5 +-
-> >> >>   arch/powerpc/include/asm/unistd32.h |  7 +++
-> >> >>   arch/powerpc/kernel/Makefile        |  3 --
-> >> >>   arch/powerpc/kernel/audit.c         | 84 ------------------------=
------
-> >> >>   arch/powerpc/kernel/compat_audit.c  | 44 ---------------
-> >> >>   5 files changed, 8 insertions(+), 135 deletions(-)
-> >> >>   create mode 100644 arch/powerpc/include/asm/unistd32.h
-> >> >>   delete mode 100644 arch/powerpc/kernel/audit.c
-> >> >>   delete mode 100644 arch/powerpc/kernel/compat_audit.c
-> >> >
-> >> > Can you explain, in detail please, the testing you have done to veri=
-fy
-> >> > this patch?
-> >> >
-> >>
-> >> I built ppc64_defconfig and checked that the generated code is functio=
-nnaly equivalent.
-> >>
-> >> ppc32_classify_syscall() is exactly the same as audit_classify_compat_=
-syscall() except that the
-> >> later takes the syscall as second argument (ie in r4) whereas the form=
-er takes it as first argument
-> >> (ie in r3).
-> >>
-> >> audit_classify_arch() and powerpc audit_classify_syscall() are slightl=
-y different between the
-> >> powerpc version and the generic version because the powerpc version ch=
-ecks whether it is
-> >> AUDIT_ARCH_PPC or not (ie value 20), while the generic one checks whet=
-her it has bit
-> >> __AUDIT_ARCH_64BIT set or not (__AUDIT_ARCH_64BIT is the sign bit of a=
- word), but taking into
-> >> account that the abi is either AUDIT_ARCH_PPC, AUDIT_ARCH_PPC64 or AUD=
-IT_ARCH_PPC64LE, the result is
-> >> the same.
-> >>
-> >> If you are asking I guess you saw something wrong ?
-> >
-> > I was asking because I didn't see any mention of testing, and when you
-> > are enabling something significant like this it is nice to see that it
-> > has been verified to work :)
-> >
-> > While binary dumps and comparisons are nice, it is always good to see
-> > verification from a test suite.  I don't have access to the necessary
-> > hardware to test this, but could you verify that the audit-testsuite
-> > passes on your test system with your patches applied?
-> >
-> >  * https://github.com/linux-audit/audit-testsuite
+On Thu, Aug 26, 2021 at 6:13 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> I tested on ppc64le. Both before and after the patch I get the result
-> below.
+> Hi all,
 >
-> So I guess the patch is OK, but maybe we have some existing issue.
+> After merging the kbuild tree, today's linux-next build (x86_64
+> allnoconfig) failed like this:
 >
-> I had a bit of a look at the test code, but my perl is limited. I think
-> it was running the command below, and it returned "<no matches>", but
-> not really sure what that means.
-
-If it makes you feel any better, my perl is *very* limited; thankfully
-this isn't my first time looking at that test :)
-
-It's a little odd, but after some basic sanity tests at the top, the
-test sets a watch on a file, /tmp/<rando_string>, and tells the kernel
-to generate audit records for any syscall that operates on that file.
-It then creates, and removes, a series of exclude audit filters to
-check if the exclude filtering is working as expected, e.g. when
-syscall filtering is excluded there should be no syscall records in
-the audit log.
-
-In the case you describe, it looks like it looks like the audit
-exclude filter is removed (that's what line 147 does), the
-/tmp/<rando_string> file is removed (line 152), and then we check to
-see if any syscall records exist (line 164, and yes, there should be
-*something* there for the unlink/rm).
-
-It may be of little consolation, but this test works just fine on
-recent kernels running on both x86_64 and aarch64.  I don't have
-access to a powerpc system of any vintage, but I added Richard to the
-To line above in case he has easier access to a test system (I suspect
-the RH/IBM linkage should help in this regard).  Otherwise I would
-suggest starting to debug this by simply doing some basic tests using
-auditctl to create rules and exclude rules to see what is working, and
-what isn't; that might provide some clues.
-
-Sorry I'm not much more help at this point :/
-
->   $ sudo ausearch -i -m SYSCALL -p 216440 -ui 0 -gi 0 -ul 0 -su unconfine=
-d _u:unconfined_r:unconfined_t:s0-s0:c0.c1023 -ts recent
->   <no matches>
+> make[2]: *** No rule to make target 'scripts/mod/empty.o', needed by '__build'.
 >
-> cheers
+> Caused by commit
 >
+>   624a912f84bc ("kbuild: detect objtool changes correctly and remove .SECONDEXPANSION")
 >
+> (at least, reverting that commit fixes it)
 >
-> Running as   user    root
->         with context unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c102=
-3
->         on   system  Fedora
+> I use a separate object directory and, in this case, it is newly created.
 >
-> backlog_wait_time_actual_reset/test .. ok
-> exec_execve/test ..................... ok
-> exec_name/test ....................... ok
-> file_create/test ..................... ok
-> file_delete/test ..................... ok
-> file_rename/test ..................... ok
-> filter_exclude/test .................. 1/21
-> # Test 20 got: "256" (filter_exclude/test at line 167)
-> #    Expected: "0"
-> #  filter_exclude/test line 167 is: ok( $result, 0 );
-> # Test 21 got: "0" (filter_exclude/test at line 179)
-> #    Expected: "1"
-> #  filter_exclude/test line 179 is: ok( $found_msg, 1 );
-> filter_exclude/test .................. Failed 2/21 subtests
-> filter_saddr_fam/test ................ ok
-> filter_sessionid/test ................ ok
-> login_tty/test ....................... ok
-> lost_reset/test ...................... ok
-> netfilter_pkt/test ................... ok
-> syscalls_file/test ................... ok
-> syscall_module/test .................. ok
-> time_change/test ..................... ok
-> user_msg/test ........................ ok
-> fanotify/test ........................ ok
-> bpf/test ............................. ok
+> A build with V=1 and -s removed (and no -j) gives this around the
+> failure:
 >
-> Test Summary Report
-> -------------------
-> filter_exclude/test                (Wstat: 0 Tests: 21 Failed: 2)
->   Failed tests:  20-21
-> Files=3D18, Tests=3D202, 45 wallclock secs ( 0.18 usr  0.03 sys + 20.15 c=
-usr  0.92 csys =3D 21.28 CPU)
-> Result: FAIL
-> Failed 1/18 test programs. 2/202 subtests failed.
+> make -f /home/sfr/next/next/scripts/Makefile.build obj=scripts/mod
+> make[2]: *** No rule to make target 'scripts/mod/empty.o', needed by '__build'.  Stop.
+> make[1]: *** [/home/sfr/next/next/Makefile:1309: prepare0] Error 2
+>
+> I have reverted that commit for today.
+> --
+> Cheers,
+> Stephen Rothwell
 
 
 
---=20
-paul moore
-www.paul-moore.com
+Hmm, it is strange.
+
+
+I re-applied that commit based on today's linux-next
+(git cherry-pick  624a912f84bc)
+
+allnoconfig built successfully.
+
+
+My build log is as follows.
+
+Can you tell the exact steps to reproduce the error?
+
+
+
+masahiro@grover:~/ref/linux-next$ git log -2 --oneline
+5046c6516ca2 (HEAD -> tmp) kbuild: detect objtool changes correctly
+and remove .SECONDEXPANSION
+88fac11862d3 (tag: next-20210826, origin/master, origin/HEAD) Add
+linux-next specific files for 20210826
+masahiro@grover:~/ref/linux-next$ rm -rf /tmp/foo
+masahiro@grover:~/ref/linux-next$ make O=/tmp/foo  allnoconfig all
+make[1]: Entering directory '/tmp/foo'
+  GEN     Makefile
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  LEX     scripts/kconfig/lexer.lex.c
+  YACC    scripts/kconfig/parser.tab.[ch]
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/menu.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTCC  scripts/kconfig/util.o
+  HOSTLD  scripts/kconfig/conf
+#
+# configuration written to .config
+#
+  GEN     Makefile
+  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_32.h
+  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_64.h
+  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_x32.h
+  SYSTBL  arch/x86/include/generated/asm/syscalls_32.h
+  HOSTCC  arch/x86/tools/relocs_32.o
+  HOSTCC  arch/x86/tools/relocs_64.o
+  HOSTCC  arch/x86/tools/relocs_common.o
+  HOSTLD  arch/x86/tools/relocs
+  HOSTCC  scripts/kallsyms
+  HOSTCC  scripts/sorttable
+  WRAP    arch/x86/include/generated/uapi/asm/bpf_perf_event.h
+  WRAP    arch/x86/include/generated/uapi/asm/errno.h
+  WRAP    arch/x86/include/generated/uapi/asm/fcntl.h
+  WRAP    arch/x86/include/generated/uapi/asm/ioctl.h
+  WRAP    arch/x86/include/generated/uapi/asm/ioctls.h
+  WRAP    arch/x86/include/generated/uapi/asm/ipcbuf.h
+  WRAP    arch/x86/include/generated/uapi/asm/param.h
+  WRAP    arch/x86/include/generated/uapi/asm/poll.h
+  WRAP    arch/x86/include/generated/uapi/asm/resource.h
+  WRAP    arch/x86/include/generated/uapi/asm/socket.h
+  WRAP    arch/x86/include/generated/uapi/asm/sockios.h
+  WRAP    arch/x86/include/generated/uapi/asm/termbits.h
+  WRAP    arch/x86/include/generated/uapi/asm/termios.h
+  WRAP    arch/x86/include/generated/uapi/asm/types.h
+  WRAP    arch/x86/include/generated/asm/early_ioremap.h
+  WRAP    arch/x86/include/generated/asm/export.h
+  WRAP    arch/x86/include/generated/asm/mcs_spinlock.h
+  WRAP    arch/x86/include/generated/asm/irq_regs.h
+  WRAP    arch/x86/include/generated/asm/kmap_size.h
+  WRAP    arch/x86/include/generated/asm/local64.h
+  WRAP    arch/x86/include/generated/asm/mmiowb.h
+  WRAP    arch/x86/include/generated/asm/module.lds.h
+  WRAP    arch/x86/include/generated/asm/rwonce.h
+  WRAP    arch/x86/include/generated/asm/unaligned.h
+  UPD     include/config/kernel.release
+  UPD     include/generated/uapi/linux/version.h
+  UPD     include/generated/utsrelease.h
+  CC      scripts/mod/empty.o
+  HOSTCC  scripts/mod/mk_elfconfig
+  MKELF   scripts/mod/elfconfig.h
+  HOSTCC  scripts/mod/modpost.o
+  CC      scripts/mod/devicetable-offsets.s
+  UPD     scripts/mod/devicetable-offsets.h
+  HOSTCC  scripts/mod/file2alias.o
+  HOSTCC  scripts/mod/sumversion.o
+  HOSTLD  scripts/mod/modpost
+  CC      kernel/bounds.s
+  UPD     include/generated/bounds.h
+  UPD     include/generated/timeconst.h
+  CC      arch/x86/kernel/asm-offsets.s
+  UPD     include/generated/asm-offsets.h
+  CALL    /home/masahiro/ref/linux-next/scripts/checksyscalls.sh
+  CALL    /home/masahiro/ref/linux-next/scripts/atomic/check-atomics.sh
+  CC      init/main.o
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+  CC      init/do_mounts.o
+  CC      init/noinitramfs.o
+  CC      init/calibrate.o
+  CC      init/init_task.o
+  AR      init/built-in.a
+  AR      usr/built-in.a
+  CC      arch/x86/entry/vdso/vma.o
+  CC      arch/x86/entry/vdso/extable.o
+  CC      arch/x86/entry/vdso/vdso32-setup.o
+  LDS     arch/x86/entry/vdso/vdso32/vdso32.lds
+  AS      arch/x86/entry/vdso/vdso32/note.o
+  AS      arch/x86/entry/vdso/vdso32/system_call.o
+  AS      arch/x86/entry/vdso/vdso32/sigreturn.o
+  CC      arch/x86/entry/vdso/vdso32/vclock_gettime.o
+  VDSO    arch/x86/entry/vdso/vdso32.so.dbg
+/home/masahiro/ref/linux-next/arch/x86/entry/vdso/Makefile:135: FORCE
+prerequisite is missing
+  OBJCOPY arch/x86/entry/vdso/vdso32.so
+  HOSTCC  arch/x86/entry/vdso/vdso2c
+  VDSO2C  arch/x86/entry/vdso/vdso-image-32.c
+  CC      arch/x86/entry/vdso/vdso-image-32.o
+  AR      arch/x86/entry/vdso/built-in.a
+
+  [snip]
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
