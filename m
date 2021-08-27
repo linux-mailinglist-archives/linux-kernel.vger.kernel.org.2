@@ -2,194 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86653F9AD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4031C3F9ACF
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245267AbhH0OZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245124AbhH0OZF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:25:05 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA99C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:24:16 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id s3so11722694ljp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bXOZzmBEt0Fm+6WjGbwh30k7Cu1VzrKXxzkcT37QPJc=;
-        b=JB5jzj8kSOuO1igcguQIEXYo2hx0zf6mDL55EA+hRqWPaHIthyapEkKzED8VvYOGvG
-         +OB2Ul5lStBGJbZTpSbqfSi3O7TO6h7buQ7IwSDBp0/yH7L7630zV722l9wjw94TthFg
-         ackTa0ps55GFEs03YqHF0eD/AH5pTW0hvphQWkNXC4703YFRoi0CL+0ZhjrAnalUylmK
-         nWdKm052W/0EsTE8uD/NdeLtXL9HfSFZfBLh5wksEgQ48FujcZfNATT8S3XIvmuegQxE
-         OWFVcoNmXoO/6pfx4cQacgK8H1CwEiRRRD7gE6FS6pEntFTEJc5Yf9bw0Dl92Eiy73gF
-         4KyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bXOZzmBEt0Fm+6WjGbwh30k7Cu1VzrKXxzkcT37QPJc=;
-        b=K6TBt4QICWqWjdcy6m4j3bc+75zObFxiZQ0LlPoaSGPePuh4vozrcp8vNZqKYZqsOv
-         tQmojYkAWMzPCbYhft86nrdUnNL9HNhbgxZSudSONKCMvUaIfAXG52F66WduKKpycAEa
-         j+b7FQW2s8I9/ZKTjxKMSqNb+TL2xIH1KIdPjivvb0bHku6lH0ldr/ywDkX9EexvbZeo
-         +WHfe49u03mk4xplnEb7AHgblp4jK+LVvyOXd6MDWNdAIcA66v/peECTtolInDeJMEBW
-         nWLsGMvu5yjm8FC8N3gBwct6Q2EehgLWhLDk/ddNNOboyFlla1urom35lVbC120FKL/l
-         WXbA==
-X-Gm-Message-State: AOAM530bj5/hZe/I0P+HV9tlRxie/MA0TMKxVhuGvrJ2NrgcnKFPBaln
-        m8C1oEAJ1Ilbgs5mhtdwXXBuzL0g4cgMl92MopvNaw==
-X-Google-Smtp-Source: ABdhPJzTlKeElmonIFy7CztdpHqQdCOYNiO4vdm/GGq26xTAY//iB9JurYYiJh+N/c2b78xL4DEVMlMrCetx1YehllY=
-X-Received: by 2002:a2e:a410:: with SMTP id p16mr8105081ljn.364.1630074253320;
- Fri, 27 Aug 2021 07:24:13 -0700 (PDT)
+        id S241260AbhH0OYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:24:48 -0400
+Received: from mail.zx2c4.com ([104.131.123.232]:41484 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230108AbhH0OYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 10:24:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1630074235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KEjz5evJg2EczOGmSlnq51/PxntQ9pR11olxKUG5rRk=;
+        b=cAyXg81SlGRs0E0GALlP2T7npJJxqpDQNwRTlH1B2P9b8ozYThPQU9OjsGi8f9MSDvLchy
+        L8Un5INyYHxWSUnj6kW2zq/tiYQhXsKt4FK8sK6V1pgrcbmvnqWI9hhMcur3MnTWde/uMZ
+        M2pXl6NhSEIubW8GhEttL/PUK0kiwmQ=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a1fcabec (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 27 Aug 2021 14:23:55 +0000 (UTC)
+Received: by mail-yb1-f170.google.com with SMTP id z18so12833763ybg.8;
+        Fri, 27 Aug 2021 07:23:55 -0700 (PDT)
+X-Gm-Message-State: AOAM533qHEjdwUDlka7FKAyxvRtDGdeYkz1QYtRLibOeElz2mfNUhp/j
+        dBhTVtFb4J+oCcIjiSVv/Tb4nyg+5nvkHOhsck8=
+X-Google-Smtp-Source: ABdhPJyAAEv+IaW3g9PGOJXFUwNWdyuIi16hioGbKZ45fZSFvFhUo2gxjgBReCrxWL8PXaXjbLJx7mZqXUN1TdnpMxE=
+X-Received: by 2002:a25:a109:: with SMTP id z9mr5325821ybh.279.1630074233917;
+ Fri, 27 Aug 2021 07:23:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210827013415.24027-1-digetx@gmail.com> <20210827013415.24027-5-digetx@gmail.com>
-In-Reply-To: <20210827013415.24027-5-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 27 Aug 2021 16:23:36 +0200
-Message-ID: <CAPDyKFqYWxY9znP1BEzogu0k7J1KRMXoSkUOeN4xHRq=gCHvTw@mail.gmail.com>
-Subject: Re: [PATCH v9 4/8] PM: domains: Add get_performance_state() callback
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
+References: <20210826015847.7416-1-lizhijian@cn.fujitsu.com> <20210826015847.7416-4-lizhijian@cn.fujitsu.com>
+In-Reply-To: <20210826015847.7416-4-lizhijian@cn.fujitsu.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Fri, 27 Aug 2021 16:23:43 +0200
+X-Gmail-Original-Message-ID: <CAHmME9qh81gzTTSzVDCxkc2MuLw-PDs7TfnO0=k1smXmK-1Zfg@mail.gmail.com>
+Message-ID: <CAHmME9qh81gzTTSzVDCxkc2MuLw-PDs7TfnO0=k1smXmK-1Zfg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] selftests/wireguard: Rename DEBUG_PI_LIST to DEBUG_PLIST
+To:     lizhijian@cn.fujitsu.com
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        Philip Li <philip.li@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        WireGuard mailing list <wireguard@lists.zx2c4.com>,
+        Netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Aug 2021 at 03:37, Dmitry Osipenko <digetx@gmail.com> wrote:
+Hi,
+
+On Thu, Aug 26, 2021 at 3:54 AM Li Zhijian <lizhijian@cn.fujitsu.com> wrote:
 >
-> Add get_performance_state() callback that retrieves and initializes
-> performance state of a device attached to a power domain. This removes
-> inconsistency of the performance state with hardware state.
+> DEBUG_PI_LIST was renamed to DEBUG_PLIST since 8e18faeac3 ("lib/plist: rename DEBUG_PI_LIST to DEBUG_PLIST")
 
-Can you please try to elaborate a bit more on the use case. Users need
-to know when it makes sense to implement the callback - and so far we
-tend to document this through detailed commit messages.
+Thanks for the patch. I've queued this up in my wireguard-linux.git
+tree for some rounds of CI, and I'll send it back out in the next
+series I send to netdev.
 
-Moreover, please state that implementing the callback is optional.
-
->
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/base/power/domain.c | 32 +++++++++++++++++++++++++++++---
->  include/linux/pm_domain.h   |  2 ++
->  2 files changed, 31 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index 3a13a942d012..8b828dcdf7f8 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -2700,15 +2700,41 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->                 goto err;
->         } else if (pstate > 0) {
->                 ret = dev_pm_genpd_set_performance_state(dev, pstate);
-> -               if (ret)
-> +               if (ret) {
-> +                       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
-> +                               pd->name, ret);
-
-Moving the dev_err() here, leads to that we won't print an error if
-of_get_required_opp_performance_state() fails, a few lines above, is
-that intentional?
-
->                         goto err;
-> +               }
->                 dev_gpd_data(dev)->default_pstate = pstate;
->         }
-> +
-> +       if (pd->get_performance_state && !dev_gpd_data(dev)->default_pstate) {
-> +               bool dev_suspended = false;
-> +
-> +               ret = pd->get_performance_state(pd, base_dev, &dev_suspended);
-> +               if (ret < 0) {
-> +                       dev_err(dev, "failed to get performance state for power-domain %s: %d\n",
-> +                               pd->name, ret);
-> +                       goto err;
-> +               }
-> +
-> +               pstate = ret;
-> +
-> +               if (dev_suspended) {
-
-The dev_suspended thing looks weird.
-
-Perhaps it was needed before dev_pm_genpd_set_performance_state()
-didn't check pm_runtime_disabled()?
-
-> +                       dev_gpd_data(dev)->rpm_pstate = pstate;
-> +               } else if (pstate > 0) {
-> +                       ret = dev_pm_genpd_set_performance_state(dev, pstate);
-> +                       if (ret) {
-> +                               dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
-> +                                       pd->name, ret);
-> +                               goto err;
-> +                       }
-> +               }
-> +       }
-
-Overall, what we seem to be doing here, is to retrieve a value for an
-initial/default performance state for a device and then we want to set
-it to make sure the vote becomes aggregated and finally set for the
-genpd.
-
-With your suggested change, there are now two ways to get the
-initial/default state. One is through the existing
-of_get_required_opp_performance_state() and the other is by using a
-new genpd callback.
-
-That said, perhaps we would get a bit cleaner code by moving the "get
-initial/default performance state" thingy, into a separate function
-and then call it from here. If this function returns a valid
-performance state, then we should continue to set the state, by
-calling dev_pm_genpd_set_performance_state() and update
-dev_gpd_data(dev)->default_pstate accordingly.
-
-Would that work, do you think?
-
-> +
->         return 1;
->
->  err:
-> -       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
-> -               pd->name, ret);
->         genpd_remove_device(pd, dev);
->         return ret;
->  }
-> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-> index 67017c9390c8..4f78b31791ae 100644
-> --- a/include/linux/pm_domain.h
-> +++ b/include/linux/pm_domain.h
-> @@ -133,6 +133,8 @@ struct generic_pm_domain {
->                                                  struct dev_pm_opp *opp);
->         int (*set_performance_state)(struct generic_pm_domain *genpd,
->                                      unsigned int state);
-> +       int (*get_performance_state)(struct generic_pm_domain *genpd,
-> +                                    struct device *dev, bool *dev_suspended);
-
-Comparing the ->set_performance_state() callback, which sets a
-performance state for the PM domain (genpd) - this new callback is
-about retrieving the *initial/default* performance state for a
-*device* that gets attached to a genpd.
-
-That said, may I suggest renaming the callback to
-"dev_get_performance_state", or something along those lines.
-
->         struct gpd_dev_ops dev_ops;
->         s64 max_off_time_ns;    /* Maximum allowed "suspended" time. */
->         ktime_t next_wakeup;    /* Maintained by the domain governor */
-> --
-> 2.32.0
->
-
-Kind regards
-Uffe
+Regards,
+Jason
