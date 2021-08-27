@@ -2,38 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B5D3F99EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F4C3F99D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245394AbhH0NXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245427AbhH0NXm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:23:42 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3623C0617AD
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:22:53 -0700 (PDT)
+        id S245354AbhH0NXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:23:22 -0400
+Received: from ozlabs.org ([203.11.71.1]:46927 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245403AbhH0NWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 09:22:53 -0400
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gx0ky5K7Sz9tk1;
-        Fri, 27 Aug 2021 23:22:50 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gx0k33Dwyz9sWq;
+        Fri, 27 Aug 2021 23:22:03 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     "Chen, Rong A" <rong.a.chen@intel.com>,
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
         Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-In-Reply-To: <20210815222334.9575-1-rdunlap@infradead.org>
-References: <20210815222334.9575-1-rdunlap@infradead.org>
-Subject: Re: [PATCH] powerpc/head_check: use stdout for error messages
-Message-Id: <163007013465.52768.731707221270776567.b4-ty@ellerman.id.au>
-Date:   Fri, 27 Aug 2021 23:15:34 +1000
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <c04cce578b97a76a9e69a096698b1d89f721768a.1629276437.git.christophe.leroy@csgroup.eu>
+References: <c04cce578b97a76a9e69a096698b1d89f721768a.1629276437.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/32: Remove unneccessary calculations in load_up_{fpu/altivec}
+Message-Id: <163007013987.52768.9451271906730834709.b4-ty@ellerman.id.au>
+Date:   Fri, 27 Aug 2021 23:15:39 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,11 +35,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Aug 2021 15:23:34 -0700, Randy Dunlap wrote:
-> Prefer stderr instead of stdout for error messages.
-> This is a good practice and can help CI error detecting and
-> reporting (0day in this case).
+On Wed, 18 Aug 2021 08:47:28 +0000 (UTC), Christophe Leroy wrote:
+> No need to re-read SPRN_THREAD, we can calculate thread address
+> from current (r2).
 > 
+> And remove a reload of value 1 into r4 as r4 is already 1.
 > 
 > 
 > 
@@ -53,7 +47,7 @@ On Sun, 15 Aug 2021 15:23:34 -0700, Randy Dunlap wrote:
 
 Applied to powerpc/next.
 
-[1/1] powerpc/head_check: use stdout for error messages
-      https://git.kernel.org/powerpc/c/47c258d71ebfc832a760a1dc6540cf3c33968023
+[1/1] powerpc/32: Remove unneccessary calculations in load_up_{fpu/altivec}
+      https://git.kernel.org/powerpc/c/51ed00e71f0130e0f3534b8e7d78facd16829426
 
 cheers
