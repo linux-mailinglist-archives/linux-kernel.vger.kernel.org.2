@@ -2,116 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BA13F9A8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00E33F9A92
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241260AbhH0OD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:03:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45146 "EHLO mail.kernel.org"
+        id S245225AbhH0OD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:03:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231675AbhH0OD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:03:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D25C760F25;
-        Fri, 27 Aug 2021 14:02:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630072959;
-        bh=9KVL338uZU2WstNlPctg6BYMhKgoDAyusOTsEn/ouuM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CASqYK4WvoeOw7f6syajt3xV0idVa1b4L0oQ4JtnOFWpZqjTSaZmZcx+zbzhe+qB9
-         ixjl3hCW1sWlfD6NbuUgZXHNiy6pnMM/SG//ANdPM1FAI+ij2zCUbsgoMcdhVqLGjL
-         k5BWgJNi7B988nnPscyVug5z4gppxLKvKNgA/PMtj8F+BWll7nu2WuILM6yTfHP9P0
-         H7ZO5kRrUvstQTPNbDlxFc7SYtUcGz6/YiiRGuPXrjotg//y94Bne/NtZ058zAhBna
-         xBOhU/xYrd5sGhFEG695Fez4ULsInXSzQejMBC/CQJwOWPQjQ8B3HvCqZm2cv7Dplq
-         QBpUkFpsQ63ww==
-Date:   Fri, 27 Aug 2021 07:02:38 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     zhaoxiao <zhaoxiao@uniontech.com>
-Cc:     davem@davemloft.net, mcoquelin.stm32@gmail.com,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] stmmac: dwmac-loongson: change the pr_info() to
- dev_err() in loongson_dwmac_probe()
-Message-ID: <20210827070238.7586fb11@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210827085550.13519-1-zhaoxiao@uniontech.com>
-References: <20210827085550.13519-1-zhaoxiao@uniontech.com>
+        id S244821AbhH0ODp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 10:03:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A91060F25;
+        Fri, 27 Aug 2021 14:02:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630072976;
+        bh=OyaTCDm5vZvhy4U/W+GLWVTstNRbyz9YgcJskrj8wkQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2TtPPCf+LNZnOsmLvAt9fUc5OzpV+f1ui/mrVuQC5Y7ImvGFnotOSUyq4gY/q8pre
+         GiBds2poXTHLvcaBEqnwYawae2sBQ7JnFOeI00lMERtULkhi7E5728cVkdRxH1yxEt
+         j2icDYo7tnhEa7qnCC+ZSLgzFmUwZdEFtT4D4JL8=
+Date:   Fri, 27 Aug 2021 16:02:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Subject: Re: [PATCH 18/20] kbuild: sh: remove unused install script
+Message-ID: <YSjwiQu1kz7CJCrq@kroah.com>
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+ <20210407053419.449796-19-gregkh@linuxfoundation.org>
+ <CAK7LNAQ07ycpjJQGwbtq1ii3k9rh2CZVN6MVxkfMb=+Vgs9zqw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQ07ycpjJQGwbtq1ii3k9rh2CZVN6MVxkfMb=+Vgs9zqw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Aug 2021 16:55:50 +0800 zhaoxiao wrote:
-> - Change the pr_info/dev_info to dev_err.
-> - Add the dev_err to improve readability.
+On Wed, Aug 25, 2021 at 12:22:03AM +0900, Masahiro Yamada wrote:
+> On Wed, Apr 7, 2021 at 2:35 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > The sh arch has a install.sh script, but no Makefile actually calls it.
+> > Remove it to keep anyone from accidentally calling it in the future.
+> >
+> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> > Cc: Rich Felker <dalias@libc.org>
+> > Cc: linux-sh@vger.kernel.org
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  arch/sh/boot/compressed/install.sh | 56 ------------------------------
+> >  1 file changed, 56 deletions(-)
+> >  delete mode 100644 arch/sh/boot/compressed/install.sh
+> >
+> > diff --git a/arch/sh/boot/compressed/install.sh b/arch/sh/boot/compressed/install.sh
+> > deleted file mode 100644
+> > index f9f41818b17e..000000000000
+> > --- a/arch/sh/boot/compressed/install.sh
+> > +++ /dev/null
+> > @@ -1,56 +0,0 @@
+> > -#!/bin/sh
+> > -#
+> > -# arch/sh/boot/install.sh
+> > -#
+> > -# This file is subject to the terms and conditions of the GNU General Public
+> > -# License.  See the file "COPYING" in the main directory of this archive
+> > -# for more details.
+> > -#
+> > -# Copyright (C) 1995 by Linus Torvalds
+> > -#
+> > -# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
+> > -# Adapted from code in arch/i386/boot/install.sh by Russell King
+> > -# Adapted from code in arch/arm/boot/install.sh by Stuart Menefy
+> > -#
+> > -# "make install" script for sh architecture
+> > -#
+> > -# Arguments:
+> > -#   $1 - kernel version
+> > -#   $2 - kernel image file
+> > -#   $3 - kernel map file
+> > -#   $4 - default install path (blank if root directory)
+> > -#
+> > -
+> > -# User may have a custom install script
+> > -
+> > -if [ -x /sbin/${INSTALLKERNEL} ]; then
+> > -  exec /sbin/${INSTALLKERNEL} "$@"
+> > -fi
+> > -
+> > -if [ "$2" = "zImage" ]; then
+> > -# Compressed install
+> > -  echo "Installing compressed kernel"
+> > -  if [ -f $4/vmlinuz-$1 ]; then
+> > -    mv $4/vmlinuz-$1 $4/vmlinuz.old
+> > -  fi
+> > -
+> > -  if [ -f $4/System.map-$1 ]; then
+> > -    mv $4/System.map-$1 $4/System.old
+> > -  fi
+> > -
+> > -  cat $2 > $4/vmlinuz-$1
+> > -  cp $3 $4/System.map-$1
+> > -else
+> > -# Normal install
+> > -  echo "Installing normal kernel"
+> > -  if [ -f $4/vmlinux-$1 ]; then
+> > -    mv $4/vmlinux-$1 $4/vmlinux.old
+> > -  fi
+> > -
+> > -  if [ -f $4/System.map ]; then
+> > -    mv $4/System.map $4/System.old
+> > -  fi
+> > -
+> > -  cat $2 > $4/vmlinux-$1
+> > -  cp $3 $4/System.map
+> > -fi
+> > --
+> > 2.31.1
+> >
 > 
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
-> ---
->  .../net/ethernet/stmicro/stmmac/dwmac-loongson.c  | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-> index 4c9a37dd0d3f..495c94e7929f 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-> @@ -54,20 +54,21 @@ static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id
->  	bool mdio = false;
->  
->  	np = dev_of_node(&pdev->dev);
-> -
->  	if (!np) {
-> -		pr_info("dwmac_loongson_pci: No OF node\n");
-> +		dev_err(&pdev->dev, "dwmac_loongson_pci: No OF node\n");
->  		return -ENODEV;
->  	}
->  
->  	if (!of_device_is_compatible(np, "loongson, pci-gmac")) {
-> -		pr_info("dwmac_loongson_pci: Incompatible OF node\n");
-> +		dev_err(&pdev->dev, "dwmac_loongson_pci: Incompatible OF node\n");
->  		return -ENODEV;
->  	}
->  
->  	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
-> -	if (!plat)
-> +	if (!plat) {
-> +		dev_err(&pdev->dev, "memory allocation failed\n");
+> This one is applicable independently.
+> 
+> Applied to linux-kbuild. Thanks.
 
-Please don't add error messages after allocation failures. OOM will
-produce a lot of kernel messages and a stack trace already.
+Hey, nice, thanks!
 
->  		return -ENOMEM;
-> +	}
->  
->  	if (plat->mdio_node) {
->  		dev_err(&pdev->dev, "Found MDIO subnode\n");
-> @@ -109,8 +110,10 @@ static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id
->  		plat->bus_id = pci_dev_id(pdev);
->  
->  	phy_mode = device_get_phy_mode(&pdev->dev);
-> -	if (phy_mode < 0)
-> +	if (phy_mode < 0) {
->  		dev_err(&pdev->dev, "phy_mode not found\n");
-> +		return phy_mode;
+I'll work on the rest of the patches in this series after the next merge
+window is over...
 
-You're adding a return here, it should be a separate patch with its own
-justification.
-
-> +	}
->  
->  	plat->phy_interface = phy_mode;
->  	plat->interface = PHY_INTERFACE_MODE_GMII;
-> @@ -130,7 +133,7 @@ static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id
->  
->  	res.wol_irq = of_irq_get_byname(np, "eth_wake_irq");
->  	if (res.wol_irq < 0) {
-> -		dev_info(&pdev->dev, "IRQ eth_wake_irq not found, using macirq\n");
-> +		dev_err(&pdev->dev, "IRQ eth_wake_irq not found, using macirq\n");
-
-Why upgrade to an error, isn't wol_irq optional?
-
->  		res.wol_irq = res.irq;
->  	}
->  
-
+greg k-h
