@@ -2,153 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31613F951B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB5A3F952D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244465AbhH0HaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 03:30:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43978 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244426AbhH0H3w (ORCPT
+        id S244395AbhH0HfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 03:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231345AbhH0HfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 03:29:52 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 14EC6222EE;
-        Fri, 27 Aug 2021 07:29:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630049340; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=d3NbyDPPFSBrjV+S1BKlkMfLhsDNl8MMVaC+wVMU/B8=;
-        b=bDezurcq3+3gYRybXfuSvp3XCW0BZcbsgHWqFXiPxJy6WIBivN9Nn5BfT0jCGUp3Mqlg89
-        kKfa1EAbPhrax+t/kpkumpu2AhnsIpcEAVCx2jR5Tgi0fsoykNO0eb64gmiu7UTnddIVjg
-        kDvWB3Gy8uJ7d4RGjvkkgr79JpjYFnQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630049340;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=d3NbyDPPFSBrjV+S1BKlkMfLhsDNl8MMVaC+wVMU/B8=;
-        b=/g3qxJ7SX6+tVlwGYYVzzsA+2mw5fhrd+r+RrfaSzUz8Sye7Ff/5Uvq4LvxXlQygX7o7Ir
-        W1LIiSNmU8QjN+Dw==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        by relay2.suse.de (Postfix) with ESMTP id E06D7A3B92;
-        Fri, 27 Aug 2021 07:28:59 +0000 (UTC)
-From:   Michal Suchanek <msuchanek@suse.de>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Patrick McCarty <patrick.mccarty@intel.com>,
-        Michal Suchanek <msuchanek@suse.de>
-Subject: [PATCH] libbpf: Fix build with latest gcc/binutils with LTO
-Date:   Fri, 27 Aug 2021 09:28:55 +0200
-Message-Id: <20210827072855.3664-1-msuchanek@suse.de>
-X-Mailer: git-send-email 2.31.1
+        Fri, 27 Aug 2021 03:35:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8042DC061757;
+        Fri, 27 Aug 2021 00:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pX/U+rVEPbfrs2KxIK3fTT5zek69Vi8l41Blp4tBLok=; b=Yc/w61MYBYU/2XovOdaG/1LI+3
+        ofvXZY72T/bqQpEDQIopTT41ymuCj9LCYB3YpGsaZsw8I7lr88Q2nTCRx2MpWUAJi2+3qnashJI4R
+        pq0hm4wrqjtQzjgnu14Y0Hv71MTmXVlwUtR00yaCrR+u7hNfiDC4NQgkVvvO74M9TS46PVdKtznHr
+        cI35oR72a6g4a2mZG68PMOuldBKtE8eyE5BYPjhe0gvPrNhQPT9HfquqIFtVn1+9kmnU1uaROxDf6
+        T9v8X9G4zCE0HsYiDhrr3Coe9vaArCNE5m8ZWnIbYQ2Ri33yjkJEKLCpR695YXtWTkmMXBqMBOcvc
+        uj1qfSCA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJWJz-00EFo3-0q; Fri, 27 Aug 2021 07:30:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0C6F23005AD;
+        Fri, 27 Aug 2021 09:30:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E07822C6670E9; Fri, 27 Aug 2021 09:30:36 +0200 (CEST)
+Date:   Fri, 27 Aug 2021 09:30:36 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH 07/15] KVM: Use dedicated flag to track if KVM is
+ handling an NMI from guest
+Message-ID: <YSiUnDbi/aZ3nunT@hirez.programming.kicks-ass.net>
+References: <20210827005718.585190-1-seanjc@google.com>
+ <20210827005718.585190-8-seanjc@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827005718.585190-8-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrick McCarty <patrick.mccarty@intel.com>
+On Thu, Aug 26, 2021 at 05:57:10PM -0700, Sean Christopherson wrote:
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 5cedc0e8a5d5..4c5ba4128b38 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -395,9 +395,10 @@ static inline void kvm_unregister_perf_callbacks(void)
+>  
+>  DECLARE_PER_CPU(struct kvm_vcpu *, current_vcpu);
+>  
+> -static inline void kvm_before_interrupt(struct kvm_vcpu *vcpu)
+> +static inline void kvm_before_interrupt(struct kvm_vcpu *vcpu, bool is_nmi)
+>  {
+>  	__this_cpu_write(current_vcpu, vcpu);
+> +	WRITE_ONCE(vcpu->arch.handling_nmi_from_guest, is_nmi);
+>  
+>  	kvm_register_perf_callbacks();
+>  }
+> @@ -406,6 +407,7 @@ static inline void kvm_after_interrupt(struct kvm_vcpu *vcpu)
+>  {
+>  	kvm_unregister_perf_callbacks();
+>  
+> +	WRITE_ONCE(vcpu->arch.handling_nmi_from_guest, false);
+>  	__this_cpu_write(current_vcpu, NULL);
+>  }
 
-After updating to binutils 2.35, the build began to fail with an
-assembler error. A bug was opened on the Red Hat Bugzilla a few days
-later for the same issue.
-
-Work around the problem by using the new `symver` attribute (introduced
-in GCC 10) as needed, instead of the `COMPAT_VERSION` and
-`DEFAULT_VERSION` macros, which expand to assembler directives.
-
-Fixes: https://github.com/libbpf/libbpf/issues/338
-Fixes: https://bugzilla.redhat.com/show_bug.cgi?id=1863059
-Fixes: https://bugzilla.opensuse.org/show_bug.cgi?id=1188749
-Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
-Make the change conditional on GCC version
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
----
- tools/lib/bpf/libbpf_internal.h | 23 +++++++++++++++++------
- tools/lib/bpf/xsk.c             |  4 ++--
- 2 files changed, 19 insertions(+), 8 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 016ca7cb4f8a..af0f3fb102c0 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -86,20 +86,31 @@
- 	(offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
- #endif
- 
-+#ifdef __GNUC__
-+# if __GNUC__ >= 10
-+#  define DEFAULT_VERSION(internal_name, api_name, version) \
-+__attribute__((__symver__(#api_name "@@" #version)))
-+#  define COMPAT_VERSION(internal_name, api_name, version) \
-+__attribute__((__symver__(#api_name "@" #version)))
-+# endif
-+#endif
-+
-+#if !defined(COMPAT_VERSION) || !defined(DEFAULT_VERSION)
- /* Symbol versioning is different between static and shared library.
-  * Properly versioned symbols are needed for shared library, but
-  * only the symbol of the new version is needed for static library.
-  */
--#ifdef SHARED
--# define COMPAT_VERSION(internal_name, api_name, version) \
-+# ifdef SHARED
-+#  define COMPAT_VERSION(internal_name, api_name, version) \
- 	asm(".symver " #internal_name "," #api_name "@" #version);
--# define DEFAULT_VERSION(internal_name, api_name, version) \
-+#  define DEFAULT_VERSION(internal_name, api_name, version) \
- 	asm(".symver " #internal_name "," #api_name "@@" #version);
--#else
--# define COMPAT_VERSION(internal_name, api_name, version)
--# define DEFAULT_VERSION(internal_name, api_name, version) \
-+# else
-+#  define COMPAT_VERSION(internal_name, api_name, version)
-+#  define DEFAULT_VERSION(internal_name, api_name, version) \
- 	extern typeof(internal_name) api_name \
- 	__attribute__((alias(#internal_name)));
-+# endif
- #endif
- 
- extern void libbpf_print(enum libbpf_print_level level,
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index e9b619aa0cdf..a2111696ba91 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -281,6 +281,7 @@ static int xsk_create_umem_rings(struct xsk_umem *umem, int fd,
- 	return err;
- }
- 
-+DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
- int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
- 			    __u64 size, struct xsk_ring_prod *fill,
- 			    struct xsk_ring_cons *comp,
-@@ -345,6 +346,7 @@ struct xsk_umem_config_v1 {
- 	__u32 frame_headroom;
- };
- 
-+COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
- int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
- 			    __u64 size, struct xsk_ring_prod *fill,
- 			    struct xsk_ring_cons *comp,
-@@ -358,8 +360,6 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
- 	return xsk_umem__create_v0_0_4(umem_ptr, umem_area, size, fill, comp,
- 					&config);
- }
--COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
--DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
- 
- static enum xsk_prog get_xsk_prog(void)
- {
--- 
-2.31.1
-
+Does this rely on kvm_{,un}register_perf_callback() being a function
+call and thus implying a sequence point to order the stores? 
