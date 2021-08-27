@@ -2,144 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3C33F9517
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31613F951B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244438AbhH0H3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 03:29:34 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55386 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231345AbhH0H3S (ORCPT
+        id S244465AbhH0HaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 03:30:14 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43978 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244426AbhH0H3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 03:29:18 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17R78fl8161870;
-        Fri, 27 Aug 2021 03:28:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=hPt+3KiUZFcZAM29v8jxkS1WokIMp9d97TNoTAP9JGU=;
- b=I0+zdla5w6LjFp/LwJlpQlCKKst2YS13FgblV0Ryf2LMcNZX9tA4yTbs9bEyyj6UJxk5
- 8a8lmMNX0ya1amq1N2rkTFJEAOs3o19I9haeq69uydWxVTHtUluNcdlRfJwVZGFkPGs4
- 2kx/Ipy24AiAwXrQD6B94C1QZXlzuWPJq8Zkpcr60iT4nBbeHy36Aj5jvfGG3VEIYti8
- azgaj+vHhCeYgqqbYFfXfPLMVoguVJvseJt4LkX9MEa+Vp/6FPw23J2XVuQn+LChL+2I
- uUfR1QFN3ceZWK8S6wR1JiNg76j6jGICwSyB+90GR4P15a60ZB9q8ZuqHym0YXCbl74w EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3apt5w240g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 03:28:17 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17R78oeA162582;
-        Fri, 27 Aug 2021 03:28:17 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3apt5w2403-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 03:28:17 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17R7R2Hr002802;
-        Fri, 27 Aug 2021 07:28:16 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04wdc.us.ibm.com with ESMTP id 3ajs4fc4pf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 07:28:16 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17R7SFSM47186410
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 07:28:15 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F62C78067;
-        Fri, 27 Aug 2021 07:28:15 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 79CDE78064;
-        Fri, 27 Aug 2021 07:28:11 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.43.73.252])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 27 Aug 2021 07:28:11 +0000 (GMT)
-Subject: Re: [PATCH v2] perf bpf: Fix memory leaks relating to BTF.
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com
-References: <20210826184833.408563-1-irogers@google.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <767e90d9-fb3e-93e2-ac67-940ab7e9ae28@linux.ibm.com>
-Date:   Fri, 27 Aug 2021 12:58:09 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 27 Aug 2021 03:29:52 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 14EC6222EE;
+        Fri, 27 Aug 2021 07:29:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630049340; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=d3NbyDPPFSBrjV+S1BKlkMfLhsDNl8MMVaC+wVMU/B8=;
+        b=bDezurcq3+3gYRybXfuSvp3XCW0BZcbsgHWqFXiPxJy6WIBivN9Nn5BfT0jCGUp3Mqlg89
+        kKfa1EAbPhrax+t/kpkumpu2AhnsIpcEAVCx2jR5Tgi0fsoykNO0eb64gmiu7UTnddIVjg
+        kDvWB3Gy8uJ7d4RGjvkkgr79JpjYFnQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630049340;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=d3NbyDPPFSBrjV+S1BKlkMfLhsDNl8MMVaC+wVMU/B8=;
+        b=/g3qxJ7SX6+tVlwGYYVzzsA+2mw5fhrd+r+RrfaSzUz8Sye7Ff/5Uvq4LvxXlQygX7o7Ir
+        W1LIiSNmU8QjN+Dw==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        by relay2.suse.de (Postfix) with ESMTP id E06D7A3B92;
+        Fri, 27 Aug 2021 07:28:59 +0000 (UTC)
+From:   Michal Suchanek <msuchanek@suse.de>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Patrick McCarty <patrick.mccarty@intel.com>,
+        Michal Suchanek <msuchanek@suse.de>
+Subject: [PATCH] libbpf: Fix build with latest gcc/binutils with LTO
+Date:   Fri, 27 Aug 2021 09:28:55 +0200
+Message-Id: <20210827072855.3664-1-msuchanek@suse.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210826184833.408563-1-irogers@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 3kGFbuH_7pRe_HUCTFoSilfEqg6ruN7g
-X-Proofpoint-GUID: 1PMCwQO-iej1Jqb8ll3L7n4FLnQdrmjh
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_02:2021-08-26,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 phishscore=0 impostorscore=0 bulkscore=0 suspectscore=0
- mlxscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108270046
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch looks good me.
+From: Patrick McCarty <patrick.mccarty@intel.com>
 
-Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
+After updating to binutils 2.35, the build began to fail with an
+assembler error. A bug was opened on the Red Hat Bugzilla a few days
+later for the same issue.
 
-Thanks,
-Kajol Jain
+Work around the problem by using the new `symver` attribute (introduced
+in GCC 10) as needed, instead of the `COMPAT_VERSION` and
+`DEFAULT_VERSION` macros, which expand to assembler directives.
 
-On 8/27/21 12:18 AM, Ian Rogers wrote:
-> BTF needs to be freed with btf__free.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/annotate.c  | 2 +-
->  tools/perf/util/bpf-event.c | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> index d43f6b5e5169..0bae061b2d6d 100644
-> --- a/tools/perf/util/annotate.c
-> +++ b/tools/perf/util/annotate.c
-> @@ -1833,7 +1833,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
->  	ret = 0;
->  out:
->  	free(prog_linfo);
-> -	free(btf);
-> +	btf__free(btf);
->  	fclose(s);
->  	bfd_close(bfdf);
->  	return ret;
-> diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-> index cdecda1ddd36..17a9844e4fbf 100644
-> --- a/tools/perf/util/bpf-event.c
-> +++ b/tools/perf/util/bpf-event.c
-> @@ -296,7 +296,7 @@ static int perf_event__synthesize_one_bpf_prog(struct perf_session *session,
->  
->  out:
->  	free(info_linear);
-> -	free(btf);
-> +	btf__free(btf);
->  	return err ? -1 : 0;
->  }
->  
-> @@ -486,7 +486,7 @@ static void perf_env__add_bpf_info(struct perf_env *env, u32 id)
->  	perf_env__fetch_btf(env, btf_id, btf);
->  
->  out:
-> -	free(btf);
-> +	btf__free(btf);
->  	close(fd);
->  }
->  
-> 
+Fixes: https://github.com/libbpf/libbpf/issues/338
+Fixes: https://bugzilla.redhat.com/show_bug.cgi?id=1863059
+Fixes: https://bugzilla.opensuse.org/show_bug.cgi?id=1188749
+Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
+Make the change conditional on GCC version
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+---
+ tools/lib/bpf/libbpf_internal.h | 23 +++++++++++++++++------
+ tools/lib/bpf/xsk.c             |  4 ++--
+ 2 files changed, 19 insertions(+), 8 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index 016ca7cb4f8a..af0f3fb102c0 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -86,20 +86,31 @@
+ 	(offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
+ #endif
+ 
++#ifdef __GNUC__
++# if __GNUC__ >= 10
++#  define DEFAULT_VERSION(internal_name, api_name, version) \
++__attribute__((__symver__(#api_name "@@" #version)))
++#  define COMPAT_VERSION(internal_name, api_name, version) \
++__attribute__((__symver__(#api_name "@" #version)))
++# endif
++#endif
++
++#if !defined(COMPAT_VERSION) || !defined(DEFAULT_VERSION)
+ /* Symbol versioning is different between static and shared library.
+  * Properly versioned symbols are needed for shared library, but
+  * only the symbol of the new version is needed for static library.
+  */
+-#ifdef SHARED
+-# define COMPAT_VERSION(internal_name, api_name, version) \
++# ifdef SHARED
++#  define COMPAT_VERSION(internal_name, api_name, version) \
+ 	asm(".symver " #internal_name "," #api_name "@" #version);
+-# define DEFAULT_VERSION(internal_name, api_name, version) \
++#  define DEFAULT_VERSION(internal_name, api_name, version) \
+ 	asm(".symver " #internal_name "," #api_name "@@" #version);
+-#else
+-# define COMPAT_VERSION(internal_name, api_name, version)
+-# define DEFAULT_VERSION(internal_name, api_name, version) \
++# else
++#  define COMPAT_VERSION(internal_name, api_name, version)
++#  define DEFAULT_VERSION(internal_name, api_name, version) \
+ 	extern typeof(internal_name) api_name \
+ 	__attribute__((alias(#internal_name)));
++# endif
+ #endif
+ 
+ extern void libbpf_print(enum libbpf_print_level level,
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index e9b619aa0cdf..a2111696ba91 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -281,6 +281,7 @@ static int xsk_create_umem_rings(struct xsk_umem *umem, int fd,
+ 	return err;
+ }
+ 
++DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
+ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+ 			    __u64 size, struct xsk_ring_prod *fill,
+ 			    struct xsk_ring_cons *comp,
+@@ -345,6 +346,7 @@ struct xsk_umem_config_v1 {
+ 	__u32 frame_headroom;
+ };
+ 
++COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
+ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
+ 			    __u64 size, struct xsk_ring_prod *fill,
+ 			    struct xsk_ring_cons *comp,
+@@ -358,8 +360,6 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
+ 	return xsk_umem__create_v0_0_4(umem_ptr, umem_area, size, fill, comp,
+ 					&config);
+ }
+-COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
+-DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
+ 
+ static enum xsk_prog get_xsk_prog(void)
+ {
+-- 
+2.31.1
+
