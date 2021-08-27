@@ -2,202 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7393F945A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 08:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630053F945D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 08:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244321AbhH0GYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 02:24:10 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41296
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229611AbhH0GYI (ORCPT
+        id S244337AbhH0GY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 02:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244331AbhH0GYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 02:24:08 -0400
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 96B1F40793
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:23:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630045399;
-        bh=ohSVakcde5SU9A5Azhvp1T8TDHvhvAjJTMuWk8UJlQA=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=kjcS/05w3jqjmeCMVj/qv5Cv29NjGhhwEYQ0knwiu/Q5HR2w/jHJUEeOzFLL+2nTm
-         WsKcRLdqbWhEF/l3Q/qQEohkqxdQfDnb/zZN0Kh/u00x4NfTAbuFPv61vZA1ZLGbdW
-         izlUfuL6xJPKaVWVN+QHdmFriPINKYJuuMcYITpHzszLJ/qNMmPSC2J4Tjsyg62uiZ
-         Ga/EViqMMC/Vpcci/eyHOxaQSV/czxuEJ65yOr7MzbeE5UgNP62z1jxSVRXf9yjN7B
-         kKjzkjgS+F+3vks/SFbERVgui2NyDJ0TiRYUY6hxDdNBBUSOtXu92km7q+myPviljv
-         cdSB9x+3Ps8Tw==
-Received: by mail-ej1-f71.google.com with SMTP id yz13-20020a170906dc4d00b005c61ad936f0so2209099ejb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 23:23:19 -0700 (PDT)
+        Fri, 27 Aug 2021 02:24:14 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAD0C0613D9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 23:23:25 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id g13so12122411lfj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 23:23:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rpedwb5yaPZmRQ7TUMaWIQcNQoBLY0k4x2IcEMbGMoc=;
+        b=g91pVJkUFlpUnXEtC/VPwHZLsELfWsBERNq168TcegldJ6g1/xcj9vWLRFbAVgTR71
+         8VYl6Sa2flrqyrnxSxH/UW6LxsofP/m+dvphUoGcyiJ8rGMRPhm1gGbHemr68MCj5Ixq
+         M5nIPFeL/e45tVFYvbvKyP2qBxFygkf7DXqCd0y0kNWubxMNbe3Q2RJF813quihB/vRn
+         fJz87KPuuma68ILIz/DY+RXPp7+DylbKjmFq8lXY2zytNqYnxHDjnldxoP/BRJjI7yRs
+         MLHXnD23EzZ+qpb2UC7hTTiaN8DpZOtCTilJvpxIBpdFpyg3O9LGjL+fVxldYLwVE2d+
+         Rtug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ohSVakcde5SU9A5Azhvp1T8TDHvhvAjJTMuWk8UJlQA=;
-        b=DIfrrPVpi4GyZubR7lCk7VTSpYt1cTF/kBwXtP7PBD7UZ2qrCkzL6QNQmbLXFJ9z3v
-         Nu+bvShUoTkRKGPrnHxb13z3HWGhc0uoG7anBoqtJfoILJm+RqmYhij0rn3ikntgCd7n
-         icac74eE2gxn8iWVktCrT3z1XwEwDhzY/uNf+ps5r4SAyfaT95aImymzxLQYLz8TLuhC
-         q5wNrLHTvZ5ow3z4DeYTmpxAON8UpAZTbyeWDA0DzrpTTKTpGo3fOFoKn6NksWYD8ejJ
-         CJXDFi34IieQRniibf/1cmN9W5qkoouxa5PvIWvsM3yVfARk3Ijganox5nnT3GZNpzfq
-         p0NA==
-X-Gm-Message-State: AOAM531EpIQQWT/mBITjZCYc1bFiyymML0H6K2ckrGLxk5sjh5V/5flU
-        18KScSqLLfUArbpi3KFCCeOw5Fp20cQD4jZsb8J5bX6JpqKUsoIHQLVBYEcKKDR2osR0VcbfSFz
-        4/6Ze2/OhsUQpMgRsD7tjzHVPkEC86057LjWhTcrYNDG1OMsjbs2m+evzTA==
-X-Received: by 2002:a17:907:2d8b:: with SMTP id gt11mr8486708ejc.432.1630045399170;
-        Thu, 26 Aug 2021 23:23:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPW07mr7W5GhSow8wp/eSxl6XrHTu2nLBhPVJIML5dI1P2dUXQb8SwvbkQfC3LuSgHoRa+f3dhNXTcnF2j5Eo=
-X-Received: by 2002:a17:907:2d8b:: with SMTP id gt11mr8486677ejc.432.1630045398810;
- Thu, 26 Aug 2021 23:23:18 -0700 (PDT)
+        bh=Rpedwb5yaPZmRQ7TUMaWIQcNQoBLY0k4x2IcEMbGMoc=;
+        b=sRHeKFF7DZ2yOafqrck2fIgSl4xiRa5jDIrxExpb2kInO0U5Fh2trlW7UiRi128GyL
+         TkuBSzb3h2Bw4SunoF+6ROvRFyA0HKFQ5Y3BYaIiLiIh1tDuiO171r6E7drXWLQb9U6m
+         6ol6hdSyB+7vjHOfoKATeus0Yyy5QDkNOOrF+lX/QvgjTj8natfxNYGJBNgBKh6kBTdc
+         DKiXE9MKJddv3oe9v7USV8H3jOm3GN1+IRkS2ud1uMcXaUZRp33PjahHgCLkCdILjc+n
+         +wlwJ8NyEMxc4CVr/UbklkDuzuTo3NknfuBZiS1YacP4MM7XRHSnphahVI8kDH9zrsRx
+         VkUg==
+X-Gm-Message-State: AOAM5311KxXB7PbNWxnCQouM+AUDV8CYcw2oGQNLEJbxBLtgdSQaHGcS
+        e1ViZ3slkdtuANA/SNH8QAVTF8bvpe8iSFmW/r5vUA==
+X-Google-Smtp-Source: ABdhPJwTvYKnJhrnKjTE/y6SJpS8GE8XhPgJ2W27p+unVTmLnnQUa8SmaQFQZruEseDfZUFlGFW2T9MK6LJULh6jLuw=
+X-Received: by 2002:a05:6512:3487:: with SMTP id v7mr5544143lfr.302.1630045404094;
+ Thu, 26 Aug 2021 23:23:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210819054542.608745-1-kai.heng.feng@canonical.com>
- <20210819054542.608745-4-kai.heng.feng@canonical.com> <084b8ea3-99d8-3393-4b74-0779c92fde64@gmail.com>
- <CAAd53p4CYOOXjyNdTnBtsQ+2MW-Jar8fgEfPFZHSPrJde=HqVA@mail.gmail.com> <d3e4ec0b-2681-1b3c-f0ca-828b24b253e7@gmail.com>
-In-Reply-To: <d3e4ec0b-2681-1b3c-f0ca-828b24b253e7@gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Fri, 27 Aug 2021 14:23:07 +0800
-Message-ID: <CAAd53p7JLemocM+rA-EyiuX=asYg5__J07+F9W7YZpUgWVMrPg@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 3/3] r8169: Enable ASPM for selected NICs
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     nic_swsd <nic_swsd@realtek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210826123032.1732926-1-jens.wiklander@linaro.org> <20210826123032.1732926-5-jens.wiklander@linaro.org>
+In-Reply-To: <20210826123032.1732926-5-jens.wiklander@linaro.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 27 Aug 2021 11:53:12 +0530
+Message-ID: <CAFA6WYM_zaVsWzP-sDuD6_xf3qgv-sQsbEAebZG6vtFrKfRpag@mail.gmail.com>
+Subject: Re: [PATCH v5 4/6] tee: add tee_dev_open_helper() primitive
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 5:56 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+On Thu, 26 Aug 2021 at 18:00, Jens Wiklander <jens.wiklander@linaro.org> wrote:
 >
-> On 19.08.2021 08:50, Kai-Heng Feng wrote:
-> > On Thu, Aug 19, 2021 at 2:08 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> >>
-> >> On 19.08.2021 07:45, Kai-Heng Feng wrote:
-> >>> The latest vendor driver enables ASPM for more recent r8168 NICs, so
-> >>> disable ASPM on older chips and enable ASPM for the rest.
-> >>>
-> >>> Rename aspm_manageable to pcie_aspm_manageable to indicate it's ASPM
-> >>> from PCIe, and use rtl_aspm_supported for Realtek NIC's internal ASPM
-> >>> function.
-> >>>
-> >>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> >>> ---
-> >>> v3:
-> >>>  - Use pcie_aspm_supported() to retrieve ASPM support status
-> >>>  - Use whitelist for r8169 internal ASPM status
-> >>>
-> >>> v2:
-> >>>  - No change
-> >>>
-> >>>  drivers/net/ethernet/realtek/r8169_main.c | 27 ++++++++++++++++-------
-> >>>  1 file changed, 19 insertions(+), 8 deletions(-)
-> >>>
-> >>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> >>> index 3359509c1c351..88e015d93e490 100644
-> >>> --- a/drivers/net/ethernet/realtek/r8169_main.c
-> >>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> >>> @@ -623,7 +623,8 @@ struct rtl8169_private {
-> >>>       } wk;
-> >>>
-> >>>       unsigned supports_gmii:1;
-> >>> -     unsigned aspm_manageable:1;
-> >>> +     unsigned pcie_aspm_manageable:1;
-> >>> +     unsigned rtl_aspm_supported:1;
-> >>>       unsigned rtl_aspm_enabled:1;
-> >>>       struct delayed_work aspm_toggle;
-> >>>       atomic_t aspm_packet_count;
-> >>> @@ -702,6 +703,20 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
-> >>>              tp->mac_version <= RTL_GIGA_MAC_VER_53;
-> >>>  }
-> >>>
-> >>> +static int rtl_supports_aspm(struct rtl8169_private *tp)
-> >>> +{
-> >>> +     switch (tp->mac_version) {
-> >>> +     case RTL_GIGA_MAC_VER_02 ... RTL_GIGA_MAC_VER_31:
-> >>> +     case RTL_GIGA_MAC_VER_37:
-> >>> +     case RTL_GIGA_MAC_VER_39:
-> >>> +     case RTL_GIGA_MAC_VER_43:
-> >>> +     case RTL_GIGA_MAC_VER_47:
-> >>> +             return 0;
-> >>> +     default:
-> >>> +             return 1;
-> >>> +     }
-> >>> +}
-> >>> +
-> >>>  static bool rtl_supports_eee(struct rtl8169_private *tp)
-> >>>  {
-> >>>       return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
-> >>> @@ -2669,7 +2684,7 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
-> >>>
-> >>>  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
-> >>>  {
-> >>> -     if (!tp->aspm_manageable && enable)
-> >>> +     if (!(tp->pcie_aspm_manageable && tp->rtl_aspm_supported) && enable)
-> >>>               return;
-> >>>
-> >>>       tp->rtl_aspm_enabled = enable;
-> >>> @@ -5319,12 +5334,8 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >>>       if (rc)
-> >>>               return rc;
-> >>>
-> >>> -     /* Disable ASPM completely as that cause random device stop working
-> >>> -      * problems as well as full system hangs for some PCIe devices users.
-> >>> -      */
-> >>> -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
-> >>> -                                       PCIE_LINK_STATE_L1);
-> >>> -     tp->aspm_manageable = !rc;
-> >>> +     tp->pcie_aspm_manageable = pcie_aspm_supported(pdev);
-> >>
-> >> That's not what I meant, and it's also not correct.
-> >
-> > In case I make another mistake in next series, let me ask it more clearly...
-> > What you meant was to check both link->aspm_enabled and link->aspm_support?
-> >
-> aspm_enabled can be changed by the user at any time.
+> Adds tee_dev_open_helper() and tee_dev_ctx_put() to make it easier to
+> create a driver internal struct tee_context without the usual
+> tee_device_get() on the struct tee_device as that adds a circular
+> reference counter dependency and would prevent the struct tee_device
+> from ever being released again.
 
-OK, will check that too.
+Can you elaborate regarding the circular dependency issue you are
+referring to? IIUC, lifespan for struct tee_device would look like
+below with normal teedev_open():
 
-> pci_disable_link_state() also considers whether BIOS forbids that OS
-> mess with ASPM. See aspm_disabled.
+optee_probe() {
+  ...
+  tee_device_alloc()            <- teedev->num_users = 1
+  tee_device_register()
+  optee_notif_init()               <- tee_device_get()
+  ...
+}
 
-I think aspm_disabled means leave BIOS ASPM setting intact?
-So If PCIe ASPM is already enabled, we should also enable Realtek
-specific bits to make ASPM really work.
+optee_remove() {
+  ...
+  optee_notif_uninit()           <- tee_device_put()
+  tee_device_unregister()    <- tee_device_put()
+  ...
+}
+
+-Sumit
 
 >
-> >>
-> >>> +     tp->rtl_aspm_supported = rtl_supports_aspm(tp);
-> >
-> > Is rtl_supports_aspm() what you expect for the whitelist?
-> > And what else am I missing?
-> >
-> I meant use rtl_supports_aspm() to check when ASPM is relevant at all,
-
-I think that means the relevant bits are link->aspm_capable and
-pcie_aspm_support_enabled().
-ASPM can be already enabled by BIOS with aspm_disabled set.
-
-Then check link->aspm_enabled in aspm_toggle() routine because it can
-be enabled at runtime.
-
-> and in addition use a blacklist for chip versions where ASPM is
-> completely unusable.
-
-Thanks for your suggestion and review.
-
-Kai-Heng
-
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> ---
+>  drivers/tee/tee_core.c  | 33 ++++++++++++++++++++++++---------
+>  include/linux/tee_drv.h | 27 +++++++++++++++++++++++++++
+>  2 files changed, 51 insertions(+), 9 deletions(-)
 >
-> > Kai-Heng
-> >
-> >>>
-> >>>       /* enable device (incl. PCI PM wakeup and hotplug setup) */
-> >>>       rc = pcim_enable_device(pdev);
-> >>>
-> >>
+> diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+> index 85102d12d716..3beb682684a8 100644
+> --- a/drivers/tee/tee_core.c
+> +++ b/drivers/tee/tee_core.c
+> @@ -43,14 +43,11 @@ static DEFINE_SPINLOCK(driver_lock);
+>  static struct class *tee_class;
+>  static dev_t tee_devt;
+>
+> -static struct tee_context *teedev_open(struct tee_device *teedev)
+> +struct tee_context *tee_dev_open_helper(struct tee_device *teedev)
+>  {
+>         int rc;
+>         struct tee_context *ctx;
+>
+> -       if (!tee_device_get(teedev))
+> -               return ERR_PTR(-EINVAL);
+> -
+>         ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+>         if (!ctx) {
+>                 rc = -ENOMEM;
+> @@ -66,10 +63,30 @@ static struct tee_context *teedev_open(struct tee_device *teedev)
+>         return ctx;
+>  err:
+>         kfree(ctx);
+> -       tee_device_put(teedev);
+>         return ERR_PTR(rc);
+>
+>  }
+> +EXPORT_SYMBOL_GPL(tee_dev_open_helper);
+> +
+> +void tee_dev_ctx_put(struct tee_context *ctx)
+> +{
+> +       teedev_ctx_put(ctx);
+> +}
+> +EXPORT_SYMBOL_GPL(tee_dev_ctx_put);
+> +
+> +static struct tee_context *teedev_open(struct tee_device *teedev)
+> +{
+> +       struct tee_context *ctx;
+> +
+> +       if (!tee_device_get(teedev))
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       ctx = tee_dev_open_helper(teedev);
+> +       if (IS_ERR(ctx))
+> +               tee_device_put(teedev);
+> +
+> +       return ctx;
+> +}
+>
+>  void teedev_ctx_get(struct tee_context *ctx)
+>  {
+> @@ -90,10 +107,8 @@ static void teedev_ctx_release(struct kref *ref)
+>
+>  void teedev_ctx_put(struct tee_context *ctx)
+>  {
+> -       if (ctx->releasing)
+> -               return;
+> -
+> -       kref_put(&ctx->refcount, teedev_ctx_release);
+> +       if (ctx && !ctx->releasing)
+> +               kref_put(&ctx->refcount, teedev_ctx_release);
+>  }
+>
+>  static void teedev_close_context(struct tee_context *ctx)
+> diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+> index 3ebfea0781f1..00a31ff03049 100644
+> --- a/include/linux/tee_drv.h
+> +++ b/include/linux/tee_drv.h
+> @@ -458,6 +458,33 @@ static inline int tee_shm_get_id(struct tee_shm *shm)
+>   */
+>  struct tee_shm *tee_shm_get_from_id(struct tee_context *ctx, int id);
+>
+> +/**
+> + * tee_dev_open_helper() - helper function to make a struct tee_context
+> + * @teedev:    Device to open
+> + *
+> + * Creates the struct tee_context without increasing the reference counter
+> + * on @teedev. This is needed for instance when a driver need an internal
+> + * struct tee_context to operate on. By skipping the reference counter
+> + * the circular dependency is broken.
+> + *
+> + * Note that this struct tee_context need special care when freeing in
+> + * order to avoid the normal put on the struct tee_device.
+> + * tee_dev_ctx_put() is the best choice for this.
+> + *
+> + * @returns a pointer 'struct tee_context' on success or an ERR_PTR on failure
+> + */
+> +struct tee_context *tee_dev_open_helper(struct tee_device *teedev);
+> +
+> +/**
+> + * tee_dev_ctx_put() - helper function to release a struct tee_context
+> + * @ctx:       The struct tee_context to release
+> + *
+> + * Note that this function doesn't do a tee_device_put() on the internal
+> + * struct tee_device so this function should normal only be used when
+> + * releasing a struct tee_context obtained with tee_dev_open_helper().
+> + */
+> +void tee_dev_ctx_put(struct tee_context *ctx);
+> +
+>  /**
+>   * tee_client_open_context() - Open a TEE context
+>   * @start:     if not NULL, continue search after this context
+> --
+> 2.31.1
 >
