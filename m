@@ -2,155 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E583F9A6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B9E3F9A72
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245286AbhH0Npi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:45:38 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:44762 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232312AbhH0Nph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:45:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=U4iw9bGfwsiLVriGmOSmQiVeY8AhY1Wlg6keAnSbylw=; b=2MIAxJFd2O7afg050RyBGVQMpJ
-        l8Jj/0grtM4Wjh7TBzLXmtNY1mAAoeqEMdyjyMzsvZI36V2+FCutEf9iO9TbObDSXzC/vUQKIHzDX
-        k0OKanA0JtQR+322DPhNY8A2HiHr8rd2lOyeeQyFJqEMRUzJ+BFFBpxlrSSpNoJmcOtA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mJc9q-0047E0-1o; Fri, 27 Aug 2021 15:44:34 +0200
-Date:   Fri, 27 Aug 2021 15:44:34 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <YSjsQmx8l4MXNvP+@lunn.ch>
-References: <20210826074526.825517-1-saravanak@google.com>
- <20210826074526.825517-2-saravanak@google.com>
- <YSeTdb6DbHbBYabN@lunn.ch>
- <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
- <YSf/Mps9E77/6kZX@lunn.ch>
- <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
- <YSg+dRPSX9/ph6tb@lunn.ch>
- <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
+        id S245209AbhH0NsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232417AbhH0NsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 09:48:12 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D39C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:47:24 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id a15so8559559iot.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y0kIZxdG2WP5UVtm2i0XaO2Bfut6JUxDjhvFbpFOnGo=;
+        b=JSu97EaVGMjtQz6hYY6AI5sMmCkndzrTwaujZd7EI+5ltUCYPaLKhEwB6jjgRrI3nk
+         WYGpWj6vaCJwjq22DPQhtUxZIPZsPb/0sKt2rkpMP3/BcGUclalMiFrrEngizO7bL/Y+
+         dPmWWvxlWCo1jjdczL8iZ2pkyJ+v4ADBp/DrG8KuCWcwPLqb26T0U4Izc7gTkOgEIX3R
+         uSPDzIfCjJYAu12vYp0qbjo+/6h83kwd+qh7JzWGUT3zaBIiA74oG496p6Fa6p6soDOh
+         s3/di0YPKPA1p9YUw62YWB3e2kxA9zyLOqgph3O5V4yn5cVibzkC2rjwOC5qOcG0R7ru
+         OM5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y0kIZxdG2WP5UVtm2i0XaO2Bfut6JUxDjhvFbpFOnGo=;
+        b=uXutVfHTdtQSXt7+EXdq2lWWLt+4ktxTUhBPoPmmvmg/tnb3SSpQs//yUXPWw82p7B
+         T6PiYgvU5Wn7CD6JyP4c5BQrVwBn115SI5DmQyeSpzOiahsYJKgpknO+N11XLpliI6Nc
+         10F6KDz5Tc4GHmpj/WIX3EHeS9dSCxrWn0XhdmJ8AV1O+ekrJmlgvqYv4bvG8YyuGYSe
+         WjmM+ceFTCGFY3JZqx4GBrBsGDlURYU23a4w8mQ461ul6/VHL6GZD1lR769Z9ftt1Upl
+         vE3KcsTAgf9RWHepUllwhZKPlLfXYm/507vS6gII3ex5eHGV+Jgp2Yytv4pU+jsporBU
+         Jptg==
+X-Gm-Message-State: AOAM5324M/7mCIjQvwh9OufVLJOscp+vAsZzFtwYOP2rmrv/wn0VgWq6
+        Oq34MJzCA7sIvF5+QXlEr3CkaTu1BFzl0MGCG94ybA==
+X-Google-Smtp-Source: ABdhPJwoMBLlwC9Y3OiKT1MJ/TLJ1htrXZ0Gsq6A+zo5pCGOJKT4X2C+tgqr5zx1l20TXTxPTu1Rb6sQWSkFhJaNluY=
+X-Received: by 2002:a5d:8acf:: with SMTP id e15mr7489552iot.184.1630072043205;
+ Fri, 27 Aug 2021 06:47:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
+References: <YSPAseE6WD8dDRuz@ravnborg.org> <20210824014124.1080798-1-yangcong5@huaqin.corp-partner.google.com>
+ <CAD=FV=UFDRG9TJis28Wtsz9RVhp3Xk35stpLyY5ExLx3=8yxPQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=UFDRG9TJis28Wtsz9RVhp3Xk35stpLyY5ExLx3=8yxPQ@mail.gmail.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Fri, 27 Aug 2021 06:47:10 -0700
+Message-ID: <CAD=FV=WEid=JgsXEPWpEfNivJ3DK_hnFxxNf_HDiOpuTozAjHA@mail.gmail.com>
+Subject: Re: [v2 0/2] Add driver for BOE tv110c9m-ll3 panel
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> fw_devlink=on/device links short circuits the probe() call of a
-> consumer (in this case the PHY) and returns -EPROBE_DEFER if the
-> supplier's (in this case switch) probe hasn't finished without an
-> error. fw_devlink/device links effectively does the probe in graph
-> topological order and there's a ton of good reasons to do it that way
-> -- what's why fw_devlink=on was implemented.
-> 
-> In this specific case though, since the PHY depends on the parent
-> device, if we fail the parent's probe realtek_smi_probe() because the
-> PHYs failed to probe, we'll get into a catch-22/chicken-n-egg
-> situation and the switch/PHYs will never probe.
+Hi,
 
-So lets look at:
+On Thu, Aug 26, 2021 at 10:17 AM Doug Anderson <dianders@google.com> wrote:
+>
+> Hi,
+>
+> On Mon, Aug 23, 2021 at 6:41 PM yangcong
+> <yangcong5@huaqin.corp-partner.google.com> wrote:
+> >
+> > Hi Sam,
+> >   This driver support boe tv1110c9m-ll3 and inx hj110iz-01a panel.The IC chip is used NT36523, which is a new IC.
+> >
+> > 1: panel-boe-tv101wum-nl6.c driver cannot meet the timing requirements of the current two panel.
+> >
+> > 2: The screen cannot be work in HS mode, panel-boe-tv101wum-nl6.c will switch to HS mode when boe_panel_enter_sleep_mode.
+> >
+> > static int boe_panel_enter_sleep_mode(struct boe_panel *boe)
+> > {
+> >         struct mipi_dsi_device *dsi = boe->dsi;
+> >         int ret;
+> >
+> >         dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> >         ...
+> >         ...
+> > }
+>
+> It's really up to Sam how he wants to proceed here, but certainly you
+> could support things with the existing driver even if there are
+> differences. In general you can add more things to the `struct
+> panel_desc` in the driver and then make them different for your panel.
+> Look, for instance, at `discharge_on_disable`. Not all panels
+> supported by this driver do that, so you could support your "cannot
+> work in HS mode" in a similar way.
+>
+> For the timings, you could also add another bit to the `struct
+> panel_desc` to select a different delay for your panel or (if it's
+> just a small delay) you could just increase it across the board. I
+> guess you need a 10 ms delay instead of a 5 ms delay in probe? I'd
+> just make it 10 ms across the board and call it done. Similarly looks
+> like something needs .5 ms => 1 ms. Again, this is likely fine across
+> the board for all panels.
+>
+> Unless Sam comes back and says "no, wait, keep it two drivers!" then
+> I'd suggest that you post a new version that works as Sam suggests. In
+> the worst case if having it combined into one driver looks too ugly
+> then we can always go back to a split driver.
 
-arch/arm/boot/dts/vf610-zii-dev-rev-b.dts
+Breadcrumbs: it looks like yangcong has attempted this in the
+confusingly numbered v3 of his other patch series. See:
 
-       mdio-mux {
-                compatible = "mdio-mux-gpio";
-                pinctrl-0 = <&pinctrl_mdio_mux>;
-                pinctrl-names = "default";
-                gpios = <&gpio0 8  GPIO_ACTIVE_HIGH
-                         &gpio0 9  GPIO_ACTIVE_HIGH
-                         &gpio0 24 GPIO_ACTIVE_HIGH
-                         &gpio0 25 GPIO_ACTIVE_HIGH>;
-                mdio-parent-bus = <&mdio1>;
-                #address-cells = <1>;
-                #size-cells = <0>;
+https://lore.kernel.org/r/20210827082407.101053-4-yangcong5@huaqin.corp-partner.google.com
 
-
-We have an MDIO multiplexor
-
-
-                mdio_mux_1: mdio@1 {
-                        reg = <1>;
-                        #address-cells = <1>;
-                        #size-cells = <0>;
-
-                        switch0: switch@0 {
-                                compatible = "marvell,mv88e6085";
-                                pinctrl-0 = <&pinctrl_gpio_switch0>;
-                                pinctrl-names = "default";
-                                reg = <0>;
-                                dsa,member = <0 0>;
-                                interrupt-parent = <&gpio0>;
-                                interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
-
-On the first bus, we have a Ethernet switch.
-
-                                interrupt-controller;
-                                #interrupt-cells = <2>;
-                                eeprom-length = <512>;
-
-                                ports {
-                                        #address-cells = <1>;
-                                        #size-cells = <0>;
-
-                                        port@0 {
-                                                reg = <0>;
-                                                label = "lan0";
-                                                phy-handle = <&switch0phy0>;
-                                        };
-
-The first port of that switch has a pointer to a PHY.
-
-                               mdio {
-                                        #address-cells = <1>;
-                                        #size-cells = <0>;
-
-That Ethernet switch also has an MDIO bus,
-
-                                        switch0phy0: switch0phy0@0 {
-                                                reg = <0>;
-
-On that bus is the PHY.
-
-                                                interrupt-parent = <&switch0>;
-                                                interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-
-And that PHY has an interrupt. And that interrupt is provided by the switch.
-
-Given your description, it sounds like this is also go to break.
-
-vf610-zii-dev-rev-c.dts is the same pattern, and there are more
-examples for mv88e6xxx.
-
-It is a common pattern, e.g. the mips ar9331.dtsi follows it.
-
-I've not yet looked at plain Ethernet drivers. This pattern could also
-exist there. And i wonder about other complex structures, i2c bus
-multiplexors, you can have interrupt controllers as i2c devices,
-etc. So the general case could exist in other places.
-
-I don't think we should be playing whack-a-mole by changing drivers as
-we find they regress and break. We need a generic fix. I think the
-solution is pretty clear. As you said the device depends on its
-parent. DT is a tree, so it is easy to walk up the tree to detect this
-relationship, and not fail the probe.
-
-   Andrew
+-Doug
