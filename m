@@ -2,156 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63543F9916
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1943F9919
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245101AbhH0Mkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 08:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
+        id S245117AbhH0Mlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 08:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231271AbhH0Mka (ORCPT
+        with ESMTP id S245094AbhH0Mlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 08:40:30 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC1EC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 05:39:41 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id l2so5971288lfp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 05:39:41 -0700 (PDT)
+        Fri, 27 Aug 2021 08:41:31 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A574BC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 05:40:42 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id q3so9680604edt.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 05:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rSCVAOdTzS6of67hqwXXSt/v4Q5zwDeqrRZRMqtOo4o=;
-        b=e1H4CnN0oVEEbKadjd940jNGpQ+4i9Is62sT4sD9RRPkpJVz//9sGynYDjUvr7qOqY
-         9+KZGi3nY6T3oO/klS2IhsDOR1ubpDzwNM0mGlITPJknlP/5lu5G+jOGUB8w4yh375z8
-         uUKOkX9MsDLDLQ+nCmgyS3p0++5c4UvqcciD12MAtYATXCJUM2KDAOYv7LLHK5YGTNiZ
-         7xe/lJg6+6fUoeLam6qlFtW4PTe5pGiTyAbnQ628L/BHbe+2n/o+7BiK1VLvKMxMTRTW
-         tuaOlJ3+A/24VY84DEXxONhu+KShaH4VqtEyFcis1ZvpKPS4XD4TF7G5IF0XmsA+xZMS
-         hlSw==
+         :cc:content-transfer-encoding;
+        bh=2nPzWi/NZ8hWZLaCBAACfozkVkQ+SBGjdnmjr0f1fk0=;
+        b=RwzREXGmXZLMaMprMGO8kB9mnWGLW8SQErl4tSQVsIK/KqoBVVxl1/Wq2h1t2Uo+9d
+         QOrHKGNvA2U6wQxbmXnW4h71pi0WefyUBpIBfs/uQ+Qx0v6Vjsbg/nZ3x203R98otZ98
+         0FCT2PP/x2T+1iLNqVS0xbaXj1nuOE82BSLT1mtM6VHfj8yxvIUxFGvd8TNVwDKqE32N
+         DBA/08T68yVXIc8aC0ZfEAAj+2y9Jbu2rrwLvRyvRVdIYHkN5wiOL+X2IX1USapxVuCQ
+         26wQi505C21Q/tVHAiZdrLbJh7csq6sr/jq89U6UvVGnrFJV+KXPvaccOIVx3qMAk3ST
+         Op+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rSCVAOdTzS6of67hqwXXSt/v4Q5zwDeqrRZRMqtOo4o=;
-        b=BYSklynCyteVimAA3QdOdFHfan3WAxV7FLkACKoDVSwxnbk0Nxg+DRC7L3Z12npWJF
-         JVp9faY59ooa+7jyYtP4hBPUA5rchUEzhX4pJSaT4jETmzgdsyjlYBvHUcpfUyTmsvII
-         V2ko0xt91bb+60ZTaKULrjCJpzvPPJVprXLloTK+jW1+1D1a+8t8NtQr/xFiMYnf2t8V
-         k69X7gXeYJaOh/xBNmUzZ780HH72ns1J5+OoDdHGe7afCVeFrfUZI0dkLOCM/+lo/jZm
-         hYTD7XlPv8s3o0suiVzb46Xi0yudcXZqKDo8eL9GTMgVCY+67+m1RD3oOrbjsKeBc2kV
-         2C/A==
-X-Gm-Message-State: AOAM531KqyQuMUGq6PtjguJs3EWGAq+JePfwLLigTF7H1RxUO1OimjF3
-        ovNCXamENB7X+C+s+BYnDhP4UW3yeHc6BqpuJP4iFQ==
-X-Google-Smtp-Source: ABdhPJxb8nP92sVAh62cKernHOP1MWRfQb68gcojS0Hh9rRTVhgY8RCAwZxU1/qQehPnXDTY0/jHdLv2Pp4Pb8OtBtE=
-X-Received: by 2002:a19:5f0d:: with SMTP id t13mr6558353lfb.229.1630067979561;
- Fri, 27 Aug 2021 05:39:39 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2nPzWi/NZ8hWZLaCBAACfozkVkQ+SBGjdnmjr0f1fk0=;
+        b=GLxDHH3Vlo3X3a5BiV5tlPkQ3r+A38kTR5UI3zRc9OLfiSfuXnXWbLLSDZhsUh/s1A
+         KaZ6oiaHmQ7UMbMnw+ZOwvJgjGTbG4/vgpXtBYxu64tJSBAfyYAahpxNLK6wttKoPp+e
+         HFauhDSbCClhXcoimtDpTVf7sIN0lYqMPV+WQRGqEDyrfu543fdIPlAHCYUSAfCdDYR3
+         Ds6sxnSlBHGvbUr3uzZ4ufdU1DM82DHd0C/SsKYQ0nHBsVDuWVRVavBjHVOM0/6AeoYH
+         crbLzcBESk61HRUQx24gXjSuSlP7YXkQb8JH+RGYMB7VTBNn1oYcEflfmGg40ZYhE0K2
+         Oeaw==
+X-Gm-Message-State: AOAM530bknqxdJuorxxDAdeJ7sOIFMphyYL/JbYEyxqDuNXS8dctJhgE
+        WcuBCYrlyqrdOxWgNP8crmwFQtNoPRHH4hHLDQHEkw==
+X-Google-Smtp-Source: ABdhPJy6G5l8EbEo8HSfL/otUq0S7HfOLOVnL6opEuMcGSY2+ANC9ilYGkfZb35yEZdkaPtAXtv1jZ5IeYfEWWayyO4=
+X-Received: by 2002:a05:6402:11c9:: with SMTP id j9mr9584544edw.134.1630068041190;
+ Fri, 27 Aug 2021 05:40:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726060855.108250-1-pankaj.gupta.linux@gmail.com>
- <20210726060855.108250-2-pankaj.gupta.linux@gmail.com> <CAPcyv4inCFFXmg0r5+h0O6cADpt9HdboVDEL00XX-wGroy-7LQ@mail.gmail.com>
- <CAM9Jb+hqPBFUh9X4sKb9TUGXX1P0mC1xcuCNQx1BYvAvoP9uQg@mail.gmail.com>
- <CAPcyv4gUG1-y1u0ZyUkSGXg0eER_oTdexb8n-CYgb_rURvr8LA@mail.gmail.com>
- <CALzYo32AnNzENe414GDVivaF5wXQ7azaysBYkN9wHVYEW27NPw@mail.gmail.com> <CAPcyv4idY7GDYjXsvjduQ4rjfKo-qDgQoj5r6=Rr9poXqHEzeg@mail.gmail.com>
-In-Reply-To: <CAPcyv4idY7GDYjXsvjduQ4rjfKo-qDgQoj5r6=Rr9poXqHEzeg@mail.gmail.com>
-From:   Pankaj Gupta <pankaj.gupta@ionos.com>
-Date:   Fri, 27 Aug 2021 14:39:28 +0200
-Message-ID: <CALzYo315CXhcO2Dph010WazWBYkaAeEuGdjUFDnJcsVBDa5LNQ@mail.gmail.com>
-Subject: Re: [RFC v2 1/2] virtio-pmem: Async virtio-pmem flush
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
+References: <20210823082949.237716-1-benjamin.gaignard@collabora.com>
+ <02r6ig176o0lqc52nm8rhta7cn5bfn04in@4ax.com> <e1df8e77-b4d1-481c-0f4b-4a20f42d5c9e@collabora.com>
+ <i917ig582epdnpkmjdtvtnap6u8c032c1r@4ax.com> <9d6336fff6f122a9a4510a111387a000c65f797b.camel@ndufresne.ca>
+ <da18a240-22bd-54d2-6306-f39f10a05b22@collabora.com> <r4ehigheq602qijsnjd8govhl4f1dpnr35@4ax.com>
+ <b5ae0ebe-de90-5ebb-5e69-ea66ae0e0639@collabora.com> <mdmhigh3ubgs6r89061v19iagjs0il9b89@4ax.com>
+In-Reply-To: <mdmhigh3ubgs6r89061v19iagjs0il9b89@4ax.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Fri, 27 Aug 2021 09:40:29 -0300
+Message-ID: <CAAEAJfA68tTeGgRHS2=hs5tQw2_3RhPgdXq6+k4GDX=0LMMBxQ@mail.gmail.com>
+Subject: Re: [PATCH] media: hevc: fix pictures lists type
+To:     John Cox <jc@kynesim.co.uk>
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media <linux-media@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jmoyer <jmoyer@redhat.com>, David Hildenbrand <david@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>
+        Collabora Kernel ML <kernel@collabora.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > > > Implement asynchronous flush for virtio pmem using work queue
-> > > > > > to solve the preflush ordering issue. Also, coalesce the flush
-> > > > > > requests when a flush is already in process.
-> > > > > >
-> > > > > > Signed-off-by: Pankaj Gupta <pankaj.gupta@ionos.com>
-> > > > > > ---
-> > > > > >  drivers/nvdimm/nd_virtio.c   | 72 ++++++++++++++++++++++++++++--------
-> > > > > >  drivers/nvdimm/virtio_pmem.c | 10 ++++-
-> > > > > >  drivers/nvdimm/virtio_pmem.h | 14 +++++++
-> > > > > >  3 files changed, 79 insertions(+), 17 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/nvdimm/nd_virtio.c b/drivers/nvdimm/nd_virtio.c
-> > > > > > index 10351d5b49fa..61b655b583be 100644
-> > > > > > --- a/drivers/nvdimm/nd_virtio.c
-> > > > > > +++ b/drivers/nvdimm/nd_virtio.c
-> > > > > > @@ -97,29 +97,69 @@ static int virtio_pmem_flush(struct nd_region *nd_region)
-> > > > > >         return err;
-> > > > > >  };
-> > > > > >
-> > > > > > +static void submit_async_flush(struct work_struct *ws);
-> > > > > > +
-> > > > > >  /* The asynchronous flush callback function */
-> > > > > >  int async_pmem_flush(struct nd_region *nd_region, struct bio *bio)
-> > > > > >  {
-> > > > > > -       /*
-> > > > > > -        * Create child bio for asynchronous flush and chain with
-> > > > > > -        * parent bio. Otherwise directly call nd_region flush.
-> > > > > > +       /* queue asynchronous flush and coalesce the flush requests */
-> > > > > > +       struct virtio_device *vdev = nd_region->provider_data;
-> > > > > > +       struct virtio_pmem *vpmem  = vdev->priv;
-> > > > > > +       ktime_t req_start = ktime_get_boottime();
-> > > > > > +
-> > > > > > +       spin_lock_irq(&vpmem->lock);
-> > > > > > +       /* flush requests wait until ongoing flush completes,
-> > > > > > +        * hence coalescing all the pending requests.
-> > > > > >          */
-> > > > > > -       if (bio && bio->bi_iter.bi_sector != -1) {
-> > > > > > -               struct bio *child = bio_alloc(GFP_ATOMIC, 0);
-> > > > > > -
-> > > > > > -               if (!child)
-> > > > > > -                       return -ENOMEM;
-> > > > > > -               bio_copy_dev(child, bio);
-> > > > > > -               child->bi_opf = REQ_PREFLUSH;
-> > > > > > -               child->bi_iter.bi_sector = -1;
-> > > > > > -               bio_chain(child, bio);
-> > > > > > -               submit_bio(child);
-> > > > > > -               return 0;
-> > > > > > +       wait_event_lock_irq(vpmem->sb_wait,
-> > > > > > +                           !vpmem->flush_bio ||
-> > > > > > +                           ktime_before(req_start, vpmem->prev_flush_start),
-> > > > > > +                           vpmem->lock);
-> > > > > > +       /* new request after previous flush is completed */
-> > > > > > +       if (ktime_after(req_start, vpmem->prev_flush_start)) {
-> > > > > > +               WARN_ON(vpmem->flush_bio);
-> > > > > > +               vpmem->flush_bio = bio;
-> > > > > > +               bio = NULL;
-> > > > > > +       }
-> > > > >
-> > > > > Why the dance with ->prev_flush_start vs just calling queue_work()
-> > > > > again. queue_work() is naturally coalescing in that if the last work
-> > > > > request has not started execution another queue attempt will be
-> > > > > dropped.
-> > > >
-> > > > How parent flush request will know when corresponding flush is completed?
-> > >
-> > > The eventual bio_endio() is what signals upper layers that the flush
-> > > completed...
-> > >
-> > >
-> > > Hold on... it's been so long that I forgot that you are copying
-> > > md_flush_request() here. It would help immensely if that was mentioned
-> > > in the changelog and at a minimum have a comment in the code that this
-> > > was copied from md. In fact it would be extra helpful if you
-> >
-> > My bad. I only mentioned this in the cover letter.
+On Fri, 27 Aug 2021 at 09:36, John Cox <jc@kynesim.co.uk> wrote:
 >
-> Yeah, sorry about that. Having come back to this after so long I just
-> decided to jump straight into the patches, but even if I had read that
-> cover I still would have given the feedback that md_flush_request()
-> heritage should also be noted with a comment in the code.
+> >Le 27/08/2021 =C3=A0 12:10, John Cox a =C3=A9crit :
+> >>> Le 26/08/2021 =C3=A0 18:09, Nicolas Dufresne a =C3=A9crit :
+> >>>> Le lundi 23 ao=C3=BBt 2021 =C3=A0 12:35 +0100, John Cox a =C3=A9crit=
+ :
+> >>>>> Hi
+> >>>>>
+> >>>>>> Le 23/08/2021 =C3=A0 11:50, John Cox a =C3=A9crit :
+> >>>>>>>> The lists embedded Picture Order Count values which are s32 so t=
+heir type
+> >>>>>>>> most be s32 and not u8.
+> >>>>>>> I'm not convinced that you can't calculate all of those lists fro=
+m the
+> >>>>>>> info already contained in the DPB array so this is probably redun=
+dant
+> >>>>>>> info though I grant that having the list pre-calced might make yo=
+ur life
+> >>>>>>> easier, and the userland side will have calculated the lists to
+> >>>>>>> calculate other required things so it isn't much extra work for i=
+t.
+> >>>>>> Yes the userland have already compute these lists and the number o=
+f items
+> >>>>>> in each of them.
+> >>>>>> Build them in the kernel would means to also compute the values of=
+ NumPocStCurrBefore,
+> >>>>>> NumPocStCurrAfter, NumPocLtCurr, NumPocStCurrAfter, NumPocStCurrBe=
+fore and NumPocLtCurr
+> >>>>>> and that requires information (NumNegativePics, NumPositivePics...=
+) not provided to the kernel.
+> >>>>>> Since it have to be done in userland anyway, I'm reluctant to modi=
+fy the API to redo in the kernel.
+> >>>>> Well, fair enough, I'm not going to argue
+> >>>>>
+> >>>>>>> Even if you do need the lists wouldn't it be a better idea to hav=
+e them
+> >>>>>>> as indices into the DPB (you can't have a frame in any of those l=
+ists
+> >>>>>>> that isn't in the DPB) which already contains POCs then it will s=
+till
+> >>>>>>> fit into u8 and be smaller?
+> >>>>>> Hantro HW works with indexes but I think it is more simple to send=
+ PoC rather than indexes.
+> >>>>> I'd disagree but as I don't use the info I'm not concerned. Though =
+I
+> >>>>> think I should point out that when Hantro converts the POCs to indi=
+cies
+> >>>>> it compares the now s32 POC in these lists with the u16 POC in the =
+DPB
+> >>>>> so you might need to fix that too; by std (8.3.1) no POC diff can b=
+e
+> >>>>> outside s16 so you can mask & compare or use u16 POCs in the lists =
+or
+> >>>>> s32 in the DPB.
+> >>>> Fun fact, my interpretation with the API when I drafted GStreamer su=
+pport was
+> >>>> that it was DPB indexes:
+> >>>>
+> >>>> https://gitlab.freedesktop.org/ndufresne/gst-plugins-bad/-/blob/hevc=
+_wip/sys/v4l2codecs/gstv4l2codech265dec.c#L850
+> >>>>
+> >>>> It felt quite natural to be, since this is also how we pass referenc=
+es for l0/l1
+> >>>> (unused by hantro I guess).
+> >>>>
+> >>>> Looking at old rkvdec code as a refresher:
+> >>>>
+> >>>>     for (j =3D 0; j < run->num_slices; j++) {
+> >>>>                   sl_params =3D &run->slices_params[j];
+> >>>>                   dpb =3D sl_params->dpb;
+> >>>>
+> >>>>                   hw_ps =3D &priv_tbl->rps[j];
+> >>>>                   memset(hw_ps, 0, sizeof(*hw_ps));
+> >>>>
+> >>>>                   for (i =3D 0; i <=3D sl_params->num_ref_idx_l0_act=
+ive_minus1; i++) {
+> >>>>                           WRITE_RPS(!!(dpb[sl_params->ref_idx_l0[i]]=
+.rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR),
+> >>>>                                     REF_PIC_LONG_TERM_L0(i));
+> >>>>                           WRITE_RPS(sl_params->ref_idx_l0[i], REF_PI=
+C_IDX_L0(i));
+> >>>>                   }
+> >>>>
+> >>>>                   for (i =3D 0; i <=3D sl_params->num_ref_idx_l1_act=
+ive_minus1; i++) {
+> >>>>                           WRITE_RPS(!!(dpb[sl_params->ref_idx_l1[i]]=
+.rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR),
+> >>>>                                     REF_PIC_LONG_TERM_L1(i));
+> >>>>                           WRITE_RPS(sl_params->ref_idx_l1[i], REF_PI=
+C_IDX_L1(i));
+> >>>>                   }
+> >>>>
+> >>>>
+> >>>> This is code is clearly unsafe, but now I remember that dpb_entry ha=
+s a flag
+> >>>> "rps". So we know from the DPB in which of the list the reference li=
+ves, if any.
+> >>>> In the case of RKVDEC the HW only cares to know if this is long term=
+ or not.
+> >>>>
+> >>>> So without looking at the spec, is that dpb represention enough to r=
+econstruct
+> >>>> these array ? If we pass these array, shall we keep the rps flag ? I=
+ think a
+> >>>> little step back and cleanup will be needed. I doubt there is a sing=
+le answer,
+> >>>> perhaps list what others do (VA, DXVA, NVDEC, Khronos, etc) and we c=
+an
+> >>>> collectively decide were we want V4L2 to sit ?
+> >>> I have done some tests with Hantro driver and look at the spec, the o=
+rder of the PoC
+> >>> in the reference lists matters. You can deducted the order for DPB rp=
+s flags.
+> >>> I would suggest to remove rps flags to avoid information duplication.
+> >> I want the DPB rps member for long term reference marking.  I don't ca=
+re
+> >> about before / after, but LTR can't be deduced from PoC and if you are
+> >> going to keep the member you might as well keep before / after.
+> >
+> >Ok so keep like it is.
+> >In this case my patch is enough, right ?
+>
 
-Sure.
+The problem with the patch is that it breaks existing userspace.
+Currently, there's no upstreamed userspace so this is not a huge
+deal.
+
+However, it's definitely not a good practice. Even if these are
+staging controls, I think a proper action item is to start discussing
+what's missing on the HEVC interface as a whole, so it can be
+moved to stable.
+
+Otherwise, it almost feels like bikeshading.
 
 Thanks,
-Pankaj
+Ezequiel
