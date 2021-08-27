@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2973F9A4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583883F9A58
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245369AbhH0Ne3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:34:29 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:29653 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245360AbhH0NeV (ORCPT
+        id S245182AbhH0Njm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:39:42 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:47769 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231583AbhH0Njl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:34:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1630071212; x=1661607212;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=XlrFOPsHVkGwuf5CGE9FaO4wRJO0d1CiINHk8dBhF/8=;
-  b=MVXYpuFyKKJru/YR9nKSRMv3VvkVfblLVrVJkoJXcA0amto9q9359C7o
-   u8Av7ywZukDMMNDVtIIBgOQ9KZsuTlh6vkJipRwq09WcAocBMdyskxYJT
-   mXY6p+qS58E1FaSvNxOXpJGIHBsA06h6LIX5CqNQt2gj8loif65e3IRmW
-   g=;
-X-IronPort-AV: E=Sophos;i="5.84,356,1620691200"; 
-   d="scan'208";a="155617338"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 27 Aug 2021 13:33:32 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id 988FEA04DB;
-        Fri, 27 Aug 2021 13:33:31 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.52) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Fri, 27 Aug 2021 13:33:25 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Alexandru Ciobotaru <alcioa@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kamal Mostafa <kamal@canonical.com>,
-        "Alexandru Vasile" <lexnv@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Stefano Garzarella" <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v2 7/7] nitro_enclaves: Add fixes for checkpatch blank line reports
-Date:   Fri, 27 Aug 2021 16:32:30 +0300
-Message-ID: <20210827133230.29816-8-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20210827133230.29816-1-andraprs@amazon.com>
-References: <20210827133230.29816-1-andraprs@amazon.com>
+        Fri, 27 Aug 2021 09:39:41 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A0Zw3S622jUW+pS94gmV1wAqjBI4kLtp133Aq?=
+ =?us-ascii?q?2lEZdPU1SL39qynKppkmPHDP5gr5J0tLpTntAsi9qBDnhPtICOsqTNSftWDd0Q?=
+ =?us-ascii?q?PGEGgI1/qB/9SPIU3D398Y/aJhXow7M9foEGV95PyQ3CCIV/om3/mLmZrFudvj?=
+X-IronPort-AV: E=Sophos;i="5.84,356,1620662400"; 
+   d="scan'208";a="113571592"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 27 Aug 2021 21:38:50 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id E69214D0DC67;
+        Fri, 27 Aug 2021 21:38:48 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 27 Aug 2021 21:38:48 +0800
+Received: from [192.168.122.212] (10.167.226.45) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 27 Aug 2021 21:38:49 +0800
+Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
+References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
+ <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
+ <20210806014559.GM543798@ziepe.ca>
+ <b5e6c4cd-8842-59ef-c089-2802057f3202@cn.fujitsu.com>
+ <10c4bead-c778-8794-f916-80bf7ba3a56b@fujitsu.com>
+ <20210827121034.GG1200268@ziepe.ca>
+ <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
+ <20210827131657.GI1200268@ziepe.ca>
+From:   "Li, Zhijian" <lizhijian@cn.fujitsu.com>
+Message-ID: <1e26aa53-a76a-ffd3-f1f4-1c678dceee75@cn.fujitsu.com>
+Date:   Fri, 27 Aug 2021 21:38:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-Originating-IP: [10.43.162.52]
-X-ClientProxiedBy: EX13D43UWA002.ant.amazon.com (10.43.160.109) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20210827131657.GI1200268@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-yoursite-MailScanner-ID: E69214D0DC67.AB0CB
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove blank lines that are not necessary, fixing the checkpatch script
-reports. While at it, add a blank line after the switch default block,
-similar to the other parts of the codebase.
 
-Changelog
+on 2021/8/27 21:16, Jason Gunthorpe wrote:
+> On Fri, Aug 27, 2021 at 09:05:21PM +0800, Li, Zhijian wrote:
+>
+> Yes, can you send a proper patch and include the mm mailing list?
 
-v1 -> v2
+Of course, my pleasure
 
-* No codebase changes, it was split from the patch 3 in the v1 of the
-patch series.
-
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
----
- samples/nitro_enclaves/ne_ioctl_sample.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/samples/nitro_enclaves/ne_ioctl_sample.c b/samples/nitro_enclaves/ne_ioctl_sample.c
-index 6a60990b2e202..765b131c73190 100644
---- a/samples/nitro_enclaves/ne_ioctl_sample.c
-+++ b/samples/nitro_enclaves/ne_ioctl_sample.c
-@@ -185,7 +185,6 @@ static int ne_create_vm(int ne_dev_fd, unsigned long *slot_uid, int *enclave_fd)
- 	return 0;
- }
- 
--
- /**
-  * ne_poll_enclave_fd() - Thread function for polling the enclave fd.
-  * @data:	Argument provided for the polling function.
-@@ -560,8 +559,8 @@ static int ne_add_vcpu(int enclave_fd, unsigned int *vcpu_id)
- 
- 		default:
- 			printf("Error in add vcpu [%m]\n");
--
- 		}
-+
- 		return rc;
- 	}
- 
--- 
-2.20.1 (Apple Git-117)
+Thanks
 
 
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
 
