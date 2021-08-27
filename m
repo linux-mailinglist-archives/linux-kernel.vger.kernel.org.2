@@ -2,172 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C263F98F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2232F3F98F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245060AbhH0MUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 08:20:45 -0400
-Received: from mout.gmx.net ([212.227.15.19]:50529 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231260AbhH0MUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 08:20:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630066788;
-        bh=36rePuGIII6ztQM9yWdUbhmy2VQkb0KeoNAL0pJ37b0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=JwRluKIHYFr0zjobhsWonJNTVestxBc/4S6wKsTXI47UtXSMv5/Mx8AhE63nPa7mo
-         8ReJ/0SwRYC4IJ4oKR1TQBUTjk3B3Y4SFQHzgGe1Pon/neVDkC1HTAe32BJh173UuK
-         kPQ2AwZqNDGDRIhjsMlniyAyAh/7SiazZmSWr1+0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.133.192]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mwwdl-1nDBbE3hwx-00yUCz; Fri, 27
- Aug 2021 14:19:47 +0200
-Subject: Re: [PATCH] Fix prctl(PR_GET_NAME) to not leak random trailing bytes
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-References: <YSiwLuE17BwRlI/d@ls3530>
- <aa0006e7-58b8-ab05-0599-5609e900ba4d@rasmusvillemoes.dk>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <97a0ddcf-243d-f312-8291-01d6595260bf@gmx.de>
-Date:   Fri, 27 Aug 2021 14:18:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S245095AbhH0MU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 08:20:59 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:42702 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231260AbhH0MU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 08:20:58 -0400
+Received: by mail-ot1-f42.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so7569261otk.9;
+        Fri, 27 Aug 2021 05:20:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B3od3vyvcuge7BK5/FxXd+T+mQcTApP8RCdRnptyqb0=;
+        b=mVWaBICFn4TiL0Q5a95VQ04nqixa92ObxGnP/BVLPP/2mqHL0ucDR8FWeSDAVA/sOL
+         w81UEXcM4LZCme5BBdHPh/NllXGAj+pcFCvzhO6fkl+fY1V5Prbre+3+pzv12DkS0Lgv
+         bsW8ezCi+igf1a+gPpTowgkpCovWRw0b9mSlkio1OpZyUVPPNAzNhxmP7cYP1+tqxE6f
+         LIHxYC2ajNHWVDctW4JUPkWV5OrtyfC9AVzBh6IvQHCdGcKA9bgEsL1iy/nqNaDwdUMc
+         1L4DyuHQiuOisog7ePUKh+G6dPCZBoOFLXSOyMtToZ6wBjYXOYkNa+ZdhZZVWpekIOC+
+         a2FQ==
+X-Gm-Message-State: AOAM533pJb/kA4baam4MZ3I2ex19FUpPevuPA53oVFpcZrDoXgBlEBDa
+        +Wm7GrGBmnmmDLB+zUb50sOcGQhORaITizvy0NzMyf/DV1rOpg==
+X-Google-Smtp-Source: ABdhPJx0Z9rGHhnrH+t026SA3axXHuRKaF5tAuDWKrLQrR1VycWqPfvXzgLcuuV89QuqOoocZQgEJvCOE9UJNQ57IYQ=
+X-Received: by 2002:a9d:7115:: with SMTP id n21mr2067521otj.321.1630066809238;
+ Fri, 27 Aug 2021 05:20:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <aa0006e7-58b8-ab05-0599-5609e900ba4d@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rVJo3HcM7U7Ar9BboNsiZtxEgxj18axgs3PoVacPYthMOxstrht
- eSN+qCHmJIEtOL252H61YZKhNOPwrLapKtfF1IhTg8/RsVnA8bWh/ebM44iYNu6QPxPO9Tk
- kw379skaDlpeYPQzb5TYSyGmK8X+FWY8U5fY4aJd/pHsH92fSPz9h3PEdhtd6X8Vn4rddHw
- lgTbiQLGz1XPxXnlMYLxg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uivJSkOGzUk=:MdFc2qvlIt3cUfQzFM+2ZE
- O6SQuelsNnP92ae72cc1ObjydJrJ4Xq5lVq7A1nTcOnaSjTNbchzvKiS2Iq+uDOv4wOeGwGn9
- Hjejb66j59EZTSpi5QCBmyaAOryu1f7+VRV6vX/Tc3Ht0RxfRu3ICrEjLTmKO8EBfm7Lottls
- gUmY5eNWaS5YXkAbk5YxkANn1gpsQQFNfn7DPTPxGW6EHRubi3OrcTeqnp/gWn6YWr/mFOmYo
- stHqqKLpGv7oamPldmOmAV9jfmGvffwmUr5yCKpWDF9nD6AW6vzTxYTqpKhoRArV4nw7WzQAh
- jgWd1vjge6ywy/1rTyFWMZyugAWQyGIwRLQul23sN9Exf123lDKAY18iWLKJoji/7hlpB/t62
- zogyLGjG7grpCqwoXC+YZqilAPADdCHiFys9YV5F2diAe68FJh0gBmtTT562IUu5/3vsGQ85W
- sPl4uyk1Dbly4iB6LrSpLCga6opVeOQY5IrHjBKBXVtvEPwXVwyxCGju+sFhfwMtcxdnZIC6r
- aqJzCpIcvS0ZPy/kfrsmRbvTWXX/1tm4FZOmUi6W16Ii0BfM9hYjGK5cYJ7RR3DGoDTk933yi
- enpOTgz3maizoQMoRmVjJn0RUWPvFZvTSBI5nfq8dxH4KGNYts787KHRcOL+W++/7thg1rAEg
- GCVMXpGhUlZVkpYN1r3eUYjYRRSkmAOKzCxmaZw9L2i6RKq1agklVgLtNR9Ao9Y+L/vcIxmUD
- TyLd0mX2PWYm38bSGLBhYWPmmsHuGrrme0vFa4yUYY43B1b0Tba9Gbt6yY9O1wZ9hq9fxQefb
- gsNQMBgeCQuVRQUebN2qs/QR1jvpc0rcsTuBkyJRiONpbTO3GlJsnGcfRt2shcMJ6RUlj9s/i
- hxcC/fNdKOzZg5QEeIjcIyV0MCxG/wXYOV2X8xUJU4vAlYzyYsStMob/2+QSFpv8CWT7G6Ntf
- 9XKLTtxUfiqcs2PkhrKynlKlkO70Ymvil5ZfvnK9Sn/+A2y+dhQqRjqtD6AVzDjWUUK1y9GKW
- w6Ahn8Ixh3r5QO3HVFCH1DWFmKzBFwoFO0gGTxFlWHvHgklLUKLuZUcMfIMOlgP3gdDDHIeIu
- hfUHW7T+HQLeyEuDH6yrx/l1RLQOef5ke4C
+References: <1629732470-155444-1-git-send-email-psodagud@codeaurora.org>
+In-Reply-To: <1629732470-155444-1-git-send-email-psodagud@codeaurora.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 27 Aug 2021 14:19:58 +0200
+Message-ID: <CAJZ5v0hAuZmaB6j4qA7P43J4TshBrYa8UsX3KtH7hkxWZPU2wA@mail.gmail.com>
+Subject: Re: [PATCH v4] PM: sleep: core: Avoid setting power.must_resume to false
+To:     Prasad Sodagudi <psodagud@codeaurora.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Pavel Machek <pavel@ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 12:31 PM, Rasmus Villemoes wrote:
-> On 27/08/2021 11.28, Helge Deller wrote:
->> The prctl(PR_GET_NAME) and prctl(PR_SET_NAME) syscalls are used to set =
-and
->> retrieve the process name. Those kernel functions are currently impleme=
-nted to
->> always copy the full array of 16-bytes back and forth between kernel an=
-d
->> userspace instead of just copying the relevant bytes of the string.
->>
->> This patch changes the prctl(PR_GET_NAME) to only copy back the null-te=
-rminated
->> string (with max. up to 16 chars including the trailing zero) to usersp=
-ace and
->> thus avoids copying and leaking random trailing chars behind the proces=
-s name.
->>
->> Background:
->> The newest glibc testsuite includes a test which is implemented similia=
-r to
->> this:
->>     prctl(PR_SET_NAME, "thread name", 0, 0, 0);
->>     char buffer[16] =3D { 0, };
->>     prctl(PR_GET_NAME, buffer, 0, 0, 0);
->>     char expected[16] =3D "thread name";
->>     fail if memcmp(buffer, expected, 16) !=3D 0;
->>
->> The compiler may put the "thread name" string given in the PR_SET_NAME =
-call
->> somewhere into memory and it's not guaranteed that trailing (up to a to=
-tal of
->> 16) chars behind that string has zeroes.
->> As such on the parisc architecture I've seen that the buffer[] array ge=
-ts
->> filled on return of prctl(PR_GET_NAME) with such additional random byte=
-s, e.g.:
->>         "thread name\000@\032i\000"
->>         74 68 72 65 61 64 20 6E 61 6D 65 00 40 1A 69 00
->>
->> Unfortunatly the glibc testuite tests the full memory block of 16 bytes
->> and fails because it expects zeroed characters behind the process name.
->>
->> In addition to fix the glibc testsuite, I suggest to fix the kernel fun=
-ction of
->> prctl(PR_GET_NAME) to just return the null-terminated process name.
->>
->> Signed-off-by: Helge Deller <deller@gmx.de>
->> Cc: stable@vger.kernel.org
->>
->> diff --git a/kernel/sys.c b/kernel/sys.c
->> index ef1a78f5d71c..af71412760be 100644
->> --- a/kernel/sys.c
->> +++ b/kernel/sys.c
->> @@ -2367,7 +2367,7 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long=
-, arg2, unsigned long, arg3,
->>   		break;
->>   	case PR_GET_NAME:
->>   		get_task_comm(comm, me);
->> -		if (copy_to_user((char __user *)arg2, comm, sizeof(comm)))
->> +		if (copy_to_user((char __user *)arg2, comm, strlen(comm) + 1))
->>   			return -EFAULT;
->>   		break;
+On Mon, Aug 23, 2021 at 5:28 PM Prasad Sodagudi <psodagud@codeaurora.org> wrote:
 >
-> I don't understand. get_task_comm() is
+> There are variables(power.may_skip_resume and dev->power.must_resume)
+> and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
+> a system wide suspend transition.
 >
-> extern char *__get_task_comm(char *to, size_t len, struct task_struct *t=
-sk);
-> #define get_task_comm(buf, tsk) ({                      \
->          BUILD_BUG_ON(sizeof(buf) !=3D TASK_COMM_LEN);     \
->          __get_task_comm(buf, sizeof(buf), tsk);         \
-> })
+> Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+> its "noirq" and "early" resume callbacks to be skipped if the device
+> can be left in suspend after a system-wide transition into the working
+> state. PM core determines that the driver's "noirq" and "early" resume
+> callbacks should be skipped or not with dev_pm_skip_resume() function by
+> checking power.may_skip_resume variable.
 >
-> and __get_task_comm() is
+> power.must_resume variable is getting set to false in __device_suspend()
+> function without checking device's DPM_FLAG_MAY_SKIP_RESUME settings.
+> In problematic scenario, where all the devices in the suspend_late
+> stage are successful and some device can fail to suspend in
+> suspend_noirq phase. So some devices successfully suspended in suspend_late
+> stage are not getting chance to execute __device_suspend_noirq()
+> to set dev->power.must_resume variable to true and not getting
+> resumed in early_resume phase.
 >
-> char *__get_task_comm(char *buf, size_t buf_size, struct task_struct *ts=
-k)
-> {
->          task_lock(tsk);
->          strncpy(buf, tsk->comm, buf_size);
->          task_unlock(tsk);
->          return buf;
-> }
+> Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
+> setting power.must_resume variable in __device_suspend function.
 >
-> so the strncpy should ensure that the caller's buffer after the string's
-> terminator gets zero-filled. I can see that parisc has its own
-> strncpy(), but I can't read that asm, so I can't see if it actually does
-> that mandated-by-C-standard zero-filling.
+> Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> ---
+>  V3 -> V4: Remove dev->power.usage_count variable check
+>  V2 -> V3: Format issues patch posting
+>  V1 -> V2: Fixed indentation and commit text to include scenario
+>  drivers/base/power/main.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index d568772..50e8ea3 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -1642,7 +1642,10 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+>         }
+>
+>         dev->power.may_skip_resume = true;
+> -       dev->power.must_resume = false;
+> +       if (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME))
+> +               dev->power.must_resume = false;
+> +       else
+> +               dev->power.must_resume = true;
 
-Oh, the parisc strncpy() asm does NOT zero-fill the target address !!
-That's the bug.
-I thought strncpy would just copy up to given number of chars.
+Why don't you write it as
 
-> It would surprise me if it
-> didn't (I'd expect lots of other breakage), but OTOH it is the only way
-> I can explain what you've seen.
+dev->power.must_resume = !dev_pm_test_driver_flags(dev,
+DPM_FLAG_MAY_SKIP_RESUME);
 
-Interestingly the kernel runs quite well and we don't see any bigger break=
-age.
-Anyway, the function needs fixing.
-
-Please ignore this patch and thanks for pointing to the real bug.
-
-Helge
+>
+>         dpm_watchdog_set(&wd, dev);
+>         device_lock(dev);
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
