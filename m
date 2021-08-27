@@ -2,73 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D383FA055
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BCB3FA064
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbhH0UMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:12:20 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45358 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231472AbhH0UMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 16:12:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=BvwakT2Cfp9jgzCeUu5YYEs3eBCl3SoatPDmjRaP9Sg=; b=beNjMWkrBSiEsBTnKNKqJPbVJF
-        EQI1TqVxeY476KyyZRFSNF5IvKRd13m3/7K+7pB9mQ8OCOD9Ih8HlZk8UZSIh7tD+LTDcpfPzaK5a
-        fad9iq0xYpmb/YSJph+skbSgoBWrO/lMZMlniYATR2Nax34ZQHvIN+9LgBYtfADpcVE0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mJiC1-004ABt-F0; Fri, 27 Aug 2021 22:11:13 +0200
-Date:   Fri, 27 Aug 2021 22:11:13 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <YSlG4XRGrq5D1/WU@lunn.ch>
-References: <20210826074526.825517-1-saravanak@google.com>
- <20210826074526.825517-2-saravanak@google.com>
- <YSeTdb6DbHbBYabN@lunn.ch>
- <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
- <YSf/Mps9E77/6kZX@lunn.ch>
- <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
- <YSg+dRPSX9/ph6tb@lunn.ch>
- <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
- <YSjsQmx8l4MXNvP+@lunn.ch>
- <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
+        id S231317AbhH0UOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 16:14:09 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:47205 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229591AbhH0UNt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 16:13:49 -0400
+Received: from [192.168.1.18] ([90.126.253.178])
+        by mwinf5d77 with ME
+        id mkCy2500K3riaq203kCyHe; Fri, 27 Aug 2021 22:12:59 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 27 Aug 2021 22:12:59 +0200
+X-ME-IP: 90.126.253.178
+Subject: Re: [PATCH] mei: switch from 'pci_' to 'dma_' API
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     tomas.winkler@intel.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <d4d442f06c602230e8145a531647bbfee69a1e31.1629662528.git.christophe.jaillet@wanadoo.fr>
+ <YST3d2kFISWty5EI@kroah.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <39e04750-a15d-37ec-6fa1-82591331702c@wanadoo.fr>
+Date:   Fri, 27 Aug 2021 22:12:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
+In-Reply-To: <YST3d2kFISWty5EI@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I've not yet looked at plain Ethernet drivers. This pattern could also
-> > exist there. And i wonder about other complex structures, i2c bus
-> > multiplexors, you can have interrupt controllers as i2c devices,
-> > etc. So the general case could exist in other places.
+Le 24/08/2021 à 15:43, Greg KH a écrit :
+> On Sun, Aug 22, 2021 at 10:02:59PM +0200, Christophe JAILLET wrote:
+>> The wrappers in include/linux/pci-dma-compat.h should go away.
+>>
+>> The patch has been generated with the coccinelle script below.
+>>
+>> It has been compile tested.
+>>
+>>
+>> @@
+>> @@
+>> -    PCI_DMA_BIDIRECTIONAL
+>> +    DMA_BIDIRECTIONAL
+>>
+>> @@
+>> @@
+>> -    PCI_DMA_TODEVICE
+>> +    DMA_TO_DEVICE
+>>
+>> @@
+>> @@
+>> -    PCI_DMA_FROMDEVICE
+>> +    DMA_FROM_DEVICE
+>>
+>> @@
+>> @@
+>> -    PCI_DMA_NONE
+>> +    DMA_NONE
+>>
+>> @@
+>> expression e1, e2, e3;
+>> @@
+>> -    pci_alloc_consistent(e1, e2, e3)
+>> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+>>
+>> @@
+>> expression e1, e2, e3;
+>> @@
+>> -    pci_zalloc_consistent(e1, e2, e3)
+>> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_free_consistent(e1, e2, e3, e4)
+>> +    dma_free_coherent(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_map_single(e1, e2, e3, e4)
+>> +    dma_map_single(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_unmap_single(e1, e2, e3, e4)
+>> +    dma_unmap_single(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2, e3, e4, e5;
+>> @@
+>> -    pci_map_page(e1, e2, e3, e4, e5)
+>> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_unmap_page(e1, e2, e3, e4)
+>> +    dma_unmap_page(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_map_sg(e1, e2, e3, e4)
+>> +    dma_map_sg(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_unmap_sg(e1, e2, e3, e4)
+>> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
+>> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
+>> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
+>> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2, e3, e4;
+>> @@
+>> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
+>> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+>>
+>> @@
+>> expression e1, e2;
+>> @@
+>> -    pci_dma_mapping_error(e1, e2)
+>> +    dma_mapping_error(&e1->dev, e2)
+>>
+>> @@
+>> expression e1, e2;
+>> @@
+>> -    pci_set_dma_mask(e1, e2)
+>> +    dma_set_mask(&e1->dev, e2)
+>>
+>> @@
+>> expression e1, e2;
+>> @@
+>> -    pci_set_consistent_dma_mask(e1, e2)
+>> +    dma_set_coherent_mask(&e1->dev, e2)
+>>
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > 
-> I haven't seen any generic issues like this reported so far. It's only
-> after adding phy-handle that we are hitting these issues with DSA
-> switches.
+> That is a lot of different things in one changelog text, yet you really
+> only did a replacement for pci_set_dma_mask here.  Please clean up the
+> changelog to reflect what you did, and most importantly, _WHY_ you are
+> doing it.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Can you run your parser over the 2250 DTB blobs and see how many
-children have dependencies on a parent? That could give us an idea how
-many moles need whacking. And maybe, where in the tree they are
-hiding?
+Hi,
 
-    Andrew
+thx for the feed-back.
+
+I've continued my serie and just sent "[PATCH] niu: switch from 'pci_' 
+to 'dma_' API" where you are also in copy.
+
+I've tried to improve the log message in it, giving references of why 
+these clean-ups are done (proposed by Christoph Hellwig) and some 
+reasons of why it is a good idea (argumentation from Julia Lawall)
+
+The long coccinelle script has been reduced to only relevant parts.
+
+I hope that this new version is good enough.
+
+
+Comments on the "niu" drivers will also be taken into account when I 
+will send a v2 for patches you have commented on.
+
+CJ
