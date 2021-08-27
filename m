@@ -2,125 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075293F9701
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1533F9751
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244842AbhH0Jar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244818AbhH0Jaf (ORCPT
+        id S244917AbhH0JkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:40:13 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:32905 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244972AbhH0Jjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:30:35 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC524C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:29:45 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id b6so9372536wrh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1xUF9cH5LkIQ+vY1rJ84NxUnxKCkjh40P+zqUVE+ais=;
-        b=eUa51EalOnCi+1Lc9AW3VuuFcgX8DMEMXIhAIbm9blwTlLLVAxGh1MU8emI1K3hp4g
-         04JuoN/Nar/afYf5kIDWIiSW9RN9cwO+PmCNPmkx4IUGxepcKgRopwE93fkk9oXQy6gH
-         SH1i30vnk591WtkFOwXL9jHw17Z4i4JguGqhLMzFEYxQPXx29I2nkoLRfIcV3n1LjePZ
-         /5ZouUKNV2p2uCl0iYhlyjLOu0UNvfUdNeTuvMoIbBsiSrV//Ne1iXZS46sAmf44Wh0H
-         HmdxQX0gc1A7RArj1DcuDvQoQjJzw3fXuBxLzSoOg6kWQrVPAZw/7yb1LnDEml9oOq95
-         L4wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1xUF9cH5LkIQ+vY1rJ84NxUnxKCkjh40P+zqUVE+ais=;
-        b=GGoWES13O82JvusAtBcA6BeGJgrxYaUWTFDFuWXeIpWOWMRuuK5YJ9Q4UpLjM1AF0z
-         cNx095drz/W4Az3dWZUeCd3zlp96R41pNg3U8Blj5KuvQaz8gfy8JdduLqPtzEWlAt12
-         OQdHx3/8T6ohitOrvDoxG2u5iOJHyUR9mXGYedM9RD4nLLxkhilGJO/QpYx62prUfuWm
-         xB1ukD4aWMCavT2gwrcWDyLzcH3iPqEuRRELzMp9bHL6i+YvnqDRjAoap8TFV769ccgP
-         yjzzHMsCVb2fIiTV/8Gj2wR4J3vAaM+qTmYguXQs4AqnTZXPfvSYGXK0/NmdQDvNuE4B
-         FKOQ==
-X-Gm-Message-State: AOAM532VgV6ICDDsHK4lEbW1/XU2J8EXjCtpa6GSUrmNFJwfV0MPLOuT
-        bpJzViRCxAdbUc2HNjwY/KR9ew==
-X-Google-Smtp-Source: ABdhPJz07gsE3HRVZao/zMs1UTazUDypn/B827ah8dCDRUNWK9ebZjINVlN2pzpQrahmQUH1n5Hi2w==
-X-Received: by 2002:adf:914e:: with SMTP id j72mr9256929wrj.218.1630056584407;
-        Fri, 27 Aug 2021 02:29:44 -0700 (PDT)
-Received: from jackdaw.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id s13sm11048515wmc.47.2021.08.27.02.29.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 02:29:44 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jack Pham <jackp@codeaurora.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Subject: [PATCH] usb: gadget: u_audio: fix race condition on endpoint stop
-Date:   Fri, 27 Aug 2021 11:29:27 +0200
-Message-Id: <20210827092927.366482-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.33.0
+        Fri, 27 Aug 2021 05:39:49 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210827093858epoutp02c89b97df632a17192e4e929d1eb5575b~fIFS5sZQf2986829868epoutp02B
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:38:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210827093858epoutp02c89b97df632a17192e4e929d1eb5575b~fIFS5sZQf2986829868epoutp02B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1630057138;
+        bh=bF2FPIkqfoDCrBEfXOkuYTk7alY50X8qdPwe7039LkA=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Bhm2uh3VRPC9v/h0gPZDHq/qHxsmSXzFXQSA1F3SJ1NEwb8yTZ8GQbwwnJR7NLxlN
+         iCGAchVBtzr+qtpgHRLFkmtAmqKKEGaVnXzvvf/SW+tYVi5In7uhpIXqjjAlj2sk3K
+         rfKklF+QOu+NG8FMIhwt1eh0EXh4VwhzphwUGJQQ=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210827093857epcas1p12370a4e0ff321d51f97153be5e7cffeb~fIFSVDFBq0892308923epcas1p1Z;
+        Fri, 27 Aug 2021 09:38:57 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.38.250]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Gwvmc1Rgtz4x9Q6; Fri, 27 Aug
+        2021 09:38:56 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        93.EA.10095.FA2B8216; Fri, 27 Aug 2021 18:38:56 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210827093855epcas1p4ac8e34d779fe30de3e03bcadedcb66c8~fIFQUmXm72033020330epcas1p4X;
+        Fri, 27 Aug 2021 09:38:55 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210827093855epsmtrp11f948ee91b7456004d861dffc77570cb~fIFQT30RY2278822788epsmtrp18;
+        Fri, 27 Aug 2021 09:38:55 +0000 (GMT)
+X-AuditID: b6c32a38-691ff7000000276f-df-6128b2afcefc
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        98.03.08750.FA2B8216; Fri, 27 Aug 2021 18:38:55 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.100.232]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210827093855epsmtip244f62cb1f6d68bdfc64d05250cc868ff~fIFQFBXqe1769117691epsmtip2g;
+        Fri, 27 Aug 2021 09:38:55 +0000 (GMT)
+From:   Chanwoo Lee <cw9316.lee@samsung.com>
+To:     chaotian.jing@mediatek.com, ulf.hansson@linaro.org,
+        matthias.bgg@gmail.com, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
+        dh0421.hwang@samsung.com, sh043.lee@samsung.com,
+        ChanWoo Lee <cw9316.lee@samsung.com>
+Subject: [PATCH] mmc: mtk-sd: Remove unused parameters(mrq)
+Date:   Fri, 27 Aug 2021 18:31:19 +0900
+Message-Id: <20210827093119.32481-1-cw9316.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLJsWRmVeSWpSXmKPExsWy7bCmvu6GTRqJBu8WMVlcuzWfzWLGqTZW
+        i33XTrJb/Pq7nt1ix/Mz7BabHl9jtbi8aw6bxeXmi4wWR/73M1o0tRhbNP3Zx2JxfG24A4/H
+        zll32T3uXNvD5rF5Sb1Hy8n9LB59W1YxenzeJBfAFpVtk5GamJJapJCal5yfkpmXbqvkHRzv
+        HG9qZmCoa2hpYa6kkJeYm2qr5OIToOuWmQN0oZJCWWJOKVAoILG4WEnfzqYov7QkVSEjv7jE
+        Vim1ICWnwKxArzgxt7g0L10vL7XEytDAwMgUqDAhO+NJz332gqmcFR+v/WBrYNzD3sXIySEh
+        YCJxYcIEpi5GLg4hgR2MEttmPGSGcD4xSly6c5QVpEpI4DOjxOoTTjAda1duhiraxSixbsoC
+        KOcLo8S5xzcZuxg5ONgEtCRuH/MGiYsIXGeUaNuwkwXEYRboYpT4dbCLBWSUsIC1xMympWCH
+        sAioSvx5cBVsHS9QfN7HRUwQ6+Ql/tzvYYaIC0qcnPkErJcZKN68dTbYZgmBn+wS/zrusEA0
+        uEhs+nKHEcIWlnh1fAvUp1ISL/vb2CEamhklTs0+B+W0MEq8vnIDqspY4tPnz2A/MAtoSqzf
+        pQ8RVpTY+XsuI8RmPol3X3tYQUokBHglOtqEIEpUJOZ0nWOD2fXxxmNWCNtD4uzDK+yQcIyV
+        aH49jXUCo/wsJP/MQvLPLITFCxiZVzGKpRYU56anFhsWmMDjNTk/dxMjOJ1qWexgnPv2g94h
+        RiYOxkOMEhzMSiK8C76rJQrxpiRWVqUW5ccXleakFh9iNAWG8ERmKdHkfGBCzyuJNzSxNDAx
+        MzKxMLY0NlMS52V8JZMoJJCeWJKanZpakFoE08fEwSnVwGS99HL81IfbJ95xSlkTMvebANs5
+        s4dxN4WOXNbRU5qe6/Vh+c1dZ751XVY0qe/jMuK27X3lcfKqcXtZwXNmx9CIRi2bh+de/N8c
+        9urueh+7iElVDDM5A6da96YZliecC32/yNmXPX/NM6sPN7ONH1/5Izhf/9jVuZuONiz7Ee2+
+        9KS+/WztlX/vmU9X1T8uek5i1YVPzLt/ti3689FRX8BGclNIk1wJj1sA0xuJQ8suC21L8Hf/
+        c6U6r/HFFGGp/8GRFr5yKRHrrH7aLnfs2fZRYtvWwyL5BQvLe661GS2dYRU+575rXMma278u
+        /ela6GXbIL9AM9Bd9M+HgBTbwOPHzBvSroUIirgIGUwwvqbEUpyRaKjFXFScCACSkIZSMAQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFLMWRmVeSWpSXmKPExsWy7bCSvO76TRqJBi8+y1tcuzWfzWLGqTZW
+        i33XTrJb/Pq7nt1ix/Mz7BabHl9jtbi8aw6bxeXmi4wWR/73M1o0tRhbNP3Zx2JxfG24A4/H
+        zll32T3uXNvD5rF5Sb1Hy8n9LB59W1YxenzeJBfAFsVlk5Kak1mWWqRvl8CV8aTnPnvBVM6K
+        j9d+sDUw7mHvYuTkkBAwkVi7cjNzFyMXh5DADkaJrv8ToRJSErv3n2frYuQAsoUlDh8uhqj5
+        xChx+8ghVpA4m4CWxO1j3iBxEYG7jBJL5uxhBXGYBSYwSiy+8pYZZJCwgLXEzKalYENZBFQl
+        /jy4ygpi8wLF531cxASxTF7iz/0eZoi4oMTJmU9YQGxmoHjz1tnMExj5ZiFJzUKSWsDItIpR
+        MrWgODc9t9iwwCgvtVyvODG3uDQvXS85P3cTIzi4tbR2MO5Z9UHvECMTB+MhRgkOZiUR3gXf
+        1RKFeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKanZpakFoEk2Xi4JRqYJrFZOZ+
+        9nHUUul/T3hdr5U9mMLymr1ePPrl2c/v6vOmR7/rnXQuqVM3/1fzzsoPvInS785yzpvkZmW8
+        vnzykbj9jx9d95hk+zXEJ47FIZL74BNRiVPzdDZqzn/97uD6sK3dt/YfnRCarXvhcraLaetN
+        VjHuqezz+Y5ruF2Wz/dvzMjbNz/u4NRX5teduzn3fuHLrlO0U5m840ikiGjl55lyU7U/flAN
+        TpR2bRDQDA2WO9BXZVixUvVT4DReFYW/35ctsppYfoVF9PwDs99FP7R3/X92+kK+n5Amb4tn
+        hkCreIBLbktIlWzIF34zH6+9th/XHAxorr14lNn4rr1yHPebKOdbYav3FIZMUZr5WImlOCPR
+        UIu5qDgRAGikdwzdAgAA
+X-CMS-MailID: 20210827093855epcas1p4ac8e34d779fe30de3e03bcadedcb66c8
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210827093855epcas1p4ac8e34d779fe30de3e03bcadedcb66c8
+References: <CGME20210827093855epcas1p4ac8e34d779fe30de3e03bcadedcb66c8@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the endpoint completion callback is call right after the ep_enabled flag
-is cleared and before usb_ep_dequeue() is call, we could do a double free
-on the request and the associated buffer.
+From: ChanWoo Lee <cw9316.lee@samsung.com>
 
-Fix this by clearing ep_enabled after all the endpoint requests have been
-dequeued.
+The mmc_request structure(*mrq) is not used. //msdc_cmd_find_resp
+I remove the unnecessary code related to the mmc_request structure.
 
-Fixes: 7de8681be2cd ("usb: gadget: u_audio: Free requests only after callback")
-Reported-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
 ---
- drivers/usb/gadget/function/u_audio.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mmc/host/mtk-sd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/u_audio.c b/drivers/usb/gadget/function/u_audio.c
-index 63d9340f008e..9e5c950612d0 100644
---- a/drivers/usb/gadget/function/u_audio.c
-+++ b/drivers/usb/gadget/function/u_audio.c
-@@ -394,8 +394,6 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
- 	if (!prm->ep_enabled)
- 		return;
- 
--	prm->ep_enabled = false;
--
- 	audio_dev = uac->audio_dev;
- 	params = &audio_dev->params;
- 
-@@ -413,6 +411,8 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
- 		}
- 	}
- 
-+	prm->ep_enabled = false;
-+
- 	if (usb_ep_disable(ep))
- 		dev_err(uac->card->dev, "%s:%d Error!\n", __func__, __LINE__);
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 4dfc246c5f95..813f57f6d9cc 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -961,7 +961,7 @@ static void msdc_set_mclk(struct msdc_host *host, unsigned char timing, u32 hz)
  }
-@@ -424,8 +424,6 @@ static inline void free_ep_fback(struct uac_rtd_params *prm, struct usb_ep *ep)
- 	if (!prm->fb_ep_enabled)
- 		return;
  
--	prm->fb_ep_enabled = false;
--
- 	if (prm->req_fback) {
- 		if (usb_ep_dequeue(ep, prm->req_fback)) {
- 			kfree(prm->req_fback->buf);
-@@ -434,6 +432,8 @@ static inline void free_ep_fback(struct uac_rtd_params *prm, struct usb_ep *ep)
- 		prm->req_fback = NULL;
- 	}
+ static inline u32 msdc_cmd_find_resp(struct msdc_host *host,
+-		struct mmc_request *mrq, struct mmc_command *cmd)
++		struct mmc_command *cmd)
+ {
+ 	u32 resp;
  
-+	prm->fb_ep_enabled = false;
-+
- 	if (usb_ep_disable(ep))
- 		dev_err(uac->card->dev, "%s:%d Error!\n", __func__, __LINE__);
- }
+@@ -997,7 +997,7 @@ static inline u32 msdc_cmd_prepare_raw_cmd(struct msdc_host *host,
+ 	 * stop << 14 | rw << 13 | dtype << 11 | rsptyp << 7 | brk << 6 | opcode
+ 	 */
+ 	u32 opcode = cmd->opcode;
+-	u32 resp = msdc_cmd_find_resp(host, mrq, cmd);
++	u32 resp = msdc_cmd_find_resp(host, cmd);
+ 	u32 rawcmd = (opcode & 0x3f) | ((resp & 0x7) << 7);
+ 
+ 	host->cmd_rsp = resp;
 -- 
-2.33.0
+2.29.0
 
