@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC353F9B8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668EC3F9B91
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245434AbhH0PS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234186AbhH0PS1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:18:27 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA0AC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:17:38 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id i3so4116161wmq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:17:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9Mvy+Kbt7FAmEXf5iwc1sFwbqDbGbF7nehIGohDWrG0=;
-        b=CPUBlUiWu6BJlUaFoHuakqhLmrV9VcgXzW1bdjPLtSDZoKKCDDJP0DH2HlI1FyBc7u
-         KYBg6AvQ5KKL8Geflv01OJOlCVGuGRMH9n9Ecb31E60MydDc9xPMRl54O58P7Okm0zFk
-         1vk1cW8B+jmcGTjYMXarcaQ/IGGJQCrSfjJGNqMnqu7NJUR4h3jxUwQoHt8TAjhxjVfJ
-         KkPDstdPZSlVaapplBGYO/IPsBrAB+olVFAueyQXeLVL7sIUmJudc9oJOt8jAlPjb3RQ
-         bUhtzsgdJ/6bmatU82pAjyTl838tmcR4j6RGOGwB4klDAkH8iBAAQCqiOxdwtWG8FLBC
-         BGig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9Mvy+Kbt7FAmEXf5iwc1sFwbqDbGbF7nehIGohDWrG0=;
-        b=TWCnyYfQvjhIefSkGITmF3pczcWf2CCHv8IgqFNIcaQwA1Lc6hokJLt4ZrRVLqu/qj
-         By3Hy1d6VBFWofsTwAh4hXHdW5qwUEW5fkzKqez5HLcFXxspq0cF1OcX5tqef8MdeChl
-         QEQJalrOT2EyBjmv87DW2lOWVeVlmYT+CxJYiz/YQahd+VEGS3e2kPzaEL5NANEgHRdM
-         aQkc1xzjLwhshF9BvUCdxq2dsYPJBn5C1jN6RrBVHHfIXVbc7juCAJorrgIbSmXYV9Q8
-         fnwOQsGRFOG3Nitwd5KwfYOTBDw3LBL18vkjl7ZRGIn4jiQsWvhBTR6iCp4SPIxEsi6r
-         w1MA==
-X-Gm-Message-State: AOAM531BwUOG9MTJ7HCwFHKA6+7CWr9zR1VzYqp2H+sdA9akIRHc+o0o
-        ifEFv7t5RiKNtlCRspaqCMY=
-X-Google-Smtp-Source: ABdhPJxL4AYwJNhnzlaVxDWG97HQPWd13eHcTNDpgZmUZxaxBQKuXLHDIrd8kfh3kgR3U7uBQlCwCg==
-X-Received: by 2002:a05:600c:4e8a:: with SMTP id f10mr9568594wmq.84.1630077457076;
-        Fri, 27 Aug 2021 08:17:37 -0700 (PDT)
-Received: from agape.jhs ([5.171.72.80])
-        by smtp.gmail.com with ESMTPSA id r4sm5074422wmq.10.2021.08.27.08.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 08:17:36 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 17:17:34 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        gregkh@linuxfoundation.org, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v3] staging: r8188eu: Provide a TODO file for this driver
-Message-ID: <20210827151733.GA1426@agape.jhs>
-References: <20210827100813.18610-1-fmdefrancesco@gmail.com>
- <a6265f77-cc21-878e-4980-272202fa5415@lwfinger.net>
+        id S245456AbhH0PTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:19:12 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:49636 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245404AbhH0PTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 11:19:09 -0400
+Received: from zn.tnic (p200300ec2f1117008c66b42124dc6a0e.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:8c66:b421:24dc:6a0e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 661E41EC0493;
+        Fri, 27 Aug 2021 17:18:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630077493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ZslriKHxbCHlChlqpQpN8Ct1kTFVcJmfBH1i2TOMis0=;
+        b=dS9d0tdMHelX7BeSkD5dirk3h3ErCw77WLAuqdv85ajmebrGqQhIMoW5u1vhc6oTuaqaKy
+        LjB5nMNTRp8Q3EzgAOD0U+X0ai7Hy9JvEQKMg2IlniiG9AWAWuejj0XN486YyVD21OT7fs
+        +wU9HdR9Y57TbcWeSNGREZ1ynEyPloE=
+Date:   Fri, 27 Aug 2021 17:18:49 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 32/38] x86/sev: enable SEV-SNP-validated CPUID
+ in #VC handlers
+Message-ID: <YSkCWVTd0ZEvphlx@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-33-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a6265f77-cc21-878e-4980-272202fa5415@lwfinger.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210820151933.22401-33-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Larry,
-
-On Fri, Aug 27, 2021 at 10:00:16AM -0500, Larry Finger wrote:
-> On 8/27/21 5:08 AM, Fabio M. De Francesco wrote:
-> > +* Switch to use LIB80211.
-> > +* Switch to use MAC80211.
+On Fri, Aug 20, 2021 at 10:19:27AM -0500, Brijesh Singh wrote:
+> From: Michael Roth <michael.roth@amd.com>
 > 
-> You totally ignored my comment of yesterday!!!!! The driver will be
-> converted to use CFG80211 - not eirher of those you quote, unless you are
-> planning to convert to use mac80211. I am not.
+> This adds support for utilizing the SEV-SNP-validated CPUID table in
 
-I think Fabio took inspiration from other staging rtl* TODO files,
-(i.e. rtl8723bs which already supports cfg80211) where those items
-are listed and it's not related with the work you are donig
-with cfg80211.  
+s/This adds support for utilizing/Utilize/
 
-> 
-> Larry
-> 
+Yap, it can really be that simple. :)
 
-thank you,
+> the various #VC handler routines used throughout boot/run-time. Mostly
+> this is handled by re-using the CPUID lookup code introduced earlier
+> for the boot/compressed kernel, but at various stages of boot some work
+> needs to be done to ensure the CPUID table is set up and remains
+> accessible throughout. The following init routines are introduced to
+> handle this:
 
-fabio
+Do not talk about what your patch does - that should hopefully be
+visible in the diff itself. Rather, talk about *why* you're doing what
+you're doing.
+
+> sev_snp_cpuid_init():
+
+This one is not really introduced - it is already there.
+
+<snip all the complex rest>
+
+So this patch is making my head spin. It seems we're dancing a lot of
+dance just to have our CPUID page present at all times. Which begs the
+question: do we need it during the whole lifetime of the guest?
+
+Regardless, I think this can be simplified by orders of
+magnitude if we allocated statically 4K for that CPUID page in
+arch/x86/boot/compressed/mem_encrypt.S, copied the supplied CPUID page
+from the firmware to it and from now on, work with our own copy.
+
+You probably would need to still remap it for kernel proper but it would
+get rid of all that crazy in this patch here.
+
+Hmmm?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
