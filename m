@@ -2,97 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6933F914F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 02:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965843F9152
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 02:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243837AbhH0A1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 20:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhH0A1W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 20:27:22 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844A8C061757;
-        Thu, 26 Aug 2021 17:26:34 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id s21-20020a4ae495000000b0028e499b5921so1496527oov.12;
-        Thu, 26 Aug 2021 17:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pnwBhL+bIRZ+1AujOyithEsycI0iSDtmHs6X+/x+Fhc=;
-        b=sBP1y9OgvieB5CccQH32mPE+X+ashq9FrlnUIlsj20FzDRksOusy3AEq18QQTjGlTN
-         j7HCMqzoDTKGUfxl+NjSTSPWAUvFySjZO2ED4rFuZfmfE1hI6G1UxrJ+xMKI6/Q8ot8S
-         Sm1unDbFtNAXi53kHjGwYPwHpcpv93aMMdzCexVagDs0dEy6PmXV9BWlHWVWJrBKn2Jn
-         EnWBCmWzEhsA6E9EqeyVzjiW0afuEbMkhoV+ivtaNJW8PaDxbtZr/xwdBRfdeY0D/S86
-         HUhj6QWPmCd3lNBSskZ67qX+MG9QVqCHfVaCI+HGe84L3JR3YSDQtuQ4mlLI5azhbI50
-         YxGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pnwBhL+bIRZ+1AujOyithEsycI0iSDtmHs6X+/x+Fhc=;
-        b=anoBQSwBHflfgaX5kbSsRaRh8R8BeVqXiXb4x4iYuc8xYtG0L8w1oCTv1xHGxmu3Qt
-         kQe9pRDk3DaGpmqTW4m2nlxtM1REdN8u7tYRtiyFSglIzZ1jkb3zsAPESIsq7FqJIWx6
-         tL+/R06izYrKoBxVnSTW/cAj2U+3g4G19AhWuT6fcbR+OPQsvMTlt7T6M3RjyZIkhWb7
-         okPVqdYpMJXh1C92KUVBsiAcMwBANHq73LdIgQvrRNdoaawUy0+7jXMZGFdOmi/JLxuf
-         WRbV5jKLFU80G8hVjJFQVhYTaa5WHMV4AbSxDBfJMlKTD4CdkE68oXC70KT8OZpSpAEm
-         8afw==
-X-Gm-Message-State: AOAM533nl1W1cUWdj+RqXLYZj5iNBot4iYN9x9WhxA9lbDFE18rxiT+P
-        pinFXA/jQdyhDLRiGEcynbqS1syPYEekixKuhU+KVyT+sY1eNsQH
-X-Google-Smtp-Source: ABdhPJzaoHbOjah8e/X215Kp/Z3xDTS2cp8NQupcSAzhDxBFPFu/G55Fo9UBoorbueobdipf4Ayxle3exSXBftAU5DA=
-X-Received: by 2002:a4a:5742:: with SMTP id u63mr5507687ooa.87.1630023993563;
- Thu, 26 Aug 2021 17:26:33 -0700 (PDT)
+        id S243863AbhH0A3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 20:29:33 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:54359 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230522AbhH0A3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 20:29:32 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwgYk0Gxwz9sVq;
+        Fri, 27 Aug 2021 10:28:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630024123;
+        bh=ba/WX581s3nrnsRLf23mdp32UzwwN0XGlSwedK1OmqA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=O+UDBGuHfNTr3cc4y236nGvtcLrz7yZsdGP9QGU/xn8aWZpH7RxWUPqI8LFoI9/IK
+         CBgW8OJ3XU/01e3mDBiz+5g79TWigohsJv3QIyXivDMifoDDMrCZZeAc/OzU4qc076
+         b7xXPq+J/xFfxXUVBSmnghxBKTAEyoNBd/wbcGugFRXNb6pCPJk5DdDtP2PW9mK6v7
+         eheSJAPYfJszGZgk6c5CyPQhD62BojE1uhtWgICyIiTezkyRzc+32PIfNRwp9GKMMP
+         FIgov8Pn39VY2eawI2A5ip6tbAgxgqam/BmKGNpe0j4jzVanIW/+vCZligunalLDtc
+         b9KmVpMuv4yqA==
+Date:   Fri, 27 Aug 2021 10:28:40 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>
+Cc:     Eric Biggers <ebiggers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the f2fs tree
+Message-ID: <20210827102840.386cdf1b@canb.auug.org.au>
+In-Reply-To: <20210723111119.6b2bf2ca@canb.auug.org.au>
+References: <20210723111119.6b2bf2ca@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210826141623.8151-1-kerneljasonxing@gmail.com>
- <00890ff4-3264-337a-19cc-521a6434d1d0@gmail.com> <860ead37-87f4-22fa-e4f3-5cadd0f2c85c@intel.com>
- <CAL+tcoCovfAQmN_c43ScmjpO9D54CKP5XFTpx6VQpwJVxZhAdg@mail.gmail.com> <da5da485-9dc7-e731-a8d9-f5ad7c7dffde@gmail.com>
-In-Reply-To: <da5da485-9dc7-e731-a8d9-f5ad7c7dffde@gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Fri, 27 Aug 2021 08:25:57 +0800
-Message-ID: <CAL+tcoCyYeb+ppM4gBU3MZWKcm4513J49QNu2yLjY2O8-KaRog@mail.gmail.com>
-Subject: Re: [PATCH v4] ixgbe: let the xdpdrv work with more than 64 cpus
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/=zd67Dy6Or6wtgpygpXKrqt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 2:19 AM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->
->
->
-> On 8/26/21 10:03 AM, Jason Xing wrote:
->
-> >
-> > Honestly, I'm a little confused right now. @nr_cpu_ids is the fixed
-> > number which means the total number of cpus the machine has.
-> > I think, using @nr_cpu_ids is safe one way or the other regardless of
-> > whether the cpu goes offline or not. What do you think?
-> >
->
-> More exactly, nr_cpu_ids is the max number cpu id can reach,
-> even in presence of holes.
->
-> I think that most/many num_online_cpus() in drivers/net are simply broken
-> and should be replaced by nr_cpu_ids.
->
+--Sig_/=zd67Dy6Or6wtgpygpXKrqt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you, Eric, really. I nearly made a terrible mistake.
+Hi all,
 
-> The assumptions of cpus being nicely numbered from [0 to X-1],
-> with X==num_online_cpus() is wrong.
+On Fri, 23 Jul 2021 11:11:19 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> Same remark for num_possible_cpus(), see commit
-> 88d4f0db7fa8 ("perf: Fix alloc_callchain_buffers()") for reference.
+> After merging the f2fs tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> fs/f2fs/data.c: In function 'f2fs_write_failed':
+> fs/f2fs/data.c:3144:27: error: 'mapping' undeclared (first use in this fu=
+nction)
+>  3144 |   filemap_invalidate_lock(mapping);
+>       |                           ^~~~~~~
+>=20
+> Caused by commit
+>=20
+>   ceddc02b7613 ("f2fs: make f2fs_write_failed() take struct inode")
+>=20
+> interacting with commit
+>=20
+>   edc6d01bad73 ("f2fs: Convert to using invalidate_lock")
+>=20
+> from the ext3 tree.
+>=20
+> I have applied the following merge fix patch.
+>=20
+
+This fix up patch is now:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 27 Aug 2021 10:10:01 +1000
+Subject: [PATCH] fxup for "f2fs: Convert to using invalidate_lock"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/f2fs/data.c | 4 ++--
+ fs/f2fs/file.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index b03ec36cce1c..0facb5eb0acb 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -3260,12 +3260,12 @@ static void f2fs_write_failed(struct inode *inode, =
+loff_t to)
+ 	/* In the fs-verity case, f2fs_end_enable_verity() does the truncate */
+ 	if (to > i_size && !f2fs_verity_in_progress(inode)) {
+ 		down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+-		filemap_invalidate_lock(mapping);
++		filemap_invalidate_lock(inode->i_mapping);
+=20
+ 		truncate_pagecache(inode, i_size);
+ 		f2fs_truncate_blocks(inode, i_size, true);
+=20
+-		filemap_invalidate_unlock(mapping);
++		filemap_invalidate_unlock(inode->i_mapping);
+ 		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+ 	}
+ }
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 884a165e70eb..9c8ef33bd8d3 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -1112,7 +1112,7 @@ static int punch_hole(struct inode *inode, loff_t off=
+set, loff_t len)
+ 			blk_end =3D (loff_t)pg_end << PAGE_SHIFT;
+=20
+ 			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+-			filemap_invalidate_lock(mapping);
++			filemap_invalidate_lock(inode->i_mapping);
+=20
+ 			truncate_pagecache_range(inode, blk_start, blk_end - 1);
+=20
+@@ -1120,7 +1120,7 @@ static int punch_hole(struct inode *inode, loff_t off=
+set, loff_t len)
+ 			ret =3D f2fs_truncate_hole(inode, pg_start, pg_end);
+ 			f2fs_unlock_op(sbi);
+=20
+-			filemap_invalidate_unlock(mapping);
++			filemap_invalidate_unlock(inode->i_mapping);
+ 			up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+ 		}
+ 	}
+--=20
+2.32.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=zd67Dy6Or6wtgpygpXKrqt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEoMbgACgkQAVBC80lX
+0GwChAgAoqZc+XTR+YgJAbXa5v7L826LVZhfQVHAqkBHqiEUqVEfxBSu/SyR7zFr
+JrnoCflv21w2T8WVXTI0JJTg75dDC1s2qenIgx6I7fXQeoJEAqQyWQiR9NuWjAqT
+eP3QhA3+I6f2E2uI8jUvKdhnhffkEr8el77RQ+viGOuj4VD+Ph+pNtuDJwnRNv59
+wDcZ82aOKQWG74s2pbXexKNfqI+nYol9zzTCY4zLJ/XyyaR60/uGON/LAxbz4VPd
+e4itzX8BhpJe5f8tArrjDIXiCRS7lrfwambE8B3FyY8/vHNFh/vXq7JxU58OnfCJ
+8QPEWQqE1J+fph2MCaNLS9LEUF3FRQ==
+=5Ob8
+-----END PGP SIGNATURE-----
+
+--Sig_/=zd67Dy6Or6wtgpygpXKrqt--
