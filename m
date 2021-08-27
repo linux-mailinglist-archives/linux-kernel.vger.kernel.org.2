@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0DF3F9F52
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3868D3F9F55
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhH0S4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 14:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhH0S4b (ORCPT
+        id S230384AbhH0S5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 14:57:44 -0400
+Received: from mail-oo1-f54.google.com ([209.85.161.54]:34464 "EHLO
+        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhH0S5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 14:56:31 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C44EC061757;
-        Fri, 27 Aug 2021 11:55:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=29EMebI8fVZxvSV7znbN64wsv6+EiNoWIskTvZ79R/I=; b=zlFo3gJSSk9TErlt5pKfkCDZ9R
-        AJL9XJkGVu1dNyQjPC6KhYgdRT6BPlnoAQQoC2uDUW9BPjEJslyXyQi0ckfY4xJjyRE+9FAkKRbXi
-        vCGwC44tNE5qZaYMt1Hf1DwDBldJXTpxAjfN3w63Lb8tv84kK+6VP46hnZdkJm1vLzdNztgU4lHfJ
-        O014zdxZ3PuBrtYH+OHCI/2G6xOc1SM0EYMDUWFHTyp64gLizYxYsSkwtZK2LG4ERPuXbNNPAA7Fo
-        Vz+JcjoSbCdh12r2Os8ua9os5AQ2SaVqCICNJim0Cjph8UBOCeIGzn3ZbXDzPxC9aEhm4OhaxEwNl
-        5Yg7APZw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJh0U-00CzW8-NG; Fri, 27 Aug 2021 18:55:14 +0000
-Date:   Fri, 27 Aug 2021 11:55:14 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
-        dm-devel@redhat.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/10] dm: add add_disk() error handling
-Message-ID: <YSk1EhUIr9OjIoVv@bombadil.infradead.org>
-References: <20210823202930.137278-1-mcgrof@kernel.org>
- <20210823202930.137278-9-mcgrof@kernel.org>
- <YSSP6ujNQttGN2sZ@infradead.org>
+        Fri, 27 Aug 2021 14:57:43 -0400
+Received: by mail-oo1-f54.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso1306788oon.1;
+        Fri, 27 Aug 2021 11:56:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=IVgojgnGhqQ+wkgkjmsrimQe5aqsGL34JdBENArlM/M=;
+        b=HRsIau2cInvstsRF9MZ+4xIr7FLeiVeBgNybfCN+nXiAByADTbAYKmI3AOO96tY+yT
+         fkJuvCTy/eDvm/Jl52EsGlN0ibVh1rUs952klOjFqR8TdpXZ8+6SGyGsIF2NtW3u6Eim
+         pijGbd59dhmFqmO3vQrBKqvpYIkkX6/ZmHhKSuDwOdPklm/1aJRgOOFVotW0hc7VGq2Y
+         b3YbLbghCOl5pOBlwUu8V316YIeVEBlXnQuQ6QTLVMoXiW8cq0biqhA+rvvzFA+LdNAa
+         kGhv3D1pXhChlbeu2GW446Z59zzBtL+nVltXiMFkbipDLv1L6+7XFGIii0yoOhouzVxt
+         09uA==
+X-Gm-Message-State: AOAM5319dd7CWf5ilsUAdfaPiFv9jaUW1tAXWO9C9JX/J8HQUPrQJnYN
+        4JVV0F659BJqdPb+vidHLMq3CTUqEYG/7buzYz+WC3pXvttmvA==
+X-Google-Smtp-Source: ABdhPJzwzdphUl+0nAfGpPcPOTLFkW86A5/1abHeqIpo6qbEZTXN4mWTCkLUVggDnfobi52p5e/TaD15urSJKaExsJc=
+X-Received: by 2002:a4a:ca83:: with SMTP id x3mr234892ooq.2.1630090613467;
+ Fri, 27 Aug 2021 11:56:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSSP6ujNQttGN2sZ@infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 27 Aug 2021 20:56:42 +0200
+Message-ID: <CAJZ5v0hxquKvcHR_YYd+csGWwHB5HW2uXMYtM=uT5QDqFLH8ew@mail.gmail.com>
+Subject: [GIT PULL] ACPI fix for v5.14-rc8
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 07:21:30AM +0100, Christoph Hellwig wrote:
-> On Mon, Aug 23, 2021 at 01:29:28PM -0700, Luis Chamberlain wrote:
-> > -	add_disk(md->disk);
-> > +	r = add_disk(md->disk);
-> > +	if (r)
-> > +		goto out_cleanup_disk;
-> >  
-> >  	r = dm_sysfs_init(md);
-> > -	if (r) {
-> > -		del_gendisk(md->disk);
-> > -		return r;
-> > -	}
-> > +	if (r)
-> > +		goto out_del_gendisk;
-> >  	md->type = type;
-> >  	return 0;
-> > +
-> > +out_cleanup_disk:
-> > +	blk_cleanup_disk(md->disk);
-> > +out_del_gendisk:
-> > +	del_gendisk(md->disk);
-> > +	return r;
-> 
-> I think the add_disk should just return r.  If you look at the
-> callers they eventualy end up in dm_table_destroy, which does
-> this cleanup.
+Hi Linus,
 
-I don't see it. What part of dm_table_destroy() does this?
+Please pull from the tag
 
-  Luis
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.14-rc8
+
+with top-most commit 294c34e704e78d641b039064ce72d4531afe0088
+
+ media: ipu3-cio2: Drop reference on error path in cio2_bridge_connect_sensor()
+
+on top of commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
+
+ Linux 5.14-rc7
+
+to receive an ACPI fix for 5.14-rc8 (or final 5.14).
+
+This fixes an ACPI-related regression introduced during this cycle that has
+been partially addressed by an earlier commit (Andy Shevchenko).
+
+Thanks!
+
+
+---------------
+
+Andy Shevchenko (1):
+      media: ipu3-cio2: Drop reference on error path in
+cio2_bridge_connect_sensor()
+
+---------------
+
+ drivers/media/pci/intel/ipu3/cio2-bridge.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
