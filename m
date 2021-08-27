@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1773F95E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E883F95F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244552AbhH0IVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:21:46 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:34793 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244530AbhH0IVm (ORCPT
+        id S244573AbhH0IWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 04:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244499AbhH0IWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:21:42 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 463662B0142E;
-        Fri, 27 Aug 2021 04:20:52 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 27 Aug 2021 04:20:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=qPmrQKanbShS42+hXFrS7JgTioo
-        HTRBUwifdJWUMxeg=; b=m8LoJh9P9rieXbPgqisf1vNYn6CAd1yEyNqzj5nlwhU
-        DUNeZ3q2Ts65L17zIiIfJ8e3baBN+w52PCPa6m+pYscsRMNz2CDCm62aIO89RneA
-        tM88udF6jk1IepAa8aQGTICoO+ci5Gjqh0/JUYzfXsO5R71Ft9E6xAUlLDDTovQO
-        JhwxfCtvFFE0xvSI0NHlNmyCwvz9Zjtle81pzEZXefQrL2pCbUSreYtK9GppZObK
-        cXI93BPC0DZLoCHZTdyqlveRLHcydj2ek/9OyUtSgX1GlYVdJEIRDhUi9ji5NFnd
-        AWvnlplRURhwSnkU+E0fk/b0Mc9FYkeRJiBxMGczTwQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=qPmrQK
-        anbShS42+hXFrS7JgTiooHTRBUwifdJWUMxeg=; b=e0ewvdV0BF2moCU5Wnb+BX
-        Ct3ccd7T9a/UdlHe26ZW90ReuZePH/rMr5muxm5FknixXSmzgGzcJcKZBxLCb9UT
-        K5WgeXdmqkespssjDkPN6SGDtcnJ9q2c0JiOcekagNdNX7mWRd3YRPCpQXxSKh6t
-        V0EIVzsSNLBp9UciZ7ZZqqgtfSFbTACifWbcKMFmED8q8YHU/+1e3Srt64S06rMg
-        xj0Jq5dYA/N2+uhvFV2e2ew1bl3OQ4VhLgWoO/KlBkUSXHpGe+Dbr2bos3IhahqM
-        gof3AZ3ak8tsFR17YRCbTR3u5xY6g2EwTEE9lHrKvramDto1sEFmvsIjCV2hVlUA
-        ==
-X-ME-Sender: <xms:YqAoYaLO4VnUAqDGhY4xBlHyOIA29MysOk6O3BEi6k3ClvJHgiQrrw>
-    <xme:YqAoYSKjGGZADAXUbCq45bqQTFl8f8WmyNjqIsOxoBxBSdnrsiXMqn1pk_IuqKT35
-    BeolzycZEelSg>
-X-ME-Received: <xmr:YqAoYatZxnGtcqTIhTw2H-ByYozbbcVnyvRhrIz-0sfINqCF8T949zJm>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddufedgtdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:YqAoYfY7i96pxrHIFQ2qkiKfQ_nmfHG6Gio1OTw_iZJDlxaGxWslUg>
-    <xmx:YqAoYRZQM7B8XBvUtZdOGoVIwIWZLbsP7XBMgx3l0K4Iq9YG-5a1ew>
-    <xmx:YqAoYbB5-4j96y5k6EjtlQYenF2gQIdENQbWTFWv71etbQdyLsztxw>
-    <xmx:Y6AoYVTLi21yxc7YPEK1_rIj8egkHi_yxtJjymPibEjlcScwJPsBx5uxkoo>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Aug 2021 04:20:49 -0400 (EDT)
-Date:   Fri, 27 Aug 2021 10:20:43 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: Re: linux-next: manual merge of the phy-next tree with the usb tree
-Message-ID: <YSigW8OMf2PPeauR@kroah.com>
-References: <20210809171023.4d387ed3@canb.auug.org.au>
- <20210827165822.7186411f@canb.auug.org.au>
+        Fri, 27 Aug 2021 04:22:40 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4317C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 01:21:51 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id h29so6254453ila.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 01:21:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Ta9KGZrEXdXbBbrP5+76a5dJyHsEL2M26EYd/ydrx6w=;
+        b=NKte3HupZHm2rWF1kBSm55UGkVoRF9l79AkwheeCza/4o2TTqrB7/biNSbnL0e1X+L
+         lVVOdflBJuJtEFFgu5OFwLHVAF4qCnY4nHZrTZi5Nooeqc4Bx95FcPjtG3vjvoaMVV67
+         r/W6sGx6U20DpjUaVCECBRL5XMJHAsWJgLQ8FVIW02UcG4llFLsnUZV04fxP5Mvaa3Gd
+         9fbvUzEUq6wQMbchwJV8jJVH8R1u5QDb+GhNeUFUR8cDR/4DrwzJPkePpgdKtGvm+ev6
+         qZnLpJGLzk7ho53hY0LeA3iaBWCOHEwqYt1KRj6O4EF8p7he5cJKEHcbHLYLwgF/RF4R
+         Wj+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Ta9KGZrEXdXbBbrP5+76a5dJyHsEL2M26EYd/ydrx6w=;
+        b=uRTVmiTZB/+tX9ZFeOdZHWQjoQZ1ctvK761itXsPd5VzbfNFjnVim6bNy4TF4hF8aa
+         Gw7NVBN1VRuVvIxZvZRYeDM/nDMeVtaHhW5KZPre/6TejJpwB3DTQ/1Zs0m98wBZbp51
+         4HVm3pmaAWKjKiz6rmox/vH9jwIkBdm1i75c0XNvji2pg1MP2koxpZTp89+4jvZ2xZG0
+         gVCJiX98Tj+MqKr7Tlz6gLVJA8uR3ziKkZnyvVyWpXf6PFZR2te/QemXDDnb60b61Z7A
+         Tq306gEY5Cv1b01YpOWWItXu/i9x8/S5tzgFGZo1xjE0mka/iF+X/5XZboBnqxA72MRs
+         H+AQ==
+X-Gm-Message-State: AOAM530RJL+LpyWw0tkfZyq7S7vkFcfteBPLMrmHHiGHFdJoDNOhMott
+        Rjp31/IyIvbyW6mmtCmFAPTxin1+3DyOxvpOL54=
+X-Google-Smtp-Source: ABdhPJy17WFk0ETyBBAPaNU931/4TtLa/92Ttoq5p4nKWPe3AjLLXrCc7SF6Ge8LrwVXU9BRE68OdztEn6dHcHzJX2Y=
+X-Received: by 2002:a92:440c:: with SMTP id r12mr5715044ila.174.1630052511356;
+ Fri, 27 Aug 2021 01:21:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827165822.7186411f@canb.auug.org.au>
+Received: by 2002:a05:6602:2bf3:0:0:0:0 with HTTP; Fri, 27 Aug 2021 01:21:50
+ -0700 (PDT)
+From:   Hassan Duku <zinabhassan91@gmail.com>
+Date:   Fri, 27 Aug 2021 01:21:50 -0700
+Message-ID: <CAENewnZ7YUZ3-X1uLUkq0C-MwA1dBwBeovYNsHbTS+ot7Ns9Mg@mail.gmail.com>
+Subject: Greeting to you,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 04:58:22PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Mon, 9 Aug 2021 17:10:23 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Today's linux-next merge of the phy-next tree got a conflict in:
-> > 
-> >   Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-> > 
-> > between commit:
-> > 
-> >   e516ac5d48fe ("dt-bindings: phy: qcom,qmp-usb3-dp: Add support for SC7280")
-> > 
-> > from the usb tree and commit:
-> > 
-> >   1a00d130596f ("dt-bindings: phy: qcom,qmp-usb3-dp: Add support for sc8180x")
-> > 
-> > from the phy-next tree.
-> > 
-> > 
-> > diff --cc Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-> > index 20199833f144,1d49cc3d4eae..000000000000
-> > --- a/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-> > +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-> > @@@ -14,7 -14,7 +14,8 @@@ properties
-> >     compatible:
-> >       enum:
-> >         - qcom,sc7180-qmp-usb3-dp-phy
-> >  +      - qcom,sc7280-qmp-usb3-dp-phy
-> > +       - qcom,sc8180x-qmp-usb3-dp-phy
-> >         - qcom,sdm845-qmp-usb3-dp-phy
-> >         - qcom,sm8250-qmp-usb3-dp-phy
-> >     reg:
-> 
-> This is now a conflict between the char-misc tree and the usb tree.
+Greetings to you,
 
-Resolution looks good to me, thanks.
+How are you doing today?, my name is Hassan Duku, I live in Ghana and
+work for the Operational Manager with Royal Bank Ghana Limited.
 
-greg k-h
+I am glad to be connected with you. I have a business proposal I would
+like to discuss with you in private. It involves a business
+opportunity that will be of huge financial benefit to both us. further
+details will be shared after I receive your response.
+
+Kindly reply with your full name and your country of Origin/residence,
+
+Yours Truly,
+
+Hassan Duku
+Operational Manager.
