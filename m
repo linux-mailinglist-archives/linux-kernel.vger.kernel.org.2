@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC2E3F9B28
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FD03F9B35
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245351AbhH0OwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:52:09 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3709 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhH0OwI (ORCPT
+        id S245263AbhH0O62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhH0O62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:52:08 -0400
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gx2gM2QN2z67NxW;
-        Fri, 27 Aug 2021 22:49:51 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 27 Aug 2021 16:51:17 +0200
-Received: from [10.47.92.37] (10.47.92.37) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Fri, 27 Aug
- 2021 15:51:16 +0100
-From:   John Garry <john.garry@huawei.com>
-Subject: Re: arm scsi drivers
-To:     <linux@armlinux.org.uk>
-CC:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hannes Reinecke <hare@suse.com>,
-        "Christoph Hellwig" <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <5a72842f-99db-8787-120b-6d85e7884e2d@huawei.com>
-Message-ID: <9552a506-e53a-3fd3-b38e-3cec81e713a6@huawei.com>
-Date:   Fri, 27 Aug 2021 15:55:05 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Fri, 27 Aug 2021 10:58:28 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE432C061757;
+        Fri, 27 Aug 2021 07:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NSdJTnTrDORwb+LwDd1YsYwMgPCJRxx0pXYK8FlAauE=; b=Fa7lAXZuZMGlhMkvCLlAaInQ0M
+        LvZMAI9dgp92KcFz4u2w541+/Nu67i2Ea3rAZpKD6Q1P9ILjKx8E7vJPC9Yy4BHzufUafcmzb+2zu
+        XEqetUQrDWVmWgUJbeWVLi3VrFACkcynBo/GAIrkEDlonwYXZkgrnKNPnvuRXhzSenXsmorxKXv3b
+        UaLmP8193HgPXArb5Wp1c/mrxTLlf/21JEFOup9O58miZONiwbcuapmO9GWG87OVfsWhj7CHiSkGX
+        N5n6bqMpN0VhS93yWvq33V/48j5w+oHy6eCsh396wVtLrGJfjfA+JtKu/NF0o3UbeTizVS7b6v5Pe
+        Ifw0PqQQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJdHk-00DX6q-CH; Fri, 27 Aug 2021 14:56:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 06096300DEF;
+        Fri, 27 Aug 2021 16:56:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DA39829CFAC0B; Fri, 27 Aug 2021 16:56:45 +0200 (CEST)
+Date:   Fri, 27 Aug 2021 16:56:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH 05/15] perf: Track guest callbacks on a per-CPU basis
+Message-ID: <YSj9LQfbKxOhxqcP@hirez.programming.kicks-ass.net>
+References: <20210827005718.585190-1-seanjc@google.com>
+ <20210827005718.585190-6-seanjc@google.com>
+ <YSiRBQQE7md7ZrNC@hirez.programming.kicks-ass.net>
+ <YSj7jq32U8Euf38o@google.com>
 MIME-Version: 1.0
-In-Reply-To: <5a72842f-99db-8787-120b-6d85e7884e2d@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.92.37]
-X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSj7jq32U8Euf38o@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
+On Fri, Aug 27, 2021 at 02:49:50PM +0000, Sean Christopherson wrote:
+> On Fri, Aug 27, 2021, Peter Zijlstra wrote:
+> > On Thu, Aug 26, 2021 at 05:57:08PM -0700, Sean Christopherson wrote:
+> > > Use a per-CPU pointer to track perf's guest callbacks so that KVM can set
+> > > the callbacks more precisely and avoid a lurking NULL pointer dereference.
+> > 
+> > I'm completely failing to see how per-cpu helps anything here...
+> 
+> It doesn't help until KVM is converted to set the per-cpu pointer in flows that
+> are protected against preemption, and more specifically when KVM only writes to
+> the pointer from the owning CPU.  
 
-Have you had a chance to consider the below?
+So the 'problem' I have with this is that sane (!KVM using) people, will
+still have to suffer that load, whereas with the static_call() we patch
+in an 'xor %rax,%rax' and only have immediate code flow.
 
-Thanks
+> Ignoring static call for the moment, I don't see how the unreg side can be safe
+> using a bare single global pointer.  There is no way for KVM to prevent an NMI
+> from running in parallel on a different CPU.  If there's a more elegant solution,
+> especially something that can be backported, e.g. an rcu-protected pointer, I'm
+> all for it.  I went down the per-cpu path because it allowed for cleanups in KVM,
+> but similar cleanups can be done without per-cpu perf callbacks.
 
+If all the perf_guest_cbs dereferences are with preemption disabled
+(IRQs disabled, IRQ context, NMI context included), then the sequence:
 
-> 
-> Recently we tried to remove scsi_cmnd.tags struct member [0].
-> 
-> However it now shows that some of the arm SCSI drivers continue to use 
-> this [1]. I think any other driver usage of this member had been found 
-> and removed.
-> 
-> The impression is that the usage of scsi_cmnd.tag in those drivers is 
-> quite dubious.
-> 
-> Now checking [2], it appears that you may have had some patches for 
-> these drivers locally.
-> 
-> So is that the case? Is this HW still used with bleeding edge kernels? 
-> If so, can we fix up this tag management?
-> 
-> [0] 
-> https://lore.kernel.org/linux-scsi/6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com/T/#mb47909f38f35837686734369600051b278d124af 
-> 
-> 
-> [1] 
-> https://lore.kernel.org/linux-scsi/6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com/T/#md5d786e5753083b2f3e8e761b1c69809f82c7485 
-> 
-> 
-> [2] 
-> https://lore.kernel.org/lkml/20210109174357.GB1551@shell.armlinux.org.uk/
-> 
-> Thanks,
-> John
+	WRITE_ONCE(perf_guest_cbs, NULL);
+	synchronize_rcu();
+
+Ensures that all prior observers of perf_guest_csb will have completed
+and future observes must observe the NULL value.
 
