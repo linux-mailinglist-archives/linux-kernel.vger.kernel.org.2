@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069ED3F9B2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC2E3F9B28
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245353AbhH0OyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:54:05 -0400
-Received: from mga17.intel.com ([192.55.52.151]:28975 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231327AbhH0OyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:54:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10089"; a="198209383"
-X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
-   d="scan'208";a="198209383"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 07:53:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
-   d="scan'208";a="427138314"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 27 Aug 2021 07:53:12 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 14AF51ED; Fri, 27 Aug 2021 17:53:13 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Zha Qipeng <qipeng.zha@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v1 1/1] platform/x86/intel: punit_ipc: Drop wrong use of ACPI_PTR()
-Date:   Fri, 27 Aug 2021 17:53:10 +0300
-Message-Id: <20210827145310.76239-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S245351AbhH0OwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:52:09 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3709 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhH0OwI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 10:52:08 -0400
+Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gx2gM2QN2z67NxW;
+        Fri, 27 Aug 2021 22:49:51 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 27 Aug 2021 16:51:17 +0200
+Received: from [10.47.92.37] (10.47.92.37) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Fri, 27 Aug
+ 2021 15:51:16 +0100
+From:   John Garry <john.garry@huawei.com>
+Subject: Re: arm scsi drivers
+To:     <linux@armlinux.org.uk>
+CC:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <5a72842f-99db-8787-120b-6d85e7884e2d@huawei.com>
+Message-ID: <9552a506-e53a-3fd3-b38e-3cec81e713a6@huawei.com>
+Date:   Fri, 27 Aug 2021 15:55:05 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a72842f-99db-8787-120b-6d85e7884e2d@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.92.37]
+X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ACPI_PTR() is more harmful than helpful. For example, in this case
-if CONFIG_ACPI=n, the ID table left unused which is not what we want.
+Hi Russell,
 
-Instead of adding ifdeffery here and there, drop ACPI_PTR()
-and unused acpi.h.
+Have you had a chance to consider the below?
 
-Fixes: fdca4f16f57d ("platform:x86: add Intel P-Unit mailbox IPC driver")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/platform/x86/intel/punit_ipc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Thanks
 
-diff --git a/drivers/platform/x86/intel/punit_ipc.c b/drivers/platform/x86/intel/punit_ipc.c
-index f58b8543f6ac..66bb39fd0ef9 100644
---- a/drivers/platform/x86/intel/punit_ipc.c
-+++ b/drivers/platform/x86/intel/punit_ipc.c
-@@ -8,7 +8,6 @@
-  * which provide mailbox interface for power management usage.
-  */
- 
--#include <linux/acpi.h>
- #include <linux/bitops.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-@@ -319,7 +318,7 @@ static struct platform_driver intel_punit_ipc_driver = {
- 	.remove = intel_punit_ipc_remove,
- 	.driver = {
- 		.name = "intel_punit_ipc",
--		.acpi_match_table = ACPI_PTR(punit_ipc_acpi_ids),
-+		.acpi_match_table = punit_ipc_acpi_ids,
- 	},
- };
- 
--- 
-2.33.0
+
+> 
+> Recently we tried to remove scsi_cmnd.tags struct member [0].
+> 
+> However it now shows that some of the arm SCSI drivers continue to use 
+> this [1]. I think any other driver usage of this member had been found 
+> and removed.
+> 
+> The impression is that the usage of scsi_cmnd.tag in those drivers is 
+> quite dubious.
+> 
+> Now checking [2], it appears that you may have had some patches for 
+> these drivers locally.
+> 
+> So is that the case? Is this HW still used with bleeding edge kernels? 
+> If so, can we fix up this tag management?
+> 
+> [0] 
+> https://lore.kernel.org/linux-scsi/6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com/T/#mb47909f38f35837686734369600051b278d124af 
+> 
+> 
+> [1] 
+> https://lore.kernel.org/linux-scsi/6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com/T/#md5d786e5753083b2f3e8e761b1c69809f82c7485 
+> 
+> 
+> [2] 
+> https://lore.kernel.org/lkml/20210109174357.GB1551@shell.armlinux.org.uk/
+> 
+> Thanks,
+> John
 
