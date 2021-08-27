@@ -2,243 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5803D3F91C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 03:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B64D3F91D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 03:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243823AbhH0BAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 21:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
+        id S243906AbhH0BDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 21:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244154AbhH0A7m (ORCPT
+        with ESMTP id S243811AbhH0BDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 20:59:42 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B24C06114B
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 17:58:04 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id f8-20020a2585480000b02905937897e3daso1587721ybn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 17:58:04 -0700 (PDT)
+        Thu, 26 Aug 2021 21:03:40 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B74C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 18:02:52 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id a5so2870383plh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 18:02:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=5wQJhGi+ZyGOAOMPxE71g3TXDJHEcKM3NH5k2IjIokU=;
-        b=OW6tj0qrfqLnmyAG7bwsLD1ivWUlSQB5/rmjy7WLw347oAMVCG3/Qk7isJlZCVSFFV
-         W7vIlgUdwAlJx2kpTZ9A55Gu92o/DT6okHoyWj++aIqZDyTZVtHibehQi7O2j3MjMThX
-         Eos5GY/kAJpzkfPs9z5NTcHHEpUm/XVAQpx4rHw8kLZUkO7HNuZJLNnlhhsXFJlEJkCy
-         p6hhGZMhQP2aZtmOVXw5yZNFRx/aQuH9Vj4YrQddHKnPUiY2qaww7D6c/XyLTUmGdHj3
-         smqjImdUUuenQzBvxAy/5tpxtN+1AQqndlIihp99we7A59b3jtdrbJnHyTatubIFGc7+
-         +UOw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=F5BzeZ88DeAznGZnAgIyJZY67dtGOyYliO+MCNuSyrA=;
+        b=rj5QPst7X8pNRivio/Yqg0Ah/9xYKsD9tPSJcodLTJEG1pEHf2IR6MLm0iz7zxpVXD
+         7GSCeOLSGNwjbpmzRQj/JFj9+bA2uQi8D1ajj0lg5054e4ZVG1ytI4Ige6EyUZaz/l9k
+         Y8G/jJvqX6d3tavN0EOJvzAJL2Vk/npgqQG2gKu3rZGFZtjCMN+t4o+yF7Y/iSIeemVm
+         G8yMlH6D48HXOKaq1pfpcAcUqOmVQAOuxwNS0ElSdKAZ7df7hcPvBJ1A/pgvbTg6dekH
+         Itwb2KfXDvj8CDAMpltCu/iTxiWzH1SS1/jVadDPzIQeaZ0/+6xNzmJFOebOK9qh0Whh
+         nEEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=5wQJhGi+ZyGOAOMPxE71g3TXDJHEcKM3NH5k2IjIokU=;
-        b=lLsADlzfkKgbyOzy1lX+UKb1wKKTnEWer2X+SiTRLBI0ARUa6aGney6FQ02aPyTBcN
-         5LUrfnlg0UC137Kqh7Vs28HE3mzFX4T++bfbV00OtdVFQleMypsYs3+NUKw5U2drsghk
-         u2WuF8t8VZJ1nZuxu0b2smzoXtgGlJ9zmEZboho9AN9ZOCIr8LnvWDW3zB2QDZp3AXGZ
-         R37IWvgVsd4MKwM+d/2geo0TWCz0gkBrqQujke3qABJb9/wUuSOUlJcFfnU10lecIraP
-         SzsFcyWisMGPlvVZohmiSbUPL0veGULrGsxSRiQzkfIW9MitejSrA9eaVu8mmENcZMj1
-         t/EQ==
-X-Gm-Message-State: AOAM5326aS89KY4jFvFv37Zgfa+2gO2jfN/dy1ZU8Ts7rJAa5lEVPj4Z
-        XA1CqF04Jtdx3Gc7pe8TCFOtSl8x258=
-X-Google-Smtp-Source: ABdhPJxNS9FKdHggEYyf3FZBaeUKCfIfMsPYcyI+FugrK+/XdFcM7Qj6lsB8B0S5DygYRKG5HNpbYwSWz/0=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:c16c:db05:96b2:1475])
- (user=seanjc job=sendgmr) by 2002:a25:ea51:: with SMTP id o17mr1969948ybe.253.1630025883284;
- Thu, 26 Aug 2021 17:58:03 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 26 Aug 2021 17:57:18 -0700
-In-Reply-To: <20210827005718.585190-1-seanjc@google.com>
-Message-Id: <20210827005718.585190-16-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210827005718.585190-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH 15/15] perf: KVM: Indicate "in guest" via NULL ->is_in_guest callback
-From:   Sean Christopherson <seanjc@google.com>
-To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=F5BzeZ88DeAznGZnAgIyJZY67dtGOyYliO+MCNuSyrA=;
+        b=cZnM2C5bIYVb+at5l0dmzKlhtLPnifJZzixizlwDDe5L4xMcvU7ms3dcUO+T/6CPhH
+         gmBdHSnnzf8aO2lvAr1imiXffvYsPwxxWHjszLg0qftjK7bdcya1vczGIOGV256yYWUH
+         XQ8NQpHCGyekxC36TMIwc6nN9a6V6CkPShD3sCKrZQvES4+ciYeTwNXaHc/JP1ENB+dg
+         oqKX9aj0TlN2Pazdykv7K2dKcYEd8lmcmBBwdoZamDJZBbvEsYq1a9toouf3RPFb0rCD
+         +ZdEA0PvgiInBclHMngIxrqVBNsRfmjcyQDqmLJG9uQ1mERe8XMGaLIiA/MMdBEmLCl5
+         NAYQ==
+X-Gm-Message-State: AOAM530IoomMpGoKjyd72WoGGsnJrfnPjtRmA/1AINfSUO6FbbObIPHZ
+        oQyXmpAu6aufnirUIp28P7gb58qw3kcODA==
+X-Google-Smtp-Source: ABdhPJzzAZU32hWnG7tGHNj4MLnmQ2A+LyMwHrmScoFqiOb0x7c3S7VytjGBLCUUhtfteRUDSbwt/w==
+X-Received: by 2002:a17:90a:c984:: with SMTP id w4mr7750050pjt.124.1630026171308;
+        Thu, 26 Aug 2021 18:02:51 -0700 (PDT)
+Received: from [10.189.0.6] ([45.135.186.38])
+        by smtp.gmail.com with ESMTPSA id c12sm3877296pfl.56.2021.08.26.18.02.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 18:02:50 -0700 (PDT)
+Subject: Re: [PATCH v5 0/3] PCI: Add a quirk to enable SVA for HiSilicon chip
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210826193020.GA3703737@bjorn-Precision-5520>
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+Message-ID: <70356556-0772-6faf-57ef-899e59cc796c@linaro.org>
+Date:   Fri, 27 Aug 2021 09:02:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210826193020.GA3703737@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Interpret a null ->is_in_guest callback as meaning "in guest" and use
-the new semantics in KVM, which currently returns 'true' unconditionally
-in its implementation of ->is_in_guest().  This avoids a retpoline on
-the indirect call for PMIs that arrive in a KVM guest, and also provides
-a handy excuse for a wrapper around retrieval of perf_get_guest_cbs,
-e.g. to reduce the probability of an errant direct read of perf_guest_cbs.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/events/core.c       | 16 ++++++++--------
- arch/x86/events/intel/core.c |  5 ++---
- include/linux/perf_event.h   | 17 +++++++++++++++++
- virt/kvm/kvm_main.c          |  9 ++-------
- 4 files changed, 29 insertions(+), 18 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 34155a52e498..b60c339ae06b 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2761,11 +2761,11 @@ static bool perf_hw_regs(struct pt_regs *regs)
- void
- perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs)
- {
--	struct perf_guest_info_callbacks *guest_cbs = this_cpu_read(perf_guest_cbs);
-+	struct perf_guest_info_callbacks *guest_cbs = perf_get_guest_cbs();
- 	struct unwind_state state;
- 	unsigned long addr;
- 
--	if (guest_cbs && guest_cbs->is_in_guest()) {
-+	if (guest_cbs) {
- 		/* TODO: We don't support guest os callchain now */
- 		return;
- 	}
-@@ -2865,11 +2865,11 @@ perf_callchain_user32(struct pt_regs *regs, struct perf_callchain_entry_ctx *ent
- void
- perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs)
- {
--	struct perf_guest_info_callbacks *guest_cbs = this_cpu_read(perf_guest_cbs);
-+	struct perf_guest_info_callbacks *guest_cbs = perf_get_guest_cbs();
- 	struct stack_frame frame;
- 	const struct stack_frame __user *fp;
- 
--	if (guest_cbs && guest_cbs->is_in_guest()) {
-+	if (guest_cbs) {
- 		/* TODO: We don't support guest os callchain now */
- 		return;
- 	}
-@@ -2946,9 +2946,9 @@ static unsigned long code_segment_base(struct pt_regs *regs)
- 
- unsigned long perf_instruction_pointer(struct pt_regs *regs)
- {
--	struct perf_guest_info_callbacks *guest_cbs = this_cpu_read(perf_guest_cbs);
-+	struct perf_guest_info_callbacks *guest_cbs = perf_get_guest_cbs();
- 
--	if (guest_cbs && guest_cbs->is_in_guest())
-+	if (guest_cbs)
- 		return guest_cbs->get_guest_ip();
- 
- 	return regs->ip + code_segment_base(regs);
-@@ -2956,10 +2956,10 @@ unsigned long perf_instruction_pointer(struct pt_regs *regs)
- 
- unsigned long perf_misc_flags(struct pt_regs *regs)
- {
--	struct perf_guest_info_callbacks *guest_cbs = this_cpu_read(perf_guest_cbs);
-+	struct perf_guest_info_callbacks *guest_cbs = perf_get_guest_cbs();
- 	int misc = 0;
- 
--	if (guest_cbs && guest_cbs->is_in_guest()) {
-+	if (guest_cbs) {
- 		if (guest_cbs->is_user_mode())
- 			misc |= PERF_RECORD_MISC_GUEST_USER;
- 		else
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 96001962c24d..9a8c18b51a96 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2853,9 +2853,8 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
- 	 */
- 	if (__test_and_clear_bit(GLOBAL_STATUS_TRACE_TOPAPMI_BIT, (unsigned long *)&status)) {
- 		handled++;
--		guest_cbs = this_cpu_read(perf_guest_cbs);
--		if (unlikely(guest_cbs && guest_cbs->is_in_guest() &&
--			     guest_cbs->handle_intel_pt_intr))
-+		guest_cbs = perf_get_guest_cbs();
-+		if (unlikely(guest_cbs && guest_cbs->handle_intel_pt_intr))
- 			guest_cbs->handle_intel_pt_intr();
- 		else
- 			intel_pt_interrupt();
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index db701409a62f..6e3a10784d24 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1241,6 +1241,23 @@ DECLARE_PER_CPU(struct perf_guest_info_callbacks *, perf_guest_cbs);
- extern void perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs);
- extern void perf_unregister_guest_info_callbacks(void);
- extern void perf_register_guest_info_callbacks_all_cpus(struct perf_guest_info_callbacks *cbs);
-+/*
-+ * Returns guest callbacks for the current CPU if callbacks are registered and
-+ * the PMI fired while a guest was running, otherwise returns NULL.
-+ */
-+static inline struct perf_guest_info_callbacks *perf_get_guest_cbs(void)
-+{
-+	struct perf_guest_info_callbacks *guest_cbs = this_cpu_read(perf_guest_cbs);
-+
-+	/*
-+	 * Implementing is_in_guest is optional if the callbacks are registered
-+	 * only when "in guest".
-+	 */
-+	if (guest_cbs && (!guest_cbs->is_in_guest || guest_cbs->is_in_guest()))
-+		return guest_cbs;
-+
-+	return NULL;
-+}
- #endif /* CONFIG_HAVE_GUEST_PERF_EVENTS */
- 
- extern void perf_event_exec(void);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 1bcc3eab510b..fa83d3846785 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -5461,12 +5461,6 @@ struct kvm_vcpu * __percpu *kvm_get_running_vcpus(void)
- }
- 
- #ifdef __KVM_WANT_PERF_CALLBACKS
--static int kvm_is_in_guest(void)
--{
--	/* Registration of KVM's callback signifies "in guest". */
--	return true;
--}
--
- static int kvm_is_user_mode(void)
- {
- 	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
-@@ -5488,7 +5482,8 @@ static unsigned long kvm_get_guest_ip(void)
- }
- 
- static struct perf_guest_info_callbacks kvm_guest_cbs = {
--	.is_in_guest		= kvm_is_in_guest,
-+	/* Registration of KVM's callback signifies "in guest". */
-+	.is_in_guest		= NULL,
- 	.is_user_mode		= kvm_is_user_mode,
- 	.get_guest_ip		= kvm_get_guest_ip,
- 	.handle_intel_pt_intr	= NULL,
--- 
-2.33.0.259.gc128427fd7-goog
+On 2021/8/27 上午3:30, Bjorn Helgaas wrote:
+> On Tue, Jul 13, 2021 at 10:54:33AM +0800, Zhangfei Gao wrote:
+>> HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+>> actually on the AMBA bus. These fake PCI devices have PASID capability
+>> though not supporting TLP.
+>>
+>> Add a quirk to set pasid_no_tlp and dma-can-stall for these devices.
+>>
+>> v5:
+>> no change, base on 5.14-rc1
+>>
+>> v4:
+>> Applied to Linux 5.13-rc2, and build successfully with only these three patches.
+>>
+>> v3:
+>> https://lore.kernel.org/linux-pci/1615258837-12189-1-git-send-email-zhangfei.gao@linaro.org/
+>> Rebase to Linux 5.12-rc1
+>> Change commit msg adding:
+>> Property dma-can-stall depends on patchset
+>> https://lore.kernel.org/linux-iommu/20210302092644.2553014-1-jean-philippe@linaro.org/
+>>
+>> By the way the patchset can directly applied on 5.12-rc1 and build successfully though
+>> without the dependent patchset.
+>>
+>> v2:
+>> Add a new pci_dev bit: pasid_no_tlp, suggested by Bjorn
+>> "Apparently these devices have a PASID capability.  I think you should
+>> add a new pci_dev bit that is specific to this idea of "PASID works
+>> without TLP prefixes" and then change pci_enable_pasid() to look at
+>> that bit as well as eetlp_prefix_path."
+>> https://lore.kernel.org/linux-pci/20210112170230.GA1838341@bjorn-Precision-5520/
+>>
+>> Zhangfei Gao (3):
+>>    PCI: PASID can be enabled without TLP prefix
+>>    PCI: Add a quirk to set pasid_no_tlp for HiSilicon chips
+>>    PCI: Set dma-can-stall for HiSilicon chips
+>>
+>>   drivers/pci/ats.c    |  2 +-
+>>   drivers/pci/quirks.c | 27 +++++++++++++++++++++++++++
+>>   include/linux/pci.h  |  1 +
+>>   3 files changed, 29 insertions(+), 1 deletion(-)
+> Applied with Robin's ack to pci/iommu for v5.15, thanks!
+Great, thanks  Bjorn and Robin.
 
