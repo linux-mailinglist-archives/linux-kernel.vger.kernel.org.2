@@ -2,226 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA593F9D09
+	by mail.lfdr.de (Postfix) with ESMTP id CD2733F9D0B
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237045AbhH0Qwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:52:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35358 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233014AbhH0Qwf (ORCPT
+        id S237166AbhH0Qwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239681AbhH0Qwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:52:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630083106;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cl0IwqXw99jVQk0cBYLPw1qKg8vsuQrBIrGkwiPpzVs=;
-        b=dOut81r6/2zU77ZaDbfccelR0xjm8l3dkn1a3kKaX449Mivj/m826tnEF+YDQGgX8CWAZ1
-        yuPSayU1nmBUn/x1e1e42aFlzmnJJ/Q/7sARq3i26KKYoZ1DBL8D8YsjQ1Xx4nyvbgvpl1
-        pNljbzqZuUFS0UdPHJgiSRL3HLeLIM0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-122-XdEF1v7wOEquM27j5olWTQ-1; Fri, 27 Aug 2021 12:51:43 -0400
-X-MC-Unique: XdEF1v7wOEquM27j5olWTQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C32AB190A7A5;
-        Fri, 27 Aug 2021 16:51:41 +0000 (UTC)
-Received: from max.com (unknown [10.40.194.206])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 50FBA60C81;
-        Fri, 27 Aug 2021 16:51:35 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v7 19/19] gfs2: Fix mmap + page fault deadlocks for direct I/O
-Date:   Fri, 27 Aug 2021 18:49:26 +0200
-Message-Id: <20210827164926.1726765-20-agruenba@redhat.com>
-In-Reply-To: <20210827164926.1726765-1-agruenba@redhat.com>
-References: <20210827164926.1726765-1-agruenba@redhat.com>
+        Fri, 27 Aug 2021 12:52:51 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DBAC0617AE
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:52:02 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id s15so2452451qta.10
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nm5f4TdykV0Ij8N80OXzW6n74qiksoV2Mz6T3bNcU4c=;
+        b=WpMImxTPH0oqNigcdNaPe3TalPVZxGNIypXpTMh6+4KoJHhi7xXR01+ileZaSM8UFm
+         nmXdWe5LE6PVPClzBloI1zRgpV4Hf5SkcnnUgCWsOKNpVVNkksUvD2CJCDBOqD83sP+l
+         IdlmSCqaJKHANuvGz6mBMIO0QO2jKhAlfZKNnxwmO8AwFT/FFU77A/jOeD7UAFa0V/bw
+         KS6DF4fU86u9GkYKn+t6MFbRPVpjSv9+HPL7u29z9jbikqjShfG42wBcgnDvW/CUNkq7
+         rA3ngjetilfeeJK5lyk6Gb/wjfQjeOiLIcOw2FJ4xHexazEAp7Bo1SMmrzHwpMSzHNLW
+         u1zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nm5f4TdykV0Ij8N80OXzW6n74qiksoV2Mz6T3bNcU4c=;
+        b=hXGlQowtE9WOOlSODiaoHCK33rfLfnHd19DE48j/1yZDNTUkYcG0gDmWoCtWpocMUU
+         HUhNxUq4v/Lz87DWQmOk6aR83vrGTPfjhrMkClE8rypS0wcUmAEKqXufrcaZr35DHhnX
+         6lXFyjkH5AmvWzmmhGFGYbz7O73y4J+3OLzEzdRDShzJIzayuY9u7XGyRhwVFpMJf5qa
+         G7dOZhdviEqsvuYEK0Gi/ij1hLMMfnhg1iAc+jIIyuGtQFdg7h8o2fwcn7tdoLm8vN6f
+         1qsT76o4jajX5WbLQ6ghBuOUaAAB4tkpwNobFM3NHa/vEjHyNldsB2qtLu5DQnJJnAj6
+         eR6Q==
+X-Gm-Message-State: AOAM532UYO3jYEx0ypZ8LHkI14n5CvgLhxK+WURy8ie/bAD7gOUicpbJ
+        Tkg6vYi7Fv3yASGBLwMC0GOD2w==
+X-Google-Smtp-Source: ABdhPJzfzX5zKzWjbUBZn31RTDJj2QP2YP2QnIppHCIOvhn1lTP8KwnEZv8V6Wd5jYKiX9XOx7WhOg==
+X-Received: by 2002:ac8:7c44:: with SMTP id o4mr9135892qtv.82.1630083121426;
+        Fri, 27 Aug 2021 09:52:01 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id x3sm4855078qkx.62.2021.08.27.09.52.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 09:52:00 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mJf5E-005kOn-4S; Fri, 27 Aug 2021 13:52:00 -0300
+Date:   Fri, 27 Aug 2021 13:52:00 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
+Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
+Message-ID: <20210827165200.GM1200268@ziepe.ca>
+References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
+ <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
+ <20210806014559.GM543798@ziepe.ca>
+ <b5e6c4cd-8842-59ef-c089-2802057f3202@cn.fujitsu.com>
+ <10c4bead-c778-8794-f916-80bf7ba3a56b@fujitsu.com>
+ <20210827121034.GG1200268@ziepe.ca>
+ <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
+ <CAPcyv4ho-42iZB3W5ypfwj-2=+v6rRUCcwE4ntPXyDPgFjzp7g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4ho-42iZB3W5ypfwj-2=+v6rRUCcwE4ntPXyDPgFjzp7g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also disable page faults during direct I/O requests and implement a
-similar kind of retry logic as in the buffered I/O case.
+On Fri, Aug 27, 2021 at 09:42:21AM -0700, Dan Williams wrote:
+> On Fri, Aug 27, 2021 at 6:05 AM Li, Zhijian <lizhijian@cn.fujitsu.com> wrote:
+> >
+> >
+> > on 2021/8/27 20:10, Jason Gunthorpe wrote:
+> > > On Fri, Aug 27, 2021 at 08:15:40AM +0000, lizhijian@fujitsu.com wrote:
+> > >> i looked over the change-log of hmm_vma_handle_pte(), and found that before
+> > >> 4055062 ("mm/hmm: add missing call to hmm_pte_need_fault in HMM_PFN_SPECIAL handling")
+> > >>
+> > >> hmm_vma_handle_pte() will not check pte_special(pte) if pte_devmap(pte) is true.
+> > >>
+> > >> when we reached
+> > >> "if (pte_special(pte) && !is_zero_pfn(pte_pfn(pte))) {"
+> > >> the pte have already presented and its pte's flag already fulfilled the request flags.
+> > >>
+> > >>
+> > >> My question is that
+> > >> Per https://01.org/blogs/dave/2020/linux-consumption-x86-page-table-bits,
+> > >> pte_devmap(pte) and pte_special(pte) could be both true in fsdax user case, right ?
+> > > How? what code creates that?
+> > >
+> > > I see:
+> > >
+> > > insert_pfn():
+> > >       /* Ok, finally just insert the thing.. */
+> > >       if (pfn_t_devmap(pfn))
+> > >               entry = pte_mkdevmap(pfn_t_pte(pfn, prot));
+> > >       else
+> > >               entry = pte_mkspecial(pfn_t_pte(pfn, prot));
+> > >
+> > > So what code path ends up setting both bits?
+> >
+> >   pte_mkdevmap() will set both _PAGE_SPECIAL | PAGE_DEVMAP
+> >
+> >   395 static inline pte_t pte_mkdevmap(pte_t pte)
+> >   396 {
+> >   397         return pte_set_flags(pte, _PAGE_SPECIAL|_PAGE_DEVMAP);
+> >   398 }
+> 
+> I can't recall why _PAGE_SPECIAL is there. I'll take a look, but I
+> think setting _PAGE_SPECIAL in pte_mkdevmap() is overkill.
 
-The retry logic in the direct I/O case differs from the buffered I/O
-case in the following way: direct I/O doesn't provide the kinds of
-consistency guarantees between concurrent reads and writes that buffered
-I/O provides, so when we lose the inode glock while faulting in user
-pages, we always resume the operation.  We never need to return a
-partial read or write.
+This is my feeling too, but every arch does it, so hmm should check
+it, at least for now as a stable fix
 
-This locking problem was originally reported by Jan Kara.  Linus came up
-with the proposal to disable page faults.  Many thanks to Al Viro and
-Matthew Wilcox for their feedback.
+devmap has a struct page so it should be refcounted inside the VMA and
+that is the main thing that PAGE_SPECIAL disabled, AFAICR..
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- fs/gfs2/file.c | 99 ++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 87 insertions(+), 12 deletions(-)
+The only places where pte_special are used that I wonder if are OK for
+devmap have to do with CPU cache maintenance
 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index 64bf2f68e6d6..6603d9cd8739 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -811,22 +811,64 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
- {
- 	struct file *file = iocb->ki_filp;
- 	struct gfs2_inode *ip = GFS2_I(file->f_mapping->host);
--	size_t count = iov_iter_count(to);
-+	size_t prev_count = 0, window_size = 0;
-+	size_t written = 0;
- 	ssize_t ret;
- 
--	if (!count)
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we drop the
-+	 * inode glock, fault in the pages manually, and retry.
-+	 *
-+	 * Unlike generic_file_read_iter, for reads, iomap_dio_rw can trigger
-+	 * physical as well as manual page faults, and we need to disable both
-+	 * kinds.
-+	 *
-+	 * For direct I/O, gfs2 takes the inode glock in deferred mode.  This
-+	 * locking mode is compatible with other deferred holders, so multiple
-+	 * processes and nodes can do direct I/O to a file at the same time.
-+	 * There's no guarantee that reads or writes will be atomic.  Any
-+	 * coordination among readers and writers needs to happen externally.
-+	 */
-+
-+	if (!iov_iter_count(to))
- 		return 0; /* skip atime */
- 
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
- 	if (ret)
- 		goto out_uninit;
-+retry_under_glock:
-+	pagefault_disable();
-+	to->nofault = true;
-+	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, written);
-+	to->nofault = false;
-+	pagefault_enable();
-+	if (ret > 0)
-+		written = ret;
- 
--	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0, 0);
--	gfs2_glock_dq(gh);
-+	if (unlikely(iov_iter_count(to) && (ret > 0 || ret == -EFAULT)) &&
-+	    should_fault_in_pages(to, &prev_count, &window_size)) {
-+		size_t leftover;
-+
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_writeable(to, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return written;
- }
- 
- static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
-@@ -835,10 +877,19 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file->f_mapping->host;
- 	struct gfs2_inode *ip = GFS2_I(inode);
--	size_t len = iov_iter_count(from);
--	loff_t offset = iocb->ki_pos;
-+	size_t prev_count = 0, window_size = 0;
-+	size_t read = 0;
- 	ssize_t ret;
- 
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we drop the
-+	 * inode glock, fault in the pages manually, and retry.
-+	 *
-+	 * For writes, iomap_dio_rw only triggers manual page faults, so we
-+	 * don't need to disable physical ones.
-+	 */
-+
- 	/*
- 	 * Deferred lock, even if its a write, since we do no allocation on
- 	 * this path. All we need to change is the atime, and this lock mode
-@@ -848,22 +899,46 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	 * VFS does.
- 	 */
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
- 	if (ret)
- 		goto out_uninit;
--
-+retry_under_glock:
- 	/* Silently fall back to buffered I/O when writing beyond EOF */
--	if (offset + len > i_size_read(&ip->i_inode))
-+	if (iocb->ki_pos + iov_iter_count(from) > i_size_read(&ip->i_inode))
- 		goto out;
- 
--	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL, 0, 0);
-+	from->nofault = true;
-+	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, read);
-+	from->nofault = false;
-+
- 	if (ret == -ENOTBLK)
- 		ret = 0;
-+	if (ret > 0)
-+		read = ret;
-+
-+	if (unlikely(iov_iter_count(from) && (ret > 0 || ret == -EFAULT)) &&
-+	    should_fault_in_pages(from, &prev_count, &window_size)) {
-+		size_t leftover;
-+
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_readable(from, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
- out:
--	gfs2_glock_dq(gh);
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return read;
- }
- 
- static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
--- 
-2.26.3
+vm_normal_page(), hmm_vma_handle_pte(), gup_pte_range() all look OK to
+drop the special bit
 
+Jason
