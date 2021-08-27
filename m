@@ -2,224 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCC53F96ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF353F96F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244817AbhH0J1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244657AbhH0J1R (ORCPT
+        id S244833AbhH0J12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:27:28 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:43987 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244825AbhH0J11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:27:17 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9CCC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:26:28 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id c129-20020a1c35870000b02902e6b6135279so3914961wma.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:26:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J6/pEtsmPXEr0DtFJnmn/n99lBxeuj7y7P+Ae72uWNQ=;
-        b=vZc+T8ZJ5gxdka3g7nbaqKV+ZU6QpU9zFc87THqV1N/i935mxvSXs1i/6uwHXRieOa
-         SjrRUWflUO13YVT8+YN7YwUcrlFNMLI84ElZusvAkRonrkz4FjGnmdXj0SPdbIrzR0nv
-         4V49QcYGaup0/9vk1+YfuB//5c135qDiZSacEVRCzV6iBRHb60JE9c/yKkTXR5XmDBD8
-         QRTX8SjWmsQAWuAwox82XN4zVxqbry7RR5S8SWkQ7W3+p0WldKaojovLG4B6/edg2fNK
-         7HN9MC/CrjdBiMVAojfyWOCFoUraKLEYOzxYzDWhtQPga+SW28llKhg31IvcxOtpkVw3
-         uM7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J6/pEtsmPXEr0DtFJnmn/n99lBxeuj7y7P+Ae72uWNQ=;
-        b=gMcM0KnjepOrmOlE7O9wfSmTBo6mkzLq172KRO5LBj4KGpUOIrDvRU5vMavOjl3mXQ
-         y9BXi+KTc1zI9HFodSOvYkjQgQt+bWRd7QjnzB1YUcHsZge1W4EwjBGanhdTkuZ0pbGQ
-         qiIwTAiLkpAPKavYhGDJ16Sr30aSgj5rPc7EoJj8jCChWuVyHeoq63blogZedS2vQMYE
-         bmbx6nwsiwpOMuJutrjf190t2QYX7x3E3rdtQeS7O02EhjaLmVcEyLR5qGIygUXbV6Yp
-         45tNFTpFsuhElMVVhiVdCv/8DXH7uhAE72gksp0UAztqy1CzzsoN3d8B6adc+JyUJpm6
-         QvAQ==
-X-Gm-Message-State: AOAM5322As8NqawN4hjMtPTAiYD/G4PlGI5EUV3cHxD3FHWo3C4fkZLQ
-        +oPVrn/zawt4J1bPj3tJPi3i5/hFU93gEQ1XMx8qyw==
-X-Google-Smtp-Source: ABdhPJxP25HXbRNWYHpFECApZlJdkZZuMsS8vVNriqMiucQtuEHv3oeceyFUPqFLuy/KFSXL3jIp70xsVV7PNU48G0A=
-X-Received: by 2002:a1c:3b05:: with SMTP id i5mr7759579wma.136.1630056386806;
- Fri, 27 Aug 2021 02:26:26 -0700 (PDT)
+        Fri, 27 Aug 2021 05:27:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1630056399; x=1661592399;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=J3i9uBz3EG1ucQmcepffYGi/MTUpR71z9RNb52yBNBM=;
+  b=jrIHicTmAuqevjYUoGgo3XgsdtlArYACbvUa3v2nA7BwyHKNNcZKQzVS
+   1KoU/S3BNcOL5Uyk3B3Zi3OGlFkwi42toOyMH5NO/5eEZRCRmmsY589aW
+   8ycNMFYzap2Lbi8unlDfiQtEsAjfLf4oxuZVhsBnkuoRQMvmunA3HnnHS
+   vFR6QKRCjjDlCRINC7moBflkjBCpkaPb7jNBqVRBBLw/eg2v09IQxTzkx
+   f+h9KwHi8BxSPDODv/OhnQKgYd6TpS2WNn/0YmvGhNCEgskDfCTZqoiaD
+   b9VPoVB4qwZo3XUPPEn6eh3mT/orp1rLAh7Z6J1xoA2SUMTWUgn2a8H57
+   w==;
+IronPort-SDR: WQMlE/SKoDrKt+PMq0eLk352Hwz5nTAFqmiuu0jmPCUpZy0oU8CfYEjyvWkVDXY5H2HMCoCgaz
+ RLN3FbLcfoRYQD9K2FngKfeFo7FA68/DsbOkK53ohyDZus7j6INmlvygdRLnkS+PRbbzOmU06Z
+ 4F169O+c1Sns0nO9FtbhueFUhmexCsCwZMeJoDjr6F83NCjvyUDpVkUVbiioorkl7wcstdL6tA
+ 8RlENh0B9msbV/ylq1esqJovy6YcTNGOYMvwyq3DC3cLxL8RHYQeotT4bAqllYsNig79t2cqzy
+ dBoqqpYBculQut68iy/x0peo
+X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
+   d="scan'208";a="133873674"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Aug 2021 02:26:39 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 27 Aug 2021 02:26:37 -0700
+Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Fri, 27 Aug 2021 02:26:34 -0700
+From:   <kavyasree.kotagiri@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <Kavyasree.Kotagiri@microchip.com>,
+        <Manohar.Puri@microchip.com>, <Madhuri.Sripada@microchip.com>
+Subject: [PATCH] ARM: at91: add basic support for new SoC lan966x
+Date:   Fri, 27 Aug 2021 14:56:23 +0530
+Message-ID: <20210827092623.10677-1-kavyasree.kotagiri@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210826123032.1732926-1-jens.wiklander@linaro.org>
- <20210826123032.1732926-5-jens.wiklander@linaro.org> <CAFA6WYM_zaVsWzP-sDuD6_xf3qgv-sQsbEAebZG6vtFrKfRpag@mail.gmail.com>
-In-Reply-To: <CAFA6WYM_zaVsWzP-sDuD6_xf3qgv-sQsbEAebZG6vtFrKfRpag@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Fri, 27 Aug 2021 11:26:16 +0200
-Message-ID: <CAHUa44FWM-QRfeEb5rreN4J9yJjQJQrh3XEm-YLBQmZMvBLC0g@mail.gmail.com>
-Subject: Re: [PATCH v5 4/6] tee: add tee_dev_open_helper() primitive
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 8:23 AM Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> On Thu, 26 Aug 2021 at 18:00, Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> >
-> > Adds tee_dev_open_helper() and tee_dev_ctx_put() to make it easier to
-> > create a driver internal struct tee_context without the usual
-> > tee_device_get() on the struct tee_device as that adds a circular
-> > reference counter dependency and would prevent the struct tee_device
-> > from ever being released again.
->
-> Can you elaborate regarding the circular dependency issue you are
-> referring to? IIUC, lifespan for struct tee_device would look like
-> below with normal teedev_open():
->
-> optee_probe() {
->   ...
->   tee_device_alloc()            <- teedev->num_users = 1
->   tee_device_register()
->   optee_notif_init()               <- tee_device_get()
->   ...
-> }
->
-> optee_remove() {
->   ...
->   optee_notif_uninit()           <- tee_device_put()
->   tee_device_unregister()    <- tee_device_put()
->   ...
-> }
+From: Kavyasree Kotagiri <Kavyasree.Kotagiri@microchip.com>
 
-You're right, it works just as well without this patch.
-teedev_close_context() and teedev_open() must be exported in another
-patch though. I'll replace this patch with such a patch in the next
-patch set.
+This patch introduces Microchip LAN966X ARMv7 based SoC family
+of multiport gigabit AVB/TSN-capable ethernet switches.
+It supports two SKUs: 4-port LAN9662 with multiprotocol
+processing support and 8-port LAN9668 switch.
 
+LAN966X includes copper and serial ethernet interfaces,
+peripheral interfaces such as PCIe, USB, TWI, SPI, UART, QSPI,
+SD/eMMC, Parallel Interface (PI) as well as synchronization
+and trigger inputs/outputs.
 
-Thanks,
-Jens
+Signed-off-by: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
+---
+ arch/arm/mach-at91/Kconfig   | 13 +++++++++++++
+ arch/arm/mach-at91/Makefile  |  1 +
+ arch/arm/mach-at91/lan966x.c | 31 +++++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+)
+ create mode 100644 arch/arm/mach-at91/lan966x.c
 
->
-> -Sumit
->
-> >
-> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > ---
-> >  drivers/tee/tee_core.c  | 33 ++++++++++++++++++++++++---------
-> >  include/linux/tee_drv.h | 27 +++++++++++++++++++++++++++
-> >  2 files changed, 51 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-> > index 85102d12d716..3beb682684a8 100644
-> > --- a/drivers/tee/tee_core.c
-> > +++ b/drivers/tee/tee_core.c
-> > @@ -43,14 +43,11 @@ static DEFINE_SPINLOCK(driver_lock);
-> >  static struct class *tee_class;
-> >  static dev_t tee_devt;
-> >
-> > -static struct tee_context *teedev_open(struct tee_device *teedev)
-> > +struct tee_context *tee_dev_open_helper(struct tee_device *teedev)
-> >  {
-> >         int rc;
-> >         struct tee_context *ctx;
-> >
-> > -       if (!tee_device_get(teedev))
-> > -               return ERR_PTR(-EINVAL);
-> > -
-> >         ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-> >         if (!ctx) {
-> >                 rc = -ENOMEM;
-> > @@ -66,10 +63,30 @@ static struct tee_context *teedev_open(struct tee_device *teedev)
-> >         return ctx;
-> >  err:
-> >         kfree(ctx);
-> > -       tee_device_put(teedev);
-> >         return ERR_PTR(rc);
-> >
-> >  }
-> > +EXPORT_SYMBOL_GPL(tee_dev_open_helper);
-> > +
-> > +void tee_dev_ctx_put(struct tee_context *ctx)
-> > +{
-> > +       teedev_ctx_put(ctx);
-> > +}
-> > +EXPORT_SYMBOL_GPL(tee_dev_ctx_put);
-> > +
-> > +static struct tee_context *teedev_open(struct tee_device *teedev)
-> > +{
-> > +       struct tee_context *ctx;
-> > +
-> > +       if (!tee_device_get(teedev))
-> > +               return ERR_PTR(-EINVAL);
-> > +
-> > +       ctx = tee_dev_open_helper(teedev);
-> > +       if (IS_ERR(ctx))
-> > +               tee_device_put(teedev);
-> > +
-> > +       return ctx;
-> > +}
-> >
-> >  void teedev_ctx_get(struct tee_context *ctx)
-> >  {
-> > @@ -90,10 +107,8 @@ static void teedev_ctx_release(struct kref *ref)
-> >
-> >  void teedev_ctx_put(struct tee_context *ctx)
-> >  {
-> > -       if (ctx->releasing)
-> > -               return;
-> > -
-> > -       kref_put(&ctx->refcount, teedev_ctx_release);
-> > +       if (ctx && !ctx->releasing)
-> > +               kref_put(&ctx->refcount, teedev_ctx_release);
-> >  }
-> >
-> >  static void teedev_close_context(struct tee_context *ctx)
-> > diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-> > index 3ebfea0781f1..00a31ff03049 100644
-> > --- a/include/linux/tee_drv.h
-> > +++ b/include/linux/tee_drv.h
-> > @@ -458,6 +458,33 @@ static inline int tee_shm_get_id(struct tee_shm *shm)
-> >   */
-> >  struct tee_shm *tee_shm_get_from_id(struct tee_context *ctx, int id);
-> >
-> > +/**
-> > + * tee_dev_open_helper() - helper function to make a struct tee_context
-> > + * @teedev:    Device to open
-> > + *
-> > + * Creates the struct tee_context without increasing the reference counter
-> > + * on @teedev. This is needed for instance when a driver need an internal
-> > + * struct tee_context to operate on. By skipping the reference counter
-> > + * the circular dependency is broken.
-> > + *
-> > + * Note that this struct tee_context need special care when freeing in
-> > + * order to avoid the normal put on the struct tee_device.
-> > + * tee_dev_ctx_put() is the best choice for this.
-> > + *
-> > + * @returns a pointer 'struct tee_context' on success or an ERR_PTR on failure
-> > + */
-> > +struct tee_context *tee_dev_open_helper(struct tee_device *teedev);
-> > +
-> > +/**
-> > + * tee_dev_ctx_put() - helper function to release a struct tee_context
-> > + * @ctx:       The struct tee_context to release
-> > + *
-> > + * Note that this function doesn't do a tee_device_put() on the internal
-> > + * struct tee_device so this function should normal only be used when
-> > + * releasing a struct tee_context obtained with tee_dev_open_helper().
-> > + */
-> > +void tee_dev_ctx_put(struct tee_context *ctx);
-> > +
-> >  /**
-> >   * tee_client_open_context() - Open a TEE context
-> >   * @start:     if not NULL, continue search after this context
-> > --
-> > 2.31.1
-> >
+diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+index ccd7e80ce943..06cb425af761 100644
+--- a/arch/arm/mach-at91/Kconfig
++++ b/arch/arm/mach-at91/Kconfig
+@@ -122,6 +122,14 @@ config SOC_SAM9X60
+ 	help
+ 	  Select this if you are using Microchip's SAM9X60 SoC
+
++config SOC_LAN966X
++	bool "ARMv7 based Microchip LAN966X SoC family"
++	depends on ARCH_MULTI_V7
++	select SOC_LAN966
++	select DW_APB_TIMER_OF
++	help
++	  This enables support for ARMv7 based Microchip LAN966X SoC family.
++
+ comment "Clocksource driver selection"
+
+ config ATMEL_CLOCKSOURCE_PIT
+@@ -188,6 +196,11 @@ config SOC_SAMA5
+ 	select SOC_SAM_V7
+ 	select SRAM if PM
+
++config SOC_LAN966
++	bool
++	select ARM_GIC
++	select MEMORY
++
+ config ATMEL_PM
+ 	bool
+
+diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+index f565490f1b70..93cfd5b4e6d4 100644
+--- a/arch/arm/mach-at91/Makefile
++++ b/arch/arm/mach-at91/Makefile
+@@ -6,6 +6,7 @@
+ # CPU-specific support
+ obj-$(CONFIG_SOC_AT91RM9200)	+= at91rm9200.o
+ obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
++obj-$(CONFIG_SOC_LAN966X)	+= lan966x.o
+ obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
+ obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
+ obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
+diff --git a/arch/arm/mach-at91/lan966x.c b/arch/arm/mach-at91/lan966x.c
+new file mode 100644
+index 000000000000..de689f854068
+--- /dev/null
++++ b/arch/arm/mach-at91/lan966x.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Setup code for LAN966X
++ *
++ * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
++ *
++ */
++
++#include <linux/of.h>
++#include <linux/of_platform.h>
++
++#include <asm/mach/arch.h>
++#include <asm/system_misc.h>
++
++#include "generic.h"
++
++static void __init lan966x_dt_device_init(void)
++{
++	of_platform_default_populate(NULL, NULL, NULL);
++}
++
++static const char *const lan966x_dt_board_compat[] __initconst = {
++	"microchip,lan966x",
++	NULL
++};
++
++DT_MACHINE_START(lan966x_dt, "Microchip LAN966X")
++	/* Maintainer: Microchip */
++	.init_machine	= lan966x_dt_device_init,
++	.dt_compat	= lan966x_dt_board_compat,
++MACHINE_END
+--
+2.17.1
+
