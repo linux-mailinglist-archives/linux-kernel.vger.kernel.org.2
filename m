@@ -2,72 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E883F95F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E93E3F95F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244573AbhH0IWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244499AbhH0IWk (ORCPT
+        id S233157AbhH0IXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 04:23:03 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:34500 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244449AbhH0IXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:22:40 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4317C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 01:21:51 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id h29so6254453ila.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 01:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=Ta9KGZrEXdXbBbrP5+76a5dJyHsEL2M26EYd/ydrx6w=;
-        b=NKte3HupZHm2rWF1kBSm55UGkVoRF9l79AkwheeCza/4o2TTqrB7/biNSbnL0e1X+L
-         lVVOdflBJuJtEFFgu5OFwLHVAF4qCnY4nHZrTZi5Nooeqc4Bx95FcPjtG3vjvoaMVV67
-         r/W6sGx6U20DpjUaVCECBRL5XMJHAsWJgLQ8FVIW02UcG4llFLsnUZV04fxP5Mvaa3Gd
-         9fbvUzEUq6wQMbchwJV8jJVH8R1u5QDb+GhNeUFUR8cDR/4DrwzJPkePpgdKtGvm+ev6
-         qZnLpJGLzk7ho53hY0LeA3iaBWCOHEwqYt1KRj6O4EF8p7he5cJKEHcbHLYLwgF/RF4R
-         Wj+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=Ta9KGZrEXdXbBbrP5+76a5dJyHsEL2M26EYd/ydrx6w=;
-        b=uRTVmiTZB/+tX9ZFeOdZHWQjoQZ1ctvK761itXsPd5VzbfNFjnVim6bNy4TF4hF8aa
-         Gw7NVBN1VRuVvIxZvZRYeDM/nDMeVtaHhW5KZPre/6TejJpwB3DTQ/1Zs0m98wBZbp51
-         4HVm3pmaAWKjKiz6rmox/vH9jwIkBdm1i75c0XNvji2pg1MP2koxpZTp89+4jvZ2xZG0
-         gVCJiX98Tj+MqKr7Tlz6gLVJA8uR3ziKkZnyvVyWpXf6PFZR2te/QemXDDnb60b61Z7A
-         Tq306gEY5Cv1b01YpOWWItXu/i9x8/S5tzgFGZo1xjE0mka/iF+X/5XZboBnqxA72MRs
-         H+AQ==
-X-Gm-Message-State: AOAM530RJL+LpyWw0tkfZyq7S7vkFcfteBPLMrmHHiGHFdJoDNOhMott
-        Rjp31/IyIvbyW6mmtCmFAPTxin1+3DyOxvpOL54=
-X-Google-Smtp-Source: ABdhPJy17WFk0ETyBBAPaNU931/4TtLa/92Ttoq5p4nKWPe3AjLLXrCc7SF6Ge8LrwVXU9BRE68OdztEn6dHcHzJX2Y=
-X-Received: by 2002:a92:440c:: with SMTP id r12mr5715044ila.174.1630052511356;
- Fri, 27 Aug 2021 01:21:51 -0700 (PDT)
+        Fri, 27 Aug 2021 04:23:02 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-9-YAcLez3-PIu1MFGqx63a2w-1;
+ Fri, 27 Aug 2021 09:22:11 +0100
+X-MC-Unique: YAcLez3-PIu1MFGqx63a2w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Fri, 27 Aug 2021 09:22:07 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Fri, 27 Aug 2021 09:22:07 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Eric W. Biederman'" <ebiederm@xmission.com>,
+        David Hildenbrand <david@redhat.com>
+CC:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Shawn Anastasio" <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Gabriel Krisman Bertazi" <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Suren Baghdasaryan" <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Marco Elver" <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Florian Weimer" <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: RE: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+Thread-Topic: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+Thread-Index: AQHXmsfEnhLiH4wkgUCh4gMa99+VE6uHAcKg
+Date:   Fri, 27 Aug 2021 08:22:07 +0000
+Message-ID: <04e61e79ebad4a5d872d0a2b5be4c23d@AcuMS.aculab.com>
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+        <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+        <87lf56bllc.fsf@disp2133>
+        <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+        <87eeay8pqx.fsf@disp2133>       <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+        <87h7ft2j68.fsf@disp2133>
+        <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+        <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+        <CAHk-=wiJ0u33h2CXAO4b271Diik=z4jRt64=Gt6YV2jV4ef27g@mail.gmail.com>
+        <b60e9bd1-7232-472d-9c9c-1d6593e9e85e@www.fastmail.com>
+        <0ed69079-9e13-a0f4-776c-1f24faa9daec@redhat.com> <87mtp3g8gv.fsf@disp2133>
+In-Reply-To: <87mtp3g8gv.fsf@disp2133>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Received: by 2002:a05:6602:2bf3:0:0:0:0 with HTTP; Fri, 27 Aug 2021 01:21:50
- -0700 (PDT)
-From:   Hassan Duku <zinabhassan91@gmail.com>
-Date:   Fri, 27 Aug 2021 01:21:50 -0700
-Message-ID: <CAENewnZ7YUZ3-X1uLUkq0C-MwA1dBwBeovYNsHbTS+ot7Ns9Mg@mail.gmail.com>
-Subject: Greeting to you,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings to you,
+RnJvbTogRXJpYyBXLiBCaWVkZXJtYW4NCj4gU2VudDogMjYgQXVndXN0IDIwMjEgMjM6MTQNCi4u
+Lg0KPiBJIGFsc28gcmFuIGludG8gdGhpcyBpc3N1ZSBub3QgdG9vIGxvbmcgYWdvIHdoZW4gSSBy
+ZWZhY3RvcmVkIHRoZQ0KPiB1c2VybW9kZV9kcml2ZXIgY29kZS4gIE15IGNoYWxsZW5nZSB3YXMg
+bm90IGJlaW5nIGluIHVzZXJzcGFjZQ0KPiB0aGUgZGVsYXllZCBmcHV0IHdhcyBub3QgaGFwcGVu
+aW5nIGluIG15IGtlcm5lbCB0aHJlYWQuICBXaGljaCBtZWFudA0KPiB0aGF0IHdyaXRpbmcgdGhl
+IGZpbGUsIHRoZW4gY2xvc2luZyB0aGUgZmlsZSwgdGhlbiBleGVjaW5nIHRoZSBmaWxlDQo+IGNv
+bnNpc3RlbnRseSByZXBvcnRlZCAtRVRYVEJTWS4NCj4gDQo+IFRoZSBrZXJuZWwgY29kZSB3b3Vu
+ZCB1cCBkb2luZzoNCj4gCS8qIEZsdXNoIGRlbGF5ZWQgZnB1dCBzbyBleGVjIGNhbiBvcGVuIHRo
+ZSBmaWxlIHJlYWQtb25seSAqLw0KPiAJZmx1c2hfZGVsYXllZF9mcHV0KCk7DQo+IAl0YXNrX3dv
+cmtfcnVuKCk7DQo+IA0KPiBBcyBJIHJlYWQgdGhlIGNvZGUgdGhlIGRlbGF5IGZvciB1c2Vyc3Bh
+Y2UgZmlsZSBkZXNjcmlwdG9ycyBpcw0KPiBhbHdheXMgZG9uZSB3aXRoIHRhc2tfd29ya19hZGQs
+IHNvIHVzZXJzcGFjZSBzaG91bGQgbm90IGhpdA0KPiB0aGF0IGtpbmQgb2Ygc2lsbGluZXNzLCBh
+bmQgc2hvdWxkIGJlIGFibGUgdG8gYWN0dWFsbHkgY2xvc2UNCj4gdGhlIGZpbGUgZGVzY3JpcHRv
+ciBiZWZvcmUgdGhlIGV4ZWMuDQoNCklmIHRhc2tfd29ya19hZGQgZW5kcyB1cCBhZGRpbmcgaXQg
+dG8gYSB0YXNrIHRoYXQgaXMgYWxyZWFkeQ0KcnVubmluZyBvbiBhIGRpZmZlcmVudCBjcHUsIGFu
+ZCB0aGF0IGNwdSB0YWtlcyBhIGhhcmR3YXJlDQppbnRlcnJ1cHQgdGhhdCB0YWtlcyBzb21lIHRp
+bWUgYW5kL29yIHNjaGVkdWxlcyB0aGUgc29mdGludA0KY29kZSB0byBydW4gaW1tZWRpYXRlbHkg
+dGhlIGhhcmR3YXJlIGludGVycnVwdCBjb21wbGV0ZXMNCnRoZW4gaXQgbWF5IHdlbGwgYmUgcG9z
+c2libGUgZm9yIHVzZXJzcGFjZSB0byBoYXZlICdpc3N1ZXMnLg0KDQpBbnkgZmxhZ3MgYXNzb2Np
+YXRlZCB3aXRoIE9fREVOWV9XUklURSB3b3VsZCBuZWVkIHRvIGJlIGNsZWFyZWQNCnN5bmNocm9u
+b3VzbHkgaW4gdGhlIGNsb3NlKCkgcmF0aGVyIHRoZW4gaW4gYW55IGRlbGF5ZWQgZnB1dCgpLg0K
+DQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQs
+IE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86
+IDEzOTczODYgKFdhbGVzKQ0K
 
-How are you doing today?, my name is Hassan Duku, I live in Ghana and
-work for the Operational Manager with Royal Bank Ghana Limited.
-
-I am glad to be connected with you. I have a business proposal I would
-like to discuss with you in private. It involves a business
-opportunity that will be of huge financial benefit to both us. further
-details will be shared after I receive your response.
-
-Kindly reply with your full name and your country of Origin/residence,
-
-Yours Truly,
-
-Hassan Duku
-Operational Manager.
