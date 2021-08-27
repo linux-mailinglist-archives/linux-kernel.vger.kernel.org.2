@@ -2,99 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06713FA076
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC393FA079
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhH0URn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbhH0URm (ORCPT
+        id S231649AbhH0USo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 16:18:44 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:43157 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230171AbhH0USn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 16:17:42 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3A7C0613D9;
-        Fri, 27 Aug 2021 13:16:53 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1117002bace1eb09205059.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:2bac:e1eb:920:5059])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 514951EC0453;
-        Fri, 27 Aug 2021 22:16:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630095407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=hCYoAQ41iPdcZpGqXz/s23YuGJNo/dQNa8YAMDCU2HY=;
-        b=GjwdFy7qt3ob/0LSLGK1B82Uz9msxITNAaImGC4UJMX+n4gSh2vCqtUX2rj8qMmiRPn1e/
-        HecOiNXJt9D+5vT+0p8cH27z9/RkZ1Q/Mk6D1oG4FD+3yJhzjZLXLE3tSuH6RdA+IAQFfr
-        Thjs6tnmfK016mHtHDygxa8FbMhAwFg=
-Date:   Fri, 27 Aug 2021 22:17:25 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 33/38] x86/sev: Provide support for SNP guest
- request NAEs
-Message-ID: <YSlIVRzTGHjou3eA@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-34-brijesh.singh@amd.com>
- <YSkkaaXrg6+cnb9+@zn.tnic>
- <4acd17bc-bdb0-c4cc-97af-8842f8836c8e@amd.com>
- <20005c9e-fd82-5c96-7bfb-8b072e5d66e6@amd.com>
+        Fri, 27 Aug 2021 16:18:43 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id BB93B1C0003;
+        Fri, 27 Aug 2021 20:17:49 +0000 (UTC)
+Date:   Fri, 27 Aug 2021 22:17:45 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     kavyasree.kotagiri@microchip.com
+Cc:     nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
+        linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Manohar.Puri@microchip.com,
+        Madhuri.Sripada@microchip.com
+Subject: Re: [PATCH] ARM: at91: add basic support for new SoC lan966x
+Message-ID: <YSlIaUMt0nS7MFoP@piout.net>
+References: <20210827092623.10677-1-kavyasree.kotagiri@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20005c9e-fd82-5c96-7bfb-8b072e5d66e6@amd.com>
+In-Reply-To: <20210827092623.10677-1-kavyasree.kotagiri@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 02:57:11PM -0500, Tom Lendacky wrote:
-> The main thing about this is that it is an error code from the HV on
-> extended guest requests. The HV error code sits in the high-order 32-bits of
-> the SW_EXIT_INFO_2 field. So defining it either way seems a bit confusing.
-> To me, the value should just be 1ULL and then it should be shifted when
-> assigning it to the SW_EXIT_INFO_2.
+Hello Kavya,
 
-Err, that's from the GHCB spec:
+Thank you for the patch and the upstreaming effort!
 
-"The hypervisor must validate that the guest has supplied enough pages
+On 27/08/2021 14:56:23+0530, kavyasree.kotagiri@microchip.com wrote:
+> From: Kavyasree Kotagiri <Kavyasree.Kotagiri@microchip.com>
+> 
+> This patch introduces Microchip LAN966X ARMv7 based SoC family
+> of multiport gigabit AVB/TSN-capable ethernet switches.
+> It supports two SKUs: 4-port LAN9662 with multiprotocol
+> processing support and 8-port LAN9668 switch.
+> 
+> LAN966X includes copper and serial ethernet interfaces,
+> peripheral interfaces such as PCIe, USB, TWI, SPI, UART, QSPI,
+> SD/eMMC, Parallel Interface (PI) as well as synchronization
+> and trigger inputs/outputs.
+> 
+> Signed-off-by: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
+> ---
+>  arch/arm/mach-at91/Kconfig   | 13 +++++++++++++
+>  arch/arm/mach-at91/Makefile  |  1 +
+>  arch/arm/mach-at91/lan966x.c | 31 +++++++++++++++++++++++++++++++
+>  3 files changed, 45 insertions(+)
+>  create mode 100644 arch/arm/mach-at91/lan966x.c
+> 
+> diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+> index ccd7e80ce943..06cb425af761 100644
+> --- a/arch/arm/mach-at91/Kconfig
+> +++ b/arch/arm/mach-at91/Kconfig
+> @@ -122,6 +122,14 @@ config SOC_SAM9X60
+>  	help
+>  	  Select this if you are using Microchip's SAM9X60 SoC
+> 
+> +config SOC_LAN966X
+> +	bool "ARMv7 based Microchip LAN966X SoC family"
+> +	depends on ARCH_MULTI_V7
+> +	select SOC_LAN966
+> +	select DW_APB_TIMER_OF
+> +	help
+> +	  This enables support for ARMv7 based Microchip LAN966X SoC family.
+> +
+>  comment "Clocksource driver selection"
+> 
+>  config ATMEL_CLOCKSOURCE_PIT
+> @@ -188,6 +196,11 @@ config SOC_SAMA5
+>  	select SOC_SAM_V7
+>  	select SRAM if PM
+> 
+> +config SOC_LAN966
+> +	bool
+> +	select ARM_GIC
+> +	select MEMORY
+> +
+>  config ATMEL_PM
+>  	bool
+> 
+> diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+> index f565490f1b70..93cfd5b4e6d4 100644
+> --- a/arch/arm/mach-at91/Makefile
+> +++ b/arch/arm/mach-at91/Makefile
+> @@ -6,6 +6,7 @@
+>  # CPU-specific support
+>  obj-$(CONFIG_SOC_AT91RM9200)	+= at91rm9200.o
+>  obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
+> +obj-$(CONFIG_SOC_LAN966X)	+= lan966x.o
+>  obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
+>  obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
+>  obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
+> diff --git a/arch/arm/mach-at91/lan966x.c b/arch/arm/mach-at91/lan966x.c
+> new file mode 100644
+> index 000000000000..de689f854068
+> --- /dev/null
+> +++ b/arch/arm/mach-at91/lan966x.c
+> @@ -0,0 +1,31 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Setup code for LAN966X
+> + *
+> + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
+> + *
+> + */
+> +
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +
+> +#include <asm/mach/arch.h>
+> +#include <asm/system_misc.h>
+> +
+> +#include "generic.h"
+> +
+> +static void __init lan966x_dt_device_init(void)
+> +{
+> +	of_platform_default_populate(NULL, NULL, NULL);
 
-...
+Are you sure this is needed? This is a workaround that is there on the
+other platforms because of the at91 pinctrl driver. Ideally, you should
+be able to boot without that. Can you confirm?
 
-certificate data in the RBX register and set the SW_EXITINFO2 field to
-0x0000000100000000."
-
-So if you wanna do the above, you need to fix the spec first. I'd say.
-
-:-)
+> +}
+> +
+> +static const char *const lan966x_dt_board_compat[] __initconst = {
+> +	"microchip,lan966x",
+> +	NULL
+> +};
+> +
+> +DT_MACHINE_START(lan966x_dt, "Microchip LAN966X")
+> +	/* Maintainer: Microchip */
+> +	.init_machine	= lan966x_dt_device_init,
+> +	.dt_compat	= lan966x_dt_board_compat,
+> +MACHINE_END
+> --
+> 2.17.1
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
