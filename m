@@ -1,103 +1,109 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A222D3F96BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:16:25 +0200 (CEST)
+Received: from vger.kernel.org (unknown [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 782933F96BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244657AbhH0JRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
+        id S244672AbhH0JRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232282AbhH0JRK (ORCPT
+        with ESMTP id S232282AbhH0JRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:17:10 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A0FC061757;
-        Fri, 27 Aug 2021 02:16:22 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id fz10so4147112pjb.0;
-        Fri, 27 Aug 2021 02:16:22 -0700 (PDT)
+        Fri, 27 Aug 2021 05:17:19 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED37C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:16:30 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id g13so12978026lfj.12
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:16:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d3XRTlq16t0wJ8HaEjtxOV1ZKnV6ECbNojq2Fi7Sq0w=;
-        b=jSGxin7FakfqGuTj23IY9L2oNrl/AOVnfwZsB7vywp1smzg2kJFQVnbrc1EszHV0IX
-         gbiBgpk8B6F5eGuoU7skjAoqJRhhcD/4CSliMbLEafVbhpOZacDq1grQH8jffNKFsR9W
-         aFGOkoZk7nMniiag4Hr/RkILfElroDBMW80W1E1m63j8dOpsHn5SDNEMZKsTHDts95ra
-         HZskFv9+RF8RgyinudRjLyhbtByK8qYp3PCFrw8nzwHrzqv7druae5yYcC6x1BdNXLV8
-         2I7G7peQO5luoPa8tysTMqlVmL+tRg8m5zBTHqe0z1mgoS8t1fRLs8EJVRKwY3art00T
-         nRtg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VwzfECxpCdVoPZvMBUhjsZ1CU0bHcG8tMQUcJoB03Mc=;
+        b=U6YJzYHhiIzC093S977N4kojGE2WwMIjAs6xGSKaleQLY4hI+jPjthAivr0L/Gglbw
+         rMS8U5STB3QsD9UWWCSfk44W4FuDQfh5Wu8apnVfbkJG2LPYy1wbRLzhdEgNHKpuaFnm
+         hLNC4JjpVY+xFm68Tcdh/Bo+E/4edjIbq+9Talzc7BYXyOyI7SDEknfVB/k2QSbRJBwM
+         5Oj2GYe2HnqMJfM7QHWRDHau5p0hiyiIypJ5SIG4A4M6WDMSoZAGExo5TW1Au22D6g24
+         3hPbgoxNVgzSN+HjavzL4o8xdIw819E6P1kv4qQwznfPyroedtmLrhBIMCLld5O3cNFa
+         OGgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d3XRTlq16t0wJ8HaEjtxOV1ZKnV6ECbNojq2Fi7Sq0w=;
-        b=l0BoUdl0gkGUWaxwpjid6w+WmzSpuo5MvXXEDQk6Jzen7+jgL+2e+mclIQlKlK7dma
-         vFuU38WAGW+C8XDppFU2tgqEWjAGFFZTLgFF2d6lEjngdKWjh7WOiBEZ7HWbRc+LLRmt
-         gBdTsRljs+YudWPzZDutbBgkliPn8UBaJ/kPUowmGkKyawnEcsCged9Pgu1DVx5Rt/dn
-         8yBG+1dxPINd3GhJ/MSeS34bAcIlqAsM9yisu5d6TOLACiRkinKoZ6ZOKU4FqM81Zif7
-         PR+B32b3wKoZ0ovEACKShBrybYYoA20Y55jqaSqjRI7PK0Fc87IM8aXaKIAhkkqywwQM
-         whSQ==
-X-Gm-Message-State: AOAM530cpQwoj0x/g6r2BXFUALklU8pXYE75L1hv4wuZ/WHUETQTNM3Z
-        Kv1GWBEGopkurZm5Qk5giOQj1iefa6t05ldX3ho=
-X-Google-Smtp-Source: ABdhPJyzeMozxSYqalhjT7ul9ZDWu9jJQD7ANoKobe0jVGOY+MJkoh9ZDaPGeAZoVoZmIL4s/eMt3vlsrp2fTMl/noo=
-X-Received: by 2002:a17:90a:6502:: with SMTP id i2mr22150491pjj.129.1630055781885;
- Fri, 27 Aug 2021 02:16:21 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VwzfECxpCdVoPZvMBUhjsZ1CU0bHcG8tMQUcJoB03Mc=;
+        b=ZVaJviuPtMPq6iUyRVK7qHn6k7WEfEsh83GXd+/d3EelSvCEM7ymKv97FQRXIHKYUI
+         NbU/phT8ZM8lNZSbWnUr6MsR1loqPHsQmaO7svVAC+DtVFFsU27SLzwvqZ0lZt1AUDVs
+         AVRMTvgBr5Txq1X2dD8OYofPCIJM6y2UbJNFZrj4rJSbCFRbNA/JuRoNA3i7Dgc5xRLA
+         v21npsHLgkoHqdVFdUkxegCBXsOwqBDTd0jGUWfTf0C1tOmBaP0OB2kdzUjXgfKi0b1W
+         f7+9dKtb3YtZITSgjtpcBFYoDqkEDhXLPq/kwIIv5g3bzczLFwFbfYVgXUp1wcu0sfY2
+         PhWw==
+X-Gm-Message-State: AOAM532dqwY+k99ELstex3z6cSI1hpSX8GotUNVzZxfGu0IswdCqaWdo
+        ctam1EYN9mDAK2SURz5L1vGd3r0jM9luiA==
+X-Google-Smtp-Source: ABdhPJycNrabdok/Z8eft5BVQ9a42ip6dQ5f2EGgX78UHL4HQER2tKNGQSgPBTtYULu8nrHnjYWp4A==
+X-Received: by 2002:ac2:5456:: with SMTP id d22mr6112299lfn.139.1630055788705;
+        Fri, 27 Aug 2021 02:16:28 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id m28sm615005ljc.46.2021.08.27.02.16.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 02:16:28 -0700 (PDT)
+Subject: Re: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <cover.1629789580.git.paskripkin@gmail.com>
+ <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
+ <20210827090706.GA12231@kadam>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <84e04d0e-8a07-aedd-117a-6b6337b865c7@gmail.com>
+Date:   Fri, 27 Aug 2021 12:16:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210826185739.3868-1-ftoth@exalondelft.nl> <1j4kbbxqgr.fsf@starbuckisacylon.baylibre.com>
-In-Reply-To: <1j4kbbxqgr.fsf@starbuckisacylon.baylibre.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 27 Aug 2021 12:15:42 +0300
-Message-ID: <CAHp75Vdu8v1QSi0CQw7qp-yPhMtwJ_hQO=GT5pWoD0nxmKoF_w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Revert "usb: gadget: u_audio: add real feedback implementation"
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ferry Toth <ftoth@exalondelft.nl>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Jack Pham <jackp@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Pavel Hofman <pavel.hofman@ivitera.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210827090706.GA12231@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 11:05 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
-> On Thu 26 Aug 2021 at 20:57, Ferry Toth <ftoth@exalondelft.nl> wrote:
->
-> > Although there is a patch resolving this issue (see
-> > https://lore.kernel.org/linux-usb/1jilzsy8g7.fsf@starbuckisacylon.baylibre.com/T/#u)
-> > it needs a little work and will not be ready for v5.14.0 release. Until then
-> > revert the series.
->
-> Seems like a quite messy solution when the fix available :/
+On 8/27/21 12:07 PM, Dan Carpenter wrote:
+> On Tue, Aug 24, 2021 at 10:27:27AM +0300, Pavel Skripkin wrote:
+>> @@ -83,7 +83,12 @@ int proc_get_read_reg(char *page, char **start,
+>>  
+>>  	switch (proc_get_read_len) {
+>>  	case 1:
+>> -		len += snprintf(page + len, count - len, "rtw_read8(0x%x)=0x%x\n", proc_get_read_addr, rtw_read8(padapter, proc_get_read_addr));
+>> +		error = rtw_read8(padapter, proc_get_read_addr, (u8 *) &tmp);
+>> +		if (error)
+>> +			return len;
+>> +
+>> +		len += snprintf(page + len, count - len, "rtw_read8(0x%x)=0x%x\n",
+>> +				proc_get_read_addr, (u8) tmp);
+>>  		break;
+> 
+> Oh my goodness...  :P
+> 
+> If you look at what proc_get_read_addr is, it turns out it's a 32bit
+> address which is controlled by the user in proc_set_read_reg().  LOL!
+> Just a giant security hole.
+> 
+> My advise is just delete this dead code.  No one is using it so how
+> necessary can it be?
 
-Is it? AFAIR Thing pointed out to some problems with the proposed
-solution. Have those been addressed?
 
-> Change with the updated commit description is avaialable BTW [0]
+Yep, it's dead code as was already mentioned. My plan is to convert all 
+this code to sysfs. One thing I am wondering about should I include 
+these changes into this series?...
 
-> [0]: https://lore.kernel.org/20210827075853.266912-1-jbrunet@baylibre.com
 
-Dunno, but this gives me 404.
 
--- 
-With Best Regards,
-Andy Shevchenko
+
+
+With regards,
+Pavel Skripkin
