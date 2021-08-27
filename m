@@ -2,143 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC383F9D6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183543F9D70
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhH0RQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:16:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42365 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237168AbhH0RQW (ORCPT
+        id S238615AbhH0RQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:16:36 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:55917 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238071AbhH0RQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:16:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630084533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=9Gafj8sxsDqc97Bfoh5OIubdmjwxbqAMG/Cf5EW4CHA=;
-        b=gcbXGuqDoSZ+MENPuOMvCLYGMotBqBnv2DxKZBdgIf5Co4o1JWcqA81aech99VxIAPj9nP
-        KMWi5onRwPo5qAYdqsz98GTksJGYUWadJju+M8i07Y5nT7YM3tPpg3PVlHjaPybfK9hFzw
-        h27RJqCvF/yzdK/CPGaiOGUZ0isJJeo=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-NU81gqk7PYSTIID58oA9nQ-1; Fri, 27 Aug 2021 13:15:31 -0400
-X-MC-Unique: NU81gqk7PYSTIID58oA9nQ-1
-Received: by mail-qt1-f197.google.com with SMTP id e6-20020ac84e46000000b0029baad9aaa0so713609qtw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:15:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9Gafj8sxsDqc97Bfoh5OIubdmjwxbqAMG/Cf5EW4CHA=;
-        b=eztmwU4qaBNHrbtVuQ9lf+xmjyQjoP9zqwJS9EoYnsDUFqIruYJeWz+4AwpgltPGh8
-         jl0tDesoY6mm/gGGTbQczwnRQzdbTFm6FcO2HmebiGMmYlfFfnsYfopZc30xXehEOcEK
-         29GrJ+zvgOyMED4SNuUV/RDBb55N/UmPdiIU2h0Dj0tSoS9s+UURUfytEYvKQFjX48PC
-         zMKX4/xocDuu/7zJhXcWu0ivaRc/DK0Q7+uR7vLEg9kFu93vb3K3W21l5vXDnkHoD6tx
-         piR9EUitQCO7qpYTGOHaUm0/NhExlfwcVej56eE8n+pQ/T6fq6agdHX8im4rqolGWh+3
-         HG/g==
-X-Gm-Message-State: AOAM530oBBQLbGgS91g+alcgwREWUPiIYtLsY9K9x/CUi9zzJUxxqLeY
-        d6Lpipt6QL4b91/xPnCLyGyHnsmxHzbxdvn/TKWWGVie2Qrc9B6k8NzfuFfeHC/60nlLbveEYgW
-        hQ62FwQlGuoR+XXEQa6yZ8XEu
-X-Received: by 2002:a05:622a:650:: with SMTP id a16mr9368934qtb.157.1630084530828;
-        Fri, 27 Aug 2021 10:15:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+mGVdS88FWRCD11ZTp8zbd10l92FiowGcA/FEWX67lzhyonxWS4Z0phgbqe+R7LCZiA3JOA==
-X-Received: by 2002:a05:622a:650:: with SMTP id a16mr9368915qtb.157.1630084530614;
-        Fri, 27 Aug 2021 10:15:30 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q14sm5119552qkl.44.2021.08.27.10.15.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 10:15:30 -0700 (PDT)
-From:   trix@redhat.com
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] igc: optimize igc_ptp_systim_to_hwtstamp()
-Date:   Fri, 27 Aug 2021 10:15:15 -0700
-Message-Id: <20210827171515.2518713-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        Fri, 27 Aug 2021 13:16:35 -0400
+Received: from cust-df1d398c ([IPv6:fc0c:c1f5:9ac0:c45f:1583:5c5b:91fa:2436])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id JfS3mDfw9JWNeJfS5m6c2g; Fri, 27 Aug 2021 19:15:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1630084540; bh=nXlaS3prSiZVMJryT3t3etHYnAzjqVUbsiRTUUbYIeI=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version:From:Subject;
+        b=O5mvUkZqEL/Ad+wlV/1oQLIZve/W6esfQZnoDY1y8Bc5jdtEqj5ZDHG4JnqmakBek
+         LKm7xGDfBYtHJGS4VgNXlawwuL/oj+5kGREWjNOzkQNej/SZSD0f0OORkVxe/L0A6F
+         W2cnzPP0nWQIh0DmRQ6h1DpXeIzqgw3ZB1G5k4msnDzpJqFvrq2JMoXddGngzkwmHb
+         jBcoAhC9Ie7OJ5lyWHRwQkTHrt906AorhfSjeMPz80FiD0IgxT6uPeq65ji9nNiump
+         ACRZ4nZaCUMzmgjpF9KkjXk0DESAvClRiXs+08roByBw1u3yzU1B4+0KzYVyX57rUq
+         U1u9Wl+PhQ6yg==
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     devicetree@vger.kernel.org
+Cc:     alyssa@rosenzweig.io, Mark Kettenis <kettenis@openbsd.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+Subject: [PATCH v4 0/4] Apple M1 PCIe DT bindings
+Date:   Fri, 27 Aug 2021 19:15:25 +0200
+Message-Id: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfF4P4Lg/TKSMGvTdS4QEd3FclE9oV5E+06cdwacwqiwVewVsnRfmDHmsDipn9GOTFOJXXXyD2knsMLStF3P6V8Ul/a21HndwGlfyD7KdAEUp9Wpr4J71
+ iocDEPasSk9Pi1ggyGTSsmNmCygt3cPp5sBhgekIvTrWRgH5AQUz1/GYLz1GtfkS85DywbBoU/hD1sQwf3cV4g0fKFfVjetMsJeH8EebN5nbaAc8D842iO4p
+ XL6Mgorwis/xz1jXNcpdmfQ3eP5y0MzDakhoUY6FG/zy9ECXqJZRmCenH4VFxVo09sEGDwxhR5j3zq0DA0iVBOxqolG8nYyg1yDI2H34B93dhUcYQ/TNtH73
+ z46PG/hfiiIdNNXd/THBPscyjeT/KA+jKg8SYzPxsgzO6qBIjy33tafGfYq/6bDDU4MYaAXs2tawq47h8M8QoBtkV0L4bVhRQK+PAweEXdEb5Mttn5gLYuMW
+ fHUA4ea9OeDZo1RRJ+vobULpm/eQnUOGomfik8n0YJFCF6oW9HdxXo4oGyogm54K8H8ojH88FgVQyTQYL7St1uwo32mE9zzPK1uFBKoSAyodVdbPbcKcbOzB
+ Ynh2Su6qtcaDBjsSBe0V8KWPNkWm9em9UpPGwoT4dSctdCL0deWuKGGjmV8AEhTosHHbjmCExPtaa6on5kTyS+hiCEw05kgfL7GHX0iXqL/oAryh1/pZ62zo
+ tX9C3AtV+e5N+XNEU0aLV/i3J3gQdL67C6/GGe6/EYm7JkZ3zJZgfRMSW4o844A21qA4h6we4rRmiIuTyyX2hvU8NxSowbRe2C3KhNlxli5/J68A103Rt2m0
+ t8mQ0aVfZZ28vAbJF1Y=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Mark Kettenis <kettenis@openbsd.org>
 
-Static analysis reports this representative problem
-igc_ptp.c:676:3: warning: The left operand of '+' is a garbage value
-                ktime_add_ns(shhwtstamps.hwtstamp, adjust);
-                ^            ~~~~~~~~~~~~~~~~~~~~
+This small series adds bindings for the PCIe controller found on the
+Apple M1 SoC.
 
-The issue is flagged because the setting of shhwtstamps is
-in igc_ptp_systim_to_hwtstamp() it is set only in one path through
-this switch.
+At this point, the primary consumer for these bindings is U-Boot.
+With these bindings U-Boot can bring up the links for the root ports
+of the PCIe root complex.  A simple OS driver can then provide
+standard ECAM access and manage MSI interrupts to provide access
+to the built-in Ethernet and XHCI controllers of the Mac mini.
 
-	switch (adapter->hw.mac.type) {
-	case igc_i225:
-		memset(hwtstamps, 0, sizeof(*hwtstamps));
-		/* Upper 32 bits contain s, lower 32 bits contain ns. */
-		hwtstamps->hwtstamp = ktime_set(systim >> 32,
-						systim & 0xFFFFFFFF);
-		break;
-	default:
-		break;
-	}
+The Apple controller incorporates Synopsys Designware PCIe logic
+to implement its root port.  But unlike other hardware currently
+supported by U-Boot and the Linux kernel the Apple hardware
+integrates multiple root ports.  As such the existing bindings
+for the DWC PCIe interface can't be used.  There is a single ECAM
+space for all root space, but separate GPIOs to take the PCI devices
+on those ports out of reset.  Therefore the standard "reset-gpio" and
+"max-link-speed" properties appear on the child nodes representing
+the PCI devices that correspond to the individual root ports.
 
-Changing the memset the a caller initialization is a small optimization
-and will resolve uninitialized use issue.
+MSIs are handled by the PCIe controller and translated into "regular
+interrupts".  A range of 32 MSIs is provided.  These 32 MSIs can be
+distributed over the root ports as the OS sees fit by programming the
+PCIe controller port registers.
 
-A switch statement with one case is overkill, convert to an if statement.
+This now adds an MSI controller binding schema and uses the generic
+msi-ranges property to specify how the MSIs are mapped to interrupts
+on the AIC.  I copied some of the description text in the MSI
+controller binding schema from msi.txt but it may need some further
+tweaks to make sense.
 
-This function is small and only called once, change to inline for an
-expected small runtime and size improvement.
+Patch 2/2 of this series depends on the pinctrl series I sent earlier
+and will probably go through Hector Martin's Apple M1 SoC tree.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/net/ethernet/intel/igc/igc_ptp.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_ptp.c b/drivers/net/ethernet/intel/igc/igc_ptp.c
-index 0f021909b430a0..1443a2da246e22 100644
---- a/drivers/net/ethernet/intel/igc/igc_ptp.c
-+++ b/drivers/net/ethernet/intel/igc/igc_ptp.c
-@@ -417,20 +417,14 @@ static int igc_ptp_verify_pin(struct ptp_clock_info *ptp, unsigned int pin,
-  * We need to convert the system time value stored in the RX/TXSTMP registers
-  * into a hwtstamp which can be used by the upper level timestamping functions.
-  **/
--static void igc_ptp_systim_to_hwtstamp(struct igc_adapter *adapter,
--				       struct skb_shared_hwtstamps *hwtstamps,
--				       u64 systim)
-+static inline void igc_ptp_systim_to_hwtstamp(struct igc_adapter *adapter,
-+					      struct skb_shared_hwtstamps *hwtstamps,
-+					      u64 systim)
- {
--	switch (adapter->hw.mac.type) {
--	case igc_i225:
--		memset(hwtstamps, 0, sizeof(*hwtstamps));
--		/* Upper 32 bits contain s, lower 32 bits contain ns. */
-+	/* Upper 32 bits contain s, lower 32 bits contain ns. */
-+	if (adapter->hw.mac.type == igc_i225)
- 		hwtstamps->hwtstamp = ktime_set(systim >> 32,
- 						systim & 0xFFFFFFFF);
--		break;
--	default:
--		break;
--	}
- }
- 
- /**
-@@ -645,7 +639,7 @@ void igc_ptp_tx_hang(struct igc_adapter *adapter)
- static void igc_ptp_tx_hwtstamp(struct igc_adapter *adapter)
- {
- 	struct sk_buff *skb = adapter->ptp_tx_skb;
--	struct skb_shared_hwtstamps shhwtstamps;
-+	struct skb_shared_hwtstamps shhwtstamps = { 0 };
- 	struct igc_hw *hw = &adapter->hw;
- 	int adjust = 0;
- 	u64 regval;
+Changelog:
+
+v4: - Convert MSI controller binding to YAML
+    - Add generic msi-ranges property to MSI controller binding
+    - Fix typos/formatting in apple,pcie binding
+    - Use generic MSI controller binding in apple,pcie
+
+v3: - Remove unneeded include in example
+
+v2: - Adjust name for ECAM in "reg-names"
+    - Drop "phy" registers
+    - Expand description
+    - Add description for "interrupts"
+    - Fix incorrect minItems for "interrupts"
+    - Fix incorrect MaxItems for "reg-names"
+    - Document the use of "msi-controller", "msi-parent", "iommu-map" and
+      "iommu-map-mask"
+    - Fix "bus-range" and "iommu-map" properties in the example
+
+Mark Kettenis (4):
+  dt-bindings: interrupt-controller: Convert MSI controller to
+    json-schema
+  dt-bindings: interrupt-controller: msi: Add msi-ranges property
+  dt-bindings: pci: Add DT bindings for apple,pcie
+  arm64: apple: Add PCIe node
+
+ .../interrupt-controller/msi-controller.yaml  |  42 +++++
+ .../devicetree/bindings/pci/apple,pcie.yaml   | 165 ++++++++++++++++++
+ .../bindings/pci/brcm,stb-pcie.yaml           |   1 +
+ .../bindings/pci/microchip,pcie-host.yaml     |   1 +
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/apple/t8103.dtsi          |  63 +++++++
+ 6 files changed, 273 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/msi-controller.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+
 -- 
-2.26.3
+2.32.0
 
