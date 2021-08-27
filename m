@@ -2,157 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B143FA0DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112503FA0E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhH0UqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:46:22 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3742 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231570AbhH0UqU (ORCPT
+        id S231672AbhH0Uuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 16:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231346AbhH0Uuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 16:46:20 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RKcwUH175141;
-        Fri, 27 Aug 2021 16:45:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=V4Bn5zvUHai0GK9if0diH+c0ro46+dVK+RJfgxCxnD0=;
- b=AT0KbGubyPbSknLxtnmiJHDDCRStB0x2euyH7EuqjQW9DcITZSX9RAp9Q2CA1foGcpWf
- AE4Ar3pHD/i46SeWI4eNCCf8DGB00Sffj0y3usaqjOqQ1nzEhAMApue2rFeuYY54aiLI
- LkV2hZccwthNMJrasQtwRwvcqSjo12Ak9e70/XYgq4MohAWMNlwpehaSQNadFBrHKe6K
- lamm+h6XgzpsVHNgVAZH4H9xvub8aobDdr5ZsJxAUzz11hDqQRkBWu87WBMt59mNI/cC
- Io881OjXqb45MSvsD1f+RbPNwAfb/VjPbuMJIMa+gDbWfoDZr+G/atpLk5dCkoAjELpm qQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aq68k1pcq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 16:45:00 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17RKfEhP180599;
-        Fri, 27 Aug 2021 16:44:59 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aq68k1pc7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 16:44:59 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17RKgLf6003118;
-        Fri, 27 Aug 2021 20:44:58 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma03wdc.us.ibm.com with ESMTP id 3ajs4ftd3r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 20:44:58 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17RKivb618219340
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 20:44:57 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AEAFC28059;
-        Fri, 27 Aug 2021 20:44:57 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A866C28058;
-        Fri, 27 Aug 2021 20:44:54 +0000 (GMT)
-Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.211.72.200])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 27 Aug 2021 20:44:54 +0000 (GMT)
-Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org, pjones@redhat.com,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        Patrick Uiterwijk <patrick@puiterwijk.org>
-References: <20210819002109.534600-1-eric.snowberg@oracle.com>
- <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
- <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
- <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
- <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
- <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
- <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
- <9526a4e0be9579a9e52064dd590a78c6496ee025.camel@linux.ibm.com>
- <9067ff7142d097698b827f3c1630a751898a76bf.camel@kernel.org>
- <bc37d1da3ef5aae16e69eeda25d6ce6fe6a51a77.camel@HansenPartnership.com>
-From:   Nayna <nayna@linux.vnet.ibm.com>
-Message-ID: <10bc1017-2b45-43f3-ad91-d09310b24c2c@linux.vnet.ibm.com>
-Date:   Fri, 27 Aug 2021 16:44:53 -0400
+        Fri, 27 Aug 2021 16:50:50 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C118C0613D9;
+        Fri, 27 Aug 2021 13:50:01 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id u14so16380403ejf.13;
+        Fri, 27 Aug 2021 13:50:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KasoWwT+Q4gofr9QBSjUL1Cy40NSgOuJugmN8Oq4nsE=;
+        b=By+JlkafpyWxPZomHEu2Y2TyodMM0TU543YMHcTvIy2L+aTaEoRyk2J8dVpk3WVub1
+         mPAadkKwt7guXNRr++RlV7BPEbFDe3XIrlT1RGF8s3D97H9h+xCDFGSKPhiToPLMhI9V
+         O4unzIRx3Q8C7zMZeU7kKlMdzZeEoTEFA2Iis/zM8d5U5Cff9dG57YR+JyQbHS9PtT13
+         JoIs0zChUHjvQfxC1f5T+5VjOOK60YCHl8p8q8jX73tu1jNxp2B1a9ttlDHMv1Xb+GiZ
+         c6LlNlwSmoDgiQV9WS5vMk9VLkBM1XYhwuT3bp/4gcuK+2cN56FpoXLz8dCzEdyzivdw
+         XHMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KasoWwT+Q4gofr9QBSjUL1Cy40NSgOuJugmN8Oq4nsE=;
+        b=EBsVbeSqHKX+d0pt7utjdjk8mtD3QJLY/IW7VhtOqY3RM5hbXus1IYK8N5A3MoYokn
+         LQTUV30LNeJtLk0T6a8/7p+4QsXJkksAREzzP9Un4icsP0kJ4daDmQEo1xKj2wxrw/F8
+         V8Cq+jKqkBaxA8Mh67ppTDfMf9vsyqS7YW5Z9WzGyYgUUOc07+3+/nprBTzSSmBrHH0y
+         lPg7d3OOHzQYOnrBOK7Uw5/IQ6KRo+d3XOva0zGMY0LFJ8Qr5FGDg49HfjbhqoNwMkqH
+         KDrI3t7Bkf8/PTxvKdZK45jnOJOjykGD6yuoEw4oGkHMzNK0y1oxlruXhhTMfLaLsSPX
+         PAVA==
+X-Gm-Message-State: AOAM530YS6Q3FkiF/h8nZeSyF6Kd1XGl7E1sYk4RJwa/jY2/zk9OLjZS
+        yD2mJZWFxa1AUwbiaoRtq3g=
+X-Google-Smtp-Source: ABdhPJx2+g1sK5VxQEGFGoscts265WqnlDMr+9lMq3kOysNCtnz5SSqKD5X7moIfAQoTeiuOzLkNxA==
+X-Received: by 2002:a17:906:3589:: with SMTP id o9mr11975443ejb.150.1630097398595;
+        Fri, 27 Aug 2021 13:49:58 -0700 (PDT)
+Received: from ?IPv6:2001:981:6fec:1:1b32:912f:78cc:6c61? ([2001:981:6fec:1:1b32:912f:78cc:6c61])
+        by smtp.gmail.com with ESMTPSA id k6sm3810520edv.77.2021.08.27.13.49.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 13:49:58 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] Revert "usb: gadget: u_audio: add real feedback
+ implementation"
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ferry Toth <ftoth@exalondelft.nl>
+Cc:     Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Jack Pham <jackp@codeaurora.org>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+        Lorenzo Colitti <lorenzo@google.com>,
+        Wesley Cheng <wcheng@codeaurora.org>, robh+dt@kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        frowand.list@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Hofman <pavel.hofman@ivitera.com>
+References: <20210826185739.3868-1-ftoth@exalondelft.nl>
+ <YSiiAsrCaxOn8myU@kroah.com>
+From:   Ferry Toth <fntoth@gmail.com>
+Message-ID: <1faf1ad0-25eb-4d78-98d5-4612b8b8f3be@gmail.com>
+Date:   Fri, 27 Aug 2021 22:49:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <bc37d1da3ef5aae16e69eeda25d6ce6fe6a51a77.camel@HansenPartnership.com>
+In-Reply-To: <YSiiAsrCaxOn8myU@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: P8y2vFgMMz6mtKu6ZTA1-OA2iJE_cBk2
-X-Proofpoint-GUID: jmXS99QL71NUcQhSu-DO56SNSiN-arUK
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_06:2021-08-27,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- malwarescore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
- bulkscore=0 impostorscore=0 spamscore=0 mlxscore=0 clxscore=1015
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2108270120
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi
+Op 27-08-2021 om 10:27 schreef Greg Kroah-Hartman:
+> On Thu, Aug 26, 2021 at 08:57:36PM +0200, Ferry Toth wrote:
+>> Although there is a patch resolving this issue (see
+>> https://lore.kernel.org/linux-usb/1jilzsy8g7.fsf@starbuckisacylon.baylibre.com/T/#u)
+>> it needs a little work and will not be ready for v5.14.0 release. Until then
+>> revert the series.
+> 
+> revert the series for what?  5.14-final needs these reverts?  Or are
+> these for 5.15-rc1?
+> 
+> confused,
 
-On 8/25/21 6:27 PM, James Bottomley wrote:
-> On Thu, 2021-08-26 at 01:21 +0300, Jarkko Sakkinen wrote:
->> On Tue, 2021-08-24 at 10:34 -0400, Mimi Zohar wrote:
->>>>>> Jarkko, I think the emphasis should not be on "machine" from
->>>>>> Machine Owner Key (MOK), but on "owner".  Whereas Nayna is
->>>>>> focusing more on the "_ca" aspect of the name.   Perhaps
->>>>>> consider naming it "system_owner_ca" or something along those
->>>>>> lines.
->>>>> What do you gain such overly long identifier? Makes no sense.
->>>>> What is "ca aspect of the name" anyway?
->>>> As I mentioned previously, the main usage of this new keyring is
->>>> that it should contain only CA keys which can be later used to
->>>> vouch for user keys loaded onto secondary or IMA keyring at
->>>> runtime. Having ca in the  name like .xxxx_ca, would make the
->>>> keyring name self-describing. Since you preferred .system, we can
->>>> call it .system_ca.
->>> Sounds good to me.  Jarkko?
->>>
->>> thanks,
->>>
->>> Mimi
->> I just wonder what you exactly gain with "_ca"?
-> Remember, a CA cert is a self signed cert with the CA:TRUE basic
-> constraint.  Pretty much no secure boot key satisfies this (secure boot
-> chose deliberately NOT to use CA certificates, so they're all some type
-> of intermediate or leaf), so the design seems to be only to pick out
-> the CA certificates you put in the MOK keyring.  Adding the _ca suffix
-> may deflect some of the "why aren't all my MOK certificates in the
-> keyring" emails ...
+Apologies. Yes, the idea was to revert for 5.14-final as the series 
+creates a regression.
 
+However, an updated patch "usb: gadget: f_uac2: fixup feedback endpoint 
+stop"
+https://lore.kernel.org/linux-usb/1jfsuvw817.fsf@starbuckisacylon.baylibre.com/T/#m922149b7e74204c8ed1bed2c624910ab4eafd43c
+now has been acked by Felipe.
 
-My understanding is the .system_ca keyring should not be restricted only 
-to self-signed CAs (Root CA). Any cert that can qualify as Root or 
-Intermediate CA with Basic Constraints CA:TRUE should be allowed. In 
-fact, the intermediate CA certificates closest to the leaf nodes would 
-be best.
+If we can get that it for 5.14-final it would be less messy.
 
-Thanks for bringing up that adding the _ca suffix may deflect some of 
-the "why aren't all my MOK certificates in the keyring" emails.
+Can we?
 
-Thanks & Regards,
-
-     - Nayna
+> greg k-h
+> 
 
