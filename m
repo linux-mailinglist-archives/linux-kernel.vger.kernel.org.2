@@ -2,87 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484553F929D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0013A3F92A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244068AbhH0DGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbhH0DGu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:06:50 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9304EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:06:02 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id c4so3042607plh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=B3i7idO8QqKhjt0ThMO0ce5R45fYSfUmsl0FexLZ5s0=;
-        b=bTEyYRvY1cWcwoZEZ2moTg1MjvMRYK8rR2S5dUEOaEfvquXEgZBwJP6Pk1JE+xxszK
-         Gh2K0JCV4U6S6UY6uJjQunU41ghVesKm1+1TyAmkjVlwsbOIqY7QRq5SpcdAeERa95zm
-         65SJep8SkvCVT7UaMaZ3Pke9nQreBI6ybUrcnCamJXe5wiLQdQm6xfk5ofI5favfLZTl
-         9yTQbn509s3wcC6a42QCUHj2d1cU0FxlgQFFOqMcbgBHIWwK3abPu7ZPNSGt+lEv2dFW
-         hUrQ2RHm+beAGZ4f4+rJZ3XxBqgJgfgKwNR+ZmfiXcNvKOxNgpgj3X5CbYCr/9c8LF4A
-         9hig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=B3i7idO8QqKhjt0ThMO0ce5R45fYSfUmsl0FexLZ5s0=;
-        b=VEb7Uyucrx2L3xS3Envl3l4/yXQjEBEhQ56rx/qFSZi8XR28D1ZRizMOx1Zt9nhUkX
-         IT00mRgsA5iepGJTiD/j9M7vHQWbwE/U45EUenORjFMGxT93n5VqlKm8eyMSdi99dN2F
-         Mb24QoWRsdM8cZiKlGrW9RnDcEoZ+TH4Z4/tO8tY/FRwt2uvfWdW8VO6KiCByi1zQSUl
-         H/ffJYnTCrfPfX1nvXE3OCF8DzNjW4gni4+emTYXzA4FtmsIq7UmBB47IzkMl5ViAcrC
-         QZegQlvSPhoz4iE/pzl7rQnNV1uxksVujO7xzz6W2h3NfHzvFl9sy0JXQyEP/sR5+gO4
-         K3hQ==
-X-Gm-Message-State: AOAM533QwgpGMPRMkVfsY6XwwjsIk6jUSeh7ejEM2lAAEq+61C/TTJwk
-        iYsDcohBsVIBbGcj2H16GqnRsg==
-X-Google-Smtp-Source: ABdhPJwi/AXRYp0dh7EOBaZcQmdGOm65HoIu+HLQTJxX6eLLRbofgCP5WSIT9+znxWkDp2OZLm3HfA==
-X-Received: by 2002:a17:90a:6a01:: with SMTP id t1mr8009301pjj.31.1630033562037;
-        Thu, 26 Aug 2021 20:06:02 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id z12sm4262715pfe.79.2021.08.26.20.06.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 20:06:01 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 08:35:57 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v9 5/8] soc/tegra: pmc: Implement get_performance_state()
- callback
-Message-ID: <20210827030557.aymjkky7athjxpow@vireshk-i7>
-References: <20210827013415.24027-1-digetx@gmail.com>
- <20210827013415.24027-6-digetx@gmail.com>
+        id S244102AbhH0DJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:09:12 -0400
+Received: from mail-eopbgr1310113.outbound.protection.outlook.com ([40.107.131.113]:13568
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244081AbhH0DJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 23:09:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oUyUnKbdYweusmFJoP/LMCWm9yxui9DSADD/2ngV/+LCZv0VtHfToKDDZkBpqdstHoksbYTBxAGgq5ENy+b9g8xf0/qPVdqVVmU4OpjegK/5DjSafIByR6PvKd1fYgzbSY78v4FTaLCH6xsDn7FW448v2Pj2RsxT0N92kNB5zXBHMFyvsqF+UyMMvFU9XP1rPvdTMGWHZTMj53bsZNVUWQh4LSHZrzz9iio1Kf+IsDM9tzmJQOPpFRK9UUkOFBBemAWsNrbV/AGsBI0vXi/VT/dOfI1uu/59IVvvIBr9ekurePI+VFck4d9RjSJKVyzcyS+2MWFfc8dd/fHcziJWGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RqHXYjedbujd6o3p3s2LcHxOIVFSDnJmdrTXPigGWqE=;
+ b=B8xu0F2QM/8QGX1WABVYdEf43LOtmrK0DJ5iS3vPP2+FhTYsL+o4t9gqJ0CAPAfQABQi1mzB1JyBjWcBOgWNNzwJBrf12eUiXcWjfDNyytRvqWEowPiCioWifwAdgEk/pzg3R+vpHqsosI1YvpQD18T/YaU+Oh1lWZ8e5O8WtD1RQ7fLIuGaiZQiTrik1tGO1qFbpExoMItMqgxuWx2eINuCWAzVUNLk3F2DMtatRiMfceZnYoa5FsXD2JvDQDgMVuHz/Hrqx71RgitoJhgwdNlYm8rJ/L9MiONOlXd8t7ob/iysKpMLD847mW+y/87+RRH6pd27K+/qz0X1wWAo8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RqHXYjedbujd6o3p3s2LcHxOIVFSDnJmdrTXPigGWqE=;
+ b=Udt1V+P5amB7g2u7BOT2oUHuD6At7vv/5LALFKhC0wlf5BZtBWLAw3q72zMhASgHPzu9fp7Ksb7dcIwhmQQDfqSwUQk5LCGxP4QBBBXjRgfGHceTmVEooccEGYNDkJ6rH3ISEmUUVRUoDk6+duVYpfhI+1I6U+87Zk6fIl8T76jH/n4uEhLVRlXsGBjqOrDcluNh7yLMXjc7+oNo00TZrkC4qcJvnk35fGVMDHJNXkf0Z8ZvE96om6haY6UHOa/MZUcItvL1lv74b8mY/9D+54LkviTSIOKuzynpoObXRgCATGaJiUslNmWGbP4ZbSFAvRUvz3ZguOLuxRTzxwUSOQ==
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
+ by HK2PR06MB3554.apcprd06.prod.outlook.com (2603:1096:202:40::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.19; Fri, 27 Aug
+ 2021 03:08:19 +0000
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::4c26:6668:f551:3a62]) by HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::4c26:6668:f551:3a62%3]) with mapi id 15.20.4436.025; Fri, 27 Aug 2021
+ 03:08:19 +0000
+From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH v3 1/4] dt-bindings: aspeed: Add eSPI controller
+Thread-Topic: [PATCH v3 1/4] dt-bindings: aspeed: Add eSPI controller
+Thread-Index: AQHXmkIdttmpXm7UpE2tjp2jWlnrTKuFx06AgADlQGA=
+Date:   Fri, 27 Aug 2021 03:08:19 +0000
+Message-ID: <HK0PR06MB3779F7F75D24326E6F0DB23591C89@HK0PR06MB3779.apcprd06.prod.outlook.com>
+References: <20210826061623.6352-1-chiawei_wang@aspeedtech.com>
+ <20210826061623.6352-2-chiawei_wang@aspeedtech.com>
+ <1629984361.334223.1033382.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1629984361.334223.1033382.nullmailer@robh.at.kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 99353c3b-5609-494b-c194-08d96907ec09
+x-ms-traffictypediagnostic: HK2PR06MB3554:
+x-microsoft-antispam-prvs: <HK2PR06MB355400784E9F9846E7C2042D91C89@HK2PR06MB3554.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hgIg9WMl81Ftoxz0Tfbb9HQjuWdpt7ot5r9I7jtwd/K+DUn2WngHpIJer/GjOORNxxdJZZcGHtBXRwaFroao+hVfhX78MhLQjvOkozmTw9LnewaHLDBfMiZjtU1PvHu/UgBBBjUDZ5sDQeTTUbRS4NL8eYvXLsNWJiZd+IWdOoPjVOL1mpAEPY5kA/VJqpkJgQeYXrLZwSbo4TdZNQgcalPKtSBVjA7Vm2C1VBUwWrVkh8L2B2kCL/IK9D8XP9//RB2wABLanMilwuscrjJXLlgtp2KUO6FkrrCwjHEMi8ck8pHXSrz4oCNnNZEwKeX4Yt6q9d96jEdhzhC8TUpsEC2M7UNFkVUI5vfrdZaoXzZFedcveGcskg55V35jjGOs0jYkq4NYZynpt6A0IfPIMp5P0NEve7mUOCcHstBIWRISC+Bsp3v/pAFW2VCpkdngLE7Vbi6/CcBv60eaGfBS3+LwHxsFrkUoP01MtYUZMsrw1GYUsd95bg1rZvrfbenPlSU6lOLVYYAvGKAg/dfKN10/JDN4yY8Fs3i/iPa1WwxjYoxMLGwLOX4qxbcRlGjKcj+J4RT/NmXE8ORoA05/s/Ldj/nKSei3kvzj5ntaB8BETg1DKKl9/9GMXEpC8Q7o2hAUBO5T1aKOvyd6vnAyIWK8faR+8Q4MXRkwh0QBMw62AnkDcpSZpWNfb2C2qdC4h/MX0xBMROdj+Wbw+Ie0pmM4rg/SU2Q1lzyho3TlTDpEInT4fXewDUIBYO6R37kbYOieGhewNV9MjS0ZTSBNcw5LHYSLZQye99jfhNMZiCU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(136003)(396003)(39830400003)(83380400001)(4326008)(26005)(8936002)(86362001)(7696005)(55016002)(2906002)(6506007)(9686003)(6916009)(76116006)(478600001)(66556008)(66476007)(66946007)(966005)(66446008)(64756008)(5660300002)(71200400001)(316002)(38070700005)(33656002)(38100700002)(54906003)(52536014)(8676002)(122000001)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tspzspcT+keZkB/C3wd+xiUhDpVASTXz05/MWKkCvLAIqZ7UroxBXfSOE1eB?=
+ =?us-ascii?Q?3ouNqsQdGiRRNc5WPU/aW0cvnXeGiMvtQw/FGrtd5bcP0A9IR+PV9yo+ql0Q?=
+ =?us-ascii?Q?AyYWtzTH2kjYR1HsbETc8m1swXFpIp1Mv3Kaxiftw9F3N/qKvGe6cvWdAwsd?=
+ =?us-ascii?Q?6mUq20VKkeKp8ApR+Y8LhMPEfTkRWCDabLopYnJQhcEW79cSqQZnHCSRGW4z?=
+ =?us-ascii?Q?3J7vqBMFE8b5c1Puq1Jjw3uOiFLkkpX1XIIttKuDcF22jmjFaXT/tFPyej2/?=
+ =?us-ascii?Q?GZESvZRdUHFao58l9/Pn5Fr7totZOmcz3ZSvK/NkOyaB8Hwx40jNAdXVFw4t?=
+ =?us-ascii?Q?TVAepcpFM/7wJYImBYib9ZQAIorujiKMAsmDrAZXAWIzUqfzEiQCB7SihCE6?=
+ =?us-ascii?Q?y430bQZ4ZxYs6DisUzFh2j1D/XIjgyGK6bP+fAPyUamsXKiNT+eWB7TCip9F?=
+ =?us-ascii?Q?ztjpf8Vb1vbXeGAQ61SY/t2MF2StbQ8rIzzTqs6GW4hiXqy0vLg8Yz9nOk1m?=
+ =?us-ascii?Q?gb8Coen6eVvuMNDjtCJSFbmZ057sR6/kuOqOMBi2umiMZqyqOqiBBPqPIDfl?=
+ =?us-ascii?Q?bo9p+qZgutWodYILRdTf2Il44TGzBTu926NiKxua+6AJrDAdUCQytjpUWujG?=
+ =?us-ascii?Q?ch/ym0aCVCqyvbaNOPwjTHwGf4qMWD6ipCwWeQAx67/D5a09QqvAPJUR83V1?=
+ =?us-ascii?Q?W3uRNnjpOTFQnBGWJjaYshSW9ZNesk6Jf+PoCywfQMJWgBfBfo7p9QAXFKb0?=
+ =?us-ascii?Q?mj2L1zlzr3WAO/NBexWVkxujeAhfPO+Me7RzWMkOPPsUKiRdCnerZomCWqNB?=
+ =?us-ascii?Q?bm1izL3O9kSokm6yGt7kxCYby6E0JEP7tlwIcLyC3oaoQDUUeqAfCEdg0vc2?=
+ =?us-ascii?Q?mFl/Uf2247hMtqds0ob84MBcPGj3MfkJIpsA2SY7CgrUOulLD0aqNS9xcKkH?=
+ =?us-ascii?Q?H1oKmamdIGjgT1B3i/x0+TJcEK6WXIec4hYBMJuY5hZpj/SQLXUq1bd5Su/u?=
+ =?us-ascii?Q?xf575x06hXUw+glRe+Rg1NDIbwrDyekxNWS6Xb1322cleF0gnbkbf6W7nqLc?=
+ =?us-ascii?Q?TqOL9b7Tl4TQcAEELptIv+CpNOjJHhUDvqvH9NzWcBMLZtcwDiWE2CsQ40n6?=
+ =?us-ascii?Q?sNWZJkzl/mroO4aLpFq5E7JNGobzdMdIIjCvR3w66+FgTSwcdumUhnmjP1M9?=
+ =?us-ascii?Q?YvDR6FzrPhOQUm4old4kubMMz/d9gKo0FbqKNmgw30D8PgJA1RhQ0cCi8pEo?=
+ =?us-ascii?Q?M+R/0BVETVC/SWht1R2a4cCcAC9FIBERZ59ywBY1gISSZbeF6WBoLKxMgbff?=
+ =?us-ascii?Q?Ovhc4zh/Li9Tc0TUFaIJHXBv?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827013415.24027-6-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99353c3b-5609-494b-c194-08d96907ec09
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2021 03:08:19.4955
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XxLgH44MPXHles6L0mPme1CFVYHYRKQ8DZlftl/4LZhqFhd8BgWxDl6ltXzO+e4P3WK/spTXm71zOsTuoHqPGkVKPMy2aPFI78ol8DUBkBw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3554
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-08-21, 04:34, Dmitry Osipenko wrote:
-> +	clk_opp_table = dev_pm_opp_set_clkname(dev, NULL);
-> +	if (IS_ERR(clk_opp_table)) {
-> +		dev_err(dev, "failed to set OPP clk: %pe\n", clk_opp_table);
-> +		ret = PTR_ERR(clk_opp_table);
-> +		goto put_hw;
-> +	}
+> From: Rob Herring <robh@kernel.org>
+> Sent: Thursday, August 26, 2021 9:26 PM
+>=20
+> On Thu, 26 Aug 2021 14:16:20 +0800, Chia-Wei Wang wrote:
+> > Add dt-bindings for Aspeed eSPI controller
+> >
+> > Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+> > ---
+> >  .../devicetree/bindings/soc/aspeed/espi.yaml  | 157
+> > ++++++++++++++++++
+> >  1 file changed, 157 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/soc/aspeed/espi.yaml
+> >
+>=20
+> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m
+> dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>=20
+> yamllint warnings/errors:
+>=20
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/=
+as
+> peed/espi.example.dt.yaml: espi@1e6ee000: 'espi-ctrl@0', 'espi-mmbi@800'
+> do not match any of the regexes: 'pinctrl-[0-9]+'
+> 	From schema:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/=
+as
+> peed/espi.yaml
+>=20
+> doc reference errors (make refcheckdocs):
+>=20
+> See https://patchwork.ozlabs.org/patch/1520968
+>=20
+> This check can fail if there are any dependencies. The base for a patch s=
+eries is
+> generally the most recent rc1.
+>=20
+> If you already ran 'make dt_binding_check' and didn't see the above error=
+(s),
+> then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>=20
+> pip3 install dtschema --upgrade
+>=20
+> Please check and re-submit.
 
-Why do you need to do it ? OPP core already does this automatically.
+The warning has been fixed by using patternProperties to define the espi-ct=
+rl and the espi-mmbi child nodes.
+The updated version will be submitted soon. Thanks.
 
--- 
-viresh
+Chiawei
