@@ -2,89 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C253F9FE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5703F9FEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhH0TTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 15:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
+        id S231656AbhH0TUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 15:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhH0TTN (ORCPT
+        with ESMTP id S231566AbhH0TU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 15:19:13 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957C3C061757;
-        Fri, 27 Aug 2021 12:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=r8MzoKDcb67F6VDD0mCfQtUXlNELBrr58OK/skvQejQ=; b=Q6aWwEC/JZVopdDk8X1QjnwL8l
-        nn5puUdf+O7B1dgHvEgE4VR7dMiWkZu0xOHZ4JH821w52Q/zP3BGX87mxABarojvRRQN8u29TM7AL
-        lR/nfcx0+N9/YXnOsFsLU4IceBFw2kFHhg0uy+/V1bVbKVTnYCfERNaqNWBnrCzFJCGtTrehA4gIX
-        NsZ8WaFJYPNs/OBiDn26XCThBH4Eo/cEv0x9yrpI29bkfk1n34eDIt9vthtYt6S08SmmCC1MRMHhh
-        KQw+8lZybK5CYUFuLfszXurf4AJk7ow675xAoVzGdkre1+NsJyA++7qavXURTiW5DAp++SVxfGZac
-        b0ct+yrg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJhMh-00D5BG-Gk; Fri, 27 Aug 2021 19:18:11 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk, colyli@suse.de, kent.overstreet@gmail.com,
-        kbusch@kernel.org, sagi@grimberg.me, vishal.l.verma@intel.com,
-        dan.j.williams@intel.com, dave.jiang@intel.com,
-        ira.weiny@intel.com, konrad.wilk@oracle.com, roger.pau@citrix.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, minchan@kernel.org, ngupta@vflare.org,
-        senozhatsky@chromium.org
-Cc:     xen-devel@lists.xenproject.org, nvdimm@lists.linux.dev,
-        linux-nvme@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 10/10] zram: add error handling support for add_disk()
-Date:   Fri, 27 Aug 2021 12:18:09 -0700
-Message-Id: <20210827191809.3118103-11-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210827191809.3118103-1-mcgrof@kernel.org>
-References: <20210827191809.3118103-1-mcgrof@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+        Fri, 27 Aug 2021 15:20:29 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891B6C0612A6
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:19:06 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id 70-20020a370b49000000b003d2f5f0dcc6so130931qkl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=RRkML5aaLpabtiv7lMTsCxfjkz2roCtfewQM+FW/noA=;
+        b=sHNZLIBtukDKX17un4BpyKt9o/NbkOKdeGKhtEUC+VIhW+JR5IRHL/MeI5m4UiRgqZ
+         23gqGbl9Sb7h5tWJhUjmXAenuxo7to0hGDzQrIWaCF8ZzLqPlesKPZxXUDSeQxvUTGmc
+         Y2q4AfRIF7k7FcPTgS069D4hyRgQrpknm3wcTyXWeNlENvMKkdvKWpiP4biyfRWVb59v
+         B91dhUVE/mHPNPBjNK4ZRgRdi5t9QmrSgUOwyv/flhMGooimzka+r5zb/ibMZ1WhvfaB
+         MXQaZMd3mgBtEhejxWPzQM+aR6bjI65i/DIQJhV7XR5fILiAOHJva5SMoP1jY3C5UH3J
+         il3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=RRkML5aaLpabtiv7lMTsCxfjkz2roCtfewQM+FW/noA=;
+        b=KPqlDiE0IragC2hkLy48tkkW2g9Oi3mEef5oUheMxJV0NdePi19RZN5/phTMtccDIB
+         svmgSatOW6IppA7iyUCruREI7hC7CFXQV7CxUWYDOrK3U1wCN0bZiQKTRL7/TNuBY9v2
+         6EH0Dmy0Va9AgS2nP45PJd7fSydwBb81iTPYRGs/btN0xJ25sQmT3MXe/vVJhtQDgt2J
+         Z23RSvf2K6Eaxbv1siMyBHsqNSt6q6bDN05zMebm0qdRMuCkQCEsVwA8t7wXLi3jhzZ6
+         8SvWpizQBChMI+SMGkDm9CAPvLNQYG8q8qaI7waRN/zFHJ0UhlNLXOqd4GjeKqnXZgwq
+         CFpg==
+X-Gm-Message-State: AOAM532LfgxFdZv7vglID9ULrxlWq69l6Y719A3Kgi0GvDubxK73kJeW
+        XJjiIThwp4qSeZw+jVigBH9hKPHJ5Rc=
+X-Google-Smtp-Source: ABdhPJwlVMTSP3mPPLPB1FcLBEO5KECbnVlvJAx1zWj/a6b3fF2DC7neWZh9xHOrwjaAJJ+ycpZ/93uH+YM=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:200:fd8e:f32b:a64b:dd89])
+ (user=surenb job=sendgmr) by 2002:a05:6214:922:: with SMTP id
+ dk2mr11208979qvb.36.1630091945639; Fri, 27 Aug 2021 12:19:05 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 12:18:55 -0700
+Message-Id: <20210827191858.2037087-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH v8 0/3] Anonymous VMA naming patches
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     ccross@google.com, sumit.semwal@linaro.org, mhocko@suse.com,
+        dave.hansen@intel.com, keescook@chromium.org, willy@infradead.org,
+        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com,
+        rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com,
+        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
+        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
+        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
+        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
+        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
+        legion@kernel.org, eb@emlix.com, songmuchun@bytedance.com,
+        viresh.kumar@linaro.org, thomascedeno@google.com,
+        sashal@kernel.org, cxfcosmos@gmail.com, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@android.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+There were a number of previous attempts to upstream support for anonymous
+VMA naming. The original submission by Colin Cross [1] implemented a
+dictionary of refcounted names to reuse same name strings. Dave Hansen
+suggested [2] to use userspace pointers instead and the patch was rewritten
+that way. The last v7 version of this patch was posted by Sumit Semwal [3]
+and a very similar patch has been used in Android to name anonymous VMAs
+for a number of years. Concerns about this patch were raised by Kees Cook
+[4] noting the lack of string sanitization and the use of userspace
+pointers from the kernel. In conclusion [5], it was suggested to
+strndup_user the strings from userspace, perform appropriate checks and
+store a copy as a vm_area_struct member. Performance impact from
+additional strdup's during fork() should be measured by allocating a large
+number (64k) of VMAs with longest names and timing fork()s.
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/zram/zram_drv.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+This patchset implements the suggested approach in the first 2 patches and
+the 3rd patch implements simple refcounting to avoid strdup'ing the names
+during fork() and minimize the regression.
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index fcaf2750f68f..d5b343c2bc96 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1953,7 +1953,9 @@ static int zram_add(void)
- 		blk_queue_max_write_zeroes_sectors(zram->disk->queue, UINT_MAX);
- 
- 	blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, zram->disk->queue);
--	device_add_disk(NULL, zram->disk, zram_disk_attr_groups);
-+	ret = device_add_disk(NULL, zram->disk, zram_disk_attr_groups);
-+	if (ret)
-+		goto out_cleanup_disk;
- 
- 	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
- 
-@@ -1961,6 +1963,8 @@ static int zram_add(void)
- 	pr_info("Added device: %s\n", zram->disk->disk_name);
- 	return device_id;
- 
-+out_cleanup_disk:
-+	blk_cleanup_disk(zram->disk);
- out_free_idr:
- 	idr_remove(&zram_index_idr, device_id);
- out_free_dev:
+Proposed test was conducted on an ARM64 Android device with CPU frequency
+locked at 2.4GHz, performance governor and Android system being stopped
+(adb shell stop) to minimize the noise. Test includes 3 different
+scenarios. In each scenario a process with 64K named anonymous VMAs forks
+children 1000 times while timing each fork and reporting the average time.
+The scenarios differ in the VMA content:
+
+1. VMAs are not populated with any data (not realistic scenario but
+helps in emphasizing the regression).
+2. Each VMA contains 1 page populated with random data.
+3. Each VMA contains 10 pages populated with random data.
+
+With the first 2 patches implementing strdup approach, the average fork()
+times are:
+
+                              unnamed VMAs      named VMAs      REGRESSION
+Unpopulated VMAs              16.73ms           23.34ms         39.51%
+VMAs with 1 page of data      51.98ms           59.94ms         15.31%
+VMAs with 10 pages of data    66.86ms           76.31ms         14.13%
+
+From the perf results, the regression can be attributed to strlen() and
+strdup() calls. The regression shrinking with the increased amount of
+populated data can be attributed mostly to anon_vma_fork() and
+copy_page_range() consuming more time during fork().
+
+After the refcounting implemented in the last patch of this series the
+results are:
+
+                              unnamed VMAs      named VMAs      REGRESSION
+Unpopulated VMAs              16.36ms           18.35ms         12.16%%
+VMAs with 1 page of data      48.16ms           51.30ms         6.52%
+VMAs with 10 pages of data    64.23ms           67.69ms         5.39%
+
+From the perf results, the regression can be attributed to
+refcount_inc_checked() (called from kref_get()).
+
+While there is obviously a measurable regression, 64K named anonymous VMAs
+is truly a worst case scenario. In the real usage, the only current user of
+this feature, namely Android, rarely has processes with the number of VMAs
+reaching 4000 (that's the highest I've measured). The regression of forking
+a process with that number of VMAs is at the noise level.
+
+1. https://lore.kernel.org/linux-mm/1372901537-31033-1-git-send-email-ccross@android.com/
+2. https://lore.kernel.org/linux-mm/51DDFA02.9040707@intel.com/
+3. https://lore.kernel.org/linux-mm/20200901161459.11772-1-sumit.semwal@linaro.org/
+4. https://lore.kernel.org/linux-mm/202009031031.D32EF57ED@keescook/
+5. https://lore.kernel.org/linux-mm/5d0358ab-8c47-2f5f-8e43-23b89d6a8e95@intel.com/
+
+Colin Cross (2):
+  mm: rearrange madvise code to allow for reuse
+  mm: add a field to store names for private anonymous memory
+
+Suren Baghdasaryan (1):
+  mm: add anonymous vma name refcounting
+
+ Documentation/filesystems/proc.rst |   2 +
+ fs/proc/task_mmu.c                 |  14 +-
+ fs/userfaultfd.c                   |   7 +-
+ include/linux/mm.h                 |  13 +-
+ include/linux/mm_types.h           |  55 +++-
+ include/uapi/linux/prctl.h         |   3 +
+ kernel/fork.c                      |   2 +
+ kernel/sys.c                       |  48 ++++
+ mm/madvise.c                       | 447 +++++++++++++++++++----------
+ mm/mempolicy.c                     |   3 +-
+ mm/mlock.c                         |   2 +-
+ mm/mmap.c                          |  38 +--
+ mm/mprotect.c                      |   2 +-
+ 13 files changed, 462 insertions(+), 174 deletions(-)
+
 -- 
-2.30.2
+2.33.0.259.gc128427fd7-goog
 
