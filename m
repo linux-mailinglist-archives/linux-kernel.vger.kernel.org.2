@@ -2,99 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E7E3F9AA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0133F9AB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245263AbhH0OLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231571AbhH0OLX (ORCPT
+        id S245215AbhH0OOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:14:32 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:50066 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232449AbhH0OO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:11:23 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC80FC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:10:34 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id b7so8676574iob.4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:10:34 -0700 (PDT)
+        Fri, 27 Aug 2021 10:14:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=rrJMTcBJng7lg5+SYeFOOrr3iU5VlkOZnQpM2Ssl+hQ=;
-        b=oVatR1qDsx2892HhBb+8XxxPXjxCNF6FBamsG+Z1leyWQpucAiUcA8mC7J2HpqNAgw
-         MqUQnzTht9L8TKigieacD8a1mjenTQb02uvQ/FDnuFrwdono+sStwj3XPNT0XBP5PZus
-         OEb2uGxrkjUW89z/R41/YeTS+HFCwrGK2Qhi4KGJ5XLRbk4ZQ3GJmi3gdoqCkJC0uVvU
-         mg3sfjGENmHU14Y6wdWHBFyJI+vGsLYwX8xrkkC7OoD1q/vCrup1Ycj/n2nebl+EaTIX
-         sjGTeLIDagyx4d6SOSfavzNTgCH6HQjWpOHnmuLIRbfbbNgjuS/S7oBF+R06e2Iv/QYi
-         qoTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=rrJMTcBJng7lg5+SYeFOOrr3iU5VlkOZnQpM2Ssl+hQ=;
-        b=FY4qYRezvxpA/1r8cdrhYey7zwannXtJ86KT0ttfGZ0pf1UI22bIDGHqkkXOwXjAwg
-         QFo7hMB+utI8s+sVPK8bvrko18OKHfvmFURpneclHJeGIAGPX1gsKWfBNAGbAjpzA5da
-         oPMG8gjnBX36qGh0wNDrjv3mY5aKg7Q/NzVhWkaJrGEGGR5SOuJT1lgFLiPS+RAJz9TB
-         MnvSKJELINAnf0cTIartRfDAr1N/U1FXVgBlELa6emH8pjXH8c7T9eFEZB/X5fySZq2I
-         wcedaAeYJVVebGe6OcycVcRbgvS+IgifdrD1Ex2qPcNpsNwGujcDh0a7+fTvh7I/XUhd
-         QtbA==
-X-Gm-Message-State: AOAM531xFnvcbrTHiSe4Qo7vhuCAkxNhzHuWjly6CgFJGa0ZxTv+cY7w
-        N/c6ERlnVKMOj2WbkyWCIk+mwOHCE9o5aA==
-X-Google-Smtp-Source: ABdhPJx8uZ6KLSWLiaVTzdcF+CbRkbzecbW/I0NEw5CCcQQmsWp9AEHqNOuk2nEze21vyoYUbNF4iA==
-X-Received: by 2002:a02:6a55:: with SMTP id m21mr8501409jaf.74.1630073423420;
-        Fri, 27 Aug 2021 07:10:23 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id g11sm3457252iom.46.2021.08.27.07.10.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 07:10:23 -0700 (PDT)
-To:     linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: Wanted: CDROM maintainer
-Message-ID: <22d59432-1b8e-0125-96e9-51b041fe3536@kernel.dk>
-Date:   Fri, 27 Aug 2021 08:10:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1630073620; x=1661609620;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cooRg+8poDt2U3SIxIP/cBwAlBTa7XLQaObBrJSXAXw=;
+  b=R1o/RvQWMrRgQmfIzSz/1RSCzIx5ZyV2JGrz8ke4YhRZ1glNB8qEbWsd
+   QTEqWZ1VkUDSU+TkzQRe+vAWWh0Qq04IGyAGulhm7MfPJd0SUQ3ygeuOX
+   7X6gk0+HyH1V6H6Ns0HN0lPMm9O7caw30tcObGzPiLBVPS7BP5o5oXStg
+   E=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 27 Aug 2021 07:13:39 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 07:13:39 -0700
+Received: from jhugo-lnx.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.922.7;
+ Fri, 27 Aug 2021 07:13:38 -0700
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+To:     <mani@kernel.org>, <hemantk@codeaurora.org>,
+        <bbhatt@codeaurora.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jeffrey Hugo" <quic_jhugo@quicinc.com>
+Subject: [PATCH v2] bus: mhi: core: Use cached values for calculating the shared write pointer
+Date:   Fri, 27 Aug 2021 08:13:26 -0600
+Message-ID: <1630073606-13671-1-git-send-email-quic_jhugo@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03d.na.qualcomm.com (10.85.0.91) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+mhi_recycle_ev_ring() computes the shared write pointer for the ring
+(ctxt_wp) using a read/modify/write pattern where the ctxt_wp value in the
+shared memory is read, incremented, and written back.  There are no checks
+on the read value, it is assumed that it is kept in sync with the locally
+cached value.  Per the MHI spec, this is correct.  The device should only
+read ctxt_wp, never write it.
 
-Back in 1998, if I recall correctly, Erik Andersen posted on lkml that
-he was looking for someone to take over development and maintainership
-of the cdrom drivers. I responded to that, and ended up maintaining and
-continuing the development of that part of the kernel. Outside of
-working on that part of the stack, it eventually led to diving further
-down the rabbit hole and into the general block IO stack. In many ways,
-it kick started by career in kernel development.
+However, there are devices in the wild that violate the spec, and can
+update the ctxt_wp in a specific scenario.  This can cause corruption, and
+violate the above assumption that the ctxt_wp is in sync with the cached
+value.
 
-These days I've got a lot on my plate, and areas like cdrom have been
-neglected as a result. This obviously isn't an area of hot development
-these days, but even so it still needs someone that cares for the code
-and is available to review and merge patches in a timely fashion. I
-haven't been able to do so for quite a while.
+This can occur when the device has loaded firmware from the host, and is
+transitioning from the SBL EE to the AMSS EE.  As part of shutting down
+SBL, the SBL flushes it's local MHI context to the shared memory since
+the local context will not persist across an EE change.  In the case of
+the event ring, SBL will flush its entire context, not just the parts that
+it is allowed to update.  This means SBL will write to ctxt_wp, and
+possibly corrupt it.
 
-In the spirit of passing on the baton, I think we're way overdue for
-some new blood in this area. With the recent removal of the old parallel
-IDE code, the old atapi cdrom driver is gone. Hence there are really two
-parts to this these days:
+An example:
 
-1) drivers/scsi/sr.c - the SCSI cdrom driver. My suggestion would be to
-   fold this in with general SCSI maintainership, as that's really where
-   that belongs.
+Host				Device
+----				---
+Update ctxt_wp to 0x1f0
+				SBL observes 0x1f0
+Update ctxt_wp to 0x0
+				Starts transition to AMSS EE
+				Context flush, writes 0x1f0 to ctxt_wp
+Update ctxt_wp to 0x200
+Update ctxt_wp to 0x210
+				AMSS observes 0x210
+				0x210 exceeds ring size
+				AMSS signals syserr
 
-2) drivers/cdrom/cdrom.c - the uniform cdrom layer. This is really the
-   meat of it. sr is a consumer, and so is the paride cdrom driver and
-   the sega dreamcast cdrom driver.
+The reason the ctxt_wp goes off the end of the ring is that the rollover
+check is only performed on the cached wp, which is out of sync with
+ctxt_wp.
 
-If you have any interest and experience with cdrom/dvd and mmc/atapi, I
-would love to hear from you. Let's find a new good home for this code.
+Since the host is the authority of the value of ctxt_wp per the MHI spec,
+we can fix this issue by not reading ctxt_wp from the shared memory, and
+instead compute it based on the cached value.  If SBL corrupts ctxt_wp,
+the host won't observe it, and will correct the value at some point later.
 
+Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+---
+
+v2:
+Fix typo on the ring base
+
+ drivers/bus/mhi/core/main.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index c01ec2f..dc86fdb3 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -533,18 +533,13 @@ irqreturn_t mhi_intvec_handler(int irq_number, void *dev)
+ static void mhi_recycle_ev_ring_element(struct mhi_controller *mhi_cntrl,
+ 					struct mhi_ring *ring)
+ {
+-	dma_addr_t ctxt_wp;
+-
+ 	/* Update the WP */
+ 	ring->wp += ring->el_size;
+-	ctxt_wp = *ring->ctxt_wp + ring->el_size;
+ 
+-	if (ring->wp >= (ring->base + ring->len)) {
++	if (ring->wp >= (ring->base + ring->len))
+ 		ring->wp = ring->base;
+-		ctxt_wp = ring->iommu_base;
+-	}
+ 
+-	*ring->ctxt_wp = ctxt_wp;
++	*ring->ctxt_wp = ring->iommu_base + (ring->wp - ring->base);
+ 
+ 	/* Update the RP */
+ 	ring->rp += ring->el_size;
 -- 
-Jens Axboe
+2.7.4
 
