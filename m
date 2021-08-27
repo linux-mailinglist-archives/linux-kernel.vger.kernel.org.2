@@ -2,275 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7DE3F9FA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929D63F9FAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhH0TK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 15:10:26 -0400
-Received: from mail.efficios.com ([167.114.26.124]:53444 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbhH0TKZ (ORCPT
+        id S230446AbhH0TMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 15:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhH0TMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 15:10:25 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 35CF8381D4D;
-        Fri, 27 Aug 2021 15:09:35 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id bdpbmavpTcDf; Fri, 27 Aug 2021 15:09:34 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 70AB2381CCB;
-        Fri, 27 Aug 2021 15:09:34 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 70AB2381CCB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1630091374;
-        bh=a+xsJEpOCH31ksEHBk6kwF1tUR+tILdkL5tisWRdxI0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=cZCl7fQ/RTUAu0JMKb52619qhmst5OKPbEtnktbVMX/PIHufPwNIz98Ws9VY3/hy4
-         tL/OEN4pzYr3Qp9c6LsakEcVPL42DmIBvwb0DHeXYpf+36mtzHghXaDhPpzwd132KK
-         hEGDyCXfz7EzVSVP6SPQEDmeEGlUwzPCYdoSc1QaK5k5qgXsewClns9NDZ5b/ANSk9
-         QAIBXoJdR3MOeo9N8iFtFpTi7L41mC/UV6LCTb8bhnUV6jRlXRnwh3eKkShIA/awvz
-         X6y/j+YsW2oArKIqHNlYlgPu+EvmE4w8fkZeC4LXw6VXW0bGAFOxuNvAsFq0SA9oq1
-         ckDQ0iaaY4cpQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nRsCb8Qy1cNv; Fri, 27 Aug 2021 15:09:34 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 3381D381E39;
-        Fri, 27 Aug 2021 15:09:34 -0400 (EDT)
-Date:   Fri, 27 Aug 2021 15:09:34 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     dvhart <dvhart@infradead.org>,
-        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Ben Gardon <bgardon@google.com>
-Message-ID: <339641531.29941.1630091374065.JavaMail.zimbra@efficios.com>
-In-Reply-To: <YSgpy8iXXXUQ+b/k@google.com>
-References: <20210820225002.310652-1-seanjc@google.com> <20210820225002.310652-5-seanjc@google.com> <766990430.21713.1629731934069.JavaMail.zimbra@efficios.com> <282257549.21721.1629732017655.JavaMail.zimbra@efficios.com> <YSblqrrpKcORzilX@google.com> <1700758714.29394.1630003332081.JavaMail.zimbra@efficios.com> <YSgpy8iXXXUQ+b/k@google.com>
-Subject: Re: [PATCH v2 4/5] KVM: selftests: Add a test for KVM_RUN+rseq to
- detect task migration bugs
+        Fri, 27 Aug 2021 15:12:01 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA08C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:11:12 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id mq3so5170980pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:11:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yl8JaGwDYWpLzn1wS9SWOQbcJPOi0ZPRWqv06q6Qt74=;
+        b=LQBqohKiZF1hUQMSKbFutNRYNB2ZNBVrhxEGrV1/8QVmiiiwLqYpSys8ZACniFIdH4
+         xM7xdYhXcyegGoPyE3+qtuehpOFqNA9gFUXKXAZxnyBlokhrZBx7v8e2Z3A1rAWhrbl7
+         R3Ce4Ww+tmlx/5NmV8nIRwz0kvJpH70SjEOHC0z0zsUh5vi4iEK2ZdFwLHc6XCKTosnr
+         avjP30EP8hNygZms28yK8TAHbPcuQi3xyn8YVpSapvous8V0ILQ+MCQDC/GgUrWRJ4Ca
+         SkB39+e/WmHAULwChUJz/Q05W1pMC7ddj20rj/H7iZmu4pJdHZu9gx6J4FFy/j6yRrId
+         WjmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yl8JaGwDYWpLzn1wS9SWOQbcJPOi0ZPRWqv06q6Qt74=;
+        b=okmO4sXBR+dRsx5dGHJArm0OLmMbdeYj5ewaA2mKTFQ6uT8rajgWQMpaeHHVst9fOO
+         LrBJKXTv8eJxeyE0tkubUScJrEeYRFbNDz18qZyeNaeVDjSDstkkeKkD/lZ41jjHDYWv
+         MneZ62l4Ly6rumDdnD+QEzI+gMLmdxK5WEVg9PgqF2ETn/HxiMoooYcZf0QjisBa2Pt9
+         DkWa8mlQcHp6mqsbU6cpSJ9QqdNeuhaLDbbXwVws72mAUqPPBHf3hv/nF/qiX6STtyz6
+         /XrSbEUjfXoQGGgeCA73voaueUN6IfSNZhxkTXTOaU5kjGD6rSofc8DHv7sfXOe3fw4e
+         rYZA==
+X-Gm-Message-State: AOAM530kkOv9tyVfV49J/jq0Qhbec7g/ATduGrvOSv/9Rmtxz+Fp7lL/
+        fhaRm1IMf/Laf2q1dvpKl3utlgH78HdYScDkpXX0Wg==
+X-Google-Smtp-Source: ABdhPJxPpy9zsWh8K3XJaMk4z9lCRsqU/ns24+nAno2osjLNoWIhEDfFvosicD/8oRBRu6WenkwxjYSnfuhYhnlHAWs=
+X-Received: by 2002:a17:90a:1991:: with SMTP id 17mr15779481pji.149.1630091471578;
+ Fri, 27 Aug 2021 12:11:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF91 (Linux)/8.8.15_GA_4059)
-Thread-Topic: selftests: Add a test for KVM_RUN+rseq to detect task migration bugs
-Thread-Index: Cat4/nZnF/JdYT0CBeoaNK9t7xzyjQ==
+References: <20210803113134.2262882-1-iwona.winiarska@intel.com> <20210803113134.2262882-10-iwona.winiarska@intel.com>
+In-Reply-To: <20210803113134.2262882-10-iwona.winiarska@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 27 Aug 2021 12:11:00 -0700
+Message-ID: <CAPcyv4hhtTi+dKspjoamYj53GxT4Ot_1pG5-eavUJdihD8iAEg@mail.gmail.com>
+Subject: Re: [PATCH v2 09/15] peci: Add sysfs interface for PECI bus
+To:     Iwona Winiarska <iwona.winiarska@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        openbmc@lists.ozlabs.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        X86 ML <x86@kernel.org>,
+        Device Tree <devicetree@vger.kernel.org>,
+        linux-aspeed@lists.ozlabs.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Zev Weiss <zweiss@equinix.com>,
+        David Muller <d.mueller@elsoft.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 3, 2021 at 4:35 AM Iwona Winiarska
+<iwona.winiarska@intel.com> wrote:
+>
+> PECI devices may not be discoverable at the time when PECI controller is
+> being added (e.g. BMC can boot up when the Host system is still in S5).
+> Since we currently don't have the capabilities to figure out the Host
+> system state inside the PECI subsystem itself, we have to rely on
+> userspace to do it for us.
+>
+> In the future, PECI subsystem may be expanded with mechanisms that allow
+> us to avoid depending on userspace interaction (e.g. CPU presence could
+> be detected using GPIO, and the information on whether it's discoverable
+> could be obtained over IPMI).
 
+Thanks for this detail.
 
------ On Aug 26, 2021, at 7:54 PM, Sean Christopherson seanjc@google.com wrote:
+> Unfortunately, those methods may ultimately not be available (support
+> will vary from platform to platform), which means that we still need
+> platform independent method triggered by userspace.
+>
+> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-peci | 16 +++++
+>  drivers/peci/Makefile                    |  2 +-
+>  drivers/peci/core.c                      |  3 +-
+>  drivers/peci/device.c                    |  1 +
+>  drivers/peci/internal.h                  |  5 ++
+>  drivers/peci/sysfs.c                     | 82 ++++++++++++++++++++++++
+>  6 files changed, 107 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-peci
+>  create mode 100644 drivers/peci/sysfs.c
+>
+> diff --git a/Documentation/ABI/testing/sysfs-bus-peci b/Documentation/ABI/testing/sysfs-bus-peci
+> new file mode 100644
+> index 000000000000..56c2b2216bbd
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-bus-peci
+> @@ -0,0 +1,16 @@
+> +What:          /sys/bus/peci/rescan
+> +Date:          July 2021
+> +KernelVersion: 5.15
+> +Contact:       Iwona Winiarska <iwona.winiarska@intel.com>
+> +Description:
+> +               Writing a non-zero value to this attribute will
+> +               initiate scan for PECI devices on all PECI controllers
+> +               in the system.
+> +
+> +What:          /sys/bus/peci/devices/<controller_id>-<device_addr>/remove
+> +Date:          July 2021
+> +KernelVersion: 5.15
+> +Contact:       Iwona Winiarska <iwona.winiarska@intel.com>
+> +Description:
+> +               Writing a non-zero value to this attribute will
+> +               remove the PECI device and any of its children.
+> diff --git a/drivers/peci/Makefile b/drivers/peci/Makefile
+> index c5f9d3fe21bb..917f689e147a 100644
+> --- a/drivers/peci/Makefile
+> +++ b/drivers/peci/Makefile
+> @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>
+>  # Core functionality
+> -peci-y := core.o request.o device.o
+> +peci-y := core.o request.o device.o sysfs.o
+>  obj-$(CONFIG_PECI) += peci.o
+>
+>  # Hardware specific bus drivers
+> diff --git a/drivers/peci/core.c b/drivers/peci/core.c
+> index d143f1a7fe98..c473acb3c2a0 100644
+> --- a/drivers/peci/core.c
+> +++ b/drivers/peci/core.c
+> @@ -34,7 +34,7 @@ struct device_type peci_controller_type = {
+>         .release        = peci_controller_dev_release,
+>  };
+>
+> -static int peci_controller_scan_devices(struct peci_controller *controller)
+> +int peci_controller_scan_devices(struct peci_controller *controller)
+>  {
+>         int ret;
+>         u8 addr;
+> @@ -159,6 +159,7 @@ EXPORT_SYMBOL_NS_GPL(devm_peci_controller_add, PECI);
+>
+>  struct bus_type peci_bus_type = {
+>         .name           = "peci",
+> +       .bus_groups     = peci_bus_groups,
+>  };
+>
+>  static int __init peci_init(void)
+> diff --git a/drivers/peci/device.c b/drivers/peci/device.c
+> index 32811248997b..d77d9dabd51e 100644
+> --- a/drivers/peci/device.c
+> +++ b/drivers/peci/device.c
+> @@ -110,5 +110,6 @@ static void peci_device_release(struct device *dev)
+>  }
+>
+>  struct device_type peci_device_type = {
+> +       .groups         = peci_device_groups,
+>         .release        = peci_device_release,
+>  };
+> diff --git a/drivers/peci/internal.h b/drivers/peci/internal.h
+> index 57d11a902c5d..978e12c8e1d3 100644
+> --- a/drivers/peci/internal.h
+> +++ b/drivers/peci/internal.h
+> @@ -8,6 +8,7 @@
+>  #include <linux/types.h>
+>
+>  struct peci_controller;
+> +struct attribute_group;
+>  struct peci_device;
+>  struct peci_request;
+>
+> @@ -19,12 +20,16 @@ struct peci_request *peci_request_alloc(struct peci_device *device, u8 tx_len, u
+>  void peci_request_free(struct peci_request *req);
+>
+>  extern struct device_type peci_device_type;
+> +extern const struct attribute_group *peci_device_groups[];
+>
+>  int peci_device_create(struct peci_controller *controller, u8 addr);
+>  void peci_device_destroy(struct peci_device *device);
+>
+>  extern struct bus_type peci_bus_type;
+> +extern const struct attribute_group *peci_bus_groups[];
 
-> On Thu, Aug 26, 2021, Mathieu Desnoyers wrote:
->> ----- On Aug 25, 2021, at 8:51 PM, Sean Christopherson seanjc@google.com wrote:
->> >> >> +		r = sched_setaffinity(0, sizeof(allowed_mask), &allowed_mask);
->> >> >> +		TEST_ASSERT(!r, "sched_setaffinity failed, errno = %d (%s)",
->> >> >> +			    errno, strerror(errno));
->> >> >> +		atomic_inc(&seq_cnt);
->> >> >> +
->> >> >> +		CPU_CLR(cpu, &allowed_mask);
->> >> >> +
->> >> >> +		/*
->> >> >> +		 * Let the read-side get back into KVM_RUN to improve the odds
->> >> >> +		 * of task migration coinciding with KVM's run loop.
->> >> > 
->> >> > This comment should be about increasing the odds of letting the seqlock
->> >> > read-side complete. Otherwise, the delay between the two back-to-back
->> >> > atomic_inc is so small that the seqlock read-side may never have time to
->> >> > complete the reading the rseq cpu id and the sched_getcpu() call, and can
->> >> > retry forever.
->> > 
->> > Hmm, but that's not why there's a delay.  I'm not arguing that a livelock isn't
->> > possible (though that syscall would have to be screaming fast),
->> 
->> I don't think we have the same understanding of the livelock scenario. AFAIU the
->> livelock
->> would be caused by a too-small delay between the two consecutive atomic_inc()
->> from one
->> loop iteration to the next compared to the time it takes to perform a read-side
->> critical
->> section of the seqlock. Back-to-back atomic_inc can be performed very quickly,
->> so I
->> doubt that the sched_getcpu implementation have good odds to be fast enough to
->> complete
->> in that narrow window, leading to lots of read seqlock retry.
-> 
-> Ooooh, yeah, brain fart on my side.  I was thinking of the two atomic_inc() in
-> the
-> same loop iteration and completely ignoring the next iteration.  Yes, I 100%
-> agree
-> that a delay to ensure forward progress is needed.  An assertion in main() that
-> the
-> reader complete at least some reasonable number of KVM_RUNs is also probably a
-> good
-> idea, e.g. to rule out a false pass due to the reader never making forward
-> progress.
+To me, sysfs.c is small enough to just fold into core.c, then no need
+to declare public attribute arrays like this, but up to you if you
+prefer the sysfs.c split.
 
-Agreed.
+>
+>  extern struct device_type peci_controller_type;
+>
+> +int peci_controller_scan_devices(struct peci_controller *controller);
+> +
+>  #endif /* __PECI_INTERNAL_H */
+> diff --git a/drivers/peci/sysfs.c b/drivers/peci/sysfs.c
+> new file mode 100644
+> index 000000000000..db9ef05776e3
+> --- /dev/null
+> +++ b/drivers/peci/sysfs.c
+> @@ -0,0 +1,82 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright (c) 2021 Intel Corporation
+> +
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/peci.h>
+> +
+> +#include "internal.h"
+> +
+> +static int rescan_controller(struct device *dev, void *data)
+> +{
+> +       if (dev->type != &peci_controller_type)
+> +               return 0;
+> +
+> +       return peci_controller_scan_devices(to_peci_controller(dev));
+> +}
+> +
+> +static ssize_t rescan_store(struct bus_type *bus, const char *buf, size_t count)
+> +{
+> +       bool res;
+> +       int ret;
+> +
+> +       ret = kstrtobool(buf, &res);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (!res)
+> +               return count;
+> +
+> +       ret = bus_for_each_dev(&peci_bus_type, NULL, NULL, rescan_controller);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return count;
+> +}
+> +static BUS_ATTR_WO(rescan);
+> +
+> +static struct attribute *peci_bus_attrs[] = {
+> +       &bus_attr_rescan.attr,
+> +       NULL
+> +};
+> +
+> +static const struct attribute_group peci_bus_group = {
+> +       .attrs = peci_bus_attrs,
+> +};
+> +
+> +const struct attribute_group *peci_bus_groups[] = {
+> +       &peci_bus_group,
+> +       NULL
+> +};
+> +
+> +static ssize_t remove_store(struct device *dev, struct device_attribute *attr,
+> +                           const char *buf, size_t count)
+> +{
+> +       struct peci_device *device = to_peci_device(dev);
+> +       bool res;
+> +       int ret;
+> +
+> +       ret = kstrtobool(buf, &res);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (res && device_remove_file_self(dev, attr))
+> +               peci_device_destroy(device);
 
-> 
-> FWIW, the do-while loop does make forward progress without a delay, but at ~50%
-> throughput, give or take.
+How do you solve races between sysfs device remove and controller
+device remove? Looks like double-free at first glance. Have a look at
+the  kill_device() helper as one way to resolve this double-delete
+race..
 
-I did not expect absolutely no progress, but a significant slow down of
-the read-side.
-
-> 
->> > but the primary motivation is very much to allow the read-side enough time
->> > to get back into KVM proper.
->> 
->> I'm puzzled by your statement. AFAIU, let's say we don't have the delay, then we
->> have:
->> 
->> migration thread                             KVM_RUN/read-side thread
->> -----------------------------------------------------------------------------------
->>                                              - ioctl(KVM_RUN)
->> - atomic_inc_seq_cst(&seqcnt)
->> - sched_setaffinity
->> - atomic_inc_seq_cst(&seqcnt)
->>                                              - a = atomic_load(&seqcnt) & ~1
->>                                              - smp_rmb()
->>                                              - b = LOAD_ONCE(__rseq_abi->cpu_id);
->>                                              - sched_getcpu()
->>                                              - smp_rmb()
->>                                              - re-load seqcnt/compare (succeeds)
->>                                                - Can only succeed if entire read-side happens while the seqcnt
->>                                                  is in an even numbered state.
->>                                              - if (a != b) abort()
->>   /* no delay. Even counter state is very
->>      short. */
->> - atomic_inc_seq_cst(&seqcnt)
->>   /* Let's suppose the lack of delay causes the
->>      setaffinity to complete too early compared
->>      with KVM_RUN ioctl */
->> - sched_setaffinity
->> - atomic_inc_seq_cst(&seqcnt)
->> 
->>   /* no delay. Even counter state is very
->>      short. */
->> - atomic_inc_seq_cst(&seqcnt)
->>   /* Then a setaffinity from a following
->>      migration thread loop will run
->>      concurrently with KVM_RUN */
->>                                              - ioctl(KVM_RUN)
->> - sched_setaffinity
->> - atomic_inc_seq_cst(&seqcnt)
->> 
->> As pointed out here, if the first setaffinity runs too early compared with
->> KVM_RUN,
->> a following setaffinity will run concurrently with it. However, the fact that
->> the even counter state is very short may very well hurt progress of the read
->> seqlock.
-> 
-> *sigh*
-> 
-> Several hours later, I think I finally have my head wrapped around everything.
-> 
-> Due to the way the test is written and because of how KVM's run loop works,
-> TIF_NOTIFY_RESUME or TIF_NEED_RESCHED effectively has to be set before KVM
-> actually
-> enters the guest, otherwise KVM will exit to userspace without touching the
-> flag,
-> i.e. it will be handled by the normal exit_to_user_mode_loop().
-> 
-> Where I got lost was trying to figure out why I couldn't make the bug reproduce
-> by
-> causing the guest to exit to KVM, but not userspace, in which case KVM should
-> easily trigger the problematic flow as the window for sched_getcpu() to collide
-> with KVM would be enormous.  The reason I didn't go down this route for the
-> "official" test is that, unless there's something clever I'm overlooking, it
-> requires arch specific guest code, and ialso I don't know that forcing an exit
-> would even be necessary/sufficient on other architectures.
-> 
-> Anyways, I was trying to confirm that the bug was being hit without a delay,
-> while
-> still retaining the sequence retry in the test.  The test doesn't fail because
-> the
-> back-to-back atomic_inc() changes seqcnt too fast.  The read-side makes forward
-> progress, but it never observes failure because the do-while loop only ever
-> completes after another sched_setaffinity(), never after the one that collides
-> with KVM because it takes too long to get out of ioctl(KVM_RUN) and back to the
-> test.  I.e. the atomic_inc() in the next loop iteration (makes seq_cnt odd)
-> always
-> completes before the check, and so the check ends up spinning until another
-> migration, which correctly updates rseq.  This was expected and didn't confuse
-> me.
-> 
-> What confused me is that I was trying to confirm the bug was being hit from
-> within
-> the kernel by confirming KVM observed TIF_NOTIFY_RESUME, but I misunderstood
-> when
-> TIF_NOTIFY_RESUME would get set.  KVM can observe TIF_NOTIFY_RESUME directly,
-> but
-> it's rare, and I suspect happens iff sched_setaffinity() hits the small window
-> where
-> it collides with KVM_RUN before KVM enters the guest.
-> 
-> More commonly, the bug occurs when KVM sees TIF_NEED_RESCHED.  In that case, KVM
-> calls xfer_to_guest_mode_work(), which does schedule() and _that_ sets
-> TIF_NOTIFY_RESUME.  xfer_to_guest_mode_work() then mishandles TIF_NOTIFY_RESUME
-> and the bug is hit, but my confirmation logic in KVM never fired.
-> 
-> So there are effectively three reasons we want a delay:
-> 
->  1. To allow sched_setaffinity() to coincide with ioctl(KVM_RUN) before KVM can
->     enter the guest so that the guest doesn't need an arch-specific VM-Exit source.
-> 
->  2. To let ioctl(KVM_RUN) make its way back to the test before the next round
->     of migration.
-> 
->  3. To ensure the read-side can make forward progress, e.g. if sched_getcpu()
->     involves a syscall.
-> 
-> 
-> After looking at KVM for arm64 and s390, #1 is a bit tenuous because x86 is the
-> only arch that currently uses xfer_to_guest_mode_work(), i.e. the test could be
-> tweaked to be overtly x86-specific.  But since a delay is needed for #2 and #3,
-> I'd prefer to rely on it for #1 as well in the hopes that this test provides
-> coverage for arm64 and/or s390 if they're ever converted to use the common
-> xfer_to_guest_mode_work().
-
-Now that we have this understanding of why we need the delay, it would be good to
-write this down in a comment within the test.
-
-Does it reproduce if we randomize the delay to have it picked randomly from 0us
-to 100us (with 1us step) ? It would remove a lot of the needs for arch-specific
-magic delay value.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+> +
+> +       return count;
+> +}
+> +static DEVICE_ATTR_IGNORE_LOCKDEP(remove, 0200, NULL, remove_store);
+> +
+> +static struct attribute *peci_device_attrs[] = {
+> +       &dev_attr_remove.attr,
+> +       NULL
+> +};
+> +
+> +static const struct attribute_group peci_device_group = {
+> +       .attrs = peci_device_attrs,
+> +};
+> +
+> +const struct attribute_group *peci_device_groups[] = {
+> +       &peci_device_group,
+> +       NULL
+> +};
+> --
+> 2.31.1
+>
