@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6173F92DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9754F3F92DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244124AbhH0DU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:20:57 -0400
-Received: from pi.codeconstruct.com.au ([203.29.241.158]:45310 "EHLO
-        codeconstruct.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243968AbhH0DUz (ORCPT
+        id S244167AbhH0DXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:23:15 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:32690 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S243968AbhH0DXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:20:55 -0400
-Received: from pecola.lan (unknown [159.196.93.152])
-        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 740922012C;
-        Fri, 27 Aug 2021 11:20:05 +0800 (AWST)
-Message-ID: <7e7378c49ecfb21fef6a0640f92c1b3a7a5878d0.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v3 3/4] soc: aspeed: Add eSPI driver
-From:   Jeremy Kerr <jk@codeconstruct.com.au>
-To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>, joel@jms.id.au,
-        robh+dt@kernel.org, andrew@aj.id.au, linux-aspeed@lists.ozlabs.org,
-        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Fri, 27 Aug 2021 11:20:05 +0800
-In-Reply-To: <20210826061623.6352-4-chiawei_wang@aspeedtech.com>
-References: <20210826061623.6352-1-chiawei_wang@aspeedtech.com>
-         <20210826061623.6352-4-chiawei_wang@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        Thu, 26 Aug 2021 23:23:14 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AdJlzS6DX1wrl1s/lHemQ55DYdb4zR+YMi2TD?=
+ =?us-ascii?q?tnoBLSC9F/b0qynAppomPGDP4gr5NEtApTniAtjkfZq/z+8X3WB5B97LMzUO01?=
+ =?us-ascii?q?HYTr2Kg7GD/xTQXwX69sN4kZxrarVCDrTLZmRSvILX5xaZHr8brOW6zA=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,355,1620662400"; 
+   d="scan'208";a="113546519"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 27 Aug 2021 11:22:23 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 821B24D0D4BA;
+        Fri, 27 Aug 2021 11:22:23 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 27 Aug 2021 11:22:24 +0800
+Received: from [192.168.22.65] (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 27 Aug 2021 11:22:22 +0800
+Subject: Re: [PATCH v7 3/8] fsdax: Replace mmap entry in case of CoW
+To:     Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com>
+ <20210816060359.1442450-4-ruansy.fnst@fujitsu.com>
+ <CAPcyv4iOSxoy-qGfAd3i4uzwfDX0t1xTmyM0pNd+-euVMDUwrQ@mail.gmail.com>
+ <20210823125715.GA15536@lst.de>
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Message-ID: <d4f07aef-ad9f-7de9-c112-a40e2022b399@fujitsu.com>
+Date:   Fri, 27 Aug 2021 11:22:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210823125715.GA15536@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-yoursite-MailScanner-ID: 821B24D0D4BA.AF7AB
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chia-Wei,
-
-[apologies for the re-send, dropping HTML part...]
-
-> The Aspeed eSPI controller is slave device to communicate with
-> the master through the Enhanced Serial Peripheral Interface (eSPI).
-> All of the four eSPI channels, namely peripheral, virtual wire,
-> out-of-band, and flash are supported.
-
-Great to have this added submitted upstream! A few comments though:
-
-> ---
->  drivers/soc/aspeed/Kconfig             |  11 +
->  drivers/soc/aspeed/Makefile            |   1 +
->  drivers/soc/aspeed/aspeed-espi-ctrl.c  | 205 +++++++++
->  drivers/soc/aspeed/aspeed-espi-ctrl.h  | 304 ++++++++++++
->  drivers/soc/aspeed/aspeed-espi-flash.h | 380 +++++++++++++++
->  drivers/soc/aspeed/aspeed-espi-ioc.h   | 153 +++++++
->  drivers/soc/aspeed/aspeed-espi-oob.h   | 611 +++++++++++++++++++++++++
->  drivers/soc/aspeed/aspeed-espi-perif.h | 539 ++++++++++++++++++++++
->  drivers/soc/aspeed/aspeed-espi-vw.h    | 142 ++++++
-
-This structure is a bit odd - you have the one -crtl.c file, which
-defines the actual driver, but then a bunch of headers that contain more
-code than header-type definitions.
-
-Is there any reason that -flash, -ioc, -oob, -perif and -vw components
-can't be standard .c files?
-
-Then, for the userspace ABI: it looks like you're exposing everything
-through new device-specific ioctls. Would it not make more sense to use
-existing interfaces? For example, the virtual wire bits could be regular
-GPIOs; the flash interface could be a mtd or block device.
-
-I understand that we'll likely still need some level of custom device
-control, but the more we can use generic interfaces for, the less custom
-code (and interfaces) we'll need on the userspace side.
-
-Cheers,
 
 
-Jeremy
+On 2021/8/23 20:57, Christoph Hellwig wrote:
+> On Thu, Aug 19, 2021 at 03:54:01PM -0700, Dan Williams wrote:
+>>
+>> static void *dax_insert_entry(struct xa_state *xas, struct vm_fault *vmf,
+>>                                const struct iomap_iter *iter, void
+>> *entry, pfn_t pfn,
+>>                                unsigned long flags)
+>>
+>>
+>>>   {
+>>> +       struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+>>>          void *new_entry = dax_make_entry(pfn, flags);
+>>> +       bool dirty = insert_flags & DAX_IF_DIRTY;
+>>> +       bool cow = insert_flags & DAX_IF_COW;
+>>
+>> ...and then calculate these flags from the source data. I'm just
+>> reacting to "yet more flags".
+> 
+> Except for the overly long line above that seems like a good idea.
+> The iomap_iter didn't exist for most of the time this patch has been
+> around.
+> 
+
+So should I reuse the iter->flags to pass the insert_flags? (left shift 
+it to higher bits)
+
+--
+Thanks,
+Ruan.
 
 
