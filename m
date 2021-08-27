@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19F83F9F7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B5A3F9F98
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhH0TG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 15:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
+        id S231296AbhH0TGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 15:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhH0TGV (ORCPT
+        with ESMTP id S231197AbhH0TGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 15:06:21 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49809C061757;
-        Fri, 27 Aug 2021 12:05:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=rBPvEKTcZjAE3OuEvhz8lMdhHSp3hTsmUQtXV+X3g2E=; b=Z5CtRbeMw5PpPOlrY/n9KaY2g+
-        Lrhzg37BomgyCLtZ1+D1KwYUT/v3QQ5+OBJpZEq1Tyhxd53I5Hs0ms+X3nxQGoHPpzHTcAxkjssie
-        jrB+SOhshzdfI090PK9DDCvOgNDT7eBB5EVQckaxm8BBS000TGt3mZE5Q1QIdMCpWI389CvPgD288
-        BE6XpWQA++R6R/0NmfvPw78zg/a/QsdwnK6TbLvse3tGPLs4SzARdKiUeedAfwl1dyMoxvfGqhikE
-        F82X5ueeYHSy6RZU2LEickm18sFHt56GEULYFN+Ne3afK/j+lfUA2oFzd86+wmOjHUfZPKzMt8s8D
-        CCYmLRXQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJhA1-00D1LD-J0; Fri, 27 Aug 2021 19:05:05 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com
-Cc:     hch@infradead.org, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
-        dm-devel@redhat.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v2 6/6] nbd: add error handling support for add_disk()
-Date:   Fri, 27 Aug 2021 12:05:04 -0700
-Message-Id: <20210827190504.3103362-7-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210827190504.3103362-1-mcgrof@kernel.org>
-References: <20210827190504.3103362-1-mcgrof@kernel.org>
+        Fri, 27 Aug 2021 15:06:43 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD27CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:05:53 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id j4so16367101lfg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xurqpx2HBsUzvPtF9beAd23C15iGKZUtGtKLy9/65Yo=;
+        b=ZCnYGG6oW+yh9/k4bIpx+5YJVuekh5B3BxAXApXeWgjP1VAyaSzCumlVz49LYpRpSt
+         E7SrDcY9aS1dWjIAtv6pOr5SC4ltNzuJ7d7SIZ4uEgXFlv0fGe4/eQXFko1gO9F/7t9W
+         74SaW+5xX2+Nhbgohi4k/EwOND3nF7mQg6AyE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xurqpx2HBsUzvPtF9beAd23C15iGKZUtGtKLy9/65Yo=;
+        b=nrQDiK4XecRvB2JfXoN5XurwKNAIp+Uufafxrh1f7tMF7qkIfa6DgAkpOOWi9tmiho
+         0EMV3vFFP2HKhIUqHM/Yg+O8MyexwrhVqTOkMwX0Ljs2eC7u5ltF3L5nHKFH9inuG0wo
+         UdxjIIleaNF0PfCxXUZqT4GNVFbR4MHfDWrvfVElQpx+F/XOzXD9lIn61OKF6J/iqbzP
+         HwkVZgJHQf0GtTjCZ8FzfM1oqba6XxAoB9COPrs4S7OiEO9XTW9qSi2Zbldgw6j1zylQ
+         MhbgaBcC5+Tc4qQOh0jK9wxUK0Jq+ngFvwyoMTdf9YcYlLWMUmblMKKPqTOZKSg+Swci
+         5dxw==
+X-Gm-Message-State: AOAM5319DU9mUmO0C+Uj9dRicKpMMh3LLMfY/UmaS4ZFzFwvuQ5b1WMu
+        3k2lF3vRnFBynO2NVInLe1/TgPecjipOqM9h
+X-Google-Smtp-Source: ABdhPJz3wtvfwaa6LwX14sQdHe/QGDW2MvsvAjJiPSjOxcxySmLGgP2PeSDHXqEVB57MsMyVD1IYfg==
+X-Received: by 2002:a05:6512:3f15:: with SMTP id y21mr7938143lfa.631.1630091151490;
+        Fri, 27 Aug 2021 12:05:51 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id t13sm107553lff.46.2021.08.27.12.05.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 12:05:49 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id m28so16381938lfj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:05:49 -0700 (PDT)
+X-Received: by 2002:a05:6512:104b:: with SMTP id c11mr7660072lfb.201.1630091149264;
+ Fri, 27 Aug 2021 12:05:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20210827164926.1726765-1-agruenba@redhat.com> <20210827164926.1726765-6-agruenba@redhat.com>
+ <YSkz025ncjhyRmlB@zeniv-ca.linux.org.uk>
+In-Reply-To: <YSkz025ncjhyRmlB@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 27 Aug 2021 12:05:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh5p6zpgUUoY+O7e74X9BZyODhnsqvv=xqnTaLRNj3d_Q@mail.gmail.com>
+Message-ID: <CAHk-=wh5p6zpgUUoY+O7e74X9BZyODhnsqvv=xqnTaLRNj3d_Q@mail.gmail.com>
+Subject: Re: [PATCH v7 05/19] iov_iter: Introduce fault_in_iov_iter_writeable
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+On Fri, Aug 27, 2021 at 11:52 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> Again, the calling conventions are wrong.  Make it success/failure or
+> 0/-EFAULT.  And it's inconsistent for iovec and non-iovec cases as it is.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/nbd.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Al, the 0/-EFAULT thing DOES NOT WORK.
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 5170a630778d..741365295157 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1757,7 +1757,9 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
- 	disk->fops = &nbd_fops;
- 	disk->private_data = nbd;
- 	sprintf(disk->disk_name, "nbd%d", index);
--	add_disk(disk);
-+	err = add_disk(disk);
-+	if (err)
-+		goto out_err_disk;
- 
- 	/*
- 	 * Now publish the device.
-@@ -1766,6 +1768,8 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
- 	nbd_total_devices++;
- 	return nbd;
- 
-+out_err_disk:
-+	blk_cleanup_disk(disk);
- out_free_idr:
- 	mutex_lock(&nbd_index_mutex);
- 	idr_remove(&nbd_index_idr, index);
--- 
-2.30.2
+The whole "success vs failure" model is broken.
 
+Because "success" for some people is "everything worked".
+
+And for other people it is "at least _part_ of it worked".
+
+So no, 0/-EFAULT fundamentally cannot work, because the return needs
+to be able to handle that ternary situation (ie "nothing" vs
+"something" vs "everything").
+
+This is *literally* the exact same thing that we have for
+copy_to/from_user(). And Andreas' solution (based on my suggestion) is
+the exact same one that we have had for that code since basically day
+#1.
+
+The whole "0/-EFAULT" is simpler, yes. And it's what
+"{get|put}_user()" uses, yes. And it's more common to a lot of other
+functions that return zero or an error.
+
+But see above. People *need* that ternary result, and "bytes/pages
+uncopied" is not only the traditional one we use elsewhere in similar
+situations, it's the one that has the easiest error tests for existing
+users (because zero remains "everything worked").
+
+Andreas originally had that "how many bytes/pages succeeded" return
+value instead, and yes, that's also ternary. But it means that now the
+common "complete success" test ends up being a lot uglier, and the
+semantics of the function changes completely where "0" no longer means
+success, and that messes up much more.
+
+So I really think you are barking entirely up the wrong tree.
+
+If there is any inconsistency, maybe we should make _more_ cases use
+that "how many bytes/pages not copied" logic, but in a lot of cases
+you don't actually need the ternary decision value.
+
+So the inconsistency is EXACTLY the same as the one we have always had
+for get|put_user() vs copy_to|from_user(), and it exists for the EXACT
+same reason.
+
+IOW, please explain how you'd solve the ternary problem without making
+the code a lot uglier.
+
+              Linus
