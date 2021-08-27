@@ -2,65 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571013F9C55
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B85473F9C5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhH0QXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:23:19 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:14154 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhH0QXP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:23:15 -0400
-Date:   Fri, 27 Aug 2021 16:22:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail; t=1630081344;
-        bh=I4JX7t4MHHBtFAolgl6hOrm9rgSrfGIzNZYXK4merpg=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=pJ79Bz155xZwlP/udsUIhz10XooeNt7fNvqWMvnrs9ajYpqApUCIsnMgl5fXhEbdW
-         +y6uXKV+Eeguet9DiNt6re6fobRc3P6KRHru1vIW3e/iJaI1qUXJ19BAekkL7fn0CD
-         bZ/VdB2OXUESdto1XEw5BczaL44wQWqgVEoHDPn3ZFmGxiBGjp63bsVbdhZDUE1QPJ
-         NXzKjnfKonSQspYjhHnmR9fCSBwthotl4lG8hVVolWWD217YMc14mxlrlqLRJd8B46
-         R5YO0CP/KQxRIYC+dE7V4RglUjmiolRW3V7jeGSRfAflvyP4gwB8QUPrsNSvTsMV9i
-         nhYJd+pAakz5w==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: Re: [PATCH 0/5] staging: rtl8723bs: remove unused functions
-Message-ID: <20210827162204.vh4xbgniet5w5mmo@h510>
-In-Reply-To: <cover.1630080164.git.hello@bryanbrattlof.com>
-References: <cover.1630080164.git.hello@bryanbrattlof.com>
+        id S234192AbhH0Q0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:26:06 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15081 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229800AbhH0Q0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 12:26:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630081516; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=iJshbTfn89uxIYVt4Jwk7Wz36RK17S/gIKsiIWm5UAI=; b=hWB36AuYjUDSJAWahsrzR+6ucXYejiM0JZgaduF6c7tMr1c6nNql+J6K6Af2PciwxJyDGV4j
+ TBTsqjxUeJqSRbtfxHa20GxZ6tIEQMlOcTa3x1LYXkI4HEy5N/VqREAR91cBHtOijBiCRBsC
+ E2BquvGI/Fro58Aj9msCLCmF72g=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 612911d8d15f4d68a27675bc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Aug 2021 16:24:56
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A541BC43617; Fri, 27 Aug 2021 16:24:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5F018C4338F;
+        Fri, 27 Aug 2021 16:24:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5F018C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        David Miller <davem@davemloft.net>
+Subject: Re: linux-next: manual merge of the char-misc tree with Linus' tree
+References: <20210827164904.6b1d1f0e@canb.auug.org.au>
+        <YSjkosA6yMrMmaNk@kroah.com>
+Date:   Fri, 27 Aug 2021 19:24:49 +0300
+In-Reply-To: <YSjkosA6yMrMmaNk@kroah.com> (Greg KH's message of "Fri, 27 Aug
+        2021 15:12:02 +0200")
+Message-ID: <87bl5i6ejy.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the noise Greg,
+Greg KH <greg@kroah.com> writes:
 
-On this day, August 27, 2021 thus sayeth Bryan Brattlof:
-> Changes in v3:
->  - Fix issue causing some emails to drop their In-Reply-To: header.
+> On Fri, Aug 27, 2021 at 04:49:04PM +1000, Stephen Rothwell wrote:
+>> Hi all,
+>> 
+>> Today's linux-next merge of the char-misc tree got conflicts in:
+>> 
+>>   drivers/bus/mhi/core/main.c
+>>   net/qrtr/mhi.c
+>> 
+>> between commit:
+>> 
+>>   9ebc2758d0bb ("Revert "net: really fix the build..."")
+>> 
+>> from the origin tree and commit:
+>> 
+>>   0092a1e3f763 ("bus: mhi: Add inbound buffers allocation flag")
+>> 
+>> from the char-misc tree.
+>> 
+>> I fixed it up (the commit in Linus' tree is basically a revert of the
+>> char-misc tree, so I effectively reverted the latter) and can carry the
+>> fix as necessary. This is now fixed as far as linux-next is concerned,
+>> but any non trivial conflicts should be mentioned to your upstream
+>> maintainer when your tree is submitted for merging.  You may also want
+>> to consider cooperating with the maintainer of the conflicting tree to
+>> minimise any particularly complex conflicts.
 >
->  (For the curious: NullMailer & my email provider where conspiring)
+> Hm, what should I do in my tree here?
 >
+> Kalle, what commit should I make in the char-misc tree now to handle
+> this issue, and make the merge with Linus's tree "simple"?  Or any other
+> ideas?
 
-This turns out to be untrue :(
+Good news first, I tested next-20210827 with ath11k (using QCA6390) and
+it's working fine. So Stephen solved the conflict correctly, at least
+from ath11k point of view. And my suggestion is that Linus should do the
+same resolution when merging char-misc-next (after he has merged
+net-next).
 
-I've been testing my git-send-email setup on some friends without issue.
-Somewhere between me and the mailing list In-Reply-To: headers are being
-dropped.
+I'll explain that in detail below. But do note that I'm not familiar
+with the MHI subsystem and the MHI folks really should look at this in
+detail to make sure no new bugs are introduced! I did the conflict
+resolution myself and at least ath11k works after this resolution.
 
-I'll be back, but you can safely drop any patches from me today :(
+In my test merge I first used Linus' tree as of today as the baseline.
+I first merged net-next and it went without conflicts. After that I
+merged char-misc-next and got conflicts in two files:
 
-Again sorry for the noise
+$ git merge char-misc/char-misc-next
+Auto-merging net/qrtr/mhi.c
+CONFLICT (content): Merge conflict in net/qrtr/mhi.c
+Auto-merging include/linux/mhi.h
+Auto-merging drivers/bus/mhi/pci_generic.c
+Auto-merging drivers/bus/mhi/core/main.c
+CONFLICT (content): Merge conflict in drivers/bus/mhi/core/main.c
+Auto-merging drivers/bus/mhi/core/internal.h
+Auto-merging drivers/bus/fsl-mc/fsl-mc-bus.c
+Removing Documentation/devicetree/bindings/phy/ti,phy-am654-serdes.txt
+Removing Documentation/devicetree/bindings/phy/fsl,imx8mq-usb-phy.txt
+Removing Documentation/devicetree/bindings/misc/ge-achc.txt
+Removing Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.txt
+Recorded preimage for 'drivers/bus/mhi/core/main.c'
+Recorded preimage for 'net/qrtr/mhi.c'
+Automatic merge failed; fix conflicts and then commit the result.
 
-~Bryan
+Luckily the conflicts are simple:
 
+diff --cc drivers/bus/mhi/core/main.c
+index fc9196f11cb7,c01ec2fef02c..000000000000
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@@ -1455,6 -1455,9 +1455,12 @@@ int mhi_prepare_channel(struct mhi_cont
+        if (ret)
+                goto error_pm_state;
+  
+++<<<<<<< HEAD
+++=======
++       if (mhi_chan->dir == DMA_FROM_DEVICE)
++               mhi_chan->pre_alloc = !!(flags & MHI_CH_INBOUND_ALLOC_BUFS);
++ 
+++>>>>>>> char-misc/char-misc-next
+        /* Pre-allocate buffer for xfer ring */
+        if (mhi_chan->pre_alloc) {
+                int nr_el = get_nr_avail_ring_elements(mhi_cntrl,
+diff --cc net/qrtr/mhi.c
+index fa611678af05,c609cb724c25..000000000000
+--- a/net/qrtr/mhi.c
++++ b/net/qrtr/mhi.c
+@@@ -79,7 -84,7 +79,11 @@@ static int qcom_mhi_qrtr_probe(struct m
+        int rc;
+  
+        /* start channels */
+++<<<<<<< HEAD
+ +      rc = mhi_prepare_for_transfer(mhi_dev);
+++=======
++       rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
+++>>>>>>> char-misc/char-misc-next
+        if (rc)
+                return rc;
+
+In both cases just take the first hunk from HEAD and remove the second
+hunk from char-misc-next. After the conflict resolution 'git diff'
+should show:
+
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index 88dba230f406..b15c5bc37dd4 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -1455,9 +1455,6 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
+        if (ret)
+                goto error_pm_state;
+ 
+-       if (mhi_chan->dir == DMA_FROM_DEVICE)
+-               mhi_chan->pre_alloc = !!(flags & MHI_CH_INBOUND_ALLOC_BUFS);
+-
+        /* Pre-allocate buffer for xfer ring */
+        if (mhi_chan->pre_alloc) {
+                int nr_el = get_nr_avail_ring_elements(mhi_cntrl,
+
+Greg, does this help? Stephen, do you have any advice how to handle
+this?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
