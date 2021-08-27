@@ -2,221 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA2C3F9B69
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030F53F9B6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245393AbhH0PFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233912AbhH0PFB (ORCPT
+        id S245442AbhH0PFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:05:16 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:38126 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233712AbhH0PFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:05:01 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E5AC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:04:12 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id ew6so4145547qvb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:04:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=op2QVF7ofZpANc1CMzE9ciWUBXUVrosnUhzGCjoQSlU=;
-        b=vbYlZelwKh8Sl1ByA94JNKLxNAbvyVPJNZYQdKIORBxqH8DA5iOQnbkBUbib2yX5dC
-         if2PnA3BlvTyGKDHPo/hVZtsdhdbZpAzdkOEZmF16y6KCPcveFOhPXQkCfZ5olWQUpPi
-         mDUdFgUsxacDJ5vjp3hK0dCIK8QrrbuXaTmVwxayQ5egHtd2MumLwiGVVMT2ilCv9yUH
-         3hG2OsSrPZjubhWYhoCJ83ORNj8YpjvJk2bg3OmkmKukqlpeHylQWSFpLyH9FOR5NmCT
-         sW9XQvRBFLaPACgbS2bF514h9ZMdbtIvp9ERE3BVsQ3n0qLoqs29Xw85UrICj0NXNGXQ
-         ITOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=op2QVF7ofZpANc1CMzE9ciWUBXUVrosnUhzGCjoQSlU=;
-        b=A0qyvlMiN1RB7wk64jWOpwkwm0Rcsfqwt7QyCzHCgqQIf1EtxWrPGGvmCpEAFs/Uni
-         88ZgZoQ1eidrGL6H0Ve/9ofDa0ihgKf6N5LYoJaB7IM4cPTFTFPGA0Li04Khg0PhHLx9
-         GDTWtXzNUMwgRMnUVWYQOBboW+SC3oV0IlI0YEiTfewb2OdsQpZmYMq7XaU5pAvqolIo
-         X1TgFKc9MALodm1LnnRlWoOX/OqGZtIripRpp+YPbJYDwEat5chwbCHFZVviZd/zMErV
-         edFt23PIQPixiC1Re8hkNLZKMUp/0bQiKWLR4mEkd8aJqUH98xGfKu7My/csLWKxR8HS
-         J/qg==
-X-Gm-Message-State: AOAM530/r936Q7O/LqxnjIg1fWEJ0/cBVWjKEkoenGSbqmGq5Jz+j1VZ
-        Z1q18TYzPysWFGW+qvaOD4k=
-X-Google-Smtp-Source: ABdhPJxLp0R/ieXX1YdB/sEdguqUzsVUVLdaa9tGsB4/JIL2IVGh0T3SCkZ4VyqCP7KJihUiiTheqQ==
-X-Received: by 2002:a05:6214:194b:: with SMTP id q11mr9954664qvk.33.1630076651299;
-        Fri, 27 Aug 2021 08:04:11 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id m187sm4796385qkd.131.2021.08.27.08.04.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 08:04:10 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     david@redhat.com, markubo@amazon.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH] mm/damon/vaddr: Safely walk page table
-Date:   Fri, 27 Aug 2021 15:04:00 +0000
-Message-Id: <20210827150400.6305-1-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 27 Aug 2021 11:05:14 -0400
+X-UUID: 144f094e71e2400db557bd852b042f62-20210827
+X-UUID: 144f094e71e2400db557bd852b042f62-20210827
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1513399212; Fri, 27 Aug 2021 23:04:21 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 27 Aug 2021 23:04:20 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 27 Aug 2021 23:04:19 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <rocco.yue@gmail.com>,
+        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
+        Rocco Yue <rocco.yue@mediatek.com>
+Subject: [PATCH net-next v6] ipv6: add IFLA_INET6_RA_MTU to expose mtu value
+Date:   Fri, 27 Aug 2021 23:04:12 +0800
+Message-ID: <20210827150412.9267-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+The kernel provides a "/proc/sys/net/ipv6/conf/<iface>/mtu"
+file, which can temporarily record the mtu value of the last
+received RA message when the RA mtu value is lower than the
+interface mtu, but this proc has following limitations:
 
-Commit d7f647622761 ("mm/damon: implement primitives for the virtual
-memory address spaces") of linux-mm[1] tries to find PTE or PMD for
-arbitrary virtual address using 'follow_invalidate_pte()' without proper
-locking[2].  This commit fixes the issue by using another page table
-walk function for more general use case under proper locking.
+(1) when the interface mtu (/sys/class/net/<iface>/mtu) is
+updeated, mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) will
+be updated to the value of interface mtu;
+(2) mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) only affect
+ipv6 connection, and not affect ipv4.
 
-[1] https://github.com/hnaz/linux-mm/commit/d7f647622761
-[2] https://lore.kernel.org/linux-mm/3b094493-9c1e-6024-bfd5-7eca66399b7e@redhat.com
+Therefore, when the mtu option is carried in the RA message,
+there will be a problem that the user sometimes cannot obtain
+RA mtu value correctly by reading mtu6.
 
-Fixes: d7f647622761 ("mm/damon: implement primitives for the virtual memory address spaces")
-Reported-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+After this patch set, if a RA message carries the mtu option,
+you can send a netlink msg which nlmsg_type is RTM_GETLINK,
+and then by parsing the attribute of IFLA_INET6_RA_MTU to
+get the mtu value carried in the RA message received on the
+inet6 device. In addition, you can also get a link notification
+when ra_mtu is updated so it doesn't have to poll.
+
+In this way, if the MTU values that the device receives from
+the network in the PCO IPv4 and the RA IPv6 procedures are
+different, the user can obtain the correct ipv6 ra_mtu value
+and compare the value of ra_mtu and ipv4 mtu, then the device
+can use the lower MTU value for both IPv4 and IPv6.
+
+Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
 ---
- mm/damon/vaddr.c | 81 +++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 74 insertions(+), 7 deletions(-)
+ include/net/if_inet6.h             |  2 ++
+ include/uapi/linux/if_link.h       |  1 +
+ net/ipv6/addrconf.c                | 10 ++++++++++
+ net/ipv6/ndisc.c                   | 17 +++++++++++------
+ tools/include/uapi/linux/if_link.h |  1 +
+ 5 files changed, 25 insertions(+), 6 deletions(-)
 
-diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
-index 230db7413278..b3677f2ef54b 100644
---- a/mm/damon/vaddr.c
-+++ b/mm/damon/vaddr.c
-@@ -8,10 +8,12 @@
- #define pr_fmt(fmt) "damon-va: " fmt
+diff --git a/include/net/if_inet6.h b/include/net/if_inet6.h
+index 42235c178b06..653e7d0f65cb 100644
+--- a/include/net/if_inet6.h
++++ b/include/net/if_inet6.h
+@@ -210,6 +210,8 @@ struct inet6_dev {
  
- #include <linux/damon.h>
-+#include <linux/hugetlb.h>
- #include <linux/mm.h>
- #include <linux/mmu_notifier.h>
- #include <linux/highmem.h>
- #include <linux/page_idle.h>
-+#include <linux/pagewalk.h>
- #include <linux/random.h>
- #include <linux/sched/mm.h>
- #include <linux/slab.h>
-@@ -446,14 +448,69 @@ static void damon_pmdp_mkold(pmd_t *pmd, struct mm_struct *mm,
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+ 	unsigned long		tstamp; /* ipv6InterfaceTable update timestamp */
+ 	struct rcu_head		rcu;
++
++	unsigned int		ra_mtu;
+ };
+ 
+ static inline void ipv6_eth_mc_map(const struct in6_addr *addr, char *buf)
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index 8aad65b69054..eebd3894fe89 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -417,6 +417,7 @@ enum {
+ 	IFLA_INET6_ICMP6STATS,	/* statistics (icmpv6)		*/
+ 	IFLA_INET6_TOKEN,	/* device token			*/
+ 	IFLA_INET6_ADDR_GEN_MODE, /* implicit address generator mode */
++	IFLA_INET6_RA_MTU,	/* mtu carried in the RA message */
+ 	__IFLA_INET6_MAX
+ };
+ 
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index 8381288a0d6e..17756f3ed33b 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -394,6 +394,7 @@ static struct inet6_dev *ipv6_add_dev(struct net_device *dev)
+ 		ndev->cnf.addr_gen_mode = IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
+ 
+ 	ndev->cnf.mtu6 = dev->mtu;
++	ndev->ra_mtu = 0;
+ 	ndev->nd_parms = neigh_parms_alloc(dev, &nd_tbl);
+ 	if (!ndev->nd_parms) {
+ 		kfree(ndev);
+@@ -3849,6 +3850,7 @@ static int addrconf_ifdown(struct net_device *dev, bool unregister)
+ 	}
+ 
+ 	idev->tstamp = jiffies;
++	idev->ra_mtu = 0;
+ 
+ 	/* Last: Shot the device (if unregistered) */
+ 	if (unregister) {
+@@ -5543,6 +5545,7 @@ static inline size_t inet6_ifla6_size(void)
+ 	     + nla_total_size(ICMP6_MIB_MAX * 8) /* IFLA_INET6_ICMP6STATS */
+ 	     + nla_total_size(sizeof(struct in6_addr)) /* IFLA_INET6_TOKEN */
+ 	     + nla_total_size(1) /* IFLA_INET6_ADDR_GEN_MODE */
++	     + nla_total_size(4) /* IFLA_INET6_RA_MTU */
+ 	     + 0;
  }
  
-+struct damon_walk_private {
-+	pmd_t *pmd;
-+	pte_t *pte;
-+	spinlock_t *ptl;
-+};
+@@ -5651,6 +5654,10 @@ static int inet6_fill_ifla6_attrs(struct sk_buff *skb, struct inet6_dev *idev,
+ 	if (nla_put_u8(skb, IFLA_INET6_ADDR_GEN_MODE, idev->cnf.addr_gen_mode))
+ 		goto nla_put_failure;
+ 
++	if (idev->ra_mtu &&
++	    nla_put_u32(skb, IFLA_INET6_RA_MTU, idev->ra_mtu))
++		goto nla_put_failure;
 +
-+static int damon_pmd_entry(pmd_t *pmd, unsigned long addr, unsigned long next,
-+		struct mm_walk *walk)
-+{
-+	struct damon_walk_private *priv = walk->private;
-+
-+	if (pmd_huge(*pmd)) {
-+		priv->ptl = pmd_lock(walk->mm, pmd);
-+		if (pmd_huge(*pmd)) {
-+			priv->pmd = pmd;
-+			return 0;
+ 	return 0;
+ 
+ nla_put_failure:
+@@ -5767,6 +5774,9 @@ static int inet6_set_iftoken(struct inet6_dev *idev, struct in6_addr *token,
+ static const struct nla_policy inet6_af_policy[IFLA_INET6_MAX + 1] = {
+ 	[IFLA_INET6_ADDR_GEN_MODE]	= { .type = NLA_U8 },
+ 	[IFLA_INET6_TOKEN]		= { .len = sizeof(struct in6_addr) },
++	[IFLA_INET6_RA_MTU]		= { .type = NLA_REJECT,
++					    .reject_message =
++						"IFLA_INET6_RA_MTU can not be set" },
+ };
+ 
+ static int check_addr_gen_mode(int mode)
+diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
+index c467c6419893..4b098521a44c 100644
+--- a/net/ipv6/ndisc.c
++++ b/net/ipv6/ndisc.c
+@@ -1391,12 +1391,6 @@ static void ndisc_router_discovery(struct sk_buff *skb)
+ 		}
+ 	}
+ 
+-	/*
+-	 *	Send a notify if RA changed managed/otherconf flags or timer settings
+-	 */
+-	if (send_ifinfo_notify)
+-		inet6_ifinfo_notify(RTM_NEWLINK, in6_dev);
+-
+ skip_linkparms:
+ 
+ 	/*
+@@ -1496,6 +1490,11 @@ static void ndisc_router_discovery(struct sk_buff *skb)
+ 		memcpy(&n, ((u8 *)(ndopts.nd_opts_mtu+1))+2, sizeof(mtu));
+ 		mtu = ntohl(n);
+ 
++		if (in6_dev->ra_mtu != mtu) {
++			in6_dev->ra_mtu = mtu;
++			send_ifinfo_notify = true;
 +		}
-+		spin_unlock(priv->ptl);
-+	}
 +
-+	if (pmd_none(*pmd) || unlikely(pmd_bad(*pmd)))
-+		return -EINVAL;
-+	priv->pte = pte_offset_map_lock(walk->mm, pmd, addr, &priv->ptl);
-+	if (!pte_present(*priv->pte)) {
-+		pte_unmap_unlock(priv->pte, priv->ptl);
-+		priv->pte = NULL;
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static struct mm_walk_ops damon_walk_ops = {
-+	.pmd_entry = damon_pmd_entry,
-+};
-+
-+int damon_follow_pte_pmd(struct mm_struct *mm, unsigned long addr,
-+		struct damon_walk_private *private)
-+{
-+	int rc;
-+
-+	private->pte = NULL;
-+	private->pmd = NULL;
-+	rc = walk_page_range(mm, addr, addr + 1, &damon_walk_ops, private);
-+	if (!rc && !private->pte && !private->pmd)
-+		return -EINVAL;
-+	return rc;
-+}
-+
- static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
- {
--	pte_t *pte = NULL;
--	pmd_t *pmd = NULL;
-+	struct damon_walk_private walk_result;
-+	pte_t *pte;
-+	pmd_t *pmd;
- 	spinlock_t *ptl;
- 
--	if (follow_invalidate_pte(mm, addr, NULL, &pte, &pmd, &ptl))
-+	mmap_write_lock(mm);
-+	if (damon_follow_pte_pmd(mm, addr, &walk_result)) {
-+		mmap_write_unlock(mm);
- 		return;
-+	}
-+	pte = walk_result.pte;
-+	pmd = walk_result.pmd;
-+	ptl = walk_result.ptl;
- 
- 	if (pte) {
- 		damon_ptep_mkold(pte, mm, addr);
-@@ -462,6 +519,7 @@ static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
- 		damon_pmdp_mkold(pmd, mm, addr);
- 		spin_unlock(ptl);
+ 		if (mtu < IPV6_MIN_MTU || mtu > skb->dev->mtu) {
+ 			ND_PRINTK(2, warn, "RA: invalid mtu: %d\n", mtu);
+ 		} else if (in6_dev->cnf.mtu6 != mtu) {
+@@ -1519,6 +1518,12 @@ static void ndisc_router_discovery(struct sk_buff *skb)
+ 		ND_PRINTK(2, warn, "RA: invalid RA options\n");
  	}
-+	mmap_write_unlock(mm);
- }
- 
- /*
-@@ -495,14 +553,21 @@ void damon_va_prepare_access_checks(struct damon_ctx *ctx)
- static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
- 			unsigned long *page_sz)
- {
--	pte_t *pte = NULL;
--	pmd_t *pmd = NULL;
-+	struct damon_walk_private walk_result;
-+	pte_t *pte;
-+	pmd_t *pmd;
- 	spinlock_t *ptl;
- 	struct page *page;
- 	bool young = false;
- 
--	if (follow_invalidate_pte(mm, addr, NULL, &pte, &pmd, &ptl))
-+	mmap_write_lock(mm);
-+	if (damon_follow_pte_pmd(mm, addr, &walk_result)) {
-+		mmap_write_unlock(mm);
- 		return false;
-+	}
-+	pte = walk_result.pte;
-+	pmd = walk_result.pmd;
-+	ptl = walk_result.ptl;
- 
- 	*page_sz = PAGE_SIZE;
- 	if (pte) {
-@@ -513,7 +578,7 @@ static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
- 		if (page)
- 			put_page(page);
- 		pte_unmap_unlock(pte, ptl);
--		return young;
-+		goto out;
- 	}
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-@@ -528,6 +593,8 @@ static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
- 	*page_sz = ((1UL) << HPAGE_PMD_SHIFT);
- #endif	/* CONFIG_TRANSPARENT_HUGEPAGE */
- 
-+out:
-+	mmap_write_unlock(mm);
- 	return young;
- }
+ out:
++	/* Send a notify if RA changed managed/otherconf flags or
++	 * timer settings or ra_mtu value
++	 */
++	if (send_ifinfo_notify)
++		inet6_ifinfo_notify(RTM_NEWLINK, in6_dev);
++
+ 	fib6_info_release(rt);
+ 	if (neigh)
+ 		neigh_release(neigh);
+diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
+index eb15f319aa57..b3610fdd1fee 100644
+--- a/tools/include/uapi/linux/if_link.h
++++ b/tools/include/uapi/linux/if_link.h
+@@ -230,6 +230,7 @@ enum {
+ 	IFLA_INET6_ICMP6STATS,	/* statistics (icmpv6)		*/
+ 	IFLA_INET6_TOKEN,	/* device token			*/
+ 	IFLA_INET6_ADDR_GEN_MODE, /* implicit address generator mode */
++	IFLA_INET6_RA_MTU,	/* mtu carried in the RA message */
+ 	__IFLA_INET6_MAX
+ };
  
 -- 
-2.17.1
+2.18.0
 
