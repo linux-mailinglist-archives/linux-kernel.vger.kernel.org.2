@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668EC3F9B91
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEF23F9BA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245456AbhH0PTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:19:12 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:49636 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245404AbhH0PTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:19:09 -0400
-Received: from zn.tnic (p200300ec2f1117008c66b42124dc6a0e.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:8c66:b421:24dc:6a0e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 661E41EC0493;
-        Fri, 27 Aug 2021 17:18:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630077493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ZslriKHxbCHlChlqpQpN8Ct1kTFVcJmfBH1i2TOMis0=;
-        b=dS9d0tdMHelX7BeSkD5dirk3h3ErCw77WLAuqdv85ajmebrGqQhIMoW5u1vhc6oTuaqaKy
-        LjB5nMNTRp8Q3EzgAOD0U+X0ai7Hy9JvEQKMg2IlniiG9AWAWuejj0XN486YyVD21OT7fs
-        +wU9HdR9Y57TbcWeSNGREZ1ynEyPloE=
-Date:   Fri, 27 Aug 2021 17:18:49 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 32/38] x86/sev: enable SEV-SNP-validated CPUID
- in #VC handlers
-Message-ID: <YSkCWVTd0ZEvphlx@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-33-brijesh.singh@amd.com>
+        id S245384AbhH0PX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233884AbhH0PX1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 11:23:27 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3C0C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:22:37 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id l18so12006340lji.12
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=12EwHYLs5eOm6quA+sm5cigmgg54YxcYAcpzFTkzTao=;
+        b=jEpVum+lZp9b+V7si+VhVikOieyqbKysSBBXz1GeJAcrqjxbumhj6CG8FX6yRs56wo
+         L+OZYerWMsGR6sJ3brzUy0IN39xDSptABdOkE3A6MSjbaKbmDbYqiQonD8NQQXozTemh
+         vaSQQhHvMvfIr/RKr6j7hJVXR1ZXYwzuynk0dAptC0ikewkSAfXS4EdUBCYpUaqQZ6oE
+         DTXQf87AGv4BliNaG8mvaq8VmMVI7IIiuU1TJ8fncxif4Kq+RVg77F9E9A0lTxxzCvCD
+         yu5KJs3zrJ/ez/baVFiKRtkHpkr+gLxv2yqmYCjITAnC2qWJJQEDRdAbWsUwDT9UFy7P
+         bETQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=12EwHYLs5eOm6quA+sm5cigmgg54YxcYAcpzFTkzTao=;
+        b=Bg+uYh0xP8s5ySnmdmjLclxWEwgpOaLDp/xd8/93/lFUWpj+qxopgNoSxA6wLc2/Z5
+         0gjWK18dAMoOlBRw6lA2JLdE5wCH095EN2aJgqgDGWXOOa4bY2mNh9S2dQf9M2WU4H6G
+         4YTSYvbMzuCv5TOnXL+aYVtnP7N8/MVrArNv+OAzDmWPgNn7ny0ZEl+STF3/Jtg16zXH
+         gIymhTdVMwbTyBsrTgUZgwEAlr2mIK1htVc6s1XFkWrdFE6kTTOR9ynFioQKmjJKgZ3M
+         vw1o+bb+ILT0OpLwf5urbQwTwTXDGj/8Q4Qso3iLuRnfWUXDzrst+BXm3OoJ95BUaldg
+         +jYw==
+X-Gm-Message-State: AOAM530Zns6Hu2E1TG/tBMcTh7IgPp3f27xt6ePTdEIXp7NGLsIgVC2b
+        3ixCsEz1J9T3o+Md1EhXp4NrMRaHhIM69eBm3UU=
+X-Google-Smtp-Source: ABdhPJxWbKzBq4Syh4W699pjantVPGtpyDFbhimXMVsIQwhZumoSStC3iUlQZcQW1Mr/Lno5EIfKvAemGvjTGt1M7IQ=
+X-Received: by 2002:a2e:2d01:: with SMTP id t1mr8022273ljt.400.1630077756278;
+ Fri, 27 Aug 2021 08:22:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820151933.22401-33-brijesh.singh@amd.com>
+References: <20210825185747.1627497-1-daeho43@gmail.com> <1f1e6d38-6bd1-17ea-b8ca-a45d1244728f@kernel.org>
+In-Reply-To: <1f1e6d38-6bd1-17ea-b8ca-a45d1244728f@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 27 Aug 2021 08:22:25 -0700
+Message-ID: <CACOAw_yhgo1_wrejKskSm=Rsw27ogx=TS_A=z=-NGLcecA-gYA@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce fragment allocation mode
+ mount option
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:19:27AM -0500, Brijesh Singh wrote:
-> From: Michael Roth <michael.roth@amd.com>
-> 
-> This adds support for utilizing the SEV-SNP-validated CPUID table in
+> I'd like to add a fixed chunk/hole fragmentation mode in addition, then
+> userspace can control the fragmented chunk/hole with fixed size.
+>
+> How do you think of renaming "fragment:block" to "fragment:rand_block", and
+> then I can add "fragment:fixed_block" option and its logic in addition?
+>
 
-s/This adds support for utilizing/Utilize/
+The reason I added the randomness on these values is the segment
+selection in SSR mode.
+If all the segments have the same free block counts, f2fs will
+allocate a new segment sequentially in SSR.
+This was what I didn't want. Plus, in the real world, the size of hole
+and chunk will be different in different segments.
 
-Yap, it can really be that simple. :)
+But, if you think we need this "fragment:fixed_block" mode, I am happy
+to have it. :)
 
-> the various #VC handler routines used throughout boot/run-time. Mostly
-> this is handled by re-using the CPUID lookup code introduced earlier
-> for the boot/compressed kernel, but at various stages of boot some work
-> needs to be done to ensure the CPUID table is set up and remains
-> accessible throughout. The following init routines are introduced to
-> handle this:
+> Do we need to consider multiple thread scenario? in such case,
+> .fragment_remained_chunk may update randomly.
+>
+> In addition, multiple log headers share one .fragment_remained_chunk,
+> it may cause unexpected result, it means there may be continuous holes
+> or chunks in locality due to swithing between different log headers.
+>
+> Thanks,
+>
 
-Do not talk about what your patch does - that should hopefully be
-visible in the diff itself. Rather, talk about *why* you're doing what
-you're doing.
+Oh, I overlooked that point. I am going to add the variable for each
+segment as you said before.
 
-> sev_snp_cpuid_init():
-
-This one is not really introduced - it is already there.
-
-<snip all the complex rest>
-
-So this patch is making my head spin. It seems we're dancing a lot of
-dance just to have our CPUID page present at all times. Which begs the
-question: do we need it during the whole lifetime of the guest?
-
-Regardless, I think this can be simplified by orders of
-magnitude if we allocated statically 4K for that CPUID page in
-arch/x86/boot/compressed/mem_encrypt.S, copied the supplied CPUID page
-from the firmware to it and from now on, work with our own copy.
-
-You probably would need to still remap it for kernel proper but it would
-get rid of all that crazy in this patch here.
-
-Hmmm?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
