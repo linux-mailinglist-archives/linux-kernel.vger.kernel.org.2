@@ -2,92 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6293F9C8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867013F9C8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236077AbhH0Qb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:31:58 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:48977 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233745AbhH0Qb5 (ORCPT
+        id S230287AbhH0QdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhH0QdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:31:57 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 91A0E821CB;
-        Fri, 27 Aug 2021 19:31:07 +0300 (MSK)
+        Fri, 27 Aug 2021 12:33:16 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7EEC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:32:26 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id bq28so15538187lfb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:32:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1630081867;
-        bh=mTPrU7Xby7bdyA5QoWyXxTNUqhVFSY/ggcdmXWm3lTw=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=ch6SmnIk2fS3FTquU3QgRc/OP3pBtHdJVdoFFbGWiPs0eYY++ropdyQyjFbNd+u76
-         K8Be20RFRsAjMvBcgr5tT4cSyEQtBj7IuxwRAUX91gcRjaNCn3jLtj0dBsUF81nRoV
-         KJ/XHRnjFPsOLK5mRCjMjypPUcxMOeb13aQABmIc=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 27 Aug 2021 19:31:07 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%12]) with
- mapi id 15.01.2176.009; Fri, 27 Aug 2021 19:31:07 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-CC:     "nathan@kernel.org" <nathan@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH] fs/ntfs3: Remove unused including <linux/version.h>
-Thread-Topic: [PATCH] fs/ntfs3: Remove unused including <linux/version.h>
-Thread-Index: AQHXlNOYiBEK8ENRz0Won74AeeEXEauHl8Bg
-Date:   Fri, 27 Aug 2021 16:31:07 +0000
-Message-ID: <3f2f11cc4e414f088ed60919e7d9cd56@paragon-software.com>
-References: <1629361417-94657-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1629361417-94657-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.0.26]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rDEyniYnUo6SP9JGWjfsS6i4iPrH22gq5zNs0dJFqeQ=;
+        b=nWFz0ZQ+mJ29vyniEQlz/brm3kzo7t3aCrZmz9gBloLSWgjsf5eDaCZeuQF/YXiGt9
+         tUfh/bHva0S8doRgMygMZBLdjx8d9+uJYGUCoaO1AL5l1jrMYFjU4JZSL5/RtAJkoO/J
+         z4c5608vgAw0jUUvF79lmVEPePKKEOq/wBAwG3mVWRfv/su3lcLTMxDpo/gED1wXPD8v
+         +tUuOMvkPXVaCe973zVQEMTpGWJYQ5d8x21p2t/XvNIEsl9Qe2zz62/+NnncnqkDSaO3
+         db5HPcbHOpahh6Sji1/ofty4l6QOTu2u/A0yn5jH+OSc9gC3iofDQ4MXNkBtIlyH8RnT
+         jrcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rDEyniYnUo6SP9JGWjfsS6i4iPrH22gq5zNs0dJFqeQ=;
+        b=VuI2JWVinZI4wGONtpC1TiCjO1kKoJq1CThb2idtp/I3x+HxRkMzEqkgqzboUHJdrA
+         UbCEmzKakmXxDPRack6Ip+dkCOgPrJHaOIl/IIflaYk6L4Y0MsKfOGOTKuzzHwQlOjLS
+         ZKbuUJsnECqDyGZa1V8PUjsDGpHwxoJ1AerB7mBdL6AcwYi3DS9bETK/IKrbhS97XFVS
+         pGMRhQ51Pcg9yFzSvTzGGf753WXLthr/So51P/AsrnWeWJK909xrseOdn8QY07+62WBM
+         oWllYe0VQWtgMT4DjvopH6/JTB41PUdrW9gruLNtSBaGKerM0ht7BJ37ki1PODMRPmA3
+         XAMQ==
+X-Gm-Message-State: AOAM533izvKfh3YPV26rwGDaDTxRnvOzDZJXlvjGXIoipGkMDDu7nfoD
+        iHh/dltnTNHW+egWJ9nkVxo=
+X-Google-Smtp-Source: ABdhPJz2TfsSfJlx0fzh0sqfW8FsA2oVlt/8oGp3MDnp1ubPztetO15Q7WSUSfCfgaFr51R/S7ZjWw==
+X-Received: by 2002:a05:6512:2342:: with SMTP id p2mr7277813lfu.516.1630081945128;
+        Fri, 27 Aug 2021 09:32:25 -0700 (PDT)
+Received: from DESKTOP-5EKDQDN.localdomain (78-63-10-115.static.zebra.lt. [78.63.10.115])
+        by smtp.gmail.com with ESMTPSA id bq18sm633211lfb.183.2021.08.27.09.32.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 09:32:24 -0700 (PDT)
+From:   =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
+To:     gregkh@linuxfoundation.org, forest@alittletooquiet.net
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
+Subject: [PATCH] staging: vt6656: Remove filenames in files
+Date:   Fri, 27 Aug 2021 19:32:03 +0300
+Message-Id: <20210827163203.4100-1-aldas60@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> Sent: Thursday, August 19, 2021 11:24 AM
-> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> Cc: nathan@kernel.org; ndesaulniers@google.com; ntfs3@lists.linux.dev; li=
-nux-kernel@vger.kernel.org; clang-built-
-> linux@googlegroups.com; Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> Subject: [PATCH] fs/ntfs3: Remove unused including <linux/version.h>
->=20
-> Eliminate the follow versioncheck warning:
->=20
-> ./fs/ntfs3/inode.c: 16 linux/version.h not needed.
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  fs/ntfs3/inode.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-> index bf51e29..bb01f1b 100644
-> --- a/fs/ntfs3/inode.c
-> +++ b/fs/ntfs3/inode.c
-> @@ -13,7 +13,6 @@
->  #include <linux/namei.h>
->  #include <linux/nls.h>
->  #include <linux/uio.h>
-> -#include <linux/version.h>
->  #include <linux/writeback.h>
->=20
->  #include "debug.h"
-> --
-> 1.8.3.1
-Hi Jiapeng! Applied, thanks.
-Best regards.
+checkpatch.pl warning: It's generally not useful to have the filename in
+the file
+
+Remove the filenames.
+
+Signed-off-by: Aldas Taraškevičius <aldas60@gmail.com>
+---
+ drivers/staging/vt6656/baseband.c | 2 --
+ drivers/staging/vt6656/baseband.h | 2 --
+ drivers/staging/vt6656/card.c     | 1 -
+ drivers/staging/vt6656/card.h     | 2 --
+ drivers/staging/vt6656/channel.c  | 2 --
+ drivers/staging/vt6656/channel.h  | 2 --
+ drivers/staging/vt6656/desc.h     | 2 --
+ drivers/staging/vt6656/device.h   | 2 --
+ drivers/staging/vt6656/key.c      | 2 --
+ drivers/staging/vt6656/key.h      | 2 --
+ drivers/staging/vt6656/mac.c      | 2 --
+ drivers/staging/vt6656/mac.h      | 2 --
+ drivers/staging/vt6656/main_usb.c | 2 --
+ drivers/staging/vt6656/power.c    | 2 --
+ drivers/staging/vt6656/power.h    | 2 --
+ drivers/staging/vt6656/rf.c       | 2 --
+ drivers/staging/vt6656/rf.h       | 2 --
+ drivers/staging/vt6656/rxtx.c     | 2 --
+ drivers/staging/vt6656/rxtx.h     | 2 --
+ drivers/staging/vt6656/usbpipe.c  | 2 --
+ drivers/staging/vt6656/usbpipe.h  | 2 --
+ drivers/staging/vt6656/wcmd.c     | 2 --
+ drivers/staging/vt6656/wcmd.h     | 2 --
+ 23 files changed, 45 deletions(-)
+
+diff --git a/drivers/staging/vt6656/baseband.c b/drivers/staging/vt6656/baseband.c
+index 41ae779ec61f..1e1c5a7d8968 100644
+--- a/drivers/staging/vt6656/baseband.c
++++ b/drivers/staging/vt6656/baseband.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: baseband.c
+- *
+  * Purpose: Implement functions to access baseband
+  *
+  * Author: Jerry Chen
+diff --git a/drivers/staging/vt6656/baseband.h b/drivers/staging/vt6656/baseband.h
+index 12456ebc23ec..dce50a311f24 100644
+--- a/drivers/staging/vt6656/baseband.h
++++ b/drivers/staging/vt6656/baseband.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: baseband.h
+- *
+  * Purpose: Implement functions to access baseband
+  *
+  * Author: Jerry Chen
+diff --git a/drivers/staging/vt6656/card.c b/drivers/staging/vt6656/card.c
+index 396736eee690..e92ecfad26d2 100644
+--- a/drivers/staging/vt6656/card.c
++++ b/drivers/staging/vt6656/card.c
+@@ -3,7 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: card.c
+  * Purpose: Provide functions to setup NIC operation mode
+  * Functions:
+  *      vnt_set_rspinf - Set RSPINF
+diff --git a/drivers/staging/vt6656/card.h b/drivers/staging/vt6656/card.h
+index a524fdc60ae3..be32c25c95de 100644
+--- a/drivers/staging/vt6656/card.h
++++ b/drivers/staging/vt6656/card.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: card.h
+- *
+  * Purpose: Provide functions to setup NIC operation mode
+  *
+  * Author: Tevin Chen
+diff --git a/drivers/staging/vt6656/channel.c b/drivers/staging/vt6656/channel.c
+index 7855689af7cb..eb2d52e6420b 100644
+--- a/drivers/staging/vt6656/channel.c
++++ b/drivers/staging/vt6656/channel.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: channel.c
+- *
+  * Purpose: Channel number mapping
+  *
+  * Author: Lucas Lin
+diff --git a/drivers/staging/vt6656/channel.h b/drivers/staging/vt6656/channel.h
+index cca330f0daf4..723660e40310 100644
+--- a/drivers/staging/vt6656/channel.h
++++ b/drivers/staging/vt6656/channel.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: channel.h
+- *
+  * Purpose: Country Regulation Rules header file
+  *
+  * Author: Lucas Lin
+diff --git a/drivers/staging/vt6656/desc.h b/drivers/staging/vt6656/desc.h
+index 703597a911f4..c13561e528db 100644
+--- a/drivers/staging/vt6656/desc.h
++++ b/drivers/staging/vt6656/desc.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: desc.h
+- *
+  * Purpose:The header file of descriptor
+  *
+  * Revision History:
+diff --git a/drivers/staging/vt6656/device.h b/drivers/staging/vt6656/device.h
+index 2c93a2e66c8a..8b6623a751f0 100644
+--- a/drivers/staging/vt6656/device.h
++++ b/drivers/staging/vt6656/device.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: device.h
+- *
+  * Purpose: MAC Data structure
+  *
+  * Author: Tevin Chen
+diff --git a/drivers/staging/vt6656/key.c b/drivers/staging/vt6656/key.c
+index 70f75c5760ce..bdc5f30c4f9d 100644
+--- a/drivers/staging/vt6656/key.c
++++ b/drivers/staging/vt6656/key.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: key.c
+- *
+  * Purpose: Implement functions for 802.11i Key management
+  *
+  * Author: Jerry Chen
+diff --git a/drivers/staging/vt6656/key.h b/drivers/staging/vt6656/key.h
+index 1f3449e66143..6f1d5b4f6da7 100644
+--- a/drivers/staging/vt6656/key.h
++++ b/drivers/staging/vt6656/key.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: key.h
+- *
+  * Purpose: Implement functions for 802.11i Key management
+  *
+  * Author: Jerry Chen
+diff --git a/drivers/staging/vt6656/mac.c b/drivers/staging/vt6656/mac.c
+index da7067c34643..4f1f9b03a678 100644
+--- a/drivers/staging/vt6656/mac.c
++++ b/drivers/staging/vt6656/mac.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: mac.c
+- *
+  * Purpose:  MAC routines
+  *
+  * Author: Tevin Chen
+diff --git a/drivers/staging/vt6656/mac.h b/drivers/staging/vt6656/mac.h
+index dae70b5c7634..05af9ca7d69c 100644
+--- a/drivers/staging/vt6656/mac.h
++++ b/drivers/staging/vt6656/mac.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: mac.h
+- *
+  * Purpose: MAC routines
+  *
+  * Author: Tevin Chen
+diff --git a/drivers/staging/vt6656/main_usb.c b/drivers/staging/vt6656/main_usb.c
+index b90d3dab28b1..ae7f5916d4d6 100644
+--- a/drivers/staging/vt6656/main_usb.c
++++ b/drivers/staging/vt6656/main_usb.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: main_usb.c
+- *
+  * Purpose: driver entry for initial, open, close, tx and rx.
+  *
+  * Author: Lyndon Chen
+diff --git a/drivers/staging/vt6656/power.c b/drivers/staging/vt6656/power.c
+index 2f49c870272a..e5411f6284c7 100644
+--- a/drivers/staging/vt6656/power.c
++++ b/drivers/staging/vt6656/power.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: power.c
+- *
+  * Purpose: Handles 802.11 power management functions
+  *
+  * Author: Lyndon Chen
+diff --git a/drivers/staging/vt6656/power.h b/drivers/staging/vt6656/power.h
+index 160872026db3..9f9c70072933 100644
+--- a/drivers/staging/vt6656/power.h
++++ b/drivers/staging/vt6656/power.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: power.h
+- *
+  * Purpose: Handles 802.11 power management  functions
+  *
+  * Author: Lyndon Chen
+diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
+index bcd4d467e03a..b9c06b312ae1 100644
+--- a/drivers/staging/vt6656/rf.c
++++ b/drivers/staging/vt6656/rf.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: rf.c
+- *
+  * Purpose: rf function code
+  *
+  * Author: Jerry Chen
+diff --git a/drivers/staging/vt6656/rf.h b/drivers/staging/vt6656/rf.h
+index 493faaf4e2b5..b47e149875d1 100644
+--- a/drivers/staging/vt6656/rf.h
++++ b/drivers/staging/vt6656/rf.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: rf.h
+- *
+  * Purpose:
+  *
+  * Author: Jerry Chen
+diff --git a/drivers/staging/vt6656/rxtx.c b/drivers/staging/vt6656/rxtx.c
+index 5dd6b4d2bf20..a31947f2620d 100644
+--- a/drivers/staging/vt6656/rxtx.c
++++ b/drivers/staging/vt6656/rxtx.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: rxtx.c
+- *
+  * Purpose: handle WMAC/802.3/802.11 rx & tx functions
+  *
+  * Author: Lyndon Chen
+diff --git a/drivers/staging/vt6656/rxtx.h b/drivers/staging/vt6656/rxtx.h
+index f23440799443..b9df0854b4b0 100644
+--- a/drivers/staging/vt6656/rxtx.h
++++ b/drivers/staging/vt6656/rxtx.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: rxtx.h
+- *
+  * Purpose:
+  *
+  * Author: Jerry Chen
+diff --git a/drivers/staging/vt6656/usbpipe.c b/drivers/staging/vt6656/usbpipe.c
+index 82b774be6485..7f45734390f6 100644
+--- a/drivers/staging/vt6656/usbpipe.c
++++ b/drivers/staging/vt6656/usbpipe.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: usbpipe.c
+- *
+  * Purpose: Handle USB control endpoint
+  *
+  * Author: Warren Hsu
+diff --git a/drivers/staging/vt6656/usbpipe.h b/drivers/staging/vt6656/usbpipe.h
+index 52c2a928c9c1..922312e299bf 100644
+--- a/drivers/staging/vt6656/usbpipe.h
++++ b/drivers/staging/vt6656/usbpipe.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: usbpipe.h
+- *
+  * Purpose:
+  *
+  * Author: Warren Hsu
+diff --git a/drivers/staging/vt6656/wcmd.c b/drivers/staging/vt6656/wcmd.c
+index 0ccc87da394e..e8ee2fbee76c 100644
+--- a/drivers/staging/vt6656/wcmd.c
++++ b/drivers/staging/vt6656/wcmd.c
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: wcmd.c
+- *
+  * Purpose: Handles the management command interface functions
+  *
+  * Author: Lyndon Chen
+diff --git a/drivers/staging/vt6656/wcmd.h b/drivers/staging/vt6656/wcmd.h
+index a0d98cf74998..a62924671b17 100644
+--- a/drivers/staging/vt6656/wcmd.h
++++ b/drivers/staging/vt6656/wcmd.h
+@@ -3,8 +3,6 @@
+  * Copyright (c) 1996, 2003 VIA Networking Technologies, Inc.
+  * All rights reserved.
+  *
+- * File: wcmd.h
+- *
+  * Purpose: Handles the management command interface functions
+  *
+  * Author: Lyndon Chen
+-- 
+2.30.2
+
