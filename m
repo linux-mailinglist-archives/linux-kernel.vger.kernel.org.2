@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103FA3F9C04
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2283F9C08
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245413AbhH0Pxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:53:30 -0400
-Received: from smtprelay0105.hostedemail.com ([216.40.44.105]:44624 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S241778AbhH0Px2 (ORCPT
+        id S245348AbhH0P6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234232AbhH0P6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:53:28 -0400
-Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id E1A66100F1E35;
-        Fri, 27 Aug 2021 15:52:38 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id E864E2448BC;
-        Fri, 27 Aug 2021 15:52:37 +0000 (UTC)
-Message-ID: <52ab858d1061bd8c0da8bba247235d92a5e4a0ec.camel@perches.com>
-Subject: Re: [PATCH 5/5] staging: r8188eu: Use vsprintf extension %phCX to
- format a copy_to_user string
-From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev
-Date:   Fri, 27 Aug 2021 08:52:36 -0700
-In-Reply-To: <YSkEWBbOJmNSI4zn@kroah.com>
-References: <cover.1630003183.git.joe@perches.com>
-         <152e1b8f84c4686ea38182ca55344ed7f2cede65.1630003183.git.joe@perches.com>
-         <YSildgE0Ul4akIUJ@kroah.com>
-         <903a73b791466918ca72c8fc62406acb86e93018.camel@perches.com>
-         <YSkEWBbOJmNSI4zn@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Fri, 27 Aug 2021 11:58:04 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0393C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:57:15 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id k7so626799vst.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:57:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=W/DhsrvWt4wuY9d8ShJV/6QapPFdI6Iak+kqBAUnenE=;
+        b=rFMcn7efVxI11I4ehKns6GrhMcCMHZwvws35Rj7SepJnK1SSy0mqsIC7vRovsp9buv
+         HaneeTdPrLOr8G7lw2MOUSW+hOtzSzjMd44887snTHsR+APq7boYLm1bPzkanklXb97W
+         T08s+dALZOyG308Am6IC706kF5LW9R9VY2DxXtl9oUVbt7ef5NaDYep5VUsfkd9JV/mD
+         P00afaPiolWI87j/8WRlzneMyOjn4L0Q5NdiNuzfxEEEc+B47U8+GA3dljUntJRw9w0L
+         9fLcusxar9DF+bie4tR2s+kiUKe3divamSEI7FIR4Z/LI7g7thuxE97VFmza2SSyjyUS
+         X/EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=W/DhsrvWt4wuY9d8ShJV/6QapPFdI6Iak+kqBAUnenE=;
+        b=HGmv3cKIagDJ1M59q10jvjBA1TveQQaxTKvFHC7PkEWuWlS9kQNQDIqUikvz3BRhxh
+         Y9FqLkKcuwHzGlgt7j5DR0xTZewAbFZsfLILnM7fBCaRVDhCDihfH3S6EF6jg/9jcwV0
+         oPH6MwHMlGIhDom16JfWO3qes5p++Vw/Lel0noX+6rarwOrfNGas4cANNbKOU1VaTmVy
+         X7ebwtC+xIW5WGKTW5QrhHhnWQrxwuqRcO3Cc3a/s7JKghqVLvJhEF3Rl6nLAtWJ+FkV
+         ilvOg8QZqP2vJninvuSI6ssOemFYZPW8+WJI8uqiv/X55kkY/+AiGpQOyPY7Ds6TNyiA
+         HB7g==
+X-Gm-Message-State: AOAM5334jUvEV1xdHHKH2P/YZIKXYiY7pAIadVPuFANJS8xjeMSzbNLu
+        2rg/wIr2CRRpCQloAlEBp0ivGrNZK0rojRUZLk8=
+X-Google-Smtp-Source: ABdhPJwruuo+KyB/JNNXsC7o6t52V5DNATg1FvDJVH5h3cJDuAgO2ue+28DXo+x57/qWqojK5A6sp2+KOQCj5B0kuuU=
+X-Received: by 2002:a67:f3c5:: with SMTP id j5mr7875012vsn.5.1630079834390;
+ Fri, 27 Aug 2021 08:57:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.48
-X-Stat-Signature: y579dc7es1hqde1gffbini44sjqsscse
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: E864E2448BC
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/tBn5XILEQLaSLCcJfkgGrrb6KNxPZqiI=
-X-HE-Tag: 1630079557-674807
+Received: by 2002:ab0:6cb5:0:0:0:0:0 with HTTP; Fri, 27 Aug 2021 08:57:13
+ -0700 (PDT)
+Reply-To: abrahammorrison443@gmail.com
+From:   Abraham Morrison <kelchachambers@gmail.com>
+Date:   Fri, 27 Aug 2021 08:57:13 -0700
+Message-ID: <CABbsWSujiCPM=zNKgzsWbckf_SrB9RtXnQY2k73NGZuGVhp6FQ@mail.gmail.com>
+Subject: Good day!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-27 at 17:27 +0200, Greg Kroah-Hartman wrote:
-> On Fri, Aug 27, 2021 at 08:23:31AM -0700, Joe Perches wrote:
-> > On Fri, 2021-08-27 at 10:42 +0200, Greg Kroah-Hartman wrote:
-> > > On Thu, Aug 26, 2021 at 11:43:05AM -0700, Joe Perches wrote:
-> > > > This reduces object size without changing the string content.
-[]
-> > > > diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-[]
-> > The copy_to_user bit (2nd diff block) is nominally an ABI and is upper case.
-> > IMO at a minimum, it's bad form to change it.
-> > 
-> > @@ -3075,8 +3073,7 @@ static int rtw_p2p_get_go_device_address(struct net_device *dev,
-> >         if (!blnMatch)
-> >                 sprintf(go_devadd_str, "\n\ndev_add = NULL");
-> >         else
-> > -               sprintf(go_devadd_str, "\ndev_add =%.2X:%.2X:%.2X:%.2X:%.2X:%.2X",
-> > -                       attr_content[0], attr_content[1], attr_content[2], attr_content[3], attr_content[4], attr_content[5]);
-> > +               sprintf(go_devadd_str, "\ndev_add =%6phCX", attr_content);
-> > 
-> >         if (copy_to_user(wrqu->data.pointer, go_devadd_str, 10 + 17))
-> >                 return -EFAULT;
-> 
-> That looks like a horrible driver-specific api
-
-Horrible could be used to describe most realtek code in the kernel.
-
-> that no one will really
-> be using and will be removed from the tree soon.  So it can be changed,
-> no need to worry about any "compatibility" issues here.
-
-Fine with me too.  I just did it for completeness.
-
-
-
+Witam!, jestem adwokatem. Abrahamie Morrisonie, mam dla ciebie wa=C5=BCn=C4=
+=85
+informacj=C4=99. Wi=C4=99c je=C5=9Bli jeste=C5=9B zainteresowany, wr=C3=B3=
+=C4=87 do mnie po wi=C4=99cej
+szczeg=C3=B3=C5=82=C3=B3w
+Dzi=C4=99kuj=C4=99 Ci.
+Adwokat. Abrahama Morrisona.
+............................
+Hello!, I am Barrister. Abraham Morrison, I have an important
+information for you. So if you are interested please get back to me
+for more details
+Thank you.
+Barrister. Abraham Morrison.
