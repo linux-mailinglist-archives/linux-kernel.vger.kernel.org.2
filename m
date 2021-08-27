@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718C13F92E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859003F92EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244208AbhH0DYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:24:47 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:44899 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S244100AbhH0DYq (ORCPT
+        id S244134AbhH0D31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244102AbhH0D3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:24:46 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AXPiOwq8oukES4tm1kO1uk+DkI+orL9Y04lQ7?=
- =?us-ascii?q?vn2ZKCYlFvBw8vrCoB1173HJYUkqMk3I9ergBEDiewK4yXcW2/hzAV7KZmCP11?=
- =?us-ascii?q?dAR7sSj7cKrQeBJwTOssZZ1YpFN5N1EcDMCzFB5vrS0U2VFMkBzbC8nJyVuQ?=
- =?us-ascii?q?=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,355,1620662400"; 
-   d="scan'208";a="113546575"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 27 Aug 2021 11:23:55 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 0A9C04D0D9CD;
-        Fri, 27 Aug 2021 11:23:54 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Fri, 27 Aug 2021 11:23:50 +0800
-Received: from [192.168.22.65] (10.167.225.141) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Fri, 27 Aug 2021 11:23:47 +0800
-Subject: Re: [PATCH v7 4/8] fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        david <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com>
- <20210816060359.1442450-5-ruansy.fnst@fujitsu.com>
- <CAPcyv4gFDyXqu5NyrWQ9Y_JqjLmCb8pWQgPZVBYE=dOir2KdzA@mail.gmail.com>
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Message-ID: <6ac5dda5-9681-6b6f-7a84-55215578f0c3@fujitsu.com>
-Date:   Fri, 27 Aug 2021 11:23:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 26 Aug 2021 23:29:08 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4BDC061757;
+        Thu, 26 Aug 2021 20:28:19 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id f2so9022398ljn.1;
+        Thu, 26 Aug 2021 20:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+U5aSlU9F6s4CJChb8fLuniyYCxL02p3ONKQon0NCj4=;
+        b=OVjjxOrBh1KW9LXgEP6fGQ2odeRhc95dCMhPyuGmYrwE3U7/klMS7kzfqBXs7zNKFl
+         50coJ0DpyKURPR54iA0Cwm+BLnCjoiAUAFdQkzpIR0m0/JFXxVktqJuX+FEaAopVL71x
+         5ss8BDc1s6HCRd7UmSKzlrgbkvCB76A2/+OIbqsBD6ayTOTbg+tRYv741L1Tocw3hf+b
+         kVNYEPMNMWlP91pKn+wk5aDYziEovW3D02R63zMlYvSpkOmCEZcmaihdbMzOp7tjmBW/
+         KWagM+EwnUb77OC2hmciNqjqq8GjntPYrDtaMH6e0G1/VZg/nGz1mqeuxvJ3rdsEWLLK
+         KZdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+U5aSlU9F6s4CJChb8fLuniyYCxL02p3ONKQon0NCj4=;
+        b=J8I2Ah6VIvzkbZefq6rEVmtcw6ZBKI3ra0G5l5Xr/7nWjQi5mpIOjF3nxT+PQCXOiT
+         JHOqD1BhEJAlF5jOaK4bSH+bP6oS71QXo/EIdoww2BRBguQ5a9fPmcbp60QFgpX/F7ux
+         AwN6ZCuL68hsHqeu0RTrGX9kd71QNDxz6GJ+1DMHNmGe3XVnPTm/jEnxCux1kAoilyT7
+         fI/ArH9RHufXL61EZSM2hSSsS1q3MCauzO/DGxpGvMM9A/4ulFV5FnS9Bdh9/xY9VS+y
+         Zko2Lfe0CXoFZei6S3XfjHKFL6Mcoc41GTTIAKDQWp3rEJyKXWXrY4+G4dEfKwAMFzdc
+         y2EA==
+X-Gm-Message-State: AOAM532JujjpodL0Y4YWzVTSRR+gIGxp/gU4Jlyy7epPaPB9EBcC6cXp
+        OeGb4L2RkonfSIFyNPAJ/OvT3GhLlWw=
+X-Google-Smtp-Source: ABdhPJw6uhIWF/04hBkiI7l6/XxBmjdTaNRmv1B2KEBAVH93Dd45nsn0NEUi26EBLckNQpdAmipfyw==
+X-Received: by 2002:a2e:a4ca:: with SMTP id p10mr5807971ljm.415.1630034898095;
+        Thu, 26 Aug 2021 20:28:18 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-17-251.dynamic.spd-mgts.ru. [94.29.17.251])
+        by smtp.googlemail.com with ESMTPSA id p14sm526286ljj.140.2021.08.26.20.28.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 20:28:17 -0700 (PDT)
+Subject: Re: [PATCH v9 5/8] soc/tegra: pmc: Implement get_performance_state()
+ callback
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210827013415.24027-1-digetx@gmail.com>
+ <20210827013415.24027-6-digetx@gmail.com>
+ <20210827030557.aymjkky7athjxpow@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <9c2287ca-4c51-d782-a0a5-4b1227c2e9db@gmail.com>
+Date:   Fri, 27 Aug 2021 06:28:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4gFDyXqu5NyrWQ9Y_JqjLmCb8pWQgPZVBYE=dOir2KdzA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-yoursite-MailScanner-ID: 0A9C04D0D9CD.A4211
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <20210827030557.aymjkky7athjxpow@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/8/20 10:39, Dan Williams wrote:
-> On Sun, Aug 15, 2021 at 11:04 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
->>
->> Punch hole on a reflinked file needs dax_iomap_cow_copy() too.
->> Otherwise, data in not aligned area will be not correct.  So, add the
->> srcmap to dax_iomap_zero() and replace memset() as dax_iomap_cow_copy().
->>
->> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
->> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
->> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
->> ---
->>   fs/dax.c               | 25 +++++++++++++++----------
->>   fs/iomap/buffered-io.c |  4 ++--
->>   include/linux/dax.h    |  3 ++-
->>   3 files changed, 19 insertions(+), 13 deletions(-)
->>
->> diff --git a/fs/dax.c b/fs/dax.c
->> index e49ba68cc7e4..91ceb518f66a 100644
->> --- a/fs/dax.c
->> +++ b/fs/dax.c
->> @@ -1198,7 +1198,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
->>   }
->>   #endif /* CONFIG_FS_DAX_PMD */
->>
->> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
->> +s64 dax_iomap_zero(loff_t pos, u64 length, const struct iomap *iomap,
->> +               const struct iomap *srcmap)
->>   {
->>          sector_t sector = iomap_sector(iomap, pos & PAGE_MASK);
->>          pgoff_t pgoff;
->> @@ -1220,19 +1221,23 @@ s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
->>
->>          if (page_aligned)
->>                  rc = dax_zero_page_range(iomap->dax_dev, pgoff, 1);
->> -       else
->> +       else {
->>                  rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
->> -       if (rc < 0) {
->> -               dax_read_unlock(id);
->> -               return rc;
->> -       }
->> -
->> -       if (!page_aligned) {
->> -               memset(kaddr + offset, 0, size);
->> +               if (rc < 0)
->> +                       goto out;
->> +               if (iomap->addr != srcmap->addr) {
->> +                       rc = dax_iomap_cow_copy(pos, size, PAGE_SIZE, srcmap,
->> +                                               kaddr);
+27.08.2021 06:05, Viresh Kumar пишет:
+> On 27-08-21, 04:34, Dmitry Osipenko wrote:
+>> +	clk_opp_table = dev_pm_opp_set_clkname(dev, NULL);
+>> +	if (IS_ERR(clk_opp_table)) {
+>> +		dev_err(dev, "failed to set OPP clk: %pe\n", clk_opp_table);
+>> +		ret = PTR_ERR(clk_opp_table);
+>> +		goto put_hw;
+>> +	}
 > 
-> Apologies, I'm confused, why is it ok to skip zeroing here?
-> 
+> Why do you need to do it ? OPP core already does this automatically.
 
-That was a mistake.  Will be fixed in next version.
-
-
---
-Thanks,
-Ruan.
-
-
+Indeed, thanks.
