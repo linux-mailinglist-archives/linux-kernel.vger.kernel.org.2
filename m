@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82BE3F977B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249A23F9777
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244948AbhH0Jo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:44:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35025 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244865AbhH0Jos (ORCPT
+        id S244856AbhH0Jor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:44:47 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:57434 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S244649AbhH0Jop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:44:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630057439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Db4J9qqzVtQ4nd+3HQst+edgAm4oaZrD+OaQmGzLIq8=;
-        b=duN+2oGVL9Q9rQewV8OfwzxIo1mIywSpVp5AEiVGabq/9Ey0OAHrSQ/RFy91K5GGRCj9JZ
-        nojxXQ0noZPn93HLQbjuIv7cVFWww/zhgdehKENhGMBSGSMFpjZb1uUL2up3498v06IbJ7
-        JBdn/4Okgt/Xh5FeiNfjmMKccEFHOJs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-301-9Sg_JrpyPwC_i1p3yT2gAQ-1; Fri, 27 Aug 2021 05:43:57 -0400
-X-MC-Unique: 9Sg_JrpyPwC_i1p3yT2gAQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D8191015193;
-        Fri, 27 Aug 2021 09:43:31 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 07ED9752A0;
-        Fri, 27 Aug 2021 09:43:27 +0000 (UTC)
-Subject: [PATCH v2 0/6] netfs, afs, ceph: Support folios, at least partially
-From:   David Howells <dhowells@redhat.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Jeffrey Altman <jaltman@auristor.com>,
-        ceph-devel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>, dhowells@redhat.com,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date:   Fri, 27 Aug 2021 10:43:27 +0100
-Message-ID: <163005740700.2472992.12365214290752300378.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 27 Aug 2021 05:44:45 -0400
+X-UUID: 5eea3328230147b086203df54e390770-20210827
+X-UUID: 5eea3328230147b086203df54e390770-20210827
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2106127847; Fri, 27 Aug 2021 17:43:51 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkexhb01.mediatek.inc (172.21.101.102) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 27 Aug 2021 17:43:50 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 27 Aug 2021 17:43:50 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 27 Aug 2021 17:43:49 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     David Ahern <dsahern@gmail.com>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <rocco.yue@gmail.com>,
+        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
+        Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH net-next v5] ipv6: add IFLA_INET6_RA_MTU to expose mtu value
+Date:   Fri, 27 Aug 2021 17:43:33 +0800
+Message-ID: <20210827094333.4669-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <6a870141-089d-5e2b-48a7-448695e26238@gmail.com>
+References: <6a870141-089d-5e2b-48a7-448695e26238@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2021-08-27 at 13:28 +0800, David Ahern wrote:
+> On 8/25/21 11:46 PM, Rocco Yue wrote:
+>> @@ -5651,6 +5654,9 @@ static int inet6_fill_ifla6_attrs(struct sk_buff *skb, struct inet6_dev *idev,
+>>  	if (nla_put_u8(skb, IFLA_INET6_ADDR_GEN_MODE, idev->cnf.addr_gen_mode))
+>>  		goto nla_put_failure;
+>>  
+>> +	if (nla_put_u32(skb, IFLA_INET6_RA_MTU, idev->ra_mtu))
+> 
+> I should have seen this earlier. The intent here is to only notify
+> userspace if the RA contains an MTU in which case this should be
+> 
+> 	if (idev->ra_mtu &&
+> 	    nla_put_u32(skb, IFLA_INET6_RA_MTU, idev->ra_mtu))
+> 
 
-Here's a set of patches to convert netfs and afs to use folios and to
-provide sufficient conversion for ceph that it can continue to use the
-netfs library.  Jeff Layton is working on fully converting ceph.
+Hi David,
 
-This based on top of part of Matthew Wilcox's folio changes[1]
+Thanks for your pretty suggestion.
 
-Changes:
+When ra_mtu = 0, notify userspace is really unnecessary. At first
+I did this because when userspace get ra_mtu = 0 through getlink,
+then the corresponding operation can be performed.
 
-ver #2:
- - Reorder the patches to put both non-folio afs patches to the front.
- - Use page_offset() rather than manual calculation[2].
- - Fix folio_inode() to directly access the inode[3].
+After adding the restriction of "idev->ra_mtu", I think userspace can
+judge whether the mtu option is carried in the RA by judging whether it
+can be parsed to IFLA_INET6_RA_MTU after getlink, and perform the
+corresponding operation.
 
-David
+I will push the next version.
 
-Link: https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/for-next [1]
-Link: https://lore.kernel.org/r/YST/0e92OdSH0zjg@casper.infradead.org/ [2]
-Link: https://lore.kernel.org/r/YST8OcVNy02Rivbm@casper.infradead.org/ [3]
-Link: https://lore.kernel.org/r/2408234.1628687271@warthog.procyon.org.uk/ # v0
-Link: https://lore.kernel.org/r/162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk/ # v1
----
-David Howells (6):
-      afs: Fix afs_launder_page() to set correct start file position
-      afs: Sort out symlink reading
-      folio: Add a function to change the private data attached to a folio
-      folio: Add a function to get the host inode for a folio
-      netfs, afs, ceph: Use folios
-      afs: Use folios in directory handling
+> and in which case idev->ra_mtu should be initialized to 0 explicitly,
+> not U32_MIN.
 
+will do.
 
- fs/afs/dir.c               | 229 +++++++++++--------------
- fs/afs/dir_edit.c          | 154 ++++++++---------
- fs/afs/file.c              |  82 +++++----
- fs/afs/inode.c             |   6 +-
- fs/afs/internal.h          |  49 +++---
- fs/afs/write.c             | 332 ++++++++++++++++++-------------------
- fs/ceph/addr.c             |  80 ++++-----
- fs/netfs/read_helper.c     | 165 +++++++++---------
- include/linux/netfs.h      |  12 +-
- include/linux/pagemap.h    |  33 ++++
- include/trace/events/afs.h |  21 +--
- mm/page-writeback.c        |   2 +-
- 12 files changed, 584 insertions(+), 581 deletions(-)
-
-
+Thanks
