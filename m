@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53993F9D58
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43203F9D54
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236468AbhH0RNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:13:49 -0400
-Received: from mout.gmx.net ([212.227.17.22]:56999 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235695AbhH0RNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:13:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630084370;
-        bh=YGrt/tZqC6Fgg1MGVMuVmS6neQk6AN33ybHRfOyG7U4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=HexiUg1W5x2Jo15hbQizUtOvWIGA7i04Ksg6C4jYtc9xdf/4EcF+Hr5T+y3uwh2H+
-         nnkZ+QOQRvYtD/qi1VtgNc8k+jlMk9UcdGH+PxQhFIhw+Jl1mFyaEDoCRGzSF3YIQY
-         tG5kWehi9jn49B5WbDbQ9g0/CCDKAAJZtZr6vpMM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1N8XPt-1n60o70u0H-014Vvb; Fri, 27 Aug 2021 19:12:50 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] docs: deprecated.rst: Clarify open-coded arithmetic with literals
-Date:   Fri, 27 Aug 2021 19:12:26 +0200
-Message-Id: <20210827171226.2938-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+        id S234725AbhH0RNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:13:22 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:37540 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230021AbhH0RNU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 13:13:20 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 711D642C;
+        Fri, 27 Aug 2021 20:12:29 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1630084349;
+        bh=k5CkhsWtPfiYob9Y++gS1X8TgF++lJOzIgl5gQZ+Ozc=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=VrqxzgSpIl30A1GybMbPKXlhEprRJNwFGYOhrd6poyuqXfma2TWKixjCVN0HXjoiF
+         nOBlT3pJEPPu5VmPrgfIgGhvMCNdJEfXYbzYmJPPxR8KSQuLUFz9P/CX2W/V4xP0ky
+         w83dYXhmMuuxuLAUywEo/DGOWn8MjKG3zggFpbxY=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 27 Aug 2021 20:12:29 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%12]) with
+ mapi id 15.01.2176.009; Fri, 27 Aug 2021 20:12:29 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        Christoph Hellwig <hch@lst.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>
+Subject: RE: [PATCH v4 0/3] fs/ntfs3: Use kernel alloc wrappers and fix
+ warnings
+Thread-Topic: [PATCH v4 0/3] fs/ntfs3: Use kernel alloc wrappers and fix
+ warnings
+Thread-Index: AQHXmRcWmaTmTKjT70K3YgZRTKjTH6uHms+A
+Date:   Fri, 27 Aug 2021 17:12:28 +0000
+Message-ID: <373c644eff6d4e2b8137acc0ca6faf7f@paragon-software.com>
+References: <20210824183708.1008538-1-kari.argillander@gmail.com>
+In-Reply-To: <20210824183708.1008538-1-kari.argillander@gmail.com>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.0.26]
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:I4VWPP58QCGSuKHAt9e7f4B6GR0oJLIbfsgC5vaEc4Jc+JHrAW/
- M8cvyz1w4tH1262z1GzwPm7Yy/QsCM+Vv0UAV7x/DqOpdjRa/hRByyP3Xzbyi67knQD8aek
- b/m8TnEg9IQROi9C2I+iIjWx20VYjJerMA2GtIpeY2noVT6Eg4G1DQH3ncBfar9gb+6SNM/
- jwcjwJobLqQzVzi+IC+LA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eJgriy0mrwI=:BRr/Xj1/Ce77Qxj3YGdtWH
- 900bbVsHm6mQeIWxP1zoB9sgWuq1885wFtslqEN/+l9wJxXfaqyuSDE9wvAT2tWOhDCGeagc/
- VlfRsgzJQr54TnB8gELEbfCWRNPeJioRovPh0znkMooyZkF0D/ZfOYD8wclbvq3Un4NrGlOR0
- IOx/UjqmDrOrZ7wOiCppKuvfb/hW/8GKAxXvUAg8l1pZz88/gmBsLgsdC0louSCm2/rLM//+V
- dWvvYh+OnmkgcBnIw3pVZmQvBoFJSNbAFByOIv0GH37kp3UGmonNtk+GHvW/fcEq67AXZCd/c
- xNRAGUcCxKzjEyYEKffDQVfK1ANPMjdTOZbGunJaOGlfzuTNbZ+BA+jkJYlGukrwO8VfiDKDd
- Y27ly0uCWBcixtHZgrCaXv5jSRL9Y9MmIgbCvsdHx0R6P/nGBMQOy726KonYpsOClhdoFgWZY
- vdAG/PbNRyQgRUikzqCB6w7zA/lyzm5HOKtDi/O5cikXMXSCgiJmEyGwAyjFYdMoyDQ99PPaL
- ZYPUTMjimH8qeUj8Twz1pYydnX2G/c3dYC4i4+8K0FbK3jQ+CbnWAa1jwvm1IgmOe9Khu/xbj
- +TqUzfJSimkaP6kjlEurxyslOiIRLmI3XoelrXcDNPQmItrd9Jy0hcxxvo9RVNP1jp5bqUXrT
- d8xM5IxrMLiDxw23aUKi84aQqw0l56OeoU4fjsz5IUje3QJQk5e8e+4DTaz2gsGuaJ66sS8TQ
- RHhyxP1syRFD6vwuUsjghqjW3CeCTZkghqKl3fcFIBZIBCYgF7dP6qhcs/cJjBCFL7xM6Edvx
- AfEhL9+U9AxsvuPNjLd6ilGSziwDsImiCncZFN1JbT50oZKQfI5e/LIr5qpW8veg60b6wEmut
- ELPlaLfSCOBaFluHWvY4Hs4Zu8QIXCHAiWPfWI9EOBCeWrBDji6hbCg8ktpjShbTm60kf9HM8
- QLU8wmOMoQ/5nMPw8Yjfd9u6DhDrdrxzkyryZXjsc4/HQWJsWZckcaTpVcgCgT1kuZL3CqzuK
- OBWzcAVfLKlQ5SYxGc8JN/Q0D8EqCYFWh+eNUiutQL56GRL943xFGlgogzhfghmtmvbxCDuOk
- qPHbgb5oqk0DIqJN4/X4I6kJ1a22yoKAAMjCk6iOEmqUppnS6R73Ovmgw==
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although using literals for size calculation in allocator arguments may
-be harmless due to compiler warnings in case of overflows, it is better
-to refactor the code to avoid the use of open-coded math idiom.
+> From: Kari Argillander <kari.argillander@gmail.com>
+> Sent: Tuesday, August 24, 2021 9:37 PM
+> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>; ntfs3@=
+lists.linux.dev; Christoph Hellwig <hch@lst.de>
+> Cc: Kari Argillander <kari.argillander@gmail.com>; linux-kernel@vger.kern=
+el.org; Joe Perches <joe@perches.com>
+> Subject: [PATCH v4 0/3] fs/ntfs3: Use kernel alloc wrappers and fix warni=
+ngs
+>=20
+> In ntfs3 driver there is allocation made like this ntfs_malloc().
+> Patch 2/3 will converter these to kernel ones like kmalloc(). After I
+> did this then checkpatch raise warnings about array allocations so I
+> fix these in patch 3/3.
+>=20
+> I also notice when I made patch that there is broken utf8 char so I
+> wanted first fix that because it raised some warning in my editor and
+> did not want to "break" patch 2/3. And because we are editing comment
+> then make whole comment block clean. So patch 1/3 address that. I did
+> try to apply this and it seem to work without issues.
+>=20
+> v2:
+>  - Add patch 1/3 because I found broken utf8 char in source file
+>  - Add another patch 3/3 which will fix allocation warnings
+>  - Rewrite some of commit message from first patch
+> v3:
+>  - Patch series didn't have X/X numbers
+>  - Cover letter didn't have fs/ntfs3 in it
+>  - One kmalloc was converted to kcalloc insted of kmalloc_array
+>  	Thanks Joe Perches
+> v4:
+>  - Wrap whole comment block in patch 1/1 max 80 char. And restyle.
+>  	Thanks Christoph Hellwig for noting this
+>  - Add Reviewed-by: from Christoph Hellwig to patch 2 and 3
+>=20
+> Kari Argillander (3):
+>   fs/ntfs3: Restyle comment block in ni_parse_reparse()
+>   fs/ntfs3: Do not use driver own alloc wrappers
+>   fs/ntfs3: Use kcalloc/kmalloc_array over kzalloc/kmalloc
+>=20
+>  fs/ntfs3/attrib.c   |   6 +-
+>  fs/ntfs3/attrlist.c |  10 +--
+>  fs/ntfs3/bitmap.c   |   8 +--
+>  fs/ntfs3/debug.h    |   7 --
+>  fs/ntfs3/file.c     |   4 +-
+>  fs/ntfs3/frecord.c  |  42 ++++++-----
+>  fs/ntfs3/fslog.c    | 172 ++++++++++++++++++++++----------------------
+>  fs/ntfs3/fsntfs.c   |   8 +--
+>  fs/ntfs3/index.c    |  54 +++++++-------
+>  fs/ntfs3/inode.c    |  10 +--
+>  fs/ntfs3/lznt.c     |   4 +-
+>  fs/ntfs3/ntfs_fs.h  |  18 ++---
+>  fs/ntfs3/record.c   |   8 +--
+>  fs/ntfs3/run.c      |   8 +--
+>  fs/ntfs3/super.c    |  20 +++---
+>  fs/ntfs3/xattr.c    |  18 ++---
+>  16 files changed, 197 insertions(+), 200 deletions(-)
+>=20
+> --
+> 2.25.1
 
-So, clarify the preferred way in these cases.
+Hi Kari, Christoph and Joe! Thanks for your contribution, applied these pat=
+ch series to our tree.
 
-Suggested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- Documentation/process/deprecated.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/process/deprecated.rst b/Documentation/process/=
-deprecated.rst
-index 9d83b8db8874..fdfafdefe296 100644
-=2D-- a/Documentation/process/deprecated.rst
-+++ b/Documentation/process/deprecated.rst
-@@ -60,7 +60,8 @@ smaller allocation being made than the caller was expect=
-ing. Using those
- allocations could lead to linear overflows of heap memory and other
- misbehaviors. (One exception to this is literal values where the compiler
- can warn if they might overflow. Though using literals for arguments as
--suggested below is also harmless.)
-+suggested below is also harmless. So, the preferred way in these cases is
-+to refactor the code to keep the open-coded math idiom out.)
-
- For example, do not use ``count * size`` as an argument, as in::
-
-=2D-
-2.25.1
-
+Best regards,
+Konstantin
