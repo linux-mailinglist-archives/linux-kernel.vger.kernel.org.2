@@ -2,113 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8DD3F9245
+	by mail.lfdr.de (Postfix) with ESMTP id CCE643F9247
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 04:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244069AbhH0CRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 22:17:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241128AbhH0CRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 22:17:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CD9860EE4;
-        Fri, 27 Aug 2021 02:16:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630030593;
-        bh=uDYKss5H51+qlIxfwS1FoAJZats7oowU7sDnItkFnkM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DqVbZaXCL8jSy0LZAmP6+zE3UBKplz6lO0Tgb+lQTdDG86f1MKzwCSJUv28C/cZeI
-         5V75g8WD2iT6ZYs1+IlJQ0ut22NjiQGeLIH+ecR5+gz0EGB/Q4K3QDfEVp2DIbTZYS
-         tB8nlsUSjgBD1LHuEF7FHqt+aCpjR5VVk0PDAUdvxYBv7jXuLRVSQfHLrgwWLMTvN6
-         cj+TGPXM5pmeDCuY6u1T6VV8s7A/mbMFu1/5BSyGMCoeb4C5YVfh9dG392eE3BtiA8
-         Qgvt0kcaOb5DHeoU+gUOF7BoQJrPea7QH7NCt1Cqi3JhS4ENelU7YgX+6dSa9dRLzx
-         K4G91ice+nXAQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH v2 3/3] docs: bootconfig: Add how to use bootconfig for kernel parameters
-Date:   Fri, 27 Aug 2021 11:16:30 +0900
-Message-Id: <163003058988.284890.9518735919599994613.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <163003056713.284890.5878333391812608469.stgit@devnote2>
-References: <163003056713.284890.5878333391812608469.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S244054AbhH0CSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 22:18:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40705 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231613AbhH0CSq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 22:18:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630030678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fO10uE/NOQ1QMOqhqK2ZdAOz3mqX6cifhVdS/LXHtXw=;
+        b=EjmBmDddmX/var6qIjdMo9xIJ3UJ7f7wkeCOlm0pML2ZCw0l6JZ+CD0Q2VfxbhIJF9Z5mE
+        PCWdavX/voOYWzmjKF4xOBHeWGmBZrwGCHr7FT/kkzqzEVYNNbq/3I98o3PQugiS0skrYC
+        n9EDK395V4DzVY5K2MYZlyKnNenUNQI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-351-bXSrgr6fOHyAS2o-_zCvgA-1; Thu, 26 Aug 2021 22:17:56 -0400
+X-MC-Unique: bXSrgr6fOHyAS2o-_zCvgA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71E141082921;
+        Fri, 27 Aug 2021 02:17:55 +0000 (UTC)
+Received: from x61s-fbsd.aquini.net (unknown [10.3.128.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6227F18432;
+        Fri, 27 Aug 2021 02:17:53 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 22:17:55 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Waiman Long <llong@redhat.com>, 1vier1@web.de
+Subject: Re: [PATCH] ipc: replace costly bailout check in sysvipc_find_ipc()
+Message-ID: <YShLU3VTtifYU8IR@x61s-fbsd.aquini.net>
+References: <20210809203554.1562989-1-aquini@redhat.com>
+ <127e0132-50b7-9759-722c-3dea079877e5@colorfullife.com>
+ <YSbA6n9kTXmAcUyh@optiplex-fbsd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSbA6n9kTXmAcUyh@optiplex-fbsd>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a section to describe how to use the bootconfig for
-specifying kernel and init parameters. This is an important
-section because it is the reason why this document is under
-the admin-guide.
+On Wed, Aug 25, 2021 at 06:15:06PM -0400, Rafael Aquini wrote:
+> On Fri, Aug 20, 2021 at 09:41:32PM +0200, Manfred Spraul wrote:
+> > Hi Rafael,
+> > 
+> > On 8/9/21 10:35 PM, Rafael Aquini wrote:
+> > > sysvipc_find_ipc() was left with a costly way to check if the offset
+> > > position fed to it is bigger than the total number of IPC IDs in use.
+> > > So much so that the time it takes to iterate over /proc/sysvipc/* files
+> > > grows exponentially for a custom benchmark that creates "N" SYSV shm
+> > > segments and then times the read of /proc/sysvipc/shm (milliseconds):
+> > >
+> > >      12 msecs to read   1024 segs from /proc/sysvipc/shm
+> > >      18 msecs to read   2048 segs from /proc/sysvipc/shm
+> > >      65 msecs to read   4096 segs from /proc/sysvipc/shm
+> > >     325 msecs to read   8192 segs from /proc/sysvipc/shm
+> > >    1303 msecs to read  16384 segs from /proc/sysvipc/shm
+> > >    5182 msecs to read  32768 segs from /proc/sysvipc/shm
+> > >
+> > > The root problem lies with the loop that computes the total amount of ids
+> > > in use to check if the "pos" feeded to sysvipc_find_ipc() grew bigger than
+> > > "ids->in_use". That is a quite inneficient way to get to the maximum index
+> > > in the id lookup table, specially when that value is already provided by
+> > > struct ipc_ids.max_idx.
+> > >
+> > > This patch follows up on the optimization introduced via commit 15df03c879836
+> > > ("sysvipc: make get_maxid O(1) again") and gets rid of the aforementioned
+> > > costly loop replacing it by a simpler checkpoint based on ipc_get_maxidx()
+> > > returned value, which allows for a smooth linear increase in time complexity
+> > > for the same custom benchmark:
+> > >
+> > >       2 msecs to read   1024 segs from /proc/sysvipc/shm
+> > >       2 msecs to read   2048 segs from /proc/sysvipc/shm
+> > >       4 msecs to read   4096 segs from /proc/sysvipc/shm
+> > >       9 msecs to read   8192 segs from /proc/sysvipc/shm
+> > >      19 msecs to read  16384 segs from /proc/sysvipc/shm
+> > >      39 msecs to read  32768 segs from /proc/sysvipc/shm
+> > 
+> > Could you run your test with the attached patch?
+> >
+> 
+> Manfred, 
+> 
+> Sorry it took me a while to get back to you here. (coming back from a short
+> leave). I'll take a look into your approach and report back in a few days.
+>
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
----
- Documentation/admin-guide/bootconfig.rst |   39 +++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+Manfred,
 
-diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
-index 6a79f2e59396..a1860fc0ca88 100644
---- a/Documentation/admin-guide/bootconfig.rst
-+++ b/Documentation/admin-guide/bootconfig.rst
-@@ -178,7 +178,7 @@ update the boot loader and the kernel image itself as long as the boot
- loader passes the correct initrd file size. If by any chance, the boot
- loader passes a longer size, the kernel fails to find the bootconfig data.
+as promised I re-ran the tests, adjusting the shm workload to leave a gap in
+the ids between the runs (effectivelly deleting all previously created segments
+before recreating the batch for the next turn), and the outcome between the two
+patches is virtually the same:
+
+* your patch:
+
+     1 msecs to read   1024 segs from /proc/sysvipc/shm
+     2 msecs to read   2048 segs from /proc/sysvipc/shm
+     4 msecs to read   4096 segs from /proc/sysvipc/shm
+     9 msecs to read   8192 segs from /proc/sysvipc/shm
+    24 msecs to read  16384 segs from /proc/sysvipc/shm
+    44 msecs to read  32768 segs from /proc/sysvipc/shm
+
+
+
+* my patch:
+
+     1 msecs to read   1024 segs from /proc/sysvipc/shm
+     2 msecs to read   2048 segs from /proc/sysvipc/shm
+     4 msecs to read   4096 segs from /proc/sysvipc/shm
+     9 msecs to read   8192 segs from /proc/sysvipc/shm
+    22 msecs to read  16384 segs from /proc/sysvipc/shm
+    45 msecs to read  32768 segs from /proc/sysvipc/shm
+
+
+
+and even perf stat numbers are virtually the same for reading
+32768 segments from /proc/sysvipc/shm:
+
+* your patch
+
+ Performance counter stats for 'cat /proc/sysvipc/shm' (10 runs):
+
+             45.03 msec task-clock                #    0.990 CPUs utilized            ( +-  0.27% )
+                 0      context-switches          #    0.004 K/sec                    ( +-100.00% )
+                 0      cpu-migrations            #    0.004 K/sec                    ( +-100.00% )
+                70      page-faults               #    0.002 M/sec                    ( +-  0.61% )
+       149,631,684      cycles                    #    3.323 GHz                      ( +-  0.25% )  (82.23%)
+         2,148,928      stalled-cycles-frontend   #    1.44% frontend cycles idle     ( +-  2.21% )  (82.24%)
+        67,488,510      stalled-cycles-backend    #   45.10% backend cycles idle      ( +-  0.73% )  (83.32%)
+       249,186,578      instructions              #    1.67  insn per cycle
+                                                  #    0.27  stalled cycles per insn  ( +-  0.03% )  (84.31%)
+        62,268,386      branches                  # 1382.790 M/sec                    ( +-  0.02% )  (84.45%)
+            83,170      branch-misses             #    0.13% of all branches          ( +-  1.57% )  (83.44%)
+
+          0.045485 +- 0.000142 seconds time elapsed  ( +-  0.31% )
+
+
+
+* my patch:
+
+ Performance counter stats for 'cat /proc/sysvipc/shm' (10 runs):
+
+             45.22 msec task-clock                #    0.990 CPUs utilized            ( +-  0.24% )
+                 0      context-switches          #    0.002 K/sec                    ( +-100.00% )
+                 0      cpu-migrations            #    0.000 K/sec
+                70      page-faults               #    0.002 M/sec                    ( +-  0.92% )
+       150,273,699      cycles                    #    3.323 GHz                      ( +-  0.25% )  (82.31%)
+        12,288,154      stalled-cycles-frontend   #    8.18% frontend cycles idle     ( +-  0.95% )  (82.31%)
+        61,198,482      stalled-cycles-backend    #   40.72% backend cycles idle      ( +-  0.91% )  (83.14%)
+       245,485,497      instructions              #    1.63  insn per cycle
+                                                  #    0.25  stalled cycles per insn  ( +-  0.03% )  (84.41%)
+        61,736,363      branches                  # 1365.267 M/sec                    ( +-  0.02% )  (84.52%)
+            82,381      branch-misses             #    0.13% of all branches          ( +-  1.17% )  (83.31%)
+
+          0.045671 +- 0.000125 seconds time elapsed  ( +-  0.27% )
+
+
+I'll leave it up to you, as clearly both approaches do pretty good in reducing
+the noted overhead imposed by the old approach.
+
+Since my patch is already in linux-next, may I ask you to ack it and follow it 
+up there if you decide on going with your approach? The diff below applies 
+cleanly on top of linux-next head (it's the one I used on tests). 
+
+Cheers!
+Rafael
+
+--
+
+diff --git a/ipc/util.c b/ipc/util.c
+index d48d8cfa1f3f..261540154782 100644
+--- a/ipc/util.c
++++ b/ipc/util.c
+@@ -788,22 +788,26 @@ struct pid_namespace *ipc_seq_pid_ns(struct seq_file *s)
+ static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
+ 					      loff_t *new_pos)
+ {
+-	struct kern_ipc_perm *ipc = NULL;
+-	int max_idx = ipc_get_maxidx(ids);
++	struct kern_ipc_perm *ipc;
++	int tmpidx = pos;
  
--To do this operation, Linux kernel provides "bootconfig" command under
-+To do this operation, Linux kernel provides ``bootconfig`` command under
- tools/bootconfig, which allows admin to apply or delete the config file
- to/from initrd image. You can build it by the following command::
- 
-@@ -196,6 +196,43 @@ To remove the config from the image, you can use -d option as below::
- Then add "bootconfig" on the normal kernel command line to tell the
- kernel to look for the bootconfig at the end of the initrd file.
- 
+-	if (max_idx == -1 || pos > max_idx)
+-		goto out;
+-
+-	for (; pos <= max_idx; pos++) {
+-		ipc = idr_find(&ids->ipcs_idr, pos);
+-		if (ipc != NULL) {
+-			rcu_read_lock();
+-			ipc_lock_object(ipc);
+-			break;
+-		}
++	ipc = idr_get_next(&ids->ipcs_idr, &tmpidx);
++	if (ipc != NULL) {
++		rcu_read_lock();
++		ipc_lock_object(ipc);
++		/*
++		 * We found the object with the index tmpidx.
++		 * For next search, start with tmpidx+1
++		 */
++		*new_pos = tmpidx + 1;
++	} else {
++		/*
++		 * EOF. seq_file can't notice that, thus
++		 * move the offset by one.
++		 */
++		*new_pos = pos + 1;
+ 	}
+-out:
+-	*new_pos = pos + 1;
 +
-+Kernel parameters via Boot Config
-+=================================
-+
-+In addition to the kernel command line, the boot config can be used for
-+passing the kernel parameters. All the key-value pairs under ``kernel``
-+key will be passed to kernel cmdline directly. Moreover, the key-value
-+pairs under ``init`` will be passed to init process via the cmdline.
-+The parameters are concatinated with user-given kernel cmdline string
-+as the following order, so that the command line parameter can override
-+bootconfig parameters (this depends on how the subsystem handles parameters
-+but in general, earlier parameter will be overwritten by later one.)::
-+
-+ [bootconfig params][cmdline params] -- [bootconfig init params][cmdline init params]
-+
-+Here is an example of the bootconfig file for kernel/init parameters.::
-+
-+ kernel {
-+   root = 01234567-89ab-cdef-0123-456789abcd
-+ }
-+ init {
-+  splash
-+ }
-+
-+This will be copied into the kernel cmdline string as the following::
-+
-+ root="01234567-89ab-cdef-0123-456789abcd" -- splash
-+
-+If user gives some other command line like,::
-+
-+ ro bootconfig -- quiet
-+
-+The final kernel cmdline will be the following::
-+
-+ root="01234567-89ab-cdef-0123-456789abcd" ro bootconfig -- splash quiet
-+
-+
- Config File Limitation
- ======================
+ 	return ipc;
+ }
  
 
