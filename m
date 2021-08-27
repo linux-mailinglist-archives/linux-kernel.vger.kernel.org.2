@@ -2,220 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEEC3F9A9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160203F9A99
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245291AbhH0OHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:07:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39312 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231907AbhH0OHQ (ORCPT
+        id S231571AbhH0OGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245123AbhH0OGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:07:16 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RE4VL5189587;
-        Fri, 27 Aug 2021 10:06:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=sgwVAJcqE0rDWtTZ6AJ38qg4lT3MJsxVdgbPhaYwVoI=;
- b=D+SUDAuuY+Jdce96pysiTUiGY2FwDh8lgRR2557+doTzVqJUJFgjPYBTGsluHjC+Ko7G
- qWglldbYcAj/mI+ALjArx6PYqrJeOryrrrIooHjk4XK2VBWEdZzQSQ5Tge4kTUfxDp6m
- w5Km1weRjifg/gu2KwqhrSu8Afw/u25rFDS+3dcc6CLExJZCn+0xKDecUJKVP3cO2hWT
- JWPaGe8v7N6RNAsCjZpEC/HPHl9VEYfArTb/WDRD+QY0lBWx68VFm2L5Wzju1oZ5XwpN
- d9KxC7ZY/IAlYJ4MdZX5/zFemrzLKK/9jqhveckKmsWad04ygE4SUXRF34jdW8K2m5uI Og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3apver80fp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 10:06:26 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17RE5E60194316;
-        Fri, 27 Aug 2021 10:06:25 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3apver80bx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 10:06:25 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17RDve9g017081;
-        Fri, 27 Aug 2021 14:06:23 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ajs48km83-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 14:06:23 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17RE6JUb33292768
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 14:06:19 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7FBE152059;
-        Fri, 27 Aug 2021 14:06:19 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.13.169])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D1A6852063;
-        Fri, 27 Aug 2021 14:06:18 +0000 (GMT)
-Date:   Fri, 27 Aug 2021 16:06:16 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Michael Mueller <mimu@linux.ibm.com>
-Subject: Re: [PATCH 1/1] KVM: s390: index kvm->arch.idle_mask by vcpu_idx
-Message-ID: <20210827160616.532d6699@p-imbrenda>
-In-Reply-To: <20210827125429.1912577-1-pasic@linux.ibm.com>
-References: <20210827125429.1912577-1-pasic@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Fri, 27 Aug 2021 10:06:21 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15823C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:05:33 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id v1so4015206qva.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:05:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mZZ2GJOqbD627yDd8PxmA7ZK7E+daVtcBKB5g7fmVmo=;
+        b=K3MT73Ixrnvebe5Zl6Aji0mjUHK9hnQ+4WZzC+98XvZT5HHdMieKFjqvtLtXEOb6au
+         4lJTYZtnuoQI0bz6qP06wk0IBgT/EhmovIYR+Nx3A5K8eQ8BK2b0pEcfPhXNnO/W6SQ/
+         PS7+Ttp9NEaUBS3cBbDe8KBLQEvpWkDS+T0V0CQdPkuyh2t2zhIKo1HZ1++c8O/g4usF
+         dBL5GbvRvR1kfX7vl59xVklI7zqWt1ekKgGtDoBjNpLFNjqdx+x8J0RlvieEZE8pjmBF
+         0fNVHyiKUpXM7Gy2Jkpl9nIi2oOziKAp/fym8cKaQHMKaFxNmW8lb+GQi9tVIaXfee9C
+         IZQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mZZ2GJOqbD627yDd8PxmA7ZK7E+daVtcBKB5g7fmVmo=;
+        b=nkrLwYKqmySJC0Ff6zu3EQ9XqBLDW0fUUINnUyxlJccBfpzU/C2LOJur5uaHn6Zpr5
+         RTukPn6AP400DM6AdcSROtOsl6DzVqNHp439hJaRjuCMCCSz9uum+p8+sUo4ReX7nPAz
+         o8wNDtvIDPLIZ8e0mgkA+gTPshN1P+binjQM94/VZ9uMQ+cV3qAhitKGEyDqcJjveUkg
+         qHf34j7K9e6dahTbS0+syMnE74SBpeaeNJodj075TPwvXoeMqFMyqg7VOOqV8hyXCloe
+         y36JgmMTBC/CPZ1RY2RL0KdyKS3YV8x6RIGvdTGabgi/xm6A3UdRWIkG8TuG2YqAD1Y1
+         Envg==
+X-Gm-Message-State: AOAM5326C6GIYm6sx/xcYgVV1uJykYqyAAEmCldIApmRyMSLriZyNh3d
+        y2ZNM68nkOMUcIhvqWefZdVIFw==
+X-Google-Smtp-Source: ABdhPJyB5hwxHPVFEgZdJaR13uGxqzcrL2WCzgBa8Jr4z8v/kEfh1KkxoGej/fzaYogkl2VRWDmwnQ==
+X-Received: by 2002:ad4:482d:: with SMTP id h13mr9781285qvy.5.1630073132206;
+        Fri, 27 Aug 2021 07:05:32 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id w18sm3384738qto.91.2021.08.27.07.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 07:05:31 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 10:07:16 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSjxlNl9jeEX2Yff@cmpxchg.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <YSQeFPTMn5WpwyAa@casper.infradead.org>
+ <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
+ <YSVMAS2pQVq+xma7@casper.infradead.org>
+ <YSZeKfHxOkEAri1q@cmpxchg.org>
+ <20210826004555.GF12597@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: _9EcOdcMaTV3lvmIfWHyn5Wxy8xo9y3B
-X-Proofpoint-GUID: pZ2WiLbKyw6Jvb4Plinox0nbQh7DuH-W
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_04:2021-08-26,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
- adultscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 priorityscore=1501 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108270089
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826004555.GF12597@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Aug 2021 14:54:29 +0200
-Halil Pasic <pasic@linux.ibm.com> wrote:
-
-> While in practice vcpu->vcpu_idx ==  vcpu->vcp_id is often true,
-> it may not always be, and we must not rely on this.
-
-why?
-
-maybe add a simple explanation of why vcpu_idx and vcpu_id can be
-different, namely:
-KVM decides the vcpu_idx, userspace decides the vcpu_id, thus the two
-might not match 
-
+On Wed, Aug 25, 2021 at 05:45:55PM -0700, Darrick J. Wong wrote:
+> Pardon my ignorance, but ... how would adding yet another layer help a
+> filesystem?  No matter how the software is structured, we have to set up
+> and manage the (hardware) page state for programs, and we must keep that
+> coherent with the file space mappings that we maintain.  I already know
+> how to deal with pages and dealing with "folios" seems about the same.
+> Adding another layer of caching structures just adds another layer of
+> cra^Wcoherency management for a filesystem to screw up.
 > 
-> Currently kvm->arch.idle_mask is indexed by vcpu_id, which implies
-> that code like
-> for_each_set_bit(vcpu_id, kvm->arch.idle_mask, online_vcpus) {
->                 vcpu = kvm_get_vcpu(kvm, vcpu_id);
-
-you can also add a sentence to clarify that kvm_get_vcpu expects an
-vcpu_idx, not an vcpu_id.
-
-> 		do_stuff(vcpu);
-> }
-> is not legit. The trouble is, we do actually use kvm->arch.idle_mask
-> like this. To fix this problem we have two options. Either use
-> kvm_get_vcpu_by_id(vcpu_id), which would loop to find the right vcpu_id,
-> or switch to indexing via vcpu_idx. The latter is preferable for obvious
-> reasons.
+> The folios change management of memory pages enough to disentangle the
+> page/compound page confusion that exists now, and it seems like a
+> reasonable means to supporting unreasonable things like copy on write
+> storage for filesystems with a 56k block size.
 > 
-> Let us make switch from indexing kvm->arch.idle_mask by vcpu_id to
-> indexing it by vcpu_idx.  To keep gisa_int.kicked_mask indexed by the
-> same index as idle_mask lets make the same change for it as well.
-> 
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: 1ee0bc559dc3 ("KVM: s390: get rid of local_int array")
+> (And I'm sure I'll get tons of blowback for this, but XFS can manage
+> space in weird units like that (configure the rt volume, set a 56k rt
+> extent size, and all the allocations are multiples of 56k); if we ever
+> wanted to support reflink on /that/ hot mess, it would be awesome to be
+> able to say that we're only going to do 56k folios in the page cache for
+> those files instead of the crazy writeback games that the prototype
+> patchset does now.)
 
-otherwise looks good to me.
+I'm guessing the reason you want 56k blocks is because with a larger
+filesystems and faster drives it would be a more reasonable unit for
+managing this amount of data than 4k would be.
 
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+We have the same thoughts in MM and growing memory sizes. The DAX
+stuff said from the start it won't be built on linear struct page
+mappings anymore because we expect the memory modules to be too big to
+manage them with such fine-grained granularity. But in practice, this
+is more and more becoming true for DRAM as well. We don't want to
+allocate gigabytes of struct page when on our servers only a very
+small share of overall memory needs to be managed at this granularity.
 
-> Cc: <stable@vger.kernel.org> # 3.15+
-> ---
->  arch/s390/include/asm/kvm_host.h |  1 +
->  arch/s390/kvm/interrupt.c        | 12 ++++++------
->  arch/s390/kvm/kvm-s390.c         |  2 +-
->  arch/s390/kvm/kvm-s390.h         |  2 +-
->  4 files changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> index 161a9e12bfb8..630eab0fa176 100644
-> --- a/arch/s390/include/asm/kvm_host.h
-> +++ b/arch/s390/include/asm/kvm_host.h
-> @@ -957,6 +957,7 @@ struct kvm_arch{
->  	atomic64_t cmma_dirty_pages;
->  	/* subset of available cpu features enabled by user space */
->  	DECLARE_BITMAP(cpu_feat, KVM_S390_VM_CPU_FEAT_NR_BITS);
-> +	/* indexed by vcpu_idx */
->  	DECLARE_BITMAP(idle_mask, KVM_MAX_VCPUS);
->  	struct kvm_s390_gisa_interrupt gisa_int;
->  	struct kvm_s390_pv pv;
-> diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
-> index d548d60caed2..16256e17a544 100644
-> --- a/arch/s390/kvm/interrupt.c
-> +++ b/arch/s390/kvm/interrupt.c
-> @@ -419,13 +419,13 @@ static unsigned long deliverable_irqs(struct kvm_vcpu *vcpu)
->  static void __set_cpu_idle(struct kvm_vcpu *vcpu)
->  {
->  	kvm_s390_set_cpuflags(vcpu, CPUSTAT_WAIT);
-> -	set_bit(vcpu->vcpu_id, vcpu->kvm->arch.idle_mask);
-> +	set_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.idle_mask);
->  }
->  
->  static void __unset_cpu_idle(struct kvm_vcpu *vcpu)
->  {
->  	kvm_s390_clear_cpuflags(vcpu, CPUSTAT_WAIT);
-> -	clear_bit(vcpu->vcpu_id, vcpu->kvm->arch.idle_mask);
-> +	clear_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.idle_mask);
->  }
->  
->  static void __reset_intercept_indicators(struct kvm_vcpu *vcpu)
-> @@ -3050,18 +3050,18 @@ int kvm_s390_get_irq_state(struct kvm_vcpu *vcpu, __u8 __user *buf, int len)
->  
->  static void __airqs_kick_single_vcpu(struct kvm *kvm, u8 deliverable_mask)
->  {
-> -	int vcpu_id, online_vcpus = atomic_read(&kvm->online_vcpus);
-> +	int vcpu_idx, online_vcpus = atomic_read(&kvm->online_vcpus);
->  	struct kvm_s390_gisa_interrupt *gi = &kvm->arch.gisa_int;
->  	struct kvm_vcpu *vcpu;
->  
-> -	for_each_set_bit(vcpu_id, kvm->arch.idle_mask, online_vcpus) {
-> -		vcpu = kvm_get_vcpu(kvm, vcpu_id);
-> +	for_each_set_bit(vcpu_idx, kvm->arch.idle_mask, online_vcpus) {
-> +		vcpu = kvm_get_vcpu(kvm, vcpu_idx);
->  		if (psw_ioint_disabled(vcpu))
->  			continue;
->  		deliverable_mask &= (u8)(vcpu->arch.sie_block->gcr[6] >> 24);
->  		if (deliverable_mask) {
->  			/* lately kicked but not yet running */
-> -			if (test_and_set_bit(vcpu_id, gi->kicked_mask))
-> +			if (test_and_set_bit(vcpu_idx, gi->kicked_mask))
->  				return;
->  			kvm_s390_vcpu_wakeup(vcpu);
->  			return;
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 4527ac7b5961..8580543c5bc3 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -4044,7 +4044,7 @@ static int vcpu_pre_run(struct kvm_vcpu *vcpu)
->  		kvm_s390_patch_guest_per_regs(vcpu);
->  	}
->  
-> -	clear_bit(vcpu->vcpu_id, vcpu->kvm->arch.gisa_int.kicked_mask);
-> +	clear_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.gisa_int.kicked_mask);
->  
->  	vcpu->arch.sie_block->icptcode = 0;
->  	cpuflags = atomic_read(&vcpu->arch.sie_block->cpuflags);
-> diff --git a/arch/s390/kvm/kvm-s390.h b/arch/s390/kvm/kvm-s390.h
-> index 9fad25109b0d..ecd741ee3276 100644
-> --- a/arch/s390/kvm/kvm-s390.h
-> +++ b/arch/s390/kvm/kvm-s390.h
-> @@ -79,7 +79,7 @@ static inline int is_vcpu_stopped(struct kvm_vcpu *vcpu)
->  
->  static inline int is_vcpu_idle(struct kvm_vcpu *vcpu)
->  {
-> -	return test_bit(vcpu->vcpu_id, vcpu->kvm->arch.idle_mask);
-> +	return test_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.idle_mask);
->  }
->  
->  static inline int kvm_is_ucontrol(struct kvm *kvm)
-> 
-> base-commit: 77dd11439b86e3f7990e4c0c9e0b67dca82750ba
+Folio perpetuates the problem of the base page being the floor for
+cache granularity, and so from an MM POV it doesn't allow us to scale
+up to current memory sizes without horribly regressing certain
+filesystem workloads that still need us to be able to scale down.
 
+
+But there is something more important that I wish more MM people would
+engage on: When you ask for 56k/2M/whatever buffers, the MM has to be
+able to *allocate* them.
+
+I'm assuming that while you certainly have preferences, you don't rely
+too much on whether that memory is composed of a contiguous chunk of
+4k pages, a single 56k page, a part of a 2M page, or maybe even
+discontig 4k chunks with an SG API. You want to manage your disk space
+one way, but you could afford the MM some flexibility to do the right
+thing under different levels of memory load, and allow it to scale in
+the direction it needs for its own purposes.
+
+But if folios are also the low-level compound pages used throughout
+the MM code, we're tying these fs allocations to the requirement of
+being physically contiguous. This is a much more difficult allocation
+problem. And from the MM side, we have a pretty poor track record of
+serving contiguous memory larger than the base page size.
+
+Since forever have non-MM people assumed that because the page
+allocator takes an order argument you could make arbitrary 2^n
+requests. When they inevitably complain that it doesn't work, even
+under light loads, we tell them "lol order-0 or good luck".
+
+Compaction has improved our ability to serve these requests, but only
+*if you bring the time for defragmentation*. Many allocations
+don't. THP has been around for years, but honestly it doesn't really
+work in general purpose environments. Yeah if you have some HPC number
+cruncher that allocates all the anon at startup and then runs for
+hours, it's fine. But in a more dynamic environment after some uptime,
+the MM code just isn't able to produce these larger pages reliably and
+within a reasonable deadline. I'm assuming filesystem workloads won't
+bring the necessary patience for this either.
+
+We've effectively declared bankruptcy on this already. Many requests
+have been replaced with kvmalloc(), and THP has been mostly relegated
+to the optimistic background tinkering of khugepaged. You can't rely
+on it, so you need to structure your expectations around it, and
+perform well when it isn't. This will apply to filesystems as well.
+
+I really don't think it makes sense to discuss folios as the means for
+enabling huge pages in the page cache, without also taking a long hard
+look at the allocation model that is supposed to back them. Because
+you can't make it happen without that. And this part isn't looking so
+hot to me, tbh.
+
+Willy says he has future ideas to make compound pages scale. But we
+have years of history saying this is incredibly hard to achieve - and
+it certainly wasn't for a lack of constant trying.
+
+Decoupling the filesystems from struct page is a necessary step. I can
+also see an argument for abstracting away compound pages to clean up
+the compound_head() mess in all the helpers (although I'm still not
+convinced the wholesale replacement of the page concept is the best
+way to achieve this). But combining the two objectives, and making
+compound pages the basis for huge page cache - after everything we
+know about higher-order allocs - seems like a stretch to me.
