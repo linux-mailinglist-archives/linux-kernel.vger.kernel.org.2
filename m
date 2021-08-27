@@ -2,147 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D841A3FA198
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 00:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D087B3FA19C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 00:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhH0Wm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 18:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbhH0Wm0 (ORCPT
+        id S232405AbhH0Wtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 18:49:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40808 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232126AbhH0Wtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 18:42:26 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C390FC0613D9;
-        Fri, 27 Aug 2021 15:41:36 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id q3so11975225edt.5;
-        Fri, 27 Aug 2021 15:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MZze2kXw1GqozYBFIt5cZT7bkr7jV4DexjrT5UOwl5w=;
-        b=WYqYIPpRr7hz1zsAqib1Su0/B8OPv5AG/9e+IL12N501J/tNnWMGZQBx3+KJzoV3dg
-         JZypnCcfvTKm3Ns0I/Wkhg0AK4f5iPmDxFNno0Yljq1M1HcxdXYNbvgWrZthfIBppwyz
-         Fz8ReHpAftQ1seaB9ZoXHHJ/sbHlswCBr+tgzSx4YrCOV8svmbIcLN1IRV/qdFTIieze
-         uw3wiKNbPBYCOpufathlzW3KhdHHxNBn8VrdV2kNXMA1H6i+XpjcoWQtHFNC69vBibCY
-         r8e7IvHzsTAdQCWvg8vjyLj6lCi13l3Bch0ownjgLB+/gTgCV2TKeG8tpCeydsKJGDwj
-         9l0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MZze2kXw1GqozYBFIt5cZT7bkr7jV4DexjrT5UOwl5w=;
-        b=nn0DeN2g3TO9fh0QR1VNFZQCq/mKYnO4UdWqOVgzTQyRpP5sKoB5rppJE2M9R1vVs9
-         CVDvoe14ajdUThOP2sBEypd9Z2FOQEUErzONAq5cSyHhKTqIdEoN+8z/if3XByWIltRJ
-         46c9SopKEqlpd13JkQJm80DPlfAP5NNs0OMRfh7LefAfeOjsjd8kM8Y31bU1e5DAV2Ri
-         NZoBeiM7u+sszV8vxYqnhf9hmwbrkaJRsEBEMf/uJkVSY/lZ+s2+9UmH8Y7eoT/Ho2hQ
-         y/Wv3PddPDb5Kj5H26mozIbCv3j3/VSEbMRBO6/cv6JsQmripG1sxCZYtzTNFITjlBuU
-         jwuQ==
-X-Gm-Message-State: AOAM532udhwLcuLgvooY9zJSzT+zJHjJ4kwnBiwgP/W30p3bz4j7c6jp
-        jZjcRlVBy3N6kBbKidTcUMjdOkpv5nU=
-X-Google-Smtp-Source: ABdhPJyfEfKqRfYPyu4DoVykgTYH+zSrQKn5x1Ok7dfHZHfLY+QvSkBL10YccOyIV7IFI5MaleksTw==
-X-Received: by 2002:a05:6402:254b:: with SMTP id l11mr12153412edb.268.1630104095356;
-        Fri, 27 Aug 2021 15:41:35 -0700 (PDT)
-Received: from ?IPv6:2001:981:6fec:1:c857:3b83:8809:ffc9? ([2001:981:6fec:1:c857:3b83:8809:ffc9])
-        by smtp.gmail.com with ESMTPSA id kw10sm3394920ejc.111.2021.08.27.15.41.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 15:41:34 -0700 (PDT)
-Subject: Re: Crash on unplug smsc95xx on 5.14.0-rc6
-From:   Ferry Toth <fntoth@gmail.com>
-To:     UNGLinuxDriver@microchip.com
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        stern@rowland.harvard.edu
-References: <07628a9b-1370-98b7-c1f3-98b9bf8cc38f@gmail.com>
-Message-ID: <529eae08-397f-13c8-833f-ee04275e5470@gmail.com>
-Date:   Sat, 28 Aug 2021 00:41:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 27 Aug 2021 18:49:33 -0400
+Date:   Sat, 28 Aug 2021 00:48:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630104522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=TPxS41XE6nFxDgMcdvB0oSAWsF7LEQbTeE9CIRz4vqY=;
+        b=VOPKGft9XGBT3C7hb5vRx+Xf75x0MuIK23NF3N1NLjn3+O1NaP1UpM+ztrdXIbpEXThSrO
+        AzCDZc9IsjHpY7nMbacZ5RttEvOmK6a2s1p5MzFtURQE08XnbxCOH0jOHM/1cPXng3HxXb
+        hVpavTp1x8BLpnU7tKx61y+8jFGDRYt4hHt90JRHnYhCsDBmD/wZ1T/DLyXbDUZv3wBUdk
+        CitXpGNbHEwfaImnVlFgeJJHQ2O+OQi+xt3qhRK9F5Ji92uX17dYiz3JqFuIfOx6708L/J
+        kvGH9PhzXuvyGOwzBTZWu1AOXJfvDPlIns9QlwyT7Yh41ngpVVgYXBMEWWQtzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630104522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=TPxS41XE6nFxDgMcdvB0oSAWsF7LEQbTeE9CIRz4vqY=;
+        b=RCoid/LpCqm9+2t9fGOb8uS3Vg2SBmY5jvt/onfx3/pq7ZGd2b7WeYI7LWbyL3mxeGEWQb
+        tlOUodBNfVrPRBDg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.14-rc7-rt14
+Message-ID: <20210827224841.4fov4nmceupfs2jy@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <07628a9b-1370-98b7-c1f3-98b9bf8cc38f@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Dear RT folks!
 
-Op 25-08-2021 om 22:42 schreef Ferry Toth:
-> With 5.14.0-rc6 smsc9504 attached to dwc3 host (Intel Merrifield) 
-> unplugging leads to the following stack trace:
-> 
-> kernel: kernfs: can not remove 'attached_dev', no directory
-> kernel: WARNING: CPU: 0 PID: 23 at fs/kernfs/dir.c:1508 
-> kernfs_remove_by_name_ns+0x7e/0x90
-> kernel: Modules linked in: rfcomm iptable_nat bnep snd_sof_nocodec 
-> spi_pxa2xx_platform dw_dmac smsc smsc95xx pwm_lpss_pci dw_dmac_pci 
-> pwm_lpss dw_dmac_core snd_sof_pc>
-> kernel: CPU: 0 PID: 23 Comm: kworker/0:1 Not tainted 
-> 5.14.0-rc6-edison-acpi-standard #1
-> kernel: Hardware name: Intel Corporation Merrifield/BODEGA BAY, BIOS 542 
-> 2015.01.21:18.19.48
-> kernel: Workqueue: usb_hub_wq hub_event
-> kernel: RIP: 0010:kernfs_remove_by_name_ns+0x7e/0x90
-> kernel: Code: ff 9a 00 31 c0 5d 41 5c 41 5d c3 48 c7 c7 e0 48 f6 b2 e8 
-> 15 ff 9a 00 b8 fe ff ff ff eb e7 48 c7 c7 d0 fa a8 b2 e8 cb c6 94 00 
-> <0f> 0b b8 fe ff ff ff eb >
-> kernel: RSP: 0018:ffffa514000cfa10 EFLAGS: 00010282
-> kernel: RAX: 0000000000000000 RBX: ffff9a9008a3d8c0 RCX: ffff9a903e217478
-> kernel: RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff9a903e217470
-> kernel: RBP: ffff9a90023d3000 R08: ffffffffb2f341c8 R09: 0000000000009ffb
-> kernel: R10: 00000000ffffe000 R11: 3fffffffffffffff R12: ffffffffb2af705d
-> kernel: R13: ffff9a9008a3d8c0 R14: ffffa514000cfb10 R15: 0000000000000003
-> kernel: FS:  0000000000000000(0000) GS:ffff9a903e200000(0000) 
-> knlGS:0000000000000000
-> kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> kernel: CR2: 00007fe6971fcca0 CR3: 0000000007b02000 CR4: 00000000001006f0
-> kernel: Call Trace:
-> kernel:  phy_detach+0x10b/0x170
-> kernel:  smsc95xx_disconnect_phy+0x2a/0x30 [smsc95xx]
-> kernel:  usbnet_stop+0x5d/0x130
-> kernel:  __dev_close_many+0x99/0x110
-> kernel:  dev_close_many+0x76/0x120
-> kernel:  unregister_netdevice_many+0x13d/0x750
-> kernel:  unregister_netdevice_queue+0x80/0xc0
-> kernel:  unregister_netdev+0x13/0x20
-> kernel:  usbnet_disconnect+0x54/0xb0
-> kernel:  usb_unbind_interface+0x85/0x270
-> kernel:  ? kernfs_find_ns+0x30/0xc0
-> kernel:  __device_release_driver+0x175/0x230
-> kernel:  device_release_driver+0x1f/0x30
-> kernel:  bus_remove_device+0xd3/0x140
-> kernel:  device_del+0x186/0x3e0
-> kernel:  ? kobject_put+0x91/0x1d0
-> kernel:  usb_disable_device+0xc1/0x1e0
-> kernel:  usb_disconnect.cold+0x7a/0x1f7
-> kernel:  usb_disconnect.cold+0x29/0x1f7
-> kernel:  hub_event+0xbb9/0x1830
-> kernel:  ? __switch_to_asm+0x42/0x70
-> kernel:  ? __switch_to_asm+0x36/0x70
-> kernel:  process_one_work+0x1cf/0x370
-> kernel:  worker_thread+0x48/0x3d0
-> kernel:  ? rescuer_thread+0x360/0x360
-> kernel:  kthread+0x122/0x140
-> kernel:  ? set_kthread_struct+0x40/0x40
-> kernel:  ret_from_fork+0x22/0x30
-> 
-> The unplug event happen when switching dwc3 from host  to device mode.
-> 
-> I'm not sure when this behavior started exactly, but al least since 
-> 5.14.0-rc1.
+I'm pleased to announce the v5.14-rc7-rt14 patch set. 
 
-Ideas how to continue welcome.
+Changes since v5.14-rc7-rt13:
 
-> Maybe related: smsc95xx plugin seems to trigger:
-> 
-> DMA-API: cacheline tracking EEXIST, overlapping mappings aren't supported
-> 
-OTOH the cache line error might be due to reporting the error is 
-relatively new:
-https://lore.kernel.org/lkml/20210518125443.34148-1-someguy@effective-light.com/
+  - A few patches to the rtmutex / ww-mutex code. It addresses a few
+    corner case in the deadlock handling of ww-mutex vs rtmutex. It also
+    addresses an unsafe waiter access in the spin-on-owner check.
+    Introduced during the locking rework, patches by Thomas Gleixner and
+    Peter Zijlstra.
 
-So maybe unrelated to crash.
+  - A change to the scheduler to not try to push tasks away which have
+    disabled migration.
+
+  - A change to the scheduler / wait_task_inactive() to use wakeups in
+    hardirq context in order to avoid freezes during boot. This issue
+    appeared to have been fixed but came back in a configuration with
+    the function tracer enabled on boot.
+
+  - In zsmalloc a warning was triggered by lockdep because a mutex_t was
+    acquired within a local_lock_t section only on PREEMPT_RT. Patch by
+    Mike Galbraith.
+
+  - Avoid running balance_push() on remote runqueues during CPU-up.
+    Patch by Thomas Gleixner.
+    
+
+Known issues
+     - netconsole triggers WARN.
+
+     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
+
+     - A RCU and ARM64 warning has been fixed by Valentin Schneider. It is
+       still not clear if the RCU related change is correct.
+
+     - Clark Williams reported issues in i915 (execlists_dequeue_irq())
+
+     - Clark Williams reported issues with kcov enabled.
+
+     - Valentin Schneider reported a few splats on ARM64, see
+          https://https://lkml.kernel.org/r/.kernel.org/lkml/20210810134127.1394269-1-valentin.schneider@arm.com/
+
+The delta patch against v5.14-rc7-rt13 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/incr/patch-5.14-rc7-rt13-rt14.patch.xz
+
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.14-rc7-rt14
+
+The RT patch against v5.14-rc7 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patch-5.14-rc7-rt14.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patches-5.14-rc7-rt14.tar.xz
+
+Sebastian
+
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index c1c480c52f0e0..1326cf3f88cae 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -656,6 +656,31 @@ static int __sched rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	if (next_lock != waiter->lock)
+ 		goto out_unlock_pi;
+ 
++	/*
++	 * There could be 'spurious' loops in the lock graph due to ww_mutex,
++	 * consider:
++	 *
++	 *   P1: A, ww_A, ww_B
++	 *   P2: ww_B, ww_A
++	 *   P3: A
++	 *
++	 * P3 should not return -EDEADLK because it gets trapped in the cycle
++	 * created by P1 and P2 (which will resolve -- and runs into
++	 * max_lock_depth above). Therefore disable detect_deadlock such that
++	 * the below termination condition can trigger once all relevant tasks
++	 * are boosted.
++	 *
++	 * Even when we start with ww_mutex we can disable deadlock detection,
++	 * since we would supress a ww_mutex induced deadlock at [6] anyway.
++	 * Supressing it here however is not sufficient since we might still
++	 * hit [6] due to adjustment driven iteration.
++	 *
++	 * NOTE: if someone were to create a deadlock between 2 ww_classes we'd
++	 * utterly fail to report it; lockdep should.
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && waiter->ww_ctx && detect_deadlock)
++		detect_deadlock = false;
++
+ 	/*
+ 	 * Drop out, when the task has no waiters. Note,
+ 	 * top_waiter can be NULL, when we are in the deboosting
+@@ -717,8 +742,21 @@ static int __sched rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	 * walk, we detected a deadlock.
+ 	 */
+ 	if (lock == orig_lock || rt_mutex_owner(lock) == top_task) {
+-		raw_spin_unlock(&lock->wait_lock);
+ 		ret = -EDEADLK;
++
++		/*
++		 * When the deadlock is due to ww_mutex; also see above. Don't
++		 * report the deadlock and instead let the ww_mutex wound/die
++		 * logic pick which of the contending threads gets -EDEADLK.
++		 *
++		 * NOTE: assumes the cycle only contains a single ww_class; any
++		 * other configuration and we fail to report; also, see
++		 * lockdep.
++		 */
++		if (IS_ENABLED(CONFIG_PREEMPT_RT) && orig_waiter->ww_ctx)
++			ret = 0;
++
++		raw_spin_unlock(&lock->wait_lock);
+ 		goto out_unlock_pi;
+ 	}
+ 
+@@ -1100,8 +1138,13 @@ static int __sched task_blocks_on_rt_mutex(struct rt_mutex_base *lock,
+ 		/* Check whether the waiter should back out immediately */
+ 		rtm = container_of(lock, struct rt_mutex, rtmutex);
+ 		res = __ww_mutex_add_waiter(waiter, rtm, ww_ctx);
+-		if (res)
++		if (res) {
++			raw_spin_lock(&task->pi_lock);
++			rt_mutex_dequeue(lock, waiter);
++			task->pi_blocked_on = NULL;
++			raw_spin_unlock(&task->pi_lock);
+ 			return res;
++		}
+ 	}
+ 
+ 	if (!owner)
+@@ -1347,8 +1390,9 @@ static bool rtmutex_spin_on_owner(struct rt_mutex_base *lock,
+ 		 *    for CONFIG_PREEMPT_RCU=y)
+ 		 *  - the VCPU on which owner runs is preempted
+ 		 */
+-		if (!owner->on_cpu || waiter != rt_mutex_top_waiter(lock) ||
+-		    need_resched() || vcpu_is_preempted(task_cpu(owner))) {
++		if (!owner->on_cpu || need_resched() ||
++		    rt_mutex_waiter_is_top_waiter(lock, waiter) ||
++		    vcpu_is_preempted(task_cpu(owner))) {
+ 			res = false;
+ 			break;
+ 		}
+diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
+index 61256de5bd66a..c47e8361bfb5c 100644
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -95,6 +95,19 @@ static inline int rt_mutex_has_waiters(struct rt_mutex_base *lock)
+ 	return !RB_EMPTY_ROOT(&lock->waiters.rb_root);
+ }
+ 
++/*
++ * Lockless speculative check whether @waiter is still the top waiter on
++ * @lock. This is solely comparing pointers and not derefencing the
++ * leftmost entry which might be about to vanish.
++ */
++static inline bool rt_mutex_waiter_is_top_waiter(struct rt_mutex_base *lock,
++						 struct rt_mutex_waiter *waiter)
++{
++	struct rb_node *leftmost = rb_first_cached(&lock->waiters);
++
++	return rb_entry(leftmost, struct rt_mutex_waiter, tree_entry) == waiter;
++}
++
+ static inline struct rt_mutex_waiter *rt_mutex_top_waiter(struct rt_mutex_base *lock)
+ {
+ 	struct rb_node *leftmost = rb_first_cached(&lock->waiters);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 02718b6c7732d..3885f851997d9 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3081,7 +3081,7 @@ unsigned long wait_task_inactive(struct task_struct *p, unsigned int match_state
+ 			ktime_t to = NSEC_PER_SEC / HZ;
+ 
+ 			set_current_state(TASK_UNINTERRUPTIBLE);
+-			schedule_hrtimeout(&to, HRTIMER_MODE_REL);
++			schedule_hrtimeout(&to, HRTIMER_MODE_REL_HARD);
+ 			continue;
+ 		}
+ 
+@@ -8588,7 +8588,6 @@ static void balance_push(struct rq *rq)
+ 	struct task_struct *push_task = rq->curr;
+ 
+ 	lockdep_assert_rq_held(rq);
+-	SCHED_WARN_ON(rq->cpu != smp_processor_id());
+ 
+ 	/*
+ 	 * Ensure the thing is persistent until balance_push_set(.on = false);
+@@ -8596,9 +8595,10 @@ static void balance_push(struct rq *rq)
+ 	rq->balance_callback = &balance_push_callback;
+ 
+ 	/*
+-	 * Only active while going offline.
++	 * Only active while going offline and when invoked on the outgoing
++	 * CPU.
+ 	 */
+-	if (!cpu_dying(rq->cpu))
++	if (!cpu_dying(rq->cpu) && rq == this_rq())
+ 		return;
+ 
+ 	/*
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 096cfefc66c90..60a9ad2ba166b 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2255,6 +2255,9 @@ static inline struct task_struct *get_push_task(struct rq *rq)
+ 	if (p->nr_cpus_allowed == 1)
+ 		return NULL;
+ 
++	if (p->migration_disabled)
++		return NULL;
++
+ 	rq->push_busy = true;
+ 	return get_task_struct(p);
+ }
+diff --git a/localversion-rt b/localversion-rt
+index 9f7d0bdbffb18..08b3e75841adc 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt13
++-rt14
+diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+index c55d5862416fc..d597df37bfb7c 100644
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -82,7 +82,7 @@
+ 
+ struct zsmalloc_handle {
+ 	unsigned long addr;
+-	struct mutex lock;
++	spinlock_t lock;
+ };
+ 
+ #define ZS_HANDLE_ALLOC_SIZE (sizeof(struct zsmalloc_handle))
+@@ -370,7 +370,7 @@ static unsigned long cache_alloc_handle(struct zs_pool *pool, gfp_t gfp)
+ 	if (p) {
+ 		struct zsmalloc_handle *zh = p;
+ 
+-		mutex_init(&zh->lock);
++		spin_lock_init(&zh->lock);
+ 	}
+ #endif
+ 	return (unsigned long)p;
+@@ -927,7 +927,7 @@ static inline int testpin_tag(unsigned long handle)
+ #ifdef CONFIG_PREEMPT_RT
+ 	struct zsmalloc_handle *zh = zs_get_pure_handle(handle);
+ 
+-	return mutex_is_locked(&zh->lock);
++	return spin_is_locked(&zh->lock);
+ #else
+ 	return bit_spin_is_locked(HANDLE_PIN_BIT, (unsigned long *)handle);
+ #endif
+@@ -938,7 +938,7 @@ static inline int trypin_tag(unsigned long handle)
+ #ifdef CONFIG_PREEMPT_RT
+ 	struct zsmalloc_handle *zh = zs_get_pure_handle(handle);
+ 
+-	return mutex_trylock(&zh->lock);
++	return spin_trylock(&zh->lock);
+ #else
+ 	return bit_spin_trylock(HANDLE_PIN_BIT, (unsigned long *)handle);
+ #endif
+@@ -949,7 +949,7 @@ static void pin_tag(unsigned long handle) __acquires(bitlock)
+ #ifdef CONFIG_PREEMPT_RT
+ 	struct zsmalloc_handle *zh = zs_get_pure_handle(handle);
+ 
+-	return mutex_lock(&zh->lock);
++	return spin_lock(&zh->lock);
+ #else
+ 	bit_spin_lock(HANDLE_PIN_BIT, (unsigned long *)handle);
+ #endif
+@@ -960,7 +960,7 @@ static void unpin_tag(unsigned long handle) __releases(bitlock)
+ #ifdef CONFIG_PREEMPT_RT
+ 	struct zsmalloc_handle *zh = zs_get_pure_handle(handle);
+ 
+-	return mutex_unlock(&zh->lock);
++	return spin_unlock(&zh->lock);
+ #else
+ 	bit_spin_unlock(HANDLE_PIN_BIT, (unsigned long *)handle);
+ #endif
