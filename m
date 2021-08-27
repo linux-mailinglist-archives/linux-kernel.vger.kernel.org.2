@@ -2,104 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FC03F98B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B503F98B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245053AbhH0MEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 08:04:31 -0400
-Received: from mga07.intel.com ([134.134.136.100]:19525 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231191AbhH0MEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 08:04:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="281664712"
-X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
-   d="scan'208";a="281664712"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 05:03:41 -0700
-X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
-   d="scan'208";a="426457876"
-Received: from ivillega-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.59.186])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 05:03:37 -0700
-Date:   Sat, 28 Aug 2021 00:03:35 +1200
-From:   Kai Huang <kai.huang@intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-Message-Id: <20210828000335.1d40dfff0f408b2d91467491@intel.com>
-In-Reply-To: <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
-References: <20210825235234.153013-1-jarkko@kernel.org>
-        <20210825235234.153013-2-jarkko@kernel.org>
-        <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
-        <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S245079AbhH0MHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 08:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231191AbhH0MHW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 08:07:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BD3C061757;
+        Fri, 27 Aug 2021 05:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qyXblKfzKi0M/ZBTjKDzsBk5pEo6TqTVKlmSZn0GpDg=; b=pEZAjqyUYEjAckJA/23zaJLAf/
+        bWCTtj4BqKKt0B2KcE7INS7Lsg4hxcA7XE3jzCZFCfMx9l61IIkuNcEvTo+Z+rZwZc15l6OWNUPKN
+        CIORkmRhnjj4QegdpMEEY8bDm9JJrUei4QbPaqQ+EfPD6zSiO251ROVuqgkkUEoHxq9uVJh2JkPGT
+        hSxCGNPmG6A57KluamQE1Ua9CoKJSOENpEUDSVAnqE+6coWR7cV+Fl1qQyO7PiKENtH4kzunfR239
+        AVMDF+jP2mNXWRKdJY8f1J16hG/rK4JpUBG6GVytF/Bc7L8LkRomHPJlGhhzt2VGKBjUWiOrkzmga
+        1Tle5evQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJac7-00EW7t-BM; Fri, 27 Aug 2021 12:05:47 +0000
+Date:   Fri, 27 Aug 2021 13:05:39 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSjVE8aX98C1vm3j@casper.infradead.org>
+References: <YSZeKfHxOkEAri1q@cmpxchg.org>
+ <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <YSQeFPTMn5WpwyAa@casper.infradead.org>
+ <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
+ <YSVMAS2pQVq+xma7@casper.infradead.org>
+ <2101397.1629968286@warthog.procyon.org.uk>
+ <YSi4bZ7myEMNBtlY@cmpxchg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSi4bZ7myEMNBtlY@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> > > -/* The free page list lock protected variables prepend the lock. */
-> > > +/* The number of usable EPC pages in the system. */
-> > > +unsigned long sgx_nr_all_pages;
-> > > +
-> > > +/* The number of free EPC pages in all nodes. */
-> > >  static unsigned long sgx_nr_free_pages;
-> > >  
-> > >  /* Nodes with one or more EPC sections. */
-> > > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
-> > >  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
-> > >  	}
-> > >  
-> > > +	sgx_nr_all_pages += nr_pages;
-> > > +
-> > 
-> > EPC sections can be freed again in sgx_init() after they are successfully
-> > initialized, when any further initialization fails (i.e. when fails to create
-> > ksgxd, or fails to register /dev/sgx_provision).  In which case, I think
-> > sgx_nr_all_pages should also be cleared.  But current sgx_init() seems doesn't
-> > reset it.  Do you need to fix that too?
+On Fri, Aug 27, 2021 at 06:03:25AM -0400, Johannes Weiner wrote:
+> At the current stage of conversion, folio is a more clearly delineated
+> API of what can be safely used from the FS for the interaction with
+> the page cache and memory management. And it looks still flexible to
+> make all sorts of changes, including how it's backed by
+> memory. Compared with the page, where parts of the API are for the FS,
+> but there are tons of members, functions, constants, and restrictions
+> due to the page's role inside MM core code. Things you shouldn't be
+> using, things you shouldn't be assuming from the fs side, but it's
+> hard to tell which is which, because struct page is a lot of things.
 > 
-> sgx_nr_all_pages tells just the total pages in the system, i.e. it's a constant.
-> 
-> Maybe a rename to "sgx_nr_total_pages" would be a good idea? Would match with
-> the meminfo field better too.
+> However, the MM narrative for folios is that they're an abstraction
+> for regular vs compound pages. This is rather generic. Conceptually,
+> it applies very broadly and deeply to MM core code: anonymous memory
+> handling, reclaim, swapping, even the slab allocator uses them. If we
+> follow through on this concept from the MM side - and that seems to be
+> the plan - it's inevitable that the folio API will grow more
+> MM-internal members, methods, as well as restrictions again in the
+> process. Except for the tail page bits, I don't see too much in struct
+> page that would not conceptually fit into this version of the folio.
 
-I don't have preference on name.  I just think if there's no actual user of
-EPC (when both driver and KVM SGX cannot be enabled), it's pointless to print
-number of EPC pages.
+So the superhypermegaultra ambitious version of this does something
+like:
 
-> 
-> > 
-> > >  	return true;
-> > >  }
-> > >  
-> > > diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> > > index ad8a5c586a35..82bb09c298de 100644
-> > > --- a/arch/x86/mm/pat/set_memory.c
-> > > +++ b/arch/x86/mm/pat/set_memory.c
-> > > @@ -29,6 +29,7 @@
-> > >  #include <asm/proto.h>
-> > >  #include <asm/memtype.h>
-> > >  #include <asm/set_memory.h>
-> > > +#include <asm/sgx.h>
-> > 
-> > How about only include <asm/sgx.h> when CONFIG_X86_SGX is on, then you don't
-> > have to do #ifdef CONFIG_X86_SGX changes to sgx.h?
-> 
-> Why do it that way instead of doing it once in sgx.h for every site that wants
-> to include the file?
+struct slab_page {
+	unsigned long flags;
+	union {
+		struct list_head slab_list;
+		struct {
+		...
+		};
+	};
+	struct kmem_cache *slab_cache;
+	void *freelist;
+	void *s_mem;
+	unsigned int active;
+	atomic_t _refcount;
+	unsigned long memcg_data;
+};
 
-Just my preference.  You only need sgx_nr_all_pages here, while <asm/sgx.h>
-has bunch of others such as SGX data structures.  It seems it's not worth to
-include <asm/sgx.h> directly.
+struct folio {
+	... more or less as now ...
+};
+
+struct net_page {
+	unsigned long flags;
+	unsigned long pp_magic;
+	struct page_pool *pp;
+	unsigned long _pp_mapping_pad;
+	unsigned long dma_addr[2];
+	atomic_t _mapcount;
+	atomic_t _refcount;
+	unsigned long memcg_data;
+};
+
+struct page {
+	union {
+		struct folio folio;
+		struct slab_page slab;
+		struct net_page pool;
+		...
+	};
+};
+
+and then functions which only take one specific type of page use that
+type.  And the compiler will tell you that you can't pass a net_page
+to a slab function, or vice versa.
+
+This is a lot more churn, and I'm far from convinced that it's worth
+doing.  There's also the tricky "This page is mappable to userspace"
+kind of functions, which (for example) includes vmalloc and net_page
+as well as folios and random driver allocations, but shouldn't include
+slab or page table pages.  They're especially tricky because mapping to
+userspace comes with rules around the use of the ->mapping field as well
+as ->_mapcount.
