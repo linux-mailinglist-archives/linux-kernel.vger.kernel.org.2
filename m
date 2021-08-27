@@ -2,149 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5905A3FA08A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1983FA08B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhH0U0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:26:23 -0400
-Received: from mga01.intel.com ([192.55.52.88]:37771 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhH0U0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 16:26:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10089"; a="240246764"
-X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
-   d="scan'208";a="240246764"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 13:25:33 -0700
-X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
-   d="scan'208";a="538426092"
-Received: from aschultz-mobl2.amr.corp.intel.com (HELO [10.212.141.171]) ([10.212.141.171])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 13:25:31 -0700
-Subject: Re: [PATCH v29 23/32] x86/cet/shstk: Add user-mode shadow stack
- support
-To:     Borislav Petkov <bp@alien8.de>,
-        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>
-References: <20210820181201.31490-1-yu-cheng.yu@intel.com>
- <20210820181201.31490-24-yu-cheng.yu@intel.com> <YSfAbaMxQegvmN2p@zn.tnic>
- <fa372ba8-7019-46d6-3520-03859e44cad9@intel.com> <YSktDrcJIAo9mQBV@zn.tnic>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <ab5bfeb4-af66-35b4-40da-829c7f98dcc2@intel.com>
-Date:   Fri, 27 Aug 2021 13:25:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231462AbhH0U15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 16:27:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35335 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229591AbhH0U14 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 16:27:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630096026;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JvUFmdthk7jLPef6R9/TSXU1gnYsUf+KUTcBRx1p1DE=;
+        b=HySl7sKOPEmpBN0Ae1fjGQL5B35kBQVzxAxWSMETTCVeoxt9qf76LwuQ0d3Rl97eEO38wQ
+        fJeOYwrE99yAEP28Bl76TVdydQfeE5ZuKi04HQhyg4BfjB+fOWvHZjiRkqn/ykyyvbRjf8
+        4qvDoGMtZi9YvMqN0q8fVMCRg6S99Zo=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-Vzh89-jCMrOGgb2sg_WeHg-1; Fri, 27 Aug 2021 16:27:03 -0400
+X-MC-Unique: Vzh89-jCMrOGgb2sg_WeHg-1
+Received: by mail-qk1-f200.google.com with SMTP id 70-20020a370b49000000b003d2f5f0dcc6so457899qkl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 13:27:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=JvUFmdthk7jLPef6R9/TSXU1gnYsUf+KUTcBRx1p1DE=;
+        b=Ht8r3ayee3iDUUMDa1qEfnTZ9dmm4e2RgeGJOi3SynpD5VcbPRwMPixVTKAgOuSrAD
+         +5YYJXzAPAmFAJNjL1e9SCyjrCbXPfaJ/YoYDUr5KPje1tfeUoywVkecQ/epnoJ3wMxP
+         i/AzBbaCuZt9Nd4Z2jPMQ9lG5aFj/Z/fWkr24Gg1izXXRmoEjosf1sd3nVPWXGZjBhJG
+         TuaFeaWQHT5O7poyGeKtxuE4zr87RsXBYSygTLcDBBrz4YDyue3dTGxm/THeG6ObeeC7
+         dkw7lmdwUBpbeXegHfq0KlQU/19jDbmbY3RFFGqNDVcaPn35tOHSofEF/V9PB/JoWmJj
+         XbXQ==
+X-Gm-Message-State: AOAM530aMdDxY5/PXhiqBs5q9ZFNn1PN35CoIt0NMXvU4BMJDbUfnEZk
+        U5tfIVhw6w2hPVvXsJqqxuEyp5oCtzQh9vS6WtlCUqo6lPQSsP3KHPiZpqHJ9ebF/PbmYornOYl
+        /AA6JZwjb9eRfeimiop0qxyDb
+X-Received: by 2002:ac8:47d7:: with SMTP id d23mr10075289qtr.73.1630096022618;
+        Fri, 27 Aug 2021 13:27:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwaVC191a1tAlIadHotO6wANwljm8N7F7Z8+S2yDbcvImQy/MRUKFShJP3VGOS4gvfCCav+Pg==
+X-Received: by 2002:ac8:47d7:: with SMTP id d23mr10075280qtr.73.1630096022406;
+        Fri, 27 Aug 2021 13:27:02 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id m8sm5202923qkk.130.2021.08.27.13.27.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 13:27:01 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] rcu: Avoid unneeded function call in rcu_read_unlock()
+To:     paulmck@kernel.org
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        andrii@kernel.org
+References: <20210827022122.15816-1-longman@redhat.com>
+ <20210827183455.GP4156@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <34cbf3f5-9485-a82d-2548-272e87033ab2@redhat.com>
+Date:   Fri, 27 Aug 2021 16:27:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YSktDrcJIAo9mQBV@zn.tnic>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210827183455.GP4156@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 11:21 AM, Borislav Petkov wrote:
-> On Fri, Aug 27, 2021 at 11:10:31AM -0700, Yu, Yu-cheng wrote:
->> Because on context switches the whole xstates are switched together,
->> we need to make sure all are in registers.
-> There's context switch code which does that already.
-> 
-> Why would shstk_setup() be responsible for switching the whole extended
-> states buffer instead of only the shadow stack stuff only?
+On 8/27/21 2:34 PM, Paul E. McKenney wrote:
+> On Thu, Aug 26, 2021 at 10:21:22PM -0400, Waiman Long wrote:
+>> Since commit aa40c138cc8f3 ("rcu: Report QS for outermost
+>> PREEMPT=n rcu_read_unlock() for strict GPs"). A real function call
+>> rcu_read_unlock_strict() is added to the inlined rcu_read_unlock().
+>> The rcu_read_unlock_strict() call is only needed if the performance
+>> sagging CONFIG_RCU_STRICT_GRACE_PERIOD option is set. This config
+>> option isn't set for most production kernels while the function call
+>> overhead remains.
+>>
+>> To provide a slight performance improvement, the
+>> CONFIG_RCU_STRICT_GRACE_PERIOD config check is moved from
+>> rcu_read_unlock_strict() to __rcu_read_unlock() so that the function
+>> call can be compiled out in most cases.
+>>
+>> Besides, the GPL exported rcu_read_unlock_strict() also impact the
+>> the compilation of non-GPL kernel modules as rcu_read_unlock() is a
+>> frequently used kernel API.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Nice, and good eyes!!!
+>
+> I have queued this for v5.16, that is, not the upcoming merge window
+> but the one after that.
+>
+> I did my usual wordsmithing, so please check the following in case I
+> messed something up.  I intentionally omitted the EXPORT_SYMBOL_GPL()
+> discussion because:
+>
+> 1.	Kernels built with CONFIG_PREEMPT=y have the same issue
+> 	with the __rcu_read_lock() and __rcu_read_unlock() functions.
+>
+> 2.	Many other RCU functions are EXPORT_SYMBOL_GPL() and have
+> 	been for almost two decades.
+>
+> But if someone does use RCU readers within CONFIG_PREEMPT=n kernels from
+> a binary module, I will happily refer them to you for any RCU issues
+> that they encounter.  ;-)
+>
+> I am also CCing the BPF guys in case my interpretation of the code in
+> the BPF verifier is incorrect.
+>
+> 							Thanx, Paul
+>
+It looks good to me. Thanks for the rewording. I did regret mentioning 
+about about the GPL export symbol in the commit log and it is good that 
+you had taken it out.
 
-I don't think this has anything to do with context-switching, really.
+Cheers,
+Longman
 
-The code lands in shstk_setup() which wants to make sure that the new
-MSR values are set before the task goes out to userspace.  If
-TIF_NEED_FPU_LOAD was set, it could do that by going out to the XSAVE
-buffer and setting the MSR state in the buffer.  Before returning to
-userspace, it would be XRSTOR'd.  A WRMSR by itself would not be
-persistent because that XRSTOR would overwrite it.
-
-But, if TIF_NEED_FPU_LOAD is *clear* it means the XSAVE buffer is
-out-of-date and the registers are live.  WRMSR can be used and there
-will be a XSAVE* to the task buffer during a context switch.
-
-So, this code takes the coward's way out: it *forces* TIF_NEED_FPU_LOAD
-to be clear by making the registers live with fpregs_restore_userregs().
- That lets it just use WRMSR instead of dealing with the XSAVE buffer
-directly.  If it didn't do this with the *WHOLE* set of user FPU state,
-we'd need more fine-granted "NEED_*_LOAD" tracking than our one FPU bit.
-
-This is also *only* safe because the task is newly-exec()'d and the FPU
-state was just reset.  Otherwise, we might have had to worry that the
-non-PL3 SSPs have garbage or that non-SHSTK bits are set in MSR_IA32_U_CET.
-
-That said, after staring at it, I *think* this code is functionally
-correct and OK performance-wise.  I suspect that the (very blunt) XRSTOR
-inside of start_update_msrs()->fpregs_restore_userregs() is quite rare
-because TIF_NEED_FPU_LOAD will usually be clear due to the proximity to
-execve().  So, adding direct XSAVE buffer manipulation would probably
-only make it more error prone.
