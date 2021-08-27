@@ -2,82 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0757B3F9B08
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9B53F9B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245337AbhH0OoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:44:16 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14427 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245263AbhH0OoP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:44:15 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gx2RP4LsNzbdLn;
-        Fri, 27 Aug 2021 22:39:29 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 27 Aug 2021 22:43:21 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 27
- Aug 2021 22:43:20 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <johannes@sipsolutions.net>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] mac80211: Drop frames from invalid MAC address in ad-hoc mode
-Date:   Fri, 27 Aug 2021 22:42:30 +0800
-Message-ID: <20210827144230.39944-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S245124AbhH0OoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:44:09 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:44492 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231327AbhH0OoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 10:44:08 -0400
+Received: from zn.tnic (p200300ec2f1117006e0d6268a9fc7b3e.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:6e0d:6268:a9fc:7b3e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D16451EC0493;
+        Fri, 27 Aug 2021 16:43:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630075393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=JnpD/7q7WF7NuQTfcoCi3R50uMQ/1+7oFap3seyqFiU=;
+        b=e26r5thZw3XobM2ye3EddiEyjsURteB1VBnb9DqalDrz/BfqeAqavI3AfDm3wWbyRpHNYf
+        KaaDG9MPIkesEZZlZNR1sFhG8o8pPc4me7+aevWWCAlge78mDHfvYrrKAql2Ceq4wAet5Z
+        tCUyonEcyXAV+onAyLO+agfkeabOE2s=
+Date:   Fri, 27 Aug 2021 16:43:51 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 31/38] x86/compressed/64: add identity mapping
+ for Confidential Computing blob
+Message-ID: <YSj6J+TFnJzueCAQ@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-32-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820151933.22401-32-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WARNING: CPU: 1 PID: 9 at net/mac80211/sta_info.c:554
-sta_info_insert_rcu+0x121/0x12a0
-Modules linked in:
-CPU: 1 PID: 9 Comm: kworker/u8:1 Not tainted 5.14.0-rc7+ #253
-Workqueue: phy3 ieee80211_iface_work
-RIP: 0010:sta_info_insert_rcu+0x121/0x12a0
-...
-Call Trace:
- ieee80211_ibss_finish_sta+0xbc/0x170
- ieee80211_ibss_work+0x13f/0x7d0
- ieee80211_iface_work+0x37a/0x500
- process_one_work+0x357/0x850
- worker_thread+0x41/0x4d0
+On Fri, Aug 20, 2021 at 10:19:26AM -0500, Brijesh Singh wrote:
+> diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
+> index 3cf7a7575f5c..54374e0f0257 100644
+> --- a/arch/x86/boot/compressed/ident_map_64.c
+> +++ b/arch/x86/boot/compressed/ident_map_64.c
+> @@ -37,6 +37,9 @@
+>  #include <asm/setup.h>	/* For COMMAND_LINE_SIZE */
+>  #undef _SETUP
+>  
+> +#define __BOOT_COMPRESSED
+> +#include <asm/sev.h> /* For sev_snp_active() + ConfidentialComputing blob */
+> +
 
-If an Ad-Hoc node receives packets with invalid source MAC address,
-it hits a WARN_ON in sta_info_insert_check(), this can spam the log.
+When you move all the cc_blob parsing to the compressed kernel, all that
+ugly ifdeffery won't be needed.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- net/mac80211/rx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>  extern unsigned long get_cmd_line_ptr(void);
+>  
+>  /* Used by PAGE_KERN* macros: */
+> @@ -163,6 +166,21 @@ void initialize_identity_maps(void *rmode)
+>  	cmdline = get_cmd_line_ptr();
+>  	add_identity_map(cmdline, cmdline + COMMAND_LINE_SIZE);
 
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 2563473..e023e30 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -4053,7 +4053,8 @@ static bool ieee80211_accept_frame(struct ieee80211_rx_data *rx)
- 		if (!bssid)
- 			return false;
- 		if (ether_addr_equal(sdata->vif.addr, hdr->addr2) ||
--		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2))
-+		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2) ||
-+		    !is_valid_ether_addr(hdr->addr2))
- 			return false;
- 		if (ieee80211_is_beacon(hdr->frame_control))
- 			return true;
+Carve that ...
+
+> +	/*
+> +	 * The ConfidentialComputing blob is used very early in uncompressed
+> +	 * kernel to find CPUID memory to handle cpuid instructions. Make sure
+> +	 * an identity-mapping exists so they can be accessed after switchover.
+> +	 */
+> +	if (sev_snp_enabled()) {
+> +		struct cc_blob_sev_info *cc_info =
+> +			(void *)(unsigned long)boot_params->cc_blob_address;
+> +
+> +		add_identity_map((unsigned long)cc_info,
+> +				 (unsigned long)cc_info + sizeof(*cc_info));
+> +		add_identity_map((unsigned long)cc_info->cpuid_phys,
+> +				 (unsigned long)cc_info->cpuid_phys + cc_info->cpuid_len);
+> +	}
+> +
+>  	/* Load the new page-table. */
+>  	sev_verify_cbit(top_level_pgt);
+
+... up to here into a separate function called sev_prep_identity_maps()
+so that SEV-specific code flow is not in the generic code path.
+
+>  	write_cr3(top_level_pgt);
+
 -- 
-1.8.3.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
