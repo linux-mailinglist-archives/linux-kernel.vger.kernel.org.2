@@ -2,93 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEF23F9BA2
+	by mail.lfdr.de (Postfix) with ESMTP id E58C63F9BA5
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245384AbhH0PX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        id S245425AbhH0PXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233884AbhH0PX1 (ORCPT
+        with ESMTP id S245358AbhH0PX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:23:27 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3C0C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:22:37 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id l18so12006340lji.12
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:22:37 -0700 (PDT)
+        Fri, 27 Aug 2021 11:23:28 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE88C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:22:39 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id r13so5567805pff.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:22:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=12EwHYLs5eOm6quA+sm5cigmgg54YxcYAcpzFTkzTao=;
-        b=jEpVum+lZp9b+V7si+VhVikOieyqbKysSBBXz1GeJAcrqjxbumhj6CG8FX6yRs56wo
-         L+OZYerWMsGR6sJ3brzUy0IN39xDSptABdOkE3A6MSjbaKbmDbYqiQonD8NQQXozTemh
-         vaSQQhHvMvfIr/RKr6j7hJVXR1ZXYwzuynk0dAptC0ikewkSAfXS4EdUBCYpUaqQZ6oE
-         DTXQf87AGv4BliNaG8mvaq8VmMVI7IIiuU1TJ8fncxif4Kq+RVg77F9E9A0lTxxzCvCD
-         yu5KJs3zrJ/ez/baVFiKRtkHpkr+gLxv2yqmYCjITAnC2qWJJQEDRdAbWsUwDT9UFy7P
-         bETQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QatDM27fKYA9pWDzVSAqlJ2DDoFQbm13fmaaMfb9ulg=;
+        b=LbfQeRJPD2tlThKAHYznAy0sM0IgIfh1wTpRJBZ2a8T56zVu98PuMUUVUbHs4fqFWr
+         6+86/kLM/nQLlWQf9dDa+no5hVa+6sXIHhmX9R3rM1SD9hRro8HWA2j/NGyx2O8VrgV+
+         oGP6lA9WOmK8FVw2oSIVs+avOR5GJ+s6JTH9S2ut8a2dmjwSmakGT8siao8WSM0rYY/D
+         l8AtqZP9IsjFRz1XRX7SFZjz8ry7nluU0QO8loudJxQXIIhTLPgOJCI+sU7b8vw4rsbo
+         7ceZSl6gyIwnJ0+ZB+tg2Cex82NuQqvIiek/SOq2xNCKjHmmV/miz2C81kIq6WQooMor
+         pjmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=12EwHYLs5eOm6quA+sm5cigmgg54YxcYAcpzFTkzTao=;
-        b=Bg+uYh0xP8s5ySnmdmjLclxWEwgpOaLDp/xd8/93/lFUWpj+qxopgNoSxA6wLc2/Z5
-         0gjWK18dAMoOlBRw6lA2JLdE5wCH095EN2aJgqgDGWXOOa4bY2mNh9S2dQf9M2WU4H6G
-         4YTSYvbMzuCv5TOnXL+aYVtnP7N8/MVrArNv+OAzDmWPgNn7ny0ZEl+STF3/Jtg16zXH
-         gIymhTdVMwbTyBsrTgUZgwEAlr2mIK1htVc6s1XFkWrdFE6kTTOR9ynFioQKmjJKgZ3M
-         vw1o+bb+ILT0OpLwf5urbQwTwTXDGj/8Q4Qso3iLuRnfWUXDzrst+BXm3OoJ95BUaldg
-         +jYw==
-X-Gm-Message-State: AOAM530Zns6Hu2E1TG/tBMcTh7IgPp3f27xt6ePTdEIXp7NGLsIgVC2b
-        3ixCsEz1J9T3o+Md1EhXp4NrMRaHhIM69eBm3UU=
-X-Google-Smtp-Source: ABdhPJxWbKzBq4Syh4W699pjantVPGtpyDFbhimXMVsIQwhZumoSStC3iUlQZcQW1Mr/Lno5EIfKvAemGvjTGt1M7IQ=
-X-Received: by 2002:a2e:2d01:: with SMTP id t1mr8022273ljt.400.1630077756278;
- Fri, 27 Aug 2021 08:22:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QatDM27fKYA9pWDzVSAqlJ2DDoFQbm13fmaaMfb9ulg=;
+        b=Nqm25bSF92d/cTez6UyqOnBIDzE3+VV5AhAmB5TG5I/Rn+UMwUishAwsOhpIABcBXw
+         wZ5frkePxBLegIoS6O86647O7HhnsLIPI5GNIevtxFl5cq78K5eI1t34ogP7Rk5pF/i/
+         VJwyUrg7NXhZuZph2v2rD9XAjEr1BFehiqvwiWVsbHdOBa2+HIfLeSh190qlBtdmEZ6P
+         54NP43Zz1gswlINgwfEi4BNcVT7lXU1zdD4bdbtelQISgis6K932YDC7J+ob9KNOuDYi
+         kOmIGTQogCEXoCROTMfYfPKbSUJ4pT1u9lJm4saDN8lvHP4dH8PxxqUy5oM6khbrlWWs
+         sICQ==
+X-Gm-Message-State: AOAM5336WevMj06yu2U2lZ80L632fmiIdHcGK3yQhXEveHKERAtos1lj
+        T1uHGxHSxqUJtx6QT91XDLbnLg==
+X-Google-Smtp-Source: ABdhPJzEumx17gqrFfS4IgX2tHxkXDWTQYfyqElR8d63vRz/R/VGX/kHlh1uWjTReV2Ta0/ixjnVag==
+X-Received: by 2002:a05:6a00:26f6:b0:3ed:834e:153 with SMTP id p54-20020a056a0026f600b003ed834e0153mr9605926pfw.53.1630077758383;
+        Fri, 27 Aug 2021 08:22:38 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id q3sm7448697pgf.18.2021.08.27.08.22.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 08:22:37 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 15:22:33 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH 05/15] perf: Track guest callbacks on a per-CPU basis
+Message-ID: <YSkDOWze5dBHkJnA@google.com>
+References: <20210827005718.585190-1-seanjc@google.com>
+ <20210827005718.585190-6-seanjc@google.com>
+ <YSiRBQQE7md7ZrNC@hirez.programming.kicks-ass.net>
+ <YSj7jq32U8Euf38o@google.com>
+ <YSj9LQfbKxOhxqcP@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210825185747.1627497-1-daeho43@gmail.com> <1f1e6d38-6bd1-17ea-b8ca-a45d1244728f@kernel.org>
-In-Reply-To: <1f1e6d38-6bd1-17ea-b8ca-a45d1244728f@kernel.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 27 Aug 2021 08:22:25 -0700
-Message-ID: <CACOAw_yhgo1_wrejKskSm=Rsw27ogx=TS_A=z=-NGLcecA-gYA@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce fragment allocation mode
- mount option
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSj9LQfbKxOhxqcP@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I'd like to add a fixed chunk/hole fragmentation mode in addition, then
-> userspace can control the fragmented chunk/hole with fixed size.
->
-> How do you think of renaming "fragment:block" to "fragment:rand_block", and
-> then I can add "fragment:fixed_block" option and its logic in addition?
->
+On Fri, Aug 27, 2021, Peter Zijlstra wrote:
+> On Fri, Aug 27, 2021 at 02:49:50PM +0000, Sean Christopherson wrote:
+> > On Fri, Aug 27, 2021, Peter Zijlstra wrote:
+> > > On Thu, Aug 26, 2021 at 05:57:08PM -0700, Sean Christopherson wrote:
+> > > > Use a per-CPU pointer to track perf's guest callbacks so that KVM can set
+> > > > the callbacks more precisely and avoid a lurking NULL pointer dereference.
+> > > 
+> > > I'm completely failing to see how per-cpu helps anything here...
+> > 
+> > It doesn't help until KVM is converted to set the per-cpu pointer in flows that
+> > are protected against preemption, and more specifically when KVM only writes to
+> > the pointer from the owning CPU.  
+> 
+> So the 'problem' I have with this is that sane (!KVM using) people, will
+> still have to suffer that load, whereas with the static_call() we patch
+> in an 'xor %rax,%rax' and only have immediate code flow.
 
-The reason I added the randomness on these values is the segment
-selection in SSR mode.
-If all the segments have the same free block counts, f2fs will
-allocate a new segment sequentially in SSR.
-This was what I didn't want. Plus, in the real world, the size of hole
-and chunk will be different in different segments.
+Again, I've no objection to the static_call() approach.  I didn't even see the
+patch until I had finished testing my series :-/
 
-But, if you think we need this "fragment:fixed_block" mode, I am happy
-to have it. :)
+> > Ignoring static call for the moment, I don't see how the unreg side can be safe
+> > using a bare single global pointer.  There is no way for KVM to prevent an NMI
+> > from running in parallel on a different CPU.  If there's a more elegant solution,
+> > especially something that can be backported, e.g. an rcu-protected pointer, I'm
+> > all for it.  I went down the per-cpu path because it allowed for cleanups in KVM,
+> > but similar cleanups can be done without per-cpu perf callbacks.
+> 
+> If all the perf_guest_cbs dereferences are with preemption disabled
+> (IRQs disabled, IRQ context, NMI context included), then the sequence:
+> 
+> 	WRITE_ONCE(perf_guest_cbs, NULL);
+> 	synchronize_rcu();
+> 
+> Ensures that all prior observers of perf_guest_csb will have completed
+> and future observes must observe the NULL value.
 
-> Do we need to consider multiple thread scenario? in such case,
-> .fragment_remained_chunk may update randomly.
->
-> In addition, multiple log headers share one .fragment_remained_chunk,
-> it may cause unexpected result, it means there may be continuous holes
-> or chunks in locality due to swithing between different log headers.
->
-> Thanks,
->
+That alone won't be sufficient, as the read side also needs to ensure it doesn't
+reload perf_guest_cbs between NULL checks and dereferences.  But that's easy
+enough to solve with a READ_ONCE and maybe a helper to make it more cumbersome
+to use perf_guest_cbs directly.
 
-Oh, I overlooked that point. I am going to add the variable for each
-segment as you said before.
+How about this for a series?
 
-Thanks,
+  1. Use READ_ONCE/WRITE_ONCE + synchronize_rcu() to fix the underlying bug
+  2. Fix KVM PT interrupt handler bug
+  3. Kill off perf_guest_cbs usage in architectures that don't need the callbacks
+  4. Replace ->is_in_guest()/->is_user_mode() with ->state(), and s/get_guest_ip/get_ip
+  5. Implement static_call() support
+  6. Cleanups, if there are any
+  6..N KVM cleanups, e.g. to eliminate current_vcpu and share x86+arm64 callbacks
