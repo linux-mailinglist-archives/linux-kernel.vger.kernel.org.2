@@ -2,163 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545143F9E46
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1B23F9E3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239681AbhH0Rrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239233AbhH0Rru (ORCPT
+        id S237357AbhH0Rrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:47:45 -0400
+Received: from out28-121.mail.aliyun.com ([115.124.28.121]:55647 "EHLO
+        out28-121.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhH0Rro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:47:50 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B913C061796;
-        Fri, 27 Aug 2021 10:47:01 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id mq3so5025218pjb.5;
-        Fri, 27 Aug 2021 10:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=i9TmDZ+esw/3ZLUDMU0ftSn23gEkgnQwCRuas4CrT3U=;
-        b=IHtobvTQGY1nPT3/rK9A1D4px0mz9BbFo22Zema5+9nth1Iz8xRjEgbud3ecsrTACs
-         Vi0LRfmP6pC0DYOfU30m5IkT0RTdx1CV7IJxATteIxw8CIRTVVgLMm1G9RvSeC8txy3w
-         3vkVe4JLgdQHuErnQrEWdxOE6rP0ErL9md4E0hh+apLDdJ7WZ48WHolfWdjVexGKS4Fg
-         64VkrIaGeWHwfHBR7pDlwiNy9s7exrN3vRd0AJl72z/zDyU7wj7/6rHEM1CVLs3fMsSi
-         383OW19VKOeS1sl5t8aORjPeFCc0nn+WtBx09yLwfzvn3x+xousu5jOLlDzZAsqMezkN
-         xg2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=i9TmDZ+esw/3ZLUDMU0ftSn23gEkgnQwCRuas4CrT3U=;
-        b=oE2ZQenaDRWQUJQMIVWV7feGz1IMBvbertvTqa56S+gMq31dI8/KPLINGuyjBIXXF1
-         vtU5cj1tpmgb9q9jKpQFPYoqWa71ejAFwIUcM06resiVPfXIBCkwMsKeSsM19nxPGQs5
-         1PoiSKSc1e7yrYTyq0Qjd6dlDCuvvV+3dj9QuPUwz3ZWmDiwJi5Qn0wHL+Ap6uRaNsy+
-         PcDaF2kdxh/RweQIRpdwiaisfIXm9gEjqD3jVwwXltN+cOf+/BYCDZZewR3zba/+s/FG
-         PEdQ0oK4Qjr3Ffu+Yl03SXuw+5CtpQ+0t0qIR/3U0Qgqy4zoy3O0ST+SNZ7bHiZpGVEj
-         qsQw==
-X-Gm-Message-State: AOAM531ncWA0IGdPr0nB2VNUxTTykBEohR6+c/ajLEY/OuGYfNEaJb+n
-        vP6ipoko8iD9IyW7SBG164Y=
-X-Google-Smtp-Source: ABdhPJwCpp1CTTpUQk7qWKnIh/yFBudGLOgzTmHXJL1o6YBu8x2FX5yDDzUTnumdUgFfk3BNuYTWSw==
-X-Received: by 2002:a17:902:8d8a:b029:12d:3774:3630 with SMTP id v10-20020a1709028d8ab029012d37743630mr9735558plo.65.1630086421011;
-        Fri, 27 Aug 2021 10:47:01 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
-        by smtp.gmail.com with ESMTPSA id h13sm6970553pgh.93.2021.08.27.10.46.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 10:47:00 -0700 (PDT)
-Subject: Re: [PATCH V4 05/13] hyperv: Add Write/Read MSR registers via ghcb
- page
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, catalin.marinas@arm.com,
-        will@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        brijesh.singh@amd.com, thomas.lendacky@amd.com,
-        Tianyu.Lan@microsoft.com, pgonda@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        hannes@cmpxchg.org, aneesh.kumar@linux.ibm.com,
-        krish.sadhukhan@oracle.com, saravanand@fb.com,
-        linux-arm-kernel@lists.infradead.org,
-        xen-devel@lists.xenproject.org, rientjes@google.com,
-        ardb@kernel.org, michael.h.kelley@microsoft.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
-References: <20210827172114.414281-1-ltykernel@gmail.com>
- <20210827172114.414281-6-ltykernel@gmail.com> <YSkj2kvYoYW8kDiF@kroah.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <aed9409f-8708-2599-e441-c6a0c92b737b@gmail.com>
-Date:   Sat, 28 Aug 2021 01:46:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 27 Aug 2021 13:47:44 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;BR=01201311R621ec;CH=green;DM=|CONTINUE|false|;DS=SPAM|spam_low_mark|0.81893-0.00243011-0.17864;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.LB8ZT09_1630086411;
+Received: from 192.168.88.131(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.LB8ZT09_1630086411)
+          by smtp.aliyun-inc.com(10.147.41.143);
+          Sat, 28 Aug 2021 01:46:52 +0800
+Subject: Re: [PATCH v7 02/11] clk: Ingenic: Adjust cgu code to make it
+ compatible with I2S PLL.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
+        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
+References: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1627119286-125821-3-git-send-email-zhouyanjie@wanyeetech.com>
+ <5RY2YQ.VQN2WB38KM14@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <a98a8078-c388-8af4-a605-20e2edb3363d@wanyeetech.com>
+Date:   Sat, 28 Aug 2021 01:46:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <YSkj2kvYoYW8kDiF@kroah.com>
+In-Reply-To: <5RY2YQ.VQN2WB38KM14@crapouillou.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/2021 1:41 AM, Greg KH wrote:
-> On Fri, Aug 27, 2021 at 01:21:03PM -0400, Tianyu Lan wrote:
->> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
->>
->> Hyperv provides GHCB protocol to write Synthetic Interrupt
->> Controller MSR registers in Isolation VM with AMD SEV SNP
->> and these registers are emulated by hypervisor directly.
->> Hyperv requires to write SINTx MSR registers twice. First
->> writes MSR via GHCB page to communicate with hypervisor
->> and then writes wrmsr instruction to talk with paravisor
->> which runs in VMPL0. Guest OS ID MSR also needs to be set
->> via GHCB page.
->>
->> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
->> ---
->> Change since v1:
->>           * Introduce sev_es_ghcb_hv_call_simple() and share code
->>             between SEV and Hyper-V code.
->> Change since v3:
->>           * Pass old_msg_type to hv_signal_eom() as parameter.
->> 	 * Use HV_REGISTER_* marcro instead of HV_X64_MSR_*
->> 	 * Add hv_isolation_type_snp() weak function.
->> 	 * Add maros to set syinc register in ARM code.
->> ---
->>   arch/arm64/include/asm/mshyperv.h |  23 ++++++
->>   arch/x86/hyperv/hv_init.c         |  36 ++--------
->>   arch/x86/hyperv/ivm.c             | 112 ++++++++++++++++++++++++++++++
->>   arch/x86/include/asm/mshyperv.h   |  80 ++++++++++++++++++++-
->>   arch/x86/include/asm/sev.h        |   3 +
->>   arch/x86/kernel/sev-shared.c      |  63 ++++++++++-------
->>   drivers/hv/hv.c                   | 112 ++++++++++++++++++++----------
->>   drivers/hv/hv_common.c            |   6 ++
->>   include/asm-generic/mshyperv.h    |   4 +-
->>   9 files changed, 345 insertions(+), 94 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/mshyperv.h b/arch/arm64/include/asm/mshyperv.h
->> index 20070a847304..ced83297e009 100644
->> --- a/arch/arm64/include/asm/mshyperv.h
->> +++ b/arch/arm64/include/asm/mshyperv.h
->> @@ -41,6 +41,29 @@ static inline u64 hv_get_register(unsigned int reg)
->>   	return hv_get_vpreg(reg);
->>   }
->>   
->> +#define hv_get_simp(val)	{ val = hv_get_register(HV_REGISTER_SIMP); }
->> +#define hv_set_simp(val)	hv_set_register(HV_REGISTER_SIMP, val)
->> +
->> +#define hv_get_siefp(val)	{ val = hv_get_register(HV_REGISTER_SIEFP); }
->> +#define hv_set_siefp(val)	hv_set_register(HV_REGISTER_SIEFP, val)
->> +
->> +#define hv_get_synint_state(int_num, val) {			\
->> +	val = hv_get_register(HV_REGISTER_SINT0 + int_num);	\
->> +	}
->> +
->> +#define hv_set_synint_state(int_num, val)			\
->> +	hv_set_register(HV_REGISTER_SINT0 + int_num, val)
->> +
->> +#define hv_get_synic_state(val) {			\
->> +	val = hv_get_register(HV_REGISTER_SCONTROL);	\
->> +	}
->> +
->> +#define hv_set_synic_state(val)			\
->> +	hv_set_register(HV_REGISTER_SCONTROL, val)
->> +
->> +#define hv_signal_eom(old_msg_type)		 \
->> +	hv_set_register(HV_REGISTER_EOM, 0)
-> 
-> Please just use real inline functions and not #defines if you really
-> need it.
-> 
+Hi Paul,
 
-OK. Will update. Thanks.
+On 2021/8/19 下午5:37, Paul Cercueil wrote:
+> Hi Zhou,
+>
+> Le sam., juil. 24 2021 at 17:34:37 +0800, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> I2S PLL is different from the APLL/MPLL, which have no OD bits,
+>> no stable bit, but have parent clock selection bits, therefore,
+>> it is necessary to modify the CGU PLL correlation code to make
+>> it compatible with I2S PLL.
+>>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>
+> Could you split this commit into three:
+> - one commit to support PLLs with no OD bit,
+> - one commit to support PLLs with no stable bit,
+> - one commit to support setting the parents of PLLs.
+
+
+Sure, I will do it in the next version.
+
+
+>
+>> ---
+>>
+>> Notes:
+>>     v5:
+>>     New patch.
+>>
+>>     v5->v6:
+>>     Change the type of stable_bit from u8 to s8, because a negative 
+>> value will appear
+>>     when the stable_bit bit does not exist.
+>>     Reported-by: kernel test robot <lkp@intel.com>
+>>
+>>     v6->v7:
+>>     No change.
+>>
+>>  drivers/clk/ingenic/cgu.c | 118 
+>> ++++++++++++++++++++++++++++++++++++++++------
+>>  drivers/clk/ingenic/cgu.h |  10 +++-
+>>  2 files changed, 111 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+>> index 266c759..391bf50 100644
+>> --- a/drivers/clk/ingenic/cgu.c
+>> +++ b/drivers/clk/ingenic/cgu.c
+>> @@ -76,6 +76,85 @@ ingenic_cgu_gate_set(struct ingenic_cgu *cgu,
+>>   * PLL operations
+>>   */
+>>
+>> +static u8 ingenic_pll_get_parent(struct clk_hw *hw)
+>> +{
+>> +    struct ingenic_clk *ingenic_clk = to_ingenic_clk(hw);
+>> +    const struct ingenic_cgu_clk_info *clk_info = 
+>> to_clk_info(ingenic_clk);
+>> +    struct ingenic_cgu *cgu = ingenic_clk->cgu;
+>> +    const struct ingenic_cgu_pll_info *pll_info;
+>> +    u32 reg;
+>> +    u8 i, hw_idx, idx = 0;
+>> +
+>> +    BUG_ON(clk_info->type != CGU_CLK_PLL);
+>> +    pll_info = &clk_info->pll;
+>> +
+>> +    if (pll_info->mux_bits <= 0)
+>> +        return 1;
+>> +
+>> +    reg = readl(cgu->base + pll_info->reg);
+>> +    hw_idx = (reg >> pll_info->mux_shift) &
+>> +         GENMASK(pll_info->mux_bits - 1, 0);
+>> +
+>> +    /*
+>> +     * Convert the hardware index to the parent index by skipping
+>> +     * over any -1's in the parents array.
+>> +     */
+>> +    for (i = 0; i < hw_idx; i++) {
+>> +        if (clk_info->parents[i] != -1)
+>> +            idx++;
+>> +    }
+>> +
+>> +    return idx;
+>> +}
+>> +
+>> +static int ingenic_pll_set_parent(struct clk_hw *hw, u8 idx)
+>> +{
+>> +    struct ingenic_clk *ingenic_clk = to_ingenic_clk(hw);
+>> +    const struct ingenic_cgu_clk_info *clk_info = 
+>> to_clk_info(ingenic_clk);
+>> +    struct ingenic_cgu *cgu = ingenic_clk->cgu;
+>> +    const struct ingenic_cgu_pll_info *pll_info;
+>> +    unsigned long flags;
+>> +    u32 reg;
+>> +    u8 curr_idx, hw_idx, num_poss;
+>> +
+>> +    BUG_ON(clk_info->type != CGU_CLK_PLL);
+>> +    pll_info = &clk_info->pll;
+>> +
+>> +    if (pll_info->mux_bits <= 0)
+>> +        return 0;
+>> +
+>> +    /*
+>> +     * Convert the parent index to the hardware index by adding
+>> +     * 1 for any -1 in the parents array preceding the given
+>> +     * index. That is, we want the index of idx'th entry in
+>> +     * clk_info->parents which does not equal -1.
+>> +     */
+>> +    hw_idx = curr_idx = 0;
+>> +    num_poss = 1 << pll_info->mux_bits;
+>> +    for (; hw_idx < num_poss; hw_idx++) {
+>> +        if (clk_info->parents[hw_idx] == -1)
+>> +            continue;
+>> +        if (curr_idx == idx)
+>> +            break;
+>> +        curr_idx++;
+>> +    }
+>> +
+>> +    /* idx should always be a valid parent */
+>> +    BUG_ON(curr_idx != idx);
+>> +
+>> +    spin_lock_irqsave(&cgu->lock, flags);
+>> +
+>> +    /* write the register */
+>> +    reg = readl(cgu->base + pll_info->reg);
+>> +    reg &= ~(GENMASK(pll_info->mux_bits - 1, 0) << 
+>> pll_info->mux_shift);
+>> +    reg |= hw_idx << pll_info->mux_shift;
+>> +    writel(reg, cgu->base + pll_info->reg);
+>> +
+>> +    spin_unlock_irqrestore(&cgu->lock, flags);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>  static unsigned long
+>>  ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+>>  {
+>> @@ -96,8 +175,20 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, 
+>> unsigned long parent_rate)
+>>      m += pll_info->m_offset;
+>>      n = (ctl >> pll_info->n_shift) & GENMASK(pll_info->n_bits - 1, 0);
+>>      n += pll_info->n_offset;
+>> -    od_enc = ctl >> pll_info->od_shift;
+>> -    od_enc &= GENMASK(pll_info->od_bits - 1, 0);
+>> +
+>> +    if (pll_info->od_encoding) {
+>> +        od_enc = ctl >> pll_info->od_shift;
+>> +        od_enc &= GENMASK(pll_info->od_bits - 1, 0);
+>> +
+>> +        for (od = 0; od < pll_info->od_max; od++) {
+>> +            if (pll_info->od_encoding[od] == od_enc)
+>> +                break;
+>> +        }
+>> +        BUG_ON(od == pll_info->od_max);
+>> +        od++;
+>> +    } else {
+>> +        od = 1;
+>> +    }
+>>
+>>      if (pll_info->bypass_bit >= 0) {
+>>          ctl = readl(cgu->base + pll_info->bypass_reg);
+>> @@ -108,15 +199,7 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, 
+>> unsigned long parent_rate)
+>>              return parent_rate;
+>>      }
+>>
+>> -    for (od = 0; od < pll_info->od_max; od++) {
+>> -        if (pll_info->od_encoding[od] == od_enc)
+>> -            break;
+>> -    }
+>> -    BUG_ON(od == pll_info->od_max);
+>> -    od++;
+>> -
+>> -    return div_u64((u64)parent_rate * m * pll_info->rate_multiplier,
+>> -        n * od);
+>> +    return div_u64((u64)parent_rate * m * pll_info->rate_multiplier, 
+>> n * od);
+>>  }
+>>
+>>  static void
+>> @@ -215,13 +298,15 @@ ingenic_pll_set_rate(struct clk_hw *hw, 
+>> unsigned long req_rate,
+>>      ctl &= ~(GENMASK(pll_info->n_bits - 1, 0) << pll_info->n_shift);
+>>      ctl |= (n - pll_info->n_offset) << pll_info->n_shift;
+>>
+>> -    ctl &= ~(GENMASK(pll_info->od_bits - 1, 0) << pll_info->od_shift);
+>> -    ctl |= pll_info->od_encoding[od - 1] << pll_info->od_shift;
+>> +    if (pll_info->od_encoding) {
+>> +        ctl &= ~(GENMASK(pll_info->od_bits - 1, 0) << 
+>> pll_info->od_shift);
+>> +        ctl |= pll_info->od_encoding[od - 1] << pll_info->od_shift;
+>> +    }
+>>
+>>      writel(ctl, cgu->base + pll_info->reg);
+>>
+>>      /* If the PLL is enabled, verify that it's stable */
+>> -    if (ctl & BIT(pll_info->enable_bit))
+>> +    if ((pll_info->stable_bit >= 0) && (ctl & 
+>> BIT(pll_info->enable_bit)))
+>>          ret = ingenic_pll_check_stable(cgu, pll_info);
+>>
+>>      spin_unlock_irqrestore(&cgu->lock, flags);
+>> @@ -292,6 +377,9 @@ static int ingenic_pll_is_enabled(struct clk_hw *hw)
+>>  }
+>>
+>>  static const struct clk_ops ingenic_pll_ops = {
+>> +    .get_parent = ingenic_pll_get_parent,
+>> +    .set_parent = ingenic_pll_set_parent,
+>
+> If you move the "pll" field of struct ingenic_cgu_clk_info to the 
+> nameless "struct" that follows it, you will then be able to use the 
+> other fields as well. That means that you'll be able to use 
+> ingenic_clk_get_parent() / ingenic_clk_set_parent() instead of 
+> duplicating code.
+
+
+Sure, I'll try it.
+
+
+>
+>> +
+>>      .recalc_rate = ingenic_pll_recalc_rate,
+>>      .round_rate = ingenic_pll_round_rate,
+>>      .set_rate = ingenic_pll_set_rate,
+>> @@ -672,7 +760,7 @@ static int ingenic_register_clock(struct 
+>> ingenic_cgu *cgu, unsigned idx)
+>>          clk_init.flags |= CLK_SET_RATE_PARENT;
+>>      }
+>>
+>> -    if (caps & (CGU_CLK_MUX | CGU_CLK_CUSTOM)) {
+>> +    if (caps & (CGU_CLK_PLL | CGU_CLK_MUX | CGU_CLK_CUSTOM)) {
+>
+> I tend to disagree with this - clocks that support parenting should 
+> use the CGU_CLK_MUX flag. I know it conflicts with CGU_CLK_PLL right 
+> now, but with the change I suggested above, your clock should be able 
+> to use .type = CGU_CLK_PLL | CGU_CLK_MUX.
+
+
+Sure.
+
+
+Thanks and best regards!
+
+
+>
+> Cheers,
+> -Paul
+>
+>>          clk_init.num_parents = 0;
+>>
+>>          if (caps & CGU_CLK_MUX)
+>> diff --git a/drivers/clk/ingenic/cgu.h b/drivers/clk/ingenic/cgu.h
+>> index bfc2b9c..30d575d 100644
+>> --- a/drivers/clk/ingenic/cgu.h
+>> +++ b/drivers/clk/ingenic/cgu.h
+>> @@ -18,6 +18,10 @@
+>>   * struct ingenic_cgu_pll_info - information about a PLL
+>>   * @reg: the offset of the PLL's control register within the CGU
+>>   * @rate_multiplier: the multiplier needed by pll rate calculation
+>> + * @mux_shift: the number of bits to shift the mux value by (ie. the
+>> + *           index of the lowest bit of the mux value in the I2S PLL's
+>> + *           control register)
+>> + * @mux_bits: the size of the mux field in bits
+>>   * @m_shift: the number of bits to shift the multiplier value by 
+>> (ie. the
+>>   *           index of the lowest bit of the multiplier value in the 
+>> PLL's
+>>   *           control register)
+>> @@ -42,19 +46,21 @@
+>>   * @bypass_bit: the index of the bypass bit in the PLL control 
+>> register, or
+>>   *              -1 if there is no bypass bit
+>>   * @enable_bit: the index of the enable bit in the PLL control register
+>> - * @stable_bit: the index of the stable bit in the PLL control register
+>> + * @stable_bit: the index of the stable bit in the PLL control 
+>> register, or
+>> + *              -1 if there is no stable bit
+>>   */
+>>  struct ingenic_cgu_pll_info {
+>>      unsigned reg;
+>>      unsigned rate_multiplier;
+>>      const s8 *od_encoding;
+>> +    u8 mux_shift, mux_bits;
+>>      u8 m_shift, m_bits, m_offset;
+>>      u8 n_shift, n_bits, n_offset;
+>>      u8 od_shift, od_bits, od_max;
+>>      unsigned bypass_reg;
+>>      s8 bypass_bit;
+>>      u8 enable_bit;
+>> -    u8 stable_bit;
+>> +    s8 stable_bit;
+>>      void (*calc_m_n_od)(const struct ingenic_cgu_pll_info *pll_info,
+>>                  unsigned long rate, unsigned long parent_rate,
+>>                  unsigned int *m, unsigned int *n, unsigned int *od);
+>> -- 
+>> 2.7.4
+>>
+>
