@@ -2,63 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B163F923E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 04:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28443F9241
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 04:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244050AbhH0CNJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Aug 2021 22:13:09 -0400
-Received: from seshat.vectro.org ([212.24.108.39]:39120 "EHLO
-        seshat.vectro.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbhH0CNI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 22:13:08 -0400
-Received: from [IPv6:2603:7000:7f02:f340:5ea4:fd1d:9a:71e3] (2603-7000-7f02-f340-5ea4-fd1d-009a-71e3.res6.spectrum.com [IPv6:2603:7000:7f02:f340:5ea4:fd1d:9a:71e3])
-        by seshat.vectro.org (Postfix) with ESMTPSA id 8EE941008A2;
-        Fri, 27 Aug 2021 05:12:13 +0300 (EEST)
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     Benjamin Berg <benjamin@sipsolutions.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-References: <20201009144047.505957-1-benjamin@sipsolutions.net>
- <20201028091043.GC1947336@kroah.com> <20201106104725.GC2785199@kroah.com>
- <YR+nwZtz9CQuyTn+@lorien.valinor.li>
- <077990d1e354777c4c6a33866a0916bed6a97ed5.camel@sipsolutions.net>
- <bd81136b-3b52-fbda-780a-9dc58bdeb268@vectro.org>
- <YSCd0aBXNX4rj3Vb@eldamar.lan>
-From:   Ian Turner <vectro@vectro.org>
-Subject: Re: [PATCH 0/2] UCSI race condition resulting in wrong port state
-Message-ID: <f0216270-8b39-1eaf-c4b6-c5d455c8bac3@vectro.org>
-Date:   Thu, 26 Aug 2021 22:12:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S244018AbhH0CQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 22:16:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241128AbhH0CQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 22:16:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF32860C3E;
+        Fri, 27 Aug 2021 02:16:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630030569;
+        bh=QblDK89r69AlgT4tCSWh91kQaXFt7iKvNWN+q4Nf/W8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fnsSUO+LD6nJ95NShA/TFLUgJY6Lh8mn2R+skmpxAKYfqgap5b/s0CDurVlqBpBBi
+         iz45Z2BH34ev+QUl7s9BfgGNlkRwCdiurp2PAHKqgXCKb3824mGp8iqxsRTNuGhBVi
+         eMIO2mLS+bCKFAJPBDcPmOG5WokNqmrq18CT0QigMADHnAcRYPA9Aztli+7LzLw3fv
+         4NDdKZYvOLUA/sTSUg0HOkF4PpLV2Xn9UrAr0+TORlz92ckWMzK0a2P3897QgOl9Hs
+         Ti/Iz2KOuxUFW7LJm9ezTtDkhJuZLt25rXN1RZ75captxFwtGfr7l234Uh5SfOS7rD
+         sprUxF2AhpLgQ==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/3] bootconfig: Cleanup and reorder the init parameter from bootconfig
+Date:   Fri, 27 Aug 2021 11:16:07 +0900
+Message-Id: <163003056713.284890.5878333391812608469.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-In-Reply-To: <YSCd0aBXNX4rj3Vb@eldamar.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21 2:31 AM, Salvatore Bonaccorso wrote:
-> Ah apologies, I was under the impression that you confirmed that this
-> was already the right fix. It is pretty close to what you describe, so
-> if you can additionally confirm the fix, that would be great.
->
-> Regards,
-> Salvatore
+Hi,
 
-Well, it would seem that I owe everyone here an apology.
+Here are the 2nd version of the patches to update the bootconfig.
+The 1st one is for bootconfig memory cleanup when exiting init stage.
+The 2nd one and 3rd one are for reordering the init parameters from
+bootconfig.
+Since the current kernel concatenate the kernel cmdline and the
+bootconfig parameters as below.
 
-Not only did I not observe this issue with a patched kernel, but I'm 
-also now unable to reproduce it booting into a stock kernel. I can only 
-speculate about the reasons for this.
+[bootconfig kernel params][cmdline] -- [init cmdline][bootconfig init params]
 
-I'll come back here if I learn more. Sorry about the noise.
+This is bit odd because for the kernel parameters, user passed cmdline
+can override the previous (bootconfig) one, but for the init cmdline,
+bootconfig may override the parameter.
+Thus, this series invert the order as the following.
 
-Ian Turner
+[bootconfig kernel params][cmdline] -- [bootconfig init params][init cmdline]
+
+The 3rd patch is adding how to use the bootconfig for passing kernel
+and init parameters.
+
+Changes in v2:
+ - introduce exit_boot_config() wrapper for !CONFIG_BOOT_CONFIG.
+
+Thank you,
+
+---
+
+Masami Hiramatsu (3):
+      init: bootconfig: Remove all bootconfig data when the init memory is removed
+      init/bootconfig: Reorder init parameter from bootconfig and cmdline
+      docs: bootconfig: Add how to use bootconfig for kernel parameters
 
 
+ Documentation/admin-guide/bootconfig.rst |   39 +++++++++++++++++++++++++++++-
+ init/main.c                              |   37 ++++++++++++++++++++--------
+ 2 files changed, 64 insertions(+), 12 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
