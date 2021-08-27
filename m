@@ -2,150 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D64C3F934D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9053F9356
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 06:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244134AbhH0D5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        id S244207AbhH0D6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbhH0D5j (ORCPT
+        with ESMTP id S244177AbhH0D6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:57:39 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334B0C061757;
-        Thu, 26 Aug 2021 20:56:51 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id m28so11528278lfj.6;
-        Thu, 26 Aug 2021 20:56:51 -0700 (PDT)
+        Thu, 26 Aug 2021 23:58:11 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76267C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:57:22 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b200so6810669iof.13
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:57:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4QxALuin9m8ppNyC3CMHVOVABk0j8/ChSzc0eVDXKkE=;
-        b=qhbaZz0pOlpvhrx8zOIWXWjl5cUvGIbqwjUMHRRI1XzEX4847o+tt8RdnkUq/r44XZ
-         o6DGulapCwGTv/47/cxgAH/py/6g5GCAwboJ3JeLHPFyQ/R2YCNpfI42Gg2KgsCGaFJr
-         f6C5eS3lt450dKOPsuAzr9KchmajlVUdD6w6K4xfmHkboOEv+z62bPSDQrA2FmqI5y33
-         AtonDRf5vNpxFFz9WySMe6xtNm2pZjC9M8HUwOuvg8ppBYyY2Kc57+N9osNmM/VmxaDh
-         JI2UZ5HXdz9TBVSmRL/VB35wAsxku/0LefYHLaKP7LQ0R/D6ZIMM3RKGlsuflKjNLJVC
-         XMew==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aO31d1ja5MAKunYUAZZRLdfg9N4l+qmRykC9m1jC/pQ=;
+        b=LHO3ECTKxrFvHrNircCd8rdZ+1fd28Cmb0yeGOAFZz7tvi23JfdsoKQlBQ/osBU2PS
+         uSjlHhkxT55kRAddmfXWJAAOEApdxidxxDW04W+WXtBEpgeVUzkf4uqWPWAg7OHZiZJx
+         7DqmkAUptTsy2yC8hMD6ce5SkESGfwW9yU/Tw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4QxALuin9m8ppNyC3CMHVOVABk0j8/ChSzc0eVDXKkE=;
-        b=FPZv23JAImC2T8AiWo9xDhFY5e4apPfEVKUWp/ElktQ23KiU7xGG7nmBGviXDlmjJS
-         7u47xLcKQQ0ZaYx3qVvySKDgdTHHp/5gjWTilw69CjPNGJdCHq0v7c7mdrMknHfq31d2
-         vMPrDLqmjwha9eY2Q2OHKOsLXc2lEOCyLnVkUncXF8WsESph+cIvhZ/sS4Ik0vZ4EJhO
-         XjXu12zKm5PTGU9x3thhYA/O4a5z22PespODRo2b3lTRldUu2M0jUlHxuMt146slcm7P
-         uEGjchqDHWIpNZ9VHggMzQHZokghUXGd8cAnF6E04kZgj+vVryLAiVt76VQvlY7ltJbW
-         CaIg==
-X-Gm-Message-State: AOAM530CLNh8TJooMgAWQF2K7ZQBfrjcOp/zkJ9PslfK2kK69CBE6ndC
-        sPIC9gFrvWSJyolBlZl0c2jv9VT3ZaA=
-X-Google-Smtp-Source: ABdhPJyN0iu0lvrgrnLGNJNFOnzKrY/pZm1o2Hg3A2W3O70e7c2DDFP7SZROFbY90HGUv1rUR/uIAw==
-X-Received: by 2002:a05:6512:3a96:: with SMTP id q22mr5061526lfu.660.1630036609467;
-        Thu, 26 Aug 2021 20:56:49 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-17-251.dynamic.spd-mgts.ru. [94.29.17.251])
-        by smtp.googlemail.com with ESMTPSA id k15sm593540lja.72.2021.08.26.20.56.48
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aO31d1ja5MAKunYUAZZRLdfg9N4l+qmRykC9m1jC/pQ=;
+        b=EBAEoMHgvmtN8Q/Ba4JRmg1qGBgSZN9Fv4HdEilMoDujwv0TzfWKjQzfGsjgnHY90A
+         C4EvM5+wYJ6eeEVSke3c1mKJcuVvU9yVlmhK5+DzZZl9nQvkYIx9y3x07tEUDMuprGU9
+         QtdjhsAD98sXl3+Luhe31WPVgyPnQJS4UtxqNw+xmFcqVoWtzqZtI8t77v8MvOizIzLl
+         GQ5j1SerL19c9iiy2IEEM+DGMzncW/91hxJChJ6T4hujqJE47sfafELntMzoLHIZ2VAg
+         drUU6MJw7AMgK3rfmawKHQBD8MlDI/1wR0ZRoMnU1QIfA6JZoG6DP93ClwP/I4DM0kwK
+         itKA==
+X-Gm-Message-State: AOAM530wxQNDNNutcIPa0fXwshxCzhK4zUDGBhsYPXBnnN8LWp3vSX8/
+        nNF+joveDiAfouHDXihrkQsPL5tszcYbdA==
+X-Google-Smtp-Source: ABdhPJyVOZ648kZiS/MxfKd4fH2IchtIoisoMGahDBJhE/DgWt7hpZi6KRzdk9/u9I/+h+2mlnfGHg==
+X-Received: by 2002:a5e:a81a:: with SMTP id c26mr5790746ioa.15.1630036641606;
+        Thu, 26 Aug 2021 20:57:21 -0700 (PDT)
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
+        by smtp.gmail.com with ESMTPSA id k14sm2784394ili.19.2021.08.26.20.57.21
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 20:56:49 -0700 (PDT)
-Subject: Re: [PATCH v9 5/8] soc/tegra: pmc: Implement get_performance_state()
- callback
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210827013415.24027-1-digetx@gmail.com>
- <20210827013415.24027-6-digetx@gmail.com>
- <20210827030557.aymjkky7athjxpow@vireshk-i7>
- <9c2287ca-4c51-d782-a0a5-4b1227c2e9db@gmail.com>
- <7aca6da3-89a7-a4a6-c720-8be4a105a696@gmail.com>
-Message-ID: <b27be681-7987-3cf9-b525-601118e0b57a@gmail.com>
-Date:   Fri, 27 Aug 2021 06:56:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 26 Aug 2021 20:57:21 -0700 (PDT)
+Received: by mail-il1-f177.google.com with SMTP id r6so5696388ilt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:57:21 -0700 (PDT)
+X-Received: by 2002:a5d:9ada:: with SMTP id x26mr5606315ion.50.1630036221774;
+ Thu, 26 Aug 2021 20:50:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7aca6da3-89a7-a4a6-c720-8be4a105a696@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210624155526.2775863-1-tientzu@chromium.org>
+ <20210624155526.2775863-11-tientzu@chromium.org> <20210824142601.GA3393158@roeck-us.net>
+In-Reply-To: <20210824142601.GA3393158@roeck-us.net>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Fri, 27 Aug 2021 11:50:10 +0800
+X-Gmail-Original-Message-ID: <CALiNf2_NoJwU7UUT4mNkbKWRKsTP9R9E=9qBZzjdjOduO5WZDQ@mail.gmail.com>
+Message-ID: <CALiNf2_NoJwU7UUT4mNkbKWRKsTP9R9E=9qBZzjdjOduO5WZDQ@mail.gmail.com>
+Subject: Re: [PATCH v15 10/12] swiotlb: Add restricted DMA pool initialization
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Qian Cai <quic_qiancai@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.08.2021 06:47, Dmitry Osipenko пишет:
-> 27.08.2021 06:28, Dmitry Osipenko пишет:
->> 27.08.2021 06:05, Viresh Kumar пишет:
->>> On 27-08-21, 04:34, Dmitry Osipenko wrote:
->>>> +	clk_opp_table = dev_pm_opp_set_clkname(dev, NULL);
->>>> +	if (IS_ERR(clk_opp_table)) {
->>>> +		dev_err(dev, "failed to set OPP clk: %pe\n", clk_opp_table);
->>>> +		ret = PTR_ERR(clk_opp_table);
->>>> +		goto put_hw;
->>>> +	}
->>>
->>> Why do you need to do it ? OPP core already does this automatically.
->>
->> Indeed, thanks.
->>
-> 
-> Actually, it doesn't work.
-> 
-> The devm_tegra_core_dev_init_opp_table() needs to set clk to support older device-tree and now OPP table already has clk being set.
-> 
-> WARNING: CPU: 2 PID: 92 at drivers/opp/core.c:2146 dev_pm_opp_set_clkname+0x97/0xb8
-> Modules linked in:
-> CPU: 2 PID: 92 Comm: kworker/u8:1 Tainted: G        W         5.14.0-rc7-next-20210826-00181-g6389463cbb0a #9318
-> Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
-> Workqueue: events_unbound deferred_probe_work_func
-> [<c010cc91>] (unwind_backtrace) from [<c0108d35>] (show_stack+0x11/0x14)
-> [<c0108d35>] (show_stack) from [<c0a6c1bd>] (dump_stack_lvl+0x2b/0x34)
-> [<c0a6c1bd>] (dump_stack_lvl) from [<c011fc47>] (__warn+0xbb/0x100)
-> [<c011fc47>] (__warn) from [<c0a696e3>] (warn_slowpath_fmt+0x4b/0x80)
-> [<c0a696e3>] (warn_slowpath_fmt) from [<c07407b3>] (dev_pm_opp_set_clkname+0x97/0xb8)
-> [<c07407b3>] (dev_pm_opp_set_clkname) from [<c07407e3>] (devm_pm_opp_set_clkname+0xf/0x64)
-> [<c07407e3>] (devm_pm_opp_set_clkname) from [<c050735b>] (devm_tegra_core_dev_init_opp_table+0x23/0x144)
-> [<c050735b>] (devm_tegra_core_dev_init_opp_table) from [<c05aad09>] (gr3d_probe+0x111/0x348)
-> [<c05aad09>] (gr3d_probe) from [<c05ba69b>] (platform_probe+0x43/0x84)
-> [<c05ba69b>] (platform_probe) from [<c05b8c01>] (really_probe.part.0+0x69/0x200)
-> [<c05b8c01>] (really_probe.part.0) from [<c05b8e0b>] (__driver_probe_device+0x73/0xd4)
-> [<c05b8e0b>] (__driver_probe_device) from [<c05b8ea1>] (driver_probe_device+0x35/0xd0)
-> [<c05b8ea1>] (driver_probe_device) from [<c05b92a9>] (__device_attach_driver+0x75/0x98)
-> [<c05b92a9>] (__device_attach_driver) from [<c05b769d>] (bus_for_each_drv+0x51/0x7c)
-> [<c05b769d>] (bus_for_each_drv) from [<c05b908f>] (__device_attach+0x8b/0x104)
-> [<c05b908f>] (__device_attach) from [<c05b81b3>] (bus_probe_device+0x5b/0x60)
-> [<c05b81b3>] (bus_probe_device) from [<c05b5d9f>] (device_add+0x293/0x65c)
-> [<c05b5d9f>] (device_add) from [<c0777a4f>] (of_platform_device_create_pdata+0x63/0x88)
-> [<c0777a4f>] (of_platform_device_create_pdata) from [<c0777b7d>] (of_platform_bus_create+0xfd/0x26c)
-> [<c0777b7d>] (of_platform_bus_create) from [<c0777dc5>] (of_platform_populate+0x45/0x84)
-> [<c0777dc5>] (of_platform_populate) from [<c0777e5d>] (devm_of_platform_populate+0x41/0x6c)
-> [<c0777e5d>] (devm_of_platform_populate) from [<c05490f9>] (host1x_probe+0x1e9/0x2c8)
-> [<c05490f9>] (host1x_probe) from [<c05ba69b>] (platform_probe+0x43/0x84)
-> [<c05ba69b>] (platform_probe) from [<c05b8c01>] (really_probe.part.0+0x69/0x200)
-> [<c05b8c01>] (really_probe.part.0) from [<c05b8e0b>] (__driver_probe_device+0x73/0xd4)
-> [<c05b8e0b>] (__driver_probe_device) from [<c05b8ea1>] (driver_probe_device+0x35/0xd0)
-> [<c05b8ea1>] (driver_probe_device) from [<c05b92a9>] (__device_attach_driver+0x75/0x98)
-> [<c05b92a9>] (__device_attach_driver) from [<c05b769d>] (bus_for_each_drv+0x51/0x7c)
-> [<c05b769d>] (bus_for_each_drv) from [<c05b908f>] (__device_attach+0x8b/0x104)
-> [<c05b908f>] (__device_attach) from [<c05b81b3>] (bus_probe_device+0x5b/0x60)
-> [<c05b81b3>] (bus_probe_device) from [<c05b8493>] (deferred_probe_work_func+0x57/0x78)
-> [<c05b8493>] (deferred_probe_work_func) from [<c0136f73>] (process_one_work+0x147/0x3f8)
-> [<c0136f73>] (process_one_work) from [<c0137759>] (worker_thread+0x21d/0x3f4)
-> [<c0137759>] (worker_thread) from [<c013c10f>] (kthread+0x123/0x140)
-> [<c013c10f>] (kthread) from [<c0100135>] (ret_from_fork+0x11/0x1c)
-> ---[ end trace f68728a0d3053b54 ]---
-> tegra-gr3d 54180000.gr3d: tegra-soc: failed to set OPP clk: -16
-> 
+On Tue, Aug 24, 2021 at 10:26 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Hi Claire,
+>
+> On Thu, Jun 24, 2021 at 11:55:24PM +0800, Claire Chang wrote:
+> > Add the initialization function to create restricted DMA pools from
+> > matching reserved-memory nodes.
+> >
+> > Regardless of swiotlb setting, the restricted DMA pool is preferred if
+> > available.
+> >
+> > The restricted DMA pools provide a basic level of protection against the
+> > DMA overwriting buffer contents at unexpected times. However, to protect
+> > against general data leakage and system memory corruption, the system
+> > needs to provide a way to lock down the memory access, e.g., MPU.
+> >
+> > Signed-off-by: Claire Chang <tientzu@chromium.org>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+> > Tested-by: Will Deacon <will@kernel.org>
+> > ---
+> >  include/linux/swiotlb.h |  3 +-
+> >  kernel/dma/Kconfig      | 14 ++++++++
+> >  kernel/dma/swiotlb.c    | 76 +++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 92 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> > index 3b9454d1e498..39284ff2a6cd 100644
+> > --- a/include/linux/swiotlb.h
+> > +++ b/include/linux/swiotlb.h
+> > @@ -73,7 +73,8 @@ extern enum swiotlb_force swiotlb_force;
+> >   *           range check to see if the memory was in fact allocated by this
+> >   *           API.
+> >   * @nslabs:  The number of IO TLB blocks (in groups of 64) between @start and
+> > - *           @end. This is command line adjustable via setup_io_tlb_npages.
+> > + *           @end. For default swiotlb, this is command line adjustable via
+> > + *           setup_io_tlb_npages.
+> >   * @used:    The number of used IO TLB block.
+> >   * @list:    The free list describing the number of free entries available
+> >   *           from each index.
+> > diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
+> > index 77b405508743..3e961dc39634 100644
+> > --- a/kernel/dma/Kconfig
+> > +++ b/kernel/dma/Kconfig
+> > @@ -80,6 +80,20 @@ config SWIOTLB
+> >       bool
+> >       select NEED_DMA_MAP_STATE
+> >
+> > +config DMA_RESTRICTED_POOL
+> > +     bool "DMA Restricted Pool"
+> > +     depends on OF && OF_RESERVED_MEM
+> > +     select SWIOTLB
+>
+> This makes SWIOTLB user configurable, which in turn results in
+>
+> mips64-linux-ld: arch/mips/kernel/setup.o: in function `arch_mem_init':
+> setup.c:(.init.text+0x19c8): undefined reference to `plat_swiotlb_setup'
+> make[1]: *** [Makefile:1280: vmlinux] Error 1
+>
+> when building mips:allmodconfig.
+>
+> Should this possibly be "depends on SWIOTLB" ?
 
-That's because devm_pm_opp_attach_genpd() holds the reference to OPP
-table on Tegra30 which uses multiple power domains. See
-gr3d_init_power() of the GR3D patch.
+Patch is sent here: https://lkml.org/lkml/2021/8/26/932
 
-It works in case of a single-domain hardware.
+>
+> Thanks,
+> Guenter
+
+Thanks,
+Claire
