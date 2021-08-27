@@ -2,130 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB593F9504
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C523F9511
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244405AbhH0HWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 03:22:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38660 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244198AbhH0HWi (ORCPT
+        id S244379AbhH0H0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 03:26:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43460 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244307AbhH0H0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 03:22:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630048909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P7AbRF8g9kF3iNkqSowKy6V7iUBVivXq+0DaEzOiKbQ=;
-        b=ApkQJ8LCgXiISL9YJXpqGd5l/EZ2QIWNLlzqarCTlCYNLl/tp8FZ3HbUfT+yIWsqEyGxFi
-        /R4FPrqj3KV01s5q3gy7DIZgAskmAvElw9bF5WgHXQw2MYg6NL4zQ2scK+bvsM2X06Q5gx
-        3NcKv2S/NiOvY7NRB78rDutwzX+s0nQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-Kwx455nuPdmUpEuTKGm2Tg-1; Fri, 27 Aug 2021 03:21:48 -0400
-X-MC-Unique: Kwx455nuPdmUpEuTKGm2Tg-1
-Received: by mail-ej1-f70.google.com with SMTP id gb24-20020a170907961800b005c158d37301so2251184ejc.17
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 00:21:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P7AbRF8g9kF3iNkqSowKy6V7iUBVivXq+0DaEzOiKbQ=;
-        b=BAqozXyPckzTVyfnQvMuFXT+o185YjOwWa6dpNyzAurlTmV1wDBE2LQGZX7kp5q+Vg
-         woT+YFBGRTh7P7/fYom9PZmNPG2Qau0yDJCKgmv4ECLPJWhctifaGaiSGwrsETha9gvW
-         PBDeERi3cHaxJYQPGZBCIRInreOh8v7QnaMT9MG2lInR9pvhWJ4Q4uhznrOcJQa4WGYB
-         +8r/mLcaP7IMihvk68BCBsmAX4vUf4h0vP9B0BxTwcSu/76MhD90FoIYyTq5lCZhyyay
-         3ngnnj0455J7A2U5orqQYG770zcCRbXr+l5P6C5qb376j2rTi8d9uxkZqKzkdXcC76s5
-         LKLQ==
-X-Gm-Message-State: AOAM530DpTxiFlRAilVNpKVroQXywcTd9KtPPAMUpRrO+bnMozsom7fK
-        Skfc2VpWWal6ldfkhZ5lqaoNqq+Qi6ayFkmaovi7+pzGIx5pIkxsnfMf8tMcOMwyElP7PeEf94w
-        gjF8Snd0ZEmTMw6xtFPVzZVg1
-X-Received: by 2002:a17:906:1fd4:: with SMTP id e20mr8626092ejt.421.1630048907006;
-        Fri, 27 Aug 2021 00:21:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWg1xXqNiorZgR8T58rEsVQDwfH5wUl/c8mZleWZuPOQ+ZXA/1mYSSRDNOCZCEBjdvKW8w2g==
-X-Received: by 2002:a17:906:1fd4:: with SMTP id e20mr8626079ejt.421.1630048906799;
-        Fri, 27 Aug 2021 00:21:46 -0700 (PDT)
-Received: from steredhat (host-79-36-51-142.retail.telecomitalia.it. [79.36.51.142])
-        by smtp.gmail.com with ESMTPSA id n15sm2916196edw.70.2021.08.27.00.21.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 00:21:46 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 09:21:44 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexandru Ciobotaru <alcioa@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kamal Mostafa <kamal@canonical.com>,
-        Alexandru Vasile <lexnv@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-Subject: Re: [PATCH v1 2/3] nitro_enclaves: Update documentation for Arm
- support
-Message-ID: <20210827072144.gqncsq42vfpzmoxl@steredhat>
-References: <20210826173451.93165-1-andraprs@amazon.com>
- <20210826173451.93165-3-andraprs@amazon.com>
+        Fri, 27 Aug 2021 03:26:36 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id F2DF622351;
+        Fri, 27 Aug 2021 07:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630049147; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=d3NbyDPPFSBrjV+S1BKlkMfLhsDNl8MMVaC+wVMU/B8=;
+        b=VThWRU8+9AASmKc/DZp1veiCzBC0DjuTiCqLxR2wUjsoBX7v6j/rU1AfigzMbns6H4DPMs
+        JNk5Xde4PjAP26FFbp4NCCW3guH3myoWWjcQHPVe84DM74vV1eGj983ovUcLoBZw/0snw9
+        a10T1uRTwPv/s1AeB64xsgdIBnAnmys=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630049147;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=d3NbyDPPFSBrjV+S1BKlkMfLhsDNl8MMVaC+wVMU/B8=;
+        b=JTEZprgfqwYKiDPt7f7N/ZN39cMUxks56fBSCHQl2Vj9nVuCh5IzFQL7J5MOjpruD9+fup
+        6eSVBPvs5inzZBAg==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        by relay2.suse.de (Postfix) with ESMTP id C4F44A3B91;
+        Fri, 27 Aug 2021 07:25:46 +0000 (UTC)
+From:   Michal Suchanek <msuchanek@suse.de>
+To:     bpf@vger.kernel.org
+Cc:     Patrick McCarty <patrick.mccarty@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michal Suchanek <msuchanek@suse.de>
+Subject: [PATCH] libbpf: Fix build with latest gcc/binutils with LTO
+Date:   Fri, 27 Aug 2021 09:25:39 +0200
+Message-Id: <20210827072539.3399-1-msuchanek@suse.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210826173451.93165-3-andraprs@amazon.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 08:34:50PM +0300, Andra Paraschiv wrote:
->Add references for hugepages and booting steps for Arm.
->
->Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
->---
-> Documentation/virt/ne_overview.rst | 8 +++++---
-> 1 file changed, 5 insertions(+), 3 deletions(-)
+From: Patrick McCarty <patrick.mccarty@intel.com>
 
-If you need to respin, maybe we can add a little section with supported 
-architectures (x86, ARM64).
+After updating to binutils 2.35, the build began to fail with an
+assembler error. A bug was opened on the Red Hat Bugzilla a few days
+later for the same issue.
 
-Stefano
+Work around the problem by using the new `symver` attribute (introduced
+in GCC 10) as needed, instead of the `COMPAT_VERSION` and
+`DEFAULT_VERSION` macros, which expand to assembler directives.
 
->
->diff --git a/Documentation/virt/ne_overview.rst b/Documentation/virt/ne_overview.rst
->index 39b0c8fe2654a..2777da1fb0ad1 100644
->--- a/Documentation/virt/ne_overview.rst
->+++ b/Documentation/virt/ne_overview.rst
->@@ -43,8 +43,8 @@ for the enclave VM. An enclave does not have persistent storage attached.
-> The memory regions carved out of the primary VM and given to an enclave need to
-> be aligned 2 MiB / 1 GiB physically contiguous memory regions (or multiple of
-> this size e.g. 8 MiB). The memory can be allocated e.g. by using hugetlbfs from
->-user space [2][3]. The memory size for an enclave needs to be at least 64 MiB.
->-The enclave memory and CPUs need to be from the same NUMA node.
->+user space [2][3][7]. The memory size for an enclave needs to be at least
->+64 MiB. The enclave memory and CPUs need to be from the same NUMA node.
->
-> An enclave runs on dedicated cores. CPU 0 and its CPU siblings need to remain
-> available for the primary VM. A CPU pool has to be set for NE purposes by an
->@@ -61,7 +61,7 @@ device is placed in memory below the typical 4 GiB.
-> The application that runs in the enclave needs to be packaged in an enclave
-> image together with the OS ( e.g. kernel, ramdisk, init ) that will run in the
-> enclave VM. The enclave VM has its own kernel and follows the standard Linux
->-boot protocol [6].
->+boot protocol [6][8].
->
-> The kernel bzImage, the kernel command line, the ramdisk(s) are part of the
-> Enclave Image Format (EIF); plus an EIF header including metadata such as magic
->@@ -93,3 +93,5 @@ enclave process can exit.
-> [4] https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
-> [5] https://man7.org/linux/man-pages/man7/vsock.7.html
-> [6] https://www.kernel.org/doc/html/latest/x86/boot.html
->+[7] https://www.kernel.org/doc/html/latest/arm64/hugetlbpage.html
->+[8] https://www.kernel.org/doc/html/latest/arm64/booting.html
->-- 
->2.20.1 (Apple Git-117)
->
->
->
->
->Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
->
+Fixes: https://github.com/libbpf/libbpf/issues/338
+Fixes: https://bugzilla.redhat.com/show_bug.cgi?id=1863059
+Fixes: https://bugzilla.opensuse.org/show_bug.cgi?id=1188749
+Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
+Make the change conditional on GCC version
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+---
+ tools/lib/bpf/libbpf_internal.h | 23 +++++++++++++++++------
+ tools/lib/bpf/xsk.c             |  4 ++--
+ 2 files changed, 19 insertions(+), 8 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index 016ca7cb4f8a..af0f3fb102c0 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -86,20 +86,31 @@
+ 	(offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
+ #endif
+ 
++#ifdef __GNUC__
++# if __GNUC__ >= 10
++#  define DEFAULT_VERSION(internal_name, api_name, version) \
++__attribute__((__symver__(#api_name "@@" #version)))
++#  define COMPAT_VERSION(internal_name, api_name, version) \
++__attribute__((__symver__(#api_name "@" #version)))
++# endif
++#endif
++
++#if !defined(COMPAT_VERSION) || !defined(DEFAULT_VERSION)
+ /* Symbol versioning is different between static and shared library.
+  * Properly versioned symbols are needed for shared library, but
+  * only the symbol of the new version is needed for static library.
+  */
+-#ifdef SHARED
+-# define COMPAT_VERSION(internal_name, api_name, version) \
++# ifdef SHARED
++#  define COMPAT_VERSION(internal_name, api_name, version) \
+ 	asm(".symver " #internal_name "," #api_name "@" #version);
+-# define DEFAULT_VERSION(internal_name, api_name, version) \
++#  define DEFAULT_VERSION(internal_name, api_name, version) \
+ 	asm(".symver " #internal_name "," #api_name "@@" #version);
+-#else
+-# define COMPAT_VERSION(internal_name, api_name, version)
+-# define DEFAULT_VERSION(internal_name, api_name, version) \
++# else
++#  define COMPAT_VERSION(internal_name, api_name, version)
++#  define DEFAULT_VERSION(internal_name, api_name, version) \
+ 	extern typeof(internal_name) api_name \
+ 	__attribute__((alias(#internal_name)));
++# endif
+ #endif
+ 
+ extern void libbpf_print(enum libbpf_print_level level,
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index e9b619aa0cdf..a2111696ba91 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -281,6 +281,7 @@ static int xsk_create_umem_rings(struct xsk_umem *umem, int fd,
+ 	return err;
+ }
+ 
++DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
+ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+ 			    __u64 size, struct xsk_ring_prod *fill,
+ 			    struct xsk_ring_cons *comp,
+@@ -345,6 +346,7 @@ struct xsk_umem_config_v1 {
+ 	__u32 frame_headroom;
+ };
+ 
++COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
+ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
+ 			    __u64 size, struct xsk_ring_prod *fill,
+ 			    struct xsk_ring_cons *comp,
+@@ -358,8 +360,6 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
+ 	return xsk_umem__create_v0_0_4(umem_ptr, umem_area, size, fill, comp,
+ 					&config);
+ }
+-COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
+-DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
+ 
+ static enum xsk_prog get_xsk_prog(void)
+ {
+-- 
+2.31.1
 
