@@ -2,230 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9F03F9408
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 07:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562A83F940B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 07:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244226AbhH0F2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 01:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhH0F2C (ORCPT
+        id S244238AbhH0F3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 01:29:07 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:32169 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S244225AbhH0F3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 01:28:02 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31ACC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 22:27:13 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id bq28so11897934lfb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 22:27:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aCNGlXY6361ZigaIW6incXr5mbnDjyMCYDuUlz3Yj5o=;
-        b=oqzvMaeIs4iTOzMP6wvTn2+1nJhI0RmOfTsl15fEzOJgN4u+b4TXv02mvvwjb78HtJ
-         K04ToZZHp3fgqTptx3kNY+aUf2oQPYWcWPBp6tddPPiFq+xNvQNnpH/5oP2ls3J0a/u0
-         XXPl5CDSP5u4li6Nu74m5jLGmmJxw6FvQbXUQWBtDAZz5L79Evx3oHyv3BLhcmViZjHt
-         uBecX5sD7TDTog+pxuazs6325QK7eFb40ERjNgOgFYr1TXRCrWqdtuEKqQq1Kg8AeHMv
-         KsINC8AnwVjpkX9JCfnosFfxAW+Z9h+nXz1Vdtvgx7EHmaP+LVG8yISs3+xu9Yx1LzQ5
-         4OzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aCNGlXY6361ZigaIW6incXr5mbnDjyMCYDuUlz3Yj5o=;
-        b=Kl7vmdh7L1+3SmL9a1ZpV9OgFxGcjFswSMIGQQ7c4L92GLBovWbi1t5RddW+oO/Qhf
-         UzRTW0EWbjUYbBOGKxcCg2B/CTIgnD0YPEcrpdS4afQNA+yoSlN4KV7NwYUDheIooF3g
-         J8u6V54SlggoTb2GkANGkO24Q4hljrCwhS2tp+JiwH3+Q879syC4sjLj9tx/byRB9tJL
-         hlWU2ykJWwDgO/p0dIQeAk8vwA5/gBWyi91Y1ged/fAL1thXAxAF/k05fOvaw9NIMdL7
-         bg26LqiKN6X1ETrscBNt3F2Hphx62Wx6slayVOUB2wMmaZ9/7EjDd4Om3dcYJTMFCVeU
-         D74w==
-X-Gm-Message-State: AOAM531k1F7nDt+a5IEauMlK/itgOuM5xqoOgiz4vNxfq0RuEJN2O8fq
-        LjCXakxW9ktZJDqCbjZ/wHSPMYc9eMv+8jVmrrLmBw==
-X-Google-Smtp-Source: ABdhPJw5tu9U0plf944UOLkB6b80+Y1ywSWOvicN6FaE8XCULyPXDzRXt/73+pxFc6FebCmNjRws2R0LO6hcfB36Sd8=
-X-Received: by 2002:ac2:5c4c:: with SMTP id s12mr5211187lfp.108.1630042031913;
- Thu, 26 Aug 2021 22:27:11 -0700 (PDT)
+        Fri, 27 Aug 2021 01:29:04 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Atei45Kg/Y8j9xKYkcrbfWQ3753BQXuYji2hC?=
+ =?us-ascii?q?6mlwRA09TyX4rbHLoB1/73LJYVkqNk3I5urrBEDtexLhHP1OkOws1NWZLWrbUQ?=
+ =?us-ascii?q?KTRekM0WKI+UyDJ8SRzI5g/JYlW61/Jfm1NlJikPv9iTPSL/8QhPWB74Ck7N2z?=
+ =?us-ascii?q?80tQ?=
+X-IronPort-AV: E=Sophos;i="5.84,355,1620662400"; 
+   d="scan'208";a="113551417"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 27 Aug 2021 13:28:14 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id C83874D0D4BD;
+        Fri, 27 Aug 2021 13:28:07 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 27 Aug 2021 13:27:58 +0800
+Received: from [192.168.22.65] (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 27 Aug 2021 13:27:56 +0800
+Subject: Re: [PATCH v7 7/8] fsdax: Introduce dax_iomap_ops for end of reflink
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com>
+ <20210816060359.1442450-8-ruansy.fnst@fujitsu.com>
+ <CAPcyv4jbi=p=SjFYZcHnEAu+KY821pW_k_yA5u6hya4jEfrTUg@mail.gmail.com>
+ <c7e68dc8-5a43-f727-c262-58dcf244c711@fujitsu.com>
+ <CAPcyv4jM86gy-T5EEZf6M2m44v4MiGqYDhxisX59M5QJii6DVg@mail.gmail.com>
+ <32fa5333-b14e-2060-d659-d77f6c75ff16@fujitsu.com>
+ <CAPcyv4h801eipbvOpzSnw_GnUcuSxcm6eUfJdoHNW2ZmZgzW=Q@mail.gmail.com>
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Message-ID: <2489af0c-ef3c-a293-c652-e1c2b7bd4164@fujitsu.com>
+Date:   Fri, 27 Aug 2021 13:27:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210819110655.739318-1-jens.wiklander@linaro.org>
- <20210819110655.739318-6-jens.wiklander@linaro.org> <CAFA6WYNHrej1_yMZejLpG5u1WjN5XvpmS-zKWdLVZu=DEWd6xA@mail.gmail.com>
- <20210826145213.GA1739293@jade>
-In-Reply-To: <20210826145213.GA1739293@jade>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Fri, 27 Aug 2021 10:57:00 +0530
-Message-ID: <CAFA6WYMuAgL0D7oQYoK_zaJ+2hjtyeeVHOgA4tfkurzGuQi6=g@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] optee: add FF-A support
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        Sughosh Ganu <sughosh.ganu@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPcyv4h801eipbvOpzSnw_GnUcuSxcm6eUfJdoHNW2ZmZgzW=Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-yoursite-MailScanner-ID: C83874D0D4BD.A227B
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- On Thu, 26 Aug 2021 at 20:22, Jens Wiklander <jens.wiklander@linaro.org> wrote:
->
-> On Wed, Aug 25, 2021 at 05:12:45PM +0530, Sumit Garg wrote:
-> > On Thu, 19 Aug 2021 at 16:37, Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> > >
-> > > Adds support for using FF-A [1] as transport to the OP-TEE driver.
-> > >
-> > > Introduces struct optee_msg_param_fmem which carries all information
-> > > needed when OP-TEE is calling FFA_MEM_RETRIEVE_REQ to get the shared
-> > > memory reference mapped by the hypervisor in S-EL2. Register usage is
-> > > also updated to include the information needed.
-> > >
-> > > The FF-A part of this driver is enabled if CONFIG_ARM_FFA_TRANSPORT is
-> > > enabled.
-> > >
-> > > [1] https://developer.arm.com/documentation/den0077/latest
-> > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > > ---
-> > >  drivers/tee/optee/Makefile        |   3 +-
-> > >  drivers/tee/optee/call.c          |  13 +-
-> > >  drivers/tee/optee/core.c          |  16 +-
-> > >  drivers/tee/optee/ffa_abi.c       | 907 ++++++++++++++++++++++++++++++
-> > >  drivers/tee/optee/optee_ffa.h     | 153 +++++
-> > >  drivers/tee/optee/optee_msg.h     |  27 +-
-> > >  drivers/tee/optee/optee_private.h |  43 +-
-> > >  7 files changed, 1148 insertions(+), 14 deletions(-)
-> > >  create mode 100644 drivers/tee/optee/ffa_abi.c
-> > >  create mode 100644 drivers/tee/optee/optee_ffa.h
-> > >
-> [snip]
-> > > --- /dev/null
-> > > +++ b/drivers/tee/optee/ffa_abi.c
-> > > @@ -0,0 +1,907 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +/*
-> > > + * Copyright (c) 2021, Linaro Limited
-> > > + */
-> > > +
-> > > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > > +
-> > > +#include <linux/arm_ffa.h>
-> > > +#include <linux/errno.h>
-> > > +#include <linux/scatterlist.h>
-> > > +#include <linux/sched.h>
-> > > +#include <linux/slab.h>
-> > > +#include <linux/string.h>
-> > > +#include <linux/tee_drv.h>
-> > > +#include <linux/types.h>
-> > > +#include "optee_private.h"
-> > > +#include "optee_ffa.h"
-> > > +#include "optee_rpc_cmd.h"
-> > > +
-> > > +/*
-> > > + * This file implement the FF-A ABI used when communicating with secure world
-> > > + * OP-TEE OS via FF-A.
-> > > + * This file is divided into the follow sections:
-> >
-> > s/follow/following/
->
-> Thanks, I'll fix.
->
-> [snip]
-> > > +static bool optee_ffa_exchange_caps(struct ffa_device *ffa_dev,
-> > > +                                   const struct ffa_dev_ops *ops,
-> > > +                                   unsigned int *rpc_arg_count)
-> > > +{
-> > > +       struct ffa_send_direct_data data = { OPTEE_FFA_EXCHANGE_CAPABILITIES };
-> > > +       int rc;
-> > > +
-> > > +       rc = ops->sync_send_receive(ffa_dev, &data);
-> > > +       if (rc) {
-> > > +               pr_err("Unexpected error %d", rc);
-> > > +               return false;
-> > > +       }
-> > > +       if (data.data0) {
-> > > +               pr_err("Unexpected exchange error %lu", data.data0);
-> > > +               return false;
-> > > +       }
-> > > +
-> > > +       *rpc_arg_count = (u8)data.data1;
-> >
-> > Why is this special capability required in case of FF-A? Is it true
-> > that RPC arguments count will be fixed for all RPC commands?
->
-> It's to allow this driver to preallocate the argument struct used when
-> doing RPC. That way we can avoid the chicken and egg problem of allocating
-> an RPC argumet struct just before doing the real RPC.
->
-> This is the maximum number of arguments needed by secure world. In case
-> a larger value ever is needed, secure world will be able to supply the
-> needed value.
->
-> I plan to update the SMC based ABI with this also, but not in the patch
-> set.
->
 
-Okay, I see the requirement with FF-A ABI that we need to pass memory
-reference to "struct thread_rpc_arg" while in case of SMC ABI we
-directly pass the RPC commands in registers which allows it to work
-without pre-allocation.
 
-So I am fine with this approach as well given that the pre-allocated
-memory for RPC arguments may be left unused in some cases but that's
-fine when compared with the overhead of extra RPC calls with SMC ABI.
+On 2021/8/27 13:04, Dan Williams wrote:
+> On Thu, Aug 26, 2021 at 8:30 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>>
+>>
+>>
+>> On 2021/8/20 23:18, Dan Williams wrote:
+>>> On Thu, Aug 19, 2021 at 11:13 PM ruansy.fnst <ruansy.fnst@fujitsu.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2021/8/20 上午11:01, Dan Williams wrote:
+>>>>> On Sun, Aug 15, 2021 at 11:05 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>>>>>>
+>>>>>> After writing data, reflink requires end operations to remap those new
+>>>>>> allocated extents.  The current ->iomap_end() ignores the error code
+>>>>>> returned from ->actor(), so we introduce this dax_iomap_ops and change
+>>>>>> the dax_iomap_*() interfaces to do this job.
+>>>>>>
+>>>>>> - the dax_iomap_ops contains the original struct iomap_ops and fsdax
+>>>>>>        specific ->actor_end(), which is for the end operations of reflink
+>>>>>> - also introduce dax specific zero_range, truncate_page
+>>>>>> - create new dax_iomap_ops for ext2 and ext4
+>>>>>>
+>>>>>> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+>>>>>> ---
+>>>>>>     fs/dax.c               | 68 +++++++++++++++++++++++++++++++++++++-----
+>>>>>>     fs/ext2/ext2.h         |  3 ++
+>>>>>>     fs/ext2/file.c         |  6 ++--
+>>>>>>     fs/ext2/inode.c        | 11 +++++--
+>>>>>>     fs/ext4/ext4.h         |  3 ++
+>>>>>>     fs/ext4/file.c         |  6 ++--
+>>>>>>     fs/ext4/inode.c        | 13 ++++++--
+>>>>>>     fs/iomap/buffered-io.c |  3 +-
+>>>>>>     fs/xfs/xfs_bmap_util.c |  3 +-
+>>>>>>     fs/xfs/xfs_file.c      |  8 ++---
+>>>>>>     fs/xfs/xfs_iomap.c     | 36 +++++++++++++++++++++-
+>>>>>>     fs/xfs/xfs_iomap.h     | 33 ++++++++++++++++++++
+>>>>>>     fs/xfs/xfs_iops.c      |  7 ++---
+>>>>>>     fs/xfs/xfs_reflink.c   |  3 +-
+>>>>>>     include/linux/dax.h    | 21 ++++++++++---
+>>>>>>     include/linux/iomap.h  |  1 +
+>>>>>>     16 files changed, 189 insertions(+), 36 deletions(-)
+>>>>>>
+>>>>>> diff --git a/fs/dax.c b/fs/dax.c
+>>>>>> index 74dd918cff1f..0e0536765a7e 100644
+>>>>>> --- a/fs/dax.c
+>>>>>> +++ b/fs/dax.c
+>>>>>> @@ -1348,11 +1348,30 @@ static loff_t dax_iomap_iter(const struct iomap_iter *iomi,
+>>>>>>            return done ? done : ret;
+>>>>>>     }
+>>>>>>
+>>>>>> +static inline int
+>>>>>> +__dax_iomap_iter(struct iomap_iter *iter, const struct dax_iomap_ops *ops)
+>>>>>> +{
+>>>>>> +       int ret;
+>>>>>> +
+>>>>>> +       /*
+>>>>>> +        * Call dax_iomap_ops->actor_end() before iomap_ops->iomap_end() in
+>>>>>> +        * each iteration.
+>>>>>> +        */
+>>>>>> +       if (iter->iomap.length && ops->actor_end) {
+>>>>>> +               ret = ops->actor_end(iter->inode, iter->pos, iter->len,
+>>>>>> +                                    iter->processed);
+>>>>>> +               if (ret < 0)
+>>>>>> +                       return ret;
+>>>>>> +       }
+>>>>>> +
+>>>>>> +       return iomap_iter(iter, &ops->iomap_ops);
+>>>>>
+>>>>> This reorganization looks needlessly noisy. Why not require the
+>>>>> iomap_end operation to perform the actor_end work. I.e. why can't
+>>>>> xfs_dax_write_iomap_actor_end() just be the passed in iomap_end? I am
+>>>>> not seeing where the ->iomap_end() result is ignored?
+>>>>>
+>>>>
+>>>> The V6 patch[1] was did in this way.
+>>>> [1]https://lore.kernel.org/linux-xfs/20210526005159.GF202144@locust/T/#m79a66a928da2d089e2458c1a97c0516dbfde2f7f
+>>>>
+>>>> But Darrick reminded me that ->iomap_end() will always take zero or
+>>>> positive 'written' because iomap_apply() handles this argument.
+>>>>
+>>>> ```
+>>>>           if (ops->iomap_end) {
+>>>>                   ret = ops->iomap_end(inode, pos, length,
+>>>>                                        written > 0 ? written : 0,
+>>>>                                        flags, &iomap);
+>>>>           }
+>>>> ```
+>>>>
+>>>> So, we cannot get actual return code from CoW in ->actor(), and as a
+>>>> result, we cannot handle the xfs end_cow correctly in ->iomap_end().
+>>>> That's where the result of CoW was ignored.
+>>>
+>>> Ah, thank you for the explanation.
+>>>
+>>> However, this still seems like too much code thrash just to get back
+>>> to the original value of iter->processed. I notice you are talking
+>>> about iomap_apply(), but that routine is now gone in Darrick's latest
+>>> iomap-for-next branch. Instead iomap_iter() does this:
+>>>
+>>>           if (iter->iomap.length && ops->iomap_end) {
+>>>                   ret = ops->iomap_end(iter->inode, iter->pos, iomap_length(iter),
+>>>                                   iter->processed > 0 ? iter->processed : 0,
+>>
+>> As you can see, here is the same logic as the old iomap_apply(): the
+>> negative iter->processed won't be passed into ->iomap_end().
+>>
+>>>                                   iter->flags, &iter->iomap);
+>>>                   if (ret < 0 && !iter->processed)
+>>>                           return ret;
+>>>           }
+>>>
+>>>
+>>> I notice that the @iomap argument to ->iomap_end() is reliably coming
+>>> from @iter. So you could do the following in your iomap_end()
+>>> callback:
+>>>
+>>>           struct iomap_iter *iter = container_of(iomap, typeof(*iter), iomap);
+>>>           struct xfs_inode *ip = XFS_I(inode);
+>>>           ssize_t written = iter->processed;
+>>
+>> The written will be 0 or positive.  The original error code is ingnored.
+> 
+> Correct, but you can use container_of() to get back to the iter and
+> consider the raw untranslated value of iter->processed. As Christoph
+> mentioned this needs a comment explaining the layering violation, but
+> that's a cleaner change than the dax_iomap_ops approach.
+> 
 
-> >
-> > > +
-> > > +       return true;
-> > > +}
->
-> [snip]
-> > > +static int optee_ffa_probe(struct ffa_device *ffa_dev)
-> > > +{
-> > > +       const struct ffa_dev_ops *ffa_ops;
-> > > +       unsigned int rpc_arg_count;
-> > > +       struct tee_device *teedev;
-> > > +       struct optee *optee;
-> > > +       int rc;
-> > > +
-> > > +       ffa_ops = ffa_dev_ops_get(ffa_dev);
-> > > +       if (!ffa_ops) {
-> > > +               pr_warn("failed \"method\" init: ffa\n");
-> > > +               return -ENOENT;
-> > > +       }
-> > > +
-> > > +       if (!optee_ffa_api_is_compatbile(ffa_dev, ffa_ops))
-> > > +               return -EINVAL;
-> > > +
-> > > +       if (!optee_ffa_exchange_caps(ffa_dev, ffa_ops, &rpc_arg_count))
-> > > +               return -EINVAL;
-> > => +
-> > > +       optee = kzalloc(sizeof(*optee), GFP_KERNEL);
-> > > +       if (!optee) {
-> > > +               rc = -ENOMEM;
-> > > +               goto err;
-> > > +       }
-> > > +       optee->pool = optee_ffa_config_dyn_shm();
-> > > +       if (IS_ERR(optee->pool)) {
-> > > +               rc = PTR_ERR(optee->pool);
-> > > +               optee->pool = NULL;
-> > > +               goto err;
-> > > +       }
-> >
-> > IIUC, with FF-A we will only be supporting dynamic shared memory. So
-> > CFG_CORE_DYN_SHM=y should be enforced in OP-TEE OS when
-> > CFG_CORE_FFA=y, but I don't see that currently. Am I missing
-> > something?
->
-> You mean in optee_os.git? With FF-A dynamic shared memory is always
-> handled, so that flag in irrelevant in that case. However, feel free to
-> start a discussion on that topic at github.
+Understood.  Thanks.
 
-Ah, I see. You are correct that FF-A enables dynamic shared memory by default.
+--
+Ruan.
 
-FWIW, feel free to add:
 
-Acked-by: Sumit Garg <sumit.garg@linaro.org>
-
--Sumit
-
->
-> Thanks,
-> Jens
