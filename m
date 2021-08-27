@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892073F9938
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6503F993C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245156AbhH0Mwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 08:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231271AbhH0Mwf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 08:52:35 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA513C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 05:51:46 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id m26so5633527pff.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 05:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ImX+lEaSLVHqZqeaBkJ+uFMURgXjdXd4Hy04paLGmRQ=;
-        b=lWvXxEcl+wUBeQvpAN5BDFR3ErqdZX7RBoyb9HtmqOJQAwLFGY99pPmPPhT/OfP+Ac
-         4onIfbzZVheFnzp8S+breGr7p0VQmR2ZJsMYBhHW7BdNQxTfZqND9ffiCfM01hdrQdrM
-         mgctm/7iX4NBeQXCiKCpbAiX2cgHPpnmCkazhafECMZCek8mXcV7IrcF2yCerK3A1JMj
-         jfsj6WS6ZoDfa9FhqdK9ByIkwycSSACzgMfIO9o5P8uq9D1Q2zFNENsj4F9Z6XJvkbRv
-         lxp4g9kv+tzMxPeR4fBDgiDRDbDXil8NAdU14tq8SjafJTuvoz+x5/JLP78/8btREUKi
-         kcMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ImX+lEaSLVHqZqeaBkJ+uFMURgXjdXd4Hy04paLGmRQ=;
-        b=a0buZTc2/kKRgV53Tsga7E50zQKMC9fjNJ+zk7Dovmonuv+UrGxvK5I5OlVARYdMO+
-         +dP1bMpawNng7IK1aQSjHdjVR2eO4hOo17ONqtxv8/ZlENg0DsVOGMA+Fs3sTY1NCI9z
-         kvgqCiGRC03MWmw12EgrbhxFs1diMTP3scMYPWRX2xbQ09YV+fz8no8NKkjl2OmV1JE8
-         tq8wGVLPWDqw3AkpU0bapfYDBMh6QsFZ1US/vUfKJMruM0qVkdStAz7nrsaEjrkFjviH
-         UbOohx9c/uW3ciBL4LpFvE12vdRJBlbddCED9kDNuImJGyJCHQPA58jcwyTxt9R54sfN
-         aRlA==
-X-Gm-Message-State: AOAM530pSefIa7+Idn3qhutmuKsWOM4XFTd0Km5ar5cWcf8dwXfJfQ2Q
-        MWqK6yjt/sA28A0oW/2LtaA=
-X-Google-Smtp-Source: ABdhPJyGbOM6XZ9I6eRr5sx+i8vS4BGkS6+oR72LHvZ7bMs2tmSEOH8TnG4FELGLnhtDIvWleEAXOA==
-X-Received: by 2002:a65:6883:: with SMTP id e3mr7852361pgt.90.1630068706346;
-        Fri, 27 Aug 2021 05:51:46 -0700 (PDT)
-Received: from localhost.localdomain ([112.17.247.23])
-        by smtp.gmail.com with ESMTPSA id n3sm6236982pfo.101.2021.08.27.05.51.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Aug 2021 05:51:45 -0700 (PDT)
-From:   Wenlong Zhang <yixiaonn@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
-        marcocesati@gmail.com, insafonov@gmail.com, cyruscyliu@gmail.com,
-        yajin@vm-kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, Wenlong Zhang <yixiaonn@gmail.com>
-Subject: [PATCH v3] staging: rtl8723bs: prevent ->ssid overflow in rtw_wx_set_scan()
-Date:   Fri, 27 Aug 2021 20:50:59 +0800
-Message-Id: <20210827125059.26694-1-yixiaonn@gmail.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <YSfjtZsISLH6cktF@kroah.com>
-References: <YSfjtZsISLH6cktF@kroah.com>
+        id S245162AbhH0MyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 08:54:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:41376 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231964AbhH0MyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 08:54:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630068802; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=023YrzZ8LpsSoMj53i6JFFETaout/dUogNgKAIVS0TE=; b=u32tUbVj1YqDmTipG6esmrj991t53JlpeTO9bEjVXoqygPTqsFSLDL9OYoC2qnmekzVMKUtm
+ PXaK88laED0yPvV3XV5rM48dtA7tIX8yQdGgM2nqoXpew0FQg3O68s9AMfh6Lht7ASdRFGjo
+ 6VNVzrxbaKyunY4JDV8Dz3lqwQg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6128e039e0fcecca1941bc04 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Aug 2021 12:53:13
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EF854C43618; Fri, 27 Aug 2021 12:53:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D9B0AC43460;
+        Fri, 27 Aug 2021 12:53:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D9B0AC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        =?utf-8?B?QW7DrWJhbCBM?= =?utf-8?B?aW3Ds24=?= 
+        <anibal.limon@linaro.org>
+Subject: Re: [RESEND PATCH] wcn36xx: Allow firmware name to be overridden by DT
+References: <20210824171225.686683-1-bjorn.andersson@linaro.org>
+Date:   Fri, 27 Aug 2021 15:53:04 +0300
+In-Reply-To: <20210824171225.686683-1-bjorn.andersson@linaro.org> (Bjorn
+        Andersson's message of "Tue, 24 Aug 2021 10:12:25 -0700")
+Message-ID: <87fsuv59sf.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 74b6b20df8cf ("staging: rtl8188eu: prevent ->ssid overflow in rtw_wx_set_scan()")
-fixed up the staging driver rtl8188eu by adding another check
-to prevent writing beyond the end of the ->ssid[] array.
+Bjorn Andersson <bjorn.andersson@linaro.org> writes:
 
-Resolve this by properly fixing up the rtl8723bs driver's version of
-rtw_wx_set_scan()
+> The WLAN NV firmware blob differs between platforms, and possibly
+> devices, so add support in the wcn36xx driver for reading the path of
+> this file from DT in order to allow these files to live in a generic
+> file system (or linux-firmware).
+>
+> For some reason the parent (wcnss_ctrl) also needs to upload this blob,
+> so rather than specifying the same information in both nodes wcn36xx
+> reads the string from the parent's of_node.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Tested-by: An=C3=ADbal Lim=C3=B3n <anibal.limon@linaro.org>
 
-Fixes: 74b6b20df8cf ("staging: rtl8188eu: prevent ->ssid overflow in rtw_wx_set_scan()")
-Signed-off-by: Wenlong Zhang <yixiaonn@gmail.com>
----
-v3:
-- Added the changelogs for this patch.
-v2: 
-- Fixed the description of this patch.
-  Thanks Greg KH for the review and guidance
----
- drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[...]
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-index 902ac8169948..6fc1020cea11 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-@@ -1351,9 +1351,9 @@ static int rtw_wx_set_scan(struct net_device *dev, struct iw_request_info *a,
- 
- 					sec_len = *(pos++); len -= 1;
- 
--					if (sec_len > 0 && sec_len <= len) {
-+					if (sec_len > 0 && sec_len <= len && sec_len <= 32) {
- 						ssid[ssid_index].SsidLength = sec_len;
--						memcpy(ssid[ssid_index].Ssid, pos, ssid[ssid_index].SsidLength);
-+						memcpy(ssid[ssid_index].Ssid, pos, sec_len);
- 						/* DBG_871X("%s COMBO_SCAN with specific ssid:%s, %d\n", __func__ */
- 						/* 	, ssid[ssid_index].Ssid, ssid[ssid_index].SsidLength); */
- 						ssid_index++;
--- 
-2.15.0
+> --- a/drivers/net/wireless/ath/wcn36xx/main.c
+> +++ b/drivers/net/wireless/ath/wcn36xx/main.c
+> @@ -1500,6 +1500,13 @@ static int wcn36xx_probe(struct platform_device *p=
+dev)
+>  		goto out_wq;
+>  	}
+>=20=20
+> +	wcn->nv_file =3D WLAN_NV_FILE;
+> +	ret =3D of_property_read_string(wcn->dev->parent->of_node, "firmware-na=
+me", &wcn->nv_file);
+> +	if (ret < 0 && ret !=3D -EINVAL) {
+> +		wcn36xx_err("failed to read \"firmware-name\" property\n");
 
+I included the value of ret to the error print to ease debugging.
+Modified patch is soon in the pending branch, please take a look.
+
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
