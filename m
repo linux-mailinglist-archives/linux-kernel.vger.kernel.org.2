@@ -2,135 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2733F9D0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5123F9D0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237166AbhH0Qwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239681AbhH0Qwv (ORCPT
+        id S233571AbhH0QyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:54:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53762 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232649AbhH0QyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:52:51 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DBAC0617AE
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:52:02 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id s15so2452451qta.10
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nm5f4TdykV0Ij8N80OXzW6n74qiksoV2Mz6T3bNcU4c=;
-        b=WpMImxTPH0oqNigcdNaPe3TalPVZxGNIypXpTMh6+4KoJHhi7xXR01+ileZaSM8UFm
-         nmXdWe5LE6PVPClzBloI1zRgpV4Hf5SkcnnUgCWsOKNpVVNkksUvD2CJCDBOqD83sP+l
-         IdlmSCqaJKHANuvGz6mBMIO0QO2jKhAlfZKNnxwmO8AwFT/FFU77A/jOeD7UAFa0V/bw
-         KS6DF4fU86u9GkYKn+t6MFbRPVpjSv9+HPL7u29z9jbikqjShfG42wBcgnDvW/CUNkq7
-         rA3ngjetilfeeJK5lyk6Gb/wjfQjeOiLIcOw2FJ4xHexazEAp7Bo1SMmrzHwpMSzHNLW
-         u1zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nm5f4TdykV0Ij8N80OXzW6n74qiksoV2Mz6T3bNcU4c=;
-        b=hXGlQowtE9WOOlSODiaoHCK33rfLfnHd19DE48j/1yZDNTUkYcG0gDmWoCtWpocMUU
-         HUhNxUq4v/Lz87DWQmOk6aR83vrGTPfjhrMkClE8rypS0wcUmAEKqXufrcaZr35DHhnX
-         6lXFyjkH5AmvWzmmhGFGYbz7O73y4J+3OLzEzdRDShzJIzayuY9u7XGyRhwVFpMJf5qa
-         G7dOZhdviEqsvuYEK0Gi/ij1hLMMfnhg1iAc+jIIyuGtQFdg7h8o2fwcn7tdoLm8vN6f
-         1qsT76o4jajX5WbLQ6ghBuOUaAAB4tkpwNobFM3NHa/vEjHyNldsB2qtLu5DQnJJnAj6
-         eR6Q==
-X-Gm-Message-State: AOAM532UYO3jYEx0ypZ8LHkI14n5CvgLhxK+WURy8ie/bAD7gOUicpbJ
-        Tkg6vYi7Fv3yASGBLwMC0GOD2w==
-X-Google-Smtp-Source: ABdhPJzfzX5zKzWjbUBZn31RTDJj2QP2YP2QnIppHCIOvhn1lTP8KwnEZv8V6Wd5jYKiX9XOx7WhOg==
-X-Received: by 2002:ac8:7c44:: with SMTP id o4mr9135892qtv.82.1630083121426;
-        Fri, 27 Aug 2021 09:52:01 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id x3sm4855078qkx.62.2021.08.27.09.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 09:52:00 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mJf5E-005kOn-4S; Fri, 27 Aug 2021 13:52:00 -0300
-Date:   Fri, 27 Aug 2021 13:52:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
-Message-ID: <20210827165200.GM1200268@ziepe.ca>
-References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
- <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
- <20210806014559.GM543798@ziepe.ca>
- <b5e6c4cd-8842-59ef-c089-2802057f3202@cn.fujitsu.com>
- <10c4bead-c778-8794-f916-80bf7ba3a56b@fujitsu.com>
- <20210827121034.GG1200268@ziepe.ca>
- <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
- <CAPcyv4ho-42iZB3W5ypfwj-2=+v6rRUCcwE4ntPXyDPgFjzp7g@mail.gmail.com>
+        Fri, 27 Aug 2021 12:54:15 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RGX4DK081644;
+        Fri, 27 Aug 2021 12:53:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ABrXeDwX9L9goAbNY31KRXH0SflMOTwVbieMWTEOvq8=;
+ b=mR+Q8J5Dns5ZME38/kkl1q6+hju7LN61Jy0h/0AJzVMSFEMgFaXlKAmTylgxSsjNMGo3
+ CGnV8VroE7S+De/pYxdCLp6fP5XDxFhEgAeLbT6c5VmNDCa7px4+AnKWKqG3V+H9FVb/
+ x0RWoPFgR8TTV3qPziaFRe7Ibp9P0L6lemKCpWu+x3P3pF2iFWYfIpB8Co9CW2QM2vWm
+ 15pOrws1cn/SZu6eD0KhAZGLgpDwXFfcawnPH7W/8EJFiPdzcVnbeo2RcA2Tawo+5X7O
+ S1Z/HXz0HTugFRfkDdlhNVndsX+wm4ZHNJTOCTDdb9iq69tb+YT8eFdZ9qcpCraisbIZ YA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq3039sgn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Aug 2021 12:53:04 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17RGaOaC098429;
+        Fri, 27 Aug 2021 12:53:03 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq3039seh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Aug 2021 12:53:03 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17RGlg2R012737;
+        Fri, 27 Aug 2021 16:53:01 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3ajrrhkvt0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Aug 2021 16:53:00 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17RGnATV57213276
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Aug 2021 16:49:10 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A93E75204E;
+        Fri, 27 Aug 2021 16:52:58 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.153.220])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 53E8252050;
+        Fri, 27 Aug 2021 16:52:58 +0000 (GMT)
+Subject: Re: [PATCH v6 02/11] powerpc/kernel/iommu: Add new
+ iommu_table_in_use() helper
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210817063929.38701-1-leobras.c@gmail.com>
+ <20210817063929.38701-3-leobras.c@gmail.com>
+From:   Frederic Barrat <fbarrat@linux.ibm.com>
+Message-ID: <39063d3f-82c6-3253-2483-249b0ec0ed9a@linux.ibm.com>
+Date:   Fri, 27 Aug 2021 18:52:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4ho-42iZB3W5ypfwj-2=+v6rRUCcwE4ntPXyDPgFjzp7g@mail.gmail.com>
+In-Reply-To: <20210817063929.38701-3-leobras.c@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: frjvUDEIAaOlsyNiqrIu9sjKN2jdOrpz
+X-Proofpoint-ORIG-GUID: uZuoa9jPZseUR0dlafozL9z9xcRyucsI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-27_04:2021-08-26,2021-08-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 adultscore=0 phishscore=0 lowpriorityscore=0 clxscore=1011
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108270098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 09:42:21AM -0700, Dan Williams wrote:
-> On Fri, Aug 27, 2021 at 6:05 AM Li, Zhijian <lizhijian@cn.fujitsu.com> wrote:
-> >
-> >
-> > on 2021/8/27 20:10, Jason Gunthorpe wrote:
-> > > On Fri, Aug 27, 2021 at 08:15:40AM +0000, lizhijian@fujitsu.com wrote:
-> > >> i looked over the change-log of hmm_vma_handle_pte(), and found that before
-> > >> 4055062 ("mm/hmm: add missing call to hmm_pte_need_fault in HMM_PFN_SPECIAL handling")
-> > >>
-> > >> hmm_vma_handle_pte() will not check pte_special(pte) if pte_devmap(pte) is true.
-> > >>
-> > >> when we reached
-> > >> "if (pte_special(pte) && !is_zero_pfn(pte_pfn(pte))) {"
-> > >> the pte have already presented and its pte's flag already fulfilled the request flags.
-> > >>
-> > >>
-> > >> My question is that
-> > >> Per https://01.org/blogs/dave/2020/linux-consumption-x86-page-table-bits,
-> > >> pte_devmap(pte) and pte_special(pte) could be both true in fsdax user case, right ?
-> > > How? what code creates that?
-> > >
-> > > I see:
-> > >
-> > > insert_pfn():
-> > >       /* Ok, finally just insert the thing.. */
-> > >       if (pfn_t_devmap(pfn))
-> > >               entry = pte_mkdevmap(pfn_t_pte(pfn, prot));
-> > >       else
-> > >               entry = pte_mkspecial(pfn_t_pte(pfn, prot));
-> > >
-> > > So what code path ends up setting both bits?
-> >
-> >   pte_mkdevmap() will set both _PAGE_SPECIAL | PAGE_DEVMAP
-> >
-> >   395 static inline pte_t pte_mkdevmap(pte_t pte)
-> >   396 {
-> >   397         return pte_set_flags(pte, _PAGE_SPECIAL|_PAGE_DEVMAP);
-> >   398 }
+
+
+On 17/08/2021 08:39, Leonardo Bras wrote:
+> Having a function to check if the iommu table has any allocation helps
+> deciding if a tbl can be reset for using a new DMA window.
 > 
-> I can't recall why _PAGE_SPECIAL is there. I'll take a look, but I
-> think setting _PAGE_SPECIAL in pte_mkdevmap() is overkill.
+> It should be enough to replace all instances of !bitmap_empty(tbl...).
+> 
+> iommu_table_in_use() skips reserved memory, so we don't need to worry about
+> releasing it before testing. This causes iommu_table_release_pages() to
+> become unnecessary, given it is only used to remove reserved memory for
+> testing.
+> 
+> Also, only allow storing reserved memory values in tbl if they are valid
+> in the table, so there is no need to check it in the new helper.
+> 
+> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> ---
 
-This is my feeling too, but every arch does it, so hmm should check
-it, at least for now as a stable fix
+Looks ok to me now, thanks!
+Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
 
-devmap has a struct page so it should be refcounted inside the VMA and
-that is the main thing that PAGE_SPECIAL disabled, AFAICR..
 
-The only places where pte_special are used that I wonder if are OK for
-devmap have to do with CPU cache maintenance
-
-vm_normal_page(), hmm_vma_handle_pte(), gup_pte_range() all look OK to
-drop the special bit
-
-Jason
+>   arch/powerpc/include/asm/iommu.h |  1 +
+>   arch/powerpc/kernel/iommu.c      | 61 ++++++++++++++++----------------
+>   2 files changed, 32 insertions(+), 30 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/iommu.h b/arch/powerpc/include/asm/iommu.h
+> index deef7c94d7b6..bf3b84128525 100644
+> --- a/arch/powerpc/include/asm/iommu.h
+> +++ b/arch/powerpc/include/asm/iommu.h
+> @@ -154,6 +154,7 @@ extern int iommu_tce_table_put(struct iommu_table *tbl);
+>    */
+>   extern struct iommu_table *iommu_init_table(struct iommu_table *tbl,
+>   		int nid, unsigned long res_start, unsigned long res_end);
+> +bool iommu_table_in_use(struct iommu_table *tbl);
+>   
+>   #define IOMMU_TABLE_GROUP_MAX_TABLES	2
+>   
+> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
+> index 2af89a5e379f..ed98ad63633e 100644
+> --- a/arch/powerpc/kernel/iommu.c
+> +++ b/arch/powerpc/kernel/iommu.c
+> @@ -690,32 +690,24 @@ static void iommu_table_reserve_pages(struct iommu_table *tbl,
+>   	if (tbl->it_offset == 0)
+>   		set_bit(0, tbl->it_map);
+>   
+> -	tbl->it_reserved_start = res_start;
+> -	tbl->it_reserved_end = res_end;
+> -
+> -	/* Check if res_start..res_end isn't empty and overlaps the table */
+> -	if (res_start && res_end &&
+> -			(tbl->it_offset + tbl->it_size < res_start ||
+> -			 res_end < tbl->it_offset))
+> -		return;
+> +	if (res_start < tbl->it_offset)
+> +		res_start = tbl->it_offset;
+>   
+> -	for (i = tbl->it_reserved_start; i < tbl->it_reserved_end; ++i)
+> -		set_bit(i - tbl->it_offset, tbl->it_map);
+> -}
+> +	if (res_end > (tbl->it_offset + tbl->it_size))
+> +		res_end = tbl->it_offset + tbl->it_size;
+>   
+> -static void iommu_table_release_pages(struct iommu_table *tbl)
+> -{
+> -	int i;
+> +	/* Check if res_start..res_end is a valid range in the table */
+> +	if (res_start >= res_end) {
+> +		tbl->it_reserved_start = tbl->it_offset;
+> +		tbl->it_reserved_end = tbl->it_offset;
+> +		return;
+> +	}
+>   
+> -	/*
+> -	 * In case we have reserved the first bit, we should not emit
+> -	 * the warning below.
+> -	 */
+> -	if (tbl->it_offset == 0)
+> -		clear_bit(0, tbl->it_map);
+> +	tbl->it_reserved_start = res_start;
+> +	tbl->it_reserved_end = res_end;
+>   
+>   	for (i = tbl->it_reserved_start; i < tbl->it_reserved_end; ++i)
+> -		clear_bit(i - tbl->it_offset, tbl->it_map);
+> +		set_bit(i - tbl->it_offset, tbl->it_map);
+>   }
+>   
+>   /*
+> @@ -779,6 +771,22 @@ struct iommu_table *iommu_init_table(struct iommu_table *tbl, int nid,
+>   	return tbl;
+>   }
+>   
+> +bool iommu_table_in_use(struct iommu_table *tbl)
+> +{
+> +	unsigned long start = 0, end;
+> +
+> +	/* ignore reserved bit0 */
+> +	if (tbl->it_offset == 0)
+> +		start = 1;
+> +	end = tbl->it_reserved_start - tbl->it_offset;
+> +	if (find_next_bit(tbl->it_map, end, start) != end)
+> +		return true;
+> +
+> +	start = tbl->it_reserved_end - tbl->it_offset;
+> +	end = tbl->it_size;
+> +	return find_next_bit(tbl->it_map, end, start) != end;
+> +}
+> +
+>   static void iommu_table_free(struct kref *kref)
+>   {
+>   	struct iommu_table *tbl;
+> @@ -795,10 +803,8 @@ static void iommu_table_free(struct kref *kref)
+>   
+>   	iommu_debugfs_del(tbl);
+>   
+> -	iommu_table_release_pages(tbl);
+> -
+>   	/* verify that table contains no entries */
+> -	if (!bitmap_empty(tbl->it_map, tbl->it_size))
+> +	if (iommu_table_in_use(tbl))
+>   		pr_warn("%s: Unexpected TCEs\n", __func__);
+>   
+>   	/* free bitmap */
+> @@ -1099,14 +1105,9 @@ int iommu_take_ownership(struct iommu_table *tbl)
+>   	for (i = 0; i < tbl->nr_pools; i++)
+>   		spin_lock_nest_lock(&tbl->pools[i].lock, &tbl->large_pool.lock);
+>   
+> -	iommu_table_release_pages(tbl);
+> -
+> -	if (!bitmap_empty(tbl->it_map, tbl->it_size)) {
+> +	if (iommu_table_in_use(tbl)) {
+>   		pr_err("iommu_tce: it_map is not empty");
+>   		ret = -EBUSY;
+> -		/* Undo iommu_table_release_pages, i.e. restore bit#0, etc */
+> -		iommu_table_reserve_pages(tbl, tbl->it_reserved_start,
+> -				tbl->it_reserved_end);
+>   	} else {
+>   		memset(tbl->it_map, 0xff, sz);
+>   	}
+> 
