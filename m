@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E943F968C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A123F9690
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244602AbhH0I7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
+        id S244584AbhH0I75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 04:59:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232757AbhH0I6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:58:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2120A608FE;
-        Fri, 27 Aug 2021 08:58:03 +0000 (UTC)
+        id S232757AbhH0I7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 04:59:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF9EB60FDA;
+        Fri, 27 Aug 2021 08:59:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630054685;
-        bh=77yL8U8+buC1Srr5lcXcqgg1GZ5TiZMsD9z6Pe25ohA=;
+        s=korg; t=1630054745;
+        bh=MCi/iLwDS2lKNvQHC6owLIj+45AM4PBViJAXy7zxvd8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FTvx7NUb9j2WXBbHdWdpnh2el917e6I0ArcOvvSYF8r1z0T0HXm6sZIewdkoJR6LL
-         HSJWk6TB5jjO8Xkvr+BYQNG28Zim2EMSHT2eMy/BR1uoWG7ks9FAtuFYrncU9lbySe
-         4oKkWzKTSxfmoUalOhYOB9mNN2tBYcEn7vZdgxhQ=
-Date:   Fri, 27 Aug 2021 10:57:59 +0200
+        b=Kogy+aRcFo00z5sZSqNR/2BF8GGrGago3CiX3fVplZ6QJQoQDlRqjoEHb1YZMC5KM
+         Q7DB+W3+gfJtj9ERzajJnEuj1ZICuuF2cceznbf3Ti2E7brQKUMPk5Ta9k9pEbmpWV
+         fp6At5m1YCWiDhIio8Rec2WNLipR8jwRY+0M8M5Y=
+Date:   Fri, 27 Aug 2021 10:59:02 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Prasad Sodagudi <psodagud@codeaurora.org>, rjw@rjwysocki.net
-Cc:     len.brown@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, pavel@ucw.cz
-Subject: Re: [PATCH v4] PM: sleep: core: Avoid setting power.must_resume to
- false
-Message-ID: <YSipF4KG130rw9lc@kroah.com>
-References: <1629732470-155444-1-git-send-email-psodagud@codeaurora.org>
+To:     yang.yang29@zte.com.cn
+Cc:     salah.triki@gmail.com, linux-kernel@vger.kernel.org,
+        xu.xin16@zte.com.cn
+Subject: Re: [PATCH] dio: add missing iounmap() after ioremap()
+Message-ID: <YSipVhlwqaWarFTt@kroah.com>
+References: <202108232045471583580@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1629732470-155444-1-git-send-email-psodagud@codeaurora.org>
+In-Reply-To: <202108232045471583580@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 08:27:50AM -0700, Prasad Sodagudi wrote:
-> There are variables(power.may_skip_resume and dev->power.must_resume)
-> and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
-> a system wide suspend transition.
+On Mon, Aug 23, 2021 at 08:45:47PM +0800, yang.yang29@zte.com.cn wrote:
+> From: xu xin <xu.xin16@zte.com.cn>
 > 
-> Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
-> its "noirq" and "early" resume callbacks to be skipped if the device
-> can be left in suspend after a system-wide transition into the working
-> state. PM core determines that the driver's "noirq" and "early" resume
-> callbacks should be skipped or not with dev_pm_skip_resume() function by
-> checking power.may_skip_resume variable.
+> If kzalloc() fails, the 'va' needs to be unmapped before returning -ENOMEM.
 > 
-> power.must_resume variable is getting set to false in __device_suspend()
-> function without checking device's DPM_FLAG_MAY_SKIP_RESUME settings.
-> In problematic scenario, where all the devices in the suspend_late
-> stage are successful and some device can fail to suspend in
-> suspend_noirq phase. So some devices successfully suspended in suspend_late
-> stage are not getting chance to execute __device_suspend_noirq()
-> to set dev->power.must_resume variable to true and not getting
-> resumed in early_resume phase.
-> 
-> Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
-> setting power.must_resume variable in __device_suspend function.
-> 
-> Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
-> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: xu xin <xu.xin16@zte.com.cn>
 > ---
->  V3 -> V4: Remove dev->power.usage_count variable check
->  V2 -> V3: Format issues patch posting
->  V1 -> V2: Fixed indentation and commit text to include scenario
->  drivers/base/power/main.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  drivers/dio/dio.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletions(-)
 > 
-> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> index d568772..50e8ea3 100644
-> --- a/drivers/base/power/main.c
-> +++ b/drivers/base/power/main.c
-> @@ -1642,7 +1642,10 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
->  	}
->  
->  	dev->power.may_skip_resume = true;
-> -	dev->power.must_resume = false;
-> +	if (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME))
-> +		dev->power.must_resume = false;
-> +	else
-> +		dev->power.must_resume = true;
->  
->  	dpm_watchdog_set(&wd, dev);
->  	device_lock(dev);
+> diff --git a/drivers/dio/dio.c b/drivers/dio/dio.c
+> index 4c06c93..7d19250 100644
+> --- a/drivers/dio/dio.c
+> +++ b/drivers/dio/dio.c
+> @@ -218,9 +218,11 @@ static int __init dio_init(void)
+> 
+>         /* Found a board, allocate it an entry in the list */
+>         dev = kzalloc(sizeof(struct dio_dev), GFP_KERNEL);
+> -       if (!dev)
+> +       if (!dev) {
+> +           if (scode >= DIOII_SCBASE)
+> +               iounmap(va);
+>             return -ENOMEM;
+> +       }
+>         dev->bus = &dio_bus;
+>         dev->dev.parent = &dio_bus.dev;
+>         dev->dev.bus = &dio_bus_type;
+> -- 
+> 2.15.2
 
-Seems sane, Rafael, any comments?
+
+Hi,
+
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch contains warnings and/or errors noticed by the
+  scripts/checkpatch.pl tool.
+
+- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
+  and can not be applied.  Please read the file,
+  Documentation/email-clients.txt in order to fix this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
 thanks,
 
-greg k-h
+greg k-h's patch email bot
