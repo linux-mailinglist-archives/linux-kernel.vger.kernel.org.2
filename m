@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B313F9DAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250163F9DAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240517AbhH0RSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:18:45 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:17599 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240475AbhH0RSo (ORCPT
+        id S240707AbhH0RSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:18:50 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:60421 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240482AbhH0RSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:18:44 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d74 with ME
-        id mhHu250093riaq203hHuaw; Fri, 27 Aug 2021 19:17:54 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 27 Aug 2021 19:17:54 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     eli.billauer@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH v1 4/4] char: xillybus: Simplify 'xillybus_init_endpoint()'
-Date:   Fri, 27 Aug 2021 19:17:53 +0200
-Message-Id: <ba687c1eff5dc8f21422323f57164d06f25d4169.1630083668.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1630083668.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1630083668.git.christophe.jaillet@wanadoo.fr>
+        Fri, 27 Aug 2021 13:18:45 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 1115082098;
+        Fri, 27 Aug 2021 20:17:55 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1630084675;
+        bh=5Nw7v9NTMS8258UFCfYCXGLMQoTyuQKiZqWPaggUcRg=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=pdVACW35hyhaFzg3zWisQOuPMSYYs1UIjG96vGDuqJqVxdnqb543ANHeTHaE5Oil3
+         P+gkXxKGL59DG69Of1wKoTNWHY2DiaBaOPEQ294l5Q7uIaTd//1Ranf2Oqy5nT8EZ0
+         pQiEeh/LOv7IYFHZbAWhk3MoHf8ZRHp7UtXfUhLc=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 27 Aug 2021 20:17:54 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%12]) with
+ mapi id 15.01.2176.009; Fri, 27 Aug 2021 20:17:54 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Kari Argillander <kari.argillander@gmail.com>
+CC:     "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH] fs/ntfs3: fix an error code in ntfs_get_acl_ex()
+Thread-Topic: [PATCH] fs/ntfs3: fix an error code in ntfs_get_acl_ex()
+Thread-Index: AQHXmN4THTu3LgVVhE6dhDj9H1dO4KuCqQOAgAAH9QCABOwqsA==
+Date:   Fri, 27 Aug 2021 17:17:54 +0000
+Message-ID: <dbd79495182b43568d1c6b397d1abfff@paragon-software.com>
+References: <20210824114858.GH31143@kili>
+ <20210824163851.hfbjqqpztgk4ngd5@kari-VirtualBox>
+ <20210824170720.GO7722@kadam>
+In-Reply-To: <20210824170720.GO7722@kadam>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.0.26]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ths first argument of 'xillybus_init_endpoint()' is now useless.
-Remove it.
+> From: Dan Carpenter <dan.carpenter@oracle.com>
+> Sent: Tuesday, August 24, 2021 8:07 PM
+> To: Kari Argillander <kari.argillander@gmail.com>
+> Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>; ntfs3@=
+lists.linux.dev; linux-kernel@vger.kernel.org; kernel-
+> janitors@vger.kernel.org
+> Subject: Re: [PATCH] fs/ntfs3: fix an error code in ntfs_get_acl_ex()
+>=20
+> On Tue, Aug 24, 2021 at 07:38:51PM +0300, Kari Argillander wrote:
+> > On Tue, Aug 24, 2021 at 02:48:58PM +0300, Dan Carpenter wrote:
+> > > diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+> > > index 9239c388050e..e8ed38d0c4c9 100644
+> > > --- a/fs/ntfs3/xattr.c
+> > > +++ b/fs/ntfs3/xattr.c
+> > > @@ -521,7 +521,7 @@ static struct posix_acl *ntfs_get_acl_ex(struct u=
+ser_namespace *mnt_userns,
+> > >  		ni_unlock(ni);
+> > >
+> > >  	/* Translate extended attribute to acl */
+> > > -	if (err > 0) {
+> > > +	if (err >=3D 0) {
+> >
+> > So now if err (size) is 0 it will try to get acl. Didn't you just say
+> > that you want to return PTR_ERR(-EINVAL)?
+> >
+>=20
+> If you pass an invalid too short size to posix_acl_from_xattr() then it
+> returns PTR_ERR(-EINVAL).  It was hard to phrase this in the change log
+> but I feel like length of 1 and 0 should be treated the same.
+>=20
+>=20
+> > So overall good finding but maybe more work is needed with this one.
+> >
+> > >  		acl =3D posix_acl_from_xattr(mnt_userns, buf, err);
+> > >  		if (!IS_ERR(acl))
+> > >  			set_cached_acl(inode, type, acl);
+>=20
+> regards,
+> dan carpenter
+>=20
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/char/xillybus/xillybus.h      | 3 +--
- drivers/char/xillybus/xillybus_core.c | 4 +---
- drivers/char/xillybus/xillybus_of.c   | 2 +-
- drivers/char/xillybus/xillybus_pcie.c | 2 +-
- 4 files changed, 4 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/char/xillybus/xillybus.h b/drivers/char/xillybus/xillybus.h
-index 55d47cb13a7b..afce5bb4d127 100644
---- a/drivers/char/xillybus/xillybus.h
-+++ b/drivers/char/xillybus/xillybus.h
-@@ -134,8 +134,7 @@ struct xilly_mapping {
- 
- irqreturn_t xillybus_isr(int irq, void *data);
- 
--struct xilly_endpoint *xillybus_init_endpoint(struct pci_dev *pdev,
--					      struct device *dev,
-+struct xilly_endpoint *xillybus_init_endpoint(struct device *dev,
- 					      struct xilly_endpoint_hardware
- 					      *ephw);
- 
-diff --git a/drivers/char/xillybus/xillybus_core.c b/drivers/char/xillybus/xillybus_core.c
-index 0ced9ec6977f..02f30140c2d5 100644
---- a/drivers/char/xillybus/xillybus_core.c
-+++ b/drivers/char/xillybus/xillybus_core.c
-@@ -1772,8 +1772,7 @@ static const struct file_operations xillybus_fops = {
- 	.poll       = xillybus_poll,
- };
- 
--struct xilly_endpoint *xillybus_init_endpoint(struct pci_dev *pdev,
--					      struct device *dev,
-+struct xilly_endpoint *xillybus_init_endpoint(struct device *dev,
- 					      struct xilly_endpoint_hardware
- 					      *ephw)
- {
-@@ -1783,7 +1782,6 @@ struct xilly_endpoint *xillybus_init_endpoint(struct pci_dev *pdev,
- 	if (!endpoint)
- 		return NULL;
- 
--	(void)pdev;	// silence a compiler warning, will be removed
- 	endpoint->dev = dev;
- 	endpoint->ephw = ephw;
- 	endpoint->msg_counter = 0x0b;
-diff --git a/drivers/char/xillybus/xillybus_of.c b/drivers/char/xillybus/xillybus_of.c
-index 1a20b286fd1d..4e6e0c19d8c8 100644
---- a/drivers/char/xillybus/xillybus_of.c
-+++ b/drivers/char/xillybus/xillybus_of.c
-@@ -120,7 +120,7 @@ static int xilly_drv_probe(struct platform_device *op)
- 	if (of_property_read_bool(dev->of_node, "dma-coherent"))
- 		ephw = &of_hw_coherent;
- 
--	endpoint = xillybus_init_endpoint(NULL, dev, ephw);
-+	endpoint = xillybus_init_endpoint(dev, ephw);
- 
- 	if (!endpoint)
- 		return -ENOMEM;
-diff --git a/drivers/char/xillybus/xillybus_pcie.c b/drivers/char/xillybus/xillybus_pcie.c
-index f4be61349ca6..a6ef4ce90649 100644
---- a/drivers/char/xillybus/xillybus_pcie.c
-+++ b/drivers/char/xillybus/xillybus_pcie.c
-@@ -124,7 +124,7 @@ static int xilly_probe(struct pci_dev *pdev,
- 	struct xilly_endpoint *endpoint;
- 	int rc;
- 
--	endpoint = xillybus_init_endpoint(pdev, &pdev->dev, &pci_hw);
-+	endpoint = xillybus_init_endpoint(&pdev->dev, &pci_hw);
- 
- 	if (!endpoint)
- 		return -ENOMEM;
--- 
-2.30.2
-
+Applied, thanks!
