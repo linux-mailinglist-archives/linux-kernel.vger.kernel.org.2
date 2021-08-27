@@ -2,109 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 139E83F9CB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD2B3F9CBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbhH0QnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbhH0QnV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:43:21 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722A4C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:42:32 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so9272132pjr.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N4ycuy1sr/uw7TD/lnGtmhJPET4O9tG56DU4s7vExRc=;
-        b=Lvoj7e2n4w0IK4etf1iQ9jYZqI7qgmyxocAuTVCR51wfVsM28PORXBncAmMiSb0x3e
-         gXKO8JFv+/stlktlnaeDoUlxaVoGBLZ5ZsgHPfC5/Aq9HrdpUiYRUoQ/1+/0/BxOFR+v
-         K7gYD0KPFk0KEAAWY5Vhx9xAHx7VlgBY6t7s6nltGRqP2xWwncovu6AsRkePywesuhRH
-         a6NpkpoQ+YZzvrV0GkepU5Ky8P3+XdqHMZ7ivVQHBsSV9uGpJEoaucRLLVjyKgiib9do
-         nAqnLT9d4hAmtf5EmyL014xAmvelwGeJ/AcSgrD+VM20kPD9NC+fd8o/hwnX0Fn7W45d
-         8Xmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N4ycuy1sr/uw7TD/lnGtmhJPET4O9tG56DU4s7vExRc=;
-        b=Re9gg/O9cg/4ooMGu5mlOY/5k9mEtCt/t6OeO8eYKoUQVpl8m+8mDN0KhTKyLl0bPK
-         rTawC9JfIRUUjGc73Nzy2zd721UCgGFg5iQxK+I2dMgXqYfxGs0l3vXiJ7/zvzm6rE1G
-         o2vIU9M1q5TPyPUyiDbDvVj24f+Z/Utb6Svy7gwUjylTdu05s+CZqa8kGtQqsO3+h3rx
-         NhfiLAYP6Lt4nBGfhTrEGjDZbc2Rg8qauhBUYczpmyePSdztFZl2uD0jYc6aPcQcjBhD
-         yzsJqWWVrA8nXOOn+SVJYKj81yCD3BJRnalYM6I5sQhH14vvnYZ5LOhxillVfmEWb9ub
-         L6/g==
-X-Gm-Message-State: AOAM533f1G2m9LDtfAQAwjMOGR0HGDIpT/zfNCn7bpjdBSeLMNQPshpv
-        ppWnLLPXiI3ORgJdMuB/hYrfIR2T1Obj9tBaLCaNSA==
-X-Google-Smtp-Source: ABdhPJziK4HQfETlenNGQKDOWz+QE54n/rfbSQZA9GTYS/ZDxIcUoBcbFTG/U6SCP1KUl+Nf8+OpMuqzoNMp0yB/eFw=
-X-Received: by 2002:a17:902:edd0:b0:135:b351:bd5a with SMTP id
- q16-20020a170902edd000b00135b351bd5amr9562085plk.52.1630082551867; Fri, 27
- Aug 2021 09:42:31 -0700 (PDT)
+        id S232098AbhH0QrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:47:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229560AbhH0QrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 12:47:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67D0960FD8;
+        Fri, 27 Aug 2021 16:46:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630082795;
+        bh=hMhFii5SEnyesU+J3DnJAqd9NcCDRrvpJCnbR/n6FBY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=B/tcAg/jio1dncVSKclmFp0GAyYR0lBls+lVdKbgBAHYy6xLf3QSrst94KvbUbKbO
+         zgffjO0KvcZAqS1BibHrhskCc5wjfo2WbZvu7Y8k2NGzc6Yw+H2FuttJv7R23dLrZ4
+         EZfmEODkqHx/Xre09qo7Wf2QpY7rZLiQoV/S5hsmrIoRu4L+7xI1N3Sx/toGLRHEK9
+         btPWBH1NcHlU8uOiLkFLWxkGud9ccL/h0H4fAXwpBETCrcbcn921HenLA02jFjyYYa
+         IQgkiSunEAQGswpfPzZUD4RcN1oIMHls85ag4dybbvQmWQHWJXw4pqRPDAu1J1UrwZ
+         iEky6AUjHTZvw==
+Date:   Fri, 27 Aug 2021 11:46:34 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Chuanjia Liu <chuanjia.liu@mediatek.com>
+Cc:     robh+dt@kernel.org, bhelgaas@google.com, matthias.bgg@gmail.com,
+        lorenzo.pieralisi@arm.com, ryder.lee@mediatek.com,
+        jianjun.wang@mediatek.com, yong.wu@mediatek.com,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v12 2/6] PCI: mediatek: Add new method to get shared
+ pcie-cfg base address
+Message-ID: <20210827164634.GA3779223@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
- <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com> <20210806014559.GM543798@ziepe.ca>
- <b5e6c4cd-8842-59ef-c089-2802057f3202@cn.fujitsu.com> <10c4bead-c778-8794-f916-80bf7ba3a56b@fujitsu.com>
- <20210827121034.GG1200268@ziepe.ca> <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
-In-Reply-To: <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 27 Aug 2021 09:42:21 -0700
-Message-ID: <CAPcyv4ho-42iZB3W5ypfwj-2=+v6rRUCcwE4ntPXyDPgFjzp7g@mail.gmail.com>
-Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
-To:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823032800.1660-3-chuanjia.liu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 6:05 AM Li, Zhijian <lizhijian@cn.fujitsu.com> wrote:
->
->
-> on 2021/8/27 20:10, Jason Gunthorpe wrote:
-> > On Fri, Aug 27, 2021 at 08:15:40AM +0000, lizhijian@fujitsu.com wrote:
-> >> i looked over the change-log of hmm_vma_handle_pte(), and found that before
-> >> 4055062 ("mm/hmm: add missing call to hmm_pte_need_fault in HMM_PFN_SPECIAL handling")
-> >>
-> >> hmm_vma_handle_pte() will not check pte_special(pte) if pte_devmap(pte) is true.
-> >>
-> >> when we reached
-> >> "if (pte_special(pte) && !is_zero_pfn(pte_pfn(pte))) {"
-> >> the pte have already presented and its pte's flag already fulfilled the request flags.
-> >>
-> >>
-> >> My question is that
-> >> Per https://01.org/blogs/dave/2020/linux-consumption-x86-page-table-bits,
-> >> pte_devmap(pte) and pte_special(pte) could be both true in fsdax user case, right ?
-> > How? what code creates that?
-> >
-> > I see:
-> >
-> > insert_pfn():
-> >       /* Ok, finally just insert the thing.. */
-> >       if (pfn_t_devmap(pfn))
-> >               entry = pte_mkdevmap(pfn_t_pte(pfn, prot));
-> >       else
-> >               entry = pte_mkspecial(pfn_t_pte(pfn, prot));
-> >
-> > So what code path ends up setting both bits?
->
->   pte_mkdevmap() will set both _PAGE_SPECIAL | PAGE_DEVMAP
->
->   395 static inline pte_t pte_mkdevmap(pte_t pte)
->   396 {
->   397         return pte_set_flags(pte, _PAGE_SPECIAL|_PAGE_DEVMAP);
->   398 }
+On Mon, Aug 23, 2021 at 11:27:56AM +0800, Chuanjia Liu wrote:
+> For the new dts format, add a new method to get
+> shared pcie-cfg base address and use it to configure
+> the PCIECFG controller
 
-I can't recall why _PAGE_SPECIAL is there. I'll take a look, but I
-think setting _PAGE_SPECIAL in pte_mkdevmap() is overkill.
+Rewrap this to fill 75 columns.
+
+> Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
+> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> ---
+>  drivers/pci/controller/pcie-mediatek.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+> index 25bee693834f..4296d9e04240 100644
+> --- a/drivers/pci/controller/pcie-mediatek.c
+> +++ b/drivers/pci/controller/pcie-mediatek.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/irqchip/chained_irq.h>
+>  #include <linux/irqdomain.h>
+>  #include <linux/kernel.h>
+> +#include <linux/mfd/syscon.h>
+>  #include <linux/msi.h>
+>  #include <linux/module.h>
+>  #include <linux/of_address.h>
+> @@ -23,6 +24,7 @@
+>  #include <linux/phy/phy.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/regmap.h>
+>  #include <linux/reset.h>
+>  
+>  #include "../pci.h"
+> @@ -207,6 +209,7 @@ struct mtk_pcie_port {
+>   * struct mtk_pcie - PCIe host information
+>   * @dev: pointer to PCIe device
+>   * @base: IO mapped register base
+> + * @cfg: IO mapped register map for PCIe config
+>   * @free_ck: free-run reference clock
+>   * @mem: non-prefetchable memory resource
+>   * @ports: pointer to PCIe port information
+> @@ -215,6 +218,7 @@ struct mtk_pcie_port {
+>  struct mtk_pcie {
+>  	struct device *dev;
+>  	void __iomem *base;
+> +	struct regmap *cfg;
+>  	struct clk *free_ck;
+>  
+>  	struct list_head ports;
+> @@ -682,6 +686,10 @@ static int mtk_pcie_startup_port_v2(struct mtk_pcie_port *port)
+>  		val |= PCIE_CSR_LTSSM_EN(port->slot) |
+>  		       PCIE_CSR_ASPM_L1_EN(port->slot);
+>  		writel(val, pcie->base + PCIE_SYS_CFG_V2);
+> +	} else if (pcie->cfg) {
+> +		val = PCIE_CSR_LTSSM_EN(port->slot) |
+> +		      PCIE_CSR_ASPM_L1_EN(port->slot);
+> +		regmap_update_bits(pcie->cfg, PCIE_SYS_CFG_V2, val, val);
+>  	}
+>  
+>  	/* Assert all reset signals */
+> @@ -985,6 +993,7 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
+>  	struct device *dev = pcie->dev;
+>  	struct platform_device *pdev = to_platform_device(dev);
+>  	struct resource *regs;
+> +	struct device_node *cfg_node;
+>  	int err;
+>  
+>  	/* get shared registers, which are optional */
+> @@ -995,6 +1004,14 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
+>  			return PTR_ERR(pcie->base);
+>  	}
+>  
+> +	cfg_node = of_find_compatible_node(NULL, NULL,
+> +					   "mediatek,generic-pciecfg");
+
+This looks wrong to me.  IIUC, since we start at NULL, this searches
+the entire device tree for any node with
+
+  compatible = "mediatek,generic-pciecfg"
+
+but we should only care about the specific device/node this driver
+claimed.
+
+Should this be part of the match data, i.e., struct mtk_pcie_soc?
+
+> +	if (cfg_node) {
+> +		pcie->cfg = syscon_node_to_regmap(cfg_node);
+
+Other drivers in drivers/pci/controller/ use
+syscon_regmap_lookup_by_phandle() (j721e, dra7xx, keystone,
+layerscape, artpec6) or syscon_regmap_lookup_by_compatible() (imx6,
+kirin, v3-semi).
+
+You should do it the same way unless there's a need to be different.
+It's also nice if you can use the same struct member name
+("mtk_pcie.cfg") as other drivers.  They're not all consistent, but I
+don't see any other "cfg".
+
+> +		if (IS_ERR(pcie->cfg))
+> +			return PTR_ERR(pcie->cfg);
+> +	}
+> +
+>  	pcie->free_ck = devm_clk_get(dev, "free_ck");
+>  	if (IS_ERR(pcie->free_ck)) {
+>  		if (PTR_ERR(pcie->free_ck) == -EPROBE_DEFER)
+> -- 
+> 2.18.0
+> 
