@@ -2,165 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D54D3F9F9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0753F9FA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhH0TJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 15:09:33 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:42624 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhH0TJc (ORCPT
+        id S231206AbhH0TKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 15:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230446AbhH0TKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 15:09:32 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJhDO-00GZVm-U4; Fri, 27 Aug 2021 19:08:34 +0000
-Date:   Fri, 27 Aug 2021 19:08:34 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH v7 03/19] gup: Turn fault_in_pages_{readable,writeable}
- into fault_in_{readable,writeable}
-Message-ID: <YSk4Mvbyp8lxPfPF@zeniv-ca.linux.org.uk>
-References: <20210827164926.1726765-1-agruenba@redhat.com>
- <20210827164926.1726765-4-agruenba@redhat.com>
+        Fri, 27 Aug 2021 15:10:48 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181DCC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:09:59 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id a93so14472942ybi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:09:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AmqpPyCViUdQ6lV2XGHo1KoClyvYrg1o5PhxAHxFrNU=;
+        b=r/YqS1x4EeqispNU89qAK/xlc4TzaN4m3mOoOi3mTjNnJKjhznNasDf/9eIADbDelD
+         0CDsilL8J4JRfB6z6JIZAe3cy4WN+26vfyKeO3mMW2dtHMxWAJHmCEonJhzhRFDqk1yb
+         czL/CZx8zlQlvX9bwr2d8QGjjzHGdMUffXOaBNXAmL0QKWaQOObISPDdH7UuayD5X0/d
+         m/k2hQmocayd68Id0D6EKkUHz6yBVveMdJEn7xSYPgPoS4mpYk2qTINVPEDH9E50xlxR
+         u3xwNczNqf18h9dqHEEfQmQ080JEx8z/2peNox30LVoxAbF/ULIKtv1gQaKthrIb8mMg
+         V1fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AmqpPyCViUdQ6lV2XGHo1KoClyvYrg1o5PhxAHxFrNU=;
+        b=JqdXUVkaDojlpFfz14mFkKIwWc8SuS4eMpgR672ZEQUrQq0M9tGZUixY3X7oVtPDN+
+         Di4gP64r/4Sjz7awJHfxsOy88ZQWFbeknADsEzn+683Qd07FGq37UQvd8g0v3luiLqsh
+         36KStUjt+p7xTyn7SganY0Oh/cNRCX51DXaMqepnMQusMNwZR/5tCL1jSdW4IxXhi1xw
+         uokBn3xgHRyv1FcG7SRvz/iJyAScSl2ptUQLAl2+HwVP1gjzXRUnoHKqzS75fJnnZegL
+         bXQQH5J/fclGGqf7BgetsCzEbY8Y3jnmw6zxPgiPL8XWuc5wFmh0m0JrsheabH0Fund1
+         BifQ==
+X-Gm-Message-State: AOAM530GNwa3FxG49fMzmCE8tfBrtP8WNfcbgTPmciyQB0Pu9q8gKGH1
+        dAT/a0FYhz5C0wHNCQ9NdWZsxOSFFpNvhAN+5uBbdw==
+X-Google-Smtp-Source: ABdhPJyAq8493Ze/4BngPeKPMZmgpY2Y0wSygyb4JFj8HUfSp1QLt0YKKUJUFwKtDYkigqneF6kkcm8lGTeTRW+nL5s=
+X-Received: by 2002:a25:d213:: with SMTP id j19mr7541214ybg.20.1630091398019;
+ Fri, 27 Aug 2021 12:09:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827164926.1726765-4-agruenba@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
+ <20210816074619.177383-4-wangkefeng.wang@huawei.com> <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
+ <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
+ <ee649111-dc07-d6db-8872-dcb692802236@huawei.com> <CAGETcx9drOdE_vfn-nhDZM9MbgxGxYJN6ydiAVxo_Ltqve9eTg@mail.gmail.com>
+ <b5eb935f-26e1-6475-63af-e7f6101eb017@huawei.com> <CAGETcx9yaWZOzt=gcyNAshoHdPoYizhmrKS-kU9c2QM2+HqeEw@mail.gmail.com>
+ <df8e7756-8b0d-d7de-a9ff-3f6eb0ffa8a5@huawei.com> <CAGETcx-47yRUcBjEdWFBtroSEkHXRNrJ4zaD8WpE0DPEPp9NxQ@mail.gmail.com>
+ <85b28900-5f42-b997-2ded-0b952bc2a03e@huawei.com>
+In-Reply-To: <85b28900-5f42-b997-2ded-0b952bc2a03e@huawei.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 27 Aug 2021 12:09:22 -0700
+Message-ID: <CAGETcx-N4+u0iw9n5ncx_9MNnTa3ViyesxsDD7xN3jtEPT-uBw@mail.gmail.com>
+Subject: Re: [BUG] amba: Remove deferred device addition
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 06:49:10PM +0200, Andreas Gruenbacher wrote:
-> Turn fault_in_pages_{readable,writeable} into versions that return the
-> number of bytes not faulted in (similar to copy_to_user) instead of
-> returning a non-zero value when any of the requested pages couldn't be
-> faulted in.  This supports the existing users that require all pages to
-> be faulted in as well as new users that are happy if any pages can be
-> faulted in at all.
-> 
-> Neither of these functions is entirely trivial and it doesn't seem
-> useful to inline them, so move them to mm/gup.c.
-> 
-> Rename the functions to fault_in_{readable,writeable} to make sure that
-> this change doesn't silently break things.
+On Fri, Aug 27, 2021 at 7:38 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>
+>
+> On 2021/8/27 8:04, Saravana Kannan wrote:
+> > On Thu, Aug 26, 2021 at 1:22 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+> >>
+> >>>>> Btw, I've been working on [1] cleaning up the one-off deferred probe
+> >>>>> solution that we have for amba devices. That causes a bunch of other
+> >>>>> headaches. Your patch 3/3 takes us further in the wrong direction by
+> >>>>> adding more reasons for delaying the addition of the device.
+> >> Hi Saravana, I try the link[1], but with it, there is a crash when boot
+> >> (qemu-system-arm -M vexpress-a15),
 
-I'm sorry, but this is wrong.  The callers need to be reviewed and
-sanitized.  You have several oddball callers (most of them simply
-wrong) *and* the ones on a very hot path in write(2).  And _there_
-the existing behaviour does the wrong thing for memory poisoning setups.
+I'm assuming it's this one?
+arch/arm/boot/dts/vexpress-v2p-ca15_a7.dts
 
-	Do we have *any* cases where we both need the fault-in at all *and*
-would not be better off with "fail only if the first byte couldn't have been
-faulted in"?
+> > Hi,
+> >
+> > It's hard to make sense of the logs. Looks like two different threads
+> > might be printing to the log at the same time? Can you please enable
+> > the config that prints the thread ID (forgot what it's called) and
+> > collect this again? With what I could tell the crash seems to be
+> > happening somewhere in platform_match(), but that's not related to
+> > this patch at all?
+>
+> Can you reproduce it? it is very likely related(without your patch, the
+> boot is fine),
 
-> diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
-> index 0608581967f0..38c3eae40c14 100644
-> --- a/arch/powerpc/kernel/signal_32.c
-> +++ b/arch/powerpc/kernel/signal_32.c
-> @@ -1048,7 +1048,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
->  	if (new_ctx == NULL)
->  		return 0;
->  	if (!access_ok(new_ctx, ctx_size) ||
-> -	    fault_in_pages_readable((u8 __user *)new_ctx, ctx_size))
-> +	    fault_in_readable((char __user *)new_ctx, ctx_size))
->  		return -EFAULT;
+Sorry, I haven't ever setup qemu and booted vexpress. Thanks for your help.
 
-This is completely pointless.  Look at do_setcontext() there.  Seriously,
-it immediately does
-        if (!user_read_access_begin(ucp, sizeof(*ucp)))
-			return -EFAULT;
-so this access_ok() is so much garbage.  Then it does normal unsage_get_...()
-stuff, so it doesn't need that fault-in crap at all - it *must* handle
-copyin failures, fault-in or not.  Just lose that fault_in_... call and be
-done with that.
+> the NULL ptr is about serio, it is registed from amba driver.
+>
+> ambakmi_driver_init
+>
+>   -- amba_kmi_probe
+>
+>     -- __serio_register_port
 
+Thanks for the pointer. I took a look at the logs and the code. It's
+very strange. As you can see from the backtrace, platform_match() is
+being called for the device_add() from serio_handle_event(). But the
+device that gets added there is on the serio_bus which obviously
+should be using the serio_bus_match.
 
-> @@ -1237,7 +1237,7 @@ SYSCALL_DEFINE3(debug_setcontext, struct ucontext __user *, ctx,
->  #endif
->  
->  	if (!access_ok(ctx, sizeof(*ctx)) ||
-> -	    fault_in_pages_readable((u8 __user *)ctx, sizeof(*ctx)))
-> +	    fault_in_readable((char __user *)ctx, sizeof(*ctx)))
->  		return -EFAULT;
+>
+> +Dmitry and input maillist, is there some known issue about serio ?
+>
+> I add some debug, the full log is attached.
+>
+> [    2.958355][   T41] input: AT Raw Set 2 keyboard as
+> /devices/platform/bus@8000000/bus@8000000:motherboard-bus/bus@8000000:motherboard-bus:iofpga-bus@300000000/1c060000.kmi/serio0/input/input0
+> [    2.977441][   T41] serio serio1: pdev c1e05508, pdev->name (null),
+> drv c1090fc0, drv->name vexpress-reset
 
-Ditto.
+Based on the logs you added, it's pretty clear we are getting to
+platform_match(). It's also strange that the drv->name is
+vexpress-reset
 
-> diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
-> index 1831bba0582e..9f471b4a11e3 100644
-> --- a/arch/powerpc/kernel/signal_64.c
-> +++ b/arch/powerpc/kernel/signal_64.c
-> @@ -688,7 +688,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
->  	if (new_ctx == NULL)
->  		return 0;
->  	if (!access_ok(new_ctx, ctx_size) ||
-> -	    fault_in_pages_readable((u8 __user *)new_ctx, ctx_size))
-> +	    fault_in_readable((char __user *)new_ctx, ctx_size))
->  		return -EFAULT;
+> [    2.977928][   T41] 8<--- cut here ---
+> [    2.978162][   T41] Unhandled fault: page domain fault (0x01b) at
+> 0x00000000
+> [    2.978494][   T41] pgd = (ptrval)
+> [    2.978819][   T41] [00000000] *pgd=00000000
+> [    2.979881][   T41] Internal error: : 1b [#1] SMP ARM
+> [    2.980385][   T41] Modules linked in:
+> [    2.980810][   T41] CPU: 0 PID: 41 Comm: kworker/0:2 Not tainted
+> 5.14.0-rc7+ #213
+> [    2.981229][   T41] Hardware name: ARM-Versatile Express
+> [    2.981780][   T41] Workqueue: events_long serio_handle_event
+> [    2.982737][   T41] PC is at strcmp+0x18/0x44
+> [    2.983030][   T41] LR is at platform_match+0xdc/0xf0
+> [    2.983283][   T41] pc : [<c0560bcc>]    lr : [<c0646358>]    psr:
+> 600b0013
+> [    2.983572][   T41] sp : c1675d68  ip : c1675d78  fp : c1675d74
+> [    2.983832][   T41] r10: 00000000  r9 : 00000000  r8 : 00000001
+> [    2.984095][   T41] r7 : c1e05518  r6 : c1675df4  r5 : c1e05518  r4 :
+> c1090fc0
+> [    2.984395][   T41] r3 : c0a5e180  r2 : 6bede3db  r1 : c0b82a04  r0 :
+> 00000000
+> [    2.984906][   T41] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32 ISA
+> ARM  Segment none
 
-... and again.
+---- 8< ---- cleaning up a bunch of register dumps
 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 0ba98e08a029..9233ecc31e2e 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -2244,9 +2244,8 @@ static noinline int search_ioctl(struct inode *inode,
->  	key.offset = sk->min_offset;
->  
->  	while (1) {
-> -		ret = fault_in_pages_writeable(ubuf + sk_offset,
-> -					       *buf_size - sk_offset);
-> -		if (ret)
-> +		ret = -EFAULT;
-> +		if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
->  			break;
+> [    3.003113][   T41] Backtrace:
+> [    3.003451][   T41] [<c0560bb4>] (strcmp) from [<c0646358>] (platform_match+0xdc/0xf0)
+> [    3.003963][   T41] [<c064627c>] (platform_match) from [<c06437d4>] (__device_attach_driver+0x3c/0xf4)
+> [    3.004769][   T41] [<c0643798>] (__device_attach_driver) from [<c0641180>] (bus_for_each_drv+0x68/0xc8)
+> [    3.005481][   T41] [<c0641118>] (bus_for_each_drv) from [<c0642f40>] (__device_attach+0xf0/0x16c)
+> [    3.006152][   T41] [<c0642e50>] (__device_attach) from [<c06439d4>] (device_initial_probe+0x1c/0x20)
+> [    3.006853][   T41] [<c06439b8>] (device_initial_probe) from [<c0642030>] (bus_probe_device+0x94/0x9c)
+> [    3.007259][   T41] [<c0641f9c>] (bus_probe_device) from [<c063f9cc>] (device_add+0x408/0x8b8)
+> [    3.007900][   T41] [<c063f5c4>] (device_add) from [<c071c1cc>] (serio_handle_event+0x1b8/0x234)
+> [    3.008824][   T41] [<c071c014>] (serio_handle_event) from [<c01475a4>] (process_one_work+0x238/0x594)
+> [    3.009737][   T41] [<c014736c>] (process_one_work) from [<c014795c>] (worker_thread+0x5c/0x5f4)
+> [    3.010638][   T41] [<c0147900>] (worker_thread) from [<c014feb4>] (kthread+0x178/0x194)
+> [    3.011496][   T41] [<c014fd3c>] (kthread) from [<c0100150>] (ret_from_fork+0x14/0x24)
+> [    3.011860][   T41] Exception stack(0xc1675fb0 to 0xc1675ff8)
 
-Really?
+But the platform_match() is happening for the device_add() from
+serio_event_handle() that's adding a device to the serio_bus and it
+should be using serio_bus_match().
 
-> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-> index 25dfc48536d7..069cedd9d7b4 100644
-> --- a/lib/iov_iter.c
-> +++ b/lib/iov_iter.c
-> @@ -191,7 +191,7 @@ static size_t copy_page_to_iter_iovec(struct page *page, size_t offset, size_t b
->  	buf = iov->iov_base + skip;
->  	copy = min(bytes, iov->iov_len - skip);
->  
-> -	if (IS_ENABLED(CONFIG_HIGHMEM) && !fault_in_pages_writeable(buf, copy)) {
-> +	if (IS_ENABLED(CONFIG_HIGHMEM) && !fault_in_writeable(buf, copy)) {
+I haven't reached any conclusion yet, but my current thought process
+is that it's either:
+1. My patch is somehow causing list corruption. But I don't directly
+touch any list in my change (other than deleting a list entirely), so
+it's not clear how that would be happening.
+2. Without my patch, these AMBA device's probe would be delayed at
+least until 5 seconds or possibly later. I'm wondering if my patch is
+catching some bad timing assumptions in other code.
 
-Here we definitely want "fail only if nothing could be faulted in"
+You might be able to test out theory (2) by DEFERRED_DEVICE_TIMEOUT to
+a much smaller number. Say 500ms or 100ms. If it doesn't crash, it
+doesn't mean it's not (2), but if it does, then we know for sure it's
+(2).
 
->  		kaddr = kmap_atomic(page);
->  		from = kaddr + offset;
->  
-> @@ -275,7 +275,7 @@ static size_t copy_page_from_iter_iovec(struct page *page, size_t offset, size_t
->  	buf = iov->iov_base + skip;
->  	copy = min(bytes, iov->iov_len - skip);
->  
-> -	if (IS_ENABLED(CONFIG_HIGHMEM) && !fault_in_pages_readable(buf, copy)) {
-> +	if (IS_ENABLED(CONFIG_HIGHMEM) && !fault_in_readable(buf, copy)) {
+I'll continue debugging further.
 
-Same.
+-Saravana
 
-> @@ -446,13 +446,11 @@ int iov_iter_fault_in_readable(const struct iov_iter *i, size_t bytes)
->  			bytes = i->count;
->  		for (p = i->iov, skip = i->iov_offset; bytes; p++, skip = 0) {
->  			size_t len = min(bytes, p->iov_len - skip);
-> -			int err;
->  
->  			if (unlikely(!len))
->  				continue;
-> -			err = fault_in_pages_readable(p->iov_base + skip, len);
-> -			if (unlikely(err))
-> -				return err;
-> +			if (fault_in_readable(p->iov_base + skip, len))
-> +				return -EFAULT;
-
-... and the same, except that here we want failure only if nothing had already
-been faulted in.
+>
+> diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+> index 836d6d23bba3..883a58c658c2 100644
+> --- a/drivers/amba/bus.c
+> +++ b/drivers/amba/bus.c
+> @@ -237,6 +237,7 @@ static int amba_match(struct device *dev, struct
+> device_driver *drv)
+>
+>          if (!pcdev->periphid) {
+>                  int ret = amba_read_periphid(pcdev);
+> +               dev_info(dev, "%s, amba_read_periphid ret = %d\n",
+> __func__, ret);
+>
+>                  if (ret)
+>                          return ret;
+> @@ -522,6 +523,7 @@ int amba_device_add(struct amba_device *dev, struct
+> resource *parent)
+>          /* If primecell ID isn't hard-coded, figure it out */
+>          if (!dev->periphid) {
+>                  ret = amba_read_periphid(dev);
+> +               dev_info(&dev->dev, "%s, amba_read_periphid ret = %d\n",
+> __func__, ret);
+>                  if (ret && ret != -EPROBE_DEFER)
+>                          goto err_release;
+>                  /*
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index 8640578f45e9..f7c1933c56b5 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -1360,6 +1360,7 @@ static int platform_match(struct device *dev,
+> struct device_driver *drv)
+>          struct platform_device *pdev = to_platform_device(dev);
+>          struct platform_driver *pdrv = to_platform_driver(drv);
+>
+> +       dev_info(dev, "pdev %px, pdev->name %s, drv %px, drv->name %s",
+> pdev, pdev->name, drv, drv->name);
+>          /* When driver_override is set, only bind to the matching driver */
+>          if (pdev->driver_override)
+>                  return !strcmp(pdev->driver_override, drv->name);
+>
+>
+> > [1] - https://lore.kernel.org/lkml/CAGETcx8b228nDUho3cX9AAQ-pXOfZTMv8cj2vhdx9yc_pk8q+A@mail.gmail.com/
+> > .
+> >
+> >>> .
+> >>>
+> > .
+> >
