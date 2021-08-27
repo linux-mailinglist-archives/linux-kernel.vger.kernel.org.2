@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FCA3F9CAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139E83F9CB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbhH0Qmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
+        id S232810AbhH0QnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhH0Qmp (ORCPT
+        with ESMTP id S232223AbhH0QnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:42:45 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCA3C061757;
-        Fri, 27 Aug 2021 09:41:56 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id e15so4271786plh.8;
-        Fri, 27 Aug 2021 09:41:56 -0700 (PDT)
+        Fri, 27 Aug 2021 12:43:21 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722A4C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:42:32 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so9272132pjr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:42:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3V2CZy6dmdkD9GfcdkbWhhKFYcBdzsCBJHlbGNHPDlM=;
-        b=iDLnafUOq6WqYT+CV5zlg1K1jj8RSH2+gL+TL710pxFogi71WDp11udZQMWz4G3Cje
-         vZHbGQaHIzbIE4hmLZg9PuXRq9gvFMiZ6jA4ywMVdC4BHI1Thda/mGewhWsFd8TviI6V
-         6/tflR2Tq2yu8Ky8mi+M7YOFy2NfW2qmlp72ygpg9s7mpgkT/L3IJtlCxsnUx6iYDH3L
-         TMYGvQ2IbMKFYWKUCYZidE4G5GtJ2cjLJHDqSQ2ZuEQsqa8rjmNo8WCjQqGg+mEVOXmC
-         SQ3tjoR1OAKFPDBUEBzA4YHVJDEdztAalrSnyphgY4y3dDTm7QPA+bpTZoXyoPJs1qFl
-         dRAg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N4ycuy1sr/uw7TD/lnGtmhJPET4O9tG56DU4s7vExRc=;
+        b=Lvoj7e2n4w0IK4etf1iQ9jYZqI7qgmyxocAuTVCR51wfVsM28PORXBncAmMiSb0x3e
+         gXKO8JFv+/stlktlnaeDoUlxaVoGBLZ5ZsgHPfC5/Aq9HrdpUiYRUoQ/1+/0/BxOFR+v
+         K7gYD0KPFk0KEAAWY5Vhx9xAHx7VlgBY6t7s6nltGRqP2xWwncovu6AsRkePywesuhRH
+         a6NpkpoQ+YZzvrV0GkepU5Ky8P3+XdqHMZ7ivVQHBsSV9uGpJEoaucRLLVjyKgiib9do
+         nAqnLT9d4hAmtf5EmyL014xAmvelwGeJ/AcSgrD+VM20kPD9NC+fd8o/hwnX0Fn7W45d
+         8Xmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3V2CZy6dmdkD9GfcdkbWhhKFYcBdzsCBJHlbGNHPDlM=;
-        b=tUhOCLNuK88Fi2yjllA8Nm69ssLgfVIQA7ic85BVa9RjNqU1P79QGa4cctpnc82XIV
-         Zr1AbHz5fWCVoBXP42hXQS6anLczma6XWiY4iztz5Wgvl3Plfq/wFHEOAgau+lH2y+1J
-         mB5YxcPHdAXP6nMh8Ccd+S5z26gIszWX8ChEFcmMrYK9Fl4XJBqIaqtfCiG5zr0AEi4M
-         84LcXwuLVtpXd2l6kfA/AmEC0hfZLuBsIQHaO9uEJNHOFZpfdkrPTbLZHtmb0ScDrjpE
-         w+8LExMKFlrcykIDfGz78PNNQz/s4SLeq+rN36TmKqTQgANLHlVckrKJbHwD4obVWn97
-         E43A==
-X-Gm-Message-State: AOAM530KvwIm089UIcXoJ2T8YUsgl2R542F/BEfcLRVP4yoOTLnYqsO0
-        L0wjPL/CMM27Fe0gLtUXPsM=
-X-Google-Smtp-Source: ABdhPJwASjddcM9h65Sw+qmPBLmmgOUuenDeBxxNvZDAFoEs6Kzmn2wHc4GYH3puhZGsXvYeSqAiKw==
-X-Received: by 2002:a17:90a:9511:: with SMTP id t17mr24495129pjo.194.1630082515636;
-        Fri, 27 Aug 2021 09:41:55 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([72.164.175.30])
-        by smtp.googlemail.com with ESMTPSA id cq8sm6511133pjb.31.2021.08.27.09.41.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 09:41:55 -0700 (PDT)
-Subject: Re: [PATCH net-next v6] ipv6: add IFLA_INET6_RA_MTU to expose mtu
- value
-To:     Rocco Yue <rocco.yue@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, rocco.yue@gmail.com,
-        chao.song@mediatek.com, zhuoliang.zhang@mediatek.com
-References: <20210827150412.9267-1-rocco.yue@mediatek.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <88523c38-f0b4-8a63-6ca6-68a3122bef79@gmail.com>
-Date:   Fri, 27 Aug 2021 09:41:53 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N4ycuy1sr/uw7TD/lnGtmhJPET4O9tG56DU4s7vExRc=;
+        b=Re9gg/O9cg/4ooMGu5mlOY/5k9mEtCt/t6OeO8eYKoUQVpl8m+8mDN0KhTKyLl0bPK
+         rTawC9JfIRUUjGc73Nzy2zd721UCgGFg5iQxK+I2dMgXqYfxGs0l3vXiJ7/zvzm6rE1G
+         o2vIU9M1q5TPyPUyiDbDvVj24f+Z/Utb6Svy7gwUjylTdu05s+CZqa8kGtQqsO3+h3rx
+         NhfiLAYP6Lt4nBGfhTrEGjDZbc2Rg8qauhBUYczpmyePSdztFZl2uD0jYc6aPcQcjBhD
+         yzsJqWWVrA8nXOOn+SVJYKj81yCD3BJRnalYM6I5sQhH14vvnYZ5LOhxillVfmEWb9ub
+         L6/g==
+X-Gm-Message-State: AOAM533f1G2m9LDtfAQAwjMOGR0HGDIpT/zfNCn7bpjdBSeLMNQPshpv
+        ppWnLLPXiI3ORgJdMuB/hYrfIR2T1Obj9tBaLCaNSA==
+X-Google-Smtp-Source: ABdhPJziK4HQfETlenNGQKDOWz+QE54n/rfbSQZA9GTYS/ZDxIcUoBcbFTG/U6SCP1KUl+Nf8+OpMuqzoNMp0yB/eFw=
+X-Received: by 2002:a17:902:edd0:b0:135:b351:bd5a with SMTP id
+ q16-20020a170902edd000b00135b351bd5amr9562085plk.52.1630082551867; Fri, 27
+ Aug 2021 09:42:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210827150412.9267-1-rocco.yue@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
+ <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com> <20210806014559.GM543798@ziepe.ca>
+ <b5e6c4cd-8842-59ef-c089-2802057f3202@cn.fujitsu.com> <10c4bead-c778-8794-f916-80bf7ba3a56b@fujitsu.com>
+ <20210827121034.GG1200268@ziepe.ca> <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
+In-Reply-To: <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 27 Aug 2021 09:42:21 -0700
+Message-ID: <CAPcyv4ho-42iZB3W5ypfwj-2=+v6rRUCcwE4ntPXyDPgFjzp7g@mail.gmail.com>
+Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
+To:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 8:04 AM, Rocco Yue wrote:
-> The kernel provides a "/proc/sys/net/ipv6/conf/<iface>/mtu"
-> file, which can temporarily record the mtu value of the last
-> received RA message when the RA mtu value is lower than the
-> interface mtu, but this proc has following limitations:
-> 
-> (1) when the interface mtu (/sys/class/net/<iface>/mtu) is
-> updeated, mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) will
-> be updated to the value of interface mtu;
-> (2) mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) only affect
-> ipv6 connection, and not affect ipv4.
-> 
-> Therefore, when the mtu option is carried in the RA message,
-> there will be a problem that the user sometimes cannot obtain
-> RA mtu value correctly by reading mtu6.
-> 
-> After this patch set, if a RA message carries the mtu option,
-> you can send a netlink msg which nlmsg_type is RTM_GETLINK,
-> and then by parsing the attribute of IFLA_INET6_RA_MTU to
-> get the mtu value carried in the RA message received on the
-> inet6 device. In addition, you can also get a link notification
-> when ra_mtu is updated so it doesn't have to poll.
-> 
-> In this way, if the MTU values that the device receives from
-> the network in the PCO IPv4 and the RA IPv6 procedures are
-> different, the user can obtain the correct ipv6 ra_mtu value
-> and compare the value of ra_mtu and ipv4 mtu, then the device
-> can use the lower MTU value for both IPv4 and IPv6.
-> 
-> Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
-> ---
->  include/net/if_inet6.h             |  2 ++
->  include/uapi/linux/if_link.h       |  1 +
->  net/ipv6/addrconf.c                | 10 ++++++++++
->  net/ipv6/ndisc.c                   | 17 +++++++++++------
->  tools/include/uapi/linux/if_link.h |  1 +
->  5 files changed, 25 insertions(+), 6 deletions(-)
-> 
+On Fri, Aug 27, 2021 at 6:05 AM Li, Zhijian <lizhijian@cn.fujitsu.com> wrote:
+>
+>
+> on 2021/8/27 20:10, Jason Gunthorpe wrote:
+> > On Fri, Aug 27, 2021 at 08:15:40AM +0000, lizhijian@fujitsu.com wrote:
+> >> i looked over the change-log of hmm_vma_handle_pte(), and found that before
+> >> 4055062 ("mm/hmm: add missing call to hmm_pte_need_fault in HMM_PFN_SPECIAL handling")
+> >>
+> >> hmm_vma_handle_pte() will not check pte_special(pte) if pte_devmap(pte) is true.
+> >>
+> >> when we reached
+> >> "if (pte_special(pte) && !is_zero_pfn(pte_pfn(pte))) {"
+> >> the pte have already presented and its pte's flag already fulfilled the request flags.
+> >>
+> >>
+> >> My question is that
+> >> Per https://01.org/blogs/dave/2020/linux-consumption-x86-page-table-bits,
+> >> pte_devmap(pte) and pte_special(pte) could be both true in fsdax user case, right ?
+> > How? what code creates that?
+> >
+> > I see:
+> >
+> > insert_pfn():
+> >       /* Ok, finally just insert the thing.. */
+> >       if (pfn_t_devmap(pfn))
+> >               entry = pte_mkdevmap(pfn_t_pte(pfn, prot));
+> >       else
+> >               entry = pte_mkspecial(pfn_t_pte(pfn, prot));
+> >
+> > So what code path ends up setting both bits?
+>
+>   pte_mkdevmap() will set both _PAGE_SPECIAL | PAGE_DEVMAP
+>
+>   395 static inline pte_t pte_mkdevmap(pte_t pte)
+>   396 {
+>   397         return pte_set_flags(pte, _PAGE_SPECIAL|_PAGE_DEVMAP);
+>   398 }
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
-
-
+I can't recall why _PAGE_SPECIAL is there. I'll take a look, but I
+think setting _PAGE_SPECIAL in pte_mkdevmap() is overkill.
