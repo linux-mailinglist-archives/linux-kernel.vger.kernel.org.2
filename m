@@ -2,178 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46B13F9D28
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C2E3F9D2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhH0Q70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:59:26 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30582 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229667AbhH0Q7Y (ORCPT
+        id S232844AbhH0RBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231944AbhH0RBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:59:24 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RGXnw9160813;
-        Fri, 27 Aug 2021 12:58:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=G1bFtCzAbdq5KNIoJFyJHvQDP04QzWYfpuJi2xotdEY=;
- b=QkLX0juNXKVs2GaymTVoYEnmdMCvoUGqZ84bNTsofzop2LXTHLsSpytEAvdz9cobv/ED
- VXtTFkRyiK1sUgnQIQqJlzf7ZYTTjEx/0WI/sjALcUFDc58Y/+5/uwoimk3tWkvkay9x
- WmLv7V9wjYjLg5LwtAgLB9UMKaYSNvVhQqWWA52KJND4NgRyLaycur7UH9680rdKfahk
- lvddWOltFTcYrmiGVlgg/z+Ug4W+2kpCDEUQvuRJt0fff4eqE20cPAb3v4BLOn3cPdnZ
- F0ZiQV0OdwDi3lfsCZynq94Qdi00HJdvYuzJhjMXurELqtw/b4wLsRoEhEVOjlYflxOh QQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aq0ysdy5k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 12:58:09 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17RGYs99171307;
-        Fri, 27 Aug 2021 12:58:09 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aq0ysdy4m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 12:58:09 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17RGrgSc020316;
-        Fri, 27 Aug 2021 16:58:07 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 3ajrrhkw05-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 16:58:07 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17RGw4WF54395290
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 16:58:05 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C41095205A;
-        Fri, 27 Aug 2021 16:58:04 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.153.220])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 6F1A95204F;
-        Fri, 27 Aug 2021 16:58:04 +0000 (GMT)
-Subject: Re: [PATCH v6 08/11] powerpc/pseries/iommu: Update
- remove_dma_window() to accept property name
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210817063929.38701-1-leobras.c@gmail.com>
- <20210817063929.38701-9-leobras.c@gmail.com>
-From:   Frederic Barrat <fbarrat@linux.ibm.com>
-Message-ID: <50172860-7ceb-184e-6173-2cd728584d81@linux.ibm.com>
-Date:   Fri, 27 Aug 2021 18:58:04 +0200
+        Fri, 27 Aug 2021 13:01:37 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6AFC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:00:48 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id e186so9322184iof.12
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qY4u/QSD5mvN8lZY5uxrxfQLztvCoO84v1j/fKkjLkI=;
+        b=LPqgm/9TH4nNGDCyZZ+4DPZiv/R/j2OSqWJ0xY8S5J4VYdZGOGN/5ViAHEr76dVQNK
+         g2OZnECtAoKXXulNItoW6GV6ysXWtHE3keN7i7Wz2DtBmDUEk6GslNB4PwnnthtjnF/7
+         d/fj0vixpa6PnDLxTO5HPh+6IltjOtwtnxyqw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qY4u/QSD5mvN8lZY5uxrxfQLztvCoO84v1j/fKkjLkI=;
+        b=olAl71iZW29W8mW8kfKRqqs+KEtB2wc2zGQPqw30HfI1Tw235Jbks1Cz+Q5Bh9zCfo
+         +BHOL/H04GCC7OLRauOnbLaVLZVkpwqbDXYzRpqg0tnCYWzcvmkVjOS6AVu6Y+t8iqtX
+         dYCmUva166eTILP1uoBN4+J9As5U3j4MOs3qFLoQZFy7Qymr73V1khbuH9xAL1ev9wBQ
+         jcdR+0B2A9fkqST1V6V2VC3fl3xH9t2m+aMmHFUtaN5oMePzMYm9gbffhfZD08gZUxdI
+         1RZj2+ihdI0AdaFcMZn6Zz66q5QUDvaT+5zrAHfjC9DjDrfh/T859MvphVbXucChZcPI
+         NfNg==
+X-Gm-Message-State: AOAM532nXtbuAF2J3dSts5Nn+ckORF28VuMHnRSVZS8KV2oOeNIUsW9H
+        lLjf4mM5y9dukkCM/we83fq2NQ==
+X-Google-Smtp-Source: ABdhPJwfB545VC1ov4ZmZTc67mKTH9BKIPoYlMHkgxx/oHH0ac0FXfe2j6fO1jqjoFTV3kaUhkVhjg==
+X-Received: by 2002:a5d:83c4:: with SMTP id u4mr8436013ior.21.1630083647725;
+        Fri, 27 Aug 2021 10:00:47 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id o5sm3448725iow.48.2021.08.27.10.00.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 10:00:45 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] selftests/sync: Remove the deprecated config SYNC
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Cc:     "philip.li@intel.com" <philip.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210826015847.7416-1-lizhijian@cn.fujitsu.com>
+ <20210826015847.7416-2-lizhijian@cn.fujitsu.com>
+ <239339d5-5626-ea04-97db-7dc070a48636@linuxfoundation.org>
+ <69835666-1710-5103-fb06-2636a3a3c5bb@fujitsu.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <2c141f7e-bec8-49ad-2d2b-d238a372b0e6@linuxfoundation.org>
+Date:   Fri, 27 Aug 2021 11:00:43 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210817063929.38701-9-leobras.c@gmail.com>
+In-Reply-To: <69835666-1710-5103-fb06-2636a3a3c5bb@fujitsu.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nxMHvHR7oQfitpF_3Ct4eDD1p45CYc_W
-X-Proofpoint-ORIG-GUID: ujsb9XzkpUROXa6uMA-7fxo-6qRNkDNf
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_04:2021-08-26,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- impostorscore=0 bulkscore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0
- suspectscore=0 clxscore=1015 adultscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108270098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 17/08/2021 08:39, Leonardo Bras wrote:
-> Update remove_dma_window() so it can be used to remove DDW with a given
-> property name.
+On 8/26/21 7:35 PM, lizhijian@fujitsu.com wrote:
 > 
-> This enables the creation of new property names for DDW, so we can
-> have different usage for it, like indirect mapping.
 > 
-> Also, add return values to it so we can check if the property was found
-> while removing the active DDW. This allows skipping the remaining property
-> names while reducing the impact of multiple property names.
+> On 27/08/2021 05:10, Shuah Khan wrote:
+>> On 8/25/21 7:58 PM, Li Zhijian wrote:
+>>> SYNC was removed since aff9da10e21 ("staging/android: make sync_timeline internal to sw_sync")
+>>> LKP/0Day will check if all configs listing under selftests are able to be enabled properly.
+>>>
+>>
+>> Can you please state what you arr fxing and also keep the sentences
+>> 75 chars or less.
+>>
+>> Where is LKP warning?
+> https://01.org/lkp
+> LKP(aka. 0Day) often reports issue related to the *recent* kernel commits/WIP patches publicly.
+> As the LKP keeping improvement, it will cover more aspects in the kernel so that more issues will be detected.
 > 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> ---
-
-
-Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
-
-
-
->   arch/powerpc/platforms/pseries/iommu.c | 18 ++++++++++--------
->   1 file changed, 10 insertions(+), 8 deletions(-)
+> So in this case, which is related to too old kernel, it just reported it internally.
 > 
-> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-> index a47f59a8f107..901f290999d0 100644
-> --- a/arch/powerpc/platforms/pseries/iommu.c
-> +++ b/arch/powerpc/platforms/pseries/iommu.c
-> @@ -844,31 +844,33 @@ static void remove_dma_window(struct device_node *np, u32 *ddw_avail,
->   	__remove_dma_window(np, ddw_avail, liobn);
->   }
->   
-> -static void remove_ddw(struct device_node *np, bool remove_prop)
-> +static int remove_ddw(struct device_node *np, bool remove_prop, const char *win_name)
->   {
->   	struct property *win;
->   	u32 ddw_avail[DDW_APPLICABLE_SIZE];
->   	int ret = 0;
->   
-> +	win = of_find_property(np, win_name, NULL);
-> +	if (!win)
-> +		return -EINVAL;
-> +
->   	ret = of_property_read_u32_array(np, "ibm,ddw-applicable",
->   					 &ddw_avail[0], DDW_APPLICABLE_SIZE);
->   	if (ret)
-> -		return;
-> +		return 0;
->   
-> -	win = of_find_property(np, DIRECT64_PROPNAME, NULL);
-> -	if (!win)
-> -		return;
->   
->   	if (win->length >= sizeof(struct dynamic_dma_window_prop))
->   		remove_dma_window(np, ddw_avail, win);
->   
->   	if (!remove_prop)
-> -		return;
-> +		return 0;
->   
->   	ret = of_remove_property(np, win);
->   	if (ret)
->   		pr_warn("%pOF: failed to remove direct window property: %d\n",
->   			np, ret);
-> +	return 0;
->   }
->   
->   static bool find_existing_ddw(struct device_node *pdn, u64 *dma_addr, int *window_shift)
-> @@ -921,7 +923,7 @@ static int find_existing_ddw_windows(void)
->   	for_each_node_with_property(pdn, DIRECT64_PROPNAME) {
->   		direct64 = of_get_property(pdn, DIRECT64_PROPNAME, &len);
->   		if (!direct64 || len < sizeof(*direct64)) {
-> -			remove_ddw(pdn, true);
-> +			remove_ddw(pdn, true, DIRECT64_PROPNAME);
->   			continue;
->   		}
->   
-> @@ -1565,7 +1567,7 @@ static int iommu_reconfig_notifier(struct notifier_block *nb, unsigned long acti
->   		 * we have to remove the property when releasing
->   		 * the device node.
->   		 */
-> -		remove_ddw(np, false);
-> +		remove_ddw(np, false, DIRECT64_PROPNAME);
->   		if (pci && pci->table_group)
->   			iommu_pseries_free_group(pci->table_group,
->   					np->full_name);
 > 
+>> Include the warning and explain why this
+>> change is necessary.
+> - it's not reasonable to keep the deprecated configs, right ?
+> 
+> - In my understanding, configs under kselftests are recommended by corresponding tests.
+> So if some configs are missing, it will impact the testing results
+> 
+> Do you mean the commit log should include above 2 reasons ?
+> 
+
+Correct. I am asking the commit log to include these details.
+
+thanks,
+-- Shuah
