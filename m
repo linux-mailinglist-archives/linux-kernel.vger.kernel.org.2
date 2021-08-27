@@ -2,127 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE463F9A66
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3823F9A69
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245267AbhH0NoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:44:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21000 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232312AbhH0NoB (ORCPT
+        id S245271AbhH0No4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245310AbhH0Noy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:44:01 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RDYK2V058958;
-        Fri, 27 Aug 2021 09:43:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=NcyAFygEloHrzR2BPB+9hg/HsZPI/Rn5It99jayT6Wk=;
- b=dvQi3upwvYdkY8+ANukCwYkeTIJMPwT/ac6B3Bw833ZNxCBUo9OYIYVyEMOrJshdfUfJ
- H3ShzgysMJw2zQAamdPDySh5C3nyTeXQJrXjCt0pQlLou8fS28wUS4QY/+TJaR58y8MH
- qaZ+FIrvn7G+KlAAM+X0W7MBtTAqRzVHBbatRsXFE1nryunuGSRSovs+c9dIBSn0KkmI
- b6cdTyUS8u2794XBqBCZvxSb1BA7UQrbaDXaGVsjvMY4/Jg1pnXEcK5qn+rwcN3btSTS
- A1ma0m/0LAs3Pj2Qv5uIqRktEpxMv2f7aUqFHPelQV1KssBxGwon/LnUW84hWKOulsso 2w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq0bhhfvd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 09:43:09 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17RDYU7R060115;
-        Fri, 27 Aug 2021 09:43:09 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq0bhhfv6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 09:43:09 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17RDbWOb025595;
-        Fri, 27 Aug 2021 13:43:08 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma03dal.us.ibm.com with ESMTP id 3anhsqkeum-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 13:43:08 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17RDh6d052625894
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 13:43:07 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DED6EBE054;
-        Fri, 27 Aug 2021 13:43:06 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6CD8DBE061;
-        Fri, 27 Aug 2021 13:43:05 +0000 (GMT)
-Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.160.142.168])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 27 Aug 2021 13:43:05 +0000 (GMT)
-Subject: Re: [PATCH v2 0/2] s390/vfio-ap: do not open code locks for
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        kwankhede@nvidia.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com
-References: <20210823212047.1476436-1-akrowiak@linux.ibm.com>
- <20210826162056.304eb7ca.alex.williamson@redhat.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <a0839835-3259-301d-7aee-beff17ed3c7d@linux.ibm.com>
-Date:   Fri, 27 Aug 2021 09:43:04 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210826162056.304eb7ca.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5lCPac_bntS9CcVyktmYRt6Xa-nZRPNM
-X-Proofpoint-GUID: fippi_uHSUhVSqfoM4pSyEii4TrrgS-3
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 27 Aug 2021 09:44:54 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE00C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:44:05 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id j15so7072982ila.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nTcz622O5BJSdhwbyQLpgjIcVtxzhbuuDPAw/ERSb34=;
+        b=nwMZdArwlv8PgqotkRBgtHlu7yabfcDMjYgvJM0IH8awX+9VQ78BYs+kxfawbg3ByI
+         GVS2wJYh0hYBdqKT4ICNSQV2kSks6YSWLi64KWD9FOvegcbUE1JoBGwviQVEp37Kfscl
+         t4BCXUCwTJbY3jAnUapbGiJ+WVyuxkBirs6cIOvHq2A3KzvYoG7qb3SG0QK884hzvCcv
+         ZBHvOhm56MO6mWgbQin0tWbYzy4ca1GAUd8qfyl39NysGaPjI6q2Zrsz1TmZnpodQrGZ
+         B2NIt3gK8LQHWMtNAIZngIXslebF4zKQ8vgVzFkxtmQx53VwA2/kqnEHWWVi9Bp6b3+c
+         6MZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nTcz622O5BJSdhwbyQLpgjIcVtxzhbuuDPAw/ERSb34=;
+        b=VqtJ42YGyHe4PbkiQluJZmfLGztIlCJ+ugiTChjEKnHUxOI4EnpVeY+RjcOR9faejl
+         4nxjAZpv0meFte5jd+uBXKGaX8yV6HNusq4hxB1OXlTvjD1Tm375KZ6VYp7zXW/dbPzx
+         UM9/HV+mCQl4Rfj/UOi0GekRL257NLeZ05TzYHVSty1sEX4d75IL/y3S0CmTEnfjVqBG
+         dGgSbwgCsLFBZOGRq5iKY+XRUdTxOk9mXzsZpJv3L7OrNe196wQKZ6WbrhMbu2Y9g4hh
+         7lpQu7WhpQ06juW5wt5bxDgA6IWIkErpFZeiT5ohnMsDmVwVL+6PVt9i2QeEZl3xvVwE
+         mViQ==
+X-Gm-Message-State: AOAM533j/wQ2CsH63zvCp2f2qxxoLpHN9bBEemYDuCylDcGIkZe1zUmF
+        5G2B8Sn+soZvrPZvhpl0vU2DXUKbwhZxwozqHAmMzw==
+X-Google-Smtp-Source: ABdhPJzTQDUwgP1HqS9A4c6xvJF2fQzeReSUEOiC4fqaM82hDkXm4wHKQiR4QMH5GN+DLTEf0xhxY3gl84w/dQcXMBY=
+X-Received: by 2002:a05:6e02:168d:: with SMTP id f13mr6835390ila.12.1630071844764;
+ Fri, 27 Aug 2021 06:44:04 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_04:2021-08-26,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- adultscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 malwarescore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108270087
+References: <20210827082407.101053-1-yangcong5@huaqin.corp-partner.google.com> <20210827082407.101053-3-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20210827082407.101053-3-yangcong5@huaqin.corp-partner.google.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Fri, 27 Aug 2021 06:43:52 -0700
+Message-ID: <CAD=FV=V9GQXJo8YRwnPFK2QZY-CmaFG14v7H4Qb+JqmmiEF0Ug@mail.gmail.com>
+Subject: Re: [v3 2/4] dt-bindings: drm/panel: boe-tv101wum-nl6: Support
+ enabling a 3.3V rail
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 8/26/21 6:20 PM, Alex Williamson wrote:
-> On Mon, 23 Aug 2021 17:20:45 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On Fri, Aug 27, 2021 at 1:24 AM yangcong
+<yangcong5@huaqin.corp-partner.google.com> wrote:
 >
->> The subject line does not necessarily encompass both patches of this
->> two-patch series, but I left it as versions 1 and 2 used this subject
->> line and I didn't want to confuse those who reviewed those patches.
->>
->> Change log v1->v2:
->> -----------------
->> * Both of these patches were rebased on Alex's linux-vfio-next tree taken
->>    from https://github.com/awilliam/linux-vfio.git.
->>    
->> * Replaced kvm_s390_module_hook structure with a function pointer to the
->>    interception handler for the PQAP(AQIC) instruction.
->>
->> Tony Krowiak (2):
->>    s390/vfio-ap: r/w lock for PQAP interception handler function pointer
->>    s390/vfio-ap: replace open coded locks for VFIO_GROUP_NOTIFY_SET_KVM
->>      notification
->>
->>   arch/s390/include/asm/kvm_host.h      |   8 +-
->>   arch/s390/kvm/kvm-s390.c              |  32 ++++++-
->>   arch/s390/kvm/priv.c                  |  15 +--
->>   drivers/s390/crypto/vfio_ap_ops.c     | 127 +++++++++-----------------
->>   drivers/s390/crypto/vfio_ap_private.h |   4 +-
->>   5 files changed, 84 insertions(+), 102 deletions(-)
-> Applied to vfio next branch for v5.15.  Thanks,
+> The auo,b101uan08.3 panel (already supported by this driver) has
+> a 3.3V rail that needs to be turned on. For previous users of
+> this panel this voltage was directly output by pmic. On a new
+> user (the not-yet-upstream sc7180-trogdor-mrbland board) we need
+> to turn the 3.3V rail on.
 >
-> Alex
+> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
+> ---
+>  .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml    | 3 +++
+>  1 file changed, 3 insertions(+)
 
-Thank you Alex.
+There were no differences between this and the previous version [1]. I
+added my Reviewed-by tag on the previous version, so you should have
+included it in this new version. Rob's too.
 
->
+[1] https://lore.kernel.org/r/20210820070113.45191-3-yangcong5@huaqin.corp-partner.google.com
 
+In any case:
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
