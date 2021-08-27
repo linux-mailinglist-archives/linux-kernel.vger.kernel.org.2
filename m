@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E4E3FA1A5
+	by mail.lfdr.de (Postfix) with ESMTP id E1F8F3FA1A7
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 00:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhH0W7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 18:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
+        id S232468AbhH0W7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 18:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232396AbhH0W7N (ORCPT
+        with ESMTP id S232473AbhH0W7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 18:59:13 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B959DC061796
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:58:23 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id k23-20020a17090a591700b001796382f0d7so1356284pji.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:58:23 -0700 (PDT)
+        Fri, 27 Aug 2021 18:59:18 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDF3C0617A8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:58:28 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id z8-20020a25ad88000000b0059a94ada16fso8094285ybi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=5kt2Hs53YExhNYpfPSX+vfaUKXrkgz5zWfnPb9H9C5o=;
-        b=CwVuEzd0fS3U5i7hEYs6kt8YGwK1Q+B0CA8MKQ0HFuUN7KjKITVZBmOAj9+61B/xUL
-         H5eS7kjXwCW2Opax4eWgDUdycDVagLubSWmiM2uugcT5KVFWpajGG8X15tmzZe3VoaXG
-         +236OKR3PaEC7xQONOBiLikYG6tNnLB2eA05KVSwgFn2uOYSOvyKMWfSoElbzwSHWeLO
-         AMAUbEirs+E7hRG5UhbEizrS27gT89Dv0LCRFDz5Pr/VSfOURlAlsPHH7NhqBm26EGRD
-         elIhr8IQWl3ZOni+DMR8RNbD+H/fFGRSGsTX79XayMd42lQGs3GKxcDCTXWzXGdbmLvs
-         lWMw==
+        bh=1vVn3tT4i3E1FmbURQDOaSj4WaBWIdDZC/BLf0YptVo=;
+        b=amWWbC4Vd2VlctVqbhne1QKiw4B3hrhIb4FhT4FizxwTOMAgV7eULVijyk+3PVUZl3
+         geP+wc1VfDExeq9hMedHt+dEh8yCqxDeOaW+DXQZrfa2fD8iAA5ShrKgwVHVfiphOFb+
+         EVX35GpTlIEEXY1HpFuFxtjIu1U8RKscpyj/neSEFUl6c6hk1Y09chRFSMFTMfZA33n1
+         Skvd0ELdhLLh3HdLm1LIPVcowumewcyvU+a0IwiifnBmwV8ZVLpMh2w52HxVrXmdihuv
+         GFaZm9dRvZJLcYOK24g/OXezZs1BUTjAzokqRGTgfZiAQdg7l/dDR1iLW4liR30WRvc+
+         sqYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=5kt2Hs53YExhNYpfPSX+vfaUKXrkgz5zWfnPb9H9C5o=;
-        b=DfmL1MHOEhaBK3phBRLzUkql8b1xdF5qHjWB95eS4LUwvXIkfQlCneyBj9U4N0Jge3
-         Ywow6XsGHi85yoVOgOdk8rfuufD7ueDff2MoJLOKOmPi4SP8jQK4H2vaZ5KmA5vHmvi7
-         5HCIWAEnp05+gRWoNuUKdVoxgAVJiLHMWIwlgeqmvcw3OWcu9JZiIi7DnRK+LrisdVio
-         P6fwFEPbDWBRw1iFpOeI0xXScgAOYd061gw7viyLLneINsfwurt55TqhK4G8QFF9A4X9
-         8rNp65pRjUyJ7hIroO6gVMQcIqh1iTHXXaM6sGgD0s3SGeG8oVQoitRw82kVzDA3EEWo
-         Rs7w==
-X-Gm-Message-State: AOAM532Q985ovFBwgAk1RiFGShuc+hA3U3+GXOAWGtQ+0/PNTCHEPq3j
-        3v3zLFylUz3QShH2jrVw130oe9cEog==
-X-Google-Smtp-Source: ABdhPJwuGZHQKI3Z4ubJeC6jgqz/RDnR26QtINCQ0T5nhoUDIbS6Tb/DK4aJEaBXwMqbuAjIIzLy/idWhQ==
+        bh=1vVn3tT4i3E1FmbURQDOaSj4WaBWIdDZC/BLf0YptVo=;
+        b=hfybmoUMDmcw4ta1dPTnmr/52jQKaJoYCi6SxScW4C6yX9EEKbwBUPZPg8Lxw8ySYp
+         8HRZB3wQBZlaj6oVzFYC5MzwY4/zRPZfpbNqnUQ1ggFFPVxVRlooZLj7MR1s7UjF0KQV
+         Hm0K/aQXG/meLog4xy/S+Qoa/zS+km/drqnCus0nSue3PMTF2TXceTCrEDdCTVzWJlOz
+         2lPp/uZqwy4yl1hGqZtXJ1DUg3NycclBF65QCyjFVMROY+1bctm3odaCzGDbY8YCtlZf
+         CTQEixqk8hB2BeoSCbLIFtkAH+PDlg5zW1Pxx2eV6aTcSXOCzo1qvITZfWurBBgXiTto
+         v27w==
+X-Gm-Message-State: AOAM533NlU2v4vlmHzyeQZs08SQhyWQ28q8gakSn0swZ8jk/CxasuQlG
+        YZ9hLCrheYAlC+B1FJtGSQiZt8hJ2w==
+X-Google-Smtp-Source: ABdhPJxYJKi9TruSA6ySOacyal37q2p6g1uxh23QfUPvKU++OzDjQwdfE9PbLpLJFBQ5IRxHcLJ5qGpmJA==
 X-Received: from sunrae.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2814])
- (user=rmoar job=sendgmr) by 2002:a17:90b:1182:: with SMTP id
- gk2mr285811pjb.109.1630105102801; Fri, 27 Aug 2021 15:58:22 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 22:58:11 +0000
+ (user=rmoar job=sendgmr) by 2002:a25:b810:: with SMTP id v16mr8723586ybj.357.1630105108003;
+ Fri, 27 Aug 2021 15:58:28 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 22:58:12 +0000
 In-Reply-To: <20210827225812.3247919-1-rmoar@google.com>
-Message-Id: <20210827225812.3247919-2-rmoar@google.com>
+Message-Id: <20210827225812.3247919-3-rmoar@google.com>
 Mime-Version: 1.0
 References: <20210827225812.3247919-1-rmoar@google.com>
 X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH 1/2] selftests: tool: Add subtest header line and change
- indentation format in TAP results
+Subject: [PATCH 2/2] Revert "selftests: Remove KSFT_TAP_LEVEL"
 From:   Rae Moar <rmoar@google.com>
 To:     brendanhiggins@google.com, davidgow@google.com,
         dlatypov@google.com, keescook@chromium.org, shuah@kernel.org
@@ -63,97 +62,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is part of a series to alter the format of kselftest TAP
-results to improve compatibility with proposed KTAP specification
+This reverts commit f41c322f17ec4aa809222dc352439d80862c175b:
+https://lore.kernel.org/linux-kselftest/20190424231236.aWGsEs-_2b6p3DpN3b_4U1xGERmHSv45uBzgjf6RIRk@z/
+
+This patch removes nested TAP headers in kselftets TAP results and is part
+of a series to alter the format of kselftest TAP results to improve
+compatibility with proposed KTAP specification
 (https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/).
 
-Two changes:
-- Change from "# " to "  " for indentation of nested tests
-- Add subtest header line at start of tests with subtests. Line format
-is "# Subtest: [name of test]".
-
-An example of the new format:
-
-Old format:
-
- TAP version 13
- 1..1
- # TAP version 13
- # 1..1
- # # Starting 1 tests from 1 test cases.
- # #  RUN           global.get_syscall_info ...
- # #            OK  global.get_syscall_info
- # ok 1 global.get_syscall_info
- # # PASSED: 1 / 1 tests passed.
- # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
- ok 1 selftests: ptrace: get_syscall_info
-
-New format:
-
-TAP version 13
-1..1
-  # Subtest: selftests: ptrace: get_syscall_info
-  TAP version 13
-  1..1
-  # Starting 1 tests from 1 test cases.
-  #  RUN           global.get_syscall_info ...
-  #            OK  global.get_syscall_info
-  ok 1 global.get_syscall_info
-  # PASSED: 1 / 1 tests passed.
-  # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-ok 1 selftests: ptrace: get_syscall_info
-
 Signed-off-by: Rae Moar <rmoar@google.com>
-Change-Id: I139774745310ad2cd6dc5d7740254e48d8226241
+Change-Id: I24e74cacfc49a90a068eb30ee1448c097de5297d
 ---
- tools/testing/selftests/kselftest/prefix.pl | 2 +-
- tools/testing/selftests/kselftest/runner.sh | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ tools/testing/selftests/Makefile            | 6 ++++++
+ tools/testing/selftests/kselftest/runner.sh | 1 +
+ 2 files changed, 7 insertions(+)
 
-diff --git a/tools/testing/selftests/kselftest/prefix.pl b/tools/testing/selftests/kselftest/prefix.pl
-index 12a7f4ca2684..e59374b62603 100755
---- a/tools/testing/selftests/kselftest/prefix.pl
-+++ b/tools/testing/selftests/kselftest/prefix.pl
-@@ -16,7 +16,7 @@ while (1) {
- 	my $bytes = sysread(STDIN, $char, 1);
- 	exit 0 if ($bytes == 0);
- 	if ($needed) {
--		print "# ";
-+		print "  ";
- 		$needed = 0;
- 	}
- 	print $char;
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index fb010a35d61a..3bbfb83e2252 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -122,6 +122,12 @@ else
+ 	endif
+ endif
+ 
++# KSFT_TAP_LEVEL is used from KSFT framework to prevent nested TAP header
++# printing from tests. Applicable to run_tests case where run_tests adds
++# TAP header prior running tests and when a test program invokes another
++# with system() call. Export it here to cover override RUN_TESTS defines.
++export KSFT_TAP_LEVEL=`echo 1`
++
+ # Prepare for headers install
+ top_srcdir ?= ../../..
+ include $(top_srcdir)/scripts/subarch.include
 diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
-index cc9c846585f0..9b04aeb26d3a 100644
+index 9b04aeb26d3a..40ce901cb38d 100644
 --- a/tools/testing/selftests/kselftest/runner.sh
 +++ b/tools/testing/selftests/kselftest/runner.sh
-@@ -23,7 +23,7 @@ fi
- tap_prefix()
- {
- 	if [ ! -x /usr/bin/perl ]; then
--		sed -e 's/^/# /'
-+		sed -e 's/^/  /'
- 	else
- 		"$BASE_DIR"/kselftest/prefix.pl
- 	fi
-@@ -75,7 +75,8 @@ run_one()
- 		echo "not ok $test_num $TEST_HDR_MSG"
- 	else
- 		cd `dirname $TEST` > /dev/null
--		((((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
-+		(echo "  # Subtest: selftests: $DIR: $BASENAME_TEST" &&
-+		(((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
- 			tap_prefix >&4) 3>&1) |
- 			(read xs; exit $xs)) 4>>"$logfile" &&
- 		echo "ok $test_num $TEST_HDR_MSG") ||
-@@ -83,7 +84,6 @@ run_one()
- 		if [ $rc -eq $skip_rc ]; then	\
- 			echo "ok $test_num $TEST_HDR_MSG # SKIP"
- 		elif [ $rc -eq $timeout_rc ]; then \
--			echo "#"
- 			echo "not ok $test_num $TEST_HDR_MSG # TIMEOUT $kselftest_timeout seconds"
- 		else
- 			echo "not ok $test_num $TEST_HDR_MSG # exit=$rc"
+@@ -2,6 +2,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ #
+ # Runs a set of tests in a given subdirectory.
++export KSFT_TAP_LEVEL=1
+ export skip_rc=4
+ export timeout_rc=124
+ export logfile=/dev/stdout
 -- 
 2.33.0.259.gc128427fd7-goog
 
