@@ -2,94 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4EE3F961B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4478A3F962C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244584AbhH0IaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:30:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232048AbhH0I36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:29:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D255E60F92;
-        Fri, 27 Aug 2021 08:29:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630052949;
-        bh=BU9TRzkMG53KIKBgnqTa/wiySOBfMjCnl6DVJZAWeR8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AkxzV2bWozX+avMROB8UwIqZy81fYWziObSlO5YoQPeCWrvnzwnTkH9hZoql89feF
-         OQZ+indgwfTFbxp6FK7hde02GgkG/34BwW47EzC1Wt3i9pWpdX0pgQpcW4WIFvO4uZ
-         eL7yE5pzmJQNXzFdEcumG9p0BgwRatKXIdJ8IGa8=
-Date:   Fri, 27 Aug 2021 10:29:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ferry Toth <ftoth@exalondelft.nl>
-Cc:     Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Jack Pham <jackp@codeaurora.org>, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-        Lorenzo Colitti <lorenzo@google.com>,
-        Wesley Cheng <wcheng@codeaurora.org>, robh+dt@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org,
-        frowand.list@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: [PATCH v2 1/3] Revert "usb: gadget: u_audio: add real feedback
- implementation"
-Message-ID: <YSiiTrW/ZF2PyGWd@kroah.com>
-References: <20210826185739.3868-1-ftoth@exalondelft.nl>
- <20210826185739.3868-2-ftoth@exalondelft.nl>
+        id S244597AbhH0Ie0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 04:34:26 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:15258 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232180AbhH0IeW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 04:34:22 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GwtJq0N7vz8BDJ;
+        Fri, 27 Aug 2021 16:33:15 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 27 Aug 2021 16:33:32 +0800
+Received: from [127.0.0.1] (10.40.192.131) by dggemi759-chm.china.huawei.com
+ (10.1.198.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 27
+ Aug 2021 16:33:31 +0800
+Subject: Re: PCI MSI issue with reinserting a driver
+To:     Marc Zyngier <maz@kernel.org>, John Garry <john.garry@huawei.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        <linux-kernel@vger.kernel.org>, <qianweili@huawei.com>
+References: <cc224272-15db-968b-46a0-95951e11b23f@huawei.com>
+ <87o8h3lj0n.wl-maz@kernel.org>
+ <a80b9be0-c455-c852-ddac-3f514a15e896@huawei.com>
+ <8a54fdd0-950b-f801-e83d-750aef73ab3c@huawei.com>
+ <4848792ce8c9ed7490e2205281a3cbda@kernel.org>
+ <28c56995-501a-880b-e6dd-ac76b8290c2c@huawei.com>
+ <3d3d0155e66429968cb4f6b4feeae4b3@kernel.org>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <e4689914-508c-b1f1-a372-cb890d64f391@huawei.com>
+Date:   Fri, 27 Aug 2021 16:33:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826185739.3868-2-ftoth@exalondelft.nl>
+In-Reply-To: <3d3d0155e66429968cb4f6b4feeae4b3@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 08:57:37PM +0200, Ferry Toth wrote:
-> This reverts commit e89bb4288378b85c82212b60dc98ecda6b3d3a70.
-> 
-> The commit is part of a series with commit
-> 24f779dac8f3efb9629adc0e486914d93dc45517 causing a BUG on dwc3
-> hardware, at least on Intel Merrifield platform when configured
-> through configfs:
-> BUG: kernel NULL pointer dereference, address: 0000000000000008
-> ...
-> RIP: 0010:dwc3_gadget_del_and_unmap_request+0x19/0xe0
-> ...
-> Call Trace:
->  dwc3_remove_requests.constprop.0+0x12f/0x170
->  __dwc3_gadget_ep_disable+0x7a/0x160
->  dwc3_gadget_ep_disable+0x3d/0xd0
->  usb_ep_disable+0x1c/0x70
->  u_audio_stop_capture+0x79/0x120 [u_audio]
->  afunc_set_alt+0x73/0x80 [usb_f_uac2]
->  composite_setup+0x224/0x1b90 [libcomposite]
-> 
-> Pavel's suggestion to add
-> `echo "adaptive" > functions/uac2.usb0/c_sync` to the configfs script
-> resolves the issue.
-> Thinh suggests "the crash is probably because of f_uac2 prematurely
-> freeing feedback request before its completion. usb_ep_dequeue() is
-> asynchronous. dwc2() may treat it as a synchronous call so you didn't
-> get a crash."
-> 
-> Revert as this is a regression and the kernel shouldn't crash depending
-> on configuration parameters.
 
-Are these normal configuration options in the wild, or is this just
-something that you "can do"?
+On 2021/2/4 1:23, Marc Zyngier wrote:
+> On 2021-02-02 15:46, John Garry wrote:
+>> On 02/02/2021 14:48, Marc Zyngier wrote:
+>>>>>
+>>>>> Not sure. I also now notice an error for the SAS PCI driver on D06 
+>>>>> when nr_cpus < 16, which means number of MSI vectors allocated < 
+>>>>> 32, so looks the same problem. There we try to allocate 16 + 
+>>>>> max(nr cpus, 16) MSI.
+>>>>>
+>>>>> Anyway, let me have a look today to see what is going wrong.
+>>>>>
+>>>> Could this be the problem:
+>>>>
+>>>> nr_cpus=11
+>>>>
+>>>> In alloc path, we have:
+>>>>     its_alloc_device_irq(nvecs=27 = 16+11)
+>>>>       bitmap_find_free_region(order = 5);
+>>>> In free path, we have:
+>>>>     its_irq_domain_free(nvecs = 1) and free each 27 vecs
+>>>>       bitmap_release_region(order = 0)
+>>>>
+>>>> So we allocate 32 bits, but only free 27. And 2nd alloc for 32 fails.
+>>
+>> [ ... ]
+>>
+>>>>
+>>>>
+>>>> But I'm not sure that we have any requirement for those map bits to be
+>>>> consecutive.
+>>>
+>>> We can't really do that. All the events must be contiguous,
+>>> and there is also a lot of assumptions in the ITS driver that
+>>> LPI allocations is also contiguous.
+>>>
+>>> But there is also the fact that for Multi-MSI, we *must*
+>>> allocate 32 vectors. Any driver could assume that if we have
+>>> allocated 17 vectors, then there is another 15 available.
+>>>
+>>> My question still stand: how was this working with the previous
+>>> behaviour?
+>>
+>> Because previously in this scenario we would allocate 32 bits and free
+>> 32 bits in the map; but now we allocate 32 bits, yet only free 27 - so
+>> leak 5 bits. And this comes from how irq_domain_free_irqs_hierarchy()
+>> now frees per-interrupt, instead of all irqs per domain.
+>>
+>> Before:
+>>  In free path, we have:
+>>      its_irq_domain_free(nvecs = 27)
+>>        bitmap_release_region(count order = 5 == 32bits)
+>>
+>> Current:
+>>  In free path, we have:
+>>      its_irq_domain_free(nvecs = 1) for free each 27 vecs
+>>        bitmap_release_region(count order = 0 == 1bit)
+>
+> Right. I was focusing on the patch and blindly ignored the explanation
+> at the top of the email. Apologies for that.
+>
+> I'm not overly keen on handling this in the ITS though, and I'd rather
+> we try and do it in the generic code. How about this (compile tested
+> only)?
+>
+> Thanks,
+>
+>         M.
 
-> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
 
-I need an ack from the original authors to revert all this...
+Hi, Marc, Just a friendly reminder on this issue. We tested the kernel 
+on 5.14-rc4 and found that this issue still existed, and the following 
+bugfix code was not incorporated into the kernel.
 
-thanks,
+I wonder if you have any plans to merge this bugfix patch.
 
-greg k-h
+
+Thanks
+
+Jiaxing
+
+
+>
+> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+> index 6aacd342cd14..cfccad83c2df 100644
+> --- a/kernel/irq/irqdomain.c
+> +++ b/kernel/irq/irqdomain.c
+> @@ -1399,8 +1399,19 @@ static void 
+> irq_domain_free_irqs_hierarchy(struct irq_domain *domain,
+>          return;
+>
+>      for (i = 0; i < nr_irqs; i++) {
+> -        if (irq_domain_get_irq_data(domain, irq_base + i))
+> -            domain->ops->free(domain, irq_base + i, 1);
+> +        int n ;
+> +
+> +        /* Find the largest possible span of IRQs to free in one go */
+> +        for (n = 0;
+> +             ((i + n) < nr_irqs &&
+> +              irq_domain_get_irq_data(domain, irq_base + i + n));
+> +             n++);
+> +
+> +        if (!n)
+> +            continue;
+> +
+> +        domain->ops->free(domain, irq_base + i, n);
+> +        i += n;
+>      }
+>  }
+>
+>
+
