@@ -2,174 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FDE3F96A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D5E3F96AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhH0JIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:08:22 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:58740 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232048AbhH0JIU (ORCPT
+        id S244632AbhH0JMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244624AbhH0JL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:08:20 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17R6Ih0u015020;
-        Fri, 27 Aug 2021 09:07:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=1NlA62nxTuhcwvEY2cAfwLS0IHS+WNovlyzXRJv3EJ0=;
- b=Zpoa/FaQFKPWVBPrRFspLwgPtv2iKxQY95lzrZIruGP3hazW6ps7utEDDI282loFYJsC
- 0FzPnmNGhNxFVJcnaxADBef6D51/oCjCXGP5rwu0jbTkIS1ArHGx7AW8JjRcWCTA3eJN
- lzfSq6WQCRF59lXxVQwg7JjEWM+11O0cEQmczP6rkGa9MKvC1+yU7d+9LP+c05J29l+O
- SZWvQRZIcPuFCfuotWHrxRuvRXUGhwhVg+pVxrVH7UVlOiX0gdXDu7lWafh2r7ClECSY
- kH6EVWXjNKsusAeJpxkN0A1fkyMKM/wXibTFliZJMBaDpdCizNAs4dp/EEQgYTH0JP+J kg== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=1NlA62nxTuhcwvEY2cAfwLS0IHS+WNovlyzXRJv3EJ0=;
- b=g+F1JjJF71TP3vGvIgjFF99wucd+RLaohL6da8Cf8W1IiHnMBhK+BE/xMiF0pmcC0zV0
- fIR9o0mvQr4WC9j3PmosvsBdq6ubWM7VvKbyk50Tep4mIT7uyWzX4Jvx3f8ydjv5PG1C
- XQpFk//hMEXdBpbkxmbojihgNLVdFfOYBkbsaMunwpbkBDn/mdRucpnlzIYiSTKjvC38
- PIBg10Wm8wUoVw+XRVGetXjw9a5FyKMGga8UtVE227yO5THNhhADiClqA57QntfqEdvg
- IIGd2QhFM8sOJUfb8DNvrf9fRJNdi/mjN9noYrcHZvdUmbm7tCa3YWTNWcL/25EG2x0J Ng== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ap4xv3286-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 09:07:27 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17R8tc04017522;
-        Fri, 27 Aug 2021 09:07:26 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by userp3020.oracle.com with ESMTP id 3akb91rx9f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 09:07:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZXPKV5lLJ9PHBOdYD7ec21GCC+1F68L9FkGleFS2AwEbUOZnBq0oaSQQVZDxjm/mD2PTXAdSILxwKKs1yA/Su00q7vEKG/4aEGLZ//YIKHJ7f0m9g5mjcKk/21Xdjmh6laE4h3n1V7MwREqC9a/9QbsAGHksw5AkasK/lgynyGne79rsV8kPN+bEbxCuCWJwQcewP0sZsBma9Eb10KvwNU3o07s4Q/K1pmulbuEYT5JsuixxbTD0mHQjMq+sUUxl6A/DIx1sFcaZFAtb6W/pMdM/z64pDD5PC/V39WMoMEkx7BkJDwtiqoxpds2ANMJKBZyT8RyfpyY/rPI+/I5m0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1NlA62nxTuhcwvEY2cAfwLS0IHS+WNovlyzXRJv3EJ0=;
- b=L8k6XJ16fwJIAfq9cFhQIfCxlSBrN2ec5nppdzgLydgq0KF3+wrzHOPXMX6Sy+CyH+iprcM+BwFJ7eyewWSR0XtuWNPuBs6agdD44VBaAilvsoJSDvxvr4z5axBhi5PQ+GnogYnajKMx9cnl57y0EdXq6teXDJadWAAwxisr775mmsOeZ5o6mGZpiqMF6mD9IxawhcrApLM9550xK1Mh8vmzkYFMswi1gyJpM4MhLqN5JIjpxo1iz84nCJKq7ZxGAG+w/EZ+6Ee4hRdGspNUbU/L+RoebqgIeVdPcoz15w+87QpF91RD/ESwNUAVJgDL0BnAKWyuPKi3xjUjJcCYQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1NlA62nxTuhcwvEY2cAfwLS0IHS+WNovlyzXRJv3EJ0=;
- b=YXthpoq0pCidpfKhlhkKubxMvZi/1Q8wmy+iVPkfKU/dfWQKUwTDZTgD3pi52fVSdxeetVgHQQVrFIsVEM2jfJ9S/eq2e5WojfaWqiLoABLGoPXyLKB8Orj+t4vTWQ0AnWuZm6hG1O88lRtG945JXF1WwOPE+ChQx0+pDh9bXDw=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO6PR10MB5569.namprd10.prod.outlook.com
- (2603:10b6:303:144::5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Fri, 27 Aug
- 2021 09:07:24 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4457.019; Fri, 27 Aug 2021
- 09:07:24 +0000
-Date:   Fri, 27 Aug 2021 12:07:06 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] staging: r8188eu: add error handling of rtw_read8
-Message-ID: <20210827090706.GA12231@kadam>
-References: <cover.1629789580.git.paskripkin@gmail.com>
- <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c59d5d850bf9aab208704182c83086609289cb9c.1629789580.git.paskripkin@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0058.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::6)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Fri, 27 Aug 2021 05:11:59 -0400
+Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45C02C061757;
+        Fri, 27 Aug 2021 02:11:10 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by ha0.nfschina.com (Postfix) with ESMTP id 2CA2FAE0DE1;
+        Fri, 27 Aug 2021 17:10:13 +0800 (CST)
+X-Virus-Scanned: amavisd-new at test.com
+Received: from ha0.nfschina.com ([127.0.0.1])
+        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id I55RfApHpAp4; Fri, 27 Aug 2021 17:09:49 +0800 (CST)
+Received: from [172.30.18.174] (unknown [180.167.10.98])
+        (Authenticated sender: liqiong@nfschina.com)
+        by ha0.nfschina.com (Postfix) with ESMTPA id D5F44AE0DB0;
+        Fri, 27 Aug 2021 17:09:48 +0800 (CST)
+Subject: Re: [PATCH] ima: fix deadlock within RCU list of ima_rules
+To:     THOBY Simon <Simon.THOBY@viveris.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210819101529.28001-1-liqiong@nfschina.com>
+ <20210824085747.23604-1-liqiong@nfschina.com>
+ <e720e88e-ebfa-56df-6048-f2da0b8fa2a0@viveris.fr>
+ <3ba4da9d-fa7b-c486-0c48-67cee4d5de6d@nfschina.com>
+ <2c4f61ff68544b2627fc4a38ad1e4109184ec68a.camel@linux.ibm.com>
+ <d502623a-7a49-04f8-1672-6521ceef260b@nfschina.com>
+ <5a032a1b-f763-a0e4-8ea2-803872bd7174@nfschina.com>
+ <eb9921ff-2d4b-136f-b7a7-924e61a0651b@viveris.fr>
+ <1e464ae0-28e1-6511-ab89-52b5cd1a0841@nfschina.com>
+ <3ef6906b-ccf1-0ab8-180b-b71568e22443@viveris.fr>
+ <bd52af5b-6c69-73a1-e0b2-8d23f3d8db3a@nfschina.com>
+ <caa4955e-04d9-d3f8-cccb-5f78bd554c55@viveris.fr>
+From:   liqiong <liqiong@nfschina.com>
+Message-ID: <266c50d0-1efd-dc45-d11f-e8c91bfc8490@nfschina.com>
+Date:   Fri, 27 Aug 2021 17:10:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (62.8.83.99) by JNAP275CA0058.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.22 via Frontend Transport; Fri, 27 Aug 2021 09:07:19 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7a7686cb-4487-449d-388a-08d9693a155e
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5569:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO6PR10MB55691F7F0875147B6A91EC438EC89@CO6PR10MB5569.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 893YXZdZn17aKqSlaVY2aTIvZz7OUaDQ6/RSqYcmYuB1uCTIX3jyN75TeV/8VPy/RWzltLZ5plroVIb9QUOKLr9UqjgyTSrC5EFSpDsUR8+UDwIfcS5VyFOVWN0+6Wp/pkkEmTW8P/dgENpOqaJu0xwpLgdkVMEyBrTH6OyT8K9UP72gsTu6TnlnEdjxVXlVi56baQpKonqGFsHDDp+BIFvN1R7JwkR3Smdfa6g+grDP/u/0ZJ0D+FLpsbA4NX75fBRuU2VN0KRDKYP314tfWHbgoTMEaRrX9rVf0nAT+uHKapBOrwW4hEiWyboCMerX0Y+qyyQMn7mkEX9T9iK36jfzywx+re31ATO87dCflOr46dJBbLsop3Li93AT2OY15a5a5+oOMmPmx6ZQgEIJeB8jkV2ANLybpSODIlGxKTP+JjSetWbT765gfNIEU6WHH46rA5SLfDYpOZB8/qWqrxdUG1zsVgqeUVqK7vPM8InGszbpFhZd4BxHQsQlHhbufHLdEwizS0g26kFpw8nP/R/kNyZGZQkxnKMXUrF/IWm/pSuukEBN4xSIsC04mr40hbMyIPZRH2WC7wjRkobt3lR4FqzipIp7ndRFUpRiCP4Ui3hTy4DYBVakVjkYJJD0kPlweHJWpxTXYVPWbWbXNyJBgLaeAuejyENa3P8QosTWneehluHCTh2vpFgrTVO4No5g7U+WMhbzDcsJbZXvOw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(376002)(136003)(366004)(396003)(44832011)(4744005)(86362001)(33716001)(186003)(6916009)(38100700002)(478600001)(5660300002)(83380400001)(38350700002)(1076003)(9686003)(33656002)(66946007)(55016002)(66476007)(956004)(6666004)(8676002)(26005)(8936002)(2906002)(52116002)(316002)(4326008)(66556008)(9576002)(6496006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?y1yxvHPMvsCGw5QTmO4LZYYdNNNsfx4PP/VX1NJZgKANM9neQEK9qpGcSf8/?=
- =?us-ascii?Q?Qmka8Ca9k11MTNmonxfhcEE300S3Gty8wdW6Hjqtup7G/oBtwxc/muDDd+0d?=
- =?us-ascii?Q?CQbDruMJtu7mKS+1A+P6XFgbYBS0KOp4RvnI9tJsZ1RTDSoMWe+saR59uA1y?=
- =?us-ascii?Q?OQFrRbvgSNdTjaCuYhWrC7UAgansgh6AH2jv3NpHXIEAAr9ORZJ85iG4qcqC?=
- =?us-ascii?Q?wjQ6qTX80knks1v8FbQjW7ubSXrcSfW+kKmwsuAHLVlKT89UcCWwPzz94oMR?=
- =?us-ascii?Q?Cvi9Z8FCNn25QPvJAJpUpU4rVVeTb71LR2Qfet2zupFEqjbuDYWgwftNhIm+?=
- =?us-ascii?Q?bIn5RU2Hzo2pxVn0k85+JVtbXf++kZtHgF+0T8t877p0Qhl8J9qB1KnohQZW?=
- =?us-ascii?Q?xb+497ov/qVOEwITbEYBK4JNsU7HONjbbQQlgkmfyEULp6qrIvbjZ+SAxV6O?=
- =?us-ascii?Q?UCbwVCE6ker0/6YeUDC+ZRp+r3gTuYZSe2tA9PBjX7XjaJYGJbHHJSOdjNy4?=
- =?us-ascii?Q?cP7oVT6041F3+ylafueNZYXy9kzVlxkJhjL5xuYtkyAPfEeHGt+nVYJFRUHI?=
- =?us-ascii?Q?kRrsFHzL47pU6dTt8lQTrkt8Dvnu8jSTlBKPszMWCtXFK5UHSc1opeYGtHV3?=
- =?us-ascii?Q?bHkedcD47At0B7KO5Uc/92CCLN++ufKvavHkcXDo4Q4pBg8fc8qmo8pfiZxf?=
- =?us-ascii?Q?bkEpsan5oTFgqCRIDeKqHqaIQXKbonPnEe5y7mFoNPKMcpc6lPRyz8MBq8k9?=
- =?us-ascii?Q?Akp5iyIbE2IygxIHLsoLRwPc/cRCV7GSWorQwl50gDmgpUNPrMaW6hul9wVM?=
- =?us-ascii?Q?WNeE49+Cp6S9L1KJ4RKocfJqqbsXu45g6ETkT3PtANesX2VkSg56z5fyWzHf?=
- =?us-ascii?Q?YXIzK3Eel6MT8brsfiHEdzwdWqfpmw0zp76UnwZJjptsDGjlWFB4/ri0lbQl?=
- =?us-ascii?Q?AJnGCzfdu8guuAD6N1v75/FE22siZdeagy2kST2OJBpCfbdgCVvNd3kUOPNy?=
- =?us-ascii?Q?Z31E1Srrza/XDKcPeSpvrpcjufn8EnIv4jGu6AP4kNvFsDIb4MklENYwIvSp?=
- =?us-ascii?Q?nVzo5B8sYR0/Ww2SHyOjUPEFEi3NJj13eEPbf5GhUUu9rnPIfrOBZFAStNVU?=
- =?us-ascii?Q?SI6UJ0CLgNS7DOQ1VBL31Jp+ZYyg5MyHpPUl3F0chhT60qCPDIkYKoOlmf64?=
- =?us-ascii?Q?BnUxj4hrOsZjdHf/SapzpVp2DA7JKavL9gU4uxPYYMBYYjcyaWPexp0i/WuZ?=
- =?us-ascii?Q?g7udLSTXjdthLoLY83psNjom14OQwglfqBOI1GIk9O9zhpBgmRKHK2tW7fMO?=
- =?us-ascii?Q?jbpNeUgR715IQeBtBD4y0g1A?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a7686cb-4487-449d-388a-08d9693a155e
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 09:07:24.2821
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RVrwv11p5qD9vd605oVekMsxyy7mTJv2W69cqNpFU7nYDpMZcOD1mr5NzO82f1hBNNMX/ravRA0dj3Ttdj6eusBgSG1+IUYabSCwXYkw64g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5569
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10088 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108270058
-X-Proofpoint-ORIG-GUID: ui6U8y5XmsbmO8eMx42dl9_T798nSgZa
-X-Proofpoint-GUID: ui6U8y5XmsbmO8eMx42dl9_T798nSgZa
+In-Reply-To: <caa4955e-04d9-d3f8-cccb-5f78bd554c55@viveris.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:27:27AM +0300, Pavel Skripkin wrote:
-> @@ -83,7 +83,12 @@ int proc_get_read_reg(char *page, char **start,
->  
->  	switch (proc_get_read_len) {
->  	case 1:
-> -		len += snprintf(page + len, count - len, "rtw_read8(0x%x)=0x%x\n", proc_get_read_addr, rtw_read8(padapter, proc_get_read_addr));
-> +		error = rtw_read8(padapter, proc_get_read_addr, (u8 *) &tmp);
-> +		if (error)
-> +			return len;
-> +
-> +		len += snprintf(page + len, count - len, "rtw_read8(0x%x)=0x%x\n",
-> +				proc_get_read_addr, (u8) tmp);
->  		break;
+Hi Simon,
 
-Oh my goodness...  :P
+Thanks for your patient, i learn a lot. If the commit message
+does work, i would resubmit the patch.  Here is the whole patch:
 
-If you look at what proc_get_read_addr is, it turns out it's a 32bit
-address which is controlled by the user in proc_set_read_reg().  LOL!
-Just a giant security hole.
 
-My advise is just delete this dead code.  No one is using it so how
-necessary can it be?
+The current IMA ruleset is identified by the variable "ima_rules"
+that default to "&ima_default_rules". When loading a custom policy
+for the first time, the variable is updated to "&ima_policy_rules"
+instead. That update isn't RCU-safe, and deadlocks are possible.
+Indeed, some functions like ima_match_policy() may loop indefinitely
+when traversing "ima_default_rules" with list_for_each_entry_rcu().
 
-regards,
-dan carpenter
+When iterating over the default ruleset back to head, if the list
+head is "ima_default_rules", and "ima_rules" have been updated to
+"&ima_policy_rules", the loop condition (&entry->list != ima_rules)
+stays always true, traversing won't terminate, causing a soft lockup
+and RCU stalls.
+
+Introduce a temporary value for "ima_rules" when iterating over
+the ruleset to avoid the deadlocks.
+
+Signed-off-by: liqiong <liqiong@nfschina.com>
+---
+ security/integrity/ima/ima_policy.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index fd5d46e511f1..e92b197bfd3c 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -662,12 +662,14 @@ int ima_match_policy(struct user_namespace *mnt_userns, struct inode *inode,
+ {
+ 	struct ima_rule_entry *entry;
+ 	int action = 0, actmask = flags | (flags << 1);
++	struct list_head *ima_rules_tmp;
+ 
+ 	if (template_desc && !*template_desc)
+ 		*template_desc = ima_template_desc_current();
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 
+ 		if (!(entry->action & actmask))
+ 			continue;
+@@ -919,8 +921,8 @@ void ima_update_policy(void)
+ 
+ 	if (ima_rules != policy) {
+ 		ima_policy_flag = 0;
+-		ima_rules = policy;
+ 
++		rcu_assign_pointer(ima_rules, policy);
+ 		/*
+ 		 * IMA architecture specific policy rules are specified
+ 		 * as strings and converted to an array of ima_entry_rules
+@@ -1649,9 +1651,11 @@ void *ima_policy_start(struct seq_file *m, loff_t *pos)
+ {
+ 	loff_t l = *pos;
+ 	struct ima_rule_entry *entry;
++	struct list_head *ima_rules_tmp;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 		if (!l--) {
+ 			rcu_read_unlock();
+ 			return entry;
+@@ -1670,7 +1674,8 @@ void *ima_policy_next(struct seq_file *m, void *v, loff_t *pos)
+ 	rcu_read_unlock();
+ 	(*pos)++;
+ 
+-	return (&entry->list == ima_rules) ? NULL : entry;
++	return (&entry->list == &ima_default_rules ||
++		&entry->list == &ima_policy_rules) ? NULL : entry;
+ }
+ 
+ void ima_policy_stop(struct seq_file *m, void *v)
+@@ -1872,6 +1877,7 @@ bool ima_appraise_signature(enum kernel_read_file_id id)
+ 	struct ima_rule_entry *entry;
+ 	bool found = false;
+ 	enum ima_hooks func;
++	struct list_head *ima_rules_tmp;
+ 
+ 	if (id >= READING_MAX_ID)
+ 		return false;
+@@ -1879,7 +1885,8 @@ bool ima_appraise_signature(enum kernel_read_file_id id)
+ 	func = read_idmap[id] ?: FILE_CHECK;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 		if (entry->action != APPRAISE)
+ 			continue;
+ 
+
+-- 
+2.11.0
+
+
+在 2021年08月27日 15:30, THOBY Simon 写道:
+
+> Hi liqiong,
+>
+> a few nits but nothing significant. This is getting in good shape!
+>
+> On 8/27/21 8:41 AM, liqiong wrote:
+>> Hi Simon,
+>>
+>> Thanks for you help, i may got it, here is the new commit message:
+>>
+>>
+>> The current IMA ruleset is identified by the variable "ima_rules"
+>> that default to "&ima_default_rules". When loading a custom policy
+>> for the first time, the variable is updated to "&ima_policy_rules"
+>> instead. That update isn't RCU-safe, and deadlocks are possible.
+>> Because some functions like ima_match_policy() may loop indefinitely
+> s/Because/Indeed,/ (in english, sentences with a subordinating conjunction
+> like 'because' are usually written in two parts, and a dependent clause
+> standing by itself is rarely used except for stylistic effect)
+>
+>> over traversing the "ima_default_rules" as list_for_each_entry_rcu().
+> s/over traversing the "ima_default_rules" as list_for_each_entry_rcu()/when traversing "ima_default_rules" with list_for_each_entry_rcu()./
+>
+>> When iterating over the default ruleset back to head, value of
+>> "&entry->list" is "&ima_default_rules", and "ima_rules" may have been
+> s/value of "&entry->list" is "&ima_default_rules"/if the list head is "ima_default_rules"/
+> s/may have been/have been/
+>
+>> updated to "&ima_policy_rules", the loop condition (&entry->list != ima_rules)
+>> stay alway true, traversing doesn't terminate, cause soft lockup and
+> Don't forget the 's' in "stays" (or "remains")
+> Ditto for "always"
+> s/traversing doesn't/traversing won't/
+> Also: s/cause/causing a/
+>
+>> RCU stalls.
+>>
+>> Introduce a temporary value for "ima_rules" when iterating over
+>> the ruleset to avoid the deadlocks.
+>>
+>>
+>> Signed-off-by: liqiong <liqiong@nfschina.com>
+>> ---
+>>  security/integrity/ima/ima_policy.c | 17 ++++++++++++-----
+>>  1 file changed, 12 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+>> index fd5d46e511f1..e92b197bfd3c 100644
+>> --- a/security/integrity/ima/ima_policy.c
+>> +++ b/security/integrity/ima/ima_policy.c
+>>
+>>
+>> Thanks
+>>
+>> liqiong
+>>
+> Thanks,
+> Simon
 
