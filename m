@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3413F9E97
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741FF3F9EA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhH0SNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 14:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
+        id S229805AbhH0SVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 14:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhH0SNf (ORCPT
+        with ESMTP id S229580AbhH0SVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 14:13:35 -0400
+        Fri, 27 Aug 2021 14:21:15 -0400
 Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BB6C061757;
-        Fri, 27 Aug 2021 11:12:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FF6C061757;
+        Fri, 27 Aug 2021 11:20:25 -0700 (PDT)
 Received: from zn.tnic (p200300ec2f111700cf40790d4c46ba75.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:cf40:790d:4c46:ba75])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 027621EC0464;
-        Fri, 27 Aug 2021 20:12:41 +0200 (CEST)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 580311EC0464;
+        Fri, 27 Aug 2021 20:20:20 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630087961;
+        t=1630088420;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Hlz/5VHRXOfPhVFm7WimoCOj8La+rdAhYJDH4ZFMWbQ=;
-        b=NZddcriKO1PUvMjPs2tFF605PavVOcGKBCU1BA3MnkZVTgbB73hIPgsXYXdschIR7S1+Lp
-        kdQm5Rj6pCwGGqj0B7lkK3xZ8+th3EqnXfpKqYdxuO+fi1SoVcKXs4VB9adfV8G52RawXN
-        N51VO5jyxZpg3mFRIWfHvwPWB/6fKwY=
-Date:   Fri, 27 Aug 2021 20:13:17 +0200
+        bh=ZX+dUaso9hY7Jwyhm9+J+9xSIFkf/Ba913Jr6PxHR8M=;
+        b=hxhN/9qaxv9CejLRWw/PIxqlAS/tScL1xrIYrKtj0tITUY//ZNg6TZHq5y6GLCwkNmGnkE
+        ea7gb0qDI/2HlzvGLbqA8//rLOTvTBv+aGCGxfMwcbe6UrZnn/Srne1S5PpjyNBIjZoDrV
+        Ii6Bm3VbSHJ/Qikkp8eaLIl1EwOJ1So=
+Date:   Fri, 27 Aug 2021 20:21:02 +0200
 From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
         Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
         Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 33/38] x86/sev: Provide support for SNP guest
- request NAEs
-Message-ID: <YSkrPXLqg38txCqp@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-34-brijesh.singh@amd.com>
- <YSkkaaXrg6+cnb9+@zn.tnic>
- <4acd17bc-bdb0-c4cc-97af-8842f8836c8e@amd.com>
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>
+Subject: Re: [PATCH v29 23/32] x86/cet/shstk: Add user-mode shadow stack
+ support
+Message-ID: <YSktDrcJIAo9mQBV@zn.tnic>
+References: <20210820181201.31490-1-yu-cheng.yu@intel.com>
+ <20210820181201.31490-24-yu-cheng.yu@intel.com>
+ <YSfAbaMxQegvmN2p@zn.tnic>
+ <fa372ba8-7019-46d6-3520-03859e44cad9@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4acd17bc-bdb0-c4cc-97af-8842f8836c8e@amd.com>
+In-Reply-To: <fa372ba8-7019-46d6-3520-03859e44cad9@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 01:07:59PM -0500, Brijesh Singh wrote:
-> Okay, works for me. The main reason why I choose the enum was to not
-> expose the GHCB exit code to the driver
+On Fri, Aug 27, 2021 at 11:10:31AM -0700, Yu, Yu-cheng wrote:
+> Because on context switches the whole xstates are switched together,
+> we need to make sure all are in registers.
 
-Why does that matter?
+There's context switch code which does that already.
 
-> but I guess that attestation driver need to know which VMGEXIT need to
-> be called, so, its okay to have it pass the VMGEXIT number instead of
-> enum.
-
-Well, they're in an uapi header - can't be more public than that. :-)
-
-> So far most of the changes were in x86 specific files. However, the
-> attestation service is available through a driver to the userspace. The
-> driver needs to use the VMGEXIT routines provides by the x86 core. I
-> created the said header file so that driver does not need to include
-> <asm/sev.h/sev-common.h> etc and will compile for !x86.
-
-Lemme ask my question again:
-
-Is SNP available on something which is !x86, all of a sudden?
-
-Why would you want to compile that driver on anything but x86?
+Why would shstk_setup() be responsible for switching the whole extended
+states buffer instead of only the shadow stack stuff only?
 
 -- 
 Regards/Gruss,
