@@ -2,139 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0033FA0C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC41F3FA0C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhH0UmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:42:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
+        id S231603AbhH0UoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 16:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbhH0Ul6 (ORCPT
+        with ESMTP id S231346AbhH0UoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 16:41:58 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BECC0613D9;
-        Fri, 27 Aug 2021 13:41:08 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id h9so16453084ejs.4;
-        Fri, 27 Aug 2021 13:41:08 -0700 (PDT)
+        Fri, 27 Aug 2021 16:44:21 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7594C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 13:43:32 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso9643285pjh.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 13:43:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Xf357nAIQp/DfI8J7kSV68oMUuTmpfBnw0jmnOXe50I=;
-        b=i02ToSDhvCjpWFC6uRaCryi7/LoA9thyo2fw2FYBXwihADlLwRKxiCF9v7WVJ2Lhx2
-         Y6fDfyjsiUQ8qOYfRkHPMBjsv9fl+BjwnQ05CYN93sRhl313UTNCM1nrbMdzmnwk11yj
-         AXMWlfG1rT4eEiQXnKW0e4F01vXUsUTngUz0Mxkdc9UHWEyyxJAP5Gkn2YiSCoIYdTk0
-         lxz4AJ+PBklLOYq4T2r+kIUwLER4I7N7QS3RTdTaf4he83kFr6v3ZO0hBnl1ODAbMp2U
-         JUR40l2FbOcle4Ah7uIX0nOL8oQH66GsFwICiI8/XlnWt7z1Y2sHiCuS9ENrQqBpK5Jj
-         ImbA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=es5gtjhENWB79sLZ79K6hxDx1HVq6EBAX7j3HW4typw=;
+        b=gmt5Mp0IgaRkMY54PcMga1eLF7Afk7zcLUG83z2o91zzXwBqHnxQvvPoT3zEP9cJ0c
+         OdOKbqWtMWEUjvllWJmrHG/F9tATXjEiwp9ToA/WpXmvIqt1ePq2JikWKceINCAx6jrm
+         jfaM0XGIESsp8G6Yk0PjT6ITVGRyJ8zyko6OlRL4rr18H3k817EQVZDCnyhbsUhP32Xl
+         b9ULBl3tQXTHZ00smpUsbFQHvt5Xfaxd2sdKeIx0AbQo0JHVM4xDO1sH1uhLH98qv0eG
+         fDIjFXu//X2lA4PsliluOK/MbMy+aPlaJ+E/tLQOcwaQTsr+R+DaisVlYvbJQ5v5cRLv
+         ayXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xf357nAIQp/DfI8J7kSV68oMUuTmpfBnw0jmnOXe50I=;
-        b=H65stQ3GDPDBXRsv4LGA50oMFS+znfkP531+fr//9w7H2v2PU+f8RoeLWmqv6s2kU0
-         kODDxOjEUrOpQVkHxbpVo4hzmbvFlWnVEpnvIRnb/ITozqjffHa9EadYLDLbj2NSeE+h
-         y2/BdFUEDSf0BJvwTUUHDbbvM7jMnLpzs/QahCZt+Fe+Uy2UgUYGpFg3enVXatxMeW7G
-         VGBayLGMtp132V4Ve6+c5g2IXZ8Tq6zVAbjyHHMYgf+XhamsUMt3kdxysix/KnyJ+UVw
-         E04AM3Bn/UpzMo18GNYB5o+SdU3VEYishesylE6sQfd0Wbwow753caW0XOJzVnmjgkr9
-         W5yQ==
-X-Gm-Message-State: AOAM5321eZR7uUF2i4nlMS7DHQsbyUmcdUUZwXWake/9Nwdb7E3I6FWB
-        uw084xlEQGuej1RjFuDay44=
-X-Google-Smtp-Source: ABdhPJzzLZMz6eEGyk7vQVVUp9Qi6qWAHt1bt9JJN1w4oRxyhxemJFY2E+i7IWTJQYI/Nw7Zrd1BGg==
-X-Received: by 2002:a17:907:3e05:: with SMTP id hp5mr11988313ejc.527.1630096867440;
-        Fri, 27 Aug 2021 13:41:07 -0700 (PDT)
-Received: from ?IPv6:2001:981:6fec:1:1b32:912f:78cc:6c61? ([2001:981:6fec:1:1b32:912f:78cc:6c61])
-        by smtp.gmail.com with ESMTPSA id s17sm3863006edt.69.2021.08.27.13.41.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 13:41:06 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] Revert "usb: gadget: u_audio: add real feedback
- implementation"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ferry Toth <ftoth@exalondelft.nl>
-Cc:     Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Jack Pham <jackp@codeaurora.org>, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-        Lorenzo Colitti <lorenzo@google.com>,
-        Wesley Cheng <wcheng@codeaurora.org>, robh+dt@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org,
-        frowand.list@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Pavel Hofman <pavel.hofman@ivitera.com>
-References: <20210826185739.3868-1-ftoth@exalondelft.nl>
- <20210826185739.3868-2-ftoth@exalondelft.nl> <YSiiTrW/ZF2PyGWd@kroah.com>
-From:   Ferry Toth <fntoth@gmail.com>
-Message-ID: <605f5ae5-365d-80be-42a4-8d273a20c3d7@gmail.com>
-Date:   Fri, 27 Aug 2021 22:41:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=es5gtjhENWB79sLZ79K6hxDx1HVq6EBAX7j3HW4typw=;
+        b=o6fvDFAORLH3grBIiiQoymGQPyb4MaGFrzEREQR9vdGxN69xh2aUdkMIVXcCyVwjJ6
+         Ti25bilZdc8bnqQgp0+lnej6KryZyjcj8J6YBuOrdrTJ63XikI1PtmyWM6fLpYPfgwGx
+         TIc29b1WL+8QoxLTTZuCKgyOEr2F8LoYeeDzdxQHBsx/QEa90WwNGndkMBVq8wfM6Ole
+         l27jrA9CSiTlqzQ3TxbsXknEF/ylPl+bo92a2xShQKVAf97F731mMcswhfxp/9YnKkJT
+         JaHU0m4MGjLi2sS8Ra+BbXgZgus1XU8Wo4Fu0H6figonhJF5XJScAVdU14c1kqds0n9S
+         T5qQ==
+X-Gm-Message-State: AOAM531Hw1FT6EaytTbpEm9iqbMrgtoCNyjPOzBVYuNeROwlIM9cfZ5p
+        YrrI5TaqTcJVQNutt3whBivQUA==
+X-Google-Smtp-Source: ABdhPJwjTWsz+TFVHmuSv1hcV51k1QdExw20URi2PmswyOyTKKLv9pBovjFi4qHivbUgrCbqE0PmOg==
+X-Received: by 2002:a17:90a:345:: with SMTP id 5mr16954518pjf.203.1630097012013;
+        Fri, 27 Aug 2021 13:43:32 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 6sm7388391pjz.8.2021.08.27.13.43.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 13:43:31 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 20:43:27 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Cathy Zhang <cathy.zhang@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] Basic recovery for machine checks inside SGX
+Message-ID: <YSlObwgsUTcrixfm@google.com>
+References: <20210728204653.1509010-1-tony.luck@intel.com>
+ <20210827195543.1667168-1-tony.luck@intel.com>
+ <YSlLAaNEhQ3kKZ1D@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <YSiiTrW/ZF2PyGWd@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSlLAaNEhQ3kKZ1D@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Op 27-08-2021 om 10:29 schreef Greg Kroah-Hartman:
-> On Thu, Aug 26, 2021 at 08:57:37PM +0200, Ferry Toth wrote:
->> This reverts commit e89bb4288378b85c82212b60dc98ecda6b3d3a70.
->>
->> The commit is part of a series with commit
->> 24f779dac8f3efb9629adc0e486914d93dc45517 causing a BUG on dwc3
->> hardware, at least on Intel Merrifield platform when configured
->> through configfs:
->> BUG: kernel NULL pointer dereference, address: 0000000000000008
->> ...
->> RIP: 0010:dwc3_gadget_del_and_unmap_request+0x19/0xe0
->> ...
->> Call Trace:
->>   dwc3_remove_requests.constprop.0+0x12f/0x170
->>   __dwc3_gadget_ep_disable+0x7a/0x160
->>   dwc3_gadget_ep_disable+0x3d/0xd0
->>   usb_ep_disable+0x1c/0x70
->>   u_audio_stop_capture+0x79/0x120 [u_audio]
->>   afunc_set_alt+0x73/0x80 [usb_f_uac2]
->>   composite_setup+0x224/0x1b90 [libcomposite]
->>
->> Pavel's suggestion to add
->> `echo "adaptive" > functions/uac2.usb0/c_sync` to the configfs script
->> resolves the issue.
->> Thinh suggests "the crash is probably because of f_uac2 prematurely
->> freeing feedback request before its completion. usb_ep_dequeue() is
->> asynchronous. dwc2() may treat it as a synchronous call so you didn't
->> get a crash."
->>
->> Revert as this is a regression and the kernel shouldn't crash depending
->> on configuration parameters.
+On Fri, Aug 27, 2021, Borislav Petkov wrote:
+> On Fri, Aug 27, 2021 at 12:55:37PM -0700, Tony Luck wrote:
+> > Here's version 4 (just 38 more to go if I want to meet the bar set by
+> > the base SGX series :-) )
 > 
-> Are these normal configuration options in the wild, or is this just
-> something that you "can do"?
-
-It's a work around suggested by Pavel, a line that can be added to 
-configfs script.
-
->> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+> You're off by 1:
 > 
-> I need an ack from the original authors to revert all this...
-
-A fix has appeared:
-https://lore.kernel.org/linux-usb/1jfsuvw817.fsf@starbuckisacylon.baylibre.com/T/#m922149b7e74204c8ed1bed2c624910ab4eafd43c
-
-This has been acked by Felipe. If we can get that in 5.14.0 it would be 
-preferable to reverting this series.
-
-> thanks,
+> https://lore.kernel.org/lkml/20201214114200.GD26358@zn.tnic/
 > 
-> greg k-h
+> you have only just 37 more.
 > 
+> :-P
 
+LOL, sorry for setting such high standards.
