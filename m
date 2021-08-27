@@ -2,170 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160203F9A99
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E053F9AA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbhH0OGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245123AbhH0OGV (ORCPT
+        id S241260AbhH0OIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:08:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38472 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231571AbhH0OIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:06:21 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15823C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:05:33 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id v1so4015206qva.7
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mZZ2GJOqbD627yDd8PxmA7ZK7E+daVtcBKB5g7fmVmo=;
-        b=K3MT73Ixrnvebe5Zl6Aji0mjUHK9hnQ+4WZzC+98XvZT5HHdMieKFjqvtLtXEOb6au
-         4lJTYZtnuoQI0bz6qP06wk0IBgT/EhmovIYR+Nx3A5K8eQ8BK2b0pEcfPhXNnO/W6SQ/
-         PS7+Ttp9NEaUBS3cBbDe8KBLQEvpWkDS+T0V0CQdPkuyh2t2zhIKo1HZ1++c8O/g4usF
-         dBL5GbvRvR1kfX7vl59xVklI7zqWt1ekKgGtDoBjNpLFNjqdx+x8J0RlvieEZE8pjmBF
-         0fNVHyiKUpXM7Gy2Jkpl9nIi2oOziKAp/fym8cKaQHMKaFxNmW8lb+GQi9tVIaXfee9C
-         IZQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mZZ2GJOqbD627yDd8PxmA7ZK7E+daVtcBKB5g7fmVmo=;
-        b=nkrLwYKqmySJC0Ff6zu3EQ9XqBLDW0fUUINnUyxlJccBfpzU/C2LOJur5uaHn6Zpr5
-         RTukPn6AP400DM6AdcSROtOsl6DzVqNHp439hJaRjuCMCCSz9uum+p8+sUo4ReX7nPAz
-         o8wNDtvIDPLIZ8e0mgkA+gTPshN1P+binjQM94/VZ9uMQ+cV3qAhitKGEyDqcJjveUkg
-         qHf34j7K9e6dahTbS0+syMnE74SBpeaeNJodj075TPwvXoeMqFMyqg7VOOqV8hyXCloe
-         y36JgmMTBC/CPZ1RY2RL0KdyKS3YV8x6RIGvdTGabgi/xm6A3UdRWIkG8TuG2YqAD1Y1
-         Envg==
-X-Gm-Message-State: AOAM5326C6GIYm6sx/xcYgVV1uJykYqyAAEmCldIApmRyMSLriZyNh3d
-        y2ZNM68nkOMUcIhvqWefZdVIFw==
-X-Google-Smtp-Source: ABdhPJyB5hwxHPVFEgZdJaR13uGxqzcrL2WCzgBa8Jr4z8v/kEfh1KkxoGej/fzaYogkl2VRWDmwnQ==
-X-Received: by 2002:ad4:482d:: with SMTP id h13mr9781285qvy.5.1630073132206;
-        Fri, 27 Aug 2021 07:05:32 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id w18sm3384738qto.91.2021.08.27.07.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 07:05:31 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 10:07:16 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YSjxlNl9jeEX2Yff@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YSQSkSOWtJCE4g8p@cmpxchg.org>
- <YSQeFPTMn5WpwyAa@casper.infradead.org>
- <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
- <YSVMAS2pQVq+xma7@casper.infradead.org>
- <YSZeKfHxOkEAri1q@cmpxchg.org>
- <20210826004555.GF12597@magnolia>
+        Fri, 27 Aug 2021 10:08:21 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630073251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=11NIC+pr+SwPLcFh+rYzsUwGFwRQn2PPhhrNnoAS/Hk=;
+        b=FA/a8YDH9ZywgSQADqEWqAEC32qDJ1g3ObowrKmhnXpy8W5EgZverx9AHMuh6mqfBVNY0T
+        yg1Pkb2cs3XZrm74KScyzZ83FA5loJXDF3SZ/xA6tYcgAzqZbP9pw/9qFleloyVOy2Fj9+
+        H1FWQn8pE9MNgDVmlTEZvdWz2mnlGSKcVUf1twKlL2Bkv9rZkF3JuI/MDJt0YOsFLfj9g9
+        N4tRP5es7MbdSGKOaECjvlauK1625y6SYmo33khDkE+IaMsVQH9YtqD41tB5pGwezcv5su
+        a/B5X6xCNGSso2BVN62Tdq+NWiIq2TUQuFZbTyeSHODD9tZ/8YPEYL9Dqx29yg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630073251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=11NIC+pr+SwPLcFh+rYzsUwGFwRQn2PPhhrNnoAS/Hk=;
+        b=Tt7ESV8hwG8E9hl9zdPAzSx+ERfKFDb5RXSUMYOtUjiqVNI00gNOJWevWju1hENZfxXES+
+        UwFnUzefUSnm21Bw==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Subject: [PATCH] sched: Prevent balance_push() on remote runqueues
+Date:   Fri, 27 Aug 2021 16:07:30 +0200
+Message-ID: <87tujb0yn1.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826004555.GF12597@magnolia>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 05:45:55PM -0700, Darrick J. Wong wrote:
-> Pardon my ignorance, but ... how would adding yet another layer help a
-> filesystem?  No matter how the software is structured, we have to set up
-> and manage the (hardware) page state for programs, and we must keep that
-> coherent with the file space mappings that we maintain.  I already know
-> how to deal with pages and dealing with "folios" seems about the same.
-> Adding another layer of caching structures just adds another layer of
-> cra^Wcoherency management for a filesystem to screw up.
-> 
-> The folios change management of memory pages enough to disentangle the
-> page/compound page confusion that exists now, and it seems like a
-> reasonable means to supporting unreasonable things like copy on write
-> storage for filesystems with a 56k block size.
-> 
-> (And I'm sure I'll get tons of blowback for this, but XFS can manage
-> space in weird units like that (configure the rt volume, set a 56k rt
-> extent size, and all the allocations are multiples of 56k); if we ever
-> wanted to support reflink on /that/ hot mess, it would be awesome to be
-> able to say that we're only going to do 56k folios in the page cache for
-> those files instead of the crazy writeback games that the prototype
-> patchset does now.)
+sched_setscheduler() and rt_mutex_setprio() invoke the run-queue balance
+callback after changing priorities or the scheduling class of a task. The
+run-queue for which the callback is invoked can be local or remote.
 
-I'm guessing the reason you want 56k blocks is because with a larger
-filesystems and faster drives it would be a more reasonable unit for
-managing this amount of data than 4k would be.
+That's not a problem for the regular rq::push_work which is serialized with
+a busy flag in the run-queue struct, but for the balance_push() work which
+is only valid to be invoked on the outgoing CPU that's wrong. It not only
+triggers the debug warning, but also leaves the per CPU variable push_work
+unprotected, which can result in double enqueues on the stop machine list.
 
-We have the same thoughts in MM and growing memory sizes. The DAX
-stuff said from the start it won't be built on linear struct page
-mappings anymore because we expect the memory modules to be too big to
-manage them with such fine-grained granularity. But in practice, this
-is more and more becoming true for DRAM as well. We don't want to
-allocate gigabytes of struct page when on our servers only a very
-small share of overall memory needs to be managed at this granularity.
+Remove the warning and check that the function is invoked on the
+outgoing CPU. If not, just return and do nothing.
 
-Folio perpetuates the problem of the base page being the floor for
-cache granularity, and so from an MM POV it doesn't allow us to scale
-up to current memory sizes without horribly regressing certain
-filesystem workloads that still need us to be able to scale down.
+Fixes: ae7927023243 ("sched: Optimize finish_lock_switch()")
+Reported-by: Sebastian Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+---
+ kernel/sched/core.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-
-But there is something more important that I wish more MM people would
-engage on: When you ask for 56k/2M/whatever buffers, the MM has to be
-able to *allocate* them.
-
-I'm assuming that while you certainly have preferences, you don't rely
-too much on whether that memory is composed of a contiguous chunk of
-4k pages, a single 56k page, a part of a 2M page, or maybe even
-discontig 4k chunks with an SG API. You want to manage your disk space
-one way, but you could afford the MM some flexibility to do the right
-thing under different levels of memory load, and allow it to scale in
-the direction it needs for its own purposes.
-
-But if folios are also the low-level compound pages used throughout
-the MM code, we're tying these fs allocations to the requirement of
-being physically contiguous. This is a much more difficult allocation
-problem. And from the MM side, we have a pretty poor track record of
-serving contiguous memory larger than the base page size.
-
-Since forever have non-MM people assumed that because the page
-allocator takes an order argument you could make arbitrary 2^n
-requests. When they inevitably complain that it doesn't work, even
-under light loads, we tell them "lol order-0 or good luck".
-
-Compaction has improved our ability to serve these requests, but only
-*if you bring the time for defragmentation*. Many allocations
-don't. THP has been around for years, but honestly it doesn't really
-work in general purpose environments. Yeah if you have some HPC number
-cruncher that allocates all the anon at startup and then runs for
-hours, it's fine. But in a more dynamic environment after some uptime,
-the MM code just isn't able to produce these larger pages reliably and
-within a reasonable deadline. I'm assuming filesystem workloads won't
-bring the necessary patience for this either.
-
-We've effectively declared bankruptcy on this already. Many requests
-have been replaced with kvmalloc(), and THP has been mostly relegated
-to the optimistic background tinkering of khugepaged. You can't rely
-on it, so you need to structure your expectations around it, and
-perform well when it isn't. This will apply to filesystems as well.
-
-I really don't think it makes sense to discuss folios as the means for
-enabling huge pages in the page cache, without also taking a long hard
-look at the allocation model that is supposed to back them. Because
-you can't make it happen without that. And this part isn't looking so
-hot to me, tbh.
-
-Willy says he has future ideas to make compound pages scale. But we
-have years of history saying this is incredibly hard to achieve - and
-it certainly wasn't for a lack of constant trying.
-
-Decoupling the filesystems from struct page is a necessary step. I can
-also see an argument for abstracting away compound pages to clean up
-the compound_head() mess in all the helpers (although I'm still not
-convinced the wholesale replacement of the page concept is the best
-way to achieve this). But combining the two objectives, and making
-compound pages the basis for huge page cache - after everything we
-know about higher-order allocs - seems like a stretch to me.
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8523,7 +8523,6 @@ static void balance_push(struct rq *rq)
+ 	struct task_struct *push_task = rq->curr;
+ 
+ 	lockdep_assert_rq_held(rq);
+-	SCHED_WARN_ON(rq->cpu != smp_processor_id());
+ 
+ 	/*
+ 	 * Ensure the thing is persistent until balance_push_set(.on = false);
+@@ -8531,9 +8530,10 @@ static void balance_push(struct rq *rq)
+ 	rq->balance_callback = &balance_push_callback;
+ 
+ 	/*
+-	 * Only active while going offline.
++	 * Only active while going offline and when invoked on the outgoing
++	 * CPU.
+ 	 */
+-	if (!cpu_dying(rq->cpu))
++	if (!cpu_dying(rq->cpu) && rq == this_rq())
+ 		return;
+ 
+ 	/*
