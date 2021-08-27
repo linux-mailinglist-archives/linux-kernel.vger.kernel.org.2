@@ -2,341 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1B23F9E3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A72C3F9E49
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237357AbhH0Rrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:47:45 -0400
-Received: from out28-121.mail.aliyun.com ([115.124.28.121]:55647 "EHLO
-        out28-121.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhH0Rro (ORCPT
+        id S239992AbhH0Rs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:48:29 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:39395 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236883AbhH0RsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:47:44 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;BR=01201311R621ec;CH=green;DM=|CONTINUE|false|;DS=SPAM|spam_low_mark|0.81893-0.00243011-0.17864;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.LB8ZT09_1630086411;
-Received: from 192.168.88.131(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.LB8ZT09_1630086411)
-          by smtp.aliyun-inc.com(10.147.41.143);
-          Sat, 28 Aug 2021 01:46:52 +0800
-Subject: Re: [PATCH v7 02/11] clk: Ingenic: Adjust cgu code to make it
- compatible with I2S PLL.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
-        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
-        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
-References: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1627119286-125821-3-git-send-email-zhouyanjie@wanyeetech.com>
- <5RY2YQ.VQN2WB38KM14@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <a98a8078-c388-8af4-a605-20e2edb3363d@wanyeetech.com>
-Date:   Sat, 28 Aug 2021 01:46:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Fri, 27 Aug 2021 13:48:23 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 485D08221E;
+        Fri, 27 Aug 2021 20:47:28 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1630086448;
+        bh=cQHGVALsR0wITXNG82rls7Ltz5TIhHWjctlfp9KdpL0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=laIFR4i5oregS0eTBrhg8j22S1NlqhDlfjJP0n0L+30rksGU3LS9A2uD0CQxcrLEe
+         4Jy1rMkhIubwvkzpazqphNmVoTdsJ/TwQOQoTy+4KCZ97mRzqx33zzdDWGIdN/Hj+i
+         TlgUuf738m/x5Rx0sVdjnIhBRI/r9xtgU+X6lF0I=
+Received: from [192.168.211.135] (192.168.211.135) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 27 Aug 2021 20:47:27 +0300
+Subject: Re: [PATCH 3/3] fs/ntfs3: Fix error handling in
+ indx_insert_into_root()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     <ntfs3@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+References: <20210824075103.GC13096@kili>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Message-ID: <a154fe47-8634-415c-2f53-8dcd3ee67665@paragon-software.com>
+Date:   Fri, 27 Aug 2021 20:47:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <5RY2YQ.VQN2WB38KM14@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210824075103.GC13096@kili>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.135]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-On 2021/8/19 下午5:37, Paul Cercueil wrote:
-> Hi Zhou,
->
-> Le sam., juil. 24 2021 at 17:34:37 +0800, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> I2S PLL is different from the APLL/MPLL, which have no OD bits,
->> no stable bit, but have parent clock selection bits, therefore,
->> it is necessary to modify the CGU PLL correlation code to make
->> it compatible with I2S PLL.
->>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->
-> Could you split this commit into three:
-> - one commit to support PLLs with no OD bit,
-> - one commit to support PLLs with no stable bit,
-> - one commit to support setting the parents of PLLs.
 
 
-Sure, I will do it in the next version.
+On 24.08.2021 10:51, Dan Carpenter wrote:
+> There are three bugs in this code:
+> 1) If indx_get_root() fails, then return -EINVAL instead of success.
+> 2) On the "/* make root external */" -EOPNOTSUPP; error path it should
+>    free "re" but it has a memory leak.
+> 3) If indx_new() fails then it will lead to an error pointer dereference
+>    when we call put_indx_node().
+> 
+> I've re-written the error handling to be more clear.
+> 
+> Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  fs/ntfs3/index.c | 36 ++++++++++++++++--------------------
+>  1 file changed, 16 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
+> index 489e0fffbc75..4f2d24010386 100644
+> --- a/fs/ntfs3/index.c
+> +++ b/fs/ntfs3/index.c
+> @@ -1554,12 +1554,12 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  	u32 root_size, new_root_size;
+>  	struct ntfs_sb_info *sbi;
+>  	int ds_root;
+> -	struct INDEX_ROOT *root, *a_root = NULL;
+> +	struct INDEX_ROOT *root, *a_root;
+>  
+>  	/* Get the record this root placed in */
+>  	root = indx_get_root(indx, ni, &attr, &mi);
+>  	if (!root)
+> -		goto out;
+> +		return -EINVAL;
+>  
+>  	/*
+>  	 * Try easy case:
+> @@ -1591,10 +1591,8 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  
+>  	/* Make a copy of root attribute to restore if error */
+>  	a_root = ntfs_memdup(attr, asize);
+> -	if (!a_root) {
+> -		err = -ENOMEM;
+> -		goto out;
+> -	}
+> +	if (!a_root)
+> +		return -ENOMEM;
+>  
+>  	/* copy all the non-end entries from the index root to the new buffer.*/
+>  	to_move = 0;
+> @@ -1604,7 +1602,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  	for (e = e0;; e = hdr_next_de(hdr, e)) {
+>  		if (!e) {
+>  			err = -EINVAL;
+> -			goto out;
+> +			goto out_free_root;
+>  		}
+>  
+>  		if (de_is_last(e))
+> @@ -1612,14 +1610,13 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  		to_move += le16_to_cpu(e->size);
+>  	}
+>  
+> -	n = NULL;
+>  	if (!to_move) {
+>  		re = NULL;
+>  	} else {
+>  		re = ntfs_memdup(e0, to_move);
+>  		if (!re) {
+>  			err = -ENOMEM;
+> -			goto out;
+> +			goto out_free_root;
+>  		}
+>  	}
+>  
+> @@ -1636,7 +1633,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  	if (ds_root > 0 && used + ds_root > sbi->max_bytes_per_attr) {
+>  		/* make root external */
+>  		err = -EOPNOTSUPP;
+> -		goto out;
+> +		goto out_free_re;
+>  	}
+>  
+>  	if (ds_root)
+> @@ -1666,7 +1663,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  		/* bug? */
+>  		ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
+>  		err = -EINVAL;
+> -		goto out1;
+> +		goto out_free_re;
+>  	}
+>  
+>  	if (err) {
+> @@ -1677,7 +1674,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  			/* bug? */
+>  			ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
+>  		}
+> -		goto out1;
+> +		goto out_free_re;
+>  	}
+>  
+>  	e = (struct NTFS_DE *)(root + 1);
+> @@ -1688,7 +1685,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  	n = indx_new(indx, ni, new_vbn, sub_vbn);
+>  	if (IS_ERR(n)) {
+>  		err = PTR_ERR(n);
+> -		goto out1;
+> +		goto out_free_re;
+>  	}
+>  
+>  	hdr = &n->index->ihdr;
+> @@ -1715,7 +1712,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  		put_indx_node(n);
+>  		fnd_clear(fnd);
+>  		err = indx_insert_entry(indx, ni, new_de, ctx, fnd);
+> -		goto out;
+> +		goto out_free_root;
+>  	}
+>  
+>  	/*
+> @@ -1725,7 +1722,7 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  	e = hdr_insert_de(indx, hdr, new_de, NULL, ctx);
+>  	if (!e) {
+>  		err = -EINVAL;
+> -		goto out1;
+> +		goto out_put_n;
+>  	}
+>  	fnd_push(fnd, n, e);
+>  
+> @@ -1734,12 +1731,11 @@ static int indx_insert_into_root(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  
+>  	n = NULL;
+>  
+> -out1:
+> +out_put_n:
+> +	put_indx_node(n);
+> +out_free_re:
+>  	ntfs_free(re);
+> -	if (n)
+> -		put_indx_node(n);
+> -
+> -out:
+> +out_free_root:
+>  	ntfs_free(a_root);
+>  	return err;
+>  }
+> 
 
+Hi, Dan!
 
->
->> ---
->>
->> Notes:
->>     v5:
->>     New patch.
->>
->>     v5->v6:
->>     Change the type of stable_bit from u8 to s8, because a negative 
->> value will appear
->>     when the stable_bit bit does not exist.
->>     Reported-by: kernel test robot <lkp@intel.com>
->>
->>     v6->v7:
->>     No change.
->>
->>  drivers/clk/ingenic/cgu.c | 118 
->> ++++++++++++++++++++++++++++++++++++++++------
->>  drivers/clk/ingenic/cgu.h |  10 +++-
->>  2 files changed, 111 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
->> index 266c759..391bf50 100644
->> --- a/drivers/clk/ingenic/cgu.c
->> +++ b/drivers/clk/ingenic/cgu.c
->> @@ -76,6 +76,85 @@ ingenic_cgu_gate_set(struct ingenic_cgu *cgu,
->>   * PLL operations
->>   */
->>
->> +static u8 ingenic_pll_get_parent(struct clk_hw *hw)
->> +{
->> +    struct ingenic_clk *ingenic_clk = to_ingenic_clk(hw);
->> +    const struct ingenic_cgu_clk_info *clk_info = 
->> to_clk_info(ingenic_clk);
->> +    struct ingenic_cgu *cgu = ingenic_clk->cgu;
->> +    const struct ingenic_cgu_pll_info *pll_info;
->> +    u32 reg;
->> +    u8 i, hw_idx, idx = 0;
->> +
->> +    BUG_ON(clk_info->type != CGU_CLK_PLL);
->> +    pll_info = &clk_info->pll;
->> +
->> +    if (pll_info->mux_bits <= 0)
->> +        return 1;
->> +
->> +    reg = readl(cgu->base + pll_info->reg);
->> +    hw_idx = (reg >> pll_info->mux_shift) &
->> +         GENMASK(pll_info->mux_bits - 1, 0);
->> +
->> +    /*
->> +     * Convert the hardware index to the parent index by skipping
->> +     * over any -1's in the parents array.
->> +     */
->> +    for (i = 0; i < hw_idx; i++) {
->> +        if (clk_info->parents[i] != -1)
->> +            idx++;
->> +    }
->> +
->> +    return idx;
->> +}
->> +
->> +static int ingenic_pll_set_parent(struct clk_hw *hw, u8 idx)
->> +{
->> +    struct ingenic_clk *ingenic_clk = to_ingenic_clk(hw);
->> +    const struct ingenic_cgu_clk_info *clk_info = 
->> to_clk_info(ingenic_clk);
->> +    struct ingenic_cgu *cgu = ingenic_clk->cgu;
->> +    const struct ingenic_cgu_pll_info *pll_info;
->> +    unsigned long flags;
->> +    u32 reg;
->> +    u8 curr_idx, hw_idx, num_poss;
->> +
->> +    BUG_ON(clk_info->type != CGU_CLK_PLL);
->> +    pll_info = &clk_info->pll;
->> +
->> +    if (pll_info->mux_bits <= 0)
->> +        return 0;
->> +
->> +    /*
->> +     * Convert the parent index to the hardware index by adding
->> +     * 1 for any -1 in the parents array preceding the given
->> +     * index. That is, we want the index of idx'th entry in
->> +     * clk_info->parents which does not equal -1.
->> +     */
->> +    hw_idx = curr_idx = 0;
->> +    num_poss = 1 << pll_info->mux_bits;
->> +    for (; hw_idx < num_poss; hw_idx++) {
->> +        if (clk_info->parents[hw_idx] == -1)
->> +            continue;
->> +        if (curr_idx == idx)
->> +            break;
->> +        curr_idx++;
->> +    }
->> +
->> +    /* idx should always be a valid parent */
->> +    BUG_ON(curr_idx != idx);
->> +
->> +    spin_lock_irqsave(&cgu->lock, flags);
->> +
->> +    /* write the register */
->> +    reg = readl(cgu->base + pll_info->reg);
->> +    reg &= ~(GENMASK(pll_info->mux_bits - 1, 0) << 
->> pll_info->mux_shift);
->> +    reg |= hw_idx << pll_info->mux_shift;
->> +    writel(reg, cgu->base + pll_info->reg);
->> +
->> +    spin_unlock_irqrestore(&cgu->lock, flags);
->> +
->> +    return 0;
->> +}
->> +
->>  static unsigned long
->>  ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
->>  {
->> @@ -96,8 +175,20 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, 
->> unsigned long parent_rate)
->>      m += pll_info->m_offset;
->>      n = (ctl >> pll_info->n_shift) & GENMASK(pll_info->n_bits - 1, 0);
->>      n += pll_info->n_offset;
->> -    od_enc = ctl >> pll_info->od_shift;
->> -    od_enc &= GENMASK(pll_info->od_bits - 1, 0);
->> +
->> +    if (pll_info->od_encoding) {
->> +        od_enc = ctl >> pll_info->od_shift;
->> +        od_enc &= GENMASK(pll_info->od_bits - 1, 0);
->> +
->> +        for (od = 0; od < pll_info->od_max; od++) {
->> +            if (pll_info->od_encoding[od] == od_enc)
->> +                break;
->> +        }
->> +        BUG_ON(od == pll_info->od_max);
->> +        od++;
->> +    } else {
->> +        od = 1;
->> +    }
->>
->>      if (pll_info->bypass_bit >= 0) {
->>          ctl = readl(cgu->base + pll_info->bypass_reg);
->> @@ -108,15 +199,7 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, 
->> unsigned long parent_rate)
->>              return parent_rate;
->>      }
->>
->> -    for (od = 0; od < pll_info->od_max; od++) {
->> -        if (pll_info->od_encoding[od] == od_enc)
->> -            break;
->> -    }
->> -    BUG_ON(od == pll_info->od_max);
->> -    od++;
->> -
->> -    return div_u64((u64)parent_rate * m * pll_info->rate_multiplier,
->> -        n * od);
->> +    return div_u64((u64)parent_rate * m * pll_info->rate_multiplier, 
->> n * od);
->>  }
->>
->>  static void
->> @@ -215,13 +298,15 @@ ingenic_pll_set_rate(struct clk_hw *hw, 
->> unsigned long req_rate,
->>      ctl &= ~(GENMASK(pll_info->n_bits - 1, 0) << pll_info->n_shift);
->>      ctl |= (n - pll_info->n_offset) << pll_info->n_shift;
->>
->> -    ctl &= ~(GENMASK(pll_info->od_bits - 1, 0) << pll_info->od_shift);
->> -    ctl |= pll_info->od_encoding[od - 1] << pll_info->od_shift;
->> +    if (pll_info->od_encoding) {
->> +        ctl &= ~(GENMASK(pll_info->od_bits - 1, 0) << 
->> pll_info->od_shift);
->> +        ctl |= pll_info->od_encoding[od - 1] << pll_info->od_shift;
->> +    }
->>
->>      writel(ctl, cgu->base + pll_info->reg);
->>
->>      /* If the PLL is enabled, verify that it's stable */
->> -    if (ctl & BIT(pll_info->enable_bit))
->> +    if ((pll_info->stable_bit >= 0) && (ctl & 
->> BIT(pll_info->enable_bit)))
->>          ret = ingenic_pll_check_stable(cgu, pll_info);
->>
->>      spin_unlock_irqrestore(&cgu->lock, flags);
->> @@ -292,6 +377,9 @@ static int ingenic_pll_is_enabled(struct clk_hw *hw)
->>  }
->>
->>  static const struct clk_ops ingenic_pll_ops = {
->> +    .get_parent = ingenic_pll_get_parent,
->> +    .set_parent = ingenic_pll_set_parent,
->
-> If you move the "pll" field of struct ingenic_cgu_clk_info to the 
-> nameless "struct" that follows it, you will then be able to use the 
-> other fields as well. That means that you'll be able to use 
-> ingenic_clk_get_parent() / ingenic_clk_set_parent() instead of 
-> duplicating code.
-
-
-Sure, I'll try it.
-
-
->
->> +
->>      .recalc_rate = ingenic_pll_recalc_rate,
->>      .round_rate = ingenic_pll_round_rate,
->>      .set_rate = ingenic_pll_set_rate,
->> @@ -672,7 +760,7 @@ static int ingenic_register_clock(struct 
->> ingenic_cgu *cgu, unsigned idx)
->>          clk_init.flags |= CLK_SET_RATE_PARENT;
->>      }
->>
->> -    if (caps & (CGU_CLK_MUX | CGU_CLK_CUSTOM)) {
->> +    if (caps & (CGU_CLK_PLL | CGU_CLK_MUX | CGU_CLK_CUSTOM)) {
->
-> I tend to disagree with this - clocks that support parenting should 
-> use the CGU_CLK_MUX flag. I know it conflicts with CGU_CLK_PLL right 
-> now, but with the change I suggested above, your clock should be able 
-> to use .type = CGU_CLK_PLL | CGU_CLK_MUX.
-
-
-Sure.
-
-
-Thanks and best regards!
-
-
->
-> Cheers,
-> -Paul
->
->>          clk_init.num_parents = 0;
->>
->>          if (caps & CGU_CLK_MUX)
->> diff --git a/drivers/clk/ingenic/cgu.h b/drivers/clk/ingenic/cgu.h
->> index bfc2b9c..30d575d 100644
->> --- a/drivers/clk/ingenic/cgu.h
->> +++ b/drivers/clk/ingenic/cgu.h
->> @@ -18,6 +18,10 @@
->>   * struct ingenic_cgu_pll_info - information about a PLL
->>   * @reg: the offset of the PLL's control register within the CGU
->>   * @rate_multiplier: the multiplier needed by pll rate calculation
->> + * @mux_shift: the number of bits to shift the mux value by (ie. the
->> + *           index of the lowest bit of the mux value in the I2S PLL's
->> + *           control register)
->> + * @mux_bits: the size of the mux field in bits
->>   * @m_shift: the number of bits to shift the multiplier value by 
->> (ie. the
->>   *           index of the lowest bit of the multiplier value in the 
->> PLL's
->>   *           control register)
->> @@ -42,19 +46,21 @@
->>   * @bypass_bit: the index of the bypass bit in the PLL control 
->> register, or
->>   *              -1 if there is no bypass bit
->>   * @enable_bit: the index of the enable bit in the PLL control register
->> - * @stable_bit: the index of the stable bit in the PLL control register
->> + * @stable_bit: the index of the stable bit in the PLL control 
->> register, or
->> + *              -1 if there is no stable bit
->>   */
->>  struct ingenic_cgu_pll_info {
->>      unsigned reg;
->>      unsigned rate_multiplier;
->>      const s8 *od_encoding;
->> +    u8 mux_shift, mux_bits;
->>      u8 m_shift, m_bits, m_offset;
->>      u8 n_shift, n_bits, n_offset;
->>      u8 od_shift, od_bits, od_max;
->>      unsigned bypass_reg;
->>      s8 bypass_bit;
->>      u8 enable_bit;
->> -    u8 stable_bit;
->> +    s8 stable_bit;
->>      void (*calc_m_n_od)(const struct ingenic_cgu_pll_info *pll_info,
->>                  unsigned long rate, unsigned long parent_rate,
->>                  unsigned int *m, unsigned int *n, unsigned int *od);
->> -- 
->> 2.7.4
->>
->
+Applied all 3 patches, thanks!
