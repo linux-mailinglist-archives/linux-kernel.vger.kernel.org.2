@@ -2,165 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8273F9B02
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0757B3F9B08
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234232AbhH0OnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhH0OnD (ORCPT
+        id S245337AbhH0OoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:44:16 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14427 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245263AbhH0OoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:43:03 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A77C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:42:14 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id b10so8780945ioq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:42:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CFay9r08enlHVx+9WttkR29jMfZFJp3kMsw5xeMb8SU=;
-        b=g77ve3sH11s90MOAtL5Fe/Ks6XKzCGmBKkQbxda83Z/dPuLxcu/JrGYVIEGC7qKr1W
-         cwUNxwZ3lvZGxv6M9XyvThGVZBMpm49kDpI1FWv42i5aJSI++acThcZA58jzLl2xoBn6
-         htbkWP3zcoIC4Rdxf70AifYYqeV6tvd3SvGfMUaLTiK7NdMujJla52Beta0VmMIt+IZK
-         6uEzgTIUj4beudDHevA+hsIClHPCcpwi2azaImx9pQXGXKRTqzqCrNY2aSQgR898++Ve
-         DuFQJ8yQALsvMU/mHh0iZQ9TBWR/Ee3yKTsIQYDQh8zo9cgdS4XnFHBObrDqV+iHO4Tw
-         WZEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CFay9r08enlHVx+9WttkR29jMfZFJp3kMsw5xeMb8SU=;
-        b=YxDtX+v1NjeLzyHxf7eNs/ZPk9QU9C6AVaFgqspn/AhCwagaHZZuACXZLmOrIz85Gm
-         PbD5bZAJtbDJLWphDNdCBbnotC6J4XBEOvWOTdJ7oreWIzjThQCuchv9e3+qDBR4u4Y9
-         RtP5ZwrORGDjJMvHxA/o8owZxczxufJR9NcliUTez2+5sDj0bYDgq3bZJOoB0Qgsl+MJ
-         ZCHK4VLIXWGIf4ZamOF9cI21efiZqPHMClhNgaYGQdmwPqUKAgs2cU6ptsaKGLYah8cF
-         oPmHQD5iMxI+iyd2DUbQ472eixMStbnH2pAy/lO3PmwMxB4OAgczrXp2qibX2idmJcCr
-         uxlw==
-X-Gm-Message-State: AOAM5336wvuQfnfTyfV5V9bToWHZwebHkM58kNopGXMkiPeYf5QEQJAQ
-        zxpjvrImLYSHoI3bWTJzGccjT+EzwduJ/F+BKrwk8w==
-X-Google-Smtp-Source: ABdhPJxKll3v2Sx54NeJRFiI49YcwJQQt0GNvwwK4RRpGNl7i3KMNBhhoIflYvBf/kikTGsbGuJ+Gunmf3z4LT4xVjU=
-X-Received: by 2002:a5e:a813:: with SMTP id c19mr7774552ioa.199.1630075333436;
- Fri, 27 Aug 2021 07:42:13 -0700 (PDT)
+        Fri, 27 Aug 2021 10:44:15 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gx2RP4LsNzbdLn;
+        Fri, 27 Aug 2021 22:39:29 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 27 Aug 2021 22:43:21 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 27
+ Aug 2021 22:43:20 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <johannes@sipsolutions.net>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] mac80211: Drop frames from invalid MAC address in ad-hoc mode
+Date:   Fri, 27 Aug 2021 22:42:30 +0800
+Message-ID: <20210827144230.39944-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-References: <20210827082407.101053-1-yangcong5@huaqin.corp-partner.google.com> <20210827082407.101053-4-yangcong5@huaqin.corp-partner.google.com>
-In-Reply-To: <20210827082407.101053-4-yangcong5@huaqin.corp-partner.google.com>
-From:   Doug Anderson <dianders@google.com>
-Date:   Fri, 27 Aug 2021 07:42:01 -0700
-Message-ID: <CAD=FV=Uo-7rFWGiJG0oJ0ydosA4DxhFqiWGrab1zoZyxyPsOBg@mail.gmail.com>
-Subject: Re: [v3 3/4] drm/panel: support for BOE and INX video mode panel
-To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+WARNING: CPU: 1 PID: 9 at net/mac80211/sta_info.c:554
+sta_info_insert_rcu+0x121/0x12a0
+Modules linked in:
+CPU: 1 PID: 9 Comm: kworker/u8:1 Not tainted 5.14.0-rc7+ #253
+Workqueue: phy3 ieee80211_iface_work
+RIP: 0010:sta_info_insert_rcu+0x121/0x12a0
+...
+Call Trace:
+ ieee80211_ibss_finish_sta+0xbc/0x170
+ ieee80211_ibss_work+0x13f/0x7d0
+ ieee80211_iface_work+0x37a/0x500
+ process_one_work+0x357/0x850
+ worker_thread+0x41/0x4d0
 
-On Fri, Aug 27, 2021 at 1:24 AM yangcong
-<yangcong5@huaqin.corp-partner.google.com> wrote:
->
-> Add driver for BOE tv110c9m-ll3 and Inx hj110iz-01a panel
-> both of those are 10.95" 1200x2000 panel.
+If an Ad-Hoc node receives packets with invalid source MAC address,
+it hits a WARN_ON in sta_info_insert_check(), this can spam the log.
 
-Your commit message would be a good place to note design choices you
-made in your patch. Maybe you might say:
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ net/mac80211/rx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Support for these two panels fits in nicely with the existing
-panel-boe-tv101wum-nl6 driver as suggested by Sam [1]. The main things
-we needed to handle were:
-a) These panels need slightly longer delays in two places. Since these
-new delays aren't much longer, let's just unconditionally increase
-them for the driver.
-b) One of these two panels doesn't support DSI HS mode so this patch
-adds a flag for a panel to disable that.
+diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+index 2563473..e023e30 100644
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -4053,7 +4053,8 @@ static bool ieee80211_accept_frame(struct ieee80211_rx_data *rx)
+ 		if (!bssid)
+ 			return false;
+ 		if (ether_addr_equal(sdata->vif.addr, hdr->addr2) ||
+-		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2))
++		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2) ||
++		    !is_valid_ether_addr(hdr->addr2))
+ 			return false;
+ 		if (ieee80211_is_beacon(hdr->frame_control))
+ 			return true;
+-- 
+1.8.3.1
 
-[1] https://lore.kernel.org/r/YSPAseE6WD8dDRuz@ravnborg.org/
-
-If you send a new version, maybe you could include prose similar to that?
-
-> +       _INIT_DCS_CMD(0x4D, 0x21),
-> +       _INIT_DCS_CMD(0x4E, 0x43),
-> +       _INIT_DCS_CMD(0x51, 0x12),
-> +       _INIT_DCS_CMD(0x52, 0x34),
-> +       _INIT_DCS_CMD(0x55, 0x82, 0x02),
-> +       _INIT_DCS_CMD(0x56, 0x04),
-> +       _INIT_DCS_CMD(0x58, 0x21),
-> +       _INIT_DCS_CMD(0x59, 0x30),
-> +       _INIT_DCS_CMD(0x5A, 0xBA),      //9A
-
-nit: the "//9A" above seems like it's leftover from something. Remove?
-
-> +       _INIT_DCS_CMD(0x1F, 0xBA),//9A
-> +       _INIT_DCS_CMD(0x20, 0xA0),
-> +
-> +       _INIT_DCS_CMD(0x26, 0xBA),//9A
-> +       _INIT_DCS_CMD(0x27, 0xA0),
-> +
-> +       _INIT_DCS_CMD(0x33, 0xBA),//9A
-> +       _INIT_DCS_CMD(0x34, 0xA0),
-> +
-> +       _INIT_DCS_CMD(0x3F, 0xE0),
-> +
-> +       _INIT_DCS_CMD(0x40, 0x00),
-> +
-> +       _INIT_DCS_CMD(0x44, 0x00),
-> +       _INIT_DCS_CMD(0x45, 0x40),
-> +
-> +       _INIT_DCS_CMD(0x48, 0xBA),//9A
-> +       _INIT_DCS_CMD(0x49, 0xA0),
-> +
-> +       _INIT_DCS_CMD(0x5B, 0x00),
-> +       _INIT_DCS_CMD(0x5C, 0x00),
-> +       _INIT_DCS_CMD(0x5D, 0x00),
-> +       _INIT_DCS_CMD(0x5E, 0xD0),
-> +
-> +       _INIT_DCS_CMD(0x61, 0xBA),//9A
-> +       _INIT_DCS_CMD(0x62, 0xA0),
-
-More random //9A to remove above?
-
-
-> @@ -515,7 +1363,7 @@ static int boe_panel_unprepare(struct drm_panel *panel)
->                 regulator_disable(boe->pp3300);
->         } else {
->                 gpiod_set_value(boe->enable_gpio, 0);
-> -               usleep_range(500, 1000);
-> +               usleep_range(1000, 2000);
->                 regulator_disable(boe->avee);
->                 regulator_disable(boe->avdd);
->                 usleep_range(5000, 7000);
-> @@ -556,7 +1404,7 @@ static int boe_panel_prepare(struct drm_panel *panel)
->         if (ret < 0)
->                 goto poweroffavdd;
->
-> -       usleep_range(5000, 10000);
-> +       usleep_range(10000, 15000);
-
-nit: how about using the range 10000, 11000? Last I looked at
-usleep_range() it almost always ended up at the longer of the two
-times, so that will shave 4 ms off and get us nearly to where we were
-without your change. The whole point of the range is to make the
-system more power efficient for frequent operations (wakeup
-combining), but that really doesn't matter for something as infrequent
-as turning on a LCD.
-
-Other than nits this looks fine to me and I'd be happy to add my
-Reviewed-by to a version with nits fixed. I'm not really an expert on
-MIPI panels but the convention of a big stream of binary commands
-seems to match what other panels in this driver do, even if their
-table of binary data isn't quite as long as yours (are all of yours
-actually needed?). I'm happy to land this in drm-misc-next with Sam or
-Thierry's Ack, too.
-
-
--Doug
