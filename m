@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27EF3F92EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1D43F92F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244176AbhH0D3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
+        id S244184AbhH0DaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244015AbhH0D3v (ORCPT
+        with ESMTP id S244166AbhH0D3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:29:51 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDCDC061757;
-        Thu, 26 Aug 2021 20:29:02 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id f2so9024942ljn.1;
-        Thu, 26 Aug 2021 20:29:02 -0700 (PDT)
+        Thu, 26 Aug 2021 23:29:52 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1310EC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:29:04 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id a21so4528374pfh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:29:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=svxqvpAKliIvS4u4Jy0OhtXDUN4ND8MTehcm1BRtWIc=;
-        b=fW/YVxM1LrYBh5IkDppF9PZVvuacDw0jD3rfHo0tsWUZp0FCOVXQPIDHL8h7+NISTR
-         +kpANRMDEhImzAG68MW1ogpfLWBBZt15+CcjjNtPedrOpt8NIaCEzmotAZSXjMNN4wUM
-         7RJMRSuRoXxJiYjuqVrC/znR+r02D/5D3+CjNmfoXMkIChqV09aPCLpIHRtuo5+9ftd/
-         rh+Wj2sFG+XFak8tGzaYbi9ReJFQUh8VjE47L5GCbhBle62Asn8zQUEU5krNSqynlMTo
-         M4ZFu2Bk/SAG+q96YlEhdqCWqIJjv9ZcBbnu2matvJBiyK8vXTGZCqgs5U6CQSAZMd3D
-         VVdQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=972//1VrtuuFZwnQDeMdS0B6akzzjiuVZWtERzM09s0=;
+        b=j9siNTCZuGh7KQq256N6d/De1fzPdgR0s59g9kiBkVFEaXhT+QJ7U7zpHzePZleqCa
+         NLeFWIHihL1/Y+z5CRxYz1icg+OLIffMO21qfx/LEc3WkIeVqdQM4oBbyPo2Jn0VviNz
+         R3/z4TnS8N0GQHIBTY0/hyXoR9RDTQMpB7Q1c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=svxqvpAKliIvS4u4Jy0OhtXDUN4ND8MTehcm1BRtWIc=;
-        b=AeLXq0R2uwC69/lqXQUoQXzep0nJc+cO789Wm6fdSHu8zMsrBtl0sPYfUMOWfvlTRQ
-         jsjBnNSTleig6zDetqj4Pl8aktYTjoCHk0Svub/zyg+nHB/Y1ccCRKSrBJgcfXIhJ48U
-         F5oh92/HEwZrlU+Vq03WHKxaGtgDwgpBxlq7pIORYQuB5Z5sWYD2yHCAgEyOC/b92hhQ
-         zFjFQPnLhSbZrYPIypARplFsrMvPBxLdpXxEi6fDBzwWyS1T84Cv62Y9XrprYjftDeYy
-         MbXTCUMGjahkyn1a5igImlhvUQXIsq+x/DNssus0boUFTA1QA6M40TffvSggGNph3UWW
-         B8XQ==
-X-Gm-Message-State: AOAM531FZfNupMUXhr5SGi6eVrObX48cSJwaAWwoJPTElMSfgK2UkGK3
-        W24QAJQ449f7TgkMClz7xI9rzm/z30s=
-X-Google-Smtp-Source: ABdhPJy+iN1793E/d7VmWXGrY5oV9KafTsvhfYaK1hBact+7rR57p7mcI73r8+6Y+LSJlVWdDcGtaQ==
-X-Received: by 2002:a2e:8ec2:: with SMTP id e2mr1876342ljl.236.1630034940705;
-        Thu, 26 Aug 2021 20:29:00 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-17-251.dynamic.spd-mgts.ru. [94.29.17.251])
-        by smtp.googlemail.com with ESMTPSA id w2sm469497lfp.231.2021.08.26.20.29.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 20:29:00 -0700 (PDT)
-Subject: Re: [PATCH v9 1/8] opp: Add dev_pm_opp_from_clk_rate()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210827013415.24027-1-digetx@gmail.com>
- <20210827013415.24027-2-digetx@gmail.com>
- <20210827030019.blhfh5wp7iyf53a2@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <536563a8-ffdc-5a75-ebf2-89f38d52f580@gmail.com>
-Date:   Fri, 27 Aug 2021 06:28:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=972//1VrtuuFZwnQDeMdS0B6akzzjiuVZWtERzM09s0=;
+        b=UEm0zXbwfDYwPIQ/HmZG5EUuoJcUIvH7I7qkfwEGzTKgQNAu1HIYmc9dA8uBcGd2o6
+         o5uHMFPL8+fKOmc5PV/G99Eokkq6E34nAx0J7KqBXu0H5eRVRIj63Gls+Zj7+5yQ5G+Q
+         J4iXiPXkWqm2GVAl9oHmI0jshhLnB+gQyxlJKYhvkqxRI9Z/7kHcns0pWQLfDRqpzohU
+         jaysysR5oMyWLDQPnJSJfTyfE8NKgNFAM8eGDy6R7vCR67dx7CnW3f4SxtX7yxxgcRTA
+         310jT+KIqGSfd1lkbddyLLXWIrolO8OqVHuPGL8auXhP//F9EFqHUTKDxY3gXEpi6+4f
+         SX9w==
+X-Gm-Message-State: AOAM531gj+SrpPgOzf/fDORNFnG8PfU6XolTkPeVPYpqrKiLPK54MwNu
+        kwoACmvQnJez4qsbGzcoQLdQaQ==
+X-Google-Smtp-Source: ABdhPJwVDJrVgxj/z0XncPqUa8JFXd12WSJDmoQs/kn0QTdmzgf8+20bw/dtXZZdLj09qUkYvY9BQg==
+X-Received: by 2002:aa7:8198:0:b029:3dd:a2ec:9ea8 with SMTP id g24-20020aa781980000b02903dda2ec9ea8mr6921691pfi.11.1630034943468;
+        Thu, 26 Aug 2021 20:29:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c2sm4382533pfp.138.2021.08.26.20.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 20:29:02 -0700 (PDT)
+Date:   Thu, 26 Aug 2021 20:29:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the kspp tree
+Message-ID: <202108262021.65CA0EC3@keescook>
+References: <20210826180042.35e8aab6@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210827030019.blhfh5wp7iyf53a2@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826180042.35e8aab6@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.08.2021 06:00, Viresh Kumar пишет:
-> On 27-08-21, 04:34, Dmitry Osipenko wrote:
->> +/**
->> + * dev_pm_opp_from_clk_rate() - Get OPP from current clock rate
->> + * @dev:	device for which we do this operation
->> + *
->> + * Get OPP which corresponds to the current clock rate of a device.
->> + *
->> + * Return: pointer to 'struct dev_pm_opp' on success and errorno otherwise.
->> + */
->> +struct dev_pm_opp *dev_pm_opp_from_clk_rate(struct device *dev)
+On Thu, Aug 26, 2021 at 06:00:42PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> I will rather call it dev_pm_opp_get_current(), and do the magic to find the
-> current OPP here as well. No need to reinvent the wheel.
+> After merging the kspp tree, today's linux-next build (arm
+> multi_v7_defconfig) produced these warnings:
 > 
+> In file included from ./arch/arm/include/generated/asm/rwonce.h:1,
+>                  from include/linux/compiler.h:264,
+>                  from include/uapi/linux/swab.h:6,
+>                  from include/linux/swab.h:5,
+>                  from arch/arm/include/asm/opcodes.h:86,
+>                  from arch/arm/include/asm/bug.h:7,
+>                  from include/linux/bug.h:5,
+>                  from include/linux/thread_info.h:13,
+>                  from include/asm-generic/current.h:5,
+>                  from ./arch/arm/include/generated/asm/current.h:1,
+>                  from include/linux/sched.h:12,
+>                  from include/linux/cgroup.h:12,
+>                  from kernel/cgroup/cgroup-internal.h:5,
+>                  from kernel/cgroup/cgroup.c:31:
+> kernel/cgroup/cgroup.c: In function 'of_css':
+> kernel/cgroup/cgroup.c:651:42: warning: array subscript '<unknown>' is outside the bounds of an interior zero-length array 'struct cgroup_subsys_state *[0]' [-Wzero-length-bounds]
+>   651 |   return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
 
-Okay, I'll change it.
+Oh, that's cute. That's "with cgroups but no cgroup subsystems". :P I
+will get this fixed.
+
+> [...]
+> Introduced by commit
+> 
+>   7d8aac16a0a8 ("Makefile: Enable -Wzero-length-bounds")
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+
+-- 
+Kees Cook
