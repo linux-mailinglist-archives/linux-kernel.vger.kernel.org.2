@@ -2,967 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C344D3F9C13
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E653F9C16
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245389AbhH0QGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234297AbhH0QGr (ORCPT
+        id S245428AbhH0QHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:07:34 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:36910 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234297AbhH0QHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:06:47 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA83BC061757;
-        Fri, 27 Aug 2021 09:05:58 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso8553217ots.5;
-        Fri, 27 Aug 2021 09:05:58 -0700 (PDT)
+        Fri, 27 Aug 2021 12:07:33 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 4ED8D42C;
+        Fri, 27 Aug 2021 19:06:42 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E3nWqqymEsD8xi96PiTnovSC4uvNmDWk9kCUiPeQGPM=;
-        b=lZuWp4nXRr7vx5qKPQcInnC1MbQsAONq1nqw2RkpPYzk4VKZHDebxj6TxT7ssnb2sz
-         77HdJUZA7TB/IZW2G1OLhXb+CJ+UInieJADBQwS+DTuzIQFNwmDSD1m90TEhHMPFa143
-         5FWOeaKRy8fAYrJyKAJ4kwZJWbkTPd978gngS9zhTfQ3dsJEwh2s+ZmEZ2PNu6S4eJao
-         rydJSbreNrFmEqMjzpYBOrcakNWxX+oqCgzYwcITQnvrBIc8sGkVTapPQD72v2aBnRYu
-         MOrIjP2OOwEdIlxjMYcuKgNxKgEYri4G026p5ojt4vYm2NMgBS+s5imCiruDfvMeDwkq
-         kQyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E3nWqqymEsD8xi96PiTnovSC4uvNmDWk9kCUiPeQGPM=;
-        b=PJp+KUxBlLU6xWgbXtC7SREShb/hnGPTRN9l0AzsArEJ4I0FgHcGIdiNRGUwP+ge+s
-         QehAI+mBMdJK3UJm5wkvF+qveHK+IaQqXy6faNlHqA2P16kq3kpaY+u5QjEACmQJdP4k
-         VXmcwz3pp7egt8d9Uq1p/lMg35iPCzAksxQa4P7Onw1l+mLOiOw6UMXPW5zmfCbmCXC4
-         mTC5Yd6JsQLNQkkQDsvHcueemgPKeoEFrnjjgWfBzDhIJ8XxvMzcuoI0RP2BOSYJxbA7
-         PCtI1/rvvsJqbfHN2w+ut0/aDOSWFO7yjTS3oA6tf+Dj02GynGJn97KL1I2+0yEupkEP
-         n+hA==
-X-Gm-Message-State: AOAM5323YaQlTVeBSv4fFn5q6tzxNWUiDLJpFjgVx3tg1ALh4B3kaNmE
-        YXuHcOUfaXz27tfmQxffHMjPYIabx1w=
-X-Google-Smtp-Source: ABdhPJxTgLgfKv/xOpgZHgV5DnwAOIuldacQXYbWpieWoDZs05FcYH7gACC1Pz879doLVILw1E+RFg==
-X-Received: by 2002:a9d:3ae:: with SMTP id f43mr8693215otf.171.1630080357663;
-        Fri, 27 Aug 2021 09:05:57 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q5sm1284366ooa.1.2021.08.27.09.05.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 09:05:55 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
-        "Luke D. Jones" <luke@ljones.dev>
-Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
-        hadess@hadess.net, platform-driver-x86@vger.kernel.org
-References: <20210826234259.5980-1-luke@ljones.dev>
- <20210826234259.5980-2-luke@ljones.dev>
- <l_wjZlSh5I-iPC46H7er23ScdheWKul7iVjIbCUAKyz1sMPoZsFiAMVZa7N2W8Kv8RnFiksYwnWkPv9X428OYZtN5Q1OtI0L8zyHc-6cs2g=@protonmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v5] asus-wmi: Add support for custom fan curves
-Message-ID: <29734901-e986-c77b-30bd-86a57f189e36@roeck-us.net>
-Date:   Fri, 27 Aug 2021 09:05:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <l_wjZlSh5I-iPC46H7er23ScdheWKul7iVjIbCUAKyz1sMPoZsFiAMVZa7N2W8Kv8RnFiksYwnWkPv9X428OYZtN5Q1OtI0L8zyHc-6cs2g=@protonmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        d=paragon-software.com; s=mail; t=1630080402;
+        bh=03pdRXHJ2rUmLpMSqJkMnzOyz6oSUVCwF8fWVn/2NAs=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=CDC6G99xrns7UnMunNBwh0pDyuzuAS7ptBAij+6yAxn4Q9pC4Dn2Mgu5NWJOP1oVk
+         xgW2ocJgR8iIBbUxkW9iiPu74/bgMDAcaTlUFWjg2O5aQoDWZ9LFJyKW8IgK/fh1+N
+         okiKpSDJIxltNGpDc6eMWi9PzGc1O5hZyut0Ov28=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 27 Aug 2021 19:06:41 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%12]) with
+ mapi id 15.01.2176.009; Fri, 27 Aug 2021 19:06:41 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Colin King <colin.king@canonical.com>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Kari Argillander" <kari.argillander@gmail.com>
+Subject: RE: [PATCH][next][V2] fs/ntfs3: Fix various spelling mistakes
+Thread-Topic: [PATCH][next][V2] fs/ntfs3: Fix various spelling mistakes
+Thread-Index: AQHXkodWkC9fdf6SXUu+H4zBGVMAuquHlYag
+Date:   Fri, 27 Aug 2021 16:06:41 +0000
+Message-ID: <d7c358f769494cb2b1983df27df0e335@paragon-software.com>
+References: <20210816101308.67769-1-colin.king@canonical.com>
+In-Reply-To: <20210816101308.67769-1-colin.king@canonical.com>
+Accept-Language: ru-RU, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.0.26]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 8:26 AM, Barnabás Pőcze wrote:
-> Hi
-> 
-> 
-> +CC Guenter Roeck as he may be able to tell us if there's an established
-> way to export fan curves.
-> 
-
-If I understand the context correctly, one would normally define pairs
-of pwmX_auto_pointN_temp and pwmX_auto_pointN_pwm, with _temp
-being the temperature in milli-degrees C and _pwm being a pwm value
-between 0 and 255. Normally the X would refer to different fans/pwm
-channels, but one could "tweak" that and declare that pwm1 is quiet,
-pwm2 is default, and pwm3 is performance. One could then use pwm1_enable
-values (2..4) to select the active mode.
-
-The format isn't documented here, though, so it is hard to say if that
-would be a good match. And I won't start analyzing the code trying
-to understand in detail what it actually does.
-
-Guenter
-
-> I have added a couple comments.
-> There are places where spaces are used instead of tabs.
-> 
-> 
-> 2021. augusztus 27., péntek 1:42 keltezéssel, Luke D. Jones írta:
->> Add support for custom fan curves found on some ASUS ROG laptops.
->>
->> These laptops have the ability to set a custom curve for the CPU
->> and GPU fans via an ACPI method call. This patch enables this,
->> additionally enabling custom fan curves per-profile, where profile
->> here means each of the 3 levels of "throttle_thermal_policy".
->>
->> Signed-off-by: Luke D. Jones <luke@ljones.dev>
->> ---
->>   drivers/platform/x86/asus-wmi.c            | 616 ++++++++++++++++++++-
->>   include/linux/platform_data/x86/asus-wmi.h |   2 +
->>   2 files changed, 616 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
->> index cc5811844012..944644ae0acd 100644
->> --- a/drivers/platform/x86/asus-wmi.c
->> +++ b/drivers/platform/x86/asus-wmi.c
->> @@ -108,6 +108,11 @@ module_param(fnlock_default, bool, 0444);
->>
->>   static const char * const ashs_ids[] = { "ATK4001", "ATK4002", NULL };
->>
->> +static int throttle_thermal_policy_write(struct asus_wmi*);
->> +static ssize_t fan_curve_store(struct asus_wmi *asus, const char *buf,
->> +								size_t count, u32 dev, char **curve,
->> +								char *default_curve);
->> +
->>   static bool ashs_present(void)
->>   {
->>   	int i = 0;
->> @@ -122,7 +127,8 @@ struct bios_args {
->>   	u32 arg0;
->>   	u32 arg1;
->>   	u32 arg2; /* At least TUF Gaming series uses 3 dword input buffer. */
->> -	u32 arg4;
->> +	u32 arg3;
->> +	u32 arg4; /* Some ROG laptops require a full 5 input args */
->>   	u32 arg5;
->>   } __packed;
->>
->> @@ -173,6 +179,21 @@ enum fan_type {
->>   	FAN_TYPE_SPEC83,	/* starting in Spec 8.3, use CPU_FAN_CTRL */
->>   };
->>
->> +struct fan_curve {
->> +	char *balanced;
->> +	char *balanced_default;
->> +	char *performance;
->> +	char *performance_default;
->> +	char *quiet;
->> +	char *quiet_default;
->> +};
->> +
->> +struct enabled_fan_curves {
->> +	bool balanced;
->> +	bool performance;
->> +	bool quiet;
->> +};
->> +
->>   struct asus_wmi {
->>   	int dsts_id;
->>   	int spec;
->> @@ -220,6 +241,14 @@ struct asus_wmi {
->>   	bool throttle_thermal_policy_available;
->>   	u8 throttle_thermal_policy_mode;
->>
->> +	bool cpu_fan_curve_available;
->> +	struct fan_curve cpu_fan_curve;
->> +
->> +    bool gpu_fan_curve_available;
->> +	struct fan_curve gpu_fan_curve;
->> +
->> +	struct enabled_fan_curves enabled_fan_curve_profiles;
-> 
-> I would suggest something like the following:
-> 
->    struct fan_curve {
->      /* bool enabled; */
->      u8 temps[FAN_CURVE_SIZE];
->      u8 percents[FAN_CURVE_SIZE];
->    };
-> 
->    struct fan {
->      bool available;
->      struct fan_curve curves[NUM_PERF_PROFILES];
->    };
-> 
->    struct asus_wmi {
->      ...
-> 
->      struct fan fans[NUM_FANS];
-> 
->      bool fan_curve_enabled_for_profile[NUM_PERF_PROFILES];
->      /* or maybe you could add it as `bool enabled;` into the inner struct */
->    };
-> 
-> see the reason later.
-> 
-> 
->> +
->>   	struct platform_profile_handler platform_profile_handler;
->>   	bool platform_profile_support;
->>
->> @@ -285,6 +314,85 @@ int asus_wmi_evaluate_method(u32 method_id, u32 arg0, u32 arg1, u32 *retval)
->>   }
->>   EXPORT_SYMBOL_GPL(asus_wmi_evaluate_method);
->>
->> +static int asus_wmi_evaluate_method5(u32 method_id,
->> +		u32 arg0, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32 *retval)
->> +{
->> +	struct bios_args args = {
->> +		.arg0 = arg0,
->> +		.arg1 = arg1,
->> +		.arg2 = arg2,
->> +		.arg3 = arg3,
->> +		.arg4 = arg4,
->> +	};
->> +	struct acpi_buffer input = { (acpi_size) sizeof(args), &args };
->> +	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
->> +	acpi_status status;
->> +	union acpi_object *obj;
->> +	u32 tmp = 0;
->> +
->> +	status = wmi_evaluate_method(ASUS_WMI_MGMT_GUID, 0, method_id,
->> +				     &input, &output);
->> +
->> +	if (ACPI_FAILURE(status))
->> +		return -EIO;
->> +
->> +	obj = (union acpi_object *)output.pointer;
-> 
-> Small thing, but this cast is unnecessary.
-> 
-> 
->> +	if (obj && obj->type == ACPI_TYPE_INTEGER)
->> +		tmp = (u32) obj->integer.value;
-> 
-> Same here.
-> 
-> 
->> +
->> +	if (retval)
->> +		*retval = tmp;
->> +
->> +	kfree(obj);
->> +
->> +	if (tmp == ASUS_WMI_UNSUPPORTED_METHOD)
->> +		return -ENODEV;
->> +
->> +	return 0;
->> +}
->> +
->> +/*
->> + * Returns as an error if the method output is not a buffer. Typically this
->> + * means that the method called is unsupported.
->> +*/
->> +static int asus_wmi_evaluate_method_buf(u32 method_id,
->> +		u32 arg0, u32 arg1, u8 *ret_buffer)
->> +{
->> +	struct bios_args args = {
->> +		.arg0 = arg0,
->> +		.arg1 = arg1,
->> +		.arg2 = 0,
->> +	};
->> +	struct acpi_buffer input = { (acpi_size) sizeof(args), &args };
->> +	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
->> +	acpi_status status;
->> +	union acpi_object *obj;
->> +	u32 int_tmp = 0;
->> +
->> +	status = wmi_evaluate_method(ASUS_WMI_MGMT_GUID, 0, method_id,
->> +				     &input, &output);
->> +
->> +	if (ACPI_FAILURE(status))
->> +		return -EIO;
->> +
->> +	obj = (union acpi_object *)output.pointer;
->> +
->> +	if (obj && obj->type == ACPI_TYPE_INTEGER) {
->> +		int_tmp = (u32) obj->integer.value;
->> +		if (int_tmp == ASUS_WMI_UNSUPPORTED_METHOD)
->> +			return -ENODEV;
->> +		return int_tmp;
->> +	}
->> +
->> +	if (obj && obj->type == ACPI_TYPE_BUFFER) {
->> +		memcpy(ret_buffer, obj->buffer.pointer, obj->buffer.length);
->> +	}
->> +
->> +	kfree(obj);
->> +
->> +	return 0;
->> +}
->> +
->>   static int asus_wmi_evaluate_method_agfn(const struct acpi_buffer args)
->>   {
->>   	struct acpi_buffer input;
->> @@ -1813,7 +1921,7 @@ static ssize_t fan1_label_show(struct device *dev,
->>   					  struct device_attribute *attr,
->>   					  char *buf)
->>   {
->> -	return sprintf(buf, "%s\n", ASUS_FAN_DESC);
->> +	return sprintf(buf, "%s", ASUS_FAN_DESC);
-> 
-> What is the reason for this change?
-> 
-> 
->>   }
->>
->>   static ssize_t asus_hwmon_temp1(struct device *dev,
->> @@ -2043,6 +2151,458 @@ static ssize_t fan_boost_mode_store(struct device *dev,
->>   // Fan boost mode: 0 - normal, 1 - overboost, 2 - silent
->>   static DEVICE_ATTR_RW(fan_boost_mode);
->>
->> +/* Custom fan curves per-profile **********************************************/
->> +
->> +/*
->> + * Check if the ability to set fan curves on either fan exists, and store the
->> + * defaults for recall later plus to provide users with a starting point.
->> + *
->> + * "dev" is either CPU_FAN_CURVE or GPU_FAN_CURVE.
->> +*/
->> +static int custom_fan_check_present(struct asus_wmi *asus,
->> +									bool *available, u32 dev)
->> +{
->> +	struct fan_curve *curves = &asus->cpu_fan_curve;
->> +	u8 *buf = kzalloc(16 * sizeof(u8), GFP_KERNEL);
-> 
-> Is dynamic allocation needed here? No early return frees it.
-> 
-> 
->> +	/* 15 punctuation marks + 16 sets of numbers up to 3 char each */
->> +	int str_len = 15 + 16 * 3;
-> 
-> It appears to me that the terminating null byte is not accounted for. E.g.:
-> 
->    255:255,255:255,255:255,255:255,255:255,255:255,255:255,255:255
-> 
-> is itself already 63 (= 15 + 16 x 3) characters.
-> 
-> And if the maximum length is known, and it's reasonably small, why is it not
-> part of the struct as a char array? E.g.:
-> 
->    struct fan_curve {
->      char balanced[FAN_CURVE_STR_SIZE]; /* #define FAN_CURVE_STR_SIZE 64 */
->      ...
->    };
-> 
-> I would actually suggest storing the u8 array itself in the fan curve struct,
-> and not a string representation of it. I think the data is easier to deal with
-> that way, and the price of formatting it for the sysfs attribute is not
-> significant.
-> 
-> 
->> +	int err;
->> +
->> +	*available = false;
->> +
->> +	if (dev == ASUS_WMI_DEVID_GPU_FAN_CURVE)
->> +		curves = &asus->gpu_fan_curve;
->> +
->> +	/* Balanced default */
->> +	err = asus_wmi_evaluate_method_buf(asus->dsts_id, dev, 0, buf);
->> +	if (err) {
->> +		if (err == -ENODEV)
->> +			return 0;
->> +		return err;
->> +	}
->> +
->> +	curves->balanced = kzalloc(str_len * sizeof(char), GFP_KERNEL);
->> +	if (!curves->balanced)
->> +		return -ENOMEM;
->> +
->> +	curves->balanced_default = kzalloc(str_len * sizeof(char), GFP_KERNEL);
->> +	if (!curves->balanced_default)
->> +		return -ENOMEM;
->> +
->> +	sprintf(curves->balanced, "%d:%d,%d:%d,%d:%d,%d:%d,%d:%d,%d:%d,%d:%d,%d:%d",
->> +		buf[0], buf[8], buf[1], buf[9], buf[2], buf[10], buf[3], buf[11],
->> +		buf[4], buf[12], buf[5], buf[13], buf[6], buf[14], buf[7], buf[15]);
->> +	sprintf(curves->balanced_default, curves->balanced);
->> +
->> +	/* Quiet default */
->> +	err = asus_wmi_evaluate_method_buf(asus->dsts_id, dev, 1, buf);
->> +	if (err) {
->> +		if (err == -ENODEV)
->> +			return 0;
->> +		return err;
->> +	}
->> +
->> +	curves->quiet = kzalloc(str_len * sizeof(char), GFP_KERNEL);
->> +	if (!curves->quiet)
->> +		return -ENOMEM;
->> +
->> +	curves->quiet_default = kzalloc(str_len * sizeof(char), GFP_KERNEL);
->> +	if (!curves->quiet_default)
->> +		return -ENOMEM;
->> +
->> +	sprintf(curves->quiet, "%d:%d,%d:%d,%d:%d,%d:%d,%d:%d,%d:%d,%d:%d,%d:%d",
->> +		buf[0], buf[8], buf[1], buf[9], buf[2], buf[10], buf[3], buf[11],
->> +		buf[4], buf[12], buf[5], buf[13], buf[6], buf[14], buf[7], buf[15]);
->> +	sprintf(curves->quiet_default, curves->quiet);
->> +
->> +	/* Performance default */
->> +	err = asus_wmi_evaluate_method_buf(asus->dsts_id, dev, 2, buf);
->> +	if (err) {
->> +		if (err == -ENODEV)
->> +			return 0;
->> +		return err;
->> +	}
->> +
->> +	curves->performance = kzalloc(str_len * sizeof(char), GFP_KERNEL);
->> +	if (!curves->performance)
->> +		return -ENOMEM;
->> +
->> +	curves->performance_default = kzalloc(str_len * sizeof(char), GFP_KERNEL);
->> +	if (!curves->performance_default)
->> +		return -ENOMEM;
->> +
->> +	sprintf(curves->performance,
->> +		"%d:%d,%d:%d,%d:%d,%d:%d,%d:%d,%d:%d,%d:%d,%d:%d",
->> +		buf[0], buf[8], buf[1], buf[9], buf[2], buf[10], buf[3], buf[11],
->> +		buf[4], buf[12], buf[5], buf[13], buf[6], buf[14], buf[7], buf[15]);
->> +	sprintf(curves->performance_default, curves->performance);
-> 
-> More or less the same code is repeated three times, I'd consider adding an e.g.
-> 
->    void fan_curve_to_str(..., char[static FAN_CURVE_STR_SIZE]);
-> 
-> function.
-> 
-> 
->> +
->> +	kfree(buf);
->> +
->> +	*available = true;
->> +	return 0;
->> +}
->> +
->> +/*
->> + * The expected input is of the format
->> + *     "30:1,49:2,59:3,69:4,79:31,89:49,99:56,109:58"
->> + * where a pair is 30:1, with 30 = temperature, and 1 = percentage
->> +*/
->> +static int fan_curve_write(struct asus_wmi *asus, u32 dev, char *curve)
->> +{
->> +    char * buf, *set, *pair_tmp, *pair, *set_end, *pair_end;
->> +    int err, ret;
->> +
->> +	char *set_delimiter = ",";
->> +	char *pair_delimiter = ":";
->> +	bool half_complete = false;
->> +	bool pair_start = true;
->> +	u32 prev_percent = 0;
->> +	u32 prev_temp = 0;
->> +	u32 percent = 0;
->> +	u32 shift = 0;
->> +	u32 temp = 0;
->> +    u32 arg1 = 0;
->> +    u32 arg2 = 0;
->> +    u32 arg3 = 0;
->> +    u32 arg4 = 0;
->> +
->> +    buf = set_end = pair_end = kstrdup(curve, GFP_KERNEL);
->> +
->> +	while( (set = strsep(&set_end, set_delimiter)) != NULL ) {
->> +		pair_tmp = kstrdup(set, GFP_KERNEL);
->> +        pair_start = true;
->> +		while( (pair = strsep(&pair_tmp, pair_delimiter)) != NULL ) {
->> +			err = kstrtouint(pair, 10, &ret);
->> +            if (err) {
->> +                kfree(pair_tmp);
->> +                kfree(buf);
->> +                return err;
->> +            }
->> +
->> +            if (pair_start) {
->> +                temp = ret;
->> +                pair_start = false;
->> +            } else {
->> +                percent = ret;
->> +            }
->> +		}
->> +		kfree(pair_tmp);
->> +
->> +		if (temp < prev_temp || percent < prev_percent || percent > 100) {
->> +            pr_info("Fan curve invalid");
->> +			pr_info("A value is sequentially lower or percentage is > 100");
->> +            kfree(buf);
->> +            return -EINVAL;
->> +        }
->> +
->> +        prev_temp = temp;
->> +        prev_percent = percent;
->> +
->> +        if (!half_complete) {
->> +            arg1 += temp << shift;
->> +            arg3 += percent << shift;
->> +        } else {
->> +            arg2 += temp << shift;
->> +            arg4 += percent << shift;
->> +        }
-> 
-> As far as I see using 64-bit integers would avoid the need for `half_complete`, et al.
-> 
-> 
->> +        shift += 8;
->> +
->> +        if (shift == 32) {
->> +            shift = 0;
->> +            half_complete = true;
->> +        }
->> +	}
->> +	kfree(buf);
->> +
-> 
-> If you don't insist on using commas, I think it is much simpler to
-> parse it using `sscanf()`, e.g.:
-> 
->    unsigned int temp, prct;
->    int at = 0, len;
-> 
->    while (sscanf(&buf[at], "%u:%u %n", &temp, &prct, &len) == 2) {
->      /* process `temp` and `prct` */
-> 
->      at += len;
->    }
-> 
->    if (buf[at] != '\0')
->      /* error */;
-> 
-> This also has the advantage that you don't need dynamic memory allocation.
-> 
-> 
->> +    return asus_wmi_evaluate_method5(ASUS_WMI_METHODID_DEVS, dev,
->> +									 arg1, arg2, arg3, arg4, &ret);
->> +}
->> +
->> +static int fan_curve_cpu_write(struct asus_wmi *asus)
->> +{
->> +	char *curve = NULL;
->> +	int err, mode;
->> +
->> +	mode = asus->throttle_thermal_policy_mode;
->> +
->> +	if (mode == ASUS_THROTTLE_THERMAL_POLICY_DEFAULT
->> +					&& asus->enabled_fan_curve_profiles.balanced) {
->> +		curve = asus->cpu_fan_curve.balanced;
->> +	} else if (mode == ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST
->> +					&& asus->enabled_fan_curve_profiles.performance) {
->> +		curve = asus->cpu_fan_curve.performance;
->> +	} else if (mode == ASUS_THROTTLE_THERMAL_POLICY_SILENT
->> +					&& asus->enabled_fan_curve_profiles.quiet) {
->> +		curve = asus->cpu_fan_curve.quiet;
->> +	}
->> +
->> +	if (curve != NULL) {
->> +		err = fan_curve_write(asus, ASUS_WMI_DEVID_CPU_FAN_CURVE, curve);
->> +		if (err)
->> +			return err;
->> +	}
->> +	return 0;
->> +}
->> +
->> +
->> +static int fan_curve_gpu_write(struct asus_wmi *asus)
->> +{
->> +	char *curve = NULL;
->> +	int err, mode;
->> +
->> +	mode = asus->throttle_thermal_policy_mode;
->> +
->> +	if (mode == ASUS_THROTTLE_THERMAL_POLICY_DEFAULT
->> +					&& asus->enabled_fan_curve_profiles.balanced) {
->> +		curve = asus->gpu_fan_curve.balanced;
->> +	} else if (mode == ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST
->> +					&& asus->enabled_fan_curve_profiles.performance) {
->> +		curve = asus->gpu_fan_curve.performance;
->> +	} else if (mode == ASUS_THROTTLE_THERMAL_POLICY_SILENT
->> +					&& asus->enabled_fan_curve_profiles.quiet) {
->> +		curve = asus->gpu_fan_curve.quiet;
->> +	}
->> +
->> +	if (curve != NULL) {
->> +		err = fan_curve_write(asus, ASUS_WMI_DEVID_GPU_FAN_CURVE, curve);
->> +		if (err)
->> +			return err;
->> +	}
->> +	return 0;
->> +}
->> +
->> +static ssize_t fan_curve_store(struct asus_wmi *asus, const char *buf,
->> +								size_t count, u32 dev, char **curve,
->> +								char *default_curve)
->> +{
->> +    int err;
->> +
->> +	/* Allow a user to write "" or " " to erase a curve setting */
->> +	if (strlen(buf) <= 1 || strcmp(buf, " \n") == 0) {
->> +		kfree(*curve);
->> +		*curve = kstrdup(default_curve, GFP_KERNEL);
->> +		err = throttle_thermal_policy_write(asus);
->> +		if (err)
->> +			return err;
->> +		return count;
->> +	}
->> +
->> +	if (*curve)
->> +		kfree(*curve);
->> +    *curve = kstrdup(buf, GFP_KERNEL);
->> +
->> +	/* Maybe activate fan curve if in associated mode */
->> +	err = throttle_thermal_policy_write(asus);
->> +	if (err) {
->> +		kfree(*curve);
->> +		*curve = kstrdup(default_curve, GFP_KERNEL);
->> +		return err;
->> +	}
->> +
->> +    return count;
->> +}
->> +
->> +/*
->> + * CPU Fan Curves
->> +*/
->> +
->> +static ssize_t cpu_fan_curve_balanced_show(struct device *dev,
->> +				   struct device_attribute *attr, char *buf)
->> +{
->> +	struct asus_wmi *asus = dev_get_drvdata(dev);
->> +	return scnprintf(buf, PAGE_SIZE, "%s", asus->cpu_fan_curve.balanced);
->> +}
->> +
->> +static ssize_t cpu_fan_curve_balanced_store(struct device *dev,
->> +				    struct device_attribute *attr,
->> +				    const char *buf, size_t count)
->> +{
->> +    struct asus_wmi *asus = dev_get_drvdata(dev);
->> +    return fan_curve_store(asus, buf, count, ASUS_WMI_DEVID_CPU_FAN_CURVE,
->> +							&asus->cpu_fan_curve.balanced,
->> +							asus->cpu_fan_curve.balanced_default);
->> +}
->> +
->> +static DEVICE_ATTR_RW(cpu_fan_curve_balanced);
->> +
->> +static ssize_t cpu_fan_curve_performance_show(struct device *dev,
->> +				   struct device_attribute *attr, char *buf)
->> +{
->> +	struct asus_wmi *asus = dev_get_drvdata(dev);
->> +	return scnprintf(buf, PAGE_SIZE, "%s", asus->cpu_fan_curve.performance);
->> +}
->> +
->> +static ssize_t cpu_fan_curve_performance_store(struct device *dev,
->> +				    struct device_attribute *attr,
->> +				    const char *buf, size_t count)
->> +{
->> +    struct asus_wmi *asus = dev_get_drvdata(dev);
->> +    return fan_curve_store(asus, buf, count, ASUS_WMI_DEVID_CPU_FAN_CURVE,
->> +							&asus->cpu_fan_curve.performance,
->> +							asus->cpu_fan_curve.performance_default);
->> +}
->> +
->> +static DEVICE_ATTR_RW(cpu_fan_curve_performance);
->> +
->> +static ssize_t cpu_fan_curve_quiet_show(struct device *dev,
->> +				   struct device_attribute *attr, char *buf)
->> +{
->> +	struct asus_wmi *asus = dev_get_drvdata(dev);
->> +	return scnprintf(buf, PAGE_SIZE, "%s", asus->cpu_fan_curve.quiet);
->> +}
->> +
->> +static ssize_t cpu_fan_curve_quiet_store(struct device *dev,
->> +				    struct device_attribute *attr,
->> +				    const char *buf, size_t count)
->> +{
->> +    struct asus_wmi *asus = dev_get_drvdata(dev);
->> +    return fan_curve_store(asus, buf, count, ASUS_WMI_DEVID_CPU_FAN_CURVE,
->> +							&asus->cpu_fan_curve.quiet,
->> +							asus->cpu_fan_curve.quiet_default);
->> +}
->> +
->> +static DEVICE_ATTR_RW(cpu_fan_curve_quiet);
->> +
->> +/*
->> + * GPU Fan Curves
->> +*/
->> +
->> +static ssize_t gpu_fan_curve_balanced_show(struct device *dev,
->> +				   struct device_attribute *attr, char *buf)
->> +{
->> +	struct asus_wmi *asus = dev_get_drvdata(dev);
->> +	return scnprintf(buf, PAGE_SIZE, "%s", asus->gpu_fan_curve.balanced);
->> +}
->> +
->> +static ssize_t gpu_fan_curve_balanced_store(struct device *dev,
->> +				    struct device_attribute *attr,
->> +				    const char *buf, size_t count)
->> +{
->> +    struct asus_wmi *asus = dev_get_drvdata(dev);
->> +    return fan_curve_store(asus, buf, count, ASUS_WMI_DEVID_GPU_FAN_CURVE,
->> +							&asus->gpu_fan_curve.balanced,
->> +							asus->gpu_fan_curve.balanced_default);
->> +}
->> +
->> +static DEVICE_ATTR_RW(gpu_fan_curve_balanced);
->> +
->> +static ssize_t gpu_fan_curve_performance_show(struct device *dev,
->> +				   struct device_attribute *attr, char *buf)
->> +{
->> +	struct asus_wmi *asus = dev_get_drvdata(dev);
->> +	return scnprintf(buf, PAGE_SIZE, "%s", asus->gpu_fan_curve.performance);
->> +}
->> +
->> +static ssize_t gpu_fan_curve_performance_store(struct device *dev,
->> +				    struct device_attribute *attr,
->> +				    const char *buf, size_t count)
->> +{
->> +    struct asus_wmi *asus = dev_get_drvdata(dev);
->> +    return fan_curve_store(asus, buf, count, ASUS_WMI_DEVID_GPU_FAN_CURVE,
->> +							&asus->gpu_fan_curve.performance,
->> +							asus->gpu_fan_curve.performance_default);
->> +}
->> +
->> +static DEVICE_ATTR_RW(gpu_fan_curve_performance);
->> +
->> +static ssize_t gpu_fan_curve_quiet_show(struct device *dev,
->> +				   struct device_attribute *attr, char *buf)
->> +{
->> +	struct asus_wmi *asus = dev_get_drvdata(dev);
->> +	return scnprintf(buf, PAGE_SIZE, "%s", asus->gpu_fan_curve.quiet);
->> +}
->> +
->> +static ssize_t gpu_fan_curve_quiet_store(struct device *dev,
->> +				    struct device_attribute *attr,
->> +				    const char *buf, size_t count)
->> +{
->> +    struct asus_wmi *asus = dev_get_drvdata(dev);
->> +    return fan_curve_store(asus, buf, count, ASUS_WMI_DEVID_GPU_FAN_CURVE,
->> +							&asus->gpu_fan_curve.quiet,
->> +							asus->gpu_fan_curve.quiet_default);
->> +}
->> +
->> +static DEVICE_ATTR_RW(gpu_fan_curve_quiet);
-> 
-> Even though it is a hwmon thing, I think `SENSOR_ATTR_2()` (from linux/hwmon-sysfs.h)
-> would be very useful here as you'd avoid creating n+1 functions, e.g:
-> 
->    static ssize_t fan_curve_show(struct device *dev, struct device_attribute *attr, char *buf)
->    {
->      struct sensor_device_attribute_2 *sattr = to_sensor_dev_attr_2(attr);
->      struct asus_wmi *asus = dev_get_drvdata(dev);
-> 
->      /*
->       * if you stored fan curves in an array, you could then access the fan
->       * curve in `asus->fans[sattr->index].curves[sattr->nr]`
->       * /
->    }
-> 
->    static SENSOR_DEVICE_ATTR_2(some_name1, 0644, fan_curve_show, fan_curve_store,
->                                FAN_CPU /* index in the "fans" array */,
->                                ASUS_THROTTLE_THERMAL_POLICY_SILENT /* index in the "curves" array */);
-> 
-> 
->> +
->> +/*
->> + * Profiles with enabled fan curve setting
->> +*/
->> +
->> +static int enabled_fan_curve_profiles_write(struct asus_wmi *asus,
->> +											const char *names)
->> +{
->> +    char *buf, *set, *set_end;
->> +    int err;
->> +
->> +    buf = set_end = kstrdup(names, GFP_KERNEL);
->> +
->> +	/* Reset before checking */
->> +	asus->enabled_fan_curve_profiles.balanced = false;
->> +	asus->enabled_fan_curve_profiles.quiet = false;
->> +	asus->enabled_fan_curve_profiles.performance = false;
->> +
->> +	while( (set = strsep(&set_end, " ")) != NULL ) {
->> +		if (set == NULL)
-> 
-> When is this possible?
-> 
-> 
->> +			set = buf;
->> +
->> +		if (strcmp(set, "balanced") == 0
->> +				|| strcmp(set, "balanced\n") == 0)
->> +			asus->enabled_fan_curve_profiles.balanced = true;
->> +
->> +		if (strcmp(set, "quiet") == 0
->> +				|| strcmp(set, "quiet\n") == 0)
->> +			asus->enabled_fan_curve_profiles.quiet = true;
->> +
->> +		if (strcmp(set, "performance") == 0
->> +				|| strcmp(set, "performance\n") == 0)
->> +			asus->enabled_fan_curve_profiles.performance = true;
-> 
-> If you store the enabled curves in an array, and you have a list of profile names,
-> then `sysfs_match_string()`, will be very helpful here. You could do something like:
-> 
->    int profile = sysfs_match_string(profile_names, set);
->    if (profile < 0) {
->      /* not found */
->    }
-> 
->    asus->fan_curve_enabled_for_profile[profile] = true;
-> 
-> 
->> +	}
->> +
->> +	err = throttle_thermal_policy_write(asus);
->> +	if (err)
->> +		return err;
->> +
->> +	kfree(buf);
->> +
->> +	return 0;
->> +}
->> +
->> +static ssize_t enabled_fan_curve_profiles_show(struct device *dev,
->> +				   struct device_attribute *attr, char *buf)
->> +{
->> +	struct asus_wmi *asus = dev_get_drvdata(dev);
->> +	int len = 0;
->> +
->> +	if (asus->enabled_fan_curve_profiles.balanced)
->> +		len += sysfs_emit_at(buf, len, "balanced ");
->> +
->> +	if (asus->enabled_fan_curve_profiles.performance)
->> +		len += sysfs_emit_at(buf, len, "performance ");
->> +
->> +	if (asus->enabled_fan_curve_profiles.quiet)
->> +		len += sysfs_emit_at(buf, len, "quiet ");
->> +
->> +	len += sysfs_emit_at(buf, len, "\n");
->> +	return len;
->> +}
->> +
->> +static ssize_t enabled_fan_curve_profiles_store(struct device *dev,
->> +				    struct device_attribute *attr,
->> +				    const char *buf, size_t count)
->> +{
->> +    struct asus_wmi *asus = dev_get_drvdata(dev);
->> +	int err;
->> +
->> +	err = enabled_fan_curve_profiles_write(asus, buf);
->> +	if (err)
->> +		return err;
->> +
->> +    return count;
->> +}
->> +
->> +static DEVICE_ATTR_RW(enabled_fan_curve_profiles);
->> +
->>   /* Throttle thermal policy ****************************************************/
->>
->>   static int throttle_thermal_policy_check_present(struct asus_wmi *asus)
->> @@ -2092,6 +2652,26 @@ static int throttle_thermal_policy_write(struct asus_wmi *asus)
->>   		return -EIO;
->>   	}
->>
->> +	if (asus->cpu_fan_curve_available) {
->> +		err = fan_curve_cpu_write(asus);
->> +		if (err) {
->> +			dev_warn(&asus->platform_device->dev,
->> +				"Failed to set custom CPU curve for thermal policy: %d\n",
->> +				err);
->> +			return err;
->> +		}
->> +	}
->> +
->> +	if (asus->gpu_fan_curve_available) {
->> +		err = fan_curve_gpu_write(asus);
->> +		if (err) {
->> +			dev_warn(&asus->platform_device->dev,
->> +				"Failed to set custom GPU curve for thermal policy: %d\n",
->> +				err);
->> +			return err;
->> +		} >> +	}
->> +
->>   	return 0;
->>   }
->>
->> @@ -2711,6 +3291,13 @@ static struct attribute *platform_attributes[] = {
->>   	&dev_attr_als_enable.attr,
->>   	&dev_attr_fan_boost_mode.attr,
->>   	&dev_attr_throttle_thermal_policy.attr,
->> +	&dev_attr_cpu_fan_curve_balanced.attr,
->> +	&dev_attr_cpu_fan_curve_performance.attr,
->> +	&dev_attr_cpu_fan_curve_quiet.attr,
->> +    &dev_attr_gpu_fan_curve_balanced.attr,
->> +	&dev_attr_gpu_fan_curve_performance.attr,
->> +	&dev_attr_gpu_fan_curve_quiet.attr,
->> +	&dev_attr_enabled_fan_curve_profiles.attr,
->>   	&dev_attr_panel_od.attr,
->>   	NULL
->>   };
->> @@ -2741,6 +3328,20 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
->>   		ok = asus->fan_boost_mode_available;
->>   	else if (attr == &dev_attr_throttle_thermal_policy.attr)
->>   		ok = asus->throttle_thermal_policy_available;
->> +	else if (attr == &dev_attr_cpu_fan_curve_balanced.attr)
->> +		ok = asus->cpu_fan_curve_available;
->> +	else if (attr == &dev_attr_cpu_fan_curve_performance.attr)
->> +		ok = asus->cpu_fan_curve_available;
->> +	else if (attr == &dev_attr_cpu_fan_curve_quiet.attr)
->> +		ok = asus->cpu_fan_curve_available;
->> +    else if (attr == &dev_attr_gpu_fan_curve_balanced.attr)
->> +		ok = asus->gpu_fan_curve_available;
->> +	else if (attr == &dev_attr_gpu_fan_curve_performance.attr)
->> +		ok = asus->gpu_fan_curve_available;
->> +	else if (attr == &dev_attr_gpu_fan_curve_quiet.attr)
->> +		ok = asus->gpu_fan_curve_available;
->> +	else if (attr == &dev_attr_enabled_fan_curve_profiles.attr)
->> +		ok = asus->cpu_fan_curve_available || asus->gpu_fan_curve_available;
->>   	else if (attr == &dev_attr_panel_od.attr)
->>   		ok = asus->panel_overdrive_available;
->>
->> @@ -3016,6 +3617,16 @@ static int asus_wmi_add(struct platform_device *pdev)
->>   	else
->>   		throttle_thermal_policy_set_default(asus);
->>
->> +	err = custom_fan_check_present(asus, &asus->cpu_fan_curve_available,
->> +			ASUS_WMI_DEVID_CPU_FAN_CURVE);
->> +	if (err)
->> +		goto fail_custom_fan_curve;
->> +
->> +    err = custom_fan_check_present(asus, &asus->gpu_fan_curve_available,
->> +			ASUS_WMI_DEVID_GPU_FAN_CURVE);
->> +	if (err)
->> +		goto fail_custom_fan_curve;
->> +
->>   	err = platform_profile_setup(asus);
->>   	if (err)
->>   		goto fail_platform_profile_setup;
->> @@ -3109,6 +3720,7 @@ static int asus_wmi_add(struct platform_device *pdev)
->>   	asus_wmi_sysfs_exit(asus->platform_device);
->>   fail_sysfs:
->>   fail_throttle_thermal_policy:
->> +fail_custom_fan_curve:
->>   fail_platform_profile_setup:
->>   	if (asus->platform_profile_support)
->>   		platform_profile_remove();
->> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
->> index 17dc5cb6f3f2..a571b47ff362 100644
->> --- a/include/linux/platform_data/x86/asus-wmi.h
->> +++ b/include/linux/platform_data/x86/asus-wmi.h
->> @@ -77,6 +77,8 @@
->>   #define ASUS_WMI_DEVID_THERMAL_CTRL	0x00110011
->>   #define ASUS_WMI_DEVID_FAN_CTRL		0x00110012 /* deprecated */
->>   #define ASUS_WMI_DEVID_CPU_FAN_CTRL	0x00110013
->> +#define ASUS_WMI_DEVID_CPU_FAN_CURVE	0x00110024
->> +#define ASUS_WMI_DEVID_GPU_FAN_CURVE	0x00110025
->>
->>   /* Power */
->>   #define ASUS_WMI_DEVID_PROCESSOR_STATE	0x00120012
->> --
->> 2.31.1
-> 
-> 
-> Best regards,
-> Barnabás Pőcze
-> 
-
+PiBGcm9tOiBDb2xpbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+DQo+IFNlbnQ6IE1v
+bmRheSwgQXVndXN0IDE2LCAyMDIxIDE6MTMgUE0NCj4gVG86IEtvbnN0YW50aW4gS29tYXJvdiA8
+YWxtYXouYWxleGFuZHJvdmljaEBwYXJhZ29uLXNvZnR3YXJlLmNvbT47IG50ZnMzQGxpc3RzLmxp
+bnV4LmRldg0KPiBDYzoga2VybmVsLWphbml0b3JzQHZnZXIua2VybmVsLm9yZzsgbGludXgta2Vy
+bmVsQHZnZXIua2VybmVsLm9yZzsgS2FyaSBBcmdpbGxhbmRlciA8a2FyaS5hcmdpbGxhbmRlckBn
+bWFpbC5jb20+DQo+IFN1YmplY3Q6IFtQQVRDSF1bbmV4dF1bVjJdIGZzL250ZnMzOiBGaXggdmFy
+aW91cyBzcGVsbGluZyBtaXN0YWtlcw0KPiANCj4gRnJvbTogQ29saW4gSWFuIEtpbmcgPGNvbGlu
+LmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gDQo+IFRoZXJlIGlzIGEgc3BlbGxpbmcgbWlzdGFrZSBp
+biBhIG50ZnNfZXJyIGVycm9yIG1lc3NhZ2UuIEFsc28NCj4gZml4IHZhcmlvdXMgc3BlbGxpbmcg
+bWlzdGFrZXMgaW4gY29tbWVudHMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDb2xpbiBJYW4gS2lu
+ZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KPiBSZXZpZXdlZC1ieSBLYXJpIEFyZ2lsbGFu
+ZGVyIDxrYXJpLmFyZ2lsbGFuZGVyQGdtYWlsLmNvbT4NCj4gLS0tDQo+IFYyOiBBbHNvIGZpeCBz
+cGVsbGluZyBtaXN0YWtlcyBpbiBjb21tZW50cywgdGhhbmtzIHRvIEthcmkgQXJnaWxsYW5kZXIN
+Cj4gICAgIGZvciBub3RpbmcgdGhhdCB0aGVzZSBuZWVkIGZpeGluZyB0b28uDQo+IC0tLQ0KPiAg
+ZnMvbnRmczMvZGVidWcuaCAgICAgICAgICAgICAgICAgfCAyICstDQo+ICBmcy9udGZzMy9saWIv
+ZGVjb21wcmVzc19jb21tb24uYyB8IDIgKy0NCj4gIGZzL250ZnMzL3J1bi5jICAgICAgICAgICAg
+ICAgICAgIHwgMiArLQ0KPiAgZnMvbnRmczMvc3VwZXIuYyAgICAgICAgICAgICAgICAgfCA0ICsr
+LS0NCj4gIGZzL250ZnMzL3VwY2FzZS5jICAgICAgICAgICAgICAgIHwgMiArLQ0KPiAgNSBmaWxl
+cyBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0t
+Z2l0IGEvZnMvbnRmczMvZGVidWcuaCBiL2ZzL250ZnMzL2RlYnVnLmgNCj4gaW5kZXggZGZhYTRj
+NzlkYzZkLi4xNWFjNDIxODVlNWIgMTAwNjQ0DQo+IC0tLSBhL2ZzL250ZnMzL2RlYnVnLmgNCj4g
+KysrIGIvZnMvbnRmczMvZGVidWcuaA0KPiBAQCAtMyw3ICszLDcgQEANCj4gICAqDQo+ICAgKiBD
+b3B5cmlnaHQgKEMpIDIwMTktMjAyMSBQYXJhZ29uIFNvZnR3YXJlIEdtYkgsIEFsbCByaWdodHMg
+cmVzZXJ2ZWQuDQo+ICAgKg0KPiAtICogdXNlZnVsIGZ1bmN0aW9ucyBmb3IgZGVidWdpbmcNCj4g
+KyAqIHVzZWZ1bCBmdW5jdGlvbnMgZm9yIGRlYnVnZ2luZw0KPiAgICovDQo+IA0KPiAgLy8gY2xh
+bmctZm9ybWF0IG9mZg0KPiBkaWZmIC0tZ2l0IGEvZnMvbnRmczMvbGliL2RlY29tcHJlc3NfY29t
+bW9uLmMgYi9mcy9udGZzMy9saWIvZGVjb21wcmVzc19jb21tb24uYw0KPiBpbmRleCA4M2M5ZTkz
+YWVhNzcuLjg1MGQ4ZThjOGYxZiAxMDA2NDQNCj4gLS0tIGEvZnMvbnRmczMvbGliL2RlY29tcHJl
+c3NfY29tbW9uLmMNCj4gKysrIGIvZnMvbnRmczMvbGliL2RlY29tcHJlc3NfY29tbW9uLmMNCj4g
+QEAgLTI5Miw3ICsyOTIsNyBAQCBpbnQgbWFrZV9odWZmbWFuX2RlY29kZV90YWJsZSh1MTYgZGVj
+b2RlX3RhYmxlW10sIGNvbnN0IHUzMiBudW1fc3ltcywNCj4gIAkJCQkgKiBvZiBhcyBzaW1wbHkg
+dGhlIHJvb3Qgb2YgdGhlIHRyZWUuICBUaGUNCj4gIAkJCQkgKiByZXByZXNlbnRhdGlvbiBvZiB0
+aGVzZSBpbnRlcm5hbCBub2RlcyBpcw0KPiAgCQkJCSAqIHNpbXBseSB0aGUgaW5kZXggb2YgdGhl
+IGxlZnQgY2hpbGQgY29tYmluZWQNCj4gLQkJCQkgKiB3aXRoIHRoZSBzcGVjaWFsIGJpdHMgMHhD
+MDAwIHRvIGRpc3Rpbmd1c2gNCj4gKwkJCQkgKiB3aXRoIHRoZSBzcGVjaWFsIGJpdHMgMHhDMDAw
+IHRvIGRpc3Rpbmd1aXNoDQo+ICAJCQkJICogdGhlIGVudHJ5IGZyb20gZGlyZWN0IG1hcHBpbmcg
+YW5kIGxlYWYgbm9kZQ0KPiAgCQkJCSAqIGVudHJpZXMuDQo+ICAJCQkJICovDQo+IGRpZmYgLS1n
+aXQgYS9mcy9udGZzMy9ydW4uYyBiL2ZzL250ZnMzL3J1bi5jDQo+IGluZGV4IDVjZGY2ZWZlNjdl
+MC4uZjljMzYyYWM2NzJlIDEwMDY0NA0KPiAtLS0gYS9mcy9udGZzMy9ydW4uYw0KPiArKysgYi9m
+cy9udGZzMy9ydW4uYw0KPiBAQCAtOTQ5LDcgKzk0OSw3IEBAIGludCBydW5fdW5wYWNrKHN0cnVj
+dCBydW5zX3RyZWUgKnJ1biwgc3RydWN0IG50ZnNfc2JfaW5mbyAqc2JpLCBDTFNUIGlubywNCj4g
+IAkJaWYgKG5leHRfdmNuID4gMHgxMDAwMDAwMDB1bGwgfHwgKGxjbiArIGxlbikgPiAweDEwMDAw
+MDAwMHVsbCkgew0KPiAgCQkJbnRmc19lcnIoDQo+ICAJCQkJc2JpLT5zYiwNCj4gLQkJCQkiVGhp
+cyBkcml2ZXIgaXMgY29tcGlsZWQgd2hpdG91dCBDT05GSUdfTlRGUzNfNjRCSVRfQ0xVU1RFUiAo
+bGlrZSB3aW5kb3dzIGRyaXZlcikuXG4iDQo+ICsJCQkJIlRoaXMgZHJpdmVyIGlzIGNvbXBpbGVk
+IHdpdGhvdXQgQ09ORklHX05URlMzXzY0QklUX0NMVVNURVIgKGxpa2Ugd2luZG93cyBkcml2ZXIp
+LlxuIg0KPiAgCQkJCSJWb2x1bWUgY29udGFpbnMgNjQgYml0cyBydW46IHZjbiAlbGx4LCBsY24g
+JWxseCwgbGVuICVsbHguXG4iDQo+ICAJCQkJIkFjdGl2YXRlIENPTkZJR19OVEZTM182NEJJVF9D
+TFVTVEVSIHRvIHByb2Nlc3MgdGhpcyBjYXNlIiwNCj4gIAkJCQl2Y242NCwgbGNuLCBsZW4pOw0K
+PiBkaWZmIC0tZ2l0IGEvZnMvbnRmczMvc3VwZXIuYyBiL2ZzL250ZnMzL3N1cGVyLmMNCj4gaW5k
+ZXggNmJlMTNlMjU2YzFhLi44NGQ0ZjM4OWY2ODUgMTAwNjQ0DQo+IC0tLSBhL2ZzL250ZnMzL3N1
+cGVyLmMNCj4gKysrIGIvZnMvbnRmczMvc3VwZXIuYw0KPiBAQCAtMTI0LDcgKzEyNCw3IEBAIHZv
+aWQgbnRmc19pbm9kZV9wcmludGsoc3RydWN0IGlub2RlICppbm9kZSwgY29uc3QgY2hhciAqZm10
+LCAuLi4pDQo+ICAvKg0KPiAgICogU2hhcmVkIG1lbW9yeSBzdHJ1Y3QuDQo+ICAgKg0KPiAtICog
+b24tZGlzayBudGZzJ3MgdXBjYXNlIHRhYmxlIGlzIGNyZWF0ZWQgYnkgbnRmcyBmb3JtYXRlcg0K
+PiArICogb24tZGlzayBudGZzJ3MgdXBjYXNlIHRhYmxlIGlzIGNyZWF0ZWQgYnkgbnRmcyBmb3Jt
+YXR0ZXINCj4gICAqICd1cGNhc2UnIHRhYmxlIGlzIDEyOEsgYnl0ZXMgb2YgbWVtb3J5DQo+ICAg
+KiB3ZSBzaG91bGQgcmVhZCBpdCBpbnRvIG1lbW9yeSB3aGVuIG1vdW50aW5nDQo+ICAgKiBTZXZl
+cmFsIG50ZnMgdm9sdW1lcyBsaWtlbHkgdXNlIHRoZSBzYW1lICd1cGNhc2UnIHRhYmxlDQo+IEBA
+IC0xMjA4LDcgKzEyMDgsNyBAQCBzdGF0aWMgaW50IG50ZnNfZmlsbF9zdXBlcihzdHJ1Y3Qgc3Vw
+ZXJfYmxvY2sgKnNiLCB2b2lkICpkYXRhLCBpbnQgc2lsZW50KQ0KPiAgCXNiaS0+ZGVmX2VudHJp
+ZXMgPSAxOw0KPiAgCWRvbmUgPSBzaXplb2Yoc3RydWN0IEFUVFJfREVGX0VOVFJZKTsNCj4gIAlz
+YmktPnJlcGFyc2UubWF4X3NpemUgPSBNQVhJTVVNX1JFUEFSU0VfREFUQV9CVUZGRVJfU0laRTsN
+Cj4gLQlzYmktPmVhX21heF9zaXplID0gMHgxMDAwMDsgLyogZGVmYXVsdCBmb3JtYXRlciB2YWx1
+ZSAqLw0KPiArCXNiaS0+ZWFfbWF4X3NpemUgPSAweDEwMDAwOyAvKiBkZWZhdWx0IGZvcm1hdHRl
+ciB2YWx1ZSAqLw0KPiANCj4gIAl3aGlsZSAoZG9uZSArIHNpemVvZihzdHJ1Y3QgQVRUUl9ERUZf
+RU5UUlkpIDw9IGJ5dGVzKSB7DQo+ICAJCXUzMiB0MzIgPSBsZTMyX3RvX2NwdSh0LT50eXBlKTsN
+Cj4gZGlmZiAtLWdpdCBhL2ZzL250ZnMzL3VwY2FzZS5jIGIvZnMvbnRmczMvdXBjYXNlLmMNCj4g
+aW5kZXggOTYxNzM4MmFjYTY0Li5iNTM5NDM1MzhmOWYgMTAwNjQ0DQo+IC0tLSBhL2ZzL250ZnMz
+L3VwY2FzZS5jDQo+ICsrKyBiL2ZzL250ZnMzL3VwY2FzZS5jDQo+IEBAIC0yNyw3ICsyNyw3IEBA
+IHN0YXRpYyBpbmxpbmUgdTE2IHVwY2FzZV91bmljb2RlX2NoYXIoY29uc3QgdTE2ICp1cGNhc2Us
+IHUxNiBjaHIpDQo+ICAvKg0KPiAgICogVGhhbmtzIEthcmkgQXJnaWxsYW5kZXIgPGthcmkuYXJn
+aWxsYW5kZXJAZ21haWwuY29tPiBmb3IgaWRlYSBhbmQgaW1wbGVtZW50YXRpb24gJ2JvdGhjYXNl
+Jw0KPiAgICoNCj4gLSAqIFN0cmFpZ3RoIHdheSB0byBjb21wYXJlIG5hbWVzOg0KPiArICogU3Ry
+YWlnaHQgd2F5IHRvIGNvbXBhcmUgbmFtZXM6DQo+ICAgKiAtIGNhc2UgaW5zZW5zaXRpdmUNCj4g
+ICAqIC0gaWYgbmFtZSBlcXVhbHMgYW5kICdib3RoY2FzZXMnIHRoZW4NCj4gICAqIC0gY2FzZSBz
+ZW5zaXRpdmUNCj4gLS0NCj4gMi4zMi4wDQoNCkhpIENvbGluLCB0aGFua3MgYSBsb3QgZm9yIHRo
+ZSBwYXRjaCAtIHdlJ3ZlIHBpY2tlZCBpdC4NCg0KQmVzdCByZWdhcmRzLg0K
