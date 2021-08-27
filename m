@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79263F9AFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693383F9B16
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233884AbhH0OlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:41:13 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:9944 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231327AbhH0OlK (ORCPT
+        id S234179AbhH0OrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhH0OrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:41:10 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A2npoUagCEbajKHeHnHDuQbZJ3XBQXr8ji2hC?=
- =?us-ascii?q?6mlwRA09TyX4raCTdZsguCMc5Ax6ZJhCo7G90cu7Lk80nKQdieIs1N+ZLWrbUQ?=
- =?us-ascii?q?CTQL2Kg7GN/wHd?=
-X-IronPort-AV: E=Sophos;i="5.84,356,1620662400"; 
-   d="scan'208";a="113573694"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 27 Aug 2021 22:40:18 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id F288C4D0DC6D;
-        Fri, 27 Aug 2021 22:40:14 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Fri, 27 Aug 2021 22:40:15 +0800
-Received: from localhost.localdomain (10.167.225.141) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Fri, 27 Aug 2021 22:40:14 +0800
-From:   Li Zhijian <lizhijian@cn.fujitsu.com>
-To:     <linux-mm@kvack.org>, <linux-rdma@vger.kernel.org>,
-        <akpm@linux-foundation.org>, <jglisse@redhat.com>, <jgg@ziepe.ca>
-CC:     <yishaih@nvidia.com>, <linux-kernel@vger.kernel.org>,
-        Li Zhijian <lizhijian@cn.fujitsu.com>, <stable@vger.kernel.org>
-Subject: [PATCH] mm/hmm: bypass devmap pte when all pfn requested flags are fulfilled
-Date:   Fri, 27 Aug 2021 22:45:00 +0800
-Message-ID: <20210827144500.2148-1-lizhijian@cn.fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 27 Aug 2021 10:47:00 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB548C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:46:11 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id x5so7255710ill.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:46:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TzOUQOR04WNA4/YVeKBqMlLPAY17QH2nosfTS9IvUQM=;
+        b=tZDh69nDdVY5p7wRtH8bR1I7nA5Lti7qTlnAa+w2NJMyRCyNUDyujRpwCrdFBwcM9c
+         wOkBjm2SZoBOXeA75VW9eEXPBO6RHPJvykSOIAfv1w3a+ad7jPs7uYOiNSuusNIlumh6
+         nSsyDYW3SbZjy88g9okTipYz0IjSQXXJpb/+3Iyz0KTpIxP3RIK7YtTn/G5e2UkTckvB
+         qey7hclft0SQShoNbO3yj8qYz8OJrSDRy8XJpTwREgJbKNKOWpsPbrc1br7t5+2SRnix
+         bjTxpNKKuDAp8QH8C+hV3mWtFPjPa32fe/lhHP8ffNAOiGfPv6FaFus9FhAcWPK/Qh83
+         QsFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TzOUQOR04WNA4/YVeKBqMlLPAY17QH2nosfTS9IvUQM=;
+        b=JVRUKZaLd4aIrMmeqPgTxwVRCO/Sppccz82326/vfMOfjrZfnjWXP9o72xQOBVMJaM
+         L41mHwdbwVstOi7bgd1VFwhD1X2mSw+wuMsKSW4cY6gnAnEt5wf7h8lR7ph2Cid0ZgqK
+         kuIPB55DiTvn+JXjI61Rwi50dgmvGoisQTSbV429Sa3o+ATK185+Hbi+5VLo9n4xYTHP
+         hWP6U8GILvoDjFpud/QYX9D4ZHVWXSlYXvvqLh3MFG4AYwRXj6ESGjNS+wm5kQPWJk2N
+         A5r/OS2nHAlgVUkXfsj5TtwrUWYbsZoG12/ftUSn9cntyEEoZDLrAskEIaSelBpk0eAl
+         2NUg==
+X-Gm-Message-State: AOAM531B/wdqNOh98eSHTtLYtJp4AUP7DK4kApL2bgv2sVJNHNxhF0W3
+        N/H516swbUSruwbMS8YQFG10mI/sJP7FDrMyFM8e+g==
+X-Google-Smtp-Source: ABdhPJx90jiXR/+Kuna9VvwisR0DddZo5lVJ7fj2PG+cx5IfLN0T4GMa1sjlVy8FyIiIF7WR0UGBSnO1/nHgexAlrhc=
+X-Received: by 2002:a92:a008:: with SMTP id e8mr6603471ili.187.1630075571040;
+ Fri, 27 Aug 2021 07:46:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: F288C4D0DC6D.AEC5F
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+References: <20210827082407.101053-1-yangcong5@huaqin.corp-partner.google.com> <20210827082407.101053-5-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20210827082407.101053-5-yangcong5@huaqin.corp-partner.google.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Fri, 27 Aug 2021 07:45:58 -0700
+Message-ID: <CAD=FV=URvNk1rBpRaRKTjGS+0u8PePd7reY9ix6cT272_MZcjA@mail.gmail.com>
+Subject: Re: [v3 4/4] dt-bindngs: display: panel: Add BOE and INX panel bindings
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, we noticed the one rpma example was failed[1] since 36f30e486d,
-where it will use ODP feature to do RDMA WRITE between fsdax files.
+Hi,
 
-After digging into the code, we found hmm_vma_handle_pte() will still
-return EFAULT even though all the its requesting flags has been
-fulfilled. That's because a DAX page will be marked as
-(_PAGE_SPECIAL | PAGE_DEVMAP) by pte_mkdevmap().
+On Fri, Aug 27, 2021 at 1:24 AM yangcong
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> Add documentation for boe tv110c9m-ll3, inx hj110iz-01a panel.
+>
+> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
+> ---
+>  .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml   | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-[1]: https://github.com/pmem/rpma/issues/1142
+Lumping these new panels in like this seems to be what Sam was
+suggesting [1] and it seems fine to me. Thus:
 
-CC: stable@vger.kernel.org
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
----
- mm/hmm.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-diff --git a/mm/hmm.c b/mm/hmm.c
-index fad6be2bf072..4766bdefb6c3 100644
---- a/mm/hmm.c
-+++ b/mm/hmm.c
-@@ -294,6 +294,12 @@ static int hmm_vma_handle_pte(struct mm_walk *walk, unsigned long addr,
- 	if (required_fault)
- 		goto fault;
- 
-+	/*
-+	 * just bypass devmap pte such as DAX page when all pfn requested
-+	 * flags(pfn_req_flags) are fulfilled.
-+	 */
-+	if (pte_devmap(pte))
-+		goto out;
- 	/*
- 	 * Since each architecture defines a struct page for the zero page, just
- 	 * fall through and treat it like a normal page.
-@@ -307,6 +313,7 @@ static int hmm_vma_handle_pte(struct mm_walk *walk, unsigned long addr,
- 		return 0;
- 	}
- 
-+out:
- 	*hmm_pfn = pte_pfn(pte) | cpu_flags;
- 	return 0;
- 
--- 
-2.31.1
+[1] https://lore.kernel.org/r/YSPAseE6WD8dDRuz@ravnborg.org/
 
-
-
+Note: please make sure to carry forward Reviewed-by tags to the v4
+version of this patch series unless something substantially changes
+about a patch.
