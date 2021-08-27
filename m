@@ -2,214 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0929A3F93F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 07:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB593F93FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 07:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244218AbhH0FFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 01:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        id S233723AbhH0FVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 01:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhH0FFP (ORCPT
+        with ESMTP id S229757AbhH0FVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 01:05:15 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB03C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 22:04:27 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d17so3185205plr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 22:04:27 -0700 (PDT)
+        Fri, 27 Aug 2021 01:21:05 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A21C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 22:20:16 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so1652930ooh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 22:20:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nFc3sdoCByIwYxggk+AQ1a3lDorwtem5TNHN34NU5Jc=;
-        b=LgiKD4Zo3v0mLVNslAx3ru3XtLkSlizC6BQHy54CHr1TxM3DHOu8L6d9ohwdHl5jFZ
-         LkcpZVu3aeWV1BX8/WFgZg1yawyzpq8FRD5EBw7PgkylUIhyTGYix6wr2qwhNnngONqR
-         0KEMJ1c1HG4X4r9v8ML+NuRn40w61WyyPUGqLvzFkC62+nmMKhUUfuMWrU18/421ViQw
-         qFNP/c7LIRCkO8UxTd8/rAJ/bKWN642/FNsp6dFY0IbLVvkYKT9H1q/Fr2eYwf6Wktjf
-         Nu3mNKm9t+SZYpDwmalLqn/R31CQX0b42gZapFrwVOZEwfLcUvhSXcOfnpyRdxw2a61t
-         npiQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=Bw4lKm4DRkGFFU7y4OaUt8e27BK/aybFhJJcTi57MKQ=;
+        b=gCLbg1CxO2PIQr82hXvq5x3DCZzn0hCanazRdNlFzAq16ek7wRftRsq/Y57VmbYSkw
+         0Enk78gHR96jzNxPHVxQVdKGlh0+VsTEs8xzxIQeKX0vAMOe3RHO6OJUlF9AbAzC0qwo
+         IkH6kuatJ/i79Usj0jWz1RwrzL2ONPJBVlit0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nFc3sdoCByIwYxggk+AQ1a3lDorwtem5TNHN34NU5Jc=;
-        b=rvQ4kPmeWFK60gcj7Mfph98xiKjFW84McLi/isc+0kW1sOsPgV2NbQNAW9FEaFQ7E4
-         nt/QTQ6ZNN4pN7ub4+H+JKBdGvGSdAT+sHZ5TyL1jZlrEAClD6BltKC1QuAMQzKReG9d
-         YGYJhLOjtphrGLMQHPr4HllEuyKjDirI35l8wN/N2DGcDIiOO7EXneyhoYhb8VCoGCet
-         C2CkT/OvIoRrROpw4zLnBHUPwQyxI5wtS5DcW2iAaoiPJyLLeY5JnqyTIBJSmIis5bUh
-         vlunqJOD//619DFpgZn1GYLlNqWC2H3KfFFUpIoGNnuTCCIzP3JQqwEwncq3ka2YICx0
-         AJhw==
-X-Gm-Message-State: AOAM532zzzAMov8Y+W93n8O18Isthpcty/omXvLKEqbHfz1glzElkepm
-        QjMMt9Gjk4H2RolmVUn6/8GMqRAswPP3YrlH4nBm7Q==
-X-Google-Smtp-Source: ABdhPJxvR/6WuE0nuMIGGz2Pojzx66g7oICbrEpMke2L3VvjgMUVihqBqiOP0icctaqTxFJqBEFwX39hG1MdjiOxRvM=
-X-Received: by 2002:a17:902:e550:b0:137:734f:1d84 with SMTP id
- n16-20020a170902e55000b00137734f1d84mr6796413plf.27.1630040666934; Thu, 26
- Aug 2021 22:04:26 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=Bw4lKm4DRkGFFU7y4OaUt8e27BK/aybFhJJcTi57MKQ=;
+        b=TG72wciOoFbxjwll7VsZprGSsOIAbzKVpJaDbXN6yUhwzAno5lpVD4N2/1uSCSBiZp
+         c9xTmCEOf29O45DNLR7vcPxw9tc4XzTjrc+umFiVAp7UDcPUndWZRCKYwIpG8PDu194X
+         XUOTHE2KBFtjton5mOxwvbRwugVeEJfiAhsIaS2jpb1YVD9thcn7beGfaFIWYqeo+R1p
+         jry3VpQ9z+e9Exp4rGnrcgVGfI4Gt+PP54Pksz38ylZGAKwXgzF1u8YrX8dfKecsy5lL
+         LtuiusOw74FPa5HclCRgFEKQY+vvA3R0JQtdGTqROX0oGLyj2SQlc2v6vr20gGsjOtC9
+         5ULg==
+X-Gm-Message-State: AOAM533GWDIuBh2uZnUS4u3wQEOR/y+/8gjL15Wd20tz/T2L8iJk8fXU
+        0tUrzsK1x91zp7ytpR9/3CblxWdveQZJUhBdMcNCOQ==
+X-Google-Smtp-Source: ABdhPJyF/shA5tj4grc4XQr75ReQxmjvKFU7KCfjLGOgJoX6KU6XDNl7YbXOo50MZUzV4QTwzxU2ZFZpGDn7CFu9Li8=
+X-Received: by 2002:a4a:96e1:: with SMTP id t30mr6124297ooi.16.1630041615566;
+ Thu, 26 Aug 2021 22:20:15 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 26 Aug 2021 22:20:15 -0700
 MIME-Version: 1.0
-References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com>
- <20210816060359.1442450-8-ruansy.fnst@fujitsu.com> <CAPcyv4jbi=p=SjFYZcHnEAu+KY821pW_k_yA5u6hya4jEfrTUg@mail.gmail.com>
- <c7e68dc8-5a43-f727-c262-58dcf244c711@fujitsu.com> <CAPcyv4jM86gy-T5EEZf6M2m44v4MiGqYDhxisX59M5QJii6DVg@mail.gmail.com>
- <32fa5333-b14e-2060-d659-d77f6c75ff16@fujitsu.com>
-In-Reply-To: <32fa5333-b14e-2060-d659-d77f6c75ff16@fujitsu.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 26 Aug 2021 22:04:16 -0700
-Message-ID: <CAPcyv4h801eipbvOpzSnw_GnUcuSxcm6eUfJdoHNW2ZmZgzW=Q@mail.gmail.com>
-Subject: Re: [PATCH v7 7/8] fsdax: Introduce dax_iomap_ops for end of reflink
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        david <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
+In-Reply-To: <20210825234233.1721068-4-bjorn.andersson@linaro.org>
+References: <20210825234233.1721068-1-bjorn.andersson@linaro.org> <20210825234233.1721068-4-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 26 Aug 2021 22:20:15 -0700
+Message-ID: <CAE-0n52YaQXQ4-=bR5ffMHOMp7CyFnCS-u9a2pddvaRUQhLrog@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] drm/msm/dp: Support up to 3 DP controllers
+To:     Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 8:30 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrot=
-e:
+Quoting Bjorn Andersson (2021-08-25 16:42:31)
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 2c7de43f655a..4a6132c18e57 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -78,6 +78,8 @@ struct dp_display_private {
+>         char *name;
+>         int irq;
 >
+> +       int id;
+> +
+>         /* state variables */
+>         bool core_initialized;
+>         bool hpd_irq_on;
+> @@ -115,8 +117,19 @@ struct dp_display_private {
+>         struct dp_audio *audio;
+>  };
 >
->
-> On 2021/8/20 23:18, Dan Williams wrote:
-> > On Thu, Aug 19, 2021 at 11:13 PM ruansy.fnst <ruansy.fnst@fujitsu.com> =
-wrote:
-> >>
-> >>
-> >>
-> >> On 2021/8/20 =E4=B8=8A=E5=8D=8811:01, Dan Williams wrote:
-> >>> On Sun, Aug 15, 2021 at 11:05 PM Shiyang Ruan <ruansy.fnst@fujitsu.co=
-m> wrote:
-> >>>>
-> >>>> After writing data, reflink requires end operations to remap those n=
-ew
-> >>>> allocated extents.  The current ->iomap_end() ignores the error code
-> >>>> returned from ->actor(), so we introduce this dax_iomap_ops and chan=
-ge
-> >>>> the dax_iomap_*() interfaces to do this job.
-> >>>>
-> >>>> - the dax_iomap_ops contains the original struct iomap_ops and fsdax
-> >>>>       specific ->actor_end(), which is for the end operations of ref=
-link
-> >>>> - also introduce dax specific zero_range, truncate_page
-> >>>> - create new dax_iomap_ops for ext2 and ext4
-> >>>>
-> >>>> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> >>>> ---
-> >>>>    fs/dax.c               | 68 +++++++++++++++++++++++++++++++++++++=
------
-> >>>>    fs/ext2/ext2.h         |  3 ++
-> >>>>    fs/ext2/file.c         |  6 ++--
-> >>>>    fs/ext2/inode.c        | 11 +++++--
-> >>>>    fs/ext4/ext4.h         |  3 ++
-> >>>>    fs/ext4/file.c         |  6 ++--
-> >>>>    fs/ext4/inode.c        | 13 ++++++--
-> >>>>    fs/iomap/buffered-io.c |  3 +-
-> >>>>    fs/xfs/xfs_bmap_util.c |  3 +-
-> >>>>    fs/xfs/xfs_file.c      |  8 ++---
-> >>>>    fs/xfs/xfs_iomap.c     | 36 +++++++++++++++++++++-
-> >>>>    fs/xfs/xfs_iomap.h     | 33 ++++++++++++++++++++
-> >>>>    fs/xfs/xfs_iops.c      |  7 ++---
-> >>>>    fs/xfs/xfs_reflink.c   |  3 +-
-> >>>>    include/linux/dax.h    | 21 ++++++++++---
-> >>>>    include/linux/iomap.h  |  1 +
-> >>>>    16 files changed, 189 insertions(+), 36 deletions(-)
-> >>>>
-> >>>> diff --git a/fs/dax.c b/fs/dax.c
-> >>>> index 74dd918cff1f..0e0536765a7e 100644
-> >>>> --- a/fs/dax.c
-> >>>> +++ b/fs/dax.c
-> >>>> @@ -1348,11 +1348,30 @@ static loff_t dax_iomap_iter(const struct io=
-map_iter *iomi,
-> >>>>           return done ? done : ret;
-> >>>>    }
-> >>>>
-> >>>> +static inline int
-> >>>> +__dax_iomap_iter(struct iomap_iter *iter, const struct dax_iomap_op=
-s *ops)
-> >>>> +{
-> >>>> +       int ret;
-> >>>> +
-> >>>> +       /*
-> >>>> +        * Call dax_iomap_ops->actor_end() before iomap_ops->iomap_e=
-nd() in
-> >>>> +        * each iteration.
-> >>>> +        */
-> >>>> +       if (iter->iomap.length && ops->actor_end) {
-> >>>> +               ret =3D ops->actor_end(iter->inode, iter->pos, iter-=
->len,
-> >>>> +                                    iter->processed);
-> >>>> +               if (ret < 0)
-> >>>> +                       return ret;
-> >>>> +       }
-> >>>> +
-> >>>> +       return iomap_iter(iter, &ops->iomap_ops);
-> >>>
-> >>> This reorganization looks needlessly noisy. Why not require the
-> >>> iomap_end operation to perform the actor_end work. I.e. why can't
-> >>> xfs_dax_write_iomap_actor_end() just be the passed in iomap_end? I am
-> >>> not seeing where the ->iomap_end() result is ignored?
-> >>>
-> >>
-> >> The V6 patch[1] was did in this way.
-> >> [1]https://lore.kernel.org/linux-xfs/20210526005159.GF202144@locust/T/=
-#m79a66a928da2d089e2458c1a97c0516dbfde2f7f
-> >>
-> >> But Darrick reminded me that ->iomap_end() will always take zero or
-> >> positive 'written' because iomap_apply() handles this argument.
-> >>
-> >> ```
-> >>          if (ops->iomap_end) {
-> >>                  ret =3D ops->iomap_end(inode, pos, length,
-> >>                                       written > 0 ? written : 0,
-> >>                                       flags, &iomap);
-> >>          }
-> >> ```
-> >>
-> >> So, we cannot get actual return code from CoW in ->actor(), and as a
-> >> result, we cannot handle the xfs end_cow correctly in ->iomap_end().
-> >> That's where the result of CoW was ignored.
-> >
-> > Ah, thank you for the explanation.
-> >
-> > However, this still seems like too much code thrash just to get back
-> > to the original value of iter->processed. I notice you are talking
-> > about iomap_apply(), but that routine is now gone in Darrick's latest
-> > iomap-for-next branch. Instead iomap_iter() does this:
-> >
-> >          if (iter->iomap.length && ops->iomap_end) {
-> >                  ret =3D ops->iomap_end(iter->inode, iter->pos, iomap_l=
-ength(iter),
-> >                                  iter->processed > 0 ? iter->processed =
-: 0,
->
-> As you can see, here is the same logic as the old iomap_apply(): the
-> negative iter->processed won't be passed into ->iomap_end().
->
-> >                                  iter->flags, &iter->iomap);
-> >                  if (ret < 0 && !iter->processed)
-> >                          return ret;
-> >          }
-> >
-> >
-> > I notice that the @iomap argument to ->iomap_end() is reliably coming
-> > from @iter. So you could do the following in your iomap_end()
-> > callback:
-> >
-> >          struct iomap_iter *iter =3D container_of(iomap, typeof(*iter),=
- iomap);
-> >          struct xfs_inode *ip =3D XFS_I(inode);
-> >          ssize_t written =3D iter->processed;
->
-> The written will be 0 or positive.  The original error code is ingnored.
+> +
+> +struct msm_dp_config {
+> +       phys_addr_t io_start[3];
 
-Correct, but you can use container_of() to get back to the iter and
-consider the raw untranslated value of iter->processed. As Christoph
-mentioned this needs a comment explaining the layering violation, but
-that's a cleaner change than the dax_iomap_ops approach.
+Can this be made into another struct, like msm_dp_desc, that also
+indicates what type of DP connector it is, i.e. eDP vs DP? That would
+help me understand in modetest and /sys/class/drm what sort of connector
+is probing. dp_drm_connector_init() would need to pass the type of
+connector appropriately. Right now, eDP connectors still show up as DP
+instead of eDP in sysfs.
+
+> +       size_t num_dp;
+> +};
+> +
+> +static const struct msm_dp_config sc7180_dp_cfg = {
+> +       .io_start = { 0x0ae90000 },
+> +       .num_dp = 1,
+> +};
+> +
+>  static const struct of_device_id dp_dt_match[] = {
+> -       {.compatible = "qcom,sc7180-dp"},
+> +       { .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
+>         {}
+>  };
+>
