@@ -2,161 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C374D3F9CBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73613F9CC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbhH0QsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbhH0QsS (ORCPT
+        id S232578AbhH0Que (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:50:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36247 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229562AbhH0Qud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:48:18 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1782C0613CF;
-        Fri, 27 Aug 2021 09:47:29 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id x16so2638708pll.2;
-        Fri, 27 Aug 2021 09:47:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AjSSclyFHkSUvuli5hojcHuEUsW5eq3tyDoeI7pev60=;
-        b=ZtvNXE+pxrodw94Sa8YOhfAEnXSUQKz/3fqCCc2ZHGzF18IwbmZ3v8YACu9oruXIWR
-         eKlz7tQ/GNQEISZuKdNa7t8bB4PHR7o3PM1gdQFHOKPKIyqrzro6b5G+3SJ4KHCUf9d3
-         9TRqgTMVZAxY0BdTTX2ZIQ1xZ0/QFk2jHjUWGwJTpcAt1luLIfDHa68MEIxGKIJ7ohlN
-         0Twy5YnUBfZtI8nU+stPniN4fBphWJ/67N56nuuV4wxSaUHN/seJC82aWqgo4k3icjeD
-         ykL6rIqU36ZzUg51zGFX6F+zKevDQylnUZ8sprPxyIGT1usP7fzpBqm8U5f71brC8W0h
-         8Ssw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AjSSclyFHkSUvuli5hojcHuEUsW5eq3tyDoeI7pev60=;
-        b=BFGyZoJcLvPjkc6PJuJPrgTKqDjhZkT5ka8HSSZlwvWgStRY6xH5O2djkfmd6vBeoK
-         KkQZKsLIrhM3tGSRTRj+926pRN7oC3zbbnbnHa5TlB6U9LltNfIzjkF+rQGRc7kiczfW
-         y6gaDC3+P2x/NJOQEYALM+sQktc+ZO7Qc9xndwWPek7Rg6bWedhkewB9ALlfKoyNf2yi
-         WmDhCW3GZlxsWEcseTRFuACxKVbL3iYRn77X612/8sJh8r5JE8GUkvmRviPCRN2nUyoS
-         ZDQoc31mQ+3kWuY8vWp8ABpGXI8RUdBHO4Q3LAmB5BtngxP7YPQofPpzbCGHEmkXdwQn
-         BE0w==
-X-Gm-Message-State: AOAM531bbBCWAoKrmD3sX3a6oC+Iu2mHcaoqnltC6SW79vhIarYK8c/B
-        RWfr/W4uWBcUKs5QApg+qWw=
-X-Google-Smtp-Source: ABdhPJw8iOhlM6b6XkGy2ASQBwmO0pxaVZ+ejWFRApKMEMAe+iW21KjQrWrjudIWTeVDdzErW7V2+Q==
-X-Received: by 2002:a17:902:a9c7:b029:12b:349:b318 with SMTP id b7-20020a170902a9c7b029012b0349b318mr9498362plr.13.1630082849260;
-        Fri, 27 Aug 2021 09:47:29 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id s16sm6494473pfu.108.2021.08.27.09.47.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 09:47:28 -0700 (PDT)
-Subject: Re: [PATCH NET-NEXT] ipv6: skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Vasily Averin <vvs@virtuozzo.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
-References: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
- <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com>
- <CALMXkpZkW+ULMMFgeY=cag1F0=891F-v9NEVcdn7Tyd-VUWGYA@mail.gmail.com>
- <1c12b056-79d2-126a-3f78-64629f072345@gmail.com>
- <2d8a102a-d641-c6c1-b417-7a35efa4e5da@gmail.com>
- <bd90616e-8e86-016b-0979-c4f4167b8bc2@gmail.com>
- <7a6588ad-00fe-cfb9-afcd-d8b31be229cd@virtuozzo.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <478ae732-161d-c692-b60a-6df11c37ac2c@gmail.com>
-Date:   Fri, 27 Aug 2021 09:47:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 27 Aug 2021 12:50:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630082983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qzk7xHxXOvrpJjyOc9WnxUmMVaQgghawUTASMZZwVjA=;
+        b=KPmuECRTfbCTbbodPP3ntTmszzPF1BPKqMbtwIRi5jRcJSUE4gjIRAYe1hAchYckjIdlCQ
+        YiOcQRmDlCs7EuvEHyhW4+V8THmORlX/PipO2+ZH1+/T6BqR0wg0JFgKFNat9Ed6YdgAlB
+        LgH9xl5RD3mkub0ssa5v4djC1tnV4gI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-112-3bkppAoeN961tOw7yiok3A-1; Fri, 27 Aug 2021 12:49:40 -0400
+X-MC-Unique: 3bkppAoeN961tOw7yiok3A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F093190A7A3;
+        Fri, 27 Aug 2021 16:49:38 +0000 (UTC)
+Received: from max.com (unknown [10.40.194.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 285BF60C81;
+        Fri, 27 Aug 2021 16:49:27 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>
+Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        kvm-ppc@vger.kernel.org
+Subject: [PATCH v7 00/19] gfs2: Fix mmap + page fault deadlocks
+Date:   Fri, 27 Aug 2021 18:49:07 +0200
+Message-Id: <20210827164926.1726765-1-agruenba@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <7a6588ad-00fe-cfb9-afcd-d8b31be229cd@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
+
+here's another update on top of v5.14-rc7.  Changes:
+
+ * Some of the patch descriptions have been improved.
+
+ * Patch "gfs2: Eliminate ip->i_gh" has been moved further to the front.
+
+At this point, I'm not aware of anything that still needs fixing, 
 
 
-On 8/27/21 8:23 AM, Vasily Averin wrote:
+The first two patches are independent of the core of this patch queue
+and I've asked the respective maintainers to have a look, but I've not
+heard back from them.  The first patch should just go into Al's tree;
+it's a relatively straight-forward fix.  The second patch really needs
+to be looked at; it might break things:
 
-> I asked Alexey Kuznetsov to look at this problem. Below is his answer:
-> "I think the current scheme is obsolete. It was created
-> when we had only two kinds of skb accounting (rmem & wmem)
-> and with more kinds of accounting it just does not work.
-> Even there we had ignored problems with adjusting accounting.
-> 
-> Logically the best solution would be replacing ->destructor,
-> set_owner* etc with skb_ops. Something like:
-> 
-> struct skb_ops
-> {
->         void init(struct sk_buff * skb, struct skb_ops * ops, struct
-> sock * owner);
->         void fini(struct sk_buff * skb);
->         void update(struct sk_buff * skb, int adjust);
->         void inherit(struct sk_buff * skb2, struct sk_buff * skb);
-> };
-> 
-> init - is replacement for skb_set_owner_r|w
-> fini - is replacement for skb_orphan
-> update - is new operation to be used in places where skb->truesize changes,
->        instead of awful constructions like:
-> 
->        if (!skb->sk || skb->destructor == sock_edemux)
->             skb->truesize += size - osize;
-> 
->        Now it will look like:
-> 
->        if (skb->ops)
->             skb->ops->update(skb, size - osize);
-> 
-> inherit - is replacement for also awful constructs like:
-> 
->       if (skb->sk)
->             skb_set_owner_w(skb2, skb->sk);
-> 
->       Now it will be:
-> 
->       if (skb->ops)
->             skb->ops->inherit(skb2, skb);
-> 
-> The implementation looks mostly obvious.
-> Some troubles can be only with new functionality:
-> update of accounting was never done before.
-> 
-> 
-> More efficient, functionally equivalent, but uglier and less flexible
-> alternative would be removal of ->destructor, replaced with
-> a small numeric indicator of ownership:
-> 
-> enum
-> {
->         SKB_OWNER_NONE,  /* aka destructor == NULL */
->         SKB_OWNER_WMEM,  /* aka destructor == sk_wfree */
->         SKB_OWNER_RMEM,  /* aka destructor == sk_rfree */
->         SKB_OWNER_SK,    /* aka destructor == sk_edemux */
->         SKB_OWNER_TCP,   /* aka destructor == tcp_wfree */
-> }
-> 
-> And the same init,fini,inherit,update become functions
-> w/o any inidirect calls. Not sure it is really more efficient though."
-> 
+  iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+  powerpc/kvm: Fix kvm_use_magic_page
 
-Well, this does not look as stable material, and would add a bunch
-of indirect calls which are quite expensive these days (CONFIG_RETPOLINE=y)
 
-I suggest we work on a fix, using existing infra, then eventually later
-try to refactor if this is really bringing improvements.
+Al and Linus seem to have a disagreement about the error reporting
+semantics that functions fault_in_{readable,writeable} and
+fault_in_iov_iter_{readable,writeable} should have.  I've implemented
+Linus's suggestion of returning the number of bytes not faulted in and I
+think that being able to tell if "nothing", "something" or "everything"
+could be faulted in does help, but I'll live with anything that allows
+us to make progress.
 
-A fix could simply be a revert of 0c9f227bee119 ("ipv6: use skb_expand_head in ip6_xmit")
-since only IPv6 has the problem (because of arbitrary headers size)
 
+The iomap changes should ideally be reviewed by Christoph; I've not
+heard from him about those.
+
+
+Thanks,
+Andreas
+
+Andreas Gruenbacher (16):
+  iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+  powerpc/kvm: Fix kvm_use_magic_page
+  gup: Turn fault_in_pages_{readable,writeable} into
+    fault_in_{readable,writeable}
+  iov_iter: Turn iov_iter_fault_in_readable into
+    fault_in_iov_iter_readable
+  iov_iter: Introduce fault_in_iov_iter_writeable
+  gfs2: Add wrapper for iomap_file_buffered_write
+  gfs2: Clean up function may_grant
+  gfs2: Move the inode glock locking to gfs2_file_buffered_write
+  gfs2: Eliminate ip->i_gh
+  gfs2: Fix mmap + page fault deadlocks for buffered I/O
+  iomap: Fix iomap_dio_rw return value for user copies
+  iomap: Support partial direct I/O on user copy failures
+  iomap: Add done_before argument to iomap_dio_rw
+  gup: Introduce FOLL_NOFAULT flag to disable page faults
+  iov_iter: Introduce nofault flag to disable page faults
+  gfs2: Fix mmap + page fault deadlocks for direct I/O
+
+Bob Peterson (3):
+  gfs2: Eliminate vestigial HIF_FIRST
+  gfs2: Remove redundant check from gfs2_glock_dq
+  gfs2: Introduce flag for glock holder auto-demotion
+
+ arch/powerpc/kernel/kvm.c           |   3 +-
+ arch/powerpc/kernel/signal_32.c     |   4 +-
+ arch/powerpc/kernel/signal_64.c     |   2 +-
+ arch/x86/kernel/fpu/signal.c        |   7 +-
+ drivers/gpu/drm/armada/armada_gem.c |   7 +-
+ fs/btrfs/file.c                     |   7 +-
+ fs/btrfs/ioctl.c                    |   5 +-
+ fs/ext4/file.c                      |   5 +-
+ fs/f2fs/file.c                      |   2 +-
+ fs/fuse/file.c                      |   2 +-
+ fs/gfs2/bmap.c                      |  60 +----
+ fs/gfs2/file.c                      | 245 ++++++++++++++++++--
+ fs/gfs2/glock.c                     | 340 +++++++++++++++++++++-------
+ fs/gfs2/glock.h                     |  20 ++
+ fs/gfs2/incore.h                    |   5 +-
+ fs/iomap/buffered-io.c              |   2 +-
+ fs/iomap/direct-io.c                |  21 +-
+ fs/ntfs/file.c                      |   2 +-
+ fs/xfs/xfs_file.c                   |   6 +-
+ fs/zonefs/super.c                   |   4 +-
+ include/linux/iomap.h               |  11 +-
+ include/linux/mm.h                  |   3 +-
+ include/linux/pagemap.h             |  58 +----
+ include/linux/uio.h                 |   4 +-
+ lib/iov_iter.c                      | 103 +++++++--
+ mm/filemap.c                        |   4 +-
+ mm/gup.c                            | 139 +++++++++++-
+ 27 files changed, 785 insertions(+), 286 deletions(-)
+
+-- 
+2.26.3
 
