@@ -2,125 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32A13F9FB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EB33F9FE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbhH0TQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 15:16:09 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:63904 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhH0TQI (ORCPT
+        id S231488AbhH0TTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 15:19:36 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:42758 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231262AbhH0TTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 15:16:08 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id f7d4fb37;
-        Fri, 27 Aug 2021 21:15:11 +0200 (CEST)
-Date:   Fri, 27 Aug 2021 21:15:11 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     devicetree@vger.kernel.org, alyssa@rosenzweig.io,
-        kettenis@openbsd.org, tglx@linutronix.de, maz@kernel.org,
-        robh+dt@kernel.org, marcan@marcan.st, bhelgaas@google.com,
-        nsaenz@kernel.org, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
-        daire.mcnamara@microchip.com, nsaenzjulienne@suse.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
-In-Reply-To: <20210827171534.62380-2-mark.kettenis@xs4all.nl> (message from
-        Mark Kettenis on Fri, 27 Aug 2021 19:15:26 +0200)
-Subject: Re: [PATCH v4 1/4] dt-bindings: interrupt-controller: Convert MSI controller to json-schema
-References: <20210827171534.62380-1-mark.kettenis@xs4all.nl> <20210827171534.62380-2-mark.kettenis@xs4all.nl>
-Message-ID: <561420d562d3e421@bloch.sibelius.xs4all.nl>
+        Fri, 27 Aug 2021 15:19:19 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJhKn-00GZbg-UX; Fri, 27 Aug 2021 19:16:13 +0000
+Date:   Fri, 27 Aug 2021 19:16:13 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v7 04/19] iov_iter: Turn iov_iter_fault_in_readable into
+ fault_in_iov_iter_readable
+Message-ID: <YSk5/ebFimHTmIYn@zeniv-ca.linux.org.uk>
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+ <20210827164926.1726765-5-agruenba@redhat.com>
+ <YSk0pAWx7xO/39A6@zeniv-ca.linux.org.uk>
+ <CAHk-=wj8Q6PtnQqamACJU1TWpT4+nr2+YGhVwMTuU=-NJEm5Rg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj8Q6PtnQqamACJU1TWpT4+nr2+YGhVwMTuU=-NJEm5Rg@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mark Kettenis <mark.kettenis@xs4all.nl>
-> Date: Fri, 27 Aug 2021 19:15:26 +0200
+On Fri, Aug 27, 2021 at 11:57:19AM -0700, Linus Torvalds wrote:
+> On Fri, Aug 27, 2021 at 11:53 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > I really disagree with these calling conventions.  "Number not faulted in"
+> > is bloody useless
 > 
-> From: Mark Kettenis <kettenis@openbsd.org>
-> 
-> Split the MSI controller bindings from the MSI binding document
-> into DT schema format using json-schema.
-> 
-> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> ---
->  .../interrupt-controller/msi-controller.yaml  | 34 +++++++++++++++++++
->  .../bindings/pci/brcm,stb-pcie.yaml           |  1 +
->  .../bindings/pci/microchip,pcie-host.yaml     |  1 +
->  3 files changed, 36 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/msi-controller.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/msi-controller.yaml b/Documentation/devicetree/bindings/interrupt-controller/msi-controller.yaml
-> new file mode 100644
-> index 000000000000..5ed6cd46e2e0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/msi-controller.yaml
-> @@ -0,0 +1,34 @@
-> +# SPDX-License-Identifier: BSD-2-Clause
+> It's what we already have for copy_to/from_user(), so it's actually
+> consistent with that.
 
-Noticed that checkpatch complains that the preferred license for new
-binding schemas is (GPL-2.0-only OR BSD-2-Clause) so I'll fix that in
-the next version.
+After copy_to/copy_from you've got the data copied and it's not going
+anywhere.  After fault-in you still have to copy, and it still can give
+you less data than fault-in had succeeded for.  So you must handle short
+copies separately, no matter how much you've got from fault-in.
 
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interrupt-controller/msi-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MSI controller
-> +
-> +maintainers:
-> +  - Marc Zyngier <marc.zyngier@arm.com>
-> +
-> +description: |
-> +  An MSI controller signals interrupts to a CPU when a write is made
-> +  to an MMIO address by some master. An MSI controller may feature a
-> +  number of doorbells.
-> +
-> +properties:
-> +  "#msi-cells":
-> +    description: |
-> +      The number of cells in an msi-specifier, required if not zero.
-> +
-> +      Typically this will encode information related to sideband data,
-> +      and will not encode doorbells or payloads as these can be
-> +      configured dynamically.
-> +
-> +      The meaning of the msi-specifier is defined by the device tree
-> +      binding of the specific MSI controller.
-> +
-> +  msi-controller:
-> +    description:
-> +      Identifies the node as an MSI controller.
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +additionalProperties: true
-> diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> index b9589a0daa5c..5c67976a8dc2 100644
-> --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> @@ -88,6 +88,7 @@ required:
->  
->  allOf:
->    - $ref: /schemas/pci/pci-bus.yaml#
-> +  - $ref: ../interrupt-controller/msi-controller.yaml#
->    - if:
->        properties:
->          compatible:
-> diff --git a/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-> index fb95c276a986..684d9d036f48 100644
-> --- a/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-> +++ b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-> @@ -11,6 +11,7 @@ maintainers:
->  
->  allOf:
->    - $ref: /schemas/pci/pci-bus.yaml#
-> +  - $ref: ../interrupt-controller/msi-controller.yaml#
->  
->  properties:
->    compatible:
-> -- 
-> 2.32.0
+> And it avoids changing all the existing tests where people really
+> cared only about the "everything ok" case.
+
+The thing is, the checks tend to be wrong.  We can't rely upon the full
+fault-in to expect the full copy-in/copy-out, so the checks downstream
+are impossible to avoid anyway.  And fault-in failure is always a slow
+path, so we are not saving time here.
+
+And for the memory poisoining we end up aborting a copy potentially
+a lot earlier than we should.
+
+> Andreas' first patch did that changed version, and was ugly as hell.
 > 
-> 
+> But if you have a version that avoids the ugliness...
+
+I'll need to dig my notes out...
