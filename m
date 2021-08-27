@@ -2,151 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AD43F9364
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 06:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8272D3F9361
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 06:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233903AbhH0EDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 00:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        id S233858AbhH0EDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 00:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234024AbhH0EDm (ORCPT
+        with ESMTP id S232793AbhH0EDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 00:03:42 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039F1C061796
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 21:02:54 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id z5so10078619ybj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 21:02:53 -0700 (PDT)
+        Fri, 27 Aug 2021 00:03:30 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5355C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 21:02:42 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id x4so4952410pgh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 21:02:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5EX0Ib5T66NZEZQUvNen4rx8W6LbQAQc16oQp/aoMH8=;
-        b=q2wz4tOPNUK/CXTrqsq327gnvpzMOo2L//zvFOMKtCAvsMZWguv+T8jRd35dUN7jm0
-         3h7Vef3WRREfLGFp4HP9fb4AzB8oJNmS7Przcq/dfU5QgNU76mFG5ggqILgq63LH3fIw
-         FJJZgu1FH3UTKcBOi0588DRyPPZ3DFo0mhdcqwy0wOutq9ZPY9LUBr4X/TAlMKlJ/iu1
-         /EYSG7UnjZ+o2iHGPPeLeBrd0XmE5jHZICZcNESLQXv2idlHQxE2k4K4uZeRzUzfRprE
-         orRrgVI+cydeAu181BPJa6GCZCIJ6URe6iQpA7AtfhvF2LI3x9HLALTjlR3cDed15lNV
-         2HuQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hLrtFA0n4d6s/6H9+lblwygH3Pl36UsMgSrW5jepzk8=;
+        b=ELk12qRZJfSnGoPjx3E4eqsXlFaa8DfCcuSNNopE/v18D8zKZYXJSdg4+eW/IxUy5v
+         qKJUMwKf8hN3JrrK0ZB3Wm1PWFRf7LePF0v2ZIg5YaCpWea7IHCxth0Nf4UmpaAnThxm
+         re41ZAqsWW6a/EuNcrih+kJmFCCGtE4xesJng9QfWkGv65owPaCwoEu7rAYm9LIBAYjr
+         +VUkkjdawbTbXoPbmOX6DfgpzueZTVeT1Ot+2xFdZZFCEgheO/Frpj1KhlFJUyfKbvEM
+         Q91+7dFSQxFCZyrAh0CaSshcoatDdywvL7cPoI1wpoTw5NKzvA5+lZvhusqQLsyKE+7y
+         HRYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5EX0Ib5T66NZEZQUvNen4rx8W6LbQAQc16oQp/aoMH8=;
-        b=kHYjs1i5++VfJYYYcGlugNatQnKMuVzFWMmvXQFT/R7TKB1BEB2gMjx6nduzgJiLwj
-         8wwBj7877PnZMsI50mYth7JfHVMyoLrQVBPqiONtlt/k0f6ehYE2YysADdALwKyf7Kcd
-         nqc14ryyqqptmcGURW7XRCy44to/ZEzLqUITACzOO5w62U3H+mRWZ9Xd2PXz8qHI92Rl
-         dNEbuJWFEM2baTLx9jN94lZgmIUsvKh7u/ezY8DoRv1LBHgul3pu9YgEH72/OSw25yX2
-         KyvvSiTb7nQ82OPYTDKeAaqSQH4LGBmlgB4GVXoY9VTQJORHkG+ja8l5veMwqzSHIFDk
-         0hjg==
-X-Gm-Message-State: AOAM531aPN/FO0LiZjm08Dg+59U13On1oLnITL3EH7nc88Lja2+8+mnp
-        dU2h1gWDCfFrpLn4a3zPBvdMvRs54J5flLYnPmpArw==
-X-Google-Smtp-Source: ABdhPJyM0ggNxJXeHokAmTYi2nyU/dC2IeiojBgwYL1tAXquHUrAImkrDV6i+MVdfHqIjbkB7k+XWvdvv8LmFN6fZEU=
-X-Received: by 2002:a25:d213:: with SMTP id j19mr2860896ybg.20.1630036972958;
- Thu, 26 Aug 2021 21:02:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hLrtFA0n4d6s/6H9+lblwygH3Pl36UsMgSrW5jepzk8=;
+        b=mjVVrRbRGM+YGAWWQ+xUxy/VYxmrxYUYTT45WTT0QEI8OZ5coSls0gCpjaSEAKzi90
+         xWHVBzSCO+o65nX1joVBP0hCqcxdRquOKIK14iu1Io5gkXcuUZ8Z0laiTVAonDr9iKgn
+         47ML8AN+3hFQM7Ca4lc6UsoWFc4crwDj0x7qojBG7Rj20L+6Ori3X4iLfqvao/rgKQni
+         qhJOMwbmQ1S3slb2clq4IMdSgj02p8RW5vDDdztFCszPaAPZDR1+NBzogEApYj+y2K1B
+         FNqR2iXfcfFgcSvKeQ03MCBjV2WAB4Hf2ejLPTSdZX/x+gL90lXmxlEkzsmO4wzezAva
+         f/QQ==
+X-Gm-Message-State: AOAM530JeTkHCDRyIxeGaRmfzF/YoTuvJsIdwPflaxLqJeN2J8cS9U1i
+        G3ZB2J0tsET1l/aB7ibDmmtdLA==
+X-Google-Smtp-Source: ABdhPJyl2DoV12OpHAr1SMImzJ31VQ0pw2+MjmrPdJKeTlAv2fMmEDksaP2mCchCf+ecrWh0y4dwog==
+X-Received: by 2002:a65:6183:: with SMTP id c3mr6183876pgv.73.1630036962333;
+        Thu, 26 Aug 2021 21:02:42 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id h127sm4362150pfe.191.2021.08.26.21.02.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 21:02:41 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 09:32:39 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v9 5/8] soc/tegra: pmc: Implement get_performance_state()
+ callback
+Message-ID: <20210827040239.roal5jpndamzotle@vireshk-i7>
+References: <20210827013415.24027-1-digetx@gmail.com>
+ <20210827013415.24027-6-digetx@gmail.com>
+ <20210827030557.aymjkky7athjxpow@vireshk-i7>
+ <9c2287ca-4c51-d782-a0a5-4b1227c2e9db@gmail.com>
+ <7aca6da3-89a7-a4a6-c720-8be4a105a696@gmail.com>
 MIME-Version: 1.0
-References: <20210826074526.825517-1-saravanak@google.com> <20210826074526.825517-2-saravanak@google.com>
- <YSeTdb6DbHbBYabN@lunn.ch> <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
- <YSf/Mps9E77/6kZX@lunn.ch> <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
- <YSg+dRPSX9/ph6tb@lunn.ch>
-In-Reply-To: <YSg+dRPSX9/ph6tb@lunn.ch>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 26 Aug 2021 21:02:16 -0700
-Message-ID: <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7aca6da3-89a7-a4a6-c720-8be4a105a696@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 6:23 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > Doesn't add much to the discussion. In the example I gave, the driver
-> > already does synchronous probing. If the device can't probe
-> > successfully because a supplier isn't ready, it doesn't matter if it's
-> > a synchronous probe. The probe would still be deferred and we'll hit
-> > the same issue. Even in the situation the commit [5] describes, if
-> > parallelized probing is done and the PHY depended on something (say a
-> > clock), you'd still end up not probing the PHY even if the driver is
-> > present and the generic PHY would end up force probing it.
->
->
-> genphy is meant to be used when there is no other driver available.
-> It is a best effort, better than nothing, might work. And quite a few
-> boards rely on it. However, it should not be used when there is a
-> specific driver.
+On 27-08-21, 06:47, Dmitry Osipenko wrote:
+> Actually, it doesn't work.
+> 
+> The devm_tegra_core_dev_init_opp_table() needs to set clk to support older device-tree and now OPP table already has clk being set.
+> 
+> WARNING: CPU: 2 PID: 92 at drivers/opp/core.c:2146 dev_pm_opp_set_clkname+0x97/0xb8
+> Modules linked in:
+> CPU: 2 PID: 92 Comm: kworker/u8:1 Tainted: G        W         5.14.0-rc7-next-20210826-00181-g6389463cbb0a #9318
+> Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+> Workqueue: events_unbound deferred_probe_work_func
+> [<c010cc91>] (unwind_backtrace) from [<c0108d35>] (show_stack+0x11/0x14)
+> [<c0108d35>] (show_stack) from [<c0a6c1bd>] (dump_stack_lvl+0x2b/0x34)
+> [<c0a6c1bd>] (dump_stack_lvl) from [<c011fc47>] (__warn+0xbb/0x100)
+> [<c011fc47>] (__warn) from [<c0a696e3>] (warn_slowpath_fmt+0x4b/0x80)
+> [<c0a696e3>] (warn_slowpath_fmt) from [<c07407b3>] (dev_pm_opp_set_clkname+0x97/0xb8)
+> [<c07407b3>] (dev_pm_opp_set_clkname) from [<c07407e3>] (devm_pm_opp_set_clkname+0xf/0x64)
+> [<c07407e3>] (devm_pm_opp_set_clkname) from [<c050735b>] (devm_tegra_core_dev_init_opp_table+0x23/0x144)
 
-Agreed, that's what we are trying to ensure.
+Why are you calling this anymore ?
 
-> So if the PHY device has been probed, and -EPROBE_DEFER was returned,
-> we also need to return -EPROBE_DEFER here when deciding if genphy
-> should be used. It should then all unwind and try again later.
-
-Yes, I think dsa_register_switch() returning -EPROBE_DEFER if the PHYs
-returned -EPROBE_DEFER might be okay (I think we should do it), but
-that doesn't solve the problem for this driver.
-
-fw_devlink=on/device links short circuits the probe() call of a
-consumer (in this case the PHY) and returns -EPROBE_DEFER if the
-supplier's (in this case switch) probe hasn't finished without an
-error. fw_devlink/device links effectively does the probe in graph
-topological order and there's a ton of good reasons to do it that way
--- what's why fw_devlink=on was implemented.
-
-In this specific case though, since the PHY depends on the parent
-device, if we fail the parent's probe realtek_smi_probe() because the
-PHYs failed to probe, we'll get into a catch-22/chicken-n-egg
-situation and the switch/PHYs will never probe.
-
-I think a clean way to fix this at the driver level is to do what I
-said in [6]. Copy pasting it here and expanding it a bit:
-
-1. The IRQ registration and mdio bus registration should get moved to
-realtek_smi_probe() which probes "realtek,rtl8366rb". So
-realtek_smi_probe() succeeding doesn't depend on its child devices
-probing successfully (which makes sense for any parent device).
-2. realtek_smi_probe() should also create/register a
-component-master/aggregate device that's "made up of"
-realtek,rtl8366rb and all the PHYs. So the component-master will wait
-for all of them to finish probing before it's initialized.
-3. PHYs will probe successfully now because realtek,rtl8366rb probe()
-which is the supplier's probe has finished probing without problems.
-4. The component device's init (the .bind op) would call
-dsa_register_switch() which kinda makes sense because the rtl8366rb
-and all the PHYs combined together is what makes up the logical DSA
-switch. The dsa_register_switch() will succeed and will be using the
-right/specific PHY driver.
-
-The same applies for any switch that has the PHYs as it's child device
-AND (this is the key part) the PHYs depend on the switch as a supplier
-(remember, if we didn't have the interrupt dependency, this would not
-be an issue).
-
-> I don't know the device core, but it looks like dev->can_match tells
-> us what we need to know. If true, we know there is a driver for this
-> device. But i'm hesitant to make use of this outside of driver/base.
-
-can_match is never cleared once it's set and it's meant as an
-optimization/preserving some probe order stuff. I wouldn't depend on
-it for this case. We can just have a phy_has_driver()  function that
-searches all the currently registered PHY drivers to check if there's
-a matching driver. And dsa_register_switch() or phy_attach_direct()
-can return -EPROBE_DEFER if there is a driver but it isn't bound yet.
-Again, this is orthogonal to the realtek driver fix though because of
-the catch-22 situation above.
-
--Saravana
-
-[6] - https://lore.kernel.org/netdev/CAGETcx8_vxxPxF8WrXqk=PZYfEggsozP+z9KyOu5C2bEW0VW8g@mail.gmail.com/
+-- 
+viresh
