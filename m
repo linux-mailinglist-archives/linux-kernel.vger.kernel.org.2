@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DB83F9880
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 13:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C797D3F9883
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 13:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245043AbhH0Lj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 07:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235295AbhH0Lj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 07:39:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2E7260FC4;
-        Fri, 27 Aug 2021 11:38:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630064319;
-        bh=ve29pPm/8F7On55yD7S+uc8qqP4GUkW7r7zweAeVCYM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cmC6lwxwMu9u5MXbRtjwnmrcNHDejWMZXLntKFAveiAZ3klLnXuoN6/WRsr8dskmL
-         TCQ4+r7rA+WJ4jKiDOFuLTP5T7vVj9PrBcWITQiHh7OIzxZiki5mh837jH2/y4PIHH
-         X/o3ua2AqZE5z3rBHk2EDHoXKCL9XrNRGRQIqkRvpbgSTtvlSQwHwSHmb8lu7yO0nt
-         TMKsk4TlUce1qzH8rorHZtFt6ePReYWKDJ/0eP2u0w6TG3RBjj31Cp136NT4PF8P/f
-         RDlrgZHJ3Tr8dGvJ8XlwOz2ktQY/kZtGX2BOIHMqnbKwIIWikGopD3V2faOtMiEXAy
-         1OPZEKvKZayNQ==
-Received: by pali.im (Postfix)
-        id A24A0617; Fri, 27 Aug 2021 13:38:36 +0200 (CEST)
-Date:   Fri, 27 Aug 2021 13:38:36 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Scott Wood <oss@buserror.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
-Message-ID: <20210827113836.hvqvaln65gexg5ps@pali>
-References: <20210604233455.fwcu2chlsed2gwmu@pali>
- <20210704134325.24842-1-pali@kernel.org>
- <63a72f648297e96c140a1412c20bd3796398a932.camel@buserror.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <63a72f648297e96c140a1412c20bd3796398a932.camel@buserror.net>
-User-Agent: NeoMutt/20180716
+        id S245031AbhH0Lmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 07:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235295AbhH0Lmb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 07:42:31 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2768C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 04:41:42 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d17so3736033plr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 04:41:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=mGpH5mvYecvwlCQ8u2SHdQPH4lb1tr2RmaIwutOOIpo=;
+        b=yAeswcrBqfgkHPkxXbxBYRCTM1ss+RtFy8k2TIQe7lO/YP7yO0he7KCaivhVA2wjdQ
+         wq2hG8o6/3CIAW/GIh5lk2Qm6dTtl1XSxPai0k8p4tmb5i/dUakXBLwOdaYZ7jgsUS8C
+         cb7qfzc1afzkoG3ekB/85O2+1996VAqpxBIKho5PskjWBSCo5AxgySSQHiJCiLqqXY2U
+         kaZJ0Bm13g6iRsUeOFuVH/YNQyrj2Nq6ubC8Ul9YivP7RCCYY9HBNWYsaxF4cxZlJtzI
+         r1scPaqPfP2DSRk+RKy1kZlRcTWq51iQbORnVM/6H03mk+OkXi+R7rsklk07oSDTcPiT
+         g+CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mGpH5mvYecvwlCQ8u2SHdQPH4lb1tr2RmaIwutOOIpo=;
+        b=cMLL5xDTZuthASmimWjwADcX/ZPDSCiPrsN0tz1nCG/cKf6+vgH06Kf9fktz/JKQjU
+         I+CNoCKLePZK74JFuNoCVl4H2Ne/yOR3XNE6xe8m2wpVt2pftG+R/9JoExBTgUwBOBw7
+         q6WCQHfVBf6cNp3cE9SA4aQu/iqr+yOfxoWvMaWRFpLXmiXCHLDUI4laXWFtUkBxBcMM
+         n62jAPYsP+AkGTdfDaS/7uzSot055U5iM/XuQxR7Aw6sZ/G/HWmG5jI/OIV05eo1yGjl
+         NmAok3xz5zTpKf9bsiWtMSPVxpzKsDzUaGHq4zgAsL2xcxOXcegq9VzPfZpsGpcchjGg
+         zT/Q==
+X-Gm-Message-State: AOAM533cu5owq+zCQ2xNGfa4DGBqh9eOs7Fy28Wtiz5Xr6w2td24LDIN
+        eR5UE/1TF/JddRPXrdiFllsZ
+X-Google-Smtp-Source: ABdhPJyEBx8IHEJhRdJ/KkDw4FOc5Vq3z8Q5+PGGvfxtplxN/JfH8vBByqeOI8eJ/9EdufbTYektgA==
+X-Received: by 2002:a17:90b:1d0c:: with SMTP id on12mr23008283pjb.12.1630064502206;
+        Fri, 27 Aug 2021 04:41:42 -0700 (PDT)
+Received: from localhost.localdomain ([123.231.122.209])
+        by smtp.gmail.com with ESMTPSA id i11sm5977457pfd.37.2021.08.27.04.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 04:41:41 -0700 (PDT)
+From:   "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+To:     mturquette@baylibre.com, sboyd@kernel.org
+Cc:     "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: fix passing zero to warning in clk_hw_create_clk()
+Date:   Fri, 27 Aug 2021 17:11:15 +0530
+Message-Id: <20210827114115.15255-1-asha.16@itfac.mrt.ac.lk>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 14 July 2021 12:11:49 Scott Wood wrote:
-> On Sun, 2021-07-04 at 15:43 +0200, Pali Rohár wrote:
-> > Property phy-connection-type contains invalid value "sgmii-2500" per scheme
-> > defined in file ethernet-controller.yaml.
-> > 
-> > Correct phy-connection-type value should be "2500base-x".
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > Fixes: 84e0f1c13806 ("powerpc/mpc85xx: Add MDIO bus muxing support to the
-> > board device tree(s)")
-> > ---
-> >  arch/powerpc/boot/dts/fsl/t1023rdb.dts | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-> > b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-> > index 5ba6fbfca274..f82f85c65964 100644
-> > --- a/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-> > +++ b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-> > @@ -154,7 +154,7 @@
-> >  
-> >                         fm1mac3: ethernet@e4000 {
-> >                                 phy-handle = <&sgmii_aqr_phy3>;
-> > -                               phy-connection-type = "sgmii-2500";
-> > +                               phy-connection-type = "2500base-x";
-> >                                 sleep = <&rcpm 0x20000000>;
-> >                         };
-> >  
-> 
-> Acked-by: Scott Wood <oss@buserror.net>
-> 
-> -Scott
+Smatch has reported passing to zero warning in ERR_CAST.
+"drivers/clk/clk.c:3673 clk_hw_create_clk() warn: passing zero to 'ERR_CAST'"
 
-Hello! If there is not any objection, could you take this patch?
+This patch resolves it by using IS_ERR instead of IS_ERR_OR_NULL.
+
+Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
+---
+ drivers/clk/clk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 65508eb89ec9..cf47526789af 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -3669,7 +3669,7 @@ struct clk *clk_hw_create_clk(struct device *dev, struct clk_hw *hw,
+ 	struct clk_core *core;
+ 
+ 	/* This is to allow this function to be chained to others */
+-	if (IS_ERR_OR_NULL(hw))
++	if (IS_ERR(hw))
+ 		return ERR_CAST(hw);
+ 
+ 	core = hw->core;
+-- 
+2.17.1
+
