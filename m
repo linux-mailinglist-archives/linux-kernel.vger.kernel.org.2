@@ -2,137 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393AB3F966F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B9F3F9673
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244662AbhH0IuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:50:10 -0400
-Received: from mail-eopbgr1310135.outbound.protection.outlook.com ([40.107.131.135]:2880
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S244643AbhH0IuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:50:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ry7LhI9S+zUbszThSr8XLLd+Q92FBOpelygK8OlFltlyjKU4AHwmT3BeEA/IO3kDB37hxba1ZBu2T6q1sFkHQqYET6SQRQf/bajaze8KzCvj7sEpkqPjW7t94TlodCB74Yi1PtxNTanClW41xdtjfupcaODEIgmn3n6MaYyoGFD6B/GIzotVkLgw/JF8dJzgL6rxI/rAd1LPeZzK0N+E7ghLzMrJ2Uk/wZXBR8w6Yyov+h5bIhIMpGsg8Te1V1j52J5702zgb1UwJZcAWo2JEsAWOHZSRqzk2OgV2uIZD3dbCHa5MwRJzXnwLl0KU9Jyx3GfWcWmzqBOS57jXlVyLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uH3S7LybM2AjVNtMe0A8PBKpWi8Vhv0S1++R4s8Rhwg=;
- b=S4aF9rDrsImGdslciczG0kcyPPViGYmu/GX4wff0sf8HXK1ohNt5tsS5Zs25BRSPTNGXCZtX+rLgUKgRqq6oGXTnAwwE8nQaFkh2spugwEYzkAJzsyxLAD7oVyWlIEna0tB5On6hUjLzGC95t2sZC0QCs/Vdop3VftFsLARVGFej7kRMfjgt4BR3ITDeoz78EpQISWZXg0AfVBfScLDF9zjWOVq+f4p2YLKXnLvSGlNrpB2OZWS8jst8hjssggSUr856KSRgd35q98cne8NV9BB+Uz0F0YtNYzFVGZ0dWVWO39BzTZO37OMB33k1IMeDmiFBNPT+rODifu7r9Y0j0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uH3S7LybM2AjVNtMe0A8PBKpWi8Vhv0S1++R4s8Rhwg=;
- b=o+WrVWAMOGDz0g6u02PmmzACKd2XVXnLX6zBLjWV74EgvcJeFsDjKVToRcuMYpO4pwbLscZ8OEXvY8DUlEWVZeAK6k6z5sci8JLd4BCAygRbgRx0G7DhBZuw3ZbaLRsYsIegWrjuWM3xj7pYadKEjhnL18A47TSCZYXrScQNLLKC58s0AzY7LCqlBE5jGmFsUQryzIVSdrETW2tPc77MGZ9MbreRprcLyvQVYf+jDsmYXPY9swz2koEWzHi5aOY9o/qF6Y/0irrZneXGxU4ZJbaTYkDkhnM/3fX+FoRvvL9JuPOwyC945udfy/qYpiW7kDF9618nC77EAZQ7m9M0mQ==
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK2PR06MB3458.apcprd06.prod.outlook.com (2603:1096:202:38::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18; Fri, 27 Aug
- 2021 08:49:16 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62%3]) with mapi id 15.20.4436.025; Fri, 27 Aug 2021
- 08:49:16 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     Joel Stanley <joel@jms.id.au>
-CC:     kernel test robot <lkp@intel.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>
-Subject: RE: [PATCH v3 3/4] soc: aspeed: Add eSPI driver
-Thread-Topic: [PATCH v3 3/4] soc: aspeed: Add eSPI driver
-Thread-Index: AQHXmkI+4Lhg3IxgrEO2OY2fsCr5kauGcBUAgABIZaCAACFtAIAAIuCA
-Date:   Fri, 27 Aug 2021 08:49:16 +0000
-Message-ID: <HK0PR06MB3779B6CD28A84D3DC651211191C89@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210826061623.6352-4-chiawei_wang@aspeedtech.com>
- <202108270732.OvBQ4K3D-lkp@intel.com>
- <HK0PR06MB377927BDCA9CC79B598251B291C89@HK0PR06MB3779.apcprd06.prod.outlook.com>
- <CACPK8Xf1g2fp5X3ELBUyjzP6Fmvt1XWLU_UgCKdZaDVjdyKryQ@mail.gmail.com>
-In-Reply-To: <CACPK8Xf1g2fp5X3ELBUyjzP6Fmvt1XWLU_UgCKdZaDVjdyKryQ@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: jms.id.au; dkim=none (message not signed)
- header.d=none;jms.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 85f78bdb-f028-4943-f5a6-08d969378d67
-x-ms-traffictypediagnostic: HK2PR06MB3458:
-x-microsoft-antispam-prvs: <HK2PR06MB34589D8F591F4B00BB24462691C89@HK2PR06MB3458.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qtFHvyRrm2kEu9berQZhbY097jhv1G8ZrR06niou+T6L6Zh39QPNI0QiIA+fhisTTpDT1FxLXkVVJMQvYkOp49ds0ui2ZEfD0E7uStnTlnqriBs0vXRcwzRE5LRIXZyw6gDr5ZARWEuoBQRDcckRc1/anMdAnosHGIGU5WwjsYY8xBt5t7R53xCZzy7f7j9YqRcHHi4Ynn/2BZ2R8cCn/yJ/uTZIJ1kvYUYI7zJtuV8el/JHXR1A06a9TpRF710+xoxK10T7RsROpviklt2hox/HEmRiThjlJW5VY8K6w+vNHEIzCr7/Bg7LAOvUTvBW1I00pArcjhiwMuxTTvDV4YMHH5h8Z4uSsozKXu1S1jMlHBYfLRiRBSLVhAUUuS7bomjUrWketLgWyq9xryLWLsW7wGKof1/Uw5SbjTrRNoSLVgvKmY3wbjrKCnqodkOTeH8m8y/QaY6A7k84iD4Y7aOCluUTV00wl4yVU+XQNLXRgocAdAkYACAhVA8iXUVNi7xP51Lpvxjg40uFg2LRb2vob70OFc0UNM3Eobq69FFSXZKylSiI8nCXlbiOaJTPuYNOEWdVEHDaoPMNmlnv3882Ms28gZC6iw3rk63SaXHOv6din04sA8x0xgybzciiEDo7EAE+W6dd/oFQw3bdV8Pmr55PeAPg9laI/SPPfHq34PTkB9bxXBKcTCb8t3q84dKzNheCjIqHocQTbhReBA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(396003)(366004)(39840400004)(54906003)(76116006)(64756008)(66556008)(66476007)(9686003)(2906002)(316002)(86362001)(66946007)(66446008)(7416002)(38070700005)(5660300002)(6916009)(52536014)(71200400001)(4326008)(26005)(8936002)(33656002)(122000001)(4744005)(8676002)(7696005)(6506007)(186003)(38100700002)(478600001)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TERDaVFUMTJaR3hmUWlMZkJaQzYwV3RsUWdzaE5zS0prWEJubHR5eHUxNlU2?=
- =?utf-8?B?S0dIcVN3aGVnSEkxcVQ4RkpFUjNEU2RBcEY3dUR6OU1Ic1dUTCtrb3I2eDRM?=
- =?utf-8?B?SjlBaTl4ZUNLczBKczU0Q2p3d3pxcGtaQUl3bld5NDVveEVQaXoxUitvZHhN?=
- =?utf-8?B?NmludTVDUGNTZ1pRV01oc0RXZDhoZUh0bEFxbC95UTRHM0pISjRLRFJnemo1?=
- =?utf-8?B?VllHUVJUMlpZL0Zkai90MjR2YjRzSFk5bEpPWnRhWWQ0NWw1eWpYWktzU2Rl?=
- =?utf-8?B?NDNndjAvcjFLSitWb1JJaElpUHdtejluQlFGcUIweFF0MjBocXJvdmJaTjBk?=
- =?utf-8?B?QWx3VmZtZGhWTktlY1BUY0IzM1lGU0dzOWNkZXlnUnpEcWkvQi92TnByUkln?=
- =?utf-8?B?MlFsRDhTZnZZYkpDeENiN2RUQU1nZFA3QmxmK0hGWlYxNysxc3h1cmtNK0sx?=
- =?utf-8?B?S25acE1pTGo1SElmTExwelpVdnZvblZjQnViazJ1TFFRZnhLcXI0Nzk4eWhh?=
- =?utf-8?B?clJGMDdtU2N6Zm80RW16dHVpL1JGbEkrSGdwSnZHSitOWCtWSDYrTkNtWCtR?=
- =?utf-8?B?aVBaejQ5eHArM2xxRnJrSGIyelZWTmRyOEpNQng3NkxIQmlVMWVpMjZUbkk4?=
- =?utf-8?B?S3JxcDZ4MGRnTFJFemNqblVwT3dUclVqMVlqZldmRnJKUk56VkxLSFVqTDg4?=
- =?utf-8?B?enBDMGtlQWNRakhSRG9yVmtwNnB4VHh5M0NUQ2s3NitiWTBmZCt3MVhtWWxv?=
- =?utf-8?B?bkdoL0IwZkY1dm84ZWttVnpIL280RlJBWmVjdVUvdDFSd2tqcXMvbWVJdldY?=
- =?utf-8?B?OWJqZ0I4V1JDd0M0UkVCV05HZDYrWHVxZzExR1plVlNFY1pWUlFGSXR4Q3F1?=
- =?utf-8?B?Vk5lWVBLbEtsUTNrc3VuQ1BWbVVWTU1LN2Z5ZEUvNUE3WjZLUjdPV0ozQlc5?=
- =?utf-8?B?cHUvb0Y4YUd4TVQ2RE5lcW9KVWJJMVJTVEI0b1hER05NSjRyMjJ5VkJzd291?=
- =?utf-8?B?SEsvbldFZk9TSzJKT1VYMjJuQzh5cWtkZVVPVHBodnk4aWk2MGQzbWltWFEw?=
- =?utf-8?B?RUgwa0NHbzZDVE9LQ3dQb1VkTUdxMmEwaFE4MGNzMlF4ZWtIT0pETUIvUEVu?=
- =?utf-8?B?WHlZYVhteWVaRG5IYU80eXVrNXAxcWFUZjJ3bStCTjZDY3AxWWVIWkFRSmRP?=
- =?utf-8?B?R2dmb1k0cEgyWWRaMXFPS0JnajVOZVd5bTlLblV2eHFZcm4yWmxxTUx3VGxM?=
- =?utf-8?B?VTg0aDVPV2lucklWWFdFTERSSWR3SmVQNlV5YWd0Z1FBaVFNVFR6UlE0VGtI?=
- =?utf-8?B?UHloZi96ZzJRTGtTQVNiME1mR05DSlp0WU1hYXd1dW5mc1o3TkMxckc4TzRp?=
- =?utf-8?B?bUhDTGxLKzFwYTVzKzg0WTNBalM0aTVudUg2eHVuVTJIdXh2UDQ4a2tDYWFX?=
- =?utf-8?B?MEJkd1dRcFFOVDMvUlFjdC9mRERYUGpZZWV2TWVUSldjdlA4THJBa1N6QW5r?=
- =?utf-8?B?U01xOHB5R1UycjBSbEFMUjliRTUxQTRyOVVocjV3dXc5cE1TVXluUU9PU0Ey?=
- =?utf-8?B?S1RwL0tVZ3ExVlFueGNUelpURG9FWE5nQ3l6bjJGYnd4THhRYXVCQnRrMyti?=
- =?utf-8?B?RXk0cEN4UlpsMEs2YXdWaytPZ05IYTQ5ejNEQ2lzQUJadXZna2tLMDM4SFpw?=
- =?utf-8?B?WlV6cDhKUTRIOUozeklWOHRtZXJwcnhmbWw4TjlSVG1LQmZKSktaM244MVlq?=
- =?utf-8?Q?XRO59P/vlmAZJt70XxFKgIY9s7O+SixHGtmN9Ka?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S244543AbhH0Iuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 04:50:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244510AbhH0Iuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 04:50:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB7A360187;
+        Fri, 27 Aug 2021 08:49:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630054195;
+        bh=ThnORpRaE0mJtWPcwRex34lKgCMWhsIl3VAZJuYDYBo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jckUYhR6Wcin3Z3zBhk0/H9dsl7cdEbNh+LzwYC+tbVzmhkopfgXIevxYG8NR+lwK
+         ckTgap4nBOwbT9KZr7Y/T6kmPBUMWHrtq+QHqRyxoBnbP/X7+fMlq1Qitcp+9Wo4AG
+         1eS1kx5gWo6vvGpzimjYfIxOH7DfUxeShTFLZtK4=
+Date:   Fri, 27 Aug 2021 10:49:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fei Li <fei1.li@intel.com>
+Cc:     linux-kernel@vger.kernel.org, yu1.wang@intel.com,
+        shuox.liu@gmail.com
+Subject: Re: [PATCH v2 3/3] virt: acrn: Introduce interface to fetch platform
+ info from the hypervisor
+Message-ID: <YSinKyxJafvgatSM@kroah.com>
+References: <20210825090142.4418-1-fei1.li@intel.com>
+ <20210825090142.4418-4-fei1.li@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85f78bdb-f028-4943-f5a6-08d969378d67
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2021 08:49:16.4675
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1Vw+evIYvjSp101Rsys6yrxUwHUISURpPV5lAZu7txitaSVvB1jRBDScgOIy+Z4a7iDCVissZWpexkKqO+uWvPpWvtJWyxRoo14FH+th8oA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3458
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825090142.4418-4-fei1.li@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBKb2VsIFN0YW5sZXkgPGpvZWxAam1zLmlkLmF1Pg0KPiBTZW50OiBGcmlkYXksIEF1
-Z3VzdCAyNywgMjAyMSAxOjQ5IFBNDQo+IA0KPiBPbiBGcmksIDI3IEF1ZyAyMDIxIGF0IDAzOjUy
-LCBDaGlhV2VpIFdhbmcNCj4gPGNoaWF3ZWlfd2FuZ0Bhc3BlZWR0ZWNoLmNvbT4gd3JvdGU6DQo+
-ID4NCj4gPiBBc3BlZWQgNXRoIGFuZCA2dGggZ2VuZXJhdGlvbiBTb0NzIGFyZSBiYXNlZCBvbiB0
-aGUgQVJNIDMyLWJpdHMNCj4gYXJjaGl0ZWN0dXJlLg0KPiA+IFNob3VsZCB3ZSBmb2xsb3cgdGhl
-IHJlcG9ydCB0byBtYWtlIHRoZSBkcml2ZXIgNjQtYml0cyBjb21wYXRpYmxlPw0KPiA+IE9yIHJl
-dmlzZSB0aGUgZHJpdmVyIHRvIHVzZSBtb3JlIHNwZWNpZmljIGRhdGEgdHlwZXM/DQo+IA0KPiBZ
-ZXMsIGluIGdlbmVyYWwgaXQncyBleHBlY3RlZCB5b3VyIGRyaXZlciB3aWxsIGNvbXBpbGUgY2xl
-YW5seSBmb3IgNjQtYml0DQo+IGFyY2hpdGVjdHVyZXMuIFRoaXMgaGVscHMgd2l0aCB0ZXN0aW5n
-IGFuZCBzdGF0aWMgYW5hbHlzaXMsIHdoZXJlIENJIGJ1aWxkcyBhbGwgdGhlDQo+IGRyaXZlcnMg
-Zm9yIHg4Ni4NCg0KVW5kZXJzdG9vZC4gV2lsbCBmaXggdGhlIGRhdGEgdHlwZSBpc3N1ZSBpbiB0
-aGUgbmV4dCBzdWJtaXNzaW9uLg0KVGhhbmtzLg0KDQpDaGlhd2VpDQo=
+On Wed, Aug 25, 2021 at 05:01:42PM +0800, Fei Li wrote:
+> From: Shuo Liu <shuo.a.liu@intel.com>
+> 
+> The ACRN hypervisor configures the guest VMs information statically and
+> builds guest VM configurations within the hypervisor. There are also
+> some hardware information are stored in the hypervisor in boot stage.
+> The ACRN userspace needs platform information to do the orchestration.
+> 
+> The HSM provides the following interface for the ACRN userspace to fetch
+> platform info:
+>  - ACRN_IOCTL_GET_PLATFORM_INFO
+>    Exchange the basic information by a struct acrn_platform_info. If the
+>    ACRN userspace provides a userspace buffer (whose vma filled in
+>    vm_configs_addr), the HSM creates a bounce buffer (kmalloced for
+>    continuous memory region) to fetch VM configurations data from the
+>    hypervisor.
+> 
+> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+> Signed-off-by: Fei Li <fei1.li@intel.com>
+> ---
+>  drivers/virt/acrn/hsm.c       | 53 +++++++++++++++++++++++++++++++++++
+>  drivers/virt/acrn/hypercall.h | 12 ++++++++
+>  include/uapi/linux/acrn.h     | 44 +++++++++++++++++++++++++++++
+>  3 files changed, 109 insertions(+)
+> 
+> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+> index 5419794fccf1..eb824a1a86a0 100644
+> --- a/drivers/virt/acrn/hsm.c
+> +++ b/drivers/virt/acrn/hsm.c
+> @@ -108,6 +108,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+>  			   unsigned long ioctl_param)
+>  {
+>  	struct acrn_vm *vm = filp->private_data;
+> +	struct acrn_platform_info *plat_info;
+>  	struct acrn_vm_creation *vm_param;
+>  	struct acrn_vcpu_regs *cpu_regs;
+>  	struct acrn_ioreq_notify notify;
+> @@ -115,9 +116,12 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+>  	struct acrn_ioeventfd ioeventfd;
+>  	struct acrn_vm_memmap memmap;
+>  	struct acrn_mmiodev *mmiodev;
+> +	void __user *vm_configs_user;
+>  	struct acrn_msi_entry *msi;
+>  	struct acrn_pcidev *pcidev;
+>  	struct acrn_irqfd irqfd;
+> +	void *vm_configs = NULL;
+> +	size_t vm_configs_size;
+>  	struct acrn_vdev *vdev;
+>  	struct page *page;
+>  	u64 cstate_cmd;
+> @@ -130,6 +134,55 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+>  	}
+>  
+>  	switch (cmd) {
+> +	case ACRN_IOCTL_GET_PLATFORM_INFO:
+> +		plat_info = memdup_user((void __user *)ioctl_param,
+> +					sizeof(struct acrn_platform_info));
+> +		if (IS_ERR(plat_info))
+> +			return PTR_ERR(plat_info);
+> +
+> +		for (i = 0; i < ARRAY_SIZE(plat_info->sw.reserved); i++)
+> +			if (plat_info->sw.reserved[i])
+> +				return -EINVAL;
+> +
+> +		for (i = 0; i < ARRAY_SIZE(plat_info->hw.reserved); i++)
+> +			if (plat_info->hw.reserved[i])
+> +				return -EINVAL;
+> +
+> +		vm_configs_size = plat_info->sw.vm_config_size *
+> +						plat_info->sw.max_vms;
+> +		if (plat_info->sw.vm_configs_addr && vm_configs_size) {
+> +			vm_configs_user = plat_info->sw.vm_configs_addr;
+> +			vm_configs = kzalloc(vm_configs_size, GFP_KERNEL);
+> +			if (IS_ERR(vm_configs)) {
+> +				kfree(plat_info);
+> +				return PTR_ERR(vm_configs);
+> +			}
+> +			plat_info->sw.vm_configs_addr =
+> +					(void __user *)virt_to_phys(vm_configs);
+> +		}
+> +
+> +		ret = hcall_get_platform_info(virt_to_phys(plat_info));
+> +		if (ret < 0) {
+> +			kfree(vm_configs);
+> +			kfree(plat_info);
+> +			dev_dbg(acrn_dev.this_device,
+> +				"Failed to get info of VM %u!\n", vm->vmid);
+> +			break;
+> +		}
+> +
+> +		if (vm_configs) {
+> +			if (copy_to_user(vm_configs_user, vm_configs,
+> +					 vm_configs_size))
+> +				ret = -EFAULT;
+> +			plat_info->sw.vm_configs_addr = vm_configs_user;
+> +		}
+> +		if (!ret && copy_to_user((void __user *)ioctl_param, plat_info,
+> +					 sizeof(*plat_info)))
+> +			ret = -EFAULT;
+> +
+> +		kfree(vm_configs);
+> +		kfree(plat_info);
+> +		break;
+>  	case ACRN_IOCTL_CREATE_VM:
+>  		vm_param = memdup_user((void __user *)ioctl_param,
+>  				       sizeof(struct acrn_vm_creation));
+> diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
+> index 71d300821a18..440e204d731a 100644
+> --- a/drivers/virt/acrn/hypercall.h
+> +++ b/drivers/virt/acrn/hypercall.h
+> @@ -15,6 +15,7 @@
+>  
+>  #define HC_ID_GEN_BASE			0x0UL
+>  #define HC_SOS_REMOVE_CPU		_HC_ID(HC_ID, HC_ID_GEN_BASE + 0x01)
+> +#define HC_GET_PLATFORM_INFO		_HC_ID(HC_ID, HC_ID_GEN_BASE + 0x03)
+>  
+>  #define HC_ID_VM_BASE			0x10UL
+>  #define HC_CREATE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x00)
+> @@ -60,6 +61,17 @@ static inline long hcall_sos_remove_cpu(u64 cpu)
+>  	return acrn_hypercall1(HC_SOS_REMOVE_CPU, cpu);
+>  }
+>  
+> +/**
+> + * hcall_get_platform_info() - Get platform information from the hypervisor
+> + * @platform_info: Service VM GPA of the &struct acrn_platform_info
+> + *
+> + * Return: 0 on success, <0 on failure
+> + */
+> +static inline long hcall_get_platform_info(u64 platform_info)
+> +{
+> +	return acrn_hypercall1(HC_GET_PLATFORM_INFO, platform_info);
+> +}
+> +
+>  /**
+>   * hcall_create_vm() - Create a User VM
+>   * @vminfo:	Service VM GPA of info of User VM creation
+> diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
+> index 1408d1063339..2675d17bc803 100644
+> --- a/include/uapi/linux/acrn.h
+> +++ b/include/uapi/linux/acrn.h
+> @@ -580,12 +580,56 @@ struct acrn_irqfd {
+>  	struct acrn_msi_entry	msi;
+>  };
+>  
+> +#define ACRN_PLATFORM_LAPIC_IDS_MAX	64
+> +/**
+> + * struct acrn_platform_info - Information of a platform from hypervisor
+> + * @hw.cpu_num:			Physical CPU number of the platform
+> + * @hw.version:			Version of this structure
+> + * @hw.l2_cat_shift:		Order of the number of threads sharing L2 cache
+> + * @hw.l3_cat_shift:		Order of the number of threads sharing L3 cache
+> + * @hw.lapic_ids:		IDs of LAPICs of all threads
+> + * @hw.reserved:		Reserved for alignment and should be 0
+
+"must be"
+
+> + * @sw.max_vcpus_per_vm:	Maximum number of vCPU of a VM
+> + * @sw.max_vms:			Maximum number of VM
+> + * @sw.vm_config_size:		Size of configuration of a VM
+> + * @sw.vm_configss_addr:	Memory address which user space provided to
+> + *				store the VM configurations
+> + * @sw.max_kata_containers:	Maximum number of VM for Kata containers
+> + * @sw.reserved:		Reserved for alignment and should be 0
+
+"must be"
+
+> + *
+> + * If vm_configs_addr is provided, the driver uses a bounce buffer (kmalloced
+> + * for continuous memory region) to fetch VM configurations data from the
+> + * hypervisor.
+> + */
+> +struct acrn_platform_info {
+> +	struct {
+> +		__u16	cpu_num;
+> +		__u16	version;
+> +		__u32	l2_cat_shift;
+> +		__u32	l3_cat_shift;
+> +		__u8	lapic_ids[ACRN_PLATFORM_LAPIC_IDS_MAX];
+> +		__u8	reserved[52];
+
+These are huge buffer padding, why so large?
+
+> +	} hw;
+> +
+> +	struct {
+> +		__u16	max_vcpus_per_vm;
+> +		__u16	max_vms;
+> +		__u32	vm_config_size;
+> +		void	__user *vm_configs_addr;
+
+pointers do not work in ioctl structures, please fix.
+
+thanks,
+
+greg k-h
