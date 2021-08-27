@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C6F3F9962
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2516B3F9969
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245172AbhH0NM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:12:59 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:43373 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232767AbhH0NM6 (ORCPT
+        id S245174AbhH0NPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232767AbhH0NPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:12:58 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5E584580A17;
-        Fri, 27 Aug 2021 09:12:09 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 27 Aug 2021 09:12:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=bkR1Q1QpGYWyLY9OclKKSQyOpWv
-        3rkNsGzg6KtErcvQ=; b=SMPCX1uzkWNEKE2KKOZGeqi4LcN/4X/yLql5VY79sH5
-        YNobd09+hrfpSWtL84k5YbkBPLEUa2UkTRIMr+BzXy4Urw0VCoV42JIVNgZTkQtx
-        dwcBRdgTyKSaSm3o6vBsO98DO5ddX7J754bCCzZHgK20+fFvMlVbf/8zwtp+aKwt
-        9yq6trb7CwS8LX74MFKyFaPDJkzJWt3HzZHLXcjE4Z67OPLU8hmaZU2DuRNuNlXA
-        eVr5Tm0TVvlDps2RrzJcLYVifLjWtMjL/3OLX952ecfEvHkvuS275PNQF3j2/OlV
-        iUx5CPIXMZaDZeZZGBlx3jyNMUDF7cL2vwr3O7+ih2g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=bkR1Q1
-        QpGYWyLY9OclKKSQyOpWv3rkNsGzg6KtErcvQ=; b=FdMNuE9rP8BkLo8dZI16Kl
-        /oI8AIIDkJG37l+TmEXs80TgQ7z30yeGc/EXabAaMoGEsTtZbqNLEhnR6//r4wNB
-        aeeCgXyfQGfFaX4pOstjgC9oViz70g859XyiEd+Np3BdaUjbjluvWv9zCQPHRtOs
-        0YhwMDhuN4qFPsddjnrsXC7GE9giOaXOf956FFIqkApEckCxDY5y6akXJYlXGiWl
-        DsTUapg8MlnvlaKMGtM+9p08uz5qo86K3vukJaTOyaMdmmPB7lGIBAwnihc39jzx
-        LCFQ5HFhyI01opGc/QkCZeddLs2K78ZIwIH6VItgM8bcvf8GJ6QaFzJzISUvlx/g
-        ==
-X-ME-Sender: <xms:p-QoYaDzUwE1PdFnCA_HoBoQGxxGO2huxxf6Sfos8uM9ONMCBteGUg>
-    <xme:p-QoYUiXFp12qH3mRfCktMSlPHBBs_-_6X80XS_BuFz3RMi8-QgI1VO2rj5dQTPB4
-    utSi7bcRNsX9g>
-X-ME-Received: <xmr:p-QoYdlxSQxFvWiPdoDgswrtGygPtTqBtPaCRNPVgmaIFDMLGvEgrWX1pNKp>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddufedgiedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:p-QoYYzbfZ5p3BLPCEnVaN0fAQLux04zjWofeumIpaD3nxq5npSUew>
-    <xmx:p-QoYfQGKpjtZrwktMVOGBrwCBPsvXXZ30zqIC85IvzkD9nkn46ATQ>
-    <xmx:p-QoYTbK-g3cABuCz3WD5PliZZPTR7kvWWdxUXZ4oyvR6bkfuYa70Q>
-    <xmx:qeQoYbpDWauCj2sQmscTHZ2vxzhPNpCfHUFbl_CeH6d64aLTpYFXbQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Aug 2021 09:12:07 -0400 (EDT)
-Date:   Fri, 27 Aug 2021 15:12:02 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: linux-next: manual merge of the char-misc tree with Linus' tree
-Message-ID: <YSjkosA6yMrMmaNk@kroah.com>
-References: <20210827164904.6b1d1f0e@canb.auug.org.au>
+        Fri, 27 Aug 2021 09:15:03 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA84C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:14:14 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id f6so8514015iox.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=qHdVs72JGE286h/Uc6e84bXFPJwSnNvbYP9UykecRKY=;
+        b=ky0AoL9wFudas+8byDfRsh6pRwHjw6i6NmFXZNo7gzPdVblm/JKVGCcgtciIl1uKD2
+         PUvolNUmb/rMApNylWJkUyugdZVSca5kswuZjsDitkHXa8NZUmuXvWgSAaPY9oND/0eR
+         mC6L3yXCITg4i4mVIwQQxw7czED4IeFlqPlOhdN1xayoztj6sCR/RDJBefvQtJvIyfgo
+         oXqWBdo3EqrobPRboTsEQBwEEWo+th+Z3/vHLWMF1v5SKfLY1wJpbBaTXsroOZgKwf75
+         jIOPiqaKj5WsXqA9qMy7HFrp5gihORWG05ihVhskrzy/EX4BDtJWlUaF5iuGUXOk8jkI
+         mUwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=qHdVs72JGE286h/Uc6e84bXFPJwSnNvbYP9UykecRKY=;
+        b=LG2FBZ6UiXBWBqOsqYWLZJOrQ2TuRzzF4+M+WKrHRYqBDwY8pvSmn8LIIVZ3nPAorX
+         LBv/4qd681qrtZpc77JLxuBptju9Vaxk8NVnOJ6kmw/GaxkE2c4govnMzdRSsthwbNt5
+         alTiboMmvkkBwRfl5YLlhi/fjBTvZrhTKkVvpRz6BrthK9klBWFgQLv79qT7kpjgVH6x
+         JBYSC9Fnoid1TjQ80EZh3LQOnnOABaVJ6KdvXJSCaJoj7pqbzwtfKoqUuaf5e6iB9IEX
+         gd9E6+D4lkJqZNGayHqg7fcDg4fLlARAvWnTerq76E6IZ8W+hTM/5XXjfSCmaKtpAnVx
+         jY5g==
+X-Gm-Message-State: AOAM530yYySC9rPpgShZQ6ArPDMh+c9LoeRezYX5YZSjtzwJKYRnuk35
+        BGuyhNFM1F3LzF23p1Yih2iQ9LIhzscoNNqwCvw=
+X-Google-Smtp-Source: ABdhPJwDrcQkLy941ITRoY9q6aSmBz5RMCiD4fM4hCPM24pNMXIqTXB6lCGdDM89GddyyKQSPNNu7FYaaMUaTrTa+nE=
+X-Received: by 2002:a05:6602:117:: with SMTP id s23mr7487900iot.124.1630070053823;
+ Fri, 27 Aug 2021 06:14:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827164904.6b1d1f0e@canb.auug.org.au>
+Sender: agnesbrow77@gmail.com
+Received: by 2002:a4f:cb81:0:0:0:0:0 with HTTP; Fri, 27 Aug 2021 06:14:13
+ -0700 (PDT)
+From:   Mrs Francisca John Carlsen <franciscacarlsen20@gmail.com>
+Date:   Fri, 27 Aug 2021 14:14:13 +0100
+X-Google-Sender-Auth: 6Oh_jBPQtOr7VY_vQ5NgUElbUdE
+Message-ID: <CAPgV8Ld+xhJ97vm9J_MYQsNjxC86jy-+u1LrfRZyn_xhUReJ6A@mail.gmail.com>
+Subject: Hello My Dear,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 04:49:04PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the char-misc tree got conflicts in:
-> 
->   drivers/bus/mhi/core/main.c
->   net/qrtr/mhi.c
-> 
-> between commit:
-> 
->   9ebc2758d0bb ("Revert "net: really fix the build..."")
-> 
-> from the origin tree and commit:
-> 
->   0092a1e3f763 ("bus: mhi: Add inbound buffers allocation flag")
-> 
-> from the char-misc tree.
-> 
-> I fixed it up (the commit in Linus' tree is basically a revert of the
-> char-misc tree, so I effectively reverted the latter) and can carry the
-> fix as necessary. This is now fixed as far as linux-next is concerned,
-> but any non trivial conflicts should be mentioned to your upstream
-> maintainer when your tree is submitted for merging.  You may also want
-> to consider cooperating with the maintainer of the conflicting tree to
-> minimise any particularly complex conflicts.
+Hello My Dear,
 
-Hm, what should I do in my tree here?
+   It is with deep consideration that I am writing this letter of
+proposal to you, I know that this message may be a very big surprise
+to you,  Please do not feel disturbed for contacting  you in this
+regards. I sent this mail praying it will found you in a good
+condition of health, since I myself are in a very critical health
+condition in which I  sleep every night without knowing if I may be
+alive to see the next day. I am Mrs. Francisca  Carlsen from Denmark
+wife of late Mr John Carlsen, a widow suffering from long time
+illness. I have some funds I inherited from my late husband, the sum
+of (eleven million dollars) my Doctor told me recently that I have
+serious sickness which is cancer problem. What disturbs me most is my
+stroke sickness.
 
-Kalle, what commit should I make in the char-misc tree now to handle
-this issue, and make the merge with Linus's tree "simple"?  Or any other
-ideas?
+ Having known my condition, I decided to donate this fund to a good
+person that will utilize it the way i am going to instruct herein. I
+need a very honest and God fearing person who can claim this money and
+use it for Charity works, for orphanages, widows and also build
+schools for less privileges that will be named after my late husband
+if possible and to promote the word of God and the effort that the
+house of God is maintained.
 
-thanks,
+I do not want a situation where this money will be used in an ungodly
+manner. That's why I'm taking this decision. I'm not afraid of death,
+so I know where I'm going. I accept this decision because I do not
+have any child who will inherit this money after I die. Please I want
+your sincerely and urgent answer to know if you will be able to
+execute this project, and I will give you more information on how the
+fund will be transferred to your bank account. I am waiting for your
+reply.
 
-greg k-h
+
+May God bless you and your family.
+
+Best Regards,
+Mrs. Francisca John  Carlsen.
