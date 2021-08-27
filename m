@@ -2,229 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4DE3F9667
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36563F966D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244584AbhH0Isj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47226 "EHLO mail.kernel.org"
+        id S244637AbhH0IuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 04:50:05 -0400
+Received: from mga12.intel.com ([192.55.52.136]:10097 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232048AbhH0Isi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:48:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EF3960F92;
-        Fri, 27 Aug 2021 08:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630054069;
-        bh=BxO8igqb4zLfhBhTE+eWClgMJlJyMFnkm8uBiJjMsbg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M0vsFvQ6HYqhFnE9MBeSycaP6rTN8rd4x0vIGOjFGjpTCrVKwqW/o93GKSs5aD0gN
-         bu2DY5zsdEV0kO+MiBC3fKEebhWWZASkarGt5QlLdA3qZQfDmRnTeD4LEFeU3NUqZ6
-         68O3OaEwfgLNxJJWCAFI5aM44CBu6YcBu5jIb5fg=
-Date:   Fri, 27 Aug 2021 10:47:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fei Li <fei1.li@intel.com>
-Cc:     linux-kernel@vger.kernel.org, yu1.wang@intel.com,
-        shuox.liu@gmail.com
-Subject: Re: [PATCH v2 2/3] virt: acrn: Introduce interfaces for virtual
- device creating/destroying
-Message-ID: <YSimrfWz+p7Wf/nC@kroah.com>
-References: <20210825090142.4418-1-fei1.li@intel.com>
- <20210825090142.4418-3-fei1.li@intel.com>
+        id S232048AbhH0IuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 04:50:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="197489373"
+X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
+   d="scan'208";a="197489373"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 01:49:15 -0700
+X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
+   d="scan'208";a="599107590"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 01:49:13 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mJXXv-00EH0t-VO; Fri, 27 Aug 2021 11:49:07 +0300
+Date:   Fri, 27 Aug 2021 11:49:07 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] vsprintf/Documentation: Add X to %*ph extension to
+ output upper case hex
+Message-ID: <YSinAyVMIQDxf6Fo@smile.fi.intel.com>
+References: <cover.1630003183.git.joe@perches.com>
+ <bc33e306a9064dfbf1180a35f9bfa587c6502eca.1630003183.git.joe@perches.com>
+ <YSiY0aa+C9cyJni4@smile.fi.intel.com>
+ <18d9f8d6803c8957ec091c207780c163af07e41f.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210825090142.4418-3-fei1.li@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <18d9f8d6803c8957ec091c207780c163af07e41f.camel@perches.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 05:01:41PM +0800, Fei Li wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
+On Fri, Aug 27, 2021 at 01:08:10AM -0700, Joe Perches wrote:
+> On Fri, 2021-08-27 at 10:48 +0300, Andy Shevchenko wrote:
+> > On Thu, Aug 26, 2021 at 11:43:01AM -0700, Joe Perches wrote:
+> > > A few sysfs output uses of hex arrays are uppercase and are nominally ABI.
+> > > 
+> > > Add a mechanism to the existing vsprintf %*ph hex output extension to
+> > > support upper case hex output.
+> > 
+> > ...
+> > 
+> > > +	The preferred output is lowercase
+> > >  	%*ph	00 01 02  ...  3f
+> > >  	%*phC	00:01:02: ... :3f
+> > >  	%*phD	00-01-02- ... -3f
+> > >  	%*phN	000102 ... 3f
+> > > +	Formats with X are uppercase, used for backwards compatibility
+> > > +	%*phX	00 01 02  ...  3F
+> > > +	%*phCX	00:01:02: ... :3F
+> > > +	%*phDX	00-01-02- ... -3F
+> > > +	%*phNX	000102 ... 3F
+> > 
+> > Why not using %*pH...?
 > 
-> The ACRN hypervisor can emulate a virtual device within hypervisor for a
-> Guest VM. The emulated virtual device can work without the ACRN
-> userspace after creation. The hypervisor do the emulation of that device.
+> I find X more intelligible.
 > 
-> To support the virtual device creating/destroying, HSM provides the
-> following ioctls:
->   - ACRN_IOCTL_CREATE_VDEV
->     Pass data struct acrn_vdev from userspace to the hypervisor, and inform
->     the hypervisor to create a virtual device for a User VM.
->   - ACRN_IOCTL_DESTROY_VDEV
->     Pass data struct acrn_vdev from userspace to the hypervisor, and inform
->     the hypervisor to destroy a virtual device of a User VM.
+> > > +	char locase = 0x20;	/* ASCII OR'd for lower case see: number() */
+> > 
+> > If you use h vs H, you may derive this from (fmt[...] & SMALL).
 > 
-> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-> Signed-off-by: Fei Li <fei1.li@intel.com>
-> ---
->  drivers/virt/acrn/hsm.c       | 24 ++++++++++++++++++++
->  drivers/virt/acrn/hypercall.h | 26 ++++++++++++++++++++++
->  include/uapi/linux/acrn.h     | 42 +++++++++++++++++++++++++++++++++++
->  3 files changed, 92 insertions(+)
-> 
-> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-> index f567ca59d7c2..5419794fccf1 100644
-> --- a/drivers/virt/acrn/hsm.c
-> +++ b/drivers/virt/acrn/hsm.c
-> @@ -118,6 +118,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
->  	struct acrn_msi_entry *msi;
->  	struct acrn_pcidev *pcidev;
->  	struct acrn_irqfd irqfd;
-> +	struct acrn_vdev *vdev;
->  	struct page *page;
->  	u64 cstate_cmd;
->  	int i, ret = 0;
-> @@ -266,6 +267,29 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
->  				"Failed to deassign pci device!\n");
->  		kfree(pcidev);
->  		break;
-> +	case ACRN_IOCTL_CREATE_VDEV:
-> +		vdev = memdup_user((void __user *)ioctl_param,
-> +				   sizeof(struct acrn_vdev));
-> +		if (IS_ERR(vdev))
-> +			return PTR_ERR(vdev);
-> +
-> +		ret = hcall_create_vdev(vm->vmid, virt_to_phys(vdev));
+> It's not necessary to use any more of the rather limited vsprintf
+> extension namespace.
 
-No validation of the structure fields?
+I understand your concern, but %*ph is quite widely used (I guess top 1 or 2
+among all %p extensions), its performance degradation with your code may affect
+a lot of other users and hence a kernel as a whole.
+
+So, that's why my proposal stays.
+
+Of course you may provide a benchmark (btw, where are the test cases for this?)
+for yours and mine variant and we will see if it makes sense to optimize.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> +		if (ret < 0)
-> +			dev_dbg(acrn_dev.this_device,
-> +				"Failed to create virtual device!\n");
-> +		kfree(vdev);
-> +		break;
-> +	case ACRN_IOCTL_DESTROY_VDEV:
-> +		vdev = memdup_user((void __user *)ioctl_param,
-> +				   sizeof(struct acrn_vdev));
-> +		if (IS_ERR(vdev))
-> +			return PTR_ERR(vdev);
-> +		ret = hcall_destroy_vdev(vm->vmid, virt_to_phys(vdev));
-
-Again, no validation?
-
-> +		if (ret < 0)
-> +			dev_dbg(acrn_dev.this_device,
-> +				"Failed to destroy virtual device!\n");
-> +		kfree(vdev);
-> +		break;
->  	case ACRN_IOCTL_SET_PTDEV_INTR:
->  		irq_info = memdup_user((void __user *)ioctl_param,
->  				       sizeof(struct acrn_ptdev_irq));
-> diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
-> index f0c78e52cebb..71d300821a18 100644
-> --- a/drivers/virt/acrn/hypercall.h
-> +++ b/drivers/virt/acrn/hypercall.h
-> @@ -43,6 +43,8 @@
->  #define HC_DEASSIGN_PCIDEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x06)
->  #define HC_ASSIGN_MMIODEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x07)
->  #define HC_DEASSIGN_MMIODEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x08)
-> +#define HC_CREATE_VDEV			_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x09)
-> +#define HC_DESTROY_VDEV			_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x0A)
->  
->  #define HC_ID_PM_BASE			0x80UL
->  #define HC_PM_GET_CPU_STATE		_HC_ID(HC_ID, HC_ID_PM_BASE + 0x00)
-> @@ -196,6 +198,30 @@ static inline long hcall_set_memory_regions(u64 regions_pa)
->  	return acrn_hypercall1(HC_VM_SET_MEMORY_REGIONS, regions_pa);
->  }
->  
-> +/**
-> + * hcall_create_vdev() - Create a virtual device for a User VM
-> + * @vmid:	User VM ID
-> + * @addr:	Service VM GPA of the &struct acrn_vdev
-> + *
-> + * Return: 0 on success, <0 on failure
-> + */
-> +static inline long hcall_create_vdev(u64 vmid, u64 addr)
-> +{
-> +	return acrn_hypercall2(HC_CREATE_VDEV, vmid, addr);
-> +}
-> +
-> +/**
-> + * hcall_destroy_vdev() - Destroy a virtual device of a User VM
-> + * @vmid:	User VM ID
-> + * @addr:	Service VM GPA of the &struct acrn_vdev
-> + *
-> + * Return: 0 on success, <0 on failure
-> + */
-> +static inline long hcall_destroy_vdev(u64 vmid, u64 addr)
-> +{
-> +	return acrn_hypercall2(HC_DESTROY_VDEV, vmid, addr);
-> +}
-> +
->  /**
->   * hcall_assign_mmiodev() - Assign a MMIO device to a User VM
->   * @vmid:	User VM ID
-> diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-> index 470036d6b1ac..1408d1063339 100644
-> --- a/include/uapi/linux/acrn.h
-> +++ b/include/uapi/linux/acrn.h
-> @@ -441,6 +441,44 @@ struct acrn_mmiodev {
->  	} res[ACRN_MMIODEV_RES_NUM];
->  };
->  
-> +/**
-> + * struct acrn_vdev - Info for creating or destroying a virtual device
-> + * @id:				Union of identifier of the virtual device
-> + * @id.value:			Raw data of the identifier
-> + * @id.fields.vendor:		Vendor id of the virtual PCI device
-> + * @id.fields.device:		Device id of the virtual PCI device
-> + * @id.fields.legacy_id:	ID of the virtual device if not a PCI device
-> + * @slot:			Virtual Bus/Device/Function of the virtual
-> + *				device
-> + * @io_base:			IO resource base address of the virtual device
-> + * @io_size:			IO resource size of the virtual device
-> + * @args:			Arguments for the virtual device creation
-> + *
-> + * The created virtual device can be a PCI device or a legacy device (e.g.
-> + * a virtual UART controller) and it is emulated by the hypervisor. This
-> + * structure will be passed to hypervisor directly.
-> + */
-> +struct acrn_vdev {
-> +	/*
-> +	 * the identifier of the device, the low 32 bits represent the vendor
-> +	 * id and device id of PCI device and the high 32 bits represent the
-> +	 * device number of the legacy device
-> +	 */
-> +	union {
-> +		__u64 value;
-> +		struct {
-> +			__u16 vendor;
-> +			__u16 device;
-
-Endian of these values?
-
-> +			__u32 legacy_id;
-
-What is "legacy"?  What types of devices?
-
-
-> +		} fields;
-> +	} id;
-> +
-> +	__u64	slot;
-> +	__u32	io_addr[ACRN_PCI_NUM_BARS];
-> +	__u32	io_size[ACRN_PCI_NUM_BARS];
-> +	__u8	args[128];
-
-What are these args for exactly?
-
-> +};
-> +
->  /**
->   * struct acrn_msi_entry - Info for injecting a MSI interrupt to a VM
->   * @msi_addr:	MSI addr[19:12] with dest vCPU ID
-> @@ -596,6 +634,10 @@ struct acrn_irqfd {
->  	_IOW(ACRN_IOCTL_TYPE, 0x57, struct acrn_mmiodev)
->  #define ACRN_IOCTL_DEASSIGN_MMIODEV	\
->  	_IOW(ACRN_IOCTL_TYPE, 0x58, struct acrn_mmiodev)
-> +#define ACRN_IOCTL_CREATE_VDEV	\
-> +	_IOW(ACRN_IOCTL_TYPE, 0x59, struct acrn_vdev)
-> +#define ACRN_IOCTL_DESTROY_VDEV	\
-> +	_IOW(ACRN_IOCTL_TYPE, 0x5A, struct acrn_vdev)
-
-Why do you need the full structure to destroy the device?
-
-thanks,
-
-greg k-h
