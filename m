@@ -2,113 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8FD3F9596
+	by mail.lfdr.de (Postfix) with ESMTP id 984453F9597
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244544AbhH0Hxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 03:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42592 "EHLO
+        id S244552AbhH0HyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 03:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244501AbhH0Hxw (ORCPT
+        with ESMTP id S244468AbhH0HyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 03:53:52 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1E2C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 00:53:03 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id l2so4504982lfp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 00:53:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CNvP38919NyhYWdPvANs9XQ0JxJiZcSEJqLPjWrVUWQ=;
-        b=Tnv3DVrGcNckVz8XtZvqs/b8pmFGa9HRRpLAMqh7XMTxrziE6rO4GPMZuHmewSXng9
-         r4mQTizQtjXRP57vTO/4UXAZsSK1SZ2hZ68zr67uYLT/Ti+WljX2j8GCv3LCprmPjwd+
-         TQurj9cW3LEI0QpQZwZAI9rH4osDX6Qpc2DSka8QLONBq7nSlwiBs1Sre4MVlA48yhMp
-         8Gy7FFJunEeoJp4oNTFRnbcTKuWHa4pv5sh/9gF4awqU1ZaKTlvyV+o00mjaDqmaCo8Z
-         RXyEYEelzlYv8f8MPyE4NLVs3EQ+q2GZNPt5J/TL6oh/Jc01TZpCci9ktm9+Wd5qrrYS
-         cQrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CNvP38919NyhYWdPvANs9XQ0JxJiZcSEJqLPjWrVUWQ=;
-        b=sp2kEG0ZqqjYb9ksca6BvsnsK+eXj/5jDYteLhB5cJgD70WbCHS0dMjT9xzXtOPcAC
-         iXS2lvB6jvKoJNPeznWPhtFazaGXfKKvAThXjnSpq4Gh2FDtKrtrZZHbYPImB0MYcLZ2
-         J3g6E8uAkSPzpuRDO6Zb+agRHODHh7QCroY0ZEQeVBPzRHBLFpigwFWZ2PA4sS9FP2Pg
-         X38jxX8Hd4SzKxI/0q1jbN0arRJFHChr7b3qMOFW0007kFyFviG3FNHcjNDPFs7igp0z
-         iccXgbZ4y2uHWyj51jCwWEPzkWjqlyAN8rI317NidxSsAe/L5NhSFQn1NAbebsCL3ihD
-         L1fA==
-X-Gm-Message-State: AOAM530bFk2PVgJzzR0Kr2I4uyYcd1qs6I9d5Qm04LhZbcU75a3mJOUq
-        66G57zitfgo82f3Xl+stVf/4vuavUgA=
-X-Google-Smtp-Source: ABdhPJx9tOaBiX7tYrgwNmZO9SllbNtR/3bB3XSzcJcW0qweu9tw9NUbf0G9doOjqIDTLFeRVXHlHg==
-X-Received: by 2002:a05:6512:96b:: with SMTP id v11mr5816665lft.121.1630050781849;
-        Fri, 27 Aug 2021 00:53:01 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id m16sm521307lfh.243.2021.08.27.00.53.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 00:53:01 -0700 (PDT)
-Subject: Re: [PATCH v3 0/6] staging: r8188eu: avoid uninit value bugs
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <CAA=Fs0=gX66TW3qoHYWcoSsvai6YZn=U81a34V45oij7NrMJrQ@mail.gmail.com>
- <cover.1629789580.git.paskripkin@gmail.com>
- <20210827074932.2qkpvmakwqqxo6hc@kari-VirtualBox>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <ae721297-68ae-dde6-d9e5-5963ebcece07@gmail.com>
-Date:   Fri, 27 Aug 2021 10:52:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 27 Aug 2021 03:54:12 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BA3C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 00:53:23 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwsQk4qx4z9sPf;
+        Fri, 27 Aug 2021 17:53:18 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1630050800;
+        bh=1qUPPOtl/jzP4e2/AHdvpaPrD2MZxD0xpD3UzdwgVjE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=NOAW2aqXkoEWDzjXNCSiyLhQVYpvT5hW4QgzQGQ53XVUtDyiS1rJuHBxVvQjlK4l1
+         gr+TTJxwGPTwwGkCf07oqB76SlFusHTZ2U/33i4uJjPh6rU3OE/4U6hREBXspqH0jY
+         d3NO/aA1+cijuryaUUCPyIUoP3tfisXDXzIfAne0soloI242kUIfW6z6Q32nyfBa75
+         QgsA/X8ARZOH0XxbXvWc6wpihPVbNU1UaZdS5Oy4sB/YgrB73zMDLv1E42bIIVE8Ez
+         jtP6VV74A8dx03wClHYJWJ/34yEY7AWxTIjJUy2yR694hcWtwZWyvbrTedBYb62XA1
+         74LksDsimWHsQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2 2/2] powerpc/bug: Provide better flexibility to
+ WARN_ON/__WARN_FLAGS() with asm goto
+In-Reply-To: <YSgp7HNGXbzrfvFq@Ryzen-9-3900X.localdomain>
+References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
+ <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
+ <YSa1O4fcX1nNKqN/@Ryzen-9-3900X.localdomain>
+ <87h7fcc2m4.fsf@mpe.ellerman.id.au>
+ <YSfjWfGbZbpYBn+w@Ryzen-9-3900X.localdomain>
+ <YSgp7HNGXbzrfvFq@Ryzen-9-3900X.localdomain>
+Date:   Fri, 27 Aug 2021 17:53:12 +1000
+Message-ID: <878s0nfhnb.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20210827074932.2qkpvmakwqqxo6hc@kari-VirtualBox>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 10:49 AM, Kari Argillander wrote:
-> On Tue, Aug 24, 2021 at 10:25:45AM +0300, Pavel Skripkin wrote:
->> Hi, Greg, Larry and Phillip!
+Nathan Chancellor <nathan@kernel.org> writes:
+> On Thu, Aug 26, 2021 at 11:54:17AM -0700, Nathan Chancellor wrote:
+>> On Thu, Aug 26, 2021 at 01:21:39PM +1000, Michael Ellerman wrote:
+>> > Nathan Chancellor <nathan@kernel.org> writes:
+>> > > On Tue, Apr 13, 2021 at 04:38:10PM +0000, Christophe Leroy wrote:
+>> > >> Using asm goto in __WARN_FLAGS() and WARN_ON() allows more
+>> > >> flexibility to GCC.
+>> > ...
+>> > >
+>> > > This patch as commit 1e688dd2a3d6 ("powerpc/bug: Provide better
+>> > > flexibility to WARN_ON/__WARN_FLAGS() with asm goto") cause a WARN_ON in
+>> > > klist_add_tail to trigger over and over on boot when compiling with
+>> > > clang:
+>> > >
+...
+>> > 
+>> > This patch seems to fix it. Not sure if that's just papering over it though.
+>> > 
+>> > diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
+>> > index 1ee0f22313ee..75fcb4370d96 100644
+>> > --- a/arch/powerpc/include/asm/bug.h
+>> > +++ b/arch/powerpc/include/asm/bug.h
+>> > @@ -119,7 +119,7 @@ __label_warn_on:						\
+>> >  								\
+>> >  			WARN_ENTRY(PPC_TLNEI " %4, 0",		\
+>> >  				   BUGFLAG_WARNING | BUGFLAG_TAINT(TAINT_WARN),	\
+>> > -				   __label_warn_on, "r" (x));	\
+>> > +				   __label_warn_on, "r" (!!(x))); \
+>> >  			break;					\
+>> >  __label_warn_on:						\
+>> >  			__ret_warn_on = true;			\
+>> > 
 >> 
->> I noticed, that new staging driver was added like 3 weeks ago and I decided
->> to look at the code, because drivers in staging directory are always buggy.
->> 
->> The first thing I noticed is *no one* was checking read operations result, but
->> it can fail and driver may start writing random stack values into registers. It
->> can cause driver misbehavior or device misbehavior.
->> 
->> To avoid this type of bugs, i've changed rtw_read* API. Now all rtw_read
->> funtions return an error, when something went wrong with usb transfer.
->> 
->> It helps callers to break/return earlier and don't write random values to
->> registers or to rely on random values.
->> 
->> 
->> v2 -> v3:
-> 
-> Hi Pavel.
-> 
-> If v4 is needed can you please send it without replying to old message.
-> This thread is so hard to follow because always new version is answer to
-> old subject. This depens a little bit how you setup your email, but some
-> of us is grouping all emails in same thread and this thread is out of
-> control :D
-> 
+>> Thank you for the in-depth explanation and triage! I have gone ahead and
+>> created a standalone reproducer that shows this based on the
+>> preprocessed file and opened https://bugs.llvm.org/show_bug.cgi?id=51634
+>> so the LLVM developers can take a look.
+>
+> Based on Eli Friedman's comment in the bug, would something like this
+> work and not regress GCC? I noticed that the BUG_ON macro does a cast as
+> well. Nick pointed out to me privately that we have run into what seems
+> like a similar issue before in commit 6c58f25e6938 ("riscv/atomic: Fix
+> sign extension for RV64I").
 
-Hi, Kari!
+Yes, I read that comment this morning, and then landed at the same fix
+via digging through the history of our bug code.
 
-v4 will be posted soon, yep. I will post v4 as separate thread :) It's 
-unreal to follow the discussion for sure. I often spend about a minute 
-to find an actual mail to reply xd
+We in fact fixed a similar bug 16 years ago :}
+
+32818c2eb6b8 ("[PATCH] ppc64: Fix issue with gcc 4.0 compiled kernels")
+
+Which is when we first started adding the cast to long.
 
 
+> diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
+> index 1ee0f22313ee..35022667f57d 100644
+> --- a/arch/powerpc/include/asm/bug.h
+> +++ b/arch/powerpc/include/asm/bug.h
+> @@ -119,7 +119,7 @@ __label_warn_on:                                            \
+>                                                                 \
+>                         WARN_ENTRY(PPC_TLNEI " %4, 0",          \
+>                                    BUGFLAG_WARNING | BUGFLAG_TAINT(TAINT_WARN), \
+> -                                  __label_warn_on, "r" (x));   \
+> +                                  __label_warn_on, "r" ((__force long)(x)));   \
+>                         break;                                  \
+>  __label_warn_on:                                               \
+>                         __ret_warn_on = true;                   \
 
 
-With regards,
-Pavel Skripkin
+Yeah that fixes the clang build for me.
+
+For GCC it seems to generate the same code in the simple cases:
+
+void test_warn_on_ulong(unsigned long b)
+{
+        WARN_ON(b);
+}
+
+void test_warn_on_int(int b)
+{
+        WARN_ON(b);
+}
+
+I get:
+
+0000000000000020 <.test_warn_on_ulong>:
+  20:   0b 03 00 00     tdnei   r3,0
+  24:   4e 80 00 20     blr
+  28:   60 00 00 00     nop
+  2c:   60 00 00 00     nop
+
+0000000000000030 <.test_warn_on_int>:
+  30:   0b 03 00 00     tdnei   r3,0
+  34:   4e 80 00 20     blr
+
+Both before and after the change. So that's good.
+
+For:
+
+void test_warn_on_int_addition(int b)
+{
+        WARN_ON(b+1);
+}
+
+Before I get:
+
+0000000000000040 <.test_warn_on_int_addition>:
+  40:   38 63 00 01     addi    r3,r3,1
+  44:   0b 03 00 00     tdnei   r3,0
+  48:   4e 80 00 20     blr
+
+vs after:
+
+0000000000000040 <.test_warn_on_int_addition>:
+  40:   38 63 00 01     addi    r3,r3,1
+  44:   7c 63 07 b4     extsw   r3,r3
+  48:   0b 03 00 00     tdnei   r3,0
+  4c:   4e 80 00 20     blr
+
+
+So there's an extra sign extension we don't need, but I guess we can
+probably live with that.
+
+cheers
