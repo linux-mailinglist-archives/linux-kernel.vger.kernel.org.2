@@ -2,71 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5030C3F965D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4D83F965B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244666AbhH0Iod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:44:33 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:54420 "EHLO deadmen.hmeau.com"
+        id S244658AbhH0Ioa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 04:44:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231824AbhH0Ioc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:44:32 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mJXSW-0007ir-Ft; Fri, 27 Aug 2021 16:43:32 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mJXSA-00061V-Nq; Fri, 27 Aug 2021 16:43:10 +0800
-Date:   Fri, 27 Aug 2021 16:43:10 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Kai Ye <yekai13@huawei.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: crypto: hisilicon - Fix sscanf format signedness
-Message-ID: <20210827084310.GA21801@gondor.apana.org.au>
-References: <202108220901.8r4gf0hB-lkp@intel.com>
+        id S231824AbhH0Io3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 04:44:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EADD460F6F;
+        Fri, 27 Aug 2021 08:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630053821;
+        bh=s+jsdk/ggk/V8dbiafHLgrllBeAs/FB4FAAZCZzflYU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZRw73S7u2T4lWUTS0l45Nm5/VRoTQjpGL1tuCksr3gq5T3LVq0SJlPTEs3+LMIh34
+         SStEAa9srTxR1BXkMED8Qa3uM1XXbXdl0/v+CDOcgJaZPRRRAVcAtW/laDRoT0goD6
+         yFyiP1uiC7kGmHck8uNKY8pacUviTaovPk6z2DOc=
+Date:   Fri, 27 Aug 2021 10:43:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andra Paraschiv <andraprs@amazon.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexandru Ciobotaru <alcioa@amazon.com>,
+        Kamal Mostafa <kamal@canonical.com>,
+        Alexandru Vasile <lexnv@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+Subject: Re: [PATCH v1 3/3] nitro_enclaves: Add fixes for checkpatch and docs
+ reports
+Message-ID: <YSilspuLarIKRquD@kroah.com>
+References: <20210826173451.93165-1-andraprs@amazon.com>
+ <20210826173451.93165-4-andraprs@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202108220901.8r4gf0hB-lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210826173451.93165-4-andraprs@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 09:18:20AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   9ff50bf2f2ff5fab01cac26d8eed21a89308e6ef
-> commit: 3bbf0783636be8fd672907df25904288f14566f2 crypto: hisilicon/qm - supports to inquiry each function's QoS
-> date:   9 weeks ago
-> compiler: ia64-linux-gcc (GCC) 11.2.0
+On Thu, Aug 26, 2021 at 08:34:51PM +0300, Andra Paraschiv wrote:
+> Fix the reported issues from checkpatch and kernel-doc scripts.
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Update the copyright statements to include 2021, where changes have been
+> made over this year.
+> 
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
 
----8<---
-The function qm_qos_value_init expects an unsigned integer but
-is incorrectly supplying a signed format to sscanf.  This patch
-fixes it.
+Please break this up into "one patch per logical change" do not mix
+different things in the same commit.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+thanks,
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 55be00374468..2e9bbec7d1f5 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -4191,7 +4191,7 @@ static ssize_t qm_qos_value_init(const char *buf, unsigned long *val)
- 			return -EINVAL;
- 	}
- 
--	ret = sscanf(buf, "%ld", val);
-+	ret = sscanf(buf, "%lu", val);
- 	if (ret != QM_QOS_VAL_NUM)
- 		return -EINVAL;
- 
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+greg k-h
