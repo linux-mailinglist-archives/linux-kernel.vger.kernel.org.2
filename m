@@ -2,316 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260633F934A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D64C3F934D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244208AbhH0DxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:53:02 -0400
-Received: from mail-eopbgr1320114.outbound.protection.outlook.com ([40.107.132.114]:15292
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S244102AbhH0DxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:53:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=juVw9hKneOo+GvVol2quOkbbvt1qV3OJxPKgW7r0n7hUzSyFa5oE1c0mK2+UoIzkMwnZta99vYo+ymjB4LSmsMzt9wpO36kKqSdQbBu122sNnhKvGpvSE/lQSFBEbCP3LTQzRSjjf8Zfz0FW7r8cUktYD+XMsVmjWpDMnYAetssHHY8HrN+8N3L5DMcApPlKVbjTg82lhL1T4NxiwD9p6E9cFNtfU8FDBzP52Jkdgi3fhWDicjbIbVb2B+lRLCI62PND3Gl2mrVyxjoz2wqa85zIgWiqHWUBGZBa+Uz7xpP0pHaIm7xuebGpRErMxaR69hjvXriCG2XnVzmzJwYbbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=33KnKNTN6+QYy4L2GF53JZkNpH5SfV0omvitYZ9dSLA=;
- b=iKcgh4Uo4Nd2Mw9DbAi9cnp2VzKB7Baigj9PVEu2T3egIiBRIk6lD7lVWVQKHmjlMliWQ8AC7xGhkgciIcceh2anTKzKx4eUUVzSn3e42cuOgdrKqzpi0XwZ4LU8kVMb3tMn5IglekhOPA9/VZLsLlErHDq5IOcpyns7MQc6rSvXBIonat75Wnq6h/M1v+6AN7UQoYbYBQnhJ9NQvvhB9dOwhWwK1qS5MX8pWhcKCgouwCKxZgc+yLGZm0huUS2dRrvS6hBW53sSYtST6BFcG/C2uV5sF2fIhAi6lWYEvc+pzVMdsyFjdvK4MGaLOmLRgRuSgUEF56ireNnbOSzpZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=33KnKNTN6+QYy4L2GF53JZkNpH5SfV0omvitYZ9dSLA=;
- b=fb6u1fl0Y7He9TMYroDgIeNwBOk55RhPTa+MenS2IkTnJ3m9oUUWKASE6oRcHGH2shTlpyi81PyhE1kIzFfv5ZdjbOcgHbx7ZGMzOfrtSZTC7lSS8YBHY0+IzLvq3gjLUprZ+E3PlxT584wBuakA9TgLtlX81RLtKbsXasgDkfPYNqXwkSiceRrknxn0iX3BNOF2A28oZtXuwcuSvXYAmqA59rJWabfkb/DrAA/TraJnb0//uQObXzYuJpebd2Yeu9eTAV6JN1yZoslqbjd8rY8mgpVElt+qrKXJEBFcDmzGjFaTugxcPrLKI393CHCmi7T+9RzstCscrbpR/fdIDw==
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK2PR06MB3555.apcprd06.prod.outlook.com (2603:1096:202:3f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Fri, 27 Aug
- 2021 03:52:03 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::4c26:6668:f551:3a62%3]) with mapi id 15.20.4436.025; Fri, 27 Aug 2021
- 03:52:03 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     kernel test robot <lkp@intel.com>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>
-Subject: RE: [PATCH v3 3/4] soc: aspeed: Add eSPI driver
-Thread-Topic: [PATCH v3 3/4] soc: aspeed: Add eSPI driver
-Thread-Index: AQHXmkI+4Lhg3IxgrEO2OY2fsCr5kauGcBUAgABIZaA=
-Date:   Fri, 27 Aug 2021 03:52:03 +0000
-Message-ID: <HK0PR06MB377927BDCA9CC79B598251B291C89@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210826061623.6352-4-chiawei_wang@aspeedtech.com>
- <202108270732.OvBQ4K3D-lkp@intel.com>
-In-Reply-To: <202108270732.OvBQ4K3D-lkp@intel.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5032b78b-c5e1-454d-d4b9-08d9690e0819
-x-ms-traffictypediagnostic: HK2PR06MB3555:
-x-microsoft-antispam-prvs: <HK2PR06MB3555FEEFA7A50AB0E2C4541D91C89@HK2PR06MB3555.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZtamstZRW1qxOKSNlk5t/znM0wvuLZUfJLjpary1D36C4p73BJlQ/Vftk94EX1fer8NqTusvciHHva0RcXSIb3qdJdNwAtoIM7JGIgnSH6YPvLaU4AuT8QDM/wtC6aG24TPcNQtptcErG2S9nU8VRJxR+Gs6vh9RbyKFEszGaqxERzMMlm4UKnp7LSSZjPoSZ/il8j5lhNFF7W6+IxBef+VGv6dWZDLVZkv4PK0N+bLQpMl6QhSlqe2QXKYlbZ0JjK7B0nzcOwX/+6aXPqrKcJXSGoifWj2SoHU4rJgDrh5mhJzE96YDXks1j/xkyvYl207HCH5JDbvuV3NkTLkOLFYBf+EeX2hyhACW4iyzlnEQBc0QJjiQyGEpeLZF1vPjxGE3ivxynrLa06Rgy4JK/55VqJEjHw70dWdIYcRODZaJ+NLlsugM2p1WlJFGS1zQ/oI3JUUeTeby1KUTvHb1sdFEb4aYyOzq23IC1AdVi11skQjzPr2a9s1UdXlmRYl6ydxHBr5XYDL7i/CHwCNamkxEDQcl03xVa8VfF12RsvAMrHaJ5chA1IG42QKdE11DC+9zpdfCu6gOIOvU7QIYf668aIMhYEebD6GaxP9lqY15zY6+WN2k4ErbPBvlXyuNAw9GngVyVAP9REGJT/SQBra6ALRPUl8rmSDAOJkvHTvTf4jqDZ5OuK2uvlvQLpsnXWAReHAaM+6ez4Jx4MZx/4q7y0XtgKSNMWFrMo9XuzauzAIMP1GxL/GqgtSqp+8dxOd+5NNCJO1JrM2xQo6Un0kVnRf6aiPOWNCHhMzlmd0rPRYfpb6Vs9O5kawKhH5OCqZiAUlc1weCtqW2k5e0hA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39840400004)(136003)(376002)(366004)(5660300002)(26005)(966005)(9686003)(55016002)(86362001)(8936002)(71200400001)(7696005)(52536014)(316002)(110136005)(508600001)(76116006)(66946007)(6506007)(122000001)(33656002)(4326008)(38100700002)(66476007)(2906002)(38070700005)(7416002)(186003)(83380400001)(66556008)(66446008)(64756008)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gpftFQL3qkhB1eWYVLLoSEFgRUnEdVB5fgNOauqvo3H97RTtyNXUUenRrixE?=
- =?us-ascii?Q?i+RYPoC/YAJgEgFAeNcVkE84NuIcyOORqNO6DNiJJrFYSkfgLhbrFuijKxN6?=
- =?us-ascii?Q?Q69eZPyfxQQ4sWEjLX6NaNzWnyKQyM+edip0MBU4Wm3Rv1r7mCVNrAwUKCh0?=
- =?us-ascii?Q?kYeDUklj8xGcPC/K2F/juki37T8LaL0h6l5iApjZqE9Kdc4vhQVMDfD+82Wo?=
- =?us-ascii?Q?8G6jPi5Qn46KIbTWyAwHASXEr9GfBaw7fN4t4ysOM8sUrAKJvwsw3YLPs1+u?=
- =?us-ascii?Q?enjjCMNhJ/hYvXLkSD8Ulb+OzRlgdoPCn5TYaM77QBWuuuJhH3O1AqWkdjnw?=
- =?us-ascii?Q?FSBPsj99lnHBdqTouTVG814aOOltv4etaVJ/jWK1gZvAxqBPusWv/kiA+yVE?=
- =?us-ascii?Q?IJBQIKnHO7qU+i5gADxNqfB60MxFHuKdEvvMuVUsmcynihDsGBH3PEJGENAR?=
- =?us-ascii?Q?FQm/379nnDFoVlvED/8CMrD9OpevARYFAcKOk+Ed17ylTwrNzYz3jt/0pjAD?=
- =?us-ascii?Q?aaU2ANRxS/PQWiQD2ZOnaDR7hLsdVw6UU8rNtTcSczLVEf1YdeLe9Js8alWw?=
- =?us-ascii?Q?ed6jD/WooiTj4o0rRt94zDOXj8D+Fomp0MWUKwcDgU2Lbjn0fIj4rq5JZGMq?=
- =?us-ascii?Q?GXmFb439y8llVE+Y0jyA4f399jQhiFGrz+JYtM42T6xSdV+Bci6HH1C/BUgk?=
- =?us-ascii?Q?EJKCDBQbRPhOaljEt24tX3vgWqbQZ5orKJCfbawm0tgd6bHZ3KWkojnX2MnH?=
- =?us-ascii?Q?mSU9E5M0FvujCMiAnxwhWQ+dGl1Ti6G31D1loupdIUNO/6OmNnTCJVNATj+g?=
- =?us-ascii?Q?QAxfMGkg6hjx99mfE6OH1tNIdRq4Lw3Q4lbSTY0OevvQeuZl+RxqBjv6i8qq?=
- =?us-ascii?Q?uspPT7/gvjrNRrsJhuU0hbWWOLK2YOLMyLg3DYsysADhxDRcdBdHLqm/l2AJ?=
- =?us-ascii?Q?LMaHGBxVzDHuyph4p0P0gLC1d9rtMb2s7bNr4kB8b8qU/iYvFV4e4PdF0tmX?=
- =?us-ascii?Q?l62k7ISEq9+xKTnVGOr5CfRjhBgrVCdDBlX90lwkcJKQht5quhy2ZMOjyadP?=
- =?us-ascii?Q?37uog8GCn2Jo9YHTtdciSRvRAQkbYU+tQ7Lhgqn/ZBBA6t8MMRDpEH65CNK+?=
- =?us-ascii?Q?sSW9Vv1Y2G+ybRzsixHfNe6qg53kPydSc3Mf9bGpEHhrHhBv7n7sk2mp6lfd?=
- =?us-ascii?Q?5LsdZDph0EGY9IywuENjmFH4hH1jg+AFM7DgsyMFJa8KtcgEoTWrNrVncpJi?=
- =?us-ascii?Q?PBxNXFX4DK0HsZ9KGa0s5fcXGQ+dxKssnCnIt2T4le6BJGiLKbqsp9AWiAGq?=
- =?us-ascii?Q?4aUBc4yCFSxk+/aCAMOQKnIz?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S244134AbhH0D5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232207AbhH0D5j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 23:57:39 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334B0C061757;
+        Thu, 26 Aug 2021 20:56:51 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id m28so11528278lfj.6;
+        Thu, 26 Aug 2021 20:56:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4QxALuin9m8ppNyC3CMHVOVABk0j8/ChSzc0eVDXKkE=;
+        b=qhbaZz0pOlpvhrx8zOIWXWjl5cUvGIbqwjUMHRRI1XzEX4847o+tt8RdnkUq/r44XZ
+         o6DGulapCwGTv/47/cxgAH/py/6g5GCAwboJ3JeLHPFyQ/R2YCNpfI42Gg2KgsCGaFJr
+         f6C5eS3lt450dKOPsuAzr9KchmajlVUdD6w6K4xfmHkboOEv+z62bPSDQrA2FmqI5y33
+         AtonDRf5vNpxFFz9WySMe6xtNm2pZjC9M8HUwOuvg8ppBYyY2Kc57+N9osNmM/VmxaDh
+         JI2UZ5HXdz9TBVSmRL/VB35wAsxku/0LefYHLaKP7LQ0R/D6ZIMM3RKGlsuflKjNLJVC
+         XMew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4QxALuin9m8ppNyC3CMHVOVABk0j8/ChSzc0eVDXKkE=;
+        b=FPZv23JAImC2T8AiWo9xDhFY5e4apPfEVKUWp/ElktQ23KiU7xGG7nmBGviXDlmjJS
+         7u47xLcKQQ0ZaYx3qVvySKDgdTHHp/5gjWTilw69CjPNGJdCHq0v7c7mdrMknHfq31d2
+         vMPrDLqmjwha9eY2Q2OHKOsLXc2lEOCyLnVkUncXF8WsESph+cIvhZ/sS4Ik0vZ4EJhO
+         XjXu12zKm5PTGU9x3thhYA/O4a5z22PespODRo2b3lTRldUu2M0jUlHxuMt146slcm7P
+         uEGjchqDHWIpNZ9VHggMzQHZokghUXGd8cAnF6E04kZgj+vVryLAiVt76VQvlY7ltJbW
+         CaIg==
+X-Gm-Message-State: AOAM530CLNh8TJooMgAWQF2K7ZQBfrjcOp/zkJ9PslfK2kK69CBE6ndC
+        sPIC9gFrvWSJyolBlZl0c2jv9VT3ZaA=
+X-Google-Smtp-Source: ABdhPJyN0iu0lvrgrnLGNJNFOnzKrY/pZm1o2Hg3A2W3O70e7c2DDFP7SZROFbY90HGUv1rUR/uIAw==
+X-Received: by 2002:a05:6512:3a96:: with SMTP id q22mr5061526lfu.660.1630036609467;
+        Thu, 26 Aug 2021 20:56:49 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-17-251.dynamic.spd-mgts.ru. [94.29.17.251])
+        by smtp.googlemail.com with ESMTPSA id k15sm593540lja.72.2021.08.26.20.56.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 20:56:49 -0700 (PDT)
+Subject: Re: [PATCH v9 5/8] soc/tegra: pmc: Implement get_performance_state()
+ callback
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210827013415.24027-1-digetx@gmail.com>
+ <20210827013415.24027-6-digetx@gmail.com>
+ <20210827030557.aymjkky7athjxpow@vireshk-i7>
+ <9c2287ca-4c51-d782-a0a5-4b1227c2e9db@gmail.com>
+ <7aca6da3-89a7-a4a6-c720-8be4a105a696@gmail.com>
+Message-ID: <b27be681-7987-3cf9-b525-601118e0b57a@gmail.com>
+Date:   Fri, 27 Aug 2021 06:56:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5032b78b-c5e1-454d-d4b9-08d9690e0819
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2021 03:52:03.4545
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8kP5oJLj6fVT97Cuawwp6o4R5TtQx4ktvrkPYjTFci6TMLOaVbnhXkCr33iZgJMmq+hzfAZuY2++k6qgnY4hoS+sPRcGtq13L612e+KFofg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3555
+In-Reply-To: <7aca6da3-89a7-a4a6-c720-8be4a105a696@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aspeed 5th and 6th generation SoCs are based on the ARM 32-bits architectur=
-e.
-Should we follow the report to make the driver 64-bits compatible?
-Or revise the driver to use more specific data types?
+27.08.2021 06:47, Dmitry Osipenko пишет:
+> 27.08.2021 06:28, Dmitry Osipenko пишет:
+>> 27.08.2021 06:05, Viresh Kumar пишет:
+>>> On 27-08-21, 04:34, Dmitry Osipenko wrote:
+>>>> +	clk_opp_table = dev_pm_opp_set_clkname(dev, NULL);
+>>>> +	if (IS_ERR(clk_opp_table)) {
+>>>> +		dev_err(dev, "failed to set OPP clk: %pe\n", clk_opp_table);
+>>>> +		ret = PTR_ERR(clk_opp_table);
+>>>> +		goto put_hw;
+>>>> +	}
+>>>
+>>> Why do you need to do it ? OPP core already does this automatically.
+>>
+>> Indeed, thanks.
+>>
+> 
+> Actually, it doesn't work.
+> 
+> The devm_tegra_core_dev_init_opp_table() needs to set clk to support older device-tree and now OPP table already has clk being set.
+> 
+> WARNING: CPU: 2 PID: 92 at drivers/opp/core.c:2146 dev_pm_opp_set_clkname+0x97/0xb8
+> Modules linked in:
+> CPU: 2 PID: 92 Comm: kworker/u8:1 Tainted: G        W         5.14.0-rc7-next-20210826-00181-g6389463cbb0a #9318
+> Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+> Workqueue: events_unbound deferred_probe_work_func
+> [<c010cc91>] (unwind_backtrace) from [<c0108d35>] (show_stack+0x11/0x14)
+> [<c0108d35>] (show_stack) from [<c0a6c1bd>] (dump_stack_lvl+0x2b/0x34)
+> [<c0a6c1bd>] (dump_stack_lvl) from [<c011fc47>] (__warn+0xbb/0x100)
+> [<c011fc47>] (__warn) from [<c0a696e3>] (warn_slowpath_fmt+0x4b/0x80)
+> [<c0a696e3>] (warn_slowpath_fmt) from [<c07407b3>] (dev_pm_opp_set_clkname+0x97/0xb8)
+> [<c07407b3>] (dev_pm_opp_set_clkname) from [<c07407e3>] (devm_pm_opp_set_clkname+0xf/0x64)
+> [<c07407e3>] (devm_pm_opp_set_clkname) from [<c050735b>] (devm_tegra_core_dev_init_opp_table+0x23/0x144)
+> [<c050735b>] (devm_tegra_core_dev_init_opp_table) from [<c05aad09>] (gr3d_probe+0x111/0x348)
+> [<c05aad09>] (gr3d_probe) from [<c05ba69b>] (platform_probe+0x43/0x84)
+> [<c05ba69b>] (platform_probe) from [<c05b8c01>] (really_probe.part.0+0x69/0x200)
+> [<c05b8c01>] (really_probe.part.0) from [<c05b8e0b>] (__driver_probe_device+0x73/0xd4)
+> [<c05b8e0b>] (__driver_probe_device) from [<c05b8ea1>] (driver_probe_device+0x35/0xd0)
+> [<c05b8ea1>] (driver_probe_device) from [<c05b92a9>] (__device_attach_driver+0x75/0x98)
+> [<c05b92a9>] (__device_attach_driver) from [<c05b769d>] (bus_for_each_drv+0x51/0x7c)
+> [<c05b769d>] (bus_for_each_drv) from [<c05b908f>] (__device_attach+0x8b/0x104)
+> [<c05b908f>] (__device_attach) from [<c05b81b3>] (bus_probe_device+0x5b/0x60)
+> [<c05b81b3>] (bus_probe_device) from [<c05b5d9f>] (device_add+0x293/0x65c)
+> [<c05b5d9f>] (device_add) from [<c0777a4f>] (of_platform_device_create_pdata+0x63/0x88)
+> [<c0777a4f>] (of_platform_device_create_pdata) from [<c0777b7d>] (of_platform_bus_create+0xfd/0x26c)
+> [<c0777b7d>] (of_platform_bus_create) from [<c0777dc5>] (of_platform_populate+0x45/0x84)
+> [<c0777dc5>] (of_platform_populate) from [<c0777e5d>] (devm_of_platform_populate+0x41/0x6c)
+> [<c0777e5d>] (devm_of_platform_populate) from [<c05490f9>] (host1x_probe+0x1e9/0x2c8)
+> [<c05490f9>] (host1x_probe) from [<c05ba69b>] (platform_probe+0x43/0x84)
+> [<c05ba69b>] (platform_probe) from [<c05b8c01>] (really_probe.part.0+0x69/0x200)
+> [<c05b8c01>] (really_probe.part.0) from [<c05b8e0b>] (__driver_probe_device+0x73/0xd4)
+> [<c05b8e0b>] (__driver_probe_device) from [<c05b8ea1>] (driver_probe_device+0x35/0xd0)
+> [<c05b8ea1>] (driver_probe_device) from [<c05b92a9>] (__device_attach_driver+0x75/0x98)
+> [<c05b92a9>] (__device_attach_driver) from [<c05b769d>] (bus_for_each_drv+0x51/0x7c)
+> [<c05b769d>] (bus_for_each_drv) from [<c05b908f>] (__device_attach+0x8b/0x104)
+> [<c05b908f>] (__device_attach) from [<c05b81b3>] (bus_probe_device+0x5b/0x60)
+> [<c05b81b3>] (bus_probe_device) from [<c05b8493>] (deferred_probe_work_func+0x57/0x78)
+> [<c05b8493>] (deferred_probe_work_func) from [<c0136f73>] (process_one_work+0x147/0x3f8)
+> [<c0136f73>] (process_one_work) from [<c0137759>] (worker_thread+0x21d/0x3f4)
+> [<c0137759>] (worker_thread) from [<c013c10f>] (kthread+0x123/0x140)
+> [<c013c10f>] (kthread) from [<c0100135>] (ret_from_fork+0x11/0x1c)
+> ---[ end trace f68728a0d3053b54 ]---
+> tegra-gr3d 54180000.gr3d: tegra-soc: failed to set OPP clk: -16
+> 
 
-Thanks.
+That's because devm_pm_opp_attach_genpd() holds the reference to OPP
+table on Tegra30 which uses multiple power domains. See
+gr3d_init_power() of the GR3D patch.
 
-Chiawei
-
-> From: kernel test robot <lkp@intel.com>
-> Sent: Friday, August 27, 2021 7:30 AM
->=20
-> Hi Chia-Wei,
->=20
-> I love your patch! Yet something to improve:
->=20
-> [auto build test ERROR on robh/for-next] [also build test ERROR on
-> arm/for-next keystone/next soc/for-next rockchip/for-next
-> arm64/for-next/core linus/master joel-aspeed/for-next v5.14-rc7
-> next-20210826] [cannot apply to xlnx/master] [If your patch is applied to=
- the
-> wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->=20
-> url:
-> https://github.com/0day-ci/linux/commits/Chia-Wei-Wang/arm-aspeed-Add-e
-> SPI-support/20210826-141737
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git fo=
-r-next
-> config: arm64-randconfig-r002-20210826 (attached as .config)
-> compiler: aarch64-linux-gcc (GCC) 11.2.0 reproduce (this is a W=3D1 build=
-):
->         wget
-> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross =
--O
-> ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         #
-> https://github.com/0day-ci/linux/commit/2980a1777c50754fe145f2e73ded873
-> 9931c0712
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review
-> Chia-Wei-Wang/arm-aspeed-Add-eSPI-support/20210826-141737
->         git checkout 2980a1777c50754fe145f2e73ded8739931c0712
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-11.2.0
-> make.cross ARCH=3Darm64
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->=20
-> All errors (new ones prefixed by >>):
->=20
->    In file included from drivers/soc/aspeed/aspeed-espi-ctrl.c:22:
->    drivers/soc/aspeed/aspeed-espi-perif.h: In function
-> 'aspeed_espi_perif_alloc':
-> >> drivers/soc/aspeed/aspeed-espi-perif.h:446:43: error: passing
-> >> argument 3 of 'of_property_read_u32' from incompatible pointer type
-> >> [-Werror=3Dincompatible-pointer-types]
->      446 |
-> &espi_perif->mcyc_saddr);
->          |
-> ^~~~~~~~~~~~~~~~~~~~~~~
->          |                                           |
->          |                                           phys_addr_t
-> * {aka long long unsigned int *}
->    In file included from include/linux/of_device.h:9,
->                     from drivers/soc/aspeed/aspeed-espi-ctrl.c:9:
->    include/linux/of.h:1249:45: note: expected 'u32 *' {aka 'unsigned int =
-*'} but
-> argument is of type 'phys_addr_t *' {aka 'long long unsigned int *'}
->     1249 |                                        u32 *out_value)
->          |                                        ~~~~~^~~~~~~~~
->    drivers/soc/aspeed/aspeed-espi-ctrl.c: In function
-> 'aspeed_espi_ctrl_probe':
->    drivers/soc/aspeed/aspeed-espi-ctrl.c:98:30: warning: cast from pointe=
-r to
-> integer of different size [-Wpointer-to-int-cast]
->       98 |         espi_ctrl->version =3D
-> (uint32_t)of_device_get_match_data(dev);
->          |                              ^
->    cc1: some warnings being treated as errors
->=20
->=20
-> vim +/of_property_read_u32 +446 drivers/soc/aspeed/aspeed-espi-perif.h
->=20
->    422
->    423	static void *aspeed_espi_perif_alloc(struct device *dev, struct
-> aspeed_espi_ctrl *espi_ctrl)
->    424	{
->    425		int rc;
->    426		struct aspeed_espi_perif *espi_perif;
->    427		struct aspeed_espi_perif_dma *dma;
->    428
->    429		espi_perif =3D devm_kzalloc(dev, sizeof(*espi_perif),
-> GFP_KERNEL);
->    430		if (!espi_perif)
->    431			return ERR_PTR(-ENOMEM);
->    432
->    433		espi_perif->ctrl =3D espi_ctrl;
->    434
->    435		init_waitqueue_head(&espi_perif->wq);
->    436
->    437		spin_lock_init(&espi_perif->lock);
->    438
->    439		mutex_init(&espi_perif->pc_rx_mtx);
->    440		mutex_init(&espi_perif->pc_tx_mtx);
->    441		mutex_init(&espi_perif->np_tx_mtx);
->    442
->    443		espi_perif->mcyc_enable =3D
-> of_property_read_bool(dev->of_node, "perif,memcyc-enable");
->    444		if (espi_perif->mcyc_enable) {
->    445			rc =3D of_property_read_u32(dev->of_node,
-> "perif,memcyc-src-addr",
->  > 446						  &espi_perif->mcyc_saddr);
->    447			if (rc) {
->    448				dev_err(dev, "cannot get Host source address for
-> memory cycle\n");
->    449				return ERR_PTR(-ENODEV);
->    450			}
->    451
->    452			rc =3D of_property_read_u32(dev->of_node,
-> "perif,memcyc-size",
->    453						  &espi_perif->mcyc_size);
->    454			if (rc) {
->    455				dev_err(dev, "cannot get size for memory cycle\n");
->    456				return ERR_PTR(-ENODEV);
->    457			}
->    458
->    459			if (espi_perif->mcyc_size < PERIF_MEMCYC_SIZE_MIN)
->    460				espi_perif->mcyc_size =3D PERIF_MEMCYC_SIZE_MIN;
->    461			else
->    462				espi_perif->mcyc_size =3D
-> roundup_pow_of_two(espi_perif->mcyc_size);
->    463
->    464			espi_perif->mcyc_mask =3D ~(espi_perif->mcyc_size - 1);
->    465			espi_perif->mcyc_virt =3D dma_alloc_coherent(dev,
-> espi_perif->mcyc_size,
->    466								   &espi_perif->mcyc_taddr,
-> GFP_KERNEL);
->    467			if (!espi_perif->mcyc_virt) {
->    468				dev_err(dev, "cannot allocate memory cycle
-> region\n");
->    469				return ERR_PTR(-ENOMEM);
->    470			}
->    471		}
->    472
->    473		if (of_property_read_bool(dev->of_node, "perif,dma-mode")) {
->    474			dma =3D &espi_perif->dma;
->    475
->    476			dma->pc_tx_virt =3D dma_alloc_coherent(dev, PAGE_SIZE,
->    477							     &dma->pc_tx_addr,
-> GFP_KERNEL);
->    478			if (!dma->pc_tx_virt) {
->    479				dev_err(dev, "cannot allocate posted TX DMA
-> buffer\n");
->    480				return ERR_PTR(-ENOMEM);
->    481			}
->    482
->    483			dma->pc_rx_virt =3D dma_alloc_coherent(dev, PAGE_SIZE,
->    484							     &dma->pc_rx_addr,
-> GFP_KERNEL);
->    485			if (!dma->pc_rx_virt) {
->    486				dev_err(dev, "cannot allocate posted RX DMA
-> buffer\n");
->    487				return ERR_PTR(-ENOMEM);
->    488			}
->    489
->    490			dma->np_tx_virt =3D dma_alloc_coherent(dev, PAGE_SIZE,
->    491					&dma->np_tx_addr, GFP_KERNEL);
->    492			if (!dma->np_tx_virt) {
->    493				dev_err(dev, "cannot allocate non-posted TX DMA
-> buffer\n");
->    494				return ERR_PTR(-ENOMEM);
->    495			}
->    496
->    497			espi_perif->dma_mode =3D 1;
->    498		}
->    499
->    500		espi_perif->mdev.parent =3D dev;
->    501		espi_perif->mdev.minor =3D MISC_DYNAMIC_MINOR;
->    502		espi_perif->mdev.name =3D devm_kasprintf(dev, GFP_KERNEL,
-> "%s", PERIF_MDEV_NAME);
->    503		espi_perif->mdev.fops =3D &aspeed_espi_perif_fops;
->    504		rc =3D misc_register(&espi_perif->mdev);
->    505		if (rc) {
->    506			dev_err(dev, "cannot register device\n");
->    507			return ERR_PTR(rc);
->    508		}
->    509
->    510		aspeed_espi_perif_enable(espi_perif);
->    511
->    512		return espi_perif;
->    513	}
->    514
->=20
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+It works in case of a single-domain hardware.
