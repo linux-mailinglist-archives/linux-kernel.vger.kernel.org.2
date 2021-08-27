@@ -2,109 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD803FA129
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEC63FA12B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhH0V2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 17:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
+        id S231858AbhH0Vaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 17:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbhH0V2g (ORCPT
+        with ESMTP id S231696AbhH0Vae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 17:28:36 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA71EC0613D9;
-        Fri, 27 Aug 2021 14:27:46 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id k24so6956953pgh.8;
-        Fri, 27 Aug 2021 14:27:46 -0700 (PDT)
+        Fri, 27 Aug 2021 17:30:34 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54273C0613D9;
+        Fri, 27 Aug 2021 14:29:45 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so9641281otf.6;
+        Fri, 27 Aug 2021 14:29:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=rpHtTbp15HJh/ptbaGOZzKJv8NxAlmEFpkpJjglISck=;
-        b=qybuEzO+6JTEALszutJES4QgB8s8ZfxvsPEDS5dKp4GuFf2drQOyt8uKwBrHhGx0SB
-         R2BhAabUOtNe2U7JJceKd9zQwXKD7u1IAh1cG1TJZWQubnZ2szfDc9B5qYYtMY1AhotR
-         LtppI2dvm4dNOacvJ+26YW0fOTtVXYyPCHWMqH14BdgZ5nqo2hxSJcwQtQETZNdJbjJ3
-         cFWbwlcSrehlJphrGoOcJo8eo48Mxjb7gMBrgZDDhqc76JodkK9PwijKZpqYLiN/wv7p
-         b48QkJBv/n1wysZ/o2lbJ2CztKr3d9IwKbgbDPAL7t/2FzD3EN6zWkcVZHVLIdid9nEX
-         6vIw==
+        bh=N9loi6rYVBIbSW3ILes00XaIut5iSfuAjQvw0o+MDE4=;
+        b=VaOvyNrEz5HT7JnJX3aSqRR/KYkk7v3nZ2KqaRn+Rk6gA4e6gSE5Qf5wqsYDPJCWpa
+         sK/Ab/E+eKVowMVPfjJ7gftA5xDhcKmZOHwOHhn5frHJ5Gikbmj4NIVtiIhkE08eLR3G
+         KlWuv8HHXSKsJPhpvDEqZxgDAFnHlw6XkFI6/q9ujSKLw2+tLZ0mn+0Lm3ahKS3AaTk+
+         VndMVQQxjC+ZdzBFobMEl6t3vEyx/kDreHjd46pACbiX4v4r44JU+9zLsXLPMrs7xz1p
+         46Q2MBWYcPPaMXy4GyzBOfsWczNu9F8TSJSb4uMZkvueT9rwYzKamoXRlA2f40jI4y89
+         io1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=rpHtTbp15HJh/ptbaGOZzKJv8NxAlmEFpkpJjglISck=;
-        b=Vv6UaMylbaQnKG6SwxnetIKVjtQ7NkMEcc7I+enQJ0p5+lw87JradjHlCf0t8ZKxFD
-         /rmyGnRfzCmH6XDMAl4cpwLskDbV9mqhcwKnqizXh2BDyAr/IwdMUFOsAKa98VLJkr6x
-         +tnzDG5WH3/nt/7ljh3D7nU2Kze2Kn2WTvzIo17fqMxzDha6hHsCKyCT2Jq94YoW3nkm
-         BFQOX0V5cbAN/YnCKg/G/ve0hn073wS+liqtXVXvt7E4TQe2vBc8YWgMbC2KvV4AEVrR
-         ONiafa/mO3nwVq8OhUXM0elCMDdyCYVtvk09rR7Ol1tl36iVnOHIkqfIECUMHJzanCyu
-         pGVw==
-X-Gm-Message-State: AOAM533uzTRXMDq5owfxD+miQHZvzYXGpClEfWUXVEltL+zUJDBmPrZp
-        SHfMMAyEmvytblQoxZ7Uhe0=
-X-Google-Smtp-Source: ABdhPJxQBn594lxRsCn5MmX28sihnOF3tWTEyNMqRzoJJqG2Qp6te4ezL6RmZDqxpsnUlJetM8VXHA==
-X-Received: by 2002:a65:6287:: with SMTP id f7mr9479799pgv.444.1630099666286;
-        Fri, 27 Aug 2021 14:27:46 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id x13sm7290038pjh.30.2021.08.27.14.27.45
+        bh=N9loi6rYVBIbSW3ILes00XaIut5iSfuAjQvw0o+MDE4=;
+        b=FQGzmoxWElkbNvz+Cr7TGZWSKcPDdHxQ4z06ccFkJ0X6Px3olxW3YYVsWHq/Q8DnhZ
+         wOZEXkwc/z/sMbTpBKbVpAWjOgX7qqku8cHWzVdHXjE8vD5NJodfBbfY7CYIBJxKqEVc
+         BvpII48aI4WsKZx28Kkocgl7tY4BcLb2mp2/yF+v36WaTdwpYqce20pYT2wRdQQ7Bogx
+         emoHSMFITdBu/hNuRc2pNEUqtseIUFl7PRnh4nVcazSb4f2R7X+u10At3fRtt6s/ljZY
+         BEK/xm/9OzoDLMfnPrwZQaYas6GnConjTQBmoM3Vn3fseJ6/X0w2jenFNHmwIEbDrHsk
+         JoHw==
+X-Gm-Message-State: AOAM531eNB49wmS4oXHUZa5RWzTlRQ4WN4OF6cA7oDcOrddbDq61Zj8y
+        dYyk1aQjc2QQYdIAIv45oBBw6svKSRo=
+X-Google-Smtp-Source: ABdhPJyktt1TjmNFsAckWfLrCWO/RlRm06k4KtQ7zYsKJwZoMT6DBGiChLUWL7hLbgWHDJKd/ENxQg==
+X-Received: by 2002:a05:6830:13c4:: with SMTP id e4mr9713858otq.58.1630099784743;
+        Fri, 27 Aug 2021 14:29:44 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u27sm1514572otj.6.2021.08.27.14.29.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 14:27:45 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 27 Aug 2021 11:27:44 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <YSlY0H/qeXQIGOfk@slm.duckdns.org>
-References: <20210825213750.6933-1-longman@redhat.com>
- <20210825213750.6933-6-longman@redhat.com>
- <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
- <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
- <YShjb2WwvuB4s4gX@slm.duckdns.org>
- <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
+        Fri, 27 Aug 2021 14:29:44 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 27 Aug 2021 14:29:42 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] hwmon: (adt7470) Use standard update_interval
+ property
+Message-ID: <20210827212942.GA716764@roeck-us.net>
+References: <20210826024121.15665-1-chris.packham@alliedtelesis.co.nz>
+ <20210826024121.15665-5-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
+In-Reply-To: <20210826024121.15665-5-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Fri, Aug 27, 2021 at 05:19:31PM -0400, Waiman Long wrote:
-> Well, that is a valid point. The cpus may have been offlined when a
-> partition is being created. I can certainly relent on this check in forming
-> a partition. IOW, cpus_allowed can contain some or all offline cpus and a
-> valid (some are online) or invalid (all are offline) partition can be
-> formed. I can also allow an invalid child partition to be formed with an
-> invalid parent partition. However, the cpu exclusivity rules will still
-> apply.
+On Thu, Aug 26, 2021 at 02:41:21PM +1200, Chris Packham wrote:
+> Instead of the non-standard auto_update_interval make use of the
+> update_interval property that is supported by the hwmon core.
 > 
-> Other than that, do you envision any other circumstances where we should
-> allow an invalid partition to be formed?
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> Notes:
+>     I kind of anticipate a NAK on this because it affects the ABI. But I figured
+>     I'd run it past the ML to see if moving towards the hwmon core is worth the hit
+>     in ABI compatibility.
+>     
+I personally don't mind (most likely no one is using it anyway), but let's
+wait until after the upcoming commit window closes to give people time to
+complain.
 
-Now that most restrictions are removed from configuration side, just go all
-the way? Given that the user must check the status afterwards anyway, I
-don't see technical or even usability reasons for leaving some pieces
-behind. Going all the way would be easier to use too - bang in the target
-config and read the resulting state to reliably find out why a partition
-isn't valid, especially if we list *all* the reasons so that the user can
-tell whether the configuration is as intended immediately.
+Guenter
 
-Thanks.
-
--- 
-tejun
+>     Changes in v2:
+>     - none
+> 
+>  drivers/hwmon/adt7470.c | 64 +++++++++++++++++++++++++----------------
+>  1 file changed, 39 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/hwmon/adt7470.c b/drivers/hwmon/adt7470.c
+> index db19a52b13de..7afbd1e4721e 100644
+> --- a/drivers/hwmon/adt7470.c
+> +++ b/drivers/hwmon/adt7470.c
+> @@ -469,35 +469,37 @@ static struct adt7470_data *adt7470_update_device(struct device *dev)
+>  	return err < 0 ? ERR_PTR(err) : data;
+>  }
+>  
+> -static ssize_t auto_update_interval_show(struct device *dev,
+> -					 struct device_attribute *devattr,
+> -					 char *buf)
+> -{
+> -	struct adt7470_data *data = adt7470_update_device(dev);
+> -
+> -	if (IS_ERR(data))
+> -		return PTR_ERR(data);
+> -
+> -	return sprintf(buf, "%d\n", data->auto_update_interval);
+> -}
+> -
+> -static ssize_t auto_update_interval_store(struct device *dev,
+> -					  struct device_attribute *devattr,
+> -					  const char *buf, size_t count)
+> +static int adt7470_chip_read(struct device *dev, u32 attr, long *val)
+>  {
+>  	struct adt7470_data *data = dev_get_drvdata(dev);
+> -	long temp;
+>  
+> -	if (kstrtol(buf, 10, &temp))
+> -		return -EINVAL;
+> +	switch (attr) {
+> +	case hwmon_chip_update_interval:
+> +		*val = data->auto_update_interval;
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+>  
+> -	temp = clamp_val(temp, 0, 60000);
+> +	return 0;
+> +}
+>  
+> -	mutex_lock(&data->lock);
+> -	data->auto_update_interval = temp;
+> -	mutex_unlock(&data->lock);
+> +static int adt7470_chip_write(struct device *dev, u32 attr, long val)
+> +{
+> +	struct adt7470_data *data = dev_get_drvdata(dev);
+>  
+> -	return count;
+> +	switch (attr) {
+> +	case hwmon_chip_update_interval:
+> +		val = clamp_val(val, 0, 60000);
+> +		mutex_lock(&data->lock);
+> +		data->auto_update_interval = val;
+> +		mutex_unlock(&data->lock);
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  static ssize_t num_temp_sensors_show(struct device *dev,
+> @@ -1034,7 +1036,6 @@ static ssize_t pwm_auto_temp_store(struct device *dev,
+>  
+>  static DEVICE_ATTR_RW(alarm_mask);
+>  static DEVICE_ATTR_RW(num_temp_sensors);
+> -static DEVICE_ATTR_RW(auto_update_interval);
+>  
+>  static SENSOR_DEVICE_ATTR_RW(force_pwm_max, force_pwm_max, 0);
+>  
+> @@ -1066,7 +1067,6 @@ static SENSOR_DEVICE_ATTR_RW(pwm4_auto_channels_temp, pwm_auto_temp, 3);
+>  static struct attribute *adt7470_attrs[] = {
+>  	&dev_attr_alarm_mask.attr,
+>  	&dev_attr_num_temp_sensors.attr,
+> -	&dev_attr_auto_update_interval.attr,
+>  	&sensor_dev_attr_force_pwm_max.dev_attr.attr,
+>  	&sensor_dev_attr_pwm1_auto_point1_pwm.dev_attr.attr,
+>  	&sensor_dev_attr_pwm2_auto_point1_pwm.dev_attr.attr,
+> @@ -1097,6 +1097,8 @@ static int adt7470_read(struct device *dev, enum hwmon_sensor_types type, u32 at
+>  			int channel, long *val)
+>  {
+>  	switch (type) {
+> +	case hwmon_chip:
+> +		return adt7470_chip_read(dev, attr, val);
+>  	case hwmon_temp:
+>  		return adt7470_temp_read(dev, attr, channel, val);
+>  	case hwmon_fan:
+> @@ -1112,6 +1114,8 @@ static int adt7470_write(struct device *dev, enum hwmon_sensor_types type, u32 a
+>  			int channel, long val)
+>  {
+>  	switch (type) {
+> +	case hwmon_chip:
+> +		return adt7470_chip_write(dev, attr, val);
+>  	case hwmon_temp:
+>  		return adt7470_temp_write(dev, attr, channel, val);
+>  	case hwmon_fan:
+> @@ -1129,6 +1133,15 @@ static umode_t adt7470_is_visible(const void *_data, enum hwmon_sensor_types typ
+>  	umode_t mode = 0;
+>  
+>  	switch (type) {
+> +	case hwmon_chip:
+> +		switch (attr) {
+> +		case hwmon_chip_update_interval:
+> +			mode = 0644;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+>  	case hwmon_temp:
+>  		switch (attr) {
+>  		case hwmon_temp:
+> @@ -1187,6 +1200,7 @@ static const struct hwmon_ops adt7470_hwmon_ops = {
+>  };
+>  
+>  static const struct hwmon_channel_info *adt7470_info[] = {
+> +	HWMON_CHANNEL_INFO(chip, HWMON_C_UPDATE_INTERVAL),
+>  	HWMON_CHANNEL_INFO(temp,
+>  			HWMON_T_INPUT | HWMON_T_MIN | HWMON_T_MAX | HWMON_T_ALARM,
+>  			HWMON_T_INPUT | HWMON_T_MIN | HWMON_T_MAX | HWMON_T_ALARM,
