@@ -2,227 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968CA3FA13F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780D03FA141
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbhH0VqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 17:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
+        id S232066AbhH0VqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 17:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhH0VqQ (ORCPT
+        with ESMTP id S232039AbhH0VqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 17:46:16 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB65C0613D9;
-        Fri, 27 Aug 2021 14:45:27 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so9664529otg.11;
-        Fri, 27 Aug 2021 14:45:27 -0700 (PDT)
+        Fri, 27 Aug 2021 17:46:23 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F6FC0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 14:45:33 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id s11so6986208pgr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 14:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7ouZTg4zsFx0uMVk4ebH+S61geCrhsSVEPoyVZAJgaQ=;
-        b=Cof9235zkIdizb3baMDkhJmYgicHTyasHHeKSbkwcGPwTN6+6CuNuX3SoBqhDwTczf
-         +/6P/O+31vN/UrYF9kQvtHehfZgmvGY6l1k+TEy813hG+pInhBXsrg3dA98ShzDCYGzQ
-         A/ZMSoExgb9Thyxw4Vou8BxaJVmNS1DYn4tdFczMERJPMnz5rPnIY2AcsGrUIdCi+JMV
-         d4q/oS3bUXb0zsZUpvEGWLbs9pqhlw31nP+VMVQnl7Z8xw9E7nEhPzFa8mlEnHxPYfme
-         CHCcmufEQ52bi2Yym5gYxzEvoLgcOY7ZFfvkYEmmbV+3X329+8k+AqZFh+WXOar9xQQS
-         zC/Q==
+        h=cc:to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=THd4GECwsu9YSndkCUb5P9tLsH3805gL0R5q0qHaVUE=;
+        b=ulW+3y2aaOKoeTsCJ3dzAaDHmwmEsbVbPPSglJq+a1bL1L2QhZ3UCCFchk0x/nk7u9
+         fQP7Y+StkXLagQHdb8Wo5UJW1sKwdAuSO7M3jzOxg0TPbaVDKrJvR9ZwBI6AXkaTn3rP
+         ciOCVmzvL/Jx/6f91UuKVhb0LsF3ht/UCITXfymyjdIgsnqqvmX99HlFONDG4Vl5PyVS
+         S1tp3rsZVJX8WHDjV5BDdF51A8+WHo3ohgSX1CN6iMrSI6fTNAG9hI0/cmxfMdnLGcn3
+         eyGlyCty8TieE3nbHGbFDNL9juNMBLfOUZ4nlobzwCpdUxQSRD5BffWoW+xZDkBLQ7/s
+         NQvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7ouZTg4zsFx0uMVk4ebH+S61geCrhsSVEPoyVZAJgaQ=;
-        b=eDAHhOBAuxKChLS2uqemn902Hxika19E9btFMFBd0mcHwFC+PUKVnfw9iKr2GEW4bI
-         9loEg/V/afVECTDiZG3jbmcBP1S7koG84NriynwyIqtopbrDFqTFf0P63kRvsXeuBdkL
-         dM8eGtMqlE9y+TxSC88EGCEmKs0hmrqWydo7k2naGM51+vcogpfY/TXFH0xYmurDWuHB
-         mPQ7AEqPHuskZy1OnPhy8fa1dnuOwAvUTrhVpwUvp2lN7lT8eo86GFugNnVOdnN1iWts
-         ZwJlUMFiObSAqM6BHazEh/vPLbjFnS2Fb732gMgxuaYO7xNB45vRPz2kM0wiprtepuxS
-         Ir1A==
-X-Gm-Message-State: AOAM5331pAK0mc/jT1pVwW6feba72Hrwayb1DqnnoWPeZGLmSURyxGFC
-        BGSG7JK2eS+5e936PTdl1hS/cJaD9d4=
-X-Google-Smtp-Source: ABdhPJyzDnRWqTspGlf7kEb23/DrG5O8uEQibg9lWAsqsjcmMWndEQ4Jc3T0HI0nFqDdXwFijHCReA==
-X-Received: by 2002:a05:6830:2151:: with SMTP id r17mr10034408otd.141.1630100726509;
-        Fri, 27 Aug 2021 14:45:26 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m16sm1440768oop.3.2021.08.27.14.45.25
+        h=x-gm-message-state:cc:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=THd4GECwsu9YSndkCUb5P9tLsH3805gL0R5q0qHaVUE=;
+        b=XvQ9UNswZz6aHJ3HNMTSpt6kOD0uE+/AvhHOKDJPLh9B+RdKqOHpT2ARGy0dozu1ZD
+         TFD0eHR+/VSrXQT4hVpfS/LLaUOmttH7L/jLf3a72TlMEXO8ognUIzQHofbPFsbg12W7
+         j1M4Hm42AJ8gNP+KzLPjJtr+eOIfkAsnxh7IgxWOQxOEulCCtElQZyyJ0D0VqNhgWQgl
+         mlN2WiiCkKjtDBMI7o8Gu645Uoc51gh01/lJwXVWpO0lFVeWSisssSPuY6VvtPNYeyB4
+         a6EhvUA4EYqiOlTbKyqu1SIvW2lfMCZruaYV/LSncubCNp7ofoAJ4yVOz/1A3S0jYL7Y
+         5JEw==
+X-Gm-Message-State: AOAM533QAVJqgJ+tzOssvZ/tCSRz/28CIrnUKZQFEBNCKQ5yMfXb+YyJ
+        80jSNsNNpjwtisJPnbUeaqIDWQCjtRM=
+X-Google-Smtp-Source: ABdhPJydp76ftTnQkcw9DOB/A3RVED+d/wIJFCLSJdCnR5Y8AJE18oldOd3TsSFpQMFMzRrWxN0m7w==
+X-Received: by 2002:a05:6a00:230e:b029:3c4:24ff:969d with SMTP id h14-20020a056a00230eb02903c424ff969dmr11110849pfh.44.1630100733315;
+        Fri, 27 Aug 2021 14:45:33 -0700 (PDT)
+Received: from [192.168.1.71] (122-61-176-117-fibre.sparkbb.co.nz. [122.61.176.117])
+        by smtp.gmail.com with ESMTPSA id n11sm13869894pjh.23.2021.08.27.14.45.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 14:45:26 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>
-Cc:     Clemens Ladisch <clemens@ladisch.de>, linux-hwmon@vger.kernel.org,
-        Gabriel Craciunescu <nix.or.die@googlemail.com>,
-        Wei Huang <wei.huang2@amd.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210827201527.24454-1-mario.limonciello@amd.com>
- <20210827201527.24454-4-mario.limonciello@amd.com>
- <20210827210648.GA678755@roeck-us.net>
- <90d283d0-06f6-baa5-b41b-fcd2f4b3ba99@amd.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 3/3] hwmon: (k10temp): Show errors failing to read
-Message-ID: <ebdfd938-d381-3c8f-8b7f-accfd90f4169@roeck-us.net>
-Date:   Fri, 27 Aug 2021 14:45:24 -0700
+        Fri, 27 Aug 2021 14:45:32 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Alejandro Colomar <alx.manpages@gmail.com>
+To:     lkml <linux-kernel@vger.kernel.org>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Subject: man-pages-5.13 is released
+Message-ID: <11ec92df-0b4c-16f2-a3bc-f55a59ad01ab@gmail.com>
+Date:   Fri, 27 Aug 2021 23:45:29 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <90d283d0-06f6-baa5-b41b-fcd2f4b3ba99@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 2:10 PM, Limonciello, Mario wrote:
-> On 8/27/2021 16:06, Guenter Roeck wrote:
->> On Fri, Aug 27, 2021 at 03:15:27PM -0500, Mario Limonciello wrote:
->>> Enabling Yellow Carp was initially not working "properly"
->>> because extra IDs were needed, but this wasn't obvious because fail values
->>> from `amd_smn_read` were ignored.
->>>
->>> Don't discard errors from any functions providing them, instead pass up
->>> to the caller.
->>>
->>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
->>> ---
->>>   drivers/hwmon/k10temp.c | 87 ++++++++++++++++++++++++-----------------
->>>   1 file changed, 52 insertions(+), 35 deletions(-)
->>>
->>> diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c
->>> index 38bc35ac8135..2edb49d39d22 100644
->>> --- a/drivers/hwmon/k10temp.c
->>> +++ b/drivers/hwmon/k10temp.c
->>> @@ -98,8 +98,8 @@ static DEFINE_MUTEX(nb_smu_ind_mutex);
->>>   struct k10temp_data {
->>>       struct pci_dev *pdev;
->>> -    void (*read_htcreg)(struct pci_dev *pdev, u32 *regval);
->>> -    void (*read_tempreg)(struct pci_dev *pdev, u32 *regval);
->>> +    int (*read_htcreg)(struct pci_dev *pdev, u32 *regval);
->>> +    int (*read_tempreg)(struct pci_dev *pdev, u32 *regval);
->>>       int temp_offset;
->>>       u32 temp_adjust_mask;
->>>       u32 show_temp;
->>> @@ -129,55 +129,65 @@ static const struct tctl_offset tctl_offset_table[] = {
->>>       { 0x17, "AMD Ryzen Threadripper 29", 27000 }, /* 29{20,50,70,90}[W]X */
->>>   };
->>> -static void read_htcreg_pci(struct pci_dev *pdev, u32 *regval)
->>> +static int read_htcreg_pci(struct pci_dev *pdev, u32 *regval)
->>>   {
->>> -    pci_read_config_dword(pdev, REG_HARDWARE_THERMAL_CONTROL, regval);
->>> +    return pci_read_config_dword(pdev, REG_HARDWARE_THERMAL_CONTROL, regval);
->>>   }
->>> -static void read_tempreg_pci(struct pci_dev *pdev, u32 *regval)
->>> +static int read_tempreg_pci(struct pci_dev *pdev, u32 *regval)
->>>   {
->>> -    pci_read_config_dword(pdev, REG_REPORTED_TEMPERATURE, regval);
->>> +    return pci_read_config_dword(pdev, REG_REPORTED_TEMPERATURE, regval);
->>>   }
->>> -static void amd_nb_index_read(struct pci_dev *pdev, unsigned int devfn,
->>> +static int amd_nb_index_read(struct pci_dev *pdev, unsigned int devfn,
->>>                     unsigned int base, int offset, u32 *val)
->>>   {
->>> +    int ret;
->>> +
->>>       mutex_lock(&nb_smu_ind_mutex);
->>> -    pci_bus_write_config_dword(pdev->bus, devfn,
->>> -                   base, offset);
->>> -    pci_bus_read_config_dword(pdev->bus, devfn,
->>> -                  base + 4, val);
->>> +    ret = pci_bus_write_config_dword(pdev->bus, devfn,
->>> +                     base, offset);
->>> +    if (ret)
->>> +        goto out;
->>> +    ret = pci_bus_read_config_dword(pdev->bus, devfn,
->>> +                    base + 4, val);
->>> +out:
->>>       mutex_unlock(&nb_smu_ind_mutex);
->>> +    return ret;
->>>   }
->>> -static void read_htcreg_nb_f15(struct pci_dev *pdev, u32 *regval)
->>> +static int read_htcreg_nb_f15(struct pci_dev *pdev, u32 *regval)
->>>   {
->>> -    amd_nb_index_read(pdev, PCI_DEVFN(0, 0), 0xb8,
->>> -              F15H_M60H_HARDWARE_TEMP_CTRL_OFFSET, regval);
->>> +    return amd_nb_index_read(pdev, PCI_DEVFN(0, 0), 0xb8,
->>> +                F15H_M60H_HARDWARE_TEMP_CTRL_OFFSET, regval);
->>>   }
->>> -static void read_tempreg_nb_f15(struct pci_dev *pdev, u32 *regval)
->>> +static int read_tempreg_nb_f15(struct pci_dev *pdev, u32 *regval)
->>>   {
->>> -    amd_nb_index_read(pdev, PCI_DEVFN(0, 0), 0xb8,
->>> -              F15H_M60H_REPORTED_TEMP_CTRL_OFFSET, regval);
->>> +    return amd_nb_index_read(pdev, PCI_DEVFN(0, 0), 0xb8,
->>> +                F15H_M60H_REPORTED_TEMP_CTRL_OFFSET, regval);
->>>   }
->>> -static void read_tempreg_nb_zen(struct pci_dev *pdev, u32 *regval)
->>> +static int read_tempreg_nb_zen(struct pci_dev *pdev, u32 *regval)
->>>   {
->>> -    amd_smn_read(amd_pci_dev_to_node_id(pdev),
->>> -             ZEN_REPORTED_TEMP_CTRL_BASE, regval);
->>> +    return amd_smn_read(amd_pci_dev_to_node_id(pdev),
->>> +                ZEN_REPORTED_TEMP_CTRL_BASE, regval);
->>>   }
->>> -static long get_raw_temp(struct k10temp_data *data)
->>> +static int get_raw_temp(struct k10temp_data *data, long *val)
->>>   {
->>>       u32 regval;
->>> -    long temp;
->>> +    int ret;
->>> -    data->read_tempreg(data->pdev, &regval);
->>> -    temp = (regval >> ZEN_CUR_TEMP_SHIFT) * 125;
->>> +    ret = data->read_tempreg(data->pdev, &regval);
->>> +    if (ret)
->>> +        return ret;
->>> +    *val = (regval >> ZEN_CUR_TEMP_SHIFT) * 125;
->>>       if (regval & data->temp_adjust_mask)
->>> -        temp -= 49000;
->>> -    return temp;
->>> +        *val -= 49000;
->>> +    if (*val < 0)
->>> +        return -EINVAL;
->>
->> Please don't do that. More on that see below.
->>
->>> +    return 0;
->>>   }
->>>   static const char *k10temp_temp_label[] = {
->>> @@ -212,24 +222,27 @@ static int k10temp_read_temp(struct device *dev, u32 attr, int channel,
->>>   {
->>>       struct k10temp_data *data = dev_get_drvdata(dev);
->>>       u32 regval;
->>> +    int ret;
->>>       switch (attr) {
->>>       case hwmon_temp_input:
->>>           switch (channel) {
->>>           case 0:        /* Tctl */
->>> -            *val = get_raw_temp(data);
->>> -            if (*val < 0)
->>> -                *val = 0;
->>
->> We have to take the history into account here. A negative value
->> is not an error per se, but it suggests that the chip returns wrong
->> data. See commit aef17ca12719 ("hwmon: (k10temp) Only apply temperature
->> offset if result is positive") for some of the background. I don't really
->> want to change that into an error return just because we don't know
->> what the chip is doing. Please retain the above code, either by fixing
->> the values up here or in get_raw_temp().
-> 
-> Actually I thought what I was doing *was* making it a lot less ambiguous.
-> 
-> The caller getting -EINVAL from get_raw_tempt will indicate that the data shouldn't be trusted rather than a surely wrong "0".
-> 
+Gidday,
 
-First, EINVAL is "Invalid argument" and thus most definitely the wrong
-error.
+Alex Colomar and I are proud to announce:
 
-Second, this is a logically different change and violates "one logical
-change per patch". You can try to argue this in a separate patch,
-but do not try sneak it in with an unrelated change.
+    man-pages-5.13 - man pages for Linux
 
-Plus, of course, I'd rather get code from AMD that does the right thing
-and reports the correct temperature in the observed situation.
+This release resulted from patches, bug reports, reviews, and
+comments from 40 contributors. The release includes
+around 200 commits that changed approximately 120 pages.
 
-Thanks,
-Guenter
+Tarball download:
+    http://www.kernel.org/doc/man-pages/download.html
+Git repository:
+    https://git.kernel.org/cgit/docs/man-pages/man-pages.git/
+Online changelog:
+    http://man7.org/linux/man-pages/changelog.html#release_5.13
+
+A short summary of the release is blogged at:
+https://linux-man-pages.blogspot.com/2021/08/man-pages-513-released.html
+
+The current version of the pages is browsable at:
+http://man7.org/linux/man-pages/
+
+A selection of changes in this release that may be of interest
+to readers of LKML is shown below.
+
+Cheers,
+
+Michael
+
+==================== Changes in man-pages-5.13 ====================
+
+Released: 2021-08-27, Christchurch
+
+
+New and rewritten pages
+-----------------------
+
+mount_setattr.2
+    Christian Brauner  [Alejandro Colomar, Michael Kerrisk]
+        New manual page documenting the mount_setattr() system call
+
+
+Newly documented interfaces in existing pages
+---------------------------------------------
+
+futex.2
+    Kurt Kanzenbach  [Alejandro Colomar, Thomas Gleixner, Michael Kerrisk]
+        Document FUTEX_LOCK_PI2
+
+ioctl_tty.2
+    Pali Rohár  [Alejandro Colomar, Michael kerrisk]
+        Document ioctls: TCGETS2, TCSETS2, TCSETSW2, TCSETSF2
+
+pidfd_open.2
+    Michael Kerrisk
+        Document PIDFD_NONBLOCK
+
+seccomp_unotify.2
+    Rodrigo Campos  [Alejandro Colomar]
+        Document SECCOMP_ADDFD_FLAG_SEND
+
+sigaction.2
+    Peter Collingbourne  [Alejandro Colomar, Michael Kerrisk]
+        Document SA_EXPOSE_TAGBITS and the flag support detection protocol
+
+statx.2
+    NeilBrown
+        Document STATX_MNT_ID
+
+capabilities.7
+user_namespaces.7
+    Michael Kerrisk, Kir Kolyshkin  [Alejandro Colomar]
+        Describe CAP_SETFCAP for mapping UID 0
+
+mount_namespaces.7
+    Michael Kerrisk  [Christian Brauner, Eric W. Biederman]
+        More clearly explain the notion of locked mounts
+            For a long time, this manual page has had a brief discussion of
+            "locked" mounts, without clearly saying what this concept is, or
+            why it exists. Expand the discussion with an explanation of what
+            locked mounts are, why mounts are locked, and some examples of the
+            effect of locking.
+
+user_namespaces.7
+    Michael Kerrisk
+        Document /proc/PID/projid_map
+
+ld.so.8
+    Michael Kerrisk
+        Document --list-tunables option added in glibc 2.33
+
+
+Global changes
+--------------
+
+Various pages
+    Michael Kerrisk
+        Fix EBADF error description
+            Make the description of the EBADF error for invalid 'dirfd' more
+            uniform. In particular, note that the error only occurs when the
+            pathname is relative, and that it occurs when the 'dirfd' is
+            neither valid *nor* has the value AT_FDCWD.
+
+Various pages
+    Michael Kerrisk
+        Terminology clean-up: "mount point" ==> "mount"
+            Many times, these pages use the terminology "mount point", where
+            "mount" would be better. A "mount point" is the location at which
+            a mount is attached. A "mount" is an association between a
+            filesystem and a mount point.
+
+
+Changes to individual pages
+---------------------------
+
+mount.2
+    Michael Kerrisk
+        ERRORS: add EPERM error for case where a mount is locked
+            Refer the reader to mount_namespaces(7) for details.
+
+open.2
+    Michael Kerrisk
+        Explicitly describe the EBADF error that can occur with openat()
+            In particular, specifying an invalid file descriptor number
+            in 'dirfd' can be used as a check that 'pathname' is absolute.
+    Michael Kerrisk
+        Clarify that openat()'s dirfd must be opened with O_RDONLY or O_PATH
+
+seccomp.2
+    Eric W. Biederman  [Kees Cook]
+        Clarify that bad system calls kill the thread (not the process)
+
+syscalls.2
+    Michael Kerrisk
+        Add quotactl_fd(); remove quotactl_path()
+            quotactl_path() was never wired up in Linux 5.13.
+            It was replaced instead by quotactl_fd(),
+    Michael Kerrisk
+        Add system calls that are new in 5.13
+
+wait.2
+    Michael Kerrisk
+        ERRORS: document EAGAIN for waitid() on a PID file descriptor
+
+termios.3
+    Pali Rohár  [Alejandro Colomar]
+        SPARC architecture has 4 different Bnnn constants
+    Pali Rohár  [Alejandro Colomar]
+        Add information how to set baud rate to any other value
+    Pali Rohár  [Alejandro Colomar]
+        Use bold style for Bnn and EXTn macro constants
+    Pali Rohár  [Alejandro Colomar]
+        Document missing baud-rate constants
+
+vdso.7
+    Michael Kerrisk  [Christophe Leroy]
+        Update CLOCK_REALTIME_COARSE + CLOCK_MONOTONIC_COARSE info for powerpc
+    Alejandro Colomar  [Christophe Leroy]
+        Add y2038 compliant gettime for ppc/32
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
