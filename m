@@ -2,263 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161F63F982F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 12:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF233F9839
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 12:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244850AbhH0KhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 06:37:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55189 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244774AbhH0Kg7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 06:36:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630060570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OK+rr9b/Jw0dJzAaDuML7H7rr3SvkFLHUl/CvBr97bA=;
-        b=bkcS9c84UjYazr0hUonIN8WUqBJnXp+Ect7yBnxLGvH3G5B085PW3a/MeYxGOv6MHja6LB
-        rIYDp6bBLWbCpLf3+Mw18seRv684yy1lYcOGCxAl2SxdOZ2QOVZNhfgBAX7PUBokmH9U58
-        CTJgTCm72QzXZoUVY2h3mqXnTmIgcew=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-bHu8u8cOMLG8usfLD48HZw-1; Fri, 27 Aug 2021 06:36:09 -0400
-X-MC-Unique: bHu8u8cOMLG8usfLD48HZw-1
-Received: by mail-ed1-f69.google.com with SMTP id g4-20020a056402180400b003c2e8da869bso3050632edy.13
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 03:36:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OK+rr9b/Jw0dJzAaDuML7H7rr3SvkFLHUl/CvBr97bA=;
-        b=YyqwUgzxsCxRBPlCj+JhROoGmtYnAeVbDeEmdYW5Xd5JTBLQg59NCwDr3+YUkjB7sz
-         rxUeSUCZAYwnbItlenLGzPj9iS8zUd0MBel86LhEk8M6knlAV+XERvzQ/qFHVj8Z4Emt
-         NQpe/zUqhm7/miI74MFaknhYYkK1EvAApUw9rYmePYBVFfdyPcp2bwQ+yPhzt39+CDVO
-         qBpE95+aA9pwJ6G4lQHgu+qiJRFgYzIZxxrj90w2Bb1kXIJks5oYHTsPABHFDELl3pxM
-         novDcPA0PqfAslTefcwPLx46Cjw6hjLqUxfuSZ2S5YaPlF0YqIhDmyy3PobSbPgTf5ba
-         enWw==
-X-Gm-Message-State: AOAM5328tSKfB5OfiajygvzXoU3d3vN54hr1JKk86xp5po3qusLNa+Uj
-        LBe4QU5+D20WBgjXn8ZkIFId3Kn4pUmXL4y8c+s664US9+ZQMLimGkFuW+3DWps+2nVkJvvBoKQ
-        /rqR0toJISYgTffoerH6s34xU
-X-Received: by 2002:a17:906:c252:: with SMTP id bl18mr9131856ejb.519.1630060567838;
-        Fri, 27 Aug 2021 03:36:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/hBwaZShGBxHr+PffpmFYGnPtNYQvxu+yonhbFtAD3+yTXCvYJm0WXNfxYm8Wbqb0411boA==
-X-Received: by 2002:a17:906:c252:: with SMTP id bl18mr9131837ejb.519.1630060567604;
-        Fri, 27 Aug 2021 03:36:07 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id o17sm3135949edc.58.2021.08.27.03.36.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 03:36:07 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] libata: libata: add ATA_HORKAGE_NO_NCQ_TRIM for
- Samsung 860 and 870 SSDs
-To:     Kate Hsuan <hpa@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-References: <20210827053344.15087-1-hpa@redhat.com>
- <20210827053344.15087-2-hpa@redhat.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <26680b02-ae3b-cbc8-4cb4-ca08722327df@redhat.com>
-Date:   Fri, 27 Aug 2021 12:36:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S244860AbhH0KqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 06:46:22 -0400
+Received: from mga05.intel.com ([192.55.52.43]:29581 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233193AbhH0KqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 06:46:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="303513952"
+X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
+   d="scan'208";a="303513952"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 03:45:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
+   d="scan'208";a="517268159"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 27 Aug 2021 03:45:03 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mJZM7-0002Sn-4M; Fri, 27 Aug 2021 10:45:03 +0000
+Date:   Fri, 27 Aug 2021 18:44:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/urgent] BUILD SUCCESS
+ 1a519dc7a73c977547d8b5108d98c6e769c89f4b
+Message-ID: <6128c201.pqJLs9/WwMJQjm5y%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210827053344.15087-2-hpa@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kate,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
+branch HEAD: 1a519dc7a73c977547d8b5108d98c6e769c89f4b  PCI/MSI: Skip masking MSI-X on Xen PV
 
-Some background info for other people following this thread, as discussed here:
-https://bugzilla.kernel.org/show_bug.cgi?id=201693
-https://bugzilla.kernel.org/show_bug.cgi?id=203475
+elapsed time: 723m
 
-There are a lot of users who are reporting disk issues (including data
-corruption with Samsung 860 and 870 SSDs. Coming up with fixes for this 
-has taken longer then it should because I failed to realize for a long
-time that there really are 2 separate issues here:
+configs tested: 129
+configs skipped: 3
 
-https://bugzilla.kernel.org/show_bug.cgi?id=203475#c34
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-"""
-So after completely re-reading / analyzing both this bug as well as bug 201693 with a fresh pair of eyes (since the last time I did this was a long time ago) I agree. After careful reading / analysis it seems that there really are 2 different bugs here impacting both the 860 EVO and the 870 EVO:
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210827
+powerpc              randconfig-c003-20210827
+arm                    vt8500_v6_v7_defconfig
+xtensa                    xip_kc705_defconfig
+mips                     loongson1b_defconfig
+powerpc                      ppc64e_defconfig
+parisc                generic-32bit_defconfig
+arm                          ep93xx_defconfig
+arm                         cm_x300_defconfig
+mips                           ip27_defconfig
+powerpc                 mpc8313_rdb_defconfig
+s390                             alldefconfig
+sh                           se7206_defconfig
+powerpc                      mgcoge_defconfig
+mips                             allyesconfig
+powerpc                     tqm8555_defconfig
+arm                        multi_v5_defconfig
+powerpc                 mpc85xx_cds_defconfig
+um                           x86_64_defconfig
+powerpc                   lite5200b_defconfig
+riscv                    nommu_virt_defconfig
+arm                         vf610m4_defconfig
+arm                          collie_defconfig
+m68k                       m5249evb_defconfig
+ia64                        generic_defconfig
+parisc                              defconfig
+sh                           se7712_defconfig
+m68k                        m5272c3_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                     akebono_defconfig
+arm                             ezx_defconfig
+sh                             sh03_defconfig
+m68k                          atari_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                        nlm_xlr_defconfig
+powerpc                        fsp2_defconfig
+m68k                             allmodconfig
+sparc                       sparc32_defconfig
+arm                        multi_v7_defconfig
+arc                          axs101_defconfig
+mips                         tb0219_defconfig
+nios2                         10m50_defconfig
+sh                   secureedge5410_defconfig
+powerpc                 canyonlands_defconfig
+arm                        oxnas_v6_defconfig
+m68k                          amiga_defconfig
+mips                        maltaup_defconfig
+arm                      footbridge_defconfig
+riscv             nommu_k210_sdcard_defconfig
+arm                          pxa168_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a014-20210827
+x86_64               randconfig-a015-20210827
+x86_64               randconfig-a016-20210827
+x86_64               randconfig-a012-20210827
+x86_64               randconfig-a011-20210827
+x86_64               randconfig-a013-20210827
+i386                 randconfig-a011-20210827
+i386                 randconfig-a016-20210827
+i386                 randconfig-a012-20210827
+i386                 randconfig-a014-20210827
+i386                 randconfig-a013-20210827
+i386                 randconfig-a015-20210827
+arc                  randconfig-r043-20210827
+riscv                randconfig-r042-20210827
+s390                 randconfig-r044-20210827
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-1. Queued Trim commands are causing issues on Intel + ASmedia + Marvell controllers
+clang tested configs:
+s390                 randconfig-c005-20210827
+i386                 randconfig-c001-20210827
+arm                  randconfig-c002-20210827
+riscv                randconfig-c006-20210827
+powerpc              randconfig-c003-20210827
+x86_64               randconfig-c007-20210827
+mips                 randconfig-c004-20210827
+x86_64               randconfig-a005-20210827
+x86_64               randconfig-a001-20210827
+x86_64               randconfig-a006-20210827
+x86_64               randconfig-a003-20210827
+x86_64               randconfig-a004-20210827
+x86_64               randconfig-a002-20210827
+i386                 randconfig-a006-20210827
+i386                 randconfig-a001-20210827
+i386                 randconfig-a002-20210827
+i386                 randconfig-a005-20210827
+i386                 randconfig-a004-20210827
+i386                 randconfig-a003-20210827
 
-2. Things are seriously broken on AMD controllers and only completely disabling NCQ altogether helps there.
-
-
-I will submit a kernel patch (with a Fixes tag so that it gets backported to stable series) for 1. right away; and I've asked a colleague to start working on a new ATA horkage flag which disables NCQ on AMD SATA controllers only, so that we can add that flag (together with the ATA_HORKAGE_NO_NCQ_TRIM flag which my patch adds) to the 860 EVO and the 870 EVO to also resolve 2.
-"""
-
-I asked Kate to write this patch to address 2., note this patch is to be applied
-on top of my " libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs"
-patch.
-
-Kate, thank you for your patch. There are several issues which need
-to be addressed before this patch can be accepted, starting with the
-commit message.
-
-It seems that you used the commit message as my patch as a template, but
-you forgot to change the Subject (the first line) for the next version please
-change the subject to something correctly describing this patch.
-
-I also see that you gave this patch a version of 2, but since this patch
-does not replace my patch, in other words it is a different patch you
-should have just made it v1. Anyways lets just make the next version v3
-to avoid confusion.
-
-The rest of the commit message should have 1 paragraph describing the reason
-why the patch is necessary + a second paragraph describing what the patch
-is doing to address this. Your cover-letter would be a good candidate for
-the second paragraph, resulting in for example something like this as
-body of the commit message:
-
-"""
-Many users are reporting that the Samsung 860 and 870 SSDs are having
-various issues when combined with AMD SATA controllers and only completely
-disabling NCQ helps to avoid these issues.
-
-Entirely disabling NCQ for Samsung 860/870 SSD will cause I/O performance
-drop. In this case, a flag ATA_HORKAGE_NONCQ_ON_AMD is introduced to used
-to perform additional check for these SSDs. If it finds it's parent ATA
-controller is AMD then NCQ will be disabled. Otherwise the NCQ is kept to
-enable.
-"""
-
-On 8/27/21 7:33 AM, Kate Hsuan wrote:
-> A flag ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL is added to disable NCQ
-> on AMD/MAREL/ASMEDIA chipsets.
-> 
-> Samsung 860/870 SSD are disabled to use NCQ trim functions but it will
-> lead to performace drop. From the bugzilla, we could realize the issues
-> only appears on those chipset mentioned above. So this flag could be
-> used to only disable NCQ on specific chipsets.
-> 
-> Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-> Signed-off-by: Kate Hsuan <hpa@redhat.com>
-> ---
->  drivers/ata/libata-core.c | 37 ++++++++++++++++++++++++++++++++-----
->  include/linux/libata.h    |  3 +++
->  2 files changed, 35 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-> index cc459ce90018..50f635669dd4 100644
-> --- a/drivers/ata/libata-core.c
-> +++ b/drivers/ata/libata-core.c
-> @@ -2119,6 +2119,8 @@ static inline u8 ata_dev_knobble(struct ata_device *dev)
->  static void ata_dev_config_ncq_send_recv(struct ata_device *dev)
->  {
->  	struct ata_port *ap = dev->link->ap;
-> +	struct device *parent = NULL;
-> +	struct pci_dev *pcidev = NULL;
->  	unsigned int err_mask;
->  
->  	if (!ata_log_supported(dev, ATA_LOG_NCQ_SEND_RECV)) {
-> @@ -2138,9 +2140,32 @@ static void ata_dev_config_ncq_send_recv(struct ata_device *dev)
->  		memcpy(cmds, ap->sector_buf, ATA_LOG_NCQ_SEND_RECV_SIZE);
->  
->  		if (dev->horkage & ATA_HORKAGE_NO_NCQ_TRIM) {
-> -			ata_dev_dbg(dev, "disabling queued TRIM support\n");
-> -			cmds[ATA_LOG_NCQ_SEND_RECV_DSM_OFFSET] &=
-> -				~ATA_LOG_NCQ_SEND_RECV_DSM_TRIM;
-> +			if (dev->horkage & ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL)
-> +			{
-> +				// get parent device for the controller vendor ID
-> +				for(parent = dev->tdev.parent; parent != NULL; parent = parent->parent)
-> +				{
-> +					if(dev_is_pci(parent))
-> +					{
-> +						pcidev = to_pci_dev(parent);
-> +						if (pcidev->vendor == PCI_VENDOR_ID_MARVELL ||
-> +							pcidev->vendor == PCI_VENDOR_ID_AMD 	||
-> +							pcidev->vendor == PCI_VENDOR_ID_ASMEDIA )
-> +						{
-> +							ata_dev_dbg(dev, "Disable NCQ -> vendor ID %x product ID %x\n", 
-> +												pcidev->vendor, pcidev->device);
-> +							cmds[ATA_LOG_NCQ_SEND_RECV_DSM_OFFSET] &=
-> +								~ATA_LOG_NCQ_SEND_RECV_DSM_TRIM;
-> +						}
-> +						break;
-> +					}
-> +				}
-> +			}else
-> +			{
-> +				ata_dev_dbg(dev, "disabling queued TRIM support\n");
-> +				cmds[ATA_LOG_NCQ_SEND_RECV_DSM_OFFSET] &=
-> +					~ATA_LOG_NCQ_SEND_RECV_DSM_TRIM;
-> +			}
-
-Please don't nest the handling of the new ATA_HORKAGE_NONCQ_ON_AMD flag with the handling of other flags.
-
-Also you are just disabling queued-trims now, which my patch already does, instead the new check should
-completely disable NCQ, this means moving the check to ata_dev_config_ncq() adding the new check
-after this check:
-
-        if (dev->horkage & ATA_HORKAGE_NONCQ) {
-                snprintf(desc, desc_sz, "NCQ (not used)");
-                return 0;
-        }
-
-And then do the same, but only if pcidev->vendor == PCI_VENDOR_ID_AMD.
-
-
-
->  		}
->  	}
->  }
-> @@ -3951,9 +3976,11 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
->  	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
->  						ATA_HORKAGE_ZERO_AFTER_TRIM, },
->  	{ "Samsung SSD 860*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
-> -						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-> +						ATA_HORKAGE_ZERO_AFTER_TRIM |
-> +						ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL, },
->  	{ "Samsung SSD 870*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
-> -						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-> +						ATA_HORKAGE_ZERO_AFTER_TRIM |
-> +						ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL, },
->  	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
->  						ATA_HORKAGE_ZERO_AFTER_TRIM, },
->  
-> diff --git a/include/linux/libata.h b/include/linux/libata.h
-> index 3fcd24236793..ec17f1f3fbf6 100644
-> --- a/include/linux/libata.h
-> +++ b/include/linux/libata.h
-> @@ -422,6 +422,9 @@ enum {
->  	ATA_HORKAGE_NOTRIM	= (1 << 24),	/* don't use TRIM */
->  	ATA_HORKAGE_MAX_SEC_1024 = (1 << 25),	/* Limit max sects to 1024 */
->  	ATA_HORKAGE_MAX_TRIM_128M = (1 << 26),	/* Limit max trim size to 128M */
-> +	ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL = (1 << 27), /*Disable NCQ only on 
-> +							ASMeida, AMD, and Marvell 
-> +							Chipset*/
-
-When we initially discussed this I know I said that we would need to disable
-NCQ on AMD + ASMEDIA + Marvell hosts, but after carefully reading both bugs again
-I've come to the conclusion that for Asmedia and Marvell SATA hosts just disabling
-trimmed queue as my patch does is enough. So please rename this to:
-
-ATA_HORKAGE_NONCQ_ON_AMD
-
-(and only check for an AMD vendor-id when doing the check).
-
->  
->  	 /* DMA mask for user DMA control: User visible values; DO NOT
->  	    renumber */
-> 
-
-Regards,
-
-Hans
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
