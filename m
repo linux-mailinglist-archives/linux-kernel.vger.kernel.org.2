@@ -2,230 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE643F9247
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 04:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9EB3F9248
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 04:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244054AbhH0CSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 22:18:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40705 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231613AbhH0CSq (ORCPT
+        id S244083AbhH0CUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 22:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244004AbhH0CUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 22:18:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630030678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fO10uE/NOQ1QMOqhqK2ZdAOz3mqX6cifhVdS/LXHtXw=;
-        b=EjmBmDddmX/var6qIjdMo9xIJ3UJ7f7wkeCOlm0pML2ZCw0l6JZ+CD0Q2VfxbhIJF9Z5mE
-        PCWdavX/voOYWzmjKF4xOBHeWGmBZrwGCHr7FT/kkzqzEVYNNbq/3I98o3PQugiS0skrYC
-        n9EDK395V4DzVY5K2MYZlyKnNenUNQI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-bXSrgr6fOHyAS2o-_zCvgA-1; Thu, 26 Aug 2021 22:17:56 -0400
-X-MC-Unique: bXSrgr6fOHyAS2o-_zCvgA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71E141082921;
-        Fri, 27 Aug 2021 02:17:55 +0000 (UTC)
-Received: from x61s-fbsd.aquini.net (unknown [10.3.128.46])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6227F18432;
-        Fri, 27 Aug 2021 02:17:53 +0000 (UTC)
-Date:   Thu, 26 Aug 2021 22:17:55 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Waiman Long <llong@redhat.com>, 1vier1@web.de
-Subject: Re: [PATCH] ipc: replace costly bailout check in sysvipc_find_ipc()
-Message-ID: <YShLU3VTtifYU8IR@x61s-fbsd.aquini.net>
-References: <20210809203554.1562989-1-aquini@redhat.com>
- <127e0132-50b7-9759-722c-3dea079877e5@colorfullife.com>
- <YSbA6n9kTXmAcUyh@optiplex-fbsd>
+        Thu, 26 Aug 2021 22:20:09 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADADC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 19:19:21 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id k24so4712461pgh.8
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 19:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Fudd8jhG4G4A8TwkFkc6LJ/nOYeKTZZ7GsfAF8ps2HA=;
+        b=ioQSQPB8D9MKu84GyC5cgvx9tWkRTwbjHbZSufgrUucdYRk+9P+kTkZlP6RN4MlVeW
+         QiO93lCjZV/Fh6SK/geKFBFDRgedEoZ0wg3UQkcLcdrGhQ5JRfsWPb2XtkK7JYK3fWNY
+         dUKYWAalDqikYs5OnLUvtK+fboeFWTPlSqAb8l1ruh5wjFxCSC8gHUI53vZKQO8KDYTd
+         WcOk6ZjrzNta6WgBzOC4+coi2PFbcoWkLhVbkIV3HU2RvNt1dLuGLpZghKkvN2WmX01m
+         guoIG+wWS94FclSn7meiJG9S6gAdotRVEHNFEKI3CKyBO7Um4Fxl/N9LKNH2Xbg9fMXT
+         bFdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Fudd8jhG4G4A8TwkFkc6LJ/nOYeKTZZ7GsfAF8ps2HA=;
+        b=Lhiq9WAKAWetb3iftUuvyWeebFjnAw3iV9oi/U/Za9KWpkezm9Iy0n4+epX8oXWE9N
+         nR7lMH5KfyoxMr2ZfVNbQ41TyOb7Brjj36S2WDliCF7MeW86SlXQV3yMjSmqxGK9EAyu
+         O9E2NBmAwqhxDnZNOBRyJcCICHTDLN1m5pc4jDlHEKbzi7nmL8KVK+p+DIXaKByuseZd
+         YUzinTRumrOwMPYCApiNVOZHMhosoi2tlA+cFlF7sl5P91EU5IYa05df5NHJG9KN1yQw
+         WDqrFF/lvMyGPmTj0Gs9o4UEB4O8vFp3qTqdDzmDe5szZP5XbVJVrchfQG32A8WK4l6X
+         DJhg==
+X-Gm-Message-State: AOAM531Ls5ID19dODR7sGGosr5WlmN077n5kds0bEwnqjfiGR+tl8Joj
+        cex0zHFtoWfAxTCWVH8fUKNVCfqY6T6gKUPhxzcHI/Zbaq5CVg==
+X-Google-Smtp-Source: ABdhPJzPncJRHk/FAgE2+ofNzYkFgWmhUlDvdavaj7iMan8VQN0/qLk92WXneZWSlbpZxcsOBukXrJSWMGoaSN67bmM=
+X-Received: by 2002:a63:fd12:: with SMTP id d18mr5934077pgh.129.1630030760887;
+ Thu, 26 Aug 2021 19:19:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSbA6n9kTXmAcUyh@optiplex-fbsd>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+From:   Krish Jain <krishjain02939@gmail.com>
+Date:   Fri, 27 Aug 2021 04:19:08 +0200
+Message-ID: <CAPGkw+wucg8DKwP0QRfamLHXMjXOYsQiKwdU=wX6LEbLv__XnA@mail.gmail.com>
+Subject: [PATCH] Declare the file_operations struct as const
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 06:15:06PM -0400, Rafael Aquini wrote:
-> On Fri, Aug 20, 2021 at 09:41:32PM +0200, Manfred Spraul wrote:
-> > Hi Rafael,
-> > 
-> > On 8/9/21 10:35 PM, Rafael Aquini wrote:
-> > > sysvipc_find_ipc() was left with a costly way to check if the offset
-> > > position fed to it is bigger than the total number of IPC IDs in use.
-> > > So much so that the time it takes to iterate over /proc/sysvipc/* files
-> > > grows exponentially for a custom benchmark that creates "N" SYSV shm
-> > > segments and then times the read of /proc/sysvipc/shm (milliseconds):
-> > >
-> > >      12 msecs to read   1024 segs from /proc/sysvipc/shm
-> > >      18 msecs to read   2048 segs from /proc/sysvipc/shm
-> > >      65 msecs to read   4096 segs from /proc/sysvipc/shm
-> > >     325 msecs to read   8192 segs from /proc/sysvipc/shm
-> > >    1303 msecs to read  16384 segs from /proc/sysvipc/shm
-> > >    5182 msecs to read  32768 segs from /proc/sysvipc/shm
-> > >
-> > > The root problem lies with the loop that computes the total amount of ids
-> > > in use to check if the "pos" feeded to sysvipc_find_ipc() grew bigger than
-> > > "ids->in_use". That is a quite inneficient way to get to the maximum index
-> > > in the id lookup table, specially when that value is already provided by
-> > > struct ipc_ids.max_idx.
-> > >
-> > > This patch follows up on the optimization introduced via commit 15df03c879836
-> > > ("sysvipc: make get_maxid O(1) again") and gets rid of the aforementioned
-> > > costly loop replacing it by a simpler checkpoint based on ipc_get_maxidx()
-> > > returned value, which allows for a smooth linear increase in time complexity
-> > > for the same custom benchmark:
-> > >
-> > >       2 msecs to read   1024 segs from /proc/sysvipc/shm
-> > >       2 msecs to read   2048 segs from /proc/sysvipc/shm
-> > >       4 msecs to read   4096 segs from /proc/sysvipc/shm
-> > >       9 msecs to read   8192 segs from /proc/sysvipc/shm
-> > >      19 msecs to read  16384 segs from /proc/sysvipc/shm
-> > >      39 msecs to read  32768 segs from /proc/sysvipc/shm
-> > 
-> > Could you run your test with the attached patch?
-> >
-> 
-> Manfred, 
-> 
-> Sorry it took me a while to get back to you here. (coming back from a short
-> leave). I'll take a look into your approach and report back in a few days.
->
+ From: Krish Jain <krishjain02939@gmail.com>
 
-Manfred,
+Declare the file_operations struct as const as done elsewhere in the
+kernel, as there are no modifications to its fields.
 
-as promised I re-ran the tests, adjusting the shm workload to leave a gap in
-the ids between the runs (effectivelly deleting all previously created segments
-before recreating the batch for the next turn), and the outcome between the two
-patches is virtually the same:
+Signed-off-by: Krish Jain <krishjain02939@gmail.com>
+---
+ drivers/staging/android/ashmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-* your patch:
+diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+index ddbde3f8430e..ec18f2ddd66c 100644
+--- a/drivers/staging/android/ashmem.c
++++ b/drivers/staging/android/ashmem.c
+@@ -377,7 +377,7 @@ ashmem_vmfile_get_unmapped_area(struct file *file,
+unsigned long addr,
 
-     1 msecs to read   1024 segs from /proc/sysvipc/shm
-     2 msecs to read   2048 segs from /proc/sysvipc/shm
-     4 msecs to read   4096 segs from /proc/sysvipc/shm
-     9 msecs to read   8192 segs from /proc/sysvipc/shm
-    24 msecs to read  16384 segs from /proc/sysvipc/shm
-    44 msecs to read  32768 segs from /proc/sysvipc/shm
-
-
-
-* my patch:
-
-     1 msecs to read   1024 segs from /proc/sysvipc/shm
-     2 msecs to read   2048 segs from /proc/sysvipc/shm
-     4 msecs to read   4096 segs from /proc/sysvipc/shm
-     9 msecs to read   8192 segs from /proc/sysvipc/shm
-    22 msecs to read  16384 segs from /proc/sysvipc/shm
-    45 msecs to read  32768 segs from /proc/sysvipc/shm
-
-
-
-and even perf stat numbers are virtually the same for reading
-32768 segments from /proc/sysvipc/shm:
-
-* your patch
-
- Performance counter stats for 'cat /proc/sysvipc/shm' (10 runs):
-
-             45.03 msec task-clock                #    0.990 CPUs utilized            ( +-  0.27% )
-                 0      context-switches          #    0.004 K/sec                    ( +-100.00% )
-                 0      cpu-migrations            #    0.004 K/sec                    ( +-100.00% )
-                70      page-faults               #    0.002 M/sec                    ( +-  0.61% )
-       149,631,684      cycles                    #    3.323 GHz                      ( +-  0.25% )  (82.23%)
-         2,148,928      stalled-cycles-frontend   #    1.44% frontend cycles idle     ( +-  2.21% )  (82.24%)
-        67,488,510      stalled-cycles-backend    #   45.10% backend cycles idle      ( +-  0.73% )  (83.32%)
-       249,186,578      instructions              #    1.67  insn per cycle
-                                                  #    0.27  stalled cycles per insn  ( +-  0.03% )  (84.31%)
-        62,268,386      branches                  # 1382.790 M/sec                    ( +-  0.02% )  (84.45%)
-            83,170      branch-misses             #    0.13% of all branches          ( +-  1.57% )  (83.44%)
-
-          0.045485 +- 0.000142 seconds time elapsed  ( +-  0.31% )
-
-
-
-* my patch:
-
- Performance counter stats for 'cat /proc/sysvipc/shm' (10 runs):
-
-             45.22 msec task-clock                #    0.990 CPUs utilized            ( +-  0.24% )
-                 0      context-switches          #    0.002 K/sec                    ( +-100.00% )
-                 0      cpu-migrations            #    0.000 K/sec
-                70      page-faults               #    0.002 M/sec                    ( +-  0.92% )
-       150,273,699      cycles                    #    3.323 GHz                      ( +-  0.25% )  (82.31%)
-        12,288,154      stalled-cycles-frontend   #    8.18% frontend cycles idle     ( +-  0.95% )  (82.31%)
-        61,198,482      stalled-cycles-backend    #   40.72% backend cycles idle      ( +-  0.91% )  (83.14%)
-       245,485,497      instructions              #    1.63  insn per cycle
-                                                  #    0.25  stalled cycles per insn  ( +-  0.03% )  (84.41%)
-        61,736,363      branches                  # 1365.267 M/sec                    ( +-  0.02% )  (84.52%)
-            82,381      branch-misses             #    0.13% of all branches          ( +-  1.17% )  (83.31%)
-
-          0.045671 +- 0.000125 seconds time elapsed  ( +-  0.27% )
-
-
-I'll leave it up to you, as clearly both approaches do pretty good in reducing
-the noted overhead imposed by the old approach.
-
-Since my patch is already in linux-next, may I ask you to ack it and follow it 
-up there if you decide on going with your approach? The diff below applies 
-cleanly on top of linux-next head (it's the one I used on tests). 
-
-Cheers!
-Rafael
+ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+-       static struct file_operations vmfile_fops;
++       const static struct file_operations vmfile_fops;
+        struct ashmem_area *asma = file->private_data;
+        int ret = 0;
 
 --
-
-diff --git a/ipc/util.c b/ipc/util.c
-index d48d8cfa1f3f..261540154782 100644
---- a/ipc/util.c
-+++ b/ipc/util.c
-@@ -788,22 +788,26 @@ struct pid_namespace *ipc_seq_pid_ns(struct seq_file *s)
- static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
- 					      loff_t *new_pos)
- {
--	struct kern_ipc_perm *ipc = NULL;
--	int max_idx = ipc_get_maxidx(ids);
-+	struct kern_ipc_perm *ipc;
-+	int tmpidx = pos;
- 
--	if (max_idx == -1 || pos > max_idx)
--		goto out;
--
--	for (; pos <= max_idx; pos++) {
--		ipc = idr_find(&ids->ipcs_idr, pos);
--		if (ipc != NULL) {
--			rcu_read_lock();
--			ipc_lock_object(ipc);
--			break;
--		}
-+	ipc = idr_get_next(&ids->ipcs_idr, &tmpidx);
-+	if (ipc != NULL) {
-+		rcu_read_lock();
-+		ipc_lock_object(ipc);
-+		/*
-+		 * We found the object with the index tmpidx.
-+		 * For next search, start with tmpidx+1
-+		 */
-+		*new_pos = tmpidx + 1;
-+	} else {
-+		/*
-+		 * EOF. seq_file can't notice that, thus
-+		 * move the offset by one.
-+		 */
-+		*new_pos = pos + 1;
- 	}
--out:
--	*new_pos = pos + 1;
-+
- 	return ipc;
- }
- 
-
+2.25.1
