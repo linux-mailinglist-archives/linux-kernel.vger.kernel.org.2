@@ -2,232 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5123F9D0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C563F9D1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233571AbhH0QyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:54:16 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53762 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232649AbhH0QyP (ORCPT
+        id S235605AbhH0Q4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235318AbhH0Q4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:54:15 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RGX4DK081644;
-        Fri, 27 Aug 2021 12:53:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ABrXeDwX9L9goAbNY31KRXH0SflMOTwVbieMWTEOvq8=;
- b=mR+Q8J5Dns5ZME38/kkl1q6+hju7LN61Jy0h/0AJzVMSFEMgFaXlKAmTylgxSsjNMGo3
- CGnV8VroE7S+De/pYxdCLp6fP5XDxFhEgAeLbT6c5VmNDCa7px4+AnKWKqG3V+H9FVb/
- x0RWoPFgR8TTV3qPziaFRe7Ibp9P0L6lemKCpWu+x3P3pF2iFWYfIpB8Co9CW2QM2vWm
- 15pOrws1cn/SZu6eD0KhAZGLgpDwXFfcawnPH7W/8EJFiPdzcVnbeo2RcA2Tawo+5X7O
- S1Z/HXz0HTugFRfkDdlhNVndsX+wm4ZHNJTOCTDdb9iq69tb+YT8eFdZ9qcpCraisbIZ YA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq3039sgn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 12:53:04 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17RGaOaC098429;
-        Fri, 27 Aug 2021 12:53:03 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq3039seh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 12:53:03 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17RGlg2R012737;
-        Fri, 27 Aug 2021 16:53:01 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3ajrrhkvt0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 16:53:00 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17RGnATV57213276
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 16:49:10 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A93E75204E;
-        Fri, 27 Aug 2021 16:52:58 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.153.220])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 53E8252050;
-        Fri, 27 Aug 2021 16:52:58 +0000 (GMT)
-Subject: Re: [PATCH v6 02/11] powerpc/kernel/iommu: Add new
- iommu_table_in_use() helper
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210817063929.38701-1-leobras.c@gmail.com>
- <20210817063929.38701-3-leobras.c@gmail.com>
-From:   Frederic Barrat <fbarrat@linux.ibm.com>
-Message-ID: <39063d3f-82c6-3253-2483-249b0ec0ed9a@linux.ibm.com>
-Date:   Fri, 27 Aug 2021 18:52:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210817063929.38701-3-leobras.c@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: frjvUDEIAaOlsyNiqrIu9sjKN2jdOrpz
-X-Proofpoint-ORIG-GUID: uZuoa9jPZseUR0dlafozL9z9xcRyucsI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_04:2021-08-26,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 mlxscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 adultscore=0 phishscore=0 lowpriorityscore=0 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108270098
+        Fri, 27 Aug 2021 12:56:43 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12376C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:55:54 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id x19-20020a05620a099300b003f64d79cbbaso278707qkx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=RtM8PgznJntS01ThQKPlB8uJpASuyv3TLEgy3t9rLqI=;
+        b=vkWudJEEqVvY1/Sm71xRTxOAU+VXGOzXQgbglYQXCF9fOIJ6xikAFa7r1puof5Ov0B
+         LCsAmYPLaC1GZYsbwpgJewGE4v6fvPSfG4uu9490bqCnsaFPuSaPmsPdcOXJCcaWrNEe
+         vMwczfLa208fVS+s8D2Eo/DDCcVscy35pGkXXW56FfMF3H4RLit26YKsY5eHu42bkt0l
+         fE3jRR8kgjbc9GYNQQg1lFhc3GhBRexOcJXPeabRTj4xq/zQAPmT0Bxx6gwicAnwC3V5
+         OVtcxaQcNWRiD+taKUEbIdUcuYIKShZ2WG1zI4texJ/dCWJSh6DhJv286DpKJDw2E8HB
+         SXxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=RtM8PgznJntS01ThQKPlB8uJpASuyv3TLEgy3t9rLqI=;
+        b=k4hMWO2E5+flGPzvaxnOP8LamCBUZWAdFAwqOGu7v53VXkm7mqSGDpHGGq76gJanME
+         jn/wN4AbQvlpB7Fs9zh43esGEtOm0eTPpOjQMme5kcisdRFXTWHQeKGw+diMjynWYD1d
+         Upe3mAJTlb7yctAbiGJ/gWYY6nqawkXLxy1I0aVWdD/Focm9DDBT4Sln6uP0Fm88mmUy
+         WWh9LPyvlLW0IKzx0x+XjWL5ZAcWOm0eASiGwySxX4Zac78Dsjtcng2bGm4N48Qjl911
+         S1sbCiZRMMklX6FE8nCOosquE37ySLqW9We3CqK3AIqO20uEKhH9JIrVzMuBIg2TtGRr
+         H+Hw==
+X-Gm-Message-State: AOAM5307CQnzyz0Zoa0XUQ/qIdGtyLTA74Z3P5i1JbTPBeDdBkzbGSy6
+        mLzSi8K5oC1/xJoBGhYWmtO1zwqSjoHm
+X-Google-Smtp-Source: ABdhPJxeWb/MTpG6t8/uCWK6p62wWgeiCGdjUMkZ29GjHvFuM/RR0MA7saJi/yAWhDKNPgDMuFo/7d3UWJw2
+X-Received: from joshdon.svl.corp.google.com ([2620:15c:2cd:202:762:3677:9a19:7f9d])
+ (user=joshdon job=sendgmr) by 2002:a05:6214:23cc:: with SMTP id
+ hr12mr10628012qvb.56.1630083353062; Fri, 27 Aug 2021 09:55:53 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 09:54:38 -0700
+Message-Id: <20210827165438.3280779-1-joshdon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH v2] fs/proc/uptime.c: fix idle time reporting in /proc/uptime
+From:   Josh Don <joshdon@google.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Josh Don <joshdon@google.com>, Luigi Rizzo <lrizzo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+/proc/uptime reports idle time by reading the CPUTIME_IDLE field from
+the per-cpu kcpustats. However, on NO_HZ systems, idle time is not
+continually updated on idle cpus, leading this value to appear
+incorrectly small.
 
+/proc/stat performs an accounting update when reading idle time; we can
+use the same approach for uptime.
 
-On 17/08/2021 08:39, Leonardo Bras wrote:
-> Having a function to check if the iommu table has any allocation helps
-> deciding if a tbl can be reset for using a new DMA window.
-> 
-> It should be enough to replace all instances of !bitmap_empty(tbl...).
-> 
-> iommu_table_in_use() skips reserved memory, so we don't need to worry about
-> releasing it before testing. This causes iommu_table_release_pages() to
-> become unnecessary, given it is only used to remove reserved memory for
-> testing.
-> 
-> Also, only allow storing reserved memory values in tbl if they are valid
-> in the table, so there is no need to check it in the new helper.
-> 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> ---
+With this patch, /proc/stat and /proc/uptime now agree on idle time.
+Additionally, the following shows idle time tick up consistently on an
+idle machine:
+(while true; do cat /proc/uptime; sleep 1; done) | awk '{print $2-prev; prev=$2}'
 
-Looks ok to me now, thanks!
-Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
+Reported-by: Luigi Rizzo <lrizzo@google.com>
+Signed-off-by: Josh Don <joshdon@google.com>
+---
+v2:
+- Move get_idle_time() from cputime.c back into stat.c
+- Use kcpustat_cpu_fetch
 
+ fs/proc/stat.c              |  4 ++--
+ fs/proc/uptime.c            | 14 +++++++++-----
+ include/linux/kernel_stat.h |  1 +
+ 3 files changed, 12 insertions(+), 7 deletions(-)
 
->   arch/powerpc/include/asm/iommu.h |  1 +
->   arch/powerpc/kernel/iommu.c      | 61 ++++++++++++++++----------------
->   2 files changed, 32 insertions(+), 30 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/iommu.h b/arch/powerpc/include/asm/iommu.h
-> index deef7c94d7b6..bf3b84128525 100644
-> --- a/arch/powerpc/include/asm/iommu.h
-> +++ b/arch/powerpc/include/asm/iommu.h
-> @@ -154,6 +154,7 @@ extern int iommu_tce_table_put(struct iommu_table *tbl);
->    */
->   extern struct iommu_table *iommu_init_table(struct iommu_table *tbl,
->   		int nid, unsigned long res_start, unsigned long res_end);
-> +bool iommu_table_in_use(struct iommu_table *tbl);
->   
->   #define IOMMU_TABLE_GROUP_MAX_TABLES	2
->   
-> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
-> index 2af89a5e379f..ed98ad63633e 100644
-> --- a/arch/powerpc/kernel/iommu.c
-> +++ b/arch/powerpc/kernel/iommu.c
-> @@ -690,32 +690,24 @@ static void iommu_table_reserve_pages(struct iommu_table *tbl,
->   	if (tbl->it_offset == 0)
->   		set_bit(0, tbl->it_map);
->   
-> -	tbl->it_reserved_start = res_start;
-> -	tbl->it_reserved_end = res_end;
-> -
-> -	/* Check if res_start..res_end isn't empty and overlaps the table */
-> -	if (res_start && res_end &&
-> -			(tbl->it_offset + tbl->it_size < res_start ||
-> -			 res_end < tbl->it_offset))
-> -		return;
-> +	if (res_start < tbl->it_offset)
-> +		res_start = tbl->it_offset;
->   
-> -	for (i = tbl->it_reserved_start; i < tbl->it_reserved_end; ++i)
-> -		set_bit(i - tbl->it_offset, tbl->it_map);
-> -}
-> +	if (res_end > (tbl->it_offset + tbl->it_size))
-> +		res_end = tbl->it_offset + tbl->it_size;
->   
-> -static void iommu_table_release_pages(struct iommu_table *tbl)
-> -{
-> -	int i;
-> +	/* Check if res_start..res_end is a valid range in the table */
-> +	if (res_start >= res_end) {
-> +		tbl->it_reserved_start = tbl->it_offset;
-> +		tbl->it_reserved_end = tbl->it_offset;
-> +		return;
-> +	}
->   
-> -	/*
-> -	 * In case we have reserved the first bit, we should not emit
-> -	 * the warning below.
-> -	 */
-> -	if (tbl->it_offset == 0)
-> -		clear_bit(0, tbl->it_map);
-> +	tbl->it_reserved_start = res_start;
-> +	tbl->it_reserved_end = res_end;
->   
->   	for (i = tbl->it_reserved_start; i < tbl->it_reserved_end; ++i)
-> -		clear_bit(i - tbl->it_offset, tbl->it_map);
-> +		set_bit(i - tbl->it_offset, tbl->it_map);
->   }
->   
->   /*
-> @@ -779,6 +771,22 @@ struct iommu_table *iommu_init_table(struct iommu_table *tbl, int nid,
->   	return tbl;
->   }
->   
-> +bool iommu_table_in_use(struct iommu_table *tbl)
-> +{
-> +	unsigned long start = 0, end;
-> +
-> +	/* ignore reserved bit0 */
-> +	if (tbl->it_offset == 0)
-> +		start = 1;
-> +	end = tbl->it_reserved_start - tbl->it_offset;
-> +	if (find_next_bit(tbl->it_map, end, start) != end)
-> +		return true;
-> +
-> +	start = tbl->it_reserved_end - tbl->it_offset;
-> +	end = tbl->it_size;
-> +	return find_next_bit(tbl->it_map, end, start) != end;
-> +}
-> +
->   static void iommu_table_free(struct kref *kref)
->   {
->   	struct iommu_table *tbl;
-> @@ -795,10 +803,8 @@ static void iommu_table_free(struct kref *kref)
->   
->   	iommu_debugfs_del(tbl);
->   
-> -	iommu_table_release_pages(tbl);
-> -
->   	/* verify that table contains no entries */
-> -	if (!bitmap_empty(tbl->it_map, tbl->it_size))
-> +	if (iommu_table_in_use(tbl))
->   		pr_warn("%s: Unexpected TCEs\n", __func__);
->   
->   	/* free bitmap */
-> @@ -1099,14 +1105,9 @@ int iommu_take_ownership(struct iommu_table *tbl)
->   	for (i = 0; i < tbl->nr_pools; i++)
->   		spin_lock_nest_lock(&tbl->pools[i].lock, &tbl->large_pool.lock);
->   
-> -	iommu_table_release_pages(tbl);
-> -
-> -	if (!bitmap_empty(tbl->it_map, tbl->it_size)) {
-> +	if (iommu_table_in_use(tbl)) {
->   		pr_err("iommu_tce: it_map is not empty");
->   		ret = -EBUSY;
-> -		/* Undo iommu_table_release_pages, i.e. restore bit#0, etc */
-> -		iommu_table_reserve_pages(tbl, tbl->it_reserved_start,
-> -				tbl->it_reserved_end);
->   	} else {
->   		memset(tbl->it_map, 0xff, sz);
->   	}
-> 
+diff --git a/fs/proc/stat.c b/fs/proc/stat.c
+index 6561a06ef905..4fb8729a68d4 100644
+--- a/fs/proc/stat.c
++++ b/fs/proc/stat.c
+@@ -24,7 +24,7 @@
+ 
+ #ifdef arch_idle_time
+ 
+-static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
++u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
+ {
+ 	u64 idle;
+ 
+@@ -46,7 +46,7 @@ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
+ 
+ #else
+ 
+-static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
++u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
+ {
+ 	u64 idle, idle_usecs = -1ULL;
+ 
+diff --git a/fs/proc/uptime.c b/fs/proc/uptime.c
+index 5a1b228964fb..deb99bc9b7e6 100644
+--- a/fs/proc/uptime.c
++++ b/fs/proc/uptime.c
+@@ -12,18 +12,22 @@ static int uptime_proc_show(struct seq_file *m, void *v)
+ {
+ 	struct timespec64 uptime;
+ 	struct timespec64 idle;
+-	u64 nsec;
++	u64 idle_nsec;
+ 	u32 rem;
+ 	int i;
+ 
+-	nsec = 0;
+-	for_each_possible_cpu(i)
+-		nsec += (__force u64) kcpustat_cpu(i).cpustat[CPUTIME_IDLE];
++	idle_nsec = 0;
++	for_each_possible_cpu(i) {
++		struct kernel_cpustat kcs;
++
++		kcpustat_cpu_fetch(&kcs, i);
++		idle_nsec += get_idle_time(&kcs, i);
++	}
+ 
+ 	ktime_get_boottime_ts64(&uptime);
+ 	timens_add_boottime(&uptime);
+ 
+-	idle.tv_sec = div_u64_rem(nsec, NSEC_PER_SEC, &rem);
++	idle.tv_sec = div_u64_rem(idle_nsec, NSEC_PER_SEC, &rem);
+ 	idle.tv_nsec = rem;
+ 	seq_printf(m, "%lu.%02lu %lu.%02lu\n",
+ 			(unsigned long) uptime.tv_sec,
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 44ae1a7eb9e3..69ae6b278464 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -102,6 +102,7 @@ extern void account_system_index_time(struct task_struct *, u64,
+ 				      enum cpu_usage_stat);
+ extern void account_steal_time(u64);
+ extern void account_idle_time(u64);
++extern u64 get_idle_time(struct kernel_cpustat *kcs, int cpu);
+ 
+ #ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+ static inline void account_process_tick(struct task_struct *tsk, int user)
+-- 
+2.33.0.259.gc128427fd7-goog
+
