@@ -2,133 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0133F9AB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58D23F9AB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245215AbhH0OOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:14:32 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:50066 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232449AbhH0OO3 (ORCPT
+        id S245295AbhH0OPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241260AbhH0OPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:14:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1630073620; x=1661609620;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=cooRg+8poDt2U3SIxIP/cBwAlBTa7XLQaObBrJSXAXw=;
-  b=R1o/RvQWMrRgQmfIzSz/1RSCzIx5ZyV2JGrz8ke4YhRZ1glNB8qEbWsd
-   QTEqWZ1VkUDSU+TkzQRe+vAWWh0Qq04IGyAGulhm7MfPJd0SUQ3ygeuOX
-   7X6gk0+HyH1V6H6Ns0HN0lPMm9O7caw30tcObGzPiLBVPS7BP5o5oXStg
-   E=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 27 Aug 2021 07:13:39 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 07:13:39 -0700
-Received: from jhugo-lnx.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.922.7;
- Fri, 27 Aug 2021 07:13:38 -0700
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-To:     <mani@kernel.org>, <hemantk@codeaurora.org>,
-        <bbhatt@codeaurora.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Jeffrey Hugo" <quic_jhugo@quicinc.com>
-Subject: [PATCH v2] bus: mhi: core: Use cached values for calculating the shared write pointer
-Date:   Fri, 27 Aug 2021 08:13:26 -0600
-Message-ID: <1630073606-13671-1-git-send-email-quic_jhugo@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 27 Aug 2021 10:15:31 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132D3C061757;
+        Fri, 27 Aug 2021 07:14:43 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1117006e0d6268a9fc7b3e.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:6e0d:6268:a9fc:7b3e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2FD8E1EC0493;
+        Fri, 27 Aug 2021 16:14:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630073677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3hBv70kaJ7xEYPUSElnsV+8ktxYO20ij25UtBpP2GHs=;
+        b=RvUnxtHP5ZBZ7z5DJaIp60qjgWYo4OZEBia83SzIl3zY4GMzFkUSp0X8fXVP4csuFG9OL7
+        cwZQf9i50aJTbvYkf29NQruKb+VvUU37WJVWvPmbdC1X59BTOfEV0O0yIhxB0pnKNH23+N
+        bxOk1W2hd7hfH8IjKvYrjLnoIREET4E=
+Date:   Fri, 27 Aug 2021 16:15:14 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 30/38] x86/compressed/64: store Confidential
+ Computing blob address in bootparams
+Message-ID: <YSjzcgQDubOY1pGI@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-31-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03d.na.qualcomm.com (10.85.0.91) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820151933.22401-31-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mhi_recycle_ev_ring() computes the shared write pointer for the ring
-(ctxt_wp) using a read/modify/write pattern where the ctxt_wp value in the
-shared memory is read, incremented, and written back.  There are no checks
-on the read value, it is assumed that it is kept in sync with the locally
-cached value.  Per the MHI spec, this is correct.  The device should only
-read ctxt_wp, never write it.
+On Fri, Aug 20, 2021 at 10:19:25AM -0500, Brijesh Singh wrote:
+> From: Michael Roth <michael.roth@amd.com>
+> 
+> When the Confidential Computing blob is located by the boot/compressed
+> kernel, store a pointer to it in bootparams->cc_blob_address to avoid
+> the need for the run-time kernel to rescan the EFI config table to find
+> it again.
+> 
+> Since this function is also shared by the run-time kernel, this patch
 
-However, there are devices in the wild that violate the spec, and can
-update the ctxt_wp in a specific scenario.  This can cause corruption, and
-violate the above assumption that the ctxt_wp is in sync with the cached
-value.
+Here's "this patch" again... but you know what to do.
 
-This can occur when the device has loaded firmware from the host, and is
-transitioning from the SBL EE to the AMSS EE.  As part of shutting down
-SBL, the SBL flushes it's local MHI context to the shared memory since
-the local context will not persist across an EE change.  In the case of
-the event ring, SBL will flush its entire context, not just the parts that
-it is allowed to update.  This means SBL will write to ctxt_wp, and
-possibly corrupt it.
+> also adds the logic to make use of bootparams->cc_blob_address when it
+> has been initialized.
+> 
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/kernel/sev-shared.c | 40 ++++++++++++++++++++++++++----------
+>  1 file changed, 29 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+> index 651980ddbd65..6f70ba293c5e 100644
+> --- a/arch/x86/kernel/sev-shared.c
+> +++ b/arch/x86/kernel/sev-shared.c
+> @@ -868,7 +868,6 @@ static enum es_result vc_handle_rdtsc(struct ghcb *ghcb,
+>  	return ES_OK;
+>  }
+>  
+> -#ifdef BOOT_COMPRESSED
+>  static struct setup_data *get_cc_setup_data(struct boot_params *bp)
+>  {
+>  	struct setup_data *hdr = (struct setup_data *)bp->hdr.setup_data;
+> @@ -888,6 +887,16 @@ static struct setup_data *get_cc_setup_data(struct boot_params *bp)
+>   *   1) Search for CC blob in the following order/precedence:
+>   *      - via linux boot protocol / setup_data entry
+>   *      - via EFI configuration table
+> + *   2) If found, initialize boot_params->cc_blob_address to point to the
+> + *      blob so that uncompressed kernel can easily access it during very
+> + *      early boot without the need to re-parse EFI config table
+> + *   3) Return a pointer to the CC blob, NULL otherwise.
+> + *
+> + * For run-time/uncompressed kernel:
+> + *
+> + *   1) Search for CC blob in the following order/precedence:
+> + *      - via linux boot protocol / setup_data entry
 
-An example:
+Why would you do this again if the boot/compressed kernel has already
+searched for it?
 
-Host				Device
-----				---
-Update ctxt_wp to 0x1f0
-				SBL observes 0x1f0
-Update ctxt_wp to 0x0
-				Starts transition to AMSS EE
-				Context flush, writes 0x1f0 to ctxt_wp
-Update ctxt_wp to 0x200
-Update ctxt_wp to 0x210
-				AMSS observes 0x210
-				0x210 exceeds ring size
-				AMSS signals syserr
+> + *      - via boot_params->cc_blob_address
 
-The reason the ctxt_wp goes off the end of the ring is that the rollover
-check is only performed on the cached wp, which is out of sync with
-ctxt_wp.
+Yes, that is the only thing you need to do in the runtime kernel - see
+if cc_blob_address is not 0. And all the work has been done by the
+decompressor kernel already.
 
-Since the host is the authority of the value of ctxt_wp per the MHI spec,
-we can fix this issue by not reading ctxt_wp from the shared memory, and
-instead compute it based on the cached value.  If SBL corrupts ctxt_wp,
-the host won't observe it, and will correct the value at some point later.
+>   *   2) Return a pointer to the CC blob, NULL otherwise.
+>   */
+>  static struct cc_blob_sev_info *sev_snp_probe_cc_blob(struct boot_params *bp)
+> @@ -897,9 +906,11 @@ static struct cc_blob_sev_info *sev_snp_probe_cc_blob(struct boot_params *bp)
+>  		struct setup_data header;
+>  		u32 cc_blob_address;
+>  	} *sd;
+> +#ifdef __BOOT_COMPRESSED
+>  	unsigned long conf_table_pa;
+>  	unsigned int conf_table_len;
+>  	bool efi_64;
+> +#endif
 
-Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
----
+That function turns into an unreadable mess with that #ifdef
+__BOOT_COMPRESSED slapped everywhere.
 
-v2:
-Fix typo on the ring base
+It seems the cleanest thing to do is to do what we do with
+acpi_rsdp_addr: do all the parsing in boot/compressed/ and pass it on
+through boot_params. Kernel proper simply reads the pointer.
 
- drivers/bus/mhi/core/main.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+Which means, you can stick all that cc_blob figuring out functionality
+in arch/x86/boot/compressed/sev.c instead.
 
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index c01ec2f..dc86fdb3 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -533,18 +533,13 @@ irqreturn_t mhi_intvec_handler(int irq_number, void *dev)
- static void mhi_recycle_ev_ring_element(struct mhi_controller *mhi_cntrl,
- 					struct mhi_ring *ring)
- {
--	dma_addr_t ctxt_wp;
--
- 	/* Update the WP */
- 	ring->wp += ring->el_size;
--	ctxt_wp = *ring->ctxt_wp + ring->el_size;
- 
--	if (ring->wp >= (ring->base + ring->len)) {
-+	if (ring->wp >= (ring->base + ring->len))
- 		ring->wp = ring->base;
--		ctxt_wp = ring->iommu_base;
--	}
- 
--	*ring->ctxt_wp = ctxt_wp;
-+	*ring->ctxt_wp = ring->iommu_base + (ring->wp - ring->base);
- 
- 	/* Update the RP */
- 	ring->rp += ring->el_size;
+Thx.
+
 -- 
-2.7.4
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
