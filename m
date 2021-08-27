@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2246E3F967D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E943F968C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244710AbhH0Iyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:54:46 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3693 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbhH0Iyp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:54:45 -0400
-Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gwtl94LbQz67LY3;
-        Fri, 27 Aug 2021 16:52:37 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 27 Aug 2021 10:53:54 +0200
-Received: from [10.47.92.37] (10.47.92.37) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Fri, 27 Aug
- 2021 09:53:53 +0100
-From:   John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH v11 10/12] vduse: Implement an MMU-based software IOTLB
-To:     Xie Yongji <xieyongji@bytedance.com>, <mst@redhat.com>,
-        <jasowang@redhat.com>, <stefanha@redhat.com>,
-        <sgarzare@redhat.com>, <parav@nvidia.com>, <hch@infradead.org>,
-        <christian.brauner@canonical.com>, <rdunlap@infradead.org>,
-        <willy@infradead.org>, <viro@zeniv.linux.org.uk>,
-        <axboe@kernel.dk>, <bcrl@kvack.org>, <corbet@lwn.net>,
-        <mika.penttila@nextfour.com>, <dan.carpenter@oracle.com>,
-        <joro@8bytes.org>, <gregkh@linuxfoundation.org>,
-        <zhe.he@windriver.com>, <xiaodong.liu@intel.com>,
-        <joe@perches.com>, <robin.murphy@arm.com>
-CC:     <kvm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <iommu@lists.linux-foundation.org>, <songmuchun@bytedance.com>,
-        <linux-fsdevel@vger.kernel.org>
-References: <20210818120642.165-1-xieyongji@bytedance.com>
- <20210818120642.165-11-xieyongji@bytedance.com>
-Message-ID: <2d807de3-e245-c2fb-ae5d-7cacbe35dfcb@huawei.com>
-Date:   Fri, 27 Aug 2021 09:57:42 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S244602AbhH0I7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 04:59:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232757AbhH0I6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 04:58:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2120A608FE;
+        Fri, 27 Aug 2021 08:58:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630054685;
+        bh=77yL8U8+buC1Srr5lcXcqgg1GZ5TiZMsD9z6Pe25ohA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FTvx7NUb9j2WXBbHdWdpnh2el917e6I0ArcOvvSYF8r1z0T0HXm6sZIewdkoJR6LL
+         HSJWk6TB5jjO8Xkvr+BYQNG28Zim2EMSHT2eMy/BR1uoWG7ks9FAtuFYrncU9lbySe
+         4oKkWzKTSxfmoUalOhYOB9mNN2tBYcEn7vZdgxhQ=
+Date:   Fri, 27 Aug 2021 10:57:59 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Prasad Sodagudi <psodagud@codeaurora.org>, rjw@rjwysocki.net
+Cc:     len.brown@intel.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, pavel@ucw.cz
+Subject: Re: [PATCH v4] PM: sleep: core: Avoid setting power.must_resume to
+ false
+Message-ID: <YSipF4KG130rw9lc@kroah.com>
+References: <1629732470-155444-1-git-send-email-psodagud@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210818120642.165-11-xieyongji@bytedance.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.92.37]
-X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1629732470-155444-1-git-send-email-psodagud@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2021 13:06, Xie Yongji wrote:
-> +
-> +static dma_addr_t
-> +vduse_domain_alloc_iova(struct iova_domain *iovad,
-> +			unsigned long size, unsigned long limit)
-> +{
-> +	unsigned long shift = iova_shift(iovad);
-> +	unsigned long iova_len = iova_align(iovad, size) >> shift;
-> +	unsigned long iova_pfn;
-> +
-> +	/*
-> +	 * Freeing non-power-of-two-sized allocations back into the IOVA caches
-> +	 * will come back to bite us badly, so we have to waste a bit of space
-> +	 * rounding up anything cacheable to make sure that can't happen. The
-> +	 * order of the unadjusted size will still match upon freeing.
-> +	 */
-> +	if (iova_len < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
-> +		iova_len = roundup_pow_of_two(iova_len);
+On Mon, Aug 23, 2021 at 08:27:50AM -0700, Prasad Sodagudi wrote:
+> There are variables(power.may_skip_resume and dev->power.must_resume)
+> and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
+> a system wide suspend transition.
+> 
+> Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+> its "noirq" and "early" resume callbacks to be skipped if the device
+> can be left in suspend after a system-wide transition into the working
+> state. PM core determines that the driver's "noirq" and "early" resume
+> callbacks should be skipped or not with dev_pm_skip_resume() function by
+> checking power.may_skip_resume variable.
+> 
+> power.must_resume variable is getting set to false in __device_suspend()
+> function without checking device's DPM_FLAG_MAY_SKIP_RESUME settings.
+> In problematic scenario, where all the devices in the suspend_late
+> stage are successful and some device can fail to suspend in
+> suspend_noirq phase. So some devices successfully suspended in suspend_late
+> stage are not getting chance to execute __device_suspend_noirq()
+> to set dev->power.must_resume variable to true and not getting
+> resumed in early_resume phase.
+> 
+> Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
+> setting power.must_resume variable in __device_suspend function.
+> 
+> Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> ---
+>  V3 -> V4: Remove dev->power.usage_count variable check
+>  V2 -> V3: Format issues patch posting
+>  V1 -> V2: Fixed indentation and commit text to include scenario
+>  drivers/base/power/main.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index d568772..50e8ea3 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -1642,7 +1642,10 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+>  	}
+>  
+>  	dev->power.may_skip_resume = true;
+> -	dev->power.must_resume = false;
+> +	if (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME))
+> +		dev->power.must_resume = false;
+> +	else
+> +		dev->power.must_resume = true;
+>  
+>  	dpm_watchdog_set(&wd, dev);
+>  	device_lock(dev);
 
-Whether it's proper to use this "fast" API or not here, this seems to be 
-copied verbatim from dma-iommu.c, which tells me that something should 
-be factored out.
+Seems sane, Rafael, any comments?
 
-Indeed, this rounding up seems a requirement of the rcache, so not sure 
-why this is not done there.
+thanks,
 
-> +	iova_pfn = alloc_iova_fast(iovad, iova_len, limit >> shift, true);
-
-
+greg k-h
