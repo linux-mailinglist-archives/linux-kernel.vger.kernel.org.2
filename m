@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527B53FA134
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053E63FA137
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbhH0Ve3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 17:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
+        id S231947AbhH0Vly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 17:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbhH0Ve2 (ORCPT
+        with ESMTP id S231696AbhH0Vlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 17:34:28 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695C7C061796
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 14:33:39 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id e129so15055083yba.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 14:33:39 -0700 (PDT)
+        Fri, 27 Aug 2021 17:41:52 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE2CC0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 14:41:03 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id k65so15066650yba.13
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 14:41:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RZNyHeDVs2mzNxDgTuglWtbJQudBi+AgMRN4SZ0C/nY=;
-        b=jVqEIc455Wtcw8ODTyXfnO/FQsEQDMK/It9z9OeJqHqx8p3YH0rnsTE3JppBBQ71ic
-         hFAjlj8BEwrMpHu5dY26GEJrq9XNElRyt2SaSTsQQPeNiGInacBfUIwM47yAwiv52Cx6
-         cb5GcXIKp71l+SHcuTn0XmplTlgeszW/UdUC5gCMt1xJKxkcd9fGDlAao5HTZ6N1Xrka
-         x1jACeUhmZYPrTZV4Sdl2PwtBWU2wCwz958GvC5DQjFa8/08MAVUxdRtI1csFaIvGlK+
-         lC13HteG3Oka7xoTpaaAHoKgIUm8l7vHSWN0P6G5nVDvLsPsESrPFwGNXA+XnpKiANxH
-         gLzQ==
+        bh=2ELnHnxXQ3QKSTdHlPecFhJXpaQDWJHo6ZXwtcu8mbA=;
+        b=Gakvhq/oe6wU40pIbOYYGPVeL5YgWg0l54zjb5tE81IMBOtnBqEEVvNmMDgEXYWo13
+         71KoElCe/ZiIC6qzbwxH94bercCT1Jg1oXjMo3KNJVVP2oHS5yV+fnZkUPWckJ/KB0l8
+         piME4THWlyVVM82Bivlb+Ig7+TRnsDFuY5pEUZqDUtkaiboEM+FXMdoMlyyQzXhlZ/Ad
+         bDRDHWvsmSgQhGQnqqd39pgtB+zAVrYv6kYBzBgZuDkHtRjJVc9qDnZy3FfhjOdLLBs3
+         2p/Qiesaw2WmneOZ0IomHmDanONP1LsTtw8N8rqLjk/KT35TpWeQlLzRJorcHhn21a8M
+         W1fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RZNyHeDVs2mzNxDgTuglWtbJQudBi+AgMRN4SZ0C/nY=;
-        b=dFviQ0DNedY3VASWX/pErrh72jiKzCfaI7U7cHo8qIdusG53yWRYo8su1FuMW3OCi2
-         zRTkg5ZsrYKlyuYyZIfZVXh9pafwd9ezbHe2XFTt8YWpW2VUmsoCq0Zopr8u1ZNsCzLQ
-         mukVp8kPDwh2uaBWufMpNm7JicaMfHPsuUz/o9RrpJZhkcwhSWfSeRUH5A2PtpMRimfd
-         eDLm0ijuhAFfIJ6d8DVBre/546ed1Y3doAx9sYTAjQDdBiWDbGRDqxvUEOw507SQO6MZ
-         GcaasvEAg40XGXFWv8JIO2w3xN0Hq9USOoFrQApvQ0vdPD2f5xVLKlqaO1jdM1TABY0r
-         PoCA==
-X-Gm-Message-State: AOAM533J0HjnU24Ugse+4ZtyI+8kbWzai3GtUOWnIInUtXIQJisXMj+3
-        xFJlyJAM+4mkPFBWST44g1OWkpgGKCpDWZV5jgPCUg==
-X-Google-Smtp-Source: ABdhPJz5+dNvgc2ixHXOwcDeo8jDfMW8Ql6QvMwMVQ6iLfDyfXrrjgP9Mg+KHQk+aYDhygWXhbGhxIhyAShRq9e5qmw=
-X-Received: by 2002:a25:d2c8:: with SMTP id j191mr8213434ybg.412.1630100018502;
- Fri, 27 Aug 2021 14:33:38 -0700 (PDT)
+        bh=2ELnHnxXQ3QKSTdHlPecFhJXpaQDWJHo6ZXwtcu8mbA=;
+        b=txgH5m8EdpZq0SvE+u9NXjWCV7yH0x8UOXbCpGHLkby5N4Mtz2pbRefXjbzhBy+OEr
+         C9KxMhokXBHZ6pT63ll8gOKLnFNO77YRFB3hZDfCLPdVgiDquK8gUeUazoFQFinWLAf4
+         TaX5zWju7/DK5ux/UJUUG3xbxk/nCHvLbHql7Jc0qDwFgoncBKp7w7yWzZuBFXwMnok9
+         dMuTe9mrdkfQUCk2UVrssofgu/jTSgclnMWiuLfd60bfylL7YNy43CplQrMqhFLP6Oum
+         Dei6w97GcPL0ZHVIUirU0jWQO0qXOj6FXnDeNlWM37MBkMHHWTGPJlNGvH2AC6y841yO
+         lTCA==
+X-Gm-Message-State: AOAM530Y7LCbnHPONVH4m5JSKJx8Y4ckWEFSRjge8Gf7hC0h4+KMFpPr
+        vGooITpe7PJb5Rd/lSImwuhkhZbO6tHoD3zjdGY8UA==
+X-Google-Smtp-Source: ABdhPJy5n7jbk99nqbGBpad3XSf1FlO1SZfJHp1ei/llIwEUOHBR8CcP6NEx4ig0dovWgxsj5xRd9Lts7rsQ36dLWx0=
+X-Received: by 2002:a25:e747:: with SMTP id e68mr7919019ybh.446.1630100462006;
+ Fri, 27 Aug 2021 14:41:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210826074526.825517-1-saravanak@google.com> <20210826074526.825517-2-saravanak@google.com>
- <YSeTdb6DbHbBYabN@lunn.ch> <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
- <YSf/Mps9E77/6kZX@lunn.ch> <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
- <YSg+dRPSX9/ph6tb@lunn.ch> <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
- <YSjsQmx8l4MXNvP+@lunn.ch> <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
- <YSlG4XRGrq5D1/WU@lunn.ch>
-In-Reply-To: <YSlG4XRGrq5D1/WU@lunn.ch>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 27 Aug 2021 14:33:02 -0700
-Message-ID: <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
+References: <20210827165438.3280779-1-joshdon@google.com>
+In-Reply-To: <20210827165438.3280779-1-joshdon@google.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 27 Aug 2021 14:40:50 -0700
+Message-ID: <CANn89iJV+VUgS5mBmtN6An83pRS4LU61efw=VLBvM1_FGYCN5A@mail.gmail.com>
+Subject: Re: [PATCH v2] fs/proc/uptime.c: fix idle time reporting in /proc/uptime
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Luigi Rizzo <lrizzo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 1:11 PM Andrew Lunn <andrew@lunn.ch> wrote:
+On Fri, Aug 27, 2021 at 9:55 AM Josh Don <joshdon@google.com> wrote:
 >
-> > > I've not yet looked at plain Ethernet drivers. This pattern could also
-> > > exist there. And i wonder about other complex structures, i2c bus
-> > > multiplexors, you can have interrupt controllers as i2c devices,
-> > > etc. So the general case could exist in other places.
-> >
-> > I haven't seen any generic issues like this reported so far. It's only
-> > after adding phy-handle that we are hitting these issues with DSA
-> > switches.
+> /proc/uptime reports idle time by reading the CPUTIME_IDLE field from
+> the per-cpu kcpustats. However, on NO_HZ systems, idle time is not
+> continually updated on idle cpus, leading this value to appear
+> incorrectly small.
 >
-> Can you run your parser over the 2250 DTB blobs and see how many
-> children have dependencies on a parent? That could give us an idea how
-> many moles need whacking. And maybe, where in the tree they are
-> hiding?
+> /proc/stat performs an accounting update when reading idle time; we can
+> use the same approach for uptime.
+>
+> With this patch, /proc/stat and /proc/uptime now agree on idle time.
+> Additionally, the following shows idle time tick up consistently on an
+> idle machine:
+> (while true; do cat /proc/uptime; sleep 1; done) | awk '{print $2-prev; prev=$2}'
+>
+> Reported-by: Luigi Rizzo <lrizzo@google.com>
+> Signed-off-by: Josh Don <joshdon@google.com>
+> ---
+>
 
-You are only responding to part of my email. As I said in my previous
-email: "There are plenty of cases where it's better to delay the child
-device's probe until the parent finishes. You even gave an example[7]
-where it would help avoid unnecessary deferred probes." Can you please
-give your thoughts on the rest of the points I made too?
+SGTM thanks !
 
--Saravana
+Reviewed-by: Eric Dumazet <edumazet@google.com>
