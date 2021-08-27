@@ -2,91 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B213F9E39
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545143F9E46
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbhH0Rqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
+        id S239681AbhH0Rrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhH0Rql (ORCPT
+        with ESMTP id S239233AbhH0Rru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:46:41 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB41C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:45:52 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso9366852pjh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:45:52 -0700 (PDT)
+        Fri, 27 Aug 2021 13:47:50 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B913C061796;
+        Fri, 27 Aug 2021 10:47:01 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id mq3so5025218pjb.5;
+        Fri, 27 Aug 2021 10:47:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=0WKKYjvy1TgBuyRVyCby36vMfEwiFoM9lW+Cn+bAZYk=;
-        b=P1jpkTPIwm0g455oQ17Wg9OyulzuKKRqHezM24WtFrqoP3YZvPX7++97c+d3WibR43
-         5fIM0M0s6my48zFK8bkZvqkDa3MbFil0S1mglvJK9Hvm1rfcCzodrJTv4g6lBzzHOyap
-         C2VV8IiD5uEDA4txqR/BlvyOfCZMDL118mJbEz/5ZK9u4Q8YW4r6Q9RRb035k+lyq374
-         1z14rWSljKX2XBwywH6bgP+gYmEOE+3wSdCi94l/yNqkyXzaB0xwW3kjDti3AgR1R1gW
-         e+SvcdXF3A5DAKdscdwcRbtv209Rnq548LnaeAFK6UwA8xCU/1FLlbnLEL3QAdnzZ44X
-         FfBg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=i9TmDZ+esw/3ZLUDMU0ftSn23gEkgnQwCRuas4CrT3U=;
+        b=IHtobvTQGY1nPT3/rK9A1D4px0mz9BbFo22Zema5+9nth1Iz8xRjEgbud3ecsrTACs
+         Vi0LRfmP6pC0DYOfU30m5IkT0RTdx1CV7IJxATteIxw8CIRTVVgLMm1G9RvSeC8txy3w
+         3vkVe4JLgdQHuErnQrEWdxOE6rP0ErL9md4E0hh+apLDdJ7WZ48WHolfWdjVexGKS4Fg
+         64VkrIaGeWHwfHBR7pDlwiNy9s7exrN3vRd0AJl72z/zDyU7wj7/6rHEM1CVLs3fMsSi
+         383OW19VKOeS1sl5t8aORjPeFCc0nn+WtBx09yLwfzvn3x+xousu5jOLlDzZAsqMezkN
+         xg2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=0WKKYjvy1TgBuyRVyCby36vMfEwiFoM9lW+Cn+bAZYk=;
-        b=ucx5vMpn2iNPA5qso/We1hZkBEEswUCo+0bBXkCi8SAoT4j848vdl7BrzN35XZHqx0
-         e/PkD297kGu59nMzxmP+b95Rrdgs2ZAnXuNydkzZfb/y+moshm5PcVqi+AGGqyOFUBxN
-         l/UNq24PmlCszGrB6WYHTq86Zn8cg90qjHK+9Zrth+egkloFInGww++J5BW9/fTRVtx6
-         m9nMWEa9ubBJb71ck+/4XKTeV9mth2YJ//L37CXvoRkNI7jW6yUWfcD2XKnHGqY0J83F
-         kLNitvMHhv0bH6qzgQSxpo/CdK/RWPZrFdYjgeY1hCOLtWJ5G3arYEhCqtjgazlMQcHo
-         lFJw==
-X-Gm-Message-State: AOAM533frcTm/OktEHHeSTFD+lvuW2lbErkjrQ/cXnFpq0NDdykcJksf
-        QtS0anBRGQqBkbhZ3SEMTO8x8g==
-X-Google-Smtp-Source: ABdhPJxVQjdKqS3vmruotXg3ZfPgtLskUbrPmpDCVWc6LiJn6CWPZ7Gqp5pi21hbbEv1Hp9pxYsTBA==
-X-Received: by 2002:a17:902:7484:b0:135:8c25:d33a with SMTP id h4-20020a170902748400b001358c25d33amr9836241pll.83.1630086351869;
-        Fri, 27 Aug 2021 10:45:51 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id s29sm7751274pgl.38.2021.08.27.10.45.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 10:45:51 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 10:45:51 -0700 (PDT)
-X-Google-Original-Date: Fri, 27 Aug 2021 10:45:47 PDT (-0700)
-Subject: [GIT PULL] RISC-V Fixes for 5.14-rc8 (or 5.14)
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-f06b0a4c-f321-4c14-9378-da36fbf6212f@palmerdabbelt-glaptop>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i9TmDZ+esw/3ZLUDMU0ftSn23gEkgnQwCRuas4CrT3U=;
+        b=oE2ZQenaDRWQUJQMIVWV7feGz1IMBvbertvTqa56S+gMq31dI8/KPLINGuyjBIXXF1
+         vtU5cj1tpmgb9q9jKpQFPYoqWa71ejAFwIUcM06resiVPfXIBCkwMsKeSsM19nxPGQs5
+         1PoiSKSc1e7yrYTyq0Qjd6dlDCuvvV+3dj9QuPUwz3ZWmDiwJi5Qn0wHL+Ap6uRaNsy+
+         PcDaF2kdxh/RweQIRpdwiaisfIXm9gEjqD3jVwwXltN+cOf+/BYCDZZewR3zba/+s/FG
+         PEdQ0oK4Qjr3Ffu+Yl03SXuw+5CtpQ+0t0qIR/3U0Qgqy4zoy3O0ST+SNZ7bHiZpGVEj
+         qsQw==
+X-Gm-Message-State: AOAM531ncWA0IGdPr0nB2VNUxTTykBEohR6+c/ajLEY/OuGYfNEaJb+n
+        vP6ipoko8iD9IyW7SBG164Y=
+X-Google-Smtp-Source: ABdhPJwCpp1CTTpUQk7qWKnIh/yFBudGLOgzTmHXJL1o6YBu8x2FX5yDDzUTnumdUgFfk3BNuYTWSw==
+X-Received: by 2002:a17:902:8d8a:b029:12d:3774:3630 with SMTP id v10-20020a1709028d8ab029012d37743630mr9735558plo.65.1630086421011;
+        Fri, 27 Aug 2021 10:47:01 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
+        by smtp.gmail.com with ESMTPSA id h13sm6970553pgh.93.2021.08.27.10.46.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 10:47:00 -0700 (PDT)
+Subject: Re: [PATCH V4 05/13] hyperv: Add Write/Read MSR registers via ghcb
+ page
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, catalin.marinas@arm.com,
+        will@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        brijesh.singh@amd.com, thomas.lendacky@amd.com,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        hannes@cmpxchg.org, aneesh.kumar@linux.ibm.com,
+        krish.sadhukhan@oracle.com, saravanand@fb.com,
+        linux-arm-kernel@lists.infradead.org,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        ardb@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210827172114.414281-1-ltykernel@gmail.com>
+ <20210827172114.414281-6-ltykernel@gmail.com> <YSkj2kvYoYW8kDiF@kroah.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <aed9409f-8708-2599-e441-c6a0c92b737b@gmail.com>
+Date:   Sat, 28 Aug 2021 01:46:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <YSkj2kvYoYW8kDiF@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit aa3e1ba32e553e611a58145c2eb349802feaa6eb:
+On 8/28/2021 1:41 AM, Greg KH wrote:
+> On Fri, Aug 27, 2021 at 01:21:03PM -0400, Tianyu Lan wrote:
+>> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+>>
+>> Hyperv provides GHCB protocol to write Synthetic Interrupt
+>> Controller MSR registers in Isolation VM with AMD SEV SNP
+>> and these registers are emulated by hypervisor directly.
+>> Hyperv requires to write SINTx MSR registers twice. First
+>> writes MSR via GHCB page to communicate with hypervisor
+>> and then writes wrmsr instruction to talk with paravisor
+>> which runs in VMPL0. Guest OS ID MSR also needs to be set
+>> via GHCB page.
+>>
+>> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+>> ---
+>> Change since v1:
+>>           * Introduce sev_es_ghcb_hv_call_simple() and share code
+>>             between SEV and Hyper-V code.
+>> Change since v3:
+>>           * Pass old_msg_type to hv_signal_eom() as parameter.
+>> 	 * Use HV_REGISTER_* marcro instead of HV_X64_MSR_*
+>> 	 * Add hv_isolation_type_snp() weak function.
+>> 	 * Add maros to set syinc register in ARM code.
+>> ---
+>>   arch/arm64/include/asm/mshyperv.h |  23 ++++++
+>>   arch/x86/hyperv/hv_init.c         |  36 ++--------
+>>   arch/x86/hyperv/ivm.c             | 112 ++++++++++++++++++++++++++++++
+>>   arch/x86/include/asm/mshyperv.h   |  80 ++++++++++++++++++++-
+>>   arch/x86/include/asm/sev.h        |   3 +
+>>   arch/x86/kernel/sev-shared.c      |  63 ++++++++++-------
+>>   drivers/hv/hv.c                   | 112 ++++++++++++++++++++----------
+>>   drivers/hv/hv_common.c            |   6 ++
+>>   include/asm-generic/mshyperv.h    |   4 +-
+>>   9 files changed, 345 insertions(+), 94 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/mshyperv.h b/arch/arm64/include/asm/mshyperv.h
+>> index 20070a847304..ced83297e009 100644
+>> --- a/arch/arm64/include/asm/mshyperv.h
+>> +++ b/arch/arm64/include/asm/mshyperv.h
+>> @@ -41,6 +41,29 @@ static inline u64 hv_get_register(unsigned int reg)
+>>   	return hv_get_vpreg(reg);
+>>   }
+>>   
+>> +#define hv_get_simp(val)	{ val = hv_get_register(HV_REGISTER_SIMP); }
+>> +#define hv_set_simp(val)	hv_set_register(HV_REGISTER_SIMP, val)
+>> +
+>> +#define hv_get_siefp(val)	{ val = hv_get_register(HV_REGISTER_SIEFP); }
+>> +#define hv_set_siefp(val)	hv_set_register(HV_REGISTER_SIEFP, val)
+>> +
+>> +#define hv_get_synint_state(int_num, val) {			\
+>> +	val = hv_get_register(HV_REGISTER_SINT0 + int_num);	\
+>> +	}
+>> +
+>> +#define hv_set_synint_state(int_num, val)			\
+>> +	hv_set_register(HV_REGISTER_SINT0 + int_num, val)
+>> +
+>> +#define hv_get_synic_state(val) {			\
+>> +	val = hv_get_register(HV_REGISTER_SCONTROL);	\
+>> +	}
+>> +
+>> +#define hv_set_synic_state(val)			\
+>> +	hv_set_register(HV_REGISTER_SCONTROL, val)
+>> +
+>> +#define hv_signal_eom(old_msg_type)		 \
+>> +	hv_set_register(HV_REGISTER_EOM, 0)
+> 
+> Please just use real inline functions and not #defines if you really
+> need it.
+> 
 
-  riscv: Fix a number of free'd resources in init_resources() (2021-08-20 10:15:51 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-rc8
-
-for you to fetch changes up to 417166ddec020c4e969aea064e23822591ad54df:
-
-  riscv: dts: microchip: Add ethernet0 to the aliases node (2021-08-24 20:57:32 -0700)
-
-----------------------------------------------------------------
-RISC-V Fixes for 5.14-rc8 (or 5.14)
-
-* A pair of device tree updates for the Microsemi Polarfire development
-  kit that fix some mismatches between the u-boot and Linux enternet
-  entries.
-* A fix to ensure that the F register state is correctly reflected in
-  core dumps.
-
-----------------------------------------------------------------
-Bin Meng (2):
-      riscv: dts: microchip: Use 'local-mac-address' for emac1
-      riscv: dts: microchip: Add ethernet0 to the aliases node
-
-Vincent Chen (1):
-      riscv: Ensure the value of FP registers in the core dump file is up to date
-
- arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 4 ++++
- arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi           | 2 +-
- arch/riscv/kernel/ptrace.c                                  | 4 ++++
- 3 files changed, 9 insertions(+), 1 deletion(-)
+OK. Will update. Thanks.
