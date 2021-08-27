@@ -2,317 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9CB3F91F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 03:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7131D3F921A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 03:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243956AbhH0Bh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 21:37:29 -0400
-Received: from mga07.intel.com ([134.134.136.100]:34469 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231481AbhH0Bh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 21:37:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="281595661"
-X-IronPort-AV: E=Sophos;i="5.84,355,1620716400"; 
-   d="scan'208";a="281595661"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 18:36:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,355,1620716400"; 
-   d="scan'208";a="495424502"
-Received: from unknown (HELO coxu-arch-shz) ([10.239.160.21])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Aug 2021 18:36:37 -0700
-Date:   Fri, 27 Aug 2021 09:36:36 +0800 (CST)
-From:   Colin Xu <colin.xu@intel.com>
-To:     Colin Xu <colin.xu@intel.com>
-cc:     Alex Williamson <alex.williamson@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhenyuw@linux.intel.com,
-        hang.yuan@linux.intel.com, swee.yee.fonn@intel.com,
-        fred.gao@intel.com
-Subject: Re: [PATCH] vfio/pci: Add OpRegion 2.0 Extended VBT support.
-In-Reply-To: <9dc7eba-2c49-8d40-46b-5f4382a25c1e@outlook.office365.com>
-Message-ID: <365a1c5b-53fe-cd2c-11a1-9678dde0c5@outlook.office365.com>
-References: <20210813021329.128543-1-colin.xu@intel.com> <20210816163958.04ab019c.alex.williamson@redhat.com> <9dc7eba-2c49-8d40-46b-5f4382a25c1e@outlook.office365.com>
+        id S244016AbhH0BnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 21:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243941AbhH0BnB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 21:43:01 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D4CC061757;
+        Thu, 26 Aug 2021 18:42:13 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id o10so10905374lfr.11;
+        Thu, 26 Aug 2021 18:42:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DbfO6q4GXpyBccwxPwmjY0PAuMwlFBkYaU8fNql3Y5I=;
+        b=nuwyVodyulgYm4czoyEH8CnfsucjmsDIbhhVJQubczBBrb+3c5nYUTJDGgP7eLg5Us
+         kqJ9/M6jB4TpQ9CT5jc7nzqqhVHkT5AacFL1o0zzAA+JS48YkQYG5OgGAgVZil0cQGQQ
+         Pi+JxtPcKFIypfqQd5lWX+V6/On+MCjQichjie9DlX1Se2Zt9OsqSHpC6Y2mk47Xobd+
+         kQJBEchshDO/0mPvipGD05R5y3jPixPzjwOUWuklHB4QIt6zkfxW4SCy3Yq5nydl0Hem
+         Ovh6DYw/iTfGvb1mwSEHLKqvtPsto++MecR84ZewEEQ5sySmkeP/s+6kSNhbm5YBJgLl
+         MEnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DbfO6q4GXpyBccwxPwmjY0PAuMwlFBkYaU8fNql3Y5I=;
+        b=B3WUBA0u6VTc/mqRZTRjmnitswNtgwTTxMNLz/Ot0H5mP3OB72lFfggqsCtcmY+GuG
+         61UQF9BtE3DFx50PxOyR3I9JofgQXIzTYPC69796Vshez2rwgAa6PFitR9WiPFhkVDP6
+         yZqBInC7pUl81erZYuqPAVWR+/CarMPVfWb6OfATr/dEsdZQyIoteUI3FN7IMg4I1B5v
+         8aZrgIrtSl+JCkuSAAs6RsZLFWhQ8VVtuTliqcSbd6i44mLORbmIrKVmsj5azSSJYFqJ
+         TDY8GhO9DNjbQetaPvhn2yxbtetrc+MO6P6DCcJRygV6HL7WvyCDfHGV03BBrF4sweVs
+         asqQ==
+X-Gm-Message-State: AOAM530ZVHWcROcqTcDceBpCOXYf+SYxSA9rm1zjE5IFsTmcL5dUoqAg
+        le1eXlCxJIITorjuiePs6r3fzx7cmqg=
+X-Google-Smtp-Source: ABdhPJwXKANeBz7m7HyS9Ky0XhrHdPodup8uo+ZqGxp0t+fgy4uAdlqcZTBVApfoB+4KYRwK9tSIww==
+X-Received: by 2002:a05:6512:3b14:: with SMTP id f20mr5101489lfv.614.1630028531264;
+        Thu, 26 Aug 2021 18:42:11 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-17-251.dynamic.spd-mgts.ru. [94.29.17.251])
+        by smtp.googlemail.com with ESMTPSA id z11sm515859ljn.114.2021.08.26.18.42.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 18:42:10 -0700 (PDT)
+Subject: Re: [PATCH v9 1/8] opp: Add dev_pm_opp_from_clk_rate()
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210827013415.24027-1-digetx@gmail.com>
+ <20210827013415.24027-2-digetx@gmail.com>
+Message-ID: <73ae8568-cd81-08a8-796b-77b88ffce5e8@gmail.com>
+Date:   Fri, 27 Aug 2021 04:42:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+In-Reply-To: <20210827013415.24027-2-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+27.08.2021 04:34, Dmitry Osipenko пишет:
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 04b4691a8aac..fae5267f5218 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -939,7 +939,8 @@ static int _set_required_opps(struct device *dev,
+>  	return ret;
+>  }
+>  
+> -static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
+> +static struct dev_pm_opp *
+> +_find_current_opp(struct device *dev, struct opp_table *opp_table)
+>  {
+>  	struct dev_pm_opp *opp = ERR_PTR(-ENODEV);
+>  	unsigned long freq;
+> @@ -961,7 +962,7 @@ static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
+>  		mutex_unlock(&opp_table->lock);
+>  	}
+>  
+> -	opp_table->current_opp = opp;
+> +	return opp;
+>  }
+>  
+>  static int _disable_opp_table(struct device *dev, struct opp_table *opp_table)
+> @@ -1003,7 +1004,7 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+>  
+>  	/* Find the currently set OPP if we don't know already */
+>  	if (unlikely(!opp_table->current_opp))
+> -		_find_current_opp(dev, opp_table);
+> +		opp_table->current_opp = _find_current_opp(dev, opp_table);
+>  
+>  	old_opp = opp_table->current_opp;
+>  
+> @@ -2931,3 +2932,38 @@ int dev_pm_opp_sync_regulators(struct device *dev)
+>  	return ret;
+>  }
 
-In addition to the background that devices on market may still need 
-OpRegion 2.0 support in vfio-pci, do you have other comments to the patch 
-body?
-
-On Tue, 17 Aug 2021, Colin Xu wrote:
-
-> On Mon, 16 Aug 2021, Alex Williamson wrote:
->
->>  On Fri, 13 Aug 2021 10:13:29 +0800
->>  Colin Xu <colin.xu@intel.com> wrote:
->>
->>>  Due to historical reason, some legacy shipped system doesn't follow
->>>  OpRegion 2.1 spec but still stick to OpRegion 2.0, in which the extended
->>>  VBT is not contigious after OpRegion in physical address, but any
->>>  location pointed by RVDA via absolute address. Thus it's impossible
->>>  to map a contigious range to hold both OpRegion and extended VBT as 2.1.
->>>
->>>  Since the only difference between OpRegion 2.0 and 2.1 is where extended
->>>  VBT is stored: For 2.0, RVDA is the absolute address of extended VBT
->>>  while for 2.1, RVDA is the relative address of extended VBT to OpRegion
->>>  baes, and there is no other difference between OpRegion 2.0 and 2.1,
->>>  it's feasible to amend OpRegion support for these legacy system (before
->>>  upgrading the system firmware), by kazlloc a range to shadown OpRegion
->>>  from the beginning and stitch VBT after closely, patch the shadow
->>>  OpRegion version from 2.0 to 2.1, and patch the shadow RVDA to relative
->>>  address. So that from the vfio igd OpRegion r/w ops view, only OpRegion
->>>  2.1 is exposed regardless the underneath host OpRegion is 2.0 or 2.1
->>>  if the extended VBT exists. vfio igd OpRegion r/w ops will return either
->>>  shadowed data (OpRegion 2.0) or directly from physical address
->>>  (OpRegion 2.1+) based on host OpRegion version and RVDA/RVDS. The shadow
->>>  mechanism makes it possible to support legacy systems on the market.
->>
->>  Which systems does this enable?  There's a suggestion above that these
->>  systems could update firmware to get OpRegion v2.1 support, why
->>  shouldn't we ask users to do that instead?  When we added OpRegion v2.1
->>  support we were told that v2.0 support was essentially non-existent,
->>  why should we add code to support and old spec with few users for such
->>  a niche use case?
-> Hi Alex, there was some mis-alignment with the BIOS owner that we were told 
-> the 2.0 system doesn't for retail but only for internal development. However 
-> in other projects we DO see the retail market has such systems, including NUC 
-> NUC6CAYB, some APL industrial PC used in RT system, and some customized APL 
-> motherboard by commercial virtualization solution. We immediately contact the 
-> BIOS owner to ask for a clarification and they admit it. These system won't 
-> get updated BIOS for OpRegion update but still under warranty. That's why the 
-> OpRegion 2.0 support is still needed.
->
->> 
->>> Cc:  Zhenyu Wang <zhenyuw@linux.intel.com>
->>> Cc:  Hang Yuan <hang.yuan@linux.intel.com>
->>> Cc:  Swee Yee Fonn <swee.yee.fonn@intel.com>
->>> Cc:  Fred Gao <fred.gao@intel.com>
->>>  Signed-off-by: Colin Xu <colin.xu@intel.com>
->>>  ---
->>>   drivers/vfio/pci/vfio_pci_igd.c | 117 ++++++++++++++++++++------------
->>>   1 file changed, 75 insertions(+), 42 deletions(-)
->>>
->>>  diff --git a/drivers/vfio/pci/vfio_pci_igd.c
->>>  b/drivers/vfio/pci/vfio_pci_igd.c
->>>  index 228df565e9bc..22b9436a3044 100644
->>>  --- a/drivers/vfio/pci/vfio_pci_igd.c
->>>  +++ b/drivers/vfio/pci/vfio_pci_igd.c
->>>  @@ -48,7 +48,10 @@ static size_t vfio_pci_igd_rw(struct vfio_pci_device
->>>  *vdev, char __user *buf,
->>>   static void vfio_pci_igd_release(struct vfio_pci_device *vdev,
->>>   				 struct vfio_pci_region *region)
->>>  {
->>>  -	memunmap(region->data);
->>>  +	if (is_ioremap_addr(region->data))
->>>  +		memunmap(region->data);
->>>  +	else
->>>  +		kfree(region->data);
->>>   }
->>>
->>>  static const struct vfio_pci_regops vfio_pci_igd_regops = {
->>>  @@ -59,10 +62,11 @@ static const struct vfio_pci_regops
->>>  vfio_pci_igd_regops = {
->>>   static int vfio_pci_igd_opregion_init(struct vfio_pci_device *vdev)
->>>   {
->>>  	__le32 *dwordp = (__le32 *)(vdev->vconfig + OPREGION_PCI_ADDR);
->>>  -	u32 addr, size;
->>>  -	void *base;
->>>  +	u32 addr, size, rvds = 0;
->>>  +	void *base, *opregionvbt;
->>>    int ret;
->>>    u16 version;
->>>  +	u64 rvda = 0;
->>>
->>>    ret = pci_read_config_dword(vdev->pdev, OPREGION_PCI_ADDR, &addr);
->>>    if (ret)
->>>  @@ -89,66 +93,95 @@ static int vfio_pci_igd_opregion_init(struct
->>>  vfio_pci_device *vdev)
->>>    size *= 1024; /* In KB */
->>>
->>>  	/*
->>>  -	 * Support opregion v2.1+
->>>  -	 * When VBT data exceeds 6KB size and cannot be within mailbox #4,
->>>  then
->>>  -	 * the Extended VBT region next to opregion is used to hold the VBT
->>>  data.
->>>  -	 * RVDA (Relative Address of VBT Data from Opregion Base) and RVDS
->>>  -	 * (Raw VBT Data Size) from opregion structure member are used to
->>>  hold the
->>>  -	 * address from region base and size of VBT data. RVDA/RVDS are not
->>>  -	 * defined before opregion 2.0.
->>>  +	 * OpRegion and VBT:
->>>  +	 * When VBT data doesn't exceed 6KB, it's stored in Mailbox #4.
->>>  +	 * When VBT data exceeds 6KB size, Mailbox #4 is no longer large
->>>  enough
->>>  +	 * to hold the VBT data, the Extended VBT region is introduced since
->>>  +	 * OpRegion 2.0 to hold the VBT data. Since OpRegion 2.0, RVDA/RVDS
->>>  are
->>>  +	 * introduced to define the extended VBT data location and size.
->>>  +	 * OpRegion 2.0: RVDA defines the absolute physical address of the
->>>  +	 *   extended VBT data, RVDS defines the VBT data size.
->>>  +	 * OpRegion 2.1 and above: RVDA defines the relative address of the
->>>  +	 *   extended VBT data to OpRegion base, RVDS defines the VBT data
->>>  size.
->>>  	 *
->>>  -	 * opregion 2.1+: RVDA is unsigned, relative offset from
->>>  -	 * opregion base, and should point to the end of opregion.
->>>  -	 * otherwise, exposing to userspace to allow read access to
->>>  everything between
->>>  -	 * the OpRegion and VBT is not safe.
->>>  -	 * RVDS is defined as size in bytes.
->>>  -	 *
->>>  -	 * opregion 2.0: rvda is the physical VBT address.
->>>  -	 * Since rvda is HPA it cannot be directly used in guest.
->>>  -	 * And it should not be practically available for end user,so it is
->>>  not supported.
->>>  +	 * Due to the RVDA difference in OpRegion VBT (also the only diff
->>>  between
->>>  +	 * 2.0 and 2.1), while for OpRegion 2.1 and above it's possible to
->>>  map
->>>  +	 * a contigious memory to expose OpRegion and VBT r/w via the vfio
->>>  +	 * region, for OpRegion 2.0 shadow and amendment mechanism is used to
->>>  +	 * expose OpRegion and VBT r/w properly. So that from r/w ops view,
->>>  only
->>>  +	 * OpRegion 2.1 is exposed regardless underneath Region is 2.0 or
->>>  2.1.
->>>    */
->>>  	version = le16_to_cpu(*(__le16 *)(base + OPREGION_VERSION));
->>>  -	if (version >= 0x0200) {
->>>  -		u64 rvda;
->>>  -		u32 rvds;
->>>
->>>  +	if (version >= 0x0200) {
->>>     rvda = le64_to_cpu(*(__le64 *)(base + OPREGION_RVDA));
->>>     rvds = le32_to_cpu(*(__le32 *)(base + OPREGION_RVDS));
->>>  +
->>>  +		/* The extended VBT is valid only when RVDA/RVDS are
->>>  non-zero. */
->>>  		if (rvda && rvds) {
->>>  -			/* no support for opregion v2.0 with physical VBT
->>>  address */
->>>  -			if (version == 0x0200) {
->>>  +			size += rvds;
->>>  +		}
->>>  +
->>>  +		/* The extended VBT must follows OpRegion for OpRegion 2.1+
->>>  */
->>>  +		if (rvda != size && version > 0x0200) {
->>
->>  But we already added rvds to size, this is not compatible with the
->>  previous code that required rvda == size BEFORE adding rvds.
->>
->>>  +			memunmap(base);
->>>  +			pci_err(vdev->pdev,
->>>  +				"Extended VBT does not follow opregion on
->>>  version 0x%04x\n",
->>>  +				version);
->>>  +			return -EINVAL;
->>>  +		}
->>>  +	}
->>>  +
->>>  +	if (size != OPREGION_SIZE) {
->>>  +		/* Allocate memory for OpRegion and extended VBT for 2.0 */
->>>  +		if (rvda && rvds && version == 0x0200) {
->>>  +			void *vbt_base;
->>>  +
->>>  +			vbt_base = memremap(rvda, rvds, MEMREMAP_WB);
->>>  +			if (!vbt_base) {
->>>  				memunmap(base);
->>>  -				pci_err(vdev->pdev,
->>>  -					"IGD assignment does not support
->>>  opregion v2.0 with an extended VBT region\n");
->>>  -				return -EINVAL;
->>>  +				return -ENOMEM;
->>>      }
->>>
->>>  -			if (rvda != size) {
->>>  +			opregionvbt = kzalloc(size, GFP_KERNEL);
->>>  +			if (!opregionvbt) {
->>>  				memunmap(base);
->>>  -				pci_err(vdev->pdev,
->>>  -					"Extended VBT does not follow
->>>  opregion on version 0x%04x\n",
->>>  -					version);
->>>  -				return -EINVAL;
->>>  +				memunmap(vbt_base);
->>>  +				return -ENOMEM;
->>>      }
->>>
->>>  -			/* region size for opregion v2.0+: opregion and VBT
->>>  size. */
->>>  -			size += rvds;
->>>  +			/* Stitch VBT after OpRegion noncontigious */
->>>  +			memcpy(opregionvbt, base, OPREGION_SIZE);
->>>  +			memcpy(opregionvbt + OPREGION_SIZE, vbt_base, rvds);
->>>  +
->>>  +			/* Patch OpRegion 2.0 to 2.1 */
->>>  +			*(__le16 *)(opregionvbt + OPREGION_VERSION) = 0x0201;
->>>  +			/* Patch RVDA to relative address after OpRegion */
->>>  +			*(__le64 *)(opregionvbt + OPREGION_RVDA) =
->>>  OPREGION_SIZE;
->>
->>  AIUI, the OpRegion is a two-way channel between the IGD device/system
->>  BIOS and the driver, numerous fields are writable by the driver.  Now
->>  the driver writes to a shadow copy of the OpRegion table.  What
->>  completes the write to the real OpRegion table for consumption by the
->>  device/BIOS?  Likewise, what updates the fields that are written by the
->>  device/BIOS for consumption by the driver?
->>
->>  If a shadow copy of the OpRegion detached from the physical table is
->>  sufficient here, why wouldn't we always shadow the OpRegion and prevent
->>  all userspace writes from touching the real version?  Thanks,
->>
->>  Alex
->>
->>>  +
->>>  +			memunmap(vbt_base);
->>>  +			memunmap(base);
->>>  +
->>>  +			/* Register shadow instead of map as vfio_region */
->>>  +			base = opregionvbt;
->>>  +		/* Remap OpRegion + extended VBT for 2.1+ */
->>>  +		} else {
->>>  +			memunmap(base);
->>>  +			base = memremap(addr, size, MEMREMAP_WB);
->>>  +			if (!base)
->>>  +				return -ENOMEM;
->>>    	}
->>>    }
->>>
->>>  -	if (size != OPREGION_SIZE) {
->>>  -		memunmap(base);
->>>  -		base = memremap(addr, size, MEMREMAP_WB);
->>>  -		if (!base)
->>>  -			return -ENOMEM;
->>>  -	}
->>>  -
->>>    ret = vfio_pci_register_dev_region(vdev,
->>>     PCI_VENDOR_ID_INTEL | VFIO_REGION_TYPE_PCI_VENDOR_TYPE,
->>>     VFIO_REGION_SUBTYPE_INTEL_IGD_OPREGION,
->>>     &vfio_pci_igd_regops, size, VFIO_REGION_INFO_FLAG_READ, base);
->>>  	if (ret) {
->>>  -		memunmap(base);
->>>  +		if (is_ioremap_addr(base))
->>>  +			memunmap(base);
->>>  +		else
->>>  +			kfree(base);
->>>    	return ret;
->>>    }
->>> 
->> 
->> 
->
-> --
-> Best Regards,
-> Colin Xu
->
->
-
---
-Best Regards,
-Colin Xu
+Please skip these lines. I missed to remove them during rebase and
+haven't noticed until now.
