@@ -2,118 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0533F935E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 06:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AD43F9364
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 06:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhH0EBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 00:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
+        id S233903AbhH0EDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 00:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhH0EBi (ORCPT
+        with ESMTP id S234024AbhH0EDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 00:01:38 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB23C061757;
-        Thu, 26 Aug 2021 21:00:50 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id 18so4561655pfh.9;
-        Thu, 26 Aug 2021 21:00:50 -0700 (PDT)
+        Fri, 27 Aug 2021 00:03:42 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039F1C061796
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 21:02:54 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id z5so10078619ybj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 21:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RpRCOr3AO5VpkYHN7Nr0GT4x4AL433B9T05VC2iQWfI=;
-        b=agLVZrQwXBCGPbao8KSDI/E8Y1tw6ek8pydIzdGVSl3O7JDMEhz0Q0ISX8FMIJyLPn
-         zI+9sYe7L3R3ieWCUsCQYVidH+np+rVbmK2eCHc8pXts5C5lgAHoyGoY7sg7BmTJS27H
-         OOiC1uOEXNnikYHTF9DauqdUUdPwNlKH7Zo0uM3swTAKAoTe67aqH1ilqpNqFgI6yw71
-         hshTZ0n/3RjKUyA7V71I8mLkJ0SkTklSOehx8XA46kTNi24UU8Fw4GwkXr+yx+bXjloK
-         mLQGcdQ0DnPcaACF68cpwBIhXSsP+uo+E48/N05ayicQ9anDwG/sVr7J+MPoCmg9f0vq
-         Fkqw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5EX0Ib5T66NZEZQUvNen4rx8W6LbQAQc16oQp/aoMH8=;
+        b=q2wz4tOPNUK/CXTrqsq327gnvpzMOo2L//zvFOMKtCAvsMZWguv+T8jRd35dUN7jm0
+         3h7Vef3WRREfLGFp4HP9fb4AzB8oJNmS7Przcq/dfU5QgNU76mFG5ggqILgq63LH3fIw
+         FJJZgu1FH3UTKcBOi0588DRyPPZ3DFo0mhdcqwy0wOutq9ZPY9LUBr4X/TAlMKlJ/iu1
+         /EYSG7UnjZ+o2iHGPPeLeBrd0XmE5jHZICZcNESLQXv2idlHQxE2k4K4uZeRzUzfRprE
+         orRrgVI+cydeAu181BPJa6GCZCIJ6URe6iQpA7AtfhvF2LI3x9HLALTjlR3cDed15lNV
+         2HuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=RpRCOr3AO5VpkYHN7Nr0GT4x4AL433B9T05VC2iQWfI=;
-        b=aNiFMVy4Jl3+w4ZdYSpkyqEl6Ym2wS2NoBZ/QONzie3W/NhUoQVA6bZJVJfzbOIlQM
-         dByNtJuycjPDt9q9WYPs4dGmbsE6E7ENftH0snMYSkLwTiTk+vaMMipk7zNSGLrZ+sJh
-         tZ56PcpI1nFo8S1QDritIbGHEnC1S1Kl+wUVXonh1jUY8BA16vsKJew+TKVGe56iPzso
-         ImIJS2uHF8GSXHCFQQLQydzZFdhEpMQvsnwGjiwagyP5xXFmOHkl4oxps1tmRn/08gIf
-         DoceusE+WVeUtos2l7b4qLY5goiitdd6NWrgtmHGK8KvzUcpyWv2zSuMQYzt2M18L4KJ
-         QQDA==
-X-Gm-Message-State: AOAM532wXDSaWj0MTvJv7Oc76SnCjNUcg0jNDyBsWwTB06DnflPC8wt0
-        d2OsrlJLGSPj8BwbdQdE3V8=
-X-Google-Smtp-Source: ABdhPJzmGI5JoHBM8adBGwIfq7rgb6Tpz7/XdpLtiHUK2uAR+MF0Qmkrw9dipCxMettwYvcuKDc5fQ==
-X-Received: by 2002:a63:f145:: with SMTP id o5mr6169427pgk.273.1630036850050;
-        Thu, 26 Aug 2021 21:00:50 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id b3sm4577431pfi.179.2021.08.26.21.00.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 21:00:49 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 26 Aug 2021 18:00:47 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <YShjb2WwvuB4s4gX@slm.duckdns.org>
-References: <20210825213750.6933-1-longman@redhat.com>
- <20210825213750.6933-6-longman@redhat.com>
- <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
- <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5EX0Ib5T66NZEZQUvNen4rx8W6LbQAQc16oQp/aoMH8=;
+        b=kHYjs1i5++VfJYYYcGlugNatQnKMuVzFWMmvXQFT/R7TKB1BEB2gMjx6nduzgJiLwj
+         8wwBj7877PnZMsI50mYth7JfHVMyoLrQVBPqiONtlt/k0f6ehYE2YysADdALwKyf7Kcd
+         nqc14ryyqqptmcGURW7XRCy44to/ZEzLqUITACzOO5w62U3H+mRWZ9Xd2PXz8qHI92Rl
+         dNEbuJWFEM2baTLx9jN94lZgmIUsvKh7u/ezY8DoRv1LBHgul3pu9YgEH72/OSw25yX2
+         KyvvSiTb7nQ82OPYTDKeAaqSQH4LGBmlgB4GVXoY9VTQJORHkG+ja8l5veMwqzSHIFDk
+         0hjg==
+X-Gm-Message-State: AOAM531aPN/FO0LiZjm08Dg+59U13On1oLnITL3EH7nc88Lja2+8+mnp
+        dU2h1gWDCfFrpLn4a3zPBvdMvRs54J5flLYnPmpArw==
+X-Google-Smtp-Source: ABdhPJyM0ggNxJXeHokAmTYi2nyU/dC2IeiojBgwYL1tAXquHUrAImkrDV6i+MVdfHqIjbkB7k+XWvdvv8LmFN6fZEU=
+X-Received: by 2002:a25:d213:: with SMTP id j19mr2860896ybg.20.1630036972958;
+ Thu, 26 Aug 2021 21:02:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
+References: <20210826074526.825517-1-saravanak@google.com> <20210826074526.825517-2-saravanak@google.com>
+ <YSeTdb6DbHbBYabN@lunn.ch> <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
+ <YSf/Mps9E77/6kZX@lunn.ch> <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
+ <YSg+dRPSX9/ph6tb@lunn.ch>
+In-Reply-To: <YSg+dRPSX9/ph6tb@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 26 Aug 2021 21:02:16 -0700
+Message-ID: <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Aug 26, 2021 at 6:23 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > Doesn't add much to the discussion. In the example I gave, the driver
+> > already does synchronous probing. If the device can't probe
+> > successfully because a supplier isn't ready, it doesn't matter if it's
+> > a synchronous probe. The probe would still be deferred and we'll hit
+> > the same issue. Even in the situation the commit [5] describes, if
+> > parallelized probing is done and the PHY depended on something (say a
+> > clock), you'd still end up not probing the PHY even if the driver is
+> > present and the generic PHY would end up force probing it.
+>
+>
+> genphy is meant to be used when there is no other driver available.
+> It is a best effort, better than nothing, might work. And quite a few
+> boards rely on it. However, it should not be used when there is a
+> specific driver.
 
-On Thu, Aug 26, 2021 at 11:01:30PM -0400, Waiman Long wrote:
-> What I am doing here is setting a high bar for transitioning from member to
-> either "root" or "isolated". Once it becomes a partition, there are multiple
-> ways that can make it invalid. I am fine with that. However, I am not sure
-> it is a good idea to allow users to echo "root" to cpuset.cpus.partition
-> anywhere in the cgroup hierarchy and require them to read it back to see if
-> it succeed.
+Agreed, that's what we are trying to ensure.
 
-The problem is that the "high" bar is rather arbitrary. It might feel like a
-good idea to some but not to others. There are no clear technical reasons or
-principles for rules to be set this particular way.
+> So if the PHY device has been probed, and -EPROBE_DEFER was returned,
+> we also need to return -EPROBE_DEFER here when deciding if genphy
+> should be used. It should then all unwind and try again later.
 
-> All the checking are done with cpuset_rwsem held. So there shouldn't be any
-> racing. Of course, a hotplug can immediately follow and make the partition
-> invalid.
+Yes, I think dsa_register_switch() returning -EPROBE_DEFER if the PHYs
+returned -EPROBE_DEFER might be okay (I think we should do it), but
+that doesn't solve the problem for this driver.
 
-Imagine a system which dynamically on/offlines its cpus based on load or
-whatever and also configures partitions for cases where the needed cpus are
-online. If the partitions are set up while the cpus are online, it'd work as
-expected - partitions are in effect when the system can support them and
-ignored otherwise. However, if the partition configuration is attempted
-while the cpus happen to be offline, the configuration will fail, and there
-is no guaranteed way to make that configuration stick short of disabling
-hotplug operations. This is a pretty jarring brekage happening exactly
-because the behavior is an inconsistent amalgam.
+fw_devlink=on/device links short circuits the probe() call of a
+consumer (in this case the PHY) and returns -EPROBE_DEFER if the
+supplier's (in this case switch) probe hasn't finished without an
+error. fw_devlink/device links effectively does the probe in graph
+topological order and there's a ton of good reasons to do it that way
+-- what's why fw_devlink=on was implemented.
 
-It's usually not a good sign if interface restrictions can be added or
-removed because how one feels without clear functional reasons and often
-indicates that there's something broken, which seems to be the case here
-too.
+In this specific case though, since the PHY depends on the parent
+device, if we fail the parent's probe realtek_smi_probe() because the
+PHYs failed to probe, we'll get into a catch-22/chicken-n-egg
+situation and the switch/PHYs will never probe.
 
-Thanks.
+I think a clean way to fix this at the driver level is to do what I
+said in [6]. Copy pasting it here and expanding it a bit:
 
--- 
-tejun
+1. The IRQ registration and mdio bus registration should get moved to
+realtek_smi_probe() which probes "realtek,rtl8366rb". So
+realtek_smi_probe() succeeding doesn't depend on its child devices
+probing successfully (which makes sense for any parent device).
+2. realtek_smi_probe() should also create/register a
+component-master/aggregate device that's "made up of"
+realtek,rtl8366rb and all the PHYs. So the component-master will wait
+for all of them to finish probing before it's initialized.
+3. PHYs will probe successfully now because realtek,rtl8366rb probe()
+which is the supplier's probe has finished probing without problems.
+4. The component device's init (the .bind op) would call
+dsa_register_switch() which kinda makes sense because the rtl8366rb
+and all the PHYs combined together is what makes up the logical DSA
+switch. The dsa_register_switch() will succeed and will be using the
+right/specific PHY driver.
+
+The same applies for any switch that has the PHYs as it's child device
+AND (this is the key part) the PHYs depend on the switch as a supplier
+(remember, if we didn't have the interrupt dependency, this would not
+be an issue).
+
+> I don't know the device core, but it looks like dev->can_match tells
+> us what we need to know. If true, we know there is a driver for this
+> device. But i'm hesitant to make use of this outside of driver/base.
+
+can_match is never cleared once it's set and it's meant as an
+optimization/preserving some probe order stuff. I wouldn't depend on
+it for this case. We can just have a phy_has_driver()  function that
+searches all the currently registered PHY drivers to check if there's
+a matching driver. And dsa_register_switch() or phy_attach_direct()
+can return -EPROBE_DEFER if there is a driver but it isn't bound yet.
+Again, this is orthogonal to the realtek driver fix though because of
+the catch-22 situation above.
+
+-Saravana
+
+[6] - https://lore.kernel.org/netdev/CAGETcx8_vxxPxF8WrXqk=PZYfEggsozP+z9KyOu5C2bEW0VW8g@mail.gmail.com/
