@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AC53F9F0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311103F9F12
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhH0Snw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 14:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbhH0Snv (ORCPT
+        id S230221AbhH0SpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 14:45:00 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:38312 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229882AbhH0So7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 14:43:51 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F26C061757;
-        Fri, 27 Aug 2021 11:43:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RBmvAwPay+sXfU8kdltg7dsiThQ5ECrs+zL2VnxPj/I=; b=lgcsvGKlvlRPjm4XeXNlzIQlb5
-        QOizv+m63NRPhUGgoDpLlprNnix7EU3Cz1GL3Dr13Yyi6Y3Nr3ZcwPqXlvo+FLXQro8rIPZF8R2NE
-        br7T4+GN2+Iy0CWjeDe99nHKDDW+WmK9hBqupHrrsDPuAvNSfyGKm5l+1xhNnDcYa8EfWkyLUQJKG
-        GwFI3fYMZklR57ielKept6nXS5jAmCG3O5g08pxOv90RKWehVeX3UdKf6uej4LC9vtg6/RMef71fY
-        3xgKIlR8IdwVfwjRwU0ZwCodscgojLikAQkiS+jUjyBHBMc7lxOFxYMcLwoExFl6wGAE/e2wldljK
-        aLHIm5Zw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJgoG-00Cyj5-C3; Fri, 27 Aug 2021 18:42:36 +0000
-Date:   Fri, 27 Aug 2021 11:42:36 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
-        dm-devel@redhat.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/10] mmc/core/block: add error handling support for
- add_disk()
-Message-ID: <YSkyHINtV/djFEej@bombadil.infradead.org>
-References: <20210823202930.137278-1-mcgrof@kernel.org>
- <20210823202930.137278-7-mcgrof@kernel.org>
- <YSSN+eac2aCFXTAA@infradead.org>
+        Fri, 27 Aug 2021 14:44:59 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id BF4D9DE;
+        Fri, 27 Aug 2021 21:44:07 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1630089847;
+        bh=4RAYrkn2SDObuvlkcIl8S0wOdjRVTtUb63ZLOYfg7Ls=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=CIUVvBtU9yMXX3oFwUkHx/4mKtnBnlXoUyDI6u63f/hqLMK39ktI4Ycd7zciyUrVU
+         N7AT2fLCli7CdxXRL4NZ9MOKqHUa0Xb+xcbq1F5TtMcB9KGQwnztJeuR2XwLAcbO/g
+         DFHffT+jMeIvRXjTVpw3OIucHNZP4ktIYPd5cnY4=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 27 Aug 2021 21:44:07 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%12]) with
+ mapi id 15.01.2176.009; Fri, 27 Aug 2021 21:44:07 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+CC:     "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        =?iso-8859-1?Q?Pali_Roh=E1r?= <pali@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: RE: [PATCH v2 3/6] fs/ntfs3: Use new api for mounting
+Thread-Topic: [PATCH v2 3/6] fs/ntfs3: Use new api for mounting
+Thread-Index: AQHXlJD4Aw/BzjELzkaNCIdXoLLU5auCIX8AgAAFSYCABZaw8A==
+Date:   Fri, 27 Aug 2021 18:44:07 +0000
+Message-ID: <9dcbd4fb0dcf434f9241d2ef13763428@paragon-software.com>
+References: <20210819002633.689831-1-kari.argillander@gmail.com>
+ <20210819002633.689831-4-kari.argillander@gmail.com>
+ <20210824080302.GC26733@lst.de>
+ <20210824082157.umppqksjl2vvyd53@kari-VirtualBox>
+In-Reply-To: <20210824082157.umppqksjl2vvyd53@kari-VirtualBox>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.0.26]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSSN+eac2aCFXTAA@infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 07:13:13AM +0100, Christoph Hellwig wrote:
-> On Mon, Aug 23, 2021 at 01:29:26PM -0700, Luis Chamberlain wrote:
-> > We never checked for errors on add_disk() as this function
-> > returned void. Now that this is fixed, use the shiny new
-> > error handling.
-> > 
-> > The caller cleanups the disk already so all we need to do
-> > is just pass along the return value.
-> > 
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > ---
-> >  drivers/mmc/core/block.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> > index 4c11f171e56d..4f12c6d1e1b5 100644
-> > --- a/drivers/mmc/core/block.c
-> > +++ b/drivers/mmc/core/block.c
-> > @@ -2432,7 +2432,9 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
-> >  	/* used in ->open, must be set before add_disk: */
-> >  	if (area_type == MMC_BLK_DATA_AREA_MAIN)
-> >  		dev_set_drvdata(&card->dev, md);
-> > -	device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
-> > +	ret = device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
-> > +	if (ret)
-> > +		goto out;
-> 
-> This needs to do a blk_cleanup_queue and also te kfree of md.
+> From: Kari Argillander <kari.argillander@gmail.com>
+> Sent: Tuesday, August 24, 2021 11:22 AM
+> To: Christoph Hellwig <hch@lst.de>
+> Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>; ntfs3@=
+lists.linux.dev; linux-kernel@vger.kernel.org; linux-
+> fsdevel@vger.kernel.org; Pali Roh=E1r <pali@kernel.org>; Matthew Wilcox <=
+willy@infradead.org>; Christian Brauner
+> <christian.brauner@ubuntu.com>
+> Subject: Re: [PATCH v2 3/6] fs/ntfs3: Use new api for mounting
+>=20
+> On Tue, Aug 24, 2021 at 10:03:02AM +0200, Christoph Hellwig wrote:
+> > > +	/*
+> > > +	 * TODO: We should probably check some mount options does
+> > > +	 * they all work after remount. Example can we really change
+> > > +	 * nls. Remove this comment when all testing is done or
+> > > +	 * even better xfstest is made for it.
+> > > +	 */
+> >
+> > Instead of the TODO I would suggest a prep patch to drop changing of
+> > any options in remount before this one and then only add them back
+> > as needed and tested.
+>=20
+> This could be good option. I have actually tested nls and it will be
+> problem so we definitely drop that. I will wait what Konstantin has
+> to say about other.
+>=20
+> > The mechanics of the conversion look good to me.
+>=20
+> I have made quite few changes to make this series better and will
+> send v3 in the near future.
+>=20
+> Main change is that we won't allocate sbi when remount. We can
+> allocate just options. Also won't let nls/iocharset change.
 
-If mmc_blk_alloc_parts() fails mmc_blk_remove_req() is called which
-does both for us?
+Hi Kari, looking forward to have v3 series to pick up!
 
- Luis
+Best regards.
