@@ -2,177 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269203FA112
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1043FA117
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhH0VUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 17:20:22 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39330 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231883AbhH0VUV (ORCPT
+        id S231954AbhH0VU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 17:20:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52005 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231948AbhH0VU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 17:20:21 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RLAZm2158605;
-        Fri, 27 Aug 2021 17:19:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=u7sQHkmMVCWEQ+xt8UpkVUhX3C0XhIyAKQkPPvYoi1Q=;
- b=E7xY5XIzDc53Kzg9lY8jkTRcinj8LX6qCpKAefRm+SHfNfqdROElMbqtwNnjf1oBHydP
- YerYDRy+474agy3GgY2t7CMHX6Gu3HPWpWwRIY7ksA6iSt2vRTpfV23QGCTdZd6ePEgQ
- 9p748MYkKLXrX9mtOLs3iHbRob7q3f8wc0ZrnWH9g7giA7Qv3bL2J4UJNp/edXPpwVeU
- DtnYo+q18TVMg7vPvhdmFqSsyXbn9RyM+C7cIopPXXoBYZUWZ0AVM+DOUNZxl3Yrv52/
- of9jMmd38l8RbJEx2C20AC3OH1LvmmMrvuX2V6HjPB/hi+DTHTNhARZjUTsAO9dwARYI 7A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq75j8qq1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 17:19:31 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17RLBOMN163530;
-        Fri, 27 Aug 2021 17:19:30 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq75j8qpb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 17:19:30 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17RLHdBd026989;
-        Fri, 27 Aug 2021 21:19:29 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 3ajs48j84t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 21:19:29 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17RLJPPm35848604
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 21:19:25 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8F4FC42041;
-        Fri, 27 Aug 2021 21:19:25 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B657942049;
-        Fri, 27 Aug 2021 21:19:24 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.80.46])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 27 Aug 2021 21:19:24 +0000 (GMT)
-Date:   Fri, 27 Aug 2021 23:19:21 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Michael Mueller <mimu@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH 1/1] KVM: s390: index kvm->arch.idle_mask by vcpu_idx
-Message-ID: <20210827231921.267ad3df.pasic@linux.ibm.com>
-In-Reply-To: <20210827160616.532d6699@p-imbrenda>
-References: <20210827125429.1912577-1-pasic@linux.ibm.com>
-        <20210827160616.532d6699@p-imbrenda>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Fri, 27 Aug 2021 17:20:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630099176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U1joG16srsSQx+ASNF6WUB8jVFgT0G7DpTPaFt49UTk=;
+        b=IiVlZ5hrZjk/El5+X2fYBivxEuPoqmen8nx2xxFUXiSnNNIvJo8vPoVrng3pHrwHMP090z
+        jIMfP/0NteL4eAJqCeW2g29O3dSLrUY8/KymEVI22shxLZug0IM70Laf9QIHoE5oLHneT7
+        8qQg9GZb27YJq6PgSKd0lbQxJpOOg9g=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-DMNV_NmDMn2vBCrgTr84PA-1; Fri, 27 Aug 2021 17:19:35 -0400
+X-MC-Unique: DMNV_NmDMn2vBCrgTr84PA-1
+Received: by mail-qt1-f197.google.com with SMTP id e3-20020ac80b030000b029028ac1c46c2aso323282qti.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 14:19:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=U1joG16srsSQx+ASNF6WUB8jVFgT0G7DpTPaFt49UTk=;
+        b=mjuqT3oFWgV9fRUQ6S4HATJTcfoe/cYDBTBK3d7ZcYLvS6UhLYGQDtB9GoWrN5wNTm
+         0h3I1l3aHT8mjmc98+rWS1CXvrYA1IGSxCphXm7JVtRh2hv0zgMfrzFTnZJtkkIrs61n
+         S8dQrqrCSDJzdq/TIYeWGyF0O8CDVHaW7+99ATQzJMD/nEsXzzj3+At8Z8YdPAiITCIC
+         83qYqvgZWQLSw7oGUdM96je4UT4RUeYLvfRwgE7ee3928t4Z6TW7MjySxhlTG+mqmYxX
+         5VxZy+ZKwS5pbDr7EZiXrVeyFbtcG9HGXCp4Vu8ELlAOVvMheAZPTphg6p0QCC6ddE9E
+         emkQ==
+X-Gm-Message-State: AOAM531defALwYBT2Kj8iW1yAny3M6rBW4tZApV6ZXxwPRdQoqnf/v5b
+        83lnzLynZDNajEdNkAGsSLTMUz6qJkLpMkoNxAs3/8pTVQO/Fb//g8MVYf55C5fE1DpuU/Vth/Q
+        LJWmmjApQcTDj8aDzjxBCw4oJ
+X-Received: by 2002:ac8:5905:: with SMTP id 5mr10126472qty.286.1630099174847;
+        Fri, 27 Aug 2021 14:19:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwSgcChWoGG7JzhgBHKTsf5bPMKevttJCBAb34KxbwiSpBx7V0ruD8rOHDWgSN7ARHcPzidpQ==
+X-Received: by 2002:ac8:5905:: with SMTP id 5mr10126447qty.286.1630099174585;
+        Fri, 27 Aug 2021 14:19:34 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id 75sm5578360qko.100.2021.08.27.14.19.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 14:19:33 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210825213750.6933-1-longman@redhat.com>
+ <20210825213750.6933-6-longman@redhat.com> <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
+ <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
+ <YShjb2WwvuB4s4gX@slm.duckdns.org>
+Message-ID: <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
+Date:   Fri, 27 Aug 2021 17:19:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: flYt4X4CxFJtdIKA-hZi8DCd9QyZXomU
-X-Proofpoint-ORIG-GUID: rDOrGoWkUmPCfTxYp7kRBUf49-RAlFkF
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_06:2021-08-27,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- priorityscore=1501 mlxlogscore=999 spamscore=0 suspectscore=0 mlxscore=0
- adultscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108270124
+In-Reply-To: <YShjb2WwvuB4s4gX@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Aug 2021 16:06:16 +0200
-Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
+On 8/27/21 12:00 AM, Tejun Heo wrote:
+> Hello,
+>
+> On Thu, Aug 26, 2021 at 11:01:30PM -0400, Waiman Long wrote:
+>> What I am doing here is setting a high bar for transitioning from member to
+>> either "root" or "isolated". Once it becomes a partition, there are multiple
+>> ways that can make it invalid. I am fine with that. However, I am not sure
+>> it is a good idea to allow users to echo "root" to cpuset.cpus.partition
+>> anywhere in the cgroup hierarchy and require them to read it back to see if
+>> it succeed.
+> The problem is that the "high" bar is rather arbitrary. It might feel like a
+> good idea to some but not to others. There are no clear technical reasons or
+> principles for rules to be set this particular way.
+>
+>> All the checking are done with cpuset_rwsem held. So there shouldn't be any
+>> racing. Of course, a hotplug can immediately follow and make the partition
+>> invalid.
+> Imagine a system which dynamically on/offlines its cpus based on load or
+> whatever and also configures partitions for cases where the needed cpus are
+> online. If the partitions are set up while the cpus are online, it'd work as
+> expected - partitions are in effect when the system can support them and
+> ignored otherwise. However, if the partition configuration is attempted
+> while the cpus happen to be offline, the configuration will fail, and there
+> is no guaranteed way to make that configuration stick short of disabling
+> hotplug operations. This is a pretty jarring brekage happening exactly
+> because the behavior is an inconsistent amalgam.
+>
+> It's usually not a good sign if interface restrictions can be added or
+> removed because how one feels without clear functional reasons and often
+> indicates that there's something broken, which seems to be the case here
+> too.
 
-> On Fri, 27 Aug 2021 14:54:29 +0200
-> Halil Pasic <pasic@linux.ibm.com> wrote:
-> 
-> > While in practice vcpu->vcpu_idx ==  vcpu->vcp_id is often true,
+Well, that is a valid point. The cpus may have been offlined when a 
+partition is being created. I can certainly relent on this check in 
+forming a partition. IOW, cpus_allowed can contain some or all offline 
+cpus and a valid (some are online) or invalid (all are offline) 
+partition can be formed. I can also allow an invalid child partition to 
+be formed with an invalid parent partition. However, the cpu exclusivity 
+rules will still apply.
 
-s/vcp_id/vcpu_id/
+Other than that, do you envision any other circumstances where we should 
+allow an invalid partition to be formed?
 
-> > it may not always be, and we must not rely on this.  
-> 
-> why?
-> 
-> maybe add a simple explanation of why vcpu_idx and vcpu_id can be
-> different, namely:
-> KVM decides the vcpu_idx, userspace decides the vcpu_id, thus the two
-> might not match 
+Cheers,
+Longman
 
-Not sure that is a good explanation. A quote from
-Documentation/virt/kvm/api.rst:
 
-"""
-4.7 KVM_CREATE_VCPU
--------------------
-
-:Capability: basic
-:Architectures: all
-:Type: vm ioctl
-:Parameters: vcpu id (apic id on x86)
-:Returns: vcpu fd on success, -1 on error
-                
-This API adds a vcpu to a virtual machine. No more than max_vcpus may be added.
-The vcpu id is an integer in the range [0, max_vcpu_id).
-        
-The recommended max_vcpus value can be retrieved using the KVM_CAP_NR_VCPUS of
-the KVM_CHECK_EXTENSION ioctl() at run-time.
-The maximum possible value for max_vcpus can be retrieved using the
-KVM_CAP_MAX_VCPUS of the KVM_CHECK_EXTENSION ioctl() at run-time.
-"""
-
-Based on that and a quick look at the code, it looks to me like the
-set of valid vcpu_id values are a subset of the range of vcpu_idx-es,
-i.e. that kvm could decide to choose vcpu_id for the value of vcpu_idx.
-I don't think it should, but it could. Were the set of valid vcpu_id
-values not a subset of the set of supported vcpu_idx values, then one
-could argue that this is why.
-
-I didn't want to get into explaining the why, I just wanted to state the
-fact.
-
-> 
-> > 
-> > Currently kvm->arch.idle_mask is indexed by vcpu_id, which implies
-> > that code like
-> > for_each_set_bit(vcpu_id, kvm->arch.idle_mask, online_vcpus) {
-> >                 vcpu = kvm_get_vcpu(kvm, vcpu_id);  
-> 
-> you can also add a sentence to clarify that kvm_get_vcpu expects an
-> vcpu_idx, not an vcpu_id.
-
-maybe ...
-
-> 
-> > 		do_stuff(vcpu);
-> > }
-> > is not legit. The trouble is, we do actually use kvm->arch.idle_mask
-
-... s/legit\./legit, because kvm_get_vcpu() expects a vcpu_idx and not a
-vcpu_id.
-
-But I agree kvm_get_vcpu(kvm, vcpu_id); does not scream BUG at me while
-kvm_get_vcpu_by_idx(kvm, vcpu_id) would look much more suspicious.
-
-[..]
-> 
-> otherwise looks good to me.
-> 
-> Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-
-Thanks for your reveiew!
-
-Halil
-
-[..]
