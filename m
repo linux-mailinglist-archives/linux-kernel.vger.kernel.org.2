@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F89B3F9F42
+	by mail.lfdr.de (Postfix) with ESMTP id B87983F9F43
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhH0Szo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 14:55:44 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:42823 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbhH0Szf (ORCPT
+        id S230412AbhH0Szp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 14:55:45 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59950
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230380AbhH0Szi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 14:55:35 -0400
-Received: by mail-oi1-f178.google.com with SMTP id bi4so7036569oib.9;
-        Fri, 27 Aug 2021 11:54:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=cJzqcTZF3D93KOJy22n9/xJntgyLy5n8Pb1qlIMUGEg=;
-        b=gY0BX+dlZ6V58tc3RBVbINAzzD7vUwqviW4tabZY6aac04CWM/fAxFP5d+MkhThiWA
-         BHRKhLo3TzJherKZp46a+YVrfm1Y4/TdY9VlOle1nDzb5Q2y1GR/vZCy2ValpP+cd1F0
-         SWNLMYwnFnPyKzfmDIo11IAdpfrIknGyuD9g975wVSa1T/LIhcGsRW4SCNd4juGIOC50
-         aaNShi97CdVsjXeWrthqPv8jal3li1o6e8lomuYAS+1iW/X7vgZ1mbRy7bwxy2g/aHD8
-         g1JrhM937Qy/NJHTJEE6koDwu0xVWREtN0h5IrXyQrzSv5bl12LsdaP6YXrBnwxnNIkI
-         I5/A==
-X-Gm-Message-State: AOAM5311osQQ6HRc0pbqbyPbQC0RoU5/v82xgV4ZBGZoafq/FpzLyyuI
-        TXEdEHrvPoqoijMxfU9FB1pM4qNo80G7p+e9XeKcPuV9shsf6w==
-X-Google-Smtp-Source: ABdhPJxCY26tIzZyHh6NA+Ujsafc5l9vBPJ5GdiG0OjrVDECYs5PXBPvl7BIXPD7ERw5j1nFtZj//RUhlZzx07GlNlE=
-X-Received: by 2002:a05:6808:10ce:: with SMTP id s14mr16583165ois.157.1630090481187;
- Fri, 27 Aug 2021 11:54:41 -0700 (PDT)
+        Fri, 27 Aug 2021 14:55:38 -0400
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net [80.193.200.194])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 184DF3F232;
+        Fri, 27 Aug 2021 18:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630090488;
+        bh=NOaiYQ6V99osk22Ft/AUMfAwEocy7/AP80thsSuyMBk=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=tJyXpCEmbw70/Hd9Eb2VGIMc028U6XmTJ6vuUPtOdgS0RyYNyGsbYMZK3t1WHnrR4
+         oK4pxGEez9CATGWnQzvHOINfMtCDhIElolI1ACZS53b5WbiETG/GVQ10IQ5rrKNN+6
+         9EFb+6JQ89pe4lE3VwLtvxI8i7KJWr7fYOY6v+OsLcMce8wxLoviHCB76ebNANu+tY
+         cLZ4oZJ3JQNiNn+q40IZLTG2VBhtP2I1jeA2SnwBI5wgMTW7y3GoL6+dm6hc+VJLZk
+         Pcrz0pX/Ck62v7pbpiZmmZUomQwGfpb85ljpmd+iJ9P/iyf/GIXKCfZiX4gmfgF2yO
+         GV7/gS4KorJ9w==
+From:   Colin King <colin.king@canonical.com>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: i810: Fix spelling mistake "constext" -> "context"
+Date:   Fri, 27 Aug 2021 19:54:47 +0100
+Message-Id: <20210827185447.507207-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 27 Aug 2021 20:54:30 +0200
-Message-ID: <CAJZ5v0i0a-mYqok8qQfQjpG-zPti=smyZR9HKxFAcQQY6VNrJw@mail.gmail.com>
-Subject: [GIT PULL] Power management fixes for v5.14-rc8
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Colin Ian King <colin.king@canonical.com>
 
-Please pull from the tag
+There is a spelling mistake in a printk message. Fix it.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.14-rc8
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/i810/i810_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-with top-most commit 7ee5fd12e8cac91bdec6de8417b030ed05d5d7ee
+diff --git a/drivers/gpu/drm/i810/i810_dma.c b/drivers/gpu/drm/i810/i810_dma.c
+index 9fb4dd63342f..ef141d217a72 100644
+--- a/drivers/gpu/drm/i810/i810_dma.c
++++ b/drivers/gpu/drm/i810/i810_dma.c
+@@ -479,7 +479,7 @@ static void i810EmitContextVerified(struct drm_device *dev,
+ 			OUT_RING(tmp);
+ 			j++;
+ 		} else
+-			printk("constext state dropped!!!\n");
++			printk("context state dropped!!!\n");
+ 	}
+ 
+ 	if (j & 1)
+-- 
+2.32.0
 
- Merge branch 'pm-opp'
-
-on top of commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
-
- Linux 5.14-rc7
-
-to receive power management fixes for 5.14-rc8 (or final 5.14).
-
-These fix two issues introduced during this cycle, one of which
-is a regression and the other one affects new code.
-
-Specifics:
-
- - Prevent the operating performance points (OPP) code from crashing
-   when some entries in the table of required OPPs are set to error
-   pointer values (Marijn Suijten).
-
- - Prevent the generic power domains (genpd) framework from
-   incorrectly overriding the performance state of a device set
-   by its driver while it is runtime-suspended or when runtime
-   PM of it is disabled (Dmitry Osipenko).
-
-Thanks!
-
-
----------------
-
-Dmitry Osipenko (1):
-      PM: domains: Improve runtime PM performance state handling
-
-Marijn Suijten (1):
-      opp: core: Check for pending links before reading required_opp pointers
-
----------------
-
- drivers/base/power/domain.c | 10 ++++++++--
- drivers/opp/core.c          |  8 ++++----
- 2 files changed, 12 insertions(+), 6 deletions(-)
