@@ -2,128 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503093F983E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 12:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B243F9874
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 13:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244976AbhH0KuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 06:50:06 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50302 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233193AbhH0Ktz (ORCPT
+        id S245013AbhH0LeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 07:34:14 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:61993 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233296AbhH0LeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 06:49:55 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 66BCA223B4;
-        Fri, 27 Aug 2021 10:49:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630061346; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K0Nn4BSUqolweqQNlr37cyJmiIhk4AifsG/Gg3LBx1o=;
-        b=foTZeijej7U4TPCeksGJSkqBKTZRrzcrPT5hlHKjrS4/X434Wvbfq1yUrVL5n4fhqJA/l3
-        12i6QdRod9wM9WjuYCWnmO9kQfFmLtqCYfLOxc0aA9TfNZeZo8oYQZ/8LAfayN4p4peyJx
-        F8qn6TC4eDGLg+uxP3qYZAtiBHX2zf0=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id D75C3A3B8F;
-        Fri, 27 Aug 2021 10:49:05 +0000 (UTC)
-Date:   Fri, 27 Aug 2021 12:49:03 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] vsprintf/Documentation: Add X to %*ph extension to
- output upper case hex
-Message-ID: <YSjDH1y8AJIvCstV@alley>
-References: <cover.1630003183.git.joe@perches.com>
- <bc33e306a9064dfbf1180a35f9bfa587c6502eca.1630003183.git.joe@perches.com>
- <YSiY0aa+C9cyJni4@smile.fi.intel.com>
- <18d9f8d6803c8957ec091c207780c163af07e41f.camel@perches.com>
- <YSinAyVMIQDxf6Fo@smile.fi.intel.com>
+        Fri, 27 Aug 2021 07:34:12 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17R81B0B012251;
+        Fri, 27 Aug 2021 06:33:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=fgC7+0bMytPVb3Z8IsZAuaN8+WcXgaQVIeFmCMgmnaU=;
+ b=lp9H0Op8oKZZ7B1t9PrcH85I+L69eIMazO9OF3NG5kvyJ//jzwqb7oIGkwf56fNFfjZ7
+ TBI8um9cXaWpFGHjGSuQmcXVsU1ny4AIcvZ47kKnw46YrDNgvv50EongAfnOMDqczvsR
+ tKoataG1+G3hyZ/fQuvPY0rrizmkFqlz56hp3xeH4DweJlFin+u14l6wpHil7fLfgBbv
+ u+TyCZ+7VWaC2HI3g+JiU0IvZCJ4KlOvPL8F1AGCUsg8Eg4618Kj6ZgpzLSon64pZ2Ms
+ EAKknzjvhLjSDeVR9wiptMnysTWbDQX9nt2ViqzcMeTFSi81Ds/fAGVgg1KTLWgJwP2P DA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3apv5sg7fa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 27 Aug 2021 06:33:07 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 27 Aug
+ 2021 12:03:01 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Fri, 27 Aug 2021 12:03:01 +0100
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.186])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 464E32A9;
+        Fri, 27 Aug 2021 11:03:00 +0000 (UTC)
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: [PATCH 1/2] ALSA: hda/cs8409: Ensure Type Detection is only run on startup when necessary
+Date:   Fri, 27 Aug 2021 12:02:51 +0100
+Message-ID: <20210827110252.5361-1-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YSinAyVMIQDxf6Fo@smile.fi.intel.com>
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: -41n5sueXKnydCdamrnkG6EbQmwZ7-TS
+X-Proofpoint-GUID: -41n5sueXKnydCdamrnkG6EbQmwZ7-TS
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-08-27 11:49:07, Andy Shevchenko wrote:
-> On Fri, Aug 27, 2021 at 01:08:10AM -0700, Joe Perches wrote:
-> > On Fri, 2021-08-27 at 10:48 +0300, Andy Shevchenko wrote:
-> > > On Thu, Aug 26, 2021 at 11:43:01AM -0700, Joe Perches wrote:
-> > > > A few sysfs output uses of hex arrays are uppercase and are nominally ABI.
-> > > > 
-> > > > Add a mechanism to the existing vsprintf %*ph hex output extension to
-> > > > support upper case hex output.
-> > > 
-> > > ...
-> > > 
-> > > > +	The preferred output is lowercase
-> > > >  	%*ph	00 01 02  ...  3f
-> > > >  	%*phC	00:01:02: ... :3f
-> > > >  	%*phD	00-01-02- ... -3f
-> > > >  	%*phN	000102 ... 3f
-> > > > +	Formats with X are uppercase, used for backwards compatibility
-> > > > +	%*phX	00 01 02  ...  3F
-> > > > +	%*phCX	00:01:02: ... :3F
-> > > > +	%*phDX	00-01-02- ... -3F
-> > > > +	%*phNX	000102 ... 3F
-> > > 
-> > > Why not using %*pH...?
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-I though about this as well.
+Type Detection should only be run after init and when the controls have been
+built. There is no need to run it multiple times.
 
-> > I find X more intelligible.
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+---
+ sound/pci/hda/patch_cs8409.c | 34 ++++++++++++++++++++++++++++------
+ sound/pci/hda/patch_cs8409.h |  2 ++
+ 2 files changed, 30 insertions(+), 6 deletions(-)
 
-I would slightly prefer %pH. I always have problems to parse long
-sequences of modifiers. So, the shorter format the better.
+diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+index 9db16b6292f4..805441b7bf86 100644
+--- a/sound/pci/hda/patch_cs8409.c
++++ b/sound/pci/hda/patch_cs8409.c
+@@ -784,6 +784,8 @@ static void cs42l42_suspend(struct sub_codec *cs42l42)
+ 	cs8409_i2c_write(cs42l42, 0x1102, 0x9C);
+ 	cs42l42->suspended = 1;
+ 	cs42l42->last_page = 0;
++	cs42l42->hp_jack_in = 0;
++	cs42l42->mic_jack_in = 0;
+ 
+ 	/* Put CS42L42 into Reset */
+ 	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
+@@ -852,6 +854,8 @@ static int cs8409_cs42l42_suspend(struct hda_codec *codec)
+ 	struct cs8409_spec *spec = codec->spec;
+ 	int i;
+ 
++	spec->init_done = 0;
++
+ 	cs8409_enable_ur(codec, 0);
+ 
+ 	for (i = 0; i < spec->num_scodecs; i++)
+@@ -1025,14 +1029,21 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+ 		break;
+ 	case HDA_FIXUP_ACT_INIT:
+ 		cs8409_cs42l42_hw_init(codec);
+-		fallthrough;
++		spec->init_done = 1;
++		if (spec->init_done && spec->build_ctrl_done
++			&& !spec->scodecs[CS8409_CODEC0]->hp_jack_in)
++			cs42l42_run_jack_detect(spec->scodecs[CS8409_CODEC0]);
++		break;
+ 	case HDA_FIXUP_ACT_BUILD:
++		spec->build_ctrl_done = 1;
+ 		/* Run jack auto detect first time on boot
+ 		 * after controls have been added, to check if jack has
+ 		 * been already plugged in.
+ 		 * Run immediately after init.
+ 		 */
+-		cs42l42_run_jack_detect(spec->scodecs[CS8409_CODEC0]);
++		if (spec->init_done && spec->build_ctrl_done
++			&& !spec->scodecs[CS8409_CODEC0]->hp_jack_in)
++			cs42l42_run_jack_detect(spec->scodecs[CS8409_CODEC0]);
+ 		break;
+ 	default:
+ 		break;
+@@ -1223,16 +1234,27 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
+ 		break;
+ 	case HDA_FIXUP_ACT_INIT:
+ 		dolphin_hw_init(codec);
+-		fallthrough;
++		spec->init_done = 1;
++		if (spec->init_done && spec->build_ctrl_done) {
++			for (i = 0; i < spec->num_scodecs; i++) {
++				if (!spec->scodecs[i]->hp_jack_in)
++					cs42l42_run_jack_detect(spec->scodecs[i]);
++			}
++		}
++		break;
+ 	case HDA_FIXUP_ACT_BUILD:
++		spec->build_ctrl_done = 1;
+ 		/* Run jack auto detect first time on boot
+ 		 * after controls have been added, to check if jack has
+ 		 * been already plugged in.
+ 		 * Run immediately after init.
+ 		 */
+-		for (i = 0; i < spec->num_scodecs; i++)
+-			cs42l42_run_jack_detect(spec->scodecs[i]);
+-
++		if (spec->init_done && spec->build_ctrl_done) {
++			for (i = 0; i < spec->num_scodecs; i++) {
++				if (!spec->scodecs[i]->hp_jack_in)
++					cs42l42_run_jack_detect(spec->scodecs[i]);
++			}
++		}
+ 		break;
+ 	default:
+ 		break;
+diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+index 207315ad5bf6..ade2b838590c 100644
+--- a/sound/pci/hda/patch_cs8409.h
++++ b/sound/pci/hda/patch_cs8409.h
+@@ -333,6 +333,8 @@ struct cs8409_spec {
+ 
+ 	unsigned int playback_started:1;
+ 	unsigned int capture_started:1;
++	unsigned int init_done:1;
++	unsigned int build_ctrl_done:1;
+ 
+ 	/* verb exec op override */
+ 	int (*exec_verb)(struct hdac_device *dev, unsigned int cmd, unsigned int flags,
+-- 
+2.25.1
 
-Of course, it means that 'H' won't be usable for another purpose.
-But it will happen one day anyway. Well, this is why I do not
-have strong opinion.
-
-I am more and more convinced that we will need another approach.
-Mathew Wilcox has had an idea to add support for custom callbacks
-that would be able to format the string, something like:
-
-   vsprintf("Date: %pX(%p)\n", format_date, time_stamp);
-
-I think that it might even be possible to do something like:
-
-   vsprintf("Date: %pX\n", format_date(time));
-
-, where the format_date() would be a macro that would create
-a struct at stack a pass it as a pointer:
-
-#define format_date(time)			   \
-({						   \
-	struct vsprintf_callback c = {		   \
-		.func = vsprintf_format_date,	   \
-		.arg1 = time,			   \
-	}					   \
-						   \
-	&c;					   \
-})
-
-and vsprintf would internally do something like:
-
-char *custom_format(char *buf, char *end, vsprintf_callback *c,
-			 struct printf_spec spec, const char *fmt)
-{
-	return c->func(buf, end, c->arg1, spec);
-}
-
-It would allow to replace all the magic %pXYZ modifiers with
-self-explanatory callbacks. While still keeping it easy to use.
-
-Best Regards,
-Petr
