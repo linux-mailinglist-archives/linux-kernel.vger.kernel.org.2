@@ -2,208 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9F03FA1E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 01:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4518D3FA1D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 01:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbhH0XmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 19:42:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40996 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232433AbhH0XmD (ORCPT
+        id S232503AbhH0Xf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 19:35:29 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:51448 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232405AbhH0Xf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 19:42:03 -0400
-Date:   Fri, 27 Aug 2021 23:41:12 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630107673;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJtYy3+Ewjzd6KiUleN02lT/h8y1My8Bkx4g8HNxCt0=;
-        b=jAGJv+QUqKknVrjTfBTClN5pQ61UfSivTREsgKJ6Y0qzU5h/pix8f1SipRTbVdLQp8xxuB
-        CjTx1SZZ+wC8Mr12CfvYQbhMDAnA4yZfXer1dK2dCEVDkZTG3Q4esr4VAkEhcR/jqee/j3
-        75E7EpYwv/X5cFoQm1JXMhr7xA7l20Qb8jGtH9vbSevttQY//X3a7Y4ZE1pJfHw/88ZPK+
-        cv3EF4NWS3iZQOpxiP8yhuphOSiLV/wTR/iEIluzVYQUspV01oA8Jwv15Rrbn92FA5H0O7
-        lS4fD/BqMx9GPBBQyAa36MNNrcuBEOJ0i9J+Z9RBP62uxhoL+7wqcEdI6vxKNg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630107673;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJtYy3+Ewjzd6KiUleN02lT/h8y1My8Bkx4g8HNxCt0=;
-        b=R6H2THrrvIMOQd8GXiXXTzmmySzHmJm8v0usKEyNtxQZnUwwON42T5aTC+qgSHfzXOJO2J
-        RaU4DsToCu115ECA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] eventfd: Make signal recursion protection a task bit
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Wang <jasowang@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <87wnp9idso.ffs@tglx>
-References: <87wnp9idso.ffs@tglx>
+        Fri, 27 Aug 2021 19:35:27 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17RKPA99002206
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 23:34:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2021-07-09; bh=zOvdA8MvFnY8zyr9XjagORMb61ckIdTVPjD4J48nZys=;
+ b=l2kkf4r9pE7PL2falhx+eRFacK0sGxKyz0CI4HWnz+ErHwNnX/WKt00hsAtHIW4gyy12
+ upWCYLd5gxsJpeohgc+fQ+Ky5VqPTHq6D//ApFnn+cwpW43rRprK1MvMSMKRr9mlHauD
+ rY8cA5MkbT5hITmNn+7UUNds8BvDtsK/nsTMTKqbUZFgQPq7epYVnt5E+YvkX1tQvuqK
+ U8HDOB1KEV4ireEsbyXJ5JWjIY1vnA8xYNgx1oGgpQ+kAmL1gT9QYSXi1Zh1Uk0CgHXm
+ +uvTSwcMn/pHZhgYVfj1dUs10E0EE/EC7/O/GUlAI3U4g0etmv++Na8OEOLncL1RzF/u 6A== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2020-01-29; bh=zOvdA8MvFnY8zyr9XjagORMb61ckIdTVPjD4J48nZys=;
+ b=w0GC6X3yvhsnF2410US+KxWXXcu0GTx7eOwAgjM9nfFm+/a91O+Of0G5rZNTNd+BQt7w
+ kVq8tLfS+BvqIc25YYrT/iBo3YlK82fFp99qkvREll00lIqYbja41pra0HPJL2b7Shud
+ YqQSOtpN20UBFdUkU5me1SM8D0npgsLk3dId6MOSVwtgqM5cb8GrMn+D04KyPTBHM+DA
+ j+aWnPcq27OzSMrE6MBtINhXQUs9XzrkZFrIdrKtXly516MPkRnmqSxfzQAo4SLlxr+X
+ iL8bgvNuupyUDdgNUsMXV2QO2r1xzXwgIOwHoctp/BIVVB3MGX6DXQy73GyLklThlHK7 2g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3apvjr1sj6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 23:34:38 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17RNFWMl109062
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 23:34:37 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2176.outbound.protection.outlook.com [104.47.58.176])
+        by aserp3030.oracle.com with ESMTP id 3aq2hv4mef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 23:34:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aNGMJ+kA9POvk1Fo/EcydC6SPJYafvCNJ00qmdvuBbhojxGFNKDGG2F0LaKB3xX/U7YJnPM4i39iQKK9YUY513pjMBw1DJJuRyR93DieM5uRxqPgpFzrQi50r0JO5Q3/f2EVhOKfWucPf/W4TWudSUAu+8IkyFxCOcxopgOJqvQVp8tDpm5wK2WKI/tHv7QzyHKlBGoaxggxz/26PbdXVou34yVvsULgjgI1TcwjTo+OSMhjOGsObVIiYstKxvzdTJMxOuQC6Hk6IbHt47cD0WsX2ofQ6wjyh9S/nAY9njxTFROFACXMb+LBRDeQ2kIGDgGQ5cKdn06HXcPh4oG8cw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zOvdA8MvFnY8zyr9XjagORMb61ckIdTVPjD4J48nZys=;
+ b=Jz4EaZwISM7FWg3ft42dqbniGQGhKF7vpituMx+S5Ttap2m9f4NABOEGBPDk7DjpX/VufGxGbyzmXzndzDIcFhygxH3dwODCo20tC/hv9YI7wy7diFNKkNIh3bcORyJPwd/lq2ciM7SdEnL0Rt4yLE2G1Zcl4Dm3y4dcm3n3RrL1Xb//Yr88TzxDwl6PVY7/+edvLlmboLjwNJeKodk3vWT5pHvBwYDufmublb1fwEr4Gt4ThtzswsHbhtmXvF2+lVtoCXv1prg+0KHmX2vR5+xUghACohGddrqMuhxilsq9pX76RLv0X8E7orfOdwS+gjUpQJMCj9gDWL723kYHvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zOvdA8MvFnY8zyr9XjagORMb61ckIdTVPjD4J48nZys=;
+ b=XdRwWgk0Quw6eZaAwBtttFt9BYpGn8QrDxNHkUn48dYK7RL5s2hRvRoLtV3h59s6qZFxGkEPwgv8pfvx7TN9PxcuO9phsgiQVBAvfnU1yoPzv/k6YIr7houNW9Vgwl6U0K5/2PvfPiBhrLisvOOkimkL4VHgUyySbhabgcJLowc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2629.namprd10.prod.outlook.com (2603:10b6:a02:b7::24)
+ by SJ0PR10MB5520.namprd10.prod.outlook.com (2603:10b6:a03:3fe::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Fri, 27 Aug
+ 2021 23:34:35 +0000
+Received: from BYAPR10MB2629.namprd10.prod.outlook.com
+ ([fe80::c9c2:64d4:c67f:6837]) by BYAPR10MB2629.namprd10.prod.outlook.com
+ ([fe80::c9c2:64d4:c67f:6837%7]) with mapi id 15.20.4415.024; Fri, 27 Aug 2021
+ 23:34:35 +0000
+From:   Prakash Sangappa <prakash.sangappa@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     prakash.sangappa@oracle.com
+Subject: [RFC PATCH 0/3] Provide fast access to thread-specific data
+Date:   Fri, 27 Aug 2021 16:42:13 -0700
+Message-Id: <1630107736-18269-1-git-send-email-prakash.sangappa@oracle.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SN4PR0701CA0034.namprd07.prod.outlook.com
+ (2603:10b6:803:2d::15) To BYAPR10MB2629.namprd10.prod.outlook.com
+ (2603:10b6:a02:b7::24)
 MIME-Version: 1.0
-Message-ID: <163010767256.25758.8600942642007356589.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pp-ThinkCentre-M82.us.oracle.com (2606:b400:8024:1010::1501) by SN4PR0701CA0034.namprd07.prod.outlook.com (2603:10b6:803:2d::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4457.19 via Frontend Transport; Fri, 27 Aug 2021 23:34:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6cec3a3f-bbff-4002-2e79-08d969b33a70
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB5520:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB5520D8E6E1CC20BC6C5DF25EE4C89@SJ0PR10MB5520.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9kTuBXoy7z433bP5yw/AyIXNClQ4eZy8+Qf23etEKWEInyFCztPwOtm//DcDUZ/RQ7Otdm436yS6jVk+0Hn3MtHJzbWxl4jupWrzzE/LYzgsSbx3OPYwAmrw8zOeBflkkqjIPWx9qr9/jFl2nbMS+7dIy/pluiZduVlMcsybj2ZXhj1Ipeb63AHIRsKm26XMqbmX6iXkSDmctdtsURqEWPQH4HvhWpqwuEBTm5lRb3SBRjT5Q/iN1fKrhF57cOVx6z4BliWLBbgFkarmSQ0twMxKTsQ8kHboSdWUoath8k1L7OA3TJ+XImybE5bNL/eY62ZHkYQF7WvTIC0sEjIJp6OTBqZzH6dddvPX1kCkzqTn6m7cxLYFVGb0Dj1ZMW839OQ1TCnxuY7Jry5TCt8dizr4/BN1fK/B+JnemPS2rLgIl4csdTthjLVJGuiCsa6PfVvxtSftr46YLXOM/VfjcHTmgFVIKBRMzFqv8DDANSLihtm0jsb5AopP9sU/XxDJxTbqO6faobs9vFWTTM99MCcFozc/Tn7iI3/LUuBgOWJKl4TdPujjVlMuMry6ZEQQ5SWyrbD/2QJCx+GZlkguM3LdMr1MQ0lOLtR2WOh66XLavkZKDWLedHTrvIaaWiHkEN1hXV56HBDVIJSGOKi/Gw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2629.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(396003)(366004)(346002)(136003)(7696005)(52116002)(38100700002)(8676002)(83380400001)(186003)(6486002)(107886003)(4326008)(66476007)(2616005)(44832011)(2906002)(6666004)(478600001)(86362001)(8936002)(5660300002)(66556008)(36756003)(316002)(66946007)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lOqHohJNLgzvOrol+/j3EigRZOF/zBI5pzT/bKXxyQqRkRpYzwQ7Q2ONKIrz?=
+ =?us-ascii?Q?jP/eKBTqUevhVffrhAs48DHIqu/GeXAUQP265pJ+SagVfRJGjHRCwMKWzbwq?=
+ =?us-ascii?Q?0w3Tg8z5DGvYbXgYgYNS6zT3Lu9pislRJ5ebbU8l4zqUm8v0kNy1EdTSWcd/?=
+ =?us-ascii?Q?i8xY/uQt/dbxSLyNTZ5VTT4u9G88ULCBI0PS90onPhnO2TZtVi8F7SdoIPpe?=
+ =?us-ascii?Q?6/sDRtlIUaJuB8acNY1zeg/z1+0XsKU/GJ1CKHcJzg66YEolfh2QKMpmOPkv?=
+ =?us-ascii?Q?xQkoxOghVlabofLwM0yuZvZAuW4aLOlWk4UiBfYFdygF6Aukh2BZlTKYRPBP?=
+ =?us-ascii?Q?vrUnbHC4t+2T0N5Yuxf6p4Kdq7zFC0LGzASR8DoaHOLiwdkCBcnGx7A2VMT3?=
+ =?us-ascii?Q?lPo1y5GujRXskqZeQuhhyKrOwKiJf/ElnyTHIFaqcrVY4IGu1d7kqjg9dejF?=
+ =?us-ascii?Q?TDekglT4uqDpxsLprppr2J8a2vKROXaHlPmPR74tVX0Z4Jp/RbM7DhBwVarr?=
+ =?us-ascii?Q?aB01DMU5gJ0DPuAFhELNVyc5/GB+9wQOJKSOMJwOq13HaROM96cElvuy5yEC?=
+ =?us-ascii?Q?pw5+mVJmWFs7mdyLW9VHpTIYcBkuWvimn8FxFWJn2ravLqwJQkjh20U7j8DZ?=
+ =?us-ascii?Q?2uq2AVz/Pro1vKdJud6p/JFSKWPWTulNR82c5HLJ7KlIPw3KsE24u4kvKt4I?=
+ =?us-ascii?Q?L3FZQeODwLq6+R67FDymPKGG88EXnHCpmeEzuVI/9DoT3zhvPkDZA7BH06fp?=
+ =?us-ascii?Q?PEz3aDFvwQHLxpCfAkAZluh6yyngSWEJT12S/ZJJkOz4OQUius8o1sVKuOXG?=
+ =?us-ascii?Q?PXERna1JjBwD6xk4unz6oU+trE/3I2uI1Wy7Ldnb+iSAvsCFDDES6RUWeWyK?=
+ =?us-ascii?Q?lGFKesKmCzWag7gS3lmCW0gRqgdIh14iigd9VivrrUr3IQR1sGk0ItVMO4pJ?=
+ =?us-ascii?Q?ufgvfxUDUgP1W5MdQnwvX1D25clhWprbc3tPwrhsGXyh46G3BchZ8FzNkYAP?=
+ =?us-ascii?Q?bTWx+KJvg+uABhU8l39Lo5/HoqoqpwdLjFo8VhE91MKUO3kgS3gyYlzXwHt0?=
+ =?us-ascii?Q?Zr1YPaXHwkZ0kcWIEt4GZ+vY3FEJYahsmsGJgKM7Rj9YG0a/6nIkoZI+J/vK?=
+ =?us-ascii?Q?R/bRvrM5kZSg2OkisNnCs/SPEhcwbDZ0f4tZcJwrumJUoSteL2c8Hn4ng1+p?=
+ =?us-ascii?Q?OiXH1rS8GP2NYDzjkGNLjoS4I/RqtvU/TJGk4SIQjlRNjm+eEKLm7rg0ZIjM?=
+ =?us-ascii?Q?x6mmD8aauaFkqXXvERsepN5PKafhuMt+hdSdcCGki8KxQHb6HxdiVkeUOack?=
+ =?us-ascii?Q?pj5PkhtBXA2/mayKh56LVWGmMvQXZ4gxeMvxBnywCMnlFegFMOcS9EImaYms?=
+ =?us-ascii?Q?vZjEVA8=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6cec3a3f-bbff-4002-2e79-08d969b33a70
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2629.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 23:34:35.3037
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sFGZNq58Hb5BO3I0+k47ISAQThDmgBAFX5veJWqPAMaF0T9UxcmT8xe3Votntd4VBjr7D6WZt96TV/jDDFR16LuDZgMQ6ZQ30sfueSECXj8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5520
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10089 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108270139
+X-Proofpoint-GUID: TLjdveH6aImNp02-NcMt-BUX-SMFAsQL
+X-Proofpoint-ORIG-GUID: TLjdveH6aImNp02-NcMt-BUX-SMFAsQL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Sending this as RFC, looking for feedback.
 
-Commit-ID:     b542e383d8c005f06a131e2b40d5889b812f19c6
-Gitweb:        https://git.kernel.org/tip/b542e383d8c005f06a131e2b40d5889b812f19c6
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 29 Jul 2021 13:01:59 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 28 Aug 2021 01:33:02 +02:00
+Some applications, like a Databases require reading thread specific stats
+frequently from the kernel in latency sensitive codepath. The overhead of
+reading stats from kernel using system call affects performance.
+One use case is reading thread's scheduler stats from /proc schedstat file
+(/proc/pid/schedstat) to collect time spent by a thread executing on the
+cpu(sum_exec_runtime), time blocked waiting on runq(run_delay). These
+scheduler stats, read several times per transaction in latency-sensitive
+codepath, are used to measure time taken by DB operations.
 
-eventfd: Make signal recursion protection a task bit
+This patch proposes to introduce a mechanism for kernel to share thread
+stats thru a per thread shared structure shared between userspace and
+kernel. The per thread shared structure is allocated on a page shared
+mapped between user space and kernel, which will provide a way for fast
+communication between user and kernel. Kernel publishes stats in this
+shared structure. Application thread can read from it in user space
+without requiring system calls.
 
-The recursion protection for eventfd_signal() is based on a per CPU
-variable and relies on the !RT semantics of spin_lock_irqsave() for
-protecting this per CPU variable. On RT kernels spin_lock_irqsave() neither
-disables preemption nor interrupts which allows the spin lock held section
-to be preempted. If the preempting task invokes eventfd_signal() as well,
-then the recursion warning triggers.
+Similarly, there can be other use cases for such shared structure
+mechanism.
 
-Paolo suggested to protect the per CPU variable with a local lock, but
-that's heavyweight and actually not necessary. The goal of this protection
-is to prevent the task stack from overflowing, which can be achieved with a
-per task recursion protection as well.
+Introduce 'off cpu' time:
 
-Replace the per CPU variable with a per task bit similar to other recursion
-protection bits like task_struct::in_page_owner. This works on both !RT and
-RT kernels and removes as a side effect the extra per CPU storage.
+The time spent executing on a cpu(sum_exec_runtime) by a thread,
+currently available thru thread's schedstat file, can be shared thru
+the shared structure mentioned above. However, when a thread is running 
+on the cpu, this time gets updated periodically, can take upto 1ms or
+more as part of scheduler tick processing. If the application has to 
+measure cpu time consumed across some DB operations, using
+'sum_exec_runtime' will not be accurate. To address this the proposal
+is to introduce a thread's 'off cpu' time, which is measured at context
+switch, similar to time on runq(ie run_delay in schedstat file) is and
+should be more accurate. With that the application can determine cpu time
+consumed by taking the elapsed time and subtracting off cpu time. The
+off cpu time will be made available thru the shared structure along with
+the other schedstats from /proc/pid/schedstat file.
 
-No functional change for !RT kernels.
+The elapsed time itself can be measured using clock_gettime, which is
+vdso optimized and would be fast. The schedstats(runq time & off cpu time)
+published in the shared structure will be accumulated time, same as what
+is available thru schedstat file, all in units of nanoseconds. The
+application would take the difference of the values from before and after
+the operation for measurement.
 
-Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Link: https://lore.kernel.org/r/87wnp9idso.ffs@tglx
+Preliminary results from a simple cached read Database workload shows
+performance benefit, when the database uses shared struct for reading
+stats vs reading from /proc directly.
 
----
- fs/aio.c                |  2 +-
- fs/eventfd.c            | 12 +++++-------
- include/linux/eventfd.h | 11 +++++------
- include/linux/sched.h   |  4 ++++
- 4 files changed, 15 insertions(+), 14 deletions(-)
+Implementation:
 
-diff --git a/fs/aio.c b/fs/aio.c
-index 76ce0cc..51b08ab 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -1695,7 +1695,7 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
- 		list_del(&iocb->ki_list);
- 		iocb->ki_res.res = mangle_poll(mask);
- 		req->done = true;
--		if (iocb->ki_eventfd && eventfd_signal_count()) {
-+		if (iocb->ki_eventfd && eventfd_signal_allowed()) {
- 			iocb = NULL;
- 			INIT_WORK(&req->work, aio_poll_put_work);
- 			schedule_work(&req->work);
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index e265b6d..3627dd7 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -25,8 +25,6 @@
- #include <linux/idr.h>
- #include <linux/uio.h>
- 
--DEFINE_PER_CPU(int, eventfd_wake_count);
--
- static DEFINE_IDA(eventfd_ida);
- 
- struct eventfd_ctx {
-@@ -67,21 +65,21 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
- 	 * Deadlock or stack overflow issues can happen if we recurse here
- 	 * through waitqueue wakeup handlers. If the caller users potentially
- 	 * nested waitqueues with custom wakeup handlers, then it should
--	 * check eventfd_signal_count() before calling this function. If
--	 * it returns true, the eventfd_signal() call should be deferred to a
-+	 * check eventfd_signal_allowed() before calling this function. If
-+	 * it returns false, the eventfd_signal() call should be deferred to a
- 	 * safe context.
- 	 */
--	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
-+	if (WARN_ON_ONCE(current->in_eventfd_signal))
- 		return 0;
- 
- 	spin_lock_irqsave(&ctx->wqh.lock, flags);
--	this_cpu_inc(eventfd_wake_count);
-+	current->in_eventfd_signal = 1;
- 	if (ULLONG_MAX - ctx->count < n)
- 		n = ULLONG_MAX - ctx->count;
- 	ctx->count += n;
- 	if (waitqueue_active(&ctx->wqh))
- 		wake_up_locked_poll(&ctx->wqh, EPOLLIN);
--	this_cpu_dec(eventfd_wake_count);
-+	current->in_eventfd_signal = 0;
- 	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
- 
- 	return n;
-diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
-index fa0a524..305d5f1 100644
---- a/include/linux/eventfd.h
-+++ b/include/linux/eventfd.h
-@@ -14,6 +14,7 @@
- #include <linux/err.h>
- #include <linux/percpu-defs.h>
- #include <linux/percpu.h>
-+#include <linux/sched.h>
- 
- /*
-  * CAREFUL: Check include/uapi/asm-generic/fcntl.h when defining
-@@ -43,11 +44,9 @@ int eventfd_ctx_remove_wait_queue(struct eventfd_ctx *ctx, wait_queue_entry_t *w
- 				  __u64 *cnt);
- void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt);
- 
--DECLARE_PER_CPU(int, eventfd_wake_count);
--
--static inline bool eventfd_signal_count(void)
-+static inline bool eventfd_signal_allowed(void)
- {
--	return this_cpu_read(eventfd_wake_count);
-+	return !current->in_eventfd_signal;
- }
- 
- #else /* CONFIG_EVENTFD */
-@@ -78,9 +77,9 @@ static inline int eventfd_ctx_remove_wait_queue(struct eventfd_ctx *ctx,
- 	return -ENOSYS;
- }
- 
--static inline bool eventfd_signal_count(void)
-+static inline bool eventfd_signal_allowed(void)
- {
--	return false;
-+	return true;
- }
- 
- static inline void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt)
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 3bb9fec..6421a9a 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -864,6 +864,10 @@ struct task_struct {
- 	/* Used by page_owner=on to detect recursion in page tracking. */
- 	unsigned			in_page_owner:1;
- #endif
-+#ifdef CONFIG_EVENTFD
-+	/* Recursion prevention for eventfd_signal() */
-+	unsigned			in_eventfd_signal:1;
-+#endif
- 
- 	unsigned long			atomic_flags; /* Flags requiring atomic access. */
- 
+A new system call is added to request use of shared structure by a user
+thread. Kernel will allocate page(s), shared mapped with user space in
+which per-thread shared structures will be allocated. These structures
+are padded to 128 bytes. This will contain struct members or nested
+structures corresponding to supported stats, like the thread's schedstats,
+published by the kernel for user space consumption. More struct members
+can be added as new feature support is implemented. Multiple such shared
+structures will be allocated from a page(upto 32 per 4k page) and avoid
+having to allocate one page per thread of a process. Although, will need
+optimizing for locality. Additional pages will be allocated as needed to
+accommodate more threads requesting use of shared structures. Aim is to
+not expose the layout of the shared structure itself to the application,
+which will allow future enhancements/changes without affecting the API.
+
+The system call will return a pointer(user space mapped address) to the per
+thread shared structure members. Application would save this per thread
+pointer in a TLS variable and reference it.
+
+The system call is of the form.
+int task_getshared(int option, int flags, void __user *uaddr)
+
+// Currently only TASK_SCHEDSTAT option is supported - returns pointer
+// to struct task_schedstat. The struct task_schedstat is nested within
+// the shared structure.
+
+struct task_schedstat {
+        volatile u64    sum_exec_runtime;
+        volatile u64    run_delay;
+        volatile u64    pcount;
+        volatile u64    off_cpu;
+};
+
+Usage:
+
+__thread struct task_schedstat *ts;
+task_getshared(TASK_SCHEDSTAT, 0, &ts);
+
+Subsequently the stats are accessed using the 'ts' pointer by the thread
+
+Prakash Sangappa (3):
+  Introduce per thread user-kernel shared structure
+  Publish tasks's scheduler stats thru the shared structure
+  Introduce task's 'off cpu' time
+
+ arch/x86/entry/syscalls/syscall_32.tbl |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl |   1 +
+ include/linux/mm_types.h               |   2 +
+ include/linux/sched.h                  |   9 +
+ include/linux/syscalls.h               |   2 +
+ include/linux/task_shared.h            |  92 ++++++++++
+ include/uapi/asm-generic/unistd.h      |   5 +-
+ include/uapi/linux/task_shared.h       |  23 +++
+ kernel/fork.c                          |   7 +
+ kernel/sched/deadline.c                |   1 +
+ kernel/sched/fair.c                    |   1 +
+ kernel/sched/rt.c                      |   1 +
+ kernel/sched/sched.h                   |   1 +
+ kernel/sched/stats.h                   |  55 ++++--
+ kernel/sched/stop_task.c               |   1 +
+ kernel/sys_ni.c                        |   3 +
+ mm/Makefile                            |   2 +-
+ mm/task_shared.c                       | 314 +++++++++++++++++++++++++++++++++
+ 18 files changed, 501 insertions(+), 20 deletions(-)
+ create mode 100644 include/linux/task_shared.h
+ create mode 100644 include/uapi/linux/task_shared.h
+ create mode 100644 mm/task_shared.c
+
+-- 
+2.7.4
+
