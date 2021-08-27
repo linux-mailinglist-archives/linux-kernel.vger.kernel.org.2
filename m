@@ -2,91 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B213FA03B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8AE3FA03E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhH0UAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbhH0UAt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 16:00:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5526DC0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 13:00:00 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630094397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cuyJ1n7mYRIj0b5rsSRH9b404T7DIM3i9sVBEK1dcis=;
-        b=bcElS44fhP7ldO1xyRVqF9iFaCnidIhMJRiK8Zs44+o/OGmdNr4aRyK7M8X7kQNm7lsOIG
-        9XiLw4nYspxLqPPuYkmd+Q96djxh2zWBqsqyH+a5wYh/1vGxAMk9hYvgiJwfVGiGqnYEzE
-        a0C38yoieeEHyRYRhikjuapVvEHiDDYST5zv8CbNCwmM3+XUNQHysGFQ1VumuDtXZNUSoe
-        zH9QBk1VrS8ZMwBkf3dOakBzEwX88ctN+sv5oeZFGhHM3RXrALjqC5EQeWuWI3JKrNzdGl
-        zdWIS26aUsc7PTt/qMAsKjakGPAmGXThu2HQp6NOzPxpfSxhUj+hNY8jZ+fPOg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630094397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cuyJ1n7mYRIj0b5rsSRH9b404T7DIM3i9sVBEK1dcis=;
-        b=msCyxaniaaZ4lR0mwgSMPTwNQfjJjBdccGLlJTAVPStOF1aI68UnVbEWh9BnS5CgD48xie
-        SJvNzHeJEeZN4RAQ==
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        "Z.Q. Hou" <zhiqiang.hou@nxp.com>, Biwen Li <biwen.li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] regmap: teach regmap to use raw spinlocks if
- requested in the config
-In-Reply-To: <20210827161227.4pnaglgctikobpf6@skbuf>
-References: <20210825205041.927788-1-vladimir.oltean@nxp.com>
- <20210825205041.927788-2-vladimir.oltean@nxp.com> <875yvr3j5c.ffs@tglx>
- <20210827161227.4pnaglgctikobpf6@skbuf>
-Date:   Fri, 27 Aug 2021 21:59:56 +0200
-Message-ID: <87pmty1ww3.ffs@tglx>
+        id S231391AbhH0UBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 16:01:18 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28940 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231215AbhH0UBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 16:01:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630094428; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=z72idV3NWgM7ioiLJkOrmuVDeX54IRncvfUCduwkFdc=;
+ b=biCwo2FUqsJLVDu4ADCtKA88z5/U8Pjr24td5Gi9oULQmT0y4rQp5rnOYKmUYFCbR3C2cXiR
+ 7DyVpZH7PCIJ/AN3WPEkX7y+613y85pA0YJ/eXtNZBNE6zFxoUGnHzMwm01Qm99d3gypTZHt
+ 4YSBauzWq8CrNCcvNRiWG8QmRjU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 61294452d15f4d68a26a1f95 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Aug 2021 20:00:18
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1D801C4361B; Fri, 27 Aug 2021 20:00:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 781D6C4338F;
+        Fri, 27 Aug 2021 20:00:16 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 27 Aug 2021 13:00:16 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, robdclark@gmail.com,
+        robh+dt@kernel.org, sean@poorly.run, vkoul@kernel.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kishon@ti.com, p.zabel@pengutronix.de
+Subject: Re: [PATCH] phy: qcom-qmp: add support for voltage and pre emphesis
+ swing
+In-Reply-To: <CAE-0n52obotsMwXLHm8Fkd3+7QnXCEZgVhO_FNSY7RsbC+pbcA@mail.gmail.com>
+References: <1629847775-16767-1-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n52obotsMwXLHm8Fkd3+7QnXCEZgVhO_FNSY7RsbC+pbcA@mail.gmail.com>
+Message-ID: <556428d20109fee3b4e3e1fd185e22cf@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27 2021 at 16:12, Vladimir Oltean wrote:
-> On Fri, Aug 27, 2021 at 01:01:35AM +0200, Thomas Gleixner wrote:
->> Even for the case where the regmap is not dealing with irq chips it does
->> not make any sense to protect low level operations on shared register
->> with a regular spinlock. I might be missing something though...
->
-> Mark, any comments?
->
-> Generally it is said that misusing raw spinlocks has detrimential
-> performance upon the real-time aspects of the system, and I don't really
-> have a good feeling for what constitutes misuse vs what is truly justified
-> (in fact I did start the thread with "apologies for my novice level of
-> understanding").
->
-> On the other hand, while it does seem a bit too much overhead for
-> sequences of MMIO reads/writes to be able to be preempted, it doesn't
-> sound like it would break something either, so...
+On 2021-08-25 10:49, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-08-24 16:29:35)
+>> Add voltage and pre emphesis swing tables so that voltage and
+> 
+> Is it "pre-emphasis"?
+> 
+>> pre emphsis swing level can be configured base on link rate.
+> 
+> This one is also different.
+> 
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> 
+> Presumably
+> 
+> Fixes: aff188feb5e1 ("phy: qcom-qmp: add support for sm8250-usb3-dp 
+> phy")
+> 
+>> ---
+>>  drivers/phy/qualcomm/phy-qcom-qmp.c | 95 
+>> ++++++++++++++++++++++++++++++++-----
+>>  1 file changed, 82 insertions(+), 13 deletions(-)
+>> 
+>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c 
+>> b/drivers/phy/qualcomm/phy-qcom-qmp.c
+>> index 31036aa..52bab6e 100644
+>> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
+>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+>> @@ -1916,7 +1916,7 @@ static const struct qmp_phy_init_tbl 
+>> qmp_v4_dp_tx_tbl[] = {
+>>         QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_OFFSET_RX, 0x11),
+>>         QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_BAND, 0x4),
+>>         QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_POL_INV, 0x0a),
+>> -       QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_DRV_LVL, 0x2a),
+>> +       QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_DRV_LVL, 0x22),
+> 
+> Is 0x22 the better "default"? Can that be described in the commit text?
+> 
+>>         QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_EMP_POST1_LVL, 0x20),
+>>  };
+>> 
+>> @@ -3727,6 +3727,81 @@ static int qcom_qmp_v3_dp_phy_calibrate(struct 
+>> qmp_phy *qphy)
+>> 
+>>         return 0;
+>>  }
+> 
+> Nitpick: Newline here please.
+> 
+>> +/*
+>> + * 0x20 deducted from tables
+>> + *
+>> + * swing_value |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
+>> + * pre_emphasis_value |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
+>> +*/
+>> +static const u8 qmp_dp_v4_pre_emphasis_hbr3_hbr2[4][4] = {
+>> +       /* p0    p1    p2    p3 */
+>> +       { 0x00, 0x0c, 0x15, 0x1b },     /* s0 */
+>> +       { 0x02, 0x0e, 0x16, 0xff },     /* s1 */
+>> +       { 0x02, 0x11, 0xff, 0xff },     /* s2 */
+>> +       { 0x04, 0xff, 0xff, 0xff }      /* s3 */
+>> +};
+>> +
+>> +static const u8 qmp_dp_v4_voltage_swing_hbr3_hbr2[4][4] = {
+> 
+> This looks the same as qmp_dp_v3_voltage_swing_hbr3_hbr2. Can that be
+> used?
+to avoid confuse, i like to keep them separated.
+> 
+>> +       /* p0    p1    p2    p3 */
+>> +       { 0x02, 0x12, 0x16, 0x1a },     /* s0 */
+>> +       { 0x09, 0x19, 0x1f, 0xff },     /* s1 */
+>> +       { 0x10, 0x1f, 0xff, 0xff },     /* s2 */
+>> +       { 0x1f, 0xff, 0xff, 0xff }      /* s3 */
+>> +};
+>> +
+>> +static const u8 qmp_dp_v4_pre_emphasis_hbr_rbr[4][4] = {
+>> +       /* p0    p1    p2    p3 */
+>> +       { 0x00, 0x0e, 0x15, 0x1b },     /* s0 */
+>> +       { 0x00, 0x0e, 0x15, 0xff },     /* s1 */
+>> +       { 0x00, 0x0e, 0xff, 0xff },     /* s2 */
+>> +       { 0x04, 0xff, 0xff, 0xff }      /* s3 */
+>> +};
+>> +
+>> +static const u8 qmp_dp_v4_voltage_swing_hbr_rbr[4][4] = {
+>> +       /* p0    p1    p2    p3 */
+>> +       { 0x08, 0x0f, 0x16, 0x1f },     /* s0 */
+>> +       { 0x11, 0x1e, 0x1f, 0xff },     /* s1 */
+>> +       { 0x16, 0x1f, 0xff, 0xff },     /* s2 */
+>> +       { 0x1f, 0xff, 0xff, 0xff }      /* s3 */
+> 
+> Do these comments add any value? Can we drop them?
+> 
+>> +};
+>> +
+>> +static int qcom_qmp_v4_phy_configure_dp_swing(struct qmp_phy *qphy,
+>> +               unsigned int drv_lvl_reg, unsigned int emp_post_reg)
+>> +{
+>> +       const struct phy_configure_opts_dp *dp_opts = &qphy->dp_opts;
+>> +       unsigned int v_level = 0, p_level = 0;
+>> +       u8 voltage_swing_cfg, pre_emphasis_cfg;
+>> +       int i;
+>> +
+>> +       for (i = 0; i < dp_opts->lanes; i++) {
+>> +               v_level = max(v_level, dp_opts->voltage[i]);
+>> +               p_level = max(p_level, dp_opts->pre[i]);
+>> +       }
+>> +
+>> +
+> 
+> Nitpick: Drop extra newline.
+> 
+>> +       if (dp_opts->link_rate <= 2700) {
+>> +               voltage_swing_cfg = 
+>> qmp_dp_v4_voltage_swing_hbr_rbr[v_level][p_level];
+>> +               pre_emphasis_cfg = 
+>> qmp_dp_v4_pre_emphasis_hbr_rbr[v_level][p_level];
+>> +       } else {
+>> +               voltage_swing_cfg = 
+>> qmp_dp_v4_voltage_swing_hbr3_hbr2[v_level][p_level];
+>> +               pre_emphasis_cfg = 
+>> qmp_dp_v4_pre_emphasis_hbr3_hbr2[v_level][p_level];
+>> +       }
+>> +
+>> +       /* TODO: Move check to config check */
+>> +       if (voltage_swing_cfg == 0xFF && pre_emphasis_cfg == 0xFF)
+>> +               return -EINVAL;
+>> +
+>> +       /* Enable MUX to use Cursor values from these registers */
+>> +       voltage_swing_cfg |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
+>> +       pre_emphasis_cfg |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
+>> +
+>> +       writel(voltage_swing_cfg, qphy->tx + drv_lvl_reg);
+>> +       writel(pre_emphasis_cfg, qphy->tx + emp_post_reg);
+>> +       writel(voltage_swing_cfg, qphy->tx2 + drv_lvl_reg);
+>> +       writel(pre_emphasis_cfg, qphy->tx2 + emp_post_reg);
+> 
+> This is copy/pasted from qcom_qmp_phy_configure_dp_swing() right? How
+> about making a function
+> 
+> static int
+> __qcom_qmp_phy_configure_dp_swing(struct qmp_phy *qphy,
+> 				  unsigned int drv_lvl_reg,
+> 				  unsigned int emp_post_reg,
+> 				  const u8 **voltage_rbr_hbr,
+> 				  const u8 **pre_emphasis_rbr_hbr,
+> 				  const u8 **voltage_hbr3_hbr2,
+> 				  const u8 **pre_emphasis_hbr3_hbr2)
+> 
+> that does the same stuff but allows the tables to be different.
+> 
+>> +
+>> +       return 0;
+>> +}
+>> 
+>>  static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
+>>  {
+>> @@ -3757,14 +3832,7 @@ static void qcom_qmp_v4_phy_dp_aux_init(struct 
+>> qmp_phy *qphy)
+>> 
+>>  static void qcom_qmp_v4_phy_configure_dp_tx(struct qmp_phy *qphy)
+>>  {
+>> -       /* Program default values before writing proper values */
+>> -       writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+>> -       writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+>> -
+>> -       writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+>> -       writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+>> -
+>> -       qcom_qmp_phy_configure_dp_swing(qphy,
+>> +       qcom_qmp_v4_phy_configure_dp_swing(qphy,
+>>                         QSERDES_V4_TX_TX_DRV_LVL,
+>>                         QSERDES_V4_TX_TX_EMP_POST1_LVL);
+>>  }
+>> @@ -3885,6 +3953,9 @@ static int 
+>> qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
+>>         writel(drvr1_en, qphy->tx2 + QSERDES_V4_TX_HIGHZ_DRVR_EN);
+>>         writel(bias1_en, qphy->tx2 + 
+>> QSERDES_V4_TX_TRANSCEIVER_BIAS_EN);
+>> 
+>> +       writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
+>> +       writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
+> 
+> Is this mentioned in the commit text? Is this fixing the sequence?
+> It doesn't look like we're adding tables.
 
-The question is how long those sequences are.
-
-If it's just a pair or so then the raw spinlock protection has
-definitely a smaller worst case than the sleeping spinlock in the
-contended case.
-
-OTOH, if regmap operations consist of several dozens of MMIO accesses,
-then the preempt disabled region might be quite long.
-
-I'm not familiar enough with regmaps to make a judgement here.
-
-Thanks,
-
-        tglx
+add these since they are missed from HPG sequence.
+> 
+>> +
+>>         writel(0x18, qphy->pcs + QSERDES_DP_PHY_CFG);
+>>         udelay(2000);
+>>         writel(0x19, qphy->pcs + QSERDES_DP_PHY_CFG);
+>> @@ -3896,11 +3967,9 @@ static int 
+>> qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
+>>                         10000))
+>>                 return -ETIMEDOUT;
+>> 
+>> -       writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
+>> -       writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
+>> 
+>> -       writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+>> -       writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+>> +       writel(0x22, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+>> +       writel(0x22, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+>> 
+>>         writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+>>         writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
