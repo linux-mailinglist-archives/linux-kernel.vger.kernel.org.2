@@ -2,71 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07233F985D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 13:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C483F9864
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 13:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245006AbhH0LOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 07:14:43 -0400
-Received: from mga06.intel.com ([134.134.136.31]:45354 "EHLO mga06.intel.com"
+        id S244990AbhH0LU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 07:20:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234172AbhH0LOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 07:14:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="278954581"
-X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
-   d="scan'208";a="278954581"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 04:13:53 -0700
-X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
-   d="scan'208";a="538054362"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.172.200]) ([10.249.172.200])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 04:13:50 -0700
-Subject: Re: [PATCH] KVM: nVMX: Fix nested bus lock VM exit
-To:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210827085110.6763-1-chenyi.qiang@intel.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <ae887305-378f-3ef1-7e74-8ae11e962671@intel.com>
-Date:   Fri, 27 Aug 2021 19:13:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S233082AbhH0LUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 07:20:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D51B760FD9;
+        Fri, 27 Aug 2021 11:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630063206;
+        bh=0KySjxQfIxpxmDUiJb0p6JoUXfD7dCcvzvPuqO/UH8U=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BDoO+hJn5bB+Neh544GHYqz0aWIi8tpIGdTPxk84zwKFEz9JeyxC2oJsg0mX0RpxF
+         b1FFR94qF+lD77fZQvuZmIvxK3oKEyoeDYe0hXaVfbA5q3NtCapkZbWQCRsQV7bRxs
+         ZJo7guvrTf6ub1zR7CCxi5aTM0Up7762PshuOUZLd9A0W161g6U0+3COD7ejSv+bRD
+         dLasopjlnJJbByb5io/+Q3tCzl8UNR/Kl8ctkk9xIX9cs1ABDOkO9XRQtHJQg9NEHL
+         SSfwgFJDJhSaara0/lfp+RjYxCcSXknMSWB4eOBSbDrsfkz860SPrnEr8Cuv+a0b1H
+         1SAtcXYV1sm2w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C8AD460A27;
+        Fri, 27 Aug 2021 11:20:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210827085110.6763-1-chenyi.qiang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/8] net: hns3: add some cleanups
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163006320681.31502.1549571483307282348.git-patchwork-notify@kernel.org>
+Date:   Fri, 27 Aug 2021 11:20:06 +0000
+References: <1630056504-31725-1-git-send-email-huangguangbin2@huawei.com>
+In-Reply-To: <1630056504-31725-1-git-send-email-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lipeng321@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/2021 4:51 PM, Chenyi Qiang wrote:
-> Nested bus lock VM exits are not supported yet. If L2 triggers bus lock
-> VM exit, it will be directed to L1 VMM, which would cause unexpected
-> behavior. Therefore, handle L2's bus lock VM exits in L0 directly.
+Hello:
+
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Fri, 27 Aug 2021 17:28:16 +0800 you wrote:
+> This series includes some cleanups for the HNS3 ethernet driver.
 > 
-> Fixes: fe6b6bc802b4 ("KVM: VMX: Enable bus lock VM exit")
-> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
-> ---
->   arch/x86/kvm/vmx/nested.c | 2 ++
->   1 file changed, 2 insertions(+)
+> Guangbin Huang (1):
+>   net: hns3: add macros for mac speeds of firmware command
 > 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index bc6327950657..754f53cf0f7a 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -5873,6 +5873,8 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu *vcpu,
->   	case EXIT_REASON_VMFUNC:
->   		/* VM functions are emulated through L2->L0 vmexits. */
->   		return true;
-> +	case EXIT_REASON_BUS_LOCK:
-> +		return true;
->   	default:
->   		break;
->   	}
+> Hao Chen (1):
+>   net: hns3: uniform type of function parameter cmd
 > 
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/8] net: hns3: add macros for mac speeds of firmware command
+    https://git.kernel.org/netdev/net-next/c/4c116f85ecf8
+  - [net-next,2/8] net: hns3: add hns3_state_init() to do state initialization
+    https://git.kernel.org/netdev/net-next/c/c511dfff4b65
+  - [net-next,3/8] net: hns3: remove redundant param mbx_event_pending
+    https://git.kernel.org/netdev/net-next/c/67821a0cf5c9
+  - [net-next,4/8] net: hns3: use memcpy to simplify code
+    https://git.kernel.org/netdev/net-next/c/304cd8e776dd
+  - [net-next,5/8] net: hns3: remove redundant param to simplify code
+    https://git.kernel.org/netdev/net-next/c/5f22a80f32de
+  - [net-next,6/8] net: hns3: package new functions to simplify hclgevf_mbx_handler code
+    https://git.kernel.org/netdev/net-next/c/d7517f8f6b3b
+  - [net-next,7/8] net: hns3: merge some repetitive macros
+    https://git.kernel.org/netdev/net-next/c/5a24b1fd301e
+  - [net-next,8/8] net: hns3: uniform type of function parameter cmd
+    https://git.kernel.org/netdev/net-next/c/0c5c135cdbda
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
