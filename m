@@ -2,156 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965843F9152
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 02:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E873F9155
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 02:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243863AbhH0A3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 20:29:33 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:54359 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230522AbhH0A3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 20:29:32 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwgYk0Gxwz9sVq;
-        Fri, 27 Aug 2021 10:28:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630024123;
-        bh=ba/WX581s3nrnsRLf23mdp32UzwwN0XGlSwedK1OmqA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=O+UDBGuHfNTr3cc4y236nGvtcLrz7yZsdGP9QGU/xn8aWZpH7RxWUPqI8LFoI9/IK
-         CBgW8OJ3XU/01e3mDBiz+5g79TWigohsJv3QIyXivDMifoDDMrCZZeAc/OzU4qc076
-         b7xXPq+J/xFfxXUVBSmnghxBKTAEyoNBd/wbcGugFRXNb6pCPJk5DdDtP2PW9mK6v7
-         eheSJAPYfJszGZgk6c5CyPQhD62BojE1uhtWgICyIiTezkyRzc+32PIfNRwp9GKMMP
-         FIgov8Pn39VY2eawI2A5ip6tbAgxgqam/BmKGNpe0j4jzVanIW/+vCZligunalLDtc
-         b9KmVpMuv4yqA==
-Date:   Fri, 27 Aug 2021 10:28:40 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>
-Cc:     Eric Biggers <ebiggers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the f2fs tree
-Message-ID: <20210827102840.386cdf1b@canb.auug.org.au>
-In-Reply-To: <20210723111119.6b2bf2ca@canb.auug.org.au>
-References: <20210723111119.6b2bf2ca@canb.auug.org.au>
+        id S243831AbhH0AeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 20:34:17 -0400
+Received: from mail-lf1-f41.google.com ([209.85.167.41]:37559 "EHLO
+        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230522AbhH0AeQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 20:34:16 -0400
+Received: by mail-lf1-f41.google.com with SMTP id k5so10699556lfu.4;
+        Thu, 26 Aug 2021 17:33:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=96MOb4RI+nTuXf2CZFEvazqidNFnAA9LZw0UQN78jnM=;
+        b=UgpqEuSxn4B2uZNoqU17fiYnX+UU+vTghS4CQ3nal6zGRlJi/bo9qgUj4VPSk1xL/m
+         stBfRHPRB+H7u8ut56cWvGSWCSYn2RF9el7F8vHJPgVAwN/61gRFo7fuGgGNMHshjA/d
+         ZlsJaGpY+rwT5j+5GELni9Ig4BtC4SjCN9gptEGN7Hdcs7Y21/4jPca4XWe4nCblBYVD
+         yHssP64oMjzC2x7piztrNmzpvyYA8Nd0OtRU1pOxAeZPLTXsqpfkpN8+1N+iSPhFMuqX
+         gSPLbdhHCm47Dq4Or9PVRfZ9sywQ67+j63xY3f93fwxyzyAUIaE3KZlonsJe8sI8GxuN
+         QoIA==
+X-Gm-Message-State: AOAM530qhc3sOhrwKtOfOMBVWAX5n7GPr5WZq+cdgUyI8BH8BhPowh0j
+        Be2x2vHkY0fd4+9HXRxDXjofrGK9Hv1pd7XywO8=
+X-Google-Smtp-Source: ABdhPJy43PDtHDd/exkSQTJRk3jpVDi7awHFab8tiqXDE8RL9XqpDJpB56nBpFDEMtyC1w217Vh0AB/FisHHGgfNORk=
+X-Received: by 2002:a05:6512:158b:: with SMTP id bp11mr4630375lfb.300.1630024407310;
+ Thu, 26 Aug 2021 17:33:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=zd67Dy6Or6wtgpygpXKrqt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <3c4f8dd64d07373d876990ceb16e469b4029363f.camel@gmail.com>
+ <b7a9f309-9765-2a64-026e-efa835989add@linux.intel.com> <CAP-5=fV1+WKKWVYVivDt1uE8P9koKre-=Boh0-P1vTD6uiw2=A@mail.gmail.com>
+ <YSUztlMX8u0P527q@kernel.org>
+In-Reply-To: <YSUztlMX8u0P527q@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 26 Aug 2021 17:33:15 -0700
+Message-ID: <CAM9d7chJTLeVcqyVvXhBDbUVtdZU+2tdwTyWuX8vdhKd3RQxiA@mail.gmail.com>
+Subject: Re: [GSoC] Multi-threading in perf: Final Report
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=zd67Dy6Or6wtgpygpXKrqt
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Fri, 23 Jul 2021 11:11:19 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Tue, Aug 24, 2021 at 11:00 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> After merging the f2fs tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> fs/f2fs/data.c: In function 'f2fs_write_failed':
-> fs/f2fs/data.c:3144:27: error: 'mapping' undeclared (first use in this fu=
-nction)
->  3144 |   filemap_invalidate_lock(mapping);
->       |                           ^~~~~~~
->=20
-> Caused by commit
->=20
->   ceddc02b7613 ("f2fs: make f2fs_write_failed() take struct inode")
->=20
-> interacting with commit
->=20
->   edc6d01bad73 ("f2fs: Convert to using invalidate_lock")
->=20
-> from the ext3 tree.
->=20
-> I have applied the following merge fix patch.
->=20
+> Em Mon, Aug 23, 2021 at 01:47:51PM -0700, Ian Rogers escreveu:
+> > On Mon, Aug 23, 2021 at 4:40 AM Bayduraev, Alexey V
+> > <alexey.v.bayduraev@linux.intel.com> wrote:
+> > >
+> > > On 21.08.2021 12:41, Riccardo Mancini wrote:
+> > > > Hi,
+> > > >
+> > > > this is the final report of my project "Multi-threading in perf",
+> > > > developed as part of the Google Summer of Code with the Linux Foundation.
+> > > > https://summerofcode.withgoogle.com/projects/#4670070929752064
+> > > <SNIP>
+> > > >
+> > > > Review activity:
+> > > > PATCHSET Introduce threaded trace streaming for basic perf record operation
+> > > >   Link: https://lore.kernel.org/lkml/cover.1629186429.git.alexey.v.bayduraev@linux.intel.com/
+> > > >   Contribution: helped in fixing some bugs, performed extensive testing
+> > >
+> > > Hi Riccardo,
+> > >
+> > > Thank you very much for the deep review and extensive testing of
+> > > this patchset, it was very helpful and allowed us to improve
+> > > the quality of the feature used in our product.
+> > >
+> > > Good luck,
+> > > Alexey
+> >
+> > Likewise, thank you Riccardo! It is always implied but not said often
+> > enough, thank you Arnaldo! I'm hoping the success of Riccardo's work
+> > will be an example for next year and we can also get more mentor
+> > volunteers.
+>
+> Yeah, it was a great experience, now we need to actually do the tests
+> Riccardo asked us on big machines and get his and Alexey's work
+> processed :-)
 
-This fix up patch is now:
+Thanks Riccardo for all your good work!
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 27 Aug 2021 10:10:01 +1000
-Subject: [PATCH] fxup for "f2fs: Convert to using invalidate_lock"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- fs/f2fs/data.c | 4 ++--
- fs/f2fs/file.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index b03ec36cce1c..0facb5eb0acb 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -3260,12 +3260,12 @@ static void f2fs_write_failed(struct inode *inode, =
-loff_t to)
- 	/* In the fs-verity case, f2fs_end_enable_verity() does the truncate */
- 	if (to > i_size && !f2fs_verity_in_progress(inode)) {
- 		down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
--		filemap_invalidate_lock(mapping);
-+		filemap_invalidate_lock(inode->i_mapping);
-=20
- 		truncate_pagecache(inode, i_size);
- 		f2fs_truncate_blocks(inode, i_size, true);
-=20
--		filemap_invalidate_unlock(mapping);
-+		filemap_invalidate_unlock(inode->i_mapping);
- 		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 	}
- }
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 884a165e70eb..9c8ef33bd8d3 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1112,7 +1112,7 @@ static int punch_hole(struct inode *inode, loff_t off=
-set, loff_t len)
- 			blk_end =3D (loff_t)pg_end << PAGE_SHIFT;
-=20
- 			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
--			filemap_invalidate_lock(mapping);
-+			filemap_invalidate_lock(inode->i_mapping);
-=20
- 			truncate_pagecache_range(inode, blk_start, blk_end - 1);
-=20
-@@ -1120,7 +1120,7 @@ static int punch_hole(struct inode *inode, loff_t off=
-set, loff_t len)
- 			ret =3D f2fs_truncate_hole(inode, pg_start, pg_end);
- 			f2fs_unlock_op(sbi);
-=20
--			filemap_invalidate_unlock(mapping);
-+			filemap_invalidate_unlock(inode->i_mapping);
- 			up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 		}
- 	}
---=20
-2.32.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=zd67Dy6Or6wtgpygpXKrqt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEoMbgACgkQAVBC80lX
-0GwChAgAoqZc+XTR+YgJAbXa5v7L826LVZhfQVHAqkBHqiEUqVEfxBSu/SyR7zFr
-JrnoCflv21w2T8WVXTI0JJTg75dDC1s2qenIgx6I7fXQeoJEAqQyWQiR9NuWjAqT
-eP3QhA3+I6f2E2uI8jUvKdhnhffkEr8el77RQ+viGOuj4VD+Ph+pNtuDJwnRNv59
-wDcZ82aOKQWG74s2pbXexKNfqI+nYol9zzTCY4zLJ/XyyaR60/uGON/LAxbz4VPd
-e4itzX8BhpJe5f8tArrjDIXiCRS7lrfwambE8B3FyY8/vHNFh/vXq7JxU58OnfCJ
-8QPEWQqE1J+fph2MCaNLS9LEUF3FRQ==
-=5Ob8
------END PGP SIGNATURE-----
-
---Sig_/=zd67Dy6Or6wtgpygpXKrqt--
+Namhyung
