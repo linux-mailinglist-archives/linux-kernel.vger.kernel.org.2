@@ -2,316 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929D63F9FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42D03F9FB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhH0TMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 15:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
+        id S230474AbhH0TQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 15:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhH0TMB (ORCPT
+        with ESMTP id S230005AbhH0TQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 15:12:01 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA08C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:11:12 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id mq3so5170980pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:11:12 -0700 (PDT)
+        Fri, 27 Aug 2021 15:16:36 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AE4C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:15:46 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id p83so12439976yba.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:15:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Yl8JaGwDYWpLzn1wS9SWOQbcJPOi0ZPRWqv06q6Qt74=;
-        b=LQBqohKiZF1hUQMSKbFutNRYNB2ZNBVrhxEGrV1/8QVmiiiwLqYpSys8ZACniFIdH4
-         xM7xdYhXcyegGoPyE3+qtuehpOFqNA9gFUXKXAZxnyBlokhrZBx7v8e2Z3A1rAWhrbl7
-         R3Ce4Ww+tmlx/5NmV8nIRwz0kvJpH70SjEOHC0z0zsUh5vi4iEK2ZdFwLHc6XCKTosnr
-         avjP30EP8hNygZms28yK8TAHbPcuQi3xyn8YVpSapvous8V0ILQ+MCQDC/GgUrWRJ4Ca
-         SkB39+e/WmHAULwChUJz/Q05W1pMC7ddj20rj/H7iZmu4pJdHZu9gx6J4FFy/j6yRrId
-         WjmQ==
+        bh=RMUPDTMlMYVMBMX9COhFQjehtW2x9n2Uvdx7yWqHdM4=;
+        b=jQ9KaFktGfzjW7qifesmAtszlkXgxE1V8TK62GzACtoPFfjvR3eSLXC4Y8HMpaXN1u
+         G3+2jU+qon/UJd4UP1ZF6vzS6Gf7wbAYWVIbFpTGQyafMCkEbDgpvuqxyg1fuadE3gjZ
+         5BH3nTUw5gMzkWuSGVGL2NeRRiKpQT8SN1j8zu9mO3zq36R0ynz6uUw0eV7wwt6eCI0r
+         PZpZWd9ABst5VtSvKJdHWcUjmCJUbjUTAMa5RmqCa/5SvdC+M9GAvuKPgaG3+dM9RbQG
+         BMpiQP3FRLYbJQknvmCZIj0IlLPP5F0o6Xt+I6pwfFkwJJaMkJZGd/WO4/biIZ+ujZN5
+         rJXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Yl8JaGwDYWpLzn1wS9SWOQbcJPOi0ZPRWqv06q6Qt74=;
-        b=okmO4sXBR+dRsx5dGHJArm0OLmMbdeYj5ewaA2mKTFQ6uT8rajgWQMpaeHHVst9fOO
-         LrBJKXTv8eJxeyE0tkubUScJrEeYRFbNDz18qZyeNaeVDjSDstkkeKkD/lZ41jjHDYWv
-         MneZ62l4Ly6rumDdnD+QEzI+gMLmdxK5WEVg9PgqF2ETn/HxiMoooYcZf0QjisBa2Pt9
-         DkWa8mlQcHp6mqsbU6cpSJ9QqdNeuhaLDbbXwVws72mAUqPPBHf3hv/nF/qiX6STtyz6
-         /XrSbEUjfXoQGGgeCA73voaueUN6IfSNZhxkTXTOaU5kjGD6rSofc8DHv7sfXOe3fw4e
-         rYZA==
-X-Gm-Message-State: AOAM530kkOv9tyVfV49J/jq0Qhbec7g/ATduGrvOSv/9Rmtxz+Fp7lL/
-        fhaRm1IMf/Laf2q1dvpKl3utlgH78HdYScDkpXX0Wg==
-X-Google-Smtp-Source: ABdhPJxPpy9zsWh8K3XJaMk4z9lCRsqU/ns24+nAno2osjLNoWIhEDfFvosicD/8oRBRu6WenkwxjYSnfuhYhnlHAWs=
-X-Received: by 2002:a17:90a:1991:: with SMTP id 17mr15779481pji.149.1630091471578;
- Fri, 27 Aug 2021 12:11:11 -0700 (PDT)
+        bh=RMUPDTMlMYVMBMX9COhFQjehtW2x9n2Uvdx7yWqHdM4=;
+        b=obqOO8hosyoBVJPeNJlfyg376KPTj5IQNXL7LHIKtCh8FtZnesWocjt+YAWEvTPRrg
+         Y5J+h70GA5sKmWsJ4LdcJOCqXbibIc+2LXkzOmUGyXr1MrHuzK41OXSuKOKBSplCW3N9
+         LxYXE9NT/s0cupxzwD6DWuUzeO7MgEBg7MvuK0r/gafM27W6IzdmtHt1zcAV5n8KRT4Y
+         5XoDNy7f4lm7fD11IHeUXLffa0Y3pDl9/PqydZ/QLT5WebJwatEkinuhEH5k0zBQWhHj
+         XSwFkY214Qocn6rUJQBi+R/f2/LztMJSI+mTqcswebjkcTLxEVEzJUK5ruKTSjNReSM2
+         PisQ==
+X-Gm-Message-State: AOAM530bogqCJRea9sfT3v2HByYC2gyuXVQA7Ix5w/DafqCCQefaOnNX
+        X+bpJlcmkmPD1KKX4FfCg+Wr5DwolQFaddAfyzF2Rg==
+X-Google-Smtp-Source: ABdhPJxQ1PofanUeoi4WI2A5GFNYyRKB+OZARF2+Ls/NJNTXOMPvXFo/WC6ShGjRyyKPcKnk9sasmZPM30lxNybZyno=
+X-Received: by 2002:a25:9c01:: with SMTP id c1mr7032149ybo.228.1630091745966;
+ Fri, 27 Aug 2021 12:15:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210803113134.2262882-1-iwona.winiarska@intel.com> <20210803113134.2262882-10-iwona.winiarska@intel.com>
-In-Reply-To: <20210803113134.2262882-10-iwona.winiarska@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 27 Aug 2021 12:11:00 -0700
-Message-ID: <CAPcyv4hhtTi+dKspjoamYj53GxT4Ot_1pG5-eavUJdihD8iAEg@mail.gmail.com>
-Subject: Re: [PATCH v2 09/15] peci: Add sysfs interface for PECI bus
-To:     Iwona Winiarska <iwona.winiarska@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        openbmc@lists.ozlabs.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        X86 ML <x86@kernel.org>,
-        Device Tree <devicetree@vger.kernel.org>,
-        linux-aspeed@lists.ozlabs.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zev Weiss <zweiss@equinix.com>,
-        David Muller <d.mueller@elsoft.ch>
+References: <CGME20210304195109eucas1p1779060378305d0f9a1eb0c7ddefd1db3@eucas1p1.samsung.com>
+ <20210304195101.3843496-1-saravanak@google.com> <30b4141e-11bd-45a2-b890-fddf444548ea@samsung.com>
+ <CAGETcx87v5=jDqCmdJL9VShAv+OzOGyF43mahxdk9A-RzNJYkA@mail.gmail.com>
+ <077fcc5b-cd09-d587-6906-d10bcc991eaf@samsung.com> <CAGETcx-bmeXK4Ws2=Zeth2yiNJ0hXHZEs4GxqL7jY3+71hhF=g@mail.gmail.com>
+ <CAGETcx8b228nDUho3cX9AAQ-pXOfZTMv8cj2vhdx9yc_pk8q+A@mail.gmail.com> <YSioUM7/w4VefjKg@kroah.com>
+In-Reply-To: <YSioUM7/w4VefjKg@kroah.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 27 Aug 2021 12:15:10 -0700
+Message-ID: <CAGETcx_JpY2PHCbP8fEgfkeZeddhM13a6Q1gu5YNQNmB99ypYA@mail.gmail.com>
+Subject: Re: [PATCH v3] amba: Remove deferred device addition
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 4:35 AM Iwona Winiarska
-<iwona.winiarska@intel.com> wrote:
+On Fri, Aug 27, 2021 at 1:54 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> PECI devices may not be discoverable at the time when PECI controller is
-> being added (e.g. BMC can boot up when the Host system is still in S5).
-> Since we currently don't have the capabilities to figure out the Host
-> system state inside the PECI subsystem itself, we have to rely on
-> userspace to do it for us.
+> On Tue, Aug 24, 2021 at 12:26:16PM -0700, Saravana Kannan wrote:
+> > On Mon, Mar 8, 2021 at 11:15 AM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Sun, Mar 7, 2021 at 11:28 PM Marek Szyprowski
+> > > <m.szyprowski@samsung.com> wrote:
+> > > >
+> > > > Hi Saravana,
+> > > >
+> > > > On 05.03.2021 19:02, Saravana Kannan wrote:
+> > > > > On Fri, Mar 5, 2021 at 3:45 AM Marek Szyprowski
+> > > > > <m.szyprowski@samsung.com> wrote:
+> > > > >> On 04.03.2021 20:51, Saravana Kannan wrote:
+> > > > >>> The uevents generated for an amba device need PID and CID information
+> > > > >>> that's available only when the amba device is powered on, clocked and
+> > > > >>> out of reset. So, if those resources aren't available, the information
+> > > > >>> can't be read to generate the uevents. To workaround this requirement,
+> > > > >>> if the resources weren't available, the device addition was deferred and
+> > > > >>> retried periodically.
+> > > > >>>
+> > > > >>> However, this deferred addition retry isn't based on resources becoming
+> > > > >>> available. Instead, it's retried every 5 seconds and causes arbitrary
+> > > > >>> probe delays for amba devices and their consumers.
+> > > > >>>
+> > > > >>> Also, maintaining a separate deferred-probe like mechanism is
+> > > > >>> maintenance headache.
+> > > > >>>
+> > > > >>> With this commit, instead of deferring the device addition, we simply
+> > > > >>> defer the generation of uevents for the device and probing of the device
+> > > > >>> (because drivers needs PID and CID to match) until the PID and CID
+> > > > >>> information can be read. This allows us to delete all the amba specific
+> > > > >>> deferring code and also avoid the arbitrary probing delays.
+> > > > >>>
+> > > > >>> Cc: Rob Herring <robh@kernel.org>
+> > > > >>> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > >>> Cc: John Stultz <john.stultz@linaro.org>
+> > > > >>> Cc: Saravana Kannan <saravanak@google.com>
+> > > > >>> Cc: Linus Walleij <linus.walleij@linaro.org>
+> > > > >>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > > > >>> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > > > >>> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > > >>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> > > > >>> Cc: Russell King <linux@armlinux.org.uk>
+> > > > >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > >>> ---
+> > > > >>>
+> > > > >>> v1 -> v2:
+> > > > >>> - Dropped RFC tag
+> > > > >>> - Complete rewrite to not use stub devices.
+> > > > >>> v2 -> v3:
+> > > > >>> - Flipped the if() condition for hard-coded periphids.
+> > > > >>> - Added a stub driver to handle the case where all amba drivers are
+> > > > >>>     modules loaded by uevents.
+> > > > >>> - Cc Marek after I realized I forgot to add him.
+> > > > >>>
+> > > > >>> Marek,
+> > > > >>>
+> > > > >>> Would you mind testing this? It looks okay with my limited testing.
+> > > > >> It looks it works fine on my test systems. I've checked current
+> > > > >> linux-next and this patch. You can add:
+> > > > >>
+> > > > >> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > > > > Hi Marek,
+> > > > >
+> > > > > Thanks! Does your test set up have amda drivers that are loaded based
+> > > > > on uevents? That's the one I couldn't test.
+> > > >
+> > > > I've checked both, the built-in and all amba drivers compiled as
+> > > > modules, loaded by udev. Both works fine here.
+> > > >
+> > > > >> I've briefly scanned the code and I'm curious how does it work. Does it
+> > > > >> depend on the recently introduced "fw_devlink=on" feature? I don't see
+> > > > >> other mechanism, which would trigger matching amba device if pm domains,
+> > > > >> clocks or resets were not available on time to read pid/cid while adding
+> > > > >> a device...
+> > > > > No, it does not depend on fw_devlink or device links in any way.
+> > > > >
+> > > > > When a device is attempted to be probed (when it's added or during
+> > > > > deferred probe), it's matched with all the drivers on the bus.
+> > > > > When a new driver is registered to a bus, all devices in that bus are
+> > > > > matched with the driver to see if they'll work together.
+> > > > > That's how match is called. And match() can return -EPROBE_DEFER and
+> > > > > that'll cause the device to be put in the deferred probe list by
+> > > > > driver core.
+> > > > >
+> > > > > The tricky part in this patch was the uevent handling and the
+> > > > > chicken-and-egg issue I talk about in the comments.
+> > > >
+> > > > Thanks for the explanation. This EPROBE_DEFER support in match()
+> > > > callback must be something added after I crafted that periodic retry
+> > > > based workaround.
+> > > >
+> > >
+> > > I think it got in just a few months before your patches, but your
+> > > patches worked :) I actually don't like match returning -EPROBE_DEFER,
+> > > but I can work around it for some of my fw_devlink optimization plans.
+> > >
+> > > More context here:
+> > > https://lore.kernel.org/lkml/CAGETcx_qO4vxTSyBtBR2k7fd_3rGJF42iBbJH37HPNw=FheDKg@mail.gmail.com/
+> >
+> > I just noticed that this still hasn't been picked up.
+> >
+> > Russell/Greg, can we please pick this up. This finally cleans up
+> > deferred probing of AMBA devices so that they don't have any special
+> > case.
 >
-> In the future, PECI subsystem may be expanded with mechanisms that allow
-> us to avoid depending on userspace interaction (e.g. CPU presence could
-> be detected using GPIO, and the information on whether it's discoverable
-> could be obtained over IPMI).
+> Now picked up, thanks.
 
-Thanks for this detail.
+This patch is apparently causing issues in a specific platform.
+https://lore.kernel.org/lkml/df8e7756-8b0d-d7de-a9ff-3f6eb0ffa8a5@huawei.com/
 
-> Unfortunately, those methods may ultimately not be available (support
-> will vary from platform to platform), which means that we still need
-> platform independent method triggered by userspace.
->
-> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-> ---
->  Documentation/ABI/testing/sysfs-bus-peci | 16 +++++
->  drivers/peci/Makefile                    |  2 +-
->  drivers/peci/core.c                      |  3 +-
->  drivers/peci/device.c                    |  1 +
->  drivers/peci/internal.h                  |  5 ++
->  drivers/peci/sysfs.c                     | 82 ++++++++++++++++++++++++
->  6 files changed, 107 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-peci
->  create mode 100644 drivers/peci/sysfs.c
->
-> diff --git a/Documentation/ABI/testing/sysfs-bus-peci b/Documentation/ABI/testing/sysfs-bus-peci
-> new file mode 100644
-> index 000000000000..56c2b2216bbd
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-peci
-> @@ -0,0 +1,16 @@
-> +What:          /sys/bus/peci/rescan
-> +Date:          July 2021
-> +KernelVersion: 5.15
-> +Contact:       Iwona Winiarska <iwona.winiarska@intel.com>
-> +Description:
-> +               Writing a non-zero value to this attribute will
-> +               initiate scan for PECI devices on all PECI controllers
-> +               in the system.
-> +
-> +What:          /sys/bus/peci/devices/<controller_id>-<device_addr>/remove
-> +Date:          July 2021
-> +KernelVersion: 5.15
-> +Contact:       Iwona Winiarska <iwona.winiarska@intel.com>
-> +Description:
-> +               Writing a non-zero value to this attribute will
-> +               remove the PECI device and any of its children.
-> diff --git a/drivers/peci/Makefile b/drivers/peci/Makefile
-> index c5f9d3fe21bb..917f689e147a 100644
-> --- a/drivers/peci/Makefile
-> +++ b/drivers/peci/Makefile
-> @@ -1,7 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->
->  # Core functionality
-> -peci-y := core.o request.o device.o
-> +peci-y := core.o request.o device.o sysfs.o
->  obj-$(CONFIG_PECI) += peci.o
->
->  # Hardware specific bus drivers
-> diff --git a/drivers/peci/core.c b/drivers/peci/core.c
-> index d143f1a7fe98..c473acb3c2a0 100644
-> --- a/drivers/peci/core.c
-> +++ b/drivers/peci/core.c
-> @@ -34,7 +34,7 @@ struct device_type peci_controller_type = {
->         .release        = peci_controller_dev_release,
->  };
->
-> -static int peci_controller_scan_devices(struct peci_controller *controller)
-> +int peci_controller_scan_devices(struct peci_controller *controller)
->  {
->         int ret;
->         u8 addr;
-> @@ -159,6 +159,7 @@ EXPORT_SYMBOL_NS_GPL(devm_peci_controller_add, PECI);
->
->  struct bus_type peci_bus_type = {
->         .name           = "peci",
-> +       .bus_groups     = peci_bus_groups,
->  };
->
->  static int __init peci_init(void)
-> diff --git a/drivers/peci/device.c b/drivers/peci/device.c
-> index 32811248997b..d77d9dabd51e 100644
-> --- a/drivers/peci/device.c
-> +++ b/drivers/peci/device.c
-> @@ -110,5 +110,6 @@ static void peci_device_release(struct device *dev)
->  }
->
->  struct device_type peci_device_type = {
-> +       .groups         = peci_device_groups,
->         .release        = peci_device_release,
->  };
-> diff --git a/drivers/peci/internal.h b/drivers/peci/internal.h
-> index 57d11a902c5d..978e12c8e1d3 100644
-> --- a/drivers/peci/internal.h
-> +++ b/drivers/peci/internal.h
-> @@ -8,6 +8,7 @@
->  #include <linux/types.h>
->
->  struct peci_controller;
-> +struct attribute_group;
->  struct peci_device;
->  struct peci_request;
->
-> @@ -19,12 +20,16 @@ struct peci_request *peci_request_alloc(struct peci_device *device, u8 tx_len, u
->  void peci_request_free(struct peci_request *req);
->
->  extern struct device_type peci_device_type;
-> +extern const struct attribute_group *peci_device_groups[];
->
->  int peci_device_create(struct peci_controller *controller, u8 addr);
->  void peci_device_destroy(struct peci_device *device);
->
->  extern struct bus_type peci_bus_type;
-> +extern const struct attribute_group *peci_bus_groups[];
+Even though it worked fine for Marek:
+https://lore.kernel.org/lkml/077fcc5b-cd09-d587-6906-d10bcc991eaf@samsung.com/#t
 
-To me, sysfs.c is small enough to just fold into core.c, then no need
-to declare public attribute arrays like this, but up to you if you
-prefer the sysfs.c split.
+Here's my current analysis:
+https://lore.kernel.org/lkml/CAGETcx-N4+u0iw9n5ncx_9MNnTa3ViyesxsDD7xN3jtEPT-uBw@mail.gmail.com/
 
->
->  extern struct device_type peci_controller_type;
->
-> +int peci_controller_scan_devices(struct peci_controller *controller);
-> +
->  #endif /* __PECI_INTERNAL_H */
-> diff --git a/drivers/peci/sysfs.c b/drivers/peci/sysfs.c
-> new file mode 100644
-> index 000000000000..db9ef05776e3
-> --- /dev/null
-> +++ b/drivers/peci/sysfs.c
-> @@ -0,0 +1,82 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +// Copyright (c) 2021 Intel Corporation
-> +
-> +#include <linux/device.h>
-> +#include <linux/kernel.h>
-> +#include <linux/peci.h>
-> +
-> +#include "internal.h"
-> +
-> +static int rescan_controller(struct device *dev, void *data)
-> +{
-> +       if (dev->type != &peci_controller_type)
-> +               return 0;
-> +
-> +       return peci_controller_scan_devices(to_peci_controller(dev));
-> +}
-> +
-> +static ssize_t rescan_store(struct bus_type *bus, const char *buf, size_t count)
-> +{
-> +       bool res;
-> +       int ret;
-> +
-> +       ret = kstrtobool(buf, &res);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (!res)
-> +               return count;
-> +
-> +       ret = bus_for_each_dev(&peci_bus_type, NULL, NULL, rescan_controller);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return count;
-> +}
-> +static BUS_ATTR_WO(rescan);
-> +
-> +static struct attribute *peci_bus_attrs[] = {
-> +       &bus_attr_rescan.attr,
-> +       NULL
-> +};
-> +
-> +static const struct attribute_group peci_bus_group = {
-> +       .attrs = peci_bus_attrs,
-> +};
-> +
-> +const struct attribute_group *peci_bus_groups[] = {
-> +       &peci_bus_group,
-> +       NULL
-> +};
-> +
-> +static ssize_t remove_store(struct device *dev, struct device_attribute *attr,
-> +                           const char *buf, size_t count)
-> +{
-> +       struct peci_device *device = to_peci_device(dev);
-> +       bool res;
-> +       int ret;
-> +
-> +       ret = kstrtobool(buf, &res);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (res && device_remove_file_self(dev, attr))
-> +               peci_device_destroy(device);
+I'll leave it up to you on how to proceed -- revert or wait for another fix.
 
-How do you solve races between sysfs device remove and controller
-device remove? Looks like double-free at first glance. Have a look at
-the  kill_device() helper as one way to resolve this double-delete
-race..
-
-> +
-> +       return count;
-> +}
-> +static DEVICE_ATTR_IGNORE_LOCKDEP(remove, 0200, NULL, remove_store);
-> +
-> +static struct attribute *peci_device_attrs[] = {
-> +       &dev_attr_remove.attr,
-> +       NULL
-> +};
-> +
-> +static const struct attribute_group peci_device_group = {
-> +       .attrs = peci_device_attrs,
-> +};
-> +
-> +const struct attribute_group *peci_device_groups[] = {
-> +       &peci_device_group,
-> +       NULL
-> +};
-> --
-> 2.31.1
->
+-Saravana
