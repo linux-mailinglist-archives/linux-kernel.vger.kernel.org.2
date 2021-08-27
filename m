@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E7F3F9C46
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1573F9C4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245474AbhH0QRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:17:18 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15484 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234192AbhH0QRR (ORCPT
+        id S245494AbhH0QSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:18:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234156AbhH0QS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:17:17 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RG434C127152;
-        Fri, 27 Aug 2021 12:16:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=nvvnLdxHi7PTLSadgbA728cuJKrqqjfzeSllbtHLFwg=;
- b=bRPh6DXN+iqWxDAajTfq6mvDn+33+aHUbZnVandpm/87hKnEFu8yXu0nu0O0S5TEAuW3
- PAZDoBT4LJO4W6Mib3dQUamET3aU4CoJKn7xjrs+FJJIxQFjObzLqpW/x0J2hbGG48J0
- km3554ftQX9bCS2eKmnW6IXgyMAbaRoQCr0pib97XG7NhFxWxARhEMMUtqFGsS3B5lyP
- g0XIqnUOWTrff3jrPKE9j7txvP7jbFnztybJMVa01MK8BwJtLse+ParcOYPVfKfz6lG4
- dyp0P3pFaAJhBcWYP8hyz4uyxtQWhFw0L3WzdRFUl1YCgZpWE/zTe16eSjKLX545b5cm 4A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq36n8fpf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 12:16:14 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17RG47jM127343;
-        Fri, 27 Aug 2021 12:16:13 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aq36n8fnp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 12:16:13 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17RGDauT026077;
-        Fri, 27 Aug 2021 16:16:11 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ajs48kshj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 16:16:11 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17RGG8bM56754632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 16:16:09 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE2FE52063;
-        Fri, 27 Aug 2021 16:16:08 +0000 (GMT)
-Received: from sig-9-65-233-113.ibm.com (unknown [9.65.233.113])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 281AE5204E;
-        Fri, 27 Aug 2021 16:16:06 +0000 (GMT)
-Message-ID: <f1953b977c3bcce8cfb4b25355e4c6d52820b7ea.camel@linux.ibm.com>
-Subject: Re: [PATCH] ima: fix deadlock when traversing "ima_default_rules".
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     liqiong <liqiong@nfschina.com>, Simon.THOBY@viveris.fr
-Cc:     dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 27 Aug 2021 12:16:06 -0400
-In-Reply-To: <20210827103536.4149-1-liqiong@nfschina.com>
-References: <20210824085747.23604-1-liqiong@nfschina.com>
-         <20210827103536.4149-1-liqiong@nfschina.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rFWXgPAAdNyGze5lqKH2wWr8KROvEFWO
-X-Proofpoint-ORIG-GUID: XT8JGzVNTy6U3pv_9f6kFkeNfTDlgHLF
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_04:2021-08-26,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- mlxscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501 bulkscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108270096
+        Fri, 27 Aug 2021 12:18:28 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE3EC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:17:39 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id t1so6378366pgv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:17:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PpE3AD8eCxkq5tJ/76g5xkddl9cPG+SrwUT4D+L1j9M=;
+        b=PTuUn80HoLhaJHYCP7XyumnxfjHBpHlaOH8dvc9A+77jDWBiFwpof2Hbr0Ax+XMQ7X
+         Uq95i61xse+X9GVAAmvNI7JtRH1mxT+CkyhUQCoW8SPNHyP1XyWWar/ZkHusyNYzyhTk
+         m/FgwR5I6I6GjP+eCQEc2GAtdCKzCkL3ZCrvo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PpE3AD8eCxkq5tJ/76g5xkddl9cPG+SrwUT4D+L1j9M=;
+        b=Y0ZMwGg2TNRltwylri86PTet6khYVHV2y5g0pjpi3j9PkVqNO+O6BY5MUpqfiEgUL+
+         RH2p6dLTx/FHuBIZnrnl6NwEbyjaU6bPifwEv+ZrzrHMUDvEZ039tNVlk6xDcBrtb2Vm
+         LcC9NZQTnE1z8AC9yPoJJmqB+EA+w1XmSLnOA+L5u9iku8kP1DEYVGYbW3J4vim7H+3R
+         OCeIyfNA87wIcDj5aATx5MK2Xb3TEJD4qbRUvl5pyblM44eBXIlUtlIqKhQw4YbWJqR/
+         W7dDvAdTogo5RtsXtb1PcFyrqnAGMj0pTiZAm93XzRtCLDVrovRZv3NhJspOBzDPOhw4
+         YzRg==
+X-Gm-Message-State: AOAM53362WKWWe0Fe4TnSPxyIgjxqeLSxdLlEXEryH7bMu45xUlZs2nT
+        swB8HqHzU3PMyBKcLjGTmV9FsA==
+X-Google-Smtp-Source: ABdhPJw/t8YOl1nXk3QdPbWpwbPMUYpww4D2dqTkc0FJGW4t+oJnaLp5x7c5LQiINxHw5PXRusXtVw==
+X-Received: by 2002:a63:79c7:: with SMTP id u190mr8361038pgc.355.1630081059098;
+        Fri, 27 Aug 2021 09:17:39 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y67sm6883595pfg.218.2021.08.27.09.17.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 09:17:38 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 09:17:37 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        linux-crypto@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-can@vger.kernel.org,
+        bpf@vger.kernel.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Keith Packard <keithp@keithp.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] treewide: Replace open-coded flex arrays in unions
+Message-ID: <202108270915.B4DD070AF@keescook>
+References: <20210826050458.1540622-1-keescook@chromium.org>
+ <20210826050458.1540622-3-keescook@chromium.org>
+ <20210826062452.jekmoo43f4xu5jxk@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826062452.jekmoo43f4xu5jxk@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-27 at 18:35 +0800, liqiong wrote:
-> The current IMA ruleset is identified by the variable "ima_rules"
-> that default to "&ima_default_rules". When loading a custom policy
-> for the first time, the variable is updated to "&ima_policy_rules"
-> instead. That update isn't RCU-safe, and deadlocks are possible.
-> Indeed, some functions like ima_match_policy() may loop indefinitely
-> when traversing "ima_default_rules" with list_for_each_entry_rcu().
+On Thu, Aug 26, 2021 at 08:24:52AM +0200, Marc Kleine-Budde wrote:
+> [...]
+> BTW: Is there opportunity for conversion, too?
 > 
-> When iterating over the default ruleset back to head, if the list
-> head is "ima_default_rules", and "ima_rules" have been updated to
-> "&ima_policy_rules", the loop condition (&entry->list != ima_rules)
-> stays always true, traversing won't terminate, causing a soft lockup
-> and RCU stalls.
-> 
-> Introduce a temporary value for "ima_rules" when iterating over
-> the ruleset to avoid the deadlocks.
-> 
-> Signed-off-by: liqiong <liqiong@nfschina.com>
-> Reviewed-by: THOBY Simon <Simon.THOBY@viveris.fr>
+> | drivers/net/can/peak_canfd/peak_pciefd_main.c:146:32: warning: array of flexible structures
 
-Thank you, Liqiong, Simon.   This patch set is now queued in the next-
-integrity-testing 
-branch.
+Untested potential solution:
 
-Mimi
+diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+index 1df3c4b54f03..efa2b5a52bd7 100644
+--- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
++++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+@@ -143,7 +143,11 @@ struct pciefd_rx_dma {
+ 	__le32 irq_status;
+ 	__le32 sys_time_low;
+ 	__le32 sys_time_high;
+-	struct pucan_rx_msg msg[];
++	/*
++	 * with "msg" being pciefd_irq_rx_cnt(priv->irq_status)-many
++	 * variable-sized struct pucan_rx_msg following.
++	 */
++	__le32 msg[];
+ } __packed __aligned(4);
+ 
+ /* Tx Link record */
+@@ -327,7 +331,7 @@ static irqreturn_t pciefd_irq_handler(int irq, void *arg)
+ 
+ 	/* handle rx messages (if any) */
+ 	peak_canfd_handle_msgs_list(&priv->ucan,
+-				    rx_dma->msg,
++				    (struct pucan_rx_msg *)rx_dma->msg,
+ 				    pciefd_irq_rx_cnt(priv->irq_status));
+ 
+ 	/* handle tx link interrupt (if any) */
 
+
+It's not great, but it's also not strictly a flex array, in the sense
+that since struct pucan_rx_msg is a variable size, the compiler cannot
+reason about the size of struct pciefd_rx_dma based only on the
+irq_status encoding...
+
+-- 
+Kees Cook
