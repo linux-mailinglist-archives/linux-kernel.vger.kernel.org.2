@@ -2,160 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF353F96F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A34F3F96F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244833AbhH0J12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:27:28 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:43987 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244825AbhH0J11 (ORCPT
+        id S244847AbhH0J1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244843AbhH0J1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:27:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1630056399; x=1661592399;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=J3i9uBz3EG1ucQmcepffYGi/MTUpR71z9RNb52yBNBM=;
-  b=jrIHicTmAuqevjYUoGgo3XgsdtlArYACbvUa3v2nA7BwyHKNNcZKQzVS
-   1KoU/S3BNcOL5Uyk3B3Zi3OGlFkwi42toOyMH5NO/5eEZRCRmmsY589aW
-   8ycNMFYzap2Lbi8unlDfiQtEsAjfLf4oxuZVhsBnkuoRQMvmunA3HnnHS
-   vFR6QKRCjjDlCRINC7moBflkjBCpkaPb7jNBqVRBBLw/eg2v09IQxTzkx
-   f+h9KwHi8BxSPDODv/OhnQKgYd6TpS2WNn/0YmvGhNCEgskDfCTZqoiaD
-   b9VPoVB4qwZo3XUPPEn6eh3mT/orp1rLAh7Z6J1xoA2SUMTWUgn2a8H57
-   w==;
-IronPort-SDR: WQMlE/SKoDrKt+PMq0eLk352Hwz5nTAFqmiuu0jmPCUpZy0oU8CfYEjyvWkVDXY5H2HMCoCgaz
- RLN3FbLcfoRYQD9K2FngKfeFo7FA68/DsbOkK53ohyDZus7j6INmlvygdRLnkS+PRbbzOmU06Z
- 4F169O+c1Sns0nO9FtbhueFUhmexCsCwZMeJoDjr6F83NCjvyUDpVkUVbiioorkl7wcstdL6tA
- 8RlENh0B9msbV/ylq1esqJovy6YcTNGOYMvwyq3DC3cLxL8RHYQeotT4bAqllYsNig79t2cqzy
- dBoqqpYBculQut68iy/x0peo
-X-IronPort-AV: E=Sophos;i="5.84,356,1620716400"; 
-   d="scan'208";a="133873674"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Aug 2021 02:26:39 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 27 Aug 2021 02:26:37 -0700
-Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 27 Aug 2021 02:26:34 -0700
-From:   <kavyasree.kotagiri@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Kavyasree.Kotagiri@microchip.com>,
-        <Manohar.Puri@microchip.com>, <Madhuri.Sripada@microchip.com>
-Subject: [PATCH] ARM: at91: add basic support for new SoC lan966x
-Date:   Fri, 27 Aug 2021 14:56:23 +0530
-Message-ID: <20210827092623.10677-1-kavyasree.kotagiri@microchip.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 27 Aug 2021 05:27:48 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B5DC0617AD;
+        Fri, 27 Aug 2021 02:26:59 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id y23so5485448pgi.7;
+        Fri, 27 Aug 2021 02:26:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGqMC/gT0Hu/hyGaRVtj0bRZrD0WSdlmK/0myQjMrVw=;
+        b=bbfFgaeFXP8CnMwrwIlRc+v6P9XQFFAfuIxGrlS3mbXywbKyTWVLEWy/WhTesK0rjN
+         CTzGfctK1w9zICY4KQR3JZzFe9hJYZsSgj2wH03TEe0imYrFhUDjI6JLhUjkhREvLalq
+         WtaT0isJ6Hi5RA41tLQZjg57YHWDzR0or+pmde052xRm5Zvii20LvSJ9A2pFAUGFqh2A
+         2I+SWHOpapqpNax8W7fM3+KGB7vpcS2GS3AERBTtVxXPxwQDy/SaBYkyKzNwrT6c4tb1
+         8be0OZkddaqdcmsJsIlvPgEuj5pfL5lmfFB+ICa/Sn+pcX2SR1gWh1ODevGQCa/b9Jkk
+         1T7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGqMC/gT0Hu/hyGaRVtj0bRZrD0WSdlmK/0myQjMrVw=;
+        b=OyV7jE6EvdmV69bqw9rVoXzfirSe/6VLqKs6E5fqSS+two/Q5P8fgxFse4cACAjixw
+         B5714pDUroep15lscfpR2Bt18bigdedFneQUpie1VSwaAWvHZsKDVqHpW5Lg9Mb6SZ9s
+         8uEDFJz0+050LlAkBMqmN8DohkmnDX1xHHH1qOsA92i0yY/HsTIozWGPM5eNx8vdzCqW
+         AP8SRj8/Ek1s5OiQZOsabU7PwwIrrdRqIYUWzoBuj89lF7iH2qgZaT/uvsTKhotsTwc4
+         T/5TzcsejZUgDaylfV60OscxCT5aPlJ0oJItiz+dG4FB1megmJJQg7hmCPZ1ie5a5uU0
+         5MuQ==
+X-Gm-Message-State: AOAM532bWA1nw26cUUlKxYhyrLszxU6iUAIw2qtyAz8TTQz2yZn0e0HT
+        JeXnH8fAQ9EzW1kJDb56by0=
+X-Google-Smtp-Source: ABdhPJwkFsfttccKndYmNFtwNy9IXjuRJF6E7r/rvEl1ejhQlpCz3No/4VPgPP8ifgWYfnSlTj67/Q==
+X-Received: by 2002:a62:8287:0:b0:3ec:f6dc:9672 with SMTP id w129-20020a628287000000b003ecf6dc9672mr8003817pfd.65.1630056418532;
+        Fri, 27 Aug 2021 02:26:58 -0700 (PDT)
+Received: from tq-G3-3579.tsinghua.edu.cn ([183.173.48.61])
+        by smtp.gmail.com with ESMTPSA id r3sm5398359pff.119.2021.08.27.02.26.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 02:26:57 -0700 (PDT)
+From:   starmiku1207184332@gmail.com
+To:     njavali@marvell.com, mrangankar@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
+        Teng Qi <starmiku120718432@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] scsi: qla4xxx: Fix a buffer overflow in qla4xxx_free_ddb()
+Date:   Fri, 27 Aug 2021 17:26:43 +0800
+Message-Id: <20210827092643.273357-1-starmiku1207184332@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kavyasree Kotagiri <Kavyasree.Kotagiri@microchip.com>
+From: Teng Qi <starmiku120718432@gmail.com>
 
-This patch introduces Microchip LAN966X ARMv7 based SoC family
-of multiport gigabit AVB/TSN-capable ethernet switches.
-It supports two SKUs: 4-port LAN9662 with multiprotocol
-processing support and 8-port LAN9668 switch.
+Function qla4xxx_session_destroy(), function qla4xxx_get_fwddb_entry() and 
+function qla4xxx_free_ddb() are corresponding this buffer overflow.
+Function qla4xxx_session_destroy() firstly calls function 
+qla4xxx_get_fwddb_entry(), and secondly calls function qla4xxx_free_ddb().
 
-LAN966X includes copper and serial ethernet interfaces,
-peripheral interfaces such as PCIe, USB, TWI, SPI, UART, QSPI,
-SD/eMMC, Parallel Interface (PI) as well as synchronization
-and trigger inputs/outputs.
+In functon qla4xxx_session_destroy(), the function qla4xxx_get_fwddb_entry() is
+called with ddb_entry->fw_ddb_index being passed to formal parameter 
+fw_ddb_index.
+ret = qla4xxx_get_fwddb_entry(ha, ddb_entry->fw_ddb_index,
+	      fw_ddb_entry, fw_ddb_entry_dma,
+	      NULL, NULL, &ddb_state, NULL,
+	      NULL, NULL);
 
-Signed-off-by: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
+In qla4xxx_get_fwddb_entry(), fw_ddb_index is checked in:
+  if (fw_ddb_index >= MAX_DDB_ENTRIES)
+
+This indicates fw_ddb_index could be greater than or equal to MAX_DDB_ENTRIES, 
+and ddb_entry->fw_ddb_index could be also greater than or equal to
+MAX_DDB_ENTRIES.
+If so, the qla4xxx_get_fwddb_entry() will return QLA_ERROR.
+After return, the program goes to the label destory_seession.
+Then the function qla4xxx_free_ddb() is called with argument ddb_entry.
+In qla4xxx_free_ddb(), ddb_entry->fw_ddb_index is used as index.
+  ha->fw_ddb_index_map[ddb_entry->fw_ddb_index] =
+		(struct ddb_entry *) INVALID_ENTRY;
+
+However, the size of ha->fw_ddb_index_map is MAX_DDB_ENTRIES, which can cause
+a buffer overflow.
+
+To fix this possible buffer overflow, ddb_entry->fw_ddb_index should be
+checked first.
+If ddb_entry->fw_ddb_index is greater than or equal to MAX_DDB_ENTRIES, the
+function qla4xxx_free_ddb() returns.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Teng Qi <starmiku120718432@gmail.com>
 ---
- arch/arm/mach-at91/Kconfig   | 13 +++++++++++++
- arch/arm/mach-at91/Makefile  |  1 +
- arch/arm/mach-at91/lan966x.c | 31 +++++++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+)
- create mode 100644 arch/arm/mach-at91/lan966x.c
+ drivers/scsi/qla4xxx/ql4_init.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
-index ccd7e80ce943..06cb425af761 100644
---- a/arch/arm/mach-at91/Kconfig
-+++ b/arch/arm/mach-at91/Kconfig
-@@ -122,6 +122,14 @@ config SOC_SAM9X60
- 	help
- 	  Select this if you are using Microchip's SAM9X60 SoC
-
-+config SOC_LAN966X
-+	bool "ARMv7 based Microchip LAN966X SoC family"
-+	depends on ARCH_MULTI_V7
-+	select SOC_LAN966
-+	select DW_APB_TIMER_OF
-+	help
-+	  This enables support for ARMv7 based Microchip LAN966X SoC family.
-+
- comment "Clocksource driver selection"
-
- config ATMEL_CLOCKSOURCE_PIT
-@@ -188,6 +196,11 @@ config SOC_SAMA5
- 	select SOC_SAM_V7
- 	select SRAM if PM
-
-+config SOC_LAN966
-+	bool
-+	select ARM_GIC
-+	select MEMORY
-+
- config ATMEL_PM
- 	bool
-
-diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
-index f565490f1b70..93cfd5b4e6d4 100644
---- a/arch/arm/mach-at91/Makefile
-+++ b/arch/arm/mach-at91/Makefile
-@@ -6,6 +6,7 @@
- # CPU-specific support
- obj-$(CONFIG_SOC_AT91RM9200)	+= at91rm9200.o
- obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
-+obj-$(CONFIG_SOC_LAN966X)	+= lan966x.o
- obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
- obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
- obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
-diff --git a/arch/arm/mach-at91/lan966x.c b/arch/arm/mach-at91/lan966x.c
-new file mode 100644
-index 000000000000..de689f854068
---- /dev/null
-+++ b/arch/arm/mach-at91/lan966x.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Setup code for LAN966X
-+ *
-+ * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-+ *
-+ */
-+
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+
-+#include <asm/mach/arch.h>
-+#include <asm/system_misc.h>
-+
-+#include "generic.h"
-+
-+static void __init lan966x_dt_device_init(void)
-+{
-+	of_platform_default_populate(NULL, NULL, NULL);
-+}
-+
-+static const char *const lan966x_dt_board_compat[] __initconst = {
-+	"microchip,lan966x",
-+	NULL
-+};
-+
-+DT_MACHINE_START(lan966x_dt, "Microchip LAN966X")
-+	/* Maintainer: Microchip */
-+	.init_machine	= lan966x_dt_device_init,
-+	.dt_compat	= lan966x_dt_board_compat,
-+MACHINE_END
---
-2.17.1
+diff --git a/drivers/scsi/qla4xxx/ql4_init.c b/drivers/scsi/qla4xxx/ql4_init.c
+index f786ac2f5548..e5b2161e59ed 100644
+--- a/drivers/scsi/qla4xxx/ql4_init.c
++++ b/drivers/scsi/qla4xxx/ql4_init.c
+@@ -47,6 +47,8 @@ static void ql4xxx_set_mac_number(struct scsi_qla_host *ha)
+ void qla4xxx_free_ddb(struct scsi_qla_host *ha,
+     struct ddb_entry *ddb_entry)
+ {
++	if (ddb_entry->fw_ddb_index >= MAX_DDB_ENTRIES)
++		return;
+ 	/* Remove device pointer from index mapping arrays */
+ 	ha->fw_ddb_index_map[ddb_entry->fw_ddb_index] =
+ 		(struct ddb_entry *) INVALID_ENTRY;
+-- 
+2.25.1
 
