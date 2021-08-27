@@ -2,160 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53423F983F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 12:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503093F983E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 12:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244990AbhH0KuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 06:50:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51584 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244814AbhH0Kt5 (ORCPT
+        id S244976AbhH0KuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 06:50:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50302 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233193AbhH0Ktz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 06:49:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630061348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 27 Aug 2021 06:49:55 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 66BCA223B4;
+        Fri, 27 Aug 2021 10:49:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630061346; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VTjQSWWlrkaygcuBNYQesIo6nKr0wj832LS/mOrVz+A=;
-        b=MrreHlxd9ddBqPtLVQIxUA4MzmNu7TrSgV8Zx74lEgA+hAfisyvm0eQsOi3kYt2pSwCUPS
-        FnmN6L4JidxJBH5x1idMKk4Xvi8ME9f+GVDXbL5HGub4uQuqweT+hNZN5Dqn6A+7Jm1DOq
-        DTSdV8QejfDHnnvZuUqFjPv85BVTuJk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-8exCeTxaPsGbTG1FG203PA-1; Fri, 27 Aug 2021 06:49:07 -0400
-X-MC-Unique: 8exCeTxaPsGbTG1FG203PA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        bh=K0Nn4BSUqolweqQNlr37cyJmiIhk4AifsG/Gg3LBx1o=;
+        b=foTZeijej7U4TPCeksGJSkqBKTZRrzcrPT5hlHKjrS4/X434Wvbfq1yUrVL5n4fhqJA/l3
+        12i6QdRod9wM9WjuYCWnmO9kQfFmLtqCYfLOxc0aA9TfNZeZo8oYQZ/8LAfayN4p4peyJx
+        F8qn6TC4eDGLg+uxP3qYZAtiBHX2zf0=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7187B1082922;
+        by relay2.suse.de (Postfix) with ESMTPS id D75C3A3B8F;
         Fri, 27 Aug 2021 10:49:05 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 63CCC5D9DD;
-        Fri, 27 Aug 2021 10:49:03 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YSi4bZ7myEMNBtlY@cmpxchg.org>
-References: <YSi4bZ7myEMNBtlY@cmpxchg.org> <YSZeKfHxOkEAri1q@cmpxchg.org> <YSPwmNNuuQhXNToQ@casper.infradead.org> <YSQSkSOWtJCE4g8p@cmpxchg.org> <YSQeFPTMn5WpwyAa@casper.infradead.org> <YSU7WCYAY+ZRy+Ke@cmpxchg.org> <YSVMAS2pQVq+xma7@casper.infradead.org> <2101397.1629968286@warthog.procyon.org.uk>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
+Date:   Fri, 27 Aug 2021 12:49:03 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Joe Perches <joe@perches.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] vsprintf/Documentation: Add X to %*ph extension to
+ output upper case hex
+Message-ID: <YSjDH1y8AJIvCstV@alley>
+References: <cover.1630003183.git.joe@perches.com>
+ <bc33e306a9064dfbf1180a35f9bfa587c6502eca.1630003183.git.joe@perches.com>
+ <YSiY0aa+C9cyJni4@smile.fi.intel.com>
+ <18d9f8d6803c8957ec091c207780c163af07e41f.camel@perches.com>
+ <YSinAyVMIQDxf6Fo@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2476940.1630061342.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 27 Aug 2021 11:49:02 +0100
-Message-ID: <2476941.1630061342@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YSinAyVMIQDxf6Fo@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Fri 2021-08-27 11:49:07, Andy Shevchenko wrote:
+> On Fri, Aug 27, 2021 at 01:08:10AM -0700, Joe Perches wrote:
+> > On Fri, 2021-08-27 at 10:48 +0300, Andy Shevchenko wrote:
+> > > On Thu, Aug 26, 2021 at 11:43:01AM -0700, Joe Perches wrote:
+> > > > A few sysfs output uses of hex arrays are uppercase and are nominally ABI.
+> > > > 
+> > > > Add a mechanism to the existing vsprintf %*ph hex output extension to
+> > > > support upper case hex output.
+> > > 
+> > > ...
+> > > 
+> > > > +	The preferred output is lowercase
+> > > >  	%*ph	00 01 02  ...  3f
+> > > >  	%*phC	00:01:02: ... :3f
+> > > >  	%*phD	00-01-02- ... -3f
+> > > >  	%*phN	000102 ... 3f
+> > > > +	Formats with X are uppercase, used for backwards compatibility
+> > > > +	%*phX	00 01 02  ...  3F
+> > > > +	%*phCX	00:01:02: ... :3F
+> > > > +	%*phDX	00-01-02- ... -3F
+> > > > +	%*phNX	000102 ... 3F
+> > > 
+> > > Why not using %*pH...?
 
-> =
+I though about this as well.
 
-> On Thu, Aug 26, 2021 at 09:58:06AM +0100, David Howells wrote:
-> > One thing I like about Willy's folio concept is that, as long as every=
-one uses
-> > the proper accessor functions and macros, we can mostly ignore the fac=
-t that
-> > they're 2^N sized/aligned and they're composed of exact multiples of p=
-ages.
-> > What really matters are the correspondences between folio size/alignme=
-nt and
-> > medium/IO size/alignment, so you could look on the folio as being a to=
-ol to
-> > disconnect the filesystem from the concept of pages.
-> >
-> > We could, in the future, in theory, allow the internal implementation =
-of a
-> > folio to shift from being a page array to being a kmalloc'd page list =
-or
-> > allow higher order units to be mixed in.  The main thing we have to st=
-op
-> > people from doing is directly accessing the members of the struct.
-> =
+> > I find X more intelligible.
 
-> In the current state of the folio patches, I agree with you. But
-> conceptually, folios are not disconnecting from the page beyond
-> PAGE_SIZE -> PAGE_SIZE * (1 << folio_order()). This is why I asked
-> what the intended endgame is. And I wonder if there is a bit of an
-> alignment issue between FS and MM people about the exact nature and
-> identity of this data structure.
+I would slightly prefer %pH. I always have problems to parse long
+sequences of modifiers. So, the shorter format the better.
 
-Possibly.  I would guess there are a couple of reasons that on the MM side
-particularly it's dealt with as a strict array of pages: efficiency and
-mmap-related faults.
+Of course, it means that 'H' won't be usable for another purpose.
+But it will happen one day anyway. Well, this is why I do not
+have strong opinion.
 
-It's most efficient to treat it as an array of contiguous pages as that
-removes the need for indirection.  From the pov of mmap, faults happen
-along the lines of h/w page divisions.
+I am more and more convinced that we will need another approach.
+Mathew Wilcox has had an idea to add support for custom callbacks
+that would be able to format the string, something like:
 
-=46rom an FS point of view, at minimum, I just need to know the state of t=
-he
-folio.  If a page fault dirties several folios, that's fine.  If I can fin=
-d
-out that a folio was partially dirtied, that's useful, but not critical.  =
-I am
-a bit concerned about higher-order folios causing huge writes - but I do
-realise that we might want to improve TLB/PT efficiency by using larger
-entries and that that comes with consequences for mmapped writes.
+   vsprintf("Date: %pX(%p)\n", format_date, time_stamp);
 
-> At the current stage of conversion, folio is a more clearly delineated
-> API of what can be safely used from the FS for the interaction with
-> the page cache and memory management. And it looks still flexible to
-> make all sorts of changes, including how it's backed by
-> memory. Compared with the page, where parts of the API are for the FS,
-> but there are tons of members, functions, constants, and restrictions
-> due to the page's role inside MM core code. Things you shouldn't be
-> using, things you shouldn't be assuming from the fs side, but it's
-> hard to tell which is which, because struct page is a lot of things.
+I think that it might even be possible to do something like:
 
-I definitely like the API cleanup that folios offer.  However, I do think
-Willy needs to better document the differences between some of the functio=
-ns,
-or at least when/where they should be used - folio_mapping() and
-folio_file_mapping() being examples of this.
+   vsprintf("Date: %pX\n", format_date(time));
 
-> However, the MM narrative for folios is that they're an abstraction
-> for regular vs compound pages. This is rather generic. Conceptually,
-> it applies very broadly and deeply to MM core code: anonymous memory
-> handling, reclaim, swapping, even the slab allocator uses them. If we
-> follow through on this concept from the MM side - and that seems to be
-> the plan - it's inevitable that the folio API will grow more
-> MM-internal members, methods, as well as restrictions again in the
-> process. Except for the tail page bits, I don't see too much in struct
-> page that would not conceptually fit into this version of the folio.
-> =
+, where the format_date() would be a macro that would create
+a struct at stack a pass it as a pointer:
 
-> The cache_entry idea is really just to codify and retain that
-> domain-specific minimalism and clarity from the filesystem side. As
-> well as the flexibility around how backing memory is implemented,
-> which I think could come in handy soon, but isn't the sole reason.
+#define format_date(time)			   \
+({						   \
+	struct vsprintf_callback c = {		   \
+		.func = vsprintf_format_date,	   \
+		.arg1 = time,			   \
+	}					   \
+						   \
+	&c;					   \
+})
 
-I can see while you might want the clarification.  However, at this point,=
- can
-you live with this set of folio patches?  Can you live with the name?  Cou=
-ld
-you live with it if "folio" was changed to something else?
+and vsprintf would internally do something like:
 
-I would really like to see this patchset get in.  It's hanging over change=
-s I
-and others want to make that will conflict with Willy's changes.  If we ca=
-n
-get the basic API of folios in now, that's means I can make my changes on =
-top
-of them.
+char *custom_format(char *buf, char *end, vsprintf_callback *c,
+			 struct printf_spec spec, const char *fmt)
+{
+	return c->func(buf, end, c->arg1, spec);
+}
 
-Thanks,
-David
+It would allow to replace all the magic %pXYZ modifiers with
+self-explanatory callbacks. While still keeping it easy to use.
 
+Best Regards,
+Petr
