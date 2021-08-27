@@ -2,159 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC733F9BD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5B83F9BDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244176AbhH0PnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
+        id S244816AbhH0Pnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232373AbhH0PnO (ORCPT
+        with ESMTP id S232373AbhH0Pna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:43:14 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48A9C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:42:24 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id m18so1084945lfl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:42:24 -0700 (PDT)
+        Fri, 27 Aug 2021 11:43:30 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6298DC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:42:41 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x27so15282338lfu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:42:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SpcuN/bsBI9VgmAGMIaDIULTEIAi8qlWKPc1ViB4NNI=;
-        b=dRCaFrflWTRbihaNb7HXDF6iyIdI8YmmqAmu6KeVTTA6J50Qi5cNSFkvrR9lOhjY8f
-         /d4t5+Fht6ECAKE50zOW+2zogeAEKbBES34vg3Lsofd5Ges+GsEG0wL7jbN5WDrKgR0J
-         WxD8c852WfVA47i21P/i9eQVSiwzXfQ+EPVZEDVww+6KN5rP3xuno2P6/idqCiPFZRAk
-         +tsxOo5g7GA5AXT1SEMEHgAFsDlyi2ldlGm1PuMrMw8HiV6KBiOIIqfQSpcNNDyjq5Zl
-         7/can9T9497no7MFmFcBS4z+slAePWbwNtGj1HlFjWIs7GjPcC4iQcFxwykP7gdIz4Yx
-         T/Rw==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DXkFy+7KOqBdBok+wuJGsKPAoyxzJU89j/0oaIHIjZA=;
+        b=nkOxZZeJcN/jVgIAQ0IX6FsblBfB9e3UhUz76awaCgUgNco96rVa6F0car1a3W+s0v
+         ieHt6e9iiMTAVlQEiWHPrkztkXarw2BuY156WmazWoxpL6ODtnUpmFHzD1bNObbHApb6
+         9BF3+KQuIWevWCfzKv7Hh4CJ/DpMXJjH//Oj/DpF7MoTfAkmYMcTNQE6KEuKYEZhRuyr
+         MBfg8O/iYeRGgccQmn1RhVS05h9c/hncMUKUG5Gn0erEKSF0qxFQ/wJeGyQKuXznSEE8
+         9mBGXgwhjVHFACuvXjIE30OTyqr8l3KBdXkc8RucKud29eGN961rdND+2DLRPp9fsmYV
+         lc9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SpcuN/bsBI9VgmAGMIaDIULTEIAi8qlWKPc1ViB4NNI=;
-        b=rZBf+wj3B5Riao+7vhPg+fig7kQqAxHQjRtPKq/wvSiPFo4HtSeKB+vOpnNcmju98Y
-         2opdCiWxNwyaX814Ipvw0mOrEezrEC9YP0R/ZWJdBgz4bW6Yug71wmkGppPpprKzF+eV
-         WZ+5NhDbSj2AxQqlYhSFrOZItDdvTnA1rX2iArkPqACvImZRk5xGatYzbYFXB8AsCCRQ
-         KC+itXb6Ify6T4Zp+hBWCx5t+o96TjlVLfnrvdorpvm+mxjT5zp6pMNM4/sRt/eDgMAj
-         5Imm2BPcOnodScJ9UEE5XX5oiPkbW1eU+RJ5feLlbl8LIOWZwHutCURzqfJD0tia69CW
-         zqSQ==
-X-Gm-Message-State: AOAM530Nf26TMwXJXR52uEddvah++gWR9pjFlg8gQViL/fQtRTl8y3b+
-        3U6SuFgVTWrd9gJ20YfZYE4=
-X-Google-Smtp-Source: ABdhPJyvvu5TfPC7zdfGAANRw/Mr8Wti/DxRpQQJsJ9kmy0sVZm1C+zqCvI8clzw98XJMj2+Qyd0QQ==
-X-Received: by 2002:a05:6512:ad6:: with SMTP id n22mr7616497lfu.532.1630078942153;
-        Fri, 27 Aug 2021 08:42:22 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id a13sm716270ljn.120.2021.08.27.08.42.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 08:42:21 -0700 (PDT)
-Subject: Re: [PATCH linux-next] drivers:r8188eu: remove unneeded variable
-To:     CGEL <cgel.zte@gmail.com>, Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210825061531.69678-1-deng.changcheng@zte.com.cn>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <68520ae2-23a8-7948-7feb-aa9a69cc0c59@gmail.com>
-Date:   Fri, 27 Aug 2021 18:42:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DXkFy+7KOqBdBok+wuJGsKPAoyxzJU89j/0oaIHIjZA=;
+        b=A1ae4oIpO2f16D6P+DzIPypxfem/Eg0t7V67CuUtDbIgubfwmcov4vycjoFoBXHd6z
+         FZ5PSQbK1/Jz28VIsAGY0V8zlE2VJdzBxMDt9z8z+fw9xYJurGHEdY3lZy5tce6f3yd9
+         ylFbn5xpkROeyQ2WbWp67DBdxb7+z3mPDUJesACuRAgDn179+ADH1w5wgYk+g73jD53H
+         2SQmpnxBANy2r2NlQD8uLCfhVFE/kmkLFWxDtEVgJox08cJf3IgMXfYvMMpspAfYtwf8
+         adVJYOBXqZLBHqh3KA5kpfoz0WtuzOrtgMYo/oE4JnPxJDmSCjD4IekvugbXyXWoWVIw
+         s3fg==
+X-Gm-Message-State: AOAM533uPCozqhYOcs0q+A+AGUcerpdCxGiiEM0rnbEBy+j++cXsNSsf
+        1FsfeAVf+N58XdYEkLjhgTNLPkvDPRZ3X2ff
+X-Google-Smtp-Source: ABdhPJwhJ3kfTrQeKzq5/TV0YCLB0WVHVvx1Tc1mPTlIgkl/LCf8nROPtK+eE87rBUF/40Kmo6o8+w==
+X-Received: by 2002:a05:6512:1042:: with SMTP id c2mr7399206lfb.283.1630078955301;
+        Fri, 27 Aug 2021 08:42:35 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id e18sm703789ljo.105.2021.08.27.08.42.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 08:42:34 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id CBD3F102E6A; Fri, 27 Aug 2021 18:42:32 +0300 (+03)
+Date:   Fri, 27 Aug 2021 18:42:32 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com
+Subject: Re: [mm]  f9ce0be71d:
+ BUG:KCSAN:data-race_in_next_uptodate_page/next_uptodate_page
+Message-ID: <20210827154232.rrpetqsh5xxklkej@box.shutemov.name>
+References: <20210826144157.GA26950@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-In-Reply-To: <20210825061531.69678-1-deng.changcheng@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826144157.GA26950@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/21 9:15 AM, CGEL wrote:
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Thu, Aug 26, 2021 at 10:41:57PM +0800, kernel test robot wrote:
 > 
-> Eliminate the following coccicheck warning:
-> ./drivers/staging/r8188eu/os_dep/os_intfs.c:505:6-12:
->   Unneeded variable "status". Return "_SUCCESS" on line 577
-> ./drivers/staging/r8188eu/os_dep/os_intfs.c:772: 4-7:
->    Unneeded variable "ret". Return "_SUCCESS" on line 818
-> ./drivers/staging/r8188eu/os_dep/os_intfs.c:823:4-8:
-> Unneeded variable "ret8". Return "_SUCCESS" on line 849
 > 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
-> ---
->   drivers/staging/r8188eu/os_dep/os_intfs.c | 9 +++------
->   1 file changed, 3 insertions(+), 6 deletions(-)
+> Greeting,
 > 
-> diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
-> index 9d7d2b9..8436a43 100644
-> --- a/drivers/staging/r8188eu/os_dep/os_intfs.c
-> +++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
-> @@ -502,7 +502,6 @@ void rtw_proc_remove_one(struct net_device *dev)
->   
->   static uint loadparam(struct adapter *padapter,  struct  net_device *pnetdev)
->   {
-> -	uint status = _SUCCESS;
->   	struct registry_priv  *registry_par = &padapter->registrypriv;
->   
->   	GlobalDebugLevel = rtw_debug;
-> @@ -574,7 +573,7 @@ static uint loadparam(struct adapter *padapter,  struct  net_device *pnetdev)
->   	snprintf(registry_par->if2name, 16, "%s", if2name);
->   	registry_par->notch_filter = (u8)rtw_notch_filter;
->   
-> -	return status;
-> +	return _SUCCESS;
->   }
->   
-
-I suggest to make this function return void instead of always returning 
-success
-
->   static int rtw_net_set_mac_address(struct net_device *pnetdev, void *p)
-> @@ -751,7 +750,6 @@ void rtw_stop_drv_threads(struct adapter *padapter)
->   
->   static u8 rtw_init_default_value(struct adapter *padapter)
->   {
-> -	u8 ret  = _SUCCESS;
->   	struct registry_priv *pregistrypriv = &padapter->registrypriv;
->   	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
->   	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-> @@ -797,12 +795,11 @@ static u8 rtw_init_default_value(struct adapter *padapter)
->   #ifdef CONFIG_88EU_P2P
->   	padapter->bShowGetP2PState = 1;
->   #endif
-> -	return ret;
-> +	return _SUCCESS;
->   }
-
-same
-
->   
->   u8 rtw_reset_drv_sw(struct adapter *padapter)
->   {
-> -	u8	ret8 = _SUCCESS;
->   	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
->   	struct pwrctrl_priv *pwrctrlpriv = &padapter->pwrctrlpriv;
->   
-> @@ -828,7 +825,7 @@ u8 rtw_reset_drv_sw(struct adapter *padapter)
->   
->   	rtw_set_signal_stat_timer(&padapter->recvpriv);
->   
-> -	return ret8;
-> +	return _SUCCESS;
->   }
->   
->   u8 rtw_init_drv_sw(struct adapter *padapter)
+> FYI, we noticed the following commit (built with clang-14):
 > 
+> commit: f9ce0be71d1fbb038ada15ced83474b0e63f264d ("mm: Cleanup faultaround and finish_fault() codepaths")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> 
+> in testcase: trinity
+> version: 
+> with following parameters:
+> 
+> 	number: 99999
+> 	group: group-04
+> 
+> test-description: Trinity is a linux system call fuzz tester.
+> test-url: http://codemonkey.org.uk/projects/trinity/
+> 
+> 
+> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> +------------------------------------------------------------------------+-----------+------------+
+> |                                                                        | v5.11-rc4 | f9ce0be71d |
+> +------------------------------------------------------------------------+-----------+------------+
+> | BUG:KCSAN:data-race_in_next_uptodate_page/next_uptodate_page           | 0         | 19         |
+> | BUG:KCSAN:data-race_in_mark_page_accessed/next_uptodate_page           | 0         | 17         |
+> | BUG:KCSAN:data-race_in_next_uptodate_page/page_memcg                   | 0         | 13         |
+> | BUG:KCSAN:data-race_in_next_uptodate_page/unlock_page                  | 0         | 13         |
+> +------------------------------------------------------------------------+-----------+------------+
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> 
+> [  184.717904][ T1873] ==================================================================
+> [  184.718938][ T1873] BUG: KCSAN: data-race in next_uptodate_page / unlock_page
+> [  184.719828][ T1873]
+> [  184.720103][ T1873] write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
+> [  184.721024][ T1873]  unlock_page+0x102/0x1b0
+> [  184.721533][ T1873]  filemap_map_pages+0x6c6/0x890
+> [  184.722102][ T1873]  handle_mm_fault+0x179c/0x27f0
+> [  184.722672][ T1873]  do_user_addr_fault+0x3fb/0x830
+> [  184.723263][ T1873]  exc_page_fault+0xc3/0x1a0
+> [  184.723845][ T1873]  asm_exc_page_fault+0x1e/0x30
+> [  184.724427][ T1873]
+> [  184.724720][ T1873] read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
+> [  184.725575][ T1873]  next_uptodate_page+0x456/0x830
+> [  184.726161][ T1873]  filemap_map_pages+0x728/0x890
+> [  184.726747][ T1873]  handle_mm_fault+0x179c/0x27f0
+> [  184.727332][ T1873]  do_user_addr_fault+0x3fb/0x830
+> [  184.727905][ T1873]  exc_page_fault+0xc3/0x1a0
+> [  184.728440][ T1873]  asm_exc_page_fault+0x1e/0x30
+> [  184.729027][ T1873]
+> [  184.729313][ T1873] Reported by Kernel Concurrency Sanitizer on:
+> [  184.730019][ T1873] CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
+> [  184.731103][ T1873] ==================================================================
 
-same
+Line annotation would be helpful.
 
+And I'm not very familiar with KCSAN. My guess it reports PageLock() vs.
+clearing PG_locked. In this context it looks safe, unless I miss
+something.
 
+Do we need some annotation to help KCSAN?
 
-
-With regards,
-Pavel Skripkin
+-- 
+ Kirill A. Shutemov
