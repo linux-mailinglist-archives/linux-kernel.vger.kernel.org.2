@@ -2,130 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B533F9455
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 08:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7393F945A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 08:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244264AbhH0GSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 02:18:30 -0400
-Received: from verein.lst.de ([213.95.11.211]:32921 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229611AbhH0GS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 02:18:29 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8B7A66736F; Fri, 27 Aug 2021 08:17:37 +0200 (CEST)
-Date:   Fri, 27 Aug 2021 08:17:37 +0200
-From:   "hch@lst.de" <hch@lst.de>
-To:     Adam Manzanares <a.manzanares@samsung.com>
-Cc:     "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] nvmet: use passthru cntrl in nvmet_init_cap
-Message-ID: <20210827061737.GA22583@lst.de>
-References: <20210826211522.308649-1-a.manzanares@samsung.com> <CGME20210826211546uscas1p1e181ca820e506c7c195b933168301dd0@uscas1p1.samsung.com> <20210826211522.308649-3-a.manzanares@samsung.com>
+        id S244321AbhH0GYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 02:24:10 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41296
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229611AbhH0GYI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 02:24:08 -0400
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 96B1F40793
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:23:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630045399;
+        bh=ohSVakcde5SU9A5Azhvp1T8TDHvhvAjJTMuWk8UJlQA=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=kjcS/05w3jqjmeCMVj/qv5Cv29NjGhhwEYQ0knwiu/Q5HR2w/jHJUEeOzFLL+2nTm
+         WsKcRLdqbWhEF/l3Q/qQEohkqxdQfDnb/zZN0Kh/u00x4NfTAbuFPv61vZA1ZLGbdW
+         izlUfuL6xJPKaVWVN+QHdmFriPINKYJuuMcYITpHzszLJ/qNMmPSC2J4Tjsyg62uiZ
+         Ga/EViqMMC/Vpcci/eyHOxaQSV/czxuEJ65yOr7MzbeE5UgNP62z1jxSVRXf9yjN7B
+         kKjzkjgS+F+3vks/SFbERVgui2NyDJ0TiRYUY6hxDdNBBUSOtXu92km7q+myPviljv
+         cdSB9x+3Ps8Tw==
+Received: by mail-ej1-f71.google.com with SMTP id yz13-20020a170906dc4d00b005c61ad936f0so2209099ejb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 23:23:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ohSVakcde5SU9A5Azhvp1T8TDHvhvAjJTMuWk8UJlQA=;
+        b=DIfrrPVpi4GyZubR7lCk7VTSpYt1cTF/kBwXtP7PBD7UZ2qrCkzL6QNQmbLXFJ9z3v
+         Nu+bvShUoTkRKGPrnHxb13z3HWGhc0uoG7anBoqtJfoILJm+RqmYhij0rn3ikntgCd7n
+         icac74eE2gxn8iWVktCrT3z1XwEwDhzY/uNf+ps5r4SAyfaT95aImymzxLQYLz8TLuhC
+         q5wNrLHTvZ5ow3z4DeYTmpxAON8UpAZTbyeWDA0DzrpTTKTpGo3fOFoKn6NksWYD8ejJ
+         CJXDFi34IieQRniibf/1cmN9W5qkoouxa5PvIWvsM3yVfARk3Ijganox5nnT3GZNpzfq
+         p0NA==
+X-Gm-Message-State: AOAM531EpIQQWT/mBITjZCYc1bFiyymML0H6K2ckrGLxk5sjh5V/5flU
+        18KScSqLLfUArbpi3KFCCeOw5Fp20cQD4jZsb8J5bX6JpqKUsoIHQLVBYEcKKDR2osR0VcbfSFz
+        4/6Ze2/OhsUQpMgRsD7tjzHVPkEC86057LjWhTcrYNDG1OMsjbs2m+evzTA==
+X-Received: by 2002:a17:907:2d8b:: with SMTP id gt11mr8486708ejc.432.1630045399170;
+        Thu, 26 Aug 2021 23:23:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwPW07mr7W5GhSow8wp/eSxl6XrHTu2nLBhPVJIML5dI1P2dUXQb8SwvbkQfC3LuSgHoRa+f3dhNXTcnF2j5Eo=
+X-Received: by 2002:a17:907:2d8b:: with SMTP id gt11mr8486677ejc.432.1630045398810;
+ Thu, 26 Aug 2021 23:23:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826211522.308649-3-a.manzanares@samsung.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20210819054542.608745-1-kai.heng.feng@canonical.com>
+ <20210819054542.608745-4-kai.heng.feng@canonical.com> <084b8ea3-99d8-3393-4b74-0779c92fde64@gmail.com>
+ <CAAd53p4CYOOXjyNdTnBtsQ+2MW-Jar8fgEfPFZHSPrJde=HqVA@mail.gmail.com> <d3e4ec0b-2681-1b3c-f0ca-828b24b253e7@gmail.com>
+In-Reply-To: <d3e4ec0b-2681-1b3c-f0ca-828b24b253e7@gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 27 Aug 2021 14:23:07 +0800
+Message-ID: <CAAd53p7JLemocM+rA-EyiuX=asYg5__J07+F9W7YZpUgWVMrPg@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 3/3] r8169: Enable ASPM for selected NICs
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Technically this looks good, but the core target code should not have
-to poke into the host side data structures.  Does this version still look
-good to you?
+On Thu, Aug 19, 2021 at 5:56 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> On 19.08.2021 08:50, Kai-Heng Feng wrote:
+> > On Thu, Aug 19, 2021 at 2:08 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> >>
+> >> On 19.08.2021 07:45, Kai-Heng Feng wrote:
+> >>> The latest vendor driver enables ASPM for more recent r8168 NICs, so
+> >>> disable ASPM on older chips and enable ASPM for the rest.
+> >>>
+> >>> Rename aspm_manageable to pcie_aspm_manageable to indicate it's ASPM
+> >>> from PCIe, and use rtl_aspm_supported for Realtek NIC's internal ASPM
+> >>> function.
+> >>>
+> >>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> >>> ---
+> >>> v3:
+> >>>  - Use pcie_aspm_supported() to retrieve ASPM support status
+> >>>  - Use whitelist for r8169 internal ASPM status
+> >>>
+> >>> v2:
+> >>>  - No change
+> >>>
+> >>>  drivers/net/ethernet/realtek/r8169_main.c | 27 ++++++++++++++++-------
+> >>>  1 file changed, 19 insertions(+), 8 deletions(-)
+> >>>
+> >>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> >>> index 3359509c1c351..88e015d93e490 100644
+> >>> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> >>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> >>> @@ -623,7 +623,8 @@ struct rtl8169_private {
+> >>>       } wk;
+> >>>
+> >>>       unsigned supports_gmii:1;
+> >>> -     unsigned aspm_manageable:1;
+> >>> +     unsigned pcie_aspm_manageable:1;
+> >>> +     unsigned rtl_aspm_supported:1;
+> >>>       unsigned rtl_aspm_enabled:1;
+> >>>       struct delayed_work aspm_toggle;
+> >>>       atomic_t aspm_packet_count;
+> >>> @@ -702,6 +703,20 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
+> >>>              tp->mac_version <= RTL_GIGA_MAC_VER_53;
+> >>>  }
+> >>>
+> >>> +static int rtl_supports_aspm(struct rtl8169_private *tp)
+> >>> +{
+> >>> +     switch (tp->mac_version) {
+> >>> +     case RTL_GIGA_MAC_VER_02 ... RTL_GIGA_MAC_VER_31:
+> >>> +     case RTL_GIGA_MAC_VER_37:
+> >>> +     case RTL_GIGA_MAC_VER_39:
+> >>> +     case RTL_GIGA_MAC_VER_43:
+> >>> +     case RTL_GIGA_MAC_VER_47:
+> >>> +             return 0;
+> >>> +     default:
+> >>> +             return 1;
+> >>> +     }
+> >>> +}
+> >>> +
+> >>>  static bool rtl_supports_eee(struct rtl8169_private *tp)
+> >>>  {
+> >>>       return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
+> >>> @@ -2669,7 +2684,7 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
+> >>>
+> >>>  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+> >>>  {
+> >>> -     if (!tp->aspm_manageable && enable)
+> >>> +     if (!(tp->pcie_aspm_manageable && tp->rtl_aspm_supported) && enable)
+> >>>               return;
+> >>>
+> >>>       tp->rtl_aspm_enabled = enable;
+> >>> @@ -5319,12 +5334,8 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >>>       if (rc)
+> >>>               return rc;
+> >>>
+> >>> -     /* Disable ASPM completely as that cause random device stop working
+> >>> -      * problems as well as full system hangs for some PCIe devices users.
+> >>> -      */
+> >>> -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
+> >>> -                                       PCIE_LINK_STATE_L1);
+> >>> -     tp->aspm_manageable = !rc;
+> >>> +     tp->pcie_aspm_manageable = pcie_aspm_supported(pdev);
+> >>
+> >> That's not what I meant, and it's also not correct.
+> >
+> > In case I make another mistake in next series, let me ask it more clearly...
+> > What you meant was to check both link->aspm_enabled and link->aspm_support?
+> >
+> aspm_enabled can be changed by the user at any time.
 
----
-From c5777caf1562df35150a71e5c91c5b272956beee Mon Sep 17 00:00:00 2001
-From: Adam Manzanares <a.manzanares@samsung.com>
-Date: Thu, 26 Aug 2021 21:15:45 +0000
-Subject: nvmet: looks at the passthrough controller when initializing CAP
+OK, will check that too.
 
-For a passthru controller make cap initialization dependent on the cap of
-the passthru controller, given that multiple Command Set support needs
-to be supported by the underlying controller.  For that move the
-initialization of CAP later so that it can use the fully initialized
-nvmet_ctrl structure.
+> pci_disable_link_state() also considers whether BIOS forbids that OS
+> mess with ASPM. See aspm_disabled.
 
-Fixes: ab5d0b38c047 (nvmet: add Command Set Identifier support)
-Signed-off-by: Adam Manzanares <a.manzanares@samsung.com>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-[hch: refactored the code a bit to keep it more contained in passthru.c]
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/nvme/target/core.c     |  6 ++++--
- drivers/nvme/target/nvmet.h    |  2 ++
- drivers/nvme/target/passthru.c | 10 ++++++++++
- 3 files changed, 16 insertions(+), 2 deletions(-)
+I think aspm_disabled means leave BIOS ASPM setting intact?
+So If PCIe ASPM is already enabled, we should also enable Realtek
+specific bits to make ASPM really work.
 
-diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
-index 66d05eecc2a9..11c44706dc2d 100644
---- a/drivers/nvme/target/core.c
-+++ b/drivers/nvme/target/core.c
-@@ -1206,6 +1206,9 @@ static void nvmet_init_cap(struct nvmet_ctrl *ctrl)
- 	ctrl->cap |= (15ULL << 24);
- 	/* maximum queue entries supported: */
- 	ctrl->cap |= NVMET_QUEUE_SIZE - 1;
-+
-+	if (nvmet_passthru_ctrl(ctrl->subsys))
-+		nvmet_passthrough_override_cap(ctrl);
- }
- 
- struct nvmet_ctrl *nvmet_ctrl_find_get(const char *subsysnqn,
-@@ -1363,8 +1366,6 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
- 		goto out_put_subsystem;
- 	mutex_init(&ctrl->lock);
- 
--	nvmet_init_cap(ctrl);
--
- 	ctrl->port = req->port;
- 
- 	INIT_WORK(&ctrl->async_event_work, nvmet_async_event_work);
-@@ -1378,6 +1379,7 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
- 
- 	kref_init(&ctrl->ref);
- 	ctrl->subsys = subsys;
-+	nvmet_init_cap(ctrl);
- 	WRITE_ONCE(ctrl->aen_enabled, NVMET_AEN_CFG_OPTIONAL);
- 
- 	ctrl->changed_ns_list = kmalloc_array(NVME_MAX_CHANGED_NAMESPACES,
-diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
-index 06dd3d537f07..183119607968 100644
---- a/drivers/nvme/target/nvmet.h
-+++ b/drivers/nvme/target/nvmet.h
-@@ -613,6 +613,8 @@ nvmet_req_passthru_ctrl(struct nvmet_req *req)
- 	return nvmet_passthru_ctrl(nvmet_req_subsys(req));
- }
- 
-+void nvmet_passthrough_override_cap(struct nvmet_ctrl *ctrl);
-+
- u16 errno_to_nvme_status(struct nvmet_req *req, int errno);
- u16 nvmet_report_invalid_opcode(struct nvmet_req *req);
- 
-diff --git a/drivers/nvme/target/passthru.c b/drivers/nvme/target/passthru.c
-index 225cd1ffbe45..8784c487e462 100644
---- a/drivers/nvme/target/passthru.c
-+++ b/drivers/nvme/target/passthru.c
-@@ -20,6 +20,16 @@ MODULE_IMPORT_NS(NVME_TARGET_PASSTHRU);
-  */
- static DEFINE_XARRAY(passthru_subsystems);
- 
-+void nvmet_passthrough_override_cap(struct nvmet_ctrl *ctrl)
-+{
-+	/*
-+	 * Multiple command set support can only be declared if the underlying
-+	 * controller actually supports it.
-+	 */
-+	if (!nvme_multi_css(ctrl->subsys->passthru_ctrl))
-+		ctrl->cap &= ~(1ULL << 43);
-+}
-+
- static u16 nvmet_passthru_override_id_ctrl(struct nvmet_req *req)
- {
- 	struct nvmet_ctrl *ctrl = req->sq->ctrl;
--- 
-2.30.2
+>
+> >>
+> >>> +     tp->rtl_aspm_supported = rtl_supports_aspm(tp);
+> >
+> > Is rtl_supports_aspm() what you expect for the whitelist?
+> > And what else am I missing?
+> >
+> I meant use rtl_supports_aspm() to check when ASPM is relevant at all,
 
+I think that means the relevant bits are link->aspm_capable and
+pcie_aspm_support_enabled().
+ASPM can be already enabled by BIOS with aspm_disabled set.
+
+Then check link->aspm_enabled in aspm_toggle() routine because it can
+be enabled at runtime.
+
+> and in addition use a blacklist for chip versions where ASPM is
+> completely unusable.
+
+Thanks for your suggestion and review.
+
+Kai-Heng
+
+>
+> > Kai-Heng
+> >
+> >>>
+> >>>       /* enable device (incl. PCI PM wakeup and hotplug setup) */
+> >>>       rc = pcim_enable_device(pdev);
+> >>>
+> >>
+>
