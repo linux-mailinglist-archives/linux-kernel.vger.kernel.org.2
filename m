@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583883F9A58
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9023F9A5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245182AbhH0Njm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:39:42 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:47769 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231583AbhH0Njl (ORCPT
+        id S245232AbhH0NmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232417AbhH0NmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:39:41 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A0Zw3S622jUW+pS94gmV1wAqjBI4kLtp133Aq?=
- =?us-ascii?q?2lEZdPU1SL39qynKppkmPHDP5gr5J0tLpTntAsi9qBDnhPtICOsqTNSftWDd0Q?=
- =?us-ascii?q?PGEGgI1/qB/9SPIU3D398Y/aJhXow7M9foEGV95PyQ3CCIV/om3/mLmZrFudvj?=
-X-IronPort-AV: E=Sophos;i="5.84,356,1620662400"; 
-   d="scan'208";a="113571592"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 27 Aug 2021 21:38:50 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id E69214D0DC67;
-        Fri, 27 Aug 2021 21:38:48 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Fri, 27 Aug 2021 21:38:48 +0800
-Received: from [192.168.122.212] (10.167.226.45) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Fri, 27 Aug 2021 21:38:49 +0800
-Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
- <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
- <20210806014559.GM543798@ziepe.ca>
- <b5e6c4cd-8842-59ef-c089-2802057f3202@cn.fujitsu.com>
- <10c4bead-c778-8794-f916-80bf7ba3a56b@fujitsu.com>
- <20210827121034.GG1200268@ziepe.ca>
- <d276eeda-7f30-6c91-24cd-a40916fcc4c8@cn.fujitsu.com>
- <20210827131657.GI1200268@ziepe.ca>
-From:   "Li, Zhijian" <lizhijian@cn.fujitsu.com>
-Message-ID: <1e26aa53-a76a-ffd3-f1f4-1c678dceee75@cn.fujitsu.com>
-Date:   Fri, 27 Aug 2021 21:38:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 27 Aug 2021 09:42:00 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BCCC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:41:11 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id b200so8495593iof.13
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yRD4HlKjeh59U2jdj/1xZGzYvYP9GrHQzdzoFY2mXsE=;
+        b=A3CLO3YLxOrIbWyb60vFVY5nAOD1S0K91vtAH/tBZ4UYIiHTZRqbcQgbAmAKGoFWZG
+         /An+oLCueW3IB4z0IrB/QaY7e7UAy6yx/3ssKU2Fizyj8m3ON5iHiQdnPtFOdWIfbppK
+         htDep1pS9eTK5c/+T4ej18dgPpkJdWRLS7CDD+AYn/3lTkdeMmkXc/JVCOHk4JbjewSB
+         7ODK1H8TgKOJHE43uB6BZMUYcWbNF+mh85ri3uzgabTB6VO8QWQQ0VKiyKnCnzQaPYaG
+         V721Nv3zbGyMXlF73M/iHnaT+0Vgd7wPdlX0CnBctqfefPKau+ocjYQUJu/xbdfhj4b2
+         OZ3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yRD4HlKjeh59U2jdj/1xZGzYvYP9GrHQzdzoFY2mXsE=;
+        b=H75lm9vCDYvPaE1dHfcgMhGxryrYeWPHkcy8fIGkY05l0Ejzqyd49WSk7SmqTqxSG8
+         AyRJwn+bcmmc12cZC3CHmyYSZlvKn9i/ckZ4MfigfawmD3xZUnbfN4hJunt7L1DUDC23
+         BjCVFCQKbXJcVh+1rkg3uKi0FuSP+ukyJ2AXxmljFqgH4CoWAGnlsmP8jEa9XsRbYM/I
+         QAmcCchQobce0+/BiC2Ko4XJv6ra84fEDbbnNhlP+aBetL0a6YEY1y4oOQUOeTMLSo/S
+         m00MSd6zQbf/nHKCGsxcoqb+VHYGKeKw2T9dIsqJ+Cl75zyhaKRsOmqxBSSQesjJv/ig
+         Yaog==
+X-Gm-Message-State: AOAM530cWQO+bANIHYikgGGMPfEDAtzVleEfv46J6s+h/9eAW+gznqif
+        EaBky9hh9XG5ob3I9QRvuIhABbJioSZ6tgCh9b57XA==
+X-Google-Smtp-Source: ABdhPJzIbvsM9MZ1LrgsCvSCxH3OR626mdzjzjXmbVOemDc4miWf19ECt6QpYYBXweacC3uYNMgDR4fr6rdbIFSi2wY=
+X-Received: by 2002:a05:6638:35aa:: with SMTP id v42mr8350640jal.5.1630071670391;
+ Fri, 27 Aug 2021 06:41:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210827131657.GI1200268@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-yoursite-MailScanner-ID: E69214D0DC67.AB0CB
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+References: <20210827082407.101053-1-yangcong5@huaqin.corp-partner.google.com> <20210827082407.101053-2-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20210827082407.101053-2-yangcong5@huaqin.corp-partner.google.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Fri, 27 Aug 2021 06:40:58 -0700
+Message-ID: <CAD=FV=UaAFY4Q+q8JyYqnjSeun=HHnbUEzFSVj5DtHVBPPAtdw@mail.gmail.com>
+Subject: Re: [v3 1/4] drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-on 2021/8/27 21:16, Jason Gunthorpe wrote:
-> On Fri, Aug 27, 2021 at 09:05:21PM +0800, Li, Zhijian wrote:
+On Fri, Aug 27, 2021 at 1:24 AM yangcong
+<yangcong5@huaqin.corp-partner.google.com> wrote:
 >
-> Yes, can you send a proper patch and include the mm mailing list?
+> The auo,b101uan08.3 panel (already supported by this driver) has
+> a 3.3V rail that needs to be turned on. For previous users of
+> this panel this voltage was directly output by pmic. On a new
+> user (the not-yet-upstream sc7180-trogdor-mrbland board) we need
+> to turn the 3.3V rail on. Add support in the driver for this.
+>
+> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
+> ---
+>  drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 
-Of course, my pleasure
+There were no differences between this and the previous version [1]. I
+added my Reviewed-by tag on the previous version, so you should have
+included it in this new version.
 
-Thanks
+[1] https://lore.kernel.org/r/20210820070113.45191-2-yangcong5@huaqin.corp-partner.google.com
 
+In any case:
 
-
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
