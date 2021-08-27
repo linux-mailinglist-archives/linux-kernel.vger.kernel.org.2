@@ -2,63 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711CD3F9B19
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534633F9B26
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbhH0Os1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:48:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57884 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhH0Os0 (ORCPT
+        id S245263AbhH0OwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhH0OwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:48:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 16A662022C;
-        Fri, 27 Aug 2021 14:47:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630075657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jMmBtD+OA80W8GrXQh+AfV9EwTPhieb7P13hnbE8+GY=;
-        b=ppSTVxbjmrq6GEJhGXt9sjGJwKurJTnS8GlaswWRb/doqUiAEFJUk+kStt/YI37O0coa1O
-        ue4xZv5bVCrZCy79eUgzNp38a9657Dwc7aC92Oq1YRcrfBx00mI3189AOIhZ+/MmCw0NTC
-        f5lvItL8k7QrvUEPaRVPLIYYkcW3e7E=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B7132A3B91;
-        Fri, 27 Aug 2021 14:47:36 +0000 (UTC)
-Date:   Fri, 27 Aug 2021 16:47:33 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     chris@chrisdown.name, senozhatsky@chromium.org,
-        rostedt@goodmis.org, john.ogness@linutronix.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] printk/index: Fix -Wunused-function warning
-Message-ID: <YSj7Bfw2Ps5cOsu8@alley>
-References: <20210804130105.18732-1-yuehaibing@huawei.com>
+        Fri, 27 Aug 2021 10:52:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5D0C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:51:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fgRwnxGGF057xGl87vsL6kCRqNe7wcNfUYeSw4x56tc=; b=tUg5s6JwGQth/zsyy+aMx5nMrP
+        +lAZJIySGhrCe0H7CM2kWBKnuk6FIHf6r/WjCeqziDWuedqlaDAdsN7hxoSU8UcN422PZpOosugZ8
+        J00lTUeG67ZQYl7rf76uNjTtnwFqJaOGxmB/Xw4kc9xyEnGHgOzxSqvaXLE8FLZ599ZvhcRDC+97M
+        AvfakezHJEL2qT9ShlZiFjA9Ycv1nH2B6C1bs1EQqbaWqhm1xL5Tu81YDp9VyT+3hBrWjWYO4uKSH
+        HdZU/ay53Y1q+VtjNe1E0+3iZeLhHrozpyie1c0udGm/8pxK+Q5iZ1ovK5u9PJKlSWGt7WBvC9vei
+        2DUHF8MQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJd9k-00EfE0-Bn; Fri, 27 Aug 2021 14:48:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EBDE63005AD;
+        Fri, 27 Aug 2021 16:48:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C009629A12A4D; Fri, 27 Aug 2021 16:48:30 +0200 (CEST)
+Date:   Fri, 27 Aug 2021 16:48:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v4 6/6] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+Message-ID: <YSj7PrVGVpcKf/vz@hirez.programming.kicks-ass.net>
+References: <20210810144145.18776-1-ricardo.neri-calderon@linux.intel.com>
+ <20210810144145.18776-7-ricardo.neri-calderon@linux.intel.com>
+ <CAKfTPtArtmhLG5QYR6TzKevDrEuiQu2HJxm_C3pe549XdGU-1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210804130105.18732-1-yuehaibing@huawei.com>
+In-Reply-To: <CAKfTPtArtmhLG5QYR6TzKevDrEuiQu2HJxm_C3pe549XdGU-1g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-08-04 21:01:05, YueHaibing wrote:
-> If CONFIG_MODULES is n, we got this:
+On Fri, Aug 27, 2021 at 12:13:42PM +0200, Vincent Guittot wrote:
+> > +/**
+> > + * asym_smt_can_pull_tasks - Check whether the load balancing CPU can pull tasks
+> > + * @dst_cpu:   Destination CPU of the load balancing
+> > + * @sds:       Load-balancing data with statistics of the local group
+> > + * @sgs:       Load-balancing statistics of the candidate busiest group
+> > + * @sg:                The candidate busiet group
+> > + *
+> > + * Check the state of the SMT siblings of both @sds::local and @sg and decide
+> > + * if @dst_cpu can pull tasks. If @dst_cpu does not have SMT siblings, it can
+> > + * pull tasks if two or more of the SMT siblings of @sg are busy. If only one
+> > + * CPU in @sg is busy, pull tasks only if @dst_cpu has higher priority.
+> > + *
+> > + * If both @dst_cpu and @sg have SMT siblings, even the number of idle CPUs
+> > + * between @sds::local and @sg. Thus, pull tasks from @sg if the difference
+> > + * between the number of busy CPUs is 2 or more. If the difference is of 1,
+> > + * only pull if @dst_cpu has higher priority. If @sg does not have SMT siblings
+> > + * only pull tasks if all of the SMT siblings of @dst_cpu are idle and @sg
+> > + * has lower priority.
+> > + */
+> > +static bool asym_smt_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
+> > +                                   struct sg_lb_stats *sgs,
+> > +                                   struct sched_group *sg)
+> > +{
+> > +#ifdef CONFIG_SCHED_SMT
+> > +       bool local_is_smt, sg_is_smt;
+> > +       int sg_busy_cpus;
+> > +
+> > +       local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
+> > +       sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
+> > +
+> > +       sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
+> > +
+> > +       if (!local_is_smt) {
+> > +               /*
+> > +                * If we are here, @dst_cpu is idle and does not have SMT
+> > +                * siblings. Pull tasks if candidate group has two or more
+> > +                * busy CPUs.
+> > +                */
+> > +               if (sg_is_smt && sg_busy_cpus >= 2)
+> > +                       return true;
+> > +
+> > +               /*
+> > +                * @dst_cpu does not have SMT siblings. @sg may have SMT
+> > +                * siblings and only one is busy. In such case, @dst_cpu
+> > +                * can help if it has higher priority and is idle.
+> > +                */
+> > +               return !sds->local_stat.group_util &&
 > 
-> kernel/printk/index.c:146:13: warning: ‘pi_remove_file’ defined but not used [-Wunused-function]
-> 
-> Move it inside #ifdef block to fix this warning.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> sds->local_stat.group_util can't be used to decide if a CPU or group
+> of CPUs is idle. util_avg is usually not null when a CPU becomes idle
+> and you can have to wait  more than 300ms before it becomes Null
+> At the opposite, the utilization of a CPU can be null but a task with
+> null utilization has just woken up on it.
+> Utilization is used to reflect the average work of the CPU or group of
+> CPUs but not the current state
 
-The patch has been committed into printk/linux.git,
-branch for-5.15-printk-index.
+If you want immediate idle, sgs->nr_running == 0 or sgs->idle_cpus ==
+sgs->group_weight come to mind.
 
-Best Regards,
-Petr
+> > +                      sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
+> > +       }
+> > +
+> > +       /* @dst_cpu has SMT siblings. */
+> > +
+> > +       if (sg_is_smt) {
+> > +               int local_busy_cpus = sds->local->group_weight -
+> > +                                     sds->local_stat.idle_cpus;
+> > +               int busy_cpus_delta = sg_busy_cpus - local_busy_cpus;
+> > +
+> > +               /* Local can always help to even the number busy CPUs. */
+> 
+> default behavior of the load balance already tries to even the number
+> of idle CPUs.
+
+Right, but I suppose this is because we're trapped here and have to deal
+with the SMT-SMT case too. Ricardo, can you clarify?
+
+> > +               if (busy_cpus_delta >= 2)
+> > +                       return true;
+> > +
+> > +               if (busy_cpus_delta == 1)
+> > +                       return sched_asym_prefer(dst_cpu,
+> > +                                                sg->asym_prefer_cpu);
+> > +
+> > +               return false;
+> > +       }
+> > +
+> > +       /*
+> > +        * @sg does not have SMT siblings. Ensure that @sds::local does not end
+> > +        * up with more than one busy SMT sibling and only pull tasks if there
+> > +        * are not busy CPUs. As CPUs move in and out of idle state frequently,
+> > +        * also check the group utilization to smoother the decision.
+> > +        */
+> > +       if (!sds->local_stat.group_util)
+> 
+> same comment as above about the meaning of group_util == 0
+> 
+> > +               return sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
+> > +
+> > +       return false;
+> > +#else
+> > +       /* Always return false so that callers deal with non-SMT cases. */
+> > +       return false;
+> > +#endif
+> > +}
+> > +
+> >  static inline bool
+> >  sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
+> >            struct sched_group *group)
+> >  {
+> > +       /* Only do SMT checks if either local or candidate have SMT siblings */
+> > +       if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
+> > +           (group->flags & SD_SHARE_CPUCAPACITY))
+> > +               return asym_smt_can_pull_tasks(env->dst_cpu, sds, sgs, group);
+> > +
+> >         return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
+> >  }
