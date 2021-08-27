@@ -2,99 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406CA3FA1C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 01:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EB43FA1C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 01:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbhH0XXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 19:23:40 -0400
-Received: from mga02.intel.com ([134.134.136.20]:52665 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232433AbhH0XXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 19:23:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10089"; a="205253045"
-X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
-   d="scan'208";a="205253045"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 16:22:47 -0700
-X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
-   d="scan'208";a="538679488"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 16:22:47 -0700
-Date:   Fri, 27 Aug 2021 16:22:46 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH v7 05/19] iov_iter: Introduce fault_in_iov_iter_writeable
-Message-ID: <20210827232246.GA1668365@agluck-desk2.amr.corp.intel.com>
-References: <20210827164926.1726765-1-agruenba@redhat.com>
- <20210827164926.1726765-6-agruenba@redhat.com>
- <YSkz025ncjhyRmlB@zeniv-ca.linux.org.uk>
- <CAHk-=wh5p6zpgUUoY+O7e74X9BZyODhnsqvv=xqnTaLRNj3d_Q@mail.gmail.com>
- <YSk7xfcHVc7CxtQO@zeniv-ca.linux.org.uk>
- <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
- <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
- <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
- <YSlftta38M4FsWUq@zeniv-ca.linux.org.uk>
+        id S232524AbhH0XY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 19:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232405AbhH0XYY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 19:24:24 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7559FC061796
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 16:23:35 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so5908997pjt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 16:23:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TQth0zKaZ1g898XhTaLjgqI+BqtTYpmEnIJq3AsLCJk=;
+        b=BAuX2ol8F6dvdcYTLPau4K0GBYzUoQCSuqStZCATywk1xJsRcTN/zbnvR40BRHvYRj
+         p2MT9UNw+pSe1w4FqYAzJww2vX26GF4Etd+uOuVWgHJFd4agO5hpaKs4rD3Z8IuIiQ64
+         bceibC9z39TyoUF5r/ZBJugD41m33rR/4wmX0JjHH4Ox3VO0sQvCLcKc4rCPjZl3kpp/
+         z2ewywcdb4obgJrlPAWwwSgAREPIfSw6ixPLrZU+orCqHvOzAJIbsJDGYnOKI/KJzI5+
+         MS27DWV8OUcVAL9tLPc5IpbSctooG5g35qhato+7vW1AY9AOSyjT1rpopwB7U0ojjXOG
+         jR7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TQth0zKaZ1g898XhTaLjgqI+BqtTYpmEnIJq3AsLCJk=;
+        b=GVpeNiv+ZjUWTMnmmxACiwKYkuVKEonKNQrgX8OYy8D5xdXphErsB0bEvCukkD9KL6
+         fnOfUflmdPJ/rPgZl//jovqsdrJiVgzpm8ePRTVNJKqZM9iISqMhq4wrFEYbCLI1MO5x
+         lMO15sg54u80h/ToYC7Kov2k8nQnsSixKduf4yFDr1GKRmIliDATLG280vnOicZxlGlu
+         7E4b/zNvMD5XTZgnT0wzBzG0EOWhSkR2wA38n3VSXrSLknHK1rFSUvokSzTyQDVRa9dJ
+         nnZcWKw0OUsz61qbeY2qHSdWZrA0bMXEm+K0OnpT+kpjVZN6wpW+ndL7nwhSP4RzG1MT
+         61mw==
+X-Gm-Message-State: AOAM531OMOuyouh+fK+kGHDCdCoA3g5HyGb08J2UbQY+sn7WEHTVg01d
+        MXX63upXKsj564q+ZeVZyY+trQ==
+X-Google-Smtp-Source: ABdhPJwmCb6NSZOc/5AwINtm/0AHRKcukC2PPcNvrpcQ6DjdUz8MDW9KTFWzGmyEhc2uaUezQAIkrA==
+X-Received: by 2002:a17:90a:fe8e:: with SMTP id co14mr10854117pjb.200.1630106614660;
+        Fri, 27 Aug 2021 16:23:34 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id h13sm7335943pgh.93.2021.08.27.16.23.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 16:23:33 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 23:23:30 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     dvhart <dvhart@infradead.org>,
+        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH v2 4/5] KVM: selftests: Add a test for KVM_RUN+rseq to
+ detect task migration bugs
+Message-ID: <YSlz8h9SWgeuicak@google.com>
+References: <20210820225002.310652-1-seanjc@google.com>
+ <20210820225002.310652-5-seanjc@google.com>
+ <766990430.21713.1629731934069.JavaMail.zimbra@efficios.com>
+ <282257549.21721.1629732017655.JavaMail.zimbra@efficios.com>
+ <YSblqrrpKcORzilX@google.com>
+ <1700758714.29394.1630003332081.JavaMail.zimbra@efficios.com>
+ <YSgpy8iXXXUQ+b/k@google.com>
+ <339641531.29941.1630091374065.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YSlftta38M4FsWUq@zeniv-ca.linux.org.uk>
+In-Reply-To: <339641531.29941.1630091374065.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 09:57:10PM +0000, Al Viro wrote:
-> On Fri, Aug 27, 2021 at 09:48:55PM +0000, Al Viro wrote:
-> 
-> > 	[btrfs]search_ioctl()
-> > Broken with memory poisoning, for either variant of semantics.  Same for
-> > arm64 sub-page permission differences, I think.
-> 
-> 
-> > So we have 3 callers where we want all-or-nothing semantics - two in
-> > arch/x86/kernel/fpu/signal.c and one in btrfs.  HWPOISON will be a problem
-> > for all 3, AFAICS...
+On Fri, Aug 27, 2021, Mathieu Desnoyers wrote:
+> > So there are effectively three reasons we want a delay:
 > > 
-> > IOW, it looks like we have two different things mixed here - one that wants
-> > to try and fault stuff in, with callers caring only about having _something_
-> > faulted in (most of the users) and one that wants to make sure we *can* do
-> > stores or loads on each byte in the affected area.
+> >  1. To allow sched_setaffinity() to coincide with ioctl(KVM_RUN) before KVM can
+> >     enter the guest so that the guest doesn't need an arch-specific VM-Exit source.
 > > 
-> > Just accessing a byte in each page really won't suffice for the second kind.
-> > Neither will g-u-p use, unless we teach it about HWPOISON and other fun
-> > beasts...  Looks like we want that thing to be a separate primitive; for
-> > btrfs I'd probably replace fault_in_pages_writeable() with clear_user()
-> > as a quick fix for now...
+> >  2. To let ioctl(KVM_RUN) make its way back to the test before the next round
+> >     of migration.
 > > 
-> > Comments?
+> >  3. To ensure the read-side can make forward progress, e.g. if sched_getcpu()
+> >     involves a syscall.
+> > 
+> > 
+> > After looking at KVM for arm64 and s390, #1 is a bit tenuous because x86 is the
+> > only arch that currently uses xfer_to_guest_mode_work(), i.e. the test could be
+> > tweaked to be overtly x86-specific.  But since a delay is needed for #2 and #3,
+> > I'd prefer to rely on it for #1 as well in the hopes that this test provides
+> > coverage for arm64 and/or s390 if they're ever converted to use the common
+> > xfer_to_guest_mode_work().
 > 
-> Wait a sec...  Wasn't HWPOISON a per-page thing?  arm64 definitely does have
-> smaller-than-page areas with different permissions, so btrfs search_ioctl()
-> has a problem there, but arch/x86/kernel/fpu/signal.c doesn't have to deal
-> with that...
-> 
-> Sigh...  I really need more coffee...
+> Now that we have this understanding of why we need the delay, it would be good to
+> write this down in a comment within the test.
 
-On Intel poison is tracked at the cache line granularity. Linux
-inflates that to per-page (because it can only take a whole page away).
-For faults triggered in ring3 this is pretty much the same thing because
-mm/memory_failure.c unmaps the page ... so while you see a #MC on first
-access, you get #PF when you retry. The x86 fault handler sees a magic
-signature in the page table and sends a SIGBUS.
+Ya, I'll get a new version out next week.
 
-But it's all different if the #MC is triggerd from ring0. The machine
-check handler can't unmap the page. It just schedules task_work to do
-the unmap when next returning to the user.
+> Does it reproduce if we randomize the delay to have it picked randomly from 0us
+> to 100us (with 1us step) ? It would remove a lot of the needs for arch-specific
+> magic delay value.
 
-But if your kernel code loops and tries again without a return to user,
-then your get another #MC.
+My less-than-scientific testing shows that it can reproduce at delays up to ~500us,
+but above ~10us the reproducibility starts to drop.  The bug still reproduces
+reliably, it just takes more iterations, and obviously the test runs a bit slower.
 
--Tony
+Any objection to using a 1-10us delay, e.g. a simple usleep((i % 10) + 1)?
