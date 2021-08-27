@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72623F9657
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F063F9659
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 10:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244543AbhH0In1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 04:43:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46370 "EHLO mail.kernel.org"
+        id S244593AbhH0IoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 04:44:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233297AbhH0In0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 04:43:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C64E60F6F;
-        Fri, 27 Aug 2021 08:42:35 +0000 (UTC)
+        id S233157AbhH0IoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 04:44:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C57060F6F;
+        Fri, 27 Aug 2021 08:43:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630053757;
-        bh=Wi+hqYvcZj79USE4XMLdmv/0UzddAaB7Y0OacSwib+0=;
+        s=korg; t=1630053793;
+        bh=hHb2wdMjI7FvcvoPutzMeKVb5FQHNPxUguvPilqgxII=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sMMGtyVQWuqvA5fPmvaCMihXq39KleoWEGVExfDwViWdWzLuhKnalrgiIxP5Eaudx
-         uumKI99pR7VLCYjGFL8odYwUWdg1MD7+6q51VeedV7wWrsKlj3QTpxg2eD+0KN+11J
-         Z5znxDHwRjcgl9I5RoesbrxgwdEgkUMfLPQoEPpA=
-Date:   Fri, 27 Aug 2021 10:42:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 5/5] staging: r8188eu: Use vsprintf extension %phCX to
- format a copy_to_user string
-Message-ID: <YSildgE0Ul4akIUJ@kroah.com>
-References: <cover.1630003183.git.joe@perches.com>
- <152e1b8f84c4686ea38182ca55344ed7f2cede65.1630003183.git.joe@perches.com>
+        b=g+DhAG7BY0c6OsQNVfLrCDw52yR0lE3h56m+n3q42sg0PUdYaSKIR1I5YNRCCvGMf
+         S+XkUt0mPWN/TXMrGsED+JIY2+PMpecLHONOl9cOeg7CUnAoLfcTWt1nihm44Ohv3Q
+         nTyr9owIlEHBO7r4soWGyH/AIv1NilXJH/XugDr8=
+Date:   Fri, 27 Aug 2021 10:43:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andra Paraschiv <andraprs@amazon.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexandru Ciobotaru <alcioa@amazon.com>,
+        Kamal Mostafa <kamal@canonical.com>,
+        Alexandru Vasile <lexnv@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+Subject: Re: [PATCH v1 1/3] nitro_enclaves: Enable Arm support
+Message-ID: <YSilmGyvEAc46ujH@kroah.com>
+References: <20210826173451.93165-1-andraprs@amazon.com>
+ <20210826173451.93165-2-andraprs@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <152e1b8f84c4686ea38182ca55344ed7f2cede65.1630003183.git.joe@perches.com>
+In-Reply-To: <20210826173451.93165-2-andraprs@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 11:43:05AM -0700, Joe Perches wrote:
-> This reduces object size without changing the string content.
+On Thu, Aug 26, 2021 at 08:34:49PM +0300, Andra Paraschiv wrote:
+> Update the kernel config to enable the Nitro Enclaves kernel driver for
+> Arm support.
 > 
-> compiled x86-64 defconfig w/ r8188eu and gcc 10.3.0
-> 
-> $ size drivers/staging/r8188eu/os_dep/ioctl_linux.o*
->    text	   data	    bss	    dec	    hex	filename
->   72556	   1548	      0	  74104	  12178	drivers/staging/r8188eu/os_dep/ioctl_linux.o.new
->   72758	   1548	      0	  74306	  12242	drivers/staging/r8188eu/os_dep/ioctl_linux.o.old
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
 > ---
->  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+>  drivers/virt/nitro_enclaves/Kconfig | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> index ab4a9200f0791..048164659d872 100644
-> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> @@ -2907,10 +2907,8 @@ static int rtw_p2p_get_groupid(struct net_device *dev,
->  	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
->  	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
+> diff --git a/drivers/virt/nitro_enclaves/Kconfig b/drivers/virt/nitro_enclaves/Kconfig
+> index 8c9387a232df8..f53740b941c0f 100644
+> --- a/drivers/virt/nitro_enclaves/Kconfig
+> +++ b/drivers/virt/nitro_enclaves/Kconfig
+> @@ -1,17 +1,13 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  #
+> -# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+> +# Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 >  
-> -	sprintf(extra, "\n%.2X:%.2X:%.2X:%.2X:%.2X:%.2X %s",
-> -		pwdinfo->groupid_info.go_device_addr[0], pwdinfo->groupid_info.go_device_addr[1],
-> -		pwdinfo->groupid_info.go_device_addr[2], pwdinfo->groupid_info.go_device_addr[3],
-> -		pwdinfo->groupid_info.go_device_addr[4], pwdinfo->groupid_info.go_device_addr[5],
-> +	sprintf(extra, "\n%pM %s",
-> +		pwdinfo->groupid_info.go_device_addr,
->  		pwdinfo->groupid_info.ssid);
+>  # Amazon Nitro Enclaves (NE) support.
+>  # Nitro is a hypervisor that has been developed by Amazon.
+>  
+> -# TODO: Add dependency for ARM64 once NE is supported on Arm platforms. For now,
+> -# the NE kernel driver can be built for aarch64 arch.
+> -# depends on (ARM64 || X86) && HOTPLUG_CPU && PCI && SMP
+> -
+>  config NITRO_ENCLAVES
+>  	tristate "Nitro Enclaves Support"
+> -	depends on X86 && HOTPLUG_CPU && PCI && SMP
+> +	depends on (ARM64 || X86) && HOTPLUG_CPU && PCI && SMP
 
-We can just use the lower-case one here, no need for a new modifier just
-for something like this (i.e. log file output)
+So no code change needed?  If not, they why do we have a cpu type at all
+here?
 
 thanks,
 
