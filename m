@@ -2,219 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9133F9E2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EAD3F9E41
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237087AbhH0Ro2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:44:28 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:41610 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230035AbhH0Ro1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:44:27 -0400
-Received: from zn.tnic (p200300ec2f111700cf40790d4c46ba75.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:cf40:790d:4c46:ba75])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 887F01EC0537;
-        Fri, 27 Aug 2021 19:43:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630086212;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ksK72yJ3wySU/4v/Z0DqBPrVhHFzU36FDKHslitFLfs=;
-        b=CnZ7xUnX3NltwfLtDCZBosHAKgNAyTK6OO9/+F36exMtD43KMTmwz5jrW/9RSQnPafC7ex
-        V1OGb6wIYQBciY/0KWALp0WLIhIXvQulT61+QAsnWfQGKgl4LeO5QriszIWX+fC3A8nbVk
-        8wnxrv59MVzTd3bMXDCEcNqxd9X6sbU=
-Date:   Fri, 27 Aug 2021 19:44:09 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 33/38] x86/sev: Provide support for SNP guest
- request NAEs
-Message-ID: <YSkkaaXrg6+cnb9+@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-34-brijesh.singh@amd.com>
+        id S238986AbhH0Rrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhH0Rrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 13:47:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CE2C061757;
+        Fri, 27 Aug 2021 10:46:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=svL56QiGuEqf74xWCkOR06NnNiaAxd4UTs5cmuB+uic=; b=PT+RxIeEjsZlkUc1VjNjOaOMiF
+        bZc/XQ7l9FKq6rVIFXSEbJGKnq/ZCw/6tcc7EpK+3fs6wfmcsx5+UVa/C7UK/Cg2imNvGtEFi956B
+        glG5v0qAWJ2VOwyF7cwesHoezvHmUg7FOQqXiw/xoW76HlrRC1ypjm0V4+x+XhySc8AJdPv+SammD
+        UxOsNMxA/aG3bjansIeQLlSizbEdDvl7IoRiZCv7Px29LgzgZw6ZFt/rL4Kr2A6wyCmQrXmkH1414
+        M+NFYJIjyzVOudLlpNWzTW9qaimcwDkjR0WQwCQ9WRW98S0ZbkST8FYBGVUXreaLz4+BSgTHpbo8d
+        qPjOWg2A==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJfvD-00EozX-1t; Fri, 27 Aug 2021 17:45:54 +0000
+Date:   Fri, 27 Aug 2021 18:45:43 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, linux-mm@kvack.org,
+        linux-rdma@vger.kernel.org, akpm@linux-foundation.org,
+        jglisse@redhat.com, yishaih@nvidia.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mm/hmm: bypass devmap pte when all pfn requested flags
+ are fulfilled
+Message-ID: <YSkkx6Tci3n+qN54@infradead.org>
+References: <20210827144500.2148-1-lizhijian@cn.fujitsu.com>
+ <20210827162852.GL1200268@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210820151933.22401-34-brijesh.singh@amd.com>
+In-Reply-To: <20210827162852.GL1200268@ziepe.ca>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:19:28AM -0500, Brijesh Singh wrote:
-> +int snp_issue_guest_request(int type, struct snp_guest_request_data *input, unsigned long *fw_err)
-> +{
-> +	struct ghcb_state state;
-> +	unsigned long id, flags;
-> +	struct ghcb *ghcb;
-> +	int ret;
-> +
-> +	if (!sev_feature_enabled(SEV_SNP))
-> +		return -ENODEV;
-> +
-> +	local_irq_save(flags);
-> +
-> +	ghcb = __sev_get_ghcb(&state);
-> +	if (!ghcb) {
-> +		ret = -EIO;
-> +		goto e_restore_irq;
-> +	}
-> +
-> +	vc_ghcb_invalidate(ghcb);
-> +
-> +	if (type == GUEST_REQUEST) {
-> +		id = SVM_VMGEXIT_GUEST_REQUEST;
-> +	} else if (type == EXT_GUEST_REQUEST) {
-> +		id = SVM_VMGEXIT_EXT_GUEST_REQUEST;
-> +		ghcb_set_rax(ghcb, input->data_gpa);
-> +		ghcb_set_rbx(ghcb, input->data_npages);
-
-Hmmm, now I'm not sure. We did enum psc_op where you simply pass in the
-op directly to the hardware because the enum uses the same numbers as
-the actual command.
-
-But here that @type thing is simply used to translate to the SVM_VMGEXIT
-thing. So maybe you don't need it here and you can hand in the exit_code
-directly:
-
-int snp_issue_guest_request(u64 exit_code, struct snp_guest_request_data *input,
-			    unsigned long *fw_err)
-
-which you then pass in directly to...
-
-> +	} else {
-> +		ret = -EINVAL;
-> +		goto e_put;
-> +	}
-> +
-> +	ret = sev_es_ghcb_hv_call(ghcb, NULL, id, input->req_gpa, input->resp_gpa);
-
-... this guy here:
-
-	ret = sev_es_ghcb_hv_call(ghcb, NULL, exit_code, input->req_gpa, input->resp_gpa);
-
-> +	if (ret)
-> +		goto e_put;
-> +
-> +	if (ghcb->save.sw_exit_info_2) {
-> +		/* Number of expected pages are returned in RBX */
-> +		if (id == EXT_GUEST_REQUEST &&
-> +		    ghcb->save.sw_exit_info_2 == SNP_GUEST_REQ_INVALID_LEN)
-> +			input->data_npages = ghcb_get_rbx(ghcb);
-> +
-> +		if (fw_err)
-> +			*fw_err = ghcb->save.sw_exit_info_2;
-> +
-> +		ret = -EIO;
-> +	}
-> +
-> +e_put:
-> +	__sev_put_ghcb(&state);
-> +e_restore_irq:
-> +	local_irq_restore(flags);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(snp_issue_guest_request);
-> diff --git a/include/linux/sev-guest.h b/include/linux/sev-guest.h
-
-Why is this a separate header in the include/linux/ namespace?
-
-Is SNP available on something which is !x86, all of a sudden?
-
-> new file mode 100644
-> index 000000000000..24dd17507789
-> --- /dev/null
-> +++ b/include/linux/sev-guest.h
-> @@ -0,0 +1,48 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * AMD Secure Encrypted Virtualization (SEV) guest driver interface
-> + *
-> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
-> + *
-> + * Author: Brijesh Singh <brijesh.singh@amd.com>
-> + *
-> + */
-> +
-> +#ifndef __LINUX_SEV_GUEST_H_
-> +#define __LINUX_SEV_GUEST_H_
-> +
-> +#include <linux/types.h>
-> +
-> +enum vmgexit_type {
-> +	GUEST_REQUEST,
-> +	EXT_GUEST_REQUEST,
-> +
-> +	GUEST_REQUEST_MAX
-> +};
-> +
-> +/*
-> + * The error code when the data_npages is too small. The error code
-> + * is defined in the GHCB specification.
-> + */
-> +#define SNP_GUEST_REQ_INVALID_LEN	0x100000000ULL
-
-so basically
-
-BIT_ULL(32)
-
-> +
-> +struct snp_guest_request_data {
-
-"snp_req_data" I guess is shorter. And having "guest" in there is
-probably not needed because snp is always guest-related anyway.
-
-> +	unsigned long req_gpa;
-> +	unsigned long resp_gpa;
-> +	unsigned long data_gpa;
-> +	unsigned int data_npages;
-> +};
-> +
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +int snp_issue_guest_request(int vmgexit_type, struct snp_guest_request_data *input,
-> +			    unsigned long *fw_err);
-> +#else
-> +
-> +static inline int snp_issue_guest_request(int type, struct snp_guest_request_data *input,
-> +					  unsigned long *fw_err)
-> +{
-> +	return -ENODEV;
-> +}
-> +
-> +#endif /* CONFIG_AMD_MEM_ENCRYPT */
-> +#endif /* __LINUX_SEV_GUEST_H__ */
-> -- 
-> 2.17.1
+On Fri, Aug 27, 2021 at 01:28:52PM -0300, Jason Gunthorpe wrote:
+> > +	/*
+> > +	 * just bypass devmap pte such as DAX page when all pfn requested
+> > +	 * flags(pfn_req_flags) are fulfilled.
+> > +	 */
+> > +	if (pte_devmap(pte))
+> > +		goto out;
 > 
+> I liked your ealier version better where this was added to the
+> pte_special test - logically this is about disambiguating the
+> pte_special and the devmap case as they are different things.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yes, I think that is much more logical.  Also please capitalize the
+first word in multi-line comments.
