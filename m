@@ -2,181 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984453F9597
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8E13F959A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244552AbhH0HyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 03:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
+        id S244556AbhH0Hy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 03:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244468AbhH0HyM (ORCPT
+        with ESMTP id S244554AbhH0Hy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 03:54:12 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BA3C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 00:53:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwsQk4qx4z9sPf;
-        Fri, 27 Aug 2021 17:53:18 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1630050800;
-        bh=1qUPPOtl/jzP4e2/AHdvpaPrD2MZxD0xpD3UzdwgVjE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=NOAW2aqXkoEWDzjXNCSiyLhQVYpvT5hW4QgzQGQ53XVUtDyiS1rJuHBxVvQjlK4l1
-         gr+TTJxwGPTwwGkCf07oqB76SlFusHTZ2U/33i4uJjPh6rU3OE/4U6hREBXspqH0jY
-         d3NO/aA1+cijuryaUUCPyIUoP3tfisXDXzIfAne0soloI242kUIfW6z6Q32nyfBa75
-         QgsA/X8ARZOH0XxbXvWc6wpihPVbNU1UaZdS5Oy4sB/YgrB73zMDLv1E42bIIVE8Ez
-         jtP6VV74A8dx03wClHYJWJ/34yEY7AWxTIjJUy2yR694hcWtwZWyvbrTedBYb62XA1
-         74LksDsimWHsQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v2 2/2] powerpc/bug: Provide better flexibility to
- WARN_ON/__WARN_FLAGS() with asm goto
-In-Reply-To: <YSgp7HNGXbzrfvFq@Ryzen-9-3900X.localdomain>
-References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
- <389962b1b702e3c78d169e59bcfac56282889173.1618331882.git.christophe.leroy@csgroup.eu>
- <YSa1O4fcX1nNKqN/@Ryzen-9-3900X.localdomain>
- <87h7fcc2m4.fsf@mpe.ellerman.id.au>
- <YSfjWfGbZbpYBn+w@Ryzen-9-3900X.localdomain>
- <YSgp7HNGXbzrfvFq@Ryzen-9-3900X.localdomain>
-Date:   Fri, 27 Aug 2021 17:53:12 +1000
-Message-ID: <878s0nfhnb.fsf@mpe.ellerman.id.au>
+        Fri, 27 Aug 2021 03:54:28 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF7CC0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 00:53:39 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id y34so12581871lfa.8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 00:53:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=FnvhmoF5/z5/Vlkplzor1LntS+hajMMuv6rFjI/7vFw=;
+        b=NRx5Wx6kgOUXMrIJ2SbxoHAdocMAaMe+q3x/PbhlpQ753+LbpjsX4my4xo/BNlbDWM
+         X+RX+7MeLQZub1WWy3wOwIfyUBCpAbZQvpuhdBUXN9pXxAykoArZndCZm9D8+pWmD6/n
+         Os+oiJRMwJNY5v2GRnZBb2+hfMehbUV4ZKEfzyixmfth71yaofaAu6svKhWW16AMrfvD
+         530Yg3AkQgpDOGcMdnwMnM1bH4VI87O8WaubWNe0QIZk4pJXXPsEVIF4IyK3PjMH3WeP
+         DnthtUJdG/UqBsUTvv6IXRM+UMCy/BpuDqpRpmUddAvf9xzf2KLmfOjj+iR3Pu86IljA
+         HebA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FnvhmoF5/z5/Vlkplzor1LntS+hajMMuv6rFjI/7vFw=;
+        b=aezUW91/Xc7w4sAl6lmRHNIzPY9CVxhVY6+SrL5GK9xVn1bhzrgL6WFSWSTmD4wHiO
+         qNUkbWryBOyoBbM76pJ98LMQs9rP9dFJ74HJRVhH+B2SPc8GFrw292WG7UnLxEpTtDNq
+         59vqTw0I3JSg/kXK7Pj305EmSoZYwOAafifFZe5RwU/OZH/PuenY/vZo0NoMyAkB1gWs
+         eWaHly8CUsP1rC/AYaBucjHdO7/iCRtv3xMUlK6+kBLKSvQ9Lshj2qpGf9DSKCnl4V3P
+         QW0Ojrdaw9EWNhSrcH/SrS7ASXxszdTrZZLQ5H2uZ8ff7G6KfrYc67SZ57BehLp16l8I
+         OeMg==
+X-Gm-Message-State: AOAM532wanNSUyzoyPZExFSeEJg6cKwHR/yXSmCyfOVn4D+pArCvCYzc
+        xk0oDjgrpByf3A8mURGGtQG4VXUw/doBow==
+X-Google-Smtp-Source: ABdhPJwZdfVkvJZoC4n948k+9nQxzZ9D3jLacRPvLtoGWBGZcLZ3Dp0V5XDuyUJdJv98SJ3r3qThog==
+X-Received: by 2002:a05:6512:3092:: with SMTP id z18mr5792558lfd.395.1630050817735;
+        Fri, 27 Aug 2021 00:53:37 -0700 (PDT)
+Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
+        by smtp.gmail.com with ESMTPSA id l13sm520144lfj.199.2021.08.27.00.53.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 00:53:37 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 09:53:36 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PM: domains: Fix domain attach for CONFIG_PM_OPP=n
+Message-ID: <YSiaAM9AbryH+uwB@oden.dyn.berto.se>
+References: <4fb42fa1b76b38c6628f056cfd804bb5b4e74d99.1629818532.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4fb42fa1b76b38c6628f056cfd804bb5b4e74d99.1629818532.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nathan Chancellor <nathan@kernel.org> writes:
-> On Thu, Aug 26, 2021 at 11:54:17AM -0700, Nathan Chancellor wrote:
->> On Thu, Aug 26, 2021 at 01:21:39PM +1000, Michael Ellerman wrote:
->> > Nathan Chancellor <nathan@kernel.org> writes:
->> > > On Tue, Apr 13, 2021 at 04:38:10PM +0000, Christophe Leroy wrote:
->> > >> Using asm goto in __WARN_FLAGS() and WARN_ON() allows more
->> > >> flexibility to GCC.
->> > ...
->> > >
->> > > This patch as commit 1e688dd2a3d6 ("powerpc/bug: Provide better
->> > > flexibility to WARN_ON/__WARN_FLAGS() with asm goto") cause a WARN_ON in
->> > > klist_add_tail to trigger over and over on boot when compiling with
->> > > clang:
->> > >
-...
->> > 
->> > This patch seems to fix it. Not sure if that's just papering over it though.
->> > 
->> > diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
->> > index 1ee0f22313ee..75fcb4370d96 100644
->> > --- a/arch/powerpc/include/asm/bug.h
->> > +++ b/arch/powerpc/include/asm/bug.h
->> > @@ -119,7 +119,7 @@ __label_warn_on:						\
->> >  								\
->> >  			WARN_ENTRY(PPC_TLNEI " %4, 0",		\
->> >  				   BUGFLAG_WARNING | BUGFLAG_TAINT(TAINT_WARN),	\
->> > -				   __label_warn_on, "r" (x));	\
->> > +				   __label_warn_on, "r" (!!(x))); \
->> >  			break;					\
->> >  __label_warn_on:						\
->> >  			__ret_warn_on = true;			\
->> > 
->> 
->> Thank you for the in-depth explanation and triage! I have gone ahead and
->> created a standalone reproducer that shows this based on the
->> preprocessed file and opened https://bugs.llvm.org/show_bug.cgi?id=51634
->> so the LLVM developers can take a look.
->
-> Based on Eli Friedman's comment in the bug, would something like this
-> work and not regress GCC? I noticed that the BUG_ON macro does a cast as
-> well. Nick pointed out to me privately that we have run into what seems
-> like a similar issue before in commit 6c58f25e6938 ("riscv/atomic: Fix
-> sign extension for RV64I").
+Hi Geert,
 
-Yes, I read that comment this morning, and then landed at the same fix
-via digging through the history of our bug code.
+Thanks for your work.
 
-We in fact fixed a similar bug 16 years ago :}
+On 2021-08-24 17:23:38 +0200, Geert Uytterhoeven wrote:
+> If CONFIG_PM_OPP=n, of_get_required_opp_performance_state() always
+> returns -EOPNOTSUPP, and all drivers for devices that are part of a PM
+> Domain fail to probe with:
+> 
+>     failed to set required performance state for power-domain foo: -95
+>     probe of bar failed with error -95
+> 
+> Fix this by treating -EOPNOTSUPP the same as -ENODEV.
+> 
+> Fixes: c016baf7dc58e77a ("PM: domains: Add support for 'required-opps' to set default perf state")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-32818c2eb6b8 ("[PATCH] ppc64: Fix issue with gcc 4.0 compiled kernels")
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 
-Which is when we first started adding the cast to long.
+> ---
+>  drivers/base/power/domain.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index a10d740c4f2a1c28..7b197690e6442911 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -2760,7 +2760,7 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>  
+>  	/* Set the default performance state */
+>  	pstate = of_get_required_opp_performance_state(dev->of_node, index);
+> -	if (pstate < 0 && pstate != -ENODEV) {
+> +	if (pstate < 0 && pstate != -ENODEV && pstate != -EOPNOTSUPP) {
+>  		ret = pstate;
+>  		goto err;
+>  	} else if (pstate > 0) {
+> -- 
+> 2.25.1
+> 
 
-
-> diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
-> index 1ee0f22313ee..35022667f57d 100644
-> --- a/arch/powerpc/include/asm/bug.h
-> +++ b/arch/powerpc/include/asm/bug.h
-> @@ -119,7 +119,7 @@ __label_warn_on:                                            \
->                                                                 \
->                         WARN_ENTRY(PPC_TLNEI " %4, 0",          \
->                                    BUGFLAG_WARNING | BUGFLAG_TAINT(TAINT_WARN), \
-> -                                  __label_warn_on, "r" (x));   \
-> +                                  __label_warn_on, "r" ((__force long)(x)));   \
->                         break;                                  \
->  __label_warn_on:                                               \
->                         __ret_warn_on = true;                   \
-
-
-Yeah that fixes the clang build for me.
-
-For GCC it seems to generate the same code in the simple cases:
-
-void test_warn_on_ulong(unsigned long b)
-{
-        WARN_ON(b);
-}
-
-void test_warn_on_int(int b)
-{
-        WARN_ON(b);
-}
-
-I get:
-
-0000000000000020 <.test_warn_on_ulong>:
-  20:   0b 03 00 00     tdnei   r3,0
-  24:   4e 80 00 20     blr
-  28:   60 00 00 00     nop
-  2c:   60 00 00 00     nop
-
-0000000000000030 <.test_warn_on_int>:
-  30:   0b 03 00 00     tdnei   r3,0
-  34:   4e 80 00 20     blr
-
-Both before and after the change. So that's good.
-
-For:
-
-void test_warn_on_int_addition(int b)
-{
-        WARN_ON(b+1);
-}
-
-Before I get:
-
-0000000000000040 <.test_warn_on_int_addition>:
-  40:   38 63 00 01     addi    r3,r3,1
-  44:   0b 03 00 00     tdnei   r3,0
-  48:   4e 80 00 20     blr
-
-vs after:
-
-0000000000000040 <.test_warn_on_int_addition>:
-  40:   38 63 00 01     addi    r3,r3,1
-  44:   7c 63 07 b4     extsw   r3,r3
-  48:   0b 03 00 00     tdnei   r3,0
-  4c:   4e 80 00 20     blr
-
-
-So there's an extra sign extension we don't need, but I guess we can
-probably live with that.
-
-cheers
+-- 
+Regards,
+Niklas Söderlund
