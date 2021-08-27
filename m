@@ -2,134 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5930E3F91E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 03:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2383F91EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 03:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243925AbhH0B3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 21:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
+        id S243933AbhH0B3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 21:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243894AbhH0B3J (ORCPT
+        with ESMTP id S229710AbhH0B3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 21:29:09 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A42C061757;
-        Thu, 26 Aug 2021 18:28:20 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id e9so3447719vst.6;
-        Thu, 26 Aug 2021 18:28:20 -0700 (PDT)
+        Thu, 26 Aug 2021 21:29:22 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A61C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 18:28:34 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id oc2-20020a17090b1c0200b00179e56772d6so7835380pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 18:28:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eojL+CWYVkbXeDacbojpALaYys7Gf6X7mCAj9i6PgeY=;
-        b=XIHjwB7yhPrtlB0C4InUgaZWjxpYRSVVIc27vDUVU65q4gu9fduks6wBc3kr7onySw
-         NMFdLlgtH9bLy/VSYY6HmHHA1C9jBe03g6tQy5hWSO5VJUn3Uu6vSQVs5NxG2plJTdt/
-         tthZ8aFnrwrUDpRqkTHHK8Jz4RZmXD2E6TyL5EL4djeAu9NEcBs2+0IgnT8bRysYAkbz
-         DF7MiELE4D9E5z9lpOzGOnHlZP/z4wltx+tzAtJOH5rz3tEOcnOXmjo6PpgVC4jeK1wQ
-         U69y1828em49SAc7+608LVXCiZZ2PjS3aQLMxnF2yoX/+9KyIN3vth99y2S8CflVoDV5
-         plGA==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=sW8AGYIk/UaGtGqdRe+NjeOpRZWC7qxLFst7xNdC0P0=;
+        b=NA9GElv4yx2yFAsW8GYz0PWrtd793+HB9JwiDJjGJeG9ze2sjL8rd5kEvMeSagaIhu
+         plKh710FVM8K7UIHpjWJ5vixYMm7MV5nROhYAYEw9zCGNAhaXlEj/kYY3KgR7/WLP6nL
+         oeNsuz0Cv7nqhqDF1UjRH0BC6H4jQ+lhdo5F6BLdXCd7xIyjesNPbCCRGAdFXiv2Z6h8
+         A8tDhe4R4JnWx36RHXRgoqQqxfMy35tvryWao1PpGKvw2H49s3aevoHsSKMpQH6r49am
+         BWIxAmhpgaqxJZqh1uBC4R5APVJktAY0PrPkF6NL8bskHktZJc+SJKInoNXYgY9w8rJd
+         wT1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eojL+CWYVkbXeDacbojpALaYys7Gf6X7mCAj9i6PgeY=;
-        b=Zlj7YOnmVuKdhz9LEsO3nFnc6cxBMBYpU/1ECTE75DBbQTKYIqrRQMm3ZAX9hc+wxi
-         ZctugvQLvWbamBRhLWvr2W6TKYnN9QROaw0TxnFom1E1AHKXfCexhLupKrG1f5YnZQZD
-         MCeFnjq7QqTlVzqyvjQZ/PnKpQdxq9Fw162mOIjuOLDgzenw2imSyBQm0+a8ck5Jm/yW
-         lO8qZ+FMO9BtrvCmoVv/KyM5ODrqlqiIuowD8M1dWaRBR8FUG5s2ROZ+FmekhM3xGfC0
-         tlE52QrdFybF1LAsW7TZhZ9KQP4opf90CNYV8k+mH9h+0kl9sjgPFNtGwpv+gfrILI91
-         8USQ==
-X-Gm-Message-State: AOAM533/i5xIP/MlUWrqli77utPkvCiTngRzo3xPQnXdjCFXSkXkdu+R
-        tTeOO2G4wF4yb4kg3nZo8zrcesNohKg1imstv6buFYDk
-X-Google-Smtp-Source: ABdhPJybVLyee+lXB4edK51zGY1t+HPu1iQFjYuk4eoCiOaxNrdHKe+HbDvG6EJHRBw0fcAEma/dfbrw5ozczWRfyrk=
-X-Received: by 2002:a67:fa19:: with SMTP id i25mr5426127vsq.7.1630027699947;
- Thu, 26 Aug 2021 18:28:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=sW8AGYIk/UaGtGqdRe+NjeOpRZWC7qxLFst7xNdC0P0=;
+        b=MkvR0cvKd3zk7MZvUJY/j4YzSP0WVDSWeARVku6Dn/GetUIEsoQOZXR8/eHS9HCirJ
+         w77mXR26o46FgVicBNjdQ7/zBn6DmzuLmBkyQynC+boZ5I/qwWhJ8da7BntPuBcAtNph
+         deVp7oGVSw+5FASPku68QEHtQoo6e8XqtLMU6j1ut8+y2SIMnTo7CmOo0EszH6jWJzZN
+         mtbJOjdLKmIBBmVRtqb5aCASVqKmcTCnex6RrXQ5wByheuxylSeGTN//flIhEF/ofAgU
+         5Un29ECZrDABV+WqOb/IaPLD9xqNkEzBFQpv4ioenWORPc9WZnuJnRklA5oYM3xwapDP
+         XsZQ==
+X-Gm-Message-State: AOAM531hvwAShMmoN6VFY/Ah5x53zp9rZQIUmbgwK73LVUtHXfTzlcdQ
+        KKhZU9gLWquBfrbYZE7Ch5ZjY6W6Pw0=
+X-Google-Smtp-Source: ABdhPJwlZNJmjEB36AnHjCJJwKiJSOBKwTPeBc0R+VveBiO4pUkDqmT6pw2Bq6rUOWaeLIECUwCZRg==
+X-Received: by 2002:a17:90b:360c:: with SMTP id ml12mr19108240pjb.158.1630027713636;
+        Thu, 26 Aug 2021 18:28:33 -0700 (PDT)
+Received: from localhost (220-244-72-10.tpgi.com.au. [220.244.72.10])
+        by smtp.gmail.com with ESMTPSA id d22sm4635766pgi.73.2021.08.26.18.28.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 18:28:33 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 11:28:27 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 1/2] powerpc/bug: Remove specific powerpc BUG_ON() and
+ WARN_ON() on PPC32
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618331881.git.christophe.leroy@csgroup.eu>
+        <1628834356.pr4zgn1xf1.astroid@bobo.none>
+        <20210818150653.GJ1583@gate.crashing.org>
+        <1629946707.f6ptz0tgle.astroid@bobo.none>
+        <20210826124901.GY1583@gate.crashing.org>
+        <1629983260.5jkx2jf0y8.astroid@bobo.none>
+        <20210826143708.GC1583@gate.crashing.org>
+        <1629989540.drlhb24t2w.astroid@bobo.none>
+        <20210826153048.GD1583@gate.crashing.org>
+In-Reply-To: <20210826153048.GD1583@gate.crashing.org>
 MIME-Version: 1.0
-References: <s5hv9418mjk.wl-tiwai@suse.de> <s5hk0k8wlfn.wl-tiwai@suse.de>
-In-Reply-To: <s5hk0k8wlfn.wl-tiwai@suse.de>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Thu, 26 Aug 2021 18:28:09 -0700
-Message-ID: <CABBYNZ+1=k2eQ4u1WWdj9JcBaB3HmjXzv8rVhQ89gwHDf4YHTg@mail.gmail.com>
-Subject: Re: CVE-2021-3640 and the unlimited block of lock_sock()
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1630026648.b7bpnt3hrh.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takashi,
+Excerpts from Segher Boessenkool's message of August 27, 2021 1:30 am:
+> On Fri, Aug 27, 2021 at 01:04:36AM +1000, Nicholas Piggin wrote:
+>> Excerpts from Segher Boessenkool's message of August 27, 2021 12:37 am:
+>> >> No, they are all dispatched and issue to the BRU for execution. It's=20
+>> >> trivial to construct a test of a lot of not taken branches in a row
+>> >> and time a loop of it to see it executes at 1 cycle per branch.
+>> >=20
+>> > (s/dispatched/issued/)
+>>=20
+>> ?
+>=20
+> Dispatch is from decode to the issue queues.  Issue is from there to
+> execution units.  Dispatch is in-order, issue is not.
 
-On Thu, Aug 26, 2021 at 3:29 AM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Thu, 19 Aug 2021 17:46:39 +0200,
-> Takashi Iwai wrote:
-> >
-> > Hi,
-> >
-> > it seems that the recent fixes in bluetooth tree address most of
-> > issues in CVE-2021-3640 ("Use-After-Free vulnerability in function
-> > sco_sock_sendmsg()").  But there is still a problem left: although we
-> > cover the race with lock_sock() now, the lock may be blocked endlessly
-> > (as the task takes over with userfaultd), which result in the trigger
-> > of watchdog like:
-> >
-> > -- 8< --
-> > [   23.226767][    T7] Bluetooth: hci0: command 0x0419 tx timeout
-> > [  284.985881][ T1529] INFO: task poc:7603 blocked for more than 143 seconds.
-> > [  284.989134][ T1529]       Not tainted 5.13.0-rc4+ #48
-> > [  284.990098][ T1529] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > [  284.991705][ T1529] task:poc             state:D stack:13784 pid: 7603 ppid:  7593 flags:0x00000000
-> > [  284.993414][ T1529] Call Trace:
-> > [  284.994025][ T1529]  __schedule+0x32e/0xb90
-> > [  284.994842][ T1529]  ? __local_bh_enable_ip+0x72/0xe0
-> > [  284.995987][ T1529]  schedule+0x38/0xe0
-> > [  284.996723][ T1529]  __lock_sock+0xa1/0x130
-> > [  284.997434][ T1529]  ? finish_wait+0x80/0x80
-> > [  284.998150][ T1529]  lock_sock_nested+0x9f/0xb0
-> > [  284.998914][ T1529]  sco_conn_del+0xb1/0x1a0
-> > [  284.999619][ T1529]  ? sco_conn_del+0x1a0/0x1a0
-> > [  285.000361][ T1529]  sco_disconn_cfm+0x3a/0x60
-> > [  285.001116][ T1529]  hci_conn_hash_flush+0x95/0x130
-> > [  285.001921][ T1529]  hci_dev_do_close+0x298/0x680
-> > [  285.002687][ T1529]  ? up_write+0x12/0x130
-> > [  285.003367][ T1529]  ? vhci_close_dev+0x20/0x20
-> > [  285.004107][ T1529]  hci_unregister_dev+0x9f/0x240
-> > [  285.004886][ T1529]  vhci_release+0x35/0x70
-> > [  285.005602][ T1529]  __fput+0xdf/0x360
-> > [  285.006225][ T1529]  task_work_run+0x86/0xd0
-> > [  285.006927][ T1529]  exit_to_user_mode_prepare+0x267/0x270
-> > [  285.007824][ T1529]  syscall_exit_to_user_mode+0x19/0x60
-> > [  285.008694][ T1529]  do_syscall_64+0x42/0xa0
-> > [  285.009393][ T1529]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > [  285.010321][ T1529] RIP: 0033:0x4065c7
-> > -- 8< --
-> >
-> > Is there any plan to address this?
-> >
-> > As a quick hack, I confirmed a workaround like below:
-> >
-> > -- 8< --
-> > --- a/net/core/sock.c
-> > +++ b/net/core/sock.c
-> > @@ -2628,7 +2628,7 @@ void __lock_sock(struct sock *sk)
-> >               prepare_to_wait_exclusive(&sk->sk_lock.wq, &wait,
-> >                                       TASK_UNINTERRUPTIBLE);
-> >               spin_unlock_bh(&sk->sk_lock.slock);
-> > -             schedule();
-> > +             schedule_timeout(msecs_to_jiffies(10 * 1000));
-> >               spin_lock_bh(&sk->sk_lock.slock);
-> >               if (!sock_owned_by_user(sk))
-> >                       break;
-> > -- 8< --
-> >
-> > .... but I'm not sure whether it's the right way to go.
->
-> Does anyone has an idea?
+I know what those mean, I wonder what your s/dispatched/issued means.
+I was saying they are dispatched in response to you saying they never
+hit the issue queue.
 
-It seems that we need to rework some code so the functions affected by
-userfaultfd are not used with sock_lock held.
+>=20
+>> >> How could it validate prediction without issuing? It wouldn't know wh=
+en
+>> >> sources are ready.
+>> >=20
+>> > In the backend.  But that is just how it worked on older cores :-/
+>>=20
+>> Okay. I don't know about older cores than POWER9. Backend would normally=
+=20
+>> include execution though.
+>> Only other place you could do it if you don't
+>> issue/exec would be after it goes back in order, like completion.
+>=20
+> You do not have to do the verification in-order: the insn cannot finish
+> until it is no longer speculative, that takes care of all ordering
+> needed.
 
--- 
-Luiz Augusto von Dentz
+Branches *can* finish out of order and speculative as they do in P9 and=20
+P10. Are you talking about these CPUs or something else which can=20
+verify branches without issuing them?
+
+>=20
+>> But that would be horrible for mispredict penalty.
+>=20
+> See the previous point.  Also, any insn known to be mispredicted can be
+> flushed immediately anyway.
+
+The point is it has to know sources (CR) to verify (aka execute) the=20
+branch prediction was right, and if it needs sources then it needs to=20
+either issue and execute in the out of order part, or it needs to wait
+until completion which would seem to be prohibitively expensive. I am
+interested to know how it works.
+
+>=20
+>> >> >> The first problem seems like the show stopper though. AFAIKS it wo=
+uld=20
+>> >> >> need a special builtin support that does something to create the t=
+able
+>> >> >> entry, or a guarantee that we could put an inline asm right after =
+the
+>> >> >> builtin as a recognized pattern and that would give us the instruc=
+tion
+>> >> >> following the trap.
+>> >> >=20
+>> >> > I'm not quite sure what this means.  Can't you always just put a
+>> >> >=20
+>> >> > bla:	asm("");
+>> >> >=20
+>> >> > in there, and use the address of "bla"?
+>> >>=20
+>> >> Not AFAIKS. Put it where?
+>> >=20
+>> > After wherever you want to know the address after.  You will have to
+>> > make sure they stay together somehow.
+>>=20
+>> I still don't follow.
+>=20
+> some_thing_you_want_to_know_the_address_after_let_us_call_it_A;
+> empty_asm_that_we_can_take_the_address_of_known_as_B;
+>=20
+> You have to make sure the compiler keeps A and B together, does not
+> insert anything between them, does put them in the assembler output in
+> the same fragment, etc.
+
+How does all this help our problem of putting the address of the trap=20
+into the table?
+
+>=20
+>> If you could give a built in that put a label at the address of the trap=
+=20
+>> instruction that could be used later by inline asm then that could work
+>> too:
+>>=20
+>>     __builtin_labeled_trap("1:");
+>>     asm ("    .section __bug_table,\"aw\"  \n\t"
+>>          "2:  .4byte 1b - 2b               \n\t"
+>>          "    .previous");
+>=20
+> How could a compiler do anything like that?!
+
+How could it add a label at the trap instruction it generates? It didn't=20
+seem like an outlandish thing to do, but I'm not a compiler writer. It was=20
+just a handwaving idea to show what we want to be able to do.
+
+Thanks,
+Nick
