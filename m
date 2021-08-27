@@ -2,211 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5C43F9177
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 02:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2503F9185
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 03:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243894AbhH0AyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 20:54:15 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:25028 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243811AbhH0AyI (ORCPT
+        id S243879AbhH0A6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 20:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhH0A6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 20:54:08 -0400
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 17R0qumb018917;
-        Fri, 27 Aug 2021 09:52:56 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 17R0qumb018917
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1630025576;
-        bh=v5UrnPxdJDQzEP3fPOndvdGBkcAodv7VU8EbX3JopoU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ijBW58/sB0mmqZ8oXYanrbnQr72qd3d5hYs+b4+l20Qkz9960/VBdPBwqXnZgNPnK
-         m+yzs/iPwN5GpJGo9GGJ1Yx1iXGWCq+Qle66YpFzsRlJjNMVaX36WCtBxD8Mikse35
-         KanmAt5t0ogLo8LqWOkEYe9E5Yxm2E1IaNIw4KvOs4THN1TcPugJqXoqzV6/dHm36O
-         IsSxT5MN98k8wWQXLiNgZSNGXjbpQcSg/TChNfqYb8x+SlymmPFTDsViFgJ3Tb286j
-         xJBq3D/fI4lj3KdeVyLJzWqZfTo+71c9t8Wb+cFzXeU2miysX1YhjFoocoqOCkarkE
-         k84SyNYgfYyfQ==
-X-Nifty-SrcIP: [209.85.210.170]
-Received: by mail-pf1-f170.google.com with SMTP id y11so4200322pfl.13;
-        Thu, 26 Aug 2021 17:52:56 -0700 (PDT)
-X-Gm-Message-State: AOAM532bficr7KOKHzX4r389DL72Qy0lby9rpaSn46tvKXSBJXky10E8
-        TEXVUVh9gUu5Nk3zu/J/4yIGC2Vnw4dY4cAJAcA=
-X-Google-Smtp-Source: ABdhPJxTdJjeA2wMBM5dBg4ozXGqDFuPcHkZAEvFkrCDapueZUB1arFHJvgqF2Gbv5NKJhRK2+Chm8BlORSSQGi4ihY=
-X-Received: by 2002:aa7:98da:0:b029:3e0:8b98:df83 with SMTP id
- e26-20020aa798da0000b02903e08b98df83mr6339470pfm.63.1630025575406; Thu, 26
- Aug 2021 17:52:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210826191330.40dc43e8@canb.auug.org.au>
-In-Reply-To: <20210826191330.40dc43e8@canb.auug.org.au>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 27 Aug 2021 09:52:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASL2JNb4zT7UFr41dLO0oEuvc6yUg__qhc59q8aNqWxEg@mail.gmail.com>
-Message-ID: <CAK7LNASL2JNb4zT7UFr41dLO0oEuvc6yUg__qhc59q8aNqWxEg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the kbuild tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+        Thu, 26 Aug 2021 20:58:18 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92295C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 17:57:30 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id f64-20020a2538430000b0290593bfc4b046so4870224yba.9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 17:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=pdAXhHtRt+WRQLNkVTKYCLh0PcmkBEMxKTEjaECJXEE=;
+        b=pE0mDgLPs8yki5IuCsFxvQe1gsBHydhzDBAYxi7pJLeHliAihZ/Pwk/+iSWZFPMYb7
+         nd5wHjsQOvo1WkAtZ+9JJrdP32uDOuRGZQSSHsBBYlCOFlELQsp6Y6bayw0IGkkaYrUP
+         kzDmY+Z9kb4aYjXPEPVy+jOyXI7f6Dx9dR0sPaesQeOveElI9QnlKJO/pFxdgo8Xz9T0
+         RQOuQaqnFmIlVgKPsyHoJ4KTZf+IKGVJp+E+voVuWVkH697tIjBXChGpAzprLa8mALCj
+         X1IMo88q5TLCwd0JLgo5VYcuufMpEtAPaYFCA8RlSbm1jH1vZIX3PAhTSB7XZJhoVCBr
+         PkRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=pdAXhHtRt+WRQLNkVTKYCLh0PcmkBEMxKTEjaECJXEE=;
+        b=DIeQSQnDQVBwunSWL+lH7POyDmUQJP0/+HINQ48UIYvOE3lcpr0por7ReUDqj3g232
+         hEHKnYqRi93z6J52/RXd+eQbiFGwn5ZjeVEz4jxfoEH+0sVouB7Hk7rN9V3OwHBGh91p
+         aeHBle/Xta0m4rzyiufsWKjmN5oX+XoCrJWZPvdKGujEXwJj2rn1AkedmP9wRVH7kNZj
+         EHny2pL+liV3WCWj/DTgfqGaPfl8bKYBPMznN0apZGBGmJVLlrNAca/l8sJWGggWdwJF
+         WltAejmE8Kt78tQQgD3Tc96xp5EWGLkYmEdusRB8wmIs0Dhg+kNDbla4YR0Y7ifeifA2
+         p3NA==
+X-Gm-Message-State: AOAM532sebDfTbfOaeQa6+0N4owU2QeqyVzYKgRJ9FIMH4+WH7zmo7Wl
+        13CGy1oGCwVistVpIvlmEfrPvjdKmhs=
+X-Google-Smtp-Source: ABdhPJzVYXytuqf9A5ptHfXceux4csoEB+K5zM4u/0R22zKT7I6HN+L+rw+ywcwa0LGPxcazSYQrRmN0u2I=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:c16c:db05:96b2:1475])
+ (user=seanjc job=sendgmr) by 2002:a25:b782:: with SMTP id n2mr1982955ybh.159.1630025849601;
+ Thu, 26 Aug 2021 17:57:29 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 26 Aug 2021 17:57:03 -0700
+Message-Id: <20210827005718.585190-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH 00/15] perf: KVM: Fix, optimize, and clean up callbacks
+From:   Sean Christopherson <seanjc@google.com>
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 6:13 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the kbuild tree, today's linux-next build (x86_64
-> allnoconfig) failed like this:
->
-> make[2]: *** No rule to make target 'scripts/mod/empty.o', needed by '__build'.
->
-> Caused by commit
->
->   624a912f84bc ("kbuild: detect objtool changes correctly and remove .SECONDEXPANSION")
->
-> (at least, reverting that commit fixes it)
->
-> I use a separate object directory and, in this case, it is newly created.
->
-> A build with V=1 and -s removed (and no -j) gives this around the
-> failure:
->
-> make -f /home/sfr/next/next/scripts/Makefile.build obj=scripts/mod
-> make[2]: *** No rule to make target 'scripts/mod/empty.o', needed by '__build'.  Stop.
-> make[1]: *** [/home/sfr/next/next/Makefile:1309: prepare0] Error 2
->
-> I have reverted that commit for today.
-> --
-> Cheers,
-> Stephen Rothwell
+This started out as a small series[1] to fix a KVM bug related to Intel PT
+interrupt handling and snowballed horribly.
 
+The main problem being addressed is that the perf_guest_cbs are shared by
+all CPUs, can be nullified by KVM during module unload, and are not
+protected against concurrent access from NMI context.
 
+The bug has escaped notice because all dereferences of perf_guest_cbs
+follow the same "perf_guest_cbs && perf_guest_cbs->is_in_guest()" pattern,
+and AFAICT the compiler never reloads perf_guest_cbs in this sequence.
+The compiler does reload perf_guest_cbs for any future dereferences, but
+the ->is_in_guest() guard all but guarantees the PMI handler will win the
+race, e.g. to nullify perf_guest_cbs, KVM has to completely exit the guest
+and teardown down all VMs before it can be unloaded.
 
-Hmm, it is strange.
+But with help, e.g. READ_ONCE(perf_guest_cbs), unloading kvm_intel can
+trigger a NULL pointer derference (see below).  Manual intervention aside,
+the bug is a bit of a time bomb, e.g. my patch 3 from the original PT
+handling series would have omitted the ->is_in_guest() guard.
 
+This series fixes the problem by making the callbacks per-CPU, and
+registering/unregistering the callbacks only with preemption disabled
+(except for the Xen case, which doesn't unregister).
 
-I re-applied that commit based on today's linux-next
-(git cherry-pick  624a912f84bc)
+This approach also allows for several nice cleanups in this series.
+KVM x86 and arm64 can share callbacks, KVM x86 drops its somewhat
+redundant current_vcpu, and the retpoline that is currently hit when KVM
+is loaded (due to always checking ->is_in_guest()) goes away (it's still
+there when running as Xen Dom0).
 
-allnoconfig built successfully.
+Changing to per-CPU callbacks also provides a good excuse to excise
+copy+paste code from architectures that can't possibly have guest
+callbacks.
 
+This series conflicts horribly with a proposed patch[2] to use static
+calls for perf_guest_cbs.  But that patch is broken as it completely
+fails to handle unregister, and it's not clear to me whether or not
+it can correctly handle unregister without fixing the underlying race
+(I don't know enough about the code patching for static calls).
 
-My build log is as follows.
+This tweak
 
-Can you tell the exact steps to reproduce the error?
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 1eb45139fcc6..202e5ad97f82 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2954,7 +2954,7 @@ unsigned long perf_misc_flags(struct pt_regs *regs)
+ {
+        int misc = 0;
 
+-       if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
++       if (READ_ONCE(perf_guest_cbs) && READ_ONCE(perf_guest_cbs)->is_in_guest()) {
+                if (perf_guest_cbs->is_user_mode())
+                        misc |= PERF_RECORD_MISC_GUEST_USER;
+                else
 
+while spamming module load/unload leads to:
 
-masahiro@grover:~/ref/linux-next$ git log -2 --oneline
-5046c6516ca2 (HEAD -> tmp) kbuild: detect objtool changes correctly
-and remove .SECONDEXPANSION
-88fac11862d3 (tag: next-20210826, origin/master, origin/HEAD) Add
-linux-next specific files for 20210826
-masahiro@grover:~/ref/linux-next$ rm -rf /tmp/foo
-masahiro@grover:~/ref/linux-next$ make O=/tmp/foo  allnoconfig all
-make[1]: Entering directory '/tmp/foo'
-  GEN     Makefile
-  HOSTCC  scripts/basic/fixdep
-  HOSTCC  scripts/kconfig/conf.o
-  HOSTCC  scripts/kconfig/confdata.o
-  HOSTCC  scripts/kconfig/expr.o
-  LEX     scripts/kconfig/lexer.lex.c
-  YACC    scripts/kconfig/parser.tab.[ch]
-  HOSTCC  scripts/kconfig/lexer.lex.o
-  HOSTCC  scripts/kconfig/menu.o
-  HOSTCC  scripts/kconfig/parser.tab.o
-  HOSTCC  scripts/kconfig/preprocess.o
-  HOSTCC  scripts/kconfig/symbol.o
-  HOSTCC  scripts/kconfig/util.o
-  HOSTLD  scripts/kconfig/conf
-#
-# configuration written to .config
-#
-  GEN     Makefile
-  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_32.h
-  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_64.h
-  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_x32.h
-  SYSTBL  arch/x86/include/generated/asm/syscalls_32.h
-  HOSTCC  arch/x86/tools/relocs_32.o
-  HOSTCC  arch/x86/tools/relocs_64.o
-  HOSTCC  arch/x86/tools/relocs_common.o
-  HOSTLD  arch/x86/tools/relocs
-  HOSTCC  scripts/kallsyms
-  HOSTCC  scripts/sorttable
-  WRAP    arch/x86/include/generated/uapi/asm/bpf_perf_event.h
-  WRAP    arch/x86/include/generated/uapi/asm/errno.h
-  WRAP    arch/x86/include/generated/uapi/asm/fcntl.h
-  WRAP    arch/x86/include/generated/uapi/asm/ioctl.h
-  WRAP    arch/x86/include/generated/uapi/asm/ioctls.h
-  WRAP    arch/x86/include/generated/uapi/asm/ipcbuf.h
-  WRAP    arch/x86/include/generated/uapi/asm/param.h
-  WRAP    arch/x86/include/generated/uapi/asm/poll.h
-  WRAP    arch/x86/include/generated/uapi/asm/resource.h
-  WRAP    arch/x86/include/generated/uapi/asm/socket.h
-  WRAP    arch/x86/include/generated/uapi/asm/sockios.h
-  WRAP    arch/x86/include/generated/uapi/asm/termbits.h
-  WRAP    arch/x86/include/generated/uapi/asm/termios.h
-  WRAP    arch/x86/include/generated/uapi/asm/types.h
-  WRAP    arch/x86/include/generated/asm/early_ioremap.h
-  WRAP    arch/x86/include/generated/asm/export.h
-  WRAP    arch/x86/include/generated/asm/mcs_spinlock.h
-  WRAP    arch/x86/include/generated/asm/irq_regs.h
-  WRAP    arch/x86/include/generated/asm/kmap_size.h
-  WRAP    arch/x86/include/generated/asm/local64.h
-  WRAP    arch/x86/include/generated/asm/mmiowb.h
-  WRAP    arch/x86/include/generated/asm/module.lds.h
-  WRAP    arch/x86/include/generated/asm/rwonce.h
-  WRAP    arch/x86/include/generated/asm/unaligned.h
-  UPD     include/config/kernel.release
-  UPD     include/generated/uapi/linux/version.h
-  UPD     include/generated/utsrelease.h
-  CC      scripts/mod/empty.o
-  HOSTCC  scripts/mod/mk_elfconfig
-  MKELF   scripts/mod/elfconfig.h
-  HOSTCC  scripts/mod/modpost.o
-  CC      scripts/mod/devicetable-offsets.s
-  UPD     scripts/mod/devicetable-offsets.h
-  HOSTCC  scripts/mod/file2alias.o
-  HOSTCC  scripts/mod/sumversion.o
-  HOSTLD  scripts/mod/modpost
-  CC      kernel/bounds.s
-  UPD     include/generated/bounds.h
-  UPD     include/generated/timeconst.h
-  CC      arch/x86/kernel/asm-offsets.s
-  UPD     include/generated/asm-offsets.h
-  CALL    /home/masahiro/ref/linux-next/scripts/checksyscalls.sh
-  CALL    /home/masahiro/ref/linux-next/scripts/atomic/check-atomics.sh
-  CC      init/main.o
-  CHK     include/generated/compile.h
-  UPD     include/generated/compile.h
-  CC      init/version.o
-  CC      init/do_mounts.o
-  CC      init/noinitramfs.o
-  CC      init/calibrate.o
-  CC      init/init_task.o
-  AR      init/built-in.a
-  AR      usr/built-in.a
-  CC      arch/x86/entry/vdso/vma.o
-  CC      arch/x86/entry/vdso/extable.o
-  CC      arch/x86/entry/vdso/vdso32-setup.o
-  LDS     arch/x86/entry/vdso/vdso32/vdso32.lds
-  AS      arch/x86/entry/vdso/vdso32/note.o
-  AS      arch/x86/entry/vdso/vdso32/system_call.o
-  AS      arch/x86/entry/vdso/vdso32/sigreturn.o
-  CC      arch/x86/entry/vdso/vdso32/vclock_gettime.o
-  VDSO    arch/x86/entry/vdso/vdso32.so.dbg
-/home/masahiro/ref/linux-next/arch/x86/entry/vdso/Makefile:135: FORCE
-prerequisite is missing
-  OBJCOPY arch/x86/entry/vdso/vdso32.so
-  HOSTCC  arch/x86/entry/vdso/vdso2c
-  VDSO2C  arch/x86/entry/vdso/vdso-image-32.c
-  CC      arch/x86/entry/vdso/vdso-image-32.o
-  AR      arch/x86/entry/vdso/built-in.a
+  BUG: kernel NULL pointer dereference, address: 0000000000000000
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 0 P4D 0
+  Oops: 0000 [#1] PREEMPT SMP
+  CPU: 6 PID: 1825 Comm: stress Not tainted 5.14.0-rc2+ #459
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:perf_misc_flags+0x1c/0x70
+  Call Trace:
+   perf_prepare_sample+0x53/0x6b0
+   perf_event_output_forward+0x67/0x160
+   __perf_event_overflow+0x52/0xf0
+   handle_pmi_common+0x207/0x300
+   intel_pmu_handle_irq+0xcf/0x410
+   perf_event_nmi_handler+0x28/0x50
+   nmi_handle+0xc7/0x260
+   default_do_nmi+0x6b/0x170
+   exc_nmi+0x103/0x130
+   asm_exc_nmi+0x76/0xbf
 
-  [snip]
+[1] https://lkml.kernel.org/r/20210823193709.55886-1-seanjc@google.com
+[2] https://lkml.kernel.org/r/20210806133802.3528-2-lingshan.zhu@intel.com
 
+Sean Christopherson (15):
+  KVM: x86: Register perf callbacks after calling vendor's
+    hardware_setup()
+  KVM: x86: Register Processor Trace interrupt hook iff PT enabled in
+    guest
+  perf: Stop pretending that perf can handle multiple guest callbacks
+  perf: Force architectures to opt-in to guest callbacks
+  perf: Track guest callbacks on a per-CPU basis
+  KVM: x86: Register perf callbacks only when actively handling
+    interrupt
+  KVM: Use dedicated flag to track if KVM is handling an NMI from guest
+  KVM: x86: Drop current_vcpu in favor of kvm_running_vcpu
+  KVM: arm64: Register/unregister perf callbacks at vcpu load/put
+  KVM: Move x86's perf guest info callbacks to generic KVM
+  KVM: x86: Move Intel Processor Trace interrupt handler to vmx.c
+  KVM: arm64: Convert to the generic perf callbacks
+  KVM: arm64: Drop perf.c and fold its tiny bit of code into pmu.c
+  perf: Disallow bulk unregistering of guest callbacks and do cleanup
+  perf: KVM: Indicate "in guest" via NULL ->is_in_guest callback
 
+ arch/arm/kernel/perf_callchain.c   | 28 ++------------
+ arch/arm64/Kconfig                 |  1 +
+ arch/arm64/include/asm/kvm_host.h  |  8 +++-
+ arch/arm64/kernel/perf_callchain.c | 18 ++++++---
+ arch/arm64/kvm/Makefile            |  2 +-
+ arch/arm64/kvm/arm.c               | 13 ++++++-
+ arch/arm64/kvm/perf.c              | 62 ------------------------------
+ arch/arm64/kvm/pmu.c               |  8 ++++
+ arch/csky/kernel/perf_callchain.c  | 10 -----
+ arch/nds32/kernel/perf_event_cpu.c | 29 ++------------
+ arch/riscv/kernel/perf_callchain.c | 10 -----
+ arch/x86/Kconfig                   |  1 +
+ arch/x86/events/core.c             | 17 +++++---
+ arch/x86/events/intel/core.c       |  7 ++--
+ arch/x86/include/asm/kvm_host.h    |  4 +-
+ arch/x86/kvm/pmu.c                 |  2 +-
+ arch/x86/kvm/pmu.h                 |  1 +
+ arch/x86/kvm/svm/svm.c             |  2 +-
+ arch/x86/kvm/vmx/vmx.c             | 25 ++++++++++--
+ arch/x86/kvm/x86.c                 | 54 +++-----------------------
+ arch/x86/kvm/x86.h                 | 12 +++---
+ arch/x86/xen/pmu.c                 |  2 +-
+ include/kvm/arm_pmu.h              |  1 +
+ include/linux/kvm_host.h           | 12 ++++++
+ include/linux/perf_event.h         | 33 ++++++++++++----
+ init/Kconfig                       |  3 ++
+ kernel/events/core.c               | 28 ++++++++------
+ virt/kvm/kvm_main.c                | 42 ++++++++++++++++++++
+ 28 files changed, 204 insertions(+), 231 deletions(-)
+ delete mode 100644 arch/arm64/kvm/perf.c
 
 -- 
-Best Regards
-Masahiro Yamada
+2.33.0.259.gc128427fd7-goog
+
