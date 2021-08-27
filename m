@@ -2,349 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB04F3F9F07
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AC53F9F0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhH0SlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 14:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50656 "EHLO
+        id S230115AbhH0Snw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 14:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbhH0SlX (ORCPT
+        with ESMTP id S229882AbhH0Snv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 14:41:23 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B09BC061757;
-        Fri, 27 Aug 2021 11:40:34 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f111700cf40790d4c46ba75.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:cf40:790d:4c46:ba75])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 842FF1EC0464;
-        Fri, 27 Aug 2021 20:40:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630089628;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6NhP3vMH5lATgbr/qa6Fg8YH0/Kap+rPek8c5UwiIt8=;
-        b=ddARyS0cWg2k1gFCk02lIWfxXSvg/bvocKhn2aoj0uhIEKswfLmKtKUr/LrzjXBR9PwvgR
-        xfndRLWSkMJ8Dtk31vwwf0vbFZJ48Xgj7nNoDh8jnfp0gg9WIrGfx23FgS5+cjg5TzYOm+
-        ELRKRVgcYHOyYv6Wzcftep4P2cXSTAI=
-Date:   Fri, 27 Aug 2021 20:41:10 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 34/38] x86/sev: Add snp_msg_seqno() helper
-Message-ID: <YSkxxkVdupkyxAJi@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-35-brijesh.singh@amd.com>
+        Fri, 27 Aug 2021 14:43:51 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F26C061757;
+        Fri, 27 Aug 2021 11:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RBmvAwPay+sXfU8kdltg7dsiThQ5ECrs+zL2VnxPj/I=; b=lgcsvGKlvlRPjm4XeXNlzIQlb5
+        QOizv+m63NRPhUGgoDpLlprNnix7EU3Cz1GL3Dr13Yyi6Y3Nr3ZcwPqXlvo+FLXQro8rIPZF8R2NE
+        br7T4+GN2+Iy0CWjeDe99nHKDDW+WmK9hBqupHrrsDPuAvNSfyGKm5l+1xhNnDcYa8EfWkyLUQJKG
+        GwFI3fYMZklR57ielKept6nXS5jAmCG3O5g08pxOv90RKWehVeX3UdKf6uej4LC9vtg6/RMef71fY
+        3xgKIlR8IdwVfwjRwU0ZwCodscgojLikAQkiS+jUjyBHBMc7lxOFxYMcLwoExFl6wGAE/e2wldljK
+        aLHIm5Zw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJgoG-00Cyj5-C3; Fri, 27 Aug 2021 18:42:36 +0000
+Date:   Fri, 27 Aug 2021 11:42:36 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
+        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
+        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
+        josef@toxicpanda.com, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
+        dm-devel@redhat.com, nbd@other.debian.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/10] mmc/core/block: add error handling support for
+ add_disk()
+Message-ID: <YSkyHINtV/djFEej@bombadil.infradead.org>
+References: <20210823202930.137278-1-mcgrof@kernel.org>
+ <20210823202930.137278-7-mcgrof@kernel.org>
+ <YSSN+eac2aCFXTAA@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210820151933.22401-35-brijesh.singh@amd.com>
+In-Reply-To: <YSSN+eac2aCFXTAA@infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:19:29AM -0500, Brijesh Singh wrote:
-> The SNP guest request message header contains a message count. The
-> message count is used while building the IV. The PSP firmware increments
-> the message count by 1, and expects that next message will be using the
-> incremented count. The snp_msg_seqno() helper will be used by driver to
-> get the message sequence counter used in the request message header,
-> and it will be automatically incremented after the request is successful.
-> The incremented value is saved in the secrets page so that the kexec'ed
-> kernel knows from where to begin.
+On Tue, Aug 24, 2021 at 07:13:13AM +0100, Christoph Hellwig wrote:
+> On Mon, Aug 23, 2021 at 01:29:26PM -0700, Luis Chamberlain wrote:
+> > We never checked for errors on add_disk() as this function
+> > returned void. Now that this is fixed, use the shiny new
+> > error handling.
+> > 
+> > The caller cleanups the disk already so all we need to do
+> > is just pass along the return value.
+> > 
+> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > ---
+> >  drivers/mmc/core/block.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> > index 4c11f171e56d..4f12c6d1e1b5 100644
+> > --- a/drivers/mmc/core/block.c
+> > +++ b/drivers/mmc/core/block.c
+> > @@ -2432,7 +2432,9 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
+> >  	/* used in ->open, must be set before add_disk: */
+> >  	if (area_type == MMC_BLK_DATA_AREA_MAIN)
+> >  		dev_set_drvdata(&card->dev, md);
+> > -	device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
+> > +	ret = device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
+> > +	if (ret)
+> > +		goto out;
 > 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/kernel/sev.c     | 79 +++++++++++++++++++++++++++++++++++++++
->  include/linux/sev-guest.h | 37 ++++++++++++++++++
->  2 files changed, 116 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 319a40fc57ce..f42cd5a8e7bb 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -51,6 +51,8 @@ static struct ghcb boot_ghcb_page __bss_decrypted __aligned(PAGE_SIZE);
->   */
->  static struct ghcb __initdata *boot_ghcb;
->  
+> This needs to do a blk_cleanup_queue and also te kfree of md.
 
-Explain what that is in a comment above it.
+If mmc_blk_alloc_parts() fails mmc_blk_remove_req() is called which
+does both for us?
 
-> +static u64 snp_secrets_phys;
-
-snp_secrets_pa;
-
-is the usual convention when a variable is supposed to contain a
-physical address.
-
-> +
->  /* #VC handler runtime per-CPU data */
->  struct sev_es_runtime_data {
->  	struct ghcb ghcb_page;
-> @@ -2030,6 +2032,80 @@ bool __init handle_vc_boot_ghcb(struct pt_regs *regs)
->  		halt();
->  }
->  
-> +static struct snp_secrets_page_layout *snp_map_secrets_page(void)
-> +{
-> +	u16 __iomem *secrets;
-> +
-> +	if (!snp_secrets_phys || !sev_feature_enabled(SEV_SNP))
-> +		return NULL;
-> +
-> +	secrets = ioremap_encrypted(snp_secrets_phys, PAGE_SIZE);
-> +	if (!secrets)
-> +		return NULL;
-> +
-> +	return (struct snp_secrets_page_layout *)secrets;
-> +}
-
-Or simply:
-
-static struct snp_secrets_page_layout *map_secrets_page(void)
-{
-        if (!snp_secrets_phys || !sev_feature_enabled(SEV_SNP))
-                return NULL;
-                
-        return ioremap_encrypted(snp_secrets_phys, PAGE_SIZE);
-}
-
-?
-
-> +
-> +static inline u64 snp_read_msg_seqno(void)
-
-Drop that "snp_" prefix from all those static function names. This one
-is even inline, which means its name doesn't matter at all.
-
-> +{
-> +	struct snp_secrets_page_layout *layout;
-> +	u64 count;
-> +
-> +	layout = snp_map_secrets_page();
-> +	if (!layout)
-> +		return 0;
-> +
-> +	/* Read the current message sequence counter from secrets pages */
-> +	count = readl(&layout->os_area.msg_seqno_0);
-> +
-> +	iounmap(layout);
-> +
-> +	/* The sequence counter must begin with 1 */
-
-That sounds weird. Why? 0 is special?
-
-> +	if (!count)
-> +		return 1;
-> +
-> +	return count + 1;
-> +}
-> +
-> +u64 snp_msg_seqno(void)
-
-Function name needs a verb. I.e.,
-
-	 snp_get_msg_seqno()
-
-> +{
-> +	u64 count = snp_read_msg_seqno();
-> +
-> +	if (unlikely(!count))
-
-That looks like a left-over from a previous version as it can't happen.
-
-Or are you handling the case where the u64 count will wraparound to 0?
-
-But "The sequence counter must begin with 1" so that read function above
-needs more love.
-
-> +		return 0;
-
-
-> +
-> +	/*
-> +	 * The message sequence counter for the SNP guest request is a
-> +	 * 64-bit value but the version 2 of GHCB specification defines a
-> +	 * 32-bit storage for the it.
-> +	 */
-> +	if (count >= UINT_MAX)
-> +		return 0;
-
-Huh, WTF? So when the internal counter goes over u32, this function will
-return 0 only? More weird.
-
-> +
-> +	return count;
-> +}
-> +EXPORT_SYMBOL_GPL(snp_msg_seqno);
-> +
-> +static void snp_gen_msg_seqno(void)
-
-That's not "gen" - that's "inc" what this function does. IOW,
-
-	snp_inc_msg_seqno
-
-> +{
-> +	struct snp_secrets_page_layout *layout;
-> +	u64 count;
-> +
-> +	layout = snp_map_secrets_page();
-> +	if (!layout)
-> +		return;
-> +
-> +	/*
-> +	 * The counter is also incremented by the PSP, so increment it by 2
-> +	 * and save in secrets page.
-> +	 */
-> +	count = readl(&layout->os_area.msg_seqno_0);
-> +	count += 2;
-> +
-> +	writel(count, &layout->os_area.msg_seqno_0);
-> +	iounmap(layout);
-
-Why does this need to constantly map and unmap the secrets page? Why
-don't you map it once on init and unmap it on exit?
-
-> +}
-> +
->  int snp_issue_guest_request(int type, struct snp_guest_request_data *input, unsigned long *fw_err)
->  {
->  	struct ghcb_state state;
-> @@ -2077,6 +2153,9 @@ int snp_issue_guest_request(int type, struct snp_guest_request_data *input, unsi
->  		ret = -EIO;
->  	}
->  
-> +	/* The command was successful, increment the sequence counter */
-> +	snp_gen_msg_seqno();
-> +
->  e_put:
->  	__sev_put_ghcb(&state);
->  e_restore_irq:
-> diff --git a/include/linux/sev-guest.h b/include/linux/sev-guest.h
-> index 24dd17507789..16b6af24fda7 100644
-> --- a/include/linux/sev-guest.h
-> +++ b/include/linux/sev-guest.h
-> @@ -20,6 +20,41 @@ enum vmgexit_type {
->  	GUEST_REQUEST_MAX
->  };
->  
-> +/*
-> + * The secrets page contains 96-bytes of reserved field that can be used by
-> + * the guest OS. The guest OS uses the area to save the message sequence
-> + * number for each VMPCK.
-> + *
-> + * See the GHCB spec section Secret page layout for the format for this area.
-> + */
-> +struct secrets_os_area {
-> +	u32 msg_seqno_0;
-> +	u32 msg_seqno_1;
-> +	u32 msg_seqno_2;
-> +	u32 msg_seqno_3;
-> +	u64 ap_jump_table_pa;
-> +	u8 rsvd[40];
-> +	u8 guest_usage[32];
-> +} __packed;
-
-So those are differently named there:
-
-struct secrets_page_os_area {
-	uint32 vmpl0_message_seq_num;
-	uint32 vmpl1_message_seq_num;
-	...
-
-and they have "vmpl" in there which makes a lot more sense for that
-they're used than msg_seqno_* does.
-
-> +
-> +#define VMPCK_KEY_LEN		32
-> +
-> +/* See the SNP spec for secrets page format */
-> +struct snp_secrets_page_layout {
-
-Simply
-
-	struct snp_secrets
-
-That name says all you need to know about what that struct represents.
-
-> +	u32 version;
-> +	u32 imien	: 1,
-> +	    rsvd1	: 31;
-> +	u32 fms;
-> +	u32 rsvd2;
-> +	u8 gosvw[16];
-> +	u8 vmpck0[VMPCK_KEY_LEN];
-> +	u8 vmpck1[VMPCK_KEY_LEN];
-> +	u8 vmpck2[VMPCK_KEY_LEN];
-> +	u8 vmpck3[VMPCK_KEY_LEN];
-> +	struct secrets_os_area os_area;
-
-My SNP spec copy has here
-
-0A0h–FFFh	Reserved.
-
-and no os area. I guess
-
-SEV Secure Nested Paging Firmware ABI Specification 56860 Rev. 0.8 August 2020
-
-needs updating...
-
-> +	u8 rsvd3[3840];
-> +} __packed;
-> +
->  /*
->   * The error code when the data_npages is too small. The error code
->   * is defined in the GHCB specification.
-> @@ -36,6 +71,7 @@ struct snp_guest_request_data {
->  #ifdef CONFIG_AMD_MEM_ENCRYPT
->  int snp_issue_guest_request(int vmgexit_type, struct snp_guest_request_data *input,
->  			    unsigned long *fw_err);
-> +u64 snp_msg_seqno(void);
->  #else
->  
->  static inline int snp_issue_guest_request(int type, struct snp_guest_request_data *input,
-> @@ -43,6 +79,7 @@ static inline int snp_issue_guest_request(int type, struct snp_guest_request_dat
->  {
->  	return -ENODEV;
->  }
-> +static inline u64 snp_msg_seqno(void) { return 0; }
->  
->  #endif /* CONFIG_AMD_MEM_ENCRYPT */
->  #endif /* __LINUX_SEV_GUEST_H__ */
-> -- 
-> 2.17.1
-> 
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+ Luis
