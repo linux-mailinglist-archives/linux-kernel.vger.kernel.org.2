@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260743FA02B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7875B3FA02E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhH0T45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 15:56:57 -0400
-Received: from mga09.intel.com ([134.134.136.24]:26659 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231320AbhH0T4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 15:56:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10089"; a="218024434"
-X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
-   d="scan'208";a="218024434"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 12:55:56 -0700
-X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
-   d="scan'208";a="528422087"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 12:55:56 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Cathy Zhang <cathy.zhang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v4 6/6] x86/sgx: Add hook to error injection address validation
-Date:   Fri, 27 Aug 2021 12:55:43 -0700
-Message-Id: <20210827195543.1667168-7-tony.luck@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210827195543.1667168-1-tony.luck@intel.com>
-References: <20210728204653.1509010-1-tony.luck@intel.com>
- <20210827195543.1667168-1-tony.luck@intel.com>
+        id S231537AbhH0T5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 15:57:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40882 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231320AbhH0T5P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 15:57:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630094185;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sd/3n0607wJTjqztLgFnu0bOLL0OQcH0TvNvy1LbLr8=;
+        b=SHj+3ue+PHmRxrG6E0hgpSIfIL42eS2WIKZcBZP5WZRHYdMmOlSe97vo+zIgNdrZFsvahA
+        9PeevwDg597Iev6nPFEWVTxjGIxHehriQQye81kMgGWkyWG0CB4HFUlJeys/JwSl8+4SXi
+        gLbTqqbvg6P/4mbfsQiV/HI8GM7+m+E=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549-Gk_zVumnM3qh5lwMUXg-Sw-1; Fri, 27 Aug 2021 15:56:24 -0400
+X-MC-Unique: Gk_zVumnM3qh5lwMUXg-Sw-1
+Received: by mail-wm1-f69.google.com with SMTP id y24-20020a7bcd98000000b002eb50db2b62so885386wmj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:56:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sd/3n0607wJTjqztLgFnu0bOLL0OQcH0TvNvy1LbLr8=;
+        b=YtoKbg16Y3tbh/nM1rdFPm6XryfS2cNI11GK/vWDEJKfqHaUqK+ErKcwUd4ZjIKlhG
+         liiyOpCV6QjNhakVbxHKHa0DkJ70cCnV9dv1UcUqpbQy0cIjD2A8BBzh+eCVEDsZi1Lo
+         vffWYITZlU+ixCLKnIryBnS4W/a8aLkFcK1tiEwYIXPwu4AsTwDgt63fuvh20L52eqOc
+         nR1kpMucptLszrc8AGmt9lJKrvoPLJifOETxLO5StYM9M7crM4ZHMd6aj8h8hozHA9mI
+         sXCU+/O/Y9UPDW9QEUMkvzCchlPAL0G5x1w4OGgBMffXltZpY8cKQNTExUwBUmW0SVQT
+         2nMw==
+X-Gm-Message-State: AOAM5303cDXPZxZ9C4AhlI90eOW62JYrvY9s6ygHc475g8Um9k+wYeTy
+        zCYM/Dd0E0ojtSYK6UX0DJBIrXNZui3HvVgZkwOICwbm5+QXnQCz+v9hWcTsfJ7aE1itv531z3p
+        507QlY/CAc3wCMvxTWsdEAZcn645VLb++CXYrGYB5
+X-Received: by 2002:a5d:47a4:: with SMTP id 4mr12104533wrb.329.1630094182742;
+        Fri, 27 Aug 2021 12:56:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydEhO4+TbNABovpa3HgGNECXB3WhRpPNdamPW7spcpayLjxbNmB0mkBEQta0WVv1DaGiTw07KdhCXl6aFWwBE=
+X-Received: by 2002:a5d:47a4:: with SMTP id 4mr12104517wrb.329.1630094182497;
+ Fri, 27 Aug 2021 12:56:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210827164926.1726765-1-agruenba@redhat.com> <20210827164926.1726765-19-agruenba@redhat.com>
+ <YSkzSHSp8lld6dwW@zeniv-ca.linux.org.uk>
+In-Reply-To: <YSkzSHSp8lld6dwW@zeniv-ca.linux.org.uk>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Fri, 27 Aug 2021 21:56:10 +0200
+Message-ID: <CAHc6FU47cApVzAcVrkCLfoV7AGzs7T-cBGejVXRtfHWVdhXfxA@mail.gmail.com>
+Subject: Re: [PATCH v7 18/19] iov_iter: Introduce nofault flag to disable page faults
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGX reserved memory does not appear in the standard address maps.
+On Fri, Aug 27, 2021 at 8:47 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Fri, Aug 27, 2021 at 06:49:25PM +0200, Andreas Gruenbacher wrote:
+> > Introduce a new nofault flag to indicate to get_user_pages to use the
+> > FOLL_NOFAULT flag.  This will cause get_user_pages to fail when it
+> > would otherwise fault in a page.
+> >
+> > Currently, the noio flag is only checked in iov_iter_get_pages and
+> > iov_iter_get_pages_alloc.  This is enough for iomaop_dio_rw, but it
+> > may make sense to check in other contexts as well.
+>
+> I can live with that, but
+>         * direct assignments (as in the next patch) are fucking hard to
+> grep for.  Is it intended to be "we set it for duration of primitive",
+> or...?
 
-Add hook to call into the SGX code to check if an address is located
-in SGX memory.
+It's for this kind of pattern:
 
-There are other challenges in injecting errors into SGX. Update the
-documentation with a sequence of operations to inject.
+       pagefault_disable();
+       to->nofault = true;
+       ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL,
+                          IOMAP_DIO_PARTIAL, written);
+       to->nofault = false;
+       pagefault_enable();
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- .../firmware-guide/acpi/apei/einj.rst         | 19 +++++++++++++++++++
- drivers/acpi/apei/einj.c                      |  3 ++-
- 2 files changed, 21 insertions(+), 1 deletion(-)
+Clearing the flag at the end isn't strictly necessary, but it kind of
+documents that the flag pertains to iomap_dio_rw and not something
+else.
 
-diff --git a/Documentation/firmware-guide/acpi/apei/einj.rst b/Documentation/firmware-guide/acpi/apei/einj.rst
-index c042176e1707..55e2331a6438 100644
---- a/Documentation/firmware-guide/acpi/apei/einj.rst
-+++ b/Documentation/firmware-guide/acpi/apei/einj.rst
-@@ -181,5 +181,24 @@ You should see something like this in dmesg::
-   [22715.834759] EDAC sbridge MC3: PROCESSOR 0:306e7 TIME 1422553404 SOCKET 0 APIC 0
-   [22716.616173] EDAC MC3: 1 CE memory read error on CPU_SrcID#0_Channel#0_DIMM#0 (channel:0 slot:0 page:0x12345 offset:0x0 grain:32 syndrome:0x0 -  area:DRAM err_code:0001:0090 socket:0 channel_mask:1 rank:0)
- 
-+Special notes for injection into SGX enclaves:
-+
-+There may be a separate BIOS setup option to enable SGX injection.
-+
-+The injection process consists of setting some special memory controller
-+trigger that will inject the error on the next write to the target
-+address. But the h/w prevents any software outside of an SGX enclave
-+from accessing enclave pages (even BIOS SMM mode).
-+
-+The following sequence can be used:
-+  1) Determine physical address of enclave page
-+  2) Use "notrigger=1" mode to inject (this will setup
-+     the injection address, but will not actually inject)
-+  3) Enter the enclave
-+  4) Store data to the virtual address matching physical address from step 1
-+  5) Execute CLFLUSH for that virtual address
-+  6) Spin delay for 250ms
-+  7) Read from the virtual address. This will trigger the error
-+
- For more information about EINJ, please refer to ACPI specification
- version 4.0, section 17.5 and ACPI 5.0, section 18.6.
-diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
-index 2882450c443e..cd7cffc955bf 100644
---- a/drivers/acpi/apei/einj.c
-+++ b/drivers/acpi/apei/einj.c
-@@ -544,7 +544,8 @@ static int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
- 	    ((region_intersects(base_addr, size, IORESOURCE_SYSTEM_RAM, IORES_DESC_NONE)
- 				!= REGION_INTERSECTS) &&
- 	     (region_intersects(base_addr, size, IORESOURCE_MEM, IORES_DESC_PERSISTENT_MEMORY)
--				!= REGION_INTERSECTS)))
-+				!= REGION_INTERSECTS) &&
-+	     !sgx_is_epc_page(base_addr)))
- 		return -EINVAL;
- 
- inject:
--- 
-2.29.2
+>         * it would be nice to have a description of intended semantics
+> for that thing.  This "may make sense to check in other contexts" really
+> needs to be elaborated (and agreed) upon.  Details, please.
+
+Maybe the description should just be something like:
+
+"Introduce a new nofault flag to indicate to iov_iter_get_pages not to
+fault in user pages.
+
+This is implemented by passing the FOLL_NOFAULT flag to get_user_pages,
+which causes get_user_pages to fail when it would otherwise fault in a
+page. We'll use the ->nofault flag to prevent iomap_dio_rw from faulting
+in pages when page faults are not allowed."
+
+Thanks,
+Andreas
 
