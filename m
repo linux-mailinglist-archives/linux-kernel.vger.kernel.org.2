@@ -2,92 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3823F9A69
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E583F9A6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245271AbhH0No4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245310AbhH0Noy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:44:54 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE00C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:44:05 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id j15so7072982ila.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nTcz622O5BJSdhwbyQLpgjIcVtxzhbuuDPAw/ERSb34=;
-        b=nwMZdArwlv8PgqotkRBgtHlu7yabfcDMjYgvJM0IH8awX+9VQ78BYs+kxfawbg3ByI
-         GVS2wJYh0hYBdqKT4ICNSQV2kSks6YSWLi64KWD9FOvegcbUE1JoBGwviQVEp37Kfscl
-         t4BCXUCwTJbY3jAnUapbGiJ+WVyuxkBirs6cIOvHq2A3KzvYoG7qb3SG0QK884hzvCcv
-         ZBHvOhm56MO6mWgbQin0tWbYzy4ca1GAUd8qfyl39NysGaPjI6q2Zrsz1TmZnpodQrGZ
-         B2NIt3gK8LQHWMtNAIZngIXslebF4zKQ8vgVzFkxtmQx53VwA2/kqnEHWWVi9Bp6b3+c
-         6MZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nTcz622O5BJSdhwbyQLpgjIcVtxzhbuuDPAw/ERSb34=;
-        b=VqtJ42YGyHe4PbkiQluJZmfLGztIlCJ+ugiTChjEKnHUxOI4EnpVeY+RjcOR9faejl
-         4nxjAZpv0meFte5jd+uBXKGaX8yV6HNusq4hxB1OXlTvjD1Tm375KZ6VYp7zXW/dbPzx
-         UM9/HV+mCQl4Rfj/UOi0GekRL257NLeZ05TzYHVSty1sEX4d75IL/y3S0CmTEnfjVqBG
-         dGgSbwgCsLFBZOGRq5iKY+XRUdTxOk9mXzsZpJv3L7OrNe196wQKZ6WbrhMbu2Y9g4hh
-         7lpQu7WhpQ06juW5wt5bxDgA6IWIkErpFZeiT5ohnMsDmVwVL+6PVt9i2QeEZl3xvVwE
-         mViQ==
-X-Gm-Message-State: AOAM533j/wQ2CsH63zvCp2f2qxxoLpHN9bBEemYDuCylDcGIkZe1zUmF
-        5G2B8Sn+soZvrPZvhpl0vU2DXUKbwhZxwozqHAmMzw==
-X-Google-Smtp-Source: ABdhPJzTQDUwgP1HqS9A4c6xvJF2fQzeReSUEOiC4fqaM82hDkXm4wHKQiR4QMH5GN+DLTEf0xhxY3gl84w/dQcXMBY=
-X-Received: by 2002:a05:6e02:168d:: with SMTP id f13mr6835390ila.12.1630071844764;
- Fri, 27 Aug 2021 06:44:04 -0700 (PDT)
+        id S245286AbhH0Npi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:45:38 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:44762 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232312AbhH0Nph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 09:45:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=U4iw9bGfwsiLVriGmOSmQiVeY8AhY1Wlg6keAnSbylw=; b=2MIAxJFd2O7afg050RyBGVQMpJ
+        l8Jj/0grtM4Wjh7TBzLXmtNY1mAAoeqEMdyjyMzsvZI36V2+FCutEf9iO9TbObDSXzC/vUQKIHzDX
+        k0OKanA0JtQR+322DPhNY8A2HiHr8rd2lOyeeQyFJqEMRUzJ+BFFBpxlrSSpNoJmcOtA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mJc9q-0047E0-1o; Fri, 27 Aug 2021 15:44:34 +0200
+Date:   Fri, 27 Aug 2021 15:44:34 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_BROKEN_PARENT
+Message-ID: <YSjsQmx8l4MXNvP+@lunn.ch>
+References: <20210826074526.825517-1-saravanak@google.com>
+ <20210826074526.825517-2-saravanak@google.com>
+ <YSeTdb6DbHbBYabN@lunn.ch>
+ <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
+ <YSf/Mps9E77/6kZX@lunn.ch>
+ <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
+ <YSg+dRPSX9/ph6tb@lunn.ch>
+ <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210827082407.101053-1-yangcong5@huaqin.corp-partner.google.com> <20210827082407.101053-3-yangcong5@huaqin.corp-partner.google.com>
-In-Reply-To: <20210827082407.101053-3-yangcong5@huaqin.corp-partner.google.com>
-From:   Doug Anderson <dianders@google.com>
-Date:   Fri, 27 Aug 2021 06:43:52 -0700
-Message-ID: <CAD=FV=V9GQXJo8YRwnPFK2QZY-CmaFG14v7H4Qb+JqmmiEF0Ug@mail.gmail.com>
-Subject: Re: [v3 2/4] dt-bindings: drm/panel: boe-tv101wum-nl6: Support
- enabling a 3.3V rail
-To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+> fw_devlink=on/device links short circuits the probe() call of a
+> consumer (in this case the PHY) and returns -EPROBE_DEFER if the
+> supplier's (in this case switch) probe hasn't finished without an
+> error. fw_devlink/device links effectively does the probe in graph
+> topological order and there's a ton of good reasons to do it that way
+> -- what's why fw_devlink=on was implemented.
+> 
+> In this specific case though, since the PHY depends on the parent
+> device, if we fail the parent's probe realtek_smi_probe() because the
+> PHYs failed to probe, we'll get into a catch-22/chicken-n-egg
+> situation and the switch/PHYs will never probe.
 
-On Fri, Aug 27, 2021 at 1:24 AM yangcong
-<yangcong5@huaqin.corp-partner.google.com> wrote:
->
-> The auo,b101uan08.3 panel (already supported by this driver) has
-> a 3.3V rail that needs to be turned on. For previous users of
-> this panel this voltage was directly output by pmic. On a new
-> user (the not-yet-upstream sc7180-trogdor-mrbland board) we need
-> to turn the 3.3V rail on.
->
-> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
-> ---
->  .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml    | 3 +++
->  1 file changed, 3 insertions(+)
+So lets look at:
 
-There were no differences between this and the previous version [1]. I
-added my Reviewed-by tag on the previous version, so you should have
-included it in this new version. Rob's too.
+arch/arm/boot/dts/vf610-zii-dev-rev-b.dts
 
-[1] https://lore.kernel.org/r/20210820070113.45191-3-yangcong5@huaqin.corp-partner.google.com
+       mdio-mux {
+                compatible = "mdio-mux-gpio";
+                pinctrl-0 = <&pinctrl_mdio_mux>;
+                pinctrl-names = "default";
+                gpios = <&gpio0 8  GPIO_ACTIVE_HIGH
+                         &gpio0 9  GPIO_ACTIVE_HIGH
+                         &gpio0 24 GPIO_ACTIVE_HIGH
+                         &gpio0 25 GPIO_ACTIVE_HIGH>;
+                mdio-parent-bus = <&mdio1>;
+                #address-cells = <1>;
+                #size-cells = <0>;
 
-In any case:
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+We have an MDIO multiplexor
+
+
+                mdio_mux_1: mdio@1 {
+                        reg = <1>;
+                        #address-cells = <1>;
+                        #size-cells = <0>;
+
+                        switch0: switch@0 {
+                                compatible = "marvell,mv88e6085";
+                                pinctrl-0 = <&pinctrl_gpio_switch0>;
+                                pinctrl-names = "default";
+                                reg = <0>;
+                                dsa,member = <0 0>;
+                                interrupt-parent = <&gpio0>;
+                                interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
+
+On the first bus, we have a Ethernet switch.
+
+                                interrupt-controller;
+                                #interrupt-cells = <2>;
+                                eeprom-length = <512>;
+
+                                ports {
+                                        #address-cells = <1>;
+                                        #size-cells = <0>;
+
+                                        port@0 {
+                                                reg = <0>;
+                                                label = "lan0";
+                                                phy-handle = <&switch0phy0>;
+                                        };
+
+The first port of that switch has a pointer to a PHY.
+
+                               mdio {
+                                        #address-cells = <1>;
+                                        #size-cells = <0>;
+
+That Ethernet switch also has an MDIO bus,
+
+                                        switch0phy0: switch0phy0@0 {
+                                                reg = <0>;
+
+On that bus is the PHY.
+
+                                                interrupt-parent = <&switch0>;
+                                                interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+
+And that PHY has an interrupt. And that interrupt is provided by the switch.
+
+Given your description, it sounds like this is also go to break.
+
+vf610-zii-dev-rev-c.dts is the same pattern, and there are more
+examples for mv88e6xxx.
+
+It is a common pattern, e.g. the mips ar9331.dtsi follows it.
+
+I've not yet looked at plain Ethernet drivers. This pattern could also
+exist there. And i wonder about other complex structures, i2c bus
+multiplexors, you can have interrupt controllers as i2c devices,
+etc. So the general case could exist in other places.
+
+I don't think we should be playing whack-a-mole by changing drivers as
+we find they regress and break. We need a generic fix. I think the
+solution is pretty clear. As you said the device depends on its
+parent. DT is a tree, so it is easy to walk up the tree to detect this
+relationship, and not fail the probe.
+
+   Andrew
