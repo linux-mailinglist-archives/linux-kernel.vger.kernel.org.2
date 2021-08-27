@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73BD3F9E10
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F733F9E14
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236573AbhH0RbQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Aug 2021 13:31:16 -0400
-Received: from smtprelay01.ispgateway.de ([80.67.31.35]:9111 "EHLO
-        smtprelay01.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhH0RbO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:31:14 -0400
-X-Greylist: delayed 84542 seconds by postgrey-1.27 at vger.kernel.org; Fri, 27 Aug 2021 13:31:14 EDT
-Received: from [87.92.210.171] (helo=[192.168.0.111])
-        by smtprelay01.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <lumip@lumip.de>)
-        id 1mJfgn-00027z-Eh; Fri, 27 Aug 2021 19:30:49 +0200
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210805194417.12439-1-lumip@lumip.de>
- <6d6c533d-465e-33ee-5801-cb7ea84924a8@kernel.dk>
-From:   Lukas Prediger <lumip@lumip.de>
-Subject: Re: [PATCH] drivers/cdrom: improved ioctl for media change detection
-Message-ID: <f0d33ff3-6b9d-bbe7-1776-a22f9f271155@lumip.de>
-Date:   Fri, 27 Aug 2021 20:30:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237395AbhH0Rh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:37:56 -0400
+Received: from mout.gmx.net ([212.227.15.15]:54303 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237087AbhH0Rhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 13:37:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630085807;
+        bh=nTR4iuVPmMGAXaXpmel+nekd8a2+COglF3GB0Y3BokA=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Xj0ceu4uzMDri8vHPD4M+88HkanYzsPE3T1ha1BfamL9rdRH6XOhgRv0STcK9ZuRp
+         d0TVMC6TSjs9m3JgNNEUFyB9rtGBmBeAhTAKmEI6jg8aRyNKiNnfIjKupeDXv4KMXw
+         bnSpM3bImH8ydjlIZbEMzZty7wD1r0gyXLLK8GUg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWRVh-1mV0Sa0N4d-00XtPK; Fri, 27
+ Aug 2021 19:36:47 +0200
+Date:   Fri, 27 Aug 2021 19:36:33 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] EDAC/mc: Prefer strscpy over strcpy
+Message-ID: <20210827173633.GA3040@titan>
+References: <20210814075527.5999-1-len.baker@gmx.com>
+ <YSPbOo90alPsv4vL@zn.tnic>
+ <20210824090338.GB7999@titan>
+ <YSU5wp/ZpsXuDgmu@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <6d6c533d-465e-33ee-5801-cb7ea84924a8@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
-X-Df-Sender: bHVrYXMucHJlZGlnZXJAbHVtaXAuZGU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSU5wp/ZpsXuDgmu@zn.tnic>
+X-Provags-ID: V03:K1:JEqlwMVH6r3hWoS9kloc3KrglkJTJwAoWlVo2fLLTtKvjRpRX6o
+ dU7eV+hcBX9GOgqqiO+nenAY32iusp2nmfkldMlDPUgRQwvGrWImH62x+iBUTSgIwyyyxle
+ rGhJNAfpbEKM9aJo4xz8jQRyjpBK1gjmZ2OndaQg2KtGWvnuo5aNnKOYWcgg17Br4AtPEQQ
+ 1chVSUBR9ej0Un8jTmU+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bog80o/EQMA=:fEvY3VupqWgMiyNOuCvw5K
+ MnyYTx/T3zlkyUvpDjOLv4V2g8IeTJy5AxDpW0hvY7Rsq0aJtL5Z9yx6nGgKGeWnUlw/o3zj1
+ ZZeZ6dQPcutCv/7EKg+FI6TTclaPgXPJ+qMsOZddrO7S3lqYXnO+t06e1TwkvPv7HqsySiPex
+ 2yW0xPt8uq7P6yLO2BOqvvdFZTX6Rut9DwDTkJddGpB8akCnjb8uqulDFNSgcn5mOqzf+4/LG
+ Zf7n+XDNWNzFZyScGYXCZM04oxexsYVXW8VlL/9LucX8KqLPkM981k4driNnVdT8uJskzhp0X
+ owuSu/7Yjhj2UKgA/4wTJO/DPK4xcfR4SDi4y7YpU3bQ5cF2wb1cFJUrV1gdolWjvq/smNahH
+ mVlz4K9NhLj+hLEA6VKF+C/GCLxiuRK7nuSACA/pARh8fn/JNuWVx2T2RPpVw4t/I8tFKhr7x
+ 0FA/v+S62emrJYa1H1ltUNmDGe7jcUqCFySr0kHhBfqyfRwZzsFzr8RwKv7s89Te31QUz4Djn
+ yGvjZyYrbY4r1RfNr0iC7m1KYT67BCAa8s4mA8M/STkjxdGm0FDjROuUVhaf7ui1uOejUgKUX
+ 24rfeuP18ZnPcM2KyIxh4KcQLQ5suduLbBgRjMcwqerbkKrbhbFEUgsuZ/035sQ6AhtMd6vAy
+ 8IGUaHjVk5tu+zUfgKkJDcT4GCY5+KVMRwgq+B5NDizMNVtz122acl+soOzWFLp/Fg+xzqtew
+ oKqlrjjMYcEHe3ZQdbM7LqLg0Q3Goydfy0Es5xHaTlXhNUzihQdSytYpV3aS49gxtK3KsPBji
+ PvZtGuq8pKdUtWxZUCQ/cGRn41nFbdN0dB7aRiHwLMilmTaWslTWUdmghtRNubybG1Sc/Jf3U
+ roT589Wm7kg29iZGOHmrhzLOnUM4uSUFJ6hYaPmHa6Vhds2mDUBLYZcYYnkJBzauqfvZDHjcL
+ qJEopzBSftXuVUxIxvK028xk7MEezrLZ17IygQCMWC230cJ+mvzst1aTosYSyal9tsqsSjcF7
+ q6Jvzhnr+uvvg1e1y9aFBFbC3E+V/H+9TcJ0ZsD8CZTw44Sm48ONlg11CdotVO/AsvOTK36+h
+ InvEi1JZ/itVVygCaNzoX1NtQde3l4G+GOz7a3CdlZSu3yMNg3RS3rLHw==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.08.21 01:38, Jens Axboe wrote:
+Hi,
 
-> Thanks for sending in the patch, appologies it's taken so long to get a
-> response. CDROM isn't really actively maintained much these days,
-> unfortunately. Should get a new maintainer.
+On Tue, Aug 24, 2021 at 08:26:10PM +0200, Borislav Petkov wrote:
+> On Tue, Aug 24, 2021 at 12:28:07PM +0200, Len Baker wrote:
+> > This is a task of the KSPP [1] and the main reason is to clean up the
+> > proliferation of str*cpy functions in the kernel.
 >
-> Anyway, for this patch, few comments inline.
+> That I understood - you prominently explain where the patches stem from.
+>
+> What I can't parse is that formulation "previous step". What previous
+> step do you mean?
 
-Thanks for the feedback, I'm currently editing the patch to improve it based on your suggestions.
-Some questions before resubmitting below.
+Well, the main purpose is to clean up the proliferation of str*cpy functio=
+ns.
+One task is to remove the strcpy uses: The first step (previous step) woul=
+d
+be to remove all the strcpy uses. Then, as a second step remove all the
+strcpy implementations.
 
-> I'd just use jiffies for this, it's not really a case of something that
-> needs a fine grained clock source. That'll give you 1-10ms resolution,
-> which should be more than adequate for this. Then use jiffies_to_msecs()
-> and make the API be in miliseconds.
+I hope that this clarify your question.
 
->> @@ -295,6 +297,19 @@ struct cdrom_generic_command
->>  	};
->>  };
->>  
->> +/* This struct is used by CDROM_TIMED_MEDIA_CHANGE */
->> +struct cdrom_timed_media_change_info
->> +{
->> +	__u64   last_media_change;	/* Timestamp of the last detected media
->> +					 * change. May be set by caller, updated
->> +					 * upon successful return of ioctl.
->> +					 */
->> +	__u8    has_changed;		/* Set to 1 by ioctl if last detected media
->> +					 * change was more recent than
->> +					 * last_media_change set by caller.
->> +					 */
->> +};
->>
-> The struct layout should be modified such that there are no holes or
-> padding in it. Probably just make the has_changed a flags thing, and
-> make it u64 as well. Then you can define bit 0 to be HAS_CHANGED, and
-> that leaves you room to add more flags in the future. Though the latter
-> probably isn't much of a concern here, but...
-
-1. jiffies_to_msecs returns unsigned int. Should I reflect that in the struct (i.e., make the
-last_media_change and has_changed fields also of type unsigned int or should I keep them at
-a fixed bit width?
-
-2. As the last_media_change field will be in ms now, is it safe to convert those back to jiffies
-for comparison or is there a risk of information loss (due to rounding or whatever) in either conversion?
-More technically, can I make the assumption that for any jiffies value x it holds that
-
-time_before(msecs_to_jiffies(jiffies_to_msecs(x)), x) is always false ?
-
-I tried to determine that from the code, but I haven't reached a conclusion that I'm confident in..
-
-Kind regards,
-Lukas
-
-
+Regards,
+Len
