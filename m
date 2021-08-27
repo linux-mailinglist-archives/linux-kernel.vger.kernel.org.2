@@ -2,119 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B9E3F9A72
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052523F9A79
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245209AbhH0NsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbhH0NsM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:48:12 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D39C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:47:24 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id a15so8559559iot.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y0kIZxdG2WP5UVtm2i0XaO2Bfut6JUxDjhvFbpFOnGo=;
-        b=JSu97EaVGMjtQz6hYY6AI5sMmCkndzrTwaujZd7EI+5ltUCYPaLKhEwB6jjgRrI3nk
-         WYGpWj6vaCJwjq22DPQhtUxZIPZsPb/0sKt2rkpMP3/BcGUclalMiFrrEngizO7bL/Y+
-         dPmWWvxlWCo1jjdczL8iZ2pkyJ+v4ADBp/DrG8KuCWcwPLqb26T0U4Izc7gTkOgEIX3R
-         uSPDzIfCjJYAu12vYp0qbjo+/6h83kwd+qh7JzWGUT3zaBIiA74oG496p6Fa6p6soDOh
-         s3/di0YPKPA1p9YUw62YWB3e2kxA9zyLOqgph3O5V4yn5cVibzkC2rjwOC5qOcG0R7ru
-         OM5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y0kIZxdG2WP5UVtm2i0XaO2Bfut6JUxDjhvFbpFOnGo=;
-        b=uXutVfHTdtQSXt7+EXdq2lWWLt+4ktxTUhBPoPmmvmg/tnb3SSpQs//yUXPWw82p7B
-         T6PiYgvU5Wn7CD6JyP4c5BQrVwBn115SI5DmQyeSpzOiahsYJKgpknO+N11XLpliI6Nc
-         10F6KDz5Tc4GHmpj/WIX3EHeS9dSCxrWn0XhdmJ8AV1O+ekrJmlgvqYv4bvG8YyuGYSe
-         WjmM+ceFTCGFY3JZqx4GBrBsGDlURYU23a4w8mQ461ul6/VHL6GZD1lR769Z9ftt1Upl
-         vE3KcsTAgf9RWHepUllwhZKPlLfXYm/507vS6gII3ex5eHGV+Jgp2Yytv4pU+jsporBU
-         Jptg==
-X-Gm-Message-State: AOAM5324M/7mCIjQvwh9OufVLJOscp+vAsZzFtwYOP2rmrv/wn0VgWq6
-        Oq34MJzCA7sIvF5+QXlEr3CkaTu1BFzl0MGCG94ybA==
-X-Google-Smtp-Source: ABdhPJwoMBLlwC9Y3OiKT1MJ/TLJ1htrXZ0Gsq6A+zo5pCGOJKT4X2C+tgqr5zx1l20TXTxPTu1Rb6sQWSkFhJaNluY=
-X-Received: by 2002:a5d:8acf:: with SMTP id e15mr7489552iot.184.1630072043205;
- Fri, 27 Aug 2021 06:47:23 -0700 (PDT)
+        id S245191AbhH0Nvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:51:49 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37258 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232257AbhH0Nvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 09:51:46 -0400
+Received: from zn.tnic (p200300ec2f1117006e0d6268a9fc7b3e.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:6e0d:6268:a9fc:7b3e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 59FAE1EC0537;
+        Fri, 27 Aug 2021 15:50:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630072252;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=MgcfjTqcSY9gu+zATu+viDfC+xRfq+ze2XUVEcy5kJQ=;
+        b=cO0UcApzABFyvPv+e6G4bGRLUXS/CNO2/DFEGytg7MS8u7V43idZQCwPExuB4RZ2dTpRkF
+        ZxrfGsWj2Lzr+LOSyR0G1Fy/jCw1vouDlF4GKT7VnZ9xWps8tPd6rZuQft0qi4nHtT/Sfa
+        fAPo0aIk+YOA4sfiUsRttbNgb58ivFI=
+Date:   Fri, 27 Aug 2021 15:51:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 29/38] x86/boot: add a pointer to Confidential
+ Computing blob in bootparams
+Message-ID: <YSjt4YDQR8vDeOdI@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-30-brijesh.singh@amd.com>
 MIME-Version: 1.0
-References: <YSPAseE6WD8dDRuz@ravnborg.org> <20210824014124.1080798-1-yangcong5@huaqin.corp-partner.google.com>
- <CAD=FV=UFDRG9TJis28Wtsz9RVhp3Xk35stpLyY5ExLx3=8yxPQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=UFDRG9TJis28Wtsz9RVhp3Xk35stpLyY5ExLx3=8yxPQ@mail.gmail.com>
-From:   Doug Anderson <dianders@google.com>
-Date:   Fri, 27 Aug 2021 06:47:10 -0700
-Message-ID: <CAD=FV=WEid=JgsXEPWpEfNivJ3DK_hnFxxNf_HDiOpuTozAjHA@mail.gmail.com>
-Subject: Re: [v2 0/2] Add driver for BOE tv110c9m-ll3 panel
-To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820151933.22401-30-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Aug 20, 2021 at 10:19:24AM -0500, Brijesh Singh wrote:
+> From: Michael Roth <michael.roth@amd.com>
+> 
+> The previously defined Confidential Computing blob is provided to the
+> kernel via a setup_data structure or EFI config table entry. Currently
+> these are both checked for by boot/compressed kernel to access the
+> CPUID table address within it for use with SEV-SNP CPUID enforcement.
+> 
+> To also enable SEV-SNP CPUID enforcement for the run-time kernel,
+> similar early access to the CPUID table is needed early on while it's
+> still using the identity-mapped page table set up by boot/compressed,
+> where global pointers need to be accessed via fixup_pointer().
+> 
+> This is much of an issue for accessing setup_data, and the EFI config
+> table helper code currently used in boot/compressed *could* be used in
+> this case as well since they both rely on identity-mapping. However, it
+> has some reliance on EFI helpers/string constants that would need to be
+> accessed via fixup_pointer(), and fixing it up while making it
+> shareable between boot/compressed and run-time kernel is fragile and
+> introduces a good bit of uglyness.
+> 
+> Instead, this patch adds a boot_params->cc_blob_address pointer that
 
-On Thu, Aug 26, 2021 at 10:17 AM Doug Anderson <dianders@google.com> wrote:
->
-> Hi,
->
-> On Mon, Aug 23, 2021 at 6:41 PM yangcong
-> <yangcong5@huaqin.corp-partner.google.com> wrote:
-> >
-> > Hi Sam,
-> >   This driver support boe tv1110c9m-ll3 and inx hj110iz-01a panel.The IC chip is used NT36523, which is a new IC.
-> >
-> > 1: panel-boe-tv101wum-nl6.c driver cannot meet the timing requirements of the current two panel.
-> >
-> > 2: The screen cannot be work in HS mode, panel-boe-tv101wum-nl6.c will switch to HS mode when boe_panel_enter_sleep_mode.
-> >
-> > static int boe_panel_enter_sleep_mode(struct boe_panel *boe)
-> > {
-> >         struct mipi_dsi_device *dsi = boe->dsi;
-> >         int ret;
-> >
-> >         dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
-> >         ...
-> >         ...
-> > }
->
-> It's really up to Sam how he wants to proceed here, but certainly you
-> could support things with the existing driver even if there are
-> differences. In general you can add more things to the `struct
-> panel_desc` in the driver and then make them different for your panel.
-> Look, for instance, at `discharge_on_disable`. Not all panels
-> supported by this driver do that, so you could support your "cannot
-> work in HS mode" in a similar way.
->
-> For the timings, you could also add another bit to the `struct
-> panel_desc` to select a different delay for your panel or (if it's
-> just a small delay) you could just increase it across the board. I
-> guess you need a 10 ms delay instead of a 5 ms delay in probe? I'd
-> just make it 10 ms across the board and call it done. Similarly looks
-> like something needs .5 ms => 1 ms. Again, this is likely fine across
-> the board for all panels.
->
-> Unless Sam comes back and says "no, wait, keep it two drivers!" then
-> I'd suggest that you post a new version that works as Sam suggests. In
-> the worst case if having it combined into one driver looks too ugly
-> then we can always go back to a split driver.
+Avoid having "This patch" or "This commit" in the commit message. It is
+tautologically useless.
 
-Breadcrumbs: it looks like yangcong has attempted this in the
-confusingly numbered v3 of his other patch series. See:
+Also, do
 
-https://lore.kernel.org/r/20210827082407.101053-4-yangcong5@huaqin.corp-partner.google.com
+$ git grep 'This patch' Documentation/process
 
--Doug
+for more details.
+
+> boot/compressed can initialize so that the run-time kernel can access
+> the prelocated CC blob that way instead.
+> 
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/include/asm/bootparam_utils.h | 1 +
+>  arch/x86/include/uapi/asm/bootparam.h  | 3 ++-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/bootparam_utils.h b/arch/x86/include/asm/bootparam_utils.h
+> index 981fe923a59f..53e9b0620d96 100644
+> --- a/arch/x86/include/asm/bootparam_utils.h
+> +++ b/arch/x86/include/asm/bootparam_utils.h
+> @@ -74,6 +74,7 @@ static void sanitize_boot_params(struct boot_params *boot_params)
+>  			BOOT_PARAM_PRESERVE(hdr),
+>  			BOOT_PARAM_PRESERVE(e820_table),
+>  			BOOT_PARAM_PRESERVE(eddbuf),
+> +			BOOT_PARAM_PRESERVE(cc_blob_address),
+>  		};
+>  
+>  		memset(&scratch, 0, sizeof(scratch));
+> diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
+> index 1ac5acca72ce..bea5cdcdf532 100644
+> --- a/arch/x86/include/uapi/asm/bootparam.h
+> +++ b/arch/x86/include/uapi/asm/bootparam.h
+> @@ -188,7 +188,8 @@ struct boot_params {
+>  	__u32 ext_ramdisk_image;			/* 0x0c0 */
+>  	__u32 ext_ramdisk_size;				/* 0x0c4 */
+>  	__u32 ext_cmd_line_ptr;				/* 0x0c8 */
+> -	__u8  _pad4[116];				/* 0x0cc */
+> +	__u8  _pad4[112];				/* 0x0cc */
+> +	__u32 cc_blob_address;				/* 0x13c */
+
+So I know I've heard grub being mentioned in conjunction with this: if
+you are ever going to pass this through the boot loader, then you'd need
+to update Documentation/x86/zero-page.rst too to state that this field
+can be written by the boot loader too.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
