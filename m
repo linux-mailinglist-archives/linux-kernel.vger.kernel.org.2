@@ -2,215 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030F53F9B6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B373C3F9B6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245442AbhH0PFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:05:16 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:38126 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233712AbhH0PFO (ORCPT
+        id S245452AbhH0PFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233712AbhH0PFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:05:14 -0400
-X-UUID: 144f094e71e2400db557bd852b042f62-20210827
-X-UUID: 144f094e71e2400db557bd852b042f62-20210827
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1513399212; Fri, 27 Aug 2021 23:04:21 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 27 Aug 2021 23:04:20 +0800
-Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 27 Aug 2021 23:04:19 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <rocco.yue@gmail.com>,
-        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
-        Rocco Yue <rocco.yue@mediatek.com>
-Subject: [PATCH net-next v6] ipv6: add IFLA_INET6_RA_MTU to expose mtu value
-Date:   Fri, 27 Aug 2021 23:04:12 +0800
-Message-ID: <20210827150412.9267-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Fri, 27 Aug 2021 11:05:18 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F797C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:04:29 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id s29so1096718pfw.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KAECcBr13A7/Y2OTRwW1tphAS3RtXLfsmJpN2+1wV/g=;
+        b=eOcsJSkR3Tcwg/sysGWZjHB3j7i5r7/PV9NeUpJgrJbmyULq0nH9YQOHu6OfxzbHKe
+         +pqjyGtX5lbERmDoDn0TFryW9eiklpbv+vwxUDsCmYqm2vAmc+UOnTUPjndIWDtzZGE6
+         1I4m3oFj3B4WBm9sPNSoqOuPlO6sKlxv2tj0U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KAECcBr13A7/Y2OTRwW1tphAS3RtXLfsmJpN2+1wV/g=;
+        b=gmgutx5V3RNguMfQZ7sNOrn09/PSCn1iqBWWq8g2o4GOt6yaljMyJXA5t96ZT7SrPx
+         f9fVftm7SNxof2+lXVmapbx+PEkLu9YByPmPHiUKQFENL2Wu2aNLYEjpE5x6QLHoLl/9
+         HSHyj4v7mVqOU+QPugc91S7wMwTrFYPlNg5baEhB7ZSFQYhtGre9bUaSigdCv+3C1mMw
+         ObqPANLTuTIV681s3ZrKkSwMlTzirZy28LediSwAr1zdOG1jC8ZRA+9wkxo5y8pS7edR
+         PD6DslI+Lc45lpNVGludT/oBNtZPv5M+COHniGE9KkQjz37PKWGAgHES+ea63ZyZLNoU
+         tx4Q==
+X-Gm-Message-State: AOAM531flmxt/X29694xPxyP98Meae3yqEofGr9nmq1P0XDCXXAZGgww
+        9v+j68E57nsEn+aXC47qwx6ZaA==
+X-Google-Smtp-Source: ABdhPJx3Th/aWz4EKkeULbF3x4SNVKUYkcYbm9Af9rvuqm06QYk8iV99LuIHbCBgC2+RnLK8ojmnXw==
+X-Received: by 2002:aa7:850c:0:b0:3e2:edf3:3d09 with SMTP id v12-20020aa7850c000000b003e2edf33d09mr9710410pfn.42.1630076668808;
+        Fri, 27 Aug 2021 08:04:28 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q3sm7411290pgf.18.2021.08.27.08.04.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 08:04:28 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH v2] cgroup: Avoid compiler warnings with no subsystems
+Date:   Fri, 27 Aug 2021 08:04:24 -0700
+Message-Id: <20210827150424.2729274-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3945; h=from:subject; bh=GFK3BETQmfQB9ONseeh+QxRF9yf/a6MqKtjDJoZzqeA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhKP74SaubLPqskWOEDTayM2+b9dEi4jnuGNQvHGBR dbuO1zCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSj++AAKCRCJcvTf3G3AJs/ZD/ 4nZI7nyxeKoS/vLqeVHPIvoLfK1l5E/MD6+mX9oxiTv2+rWvwB+LEqyQsAeWZhefkPXXtHMlSKlfZf wfngNKG3xBkDUzhHgrPH6rw0jXrzoxLQ+RziHvHD05OqAzdfEn9rqkpTRMDklEEuWtApzTu7d+e6Dk +MXPDo7l+RrVk3CHNyjvM5sz5dHE4Yx8J9WISnfgMxfKymmCsm9hW/ekMILXJhLObzsCBxtpLrhJA6 X7ghcNxXlrFlvwnteEiSYkz+8Lo5+rKXwL8DagDfwkxuCGzDQ0G86atUitohjKT70bvqKK3XlpUl+A R3/njlqqexcL9f1UoODTtGPU0rnYsj2GXoOH/iRX1wJD95tG9hOa/h7/FDkVUC8E7RhboN/0EyX57/ oswoRaZlkjUWKfHZQXYzFCl6vYIdPX8bCzqqvVXNMkwojxLHqCJ521sBuGKKMmfo86PbNOQAq6OcSW fWhNjsjZ/pgqnROVQGFyXA/Yu+9P7F34MJlrpzItf55SYOtML5fiObXzJPoG7AU6woH0md7QjAJW1i lfXc9OGmU3RqAyGV6XEo7tjbUGZ4uxhAqtQVnBdTva2n88emli1eqk6j111Hb1uEhqkLJhey4K96QQ 42Myh/Q9bRh4WDV+hP4sfQ0Aub1+R4QMdLj+6ppDmC0jhcsvC/gDYadUhqig==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel provides a "/proc/sys/net/ipv6/conf/<iface>/mtu"
-file, which can temporarily record the mtu value of the last
-received RA message when the RA mtu value is lower than the
-interface mtu, but this proc has following limitations:
+As done before in commit cb4a31675270 ("cgroup: use bitmask to filter
+for_each_subsys"), avoid compiler warnings for the pathological case of
+having no subsystems (i.e. CGROUP_SUBSYS_COUNT == 0). This condition is
+hit for the arm multi_v7_defconfig config under -Wzero-length-bounds:
 
-(1) when the interface mtu (/sys/class/net/<iface>/mtu) is
-updeated, mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) will
-be updated to the value of interface mtu;
-(2) mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) only affect
-ipv6 connection, and not affect ipv4.
+In file included from ./arch/arm/include/generated/asm/rwonce.h:1,
+                 from include/linux/compiler.h:264,
+                 from include/uapi/linux/swab.h:6,
+                 from include/linux/swab.h:5,
+                 from arch/arm/include/asm/opcodes.h:86,
+                 from arch/arm/include/asm/bug.h:7,
+                 from include/linux/bug.h:5,
+                 from include/linux/thread_info.h:13,
+                 from include/asm-generic/current.h:5,
+                 from ./arch/arm/include/generated/asm/current.h:1,
+                 from include/linux/sched.h:12,
+                 from include/linux/cgroup.h:12,
+                 from kernel/cgroup/cgroup-internal.h:5,
+                 from kernel/cgroup/cgroup.c:31:
+kernel/cgroup/cgroup.c: In function 'of_css':
+kernel/cgroup/cgroup.c:651:42: warning: array subscript '<unknown>' is outside the bounds of an
+interior zero-length array 'struct cgroup_subsys_state *[0]' [-Wzero-length-bounds]
+  651 |   return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
 
-Therefore, when the mtu option is carried in the RA message,
-there will be a problem that the user sometimes cannot obtain
-RA mtu value correctly by reading mtu6.
-
-After this patch set, if a RA message carries the mtu option,
-you can send a netlink msg which nlmsg_type is RTM_GETLINK,
-and then by parsing the attribute of IFLA_INET6_RA_MTU to
-get the mtu value carried in the RA message received on the
-inet6 device. In addition, you can also get a link notification
-when ra_mtu is updated so it doesn't have to poll.
-
-In this way, if the MTU values that the device receives from
-the network in the PCO IPv4 and the RA IPv6 procedures are
-different, the user can obtain the correct ipv6 ra_mtu value
-and compare the value of ra_mtu and ipv4 mtu, then the device
-can use the lower MTU value for both IPv4 and IPv6.
-
-Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- include/net/if_inet6.h             |  2 ++
- include/uapi/linux/if_link.h       |  1 +
- net/ipv6/addrconf.c                | 10 ++++++++++
- net/ipv6/ndisc.c                   | 17 +++++++++++------
- tools/include/uapi/linux/if_link.h |  1 +
- 5 files changed, 25 insertions(+), 6 deletions(-)
+v2: avoid "converting the enum constant to a boolean" warnings
+    https://lore.kernel.org/lkml/202108271524.oOIHtG9S-lkp@intel.com/
+v1: https://lore.kernel.org/lkml/20210827034741.2214318-1-keescook@chromium.org/
+---
+ kernel/cgroup/cgroup.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/include/net/if_inet6.h b/include/net/if_inet6.h
-index 42235c178b06..653e7d0f65cb 100644
---- a/include/net/if_inet6.h
-+++ b/include/net/if_inet6.h
-@@ -210,6 +210,8 @@ struct inet6_dev {
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index d0725c1a8db5..76693a86e8b7 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -472,7 +472,7 @@ static u16 cgroup_ss_mask(struct cgroup *cgrp)
+ static struct cgroup_subsys_state *cgroup_css(struct cgroup *cgrp,
+ 					      struct cgroup_subsys *ss)
+ {
+-	if (ss)
++	if (CGROUP_SUBSYS_COUNT > 0 && ss)
+ 		return rcu_dereference_check(cgrp->subsys[ss->id],
+ 					lockdep_is_held(&cgroup_mutex));
+ 	else
+@@ -550,6 +550,9 @@ struct cgroup_subsys_state *cgroup_e_css(struct cgroup *cgrp,
+ {
+ 	struct cgroup_subsys_state *css;
  
- 	unsigned long		tstamp; /* ipv6InterfaceTable update timestamp */
- 	struct rcu_head		rcu;
++	if (!CGROUP_SUBSYS_COUNT)
++		return NULL;
 +
-+	unsigned int		ra_mtu;
- };
+ 	do {
+ 		css = cgroup_css(cgrp, ss);
  
- static inline void ipv6_eth_mc_map(const struct in6_addr *addr, char *buf)
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index 8aad65b69054..eebd3894fe89 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -417,6 +417,7 @@ enum {
- 	IFLA_INET6_ICMP6STATS,	/* statistics (icmpv6)		*/
- 	IFLA_INET6_TOKEN,	/* device token			*/
- 	IFLA_INET6_ADDR_GEN_MODE, /* implicit address generator mode */
-+	IFLA_INET6_RA_MTU,	/* mtu carried in the RA message */
- 	__IFLA_INET6_MAX
- };
+@@ -577,6 +580,9 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
+ {
+ 	struct cgroup_subsys_state *css;
  
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index 8381288a0d6e..17756f3ed33b 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -394,6 +394,7 @@ static struct inet6_dev *ipv6_add_dev(struct net_device *dev)
- 		ndev->cnf.addr_gen_mode = IN6_ADDR_GEN_MODE_STABLE_PRIVACY;
- 
- 	ndev->cnf.mtu6 = dev->mtu;
-+	ndev->ra_mtu = 0;
- 	ndev->nd_parms = neigh_parms_alloc(dev, &nd_tbl);
- 	if (!ndev->nd_parms) {
- 		kfree(ndev);
-@@ -3849,6 +3850,7 @@ static int addrconf_ifdown(struct net_device *dev, bool unregister)
- 	}
- 
- 	idev->tstamp = jiffies;
-+	idev->ra_mtu = 0;
- 
- 	/* Last: Shot the device (if unregistered) */
- 	if (unregister) {
-@@ -5543,6 +5545,7 @@ static inline size_t inet6_ifla6_size(void)
- 	     + nla_total_size(ICMP6_MIB_MAX * 8) /* IFLA_INET6_ICMP6STATS */
- 	     + nla_total_size(sizeof(struct in6_addr)) /* IFLA_INET6_TOKEN */
- 	     + nla_total_size(1) /* IFLA_INET6_ADDR_GEN_MODE */
-+	     + nla_total_size(4) /* IFLA_INET6_RA_MTU */
- 	     + 0;
- }
- 
-@@ -5651,6 +5654,10 @@ static int inet6_fill_ifla6_attrs(struct sk_buff *skb, struct inet6_dev *idev,
- 	if (nla_put_u8(skb, IFLA_INET6_ADDR_GEN_MODE, idev->cnf.addr_gen_mode))
- 		goto nla_put_failure;
- 
-+	if (idev->ra_mtu &&
-+	    nla_put_u32(skb, IFLA_INET6_RA_MTU, idev->ra_mtu))
-+		goto nla_put_failure;
++	if (!CGROUP_SUBSYS_COUNT)
++		return NULL;
 +
- 	return 0;
+ 	rcu_read_lock();
  
- nla_put_failure:
-@@ -5767,6 +5774,9 @@ static int inet6_set_iftoken(struct inet6_dev *idev, struct in6_addr *token,
- static const struct nla_policy inet6_af_policy[IFLA_INET6_MAX + 1] = {
- 	[IFLA_INET6_ADDR_GEN_MODE]	= { .type = NLA_U8 },
- 	[IFLA_INET6_TOKEN]		= { .len = sizeof(struct in6_addr) },
-+	[IFLA_INET6_RA_MTU]		= { .type = NLA_REJECT,
-+					    .reject_message =
-+						"IFLA_INET6_RA_MTU can not be set" },
- };
+ 	do {
+@@ -647,7 +653,7 @@ struct cgroup_subsys_state *of_css(struct kernfs_open_file *of)
+ 	 * the matching css from the cgroup's subsys table is guaranteed to
+ 	 * be and stay valid until the enclosing operation is complete.
+ 	 */
+-	if (cft->ss)
++	if (CGROUP_SUBSYS_COUNT > 0 && cft->ss)
+ 		return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
+ 	else
+ 		return &cgrp->self;
+@@ -2372,7 +2378,7 @@ struct task_struct *cgroup_taskset_next(struct cgroup_taskset *tset,
+ 	struct css_set *cset = tset->cur_cset;
+ 	struct task_struct *task = tset->cur_task;
  
- static int check_addr_gen_mode(int mode)
-diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
-index c467c6419893..4b098521a44c 100644
---- a/net/ipv6/ndisc.c
-+++ b/net/ipv6/ndisc.c
-@@ -1391,12 +1391,6 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 		}
- 	}
+-	while (&cset->mg_node != tset->csets) {
++	while (CGROUP_SUBSYS_COUNT > 0 && &cset->mg_node != tset->csets) {
+ 		if (!task)
+ 			task = list_first_entry(&cset->mg_tasks,
+ 						struct task_struct, cg_list);
+@@ -4643,7 +4649,7 @@ void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
+ 	it->ss = css->ss;
+ 	it->flags = flags;
  
--	/*
--	 *	Send a notify if RA changed managed/otherconf flags or timer settings
--	 */
--	if (send_ifinfo_notify)
--		inet6_ifinfo_notify(RTM_NEWLINK, in6_dev);
--
- skip_linkparms:
- 
- 	/*
-@@ -1496,6 +1490,11 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 		memcpy(&n, ((u8 *)(ndopts.nd_opts_mtu+1))+2, sizeof(mtu));
- 		mtu = ntohl(n);
- 
-+		if (in6_dev->ra_mtu != mtu) {
-+			in6_dev->ra_mtu = mtu;
-+			send_ifinfo_notify = true;
-+		}
-+
- 		if (mtu < IPV6_MIN_MTU || mtu > skb->dev->mtu) {
- 			ND_PRINTK(2, warn, "RA: invalid mtu: %d\n", mtu);
- 		} else if (in6_dev->cnf.mtu6 != mtu) {
-@@ -1519,6 +1518,12 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 		ND_PRINTK(2, warn, "RA: invalid RA options\n");
- 	}
- out:
-+	/* Send a notify if RA changed managed/otherconf flags or
-+	 * timer settings or ra_mtu value
-+	 */
-+	if (send_ifinfo_notify)
-+		inet6_ifinfo_notify(RTM_NEWLINK, in6_dev);
-+
- 	fib6_info_release(rt);
- 	if (neigh)
- 		neigh_release(neigh);
-diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
-index eb15f319aa57..b3610fdd1fee 100644
---- a/tools/include/uapi/linux/if_link.h
-+++ b/tools/include/uapi/linux/if_link.h
-@@ -230,6 +230,7 @@ enum {
- 	IFLA_INET6_ICMP6STATS,	/* statistics (icmpv6)		*/
- 	IFLA_INET6_TOKEN,	/* device token			*/
- 	IFLA_INET6_ADDR_GEN_MODE, /* implicit address generator mode */
-+	IFLA_INET6_RA_MTU,	/* mtu carried in the RA message */
- 	__IFLA_INET6_MAX
- };
- 
+-	if (it->ss)
++	if (CGROUP_SUBSYS_COUNT > 0 && it->ss)
+ 		it->cset_pos = &css->cgroup->e_csets[css->ss->id];
+ 	else
+ 		it->cset_pos = &css->cgroup->cset_links;
 -- 
-2.18.0
+2.30.2
 
