@@ -2,100 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BC23F9824
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 12:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD293F9828
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 12:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244862AbhH0KfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 06:35:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244735AbhH0KfC (ORCPT
+        id S244906AbhH0KgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 06:36:25 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48172 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233315AbhH0KgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 06:35:02 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE15C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 03:34:14 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id i6so9256554edu.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 03:34:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7suERO5MCRclZTJvjUD3oCaR8o8lrlDPro107QK940Y=;
-        b=cTj9Q+YybeT/gf1pd8b6qQ4Scw8wpd8q4FF6FeTpme+S8EIRDp+Z0kBZbtj/MX1GUb
-         ir/T2dLcdBcIKpUTEKR+kl77xIo+e/MrL9GSbx6SSNzg7XGAjnFRuSu7VmPvsrlL01Gm
-         Hp6ojhs6VRXfqp8r+Ev/0Do0VdaDM5G/14UBX3xTwyROQq4nmftEJN+qCFHI//4gfEDV
-         UeJYzEyXzpKbJwcBjMi70xw6KBoI/TnOnVV/3GpPgeFCxvuVLA7U+S3j2VDa+XjdN4TB
-         4lrUS7K2we2zffQWgSntm59GteDsSACKP1BN8sHvSig2bQObKpcz70ybxjYRQgubwig0
-         gMpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7suERO5MCRclZTJvjUD3oCaR8o8lrlDPro107QK940Y=;
-        b=qttzbzbHFX8u8wNS5K/fWsVYGEBgUuRO3pDj5cH5MOf9ex6rebOd2gVzeYcCWwCmZs
-         eW7RMY4fxDrP1k6hSF9id4UJkW1yqO49P8NQgny0fGaNCgyNMrahYFfj98YJMnCAk+mp
-         R2gt5GAG7nqM1bzyfn2BQGWSmETaMlHmwwgRJ1QUBLR3iIZrYDTslzRfXgJ8VWJ6qLoe
-         xCku9yd5FahsIPn7QbOKoirE/ClZp5dHZIzuvHbjbt4gMvYKhbS+E1g5Ceb909SuHCsm
-         OX7ki09DTjL7+XFZ3RoJuzX43NFytnpO+fby+plalZZUz81oHxkvhhS9xFnPK4uDAmFt
-         mFvw==
-X-Gm-Message-State: AOAM532SSrHtje9PeZYrt7Vtvn1k6p03EuumkPkT80fYjuQymE0Tkp5N
-        OmLkJRkh4UZ2JKXskuys8LdSBgcoaMMF49f2hkQ=
-X-Google-Smtp-Source: ABdhPJzCPF7VtpW1gAH8kgy7FiZaP8W3cYOOvS4UkfvCabcgNhXRchLX1ZX6DFje8iTkrU50w/l70XYfIrHk6UpUX8o=
-X-Received: by 2002:aa7:c88e:: with SMTP id p14mr9313786eds.174.1630060452603;
- Fri, 27 Aug 2021 03:34:12 -0700 (PDT)
+        Fri, 27 Aug 2021 06:36:24 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 98878223A7;
+        Fri, 27 Aug 2021 10:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630060534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=niAdtdRCe3YpJfeiYeUkcQkA9WVjzr/Y1St+dfHJ19g=;
+        b=bGRUA8sCloiajoYtwpYGvw/NjZTUgRDhltqgbcujdXto30eUX+gl0W/qvwhHN8IG/C45jU
+        jpKN1JCRoWw7cbLBBVmI/ronTH6QfJGJUWgi2yccDn1SvFt43IhhmvRB2DbaQFurgqq5z+
+        xGlYXNYaJHOFnIhoWniEunm2AsUvUGg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630060534;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=niAdtdRCe3YpJfeiYeUkcQkA9WVjzr/Y1St+dfHJ19g=;
+        b=j5RRjcIxfPmjkIqfqgKufe7b3Get8FCHVvITIft9iOIVkpWBk6xn5amNXep2SXguQ4yrlT
+        KtNCmoplL7d1wZBQ==
+Received: from kunlun.suse.cz (unknown [10.100.128.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 69FD7A3B94;
+        Fri, 27 Aug 2021 10:35:34 +0000 (UTC)
+Date:   Fri, 27 Aug 2021 12:35:33 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Patrick McCarty <patrick.mccarty@intel.com>
+Subject: Re: [PATCH] libbpf: Fix build with latest gcc/binutils with LTO
+Message-ID: <20210827103533.GF21630@kunlun.suse.cz>
+References: <20210827072855.3664-1-msuchanek@suse.de>
 MIME-Version: 1.0
-References: <20210827094351.203328-1-mudongliangabcd@gmail.com> <YSi3rpsoL3UIuzFY@kroah.com>
-In-Reply-To: <YSi3rpsoL3UIuzFY@kroah.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Fri, 27 Aug 2021 18:33:46 +0800
-Message-ID: <CAD-N9QUveJWdK_zaAd6JTwWidMWap5Ri-bRe0n7QnCuBpMqbew@mail.gmail.com>
-Subject: Re: [PATCH] ipack: tpci200: change pci_iounmap to iounmap
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827072855.3664-1-msuchanek@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 6:00 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Aug 27, 2021 at 05:43:47PM +0800, Dongliang Mu wrote:
-> > The deallocation api for ioremap should be iounmap, other than
-> > pci_iounmap.
->
-> why?
+Hello,
 
-Because the tpci200->info->cfg_regs/interface_regs is allocated by
-ioremap. From my understanding, ioremap and iounmap are in pairs,
-other than pci_iounmap.
-See the code below.
+this is a duplicate of
 
-tpci200->info->interface_regs =
-ioremap(pci_resource_start(tpci200->info->pdev,
-  TPCI200_IP_INTERFACE_BAR),
-TPCI200_IFACE_SIZE);
+https://patchwork.kernel.org/project/netdevbpf/patch/20210827072539.3399-1-msuchanek@suse.de/
 
-https://elixir.bootlin.com/linux/latest/source/drivers/ipack/carriers/tpci200.c#L297
+Sorry aboit the noise.
 
-tpci200->info->cfg_regs = ioremap(
-pci_resource_start(pdev, TPCI200_CFG_MEM_BAR),
-pci_resource_len(pdev, TPCI200_CFG_MEM_BAR));
-
-https://elixir.bootlin.com/linux/latest/source/drivers/ipack/carriers/tpci200.c#L546
-
-If there is any issue, please let me know
-
->
-> Isn't this a pci device?
->
-> thanks,
->
-> greg k-h
+On Fri, Aug 27, 2021 at 09:28:55AM +0200, Michal Suchanek wrote:
+> From: Patrick McCarty <patrick.mccarty@intel.com>
+> 
+> After updating to binutils 2.35, the build began to fail with an
+> assembler error. A bug was opened on the Red Hat Bugzilla a few days
+> later for the same issue.
+> 
+> Work around the problem by using the new `symver` attribute (introduced
+> in GCC 10) as needed, instead of the `COMPAT_VERSION` and
+> `DEFAULT_VERSION` macros, which expand to assembler directives.
+> 
+> Fixes: https://github.com/libbpf/libbpf/issues/338
+> Fixes: https://bugzilla.redhat.com/show_bug.cgi?id=1863059
+> Fixes: https://bugzilla.opensuse.org/show_bug.cgi?id=1188749
+> Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
+> Make the change conditional on GCC version
+> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> ---
+>  tools/lib/bpf/libbpf_internal.h | 23 +++++++++++++++++------
+>  tools/lib/bpf/xsk.c             |  4 ++--
+>  2 files changed, 19 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> index 016ca7cb4f8a..af0f3fb102c0 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -86,20 +86,31 @@
+>  	(offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
+>  #endif
+>  
+> +#ifdef __GNUC__
+> +# if __GNUC__ >= 10
+> +#  define DEFAULT_VERSION(internal_name, api_name, version) \
+> +__attribute__((__symver__(#api_name "@@" #version)))
+> +#  define COMPAT_VERSION(internal_name, api_name, version) \
+> +__attribute__((__symver__(#api_name "@" #version)))
+> +# endif
+> +#endif
+> +
+> +#if !defined(COMPAT_VERSION) || !defined(DEFAULT_VERSION)
+>  /* Symbol versioning is different between static and shared library.
+>   * Properly versioned symbols are needed for shared library, but
+>   * only the symbol of the new version is needed for static library.
+>   */
+> -#ifdef SHARED
+> -# define COMPAT_VERSION(internal_name, api_name, version) \
+> +# ifdef SHARED
+> +#  define COMPAT_VERSION(internal_name, api_name, version) \
+>  	asm(".symver " #internal_name "," #api_name "@" #version);
+> -# define DEFAULT_VERSION(internal_name, api_name, version) \
+> +#  define DEFAULT_VERSION(internal_name, api_name, version) \
+>  	asm(".symver " #internal_name "," #api_name "@@" #version);
+> -#else
+> -# define COMPAT_VERSION(internal_name, api_name, version)
+> -# define DEFAULT_VERSION(internal_name, api_name, version) \
+> +# else
+> +#  define COMPAT_VERSION(internal_name, api_name, version)
+> +#  define DEFAULT_VERSION(internal_name, api_name, version) \
+>  	extern typeof(internal_name) api_name \
+>  	__attribute__((alias(#internal_name)));
+> +# endif
+>  #endif
+>  
+>  extern void libbpf_print(enum libbpf_print_level level,
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index e9b619aa0cdf..a2111696ba91 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -281,6 +281,7 @@ static int xsk_create_umem_rings(struct xsk_umem *umem, int fd,
+>  	return err;
+>  }
+>  
+> +DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
+>  int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+>  			    __u64 size, struct xsk_ring_prod *fill,
+>  			    struct xsk_ring_cons *comp,
+> @@ -345,6 +346,7 @@ struct xsk_umem_config_v1 {
+>  	__u32 frame_headroom;
+>  };
+>  
+> +COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
+>  int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
+>  			    __u64 size, struct xsk_ring_prod *fill,
+>  			    struct xsk_ring_cons *comp,
+> @@ -358,8 +360,6 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
+>  	return xsk_umem__create_v0_0_4(umem_ptr, umem_area, size, fill, comp,
+>  					&config);
+>  }
+> -COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
+> -DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
+>  
+>  static enum xsk_prog get_xsk_prog(void)
+>  {
+> -- 
+> 2.31.1
+> 
