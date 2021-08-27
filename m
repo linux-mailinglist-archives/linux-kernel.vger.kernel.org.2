@@ -2,144 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5B83F9BDA
+	by mail.lfdr.de (Postfix) with ESMTP id E6B593F9BDD
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244816AbhH0Pnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
+        id S244489AbhH0PoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232373AbhH0Pna (ORCPT
+        with ESMTP id S232373AbhH0Pn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:43:30 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6298DC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:42:41 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id x27so15282338lfu.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:42:41 -0700 (PDT)
+        Fri, 27 Aug 2021 11:43:59 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8C5C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:43:10 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id ia27so14739879ejc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:43:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DXkFy+7KOqBdBok+wuJGsKPAoyxzJU89j/0oaIHIjZA=;
-        b=nkOxZZeJcN/jVgIAQ0IX6FsblBfB9e3UhUz76awaCgUgNco96rVa6F0car1a3W+s0v
-         ieHt6e9iiMTAVlQEiWHPrkztkXarw2BuY156WmazWoxpL6ODtnUpmFHzD1bNObbHApb6
-         9BF3+KQuIWevWCfzKv7Hh4CJ/DpMXJjH//Oj/DpF7MoTfAkmYMcTNQE6KEuKYEZhRuyr
-         MBfg8O/iYeRGgccQmn1RhVS05h9c/hncMUKUG5Gn0erEKSF0qxFQ/wJeGyQKuXznSEE8
-         9mBGXgwhjVHFACuvXjIE30OTyqr8l3KBdXkc8RucKud29eGN961rdND+2DLRPp9fsmYV
-         lc9Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oZPGVp92VaS3dLowjetEls763eL/Q9YUNevyNpL1JuM=;
+        b=i5Kxex2KDW8eLSLlwjXmG/+a/FmluMZPNPJFNSy66Tvt+wf9rhzjE8Pd48qZNMetaz
+         G09WE9Q+ms2dF/pP64j3VS3pgUqxMZJqwenYV6987xndMpo/wRdrQ5RokRCSR+fbndIA
+         95ikxf0WSuo4QZUM3T/MxuGC5GmEPfkDQR37HoHMO6FDWY97/V5zqj91aj6nJLRpsjpN
+         duMqcaQ8DmktwD0Kd/WOByzmlEn0pwa4E0UM7u5Rv7+gQjgG5tCtfy0VbwLinKf4Ep6B
+         jzMojJLxZ1QV7IVI6oaR4xlZmRDobHWTOpPWXkCDFrmZv7nxhciY71NYbSo7+esAgCKn
+         1V0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DXkFy+7KOqBdBok+wuJGsKPAoyxzJU89j/0oaIHIjZA=;
-        b=A1ae4oIpO2f16D6P+DzIPypxfem/Eg0t7V67CuUtDbIgubfwmcov4vycjoFoBXHd6z
-         FZ5PSQbK1/Jz28VIsAGY0V8zlE2VJdzBxMDt9z8z+fw9xYJurGHEdY3lZy5tce6f3yd9
-         ylFbn5xpkROeyQ2WbWp67DBdxb7+z3mPDUJesACuRAgDn179+ADH1w5wgYk+g73jD53H
-         2SQmpnxBANy2r2NlQD8uLCfhVFE/kmkLFWxDtEVgJox08cJf3IgMXfYvMMpspAfYtwf8
-         adVJYOBXqZLBHqh3KA5kpfoz0WtuzOrtgMYo/oE4JnPxJDmSCjD4IekvugbXyXWoWVIw
-         s3fg==
-X-Gm-Message-State: AOAM533uPCozqhYOcs0q+A+AGUcerpdCxGiiEM0rnbEBy+j++cXsNSsf
-        1FsfeAVf+N58XdYEkLjhgTNLPkvDPRZ3X2ff
-X-Google-Smtp-Source: ABdhPJwhJ3kfTrQeKzq5/TV0YCLB0WVHVvx1Tc1mPTlIgkl/LCf8nROPtK+eE87rBUF/40Kmo6o8+w==
-X-Received: by 2002:a05:6512:1042:: with SMTP id c2mr7399206lfb.283.1630078955301;
-        Fri, 27 Aug 2021 08:42:35 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id e18sm703789ljo.105.2021.08.27.08.42.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 08:42:34 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id CBD3F102E6A; Fri, 27 Aug 2021 18:42:32 +0300 (+03)
-Date:   Fri, 27 Aug 2021 18:42:32 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-Subject: Re: [mm]  f9ce0be71d:
- BUG:KCSAN:data-race_in_next_uptodate_page/next_uptodate_page
-Message-ID: <20210827154232.rrpetqsh5xxklkej@box.shutemov.name>
-References: <20210826144157.GA26950@xsang-OptiPlex-9020>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oZPGVp92VaS3dLowjetEls763eL/Q9YUNevyNpL1JuM=;
+        b=n8/5bsICnSXMWQZtu387uF/CWBm/oMHjRtHcfkw2sUqCDds/CPtJC6cllXK86hIEHc
+         zwMZEjs7vIL85XQNs1ChEStIQO2Ivhpb5o1FMBVaFbTl7pcVqaZ/aIC5JsZSXc/CrwVZ
+         tQrwImR/0OX9FWYSVKtTZ2cIuuQb5mi30Ni9FoBYtQWzrL3dCxCveoeURVbllIC8p/6P
+         Uq0awQS2x+GFuANKCZ1/JsDNImHu5GW9NavZCugPKwkETXyQh2mnuDL7Zz23/yMBoglU
+         eRsLx20RwEqPr1BIk+3EJz/AeFOKSmcGV82CtUTNsNwQMHTSPolr8TAXKZlKYs9AlfDc
+         RkCA==
+X-Gm-Message-State: AOAM532qwuJz4S4iaVPh0btq0CyqPFyDFngKO3BmDMBkPf6pHfOWXDCx
+        JUWJGeYmWR/q4xteShKM4Lr1SHR1e44Tb3YXWLENjQ==
+X-Google-Smtp-Source: ABdhPJyH36GOAC0XBuOQ2fDNT72ll8GhA/IBuvrzOLPOcb/QCzQFNY/p11kajRzZ3QRbsaXgiQXkzZVqanSS1R/qstM=
+X-Received: by 2002:a17:906:fa10:: with SMTP id lo16mr10680576ejb.342.1630078988646;
+ Fri, 27 Aug 2021 08:43:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826144157.GA26950@xsang-OptiPlex-9020>
+References: <20210622203759.566716-1-iskren.chernev@gmail.com> <20210622203759.566716-2-iskren.chernev@gmail.com>
+In-Reply-To: <20210622203759.566716-2-iskren.chernev@gmail.com>
+From:   Nicolas Dechesne <nicolas.dechesne@linaro.org>
+Date:   Fri, 27 Aug 2021 17:42:58 +0200
+Message-ID: <CAP71WjxRpdoN9MMTH2Y2Xgc==tC2jWfm7X0_A1CrzZ40N_rg8Q@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] mailbox: qcom: Add support for sm4125 sm6115 APCS IPC
+To:     Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 10:41:57PM +0800, kernel test robot wrote:
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with clang-14):
-> 
-> commit: f9ce0be71d1fbb038ada15ced83474b0e63f264d ("mm: Cleanup faultaround and finish_fault() codepaths")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> 
-> in testcase: trinity
-> version: 
-> with following parameters:
-> 
-> 	number: 99999
-> 	group: group-04
-> 
-> test-description: Trinity is a linux system call fuzz tester.
-> test-url: http://codemonkey.org.uk/projects/trinity/
-> 
-> 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> +------------------------------------------------------------------------+-----------+------------+
-> |                                                                        | v5.11-rc4 | f9ce0be71d |
-> +------------------------------------------------------------------------+-----------+------------+
-> | BUG:KCSAN:data-race_in_next_uptodate_page/next_uptodate_page           | 0         | 19         |
-> | BUG:KCSAN:data-race_in_mark_page_accessed/next_uptodate_page           | 0         | 17         |
-> | BUG:KCSAN:data-race_in_next_uptodate_page/page_memcg                   | 0         | 13         |
-> | BUG:KCSAN:data-race_in_next_uptodate_page/unlock_page                  | 0         | 13         |
-> +------------------------------------------------------------------------+-----------+------------+
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> 
-> [  184.717904][ T1873] ==================================================================
-> [  184.718938][ T1873] BUG: KCSAN: data-race in next_uptodate_page / unlock_page
-> [  184.719828][ T1873]
-> [  184.720103][ T1873] write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
-> [  184.721024][ T1873]  unlock_page+0x102/0x1b0
-> [  184.721533][ T1873]  filemap_map_pages+0x6c6/0x890
-> [  184.722102][ T1873]  handle_mm_fault+0x179c/0x27f0
-> [  184.722672][ T1873]  do_user_addr_fault+0x3fb/0x830
-> [  184.723263][ T1873]  exc_page_fault+0xc3/0x1a0
-> [  184.723845][ T1873]  asm_exc_page_fault+0x1e/0x30
-> [  184.724427][ T1873]
-> [  184.724720][ T1873] read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
-> [  184.725575][ T1873]  next_uptodate_page+0x456/0x830
-> [  184.726161][ T1873]  filemap_map_pages+0x728/0x890
-> [  184.726747][ T1873]  handle_mm_fault+0x179c/0x27f0
-> [  184.727332][ T1873]  do_user_addr_fault+0x3fb/0x830
-> [  184.727905][ T1873]  exc_page_fault+0xc3/0x1a0
-> [  184.728440][ T1873]  asm_exc_page_fault+0x1e/0x30
-> [  184.729027][ T1873]
-> [  184.729313][ T1873] Reported by Kernel Concurrency Sanitizer on:
-> [  184.730019][ T1873] CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
-> [  184.731103][ T1873] ==================================================================
+On Tue, Jun 22, 2021 at 10:38 PM Iskren Chernev
+<iskren.chernev@gmail.com> wrote:
+>
+> SM4125 and SM6115, codename bengal, have APCS mailbox setup similar to
+> msm8998 and msm8916.
 
-Line annotation would be helpful.
+subject and commit refer to SM4125/SM6115, but the diff below is about
+4250/6115. I suppose it's a typo here, since 6115 is similar to 4250,
+not 4125, right?
 
-And I'm not very familiar with KCSAN. My guess it reports PageLock() vs.
-clearing PG_locked. In this context it looks safe, unless I miss
-something.
-
-Do we need some annotation to help KCSAN?
-
--- 
- Kirill A. Shutemov
+>
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+> ---
+>  drivers/mailbox/qcom-apcs-ipc-mailbox.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> index f25324d03842..1a4d8cca5881 100644
+> --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> @@ -166,6 +166,8 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
+>         { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
+>         { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
+>         { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
+> +       { .compatible = "qcom,sm4250-apcs-hmss-global", .data = &sdm660_apcs_data },
+> +       { .compatible = "qcom,sm6115-apcs-hmss-global", .data = &sdm660_apcs_data },
+>         { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
+>         { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
+>         {}
+> --
+> 2.31.1
+>
