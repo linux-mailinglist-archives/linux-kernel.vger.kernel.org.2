@@ -2,153 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE45D3F9BB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBD73F9BB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245461AbhH0P1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:27:13 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56358 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245428AbhH0P1H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:27:07 -0400
-Received: from [IPv6:2a01:e0a:4cb:a870:de4d:a9ab:fdfa:6660] (unknown [IPv6:2a01:e0a:4cb:a870:de4d:a9ab:fdfa:6660])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 190421F44BB0;
-        Fri, 27 Aug 2021 16:26:17 +0100 (BST)
-Subject: Re: [PATCH] media: hevc: fix pictures lists type
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        John Cox <jc@kynesim.co.uk>
-Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
-References: <20210823082949.237716-1-benjamin.gaignard@collabora.com>
- <02r6ig176o0lqc52nm8rhta7cn5bfn04in@4ax.com>
- <e1df8e77-b4d1-481c-0f4b-4a20f42d5c9e@collabora.com>
- <i917ig582epdnpkmjdtvtnap6u8c032c1r@4ax.com>
- <9d6336fff6f122a9a4510a111387a000c65f797b.camel@ndufresne.ca>
- <da18a240-22bd-54d2-6306-f39f10a05b22@collabora.com>
- <r4ehigheq602qijsnjd8govhl4f1dpnr35@4ax.com>
- <b5ae0ebe-de90-5ebb-5e69-ea66ae0e0639@collabora.com>
- <mdmhigh3ubgs6r89061v19iagjs0il9b89@4ax.com>
- <CAAEAJfA68tTeGgRHS2=hs5tQw2_3RhPgdXq6+k4GDX=0LMMBxQ@mail.gmail.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <ec12d297-26ae-a214-59bc-619a925a79bc@collabora.com>
-Date:   Fri, 27 Aug 2021 17:26:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S245460AbhH0P2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:28:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234044AbhH0P2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 11:28:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF09160232;
+        Fri, 27 Aug 2021 15:27:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630078047;
+        bh=YcuO1NmAv8VjO+U1iC07eG0TGAhra6EY6qYLzMjAgaA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ytgMCOlbA8xS9fK9fADxvgDVtHAxdZZdYbdHl8d9L3G439mhJbneI4c0KYZuBASB3
+         SMTgmLPBYH9WPgyZhav/y7Pi7t5xq8ceOTnJbwi5Ymf7CnygBMjEO0Lgu4t5qfY6ko
+         siwjxk2LH/DxcEJaereaBerz4SWfaS5AN1/TGkZQ=
+Date:   Fri, 27 Aug 2021 17:27:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH 5/5] staging: r8188eu: Use vsprintf extension %phCX to
+ format a copy_to_user string
+Message-ID: <YSkEWBbOJmNSI4zn@kroah.com>
+References: <cover.1630003183.git.joe@perches.com>
+ <152e1b8f84c4686ea38182ca55344ed7f2cede65.1630003183.git.joe@perches.com>
+ <YSildgE0Ul4akIUJ@kroah.com>
+ <903a73b791466918ca72c8fc62406acb86e93018.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAEAJfA68tTeGgRHS2=hs5tQw2_3RhPgdXq6+k4GDX=0LMMBxQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <903a73b791466918ca72c8fc62406acb86e93018.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 27, 2021 at 08:23:31AM -0700, Joe Perches wrote:
+> On Fri, 2021-08-27 at 10:42 +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Aug 26, 2021 at 11:43:05AM -0700, Joe Perches wrote:
+> > > This reduces object size without changing the string content.
+> > > 
+> > > compiled x86-64 defconfig w/ r8188eu and gcc 10.3.0
+> > > 
+> > > $ size drivers/staging/r8188eu/os_dep/ioctl_linux.o*
+> > >    text	   data	    bss	    dec	    hex	filename
+> > >   72556	   1548	      0	  74104	  12178	drivers/staging/r8188eu/os_dep/ioctl_linux.o.new
+> > >   72758	   1548	      0	  74306	  12242	drivers/staging/r8188eu/os_dep/ioctl_linux.o.old
+> > > 
+> > > Signed-off-by: Joe Perches <joe@perches.com>
+> > > ---
+> > >  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 9 +++------
+> > >  1 file changed, 3 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> > > index ab4a9200f0791..048164659d872 100644
+> > > --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> > > +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> > > @@ -2907,10 +2907,8 @@ static int rtw_p2p_get_groupid(struct net_device *dev,
+> > >  	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
+> > >  	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
+> > >  
+> > > 
+> > > -	sprintf(extra, "\n%.2X:%.2X:%.2X:%.2X:%.2X:%.2X %s",
+> > > -		pwdinfo->groupid_info.go_device_addr[0], pwdinfo->groupid_info.go_device_addr[1],
+> > > -		pwdinfo->groupid_info.go_device_addr[2], pwdinfo->groupid_info.go_device_addr[3],
+> > > -		pwdinfo->groupid_info.go_device_addr[4], pwdinfo->groupid_info.go_device_addr[5],
+> > > +	sprintf(extra, "\n%pM %s",
+> > > +		pwdinfo->groupid_info.go_device_addr,
+> > >  		pwdinfo->groupid_info.ssid);
+> > 
+> > We can just use the lower-case one here, no need for a new modifier just
+> > for something like this (i.e. log file output)
+> 
+> That was just a trivial conversion of log file output and is lower case
+> as log file output is not ABI.
+> 
+> The copy_to_user bit (2nd diff block) is nominally an ABI and is upper case.
+> IMO at a minimum, it's bad form to change it.
+> 
+> @@ -3075,8 +3073,7 @@ static int rtw_p2p_get_go_device_address(struct net_device *dev,
+>         if (!blnMatch)
+>                 sprintf(go_devadd_str, "\n\ndev_add = NULL");
+>         else
+> -               sprintf(go_devadd_str, "\ndev_add =%.2X:%.2X:%.2X:%.2X:%.2X:%.2X",
+> -                       attr_content[0], attr_content[1], attr_content[2], attr_content[3], attr_content[4], attr_content[5]);
+> +               sprintf(go_devadd_str, "\ndev_add =%6phCX", attr_content);
+>  
+>         if (copy_to_user(wrqu->data.pointer, go_devadd_str, 10 + 17))
+>                 return -EFAULT;
 
-Le 27/08/2021 Ã  14:40, Ezequiel Garcia a Ã©critÂ :
-> On Fri, 27 Aug 2021 at 09:36, John Cox <jc@kynesim.co.uk> wrote:
->>> Le 27/08/2021 Ã  12:10, John Cox a Ã©crit :
->>>>> Le 26/08/2021 Ã  18:09, Nicolas Dufresne a Ã©crit :
->>>>>> Le lundi 23 aoÃ»t 2021 Ã  12:35 +0100, John Cox a Ã©crit :
->>>>>>> Hi
->>>>>>>
->>>>>>>> Le 23/08/2021 Ã  11:50, John Cox a Ã©crit :
->>>>>>>>>> The lists embedded Picture Order Count values which are s32 so their type
->>>>>>>>>> most be s32 and not u8.
->>>>>>>>> I'm not convinced that you can't calculate all of those lists from the
->>>>>>>>> info already contained in the DPB array so this is probably redundant
->>>>>>>>> info though I grant that having the list pre-calced might make your life
->>>>>>>>> easier, and the userland side will have calculated the lists to
->>>>>>>>> calculate other required things so it isn't much extra work for it.
->>>>>>>> Yes the userland have already compute these lists and the number of items
->>>>>>>> in each of them.
->>>>>>>> Build them in the kernel would means to also compute the values of NumPocStCurrBefore,
->>>>>>>> NumPocStCurrAfter, NumPocLtCurr, NumPocStCurrAfter, NumPocStCurrBefore and NumPocLtCurr
->>>>>>>> and that requires information (NumNegativePics, NumPositivePics...) not provided to the kernel.
->>>>>>>> Since it have to be done in userland anyway, I'm reluctant to modify the API to redo in the kernel.
->>>>>>> Well, fair enough, I'm not going to argue
->>>>>>>
->>>>>>>>> Even if you do need the lists wouldn't it be a better idea to have them
->>>>>>>>> as indices into the DPB (you can't have a frame in any of those lists
->>>>>>>>> that isn't in the DPB) which already contains POCs then it will still
->>>>>>>>> fit into u8 and be smaller?
->>>>>>>> Hantro HW works with indexes but I think it is more simple to send PoC rather than indexes.
->>>>>>> I'd disagree but as I don't use the info I'm not concerned. Though I
->>>>>>> think I should point out that when Hantro converts the POCs to indicies
->>>>>>> it compares the now s32 POC in these lists with the u16 POC in the DPB
->>>>>>> so you might need to fix that too; by std (8.3.1) no POC diff can be
->>>>>>> outside s16 so you can mask & compare or use u16 POCs in the lists or
->>>>>>> s32 in the DPB.
->>>>>> Fun fact, my interpretation with the API when I drafted GStreamer support was
->>>>>> that it was DPB indexes:
->>>>>>
->>>>>> https://gitlab.freedesktop.org/ndufresne/gst-plugins-bad/-/blob/hevc_wip/sys/v4l2codecs/gstv4l2codech265dec.c#L850
->>>>>>
->>>>>> It felt quite natural to be, since this is also how we pass references for l0/l1
->>>>>> (unused by hantro I guess).
->>>>>>
->>>>>> Looking at old rkvdec code as a refresher:
->>>>>>
->>>>>>      for (j = 0; j < run->num_slices; j++) {
->>>>>>                    sl_params = &run->slices_params[j];
->>>>>>                    dpb = sl_params->dpb;
->>>>>>
->>>>>>                    hw_ps = &priv_tbl->rps[j];
->>>>>>                    memset(hw_ps, 0, sizeof(*hw_ps));
->>>>>>
->>>>>>                    for (i = 0; i <= sl_params->num_ref_idx_l0_active_minus1; i++) {
->>>>>>                            WRITE_RPS(!!(dpb[sl_params->ref_idx_l0[i]].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR),
->>>>>>                                      REF_PIC_LONG_TERM_L0(i));
->>>>>>                            WRITE_RPS(sl_params->ref_idx_l0[i], REF_PIC_IDX_L0(i));
->>>>>>                    }
->>>>>>
->>>>>>                    for (i = 0; i <= sl_params->num_ref_idx_l1_active_minus1; i++) {
->>>>>>                            WRITE_RPS(!!(dpb[sl_params->ref_idx_l1[i]].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR),
->>>>>>                                      REF_PIC_LONG_TERM_L1(i));
->>>>>>                            WRITE_RPS(sl_params->ref_idx_l1[i], REF_PIC_IDX_L1(i));
->>>>>>                    }
->>>>>>
->>>>>>
->>>>>> This is code is clearly unsafe, but now I remember that dpb_entry has a flag
->>>>>> "rps". So we know from the DPB in which of the list the reference lives, if any.
->>>>>> In the case of RKVDEC the HW only cares to know if this is long term or not.
->>>>>>
->>>>>> So without looking at the spec, is that dpb represention enough to reconstruct
->>>>>> these array ? If we pass these array, shall we keep the rps flag ? I think a
->>>>>> little step back and cleanup will be needed. I doubt there is a single answer,
->>>>>> perhaps list what others do (VA, DXVA, NVDEC, Khronos, etc) and we can
->>>>>> collectively decide were we want V4L2 to sit ?
->>>>> I have done some tests with Hantro driver and look at the spec, the order of the PoC
->>>>> in the reference lists matters. You can deducted the order for DPB rps flags.
->>>>> I would suggest to remove rps flags to avoid information duplication.
->>>> I want the DPB rps member for long term reference marking.  I don't care
->>>> about before / after, but LTR can't be deduced from PoC and if you are
->>>> going to keep the member you might as well keep before / after.
->>> Ok so keep like it is.
->>> In this case my patch is enough, right ?
-> The problem with the patch is that it breaks existing userspace.
-> Currently, there's no upstreamed userspace so this is not a huge
-> deal.
->
-> However, it's definitely not a good practice. Even if these are
-> staging controls, I think a proper action item is to start discussing
-> what's missing on the HEVC interface as a whole, so it can be
-> moved to stable.
+That looks like a horrible driver-specific api that no one will really
+be using and will be removed from the tree soon.  So it can be changed,
+no need to worry about any "compatibility" issues here.
 
-I do agree I think it could the time to talk about moving the API to stable.
-My plan is to get this patch merge before sending a RFC to move the API.
+thanks,
 
-Benjamin
-
->
-> Otherwise, it almost feels like bikeshading.
->
-> Thanks,
-> Ezequiel
+greg k-h
