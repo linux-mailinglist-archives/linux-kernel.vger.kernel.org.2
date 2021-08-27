@@ -2,173 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4EC3F97A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406F93F9783
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245195AbhH0JrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:47:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26426 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244972AbhH0Jo6 (ORCPT
+        id S245062AbhH0JpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245005AbhH0Joz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:44:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630057449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kUEWmlXwEslPWNc4ZD+ZKqsO8+ZWy5ojVzHcza3L6Og=;
-        b=ROoen8sLe/UEd9ymKkEW7hldHDdFWbNktkt9uQ2P8xKrmUmdRd4YlR1qU06hTBqg9KX4fA
-        1+TgAaGNsuml9uVFRbKFxbPWPxUZRBEIR+pVbWajiWjQc7IcMcReKQixdZpJSqVe4aXaUf
-        qsnTtkRwCzUg0ahkpXxwWKMPPwSnE+0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-pY8qYvOXPXqARqwH0J9bXw-1; Fri, 27 Aug 2021 05:44:08 -0400
-X-MC-Unique: pY8qYvOXPXqARqwH0J9bXw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96A4D108EDF0;
-        Fri, 27 Aug 2021 09:43:49 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A0D605D6B1;
-        Fri, 27 Aug 2021 09:43:46 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v2 2/6] afs: Sort out symlink reading
-From:   David Howells <dhowells@redhat.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Jeff Layton <jlayton@redhat.com>, dhowells@redhat.com,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date:   Fri, 27 Aug 2021 10:43:45 +0100
-Message-ID: <163005742570.2472992.7800423440314043178.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163005740700.2472992.12365214290752300378.stgit@warthog.procyon.org.uk>
-References: <163005740700.2472992.12365214290752300378.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 27 Aug 2021 05:44:55 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241A0C0617A8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:44:07 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id e16so4795649pfc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wayLOd5wtu3dJzrv0vfB7W5+rCLS0oWQSMlaWOVxFrU=;
+        b=fPzM/e13yE1Wk4X/95AnCYs1gtoOcunar3esJ1Lu7NfNAHPOzKErHPpS2OMUFgsHMY
+         4VSHA525OeEgwisSKsLyFKtjzk/Le0cFip7879FC5t0ZpcSrJAJBLMu7YRfDWc4fmtRC
+         fkCM7RyPFq8tPvC2yUz0TE9ZTIwCds35V0xyrzfhFCgoIC0BeeLsTfG84In43ldbMwNP
+         qJ2yDn+oGsBpbfbdxYuIQbI0zPplf54RMvshamhSHlmvUYTC+l3NTUccTGgpHVUeCVXR
+         NzlPAdLMClm9dmlXpZ38Ugz03xDgQgm8CzIAJB5IJHBdsbajebSCJWTsxrPpQsaIOQGi
+         RFmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wayLOd5wtu3dJzrv0vfB7W5+rCLS0oWQSMlaWOVxFrU=;
+        b=HjtuDE6q1hXsvCpta/1XZa5liUM8w4IXMC/b2V40qQ/IRjYU8+Hn9SkLil0vc9o/Ll
+         120A5epVtFR9MASQ/DqL7AbN/+PSJgqPlM1Dlaqu6mC7NxwhQHFbvGqv+qye42lJN9TN
+         HsQVsPGPxDnz1muydcgy2xZAiFfNQ9KycptLRSPc3W2H2xkkLIg3M+AEoMC4eaV7Uw5P
+         nfwKucyc5cD2CvWBqpleAMNSwWXjsYnyjBhnb9LWpWS573hW7++KaDco5fEAPc/hipzX
+         EBXYKkndHvkdQgChTJ1JMyN03JFXKwMkE4DHHXDSefO69QfdroN++mq/pdhu0nTgbJD8
+         cPsA==
+X-Gm-Message-State: AOAM532+wfRMmDMn07LS4i27o/7WhOEdU2k9Yt0MiMpti3wy6SZlzf5M
+        WO5/pBguoAiD1dJQWwbVGxo=
+X-Google-Smtp-Source: ABdhPJwh5DAORO+Hs5SuilH9ywntGjERJdBR+uqwKGqP9zqVoeRz0x6jq2Mc8hJU/VUOR/uc01Q++w==
+X-Received: by 2002:a63:4e65:: with SMTP id o37mr7196198pgl.202.1630057446618;
+        Fri, 27 Aug 2021 02:44:06 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.92])
+        by smtp.gmail.com with ESMTPSA id m2sm6619217pgu.15.2021.08.27.02.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 02:44:06 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Aditya Srivastava <yashsri421@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        industrypack-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ipack: tpci200: change pci_iounmap to iounmap
+Date:   Fri, 27 Aug 2021 17:43:47 +0800
+Message-Id: <20210827094351.203328-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-afs_readpage() doesn't get a file pointer when called for a symlink, so
-separate it from regular file pointer handling.
+The deallocation api for ioremap should be iounmap, other than
+pci_iounmap.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Jeff Layton <jlayton@redhat.com>
-Link: https://lore.kernel.org/r/162687508008.276387.6418924257569297305.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/162981152280.1901565.2264055504466731917.stgit@warthog.procyon.org.uk/
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
+ drivers/ipack/carriers/tpci200.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
- fs/afs/file.c     |   14 +++++++++-----
- fs/afs/inode.c    |    6 +++---
- fs/afs/internal.h |    3 ++-
- 3 files changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index db035ae2a134..daa9106b9654 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -19,6 +19,7 @@
- 
- static int afs_file_mmap(struct file *file, struct vm_area_struct *vma);
- static int afs_readpage(struct file *file, struct page *page);
-+static int afs_symlink_readpage(struct file *file, struct page *page);
- static void afs_invalidatepage(struct page *page, unsigned int offset,
- 			       unsigned int length);
- static int afs_releasepage(struct page *page, gfp_t gfp_flags);
-@@ -45,7 +46,7 @@ const struct inode_operations afs_file_inode_operations = {
- 	.permission	= afs_permission,
- };
- 
--const struct address_space_operations afs_fs_aops = {
-+const struct address_space_operations afs_file_aops = {
- 	.readpage	= afs_readpage,
- 	.readahead	= afs_readahead,
- 	.set_page_dirty	= afs_set_page_dirty,
-@@ -58,6 +59,12 @@ const struct address_space_operations afs_fs_aops = {
- 	.writepages	= afs_writepages,
- };
- 
-+const struct address_space_operations afs_symlink_aops = {
-+	.readpage	= afs_symlink_readpage,
-+	.releasepage	= afs_releasepage,
-+	.invalidatepage	= afs_invalidatepage,
-+};
-+
- static const struct vm_operations_struct afs_vm_ops = {
- 	.fault		= filemap_fault,
- 	.map_pages	= filemap_map_pages,
-@@ -306,7 +313,7 @@ static void afs_req_issue_op(struct netfs_read_subrequest *subreq)
- 	afs_fetch_data(fsreq->vnode, fsreq);
- }
- 
--static int afs_symlink_readpage(struct page *page)
-+static int afs_symlink_readpage(struct file *file, struct page *page)
+diff --git a/drivers/ipack/carriers/tpci200.c b/drivers/ipack/carriers/tpci200.c
+index cbfdadecb23b..bf2ae2be5eb5 100644
+--- a/drivers/ipack/carriers/tpci200.c
++++ b/drivers/ipack/carriers/tpci200.c
+@@ -88,7 +88,7 @@ static void tpci200_unregister(struct tpci200_board *tpci200)
  {
- 	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
- 	struct afs_read *fsreq;
-@@ -371,9 +378,6 @@ const struct netfs_read_request_ops afs_req_ops = {
+ 	free_irq(tpci200->info->pdev->irq, (void *) tpci200);
  
- static int afs_readpage(struct file *file, struct page *page)
- {
--	if (!file)
--		return afs_symlink_readpage(page);
--
- 	return netfs_readpage(file, page, &afs_req_ops, NULL);
- }
+-	pci_iounmap(tpci200->info->pdev, tpci200->info->interface_regs);
++	iounmap(tpci200->info->interface_regs);
  
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 80b6c8d967d5..0dc71b24859f 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -105,7 +105,7 @@ static int afs_inode_init_from_status(struct afs_operation *op,
- 		inode->i_mode	= S_IFREG | (status->mode & S_IALLUGO);
- 		inode->i_op	= &afs_file_inode_operations;
- 		inode->i_fop	= &afs_file_operations;
--		inode->i_mapping->a_ops	= &afs_fs_aops;
-+		inode->i_mapping->a_ops	= &afs_file_aops;
- 		break;
- 	case AFS_FTYPE_DIR:
- 		inode->i_mode	= S_IFDIR |  (status->mode & S_IALLUGO);
-@@ -123,11 +123,11 @@ static int afs_inode_init_from_status(struct afs_operation *op,
- 			inode->i_mode	= S_IFDIR | 0555;
- 			inode->i_op	= &afs_mntpt_inode_operations;
- 			inode->i_fop	= &afs_mntpt_file_operations;
--			inode->i_mapping->a_ops	= &afs_fs_aops;
-+			inode->i_mapping->a_ops	= &afs_symlink_aops;
- 		} else {
- 			inode->i_mode	= S_IFLNK | status->mode;
- 			inode->i_op	= &afs_symlink_inode_operations;
--			inode->i_mapping->a_ops	= &afs_fs_aops;
-+			inode->i_mapping->a_ops	= &afs_symlink_aops;
- 		}
- 		inode_nohighmem(inode);
- 		break;
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 5ed416f4ff33..beaef0387e85 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1044,7 +1044,8 @@ extern void afs_dynroot_depopulate(struct super_block *);
- /*
-  * file.c
-  */
--extern const struct address_space_operations afs_fs_aops;
-+extern const struct address_space_operations afs_file_aops;
-+extern const struct address_space_operations afs_symlink_aops;
- extern const struct inode_operations afs_file_inode_operations;
- extern const struct file_operations afs_file_operations;
- extern const struct netfs_read_request_ops afs_req_ops;
-
+ 	pci_release_region(tpci200->info->pdev, TPCI200_IP_INTERFACE_BAR);
+ 	pci_release_region(tpci200->info->pdev, TPCI200_IO_ID_INT_SPACES_BAR);
+@@ -347,7 +347,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
+ 	return 0;
+ 
+ err_interface_regs:
+-	pci_iounmap(tpci200->info->pdev, tpci200->info->interface_regs);
++	iounmap(tpci200->info->interface_regs);
+ err_mem16_space_bar:
+ 	pci_release_region(tpci200->info->pdev, TPCI200_MEM16_SPACE_BAR);
+ err_mem8_space_bar:
+@@ -596,7 +596,7 @@ static int tpci200_pci_probe(struct pci_dev *pdev,
+ err_tpci200_install:
+ 	tpci200_uninstall(tpci200);
+ err_cfg_regs:
+-	pci_iounmap(tpci200->info->pdev, tpci200->info->cfg_regs);
++	iounmap(tpci200->info->cfg_regs);
+ err_request_region:
+ 	pci_release_region(pdev, TPCI200_CFG_MEM_BAR);
+ err_tpci200_info:
+@@ -612,7 +612,7 @@ static void __tpci200_pci_remove(struct tpci200_board *tpci200)
+ 	ipack_bus_unregister(tpci200->info->ipack_bus);
+ 	tpci200_uninstall(tpci200);
+ 
+-	pci_iounmap(tpci200->info->pdev, tpci200->info->cfg_regs);
++	iounmap(tpci200->info->cfg_regs);
+ 
+ 	pci_release_region(tpci200->info->pdev, TPCI200_CFG_MEM_BAR);
+ 
+-- 
+2.25.1
 
