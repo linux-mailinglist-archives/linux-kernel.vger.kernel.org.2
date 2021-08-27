@@ -2,79 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A443F9C2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2929D3F9C2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245519AbhH0QKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:10:31 -0400
-Received: from smtprelay0209.hostedemail.com ([216.40.44.209]:46702 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S245348AbhH0QK1 (ORCPT
+        id S245530AbhH0QKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:10:46 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:36974 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245348AbhH0QKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:10:27 -0400
-Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 3381E182CF665;
-        Fri, 27 Aug 2021 16:09:35 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id D46641A29F9;
-        Fri, 27 Aug 2021 16:09:33 +0000 (UTC)
-Message-ID: <628285fc7757f020159503d4d3b45790e73f0133.camel@perches.com>
-Subject: Re: [PATCH 0/5] vsprintf and uses: Add upper case output to %*ph
- extension
-From:   Joe Perches <joe@perches.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-scsi@vger.kernel.org, storagedev@microchip.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Date:   Fri, 27 Aug 2021 09:09:32 -0700
-In-Reply-To: <YSi9NufNS18rRpmE@kroah.com>
-References: <cover.1630003183.git.joe@perches.com>
-         <YSiZlyQzgW8umsjj@smile.fi.intel.com>
-         <4b8e2987c1ff384bac497a20fcd75f9051990cff.camel@perches.com>
-         <YSimXPUVcy9zhpYG@smile.fi.intel.com> <YSi9NufNS18rRpmE@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Fri, 27 Aug 2021 12:10:44 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 897FF1D45;
+        Fri, 27 Aug 2021 19:09:54 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1630080594;
+        bh=BqiwzVhva+csPjSDEsGqCA8sq/nNxY2PFZRQPK70VtU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=Uo1cnJAycJAsDIrY1jAgvEiC6dQsXrfxkdbB8p7fIdQdJUAbVu0HFikQyAfmQRiTo
+         j8Vd2HDcLgvVGLnEFQCSPUF7yvKREeBfNxp4JgwKrke5vlH7PJO1cjWieUnhTfvsoJ
+         1ZiXO19EpM8mbJ4Fi+DyvzpLcOtAvK8rzEb6oyOU=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 27 Aug 2021 19:09:54 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%12]) with
+ mapi id 15.01.2176.009; Fri, 27 Aug 2021 19:09:54 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] fs/ntfs3: Add ifndef + define to all header files
+Thread-Topic: [PATCH] fs/ntfs3: Add ifndef + define to all header files
+Thread-Index: AQHXkpaNnll4ojWsX0ux0GOVaSMR8auHlqNw
+Date:   Fri, 27 Aug 2021 16:09:54 +0000
+Message-ID: <e73f5cebaee948568c2738bd1b9d9edf@paragon-software.com>
+References: <20210816120156.186193-1-kari.argillander@gmail.com>
+In-Reply-To: <20210816120156.186193-1-kari.argillander@gmail.com>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.0.26]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.73
-X-Stat-Signature: aby4s94qy84u5x9x6aqguca3q11mh8d3
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: D46641A29F9
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18E1EtdtIkXuy4sqiURYIDYh0DNlDpJ/ag=
-X-HE-Tag: 1630080573-979598
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-27 at 12:23 +0200, Greg KH wrote:
-> On Fri, Aug 27, 2021 at 11:46:20AM +0300, Andy Shevchenko wrote:
-> > On Fri, Aug 27, 2021 at 01:10:41AM -0700, Joe Perches wrote:
-> > > On Fri, 2021-08-27 at 10:51 +0300, Andy Shevchenko wrote:
-> > > > On Thu, Aug 26, 2021 at 11:43:00AM -0700, Joe Perches wrote:
-> > > > > Several sysfs uses that could use %*ph are upper case hex output.
-> > > > > Add a flag to the short hex formatting routine in vsprintf to support them.
-> > > > > Add documentation too.
-> > > > 
-> > > > Thanks!
-> > > > 
-> > > > Unfortunately I have got only first patch and this cover letter. Can you,
-> > > > please, Cc entire series?
-> > > 
-> > > It's on lore.
-> > > 
-> > > https://lore.kernel.org/lkml/cover.1630003183.git.joe@perches.com/T/#u
-> > 
-> > Thanks. So, you won't me to review them in a regular way :-)
-> > 
-> > TBH, I think those examples may pretty much be safe to use small
-> > letters always.
-> 
-> I agree, let's just fix the users here to use small letters instead of
-> adding another modifier to the kernel.
+> From: Kari Argillander <kari.argillander@gmail.com>
+> Sent: Monday, August 16, 2021 3:02 PM
+> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>; ntfs3@=
+lists.linux.dev
+> Cc: Kari Argillander <kari.argillander@gmail.com>; linux-kernel@vger.kern=
+el.org
+> Subject: [PATCH] fs/ntfs3: Add ifndef + define to all header files
+>=20
+> Add guards so that compiler will only include header files once.
+>=20
+> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+> ---
+> I do not mind if this get's merged to V28/V29 without commit.
+> ---
+>  fs/ntfs3/debug.h   | 5 +++++
+>  fs/ntfs3/ntfs.h    | 3 +++
+>  fs/ntfs3/ntfs_fs.h | 5 +++++
+>  3 files changed, 13 insertions(+)
+>=20
+> diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
+> index dfaa4c79dc6d..465466631d38 100644
+> --- a/fs/ntfs3/debug.h
+> +++ b/fs/ntfs3/debug.h
+> @@ -7,6 +7,9 @@
+>   */
+>=20
+>  // clang-format off
+> +#ifndef _LINUX_NTFS3_DEBUG_H
+> +#define _LINUX_NTFS3_DEBUG_H
+> +
+>  #ifndef Add2Ptr
+>  #define Add2Ptr(P, I)		((void *)((u8 *)(P) + (I)))
+>  #define PtrOffset(B, O)		((size_t)((size_t)(O) - (size_t)(B)))
+> @@ -61,4 +64,6 @@ void ntfs_inode_printk(struct inode *inode, const char =
+*fmt, ...)
+>  #define ntfs_free(p)		kfree(p)
+>  #define ntfs_vfree(p)		kvfree(p)
+>  #define ntfs_memdup(src, len)	kmemdup(src, len, GFP_NOFS)
+> +
+> +#endif /* _LINUX_NTFS3_DEBUG_H */
+>  // clang-format on
+> diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
+> index 40398e6c39c9..16da514af124 100644
+> --- a/fs/ntfs3/ntfs.h
+> +++ b/fs/ntfs3/ntfs.h
+> @@ -7,6 +7,8 @@
+>   */
+>=20
+>  // clang-format off
+> +#ifndef _LINUX_NTFS3_NTFS_H
+> +#define _LINUX_NTFS3_NTFS_H
+>=20
+>  /* TODO:
+>   * - Check 4K mft record and 512 bytes cluster
+> @@ -1235,4 +1237,5 @@ struct SID {
+>  };
+>  static_assert(offsetof(struct SID, SubAuthority) =3D=3D 8);
+>=20
+> +#endif /* _LINUX_NTFS3_NTFS_H */
+>  // clang-format on
+> diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+> index 0c3ac89c3115..80e1dea2579a 100644
+> --- a/fs/ntfs3/ntfs_fs.h
+> +++ b/fs/ntfs3/ntfs_fs.h
+> @@ -6,6 +6,9 @@
+>   */
+>=20
+>  // clang-format off
+> +#ifndef _LINUX_NTFS3_NTFS_FS_H
+> +#define _LINUX_NTFS3_NTFS_FS_H
+> +
+>  #define MINUS_ONE_T			((size_t)(-1))
+>  /* Biggest MFT / smallest cluster */
+>  #define MAXIMUM_BYTES_PER_MFT		4096
+> @@ -1090,3 +1093,5 @@ static inline void le64_sub_cpu(__le64 *var, u64 va=
+l)
+>  {
+>  	*var =3D cpu_to_le64(le64_to_cpu(*var) - val);
+>  }
+> +
+> +#endif /* _LINUX_NTFS3_NTFS_FS_H */
+> --
+> 2.30.2
 
-ABI _should_ mean stability for random parsers.
+Thanks again - applied!
 
-I don't use these so I don't care that much.
-
+Best regards
