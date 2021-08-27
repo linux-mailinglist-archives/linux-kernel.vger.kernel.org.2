@@ -2,288 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDE83F942D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 08:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87B53F9444
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 08:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244220AbhH0GFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 02:05:05 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:29624 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhH0GE7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 02:04:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1630044251; x=1661580251;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=S5gDZVkl7DqbiTC3VNHUGFMnMm7nOxcSwN8+S6FJ+4U=;
-  b=EhwQXEy6w/0rEESXpmnO1EivaTAjhN7fM4zaskLTE1rijxd9EJth6adj
-   6kgxYN19rAdusUD3BW2SyX5+OqhFZs1X7BRFlC7vYL7rETdzoHFEpgVO1
-   bALtw4quZGZf0omjsi69QwCWV2B6tbeWoLBgpeB45Sf1sBP5DjbaKQQMO
-   9VW4Ux3YdGI5Hwfu6YrpQ3OtJWEfKuaC0OZKgSKEo2S/Zh1HX4zK3A3pg
-   M5fiVO79UoNg+Ou6bykeEjJtop5un2yPoK4EknjeqVsCtQcS9zSEk4FnL
-   yTHShtv3gbzq8d3Ky1WA6Tk88CUUjNH8LiTBFq799Jyuv2+hNG0YLqf6m
-   g==;
-X-IronPort-AV: E=Sophos;i="5.84,355,1620662400"; 
-   d="scan'208";a="177669035"
-Received: from mail-dm6nam10lp2107.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.107])
-  by ob1.hgst.iphmx.com with ESMTP; 27 Aug 2021 14:04:10 +0800
+        id S244251AbhH0GGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 02:06:07 -0400
+Received: from mail-bn1nam07on2064.outbound.protection.outlook.com ([40.107.212.64]:25828
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244234AbhH0GGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 02:06:06 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nto2/tV1/rc8O5oqEXisE6+wCx0FQ5ENjKz3BKLwBJL+cO27Wm4jl1aHamC8h+CMZ2x7zEO/azI4ISbCdl9kqvkSS1PYFKgyuleA71u3znOBYbRMdtfOOandYIs6+1W/DJ+eopEjiq6TJJUCdBfGC52SMHDakaCQxnyGVJKLQa2sJ1jyLWUnxmSPeEDvf5F2pQB0F0N30h5No9l8urpbBE5EWQMNmxczrvRrasw6KWK/DG1Edm5vSV+G7euYbvlJeVnszVdRBrNR9jpH+iKy6l9ABIO98BmJI3MvYT/7IJRxofoNuZ0b0LcwLMwRpNincqCBaIiMRGUTIakgqcgf7Q==
+ b=d4Aie2WfEXKijRM4z/Yte8eQxmVr28EfEwzqOtKd7GxHV+8HtAjw+n4w6JhsDpHbfiJc4NvQdk7WBaTlM5zgrLmUnAnLAooOYnF9G7pRtf6WFW5kfntUHNxW6VUodtwnFlWHGV5GCWkyemG3iQMjc3MQowEdtWl0FDqIiDLmuJpevzXoxQQ/fnNDx7mT9n5SrS7zC8yqrzYHweHMr3AwxcZ+2IKH+MNtCBORnjxbF/dZvN2kswSQyuxvdraurfJkE6rNOpLvnORpN97J0G5oqoAEPvfBZObe4uZZQtYZVTBL88JT25eV1d7rKbuzcxLBZEVqLAswnsun5NTq06BTcg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q3F55jW6Idacds+kXWaSvMPp5tMkxl3eFJbWYO0klgU=;
- b=TABHBfXiqL2uyZ5AtgU77SAjl16GDTImzWXpo0nVyXv0O1A/T1x7AldTu+0YsizNJ/YOHQc1OYGzc1ujALOYcyGKXMbosNuVCsdyVvh+gmPpFscswD6cqtXyQFzg3e8FsOdSIjTkrqPSMqMyb4nanZNJMI7POGHImvXXetXQtw3AT5h01EshvNm1XgIEcsRIZY/RWsZTjiT7mhmgb/s8twRwguN6BezWWow0o1mVw07J9bwvlZf/JivbO9544vfmteD8tE4EV/LwHBWQUUTxSh3OZ1gms0BXzcC2p71MfQNKDEQMl+wblIjh1wNtw4TpREZ83uYHJqv2vnN0z4XqEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ bh=sqeaJ3H8tihKlSYopICBGWyeH7CQk1ejVt18JLQegq8=;
+ b=fIdwzB0vGvGExB793XK2pcvZ/dGpDkafpvGUoniv2Uf/n7eNn73ahCaG3AfN9TjeXeXRbBnHci2D7VORx/OwpjNviquqdubuzVI7pG9InJ75JjFKdwH4qLvgQzgX3Iu4HPUxjLOXrzw63N08BPeZDIcFXzcVWyEz9iNNeecyn+hSyz2/OX0/9HhPwoEGcd55ij4sku1kuRSBKetCTTr90FaFuvr9vucEfC7NUMiCk5Rr/YMB710xKONTsk8x62hheBbIVaGJJf4w/FTwQ8mZSY7yObkm5eAbQnvDBgHuDJORpBusGvQk/mAWAExe+eMZUglLOYt3rlB0qL1mZ21eWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q3F55jW6Idacds+kXWaSvMPp5tMkxl3eFJbWYO0klgU=;
- b=YC+/0wdOlJxzN1txZmjE1njiiXRauVc2JQ0KkMg8IZCvJCBckb7e8odqSZEEHT/6RIBSMC4tsmaomKyLgwfD4LVhJ0so/A0ASfU+utM9Dfo5Y1a8rSQlT2wsz0refrN03932TN1WenBf+NwqMbrAlZNsv1HOSMqst0O3G5qzvj8=
-Received: from CH2PR04MB7078.namprd04.prod.outlook.com (2603:10b6:610:98::9)
- by CH2PR04MB7029.namprd04.prod.outlook.com (2603:10b6:610:96::13) with
+ bh=sqeaJ3H8tihKlSYopICBGWyeH7CQk1ejVt18JLQegq8=;
+ b=G8jpQAPveKB42fVEyKmH5Oh0NXoX3xzJ2wZXc6DgzGuAKCHqkAGXn3WABhvK9AdEzXzDoUH6xnct9wPJS79KV1b0JyRG5OGC8e7dFL27d4ct3nA+hYyf7/IdUUIaYkteQdzM79F/cZ4PYX5hTtL7vwgO8wCzlo0/R7YgiWdTJ1L0zWECYVd41T+TB5haxXYy+lvy40a/6Zf3jM7rEzP46fn88VPA3OGA+Xfos4kB0RXOZ0jVi82EEhDJOuUIZYZqMMPcUkLG0KkBfIko7wzhkOE1CfzekxA288Ls88nL7zXNsmlk/YKTEXTUq5m5XR5lprpM2sJlxhaEJAxBoojX7w==
+Received: from MW4PR03CA0031.namprd03.prod.outlook.com (2603:10b6:303:8e::6)
+ by SN1PR12MB2367.namprd12.prod.outlook.com (2603:10b6:802:26::31) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Fri, 27 Aug
- 2021 06:04:09 +0000
-Received: from CH2PR04MB7078.namprd04.prod.outlook.com
- ([fe80::db:f463:b03c:b3d5]) by CH2PR04MB7078.namprd04.prod.outlook.com
- ([fe80::db:f463:b03c:b3d5%7]) with mapi id 15.20.4457.017; Fri, 27 Aug 2021
- 06:04:09 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Kate Hsuan <hpa@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Hans de Goede <hdegoede@redhat.com>
-CC:     "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH v2 1/1] libata: libata: add ATA_HORKAGE_NO_NCQ_TRIM for
- Samsung 860 and 870 SSDs
-Thread-Topic: [PATCH v2 1/1] libata: libata: add ATA_HORKAGE_NO_NCQ_TRIM for
- Samsung 860 and 870 SSDs
-Thread-Index: AQHXmwUrRbSqgVxmMUOflXxx+Wt7Kw==
-Date:   Fri, 27 Aug 2021 06:04:09 +0000
-Message-ID: <CH2PR04MB70784A9A507CD9F3EA07986BE7C89@CH2PR04MB7078.namprd04.prod.outlook.com>
-References: <20210827053344.15087-1-hpa@redhat.com>
- <20210827053344.15087-2-hpa@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7a1fea5c-d311-4c2e-1955-08d969207c36
-x-ms-traffictypediagnostic: CH2PR04MB7029:
-x-microsoft-antispam-prvs: <CH2PR04MB70295C57F0B136CE9E5152CCE7C89@CH2PR04MB7029.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: la17F1e8neok49gyNocIaJRImfeZkqgy/IXO32YHPuC6PqLi6n143KOkLwMnnOQGgW2/stOltHfuVbV2wV96xX4hRczVeOQm5vM9eSWywV0LL8tA88xolXOCGFZsYE+/sQp3uHlCBbe8GsRjLdyufHiYaW8sNhHQUZk9ul2tzlzn7+C4R4hlZEmhJhpvwyl22WONK4N1nRtbSMqZHpYNldpaxQJtCymnqFVyaUf9Rg6sfSD7/ZBOVlIJAwEO058RPWQi/2cH9LFeMO+bvy+nmIEzpPht0rUjwY4yWbsCqcG3J02hRQsEDu0KSMdvmkHYzumeK/h/j4X0hiKfTZW5ybCCGH3R8t95KAxJuDlKJOBQan2Vitzwq8FDuQBLDYRBZz9Z9HjhTYZJHdoOxwE9WlqFpylnbskm2ukohNZ5D2GdTz/598Visy2lbtuHnyalVMav5o22ZUr/E63qeni9Q2BHXNLFL61MScBoTOGJ2cR6UP2kSRKYblhnTPQrsTjrSN0FJKk82/kslSUuB8OzEPEgvZjf5p/lf+A2zihWpp22kCa89qJpkHPfAdYd9RA9KNwbjXwv2NME3a16uqJXHVCQGFWhIm6myFF7TcoSF53VQwttFirKl5bPgECO5X1XW7K4VKFx2WOnicy5K9W42Hgv6LmripRGsKTAGxrim9vTt82nmqulUCKfslduWmH5+cUK/hbcGn14OrK/vtLK0ojN1dvupXV9e+Ip5uW/3opcBgCqX82ykFDnayJ7UjxJES2CHysGm4DuMBJblD5l6013SXFs7jDfSHTxtzpPE3Q=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB7078.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(136003)(366004)(52536014)(122000001)(110136005)(83380400001)(316002)(186003)(71200400001)(5660300002)(38070700005)(4326008)(38100700002)(8936002)(54906003)(66946007)(2906002)(66446008)(8676002)(66476007)(66556008)(64756008)(76116006)(966005)(6506007)(9686003)(53546011)(7696005)(33656002)(91956017)(478600001)(86362001)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9FK5jc0mBTFSXEcs3pfPrAXK7MpSHLRFqTZDWjmFC8c9Xusk5XU59IX+Rti/?=
- =?us-ascii?Q?w1mp2ofH6DK7UadPdiD8mjxwMUh7/s7tEgkuIOnhKQErEvivCG3ytWbJ37Ui?=
- =?us-ascii?Q?+kPLX/9drOKPygI1Ss1ncN5h1+NkmRJirtrg2U7EPhiot0v12HGP29KFvr5V?=
- =?us-ascii?Q?SGlSRwWtIgYzeYyj/NuLi4Ng1S0bKLgIvkwKt95UD+9GLcIxjZIiDWGyARD3?=
- =?us-ascii?Q?LA/Z9m8VEKWAG98IkIGiohZE4bDcK40JdK9CF+GscgUyKWUFpdEsvFHaPQKW?=
- =?us-ascii?Q?fJScaxYu5tYPMj7uNYJ9iXzhNb/+wRX1LyJBMWJJ58CEtvxmkoVC451Uc6Ks?=
- =?us-ascii?Q?191B1RulOBFeJqiDiDSkvnlNnV2MhPL+6yDiGUNPWCA9Gv+JyLUiDKPkW5BK?=
- =?us-ascii?Q?Syde0poB3ntQd70fwO6V1lJxyzktWz3pQNaKDQlsE+I5zl0CD50oFtfmBp11?=
- =?us-ascii?Q?05bnVx6mCE/NChUutomc9i+cFa1G4TRMs5DtbzDOWvdWBF1F6F1itgcrGGhM?=
- =?us-ascii?Q?pHZWmzKhgjOIx/WKsrA9Qs4IVPD1S0NJW8rM+pjb2Q7L101tZGCtBay0wcg0?=
- =?us-ascii?Q?ifMddu2nfZ0lX1hqxQ5ofmLq0izUX6uGL4xWpHna2id3ImjPnIKBpHZIE0SZ?=
- =?us-ascii?Q?GaCUVXvzCiIp4GjUvyfAUMU+zVv6N6QKFSy3UGhB7PdmvAQWRkSsIu36tRGZ?=
- =?us-ascii?Q?Er3OiGJ4jO5An+aiho1gwOA7C7MwFj3S2Z+82DDJn40XHWHpqjuDF67i5WPv?=
- =?us-ascii?Q?w+aAWrFIXy4NW7ZFD5kSseQpCfqzSoW7KQMm9Pk5kCNih2amxQ0I6ZSW8GTN?=
- =?us-ascii?Q?yRKhlCg2A3jlb+cUUMUOIbiIGmoVq4A3tRPYyLUWDlJ+eqSW7WctGkLKIMdN?=
- =?us-ascii?Q?ik246xYpDo5DWm6hrEn0gg4qjuz3bCBJ1RhawQiAcRhYtiXu0mOsMwuXN+5N?=
- =?us-ascii?Q?nH8FHcQk5SRuvmb8gbttSmwBeMsmxBn8faglWtQUEnlEz6+GWKVc4KVW42Ii?=
- =?us-ascii?Q?/AEyjdafGSZ+02JNVY6YH2eqaawUBoIvLVTBiO5p09XoyHr9+0XxgtFDPm2Z?=
- =?us-ascii?Q?m4TFWRXI7eZbHfRvmo47HaudB1hxOb5dLRhlh3wxp+Ux4Hq1gGDSbERzvwfd?=
- =?us-ascii?Q?UcWz/8RtUw3z3sFklx3W162j6cCfzD0YiDSdrVXo2QfMr7eribMAE+yroA3j?=
- =?us-ascii?Q?9r72e0QwNAER0QBLtbxJknyNjcvbtd07gtrfZMqhqBl9xlW5cSZtul52uM2P?=
- =?us-ascii?Q?BCL+RlSEUY1U/e4XecHAYm36KI6MkQl05hEOxGNd3eBs119oCR+mBnXLH4Pi?=
- =?us-ascii?Q?nALqkIz14IkMQFdDDPj/HK9Mg6mku+2x5E6/yqY6O6lTNVYvv/lWpe89CMMa?=
- =?us-ascii?Q?Z8VJaa6aJDUJQz7pl2hqMeqzHOKbnmExxlQh89ogEsSq/XqtOg=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Fri, 27 Aug
+ 2021 06:05:14 +0000
+Received: from CO1NAM11FT032.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8e:cafe::c) by MW4PR03CA0031.outlook.office365.com
+ (2603:10b6:303:8e::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.21 via Frontend
+ Transport; Fri, 27 Aug 2021 06:05:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT032.mail.protection.outlook.com (10.13.174.218) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4457.17 via Frontend Transport; Fri, 27 Aug 2021 06:05:13 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 27 Aug
+ 2021 06:05:12 +0000
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 27 Aug
+ 2021 06:05:11 +0000
+Received: from kyarlagadda-linux.nvidia.com (172.20.187.5) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 27 Aug 2021 06:05:08 +0000
+From:   Akhil R <akhilrajeev@nvidia.com>
+To:     <rgumasta@nvidia.com>
+CC:     <dan.j.williams@intel.com>, <dmaengine@vger.kernel.org>,
+        <jonathanh@nvidia.com>, <kyarlagadda@nvidia.com>,
+        <ldewangan@nvidia.com>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <p.zabel@pengutronix.de>,
+        <thierry.reding@gmail.com>, <vkoul@kernel.org>,
+        Akhil R <akhilrajeev@nvidia.com>
+Subject: [PATCH v3 0/4] Add Nvidia Tegra GPC-DMA driver
+Date:   Fri, 27 Aug 2021 11:34:50 +0530
+Message-ID: <1630044294-21169-1-git-send-email-akhilrajeev@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <MN2PR12MB41438B94148A6D522C056771A2A70@MN2PR12MB4143.namprd12.prod.outlook.com>
+References: <MN2PR12MB41438B94148A6D522C056771A2A70@MN2PR12MB4143.namprd12.prod.outlook.com>
+X-NVConfidentiality: public
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB7078.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a1fea5c-d311-4c2e-1955-08d969207c36
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2021 06:04:09.2629
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4626aacb-2655-41f7-4f96-08d96920a2db
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2367:
+X-Microsoft-Antispam-PRVS: <SN1PR12MB236741A153E00B933226EC4AC0C89@SN1PR12MB2367.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wg+miu/j5MaMe0PVWiRi2u0DNfQzl1NE8L/M26b27GB/AountWZZ1a8XPRAlkWoh5+fTYxZPTWs4VkH0n8oJxKXHnsBW0dsT/VhEOol35/nZ4EP5XAgcBwXbsh5HkR3jqKLb4pWAMKzqAjBdkVDefXZdCLkrr0wNIsWhCymNRxWJGoLOab6IitZHmdV0N79JBuN/Onu05qn/Yemx7Nx7ioj+JhdmXIAOTdj1qgXo/sxplmjNaeJ+UOUCTAOMumrcQt8bDadHAWnbCadqeOXqSwyt9dd8acJ7zxKw8+a+mxgefHWXSIT4gq9A3rdQisSzSUz0NYZqhf3yxuwyVj7rNPgcCdFNyl4wf+BbYU+g7XK3mEN4nD+TIGu4rubuLt4TZbKBUz3URb43GC2xMgSav5UB8dDthQI2+O+oi/Tbb2zGAw0Z0TQV2Icnvv6dQQXbyI+pBMhrUMwooE9+00i8Dr+VPYWsmyNBIvIBVy2UTYmTmS2JWxmvH0Q62o5yJ6vgVhRb97dq1sgbeI2IsabJ1YLwsBhG2i0ZOVq4N+k2mMjkySq0bGLrKXtwWo0CITZaCs+LRBdIaihfRn8ULLFs+B8FMCeqCdrDFewMDLbt5aCVtcAiyfrsndXDe8cFf6KinRs86PT9Yea3pvK5GlUYg+VQuMSwKo3iHPmyMTKkvkyQ0gHucDsKrZYHVGrBY/VFyU+rRcL7upU8/y+iFfXmkKb8uKFu3svY4tx2Np3DxyDqBNa11PhOSjJ+R7kV2jMN5h6r5Fr4qEFO3paAsOdixyPnnhgIWbjPe4xtpILTH4Q=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(36860700001)(6666004)(7636003)(7696005)(70586007)(36906005)(966005)(316002)(6862004)(4326008)(508600001)(5660300002)(54906003)(37006003)(8676002)(47076005)(82310400003)(36756003)(70206006)(107886003)(356005)(336012)(426003)(2906002)(8936002)(186003)(86362001)(26005)(4744005)(6636002)(2616005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 06:05:13.9938
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aH/nX256XY9nLLeLYDu6cX2q2SbQkoTGlfC1Fxq5KjvkEgDNuObu7rE30P2VoSIeoJuVPB1DcfKo6AIeuXCyIQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB7029
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4626aacb-2655-41f7-4f96-08d96920a2db
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT032.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2367
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/08/27 14:34, Kate Hsuan wrote:=0A=
-> A flag ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL is added to disable NCQ=
-=0A=
-> on AMD/MAREL/ASMEDIA chipsets.=0A=
-> =0A=
-> Samsung 860/870 SSD are disabled to use NCQ trim functions but it will=0A=
-> lead to performace drop. From the bugzilla, we could realize the issues=
-=0A=
-> only appears on those chipset mentioned above. So this flag could be=0A=
-> used to only disable NCQ on specific chipsets.=0A=
-> =0A=
-> Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")=0A=
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D203475=0A=
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>=0A=
-> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>=0A=
-=0A=
-Since this is a v2, you should not keep the review tag here.=0A=
-=0A=
-> Signed-off-by: Kate Hsuan <hpa@redhat.com>=0A=
-> ---=0A=
-=0A=
-This is a v2 patch, so please add the changelog from v1 here.=0A=
-=0A=
-But I think that v1 introduced ATA_HORKAGE_NO_NCQ_TRIM. Yet, here you intro=
-duce=0A=
-a completely different flag on top of the patch that introduced=0A=
-ATA_HORKAGE_NO_NCQ_TRIM. So this patch is not version 2 of the previous one=
-. It=0A=
-is a completely different patch. Unless I missed v1 on the list...=0A=
-=0A=
-=0A=
->  drivers/ata/libata-core.c | 37 ++++++++++++++++++++++++++++++++-----=0A=
->  include/linux/libata.h    |  3 +++=0A=
->  2 files changed, 35 insertions(+), 5 deletions(-)=0A=
-> =0A=
-> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c=0A=
-> index cc459ce90018..50f635669dd4 100644=0A=
-> --- a/drivers/ata/libata-core.c=0A=
-> +++ b/drivers/ata/libata-core.c=0A=
-> @@ -2119,6 +2119,8 @@ static inline u8 ata_dev_knobble(struct ata_device =
-*dev)=0A=
->  static void ata_dev_config_ncq_send_recv(struct ata_device *dev)=0A=
->  {=0A=
->  	struct ata_port *ap =3D dev->link->ap;=0A=
-> +	struct device *parent =3D NULL;=0A=
-> +	struct pci_dev *pcidev =3D NULL;=0A=
->  	unsigned int err_mask;=0A=
->  =0A=
->  	if (!ata_log_supported(dev, ATA_LOG_NCQ_SEND_RECV)) {=0A=
-> @@ -2138,9 +2140,32 @@ static void ata_dev_config_ncq_send_recv(struct at=
-a_device *dev)=0A=
->  		memcpy(cmds, ap->sector_buf, ATA_LOG_NCQ_SEND_RECV_SIZE);=0A=
->  =0A=
->  		if (dev->horkage & ATA_HORKAGE_NO_NCQ_TRIM) {=0A=
-> -			ata_dev_dbg(dev, "disabling queued TRIM support\n");=0A=
-> -			cmds[ATA_LOG_NCQ_SEND_RECV_DSM_OFFSET] &=3D=0A=
-> -				~ATA_LOG_NCQ_SEND_RECV_DSM_TRIM;=0A=
-> +			if (dev->horkage & ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL)=0A=
-> +			{=0A=
-=0A=
-Please follow the kernel coding style: do not break line before "{". This=
-=0A=
-comment applies to all your modifications below too.=0A=
-=0A=
-> +				// get parent device for the controller vendor ID=0A=
-> +				for(parent =3D dev->tdev.parent; parent !=3D NULL; parent =3D parent=
-->parent)=0A=
-> +				{=0A=
-> +					if(dev_is_pci(parent))=0A=
-> +					{=0A=
-> +						pcidev =3D to_pci_dev(parent);=0A=
-> +						if (pcidev->vendor =3D=3D PCI_VENDOR_ID_MARVELL ||=0A=
-> +							pcidev->vendor =3D=3D PCI_VENDOR_ID_AMD 	||=0A=
-> +							pcidev->vendor =3D=3D PCI_VENDOR_ID_ASMEDIA )=0A=
-=0A=
-Please align the conditions.=0A=
-=0A=
-> +						{=0A=
-> +							ata_dev_dbg(dev, "Disable NCQ -> vendor ID %x product ID %x\n", =
-=0A=
-> +												pcidev->vendor, pcidev->device);=0A=
-=0A=
-Weird alignment here too. Move the arguments aligned with "dev" at the begi=
-nning=0A=
-of the line.=0A=
-=0A=
-> +							cmds[ATA_LOG_NCQ_SEND_RECV_DSM_OFFSET] &=3D=0A=
-> +								~ATA_LOG_NCQ_SEND_RECV_DSM_TRIM;=0A=
-> +						}=0A=
-> +						break;=0A=
-> +					}=0A=
-> +				}=0A=
-> +			}else=0A=
-> +			{=0A=
-> +				ata_dev_dbg(dev, "disabling queued TRIM support\n");=0A=
-> +				cmds[ATA_LOG_NCQ_SEND_RECV_DSM_OFFSET] &=3D=0A=
-> +					~ATA_LOG_NCQ_SEND_RECV_DSM_TRIM;=0A=
-> +			}=0A=
->  		}=0A=
->  	}=0A=
->  }=0A=
-> @@ -3951,9 +3976,11 @@ static const struct ata_blacklist_entry ata_device=
-_blacklist [] =3D {=0A=
->  	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |=0A=
->  						ATA_HORKAGE_ZERO_AFTER_TRIM, },=0A=
->  	{ "Samsung SSD 860*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |=0A=
-> -						ATA_HORKAGE_ZERO_AFTER_TRIM, },=0A=
-> +						ATA_HORKAGE_ZERO_AFTER_TRIM |=0A=
-> +						ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL, },=0A=
-=0A=
-You named your flag ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL but you are=0A=
-applying it to a Samsung device. This is rather confusing. I do not think y=
-ou=0A=
-need to have the vendor in the flag name, e.g. ATA_HORKAGE_NO_NCQ. Whatever=
-=0A=
-device in ata_device_blacklist has the flag will have NCQ disabled.=0A=
-=0A=
->  	{ "Samsung SSD 870*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |=0A=
-> -						ATA_HORKAGE_ZERO_AFTER_TRIM, },=0A=
-> +						ATA_HORKAGE_ZERO_AFTER_TRIM |=0A=
-> +						ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL, },=0A=
-=0A=
-If you disable NCQ entirely for this device, then what is the point of keep=
-ing=0A=
-ATA_HORKAGE_NO_NCQ_TRIM ? TRIM commands will not be NCQ anymore, similarly =
-to=0A=
-all other commands.=0A=
-=0A=
->  	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |=0A=
->  						ATA_HORKAGE_ZERO_AFTER_TRIM, },=0A=
->  =0A=
-> diff --git a/include/linux/libata.h b/include/linux/libata.h=0A=
-> index 3fcd24236793..ec17f1f3fbf6 100644=0A=
-> --- a/include/linux/libata.h=0A=
-> +++ b/include/linux/libata.h=0A=
-> @@ -422,6 +422,9 @@ enum {=0A=
->  	ATA_HORKAGE_NOTRIM	=3D (1 << 24),	/* don't use TRIM */=0A=
->  	ATA_HORKAGE_MAX_SEC_1024 =3D (1 << 25),	/* Limit max sects to 1024 */=
-=0A=
->  	ATA_HORKAGE_MAX_TRIM_128M =3D (1 << 26),	/* Limit max trim size to 128M=
- */=0A=
-> +	ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL =3D (1 << 27), /*Disable NCQ o=
-nly on =0A=
-> +							ASMeida, AMD, and Marvell =0A=
-> +							Chipset*/=0A=
-=0A=
-See above. You do not need to have the vendor name in the flag name.=0A=
-=0A=
->  =0A=
->  	 /* DMA mask for user DMA control: User visible values; DO NOT=0A=
->  	    renumber */=0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+Add support for Nvida Tegra general purpose DMA driver for
+Tegra186 and Tegra194 platform.
+
+Changes in patch v3:
+	Addressed review comments in patch v2
+
+v2 - https://lkml.org/lkml/2020/8/6/90
+v1 - https://lkml.org/lkml/2020/7/20/96
+
+Akhil R (4):
+  dt-bindings: dmaengine: Add doc for tegra gpcdma
+  dmaengine: tegra: Add tegra gpcdma driver
+  arm64: defconfig: tegra: Enable GPCDMA
+  arm64: tegra: Add GPCDMA node for tegra186 and tegra194
+
+ .../bindings/dma/nvidia,tegra-gpc-dma.yaml         |   99 ++
+ arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi     |    4 +
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi           |   46 +
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           |   46 +
+ arch/arm64/configs/defconfig                       |    1 +
+ drivers/dma/Kconfig                                |   12 +
+ drivers/dma/Makefile                               |    1 +
+ drivers/dma/tegra-gpc-dma.c                        | 1343 ++++++++++++++++++++
+ 8 files changed, 1552 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra-gpc-dma.yaml
+ create mode 100644 drivers/dma/tegra-gpc-dma.c
+
+-- 
+2.7.4
+
