@@ -2,199 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18FE3F9C22
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA453F9C25
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245446AbhH0QJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245466AbhH0QJM (ORCPT
+        id S245510AbhH0QJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:09:27 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:43506 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245500AbhH0QJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:09:12 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5393BC0617AE
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:08:23 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id fz10so4888886pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:08:23 -0700 (PDT)
+        Fri, 27 Aug 2021 12:09:25 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 05F6782090;
+        Fri, 27 Aug 2021 19:08:35 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3BOREjcUGdekjt/HzJv8JPNZZV+WRxv1ga5r5CaLfMg=;
-        b=LgSMkv8yRY6NcFjGg/J63Y2GpE2F2TGefzma4o9g5HEhtSAND6DhVddNHYYks45NsN
-         vl/76kMWgkZPlkAHgvJTPVgljvSFRJ7Ui/2QED3sjgSLOAoCwiEAsmgZNMGT/LdlCbMz
-         6XWQqYT5qF5nKBsTivPFzvO7iyOTn/hubgj2U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3BOREjcUGdekjt/HzJv8JPNZZV+WRxv1ga5r5CaLfMg=;
-        b=Q2/547GdyyaMJ4PDh9YyylUFmSQu2ITDPoCQ9H4sv7q4J4RYBm8/jnqkVsEIcdWk5a
-         hoyGf2mXh/iekbzW6hk1gc5ezY+6enLrvRf1E9cWvzEsFyo9h8VLZ6ZxXzk15yY2/Dwk
-         WYBV7w/zue1S+RPxPRmZpOdmt3gWzbvdhBo7YoW666ZBU3skySKB+Dq6dIa0pg7puPg8
-         lnfd5MHwYSkYeJ8GN6+bz14DyOiho76PV/lEu5Lp5VMvV+eIzsYAvGkIImSqMJD8NL8y
-         XyGegx/zS0S8LM+2xF3MsDhiZ9SG8GiErDDXBoVMBB6MgvBAJbyiequbNvYG3DgIZdgz
-         jltA==
-X-Gm-Message-State: AOAM530k84xGWuwUTmgMKddswRSdofZjx3kKWGmeLgvXfCok4jIGO2qu
-        t4pdxw0oU18/dbB4prnx8euj4w==
-X-Google-Smtp-Source: ABdhPJz9b21uTH+fuc32V76US0q/VM+qkB83+nJU8q4xHvgfI8nk8UEzE23GCJMggnW3rTr9tTvrxA==
-X-Received: by 2002:a17:90b:357:: with SMTP id fh23mr8796487pjb.140.1630080502650;
-        Fri, 27 Aug 2021 09:08:22 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h9sm13930821pjg.9.2021.08.27.09.08.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 09:08:21 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 09:08:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        linux-crypto@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-can@vger.kernel.org,
-        bpf@vger.kernel.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Keith Packard <keithp@keithp.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] treewide: Replace open-coded flex arrays in unions
-Message-ID: <202108270906.7C85982525@keescook>
-References: <20210826050458.1540622-1-keescook@chromium.org>
- <20210826050458.1540622-3-keescook@chromium.org>
- <20210826062452.jekmoo43f4xu5jxk@pengutronix.de>
+        d=paragon-software.com; s=mail; t=1630080515;
+        bh=nD33TNXGbeVwtfqT0HqayU2dyuRSJU6rquy3c3fui+A=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=WXcjg/KBKuMlhtBAPGOOBYsOV3DS8S7ezzCfYPWuzGoKfg/uAxqk/j6XDWxTi92gS
+         Q88/ng5/y4wgS3l7Z/TJ30APBleuNB+kPfKoTv2e/cKyQ6gFEV09VlCb9kHbkgQWky
+         eNNHYBp5ViKVc38Rw/q1D0gmW7woL63GzEhNXQpg=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 27 Aug 2021 19:08:34 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%12]) with
+ mapi id 15.01.2176.009; Fri, 27 Aug 2021 19:08:34 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH] fs/ntfs3: Use linux/log2 is_power_of_2 function
+Thread-Topic: [PATCH] fs/ntfs3: Use linux/log2 is_power_of_2 function
+Thread-Index: AQHXkorR1aO5dQA04k2VH8WfP//lc6uHllhQ
+Date:   Fri, 27 Aug 2021 16:08:34 +0000
+Message-ID: <215724bb79f24c7281731b6637fe7164@paragon-software.com>
+References: <20210816103732.177207-1-kari.argillander@gmail.com>
+In-Reply-To: <20210816103732.177207-1-kari.argillander@gmail.com>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.0.26]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826062452.jekmoo43f4xu5jxk@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 08:24:52AM +0200, Marc Kleine-Budde wrote:
-> On 25.08.2021 22:04:55, Kees Cook wrote:
-> > In support of enabling -Warray-bounds and -Wzero-length-bounds and
-> > correctly handling run-time memcpy() bounds checking, replace all
-> > open-coded flexible arrays (i.e. 0-element arrays) in unions with the
-> > flex_array() helper macro.
-> > 
-> > This fixes warnings such as:
-> > 
-> > fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
-> > fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-length-bounds]
-> >   209 |    anode->btree.u.internal[0].down = cpu_to_le32(a);
-> >       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
-> > In file included from fs/hpfs/hpfs_fn.h:26,
-> >                  from fs/hpfs/anode.c:10:
-> > fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
-> >   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
-> >       |                                ^~~~~~~~
-> > 
-> > drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-> > drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
-> >   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
-> >       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
-> >                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-> > drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
-> >   231 |   u8 raw_msg[0];
-> >       |      ^~~~~~~
-> > 
-> > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Ayush Sawal <ayush.sawal@chelsio.com>
-> > Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
-> > Cc: Rohit Maheshwari <rohitm@chelsio.com>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Kalle Valo <kvalo@codeaurora.org>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: Stanislaw Gruszka <stf_xl@wp.pl>
-> > Cc: Luca Coelho <luciano.coelho@intel.com>
-> > Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> > Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Cc: Song Liu <songliubraving@fb.com>
-> > Cc: Yonghong Song <yhs@fb.com>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: KP Singh <kpsingh@kernel.org>
-> > Cc: Johannes Berg <johannes.berg@intel.com>
-> > Cc: Mordechay Goodstein <mordechay.goodstein@intel.com>
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > Cc: Wolfgang Grandegger <wg@grandegger.com>
-> > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> > Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-> > Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> > Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-> > Cc: linux-crypto@vger.kernel.org
-> > Cc: ath10k@lists.infradead.org
-> > Cc: linux-wireless@vger.kernel.org
-> > Cc: netdev@vger.kernel.org
-> > Cc: linux-scsi@vger.kernel.org
-> > Cc: linux-can@vger.kernel.org
-> > Cc: bpf@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  drivers/net/can/usb/etas_es58x/es581_4.h          |  2 +-
-> >  drivers/net/can/usb/etas_es58x/es58x_fd.h         |  2 +-
-> 
-> For the can drivers:
-> 
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> From: Kari Argillander <kari.argillander@gmail.com>
+> Sent: Monday, August 16, 2021 1:38 PM
+> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>; ntfs3@=
+lists.linux.dev
+> Cc: Kari Argillander <kari.argillander@gmail.com>; linux-kernel@vger.kern=
+el.org; linux-fsdevel@vger.kernel.org
+> Subject: [PATCH] fs/ntfs3: Use linux/log2 is_power_of_2 function
+>=20
+> We do not need our own implementation for this function in this
+> driver. It is much better to use generic one.
+>=20
+> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+> ---
+>  fs/ntfs3/ntfs_fs.h | 5 -----
+>  fs/ntfs3/run.c     | 3 ++-
+>  fs/ntfs3/super.c   | 9 +++++----
+>  3 files changed, 7 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+> index 0c3ac89c3115..c8ea6dd38c21 100644
+> --- a/fs/ntfs3/ntfs_fs.h
+> +++ b/fs/ntfs3/ntfs_fs.h
+> @@ -972,11 +972,6 @@ static inline struct buffer_head *ntfs_bread(struct =
+super_block *sb,
+>  	return NULL;
+>  }
+>=20
+> -static inline bool is_power_of2(size_t v)
+> -{
+> -	return v && !(v & (v - 1));
+> -}
+> -
+>  static inline struct ntfs_inode *ntfs_i(struct inode *inode)
+>  {
+>  	return container_of(inode, struct ntfs_inode, vfs_inode);
+> diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
+> index 5cdf6efe67e0..ce6bff3568df 100644
+> --- a/fs/ntfs3/run.c
+> +++ b/fs/ntfs3/run.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/blkdev.h>
+>  #include <linux/buffer_head.h>
+>  #include <linux/fs.h>
+> +#include <linux/log2.h>
+>  #include <linux/nls.h>
+>=20
+>  #include "debug.h"
+> @@ -376,7 +377,7 @@ bool run_add_entry(struct runs_tree *run, CLST vcn, C=
+LST lcn, CLST len,
+>  			if (!used) {
+>  				bytes =3D 64;
+>  			} else if (used <=3D 16 * PAGE_SIZE) {
+> -				if (is_power_of2(run->allocated))
+> +				if (is_power_of_2(run->allocated))
+>  					bytes =3D run->allocated << 1;
+>  				else
+>  					bytes =3D (size_t)1
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index 6be13e256c1a..c1b7127f5e61 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/exportfs.h>
+>  #include <linux/fs.h>
+>  #include <linux/iversion.h>
+> +#include <linux/log2.h>
+>  #include <linux/module.h>
+>  #include <linux/nls.h>
+>  #include <linux/parser.h>
+> @@ -735,13 +736,13 @@ static int ntfs_init_from_boot(struct super_block *=
+sb, u32 sector_size,
+>=20
+>  	boot_sector_size =3D (u32)boot->bytes_per_sector[1] << 8;
+>  	if (boot->bytes_per_sector[0] || boot_sector_size < SECTOR_SIZE ||
+> -	    !is_power_of2(boot_sector_size)) {
+> +	    !is_power_of_2(boot_sector_size)) {
+>  		goto out;
+>  	}
+>=20
+>  	/* cluster size: 512, 1K, 2K, 4K, ... 2M */
+>  	sct_per_clst =3D true_sectors_per_clst(boot);
+> -	if (!is_power_of2(sct_per_clst))
+> +	if (!is_power_of_2(sct_per_clst))
+>  		goto out;
+>=20
+>  	mlcn =3D le64_to_cpu(boot->mft_clst);
+> @@ -757,14 +758,14 @@ static int ntfs_init_from_boot(struct super_block *=
+sb, u32 sector_size,
+>  	/* Check MFT record size */
+>  	if ((boot->record_size < 0 &&
+>  	     SECTOR_SIZE > (2U << (-boot->record_size))) ||
+> -	    (boot->record_size >=3D 0 && !is_power_of2(boot->record_size))) {
+> +	    (boot->record_size >=3D 0 && !is_power_of_2(boot->record_size))) {
+>  		goto out;
+>  	}
+>=20
+>  	/* Check index record size */
+>  	if ((boot->index_size < 0 &&
+>  	     SECTOR_SIZE > (2U << (-boot->index_size))) ||
+> -	    (boot->index_size >=3D 0 && !is_power_of2(boot->index_size))) {
+> +	    (boot->index_size >=3D 0 && !is_power_of_2(boot->index_size))) {
+>  		goto out;
+>  	}
+>=20
+> --
+> 2.30.2
 
-Thanks!
+Hi Kari! Thanks for the patch, applied.
 
-> BTW: Is there opportunity for conversion, too?
-> 
-> | drivers/net/can/peak_canfd/peak_pciefd_main.c:146:32: warning: array of flexible structures
-
-Oh, hrmpf. This isn't a sane use of flex arrays:
-
-
-struct __packed pucan_rx_msg {
-	...
-	__le32	can_id;
-	u8	d[];
-};
-
-struct pciefd_rx_dma {
-        __le32 irq_status;
-        __le32 sys_time_low;
-        __le32 sys_time_high;
-        struct pucan_rx_msg msg[];
-} __packed __aligned(4);
-
-I think that needs to be handled separately. How are you building to get
-that warning, by the way? I haven't seen that in my builds...
-
--- 
-Kees Cook
+Best regards.
