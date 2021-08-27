@@ -2,279 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512A03F97E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 12:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A9F3F980A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 12:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244877AbhH0KOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 06:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244833AbhH0KOn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 06:14:43 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1F4C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 03:13:54 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id m4so10469775ljq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 03:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mHIT1nZBEvxshxtBwUUrFhnW96v2k2CZ+QGQ0YwUldk=;
-        b=yFOF6XHA571B06bcH9G3taX5rwZqIoQMf2lbOZtMDmyZYyYiED5buac08kCFErih7c
-         vGkwO0HHvinnE56CttFcc56NnqHyPeHutuUVzX454XbzJLJ+e71XgbzihlmMxwidQ2g+
-         SiSGY4yeZvyovwe9QWw1DYia1vmwjOMXLwN/E5olTwRhjJSMv1Li3y7GND8b6aCIbnQX
-         GB+lVlujJBOxJLZhA6Ho6IXTQc5PndNjKui4VzE85O0Pz3C2oDYM7I1EMuxX5TIsIaIY
-         qTwPu6olC8j13AiJscGvOdZTQX79iqPkfUkM6rxY8Uviqckhjxk4GVgPGHQV0T34xRtI
-         mekA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mHIT1nZBEvxshxtBwUUrFhnW96v2k2CZ+QGQ0YwUldk=;
-        b=Wxg7Ustp4Vd+5FymdmOLqmp8UQf2B1xWmBbYHARoWcpkijWbOm3ulmUvudyogPfjn1
-         mDKuyRtSzifrm3cStwLoEvJxpjpVTlRGeLzmdSRE83dczJcTbvCxjGPf5yx/J5VZBT3r
-         EPfp/aZ++WkZj/16iPNUu/I3qrf9/PljqZl+lg+dd05RZSJfmfNGjIA+Hkao+kMguDrw
-         3AfC9Kg7zEPoAlsdm8LVSviDiemW5MFFO8fK/ZGnxuTwhAvG9vyN+4DDULiN5sdTZ2gh
-         B+IezpyoSLXM7rsqp3vXXN7UlOqACErtskuToRqMsQW3wXdD9CqM1hghj1vVMqg4N4t9
-         AWog==
-X-Gm-Message-State: AOAM532OMiYEb3o3zMmPR/QKCsJFCXyj3VaZ3rpAmrgXuSuM3gjgzxE2
-        kXVlP9zjxLC4IkGUGSomrBCgbroy8O4Nj+vn0kMn5A==
-X-Google-Smtp-Source: ABdhPJyGpfggSV94R7NcCFT4yPgXMAQATn296Q2SrAl8RuDrmsntkMwRTpzDYGw7xg2YOX6GmAHz9LkjSwpfTUZ0z2I=
-X-Received: by 2002:a05:651c:382:: with SMTP id e2mr6737571ljp.401.1630059233195;
- Fri, 27 Aug 2021 03:13:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210810144145.18776-1-ricardo.neri-calderon@linux.intel.com> <20210810144145.18776-7-ricardo.neri-calderon@linux.intel.com>
-In-Reply-To: <20210810144145.18776-7-ricardo.neri-calderon@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 27 Aug 2021 12:13:42 +0200
-Message-ID: <CAKfTPtArtmhLG5QYR6TzKevDrEuiQu2HJxm_C3pe549XdGU-1g@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] sched/fair: Consider SMT in ASYM_PACKING load balance
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        id S244872AbhH0KUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 06:20:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244708AbhH0KUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 06:20:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6CAF60560;
+        Fri, 27 Aug 2021 10:18:56 +0000 (UTC)
+Date:   Fri, 27 Aug 2021 12:18:52 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        David Laight <David.Laight@aculab.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+Message-ID: <20210827101852.7vbb2pqqyixqzd3b@wittgenstein>
+References: <87lf56bllc.fsf@disp2133>
+ <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+ <87eeay8pqx.fsf@disp2133>
+ <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+ <87h7ft2j68.fsf@disp2133>
+ <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+ <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+ <CAHk-=wiJ0u33h2CXAO4b271Diik=z4jRt64=Gt6YV2jV4ef27g@mail.gmail.com>
+ <b60e9bd1-7232-472d-9c9c-1d6593e9e85e@www.fastmail.com>
+ <0ed69079-9e13-a0f4-776c-1f24faa9daec@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ed69079-9e13-a0f4-776c-1f24faa9daec@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 at 16:41, Ricardo Neri
-<ricardo.neri-calderon@linux.intel.com> wrote:
->
-> When deciding to pull tasks in ASYM_PACKING, it is necessary not only to
-> check for the idle state of the destination CPU, dst_cpu, but also of
-> its SMT siblings.
->
-> If dst_cpu is idle but its SMT siblings are busy, performance suffers
-> if it pulls tasks from a medium priority CPU that does not have SMT
-> siblings.
->
-> Implement asym_smt_can_pull_tasks() to inspect the state of the SMT
-> siblings of both dst_cpu and the CPUs in the candidate busiest group.
->
-> Cc: Aubrey Li <aubrey.li@intel.com>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Quentin Perret <qperret@google.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> ---
-> Changes since v3:
->   * Removed the arch_asym_check_smt_siblings() hook. Discussions with the
->     powerpc folks showed that this patch should not impact them. Also, more
->     recent powerpc processor no longer use asym_packing. (PeterZ)
->   * Removed unnecessary local variable in asym_can_pull_tasks(). (Dietmar)
->   * Removed unnecessary check for local CPUs when the local group has zero
->     utilization. (Joel)
->   * Renamed asym_can_pull_tasks() as asym_smt_can_pull_tasks() to reflect
->     the fact that it deals with SMT cases.
->   * Made asym_smt_can_pull_tasks() return false for !CONFIG_SCHED_SMT so
->     that callers can deal with non-SMT cases.
->
-> Changes since v2:
->   * Reworded the commit message to reflect updates in code.
->   * Corrected misrepresentation of dst_cpu as the CPU doing the load
->     balancing. (PeterZ)
->   * Removed call to arch_asym_check_smt_siblings() as it is now called in
->     sched_asym().
->
-> Changes since v1:
->   * Don't bailout in update_sd_pick_busiest() if dst_cpu cannot pull
->     tasks. Instead, reclassify the candidate busiest group, as it
->     may still be selected. (PeterZ)
->   * Avoid an expensive and unnecessary call to cpumask_weight() when
->     determining if a sched_group is comprised of SMT siblings.
->     (PeterZ).
-> ---
->  kernel/sched/fair.c | 95 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 95 insertions(+)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index dd411cefb63f..8a1a2a43732c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8531,10 +8531,99 @@ group_type group_classify(unsigned int imbalance_pct,
->         return group_has_spare;
->  }
->
-> +/**
-> + * asym_smt_can_pull_tasks - Check whether the load balancing CPU can pull tasks
-> + * @dst_cpu:   Destination CPU of the load balancing
-> + * @sds:       Load-balancing data with statistics of the local group
-> + * @sgs:       Load-balancing statistics of the candidate busiest group
-> + * @sg:                The candidate busiet group
-> + *
-> + * Check the state of the SMT siblings of both @sds::local and @sg and decide
-> + * if @dst_cpu can pull tasks. If @dst_cpu does not have SMT siblings, it can
-> + * pull tasks if two or more of the SMT siblings of @sg are busy. If only one
-> + * CPU in @sg is busy, pull tasks only if @dst_cpu has higher priority.
-> + *
-> + * If both @dst_cpu and @sg have SMT siblings, even the number of idle CPUs
-> + * between @sds::local and @sg. Thus, pull tasks from @sg if the difference
-> + * between the number of busy CPUs is 2 or more. If the difference is of 1,
-> + * only pull if @dst_cpu has higher priority. If @sg does not have SMT siblings
-> + * only pull tasks if all of the SMT siblings of @dst_cpu are idle and @sg
-> + * has lower priority.
-> + */
-> +static bool asym_smt_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
-> +                                   struct sg_lb_stats *sgs,
-> +                                   struct sched_group *sg)
-> +{
-> +#ifdef CONFIG_SCHED_SMT
-> +       bool local_is_smt, sg_is_smt;
-> +       int sg_busy_cpus;
-> +
-> +       local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
-> +       sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
-> +
-> +       sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
-> +
-> +       if (!local_is_smt) {
-> +               /*
-> +                * If we are here, @dst_cpu is idle and does not have SMT
-> +                * siblings. Pull tasks if candidate group has two or more
-> +                * busy CPUs.
-> +                */
-> +               if (sg_is_smt && sg_busy_cpus >= 2)
-> +                       return true;
-> +
-> +               /*
-> +                * @dst_cpu does not have SMT siblings. @sg may have SMT
-> +                * siblings and only one is busy. In such case, @dst_cpu
-> +                * can help if it has higher priority and is idle.
-> +                */
-> +               return !sds->local_stat.group_util &&
+On Thu, Aug 26, 2021 at 11:47:07PM +0200, David Hildenbrand wrote:
+> On 26.08.21 19:48, Andy Lutomirski wrote:
+> > On Fri, Aug 13, 2021, at 5:54 PM, Linus Torvalds wrote:
+> > > On Fri, Aug 13, 2021 at 2:49 PM Andy Lutomirski <luto@kernel.org> wrote:
+> > > > 
+> > > > I’ll bite.  How about we attack this in the opposite direction: remove the deny write mechanism entirely.
+> > > 
+> > > I think that would be ok, except I can see somebody relying on it.
+> > > 
+> > > It's broken, it's stupid, but we've done that ETXTBUSY for a _loong_ time.
+> > 
+> > Someone off-list just pointed something out to me, and I think we should push harder to remove ETXTBSY.  Specifically, we've all been focused on open() failing with ETXTBSY, and it's easy to make fun of anyone opening a running program for write when they should be unlinking and replacing it.
+> > 
+> > Alas, Linux's implementation of deny_write_access() is correct^Wabsurd, and deny_write_access() *also* returns ETXTBSY if the file is open for write.  So, in a multithreaded program, one thread does:
+> > 
+> > fd = open("some exefile", O_RDWR | O_CREAT | O_CLOEXEC);
+> > write(fd, some stuff);
+> > 
+> > <--- problem is here
+> > 
+> > close(fd);
+> > execve("some exefile");
+> > 
+> > Another thread does:
+> > 
+> > fork();
+> > execve("something else");
+> > 
+> > In between fork and execve, there's another copy of the open file description, and i_writecount is held, and the execve() fails.  Whoops.  See, for example:
+> > 
+> > https://github.com/golang/go/issues/22315
+> > 
+> > I propose we get rid of deny_write_access() completely to solve this.
+> > 
+> > Getting rid of i_writecount itself seems a bit harder, since a handful of filesystems use it for clever reasons.
+> > 
+> > (OFD locks seem like they might have the same problem.  Maybe we should have a clone() flag to unshare the file table and close close-on-exec things?)
+> > 
+> 
+> It's not like this issue is new (^2017) or relevant in practice. So no need
+> to hurry IMHO. One step at a time: it might make perfect sense to remove
+> ETXTBSY, but we have to be careful to not break other user space that
+> actually cares about the current behavior in practice.
 
-sds->local_stat.group_util can't be used to decide if a CPU or group
-of CPUs is idle. util_avg is usually not null when a CPU becomes idle
-and you can have to wait  more than 300ms before it becomes Null
-At the opposite, the utilization of a CPU can be null but a task with
-null utilization has just woken up on it.
-Utilization is used to reflect the average work of the CPU or group of
-CPUs but not the current state
+I agree. As I at least tried to show, removing write-protection can make
+some exploits easier. I'm all for trying to remove this if it simplifies
+things but for sure this shouldn't be part of this patchset and we
+should be careful about it.
 
-> +                      sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-> +       }
-> +
-> +       /* @dst_cpu has SMT siblings. */
-> +
-> +       if (sg_is_smt) {
-> +               int local_busy_cpus = sds->local->group_weight -
-> +                                     sds->local_stat.idle_cpus;
-> +               int busy_cpus_delta = sg_busy_cpus - local_busy_cpus;
-> +
-> +               /* Local can always help to even the number busy CPUs. */
+The removal of a (misguided or only partially functioning) protection
+mechanism doesn't introduce but removes a failure point.
+And I don't think removal and addition of a failure point usually have
+the same consequences. Introducing a new failure point will often mean
+userspace quickly detects regressions. Such regressions are pretty
+common due to security fixes we introduce. Recent examples include [1].
+Right after this was merged the regression was reported.
 
-default behavior of the load balance already tries to even the number
-of idle CPUs.
+But when allowing behavior that used to fail like ETXTBSY it can be
+difficult for userspace to detect such regressions. The reason for that
+is quite often that userspace applications don't tend to do something
+that they know upfront will fail. Attackers however might.
 
-> +               if (busy_cpus_delta >= 2)
-> +                       return true;
-> +
-> +               if (busy_cpus_delta == 1)
-> +                       return sched_asym_prefer(dst_cpu,
-> +                                                sg->asym_prefer_cpu);
-> +
-> +               return false;
-> +       }
-> +
-> +       /*
-> +        * @sg does not have SMT siblings. Ensure that @sds::local does not end
-> +        * up with more than one busy SMT sibling and only pull tasks if there
-> +        * are not busy CPUs. As CPUs move in and out of idle state frequently,
-> +        * also check the group utilization to smoother the decision.
-> +        */
-> +       if (!sds->local_stat.group_util)
+[1]: bfb819ea20ce ("proc: Check /proc/$pid/attr/ writes against file opener")
 
-same comment as above about the meaning of group_util == 0
-
-> +               return sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-> +
-> +       return false;
-> +#else
-> +       /* Always return false so that callers deal with non-SMT cases. */
-> +       return false;
-> +#endif
-> +}
-> +
->  static inline bool
->  sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
->            struct sched_group *group)
->  {
-> +       /* Only do SMT checks if either local or candidate have SMT siblings */
-> +       if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
-> +           (group->flags & SD_SHARE_CPUCAPACITY))
-> +               return asym_smt_can_pull_tasks(env->dst_cpu, sds, sgs, group);
-> +
->         return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
->  }
->
-> @@ -9540,6 +9629,12 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->                     nr_running == 1)
->                         continue;
->
-> +               /* Make sure we only pull tasks from a CPU of lower priority */
-> +               if ((env->sd->flags & SD_ASYM_PACKING) &&
-> +                   sched_asym_prefer(i, env->dst_cpu) &&
-> +                   nr_running == 1)
-> +                       continue;
-
-This really looks similar to the test above for SD_ASYM_CPUCAPACITY.
-More generally speaking SD_ASYM_PACKING and SD_ASYM_CPUCAPACITY share
-a lot of common policy and I wonder if at some point we could not
-merge their behavior in LB
-
-> +
->                 switch (env->migration_type) {
->                 case migrate_load:
->                         /*
-> --
-> 2.17.1
->
+Christian
