@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309273FA0AA
+	by mail.lfdr.de (Postfix) with ESMTP id 799993FA0AB
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhH0UiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:38:15 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55552 "EHLO
+        id S231734AbhH0UiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 16:38:25 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55564 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbhH0UiN (ORCPT
+        with ESMTP id S231693AbhH0UiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 16:38:13 -0400
+        Fri, 27 Aug 2021 16:38:24 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8CDA8223B5;
-        Fri, 27 Aug 2021 20:37:22 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6F7F0223E7;
+        Fri, 27 Aug 2021 20:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630096642; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1630096654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=c+9stMSPxVOLjr1FrBDisvc+txwodDpkXc4LntWDO+k=;
-        b=nVTQiA1BoFK5W40HecCM3N30sjZgUDR/0cITByiIaQS7zY0ShT0EUrBkJ3shXvhhPFRyDo
-        tkCjhYrqkE1GSWAmOSveeW9CWRUW/OiJB1aOuJmBJuWNry5cFJ7xmOYXEJEjWxqIOkegta
-        VUyL4P2qG8FnDQrbiHtg3IfLDYcc4dI=
+        bh=UnO7twanOywhJsN7eVGpJZfv2gQvVghuop8JdfKFROo=;
+        b=cg87tP15BUgJ6jwm24ySWKRqgrG7rdhwKznv/qehNLCY7qLf80sRwBF6oQmMmdwm9atSXW
+        OrwR7rMDhzOFuZhcho7kCRriFTBJR1jYykTLUorHkly8jwWrNp+m9kU/HgJkKtfoShNZCa
+        MfgbZk+WGCTCD0SORHaSinFihDQzEvo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630096642;
+        s=susede2_ed25519; t=1630096654;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=c+9stMSPxVOLjr1FrBDisvc+txwodDpkXc4LntWDO+k=;
-        b=J23zIWhQ+GzYvJC3aTSIm66a55yCtLcX7reKPJjjXlnb/gF1vTpYF3ZtevQ3QmK5OdqTUC
-        VmaqFhUOqNupqXAA==
+        bh=UnO7twanOywhJsN7eVGpJZfv2gQvVghuop8JdfKFROo=;
+        b=W7AOC59+c4F4r/JXOnhuyJp+UraDYfH9eD6+JElY0hRjuYP49/tya8bpW0MIv3m7YVJ4e6
+        9Omrc9n+Zl+ehBAQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 6ECDDA3B9C;
-        Fri, 27 Aug 2021 20:37:22 +0000 (UTC)
-Date:   Fri, 27 Aug 2021 22:37:22 +0200
-Message-ID: <s5hk0k6sjy5.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id 5ADAAA3B9E;
+        Fri, 27 Aug 2021 20:37:34 +0000 (UTC)
+Date:   Fri, 27 Aug 2021 22:37:34 +0200
+Message-ID: <s5hilzqsjxt.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <linux-kernel@vger.kernel.org>,
         Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ALSA: hda/cs8409: Ensure Type Detection is only run on startup when necessary
-In-Reply-To: <20210827110252.5361-1-vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Initialize Codec only in init fixup.
+In-Reply-To: <20210827110252.5361-2-vitalyr@opensource.cirrus.com>
 References: <20210827110252.5361-1-vitalyr@opensource.cirrus.com>
+        <20210827110252.5361-2-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -54,18 +55,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Aug 2021 13:02:51 +0200,
+On Fri, 27 Aug 2021 13:02:52 +0200,
 Vitaly Rodionov wrote:
 > 
 > From: Stefan Binding <sbinding@opensource.cirrus.com>
 > 
-> Type Detection should only be run after init and when the controls have been
-> built. There is no need to run it multiple times.
+> It is not necessary to initialize the codec during both probe and inside
+> the init fixup.
 > 
 > Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 > Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
-Thanks, applied.
+Thanks, applied now.
 
 
 Takashi
