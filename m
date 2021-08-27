@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCB13FA172
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 00:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F86F3FA178
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 00:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbhH0WTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 18:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
+        id S232023AbhH0WZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 18:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbhH0WTq (ORCPT
+        with ESMTP id S232101AbhH0WZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 18:19:46 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9F5C061796
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:18:57 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id 2so6805220pfo.8
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:18:57 -0700 (PDT)
+        Fri, 27 Aug 2021 18:25:44 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36990C061796
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:24:55 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id b4so17270473lfo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:24:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rd2j1K7U4hRg00mMM07NvFIy1Z4HrCM8V2x0jTRZdHc=;
-        b=Ir0TCeJ/oEbBpLCFe3DigxZyeNESMUbjXWFtm1bmgt5YKV0hkbuJC3dJVW7OhLbAYW
-         +CNFaoOcUPqHJVf9zdoevfwQEwaVfK040RXUOHFWgMWxLAAxp0xml+kSW7SHxsweEJe/
-         BY2m5dfkHfvXcKceHJf0H659WAY7HhITZt8TS4NCzCeyZvTfTi5eOxTJx+fvAXfQbbF1
-         D8C85ucITkf1U4rC+rnF1l6C9PW/QXV/LLiIF9IvfD89GiHBX5uwCUV1Ots0Oaq+XSpe
-         mau9V6tRrcLxcPyKK2aQ/onBId9GLdt6RecXowjcw4UOBOUlt4xSmOyrjeeuhojAN0qF
-         ixqw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FpMQnWS/Idb7V4cplerWRjPC6X8Jz7LmylkwVXp0j6I=;
+        b=ZpHX8TeYsHErvM6bpNGzQ2sOfpkfHyZaLiKvIG/qqAcbwr8BkRIh5FMx0vfgBq77ba
+         mYSFFH44ORsKFpst9S9OpHMEi+mfYaG30hA/NVavodJ1+IfgtNrKg/PeVoguTwWjUhOS
+         s5yboYNlnIa+RopfDKFwAW+xvljhaQXXKNctpnDqrrcAdYH6HTgb/U5YqG1WgvaOVjp2
+         kDaVirJj6fz6RzlbaT0pCOmDAi0S8NhXkZAMBjcd2LXFK+q/A15A43xCjB/XrEYnwKSF
+         1nCRPXi14H3ajDpLEpCa1iyiDZjOq4QtQn+2nwLdAvtBphjQ4NAhM27IzT5IjMVUKt8f
+         ZxSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rd2j1K7U4hRg00mMM07NvFIy1Z4HrCM8V2x0jTRZdHc=;
-        b=U7eGE8aUeZlNnczz1XFVg4npsqQauBJzwDwCSWCOOz2DSkpH3Ztiwd7Hh20NSzIVaI
-         0amgzkaFbpe/PGQeH2+FNjxDQEIyh4d5vmG9wg0OFMGMN7kQr0m3dUFA+aInQ/KkQNCJ
-         5jdQ6Sjuqjxyh2hpywUv2W+8DOoRjcEwBvjR3v5bHc1WjecnO8YzKOtncbrUelYQWXq2
-         XKNchVMrYifXzV+IB166pYrgpBJZP8jd447X7heSHOQiytfBzSJSJV8lAyKNODNVOcgO
-         7c70pQyXEPSmOaBPXGFbzJO0HnTynXuryqlmY+K7KHSPVS2navwwsz/O0UdMbxlD50Ua
-         Q3Qw==
-X-Gm-Message-State: AOAM53205qcxNfGsa4vZ6b11BQ2GDp5h+Zwbgm82mHten7mg+AcA3BNC
-        kI33E7ZSbuvjXKCvzvxRknlGUQ==
-X-Google-Smtp-Source: ABdhPJzuJP6dIT72j2d/aCBLY9krrtGRa2afNkv9q820gAKetasQmVhVHa+tvbyJjtZXZL8dDZGGhg==
-X-Received: by 2002:a62:6007:0:b029:3cd:e67a:ef9e with SMTP id u7-20020a6260070000b02903cde67aef9emr11198834pfb.72.1630102736650;
-        Fri, 27 Aug 2021 15:18:56 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id q1sm6782229pfj.132.2021.08.27.15.18.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 15:18:56 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 22:18:52 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
- private memory
-Message-ID: <YSlkzLblHfiiPyVM@google.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FpMQnWS/Idb7V4cplerWRjPC6X8Jz7LmylkwVXp0j6I=;
+        b=dUb2baD/DmLU/TBC06DYB+IFo4XMH3iBwmEjU2CzPswoYXucNMml7LzHtnItF3vtcb
+         fvXUHYskTEpgHioElAlrlUc7ZAA/iART9gU4+1OgZZ9uMP0cw2Fkv4HzHT1enGMuBYTf
+         au2QMCfLlVMK0v2S/CwdBdall48uaJyXq54Pcms1PIpjJH+4MhvX/flxnKIXH5lGxqeC
+         2aGzMTP79jFyNIl22VKsorxftOW2Bbu5nSJ3v3BhuJxa1rHi25h/eZUzx8NDcN9P0PLR
+         Z1OkG8BDRi9/sNyurtC7If2sZCKWIP0NdVD4iG1YFRrlArKULdBGQheZocUI/J8E+QMS
+         Kesg==
+X-Gm-Message-State: AOAM530MeIT1IdxbKG6V+i9IL6HSgZnxpVpcVNAykxwHQySAchgz/MDe
+        oyPza2rPdCMo4v8AeYSF0g2VLJM5V78E248amAH28g==
+X-Google-Smtp-Source: ABdhPJzY2a0iBh2SUwgB961qSHcMc6KG1k/nbmyRlu/YhfENDRRGN3HSBgvzlDdumO1AGXZZQB9r80OhSTuE25v5UGo=
+X-Received: by 2002:ac2:5d4a:: with SMTP id w10mr8503419lfd.529.1630103093434;
+ Fri, 27 Aug 2021 15:24:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+References: <20210822193145.1312668-1-alvin@pqrs.dk> <20210822193145.1312668-5-alvin@pqrs.dk>
+ <20210822224805.p4ifpynog2jvx3il@skbuf> <dd2947d5-977d-b150-848e-fb9a20c16668@bang-olufsen.dk>
+In-Reply-To: <dd2947d5-977d-b150-848e-fb9a20c16668@bang-olufsen.dk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 28 Aug 2021 00:24:42 +0200
+Message-ID: <CACRpkdakr9pY0MmM7ZmFnqgHMr5o13kXGVtiBqCLB0aV+6Z=UA@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next 4/5] net: dsa: realtek-smi: add rtl8365mb
+ subdriver for RTL8365MB-VC
+To:     =?UTF-8?Q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Rasmussen <MIR@bang-olufsen.dk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021, David Hildenbrand wrote:
-> You'll end up with a VMA that corresponds to the whole file in a single
-> process only, and that cannot vanish, not even in parts.
+On Mon, Aug 23, 2021 at 1:56 AM Alvin =C5=A0ipraga <ALSI@bang-olufsen.dk> w=
+rote:
+> On 8/23/21 12:48 AM, Vladimir Oltean wrote:
+> > On Sun, Aug 22, 2021 at 09:31:42PM +0200, Alvin =C5=A0ipraga wrote:
 
-How would userspace tell the kernel to free parts of memory that it doesn't want
-assigned to the guest, e.g. to free memory that the guest has converted to
-not-private?
+> >> +static int rtl8365mb_enable_vlan(struct realtek_smi *smi, bool enable=
+)
+> >> +{
+> >> +    dev_dbg(smi->dev, "%s VLAN\n", enable ? "enable" : "disable");
+> >> +    return regmap_update_bits(
+> >> +            smi->map, RTL8365MB_VLAN_CTRL_REG, RTL8365MB_VLAN_CTRL_EN=
+_MASK,
+> >> +            FIELD_PREP(RTL8365MB_VLAN_CTRL_EN_MASK, enable ? 1 : 0));
+> >> +}
+> >> +
+> >> +static int rtl8365mb_enable_vlan4k(struct realtek_smi *smi, bool enab=
+le)
+> >> +{
+> >> +    return rtl8365mb_enable_vlan(smi, enable);
+> >> +}
+> >
+> > I'm not going to lie, the realtek_smi_ops VLAN methods seem highly
+> > cryptic to me. Why do you do the same thing from .enable_vlan4k as from
+> > .enable_vlan? What are these supposed to do in the first place?
+> > Or to quote from rtl8366_vlan_add: "what's with this 4k business?"
+>
+> I think realtek-smi was written with rtl8366rb.c in mind, which appears
+> to have different control registers for VLAN and VLAN4k modes, whatever
+> that's supposed to mean. Since the RTL8365MB doesn't distinguish between
+> the two, I just route one to the other. The approach is one of caution,
+> since I don't want to break the other driver (I don't have hardware to
+> test for regressions). Maybe Linus can chime in?
 
-> Define "ordinary" user memory slots as overlay on top of "encrypted" memory
-> slots.  Inside KVM, bail out if you encounter such a VMA inside a normal
-> user memory slot. When creating a "encryped" user memory slot, require that
-> the whole VMA is covered at creation time. You know the VMA can't change
-> later.
+Sigh, I have zero documentation, I just mimic what the code dump from
+Realtek does.
 
-This can work for the basic use cases, but even then I'd strongly prefer not to
-tie memslot correctness to the VMAs.  KVM doesn't truly care what lies behind
-the virtual address of a memslot, and when it does care, it tends to do poorly,
-e.g. see the whole PFNMAP snafu.  KVM cares about the pfn<->gfn mappings, and
-that's reflected in the infrastructure.  E.g. KVM relies on the mmu_notifiers
-to handle mprotect()/munmap()/etc...
+But my interpretation is that the RTL8366RB can operate with either
+16 or 4096 VLAN (VID) member entries. (Called "mc", member configs)
+The support for 4096 "4k" entries need to be enabled explicitly,
+in succession after enabling the 16 entries, and this is what the
+code in rtl8366.c does, and we always enable all 4096 "mc:s"
+of course.
 
-As is, I don't think KVM would get any kind of notification if userpaces unmaps
-the VMA for a private memslot that does not have any entries in the host page
-tables.   I'm sure it's a solvable problem, e.g. by ensuring at least one page
-is touched by the backing store, but I don't think the end result would be any
-prettier than a dedicated API for KVM to consume.
+I guess some older switch only supported 16 members and this
+is a hardware compatibility mode.
 
-Relying on VMAs, and thus the mmu_notifiers, also doesn't provide line of sight
-to page migration or swap.  For those types of operations, KVM currently just
-reacts to invalidation notifications by zapping guest PTEs, and then gets the
-new pfn when the guest re-faults on the page.  That sequence doesn't work for
-TDX or SEV-SNP because the trusteday agent needs to do the memcpy() of the page
-contents, i.e. the host needs to call into KVM for the actual migration.
-
-There's also the memory footprint side of things; the fd-based approach avoids
-having to create host page tables for memory that by definition will never be
-used by the host.
+Yours,
+Linus Walleij
