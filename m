@@ -2,135 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3DE3FA12F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527B53FA134
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 23:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbhH0Vd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 17:33:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231807AbhH0Vd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 17:33:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EB3C60F58;
-        Fri, 27 Aug 2021 21:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630099959;
-        bh=y8z3/XKnVDeuNQf8gfmjbfX5mTKkn+C8iBSvzVZM7ec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L0ROG2Qxfk6FDAULnV2nqG0z4YjYqtmPLua7ojGOhzOpGEvrFMAoaVFiTQP9JxIzg
-         X32cPWsEcX5B2U+B3FLmFhRGm4i6rG9HQEpWMqzYrnFDa5F2e6JgQwoJymd7/YhnxY
-         m4ozVulQNnO9yTGtpNIRCzoZj+hOKxNByj9uHLvDtcMLDRsBCfyUbGDXqeEPOu6zeZ
-         TSqhw2O3D3z/utWVBfrfvMjlgnIVKx/RrZERq85kUbXk810zWOI+QrqxI77c2OhiDC
-         6SR/NcBGpCVSpZlMegl6hhAk6W4228xkDqqj5EbjWdpcf5H6FQKLNCuMlEKwTMaoTw
-         z7CZbFUMrNemw==
-Date:   Fri, 27 Aug 2021 14:32:39 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH v7 16/19] iomap: Add done_before argument to iomap_dio_rw
-Message-ID: <20210827213239.GH12597@magnolia>
-References: <20210827164926.1726765-1-agruenba@redhat.com>
- <20210827164926.1726765-17-agruenba@redhat.com>
- <20210827183018.GJ12664@magnolia>
- <CAHc6FU44mGza=G4prXh08=RJZ0Wu7i6rBf53BjURj8oyX5Q8iA@mail.gmail.com>
+        id S232000AbhH0Ve3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 17:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231913AbhH0Ve2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 17:34:28 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695C7C061796
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 14:33:39 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id e129so15055083yba.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 14:33:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RZNyHeDVs2mzNxDgTuglWtbJQudBi+AgMRN4SZ0C/nY=;
+        b=jVqEIc455Wtcw8ODTyXfnO/FQsEQDMK/It9z9OeJqHqx8p3YH0rnsTE3JppBBQ71ic
+         hFAjlj8BEwrMpHu5dY26GEJrq9XNElRyt2SaSTsQQPeNiGInacBfUIwM47yAwiv52Cx6
+         cb5GcXIKp71l+SHcuTn0XmplTlgeszW/UdUC5gCMt1xJKxkcd9fGDlAao5HTZ6N1Xrka
+         x1jACeUhmZYPrTZV4Sdl2PwtBWU2wCwz958GvC5DQjFa8/08MAVUxdRtI1csFaIvGlK+
+         lC13HteG3Oka7xoTpaaAHoKgIUm8l7vHSWN0P6G5nVDvLsPsESrPFwGNXA+XnpKiANxH
+         gLzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RZNyHeDVs2mzNxDgTuglWtbJQudBi+AgMRN4SZ0C/nY=;
+        b=dFviQ0DNedY3VASWX/pErrh72jiKzCfaI7U7cHo8qIdusG53yWRYo8su1FuMW3OCi2
+         zRTkg5ZsrYKlyuYyZIfZVXh9pafwd9ezbHe2XFTt8YWpW2VUmsoCq0Zopr8u1ZNsCzLQ
+         mukVp8kPDwh2uaBWufMpNm7JicaMfHPsuUz/o9RrpJZhkcwhSWfSeRUH5A2PtpMRimfd
+         eDLm0ijuhAFfIJ6d8DVBre/546ed1Y3doAx9sYTAjQDdBiWDbGRDqxvUEOw507SQO6MZ
+         GcaasvEAg40XGXFWv8JIO2w3xN0Hq9USOoFrQApvQ0vdPD2f5xVLKlqaO1jdM1TABY0r
+         PoCA==
+X-Gm-Message-State: AOAM533J0HjnU24Ugse+4ZtyI+8kbWzai3GtUOWnIInUtXIQJisXMj+3
+        xFJlyJAM+4mkPFBWST44g1OWkpgGKCpDWZV5jgPCUg==
+X-Google-Smtp-Source: ABdhPJz5+dNvgc2ixHXOwcDeo8jDfMW8Ql6QvMwMVQ6iLfDyfXrrjgP9Mg+KHQk+aYDhygWXhbGhxIhyAShRq9e5qmw=
+X-Received: by 2002:a25:d2c8:: with SMTP id j191mr8213434ybg.412.1630100018502;
+ Fri, 27 Aug 2021 14:33:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHc6FU44mGza=G4prXh08=RJZ0Wu7i6rBf53BjURj8oyX5Q8iA@mail.gmail.com>
+References: <20210826074526.825517-1-saravanak@google.com> <20210826074526.825517-2-saravanak@google.com>
+ <YSeTdb6DbHbBYabN@lunn.ch> <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
+ <YSf/Mps9E77/6kZX@lunn.ch> <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
+ <YSg+dRPSX9/ph6tb@lunn.ch> <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
+ <YSjsQmx8l4MXNvP+@lunn.ch> <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
+ <YSlG4XRGrq5D1/WU@lunn.ch>
+In-Reply-To: <YSlG4XRGrq5D1/WU@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 27 Aug 2021 14:33:02 -0700
+Message-ID: <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 10:15:11PM +0200, Andreas Gruenbacher wrote:
-> On Fri, Aug 27, 2021 at 8:30 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > On Fri, Aug 27, 2021 at 06:49:23PM +0200, Andreas Gruenbacher wrote:
-> > > Add a done_before argument to iomap_dio_rw that indicates how much of
-> > > the request has already been transferred.  When the request succeeds, we
-> > > report that done_before additional bytes were tranferred.  This is
-> > > useful for finishing a request asynchronously when part of the request
-> > > has already been completed synchronously.
-> > >
-> > > We'll use that to allow iomap_dio_rw to be used with page faults
-> > > disabled: when a page fault occurs while submitting a request, we
-> > > synchronously complete the part of the request that has already been
-> > > submitted.  The caller can then take care of the page fault and call
-> > > iomap_dio_rw again for the rest of the request, passing in the number of
-> > > bytes already tranferred.
-> > >
-> > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > > ---
-> > >  fs/btrfs/file.c       |  5 +++--
-> > >  fs/ext4/file.c        |  5 +++--
-> > >  fs/gfs2/file.c        |  4 ++--
-> > >  fs/iomap/direct-io.c  | 11 ++++++++---
-> > >  fs/xfs/xfs_file.c     |  6 +++---
-> > >  fs/zonefs/super.c     |  4 ++--
-> > >  include/linux/iomap.h |  4 ++--
-> > >  7 files changed, 23 insertions(+), 16 deletions(-)
-> > >
+On Fri, Aug 27, 2021 at 1:11 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > > I've not yet looked at plain Ethernet drivers. This pattern could also
+> > > exist there. And i wonder about other complex structures, i2c bus
+> > > multiplexors, you can have interrupt controllers as i2c devices,
+> > > etc. So the general case could exist in other places.
 > >
-> > <snip to the interesting parts>
-> >
-> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > > index ba88fe51b77a..dcf9a2b4381f 100644
-> > > --- a/fs/iomap/direct-io.c
-> > > +++ b/fs/iomap/direct-io.c
-> > > @@ -31,6 +31,7 @@ struct iomap_dio {
-> > >       atomic_t                ref;
-> > >       unsigned                flags;
-> > >       int                     error;
-> > > +     size_t                  done_before;
-> > >       bool                    wait_for_completion;
-> > >
-> > >       union {
-> > > @@ -126,6 +127,9 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
-> > >       if (ret > 0 && (dio->flags & IOMAP_DIO_NEED_SYNC))
-> > >               ret = generic_write_sync(iocb, ret);
-> > >
-> > > +     if (ret > 0)
-> > > +             ret += dio->done_before;
-> >
-> > Pardon my ignorance since this is the first time I've had a crack at
-> > this patchset, but why is it necessary to carry the "bytes copied"
-> > count from the /previous/ iomap_dio_rw call all the way through to dio
-> > completion of the current call?
-> 
-> Consider the following situation:
-> 
->  * A user submits an asynchronous read request.
-> 
->  * The first page of the buffer is in memory, but the following
->    pages are not. This isn't uncommon for consecutive reads
->    into freshly allocated memory.
-> 
->  * iomap_dio_rw writes into the first page. Then it
->    hits the next page which is missing, so it returns a partial
->    result, synchronously.
-> 
->  * We then fault in the remaining pages and call iomap_dio_rw
->    for the rest of the request.
-> 
->  * The rest of the request completes asynchronously.
-> 
-> Does that answer your question?
+> > I haven't seen any generic issues like this reported so far. It's only
+> > after adding phy-handle that we are hitting these issues with DSA
+> > switches.
+>
+> Can you run your parser over the 2250 DTB blobs and see how many
+> children have dependencies on a parent? That could give us an idea how
+> many moles need whacking. And maybe, where in the tree they are
+> hiding?
 
-No, because you totally ignored the second question:
+You are only responding to part of my email. As I said in my previous
+email: "There are plenty of cases where it's better to delay the child
+device's probe until the parent finishes. You even gave an example[7]
+where it would help avoid unnecessary deferred probes." Can you please
+give your thoughts on the rest of the points I made too?
 
-If the directio operation succeeds even partially and the PARTIAL flag
-is set, won't that push the iov iter ahead by however many bytes
-completed?
-
-We already finished the IO for the first page, so the second attempt
-should pick up where it left off, i.e. the second page.
-
---D
-
-> Thanks,
-> Andreas
-> 
+-Saravana
