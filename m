@@ -2,193 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534633F9B26
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF82D3F9B20
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245263AbhH0OwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhH0OwG (ORCPT
+        id S233683AbhH0OuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:50:12 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:34336 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233779AbhH0OuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:52:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5D0C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:51:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fgRwnxGGF057xGl87vsL6kCRqNe7wcNfUYeSw4x56tc=; b=tUg5s6JwGQth/zsyy+aMx5nMrP
-        +lAZJIySGhrCe0H7CM2kWBKnuk6FIHf6r/WjCeqziDWuedqlaDAdsN7hxoSU8UcN422PZpOosugZ8
-        J00lTUeG67ZQYl7rf76uNjTtnwFqJaOGxmB/Xw4kc9xyEnGHgOzxSqvaXLE8FLZ599ZvhcRDC+97M
-        AvfakezHJEL2qT9ShlZiFjA9Ycv1nH2B6C1bs1EQqbaWqhm1xL5Tu81YDp9VyT+3hBrWjWYO4uKSH
-        HdZU/ay53Y1q+VtjNe1E0+3iZeLhHrozpyie1c0udGm/8pxK+Q5iZ1ovK5u9PJKlSWGt7WBvC9vei
-        2DUHF8MQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJd9k-00EfE0-Bn; Fri, 27 Aug 2021 14:48:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EBDE63005AD;
-        Fri, 27 Aug 2021 16:48:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C009629A12A4D; Fri, 27 Aug 2021 16:48:30 +0200 (CEST)
-Date:   Fri, 27 Aug 2021 16:48:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v4 6/6] sched/fair: Consider SMT in ASYM_PACKING load
- balance
-Message-ID: <YSj7PrVGVpcKf/vz@hirez.programming.kicks-ass.net>
-References: <20210810144145.18776-1-ricardo.neri-calderon@linux.intel.com>
- <20210810144145.18776-7-ricardo.neri-calderon@linux.intel.com>
- <CAKfTPtArtmhLG5QYR6TzKevDrEuiQu2HJxm_C3pe549XdGU-1g@mail.gmail.com>
+        Fri, 27 Aug 2021 10:50:11 -0400
+Received: by mail-io1-f70.google.com with SMTP id a9-20020a5ec309000000b005baa3f77016so4151399iok.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:49:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=zme3oqhaRPqOxyEVa6qXZflTFNypbpRkaNf+HNcb2hI=;
+        b=MnPGUc3VR532V9zx7xaj3yaBpp9/vbSV8Q98EJM3+C6mV7XlEaHMPj6kS/XMiK7+C9
+         gVlUYTuZYNgI4IEM+nAcxfxLJF78anKUbom3pKtGImuofkp0PYPbXec0o/XU8XLonm9t
+         2shKTM0V7Fz+HOgtPwr2ML5z1ds19rdOlzfmnJVLrFpEiE4uZi1ACicemS8gmrJf/KwD
+         m9jjWcI3tEQHJNV6tWed6wdbHk5sBOOpzDRtbdZWDtvwHgK/xrIvPMUzag+/TcIF5pAI
+         FkTdsI8Qw/D7iCSyhCvrtCdzEkk+0qWZZHRLgXGTdCWiz9sBF8oI8u0ftShr4D3ILE1I
+         wZ8A==
+X-Gm-Message-State: AOAM531fdys3LPEibduB8QmdSR8P9/HQ+dcSiYJUAffOvoCERlm9Devd
+        FhypooG3GaOTHCFWIwwQAyHndvMb+q/MrrZ8THc3PNFmYHUg
+X-Google-Smtp-Source: ABdhPJwDmNyWip24oPcN/2tFbu35ZESqlWMsdd6Zas93i+q+XWKUqetn8oM5fnnFzs4RUPPBoeKr/EcJkpt57uG0Gv7ukvDHX1US
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtArtmhLG5QYR6TzKevDrEuiQu2HJxm_C3pe549XdGU-1g@mail.gmail.com>
+X-Received: by 2002:a5e:8e4c:: with SMTP id r12mr7808124ioo.73.1630075762565;
+ Fri, 27 Aug 2021 07:49:22 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 07:49:22 -0700
+In-Reply-To: <0000000000004e5ec705c6318557@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c8e9e605ca8b962c@google.com>
+Subject: Re: [syzbot] general protection fault in legacy_parse_param
+From:   syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>
+To:     casey@schaufler-ca.com, dhowells@redhat.com, dvyukov@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, paul@paul-moore.com,
+        selinux@vger.kernel.org, stephen.smalley.work@gmail.com,
+        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 12:13:42PM +0200, Vincent Guittot wrote:
-> > +/**
-> > + * asym_smt_can_pull_tasks - Check whether the load balancing CPU can pull tasks
-> > + * @dst_cpu:   Destination CPU of the load balancing
-> > + * @sds:       Load-balancing data with statistics of the local group
-> > + * @sgs:       Load-balancing statistics of the candidate busiest group
-> > + * @sg:                The candidate busiet group
-> > + *
-> > + * Check the state of the SMT siblings of both @sds::local and @sg and decide
-> > + * if @dst_cpu can pull tasks. If @dst_cpu does not have SMT siblings, it can
-> > + * pull tasks if two or more of the SMT siblings of @sg are busy. If only one
-> > + * CPU in @sg is busy, pull tasks only if @dst_cpu has higher priority.
-> > + *
-> > + * If both @dst_cpu and @sg have SMT siblings, even the number of idle CPUs
-> > + * between @sds::local and @sg. Thus, pull tasks from @sg if the difference
-> > + * between the number of busy CPUs is 2 or more. If the difference is of 1,
-> > + * only pull if @dst_cpu has higher priority. If @sg does not have SMT siblings
-> > + * only pull tasks if all of the SMT siblings of @dst_cpu are idle and @sg
-> > + * has lower priority.
-> > + */
-> > +static bool asym_smt_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
-> > +                                   struct sg_lb_stats *sgs,
-> > +                                   struct sched_group *sg)
-> > +{
-> > +#ifdef CONFIG_SCHED_SMT
-> > +       bool local_is_smt, sg_is_smt;
-> > +       int sg_busy_cpus;
-> > +
-> > +       local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
-> > +       sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
-> > +
-> > +       sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
-> > +
-> > +       if (!local_is_smt) {
-> > +               /*
-> > +                * If we are here, @dst_cpu is idle and does not have SMT
-> > +                * siblings. Pull tasks if candidate group has two or more
-> > +                * busy CPUs.
-> > +                */
-> > +               if (sg_is_smt && sg_busy_cpus >= 2)
-> > +                       return true;
-> > +
-> > +               /*
-> > +                * @dst_cpu does not have SMT siblings. @sg may have SMT
-> > +                * siblings and only one is busy. In such case, @dst_cpu
-> > +                * can help if it has higher priority and is idle.
-> > +                */
-> > +               return !sds->local_stat.group_util &&
-> 
-> sds->local_stat.group_util can't be used to decide if a CPU or group
-> of CPUs is idle. util_avg is usually not null when a CPU becomes idle
-> and you can have to wait  more than 300ms before it becomes Null
-> At the opposite, the utilization of a CPU can be null but a task with
-> null utilization has just woken up on it.
-> Utilization is used to reflect the average work of the CPU or group of
-> CPUs but not the current state
+syzbot has found a reproducer for the following issue on:
 
-If you want immediate idle, sgs->nr_running == 0 or sgs->idle_cpus ==
-sgs->group_weight come to mind.
+HEAD commit:    77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10636bde300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
+dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d084d300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16216eb1300000
 
-> > +                      sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-> > +       }
-> > +
-> > +       /* @dst_cpu has SMT siblings. */
-> > +
-> > +       if (sg_is_smt) {
-> > +               int local_busy_cpus = sds->local->group_weight -
-> > +                                     sds->local_stat.idle_cpus;
-> > +               int busy_cpus_delta = sg_busy_cpus - local_busy_cpus;
-> > +
-> > +               /* Local can always help to even the number busy CPUs. */
-> 
-> default behavior of the load balance already tries to even the number
-> of idle CPUs.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
 
-Right, but I suppose this is because we're trapped here and have to deal
-with the SMT-SMT case too. Ricardo, can you clarify?
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 8435 Comm: syz-executor272 Not tainted 5.14.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:memchr+0x2f/0x70 lib/string.c:1054
+Code: 41 54 53 48 89 d3 41 89 f7 45 31 f6 49 bc 00 00 00 00 00 fc ff df 0f 1f 44 00 00 48 85 db 74 3b 48 89 fd 48 89 f8 48 c1 e8 03 <42> 0f b6 04 20 84 c0 75 0f 48 ff cb 48 8d 7d 01 44 38 7d 00 75 db
+RSP: 0018:ffffc9000d9f7d08 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88801c1f3880
+RDX: 0000000000000001 RSI: 000000000000002c RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff81e3db46 R09: ffffffff81e3d8e2
+R10: 0000000000000002 R11: ffff88801c1f3880 R12: dffffc0000000000
+R13: 1ffff92001b3efcc R14: 0000000000000000 R15: 000000000000002c
+FS:  0000000000deb300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000044 CR3: 0000000037173000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ legacy_parse_param+0x49b/0x810 fs/fs_context.c:555
+ vfs_parse_fs_param+0x1df/0x460 fs/fs_context.c:146
+ vfs_fsconfig_locked fs/fsopen.c:265 [inline]
+ __do_sys_fsconfig fs/fsopen.c:439 [inline]
+ __se_sys_fsconfig+0xba9/0xff0 fs/fsopen.c:314
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ee69
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc5e9e0b98 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee69
+RDX: 0000000020000080 RSI: 0000000000000001 RDI: 0000000000000003
+RBP: 0000000000402e50 R08: 0000000000000000 R09: 0000000000400488
+R10: 00000000200000c0 R11: 0000000000000246 R12: 0000000000402ee0
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+Modules linked in:
+---[ end trace 74baf661f3b47b0a ]---
+RIP: 0010:memchr+0x2f/0x70 lib/string.c:1054
+Code: 41 54 53 48 89 d3 41 89 f7 45 31 f6 49 bc 00 00 00 00 00 fc ff df 0f 1f 44 00 00 48 85 db 74 3b 48 89 fd 48 89 f8 48 c1 e8 03 <42> 0f b6 04 20 84 c0 75 0f 48 ff cb 48 8d 7d 01 44 38 7d 00 75 db
+RSP: 0018:ffffc9000d9f7d08 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88801c1f3880
+RDX: 0000000000000001 RSI: 000000000000002c RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff81e3db46 R09: ffffffff81e3d8e2
+R10: 0000000000000002 R11: ffff88801c1f3880 R12: dffffc0000000000
+R13: 1ffff92001b3efcc R14: 0000000000000000 R15: 000000000000002c
+FS:  0000000000deb300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fed5f8146c0 CR3: 0000000037173000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	41 54                	push   %r12
+   2:	53                   	push   %rbx
+   3:	48 89 d3             	mov    %rdx,%rbx
+   6:	41 89 f7             	mov    %esi,%r15d
+   9:	45 31 f6             	xor    %r14d,%r14d
+   c:	49 bc 00 00 00 00 00 	movabs $0xdffffc0000000000,%r12
+  13:	fc ff df
+  16:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  1b:	48 85 db             	test   %rbx,%rbx
+  1e:	74 3b                	je     0x5b
+  20:	48 89 fd             	mov    %rdi,%rbp
+  23:	48 89 f8             	mov    %rdi,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 0f b6 04 20       	movzbl (%rax,%r12,1),%eax <-- trapping instruction
+  2f:	84 c0                	test   %al,%al
+  31:	75 0f                	jne    0x42
+  33:	48 ff cb             	dec    %rbx
+  36:	48 8d 7d 01          	lea    0x1(%rbp),%rdi
+  3a:	44 38 7d 00          	cmp    %r15b,0x0(%rbp)
+  3e:	75 db                	jne    0x1b
 
-> > +               if (busy_cpus_delta >= 2)
-> > +                       return true;
-> > +
-> > +               if (busy_cpus_delta == 1)
-> > +                       return sched_asym_prefer(dst_cpu,
-> > +                                                sg->asym_prefer_cpu);
-> > +
-> > +               return false;
-> > +       }
-> > +
-> > +       /*
-> > +        * @sg does not have SMT siblings. Ensure that @sds::local does not end
-> > +        * up with more than one busy SMT sibling and only pull tasks if there
-> > +        * are not busy CPUs. As CPUs move in and out of idle state frequently,
-> > +        * also check the group utilization to smoother the decision.
-> > +        */
-> > +       if (!sds->local_stat.group_util)
-> 
-> same comment as above about the meaning of group_util == 0
-> 
-> > +               return sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-> > +
-> > +       return false;
-> > +#else
-> > +       /* Always return false so that callers deal with non-SMT cases. */
-> > +       return false;
-> > +#endif
-> > +}
-> > +
-> >  static inline bool
-> >  sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
-> >            struct sched_group *group)
-> >  {
-> > +       /* Only do SMT checks if either local or candidate have SMT siblings */
-> > +       if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
-> > +           (group->flags & SD_SHARE_CPUCAPACITY))
-> > +               return asym_smt_can_pull_tasks(env->dst_cpu, sds, sgs, group);
-> > +
-> >         return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
-> >  }
