@@ -2,201 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCE43F9947
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66063F9943
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhH0Mzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 08:55:46 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30338 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245172AbhH0Mzo (ORCPT
+        id S245163AbhH0Mza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 08:55:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34670 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231271AbhH0Mz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 08:55:44 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17RCak8G173581;
-        Fri, 27 Aug 2021 08:54:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=6nAAk+V2d3Xwl4xFOBHWQFYVImZXGqjhwIJlEY+rm20=;
- b=rtuW/YZpRbiM9QkYgwCIkfUJjwihCeTJ+EwSyYZyE1WUDRNgRkz/DTsQcliTy5Rqv04C
- c1QVhXJLWrZhFqqh6r4LcssGtZsZ6LalPQe9BCtWGeXVC5RJmCkRyHh1G+Lsa80m0YBL
- WjQuzR+B1Fn5VQMDZB8bmQlRzjaM5HlKvhW0871qRfxwgZrPpog2b6bWF64UJMGdoMzU
- 7dxg8PQgkRIKICuhhYGFzSC5yJXWSnJdxgYbpCxPF7oskASzIaKeKjNk8bxTkvC2/CEB
- q4Go9eMi5vKhPvMeRX/42RGrqm00QvqkNgj8sUuctZdqENjl9W7XmyP5G68syWP0MCHH mA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3apyek9maj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 08:54:55 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17RCqomp066704;
-        Fri, 27 Aug 2021 08:54:55 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3apyek9m8u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 08:54:54 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17RCmITK017628;
-        Fri, 27 Aug 2021 12:54:52 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3ajrrhkjf4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Aug 2021 12:54:52 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17RCowH456820034
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Aug 2021 12:50:58 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F14ED4C052;
-        Fri, 27 Aug 2021 12:54:48 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A3FF4C058;
-        Fri, 27 Aug 2021 12:54:48 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 27 Aug 2021 12:54:48 +0000 (GMT)
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Fri, 27 Aug 2021 08:55:29 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 9BBB42022C;
+        Fri, 27 Aug 2021 12:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630068879; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PmIoYEQGodRJmMWo7Y06lgBn7jiODJwF67Pn0cQCnrg=;
+        b=dcHFc6MmXLODLgyqfIENf0jVMpsJgcM2cBEx9UBmJueTL+hicd+b7WWMj/zMXuGgyy6Hyy
+        L67YJXPMUmMZj0LUMc2hWBF7xAOPS8xvA/BDDHYqJ/CtGFgQqosMqIwmm+rt06tCTzG7Iw
+        LJVfrmtjLKSpLvU6SaCvXwF98IaJ+NU=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 809B7A3B95;
+        Fri, 27 Aug 2021 12:54:39 +0000 (UTC)
+Date:   Fri, 27 Aug 2021 14:54:39 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
         Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Halil Pasic <pasic@linux.ibm.com>, stable@vger.kernel.org,
-        Michael Mueller <mimu@linux.ibm.com>
-Subject: [PATCH 1/1] KVM: s390: index kvm->arch.idle_mask by vcpu_idx
-Date:   Fri, 27 Aug 2021 14:54:29 +0200
-Message-Id: <20210827125429.1912577-1-pasic@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+        Sven Schnelle <svens@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] livepatch: Kick idle cpu's tasks to perform
+ transition
+Message-ID: <YSjgj+ZzOutFxevl@alley>
+References: <patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HSaEmx09D-qoYvwa6kdRNQ6JSp1xcYFH
-X-Proofpoint-ORIG-GUID: vV37pAX20O9K5gptdURlBA59ndbX9vdW
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-27_04:2021-08-26,2021-08-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- mlxlogscore=999 priorityscore=1501 suspectscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108270081
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While in practice vcpu->vcpu_idx ==  vcpu->vcp_id is often true,
-it may not always be, and we must not rely on this.
+On Wed 2021-07-07 14:49:38, Vasily Gorbik wrote:
+> On an idle system with large amount of cpus it might happen that
+> klp_update_patch_state() is not reached in do_idle() for a long periods
+> of time. With debug messages enabled log is filled with:
+> [  499.442643] livepatch: klp_try_switch_task: swapper/63:0 is running
+> 
+> without any signs of progress. Ending up with "failed to complete
+> transition".
+> 
+> On s390 LPAR with 128 cpus not a single transition is able to complete
+> and livepatch kselftests fail.
+> 
+> To deal with that, make sure we break out of do_idle() inner loop to
+> reach klp_update_patch_state() by marking idle tasks as NEED_RESCHED
+> as well as kick cpus out of idle state.
 
-Currently kvm->arch.idle_mask is indexed by vcpu_id, which implies
-that code like
-for_each_set_bit(vcpu_id, kvm->arch.idle_mask, online_vcpus) {
-                vcpu = kvm_get_vcpu(kvm, vcpu_id);
-		do_stuff(vcpu);
-}
-is not legit. The trouble is, we do actually use kvm->arch.idle_mask
-like this. To fix this problem we have two options. Either use
-kvm_get_vcpu_by_id(vcpu_id), which would loop to find the right vcpu_id,
-or switch to indexing via vcpu_idx. The latter is preferable for obvious
-reasons.
+I see.
 
-Let us make switch from indexing kvm->arch.idle_mask by vcpu_id to
-indexing it by vcpu_idx.  To keep gisa_int.kicked_mask indexed by the
-same index as idle_mask lets make the same change for it as well.
+> 
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> ---
+>  kernel/livepatch/transition.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
+> index 3a4beb9395c4..793eba46e970 100644
+> --- a/kernel/livepatch/transition.c
+> +++ b/kernel/livepatch/transition.c
+> @@ -415,8 +415,11 @@ void klp_try_complete_transition(void)
+>  	for_each_possible_cpu(cpu) {
+>  		task = idle_task(cpu);
+>  		if (cpu_online(cpu)) {
+> -			if (!klp_try_switch_task(task))
+> +			if (!klp_try_switch_task(task)) {
+>  				complete = false;
+> +				set_tsk_need_resched(task);
 
-Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-Fixes: 1ee0bc559dc3 ("KVM: s390: get rid of local_int array")
-Cc: <stable@vger.kernel.org> # 3.15+
----
- arch/s390/include/asm/kvm_host.h |  1 +
- arch/s390/kvm/interrupt.c        | 12 ++++++------
- arch/s390/kvm/kvm-s390.c         |  2 +-
- arch/s390/kvm/kvm-s390.h         |  2 +-
- 4 files changed, 9 insertions(+), 8 deletions(-)
+Is this really needed?
 
-diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-index 161a9e12bfb8..630eab0fa176 100644
---- a/arch/s390/include/asm/kvm_host.h
-+++ b/arch/s390/include/asm/kvm_host.h
-@@ -957,6 +957,7 @@ struct kvm_arch{
- 	atomic64_t cmma_dirty_pages;
- 	/* subset of available cpu features enabled by user space */
- 	DECLARE_BITMAP(cpu_feat, KVM_S390_VM_CPU_FEAT_NR_BITS);
-+	/* indexed by vcpu_idx */
- 	DECLARE_BITMAP(idle_mask, KVM_MAX_VCPUS);
- 	struct kvm_s390_gisa_interrupt gisa_int;
- 	struct kvm_s390_pv pv;
-diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
-index d548d60caed2..16256e17a544 100644
---- a/arch/s390/kvm/interrupt.c
-+++ b/arch/s390/kvm/interrupt.c
-@@ -419,13 +419,13 @@ static unsigned long deliverable_irqs(struct kvm_vcpu *vcpu)
- static void __set_cpu_idle(struct kvm_vcpu *vcpu)
- {
- 	kvm_s390_set_cpuflags(vcpu, CPUSTAT_WAIT);
--	set_bit(vcpu->vcpu_id, vcpu->kvm->arch.idle_mask);
-+	set_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.idle_mask);
- }
- 
- static void __unset_cpu_idle(struct kvm_vcpu *vcpu)
- {
- 	kvm_s390_clear_cpuflags(vcpu, CPUSTAT_WAIT);
--	clear_bit(vcpu->vcpu_id, vcpu->kvm->arch.idle_mask);
-+	clear_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.idle_mask);
- }
- 
- static void __reset_intercept_indicators(struct kvm_vcpu *vcpu)
-@@ -3050,18 +3050,18 @@ int kvm_s390_get_irq_state(struct kvm_vcpu *vcpu, __u8 __user *buf, int len)
- 
- static void __airqs_kick_single_vcpu(struct kvm *kvm, u8 deliverable_mask)
- {
--	int vcpu_id, online_vcpus = atomic_read(&kvm->online_vcpus);
-+	int vcpu_idx, online_vcpus = atomic_read(&kvm->online_vcpus);
- 	struct kvm_s390_gisa_interrupt *gi = &kvm->arch.gisa_int;
- 	struct kvm_vcpu *vcpu;
- 
--	for_each_set_bit(vcpu_id, kvm->arch.idle_mask, online_vcpus) {
--		vcpu = kvm_get_vcpu(kvm, vcpu_id);
-+	for_each_set_bit(vcpu_idx, kvm->arch.idle_mask, online_vcpus) {
-+		vcpu = kvm_get_vcpu(kvm, vcpu_idx);
- 		if (psw_ioint_disabled(vcpu))
- 			continue;
- 		deliverable_mask &= (u8)(vcpu->arch.sie_block->gcr[6] >> 24);
- 		if (deliverable_mask) {
- 			/* lately kicked but not yet running */
--			if (test_and_set_bit(vcpu_id, gi->kicked_mask))
-+			if (test_and_set_bit(vcpu_idx, gi->kicked_mask))
- 				return;
- 			kvm_s390_vcpu_wakeup(vcpu);
- 			return;
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 4527ac7b5961..8580543c5bc3 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -4044,7 +4044,7 @@ static int vcpu_pre_run(struct kvm_vcpu *vcpu)
- 		kvm_s390_patch_guest_per_regs(vcpu);
- 	}
- 
--	clear_bit(vcpu->vcpu_id, vcpu->kvm->arch.gisa_int.kicked_mask);
-+	clear_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.gisa_int.kicked_mask);
- 
- 	vcpu->arch.sie_block->icptcode = 0;
- 	cpuflags = atomic_read(&vcpu->arch.sie_block->cpuflags);
-diff --git a/arch/s390/kvm/kvm-s390.h b/arch/s390/kvm/kvm-s390.h
-index 9fad25109b0d..ecd741ee3276 100644
---- a/arch/s390/kvm/kvm-s390.h
-+++ b/arch/s390/kvm/kvm-s390.h
-@@ -79,7 +79,7 @@ static inline int is_vcpu_stopped(struct kvm_vcpu *vcpu)
- 
- static inline int is_vcpu_idle(struct kvm_vcpu *vcpu)
- {
--	return test_bit(vcpu->vcpu_id, vcpu->kvm->arch.idle_mask);
-+	return test_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.idle_mask);
- }
- 
- static inline int kvm_is_ucontrol(struct kvm *kvm)
+> +				kick_process(task);
 
-base-commit: 77dd11439b86e3f7990e4c0c9e0b67dca82750ba
--- 
-2.25.1
+This would probably do the job. Well, I wonder if the following is
+a bit cleaner.
 
+		wake_up_if_idle(cpu);
+
+
+Also, please do this in klp_send_signals(). We kick there all other
+tasks that block the transition for too long.
+
+Best Regards,
+Petr
