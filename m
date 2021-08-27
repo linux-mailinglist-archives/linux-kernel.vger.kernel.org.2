@@ -2,53 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3193FA0A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AAA3FA04D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhH0UhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:37:16 -0400
-Received: from rosenzweig.io ([138.197.143.207]:43708 "EHLO rosenzweig.io"
+        id S231266AbhH0ULq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 16:11:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231317AbhH0UhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 16:37:15 -0400
-Date:   Fri, 27 Aug 2021 16:09:13 -0400
-From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     devicetree@vger.kernel.org, kettenis@openbsd.org,
-        tglx@linutronix.de, maz@kernel.org, robh+dt@kernel.org,
-        marcan@marcan.st, bhelgaas@google.com, nsaenz@kernel.org,
-        jim2101024@gmail.com, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        daire.mcnamara@microchip.com, nsaenzjulienne@suse.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 4/4] arm64: apple: Add PCIe node
-Message-ID: <YSlGaVSaqphqXbBr@sunset>
-References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
- <20210827171534.62380-5-mark.kettenis@xs4all.nl>
- <YSkoHw3dZrW5Qnjf@rosenzweig.io>
- <56142087154d4d9e@bloch.sibelius.xs4all.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56142087154d4d9e@bloch.sibelius.xs4all.nl>
+        id S229591AbhH0ULp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 16:11:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 00CB160EAF;
+        Fri, 27 Aug 2021 20:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630095056;
+        bh=TSPJ9B5ctmgXYEYzurJRuzp+UPhIYcPkRusYE3OfY6E=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=G69j/RXTUAxUTeK9GgKSfQ9pPT23M4QoaOP8Jx/vb/lKY8y8a/rdJY9VXRkzFFebC
+         a15pbkyowkZ4fYmmhw6MmwBEYydawrLfMLFIfjvNss6TsLRCUrdM8jSmxooN0DGiMR
+         Ou184zSNXHSb1g54/gQz0mM07vQ5dIjZtxEPbRc/thQZYksNuzQYZUq/eqWFNdmr3C
+         1OnCj1N4hZTr3YBJLg62NbW9oBFnFnG+WK40wnzadGvmNExPmyUxq5Ud0uI+wDuYO9
+         DEzzL8pP9G4l/uR1zFas5HHqIjz/U41EaQBgbzDXiib8HoQ4Xh1I4fLUCke9KCaOgK
+         VZdJ/M7ma54fA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E02C4609D2;
+        Fri, 27 Aug 2021 20:10:55 +0000 (UTC)
+Subject: Re: [GIT PULL] RISC-V Fixes for 5.14-rc8 (or 5.14)
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <mhng-f06b0a4c-f321-4c14-9378-da36fbf6212f@palmerdabbelt-glaptop>
+References: <mhng-f06b0a4c-f321-4c14-9378-da36fbf6212f@palmerdabbelt-glaptop>
+X-PR-Tracked-List-Id: <linux-riscv.lists.infradead.org>
+X-PR-Tracked-Message-Id: <mhng-f06b0a4c-f321-4c14-9378-da36fbf6212f@palmerdabbelt-glaptop>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-rc8
+X-PR-Tracked-Commit-Id: 417166ddec020c4e969aea064e23822591ad54df
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5a61b7a29647ed7c939ca76d3bf83c75d10ba16e
+Message-Id: <163009505585.27622.7254144734962070601.pr-tracker-bot@kernel.org>
+Date:   Fri, 27 Aug 2021 20:10:55 +0000
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > Clock references and DART (IOMMU) references are left out at the
-> > > moment and will be added once the appropriate bindings have been
-> > > settled upon.
-> > > 
-> > 
-> > DART is in mainline .... is there a PCIe specific issue?
-> 
-> True.  I don't expect 4/4 to be merged as part of this series though
-> as it will need to go through marcan's tree.  It is mostly there to
-> show what the device tree will look like.
+The pull request you sent on Fri, 27 Aug 2021 10:45:51 -0700 (PDT):
 
-Fair enough. When it does get merged it'll need the updates from my my
-PCIe series (v2). It looks like the only change needed for the commit
-proposed there is updating the msi-ranges format. Hopefully the solution
-proposed here is acceptable to both robh and maz so we can move forward
-with this :-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-rc8
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5a61b7a29647ed7c939ca76d3bf83c75d10ba16e
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
