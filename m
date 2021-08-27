@@ -2,53 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2813FA1A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 00:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E4E3FA1A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 00:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhH0W7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 18:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
+        id S232376AbhH0W7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 18:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232396AbhH0W7H (ORCPT
+        with ESMTP id S232396AbhH0W7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 18:59:07 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E10C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:58:18 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id d202-20020a3768d3000000b003d30722c98fso737697qkc.10
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:58:18 -0700 (PDT)
+        Fri, 27 Aug 2021 18:59:13 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B959DC061796
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:58:23 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id k23-20020a17090a591700b001796382f0d7so1356284pji.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 15:58:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=GZHnj3E2iDvREWy+Xx+rZN4g2ibNoBnA7xrbQSSkUpQ=;
-        b=Ipr9sUKvRrPwBplFtKFiksRe+d689PFtXWc/Ur0tK0j9TaPCWRldqoTsZgTOf7eRdQ
-         Fk3SAWF0exxDZo6OU5+uO/oIPv8KrjQFY/5i+VnMqfIjRHSQA1Ad3BSH1Iqd2NLUpR+u
-         T1G7gYqLhIGcKSvRvo0kNTWMGN1mLcBiX9y/P/9nDw3eOwjt7nI1dmBGBZNitT2sm5G4
-         UM0v/rUJFws0K04jm3JpdET4jlniWVuyKjdnCdkPHnJlS7tOW8IrlK2dUZBT2LF52doa
-         AInHmiscxdtXgN50u9c3rNBXlMjmcMdYHSS1NA2HsOunffqHikGFbgpBfumRGcLdWLMG
-         ndag==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=5kt2Hs53YExhNYpfPSX+vfaUKXrkgz5zWfnPb9H9C5o=;
+        b=CwVuEzd0fS3U5i7hEYs6kt8YGwK1Q+B0CA8MKQ0HFuUN7KjKITVZBmOAj9+61B/xUL
+         H5eS7kjXwCW2Opax4eWgDUdycDVagLubSWmiM2uugcT5KVFWpajGG8X15tmzZe3VoaXG
+         +236OKR3PaEC7xQONOBiLikYG6tNnLB2eA05KVSwgFn2uOYSOvyKMWfSoElbzwSHWeLO
+         AMAUbEirs+E7hRG5UhbEizrS27gT89Dv0LCRFDz5Pr/VSfOURlAlsPHH7NhqBm26EGRD
+         elIhr8IQWl3ZOni+DMR8RNbD+H/fFGRSGsTX79XayMd42lQGs3GKxcDCTXWzXGdbmLvs
+         lWMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=GZHnj3E2iDvREWy+Xx+rZN4g2ibNoBnA7xrbQSSkUpQ=;
-        b=ZxD7kbfobp8nHdLFeCVvKJitu9fKJiFq662hMPgccQNQoKxhfai7Ex+eZNPTuIL4jp
-         ubTMdVraZBO7VNz8W2Bcga9BSdxqGJH5NpKGIWX/enm2is4Ogh6Vj5Mmw8/AEmkvQioA
-         huXf2RPBRWdN1d8tnROxV1DR+ggERNg2hGe/dJddT4T7yVFJEhvh0ry0pXKpdJ4GM8KI
-         G7cEEMFS4b/pcI+8wlsiJX1HEV51fem5GpG710YzydScowTqa+WFgKGT2517bZuC8lrl
-         N4ngLKjbRdDf0jAXPFyneBUgfA+BG2W1CKF1EcrJUCLcwBOW+XynigVoIhHahowM2X1L
-         u6lA==
-X-Gm-Message-State: AOAM532zlRVf19ybwEIvyJRG/gDcjgaFREqRGH+ZjWKAmbb3lL/mZfQZ
-        7RwdgfuhBg7TtjyFlsIjZy7vTGDQ4g==
-X-Google-Smtp-Source: ABdhPJyPQXrAmKDniGpm1UBQMb14WCydWu0slGzRxOkyyHh40TZsVGLOyER1nvp3TEx+NesyazTbsvENEA==
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=5kt2Hs53YExhNYpfPSX+vfaUKXrkgz5zWfnPb9H9C5o=;
+        b=DfmL1MHOEhaBK3phBRLzUkql8b1xdF5qHjWB95eS4LUwvXIkfQlCneyBj9U4N0Jge3
+         Ywow6XsGHi85yoVOgOdk8rfuufD7ueDff2MoJLOKOmPi4SP8jQK4H2vaZ5KmA5vHmvi7
+         5HCIWAEnp05+gRWoNuUKdVoxgAVJiLHMWIwlgeqmvcw3OWcu9JZiIi7DnRK+LrisdVio
+         P6fwFEPbDWBRw1iFpOeI0xXScgAOYd061gw7viyLLneINsfwurt55TqhK4G8QFF9A4X9
+         8rNp65pRjUyJ7hIroO6gVMQcIqh1iTHXXaM6sGgD0s3SGeG8oVQoitRw82kVzDA3EEWo
+         Rs7w==
+X-Gm-Message-State: AOAM532Q985ovFBwgAk1RiFGShuc+hA3U3+GXOAWGtQ+0/PNTCHEPq3j
+        3v3zLFylUz3QShH2jrVw130oe9cEog==
+X-Google-Smtp-Source: ABdhPJwuGZHQKI3Z4ubJeC6jgqz/RDnR26QtINCQ0T5nhoUDIbS6Tb/DK4aJEaBXwMqbuAjIIzLy/idWhQ==
 X-Received: from sunrae.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2814])
- (user=rmoar job=sendgmr) by 2002:a0c:ab51:: with SMTP id i17mr12144736qvb.62.1630105097700;
- Fri, 27 Aug 2021 15:58:17 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 22:58:10 +0000
-Message-Id: <20210827225812.3247919-1-rmoar@google.com>
+ (user=rmoar job=sendgmr) by 2002:a17:90b:1182:: with SMTP id
+ gk2mr285811pjb.109.1630105102801; Fri, 27 Aug 2021 15:58:22 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 22:58:11 +0000
+In-Reply-To: <20210827225812.3247919-1-rmoar@google.com>
+Message-Id: <20210827225812.3247919-2-rmoar@google.com>
 Mime-Version: 1.0
+References: <20210827225812.3247919-1-rmoar@google.com>
 X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH 0/2] selftests: tool: update format of kselftest TAP results
- to improve compatibility with KTAP
+Subject: [PATCH 1/2] selftests: tool: Add subtest header line and change
+ indentation format in TAP results
 From:   Rae Moar <rmoar@google.com>
 To:     brendanhiggins@google.com, davidgow@google.com,
         dlatypov@google.com, keescook@chromium.org, shuah@kernel.org
@@ -59,26 +63,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series of patches updates the format of kselftest TAP results to improve
-compatibility with the proposed KTAP specification
+This patch is part of a series to alter the format of kselftest TAP
+results to improve compatibility with proposed KTAP specification
 (https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/).
 
-Three changes:
+Two changes:
 - Change from "# " to "  " for indentation of nested tests
 - Add subtest header line at start of tests with subtests. Line format
 is "# Subtest: [name of test]".
-- Remove TAP header in nested tests
 
-Standardizing TAP results would not only allow for clearer documentation and ease of reading but by standardizing the format across different testing frameworks, we could also share the use of tools.
+An example of the new format:
 
-As an example:
+Old format:
 
-This is a truncated version of TAP results from the kselftest ptrace with the new format changes:
+ TAP version 13
+ 1..1
+ # TAP version 13
+ # 1..1
+ # # Starting 1 tests from 1 test cases.
+ # #  RUN           global.get_syscall_info ...
+ # #            OK  global.get_syscall_info
+ # ok 1 global.get_syscall_info
+ # # PASSED: 1 / 1 tests passed.
+ # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
+ ok 1 selftests: ptrace: get_syscall_info
+
+New format:
 
 TAP version 13
 1..1
-# selftests: ptrace: get_syscall_info
   # Subtest: selftests: ptrace: get_syscall_info
+  TAP version 13
   1..1
   # Starting 1 tests from 1 test cases.
   #  RUN           global.get_syscall_info ...
@@ -88,27 +103,57 @@ TAP version 13
   # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
 ok 1 selftests: ptrace: get_syscall_info
 
-With the new patch to update the KUnit parser to improve compatibility with the proposed KTAP specification, (https://lore.kernel.org/linux-kselftest/20210826195505.3066755-1-rmoar@google.com/) the above TAP results would be parsed as the following:
-
-[20:46:09] ============================================================
-[20:46:09] ===== selftests: ptrace: get_syscall_info (1 subtest) ======
-[20:46:09] [PASSED] global.get_syscall_info
-[20:46:09] ======= [PASSED] selftests: ptrace: get_syscall_info =======
-[20:46:09] ============================================================
-[20:46:09] Testing complete. Passed: 1, Failed: 0, Crashed: 0, Skipped: 0, Errors: 0
-
-Thus, the kunit parser could become a useful tool for kselftest users.
-
-Rae Moar (2):
-  selftests: tool: Add subtest header line and change indentation format
-    in TAP results
-  Revert "selftests: Remove KSFT_TAP_LEVEL"
-
- tools/testing/selftests/Makefile            | 6 ++++++
+Signed-off-by: Rae Moar <rmoar@google.com>
+Change-Id: I139774745310ad2cd6dc5d7740254e48d8226241
+---
  tools/testing/selftests/kselftest/prefix.pl | 2 +-
- tools/testing/selftests/kselftest/runner.sh | 7 ++++---
- 3 files changed, 11 insertions(+), 4 deletions(-)
+ tools/testing/selftests/kselftest/runner.sh | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/tools/testing/selftests/kselftest/prefix.pl b/tools/testing/selftests/kselftest/prefix.pl
+index 12a7f4ca2684..e59374b62603 100755
+--- a/tools/testing/selftests/kselftest/prefix.pl
++++ b/tools/testing/selftests/kselftest/prefix.pl
+@@ -16,7 +16,7 @@ while (1) {
+ 	my $bytes = sysread(STDIN, $char, 1);
+ 	exit 0 if ($bytes == 0);
+ 	if ($needed) {
+-		print "# ";
++		print "  ";
+ 		$needed = 0;
+ 	}
+ 	print $char;
+diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
+index cc9c846585f0..9b04aeb26d3a 100644
+--- a/tools/testing/selftests/kselftest/runner.sh
++++ b/tools/testing/selftests/kselftest/runner.sh
+@@ -23,7 +23,7 @@ fi
+ tap_prefix()
+ {
+ 	if [ ! -x /usr/bin/perl ]; then
+-		sed -e 's/^/# /'
++		sed -e 's/^/  /'
+ 	else
+ 		"$BASE_DIR"/kselftest/prefix.pl
+ 	fi
+@@ -75,7 +75,8 @@ run_one()
+ 		echo "not ok $test_num $TEST_HDR_MSG"
+ 	else
+ 		cd `dirname $TEST` > /dev/null
+-		((((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
++		(echo "  # Subtest: selftests: $DIR: $BASENAME_TEST" &&
++		(((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
+ 			tap_prefix >&4) 3>&1) |
+ 			(read xs; exit $xs)) 4>>"$logfile" &&
+ 		echo "ok $test_num $TEST_HDR_MSG") ||
+@@ -83,7 +84,6 @@ run_one()
+ 		if [ $rc -eq $skip_rc ]; then	\
+ 			echo "ok $test_num $TEST_HDR_MSG # SKIP"
+ 		elif [ $rc -eq $timeout_rc ]; then \
+-			echo "#"
+ 			echo "not ok $test_num $TEST_HDR_MSG # TIMEOUT $kselftest_timeout seconds"
+ 		else
+ 			echo "not ok $test_num $TEST_HDR_MSG # exit=$rc"
 -- 
 2.33.0.259.gc128427fd7-goog
 
