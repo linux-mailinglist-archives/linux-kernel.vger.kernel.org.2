@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF1E3F9E57
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385763F9E58
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237090AbhH0Ry2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
+        id S237384AbhH0Ry0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbhH0RyY (ORCPT
+        with ESMTP id S231349AbhH0RyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 27 Aug 2021 13:54:24 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676E0C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:53:35 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id g11so4462001qvd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Z/pvACIwYDrhsFAHjFo4egknO444SCb0xOTzLp4O58U=;
-        b=mbHJscYr7Tjgrd2ruQiWjuPvHFjRq2vgB0nivh5McxWX2Waf8TcBwcU042EoYUQ5Xg
-         FjE8pJu6MkdOgHIOwfVnsfii9Ft+LXmkse5dMtxVW+yBm5GquPJTOei+kkTBqhBVs3h0
-         L56GG8WFpMayYXvj/ThCYp+4D0lwt2TyIeUdeG3FyxZooraQL4um8+DK3K6INtZhss1k
-         uDKonUGGsrr6ba4YShpHYC4XFJws3bRf6+WQCEVEPgBzEfgzR6Tn3VrJRZ8sb8mY/+QY
-         1CUjOYwqrqV1lcQ+is4XqAYfs+uAhKAvN8Z142H3XOujxaNjBbPmR3RrUAiltcGYFIP/
-         Ep+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Z/pvACIwYDrhsFAHjFo4egknO444SCb0xOTzLp4O58U=;
-        b=gc3h/UB9R5KuVURVuszeRyJu14EjLQfbEdtLSoBqWrMXKfA4PMk6IQjSch/RvYEvpf
-         0vq4UFwoqqgZJBm6L7b7URmjY0unQtd+JK6M3iJyT8xYyJB1D6o1fg9WgSJTt1m7D46g
-         ncuSlQXkZtGaGt6/wjF6zrzqEVUQig/KBd/VdRMta53LHQhMEOQYWjtK3P3IRHedwRho
-         TyFkf7W04KyeBueIZcRi7Cq17dYARiQ9gx37tJLmYYmXNUbVCf40y6alpI/yJwnZB5ie
-         3rO7rL/J1edeXqZqoUaDA87WXp0OE0VTmjn5WiDkl3i5K4edlaWjaktExAwQxsiKOpts
-         +vLw==
-X-Gm-Message-State: AOAM532BD24u7Jxwtaal2oGXF7+bMmA6DbS3/4CApQ/K+kPq53ruG6re
-        xz9cXyV8XWkzb/zZtlqRywI=
-X-Google-Smtp-Source: ABdhPJwvu4tpIJSvU+55fpUd2TRX4HwRspEJrI/S9qzAMG9oM4gxSimheFWtMXbC+qd9Cv3iY+GUHw==
-X-Received: by 2002:a05:6214:14f2:: with SMTP id k18mr11106035qvw.19.1630086814590;
-        Fri, 27 Aug 2021 10:53:34 -0700 (PDT)
-Received: from ?IPv6:2804:431:c7f1:e948:8e69:9cd6:5512:12f4? ([2804:431:c7f1:e948:8e69:9cd6:5512:12f4])
-        by smtp.gmail.com with ESMTPSA id x21sm5033736qkf.76.2021.08.27.10.53.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 10:53:34 -0700 (PDT)
-Message-ID: <dab10177d5fa144ad271b4efb59fe3e5dc61b56d.camel@gmail.com>
-Subject: Re: [PATCH v6 10/11] powerpc/pseries/iommu: Make use of DDW for
- indirect mapping
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
-To:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Fri, 27 Aug 2021 14:53:47 -0300
-In-Reply-To: <3d79480a-20df-ea1a-e17f-8bf2c8a8a2be@linux.ibm.com>
-References: <20210817063929.38701-1-leobras.c@gmail.com>
-         <20210817063929.38701-11-leobras.c@gmail.com>
-         <3d79480a-20df-ea1a-e17f-8bf2c8a8a2be@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8698C061757;
+        Fri, 27 Aug 2021 10:53:31 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f111700cf40790d4c46ba75.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:cf40:790d:4c46:ba75])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C0D781EC0464;
+        Fri, 27 Aug 2021 19:53:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630086805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Vnzi8i4BEi+cvl2op6fLcbMnIqawCJJ9n45UwHm3acc=;
+        b=dE/4cW7JIYkODgbdUOgqYWF853o0YXGEMA5Vs0UV4nyXDhklFT5wPwDMO8d42wsyIDh5L8
+        03OTw4N2uUvYWb0eoiVLN4YFaDAT5e59Ge8dIewEO6WY+HjqER9WJ6zSPSmtouSFZVtbKb
+        Vv30fIMAPxzc3cFG7H+3NN/vD7XmHJY=
+Date:   Fri, 27 Aug 2021 19:54:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] EDAC/mc: Prefer strscpy over strcpy
+Message-ID: <YSkmv8kz2z3OBHVe@zn.tnic>
+References: <20210814075527.5999-1-len.baker@gmx.com>
+ <YSPbOo90alPsv4vL@zn.tnic>
+ <20210824090338.GB7999@titan>
+ <YSU5wp/ZpsXuDgmu@zn.tnic>
+ <20210827173633.GA3040@titan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210827173633.GA3040@titan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Fred,
-
-On Fri, 2021-08-27 at 19:06 +0200, Frederic Barrat wrote:
+On Fri, Aug 27, 2021 at 07:36:33PM +0200, Len Baker wrote:
+> Well, the main purpose is to clean up the proliferation of str*cpy functions.
+> One task is to remove the strcpy uses: The first step (previous step) would
+> be to remove all the strcpy uses. Then, as a second step remove all the
+> strcpy implementations.
 > 
-> I think it looks ok now as it was mostly me who was misunderstanding
-> one 
-> part of the previous iteration.
-> Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
-> 
+> I hope that this clarify your question.
 
-Thank you for reviewing this series!
+Yes, it does.
 
-> Sorry for the late review, I was enjoying some time off. And thanks
-> for 
-> that series, I believe it should help with those bugs complaining
-> about 
-> lack of DMA space. It was also very educational for me, thanks to you
-> and Alexey for your detailed answers.
+Now lemme clarify why I'm asking: when your patch is committed to the
+kernel tree and someone reads its commit message months or even years
+from now - and those who do that are mostly maintainers trying to figure
+out why stuff was done the way it was - they will read:
 
-Working on this series caused me to learn a lot about how DMA and IOMMU
-works in Power, and it was a great experience. Thanks to Alexey who
-helped and guided me through this!
+"This is a previous step in the path to remove the strcpy() function
+entirely from the kernel."
 
-Best regards,
-Leonardo Bras
+and wonder what previous step that is what the following step is...
 
+So, long story short, your commit message should be complete on its own
+and understandable without any references to things which might not be
+as clear and self-evident in the future as they are now.
+
+Makes sense?
+
+Also, if you're wondering if you should send the patch with the error
+checking of strscpy() added, as I requested, even if it might look
+superfluous now, yes you should.
+
+Even if it looks impossible now, we might change some of those defines
+in the future and forget to touch the logic which generates e->label and
+we might end up exhausting that string.
+
+So it would be a lot more robust if something would catch that change,
+albeit seemingly redundant now.
+
+I sincerely hope that clears up things.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
