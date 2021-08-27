@@ -2,138 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8183F9B1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8273F9B02
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbhH0OtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:49:23 -0400
-Received: from gate.crashing.org ([63.228.1.57]:57533 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233308AbhH0OtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:49:17 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 17REemKD003680;
-        Fri, 27 Aug 2021 09:40:48 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 17REel3N003679;
-        Fri, 27 Aug 2021 09:40:47 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Fri, 27 Aug 2021 09:40:47 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Cc:     Daniel Axtens <dja@axtens.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux@googlegroups.com,
-        Paul Mackerras <paulus@samba.org>,
-        Bill Wendling <morbo@google.com>, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] ppc: add "-z notext" flag to disable diagnostic
-Message-ID: <20210827144047.GN1583@gate.crashing.org>
-References: <20210812204951.1551782-1-morbo@google.com> <87sfzde8lk.fsf@linkitivity.dja.id.au> <20210813200508.7bqehxgd6ruerds5@google.com> <20210814125812.GC1583@gate.crashing.org> <CAFP8O3LZ3ZtpkF=RdyDyyXn40oYeDkqgY6NX7YRsBWeVnmPv1A@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFP8O3LZ3ZtpkF=RdyDyyXn40oYeDkqgY6NX7YRsBWeVnmPv1A@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        id S234232AbhH0OnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhH0OnD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 10:43:03 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A77C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:42:14 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id b10so8780945ioq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:42:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CFay9r08enlHVx+9WttkR29jMfZFJp3kMsw5xeMb8SU=;
+        b=g77ve3sH11s90MOAtL5Fe/Ks6XKzCGmBKkQbxda83Z/dPuLxcu/JrGYVIEGC7qKr1W
+         cwUNxwZ3lvZGxv6M9XyvThGVZBMpm49kDpI1FWv42i5aJSI++acThcZA58jzLl2xoBn6
+         htbkWP3zcoIC4Rdxf70AifYYqeV6tvd3SvGfMUaLTiK7NdMujJla52Beta0VmMIt+IZK
+         6uEzgTIUj4beudDHevA+hsIClHPCcpwi2azaImx9pQXGXKRTqzqCrNY2aSQgR898++Ve
+         DuFQJ8yQALsvMU/mHh0iZQ9TBWR/Ee3yKTsIQYDQh8zo9cgdS4XnFHBObrDqV+iHO4Tw
+         WZEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CFay9r08enlHVx+9WttkR29jMfZFJp3kMsw5xeMb8SU=;
+        b=YxDtX+v1NjeLzyHxf7eNs/ZPk9QU9C6AVaFgqspn/AhCwagaHZZuACXZLmOrIz85Gm
+         PbD5bZAJtbDJLWphDNdCBbnotC6J4XBEOvWOTdJ7oreWIzjThQCuchv9e3+qDBR4u4Y9
+         RtP5ZwrORGDjJMvHxA/o8owZxczxufJR9NcliUTez2+5sDj0bYDgq3bZJOoB0Qgsl+MJ
+         ZCHK4VLIXWGIf4ZamOF9cI21efiZqPHMClhNgaYGQdmwPqUKAgs2cU6ptsaKGLYah8cF
+         oPmHQD5iMxI+iyd2DUbQ472eixMStbnH2pAy/lO3PmwMxB4OAgczrXp2qibX2idmJcCr
+         uxlw==
+X-Gm-Message-State: AOAM5336wvuQfnfTyfV5V9bToWHZwebHkM58kNopGXMkiPeYf5QEQJAQ
+        zxpjvrImLYSHoI3bWTJzGccjT+EzwduJ/F+BKrwk8w==
+X-Google-Smtp-Source: ABdhPJxKll3v2Sx54NeJRFiI49YcwJQQt0GNvwwK4RRpGNl7i3KMNBhhoIflYvBf/kikTGsbGuJ+Gunmf3z4LT4xVjU=
+X-Received: by 2002:a5e:a813:: with SMTP id c19mr7774552ioa.199.1630075333436;
+ Fri, 27 Aug 2021 07:42:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210827082407.101053-1-yangcong5@huaqin.corp-partner.google.com> <20210827082407.101053-4-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20210827082407.101053-4-yangcong5@huaqin.corp-partner.google.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Fri, 27 Aug 2021 07:42:01 -0700
+Message-ID: <CAD=FV=Uo-7rFWGiJG0oJ0ydosA4DxhFqiWGrab1zoZyxyPsOBg@mail.gmail.com>
+Subject: Re: [v3 3/4] drm/panel: support for BOE and INX video mode panel
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hi,
 
-On Sat, Aug 14, 2021 at 12:34:15PM -0700, Fāng-ruì Sòng wrote:
-> On Sat, Aug 14, 2021 at 5:59 AM Segher Boessenkool
-> <segher@kernel.crashing.org> wrote:
-> >
-> > On Fri, Aug 13, 2021 at 01:05:08PM -0700, Fangrui Song wrote:
-> > > Text relocations are considered very awful by linker developers.
-> >
-> > By very few linker developers.
+On Fri, Aug 27, 2021 at 1:24 AM yangcong
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> Add driver for BOE tv110c9m-ll3 and Inx hj110iz-01a panel
+> both of those are 10.95" 1200x2000 panel.
 
-> https://groups.google.com/g/generic-abi/c/Ckq19PfLxyk/m/uW29sgkoAgAJ
-> Ali Bahrami: "My opinion is that no one wants text relocations, but
-> not labeling them if they do exist doesn't seem right. I find the
-> presence of DF_TEXTREL very interesting when diagnosing various
-> issues."
+Your commit message would be a good place to note design choices you
+made in your patch. Maybe you might say:
 
-I don't know who that is, and that post has no context.
+Support for these two panels fits in nicely with the existing
+panel-boe-tv101wum-nl6 driver as suggested by Sam [1]. The main things
+we needed to handle were:
+a) These panels need slightly longer delays in two places. Since these
+new delays aren't much longer, let's just unconditionally increase
+them for the driver.
+b) One of these two panels doesn't support DSI HS mode so this patch
+adds a flag for a panel to disable that.
 
-> https://gcc.gnu.org/legacy-ml/gcc/2016-04/msg00138.html
-> ( "So why not simply create 'dynamic text relocations' then?  Is that
-> possible with a pure linker change?" )
-> Cary Coutant: "Ugh. Besides being a bad idea from a performance point
-> of view, it's not even always possible to do. Depending on the
-> architecture, a direct reference from an executable to a variable in a
-> shared library may not have the necessary reach."
+[1] https://lore.kernel.org/r/YSPAseE6WD8dDRuz@ravnborg.org/
 
-That is about a very specific kind of relocation.
+If you send a new version, maybe you could include prose similar to that?
 
-> binutils-gdb commit "Add linker option: --warn-shared-textrel to
-> produce warnings when adding a DT_TEXTREL to a shared object."
-> Nick Clifton
+> +       _INIT_DCS_CMD(0x4D, 0x21),
+> +       _INIT_DCS_CMD(0x4E, 0x43),
+> +       _INIT_DCS_CMD(0x51, 0x12),
+> +       _INIT_DCS_CMD(0x52, 0x34),
+> +       _INIT_DCS_CMD(0x55, 0x82, 0x02),
+> +       _INIT_DCS_CMD(0x56, 0x04),
+> +       _INIT_DCS_CMD(0x58, 0x21),
+> +       _INIT_DCS_CMD(0x59, 0x30),
+> +       _INIT_DCS_CMD(0x5A, 0xBA),      //9A
 
-That does not say text relocations are bad.  Of course you want to know
-if they are there, for various reasons, like, if they are disallowed on
-some systems.
+nit: the "//9A" above seems like it's leftover from something. Remove?
 
-> https://www.openwall.com/lists/musl/2020/09/26/3
-> Szabolcs Nagy: "nice.  and gcc passes -z text for static pie code so
-> that case should not end up with text rels."
+> +       _INIT_DCS_CMD(0x1F, 0xBA),//9A
+> +       _INIT_DCS_CMD(0x20, 0xA0),
+> +
+> +       _INIT_DCS_CMD(0x26, 0xBA),//9A
+> +       _INIT_DCS_CMD(0x27, 0xA0),
+> +
+> +       _INIT_DCS_CMD(0x33, 0xBA),//9A
+> +       _INIT_DCS_CMD(0x34, 0xA0),
+> +
+> +       _INIT_DCS_CMD(0x3F, 0xE0),
+> +
+> +       _INIT_DCS_CMD(0x40, 0x00),
+> +
+> +       _INIT_DCS_CMD(0x44, 0x00),
+> +       _INIT_DCS_CMD(0x45, 0x40),
+> +
+> +       _INIT_DCS_CMD(0x48, 0xBA),//9A
+> +       _INIT_DCS_CMD(0x49, 0xA0),
+> +
+> +       _INIT_DCS_CMD(0x5B, 0x00),
+> +       _INIT_DCS_CMD(0x5C, 0x00),
+> +       _INIT_DCS_CMD(0x5D, 0x00),
+> +       _INIT_DCS_CMD(0x5E, 0xD0),
+> +
+> +       _INIT_DCS_CMD(0x61, 0xBA),//9A
+> +       _INIT_DCS_CMD(0x62, 0xA0),
 
-That does not say text relocations are bad.
-
-> Someone wrote "Overall, the overhead of processing text relocations
-> can cause serious performance degradation." in Solaris' Linker and
-> Libraries Guide.
-
-In process startup, sure.  And it can make those processes run faster
-as well.  That is the tradeoff with *all* relocations; you can make any
-code without any relocations.  Relocations are a tradeoff, like most
-things.
-
-> > How would this be a benefit to security?
-> 
-> https://flameeyes.blog/2016/01/16/textrels-text-relocations-and-their-impact-on-hardening-techniques/
-
-This means that those "hardening techniques" have some serious
-weaknesses, that is all.  And hardening is not part of security
-anyway; it is impact mitigation.
-
-> FWIW I contributed a glibc patch allowing TEXTREL to co-exist with ifunc.
-> It requires temporary mapping the text segment W^X.
-
-What does W^X mean here?  It normally means no mapping is both writable
-and executable at the same time.
-
-> > > There are no text relocations, therefore no need for -z notext.
-> >
-> > This is a choice by the compiler, nothing more.  It saves some process
-> > startup time, and allows slightly more maps to be shared by processes
-> > that run the same images.  But it is a tradeoff, so it might change; and
-> > of course it is not an ABI requirement.
-
-> Text relocations are generally awful.
-
-Great arguments, thanks!  :-P
-
-> GNU ld and gold's traditional "add DF_TEXTREL on-demand" behavior made
-> such user errors easy to make.
-
-That has no bearing on if text relocations are useful or not.
-
-> I understand that kernels are special applications where we apply
-> relocations once and many user-space objection can be less of a
-> concern/ignored.
-> However, the Linux kernel is already in a position where many linker
-> options are controlled and thus should specify -z notext to make
-> the intention explicit, or fix the problems (I think x86-64 is good;
-> that said, powerpc
-> has a higher cost using PC-relative instructions so pay the oneshot relocation
-> time cost probably isn't a bad choice)
-
-I have no idea what you mean.
+More random //9A to remove above?
 
 
-Segher
+> @@ -515,7 +1363,7 @@ static int boe_panel_unprepare(struct drm_panel *panel)
+>                 regulator_disable(boe->pp3300);
+>         } else {
+>                 gpiod_set_value(boe->enable_gpio, 0);
+> -               usleep_range(500, 1000);
+> +               usleep_range(1000, 2000);
+>                 regulator_disable(boe->avee);
+>                 regulator_disable(boe->avdd);
+>                 usleep_range(5000, 7000);
+> @@ -556,7 +1404,7 @@ static int boe_panel_prepare(struct drm_panel *panel)
+>         if (ret < 0)
+>                 goto poweroffavdd;
+>
+> -       usleep_range(5000, 10000);
+> +       usleep_range(10000, 15000);
+
+nit: how about using the range 10000, 11000? Last I looked at
+usleep_range() it almost always ended up at the longer of the two
+times, so that will shave 4 ms off and get us nearly to where we were
+without your change. The whole point of the range is to make the
+system more power efficient for frequent operations (wakeup
+combining), but that really doesn't matter for something as infrequent
+as turning on a LCD.
+
+Other than nits this looks fine to me and I'd be happy to add my
+Reviewed-by to a version with nits fixed. I'm not really an expert on
+MIPI panels but the convention of a big stream of binary commands
+seems to match what other panels in this driver do, even if their
+table of binary data isn't quite as long as yours (are all of yours
+actually needed?). I'm happy to land this in drm-misc-next with Sam or
+Thierry's Ack, too.
+
+
+-Doug
