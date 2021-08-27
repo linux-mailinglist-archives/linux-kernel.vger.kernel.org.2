@@ -2,205 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16393F96E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9483F96EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244771AbhH0J0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:26:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22386 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244795AbhH0J0s (ORCPT
+        id S244805AbhH0J1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:27:02 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:21795 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244785AbhH0J07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:26:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630056359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nEdDz4lJvfVQmKns+107BOpFRlx3QH8ZfZRuj0/cXvY=;
-        b=Gvu1ArA0TvN5S2BAgIP9J/MN6tPd5UgmGXQMUi8bFJkUm1cxfVDxzguny8yRy6BOE+BV9Y
-        tcgl4lndkMEp1NM7LTS9H84pFwvl7Xp9eQQF9lqmlbwr8du6IL5VJQn6kK670h9xigxuVW
-        40OFCOnfcMKpnAVcqvyj8i1/zNwudug=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-TotXXjUjPba4DS2jT4yxzQ-1; Fri, 27 Aug 2021 05:25:54 -0400
-X-MC-Unique: TotXXjUjPba4DS2jT4yxzQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5C21800493;
-        Fri, 27 Aug 2021 09:25:53 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.193.235])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 42F8160C04;
-        Fri, 27 Aug 2021 09:25:51 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 8/8] KVM: Make kvm_make_vcpus_request_mask() use pre-allocated cpu_kick_mask
-Date:   Fri, 27 Aug 2021 11:25:16 +0200
-Message-Id: <20210827092516.1027264-9-vkuznets@redhat.com>
-In-Reply-To: <20210827092516.1027264-1-vkuznets@redhat.com>
-References: <20210827092516.1027264-1-vkuznets@redhat.com>
+        Fri, 27 Aug 2021 05:26:59 -0400
+Received: from localhost.localdomain ([114.149.34.46])
+        by mwinf5d84 with ME
+        id mZRz2500A0zjR6y03ZS7Wa; Fri, 27 Aug 2021 11:26:09 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 27 Aug 2021 11:26:09 +0200
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] stddef: Add flexible array union helper
+Date:   Fri, 27 Aug 2021 18:25:32 +0900
+Message-Id: <20210827092532.908506-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210826050458.1540622-1-keescook@chromium.org>
+References: <20210826050458.1540622-1-keescook@chromium.org> <20210826050458.1540622-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm_make_vcpus_request_mask() already disables preemption so just like
-kvm_make_all_cpus_request_except() it can be switched to using
-pre-allocated per-cpu cpumasks. This allows for improvements for both
-users of the function: in Hyper-V emulation code 'tlb_flush' can now be
-dropped from 'struct kvm_vcpu_hv' and kvm_make_scan_ioapic_request_mask()
-gets rid of dynamic allocation.
+Kees Cook <keescook@chromium.org> writes:
+> Many places in the kernel want to use a flexible array in a union. This
+> is especially common when wanting several different typed trailing
+> flexible arrays. Since GCC and Clang don't (on the surface) allow this,
+> such structs have traditionally used combinations of zero-element arrays
+> instead. This is usually in the form:
+> 
+> struct thing {
+> 	...
+> 	struct type1 foo[0];
+> 	struct type2 bar[];
+> };
 
-cpumask_available() check in kvm_make_vcpu_request() can now be dropped as
-it checks for an impossible condition: kvm_init() makes sure per-cpu masks
-are allocated.
+At first read, I found the description confusing (and even thought
+that there was a copy/paste issue). The subject and the first sentence
+is about "flexible arrays in a *union*". Then suddenly, the topic
+shifts to *structs*.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/include/asm/kvm_host.h |  1 -
- arch/x86/kvm/hyperv.c           |  5 +----
- arch/x86/kvm/x86.c              |  8 +-------
- include/linux/kvm_host.h        |  2 +-
- virt/kvm/kvm_main.c             | 18 +++++++-----------
- 5 files changed, 10 insertions(+), 24 deletions(-)
+After reading at the code, it is clear that this work for both:
+  - unions with a flexible array.
+  - structures with different typed trailing flexible arrays.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 09b256db394a..846552fa2012 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -569,7 +569,6 @@ struct kvm_vcpu_hv {
- 	struct kvm_hyperv_exit exit;
- 	struct kvm_vcpu_hv_stimer stimer[HV_SYNIC_STIMER_COUNT];
- 	DECLARE_BITMAP(stimer_pending_bitmap, HV_SYNIC_STIMER_COUNT);
--	cpumask_t tlb_flush;
- 	bool enforce_cpuid;
- 	struct {
- 		u32 features_eax; /* HYPERV_CPUID_FEATURES.EAX */
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 5704bfe53ee0..f76e7228f687 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1755,7 +1755,6 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
- 	int i;
- 	gpa_t gpa;
- 	struct kvm *kvm = vcpu->kvm;
--	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
- 	struct hv_tlb_flush_ex flush_ex;
- 	struct hv_tlb_flush flush;
- 	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
-@@ -1837,8 +1836,6 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
- 		}
- 	}
- 
--	cpumask_clear(&hv_vcpu->tlb_flush);
--
- 	/*
- 	 * vcpu->arch.cr3 may not be up-to-date for running vCPUs so we can't
- 	 * analyze it here, flush TLB regardless of the specified address space.
-@@ -1850,7 +1847,7 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
- 						    vp_bitmap, vcpu_bitmap);
- 
- 		kvm_make_vcpus_request_mask(kvm, KVM_REQ_TLB_FLUSH_GUEST,
--					    vcpu_mask, &hv_vcpu->tlb_flush);
-+					    vcpu_mask);
- 	}
- 
- ret_success:
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index a4752dcc2a75..91c1e6c98b0f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9224,14 +9224,8 @@ static void process_smi(struct kvm_vcpu *vcpu)
- void kvm_make_scan_ioapic_request_mask(struct kvm *kvm,
- 				       unsigned long *vcpu_bitmap)
- {
--	cpumask_var_t cpus;
--
--	zalloc_cpumask_var(&cpus, GFP_ATOMIC);
--
- 	kvm_make_vcpus_request_mask(kvm, KVM_REQ_SCAN_IOAPIC,
--				    vcpu_bitmap, cpus);
--
--	free_cpumask_var(cpus);
-+				    vcpu_bitmap);
- }
- 
- void kvm_make_scan_ioapic_request(struct kvm *kvm)
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 2f149ed140f7..1ee85de0bf74 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -160,7 +160,7 @@ static inline bool is_error_page(struct page *page)
- #define KVM_ARCH_REQ(nr)           KVM_ARCH_REQ_FLAGS(nr, 0)
- 
- bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
--				 unsigned long *vcpu_bitmap, cpumask_var_t tmp);
-+				 unsigned long *vcpu_bitmap);
- bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req);
- bool kvm_make_all_cpus_request_except(struct kvm *kvm, unsigned int req,
- 				      struct kvm_vcpu *except);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 2f5fe4f54a51..dc52a04f0586 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -274,14 +274,6 @@ static void kvm_make_vcpu_request(struct kvm *kvm, struct kvm_vcpu *vcpu,
- 	if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
- 		return;
- 
--	/*
--	 * tmp can be "unavailable" if cpumasks are allocated off stack as
--	 * allocation of the mask is deliberately not fatal and is handled by
--	 * falling back to kicking all online CPUs.
--	 */
--	if (!cpumask_available(tmp))
--		return;
--
- 	/*
- 	 * Note, the vCPU could get migrated to a different pCPU at any point
- 	 * after kvm_request_needs_ipi(), which could result in sending an IPI
-@@ -300,22 +292,26 @@ static void kvm_make_vcpu_request(struct kvm *kvm, struct kvm_vcpu *vcpu,
- }
- 
- bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
--				 unsigned long *vcpu_bitmap, cpumask_var_t tmp)
-+				 unsigned long *vcpu_bitmap)
- {
- 	struct kvm_vcpu *vcpu;
-+	struct cpumask *cpus;
- 	int i, me;
- 	bool called;
- 
- 	me = get_cpu();
- 
-+	cpus = this_cpu_cpumask_var_ptr(cpu_kick_mask);
-+	cpumask_clear(cpus);
-+
- 	for_each_set_bit(i, vcpu_bitmap, KVM_MAX_VCPUS) {
- 		vcpu = kvm_get_vcpu(kvm, i);
- 		if (!vcpu)
- 			continue;
--		kvm_make_vcpu_request(kvm, vcpu, req, tmp, me);
-+		kvm_make_vcpu_request(kvm, vcpu, req, cpus, me);
- 	}
- 
--	called = kvm_kick_many_cpus(tmp, !!(req & KVM_REQUEST_WAIT));
-+	called = kvm_kick_many_cpus(cpus, !!(req & KVM_REQUEST_WAIT));
- 	put_cpu();
- 
- 	return called;
--- 
-2.31.1
+The subject and the description could be updated to clarify that this
+macro can be used for both unions and structs.
 
+N.B. this comment only applies to the commit message, the kerneldoc
+part is clear.
+
+> This causes problems with size checks against such zero-element arrays
+> (for example with -Warray-bounds and -Wzero-length-bounds), so they must
+> all be converted to "real" flexible arrays, avoiding warnings like this:
+> 
+> fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
+> fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-length-bounds]
+>   209 |    anode->btree.u.internal[0].down = cpu_to_le32(a);
+>       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
+> In file included from fs/hpfs/hpfs_fn.h:26,
+>                  from fs/hpfs/anode.c:10:
+> fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
+>   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
+>       |                                ^~~~~~~~
+> 
+> drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
+> drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
+>   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
+>       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
+>                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
+> drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
+>   231 |   u8 raw_msg[0];
+>       |      ^~~~~~~
+> 
+> Introduce DECLARE_FLEX_ARRAY() in support of flexible arrays in unions.
+
+... and structures.
+
+> It is entirely possible to have a flexible array in a union:
+
+It is entirely possible to have one or several flexible arrays in a
+structure or a union:
+
+> it just has to
+> be in a struct. And since it cannot be alone in a struct, such a struct
+> must have at least 1 other named member but that member can be zero sized.
+> 
+> As with struct_group(), this is needed in UAPI headers as well, so
+> implement the core there, with non-UAPI wrapper.
+> 
+> Additionally update kernel-doc to understand its existence.
+> 
+> https://github.com/KSPP/linux/issues/137
+> 
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  include/linux/stddef.h      | 13 +++++++++++++
+>  include/uapi/linux/stddef.h | 16 ++++++++++++++++
+>  scripts/kernel-doc          |  2 ++
+>  3 files changed, 31 insertions(+)
+> 
+> diff --git a/include/linux/stddef.h b/include/linux/stddef.h
+> index 8b103a53b000..ca507bd5f808 100644
+> --- a/include/linux/stddef.h
+> +++ b/include/linux/stddef.h
+> @@ -84,4 +84,17 @@ enum {
+>  #define struct_group_tagged(TAG, NAME, MEMBERS...) \
+>  	__struct_group(TAG, NAME, /* no attrs */, MEMBERS)
+>  
+> +/**
+> + * DECLARE_FLEX_ARRAY() - Declare a flexible array usable in a union
+> + *
+> + * @TYPE: The type of each flexible array element
+> + * @NAME: The name of the flexible array member
+> + *
+> + * In order to have a flexible array member in a union or alone in a
+> + * struct, it needs to be wrapped in an anonymous struct with at least 1
+> + * named member, but that member can be empty.
+> + */
+> +#define DECLARE_FLEX_ARRAY(TYPE, NAME) \
+> +	__DECLARE_FLEX_ARRAY(TYPE, NAME)
+> +
+>  #endif
+> diff --git a/include/uapi/linux/stddef.h b/include/uapi/linux/stddef.h
+> index 610204f7c275..3021ea25a284 100644
+> --- a/include/uapi/linux/stddef.h
+> +++ b/include/uapi/linux/stddef.h
+> @@ -25,3 +25,19 @@
+>  		struct { MEMBERS } ATTRS; \
+>  		struct TAG { MEMBERS } ATTRS NAME; \
+>  	}
+> +
+> +/**
+> + * __DECLARE_FLEX_ARRAY() - Declare a flexible array usable in a union
+> + *
+> + * @TYPE: The type of each flexible array element
+> + * @NAME: The name of the flexible array member
+> + *
+> + * In order to have a flexible array member in a union or alone in a
+> + * struct, it needs to be wrapped in an anonymous struct with at least 1
+> + * named member, but that member can be empty.
+> + */
+> +#define __DECLARE_FLEX_ARRAY(TYPE, NAME)	\
+> +	struct { \
+> +		struct { } __empty_ ## NAME; \
+> +		TYPE NAME[]; \
+> +	}
+> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+> index d9715efbe0b7..65088b512d14 100755
+> --- a/scripts/kernel-doc
+> +++ b/scripts/kernel-doc
+> @@ -1263,6 +1263,8 @@ sub dump_struct($$) {
+>  	$members =~ s/DECLARE_KFIFO\s*\($args,\s*$args,\s*$args\)/$2 \*$1/gos;
+>  	# replace DECLARE_KFIFO_PTR
+>  	$members =~ s/DECLARE_KFIFO_PTR\s*\($args,\s*$args\)/$2 \*$1/gos;
+> +	# replace DECLARE_FLEX_ARRAY
+> +	$members =~ s/(?:__)?DECLARE_FLEX_ARRAY\s*\($args,\s*$args\)/$1 $2\[\]/gos;
+>  	my $declaration = $members;
+>  
+>  	# Split nested struct/union elements as newer ones
+> -- 
+> 2.30.2
+> 
