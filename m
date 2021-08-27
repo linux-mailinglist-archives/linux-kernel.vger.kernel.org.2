@@ -2,198 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67ABB3F987E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 13:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DB83F9880
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 13:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245039AbhH0Lgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 07:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235295AbhH0Lgj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 07:36:39 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55365C061757;
-        Fri, 27 Aug 2021 04:35:50 -0700 (PDT)
-Received: from [IPv6:2a01:e0a:4cb:a870:de4d:a9ab:fdfa:6660] (unknown [IPv6:2a01:e0a:4cb:a870:de4d:a9ab:fdfa:6660])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6F3EB1F447F4;
-        Fri, 27 Aug 2021 12:35:47 +0100 (BST)
-Subject: Re: [PATCH] media: hevc: fix pictures lists type
-To:     John Cox <jc@kynesim.co.uk>
-Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20210823082949.237716-1-benjamin.gaignard@collabora.com>
- <02r6ig176o0lqc52nm8rhta7cn5bfn04in@4ax.com>
- <e1df8e77-b4d1-481c-0f4b-4a20f42d5c9e@collabora.com>
- <i917ig582epdnpkmjdtvtnap6u8c032c1r@4ax.com>
- <9d6336fff6f122a9a4510a111387a000c65f797b.camel@ndufresne.ca>
- <da18a240-22bd-54d2-6306-f39f10a05b22@collabora.com>
- <r4ehigheq602qijsnjd8govhl4f1dpnr35@4ax.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <b5ae0ebe-de90-5ebb-5e69-ea66ae0e0639@collabora.com>
-Date:   Fri, 27 Aug 2021 13:35:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S245043AbhH0Lj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 07:39:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235295AbhH0Lj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 07:39:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2E7260FC4;
+        Fri, 27 Aug 2021 11:38:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630064319;
+        bh=ve29pPm/8F7On55yD7S+uc8qqP4GUkW7r7zweAeVCYM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cmC6lwxwMu9u5MXbRtjwnmrcNHDejWMZXLntKFAveiAZ3klLnXuoN6/WRsr8dskmL
+         TCQ4+r7rA+WJ4jKiDOFuLTP5T7vVj9PrBcWITQiHh7OIzxZiki5mh837jH2/y4PIHH
+         X/o3ua2AqZE5z3rBHk2EDHoXKCL9XrNRGRQIqkRvpbgSTtvlSQwHwSHmb8lu7yO0nt
+         TMKsk4TlUce1qzH8rorHZtFt6ePReYWKDJ/0eP2u0w6TG3RBjj31Cp136NT4PF8P/f
+         RDlrgZHJ3Tr8dGvJ8XlwOz2ktQY/kZtGX2BOIHMqnbKwIIWikGopD3V2faOtMiEXAy
+         1OPZEKvKZayNQ==
+Received: by pali.im (Postfix)
+        id A24A0617; Fri, 27 Aug 2021 13:38:36 +0200 (CEST)
+Date:   Fri, 27 Aug 2021 13:38:36 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Scott Wood <oss@buserror.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
+Message-ID: <20210827113836.hvqvaln65gexg5ps@pali>
+References: <20210604233455.fwcu2chlsed2gwmu@pali>
+ <20210704134325.24842-1-pali@kernel.org>
+ <63a72f648297e96c140a1412c20bd3796398a932.camel@buserror.net>
 MIME-Version: 1.0
-In-Reply-To: <r4ehigheq602qijsnjd8govhl4f1dpnr35@4ax.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <63a72f648297e96c140a1412c20bd3796398a932.camel@buserror.net>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wednesday 14 July 2021 12:11:49 Scott Wood wrote:
+> On Sun, 2021-07-04 at 15:43 +0200, Pali Rohár wrote:
+> > Property phy-connection-type contains invalid value "sgmii-2500" per scheme
+> > defined in file ethernet-controller.yaml.
+> > 
+> > Correct phy-connection-type value should be "2500base-x".
+> > 
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > Fixes: 84e0f1c13806 ("powerpc/mpc85xx: Add MDIO bus muxing support to the
+> > board device tree(s)")
+> > ---
+> >  arch/powerpc/boot/dts/fsl/t1023rdb.dts | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> > b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> > index 5ba6fbfca274..f82f85c65964 100644
+> > --- a/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> > +++ b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> > @@ -154,7 +154,7 @@
+> >  
+> >                         fm1mac3: ethernet@e4000 {
+> >                                 phy-handle = <&sgmii_aqr_phy3>;
+> > -                               phy-connection-type = "sgmii-2500";
+> > +                               phy-connection-type = "2500base-x";
+> >                                 sleep = <&rcpm 0x20000000>;
+> >                         };
+> >  
+> 
+> Acked-by: Scott Wood <oss@buserror.net>
+> 
+> -Scott
 
-Le 27/08/2021 à 12:10, John Cox a écrit :
->> Le 26/08/2021 à 18:09, Nicolas Dufresne a écrit :
->>> Le lundi 23 août 2021 à 12:35 +0100, John Cox a écrit :
->>>> Hi
->>>>
->>>>> Le 23/08/2021 à 11:50, John Cox a écrit :
->>>>>>> The lists embedded Picture Order Count values which are s32 so their type
->>>>>>> most be s32 and not u8.
->>>>>> I'm not convinced that you can't calculate all of those lists from the
->>>>>> info already contained in the DPB array so this is probably redundant
->>>>>> info though I grant that having the list pre-calced might make your life
->>>>>> easier, and the userland side will have calculated the lists to
->>>>>> calculate other required things so it isn't much extra work for it.
->>>>> Yes the userland have already compute these lists and the number of items
->>>>> in each of them.
->>>>> Build them in the kernel would means to also compute the values of NumPocStCurrBefore,
->>>>> NumPocStCurrAfter, NumPocLtCurr, NumPocStCurrAfter, NumPocStCurrBefore and NumPocLtCurr
->>>>> and that requires information (NumNegativePics, NumPositivePics...) not provided to the kernel.
->>>>> Since it have to be done in userland anyway, I'm reluctant to modify the API to redo in the kernel.
->>>> Well, fair enough, I'm not going to argue
->>>>
->>>>>> Even if you do need the lists wouldn't it be a better idea to have them
->>>>>> as indices into the DPB (you can't have a frame in any of those lists
->>>>>> that isn't in the DPB) which already contains POCs then it will still
->>>>>> fit into u8 and be smaller?
->>>>> Hantro HW works with indexes but I think it is more simple to send PoC rather than indexes.
->>>> I'd disagree but as I don't use the info I'm not concerned. Though I
->>>> think I should point out that when Hantro converts the POCs to indicies
->>>> it compares the now s32 POC in these lists with the u16 POC in the DPB
->>>> so you might need to fix that too; by std (8.3.1) no POC diff can be
->>>> outside s16 so you can mask & compare or use u16 POCs in the lists or
->>>> s32 in the DPB.
->>> Fun fact, my interpretation with the API when I drafted GStreamer support was
->>> that it was DPB indexes:
->>>
->>> https://gitlab.freedesktop.org/ndufresne/gst-plugins-bad/-/blob/hevc_wip/sys/v4l2codecs/gstv4l2codech265dec.c#L850
->>>
->>> It felt quite natural to be, since this is also how we pass references for l0/l1
->>> (unused by hantro I guess).
->>>
->>> Looking at old rkvdec code as a refresher:
->>>
->>>     for (j = 0; j < run->num_slices; j++) {
->>>                   sl_params = &run->slices_params[j];
->>>                   dpb = sl_params->dpb;
->>>
->>>                   hw_ps = &priv_tbl->rps[j];
->>>                   memset(hw_ps, 0, sizeof(*hw_ps));
->>>
->>>                   for (i = 0; i <= sl_params->num_ref_idx_l0_active_minus1; i++) {
->>>                           WRITE_RPS(!!(dpb[sl_params->ref_idx_l0[i]].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR),
->>>                                     REF_PIC_LONG_TERM_L0(i));
->>>                           WRITE_RPS(sl_params->ref_idx_l0[i], REF_PIC_IDX_L0(i));
->>>                   }
->>>
->>>                   for (i = 0; i <= sl_params->num_ref_idx_l1_active_minus1; i++) {
->>>                           WRITE_RPS(!!(dpb[sl_params->ref_idx_l1[i]].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR),
->>>                                     REF_PIC_LONG_TERM_L1(i));
->>>                           WRITE_RPS(sl_params->ref_idx_l1[i], REF_PIC_IDX_L1(i));
->>>                   }
->>>
->>>
->>> This is code is clearly unsafe, but now I remember that dpb_entry has a flag
->>> "rps". So we know from the DPB in which of the list the reference lives, if any.
->>> In the case of RKVDEC the HW only cares to know if this is long term or not.
->>>
->>> So without looking at the spec, is that dpb represention enough to reconstruct
->>> these array ? If we pass these array, shall we keep the rps flag ? I think a
->>> little step back and cleanup will be needed. I doubt there is a single answer,
->>> perhaps list what others do (VA, DXVA, NVDEC, Khronos, etc) and we can
->>> collectively decide were we want V4L2 to sit ?
->> I have done some tests with Hantro driver and look at the spec, the order of the PoC
->> in the reference lists matters. You can deducted the order for DPB rps flags.
->> I would suggest to remove rps flags to avoid information duplication.
-> I want the DPB rps member for long term reference marking.  I don't care
-> about before / after, but LTR can't be deduced from PoC and if you are
-> going to keep the member you might as well keep before / after.
-
-Ok so keep like it is.
-In this case my patch is enough, right ?
-
-Benjamin
-
->
-> John Cox
->
->> Benjamin
->>
->>>> Regards
->>>>
->>>> John Cox
->>>>
->>>>> Benjamin
->>>>>
->>>>>> Full disclosure: Pi decode doesn't use this info at all so I'm only
->>>>>> arguing from a theoretical point of view - I think it is only relevant
->>>>>> if your h/w is parsing the reference list setups.
->>>>>>
->>>>>> Regards
->>>>>>
->>>>>> John Cox
->>>>>>
->>>>>>> Reported-by: John Cox <jc@kynesim.co.uk>
->>>>>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>>>>>> ---
->>>>>>> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 +++---
->>>>>>> include/media/hevc-ctrls.h                                | 6 +++---
->>>>>>> 2 files changed, 6 insertions(+), 6 deletions(-)
->>>>>>>
->>>>>>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>>>>>> index 976d34445a24..db9859ddc8b2 100644
->>>>>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>>>>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>>>>>> @@ -3323,15 +3323,15 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->>>>>>>        * - __u8
->>>>>>>          - ``num_poc_lt_curr``
->>>>>>>          - The number of reference pictures in the long-term set.
->>>>>>> -    * - __u8
->>>>>>> +    * - __s32
->>>>>>>          - ``poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
->>>>>>>          - PocStCurrBefore as described in section 8.3.2 "Decoding process for reference
->>>>>>>            picture set.
->>>>>>> -    * - __u8
->>>>>>> +    * - __s32
->>>>>>>          - ``poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
->>>>>>>          - PocStCurrAfter as described in section 8.3.2 "Decoding process for reference
->>>>>>>            picture set.
->>>>>>> -    * - __u8
->>>>>>> +    * - __s32
->>>>>>>          - ``poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
->>>>>>>          - PocLtCurr as described in section 8.3.2 "Decoding process for reference
->>>>>>>            picture set.
->>>>>>> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->>>>>>> index 781371bff2ad..04cd62e77f25 100644
->>>>>>> --- a/include/media/hevc-ctrls.h
->>>>>>> +++ b/include/media/hevc-ctrls.h
->>>>>>> @@ -219,9 +219,9 @@ struct v4l2_ctrl_hevc_decode_params {
->>>>>>> 	__u8	num_poc_st_curr_before;
->>>>>>> 	__u8	num_poc_st_curr_after;
->>>>>>> 	__u8	num_poc_lt_curr;
->>>>>>> -	__u8	poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>>>>>> -	__u8	poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>>>>>> -	__u8	poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>>>>>> +	__s32	poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>>>>>> +	__s32	poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>>>>>> +	__s32	poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>>>>>> 	__u64	flags;
->>>>>>> };
->>>>>>>
+Hello! If there is not any objection, could you take this patch?
