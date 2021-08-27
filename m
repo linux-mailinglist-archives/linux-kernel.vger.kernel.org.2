@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C52E3F9E52
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF1E3F9E57
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237280AbhH0Rv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        id S237090AbhH0Ry2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhH0Rv5 (ORCPT
+        with ESMTP id S233925AbhH0RyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:51:57 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F59CC061757;
-        Fri, 27 Aug 2021 10:51:08 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id j2so4413733pll.1;
-        Fri, 27 Aug 2021 10:51:08 -0700 (PDT)
+        Fri, 27 Aug 2021 13:54:24 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676E0C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:53:35 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id g11so4462001qvd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:53:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=c65PIoZtXrK5fG5yv9bS73WbrNpIpRgBV7KDj6Yda9o=;
-        b=IdBLcrm3jZpcZrU/u1e8c49BCTkbf1fL9uye8pgEDvFivomEZ9CkjJScQHaslx8MRm
-         Z6ks5DWfj9tf0yvzUXn43NlaS9EfJwcKUVcLkq4Fsg4leSe/mR+pAC7EsMr6gXo4QgGn
-         4oWayV3tbdmwUCY5PZbZwTkREOjQIy+dZjVa4VbMu3KZf4tjv2j9UGMw1oWQB2aDAer9
-         v1j/drh3EWQe92JJWBb2osEz1CcA6O/fPmWIJqrI7Rg26DcZ5kOdV8Y5P0KAmE47EJwe
-         lQeUASFfUjFpg/jfmeKvlS81m/BhLeF/vUPhalCfuaspJz6FMd2QpFM22zcvLMeej0s/
-         0ENg==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Z/pvACIwYDrhsFAHjFo4egknO444SCb0xOTzLp4O58U=;
+        b=mbHJscYr7Tjgrd2ruQiWjuPvHFjRq2vgB0nivh5McxWX2Waf8TcBwcU042EoYUQ5Xg
+         FjE8pJu6MkdOgHIOwfVnsfii9Ft+LXmkse5dMtxVW+yBm5GquPJTOei+kkTBqhBVs3h0
+         L56GG8WFpMayYXvj/ThCYp+4D0lwt2TyIeUdeG3FyxZooraQL4um8+DK3K6INtZhss1k
+         uDKonUGGsrr6ba4YShpHYC4XFJws3bRf6+WQCEVEPgBzEfgzR6Tn3VrJRZ8sb8mY/+QY
+         1CUjOYwqrqV1lcQ+is4XqAYfs+uAhKAvN8Z142H3XOujxaNjBbPmR3RrUAiltcGYFIP/
+         Ep+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=c65PIoZtXrK5fG5yv9bS73WbrNpIpRgBV7KDj6Yda9o=;
-        b=mNgJbHzV5gHtxofo39efx6zPNEQD/5+WVGt3lYUl7oZ6F1e8P7bkKDLS3n/I/HHoF6
-         HNj1PiSgPwtTqHkRdAi7WDYjmyaftlHiTsV5dQ1UgyHnnaF3uciyHVxErZsSpMSTylFL
-         ZJ2sstgHapBjJ78PweAyyz/V2LJ/O4yd4mjE8YP1DbJP6H+Z9a2XuNiQw8NMQcVQPCMP
-         uTZMed2lsLSKC3zFxX0e13RmgLZJ7R8OAl4+kOlnKMy3YM1Gmp780W4YfQzjn/at8I3a
-         At2iYf9aQmHfodDC4PWdlYB/7aErJLE1pcUDhPCJnf3UKQ+KIYKCXWuHXlFtDt5Qli9f
-         G0RQ==
-X-Gm-Message-State: AOAM5318uYBP0Tn5qE6AXkd4AN21PxMLDRb/0pCItZfMxJIMVS+v5Mb9
-        bGki15TxbU6ccAy1OxymzMQ=
-X-Google-Smtp-Source: ABdhPJyKNuu8YFmP/NPLRgOuwuUnXHyKeo4iR4oHDHkmWjX/1Z1MzYQdwhYdQpEOpx4nLT91WlP8lQ==
-X-Received: by 2002:a17:90a:5d8b:: with SMTP id t11mr12169346pji.136.1630086667376;
-        Fri, 27 Aug 2021 10:51:07 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id e18sm6462549pfv.172.2021.08.27.10.51.06
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Z/pvACIwYDrhsFAHjFo4egknO444SCb0xOTzLp4O58U=;
+        b=gc3h/UB9R5KuVURVuszeRyJu14EjLQfbEdtLSoBqWrMXKfA4PMk6IQjSch/RvYEvpf
+         0vq4UFwoqqgZJBm6L7b7URmjY0unQtd+JK6M3iJyT8xYyJB1D6o1fg9WgSJTt1m7D46g
+         ncuSlQXkZtGaGt6/wjF6zrzqEVUQig/KBd/VdRMta53LHQhMEOQYWjtK3P3IRHedwRho
+         TyFkf7W04KyeBueIZcRi7Cq17dYARiQ9gx37tJLmYYmXNUbVCf40y6alpI/yJwnZB5ie
+         3rO7rL/J1edeXqZqoUaDA87WXp0OE0VTmjn5WiDkl3i5K4edlaWjaktExAwQxsiKOpts
+         +vLw==
+X-Gm-Message-State: AOAM532BD24u7Jxwtaal2oGXF7+bMmA6DbS3/4CApQ/K+kPq53ruG6re
+        xz9cXyV8XWkzb/zZtlqRywI=
+X-Google-Smtp-Source: ABdhPJwvu4tpIJSvU+55fpUd2TRX4HwRspEJrI/S9qzAMG9oM4gxSimheFWtMXbC+qd9Cv3iY+GUHw==
+X-Received: by 2002:a05:6214:14f2:: with SMTP id k18mr11106035qvw.19.1630086814590;
+        Fri, 27 Aug 2021 10:53:34 -0700 (PDT)
+Received: from ?IPv6:2804:431:c7f1:e948:8e69:9cd6:5512:12f4? ([2804:431:c7f1:e948:8e69:9cd6:5512:12f4])
+        by smtp.gmail.com with ESMTPSA id x21sm5033736qkf.76.2021.08.27.10.53.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 10:51:07 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 27 Aug 2021 07:51:05 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup: Avoid compiler warnings with no subsystems
-Message-ID: <YSkmCVwLvfusqtmA@slm.duckdns.org>
-References: <20210827150424.2729274-1-keescook@chromium.org>
+        Fri, 27 Aug 2021 10:53:34 -0700 (PDT)
+Message-ID: <dab10177d5fa144ad271b4efb59fe3e5dc61b56d.camel@gmail.com>
+Subject: Re: [PATCH v6 10/11] powerpc/pseries/iommu: Make use of DDW for
+ indirect mapping
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
+To:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Fri, 27 Aug 2021 14:53:47 -0300
+In-Reply-To: <3d79480a-20df-ea1a-e17f-8bf2c8a8a2be@linux.ibm.com>
+References: <20210817063929.38701-1-leobras.c@gmail.com>
+         <20210817063929.38701-11-leobras.c@gmail.com>
+         <3d79480a-20df-ea1a-e17f-8bf2c8a8a2be@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827150424.2729274-1-keescook@chromium.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 08:04:24AM -0700, Kees Cook wrote:
-> +	if (CGROUP_SUBSYS_COUNT > 0 && ss)
+Hello Fred,
 
-Can we encapsulate this in a macro so that it's clear (or at least
-consolidated) why we need these without adding a comment in each spot?
+On Fri, 2021-08-27 at 19:06 +0200, Frederic Barrat wrote:
+> 
+> I think it looks ok now as it was mostly me who was misunderstanding
+> one 
+> part of the previous iteration.
+> Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
+> 
 
-Thanks.
+Thank you for reviewing this series!
 
--- 
-tejun
+> Sorry for the late review, I was enjoying some time off. And thanks
+> for 
+> that series, I believe it should help with those bugs complaining
+> about 
+> lack of DMA space. It was also very educational for me, thanks to you
+> and Alexey for your detailed answers.
+
+Working on this series caused me to learn a lot about how DMA and IOMMU
+works in Power, and it was a great experience. Thanks to Alexey who
+helped and guided me through this!
+
+Best regards,
+Leonardo Bras
+
