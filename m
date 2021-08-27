@@ -2,122 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17C53F94E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F713F94E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 09:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244274AbhH0HNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 03:13:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57330 "EHLO mail.kernel.org"
+        id S244325AbhH0HPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 03:15:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231739AbhH0HNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 03:13:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86E9460F92;
-        Fri, 27 Aug 2021 07:12:33 +0000 (UTC)
+        id S231739AbhH0HPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 03:15:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78AB660F5B;
+        Fri, 27 Aug 2021 07:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630048354;
-        bh=CNm1k9Yuyu0Cujjer61BVkr+/veDq0OstmL8jEynAHk=;
+        s=korg; t=1630048457;
+        bh=qrcqu6khz/oNNrbbJLXzcXuNnrVMH3an5CYyCW5I5VM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=By4UIGIJCwA38IiTikDWwyMoyXdkgAonVUn+0tpLQ9/rEJdTOA0VFrHIY7w6Ss9iV
-         /h0NS/JN0AXlygYSmfJK2JeqV7rQxVP26bEXdBTJdjygeMuip62XHZKbqMAhuBuWkz
-         zdcM7NCYztBgeRLFFuIzE88RcV0CGQrPTJ7J9Ajg=
-Date:   Fri, 27 Aug 2021 09:12:30 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>,
-        "phil@philpotter.co.uk" <phil@philpotter.co.uk>,
-        "straube.linux@gmail.com" <straube.linux@gmail.com>,
-        "fmdefrancesco@gmail.com" <fmdefrancesco@gmail.com>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 5/6] staging: r8188eu: add error handling of rtw_read32
-Message-ID: <YSiQXpzswaRhvD4P@kroah.com>
-References: <cover.1629789580.git.paskripkin@gmail.com>
- <93bf46ce2d0ce12e94672acf28b64dc341fde038.1629789580.git.paskripkin@gmail.com>
- <27f5e52d520b453cbcabb3d72f0f5d15@AcuMS.aculab.com>
- <20210826122221.5d2b0f37@gmail.com>
- <685618ac-8de1-4eb1-57dd-9d43b96e872e@gmail.com>
- <64112dfd8e8b472ab78ca8b4837dc9e9@AcuMS.aculab.com>
- <0eb2bbc6-9d35-9ff3-acde-fd89bbe0ca27@gmail.com>
- <6e864f9d133d4db3923190f5acacc32a@AcuMS.aculab.com>
- <fb29e9f2-3662-c365-7427-a91a298ef10f@gmail.com>
+        b=pAY7vaQObbsrxzuqp+RX7zgEHWa9M2/prE7QR06rBCqG+LNlUgFUA0E/HLLTnDGmS
+         C1uLmyCHnChE15+z/zws6kqEZEnvwf11N/gimWRDDRubbuTsg8wwD0CLa1rrcOMQSs
+         zgWXf37wMqBggZ61zZXc/kk0P/UJsiLJEsDxsLik=
+Date:   Fri, 27 Aug 2021 09:14:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Woody Lin <woodylin@google.com>
+Cc:     Todd Kjos <tkjos@android.com>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] ANDROID: staging: add userpanic-dev driver
+Message-ID: <YSiQxH5VehWoAcvO@kroah.com>
+References: <20210826092854.58694-1-woodylin@google.com>
+ <YSdjgnUwt76cknQ6@kroah.com>
+ <CAHn4Deczc6gSSsxys6UeAMB99p1jHMZmLFj+KwZ2QhH7dx8E8w@mail.gmail.com>
+ <YSdy1pAS1hkLVEH9@kroah.com>
+ <CAHn4Dee0d+cdSmMCB4YVMp-9swo=0UQ5gm4kz43RVY11KFnM1w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fb29e9f2-3662-c365-7427-a91a298ef10f@gmail.com>
+In-Reply-To: <CAHn4Dee0d+cdSmMCB4YVMp-9swo=0UQ5gm4kz43RVY11KFnM1w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 11:03:04PM +0300, Pavel Skripkin wrote:
-> On 8/26/21 1:59 PM, David Laight wrote:
-> > From: Pavel Skripkin
-> > > Sent: 26 August 2021 11:55
-> > > 
-> > > On 8/26/21 1:22 PM, David Laight wrote:
-> > > > From: Pavel Skripkin
-> > > >> Sent: 26 August 2021 10:28
-> > > >>
-> > > >> On 8/26/21 12:22 PM, Pavel Skripkin wrote:
-> > > >> > On Thu, 26 Aug 2021 08:51:23 +0000
-> > > >> > David Laight <David.Laight@ACULAB.COM> wrote:
-> > > > ...
-> > > >> >> ...
-> > > >> >> > -static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
-> > > >> >> > +static int usb_read32(struct intf_hdl *pintfhdl, u32 addr, u32
-> > > >> >> > *data) {
-> > > >> >> >  	u8 requesttype;
-> > > >> >> >  	u16 wvalue;
-> > > >> >> >  	u16 len;
-> > > >> >> > -	__le32 data;
-> > > >> >> > +	int res;
-> > > >> >> > +	__le32 tmp;
-> > > >> >> > +
-> > > >> >> > +	if (WARN_ON(unlikely(!data)))
-> > > >> >> > +		return -EINVAL;
-> > > >> >> >
-> > > >> >>
-> > > >> >> Kill the NULL check - it is a silly coding error.
-> > > >> >> An OOPS is just as easy to debug.
-> > > >> >>
-> > > >> >
-> > > >> >
-> > > >> > I don't think that one single driver should kill the whole system. It's
-> > > >> > 100% an error, but kernel can recover from it (for example disconnect
-> > > >> > the driver, since it's broken).
-> > > >> >
-> > > >> >
-> > > >> > AFIAK, Greg and Linus do not like BUG_ONs in recoverable state...
-> > > >> > Correct me, if I am wrong
-> > > >> >
-> > > >> Oops, I thought about BUG_ON() instead of WARN_ON(), sorry for
-> > > >> confusion. My point is "we should not let the box boom".
+On Fri, Aug 27, 2021 at 11:51:03AM +0800, Woody Lin wrote:
+> On Thu, Aug 26, 2021 at 6:54 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Aug 26, 2021 at 06:23:53PM +0800, Woody Lin wrote:
+> > > On Thu, Aug 26, 2021 at 5:48 PM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
 > > > >
+> > > > On Thu, Aug 26, 2021 at 05:28:54PM +0800, Woody Lin wrote:
+> > > > > Add char device driver 'userpanic-dev' that exposes an interface to
+> > > > > userspace processes to request a system panic with customized panic
+> > > > > message.
+> > > > >
+> > > > > Signed-off-by: Woody Lin <woodylin@google.com>
+> > > > > ---
+> > > > >  drivers/staging/android/Kconfig         |  12 +++
+> > > > >  drivers/staging/android/Makefile        |   1 +
+> > > > >  drivers/staging/android/userpanic-dev.c | 110 ++++++++++++++++++++++++
 > > > >
-> > > > There is no point checking for NULL that just can't happen.
-> > > > In this case all the callers will pass the address of a local.
-> > > > There really is no point checking.
+> > > > Why is this in staging?  What is wrong with it that it can not just go
+> > > > into the real part of the kernel?  A TODO file is needed explaining what
+> > > > needs to be done here in order for it to be accepted.
+> > >
+> > > Got it. No more TODO for this driver and I will move it to drivers/android/.
+> > >
 > > > >
-> > > 
-> > > We not always read in local variable, there are few places, where we
-> > > read into passed buffer.
-> > 
-> > It is still a very local coding bug.
-> > 
-> > 	David
-> > 
+> > > > But why is this really needed at all?  Why would userspace want to panic
+> > > > the kernel in yet-another-way?
+> > >
+> > > The idea is to panic the kernel with a panic message specified by the userspace
+> > > process requesting the panic. Without this the panic handler can only collect
+> > > panic message "sysrq triggered crash" for a panic triggered by user processes.
+> > > Using this driver, user processes can put an informative description -
+> > > process name,
+> > > reason ...etc. - to the panic message.
+> >
+> > What custom userspace tool is going to use this new user/kernel api and
+> > again, why is it needed?  Who needs to panic the kernel with a custom
+> > message and where is that used?
 > 
-> Sure, but is defensive programming so bad?
+> It's for Android's services. Currently there are usages like these:
+> 
+> * init requests panic in InitFatalReboot (abort handler).
+> https://android.googlesource.com/platform/system/core/+/master/init/reboot_utils.cpp#170
+>   android::base::WriteStringToFile("c", PROC_SYSRQ);
+> 
+> * llkd requests panic to recover kernel live-lock.
+> https://android.googlesource.com/platform/system/core/+/master/llkd/libllkd.cpp#564
+>   android::base::WriteStringToFd("c", sysrqTriggerFd);
+> 
+> * Watchdog requests panic to recover timeout-loop.
+> https://android.googlesource.com/platform/frameworks/base/+/master/services/core/java/com/android/server/Watchdog.java#847
+>   doSysRq('c');
+> 
+> So to improve the panic message from "sysrq triggered crash" to a more
+> informative one (e.g.: "Watchdog break timeout-loop", "llkd panic
+> live-lock"), we'd like to add this driver to expose a dedicated
+> interface for userspace to panic the kernel with a custom message. Later
+> the panic handler implemented per platform can collect the message and
+> use it to build the crash report. A crash report with a more readable
+> title (compared to the generic "sysrq triggered crash") will be easier
+> to categorize, triage, etc.
 
-Yes it is, for when it is not needed.
+But you can do that today from userspace, just write to the kernel log
+before doing the sysrq call.  That way your tools can pick up what you
+need later on, no kernel changes should be needed at all.
 
-> Greg, what your opinion about this NULL check?
+> And the reason to submit this to upstream, instead of making it a vendor
+> module, is that we'd like to enable it for the early stage of "init", where
+> none of the kernel module has been mounted.
 
-Never check for things that you know are not going to happen.  Otherwise
-the kernel would just be full of pointless checks everywhere.
-
-And why are you waiting for me to tell you this?  Why do you not believe
-David?
+Helps if it would actually build :(
 
 thanks,
 
