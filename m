@@ -2,96 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A39A3F9BE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341063F9BF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245433AbhH0PtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245410AbhH0PtN (ORCPT
+        id S245469AbhH0Pus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:50:48 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:13434 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244505AbhH0Puq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:49:13 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4085BC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:48:24 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id d16so12206000ljq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:48:24 -0700 (PDT)
+        Fri, 27 Aug 2021 11:50:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jcMOhlnO/6zhJtyyv3sIOHX5NmMWJ45ZG4zs+/T+Fqg=;
-        b=cRZBwnLHWS+ul5vbl3qc6LvDiTEf5Ljw7GZjWrgNHaXLMLiIb2PMIiJjWqPGJK2fLD
-         rgluypfeUEycuj33q45UE/bSZJJJqrkwHtwJhJGmXGB9wTm0sxSatVJPwKb+PDJTkR2B
-         b3ZdAp3NNk7MEXqNeW+T1VdpyXCx/G7OKsDyXU8WZwuHfm6sLuIf3PecCyzYxtQKY4tF
-         HKBUZ6ZhCeQ8IuABnNqpNyBnzQoT6jCK5748q5c+rnlIY9pA5lhzdT1LRImzezabEmWr
-         GBMqjNl97VN0eUUJf/ahlEXLMhwoz6j6+p5NaS1RFa3JHktmpoM66Kqunb7tYa8BS+Xv
-         gJPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jcMOhlnO/6zhJtyyv3sIOHX5NmMWJ45ZG4zs+/T+Fqg=;
-        b=PZ/qFUJJg/WMtJl2OMc5WlvHzXZlv1bEocUAqhOxghydxOsC7ACTa00mB+GbTa78Rq
-         re/etMXiffpCdMQJCbt39RBuntCNG+dG5fZW5yX5t5ii5lucudzWWqaaBsw6+3/X0hzT
-         EIYMD4XHLavydoIP2ekFt9W0khAnmbOMY1LMqAlFbZSjU0M34AxzWavAKr1CqdAPaIIW
-         GznlLQ7vbUZPuc9fI7vPx3u+pDPwi8YpryYwLmRFjgkkabAXTHL+RXB51DKEn44L6rvZ
-         S59cvMD+8Y9WKCVk4+nG5bgkFw1OSA+F4DxQGr1cWhOJkydmmQ7Z13MJ0U1bsDhSkDN1
-         AR+g==
-X-Gm-Message-State: AOAM532C4WtrzCBrBy93jf6o1mnYIxOcC+VwiePV0lU4tF/vPQiqIyD2
-        00WXw+thNeecor+/kkf5h+A=
-X-Google-Smtp-Source: ABdhPJyPWMiQzroJM0napci9LaVujtLp905psMmo8OoG//1nJdaD/WhJISRrDOOvnwu/fA0wXBXr3w==
-X-Received: by 2002:a2e:a49c:: with SMTP id h28mr8363318lji.510.1630079302471;
-        Fri, 27 Aug 2021 08:48:22 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id r22sm627800lfm.7.2021.08.27.08.48.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 08:48:22 -0700 (PDT)
-Subject: Re: [PATCH linux-next] drivers:r8188eu: remove unneeded variable
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     CGEL <cgel.zte@gmail.com>, Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210825061531.69678-1-deng.changcheng@zte.com.cn>
- <68520ae2-23a8-7948-7feb-aa9a69cc0c59@gmail.com>
-Message-ID: <5c6a1d8b-eadc-71ed-5dfa-f2d7615522af@gmail.com>
-Date:   Fri, 27 Aug 2021 18:48:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1630079398; x=1661615398;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jM5HWpAgaAGUm0ZTlF5dSI4DfZdrcVUcl7z0PrVtwIc=;
+  b=H1GS5T9NOnNfl3bJXhLGZ+eLDU3CTeItcnYosf7ZBsZ3C8V5mR7RmQG5
+   WqKFXKU18mdnXgnTiwkBfAGR4yKb2zpcdJZ56ntojRPuNJ4HOAQsH2i8j
+   o3HE3AvFPJ70XBrN+QX1JfH8R2P4vt9QMqUy8Pgj8dONqsTuwT9gp+hf7
+   E=;
+X-IronPort-AV: E=Sophos;i="5.84,357,1620691200"; 
+   d="scan'208";a="132769059"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 27 Aug 2021 15:49:49 +0000
+Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 3D3161A54D8;
+        Fri, 27 Aug 2021 15:49:48 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.52) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Fri, 27 Aug 2021 15:49:41 +0000
+From:   Andra Paraschiv <andraprs@amazon.com>
+To:     linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Alexandru Ciobotaru <alcioa@amazon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Kamal Mostafa <kamal@canonical.com>,
+        "Alexandru Vasile" <lexnv@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Stefano Garzarella" <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>,
+        Andra Paraschiv <andraprs@amazon.com>
+Subject: [PATCH v3 0/7] nitro_enclaves: Add support for Arm64
+Date:   Fri, 27 Aug 2021 18:49:23 +0300
+Message-ID: <20210827154930.40608-1-andraprs@amazon.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-In-Reply-To: <68520ae2-23a8-7948-7feb-aa9a69cc0c59@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+X-Originating-IP: [10.43.162.52]
+X-ClientProxiedBy: EX13D23UWA004.ant.amazon.com (10.43.160.72) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 6:42 PM, Pavel Skripkin wrote:
-> On 8/25/21 9:15 AM, CGEL wrote:
->> From: Jing Yangyang <jing.yangyang@zte.com.cn>
->> 
->> Eliminate the following coccicheck warning:
->> ./drivers/staging/r8188eu/os_dep/os_intfs.c:505:6-12:
->>   Unneeded variable "status". Return "_SUCCESS" on line 577
->> ./drivers/staging/r8188eu/os_dep/os_intfs.c:772: 4-7:
->>    Unneeded variable "ret". Return "_SUCCESS" on line 818
->> ./drivers/staging/r8188eu/os_dep/os_intfs.c:823:4-8:
->> Unneeded variable "ret8". Return "_SUCCESS" on line 849
->> 
->> Reported-by: Zeal Robot <zealci@zte.com.cn>
->> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+Update the kernel config of the Nitro Enclaves kernel driver to enable Arm64
+support. Add Arm64 specific references to its documentation.
 
-And, please, change subject line to "staging: r8188eu: ..." :)
+While at it, fix a set of reports from checkpatch and kernel-doc scripts.
+
+Thank you,
+Andra
+
+---
+
+Patch Series Changelog
+
+The patch series is built on top of v5.14-rc7.
+
+GitHub repo branch for the latest version of the patch series:
+
+* https://github.com/andraprs/linux/tree/ne-driver-arm-support-v3
+
+v1 -> v2
+
+* Add information about supported architectures for the NE kernel driver.
+* Update comments for send / receive buffer sizes for the NE PCI device.
+* Split patch 3 that includes fixes for the checkpatch and kernel-doc reports
+  into multiple ones.
+* v1: https://lore.kernel.org/lkml/20210826173451.93165-1-andraprs@amazon.com/
+
+v2 -> v3
+
+* Move changelog after the "---" line in all commits from the patch series.
+* v2: https://lore.kernel.org/lkml/20210827133230.29816-1-andraprs@amazon.com/
+
+---
+
+Andra Paraschiv (7):
+  nitro_enclaves: Enable Arm64 support
+  nitro_enclaves: Update documentation for Arm64 support
+  nitro_enclaves: Add fix for the kernel-doc report
+  nitro_enclaves: Update copyright statement to include 2021
+  nitro_enclaves: Add fixes for checkpatch match open parenthesis
+    reports
+  nitro_enclaves: Add fixes for checkpatch spell check reports
+  nitro_enclaves: Add fixes for checkpatch blank line reports
+
+ Documentation/virt/ne_overview.rst        | 21 +++++++++++++--------
+ drivers/virt/nitro_enclaves/Kconfig       |  8 ++------
+ drivers/virt/nitro_enclaves/ne_misc_dev.c | 17 +++++++++--------
+ drivers/virt/nitro_enclaves/ne_pci_dev.c  |  2 +-
+ drivers/virt/nitro_enclaves/ne_pci_dev.h  |  8 ++++++--
+ include/uapi/linux/nitro_enclaves.h       | 10 +++++-----
+ samples/nitro_enclaves/ne_ioctl_sample.c  |  7 +++----
+ 7 files changed, 39 insertions(+), 34 deletions(-)
+
+-- 
+2.20.1 (Apple Git-117)
 
 
 
-With regards,
-Pavel Skripkin
+
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+
