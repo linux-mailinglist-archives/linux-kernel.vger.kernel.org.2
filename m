@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186F43F98FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6616E3F9903
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 14:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245091AbhH0MbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 08:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
+        id S245105AbhH0McR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 08:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231271AbhH0MbF (ORCPT
+        with ESMTP id S231271AbhH0McQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 08:31:05 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20346C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 05:30:16 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id n11so9600354edv.11
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 05:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/K61xpCiRQ+3op5aOrhoO9Yb6+RQ2HLnwLmdSAbezAc=;
-        b=qZ8+rzN6RoaXRywz+Z8KeRg95H6lNUxamSqFn7UPdpEs8cmI9OyM8dlqKh0ikdDKi5
-         rabP883wFHFAKROr8f5CbVn6O12UReJbDOSHpL9+ISKG048WPfXAg9UeGCPJQKPgNDoN
-         UXkP6EiXIwvjwVypxJkcZeByE+UCZWFrp6f9wVLLKYfsdq8EWJSmcvVV+0WfhhocibZ2
-         4x04MxWsNc0oIfsefMRVWvPkjyIirXz1WY5juB3Rd0NTbihzz5tKwt9RHuk/nBWLoGS4
-         3ldrvuVDuch/92tb7zRQyG8WGWjk7GfuUA3D63gxCom0UhOXFi6el54d8rFscCRMZn2e
-         QD4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/K61xpCiRQ+3op5aOrhoO9Yb6+RQ2HLnwLmdSAbezAc=;
-        b=pusAOhMM+OeVDNZQPbdNPchalVHgiYyjwYCbyqvBONjBvv1hnEp4XzGywl76h2WObF
-         Wz/RpPJ7QmiBymGDT0cBaTYv6/8CaHQlfaK0bj1im0nwfmERl16rL2Q0fTJXIsdckGg8
-         jz9LCYla0GlYUZ7UUIFlsHALUErome4WRrH7FaZUkKaltC5+600EEZniO1KyZGnHdu5I
-         4KUrIPP+hyhC4IaQm1TKryubo3QFojpzCpAySayxP8OngxNrixWHEd+0doKjVTnngdwt
-         RhgDlhfrWAIUGFAYuZbsTID8c7LR9fXCq7KsR0RqMaYxzdtFw/J8BQIYd716VisVbPpU
-         DHkA==
-X-Gm-Message-State: AOAM530L9uL+Ilvqb/qt7MFOn8va1eRZfVZkb2oDdem/rFn7iEHQkuCR
-        ntDfBhcJBFGdctmNdnqDRZCGjS5KPplDLU3t+Kobdg==
-X-Google-Smtp-Source: ABdhPJwRe8cK23eKdCq5fSm06hgcTMh7zB/AKYp9PJ+kEHGOT0MXrud7ctMxFfiBDpil8JcerbkiCS+rVRvl1cmTWvY=
-X-Received: by 2002:aa7:d6d5:: with SMTP id x21mr9658075edr.213.1630067414703;
- Fri, 27 Aug 2021 05:30:14 -0700 (PDT)
+        Fri, 27 Aug 2021 08:32:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5351C061757;
+        Fri, 27 Aug 2021 05:31:26 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 12:31:20 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630067483;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9dNds+p81oOhH7oHWAqK8Q92dBIuf/+LRRcNobpxs60=;
+        b=qMCO9RNb5PhVE+8zGlgK/mfA9o9f+Ffwx5V59wDHnWIp5CiWmgorNijMOX8YYOijdUiI3Y
+        R4+Dw+h2qT37iNpe1VQxL/jrlAb/rJ852CZ4Gewu+nr1pWJC9r/yT8xtJRupip/gj4zXp9
+        zxgC+pBHN+5vfYcZt/Ori32HlihOLBeybRrA9vSghHZKu9HkYUdTGS7r1S75U/kKDP8ULB
+        o3mw8Wk1Xn+Tt4F31fQcyhcIfiZiWijxulJdwDl/6rI3zGDpjD2h8USP4iBFM5oBcXqxY3
+        65x8d/yIffifAWRQQ0ew4bA95m8Ia1VHDaLHFsqu2my75D4WhxrmyR1l7YLHgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630067483;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9dNds+p81oOhH7oHWAqK8Q92dBIuf/+LRRcNobpxs60=;
+        b=Ga7hPlPIf8CZKPlMty8B17nnDJssi3SXUVLh6lLBZWXuYPknLgk6d24cq072QHcOH6X58j
+        vktM9e0Hf+SFlmDA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/rtmutex: Return success on deadlock for
+ ww_mutex waiters
+Cc:     Sebastian Siewior <bigeasy@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <YSeWjCHoK4v5OcOt@hirez.programming.kicks-ass.net>
+References: <YSeWjCHoK4v5OcOt@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210826091343.1039763-1-daniel.vetter@ffwll.ch>
-In-Reply-To: <20210826091343.1039763-1-daniel.vetter@ffwll.ch>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Fri, 27 Aug 2021 09:30:03 -0300
-Message-ID: <CAAEAJfCF_1HYd1K_YGeoqSgUrBQBUVhqCSOFM7SwOAs5EaxhYA@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Add dri-devel for component.[hc]
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <163006748096.25758.17545186547817495348.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+The following commit has been merged into the locking/core branch of tip:
 
-On Thu, 26 Aug 2021 at 06:13, Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
->
-> dri-devel is the main user, and somehow there's been the assumption
-> that component stuff is unmaintained.
->
-> References: https://lore.kernel.org/dri-devel/CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com/
-> Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> ---
->  MAINTAINERS | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ac58d0032abd..7cdc19815ec4 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5707,6 +5707,11 @@ F:       Documentation/admin-guide/blockdev/
->  F:     drivers/block/drbd/
->  F:     lib/lru_cache.c
->
-> +DRIVER COMPONENT FRAMEWORK
-> +L:     dri-devel@lists.freedesktop.org
-> +F:     drivers/base/component.c
-> +F:     include/linux/component.h
-> +
+Commit-ID:     a055fcc132d4c25b96d1115aea514258810dc6fc
+Gitweb:        https://git.kernel.org/tip/a055fcc132d4c25b96d1115aea514258810dc6fc
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 26 Aug 2021 10:48:18 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 27 Aug 2021 14:28:49 +02:00
 
-Thanks for taking care of this, much appreciated.
+locking/rtmutex: Return success on deadlock for ww_mutex waiters
 
-Ezequiel
+ww_mutexes can legitimately cause a deadlock situation in the lock graph
+which is resolved afterwards by the wait/wound mechanics. The rtmutex chain
+walk can detect such a deadlock and returns EDEADLK which in turn skips the
+wait/wound mechanism and returns EDEADLK to the caller. That's wrong
+because both lock chains might get EDEADLK or the wrong waiter would back
+out.
+
+Detect that situation and return 'success' in case that the waiter which
+initiated the chain walk is a ww_mutex with context. This allows the
+wait/wound mechanics to resolve the situation according to the rules.
+
+[ tglx: Split it apart and added changelog ]
+
+Reported-by: Sebastian Siewior <bigeasy@linutronix.de>
+Fixes: add461325ec5 ("locking/rtmutex: Extend the rtmutex core to support ww_mutex")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/YSeWjCHoK4v5OcOt@hirez.programming.kicks-ass.net
+---
+ kernel/locking/rtmutex.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 3c1ba7b..8eabdc7 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -742,8 +742,21 @@ static int __sched rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 	 * walk, we detected a deadlock.
+ 	 */
+ 	if (lock == orig_lock || rt_mutex_owner(lock) == top_task) {
+-		raw_spin_unlock(&lock->wait_lock);
+ 		ret = -EDEADLK;
++
++		/*
++		 * When the deadlock is due to ww_mutex; also see above. Don't
++		 * report the deadlock and instead let the ww_mutex wound/die
++		 * logic pick which of the contending threads gets -EDEADLK.
++		 *
++		 * NOTE: assumes the cycle only contains a single ww_class; any
++		 * other configuration and we fail to report; also, see
++		 * lockdep.
++		 */
++		if (IS_ENABLED(CONFIG_PREEMPT_RT) && orig_waiter->ww_ctx)
++			ret = 0;
++
++		raw_spin_unlock(&lock->wait_lock);
+ 		goto out_unlock_pi;
+ 	}
+ 
