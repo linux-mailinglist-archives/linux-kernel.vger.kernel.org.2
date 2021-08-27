@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F4C3F99D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7993F99E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245354AbhH0NXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:23:22 -0400
-Received: from ozlabs.org ([203.11.71.1]:46927 "EHLO ozlabs.org"
+        id S245444AbhH0NXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:23:46 -0400
+Received: from ozlabs.org ([203.11.71.1]:41477 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245403AbhH0NWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:22:53 -0400
+        id S245341AbhH0NXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 09:23:33 -0400
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gx0k33Dwyz9sWq;
-        Fri, 27 Aug 2021 23:22:03 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gx0kp4HDfz9tjx;
+        Fri, 27 Aug 2021 23:22:42 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Michael Neuling <mikey@neuling.org>,
+        kvm-ppc@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     kernel-janitors@vger.kernel.org, stable@vger.kernel.org,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <c04cce578b97a76a9e69a096698b1d89f721768a.1629276437.git.christophe.leroy@csgroup.eu>
-References: <c04cce578b97a76a9e69a096698b1d89f721768a.1629276437.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/32: Remove unneccessary calculations in load_up_{fpu/altivec}
-Message-Id: <163007013987.52768.9451271906730834709.b4-ty@ellerman.id.au>
-Date:   Fri, 27 Aug 2021 23:15:39 +1000
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210819113954.17515-1-lukas.bulwahn@gmail.com>
+References: <20210819113954.17515-1-lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH v2 0/2] Kconfig symbol fixes on powerpc
+Message-Id: <163007014161.52768.9837791663447874626.b4-ty@ellerman.id.au>
+Date:   Fri, 27 Aug 2021 23:15:41 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -35,19 +40,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 08:47:28 +0000 (UTC), Christophe Leroy wrote:
-> No need to re-read SPRN_THREAD, we can calculate thread address
-> from current (r2).
+On Thu, 19 Aug 2021 13:39:52 +0200, Lukas Bulwahn wrote:
+> The script ./scripts/checkkconfigsymbols.py warns on invalid references to
+> Kconfig symbols (often, minor typos, name confusions or outdated references).
 > 
-> And remove a reload of value 1 into r4 as r4 is already 1.
-> 
-> 
+> This patch series addresses all issues reported by
+> ./scripts/checkkconfigsymbols.py in ./drivers/usb/ for Kconfig and Makefile
+> files. Issues in the Kconfig and Makefile files indicate some shortcomings in
+> the overall build definitions, and often are true actionable issues to address.
 > 
 > [...]
 
-Applied to powerpc/next.
+Patch 1 applied to powerpc/next.
 
-[1/1] powerpc/32: Remove unneccessary calculations in load_up_{fpu/altivec}
-      https://git.kernel.org/powerpc/c/51ed00e71f0130e0f3534b8e7d78facd16829426
+[1/2] powerpc: kvm: remove obsolete and unneeded select
+      https://git.kernel.org/powerpc/c/c26d4c5d4f0df7207da3975458261927f9305465
 
 cheers
