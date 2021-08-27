@@ -2,69 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2183A3F94A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 08:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38FD3F94AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 08:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244274AbhH0G5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 02:57:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243036AbhH0G52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 02:57:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B946D60EE9;
-        Fri, 27 Aug 2021 06:56:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630047400;
-        bh=ny6f4lzmpCGyhd2J7fXTQxRESmvT2VU0QnnckaPrpJg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fVQy2z86G0kW+PGWN2dTYEURNhA4ZL/k3fZGCbh11js3hIWIpfcn1aMNYLuhKNyCk
-         +bFOhRzhHaW2OPM498UQDN4zRH6dXZjhuLtk+aOrLxYTQK7QloMJXg2qAhlL8P4R6k
-         pVdJ2pCzCDuMSsLvdyygwb1j2TPOMNUmjC6YIrMU=
-Date:   Fri, 27 Aug 2021 08:56:33 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kate Hsuan <hpa@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Hans de Goede <hdegoede@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH v2 1/1] libata: libata: add ATA_HORKAGE_NO_NCQ_TRIM for
- Samsung 860 and 870 SSDs
-Message-ID: <YSiMoQWPXbv44biI@kroah.com>
-References: <20210827053344.15087-1-hpa@redhat.com>
- <20210827053344.15087-2-hpa@redhat.com>
+        id S244318AbhH0G7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 02:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234736AbhH0G7O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 02:59:14 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0720C061757;
+        Thu, 26 Aug 2021 23:58:25 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwrCM3n1Qz9sPf;
+        Fri, 27 Aug 2021 16:58:23 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630047503;
+        bh=oC3JXl0WYeJRX+mKxO79pZ9PI24fJsREzlFtXIIzK3c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qixaTv09i9jJiqeSWEj7f9c4Rsikha4sw8a4GHaoZBZEpp1itknG28NlbY8Rm8UvI
+         U4pcsZNxJaam9/4fWDrkXvwVKidODv9i2Lec2ZtavH1cvS5ppbfT62uwfOU0x7az84
+         40+xvDtoDbUwzr61MIUIMdxb7nqmNhrym5NM1iLX23YKwbkaVujBbyxG4JRUh//3zJ
+         xFN8aMl+QcxsrxlioycNrwiidrz373U+MELDpBdhHg70dvs9F6r7A/HK+/SF1oxKiR
+         O4K1DAH+5c8SiZDzNbcYtlatmWfU5Rfpk3ZyGlgtYcRix0OZzJdlONYFZjcFpLITI6
+         C/iRmWq5e/ZQg==
+Date:   Fri, 27 Aug 2021 16:58:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Vinod Koul <vkoul@kernel.org>, Greg KH <greg@kroah.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: Re: linux-next: manual merge of the phy-next tree with the usb tree
+Message-ID: <20210827165822.7186411f@canb.auug.org.au>
+In-Reply-To: <20210809171023.4d387ed3@canb.auug.org.au>
+References: <20210809171023.4d387ed3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827053344.15087-2-hpa@redhat.com>
+Content-Type: multipart/signed; boundary="Sig_/a_8TFRCye7TzpJsn2JsL=KM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 01:33:44AM -0400, Kate Hsuan wrote:
-> A flag ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL is added to disable NCQ
-> on AMD/MAREL/ASMEDIA chipsets.
-> 
-> Samsung 860/870 SSD are disabled to use NCQ trim functions but it will
-> lead to performace drop. From the bugzilla, we could realize the issues
-> only appears on those chipset mentioned above. So this flag could be
-> used to only disable NCQ on specific chipsets.
-> 
-> Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-> Signed-off-by: Kate Hsuan <hpa@redhat.com>
-> ---
->  drivers/ata/libata-core.c | 37 ++++++++++++++++++++++++++++++++-----
->  include/linux/libata.h    |  3 +++
->  2 files changed, 35 insertions(+), 5 deletions(-)
+--Sig_/a_8TFRCye7TzpJsn2JsL=KM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-<formletter>
+Hi all,
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+On Mon, 9 Aug 2021 17:10:23 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Today's linux-next merge of the phy-next tree got a conflict in:
+>=20
+>   Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+>=20
+> between commit:
+>=20
+>   e516ac5d48fe ("dt-bindings: phy: qcom,qmp-usb3-dp: Add support for SC72=
+80")
+>=20
+> from the usb tree and commit:
+>=20
+>   1a00d130596f ("dt-bindings: phy: qcom,qmp-usb3-dp: Add support for sc81=
+80x")
+>=20
+> from the phy-next tree.
+>=20
+>=20
+> diff --cc Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+> index 20199833f144,1d49cc3d4eae..000000000000
+> --- a/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+> @@@ -14,7 -14,7 +14,8 @@@ properties
+>     compatible:
+>       enum:
+>         - qcom,sc7180-qmp-usb3-dp-phy
+>  +      - qcom,sc7280-qmp-usb3-dp-phy
+> +       - qcom,sc8180x-qmp-usb3-dp-phy
+>         - qcom,sdm845-qmp-usb3-dp-phy
+>         - qcom,sm8250-qmp-usb3-dp-phy
+>     reg:
 
-</formletter>
+This is now a conflict between the char-misc tree and the usb tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/a_8TFRCye7TzpJsn2JsL=KM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEojQ4ACgkQAVBC80lX
+0Gw8Wgf9EeOkQH9pHRXGU/jmX2NuDr0KYxxAfecTlRoP3VsD6qEUNV1uGiZf1W/9
+e1ugF0TfiRZkRU7moWe+fx5ebH82LHkDA+p6tyds2RjkBiHIPsck8mz/2KkKa+pq
+BDhTc71cXIexIzR29WEbENirj2yLGnLVrUhxmHA2AqfHQ5slq65AilHhgRASmHD0
+7Y4VXrn/6vYUczJ3pTZgklk20cGeZsSvh1qETN0jss512w2V2Op/pPs1XK2c/Frc
+YHj4RafkfZtH9wJK3aKILIUtz64Hh7d50cPETt52/uBB/k/pUi4flAcOGDdCyW9x
+fkoNi2IaqR/mxUOaM+zuXglWkuZxrA==
+=TzOk
+-----END PGP SIGNATURE-----
+
+--Sig_/a_8TFRCye7TzpJsn2JsL=KM--
