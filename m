@@ -2,100 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1D43F92F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DED43F92F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244184AbhH0DaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244166AbhH0D3w (ORCPT
+        id S244193AbhH0Dax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:30:53 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:22953 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S244004AbhH0Daw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:29:52 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1310EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:29:04 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id a21so4528374pfh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=972//1VrtuuFZwnQDeMdS0B6akzzjiuVZWtERzM09s0=;
-        b=j9siNTCZuGh7KQq256N6d/De1fzPdgR0s59g9kiBkVFEaXhT+QJ7U7zpHzePZleqCa
-         NLeFWIHihL1/Y+z5CRxYz1icg+OLIffMO21qfx/LEc3WkIeVqdQM4oBbyPo2Jn0VviNz
-         R3/z4TnS8N0GQHIBTY0/hyXoR9RDTQMpB7Q1c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=972//1VrtuuFZwnQDeMdS0B6akzzjiuVZWtERzM09s0=;
-        b=UEm0zXbwfDYwPIQ/HmZG5EUuoJcUIvH7I7qkfwEGzTKgQNAu1HIYmc9dA8uBcGd2o6
-         o5uHMFPL8+fKOmc5PV/G99Eokkq6E34nAx0J7KqBXu0H5eRVRIj63Gls+Zj7+5yQ5G+Q
-         J4iXiPXkWqm2GVAl9oHmI0jshhLnB+gQyxlJKYhvkqxRI9Z/7kHcns0pWQLfDRqpzohU
-         jaysysR5oMyWLDQPnJSJfTyfE8NKgNFAM8eGDy6R7vCR67dx7CnW3f4SxtX7yxxgcRTA
-         310jT+KIqGSfd1lkbddyLLXWIrolO8OqVHuPGL8auXhP//F9EFqHUTKDxY3gXEpi6+4f
-         SX9w==
-X-Gm-Message-State: AOAM531gj+SrpPgOzf/fDORNFnG8PfU6XolTkPeVPYpqrKiLPK54MwNu
-        kwoACmvQnJez4qsbGzcoQLdQaQ==
-X-Google-Smtp-Source: ABdhPJwVDJrVgxj/z0XncPqUa8JFXd12WSJDmoQs/kn0QTdmzgf8+20bw/dtXZZdLj09qUkYvY9BQg==
-X-Received: by 2002:aa7:8198:0:b029:3dd:a2ec:9ea8 with SMTP id g24-20020aa781980000b02903dda2ec9ea8mr6921691pfi.11.1630034943468;
-        Thu, 26 Aug 2021 20:29:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c2sm4382533pfp.138.2021.08.26.20.29.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 20:29:02 -0700 (PDT)
-Date:   Thu, 26 Aug 2021 20:29:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the kspp tree
-Message-ID: <202108262021.65CA0EC3@keescook>
-References: <20210826180042.35e8aab6@canb.auug.org.au>
+        Thu, 26 Aug 2021 23:30:52 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AWKLzS6phbN9Sn/NnDITgk1MaV5oXeYIsimQD?=
+ =?us-ascii?q?101hICG9E/bo8/xG+c536faaslgssQ4b8+xoVJPgfZq+z+8R3WByB8bAYOCOgg?=
+ =?us-ascii?q?LBQ72KhrGSoQEIdRefysdtkY9kc4VbTOb7FEVGi6/BizWQIpINx8am/cmT6dvj?=
+ =?us-ascii?q?8w=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,355,1620662400"; 
+   d="scan'208";a="113546863"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 27 Aug 2021 11:30:02 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 0B4FE4D0D9DD;
+        Fri, 27 Aug 2021 11:30:01 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 27 Aug 2021 11:29:57 +0800
+Received: from [192.168.22.65] (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 27 Aug 2021 11:29:54 +0800
+Subject: Re: [PATCH v7 7/8] fsdax: Introduce dax_iomap_ops for end of reflink
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com>
+ <20210816060359.1442450-8-ruansy.fnst@fujitsu.com>
+ <CAPcyv4jbi=p=SjFYZcHnEAu+KY821pW_k_yA5u6hya4jEfrTUg@mail.gmail.com>
+ <c7e68dc8-5a43-f727-c262-58dcf244c711@fujitsu.com>
+ <CAPcyv4jM86gy-T5EEZf6M2m44v4MiGqYDhxisX59M5QJii6DVg@mail.gmail.com>
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Message-ID: <32fa5333-b14e-2060-d659-d77f6c75ff16@fujitsu.com>
+Date:   Fri, 27 Aug 2021 11:29:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826180042.35e8aab6@canb.auug.org.au>
+In-Reply-To: <CAPcyv4jM86gy-T5EEZf6M2m44v4MiGqYDhxisX59M5QJii6DVg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-yoursite-MailScanner-ID: 0B4FE4D0D9DD.A549F
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 06:00:42PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the kspp tree, today's linux-next build (arm
-> multi_v7_defconfig) produced these warnings:
-> 
-> In file included from ./arch/arm/include/generated/asm/rwonce.h:1,
->                  from include/linux/compiler.h:264,
->                  from include/uapi/linux/swab.h:6,
->                  from include/linux/swab.h:5,
->                  from arch/arm/include/asm/opcodes.h:86,
->                  from arch/arm/include/asm/bug.h:7,
->                  from include/linux/bug.h:5,
->                  from include/linux/thread_info.h:13,
->                  from include/asm-generic/current.h:5,
->                  from ./arch/arm/include/generated/asm/current.h:1,
->                  from include/linux/sched.h:12,
->                  from include/linux/cgroup.h:12,
->                  from kernel/cgroup/cgroup-internal.h:5,
->                  from kernel/cgroup/cgroup.c:31:
-> kernel/cgroup/cgroup.c: In function 'of_css':
-> kernel/cgroup/cgroup.c:651:42: warning: array subscript '<unknown>' is outside the bounds of an interior zero-length array 'struct cgroup_subsys_state *[0]' [-Wzero-length-bounds]
->   651 |   return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
 
-Oh, that's cute. That's "with cgroups but no cgroup subsystems". :P I
-will get this fixed.
 
-> [...]
-> Introduced by commit
+On 2021/8/20 23:18, Dan Williams wrote:
+> On Thu, Aug 19, 2021 at 11:13 PM ruansy.fnst <ruansy.fnst@fujitsu.com> wrote:
+>>
+>>
+>>
+>> On 2021/8/20 上午11:01, Dan Williams wrote:
+>>> On Sun, Aug 15, 2021 at 11:05 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>>>>
+>>>> After writing data, reflink requires end operations to remap those new
+>>>> allocated extents.  The current ->iomap_end() ignores the error code
+>>>> returned from ->actor(), so we introduce this dax_iomap_ops and change
+>>>> the dax_iomap_*() interfaces to do this job.
+>>>>
+>>>> - the dax_iomap_ops contains the original struct iomap_ops and fsdax
+>>>>       specific ->actor_end(), which is for the end operations of reflink
+>>>> - also introduce dax specific zero_range, truncate_page
+>>>> - create new dax_iomap_ops for ext2 and ext4
+>>>>
+>>>> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+>>>> ---
+>>>>    fs/dax.c               | 68 +++++++++++++++++++++++++++++++++++++-----
+>>>>    fs/ext2/ext2.h         |  3 ++
+>>>>    fs/ext2/file.c         |  6 ++--
+>>>>    fs/ext2/inode.c        | 11 +++++--
+>>>>    fs/ext4/ext4.h         |  3 ++
+>>>>    fs/ext4/file.c         |  6 ++--
+>>>>    fs/ext4/inode.c        | 13 ++++++--
+>>>>    fs/iomap/buffered-io.c |  3 +-
+>>>>    fs/xfs/xfs_bmap_util.c |  3 +-
+>>>>    fs/xfs/xfs_file.c      |  8 ++---
+>>>>    fs/xfs/xfs_iomap.c     | 36 +++++++++++++++++++++-
+>>>>    fs/xfs/xfs_iomap.h     | 33 ++++++++++++++++++++
+>>>>    fs/xfs/xfs_iops.c      |  7 ++---
+>>>>    fs/xfs/xfs_reflink.c   |  3 +-
+>>>>    include/linux/dax.h    | 21 ++++++++++---
+>>>>    include/linux/iomap.h  |  1 +
+>>>>    16 files changed, 189 insertions(+), 36 deletions(-)
+>>>>
+>>>> diff --git a/fs/dax.c b/fs/dax.c
+>>>> index 74dd918cff1f..0e0536765a7e 100644
+>>>> --- a/fs/dax.c
+>>>> +++ b/fs/dax.c
+>>>> @@ -1348,11 +1348,30 @@ static loff_t dax_iomap_iter(const struct iomap_iter *iomi,
+>>>>           return done ? done : ret;
+>>>>    }
+>>>>
+>>>> +static inline int
+>>>> +__dax_iomap_iter(struct iomap_iter *iter, const struct dax_iomap_ops *ops)
+>>>> +{
+>>>> +       int ret;
+>>>> +
+>>>> +       /*
+>>>> +        * Call dax_iomap_ops->actor_end() before iomap_ops->iomap_end() in
+>>>> +        * each iteration.
+>>>> +        */
+>>>> +       if (iter->iomap.length && ops->actor_end) {
+>>>> +               ret = ops->actor_end(iter->inode, iter->pos, iter->len,
+>>>> +                                    iter->processed);
+>>>> +               if (ret < 0)
+>>>> +                       return ret;
+>>>> +       }
+>>>> +
+>>>> +       return iomap_iter(iter, &ops->iomap_ops);
+>>>
+>>> This reorganization looks needlessly noisy. Why not require the
+>>> iomap_end operation to perform the actor_end work. I.e. why can't
+>>> xfs_dax_write_iomap_actor_end() just be the passed in iomap_end? I am
+>>> not seeing where the ->iomap_end() result is ignored?
+>>>
+>>
+>> The V6 patch[1] was did in this way.
+>> [1]https://lore.kernel.org/linux-xfs/20210526005159.GF202144@locust/T/#m79a66a928da2d089e2458c1a97c0516dbfde2f7f
+>>
+>> But Darrick reminded me that ->iomap_end() will always take zero or
+>> positive 'written' because iomap_apply() handles this argument.
+>>
+>> ```
+>>          if (ops->iomap_end) {
+>>                  ret = ops->iomap_end(inode, pos, length,
+>>                                       written > 0 ? written : 0,
+>>                                       flags, &iomap);
+>>          }
+>> ```
+>>
+>> So, we cannot get actual return code from CoW in ->actor(), and as a
+>> result, we cannot handle the xfs end_cow correctly in ->iomap_end().
+>> That's where the result of CoW was ignored.
 > 
->   7d8aac16a0a8 ("Makefile: Enable -Wzero-length-bounds")
+> Ah, thank you for the explanation.
 > 
-> -- 
-> Cheers,
-> Stephen Rothwell
+> However, this still seems like too much code thrash just to get back
+> to the original value of iter->processed. I notice you are talking
+> about iomap_apply(), but that routine is now gone in Darrick's latest
+> iomap-for-next branch. Instead iomap_iter() does this:
+> 
+>          if (iter->iomap.length && ops->iomap_end) {
+>                  ret = ops->iomap_end(iter->inode, iter->pos, iomap_length(iter),
+>                                  iter->processed > 0 ? iter->processed : 0,
 
--- 
-Kees Cook
+As you can see, here is the same logic as the old iomap_apply(): the 
+negative iter->processed won't be passed into ->iomap_end().
+
+>                                  iter->flags, &iter->iomap);
+>                  if (ret < 0 && !iter->processed)
+>                          return ret;
+>          }
+> 
+> 
+> I notice that the @iomap argument to ->iomap_end() is reliably coming
+> from @iter. So you could do the following in your iomap_end()
+> callback:
+> 
+>          struct iomap_iter *iter = container_of(iomap, typeof(*iter), iomap);
+>          struct xfs_inode *ip = XFS_I(inode);
+>          ssize_t written = iter->processed;
+
+The written will be 0 or positive.  The original error code is ingnored.
+
+>          bool cow = xfs_is_cow_inode(ip);
+> 
+>          if (cow) {
+>                  if (written <= 0)
+>                          xfs_reflink_cancel_cow_range(ip, pos, length, true)
+>          }
+> 
+
+--
+Thanks,
+Ruan.
+
+
