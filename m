@@ -2,112 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC1D3F9BFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529423F9C01
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245515AbhH0Pv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:51:29 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:46050 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245509AbhH0Pv1 (ORCPT
+        id S245523AbhH0Pve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245519AbhH0Pvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:51:27 -0400
+        Fri, 27 Aug 2021 11:51:33 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD34C0613CF;
+        Fri, 27 Aug 2021 08:50:43 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id i28so12218204ljm.7;
+        Fri, 27 Aug 2021 08:50:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1630079438; x=1661615438;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=i0j/X6GVx88IEMduyTxlPnzYI3HNiRgbOvXelXh/NoM=;
-  b=S4B5YNbXuMwkOsmU254+UiKjrdE49emrT47idKYJIvLHgPDUkboPTv3I
-   TgYYIpV4B3E/Yi1VQczYPiWbFZbRWD4MWNcXKj8BmfhRXvxMKKW2GceiC
-   JhxEDkIKA0N9uKI7zJAWpI537TSw0LGdALBEsfgSXtokjWOFae8Oyn24R
-   M=;
-X-IronPort-AV: E=Sophos;i="5.84,357,1620691200"; 
-   d="scan'208";a="155652121"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 27 Aug 2021 15:50:32 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 5161A2202AF;
-        Fri, 27 Aug 2021 15:50:31 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.52) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Fri, 27 Aug 2021 15:50:24 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Alexandru Ciobotaru <alcioa@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kamal Mostafa <kamal@canonical.com>,
-        "Alexandru Vasile" <lexnv@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Stefano Garzarella" <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v3 7/7] nitro_enclaves: Add fixes for checkpatch blank line reports
-Date:   Fri, 27 Aug 2021 18:49:30 +0300
-Message-ID: <20210827154930.40608-8-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20210827154930.40608-1-andraprs@amazon.com>
-References: <20210827154930.40608-1-andraprs@amazon.com>
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EBryXjPDdu2auAtyyw6+T4ajilaxKIAtiI9wgz9a9nY=;
+        b=qO1QfX+ku49f7uB4BErSQpFVbxpma7MbQ1faMhQfe9EL+guGu7j4GC8x0boAOw8XLq
+         reS48FvnCZVpZnXfXRri7euauI8Xsp9P5suRr0e8N43prppEtuoNnGTJkY5gYr0RYU5f
+         F8CtPQxnBUu+i/jJO6641N2vKKHvuv5a/io+Ui1B0rg3IIuU7tN7omDVtv8+bReVDHim
+         uMRoXwg1Uq2R/VfUqV/z1lqTx7WLKgsRa7ddN3hHXyK7R+m09zPQj+joxE9dSMkzQ795
+         Io6bOxg/cIc2nhW+ZEyXaTjoSCfZKIZiR6yL0vvOhDrpd0Xvax9fBOJe+VYaTJiHDrJg
+         RAKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EBryXjPDdu2auAtyyw6+T4ajilaxKIAtiI9wgz9a9nY=;
+        b=KDrLKUO6IL2LwsuwOEBpf5I1hdBws65TCuMkrozqFo0FZIOlCvEo61MAFVkyXhHOPn
+         6FdEubNbVjDugcfDbXaSw6hZN2GqP6S0Bu6+83ze7c/14c2i7K1JPqQRYM/YBQVSjT2H
+         dSKchK2xHNdnok6Fz21GaAygS2YLurQsG26iEExot8wH/08d9LgzmXf6pDrieNSMeCmk
+         otVGvvVXUlqL9iNrwPaz7gyjkJMHkwgLbScdRR0KS5QOwz5foGP9RMZ8GgBlds13/u8/
+         wZHGN0ugvMjNbPwppvWqI7eSZuPKIohXj2UJwG5R22AnxMG7bmcIPFxxVLoF1CZk2los
+         Bh+g==
+X-Gm-Message-State: AOAM530IhcEzIyHBFy+ZTqKMqmQo6zYGjXswAV0zFiObCC5gImFJxluL
+        bcnUwtvjyfp2TLxOqb4Z7oP3DIkJYus=
+X-Google-Smtp-Source: ABdhPJzwAd4VU6ZJ65Jc4JytDlFd1Fmjd81d+OGXQXWOmwNKh485ctVHL1cbwrOouXOFVcthskJXfg==
+X-Received: by 2002:a2e:8858:: with SMTP id z24mr8170870ljj.129.1630079442086;
+        Fri, 27 Aug 2021 08:50:42 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-17-251.dynamic.spd-mgts.ru. [94.29.17.251])
+        by smtp.googlemail.com with ESMTPSA id d26sm627196lfv.221.2021.08.27.08.50.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 08:50:41 -0700 (PDT)
+Subject: Re: [PATCH v9 4/8] PM: domains: Add get_performance_state() callback
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+References: <20210827013415.24027-1-digetx@gmail.com>
+ <20210827013415.24027-5-digetx@gmail.com>
+ <CAPDyKFqYWxY9znP1BEzogu0k7J1KRMXoSkUOeN4xHRq=gCHvTw@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <de5b2730-3032-f279-671a-b26c256b28f8@gmail.com>
+Date:   Fri, 27 Aug 2021 18:50:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Originating-IP: [10.43.162.52]
-X-ClientProxiedBy: EX13D04UWB004.ant.amazon.com (10.43.161.103) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAPDyKFqYWxY9znP1BEzogu0k7J1KRMXoSkUOeN4xHRq=gCHvTw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove blank lines that are not necessary, fixing the checkpatch script
-reports. While at it, add a blank line after the switch default block,
-similar to the other parts of the codebase.
+27.08.2021 17:23, Ulf Hansson пишет:
+> On Fri, 27 Aug 2021 at 03:37, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> Add get_performance_state() callback that retrieves and initializes
+>> performance state of a device attached to a power domain. This removes
+>> inconsistency of the performance state with hardware state.
+> 
+> Can you please try to elaborate a bit more on the use case. Users need
+> to know when it makes sense to implement the callback - and so far we
+> tend to document this through detailed commit messages.
+> 
+> Moreover, please state that implementing the callback is optional.
 
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
----
-Changelog
+Noted
 
-v1 -> v2
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/base/power/domain.c | 32 +++++++++++++++++++++++++++++---
+>>  include/linux/pm_domain.h   |  2 ++
+>>  2 files changed, 31 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+>> index 3a13a942d012..8b828dcdf7f8 100644
+>> --- a/drivers/base/power/domain.c
+>> +++ b/drivers/base/power/domain.c
+>> @@ -2700,15 +2700,41 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>>                 goto err;
+>>         } else if (pstate > 0) {
+>>                 ret = dev_pm_genpd_set_performance_state(dev, pstate);
+>> -               if (ret)
+>> +               if (ret) {
+>> +                       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
+>> +                               pd->name, ret);
+> 
+> Moving the dev_err() here, leads to that we won't print an error if
+> of_get_required_opp_performance_state() fails, a few lines above, is
+> that intentional?
 
-* No codebase changes, it was split from the patch 3 in the v1 of the
-patch series.
+Not intentional, I'll add another message.
 
-v2 -> v3
+>>                         goto err;
+>> +               }
+>>                 dev_gpd_data(dev)->default_pstate = pstate;
+>>         }
+>> +
+>> +       if (pd->get_performance_state && !dev_gpd_data(dev)->default_pstate) {
+>> +               bool dev_suspended = false;
+>> +
+>> +               ret = pd->get_performance_state(pd, base_dev, &dev_suspended);
+>> +               if (ret < 0) {
+>> +                       dev_err(dev, "failed to get performance state for power-domain %s: %d\n",
+>> +                               pd->name, ret);
+>> +                       goto err;
+>> +               }
+>> +
+>> +               pstate = ret;
+>> +
+>> +               if (dev_suspended) {
+> 
+> The dev_suspended thing looks weird.
+> 
+> Perhaps it was needed before dev_pm_genpd_set_performance_state()
+> didn't check pm_runtime_disabled()?
 
-* Move changelog after the "---" line.
----
- samples/nitro_enclaves/ne_ioctl_sample.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+There are two possible variants here:
 
-diff --git a/samples/nitro_enclaves/ne_ioctl_sample.c b/samples/nitro_enclaves/ne_ioctl_sample.c
-index 6a60990b2e202..765b131c73190 100644
---- a/samples/nitro_enclaves/ne_ioctl_sample.c
-+++ b/samples/nitro_enclaves/ne_ioctl_sample.c
-@@ -185,7 +185,6 @@ static int ne_create_vm(int ne_dev_fd, unsigned long *slot_uid, int *enclave_fd)
- 	return 0;
- }
- 
--
- /**
-  * ne_poll_enclave_fd() - Thread function for polling the enclave fd.
-  * @data:	Argument provided for the polling function.
-@@ -560,8 +559,8 @@ static int ne_add_vcpu(int enclave_fd, unsigned int *vcpu_id)
- 
- 		default:
- 			printf("Error in add vcpu [%m]\n");
--
- 		}
-+
- 		return rc;
- 	}
- 
--- 
-2.20.1 (Apple Git-117)
+1. Device is suspended
+2. Device is active
 
+If device is suspended, then it will be activated on RPM-resume and h/w
+state will require a specific performance state when resumed. Hence only
+the the rpm_pstate should be set, otherwise SoC may start to consume
+extra power if device won't be resumed by a consumer driver and
+performance state is bumped without a real need.
 
+If device is known to be active, then the performance state should be
+updated immediately, otherwise we have inconsistent state with hardware.
 
+For Tegra dev_suspended=true because in general it should be safe to
+assume that hardware is suspended since it's either stopped by the PD
+driver on initial power_on or it's assumed to be disabled by a consumer
+driver during probe. Technically it's possible to check clock and reset
+state of an attached device from the get_performance_state() to find the
+real state of device, but it's not necessary to do so far.
 
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+I'll add comment to the code.
+
+>> +                       dev_gpd_data(dev)->rpm_pstate = pstate;
+>> +               } else if (pstate > 0) {
+>> +                       ret = dev_pm_genpd_set_performance_state(dev, pstate);
+>> +                       if (ret) {
+>> +                               dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
+>> +                                       pd->name, ret);
+>> +                               goto err;
+>> +                       }
+>> +               }
+>> +       }
+> 
+> Overall, what we seem to be doing here, is to retrieve a value for an
+> initial/default performance state for a device and then we want to set
+> it to make sure the vote becomes aggregated and finally set for the
+> genpd.
+> 
+> With your suggested change, there are now two ways to get the
+> initial/default state. One is through the existing
+> of_get_required_opp_performance_state() and the other is by using a
+> new genpd callback.
+> 
+> That said, perhaps we would get a bit cleaner code by moving the "get
+> initial/default performance state" thingy, into a separate function
+> and then call it from here. If this function returns a valid
+> performance state, then we should continue to set the state, by
+> calling dev_pm_genpd_set_performance_state() and update
+> dev_gpd_data(dev)->default_pstate accordingly.
+> 
+> Would that work, do you think?
+
+To be honest, I'm now confused by
+of_get_required_opp_performance_state(). It assumes that device is
+active all the time while attached and that device is stopped on detach.
+
+If hardware is always-on, then it should be wrong to drop the
+performance state on detach.
+
+If hardware isn't always-on, then it might be suspended during
+attachment, and thus, only the rpm_pstate should be set. It's also not
+guaranteed that consumer driver will suspend device on unbind, leaving
+it active on detach, thus it should be wrong to drop performance state
+on detach.
+
+Hence I think the default_pstate is a bit out of touch. If this
+attach/detach behaviour is specific to QCOM driver/hardware, then maybe
+of_get_required_opp_performance_state() should be moved out to a
+get_performance_state() of the QCOM PD driver?
+
+I added Rajendra Nayak to explain.
+
+For now we're bailing out if default_pstate is set because it conflicts
+with get_performance_state().
+
+But we can factor out the code into a separate function anyways to make
+it cleaner a tad.
+
+>> +
+>>         return 1;
+>>
+>>  err:
+>> -       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
+>> -               pd->name, ret);
+>>         genpd_remove_device(pd, dev);
+>>         return ret;
+>>  }
+>> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+>> index 67017c9390c8..4f78b31791ae 100644
+>> --- a/include/linux/pm_domain.h
+>> +++ b/include/linux/pm_domain.h
+>> @@ -133,6 +133,8 @@ struct generic_pm_domain {
+>>                                                  struct dev_pm_opp *opp);
+>>         int (*set_performance_state)(struct generic_pm_domain *genpd,
+>>                                      unsigned int state);
+>> +       int (*get_performance_state)(struct generic_pm_domain *genpd,
+>> +                                    struct device *dev, bool *dev_suspended);
+> 
+> Comparing the ->set_performance_state() callback, which sets a
+> performance state for the PM domain (genpd) - this new callback is
+> about retrieving the *initial/default* performance state for a
+> *device* that gets attached to a genpd.
+> 
+> That said, may I suggest renaming the callback to
+> "dev_get_performance_state", or something along those lines.
+
+Noted
+
+>>         struct gpd_dev_ops dev_ops;
+>>         s64 max_off_time_ns;    /* Maximum allowed "suspended" time. */
+>>         ktime_t next_wakeup;    /* Maintained by the domain governor */
+>> --
+>> 2.32.0
+>>
+> 
+> Kind regards
+> Uffe
+> 
 
