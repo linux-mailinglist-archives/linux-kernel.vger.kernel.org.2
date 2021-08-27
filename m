@@ -2,185 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84DA3FA081
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5905A3FA08A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 22:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhH0UVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 16:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbhH0UVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 16:21:05 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFD6C061796
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 13:20:15 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id u9so12141928wrg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 13:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=87OtDxWiEoXbayG11yI3BuRN29+LIvQ+JH3zx+0332Q=;
-        b=ULbhHOnn9MrYE4bxDvydkaX2HPz3X75iWzwQgLRdtT6lZQDe50Lwy/IcAOPSkYRWe0
-         j49eQ1verzDp5pJ1z/kLVqH7Iz2Pv8UmWsEy8uP3WrXhfRPubYOJOMxD2sRxFVRp2/Wh
-         kMBdW1uYDsq+7yGal61QlESL/rfdlYF02IiyQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=87OtDxWiEoXbayG11yI3BuRN29+LIvQ+JH3zx+0332Q=;
-        b=SscmkaJgaGgBFjFW2JqIAMmuJlSS7RgOZkXk9e0ImUirm5RFCAlSZ53AmgXEmNZ0o1
-         1WxtL7oLmfrxFWz9EncQgB/GFkukw2/SqBBEuHds4Bq9FFcduPVfuCXTiXHsWVNheBnq
-         JFQCDQ1HHgkJE97YOWS2PckKll/9G/Qkhj9e1dlHXx74lEgBh8yy5jr+cRmELBn0TIzX
-         cbsMLYjNhCtk6YWXfW7o1oT47DFx77Sup59uEL7PODytezdQNWOsMfb6WGlfGsgvx9HP
-         FZ7ZkoqHmjvOLN87KSppv9yhmH4nIiDodnV1PCJz6DvtVmGmpm0u7JFOQEf3PsSffHW6
-         vslw==
-X-Gm-Message-State: AOAM533EWZtK/GP7SUMavTyvrsf5Z+lf8pNT6ijft27a9m8e6AKla4m9
-        d0fwjjoO1XTwrUlDdaP4oQ4rOA==
-X-Google-Smtp-Source: ABdhPJxhnMZJlzB+8+d7f5HkiNoG4KYXmvFm/ogC8IbWQpisgT+ThOQTY4B4jZ0HKySDhJHKL64+UQ==
-X-Received: by 2002:adf:f943:: with SMTP id q3mr12659368wrr.118.1630095614282;
-        Fri, 27 Aug 2021 13:20:14 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m5sm11998000wmi.1.2021.08.27.13.20.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 13:20:13 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 22:20:10 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        x86@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fbdev@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Ingo Molnar <mingo@redhat.com>, David Airlie <airlied@linux.ie>
-Subject: Re: [RFC PATCH 0/4] Allow to use DRM fbdev emulation layer with
- CONFIG_FB disabled
-Message-ID: <YSlI+ryYqoRxM7aB@phenom.ffwll.local>
-Mail-Followup-To: Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        x86@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fbdev@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Maxime Ripard <mripard@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
-        David Airlie <airlied@linux.ie>
-References: <20210827100027.1577561-1-javierm@redhat.com>
- <bb5d045c-c9de-b6df-cf45-32b1a866264a@suse.de>
+        id S231424AbhH0U0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 16:26:23 -0400
+Received: from mga01.intel.com ([192.55.52.88]:37771 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhH0U0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 16:26:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10089"; a="240246764"
+X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
+   d="scan'208";a="240246764"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 13:25:33 -0700
+X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
+   d="scan'208";a="538426092"
+Received: from aschultz-mobl2.amr.corp.intel.com (HELO [10.212.141.171]) ([10.212.141.171])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 13:25:31 -0700
+Subject: Re: [PATCH v29 23/32] x86/cet/shstk: Add user-mode shadow stack
+ support
+To:     Borislav Petkov <bp@alien8.de>,
+        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>
+References: <20210820181201.31490-1-yu-cheng.yu@intel.com>
+ <20210820181201.31490-24-yu-cheng.yu@intel.com> <YSfAbaMxQegvmN2p@zn.tnic>
+ <fa372ba8-7019-46d6-3520-03859e44cad9@intel.com> <YSktDrcJIAo9mQBV@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ab5bfeb4-af66-35b4-40da-829c7f98dcc2@intel.com>
+Date:   Fri, 27 Aug 2021 13:25:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <YSktDrcJIAo9mQBV@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bb5d045c-c9de-b6df-cf45-32b1a866264a@suse.de>
-X-Operating-System: Linux phenom 5.10.0-7-amd64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 07:50:23PM +0200, Thomas Zimmermann wrote:
-> Hi
+On 8/27/21 11:21 AM, Borislav Petkov wrote:
+> On Fri, Aug 27, 2021 at 11:10:31AM -0700, Yu, Yu-cheng wrote:
+>> Because on context switches the whole xstates are switched together,
+>> we need to make sure all are in registers.
+> There's context switch code which does that already.
 > 
-> Am 27.08.21 um 12:00 schrieb Javier Martinez Canillas:
-> > This patch series splits the fbdev core support in two different Kconfig
-> > symbols: FB and FB_CORE. The motivation for this is to allow CONFIG_FB to
-> > be disabled, while still using fbcon with the DRM fbdev emulation layer.
-> 
-> I'm skeptical. DRM's fbdev emulation is not just the console emulation, it's
-> a full fbdev device. You can see the related device file as /dev/fb*.
-> Providing the file while having CONFIG_FB disabled doesn't make much sense
-> to me. I know it's not pretty, but it's consistent at least.
-> 
-> If you want to remove fbdev, you could try to untangle fbdev and the console
-> emulation such that DRM can set up a console by itself. Old fbdev drives
-> would also set up the console individually.
+> Why would shstk_setup() be responsible for switching the whole extended
+> states buffer instead of only the shadow stack stuff only?
 
-Yeah given the horrendous security track record of all that code, and the
-maze of handover we have (stuff like flicker free boot and all that) I'm
-wondering whether typing a new drmcon wouldn't be faster and a lot more
-maintainable.
+I don't think this has anything to do with context-switching, really.
 
-With drm_client this shouldn't be too much work at least for the drm code.
+The code lands in shstk_setup() which wants to make sure that the new
+MSR values are set before the task goes out to userspace.  If
+TIF_NEED_FPU_LOAD was set, it could do that by going out to the XSAVE
+buffer and setting the MSR state in the buffer.  Before returning to
+userspace, it would be XRSTOR'd.  A WRMSR by itself would not be
+persistent because that XRSTOR would overwrite it.
 
-> Another low-hangling fruit is a config option to enable/disable the fbdev
-> userspace interface (i.e., dev/fb*). Disabling the interface would remove
-> the rsp mmap of the fbdev graphics buffer. We sometimes have to use an extra
-> shadow buffer because mmap requires non-moving buffers. Without mmap we
-> might be able to avoid some of the costly internal memcpys for some of our
-> drivers.
+But, if TIF_NEED_FPU_LOAD is *clear* it means the XSAVE buffer is
+out-of-date and the registers are live.  WRMSR can be used and there
+will be a XSAVE* to the task buffer during a context switch.
 
-And yeah stuff like that wouldn't be needed for drmcon either.
--Daniel
+So, this code takes the coward's way out: it *forces* TIF_NEED_FPU_LOAD
+to be clear by making the registers live with fpregs_restore_userregs().
+ That lets it just use WRMSR instead of dealing with the XSAVE buffer
+directly.  If it didn't do this with the *WHOLE* set of user FPU state,
+we'd need more fine-granted "NEED_*_LOAD" tracking than our one FPU bit.
 
-> 
-> Best regards
-> Thomas
-> 
-> > 
-> > The reason for doing this is that now with simpledrm we could just boot
-> > with simpledrm -> real DRM driver, without needing any legacy fbdev driver
-> > (e.g: efifb or simplefb) even for the early console.
-> > 
-> > We want to do that in the Fedora kernel, but currently need to keep option
-> > CONFIG_FB enabled and all fbdev drivers explicitly disabled, which makes
-> > the configuration harder to maintain.
-> > 
-> > It is a RFC because I'm not that familiar with the fbdev core, but I have
-> > tested and works with CONFIG_DRM_FBDEV_EMULATION=y and CONFIG_FB disabled.
-> > This config automatically disables all the fbdev drivers that is our goal.
-> > 
-> > Patch 1/4 is just a clean up, patch 2/4 moves a couple of functions out of
-> > fbsysfs.o, that are not related to sysfs attributes creation and finally
-> > patch 3/4 makes the fbdev split that is mentioned above.
-> > 
-> > Patch 4/4 makes the DRM fbdev emulation depend on the new FB_CORE symbol
-> > instead of FB. This could be done as a follow-up but for completeness is
-> > also included in this series.
-> > 
-> > Best regards,
-> > Javier
-> > 
-> > 
-> > Javier Martinez Canillas (4):
-> >    fbdev: Rename fb_*_device() functions names to match what they do
-> >    fbdev: Move framebuffer_{alloc,release}() functions to fbmem.c
-> >    fbdev: Split frame buffer support in FB and FB_CORE symbols
-> >    drm: Make fbdev emulation depend on FB_CORE instead of FB
-> > 
-> >   arch/x86/Makefile                  |  2 +-
-> >   arch/x86/video/Makefile            |  2 +-
-> >   drivers/gpu/drm/Kconfig            |  2 +-
-> >   drivers/video/console/Kconfig      |  2 +-
-> >   drivers/video/fbdev/Kconfig        | 57 +++++++++++++---------
-> >   drivers/video/fbdev/core/Makefile  | 13 +++--
-> >   drivers/video/fbdev/core/fbmem.c   | 73 ++++++++++++++++++++++++++--
-> >   drivers/video/fbdev/core/fbsysfs.c | 77 +-----------------------------
-> >   include/linux/fb.h                 | 18 ++++++-
-> >   9 files changed, 134 insertions(+), 112 deletions(-)
-> > 
-> 
-> -- 
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 Nürnberg, Germany
-> (HRB 36809, AG Nürnberg)
-> Geschäftsführer: Felix Imendörffer
-> 
+This is also *only* safe because the task is newly-exec()'d and the FPU
+state was just reset.  Otherwise, we might have had to worry that the
+non-PL3 SSPs have garbage or that non-SHSTK bits are set in MSR_IA32_U_CET.
 
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+That said, after staring at it, I *think* this code is functionally
+correct and OK performance-wise.  I suspect that the (very blunt) XRSTOR
+inside of start_update_msrs()->fpregs_restore_userregs() is quite rare
+because TIF_NEED_FPU_LOAD will usually be clear due to the proximity to
+execve().  So, adding direct XSAVE buffer manipulation would probably
+only make it more error prone.
