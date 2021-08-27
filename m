@@ -2,229 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E683F9DFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5422E3F9DFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245604AbhH0RXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
+        id S242156AbhH0RX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241005AbhH0RW5 (ORCPT
+        with ESMTP id S245583AbhH0RXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:22:57 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1653C0613A3;
-        Fri, 27 Aug 2021 10:21:55 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id t42so6214865pfg.12;
-        Fri, 27 Aug 2021 10:21:55 -0700 (PDT)
+        Fri, 27 Aug 2021 13:23:35 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FCBC06129F
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:22:46 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id x5so7732700ill.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 10:22:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gLQw+gOkOgBpF527SY7hnRVsopMwR8pUZ+6p/+sCMZE=;
-        b=jqKW1cLVDQjLgxObfit7zrVrS1J/x3pPdbxN1asI4+M8zeuts6wiVmaF5gUPo9V2FS
-         JXeBFTb/jNQsN8TVkdzk5dR/ZI/RL9bT7w6c7bid9edxLa0DUGokGuxk8lS91UGkaZj4
-         eqhtySo2OVg6q8KSYAGPGN96kFNqzBoVPg3X/PK5X2nNp/aialOuUPCIlZMUG0e+PnrF
-         loz3O3FeTYg3uZwrb5yAi3OMvnSUXqfLmi7a7GhGDDQYfkSFFvgBDn2e4Y2I1ay7oW87
-         728MiFOG393bdP8GnvBwKHUYm2+UuifhwCPpfKTJJH5Hk/ZtBiCsSRaDaNOT026pRuBy
-         Imzg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GQF1u9twazTHw5bGzpfVJ61gjAfk0YOMr503PJzhxkA=;
+        b=J5eWZarMLNhwjrVFQ2daH2Qe/cvX7HukjY3WROfeHrxvi6U5C8oRmvPRKnFAnJQCtb
+         zzX3s2/DbR0f/lZ37Pz+h//qUCA/W3VtqMlYglE8RgUtvu9BuP2+8+5VLEMKSS/URzse
+         rhEAi+t0USNcxZ+i6jFa0YP+JJa/fZcRWssgiOvpPihIToeC8AhPX3/7aBhxWfmCeOjB
+         6GHwyHPM26gkxZQkYEo1v7lqx9svomtnfTn7i0JlXFCX2MbonOGfN5LID8ycZUrdmzTC
+         PkGGNsZ1oELu+XsPFxQVnTHFTMc/54kqf9/h3F85kRhzs4OlYjnuQZXbm57V0XaN36AQ
+         LuHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gLQw+gOkOgBpF527SY7hnRVsopMwR8pUZ+6p/+sCMZE=;
-        b=WUD8Jq1yEH6Z3shieF9xly0FPQT8xLhOPtCEX79HaJDAx8oXCIeiuXANo8Sn99ctJ4
-         ffQq+lUaIkmJvsfNwPZRMU2D3iJUaFEvtugjzj3fidYEK3IopzzKS6IN5e5ieEPvmx6r
-         W0v13hrty15xqGYD6NEBXA0hRZJGWC3XuGFjYU+kUA2pq43CjuQ+9cSu4An/LMHb1mpF
-         7/rUZtD7TxB6jTVzhtrH0Py5Pv+Ru59SCsM3E7CnBuAK4LFSbV7Jx4vreL4/u7TilagU
-         7yzKYg9iYd+M3Ky8FlQ1RREXiuWZluLIZ7ZaeKrDU+cHnYa2WR1dwzT0D0vpiChJRnfc
-         +D0g==
-X-Gm-Message-State: AOAM5318QCNIm4wnXfwAbSlQC4O5I685530n991eRN2hbKW5sSvVR8vh
-        Gcj6gUUOSKjtJn6oL4IZKUA=
-X-Google-Smtp-Source: ABdhPJwuiMDXHrHAjE5Ue90v/UaZtCN02djvrlnnwi5m/AZBQrrgZl+iVNvLmQEttw3bmm/01KlJZg==
-X-Received: by 2002:a05:6a00:a94:b029:384:1dc6:7012 with SMTP id b20-20020a056a000a94b02903841dc67012mr10074419pfl.53.1630084915337;
-        Fri, 27 Aug 2021 10:21:55 -0700 (PDT)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:36:ef50:8fcd:44d1:eb17])
-        by smtp.gmail.com with ESMTPSA id f5sm7155015pjo.23.2021.08.27.10.21.54
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GQF1u9twazTHw5bGzpfVJ61gjAfk0YOMr503PJzhxkA=;
+        b=SifJ1ciKJK0GGQ6uQrC+VHijIV5OA9oTjntdEHeBpoVE/RH+5frWjlegAp7FOSPrMX
+         yBuKN/AtTI2LrtCNn5zFcc43Ax6ymibtVWNh0GtYcc3CdUKulv4KV0aCRbBiWPDzt4EB
+         Gxq5MRYx0t2y/wi0x8twD7R8Vsce4d0R+Zw5JBesjhbSuJCSMtPD+UgrTCDVhQ++D7Le
+         iVY5nALTQDoLhKqt4gkXZxptBBYr/FpKBTYAII5q6IYlVKr9S+Z4pf+LitoxW2mZk0em
+         VepV/XeqAS9nR8/1nc6DzSeUDr/h9OKZNVsruyhY7i6QM5WtOlBpzbwdJzSNOzHBFb0h
+         +OZQ==
+X-Gm-Message-State: AOAM533dMRRf3o28PuW/DykXqI96PQqaeF/UMu3gPbpAhNS9OLxctR+C
+        qgcF2Xn4xlp9LGwuO5U6Tvw=
+X-Google-Smtp-Source: ABdhPJxj7scKBPfADEVZuIE6Jer7RjrckrcxvS6NKL4dphhM177roh4Tsba/N7/jg9h9yGfOHGATMA==
+X-Received: by 2002:a92:8707:: with SMTP id m7mr7414471ild.177.1630084965748;
+        Fri, 27 Aug 2021 10:22:45 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id r8sm3579292iov.39.2021.08.27.10.22.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 10:21:54 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, catalin.marinas@arm.com,
-        will@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, gregkh@linuxfoundation.org,
-        arnd@arndb.de, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, brijesh.singh@amd.com,
-        thomas.lendacky@amd.com, Tianyu.Lan@microsoft.com,
-        pgonda@google.com, martin.b.radev@gmail.com,
-        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        rppt@kernel.org, hannes@cmpxchg.org, aneesh.kumar@linux.ibm.com,
-        krish.sadhukhan@oracle.com, saravanand@fb.com,
-        linux-arm-kernel@lists.infradead.org,
-        xen-devel@lists.xenproject.org, rientjes@google.com,
-        ardb@kernel.org, michael.h.kelley@microsoft.com
-Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
-Subject: [PATCH V4 13/13] hv_storvsc: Add Isolation VM support for storvsc driver
-Date:   Fri, 27 Aug 2021 13:21:11 -0400
-Message-Id: <20210827172114.414281-14-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210827172114.414281-1-ltykernel@gmail.com>
-References: <20210827172114.414281-1-ltykernel@gmail.com>
+        Fri, 27 Aug 2021 10:22:45 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 579A627C005B;
+        Fri, 27 Aug 2021 13:22:43 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 27 Aug 2021 13:22:44 -0400
+X-ME-Sender: <xms:Yh8pYc8EiDm0Zo8Bjgcd63FSK-4XiPos0HosFlEthLeLGHRyaGIviQ>
+    <xme:Yh8pYUsiBux9byqYTkfkzqpz2rUKNUIXfuE76L36I4Y4U1fNHx89JPebYRM3uQt-d
+    RSc5OARtW62s2IfYw>
+X-ME-Received: <xmr:Yh8pYSBU8J8yU2hO6mq0BTUOymdjEX79FFcINTFPi41l8p3mvpnMgeFq4tE1DQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddufedgudduudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfeg
+    vdegjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:Yh8pYcf9S5dOD1FVpZhpLPL9CK-kDU3ua0GBAOTzlf9J0jn-EJ678w>
+    <xmx:Yh8pYROcE3P6M4wlq0PAw9PNU9t34hqEjTK_avOuI76RvVSovT4HXQ>
+    <xmx:Yh8pYWki_XlEDwkFou8XWLqR8kUrXgIUiZRf4Rs7mnLI5FPRlLyf6g>
+    <xmx:Yx8pYWmhtCm_ZRrDAovT7rlPoij4CiDtfklx2qs7-pjkIhoSFZyVB5n6LJA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 27 Aug 2021 13:22:42 -0400 (EDT)
+Date:   Sat, 28 Aug 2021 01:21:46 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [patch V5 32/72] locking/rtmutex: Provide the spin/rwlock core
+ lock function
+Message-ID: <YSkfKoXIYhsLT2Ef@boqun-archlinux>
+References: <20210815203225.710392609@linutronix.de>
+ <20210815211303.770228446@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210815211303.770228446@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+On Sun, Aug 15, 2021 at 11:28:25PM +0200, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> A simplified version of the rtmutex slowlock function which neither handles
+> signals nor timeouts and is careful about preserving the state of the
+> blocked task across the lock operation.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  kernel/locking/rtmutex.c        |   60 ++++++++++++++++++++++++++++++++++++++++
+>  kernel/locking/rtmutex_common.h |    2 -
+>  2 files changed, 61 insertions(+), 1 deletion(-)
+> ---
+> --- a/kernel/locking/rtmutex.c
+> +++ b/kernel/locking/rtmutex.c
+> @@ -1416,3 +1416,63 @@ static __always_inline int __rt_mutex_lo
+>  	return rt_mutex_slowlock(lock, state);
+>  }
+>  #endif /* RT_MUTEX_BUILD_MUTEX */
+> +
+> +#ifdef RT_MUTEX_BUILD_SPINLOCKS
+> +/*
+> + * Functions required for spin/rw_lock substitution on RT kernels
+> + */
+> +
+> +/**
+> + * rtlock_slowlock_locked - Slow path lock acquisition for RT locks
+> + * @lock:	The underlying rt mutex
+> + */
+> +static void __sched rtlock_slowlock_locked(struct rt_mutex_base *lock)
+> +{
+> +	struct rt_mutex_waiter waiter;
+> +
+> +	lockdep_assert_held(&lock->wait_lock);
+> +
+> +	if (try_to_take_rt_mutex(lock, current, NULL))
+> +		return;
+> +
+> +	rt_mutex_init_rtlock_waiter(&waiter);
+> +
+> +	/* Save current state and set state to TASK_RTLOCK_WAIT */
+> +	current_save_and_set_rtlock_wait_state();
+> +
+> +	task_blocks_on_rt_mutex(lock, &waiter, current, RT_MUTEX_MIN_CHAINWALK);
+> +
+> +	for (;;) {
+> +		/* Try to acquire the lock again. */
+> +		if (try_to_take_rt_mutex(lock, current, &waiter))
+> +			break;
+> +
+> +		raw_spin_unlock_irq(&lock->wait_lock);
+> +
+> +		schedule_rtlock();
+> +
+> +		raw_spin_lock_irq(&lock->wait_lock);
+> +		set_current_state(TASK_RTLOCK_WAIT);
+> +	}
+> +
+> +	/* Restore the task state */
+> +	current_restore_rtlock_saved_state();
+> +
+> +	/*
+> +	 * try_to_take_rt_mutex() sets the waiter bit unconditionally. We
+> +	 * might have to fix that up:
+> +	 */
+> +	fixup_rt_mutex_waiters(lock);
+> +	debug_rt_mutex_free_waiter(&waiter);
+> +}
+> +
+> +static __always_inline void __sched rtlock_slowlock(struct rt_mutex_base *lock)
+> +{
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&lock->wait_lock, flags);
+> +	rtlock_slowlock_locked(lock);
+> +	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
 
-In Isolation VM, all shared memory with host needs to mark visible
-to host via hvcall. vmbus_establish_gpadl() has already done it for
-storvsc rx/tx ring buffer. The page buffer used by vmbus_sendpacket_
-mpb_desc() still needs to be handled. Use DMA API(dma_map_sg) to map
-these memory during sending/receiving packet and return swiotlb bounce
-buffer dma address. In Isolation VM, swiotlb  bounce buffer is marked
-to be visible to host and the swiotlb force mode is enabled.
+Just out of curiosity, could we use raw_spin_{un,}lock_irq() here
+instead of *_irq{save,restore}()? Because rtlock_slowlock() might sleep,
+and we cannot call it with irq-off.
 
-Set device's dma min align mask to HV_HYP_PAGE_SIZE - 1 in order to
-keep the original data offset in the bounce buffer.
+Regards,
+Boqun
 
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
----
-Change since v3:
-	* Rplace dma_map_page with dma_map_sg()
-	* Use for_each_sg() to populate payload->range.pfn_array.
-	* Remove storvsc_dma_map macro
----
- drivers/hv/vmbus_drv.c     |  1 +
- drivers/scsi/storvsc_drv.c | 41 +++++++++++++++-----------------------
- include/linux/hyperv.h     |  1 +
- 3 files changed, 18 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index f068e22a5636..270d526fd9de 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -2124,6 +2124,7 @@ int vmbus_device_register(struct hv_device *child_device_obj)
- 	hv_debug_add_dev_dir(child_device_obj);
- 
- 	child_device_obj->device.dma_mask = &vmbus_dma_mask;
-+	child_device_obj->device.dma_parms = &child_device_obj->dma_parms;
- 	return 0;
- 
- err_kset_unregister:
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 328bb961c281..4f1793be1fdc 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -21,6 +21,8 @@
- #include <linux/device.h>
- #include <linux/hyperv.h>
- #include <linux/blkdev.h>
-+#include <linux/dma-mapping.h>
-+
- #include <scsi/scsi.h>
- #include <scsi/scsi_cmnd.h>
- #include <scsi/scsi_host.h>
-@@ -1312,6 +1314,9 @@ static void storvsc_on_channel_callback(void *context)
- 					continue;
- 				}
- 				request = (struct storvsc_cmd_request *)scsi_cmd_priv(scmnd);
-+				if (scsi_sg_count(scmnd))
-+					dma_unmap_sg(&device->device, scsi_sglist(scmnd),
-+						     scsi_sg_count(scmnd), scmnd->sc_data_direction);
- 			}
- 
- 			storvsc_on_receive(stor_device, packet, request);
-@@ -1725,7 +1730,6 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	struct hv_host_device *host_dev = shost_priv(host);
- 	struct hv_device *dev = host_dev->dev;
- 	struct storvsc_cmd_request *cmd_request = scsi_cmd_priv(scmnd);
--	int i;
- 	struct scatterlist *sgl;
- 	unsigned int sg_count;
- 	struct vmscsi_request *vm_srb;
-@@ -1807,10 +1811,11 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	payload_sz = sizeof(cmd_request->mpb);
- 
- 	if (sg_count) {
--		unsigned int hvpgoff, hvpfns_to_add;
- 		unsigned long offset_in_hvpg = offset_in_hvpage(sgl->offset);
- 		unsigned int hvpg_count = HVPFN_UP(offset_in_hvpg + length);
--		u64 hvpfn;
-+		struct scatterlist *sg;
-+		unsigned long hvpfn, hvpfns_to_add;
-+		int j, i = 0;
- 
- 		if (hvpg_count > MAX_PAGE_BUFFER_COUNT) {
- 
-@@ -1824,31 +1829,16 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 		payload->range.len = length;
- 		payload->range.offset = offset_in_hvpg;
- 
-+		if (dma_map_sg(&dev->device, sgl, sg_count,
-+		    scmnd->sc_data_direction) == 0)
-+			return SCSI_MLQUEUE_DEVICE_BUSY;
- 
--		for (i = 0; sgl != NULL; sgl = sg_next(sgl)) {
--			/*
--			 * Init values for the current sgl entry. hvpgoff
--			 * and hvpfns_to_add are in units of Hyper-V size
--			 * pages. Handling the PAGE_SIZE != HV_HYP_PAGE_SIZE
--			 * case also handles values of sgl->offset that are
--			 * larger than PAGE_SIZE. Such offsets are handled
--			 * even on other than the first sgl entry, provided
--			 * they are a multiple of PAGE_SIZE.
--			 */
--			hvpgoff = HVPFN_DOWN(sgl->offset);
--			hvpfn = page_to_hvpfn(sg_page(sgl)) + hvpgoff;
--			hvpfns_to_add =	HVPFN_UP(sgl->offset + sgl->length) -
--						hvpgoff;
-+		for_each_sg(sgl, sg, sg_count, j) {
-+			hvpfns_to_add = HVPFN_UP(sg_dma_len(sg));
-+			hvpfn = HVPFN_DOWN(sg_dma_address(sg));
- 
--			/*
--			 * Fill the next portion of the PFN array with
--			 * sequential Hyper-V PFNs for the continguous physical
--			 * memory described by the sgl entry. The end of the
--			 * last sgl should be reached at the same time that
--			 * the PFN array is filled.
--			 */
- 			while (hvpfns_to_add--)
--				payload->range.pfn_array[i++] =	hvpfn++;
-+				payload->range.pfn_array[i++] = hvpfn++;
- 		}
- 	}
- 
-@@ -1992,6 +1982,7 @@ static int storvsc_probe(struct hv_device *device,
- 	stor_device->vmscsi_size_delta = sizeof(struct vmscsi_win8_extension);
- 	spin_lock_init(&stor_device->lock);
- 	hv_set_drvdata(device, stor_device);
-+	dma_set_min_align_mask(&device->device, HV_HYP_PAGE_SIZE - 1);
- 
- 	stor_device->port_number = host->host_no;
- 	ret = storvsc_connect_to_vsp(device, storvsc_ringbuffer_size, is_fc);
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index 139a43ad65a1..8f39893f8ccf 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -1274,6 +1274,7 @@ struct hv_device {
- 
- 	struct vmbus_channel *channel;
- 	struct kset	     *channels_kset;
-+	struct device_dma_parameters dma_parms;
- 
- 	/* place holder to keep track of the dir for hv device in debugfs */
- 	struct dentry *debug_dir;
--- 
-2.25.1
-
+> +}
+> +
+> +#endif /* RT_MUTEX_BUILD_SPINLOCKS */
+> --- a/kernel/locking/rtmutex_common.h
+> +++ b/kernel/locking/rtmutex_common.h
+> @@ -181,7 +181,7 @@ static inline void rt_mutex_init_waiter(
+>  	waiter->task = NULL;
+>  }
+>  
+> -static inline void rtlock_init_rtmutex_waiter(struct rt_mutex_waiter *waiter)
+> +static inline void rt_mutex_init_rtlock_waiter(struct rt_mutex_waiter *waiter)
+>  {
+>  	rt_mutex_init_waiter(waiter);
+>  	waiter->wake_state = TASK_RTLOCK_WAIT;
+> 
