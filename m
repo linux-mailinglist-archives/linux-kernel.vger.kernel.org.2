@@ -2,75 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491AC3F9262
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 04:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5D83F928B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 04:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244052AbhH0CkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 22:40:14 -0400
-Received: from out1.migadu.com ([91.121.223.63]:49005 "EHLO out1.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233556AbhH0CkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 22:40:13 -0400
+        id S244030AbhH0Cv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 22:51:29 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:39501 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231154AbhH0Cv3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Aug 2021 22:51:29 -0400
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 17R2oH7a030715;
+        Fri, 27 Aug 2021 11:50:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 17R2oH7a030715
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1630032618;
+        bh=3ul5FdNxXDzBoCZ3stt7fV3y49FCqdWTBTBeH0mAs0U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HaFYJLjmaQHVSaQfeVTlgO8w3r/crCi3okE82ywbNgAYqU6wOiXCWz7fPB5RHOVGX
+         ApzhUHJ1fPae/vfR9LXUgr62Br5X02CVKlvLEt5SAtytcCxwPZ1WSO5ONC8PmHCNbV
+         3j6F60wIYtlMCeEzNpNHxNkeW++Xzjj0aHChbgJPGQU/DKiiMGM+lMDZt8DRLUJblB
+         N6f/HysajgQhecxq0kBsp4XhEzAQqXfJX2AyeQP3Vp+n2PTvNboaW+E5ROdmdDPlCD
+         Y4nNzBpxVY5W1++s/Upzu2QEaKurOLF9LUyAo/QbLp/OYOdc/GH8c/+bFsdOLAPW1s
+         Cg4ARkBqKtDFw==
+X-Nifty-SrcIP: [209.85.214.174]
+Received: by mail-pl1-f174.google.com with SMTP id n12so3011987plk.10;
+        Thu, 26 Aug 2021 19:50:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531CALwvdQtyukngryUYN5r81Vha3abrFGx76vo3jJ+Nv2duY+vG
+        Q/TIpqBu9fCzEn0FMmu6wi1641vlWVhLM6inArQ=
+X-Google-Smtp-Source: ABdhPJyWXAjLg1wSsMAMpNAb/xV7A58D2hn+JY/cFGWUWGHjm0NirHuYD4IuWNqJPcttkjgRP0r/nD0czld8RL7hNFM=
+X-Received: by 2002:a17:902:a5c5:b029:12c:a867:a839 with SMTP id
+ t5-20020a170902a5c5b029012ca867a839mr6522746plq.71.1630032617285; Thu, 26 Aug
+ 2021 19:50:17 -0700 (PDT)
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1630031963;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cjmEmg6cpIJ91TusMZj8RMe8MiPkJJ/XPTVR7nIuQXc=;
-        b=FEG3a7rlv9ydh/zXYd+Jp5uiExw6VBBKUNoIn1doDGX+YzrNQhZbJEiNxY74lanvF5w+A4
-        CivOHPTefNPxhDh2013lghgE8m/4Lzr80nNExfU6SzOFQnX1Z2aLyNVrBpVqc86TIxDy5J
-        npKSx4tntrGIS4nF80m+0OGA9MTDyOU=
-Date:   Fri, 27 Aug 2021 02:39:23 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yajun.deng@linux.dev
-Message-ID: <d6cbd8d362ae84dde2ccde6698be0d3c@linux.dev>
-Subject: Re: [PATCH linux-next] PCI: Fix the order in unregister path
-To:     "Rob Herring" <robh@kernel.org>
-Cc:     "Bjorn Helgaas" <bhelgaas@google.com>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
-        "PCI" <linux-pci@vger.kernel.org>, linux-kernel@vger.kernel.org
-In-Reply-To: <CAL_Jsq+rRFJUO3SVLdkQV62dQPymPigiikM05Xipgfbvg_oeqw@mail.gmail.com>
-References: <CAL_Jsq+rRFJUO3SVLdkQV62dQPymPigiikM05Xipgfbvg_oeqw@mail.gmail.com>
- <20210825083425.32740-1-yajun.deng@linux.dev>
- <CAL_JsqJ4731w_0rYCSBC_Mma-rn4nUUbKnSwhymGZyh8E7xoWg@mail.gmail.com>
- <63e1e9ea1e4b74b56aeafcc6695ecfa8@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+References: <20210826191330.40dc43e8@canb.auug.org.au> <CAK7LNASL2JNb4zT7UFr41dLO0oEuvc6yUg__qhc59q8aNqWxEg@mail.gmail.com>
+ <20210827115052.00391d9a@canb.auug.org.au>
+In-Reply-To: <20210827115052.00391d9a@canb.auug.org.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 27 Aug 2021 11:49:40 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ0Gxap8oxDMqcO8b9t8B2+g98pRWenJEQCEYw+9Bn3qg@mail.gmail.com>
+Message-ID: <CAK7LNAQ0Gxap8oxDMqcO8b9t8B2+g98pRWenJEQCEYw+9Bn3qg@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the kbuild tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-August 26, 2021 8:01 PM, "Rob Herring" <robh@kernel.org> wrote:=0A=0A> On=
- Wed, Aug 25, 2021 at 10:57 PM <yajun.deng@linux.dev> wrote:=0A> =0A>> Au=
-gust 25, 2021 9:55 PM, "Rob Herring" <robh@kernel.org> wrote:=0A>> =0A>> =
-On Wed, Aug 25, 2021 at 3:34 AM Yajun Deng <yajun.deng@linux.dev> wrote:=
-=0A>> =0A>> device_del() should be called first and then called put_devic=
-e() in=0A>> unregister path, becase if that the final reference count, th=
-e device=0A>> will be cleaned up via device_release() above. So use devic=
-e_unregister()=0A>> instead.=0A>> =0A>> Fixes: 9885440b16b8 (PCI: Fix pci=
-_host_bridge struct device release/free handling)=0A>> Signed-off-by: Yaj=
-un Deng <yajun.deng@linux.dev>=0A>> ---=0A>> drivers/pci/probe.c | 4 +---=
-=0A>> 1 file changed, 1 insertion(+), 3 deletions(-)=0A>> =0A>> NAK.=0A>>=
- =0A>> The current code is correct. Go read the comments for device_add/d=
-evice_del.=0A>> =0A>> But the device_unregister() is only contains device=
-_del() and put_device(). It just put=0A>> device_del() before put_device(=
-).=0A> =0A> And that is the wrong order as we want to undo what the code =
-above=0A> did. The put_device here is for the get_device we did. The put_=
-device=0A> in device_unregister is for the get_device that device_registe=
-r did=0A> (on success only).=0A> =0A> Logically, it is wrong too to call =
-unregister if register failed. That=0A> would be like doing this:=0A> =0A=
-> p =3D malloc(1);=0A> if (!p)=0A> free(p);=0A>=0AThis is the raw code:=
-=0A        err =3D device_register(&bus->dev);=0A        if (err)=0A     =
-           goto unregister;=0Aunregister:=0A        put_device(&bridge->d=
-ev);=0A        device_del(&bridge->dev);=0A=0AThis is my code:=0A        =
-err =3D device_register(&bus->dev);=0A        if (err)=0A                =
-goto unregister;=0A unregister:=0A        device_unregister(&bridge->dev)=
-;=0A=0A=0AThe parameter in  device_register() is bus->dev, but the parame=
-ter in device_unregister() is bridge->dev.The are different.=0AThe bridge=
-->dev is already success before called device_register().So it wouldn't b=
-e happen like your code.=0A=0A =0A> Rob
+On Fri, Aug 27, 2021 at 10:50 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi Masahiro,
+>
+> On Fri, 27 Aug 2021 09:52:18 +0900 Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > On Thu, Aug 26, 2021 at 6:13 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > After merging the kbuild tree, today's linux-next build (x86_64
+> > > allnoconfig) failed like this:
+> > >
+> > > make[2]: *** No rule to make target 'scripts/mod/empty.o', needed by '__build'.
+> > >
+> > > Caused by commit
+> > >
+> > >   624a912f84bc ("kbuild: detect objtool changes correctly and remove .SECONDEXPANSION")
+> > >
+> > > (at least, reverting that commit fixes it)
+> > >
+> > > I use a separate object directory and, in this case, it is newly created.
+> > >
+> > > A build with V=1 and -s removed (and no -j) gives this around the
+> > > failure:
+> > >
+> > > make -f /home/sfr/next/next/scripts/Makefile.build obj=scripts/mod
+> > > make[2]: *** No rule to make target 'scripts/mod/empty.o', needed by '__build'.  Stop.
+> > > make[1]: *** [/home/sfr/next/next/Makefile:1309: prepare0] Error 2
+> > >
+> > > I have reverted that commit for today.
+> >
+> >
+> > Hmm, it is strange.
+> >
+> >
+> > I re-applied that commit based on today's linux-next
+> > (git cherry-pick  624a912f84bc)
+> >
+> > allnoconfig built successfully.
+> >
+> >
+> > My build log is as follows.
+> >
+> > Can you tell the exact steps to reproduce the error?
+> >
+> >
+> >
+> > masahiro@grover:~/ref/linux-next$ git log -2 --oneline
+> > 5046c6516ca2 (HEAD -> tmp) kbuild: detect objtool changes correctly
+> > and remove .SECONDEXPANSION
+> > 88fac11862d3 (tag: next-20210826, origin/master, origin/HEAD) Add
+> > linux-next specific files for 20210826
+> > masahiro@grover:~/ref/linux-next$ rm -rf /tmp/foo
+> > masahiro@grover:~/ref/linux-next$ make O=/tmp/foo  allnoconfig all
+>
+> I did more or less the same:
+>
+> $ rm -rf ../x86_64_allnoconfig
+> $ mkdir ../x86_64_allnoconfig
+> $ make ARCH=x86_64 O=../x86_64_allnoconfig CROSS_COMPILE=x86_64-linux-gnu- allnoconfig
+> $ make V=1 ARCH=x86_64 O=../x86_64_allnoconfig CROSS_COMPILE=x86_64-linux-gnu- -O
+>
+> I do cross builds hosted on a PowerPC LE host.
+>
+> --
+> Cheers,
+> Stephen Rothwell
+
+
+
+
+Ah, OK.
+Now I understood what was happening.
+
+scripts/mod/ is built before objtool, so
+the dependency is not met.
+
+I was previously not able to reproduce it
+because a stale objtool was remaining in my source tree.
+'make clean' cannot clean up objtool.
+
+I will fix it by tomorrow's linux-next.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
