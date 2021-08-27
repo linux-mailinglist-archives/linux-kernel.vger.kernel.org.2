@@ -2,218 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B503F9BD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E363F9BD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241778AbhH0Pkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbhH0Pkb (ORCPT
+        id S244511AbhH0PlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:41:20 -0400
+Received: from sonic302-27.consmr.mail.ne1.yahoo.com ([66.163.186.153]:40076
+        "EHLO sonic302-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244060AbhH0PlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:40:31 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5ABC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:39:42 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id c4so4165446plh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 08:39:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ncSvdn48KwHrQzYtexzGkXlloweM6fpLnKP3mFqE2B8=;
-        b=ZAMkIey41zgYylKJDDWIsk6u0/nHXLyn+DgPQvjEzKV/STttKZSR6WL2vI8pTX61xt
-         ISq0/8nLupj1xC/8EEqLrPIPMZ5hxD0lxCF5hFnZZ7/1ymgY07h2fbQknsJZ+4yvgLyL
-         NSnDwsm37KvzXDaJK8fCCtODrWWedFSnH78hA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ncSvdn48KwHrQzYtexzGkXlloweM6fpLnKP3mFqE2B8=;
-        b=Gn7+qsOYFXPzehB4T/cuWgo4jT8QnwB8qXTXsy9vkpS9J+vMxVc/4gXE2pFLtldZBN
-         yQAgbfjuas9QdDfsxMgaU81Mr5/a0TcpoDkonFyrO+0g19Typmy1/z26hAmHGwdMflC0
-         q2g5tMMNdAefCiHvFxMOR+y+sIQbKtKFLPlhox6TEQ5YOXsilucp9/0IH+XBiAltvmg0
-         4V/GUDUhSPvqc9IkoW07OM6D8yK9vLOwEYq4zHWza7oZKfj/WOm5VgQPdRKN46hUCoZc
-         11Ox5AzvvkLBIHVUc2DKqPxkKZileQ+IOQa5Wj24SOMGb1QJb9EB/P5Tjg/SprFMBrcO
-         1GEg==
-X-Gm-Message-State: AOAM5323QxsHWR5Fc9Ik0vAIvLNM5caIhhkflEvjeZptUPatIa2/axem
-        7f6/r9FAmjxYj+9hNGdoExBhGg==
-X-Google-Smtp-Source: ABdhPJzPu7aaMkSWPZA8phlPxNkUScTOuzkkNeN4thlRBsFhGmSGEigch3otJ94lot5HVvmS3MSkcg==
-X-Received: by 2002:a17:90b:1bc8:: with SMTP id oa8mr11096998pjb.25.1630078781831;
-        Fri, 27 Aug 2021 08:39:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f5sm6532402pfn.134.2021.08.27.08.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 08:39:41 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 08:39:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] stddef: Add flexible array union helper
-Message-ID: <202108270838.10695297AD@keescook>
-References: <20210826050458.1540622-1-keescook@chromium.org>
- <20210826050458.1540622-1-keescook@chromium.org>
- <20210827092532.908506-1-mailhol.vincent@wanadoo.fr>
+        Fri, 27 Aug 2021 11:41:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1630078822; bh=RLSfOoMGxQBA/Q+l0oOfjINaN69QHvng+wec1rTGsfk=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=drhmaT+Il9bkZTSb6KEMugJzFitA0vCF8YZZ8gVpoB0qgUvY8itfC9I1pnVsC54TghHyxJXfUQ52xmXnFzzv7MRXakr/Q7AHkD7j3lCewyFK6mpS7ey+VsmF2cmj8ajs3UGzRH0n0byteHLYmrA04n1ELBYEgwPA81qsMKWhe+VRanlAfl7tERN7tfiUhQ6b+OFgBRyj3OYe2kpb4+dFh0IH2CyVpyPZUBFPt2wTF3ev0y0dsHiSf2GrbMx+217ylaO67Toc/EoRp+FtekPl+uMsmC6Ofc3pBq5POnNnlfK+0Lc019JK+J//LSqK9kGxvs0Ky4pmZJEayQtKHMKxyw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1630078822; bh=D94bqPGl7AEF7XOQPgaZF/LHsD5C3S2nS21+M1kW6RT=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=nG2tv0R+UAZLHs0Tg8mEQGx0kzUHARmUbZCYygV1CnulS1gCzsMYwIFPjUw/rxEHUWwB2HZTaVLwfqg0Qb9NiKVe272xJyNJSW5DRAoPi6jS49o/t5oWoLtNRdhxF/5z2ockAJzMy9fikYGMK+yBdQ8e8hR891w04VZe4HL/gI1NVyV8f8Ik5GEHDfjSjplp++XlkOETW7f05OUVDaQjohyWhdn10VPad186SQ9LkaWbZrKR+vQsPErTuyEegrH5fGv/PL6n5E2Maws5xfOPFUzZgz9lgnzSQDtVAF22FtvOqhfiE/eATez1D5FPecAnwQjKb/UNfgqu6P0TCDspkQ==
+X-YMail-OSG: QSPKJ_wVM1kftnzMNAAElIqqshKzX.4IMhSyEuu7HoJS8SjfEcn.CvTFAHaeUT7
+ wTe06FwKE5j1Dp3AGdwMy_nzuyFFpcfP1SASaYAuJ1XmmqHD.eQ.Dmmle4iJv2nra2nOwA78ZyGY
+ Xk6Gg3aRrpEsFd3gu6uOyDeNgMT8DUeaRFA6nZSnav9NgDXtGkwEhx_uExPbvnvMGUbTgoFSlD.h
+ 0i9N5Z1ObYAyXdGyNWsnbY7V3ZNvTLVhwMVKOnhPS.hxzps6xxLyLSdFbTTiKTbiAnHSjePyeN68
+ 6VTxOyqGUgUjRpy.UsMmwQ97Ku0jjGQ6t9_.ywT79kFxIle5Q8L7WUFTsxGfxm5U.vOg4svidzjt
+ 9_kUkKsbvMHulScXzmWYO4L5_fPzws4iVedwBPk5s9pHBzWHjNS0Go4Jil_I6J2UmqCK9AYyFhj7
+ zaAUqFQDE3OII4SSV7lZ0k3uP2p3pd7CKum.oHFhiUYVspm3n.HAVfEVCVRIGBisYBXl36cK3g24
+ uHjd2wHOM3n401Nj2Fd00RHqYL.RPRUI_RzihuCzN7V7jNdwb7N3ealoBtIHOW6zdyAJxpcH2kbB
+ aDioOh9bDptXvMfvWfLECRCxdrzC_zXL5Irncwp4YXm41xqtQ1Sz57tqKtiKfERz3s5Zlz1l4nAW
+ Ocpa4N3Lm88NY5n60Mo5Kg5Ip1NefHDwtXdbMgGShvZWgnN2zszBEonHNC1D8nLX3W8HptCbtEpX
+ A1wRuNZeIh6O_..jA6QIQdlJV6DL0Enspcv9dCuFQyPi81ycH8aCSOXcycw4Vbstn4dG9DNbyHY3
+ BxzNF5zIUwjzVM2gnnmbdWzFLOZ1loQSBEYtotbDcvCGMWISUomDtkGp5eA9gD3sp5RM3OkFPJ89
+ abuDroy2OjTaNNn8nhlNrp6ovqxOoouJBji8jpuhYNh6xlhHE_NjoDXG40tNCTRgNrKUKijxu1N1
+ F2CI92YacRKhZstVDLoTiw7Q3BgI9xO5o4aocVP8JmRDRzeJRCObapEYaeRYz0KwNXXOOo6t0GiZ
+ 1OsVdNbEfzyONrK7QVG.vPANAS75Q.OPSCV5wYMsvUWyRIjdtGXWeeMnBdwLnBH0v3XLmUd7Me9D
+ GCwmJ1ULKLAn6CEUsZhdpPWw5QoZzGN_3jmePYL0Vuw6wUCPnUYUI_9jw7.EeCs1Hm_cliBrg4Qp
+ 4.FtB36Kf_rTCprB7dZ4Q2.XaXp_arR6ixohizfyC_f2Beub64p_bVnX5amBygcEKBIh6kcIZsx4
+ gkT1v2jCcVQO__X_IBz3ZT_ayyns6oiiFppT2hTDmzaAM7IP0o0PavyIlojYjvDok2sKPVaqFcyw
+ 9OQ4TmFFG.SrFIqIsct5YT2vUhx5FYntHWAk0b0yzyD26RkTMKcxWj2Tw61jVqoXeakYaEJnSKRC
+ I5JM0DpxmgL5Yv6jSCEEsnLcQ36wRGlB4rRBUpkD41sLYJy8HwIL6c5VOkvPaBpA4b1_0oiFEN6V
+ 61CK.LzqRsidoXzEkQkn_3kqj_OHMD4wR9KwzGLECsbxn5IXhnDH1UOB0tZbhygyA55IAN2W.Veu
+ _PZPXhGb0JZojpF7_jQV2.ppmhPa7XAC_DeZC7ionwa0VSiaMsqwU86BwGWGgmMZ2ENK3sW6jCZ2
+ AqluulGMKUtLy5DGBSkOi_aEyyaDELqNgIcmlxYpoRbekKU8bDWYbcdOCojhCbVG4kF1VuobEXsJ
+ W0fTvr6FpTSA21f3ktNfFu1bhQBNe_pUQ7qbpswbG6fBYrHE.3_lFm8jbOygIeDy5RgGH6gRHiBa
+ 3jwZWdsftDCcGB2aMrppGf3vQJai_.iCOOSRDTTkjyuqinvYYq4gK4NbdgqS0sDmvrsU8kEQQb_q
+ 5vMB7b89YfhivsHS4KSjG9few0WeBS9gS9BxYv.yLk1v48IbJYStYsGB0HqZTBMmnsF1V5AFkYey
+ _ju6DXpylilZTVywnIOoexFDv9e_VjEzdGj2Z8IuSbiOK55iiGje_akxjNOSmknU6p1sEKHi50jA
+ Ew4TG4Gh4vUak6U1XIGca.qZ4PvSaqMNsHf02VDH1rhKt8bo0XunMRxKC9RHai4GjtWJN1esHPm5
+ 3NI0uNJ3e5OmKsSxBuYHDEi4uQlA.1lgQN6j8k5qPn8IOlNkC7qlAd4SIzG7_L0dbo43DbLurpHf
+ I4Oh_d4zLG_mAAGuaMBJWImV0AyFmM5oJzuyYUmBooKSGvQjnJpmuNDKeTR9wA2_7y0omVGhfPKR
+ wGs63ltmGQ3xakUeWWUpxKHSYEdd.sS76VyJUe2zM1duu6pgEVBhRuQcvsnMHNwXzsEFlYQLsyhI
+ 8efkc228AoNGtAI_WrlUi3EGHPVFwiZX9Iy8RvAYuGRzpNO9tB8AxyhcMi5BxPFk-
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Fri, 27 Aug 2021 15:40:22 +0000
+Received: by kubenode550.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID c87127f64d5633da122d83ac78847bb5;
+          Fri, 27 Aug 2021 15:40:16 +0000 (UTC)
+Subject: Re: [syzbot] general protection fault in legacy_parse_param
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <0000000000004e5ec705c6318557@google.com>
+ <CACT4Y+YysFa1UzT6zw9GGns69WSFgqrL6P_LjUju6ujcJRTaeA@mail.gmail.com>
+ <d11c276d-65a0-5273-d797-1092e1e2692a@schaufler-ca.com>
+ <CAHC9VhSq88YjA-VGSTKkc4hkc_KOK=mnoAYiX1us6O6U0gFzAQ@mail.gmail.com>
+ <CACT4Y+bj4epytaY4hhEx5GF+Z2xcMnS4AEg=JcrTEnWvXWFuGQ@mail.gmail.com>
+ <CAHC9VhQLi+1r3BmSeQre+EEtEyvhSmmT-ABLjvzk0J-J9v9URw@mail.gmail.com>
+ <20210827153041.z3jundji5usj3afj@wittgenstein>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <cda5e293-869c-8b7b-5da6-892bf901afc7@schaufler-ca.com>
+Date:   Fri, 27 Aug 2021 08:40:15 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827092532.908506-1-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20210827153041.z3jundji5usj3afj@wittgenstein>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.18924 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 06:25:32PM +0900, Vincent Mailhol wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> > Many places in the kernel want to use a flexible array in a union. This
-> > is especially common when wanting several different typed trailing
-> > flexible arrays. Since GCC and Clang don't (on the surface) allow this,
-> > such structs have traditionally used combinations of zero-element arrays
-> > instead. This is usually in the form:
-> > 
-> > struct thing {
-> > 	...
-> > 	struct type1 foo[0];
-> > 	struct type2 bar[];
-> > };
-> 
-> At first read, I found the description confusing (and even thought
-> that there was a copy/paste issue). The subject and the first sentence
-> is about "flexible arrays in a *union*". Then suddenly, the topic
-> shifts to *structs*.
-> 
-> After reading at the code, it is clear that this work for both:
->   - unions with a flexible array.
->   - structures with different typed trailing flexible arrays.
-> 
-> The subject and the description could be updated to clarify that this
-> macro can be used for both unions and structs.
-> 
-> N.B. this comment only applies to the commit message, the kerneldoc
-> part is clear.
+On 8/27/2021 8:30 AM, Christian Brauner wrote:
+> On Tue, Jul 06, 2021 at 08:50:44AM -0400, Paul Moore wrote:
+>> On Mon, Jul 5, 2021 at 1:52 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>> On Sun, Jul 4, 2021 at 4:14 PM Paul Moore <paul@paul-moore.com> wrote:
+>>>> On Sat, Jul 3, 2021 at 6:16 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>>>>> On 7/2/2021 10:51 PM, Dmitry Vyukov wrote:
+>>>>>> On Sat, Jul 3, 2021 at 7:41 AM syzbot
+>>>>>> <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com> wrote:
+>>>>>>> Hello,
+>>>>>>>
+>>>>>>> syzbot found the following issue on:
+>>>>>>>
+>>>>>>> HEAD commit:    62fb9874 Linux 5.13
+>>>>>>> git tree:       upstream
+>>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=12ffa118300000
+>>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=19404adbea015a58
+>>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
+>>>>>>> compiler:       Debian clang version 11.0.1-2
+>>>>>>>
+>>>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>>>
+>>>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>>>>> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
+>>>>>> +Casey for what looks like a smackfs issue
+>>>>> This is from the new mount infrastructure introduced by
+>>>>> David Howells in November 2018. It makes sense that there
+>>>>> may be a problem in SELinux as well, as the code was introduced
+>>>>> by the same developer at the same time for the same purpose.
+>>>>>
+>>>>>> The crash was triggered by this test case:
+>>>>>>
+>>>>>> 21:55:33 executing program 1:
+>>>>>> r0 = fsopen(&(0x7f0000000040)='ext3\x00', 0x1)
+>>>>>> fsconfig$FSCONFIG_SET_STRING(r0, 0x1, &(0x7f00000002c0)='smackfsroot',
+>>>>>> &(0x7f0000000300)='default_permissions', 0x0)
+>>>>>>
+>>>>>> And I think the issue is in smack_fs_context_parse_param():
+>>>>>> https://elixir.bootlin.com/linux/latest/source/security/smack/smack_lsm.c#L691
+>>>>>>
+>>>>>> But it seems that selinux_fs_context_parse_param() contains the same issue:
+>>>>>> https://elixir.bootlin.com/linux/latest/source/security/selinux/hooks.c#L2919
+>>>>>> +So selinux maintainers as well.
+>>>>>>
+>>>>>>> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+>>>>>>> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+>>>>>>> CPU: 0 PID: 20300 Comm: syz-executor.1 Not tainted 5.13.0-syzkaller #0
+>>>>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>>>>>>> RIP: 0010:memchr+0x2f/0x70 lib/string.c:1054
+>>>>>>> Code: 41 54 53 48 89 d3 41 89 f7 45 31 f6 49 bc 00 00 00 00 00 fc ff df 0f 1f 44 00 00 48 85 db 74 3b 48 89 fd 48 89 f8 48 c1 e8 03 <42> 0f b6 04 20 84 c0 75 0f 48 ff cb 48 8d 7d 01 44 38 7d 00 75 db
+>>>>>>> RSP: 0018:ffffc90001dafd00 EFLAGS: 00010246
+>>>>>>> RAX: 0000000000000000 RBX: 0000000000000013 RCX: dffffc0000000000
+>>>>>>> RDX: 0000000000000013 RSI: 000000000000002c RDI: 0000000000000000
+>>>>>>> RBP: 0000000000000000 R08: ffffffff81e171bf R09: ffffffff81e16f95
+>>>>>>> R10: 0000000000000002 R11: ffff88807e96b880 R12: dffffc0000000000
+>>>>>>> R13: ffff888020894000 R14: 0000000000000000 R15: 000000000000002c
+>>>>>>> FS:  00007fe01ae27700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+>>>>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>>> CR2: 00000000005645a8 CR3: 0000000018afc000 CR4: 00000000001506f0
+>>>>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>>>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>>>>>> Call Trace:
+>>>>>>>  legacy_parse_param+0x461/0x7e0 fs/fs_context.c:537
+>>>>>>>  vfs_parse_fs_param+0x1e5/0x460 fs/fs_context.c:117
+>>>> It's Sunday morning and perhaps my mind is not yet in a "hey, let's
+>>>> look at VFS kernel code!" mindset, but I'm not convinced the problem
+>>>> is the 'param->string = NULL' assignment in the LSM hooks.  In both
+>>>> the case of SELinux and Smack that code ends up returning either a 0
+>>>> (Smack) or a 1 (SELinux) - that's a little odd in it's own way, but I
+>>>> don't believe it is relevant here - either way these return values are
+>>>> not equal to -ENOPARAM so we should end up returning early from
+>>>> vfs_parse_fs_param before it calls down into legacy_parse_param():
+>>>>
+>>>> Taken from https://elixir.bootlin.com/linux/latest/source/fs/fs_context.c#L109 :
+>>>>
+>>>>   ret = security_fs_context_parse_param(fc, param);
+>>>>   if (ret != -ENOPARAM)
+>>>>     /* Param belongs to the LSM or is disallowed by the LSM; so
+>>>>      * don't pass to the FS.
+>>>>      */
+>>>>     return ret;
+>>>>
+>>>>   if (fc->ops->parse_param) {
+>>>>     ret = fc->ops->parse_param(fc, param);
+>>>>     if (ret != -ENOPARAM)
+>>>>       return ret;
+>>>>   }
+>>> Hi Paul,
+>>>
+>>> You are right.
+>>> I almost connected the dots, but not exactly.
+>>> Now that I read more code around, setting "param->string = NULL" in
+>>> smack_fs_context_parse_param() looks correct to me (the fs copies and
+>>> takes ownership of the string).
+>>>
+>>> I don't see how the crash happened...
+>> FWIW, I poked around a bit too and couldn't see anything obvious
+>> either, but I can't pretend to know as much about the VFS layer as the
+>> VFS folks.  Hopefully they might have better luck.
+> I'm not sure that's right.
+> If the smack hook runs first, it will set
+>
+> param->string = NULL
+>
+> now the selinux hook runs. But the selinux param hook doesn't end up in
+> selinux_add_opt() instead it will fail before
+> opt = fs_parse(fc, selinux_fs_parameters, param, &result);
+> which will return -ENOPARAM since it's not a selinux option subsequently
+> causing the crash.
+>
+> Does that sound plausible?
 
-Yeah, I see now how this doesn't read well. I've rewritten this to
-describe the problem better. Thanks! I will send a v3.
+No. You can't (currently) have both Smack and SELinux enabled at
+the same time. If you're invoking both the Smack hook and the SELinux
+hook you're doing somthing way wrong.
 
--Kees
-
-> 
-> > This causes problems with size checks against such zero-element arrays
-> > (for example with -Warray-bounds and -Wzero-length-bounds), so they must
-> > all be converted to "real" flexible arrays, avoiding warnings like this:
-> > 
-> > fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
-> > fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-length-bounds]
-> >   209 |    anode->btree.u.internal[0].down = cpu_to_le32(a);
-> >       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
-> > In file included from fs/hpfs/hpfs_fn.h:26,
-> >                  from fs/hpfs/anode.c:10:
-> > fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
-> >   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
-> >       |                                ^~~~~~~~
-> > 
-> > drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-> > drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
-> >   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
-> >       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
-> >                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-> > drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
-> >   231 |   u8 raw_msg[0];
-> >       |      ^~~~~~~
-> > 
-> > Introduce DECLARE_FLEX_ARRAY() in support of flexible arrays in unions.
-> 
-> ... and structures.
-> 
-> > It is entirely possible to have a flexible array in a union:
-> 
-> It is entirely possible to have one or several flexible arrays in a
-> structure or a union:
-> 
-> > it just has to
-> > be in a struct. And since it cannot be alone in a struct, such a struct
-> > must have at least 1 other named member but that member can be zero sized.
-> > 
-> > As with struct_group(), this is needed in UAPI headers as well, so
-> > implement the core there, with non-UAPI wrapper.
-> > 
-> > Additionally update kernel-doc to understand its existence.
-> > 
-> > https://github.com/KSPP/linux/issues/137
-> > 
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  include/linux/stddef.h      | 13 +++++++++++++
-> >  include/uapi/linux/stddef.h | 16 ++++++++++++++++
-> >  scripts/kernel-doc          |  2 ++
-> >  3 files changed, 31 insertions(+)
-> > 
-> > diff --git a/include/linux/stddef.h b/include/linux/stddef.h
-> > index 8b103a53b000..ca507bd5f808 100644
-> > --- a/include/linux/stddef.h
-> > +++ b/include/linux/stddef.h
-> > @@ -84,4 +84,17 @@ enum {
-> >  #define struct_group_tagged(TAG, NAME, MEMBERS...) \
-> >  	__struct_group(TAG, NAME, /* no attrs */, MEMBERS)
-> >  
-> > +/**
-> > + * DECLARE_FLEX_ARRAY() - Declare a flexible array usable in a union
-> > + *
-> > + * @TYPE: The type of each flexible array element
-> > + * @NAME: The name of the flexible array member
-> > + *
-> > + * In order to have a flexible array member in a union or alone in a
-> > + * struct, it needs to be wrapped in an anonymous struct with at least 1
-> > + * named member, but that member can be empty.
-> > + */
-> > +#define DECLARE_FLEX_ARRAY(TYPE, NAME) \
-> > +	__DECLARE_FLEX_ARRAY(TYPE, NAME)
-> > +
-> >  #endif
-> > diff --git a/include/uapi/linux/stddef.h b/include/uapi/linux/stddef.h
-> > index 610204f7c275..3021ea25a284 100644
-> > --- a/include/uapi/linux/stddef.h
-> > +++ b/include/uapi/linux/stddef.h
-> > @@ -25,3 +25,19 @@
-> >  		struct { MEMBERS } ATTRS; \
-> >  		struct TAG { MEMBERS } ATTRS NAME; \
-> >  	}
-> > +
-> > +/**
-> > + * __DECLARE_FLEX_ARRAY() - Declare a flexible array usable in a union
-> > + *
-> > + * @TYPE: The type of each flexible array element
-> > + * @NAME: The name of the flexible array member
-> > + *
-> > + * In order to have a flexible array member in a union or alone in a
-> > + * struct, it needs to be wrapped in an anonymous struct with at least 1
-> > + * named member, but that member can be empty.
-> > + */
-> > +#define __DECLARE_FLEX_ARRAY(TYPE, NAME)	\
-> > +	struct { \
-> > +		struct { } __empty_ ## NAME; \
-> > +		TYPE NAME[]; \
-> > +	}
-> > diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-> > index d9715efbe0b7..65088b512d14 100755
-> > --- a/scripts/kernel-doc
-> > +++ b/scripts/kernel-doc
-> > @@ -1263,6 +1263,8 @@ sub dump_struct($$) {
-> >  	$members =~ s/DECLARE_KFIFO\s*\($args,\s*$args,\s*$args\)/$2 \*$1/gos;
-> >  	# replace DECLARE_KFIFO_PTR
-> >  	$members =~ s/DECLARE_KFIFO_PTR\s*\($args,\s*$args\)/$2 \*$1/gos;
-> > +	# replace DECLARE_FLEX_ARRAY
-> > +	$members =~ s/(?:__)?DECLARE_FLEX_ARRAY\s*\($args,\s*$args\)/$1 $2\[\]/gos;
-> >  	my $declaration = $members;
-> >  
-> >  	# Split nested struct/union elements as newer ones
-> > -- 
-> > 2.30.2
-> > 
-
--- 
-Kees Cook
+>
+> Christian
