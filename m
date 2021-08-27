@@ -2,136 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF82D3F9B20
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CD83F9B23
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhH0OuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 10:50:12 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:34336 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233779AbhH0OuL (ORCPT
+        id S245333AbhH0Oup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245275AbhH0Ouo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 10:50:11 -0400
-Received: by mail-io1-f70.google.com with SMTP id a9-20020a5ec309000000b005baa3f77016so4151399iok.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:49:22 -0700 (PDT)
+        Fri, 27 Aug 2021 10:50:44 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F46CC061796
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:49:55 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id oa17so4703391pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 07:49:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=14M76fSGlvACgnYuGU3A/x3DEJPAcKiBE8JXzhdP/4U=;
+        b=pLAL3YBvEH241wYB1s4aywKaz7QeJRhSbGv+nktb/1x+GCOg0VVDMExMGUZWmZPsDc
+         NVzspVTDa3lSW0dyJijr23zu+7tSFARHT4kxKiTs7I83HrgoOR9ZjAM+CS/Hri3F1VJJ
+         2cgbzigcjgD1FFxs8iuFU4QSJYpY905pXBKXs7PumwcHwyCCbOr2tLcIMDqqbkJHwm7W
+         OY/wxvG8MYV6F0/ygGfrV94k17Tq04+ngUI3kmNaGgMrAB+BvHmQiIoMrL8UQ47WIDLc
+         HbsUHl+jyqAkK128CP0oKREgIRQL0mf5zrS45lyHYrnz5h3QUE60Siq/ksEiSLoHHDKJ
+         dUxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=zme3oqhaRPqOxyEVa6qXZflTFNypbpRkaNf+HNcb2hI=;
-        b=MnPGUc3VR532V9zx7xaj3yaBpp9/vbSV8Q98EJM3+C6mV7XlEaHMPj6kS/XMiK7+C9
-         gVlUYTuZYNgI4IEM+nAcxfxLJF78anKUbom3pKtGImuofkp0PYPbXec0o/XU8XLonm9t
-         2shKTM0V7Fz+HOgtPwr2ML5z1ds19rdOlzfmnJVLrFpEiE4uZi1ACicemS8gmrJf/KwD
-         m9jjWcI3tEQHJNV6tWed6wdbHk5sBOOpzDRtbdZWDtvwHgK/xrIvPMUzag+/TcIF5pAI
-         FkTdsI8Qw/D7iCSyhCvrtCdzEkk+0qWZZHRLgXGTdCWiz9sBF8oI8u0ftShr4D3ILE1I
-         wZ8A==
-X-Gm-Message-State: AOAM531fdys3LPEibduB8QmdSR8P9/HQ+dcSiYJUAffOvoCERlm9Devd
-        FhypooG3GaOTHCFWIwwQAyHndvMb+q/MrrZ8THc3PNFmYHUg
-X-Google-Smtp-Source: ABdhPJwDmNyWip24oPcN/2tFbu35ZESqlWMsdd6Zas93i+q+XWKUqetn8oM5fnnFzs4RUPPBoeKr/EcJkpt57uG0Gv7ukvDHX1US
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=14M76fSGlvACgnYuGU3A/x3DEJPAcKiBE8JXzhdP/4U=;
+        b=s6MFXXwKqeBXvMc/he9lJvvONP2mMOtfBumnVGu0hrNtMqh/rdWrdM/91PK8zCo441
+         lguhAMahzHhmz7bA4gFyZm6xvKc5YSjtbMSevQlZSgUyJejaAa7RZbcxkr9vaTWyAw9J
+         QJCEpt+S2yjdjKYczpc5DFIB4P++xm5+UhrplR7KqaqpNNo5fGCdp+7JArW8VmNc89Yo
+         PTDhahC1xof6RW/ulNeSHaWeGStYr0jXbQzT9fm/U3++A4wt7JyLcSVQx2nsZCCqmdBg
+         +8M8jVOu6b3PbCWFs7cUyuNSLYMsOc57kZ/daEE+YQmdB/+gOROXQK1LsYxjQlm92chn
+         pLug==
+X-Gm-Message-State: AOAM53266uU1PlHMjAtEazyd9/kJQWKUJioNRlTr1/57oLcEhqAHC73f
+        RFolbNI0OTOqT0l5CgnL9IxJ9Q==
+X-Google-Smtp-Source: ABdhPJwNNMMmz636sWquZ+PrJBprWwR45xsHh4a4A1+VNHMucrkqN70WbnI4m5X0u5NEISGgHsWDDA==
+X-Received: by 2002:a17:90a:1b0d:: with SMTP id q13mr23772297pjq.217.1630075794782;
+        Fri, 27 Aug 2021 07:49:54 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x4sm6940653pff.126.2021.08.27.07.49.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 07:49:54 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 14:49:50 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH 05/15] perf: Track guest callbacks on a per-CPU basis
+Message-ID: <YSj7jq32U8Euf38o@google.com>
+References: <20210827005718.585190-1-seanjc@google.com>
+ <20210827005718.585190-6-seanjc@google.com>
+ <YSiRBQQE7md7ZrNC@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8e4c:: with SMTP id r12mr7808124ioo.73.1630075762565;
- Fri, 27 Aug 2021 07:49:22 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 07:49:22 -0700
-In-Reply-To: <0000000000004e5ec705c6318557@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c8e9e605ca8b962c@google.com>
-Subject: Re: [syzbot] general protection fault in legacy_parse_param
-From:   syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>
-To:     casey@schaufler-ca.com, dhowells@redhat.com, dvyukov@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, paul@paul-moore.com,
-        selinux@vger.kernel.org, stephen.smalley.work@gmail.com,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSiRBQQE7md7ZrNC@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Aug 27, 2021, Peter Zijlstra wrote:
+> On Thu, Aug 26, 2021 at 05:57:08PM -0700, Sean Christopherson wrote:
+> > Use a per-CPU pointer to track perf's guest callbacks so that KVM can set
+> > the callbacks more precisely and avoid a lurking NULL pointer dereference.
+> 
+> I'm completely failing to see how per-cpu helps anything here...
 
-HEAD commit:    77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10636bde300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
-dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d084d300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16216eb1300000
+It doesn't help until KVM is converted to set the per-cpu pointer in flows that
+are protected against preemption, and more specifically when KVM only writes to
+the pointer from the owning CPU.  
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
+> > On x86, KVM supports being built as a module and thus can be unloaded.
+> > And because the shared callbacks are referenced from IRQ/NMI context,
+> > unloading KVM can run concurrently with perf, and thus all of perf's
+> > checks for a NULL perf_guest_cbs are flawed as perf_guest_cbs could be
+> > nullified between the check and dereference.
+> 
+> No longer allowing KVM to be a module would be *AWESOME*. I detest how
+> much we have to export for KVM :/
+> 
+> Still, what stops KVM from doing a coherent unreg? Even the
+> static_call() proposed in the other patch, unreg can do
+> static_call_update() + synchronize_rcu() to ensure everybody sees the
+> updated pointer (would require a quick audit to see all users are with
+> preempt disabled, but I think your using per-cpu here already imposes
+> the same).
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 8435 Comm: syz-executor272 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:memchr+0x2f/0x70 lib/string.c:1054
-Code: 41 54 53 48 89 d3 41 89 f7 45 31 f6 49 bc 00 00 00 00 00 fc ff df 0f 1f 44 00 00 48 85 db 74 3b 48 89 fd 48 89 f8 48 c1 e8 03 <42> 0f b6 04 20 84 c0 75 0f 48 ff cb 48 8d 7d 01 44 38 7d 00 75 db
-RSP: 0018:ffffc9000d9f7d08 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88801c1f3880
-RDX: 0000000000000001 RSI: 000000000000002c RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff81e3db46 R09: ffffffff81e3d8e2
-R10: 0000000000000002 R11: ffff88801c1f3880 R12: dffffc0000000000
-R13: 1ffff92001b3efcc R14: 0000000000000000 R15: 000000000000002c
-FS:  0000000000deb300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000044 CR3: 0000000037173000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- legacy_parse_param+0x49b/0x810 fs/fs_context.c:555
- vfs_parse_fs_param+0x1df/0x460 fs/fs_context.c:146
- vfs_fsconfig_locked fs/fsopen.c:265 [inline]
- __do_sys_fsconfig fs/fsopen.c:439 [inline]
- __se_sys_fsconfig+0xba9/0xff0 fs/fsopen.c:314
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ee69
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc5e9e0b98 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee69
-RDX: 0000000020000080 RSI: 0000000000000001 RDI: 0000000000000003
-RBP: 0000000000402e50 R08: 0000000000000000 R09: 0000000000400488
-R10: 00000000200000c0 R11: 0000000000000246 R12: 0000000000402ee0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-Modules linked in:
----[ end trace 74baf661f3b47b0a ]---
-RIP: 0010:memchr+0x2f/0x70 lib/string.c:1054
-Code: 41 54 53 48 89 d3 41 89 f7 45 31 f6 49 bc 00 00 00 00 00 fc ff df 0f 1f 44 00 00 48 85 db 74 3b 48 89 fd 48 89 f8 48 c1 e8 03 <42> 0f b6 04 20 84 c0 75 0f 48 ff cb 48 8d 7d 01 44 38 7d 00 75 db
-RSP: 0018:ffffc9000d9f7d08 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88801c1f3880
-RDX: 0000000000000001 RSI: 000000000000002c RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff81e3db46 R09: ffffffff81e3d8e2
-R10: 0000000000000002 R11: ffff88801c1f3880 R12: dffffc0000000000
-R13: 1ffff92001b3efcc R14: 0000000000000000 R15: 000000000000002c
-FS:  0000000000deb300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fed5f8146c0 CR3: 0000000037173000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	41 54                	push   %r12
-   2:	53                   	push   %rbx
-   3:	48 89 d3             	mov    %rdx,%rbx
-   6:	41 89 f7             	mov    %esi,%r15d
-   9:	45 31 f6             	xor    %r14d,%r14d
-   c:	49 bc 00 00 00 00 00 	movabs $0xdffffc0000000000,%r12
-  13:	fc ff df
-  16:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-  1b:	48 85 db             	test   %rbx,%rbx
-  1e:	74 3b                	je     0x5b
-  20:	48 89 fd             	mov    %rdi,%rbp
-  23:	48 89 f8             	mov    %rdi,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 0f b6 04 20       	movzbl (%rax,%r12,1),%eax <-- trapping instruction
-  2f:	84 c0                	test   %al,%al
-  31:	75 0f                	jne    0x42
-  33:	48 ff cb             	dec    %rbx
-  36:	48 8d 7d 01          	lea    0x1(%rbp),%rdi
-  3a:	44 38 7d 00          	cmp    %r15b,0x0(%rbp)
-  3e:	75 db                	jne    0x1b
+Ignoring static call for the moment, I don't see how the unreg side can be safe
+using a bare single global pointer.  There is no way for KVM to prevent an NMI
+from running in parallel on a different CPU.  If there's a more elegant solution,
+especially something that can be backported, e.g. an rcu-protected pointer, I'm
+all for it.  I went down the per-cpu path because it allowed for cleanups in KVM,
+but similar cleanups can be done without per-cpu perf callbacks.
 
+As for static calls, I certainly have no objection to employing static calls for
+the callbacks, but IMO we should not be relying on static call for correctness,
+i.e. the existing bug needs to be fixed first.
