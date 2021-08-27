@@ -2,106 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68D53F9A04
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DE83F9A11
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241291AbhH0NYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245129AbhH0NYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:24:37 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C9EC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:23:48 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id k5so14390574lfu.4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 06:23:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vVEdAtwasWkrT0f0vOq5zJOkTWOPwPdpExa1I7BhZtc=;
-        b=lFI32R63zrucrYnkIqq6iE3qq5EeU910b9somn/1eHEmLa7lyPBVXEXSvUVfHZXljx
-         TN6C7dFaRvGcV7OMzmM2Z702UqA21+p6LGiil3JBftn6N+xI5cU3ZZKXnuDMakUW+3aS
-         2JJPsdBHzh/GUX+dBrwrAKurlt2KMRM3E29qSJusmZRW6Gkawk70f92avYnixl5DMoY0
-         iRfhpFxvyjlDDWVaZC/SZpaBr+oTpnlorA3vhS0oFOUOseXOqeLPa/ulN1BaOmExMsz4
-         lKUa8NlGjOIXU4SMK755TODSTf/PrplBh65Z7qev6Iz8YtvnlSlcHUfQ1X8DX7x1gssR
-         KGTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vVEdAtwasWkrT0f0vOq5zJOkTWOPwPdpExa1I7BhZtc=;
-        b=oGPMHK0Y/d12tMNzRSOt7QLeNxr/7mRint/XRQijg3ry6Gexz+NdVzAF39rB9S7zQ5
-         sze0Vgq49784ASoZjDBj78VDMg8/vkTvRWX/XVkbBS7P0pPcLAU6UuLCZAISfJ7vbgsF
-         4lePOoyMLtYbkP9rsJMX2gNkjNAQ84CJijrhSJsuzztle9Yxsq9rD8AaA5b2HW2TJr4H
-         ULeZfIZK1O4h2LHSZLbNTZDA7zKrJXvh2hONVvlmOXY9kLlDJ5lONju1JrmMVZiWQ3Zv
-         LhjDsYlLK/6U3mBC3ipDwRkVopwH5TNQ3PgwyhL9sWGKJg1C6OSvjQuqjE7jeEdsSdQO
-         ymow==
-X-Gm-Message-State: AOAM530G9f9eOmICNXd5SOwzKNvTOMBDvtVS6G8PBtQgj0zr9L6kWIyf
-        8GUtl11RafjM04wNW76VWLPsH+wN4s/CKN7Zb3xeqQ==
-X-Google-Smtp-Source: ABdhPJz8jK79D3e6Kay83LX5n+kuJqijB53HmFK7YA4ArgShByf4lqcNzK3GCZnShdgQPw2M6e8FYqwcpSmFFVEggjE=
-X-Received: by 2002:a19:655e:: with SMTP id c30mr6648013lfj.142.1630070626804;
- Fri, 27 Aug 2021 06:23:46 -0700 (PDT)
+        id S245250AbhH0N1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 09:27:34 -0400
+Received: from ozlabs.org ([203.11.71.1]:49847 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231964AbhH0N1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 09:27:33 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gx0qQ66mqz9s1l;
+        Fri, 27 Aug 2021 23:26:42 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>
+In-Reply-To: <20210816185711.21563-1-nathan@kernel.org>
+References: <20210816185711.21563-1-nathan@kernel.org>
+Subject: Re: [PATCH] powerpc/xive: Do not mark xive_request_ipi() as __init
+Message-Id: <163007069928.56462.2139354750294195638.b4-ty@ellerman.id.au>
+Date:   Fri, 27 Aug 2021 23:24:59 +1000
 MIME-Version: 1.0
-References: <4fb42fa1b76b38c6628f056cfd804bb5b4e74d99.1629818532.git.geert+renesas@glider.be>
-In-Reply-To: <4fb42fa1b76b38c6628f056cfd804bb5b4e74d99.1629818532.git.geert+renesas@glider.be>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 27 Aug 2021 15:23:10 +0200
-Message-ID: <CAPDyKFrwxCH-AEDNnhwmoZ9aHZVzKw-=foo7F0mhMNLTCZxpYQ@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: Fix domain attach for CONFIG_PM_OPP=n
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 at 17:23, Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
-> If CONFIG_PM_OPP=n, of_get_required_opp_performance_state() always
-> returns -EOPNOTSUPP, and all drivers for devices that are part of a PM
-> Domain fail to probe with:
->
->     failed to set required performance state for power-domain foo: -95
->     probe of bar failed with error -95
->
-> Fix this by treating -EOPNOTSUPP the same as -ENODEV.
->
-> Fixes: c016baf7dc58e77a ("PM: domains: Add support for 'required-opps' to set default perf state")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Mon, 16 Aug 2021 11:57:11 -0700, Nathan Chancellor wrote:
+> Compiling ppc64le_defconfig with clang-14 shows a modpost warning:
+> 
+> WARNING: modpost: vmlinux.o(.text+0xa74e0): Section mismatch in
+> reference from the function xive_setup_cpu_ipi() to the function
+> .init.text:xive_request_ipi()
+> The function xive_setup_cpu_ipi() references
+> the function __init xive_request_ipi().
+> This is often because xive_setup_cpu_ipi lacks a __init
+> annotation or the annotation of xive_request_ipi is wrong.
+> 
+> [...]
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Applied to powerpc/fixes.
 
-Kind regards
-Uffe
+[1/1] powerpc/xive: Do not mark xive_request_ipi() as __init
+      https://git.kernel.org/powerpc/c/3f78c90f9eb2e228f44ecc8f4377753f0e11dbab
 
-> ---
->  drivers/base/power/domain.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index a10d740c4f2a1c28..7b197690e6442911 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -2760,7 +2760,7 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->
->         /* Set the default performance state */
->         pstate = of_get_required_opp_performance_state(dev->of_node, index);
-> -       if (pstate < 0 && pstate != -ENODEV) {
-> +       if (pstate < 0 && pstate != -ENODEV && pstate != -EOPNOTSUPP) {
->                 ret = pstate;
->                 goto err;
->         } else if (pstate > 0) {
-> --
-> 2.25.1
->
+cheers
