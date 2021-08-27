@@ -2,143 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052523F9A79
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 15:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BA13F9A8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 16:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245191AbhH0Nvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 09:51:49 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37258 "EHLO mail.skyhub.de"
+        id S241260AbhH0OD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 10:03:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232257AbhH0Nvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 09:51:46 -0400
-Received: from zn.tnic (p200300ec2f1117006e0d6268a9fc7b3e.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:6e0d:6268:a9fc:7b3e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 59FAE1EC0537;
-        Fri, 27 Aug 2021 15:50:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630072252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=MgcfjTqcSY9gu+zATu+viDfC+xRfq+ze2XUVEcy5kJQ=;
-        b=cO0UcApzABFyvPv+e6G4bGRLUXS/CNO2/DFEGytg7MS8u7V43idZQCwPExuB4RZ2dTpRkF
-        ZxrfGsWj2Lzr+LOSyR0G1Fy/jCw1vouDlF4GKT7VnZ9xWps8tPd6rZuQft0qi4nHtT/Sfa
-        fAPo0aIk+YOA4sfiUsRttbNgb58ivFI=
-Date:   Fri, 27 Aug 2021 15:51:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 29/38] x86/boot: add a pointer to Confidential
- Computing blob in bootparams
-Message-ID: <YSjt4YDQR8vDeOdI@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-30-brijesh.singh@amd.com>
+        id S231675AbhH0OD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 10:03:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D25C760F25;
+        Fri, 27 Aug 2021 14:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630072959;
+        bh=9KVL338uZU2WstNlPctg6BYMhKgoDAyusOTsEn/ouuM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CASqYK4WvoeOw7f6syajt3xV0idVa1b4L0oQ4JtnOFWpZqjTSaZmZcx+zbzhe+qB9
+         ixjl3hCW1sWlfD6NbuUgZXHNiy6pnMM/SG//ANdPM1FAI+ij2zCUbsgoMcdhVqLGjL
+         k5BWgJNi7B988nnPscyVug5z4gppxLKvKNgA/PMtj8F+BWll7nu2WuILM6yTfHP9P0
+         H7ZO5kRrUvstQTPNbDlxFc7SYtUcGz6/YiiRGuPXrjotg//y94Bne/NtZ058zAhBna
+         xBOhU/xYrd5sGhFEG695Fez4ULsInXSzQejMBC/CQJwOWPQjQ8B3HvCqZm2cv7Dplq
+         QBpUkFpsQ63ww==
+Date:   Fri, 27 Aug 2021 07:02:38 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     zhaoxiao <zhaoxiao@uniontech.com>
+Cc:     davem@davemloft.net, mcoquelin.stm32@gmail.com,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] stmmac: dwmac-loongson: change the pr_info() to
+ dev_err() in loongson_dwmac_probe()
+Message-ID: <20210827070238.7586fb11@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210827085550.13519-1-zhaoxiao@uniontech.com>
+References: <20210827085550.13519-1-zhaoxiao@uniontech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820151933.22401-30-brijesh.singh@amd.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:19:24AM -0500, Brijesh Singh wrote:
-> From: Michael Roth <michael.roth@amd.com>
+On Fri, 27 Aug 2021 16:55:50 +0800 zhaoxiao wrote:
+> - Change the pr_info/dev_info to dev_err.
+> - Add the dev_err to improve readability.
 > 
-> The previously defined Confidential Computing blob is provided to the
-> kernel via a setup_data structure or EFI config table entry. Currently
-> these are both checked for by boot/compressed kernel to access the
-> CPUID table address within it for use with SEV-SNP CPUID enforcement.
-> 
-> To also enable SEV-SNP CPUID enforcement for the run-time kernel,
-> similar early access to the CPUID table is needed early on while it's
-> still using the identity-mapped page table set up by boot/compressed,
-> where global pointers need to be accessed via fixup_pointer().
-> 
-> This is much of an issue for accessing setup_data, and the EFI config
-> table helper code currently used in boot/compressed *could* be used in
-> this case as well since they both rely on identity-mapping. However, it
-> has some reliance on EFI helpers/string constants that would need to be
-> accessed via fixup_pointer(), and fixing it up while making it
-> shareable between boot/compressed and run-time kernel is fragile and
-> introduces a good bit of uglyness.
-> 
-> Instead, this patch adds a boot_params->cc_blob_address pointer that
-
-Avoid having "This patch" or "This commit" in the commit message. It is
-tautologically useless.
-
-Also, do
-
-$ git grep 'This patch' Documentation/process
-
-for more details.
-
-> boot/compressed can initialize so that the run-time kernel can access
-> the prelocated CC blob that way instead.
-> 
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
 > ---
->  arch/x86/include/asm/bootparam_utils.h | 1 +
->  arch/x86/include/uapi/asm/bootparam.h  | 3 ++-
->  2 files changed, 3 insertions(+), 1 deletion(-)
+>  .../net/ethernet/stmicro/stmmac/dwmac-loongson.c  | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/bootparam_utils.h b/arch/x86/include/asm/bootparam_utils.h
-> index 981fe923a59f..53e9b0620d96 100644
-> --- a/arch/x86/include/asm/bootparam_utils.h
-> +++ b/arch/x86/include/asm/bootparam_utils.h
-> @@ -74,6 +74,7 @@ static void sanitize_boot_params(struct boot_params *boot_params)
->  			BOOT_PARAM_PRESERVE(hdr),
->  			BOOT_PARAM_PRESERVE(e820_table),
->  			BOOT_PARAM_PRESERVE(eddbuf),
-> +			BOOT_PARAM_PRESERVE(cc_blob_address),
->  		};
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
+> index 4c9a37dd0d3f..495c94e7929f 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
+> @@ -54,20 +54,21 @@ static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id
+>  	bool mdio = false;
 >  
->  		memset(&scratch, 0, sizeof(scratch));
-> diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-> index 1ac5acca72ce..bea5cdcdf532 100644
-> --- a/arch/x86/include/uapi/asm/bootparam.h
-> +++ b/arch/x86/include/uapi/asm/bootparam.h
-> @@ -188,7 +188,8 @@ struct boot_params {
->  	__u32 ext_ramdisk_image;			/* 0x0c0 */
->  	__u32 ext_ramdisk_size;				/* 0x0c4 */
->  	__u32 ext_cmd_line_ptr;				/* 0x0c8 */
-> -	__u8  _pad4[116];				/* 0x0cc */
-> +	__u8  _pad4[112];				/* 0x0cc */
-> +	__u32 cc_blob_address;				/* 0x13c */
+>  	np = dev_of_node(&pdev->dev);
+> -
+>  	if (!np) {
+> -		pr_info("dwmac_loongson_pci: No OF node\n");
+> +		dev_err(&pdev->dev, "dwmac_loongson_pci: No OF node\n");
+>  		return -ENODEV;
+>  	}
+>  
+>  	if (!of_device_is_compatible(np, "loongson, pci-gmac")) {
+> -		pr_info("dwmac_loongson_pci: Incompatible OF node\n");
+> +		dev_err(&pdev->dev, "dwmac_loongson_pci: Incompatible OF node\n");
+>  		return -ENODEV;
+>  	}
+>  
+>  	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
+> -	if (!plat)
+> +	if (!plat) {
+> +		dev_err(&pdev->dev, "memory allocation failed\n");
 
-So I know I've heard grub being mentioned in conjunction with this: if
-you are ever going to pass this through the boot loader, then you'd need
-to update Documentation/x86/zero-page.rst too to state that this field
-can be written by the boot loader too.
+Please don't add error messages after allocation failures. OOM will
+produce a lot of kernel messages and a stack trace already.
 
--- 
-Regards/Gruss,
-    Boris.
+>  		return -ENOMEM;
+> +	}
+>  
+>  	if (plat->mdio_node) {
+>  		dev_err(&pdev->dev, "Found MDIO subnode\n");
+> @@ -109,8 +110,10 @@ static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id
+>  		plat->bus_id = pci_dev_id(pdev);
+>  
+>  	phy_mode = device_get_phy_mode(&pdev->dev);
+> -	if (phy_mode < 0)
+> +	if (phy_mode < 0) {
+>  		dev_err(&pdev->dev, "phy_mode not found\n");
+> +		return phy_mode;
 
-https://people.kernel.org/tglx/notes-about-netiquette
+You're adding a return here, it should be a separate patch with its own
+justification.
+
+> +	}
+>  
+>  	plat->phy_interface = phy_mode;
+>  	plat->interface = PHY_INTERFACE_MODE_GMII;
+> @@ -130,7 +133,7 @@ static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id
+>  
+>  	res.wol_irq = of_irq_get_byname(np, "eth_wake_irq");
+>  	if (res.wol_irq < 0) {
+> -		dev_info(&pdev->dev, "IRQ eth_wake_irq not found, using macirq\n");
+> +		dev_err(&pdev->dev, "IRQ eth_wake_irq not found, using macirq\n");
+
+Why upgrade to an error, isn't wol_irq optional?
+
+>  		res.wol_irq = res.irq;
+>  	}
+>  
+
