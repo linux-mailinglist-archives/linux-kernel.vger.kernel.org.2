@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EC33F9DA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B313F9DAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240426AbhH0RSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:18:41 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:41540 "EHLO
+        id S240517AbhH0RSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:18:45 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:17599 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240346AbhH0RSi (ORCPT
+        with ESMTP id S240475AbhH0RSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:18:38 -0400
+        Fri, 27 Aug 2021 13:18:44 -0400
 Received: from pop-os.home ([90.126.253.178])
         by mwinf5d74 with ME
-        id mhHo250013riaq203hHoaS; Fri, 27 Aug 2021 19:17:48 +0200
+        id mhHu250093riaq203hHuaw; Fri, 27 Aug 2021 19:17:54 +0200
 X-ME-Helo: pop-os.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 27 Aug 2021 19:17:48 +0200
+X-ME-Date: Fri, 27 Aug 2021 19:17:54 +0200
 X-ME-IP: 90.126.253.178
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To:     eli.billauer@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH v1 3/4] char: xillybus: Remove usage of remaining deprecated pci_ API
-Date:   Fri, 27 Aug 2021 19:17:47 +0200
-Message-Id: <19d67ac0208a609aef1e28278b3f2477aa714029.1630083668.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH v1 4/4] char: xillybus: Simplify 'xillybus_init_endpoint()'
+Date:   Fri, 27 Aug 2021 19:17:53 +0200
+Message-Id: <ba687c1eff5dc8f21422323f57164d06f25d4169.1630083668.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1630083668.git.christophe.jaillet@wanadoo.fr>
 References: <cover.1630083668.git.christophe.jaillet@wanadoo.fr>
@@ -35,95 +35,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'struct xilly_endpoint' has a 'dev' field which is a 'struct device *' and
-a 'pdev' field which is 'struct pci_dev *'.
-
-Both fields are initialized by 'xillybus_init_endpoint()' and in
-'xillybus_pcie.c', we have:
-	xillybus_init_endpoint(pdev, &pdev->dev, &pci_hw);
-                                 ^       ^
-        xilly_endpoint.pdev = ___|       |___ = xilly_endpoint.dev
-So the modification from pci_ to dma_ function is straightforward.
-
-Update all remaining deprecated pci_ function calls to equivalent
-dma_ API function.
-Switching from 'ep->pdev' to 'ep->dev' makes the transformation
-straightforward.
+Ths first argument of 'xillybus_init_endpoint()' is now useless.
+Remove it.
 
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/char/xillybus/xillybus.h      |  1 -
- drivers/char/xillybus/xillybus_core.c |  2 +-
- drivers/char/xillybus/xillybus_pcie.c | 16 ++++++----------
- 3 files changed, 7 insertions(+), 12 deletions(-)
+ drivers/char/xillybus/xillybus.h      | 3 +--
+ drivers/char/xillybus/xillybus_core.c | 4 +---
+ drivers/char/xillybus/xillybus_of.c   | 2 +-
+ drivers/char/xillybus/xillybus_pcie.c | 2 +-
+ 4 files changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/char/xillybus/xillybus.h b/drivers/char/xillybus/xillybus.h
-index 7c71bdef7ccb..55d47cb13a7b 100644
+index 55d47cb13a7b..afce5bb4d127 100644
 --- a/drivers/char/xillybus/xillybus.h
 +++ b/drivers/char/xillybus/xillybus.h
-@@ -87,7 +87,6 @@ struct xilly_channel {
- };
+@@ -134,8 +134,7 @@ struct xilly_mapping {
  
- struct xilly_endpoint {
--	struct pci_dev *pdev;
- 	struct device *dev;
- 	struct xilly_endpoint_hardware *ephw;
+ irqreturn_t xillybus_isr(int irq, void *data);
+ 
+-struct xilly_endpoint *xillybus_init_endpoint(struct pci_dev *pdev,
+-					      struct device *dev,
++struct xilly_endpoint *xillybus_init_endpoint(struct device *dev,
+ 					      struct xilly_endpoint_hardware
+ 					      *ephw);
  
 diff --git a/drivers/char/xillybus/xillybus_core.c b/drivers/char/xillybus/xillybus_core.c
-index 931d0bf4cec6..0ced9ec6977f 100644
+index 0ced9ec6977f..02f30140c2d5 100644
 --- a/drivers/char/xillybus/xillybus_core.c
 +++ b/drivers/char/xillybus/xillybus_core.c
-@@ -1783,7 +1783,7 @@ struct xilly_endpoint *xillybus_init_endpoint(struct pci_dev *pdev,
+@@ -1772,8 +1772,7 @@ static const struct file_operations xillybus_fops = {
+ 	.poll       = xillybus_poll,
+ };
+ 
+-struct xilly_endpoint *xillybus_init_endpoint(struct pci_dev *pdev,
+-					      struct device *dev,
++struct xilly_endpoint *xillybus_init_endpoint(struct device *dev,
+ 					      struct xilly_endpoint_hardware
+ 					      *ephw)
+ {
+@@ -1783,7 +1782,6 @@ struct xilly_endpoint *xillybus_init_endpoint(struct pci_dev *pdev,
  	if (!endpoint)
  		return NULL;
  
--	endpoint->pdev = pdev;
-+	(void)pdev;	// silence a compiler warning, will be removed
+-	(void)pdev;	// silence a compiler warning, will be removed
  	endpoint->dev = dev;
  	endpoint->ephw = ephw;
  	endpoint->msg_counter = 0x0b;
+diff --git a/drivers/char/xillybus/xillybus_of.c b/drivers/char/xillybus/xillybus_of.c
+index 1a20b286fd1d..4e6e0c19d8c8 100644
+--- a/drivers/char/xillybus/xillybus_of.c
++++ b/drivers/char/xillybus/xillybus_of.c
+@@ -120,7 +120,7 @@ static int xilly_drv_probe(struct platform_device *op)
+ 	if (of_property_read_bool(dev->of_node, "dma-coherent"))
+ 		ephw = &of_hw_coherent;
+ 
+-	endpoint = xillybus_init_endpoint(NULL, dev, ephw);
++	endpoint = xillybus_init_endpoint(dev, ephw);
+ 
+ 	if (!endpoint)
+ 		return -ENOMEM;
 diff --git a/drivers/char/xillybus/xillybus_pcie.c b/drivers/char/xillybus/xillybus_pcie.c
-index 8360427e4226..f4be61349ca6 100644
+index f4be61349ca6..a6ef4ce90649 100644
 --- a/drivers/char/xillybus/xillybus_pcie.c
 +++ b/drivers/char/xillybus/xillybus_pcie.c
-@@ -48,10 +48,8 @@ static void xilly_dma_sync_single_for_cpu_pci(struct xilly_endpoint *ep,
- 					      size_t size,
- 					      int direction)
- {
--	pci_dma_sync_single_for_cpu(ep->pdev,
--				    dma_handle,
--				    size,
--				    xilly_pci_direction(direction));
-+	dma_sync_single_for_cpu(ep->dev, dma_handle, size,
-+				xilly_pci_direction(direction));
- }
+@@ -124,7 +124,7 @@ static int xilly_probe(struct pci_dev *pdev,
+ 	struct xilly_endpoint *endpoint;
+ 	int rc;
  
- static void xilly_dma_sync_single_for_device_pci(struct xilly_endpoint *ep,
-@@ -59,10 +57,8 @@ static void xilly_dma_sync_single_for_device_pci(struct xilly_endpoint *ep,
- 						 size_t size,
- 						 int direction)
- {
--	pci_dma_sync_single_for_device(ep->pdev,
--				       dma_handle,
--				       size,
--				       xilly_pci_direction(direction));
-+	dma_sync_single_for_device(ep->dev, dma_handle, size,
-+				   xilly_pci_direction(direction));
- }
+-	endpoint = xillybus_init_endpoint(pdev, &pdev->dev, &pci_hw);
++	endpoint = xillybus_init_endpoint(&pdev->dev, &pci_hw);
  
- static void xilly_pci_unmap(void *ptr)
-@@ -98,9 +94,9 @@ static int xilly_map_single_pci(struct xilly_endpoint *ep,
- 
- 	pci_direction = xilly_pci_direction(direction);
- 
--	addr = pci_map_single(ep->pdev, ptr, size, pci_direction);
-+	addr = dma_map_single(ep->dev, ptr, size, pci_direction);
- 
--	if (pci_dma_mapping_error(ep->pdev, addr)) {
-+	if (dma_mapping_error(ep->dev, addr)) {
- 		kfree(this);
- 		return -ENODEV;
- 	}
+ 	if (!endpoint)
+ 		return -ENOMEM;
 -- 
 2.30.2
 
