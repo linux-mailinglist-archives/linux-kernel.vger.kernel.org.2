@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850503F9293
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D698D3F9299
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244089AbhH0DBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244066AbhH0DBM (ORCPT
+        id S244102AbhH0DCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:02:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45390 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244101AbhH0DCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:01:12 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB747C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:00:24 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 17so4826078pgp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=u9fsl2J395rtxjWdS/JQdfMymBJF011HJL/BAVf+vaQ=;
-        b=wt0+lXQptAtx71d1AaFamencx3yC54vtU0e2RDU3G//q+cU4UTJmPk5Ze8jOIdOj2O
-         Zar5QDY8yJsXtclYlOBeEcPY84jYRevBwIT7HMLg8RWQ/hK5rAsV/dT5LO35FwFjkFeH
-         WztLnYCOTaE/v4IREh3XmSslexYz4jd4LvDJHgyKW8HdfNxG5SP2eyAvllc87DCZa+Dt
-         DQT+yBa76HSX8PzAgAWNnZ7G92gaJhEkPuIS0BTdfZOBDdTe2pZSA5dFawWtGu/hCKzH
-         CnUnKUw/bErS08W0ZQtW6wx1PGl2nHm2kYfHHRH97qKe6S4RhZFACgKZaHZ3VnZovE3m
-         tgBA==
+        Thu, 26 Aug 2021 23:02:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630033295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K4jOE7EOyJEUtyvbzwon/FpGiE9ELVYRNObVBK/Xg7Q=;
+        b=I4Krasr7KLrpSkNAg5+wq0d12gkVocEvCi8tf7hTdukjeAEkUAfqn5kxGTkqOXW5nNLYdk
+        msSqeFPon0VCAeMg2ZDyiapytq6S/fi3BlQwXBRlWx88tkcNHbscTjD2Asyjsw3GDeUVRY
+        7NrOJNh0cw0jPjgPuCkYInW2FkoD0SY=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-313-CBOKFDk1PE-Zw1uy9scu4A-1; Thu, 26 Aug 2021 23:01:33 -0400
+X-MC-Unique: CBOKFDk1PE-Zw1uy9scu4A-1
+Received: by mail-qv1-f71.google.com with SMTP id j11-20020a0cf9cb000000b00375f0642d2dso183194qvo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:01:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=u9fsl2J395rtxjWdS/JQdfMymBJF011HJL/BAVf+vaQ=;
-        b=BXZOtMyqnR07AL2bN5RneKf6EtVqcPfy3p/5M1gVBY2KSFivjlG8J8Z7gRPgXgKL+9
-         1pS16yQY2rW57H7d36T0Ot3fTbqIHtHhQ83r6JZfsqymeDomhIXyH0LKmJonV2uBamoF
-         qrlx60L18AcMz0v+G43CnynZtJX8W4RViWo0Sq2GrSgJjjDaXJ/rpiD09EPC8lbCKrdT
-         zeIdd22WYzydAuCIXrE9jEj9Nbe77WvyBt71Hd6jy4ZhAHC8oncwdTUkp4exIO85F42K
-         PU3HFFQCVrWsBeS9n50pJ9RSZ6mTR8wMXhhGMM0cGpC1S322tpuLG0e8yF6Jq8OfMg6K
-         1K1Q==
-X-Gm-Message-State: AOAM5328RUMWK3CIZ0WOFQqJ53QDimVeBefsf1wFun5FhBN1Mhku8ss9
-        yc+UrKCF+4xsKVxthhCSOocZEQ==
-X-Google-Smtp-Source: ABdhPJyTZ9R0K9u4nnfdiatOPsG1Zri2/nz3ZfsEfYSuGeWo5aSKVaFN589cINxjxmSCFfIlqLPt4A==
-X-Received: by 2002:aa7:90cd:0:b029:333:baa9:87b7 with SMTP id k13-20020aa790cd0000b0290333baa987b7mr6680196pfk.23.1630033224126;
-        Thu, 26 Aug 2021 20:00:24 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id x2sm9980708pjq.35.2021.08.26.20.00.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 20:00:23 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 08:30:19 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v9 1/8] opp: Add dev_pm_opp_from_clk_rate()
-Message-ID: <20210827030019.blhfh5wp7iyf53a2@vireshk-i7>
-References: <20210827013415.24027-1-digetx@gmail.com>
- <20210827013415.24027-2-digetx@gmail.com>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=K4jOE7EOyJEUtyvbzwon/FpGiE9ELVYRNObVBK/Xg7Q=;
+        b=Dtl60/E09nWIQYPv0pYNjLw0AVIC6CSmJRxTw0Q1WChDEKbDLHqki/4CT3ECysi/sL
+         2DJOuT/a9ATVexonY8nN2kDFXMsGK3xw9tO+OwIISaefSk60DLlEuNI/QRshgqog07Ew
+         iQUHZQk1GJj87EcU9UfZTdWyyw046f58XDJAj9fEzdKTEYjpFI9Evp1lDKNZobvef3EQ
+         l8TpP9YEsHLTTO1aeI1fpCuhCrlJbsDz9dGAeaBdBRpEkKDN4i6R5QuuX5iLv2nBrsxK
+         /PRsweR28SIpFITIVocApEH71wgs0gV9ozIEwcgSvLD7BFUlwRPW7DQ19CScdGmcM9i8
+         6kmg==
+X-Gm-Message-State: AOAM5334UkDtVg+CyDMSpsxKBCbGwdzXZw6iX5D5y9tM5xv50z+NQc7t
+        7vpnCOMcACA+IBB1B1du5xpMPmpSr0EP6lK7riStPTwFxzbd8SXfvHCBtc1eiXPwU8t2uS3gatV
+        GR92ZafM1Q3EPHmd1sQBWN82r
+X-Received: by 2002:a05:620a:2492:: with SMTP id i18mr7242235qkn.57.1630033293055;
+        Thu, 26 Aug 2021 20:01:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwH38hLETGQM+sg7xDFhHxk8Ho4XlE30avAUmXfRuimCPma+GJB5ntZuUwdTw7Cewi7vQSA0g==
+X-Received: by 2002:a05:620a:2492:: with SMTP id i18mr7242217qkn.57.1630033292764;
+        Thu, 26 Aug 2021 20:01:32 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id v128sm4003899qkh.27.2021.08.26.20.01.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Aug 2021 20:01:32 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210825213750.6933-1-longman@redhat.com>
+ <20210825213750.6933-6-longman@redhat.com> <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
+Message-ID: <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
+Date:   Thu, 26 Aug 2021 23:01:30 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827013415.24027-2-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-08-21, 04:34, Dmitry Osipenko wrote:
-> +/**
-> + * dev_pm_opp_from_clk_rate() - Get OPP from current clock rate
-> + * @dev:	device for which we do this operation
-> + *
-> + * Get OPP which corresponds to the current clock rate of a device.
-> + *
-> + * Return: pointer to 'struct dev_pm_opp' on success and errorno otherwise.
-> + */
-> +struct dev_pm_opp *dev_pm_opp_from_clk_rate(struct device *dev)
+On 8/26/21 1:35 PM, Tejun Heo wrote:
+> Hello, Waiman.
+>
+> Let's stop iterating on the patchset until we reach a consensus.
+>
+> On Wed, Aug 25, 2021 at 05:37:49PM -0400, Waiman Long wrote:
+>>   	1) The "cpuset.cpus" is not empty and the list of CPUs are
+>>   	   exclusive, i.e. they are not shared by any of its siblings.
+> Part of it can be reached by cpus going offline.
+>
+>>   	2) The parent cgroup is a partition root.
+> This condition can happen if a parent stop being a partition.
+>
+>> -	3) The "cpuset.cpus" is also a proper subset of the parent's
+>> +	3) The "cpuset.cpus" is a subset of the parent's
+>>   	   "cpuset.cpus.effective".
+> This can happen if cpus go offline.
+>
+>>   	4) There is no child cgroups with cpuset enabled.  This is for
+>>   	   eliminating corner cases that have to be handled if such a
+>>   	   condition is allowed.
+> This may make sense as a short cut for us but doesn't really stem from
+> interface or behavior requirements.
+>
+> Of the four conditions listed, two are bogus (the states can be
+> reached through a different path and the configuration success or
+> failure can be timing dependent if configuration racaes against cpu
+> hotplug operations) and one maybe makes sense half-way and one is more
+> of a shortcut.
+>
+> Can't we just replace these with transitions to invalid state with
+> proper explanation? That'd get rid of the error handling duplications
+> from both the kernel and user side, make automated configurations
+> which may race against hot plug operations reliable, and consistently
+> provide users with why something failed.
 
-I will rather call it dev_pm_opp_get_current(), and do the magic to find the
-current OPP here as well. No need to reinvent the wheel.
+What I am doing here is setting a high bar for transitioning from member 
+to either "root" or "isolated". Once it becomes a partition, there are 
+multiple ways that can make it invalid. I am fine with that. However, I 
+am not sure it is a good idea to allow users to echo "root" to 
+cpuset.cpus.partition anywhere in the cgroup hierarchy and require them 
+to read it back to see if it succeed.
 
--- 
-viresh
+All the checking are done with cpuset_rwsem held. So there shouldn't be 
+any racing. Of course, a hotplug can immediately follow and make the 
+partition invalid.
+
+Cheers,
+Longman
+
