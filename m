@@ -2,162 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C763F9324
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F893F9328
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244201AbhH0Dsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
+        id S244228AbhH0DtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232285AbhH0Dsh (ORCPT
+        with ESMTP id S244215AbhH0DtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:48:37 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCE5C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:47:49 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id m17so3109175plc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:47:49 -0700 (PDT)
+        Thu, 26 Aug 2021 23:49:00 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8453C0613C1;
+        Thu, 26 Aug 2021 20:48:12 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id q3so3109479plx.4;
+        Thu, 26 Aug 2021 20:48:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=3iDBnZHVbEreWWuomxF6GQM4vK4iHAWwR63HQF/eKNk=;
-        b=Ztu+t6Jzw25jWNOhI/V3DOe8lvDY109i896qfsl54W3uGIWvCVdH53Euxq2HM6Tuk/
-         Y+jdZbhhGlJm37zPL7iY+cEg2VI0KDz+0/a2D3gmDi7ywcCTU5bn7vdlWxHMo6YtQY1t
-         rA5/Fmx3IUYQhpMhgYOQnrb070ajKlIE3vnRw=
+        bh=JqqSaS+xFujsg063LbIZ6FBQCRzCA3jZ3HiQj8yEsME=;
+        b=AgugwqMn5os6t3tUSyTcSvTf2l8zIzffj+S3/N8V1kjd2adSs0Coe2rmeeEB+NUGq5
+         +Nax/9LNA/4+rDZHly/8IJWb+lqcC4MLTTZMFL2DugCmdfuaQKd2nYrbJjAZL4cAEJH4
+         xxYDS5c3VFVWpFnxtm+vZl+rIvYg4GIT3vWRZDTHtnaDkVnjs2W16k9kRChz2woZoM7C
+         lDJxq2/YqCjBbjaC8nE8FFHAZ1Loy38POo1E1I6O1w7I67Ogoa++sqcNhXhU9sEX7D/P
+         lHJYzNwZBmA/1ouche3oqhgEnOlUW9cgStv9qXgDCdfCQy18tgGdsiSLn3xXMtjsUJrz
+         kmLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=3iDBnZHVbEreWWuomxF6GQM4vK4iHAWwR63HQF/eKNk=;
-        b=cAfdXonvfg9wnb8DYEPsmzbXBS6yCgIOsh4EkvdSmMcBnf08LyrtcndCwsGeGTAJHS
-         tpXQkIClH+y3wQHsgTMynEQNW49J6fClqt2lemg9mtBUdEYOuVOpUgA2Wi/LYWuzpyoM
-         k9/UeQh11lDIHyYEiq0xxKNoWlVlrDRLZmNqxeV+aFMMJHLyTiAdwlabzbFPljk/Zh+2
-         gv3u9qThh2wt7hwhLqwaVw1uV1ZFQtfLa72JPx/lRFXUqx0BIE9W7BW/FV8au6Z2a9Z7
-         xgQNS7Ot18SX9Xom22U83sbrKvT/ok5xpzXkKhU3qJb2THiF8ARsZ5LVGYC9qPo4dJeF
-         gU2Q==
-X-Gm-Message-State: AOAM532583jznbJT/fAXLkeFDMpQF2rbZ1d9vQ7BGJ2V7MjqpjvIWA6I
-        hu0h6f0ZQ6l62y5+k1CeBMs6AA==
-X-Google-Smtp-Source: ABdhPJykH/tLG4lI0FS4eGLtIMm9iMYAanogiPcMmvjyOaUZyMJ4OMAQ8QXUlc6fL8kMiQwyB3W27A==
-X-Received: by 2002:a17:90b:3547:: with SMTP id lt7mr8117562pjb.23.1630036068938;
-        Thu, 26 Aug 2021 20:47:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c17sm10338947pjq.16.2021.08.26.20.47.48
+        bh=JqqSaS+xFujsg063LbIZ6FBQCRzCA3jZ3HiQj8yEsME=;
+        b=KIC40b3qsFFNtyixa1KOQCrgYi/PMPbjjCYE122FR/zQuCvzuYo/M3OnrNar8w9IFj
+         g0xbXGsnMtO7ozM1oGHZH2aC9e24/d38ud8wCr3Pnuhdxa59LUL9ooI5Do7czqHVmzo2
+         jLhGp6tBPZcbtzUTCaJaY2LG5rYq2oQSBraoZkTIQawQTlykwTRYMG/ByaxapvsdGzki
+         AKRHl1jckVR4BFWZCW94v3HMr4p4tclEtey983k88IkUXwaAzKh8+eD4b8eoHxnDE8yL
+         n/TCq6F1Pzf+AhPiDUfieCMs+IGW88JJWpLxOjqdYVChuXCAV2f0slygjupRVz3bgKE9
+         f7GQ==
+X-Gm-Message-State: AOAM5321RgDfL+6OtH4KeVEWvf50gMNxgbSdFVUWS2IThqQiYaT66TGo
+        rPT3umV3oQC3j6UwBNB9DWs=
+X-Google-Smtp-Source: ABdhPJxNo38rlYLjA8U+ThfxFyw8VE6JDAO6SORGaGgH34iHp7uxCutHV+aYWuq2bXb6OENxHHVuVA==
+X-Received: by 2002:a17:90b:3e81:: with SMTP id rj1mr8246555pjb.99.1630036092191;
+        Thu, 26 Aug 2021 20:48:12 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id o6sm4364693pjk.4.2021.08.26.20.48.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 20:47:48 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] cgroup: Avoid compiler warnings with no subsystems
-Date:   Thu, 26 Aug 2021 20:47:41 -0700
-Message-Id: <20210827034741.2214318-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 26 Aug 2021 20:48:11 -0700 (PDT)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Subject: [PATCH v16 00/14] Introduce the Counter character device interface
+Date:   Fri, 27 Aug 2021 12:47:44 +0900
+Message-Id: <cover.1630031207.git.vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3707; h=from:subject; bh=W8mrDHl6epGwfALLfDZy6bZIPBPKmiqLtY/kJ0d40/A=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhKGBc5sJcW17N6yaoeIVynlA7aGik+aP71/c/fDv0 xr4JJdGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYShgXAAKCRCJcvTf3G3AJrc+D/ 9GISUvm+dHrhuWYcVAsCuC9AzNUkDwO8OJTJXICqteYG3BwwSvrG3Mh4Z9uc6qsgDjjyJk41wjZHAM 7yf4zprKt89GB47h9ijavum+/hDi5gXsuRJgWrJpRhsOm2HvDG3vMztKCWf8gVyLaVpWb8T4sb4YAI 3hdHs9DA8SHKzfmIGXlJ+YXSXFuMccQrZBRtP0yDG3wF8u7jsgy/nsq8CwI4h1RSARnn2EcH5gQEgB hgeseVGuNtSLugNVQAZlGiunuknJoR9lv1fptLJI3czdxeXU4ossMUZeuEere6n2Q+l2cp0bAfAjDV yKJavzHz6UGE4t7EplPrTou/M9hLuYzZD4ng9HaAX3TiyOmHNgDarS1swdUBS8YLw/vZlj7tq45nXZ RQBwcaqf2Cl3HBY0V9LMB8uEbGUtbMsZf7kjGEMENK8CiFkFxMEl8QRp6k301INBscWxuyR9Kyp40F NXRLzFsRtWOdBipI/Yqhi1yTvFekX6w3DVtGPa7vP7RXhN4Efr9252LkeSPEJZMiBvXsMmYagotiqq lef/jTeqjkmpYx/AHoVlVbxJl8Y06orD0C1FrGQ11qwudw0P/SaK9PY4FBkzxGD98mncCP9clL/R0Q ia9506zycqIh505uQfuYU2VWXdIasbNiJ6aHy4dqOUdaPPu4HT0JoXIFXp7w==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As done before in commit cb4a31675270 ("cgroup: use bitmask to filter
-for_each_subsys"), avoid compiler warnings for the pathological case of
-having no subsystems (i.e. CGROUP_SUBSYS_COUNT == 0). This condition is
-hit for the arm multi_v7_defconfig config under -Wzero-length-bounds:
+Changes in v16:
+ - Define magic numbers for stm32-lptimer-cnt clock polarities
+ - Define magic numbers for stm32-timer-cnt encoder modes
+ - Bump KernelVersion to 5.16 in sysfs-bus-counter ABI documentation
+ - Fix typos in driver API generic-counter.rst documentation file
 
-In file included from ./arch/arm/include/generated/asm/rwonce.h:1,
-                 from include/linux/compiler.h:264,
-                 from include/uapi/linux/swab.h:6,
-                 from include/linux/swab.h:5,
-                 from arch/arm/include/asm/opcodes.h:86,
-                 from arch/arm/include/asm/bug.h:7,
-                 from include/linux/bug.h:5,
-                 from include/linux/thread_info.h:13,
-                 from include/asm-generic/current.h:5,
-                 from ./arch/arm/include/generated/asm/current.h:1,
-                 from include/linux/sched.h:12,
-                 from include/linux/cgroup.h:12,
-                 from kernel/cgroup/cgroup-internal.h:5,
-                 from kernel/cgroup/cgroup.c:31:
-kernel/cgroup/cgroup.c: In function 'of_css':
-kernel/cgroup/cgroup.c:651:42: warning: array subscript '<unknown>' is outside the bounds of an
-interior zero-length array 'struct cgroup_subsys_state *[0]' [-Wzero-length-bounds]
-  651 |   return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
+For convenience, this patchset is also available on my personal git
+repo: https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v16
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: cgroups@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- kernel/cgroup/cgroup.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+The patches preceding "counter: Internalize sysfs interface code" are
+primarily cleanup and fixes that can be picked up and applied now to the
+IIO tree if so desired. The "counter: Internalize sysfs interface code"
+patch as well may be considered for pickup because it is relatively safe
+and makes no changes to the userspace interface.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index d0725c1a8db5..d23100878002 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -472,7 +472,7 @@ static u16 cgroup_ss_mask(struct cgroup *cgrp)
- static struct cgroup_subsys_state *cgroup_css(struct cgroup *cgrp,
- 					      struct cgroup_subsys *ss)
- {
--	if (ss)
-+	if (CGROUP_SUBSYS_COUNT && ss)
- 		return rcu_dereference_check(cgrp->subsys[ss->id],
- 					lockdep_is_held(&cgroup_mutex));
- 	else
-@@ -550,6 +550,9 @@ struct cgroup_subsys_state *cgroup_e_css(struct cgroup *cgrp,
- {
- 	struct cgroup_subsys_state *css;
- 
-+	if (!CGROUP_SUBSYS_COUNT)
-+		return NULL;
-+
- 	do {
- 		css = cgroup_css(cgrp, ss);
- 
-@@ -577,6 +580,9 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
- {
- 	struct cgroup_subsys_state *css;
- 
-+	if (!CGROUP_SUBSYS_COUNT)
-+		return NULL;
-+
- 	rcu_read_lock();
- 
- 	do {
-@@ -647,7 +653,7 @@ struct cgroup_subsys_state *of_css(struct kernfs_open_file *of)
- 	 * the matching css from the cgroup's subsys table is guaranteed to
- 	 * be and stay valid until the enclosing operation is complete.
- 	 */
--	if (cft->ss)
-+	if (CGROUP_SUBSYS_COUNT && cft->ss)
- 		return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
- 	else
- 		return &cgrp->self;
-@@ -2372,7 +2378,7 @@ struct task_struct *cgroup_taskset_next(struct cgroup_taskset *tset,
- 	struct css_set *cset = tset->cur_cset;
- 	struct task_struct *task = tset->cur_task;
- 
--	while (&cset->mg_node != tset->csets) {
-+	while (CGROUP_SUBSYS_COUNT && &cset->mg_node != tset->csets) {
- 		if (!task)
- 			task = list_first_entry(&cset->mg_tasks,
- 						struct task_struct, cg_list);
-@@ -4643,7 +4649,7 @@ void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
- 	it->ss = css->ss;
- 	it->flags = flags;
- 
--	if (it->ss)
-+	if (CGROUP_SUBSYS_COUNT && it->ss)
- 		it->cset_pos = &css->cgroup->e_csets[css->ss->id];
- 	else
- 		it->cset_pos = &css->cgroup->cset_links;
+To summarize the main points of this patchset: there are no changes to
+the existing Counter sysfs userspace interface; a Counter character
+device interface is introduced that allows Counter events and associated
+data to be read() by userspace; the events_configure() and
+watch_validate() driver callbacks are introduced to support Counter
+events; and IRQ support is added to the 104-QUAD-8 driver, serving as an
+example of how to support the new Counter events functionality.
+
+William Breathitt Gray (14):
+  counter: stm32-lptimer-cnt: Provide defines for clock polarities
+  counter: stm32-timer-cnt: Provide defines for slave mode selection
+  counter: Internalize sysfs interface code
+  counter: Update counter.h comments to reflect sysfs internalization
+  docs: counter: Update to reflect sysfs internalization
+  counter: Move counter enums to uapi header
+  counter: Add character device interface
+  docs: counter: Document character device interface
+  tools/counter: Create Counter tools
+  counter: Implement signalZ_action_component_id sysfs attribute
+  counter: Implement *_component_id sysfs attributes
+  counter: Implement events_queue_size sysfs attribute
+  counter: 104-quad-8: Replace mutex with spinlock
+  counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
+
+ Documentation/ABI/testing/sysfs-bus-counter   |   38 +-
+ Documentation/driver-api/generic-counter.rst  |  358 +++-
+ .../userspace-api/ioctl/ioctl-number.rst      |    1 +
+ MAINTAINERS                                   |    3 +-
+ drivers/counter/104-quad-8.c                  |  699 ++++----
+ drivers/counter/Kconfig                       |    6 +-
+ drivers/counter/Makefile                      |    1 +
+ drivers/counter/counter-chrdev.c              |  553 ++++++
+ drivers/counter/counter-chrdev.h              |   14 +
+ drivers/counter/counter-core.c                |  191 +++
+ drivers/counter/counter-sysfs.c               |  960 +++++++++++
+ drivers/counter/counter-sysfs.h               |   13 +
+ drivers/counter/counter.c                     | 1496 -----------------
+ drivers/counter/ftm-quaddec.c                 |   60 +-
+ drivers/counter/intel-qep.c                   |  144 +-
+ drivers/counter/interrupt-cnt.c               |   62 +-
+ drivers/counter/microchip-tcb-capture.c       |   91 +-
+ drivers/counter/stm32-lptimer-cnt.c           |  212 ++-
+ drivers/counter/stm32-timer-cnt.c             |  195 +--
+ drivers/counter/ti-eqep.c                     |  180 +-
+ include/linux/counter.h                       |  715 ++++----
+ include/linux/counter_enum.h                  |   45 -
+ include/linux/mfd/stm32-lptimer.h             |    5 +
+ include/linux/mfd/stm32-timers.h              |    4 +
+ include/uapi/linux/counter.h                  |  154 ++
+ tools/Makefile                                |   13 +-
+ tools/counter/Build                           |    1 +
+ tools/counter/Makefile                        |   53 +
+ tools/counter/counter_example.c               |   93 +
+ 29 files changed, 3569 insertions(+), 2791 deletions(-)
+ create mode 100644 drivers/counter/counter-chrdev.c
+ create mode 100644 drivers/counter/counter-chrdev.h
+ create mode 100644 drivers/counter/counter-core.c
+ create mode 100644 drivers/counter/counter-sysfs.c
+ create mode 100644 drivers/counter/counter-sysfs.h
+ delete mode 100644 drivers/counter/counter.c
+ delete mode 100644 include/linux/counter_enum.h
+ create mode 100644 include/uapi/linux/counter.h
+ create mode 100644 tools/counter/Build
+ create mode 100644 tools/counter/Makefile
+ create mode 100644 tools/counter/counter_example.c
+
+
+base-commit: 5ffeb17c0d3dd44704b4aee83e297ec07666e4d6
 -- 
-2.30.2
+2.32.0
 
