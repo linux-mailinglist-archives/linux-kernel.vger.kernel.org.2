@@ -2,109 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBC93F9369
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 06:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BA83F936B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 06:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbhH0EJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 00:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S233822AbhH0EKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 00:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234291AbhH0EJJ (ORCPT
+        with ESMTP id S229807AbhH0EKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 00:09:09 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479B3C061757;
-        Thu, 26 Aug 2021 21:08:21 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id c12so9112210ljr.5;
-        Thu, 26 Aug 2021 21:08:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V1I4L+WuQcg7nWDY9KXq21TZu2GnKesC/k47Saxr6QE=;
-        b=fvxGy3KeiW5F1WxZjJBhdz8dmeqbJ+TxHhoj24arnoPWM1erBG4dUf/34j3vnKxEya
-         KbylsG3L/RjG5QPagD5JWYMwIZgORVLRcYFPapM3f95IW3i3kpDuwO9ea9q0sgdTHDWn
-         QB0nDotBPb9jehl0SgNToLoTc6H4NWwaTI/IwviUuW1PlfNFQpan7rD+6aZuxKIDRvni
-         esAAfvnR8hhFk+sKXr/ZsND2q7V9bMmXCZLjjBS+/vUhbdn6Xh856zqmVR9Ui5XmYWDl
-         EBSneHXzzHbCQH+fC2s7uB3KPRbpBLhHJkDGNgQXvJ03UlFASH34RFeoN3Nxuna8rxbt
-         BEww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V1I4L+WuQcg7nWDY9KXq21TZu2GnKesC/k47Saxr6QE=;
-        b=dx9fsxrAzxz9p0aRvnRdX7nH7EufpnPypIacXUNp8DjIOX/8cT/Y3Zj3KGKXv9Pm5b
-         55oLiL5c+bBlnCt9HfGyHlBW+B3EhML5LdTKo2DdM8BaoA1FV0+8vN9e8g9Ayvoz8dDz
-         x8o5WYCX3mBSh2cnwGsIWcusEP498r7CsSU8o1DXM2+ojEi/b/o48rtg1UNpopxjf0Le
-         rkuCalfM9yvtg1/jnE23JSoBMyLzOBwah+Ikp39fypV0pSccw7UG8DAI7J7LNki+R4id
-         UvEDA4QJ3tJKrJACtsY/T5pzMoi4fT8hJOWgLHodtoVUH0KeBX5psGdgmypSMzAhuhaR
-         TkIg==
-X-Gm-Message-State: AOAM531CbE1hW59wcE/YbT5EjUuIts2ydxWmEaN3irzenIRozxvXwX8w
-        vF6eSCSaGy1FTv+HbDM5+T7bvu3SoSo=
-X-Google-Smtp-Source: ABdhPJwf11QWDRb1QrI5lmIND74fU73c+Xz/hXkvk9+Fcx1Ncsvp8ge/xtvcMB8fGteiXGN9oky+DQ==
-X-Received: by 2002:a2e:9802:: with SMTP id a2mr6017695ljj.470.1630037299403;
-        Thu, 26 Aug 2021 21:08:19 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-17-251.dynamic.spd-mgts.ru. [94.29.17.251])
-        by smtp.googlemail.com with ESMTPSA id c19sm553142ljn.75.2021.08.26.21.08.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 21:08:19 -0700 (PDT)
-Subject: Re: [PATCH v9 5/8] soc/tegra: pmc: Implement get_performance_state()
- callback
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210827013415.24027-1-digetx@gmail.com>
- <20210827013415.24027-6-digetx@gmail.com>
- <20210827030557.aymjkky7athjxpow@vireshk-i7>
- <9c2287ca-4c51-d782-a0a5-4b1227c2e9db@gmail.com>
- <7aca6da3-89a7-a4a6-c720-8be4a105a696@gmail.com>
- <20210827040239.roal5jpndamzotle@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <4a945d40-b30a-8a30-bdf8-4e17ad26cea7@gmail.com>
-Date:   Fri, 27 Aug 2021 07:08:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 27 Aug 2021 00:10:08 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F64C061757;
+        Thu, 26 Aug 2021 21:09:20 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GwmSC2pHtz9sPf;
+        Fri, 27 Aug 2021 14:09:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630037357;
+        bh=HrzSWAQwOwjPU1v6TeYmsOkX4v4YrwL3sEtfva0WF8M=;
+        h=Date:From:To:Cc:Subject:From;
+        b=n+LBkEvRGlKvl0uMs9yCvvxtaRSMfuBS3iSjSuOY27XgsrZlLBjhdVBPMk4dKslqA
+         ai6InSB+9CsWSrV8SlhWTN6RyNvQN7JR0bekHOM5cEt2xj720jtBUQOQebvsUfdkfo
+         aa35/ZaayR7QK/i7EaVejPZj0H2n1IJ2lSa+RsJ9w/0YBp8jowmBfiTrXuLs5DSp1D
+         s2hY1/Ox/t6BVrk2pfRsrnl9ScQL2BiEALjvXiPBKTp3rYNAhq6s1uBw2Ocb61/7ij
+         C+gXr7kfbE9cTSviBckT89cgVglqSit34/FbHlQT39I579cE9kGFcU7ZIHuvIp0J3J
+         f312RhPhhJnvA==
+Date:   Fri, 27 Aug 2021 14:09:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>
+Subject: linux-next: manual merge of the tip tree with the arm64 tree
+Message-ID: <20210827140913.422a7a06@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210827040239.roal5jpndamzotle@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/9PALBqedgw3k4ZMv4nAMTM+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.08.2021 07:02, Viresh Kumar пишет:
-> On 27-08-21, 06:47, Dmitry Osipenko wrote:
->> Actually, it doesn't work.
->>
->> The devm_tegra_core_dev_init_opp_table() needs to set clk to support older device-tree and now OPP table already has clk being set.
->>
->> WARNING: CPU: 2 PID: 92 at drivers/opp/core.c:2146 dev_pm_opp_set_clkname+0x97/0xb8
->> Modules linked in:
->> CPU: 2 PID: 92 Comm: kworker/u8:1 Tainted: G        W         5.14.0-rc7-next-20210826-00181-g6389463cbb0a #9318
->> Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
->> Workqueue: events_unbound deferred_probe_work_func
->> [<c010cc91>] (unwind_backtrace) from [<c0108d35>] (show_stack+0x11/0x14)
->> [<c0108d35>] (show_stack) from [<c0a6c1bd>] (dump_stack_lvl+0x2b/0x34)
->> [<c0a6c1bd>] (dump_stack_lvl) from [<c011fc47>] (__warn+0xbb/0x100)
->> [<c011fc47>] (__warn) from [<c0a696e3>] (warn_slowpath_fmt+0x4b/0x80)
->> [<c0a696e3>] (warn_slowpath_fmt) from [<c07407b3>] (dev_pm_opp_set_clkname+0x97/0xb8)
->> [<c07407b3>] (dev_pm_opp_set_clkname) from [<c07407e3>] (devm_pm_opp_set_clkname+0xf/0x64)
->> [<c07407e3>] (devm_pm_opp_set_clkname) from [<c050735b>] (devm_tegra_core_dev_init_opp_table+0x23/0x144)
-> 
-> Why are you calling this anymore ?
+--Sig_/9PALBqedgw3k4ZMv4nAMTM+
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Older device-trees don't have OPPs, meanwhile drivers will use
-dev_pm_opp_set_rate() and it requires OPP table to be set up using
-devm_pm_opp_set_clkname().
+Hi all,
 
-The devm_tegra_core_dev_init_opp_table() is a common helper that sets up
-OPP table for Tegra drivers and it sets the clk.
+Today's linux-next merge of the tip tree got conflicts in:
+
+  arch/arm64/kernel/process.c
+  arch/arm64/kernel/signal.c
+
+between commits:
+
+  d2e0d8f9746d ("arm64: move preemption disablement to prctl handlers")
+  4d1c2ee2709f ("arm64: entry: move bulk of ret_to_user to C")
+
+from the arm64 tree and commit:
+
+  94f9c00f6460 ("arm64: Remove logic to kill 32-bit tasks on 64-bit-only co=
+res")
+
+from the tip tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/kernel/process.c
+index 8334facd5356,e0e7f4e9b607..000000000000
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@@ -469,22 -469,7 +470,13 @@@ static void erratum_1418040_thread_swit
+  	write_sysreg(val, cntkctl_el1);
+  }
+ =20
+- static void compat_thread_switch(struct task_struct *next)
+- {
+- 	if (!is_compat_thread(task_thread_info(next)))
+- 		return;
+-=20
+- 	if (static_branch_unlikely(&arm64_mismatched_32bit_el0))
+- 		set_tsk_thread_flag(next, TIF_NOTIFY_RESUME);
+- }
+-=20
+ -static void update_sctlr_el1(u64 sctlr)
+ +/*
+ + * __switch_to() checks current->thread.sctlr_user as an optimisation. Th=
+erefore
+ + * this function must be called with preemption disabled and the update to
+ + * sctlr_user must be made in the same preemption disabled block so that
+ + * __switch_to() does not see the variable update before the SCTLR_EL1 on=
+e.
+ + */
+ +void update_sctlr_el1(u64 sctlr)
+  {
+  	/*
+  	 * EnIA must not be cleared while in the kernel as this is necessary for
+diff --cc arch/arm64/kernel/signal.c
+index e42743134ae2,22899c86711a..000000000000
+--- a/arch/arm64/kernel/signal.c
++++ b/arch/arm64/kernel/signal.c
+@@@ -917,20 -912,8 +917,7 @@@ static void do_signal(struct pt_regs *r
+  	restore_saved_sigmask();
+  }
+ =20
+- static bool cpu_affinity_invalid(struct pt_regs *regs)
+- {
+- 	if (!compat_user_mode(regs))
+- 		return false;
+-=20
+- 	/*
+- 	 * We're preemptible, but a reschedule will cause us to check the
+- 	 * affinity again.
+- 	 */
+- 	return !cpumask_test_cpu(raw_smp_processor_id(),
+- 				 system_32bit_el0_cpumask());
+- }
+-=20
+ -asmlinkage void do_notify_resume(struct pt_regs *regs,
+ -				 unsigned long thread_flags)
+ +void do_notify_resume(struct pt_regs *regs, unsigned long thread_flags)
+  {
+  	do {
+  		if (thread_flags & _TIF_NEED_RESCHED) {
+
+--Sig_/9PALBqedgw3k4ZMv4nAMTM+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEoZWkACgkQAVBC80lX
+0Gw7dQf9FDuexBWAMjFE9oqH4ltqtekf3WuqBHqaguL5DmYRD5uMmpK+d1Plqplh
+6Uad+j1JnHOIubI1wEiNdNE7iIfDP+DGwGdXS+fus5nRwMtpVVr9wKDmFqUCTCxk
+ytPHd1vz5uSEpSBPuoywP2Hfcqh96GidSdixi8iOcy194nq90CBTKI1B79L6/9xN
+ZXw0Sex7vPo1SVTYuxumII5qBu9qkOBtTSqGAOAzOe82W1GLqqi0PcDq5GPRsw7a
+kc1QWDZqk6PD19pockBCz/JhF8/4EPfsZQyOIdbQ2jNgjAA39EmKpPgL8WfkzT/4
+/XtwXPqykyuleVBL6gnRMUpCmkRI/Q==
+=u3lP
+-----END PGP SIGNATURE-----
+
+--Sig_/9PALBqedgw3k4ZMv4nAMTM+--
