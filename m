@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115833FA01B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE4B3FA025
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 21:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhH0TrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 15:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhH0TrN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 15:47:13 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545C5C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:46:24 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id h1so5246729pjs.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 12:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s4fMrLdYeOVJ7FAKn+gTvf9DPyxEV4lP24CasHOh+wc=;
-        b=MzfjLr+0zXATCfeKfj1gStH2r9/QkLKUuTwu6RXB6FF+pGTbHZMJ+BFncRZImDlMPz
-         TAJyaIOa3bmr7oJZGTzsg4MpFCY+biqT7ydsHrVkpgxERshnnhRcoNCV0iZptmm9bIRG
-         0kgLS4bmNoJpvCrqSocSeNlYdQEQoqk2yKatY5c8u0u+QPVi5Pkj9yN2HNOO72+x4tTY
-         H++KZNGqU9Xe7riDUtun8bDsYCKjoXSKjVwMBPz9uj8QRO7qMuVJzDyOJ6Ql0Scgp2qI
-         r+sd3NiWrgCnyC8/yuWqDISY9Rieufxx4HGUgjbk4EnFZVD6wFQ1Tv34UarPHE5AGl6P
-         iMkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s4fMrLdYeOVJ7FAKn+gTvf9DPyxEV4lP24CasHOh+wc=;
-        b=jHSfVAXwLvEq99iNyupCpL788bEjyTbr4moVSvVshN4gLVGOBkYOQYP0MflRrsmLWK
-         tLQSD0manmtcLU2ctBnuWZ3v3tfpqNX3+ltEP9GhUC/+YZ2hQ+VcgbNVXKRExTr3qDzW
-         5+nws0wPUEfv7B9rNwbApNQvd0G0Lo8M3pZJ8nEtaifCLbrmfCdMfgKjURKwB4iirJXx
-         BvP6y+r/JFYatYImgyWzG4d4ig9XRWfBRZPgiS3Cczy+hCG8qErG+YxVpimx+4U4qkZs
-         szKytBgIzTTrRI0+OB06ijTUWEPJLrx0h+6k4ZyxeRs5whPBsux+lvKK6ebZbUtYDsSi
-         SNDQ==
-X-Gm-Message-State: AOAM53376B1IoN1WrqkBKlS73uTzda1+0zwO3tXOuWUjFuyrRt7A0nyw
-        07YYQA/KPcxA7KepjkLpcBOW9rhTrWB98+fPSHE=
-X-Google-Smtp-Source: ABdhPJyhoGQNesFUYfNUjnr0miUtKJi4NCcP9m86s9dOXozx81QaL8eN09mRDUUHlBTmWsoqEFWqTV/mqwxuKiAo2NU=
-X-Received: by 2002:a17:90a:520c:: with SMTP id v12mr10155035pjh.105.1630093583921;
- Fri, 27 Aug 2021 12:46:23 -0700 (PDT)
+        id S231324AbhH0T4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 15:56:46 -0400
+Received: from mga09.intel.com ([134.134.136.24]:26658 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229821AbhH0T4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 15:56:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10089"; a="218024424"
+X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
+   d="scan'208";a="218024424"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 12:55:56 -0700
+X-IronPort-AV: E=Sophos;i="5.84,357,1620716400"; 
+   d="scan'208";a="528422070"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 12:55:55 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Cathy Zhang <cathy.zhang@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v4 0/6] Basic recovery for machine checks inside SGX
+Date:   Fri, 27 Aug 2021 12:55:37 -0700
+Message-Id: <20210827195543.1667168-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210728204653.1509010-1-tony.luck@intel.com>
+References: <20210728204653.1509010-1-tony.luck@intel.com>
 MIME-Version: 1.0
-References: <CAPGkw+x+B1731SL=afoSKiWwH-n-FA5YJ+WOwYdv8iyFhWk1zA@mail.gmail.com>
- <3634721.RBzQ2xsved@localhost.localdomain> <1742120.GgyQvu0Ciu@localhost.localdomain>
- <CAPGkw+yJ=V0OwFE+uqCeWWS8JbJD=YBE3+Uk-OKpmHRnvSTh+A@mail.gmail.com> <CAPGkw+w-y+iC3dMDLxi8DR3N+jf8roiJ2Vs_-uHxJ=i57eTiUA@mail.gmail.com>
-In-Reply-To: <CAPGkw+w-y+iC3dMDLxi8DR3N+jf8roiJ2Vs_-uHxJ=i57eTiUA@mail.gmail.com>
-From:   Krish Jain <krishjain02939@gmail.com>
-Date:   Fri, 27 Aug 2021 21:46:10 +0200
-Message-ID: <CAPGkw+zyj4e-m19KdrHpAN_vHksNDy=k_cPPAftSN-hNoph0=w@mail.gmail.com>
-Subject: Re: [PATCH] Declare the file_operations struct as const
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I unfortunately forgot to add Greg to this thread. Doing so now. I
-apologize for the confusion, if any. This patch was regarding the
-staging tree's file android/ashmem.c and declaring the file_operations
-struct as const as done elsewhere in the kernel, because there are no
-modifications to its fields.
+Here's version 4 (just 38 more to go if I want to meet the bar set by
+the base SGX series :-) )
 
-Warm Regards
+Changes since v3:
+
+Dave Hansen:
+	1) Concerns about assigning a default value to the "owner"
+	   pointer if the caller of sgx_alloc_epc_page() called with
+	   a NULL value.
+	Resolved: Sean provided a patch to fix the only caller that
+	was using NULL. I merged it in here.
+
+	2) Better commit message to explain why sgx_is_epc_page() is
+	   exported.
+	Done.
+
+	3) Unhappy with "void *owner" in struct sgx_epc_page. Would
+	   be better to use an anonymous union of all the types.
+	Done.
+
+Sean Christopherson:
+	1) Races updating bits in flags field.
+	Resolved: "poison" is now a separate field.
+
+	2) More races. When poison alert happens while moving
+	   a page on/off a free/dirty list.
+	Resolved: Well mostly. All the run time changes are now
+	done while holding the node->lock. There's a gap while
+	moving pages from dirty list to free list. But that's
+	a short-ish window during boot, and the races are mostly
+	harmless. Worst is that we might call __eremove() for a
+	page that just got marked as poisoned. But then
+	sgx_free_epc_page() will see the poison flag and do the
+	right thing.
+
+Jarkko Sakkinen:
+	1) Use xarray to keep track of which pages are the special
+	   SGX EPC ones.
+	This spawned a short discussion on whether it was overkill. But
+	xarray makes the source much simpler, and there are improvements
+	in the pipeline for xarray that will make it handle this use
+	case more efficiently. So I made this change.
+
+	2) Move the sgx debugfs directory under arch_debugfs_dir.
+	Done.
+
+Tony Luck (6):
+  x86/sgx: Provide indication of life-cycle of EPC pages
+  x86/sgx: Add infrastructure to identify SGX EPC pages
+  x86/sgx: Initial poison handling for dirty and free pages
+  x86/sgx: Add SGX infrastructure to recover from poison
+  x86/sgx: Hook sgx_memory_failure() into mainline code
+  x86/sgx: Add hook to error injection address validation
+
+ .../firmware-guide/acpi/apei/einj.rst         |  19 +++
+ arch/x86/include/asm/set_memory.h             |   4 +
+ arch/x86/kernel/cpu/sgx/encl.c                |   5 +-
+ arch/x86/kernel/cpu/sgx/encl.h                |   2 +-
+ arch/x86/kernel/cpu/sgx/ioctl.c               |   2 +-
+ arch/x86/kernel/cpu/sgx/main.c                | 140 ++++++++++++++++--
+ arch/x86/kernel/cpu/sgx/sgx.h                 |  14 +-
+ drivers/acpi/apei/einj.c                      |   3 +-
+ include/linux/mm.h                            |  15 ++
+ mm/memory-failure.c                           |  19 ++-
+ 10 files changed, 196 insertions(+), 27 deletions(-)
 
 
-On Fri, Aug 27, 2021 at 8:38 PM Krish Jain <krishjain02939@gmail.com> wrote:
->
-> So what do you think I can do?
->
-> Best Regards
->
->
-> On Fri, Aug 27, 2021 at 10:50 AM Krish Jain <krishjain02939@gmail.com> wrote:
-> >
-> > Hi, yes, this is my first time programming at this low level. And yes,
-> > I read both docs now. Furthermore the issue is that my current
-> > hardware can't handle building the kernel, it barely managed to
-> > survive the first build after 2 hours so I don't know how I can. If I
-> > change it to static const would it fix the issue and build
-> > successfully?  If not what would be the error message, then I can
-> > debug. Thanks
-> >
-> > On Fri, Aug 27, 2021 at 9:48 AM Fabio M. De Francesco
-> > <fmdefrancesco@gmail.com> wrote:
-> > >
-> > > On Friday, August 27, 2021 8:49:30 AM CEST Fabio M. De Francesco wrote:
-> > > > On Friday, August 27, 2021 3:59:28 AM CEST Krish Jain wrote:
-> > > > >  From: Krish Jain <krishjain02939@gmail.com>
-> > > > >
-> > > > > Declare the file_operations struct as const as done elsewhere in the
-> > > > > kernel, as there are no modifications to its fields.
-> > > > >
-> > > > > Signed-off-by: Krish Jain <krishjain02939@gmail.com>
-> > > > > ---
-> > > > > []
-> > > > Are you sure that it works? I wouldn't be.
-> > > > You didn't build this file. Please build your changes before submitting patches.
-> > > >
-> > > > Furthermore, please always rebase to the current version of the staging tree.
-> > > >
-> > > > Finally, please use the class modifier "static" as the first keyword of a declaration/definition
-> > > > as it is done everywhere in the kernel (see "grep -rn "static const" drivers/staging/" and
-> > > > then switch to "const static" and read the output).
-> > >
-> > > Please don't misunderstand me: as far as I can see this is your first patch and
-> > > (I'm pretty sure I can speak for everyone else about this) you are very welcome
-> > > to staging and to kernel hacking :)
-> > >
-> > > However, before posting further works, you'd better read at least the following
-> > > documents:
-> > >
-> > > https://www.kernel.org/doc/html/latest/process/4.Coding.html
-> > > https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-> > >
-> > > And please don't forget to always CC linux-kernel@vger.kernel.org.
-> > >
-> > > Have a nice time with kernel hacking.
-> > >
-> > > Thanks,
-> > >
-> > > Fabio
-> > >
-> > >
+base-commit: e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
+-- 
+2.29.2
+
