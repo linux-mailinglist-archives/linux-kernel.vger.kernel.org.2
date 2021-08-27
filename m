@@ -2,189 +2,626 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D883F9BE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D503F9BE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 17:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245400AbhH0Pso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 11:48:44 -0400
-Received: from mail-dm6nam12on2086.outbound.protection.outlook.com ([40.107.243.86]:23424
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S245040AbhH0Psk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 11:48:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IKJI9rPwBuXMzXP85FSMCuTSEKDiJXn7ZZxmNxkKrT+rhrY+xbF7S8FVPJ4AdA5EA3LKGYeKzXuloKpRdRUjujB48CTERcBhxoNWVfutfx0E2CR66LDWMTaxTSdIGrCaViTGevvA2OdjQKSDMyxZgUkZLqOZOy6aswqBGF11JKqu8crd4YfCqukfc4GwP1K3VYeJmvagYUuRI2wwXBCG2WHNvglnY/Rr2vHZ2T9AnWdEoc8BjFd3URQhUYxTXQwN9NqqKRfm4yMgfy+d2vGKzp3HU7QaUHLZDf56lSVp0X/Vch3RGMyd5BZWpMcrkJuSTdp0d3qA/H3JA/hAYGwOHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xfpjztaOqeJBEbWI9Vh8eGhK8SSM6a7VJTei7HexpFo=;
- b=bYm6VopSipCile/8YlmqI49XGixzOvOf43ZEYNMJwK2MosK5hzRbJOy1o9zXYVpQUM19NkLslnSWE+7N6ojXuoUug7B9tcQDZ2xQgWiApSsNsEhOyUEbvxmh8joZvbdnJZgitT7dlBdS51gHQv5CY9VS3vLeNKwwWraciEiB5zaT5xCU8F8YQfWo/fPD2WyW/S+BSOVDp41u7VAeHedoeIboHQRWgAc4SISzz+kkewJPse7//I5516URg2QfcF1s79lnORoDNU2pfUd9/snVnauTPGfRozpFeWK8yzlm7bFEZyiy7wcTDxR7gSbX0mJ/oI4++gMbauPRcuUW0rZOOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xfpjztaOqeJBEbWI9Vh8eGhK8SSM6a7VJTei7HexpFo=;
- b=SQYb4hjHOAS4EXGnghynCG2l4Y9Zc6NWCy+K0DOUdzQRZGTiPjlNDRCtYyhrnCK3gXMKaabbEBljCQSh9ToPUqZOfg4lOxseiriWsILrYVb7rnY3WQrLdpc64EooQZcabfdrctom2+vLmGlPY80N8cvclTG4cVabES4kKjLKCKg=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN6PR12MB2637.namprd12.prod.outlook.com (2603:10b6:805:6b::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Fri, 27 Aug
- 2021 15:47:47 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::78b7:7336:d363:9be3]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::78b7:7336:d363:9be3%6]) with mapi id 15.20.4457.020; Fri, 27 Aug 2021
- 15:47:46 +0000
-Subject: Re: [PATCH Part1 v5 32/38] x86/sev: enable SEV-SNP-validated CPUID in
- #VC handlers
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-33-brijesh.singh@amd.com> <YSkCWVTd0ZEvphlx@zn.tnic>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <62e8b7f2-4e0d-5836-ea37-9e0a7a797017@amd.com>
-Date:   Fri, 27 Aug 2021 10:47:42 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-In-Reply-To: <YSkCWVTd0ZEvphlx@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: SN4PR0601CA0021.namprd06.prod.outlook.com
- (2603:10b6:803:2f::31) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S234232AbhH0Psi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 11:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245040AbhH0Psh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 11:48:37 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9D6C061757;
+        Fri, 27 Aug 2021 08:47:48 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so8443081otf.6;
+        Fri, 27 Aug 2021 08:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0PUe2WVI4uM7npC2sJpSBRR7Kd2o5yWaZtqCRCkj3FA=;
+        b=NpyCoBiMuqaH+9isYZllGJ75iiz67o0HRx+4/y/Kao/5I8iD2aFZQvWDz5IYhbKY9F
+         zPKNBmRBTcO8ROkBeI+uY33SHXKuzczLRMBf2u/Aq2j6VWEBhn70nif6XXExGnxdSiFb
+         PwcYoxE4xV2dw8Imtz90HQwWXkmjFOmTtHDPtjd6TLL6gCKmgUW8/eW7rLKQmaNBUVZZ
+         ESHJKLNBES6Gs8rmSHWUPogKHL+X4Asuu1nSUf3PYE4xdsy3tJzUlhfJ6xC+KjF2A5uS
+         VEeV9Fg4i2s3agvrPi7liVy+FsCwrzo7erwN9NAKpcJBEd3vtdn8WgZ+B9wI/dhmnrNX
+         f/0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=0PUe2WVI4uM7npC2sJpSBRR7Kd2o5yWaZtqCRCkj3FA=;
+        b=jR8IkU74hii+yIxxKAfGBGhWwg0Xate/QBIYAc8pa5RLvrRB4TvHPlqn/ZGFdVKP1C
+         q+qC7Zg3d6O4+topNtERb8avWfLCwAtoy/5EoDNRf+tIBIdI7f8G51rRhJ/tC0Rum8gy
+         xJOLDVh1we1EdMqz5rJLLuWTh4amKPQ00JW4BJS4B5T0vVaqvEHL6fl/BIhTCAUJHtg4
+         mJexpm8ebEDvdilp6Q0TJL4UEkcQcgCi8tdiyndK/6VJZZPnk4TkTlAD2RoD/wv+rjQx
+         l3DMha09HU9Vuzz1w99Om3Nn7U6otJ0m/k1+kKvKemUnZKq4SmHI5GiZGVm+3JAnC/AV
+         zY7A==
+X-Gm-Message-State: AOAM531//J/1xfqQvO449nma3s8Zd3FqywQJsAKDQgJYylR8LDm+6oRM
+        /iMTyJgatm3ngcTByizRDgwdMUsgwtg=
+X-Google-Smtp-Source: ABdhPJxZyG+CNcfqJhP9KyYQ6H0G9ktAn146/exgwWkWxQw7eYZyaI+HmawR+s/QgUgXGQxA1YBfcA==
+X-Received: by 2002:a9d:4911:: with SMTP id e17mr8748858otf.38.1630079267357;
+        Fri, 27 Aug 2021 08:47:47 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r13sm1307956oti.80.2021.08.27.08.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 08:47:46 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 27 Aug 2021 08:47:45 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Aleksa Savic <savicaleksa83@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: add driver for Aquacomputer D5 Next
+Message-ID: <20210827154745.GA204608@roeck-us.net>
+References: <20210827082507.10591-1-savicaleksa83@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (165.204.77.11) by SN4PR0601CA0021.namprd06.prod.outlook.com (2603:10b6:803:2f::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Fri, 27 Aug 2021 15:47:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6e415cf0-4bfa-4d41-5403-08d96972041e
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2637:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB263767B11FC536D614E845C9E5C89@SN6PR12MB2637.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BElLhd1ZIUmBRsyZbWXFMNE9p8XAYl5qgUxro1/jJDzBo1yS193TooFTa9pqV9EWeRpCBsoyvQ5W0CTvRuGSV8/+UMGw5X4lYN42aSyrOHFEq+1IAYym5h+2ufJYcAJf41oezkQQnEd2mPuzmvZY6PsjpQc2C1VKtmBnOuhCqhSe9ogFFeNFmG3dVRXreXsVQgQfbfO16Y/pChiY81P/VG7tQ5KlsBi8B+kCb8N+0qsL0Wky2PrBN1gvBfurq+7LAdCIBWNwIGCBBCc0QmvWXoiLwYkrOJGFkNBfD/tDrm3d9kXN8kFsxJCB1BJrYItf//gdxnJVyQsrangKv55kghOVEuhagHAcFDbRMiPEvVaSNe2EHenkvkB160cIXkH2Zg5LpON3I4UQGzhyv24Ke1vaHCy42YryPoPNyYG5Dsd1sMe1VUMrxFcdmXPAydMHntG9YUOBN7nEGawH8NQEkJ0Z4DEb9cqb1Hnuhov3rqEtz21n+wYSnE9X3x4d42SB1d2iBTM/FHcycUfPWOW+aiPm3Mysg0t6On/Wk2Qi3u8HZORKRrhJPftHSXKA4stXyrVYrx3gRMA0IRzq0chMckmY727ubQKa/Xg6u5DCAjmoCQ9NKszvx/lt6leF7wzEjS1jXZJ5wDLhFH9d1dRX3ReCxPR6mxJXbgCJjrr4odfdJQS7e/EU0a6dv37vmRlj1+AslB+XQyQPW9FiVbz2WUs5CwEYuGqVvaDPb8e+0Mj2KlhdFqp8eQ6iOBGKXoQ8fOJplE4nNIvj1rN4Vq2Rug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(346002)(366004)(376002)(54906003)(186003)(36756003)(7416002)(83380400001)(53546011)(6506007)(15650500001)(7406005)(6916009)(8936002)(2906002)(5660300002)(26005)(52116002)(66556008)(316002)(38100700002)(86362001)(478600001)(66476007)(4326008)(8676002)(66946007)(6486002)(2616005)(6512007)(31696002)(38350700002)(956004)(31686004)(44832011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YW1QeFloR3BoQkRzbDJvODlsZVZ0akVycE0rZjA0VVl6STNrc1RjcGQ0aUUw?=
- =?utf-8?B?U3FnNncvUDcwQ0hSaXMra3NLVS93T0dLZzN6emRIZVVGSnV3UnFNZFFWS2po?=
- =?utf-8?B?Mi9STXRrK2IwYmNZMmU3UHI5WE5FRnZnbTlLeCs2TTZkQ2dONUptSXZLZnZZ?=
- =?utf-8?B?WlpHMWpCcFdhVys1djNzZ3ZYUWl1Rm1FRWVoYkVGbWhmeGVqbm5HcnFKR2dP?=
- =?utf-8?B?dGU4c2d5RkZacmVNakU3WTVtdkdYcTNhTWJxVExFcjdoQ2JmYVFiRUdsaC9P?=
- =?utf-8?B?aXNZRDhvN1gvemtSVmN2TS9yZ3R5bTJMc2VPeGtwVzFzTWp2anlTNFJqU1RT?=
- =?utf-8?B?SDNWUDh5L3pETXp4N2I0TmdPSWFPaFFaOTBIUkliZHZ0ZTBVNytWeittME9s?=
- =?utf-8?B?Vjc5dWNKc29TSjRkL3ZqNStRaXlVMzFJNWJIRld5SXVyMjVWTlIrNnNyMHpm?=
- =?utf-8?B?U3ZvT0xyZnhhaU0yQ0J3WmttK1luNWk3d3dVTTFOOTgzdElEWnVKZzNJTnZH?=
- =?utf-8?B?UWJpTzU4TWtlc2dNaDhURnNKUzBJQjgycUxPaC9WY2ZwMVVNOXNYbUR4ZVdI?=
- =?utf-8?B?emQxajNHZS9Hb1I3cGwxbTdIZzhnSW1wTDhEVDh1MTNGNzB5a09INU9uMmZz?=
- =?utf-8?B?MVBka083R0RUaExYY3hYNEsyN1p0TnY1RlRKY0loRCtwQXNvNkV5c0NKc0tr?=
- =?utf-8?B?YXNjT0JtS3NOcm1SYzc3bzB0UUhVSjh2TVJ0S240SlByRTZkVVFwTHp6R3JF?=
- =?utf-8?B?cG5Wb0FSbU5xQ1NJQkc0SGJhNzRNbVh0VXkvZ1ViVngraEovNU9nblplTEdi?=
- =?utf-8?B?bzdPVFdSNG9IUVVBeHJnNzc1T3FVSFBnNk9vM3ZCTXhocG1kdUwvNnNJQ3Vr?=
- =?utf-8?B?T1M1b1hBQnJkTWdCS2JCTHdLa0hjS0Y3SHo0b2dhN01oOEhKUEluOHpqN1By?=
- =?utf-8?B?MDRHWk14djVHY1dac2oyeG4zdlIzdWhMbW5uQnZ0R1lTN2oyeDRoZ1N3T1I2?=
- =?utf-8?B?dm5LRGYyOWVNTk16YkhoZ21WaE95dHFkeEt3L05ZejhGSEhPNWY0bGdJcVN6?=
- =?utf-8?B?V0piUTFBRlV3RnpQMkVKdUR3WHArK3V6clB1RWhEZ2hxMURwTFFxeHZqd0lD?=
- =?utf-8?B?UFVHTTRXeGJVeXJTZXdVYWUyaVZlYVdhMnhhWEU5UnRkTEo1Mm9yMGdQNUwr?=
- =?utf-8?B?VlZZOTIzUmMvdDRxQk5zMGRMRUV3WHAwSXZ6cWdUL3pBZkQra0M5dFA1QjF5?=
- =?utf-8?B?R3U3Z2R5K29aVmlKdUV4SnZKZ3R0VmRhaEtRSDB1dDkwbjZhYmFZVmx2V0VW?=
- =?utf-8?B?RWxMWk5MUlViSjFLTXhFc3h1azJSdjRxbjR6SWJmdHlJcUZDSEJoUEtGR0pr?=
- =?utf-8?B?NC9ZTUs4ZnlNcUtFSWJSMGovbGRNS0ZZZlRiMlNWdk9CYzFIUFJPWE5mM2FP?=
- =?utf-8?B?YVc4bmxjaUFzR3lsajRkc3VtYmFyMG85bnhyLy9NQnFGcWErMWJ2cFdRNS8z?=
- =?utf-8?B?Q2l3aHc2ZW1NZlF2dy9Lc3RGN3dmU2E3dy9Sb1JoTXp5T2k1T3dxRmRtOVFo?=
- =?utf-8?B?RDJvbGQxZUhZdGJTSTkwVmxQcjg1SUhBaG9ZaVdzKzBCM0dWU1Q3QmNzSlZS?=
- =?utf-8?B?VFpETGVFVXo0ZE1Fb04rSTFNS09hMjFFeWl3bXZxWm1GOGdPeWpWRFhEbmkz?=
- =?utf-8?B?bzcxNjFkQWlBMDR4UTI2c3B0OFJNOXZTYnEzekVSTXlWWjVqK0FrOXprK0Fs?=
- =?utf-8?Q?X6Cp7LZKcTrG4XIz9V8HoJY64hVDOASrQZWIYX1?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e415cf0-4bfa-4d41-5403-08d96972041e
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 15:47:46.8199
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xlRDrFVn0kek9LoIC2E48p5Ss9BfECwO+0qtEkEWxgPVjxR3vA/WTRUMu4THtnwbekk3rmtH9PosSw/RyCGodQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2637
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827082507.10591-1-savicaleksa83@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 27, 2021 at 10:25:05AM +0200, Aleksa Savic wrote:
+> This driver exposes hardware sensors of the Aquacomputer D5 Next
+> watercooling pump, which communicates through a proprietary USB HID
+> protocol.
+> 
+> Available sensors are pump and fan speed, power, voltage and current, as
+> well as coolant temperature. Also available through debugfs are the serial
+> number, firmware version and power-on count.
+> 
+> Attaching a fan is optional and allows it to be controlled using
+> temperature curves directly from the pump. If it's not connected,
+> the fan-related sensors will report zeroes.
+> 
+> The pump can be configured either through software or via its physical
+> interface. Configuring the pump through this driver is not implemented,
+> as it seems to require sending it a complete configuration. That
+> includes addressable RGB LEDs, for which there is no standard sysfs
+> interface. Thus, that task is better suited for userspace tools.
+> 
+> This driver has been tested on x86_64, both in-kernel and as a module.
+> 
+> Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
+> ---
+>  Documentation/hwmon/aquacomputer_d5next.rst |  61 ++++
+>  Documentation/hwmon/index.rst               |   1 +
+>  MAINTAINERS                                 |   7 +
+>  drivers/hwmon/Kconfig                       |  10 +
+>  drivers/hwmon/Makefile                      |   1 +
+>  drivers/hwmon/aquacomputer_d5next.c         | 366 ++++++++++++++++++++
+>  6 files changed, 446 insertions(+)
+>  create mode 100644 Documentation/hwmon/aquacomputer_d5next.rst
+>  create mode 100644 drivers/hwmon/aquacomputer_d5next.c
+> 
+> diff --git a/Documentation/hwmon/aquacomputer_d5next.rst b/Documentation/hwmon/aquacomputer_d5next.rst
+> new file mode 100644
+> index 000000000000..1f4bb4ba2e4b
+> --- /dev/null
+> +++ b/Documentation/hwmon/aquacomputer_d5next.rst
+> @@ -0,0 +1,61 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +Kernel driver aquacomputer-d5next
+> +=================================
+> +
+> +Supported devices:
+> +
+> +* Aquacomputer D5 Next watercooling pump
+> +
+> +Author: Aleksa Savic
+> +
+> +Description
+> +-----------
+> +
+> +This driver exposes hardware sensors of the Aquacomputer D5 Next watercooling
+> +pump, which communicates through a proprietary USB HID protocol.
+> +
+> +Available sensors are pump and fan speed, power, voltage and current, as
+> +well as coolant temperature. Also available through debugfs are the serial
+> +number, firmware version and power-on count.
+> +
+> +Attaching a fan is optional and allows it to be controlled using temperature
+> +curves directly from the pump. If it's not connected, the fan-related sensors
+> +will report zeroes.
+> +
+> +The pump can be configured either through software or via its physical
+> +interface. Configuring the pump through this driver is not implemented, as it
+> +seems to require sending it a complete configuration. That includes addressable
+> +RGB LEDs, for which there is no standard sysfs interface. Thus, that task is
+> +better suited for userspace tools.
+> +
+> +Usage notes
+> +-----------
+> +
+> +The pump communicates via HID reports. The driver is loaded automatically by
+> +the kernel and supports hotswapping.
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +============ =============================================
+> +temp1_input  Coolant temperature (in millidegrees Celsius)
+> +fan1_input   Pump speed (in RPM)
+> +fan2_input   Fan speed (in RPM)
+> +power1_input Pump power (in micro Watts)
+> +power2_input Fan power (in micro Watts)
+> +in0_input    Pump voltage (in milli Volts)
+> +in1_input    Fan voltage (in milli Volts)
+> +in2_input    +5V rail voltage (in milli Volts)
+> +curr1_input  Pump current (in milli Amperes)
+> +curr2_input  Fan current (in milli Amperes)
+> +============ =============================================
+> +
+> +Debugfs entries
+> +---------------
+> +
+> +================ ===============================================
+> +serial_number    Serial number of the pump
+> +firmware_version Version of installed firmware
+> +power_cycles     Count of how many times the pump was powered on
+> +================ ===============================================
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index bc01601ea81a..77bfb2e2e8a9 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -39,6 +39,7 @@ Hardware Monitoring Kernel Drivers
+>     adt7475
+>     aht10
+>     amc6821
+> +   aquacomputer_d5next
+>     asb100
+>     asc7621
+>     aspeed-pwm-tacho
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d7b4f32875a9..ec0aa0dcf635 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1316,6 +1316,13 @@ L:	linux-media@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/media/i2c/aptina-pll.*
+>  
+> +AQUACOMPUTER D5 NEXT PUMP SENSOR DRIVER
+> +M:	Aleksa Savic <savicaleksa83@gmail.com>
+> +L:	linux-hwmon@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/hwmon/aquacomputer_d5next.rst
+> +F:	drivers/hwmon/aquacomputer_d5next.c
+> +
+>  AQUANTIA ETHERNET DRIVER (atlantic)
+>  M:	Igor Russkikh <irusskikh@marvell.com>
+>  L:	netdev@vger.kernel.org
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index e3675377bc5d..2bd563850f87 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -254,6 +254,16 @@ config SENSORS_AHT10
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called aht10.
+>  
+> +config SENSORS_AQUACOMPUTER_D5NEXT
+> +	tristate "Aquacomputer D5 Next watercooling pump"
+> +	depends on USB_HID
+> +	help
+> +	  If you say yes here you get support for the Aquacomputer D5 Next
+> +	  watercooling pump sensors.
+> +
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called aquacomputer_d5next.
+> +
+>  config SENSORS_AS370
+>  	tristate "Synaptics AS370 SoC hardware monitoring driver"
+>  	help
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index d712c61c1f5e..790a611a3188 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -47,6 +47,7 @@ obj-$(CONFIG_SENSORS_ADT7475)	+= adt7475.o
+>  obj-$(CONFIG_SENSORS_AHT10)	+= aht10.o
+>  obj-$(CONFIG_SENSORS_AMD_ENERGY) += amd_energy.o
+>  obj-$(CONFIG_SENSORS_APPLESMC)	+= applesmc.o
+> +obj-$(CONFIG_SENSORS_AQUACOMPUTER_D5NEXT) += aquacomputer_d5next.o
+>  obj-$(CONFIG_SENSORS_ARM_SCMI)	+= scmi-hwmon.o
+>  obj-$(CONFIG_SENSORS_ARM_SCPI)	+= scpi-hwmon.o
+>  obj-$(CONFIG_SENSORS_AS370)	+= as370-hwmon.o
+> diff --git a/drivers/hwmon/aquacomputer_d5next.c b/drivers/hwmon/aquacomputer_d5next.c
+> new file mode 100644
+> index 000000000000..0f831b0eb94c
+> --- /dev/null
+> +++ b/drivers/hwmon/aquacomputer_d5next.c
+> @@ -0,0 +1,366 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * hwmon driver for Aquacomputer D5 Next watercooling pump
+> + *
+> + * The D5 Next sends HID reports (with ID 0x01) every second to report sensor values
+> + * (coolant temperature, pump and fan speed, voltage, current and power). It responds to
+> + * Get_Report requests, but returns a dummy value of no use.
+> + *
+> + * Copyright 2021 Aleksa Savic <savicaleksa83@gmail.com>
+> + */
+> +
+> +#include <asm/unaligned.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/hid.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/module.h>
 
-On 8/27/21 10:18 AM, Borislav Petkov wrote:
-> On Fri, Aug 20, 2021 at 10:19:27AM -0500, Brijesh Singh wrote:
->> From: Michael Roth <michael.roth@amd.com>
->>
->> This adds support for utilizing the SEV-SNP-validated CPUID table in
-> s/This adds support for utilizing/Utilize/
->
-> Yap, it can really be that simple. :)
->
->> the various #VC handler routines used throughout boot/run-time. Mostly
->> this is handled by re-using the CPUID lookup code introduced earlier
->> for the boot/compressed kernel, but at various stages of boot some work
->> needs to be done to ensure the CPUID table is set up and remains
->> accessible throughout. The following init routines are introduced to
->> handle this:
-> Do not talk about what your patch does - that should hopefully be
-> visible in the diff itself. Rather, talk about *why* you're doing what
-> you're doing.
->
->> sev_snp_cpuid_init():
-> This one is not really introduced - it is already there.
->
-> <snip all the complex rest>
->
-> So this patch is making my head spin. It seems we're dancing a lot of
-> dance just to have our CPUID page present at all times. Which begs the
-> question: do we need it during the whole lifetime of the guest?
+#include <linux/seq_file.h>
 
-Mike can correct me,  we need it for entire lifetime of the guest. 
-Whenever guest needs the CPUID value, the #VC handler will refer to this
-page.
+> +
+> +#define DRIVER_NAME		      "aquacomputer-d5next"
+> +
+> +#define D5NEXT_STATUS_REPORT_ID	      0x01
+> +#define D5NEXT_STATUS_UPDATE_INTERVAL 1 /* In seconds */
+> +
+> +/* Register offsets for the D5 Next pump */
+> +
+> +#define D5NEXT_SERIAL_FIRST_PART      3
+> +#define D5NEXT_SERIAL_SECOND_PART     5
+> +#define D5NEXT_FIRMWARE_VERSION	      13
 
+Please always use
 
-> Regardless, I think this can be simplified by orders of
-> magnitude if we allocated statically 4K for that CPUID page in
-> arch/x86/boot/compressed/mem_encrypt.S, copied the supplied CPUID page
-> from the firmware to it and from now on, work with our own copy.
+#define<space>WHAT<tab>value
 
-Actually a  VMM could populate more than one page for the CPUID. One
-page can include 64 entries and I believe Mike is already running into
-limits (with Qemu) and exploring the ideas to extend it more than a page.
+with aligned values.
 
+> +#define D5NEXT_POWER_CYCLES	      24
+> +
+> +#define D5NEXT_COOLANT_TEMP	      87
+> +
+> +#define D5NEXT_PUMP_SPEED	      116
+> +#define D5NEXT_FAN_SPEED	      103
+> +
+> +#define D5NEXT_PUMP_POWER	      114
+> +#define D5NEXT_FAN_POWER	      101
+> +
+> +#define D5NEXT_PUMP_VOLTAGE	      110
+> +#define D5NEXT_FAN_VOLTAGE	      97
+> +#define D5NEXT_5V_VOLTAGE	      57
+> +
+> +#define D5NEXT_PUMP_CURRENT	      112
+> +#define D5NEXT_FAN_CURRENT	      99
+> +
+> +/* Labels for provided values */
+> +
+> +#define L_COOLANT_TEMP		      "Coolant temp"
+> +
+> +#define L_PUMP_SPEED		      "Pump speed"
+> +#define L_FAN_SPEED		      "Fan speed"
+> +
+> +#define L_PUMP_POWER		      "Pump power"
+> +#define L_FAN_POWER		      "Fan power"
+> +
+> +#define L_PUMP_VOLTAGE		      "Pump voltage"
+> +#define L_FAN_VOLTAGE		      "Fan voltage"
+> +#define L_5V_VOLTAGE		      "+5V voltage"
+> +
+> +#define L_PUMP_CURRENT		      "Pump current"
+> +#define L_FAN_CURRENT		      "Fan current"
+> +
+> +static const char *const label_temp[] = {
+> +	L_COOLANT_TEMP,
+> +};
+> +
+> +static const char *const label_speeds[] = {
+> +	L_PUMP_SPEED,
+> +	L_FAN_SPEED,
+> +};
+> +
+> +static const char *const label_power[] = {
+> +	L_PUMP_POWER,
+> +	L_FAN_POWER,
+> +};
+> +
+> +static const char *const label_voltages[] = {
+> +	L_PUMP_VOLTAGE,
+> +	L_FAN_VOLTAGE,
+> +	L_5V_VOLTAGE,
+> +};
+> +
+> +static const char *const label_current[] = {
+> +	L_PUMP_CURRENT,
+> +	L_FAN_CURRENT,
+> +};
+> +
+> +struct d5next_data {
+> +	struct hid_device *hdev;
+> +	struct device *hwmon_dev;
+> +	struct dentry *debugfs;
+> +	s32 temp_input[1];
 
-> You probably would need to still remap it for kernel proper but it would
-> get rid of all that crazy in this patch here.
->
-> Hmmm?
->
+This doesn't have to be an array.
+
+> +	u16 speed_input[2];
+> +	u32 power_input[2];
+> +	u16 voltage_input[3];
+> +	u16 current_input[2];
+> +	u32 serial_number[2];
+> +	u16 firmware_version;
+> +	u32 power_cycles; /* How many times the device was powered on */
+> +	unsigned long updated;
+> +};
+> +
+> +static umode_t d5next_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
+> +				 int channel)
+> +{
+> +	return 0444;
+> +}
+> +
+> +static int d5next_read(struct device *dev, enum hwmon_sensor_types type, u32 attr, int channel,
+> +		       long *val)
+> +{
+> +	struct d5next_data *priv = dev_get_drvdata(dev);
+> +
+> +	if (time_after(jiffies, priv->updated + D5NEXT_STATUS_UPDATE_INTERVAL * HZ))
+> +		return -ENODATA;
+
+This seems a bit strict; it results in ENODATA if a single update
+is missed or if it comes just a little late. I would suggest to relax
+it a bit.
+
+Also, D5NEXT_STATUS_UPDATE_INTERVAL is always used with "* HZ".
+I would suggest to make that part of the define.
+
+> +
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		*val = priv->temp_input[channel];
+> +		break;
+> +	case hwmon_fan:
+> +		*val = priv->speed_input[channel];
+> +		break;
+> +	case hwmon_power:
+> +		*val = priv->power_input[channel];
+> +		break;
+> +	case hwmon_in:
+> +		*val = priv->voltage_input[channel];
+> +		break;
+> +	case hwmon_curr:
+> +		*val = priv->current_input[channel];
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int d5next_read_string(struct device *dev, enum hwmon_sensor_types type, u32 attr,
+> +			      int channel, const char **str)
+> +{
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		*str = label_temp[channel];
+> +		break;
+> +	case hwmon_fan:
+> +		*str = label_speeds[channel];
+> +		break;
+> +	case hwmon_power:
+> +		*str = label_power[channel];
+> +		break;
+> +	case hwmon_in:
+> +		*str = label_voltages[channel];
+> +		break;
+> +	case hwmon_curr:
+> +		*str = label_current[channel];
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct hwmon_ops d5next_hwmon_ops = {
+> +	.is_visible = d5next_is_visible,
+> +	.read = d5next_read,
+> +	.read_string = d5next_read_string,
+> +};
+> +
+> +static const struct hwmon_channel_info *d5next_info[] = {
+> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_LABEL),
+> +	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_LABEL, HWMON_F_INPUT | HWMON_F_LABEL),
+> +	HWMON_CHANNEL_INFO(power, HWMON_P_INPUT | HWMON_P_LABEL, HWMON_P_INPUT | HWMON_P_LABEL),
+> +	HWMON_CHANNEL_INFO(in, HWMON_I_INPUT | HWMON_I_LABEL, HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL),
+> +	HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT | HWMON_C_LABEL, HWMON_C_INPUT | HWMON_C_LABEL),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_chip_info d5next_chip_info = {
+> +	.ops = &d5next_hwmon_ops,
+> +	.info = d5next_info,
+> +};
+> +
+> +static int d5next_raw_event(struct hid_device *hdev, struct hid_report *report, u8 *data, int size)
+> +{
+> +	struct d5next_data *priv;
+> +
+> +	if (report->id != D5NEXT_STATUS_REPORT_ID)
+> +		return 0;
+> +
+> +	priv = hid_get_drvdata(hdev);
+> +
+> +	/* Info provided with every report */
+> +
+> +	priv->serial_number[0] = get_unaligned_be16(data + D5NEXT_SERIAL_FIRST_PART);
+> +	priv->serial_number[1] = get_unaligned_be16(data + D5NEXT_SERIAL_SECOND_PART);
+> +
+> +	priv->firmware_version = get_unaligned_be16(data + D5NEXT_FIRMWARE_VERSION);
+> +	priv->power_cycles = get_unaligned_be32(data + D5NEXT_POWER_CYCLES);
+> +
+> +	/* Sensor readings */
+> +
+> +	priv->temp_input[0] = get_unaligned_be16(data + D5NEXT_COOLANT_TEMP) * 10;
+> +
+> +	priv->speed_input[0] = get_unaligned_be16(data + D5NEXT_PUMP_SPEED);
+> +	priv->speed_input[1] = get_unaligned_be16(data + D5NEXT_FAN_SPEED);
+> +
+> +	priv->power_input[0] = get_unaligned_be16(data + D5NEXT_PUMP_POWER) * 10000;
+> +	priv->power_input[1] = get_unaligned_be16(data + D5NEXT_FAN_POWER) * 10000;
+> +
+> +	priv->voltage_input[0] = get_unaligned_be16(data + D5NEXT_PUMP_VOLTAGE) * 10;
+> +	priv->voltage_input[1] = get_unaligned_be16(data + D5NEXT_FAN_VOLTAGE) * 10;
+> +	priv->voltage_input[2] = get_unaligned_be16(data + D5NEXT_5V_VOLTAGE) * 10;
+> +
+> +	priv->current_input[0] = get_unaligned_be16(data + D5NEXT_PUMP_CURRENT);
+> +	priv->current_input[1] = get_unaligned_be16(data + D5NEXT_FAN_CURRENT);
+> +
+> +	priv->updated = jiffies;
+> +
+> +	return 0;
+> +}
+> +
+> +#ifdef CONFIG_DEBUG_FS
+> +
+> +static int serial_number_show(struct seq_file *seqf, void *unused)
+> +{
+> +	struct d5next_data *priv = seqf->private;
+> +
+> +	seq_printf(seqf, "%05u-%05u\n", priv->serial_number[0], priv->serial_number[1]);
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(serial_number);
+> +
+> +static int firmware_version_show(struct seq_file *seqf, void *unused)
+> +{
+> +	struct d5next_data *priv = seqf->private;
+> +
+> +	seq_printf(seqf, "%u\n", priv->firmware_version);
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(firmware_version);
+> +
+> +static int power_cycles_show(struct seq_file *seqf, void *unused)
+> +{
+> +	struct d5next_data *priv = seqf->private;
+> +
+> +	seq_printf(seqf, "%u\n", priv->power_cycles);
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(power_cycles);
+> +
+> +static void d5next_debugfs_init(struct d5next_data *priv)
+> +{
+> +	char name[32];
+> +
+> +	scnprintf(name, sizeof(name), "%s-%s", DRIVER_NAME, dev_name(&priv->hdev->dev));
+> +
+> +	priv->debugfs = debugfs_create_dir(name, NULL);
+> +	debugfs_create_file("serial_number", 0444, priv->debugfs, priv, &serial_number_fops);
+> +	debugfs_create_file("firmware_version", 0444, priv->debugfs, priv, &firmware_version_fops);
+> +	debugfs_create_file("power_cycles", 0444, priv->debugfs, priv, &power_cycles_fops);
+> +}
+> +
+> +#else
+> +
+> +static void d5next_debugfs_init(struct d5next_data *priv)
+> +{
+> +}
+> +
+> +#endif
+> +
+> +static int d5next_probe(struct hid_device *hdev, const struct hid_device_id *id)
+> +{
+> +	struct d5next_data *priv;
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(&hdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->hdev = hdev;
+> +	hid_set_drvdata(hdev, priv);
+> +
+> +	priv->updated = jiffies - D5NEXT_STATUS_UPDATE_INTERVAL * HZ;
+> +
+> +	ret = hid_parse(hdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = hid_hw_open(hdev);
+> +	if (ret)
+> +		goto fail_and_stop;
+> +
+> +	priv->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "d5next", priv,
+> +							  &d5next_chip_info, NULL);
+> +
+> +	if (IS_ERR(priv->hwmon_dev)) {
+> +		ret = PTR_ERR(priv->hwmon_dev);
+> +		goto fail_and_close;
+> +	}
+> +
+> +	d5next_debugfs_init(priv);
+> +
+> +	return 0;
+> +
+> +fail_and_close:
+> +	hid_hw_close(hdev);
+> +fail_and_stop:
+> +	hid_hw_stop(hdev);
+> +	return ret;
+> +}
+> +
+> +static void d5next_remove(struct hid_device *hdev)
+> +{
+> +	struct d5next_data *priv = hid_get_drvdata(hdev);
+> +
+> +	debugfs_remove_recursive(priv->debugfs);
+> +	hwmon_device_unregister(priv->hwmon_dev);
+> +
+> +	hid_hw_close(hdev);
+> +	hid_hw_stop(hdev);
+> +}
+> +
+> +static const struct hid_device_id d5next_table[] = {
+> +	{ HID_USB_DEVICE(0x0c70, 0xf00e) }, /* Aquacomputer D5 Next */
+> +	{},
+> +};
+> +
+> +MODULE_DEVICE_TABLE(hid, d5next_table);
+> +
+> +static struct hid_driver d5next_driver = {
+> +	.name = DRIVER_NAME,
+> +	.id_table = d5next_table,
+> +	.probe = d5next_probe,
+> +	.remove = d5next_remove,
+> +	.raw_event = d5next_raw_event,
+> +};
+> +
+> +static int __init d5next_init(void)
+> +{
+> +	return hid_register_driver(&d5next_driver);
+> +}
+> +
+> +static void __exit d5next_exit(void)
+> +{
+> +	hid_unregister_driver(&d5next_driver);
+> +}
+> +
+> +/* Request to initialize after the HID bus to ensure it's not being loaded before */
+> +
+> +late_initcall(d5next_init);
+> +module_exit(d5next_exit);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Aleksa Savic <savicaleksa83@gmail.com>");
+> +MODULE_DESCRIPTION("Hwmon driver for Aquacomputer D5 Next pump");
+> -- 
+> 2.31.1
+> 
