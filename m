@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F0C3F9F1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DFE3F9F1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhH0SrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 14:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
+        id S230245AbhH0Sqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 14:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbhH0SrC (ORCPT
+        with ESMTP id S229882AbhH0Sqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 14:47:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A72C061757;
-        Fri, 27 Aug 2021 11:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TmIFGLuzR5TKf3tBpVDD04JlWgwoS6T72CAQ6nPDOIw=; b=ut6u+4w3fu6/PUU3PCNobyymP5
-        iovfucrUkllD1i8f2h2sv2LvTP3XLNPka4S2GwsmI3JC8YBGZMJ8Cn2JZIMax7T1sY5GZfbUssQBM
-        LAlNGyy1wDNq6BLXk8uHoEtiZux4t6gBBpuw8YLLJ8rmOE/OaGdB1a9wTD2jhLU7Lt0lGVvDLfgdM
-        pTzYqSoTXIaBMd/N1A767I/LRyy7Xaxi2/U4DdUh3E4DIZivssGA1We+VIN+4JTBVF493wj0ArTLA
-        ff7hVDqdxNw6HipwmczrPP3Ea/3XbtUSBkB/219pFEgysx9EhmbasfcniBLGqNpZS7JZBozf+A+Fx
-        d0qVmVzQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJgq5-00Esn6-Ln; Fri, 27 Aug 2021 18:44:52 +0000
-Date:   Fri, 27 Aug 2021 19:44:29 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YSkyjcX9Ih816mB9@casper.infradead.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YSQSkSOWtJCE4g8p@cmpxchg.org>
- <YSQeFPTMn5WpwyAa@casper.infradead.org>
- <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
- <YSVMAS2pQVq+xma7@casper.infradead.org>
- <YSZeKfHxOkEAri1q@cmpxchg.org>
- <20210826004555.GF12597@magnolia>
- <YSjxlNl9jeEX2Yff@cmpxchg.org>
+        Fri, 27 Aug 2021 14:46:48 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA57DC061757;
+        Fri, 27 Aug 2021 11:45:58 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f111700cf40790d4c46ba75.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:cf40:790d:4c46:ba75])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 645881EC0464;
+        Fri, 27 Aug 2021 20:45:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630089953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=y0FEGpbT1o/usEWCQaIVd7WpX4gpA+I5TcpFa2iPS/c=;
+        b=SHMA6G9AjxgkvlDD605FGB3xhf0BjvRxxmOo92lMF2ekx955Tjyy8uY4UbXlI7oyLe209g
+        +JYuyJ2G360w9la3Fo0zaixmBftxHU0YDrMyaPumDFptRiuMFfbh/CP3tYATF87eJSLSql
+        PtdHSUjwg7HnCzJzHi1aVTBWqnFKAak=
+Date:   Fri, 27 Aug 2021 20:46:35 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>
+Subject: Re: [PATCH v29 23/32] x86/cet/shstk: Add user-mode shadow stack
+ support
+Message-ID: <YSkzC1lw+btvE71X@zn.tnic>
+References: <20210820181201.31490-1-yu-cheng.yu@intel.com>
+ <20210820181201.31490-24-yu-cheng.yu@intel.com>
+ <YSfAbaMxQegvmN2p@zn.tnic>
+ <fa372ba8-7019-46d6-3520-03859e44cad9@intel.com>
+ <YSktDrcJIAo9mQBV@zn.tnic>
+ <c876d0aa-865d-e48d-0b56-f9d66762f869@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YSjxlNl9jeEX2Yff@cmpxchg.org>
+In-Reply-To: <c876d0aa-865d-e48d-0b56-f9d66762f869@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 10:07:16AM -0400, Johannes Weiner wrote:
-> We have the same thoughts in MM and growing memory sizes. The DAX
-> stuff said from the start it won't be built on linear struct page
-> mappings anymore because we expect the memory modules to be too big to
-> manage them with such fine-grained granularity.
+On Fri, Aug 27, 2021 at 11:37:34AM -0700, Yu, Yu-cheng wrote:
+> Right now, the kernel does lazy restore, and it waits until right before a
+> task goes back to ring-3 to restore xstates.  If a task needs to write to
+> any xstate registers before that (e.g. for signals), it restores the whole
+> xstates first and clears TIF_NEED_FPU_LOAD, which will prevent xstates being
+> restored again later.
 
-Well, I did.  Then I left Intel, and Dan took over.  Now we have a struct
-page for each 4kB of PMEM.  I'm not particularly happy about this change
-of direction.
+shstk_setup() allocates a shadow stack for the task and puts its pointer
+in MSR_IA32_PL3_SSP.
 
-> But in practice, this
-> is more and more becoming true for DRAM as well. We don't want to
-> allocate gigabytes of struct page when on our servers only a very
-> small share of overall memory needs to be managed at this granularity.
+What does that have to do with a task having to write any xstate
+registers?
 
-This is a much less compelling argument than you think.  I had some
-ideas along these lines and I took them to a performance analysis group.
-They told me that for their workloads, doubling the amount of DRAM in a
-system increased performance by ~10%.  So increasing the amount of DRAM
-by 1/63 is going to increase performance by 1/630 or 0.15%.  There are
-more important performance wins to go after.
+-- 
+Regards/Gruss,
+    Boris.
 
-Even in the cloud space where increasing memory by 1/63 might increase the
-number of VMs you can host by 1/63, how many PMs host as many as 63 VMs?
-ie does it really buy you anything?  It sounds like a nice big number
-("My 1TB machine has 16GB occupied by memmap!"), but the real benefit
-doesn't really seem to be there.  And of course, that assumes that you
-have enough other resources to scale to 64/63 of your current workload;
-you might hit CPU, IO or some other limit first.
-
-> Folio perpetuates the problem of the base page being the floor for
-> cache granularity, and so from an MM POV it doesn't allow us to scale
-> up to current memory sizes without horribly regressing certain
-> filesystem workloads that still need us to be able to scale down.
-
-The mistake you're making is coupling "minimum mapping granularity" with
-"minimum allocation granularity".  We can happily build a system which
-only allocates memory on 2MB boundaries and yet lets you map that memory
-to userspace in 4kB granules.
-
-> I really don't think it makes sense to discuss folios as the means for
-> enabling huge pages in the page cache, without also taking a long hard
-> look at the allocation model that is supposed to back them. Because
-> you can't make it happen without that. And this part isn't looking so
-> hot to me, tbh.
-
-Please, don't creep the scope of this project to "first, redesign
-the memory allocator".  This project is _if we can_, use larg(er)
-pages to cache files.  What Darrick is talking about is an entirely
-different project that I haven't signed up for and won't.
-
-> Willy says he has future ideas to make compound pages scale. But we
-> have years of history saying this is incredibly hard to achieve - and
-> it certainly wasn't for a lack of constant trying.
-
-I genuinely don't understand.  We have five primary users of memory
-in Linux (once we're in a steady state after boot):
-
- - Anonymous memory
- - File-backed memory
- - Slab
- - Network buffers
- - Page tables
-
-The relative importance of each one very much depends on your workload.
-Slab already uses medium order pages and can be made to use larger.
-Folios should give us large allocations of file-backed memory and
-eventually anonymous memory.  Network buffers seem to be headed towards
-larger allocations too.  Page tables will need some more thought, but
-once we're no longer interleaving file cache pages, anon pages and
-page tables, they become less of a problem to deal with.
-
-Once everybody's allocating order-4 pages, order-4 pages become easy
-to allocate.  When everybody's allocating order-0 pages, order-4 pages
-require the right 16 pages to come available, and that's really freaking
-hard.
+https://people.kernel.org/tglx/notes-about-netiquette
