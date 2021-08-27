@@ -2,181 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9483F96EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCC53F96ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 11:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244805AbhH0J1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 05:27:02 -0400
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:21795 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244785AbhH0J07 (ORCPT
+        id S244817AbhH0J1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 05:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244657AbhH0J1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:26:59 -0400
-Received: from localhost.localdomain ([114.149.34.46])
-        by mwinf5d84 with ME
-        id mZRz2500A0zjR6y03ZS7Wa; Fri, 27 Aug 2021 11:26:09 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 27 Aug 2021 11:26:09 +0200
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] stddef: Add flexible array union helper
-Date:   Fri, 27 Aug 2021 18:25:32 +0900
-Message-Id: <20210827092532.908506-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210826050458.1540622-1-keescook@chromium.org>
-References: <20210826050458.1540622-1-keescook@chromium.org> <20210826050458.1540622-1-keescook@chromium.org>
+        Fri, 27 Aug 2021 05:27:17 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9CCC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:26:28 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id c129-20020a1c35870000b02902e6b6135279so3914961wma.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 02:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J6/pEtsmPXEr0DtFJnmn/n99lBxeuj7y7P+Ae72uWNQ=;
+        b=vZc+T8ZJ5gxdka3g7nbaqKV+ZU6QpU9zFc87THqV1N/i935mxvSXs1i/6uwHXRieOa
+         SjrRUWflUO13YVT8+YN7YwUcrlFNMLI84ElZusvAkRonrkz4FjGnmdXj0SPdbIrzR0nv
+         4V49QcYGaup0/9vk1+YfuB//5c135qDiZSacEVRCzV6iBRHb60JE9c/yKkTXR5XmDBD8
+         QRTX8SjWmsQAWuAwox82XN4zVxqbry7RR5S8SWkQ7W3+p0WldKaojovLG4B6/edg2fNK
+         7HN9MC/CrjdBiMVAojfyWOCFoUraKLEYOzxYzDWhtQPga+SW28llKhg31IvcxOtpkVw3
+         uM7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J6/pEtsmPXEr0DtFJnmn/n99lBxeuj7y7P+Ae72uWNQ=;
+        b=gMcM0KnjepOrmOlE7O9wfSmTBo6mkzLq172KRO5LBj4KGpUOIrDvRU5vMavOjl3mXQ
+         y9BXi+KTc1zI9HFodSOvYkjQgQt+bWRd7QjnzB1YUcHsZge1W4EwjBGanhdTkuZ0pbGQ
+         qiIwTAiLkpAPKavYhGDJ16Sr30aSgj5rPc7EoJj8jCChWuVyHeoq63blogZedS2vQMYE
+         bmbx6nwsiwpOMuJutrjf190t2QYX7x3E3rdtQeS7O02EhjaLmVcEyLR5qGIygUXbV6Yp
+         45tNFTpFsuhElMVVhiVdCv/8DXH7uhAE72gksp0UAztqy1CzzsoN3d8B6adc+JyUJpm6
+         QvAQ==
+X-Gm-Message-State: AOAM5322As8NqawN4hjMtPTAiYD/G4PlGI5EUV3cHxD3FHWo3C4fkZLQ
+        +oPVrn/zawt4J1bPj3tJPi3i5/hFU93gEQ1XMx8qyw==
+X-Google-Smtp-Source: ABdhPJxP25HXbRNWYHpFECApZlJdkZZuMsS8vVNriqMiucQtuEHv3oeceyFUPqFLuy/KFSXL3jIp70xsVV7PNU48G0A=
+X-Received: by 2002:a1c:3b05:: with SMTP id i5mr7759579wma.136.1630056386806;
+ Fri, 27 Aug 2021 02:26:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210826123032.1732926-1-jens.wiklander@linaro.org>
+ <20210826123032.1732926-5-jens.wiklander@linaro.org> <CAFA6WYM_zaVsWzP-sDuD6_xf3qgv-sQsbEAebZG6vtFrKfRpag@mail.gmail.com>
+In-Reply-To: <CAFA6WYM_zaVsWzP-sDuD6_xf3qgv-sQsbEAebZG6vtFrKfRpag@mail.gmail.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Fri, 27 Aug 2021 11:26:16 +0200
+Message-ID: <CAHUa44FWM-QRfeEb5rreN4J9yJjQJQrh3XEm-YLBQmZMvBLC0g@mail.gmail.com>
+Subject: Re: [PATCH v5 4/6] tee: add tee_dev_open_helper() primitive
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-> Many places in the kernel want to use a flexible array in a union. This
-> is especially common when wanting several different typed trailing
-> flexible arrays. Since GCC and Clang don't (on the surface) allow this,
-> such structs have traditionally used combinations of zero-element arrays
-> instead. This is usually in the form:
-> 
-> struct thing {
-> 	...
-> 	struct type1 foo[0];
-> 	struct type2 bar[];
-> };
+On Fri, Aug 27, 2021 at 8:23 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> On Thu, 26 Aug 2021 at 18:00, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> >
+> > Adds tee_dev_open_helper() and tee_dev_ctx_put() to make it easier to
+> > create a driver internal struct tee_context without the usual
+> > tee_device_get() on the struct tee_device as that adds a circular
+> > reference counter dependency and would prevent the struct tee_device
+> > from ever being released again.
+>
+> Can you elaborate regarding the circular dependency issue you are
+> referring to? IIUC, lifespan for struct tee_device would look like
+> below with normal teedev_open():
+>
+> optee_probe() {
+>   ...
+>   tee_device_alloc()            <- teedev->num_users = 1
+>   tee_device_register()
+>   optee_notif_init()               <- tee_device_get()
+>   ...
+> }
+>
+> optee_remove() {
+>   ...
+>   optee_notif_uninit()           <- tee_device_put()
+>   tee_device_unregister()    <- tee_device_put()
+>   ...
+> }
 
-At first read, I found the description confusing (and even thought
-that there was a copy/paste issue). The subject and the first sentence
-is about "flexible arrays in a *union*". Then suddenly, the topic
-shifts to *structs*.
+You're right, it works just as well without this patch.
+teedev_close_context() and teedev_open() must be exported in another
+patch though. I'll replace this patch with such a patch in the next
+patch set.
 
-After reading at the code, it is clear that this work for both:
-  - unions with a flexible array.
-  - structures with different typed trailing flexible arrays.
 
-The subject and the description could be updated to clarify that this
-macro can be used for both unions and structs.
+Thanks,
+Jens
 
-N.B. this comment only applies to the commit message, the kerneldoc
-part is clear.
-
-> This causes problems with size checks against such zero-element arrays
-> (for example with -Warray-bounds and -Wzero-length-bounds), so they must
-> all be converted to "real" flexible arrays, avoiding warnings like this:
-> 
-> fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
-> fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-length-bounds]
->   209 |    anode->btree.u.internal[0].down = cpu_to_le32(a);
->       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
-> In file included from fs/hpfs/hpfs_fn.h:26,
->                  from fs/hpfs/anode.c:10:
-> fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
->   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
->       |                                ^~~~~~~~
-> 
-> drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
-> drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
->   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
->       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
->                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
-> drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
->   231 |   u8 raw_msg[0];
->       |      ^~~~~~~
-> 
-> Introduce DECLARE_FLEX_ARRAY() in support of flexible arrays in unions.
-
-... and structures.
-
-> It is entirely possible to have a flexible array in a union:
-
-It is entirely possible to have one or several flexible arrays in a
-structure or a union:
-
-> it just has to
-> be in a struct. And since it cannot be alone in a struct, such a struct
-> must have at least 1 other named member but that member can be zero sized.
-> 
-> As with struct_group(), this is needed in UAPI headers as well, so
-> implement the core there, with non-UAPI wrapper.
-> 
-> Additionally update kernel-doc to understand its existence.
-> 
-> https://github.com/KSPP/linux/issues/137
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  include/linux/stddef.h      | 13 +++++++++++++
->  include/uapi/linux/stddef.h | 16 ++++++++++++++++
->  scripts/kernel-doc          |  2 ++
->  3 files changed, 31 insertions(+)
-> 
-> diff --git a/include/linux/stddef.h b/include/linux/stddef.h
-> index 8b103a53b000..ca507bd5f808 100644
-> --- a/include/linux/stddef.h
-> +++ b/include/linux/stddef.h
-> @@ -84,4 +84,17 @@ enum {
->  #define struct_group_tagged(TAG, NAME, MEMBERS...) \
->  	__struct_group(TAG, NAME, /* no attrs */, MEMBERS)
->  
-> +/**
-> + * DECLARE_FLEX_ARRAY() - Declare a flexible array usable in a union
-> + *
-> + * @TYPE: The type of each flexible array element
-> + * @NAME: The name of the flexible array member
-> + *
-> + * In order to have a flexible array member in a union or alone in a
-> + * struct, it needs to be wrapped in an anonymous struct with at least 1
-> + * named member, but that member can be empty.
-> + */
-> +#define DECLARE_FLEX_ARRAY(TYPE, NAME) \
-> +	__DECLARE_FLEX_ARRAY(TYPE, NAME)
-> +
->  #endif
-> diff --git a/include/uapi/linux/stddef.h b/include/uapi/linux/stddef.h
-> index 610204f7c275..3021ea25a284 100644
-> --- a/include/uapi/linux/stddef.h
-> +++ b/include/uapi/linux/stddef.h
-> @@ -25,3 +25,19 @@
->  		struct { MEMBERS } ATTRS; \
->  		struct TAG { MEMBERS } ATTRS NAME; \
->  	}
-> +
-> +/**
-> + * __DECLARE_FLEX_ARRAY() - Declare a flexible array usable in a union
-> + *
-> + * @TYPE: The type of each flexible array element
-> + * @NAME: The name of the flexible array member
-> + *
-> + * In order to have a flexible array member in a union or alone in a
-> + * struct, it needs to be wrapped in an anonymous struct with at least 1
-> + * named member, but that member can be empty.
-> + */
-> +#define __DECLARE_FLEX_ARRAY(TYPE, NAME)	\
-> +	struct { \
-> +		struct { } __empty_ ## NAME; \
-> +		TYPE NAME[]; \
-> +	}
-> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-> index d9715efbe0b7..65088b512d14 100755
-> --- a/scripts/kernel-doc
-> +++ b/scripts/kernel-doc
-> @@ -1263,6 +1263,8 @@ sub dump_struct($$) {
->  	$members =~ s/DECLARE_KFIFO\s*\($args,\s*$args,\s*$args\)/$2 \*$1/gos;
->  	# replace DECLARE_KFIFO_PTR
->  	$members =~ s/DECLARE_KFIFO_PTR\s*\($args,\s*$args\)/$2 \*$1/gos;
-> +	# replace DECLARE_FLEX_ARRAY
-> +	$members =~ s/(?:__)?DECLARE_FLEX_ARRAY\s*\($args,\s*$args\)/$1 $2\[\]/gos;
->  	my $declaration = $members;
->  
->  	# Split nested struct/union elements as newer ones
-> -- 
-> 2.30.2
-> 
+>
+> -Sumit
+>
+> >
+> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > ---
+> >  drivers/tee/tee_core.c  | 33 ++++++++++++++++++++++++---------
+> >  include/linux/tee_drv.h | 27 +++++++++++++++++++++++++++
+> >  2 files changed, 51 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+> > index 85102d12d716..3beb682684a8 100644
+> > --- a/drivers/tee/tee_core.c
+> > +++ b/drivers/tee/tee_core.c
+> > @@ -43,14 +43,11 @@ static DEFINE_SPINLOCK(driver_lock);
+> >  static struct class *tee_class;
+> >  static dev_t tee_devt;
+> >
+> > -static struct tee_context *teedev_open(struct tee_device *teedev)
+> > +struct tee_context *tee_dev_open_helper(struct tee_device *teedev)
+> >  {
+> >         int rc;
+> >         struct tee_context *ctx;
+> >
+> > -       if (!tee_device_get(teedev))
+> > -               return ERR_PTR(-EINVAL);
+> > -
+> >         ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+> >         if (!ctx) {
+> >                 rc = -ENOMEM;
+> > @@ -66,10 +63,30 @@ static struct tee_context *teedev_open(struct tee_device *teedev)
+> >         return ctx;
+> >  err:
+> >         kfree(ctx);
+> > -       tee_device_put(teedev);
+> >         return ERR_PTR(rc);
+> >
+> >  }
+> > +EXPORT_SYMBOL_GPL(tee_dev_open_helper);
+> > +
+> > +void tee_dev_ctx_put(struct tee_context *ctx)
+> > +{
+> > +       teedev_ctx_put(ctx);
+> > +}
+> > +EXPORT_SYMBOL_GPL(tee_dev_ctx_put);
+> > +
+> > +static struct tee_context *teedev_open(struct tee_device *teedev)
+> > +{
+> > +       struct tee_context *ctx;
+> > +
+> > +       if (!tee_device_get(teedev))
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       ctx = tee_dev_open_helper(teedev);
+> > +       if (IS_ERR(ctx))
+> > +               tee_device_put(teedev);
+> > +
+> > +       return ctx;
+> > +}
+> >
+> >  void teedev_ctx_get(struct tee_context *ctx)
+> >  {
+> > @@ -90,10 +107,8 @@ static void teedev_ctx_release(struct kref *ref)
+> >
+> >  void teedev_ctx_put(struct tee_context *ctx)
+> >  {
+> > -       if (ctx->releasing)
+> > -               return;
+> > -
+> > -       kref_put(&ctx->refcount, teedev_ctx_release);
+> > +       if (ctx && !ctx->releasing)
+> > +               kref_put(&ctx->refcount, teedev_ctx_release);
+> >  }
+> >
+> >  static void teedev_close_context(struct tee_context *ctx)
+> > diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+> > index 3ebfea0781f1..00a31ff03049 100644
+> > --- a/include/linux/tee_drv.h
+> > +++ b/include/linux/tee_drv.h
+> > @@ -458,6 +458,33 @@ static inline int tee_shm_get_id(struct tee_shm *shm)
+> >   */
+> >  struct tee_shm *tee_shm_get_from_id(struct tee_context *ctx, int id);
+> >
+> > +/**
+> > + * tee_dev_open_helper() - helper function to make a struct tee_context
+> > + * @teedev:    Device to open
+> > + *
+> > + * Creates the struct tee_context without increasing the reference counter
+> > + * on @teedev. This is needed for instance when a driver need an internal
+> > + * struct tee_context to operate on. By skipping the reference counter
+> > + * the circular dependency is broken.
+> > + *
+> > + * Note that this struct tee_context need special care when freeing in
+> > + * order to avoid the normal put on the struct tee_device.
+> > + * tee_dev_ctx_put() is the best choice for this.
+> > + *
+> > + * @returns a pointer 'struct tee_context' on success or an ERR_PTR on failure
+> > + */
+> > +struct tee_context *tee_dev_open_helper(struct tee_device *teedev);
+> > +
+> > +/**
+> > + * tee_dev_ctx_put() - helper function to release a struct tee_context
+> > + * @ctx:       The struct tee_context to release
+> > + *
+> > + * Note that this function doesn't do a tee_device_put() on the internal
+> > + * struct tee_device so this function should normal only be used when
+> > + * releasing a struct tee_context obtained with tee_dev_open_helper().
+> > + */
+> > +void tee_dev_ctx_put(struct tee_context *ctx);
+> > +
+> >  /**
+> >   * tee_client_open_context() - Open a TEE context
+> >   * @start:     if not NULL, continue search after this context
+> > --
+> > 2.31.1
+> >
