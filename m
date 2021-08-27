@@ -2,144 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432EA3F9E33
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9133F9E2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 19:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238532AbhH0RpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 13:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231878AbhH0RpK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 13:45:10 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D9DC061757;
-        Fri, 27 Aug 2021 10:44:20 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso9364133pjh.5;
-        Fri, 27 Aug 2021 10:44:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LPKfuH70y/vowO9PogQlJQs9AemsPOeU5ZCyLaISG1Y=;
-        b=HwSSFNicSK0d8SJfbUpGx09hgwlFzVWra5FZoqLpsFB/x+51WvKuctBr6nLXMbO6cf
-         M1YA50WBdM0sWHzlp8j5U7XFU84mU13uWGJrK8+pOLzbMDCsX1Sb/xNi2BmSDxbbcXza
-         R18ghXowDtCyeUc0qDEp5lcHL3m3iI8G2JsyOod/a4nBKBGxuBgrXX8PcOrPD7xp9VuO
-         /+6ym70TQrPMXo7VYAa03ZCcmf5mxE8qkNCNyybf9pWzAIB3F4pHZ8tqL8sUNkUxGXH3
-         q5CzVfUu6vNAAN98cQcEw1tC7x5O4qdEugSSAeEekjMP6TLGMepEq4/gpZFscPhnAz0o
-         9ETQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LPKfuH70y/vowO9PogQlJQs9AemsPOeU5ZCyLaISG1Y=;
-        b=pMm5EIsBr5YlgIEWKS7Q9r/u0hvDwaJmUZYHLZhHb7Fdp60WVpD17jISe4jGXwTlCM
-         4duWZqjYnJoXDg8rXAluBeebHHZK2rB7yhWs/65wDsKLWp3Z1lkwmKGlHaaRo7iw6Wpn
-         GkWZ3TRS9kaF91RZ7svMRC5iiEyvyH9GnrF64PdHoaNKzuq1Rh4JzFiz+gGZqxfIbPfh
-         DvA8khLP62O6y81BxbbmIDTg3jbCiYhd9ueS8qjUqFz2pNP1rK7X1WOni7YvUEsStKTE
-         9tpWazZoowwAjN9k9ZVYyNxOTIWmm/qvG+z1BUgSodOt9pX23je6kmettWWPsNFhJOnX
-         RjcA==
-X-Gm-Message-State: AOAM531D2iwZIl5AomAHA9rIiKHgxeDR8f/ZAyl9S04fZaStWNkqQhEX
-        S9P2K9K2OkP39Kw+FHkv3+M=
-X-Google-Smtp-Source: ABdhPJwvLuJzWOILGWQdJGs2DQihxg3sZ7HLxdKN9J7wFpGmDHFz6cyOnG8qdErrHdAKkfy0VbG6/g==
-X-Received: by 2002:a17:902:c9d5:b0:138:9a20:4bd9 with SMTP id q21-20020a170902c9d500b001389a204bd9mr4222493pld.34.1630086260299;
-        Fri, 27 Aug 2021 10:44:20 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
-        by smtp.gmail.com with ESMTPSA id t186sm7124382pfb.53.2021.08.27.10.44.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 10:44:19 -0700 (PDT)
-Subject: Re: [PATCH V4 04/13] hyperv: Mark vmbus ring buffer visible to host
- in Isolation VM
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, catalin.marinas@arm.com,
-        will@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        brijesh.singh@amd.com, thomas.lendacky@amd.com,
-        Tianyu.Lan@microsoft.com, pgonda@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        hannes@cmpxchg.org, aneesh.kumar@linux.ibm.com,
-        krish.sadhukhan@oracle.com, saravanand@fb.com,
-        linux-arm-kernel@lists.infradead.org,
-        xen-devel@lists.xenproject.org, rientjes@google.com,
-        ardb@kernel.org, michael.h.kelley@microsoft.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
-References: <20210827172114.414281-1-ltykernel@gmail.com>
- <20210827172114.414281-5-ltykernel@gmail.com> <YSkjsapeNj+2j//o@kroah.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <5d665aff-f200-3b1d-7b9b-2f080cf59a59@gmail.com>
-Date:   Sat, 28 Aug 2021 01:44:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237087AbhH0Ro2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 13:44:28 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:41610 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230035AbhH0Ro1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 13:44:27 -0400
+Received: from zn.tnic (p200300ec2f111700cf40790d4c46ba75.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1700:cf40:790d:4c46:ba75])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 887F01EC0537;
+        Fri, 27 Aug 2021 19:43:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630086212;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ksK72yJ3wySU/4v/Z0DqBPrVhHFzU36FDKHslitFLfs=;
+        b=CnZ7xUnX3NltwfLtDCZBosHAKgNAyTK6OO9/+F36exMtD43KMTmwz5jrW/9RSQnPafC7ex
+        V1OGb6wIYQBciY/0KWALp0WLIhIXvQulT61+QAsnWfQGKgl4LeO5QriszIWX+fC3A8nbVk
+        8wnxrv59MVzTd3bMXDCEcNqxd9X6sbU=
+Date:   Fri, 27 Aug 2021 19:44:09 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 33/38] x86/sev: Provide support for SNP guest
+ request NAEs
+Message-ID: <YSkkaaXrg6+cnb9+@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-34-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <YSkjsapeNj+2j//o@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820151933.22401-34-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg:
-      Thanks for your review.
+On Fri, Aug 20, 2021 at 10:19:28AM -0500, Brijesh Singh wrote:
+> +int snp_issue_guest_request(int type, struct snp_guest_request_data *input, unsigned long *fw_err)
+> +{
+> +	struct ghcb_state state;
+> +	unsigned long id, flags;
+> +	struct ghcb *ghcb;
+> +	int ret;
+> +
+> +	if (!sev_feature_enabled(SEV_SNP))
+> +		return -ENODEV;
+> +
+> +	local_irq_save(flags);
+> +
+> +	ghcb = __sev_get_ghcb(&state);
+> +	if (!ghcb) {
+> +		ret = -EIO;
+> +		goto e_restore_irq;
+> +	}
+> +
+> +	vc_ghcb_invalidate(ghcb);
+> +
+> +	if (type == GUEST_REQUEST) {
+> +		id = SVM_VMGEXIT_GUEST_REQUEST;
+> +	} else if (type == EXT_GUEST_REQUEST) {
+> +		id = SVM_VMGEXIT_EXT_GUEST_REQUEST;
+> +		ghcb_set_rax(ghcb, input->data_gpa);
+> +		ghcb_set_rbx(ghcb, input->data_npages);
 
-On 8/28/2021 1:41 AM, Greg KH wrote:
-> On Fri, Aug 27, 2021 at 01:21:02PM -0400, Tianyu Lan wrote:
->> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
->>
->> Mark vmbus ring buffer visible with set_memory_decrypted() when
->> establish gpadl handle.
->>
->> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
->> ---
->> Change since v3:
->>         * Change vmbus_teardown_gpadl() parameter and put gpadl handle,
->>         buffer and buffer size in the struct vmbus_gpadl.
->> ---
->>   drivers/hv/channel.c            | 36 ++++++++++++++++++++++++++++-----
->>   drivers/net/hyperv/hyperv_net.h |  1 +
->>   drivers/net/hyperv/netvsc.c     | 16 +++++++++++----
->>   drivers/uio/uio_hv_generic.c    | 14 +++++++++++--
->>   include/linux/hyperv.h          |  8 +++++++-
->>   5 files changed, 63 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
->> index f3761c73b074..82650beb3af0 100644
->> --- a/drivers/hv/channel.c
->> +++ b/drivers/hv/channel.c
->> @@ -17,6 +17,7 @@
->>   #include <linux/hyperv.h>
->>   #include <linux/uio.h>
->>   #include <linux/interrupt.h>
->> +#include <linux/set_memory.h>
->>   #include <asm/page.h>
->>   #include <asm/mshyperv.h>
->>   
->> @@ -474,6 +475,13 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
->>   	if (ret)
->>   		return ret;
->>   
->> +	ret = set_memory_decrypted((unsigned long)kbuffer,
->> +				   HVPFN_UP(size));
->> +	if (ret) {
->> +		pr_warn("Failed to set host visibility for new GPADL %d.\n", ret);
-> 
-> dev_warn()?  You have access to a struct device, why not use it?
-> 
-> same for all other instances here.
-> 
->
+Hmmm, now I'm not sure. We did enum psc_op where you simply pass in the
+op directly to the hardware because the enum uses the same numbers as
+the actual command.
 
-Yes, dav_warn() is better. Will update in the next version. Thanks.
+But here that @type thing is simply used to translate to the SVM_VMGEXIT
+thing. So maybe you don't need it here and you can hand in the exit_code
+directly:
 
+int snp_issue_guest_request(u64 exit_code, struct snp_guest_request_data *input,
+			    unsigned long *fw_err)
+
+which you then pass in directly to...
+
+> +	} else {
+> +		ret = -EINVAL;
+> +		goto e_put;
+> +	}
+> +
+> +	ret = sev_es_ghcb_hv_call(ghcb, NULL, id, input->req_gpa, input->resp_gpa);
+
+... this guy here:
+
+	ret = sev_es_ghcb_hv_call(ghcb, NULL, exit_code, input->req_gpa, input->resp_gpa);
+
+> +	if (ret)
+> +		goto e_put;
+> +
+> +	if (ghcb->save.sw_exit_info_2) {
+> +		/* Number of expected pages are returned in RBX */
+> +		if (id == EXT_GUEST_REQUEST &&
+> +		    ghcb->save.sw_exit_info_2 == SNP_GUEST_REQ_INVALID_LEN)
+> +			input->data_npages = ghcb_get_rbx(ghcb);
+> +
+> +		if (fw_err)
+> +			*fw_err = ghcb->save.sw_exit_info_2;
+> +
+> +		ret = -EIO;
+> +	}
+> +
+> +e_put:
+> +	__sev_put_ghcb(&state);
+> +e_restore_irq:
+> +	local_irq_restore(flags);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(snp_issue_guest_request);
+> diff --git a/include/linux/sev-guest.h b/include/linux/sev-guest.h
+
+Why is this a separate header in the include/linux/ namespace?
+
+Is SNP available on something which is !x86, all of a sudden?
+
+> new file mode 100644
+> index 000000000000..24dd17507789
+> --- /dev/null
+> +++ b/include/linux/sev-guest.h
+> @@ -0,0 +1,48 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * AMD Secure Encrypted Virtualization (SEV) guest driver interface
+> + *
+> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
+> + *
+> + * Author: Brijesh Singh <brijesh.singh@amd.com>
+> + *
+> + */
+> +
+> +#ifndef __LINUX_SEV_GUEST_H_
+> +#define __LINUX_SEV_GUEST_H_
+> +
+> +#include <linux/types.h>
+> +
+> +enum vmgexit_type {
+> +	GUEST_REQUEST,
+> +	EXT_GUEST_REQUEST,
+> +
+> +	GUEST_REQUEST_MAX
+> +};
+> +
+> +/*
+> + * The error code when the data_npages is too small. The error code
+> + * is defined in the GHCB specification.
+> + */
+> +#define SNP_GUEST_REQ_INVALID_LEN	0x100000000ULL
+
+so basically
+
+BIT_ULL(32)
+
+> +
+> +struct snp_guest_request_data {
+
+"snp_req_data" I guess is shorter. And having "guest" in there is
+probably not needed because snp is always guest-related anyway.
+
+> +	unsigned long req_gpa;
+> +	unsigned long resp_gpa;
+> +	unsigned long data_gpa;
+> +	unsigned int data_npages;
+> +};
+> +
+> +#ifdef CONFIG_AMD_MEM_ENCRYPT
+> +int snp_issue_guest_request(int vmgexit_type, struct snp_guest_request_data *input,
+> +			    unsigned long *fw_err);
+> +#else
+> +
+> +static inline int snp_issue_guest_request(int type, struct snp_guest_request_data *input,
+> +					  unsigned long *fw_err)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+> +#endif /* CONFIG_AMD_MEM_ENCRYPT */
+> +#endif /* __LINUX_SEV_GUEST_H__ */
+> -- 
+> 2.17.1
+> 
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
