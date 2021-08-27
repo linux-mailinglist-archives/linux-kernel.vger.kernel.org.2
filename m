@@ -2,170 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0173F9C6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB34E3F9C7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 18:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234297AbhH0Qaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 12:30:39 -0400
-Received: from mail-eopbgr80057.outbound.protection.outlook.com ([40.107.8.57]:16831
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231852AbhH0Qah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:30:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RwhDRmiasd1WJfQYagA8U7qYUxFp6DlD+nImbp3JN9pEWFcCcxJz63MWwVDab68cht/6AQsxLQbaZ0VW24hDiGqHx5Cr+FfeGV4Vav5fSaWXcpi4ogCFfFIWMXNZwyueS0hCtAK6Z+vlxRVW4+yFmgVbybyxm/621jqGrxtK9XTwCulCIfbIm5EZ6B7pWIX2V7VCzFJUsXFVpYbD0GD6x3KmtEsb8VwnOfX4zgNRoUPYwmqmXerKDtDVCrdyQKMSZ1d2hKrQBF7tI01ZqXOlCnjUkFDN0kRXSZ8ie4EjtSKYR9TDahY6hNYRcvaHnVTJbhlmCqUuXJis9IfOBSeu1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pj4Fq7ObgvXjrsdkmEIz5ZJGmCzydmLNVog1Rb+MdMI=;
- b=Pd64V6YhnBB92ODDioV4o3kbr2ZDbhHuWScuS6/bPY3qR+hGJ7MLdZyF9hfRNjBSWPVQEoZuAPgBLcX3SBCBaowdLtoAZBjAC1funatnHfsG8k/wYNW+7sl0g54RzrMYuMB2Tlg99XiatLHaaRx+MC+Vn6oHV48Gm/sMLKrD24KMC+DOunoe48jrSn6U7v0kVcNKQmP2W7/MxAhopnVzFCCWkGrjPY+wpX2O6RMskpHTWu3VE4JVb7Wk7Vy8nYK3jDWelKqHkrazG2c6pu36W56FF7ywQ7ffxv9XVgKSR2ALeuqe9wg9cn+AH0zqzjUNHKmTcr0/cP0aeDBJnVdBWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
+        id S236157AbhH0QbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 12:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234192AbhH0QbL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 12:31:11 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970C8C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:30:22 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id w7so5237019pgk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 09:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pj4Fq7ObgvXjrsdkmEIz5ZJGmCzydmLNVog1Rb+MdMI=;
- b=wicasUeI1k8fumokg8jESwUBHixTXQyQb5oUsvCK1gf1pM0vzmwZLrF18SNK9bx7CU8sxzjM38EtB3ZS5BflEXOVt6+47nc4Kvfqlyid5CogrAGXjaq9cHrVuwOuy4hfqn/i9mYTnS6TBN3+71qiB+C7NWJTNVErArL/5yCDA/c=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=seco.com;
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
- by DB7PR03MB4522.eurprd03.prod.outlook.com (2603:10a6:10:1a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Fri, 27 Aug
- 2021 16:29:46 +0000
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::dc6c:815b:2062:d1f1]) by DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::dc6c:815b:2062:d1f1%7]) with mapi id 15.20.4436.025; Fri, 27 Aug 2021
- 16:29:45 +0000
-Subject: Re: [PATCH v6 3/3] pwm: Add support for Xilinx AXI Timer
-To:     kernel test robot <lkp@intel.com>, linux-pwm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>, michal.simek@xilinx.com,
-        linux-kernel@vger.kernel.org
-References: <20210826211830.3311140-3-sean.anderson@seco.com>
- <202108271550.btqnrtGU-lkp@intel.com>
-From:   Sean Anderson <sean.anderson@seco.com>
-Message-ID: <c57c4b16-dc8c-76c7-3ac4-63a5b62144d3@seco.com>
-Date:   Fri, 27 Aug 2021 12:29:40 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <202108271550.btqnrtGU-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR15CA0004.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::17) To DB7PR03MB4523.eurprd03.prod.outlook.com
- (2603:10a6:10:19::27)
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d2f+dDNnTafc8SEGH12py3+AmRo8s4UWHPLd9vKPVi0=;
+        b=fIXY/HxJEVeBsShw7ZoC45sRn38f7msV8mjoL3Y97NbGj6DfPUODX+ihlctPKDzwdn
+         YPD/t1EBurv45eylqBuFhOgpAUBdbBmVp0yGFrWNcs1Ckt7ZkUjBS3w0KrnDuPFEZi2G
+         hhIo5TylhEWddqgaViRf0lul9BW5I+wMMvWr8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d2f+dDNnTafc8SEGH12py3+AmRo8s4UWHPLd9vKPVi0=;
+        b=S4xRHjBQJqX7bwdhvazZ+ZqPrLPs/CKbdFnIG7pC2GBQqvVv/Fr5J2uAXLoB7OAE4E
+         yDa7lrClVBEFgxhjg1ec2wHBUYtgmrDwYUShJWs3a9O8c8vGMieHzGy5H0ClQuSJcXhG
+         cH0JHA6ShpOitrx7oM4lWIrgKszsfmGJYLrY449bSmIeGldYwY5yGFUjpAA2TJvQnsrE
+         GRToQ/WbhdD14WhIdsc9TA6kK1Piuqj73FOyUmR9OKq9W5U7eqhq16jZcAZnAewG4HNs
+         wYHCJTgSz+aoPcsjo2gxXaLEJg7hMryFYVN6oGorDSTCyXm6LQY3Aty2ZTVXdkOaf8Za
+         VAYA==
+X-Gm-Message-State: AOAM533MGDn6GDpPB24oS6aqid41a1uhknYrGFA/Fa47gXPe9+DwT4EQ
+        mp5QlI+hUwKWlETvR5UKokmm7w==
+X-Google-Smtp-Source: ABdhPJznbYulYqg2Exo4T2nPryLadDYl79zJT/PERPvrMdM1d3/6of2P3VK2Q5eZfqcdzcJBmvuepQ==
+X-Received: by 2002:a63:480b:: with SMTP id v11mr8619518pga.413.1630081822183;
+        Fri, 27 Aug 2021 09:30:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 202sm6965358pfw.150.2021.08.27.09.30.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 09:30:18 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Keith Packard <keithp@keithp.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+Subject: [PATCH v3 0/5] Enable -Warray-bounds and -Wzero-length-bounds
+Date:   Fri, 27 Aug 2021 09:30:10 -0700
+Message-Id: <20210827163015.3141722-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.27.1.65] (50.195.82.171) by MN2PR15CA0004.namprd15.prod.outlook.com (2603:10b6:208:1b4::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20 via Frontend Transport; Fri, 27 Aug 2021 16:29:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9bc87eb4-1d27-498d-1834-08d96977e163
-X-MS-TrafficTypeDiagnostic: DB7PR03MB4522:
-X-Microsoft-Antispam-PRVS: <DB7PR03MB45221ED7A7A61C19329ECEF196C89@DB7PR03MB4522.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LYc4Hm+aOxWLfg1eiz5PyE2NNx27OVHqJXx5F31wMoW4xTrk77wbZ3dk+ffZqxwT+mwsl/NWm4qMN3fMXFJy5I1WZH03o1rAWXFQLmLLdyLJ+q6gyHd3zn59Pgc41yXNqPQQxH1svH3TXrY6cdABbni8m8t4fw7ASVhOtwNdRwZRieykROlYEwC3GfUB5v0CJwJ1PwNNxU5Ma6rRVlrLfUWp8+z4Kfntp7BuKydd5jHqOEXLuZHFmgc90zFvjOAcrOdjozuilEJnGxeXlBy7zwP1XX7n2sjP7IdLLRYQwonpHRkxHFsGOR2wxD8ARnHkzxB47ZXvOTAGP/APb5n2FRhKhgQlDp0bbV3Oz1FSSK+hBP6ApPBjyYM1f3IMrzNdXTUrIAD3kHU2NN9Z1I7mIprpC+RDBcc6P3NRrVQHDL7hORvAePeR/tNcQYiTNag3O0rUeJCEQXzLJB/DWmsQDoEMO6OoNFF0PFqzduLRvlB6BzyatZNBdCQ9wREHm/k6yw7DmWccWIMWZoS/W/JcPEYiKiEOcGWn0V6HiyaMNAqQt/TWN87Zi98mhJKNqP6feRBsTAWuNl63DSq8ybQRQ9omwk6n7WdSuz8is/IuDA0vojqvwWeErltpwdmPVrKEKUv4X3Aq66z8JqqxHH8G5BFk4pS1ec5JwNaI++PrFnFd8c5iuFeVlZCFWgOS5R/rhnl3hNDcgo+pmr5RvgFc/GmUOKWTqxmjabTSjN4G+n6XME2x0ZoG+0+bLbvgzXwes4tzhecO/xqoM1dkafQxOuJLg9FKYpQil4ruRq370NKAYLtahN8CWaBve4cUXajKw+f4khnM8Uz74qbUSLPzqGzMyaVn+7KoCcou6/qN3so=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39840400004)(366004)(346002)(376002)(396003)(110136005)(2616005)(31696002)(31686004)(44832011)(4326008)(2906002)(26005)(16576012)(36756003)(6486002)(956004)(83380400001)(316002)(54906003)(6666004)(53546011)(38100700002)(52116002)(38350700002)(66556008)(478600001)(5660300002)(66476007)(8936002)(966005)(66946007)(186003)(86362001)(7416002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?XsyWJKfZeNIEw5seMR2IfhPZl7i1FItEC+5lJv2Fvfvuq42f4sKumH9d?=
- =?Windows-1252?Q?9R4VXe4+E39M/AapL01CtMGMMTpqfNdLkelfMX2DaTMglhQrERTs0gMQ?=
- =?Windows-1252?Q?Nc8cHE3mg6bIPRTbZw+3EU2wyB2dByO9OhGw8TrFFenKfYIKBKcaInlo?=
- =?Windows-1252?Q?Dwri50eBiLmeQVMXoFZlkFdEgzhjFbM/epBOg/WdMNUjY9F8O+wJqgXV?=
- =?Windows-1252?Q?IXU6QqknpDHC74Oo1HnG0zh2bPYVETWiM8ZFnVG3xjvuyb8mpPTKHvff?=
- =?Windows-1252?Q?dWMb8+uuyGAYUMFoMlut8ZHYiNP3NCpKoHsz1pIcN8RQznPJniQRRBTa?=
- =?Windows-1252?Q?fn9aRwW87sL4RsJ/e9W8HB+px5qccbTVDA+owGybme73TsWJweniwhoo?=
- =?Windows-1252?Q?Y4lRaBGYLsPT7FYlflId7jmygXGW5O6qaDmnzQmoeu9DIG1Q1hj4xEK9?=
- =?Windows-1252?Q?E17HUXu/vWmeKGU8HXdobmNMwQJwIlGBNY7+bfob+ijloA8ydLijs5MX?=
- =?Windows-1252?Q?2SYT8pZ7WF6raCbedJ+h3xYUXMJA7FI3zi/3PX3vpjOnCi+6kG90P5wB?=
- =?Windows-1252?Q?P3HFi+0Beuo9zKL0O7MJqm94JLMQCuFWAU/SZXW1fDGgtlIc5jQhJcut?=
- =?Windows-1252?Q?l2EVP5lfjfhyhMM3fdpk9KorAQ6HPtJZh6zqsQP4QCsZbQVzM8HDDo4o?=
- =?Windows-1252?Q?87mHTBQne1OlZAP6ZFqwpjbMgyNNHTbWC3vT2ASFAiUO8334gcEmaeAB?=
- =?Windows-1252?Q?MXBFXW0b0yWc5tNUbN1QwAeaV9CS3c2fIwdJ5A/8NEWNe+yNSMN9dvZz?=
- =?Windows-1252?Q?EGdgRBHeYrYFqObbRdDjs8oJ64Wv4lGc4M4IxY3hpQUCF8qORRU/2mh1?=
- =?Windows-1252?Q?yfvrOcTI58QUFRiEtxuRBEwVLCPuvgiUEYnyyr9+Vfd0hrB8q+3OOur4?=
- =?Windows-1252?Q?/zB/dCJ2+VrN6U6IQbogI98uQ9TMLAk2LN1jye4EY53+OjhRT+U1492Z?=
- =?Windows-1252?Q?ZQTwIUY0WKXoTNsdEOLBfzyMQDznrz6w+gu9uD8F86CkHR59UNj5+7+s?=
- =?Windows-1252?Q?demZgRwtYXZSrwKUJ4h+VKHrE5YNfIB36ApMr7BVwnpH1Na4EHlhgfJV?=
- =?Windows-1252?Q?9Fe3MyYS7uNGGGvQXDZbVs6SjZIjnqCKkRqBRCNHnbG9e3Zf+G1WnlZW?=
- =?Windows-1252?Q?IapQTLrKKpw/OuTAnst0d35PiY5epS45M41KkNn32BsxZLocAyAeRPD+?=
- =?Windows-1252?Q?QLLKiJkz2Tvas9jAxSUgQ0L4PYn0QIZ/qZWu7wO8hJWy826E1eQXcyj7?=
- =?Windows-1252?Q?OytvMj8vN9gOEW87TBHrWrnA4GDp+mDDUF65HE3UaWWmrQtRTsrBRqDR?=
- =?Windows-1252?Q?nxBxt7d1jOyLZB4dOiQHoNR8setIQ3WZtdRbXNgWxJaNvq3F4SDhWS2I?=
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9bc87eb4-1d27-498d-1834-08d96977e163
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 16:29:45.6006
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e03iNKWVQ21SsVH56TecNEDuIUHVugnxoL72D8uKq4mdCvMo64yWXKrc70dwTt9cSLlRCnsnYmFkasIHbYRzDQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR03MB4522
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2707; h=from:subject; bh=G7lfn/S4lfDuvrMJFt78eLvz2QzX7RSCHJx2EUKfiPQ=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhKRMWb5ISje3C63/e3fG+2iJekwLtKJCE+CTV1ok1 yeprqmiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSkTFgAKCRCJcvTf3G3AJspaD/ 97UJfbeR3q77gcILqldWph6Xas5R/waooSKUI7B8kcfMWSbIFP2UH37sv3hxoFbCYKw2DG46o4TqT1 gPku/jbqbtN0frzI9RuneJ5qsPkFwTcv0bYIFWc/FollTUbUaCDSCtrUASQWCwaGbxaIsECBHaYJLq bTstrJMOBbPV0pf+booD34qB1pgAF19WHjUX8WrHcps8yC3pw6FEH80FHerA0h84m1GxmsEDrYBH1U 2JLzwundYK1XJmyh9kAaA65m5C/KDmHQKbt1hvv6yipbyZ3ebELzbaMBTP4lPQ37awcDq6h5HKBGCi t4dikQrkFGbq7u4iLCaV9/KbKjECXoUxw2lpGYN5tUFp2vZhNlOOl3ZnXJlNj3+JDEmbpsWpBoBneb Tz+r9jG98tK4qycFdPTYXrMHLN3aQJe918KJiTCqc9SadDGPdMOWrymWJDtjtoxfrfxmDQOYMU+JWZ nupRIg3yV8k2i741PnR7T3F3TtoRJPokce/4CZB0SR+E/wIliNn47zBcHikiQVSowLyUq2pG7uOERw XF65I3T5t20YANDNmwFKEHbm4TXWbm032LJ7VvsbLalEzpAdcrB9goWd+h4Jji+dANzy5+fr/SPeyF ESueU/yE/ndOHFiaqOc0lcsN2e71td7jcWOhA217gmApxZK1TtuPAJSN3Ukg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v3:
+- fix typo in treewide conversion (u8 should have been __u8)
+- improve changelog for DECLARE_FLEX_ARRAY patch
+- add acks/reviews
+v2: https://lore.kernel.org/lkml/20210826050458.1540622-1-keescook@chromium.org/
+v1: https://lore.kernel.org/lkml/20210818081118.1667663-1-keescook@chromium.org/
 
+Hi,
 
-On 8/27/21 3:16 AM, kernel test robot wrote:
-> Hi Sean,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on tip/timers/core]
-> [also build test WARNING on pwm/for-next linus/master v5.14-rc7 next-20210826]
-> [cannot apply to xlnx/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Sean-Anderson/dt-bindings-pwm-Add-Xilinx-AXI-Timer/20210827-052011
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 127c92feb74a6721f62587f1b89128808f049cf1
-> config: mips-randconfig-r025-20210827 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 1076082a0d97bd5c16a25ee7cf3dbb6ee4b5a9fe)
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # install mips cross compiling tool for clang build
->          # apt-get install binutils-mips-linux-gnu
->          # https://github.com/0day-ci/linux/commit/eab56f0b0c5a62e40c04916eb1b4f21f478cec3a
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Sean-Anderson/dt-bindings-pwm-Add-Xilinx-AXI-Timer/20210827-052011
->          git checkout eab56f0b0c5a62e40c04916eb1b4f21f478cec3a
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=mips
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> drivers/pwm/pwm-xilinx.c:249:34: warning: unused variable 'xilinx_timer_of_match' [-Wunused-const-variable]
->     static const struct of_device_id xilinx_timer_of_match[] = {
->                                      ^
->     1 warning generated.
-> 
-> 
-> vim +/xilinx_timer_of_match +249 drivers/pwm/pwm-xilinx.c
-> 
->     248	
->   > 249	static const struct of_device_id xilinx_timer_of_match[] = {
->     250		{ .compatible = "xlnx,xps-timer-1.00.a", },
->     251		{},
->     252	};
->     253	MODULE_DEVICE_TABLE(of, xilinx_timer_of_match);
->     254	
+In support of the improved buffer overflow detection for memcpy(),
+this enables -Warray-bounds and -Wzero-length-bounds globally. Mostly
+it involves some struct member tricks with the new DECLARE_FLEX_ARRAY()
+macro. Everything else is just replacing stacked 0-element arrays
+with actual unions in two related treewide patches. There is one set of
+special cases that were fixed separately[1] and are needed as well.
 
-For this and the error on the previous patch it looks like I am missing a dependency on OF_ADDR. Will add.
+I'm expecting to carry this series with the memcpy() series in my
+"overflow" tree. Reviews appreciated! :)
 
---Sean
+Thanks!
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/20210818043035.1308062-1-keescook@chromium.org/
+
+Kees Cook (5):
+  stddef: Introduce DECLARE_FLEX_ARRAY() helper
+  treewide: Replace open-coded flex arrays in unions
+  treewide: Replace 0-element memcpy() destinations with flexible arrays
+  Makefile: Enable -Warray-bounds
+  Makefile: Enable -Wzero-length-bounds
+
+ Makefile                                      |  2 --
+ drivers/crypto/chelsio/chcr_crypto.h          | 14 +++++----
+ drivers/net/can/usb/etas_es58x/es581_4.h      |  2 +-
+ drivers/net/can/usb/etas_es58x/es58x_fd.h     |  2 +-
+ drivers/net/wireless/ath/ath10k/bmi.h         | 10 +++----
+ drivers/net/wireless/ath/ath10k/htt.h         |  7 +++--
+ .../net/wireless/intel/iwlegacy/commands.h    |  6 ++--
+ .../net/wireless/intel/iwlwifi/dvm/commands.h |  6 ++--
+ .../net/wireless/intel/iwlwifi/fw/api/tx.h    |  6 ++--
+ drivers/scsi/aic94xx/aic94xx_sds.c            |  6 ++--
+ drivers/scsi/qla4xxx/ql4_def.h                |  4 +--
+ drivers/staging/rtl8188eu/include/ieee80211.h |  6 ++--
+ drivers/staging/rtl8712/ieee80211.h           |  4 +--
+ drivers/staging/rtl8723bs/include/ieee80211.h |  6 ++--
+ fs/hpfs/hpfs.h                                |  8 ++---
+ include/linux/filter.h                        |  6 ++--
+ include/linux/ieee80211.h                     | 30 +++++++++----------
+ include/linux/stddef.h                        | 13 ++++++++
+ include/scsi/sas.h                            | 12 +++++---
+ include/uapi/linux/dlm_device.h               |  4 +--
+ include/uapi/linux/stddef.h                   | 16 ++++++++++
+ include/uapi/rdma/rdma_user_rxe.h             |  4 +--
+ include/uapi/sound/asoc.h                     |  4 +--
+ scripts/kernel-doc                            |  2 ++
+ 24 files changed, 115 insertions(+), 65 deletions(-)
+
+-- 
+2.30.2
+
