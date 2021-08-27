@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4913F9290
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850503F9293
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 05:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244055AbhH0DBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Aug 2021 23:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33378 "EHLO
+        id S244089AbhH0DBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Aug 2021 23:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhH0DBL (ORCPT
+        with ESMTP id S244066AbhH0DBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Aug 2021 23:01:11 -0400
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC71C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:00:22 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 6A50C41F5D;
-        Fri, 27 Aug 2021 03:00:18 +0000 (UTC)
-Subject: Re: [PATCH] maintainers: Add Alyssa Rosenzweig as M1 reviewer
-To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Sven Peter <sven@svenpeter.dev>
-References: <20210823151738.6273-1-alyssa@rosenzweig.io>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <3112bc2c-7c6a-3190-26cd-a873b4029429@marcan.st>
-Date:   Fri, 27 Aug 2021 12:00:15 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 26 Aug 2021 23:01:12 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB747C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:00:24 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 17so4826078pgp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Aug 2021 20:00:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=u9fsl2J395rtxjWdS/JQdfMymBJF011HJL/BAVf+vaQ=;
+        b=wt0+lXQptAtx71d1AaFamencx3yC54vtU0e2RDU3G//q+cU4UTJmPk5Ze8jOIdOj2O
+         Zar5QDY8yJsXtclYlOBeEcPY84jYRevBwIT7HMLg8RWQ/hK5rAsV/dT5LO35FwFjkFeH
+         WztLnYCOTaE/v4IREh3XmSslexYz4jd4LvDJHgyKW8HdfNxG5SP2eyAvllc87DCZa+Dt
+         DQT+yBa76HSX8PzAgAWNnZ7G92gaJhEkPuIS0BTdfZOBDdTe2pZSA5dFawWtGu/hCKzH
+         CnUnKUw/bErS08W0ZQtW6wx1PGl2nHm2kYfHHRH97qKe6S4RhZFACgKZaHZ3VnZovE3m
+         tgBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=u9fsl2J395rtxjWdS/JQdfMymBJF011HJL/BAVf+vaQ=;
+        b=BXZOtMyqnR07AL2bN5RneKf6EtVqcPfy3p/5M1gVBY2KSFivjlG8J8Z7gRPgXgKL+9
+         1pS16yQY2rW57H7d36T0Ot3fTbqIHtHhQ83r6JZfsqymeDomhIXyH0LKmJonV2uBamoF
+         qrlx60L18AcMz0v+G43CnynZtJX8W4RViWo0Sq2GrSgJjjDaXJ/rpiD09EPC8lbCKrdT
+         zeIdd22WYzydAuCIXrE9jEj9Nbe77WvyBt71Hd6jy4ZhAHC8oncwdTUkp4exIO85F42K
+         PU3HFFQCVrWsBeS9n50pJ9RSZ6mTR8wMXhhGMM0cGpC1S322tpuLG0e8yF6Jq8OfMg6K
+         1K1Q==
+X-Gm-Message-State: AOAM5328RUMWK3CIZ0WOFQqJ53QDimVeBefsf1wFun5FhBN1Mhku8ss9
+        yc+UrKCF+4xsKVxthhCSOocZEQ==
+X-Google-Smtp-Source: ABdhPJyTZ9R0K9u4nnfdiatOPsG1Zri2/nz3ZfsEfYSuGeWo5aSKVaFN589cINxjxmSCFfIlqLPt4A==
+X-Received: by 2002:aa7:90cd:0:b029:333:baa9:87b7 with SMTP id k13-20020aa790cd0000b0290333baa987b7mr6680196pfk.23.1630033224126;
+        Thu, 26 Aug 2021 20:00:24 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id x2sm9980708pjq.35.2021.08.26.20.00.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 20:00:23 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 08:30:19 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v9 1/8] opp: Add dev_pm_opp_from_clk_rate()
+Message-ID: <20210827030019.blhfh5wp7iyf53a2@vireshk-i7>
+References: <20210827013415.24027-1-digetx@gmail.com>
+ <20210827013415.24027-2-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210823151738.6273-1-alyssa@rosenzweig.io>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827013415.24027-2-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2021 00.17, Alyssa Rosenzweig wrote:
-> Add myself as a reviewer for Asahi Linux (Apple M1) patches.
-> 
-> I would like to be CC'ed on Asahi Linux patches for review and testing.
-> I am also collecting Asahi Linux patches downstream, rebasing on
-> linux-next periodically, and would like to be notified of what to
-> cherry-pick from lists.
-> 
-> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> Cc: Hector Martin <marcan@marcan.st>
-> Cc: Sven Peter <sven@svenpeter.dev>
-> ---
->   MAINTAINERS | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b63403793c81..399e536bf629 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1264,6 +1264,7 @@ F:	drivers/input/mouse/bcm5974.c
->   
->   APPLE DART IOMMU DRIVER
->   M:	Sven Peter <sven@svenpeter.dev>
-> +R:	Alyssa Rosenzweig <alyssa@rosenzweig.io>
->   L:	iommu@lists.linux-foundation.org
->   S:	Maintained
->   F:	Documentation/devicetree/bindings/iommu/apple,dart.yaml
-> @@ -1693,6 +1694,7 @@ F:	drivers/*/*alpine*
->   
->   ARM/APPLE MACHINE SUPPORT
->   M:	Hector Martin <marcan@marcan.st>
-> +R:	Alyssa Rosenzweig <alyssa@rosenzweig.io>
->   L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->   S:	Maintained
->   W:	https://asahilinux.org
-> 
+On 27-08-21, 04:34, Dmitry Osipenko wrote:
+> +/**
+> + * dev_pm_opp_from_clk_rate() - Get OPP from current clock rate
+> + * @dev:	device for which we do this operation
+> + *
+> + * Get OPP which corresponds to the current clock rate of a device.
+> + *
+> + * Return: pointer to 'struct dev_pm_opp' on success and errorno otherwise.
+> + */
+> +struct dev_pm_opp *dev_pm_opp_from_clk_rate(struct device *dev)
 
-Acked-by: Hector Martin <marcan@marcan.st>
-
-P.S. fix your mail server, I had to pull this from the list and I doubt 
-I'm the only one ;)
+I will rather call it dev_pm_opp_get_current(), and do the magic to find the
+current OPP here as well. No need to reinvent the wheel.
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+viresh
