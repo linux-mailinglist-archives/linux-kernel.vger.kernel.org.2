@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3868D3F9F55
+	by mail.lfdr.de (Postfix) with ESMTP id 8430A3F9F56
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Aug 2021 20:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhH0S5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 14:57:44 -0400
-Received: from mail-oo1-f54.google.com ([209.85.161.54]:34464 "EHLO
-        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhH0S5n (ORCPT
+        id S230418AbhH0S56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 14:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230383AbhH0S5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 14:57:43 -0400
-Received: by mail-oo1-f54.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso1306788oon.1;
-        Fri, 27 Aug 2021 11:56:53 -0700 (PDT)
+        Fri, 27 Aug 2021 14:57:55 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB13CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 11:57:05 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id y23so6674390pgi.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 11:57:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=DXQ3lYRd+RJrWBWKlHG0BfrppwGOELJIQ4taDI2QXC0=;
+        b=iSmLuQnIamnOyJeu+Uda+TLpzEI+2EJI7QxFe4oIhNh6FKYSuDG4O6beHaw3/+V7Gr
+         WQTRXL5oPJDYXzNVTVjoPe7DZ5x2G3QidWDtTgb7Ny0sVMQflwMwvBHZv/1giY6vrsSP
+         I4LuL2z29s1L4dQY9/hyOljG0uqhP5BleZcVX3gCJ33lSoDdD+y1sQTpcvFV1r7G4Jr9
+         c0kocY4no1yf5+WZL1hW/4MQ8fWbH24RlzmNgsVAY4RPdvSlDT5xLMaKvuL7u0MBv/V/
+         SLbXDqcoXpg+w3TtvHBIM4CM0hrOXpQc7+WeBdtSkeL0v6Xh1r/BmFgb6XdTBSrLKSlr
+         JpGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=IVgojgnGhqQ+wkgkjmsrimQe5aqsGL34JdBENArlM/M=;
-        b=HRsIau2cInvstsRF9MZ+4xIr7FLeiVeBgNybfCN+nXiAByADTbAYKmI3AOO96tY+yT
-         fkJuvCTy/eDvm/Jl52EsGlN0ibVh1rUs952klOjFqR8TdpXZ8+6SGyGsIF2NtW3u6Eim
-         pijGbd59dhmFqmO3vQrBKqvpYIkkX6/ZmHhKSuDwOdPklm/1aJRgOOFVotW0hc7VGq2Y
-         b3YbLbghCOl5pOBlwUu8V316YIeVEBlXnQuQ6QTLVMoXiW8cq0biqhA+rvvzFA+LdNAa
-         kGhv3D1pXhChlbeu2GW446Z59zzBtL+nVltXiMFkbipDLv1L6+7XFGIii0yoOhouzVxt
-         09uA==
-X-Gm-Message-State: AOAM5319dd7CWf5ilsUAdfaPiFv9jaUW1tAXWO9C9JX/J8HQUPrQJnYN
-        4JVV0F659BJqdPb+vidHLMq3CTUqEYG/7buzYz+WC3pXvttmvA==
-X-Google-Smtp-Source: ABdhPJzwzdphUl+0nAfGpPcPOTLFkW86A5/1abHeqIpo6qbEZTXN4mWTCkLUVggDnfobi52p5e/TaD15urSJKaExsJc=
-X-Received: by 2002:a4a:ca83:: with SMTP id x3mr234892ooq.2.1630090613467;
- Fri, 27 Aug 2021 11:56:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=DXQ3lYRd+RJrWBWKlHG0BfrppwGOELJIQ4taDI2QXC0=;
+        b=g9asuMe9k2SI6eL63MvCbBuZIQM6/azXtN4UO9C9hZwPuCklQkVnCvMp6TBSEyZbZg
+         QuVtKyKEtbbI9dvNwxGPgo63ClxfcVKSIlW6tcEVEnD0Y+I1YPhXuihwQUoqkobBKjL3
+         /qyRJvqkrdSOK4CCiGRJnFmAYpm/pZ27RX5Ra/ryxllTjJwA9VkXjd6gGjTSL+SdkWOB
+         2Gfouwnuxm2s6kyoZntmVbSbK8oZHim38NYEWVppW+NfPshXpjZSZ2selVsxWtGqV8Di
+         FJeDSSXo2MkuhyGeIV1nH6w/5BKglfSSu/7IMDebrcQf6qnDgSVB+ZH8pS8v7GumNYMf
+         DGJQ==
+X-Gm-Message-State: AOAM533GjbiTKzhqHflAKYJ5qq6mejvDpgaIAPstPk+ETp8ImKWjQf2n
+        8pNNKcKZJVyJcuJiHHK1I4HBYTufn1cBgNfok+w=
+X-Google-Smtp-Source: ABdhPJwpDAGgy23CS8nKiDzewxwOu7qWqCtigY+4/2mGC+nnNcACa+ekYmloaWPgG+LaurntC0Ci77HkskdKzxruQaQ=
+X-Received: by 2002:a62:5c6:0:b029:341:e0b1:a72c with SMTP id
+ 189-20020a6205c60000b0290341e0b1a72cmr10513214pff.71.1630090625274; Fri, 27
+ Aug 2021 11:57:05 -0700 (PDT)
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 27 Aug 2021 20:56:42 +0200
-Message-ID: <CAJZ5v0hxquKvcHR_YYd+csGWwHB5HW2uXMYtM=uT5QDqFLH8ew@mail.gmail.com>
-Subject: [GIT PULL] ACPI fix for v5.14-rc8
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
+Reply-To: mrs.chantal778@gmail.com
+Sender: menlight2@gmail.com
+Received: by 2002:a05:6a10:c7c7:0:0:0:0 with HTTP; Fri, 27 Aug 2021 11:57:04
+ -0700 (PDT)
+From:   MRSCHANTAL <mrschantal737@gmail.com>
+Date:   Fri, 27 Aug 2021 11:57:04 -0700
+X-Google-Sender-Auth: _9C-Lj39xHW_RS9KI-SyUW3tJEI
+Message-ID: <CAA-qcAV5yYUNdZh+-3uRjjepXOWPZh+c5=GuH6FwrPP9zP1f=w@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+-- 
+You have been compensated with the sum of $3.8 million dollars in the
+United Nations, the payment will be issued on the ATM visa card and
+will be sent from the Santander bank.
 
-Please pull from the tag
+we need your address and your whatsapp
+this is my email address (mrs.chantal778@gmail.com)
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.14-rc8
-
-with top-most commit 294c34e704e78d641b039064ce72d4531afe0088
-
- media: ipu3-cio2: Drop reference on error path in cio2_bridge_connect_sensor()
-
-on top of commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
-
- Linux 5.14-rc7
-
-to receive an ACPI fix for 5.14-rc8 (or final 5.14).
-
-This fixes an ACPI-related regression introduced during this cycle that has
-been partially addressed by an earlier commit (Andy Shevchenko).
-
-Thanks!
-
-
----------------
-
-Andy Shevchenko (1):
-      media: ipu3-cio2: Drop reference on error path in
-cio2_bridge_connect_sensor()
-
----------------
-
- drivers/media/pci/intel/ipu3/cio2-bridge.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks
+Mrs.Chantal
