@@ -2,76 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6363FA449
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 09:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FEE3FA442
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 09:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbhH1Hab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 03:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233348AbhH1HaU (ORCPT
+        id S233419AbhH1H2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 03:28:32 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:37578 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233375AbhH1H2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 03:30:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32659C0613D9;
-        Sat, 28 Aug 2021 00:29:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AFQaUzUuTEkMjtfZe6vMif4NxOxYH1tc9yvqOWpaGoU=; b=Vs4fikiD3b55mVdKmwPinQOrql
-        2AK33dcgloSKhkn3nQm8xle7mYrgJmLXAgTipd9aFP5lr84o1zbAU3TPW2gaOy/9PC9RjmDSU77eh
-        W5g66CdX4UtfAWObohVlVtaWpEvcJB7SYXwghgc5PinRypDaQ9Ul9ftmpWp3nZmqmNrOXQRo6RYLj
-        I1GNzV2d8ZOkQOMPt43abeCgMW7JLoZnq07JzKclv09cdG6BstHMpOqcTg4KAznS4BOBsifgIENfn
-        IppcKUZOYarvjyhvlYas+2pl8emMMGCZHR1/eaXF0J4oz00GH8XZRstaxf66G63sob0aEQ20KB9eR
-        5cPJv5CA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJsjt-00FNDf-Vc; Sat, 28 Aug 2021 07:27:05 +0000
-Date:   Sat, 28 Aug 2021 08:26:53 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
-        martin.petersen@oracle.com, jejb@linux.ibm.com, kbusch@kernel.org,
-        sagi@grimberg.me, adrian.hunter@intel.com, beanhuo@micron.com,
-        ulf.hansson@linaro.org, avri.altman@wdc.com, swboyd@chromium.org,
-        agk@redhat.com, snitzer@redhat.com, josef@toxicpanda.com,
-        hare@suse.de, bvanassche@acm.org, ming.lei@redhat.com,
-        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
-        nbd@other.debian.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/10] scsi/sd: use blk_cleanup_queue() insted of
- put_disk()
-Message-ID: <YSnlPZD/LrVRZWx6@infradead.org>
-References: <20210823202930.137278-1-mcgrof@kernel.org>
- <20210823202930.137278-2-mcgrof@kernel.org>
- <YSSJNTxyLHu/LsNJ@infradead.org>
- <YSkumJBTztoYdzC7@bombadil.infradead.org>
+        Sat, 28 Aug 2021 03:28:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630135661; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=wqrl8mhhp9XRltqpiFq3Q66knEYEdoXiO60FIxmteRg=; b=rVPA8UgNTWOKFjyMXGXcGSevLAq6w2LBI4LjOJ8nkTEVH/KFRgNWhg1H+nWfxm+QnXHcQPp8
+ UA/FRP9+HOOxKEKNhJHngnVPyfFcnvNAkXF7B6S/ZEz5Eg6yXcJnis/9CkwN/tY4CFS4WAsD
+ /4WmOTrGQmgydkL78UtBVSXctd0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6129e5666fc2cf7ad9c550ed (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Aug 2021 07:27:34
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 43417C43617; Sat, 28 Aug 2021 07:27:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 555AFC4338F;
+        Sat, 28 Aug 2021 07:27:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 555AFC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>
+Subject: Re: linux-next: manual merge of the char-misc tree with Linus' tree
+References: <20210827164904.6b1d1f0e@canb.auug.org.au>
+        <YSjkosA6yMrMmaNk@kroah.com> <20210827175852.GB15018@thinkpad>
+        <YSk82+XbcRoBf37v@kroah.com>
+Date:   Sat, 28 Aug 2021 10:27:27 +0300
+In-Reply-To: <YSk82+XbcRoBf37v@kroah.com> (Greg KH's message of "Fri, 27 Aug
+        2021 21:28:27 +0200")
+Message-ID: <877dg658rk.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSkumJBTztoYdzC7@bombadil.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 11:27:36AM -0700, Luis Chamberlain wrote:
-> On Tue, Aug 24, 2021 at 06:52:53AM +0100, Christoph Hellwig wrote:
-> > On Mon, Aug 23, 2021 at 01:29:21PM -0700, Luis Chamberlain wrote:
-> > > The single put_disk() is useful if you know you're not doing
-> > > a cleanup after add_disk(), but since we want to add support
-> > > for that, just use the normal form of blk_cleanup_disk() to
-> > > cleanup the queue and put the disk.
-> > 
-> > Hmm, I don't think this is correct.  The request_queue is owned by the
-> > core SCSI code.
-> 
-> Alright, I'll drop this one. For the life of me I can't find the respective
-> probe call on the scsi layer.
+Greg KH <greg@kroah.com> writes:
 
-What probe call?  SCSI allocates the request_queue using the normal
-blk_mq_init_queue function in scsi_alloc_sdev.  It it then used to
-send SCSI passthrough commands for probing before eventually binding
-an upper level driver using the driver model (or something not binding
-one at all if there is none for the device type).
+> On Fri, Aug 27, 2021 at 11:28:52PM +0530, Manivannan Sadhasivam wrote:
+>> Hi Greg,
+>> 
+>> On Fri, Aug 27, 2021 at 03:12:02PM +0200, Greg KH wrote:
+>> > On Fri, Aug 27, 2021 at 04:49:04PM +1000, Stephen Rothwell wrote:
+>> > > Hi all,
+>> > > 
+>> > > Today's linux-next merge of the char-misc tree got conflicts in:
+>> > > 
+>> > >   drivers/bus/mhi/core/main.c
+>> > >   net/qrtr/mhi.c
+>> > > 
+>> > > between commit:
+>> > > 
+>> > >   9ebc2758d0bb ("Revert "net: really fix the build..."")
+>> > > 
+>> > > from the origin tree and commit:
+>> > > 
+>> > >   0092a1e3f763 ("bus: mhi: Add inbound buffers allocation flag")
+>> > > 
+>> > > from the char-misc tree.
+>> > > 
+>> > > I fixed it up (the commit in Linus' tree is basically a revert of the
+>> > > char-misc tree, so I effectively reverted the latter) and can carry the
+>> > > fix as necessary. This is now fixed as far as linux-next is concerned,
+>> > > but any non trivial conflicts should be mentioned to your upstream
+>> > > maintainer when your tree is submitted for merging.  You may also want
+>> > > to consider cooperating with the maintainer of the conflicting tree to
+>> > > minimise any particularly complex conflicts.
+>> > 
+>> > Hm, what should I do in my tree here?
+>> > 
+>> > Kalle, what commit should I make in the char-misc tree now to handle
+>> > this issue, and make the merge with Linus's tree "simple"?  Or any other
+>> > ideas?
+>> > 
+>> 
+>> For making the merge simpler, I'd suggest we revert below commit in char-misc:
+>> 
+>> 0092a1e3f763 ("bus: mhi: Add inbound buffers allocation flag")
+>
+> Reverting that works for me, I've done that in my tree and that allows
+> it to be merged cleanly with Linus's tree.
+
+Unfortunately this now breaks the build in char-misc-next (commit
+0dc3ad3f859d):
+
+net/qrtr/mhi.c: In function 'qcom_mhi_qrtr_probe':
+net/qrtr/mhi.c:105:48: error: 'MHI_CH_INBOUND_ALLOC_BUFS' undeclared (first use in this function)
+  105 |         rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~
+net/qrtr/mhi.c:105:48: note: each undeclared identifier is reported only once for each function it appears in
+net/qrtr/mhi.c:105:14: error: too many arguments to function 'mhi_prepare_for_transfer'
+  105 |         rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from net/qrtr/mhi.c:6:
+./include/linux/mhi.h:725:5: note: declared here
+  725 | int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+
+To see this error make sure CONFIG_QRTR and CONFIG_QRTR_MHI are enabled.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
