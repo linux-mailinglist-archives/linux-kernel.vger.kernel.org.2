@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2DC3FA697
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8213FA69B
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234494AbhH1Pxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
+        id S234528AbhH1Py6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 11:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhH1Pxn (ORCPT
+        with ESMTP id S234518AbhH1Py5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:53:43 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65F1C061756;
-        Sat, 28 Aug 2021 08:52:52 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id y3-20020a4ab403000000b00290e2a52c71so330971oon.2;
-        Sat, 28 Aug 2021 08:52:52 -0700 (PDT)
+        Sat, 28 Aug 2021 11:54:57 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E6BC061756;
+        Sat, 28 Aug 2021 08:54:06 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id b7so14579845edu.3;
+        Sat, 28 Aug 2021 08:54:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q+Ocg9t6n66QWfzQb63Nyh3M8znI6gaQbrcqs3sFG/4=;
-        b=f4ulNnMg+aI9qV4pCNJZC7VZQtHA93fzhZVWNgpAzJ/i6sW7sRa56cCDHjpgKYtKKn
-         6+k9LLk+2w1OR0VFRkZfW57W4WXvS3PPiMXTUkLPsV6etbFZhE7o1qu0uAZ7sWQDPr1R
-         SyOpQ5celoypcz9BG2EE/POllienjPY1dGwjS8ugihZt0lzMB0eqJMNL5PgMNSiy59ya
-         dj6HtkH4UYDWOa0URFq6c+FZCGZ4rZbHpGP3K8Cu3UMJemLF4tsrW/BXLXGPjXPteDNd
-         wC2oexf4VgA8+vEm8wDEkcmQHTwE4i8xmTZ9qTThoV53njGqREodbXUdyJyezvJoWMYg
-         69+g==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b/FoITeBxXzYPYRycaXkbD+65bcxuT4OKmmdeFd0Jlo=;
+        b=tf1iMB33IgOI69bWgXQProMFN2EETh3i67dsiFkKRxA9NLeh6/9xl9K6M9XrcT0iWy
+         ZFmsotmZKl1z/y+aAEirsUT/PDgeEu+8hHkFNzANECFnmGiW+0JmHcbPc11mynjxEMic
+         lNJs5eFdIb++dxvldt7ZZffeIIO+sfoUnEiMdH3ya0AdwMdLKbjGoioHQnPksF8rWGy+
+         83Sqr5K2gOgs3X4dcCKS3G0SJb9Gqf0l3d2+xcFQbTi1S+hji3XJEbTYGmfhe8Ijqz20
+         L5bTfjfw96ZWjA53QnbUO3kfIBZIuW0kIJar0qXdpTEof5ekF1uolgO8nAqtZSW8Mi2r
+         LeTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=q+Ocg9t6n66QWfzQb63Nyh3M8znI6gaQbrcqs3sFG/4=;
-        b=Xu9WG2wyFCaAmXZfyyDTPNCQspV87Z1B6YjlfY0oky/bTH0ZKCD8/qzxMe45dE58XD
-         UApFQYwQGxXdP18EoqKI9GKj2XPnFmXFqDjPHsEn0WfMx9pez4P4bEztxHkwC48zsAK1
-         N4LR0F08XQGlG7KPoepCyQYNQJ4+PIoVXs8bfssBBpaeb0nk97PXqEc297rvK1X+OC6F
-         uZbYD3Wi6uuCVT0D+lpGFw3s1KtHggY1h50uOfDzNcghEkG/CXa5Y8UxsX2ReywZK9I0
-         HYn+p/vg7bwYifkHLRb9YZgEx73HSNo9zQtf0AWI6vRl9UYXBcrZi0G+Z9sVgAuatWoY
-         RPGA==
-X-Gm-Message-State: AOAM530MTPcyDcYoW702N73/46d9lxbNCE4+7TNmvIGiGP2RHkBfXx1Q
-        aXzTkPr7//cB4qeUHIRHY5KHW380Sr4=
-X-Google-Smtp-Source: ABdhPJxHlYAg1s4un4jIGGBmp8Yg6VwhNOlYd1jxnpZgBIJcRkdBmH0NrUhf4L4FyoIl7rugyFsyDw==
-X-Received: by 2002:a4a:ba0f:: with SMTP id b15mr3739989oop.31.1630165972124;
-        Sat, 28 Aug 2021 08:52:52 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a4sm354649otv.49.2021.08.28.08.52.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 08:52:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 28 Aug 2021 08:52:50 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Brandon Wyman <bjwyman@gmail.com>
-Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Eddie James <eajames@linux.ibm.com>
-Subject: Re: [PATCH] hwmon: (pmbus/ibm-cffps) Do not swap max_power_out
-Message-ID: <20210828155250.GA820265@roeck-us.net>
-References: <20210827230433.3596370-1-bjwyman@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b/FoITeBxXzYPYRycaXkbD+65bcxuT4OKmmdeFd0Jlo=;
+        b=iM+EssKdLi2BjXcPeQS8TogGLtKPFHpIwQoPlghCNljq7iwSMqCZ2KUU7nuCE6gAbn
+         8vF/xYFkQc8bWRUGTq9L00FwytCBxQAddENLP59BAvBESDI6az61GbhcVtv2sxawNeKI
+         dFcDFypOhUmwo+ykX/1U0KdyHcDPy0oSJXvXUfHTUBXquJaLXO0yjp2XKsKioEQ0dTKV
+         ExyhWQ0L19jlBTg8p4twyMe9OVHx02929CL6T08P3Ruflu+tjh76eIGQ8fhjoOTg5efl
+         6oNf8HDv9GrrHbNfsKo5qPiKdhSdaIRqvPgSLsyhg2iKs3r3gWbotIdj3bM9p9Ke+9JF
+         uAFg==
+X-Gm-Message-State: AOAM531FB3fTRNAvd7T3M9eEmHMQlFCh81+RetzqlKVCv6a5VbYV68yZ
+        hqNkZap7weZwmdd1gsGJfSeso9QXV9IyI/yqRA4=
+X-Google-Smtp-Source: ABdhPJytLQmCtHspjMyHBMTX4NFKx0mMPjNdfQW3zHxrQS2RLqSasQmOR6hdIPX9F0PdpYCg0LBEGk6dpFFYaYQFU7M=
+X-Received: by 2002:a50:e699:: with SMTP id z25mr15370730edm.130.1630166044946;
+ Sat, 28 Aug 2021 08:54:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827230433.3596370-1-bjwyman@gmail.com>
+References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-2-linux.amoon@gmail.com>
+In-Reply-To: <20210817041548.1276-2-linux.amoon@gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sat, 28 Aug 2021 17:53:54 +0200
+Message-ID: <CAFBinCBnH1UqaiuHgTXZTH+RPOwCWiWLVheU=bydS4mfkxTP3g@mail.gmail.com>
+Subject: Re: [PATCHv3 1/6] ARM: dts: meson8b: odroidc1: Add usb phy power node
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Matt Corallo <oc2udbzfd@mattcorallo.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Emiliano Ingrassia <ingrassia@epigenesys.com>,
+        Brian Kim <brian.kim@hardkernel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 11:04:33PM +0000, Brandon Wyman wrote:
-> The bytes for max_power_out from the ibm-cffps devices do not need to be
-> swapped.
-> 
-> Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
+Hi Anand,
 
-Eddie, can you confirm this ?
+sorry for the late reply
+I have three very small comments below, apart from these, this is looking good!
 
-Thanks,
-Guenter
+On Tue, Aug 17, 2021 at 6:17 AM Anand Moon <linux.amoon@gmail.com> wrote:
+>
+> Add missing usb phy power node for usb node fix below warning.
+> P5V0 regulator supply input voltage range to USB host controller.
+> As described in the C1+ schematics, GPIO GPIOAO_5 is used to
+> enable input power to USB ports, set it to Active Low.
+I would phrase this last sentence as:
+"enable USB VBUS on the Micro-USB port using an active high signal"
+My idea here is to 1) clarify that it's about enabling USB VBUS only
+on the Micro-USB port and 2) use "active high" like the changes inside
+the patch itself
 
-> ---
->  drivers/hwmon/pmbus/ibm-cffps.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-> index df712ce4b164..29b77f192c9e 100644
-> --- a/drivers/hwmon/pmbus/ibm-cffps.c
-> +++ b/drivers/hwmon/pmbus/ibm-cffps.c
-> @@ -171,7 +171,7 @@ static ssize_t ibm_cffps_debugfs_read(struct file *file, char __user *buf,
->  		cmd = CFFPS_SN_CMD;
->  		break;
->  	case CFFPS_DEBUGFS_MAX_POWER_OUT:
-> -		rc = i2c_smbus_read_word_swapped(psu->client,
-> +		rc = i2c_smbus_read_word_data(psu->client,
->  						 CFFPS_MAX_POWER_OUT_CMD);
->  		if (rc < 0)
->  			return rc;
-> -- 
-> 2.25.1
-> 
+> [    1.260772] dwc2 c90c0000.usb: Looking up vbus-supply from device tree
+> [    1.260784] dwc2 c90c0000.usb: Looking up vbus-supply property in
+>                 mode /soc/usb@c90c0000 failed
+>
+> Fixes: 2eb79a4d15ff (ARM: dts: meson: enabling the USB Host
+>                 controller on Odroid-C1/C1+ board)
+>
+please drop this empty line
+
+[...]
+> @@ -119,7 +136,6 @@ vcc_3v3: regulator-vcc-3v3 {
+>                 regulator-name = "VCC3V3";
+>                 regulator-min-microvolt = <3300000>;
+>                 regulator-max-microvolt = <3300000>;
+> -
+I don't think that we should make any VCC3V3 regulator changes in this patch
+so please keep this empty line as-is.
+
+
+Best regards,
+Martin
