@@ -2,118 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF87F3FA575
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE713FA579
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbhH1L2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 07:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234136AbhH1L2d (ORCPT
+        id S234293AbhH1L3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 07:29:50 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:34388 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234140AbhH1L3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 07:28:33 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F55EC061796;
-        Sat, 28 Aug 2021 04:27:43 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id m25-20020a7bcb99000000b002e751bcb5dbso6030911wmi.5;
-        Sat, 28 Aug 2021 04:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=duhliZsTlIE2VE8yD9vItvYrUD0HDA/4yEWWMGX5Kx8=;
-        b=vWDaKY97EsHzOSABOczsI/BMk3y7wXr1ZXLkN2ruVw7fJ6FLNJPpcY78OFeyiJFTZO
-         q9Uug0HeNvNGbSj6ioXBbg/CkcQa+mJtDyTRdh6vTDKuJSzaAz5KKmA8VeH1wHN9wjqS
-         cHO7/GBgBM1YBOOkrslMykLGHnN83COZ2JA1A2PVFFIXjKrbmOZ36R9fqwFvd8R4EaRJ
-         cYnhu2f2QEiAjaP8id6fNvL34jfKl199++nDKHH3nP6WmY+lyhocgH/e4/dsflY8LpYK
-         aM/z1VEp9wRohA3oubDHYsnnkWeN6fYCuSGRZkDRBCE7Q8ILsG3cXG/QCOPdYAlwl5I2
-         kMxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=duhliZsTlIE2VE8yD9vItvYrUD0HDA/4yEWWMGX5Kx8=;
-        b=A2mN3RyciFo3KFuXOe/oQWaqxqsKzhOi8TdYnmj03quZve1ZBDKeN+e4F7GRQuwqfY
-         sUb++crqaL/Pz4AxAnPZ0DkGycZh2A6FtVPLyd4b7hXY4r0elSvSx8tFK/ZVc15sM/qR
-         XgOlHbCgrtj5eBRYC606f3HPYkpy5MHIZSd7ZBFEmLYMkrGhCtBSc+nI+XEvNb3sWNc7
-         9Qm7YnK74AXgwUwPOxBgb2Flk7Rdgw963vmQKTOM2C2wLfvDos8K1mfQPrQSaUUnLvQk
-         WZOF8jYGVztH60Rg30IoP5a8my6mspKPdrXgwMKLbWPvjmJdQl1hosLrvTZZk6FGcZvG
-         YM5w==
-X-Gm-Message-State: AOAM533AFWRg8RPvAvUDxK64fPpdUy+mnxCi4kuC2Ehl8wh+huQ0JZhN
-        FOCYFGMhsu1mikqEKQWT054=
-X-Google-Smtp-Source: ABdhPJzJtTsr+j4Sdr2KPv0nNpH/3oiY0Ubhor20w5rCeE7F4ayrmIa6cIpaKq3l3IWpK3LvstxKGg==
-X-Received: by 2002:a1c:7316:: with SMTP id d22mr24382165wmb.171.1630150061869;
-        Sat, 28 Aug 2021 04:27:41 -0700 (PDT)
-Received: from oci-gb-a1.vcn08061408.oraclevcn.com ([2603:c020:c001:7eff:7c7:9b76:193f:d476])
-        by smtp.googlemail.com with ESMTPSA id d145sm13571021wmd.3.2021.08.28.04.27.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 04:27:41 -0700 (PDT)
-From:   Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Matthew Hagan <mnhagan88@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] ARM: dts: NSP: Fix MX65 MDIO mux warnings
-Date:   Sat, 28 Aug 2021 11:27:03 +0000
-Message-Id: <20210828112704.2283805-5-mnhagan88@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210828112704.2283805-1-mnhagan88@gmail.com>
-References: <20210828112704.2283805-1-mnhagan88@gmail.com>
+        Sat, 28 Aug 2021 07:29:43 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d25 with ME
+        id mzUp2500J3riaq203zUqo8; Sat, 28 Aug 2021 13:28:51 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 28 Aug 2021 13:28:51 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] net: pasemi: Remove usage of the deprecated "pci-dma-compat.h" API
+Date:   Sat, 28 Aug 2021 13:28:48 +0200
+Message-Id: <bc6cd281eae024b26fd9c7ef6678d2d1dc9d74fd.1630150008.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly this fixes the following message:
-mdio-mii-mux: $nodename:0: 'mdio-mii-mux' does not match '^mdio-mux[\\-@]?'
+In [1], Christoph Hellwig has proposed to remove the wrappers in
+include/linux/pci-dma-compat.h.
 
-Secondly, move the mdio-mux to within the axi node and add the unit
-address. This requires exposing the axi node via a label in bcm-nsp.dtsi.
-This fixes the following warning:
-Warning (unit_address_vs_reg): /mdio-mii-mux: node has a reg or ranges property, but no unit name
+Some reasons why this API should be removed have been given by Julia
+Lawall in [2].
 
-Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+A coccinelle script has been used to perform the needed transformation
+Only relevant parts are given below.
+
+An 'unlikely()' has been removed when calling 'dma_mapping_error()' because
+this function, which is inlined, already has such an annotation.
+
+
+@@ @@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@ @@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+
+[1]: https://lore.kernel.org/kernel-janitors/20200421081257.GA131897@infradead.org/
+[2]: https://lore.kernel.org/kernel-janitors/alpine.DEB.2.22.394.2007120902170.2424@hadrien/
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- arch/arm/boot/dts/bcm-nsp.dtsi                | 2 +-
- arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+It has been compile tested.
+---
+ drivers/net/ethernet/pasemi/pasemi_mac.c | 32 ++++++++++++------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
-index 180827500f25..1c08daa18858 100644
---- a/arch/arm/boot/dts/bcm-nsp.dtsi
-+++ b/arch/arm/boot/dts/bcm-nsp.dtsi
-@@ -166,7 +166,7 @@ periph_clk: periph_clk {
- 		};
- 	};
+diff --git a/drivers/net/ethernet/pasemi/pasemi_mac.c b/drivers/net/ethernet/pasemi/pasemi_mac.c
+index 040a15a828b4..04a27ba26cc7 100644
+--- a/drivers/net/ethernet/pasemi/pasemi_mac.c
++++ b/drivers/net/ethernet/pasemi/pasemi_mac.c
+@@ -247,12 +247,13 @@ static int pasemi_mac_unmap_tx_skb(struct pasemi_mac *mac,
+ 	int f;
+ 	struct pci_dev *pdev = mac->dma_pdev;
  
--	axi@18000000 {
-+	axi: axi@18000000 {
- 		compatible = "simple-bus";
- 		ranges = <0x00000000 0x18000000 0x0011c40c>;
- 		#address-cells = <1>;
-diff --git a/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi b/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
-index 57d0c5eb9749..102acd85fab2 100644
---- a/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
-+++ b/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
-@@ -70,10 +70,12 @@ led-5 {
- 			gpios = <&gpioa 31 GPIO_ACTIVE_HIGH>;
- 		};
- 	};
-+};
+-	pci_unmap_single(pdev, dmas[0], skb_headlen(skb), PCI_DMA_TODEVICE);
++	dma_unmap_single(&pdev->dev, dmas[0], skb_headlen(skb), DMA_TO_DEVICE);
  
--	mdio-mii-mux {
-+&axi {
-+	mdio-mux@3f1c0 {
- 		compatible = "mdio-mux-mmioreg", "mdio-mux";
--		reg = <0x1803f1c0 0x4>;
-+		reg = <0x3f1c0 0x4>;
- 		mux-mask = <0x2000>;
- 		mdio-parent-bus = <&mdio_ext>;
- 		#address-cells = <1>;
+ 	for (f = 0; f < nfrags; f++) {
+ 		const skb_frag_t *frag = &skb_shinfo(skb)->frags[f];
+ 
+-		pci_unmap_page(pdev, dmas[f+1], skb_frag_size(frag), PCI_DMA_TODEVICE);
++		dma_unmap_page(&pdev->dev, dmas[f + 1], skb_frag_size(frag),
++			       DMA_TO_DEVICE);
+ 	}
+ 	dev_kfree_skb_irq(skb);
+ 
+@@ -548,10 +549,8 @@ static void pasemi_mac_free_rx_buffers(struct pasemi_mac *mac)
+ 	for (i = 0; i < RX_RING_SIZE; i++) {
+ 		info = &RX_DESC_INFO(rx, i);
+ 		if (info->skb && info->dma) {
+-			pci_unmap_single(mac->dma_pdev,
+-					 info->dma,
+-					 info->skb->len,
+-					 PCI_DMA_FROMDEVICE);
++			dma_unmap_single(&mac->dma_pdev->dev, info->dma,
++					 info->skb->len, DMA_FROM_DEVICE);
+ 			dev_kfree_skb_any(info->skb);
+ 		}
+ 		info->dma = 0;
+@@ -600,11 +599,11 @@ static void pasemi_mac_replenish_rx_ring(struct net_device *dev,
+ 		if (unlikely(!skb))
+ 			break;
+ 
+-		dma = pci_map_single(mac->dma_pdev, skb->data,
++		dma = dma_map_single(&mac->dma_pdev->dev, skb->data,
+ 				     mac->bufsz - LOCAL_SKB_ALIGN,
+-				     PCI_DMA_FROMDEVICE);
++				     DMA_FROM_DEVICE);
+ 
+-		if (unlikely(pci_dma_mapping_error(mac->dma_pdev, dma))) {
++		if (dma_mapping_error(&mac->dma_pdev->dev, dma)) {
+ 			dev_kfree_skb_irq(info->skb);
+ 			break;
+ 		}
+@@ -741,8 +740,9 @@ static int pasemi_mac_clean_rx(struct pasemi_mac_rxring *rx,
+ 
+ 		len = (macrx & XCT_MACRX_LLEN_M) >> XCT_MACRX_LLEN_S;
+ 
+-		pci_unmap_single(pdev, dma, mac->bufsz - LOCAL_SKB_ALIGN,
+-				 PCI_DMA_FROMDEVICE);
++		dma_unmap_single(&pdev->dev, dma,
++				 mac->bufsz - LOCAL_SKB_ALIGN,
++				 DMA_FROM_DEVICE);
+ 
+ 		if (macrx & XCT_MACRX_CRC) {
+ 			/* CRC error flagged */
+@@ -1444,10 +1444,10 @@ static int pasemi_mac_start_tx(struct sk_buff *skb, struct net_device *dev)
+ 
+ 	nfrags = skb_shinfo(skb)->nr_frags;
+ 
+-	map[0] = pci_map_single(mac->dma_pdev, skb->data, skb_headlen(skb),
+-				PCI_DMA_TODEVICE);
++	map[0] = dma_map_single(&mac->dma_pdev->dev, skb->data,
++				skb_headlen(skb), DMA_TO_DEVICE);
+ 	map_size[0] = skb_headlen(skb);
+-	if (pci_dma_mapping_error(mac->dma_pdev, map[0]))
++	if (dma_mapping_error(&mac->dma_pdev->dev, map[0]))
+ 		goto out_err_nolock;
+ 
+ 	for (i = 0; i < nfrags; i++) {
+@@ -1534,8 +1534,8 @@ static int pasemi_mac_start_tx(struct sk_buff *skb, struct net_device *dev)
+ 	spin_unlock_irqrestore(&txring->lock, flags);
+ out_err_nolock:
+ 	while (nfrags--)
+-		pci_unmap_single(mac->dma_pdev, map[nfrags], map_size[nfrags],
+-				 PCI_DMA_TODEVICE);
++		dma_unmap_single(&mac->dma_pdev->dev, map[nfrags],
++				 map_size[nfrags], DMA_TO_DEVICE);
+ 
+ 	return NETDEV_TX_BUSY;
+ }
 -- 
-2.27.0
+2.30.2
 
