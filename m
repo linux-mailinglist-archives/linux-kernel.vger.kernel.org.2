@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A563FA31A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 04:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2BE3FA31E
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 04:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233112AbhH1CTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 22:19:10 -0400
-Received: from mail-m176231.qiye.163.com ([59.111.176.231]:61504 "EHLO
-        mail-m176231.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232953AbhH1CTJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 22:19:09 -0400
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-m176231.qiye.163.com (Hmail) with ESMTP id AB1256C00F3;
-        Sat, 28 Aug 2021 10:18:17 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AJ*AdQAQD9tzCOr4iYm-E4pL.3.1630117097688.Hmail.wangqing@vivo.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Dirk Behme <dirk.behme@de.bosch.com>,
-        linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCxSRVNFTkRdIHNvZnRpcnE6IEludHJvZHVjZSBTT0ZUSVJRX0ZPUkNFRF9USFJFQURJTkc=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.213.83.158
-In-Reply-To: <87k0k61q21.ffs@tglx>
+        id S233144AbhH1CVC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Aug 2021 22:21:02 -0400
+Received: from mga01.intel.com ([192.55.52.88]:18581 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233053AbhH1CU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 22:20:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10089"; a="240282552"
+X-IronPort-AV: E=Sophos;i="5.84,358,1620716400"; 
+   d="scan'208";a="240282552"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2021 19:20:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,358,1620716400"; 
+   d="scan'208";a="528533365"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by FMSMGA003.fm.intel.com with ESMTP; 27 Aug 2021 19:20:07 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Fri, 27 Aug 2021 19:20:06 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Fri, 27 Aug 2021 19:20:06 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
+ Fri, 27 Aug 2021 19:20:06 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
+Subject: RE: [PATCH v7 05/19] iov_iter: Introduce fault_in_iov_iter_writeable
+Thread-Topic: [PATCH v7 05/19] iov_iter: Introduce fault_in_iov_iter_writeable
+Thread-Index: AQHXm5pzAH4qSaa/BkWiD/swcmZu0auILsxw
+Date:   Sat, 28 Aug 2021 02:20:05 +0000
+Message-ID: <ace2140100e6409a876984fafbb9cbde@intel.com>
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+ <20210827164926.1726765-6-agruenba@redhat.com>
+ <YSkz025ncjhyRmlB@zeniv-ca.linux.org.uk>
+ <CAHk-=wh5p6zpgUUoY+O7e74X9BZyODhnsqvv=xqnTaLRNj3d_Q@mail.gmail.com>
+ <YSk7xfcHVc7CxtQO@zeniv-ca.linux.org.uk>
+ <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
+ <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
+ <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
+ <YSlftta38M4FsWUq@zeniv-ca.linux.org.uk>
+ <20210827232246.GA1668365@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <20210827232246.GA1668365@agluck-desk2.amr.corp.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Received: from wangqing@vivo.com( [58.213.83.158) ] by ajax-webmail ( [127.0.0.1] ) ; Sat, 28 Aug 2021 10:18:17 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Sat, 28 Aug 2021 10:18:17 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRoYTxpWGR0YGkxDSRgfTh
-        5MVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1NSE1MS0pKQ0pJN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6MVE6Hyo6Kj9CDwE4NAlPEiIWVj5PCzdVSFVKTUhLSkpMS0JDS0lIVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSUpIVUNIVUpOQ1lXWQgBWUFOQ0lCNwY+
-X-HM-Tid: 0a7b8a8cf0ecd9a9kuwsab1256c00f3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5XYW5nLAo+Cj5PbiBNb24sIEF1ZyAyMyAyMDIxIGF0IDExOjMzLCBXYW5nIFFpbmcgd3JvdGU6
-Cj4KPj4gQXQgcHJlc2VudCwgd2hldGhlciB0aGUgc29mdGlycSBpcyBleGVjdXRlZCB3aGVuIHRo
-ZSBpbnRlcnJ1cHQgZXhpdHMgCj4+IGlzIGNvbnRyb2xsZWQgYnkgSVJRX0ZPUkNFRF9USFJFQURJ
-TkcuIFRoaXMgaXMgdW5yZWFzb25hYmxlLiBJdCBzaG91bGQgCj4+IGJlIHNwbGl0IGFuZCBhbGxv
-d2VkIHRvIHRha2UgZWZmZWN0IHNlcGFyYXRlbHkuCj4KPlRoZXJlIGlzIG5vdGhpbmcgdW5yZWFz
-b25hYmxlIGFib3V0IGl0LiBXaGVuIGludGVycnVwdCBmb3JjZSB0aHJlYWRpbmcKPmlzIGluIGVm
-ZmVjdCB0aGVuIGl0IG9idmlvdXNseSByZXF1aXJlcyB0aGF0IHNvZnQgaW50ZXJydXB0IHByb2Nl
-c3NpbmcKPmdvZXMgaW50byB0aHJlYWRlZCBtb2RlIGFzIHdlbGwuIEJ1dCB0aGUgdGhyZWFkZWQg
-ZXhlY3V0aW9uIHN0aWxsIHRha2VzCj5wbGFjZSB3aGVuIHRoZSBmb3JjZSB0aHJlYWRlZCBpbnRl
-cnJ1cHQgaGFuZGxlciBjb21wbGV0ZXMuIE9ubHkgc29mdGlycXMKPndoaWNoIGFyZSByYWlzZWQg
-ZnJvbSBoYXJkIGludGVycnVwdCBjb250ZXh0IChlLmcuIHRpbWVyIGludGVycnVwdCkgYXJlCj5m
-b3JjZWQgb2ZmIHRvIGtzb2Z0aXJxZC4KPgo+V2hhdCB5b3UgYXJlIHByb3Bvc2luZyBoZXJlIGlz
-IGNvbXBsZXRseSBkaWZmZXJlbnQgYXMgeW91IGVuZm9yY2UKPnNvZnRpcnEgZXhlY3V0aW9uIGlu
-IGNvbnRleHQgb2Yga3NvZnRpcnFkIG9ubHkuCgpUaGFuayB5b3UgZm9yIHJlcGx5IGFuZCBleHBs
-YW5hdGlvbiwgSSBqdXN0IHByb3ZpZGUgYSBjaG9pY2UgdG8gYmFsYW5jZQp0aGUgZXhlY3V0aW9u
-IG9mIHNvZnRpcnEgYWNjb3JkaW5nIHRvIHRoZWlyIG93biBidXNpbmVzcyBzY2VuYXJpb3MuCgo+
-Cj4+IEF0IHRoZSBzYW1lIHRpbWUsIHdlIHNob3VsZCBpbmNyZWFzZSB0aGUgcHJpb3JpdHkgb2Yg
-a3NvZnRpcnFkIHdoZW4KPj4gZm9yYmlkZGVuIHRvIGV4ZWN1dGUgaW4gaW50ZXJydXB0IGV4aXRz
-LiBJIHJlZmVyIHRvIHRoZSBpbXBsZW1lbnRhdGlvbiAKPj4gb2YgUFJFRU1QVF9SVCBhbmQgdGhp
-bmsgaXQgaXMgcmVhc29uYWJsZS4KPgo+V2hhdCBhcmUgeW91IHJlZmVycmluZyB0bz8gUFJFRU1Q
-VF9SVCBkb2VzIG5vdCBtb2RpZnkgdGhlIHByaW9yaXR5IG9mCj5rc29mdGlycWQuIElmIHN5c3Rl
-bSBkZXNpZ25lcnMgd2FudCB0byBkbyB0aGF0LCB0aGVuIHRoZXkgY2FuIGRvIHNvIGZyb20KPnVz
-ZXIgc3BhY2UuIAoKSSByZWZlciB0byB0aGUga2VybmVsLTMuMTQgUlQgUGF0Y2hlcy4gSSB1c2Vk
-IGl0IGF0IHRoYXQgdGltZSBhbmQgYWNoaWV2ZWQgCnZlcnkgZ29vZCByZXN1bHRzLgpJIHJlbWVt
-YmVyIHdoZXJlIEkgc2F3IHRoYXQgc29mdGlycWQgd2FzIHNwbGl0IGludG8gdGhlIG9yaWdpbmFs
-IHByb2Nlc3MgCmFuZCB0aGUgUlQgcHJvY2Vzcy4gVGhpcyBjYW4gcGFydGlhbGx5IHNvbHZlIG15
-IHByb2JsZW0uCgo+Cj5BbmQgZG9pbmcgc28gY2FuIGJlIHByb2JsZW1hdGljIGRlcGVuZGluZyBv
-biB0aGUgd29ya2xvYWQgYXMgdGhpcwo+ZWZmZWN0aXZlbHkgYnJlYWtzIHRoZSBzb2Z0aXJxIG92
-ZXJsb2FkIG1pdGlnYXRpb24gbWVjaGFuaXNtIHdoaWNoCj5kZXBlbmRzIG9uIGRlZmVycmluZyB0
-byBrc29mdGlycWQgc28gdGhhdCBlLmcuIHRoZSBjb25zdW1lcnMgb2YgcmVjZWl2ZWQKPm5ldHdv
-cmsgcGFja2V0cyBjYW4gYmUgc2NoZWR1bGVkIGFuZCB0aGUgc3lzdGVtIGNhbiBtYWtlIHByb2dy
-ZXNzLgo+Cj5KdXN0IGJlY2F1c2UgaXQgZG9lcyBub3QgYnJlYWsgb24geW91ciBzeXN0ZW0gd2l0
-aCB5b3VyIHBhcnRpY3VsYXIKPndvcmtsb2FkIGFuZCBjb25maWd1cmF0aW9uIGRvZXMgbm90IG1h
-a2UgaXQgc3VpdGFibGUgZm9yIGdlbmVyYWwKPmNvbnN1bXB0aW9uLgo+Cj4+ICsjaWZkZWYgQ09O
-RklHX1NPRlRJUlFfRk9SQ0VEX1RIUkVBRElORwo+PiArc3RhdGljIGlubGluZSB2b2lkIGludm9r
-ZV9zb2Z0aXJxKHZvaWQpCj4+ICt7Cj4+ICsJd2FrZXVwX3NvZnRpcnFkKCk7Cj4KPkRlcGVuZGlu
-ZyBvbiB0aGUgY29uZmlndXJhdGlvbiBhbmQgdGltaW5nIHRoaXMgYnJlYWtzIGFueSBlYXJseSBi
-b290Cj5tZWNoYW5pc20gd2hpY2ggZGVwZW5kcyBvbiBzb2Z0aXJxcyBiZWluZyBoYW5kbGVkIGJl
-Zm9yZSBrc29mdGlycWQgaXMKPmF2YWlsYWJsZS4gVGhpcyB3YXMgY2xlYXJseSBuZXZlciB0ZXN0
-ZWQgd2l0aCBmdWxsIFJDVSBkZWJ1Z2dpbmcKPmVuYWJsZWQuIAo+Cj5Bc2lkZSBvZiB0aGF0IHRo
-ZSBjaGFuZ2Vsb2cgbGFja3MgYW55IGZvcm0gb2YgdGVjaG5pY2FsIGFuYWx5c2lzIGFuZAo+anVz
-dGlmaWNhdGlvbiBmb3IgdGhpcy4gSnVzdCBjbGFpbWluZyB0aGF0IHRoaW5ncyBhcmUgW3VuXXJl
-YXNvbmFibGUgYW5kCj5tYWtpbmcgdW5pbmZvcm1lZCBzdGF0ZW1lbnRzIGFib3V0IFBSRUVNUFRf
-UlQgZG9lcyBub3QgcXVhbGlmeS4gUXVpdGUKPnRoZSBjb250cmFyeSBpdCdzIGRlZmluaXRlbHkg
-dW5yZWFzb25hYmxlLgo+Cj5UaGFua3MsCj4KPiAgICAgICAgdGdseAo+Cj4KClRoYW5rIHlvdSBm
-b3IgeW91ciBwYXRpZW50IGd1aWRhbmNlLCBpZiBuZWNlc3NhcnksIEkgd2lsbCBhZGQgaXQgaW4g
-dGhlIG5leHQgdmVyc2lvbi4KClRoYW5rcywKUWluZwoKDQoNCg==
+> But if your kernel code loops and tries again without a return to user,
+> then your get another #MC.
+
+I've been trying to push this patch:
+
+https://lore.kernel.org/linux-edac/20210818002942.1607544-1-tony.luck@intel.com/
+
+which turns the infinite loops of machine checks into a panic.
+
+-Tony
