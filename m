@@ -2,119 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27053FA308
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 04:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653E93FA311
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 04:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233080AbhH1CBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 22:01:07 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8793 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbhH1CAq (ORCPT
+        id S233117AbhH1CMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 22:12:09 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:34633 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233045AbhH1CMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 22:00:46 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GxKWn3412zYql5;
-        Sat, 28 Aug 2021 09:59:17 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 28 Aug 2021 09:59:54 +0800
-Received: from [10.174.178.242] (10.174.178.242) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 28 Aug 2021 09:59:53 +0800
-Subject: Re: [PATCH] block/mq-deadline: Speed up the dispatch of low-priority
- requests
-To:     Bart Van Assche <bvanassche@acm.org>, Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Damien Le Moal <damien.lemoal@wdc.com>
-References: <20210826144039.2143-1-thunder.leizhen@huawei.com>
- <fc1f2664-fc4f-7b3e-5542-d9e4800a5bde@acm.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <b653a431-997b-0d94-2823-779f877c314f@huawei.com>
-Date:   Sat, 28 Aug 2021 09:59:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 27 Aug 2021 22:12:08 -0400
+Received: by mail-io1-f69.google.com with SMTP id a9-20020a5ec309000000b005baa3f77016so5184634iok.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 19:11:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=76HdtwbOVuUSM0zGrd3e0OmR58hv5g+WaLxPr1hL0E4=;
+        b=cNvSiMJUhDVwim+XGoQUFkxOs2M8Qls7A7LDphQpadyuxsMVUT8/M/EHbSZgJw7vnK
+         PLz0DTJXNlwWZpCTMij4daIEATBwPtm4CnOh47yIReEjwsgaOhCOdJXW2kcOib1a7D0H
+         4Jat9mHbeenn1KurXQ5OU3fJcjEtmrOb/xMOlOsxa4HFZwgjVPyqjAlyiZ4FoT56zl+H
+         bf2/ir9A8bCt+mH2nGH/nTTF+aUx1c0hXZbbC+jpeUivAvEJx2+r5095GIW3jUOQ4DwB
+         6uQ8OKHflakUpwppQjSsHHwFcst5quhfuXVyRfzwO0+jqqjn/2c7vbxv2VwXv4Av/UI6
+         OqVA==
+X-Gm-Message-State: AOAM533on7acWO7oMre7NycLOqsR7H7BWiDESncUmhhIbXDrgwMgEHXx
+        eCoHYxXNXCXqcP/A4ngCwDdeAMaNjH1EuMJn1mA33gGD2TaN
+X-Google-Smtp-Source: ABdhPJwxHKu7FuMPwsV3/K93KbzrQVZacplDFFF1AqhALknBpGVJrTL9S9TggZdWzsPWSAJamrYeqbYL7FXnvQQ5smEHI6uIWlTf
 MIME-Version: 1.0
-In-Reply-To: <fc1f2664-fc4f-7b3e-5542-d9e4800a5bde@acm.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.242]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:6e02:1d9e:: with SMTP id h30mr8559944ila.195.1630116678280;
+ Fri, 27 Aug 2021 19:11:18 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 19:11:18 -0700
+In-Reply-To: <0000000000004e5ec705c6318557@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008d2a0005ca951d94@google.com>
+Subject: Re: [syzbot] general protection fault in legacy_parse_param
+From:   syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        casey@schaufler-ca.com, christian.brauner@ubuntu.com,
+        daniel@iogearbox.net, dhowells@redhat.com, dvyukov@google.com,
+        jmorris@namei.org, kafai@fb.com, kpsingh@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        paul@paul-moore.com, selinux@vger.kernel.org,
+        songliubraving@fb.com, stephen.smalley.work@gmail.com,
+        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
+        viro@zeniv.linux.org.uk, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
+commit 54261af473be4c5481f6196064445d2945f2bdab
+Author: KP Singh <kpsingh@google.com>
+Date:   Thu Apr 30 15:52:40 2020 +0000
 
-On 2021/8/27 2:09, Bart Van Assche wrote:
-> On 8/26/21 7:40 AM, Zhen Lei wrote:
->> lock protection needs to be added only in
->> dd_finish_request(), which is unlikely to cause significant performance
->> side effects.
-> 
-> Not sure the above is correct. Every new atomic instruction has a measurable
-> performance overhead. But I guess in this case that overhead is smaller than
-> the time needed to sum 128 per-CPU variables.
-> 
->> Tested on my 128-core board with two ssd disks.
->> fio bs=4k rw=read iodepth=128 cpus_allowed=0-95 <others>
->> Before:
->> [183K/0/0 iops]
->> [172K/0/0 iops]
->>
->> After:
->> [258K/0/0 iops]
->> [258K/0/0 iops]
-> 
-> Nice work!
-> 
->> Fixes: fb926032b320 ("block/mq-deadline: Prioritize high-priority requests")
-> 
-> Shouldn't the Fixes: tag be used only for patches that modify functionality?
-> I'm not sure it is appropriate to use this tag for performance improvements.
-> 
->>  struct deadline_data {
->> @@ -277,9 +278,9 @@ deadline_move_request(struct deadline_data *dd, struct dd_per_prio *per_prio,
->>  }
->>  
->>  /* Number of requests queued for a given priority level. */
->> -static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
->> +static __always_inline u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
->>  {
->> -	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
->> +	return dd->per_prio[prio].nr_queued;
->>  }
-> 
-> Please leave out "__always_inline". Modern compilers are smart enough to
-> inline this function without using the "inline" keyword.
+    security: Fix the default value of fs_context_parse_param hook
 
-Yes.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=160c5d75300000
+start commit:   77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=150c5d75300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=110c5d75300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
+dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d084d300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16216eb1300000
 
-> 
->> @@ -711,6 +712,8 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
->>  
->>  	prio = ioprio_class_to_prio[ioprio_class];
->>  	dd_count(dd, inserted, prio);
->> +	per_prio = &dd->per_prio[prio];
->> +	per_prio->nr_queued++;
->>  
->>  	if (blk_mq_sched_try_insert_merge(q, rq, &free)) {
->>  		blk_mq_free_requests(&free);
-> 
-> I think the above is wrong - nr_queued should not be incremented if the
-> request is merged into another request. Please move the code that increments
-> nr_queued past the above if-statement.
+Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
+Fixes: 54261af473be ("security: Fix the default value of fs_context_parse_param hook")
 
-So dd_count(dd, inserted, prio) needs to be moved behind "if-statement" as well?
-
-> 
-> Thanks,
-> 
-> Bart.
-> .
-> 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
