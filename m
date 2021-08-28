@@ -2,104 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16873FA3EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 07:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB5D3FA3F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 08:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhH1F73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 01:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
+        id S233213AbhH1GFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 02:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbhH1F72 (ORCPT
+        with ESMTP id S232255AbhH1GFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 01:59:28 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DDBC0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 22:58:38 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id g184so8013789pgc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 22:58:38 -0700 (PDT)
+        Sat, 28 Aug 2021 02:05:45 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998ADC061796
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 23:04:55 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id ia27so18631614ejc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 23:04:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R3mb2rhS2u7S3omh2zJdH1TEvW5cGjzt05hjTIDMHQ4=;
-        b=RVsH2KLdLXQcpR2li5c2qSRrl37F8W3U0bhcLBVW/RO5gngXQ4sJUiLsVULF42xzaO
-         BFTITyKD+iXSsf3jG3l+xxv6h/a5bujb9EnLriwo4vb0MHTSvo7JAYfnwqEwWMsulhJA
-         rAymlBAtmK+JrYrPbwOkPBeGaZb+3gQI6Ui7s=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=K535DrghAjwb853CNZK5uVMnOJ365R+n+0RMNrXbSI8=;
+        b=nyfQHplpw4w92OtspVr/bMPuNsmyYNqSHTMxO0N+VGZA/6q965Au+G0z7rSaoPmUgX
+         JMYH0i1vWBFNbIE4cx2ugniVcNcLFh5QjNhHtAu4ojpwdoN136YYO/7JP8P9UAvrrbhw
+         7x6mYZw74lVxfkeL9eq7xNzo0EVbLw0TZg2Vyeuk761Ia79LlTqkXSOrSHSuMVQEzxjj
+         2qWSAvszeIAOxL982myc/eHb0Ctd7Cfc8PVJu36TzzSSClvUfSP3d4D+HinYhQTCMcl+
+         zP4/dahQuBe4CVk5qgD92ABx5ZzUujhLm7zbL2LsTZxKoL0EnGDYn6AJkCc3+JaogHzE
+         WrYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R3mb2rhS2u7S3omh2zJdH1TEvW5cGjzt05hjTIDMHQ4=;
-        b=KRGhJ2uLfunE1Vx0/jNPA0sqZV4iOfQXwSutDHbgcGA0or4VOM9JyBbd2ILuVVVLEg
-         WpjojJ5VYRyQJ3QQPNO4IKq8bV2zaiuFE7D0JMpogwZLp3uGJ5hN8Cmluph+Bg1EPm5V
-         Gk+SGgCq5tkNLjl3MxSp8GAlzG1fh9Qf0Gy4DW+CQQMxe9SwYJl8Gr3yow1mFt3CYqWw
-         C2gVqU+6NQc2vjsUKk0GWcknNReNDQevXJenrlqtOuGBTZC1JtfvPAI/BmKbYSRwDnrX
-         YwS6wl442iPp7ckQQDNJI7wAW3eJHFfabHa/Iw/bOQtTUFuw4CiKpMf4hAVpGk/O8wzN
-         To4Q==
-X-Gm-Message-State: AOAM533YMzqYkwXzWr3fzLT1oEw9RUkUClJqhQC+jffw4t9/ivLwtInZ
-        TLiIG7ggmj72+dy85ORqOGHQ0w==
-X-Google-Smtp-Source: ABdhPJy3fH8qpUID13Aan+Rrc1+kibcu1N+rmIx0QpCgZcHQ+UC+bjvDgoRjFp6Kng4ySbbLH11obw==
-X-Received: by 2002:a63:d14c:: with SMTP id c12mr10917973pgj.412.1630130318435;
-        Fri, 27 Aug 2021 22:58:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 31sm8517828pgy.26.2021.08.27.22.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 22:58:37 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 22:58:30 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: wlan-ng: fix invalid assignment warning
-Message-ID: <202108272257.7396C4D146@keescook>
-References: <20210828042949.2276341-1-aakashhemadri123@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=K535DrghAjwb853CNZK5uVMnOJ365R+n+0RMNrXbSI8=;
+        b=uloZt/3+lt1iyrMZtdska1O6NogS7YCZRDL4WWuqPpq9iRqC0jkFjZPNgN0rDhE35m
+         4pdAD6WJkMjf750dVv0gzQeM2ECxxBttNTE17LSkzDrIttRC4XrOwezeb7cBfhIV/pst
+         Vwx63JyCI0aX3bxIxDmf7ToiMgTRiRs7FP+oqlWIKsKnzNXzpakHYPtkHZqgIklFJnzs
+         qybtGMcSdGc1n6ml/GWra+9g6BZOX87uxEwaqzxwI2lK6Z0lT+W9dc9lzJdeWNQGTHQu
+         OjfwaTo38GcA7mSel9WAQ5lPIPJ4xrFE7GElIETKpt7EvWM5rnhYG/U/IZKxY0t7zLej
+         /ZOA==
+X-Gm-Message-State: AOAM532+eETGTseFTZInslsO4bCka3b0EgTevfhnt6gA/EvkHpzB7Obs
+        uiAz6mx+xUZe6tBsyk3+AdGgZVeBQdpcNVZtbX4=
+X-Google-Smtp-Source: ABdhPJxpsOGtRGI5pMqnPahKdysEFDSY4xdgUfffy0F20UsoZx3+zpU5LJpQ9zWq7HN67nZMYcaFAUfpJFqpVtiql24=
+X-Received: by 2002:a17:906:c252:: with SMTP id bl18mr13780337ejb.519.1630130694122;
+ Fri, 27 Aug 2021 23:04:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828042949.2276341-1-aakashhemadri123@gmail.com>
+Received: by 2002:a54:2b09:0:0:0:0:0 with HTTP; Fri, 27 Aug 2021 23:04:53
+ -0700 (PDT)
+Reply-To: bensmithparker@gmail.com
+From:   "Mr. Parker Ben Smith" <coindiplomat.agent@gmail.com>
+Date:   Sat, 28 Aug 2021 07:04:53 +0100
+Message-ID: <CACfvvkB4h6mBx+J9fZPE_ym0tx=C5t1fSSmcqowUA4_Nx-_B+g@mail.gmail.com>
+Subject: Dear Fiend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 09:59:49AM +0530, Aakash Hemadri wrote:
-> p80211_hdr->frame_control is u16, change to __le16
-> to satisfy sparse warning:
-> 
-> wlan-ng/prism2sta.c:253:43: warning: invalid assignment: |=
-> wlan-ng/prism2sta.c:253:43:    left side has type unsigned short
-> wlan-ng/prism2sta.c:253:43:    right side has type restricted __le16
-> 
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-
-Whoops; thanks for catching that.
-
-Fixes: 6277fbfdd29c ("staging: wlan-ng: Remove pointless a3/a4 union")
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
-> ---
->  drivers/staging/wlan-ng/p80211hdr.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/wlan-ng/p80211hdr.h b/drivers/staging/wlan-ng/p80211hdr.h
-> index dd1fb99bf340..5871a55e4a61 100644
-> --- a/drivers/staging/wlan-ng/p80211hdr.h
-> +++ b/drivers/staging/wlan-ng/p80211hdr.h
-> @@ -149,7 +149,7 @@
->  /* Generic 802.11 Header types */
->  
->  struct p80211_hdr {
-> -	u16	frame_control;
-> +	__le16	frame_control;
->  	u16	duration_id;
->  	u8	address1[ETH_ALEN];
->  	u8	address2[ETH_ALEN];
-> 
-> base-commit: f6bc526accf861728d36b12fbc25ac94cd057fc9
-> -- 
-> 2.32.0
-> 
-
 -- 
-Kees Cook
+Dear Fiend,
+
+I'm glad to have you here as good business partner. I have a good
+capital and am looking for any lucrative project around you which i
+can invest on that can yield us a good profit in returns.Could you
+please suggest any for me and you will benefit from it too.
+
+Am waiting for your reply for us to have a better discussion there.
+
+Regards!
+
+Mr. Parker Ben Smith.
