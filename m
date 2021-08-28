@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3801A3FA65F
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287323FA663
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhH1PHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhH1PHS (ORCPT
+        id S234407AbhH1PMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 11:12:39 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:46581 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230060AbhH1PMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:07:18 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8984C061756;
-        Sat, 28 Aug 2021 08:06:27 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id g18so7677802wrc.11;
-        Sat, 28 Aug 2021 08:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-transfer-encoding;
-        bh=P+sg7S7rHtibXd9SvMMU8OB3sAkFT9CGekE5f8GWaSk=;
-        b=VLL/oSRtQyhtWyKcRpL6P0TbfvRG1byUhQFdCgiucIOxbAqHEkBp81PL3hKb0ME2Jm
-         frBHAUIEBJN/CNfh/42Jvii3hS7KTJaobwLN15JjEp9HdLHf3LWnh4v5zPFp0V1hAFg8
-         05fdC+yZXvyLIxpdu/VyJym17vUi/bV8aUf/sb9UQrnMfB+RrboXtMpYYwq1+HxbsJM3
-         EpCP4ePGqsEDelEk+ydcpAivi1P9IA7BYwtWZNd3cZI6ECOUQ4+/vAgGuNEnu5Taav5u
-         r0UbjceV4XWMAz8FvPqdHC/kLnrVWfHHJ3NJXDV0BjoW6G/6j+g6IeuxCjMu+DQAAw2E
-         XMaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
-         :cc:subject:references:in-reply-to:content-transfer-encoding;
-        bh=P+sg7S7rHtibXd9SvMMU8OB3sAkFT9CGekE5f8GWaSk=;
-        b=VmukoRRIwpOLjMVQ8gojAbbE7sFMJaNhisAYY1eqW0yDUSEZ4YXioAkIT6dtXicQb1
-         tSBoczJXEgUtCd52o0wfQz/oTML6wSA+YBGh+etDteXdWG6UPbNFLdAX6CEOLO7dXNwV
-         Ejv0x0Gbocjo6GRYqbflrmKFWW7BpYCTOhhYzobA+npzlbm2QPveHU5tE/ue4bHP4jv1
-         CSIJpVPJaoBoXgXKawyFCOdg0Xq6crQKdr/ftS6tbWDjCqNHLPCquOwyMr9qBWaJ7EL1
-         owJHSQBV6FUPX6qQEg/EYNr6FyfyLaaRzvrRvCV7BbcHXdZY4qnPUOR1oBCKZk8xMtmM
-         3iQQ==
-X-Gm-Message-State: AOAM532HkJQzgBpsvcRaZep5GIpr/KrFrbDYY//5IrmXE9gUNZJVmkPZ
-        g3DKCIADXl7vwSievJnGIJxDSd6Z04w=
-X-Google-Smtp-Source: ABdhPJynHoMKI44Vh5Z6kUneExJjpl8WCT5BX9QnjFuPExvYnT3liESzgpAFEZHnMAkRSlsFVlJ4Bg==
-X-Received: by 2002:adf:b745:: with SMTP id n5mr16817319wre.338.1630163186411;
-        Sat, 28 Aug 2021 08:06:26 -0700 (PDT)
-Received: from [89.139.98.169] (89-139-98-169.bb.netvision.net.il. [89.139.98.169])
-        by smtp.gmail.com with ESMTPSA id o8sm12752010wmq.21.2021.08.28.08.06.24
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sat, 28 Aug 2021 08:06:25 -0700 (PDT)
-Message-ID: <612A50C4.2080209@gmail.com>
-Date:   Sat, 28 Aug 2021 18:05:40 +0300
-From:   Eli Billauer <eli.billauer@gmail.com>
-User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
+        Sat, 28 Aug 2021 11:12:38 -0400
+Received: (qmail 288731 invoked by uid 1000); 28 Aug 2021 11:11:46 -0400
+Date:   Sat, 28 Aug 2021 11:11:46 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Evgeny Novikov <novikov@ispras.ru>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Mike Turquette <mturquette@linaro.org>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: Re: [PATCH] usb: ehci-orion: Handle errors of clk_prepare_enable()
+ in probe
+Message-ID: <20210828151146.GA288644@rowland.harvard.edu>
+References: <20210825170902.11234-1-novikov@ispras.ru>
+ <20210825172937.GD192480@rowland.harvard.edu>
+ <c22d943a-581c-c1bd-d453-3f0f6176c8a5@ispras.ru>
+ <20210826152438.GB228824@rowland.harvard.edu>
+ <303a5695-e0c4-1cae-ee1f-6f34a9717b77@ispras.ru>
 MIME-Version: 1.0
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-CC:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v1 0/4] char: xillybus: Remove usage of the deprecated
- 'pci-dma-compat.h' API
-References: <cover.1630083668.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <cover.1630083668.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <303a5695-e0c4-1cae-ee1f-6f34a9717b77@ispras.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/21 20:17, Christophe JAILLET wrote:
-> In [1], Christoph Hellwig has proposed to remove the wrappers in
-> include/linux/pci-dma-compat.h.
->    
-Xillybus' driver is an example for why this is a good idea. But has this 
-been decided upon? Are we sure that there isn't a single platform where 
-the DMA mapping for PCI is different from non-PCI, and that such 
-platform will never be?
+On Sat, Aug 28, 2021 at 01:47:12PM +0300, Evgeny Novikov wrote:
+> Hi Alan,
+> 
+> On 26.08.2021 18:24, Alan Stern wrote:
 
-If so, is there any reference to that decision?
+> > I don't know whether these errors can occur or not.  To find out, you need to
+> > ask someone who knows more about the clock framework.
+> > 
+> > On the other hand, the fact that the functions do return an error code means
+> > that they expect callers to check its value.  In fact, whoever changed the API
+> > should have gone through all the callers to make sure they did so.
+> > 
+> > (Let's put it this way:  If those functions can return an error, we should
+> > check the return code.  If they can't return an error then they shouldn't be
+> > defined to return an int, so the API should be changed.)
+> > 
+> > So on the whole, I think making these changes would be a good thing.  At the
+> > very least, it will help make all the different EHCI and OHCI drivers
+> > consistent with each other.
+> Though I may be wrong, but after the discussion with Dan, it does not seem
+> that we can expect any considerable changes in the clock API and support
+> from the static analysis tools soon. So, if you still would like to see
+> corresponding fixes in EHCI and OHCI drivers, I can prepare them.
 
-I think the best way is to put a comment at the top of pci-dma-compat.h 
-saying that the functions in that header file are deprecated and will go 
-away soon. That would, more than anything else, convince people like me 
-to get rid of those PCI-DMA function calls.
+Yes, please do so.
 
-The bonus is that the discussion on the patch inserting that comment, 
-along with the decision to apply or reject it, will become the 
-authoritative word on this matter.
-
-Thanks,
-    Eli
+Alan Stern
