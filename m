@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05F03FA74C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E3E3FA74F
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhH1TSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 15:18:07 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:50875 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhH1TSG (ORCPT
+        id S231207AbhH1TVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 15:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhH1TVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 15:18:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630178235; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=rzhVlsJuESXqjwzJH/kGoexoGmWiGQFXQuV4OdE/kSs=; b=jOK8aMVEry5DW9KG/+O8ldTV3I5u2jTfiGLekr//I7KGpmaJMu24YtMtJdlGMtHURc730j4H
- jtu2RY594rL14/hZfHlKK26P4bF+VZ3GWywXY9MTo+K7dqSDQEJgKnWG7Dp7SySiqiABk1gp
- 65EyPvQZEKG1Xz3/SEJFNihHWiM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 612a8ba897222b4b5b05b4d3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Aug 2021 19:16:56
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D401FC43460; Sat, 28 Aug 2021 19:16:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.3 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.87.126])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D6428C4338F;
-        Sat, 28 Aug 2021 19:16:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D6428C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2 10/18] arm64: dts: qcom: sm6350: Add AOSS_QMP
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Rob Herring <robh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        Vinod Koul <vkoul@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-References: <20210828131814.29589-1-konrad.dybcio@somainline.org>
- <20210828131814.29589-10-konrad.dybcio@somainline.org>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <357f3b06-7103-1580-e939-f04c6ea00520@codeaurora.org>
-Date:   Sun, 29 Aug 2021 00:46:43 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sat, 28 Aug 2021 15:21:48 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941C6C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:20:57 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id c129-20020a1c35870000b02902e6b6135279so6669320wma.0
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=3blXmIdosDOuNNq7nc3EFCtcuawBSD/bJRQmtHW5+7k=;
+        b=BoUhq/GfIAy4h/4PE78IRtrCiIBdQAyXgY6Hkfs+QynhWluSjz7NDD+9Umc0Pr8E8M
+         fHbWxcESZS4Hh8Owb59LUMiZQmODjssSQ6AxMWJ1KdUld7S3t/3/fU8AOG7gOnIrI8NX
+         Rx1xrMjwKfUQTkS/Aw+/7Mx4LkNtmteALToLtPY5No8G+/8xTNsyxWr8nnKLA6HJBJSy
+         jyxW2Na7Ydie2n3BvrB/bHckxzIHV9oKuHT/JGcYhDveRPP6miCnqt44nJIRceFZqIRk
+         3BfOBEVqu6Y5grr/EgSCJb/NJddRA5sZKIH0mWsV7s/ORtvHHHv6jjf7Kq3EkFQUpRr+
+         LfPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=3blXmIdosDOuNNq7nc3EFCtcuawBSD/bJRQmtHW5+7k=;
+        b=Omea2CEjfdKzgyYCDvrc9oBAVlALEgrHa6ocIIN0Rsp9NJSB02rUflPgslLxqG5BUG
+         D5z4LcxSN+aIEEvgTgm1Hf5bKJKoyNPE3flZJolHMAESxX8gIid+BNUVHJ4yxt29gfyv
+         JilgslCg0wG1dVLsCCtmFOfgg84ERa99Gby6rqyC6AQ6lufooqaSqJhfRQh4YDdghSXX
+         n3bD3Bu/ctrtFTBUSNVdV2QuetFEHe09xEccfL9LAUlD5rVjbKobblV3ZV7CFji0wRhR
+         PISM8aq0BzAsHLZ1GkEmSTvbigUWYFBDSEjshmjCM9HtwQKlyTO+qWP5c0ousvukR8IT
+         xS6w==
+X-Gm-Message-State: AOAM531+eBusHNR+P6pwRUH67FvaQXCRm/GJpEs2nk/4Ri+U0sLS0bYM
+        Y2u2IaP/O34C6yiX/gAizN8=
+X-Google-Smtp-Source: ABdhPJyz5Emi3EedmduPhplg1maqn6jL2UZ6g5VEtgiYyqYMWWDP52GalTmaWl05OkvAXPqygVClRQ==
+X-Received: by 2002:a1c:7dd0:: with SMTP id y199mr15046919wmc.148.1630178456131;
+        Sat, 28 Aug 2021 12:20:56 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::884b? ([2a02:8108:96c0:3b88::884b])
+        by smtp.gmail.com with UTF8SMTPSA id p13sm10288209wro.8.2021.08.28.12.20.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Aug 2021 12:20:55 -0700 (PDT)
+Message-ID: <1e31610a-0324-dfb7-abe5-f05d652d461d@gmail.com>
+Date:   Sat, 28 Aug 2021 21:20:54 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210828131814.29589-10-konrad.dybcio@somainline.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH] staging: r8188eu: core: remove null check before vfree
+Content-Language: en-US
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YSp4UP1+HrhmDA3C@user>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <YSp4UP1+HrhmDA3C@user>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/28/2021 6:48 PM, Konrad Dybcio wrote:
-> Add a node for AOSS_QMP in preparation for remote processor enablement.
->
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+On 8/28/21 19:54, Saurav Girepunje wrote:
+> Remove NULL check. NULL check before freeing function is not needed.
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 > ---
->   arch/arm64/boot/dts/qcom/sm6350.dtsi | 11 +++++++++++
->   1 file changed, 11 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-> index 986d7fb01cbb..d903173b7dbc 100644
-> --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-> @@ -537,6 +537,17 @@ tsens1: thermal-sensor@c265000 {
->   			#thermal-sensor-cells = <1>;
->   		};
->   
-> +		aoss_qmp: power-controller@c300000 {
-> +			compatible = "qcom,sm6350-aoss-qmp", "qcom,aoss-qmp";
-> +			reg = <0 0x0c300000 0 0x1000>;
+>   drivers/staging/r8188eu/core/rtw_sta_mgt.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+> index f6dffed53a60..4726771a8403 100644
+> --- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+> +++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+> @@ -155,9 +155,7 @@ u32	_rtw_free_sta_priv(struct	sta_priv *pstapriv)
+>   		spin_unlock_bh(&pstapriv->sta_hash_lock);
+>   		/*===============================*/
+> 
+> -		if (pstapriv->pallocated_stainfo_buf)
+> -			vfree(pstapriv->pallocated_stainfo_buf);
+> -		}
+> +		vfree(pstapriv->pallocated_stainfo_buf);
+> 
+>   	return _SUCCESS;
+>   }
+> --
+> 2.32.0
+> 
 
-The QMP should only need 0x400 size [1].
-Can you please change it so that when [1] goes in (and later when sleep 
-stats enabled for sm6350 don't need to change size).
-
-[1] 
-https://patchwork.kernel.org/project/linux-arm-msm/patch/1621596371-26482-4-git-send-email-mkshah@codeaurora.org/
+Acked-by: Michael Straube <straube.linux@gmail.com>
 
 Thanks,
-Maulik
-
-> +			interrupts-extended = <&ipcc IPCC_CLIENT_AOP IPCC_MPROC_SIGNAL_GLINK_QMP
-> +						     IRQ_TYPE_EDGE_RISING>;
-> +			mboxes = <&ipcc IPCC_CLIENT_AOP IPCC_MPROC_SIGNAL_GLINK_QMP>;
-> +
-> +			#clock-cells = <0>;
-> +			#power-domain-cells = <1>;
-> +		};
-> +
->   		tlmm: pinctrl@f100000 {
->   			compatible = "qcom,sm6350-tlmm";
->   			reg = <0 0x0f100000 0 0x300000>;
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
+Michael
