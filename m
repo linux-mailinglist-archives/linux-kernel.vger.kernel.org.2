@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CB33FA76C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50FF3FA770
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234467AbhH1Tsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 15:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
+        id S232037AbhH1Tve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 15:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbhH1Tsa (ORCPT
+        with ESMTP id S230253AbhH1Tvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 15:48:30 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CB2C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:47:39 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id f2so17971618ljn.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:47:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=PFEOUXTdeWHo2sN4esZdY6SR6YfyyU39CPfbRl+Qd6c=;
-        b=fsANJW0RRNCAG7UpF9B/3bsseWnuiA4kx2isHVMKHRp6cyWMhdYSh2pBHfXELdFg2F
-         VUwlQrTlc9BnQyfgD0KXJ0tgUG+aa0PvN0SrUnHccPFbNJn2Y0w/T5qUVJMgoCRAQSvB
-         qxn1GAbDctX4pgmuYkkP0Ugt/YdjU+vrLRDtXIhhBthLjrotDNqJ/E+6YjIJ9LbT4GtS
-         ZF+146nd6svEgsmcX738kIWegkSokFubF08fCy3sL6kKZ+SoSlI+wM4lSLWVLyGsoPj2
-         wUGXC8GCZp3s1QYObtnEXhMGiehtR2rKNSsMI8WAFX89VC2YQ9wh2AJrdeE/k7VDwMaa
-         K0RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PFEOUXTdeWHo2sN4esZdY6SR6YfyyU39CPfbRl+Qd6c=;
-        b=VtVNYbaLo4SyJUYk+i6OWD/RvW+moBmEoSOTb0825G/U22YghJRagjArIa+OLR6wVs
-         9AEDMgDStBfgUHjp6tD5BmqnBiFQ0g98iBP7+mdzCfCk24F67fVTb9bgzmVgqk0nBI/o
-         IpZ5rub9BBvzYuoKSk/vse1YZ3ckX9AF8VLI0ctcHc4mh3Pk/QLDsRW4sVxnEHNeVhgy
-         wKGnCG4CHPKqbXFxXTOCtIc60wRGCtMn15jszJ8F+dXm0sMedLuNcJJZTxF+tNlCu5gb
-         yDoEAQb/MpioxeMiTI7O7/is/8eru4KrFgmE4NbykwWKVnNZgTQofZ5u++EM2Gt+DeT6
-         Pqug==
-X-Gm-Message-State: AOAM530FVVO2DWWL6PXb5H7Qphz5vZSg8eFKT2OnpIk0yeljA72by8yi
-        p/lmS3MVi0DTH1yia8mT19Q=
-X-Google-Smtp-Source: ABdhPJzL9U7CN0DQZtSnui5dUfG88tUwIQrRYCHIWC20DwlQ527cFUnFPtC2RI28HdNNGS50KgulCQ==
-X-Received: by 2002:a2e:9a04:: with SMTP id o4mr13667502lji.296.1630180057822;
-        Sat, 28 Aug 2021 12:47:37 -0700 (PDT)
-Received: from kari-VirtualBox (87-95-21-3.bb.dnainternet.fi. [87.95.21.3])
-        by smtp.gmail.com with ESMTPSA id k3sm941166lfj.129.2021.08.28.12.47.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 12:47:37 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 22:47:34 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Michael Straube <straube.linux@gmail.com>,
-        Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: r8188eu: core: remove null check before vfree
-Message-ID: <20210828194734.7xn3tkdh2yay5yyt@kari-VirtualBox>
-References: <YSp4UP1+HrhmDA3C@user>
- <1e31610a-0324-dfb7-abe5-f05d652d461d@gmail.com>
- <b098cbe9-1cc6-d97f-e1d8-df6c99b0afa0@gmail.com>
+        Sat, 28 Aug 2021 15:51:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D94C061756;
+        Sat, 28 Aug 2021 12:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EvpUBX0kQkaSDPnQxMYWZGVN6zhrAsMhEqKxCVzwc4o=; b=pllg0gE0w02xyjMldZ9HnPVzqu
+        ta11OtXd1Bso4ilrEuT55ps2xPl2CjYBACyXlwdXXUeIjxslwwfUq6OAyrihSvrjzRr3JtkoSpE8r
+        nxY3yx+Fd/3UG041LWAE2YseMLAeONAzBfACBCXTK1UhZW2z6qWvQfm+cZtswlyfd2HomsjEMhaGO
+        AlA/8iv9N9xdUC/3HvjDZZKrjX+uYcxwdDOcFci5wDFWFUa+LVkIxA0cauQXcKJeC0qgJePnlirYy
+        P7fXACdPsEL7EzZFzKGU7caOwmwQc2FcxEl7F6m9RiEDfUUOmMpAmYquJxamu8c1pYg7LLIf/dgFH
+        3zfeLNxg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mK4J0-00Fo0r-RS; Sat, 28 Aug 2021 19:48:02 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1F90798679D; Sat, 28 Aug 2021 21:47:52 +0200 (CEST)
+Date:   Sat, 28 Aug 2021 21:47:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH v2 05/13] perf: Force architectures to opt-in to guest
+ callbacks
+Message-ID: <20210828194752.GC4353@worktop.programming.kicks-ass.net>
+References: <20210828003558.713983-1-seanjc@google.com>
+ <20210828003558.713983-6-seanjc@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b098cbe9-1cc6-d97f-e1d8-df6c99b0afa0@gmail.com>
+In-Reply-To: <20210828003558.713983-6-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 09:30:14PM +0200, Michael Straube wrote:
-> On 8/28/21 21:20, Michael Straube wrote:
-> > On 8/28/21 19:54, Saurav Girepunje wrote:
-> > > Remove NULL check. NULL check before freeing function is not needed.
-> > > 
-> > > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> > > ---
-> > >   drivers/staging/r8188eu/core/rtw_sta_mgt.c | 4 +---
-> > >   1 file changed, 1 insertion(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-> > > b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-> > > index f6dffed53a60..4726771a8403 100644
-> > > --- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-> > > +++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-> > > @@ -155,9 +155,7 @@ u32    _rtw_free_sta_priv(struct    sta_priv
-> > > *pstapriv)
-> > >           spin_unlock_bh(&pstapriv->sta_hash_lock);
-> > >           /*===============================*/
-> > > 
-> > > -        if (pstapriv->pallocated_stainfo_buf)
-> > > -            vfree(pstapriv->pallocated_stainfo_buf);
-> > > -        }
-> > > +        vfree(pstapriv->pallocated_stainfo_buf);
-> > > 
-> > >       return _SUCCESS;
-> > >   }
-> > > -- 
-> > > 2.32.0
-> > > 
-> > 
-> > Acked-by: Michael Straube <straube.linux@gmail.com>
-> > 
-> > Thanks,
-> > Michael
-> 
-> Whoops, I missed that you removed the } that belongs to the enclosing if
-> block. Probably because it is not properly indented in the original
-> code.
+On Fri, Aug 27, 2021 at 05:35:50PM -0700, Sean Christopherson wrote:
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 55f9f7738ebb..9ef51ae53977 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1776,6 +1776,9 @@ config HAVE_PERF_EVENTS
+>  	help
+>  	  See tools/perf/design.txt for details.
+>  
+> +config HAVE_GUEST_PERF_EVENTS
+> +	bool
+	depends on HAVE_KVM
 
-Easy to miss because that bracket is in wrong place in first place.
+?
 
-Michael can you now on even build test before sending. Thanks.
-
-> 
-> Best regards,
-> Michael
-> 
+> +
+>  config PERF_USE_VMALLOC
+>  	bool
+>  	help
