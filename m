@@ -2,163 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F92A3FA350
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 05:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69893FA355
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 05:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhH1DLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 23:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52098 "EHLO
+        id S233202AbhH1DTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 23:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233158AbhH1DLI (ORCPT
+        with ESMTP id S233117AbhH1DTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 23:11:08 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B411C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 20:10:18 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id q11so13230760wrr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 20:10:18 -0700 (PDT)
+        Fri, 27 Aug 2021 23:19:13 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F19C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 20:18:23 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id f6so11614319iox.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 20:18:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rtst-co-kr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=y527krCDKEsx0ChQP3KqPNsQAyNPKFXncMJNmo17VWs=;
-        b=dgsNlA3g3eXW2MkNa/+cZhqT/7ECRL9+46yAuRJlZUpoh6PhGCsQjdIeqz7GTF+eHc
-         HRySG3VjgQeTYhUzXiPQTl75oX8CdG8yOTMeSTC3wB1S0PJmtzMR306lXDSOnTbjFoSc
-         npvri3Z14MKg+/w5U6LIDi8RnQyVG4yiHS3rwzMMZWWkCB78vElcBedD7UXx00WvD82J
-         x+QAX4sAoIb0gUO8bafwUqgxVIL0EOE8qn+hUeRTHBuauk3fzs+6tMUS3NSsJOjzt31R
-         9vktrqUdkfSdfWGZGvilAQyUIZUv8JQwVK65cbk3mx34028K12a92Cmzz0Konq40iebJ
-         yDvQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3I2Cu0hBkyC0eu8QwfehQRNRrLF5kE2Nh3wW304WegI=;
+        b=VFc6nnAr/WImQdqxvEVT41P7sUbT0ys0GLIzwNul0ab7smJx8tK8ypODc8gP/mERLl
+         ZUsl/ci0RDvaEL1kdtTX7Cq+c4oV018Xm9DmOSP1LfEzZOGow0MUYCcTYWxXG4hYeV1w
+         WrFmbucTiKSnLJcliTcKu59QWjzSWN8ijvOK0cNdsTBmf61n9sOHGknE7g+7Tw+PuYWh
+         Fu4eztVYTECtsgMOAPGRbpFRtDNaZYddgU1ppgbqRIAkU/2GUmh1QQ7ZQvQEjL/U0pfx
+         RW0fY3WGzah8VWtjaGgjpTvhS5HBkKQ1T7B2DywgLCvQP/zWCqFMbVVtNUTMrk2EKBxR
+         X0Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=y527krCDKEsx0ChQP3KqPNsQAyNPKFXncMJNmo17VWs=;
-        b=hrwYUMpyANgS3XcyPdciE29mUn6cHBT/wz8MQcns+J2fdIjvo13vgaberIVTE8dyer
-         uvzy+6PNwkAelYWIHitLtrr2SEZYLRaqO608/MbHfrMw+PBYRwj51uX8Dx4Aca7RaSX3
-         q89mPNyCyLyhCgm20F9PJ8gcCNIUCzCacZg3Af+GxcO8Ep0AESdEOsysBoGEJ2tssX8N
-         zqyQzBoz2qpyRd+zyTLALI6YYHW7JPVviAAKNF40P1T+D1rUHAwUpia75cTKXl6dtRBV
-         AOS0CkqsBm/klcKolCct0vKhuSXE9q/sorOFpzHpLectFPuKfHvdblGPzPmzq4jfN9o3
-         VFKg==
-X-Gm-Message-State: AOAM5303Jtx+4oiZ2JwXZ2S4wSRWZ8VsbfdC7O5hXICmkXlvwnLtveKT
-        /44+KDF3R2/pzLlEwir+7UtbDVigf0PDakOfa8F+cA==
-X-Google-Smtp-Source: ABdhPJy9gONy2gALGHWfXhx9Yau7+ZLZy0pqdCTKgLmcruFnoO3c99DOpMYDV7uYMmyyOTty7ZcEeGcN2Gp2tvByCfo=
-X-Received: by 2002:adf:ba4d:: with SMTP id t13mr13576388wrg.424.1630120216876;
- Fri, 27 Aug 2021 20:10:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3I2Cu0hBkyC0eu8QwfehQRNRrLF5kE2Nh3wW304WegI=;
+        b=gFt99HLnntfpb1EH2CHZ1JTOjoWVMBApbtg5hh6Z4Xi9pqx632P9Vztkx7TuKCPehl
+         0JdAPhXhqeA6ZDHzhexCpmivm008r6KQ7CFZzxiJEiC56SBUKWIsFST+aLxeD106ZGDS
+         dqdBzaTinlWyrl0dbKGs7wF1NWkwzCC0FlaBIL2Z9fBQHtJA5dVjq6qrfuj9tzPt6ngO
+         SNBe6hVpV2xj1NqpWwkmdbAS9kJac1KGtZQbfI/DFVEzUsQVOh6OQu7g+tnYoZzaEmFD
+         5l0MpZZct5ODOvpSe46BGkM++XbTufr0TqXN41crD4hPih3J2bNZUAcovlGKRz4ahqfK
+         0v/g==
+X-Gm-Message-State: AOAM531BDkhP4r0WKA5YqBhvv2H1AsOF7AqySy5peBsJqUd3ZDbxH5ys
+        /wqULgiw84s5sU6Gj5wVjN2w+VTNWJym/Q==
+X-Google-Smtp-Source: ABdhPJx9J4qf7Eq2U2ilnV92laAQModKiua7oN74ITr/ABlhBbh8ljKdjCNGRSeS/BRV7m/j0/d8rg==
+X-Received: by 2002:a02:860d:: with SMTP id e13mr10974218jai.12.1630120702695;
+        Fri, 27 Aug 2021 20:18:22 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id a17sm4527227ios.36.2021.08.27.20.18.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 20:18:22 -0700 (PDT)
+Subject: Re: [PATCH] drivers/cdrom: improved ioctl for media change detection
+To:     Lukas Prediger <lumip@lumip.de>
+Cc:     linux-kernel@vger.kernel.org
+References: <20210805194417.12439-1-lumip@lumip.de>
+ <6d6c533d-465e-33ee-5801-cb7ea84924a8@kernel.dk>
+ <f0d33ff3-6b9d-bbe7-1776-a22f9f271155@lumip.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <5f3b7d8b-9e97-094b-efd1-cad6cab793b6@kernel.dk>
+Date:   Fri, 27 Aug 2021 21:18:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210817064353.GA669425@ubuntu> <CAJk_X9gbnx5edLmxKUfZYyDMQYKeotO3undgQygmp1skn2HjSQ@mail.gmail.com>
- <20210826230658.GB4335@Peter> <CAJk_X9i68vPWDEf2x6WtV73XRCuhyZF_26KtK=J+Z76ZyQe8PQ@mail.gmail.com>
- <20210828013811.GA3590@Peter>
-In-Reply-To: <20210828013811.GA3590@Peter>
-From:   Jeaho Hwang <jhhwang@rtst.co.kr>
-Date:   Sat, 28 Aug 2021 12:10:05 +0900
-Message-ID: <CAJk_X9i=rJ88eHoW5fyzvO83neeP0qDUYKi+-1OkrgD96b4GdQ@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: chipidea: add loop timeout for hw_ep_set_halt()
-To:     Peter Chen <peter.chen@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux team <team-linux@rtst.co.kr>,
-        =?UTF-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRpb24gUGxhdGZvcm0=?=
-         =?UTF-8?B?7Jew6rWs7YyA?= <mkbyeon@lselectric.co.kr>,
-        =?UTF-8?B?7LWc6riw7ZmNKENob2kgS2kgSG9uZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRpb24gUGxhdGZvcm3sl7A=?=
-         =?UTF-8?B?6rWs7YyA?= <khchoib@lselectric.co.kr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <f0d33ff3-6b9d-bbe7-1776-a22f9f271155@lumip.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 8=EC=9B=94 28=EC=9D=BC (=ED=86=A0) =EC=98=A4=EC=A0=84 10:38, =
-Peter Chen <peter.chen@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On 21-08-27 10:35:05, Jeaho Hwang wrote:
-> > 2021=EB=85=84 8=EC=9B=94 27=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 8:0=
-8, Peter Chen <peter.chen@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
-> > >
-> > > On 21-08-24 17:31:44, Jeaho Hwang wrote:
-> > > > 2021=EB=85=84 8=EC=9B=94 17=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84=
- 3:44, Jeaho Hwang <jhhwang@rtst.co.kr>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
-=B1:
-> > > > >
-> > > > > If ctrl EP priming is failed (very rare case in standard linux),
-> > > > > hw_ep_set_halt goes infinite loop. waiting 100 times was enough
-> > > > > for zynq7000.
-> > > > >
-> > > >
-> > > > Hi Peter.
-> > > > I found from zynq7000 TRM that the hardware clears Stall bit if a
-> > > > setup packet is received on a control endpoint.
-> > > > I think hw_ep_set_halt goes infinite loop since:
-> > > >
-> > > > 1. hw_ep_prime for control EP which is called from
-> > > > isr_tr_complete_handler -> isr_setup_status_phase is failed due to =
-a
-> > > > setup packet received.
-> > >
-> > > How do you know that? Do you observe the new setup packet on the bus
-> > > before the current status stage? Usually, the host doesn't begin new =
-setup
-> > > transfer before current setup transfer has finished.
-> > >
-> > > Peter
-> > >
-> >
-> > I found an error return from the second ENDPTSETUPSTAT checking
-> > routine, then setting the stall bit(TXS) kept failing. So I guessed it
-> > is due to a setup packet received.
-> > I didn't observe the setup packet by e.g. HW probes. Any other reason
-> > to produce that symptom?
->
-> I guess two possible reasons for that:
-> - The new setup is coming after priming
-> - The interrupt occurs after prime, and when the back from interrupt,
-> other thread for USB transfer is scheduled, eg, usb_ep_queue from RNDIS
->
-> From your experiments and observation, it seems the first reason is not p=
-ossible.
+On 8/27/21 11:30 AM, Lukas Prediger wrote:
+>>> @@ -295,6 +297,19 @@ struct cdrom_generic_command
+>>>  	};
+>>>  };
+>>>  
+>>> +/* This struct is used by CDROM_TIMED_MEDIA_CHANGE */
+>>> +struct cdrom_timed_media_change_info
+>>> +{
+>>> +	__u64   last_media_change;	/* Timestamp of the last detected media
+>>> +					 * change. May be set by caller, updated
+>>> +					 * upon successful return of ioctl.
+>>> +					 */
+>>> +	__u8    has_changed;		/* Set to 1 by ioctl if last detected media
+>>> +					 * change was more recent than
+>>> +					 * last_media_change set by caller.
+>>> +					 */
+>>> +};
+>>>
+>> The struct layout should be modified such that there are no holes or
+>> padding in it. Probably just make the has_changed a flags thing, and
+>> make it u64 as well. Then you can define bit 0 to be HAS_CHANGED, and
+>> that leaves you room to add more flags in the future. Though the latter
+>> probably isn't much of a concern here, but...
+> 
+> 1. jiffies_to_msecs returns unsigned int. Should I reflect that in the
+> struct (i.e., make the last_media_change and has_changed fields also
+> of type unsigned int or should I keep them at a fixed bit width?
 
-I will check if any other thread calls udc. but the only workload
-using RNDIS was the host side ping sender.
-Thanks for the advice.
+You can make it an u32. Always use explicitly sized types for user API
+structures.
 
-> Did your get failure with UP system?
+> 2. As the last_media_change field will be in ms now, is it safe to
+> convert those back to jiffies for comparison or is there a risk of
+> information loss (due to rounding or whatever) in either conversion?
+> More technically, can I make the assumption that for any jiffies value
+> x it holds that
 
-I'm sorry I don't understand what UP system means.
+The granularity of jiffies depends on the HZ setting, generally just
+consider it somewhere in between 100 and 1000. That's where my initial
+granularity numbers came from.
 
->
-> Peter
->
-> >
-> > For reminder, only reproduced on preemp_rt kernel and with Windows(10)
-> > RNDIS host.
-> >
-> > thanks.
-> >
-> >
-> > > > 2. in isr_tr_complete_handler it tries to call _ep_set_halt if eith=
-er
-> > > > isr_tr_complete_low or isr_setup_status_phase returns error.
-> > > > 3. Since the control EP got a setup packet, HW resets TXS bit just =
-as
-> > > > the driver sets inside hw_ep_set_halt so it goes infinite loop.
-> > > >
-> > > > Does it make sense? If it is right, we shouldn't call _ep_set_halt =
-if
-> > > > the err is -EAGAIN, which could be returned ONLY due to the setup
-> > > > packet issue described above.
-> > > > And the loop timeout is not required anymore.
-> > > >
-> > > > Can I ask your opinion on this, Peter and USB experts?
-> > > >
-> > > > Thanks.
-> > > >
->
-> --
->
-> Thanks,
-> Peter Chen
->
+> time_before(msecs_to_jiffies(jiffies_to_msecs(x)), x) is always false ?
 
+I don't think that matters. Internally, always keep things in jiffies.
+That's what you use to compare with, and to check if it's changed since
+last time. The only time you convert to ms is to pass it back to
+userspace. And that's going to be a delta of jiffies always, just ensure
+you assign last_checked = jiffies when it's setup initially.
 
---=20
-=ED=99=A9=EC=9E=AC=ED=98=B8, Jay Hwang, linux team manager of RTst
-010-7242-1593
+-- 
+Jens Axboe
+
