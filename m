@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141F53FA6A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D363FA6A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 18:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbhH1P5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
+        id S234479AbhH1QBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 12:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhH1P5L (ORCPT
+        with ESMTP id S230290AbhH1QBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:57:11 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738F9C061756;
-        Sat, 28 Aug 2021 08:56:20 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id g22so14531916edy.12;
-        Sat, 28 Aug 2021 08:56:20 -0700 (PDT)
+        Sat, 28 Aug 2021 12:01:31 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E993C061756;
+        Sat, 28 Aug 2021 09:00:40 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id me10so20724045ejb.11;
+        Sat, 28 Aug 2021 09:00:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IvpIahskAaTOBlt+JLrDDDHCDcxjhGW+GXDJSUKJacM=;
-        b=YWNcViXUHxUJyDr7/EtN+W3GEuZSkpZEbpafkzJbXpuZbV6HJgrSqMZsJfQSEvfniW
-         NGoyc1631d2+pXKy3aa0hPMWcYvvKOJ3dKZN8ClhbpRh8f+lAjC0xPF3Td6/yuepHEtP
-         62R0lA6VrxKnwymJmPRzzMyPtvz+sBqY8OpwFyVLdXAZQfDJ+bkIAMEtGm/6ftx6+WpD
-         1WbiTxTlzIVoYWEC4Rux43hRGEoryzA7mrXcGQvQzxYX94WtfnbL+CwMK3kVT6eMVRqQ
-         A92eBEKOfkaEwnupt8KP5jR8EJtcSJG7M5Av9/VmDCeUN230rvRZG33ell0Y8tmn9rTO
-         JXgQ==
+        bh=q+Lu3zsplYuNKF2IF+QmpVTl2y5bBSCP+aSg8wuwsiw=;
+        b=HF+xsgvsnrJrPToIAqza2r4D+a2I4uKoEWs4qUPB9ZtxE2lP61oybEuf71lmwwsehc
+         chY8Av/MqB3ykfHwW0Ja5AxiiZmS4/DeXKkolm4txdYKhEzQZ5l138XMO3+VGsgrn+CR
+         qwuu/5OM9ZpeW453SAUOh2G0AL+xSwJflEuEAGZTKZRElo1NZcF6YyQ3H8TiHqZmsX9W
+         cIp2roGNC2b7of6WssIXw6mppEIUbFl7OvHHsaudDCz6Zt2sFliwpt/O0M5kPzE1zl1N
+         756MlwT00hoeEpixvex5O9YwQCeeFTh1XN4lFUY34JKFo2eSz4EfQNcOSLu2WHn5h/N7
+         mH3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IvpIahskAaTOBlt+JLrDDDHCDcxjhGW+GXDJSUKJacM=;
-        b=FH58CwiCL3zzAhNDmwrmVvXzfN8w4tuRit7oDVIUbi85HRogpwAaB+nrzWu5JqN8OV
-         oGlB/Kue4RbQ0ANmyViffRQdnalPi+yfqRQf/rBC4fRkfvNbd+/oZHqvhS82YfUqGxic
-         mi5PnFk/jEEgj7h65LMJhi2K/1VpdrMdWEip4uOMky3t3f2TZZuwlp00GnIaHuB8/uz3
-         L2w/wT3to3mVG/Tv4cveECBvm0jAIbKhGoCgKecQRou4minXYf/ibdkpqaRQjr8OUV/e
-         sBfMAcsdPYNBUBgOx7DAyYZ9mDGYhN3G6cRuXt3lncpCUGDGSb0LjxOmiACrfiFiTJHi
-         Aa2g==
-X-Gm-Message-State: AOAM532fKviE/+CD+MeO5jq7hYZ2RzHJT7plSgpZDKAY5IT/BL6n5kTM
-        0a3Ls2YuOQrUkSXS4eywc7IQQuVasx2YI0+Qxw0=
-X-Google-Smtp-Source: ABdhPJxzFNpqSCAUZ337fhDSkjiD3TLh/T+GYBk8lHXVTmBrL94/bdOfFeeukR2CrwwkHFL0WzBUJS99chHZzyx+3Mg=
-X-Received: by 2002:a05:6402:313c:: with SMTP id dd28mr15369640edb.179.1630166179073;
- Sat, 28 Aug 2021 08:56:19 -0700 (PDT)
+        bh=q+Lu3zsplYuNKF2IF+QmpVTl2y5bBSCP+aSg8wuwsiw=;
+        b=RIMVKLZlsL32dyIcp2aUGMkwdJ8hDwCsa68WNKJLKEVZTqPyMENUBcuCJStN23DL/c
+         arKZ1ra35+J+vZLqQ91mNybPZwilMVXw8i9Yu9DyfPpYz3WotaAemZPloBtO950tYe9u
+         yW5M2nLZujS1R6jAB/5lqINvOxx1tLQfK/foR58B83b8WVJO4JBc/rNnus65zxf7Qucd
+         nmfmIDeafQoOa30QVGa2aI3iNz8lrc7ZSlKP+ZzsGvB+xVK+YiMORa2Uy7LwaRQbBnac
+         SfIQ+fVIZNK4PSJwMS3KyLUuWVQ2NHC25KADXZ9ki63bAiaExbpxLbLWFYXIwdJWZldf
+         /meg==
+X-Gm-Message-State: AOAM531DLl1h05KSYXUSjZ4q2T6U256dGh512SQKtKwSd6FzNpfv3Pdw
+        vuKVI7g/fBu4idUJAz99Kje73GdthArsxiBAlyU=
+X-Google-Smtp-Source: ABdhPJwD2vEA5j8yQQHHv0y4xe5OPRu0rQ5pLqz4tIRsU3/TzhWBp80jORvSGA8DCjkphVreH8wjKsmX3LcpVwfxUqE=
+X-Received: by 2002:a17:906:369a:: with SMTP id a26mr15768976ejc.539.1630166438950;
+ Sat, 28 Aug 2021 09:00:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-3-linux.amoon@gmail.com>
-In-Reply-To: <20210817041548.1276-3-linux.amoon@gmail.com>
+References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-4-linux.amoon@gmail.com>
+In-Reply-To: <20210817041548.1276-4-linux.amoon@gmail.com>
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 28 Aug 2021 17:56:08 +0200
-Message-ID: <CAFBinCB8CK8Bn2xKpiAToQQ4K1_W1XZjND9pOGZRZeMp-grs3Q@mail.gmail.com>
-Subject: Re: [PATCHv3 2/6] ARM: dts: meson8b: odroidc1: Set usb power source
- to always on
+Date:   Sat, 28 Aug 2021 18:00:28 +0200
+Message-ID: <CAFBinCAx33SnuL8n1GF8nz2Q4giNR8tsWxjU32X0wsb6kR_nhw@mail.gmail.com>
+Subject: Re: [PATCHv3 3/6] arm64: dts: amlogic: odroidc2: Fix the chip enable
+ signal for usb power
 To:     Anand Moon <linux.amoon@gmail.com>
 Cc:     linux-phy@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org,
@@ -75,13 +75,20 @@ Hi Anand,
 
 On Tue, Aug 17, 2021 at 6:17 AM Anand Moon <linux.amoon@gmail.com> wrote:
 >
-> Set P5V0 and vcc_3v3 power source to USB to always on
-> so that regulator should not enter in suspend state.
-Neither of these two regulators can be controlled by Linux in any way
-(there's no GPIO to turn them off, no PWM signal to change the output
-voltage, etc.).
-So can you please explain what this patch changes from a functional perspective?
+> Fix the chip enable signal changing from Active High to Active Low
+> to enable input power to USB power. Also updated signal name as per
+> the schematics.
+according to [0] (page 12) Odroid-C2 uses an "RT9715EGB" for USB OTG power
+The datasheet for that power switch [1] mentions on page page 1 that
+the "E" stands for "E : 1.1A/Active High"
+
+Can you please elaborate how you have tested this to confirm that
+active low is the correct polarity?
 
 
 Best regards,
 Martin
+
+
+[0] https://dn.odroid.com/S905/Schematic/odroid-c2_rev0.1_20150930.pdf
+[1] https://www.richtek.com/assets/product_file/RT9715/DS9715-03.pdf
