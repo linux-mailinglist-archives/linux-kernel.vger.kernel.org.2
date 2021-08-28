@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF673FA757
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDF83FA755
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbhH1Tdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 15:33:36 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:33570 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbhH1Tdf (ORCPT
+        id S231544AbhH1TbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 15:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231218AbhH1TbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 15:33:35 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mK401-00GsRY-Fl; Sat, 28 Aug 2021 19:28:17 +0000
-Date:   Sat, 28 Aug 2021 19:28:17 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, Josef Bacik <josef@toxicpanda.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [RFC][arm64] possible infinite loop in btrfs search_ioctl()
-Message-ID: <YSqOUb7yZ7kBoKRY@zeniv-ca.linux.org.uk>
-References: <20210827164926.1726765-1-agruenba@redhat.com>
- <20210827164926.1726765-6-agruenba@redhat.com>
- <YSkz025ncjhyRmlB@zeniv-ca.linux.org.uk>
- <CAHk-=wh5p6zpgUUoY+O7e74X9BZyODhnsqvv=xqnTaLRNj3d_Q@mail.gmail.com>
- <YSk7xfcHVc7CxtQO@zeniv-ca.linux.org.uk>
- <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
- <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
- <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
+        Sat, 28 Aug 2021 15:31:07 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0F1C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:30:16 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id h9so21521405ejs.4
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=+1evt0wlFoLtIOlqCJmQkkMUPdGJYqS85gEK2HrtK6Y=;
+        b=lbKPe9hQ/2TThG38WOxsnifFkccV+Kqsn3Z44Ad9qlOdUe+htljoUc84JEaoWGyZnN
+         PnGVYcbspdgyZ5Prd0K2uj8ZoS0cz4Y7ZSAkREymEaA6Bbni7WXwE2/02rV3eZOmxgk/
+         Xpv1ou6Tvv6bDaJypZnBuDhqUCr018HrvuKJfAHZP9xP0VpjE1sb5St5gVfVuYzubBxf
+         7Ifp4/dA54m9BoqkDaVupwhusABQFP8GNzwGgZEXb6T1gqpVBWkzHPRiVfAW1/tBIdUF
+         cFk1PGdHEiPSUayWwJU19BHMa6UkfKZhOgdQ/RvokMNh1oREBPewWc4wfCXGYkbVCdsS
+         DERw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=+1evt0wlFoLtIOlqCJmQkkMUPdGJYqS85gEK2HrtK6Y=;
+        b=I6RfLjF8y77qduS2M/0RzItd4k/mLzZZNuX8KD/gaS9B0CSAcU2cXd7E45OGA9VKaD
+         9lnzd11kxR0YwVYxWqlpoq9Jh0EshiNcqCKMuGUjYkvsxSMV3kuKgymz3A5g14GUugQh
+         fqqgV3nkTzLWqB/RCR4qJMvewcrLZ84LyJNUPc/Onwp2IgAT/t4NWUzu9NfEknWSSPKP
+         AS2Na9NF4eXN2IDdATvKSYoMgMfQSNo7ywI9OitVXBb/JUqGPNFoQvmIIKdR6eAaBUHV
+         TA4LZCOjhh0B6UxaZMpcIqO2ODrsu62J9yoMtOjWDMcasd898LmjwyAhzofNGYwGfHzV
+         ty8w==
+X-Gm-Message-State: AOAM5314fBk2Qa1nfbIChz7Pta/xuM1ZnKu1c1Ga/EzJ7vGYTqmroGSd
+        jgcji96nsvWYqz1k6BQlVf0=
+X-Google-Smtp-Source: ABdhPJzQT1Z4GiWLQMWKU/AtdIO8yfetOP32pxp0htvodlE8vGh1MuBMF/sK08kOjZif8heEWN7S7w==
+X-Received: by 2002:a17:906:e50:: with SMTP id q16mr952813eji.370.1630179015340;
+        Sat, 28 Aug 2021 12:30:15 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::884b? ([2a02:8108:96c0:3b88::884b])
+        by smtp.gmail.com with UTF8SMTPSA id s21sm3293862ejq.61.2021.08.28.12.30.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Aug 2021 12:30:14 -0700 (PDT)
+Message-ID: <b098cbe9-1cc6-d97f-e1d8-df6c99b0afa0@gmail.com>
+Date:   Sat, 28 Aug 2021 21:30:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH] staging: r8188eu: core: remove null check before vfree
+Content-Language: en-US
+From:   Michael Straube <straube.linux@gmail.com>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YSp4UP1+HrhmDA3C@user>
+ <1e31610a-0324-dfb7-abe5-f05d652d461d@gmail.com>
+In-Reply-To: <1e31610a-0324-dfb7-abe5-f05d652d461d@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	AFAICS, a48b73eca4ce "btrfs: fix potential deadlock in the search ioctl"
-has introduced a bug at least on arm64.
+On 8/28/21 21:20, Michael Straube wrote:
+> On 8/28/21 19:54, Saurav Girepunje wrote:
+>> Remove NULL check. NULL check before freeing function is not needed.
+>>
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>   drivers/staging/r8188eu/core/rtw_sta_mgt.c | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c 
+>> b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+>> index f6dffed53a60..4726771a8403 100644
+>> --- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+>> +++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+>> @@ -155,9 +155,7 @@ u32    _rtw_free_sta_priv(struct    sta_priv 
+>> *pstapriv)
+>>           spin_unlock_bh(&pstapriv->sta_hash_lock);
+>>           /*===============================*/
+>>
+>> -        if (pstapriv->pallocated_stainfo_buf)
+>> -            vfree(pstapriv->pallocated_stainfo_buf);
+>> -        }
+>> +        vfree(pstapriv->pallocated_stainfo_buf);
+>>
+>>       return _SUCCESS;
+>>   }
+>> -- 
+>> 2.32.0
+>>
+> 
+> Acked-by: Michael Straube <straube.linux@gmail.com>
+> 
+> Thanks,
+> Michael
 
-Relevant bits: in search_ioctl() we have
-        while (1) {
-                ret = fault_in_pages_writeable(ubuf + sk_offset,
-                                               *buf_size - sk_offset);
-                if (ret)
-                        break;
+Whoops, I missed that you removed the } that belongs to the enclosing if
+block. Probably because it is not properly indented in the original
+code.
 
-                ret = btrfs_search_forward(root, &key, path, sk->min_transid);
-                if (ret != 0) {
-                        if (ret > 0)
-                                ret = 0;
-                        goto err;
-                }
-                ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
-                                 &sk_offset, &num_found);
-                btrfs_release_path(path);
-                if (ret)
-                        break;
+Best regards,
+Michael
 
-        }
-and in copy_to_sk() -
-                sh.objectid = key->objectid;
-                sh.offset = key->offset;
-                sh.type = key->type;
-                sh.len = item_len;
-                sh.transid = found_transid;
 
-                /*
-                 * Copy search result header. If we fault then loop again so we
-                 * can fault in the pages and -EFAULT there if there's a
-                 * problem. Otherwise we'll fault and then copy the buffer in
-                 * properly this next time through
-                 */
-                if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh))) {
-                        ret = 0;
-                        goto out;
-                }
-with sk_offset left unchanged if the very first copy_to_user_nofault() fails.
-
-Now, consider a situation on arm64 where ubuf points to the beginning of page,
-ubuf[0] can be accessed, but ubuf[16] can not (possible with MTE, AFAICS).  We do
-fault_in_pages_writeable(), which succeeds.  When we get to copy_to_user_nofault()
-we fail as soon as it gets past the first 16 bytes.  And we repeat everything from
-scratch, with no progress made, since short copies are treated as "discard and
-repeat" here.
-
-Am I misreading what's going on there?
