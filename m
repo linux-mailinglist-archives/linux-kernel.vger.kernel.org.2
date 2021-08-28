@@ -2,132 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C74F3FA6BD
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 18:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDDA3FA6C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 18:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234505AbhH1QTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 12:19:18 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47556 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhH1QTN (ORCPT
+        id S234573AbhH1QUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 12:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhH1QUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 12:19:13 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 48C142216D;
-        Sat, 28 Aug 2021 16:18:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630167502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=7NrJ+Jhr63Y03bd2F44uKUO8GeWKhPO5AxFymYb2r/Y=;
-        b=QFGFJAzTU9QMlsLhfBkgnewcQrt7Y5lLid8CoeSLHXRfYp4HnsTWL5Uwe2oArxxlXXU1Tf
-        0Qu1iNS1M+fufqLQ4cwZ6lX59eekJkwo0Q9i2ZgjACNqXaTPJOlAFEOSQ8TUh+XbtYE8YW
-        YNPUlxCHqadOg3emwWoEILOEKbIrBno=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630167502;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=7NrJ+Jhr63Y03bd2F44uKUO8GeWKhPO5AxFymYb2r/Y=;
-        b=0pA5JPxTwbSi82qoLUOigRp7QS6I6qVGlSgTHqE+7BYixdOJSzpaO4jxHY2gfJItV+iyfL
-        GCuk5aL/ACqHlpDA==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 30AF0A3B9D;
-        Sat, 28 Aug 2021 16:18:22 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: sco: Fix lock_sock() blockage by memcpy_from_msg()
-Date:   Sat, 28 Aug 2021 18:18:18 +0200
-Message-Id: <20210828161818.31141-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+        Sat, 28 Aug 2021 12:20:51 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A40C061756;
+        Sat, 28 Aug 2021 09:20:00 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id j4so21247836lfg.9;
+        Sat, 28 Aug 2021 09:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KJjlhL+wu+SZnMSpzSjNoshjgIUDvLy0pU8sVpAAjyY=;
+        b=u+8fDKLkjfXLvVTs0dE+JFc9+I0FiO54/wmMk8th90CEiOgkFBAGh/5xcM745TSfJl
+         inKBOUjhDchGvwYvSC8CiN9D2QMegqM2VctXyKdTWd+1ETeVNzWxLg6mTjYtOQLkFPY2
+         8V/MIBPhQ+aeuqBJbDHbFqUlHSkTQUlUjDjk/PUjQSn8ILEFLSa/UDH4Xb65BRlRTei1
+         Nyjiuj+e49LRy1YzLMmP3pZKM7ln1AHyWy8Fn3BJjL3aF3y4t5Zq/GW7LqWoyF18YtW7
+         3gzXdINIcDHYPAQg1YnyGP6JKkV/9BMOrNZCjrl382MqJ5mEkVwX/U3xaYMJXVL9gCnK
+         u0vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KJjlhL+wu+SZnMSpzSjNoshjgIUDvLy0pU8sVpAAjyY=;
+        b=Dxsv9b6w6c+YXZ95jdBtx0VH6cO2kQ+BN9h1fiqCcx+6Nxh1KevJHv+Wzr9XFYY+1u
+         TKUqpLJ+0sAtEONnUwjF0ilIP/DcCaJJfEDmc39R+NyPadUPA9+hTkXwj9qCZPYQ11L+
+         vOc8eGVSlRAAk4ijHJ/w4B44XSJAmGi3+CosVgLRCsXslgGEQj2iH1s2jFxsrUDxySU3
+         tFPF9MzdUfEHwQblq41igziIaHwVGL72/q63D3ujl3xEtPHAmQGhHjWUIWIQXt/srIOM
+         k4/QZQ9GwacBQc/SAc7p0GTD+kl7sG2gZVsb3gS2Owd0t1xOjExUEpZVX6A1nFLvI5lU
+         zPMQ==
+X-Gm-Message-State: AOAM530WE3XhlY5/30Vyeey/8UTPI3aC5gIDIDkdDluJPTUs2ddWozNE
+        5CRYSF/rhal1eAzQnooVgnP5SJSaLNBoY8L0
+X-Google-Smtp-Source: ABdhPJzfh+dxaICrJfAx6dLlrn8Z1XpeCZJoqq0RHWXeE2d91rOegZX5mq6FdOUmaoPNHiKdU+T1dA==
+X-Received: by 2002:a19:6a16:: with SMTP id u22mr10838618lfu.493.1630167599317;
+        Sat, 28 Aug 2021 09:19:59 -0700 (PDT)
+Received: from grain.localdomain ([5.18.253.97])
+        by smtp.gmail.com with ESMTPSA id m1sm244759lfc.144.2021.08.28.09.19.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 09:19:59 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id AC9EF5A001E; Sat, 28 Aug 2021 19:19:46 +0300 (MSK)
+Date:   Sat, 28 Aug 2021 19:19:46 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, ccross@google.com,
+        sumit.semwal@linaro.org, mhocko@suse.com, dave.hansen@intel.com,
+        keescook@chromium.org, willy@infradead.org,
+        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com,
+        rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com,
+        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
+        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
+        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
+        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
+        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
+        legion@kernel.org, eb@emlix.com, songmuchun@bytedance.com,
+        viresh.kumar@linaro.org, thomascedeno@google.com,
+        sashal@kernel.org, cxfcosmos@gmail.com, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@android.com, Pekka Enberg <penberg@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Jan Glauber <jan.glauber@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Rob Landley <rob@landley.net>,
+        "Serge E. Hallyn" <serge.hallyn@ubuntu.com>,
+        David Rientjes <rientjes@google.com>,
+        Rik van Riel <riel@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Michel Lespinasse <walken@google.com>,
+        Tang Chen <tangchen@cn.fujitsu.com>, Robin Holt <holt@sgi.com>,
+        Shaohua Li <shli@fusionio.com>,
+        Sasha Levin <sasha.levin@oracle.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH v8 1/3] mm: rearrange madvise code to allow for reuse
+Message-ID: <YSpiIrQKs5RUccYk@grain>
+References: <20210827191858.2037087-1-surenb@google.com>
+ <20210827191858.2037087-2-surenb@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827191858.2037087-2-surenb@google.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sco_send_frame() also takes lock_sock() during memcpy_from_msg()
-call that may be endlessly blocked by a task with userfaultd
-technique, and this will result in a hung task watchdog trigger.
+On Fri, Aug 27, 2021 at 12:18:56PM -0700, Suren Baghdasaryan wrote:
+...
+>  
+> +/*
+> + * Apply an madvise behavior to a region of a vma.  madvise_update_vma
+> + * will handle splitting a vm area into separate areas, each area with its own
+> + * behavior.
+> + */
+> +static int madvise_vma_behavior(struct vm_area_struct *vma,
+> +				struct vm_area_struct **prev,
+> +				unsigned long start, unsigned long end,
+> +				unsigned long behavior)
+> +{
+> +	int error = 0;
 
-Just like the similar fix for hci_sock_sendmsg() in commit
-92c685dc5de0 ("Bluetooth: reorganize functions..."), this patch moves
-the  memcpy_from_msg() out of lock_sock() for addressing the hang.
 
-This should be the last piece for fixing CVE-2021-3640 after a few
-already queued fixes.
+Hi Suren! A nitpick -- this variable is never used with default value
+so I think we could drop assignment here.
+...
+> +	case MADV_DONTFORK:
+> +		new_flags |= VM_DONTCOPY;
+> +		break;
+> +	case MADV_DOFORK:
+> +		if (vma->vm_flags & VM_IO) {
+> +			error = -EINVAL;
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- net/bluetooth/sco.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+We can exit early here, without jumping to the end of the function, right?
 
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index 98a881586512..687e05718aad 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -280,7 +280,8 @@ static int sco_connect(struct hci_dev *hdev, struct sock *sk)
- 	return err;
- }
- 
--static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
-+static int sco_send_frame(struct sock *sk, void *buf, int len,
-+			  unsigned int msg_flags)
- {
- 	struct sco_conn *conn = sco_pi(sk)->conn;
- 	struct sk_buff *skb;
-@@ -292,15 +293,11 @@ static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
- 
- 	BT_DBG("sk %p len %d", sk, len);
- 
--	skb = bt_skb_send_alloc(sk, len, msg->msg_flags & MSG_DONTWAIT, &err);
-+	skb = bt_skb_send_alloc(sk, len, msg_flags & MSG_DONTWAIT, &err);
- 	if (!skb)
- 		return err;
- 
--	if (memcpy_from_msg(skb_put(skb, len), msg, len)) {
--		kfree_skb(skb);
--		return -EFAULT;
--	}
--
-+	memcpy(skb_put(skb, len), buf, len);
- 	hci_send_sco(conn->hcon, skb);
- 
- 	return len;
-@@ -725,6 +722,7 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
- 			    size_t len)
- {
- 	struct sock *sk = sock->sk;
-+	void *buf;
- 	int err;
- 
- 	BT_DBG("sock %p, sk %p", sock, sk);
-@@ -736,14 +734,23 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
- 	if (msg->msg_flags & MSG_OOB)
- 		return -EOPNOTSUPP;
- 
-+	buf = kmalloc(len, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+	if (memcpy_from_msg(buf, msg, len)) {
-+		kfree(buf);
-+		return -EFAULT;
-+	}
-+
- 	lock_sock(sk);
- 
- 	if (sk->sk_state == BT_CONNECTED)
--		err = sco_send_frame(sk, msg, len);
-+		err = sco_send_frame(sk, buf, len, msg->msg_flags);
- 	else
- 		err = -ENOTCONN;
- 
- 	release_sock(sk);
-+	kfree(buf);
- 	return err;
- }
- 
--- 
-2.26.2
+> +			goto out;
+> +		}
+> +		new_flags &= ~VM_DONTCOPY;
+> +		break;
+> +	case MADV_WIPEONFORK:
+> +		/* MADV_WIPEONFORK is only supported on anonymous memory. */
+> +		if (vma->vm_file || vma->vm_flags & VM_SHARED) {
+> +			error = -EINVAL;
 
+And here too.
+
+> +			goto out;
+> +		}
+> +		new_flags |= VM_WIPEONFORK;
+> +		break;
+> +	case MADV_KEEPONFORK:
+> +		new_flags &= ~VM_WIPEONFORK;
+> +		break;
+> +	case MADV_DONTDUMP:
+> +		new_flags |= VM_DONTDUMP;
+> +		break;
+> +	case MADV_DODUMP:
+> +		if (!is_vm_hugetlb_page(vma) && new_flags & VM_SPECIAL) {
+> +			error = -EINVAL;
+
+Same.
+
+> +			goto out;
+> +		}
+> +		new_flags &= ~VM_DONTDUMP;
+> +		break;
+> +	case MADV_MERGEABLE:
+> +	case MADV_UNMERGEABLE:
+> +		error = ksm_madvise(vma, start, end, behavior, &new_flags);
+> +		if (error)
+> +			goto out;
+> +		break;
+> +	case MADV_HUGEPAGE:
+> +	case MADV_NOHUGEPAGE:
+> +		error = hugepage_madvise(vma, &new_flags, behavior);
+> +		if (error)
+> +			goto out;
+> +		break;
+> +	}
+> +
+> +	error = madvise_update_vma(vma, prev, start, end, new_flags);
+> +
+> +out:
+
+I suppose we better keep the former comment on why we maps ENOMEM to EAGAIN?
+
+	Cyrill
