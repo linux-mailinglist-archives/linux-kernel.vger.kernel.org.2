@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DC13FA560
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5B03FA563
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbhH1LX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 07:23:26 -0400
-Received: from smtprelay0137.hostedemail.com ([216.40.44.137]:39704 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233831AbhH1LXY (ORCPT
+        id S234008AbhH1L1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 07:27:25 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14432 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233861AbhH1L1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 07:23:24 -0400
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id BC7011809579F;
-        Sat, 28 Aug 2021 11:22:26 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id C87962EBFAA;
-        Sat, 28 Aug 2021 11:22:25 +0000 (UTC)
-Message-ID: <d18d2c6fd87f552def3210930da34fd276b4fd6d.camel@perches.com>
-Subject: Re: [tip: efi/core] efi: cper: fix scnprintf() use in
- cper_mem_err_location()
-From:   Joe Perches <joe@perches.com>
-To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org
-Date:   Sat, 28 Aug 2021 04:22:24 -0700
-In-Reply-To: <163014706409.25758.9928933953235257712.tip-bot2@tip-bot2>
-References: <163014706409.25758.9928933953235257712.tip-bot2@tip-bot2>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Sat, 28 Aug 2021 07:27:24 -0400
+Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GxZ1p73FnzbdN7;
+        Sat, 28 Aug 2021 19:22:38 +0800 (CST)
+Received: from [10.174.176.245] (10.174.176.245) by
+ dggeme766-chm.china.huawei.com (10.3.19.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Sat, 28 Aug 2021 19:26:30 +0800
+Subject: Re: Re: [PATCH v3 0/3] auth_gss: netns refcount leaks when
+ use-gss-proxy==1
+To:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Wenbin Zeng <wenbin.zeng@gmail.com>
+CC:     <davem@davemloft.net>, <viro@zeniv.linux.org.uk>,
+        <jlayton@kernel.org>, <trond.myklebust@hammerspace.com>,
+        <anna.schumaker@netapp.com>, <wenbinzeng@tencent.com>,
+        <dsahern@gmail.com>, <nicolas.dichtel@6wind.com>,
+        <willy@infradead.org>, <edumazet@google.com>,
+        <jakub.kicinski@netronome.com>, <tyhicks@canonical.com>,
+        <chuck.lever@oracle.com>, <neilb@suse.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-nfs@vger.kernel.org>
+References: <1556692945-3996-1-git-send-email-wenbinzeng@tencent.com>
+ <1560341370-24197-1-git-send-email-wenbinzeng@tencent.com>
+ <20190801195346.GA21527@fieldses.org>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <9cfbd851-81ce-e272-8693-d3430c381c7a@huawei.com>
+Date:   Sat, 28 Aug 2021 19:26:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20190801195346.GA21527@fieldses.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.21
-X-Stat-Signature: 7uetgy9b5emkj3oiuubiwcgypyi8eaa9
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: C87962EBFAA
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18pUxn2alZBBCM1l+xnT4V9kNXDsxRmRQs=
-X-HE-Tag: 1630149745-356633
+X-Originating-IP: [10.174.176.245]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme766-chm.china.huawei.com (10.3.19.112)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-08-28 at 10:37 +0000, tip-bot2 for Rasmus Villemoes wrote:
-> The following commit has been merged into the efi/core branch of tip:
-[]
-> efi: cper: fix scnprintf() use in cper_mem_err_location()
-> 
-> The last two if-clauses fail to update n, so whatever they might have
-> written at &msg[n] would be cut off by the final nul-termination.
-> 
-> That nul-termination is redundant; scnprintf(), just like snprintf(),
-> guarantees a nul-terminated output buffer, provided the buffer size is
-> positive.
-> 
-> And there's no need to discount one byte from the initial buffer;
-> vsnprintf() expects to be given the full buffer size - it's not going
-> to write the nul-terminator one beyond the given (buffer, size) pair.
-[]
-> diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-[]
-> @@ -221,7 +221,7 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
->  		return 0;
->  
-> 
->  	n = 0;
-> -	len = CPER_REC_LEN - 1;
-> +	len = CPER_REC_LEN;
->  	if (mem->validation_bits & CPER_MEM_VALID_NODE)
->  		n += scnprintf(msg + n, len - n, "node: %d ", mem->node);
->  	if (mem->validation_bits & CPER_MEM_VALID_CARD)
 
-[etc...]
-
-Is this always single threaded?
-
-It doesn't seem this is safe for reentry as the output buffer
-being written into is a single static
-
-static char rcd_decode_str[CPER_REC_LEN];
-
-
+ÔÚ 2019/8/2 3:53, J. Bruce Fields Ð´µÀ:
+> I lost track, what happened to these patches?
+>
+> --b.
+>
+> On Wed, Jun 12, 2019 at 08:09:27PM +0800, Wenbin Zeng wrote:
+>> This patch series fixes an auth_gss bug that results in netns refcount
+>> leaks when use-gss-proxy is set to 1.
+>>
+>> The problem was found in privileged docker containers with gssproxy service
+>> enabled and /proc/net/rpc/use-gss-proxy set to 1, the corresponding
+>> struct net->count ends up at 2 after container gets killed, the consequence
+>> is that the struct net cannot be freed.
+>>
+>> It turns out that write_gssp() called gssp_rpc_create() to create a rpc
+>> client, this increases net->count by 2; rpcsec_gss_exit_net() is supposed
+>> to decrease net->count but it never gets called because its call-path is:
+>>          net->count==0 -> cleanup_net -> ops_exit_list -> rpcsec_gss_exit_net
+>> Before rpcsec_gss_exit_net() gets called, net->count cannot reach 0, this
+>> is a deadlock situation.
+>>
+>> To fix the problem, we must break the deadlock, rpcsec_gss_exit_net()
+>> should move out of the put() path and find another chance to get called,
+>> I think nsfs_evict() is a good place to go, when netns inode gets evicted
+>> we call rpcsec_gss_exit_net() to free the rpc client, this requires a new
+>> callback i.e. evict to be added in struct proc_ns_operations, and add
+>> netns_evict() as one of netns_operations as well.
+>>
+>> v1->v2:
+>>   * in nsfs_evict(), move ->evict() in front of ->put()
+>> v2->v3:
+>>   * rpcsec_gss_evict_net() directly call gss_svc_shutdown_net() regardless
+>>     if gssp_clnt is null, this is exactly same to what rpcsec_gss_exit_net()
+>>     previously did
+>>
+>> Wenbin Zeng (3):
+>>    nsfs: add evict callback into struct proc_ns_operations
+>>    netns: add netns_evict into netns_operations
+>>    auth_gss: fix deadlock that blocks rpcsec_gss_exit_net when
+>>      use-gss-proxy==1
+>>
+>>   fs/nsfs.c                      |  2 ++
+>>   include/linux/proc_ns.h        |  1 +
+>>   include/net/net_namespace.h    |  1 +
+>>   net/core/net_namespace.c       | 12 ++++++++++++
+>>   net/sunrpc/auth_gss/auth_gss.c |  4 ++--
+>>   5 files changed, 18 insertions(+), 2 deletions(-)
+>>
+>> -- 
+>> 1.8.3.1
+These patchsets don't seem to merge into the mainline, are there any 
+other patches that fix this bug?
