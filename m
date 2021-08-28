@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287323FA663
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A783FA66A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbhH1PMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:12:39 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:46581 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230060AbhH1PMi (ORCPT
+        id S234436AbhH1PRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 11:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234407AbhH1PRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:12:38 -0400
-Received: (qmail 288731 invoked by uid 1000); 28 Aug 2021 11:11:46 -0400
-Date:   Sat, 28 Aug 2021 11:11:46 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Evgeny Novikov <novikov@ispras.ru>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Mike Turquette <mturquette@linaro.org>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: Re: [PATCH] usb: ehci-orion: Handle errors of clk_prepare_enable()
- in probe
-Message-ID: <20210828151146.GA288644@rowland.harvard.edu>
-References: <20210825170902.11234-1-novikov@ispras.ru>
- <20210825172937.GD192480@rowland.harvard.edu>
- <c22d943a-581c-c1bd-d453-3f0f6176c8a5@ispras.ru>
- <20210826152438.GB228824@rowland.harvard.edu>
- <303a5695-e0c4-1cae-ee1f-6f34a9717b77@ispras.ru>
+        Sat, 28 Aug 2021 11:17:01 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABA8C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 08:16:10 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id i28so17073586ljm.7
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 08:16:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=OS0wbKqas7a539x+n8toazOUnYtdbNigT84K+DI5p+M=;
+        b=ocnmOS6bUpNvx1bgTGGaqeYpBCSq7CbeqJTBdWvz/beRn/RJrHUOC5B/FzOihT0l7Z
+         l7Z83tjViHKYm0BOCKoGtXGYrA3j5B2dug14MxZyqQqfOLJjW4H2w13X6WdL/PA6gAOs
+         JEx41JCNBXXWUHu7LWbGRal7f4fV+KQEuPM+fgVGeErG00vaNpZJ48QOt6+zCXUfgwIk
+         GHVn0N5iBmm3FxrdOhaCgXIr50xqJpJNsPo/PoZBakaY1ImOkr3rsjUnWrb4zmsS/cMO
+         kASlixWyBSCegVhcCkmX4Ji/MsOjkZtluIeiW7Eh+nbyszwmudEHJc1b1FgUjzlLVSd5
+         immA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=OS0wbKqas7a539x+n8toazOUnYtdbNigT84K+DI5p+M=;
+        b=Hfslih8rGjg31CRvybkLPBDBfgMzgG4Z57v5/5Rx2P3iLSrAGgxoIs6qgzhCyA6Jxl
+         KERx7YZuiTV/s3EK6wEnRTmDsWc9WEGeQDO5hdiu8Luu3xfuqO2mRblKLkoAYQPOSGZ8
+         E8mYWvkL9VfSLOxTAv9pw9i5WkCBM7v+xAhX6O7rEacwtf6276CQILeIP63eZFp1idBM
+         uHQNOK6BhIJS+d6VjU6MYNn52iChbfEoRuGLPtOluZYMQ7aVm0/8qqxtgkdV4cc1jYwx
+         EwuK5ZMtxOvokjI9VCw8I81RYNYVxO44HF1ZyMpFku3Mvdl9eybSJE/90kedl2YxU/0L
+         tgCQ==
+X-Gm-Message-State: AOAM531crWp3c6On/+Wb23Bt5Pe1VurUPr0Aly/67MRsk1UKjCL3W12n
+        mwXkXCOWoZBo267triS1X0+/gbFva/lQRF/I0CE=
+X-Google-Smtp-Source: ABdhPJz8S2k0kR2gKkKFbgISh0wPxXuDEqNAhsTd+qd8RUryZfxOTwqp3uRnkI51dkn3l4ZQmX835plRxy6uEpOJYKE=
+X-Received: by 2002:a2e:7d17:: with SMTP id y23mr12230156ljc.392.1630163768738;
+ Sat, 28 Aug 2021 08:16:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <303a5695-e0c4-1cae-ee1f-6f34a9717b77@ispras.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a9a:7f53:0:b0:138:daa1:52eb with HTTP; Sat, 28 Aug 2021
+ 08:16:08 -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   mr michel <mrmichel2233@gmail.com>
+Date:   Sat, 28 Aug 2021 15:16:08 +0000
+Message-ID: <CALSo2NadZPJwSvOdnKdwVeSptYTkzksBJci0k-0K3xf5mB07_w@mail.gmail.com>
+Subject: Please respond urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 01:47:12PM +0300, Evgeny Novikov wrote:
-> Hi Alan,
-> 
-> On 26.08.2021 18:24, Alan Stern wrote:
+Hello,
 
-> > I don't know whether these errors can occur or not.  To find out, you need to
-> > ask someone who knows more about the clock framework.
-> > 
-> > On the other hand, the fact that the functions do return an error code means
-> > that they expect callers to check its value.  In fact, whoever changed the API
-> > should have gone through all the callers to make sure they did so.
-> > 
-> > (Let's put it this way:  If those functions can return an error, we should
-> > check the return code.  If they can't return an error then they shouldn't be
-> > defined to return an int, so the API should be changed.)
-> > 
-> > So on the whole, I think making these changes would be a good thing.  At the
-> > very least, it will help make all the different EHCI and OHCI drivers
-> > consistent with each other.
-> Though I may be wrong, but after the discussion with Dan, it does not seem
-> that we can expect any considerable changes in the clock API and support
-> from the static analysis tools soon. So, if you still would like to see
-> corresponding fixes in EHCI and OHCI drivers, I can prepare them.
+I know that this mail will come to you as a surprise as we have never
+met before, but never mind i have decided to make this contact with
+you as I believe that you can be of great assistance to me. I need
+your assistance in transferring the sum of $11.3million to your
+private account Where this money can be shared between us.
 
-Yes, please do so.
+The money has been here in our Bank lying dormant for years now
+without anybody coming for the claim. I want to release the money to
+you as the relative to our deceased customer (the account owner) who
+died in a plane crash with his family since October 2005.
 
-Alan Stern
+By indicating your interest I will send you the full details on how
+the business will be executed.
+
+Best Regards,
+Mr.Michel Duku.
