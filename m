@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C523FA6B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 18:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A141C3FA6AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 18:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbhH1QIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 12:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
+        id S234528AbhH1QH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 12:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhH1QH6 (ORCPT
+        with ESMTP id S234494AbhH1QH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 12:07:58 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D79C061756;
-        Sat, 28 Aug 2021 09:07:07 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a25so20763844ejv.6;
-        Sat, 28 Aug 2021 09:07:07 -0700 (PDT)
+        Sat, 28 Aug 2021 12:07:56 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821B1C0613D9;
+        Sat, 28 Aug 2021 09:07:05 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id w19so13932705oik.10;
+        Sat, 28 Aug 2021 09:07:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LL6/XDkELtJGzj7bv+EahXfdLznXO7JwuHps8bbcfhg=;
-        b=IxCiQofbwWRdmlbWjkVYx9X0EwfA39yCRnGNeY1wQV8OrMMlSQWxSls8SpJMz++KMN
-         qXEBGA4rb0o4u786EA2smvODJVR/pu2m2Au85UJFLjaA9aedW+LGw+1DZiU2bT2pb2XA
-         R8iSXn/xB5WrENK+gXk2EfZTYPq3CZInmY18qzufbFgrOvw7NOa5wWIVKgsnX+gfYPgp
-         VKXeZfubEYmLnF6CEVopa/vYmHqVOilZuXIfInX8N2S1BZkmqOE4cd+dSmWV4sdhJeUR
-         K4f3we13o6+kHoJleAleDR3KNs3gLhTmFxmhzlJ8pIowJqL53kq5azuBv0pwWdt2y3ps
-         d9Mg==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2N4hXKjAGAGxHdHjCs7o/+MoEQA/CXytYWZZ2Rbz+8c=;
+        b=dkrU86+tSFsSlGnz3N1bri/bBm4GtsENNqkRTvSkSS/6gcg9bNguZR1YC4BGNg1bdA
+         Bzcwqj19tcmCwYGknWuG2/5warweQF+KViO53IeSA3/SnZIGIRZ6Vgg3yeczeYCFy/1o
+         IOx09YDj+C64Dtc1L7+8kML+5GkiF+LIkG7hKa8eFxHhDkIGvz9FQTrV/f0aefcF4g8O
+         6FQJvRaQowVX3ys9BCL96fQKUE2+JPTTXZLH0Z2PKaAbz/h9G7H5kTgOWL2OJbrNjqOw
+         U32DTd7Gk7h0Yl/8mxPkCDGCyJZ0OdEIx5ovWdz7skQ6zdsmULARiRJzXhU5N7orgej0
+         2elw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LL6/XDkELtJGzj7bv+EahXfdLznXO7JwuHps8bbcfhg=;
-        b=OHsVHvVw4Zwwz64FPl3b0PTjCK5a8Ve7pQlxjKiudQ/37SASxfyWUdYPpVjaX7+tnt
-         jbyrfumHQbihxkvigy4n7+nIGijhmE6T6a4Scq6dcqkrnZ9N+95HnklqZk0RdgpKKx6o
-         fNQyseUH6pCk++rC1LwSR6WKeRkaRWumFFFH1aVOSHRVTuRi71/h3racC7aokQGVImxD
-         AOo2iTa6FJtd8jGsOruFkRIsGq9H6y1nMK5deLlEvfKx7Z+IebnJqfXZqw+vuowq2EK1
-         pC7l2gH6jfxMvoacI8nsEmRvSetKEz2jZYuvDiQXOfDJnW7wAy5GEAiyTebxfXpnSVFZ
-         U1MA==
-X-Gm-Message-State: AOAM531tL8ECXHWFjqc2LH61GIcANGxbOZJYyfqjT4mbvEYflS84kpez
-        raaQULmyTws6ZAHJBIR4u/Dyo6pwdjlht8/zHGE=
-X-Google-Smtp-Source: ABdhPJyPZVzHL76lGJOroGS4GEkuoeintMbGC3iDT8wzVLyfCWlNhiw7RFWxKmQZ7hYxPdW7PTXctCG+cmMAPDPpHeM=
-X-Received: by 2002:a17:906:369a:: with SMTP id a26mr15801598ejc.539.1630166826553;
- Sat, 28 Aug 2021 09:07:06 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=2N4hXKjAGAGxHdHjCs7o/+MoEQA/CXytYWZZ2Rbz+8c=;
+        b=WMAFoHWm1JObTSWcrdWZNCpQk5pQDKc5q9NGVGiLjTOVJbtZ7pEKZQKTpHISDtobEs
+         Xt8/Qyes70R7bBL85Ohi7cskJuzD2W3eTNSggPGfhIXJ+H0eEaAZgABJQjel45B4mo5Y
+         8gGKiza1ntoY3nELANWJkQWxPvC/k/GLze2XKFgauXNT9/ttFQY5WtRwYB3LEXkPxTFV
+         iV9leknSX9FPdQZzE2oNzNWtjgrHy0InHRicotpoFk95NHykxZsbrox8iTAGklmIJ4jT
+         2BmqVvSVwG/6q0ET7E/B9ExRQLMikmN5tmTrlV8ncvkl/rCUjR+LiTt18d18lQTaoW/R
+         Y8Bw==
+X-Gm-Message-State: AOAM531p9JorHxUGz7lrzIQ+zSS0TZbs+iGBfPilcVQXM1F0z7sohVHE
+        Ute065/bLkK/g7bOdq/IxpM=
+X-Google-Smtp-Source: ABdhPJz+N1t9wv12duSVrVefN3Rtc7EZiHwK1wUTVm/OCni5laro3n/ttAiOKcZOUkDzi9ohKSkhcQ==
+X-Received: by 2002:a05:6808:181a:: with SMTP id bh26mr19693569oib.166.1630166824889;
+        Sat, 28 Aug 2021 09:07:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b2sm1840736ook.46.2021.08.28.09.07.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 09:07:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 28 Aug 2021 09:07:03 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH v5 2/7] watchdog: f71808e_wdt: remove superfluous global
+Message-ID: <20210828160703.GA821909@roeck-us.net>
+References: <cover.3654d10d79751f1b01adc9403f9840543df4bcc4.1628525954.git-series.a.fatoum@pengutronix.de>
+ <d1f8cda90283855633537adee0af2c6b00a9ec25.1628525954.git-series.a.fatoum@pengutronix.de>
 MIME-Version: 1.0
-References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-5-linux.amoon@gmail.com>
-In-Reply-To: <20210817041548.1276-5-linux.amoon@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 28 Aug 2021 18:06:55 +0200
-Message-ID: <CAFBinCDDASbbwBWdPnzq4352yepamD-ziG09Ki=BvjZ9xMLXdQ@mail.gmail.com>
-Subject: Re: [PATCHv3 4/6] arm64: dts: amlogic: odroidc2: use vbus-supply for
- power source for usb nodes
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d1f8cda90283855633537adee0af2c6b00a9ec25.1628525954.git-series.a.fatoum@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+On Mon, Aug 09, 2021 at 06:20:32PM +0200, Ahmad Fatoum wrote:
+> max_timeout never served any purpose over WATCHDOG_MAX_TIMEOUT, which it
+> was initialized with. Drop it.
+> 
+> Suggested-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-On Tue, Aug 17, 2021 at 6:18 AM Anand Moon <linux.amoon@gmail.com> wrote:
->
-> Use vbus-supply instead of phy-supply as power source for dwc2
-> nodes. Drop vbus-supply for usb0 node, as it will handle later.
-This is more of a question than a review comment:
-Do you think that the USB power setup on Odroid-C1 and Odroid-C2 is
-different or the same?
-On Odroid-C1 we know that only the PWREN signal which goes to the
-Micro-USB connector is configurable while VBUS for the USB host ports
-is always enabled.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-> Fixes: e841ec956e53 ("ARM64: dts: meson-gxbb-odroidc2:
->        fix usb1 power supply")
->
-most Linux commits which I have seen don't use a blank line here
-Also I think it's recommended not to break the "Fixes" tag into
-multiple lines, even if the text is long
-see [0] for example
-
-
-Best regards,
-Martin
-
-
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=425bec0032f59eeee12520085cd054fac09cc66e
+> ---
+>  drivers/watchdog/f71808e_wdt.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
+> index f7d82d261913..3a0b29cb5854 100644
+> --- a/drivers/watchdog/f71808e_wdt.c
+> +++ b/drivers/watchdog/f71808e_wdt.c
+> @@ -81,7 +81,6 @@ static unsigned short force_id;
+>  module_param(force_id, ushort, 0);
+>  MODULE_PARM_DESC(force_id, "Override the detected device ID");
+>  
+> -static const int max_timeout = WATCHDOG_MAX_TIMEOUT;
+>  static int timeout = WATCHDOG_TIMEOUT;	/* default timeout in seconds */
+>  module_param(timeout, int, 0);
+>  MODULE_PARM_DESC(timeout,
+> @@ -221,7 +220,7 @@ static inline void superio_exit(int base)
+>  static int watchdog_set_timeout(int timeout)
+>  {
+>  	if (timeout <= 0
+> -	 || timeout >  max_timeout) {
+> +	 || timeout >  WATCHDOG_MAX_TIMEOUT) {
+>  		pr_err("watchdog timeout out of range\n");
+>  		return -EINVAL;
+>  	}
+> @@ -720,7 +719,7 @@ static int __init watchdog_init(int sioaddr)
+>  
+>  	if (start_withtimeout) {
+>  		if (start_withtimeout <= 0
+> -		 || start_withtimeout >  max_timeout) {
+> +		 || start_withtimeout >  WATCHDOG_MAX_TIMEOUT) {
+>  			pr_err("starting timeout out of range\n");
+>  			err = -EINVAL;
+>  			goto exit_miscdev;
