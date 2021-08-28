@@ -2,111 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AAC3FA208
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 02:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3808E3FA20E
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 02:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbhH1AHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 20:07:24 -0400
-Received: from mail.efficios.com ([167.114.26.124]:47366 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232558AbhH1AHP (ORCPT
+        id S232754AbhH1AJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 20:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232720AbhH1AJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 20:07:15 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 334D2383D90;
-        Fri, 27 Aug 2021 20:06:25 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id dJnw97AVp-6J; Fri, 27 Aug 2021 20:06:20 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id AABF53839D9;
-        Fri, 27 Aug 2021 20:06:20 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com AABF53839D9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1630109180;
-        bh=aNbnUoaMo9qyJFeAmPDlGUugMe1xHV+lzHQym41zPgk=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ibXqVy9zMTh8pzWhCDOoh0A6j0FvWS8eYDH852Q65ZQn7p1jJGIre5/cPOpdeIP+y
-         aA3o07Eg6BWPXmQhKAcL/ut69D3yBdvdejeJXIhzPTSWYfZet9c55De2zXu/+jv9qb
-         9rMBUNtRH3XFmY4l5818jP7JeOTnYOyaVW6g21SlH6hM5lnPmcjj7mBKimFhzIieoI
-         r/xa04WF8N3Rq/3K+SW2ss83aevuy6/MvU/Sy30Y15mPyUw7HSYrNN1GbX2+DRw0YH
-         7ZItjz+GSSq3DkuqubXPIjIIupZU9sNhSleF8+cDrSh10TSYD5CLywa6jmXG5NyjL6
-         CV8mJ14ojbACA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9JJ04Y5MGhgL; Fri, 27 Aug 2021 20:06:20 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 87F07383C99;
-        Fri, 27 Aug 2021 20:06:20 -0400 (EDT)
-Date:   Fri, 27 Aug 2021 20:06:20 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     dvhart <dvhart@infradead.org>,
-        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Ben Gardon <bgardon@google.com>
-Message-ID: <1054916754.30218.1630109180443.JavaMail.zimbra@efficios.com>
-In-Reply-To: <YSlz8h9SWgeuicak@google.com>
-References: <20210820225002.310652-1-seanjc@google.com> <766990430.21713.1629731934069.JavaMail.zimbra@efficios.com> <282257549.21721.1629732017655.JavaMail.zimbra@efficios.com> <YSblqrrpKcORzilX@google.com> <1700758714.29394.1630003332081.JavaMail.zimbra@efficios.com> <YSgpy8iXXXUQ+b/k@google.com> <339641531.29941.1630091374065.JavaMail.zimbra@efficios.com> <YSlz8h9SWgeuicak@google.com>
-Subject: Re: [PATCH v2 4/5] KVM: selftests: Add a test for KVM_RUN+rseq to
- detect task migration bugs
+        Fri, 27 Aug 2021 20:09:36 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A55C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 17:08:47 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so5982041pjt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 17:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=V1Phuwg9S10P3UrzzO2JJiE8SFms1OaLW24U0NiZUw0=;
+        b=bmt9FXUTZo3GZkAW150BsedhnBTrgDULwpKB1Ck67Nbv/cKpyasz68SYaJSq2jY3f6
+         dlO3swB5SNRbC3gwcd+sfM7pvSHTdLSwzu/vJHSlJ2jfRxy577fRxe28HRHOnnUXfVxK
+         siX8kBXx9Y5rYqVMrx2jl+J5n3Xe2Hl9gnfPkpIIfPsyY4hANCueRNOoB0HiF6LYq6QP
+         CT4h0DMCiMsuZMu+seNgn5rQ43M3Ic+aITRrvZsw6ZPVxI7lqOHJkbeOMnpNMb6tNXVY
+         FCN6W9LgKmA4JwW/E6fFmKevhhrfjufB7lkQ0L0WHODkWmZ1Me7USZRFEhapoSn94UHR
+         /HBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=V1Phuwg9S10P3UrzzO2JJiE8SFms1OaLW24U0NiZUw0=;
+        b=JHAI/WGh7lu67A4h1wsSIrRZXleovxZaGVz45EKfk1WwiErRuXa3cX4FWmC/JBHTdG
+         JjxocjPuD/eQnyNB0wVlp5hUcEoQriFKRYdhcAW3nTenM1QlM31VnT56p3YkcfiA//R2
+         fMvcAdt2fmFLJZPvKVv5/EhsV5w3I0l56KanxqoL3K1t4FkrpDj3QcvTxMahdoCU4Nsh
+         PjpCUaSuDc8Ime6kdQgt64/d87fgEyOmjRNGtZIk+K1OFqBru4aJpl3SIcVc0itCrEvt
+         SrAvLyeETyMfed56ikNAK3XQEcPpEE9KARANNlyfO/acDvuxKDd3ts6TasEzu/1qv8K4
+         ZMXQ==
+X-Gm-Message-State: AOAM533FUSt85t9qhRFTsDe4iM+yftb0f5cILv9PtaUrdr2ndSiuBlvr
+        GxNRV0Wz8/Y0a356ytrBJgs=
+X-Google-Smtp-Source: ABdhPJxNj0eC9DJ3kkfn0E5168iWGGL0MpSq1fA91RsXa67fr3+MfNIPPFQ//+vv/jocozwnvSJbhg==
+X-Received: by 2002:a17:902:7611:b029:12b:e55e:6ee8 with SMTP id k17-20020a1709027611b029012be55e6ee8mr11167180pll.4.1630109326490;
+        Fri, 27 Aug 2021 17:08:46 -0700 (PDT)
+Received: from localhost.localdomain (125-237-24-95-adsl.sparkbb.co.nz. [125.237.24.95])
+        by smtp.gmail.com with ESMTPSA id u2sm132807pjv.10.2021.08.27.17.08.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 17:08:46 -0700 (PDT)
+Date:   Sat, 28 Aug 2021 12:08:36 +1200
+From:   Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
+To:     gregkh@linuxfoundation.org, hello@bryanbrattlof.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: pi433: fix docs typos and references to previous
+ struct names
+Message-ID: <20210828000836.GA10188@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF91 (Linux)/8.8.15_GA_4059)
-Thread-Topic: selftests: Add a test for KVM_RUN+rseq to detect task migration bugs
-Thread-Index: eu98ugrRMaO1Ldp5KUn1lSy5MLrp5Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Aug 27, 2021, at 7:23 PM, Sean Christopherson seanjc@google.com wrote:
+In the comments there where some grammar mistakes and references to
+struct names that have gotten renamed over time but not reflected
+in the comments.
 
-> On Fri, Aug 27, 2021, Mathieu Desnoyers wrote:
-[...]
->> Does it reproduce if we randomize the delay to have it picked randomly from 0us
->> to 100us (with 1us step) ? It would remove a lot of the needs for arch-specific
->> magic delay value.
-> 
-> My less-than-scientific testing shows that it can reproduce at delays up to
-> ~500us,
-> but above ~10us the reproducibility starts to drop.  The bug still reproduces
-> reliably, it just takes more iterations, and obviously the test runs a bit
-> slower.
-> 
-> Any objection to using a 1-10us delay, e.g. a simple usleep((i % 10) + 1)?
+Signed-off-by: Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
+---
+ drivers/staging/pi433/pi433_if.h | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-Works for me, thanks!
-
-Mathieu
-
+diff --git a/drivers/staging/pi433/pi433_if.h b/drivers/staging/pi433/pi433_if.h
+index d5c1521192c1..1fae62c40661 100644
+--- a/drivers/staging/pi433/pi433_if.h
++++ b/drivers/staging/pi433/pi433_if.h
+@@ -5,16 +5,15 @@
+  * userspace interface for pi433 radio module
+  *
+  * Pi433 is a 433MHz radio module for the Raspberry Pi.
+- * It is based on the HopeRf Module RFM69CW. Therefore inside of this
+- * driver, you'll find an abstraction of the rf69 chip.
++ * It is based on the HopeRf Module RFM69CW. Therefore, inside of this
++ * driver you'll find an abstraction of the rf69 chip.
+  *
+- * If needed, this driver could be extended, to also support other
+- * devices, basing on HopeRfs rf69.
++ * If needed this driver could also be extended to support other
++ * devices based on HopeRf rf69 as well as HopeRf modules with a similar
++ * interface such as RFM69HCW, RFM12, RFM95 and so on.
+  *
+- * The driver can also be extended, to support other modules of
+- * HopeRf with a similar interace - e. g. RFM69HCW, RFM12, RFM95, ...
+  * Copyright (C) 2016 Wolf-Entwicklungen
+- *	Marcus Wolf <linux@wolf-entwicklungen.de>
++ * Marcus Wolf <linux@wolf-entwicklungen.de>
+  */
+ 
+ #ifndef PI433_H
+@@ -33,8 +32,8 @@ enum option_on_off {
+ /* IOCTL structs and commands */
+ 
+ /**
+- * struct pi433_tx_config
+- * describes the configuration of the radio module for sending
++ * struct pi433_tx_cfg
++ * describes the configuration of the radio module for sending data
+  * @frequency:
+  * @bit_rate:
+  * @modulation:
+@@ -46,7 +45,7 @@ enum option_on_off {
+  * @repetitions:
+  *
+  * ATTENTION:
+- * If the contents of 'pi433_tx_config' ever change
++ * If the contents of 'pi433_tx_cfg' ever change
+  * incompatibly, then the ioctl number (see define below) must change.
+  *
+  * NOTE: struct layout is the same in 64bit and 32bit userspace.
+@@ -81,8 +80,8 @@ struct pi433_tx_cfg {
+ };
+ 
+ /**
+- * struct pi433_rx_config
+- * describes the configuration of the radio module for sending
++ * struct pi433_rx_cfg
++ * describes the configuration of the radio module for receiving data
+  * @frequency:
+  * @bit_rate:
+  * @modulation:
+@@ -94,7 +93,7 @@ struct pi433_tx_cfg {
+  * @repetitions:
+  *
+  * ATTENTION:
+- * If the contents of 'pi433_rx_config' ever change
++ * If the contents of 'pi433_rx_cfg' ever change
+  * incompatibly, then the ioctl number (see define below) must change
+  *
+  * NOTE: struct layout is the same in 64bit and 32bit userspace.
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.25.4
+
