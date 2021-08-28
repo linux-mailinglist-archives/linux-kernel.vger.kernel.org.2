@@ -2,231 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EF23FA688
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F72F3FA691
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234433AbhH1Poo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhH1Pom (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:44:42 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D73C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 08:43:52 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id x5so10604723ill.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 08:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=9eIn9xmZE3lDDxF5D7SNUmbx8I+eA8wKnaNy1sQ/lzw=;
-        b=o75epPEcTLKnpr8vmg72GB4RV/9INyBQjSXUD/UExbzMjRC0K+am+369CyveyW8rjP
-         qe39+wLdWNiJlLNqQWkrt47SCn0nOx5UjQ4heXT5o99FsRqQ68qcC0oGwqxtbPWXbCo1
-         9F8HqBp8rhxhKMLT/0eBLaCAHWy/CbIgSC3Fel2OpKd7qPTuoff/QERZsIBCvRfUVwEO
-         Ryi5nLUUQDncbMYps/Yaup+Gx3GMOkpwu2tJ8x6bdI0csGsQiJ8Wl3gqj031mlyWfiHD
-         ZvQl9kWepMYRZW9E4T848Om4rml9f/zed+1oiMtpo43Kdn4f4DMHNKzf/5AZFi+XcVes
-         PrUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9eIn9xmZE3lDDxF5D7SNUmbx8I+eA8wKnaNy1sQ/lzw=;
-        b=OIXwvU47hSGRQJidhUO6Rp0nSYcXjb9kQO0tpXujTvTnb2yccjq9xdH1t9qfpu6lbe
-         GRx3YTqThOk6ud2yVxDFM9xuxe7K6tj/q5jTFVSlXX4toZPA9d1tYMi0TlOLVjNJ48Iz
-         UuQ0UNeBSzXPdmNxAevYsAOsP1H4ts8JLo522l32pDCmuEJXm71rShyUuBKbzIyjhFyb
-         vudx+B5ZgYrQ94oefCKsPC4G1doq+X2qLa8POZODiPW0HacmwS24ukioKWHE0uWMiPG7
-         rHjYGwbSIDDCuoeLmDcUUj6/bYST7iGpSahOHQkGa0UrYRX0cI4dKWkHN6JiSrVfxMIz
-         c3ig==
-X-Gm-Message-State: AOAM533NYJxQtSqqDhxLkFg0Pe/ni4WsD6hTUXdLBBib+aze0AVRRudb
-        Lt+ytky0laEg7uGqbIet4g0YMvXmHMDhhb4w
-X-Google-Smtp-Source: ABdhPJzQrf6w26UPOoT1HFywMYAXwxcOdbv56BRWEou16crQY/Tq/dqYrZi2jZ1rvCZNniB8vY9VTQ==
-X-Received: by 2002:a92:cb0f:: with SMTP id s15mr10077698ilo.59.1630165431122;
-        Sat, 28 Aug 2021 08:43:51 -0700 (PDT)
-Received: from [10.10.10.198] (047-035-132-030.res.spectrum.com. [47.35.132.30])
-        by smtp.googlemail.com with ESMTPSA id m26sm5120282ioj.54.2021.08.28.08.43.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Aug 2021 08:43:50 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH v3] staging: greybus: Convert uart.c from
- IDR to XArray
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210816195000.736-1-fmdefrancesco@gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <dc2d0dda-0a04-8b45-d83e-f7c54baa357b@linaro.org>
-Date:   Sat, 28 Aug 2021 10:43:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234479AbhH1Pst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 11:48:49 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:41612 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234446AbhH1Psr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 11:48:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630165677; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=3Me/tDEtDhKcORMu1acBBz70kU2AKNLfilsmWR135rY=; b=sOe9ZhT34m/s2a8xbeFCRLdyHO5fom1xLGwrE85TUedaes/keeYqdEtCXnFncCG3BQvqVfGF
+ tOLt9pDbk9aaKRk0Ghz8Z8/QIDP4NxRZ8RMvslxvhLqCw48KmIcFDhTuZfAr/3/QE57tc7eX
+ FxULVmDpqjXHHgXw5PLQPovLXZ0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 612a5a9697222b4b5b65fb4b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Aug 2021 15:47:34
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8E032C43619; Sat, 28 Aug 2021 15:47:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.3 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.87.126])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 070C9C4338F;
+        Sat, 28 Aug 2021 15:47:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 070C9C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2 06/18] arm64: dts: qcom: sm6350: Add TLMM block node
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        Vinod Koul <vkoul@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+References: <20210828131814.29589-1-konrad.dybcio@somainline.org>
+ <20210828131814.29589-6-konrad.dybcio@somainline.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <3f1dbbf3-8d62-e855-0dcf-740da7adb7df@codeaurora.org>
+Date:   Sat, 28 Aug 2021 21:17:24 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210816195000.736-1-fmdefrancesco@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210828131814.29589-6-konrad.dybcio@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/21 2:50 PM, Fabio M. De Francesco wrote:
-> Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
-> is more memory-efficient, parallelisable, and cache friendly. It takes
-> advantage of RCU to perform lookups without locking. Furthermore, IDR is
-> deprecated because XArray has a better (cleaner and more consistent) API.
-> 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Hi,
 
-I have one more comment, below.  Generally, I don't think it is
-important to make this change, but I think it's fine to switch
-to the newer XArray interface.  The result is a little simpler.
-
+On 8/28/2021 6:48 PM, Konrad Dybcio wrote:
+> Add TLMM pinctrl node to enable referencing the SoC pins in other nodes.
+>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
-> 
-> v2->v3:
-> 	Fix some issues according to a review by Alex Elder <elder@ieee.org>
-> 
-> v1->v2:
->         Fix an issue found by the kernel test robot. It is due to
->         passing to xa_*lock() the same old mutex that IDR used with
->         the previous version of the code.
-> 
->  drivers/staging/greybus/uart.c | 34 ++++++++++++++++------------------
->  1 file changed, 16 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
-> index 73f01ed1e5b7..815156c88005 100644
-> --- a/drivers/staging/greybus/uart.c
-> +++ b/drivers/staging/greybus/uart.c
-> @@ -22,7 +22,7 @@
->  #include <linux/serial.h>
->  #include <linux/tty_driver.h>
->  #include <linux/tty_flip.h>
-> -#include <linux/idr.h>
-> +#include <linux/xarray.h>
->  #include <linux/fs.h>
->  #include <linux/kdev_t.h>
->  #include <linux/kfifo.h>
-> @@ -32,8 +32,9 @@
->  
->  #include "gbphy.h"
->  
-> -#define GB_NUM_MINORS	16	/* 16 is more than enough */
-> -#define GB_NAME		"ttyGB"
-> +#define GB_NUM_MINORS		16	/* 16 is more than enough */
-> +#define GB_RANGE_MINORS		XA_LIMIT(0, GB_NUM_MINORS)
-> +#define GB_NAME			"ttyGB"
->  
->  #define GB_UART_WRITE_FIFO_SIZE		PAGE_SIZE
->  #define GB_UART_WRITE_ROOM_MARGIN	1	/* leave some space in fifo */
-> @@ -67,8 +68,7 @@ struct gb_tty {
->  };
->  
->  static struct tty_driver *gb_tty_driver;
-> -static DEFINE_IDR(tty_minors);
-> -static DEFINE_MUTEX(table_lock);
-> +static DEFINE_XARRAY(tty_minors);
->  
->  static int gb_uart_receive_data_handler(struct gb_operation *op)
->  {
-> @@ -341,8 +341,8 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
->  {
->  	struct gb_tty *gb_tty;
->  
-> -	mutex_lock(&table_lock);
-> -	gb_tty = idr_find(&tty_minors, minor);
-> +	xa_lock(&tty_minors);
+> Changes since v1:
+> - Fix the gpio ranges from 156 to 157
+>
+>   arch/arm64/boot/dts/qcom/sm6350.dtsi | 19 +++++++++++++++++++
+>   1 file changed, 19 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> index d57c669ae0d6..03f7601457b4 100644
+> --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> @@ -406,6 +406,25 @@ pdc: interrupt-controller@b220000 {
+>   			interrupt-controller;
+>   		};
+>   
+> +		tlmm: pinctrl@f100000 {
+> +			compatible = "qcom,sm6350-tlmm";
+> +			reg = <0 0x0f100000 0 0x300000>;
+> +			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 209 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 210 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 211 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 214 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>,
+> +					<GIC_SPI 216 IRQ_TYPE_LEVEL_HIGH>;
+you will not require other interrupts (209 to 216) for dual edge to work 
+since you have below set in pinctrl-sm6350.c
 
-I'm basically new to using the XArray interface, but I
+.wakeirq_dual_edge_errata = true,
 
-don't think you really need the xa_lock()/xa_unlock()
+Thanks,
+Maulik
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +			gpio-ranges = <&tlmm 0 0 157>;
+> +		};
+> +
+>   		intc: interrupt-controller@17a00000 {
+>   			compatible = "arm,gic-v3";
+>   			#interrupt-cells = <3>;
 
-calls here.  You are not relying on reference counting
-
-to control when the allocated minor device numbers are
-
-freed, so I'm pretty sure you can simply call xa_load()
-
-to look up the gb_tty for the given minor device.
-
-
-
-But please don't only take my word for it; investigate
-
-it for yourself, and if needed ask others about it so
-
-you're confident it's correct.  There is no harm in
-taking the lock, but if it's not needed, it would be
-nice to avoid it.
-
-If you conclude the locks are necessary, just say so,
-and explain why, and I'll probably just accept it.
-Otherwise, please explain why you are sure they are
-not needed when you send version 4.  Thank you.
-
-					-Alex
-
-
-> +	gb_tty = xa_load(&tty_minors, minor);
->  	if (gb_tty) {
->  		mutex_lock(&gb_tty->mutex);
->  		if (gb_tty->disconnected) {
-> @@ -353,19 +353,19 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
->  			mutex_unlock(&gb_tty->mutex);
->  		}
->  	}
-> -	mutex_unlock(&table_lock);
-> +	xa_unlock(&tty_minors);
->  	return gb_tty;
->  }
->  
->  static int alloc_minor(struct gb_tty *gb_tty)
->  {
->  	int minor;
-> +	int ret;
->  
-> -	mutex_lock(&table_lock);
-> -	minor = idr_alloc(&tty_minors, gb_tty, 0, GB_NUM_MINORS, GFP_KERNEL);
-> -	mutex_unlock(&table_lock);
-> -	if (minor >= 0)
-> -		gb_tty->minor = minor;
-> +	ret = xa_alloc(&tty_minors, &minor, gb_tty, GB_RANGE_MINORS, GFP_KERNEL);
-> +	if (ret)
-> +		return ret;
-> +	gb_tty->minor = minor;
->  	return minor;
->  }
->  
-> @@ -374,9 +374,7 @@ static void release_minor(struct gb_tty *gb_tty)
->  	int minor = gb_tty->minor;
->  
->  	gb_tty->minor = 0;	/* Maybe should use an invalid value instead */
-> -	mutex_lock(&table_lock);
-> -	idr_remove(&tty_minors, minor);
-> -	mutex_unlock(&table_lock);
-> +	xa_erase(&tty_minors, minor);
->  }
->  
->  static int gb_tty_install(struct tty_driver *driver, struct tty_struct *tty)
-> @@ -837,7 +835,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->  
->  	minor = alloc_minor(gb_tty);
->  	if (minor < 0) {
-> -		if (minor == -ENOSPC) {
-> +		if (minor == -EBUSY) {
->  			dev_err(&gbphy_dev->dev,
->  				"no more free minor numbers\n");
->  			retval = -ENODEV;
-> @@ -982,7 +980,7 @@ static void gb_tty_exit(void)
->  {
->  	tty_unregister_driver(gb_tty_driver);
->  	put_tty_driver(gb_tty_driver);
-> -	idr_destroy(&tty_minors);
-> +	xa_destroy(&tty_minors);
->  }
->  
->  static const struct gbphy_device_id gb_uart_id_table[] = {
-> 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
