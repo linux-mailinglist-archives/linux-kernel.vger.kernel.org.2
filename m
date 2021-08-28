@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43C93FA4CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFE13FA4D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbhH1Jo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 05:44:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60726 "EHLO mail.kernel.org"
+        id S233692AbhH1Jp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 05:45:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230444AbhH1Jo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 05:44:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E41B6054E;
-        Sat, 28 Aug 2021 09:44:04 +0000 (UTC)
+        id S230444AbhH1Jp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 05:45:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50F2260ED3;
+        Sat, 28 Aug 2021 09:44:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630143845;
-        bh=x/lg3zgHWReyf3vjQgN74OPkwZEO+XBJFQK5Qu0Hq4g=;
+        s=korg; t=1630143877;
+        bh=6KXHEFTldR58KIsMPXI+PdwLyLFXMO5pNa86tpdq5u8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f2oQMK+BkraDZynJndwwmgcHoSOU5lPVpgcxbE3z4LUejm73dAd37kBkTYZpq6KSd
-         eqWZ6KhEHrOgaCRItYDrZ2ttsoYYPdUznfYlKalOamIhJaCMng7/gONZ+fIIVN2FVj
-         pOVub71Wy6//n5Ueb0PTg/VtQZOE+FgywcHDT9EQ=
-Date:   Sat, 28 Aug 2021 11:44:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
-Cc:     hello@bryanbrattlof.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: pi433: fix docs typos and references to
- previous struct names
-Message-ID: <YSoFYT+8v979+Y1/@kroah.com>
-References: <20210828000836.GA10188@localhost.localdomain>
- <YSnT5rXxQNE2sPvw@kroah.com>
- <20210828092757.GA3773@localhost.localdomain>
+        b=uMfaZ1j7XnSZwb5TbKoVkqMupaby5sHKVkFJYpfLaEhJIdOXWSv+an62yOUxNOlob
+         IO13Y2Aj4CT3Qj4kvUUZeUH4OURVUSCqvbupDP4s6tsuHV5MBgUSq2Y4w9NP8A6g1B
+         MOTNe51P+3IT0lWtRz0zppIYPZSWKRGd7aloI5VI=
+Date:   Sat, 28 Aug 2021 11:44:33 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/5] staging: r8188eu: fix sparse warnings
+Message-ID: <YSoFgUT5+5nwJOo7@kroah.com>
+References: <cover.1629563318.git.aakashhemadri123@gmail.com>
+ <20210828085017.d5l63yrxkaxqgpgu@xps.yggdrasil>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210828092757.GA3773@localhost.localdomain>
+In-Reply-To: <20210828085017.d5l63yrxkaxqgpgu@xps.yggdrasil>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 09:27:57PM +1200, Paulo Miguel Almeida wrote:
-> On Sat, Aug 28, 2021 at 08:12:54AM +0200, Greg KH wrote:
-> > On Sat, Aug 28, 2021 at 12:08:36PM +1200, Paulo Miguel Almeida wrote:
-> > > In the comments there where some grammar mistakes and references to
-> > > struct names that have gotten renamed over time but not reflected
-> > > in the comments.
-> > > 
-> > > Signed-off-by: Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
-> > > ---
-> > >  drivers/staging/pi433/pi433_if.h | 25 ++++++++++++-------------
-> > >  1 file changed, 12 insertions(+), 13 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/pi433/pi433_if.h b/drivers/staging/pi433/pi433_if.h
-> > > index d5c1521192c1..1fae62c40661 100644
-> > > --- a/drivers/staging/pi433/pi433_if.h
-> > > +++ b/drivers/staging/pi433/pi433_if.h
-> > > @@ -5,16 +5,15 @@
-> > >   * userspace interface for pi433 radio module
-> > >   *
-> > >   * Pi433 is a 433MHz radio module for the Raspberry Pi.
-> > > - * It is based on the HopeRf Module RFM69CW. Therefore inside of this
-> > > - * driver, you'll find an abstraction of the rf69 chip.
-> > > + * It is based on the HopeRf Module RFM69CW. Therefore, inside of this
-> > > + * driver you'll find an abstraction of the rf69 chip.
-> > >   *
-> > > - * If needed, this driver could be extended, to also support other
-> > > - * devices, basing on HopeRfs rf69.
-> > > + * If needed this driver could also be extended to support other
-> > > + * devices based on HopeRf rf69 as well as HopeRf modules with a similar
-> > > + * interface such as RFM69HCW, RFM12, RFM95 and so on.
-> > >   *
-> > > - * The driver can also be extended, to support other modules of
-> > > - * HopeRf with a similar interace - e. g. RFM69HCW, RFM12, RFM95, ...
-> > >   * Copyright (C) 2016 Wolf-Entwicklungen
-> > > - *	Marcus Wolf <linux@wolf-entwicklungen.de>
-> > > + * Marcus Wolf <linux@wolf-entwicklungen.de>
+On Sat, Aug 28, 2021 at 02:20:17PM +0530, Aakash Hemadri wrote:
+> On 21/08/23 10:30PM, Aakash Hemadri wrote:
+> > Hi,
+> > 	This patch series fixes some sparse warnings in rtw_br_ext.c
 > > 
-> > Indentation of the name should remain here, right?
+> > Changes in v3 -> v4
+> > - Added this changelog, as requested by Greg's patch bot
 > > 
-> > thanks,
+> > Changes in v2 -> v3
+> > - Fixed incorrect usage/removal of endian swaps and checks
 > > 
-> > greg k-h
+> > Changes in v1 -> v2
+> > - Split patch
+> > 
+> > Aakash Hemadri (5):
+> >   staging: r8188eu: restricted __be16 degrades to int
+> >   staging: r8188eu: cast to restricted __be32
+> >   staging: r8188eu: incorrect type in csum_ipv6_magic
+> >   staging: r8188eu: restricted __be16 degrades to int
+> >   staging: r8188eu: incorrect type in assignment
+> > 
+> >  drivers/staging/r8188eu/core/rtw_br_ext.c | 20 ++++++++++----------
+> >  1 file changed, 10 insertions(+), 10 deletions(-)
+> > 
+> > 
+> > base-commit: 093991aaadf0fbb34184fa37a46e7a157da3f386
+> > -- 
+> > 2.32.0
+> >
 > 
-> you are right, I shouldn't have changed that line. Do you need me to
-> send another patch without that line or can you ignore just that line 
-> before merging it to your branch? I'm flexible with any approach.
+> Hello greg, if there are any issues with the patchset do let me know,
+> Larry & Philip acked the previous ver of this patch.
+> 
+> I'd rather not add noise to the ml unnecessarily.
+> Also this patchset doesn't apply cleanly to the current staging-testing
+> I can resend fixing that if that's the issue.
 
-It is impossible to just "ignore a single line" in a diff, sorry.
-
-Please fix up and resend a new version, remember the work needs to be
-done by the developer, not the maintainer.  Your job is to make it
-trivial for me to accept your change.  Manually having to edit diffs is
-not scalable at all.
+Please fix up and resend, my staging review queue is empty.
 
 thanks,
 
