@@ -2,122 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69893FA355
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 05:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292CD3FA35C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 05:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhH1DTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 23:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
+        id S233202AbhH1DbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 23:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbhH1DTN (ORCPT
+        with ESMTP id S233117AbhH1DbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 23:19:13 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F19C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 20:18:23 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id f6so11614319iox.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 20:18:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3I2Cu0hBkyC0eu8QwfehQRNRrLF5kE2Nh3wW304WegI=;
-        b=VFc6nnAr/WImQdqxvEVT41P7sUbT0ys0GLIzwNul0ab7smJx8tK8ypODc8gP/mERLl
-         ZUsl/ci0RDvaEL1kdtTX7Cq+c4oV018Xm9DmOSP1LfEzZOGow0MUYCcTYWxXG4hYeV1w
-         WrFmbucTiKSnLJcliTcKu59QWjzSWN8ijvOK0cNdsTBmf61n9sOHGknE7g+7Tw+PuYWh
-         Fu4eztVYTECtsgMOAPGRbpFRtDNaZYddgU1ppgbqRIAkU/2GUmh1QQ7ZQvQEjL/U0pfx
-         RW0fY3WGzah8VWtjaGgjpTvhS5HBkKQ1T7B2DywgLCvQP/zWCqFMbVVtNUTMrk2EKBxR
-         X0Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3I2Cu0hBkyC0eu8QwfehQRNRrLF5kE2Nh3wW304WegI=;
-        b=gFt99HLnntfpb1EH2CHZ1JTOjoWVMBApbtg5hh6Z4Xi9pqx632P9Vztkx7TuKCPehl
-         0JdAPhXhqeA6ZDHzhexCpmivm008r6KQ7CFZzxiJEiC56SBUKWIsFST+aLxeD106ZGDS
-         dqdBzaTinlWyrl0dbKGs7wF1NWkwzCC0FlaBIL2Z9fBQHtJA5dVjq6qrfuj9tzPt6ngO
-         SNBe6hVpV2xj1NqpWwkmdbAS9kJac1KGtZQbfI/DFVEzUsQVOh6OQu7g+tnYoZzaEmFD
-         5l0MpZZct5ODOvpSe46BGkM++XbTufr0TqXN41crD4hPih3J2bNZUAcovlGKRz4ahqfK
-         0v/g==
-X-Gm-Message-State: AOAM531BDkhP4r0WKA5YqBhvv2H1AsOF7AqySy5peBsJqUd3ZDbxH5ys
-        /wqULgiw84s5sU6Gj5wVjN2w+VTNWJym/Q==
-X-Google-Smtp-Source: ABdhPJx9J4qf7Eq2U2ilnV92laAQModKiua7oN74ITr/ABlhBbh8ljKdjCNGRSeS/BRV7m/j0/d8rg==
-X-Received: by 2002:a02:860d:: with SMTP id e13mr10974218jai.12.1630120702695;
-        Fri, 27 Aug 2021 20:18:22 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id a17sm4527227ios.36.2021.08.27.20.18.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 20:18:22 -0700 (PDT)
-Subject: Re: [PATCH] drivers/cdrom: improved ioctl for media change detection
-To:     Lukas Prediger <lumip@lumip.de>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210805194417.12439-1-lumip@lumip.de>
- <6d6c533d-465e-33ee-5801-cb7ea84924a8@kernel.dk>
- <f0d33ff3-6b9d-bbe7-1776-a22f9f271155@lumip.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <5f3b7d8b-9e97-094b-efd1-cad6cab793b6@kernel.dk>
-Date:   Fri, 27 Aug 2021 21:18:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 27 Aug 2021 23:31:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E507C0613D9;
+        Fri, 27 Aug 2021 20:30:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vG2BrsxklzvaYU3MGJElnbZXqonpHe4yr8aACjbagfc=; b=HB5IqswwGXiCJh9Egt+aPJbO8Y
+        croLE9MB+SlJ6K5TAqN9IwM0Fjv30ThTPO7HLk3Hpb1NytmMADsGvT0RvUg7/fGRUGAUq8Mfd/B0N
+        K3rxdNiSTnEfoblUSEXhMXIVjgMtjz/SB1OZ0T8+M560UKjXHo+G3fKfueTN7k7tFJkgSGBqnZ3tJ
+        1bU8kj99ZZTkdY22aVbafskcujM5dy388q7QUt6U85VR/RorIpDs2s1+tcmJ/shqHogZlN/XYM1Gx
+        TOhppVGTks18RyTK4QvvJO5Ml776E59oM+kPkvHECJGyylnpQMV9Mbn7ZFJ9OfkJXE+F32q8LNZm/
+        27Neq4KA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJp1x-00FFSp-IG; Sat, 28 Aug 2021 03:29:25 +0000
+Date:   Sat, 28 Aug 2021 04:29:17 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSmtjVTqR9/4W1aq@casper.infradead.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <f0d33ff3-6b9d-bbe7-1776-a22f9f271155@lumip.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSPwmNNuuQhXNToQ@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 11:30 AM, Lukas Prediger wrote:
->>> @@ -295,6 +297,19 @@ struct cdrom_generic_command
->>>  	};
->>>  };
->>>  
->>> +/* This struct is used by CDROM_TIMED_MEDIA_CHANGE */
->>> +struct cdrom_timed_media_change_info
->>> +{
->>> +	__u64   last_media_change;	/* Timestamp of the last detected media
->>> +					 * change. May be set by caller, updated
->>> +					 * upon successful return of ioctl.
->>> +					 */
->>> +	__u8    has_changed;		/* Set to 1 by ioctl if last detected media
->>> +					 * change was more recent than
->>> +					 * last_media_change set by caller.
->>> +					 */
->>> +};
->>>
->> The struct layout should be modified such that there are no holes or
->> padding in it. Probably just make the has_changed a flags thing, and
->> make it u64 as well. Then you can define bit 0 to be HAS_CHANGED, and
->> that leaves you room to add more flags in the future. Though the latter
->> probably isn't much of a concern here, but...
+On Mon, Aug 23, 2021 at 08:01:44PM +0100, Matthew Wilcox wrote:
+> The following changes since commit f0eb870a84224c9bfde0dc547927e8df1be4267c:
 > 
-> 1. jiffies_to_msecs returns unsigned int. Should I reflect that in the
-> struct (i.e., make the last_media_change and has_changed fields also
-> of type unsigned int or should I keep them at a fixed bit width?
+>   Merge tag 'xfs-5.14-fixes-1' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux (2021-07-18 11:27:25 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.infradead.org/users/willy/pagecache.git tags/folio-5.15
+> 
+> for you to fetch changes up to 1a90e9dae32ce26de43c1c5eddb3ecce27f2a640:
+> 
+>   mm/writeback: Add folio_write_one (2021-08-15 23:04:07 -0400)
 
-You can make it an u32. Always use explicitly sized types for user API
-structures.
+Running 'sed -i' across the patches and reapplying them got me this:
 
-> 2. As the last_media_change field will be in ms now, is it safe to
-> convert those back to jiffies for comparison or is there a risk of
-> information loss (due to rounding or whatever) in either conversion?
-> More technically, can I make the assumption that for any jiffies value
-> x it holds that
+The following changes since commit f0eb870a84224c9bfde0dc547927e8df1be4267c:
 
-The granularity of jiffies depends on the HZ setting, generally just
-consider it somewhere in between 100 and 1000. That's where my initial
-granularity numbers came from.
+  Merge tag 'xfs-5.14-fixes-1' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux (2021-07-18 11:27:25 -0700)
 
-> time_before(msecs_to_jiffies(jiffies_to_msecs(x)), x) is always false ?
+are available in the Git repository at:
 
-I don't think that matters. Internally, always keep things in jiffies.
-That's what you use to compare with, and to check if it's changed since
-last time. The only time you convert to ms is to pass it back to
-userspace. And that's going to be a delta of jiffies always, just ensure
-you assign last_checked = jiffies when it's setup initially.
+  git://git.infradead.org/users/willy/pagecache.git tags/pageset-5.15
 
--- 
-Jens Axboe
+for you to fetch changes up to dc185ab836d41729f15b2925a59c7dc29ae72377:
 
+  mm/writeback: Add pageset_write_one (2021-08-27 22:52:26 -0400)
+
+----------------------------------------------------------------
+Pagesets
+
+Add pagesets, a new type to represent either an order-0 page or the
+head page of a compound page.  This should be enough infrastructure to
+support filesystems converting from pages to pagesets.
+
+----------------------------------------------------------------
+Matthew Wilcox (Oracle) (90):
+      mm: Convert get_page_unless_zero() to return bool
+      mm: Introduce struct pageset
+      mm: Add pageset_pgdat(), pageset_zone() and pageset_zonenum()
+      mm/vmstat: Add functions to account pageset statistics
+      mm/debug: Add VM_BUG_ON_PAGESET() and VM_WARN_ON_ONCE_PAGESET()
+      mm: Add pageset reference count functions
+      mm: Add pageset_put()
+      mm: Add pageset_get()
+      mm: Add pageset_try_get_rcu()
+      mm: Add pageset flag manipulation functions
+      mm/lru: Add pageset LRU functions
+      mm: Handle per-pageset private data
+      mm/filemap: Add pageset_index(), pageset_file_page() and pageset_contains()
+      mm/filemap: Add pageset_next_index()
+      mm/filemap: Add pageset_pos() and pageset_file_pos()
+      mm/util: Add pageset_mapping() and pageset_file_mapping()
+      mm/filemap: Add pageset_unlock()
+      mm/filemap: Add pageset_lock()
+      mm/filemap: Add pageset_lock_killable()
+      mm/filemap: Add __pageset_lock_async()
+      mm/filemap: Add pageset_wait_locked()
+      mm/filemap: Add __pageset_lock_or_retry()
+      mm/swap: Add pageset_rotate_reclaimable()
+      mm/filemap: Add pageset_end_writeback()
+      mm/writeback: Add pageset_wait_writeback()
+      mm/writeback: Add pageset_wait_stable()
+      mm/filemap: Add pageset_wait_bit()
+      mm/filemap: Add pageset_wake_bit()
+      mm/filemap: Convert page wait queues to be pagesets
+      mm/filemap: Add pageset private_2 functions
+      fs/netfs: Add pageset fscache functions
+      mm: Add pageset_mapped()
+      mm: Add pageset_nid()
+      mm/memcg: Remove 'page' parameter to mem_cgroup_charge_statistics()
+      mm/memcg: Use the node id in mem_cgroup_update_tree()
+      mm/memcg: Remove soft_limit_tree_node()
+      mm/memcg: Convert memcg_check_events to take a node ID
+      mm/memcg: Add pageset_memcg() and related functions
+      mm/memcg: Convert commit_charge() to take a pageset
+      mm/memcg: Convert mem_cgroup_charge() to take a pageset
+      mm/memcg: Convert uncharge_page() to uncharge_pageset()
+      mm/memcg: Convert mem_cgroup_uncharge() to take a pageset
+      mm/memcg: Convert mem_cgroup_migrate() to take pagesets
+      mm/memcg: Convert mem_cgroup_track_foreign_dirty_slowpath() to pageset
+      mm/memcg: Add pageset_memcg_lock() and pageset_memcg_unlock()
+      mm/memcg: Convert mem_cgroup_move_account() to use a pageset
+      mm/memcg: Add pageset_lruvec()
+      mm/memcg: Add pageset_lruvec_lock() and similar functions
+      mm/memcg: Add pageset_lruvec_relock_irq() and pageset_lruvec_relock_irqsave()
+      mm/workingset: Convert workingset_activation to take a pageset
+      mm: Add pageset_pfn()
+      mm: Add pageset_raw_mapping()
+      mm: Add flush_dcache_pageset()
+      mm: Add kmap_local_pageset()
+      mm: Add arch_make_pageset_accessible()
+      mm: Add pageset_young and pageset_idle
+      mm/swap: Add pageset_activate()
+      mm/swap: Add pageset_mark_accessed()
+      mm/rmap: Add pageset_mkclean()
+      mm/migrate: Add pageset_migrate_mapping()
+      mm/migrate: Add pageset_migrate_flags()
+      mm/migrate: Add pageset_migrate_copy()
+      mm/writeback: Rename __add_wb_stat() to wb_stat_mod()
+      flex_proportions: Allow N events instead of 1
+      mm/writeback: Change __wb_writeout_inc() to __wb_writeout_add()
+      mm/writeback: Add __pageset_end_writeback()
+      mm/writeback: Add pageset_start_writeback()
+      mm/writeback: Add pageset_mark_dirty()
+      mm/writeback: Add __pageset_mark_dirty()
+      mm/writeback: Convert tracing writeback_page_template to pagesets
+      mm/writeback: Add filemap_dirty_pageset()
+      mm/writeback: Add pageset_account_cleaned()
+      mm/writeback: Add pageset_cancel_dirty()
+      mm/writeback: Add pageset_clear_dirty_for_io()
+      mm/writeback: Add pageset_account_redirty()
+      mm/writeback: Add pageset_redirty_for_writepage()
+      mm/filemap: Add i_blocks_per_pageset()
+      mm/filemap: Add pageset_mkwrite_check_truncate()
+      mm/filemap: Add readahead_pageset()
+      mm/workingset: Convert workingset_refault() to take a pageset
+      mm: Add pageset_evictable()
+      mm/lru: Convert __pagevec_lru_add_fn to take a pageset
+      mm/lru: Add pageset_add_lru()
+      mm/page_alloc: Add pageset allocation functions
+      mm/filemap: Add filemap_alloc_pageset
+      mm/filemap: Add filemap_add_pageset()
+      mm/filemap: Convert mapping_get_entry to return a pageset
+      mm/filemap: Add filemap_get_pageset
+      mm/filemap: Add FGP_STABLE
+      mm/writeback: Add pageset_write_one
+
+ Documentation/core-api/cachetlb.rst         |   6 +
+ Documentation/core-api/mm-api.rst           |   5 +
+ Documentation/filesystems/netfs_library.rst |   2 +
+ arch/arc/include/asm/cacheflush.h           |   1 +
+ arch/arm/include/asm/cacheflush.h           |   1 +
+ arch/mips/include/asm/cacheflush.h          |   2 +
+ arch/nds32/include/asm/cacheflush.h         |   1 +
+ arch/nios2/include/asm/cacheflush.h         |   3 +-
+ arch/parisc/include/asm/cacheflush.h        |   3 +-
+ arch/sh/include/asm/cacheflush.h            |   3 +-
+ arch/xtensa/include/asm/cacheflush.h        |   3 +-
+ fs/afs/write.c                              |   9 +-
+ fs/cachefiles/rdwr.c                        |  16 +-
+ fs/io_uring.c                               |   2 +-
+ fs/jfs/jfs_metapage.c                       |   1 +
+ include/asm-generic/cacheflush.h            |   6 +
+ include/linux/backing-dev.h                 |   6 +-
+ include/linux/flex_proportions.h            |   9 +-
+ include/linux/gfp.h                         |  22 +-
+ include/linux/highmem-internal.h            |  11 +
+ include/linux/highmem.h                     |  37 ++
+ include/linux/huge_mm.h                     |  15 -
+ include/linux/ksm.h                         |   4 +-
+ include/linux/memcontrol.h                  | 231 ++++++-----
+ include/linux/migrate.h                     |   4 +
+ include/linux/mm.h                          | 239 +++++++++---
+ include/linux/mm_inline.h                   | 103 +++--
+ include/linux/mm_types.h                    |  77 ++++
+ include/linux/mmdebug.h                     |  20 +
+ include/linux/netfs.h                       |  77 ++--
+ include/linux/page-flags.h                  | 267 +++++++++----
+ include/linux/page_idle.h                   |  99 +++--
+ include/linux/page_owner.h                  |   8 +-
+ include/linux/page_ref.h                    | 158 +++++++-
+ include/linux/pagemap.h                     | 585 ++++++++++++++++++----------
+ include/linux/rmap.h                        |  10 +-
+ include/linux/swap.h                        |  17 +-
+ include/linux/vmstat.h                      | 113 +++++-
+ include/linux/writeback.h                   |   9 +-
+ include/trace/events/pagemap.h              |  46 ++-
+ include/trace/events/writeback.h            |  28 +-
+ kernel/bpf/verifier.c                       |   2 +-
+ kernel/events/uprobes.c                     |   3 +-
+ lib/flex_proportions.c                      |  28 +-
+ mm/Makefile                                 |   2 +-
+ mm/compaction.c                             |   4 +-
+ mm/filemap.c                                | 575 +++++++++++++--------------
+ mm/huge_memory.c                            |   7 +-
+ mm/hugetlb.c                                |   2 +-
+ mm/internal.h                               |  36 +-
+ mm/khugepaged.c                             |   8 +-
+ mm/ksm.c                                    |  34 +-
+ mm/memcontrol.c                             | 358 +++++++++--------
+ mm/memory-failure.c                         |   2 +-
+ mm/memory.c                                 |  20 +-
+ mm/mempolicy.c                              |  10 +
+ mm/memremap.c                               |   2 +-
+ mm/migrate.c                                | 189 +++++----
+ mm/mlock.c                                  |   3 +-
+ mm/page-writeback.c                         | 477 +++++++++++++----------
+ mm/page_alloc.c                             |  14 +-
+ mm/page_io.c                                |   4 +-
+ mm/page_owner.c                             |  10 +-
+ mm/pageset-compat.c                         | 142 +++++++
+ mm/rmap.c                                   |  14 +-
+ mm/shmem.c                                  |   7 +-
+ mm/swap.c                                   | 197 +++++-----
+ mm/swap_state.c                             |   2 +-
+ mm/swapfile.c                               |   8 +-
+ mm/userfaultfd.c                            |   2 +-
+ mm/util.c                                   | 111 +++---
+ mm/vmscan.c                                 |   8 +-
+ mm/workingset.c                             |  52 +--
+ 73 files changed, 2900 insertions(+), 1692 deletions(-)
+ create mode 100644 mm/pageset-compat.c
