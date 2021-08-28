@@ -2,249 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556B53FA71D
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B653FA720
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhH1SIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 14:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhH1SIe (ORCPT
+        id S230327AbhH1SKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 14:10:49 -0400
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:51654 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229479AbhH1SKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 14:08:34 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF96C0613D9
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:07:43 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id z3-20020a4a98430000b029025f4693434bso3115644ooi.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ves4rEFbuIlPzY9KtlYpO56vkgctRzHEkajdiDzSNZI=;
-        b=hdp6No9GL73pD05e+eYeNTDWcPTx1YCFqtVOhyTeTf2uROufLpRpcCpAd9UylKgj3d
-         WGuVdr2F0ccCoHWGW8rbmtLuLtjEv6iOTSIBj+JCzJqaEqE1SZBnBYrVLsl4mrcefQbu
-         WcoLTHbDrz8voCrX+Jlwp2OWKlZiOZJUp76HdBNHcDvaOv8h7IfUF0DRObXZBoP2WGu/
-         UDCmBNOEFIqax2CcxGecDYALKC9+wvygXJZ0eLoGp2b5vsM4G3ytxergTgB+rqxrLwtL
-         7vh33G+GrpgxO4RolCgDxopyVI98QLBjqFwqHaPKevU0tVXQOiPGwfz+d18B0FFN7fmR
-         IR3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ves4rEFbuIlPzY9KtlYpO56vkgctRzHEkajdiDzSNZI=;
-        b=kd4LGfedvQnETFkl43tnbN/f+Fwp3Z4ZPIVDzGaB0k1YeMq1ohGW/u80rFAdCk5DMm
-         nYXb5mWvIGlNFO++4SO/tzo/SRtEVmZ5vZursiOvK/FiZ4l/mFzyQzZNuAL72TKRdos2
-         m3I/I9/3QEo2RoenHf9eIM+3Me1vk25xWVdU7H21jTs8V8gxThke9LqTPBkaW5UDUZEe
-         G2F76glqszVdhl/gsWf//wMJvD6nVejuTrk8ArexLs1RRF2ol2zwh+L0ofoNMVOMDMA/
-         sI/WuBKA8toLbK2+9ANlU49NwObSXUMQlAZ4m7i93YgskvyCpaidFzD8rhIk8PpwhyS7
-         VUZQ==
-X-Gm-Message-State: AOAM533vnNVyjaigb7wABgcrpR9RBOtAIDY71cgcSOGEHnVU1a1/yfgd
-        TiF/wr3I/7wphUuE1we+gCiJpQ==
-X-Google-Smtp-Source: ABdhPJzGm7aYpkcvBh52pNx0ZDFrrdjtJC2mAVrJctkZ0jCtShiTb6GbKe3ylOcs27/Yo065nyQ4zg==
-X-Received: by 2002:a4a:c541:: with SMTP id j1mr4162359ooq.15.1630174062688;
-        Sat, 28 Aug 2021 11:07:42 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 186sm1942151ood.39.2021.08.28.11.07.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 11:07:42 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 13:07:39 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM6350 pinctrl
- bindings
-Message-ID: <YSp7az2iBlPnGgxQ@yoga>
-References: <20210828172315.55742-1-konrad.dybcio@somainline.org>
+        Sat, 28 Aug 2021 14:10:48 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 8C4DC12802DB;
+        Sat, 28 Aug 2021 11:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1630174197;
+        bh=Jri9M2z+L6BNmQfbdTcw8CwtirXkoSroHqBCKW2QoKg=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=VE0Pw2XySNP/vbDkD8F/k4zuQTiJmro3a5Lr24d4Vt1ElhqFD1RZKupP0loobS+oZ
+         /72Q2DdyA5vwCpf3GTYGHeP5JpYSJ9qTyS5IRPkRU/BGQqNs9Z7a96fgtbsG/KwLex
+         ocqzfhVfRWa4DnATzLneJpDW0urqguylsNHyrD98=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 0xF9_Z2rMan6; Sat, 28 Aug 2021 11:09:57 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 2BD7A12802CC;
+        Sat, 28 Aug 2021 11:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1630174197;
+        bh=Jri9M2z+L6BNmQfbdTcw8CwtirXkoSroHqBCKW2QoKg=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=VE0Pw2XySNP/vbDkD8F/k4zuQTiJmro3a5Lr24d4Vt1ElhqFD1RZKupP0loobS+oZ
+         /72Q2DdyA5vwCpf3GTYGHeP5JpYSJ9qTyS5IRPkRU/BGQqNs9Z7a96fgtbsG/KwLex
+         ocqzfhVfRWa4DnATzLneJpDW0urqguylsNHyrD98=
+Message-ID: <4313aa33c50578e6b3c52437d27704f24e27ae8f.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.14-rc7
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sat, 28 Aug 2021 11:09:55 -0700
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828172315.55742-1-konrad.dybcio@somainline.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 28 Aug 12:23 CDT 2021, Konrad Dybcio wrote:
+A single fix for a race introduced by a fix that went up in 5.14-rc5.
 
-> Add device tree binding Documentation details for Qualcomm SM6350
-> pinctrl driver.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+The patch is available here:
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-Regards,
-Bjorn
+The short changelog is:
 
-> ---
-> Changes since v2:
-> - Tweak the regex to match gpio0-gpio157
-> 
->  .../bindings/pinctrl/qcom,sm6350-pinctrl.yaml | 148 ++++++++++++++++++
->  1 file changed, 148 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..554992a681f3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
-> @@ -0,0 +1,148 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/qcom,sm6350-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. SM6350 TLMM block
-> +
-> +maintainers:
-> +  - Konrad Dybcio <konrad.dybcio@somainline.org>
-> +
-> +description: |
-> +  This binding describes the Top Level Mode Multiplexer (TLMM) block found
-> +  in the SM6350 platform.
-> +
-> +allOf:
-> +  - $ref: /schemas/pinctrl/qcom,tlmm-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sm6350-tlmm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts: true
-> +  interrupt-controller: true
-> +  '#interrupt-cells': true
-> +  gpio-controller: true
-> +  gpio-reserved-ranges: true
-> +  '#gpio-cells': true
-> +  gpio-ranges: true
-> +  wakeup-parent: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +patternProperties:
-> +  '-state$':
-> +    oneOf:
-> +      - $ref: "#/$defs/qcom-sm6350-tlmm-state"
-> +      - patternProperties:
-> +          ".*":
-> +            $ref: "#/$defs/qcom-sm6350-tlmm-state"
-> +
-> +$defs:
-> +  qcom-sm6350-tlmm-state:
-> +    type: object
-> +    description:
-> +      Pinctrl node's client devices use subnodes for desired pin configuration.
-> +      Client device subnodes use below standard properties.
-> +    $ref: "qcom,tlmm-common.yaml#/$defs/qcom-tlmm-state"
-> +
-> +    properties:
-> +      pins:
-> +        description:
-> +          List of gpio pins affected by the properties specified in this
-> +          subnode.
-> +        items:
-> +          oneOf:
-> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-4][0-9]|15[0-7])$"
-> +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
-> +        minItems: 1
-> +        maxItems: 36
-> +
-> +      function:
-> +        description:
-> +          Specify the alternative function to be configured for the specified
-> +          pins.
-> +
-> +        enum: [ adsp_ext, agera_pll, atest_char, atest_char0, atest_char1, atest_char2,
-> +                atest_char3, atest_tsens, atest_tsens2, atest_usb1, atest_usb10, atest_usb11,
-> +                atest_usb12, atest_usb13, atest_usb2, atest_usb20, atest_usb21, atest_usb22,
-> +                atest_usb23, audio_ref, btfm_slimbus, cam_mclk0, cam_mclk1, cam_mclk2, cam_mclk3,
-> +                cam_mclk4, cci_async, cci_i2c, cci_timer0, cci_timer1, cci_timer2, cci_timer3,
-> +                cci_timer4, cri_trng, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1, ddr_pxi2, ddr_pxi3,
-> +                dp_hot, edp_lcd, gcc_gp1, gcc_gp2, gcc_gp3, gp_pdm0, gp_pdm1, gp_pdm2, gpio,
-> +                gps_tx, ibi_i3c, jitter_bist, ldo_en, ldo_update, lpass_ext, m_voc, mclk,
-> +                mdp_vsync, mdp_vsync0, mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s_0, mi2s_1, mi2s_2,
-> +                mss_lte, nav_gpio, nav_pps, pa_indicator, pcie0_clk, phase_flag0, phase_flag1,
-> +                phase_flag10, phase_flag11, phase_flag12, phase_flag13, phase_flag14, phase_flag15,
-> +                phase_flag16, phase_flag17, phase_flag18, phase_flag19, phase_flag2, phase_flag20,
-> +                phase_flag21, phase_flag22, phase_flag23, phase_flag24, phase_flag25, phase_flag26,
-> +                phase_flag27, phase_flag28, phase_flag29, phase_flag3, phase_flag30, phase_flag31,
-> +                phase_flag4, phase_flag5, phase_flag6, phase_flag7, phase_flag8, phase_flag9,
-> +                pll_bist, pll_bypassnl, pll_reset, prng_rosc, qdss_cti, qdss_gpio, qdss_gpio0,
-> +                qdss_gpio1, qdss_gpio10, qdss_gpio11, qdss_gpio12, qdss_gpio13, qdss_gpio14,
-> +                qdss_gpio15, qdss_gpio2, qdss_gpio3, qdss_gpio4, qdss_gpio5, qdss_gpio6,
-> +                qdss_gpio7, qdss_gpio8, qdss_gpio9, qlink0_enable, qlink0_request, qlink0_wmss,
-> +                qlink1_enable, qlink1_request, qlink1_wmss, qup00, qup01, qup02, qup10, qup11,
-> +                qup12, qup13_f1, qup13_f2, qup14, rffe0_clk, rffe0_data, rffe1_clk, rffe1_data,
-> +                rffe2_clk, rffe2_data, rffe3_clk, rffe3_data, rffe4_clk, rffe4_data, sd_write,
-> +                sdc1_tb, sdc2_tb, sp_cmu, tgu_ch0, tgu_ch1, tgu_ch2, tgu_ch3, tsense_pwm1,
-> +                tsense_pwm2, uim1_clk, uim1_data, uim1_present, uim1_reset, uim2_clk, uim2_data,
-> +                uim2_present, uim2_reset, usb_phy, vfr_1, vsense_trigger, wlan1_adc0, wlan1_adc1,
-> +                wlan2_adc0, wlan2_adc1, ]
-> +
-> +
-> +      bias-disable: true
-> +      bias-pull-down: true
-> +      bias-pull-up: true
-> +      drive-strength: true
-> +      input-enable: true
-> +      output-high: true
-> +      output-low: true
-> +
-> +    required:
-> +      - pins
-> +      - function
-> +
-> +    additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +        pinctrl@f100000 {
-> +                compatible = "qcom,sm6350-tlmm";
-> +                reg = <0x0f100000 0x300000>;
-> +                interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-> +                gpio-controller;
-> +                #gpio-cells = <2>;
-> +                interrupt-controller;
-> +                #interrupt-cells = <2>;
-> +                gpio-ranges = <&tlmm 0 0 157>;
-> +
-> +                gpio-wo-subnode-state {
-> +                        pins = "gpio1";
-> +                        function = "gpio";
-> +                };
-> +
-> +                uart-w-subnodes-state {
-> +                        rx {
-> +                                pins = "gpio25";
-> +                                function = "qup13_f2";
-> +                                bias-disable;
-> +                        };
-> +
-> +                        tx {
-> +                                pins = "gpio26";
-> +                                function = "qup13_f2";
-> +                                bias-disable;
-> +                        };
-> +                };
-> +        };
-> +...
-> -- 
-> 2.33.0
-> 
+Li Jinlin (1):
+      scsi: core: Fix hang of freezing queue between blocking and running device
+
+And the diffstat:
+
+ drivers/scsi/scsi_sysfs.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+With full diff below.
+
+James
+
+---
+
+diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+index ae9bfc658203..c0d31119d6d7 100644
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -808,12 +808,15 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+ 	ret = scsi_device_set_state(sdev, state);
+ 	/*
+ 	 * If the device state changes to SDEV_RUNNING, we need to
+-	 * rescan the device to revalidate it, and run the queue to
+-	 * avoid I/O hang.
++	 * run the queue to avoid I/O hang, and rescan the device
++	 * to revalidate it. Running the queue first is necessary
++	 * because another thread may be waiting inside
++	 * blk_mq_freeze_queue_wait() and because that call may be
++	 * waiting for pending I/O to finish.
+ 	 */
+ 	if (ret == 0 && state == SDEV_RUNNING) {
+-		scsi_rescan_device(dev);
+ 		blk_mq_run_hw_queues(sdev->request_queue, true);
++		scsi_rescan_device(dev);
+ 	}
+ 	mutex_unlock(&sdev->state_mutex);
+ 
+
