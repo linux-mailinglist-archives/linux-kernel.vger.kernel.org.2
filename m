@@ -2,231 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D293FA270
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 02:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6380F3FA28D
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 02:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbhH1AiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 20:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233293AbhH1AiD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 20:38:03 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDAEC0611FB
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 17:36:55 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id f8-20020a2585480000b02905937897e3daso1667023ybn.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 17:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=MvwJUHJ7nL7QAZpmwIc3YN3b2GBJgXnzulug8SK2Qjw=;
-        b=Rd8GZlOM7483aZ/NulymMp3S9HO5bS1npFsrbHkWVgmtUT7AYmnlfjuL+oAn/+3Dri
-         +5cR2ODgibWqpXhDO8BZ5XeMEmoa6kHMNeLnQOJzh9PWAYLTkPF2NgJK5Mby7Cvmotge
-         2PyjseoJ7Slvdtb6cq6mgARo7D+wvyYizSBuQjnshLNdziqxPWZnRNLzvpaZZ+ivbpGR
-         1gkx3rIpMiVsfiqaiEDc1i/t4zHv55U+FFPE/qx5o8z68VoLNkaUyOM/1xRhzVqRYHrY
-         re+Q8PzB8BWoikOAEufy0epFWC9x2ug/ZDxYOVgylgofjF85zivnlpT4bnrEu+QzpLoF
-         hYZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=MvwJUHJ7nL7QAZpmwIc3YN3b2GBJgXnzulug8SK2Qjw=;
-        b=UujJ46uwp0R68wtFeeqC4t3t4WZtCi63AVPOQJ49wLNivdxOUoSyMwDocHmmNXRG8U
-         66kcLurQTeYTNpL5RtVbUQoauh6cdTvvJxkIspyhX2OkmMY6kOnpAKL+h8UBJRdvmAIV
-         Tp8dsixl1D4ThQ7OU9bKv+nTgSliGfrZXx9Sg7FINrGRtKnUjy4mC1egkf4LgBDjc8Pm
-         ZZuqWHMSwPiwtQwbYzB4h0jHeUhYnjf06aD2wIdetKQqxZgozYcgjNuKnRhjDWiIg7um
-         /usbJOs32wjst2YYf5cn/opdY7R8DqUMRbngDFm1jv73Qv/z1F/WnjH7+thzRzp6RH52
-         deqg==
-X-Gm-Message-State: AOAM531UtKYzXnY1sHu0Is+iO/UOnotUxW+z4WQqbjDuZpa0KSK7OZTG
-        8hdh+YMDUaj/U9SZ16PCLk/0GsXUVCo=
-X-Google-Smtp-Source: ABdhPJyAd60vBQXQHXvEDagnL5C8DqU2H00FG/h0rAqZ+ilMScmE0veBYXU9kzdGqI+AZkskYlaiz8r6ASk=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:f66c:b851:7e79:7ed4])
- (user=seanjc job=sendgmr) by 2002:a25:9d83:: with SMTP id v3mr8323765ybp.97.1630111014478;
- Fri, 27 Aug 2021 17:36:54 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 27 Aug 2021 17:35:58 -0700
-In-Reply-To: <20210828003558.713983-1-seanjc@google.com>
-Message-Id: <20210828003558.713983-14-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210828003558.713983-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH v2 13/13] KVM: arm64: Drop perf.c and fold its tiny bits of
- code into arm.c / pmu.c
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232808AbhH1AoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 20:44:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232503AbhH1AoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Aug 2021 20:44:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEF8860F14;
+        Sat, 28 Aug 2021 00:43:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630111392;
+        bh=jah1aaOllz3Ob5t19NZqX7ZjZZ2lH5n+1dapisCauwQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=GJbKp4uSX/c1BFHuIEAXUZUN78tl/voUlAWWTZpgdsdcmu9+G7WKBORjJyQeVTXJl
+         gGHmAUl7D1oFkAM+XI49Mf09mZX9fnJUOB+UUBpfJ9NF6SI0tbzHXMjw6UyW7vcoTS
+         dk6vxdpV0arO/4o6p86qx+WDbf7jrd+WDvgGBAgVz/3eGzZpmvJGFfQo8AGeB28SxS
+         g5shRAJjfioCS24ASPANj1dhEn4qfBvHcn6NbsjsFKsg1DJS8VIPIAFF5T3Y2VdKjD
+         geOVLxVlj3nu/RVtB1XoskYu92u6Ze4Z0KAEMUljFPVSRdX/ND3YNUuZuemLNCw1yo
+         TrUYHe9Ka861A==
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce fragment allocation mode
+ mount option
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+References: <20210825185747.1627497-1-daeho43@gmail.com>
+ <1f1e6d38-6bd1-17ea-b8ca-a45d1244728f@kernel.org>
+ <CACOAw_yhgo1_wrejKskSm=Rsw27ogx=TS_A=z=-NGLcecA-gYA@mail.gmail.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <335d5bb5-7055-c934-33df-a03885382034@kernel.org>
+Date:   Sat, 28 Aug 2021 08:43:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <CACOAw_yhgo1_wrejKskSm=Rsw27ogx=TS_A=z=-NGLcecA-gYA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call KVM's (un)register perf callbacks helpers directly from arm.c, and
-move the PMU bits into pmu.c and rename the related helper accordingly.
+On 2021/8/27 23:22, Daeho Jeong wrote:
+>> I'd like to add a fixed chunk/hole fragmentation mode in addition, then
+>> userspace can control the fragmented chunk/hole with fixed size.
+>>
+>> How do you think of renaming "fragment:block" to "fragment:rand_block", and
+>> then I can add "fragment:fixed_block" option and its logic in addition?
+>>
+> 
+> The reason I added the randomness on these values is the segment
+> selection in SSR mode.
+> If all the segments have the same free block counts, f2fs will
+> allocate a new segment sequentially in SSR.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/arm64/include/asm/kvm_host.h |  3 ---
- arch/arm64/kvm/Makefile           |  2 +-
- arch/arm64/kvm/arm.c              |  6 ++++--
- arch/arm64/kvm/perf.c             | 27 ---------------------------
- arch/arm64/kvm/pmu.c              |  8 ++++++++
- include/kvm/arm_pmu.h             |  1 +
- 6 files changed, 14 insertions(+), 33 deletions(-)
- delete mode 100644 arch/arm64/kvm/perf.c
+I'm fine with this, since test program can customize different fragment
+degree on segments by setting different chunk/hole size.
 
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 73dc402ded1f..d549b58120bc 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -670,9 +670,6 @@ unsigned long kvm_mmio_read_buf(const void *buf, unsigned int len);
- int kvm_handle_mmio_return(struct kvm_vcpu *vcpu);
- int io_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa);
- 
--void kvm_perf_init(void);
--void kvm_perf_teardown(void);
--
- #ifdef CONFIG_PERF_EVENTS
- #define __KVM_WANT_PERF_CALLBACKS
- static inline bool kvm_arch_pmi_in_guest(struct kvm_vcpu *vcpu)
-diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
-index 989bb5dad2c8..0bcc378b7961 100644
---- a/arch/arm64/kvm/Makefile
-+++ b/arch/arm64/kvm/Makefile
-@@ -12,7 +12,7 @@ obj-$(CONFIG_KVM) += hyp/
- 
- kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
- 	 $(KVM)/vfio.o $(KVM)/irqchip.o $(KVM)/binary_stats.o \
--	 arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
-+	 arm.o mmu.o mmio.o psci.o hypercalls.o pvtime.o \
- 	 inject_fault.o va_layout.o handle_exit.o \
- 	 guest.o debug.o reset.o sys_regs.o \
- 	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 2b542fdc237e..48f89d80f464 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1744,7 +1744,9 @@ static int init_subsystems(void)
- 	if (err)
- 		goto out;
- 
--	kvm_perf_init();
-+	kvm_pmu_init();
-+	kvm_register_perf_callbacks(NULL);
-+
- 	kvm_sys_reg_table_init();
- 
- out:
-@@ -2160,7 +2162,7 @@ int kvm_arch_init(void *opaque)
- /* NOP: Compiling as a module not supported */
- void kvm_arch_exit(void)
- {
--	kvm_perf_teardown();
-+	kvm_unregister_perf_callbacks();
- }
- 
- static int __init early_kvm_mode_cfg(char *arg)
-diff --git a/arch/arm64/kvm/perf.c b/arch/arm64/kvm/perf.c
-deleted file mode 100644
-index 0b902e0d5b5d..000000000000
---- a/arch/arm64/kvm/perf.c
-+++ /dev/null
-@@ -1,27 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Based on the x86 implementation.
-- *
-- * Copyright (C) 2012 ARM Ltd.
-- * Author: Marc Zyngier <marc.zyngier@arm.com>
-- */
--
--#include <linux/perf_event.h>
--#include <linux/kvm_host.h>
--
--#include <asm/kvm_emulate.h>
--
--DEFINE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
--
--void kvm_perf_init(void)
--{
--	if (kvm_pmu_probe_pmuver() != 0xf && !is_protected_kvm_enabled())
--		static_branch_enable(&kvm_arm_pmu_available);
--
--	kvm_register_perf_callbacks(NULL);
--}
--
--void kvm_perf_teardown(void)
--{
--	kvm_unregister_perf_callbacks();
--}
-diff --git a/arch/arm64/kvm/pmu.c b/arch/arm64/kvm/pmu.c
-index 03a6c1f4a09a..d98b57a17043 100644
---- a/arch/arm64/kvm/pmu.c
-+++ b/arch/arm64/kvm/pmu.c
-@@ -7,6 +7,14 @@
- #include <linux/perf_event.h>
- #include <asm/kvm_hyp.h>
- 
-+DEFINE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
-+
-+void kvm_pmu_init(void)
-+{
-+	if (kvm_pmu_probe_pmuver() != 0xf && !is_protected_kvm_enabled())
-+		static_branch_enable(&kvm_arm_pmu_available);
-+}
-+
- /*
-  * Given the perf event attributes and system type, determine
-  * if we are going to need to switch counters at guest entry/exit.
-diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
-index 864b9997efb2..42270676498d 100644
---- a/include/kvm/arm_pmu.h
-+++ b/include/kvm/arm_pmu.h
-@@ -14,6 +14,7 @@
- #define ARMV8_PMU_MAX_COUNTER_PAIRS	((ARMV8_PMU_MAX_COUNTERS + 1) >> 1)
- 
- DECLARE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
-+void kvm_pmu_init(void);
- 
- static __always_inline bool kvm_arm_support_pmu_v3(void)
- {
--- 
-2.33.0.259.gc128427fd7-goog
+> This was what I didn't want. Plus, in the real world, the size of hole
+> and chunk will be different in different segments.
+> 
+> But, if you think we need this "fragment:fixed_block" mode, I am happy
+> to have it. :)
 
+Thanks a lot. :)
+
+As you said it needs to be aligned to real world fragmentation, I notice that:
+with this way, we can't simulate similar fragment in FTL, due to its page
+mapping architecture, all fragmented data/node in filesystem will be written
+sequentially into its blocks.
+
+In order to simulate fragment in FTL, we need to:
+- write data (chunk size) with dummy pages (hole size) to devices
+- issue discards on those holes
+
+I guess fragmenting device (erase blocks) at the same time wouldn't be
+original intention of this patch, right?
+
+Thanks,
+
+> 
+>> Do we need to consider multiple thread scenario? in such case,
+>> .fragment_remained_chunk may update randomly.
+>>
+>> In addition, multiple log headers share one .fragment_remained_chunk,
+>> it may cause unexpected result, it means there may be continuous holes
+>> or chunks in locality due to swithing between different log headers.
+>>
+>> Thanks,
+>>
+> 
+> Oh, I overlooked that point. I am going to add the variable for each
+> segment as you said before.
+> 
+> Thanks,
+> 
