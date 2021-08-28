@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0733FA79A
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB0E3FA79C
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 23:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbhH1VZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 17:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232684AbhH1VZv (ORCPT
+        id S233916AbhH1V1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 17:27:35 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:47959 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232532AbhH1V1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 17:25:51 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427DBC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 14:25:00 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id d26so16271274wrc.0
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 14:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Q1h4DF8vwdgzDXv0WetE7P68kDtfdB8RpBQW3/t1r50=;
-        b=f22pL4vTEsQRaJBRfxGB+OThWRmIS5S88NRYIbsIjOS2srvrc7wT3AhfanOIcxXmiM
-         ZC+MTM5vR8PdHHPrLBNG3UIIahHBeqORSq9jACTsNSGbggbfnSP0vhDSY0Jk5FHeNs92
-         1IPjDOyRdX1r8LhfncOPJbr9n2RpFLtCRJQisF53Cgv4mX2yPwMkY5rIM9pt5Q3uqa6c
-         2OQ2EDyojO2JfrP+/dI0r8WZZElKRPciYK6SNQJJ62YQXGebH7lkKLIq6p1RYey+OnIb
-         +Kq7/Q1p4WlGSivar32Hf8cuLUnWHScag5O0xfcrzCt+tBO4VmeLLFTps1xRKDpf/YHW
-         rs1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Q1h4DF8vwdgzDXv0WetE7P68kDtfdB8RpBQW3/t1r50=;
-        b=E3KWywHS+dtMW3HdaEp9pv7JJzcrIq9k1mg3qRZWJWEkRl01blocc3Ad0/6xJwrDj3
-         EqMoL7f3kVD07TqLnwTb1o+7f57yBBjvCvVpp6VNb6OzHuLK+uuSpH0fmmQN2Y2dTvVs
-         G36GZb0K5Vg0xCF8HxuavRLvX4IlCm7tH4aZ9K+UxJLCF53DErI0MTwYG3rEuBB290l0
-         LBwenP3siqgxlHgaAO+rJ83fYSmhu3JJtckUWNF8OKf7pb5quCmnwCvAv2Zd14WTCyIi
-         twXSjVB7EIM1CapnP6N9gNSR9MqiHkgxwpELLf9YHuBUiTEWQPenYFYXT0202SUDwHr3
-         gLXg==
-X-Gm-Message-State: AOAM530q8i0ZPzfZnITdxcS20vc/DRcWgYwBTUYAeiXR9RVATxYIsFXu
-        IXjEhCOQBilIWmQveSSdRca5sg==
-X-Google-Smtp-Source: ABdhPJw6iV3AMIFjF3F2nlzYwQSNyaVDYOFJAMCCpzN0XOEtnC8nZPHPTMPEXPHFQV+jgNSJFWKGJw==
-X-Received: by 2002:a5d:4647:: with SMTP id j7mr17894768wrs.149.1630185897349;
-        Sat, 28 Aug 2021 14:24:57 -0700 (PDT)
-Received: from localhost.localdomain (d.f.5.e.6.6.b.1.e.6.2.7.e.5.c.8.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0:8c5e:726e:1b66:e5fd])
-        by smtp.gmail.com with ESMTPSA id u26sm8645847wrd.32.2021.08.28.14.24.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 14:24:57 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     straube.linux@gmail.com, fmdefrancesco@gmail.com,
-        Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] staging: r8188eu: remove rtw_hal_c2h_handler function
-Date:   Sat, 28 Aug 2021 22:24:53 +0100
-Message-Id: <20210828212453.898-4-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210828212453.898-1-phil@philpotter.co.uk>
-References: <20210828212453.898-1-phil@philpotter.co.uk>
+        Sat, 28 Aug 2021 17:27:34 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MQdtO-1mgjKe2KGs-00Ng03; Sat, 28 Aug 2021 23:26:42 +0200
+Received: by mail-wr1-f45.google.com with SMTP id u16so16201750wrn.5;
+        Sat, 28 Aug 2021 14:26:42 -0700 (PDT)
+X-Gm-Message-State: AOAM530A0LiUb5m55CRPyLg2BpilximUExHXKjFmbgu5kb36U/dW/UEl
+        /Fvaq/T9nepORjziTFtMXobrY6W5ELwjGkfp0Sk=
+X-Google-Smtp-Source: ABdhPJwvDnsDJcn3wIhFHRhkw8EPD/pggXR8T4gD9Xh87dD/CiOcm+8HpoR7LLiItw7WlQGpC2ld22sA7ZHK6OreHnU=
+X-Received: by 2002:adf:b781:: with SMTP id s1mr10383658wre.165.1630186002171;
+ Sat, 28 Aug 2021 14:26:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1630083668.git.christophe.jaillet@wanadoo.fr> <612A50C4.2080209@gmail.com>
+In-Reply-To: <612A50C4.2080209@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 28 Aug 2021 23:26:26 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1=tZkb-rxj5Ys_FgUa=qoKPD6fpPjEMHXDL0QwwS0zgg@mail.gmail.com>
+Message-ID: <CAK8P3a1=tZkb-rxj5Ys_FgUa=qoKPD6fpPjEMHXDL0QwwS0zgg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/4] char: xillybus: Remove usage of the deprecated
+ 'pci-dma-compat.h' API
+To:     Eli Billauer <eli.billauer@gmail.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Arnd Bergmann <arnd@arndb.de>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:SfZd/6/VPd+vpSJtwx98oNSjKSxpNw4Dj18VzVx1viyfokFzESd
+ wka5xkyUfXDzcKtpH8aY2+X0PEqBErPaEnz4+VoHk5bLlU5LkRkSZBSKTYFWEVUgupriGZr
+ 3LxbfkIaxA3aQbAUcEK5SrWFo1dNzrClxdomhxEQYivC47fZ/PDIXCxm63jbIV5YWykJXB8
+ KlDSXErMH0zSjSTmJ1DOw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:m86IDzp4oNs=:ZyFwd5QinI1i2btLgw+xMm
+ qgb98PObe1/9td3pZRMt8C6PpPs3+SiiyMAJEIVwm6f9zdMNt0axPXkl8748nGRRLVy5XG1di
+ E+VyHckvfm0NQkZOXJcHGmlzpuYgEcMXdw/f2Fj7+BYKSGXANvL+L8H6A1PFcO6+K4iY5tCb9
+ 1AwNKlXPQp29r8JHxH8Lmc2nHp5JNsxsYTHYvUMfE83mDyZqRG0dZXjFtn3p+3g9Kj4uSv6oz
+ OfO8shRm4lZeAmTof4MTvUyrkN52+zBUg6fGWnPwv1Fk1jkKpxkPCJHR2sxQ+fM4L/R1K+dK4
+ BGCREerzvECjJXTzgSN/s4Fg3cDGJ7GCMf3q/9XXieHBhXJ1zEaqUTZZxFna+Hii4TbT9VpXr
+ bR9PSKFEm4U47kAO0DvbKg8M+CpOhAfw/c1GaHLtEJcZUt4+uWC9bzdftET7kGYLDC2P0OBtx
+ 5+Bu4vuD1VwAqWbofZVaTABX1kCefzmiNj6nGALzpIn1OE6uqku6LDqGPLcUdutj22/uijEP9
+ Q875mTbRj0IjpqC2aMPqEuRWEw5+tMIg1qtZePGmb66mEFqcL5rBpFI3nWx+W/EAZO+w4/+EH
+ dYAVDcLUIQfW+dCqTkLjUhUAXq1elmlMHlJJPHgv4vt0YL5OENNT7MNWViCVUN1+Buq0N5Ktg
+ 3BESG7asFqp1knedtjrYXGMP7kF1BAqVeRP5bdxQPDw8bPLeud+rGtqce7pch/GR71/Lshjz7
+ ECsq9TFYg+IEcUONwTwf4jFA/69kH+uPrio4jA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove rtw_hal_c2h_handler function from hal/hal_intf.c, as well as its
-declaration in include/hal_intf.h, and remove its one remaining caller
-within core/rtw_cmd.c.
+On Sat, Aug 28, 2021 at 5:07 PM Eli Billauer <eli.billauer@gmail.com> wrote:
+>
+> On 27/08/21 20:17, Christophe JAILLET wrote:
+> > In [1], Christoph Hellwig has proposed to remove the wrappers in
+> > include/linux/pci-dma-compat.h.
+> >
+> Xillybus' driver is an example for why this is a good idea. But has this
+> been decided upon? Are we sure that there isn't a single platform where
+> the DMA mapping for PCI is different from non-PCI, and that such
+> platform will never be?
 
-This function was a wrapper function, then simplified to always return
-_FAIL. Since it has no further use, remove it, as part of ongoing
-efforts to simplify and remove the HAL layer of the driver.
+Yes.
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/r8188eu/core/rtw_cmd.c     | 2 --
- drivers/staging/r8188eu/hal/hal_intf.c     | 5 -----
- drivers/staging/r8188eu/include/hal_intf.h | 2 --
- 3 files changed, 9 deletions(-)
+> If so, is there any reference to that decision?
 
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index b520c6b43c03..5222863f8d66 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -1898,8 +1898,6 @@ static void c2h_wk_callback(struct work_struct *work)
- 		}
- 
- 		if (ccx_id_filter(c2h_evt->id)) {
--			/* Handle CCX report here */
--			rtw_hal_c2h_handler(adapter, c2h_evt);
- 			kfree(c2h_evt);
- 		} else {
- #ifdef CONFIG_88EU_P2P
-diff --git a/drivers/staging/r8188eu/hal/hal_intf.c b/drivers/staging/r8188eu/hal/hal_intf.c
-index 0c835f9cd181..bcc77da06c08 100644
---- a/drivers/staging/r8188eu/hal/hal_intf.c
-+++ b/drivers/staging/r8188eu/hal/hal_intf.c
-@@ -426,11 +426,6 @@ void rtw_hal_reset_security_engine(struct adapter *adapter)
- 		adapter->HalFunc.hal_reset_security_engine(adapter);
- }
- 
--s32 rtw_hal_c2h_handler(struct adapter *adapter, struct c2h_evt_hdr *c2h_evt)
--{
--	return _FAIL;
--}
--
- c2h_id_filter rtw_hal_c2h_id_filter_ccx(struct adapter *adapter)
- {
- 	return adapter->HalFunc.c2h_id_filter_ccx;
-diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-index 4603f9212030..954de3ab2613 100644
---- a/drivers/staging/r8188eu/include/hal_intf.h
-+++ b/drivers/staging/r8188eu/include/hal_intf.h
-@@ -400,8 +400,6 @@ int rtw_hal_iol_cmd(struct adapter  *adapter, struct xmit_frame *xmit_frame,
- void rtw_hal_notch_filter(struct adapter *adapter, bool enable);
- void rtw_hal_reset_security_engine(struct adapter *adapter);
- 
--s32 rtw_hal_c2h_handler(struct adapter *adapter,
--			struct c2h_evt_hdr *c2h_evt);
- c2h_id_filter rtw_hal_c2h_id_filter_ccx(struct adapter *adapter);
- void indicate_wx_scan_complete_event(struct adapter *padapter);
- u8 rtw_do_join(struct adapter *padapter);
--- 
-2.31.1
+The documentation was updated 11 years ago to only describe the modern
+linux/dma-mapping.h interfaces and mark the old bus-specific ones as
+no longer recommended, see 216bf58f4092 ("Documentation: convert
+PCI-DMA-mapping.txt to use the generic DMA API").
 
+> I think the best way is to put a comment at the top of pci-dma-compat.h
+> saying that the functions in that header file are deprecated and will go
+> away soon. That would, more than anything else, convince people like me
+> to get rid of those PCI-DMA function calls.
+
+The only reason for keeping the old interface around any day longer would
+be to identify drivers that have been unmaintained for the past decade
+and ignored all the previous cleanup patches that got sent to them.
+
+       Arnd
