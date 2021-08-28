@@ -2,135 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2863FA765
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905703FA768
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhH1Toy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 15:44:54 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:33764 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231258AbhH1Tox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 15:44:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630179842; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=EzEkY2UNfFhXjc4UKN2F2zDkGNQ5JRlcjSo43WdLnzM=; b=v/B/YP1zeZJ10O2CGHrPiic9y8ac5RtF2TMUpCByqjuc00nurejiT2gWwpU90aZwgc3r7OZz
- ss5CmaHjCCoyUHUdbW3YBAiHq5Z3hmWKTTcZNYIkx+gsoz8pAo0xIMD+HLKmdHV8s0sPcbhG
- VuFgMn+YludxvFpCOM2B6ScmMzg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 612a92014cd9015037ed25cb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Aug 2021 19:44:01
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1619FC4338F; Sat, 28 Aug 2021 19:44:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.3 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.87.126])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A2D9C4338F;
-        Sat, 28 Aug 2021 19:43:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0A2D9C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2 02/18] arm64: dts: qcom: Add SM6350 device tree
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Rob Herring <robh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        Vinod Koul <vkoul@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org
-References: <20210828131814.29589-1-konrad.dybcio@somainline.org>
- <20210828131814.29589-2-konrad.dybcio@somainline.org>
- <55db46ad-e255-7d8f-f284-96a7d807e5d9@codeaurora.org>
- <95c5001a-87dc-2548-97de-538da713b9b6@somainline.org>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <e483238e-29ac-b1ef-ed80-d5ffdbca83bf@codeaurora.org>
-Date:   Sun, 29 Aug 2021 01:13:48 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234399AbhH1TqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 15:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhH1TqT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 15:46:19 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389A5C061756;
+        Sat, 28 Aug 2021 12:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XaDJo/Xp/thzakG+AyFw4gfOeYqXSd+OvToP2IAZADw=; b=iaSYaDXqR2I0RfntlzqVugj0Nj
+        rXYt5kYTwyGKSPywFnw4fyUzTY9LAxxbRjtQkmlvftPwsUj5uPz2F5YspCjIPUg0EU+uNCyGQ3m1z
+        lWBYQwuSheYbXudKlCIc8TNjxaN9C6VQgIvcLqNM4nad3zEOcmW0XTeahuIU8N5XEWm3P7Ut9+abN
+        Q8fQ7zTfRTZ3R7RoF/QygqFwsUOnFQLkR+lOFf7wq4T+6b6moR3EFv7YMAVF9pd5Ox3uQjzGFISAV
+        ivzAchA/SXjNJ8WNIC5WtqGO0JdesSU+G3xE61VeRun7z2ArlsfJGMdbJCaLwzEcpgePCOVpe7U2B
+        vRqaWBQQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mK4Fb-00Dvei-M3; Sat, 28 Aug 2021 19:44:23 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A026C98679D; Sat, 28 Aug 2021 21:44:21 +0200 (CEST)
+Date:   Sat, 28 Aug 2021 21:44:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH v2 01/13] perf: Ensure perf_guest_cbs aren't reloaded
+ between !NULL check and deref
+Message-ID: <20210828194421.GB4353@worktop.programming.kicks-ass.net>
+References: <20210828003558.713983-1-seanjc@google.com>
+ <20210828003558.713983-2-seanjc@google.com>
 MIME-Version: 1.0
-In-Reply-To: <95c5001a-87dc-2548-97de-538da713b9b6@somainline.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210828003558.713983-2-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Aug 27, 2021 at 05:35:46PM -0700, Sean Christopherson wrote:
 
-On 8/28/2021 9:52 PM, Konrad Dybcio wrote:
->>> +
->>> +        tcsr_mutex: hwlock@1f40000 {
->>> +            compatible = "qcom,tcsr-mutex";
->>> +            reg = <0x0 0x01f40000 0x0 0x40000>;
->>> +            #hwlock-cells = <1>;
->>> +        };
->>> +
->>> +        pdc: interrupt-controller@b220000 {
->>> +            compatible = "qcom,sm6350-pdc", "qcom,pdc";
->>> +            reg = <0 0x0b220000 0 0x30000>, <0 0x17c000f0 0 0x64>;
->> The second reg  0x17c000f0 is neither documented nor used in PDC irq chip driver. can you please remove it?
->>
->> Thanks,
->> Maulik
->>
-> Wouldn't it make more sense to keep it (like in other PDC-enabled SoCs' device trees) so that there's no
->
-> need to add it back when the driver gains support for spi_configure_type (I believe that's what it's used for)?
-The second reg in some of the PDC enabled SoCs' went in since it may 
-have slipped throgh code reviews when using downstream
-patch as is on upstream.
-Also the bindings document for PDC is still in txt, so yaml check could 
-not catch the extra register which is not documented.
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index 2d510ad750ed..6b0405e578c1 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -1237,6 +1237,14 @@ extern void perf_event_bpf_event(struct bpf_prog *prog,
+>  				 u16 flags);
+>  
+>  extern struct perf_guest_info_callbacks *perf_guest_cbs;
+> +static inline struct perf_guest_info_callbacks *perf_get_guest_cbs(void)
+> +{
+> +	/* Reg/unreg perf_guest_cbs waits for readers via synchronize_rcu(). */
+> +	lockdep_assert_preemption_disabled();
+> +
+> +	/* Prevent reloading between a !NULL check and dereferences. */
+> +	return READ_ONCE(perf_guest_cbs);
+> +}
 
-An attempt to add support for spi_configure_type [1] & [2] had 
-suggestion either to access second reg via mailbox or
-add another level of irqchip hierarchy between PDC to GIC to configure 
-SPI type. Unless both [1] and [2] patch can go in as
-PDC irqchip driver won't gain support to use it. (using mailbox approch 
-will have mailbox driver to access this register and PDC node may 
-mention which mailbox to use).
+Nice..
 
-[1] 
-https://patchwork.kernel.org/project/linux-arm-msm/patch/1568411962-1022-7-git-send-email-ilina@codeaurora.org/
+>  extern int perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *callbacks);
+>  extern int perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *callbacks);
+>  
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 464917096e73..2126f6327321 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -6491,14 +6491,19 @@ struct perf_guest_info_callbacks *perf_guest_cbs;
+>  
+>  int perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
+>  {
+> -	perf_guest_cbs = cbs;
+> +	if (WARN_ON_ONCE(perf_guest_cbs))
+> +		return -EBUSY;
+> +
+> +	WRITE_ONCE(perf_guest_cbs, cbs);
+> +	synchronize_rcu();
 
-[2] 
-https://patchwork.kernel.org/project/linux-arm-msm/patch/1568411962-1022-8-git-send-email-ilina@codeaurora.org/
+You're waiting for all NULL users to go away? :-) IOW, we can do without
+this synchronize_rcu() call.
 
-Thanks,
-Maulik
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(perf_register_guest_info_callbacks);
+>  
+>  int perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
+>  {
+> -	perf_guest_cbs = NULL;
 
->
->
-> Konrad
->
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+	if (WARN_ON_ONCE(perf_guest_cbs != cbs))
+		return -EBUSY;
 
+?
+
+> +	WRITE_ONCE(perf_guest_cbs, NULL);
+> +	synchronize_rcu();
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(perf_unregister_guest_info_callbacks);
+
+Yes, this ought to work fine.
