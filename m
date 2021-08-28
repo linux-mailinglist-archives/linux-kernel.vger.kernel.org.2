@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA6C3FA789
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 22:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2133FA790
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 23:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhH1UpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 16:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
+        id S232401AbhH1VOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 17:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhH1UpH (ORCPT
+        with ESMTP id S230253AbhH1VOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 16:45:07 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29249C061756;
-        Sat, 28 Aug 2021 13:44:12 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630183450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jqn7wYgtWLIqZ9aye1ornYrsbRPpzBUqOlOGcb6SmI8=;
-        b=mqKN5AWhujtiGKZ6L81ViYtYwQZi+xkoocav2zijsXbog4utBtunya7RVvX83UM298WNU0
-        g6b4QTbT6X2D/Uxjb06CtP0EKazlp+YTAyDYgoBOOcdeT7XUEUfMPxo2B7bgda1BhRXo21
-        AZE5GrHgCMvNhfjGefKyXHemYvVxU8/PxkTF52lDqFLQoe9LgtmqcekJaGLc74ZOzZe+sz
-        KGP1In38tJbTvDk7FoNPwAsrM6I01dg1bgBWAU9jddoa2YuKRb8JaluRwun7nAZXcWBm1f
-        DAmPlfPDvhlKtwTNLFyxMdvDoH6M7EYHeohvn4MVVwk1vf0fNOyLfXDI4zifZg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630183450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jqn7wYgtWLIqZ9aye1ornYrsbRPpzBUqOlOGcb6SmI8=;
-        b=ez+HiTr9a13KmBngRjTOOnKKW3JeJJIguEpv3Zlr6LZei7W2GH62vHq5OMOZAn3KN3JGx0
-        oEVaZ7hY/QX9bODA==
-To:     Dexuan Cui <decui@microsoft.com>,
-        'Saeed Mahameed' <saeed@kernel.org>,
-        'Leon Romanovsky' <leon@kernel.org>
-Cc:     "'linux-pci@vger.kernel.org'" <linux-pci@vger.kernel.org>,
-        "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>,
-        "'x86@kernel.org'" <x86@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
-Subject: RE: [5.14-rc1] mlx5_core receives no interrupts with maxcpus=8
-In-Reply-To: <draft-87h7fa1m37.ffs@tglx>
-References: <draft-87h7fa1m37.ffs@tglx>
-Date:   Sat, 28 Aug 2021 22:44:09 +0200
-Message-ID: <87tuj9guzq.ffs@tglx>
+        Sat, 28 Aug 2021 17:14:49 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD55BC061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 14:13:58 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id z18so19731924ybg.8
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 14:13:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ICcSCFexjhpp8PBl0tQjqKkSyaD0mJsG1uKHkuscRbw=;
+        b=gV1T+5i/k5S8ZzJnpNhMlyvXxAUnUgvbFDNvQcSjiLmWAm+5RMKOptlxPVAbDSB9y5
+         DjNRnN5aBxTyw4/H75I2FCH88Zwihmjf9TpcXO0SJAX0UN8e8SIAlqjOOjkIanqGlbTY
+         RMI8YRMNYv2G0S6FVFQCX5uNDAR2kKbD92SjaqnfnhfD0tQqLs3X8CtGg8rjSdEceQ6S
+         MvJcXW+AL/eJW0wFEQvZwnxxN6qjnabEpuE4gDcxYezkBmtBq4lWKff5KT71Tk38dlWf
+         Y6FEywUwpOgKyVBbSlLlUHSK8Ky94Q6eoOfKdGBLWf3OAxCQyDjyLfUl+Mam1YIEpNhr
+         GF+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ICcSCFexjhpp8PBl0tQjqKkSyaD0mJsG1uKHkuscRbw=;
+        b=ACbSfkJACqi4wUh/Pa4ApS4M2qt8F5H/2pbtrNjvyh1hL16qv4SPpqAVhU8U1JXgfE
+         qXfJwuv7JvFdyIPr9EJLwQtcItfo6PwbpMcoqFOjYIcbz6Gsyk3FguS9Fogucd113bMc
+         VHK6mZDFSb/zArrpEMVKEFXkYsHCnwMrBgbAcg6yq9Lx8TW9lFDciXcl/SWPF4RjSa4w
+         na3OTqZYD4w1WDkQo6w/lnxQDV4UWTMuCYGQgpS1sY/4TuB+23COvim6iJPyzDEOiZv8
+         9aQEWTWlqS1MtPGy89s5GKlxJrImG2gycV+RsSJ0hYGKawV18HDUKlNtViQeYKeINTFN
+         kMyQ==
+X-Gm-Message-State: AOAM532fDfLqpCfxSorzgOdTBF14E2/jVIOHIaeWeRJaQEs9YCU5GD9s
+        eu/oh5M/1titiS1D48lQ0pXKU9oOvwAsRW59HysHaw==
+X-Google-Smtp-Source: ABdhPJzTGgBAMEHL0PjhT2MzcQ07lzKlvxCvWWXzRYRZdMn4dsVrA+qJVnFa57VycofHCrLOcfOcy4S0yhD1Mp8cwI0=
+X-Received: by 2002:a25:810c:: with SMTP id o12mr14438431ybk.250.1630185237477;
+ Sat, 28 Aug 2021 14:13:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-4-surenb@google.com>
+ <202108271746.F444DA6C9@keescook>
+In-Reply-To: <202108271746.F444DA6C9@keescook>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Sat, 28 Aug 2021 14:13:46 -0700
+Message-ID: <CAJuCfpHLTMyAFsxAYHbiwkZNidzQU3qKWzj57LZX=b-Zybmugg@mail.gmail.com>
+Subject: Re: [PATCH v8 3/3] mm: add anonymous vma name refcounting
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org, eb@emlix.com,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com,
+        linux@rasmusvillemoes.dk, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dexuan,
+On Fri, Aug 27, 2021 at 10:28 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Fri, Aug 27, 2021 at 12:18:58PM -0700, Suren Baghdasaryan wrote:
+> > While forking a process with high number (64K) of named anonymous vmas the
+> > overhead caused by strdup() is noticeable. Experiments with ARM64 Android
+> > device show up to 40% performance regression when forking a process with
+> > 64k unpopulated anonymous vmas using the max name lengths vs the same
+> > process with the same number of anonymous vmas having no name.
+> > Introduce anon_vma_name refcounted structure to avoid the overhead of
+> > copying vma names during fork() and when splitting named anonymous vmas.
+> > When a vma is duplicated, instead of copying the name we increment the
+> > refcount of this structure. Multiple vmas can point to the same
+> > anon_vma_name as long as they increment the refcount. The name member of
+> > anon_vma_name structure is assigned at structure allocation time and is
+> > never changed. If vma name changes then the refcount of the original
+> > structure is dropped, a new anon_vma_name structure is allocated
+> > to hold the new name and the vma pointer is updated to point to the new
+> > structure.
+> > With this approach the fork() performance regressions is reduced 3-4x
+> > times and with usecases using more reasonable number of VMAs (a few
+> > thousand) the regressions is not measurable.
+>
+> I like the refcounting; thank you!
+>
+> Since patch2 adds a lot of things that are changed by patch3; maybe
+> combine them?
 
-On Sat, Aug 28 2021 at 01:53, Thomas Gleixner wrote:
-> On Thu, Aug 19 2021 at 20:41, Dexuan Cui wrote:
->>> Sorry for the late response! I checked the below sys file, and the output is
->>> exactly the same in the good/bad cases -- in both cases, I use maxcpus=8;
->>> the only difference in the good case is that I online and then offline CPU 8~31:
->>> for i in `seq 8 31`;  do echo 1 >  /sys/devices/system/cpu/cpu$i/online; done
->>> for i in `seq 8 31`;  do echo 0 >  /sys/devices/system/cpu/cpu$i/online; done
->>> 
->>> # cat /sys/kernel/debug/irq/irqs/209
+I thought it would be easier to review with the main logic being
+written using a basic type (string) first and then replace the basic
+type with a more complex refcounted structure. Also, if someone would
+like to rerun the tests and measure the regression of strdup vs
+refcounting approach, keeping this patch separate makes it easier to
+set up these tests.
+If that's not convenient I can absolutely squash them together.
 
-Yes, that looks correct.
-
->>
->> I tried the kernel parameter "intremap=nosid,no_x2apic_optout,nopost" but
->> it didn't help. Only "intremap=off" can work round the no interrupt issue.
->>
->> When the no interrupt issue happens, irq 209's effective_affinity_list is 5.
->> I modified modify_irte() to print the irte->low, irte->high, and I also printed
->> the irte_index for irq 209, and they were all normal to me, and they were
->> exactly the same in the bad case and the good case -- it looks like, with
->> "intremap=on maxcpus=8", MSI-X on CPU5 can't work for the NIC device
->> (MSI-X on CPU5 works for other devices like a NVMe controller) , and somehow
->> "onlining and then offlining CPU 8~31" can "fix" the issue, which is really weird.
-
-Just for the record: maxcpus=N is a dangerous boot option as it leaves
-the non brought up CPUs in a state where they can be hit by MCE
-broadcasting without being able to act on it. Which means you're
-operating the system out of spec.
-
-According to your debug output the interrupt in question belongs to the
-INTEL-IR-3 interrupt domain, which means it hangs of IOMMU3, aka DMAR
-unit 3.
-
-To which DMAR/remap unit are the other unaffected devices connected to?
-
-Thanks,
-
-        tglx
-
+>
+> --
+> Kees Cook
