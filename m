@@ -2,118 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E536F3FA2C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 03:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20F63FA2EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 03:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhH1BPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 21:15:40 -0400
-Received: from mo-csw1115.securemx.jp ([210.130.202.157]:56114 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232877AbhH1BPj (ORCPT
+        id S233019AbhH1Bgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 21:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhH1Bgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 21:15:39 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 17S1EksB001842; Sat, 28 Aug 2021 10:14:46 +0900
-X-Iguazu-Qid: 2wHHCQcimiqb2Jfnge
-X-Iguazu-QSIG: v=2; s=0; t=1630113285; q=2wHHCQcimiqb2Jfnge; m=COs2fNyNW/e9aN1r8qfvg9hhyTI2VUC9qIXExnCc1c8=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1110) id 17S1Ejue025732
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 28 Aug 2021 10:14:45 +0900
-Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 3475C10014D;
-        Sat, 28 Aug 2021 10:14:45 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 17S1EiHP004416;
-        Sat, 28 Aug 2021 10:14:45 +0900
-Date:   Sat, 28 Aug 2021 10:14:43 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     robh+dt@kernel.org, bhelgaas@google.com, kishon@ti.com,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, kw@linux.com,
-        punit1.agrawal@toshiba.co.jp, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/3] Visconti: Add Toshiba Visconti PCIe host
- controller driver
-X-TSB-HOP: ON
-Message-ID: <20210828011443.njafshmejojm7t5t@toshiba.co.jp>
-References: <20210811083830.784065-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <162998285902.30814.11206633831020646086.b4-ty@arm.com>
- <TYAPR01MB6252A29B56BBF8921822824F92C79@TYAPR01MB6252.jpnprd01.prod.outlook.com>
- <20210827094815.GA13112@lpieralisi>
+        Fri, 27 Aug 2021 21:36:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B01C0613D9;
+        Fri, 27 Aug 2021 18:35:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=AxcZIHM6WRdQHLVjEv6VID2r686OxIA9JRn4iceNx/k=; b=JzMfwkMosdaUNdn/1Yel4T4CIK
+        nWisCh3pB4LKYN9lmwe3kcW3y3RMi10xxn6rv9ZKQHMOEzo7YeR6slfz9vwI6zdJaT9QpwTkMDLG0
+        FVlxc+oMw9bT3aYZHXCILsRugcuKgDA/pNOPr3WKN/CR/4TZWLX8LOvM8JIY8Tw7/RAXbZ5+EvLLl
+        ELs2nfKhbOuHAJWozZXROlf+LlMshSqceKQyZsvz2IaQ/0W++3UqEREICbu9Lr6NKfgCs3fCgy/t0
+        lY3tapkuG51RveCTItRCp2mSHKi2NHvMx/tFOfQn5IG43PTS4CpRFFlnS1B9TvB8gRsXu+E89GAV5
+        n/4ThJsQ==;
+Received: from [2602:306:c5a2:a380:51a9:8dca:e324:214f]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mJnFP-00FBZe-Bc; Sat, 28 Aug 2021 01:35:14 +0000
+Subject: Re: [PATCH] net: spider_net: switch from 'pci_' to 'dma_' API
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        kou.ishizaki@toshiba.co.jp, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <60abc3d0c8b4ef8368a4d63326a25a5cb3cd218c.1630094078.git.christophe.jaillet@wanadoo.fr>
+From:   Geoff Levand <geoff@infradead.org>
+Message-ID: <4f3113d1-b76e-a085-df2d-fd97d4b45faf@infradead.org>
+Date:   Fri, 27 Aug 2021 18:34:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <60abc3d0c8b4ef8368a4d63326a25a5cb3cd218c.1630094078.git.christophe.jaillet@wanadoo.fr>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210827094815.GA13112@lpieralisi>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Christophe,
 
-On Fri, Aug 27, 2021 at 10:48:15AM +0100, Lorenzo Pieralisi wrote:
-> On Thu, Aug 26, 2021 at 11:49:04PM +0000, nobuhiro1.iwamatsu@toshiba.co.jp wrote:
-> > Hi,
-> > 
-> > > -----Original Message-----
-> > > From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi@arm.com]
-> > > Sent: Thursday, August 26, 2021 10:01 PM
-> > > To: iwamatsu nobuhiro(岩松 信洋 □ＳＷＣ◯ＡＣＴ) <nobuhiro1.iwamatsu@toshiba.co.jp>; Rob Herring
-> > > <robh+dt@kernel.org>; Bjorn Helgaas <bhelgaas@google.com>
-> > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>; Kishon Vijay Abraham I <kishon@ti.com>; ishikawa yuji(石川 悠司
-> > > ○ＲＤＣ□ＡＩＴＣ○ＥＡ開) <yuji2.ishikawa@toshiba.co.jp>; linux-arm-kernel@lists.infradead.org;
-> > > linux-pci@vger.kernel.org; Krzysztof Wilczyński <kw@linux.com>; agrawal punit(アグラワル プニト □ＳＷＣ◯ＡＣＴ)
-> > > <punit1.agrawal@toshiba.co.jp>; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> > > Subject: Re: [PATCH v6 0/3] Visconti: Add Toshiba Visconti PCIe host controller driver
-> > > 
-> > > On Wed, 11 Aug 2021 17:38:27 +0900, Nobuhiro Iwamatsu wrote:
-> > > > This series is the PCIe driver for Toshiba's ARM SoC, Visconti[0].
-> > > > This provides DT binding documentation, device driver, MAINTAINER files.
-> > > >
-> > > > Best regards,
-> > > >   Nobuhiro
-> > > >
-> > > > [0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
-> > > >
-> > > > [...]
-> > > 
-> > > Applied to pci/dwc, thanks!
-> > 
-> > Thanks! But...
-> > > 
-> > > [1/3] dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
-> > >       https://git.kernel.org/lpieralisi/pci/c/a655ce4000
-> > > [2/3] PCI: visconti: Add Toshiba Visconti PCIe host controller driver
-> > >       https://git.kernel.org/lpieralisi/pci/c/09436f819c
-> > 
-> > Only drivers/pci/controller/dwc/Makefile is applied. Could you check this?	
-> 
-> I fixed this. Please don't write patch versions changes in the commit
-> log - I had to delete those myself, I did not notice while applying
-> them.
+On 8/27/21 12:56 PM, Christophe JAILLET wrote:
+> It has *not* been compile tested because I don't have the needed
+> configuration or cross-compiler.
 
-Sorry about this.
+The powerpc ppc64_defconfig has CONFIG_SPIDER_NET set. My
+tdd-builder Docker image has the needed gcc-powerpc-linux-gnu
+cross compiler to build ppc64_defconfig:
 
-> 
-> Please let me know if the branch looks OK now.
-> 
+  https://hub.docker.com/r/glevand/tdd-builder
 
-Looks good to me.
-Thanks for your work.
-
-> Lorenzo
-> 
-> > > [3/3] MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
-> > >       https://git.kernel.org/lpieralisi/pci/c/34af7aace1
-> > > 
-> > > Thanks,
-> > > Lorenzo
-> > 
-
-Best regards,
-  Nobuhiro
-
-
+-Geoff
+ 
