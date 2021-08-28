@@ -2,67 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524B43FA4A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBB33FA4A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233663AbhH1JDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 05:03:35 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:58942 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233446AbhH1JDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 05:03:34 -0400
-Received: from BC-Mail-Ex29.internal.baidu.com (unknown [172.31.51.23])
-        by Forcepoint Email with ESMTPS id ECCCDDC310992669262B;
-        Sat, 28 Aug 2021 17:02:42 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex29.internal.baidu.com (172.31.51.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sat, 28 Aug 2021 17:02:42 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.62.18) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sat, 28 Aug 2021 17:02:42 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Cai Huoqing <caihuoqing@baidu.com>
-Subject: [PATCH] driver core: platform: Make use of the helper macro SET_RUNTIME_PM_OPS()
-Date:   Sat, 28 Aug 2021 17:02:19 +0800
-Message-ID: <20210828090219.1177-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.32.0.windows.2
+        id S233661AbhH1JNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 05:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233595AbhH1JNb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 05:13:31 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F04C061756;
+        Sat, 28 Aug 2021 02:12:41 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id z10so13558733edb.6;
+        Sat, 28 Aug 2021 02:12:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SvvbcesUWfj9LMRxBzI6Ev7Q0MX9bVpa2X1UHmZy5Ko=;
+        b=WbrKJIDpVBW4LuxY9IEFZWqoCPt11yVJXydz5n+xiEdUt/Iiy9dTT5DzDciw9LRn1E
+         y3KNoTpglKtkhTvAvbiMz2TZWWrvHO1XXLY04E0T/Mr1Ia3kFjwf0+WM6dY/RevB3M3n
+         28SHgfjhu7ijS1MBgadoJSGB4Uinrt21n9fuxt+YtxaKnILOT7cBqB1hiAM/50y72T22
+         5ZATPwdqltWGCXNOMFUWZ3y1Er5+O5+2BaEM1Wrd6wlJCTtCVC7MvjqaOBoWUYOikgUO
+         rbgvRKsMnyI+8Ymy8YoqxQk4cQpp5cTyO2c6RvVQO8lwchIBxgm7VwctT8P+l/nU0pDx
+         W7cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SvvbcesUWfj9LMRxBzI6Ev7Q0MX9bVpa2X1UHmZy5Ko=;
+        b=Y6jH/mtd8EYy6/vC2jjWSapbtjDJnjAeJlyux9uCu74A+714EAfZ/aZmSaLeEGQAwY
+         mmi1xutcEf4dd7XeKCEOflCrCEtumgy0ERreuWlY/vb8q/sHPvtmim8TnF+lri1Dytl2
+         YU14uQVkizHsfUptCovvwC4HHiiUFlymPu2ZoYaQezr/sXelzwXUsZTeFOlNpYcgwwFv
+         +ELch3aUZ6fpDdn3jXJG+Jcd2mZXu2qBsflUHi+zgb3NcpYV5DJoVGUUIbFB5ge5e+lW
+         kbK54lbw2eb6OHDgv2G4ppxQlDH06sB6z0jw+jy5QnHNfeGN348pQp6krjS8xIQua61U
+         n+jg==
+X-Gm-Message-State: AOAM530p/dVlepkAOl9d30kNYkkoIPG1rSK5peUl9zp/LBlAV0uJM7wg
+        tTd2RporGV9CUC6yPCY7sWY=
+X-Google-Smtp-Source: ABdhPJwolTxMxxAfrpO8rnE0IdRrrykT1UKXuvGuqrPmonIccYMBpu5U39/TA+Ddd6hRpx80ronDeA==
+X-Received: by 2002:a05:6402:714:: with SMTP id w20mr10288906edx.62.1630141960105;
+        Sat, 28 Aug 2021 02:12:40 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id gl2sm3965102ejb.110.2021.08.28.02.12.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 02:12:39 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: rockchip: rk3066a: add more angle brackets to operating-points property
+Date:   Sat, 28 Aug 2021 11:12:33 +0200
+Message-Id: <20210828091233.19992-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.31.62.18]
-X-ClientProxiedBy: BC-Mail-Ex11.internal.baidu.com (172.31.51.51) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the helper macro SET_RUNTIME_PM_OPS() instead of the verbose
-operators ".runtime_suspend/.runtime_resume", because the
-SET_RUNTIME_PM_OPS() is a nice helper macro that could be brought
-in to make code a little clearer, a little more concise.
+After the conversion to YAML of the Operating Performance Points(OPP)
+binding the operating-points property expects values in
+a uint32-matrix with 2 items, so fix the notifications by adding
+angle brackets.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/opp/opp-v1.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- drivers/base/platform.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arm/boot/dts/rk3066a.dtsi | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 652531f67135..598acf93a360 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -1466,8 +1466,7 @@ int platform_dma_configure(struct device *dev)
- }
- 
- static const struct dev_pm_ops platform_dev_pm_ops = {
--	.runtime_suspend = pm_generic_runtime_suspend,
--	.runtime_resume = pm_generic_runtime_resume,
-+	SET_RUNTIME_PM_OPS(pm_generic_runtime_suspend, pm_generic_runtime_resume, NULL)
- 	USE_PLATFORM_PM_SLEEP_OPS
- };
- 
+diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.dtsi
+index ae4055428..cc701a4e0 100644
+--- a/arch/arm/boot/dts/rk3066a.dtsi
++++ b/arch/arm/boot/dts/rk3066a.dtsi
+@@ -23,16 +23,15 @@
+ 			compatible = "arm,cortex-a9";
+ 			next-level-cache = <&L2>;
+ 			reg = <0x0>;
+-			operating-points = <
++			operating-points =
+ 				/* kHz    uV */
+-				1416000 1300000
+-				1200000 1175000
+-				1008000 1125000
+-				816000  1125000
+-				600000  1100000
+-				504000  1100000
+-				312000  1075000
+-			>;
++				<1416000 1300000>,
++				<1200000 1175000>,
++				<1008000 1125000>,
++				<816000  1125000>,
++				<600000  1100000>,
++				<504000  1100000>,
++				<312000  1075000>;
+ 			clock-latency = <40000>;
+ 			clocks = <&cru ARMCLK>;
+ 		};
 -- 
-2.25.1
+2.20.1
 
