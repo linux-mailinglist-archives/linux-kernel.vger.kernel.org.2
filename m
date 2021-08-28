@@ -2,154 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A615D3FA6F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 19:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D393FA6FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 19:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhH1RRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 13:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhH1RRq (ORCPT
+        id S229920AbhH1RYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 13:24:16 -0400
+Received: from relay03.th.seeweb.it ([5.144.164.164]:60365 "EHLO
+        relay03.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhH1RYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 13:17:46 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD2BC06179A
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:16:55 -0700 (PDT)
-Date:   Sun, 29 Aug 2021 01:17:39 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1630171012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NC19TIU/UNKx6o1XW6VnMHGmVekrOJOXU9jgYnArCiM=;
-        b=hd9ReYfg9fv8DUELLtqS27gAgIqOOQqF8uQaPngrMxeFUF9usLYXIwcD2hG0ofDiLl/oB7
-        Ss2uRIfxJ19pKcc4xPjWbmIVNS7wlryyL70h2BLMAnNhfiDdUPGqjO/bgtRyPZUQaZZks7
-        JRy8hPkidPkmvu0nsE7v+P6BjluaWJQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: Re: [PATCH V2] sched: Prevent balance_push() on remote runqueues
-Message-ID: <YSpvs5G3X7fJ5FWG@geo.homenetwork>
-References: <87tujb0yn1.ffs@tglx>
- <87eeae11cr.ffs@tglx>
- <87zgt1hdw7.ffs@tglx>
+        Sat, 28 Aug 2021 13:24:15 -0400
+Received: from localhost.localdomain (83.6.168.105.neoplus.adsl.tpnet.pl [83.6.168.105])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 4EFF2200ED;
+        Sat, 28 Aug 2021 19:23:22 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM6350 pinctrl bindings
+Date:   Sat, 28 Aug 2021 19:23:13 +0200
+Message-Id: <20210828172315.55742-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zgt1hdw7.ffs@tglx>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Add device tree binding Documentation details for Qualcomm SM6350
+pinctrl driver.
 
-On Sat, Aug 28, 2021 at 03:55:52PM +0200, Thomas Gleixner wrote:
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+Changes since v2:
+- Tweak the regex to match gpio0-gpio157
 
-> sched_setscheduler() and rt_mutex_setprio() invoke the run-queue balance
-> callback after changing priorities or the scheduling class of a task. The
-> run-queue for which the callback is invoked can be local or remote.
+ .../bindings/pinctrl/qcom,sm6350-pinctrl.yaml | 148 ++++++++++++++++++
+ 1 file changed, 148 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
 
-Let me say(always with my wrong). When the priority or policy changed, it is
-the opportunity to call RT/DL/core_sched callback if they queued.
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
+new file mode 100644
+index 000000000000..554992a681f3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
+@@ -0,0 +1,148 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/qcom,sm6350-pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies, Inc. SM6350 TLMM block
++
++maintainers:
++  - Konrad Dybcio <konrad.dybcio@somainline.org>
++
++description: |
++  This binding describes the Top Level Mode Multiplexer (TLMM) block found
++  in the SM6350 platform.
++
++allOf:
++  - $ref: /schemas/pinctrl/qcom,tlmm-common.yaml#
++
++properties:
++  compatible:
++    const: qcom,sm6350-tlmm
++
++  reg:
++    maxItems: 1
++
++  interrupts: true
++  interrupt-controller: true
++  '#interrupt-cells': true
++  gpio-controller: true
++  gpio-reserved-ranges: true
++  '#gpio-cells': true
++  gpio-ranges: true
++  wakeup-parent: true
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++patternProperties:
++  '-state$':
++    oneOf:
++      - $ref: "#/$defs/qcom-sm6350-tlmm-state"
++      - patternProperties:
++          ".*":
++            $ref: "#/$defs/qcom-sm6350-tlmm-state"
++
++$defs:
++  qcom-sm6350-tlmm-state:
++    type: object
++    description:
++      Pinctrl node's client devices use subnodes for desired pin configuration.
++      Client device subnodes use below standard properties.
++    $ref: "qcom,tlmm-common.yaml#/$defs/qcom-tlmm-state"
++
++    properties:
++      pins:
++        description:
++          List of gpio pins affected by the properties specified in this
++          subnode.
++        items:
++          oneOf:
++            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-4][0-9]|15[0-7])$"
++            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
++        minItems: 1
++        maxItems: 36
++
++      function:
++        description:
++          Specify the alternative function to be configured for the specified
++          pins.
++
++        enum: [ adsp_ext, agera_pll, atest_char, atest_char0, atest_char1, atest_char2,
++                atest_char3, atest_tsens, atest_tsens2, atest_usb1, atest_usb10, atest_usb11,
++                atest_usb12, atest_usb13, atest_usb2, atest_usb20, atest_usb21, atest_usb22,
++                atest_usb23, audio_ref, btfm_slimbus, cam_mclk0, cam_mclk1, cam_mclk2, cam_mclk3,
++                cam_mclk4, cci_async, cci_i2c, cci_timer0, cci_timer1, cci_timer2, cci_timer3,
++                cci_timer4, cri_trng, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1, ddr_pxi2, ddr_pxi3,
++                dp_hot, edp_lcd, gcc_gp1, gcc_gp2, gcc_gp3, gp_pdm0, gp_pdm1, gp_pdm2, gpio,
++                gps_tx, ibi_i3c, jitter_bist, ldo_en, ldo_update, lpass_ext, m_voc, mclk,
++                mdp_vsync, mdp_vsync0, mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s_0, mi2s_1, mi2s_2,
++                mss_lte, nav_gpio, nav_pps, pa_indicator, pcie0_clk, phase_flag0, phase_flag1,
++                phase_flag10, phase_flag11, phase_flag12, phase_flag13, phase_flag14, phase_flag15,
++                phase_flag16, phase_flag17, phase_flag18, phase_flag19, phase_flag2, phase_flag20,
++                phase_flag21, phase_flag22, phase_flag23, phase_flag24, phase_flag25, phase_flag26,
++                phase_flag27, phase_flag28, phase_flag29, phase_flag3, phase_flag30, phase_flag31,
++                phase_flag4, phase_flag5, phase_flag6, phase_flag7, phase_flag8, phase_flag9,
++                pll_bist, pll_bypassnl, pll_reset, prng_rosc, qdss_cti, qdss_gpio, qdss_gpio0,
++                qdss_gpio1, qdss_gpio10, qdss_gpio11, qdss_gpio12, qdss_gpio13, qdss_gpio14,
++                qdss_gpio15, qdss_gpio2, qdss_gpio3, qdss_gpio4, qdss_gpio5, qdss_gpio6,
++                qdss_gpio7, qdss_gpio8, qdss_gpio9, qlink0_enable, qlink0_request, qlink0_wmss,
++                qlink1_enable, qlink1_request, qlink1_wmss, qup00, qup01, qup02, qup10, qup11,
++                qup12, qup13_f1, qup13_f2, qup14, rffe0_clk, rffe0_data, rffe1_clk, rffe1_data,
++                rffe2_clk, rffe2_data, rffe3_clk, rffe3_data, rffe4_clk, rffe4_data, sd_write,
++                sdc1_tb, sdc2_tb, sp_cmu, tgu_ch0, tgu_ch1, tgu_ch2, tgu_ch3, tsense_pwm1,
++                tsense_pwm2, uim1_clk, uim1_data, uim1_present, uim1_reset, uim2_clk, uim2_data,
++                uim2_present, uim2_reset, usb_phy, vfr_1, vsense_trigger, wlan1_adc0, wlan1_adc1,
++                wlan2_adc0, wlan2_adc1, ]
++
++
++      bias-disable: true
++      bias-pull-down: true
++      bias-pull-up: true
++      drive-strength: true
++      input-enable: true
++      output-high: true
++      output-low: true
++
++    required:
++      - pins
++      - function
++
++    additionalProperties: false
++
++examples:
++  - |
++        #include <dt-bindings/interrupt-controller/arm-gic.h>
++        pinctrl@f100000 {
++                compatible = "qcom,sm6350-tlmm";
++                reg = <0x0f100000 0x300000>;
++                interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
++                gpio-controller;
++                #gpio-cells = <2>;
++                interrupt-controller;
++                #interrupt-cells = <2>;
++                gpio-ranges = <&tlmm 0 0 157>;
++
++                gpio-wo-subnode-state {
++                        pins = "gpio1";
++                        function = "gpio";
++                };
++
++                uart-w-subnodes-state {
++                        rx {
++                                pins = "gpio25";
++                                function = "qup13_f2";
++                                bias-disable;
++                        };
++
++                        tx {
++                                pins = "gpio26";
++                                function = "qup13_f2";
++                                bias-disable;
++                        };
++                };
++        };
++...
+-- 
+2.33.0
 
-The corresponding callback is: pull/push_rt_task(), pull/push_dl_task() and
-sched_core_balance(). The rq's callback list can be queued from local or
-other cpu's callback_head. They defined as per-cpu.
-
-sched_core_balance() do not use stop machine. pull_dl_task(), push/pull_rt_task
-use stop machine(push_cpu_stop()) to migrate tasks. SCA is another place to
-use stop machine(push_cpu_stop()).
-
-> That's not a problem for the regular rq::push_work which is serialized with
-> a busy flag in the run-queue struct, but for the balance_push() work which
-
-So, they use rq::push_busy to serialize as said above.
-
-balance_push() is another call back func that may queue on rq's callback list.
-But, it is different from the above ones. It is *global* and more import than
-others. If it is already queued on, every other callback will not be queued.
-And the points where calling __balance_callbacks() will do the cpu outgoing
-things.
-
-sched_setscheduler() and rt_mutex_setprio() are the two points to call
-__balance_callbacks(), and the __schedule() also have two points. one
-is finish_lock_switch() and another is when prev==next case.
-
-Task switched implys priority or policy changed. More important is for 
-stop machine(__balance_push_cpu_stop()) to migrate the tasks..
-
-> is only valid to be invoked on the outgoing CPU that's wrong. It not only
-
-When deactive cpu, set balance_push() call back. The opportunity that
-call this func may from other cpus(now see, so the saying warning).
-
-> triggers the debug warning, but also leaves the per CPU variable push_work
-> unprotected, which can result in double enqueues on the stop machine list.
-
-Auh, only just use the outgoing cpu to do the stop->task->stop.. migrate tasks..
-And, no need to use what to protect the push_work.
-
-Yeah.. my ugly words.. But.
-
-> Remove the warning and validate that the function is invoked on the
-> outgoing CPU.
-> 
-> Fixes: ae7927023243 ("sched: Optimize finish_lock_switch()")
-> Reported-by: Sebastian Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: stable@vger.kernel.org
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> ---
-> V2: Use the correct check for the outgoing CPU
-> ---
->  kernel/sched/core.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -8435,7 +8435,6 @@ static void balance_push(struct rq *rq)
->  	struct task_struct *push_task = rq->curr;
->  
->  	lockdep_assert_rq_held(rq);
-> -	SCHED_WARN_ON(rq->cpu != smp_processor_id());
->  
->  	/*
->  	 * Ensure the thing is persistent until balance_push_set(.on = false);
-> @@ -8443,9 +8442,10 @@ static void balance_push(struct rq *rq)
->  	rq->balance_callback = &balance_push_callback;
->  
->  	/*
-> -	 * Only active while going offline.
-> +	 * Only active while going offline and when invoked on the outgoing
-> +	 * CPU.
->  	 */
-> -	if (!cpu_dying(rq->cpu))
-> +	if (!cpu_dying(rq->cpu) || rq != this_rq())
->  		return;
->  
->  	/*
-
-
-
-Thanks,
-Tao
