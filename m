@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489173FA49D
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094C63FA49F
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbhH1JBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 05:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233446AbhH1JBc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 05:01:32 -0400
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625C6C061756;
-        Sat, 28 Aug 2021 02:00:42 -0700 (PDT)
-Received: from [10.0.20.3] (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 0CEDB1F986;
-        Sat, 28 Aug 2021 11:00:39 +0200 (CEST)
-Subject: Re: [PATCH v2] soc: qcom: mdt_loader: Drop PT_LOAD check on hash
- segment
-To:     Shawn Guo <shawn.guo@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210828070202.7033-1-shawn.guo@linaro.org>
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-Message-ID: <2944d5e9-1efb-ac13-a1b2-293ae11c430f@somainline.org>
-Date:   Sat, 28 Aug 2021 11:00:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233653AbhH1JCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 05:02:35 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:58272 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233446AbhH1JCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 05:02:34 -0400
+Received: from BC-Mail-Ex30.internal.baidu.com (unknown [172.31.51.24])
+        by Forcepoint Email with ESMTPS id 4C6A161F9DE55F7980D0;
+        Sat, 28 Aug 2021 17:01:42 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex30.internal.baidu.com (172.31.51.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Sat, 28 Aug 2021 17:01:42 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.62.11) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Sat, 28 Aug 2021 17:01:41 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Cai Huoqing <caihuoqing@baidu.com>
+Subject: [PATCH] dmaengine: sa11x0: Make use of the helper macro SET_NOIRQ_SYSTEM_SLEEP_PM_OPS()
+Date:   Sat, 28 Aug 2021 17:01:17 +0800
+Message-ID: <20210828090117.1814-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.32.0.windows.2
 MIME-Version: 1.0
-In-Reply-To: <20210828070202.7033-1-shawn.guo@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.31.62.11]
+X-ClientProxiedBy: BC-Mail-Ex18.internal.baidu.com (172.31.51.12) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn,
+Use the helper macro SET_NOIRQ_SYSTEM_SLEEP_PM_OPS() instead of the
+verbose operators ".suspend_noirq /.resume_noirq/.freeze_noirq/
+.thaw_noirq/.poweroff_noirq/.restore_noirq", because the
+SET_NOIRQ_SYSTEM_SLEEP_PM_OPS() is a nice helper macro that could
+be brought in to make code a little clearer, a little more concise.
 
-On 8/28/21 9:02 AM, Shawn Guo wrote:
-> PT_LOAD type denotes that the segment should be loaded into the final
-> firmware memory region.  Hash segment is not one such, because it's only
-> needed for PAS init and shouldn't be in the final firmware memory region.
-> That's why mdt_phdr_valid() explicitly reject non PT_LOAD segment and
-> hash segment.  This actually makes the hash segment type check in
-> qcom_mdt_read_metadata() unnecessary and redundant.  For a hash segment,
-> it won't be loaded into firmware memory region anyway, due to the
-> QCOM_MDT_TYPE_HASH check in mdt_phdr_valid(), even if it has a PT_LOAD
-> type for some reason (misusing or abusing?).
-> 
-> Some firmware files on Sony phones are such examples, e.g WCNSS firmware
-> of Sony Xperia M4 Aqua phone.  The type of hash segment is just PT_LOAD.
-> Drop the unnecessary hash segment type check in qcom_mdt_read_metadata()
-> to fix firmware loading failure on these phones, while hash segment is
-> still kept away from the final firmware memory region.
-> 
-> Fixes: 498b98e93900 ("soc: qcom: mdt_loader: Support loading non-split images")
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/dma/sa11x0-dma.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
+diff --git a/drivers/dma/sa11x0-dma.c b/drivers/dma/sa11x0-dma.c
+index 1e918e284fc0..38f318b2f80d 100644
+--- a/drivers/dma/sa11x0-dma.c
++++ b/drivers/dma/sa11x0-dma.c
+@@ -1072,12 +1072,7 @@ static int sa11x0_dma_resume(struct device *dev)
+ }
+ 
+ static const struct dev_pm_ops sa11x0_dma_pm_ops = {
+-	.suspend_noirq = sa11x0_dma_suspend,
+-	.resume_noirq = sa11x0_dma_resume,
+-	.freeze_noirq = sa11x0_dma_suspend,
+-	.thaw_noirq = sa11x0_dma_resume,
+-	.poweroff_noirq = sa11x0_dma_suspend,
+-	.restore_noirq = sa11x0_dma_resume,
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(sa11x0_dma_suspend, sa11x0_dma_resume)
+ };
+ 
+ static struct platform_driver sa11x0_dma_driver = {
+-- 
+2.25.1
 
-Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
-
-Thanks for sitting through that long discussion and coming to the 
-conclusion that your patch was correct all along!
-
-> ---
-> Changes for v2:
-> - Update commit log based on the great disscussion with Marijn and Bjorn.
-> 
->   drivers/soc/qcom/mdt_loader.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
-> index eba7f76f9d61..6034cd8992b0 100644
-> --- a/drivers/soc/qcom/mdt_loader.c
-> +++ b/drivers/soc/qcom/mdt_loader.c
-> @@ -98,7 +98,7 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len)
->   	if (ehdr->e_phnum < 2)
->   		return ERR_PTR(-EINVAL);
->   
-> -	if (phdrs[0].p_type == PT_LOAD || phdrs[1].p_type == PT_LOAD)
-> +	if (phdrs[0].p_type == PT_LOAD)
->   		return ERR_PTR(-EINVAL);
->   
->   	if ((phdrs[1].p_flags & QCOM_MDT_TYPE_MASK) != QCOM_MDT_TYPE_HASH)
-> 
