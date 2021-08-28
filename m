@@ -2,102 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50FF3FA770
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D053FA774
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbhH1Tve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 15:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
+        id S232112AbhH1TyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 15:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhH1Tvd (ORCPT
+        with ESMTP id S231272AbhH1TyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 15:51:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D94C061756;
-        Sat, 28 Aug 2021 12:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EvpUBX0kQkaSDPnQxMYWZGVN6zhrAsMhEqKxCVzwc4o=; b=pllg0gE0w02xyjMldZ9HnPVzqu
-        ta11OtXd1Bso4ilrEuT55ps2xPl2CjYBACyXlwdXXUeIjxslwwfUq6OAyrihSvrjzRr3JtkoSpE8r
-        nxY3yx+Fd/3UG041LWAE2YseMLAeONAzBfACBCXTK1UhZW2z6qWvQfm+cZtswlyfd2HomsjEMhaGO
-        AlA/8iv9N9xdUC/3HvjDZZKrjX+uYcxwdDOcFci5wDFWFUa+LVkIxA0cauQXcKJeC0qgJePnlirYy
-        P7fXACdPsEL7EzZFzKGU7caOwmwQc2FcxEl7F6m9RiEDfUUOmMpAmYquJxamu8c1pYg7LLIf/dgFH
-        3zfeLNxg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mK4J0-00Fo0r-RS; Sat, 28 Aug 2021 19:48:02 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1F90798679D; Sat, 28 Aug 2021 21:47:52 +0200 (CEST)
-Date:   Sat, 28 Aug 2021 21:47:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH v2 05/13] perf: Force architectures to opt-in to guest
- callbacks
-Message-ID: <20210828194752.GC4353@worktop.programming.kicks-ass.net>
-References: <20210828003558.713983-1-seanjc@google.com>
- <20210828003558.713983-6-seanjc@google.com>
+        Sat, 28 Aug 2021 15:54:20 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AF9C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:53:29 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id p38so22150687lfa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fep7azk9ZbUUiIx4juaHhTmKAWR+H3XVQCklLWNkvJ8=;
+        b=J5V9lPXbpmDHa654QCGCqu21+C+7ObrXswVcyLVCRa8jYBaQx7XZ+BK7d50jTppCN5
+         RrWj9IgA9TVJHLRUsJ+WM5+LZq8dZNPLMlnSYfly6WsadMlBbOzAcFvELvRJRqvdxAx7
+         bFoZh3Bc+LxeK05q4YKZcPUO4Z+t4K+mDAc+vWeD2z7bSRYna9RC0+xE/5ZjnNhX9hze
+         ah4I/7upp+Qu5ORHGuqOaBKFv1CzydDSiYL5QUsXW7JMxszQF6nAkclq/DqRieHvOR+J
+         dVIR8Tglhrz2gOvfF7hQH2Alr+TVpjJmXv4TbuAc6WXInpja9wBTZcmhbS9C6aU1oAXW
+         S39A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fep7azk9ZbUUiIx4juaHhTmKAWR+H3XVQCklLWNkvJ8=;
+        b=iEhOxYsZ2NskdFaeEH9AOPlqPnHQ0fjlL8caSgygxu92EVoDLwSgRdVawa7JhmdtY8
+         WUKhMX22OIaXUmOXqbFNDacTQeawFQZUdOQauSd3ObIfs4JqTtx1T5Dapdgp6CTpvYqb
+         bomjyaUBzuWt+2mzCBdhmpY0jehHfUqSi2EXMWLK/CxSl8BYfzyGg8QZ0KaJHYMiiPhb
+         JDaonvLOidaJkk+ovOyTCIzN2O6UFD0x/hbXXgEcUeRsEW8n3vXCwOvdVpVObRLZr+vN
+         +X1bEInbWev9Fw/t+wetJjpm3Fx5BAo4e2TN9Aj81LOWL0eULrKYg2ixP97x3xitxa7t
+         8BbA==
+X-Gm-Message-State: AOAM532n0wqOpqSYods10Y90XuSZ1NH40gi1h/e/bLIJe487fthseu/x
+        yh4xpMPrdN0a3kQTBuIk2mg=
+X-Google-Smtp-Source: ABdhPJz2wSevyMhgweanNe/bwlCrhr7AkUpu+Ee78NseUStZqcOsUWPriuF4T935QlDtE2PWZCApyA==
+X-Received: by 2002:a05:6512:159b:: with SMTP id bp27mr7855884lfb.17.1630180407462;
+        Sat, 28 Aug 2021 12:53:27 -0700 (PDT)
+Received: from DESKTOP-5EKDQDN.localdomain (78-63-10-115.static.zebra.lt. [78.63.10.115])
+        by smtp.gmail.com with ESMTPSA id br11sm944977lfb.89.2021.08.28.12.53.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 12:53:26 -0700 (PDT)
+From:   =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
+Subject: [PATCH] staging: wlan-ng: Remove filenames from files
+Date:   Sat, 28 Aug 2021 22:53:24 +0300
+Message-Id: <20210828195324.68-1-aldas60@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828003558.713983-6-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 05:35:50PM -0700, Sean Christopherson wrote:
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 55f9f7738ebb..9ef51ae53977 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1776,6 +1776,9 @@ config HAVE_PERF_EVENTS
->  	help
->  	  See tools/perf/design.txt for details.
->  
-> +config HAVE_GUEST_PERF_EVENTS
-> +	bool
-	depends on HAVE_KVM
+Fix checkpatch warnings about having filenames in the files.
 
-?
+Signed-off-by: Aldas Taraškevičius <aldas60@gmail.com>
+---
+ drivers/staging/wlan-ng/hfa384x.h      | 2 +-
+ drivers/staging/wlan-ng/hfa384x_usb.c  | 2 +-
+ drivers/staging/wlan-ng/p80211conv.c   | 2 +-
+ drivers/staging/wlan-ng/p80211conv.h   | 2 +-
+ drivers/staging/wlan-ng/p80211hdr.h    | 2 +-
+ drivers/staging/wlan-ng/p80211ioctl.h  | 2 +-
+ drivers/staging/wlan-ng/p80211mgmt.h   | 2 +-
+ drivers/staging/wlan-ng/p80211msg.h    | 2 +-
+ drivers/staging/wlan-ng/p80211netdev.c | 2 +-
+ drivers/staging/wlan-ng/p80211netdev.h | 2 +-
+ drivers/staging/wlan-ng/p80211req.c    | 2 +-
+ drivers/staging/wlan-ng/p80211req.h    | 2 +-
+ drivers/staging/wlan-ng/p80211types.h  | 2 +-
+ drivers/staging/wlan-ng/p80211wep.c    | 2 +-
+ drivers/staging/wlan-ng/prism2mgmt.c   | 2 +-
+ drivers/staging/wlan-ng/prism2mgmt.h   | 2 +-
+ drivers/staging/wlan-ng/prism2mib.c    | 2 +-
+ drivers/staging/wlan-ng/prism2sta.c    | 2 +-
+ 18 files changed, 18 insertions(+), 18 deletions(-)
 
-> +
->  config PERF_USE_VMALLOC
->  	bool
->  	help
+diff --git a/drivers/staging/wlan-ng/hfa384x.h b/drivers/staging/wlan-ng/hfa384x.h
+index 75ed8bc4bbc1..98c154a8d8c1 100644
+--- a/drivers/staging/wlan-ng/hfa384x.h
++++ b/drivers/staging/wlan-ng/hfa384x.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* hfa384x.h
++/*
+  *
+  * Defines the constants and data structures for the hfa384x
+  *
+diff --git a/drivers/staging/wlan-ng/hfa384x_usb.c b/drivers/staging/wlan-ng/hfa384x_usb.c
+index 8c8524679ba3..59aa84d1837d 100644
+--- a/drivers/staging/wlan-ng/hfa384x_usb.c
++++ b/drivers/staging/wlan-ng/hfa384x_usb.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/* src/prism2/driver/hfa384x_usb.c
++/*
+  *
+  * Functions that talk to the USB variant of the Intersil hfa384x MAC
+  *
+diff --git a/drivers/staging/wlan-ng/p80211conv.c b/drivers/staging/wlan-ng/p80211conv.c
+index 59b25ca50d15..cd271b1da69f 100644
+--- a/drivers/staging/wlan-ng/p80211conv.c
++++ b/drivers/staging/wlan-ng/p80211conv.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/* src/p80211/p80211conv.c
++/*
+  *
+  * Ether/802.11 conversions and packet buffer routines
+  *
+diff --git a/drivers/staging/wlan-ng/p80211conv.h b/drivers/staging/wlan-ng/p80211conv.h
+index 63c423507fe8..dfb762bce84d 100644
+--- a/drivers/staging/wlan-ng/p80211conv.h
++++ b/drivers/staging/wlan-ng/p80211conv.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* p80211conv.h
++/*
+  *
+  * Ether/802.11 conversions and packet buffer routines
+  *
+diff --git a/drivers/staging/wlan-ng/p80211hdr.h b/drivers/staging/wlan-ng/p80211hdr.h
+index 5871a55e4a61..93195a4c5b01 100644
+--- a/drivers/staging/wlan-ng/p80211hdr.h
++++ b/drivers/staging/wlan-ng/p80211hdr.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* p80211hdr.h
++/*
+  *
+  * Macros, types, and functions for handling 802.11 MAC headers
+  *
+diff --git a/drivers/staging/wlan-ng/p80211ioctl.h b/drivers/staging/wlan-ng/p80211ioctl.h
+index 77e8d2913b76..b50ce11147dd 100644
+--- a/drivers/staging/wlan-ng/p80211ioctl.h
++++ b/drivers/staging/wlan-ng/p80211ioctl.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* p80211ioctl.h
++/*
+  *
+  * Declares constants and types for the p80211 ioctls
+  *
+diff --git a/drivers/staging/wlan-ng/p80211mgmt.h b/drivers/staging/wlan-ng/p80211mgmt.h
+index 1457a6def5a2..1ef30d3f3159 100644
+--- a/drivers/staging/wlan-ng/p80211mgmt.h
++++ b/drivers/staging/wlan-ng/p80211mgmt.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* p80211mgmt.h
++/*
+  *
+  * Macros, types, and functions to handle 802.11 mgmt frames
+  *
+diff --git a/drivers/staging/wlan-ng/p80211msg.h b/drivers/staging/wlan-ng/p80211msg.h
+index 114066526df4..f68d8b7d5ad8 100644
+--- a/drivers/staging/wlan-ng/p80211msg.h
++++ b/drivers/staging/wlan-ng/p80211msg.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* p80211msg.h
++/*
+  *
+  * Macros, constants, types, and funcs for req and ind messages
+  *
+diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
+index 0905602ef8ff..2233f75854bd 100644
+--- a/drivers/staging/wlan-ng/p80211netdev.c
++++ b/drivers/staging/wlan-ng/p80211netdev.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/* src/p80211/p80211knetdev.c
++/*
+  *
+  * Linux Kernel net device interface
+  *
+diff --git a/drivers/staging/wlan-ng/p80211netdev.h b/drivers/staging/wlan-ng/p80211netdev.h
+index 25e5116b1590..5654dc54ae91 100644
+--- a/drivers/staging/wlan-ng/p80211netdev.h
++++ b/drivers/staging/wlan-ng/p80211netdev.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* p80211netdev.h
++/*
+  *
+  * WLAN net device structure and functions
+  *
+diff --git a/drivers/staging/wlan-ng/p80211req.c b/drivers/staging/wlan-ng/p80211req.c
+index 9f5c1267d829..809cf3d480e9 100644
+--- a/drivers/staging/wlan-ng/p80211req.c
++++ b/drivers/staging/wlan-ng/p80211req.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/* src/p80211/p80211req.c
++/*
+  *
+  * Request/Indication/MacMgmt interface handling functions
+  *
+diff --git a/drivers/staging/wlan-ng/p80211req.h b/drivers/staging/wlan-ng/p80211req.h
+index c04053f3b02b..bc45cd5f91e4 100644
+--- a/drivers/staging/wlan-ng/p80211req.h
++++ b/drivers/staging/wlan-ng/p80211req.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* p80211req.h
++/*
+  *
+  * Request handling functions
+  *
+diff --git a/drivers/staging/wlan-ng/p80211types.h b/drivers/staging/wlan-ng/p80211types.h
+index 3dcdd022da61..6486612a8f31 100644
+--- a/drivers/staging/wlan-ng/p80211types.h
++++ b/drivers/staging/wlan-ng/p80211types.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+ /*
+- * p80211types.h
++ *
+  *
+  * Macros, constants, types, and funcs for p80211 data types
+  *
+diff --git a/drivers/staging/wlan-ng/p80211wep.c b/drivers/staging/wlan-ng/p80211wep.c
+index 51d917c8cdc8..3ff7ee7011df 100644
+--- a/drivers/staging/wlan-ng/p80211wep.c
++++ b/drivers/staging/wlan-ng/p80211wep.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/* src/p80211/p80211wep.c
++/*
+  *
+  * WEP encode/decode for P80211.
+  *
+diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
+index 1bd36dc2b7ff..9030a8939a9b 100644
+--- a/drivers/staging/wlan-ng/prism2mgmt.c
++++ b/drivers/staging/wlan-ng/prism2mgmt.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/* src/prism2/driver/prism2mgmt.c
++/*
+  *
+  * Management request handler functions.
+  *
+diff --git a/drivers/staging/wlan-ng/prism2mgmt.h b/drivers/staging/wlan-ng/prism2mgmt.h
+index 17bc1ee0d498..7132cec2d7eb 100644
+--- a/drivers/staging/wlan-ng/prism2mgmt.h
++++ b/drivers/staging/wlan-ng/prism2mgmt.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* prism2mgmt.h
++/*
+  *
+  * Declares the mgmt command handler functions
+  *
+diff --git a/drivers/staging/wlan-ng/prism2mib.c b/drivers/staging/wlan-ng/prism2mib.c
+index d14f032a7ed6..24ba10d6bd0b 100644
+--- a/drivers/staging/wlan-ng/prism2mib.c
++++ b/drivers/staging/wlan-ng/prism2mib.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/* src/prism2/driver/prism2mib.c
++/*
+  *
+  * Management request for mibset/mibget
+  *
+diff --git a/drivers/staging/wlan-ng/prism2sta.c b/drivers/staging/wlan-ng/prism2sta.c
+index f67b7405156a..1be43300052f 100644
+--- a/drivers/staging/wlan-ng/prism2sta.c
++++ b/drivers/staging/wlan-ng/prism2sta.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/* src/prism2/driver/prism2sta.c
++/*
+  *
+  * Implements the station functionality for prism2
+  *
+-- 
+2.30.2
+
