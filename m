@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFF73FA2AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 03:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4B73FA2B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 03:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbhH1BDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 21:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52426 "EHLO
+        id S232946AbhH1BFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 21:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232682AbhH1BDn (ORCPT
+        with ESMTP id S232861AbhH1BFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 21:03:43 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9CBC0613D9;
-        Fri, 27 Aug 2021 18:02:53 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id a10so9083837qka.12;
-        Fri, 27 Aug 2021 18:02:53 -0700 (PDT)
+        Fri, 27 Aug 2021 21:05:35 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22570C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 18:04:45 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id eh1so5016941qvb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 18:04:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZqtHOG1cYK3m7nQOspZdmgqBHZtI39r10WDkq42VZZo=;
-        b=oy0u2A7w+ItIZw2vt87rTBTtEfak+ioIj5khLZXR0XJSyNzvCmCMIUGwuygAqljVOW
-         JLkrhfrdbkae9oDDBaYYH/7df3MOAhx9qg02WzVaMtavI5fNnDvaqWht1nhEwWrEozX5
-         Mzl4X59c0DsTVs3TxVRdo0exfVKfW+xZwslhYF8OsAa4McLaQ9h6K5KRY0ZvtPdR1MPU
-         UBo83xTESY2RxGt/OUzQbiaOUVGm4lC44tvkS0+yu8opKQpwbQUKrrAMKX0JDjmLRYlg
-         K8R/YCUVZqOXEgf9F8qYYQuN09bLLZZ6dn+OV2BahsvH7gG7CSOhTylGSLUb5XPwZHx9
-         nzhQ==
+        bh=ycC5EjOXPlt4T7OSVhH11w0K9nPLV+pEuuLBP1af7qg=;
+        b=X3UY66mu5D5Oa20nbjKyka61OUbcBHu+0Dn+JOelzZCzj45w1vm7IZruetW3O0Utvm
+         wphy/DmOkplxve8ZP0Bf6JcliiO70OF3hk7tIeqTKcZGXOO6vMRATEo6yvc5pq0E6lRi
+         po6R4b1DECzkyvCjjuRUn4rZv5HrrbLP2TEKFhTNBHvJpnTpZD+xuxUh98zUWvY3QxIZ
+         E4xszaIXsDQI4Wuw7Q19OZw0q5J8c0ufjkcZt0VYmdCAATUvlvyNyVlNSwWmG2eWMBr3
+         ipPPo1R5bZt7X4m8ssQlGBmt+L+LzarNIe3onimTOihVFyb2Jg3CYsgCWmb1aH53/7jA
+         buww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZqtHOG1cYK3m7nQOspZdmgqBHZtI39r10WDkq42VZZo=;
-        b=ffMdrO36b8kLrakDIheuq27LDlox5VjRhE+5eaBWmBuxN5VJ0Zipiyd8rjgUoF9oQm
-         s5OKqWYNXZ6odFJ684wl5SRLqJPjPqWLOdLrWlvaCR5iOCczvGcxHT5Wv+8tf854OXW9
-         SHCIbZOUwzjlMOkFp9v3uiP3PAkze5NoldepYLOxP6ufEHAOA6cEzkwjZgq6M+tLbxKB
-         KfXWSBh5hLW+w3lH6BxhaoSNiNiaeIApSpzsLHx/6BRRlpvN5YQRTc+07rjOeQkIsqec
-         sHj0wtf3Jc3ONT/rb1jlFVABfCIXz2ftao4TPnvb38dBN7S7ZAI/F5MrgBRjAVKlDpP/
-         2Wqw==
-X-Gm-Message-State: AOAM5320IPpR11rAEl46Ev70XYKpGd3EEKEL1CNMEHRILu/DPcbAJ2J0
-        Lgwy8x+L1uOMyz1sN9a05aU=
-X-Google-Smtp-Source: ABdhPJzzS2e1SA/F8Wa8VH56LDI7BZ12lZcsaitMYNWlfKT9NEFe2c/ICccHO3pueeM6xqRZElouWA==
-X-Received: by 2002:a37:2d04:: with SMTP id t4mr11920659qkh.463.1630112572718;
-        Fri, 27 Aug 2021 18:02:52 -0700 (PDT)
+        bh=ycC5EjOXPlt4T7OSVhH11w0K9nPLV+pEuuLBP1af7qg=;
+        b=AvR44pjnZ9yDbFj1CiQQg/aN6YB8aXPExP1HlgSN7HLA360TkDrOfXnUV6wqYpx76D
+         RoShAd1OrMRLPFs6UGddY2oQjUudUTsB//frHL2mboRsIWA3uN4Fg8J/3BkZt98s6Lz2
+         8/F7ZKPGJAAHqCWdx6IbB2rFqw22dbtkmuvRFdm6W63rxh/g/o8qGVTA5QNlalp3ufI6
+         e7Bl4oXelia5N18RS0/Q8efirsFI2UgB9Q+xqjMfehOqvHVx6YrNB2xM0gmZlhVrtUFP
+         fwolPlgA4IOe0yDI4ZlVI8O/TQfFjJz72ydXQBVTVwtsyQk/o8jUxsp6JAt188UCeCrJ
+         4oRQ==
+X-Gm-Message-State: AOAM5300hhXZ+MQBS0mDTOnEj8xAbU0ZjYTIGorluvkRvCVkeT1BYf4P
+        iS2ElFqnng3KNOnHj3T0pTY=
+X-Google-Smtp-Source: ABdhPJyv++bIWK/0r2Oc18SBIuOViJS3qdiBlzi1SOLF2tjvrUUe0Vi+k6jsaRKexrbeR3ia/zzHqA==
+X-Received: by 2002:a0c:9043:: with SMTP id o61mr978572qvo.54.1630112684366;
+        Fri, 27 Aug 2021 18:04:44 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id q184sm6023102qkd.35.2021.08.27.18.02.49
+        by smtp.gmail.com with ESMTPSA id n18sm5963946qkn.63.2021.08.27.18.04.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 18:02:51 -0700 (PDT)
+        Fri, 27 Aug 2021 18:04:44 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Jay Vosburgh <j.vosburgh@gmail.com>
-Cc:     Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+To:     Mark Fasheh <mark@fasheh.com>
+Cc:     Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
         Changcheng Deng <deng.changcheng@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] net: bonding: bond_alb: Replace if (cond) BUG() with BUG_ON()
-Date:   Fri, 27 Aug 2021 18:02:30 -0700
-Message-Id: <20210828010230.11022-1-deng.changcheng@zte.com.cn>
+Subject: [PATCH linux-next] ocfs2: fix bugon.cocci warnings
+Date:   Fri, 27 Aug 2021 18:04:32 -0700
+Message-Id: <20210828010432.11100-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -70,31 +68,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Fix the following coccinelle reports:
-
-./drivers/net/bonding/bond_alb.c:976:3-6 WARNING: Use BUG_ON instead of
-if condition followed by BUG.
+Use BUG_ON instead of if condition followed by BUG.
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 ---
- drivers/net/bonding/bond_alb.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/ocfs2/journal.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
-index 7d3752c..3288022 100644
---- a/drivers/net/bonding/bond_alb.c
-+++ b/drivers/net/bonding/bond_alb.c
-@@ -972,8 +972,7 @@ static int alb_upper_dev_walk(struct net_device *upper,
- 	 */
- 	if (netif_is_macvlan(upper) && !strict_match) {
- 		tags = bond_verify_device_path(bond->dev, upper, 0);
--		if (IS_ERR_OR_NULL(tags))
+diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
+index 4f15750..2305aa5 100644
+--- a/fs/ocfs2/journal.c
++++ b/fs/ocfs2/journal.c
+@@ -974,8 +974,7 @@ void ocfs2_journal_shutdown(struct ocfs2_super *osb)
+ 		goto done;
+ 
+ 	/* need to inc inode use count - jbd2_journal_destroy will iput. */
+-	if (!igrab(inode))
+-		BUG();
++	BUG_ON(!igrab(inode));
+ 
+ 	num_running_trans = atomic_read(&(osb->journal->j_num_trans));
+ 	trace_ocfs2_journal_shutdown(num_running_trans);
+@@ -1656,8 +1655,7 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
+ 	status = jbd2_journal_load(journal);
+ 	if (status < 0) {
+ 		mlog_errno(status);
+-		if (!igrab(inode))
 -			BUG();
-+		BUG_ON(IS_ERR_OR_NULL(tags));
- 		alb_send_lp_vid(slave, upper->dev_addr,
- 				tags[0].vlan_proto, tags[0].vlan_id);
- 		kfree(tags);
++		BUG_ON(!igrab(inode));
+ 		jbd2_journal_destroy(journal);
+ 		goto done;
+ 	}
+@@ -1686,8 +1684,7 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
+ 	if (status < 0)
+ 		mlog_errno(status);
+ 
+-	if (!igrab(inode))
+-		BUG();
++	BUG_ON(!igrab(inode));
+ 
+ 	jbd2_journal_destroy(journal);
+ 
 -- 
 1.8.3.1
 
