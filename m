@@ -2,135 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2133FA790
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 23:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232253FA797
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 23:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbhH1VOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 17:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
+        id S232486AbhH1VZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 17:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhH1VOt (ORCPT
+        with ESMTP id S229626AbhH1VZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 17:14:49 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD55BC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 14:13:58 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id z18so19731924ybg.8
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 14:13:58 -0700 (PDT)
+        Sat, 28 Aug 2021 17:25:47 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2F1C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 14:24:56 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 79-20020a1c0452000000b002e6cf79e572so11872325wme.1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 14:24:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ICcSCFexjhpp8PBl0tQjqKkSyaD0mJsG1uKHkuscRbw=;
-        b=gV1T+5i/k5S8ZzJnpNhMlyvXxAUnUgvbFDNvQcSjiLmWAm+5RMKOptlxPVAbDSB9y5
-         DjNRnN5aBxTyw4/H75I2FCH88Zwihmjf9TpcXO0SJAX0UN8e8SIAlqjOOjkIanqGlbTY
-         RMI8YRMNYv2G0S6FVFQCX5uNDAR2kKbD92SjaqnfnhfD0tQqLs3X8CtGg8rjSdEceQ6S
-         MvJcXW+AL/eJW0wFEQvZwnxxN6qjnabEpuE4gDcxYezkBmtBq4lWKff5KT71Tk38dlWf
-         Y6FEywUwpOgKyVBbSlLlUHSK8Ky94Q6eoOfKdGBLWf3OAxCQyDjyLfUl+Mam1YIEpNhr
-         GF+A==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZNxHbwj3FFw1s7r8fmJNCVirp0vGHYDh5NCdNZ/bMJw=;
+        b=I0bu/IWSCaVI4Q5GDkcJ1MryLO1CNVwZqWRFlYMCUC+/Q8NyU7VcLgE1kFKXw3Y1Rh
+         WUyGB8IhIeYZX3GyXGkvDWqYgRnMuyR0D+Cc8moTPwYMtPOrC7YoPu+4kskJTO580d23
+         MQVEEAmtoFmJuFwjBPuHJVmk9syB2JAscAL+f5qE2TdufGatKlOFxelLIWqoj0DzETHj
+         SaGzuxcsrCNp+6cAIV5CAOB7XBOtR/6tq5inED+SlSEukjPIeZHIZ/TQA9nnXtHiU407
+         Lrx4AI18q1Sj9C1FAXUtcU/JwwvFgC9yTkA2vbZXjpIu2F0S7exr82QT52TWWubH2emE
+         X05A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ICcSCFexjhpp8PBl0tQjqKkSyaD0mJsG1uKHkuscRbw=;
-        b=ACbSfkJACqi4wUh/Pa4ApS4M2qt8F5H/2pbtrNjvyh1hL16qv4SPpqAVhU8U1JXgfE
-         qXfJwuv7JvFdyIPr9EJLwQtcItfo6PwbpMcoqFOjYIcbz6Gsyk3FguS9Fogucd113bMc
-         VHK6mZDFSb/zArrpEMVKEFXkYsHCnwMrBgbAcg6yq9Lx8TW9lFDciXcl/SWPF4RjSa4w
-         na3OTqZYD4w1WDkQo6w/lnxQDV4UWTMuCYGQgpS1sY/4TuB+23COvim6iJPyzDEOiZv8
-         9aQEWTWlqS1MtPGy89s5GKlxJrImG2gycV+RsSJ0hYGKawV18HDUKlNtViQeYKeINTFN
-         kMyQ==
-X-Gm-Message-State: AOAM532fDfLqpCfxSorzgOdTBF14E2/jVIOHIaeWeRJaQEs9YCU5GD9s
-        eu/oh5M/1titiS1D48lQ0pXKU9oOvwAsRW59HysHaw==
-X-Google-Smtp-Source: ABdhPJzTGgBAMEHL0PjhT2MzcQ07lzKlvxCvWWXzRYRZdMn4dsVrA+qJVnFa57VycofHCrLOcfOcy4S0yhD1Mp8cwI0=
-X-Received: by 2002:a25:810c:: with SMTP id o12mr14438431ybk.250.1630185237477;
- Sat, 28 Aug 2021 14:13:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZNxHbwj3FFw1s7r8fmJNCVirp0vGHYDh5NCdNZ/bMJw=;
+        b=MyPmjlMtmERECPeNxe+WgomUFWd1RwbMDiEh2nSVT6N0eTqlI+mpXrjFy0W2HoRYp4
+         pWkR2CYI3R3IzPVh3lYDnZ6t9yT5qgdGGj85H+7xtcysVx+dFD6kcAs68QzkezY69FOC
+         FhvmHex/RTaYQJBxr5DkqMDq01JzJ2wcDFAMJ70vCC6v9m7rMCFrP7NpUsve3xhc9it7
+         rczOR8ab+95ha92HeEQVmHqKL4c29hJ9P/E9oQXBMN0yGqG8FjTLmYFfSNiLf4zIuRZH
+         o2io+jxRA7tKs25DiAdVlFd9GIbPLYzlmmskdzVa25r/VAVVDffvXsxc3kuI1VVzA6Mf
+         oYAg==
+X-Gm-Message-State: AOAM530XBdwY1Qf1hhPYAVNEuhrhyokf5MSj7PmyvANHbvE4ZeU1kY9o
+        CAvGI9znBYEErWnVKdXrqJ/q3XhKd6dW58gU
+X-Google-Smtp-Source: ABdhPJzP10UNmHbvkAL2JL9uNMbsGcbTdDnWUhz2cnmq0lRK6kSteom8KLe2geWLREhbwQyz/G0PGA==
+X-Received: by 2002:a1c:9a91:: with SMTP id c139mr15158828wme.106.1630185894927;
+        Sat, 28 Aug 2021 14:24:54 -0700 (PDT)
+Received: from localhost.localdomain (d.f.5.e.6.6.b.1.e.6.2.7.e.5.c.8.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0:8c5e:726e:1b66:e5fd])
+        by smtp.gmail.com with ESMTPSA id u26sm8645847wrd.32.2021.08.28.14.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 14:24:54 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     straube.linux@gmail.com, fmdefrancesco@gmail.com,
+        Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] staging: r8188eu: cleanup c2h_handler code
+Date:   Sat, 28 Aug 2021 22:24:50 +0100
+Message-Id: <20210828212453.898-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-4-surenb@google.com>
- <202108271746.F444DA6C9@keescook>
-In-Reply-To: <202108271746.F444DA6C9@keescook>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Sat, 28 Aug 2021 14:13:46 -0700
-Message-ID: <CAJuCfpHLTMyAFsxAYHbiwkZNidzQU3qKWzj57LZX=b-Zybmugg@mail.gmail.com>
-Subject: Re: [PATCH v8 3/3] mm: add anonymous vma name refcounting
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org, eb@emlix.com,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com,
-        linux@rasmusvillemoes.dk, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 10:28 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Aug 27, 2021 at 12:18:58PM -0700, Suren Baghdasaryan wrote:
-> > While forking a process with high number (64K) of named anonymous vmas the
-> > overhead caused by strdup() is noticeable. Experiments with ARM64 Android
-> > device show up to 40% performance regression when forking a process with
-> > 64k unpopulated anonymous vmas using the max name lengths vs the same
-> > process with the same number of anonymous vmas having no name.
-> > Introduce anon_vma_name refcounted structure to avoid the overhead of
-> > copying vma names during fork() and when splitting named anonymous vmas.
-> > When a vma is duplicated, instead of copying the name we increment the
-> > refcount of this structure. Multiple vmas can point to the same
-> > anon_vma_name as long as they increment the refcount. The name member of
-> > anon_vma_name structure is assigned at structure allocation time and is
-> > never changed. If vma name changes then the refcount of the original
-> > structure is dropped, a new anon_vma_name structure is allocated
-> > to hold the new name and the vma pointer is updated to point to the new
-> > structure.
-> > With this approach the fork() performance regressions is reduced 3-4x
-> > times and with usecases using more reasonable number of VMAs (a few
-> > thousand) the regressions is not measurable.
->
-> I like the refcounting; thank you!
->
-> Since patch2 adds a lot of things that are changed by patch3; maybe
-> combine them?
+This small patch set cleans up the c2h_handler code in the HAL layer
+of the driver. In r8188eu, this field of struct hal_ops, is not even
+used, so dependent code has always returned _FAIL. For this reason, we
+should remove this function pointer field, and the wrapper function
+which checks it. This is done in stages by this set, and helps get
+the driver closer to the pointer where the HAL layer is
+deleted/integrated as necessary and no longer a separate entity.
 
-I thought it would be easier to review with the main logic being
-written using a basic type (string) first and then replace the basic
-type with a more complex refcounted structure. Also, if someone would
-like to rerun the tests and measure the regression of strdup vs
-refcounting approach, keeping this patch separate makes it easier to
-set up these tests.
-If that's not convenient I can absolutely squash them together.
+Phillip Potter (3):
+  staging: r8188eu: remove c2h_handler field from struct hal_ops
+  staging: r8188eu: simplify c2h_evt_hdl function
+  staging: r8188eu: remove rtw_hal_c2h_handler function
 
->
-> --
-> Kees Cook
+ drivers/staging/r8188eu/core/rtw_cmd.c     | 23 +++-------------------
+ drivers/staging/r8188eu/hal/hal_intf.c     |  9 ---------
+ drivers/staging/r8188eu/include/hal_intf.h |  4 ----
+ 3 files changed, 3 insertions(+), 33 deletions(-)
+
+-- 
+2.31.1
+
