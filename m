@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB733FA5B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 14:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7413FA5B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 14:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbhH1MrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 08:47:10 -0400
-Received: from ozlabs.org ([203.11.71.1]:39511 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234012AbhH1MrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 08:47:01 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gxbt71cB7z9sxS;
-        Sat, 28 Aug 2021 22:46:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1630154767;
-        bh=Ib/F1AUkPbtr95ajbp8rWSPbdz/DrlSAGa1a1EJ/h+M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NwZyAE2XEmm2A8vpYoFnO19QxEBgrN7+eIlX6PY1yNuI0s7Gj62NydjsLEZAKwLCL
-         sNnw/aStJ99SaSI4osnSeRJrQqZsgL9mez1hZjGxnWnn2fnrmrGXgsQqkyYaVlTp7Q
-         IeHRFrSyk7SfltJx5jWLV4GY4oaLE/lbUaAWaUx5PXiMxhswoQ8vhfT8aoxmJX1XB6
-         P52OcDlww+hIQMbf13zP54S0CufzPKkWbR5ttnRmO6RVr0x+HcFCDosizXuwKqP3xR
-         eWfpZjA6e6KV37jcfKgM7KDJyAS7hTD/Zk9Yc+lZOvx/DFvP2LK3IMdBSfrUBa+ejB
-         Sy1/hVuEuSdZQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        lukas.bulwahn@gmail.com, npiggin@gmail.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.14-7 tag
-Date:   Sat, 28 Aug 2021 22:46:02 +1000
-Message-ID: <874kb9g2k5.fsf@mpe.ellerman.id.au>
+        id S234307AbhH1Mtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 08:49:53 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:38248 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234181AbhH1Mts (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 08:49:48 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 950851C0B80; Sat, 28 Aug 2021 14:48:52 +0200 (CEST)
+Date:   Sat, 28 Aug 2021 14:48:52 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, ccross@google.com,
+        sumit.semwal@linaro.org, mhocko@suse.com, dave.hansen@intel.com,
+        keescook@chromium.org, willy@infradead.org,
+        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com,
+        rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com,
+        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
+        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
+        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
+        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
+        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
+        legion@kernel.org, eb@emlix.com, songmuchun@bytedance.com,
+        viresh.kumar@linaro.org, thomascedeno@google.com,
+        sashal@kernel.org, cxfcosmos@gmail.com, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v8 0/3] Anonymous VMA naming patches
+Message-ID: <20210828124852.GA12580@duo.ucw.cz>
+References: <20210827191858.2037087-1-surenb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="rwEMma7ioTxnRzrJ"
+Content-Disposition: inline
+In-Reply-To: <20210827191858.2037087-1-surenb@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
 
-Hi Linus,
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please pull two more powerpc fixes for 5.14:
+Hi!
 
-The following changes since commit 9f7853d7609d59172eecfc5e7ccf503bc1b690bd:
+>  Documentation/filesystems/proc.rst |   2 +
 
-  powerpc/mm: Fix set_memory_*() against concurrent accesses (2021-08-19 09:41:54 +1000)
+Documentation for the setting part would be welcome, too.
 
-are available in the git repository at:
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.14-7
+--rwEMma7ioTxnRzrJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-for you to fetch changes up to 787c70f2f9990b5a197320152d2fc32cd8a6ad1a:
-
-  powerpc/64s: Fix scv implicit soft-mask table for relocated kernels (2021-08-20 22:35:18 +1000)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.14 #7
-
- - Fix scv implicit soft-mask table for relocated (eg. kdump) kernels.
- - Re-enable ARCH_ENABLE_SPLIT_PMD_PTLOCK, which was disabled due to a typo.
-
-Thanks to: Lukas Bulwahn, Nicholas Piggin, Daniel Axtens.
-
-- ------------------------------------------------------------------
-Lukas Bulwahn (1):
-      powerpc: Re-enable ARCH_ENABLE_SPLIT_PMD_PTLOCK
-
-Nicholas Piggin (1):
-      powerpc/64s: Fix scv implicit soft-mask table for relocated kernels
-
-
- arch/powerpc/kernel/exceptions-64s.S   | 7 ++++---
- arch/powerpc/platforms/Kconfig.cputype | 2 +-
- 2 files changed, 5 insertions(+), 4 deletions(-)
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmEqL8QACgkQUevqPMjh
-pYDvjQ//dYPmb8eTLrWTRXUy6vLnem+CuJv6gyLEG+7s6T8qZMSA2uvKr4zXAvgF
-2QOAoVYWDth6blxjfHc5zqpdERhZHhOq0o2ofuJYGz1J/HAymvIohGFmiIwvOu5n
-rPI8NMmsw61W35jJS7dgRr86b3rBwZSzRpDL14g+zQRRzuCqnBdOCA3Ixxn5JQ/F
-D1AhyWL61IpVdg0Tz6FRU8s+VKYHh4Yr/CsozkFRMgqZZ2k3zs7aTcluyN8JhEta
-BoqejJStrgRt2KOJPr3HXk5fHaoz/9AJn3lSauhnEPFR/Li2ChjkDZPd9KQysHI/
-f56HfO/jRx3lY/qhHQ3HeGVJ8rsQrzEILj7KqL0KHwfQoqAhP3E2sut6oqZBFWii
-HzfNl0vDrVkjBW7WDV/Y1hlGYaeiGt6DgXwh6wifek6JhMSABwyrd+Uoi9efG7sg
-fOUl11VHvBHHQoT+h526urQrdSvgNn+M2iwjElK3LC+tDStNVZTxEiS/KtvpK1vC
-I7f7CuwS+z3y4kPs2lwr1t0qQOnmOsvJP82+IDb7Tq4LJRgajyFlGdUEtMrpxZvP
-whpFxWrxlQabX6QEr3CGYTGjbiYaGUCfWLkwhwpcftp7QcadjYko7u6nxIyOjI2G
-8XG3+CMcPkNB4fSo4Ijt5upaTjhjl4JUGEenLHbyzdcixfj9Z9w=
-=yPpX
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYSowtAAKCRAw5/Bqldv6
+8jSvAKCxJZznmRcj1IaqbSg4leIEDn+cXgCfeS9zT/HzkA5sLB+xnKVjT1Id/A0=
+=X0pp
 -----END PGP SIGNATURE-----
+
+--rwEMma7ioTxnRzrJ--
