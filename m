@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF55B3FA677
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A893FA679
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234461AbhH1PjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:39:13 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:57757 "EHLO
+        id S234498AbhH1PjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 11:39:19 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:49925 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231368AbhH1PjI (ORCPT
+        by vger.kernel.org with ESMTP id S234446AbhH1PjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:39:08 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id ECEF7580A77;
-        Sat, 28 Aug 2021 11:38:17 -0400 (EDT)
+        Sat, 28 Aug 2021 11:39:12 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C0B68580A6B;
+        Sat, 28 Aug 2021 11:38:19 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sat, 28 Aug 2021 11:38:17 -0400
+  by compute3.internal (MEProxy); Sat, 28 Aug 2021 11:38:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=D4PCd0JOhWxqQ
-        0FHLtGzqrwB4RN73vh1ozYKHe2Vr6c=; b=rp/coHPSJpRsYRFZEpxdqPJWHVy1/
-        XP9fwqWZkTA8puZ+wweuwWDcMD67nLgqnPSHJCIU9HbeplW1+CFC3vJC4ylxReTq
-        pGaCDh2vbyxbGMPn6Ypq7LDPFmOIEg5m2V1ozmjMgzprAyIlgflFoqqyEPOu9iDy
-        yXNiPgA7x9MaaN+9ErygG1PfLAZb3gaphcZSh72f09ujk6WWHCrZH9vMkOJON/YC
-        deWzL+nzhPh9/drASa48mKmF1AbhTXEXAPMCsOpTB2NAuwYYLy+miV+SUYT4tL7p
-        4anGIrlSdzZbEH/oRU/YmGz7t+/NdHX0xwVZKt2Hcys98kqJ77AWMIrmg==
+        :mime-version:content-transfer-encoding; s=fm2; bh=UYZp9goIX3db+
+        451Td4TbHlI8QOyAlCJRHIWbYLh0Pc=; b=rA2AF9SDrVGmgwvvIQ/ymfgLrVxeQ
+        j3p0ZFR35MjmK8SpH7uLxjKBpoH4JKOnq/Mq2hI9rCkpKaqf9SExOq4i6uz1OPn7
+        YIO8+cW1Yew6yXa5rL2BRToLFy7r9hA8/YUc27LJbqOrFna6xRQNqbMrvlyWRbrW
+        GYXO7cPi6UqdsklqFWLG7K/PM76dJiiETa1bS+bEKA7oF+Q573dnAVM4yXkJkLKu
+        M+em7l1nlLHZDTT0NJTh/hb3nxH6wrk8nBqaPNXMEl5Cq1PszcR5/LCnSJu99iti
+        Aa525AGM7vUOdUe7rSEpUOH1xL4DFFyJGJkG6f+REhCROG4Zmfsitzfzw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=D4PCd0JOhWxqQ0FHLtGzqrwB4RN73vh1ozYKHe2Vr6c=; b=Qln4h02r
-        1mZd5/ji4lV6ubnGH9nj1q/ACldcUehel8GJW/hLWalmYvgJ5kNCy7lLfMBLY3mm
-        BII5kQpsvlRJcSECkXQrBTNHDK52ENw5BnzU/O6RdkgK7mKgH56p0iJqsNyhQMTd
-        nsiqvnzhXMd6zww7OefKdMKLuwP9cynksTGGU2ze69TEnlH4Q5QugSZj3val11/k
-        AqRMVmjsAuxTTxXMVy16Y7UHiPa0YZz19AF2VNtBO42hK3TL6bU0DALSLnaZrR+C
-        7DNvcKokMZVnoez4zz94gTEcVeot+0BOEqotY0zRAMNYKeDAPgGHnu5mztkBkU+S
-        qLW68lDpKaYngA==
-X-ME-Sender: <xms:aFgqYaN54exDeEWwPDDEhtgbSLcuhElr4yWCxE8N-nNcH4VVtMjG4Q>
-    <xme:aFgqYY9YgzOICuV-7sF6H9eeK-5_stAPt94x2pqiZT7AK4JXP3yhmj0mGbF7GhamD
-    s9yxQ2W4Y2ejcTLvTg>
-X-ME-Received: <xmr:aFgqYRSHsY2Q0sTbjGABPgnF_YRscfGNJc5IL24JVLuaj5wujUUQV-G1bBfWGAqyrM6CNJnYf17Kh9-mqkqrUDLFrC204MSZjx5FelbNNkChk5-Eb0waSSC9d5Zjtw>
+        fm3; bh=UYZp9goIX3db+451Td4TbHlI8QOyAlCJRHIWbYLh0Pc=; b=W/mh6OS+
+        xmwG76ds68cQl/CY55NldYEJ0Lrlw2hMyV1uiIVdTilvkA5A9sA3X1hq0JKbwEi/
+        LnnCCzWtiUGGBVP9G0vsLkR83huQ0TqcWSTrjDRIpTjkho819lt/GLENODEqlUFm
+        /AZMUvlLhwbPDZKe0Tm83HPK00AvSE0g0VFZn43RhjRiIK/LD7SXWGKi/ckIKz6b
+        TM4tb4R4s0BfeQ+NaeagiFXXq7BU3XvgtmZ/CPESm5p1M0V8PEam01B2faDhqVrx
+        zy/VttZwf1q/Us0eoYLbV+JLfNBbmB/3eecg4hRvHyvAEMd2te+XIAxast2he6t6
+        PWmuFNTMfVFCOw==
+X-ME-Sender: <xms:a1gqYUO-X6cH76PihY0y8R3ZpHBvXbFvPanhK6HzuIgagDZxqckCPQ>
+    <xme:a1gqYa9QbhDCyp0k19l_XSuUNBEnAca-HNg3ECEd_bPEHIc-CcnH-w9OQnQzJJCHN
+    GjiRScR_WOBvO5SWQg>
+X-ME-Received: <xmr:a1gqYbTsKTZnbLmSuwBY-nUKjoDOZghYadN-ehSLyMRv9xBY-dg9Fz8EZ_QSPpfJnwBOO3_S5EKhd-frlv_p3mwU1la-0JnkBcCdLTrhhvYrDI-6kEbT53L2ogsIZg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduhedgleduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcu
     rfgvthgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvg
     hrnheptedvkeetleeuffffhfekteetffeggffgveehieelueefvddtueffveevlefhfeej
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
+    necuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
     hnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:aFgqYavnRfdZAWJi3gj1b8ZzyXLzjPS-L1Cp1X4QYYBYe1ktEmkANQ>
-    <xmx:aFgqYScKzy49E_g5Z5KJdzYCuhH0z4DuszYUJumYsp4rQk3A7Ban7w>
-    <xmx:aFgqYe34IKB52NzVpJH4x8dVxXzcPtIQ8KgRrV3OYkFpoDGJ11Srfg>
-    <xmx:aVgqYS5JIIsMO3NHrU_7qWnBqT-AZ36xXmwBrFTJZH2khQLLZJDkVw>
+X-ME-Proxy: <xmx:a1gqYcvsVk3eJpZ_t5zlteGi8fdLla-2808wXzyewFHEH6zg3QcKUQ>
+    <xmx:a1gqYcf4KJgkW5jtkNcc_R4FvcWjma-3M-8MFIAlJxOkJ4mgTXGNCg>
+    <xmx:a1gqYQ1TTwOae1ubeMP3DkFcYA4W8BJGQBFc2pYvXcSu5LFULLLHMA>
+    <xmx:a1gqYU7W_NlHPYmWCohQz921YdfpvQFDZH4Y1ECnPthq1oesmRtM1w>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 28 Aug 2021 11:38:15 -0400 (EDT)
+ 28 Aug 2021 11:38:18 -0400 (EDT)
 From:   Sven Peter <sven@svenpeter.dev>
 To:     iommu@lists.linux-foundation.org
 Cc:     Sven Peter <sven@svenpeter.dev>, Joerg Roedel <joro@8bytes.org>,
@@ -66,9 +66,9 @@ Cc:     Sven Peter <sven@svenpeter.dev>, Joerg Roedel <joro@8bytes.org>,
         Hector Martin <marcan@marcan.st>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/8] iommu/dma: Fail unaligned map requests for untrusted devs
-Date:   Sat, 28 Aug 2021 17:36:36 +0200
-Message-Id: <20210828153642.19396-3-sven@svenpeter.dev>
+Subject: [PATCH v2 3/8] iommu/dma: Disable get_sgtable for granule > PAGE_SIZE
+Date:   Sat, 28 Aug 2021 17:36:37 +0200
+Message-Id: <20210828153642.19396-4-sven@svenpeter.dev>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 In-Reply-To: <20210828153642.19396-1-sven@svenpeter.dev>
 References: <20210828153642.19396-1-sven@svenpeter.dev>
@@ -78,41 +78,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If swiotlb is enabled we should never try to create any mappings that
-would expose more memory than requested to the device.
-WARN_ON and refuse those mappings just in case.
+Pretend that iommu_dma_get_sgtable is not implemented when
+granule > PAGE_SIZE since I can neither test this function right now
+nor do I fully understand how it is used.
 
 Signed-off-by: Sven Peter <sven@svenpeter.dev>
 ---
- drivers/iommu/dma-iommu.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/iommu/dma-iommu.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index e8eae34e9e4f..d6e273ec3de6 100644
+index d6e273ec3de6..64fbd9236820 100644
 --- a/drivers/iommu/dma-iommu.c
 +++ b/drivers/iommu/dma-iommu.c
-@@ -534,13 +534,20 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
- 	struct iommu_dma_cookie *cookie = domain->iova_cookie;
- 	struct iova_domain *iovad = &cookie->iovad;
- 	size_t iova_off = iova_offset(iovad, phys);
-+	size_t size_aligned = iova_align(iovad, size + iova_off);
- 	dma_addr_t iova;
+@@ -1315,9 +1315,15 @@ static int iommu_dma_get_sgtable(struct device *dev, struct sg_table *sgt,
+ 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+ 		unsigned long attrs)
+ {
++	struct iommu_domain *domain = iommu_get_dma_domain(dev);
++	struct iommu_dma_cookie *cookie = domain->iova_cookie;
++	struct iova_domain *iovad = &cookie->iovad;
+ 	struct page *page;
+ 	int ret;
  
- 	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
- 	    iommu_deferred_attach(dev, domain))
- 		return DMA_MAPPING_ERROR;
++	if (iovad->granule > PAGE_SIZE)
++		return -ENXIO;
++
+ 	if (IS_ENABLED(CONFIG_DMA_REMAP) && is_vmalloc_addr(cpu_addr)) {
+ 		struct page **pages = dma_common_find_pages(cpu_addr);
  
--	size = iova_align(iovad, size + iova_off);
-+	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev)) {
-+		if (WARN_ON(iova_off))
-+			return DMA_MAPPING_ERROR;
-+		if (WARN_ON(size_aligned != size))
-+			return DMA_MAPPING_ERROR;
-+	}
-+	size = size_aligned;
- 
- 	iova = iommu_dma_alloc_iova(domain, size, dma_mask, dev);
- 	if (!iova)
 -- 
 2.25.1
 
