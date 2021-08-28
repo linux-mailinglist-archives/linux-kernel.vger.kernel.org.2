@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5193A3FA3B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 06:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812893FA3BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 06:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhH1Eav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 00:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhH1Eau (ORCPT
+        id S231326AbhH1EpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 00:45:17 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:55287 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhH1EpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 00:30:50 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CD5C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 21:30:00 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 17so7824029pgp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 21:30:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ThXq/38kzog6YWsBoPcGtQqrTsog3IJpMTo1ZeSwCSQ=;
-        b=kOHbNHP81KjALs3KHPR4QZtz/g+Z6/ozhPpsMWu2ss+Vj6xuQ79CW3ytwfryPkrLe4
-         X/P+gYyB3tLOfL8Aa6X4EvtgD7Dfwgl0VvhCbJq89bpapbFFsPt392DzBMU9VrgDGDzC
-         N/DN1G3h8cGeCRM1FZY3lAfG+Nc7LKmNs2/Rt/pb7d5HFFnfMN7WVPMMTdIsfhZYnM3X
-         TR27mALAevEkq4tcFaC0xjGLtXShnYTGV82Pq7GeVEJvOnnIyqaMjhphoPEibZKThv8V
-         POAjMEauU+4l5nUL3+BW1HiFHEkRk/3YjsXIC5I60sjmzc/kcbrjZPEXGrkGyV1rYQEZ
-         d/3Q==
+        Sat, 28 Aug 2021 00:45:16 -0400
+Received: by mail-io1-f69.google.com with SMTP id o5-20020a6bf8050000b02905b026202a6fso5279616ioh.21
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 21:44:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ThXq/38kzog6YWsBoPcGtQqrTsog3IJpMTo1ZeSwCSQ=;
-        b=Yr4dPL96Ho3SrhTG7HqrX95IZSW6pDPurHpVQjx0fdRe02PChUM7v1idFNPSgBz9Nv
-         /i5nx6g4WTfS+SVUS2jOrCAKhDEqetwwuhmBfxQ7kCMGd4LbnBVMLFpsZ4zC81BsJhSd
-         eu2bErBJ9HGcMUUCyZ2eqACYkn7ob6i79/nmd485ziiglP+5rdIVxtPeLlOj9NqaGnSz
-         lGUUIRbQYzAqsyI6zHMHNaq2knKpdnOOEPsxC1MMlgnxUrAGLH70v2agfFXc7RdTyrHG
-         rn/a5AMHSQbZfqkBzrcqLFiYheliMgDSdR2Xk7UsbGANB1I7ITqq+pZ6FYhNnHnH2i2O
-         qCtQ==
-X-Gm-Message-State: AOAM531wKhmBllO4X4QuwwgEdKFSs/bY+hthyOoFckIQh1GNz6oKn9Za
-        DeBhS9ABA7mHlC1hDunRFGI=
-X-Google-Smtp-Source: ABdhPJzQ0qQ2Gs96Y2NARCplv357ZroJmAly06xqBxiLFM/5uBiJ/f1Ku2hHM7V3JSWGemA1djBczA==
-X-Received: by 2002:a63:2242:: with SMTP id t2mr10476568pgm.111.1630124999426;
-        Fri, 27 Aug 2021 21:29:59 -0700 (PDT)
-Received: from xps.yggdrasil ([49.206.124.188])
-        by smtp.gmail.com with ESMTPSA id 6sm7992463pjz.8.2021.08.27.21.29.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 21:29:59 -0700 (PDT)
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: wlan-ng: fix invalid assignment warning
-Date:   Sat, 28 Aug 2021 09:59:49 +0530
-Message-Id: <20210828042949.2276341-1-aakashhemadri123@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=JV7h5CQOr+nuXXZ8H13qPIBPgqFcVEsgvYOpM06/UEI=;
+        b=HeKKlg6pbnvfxnCJsKBwpGymU7P7fY+UatjniIFMRYOri0ICGmAlDCjUfLVku8oxmV
+         GHD3ZbPTC3TMLdGC06HP8qQT4ssQBkMLad09WqlA0O7LQ6EWOYIw9w6tdJtD+gk94xsd
+         0Su75KzzmC+Z8XcHZvqFmESgFvD832tfMM0UXsSqjJaQRajO5EOKLHVtcbKICtKdv1h1
+         A/vqvL8us5sIPeYoI6yHvsL2Bsaq7PsrAPzz/y/0Y8JvrFemW13Jq/c2ErzUyW4FWswD
+         F+DEnPTXDPdO1eHnvBSp87k6ZfjQaZH9XrlS/Jm2+yQjpu3mKzmkYcLSPtv6sa7eDvG7
+         CfQw==
+X-Gm-Message-State: AOAM532RZ2u9RNZ0nJgSVp89nwwfeI0zCtKj8C5cZql6+DWKKT4beSBn
+        Jan21io7ZD6oYhQ4Z8Ae1xBp4xxGjaUMBy5nj9PJGlEhUKF1
+X-Google-Smtp-Source: ABdhPJzHxr32HLgq7+E3KnzmlIQt/NZpNY7kLZyt9dJ8h3MgC8vTjHHV/rOjEIiA5zU2eCqbZSevYwX5u6bm+DWQWzT9qEjCUNGz
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:7f0f:: with SMTP id a15mr8811837ild.245.1630125866379;
+ Fri, 27 Aug 2021 21:44:26 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 21:44:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000034712e05ca9741e8@google.com>
+Subject: [syzbot] KASAN: null-ptr-deref Write in __pm_runtime_resume
+From:   syzbot <syzbot+7d41312fe3f123a6f605@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, len.brown@intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        pavel@ucw.cz, rjw@rjwysocki.net, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-p80211_hdr->frame_control is u16, change to __le16
-to satisfy sparse warning:
+Hello,
 
-wlan-ng/prism2sta.c:253:43: warning: invalid assignment: |=
-wlan-ng/prism2sta.c:253:43:    left side has type unsigned short
-wlan-ng/prism2sta.c:253:43:    right side has type restricted __le16
+syzbot found the following issue on:
 
-Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+HEAD commit:    5e63226c7228 Add linux-next specific files for 20210827
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=123771b1300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c03a8fdabc6b3ae
+dashboard link: https://syzkaller.appspot.com/bug?extid=7d41312fe3f123a6f605
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7d41312fe3f123a6f605@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: null-ptr-deref in atomic_inc include/linux/atomic/atomic-instrumented.h:181 [inline]
+BUG: KASAN: null-ptr-deref in __pm_runtime_resume+0x154/0x180 drivers/base/power/runtime.c:1105
+Write of size 4 at addr 0000000000000388 by task syz-executor.1/8810
+
+CPU: 0 PID: 8810 Comm: syz-executor.1 Not tainted 5.14.0-rc7-next-20210827-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ __kasan_report mm/kasan/report.c:446 [inline]
+ kasan_report.cold+0x66/0xdf mm/kasan/report.c:459
+ check_region_inline mm/kasan/generic.c:183 [inline]
+ kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_inc include/linux/atomic/atomic-instrumented.h:181 [inline]
+ __pm_runtime_resume+0x154/0x180 drivers/base/power/runtime.c:1105
+ pm_runtime_get include/linux/pm_runtime.h:370 [inline]
+ h5_recv+0x2c4/0x680 drivers/bluetooth/hci_h5.c:590
+ hci_uart_tty_receive+0x24d/0x710 drivers/bluetooth/hci_ldisc.c:613
+ tiocsti drivers/tty/tty_io.c:2311 [inline]
+ tty_ioctl+0x8db/0x1600 drivers/tty/tty_io.c:2719
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc6badab188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665f9
+RDX: 00000000200000c0 RSI: 0000000000005412 RDI: 0000000000000003
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffe925987cf R14: 00007fc6badab300 R15: 0000000000022000
+==================================================================
+
+
 ---
- drivers/staging/wlan-ng/p80211hdr.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/staging/wlan-ng/p80211hdr.h b/drivers/staging/wlan-ng/p80211hdr.h
-index dd1fb99bf340..5871a55e4a61 100644
---- a/drivers/staging/wlan-ng/p80211hdr.h
-+++ b/drivers/staging/wlan-ng/p80211hdr.h
-@@ -149,7 +149,7 @@
- /* Generic 802.11 Header types */
- 
- struct p80211_hdr {
--	u16	frame_control;
-+	__le16	frame_control;
- 	u16	duration_id;
- 	u8	address1[ETH_ALEN];
- 	u8	address2[ETH_ALEN];
-
-base-commit: f6bc526accf861728d36b12fbc25ac94cd057fc9
--- 
-2.32.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
