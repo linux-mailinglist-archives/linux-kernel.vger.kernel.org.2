@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC9E3FA710
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 19:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8121C3FA712
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 19:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhH1RzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 13:55:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
+        id S230204AbhH1R6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 13:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhH1RzV (ORCPT
+        with ESMTP id S229864AbhH1R6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 13:55:21 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A68C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:54:31 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id x19so1677401pfu.4
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:54:30 -0700 (PDT)
+        Sat, 28 Aug 2021 13:58:46 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162E7C0613D9
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:57:56 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so7232630pjq.1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:57:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=c1G2etAo7RXizmOfzbwL5cJQFEkKfK8BqKZoS+nPauQ=;
-        b=E/R8t3XZI/5mgoy6q/2sninrfivvVRMNytclY5+w2rNZgcmetRzMO1rD8RoOQCvxFF
-         OrpXRzpzT00CEvPGF94Dsxz8bjnl767jjxrchvSvs2GiyfBuS/UExPhBAZWRDtPOjtjF
-         V2EqJ3NUmO1sYOHdHmBOVG/vCostMW+PdvdmxVQVKb3X/aWecNcvWyIt6AV2jYyE6HdS
-         yzj7PhUuCh1j1VxjsYBQWQ18g/rDq4ButH7KGd+CbSBxULRR+Gotgf79qsHlr7Glbrad
-         mdelxgUtaoyZCEIAwOumugPbwTMc6irrmtBOnGNCDYNCnWAXzVcRRTARWaXx5AHs/Gc4
-         38+A==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qoRrda6U6GxHzpOEaIJ6gVUXCj3XTmN8tjTe4PtJ0hc=;
+        b=mmMbPiCU3U+syXMjU8vmu6LDmEoQU8JvLN7kPzP2kUB2pj1DoBzCimW/GwtZyrYsiu
+         ddQHHN+WPFjOXjVBZdvWcwpfDfER+4xVOWV93BdAAmPCASjc1I1FSB6KLfHvnofn1nHK
+         i1/OgItiwbOqlNZtnkp2Ww50woEvHsYEsO+V8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=c1G2etAo7RXizmOfzbwL5cJQFEkKfK8BqKZoS+nPauQ=;
-        b=dwHhzL+n/z1FcC4U+iwAVMxwrys5ejVqSXmfnZJTVYeS/XJnRm8UitXZhQRQbXWhWy
-         VHuCYUuuUkN4D4XrrhRAK0lNSZR8qaNe9oq6br5d7bUbUzyp4KLz4Kh4HluZOci9p7Qo
-         t/Ewnr5bHPH+lPid7u7U3wUojpDGFJnpXAXI5waADMv9Lecyc/fq2JkaEwVKc8elP6/R
-         /lh5mi5X/IEr6gWKs6cTXXPtJykS9usOyWKmiga3uCy8tdFQFTK5g/grWb4Uq0/x+TP1
-         ie1ww8WOhYrbBv/tpLVgEy8bKaHZdNcHF0Y0p5ecAKKq69Jg2yzZOd52sahksqS/dLAQ
-         awSw==
-X-Gm-Message-State: AOAM533k0ngM25utO4nQLzf+mMCEZCdw581U9+j4wNtseh1n58y06pC4
-        rVdYTnktmosTHnyZcy4jcl8=
-X-Google-Smtp-Source: ABdhPJxAMhP8rcvBotU/D99aaqe+WpNdcTMWDE9Rn228MIaSl7HZXjzVkvftav1zSuThaFKHsd1Ckw==
-X-Received: by 2002:a65:5a8e:: with SMTP id c14mr13112527pgt.125.1630173270431;
-        Sat, 28 Aug 2021 10:54:30 -0700 (PDT)
-Received: from user ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id y140sm2294700pfc.139.2021.08.28.10.54.27
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qoRrda6U6GxHzpOEaIJ6gVUXCj3XTmN8tjTe4PtJ0hc=;
+        b=ZnG+Yv5hhuTJm6U2l1ov5Kl21h8als6ezk/rO99vENOTTNTaeYMzkE02/CabvsJ2Or
+         cgb/mUHtfvFPBMCml5ImR2G3fnGk0mf/+ObBYYUXxoRnE5uMYp9FYLvli6lPcgqTYrCm
+         tYtIKWrVVEWeuUBSHfLCiYQxEVVFHn9se7jxrdZyBPJ1tsgV7biZ3wncvq90LXritD6w
+         TAwDtVBgDxbqCjriU1XuxLqAxlDZMwl3+0UKgASN4EfruyijA4yNBZp5uiE+5ns+qEQV
+         zVkjbD7CfwitkXbrhXcPm1fg7h6Qwc+cYk1yA237D7gLAOoXCI8aPHiteegbEZCMOTeH
+         Rqxw==
+X-Gm-Message-State: AOAM530PZjsCdCWHvdQ7bKWlYs51SVRZtweWGVhOdhugNE37IM191ytT
+        vn0aTNFRyp+qnFRngf53NGVcIQ==
+X-Google-Smtp-Source: ABdhPJwIfzGrqWWVKr5y17UZd/DsAh6nRMZPSFCys6z9v4x1Eg8H5t+RpDONcLx091gGh24zKeqkUA==
+X-Received: by 2002:a17:902:fe81:b0:133:851e:5923 with SMTP id x1-20020a170902fe8100b00133851e5923mr14151597plm.25.1630173475568;
+        Sat, 28 Aug 2021 10:57:55 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t15sm11199595pgi.80.2021.08.28.10.57.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 10:54:30 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 23:24:24 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        straube.linux@gmail.com, ross.schm.dev@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: r8188eu: core: remove null check before vfree
-Message-ID: <YSp4UP1+HrhmDA3C@user>
+        Sat, 28 Aug 2021 10:57:54 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Keerthy <j-keerthy@ti.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
+        Ladislav Michl <ladis@linux-mips.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        linux-omap@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] clocksource/drivers/timer-ti-dm: Select TIMER_OF
+Date:   Sat, 28 Aug 2021 10:57:47 -0700
+Message-Id: <20210828175747.3777891-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1368; h=from:subject; bh=9jx5uQPQqpp6TrFslvjEgR6EW3HiZEM9ERGP13bv27o=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhKnka8IMpGL75t9SdPtlw5cO32b0cj/Ljslc5NM+C Mk3bmEKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSp5GgAKCRCJcvTf3G3AJsbaD/ 9aHBUpWn4I1adVnh/gDEinuFwYEId8xHXMAzcKmAtGYn9aDrtjoho0QB65x/XE3thwjJv4rCtM6cfP im14GI7xHW/uIfagrW0Jiv9Rg9b1t0Gu2w6x6HrzymAHfrplvvcm8A8TDdFOWBrECEbKKEyFHvKxvI 7LEnxaaIY5RGxG17eFQXW2wdFuGppuHhZqenCfX8JRIZ2XzGKOJ6VnV7i5qWldvBe7jSPUbiYAK+xm Mi+AN3Xqkc1Guj/KGGMJ6nAyZKHRQ0l8SVTJeShnoPnWuor8X6haOExTFTH6tPl+0pbOisdtXiOumw axOUWWOeU7ga0QFJ+vacWTKXFmc+fMAS6355YTYFM3q2Rnv1eLDTZoetNwjxvitQtVfoeoY6+DQUtg uRMxDbULb22uh2rWpm5GkRABAdPiNXfbSUjTFRKAOjYFFxA85CC3XlHI9eW4Sa0Xr1hbffFm50Fb7j L+XEGRWoVoO/UONT74eVGC1HLJXDqGUs71GTXbWDRG77Sg2CN/+GNTI+JlJjznLvbWPT8njCD7Qr5n 0ZXDIlKtM2NF2xfDOWksUL6GgQc1sGloiVyDtxVgiyJIpNsHC4AG9hJUSQ0zi0PzoIr3LAz/3ylz6e ktGmQcMYLEmlX14y5Vn4v+WxMigNBrSEQU8vbERGmENn9RVkg4tg3OAs9NHA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove NULL check. NULL check before freeing function is not needed.
+When building OMAP_DM_TIMER without TIMER_OF, there are orphan sections
+due to the use of TIMER_OF_DELCARE() without CONFIG_TIMER_OF. Select
+CONFIG_TIMER_OF when enaling OMAP_DM_TIMER:
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
+
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/202108282255.tkdt4ani-lkp@intel.com/
+Cc: Tony Lindgren <tony@atomide.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Keerthy <j-keerthy@ti.com>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: Ladislav Michl <ladis@linux-mips.org>
+Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: linux-omap@vger.kernel.org
+Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/staging/r8188eu/core/rtw_sta_mgt.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/clocksource/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-index f6dffed53a60..4726771a8403 100644
---- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-+++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-@@ -155,9 +155,7 @@ u32	_rtw_free_sta_priv(struct	sta_priv *pstapriv)
- 		spin_unlock_bh(&pstapriv->sta_hash_lock);
- 		/*===============================*/
-
--		if (pstapriv->pallocated_stainfo_buf)
--			vfree(pstapriv->pallocated_stainfo_buf);
--		}
-+		vfree(pstapriv->pallocated_stainfo_buf);
-
- 	return _SUCCESS;
- }
---
-2.32.0
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 0f5e3983951a..08f8cb944a2a 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -24,6 +24,7 @@ config I8253_LOCK
+ 
+ config OMAP_DM_TIMER
+ 	bool
++	select TIMER_OF
+ 
+ config CLKBLD_I8253
+ 	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
+-- 
+2.30.2
 
