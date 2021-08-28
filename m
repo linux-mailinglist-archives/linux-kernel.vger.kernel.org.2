@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2767B3FA585
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071103FA588
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbhH1LiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 07:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
+        id S234070AbhH1Lni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 07:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233892AbhH1LiV (ORCPT
+        with ESMTP id S233949AbhH1Lnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 07:38:21 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F814C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 04:37:30 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id f2so16444269ljn.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 04:37:30 -0700 (PDT)
+        Sat, 28 Aug 2021 07:43:37 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDC5C061756;
+        Sat, 28 Aug 2021 04:42:47 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id s25so13994626edw.0;
+        Sat, 28 Aug 2021 04:42:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yjSEFzv8kluOENILFvuHRCvSbNy9lHGaoFHd7/7ZFsQ=;
-        b=S1DSOz6SVZnuHxCuMzaj0nTV+SF5vsYAC/4eUaN5HXXaMoyJb73AqM/OshZ4HzHAMc
-         PpdVo2WqEawsU09HNnVWGdNDQJPc9D1PCDtO0m3/ixUMUuGjkv7WyWrKmcNQfn7cobkf
-         yWfnBBn9rnKw9453F16PqpmvIOBs0IkMuwXTbU/r/FOVYLUn9nFb8+pFKz+CYP09xsUS
-         NtfULXcwVvUO1GF3I9Ma1OCLY7tTHP7aFrJMqRgPPWRisqVhOvOlVrVrtPP1/dNAahdk
-         hr4MeQBF5gKjJxdsjL3V86TVnApAcwJI+C8s1paDJl6L2D22QWpBE+gyDQuP/qjls5J2
-         V00Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/ciX02sKxaW+KjLp+s3okHNDZBthMGDh/mH1d3hrxIA=;
+        b=V9AKmYFIV7JdCz7tciME01bsr2lmA9FLBiLCa09DPKevVGPDygozgA8TLqI3eNA++U
+         IxTR5IJWgsQAKmGy2JSHTmG3ww2fKMHvgjWervpO+15BDCMGgezfbY2hpa9lcQSTi+ot
+         y8kZtCEc67u+YJxUH8kdHJAaE+DisA+49If8EvwqOqlXKf7AVhGB14XlXXcxastjwk4z
+         vRP6dSC1UCurgMqtRkWxUQVNRldJR3EPrqrSjUUukaLWPtZL49IDFQrDlefJaduDT3Pl
+         XdIkIuaM/+I/BbDIamxWViT9RhbViLpIa0u0B6H65K/o7V0BPByJnZhk/5z2wGhEsBvb
+         0Uiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yjSEFzv8kluOENILFvuHRCvSbNy9lHGaoFHd7/7ZFsQ=;
-        b=iBaKFedUdYPpQ4JfNc+EhW55M4it469zvrqN7u6zJBbqlQkMPonz8rwrui81z1ouVG
-         2ZnhnX+yjLVjOymr3nAoOvMh/Zehtfq6Jw6It7QQhPkQy/IeLhcfMIfFrbrF8d+y5x6N
-         zbDQ8+TQjLKPSEpyMw5jqqbK7SsmKT7szH/GNnOunQRrQ7MYJfAUmIuwiSt4OuJ5R3W4
-         M7VjZXUyFop/ymPd+kV4DYagz10wcJKsR2htWX5RXhnc/gFYGqjsfs8leXNcKm81lvhz
-         4urkuNQUkqaDTZG2ES07Uk3NvoGepjBFhMsFI/Npc3k8O6wvF8XCtnFHvQ/apoHsEntu
-         A0sg==
-X-Gm-Message-State: AOAM530s0xrljRpZUD7sdKk6YYrai0pcT5xwk54Sy3SdaklLHSCGE2R6
-        Hvb2oqxA2xjpHFA57CYfqfVQ4X4ZEDzzNQ==
-X-Google-Smtp-Source: ABdhPJxcq/9sIBbo1oNHzb+12fxkefXkAK1GnD8rSXHhUSRuT2D+e9DMiO9QidG1zcE7gyv9N+BoqQ==
-X-Received: by 2002:a2e:b605:: with SMTP id r5mr12033036ljn.283.1630150648852;
-        Sat, 28 Aug 2021 04:37:28 -0700 (PDT)
-Received: from kari-VirtualBox (87-95-21-3.bb.dnainternet.fi. [87.95.21.3])
-        by smtp.gmail.com with ESMTPSA id n19sm856205lfu.68.2021.08.28.04.37.27
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/ciX02sKxaW+KjLp+s3okHNDZBthMGDh/mH1d3hrxIA=;
+        b=BUfQq9SD1k3CpJVq8lvNtC6qcbxRbumBH8bB+YeTYTtC+Gt/Iz/H5uwMA5Gvl0bD24
+         NvSsM7ss/jVKV9rqTygFAFtuSlHI9M7uoboueNNkx2iZZDRwOSujZCFRdlFN1sfxGgDj
+         hlFvmbcCoIuFQwtouy60+o0mMxWLXfbN9sbUldtklEyXT0IehTwBgA7FDAX1VhpfGv6/
+         A4Vgakh8l/qRmWIA5iEEOddVTW38WVUr9jSEdVpzjeZimDeUbkIA29psJFt1/NdAhNBs
+         gQwKAuCjEi+jeb1DksveOJ2x5xLLOLVaTFF9bBpoKR8qAXnCSL4d2YqujqN9/sPcSNPr
+         AdPw==
+X-Gm-Message-State: AOAM5333FY70VaFwHOrcO2QdYfgFxj/nIHYeme4TeuFjGHc31bAXla1f
+        ots7bAEaKN02Fyn8xZLO+is=
+X-Google-Smtp-Source: ABdhPJxXvjZLvMXdKIomq2YJq7EFB2BI2ZlLHohbN0UqLAGKOI8RbvgVeH9b4sOcOtPK1viZUstnmA==
+X-Received: by 2002:a05:6402:1c8a:: with SMTP id cy10mr14752604edb.112.1630150965957;
+        Sat, 28 Aug 2021 04:42:45 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id v1sm4286639ejd.31.2021.08.28.04.42.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 04:37:28 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 14:37:26 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] staging: r8188eu: incorrect type in
- csum_ipv6_magic
-Message-ID: <20210828113726.v4tmknjosvgb7bke@kari-VirtualBox>
-References: <cover.1630148641.git.aakashhemadri123@gmail.com>
- <0b7d6e92c79a6daf55a0c3a4961df6f33a9bcf37.1630148641.git.aakashhemadri123@gmail.com>
+        Sat, 28 Aug 2021 04:42:45 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: rockchip: change rv1108 gmac nodename
+Date:   Sat, 28 Aug 2021 13:42:40 +0200
+Message-Id: <20210828114240.12231-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b7d6e92c79a6daf55a0c3a4961df6f33a9bcf37.1630148641.git.aakashhemadri123@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[PATCH v5 2/3] staging: r8188eu: incorrect type in csum_ipv6_magic
+The rv1108 gmac node is checked with rockchip-dwmac.yaml,
+snps,dwmac.yaml and ethernet-controller.yaml.
+The nodename should have a pattern: "^ethernet(@.*)?$",
+so change to nodename.
 
-Subject should start with imperative mood. Every patch in this series
-needs this fix.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ arch/arm/boot/dts/rv1108.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I actually check linux coding style and did not found mention about
-this, but if you look kernel log then you see that it is at least
-unwritten rule. You can check this if you want
-https://chris.beams.io/posts/git-commit/#imperative
+diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
+index 140434384..668fb1513 100644
+--- a/arch/arm/boot/dts/rv1108.dtsi
++++ b/arch/arm/boot/dts/rv1108.dtsi
+@@ -557,7 +557,7 @@
+ 		status = "disabled";
+ 	};
+ 
+-	gmac: eth@30200000 {
++	gmac: ethernet@30200000 {
+ 		compatible = "rockchip,rv1108-gmac";
+ 		reg = <0x30200000 0x10000>;
+ 		interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
+-- 
+2.20.1
 
-On Sat, Aug 28, 2021 at 04:40:45PM +0530, Aakash Hemadri wrote:
-> Fix sparse warning:
-> > rtw_br_ext.c:771:84:    got restricted __be16 [usertype] payload_len
-> > rtw_br_ext.c:773:110: warning: incorrect type in argument 2
->     (different base types)
-> > rtw_br_ext.c:773:110:    expected int len
-> > rtw_br_ext.c:773:110:    got restricted __be16 [usertype] payload_len
-> 
-> csum_ipv6_magic and csum_partial expect int len not __be16, use
-> be16_to_cpu()
-> 
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> index aa56cd1a8490..38f1bd591da9 100644
-> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> @@ -615,9 +615,9 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
->  						struct icmp6hdr  *hdr = (struct icmp6hdr *)(skb->data + ETH_HLEN + sizeof(*iph));
->  						hdr->icmp6_cksum = 0;
->  						hdr->icmp6_cksum = csum_ipv6_magic(&iph->saddr, &iph->daddr,
-> -										iph->payload_len,
-> +										be16_to_cpu(iph->payload_len),
->  										IPPROTO_ICMPV6,
-> -										csum_partial((__u8 *)hdr, iph->payload_len, 0));
-> +										csum_partial((__u8 *)hdr, be16_to_cpu(iph->payload_len), 0));
->  					}
->  				}
->  			}
-> -- 
-> 2.32.0
-> 
