@@ -2,134 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBE73FA55C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74643FA55F
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhH1LOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 07:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45020 "EHLO
+        id S233954AbhH1LRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 07:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbhH1LOm (ORCPT
+        with ESMTP id S233831AbhH1LRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 07:14:42 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655D0C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 04:13:52 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id lc21so19693049ejc.7
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 04:13:52 -0700 (PDT)
+        Sat, 28 Aug 2021 07:17:15 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DC2C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 04:16:25 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id w6so5731636plg.9
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 04:16:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=X9J7QVqkb+h1L05qRuxksgd8BRKIzsS4rtSxbcYkOD4=;
-        b=OxQ992I2XLDfyUuoDMcDx0GG7HoIKgDw6t34rTb8L/oK5Fn+A+l/69XFjPCtS/rny4
-         nT1AB0DSPZld7ajPDHhM/ChEDGIK6BzfctFyV9iZyiI5GZpPeMjd6P7O3Zmfl6DM+XkG
-         +KQLnMfYU27JKHmJP2VcpS4XGNZUplHluwUh32kR28rNg5cigfSNmzlcHhxuzR3YkEga
-         XUf+S6U2CKJdZzZvo3uXj7Y4dBrq7hfDzcMIiXv41NkMtQ0MUm6VHJxjyRnBy1yFBxEE
-         HSTghpynyiyTEC9qmwSFHiXQPKCrPYxDR6opN6wZjLlafubWOBuANewP8XRo4/+IjAN4
-         CtiA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Vu5jBjunzDOP0PLhWuxgdCxdhyX6vl/xQHEmao6wMA8=;
+        b=G2XUXbT/Wq8fVmfj6bNjX8cIltYnuxQeiHmXcsilQNimtRh1BtrHy0m2/KzJMMSYF/
+         bookN6aCCylFp60CExRwyvi2qwi9Cy5e9pysPGM/csKoda6KYL4EZjYp32rA6rYGHBeD
+         G6LKB284QsNYSvhXcAbCbOO+vCB+1860ayvlQ7lu3OVpUdU9B2BD2XdqZ/hznaZfoIoX
+         7pYVsiCcd6KfpNhgUCg53b+/Lrdenu7N1eBkr9fM1nlpuLADZh2as+yYcqBA1ZCXf6Pu
+         IsHtlZ+9iqW0ttO4fu3Q7KuZCQ6pzAHNJcv7kC6mXMLbO311VWbQpatnpXG0Cqb8B/zH
+         6iFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=X9J7QVqkb+h1L05qRuxksgd8BRKIzsS4rtSxbcYkOD4=;
-        b=BEHyQ7LdjHHf6+d8kCr6cmm+7QZTzfL0rTwXLSwHNnKMO1ZqYS4moy56FyJj7Iw25p
-         FpgbdbRhJKQ2o7FFbsVcKi45stlHNB9FgwUjJriuVUOAwveW9/xv0P9PqOuVUxiFvM0o
-         utUeS2Ki1QtLvKb3ZDX1zY8FVwJR7cFIh9HxAvmxiKEhV1tl29ikaL1txl3vl3Kj1Slp
-         kLujrxk67Ay4c3VQuaDD4+ahddnGjy6SXNo1vnDp6W1/ieb+6e1TU3BS4DhS+/b1hIv0
-         j0gk/OCBb1Mi0q00hmw7U7cvDlENWFynHBLaPtWsccAoXhaRNjN14ioB3m12D8vnAeuI
-         mwXA==
-X-Gm-Message-State: AOAM530uidRqLZNki4BEpQ6UTfgCTFaT86lDrgqLBt0vgGkAi8CsB9Ph
-        9lQV9HF5OT2q08pvZXyKgID8JGX97wM=
-X-Google-Smtp-Source: ABdhPJx9jsrDt8mfFxjJLaxsSOvVtrqWSB4mp6B9fllLK/dRpf+L558OCs0oAjPp6GVN4BoleYXfvg==
-X-Received: by 2002:a17:906:93e8:: with SMTP id yl8mr15215967ejb.524.1630149230999;
-        Sat, 28 Aug 2021 04:13:50 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id y10sm4642649eda.47.2021.08.28.04.13.50
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Vu5jBjunzDOP0PLhWuxgdCxdhyX6vl/xQHEmao6wMA8=;
+        b=a+JEnO713vBSi6jW4lt0lmiQsnODGIv/SEh+iPVsStW4Ab1oqJ7gZkDwRVv/zEhNmz
+         U6yr+jfOTKUl56akh2VjzH/Q/KqVhwYd4+2rb0KZ3levCJoaQw8Wco7BUaUFc0W3Cv2Y
+         3wE7AXYrja4P9z/jvnAJNqdFfOTNJeZoAYBm8Qd/sUr9CMzfHdd0/tcR6O4YGUN3xkXt
+         EfW9dE48QzsU6zgZJ0NMRJhmzAWIk9/dtudfppDNjPBwYsQOprFoDt64QUI51Wfub4j1
+         OcKyYLIkLm+ersbBzL7yVbRGCgIdUEjAberiFPpWyuB+TfE/a+mM4sDIddltejpAgXiq
+         9FBQ==
+X-Gm-Message-State: AOAM532Yo4I8wzNlO/VHaDViDj0fH58KqKuyW76tlS7MudqIRhlvZlA8
+        Zm2OUf1vi0NbOgDtDqqCGu8=
+X-Google-Smtp-Source: ABdhPJzpZk3hRz+5bRioH81N+ZTuPsyV4pYw01kHLo+T5Q8NNLmy8h1vr86VEk0jN7Lh2rz9SVNyvQ==
+X-Received: by 2002:a17:902:dacc:b0:135:960b:1754 with SMTP id q12-20020a170902dacc00b00135960b1754mr13164755plx.77.1630149384542;
+        Sat, 28 Aug 2021 04:16:24 -0700 (PDT)
+Received: from localhost ([49.206.124.188])
+        by smtp.gmail.com with ESMTPSA id t10sm14595617pji.30.2021.08.28.04.16.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 04:13:50 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Krish Jain <krishjain02939@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Declare the file_operations struct as const
-Date:   Sat, 28 Aug 2021 13:13:48 +0200
-Message-ID: <1720585.ZkIvycaLSE@localhost.localdomain>
-In-Reply-To: <CAPGkw+wcZRcr0W2ay6ZJY5yW7-EEMpK-yH-3j=UkDpj3kA-ySg@mail.gmail.com>
-References: <CAPGkw+x+B1731SL=afoSKiWwH-n-FA5YJ+WOwYdv8iyFhWk1zA@mail.gmail.com> <YSoF+VcDuW/2ojjF@kroah.com> <CAPGkw+wcZRcr0W2ay6ZJY5yW7-EEMpK-yH-3j=UkDpj3kA-ySg@mail.gmail.com>
+        Sat, 28 Aug 2021 04:16:24 -0700 (PDT)
+Date:   Sat, 28 Aug 2021 16:46:22 +0530
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHi v4] staging: r8188eu: Remove
+ _enter/_exit_critical_mutex()
+Message-ID: <20210828111622.3jytsm56cblqkvil@xps.yggdrasil>
+References: <20210828105109.5776-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210828105109.5776-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, August 28, 2021 11:52:39 AM CEST Krish Jain wrote:
-> On Sat, Aug 28, 2021 at 11:46 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > A: http://en.wikipedia.org/wiki/Top_post
-> > Q: Were do I find info about this thing called top-posting?
-> > A: Because it messes up the order in which people normally read text.
-> > Q: Why is top-posting such a bad thing?
-> > A: Top-posting.
-> > Q: What is the most annoying thing in e-mail?
-> >
-> > A: No.
-> > Q: Should I include quotations after my reply?
-> >
-> > http://daringfireball.net/2007/07/on_top
-> 
-> 
-> Now I get it. I've never used this style of email ever before so am a
-> novice. Forgive me. Also I didn't get what you mean should I include
-> quotations after my reply?
+Unrelated to the patch, but if this was a typo then you can easily modify
+the subject prefix for new versions with `-v4` using `git format-patch`
 
-No, Krish. Greg placed the lines you read above only to let you understand
-how much confusion we get with top-posting :)
-
-> > On Sat, Aug 28, 2021 at 11:37:50AM +0200, Krish Jain wrote:
-> > > Hi. Thanks for your response. Changing to  "const static" would fix
-> > > the first error but looking at the second error indicates that it
-> > > can't be a const, right? So checkpatch.pl was wrong?
-
-You misunderstood my first message in reply to your patch:
-
-(1) that structure shouldn't be "const". You broke the build with that so I
-guessed that you didn't build the driver;
-
-(2) You should place "static" as the first keyword of a declaration. It doesn't
-change the semantics, but it is better style and so it is used in the kernel.
-
-> > checkpatch.pl is a perl script that does its best here.  You always have
-> > to then look at the code itself to see if what it is asking you to do is
-> > correct.
-> >
-> > And you always have to at the very least, test build your changes to
-> > verify that they do not break anything.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Thank you so much. I didn't realize that I could have tested it by
-> just building the driver and not the entire kernel. Anyway, I'd still
-> love to learn more and contribute to the kernel. Where can I find
-> "small fixes" I can make?
-
-Don't expect that someone here says to you which "fixes" you should
-address. Read the code and find them on your own. Get hints from 
-checkpatch.pl and the other static analyzers too (Sparse, Coccinelle,
-make that-driver-you-chose W=1, etc..).
-
-Thanks,
-
-Fabio
-> Warm Regards,
-> 
-> Krish
-> 
-> 
-
-
-
-
+-Aakash
