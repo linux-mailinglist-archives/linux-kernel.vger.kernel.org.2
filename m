@@ -2,73 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB713FA72A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B894D3FA734
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhH1SdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 14:33:02 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:49761 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhH1SdB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 14:33:01 -0400
-Received: by mail-il1-f199.google.com with SMTP id a15-20020a92444f000000b0022473393120so6204308ilm.16
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:32:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=up8sbinmdfW5FEk6l6npSbM0ylrChylbR3vjt8i49Xs=;
-        b=bDhLcMB8WdsdMjVeTK2V8JIx+RYTZLan+r3UF0nNIRWBvK6IlpX9Jw52mNImBY9Tcu
-         y4O1nuLlLH/tgLeJ07J0hw2QTjfjBd663M6BSbXSk36zJa3QdH//1KZoBBTxHSGo2I7M
-         FoBJK+ICHC0yE2m1G37/ptIf4LMWn+JMbXuEJDHw4l7Th8LsmvoRe8PlnrEk0xw5scsD
-         ADNCk46f+QRvB9n5NPZYTqTnvNLEHfjftzq4UF4XK8LvXUjoZGXS2COAnKFA/jUB6vhq
-         GFpUZZC/uJ7f15JhLpfbxeQNT4bdH5Tkmo4iVzcv0l02hkhP2vg8gbYBMZBnVFRLmDwv
-         CIwA==
-X-Gm-Message-State: AOAM533Cv2Hb49p5smVXKId0HDmUYUA38ihlzjRlMYCWdFv/+w4yDiW0
-        8nlx3Y+Jgv+S5iVx0jqXIt55T/3mwrQ6mTGZXTVA0Hj+i0b7
-X-Google-Smtp-Source: ABdhPJz+Yyr5HRroDxrfkjQQ5ziL5gBeIlEZ7KitgTECC5WrydwZTAne5hlTp3U9EC17zAoYBcRj22iKM9omVjv0Oo7cv7/OiVjq
-MIME-Version: 1.0
-X-Received: by 2002:a92:280d:: with SMTP id l13mr10827952ilf.99.1630175530430;
- Sat, 28 Aug 2021 11:32:10 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 11:32:10 -0700
-In-Reply-To: <000000000000b575ab05aebfc192@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000069bb3e05caa2d1f8@google.com>
-Subject: Re: [syzbot] WARNING: refcount bug in qrtr_node_lookup
-From:   syzbot <syzbot+c613e88b3093ebf3686e@syzkaller.appspotmail.com>
-To:     anant.thazhemadam@gmail.com, bjorn.andersson@linaro.org,
-        butterflyhuangxx@gmail.com, davem@davemloft.net,
-        dragonjetli@gmail.com, hdanton@sina.com, kuba@kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, mani@kernel.org,
-        manivannan.sadhasivam@linaro.org, masahiroy@kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S230336AbhH1Srw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 14:47:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhH1Sru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 14:47:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 797C360C3F;
+        Sat, 28 Aug 2021 18:46:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630176419;
+        bh=9ZYvRmk9jSTxEvunwFqVLA1g6R838quWfEF5cJAQHBc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=esDcDKmfU3rR20Aza2yrrgwtVwPdJ5Kzlrelmqh6cTQKfHL+44CMyzV/0QlT31gNx
+         XRq3BA7JbRYKHRQ64zaflcHLq2iw0VjiuBz9jl9T8934RZ2M8dsmVjWMs5WEHXA2WC
+         MpkxPA7dh20toL5CxqRrRQxdmxwS+jYTzjFXYmuzUmTaWD4+ElqBZ1CTJ5Qvkvt7N+
+         aBW9Ncgku0nXEiSLuDPgbyj23Cs4dIeu/6JAxMS6FTshl4kmAm5tE9r6ojJMQV4Hgp
+         3kFVAwOWKfn8TAc/X88RkEDtX94k62XPpYBvi4LPvfESNvFCAd4w4ZBtdbQ54Uw9vR
+         fCQ+TQG1wWWNg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 67CCC60984;
+        Sat, 28 Aug 2021 18:46:59 +0000 (UTC)
+Subject: Re: [GIT PULL] SCSI fixes for 5.14-rc7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <4313aa33c50578e6b3c52437d27704f24e27ae8f.camel@HansenPartnership.com>
+References: <4313aa33c50578e6b3c52437d27704f24e27ae8f.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <4313aa33c50578e6b3c52437d27704f24e27ae8f.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 02c6dcd543f8f051973ee18bfbc4dc3bd595c558
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3f5ad13cb012939e1797ec9cdf43941c169216d2
+Message-Id: <163017641936.5058.110294646524611487.pr-tracker-bot@kernel.org>
+Date:   Sat, 28 Aug 2021 18:46:59 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+The pull request you sent on Sat, 28 Aug 2021 11:09:55 -0700:
 
-commit 7e78c597c3ebfd0cb329aa09a838734147e4f117
-Author: Xiaolong Huang <butterflyhuangxx@gmail.com>
-Date:   Thu Aug 19 19:50:34 2021 +0000
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-    net: qrtr: fix another OOB Read in qrtr_endpoint_post
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3f5ad13cb012939e1797ec9cdf43941c169216d2
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11279a4d300000
-start commit:   ba4f184e126b Linux 5.9-rc6
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
-dashboard link: https://syzkaller.appspot.com/bug?extid=c613e88b3093ebf3686e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12263dd9900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d77603900000
+Thank you!
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: net: qrtr: fix another OOB Read in qrtr_endpoint_post
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
