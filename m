@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857063FA502
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 12:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA22A3FA507
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 12:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233778AbhH1KiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 06:38:05 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:41922 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230428AbhH1KiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 06:38:04 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 3924040D403D;
-        Sat, 28 Aug 2021 10:37:10 +0000 (UTC)
-Subject: Re: [PATCH] usb: ehci-orion: Handle errors of clk_prepare_enable() in
- probe
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Mike Turquette <mturquette@linaro.org>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-References: <20210825170902.11234-1-novikov@ispras.ru>
- <20210825172937.GD192480@rowland.harvard.edu>
- <c22d943a-581c-c1bd-d453-3f0f6176c8a5@ispras.ru>
- <20210826152438.GB228824@rowland.harvard.edu>
- <4d91f982-99df-29d2-c335-1df0c23acbc8@ispras.ru>
- <20210827115156.GK7722@kadam>
-From:   Evgeny Novikov <novikov@ispras.ru>
-Message-ID: <2290efca-b6c9-6964-7b5c-7ad5d53d719c@ispras.ru>
-Date:   Sat, 28 Aug 2021 13:37:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233831AbhH1Kig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 06:38:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42814 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233807AbhH1Kif (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 06:38:35 -0400
+Date:   Sat, 28 Aug 2021 10:37:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630147064;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=GUBreEWSeJdI+xIgn8oqqOgSWLasoexxUz4WbzqcM6w=;
+        b=2e1sQM7gZrHU8CcrVIwOWyDTxiRizUg7zwPXcl7ebXe/qnjSmdE4jpzjlz58xivYO1aobK
+        nWvC4oQ8ORkY/W4FixWd8nIQvbrKMtErxBLNQHV8MGWvg+wDcWUvGApAM7qFWozfQmhRvX
+        0lIXYTDnxoDMiswo45pIoQ0UsnHOoaQ5NW2fCvtlQg+ygl/xzM7xfldF2UBpARZNWmfKtI
+        qi/vr2ua3xxFh3ABOCzgz0vPqIqrYjaoe8uRiITiavEPNFLcLtv6R5AL31aMF1pp5gBLAo
+        lng+4Ska2o/ydR+k4qGi2bZ8sYPpg7cugqqGuKNHWt/j+TjxAQwtR3TNPHv5/Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630147064;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=GUBreEWSeJdI+xIgn8oqqOgSWLasoexxUz4WbzqcM6w=;
+        b=gYNVnionqJ7sFTpLkET7aHnWfSh4TfSIWZ0EAvRisvefM4CkKMdt1EgzOoPnQOAovRj2ij
+        VSQyiofcBG5JHOAw==
+From:   "tip-bot2 for Shuai Xue" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/core] efi: cper: check section header more appropriately
+Cc:     Shuai Xue <xueshuai@linux.alibaba.com>,
+        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20210827115156.GK7722@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Message-ID: <163014706251.25758.11166991934016346418.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+The following commit has been merged into the efi/core branch of tip:
 
-On 27.08.2021 14:51, Dan Carpenter wrote:
-> On Thu, Aug 26, 2021 at 07:26:22PM +0300, Evgeny Novikov wrote:
->> I added Dan to the discussion since he is a developer of one of such
->> tools.
-> Thanks for that...  :P
->
-> I never warn about "forgot to check the return" bugs except in the case
-> of error pointers or allocation failures.  There are too many false
-> positives.  If people want to do that they should add a __must_check
-> attribute to the function.
-Maybe you will be able to convince the developers of the clock framework 
-to add this attribute to some of their functions. For instance, this is 
-already the case, say, for clk_bulk_prepare() and clk_bulk_enable() that 
-seem to represent a number of clk_prepare() and clk_enable(). For those 
-functions the __must_check attribute was added in commit 6e0d4ff4580c 
-without providing any specific reasons why it is necessary for them and 
-is not necessary for usual clk_prepare() and clk_enable().
-> You linked to another thread: https://lkml.org/lkml/2021/8/17/239
->
-> That patch isn't correct.  Miquel was on the right track but not 100%.
-> The nand_scan() calls mxic_nfc_clk_enable() so we should disable it
-> until it has been successfully enabled.  The current code can trigger a
-> WARN() in __clk_disable().  In other words it should have been:
->
-> diff --git a/drivers/mtd/nand/raw/mxic_nand.c b/drivers/mtd/nand/raw/mxic_nand.c
-> index da1070993994..87aef98f5b9d 100644
-> --- a/drivers/mtd/nand/raw/mxic_nand.c
-> +++ b/drivers/mtd/nand/raw/mxic_nand.c
-> @@ -535,11 +535,11 @@ static int mxic_nfc_probe(struct platform_device *pdev)
->   	err = devm_request_irq(&pdev->dev, irq, mxic_nfc_isr,
->   			       0, "mxic-nfc", nfc);
->   	if (err)
-> -		goto fail;
-> +		return err;
->   
->   	err = nand_scan(nand_chip, 1);
->   	if (err)
-> -		goto fail;
-> +		return err;
->   
->   	err = mtd_device_register(mtd, NULL, 0);
->   	if (err)
-Thank you for this explanation. Now I understand better the Miquel's 
-comment. Nevertheless, I still have doubts that your fix is completely 
-correct since  mxic_nfc_set_freq() invokes mxic_nfc_clk_disable() first 
-that still should raise a warning. It seems that the driver developers 
-are looking on this issue, so, let's wait a bug fix from them. At least 
-they will be able to test that everything is okay after all.
-> nand_scan() error handling is still leaky, but it's hard to fix without
-> re-working the API.
->
-> Anyway, thanks for the fixes.  I've been inspired by the Linux Driver
-> Verification project work.
-It would be great to collaborate with each other. For instance, for the 
-aforementioned clock API your tool can perform better checking and find 
-more potential bugs in some (maybe even all) cases due to a number of 
-reasons. Unless it will be possible to detect all target issues 
-automatically with static analysis tools, we can try to reveal some of 
-the remaining ones with our heavyweight approach.
+Commit-ID:     1be72c8e0786727df375f11c8178ce7e65eea20e
+Gitweb:        https://git.kernel.org/tip/1be72c8e0786727df375f11c8178ce7e65eea20e
+Author:        Shuai Xue <xueshuai@linux.alibaba.com>
+AuthorDate:    Mon, 23 Aug 2021 19:56:54 +08:00
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Fri, 27 Aug 2021 16:03:01 +02:00
 
-Best regards,
-Evgeny Novikov
-> regards,
-> dan carpenter
+efi: cper: check section header more appropriately
+
+When checking a generic status block, we iterate over all the generic data
+blocks. The loop condition checks that the generic data block is valid.
+Because the size of data blocks (excluding error data) may vary depending
+on the revision and the revision is contained within the data block, we
+should ensure that enough of the current data block is valid appropriately
+for different revision.
+
+Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ drivers/firmware/efi/cper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+index 1cb7097..73bdbd2 100644
+--- a/drivers/firmware/efi/cper.c
++++ b/drivers/firmware/efi/cper.c
+@@ -632,7 +632,7 @@ int cper_estatus_check(const struct acpi_hest_generic_status *estatus)
+ 	data_len = estatus->data_length;
+ 
+ 	apei_estatus_for_each_section(estatus, gdata) {
+-		if (sizeof(struct acpi_hest_generic_data) > data_len)
++		if (acpi_hest_get_size(gdata) > data_len)
+ 			return -EINVAL;
+ 
+ 		record_size = acpi_hest_get_record_size(gdata);
