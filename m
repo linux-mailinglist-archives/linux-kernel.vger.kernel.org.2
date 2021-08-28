@@ -2,290 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3ABF3FA3C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 06:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5353FA3DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 07:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhH1ExT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 00:53:19 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:44865 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhH1ExS (ORCPT
+        id S233101AbhH1F0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 01:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232255AbhH1F0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 00:53:18 -0400
-Received: by mail-io1-f71.google.com with SMTP id d15-20020a0566022befb02905b2e9040807so5350577ioy.11
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 21:52:28 -0700 (PDT)
+        Sat, 28 Aug 2021 01:26:53 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D85C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 22:26:04 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id fz10so6091738pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 22:26:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2JfUpe2H37PEi8fU0OKJL2trjpNhW7D/OwMqmglIVHg=;
+        b=wmdEvv2ENIhYYGUB7JTLAaIAv0cY9J3AEXqGcxs1JW+wpuG+n6GX/zaphPuMCLN3xI
+         ns9idB6Sg7OOr03SuAxG8sRfuinLdHFSjEU7Jq3tp6oLpTSXdhzJPqGFq/uZ+786OV8p
+         xd/s6r1r4ESyAYa+7j4DekrjGfL2n2mT9Ovr+H0dMEBLRaDX5FUtiImrzjnlHt2guhE4
+         SttN5jwQ2wwEd3jfeAACvoIdQHjZHFJkMFIJcbCmI+cJx+9Z5ebldao2y6R7yv1o1Gnl
+         WYYQWav3jQ0a7SPEmpucjj3+iuyqLjSHpDbeiKtEJylvNGStg8w9l95tdLZctBgLKoTg
+         DR+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=CDqAEXatCragUnZhEJzRVZOwDQTwwcVUKIzVGx+XlYI=;
-        b=fxqpS3peqRcj2wxMViktLz6a8zmih7Au5CfJ3ZVppKj8WiyMseWxHzsUzRQti6kssd
-         ibLi/afkFBEWxPBwjEksyT5fAhYytGpWMg5vGqP/2PbuFYX2uEAbsj+iwBW4IMRixFgG
-         +cwoCKfXFdWseLCEEAyGZSVx/JrF6UfIdkrqfr01pEWOk5D3EDUou0rylL0pGBkmTmB8
-         jZ+rORgdagnhWJUzgdM/IBy0xE9PTMXmFrePq5FTl+8OCfh7V+D8JktZ3sTBThz6yXDm
-         HtsOHsoQg79qUqtOUaKbfZyTY2RuXX1Gjiec4c68xEDrfIRSUi7nXFBJiedaMemXvnHn
-         a7Bw==
-X-Gm-Message-State: AOAM530gyaesqaJKYOjmwfO3fRiEBgzmrwO1sIP8V93IGf9VGd6wNC3s
-        SAJTAeG3Mh4CMDBVr3jXwP+8BnUp17UDUtcub5TOAj5tEGf7
-X-Google-Smtp-Source: ABdhPJzIB6+0w3mDcmUV9PDAIoA5cmowH4x4GaidGySjB8zOJkRdnuurjTkHMZJFAJTVuuUYCINpsRe2RcPqoOCn+x3z8EhwTcJ3
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2JfUpe2H37PEi8fU0OKJL2trjpNhW7D/OwMqmglIVHg=;
+        b=bPUZyudamuO21vy1WY0oiczbqcnazqyvahNtEpZ3MA1Aid8tZnUTbgipoXYHpnCfFX
+         UJo2cTgGuTjjN56OclzWembwpsg00/dPOWWSxU7N9baz5jqBA4XrCpsN8d+k8gBFWTaL
+         AUgTzQbin7+lc6DbzM8Q9eCyzZ7RZ7d+zxeGixklgP2Wo7USeOUc4sXK+fb4oS4gQLAn
+         UjaAhwKR9Hx+C7aHfiaJ4AHXsqSNGWvg/Me7wdWK7jqwTis76ochbgrUWBEWLwC4kwf+
+         hOL8e3w5cMSsOXvu2THdcTMCTMCpyw4MvLjK66PfnJrp0ClnvvRDg6gFP67lsNL/a2gl
+         LoyQ==
+X-Gm-Message-State: AOAM533LgmdtlPfPz+71rc3MW9QVuQbTtxKR4IVpZ8zQGCAWkrRwKJmM
+        9wktscjuJgGv6OkFEoe9DKpxVnc98hQdA7161usuuA==
+X-Google-Smtp-Source: ABdhPJyWIL3bp2Wtvc8QNlN/2pOeczW9cA7a6NJ+Yc79O9glgqWDdhp+1YDeYsbIyXrjH7fSFmW+RMAB1LNFKreobxU=
+X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr14659897pjh.229.1630128363484;
+ Fri, 27 Aug 2021 22:26:03 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1107:: with SMTP id u7mr8262153ilk.39.1630126348084;
- Fri, 27 Aug 2021 21:52:28 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 21:52:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eaacf005ca975d1a@google.com>
-Subject: [syzbot] INFO: rcu detected stall in syscall_exit_to_user_mode
-From:   syzbot <syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jirislaby@kernel.org,
-        jpoimboe@redhat.com, jthierry@redhat.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
+References: <20210828042306.42886-1-zhengqi.arch@bytedance.com> <20210828042306.42886-2-zhengqi.arch@bytedance.com>
+In-Reply-To: <20210828042306.42886-2-zhengqi.arch@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sat, 28 Aug 2021 13:25:27 +0800
+Message-ID: <CAMZfGtW8CVMQkkC_rwJoHXQQYsuJBAfCuWC_XjhHyKnxFdc3kw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] mm: introduce pmd_install() helper
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        mika.penttila@nextfour.com, David Hildenbrand <david@redhat.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Aug 28, 2021 at 12:23 PM Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+>
+> Currently we have three times the same few lines repeated in the
+> code. Deduplicate them by newly introduced pmd_install() helper.
+>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-syzbot found the following issue on:
-
-HEAD commit:    d5ae8d7f85b7 Revert "media: dvb header files: move some he..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1138c9ad300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=765eea9a273a8879
-dashboard link: https://syzkaller.appspot.com/bug?extid=0e964fad69a9c462bc1e
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com
-
-rcu: INFO: rcu_preempt self-detected stall on CPU
-rcu: 	1-...!: (1 GPs behind) idle=70e/1/0x4000000000000000 softirq=60586/60587 fqs=2492 
-	(t=10501 jiffies g=90689 q=3510)
-rcu: rcu_preempt kthread starved for 5495 jiffies! g90689 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R  running task     stack:28864 pid:   14 ppid:     2 flags:0x00004000
-Call Trace:
- context_switch kernel/sched/core.c:4681 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
- schedule+0xd3/0x270 kernel/sched/core.c:6017
- schedule_timeout+0x14a/0x2a0 kernel/time/timer.c:1881
- rcu_gp_fqs_loop kernel/rcu/tree.c:1996 [inline]
- rcu_gp_kthread+0xd34/0x1980 kernel/rcu/tree.c:2169
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-rcu: Stack dump where RCU GP kthread last ran:
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 10491 Comm: syz-executor.3 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:unwind_next_frame+0x829/0x1ce0 arch/x86/kernel/unwind_orc.c:466
-Code: 83 e0 07 40 38 c6 40 0f 9e c7 40 84 f6 0f 95 c0 40 84 c7 0f 85 bc 0f 00 00 49 0f bf 30 48 01 d6 48 89 74 24 60 e9 d8 fd ff ff <48> b8 00 00 00 00 00 fc ff df 48 8b 54 24 08 48 c1 ea 03 80 3c 02
-RSP: 0018:ffffc90000007698 EFLAGS: 00000297
-RAX: 0000000000000005 RBX: 1ffff92000000edb RCX: ffffffff8e5a56dd
-RDX: 0000000000000005 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: 0000000000000002 R08: ffffffff8e5a56d8 R09: ffffffff8e5a56a8
-R10: fffff52000000ef9 R11: 0000000000086088 R12: ffffc900000077b8
-R13: ffffc900000077a5 R14: ffffc90000007770 R15: ffffffff8e5a56dc
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c01b7ba1b0 CR3: 0000000014fb2000 CR4: 00000000001526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- arch_stack_walk+0x7d/0xe0 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- __kasan_slab_alloc+0x83/0xb0 mm/kasan/common.c:467
- kasan_slab_alloc include/linux/kasan.h:254 [inline]
- slab_post_alloc_hook mm/slab.h:519 [inline]
- slab_alloc_node mm/slub.c:2959 [inline]
- kmem_cache_alloc_node+0x266/0x3e0 mm/slub.c:2995
- __alloc_skb+0x20b/0x340 net/core/skbuff.c:414
- skb_copy+0x137/0x2f0 net/core/skbuff.c:1581
- mac80211_hwsim_tx_frame_no_nl.isra.0+0xb17/0x1330 drivers/net/wireless/mac80211_hwsim.c:1565
- mac80211_hwsim_tx_frame+0x1ee/0x2a0 drivers/net/wireless/mac80211_hwsim.c:1784
- mac80211_hwsim_beacon_tx+0x49b/0x930 drivers/net/wireless/mac80211_hwsim.c:1838
- __iterate_interfaces+0x1e5/0x520 net/mac80211/util.c:793
- ieee80211_iterate_active_interfaces_atomic+0x70/0x180 net/mac80211/util.c:829
- mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1861
- __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
- __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1601
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
- __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu+0x16e/0x1c0 kernel/softirq.c:636
- irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:__page_mapcount+0x2/0x350 mm/util.c:716
-Code: 89 e7 e8 31 cf 17 00 e9 10 fe ff ff e8 27 cf 17 00 e9 74 fe ff ff e8 1d cf 17 00 e9 3c fe ff ff 0f 1f 84 00 00 00 00 00 41 56 <41> 55 41 54 55 48 89 fd 4c 8d 65 30 53 e8 ec 94 d1 ff be 04 00 00
-RSP: 0018:ffffc900180177a0 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff88807d149c40 RSI: ffffffff81aa23f5 RDI: ffffea0001deaa80
-RBP: ffffea0001deaa80 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81aa28ae R11: 0000000000000000 R12: ffffea0001deaa88
-R13: 0000000000000001 R14: dffffc0000000000 R15: 0000000000aab000
- page_mapcount include/linux/mm.h:875 [inline]
- zap_pte_range mm/memory.c:1363 [inline]
- zap_pmd_range mm/memory.c:1481 [inline]
- zap_pud_range mm/memory.c:1510 [inline]
- zap_p4d_range mm/memory.c:1531 [inline]
- unmap_page_range+0xf1d/0x2a10 mm/memory.c:1552
- unmap_single_vma+0x198/0x300 mm/memory.c:1597
- unmap_vmas+0x16d/0x2f0 mm/memory.c:1629
- exit_mmap+0x1d0/0x620 mm/mmap.c:3201
- __mmput+0x122/0x470 kernel/fork.c:1101
- mmput+0x58/0x60 kernel/fork.c:1122
- exit_mm kernel/exit.c:501 [inline]
- do_exit+0xae2/0x2a60 kernel/exit.c:812
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2808
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665e9
-Code: Unable to access opcode bytes at RIP 0x4665bf.
-RSP: 002b:00007f1283537218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000056bf88 RCX: 00000000004665e9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf88
-RBP: 000000000056bf80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf8c
-R13: 0000000000a9fb1f R14: 00007f1283537300 R15: 0000000000022000
-NMI backtrace for cpu 1
-CPU: 1 PID: 4075 Comm: syz-executor.4 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
- rcu_dump_cpu_stacks+0x25e/0x3f0 kernel/rcu/tree_stall.h:342
- print_cpu_stall kernel/rcu/tree_stall.h:625 [inline]
- check_cpu_stall kernel/rcu/tree_stall.h:700 [inline]
- rcu_pending kernel/rcu/tree.c:3922 [inline]
- rcu_sched_clock_irq.cold+0x9f/0x747 kernel/rcu/tree.c:2641
- update_process_times+0x16d/0x200 kernel/time/timer.c:1785
- tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:226
- tick_sched_timer+0x1b0/0x2d0 kernel/time/tick-sched.c:1421
- __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
- __hrtimer_run_queues+0x1c0/0xe50 kernel/time/hrtimer.c:1601
- hrtimer_interrupt+0x330/0xa00 kernel/time/hrtimer.c:1663
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
- __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1106
- sysvec_apic_timer_interrupt+0x40/0xc0 arch/x86/kernel/apic/apic.c:1100
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:191
-Code: 74 24 10 e8 9a fa 2d f8 48 89 ef e8 42 70 2e f8 81 e3 00 02 00 00 75 25 9c 58 f6 c4 02 75 2d 48 85 db 74 01 fb bf 01 00 00 00 <e8> 03 4e 22 f8 65 8b 05 ec c8 d4 76 85 c0 74 0a 5b 5d c3 e8 e0 aa
-RSP: 0018:ffffc90000dc0c08 EFLAGS: 00000206
-RAX: 0000000000000002 RBX: 0000000000000200 RCX: 1ffffffff1fa4e6a
-RDX: 0000000000000000 RSI: 0000000000000102 RDI: 0000000000000001
-RBP: ffff8880b9d40280 R08: 0000000000000001 R09: ffffffff8fcd59bf
-R10: 0000000000000001 R11: 0000000000000000 R12: 000000010000c10b
-R13: ffff8880b9d40280 R14: 0000000000000000 R15: 00000000ffffffff
- __mod_timer+0x837/0xe30 kernel/time/timer.c:1065
- call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1421
- expire_timers kernel/time/timer.c:1466 [inline]
- __run_timers.part.0+0x675/0xa20 kernel/time/timer.c:1734
- __run_timers kernel/time/timer.c:1715 [inline]
- run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1747
- __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu+0x16e/0x1c0 kernel/softirq.c:636
- irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:finish_task_switch.isra.0+0x23c/0xa50 kernel/sched/core.c:4555
-Code: 8b 3a 4c 89 e7 48 c7 02 00 00 00 00 ff d1 4d 85 ff 75 bf 4c 89 e7 e8 23 3c dd 07 e8 fe e7 2b 00 fb 65 48 8b 1c 25 40 f0 01 00 <48> 8d bb 10 15 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1
-RSP: 0018:ffffc90003ae7810 EFLAGS: 00000202
-RAX: 00000000000003cd RBX: ffff888030a13880 RCX: 1ffffffff1f9c5a2
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc90003ae7850 R08: 0000000000000001 R09: ffffffff8fcd5907
-R10: 0000000000000001 R11: 0000000000000000 R12: ffff8880b9d51b00
-R13: ffff88801f1c1c40 R14: 0000000000000000 R15: ffff8880b9d51b18
- context_switch kernel/sched/core.c:4684 [inline]
- __schedule+0x942/0x26f0 kernel/sched/core.c:5938
- preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:6098
- preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
- put_cpu_partial+0x1a1/0x230 mm/slub.c:2482
- qlink_free mm/kasan/quarantine.c:146 [inline]
- qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
- kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
- __kasan_slab_alloc+0x95/0xb0 mm/kasan/common.c:444
- kasan_slab_alloc include/linux/kasan.h:254 [inline]
- slab_post_alloc_hook mm/slab.h:519 [inline]
- slab_alloc_node mm/slub.c:2959 [inline]
- slab_alloc mm/slub.c:2967 [inline]
- __kmalloc+0x1f4/0x330 mm/slub.c:4111
- kmalloc include/linux/slab.h:596 [inline]
- tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
- tomoyo_realpath_nofollow+0xc8/0xe0 security/tomoyo/realpath.c:309
- tomoyo_find_next_domain+0x280/0x1f80 security/tomoyo/domain.c:727
- tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
- tomoyo_bprm_check_security+0x121/0x1a0 security/tomoyo/tomoyo.c:91
- security_bprm_check+0x45/0xa0 security/security.c:866
- search_binary_handler fs/exec.c:1709 [inline]
- exec_binprm fs/exec.c:1762 [inline]
- bprm_execve fs/exec.c:1831 [inline]
- bprm_execve+0x732/0x19b0 fs/exec.c:1793
- do_execveat_common+0x5e3/0x780 fs/exec.c:1920
- do_execve fs/exec.c:1988 [inline]
- __do_sys_execve fs/exec.c:2064 [inline]
- __se_sys_execve fs/exec.c:2059 [inline]
- __x64_sys_execve+0x8f/0xc0 fs/exec.c:2059
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665e9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc2fc6a3188 EFLAGS: 00000246 ORIG_RAX: 000000000000003b
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000180
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 0000000000a9fb1f R14: 00007fc2fc6a3300 R15: 0000000000022000
-----------------
-Code disassembly (best guess):
-   0:	83 e0 07             	and    $0x7,%eax
-   3:	40 38 c6             	cmp    %al,%sil
-   6:	40 0f 9e c7          	setle  %dil
-   a:	40 84 f6             	test   %sil,%sil
-   d:	0f 95 c0             	setne  %al
-  10:	40 84 c7             	test   %al,%dil
-  13:	0f 85 bc 0f 00 00    	jne    0xfd5
-  19:	49 0f bf 30          	movswq (%r8),%rsi
-  1d:	48 01 d6             	add    %rdx,%rsi
-  20:	48 89 74 24 60       	mov    %rsi,0x60(%rsp)
-  25:	e9 d8 fd ff ff       	jmpq   0xfffffe02
-* 2a:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax <-- trapping instruction
-  31:	fc ff df
-  34:	48 8b 54 24 08       	mov    0x8(%rsp),%rdx
-  39:	48 c1 ea 03          	shr    $0x3,%rdx
-  3d:	80                   	.byte 0x80
-  3e:	3c 02                	cmp    $0x2,%al
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
