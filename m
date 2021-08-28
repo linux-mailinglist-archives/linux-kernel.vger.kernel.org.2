@@ -2,81 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFE13FA4D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352113FA4D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhH1Jp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 05:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230444AbhH1Jp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 05:45:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50F2260ED3;
-        Sat, 28 Aug 2021 09:44:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630143877;
-        bh=6KXHEFTldR58KIsMPXI+PdwLyLFXMO5pNa86tpdq5u8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uMfaZ1j7XnSZwb5TbKoVkqMupaby5sHKVkFJYpfLaEhJIdOXWSv+an62yOUxNOlob
-         IO13Y2Aj4CT3Qj4kvUUZeUH4OURVUSCqvbupDP4s6tsuHV5MBgUSq2Y4w9NP8A6g1B
-         MOTNe51P+3IT0lWtRz0zppIYPZSWKRGd7aloI5VI=
-Date:   Sat, 28 Aug 2021 11:44:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/5] staging: r8188eu: fix sparse warnings
-Message-ID: <YSoFgUT5+5nwJOo7@kroah.com>
-References: <cover.1629563318.git.aakashhemadri123@gmail.com>
- <20210828085017.d5l63yrxkaxqgpgu@xps.yggdrasil>
+        id S233697AbhH1JqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 05:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230444AbhH1JqO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 05:46:14 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7DBC061756;
+        Sat, 28 Aug 2021 02:45:24 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id lc21so19394044ejc.7;
+        Sat, 28 Aug 2021 02:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rVSThyxcJIxO6/MqLNa1RZ3VCG/V0uLT1hBIC06use0=;
+        b=bN7jTAmnpL49pubBkgeXTD49jV39N0wtwwBoHDNZ+3geH6/XdVcvmVNVE+/KnAHEXn
+         bfSOeO47eVnywNzYUtqUhrXMlTW70rNefh5tEA0KafAtkR7TiUUdn2Ff5/amcsMUaNRh
+         +ITC3H2hbQNSW1ePJHJb1TZI30Dci4GSrqShfi9b4E7OzZb4KfJUdqwxqZQj7GqC5V1e
+         7Q3Xl8XLTFugt0slsOxlXkv0IUdXsDl1FapbC7u1mp5bbgg00Vs+iixgZnJCxPY6NIlH
+         RsHPxJ+yg9/INmCvqcviSH9P7e/49tfHWQDNCsnCGSyRcdABAqFj2yQfsXVorL5eD2pm
+         JxRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rVSThyxcJIxO6/MqLNa1RZ3VCG/V0uLT1hBIC06use0=;
+        b=ryqW9SfG7N1WMEr0E5+r44D9nlAw5Cwy7miJWR8wit8SMg+sqq9LBU2Eqv/GGgwGAz
+         NJvFrH330+KqXflqiSNJFiZgVTSCs3Ur0O2eECyKz3vY2xozg7pYFWkGSMOVdvBo7PQc
+         mXSsNSDAVxTSdIB+eBJtY/QGJ9kxThZUXO9/19uz1oFM+ieKU0pE9agMU3V8j9A3ozeS
+         gGdXAJ+awu3Ld0ngyqSN8ic5JgFUFXfkAN1TW61gyrWdf7kqfiJA8PdqOh7Z6KMPiHBz
+         isnPKGG0CPdHhF+F21/yeGJ9nQtRFo54Nl7be+EmoXAUjDFBfGVuOxkPV+9yL9HSd5Fl
+         C/jw==
+X-Gm-Message-State: AOAM531z0sgkyip2u2PWOXzIncW7m8hhqSuz0TIOXY8NHvRI9t0eeYcs
+        mbNchd4FNsctZSuR7QgbKYM=
+X-Google-Smtp-Source: ABdhPJwWxk63rPsUGH0JQ+4pj/rJeLjbpyQKsxXZ5WOrFnxl9QL/oOy1HaO4X7kUOAecSCdz6u6Y9g==
+X-Received: by 2002:a17:906:7095:: with SMTP id b21mr14704691ejk.131.1630143922661;
+        Sat, 28 Aug 2021 02:45:22 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id q18sm4017076ejc.84.2021.08.28.02.45.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 02:45:22 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: rockchip: rename opp-table node names
+Date:   Sat, 28 Aug 2021 11:45:12 +0200
+Message-Id: <20210828094512.26862-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828085017.d5l63yrxkaxqgpgu@xps.yggdrasil>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 02:20:17PM +0530, Aakash Hemadri wrote:
-> On 21/08/23 10:30PM, Aakash Hemadri wrote:
-> > Hi,
-> > 	This patch series fixes some sparse warnings in rtw_br_ext.c
-> > 
-> > Changes in v3 -> v4
-> > - Added this changelog, as requested by Greg's patch bot
-> > 
-> > Changes in v2 -> v3
-> > - Fixed incorrect usage/removal of endian swaps and checks
-> > 
-> > Changes in v1 -> v2
-> > - Split patch
-> > 
-> > Aakash Hemadri (5):
-> >   staging: r8188eu: restricted __be16 degrades to int
-> >   staging: r8188eu: cast to restricted __be32
-> >   staging: r8188eu: incorrect type in csum_ipv6_magic
-> >   staging: r8188eu: restricted __be16 degrades to int
-> >   staging: r8188eu: incorrect type in assignment
-> > 
-> >  drivers/staging/r8188eu/core/rtw_br_ext.c | 20 ++++++++++----------
-> >  1 file changed, 10 insertions(+), 10 deletions(-)
-> > 
-> > 
-> > base-commit: 093991aaadf0fbb34184fa37a46e7a157da3f386
-> > -- 
-> > 2.32.0
-> >
-> 
-> Hello greg, if there are any issues with the patchset do let me know,
-> Larry & Philip acked the previous ver of this patch.
-> 
-> I'd rather not add noise to the ml unnecessarily.
-> Also this patchset doesn't apply cleanly to the current staging-testing
-> I can resend fixing that if that's the issue.
+After the conversion to YAML of the Operating Performance Points(OPP)
+binding the operating-points-v2 property expects the nodename to have
+the '^opp-table(-[a-z0-9]+)?$' format, so rename all Rockchip ARM dts
+opp-table node names.
 
-Please fix up and resend, my staging review queue is empty.
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/opp/opp-v2.yaml
 
-thanks,
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ arch/arm/boot/dts/rk3188.dtsi | 2 +-
+ arch/arm/boot/dts/rk3229.dtsi | 2 +-
+ arch/arm/boot/dts/rk322x.dtsi | 2 +-
+ arch/arm/boot/dts/rk3288.dtsi | 4 ++--
+ arch/arm/boot/dts/rv1108.dtsi | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-greg k-h
+diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
+index 2c606494b..d6a946a2a 100644
+--- a/arch/arm/boot/dts/rk3188.dtsi
++++ b/arch/arm/boot/dts/rk3188.dtsi
+@@ -54,7 +54,7 @@
+ 		};
+ 	};
+ 
+-	cpu0_opp_table: opp_table0 {
++	cpu0_opp_table: opp-table-0 {
+ 		compatible = "operating-points-v2";
+ 		opp-shared;
+ 
+diff --git a/arch/arm/boot/dts/rk3229.dtsi b/arch/arm/boot/dts/rk3229.dtsi
+index cb7d3fad8..c340fb30e 100644
+--- a/arch/arm/boot/dts/rk3229.dtsi
++++ b/arch/arm/boot/dts/rk3229.dtsi
+@@ -10,7 +10,7 @@
+ 
+ 	/delete-node/ opp-table0;
+ 
+-	cpu0_opp_table: opp_table0 {
++	cpu0_opp_table: opp-table-0 {
+ 		compatible = "operating-points-v2";
+ 		opp-shared;
+ 
+diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
+index 75af99c76..4021e92e0 100644
+--- a/arch/arm/boot/dts/rk322x.dtsi
++++ b/arch/arm/boot/dts/rk322x.dtsi
+@@ -68,7 +68,7 @@
+ 		};
+ 	};
+ 
+-	cpu0_opp_table: opp_table0 {
++	cpu0_opp_table: opp-table-0 {
+ 		compatible = "operating-points-v2";
+ 		opp-shared;
+ 
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 4dcdcf17c..1ded2aabe 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -100,7 +100,7 @@
+ 		};
+ 	};
+ 
+-	cpu_opp_table: cpu-opp-table {
++	cpu_opp_table: opp-table-0 {
+ 		compatible = "operating-points-v2";
+ 		opp-shared;
+ 
+@@ -1278,7 +1278,7 @@
+ 		status = "disabled";
+ 	};
+ 
+-	gpu_opp_table: gpu-opp-table {
++	gpu_opp_table: opp-table-1 {
+ 		compatible = "operating-points-v2";
+ 
+ 		opp-100000000 {
+diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
+index 24d56849a..7d96a0d02 100644
+--- a/arch/arm/boot/dts/rv1108.dtsi
++++ b/arch/arm/boot/dts/rv1108.dtsi
+@@ -40,7 +40,7 @@
+ 		};
+ 	};
+ 
+-	cpu_opp_table: opp_table {
++	cpu_opp_table: opp-table-0 {
+ 		compatible = "operating-points-v2";
+ 
+ 		opp-408000000 {
+-- 
+2.20.1
+
