@@ -2,428 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098293FA622
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 16:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD953FA624
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 16:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbhH1OCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 10:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        id S234335AbhH1ODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 10:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbhH1OCh (ORCPT
+        with ESMTP id S229654AbhH1ODC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 10:02:37 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7799C061756;
-        Sat, 28 Aug 2021 07:01:46 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id o10so20704178lfr.11;
-        Sat, 28 Aug 2021 07:01:46 -0700 (PDT)
+        Sat, 28 Aug 2021 10:03:02 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB188C061756;
+        Sat, 28 Aug 2021 07:02:11 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id bt14so20348190ejb.3;
+        Sat, 28 Aug 2021 07:02:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dqrp/KH5tLqSap7ntZ/vvOicD5LnNwHSCIXjYo1/JVc=;
-        b=McQxQYfotZG11D5X8pPamm7dZOtwqIMvsRXsTYbwlucu8urBYU1163EZ93U8sO3H74
-         3A5uKUN2gaJFHqEfFpfDdnEhtK+pmn2BrO7qKV5JqAPKssvI1jDQQ3W7yA4N0UDqQ3er
-         IgQ0Iy3lv4WcH9pe6wF82eyluGih/56eYxKWDSr6uH8zz3S8uNltYpdqB9+iMQhrMKBK
-         eoufxm2kHY5LLUnU/d9C/4c+dkOetMSjblvfh6Igx+BoTWMlaosmWDx62EY6qd9WW2tg
-         w8eMzLCm8S73HWxCKbA/1f3fElsk28xtv63WLjlLrHi7kpjl/FkKH2bBYQY9+lZZ6/hA
-         FG3w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dGMD8G1jIPuTkP7k4fL/JNaabjrqckiKTYDIJ4uuuE0=;
+        b=GbNbCHzhYOTSJwpk8QpPayaXfLVMx3hzQag0i1ovxDU8buCO+kdz7SVUxd++BPbnuQ
+         h/fqLmzZgFg+t6vs4plyajV/fX4vK05/eEZiFkXIWWpgISSy2DBiZKR254KJoby7WkwX
+         jt8TclTBhwiwfGP9JqjNk2UoH2QiTQm+Fox+LgfWm38So4gzzxVxBqEZMwhlwSdgr6Im
+         6jjnr3TQVFVnwvXkXDp0x3lPLWaKFOmKowOaRGd4C8A5nOIynhqCrXCLfpCIZ2W6SqUK
+         eHKGIXO7z25tbuxJqD61mqaCSrF6xpm4z3lHbFMSrLjWmrzdi3RKWSqzFMO3b5MF4stg
+         oyQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dqrp/KH5tLqSap7ntZ/vvOicD5LnNwHSCIXjYo1/JVc=;
-        b=e1WJdVVYAGnz6xAtfEZyPIScHzSIpV0qPi8v5Fb0HyQx1GFwIVkHhlxqmGOjzwTCBb
-         WCjRUXjP6SN8ogEEemWKvHOhwx9iATM4OrrO0Qc7D/voPFMliMUh8o/+XYC0iRdPc0Ue
-         26nF1rbiBssTB1V4lg9ixDSb3kfNPzqJIpSDaA1eCYMlBUjhLwz71xX3Rr7CkVMQ8K+7
-         YPqijVutmsLx19NxB1aCorHjkkFPGWIaYB+Jk3WlEjumb1u95uyGsa7+8zJ9NIGdEcr+
-         DqKX2YW+3MGBejZg5LRSk9+BOLZa3z62kijQKYhVF0Z1NUCi57Yw9dLbpaVY26M30TIk
-         O15Q==
-X-Gm-Message-State: AOAM532VmsqxwfrSEbhXureP6jerW7YBqXP/1GzVvakCtICTxIxCJIjX
-        3FP8ATC+Kzx+bWmRamBfSdH/E6t2rBOmwQ==
-X-Google-Smtp-Source: ABdhPJyUv7DzkCxtZmWQC+hmZTOQQ1pBle7v2BgXAwmywunA35GMl50kRhfgP4vbRTlXlJGZKZFuNQ==
-X-Received: by 2002:ac2:4d17:: with SMTP id r23mr10509326lfi.234.1630159304888;
-        Sat, 28 Aug 2021 07:01:44 -0700 (PDT)
-Received: from kari-VirtualBox (87-95-21-3.bb.dnainternet.fi. [87.95.21.3])
-        by smtp.gmail.com with ESMTPSA id h15sm1066543ljc.96.2021.08.28.07.01.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dGMD8G1jIPuTkP7k4fL/JNaabjrqckiKTYDIJ4uuuE0=;
+        b=K5p0S2t25PWd297Jd2s30mZ1QfGSygOJbvgN7PyZ39GNVb2AdsgCrIBTlhZDuOYyZZ
+         Gd6PsNAdJowog1V4Kzbz1GskZjeZdOqSW+NjKnMCC6quOAJiNOK2NzlRX2P/zjnE+4Q3
+         XPLNIx9TUlzLuyE6kiuMXUozzDkeMOoSbuYYkQRDRcpWqM6LPAWNACeSKi3HcliWILT3
+         owkAUFLRfeCYRAFKQqVDTGmhCb7rzVzq5nqBhxEZOsNwGgD47TvtWEyw/azbcel/o3Pj
+         RiCUflWFhrAQxihKP6e0SVD+MPnTQFYJcfhvO3Hkz2jhg/+Tno9Tz2Iwsh6BGshIeDEe
+         dxnQ==
+X-Gm-Message-State: AOAM5309aX2CGBOOOoxZIaO6EP8XD+dE1hzW2RVtlXYcXmRQECFZ3dMW
+        uPeE670nYAq3ci29+jLnvX0=
+X-Google-Smtp-Source: ABdhPJw6u0+tq5UMYxj/3pOPrn8zfR/ErHG3LVTAGGRJqwoXlKkcOEk6Mimyf1b4/vxX247Xe2v0TA==
+X-Received: by 2002:a17:906:3383:: with SMTP id v3mr10421811eja.213.1630159330279;
+        Sat, 28 Aug 2021 07:02:10 -0700 (PDT)
+Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id cn16sm4953982edb.87.2021.08.28.07.02.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 07:01:44 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 17:01:39 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Christophe Branchereau <cbranchereau@gmail.com>,
-        list@opendingux.net, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] drm/panel: Add driver for the AUO A030JTN01 TFT LCD
-Message-ID: <20210828140139.vwhgcjmgnas4fh7w@kari-VirtualBox>
-References: <20210828112640.7248-1-paul@crapouillou.net>
- <20210828112640.7248-2-paul@crapouillou.net>
+        Sat, 28 Aug 2021 07:02:09 -0700 (PDT)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/4] Rockchip I2S/TDM controller
+Date:   Sat, 28 Aug 2021 16:02:00 +0200
+Message-Id: <20210828140205.21973-1-frattaroli.nicolas@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828112640.7248-2-paul@crapouillou.net>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 12:26:40PM +0100, Paul Cercueil wrote:
-> From: Christophe Branchereau <cbranchereau@gmail.com>
-> 
-> Add driver for the AUO A030JTN01 panel, which is a 320x480 3.0" 4:3
-> 24-bit TFT LCD with non-square pixels and a delta-RGB 8-bit interface.
-> 
-> Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/gpu/drm/panel/Kconfig               |   8 +
->  drivers/gpu/drm/panel/Makefile              |   1 +
->  drivers/gpu/drm/panel/panel-auo-a030jtn01.c | 297 ++++++++++++++++++++
->  3 files changed, 306 insertions(+)
->  create mode 100644 drivers/gpu/drm/panel/panel-auo-a030jtn01.c
-> 
-> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-> index 0b3784941312..42d42f999266 100644
-> --- a/drivers/gpu/drm/panel/Kconfig
-> +++ b/drivers/gpu/drm/panel/Kconfig
-> @@ -8,6 +8,14 @@ config DRM_PANEL
->  menu "Display Panels"
->  	depends on DRM && DRM_PANEL
->  
-> +config DRM_PANEL_AUO_A030JTN01
-> +	tristate "AUO A030JTN01"
-> +	depends on OF && SPI
-> +	select REGMAP_SPI
-> +	help
-> +	  Say Y here to enable support for the AUO A030JTN01 320x480 3.0" panel
-> +	  as found in the YLM RS-97 handheld gaming console.
-> +
+Hello,
 
-It seems that these should be alphabetical order.
+this is version 3 of the I2S/TDM driver patchset. A big thanks
+to everyone who has provided their valuable feedback so far.
 
->  config DRM_PANEL_ABT_Y030XX067A
->  	tristate "ABT Y030XX067A 320x480 LCD panel"
->  	depends on OF && SPI
-> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-> index 60c0149fc54a..edf62866e4af 100644
-> --- a/drivers/gpu/drm/panel/Makefile
-> +++ b/drivers/gpu/drm/panel/Makefile
-> @@ -1,4 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0
-> +obj-$(CONFIG_DRM_PANEL_AUO_A030JTN01) += panel-auo-a030jtn01.o
->  obj-$(CONFIG_DRM_PANEL_ABT_Y030XX067A) += panel-abt-y030xx067a.o
->  obj-$(CONFIG_DRM_PANEL_ARM_VERSATILE) += panel-arm-versatile.o
->  obj-$(CONFIG_DRM_PANEL_ASUS_Z00T_TM5P5_NT35596) += panel-asus-z00t-tm5p5-n35596.o
-> diff --git a/drivers/gpu/drm/panel/panel-auo-a030jtn01.c b/drivers/gpu/drm/panel/panel-auo-a030jtn01.c
-> new file mode 100644
-> index 000000000000..804567a59d19
-> --- /dev/null
-> +++ b/drivers/gpu/drm/panel/panel-auo-a030jtn01.c
-> @@ -0,0 +1,297 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * AU Optronics A030JTN01.0 TFT LCD panel driver
-> + *
-> + * Copyright (C) 2020, Paul Cercueil <paul@crapouillou.net>
-> + * Copyright (C) 2020, Christophe Branchereau <cbranchereau@gmail.com>
+I've decided to omit the original cover letter for this version,
+as it got quite long and had some things that are outdated or
+weren't the case as I've discovered from better understanding
+the driver code.
 
-Should these be 2021?
+I've decided not to remove the synced reset code. The udelay
+matter has been settled, and it is code that most likely works,
+even if I cannot test it right now. The implementation of half
+a reset controller is ugly, but specifying a generalised n-reset
+synchronised reset is a bit more complex to do than just doing it
+for 2, so I'd prefer putting that work off until later.
 
-    Argillander
+Changes in v3:
+ driver:
+ - alphabetically sort includes
+ - check pm_runtime_get_sync return value, act on it
+ - remove unnecessary initialisers in set_fmt
+ - use udelay(15) in retry code: 10 retries * 15 = 150, so at worst
+   we wait the full i2s register access delay
+ - fix some weird returns to return directly
+ - use __maybe_unused instead of #ifdef CONFIG_PM_SLEEP, also put
+   __maybe_unused on the runtime callbacks
+ - use (foo) instead of foo in header macros for precedence reasons
+ - when using mclk-calibrate, also turn off/on those clocks during
+   suspend and resume operations
+ - remove mclk_tx and mclk_rx reenablement code in remove
+ - move hclk enablement further down the probe, and disable it
+   on probe failure
+ - make reset controls mandatory, since the bindings state this too
+ - use _exclusive for getting the reset controls
+ - change reset assert/deassert delays to both be 10 usec
+   (thank you Sugar Zhang!)
+ - properly prepare and enable all mclks in probe, especially before
+   calling clk_get_rate on them
+ - if registering PCM fails, also use the cleanup error path instead of
+   returning directly
+ - bring back playback and capture only but in the way Sugar Zhang
+   suggested it: set those modes depending on dma-names
+ - rework clock enablement in general. Probe now always enables these,
+   instead of relying on the pm resume thing
+ - add myself to MAINTAINERS for this driver
+ dt bindings:
+ - fix a description still mentioning clk-trcm in the schema
+ - document rockchip,io-multiplex, a property that describes the
+   hardware as having multiplexed I2S GPIOs so direction needs to
+   be changed dynamically
+ - document rockchip,mclk-calibrate, which allows specifying
+   different clocks for the two sample rate bases and switch between
+   them as needed
+ - dma-names now doesn't have a set order and items can be absent to
+   indicate that the controller doesn't support this mode
+ - add myself to MAINTAINERS for these bindings
 
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/media-bus-format.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/regulator/consumer.h>
-> +#include <linux/spi/spi.h>
-> +
-> +#include <drm/drm_modes.h>
-> +#include <drm/drm_panel.h>
-> +
-> +struct a030jtn01_info {
-> +	const struct drm_display_mode *display_modes;
-> +	unsigned int num_modes;
-> +	u16 width_mm, height_mm;
-> +	u32 bus_format, bus_flags;
-> +};
-> +
-> +struct a030jtn01 {
-> +	struct drm_panel panel;
-> +	struct spi_device *spi;
-> +	struct regmap *map;
-> +
-> +	const struct a030jtn01_info *panel_info;
-> +
-> +	struct regulator *supply;
-> +	struct gpio_desc *reset_gpio;
-> +};
-> +
-> +static inline struct a030jtn01 *to_a030jtn01(struct drm_panel *panel)
-> +{
-> +	return container_of(panel, struct a030jtn01, panel);
-> +}
-> +
-> +static int a030jtn01_prepare(struct drm_panel *panel)
-> +{
-> +	struct a030jtn01 *priv = to_a030jtn01(panel);
-> +	struct device *dev = &priv->spi->dev;
-> +	int err;
-> +
-> +	err = regulator_enable(priv->supply);
-> +	if (err) {
-> +		dev_err(dev, "Failed to enable power supply: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	usleep_range(1000, 8000);
-> +
-> +	/* Reset the chip */
-> +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
-> +	usleep_range(100, 8000);
-> +	gpiod_set_value_cansleep(priv->reset_gpio, 0);
-> +	usleep_range(2000, 8000);
-> +
-> +	/*
-> +	 * No idea why two writes are needed. If this write is commented,
-> +	 * the colors are wrong. Doesn't seem to be timing-related, since
-> +	 * a msleep(200) doesn't fix it.
-> +	 */
-> +	regmap_write(priv->map, 0x06, 0x00);
-> +
-> +	/* Use (24 + 6) == 0x1e as the vertical back porch */
-> +	err = regmap_write(priv->map, 0x06, 0x1e);
-> +	if (err)
-> +		goto err_disable_regulator;
-> +
-> +	/* Use (42 + 30) * 3 == 0xd8 as the horizontal back porch */
-> +	err = regmap_write(priv->map, 0x07, 0xd8);
-> +	if (err)
-> +		goto err_disable_regulator;
-> +
-> +	regmap_write(priv->map, 0x05, 0x74);
-> +
-> +	return 0;
-> +
-> +err_disable_regulator:
-> +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
-> +	regulator_disable(priv->supply);
-> +	return err;
-> +}
-> +
-> +static int a030jtn01_unprepare(struct drm_panel *panel)
-> +{
-> +	struct a030jtn01 *priv = to_a030jtn01(panel);
-> +
-> +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
-> +	regulator_disable(priv->supply);
-> +
-> +	return 0;
-> +}
-> +
-> +static int a030jtn01_enable(struct drm_panel *panel)
-> +{
-> +	struct a030jtn01 *priv = to_a030jtn01(panel);
-> +	int ret;
-> +
-> +	ret = regmap_write(priv->map, 0x05, 0x75);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Wait for the picture to be stable */
-> +	if (panel->backlight)
-> +		msleep(100);
-> +
-> +	return 0;
-> +}
-> +
-> +static int a030jtn01_disable(struct drm_panel *panel)
-> +{
-> +	struct a030jtn01 *priv = to_a030jtn01(panel);
-> +
-> +	return regmap_write(priv->map, 0x05, 0x74);
-> +}
-> +
-> +static int a030jtn01_get_modes(struct drm_panel *panel,
-> +				struct drm_connector *connector)
-> +{
-> +	struct a030jtn01 *priv = to_a030jtn01(panel);
-> +	const struct a030jtn01_info *panel_info = priv->panel_info;
-> +	struct drm_display_mode *mode;
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < panel_info->num_modes; i++) {
-> +		mode = drm_mode_duplicate(connector->dev,
-> +					  &panel_info->display_modes[i]);
-> +		if (!mode)
-> +			return -ENOMEM;
-> +
-> +		drm_mode_set_name(mode);
-> +
-> +		mode->type = DRM_MODE_TYPE_DRIVER;
-> +		if (panel_info->num_modes == 1)
-> +			mode->type |= DRM_MODE_TYPE_PREFERRED;
-> +
-> +		drm_mode_probed_add(connector, mode);
-> +	}
-> +
-> +	connector->display_info.bpc = 8;
-> +	connector->display_info.width_mm = panel_info->width_mm;
-> +	connector->display_info.height_mm = panel_info->height_mm;
-> +
-> +	drm_display_info_set_bus_formats(&connector->display_info,
-> +					 &panel_info->bus_format, 1);
-> +	connector->display_info.bus_flags = panel_info->bus_flags;
-> +
-> +	return panel_info->num_modes;
-> +}
-> +
-> +static const struct drm_panel_funcs a030jtn01_funcs = {
-> +	.prepare	= a030jtn01_prepare,
-> +	.unprepare	= a030jtn01_unprepare,
-> +	.enable		= a030jtn01_enable,
-> +	.disable	= a030jtn01_disable,
-> +	.get_modes	= a030jtn01_get_modes,
-> +};
-> +
-> +static bool a030jtn01_has_reg(struct device *dev, unsigned int reg)
-> +{
-> +	static const u32 a030jtn01_regs_mask = 0x001823f1fb;
-> +
-> +	return a030jtn01_regs_mask & BIT(reg);
-> +};
-> +
-> +static const struct regmap_config a030jtn01_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.read_flag_mask = 0x40,
-> +	.max_register = 0x1c,
-> +	.readable_reg = a030jtn01_has_reg,
-> +	.writeable_reg = a030jtn01_has_reg,
-> +};
-> +
-> +static int a030jtn01_probe(struct spi_device *spi)
-> +{
-> +	struct device *dev = &spi->dev;
-> +	struct a030jtn01 *priv;
-> +	int err;
-> +
-> +	spi->mode |= SPI_MODE_3 | SPI_3WIRE;
-> +
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->spi = spi;
-> +	spi_set_drvdata(spi, priv);
-> +
-> +	priv->map = devm_regmap_init_spi(spi, &a030jtn01_regmap_config);
-> +	if (IS_ERR(priv->map)) {
-> +		dev_err(dev, "Unable to init regmap\n");
-> +		return PTR_ERR(priv->map);
-> +	}
-> +
-> +	priv->panel_info = of_device_get_match_data(dev);
-> +	if (!priv->panel_info)
-> +		return -EINVAL;
-> +
-> +	priv->supply = devm_regulator_get(dev, "power");
-> +	if (IS_ERR(priv->supply)) {
-> +		dev_err(dev, "Failed to get power supply\n");
-> +		return PTR_ERR(priv->supply);
-> +	}
-> +
-> +	priv->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(priv->reset_gpio)) {
-> +		dev_err(dev, "Failed to get reset GPIO\n");
-> +		return PTR_ERR(priv->reset_gpio);
-> +	}
-> +
-> +	drm_panel_init(&priv->panel, dev, &a030jtn01_funcs,
-> +		       DRM_MODE_CONNECTOR_DPI);
-> +
-> +	err = drm_panel_of_backlight(&priv->panel);
-> +	if (err)
-> +		return err;
-> +
-> +	drm_panel_add(&priv->panel);
-> +
-> +	return 0;
-> +}
-> +
-> +static int a030jtn01_remove(struct spi_device *spi)
-> +{
-> +	struct a030jtn01 *priv = spi_get_drvdata(spi);
-> +
-> +	drm_panel_remove(&priv->panel);
-> +	drm_panel_disable(&priv->panel);
-> +	drm_panel_unprepare(&priv->panel);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct drm_display_mode a030jtn01_modes[] = {
-> +	{ /* 60 Hz */
-> +		.clock = 14400,
-> +		.hdisplay = 320,
-> +		.hsync_start = 320 + 8,
-> +		.hsync_end = 320 + 8 + 42,
-> +		.htotal = 320 + 8 + 42 + 30,
-> +		.vdisplay = 480,
-> +		.vsync_start = 480 + 90,
-> +		.vsync_end = 480 + 90 + 24,
-> +		.vtotal = 480 + 90 + 24 + 6,
-> +		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-> +	},
-> +	{ /* 50 Hz */
-> +		.clock = 12000,
-> +		.hdisplay = 320,
-> +		.hsync_start = 320 + 8,
-> +		.hsync_end = 320 + 8 + 42,
-> +		.htotal = 320 + 8 + 42 + 30,
-> +		.vdisplay = 480,
-> +		.vsync_start = 480 + 90,
-> +		.vsync_end = 480 + 90 + 24,
-> +		.vtotal = 480 + 90 + 24 + 6,
-> +		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-> +	},
-> +};
-> +
-> +static const struct a030jtn01_info a030jtn01_info = {
-> +	.display_modes = a030jtn01_modes,
-> +	.num_modes = ARRAY_SIZE(a030jtn01_modes),
-> +	.width_mm = 70,
-> +	.height_mm = 51,
-> +	.bus_format = MEDIA_BUS_FMT_RGB888_3X8_DELTA,
-> +	.bus_flags = DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
-> +};
-> +
-> +static const struct of_device_id a030jtn01_of_match[] = {
-> +	{ .compatible = "auo,a030jtn01", .data = &a030jtn01_info },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, a030jtn01_of_match);
-> +
-> +static struct spi_driver a030jtn01_driver = {
-> +	.driver = {
-> +		.name = "auo-a030jtn01",
-> +		.of_match_table = a030jtn01_of_match,
-> +	},
-> +	.probe = a030jtn01_probe,
-> +	.remove = a030jtn01_remove,
-> +};
-> +module_spi_driver(a030jtn01_driver);
-> +
-> +MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
-> +MODULE_AUTHOR("Christophe Branchereau <cbranchereau@gmail.com>");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.33.0
-> 
+Changes in v2:
+ - remove ad-hoc writeq and needless (and broken) optimisation in
+   reset assert/deassert. This wouldn't have worked on Big Endian,
+   and would've been pointless on any other platform, as the
+   overhead for saving one write was comparatively big
+ - fix various checkpatch issues
+ - get rid of leftover clk-trcm in schema
+ - set status = "okay" in example in schema instead of "disabled"
+ - change dma-names so rx is first, adjust device trees as necessary
+ - properly reference uint32-array for rx-route and tx-route
+   instead of uint32
+ - replace trcm-sync with two boolean properties, adjust DT changes
+   accordingly and also get rid of the header file
+ - get rid of rockchip,no-dmaengine. This was only needed for
+   some downstream driver and shouldn't be in the DT
+ - get rid of rockchip,capture-only/playback-only. Rationale being
+   that I have no way to test whether they're needed, and
+   unconditionally setting channels_min to 0 breaks everything
+ - change hclk description in "clocks"
+
+Nicolas Frattaroli (4):
+  ASoC: rockchip: add support for i2s-tdm controller
+  dt-bindings: sound: add rockchip i2s-tdm binding
+  arm64: dts: rockchip: add i2s1 on rk356x
+  arm64: dts: rockchip: add analog audio on Quartz64
+
+ .../bindings/sound/rockchip,i2s-tdm.yaml      |  218 ++
+ MAINTAINERS                                   |    7 +
+ .../boot/dts/rockchip/rk3566-quartz64-a.dts   |   35 +-
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi      |   26 +
+ sound/soc/rockchip/Kconfig                    |   11 +
+ sound/soc/rockchip/Makefile                   |    2 +
+ sound/soc/rockchip/rockchip_i2s_tdm.c         | 1845 +++++++++++++++++
+ sound/soc/rockchip/rockchip_i2s_tdm.h         |  398 ++++
+ 8 files changed, 2541 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
+ create mode 100644 sound/soc/rockchip/rockchip_i2s_tdm.c
+ create mode 100644 sound/soc/rockchip/rockchip_i2s_tdm.h
+
+-- 
+2.33.0
+
