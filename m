@@ -2,297 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C073FA593
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 14:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0143FA59A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 14:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbhH1L7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 07:59:43 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:50630 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234099AbhH1L7m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 07:59:42 -0400
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 17SBwHK3032141;
-        Sat, 28 Aug 2021 20:58:18 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 17SBwHK3032141
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1630151898;
-        bh=DJwBTSB1Ga58CQUosYCACjgumTXwfvbyeghgs73ref0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uHW7FDheehL5Cx41btKsNreWaqR2KA6q8ZT8DhB6xuHb7MeL27EGC7CFHTakSPqgf
-         5pOrSWX7W0OsRTrQAB80FEdpcZrtyycBHSa7QNJON/2pjERK7by1RJIrzL6mHYgcVI
-         ognwGP9SOwZOFNR8mWK3D0W6yvuqiDyAykCmhGqz79ZfHW/4TmvJNfXKVOufrqdUt8
-         lcCXS72vw7jADde/yxxLbBdYC0/FuamLjI1Jya6QaXLtpmE8B0TfFTUeM0TNesR/Y3
-         Sb8Bt9Ur8JdS9+rHmyrr70T5AJI3ZSYbFF7upyRzVnT4n+j2zHjpwQV6z/kEKVpcMJ
-         QqTrGXoYAVRSg==
-X-Nifty-SrcIP: [209.85.215.177]
-Received: by mail-pg1-f177.google.com with SMTP id y23so8515321pgi.7;
-        Sat, 28 Aug 2021 04:58:18 -0700 (PDT)
-X-Gm-Message-State: AOAM533yLVrzuwiF1juMGuvOcoGxZRjDLxhEzkltBgSDB6Gop0lqSdnb
-        msTi9kS+SqaeiCjAL8FNNa87A1xzNZB04KCrvPc=
-X-Google-Smtp-Source: ABdhPJwRhQVqNucYoJyrYOLZIrND7BVSRg4eIVaV65pJokYN0dLEGCI72Yt3W4EyAcgNCd/cn2z00JY6WZZ46ZCZkIU=
-X-Received: by 2002:a62:f243:0:b0:3fb:b8bd:e9d9 with SMTP id
- y3-20020a62f243000000b003fbb8bde9d9mr859828pfl.63.1630151897130; Sat, 28 Aug
- 2021 04:58:17 -0700 (PDT)
+        id S234140AbhH1MLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 08:11:22 -0400
+Received: from mga06.intel.com ([134.134.136.31]:13917 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234148AbhH1MLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 08:11:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10089"; a="279106879"
+X-IronPort-AV: E=Sophos;i="5.84,359,1620716400"; 
+   d="scan'208";a="279106879"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2021 05:10:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,359,1620716400"; 
+   d="scan'208";a="458231068"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Aug 2021 05:10:25 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mJxAG-0003Pf-Ps; Sat, 28 Aug 2021 12:10:24 +0000
+Date:   Sat, 28 Aug 2021 20:10:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ b542e383d8c005f06a131e2b40d5889b812f19c6
+Message-ID: <612a279d.h60G6LE+lLha8cYX%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210819005744.644908-1-masahiroy@kernel.org> <20210819005744.644908-10-masahiroy@kernel.org>
- <202108182337.25ECD5503B@keescook>
-In-Reply-To: <202108182337.25ECD5503B@keescook>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 28 Aug 2021 20:57:40 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATyNAu6sa-TT9JXy=BXr5d2Q5K-sp-mVXXtJDuJyi6_bA@mail.gmail.com>
-Message-ID: <CAK7LNATyNAu6sa-TT9JXy=BXr5d2Q5K-sp-mVXXtJDuJyi6_bA@mail.gmail.com>
-Subject: Re: [PATCH 09/13] kbuild: do not create built-in.a.symversions or lib.a.symversions
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 3:41 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Thu, Aug 19, 2021 at 09:57:40AM +0900, Masahiro Yamada wrote:
-> > Merge all *.o.symversions in scripts/link-vmlinux.sh instead of
-> > merging them in the unit of built-in.a or lib.a.
-> >
-> > This is a preparation for further code cleanups.
->
-> Looks good, though I wonder about this becoming serialized during the
-> link phase rather than doing the work per-target. I mean, it always had
-> to collect them all during the link phase (with "cat"), but before it
-> wasn't running $(AR) serially to do it.
->
-> I'll ponder how this might be made a little more parallel. But for now:
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> -Kees
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: b542e383d8c005f06a131e2b40d5889b812f19c6  eventfd: Make signal recursion protection a task bit
 
+elapsed time: 743m
 
-I measured the cost of merging all the *.symversions.
+configs tested: 160
+configs skipped: 5
 
-For a typical use-case
-(x86_64 defconfig + CONFIG_LTO_CLANG_THIN + CONFIG_MODVERSIONS),
-my shell script took about 0.40 msec
-for merging all the individual *.symversions files.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Most of the cost of 0.40 msec came from the 'cat' command.
-The 'cat' command is kind of slow when you concatenate
-a large number of files.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210827
+arc                            hsdk_defconfig
+arm                         lpc32xx_defconfig
+sh                           sh2007_defconfig
+nios2                               defconfig
+mips                           xway_defconfig
+x86_64                           alldefconfig
+arm                  colibri_pxa270_defconfig
+arm                         lpc18xx_defconfig
+m68k                       m5275evb_defconfig
+mips                         mpc30x_defconfig
+mips                           ip32_defconfig
+m68k                        m5272c3_defconfig
+arm                         at91_dt_defconfig
+mips                      fuloong2e_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                          g5_defconfig
+sh                         ecovec24_defconfig
+arm                       imx_v4_v5_defconfig
+mips                        maltaup_defconfig
+arm                         palmz72_defconfig
+mips                     loongson2k_defconfig
+arc                         haps_hs_defconfig
+powerpc                     sbc8548_defconfig
+arm                         lubbock_defconfig
+powerpc                      katmai_defconfig
+m68k                        mvme147_defconfig
+sh                           se7722_defconfig
+sh                           se7751_defconfig
+ia64                        generic_defconfig
+sh                          rsk7201_defconfig
+sh                           se7780_defconfig
+powerpc                        warp_defconfig
+arm                          badge4_defconfig
+xtensa                       common_defconfig
+arm                         bcm2835_defconfig
+powerpc                      makalu_defconfig
+m68k                          multi_defconfig
+nds32                             allnoconfig
+sh                         apsh4a3a_defconfig
+arm                        keystone_defconfig
+sh                        edosk7705_defconfig
+powerpc                     akebono_defconfig
+nios2                         3c120_defconfig
+arc                        vdk_hs38_defconfig
+sh                         ap325rxa_defconfig
+sh                        sh7763rdp_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                      bamboo_defconfig
+powerpc                      ppc64e_defconfig
+arc                    vdk_hs38_smp_defconfig
+arm                        vexpress_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                         s3c6400_defconfig
+powerpc                       holly_defconfig
+powerpc                      ppc6xx_defconfig
+sh                           se7343_defconfig
+arm                         nhk8815_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210828
+x86_64               randconfig-a001-20210828
+x86_64               randconfig-a005-20210828
+x86_64               randconfig-a003-20210828
+x86_64               randconfig-a004-20210828
+x86_64               randconfig-a002-20210828
+i386                 randconfig-a001-20210828
+i386                 randconfig-a006-20210828
+i386                 randconfig-a002-20210828
+i386                 randconfig-a005-20210828
+i386                 randconfig-a003-20210828
+i386                 randconfig-a004-20210828
+x86_64               randconfig-a014-20210827
+x86_64               randconfig-a015-20210827
+x86_64               randconfig-a016-20210827
+x86_64               randconfig-a013-20210827
+x86_64               randconfig-a012-20210827
+x86_64               randconfig-a011-20210827
+i386                 randconfig-a011-20210827
+i386                 randconfig-a016-20210827
+i386                 randconfig-a012-20210827
+i386                 randconfig-a014-20210827
+i386                 randconfig-a013-20210827
+i386                 randconfig-a015-20210827
+arc                  randconfig-r043-20210827
+riscv                randconfig-r042-20210827
+s390                 randconfig-r044-20210827
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-I implemented the equivalent functionality with a perl script,
-which worked in only 0.04 msec.
+clang tested configs:
+s390                 randconfig-c005-20210827
+i386                 randconfig-c001-20210827
+arm                  randconfig-c002-20210827
+riscv                randconfig-c006-20210827
+powerpc              randconfig-c003-20210827
+x86_64               randconfig-c007-20210827
+mips                 randconfig-c004-20210827
+x86_64               randconfig-a005-20210827
+x86_64               randconfig-a001-20210827
+x86_64               randconfig-a006-20210827
+x86_64               randconfig-a003-20210827
+x86_64               randconfig-a004-20210827
+x86_64               randconfig-a002-20210827
+i386                 randconfig-a006-20210827
+i386                 randconfig-a001-20210827
+i386                 randconfig-a002-20210827
+i386                 randconfig-a005-20210827
+i386                 randconfig-a004-20210827
+i386                 randconfig-a003-20210827
+i386                 randconfig-a011-20210828
+i386                 randconfig-a016-20210828
+i386                 randconfig-a012-20210828
+i386                 randconfig-a014-20210828
+i386                 randconfig-a013-20210828
+i386                 randconfig-a015-20210828
 
-I think 0.04 msec should be acceptable cost because
-this commit eliminates all the intermediate built-in.a.symversions
-and lib.a.symversions, saving disk space.
-
-I also tried allyesconfig + CONFIG_LTO_CLANG_THIN + CONFIG_MODVERSIONS
-(the heaviest load), but the result is similar.
-
-This is because most of EXPORT_SYMBOL's come from the core part of
-the kernel, and enabling drivers as built-in does not give much impact, I think.
-
-So, I will plan to submit v2 with perl implementation.
-
-
-The detailed test code is as follows:
-
-
-
-
-
-
-
-
-masahiro@oscar:~/workspace/linux-kbuild$ cat scripts/merge-symvers.sh
-#!/bin/sh
-
-append_symversion()
-{
-        if [ -f ${1}.symversions ]; then
-                cat ${1}.symversions >> .tmp_symversions.lds
-        fi
-}
-
-# If CONFIG_LTO_CLANG is selected, collect generated symbol versions into
-# .tmp_symversions.lds
-gen_symversions()
-{
-        rm -f .tmp_symversions.lds
-
-        for a in ${KBUILD_VMLINUX_OBJS} ${KBUILD_VMLINUX_LIBS}; do
-                case $a in
-                *.a)
-                        for o in $(${AR} t ${a}); do
-                                append_symversion ${o}
-                        done
-                        ;;
-                *)
-                        append_symversion ${a}
-                        ;;
-                esac
-        done
-}
-
-gen_symversions
-
-
-
-masahiro@oscar:~/workspace/linux-kbuild$ cat scripts/merge-symvers.pl
-#!/usr/bin/env perl
-# SPDX-License-Identifier: GPL-2.0-only
-
-use autodie;
-use strict;
-use warnings;
-use Getopt::Long 'GetOptions';
-
-my $ar;
-my $output;
-
-GetOptions(
-        'a|ar=s' => \$ar,
-        'o|output=s'  => \$output,
-);
-
-# Collect all objects
-my @objects;
-
-foreach (@ARGV) {
-        if (/\.o$/) {
-                # Some objects (head-y) are linked to vmlinux directly.
-                push(@objects, $_);
-        } elsif (/\.a$/) {
-                # Most of built-in objects are contained in built-in.a or lib.a.
-                # Use 'ar -t' to get the list of the contained objects.
-                $_ = `$ar -t $_`;
-                push(@objects, split(/\n/));
-        } else {
-                die "$_: unknown file type\n";
-        }
-}
-
-open(my $out_fh, '>', "$output");
-
-foreach (@objects) {
-        # The symbol CRCs for foo/bar/baz.o is output to
-foo/bar/baz.o.symversions
-        s/(.*)/$1.symversions/;
-
-        if (! -e $_) {
-                # .symversions does not exist if the object does not contain
-                # EXPORT_SYMBOL at all. Skip it.
-                next;
-        }
-
-        open(my $in_fh, '<', "$_");
-        # Concatenate all the existing *.symversions files.
-        print $out_fh do { local $/; <$in_fh> };
-        close $in_fh;
-}
-
-close $out_fh;
-
-
-
-masahiro@oscar:~/workspace/linux-kbuild$ git diff
-diff --git a/Makefile b/Makefile
-index 3ef3685b7e4a..5b8fe617769a 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1175,6 +1175,14 @@ vmlinux: scripts/link-vmlinux.sh
-autoksyms_recursive $(vmlinux-deps) FORCE
-
- targets := vmlinux
-
-+PHONY += merge-symvers-by-shell merge-symvers-by-perl
-+
-+merge-symvers-by-shell:
-+       time sh scripts/merge-symvers.sh
-+
-+merge-symvers-by-perl:
-+       time perl scripts/merge-symvers.pl -a $(AR) -o
-.tmp_symversions.lds $(KBUILD_VMLINUX_OBJS) $(KBUILD_VMLINUX_LIBS)
-+
- # The actual objects are generated when descending,
- # make sure no implicit rule kicks in
- $(sort $(vmlinux-deps) $(subdir-modorder)): descend ;
-
-
-
-
-masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1 defconfig
-*** Default configuration is based on 'x86_64_defconfig'
-#
-# configuration written to .config
-#
-masahiro@oscar:~/workspace/linux-kbuild$ ./scripts/config  -d
-LTO_NONE -e LTO_CLANG_THIN -e MODVERSIONS
-masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1  -s -j24
-arch/x86/entry/vdso/Makefile:135: FORCE prerequisite is missing
-arch/x86/entry/vdso/Makefile:135: FORCE prerequisite is missing
-
-
-masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   merge-symvers-by-shell
-time sh scripts/merge-symvers.sh
-0.40user 0.08system 0:00.47elapsed 101%CPU (0avgtext+0avgdata 7156maxresident)k
-0inputs+896outputs (0major+90678minor)pagefaults 0swaps
-
-
-masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   merge-symvers-by-perl
-time perl scripts/merge-symvers.pl -a llvm-ar -o .tmp_symversions.lds
-arch/x86/kernel/head_64.o arch/x86/kernel/head64.o
-arch/x86/kernel/ebda.o arch/x86/kernel/platform-quirks.o
-init/built-in.a usr/built-in.a arch/x86/built-in.a kernel/built-in.a
-certs/built-in.a mm/built-in.a fs/built-in.a ipc/built-in.a
-security/built-in.a crypto/built-in.a block/built-in.a lib/built-in.a
-arch/x86/lib/built-in.a  lib/lib.a  arch/x86/lib/lib.a
-drivers/built-in.a sound/built-in.a net/built-in.a virt/built-in.a
-arch/x86/pci/built-in.a arch/x86/power/built-in.a
-0.04user 0.02system 0:00.06elapsed 101%CPU (0avgtext+0avgdata 10100maxresident)k
-0inputs+896outputs (0major+8590minor)pagefaults 0swaps
-
-
-masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   allyesconfig
-#
-# configuration written to .config
-#
-masahiro@oscar:~/workspace/linux-kbuild$ ./scripts/config  -d
-LTO_NONE -e LTO_CLANG_THIN
-masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1  -s -j24
-  [ snip ]
-
-masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   merge-symvers-by-shell
-time sh scripts/merge-symvers.sh
-0.41user 0.09system 0:00.50elapsed 101%CPU (0avgtext+0avgdata 7172maxresident)k
-0inputs+896outputs (0major+91425minor)pagefaults 0swaps
-
-masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   merge-symvers-by-perl
-time perl scripts/merge-symvers.pl -a llvm-ar -o .tmp_symversions.lds
-arch/x86/kernel/head_64.o arch/x86/kernel/head64.o
-arch/x86/kernel/ebda.o arch/x86/kernel/platform-quirks.o
-init/built-in.a usr/built-in.a arch/x86/built-in.a kernel/built-in.a
-certs/built-in.a mm/built-in.a fs/built-in.a ipc/built-in.a
-security/built-in.a crypto/built-in.a block/built-in.a lib/built-in.a
-arch/x86/lib/built-in.a  lib/lib.a  arch/x86/lib/lib.a
-drivers/built-in.a sound/built-in.a samples/built-in.a net/built-in.a
-virt/built-in.a arch/x86/pci/built-in.a arch/x86/power/built-in.a
-arch/x86/video/built-in.a
-0.08user 0.02system 0:00.11elapsed 100%CPU (0avgtext+0avgdata 15984maxresident)k
-0inputs+896outputs (0major+11506minor)pagefaults 0swaps
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
