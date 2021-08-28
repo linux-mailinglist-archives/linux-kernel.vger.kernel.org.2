@@ -2,167 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6533FA718
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15663FA71A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhH1SCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 14:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhH1SCn (ORCPT
+        id S230298AbhH1SEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 14:04:53 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:40695 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229912AbhH1SEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 14:02:43 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B1BC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:01:52 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id me10so21167517ejb.11
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=LweYKg4Vk4QsavD9uxUeq5d8BOyJSCHKCTz9RcXLWNY=;
-        b=mTAz6GdNb39rq4+nA4PfTHwRcMdwB+MzD4NwMqI4K3iK9MPokEzr0CgxX4EBTw8A32
-         hM04g71VA64zpQzn89RwpsrbK/QZ49BtvCF0oeeb91QCtw5RoqhnzAHB0fLW6q3cHwdT
-         vK08G0OFd+giCb8JwcCcF4A+hBxxwaUSTLVwfz/svMLWCs2zNrLF+c3X/gFxloGkxua5
-         oRG0oPYI1wLA3YVXuc1imEmO/M0gsyDxHCZwnkO8zYaWztUJOup/5qUGqy25lZyMvPN9
-         i0geUJF3Gn25PGkX6pCuO26WkBU7xLOIznSfLNQpwXttOUKwl0hYeOqFOSdFBTUmkmO8
-         qavg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LweYKg4Vk4QsavD9uxUeq5d8BOyJSCHKCTz9RcXLWNY=;
-        b=mMFDBMt5v3i2VzeetqCHnoEb/8jORPJPwVSC9+TtuRGc/yqBM8ecpWUU8w3piASGBk
-         hLEZRVvEDTqXTy9yVQuU6nh0BJBgJB/8FuhTehr3MkYlpU9nBN2bPLBlDSyfSI4P1B1H
-         UDzqJ3wxlgWwsRjOTg4nYtCAyBTP3flg9E/HKJn7qEXSfuydrt3KYUKpBzbORVhStSfS
-         N9R8fpDTWOChqqeip5aw5hJesklL+OW3aJnJjX7GqYwAvuSXoftrp1N70S1dxvg6yL5E
-         MY12tTz3GsnpKJXK0hY+byfCioKGRXEpam8zZrMV+Y3Gh2QsJ/zH1JDR4gTTGTbpVD2+
-         nFCw==
-X-Gm-Message-State: AOAM533sugeWjU2gJj+cUAM/nhiMnoL4e4hmN/arHCeagGEyuuXR+2me
-        k7jXvBkoPmwwBkQ1giBsE6c=
-X-Google-Smtp-Source: ABdhPJy8xBvbl8O2QZvyScAuLRfWQxlC5B5EVOXgKFFWJbAHGsDVGQ8TFN2tFMABHMbaApM3GR5LSg==
-X-Received: by 2002:a17:906:4943:: with SMTP id f3mr16244434ejt.102.1630173711020;
-        Sat, 28 Aug 2021 11:01:51 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id x11sm327862edq.58.2021.08.28.11.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 11:01:50 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Alex Elder <elder@linaro.org>
-Subject: Re: [greybus-dev] [PATCH v3] staging: greybus: Convert uart.c from IDR to XArray
-Date:   Sat, 28 Aug 2021 20:01:48 +0200
-Message-ID: <3554184.2JXonMZcNW@localhost.localdomain>
-In-Reply-To: <dc2d0dda-0a04-8b45-d83e-f7c54baa357b@linaro.org>
-References: <20210816195000.736-1-fmdefrancesco@gmail.com> <dc2d0dda-0a04-8b45-d83e-f7c54baa357b@linaro.org>
+        Sat, 28 Aug 2021 14:04:51 -0400
+Received: (qmail 291460 invoked by uid 1000); 28 Aug 2021 14:03:58 -0400
+Date:   Sat, 28 Aug 2021 14:03:58 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com>
+Cc:     gregkh@linuxfoundation.org, johan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mathias.nyman@linux.intel.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] INFO: task hung in do_proc_bulk
+Message-ID: <20210828180358.GA291431@rowland.harvard.edu>
+References: <000000000000a83c6a05caa09572@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000a83c6a05caa09572@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, August 28, 2021 5:43:49 PM CEST Alex Elder wrote:
-> On 8/16/21 2:50 PM, Fabio M. De Francesco wrote:
-> > Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
-> > is more memory-efficient, parallelisable, and cache friendly. It takes
-> > advantage of RCU to perform lookups without locking. Furthermore, IDR is
-> > deprecated because XArray has a better (cleaner and more consistent) API.
-> > 
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+On Sat, Aug 28, 2021 at 08:52:17AM -0700, syzbot wrote:
+> Hello,
 > 
-> I have one more comment, below.  Generally, I don't think it is
-> important to make this change, but I think it's fine to switch
-> to the newer XArray interface.  The result is a little simpler.
-
-I agree that the result of using XArray is a little simpler and readable. As far as 
-performance is regarded (memory-efficiency, cache friendliness, parallelization
-improvements) I have to take for true the words of Matthew W.. Some time ago
-I did a similar conversion for staging/unisys/visorhba after discussing with him 
-on IRC; he confirmed that the driver would have got several benefits. This is why
-I decided to do this work on staging/greybus too.
-
-I cannot affirm the same for IDA to XArray conversions, since IDA are relatively
-lighter and efficient than IDR. Unfortunately, I cannot profile such conversions
-in order to prove/disprove they *really* gain on execution time and/or memory 
-footprint.
-> >  
-> > []
-> >
-> >  static int gb_uart_receive_data_handler(struct gb_operation *op)
-> >  {
-> > @@ -341,8 +341,8 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
-> >  {
-> >  	struct gb_tty *gb_tty;
-> >  
-> > -	mutex_lock(&table_lock);
-> > -	gb_tty = idr_find(&tty_minors, minor);
-> > +	xa_lock(&tty_minors);
+> syzbot found the following issue on:
 > 
-> I'm basically new to using the XArray interface, but I
-> don't think you really need the xa_lock()/xa_unlock()
-> calls here.  You are not relying on reference counting
-> to control when the allocated minor device numbers are
-> freed, so I'm pretty sure you can simply call xa_load()
-> to look up the gb_tty for the given minor device.
-
-I haven't yet had time to understand how driver works. However,
-I can attempt a response mostly due to logic than to a real knowledge
-of how drivers work...
-
-(1) I see that alloc_minor is called at "probe" (that I suppose it means
-the the kernel "feels" that a new device has been added and so it should 
-initialize it somehow and make it ready to operate properly - I hope
-I'm not too far from the truth :)).
-
-(2) I see that xa_alloc() finds an *unused* identifier and, if it succeeds, 
-that identifier is used as the "minor". So, we have one minor per device
-and that the same minor cannot be re-assigned to other devices. It also
-should mean that there's no need for reference counting because that
-"minor" is not shared.
-
-(3) If the logic above is sound, we have a 1:1 correspondence between
-minors and devices (max 16 gb_tty's) and therefore we don't need to lock 
-tty_minors because concurrent code passes different minors to xa_load() 
-which always returns different gb_tty's.
-
-If the above argument is wrong I think I should read a book on device 
-drivers for the first time. I have Greg's but I haven't yet opened it for
-reading :) 
-
-Thanks,
-
-Fabio
-
-> But please don't only take my word for it; investigate
-> it for yourself, and if needed ask others about it so
-> you're confident it's correct.  There is no harm in
-> taking the lock, but if it's not needed, it would be
-> nice to avoid it.
+> HEAD commit:    d5ae8d7f85b7 Revert "media: dvb header files: move some he..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=155fa21e300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ada0f7d3d9fd2016d927
+> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a1ab0e300000
 > 
-> If you conclude the locks are necessary, just say so,
-> and explain why, and I'll probably just accept it.
-> Otherwise, please explain why you are sure they are
-> not needed when you send version 4.  Thank you.
+> Bisection is inconclusive: the issue happens on the oldest tested release.
 > 
-> 					-Alex
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15662ee1300000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=17662ee1300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13662ee1300000
 > 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com
 > 
-> > +	gb_tty = xa_load(&tty_minors, minor);
-> >  	if (gb_tty) {
-> >  		mutex_lock(&gb_tty->mutex);
-> >  		if (gb_tty->disconnected) {
-> > @@ -353,19 +353,19 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
-> >  			mutex_unlock(&gb_tty->mutex);
-> >  		}
-> >  	}
-> > -	mutex_unlock(&table_lock);
-> > +	xa_unlock(&tty_minors);
-> >  	return gb_tty;
-> >  }
+> INFO: task syz-executor.0:8700 blocked for more than 143 seconds.
+>       Not tainted 5.14.0-rc7-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor.0  state:D stack:23192 pid: 8700 ppid:  8455 flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:4681 [inline]
+>  __schedule+0xc07/0x11f0 kernel/sched/core.c:5938
+>  schedule+0x14b/0x210 kernel/sched/core.c:6017
+>  schedule_timeout+0x98/0x2f0 kernel/time/timer.c:1857
+>  do_wait_for_common+0x2da/0x480 kernel/sched/completion.c:85
+>  __wait_for_common kernel/sched/completion.c:106 [inline]
+>  wait_for_common kernel/sched/completion.c:117 [inline]
+>  wait_for_completion_timeout+0x46/0x60 kernel/sched/completion.c:157
+>  usb_start_wait_urb+0x167/0x550 drivers/usb/core/message.c:63
+>  do_proc_bulk+0x978/0x1080 drivers/usb/core/devio.c:1236
 
+Looks like the wait needs to be interruptible.
 
+Alan Stern
 
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git d5ae8d7f85b7
+
+Index: usb-devel/drivers/usb/core/message.c
+===================================================================
+--- usb-devel.orig/drivers/usb/core/message.c
++++ usb-devel/drivers/usb/core/message.c
+@@ -60,12 +60,18 @@ static int usb_start_wait_urb(struct urb
+ 		goto out;
+ 
+ 	expire = timeout ? msecs_to_jiffies(timeout) : MAX_SCHEDULE_TIMEOUT;
+-	if (!wait_for_completion_timeout(&ctx.done, expire)) {
++	retval = wait_for_completion_interruptible_timeout(&ctx.done, expire);
++	if (retval <= 0) {
+ 		usb_kill_urb(urb);
+-		retval = (ctx.status == -ENOENT ? -ETIMEDOUT : ctx.status);
++		if (retval < 0)
++			retval = -EINTR;
++		else if (ctx.status == -ENOENT)
++			retval = -ETIMEDOUT;
++		else
++			retval = ctx.status;
+ 
+ 		dev_dbg(&urb->dev->dev,
+-			"%s timed out on ep%d%s len=%u/%u\n",
++			"%s timed out or interrupted on ep%d%s len=%u/%u\n",
+ 			current->comm,
+ 			usb_endpoint_num(&urb->ep->desc),
+ 			usb_urb_dir_in(urb) ? "in" : "out",
