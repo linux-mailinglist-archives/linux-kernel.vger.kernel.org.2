@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5B03FA563
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3393FA569
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 13:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234008AbhH1L1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 07:27:25 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14432 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233861AbhH1L1Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 07:27:24 -0400
-Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GxZ1p73FnzbdN7;
-        Sat, 28 Aug 2021 19:22:38 +0800 (CST)
-Received: from [10.174.176.245] (10.174.176.245) by
- dggeme766-chm.china.huawei.com (10.3.19.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Sat, 28 Aug 2021 19:26:30 +0800
-Subject: Re: Re: [PATCH v3 0/3] auth_gss: netns refcount leaks when
- use-gss-proxy==1
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Wenbin Zeng <wenbin.zeng@gmail.com>
-CC:     <davem@davemloft.net>, <viro@zeniv.linux.org.uk>,
-        <jlayton@kernel.org>, <trond.myklebust@hammerspace.com>,
-        <anna.schumaker@netapp.com>, <wenbinzeng@tencent.com>,
-        <dsahern@gmail.com>, <nicolas.dichtel@6wind.com>,
-        <willy@infradead.org>, <edumazet@google.com>,
-        <jakub.kicinski@netronome.com>, <tyhicks@canonical.com>,
-        <chuck.lever@oracle.com>, <neilb@suse.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-nfs@vger.kernel.org>
-References: <1556692945-3996-1-git-send-email-wenbinzeng@tencent.com>
- <1560341370-24197-1-git-send-email-wenbinzeng@tencent.com>
- <20190801195346.GA21527@fieldses.org>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <9cfbd851-81ce-e272-8693-d3430c381c7a@huawei.com>
-Date:   Sat, 28 Aug 2021 19:26:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S234070AbhH1L1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 07:27:38 -0400
+Received: from aposti.net ([89.234.176.197]:53210 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234042AbhH1L1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 07:27:37 -0400
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Christophe Branchereau <cbranchereau@gmail.com>,
+        list@opendingux.net, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 1/2] dt-bindings: display/panel: Add AUO A030JTN01
+Date:   Sat, 28 Aug 2021 12:26:39 +0100
+Message-Id: <20210828112640.7248-1-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <20190801195346.GA21527@fieldses.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.245]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add binding for the AUO A030JTN01 panel, which is a 320x480 3.0" 4:3
+24-bit TFT LCD panel with non-square pixels and a delta-RGB 8-bit
+interface.
 
-ÔÚ 2019/8/2 3:53, J. Bruce Fields Ð´µÀ:
-> I lost track, what happened to these patches?
->
-> --b.
->
-> On Wed, Jun 12, 2019 at 08:09:27PM +0800, Wenbin Zeng wrote:
->> This patch series fixes an auth_gss bug that results in netns refcount
->> leaks when use-gss-proxy is set to 1.
->>
->> The problem was found in privileged docker containers with gssproxy service
->> enabled and /proc/net/rpc/use-gss-proxy set to 1, the corresponding
->> struct net->count ends up at 2 after container gets killed, the consequence
->> is that the struct net cannot be freed.
->>
->> It turns out that write_gssp() called gssp_rpc_create() to create a rpc
->> client, this increases net->count by 2; rpcsec_gss_exit_net() is supposed
->> to decrease net->count but it never gets called because its call-path is:
->>          net->count==0 -> cleanup_net -> ops_exit_list -> rpcsec_gss_exit_net
->> Before rpcsec_gss_exit_net() gets called, net->count cannot reach 0, this
->> is a deadlock situation.
->>
->> To fix the problem, we must break the deadlock, rpcsec_gss_exit_net()
->> should move out of the put() path and find another chance to get called,
->> I think nsfs_evict() is a good place to go, when netns inode gets evicted
->> we call rpcsec_gss_exit_net() to free the rpc client, this requires a new
->> callback i.e. evict to be added in struct proc_ns_operations, and add
->> netns_evict() as one of netns_operations as well.
->>
->> v1->v2:
->>   * in nsfs_evict(), move ->evict() in front of ->put()
->> v2->v3:
->>   * rpcsec_gss_evict_net() directly call gss_svc_shutdown_net() regardless
->>     if gssp_clnt is null, this is exactly same to what rpcsec_gss_exit_net()
->>     previously did
->>
->> Wenbin Zeng (3):
->>    nsfs: add evict callback into struct proc_ns_operations
->>    netns: add netns_evict into netns_operations
->>    auth_gss: fix deadlock that blocks rpcsec_gss_exit_net when
->>      use-gss-proxy==1
->>
->>   fs/nsfs.c                      |  2 ++
->>   include/linux/proc_ns.h        |  1 +
->>   include/net/net_namespace.h    |  1 +
->>   net/core/net_namespace.c       | 12 ++++++++++++
->>   net/sunrpc/auth_gss/auth_gss.c |  4 ++--
->>   5 files changed, 18 insertions(+), 2 deletions(-)
->>
->> -- 
->> 1.8.3.1
-These patchsets don't seem to merge into the mainline, are there any 
-other patches that fix this bug?
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ .../bindings/display/panel/auo,a030jtn01.yaml | 57 +++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/auo,a030jtn01.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/panel/auo,a030jtn01.yaml b/Documentation/devicetree/bindings/display/panel/auo,a030jtn01.yaml
+new file mode 100644
+index 000000000000..21c9d62e3625
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/auo,a030jtn01.yaml
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/auo,a030jtn01.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: AUO A030JTN01 3.0" (320x480 pixels) 24-bit TFT LCD
++
++description: |
++  The panel must obey the rules for a SPI slave device as specified in
++  spi/spi-controller.yaml
++
++maintainers:
++  - Paul Cercueil <paul@crapouillou.net>
++
++allOf:
++  - $ref: panel-common.yaml#
++
++properties:
++  compatible:
++    const: auo,a030jtn01
++
++  backlight: true
++  port: true
++  power-supply: true
++  reg: true
++  reset-gpios: true
++
++required:
++  - compatible
++  - reg
++  - power-supply
++  - reset-gpios
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    panel@0 {
++      compatible = "auo,a030jtn01";
++      reg = <0>;
++
++      spi-max-frequency = <10000000>;
++
++      reset-gpios = <&gpe 4 GPIO_ACTIVE_LOW>;
++      power-supply = <&lcd_power>;
++
++      backlight = <&backlight>;
++
++      port {
++        panel_input: endpoint {
++          remote-endpoint = <&panel_output>;
++        };
++      };
++    };
+-- 
+2.33.0
+
