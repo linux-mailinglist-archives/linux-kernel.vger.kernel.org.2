@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C993FA722
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB713FA72A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhH1SSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 14:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhH1SSs (ORCPT
+        id S230137AbhH1SdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 14:33:02 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:49761 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230298AbhH1SdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 14:18:48 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DF2C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:17:57 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id j2so6111290pll.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=QK06svqw7DyH5jd4WQQegPSwOLABf8o6RovqCiYy1aI=;
-        b=GdDcYUUFcu40LOvVrFSUSjOdct8TJvYCny7rpi0ZRkFSVfR/5k0QoFQ4ka2tosX2mD
-         /LvxPxJFXR/6FBmbVowLEe3MoVk8rOA1LQwvPCZpBIUbfJwYBhBkDKdfNfuHMqrHwqv0
-         zBjOfRpyG4pyyBLu8mukkVE2CPpPe6castqRRG9OXFo2srraiomilfK74Cb5C6+Njpvb
-         ZtnBOWZz0eGTHk6NhfRRCPwE2zoGCkXdUYX50rOi3G7x+LMi9WPAUqmDZiCvrID3/iTS
-         e2HhcO6A4dJiEdT1aIa7Qvdf/orpoBMCmS1iINujGR2p2pAK48gN5GVZfZgHX/dxxL65
-         PpVQ==
+        Sat, 28 Aug 2021 14:33:01 -0400
+Received: by mail-il1-f199.google.com with SMTP id a15-20020a92444f000000b0022473393120so6204308ilm.16
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:32:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=QK06svqw7DyH5jd4WQQegPSwOLABf8o6RovqCiYy1aI=;
-        b=jSEDegtCXXi4YI+3tbKZfKidNWBJOG3tgRY0yFCZ6cxb6/tsD9kC9KL/lhQrNKtexe
-         vka9RFLJ7Qsw0+eivFfGOG53fr/KR5algMI9KR7DMRnDdSJFxHys8D/Jnra5IJ1wXYex
-         P7gmlRI5Cak47CuhiLw8U/iS9pTxRO2FCLpEr0vp/jAQ9mvwUFV4Us6FJR2Q3AAKzyLd
-         pYwGuLMPFn0N8fwP+b6WNsL6NyeAMLo7MjRw/j9kx4je2QyiYW3d/iwK+xgglf0M0Z3S
-         EVrlgkMISxfYQRZgs+t9DSF4lLkNQOUyDGw4Bp0D/634zPqnX0/EZOP0uBFz1aZXYjUe
-         z62w==
-X-Gm-Message-State: AOAM532bQt+SW26f8HJLYON7azns5JXuGkvFzrsdadw+J6oxxgYPNgn5
-        Ttn639HfU+29oodwfWF1MxvqoRjKijw=
-X-Google-Smtp-Source: ABdhPJxHJ5qdD6EpLAmrE4/35glO1pjDTLOTtmU/bxNMDeSr70Q8AwlhYP5UzNNPEl/HCqOJQr959w==
-X-Received: by 2002:a17:902:ed82:b029:ef:48c8:128e with SMTP id e2-20020a170902ed82b02900ef48c8128emr14366631plj.72.1630174677122;
-        Sat, 28 Aug 2021 11:17:57 -0700 (PDT)
-Received: from user ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id c16sm10196931pfb.196.2021.08.28.11.17.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 11:17:56 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 23:47:51 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        martin@kaiser.cx, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: r8188eu: os_dep: use kmemdup instead of kzalloc and
- memcpy
-Message-ID: <YSp9z2/JmvHGhW5m@user>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=up8sbinmdfW5FEk6l6npSbM0ylrChylbR3vjt8i49Xs=;
+        b=bDhLcMB8WdsdMjVeTK2V8JIx+RYTZLan+r3UF0nNIRWBvK6IlpX9Jw52mNImBY9Tcu
+         y4O1nuLlLH/tgLeJ07J0hw2QTjfjBd663M6BSbXSk36zJa3QdH//1KZoBBTxHSGo2I7M
+         FoBJK+ICHC0yE2m1G37/ptIf4LMWn+JMbXuEJDHw4l7Th8LsmvoRe8PlnrEk0xw5scsD
+         ADNCk46f+QRvB9n5NPZYTqTnvNLEHfjftzq4UF4XK8LvXUjoZGXS2COAnKFA/jUB6vhq
+         GFpUZZC/uJ7f15JhLpfbxeQNT4bdH5Tkmo4iVzcv0l02hkhP2vg8gbYBMZBnVFRLmDwv
+         CIwA==
+X-Gm-Message-State: AOAM533Cv2Hb49p5smVXKId0HDmUYUA38ihlzjRlMYCWdFv/+w4yDiW0
+        8nlx3Y+Jgv+S5iVx0jqXIt55T/3mwrQ6mTGZXTVA0Hj+i0b7
+X-Google-Smtp-Source: ABdhPJz+Yyr5HRroDxrfkjQQ5ziL5gBeIlEZ7KitgTECC5WrydwZTAne5hlTp3U9EC17zAoYBcRj22iKM9omVjv0Oo7cv7/OiVjq
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a92:280d:: with SMTP id l13mr10827952ilf.99.1630175530430;
+ Sat, 28 Aug 2021 11:32:10 -0700 (PDT)
+Date:   Sat, 28 Aug 2021 11:32:10 -0700
+In-Reply-To: <000000000000b575ab05aebfc192@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000069bb3e05caa2d1f8@google.com>
+Subject: Re: [syzbot] WARNING: refcount bug in qrtr_node_lookup
+From:   syzbot <syzbot+c613e88b3093ebf3686e@syzkaller.appspotmail.com>
+To:     anant.thazhemadam@gmail.com, bjorn.andersson@linaro.org,
+        butterflyhuangxx@gmail.com, davem@davemloft.net,
+        dragonjetli@gmail.com, hdanton@sina.com, kuba@kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, mani@kernel.org,
+        manivannan.sadhasivam@linaro.org, masahiroy@kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warning:WARNING opportunity for kmemdup in ioctl_linux.c
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/os_dep/ioctl_linux.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+commit 7e78c597c3ebfd0cb329aa09a838734147e4f117
+Author: Xiaolong Huang <butterflyhuangxx@gmail.com>
+Date:   Thu Aug 19 19:50:34 2021 +0000
 
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 81d4255d1785..495fadd2b8c8 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -585,14 +585,12 @@ static int rtw_set_wpa_ie(struct adapter *padapter, char *pie, unsigned short ie
- 	}
+    net: qrtr: fix another OOB Read in qrtr_endpoint_post
 
- 	if (ielen) {
--		buf = kzalloc(ielen, GFP_KERNEL);
-+		buf = kmemdup(pie, ielen, GFP_KERNEL);
- 		if (!buf) {
- 			ret =  -ENOMEM;
- 			goto exit;
- 		}
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11279a4d300000
+start commit:   ba4f184e126b Linux 5.9-rc6
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=c613e88b3093ebf3686e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12263dd9900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d77603900000
 
--		memcpy(buf, pie, ielen);
--
- 		/* dump */
- 		{
- 			int i;
---
-2.32.0
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: net: qrtr: fix another OOB Read in qrtr_endpoint_post
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
