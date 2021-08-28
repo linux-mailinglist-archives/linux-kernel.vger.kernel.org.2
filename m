@@ -2,112 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E188B3FA61B
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 15:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098293FA622
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 16:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234335AbhH1N4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 09:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
+        id S233848AbhH1OCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 10:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhH1N4r (ORCPT
+        with ESMTP id S229654AbhH1OCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 09:56:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE15BC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 06:55:56 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630158953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=szT5lkD+YWto/0wcn5LngBYE8usayOdbrKOZ9uNLgNI=;
-        b=csJu0jMX4yt4WEZoYCHowPRFviaigHrC4t5wJ2Z6nfuzYm2AHunep4zQhaoQCTVrWz2XvK
-        3mwfK424sBX93//QS9c4fDKB/bT8+40dg5Idr6Hl/GQy8S4KaHl09dqXFLiPHOg13e39Nd
-        lESjSOscH5K3AHvhyVE2XOOTl9Zvi30DO9zs87tiY3lPSzZNBfZiiIGm7tJbSYMsG7bEpL
-        TisAnRhToY/uLNalB9omnR/oOmoLruGLdMQm6RBbNFQ7yy9NYhrjQVdBfNbbR8x5S2fsFi
-        B3wh2ytt6uZty4ZK7HeNQxQtRypho8ewv2ZvZVnkoG9o5IszrEJJObZ67BBkcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630158953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=szT5lkD+YWto/0wcn5LngBYE8usayOdbrKOZ9uNLgNI=;
-        b=t5sHQTMaI0H8e5OxYviLacK2pQTLScvYqMXthgFniEO3MH4hs5NEVBj4sPNCBrAbmS0z7r
-        lsbqRurp0ZgRFaBA==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: [PATCH V2] sched: Prevent balance_push() on remote runqueues
-In-Reply-To: <87eeae11cr.ffs@tglx>
-References: <87tujb0yn1.ffs@tglx> <87eeae11cr.ffs@tglx>
-Date:   Sat, 28 Aug 2021 15:55:52 +0200
-Message-ID: <87zgt1hdw7.ffs@tglx>
+        Sat, 28 Aug 2021 10:02:37 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7799C061756;
+        Sat, 28 Aug 2021 07:01:46 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id o10so20704178lfr.11;
+        Sat, 28 Aug 2021 07:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dqrp/KH5tLqSap7ntZ/vvOicD5LnNwHSCIXjYo1/JVc=;
+        b=McQxQYfotZG11D5X8pPamm7dZOtwqIMvsRXsTYbwlucu8urBYU1163EZ93U8sO3H74
+         3A5uKUN2gaJFHqEfFpfDdnEhtK+pmn2BrO7qKV5JqAPKssvI1jDQQ3W7yA4N0UDqQ3er
+         IgQ0Iy3lv4WcH9pe6wF82eyluGih/56eYxKWDSr6uH8zz3S8uNltYpdqB9+iMQhrMKBK
+         eoufxm2kHY5LLUnU/d9C/4c+dkOetMSjblvfh6Igx+BoTWMlaosmWDx62EY6qd9WW2tg
+         w8eMzLCm8S73HWxCKbA/1f3fElsk28xtv63WLjlLrHi7kpjl/FkKH2bBYQY9+lZZ6/hA
+         FG3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dqrp/KH5tLqSap7ntZ/vvOicD5LnNwHSCIXjYo1/JVc=;
+        b=e1WJdVVYAGnz6xAtfEZyPIScHzSIpV0qPi8v5Fb0HyQx1GFwIVkHhlxqmGOjzwTCBb
+         WCjRUXjP6SN8ogEEemWKvHOhwx9iATM4OrrO0Qc7D/voPFMliMUh8o/+XYC0iRdPc0Ue
+         26nF1rbiBssTB1V4lg9ixDSb3kfNPzqJIpSDaA1eCYMlBUjhLwz71xX3Rr7CkVMQ8K+7
+         YPqijVutmsLx19NxB1aCorHjkkFPGWIaYB+Jk3WlEjumb1u95uyGsa7+8zJ9NIGdEcr+
+         DqKX2YW+3MGBejZg5LRSk9+BOLZa3z62kijQKYhVF0Z1NUCi57Yw9dLbpaVY26M30TIk
+         O15Q==
+X-Gm-Message-State: AOAM532VmsqxwfrSEbhXureP6jerW7YBqXP/1GzVvakCtICTxIxCJIjX
+        3FP8ATC+Kzx+bWmRamBfSdH/E6t2rBOmwQ==
+X-Google-Smtp-Source: ABdhPJyUv7DzkCxtZmWQC+hmZTOQQ1pBle7v2BgXAwmywunA35GMl50kRhfgP4vbRTlXlJGZKZFuNQ==
+X-Received: by 2002:ac2:4d17:: with SMTP id r23mr10509326lfi.234.1630159304888;
+        Sat, 28 Aug 2021 07:01:44 -0700 (PDT)
+Received: from kari-VirtualBox (87-95-21-3.bb.dnainternet.fi. [87.95.21.3])
+        by smtp.gmail.com with ESMTPSA id h15sm1066543ljc.96.2021.08.28.07.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 07:01:44 -0700 (PDT)
+Date:   Sat, 28 Aug 2021 17:01:39 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        list@opendingux.net, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] drm/panel: Add driver for the AUO A030JTN01 TFT LCD
+Message-ID: <20210828140139.vwhgcjmgnas4fh7w@kari-VirtualBox>
+References: <20210828112640.7248-1-paul@crapouillou.net>
+ <20210828112640.7248-2-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210828112640.7248-2-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sched_setscheduler() and rt_mutex_setprio() invoke the run-queue balance
-callback after changing priorities or the scheduling class of a task. The
-run-queue for which the callback is invoked can be local or remote.
+On Sat, Aug 28, 2021 at 12:26:40PM +0100, Paul Cercueil wrote:
+> From: Christophe Branchereau <cbranchereau@gmail.com>
+> 
+> Add driver for the AUO A030JTN01 panel, which is a 320x480 3.0" 4:3
+> 24-bit TFT LCD with non-square pixels and a delta-RGB 8-bit interface.
+> 
+> Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/gpu/drm/panel/Kconfig               |   8 +
+>  drivers/gpu/drm/panel/Makefile              |   1 +
+>  drivers/gpu/drm/panel/panel-auo-a030jtn01.c | 297 ++++++++++++++++++++
+>  3 files changed, 306 insertions(+)
+>  create mode 100644 drivers/gpu/drm/panel/panel-auo-a030jtn01.c
+> 
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index 0b3784941312..42d42f999266 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -8,6 +8,14 @@ config DRM_PANEL
+>  menu "Display Panels"
+>  	depends on DRM && DRM_PANEL
+>  
+> +config DRM_PANEL_AUO_A030JTN01
+> +	tristate "AUO A030JTN01"
+> +	depends on OF && SPI
+> +	select REGMAP_SPI
+> +	help
+> +	  Say Y here to enable support for the AUO A030JTN01 320x480 3.0" panel
+> +	  as found in the YLM RS-97 handheld gaming console.
+> +
 
-That's not a problem for the regular rq::push_work which is serialized with
-a busy flag in the run-queue struct, but for the balance_push() work which
-is only valid to be invoked on the outgoing CPU that's wrong. It not only
-triggers the debug warning, but also leaves the per CPU variable push_work
-unprotected, which can result in double enqueues on the stop machine list.
+It seems that these should be alphabetical order.
 
-Remove the warning and validate that the function is invoked on the
-outgoing CPU.
+>  config DRM_PANEL_ABT_Y030XX067A
+>  	tristate "ABT Y030XX067A 320x480 LCD panel"
+>  	depends on OF && SPI
+> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> index 60c0149fc54a..edf62866e4af 100644
+> --- a/drivers/gpu/drm/panel/Makefile
+> +++ b/drivers/gpu/drm/panel/Makefile
+> @@ -1,4 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> +obj-$(CONFIG_DRM_PANEL_AUO_A030JTN01) += panel-auo-a030jtn01.o
+>  obj-$(CONFIG_DRM_PANEL_ABT_Y030XX067A) += panel-abt-y030xx067a.o
+>  obj-$(CONFIG_DRM_PANEL_ARM_VERSATILE) += panel-arm-versatile.o
+>  obj-$(CONFIG_DRM_PANEL_ASUS_Z00T_TM5P5_NT35596) += panel-asus-z00t-tm5p5-n35596.o
+> diff --git a/drivers/gpu/drm/panel/panel-auo-a030jtn01.c b/drivers/gpu/drm/panel/panel-auo-a030jtn01.c
+> new file mode 100644
+> index 000000000000..804567a59d19
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panel/panel-auo-a030jtn01.c
+> @@ -0,0 +1,297 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * AU Optronics A030JTN01.0 TFT LCD panel driver
+> + *
+> + * Copyright (C) 2020, Paul Cercueil <paul@crapouillou.net>
+> + * Copyright (C) 2020, Christophe Branchereau <cbranchereau@gmail.com>
 
-Fixes: ae7927023243 ("sched: Optimize finish_lock_switch()")
-Reported-by: Sebastian Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
----
-V2: Use the correct check for the outgoing CPU
----
- kernel/sched/core.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Should these be 2021?
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8435,7 +8435,6 @@ static void balance_push(struct rq *rq)
- 	struct task_struct *push_task = rq->curr;
- 
- 	lockdep_assert_rq_held(rq);
--	SCHED_WARN_ON(rq->cpu != smp_processor_id());
- 
- 	/*
- 	 * Ensure the thing is persistent until balance_push_set(.on = false);
-@@ -8443,9 +8442,10 @@ static void balance_push(struct rq *rq)
- 	rq->balance_callback = &balance_push_callback;
- 
- 	/*
--	 * Only active while going offline.
-+	 * Only active while going offline and when invoked on the outgoing
-+	 * CPU.
- 	 */
--	if (!cpu_dying(rq->cpu))
-+	if (!cpu_dying(rq->cpu) || rq != this_rq())
- 		return;
- 
- 	/*
+    Argillander
+
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/media-bus-format.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/spi/spi.h>
+> +
+> +#include <drm/drm_modes.h>
+> +#include <drm/drm_panel.h>
+> +
+> +struct a030jtn01_info {
+> +	const struct drm_display_mode *display_modes;
+> +	unsigned int num_modes;
+> +	u16 width_mm, height_mm;
+> +	u32 bus_format, bus_flags;
+> +};
+> +
+> +struct a030jtn01 {
+> +	struct drm_panel panel;
+> +	struct spi_device *spi;
+> +	struct regmap *map;
+> +
+> +	const struct a030jtn01_info *panel_info;
+> +
+> +	struct regulator *supply;
+> +	struct gpio_desc *reset_gpio;
+> +};
+> +
+> +static inline struct a030jtn01 *to_a030jtn01(struct drm_panel *panel)
+> +{
+> +	return container_of(panel, struct a030jtn01, panel);
+> +}
+> +
+> +static int a030jtn01_prepare(struct drm_panel *panel)
+> +{
+> +	struct a030jtn01 *priv = to_a030jtn01(panel);
+> +	struct device *dev = &priv->spi->dev;
+> +	int err;
+> +
+> +	err = regulator_enable(priv->supply);
+> +	if (err) {
+> +		dev_err(dev, "Failed to enable power supply: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	usleep_range(1000, 8000);
+> +
+> +	/* Reset the chip */
+> +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
+> +	usleep_range(100, 8000);
+> +	gpiod_set_value_cansleep(priv->reset_gpio, 0);
+> +	usleep_range(2000, 8000);
+> +
+> +	/*
+> +	 * No idea why two writes are needed. If this write is commented,
+> +	 * the colors are wrong. Doesn't seem to be timing-related, since
+> +	 * a msleep(200) doesn't fix it.
+> +	 */
+> +	regmap_write(priv->map, 0x06, 0x00);
+> +
+> +	/* Use (24 + 6) == 0x1e as the vertical back porch */
+> +	err = regmap_write(priv->map, 0x06, 0x1e);
+> +	if (err)
+> +		goto err_disable_regulator;
+> +
+> +	/* Use (42 + 30) * 3 == 0xd8 as the horizontal back porch */
+> +	err = regmap_write(priv->map, 0x07, 0xd8);
+> +	if (err)
+> +		goto err_disable_regulator;
+> +
+> +	regmap_write(priv->map, 0x05, 0x74);
+> +
+> +	return 0;
+> +
+> +err_disable_regulator:
+> +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
+> +	regulator_disable(priv->supply);
+> +	return err;
+> +}
+> +
+> +static int a030jtn01_unprepare(struct drm_panel *panel)
+> +{
+> +	struct a030jtn01 *priv = to_a030jtn01(panel);
+> +
+> +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
+> +	regulator_disable(priv->supply);
+> +
+> +	return 0;
+> +}
+> +
+> +static int a030jtn01_enable(struct drm_panel *panel)
+> +{
+> +	struct a030jtn01 *priv = to_a030jtn01(panel);
+> +	int ret;
+> +
+> +	ret = regmap_write(priv->map, 0x05, 0x75);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Wait for the picture to be stable */
+> +	if (panel->backlight)
+> +		msleep(100);
+> +
+> +	return 0;
+> +}
+> +
+> +static int a030jtn01_disable(struct drm_panel *panel)
+> +{
+> +	struct a030jtn01 *priv = to_a030jtn01(panel);
+> +
+> +	return regmap_write(priv->map, 0x05, 0x74);
+> +}
+> +
+> +static int a030jtn01_get_modes(struct drm_panel *panel,
+> +				struct drm_connector *connector)
+> +{
+> +	struct a030jtn01 *priv = to_a030jtn01(panel);
+> +	const struct a030jtn01_info *panel_info = priv->panel_info;
+> +	struct drm_display_mode *mode;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < panel_info->num_modes; i++) {
+> +		mode = drm_mode_duplicate(connector->dev,
+> +					  &panel_info->display_modes[i]);
+> +		if (!mode)
+> +			return -ENOMEM;
+> +
+> +		drm_mode_set_name(mode);
+> +
+> +		mode->type = DRM_MODE_TYPE_DRIVER;
+> +		if (panel_info->num_modes == 1)
+> +			mode->type |= DRM_MODE_TYPE_PREFERRED;
+> +
+> +		drm_mode_probed_add(connector, mode);
+> +	}
+> +
+> +	connector->display_info.bpc = 8;
+> +	connector->display_info.width_mm = panel_info->width_mm;
+> +	connector->display_info.height_mm = panel_info->height_mm;
+> +
+> +	drm_display_info_set_bus_formats(&connector->display_info,
+> +					 &panel_info->bus_format, 1);
+> +	connector->display_info.bus_flags = panel_info->bus_flags;
+> +
+> +	return panel_info->num_modes;
+> +}
+> +
+> +static const struct drm_panel_funcs a030jtn01_funcs = {
+> +	.prepare	= a030jtn01_prepare,
+> +	.unprepare	= a030jtn01_unprepare,
+> +	.enable		= a030jtn01_enable,
+> +	.disable	= a030jtn01_disable,
+> +	.get_modes	= a030jtn01_get_modes,
+> +};
+> +
+> +static bool a030jtn01_has_reg(struct device *dev, unsigned int reg)
+> +{
+> +	static const u32 a030jtn01_regs_mask = 0x001823f1fb;
+> +
+> +	return a030jtn01_regs_mask & BIT(reg);
+> +};
+> +
+> +static const struct regmap_config a030jtn01_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.read_flag_mask = 0x40,
+> +	.max_register = 0x1c,
+> +	.readable_reg = a030jtn01_has_reg,
+> +	.writeable_reg = a030jtn01_has_reg,
+> +};
+> +
+> +static int a030jtn01_probe(struct spi_device *spi)
+> +{
+> +	struct device *dev = &spi->dev;
+> +	struct a030jtn01 *priv;
+> +	int err;
+> +
+> +	spi->mode |= SPI_MODE_3 | SPI_3WIRE;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->spi = spi;
+> +	spi_set_drvdata(spi, priv);
+> +
+> +	priv->map = devm_regmap_init_spi(spi, &a030jtn01_regmap_config);
+> +	if (IS_ERR(priv->map)) {
+> +		dev_err(dev, "Unable to init regmap\n");
+> +		return PTR_ERR(priv->map);
+> +	}
+> +
+> +	priv->panel_info = of_device_get_match_data(dev);
+> +	if (!priv->panel_info)
+> +		return -EINVAL;
+> +
+> +	priv->supply = devm_regulator_get(dev, "power");
+> +	if (IS_ERR(priv->supply)) {
+> +		dev_err(dev, "Failed to get power supply\n");
+> +		return PTR_ERR(priv->supply);
+> +	}
+> +
+> +	priv->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(priv->reset_gpio)) {
+> +		dev_err(dev, "Failed to get reset GPIO\n");
+> +		return PTR_ERR(priv->reset_gpio);
+> +	}
+> +
+> +	drm_panel_init(&priv->panel, dev, &a030jtn01_funcs,
+> +		       DRM_MODE_CONNECTOR_DPI);
+> +
+> +	err = drm_panel_of_backlight(&priv->panel);
+> +	if (err)
+> +		return err;
+> +
+> +	drm_panel_add(&priv->panel);
+> +
+> +	return 0;
+> +}
+> +
+> +static int a030jtn01_remove(struct spi_device *spi)
+> +{
+> +	struct a030jtn01 *priv = spi_get_drvdata(spi);
+> +
+> +	drm_panel_remove(&priv->panel);
+> +	drm_panel_disable(&priv->panel);
+> +	drm_panel_unprepare(&priv->panel);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct drm_display_mode a030jtn01_modes[] = {
+> +	{ /* 60 Hz */
+> +		.clock = 14400,
+> +		.hdisplay = 320,
+> +		.hsync_start = 320 + 8,
+> +		.hsync_end = 320 + 8 + 42,
+> +		.htotal = 320 + 8 + 42 + 30,
+> +		.vdisplay = 480,
+> +		.vsync_start = 480 + 90,
+> +		.vsync_end = 480 + 90 + 24,
+> +		.vtotal = 480 + 90 + 24 + 6,
+> +		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
+> +	},
+> +	{ /* 50 Hz */
+> +		.clock = 12000,
+> +		.hdisplay = 320,
+> +		.hsync_start = 320 + 8,
+> +		.hsync_end = 320 + 8 + 42,
+> +		.htotal = 320 + 8 + 42 + 30,
+> +		.vdisplay = 480,
+> +		.vsync_start = 480 + 90,
+> +		.vsync_end = 480 + 90 + 24,
+> +		.vtotal = 480 + 90 + 24 + 6,
+> +		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
+> +	},
+> +};
+> +
+> +static const struct a030jtn01_info a030jtn01_info = {
+> +	.display_modes = a030jtn01_modes,
+> +	.num_modes = ARRAY_SIZE(a030jtn01_modes),
+> +	.width_mm = 70,
+> +	.height_mm = 51,
+> +	.bus_format = MEDIA_BUS_FMT_RGB888_3X8_DELTA,
+> +	.bus_flags = DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
+> +};
+> +
+> +static const struct of_device_id a030jtn01_of_match[] = {
+> +	{ .compatible = "auo,a030jtn01", .data = &a030jtn01_info },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, a030jtn01_of_match);
+> +
+> +static struct spi_driver a030jtn01_driver = {
+> +	.driver = {
+> +		.name = "auo-a030jtn01",
+> +		.of_match_table = a030jtn01_of_match,
+> +	},
+> +	.probe = a030jtn01_probe,
+> +	.remove = a030jtn01_remove,
+> +};
+> +module_spi_driver(a030jtn01_driver);
+> +
+> +MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
+> +MODULE_AUTHOR("Christophe Branchereau <cbranchereau@gmail.com>");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.33.0
+> 
