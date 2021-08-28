@@ -2,247 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292CD3FA35C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 05:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2EE3FA364
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 05:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhH1DbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 23:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
+        id S233235AbhH1Diw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 23:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbhH1DbP (ORCPT
+        with ESMTP id S233209AbhH1Dit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 23:31:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E507C0613D9;
-        Fri, 27 Aug 2021 20:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vG2BrsxklzvaYU3MGJElnbZXqonpHe4yr8aACjbagfc=; b=HB5IqswwGXiCJh9Egt+aPJbO8Y
-        croLE9MB+SlJ6K5TAqN9IwM0Fjv30ThTPO7HLk3Hpb1NytmMADsGvT0RvUg7/fGRUGAUq8Mfd/B0N
-        K3rxdNiSTnEfoblUSEXhMXIVjgMtjz/SB1OZ0T8+M560UKjXHo+G3fKfueTN7k7tFJkgSGBqnZ3tJ
-        1bU8kj99ZZTkdY22aVbafskcujM5dy388q7QUt6U85VR/RorIpDs2s1+tcmJ/shqHogZlN/XYM1Gx
-        TOhppVGTks18RyTK4QvvJO5Ml776E59oM+kPkvHECJGyylnpQMV9Mbn7ZFJ9OfkJXE+F32q8LNZm/
-        27Neq4KA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJp1x-00FFSp-IG; Sat, 28 Aug 2021 03:29:25 +0000
-Date:   Sat, 28 Aug 2021 04:29:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YSmtjVTqR9/4W1aq@casper.infradead.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+        Fri, 27 Aug 2021 23:38:49 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23345C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 20:38:00 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso306994otu.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 20:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aBUEc/1o/dcHZcAssq2pXxkW7IBn2OYtFLHrnrOZLG4=;
+        b=j6stF9Q1YdfQY0NyG8smT7KeZDlWzF6ukz00qwTgUeGzJEHpznRK4srIph/dGTKZhJ
+         57RPHvmxyptd0mQaV3hVRaYZMfjVL2v/8xsTcP0GyDwcB92GI5HzNvwJ/OpeX7NmyvqV
+         bUUUYmMxBL+xeFssNejGlfHXJM6F47YRVAPY2sS7ya8d0wC72oSJYb98n/Ialm9eGzGD
+         EDNiUTsWbNJmReMr11xVWojTZnHKkDyaoJvZrTDNNX8fgIpNUbTTuBNyV2ok0n0RalV3
+         0uCwqbLpiACpxvqPBOOvjXmdJqa14EvWtOFZiDvVZmagavA3/ccp2Cu6QD2IKmJGtEI4
+         OYXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aBUEc/1o/dcHZcAssq2pXxkW7IBn2OYtFLHrnrOZLG4=;
+        b=d8lL5sDAc4WjvhEasB4y88+5b+I7S5p6g7uizWiOd35Gv3h1ImQVPpts4BQyRv06M/
+         xn2wnxJ0o7o9KQ7VQRXj0+RhZ51LalFP2UAU7FakakXqt1VCpP2o8CTEdxYco12bnYeC
+         gbnm3JjkhUUDqthwWwBDOJFEtJ0dBi19zk33ClMDezB3vUtlqXxusebPAvTp5TEShLqi
+         bz/kB7U4DE6bv7LHL9LOeRCjKTEWUjfcoDByez6VNoWMHd9dWTq4rD0Zk4ez7ihbHbkx
+         dc495a+2WT63ojekHccFEO3dL11x1/VyqwwFZtrGx+GbNvBg9KSYXkqZxxYcB3PIblnZ
+         XaDw==
+X-Gm-Message-State: AOAM53149AgGetmyKrL4RcpTGf7j+PLF3hGUmyschXVVnNwsys2gLTuP
+        gV1MIlysr5dYqkpaLp+GsRU=
+X-Google-Smtp-Source: ABdhPJykkL9iV6CMo1bU3OAbS4bWpJtrjLIurhUSsJfO5aIbuWtVgZYbsVQHZCeE5R19Z18GRCEFoA==
+X-Received: by 2002:a9d:5f85:: with SMTP id g5mr4078808oti.139.1630121879446;
+        Fri, 27 Aug 2021 20:37:59 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x8sm1562459ooq.41.2021.08.27.20.37.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 20:37:58 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Jeffery <andrew@aj.id.au>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?C=c3=a9dric_Le_Goate?= =?UTF-8?Q?r?= <clg@kaod.org>,
+        Joel Stanley <joel@jms.id.au>
+References: <20210724224424.2085404-1-linus.walleij@linaro.org>
+ <20210724224424.2085404-2-linus.walleij@linaro.org>
+ <20210821042010.GA1759866@roeck-us.net>
+ <CACRpkdYObGTWni3sSa21iNsgikzj7t9MA6y4TNgkBTTYQt+coA@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 2/2] clocksource/drivers/fttmr010: Be stricter on IRQs
+Message-ID: <4d87c7af-d2e3-9456-130a-b35b507ff3a2@roeck-us.net>
+Date:   Fri, 27 Aug 2021 20:37:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+In-Reply-To: <CACRpkdYObGTWni3sSa21iNsgikzj7t9MA6y4TNgkBTTYQt+coA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 08:01:44PM +0100, Matthew Wilcox wrote:
-> The following changes since commit f0eb870a84224c9bfde0dc547927e8df1be4267c:
+On 8/27/21 3:01 PM, Linus Walleij wrote:
+> On Sat, Aug 21, 2021 at 6:20 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>> On Sun, Jul 25, 2021 at 12:44:24AM +0200, Linus Walleij wrote:
 > 
->   Merge tag 'xfs-5.14-fixes-1' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux (2021-07-18 11:27:25 -0700)
+>>> Make sure we check that the right interrupt occurred before
+>>> calling the event handler for timer 1. Report spurious IRQs
+>>> as IRQ_NONE.
+>>>
+>>> Cc: Cédric Le Goater <clg@kaod.org>
+>>> Cc: Joel Stanley <joel@jms.id.au>
+>>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+>>
+>> This patch results in boot stalls with several qemu aspeed emulations
+>> (quanta-q71l-bmc, palmetto-bmc, witherspoon-bmc, ast2500-evb,
+>> romulus-bmc, g220a-bmc). Reverting this patch together with
+>> "clocksource/drivers/fttmr010: Clear also overflow bit on AST2600"
+>> fixes the problem. Bisect log is attached.
 > 
-> are available in the Git repository at:
+> Has it been tested on real hardware?
 > 
->   git://git.infradead.org/users/willy/pagecache.git tags/folio-5.15
+> We are reading register 0x34 TIMER_INTR_STATE for this.
+> So this should reflect the state of raw interrupts from the timers.
 > 
-> for you to fetch changes up to 1a90e9dae32ce26de43c1c5eddb3ecce27f2a640:
+> I looked in qemu/hw/timer/aspeed_timer.c
+> and the aspeed_timer_read() looks dubious.
+> It rather looks like this falls down to returning whatever
+> was written to this register and not reflect which IRQ
+> was fired at all.
 > 
->   mm/writeback: Add folio_write_one (2021-08-15 23:04:07 -0400)
 
-Running 'sed -i' across the patches and reapplying them got me this:
+Actually, no. Turns out the qemu code is just a bit difficult to understand.
+The code in question is:
 
-The following changes since commit f0eb870a84224c9bfde0dc547927e8df1be4267c:
+     default:
+         value = ASPEED_TIMER_GET_CLASS(s)->read(s, offset);
+         break;
 
-  Merge tag 'xfs-5.14-fixes-1' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux (2021-07-18 11:27:25 -0700)
+For ast2500-evb, that translates to a call to aspeed_2500_timer_read().
+Here is a trace example (after adding some more tracing):
 
-are available in the Git repository at:
+aspeed_2500_timer_read From 0x34: 0x0
+aspeed_timer_read From 0x34: of size 4: 0x0
 
-  git://git.infradead.org/users/willy/pagecache.git tags/pageset-5.15
+Problem is that - at least in qemu - only the 2600 uses register 0x34
+for the interrupt status. On the 2500, 0x34 is the ctrl2 register.
 
-for you to fetch changes up to dc185ab836d41729f15b2925a59c7dc29ae72377:
+Indeed, the patch works fine on, for example, ast2600-evb.
+It only fails on ast2400 and ast2500 boards.
 
-  mm/writeback: Add pageset_write_one (2021-08-27 22:52:26 -0400)
+I don't have the manuals, so I can't say what the correct behavior is,
+but at least there is some evidence that TIMER_INTR_STATE may not exist
+on ast2400 and ast2500 SOCs. From drivers/clocksource/timer-fttmr010.c:
 
-----------------------------------------------------------------
-Pagesets
+/*
+  * Interrupt status/mask register definitions for fttmr010/gemini/moxart
+  * timers.
+  * The registers don't exist and they are not needed on aspeed timers
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  * because:
+  *   - aspeed timer overflow interrupt is controlled by bits in Control
+  *     Register (TMC30).
+  *   - aspeed timers always generate interrupt when either one of the
+  *     Match registers equals to Status register.
+  */
 
-Add pagesets, a new type to represent either an order-0 page or the
-head page of a compound page.  This should be enough infrastructure to
-support filesystems converting from pages to pagesets.
-
-----------------------------------------------------------------
-Matthew Wilcox (Oracle) (90):
-      mm: Convert get_page_unless_zero() to return bool
-      mm: Introduce struct pageset
-      mm: Add pageset_pgdat(), pageset_zone() and pageset_zonenum()
-      mm/vmstat: Add functions to account pageset statistics
-      mm/debug: Add VM_BUG_ON_PAGESET() and VM_WARN_ON_ONCE_PAGESET()
-      mm: Add pageset reference count functions
-      mm: Add pageset_put()
-      mm: Add pageset_get()
-      mm: Add pageset_try_get_rcu()
-      mm: Add pageset flag manipulation functions
-      mm/lru: Add pageset LRU functions
-      mm: Handle per-pageset private data
-      mm/filemap: Add pageset_index(), pageset_file_page() and pageset_contains()
-      mm/filemap: Add pageset_next_index()
-      mm/filemap: Add pageset_pos() and pageset_file_pos()
-      mm/util: Add pageset_mapping() and pageset_file_mapping()
-      mm/filemap: Add pageset_unlock()
-      mm/filemap: Add pageset_lock()
-      mm/filemap: Add pageset_lock_killable()
-      mm/filemap: Add __pageset_lock_async()
-      mm/filemap: Add pageset_wait_locked()
-      mm/filemap: Add __pageset_lock_or_retry()
-      mm/swap: Add pageset_rotate_reclaimable()
-      mm/filemap: Add pageset_end_writeback()
-      mm/writeback: Add pageset_wait_writeback()
-      mm/writeback: Add pageset_wait_stable()
-      mm/filemap: Add pageset_wait_bit()
-      mm/filemap: Add pageset_wake_bit()
-      mm/filemap: Convert page wait queues to be pagesets
-      mm/filemap: Add pageset private_2 functions
-      fs/netfs: Add pageset fscache functions
-      mm: Add pageset_mapped()
-      mm: Add pageset_nid()
-      mm/memcg: Remove 'page' parameter to mem_cgroup_charge_statistics()
-      mm/memcg: Use the node id in mem_cgroup_update_tree()
-      mm/memcg: Remove soft_limit_tree_node()
-      mm/memcg: Convert memcg_check_events to take a node ID
-      mm/memcg: Add pageset_memcg() and related functions
-      mm/memcg: Convert commit_charge() to take a pageset
-      mm/memcg: Convert mem_cgroup_charge() to take a pageset
-      mm/memcg: Convert uncharge_page() to uncharge_pageset()
-      mm/memcg: Convert mem_cgroup_uncharge() to take a pageset
-      mm/memcg: Convert mem_cgroup_migrate() to take pagesets
-      mm/memcg: Convert mem_cgroup_track_foreign_dirty_slowpath() to pageset
-      mm/memcg: Add pageset_memcg_lock() and pageset_memcg_unlock()
-      mm/memcg: Convert mem_cgroup_move_account() to use a pageset
-      mm/memcg: Add pageset_lruvec()
-      mm/memcg: Add pageset_lruvec_lock() and similar functions
-      mm/memcg: Add pageset_lruvec_relock_irq() and pageset_lruvec_relock_irqsave()
-      mm/workingset: Convert workingset_activation to take a pageset
-      mm: Add pageset_pfn()
-      mm: Add pageset_raw_mapping()
-      mm: Add flush_dcache_pageset()
-      mm: Add kmap_local_pageset()
-      mm: Add arch_make_pageset_accessible()
-      mm: Add pageset_young and pageset_idle
-      mm/swap: Add pageset_activate()
-      mm/swap: Add pageset_mark_accessed()
-      mm/rmap: Add pageset_mkclean()
-      mm/migrate: Add pageset_migrate_mapping()
-      mm/migrate: Add pageset_migrate_flags()
-      mm/migrate: Add pageset_migrate_copy()
-      mm/writeback: Rename __add_wb_stat() to wb_stat_mod()
-      flex_proportions: Allow N events instead of 1
-      mm/writeback: Change __wb_writeout_inc() to __wb_writeout_add()
-      mm/writeback: Add __pageset_end_writeback()
-      mm/writeback: Add pageset_start_writeback()
-      mm/writeback: Add pageset_mark_dirty()
-      mm/writeback: Add __pageset_mark_dirty()
-      mm/writeback: Convert tracing writeback_page_template to pagesets
-      mm/writeback: Add filemap_dirty_pageset()
-      mm/writeback: Add pageset_account_cleaned()
-      mm/writeback: Add pageset_cancel_dirty()
-      mm/writeback: Add pageset_clear_dirty_for_io()
-      mm/writeback: Add pageset_account_redirty()
-      mm/writeback: Add pageset_redirty_for_writepage()
-      mm/filemap: Add i_blocks_per_pageset()
-      mm/filemap: Add pageset_mkwrite_check_truncate()
-      mm/filemap: Add readahead_pageset()
-      mm/workingset: Convert workingset_refault() to take a pageset
-      mm: Add pageset_evictable()
-      mm/lru: Convert __pagevec_lru_add_fn to take a pageset
-      mm/lru: Add pageset_add_lru()
-      mm/page_alloc: Add pageset allocation functions
-      mm/filemap: Add filemap_alloc_pageset
-      mm/filemap: Add filemap_add_pageset()
-      mm/filemap: Convert mapping_get_entry to return a pageset
-      mm/filemap: Add filemap_get_pageset
-      mm/filemap: Add FGP_STABLE
-      mm/writeback: Add pageset_write_one
-
- Documentation/core-api/cachetlb.rst         |   6 +
- Documentation/core-api/mm-api.rst           |   5 +
- Documentation/filesystems/netfs_library.rst |   2 +
- arch/arc/include/asm/cacheflush.h           |   1 +
- arch/arm/include/asm/cacheflush.h           |   1 +
- arch/mips/include/asm/cacheflush.h          |   2 +
- arch/nds32/include/asm/cacheflush.h         |   1 +
- arch/nios2/include/asm/cacheflush.h         |   3 +-
- arch/parisc/include/asm/cacheflush.h        |   3 +-
- arch/sh/include/asm/cacheflush.h            |   3 +-
- arch/xtensa/include/asm/cacheflush.h        |   3 +-
- fs/afs/write.c                              |   9 +-
- fs/cachefiles/rdwr.c                        |  16 +-
- fs/io_uring.c                               |   2 +-
- fs/jfs/jfs_metapage.c                       |   1 +
- include/asm-generic/cacheflush.h            |   6 +
- include/linux/backing-dev.h                 |   6 +-
- include/linux/flex_proportions.h            |   9 +-
- include/linux/gfp.h                         |  22 +-
- include/linux/highmem-internal.h            |  11 +
- include/linux/highmem.h                     |  37 ++
- include/linux/huge_mm.h                     |  15 -
- include/linux/ksm.h                         |   4 +-
- include/linux/memcontrol.h                  | 231 ++++++-----
- include/linux/migrate.h                     |   4 +
- include/linux/mm.h                          | 239 +++++++++---
- include/linux/mm_inline.h                   | 103 +++--
- include/linux/mm_types.h                    |  77 ++++
- include/linux/mmdebug.h                     |  20 +
- include/linux/netfs.h                       |  77 ++--
- include/linux/page-flags.h                  | 267 +++++++++----
- include/linux/page_idle.h                   |  99 +++--
- include/linux/page_owner.h                  |   8 +-
- include/linux/page_ref.h                    | 158 +++++++-
- include/linux/pagemap.h                     | 585 ++++++++++++++++++----------
- include/linux/rmap.h                        |  10 +-
- include/linux/swap.h                        |  17 +-
- include/linux/vmstat.h                      | 113 +++++-
- include/linux/writeback.h                   |   9 +-
- include/trace/events/pagemap.h              |  46 ++-
- include/trace/events/writeback.h            |  28 +-
- kernel/bpf/verifier.c                       |   2 +-
- kernel/events/uprobes.c                     |   3 +-
- lib/flex_proportions.c                      |  28 +-
- mm/Makefile                                 |   2 +-
- mm/compaction.c                             |   4 +-
- mm/filemap.c                                | 575 +++++++++++++--------------
- mm/huge_memory.c                            |   7 +-
- mm/hugetlb.c                                |   2 +-
- mm/internal.h                               |  36 +-
- mm/khugepaged.c                             |   8 +-
- mm/ksm.c                                    |  34 +-
- mm/memcontrol.c                             | 358 +++++++++--------
- mm/memory-failure.c                         |   2 +-
- mm/memory.c                                 |  20 +-
- mm/mempolicy.c                              |  10 +
- mm/memremap.c                               |   2 +-
- mm/migrate.c                                | 189 +++++----
- mm/mlock.c                                  |   3 +-
- mm/page-writeback.c                         | 477 +++++++++++++----------
- mm/page_alloc.c                             |  14 +-
- mm/page_io.c                                |   4 +-
- mm/page_owner.c                             |  10 +-
- mm/pageset-compat.c                         | 142 +++++++
- mm/rmap.c                                   |  14 +-
- mm/shmem.c                                  |   7 +-
- mm/swap.c                                   | 197 +++++-----
- mm/swap_state.c                             |   2 +-
- mm/swapfile.c                               |   8 +-
- mm/userfaultfd.c                            |   2 +-
- mm/util.c                                   | 111 +++---
- mm/vmscan.c                                 |   8 +-
- mm/workingset.c                             |  52 +--
- 73 files changed, 2900 insertions(+), 1692 deletions(-)
- create mode 100644 mm/pageset-compat.c
+Guenter
