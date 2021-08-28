@@ -2,104 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556523FA2B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 03:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C4B3FA2BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 03:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbhH1BMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 21:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbhH1BMH (ORCPT
+        id S232967AbhH1BPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 21:15:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21167 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232763AbhH1BO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 21:12:07 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D84C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 18:11:17 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id 2so2242369qtw.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 18:11:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jbKjJi+SjlBlvBWeuYSN6P3GgzXQjaFRsk5Xet0fqF4=;
-        b=otEH4Zf3r/yrdw9fwNxLDZFbEn2KbGIc1rnCbtRcunDXhwOxyooauliDHc4vQ3vM5R
-         poWfKM5LepAL+e8+WgwObuhWn/Jm8NgGKEFSq/nKDJzWr7V6oBzXRIwXRsnXP36zwqPX
-         09OM6mAvBfhQnv0WQ59X+Ba5Hvle2A3OYtDiTRrUhLDPt3n8dILsRigiV3DBnG00PoJ0
-         d76Vvvb9U89Lax8Q6DNzE/Eykw5slTbCZLYUdnr6FqEL0OavkpXVr+9niREO0PnU7dpG
-         YjGt52HwHk8YndxBx7IiK28sXT0XBsLqzLsA+/0zXlwhGRnvyYmTsAxY/BgEmxGqBroh
-         twEA==
+        Fri, 27 Aug 2021 21:14:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630113246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nj7lN9b3OW9PxFPw9p3QaG1rQrZn9spoM1KJO1HMw1U=;
+        b=A4dzNDypRsANDa1pVg1DfcJKC3AeuzVqI/F2sN9U5WyLrRgudYokmWn6/FKp29JdUtpDNU
+        OGw349B1vwMuvYMNMev+arKbHt1fAAgPZ1aRSdSemGsBd0tfpZTPP4W2ECt8avwlCJKjgq
+        ekctGLWwbBEl2uru6xbRluuaPsqoHzE=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-ZdXJXCLVN6q8Xt25nxMlhw-1; Fri, 27 Aug 2021 21:14:04 -0400
+X-MC-Unique: ZdXJXCLVN6q8Xt25nxMlhw-1
+Received: by mail-qv1-f71.google.com with SMTP id ib9-20020a0562141c8900b003671c3a1243so1146281qvb.21
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 18:14:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jbKjJi+SjlBlvBWeuYSN6P3GgzXQjaFRsk5Xet0fqF4=;
-        b=UOS0hjhc4eLcHjtMi+Rm/2OQ3ERaQ5UGcDyEeptI7nqbEPbA1Mi601SE0io8XQfaja
-         PyMUERmmHKHOYCrkv20fuF2Y7NmqI0uLb5PugJZrg6rCaxu/Cx7fC80irN3fExNmKkWu
-         y46CzHdUjc72xdG7KicTjeL0Se9eoSrkQizn339ZTHu9+/RphW3nagGI1uo/Wvtiyqhw
-         nhFDnea4nx2MIdQzdVAx5wkTsjfAfjn2sU3jbwprg9NMmayNAzVDR47Lw+uCPz8NzdEi
-         O0saY4GyM7wwDpwMuba7bZ1KiJjxnjjsF8yVjdk7ntOez7605ZuxMf7kRJJFtImJHZcQ
-         peSg==
-X-Gm-Message-State: AOAM533q9yZMylNzhfn8w5aufal7/eoy3op/G3CPIOxWSPPg+XE1/XAf
-        vG/sRI4hsGcYzUYFh5NY18g=
-X-Google-Smtp-Source: ABdhPJwIwrrPhRFtDeJwcwFAYL0p4jwDMGhBkLRQedTlZTJESvAvn/2GegNe/WfdH9vRVWQnc2RXsw==
-X-Received: by 2002:aed:304c:: with SMTP id 70mr11104623qte.2.1630113076555;
-        Fri, 27 Aug 2021 18:11:16 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id w14sm6069193qkm.81.2021.08.27.18.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 18:11:16 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Jeff Dike <jdike@addtoit.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=nj7lN9b3OW9PxFPw9p3QaG1rQrZn9spoM1KJO1HMw1U=;
+        b=QSabHgjDMmbDWqIQtiDmCPqlQpOcb4MXjnNyEbks+2h3LpL7JYzjsaWt3KVBYwEAIs
+         f9YeiIxd6ok5GIqSsxngeFxN/jOI8jizPb3c33X2Cg24oZHulbtvZ7GFWnGb+dkiVO4t
+         tGmdqIFR9bQZ7FgvIOFxqAUA7nyjXFcMzDPHK0BfEyEsKrqHmV4cW+6YQf6TRgCooH6V
+         0CWMt7ZA8IUrRy3JLtIiDVyAVKLT84gOojvNieK0mNHQwZM4TKNXjjTre7NYPfB9sFEt
+         KbCCoCNYa/0ecClim5+76zVm/TQnU/nIhv3TpRJPy5rOJk+j+dOnCEG1h7mv00/bcmuY
+         YhQA==
+X-Gm-Message-State: AOAM532TvAQv4dw9oyxyuACiG0MozrjwoimSOc64o5YRgMeXCUnrx9uS
+        zq2lGhdfRk1Ty/hflZwcYooH4ic9UTeWUEeBDcrcj9zsvcm+rjU6aWR8WS1DpSyeyASHipamt62
+        aaW4L7qDtX/CLo+Qv9td2ND3V
+X-Received: by 2002:a37:652:: with SMTP id 79mr12078383qkg.197.1630113244161;
+        Fri, 27 Aug 2021 18:14:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJykNQoi0T51RsUXHOgq9qN2JS1S6X7N+wT1bH2pmiiItHjdiaYmsBmA5yoKxviFq81ypmmOdA==
+X-Received: by 2002:a37:652:: with SMTP id 79mr12078348qkg.197.1630113243925;
+        Fri, 27 Aug 2021 18:14:03 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id 21sm6009570qkk.51.2021.08.27.18.14.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Aug 2021 18:14:02 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] um: Replace if (cond) BUG() with BUG_ON()
-Date:   Fri, 27 Aug 2021 18:11:08 -0700
-Message-Id: <20210828011108.11232-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210825213750.6933-1-longman@redhat.com>
+ <20210825213750.6933-6-longman@redhat.com> <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
+ <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
+ <YShjb2WwvuB4s4gX@slm.duckdns.org>
+ <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
+ <YSlY0H/qeXQIGOfk@slm.duckdns.org>
+ <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
+ <YSl2yxEvnDrPxzUV@slm.duckdns.org>
+Message-ID: <f1168ddc-cb67-ecfd-6644-4963c857a0a0@redhat.com>
+Date:   Fri, 27 Aug 2021 21:14:01 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YSl2yxEvnDrPxzUV@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On 8/27/21 7:35 PM, Tejun Heo wrote:
+> Hello,
+>
+> On Fri, Aug 27, 2021 at 06:50:10PM -0400, Waiman Long wrote:
+>> The cpu exclusivity rule is due to the setting of CPU_EXCLUSIVE bit. This is
+>> a pre-existing condition unless you want to change how the
+>> cpuset.cpu_exclusive works.
+>>
+>> So the new rules will be:
+>>
+>> 1) The "cpuset.cpus" is not empty and the list of CPUs are exclusive.
+> Empty cpu list can be considered an exclusive one.
+It doesn't make sense to me to have a partition with no cpu configured 
+at all. I very much prefer the users to set cpuset.cpus first before 
+turning it into a partition.
+>
+>> 2) The parent cgroup is a partition root (can be an invalid one).
+> Does this mean a partition parent can't stop being a partition if one or
+> more of its children become partitions? If so, it violates the rule that a
+> descendant shouldn't be able to restrict what its ancestors can do.
 
-Fix the following coccinelle reports:
+No. As I said in the documentation, transitioning from partition root to 
+member is allowed. Against, it is illogical to allow a cpuset to become 
+a potential partition if it parent is not even a partition root at all. 
+In the case that the parent is reverted back to a member, the child 
+partitions will stay invalid forever unless the parent become a valid 
+partition again.
 
-./arch/um/kernel/mem.c:89:2-5: WARNING: Use BUG_ON instead of if
-condition followed by BUG.
+>
+>> 3) The "cpuset.cpus" is a subset of the parent's cpuset.cpus.allowed.
+> Why not just go by effective? This would mean that a parent can't withdraw
+> CPUs from its allowed set once descendants are configured. Restrictions like
+> this are fine when the entire hierarchy is configured by a single entity but
+> become awkward when configurations are multi-tiered, automated and dynamic.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- arch/um/kernel/mem.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+The original rule is to be based on effective cpus. However, to properly 
+handle the case of allowing offlined cpus to be included in the 
+partition, I have to change it to cpu_allowed instead. I can certainly 
+change it back to effective if you prefer.
 
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 8e636ce..1810e69 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -85,8 +85,7 @@ static void __init one_md_table_init(pud_t *pud)
- 		      __func__, PAGE_SIZE, PAGE_SIZE);
- 
- 	set_pud(pud, __pud(_KERNPG_TABLE + (unsigned long) __pa(pmd_table)));
--	if (pmd_table != pmd_offset(pud, 0))
--		BUG();
-+	BUG_ON(pmd_table != pmd_offset(pud, 0));
- #endif
- }
- 
--- 
-1.8.3.1
+>
+>> 4) No child cgroup with cpuset enabled.
+> idk, maybe? I'm having a hard time seeing the point in adding these
+> restrictions when the state transitions are asynchronous anyway. Would it
+> help if we try to separate what's absoluately and technically necessary and
+> what seems reasonable or high bar and try to justify why each of the latter
+> should be added?
+
+This rule is there mainly for ease of implementation. Otherwise, I need 
+to add additional code to handle the conversion of child cpusets which 
+can be rather complex and require a lot more debugging. This rule will 
+no longer apply once the cpuset becomes a partition root.
+
+Cheers,
+Longman
 
 
