@@ -2,102 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15663FA71A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556B53FA71D
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhH1SEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 14:04:53 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:40695 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229912AbhH1SEv (ORCPT
+        id S230336AbhH1SIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 14:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhH1SIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 14:04:51 -0400
-Received: (qmail 291460 invoked by uid 1000); 28 Aug 2021 14:03:58 -0400
-Date:   Sat, 28 Aug 2021 14:03:58 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     syzbot <syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com>
-Cc:     gregkh@linuxfoundation.org, johan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        mathias.nyman@linux.intel.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] INFO: task hung in do_proc_bulk
-Message-ID: <20210828180358.GA291431@rowland.harvard.edu>
-References: <000000000000a83c6a05caa09572@google.com>
+        Sat, 28 Aug 2021 14:08:34 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF96C0613D9
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:07:43 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id z3-20020a4a98430000b029025f4693434bso3115644ooi.3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 11:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ves4rEFbuIlPzY9KtlYpO56vkgctRzHEkajdiDzSNZI=;
+        b=hdp6No9GL73pD05e+eYeNTDWcPTx1YCFqtVOhyTeTf2uROufLpRpcCpAd9UylKgj3d
+         WGuVdr2F0ccCoHWGW8rbmtLuLtjEv6iOTSIBj+JCzJqaEqE1SZBnBYrVLsl4mrcefQbu
+         WcoLTHbDrz8voCrX+Jlwp2OWKlZiOZJUp76HdBNHcDvaOv8h7IfUF0DRObXZBoP2WGu/
+         UDCmBNOEFIqax2CcxGecDYALKC9+wvygXJZ0eLoGp2b5vsM4G3ytxergTgB+rqxrLwtL
+         7vh33G+GrpgxO4RolCgDxopyVI98QLBjqFwqHaPKevU0tVXQOiPGwfz+d18B0FFN7fmR
+         IR3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ves4rEFbuIlPzY9KtlYpO56vkgctRzHEkajdiDzSNZI=;
+        b=kd4LGfedvQnETFkl43tnbN/f+Fwp3Z4ZPIVDzGaB0k1YeMq1ohGW/u80rFAdCk5DMm
+         nYXb5mWvIGlNFO++4SO/tzo/SRtEVmZ5vZursiOvK/FiZ4l/mFzyQzZNuAL72TKRdos2
+         m3I/I9/3QEo2RoenHf9eIM+3Me1vk25xWVdU7H21jTs8V8gxThke9LqTPBkaW5UDUZEe
+         G2F76glqszVdhl/gsWf//wMJvD6nVejuTrk8ArexLs1RRF2ol2zwh+L0ofoNMVOMDMA/
+         sI/WuBKA8toLbK2+9ANlU49NwObSXUMQlAZ4m7i93YgskvyCpaidFzD8rhIk8PpwhyS7
+         VUZQ==
+X-Gm-Message-State: AOAM533vnNVyjaigb7wABgcrpR9RBOtAIDY71cgcSOGEHnVU1a1/yfgd
+        TiF/wr3I/7wphUuE1we+gCiJpQ==
+X-Google-Smtp-Source: ABdhPJzGm7aYpkcvBh52pNx0ZDFrrdjtJC2mAVrJctkZ0jCtShiTb6GbKe3ylOcs27/Yo065nyQ4zg==
+X-Received: by 2002:a4a:c541:: with SMTP id j1mr4162359ooq.15.1630174062688;
+        Sat, 28 Aug 2021 11:07:42 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 186sm1942151ood.39.2021.08.28.11.07.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 11:07:42 -0700 (PDT)
+Date:   Sat, 28 Aug 2021 13:07:39 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add SM6350 pinctrl
+ bindings
+Message-ID: <YSp7az2iBlPnGgxQ@yoga>
+References: <20210828172315.55742-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000a83c6a05caa09572@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210828172315.55742-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 08:52:17AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    d5ae8d7f85b7 Revert "media: dvb header files: move some he..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=155fa21e300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ada0f7d3d9fd2016d927
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a1ab0e300000
-> 
-> Bisection is inconclusive: the issue happens on the oldest tested release.
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15662ee1300000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=17662ee1300000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13662ee1300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com
-> 
-> INFO: task syz-executor.0:8700 blocked for more than 143 seconds.
->       Not tainted 5.14.0-rc7-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:syz-executor.0  state:D stack:23192 pid: 8700 ppid:  8455 flags:0x00004004
-> Call Trace:
->  context_switch kernel/sched/core.c:4681 [inline]
->  __schedule+0xc07/0x11f0 kernel/sched/core.c:5938
->  schedule+0x14b/0x210 kernel/sched/core.c:6017
->  schedule_timeout+0x98/0x2f0 kernel/time/timer.c:1857
->  do_wait_for_common+0x2da/0x480 kernel/sched/completion.c:85
->  __wait_for_common kernel/sched/completion.c:106 [inline]
->  wait_for_common kernel/sched/completion.c:117 [inline]
->  wait_for_completion_timeout+0x46/0x60 kernel/sched/completion.c:157
->  usb_start_wait_urb+0x167/0x550 drivers/usb/core/message.c:63
->  do_proc_bulk+0x978/0x1080 drivers/usb/core/devio.c:1236
+On Sat 28 Aug 12:23 CDT 2021, Konrad Dybcio wrote:
 
-Looks like the wait needs to be interruptible.
+> Add device tree binding Documentation details for Qualcomm SM6350
+> pinctrl driver.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-Alan Stern
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git d5ae8d7f85b7
+Regards,
+Bjorn
 
-Index: usb-devel/drivers/usb/core/message.c
-===================================================================
---- usb-devel.orig/drivers/usb/core/message.c
-+++ usb-devel/drivers/usb/core/message.c
-@@ -60,12 +60,18 @@ static int usb_start_wait_urb(struct urb
- 		goto out;
- 
- 	expire = timeout ? msecs_to_jiffies(timeout) : MAX_SCHEDULE_TIMEOUT;
--	if (!wait_for_completion_timeout(&ctx.done, expire)) {
-+	retval = wait_for_completion_interruptible_timeout(&ctx.done, expire);
-+	if (retval <= 0) {
- 		usb_kill_urb(urb);
--		retval = (ctx.status == -ENOENT ? -ETIMEDOUT : ctx.status);
-+		if (retval < 0)
-+			retval = -EINTR;
-+		else if (ctx.status == -ENOENT)
-+			retval = -ETIMEDOUT;
-+		else
-+			retval = ctx.status;
- 
- 		dev_dbg(&urb->dev->dev,
--			"%s timed out on ep%d%s len=%u/%u\n",
-+			"%s timed out or interrupted on ep%d%s len=%u/%u\n",
- 			current->comm,
- 			usb_endpoint_num(&urb->ep->desc),
- 			usb_urb_dir_in(urb) ? "in" : "out",
+> ---
+> Changes since v2:
+> - Tweak the regex to match gpio0-gpio157
+> 
+>  .../bindings/pinctrl/qcom,sm6350-pinctrl.yaml | 148 ++++++++++++++++++
+>  1 file changed, 148 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..554992a681f3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
+> @@ -0,0 +1,148 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,sm6350-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. SM6350 TLMM block
+> +
+> +maintainers:
+> +  - Konrad Dybcio <konrad.dybcio@somainline.org>
+> +
+> +description: |
+> +  This binding describes the Top Level Mode Multiplexer (TLMM) block found
+> +  in the SM6350 platform.
+> +
+> +allOf:
+> +  - $ref: /schemas/pinctrl/qcom,tlmm-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sm6350-tlmm
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts: true
+> +  interrupt-controller: true
+> +  '#interrupt-cells': true
+> +  gpio-controller: true
+> +  gpio-reserved-ranges: true
+> +  '#gpio-cells': true
+> +  gpio-ranges: true
+> +  wakeup-parent: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +patternProperties:
+> +  '-state$':
+> +    oneOf:
+> +      - $ref: "#/$defs/qcom-sm6350-tlmm-state"
+> +      - patternProperties:
+> +          ".*":
+> +            $ref: "#/$defs/qcom-sm6350-tlmm-state"
+> +
+> +$defs:
+> +  qcom-sm6350-tlmm-state:
+> +    type: object
+> +    description:
+> +      Pinctrl node's client devices use subnodes for desired pin configuration.
+> +      Client device subnodes use below standard properties.
+> +    $ref: "qcom,tlmm-common.yaml#/$defs/qcom-tlmm-state"
+> +
+> +    properties:
+> +      pins:
+> +        description:
+> +          List of gpio pins affected by the properties specified in this
+> +          subnode.
+> +        items:
+> +          oneOf:
+> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-4][0-9]|15[0-7])$"
+> +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
+> +        minItems: 1
+> +        maxItems: 36
+> +
+> +      function:
+> +        description:
+> +          Specify the alternative function to be configured for the specified
+> +          pins.
+> +
+> +        enum: [ adsp_ext, agera_pll, atest_char, atest_char0, atest_char1, atest_char2,
+> +                atest_char3, atest_tsens, atest_tsens2, atest_usb1, atest_usb10, atest_usb11,
+> +                atest_usb12, atest_usb13, atest_usb2, atest_usb20, atest_usb21, atest_usb22,
+> +                atest_usb23, audio_ref, btfm_slimbus, cam_mclk0, cam_mclk1, cam_mclk2, cam_mclk3,
+> +                cam_mclk4, cci_async, cci_i2c, cci_timer0, cci_timer1, cci_timer2, cci_timer3,
+> +                cci_timer4, cri_trng, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1, ddr_pxi2, ddr_pxi3,
+> +                dp_hot, edp_lcd, gcc_gp1, gcc_gp2, gcc_gp3, gp_pdm0, gp_pdm1, gp_pdm2, gpio,
+> +                gps_tx, ibi_i3c, jitter_bist, ldo_en, ldo_update, lpass_ext, m_voc, mclk,
+> +                mdp_vsync, mdp_vsync0, mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s_0, mi2s_1, mi2s_2,
+> +                mss_lte, nav_gpio, nav_pps, pa_indicator, pcie0_clk, phase_flag0, phase_flag1,
+> +                phase_flag10, phase_flag11, phase_flag12, phase_flag13, phase_flag14, phase_flag15,
+> +                phase_flag16, phase_flag17, phase_flag18, phase_flag19, phase_flag2, phase_flag20,
+> +                phase_flag21, phase_flag22, phase_flag23, phase_flag24, phase_flag25, phase_flag26,
+> +                phase_flag27, phase_flag28, phase_flag29, phase_flag3, phase_flag30, phase_flag31,
+> +                phase_flag4, phase_flag5, phase_flag6, phase_flag7, phase_flag8, phase_flag9,
+> +                pll_bist, pll_bypassnl, pll_reset, prng_rosc, qdss_cti, qdss_gpio, qdss_gpio0,
+> +                qdss_gpio1, qdss_gpio10, qdss_gpio11, qdss_gpio12, qdss_gpio13, qdss_gpio14,
+> +                qdss_gpio15, qdss_gpio2, qdss_gpio3, qdss_gpio4, qdss_gpio5, qdss_gpio6,
+> +                qdss_gpio7, qdss_gpio8, qdss_gpio9, qlink0_enable, qlink0_request, qlink0_wmss,
+> +                qlink1_enable, qlink1_request, qlink1_wmss, qup00, qup01, qup02, qup10, qup11,
+> +                qup12, qup13_f1, qup13_f2, qup14, rffe0_clk, rffe0_data, rffe1_clk, rffe1_data,
+> +                rffe2_clk, rffe2_data, rffe3_clk, rffe3_data, rffe4_clk, rffe4_data, sd_write,
+> +                sdc1_tb, sdc2_tb, sp_cmu, tgu_ch0, tgu_ch1, tgu_ch2, tgu_ch3, tsense_pwm1,
+> +                tsense_pwm2, uim1_clk, uim1_data, uim1_present, uim1_reset, uim2_clk, uim2_data,
+> +                uim2_present, uim2_reset, usb_phy, vfr_1, vsense_trigger, wlan1_adc0, wlan1_adc1,
+> +                wlan2_adc0, wlan2_adc1, ]
+> +
+> +
+> +      bias-disable: true
+> +      bias-pull-down: true
+> +      bias-pull-up: true
+> +      drive-strength: true
+> +      input-enable: true
+> +      output-high: true
+> +      output-low: true
+> +
+> +    required:
+> +      - pins
+> +      - function
+> +
+> +    additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +        pinctrl@f100000 {
+> +                compatible = "qcom,sm6350-tlmm";
+> +                reg = <0x0f100000 0x300000>;
+> +                interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +                interrupt-controller;
+> +                #interrupt-cells = <2>;
+> +                gpio-ranges = <&tlmm 0 0 157>;
+> +
+> +                gpio-wo-subnode-state {
+> +                        pins = "gpio1";
+> +                        function = "gpio";
+> +                };
+> +
+> +                uart-w-subnodes-state {
+> +                        rx {
+> +                                pins = "gpio25";
+> +                                function = "qup13_f2";
+> +                                bias-disable;
+> +                        };
+> +
+> +                        tx {
+> +                                pins = "gpio26";
+> +                                function = "qup13_f2";
+> +                                bias-disable;
+> +                        };
+> +                };
+> +        };
+> +...
+> -- 
+> 2.33.0
+> 
