@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C4B3FA2BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 03:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E536F3FA2C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 03:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232967AbhH1BPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 21:15:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21167 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232763AbhH1BO6 (ORCPT
+        id S232997AbhH1BPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 21:15:40 -0400
+Received: from mo-csw1115.securemx.jp ([210.130.202.157]:56114 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232877AbhH1BPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 21:14:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630113246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nj7lN9b3OW9PxFPw9p3QaG1rQrZn9spoM1KJO1HMw1U=;
-        b=A4dzNDypRsANDa1pVg1DfcJKC3AeuzVqI/F2sN9U5WyLrRgudYokmWn6/FKp29JdUtpDNU
-        OGw349B1vwMuvYMNMev+arKbHt1fAAgPZ1aRSdSemGsBd0tfpZTPP4W2ECt8avwlCJKjgq
-        ekctGLWwbBEl2uru6xbRluuaPsqoHzE=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-ZdXJXCLVN6q8Xt25nxMlhw-1; Fri, 27 Aug 2021 21:14:04 -0400
-X-MC-Unique: ZdXJXCLVN6q8Xt25nxMlhw-1
-Received: by mail-qv1-f71.google.com with SMTP id ib9-20020a0562141c8900b003671c3a1243so1146281qvb.21
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 18:14:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=nj7lN9b3OW9PxFPw9p3QaG1rQrZn9spoM1KJO1HMw1U=;
-        b=QSabHgjDMmbDWqIQtiDmCPqlQpOcb4MXjnNyEbks+2h3LpL7JYzjsaWt3KVBYwEAIs
-         f9YeiIxd6ok5GIqSsxngeFxN/jOI8jizPb3c33X2Cg24oZHulbtvZ7GFWnGb+dkiVO4t
-         tGmdqIFR9bQZ7FgvIOFxqAUA7nyjXFcMzDPHK0BfEyEsKrqHmV4cW+6YQf6TRgCooH6V
-         0CWMt7ZA8IUrRy3JLtIiDVyAVKLT84gOojvNieK0mNHQwZM4TKNXjjTre7NYPfB9sFEt
-         KbCCoCNYa/0ecClim5+76zVm/TQnU/nIhv3TpRJPy5rOJk+j+dOnCEG1h7mv00/bcmuY
-         YhQA==
-X-Gm-Message-State: AOAM532TvAQv4dw9oyxyuACiG0MozrjwoimSOc64o5YRgMeXCUnrx9uS
-        zq2lGhdfRk1Ty/hflZwcYooH4ic9UTeWUEeBDcrcj9zsvcm+rjU6aWR8WS1DpSyeyASHipamt62
-        aaW4L7qDtX/CLo+Qv9td2ND3V
-X-Received: by 2002:a37:652:: with SMTP id 79mr12078383qkg.197.1630113244161;
-        Fri, 27 Aug 2021 18:14:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykNQoi0T51RsUXHOgq9qN2JS1S6X7N+wT1bH2pmiiItHjdiaYmsBmA5yoKxviFq81ypmmOdA==
-X-Received: by 2002:a37:652:: with SMTP id 79mr12078348qkg.197.1630113243925;
-        Fri, 27 Aug 2021 18:14:03 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id 21sm6009570qkk.51.2021.08.27.18.14.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 18:14:02 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20210825213750.6933-1-longman@redhat.com>
- <20210825213750.6933-6-longman@redhat.com> <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
- <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
- <YShjb2WwvuB4s4gX@slm.duckdns.org>
- <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
- <YSlY0H/qeXQIGOfk@slm.duckdns.org>
- <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
- <YSl2yxEvnDrPxzUV@slm.duckdns.org>
-Message-ID: <f1168ddc-cb67-ecfd-6644-4963c857a0a0@redhat.com>
-Date:   Fri, 27 Aug 2021 21:14:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 27 Aug 2021 21:15:39 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 17S1EksB001842; Sat, 28 Aug 2021 10:14:46 +0900
+X-Iguazu-Qid: 2wHHCQcimiqb2Jfnge
+X-Iguazu-QSIG: v=2; s=0; t=1630113285; q=2wHHCQcimiqb2Jfnge; m=COs2fNyNW/e9aN1r8qfvg9hhyTI2VUC9qIXExnCc1c8=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1110) id 17S1Ejue025732
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 28 Aug 2021 10:14:45 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 3475C10014D;
+        Sat, 28 Aug 2021 10:14:45 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 17S1EiHP004416;
+        Sat, 28 Aug 2021 10:14:45 +0900
+Date:   Sat, 28 Aug 2021 10:14:43 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     robh+dt@kernel.org, bhelgaas@google.com, kishon@ti.com,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, kw@linux.com,
+        punit1.agrawal@toshiba.co.jp, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/3] Visconti: Add Toshiba Visconti PCIe host
+ controller driver
+X-TSB-HOP: ON
+Message-ID: <20210828011443.njafshmejojm7t5t@toshiba.co.jp>
+References: <20210811083830.784065-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <162998285902.30814.11206633831020646086.b4-ty@arm.com>
+ <TYAPR01MB6252A29B56BBF8921822824F92C79@TYAPR01MB6252.jpnprd01.prod.outlook.com>
+ <20210827094815.GA13112@lpieralisi>
 MIME-Version: 1.0
-In-Reply-To: <YSl2yxEvnDrPxzUV@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210827094815.GA13112@lpieralisi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 7:35 PM, Tejun Heo wrote:
-> Hello,
->
-> On Fri, Aug 27, 2021 at 06:50:10PM -0400, Waiman Long wrote:
->> The cpu exclusivity rule is due to the setting of CPU_EXCLUSIVE bit. This is
->> a pre-existing condition unless you want to change how the
->> cpuset.cpu_exclusive works.
->>
->> So the new rules will be:
->>
->> 1) The "cpuset.cpus" is not empty and the list of CPUs are exclusive.
-> Empty cpu list can be considered an exclusive one.
-It doesn't make sense to me to have a partition with no cpu configured 
-at all. I very much prefer the users to set cpuset.cpus first before 
-turning it into a partition.
->
->> 2) The parent cgroup is a partition root (can be an invalid one).
-> Does this mean a partition parent can't stop being a partition if one or
-> more of its children become partitions? If so, it violates the rule that a
-> descendant shouldn't be able to restrict what its ancestors can do.
+Hi,
 
-No. As I said in the documentation, transitioning from partition root to 
-member is allowed. Against, it is illogical to allow a cpuset to become 
-a potential partition if it parent is not even a partition root at all. 
-In the case that the parent is reverted back to a member, the child 
-partitions will stay invalid forever unless the parent become a valid 
-partition again.
+On Fri, Aug 27, 2021 at 10:48:15AM +0100, Lorenzo Pieralisi wrote:
+> On Thu, Aug 26, 2021 at 11:49:04PM +0000, nobuhiro1.iwamatsu@toshiba.co.jp wrote:
+> > Hi,
+> > 
+> > > -----Original Message-----
+> > > From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi@arm.com]
+> > > Sent: Thursday, August 26, 2021 10:01 PM
+> > > To: iwamatsu nobuhiro(岩松 信洋 □ＳＷＣ◯ＡＣＴ) <nobuhiro1.iwamatsu@toshiba.co.jp>; Rob Herring
+> > > <robh+dt@kernel.org>; Bjorn Helgaas <bhelgaas@google.com>
+> > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>; Kishon Vijay Abraham I <kishon@ti.com>; ishikawa yuji(石川 悠司
+> > > ○ＲＤＣ□ＡＩＴＣ○ＥＡ開) <yuji2.ishikawa@toshiba.co.jp>; linux-arm-kernel@lists.infradead.org;
+> > > linux-pci@vger.kernel.org; Krzysztof Wilczyński <kw@linux.com>; agrawal punit(アグラワル プニト □ＳＷＣ◯ＡＣＴ)
+> > > <punit1.agrawal@toshiba.co.jp>; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> > > Subject: Re: [PATCH v6 0/3] Visconti: Add Toshiba Visconti PCIe host controller driver
+> > > 
+> > > On Wed, 11 Aug 2021 17:38:27 +0900, Nobuhiro Iwamatsu wrote:
+> > > > This series is the PCIe driver for Toshiba's ARM SoC, Visconti[0].
+> > > > This provides DT binding documentation, device driver, MAINTAINER files.
+> > > >
+> > > > Best regards,
+> > > >   Nobuhiro
+> > > >
+> > > > [0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
+> > > >
+> > > > [...]
+> > > 
+> > > Applied to pci/dwc, thanks!
+> > 
+> > Thanks! But...
+> > > 
+> > > [1/3] dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+> > >       https://git.kernel.org/lpieralisi/pci/c/a655ce4000
+> > > [2/3] PCI: visconti: Add Toshiba Visconti PCIe host controller driver
+> > >       https://git.kernel.org/lpieralisi/pci/c/09436f819c
+> > 
+> > Only drivers/pci/controller/dwc/Makefile is applied. Could you check this?	
+> 
+> I fixed this. Please don't write patch versions changes in the commit
+> log - I had to delete those myself, I did not notice while applying
+> them.
 
->
->> 3) The "cpuset.cpus" is a subset of the parent's cpuset.cpus.allowed.
-> Why not just go by effective? This would mean that a parent can't withdraw
-> CPUs from its allowed set once descendants are configured. Restrictions like
-> this are fine when the entire hierarchy is configured by a single entity but
-> become awkward when configurations are multi-tiered, automated and dynamic.
+Sorry about this.
 
-The original rule is to be based on effective cpus. However, to properly 
-handle the case of allowing offlined cpus to be included in the 
-partition, I have to change it to cpu_allowed instead. I can certainly 
-change it back to effective if you prefer.
+> 
+> Please let me know if the branch looks OK now.
+> 
 
->
->> 4) No child cgroup with cpuset enabled.
-> idk, maybe? I'm having a hard time seeing the point in adding these
-> restrictions when the state transitions are asynchronous anyway. Would it
-> help if we try to separate what's absoluately and technically necessary and
-> what seems reasonable or high bar and try to justify why each of the latter
-> should be added?
+Looks good to me.
+Thanks for your work.
 
-This rule is there mainly for ease of implementation. Otherwise, I need 
-to add additional code to handle the conversion of child cpusets which 
-can be rather complex and require a lot more debugging. This rule will 
-no longer apply once the cpuset becomes a partition root.
+> Lorenzo
+> 
+> > > [3/3] MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+> > >       https://git.kernel.org/lpieralisi/pci/c/34af7aace1
+> > > 
+> > > Thanks,
+> > > Lorenzo
+> > 
 
-Cheers,
-Longman
+Best regards,
+  Nobuhiro
 
 
