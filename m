@@ -2,156 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226323FA748
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05F03FA74C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhH1TFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 15:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbhH1TF1 (ORCPT
+        id S230452AbhH1TSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 15:18:07 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:50875 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhH1TSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 15:05:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C8AC061756;
-        Sat, 28 Aug 2021 12:04:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=TuHgCRXfj8vRtIl2JCrQ2TAdDZ4HQm6n8/xX2K1UOSw=; b=XD2wEWxFFz9GVLE/bKHQCVY6ZB
-        bEqI392gY7gLHgdyf1aCDCqtlhRNRpawo6Rn20HShARD+/ZvnuBRMFEZjVfaDXvbrFD/h7LP0e6O5
-        iSs/XepkPwoQ/h3xLrxvhIdl/kQu7nKwE8yOw/lJJV2Y3Kw5iGgczWbpljRmGwKlAYrYbm2QuHmOl
-        3PLca63gFFAYJ62Hy1bOSx5GK67aQZjNDefpL+onEyuku+scKS11pxAQuLLmLhT2vx9dbxTwT+Glq
-        CKclkP/5wjkeaPDlamGm/Bm5+ZaloAZAI7yZyMfBDnMB8NByu7SxTZnQ3fBNJKtGuHTJeQTV2Yuav
-        wHzoLNPw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mK3cl-00Fm3g-4m; Sat, 28 Aug 2021 19:04:19 +0000
-Date:   Sat, 28 Aug 2021 20:04:15 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Discontiguous folios/pagesets
-Message-ID: <YSqIry5dKg+kqAxJ@casper.infradead.org>
+        Sat, 28 Aug 2021 15:18:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630178235; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=rzhVlsJuESXqjwzJH/kGoexoGmWiGQFXQuV4OdE/kSs=; b=jOK8aMVEry5DW9KG/+O8ldTV3I5u2jTfiGLekr//I7KGpmaJMu24YtMtJdlGMtHURc730j4H
+ jtu2RY594rL14/hZfHlKK26P4bF+VZ3GWywXY9MTo+K7dqSDQEJgKnWG7Dp7SySiqiABk1gp
+ 65EyPvQZEKG1Xz3/SEJFNihHWiM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 612a8ba897222b4b5b05b4d3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Aug 2021 19:16:56
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D401FC43460; Sat, 28 Aug 2021 19:16:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.3 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.87.126])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D6428C4338F;
+        Sat, 28 Aug 2021 19:16:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D6428C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2 10/18] arm64: dts: qcom: sm6350: Add AOSS_QMP
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        Vinod Koul <vkoul@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+References: <20210828131814.29589-1-konrad.dybcio@somainline.org>
+ <20210828131814.29589-10-konrad.dybcio@somainline.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <357f3b06-7103-1580-e939-f04c6ea00520@codeaurora.org>
+Date:   Sun, 29 Aug 2021 00:46:43 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210828131814.29589-10-konrad.dybcio@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current folio work is focused on permitting the VM to use
-physically contiguous chunks of memory.  Both Darrick and Johannes
-have pointed out the advantages of supporting logically-contiguous,
-physically-discontiguous chunks of memory.  Johannes wants to be able to
-use order-0 allocations to allocate larger folios, getting the benefit
-of managing the memory in larger chunks without requiring the memory
-allocator to be able to find contiguous chunks.  Darrick wants to support
-non-power-of-two block sizes.
+Hi,
 
-Johannes' ask is more readily achievable.  It requires a bit in struct
-page to distinguish between contiguous/discontiguous folios.  The biggest
-change would probably be to folio_page(), which will need a way to find
-each subpage given the struct folio.  There are several different ways
-to accomplish this (and I don't want to get into a detailed design
-discussion here).  page_folio() actually requires no change at all;
-compound_head() can move to any struct page.  There are challenges with
-things like adding a folio to a bio_vec.  The current code assumes
-that if we can add some of the folio, we can add all of the folio,
-and that's not true for discontiguous folios (we might run out of room
-in the bio_vec and have to allocate a new one).  It's a SMOP to fix.
-There are probably other problems I haven't thought of, but I don't
-expect them to be terribly hard to fix.
+On 8/28/2021 6:48 PM, Konrad Dybcio wrote:
+> Add a node for AOSS_QMP in preparation for remote processor enablement.
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+>   arch/arm64/boot/dts/qcom/sm6350.dtsi | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> index 986d7fb01cbb..d903173b7dbc 100644
+> --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> @@ -537,6 +537,17 @@ tsens1: thermal-sensor@c265000 {
+>   			#thermal-sensor-cells = <1>;
+>   		};
+>   
+> +		aoss_qmp: power-controller@c300000 {
+> +			compatible = "qcom,sm6350-aoss-qmp", "qcom,aoss-qmp";
+> +			reg = <0 0x0c300000 0 0x1000>;
 
-Non-power-of-two folios are more awkward.  Any calls to folio_order()
-and folio_shift() have to be guarded by folio_test_contig() (which will
-be fine).  The bigger problem is the radix tree.  It really only works
-for power-of-two sized objects (and honestly, it's not even all that
-great for things which aren't a power of 64 in size).  See appendix
-for more details.
+The QMP should only need 0x400 size [1].
+Can you please change it so that when [1] goes in (and later when sleep 
+stats enabled for sm6350 don't need to change size).
 
-Liam and I (mostly Liam) have been working on the maple tree data
-structure.  It naturally supports arbitrary-sized objects.  It does not
-currently support three important features:
+[1] 
+https://patchwork.kernel.org/project/linux-arm-msm/patch/1621596371-26482-4-git-send-email-mkshah@codeaurora.org/
 
-1. It is inefficient for objects of size 1.  The leaf node currently
-stores 15 indices and 16 pointers.  By adding a new leaf node type, that
-can be increased to 31 pointers, effectively making it twice as dense.
+Thanks,
+Maulik
 
-2. It does not support search marks.  The page cache relies on being able
-to efficiently search for pages which are marked as dirty or writeback.
-Again, a new node type can fix this by sacrificing one pointer per level
-of the tree in order to mark subnodes/objects.
+> +			interrupts-extended = <&ipcc IPCC_CLIENT_AOP IPCC_MPROC_SIGNAL_GLINK_QMP
+> +						     IRQ_TYPE_EDGE_RISING>;
+> +			mboxes = <&ipcc IPCC_CLIENT_AOP IPCC_MPROC_SIGNAL_GLINK_QMP>;
+> +
+> +			#clock-cells = <0>;
+> +			#power-domain-cells = <1>;
+> +		};
+> +
+>   		tlmm: pinctrl@f100000 {
+>   			compatible = "qcom,sm6350-tlmm";
+>   			reg = <0 0x0f100000 0 0x300000>;
 
-3. It does not support the 'private_list' / xa_update_node_t, which
-is used by the workingset code to prune shadow entries under memory
-pressure.  I think the maple tree should take a different approach from
-the radix tree.  Instead of pruning nodes which contain only shadow
-entries, we should prune shadow entries from the tree which will cause
-the tree to shrink.  That calls for marking inodes as containing shadow
-entries, and removing old shadow entries, maybe on an LRU of some kind.
-I haven't thought deeply about this one, but I'm convinced that (as with
-so many things) a real tree behaves better than the radix tree.
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
-The maple tree is also better at storing "random" power of two sizes.
-In the worst case, an order-5 page will take up 32 pointers (256
-bytes; 4 cache lines) in the tree.  Even an order-2 page (the most
-common allocation) takes 4 pointers.  That kind of wasted space offers
-considerable opportunity for the maple tree to do better than the radix
-tree for real workloads.
-
-If nobody beats me to it, I expect to spend some time on the maple
-tree soon.  This is a good time to offer suggestions, as opposed to
-waiting until the pull request to tell me the entire idea is wrong.
-
-
-Appendix: The fsync_range problem
-
-The radix tree works by indexing into a 64-element table 6 bits at a time.
-Assuming a 64-bit lookup index, it uses the top 4 bits to choose a node
-from the top-level array, then it uses bits 54-59 to choose the next
-node, then bits 48-53 for the next node, and so on.  This is optimised
-to start further down the tree for trees which have no entries above a
-certain index, saving memory and lookup time.
-
-When we mark a page as dirty, we set a search mark in the node that
-contains that page (and recursively all its parents, up to the root
-node), ensuring that when we walk the tree looking for dirty pages,
-we will find it.
-
-That search is done by vfs_fsync_range() (there are a number of syscalls
-which will get us there, eg sync_file_range(), msync(), IORING_OP_FSYNC)
-It calls the fs-specific ->fsync() method, which usually calls
-file_write_and_wait_range(), calls __filemap_fdatawrite_range()
-calls do_writepages() calls ->writepages() which usually calls
-write_cache_pages() calls pagevec_lookup_range_tag() calls
-find_get_pages_range_tag() calls find_get_entry().
-
-Here's the problem.  We might have a 20kB folio at index 4095-4099
-of a file.  When we dirty the page at index 4097, we mark the head
-page as dirty and so we mark index 4095 as dirty (which marks the node
-containing 4032-4095 as dirty, and its parent node 0-4095 as dirty, and
-its parent node 0-262143 as dirty).  Then we msync() the page at index
-4097, so we start a search looking for dirty pages from index 4097-4097.
-Node 0-262143 is dirty, so we step down into it, but then node 4096-8193
-is not dirty, so we don't even look in it.
-
-This isn't a problem for power-of-two folios.  All subpages are in
-the same node as the head page.  When the XArray does a mark search,
-it actually loads the entry, even if it's not marked.  If that entry is
-a sibling entry, it checks to see whether the canonical entry is marked
-or not.
-
-We can't solve this by having the filesystem "round up" its search
-to the nearest multiple of 20kB.  It would fix this particular
-example, but if we happen to have allocated a 40kB page at index 8190,
-dirtied-and-then-searched-for index 8207, we'd be looking for a start
-of 8200 and miss the dirty mark of index 8190.
-
-We could solve this by marking every subpage as being dirty, but
-that makes marking rather inefficient (we could end up having to mark
-twice as many nodes as we currently do) and complicated.  I think it's
-better to admit we've reached the limit of what a radix tree can do for
-us and move to the maple tree.
