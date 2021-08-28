@@ -2,167 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932BF3FA659
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3801A3FA65F
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234478AbhH1PEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:04:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43528 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbhH1PEw (ORCPT
+        id S234388AbhH1PHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 11:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhH1PHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:04:52 -0400
-Date:   Sat, 28 Aug 2021 15:03:59 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630163041;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=y60azyjuAZmiS76cGq2J2xGYR5fnA2UXsW3Y5Tf6ncY=;
-        b=Ayw5jdb4FXQ3e7XwMz8kPPk5Vw82ZoU4Gb2PFFu06iWLPxKxbbFNNnpQTO8L4ajAooefYy
-        A9nlwmK26z7QiCwqu3LfN9tnGWW2Hd5S5qVZ6Lg4lT+BEFgLI5SCv+/1KKmc5qmqjIKaH9
-        5wjADoEKW3Z1bfBK7yWKkMzXOt7rOJLv90SITOXM9tDKMJ7ML2Is2tyCidqBdlwzEmeGLD
-        j7006kIsveE9IRQOnkx6RMqQuLxyp7DUbvz7mc9Z/qo3U0RlrtibVmMsBvpN8EXYenWzaB
-        uX273Ya6EnoekoaQHMJLfN+sA2No6io/2I+mxxDy511uiVLwfm+yNeOByMTIrQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630163041;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=y60azyjuAZmiS76cGq2J2xGYR5fnA2UXsW3Y5Tf6ncY=;
-        b=4Afi/yGj8Q6BM4Qce8lPZ0pBzimuabJS/7S5aFv1oLLqr/qawnNyQgjaRhtSlm2azwOq/N
-        ojtMxV1JPYWp5TBQ==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource: Make clocksource watchdog test safe
- for slow-HZ systems
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Sat, 28 Aug 2021 11:07:18 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8984C061756;
+        Sat, 28 Aug 2021 08:06:27 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id g18so7677802wrc.11;
+        Sat, 28 Aug 2021 08:06:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-transfer-encoding;
+        bh=P+sg7S7rHtibXd9SvMMU8OB3sAkFT9CGekE5f8GWaSk=;
+        b=VLL/oSRtQyhtWyKcRpL6P0TbfvRG1byUhQFdCgiucIOxbAqHEkBp81PL3hKb0ME2Jm
+         frBHAUIEBJN/CNfh/42Jvii3hS7KTJaobwLN15JjEp9HdLHf3LWnh4v5zPFp0V1hAFg8
+         05fdC+yZXvyLIxpdu/VyJym17vUi/bV8aUf/sb9UQrnMfB+RrboXtMpYYwq1+HxbsJM3
+         EpCP4ePGqsEDelEk+ydcpAivi1P9IA7BYwtWZNd3cZI6ECOUQ4+/vAgGuNEnu5Taav5u
+         r0UbjceV4XWMAz8FvPqdHC/kLnrVWfHHJ3NJXDV0BjoW6G/6j+g6IeuxCjMu+DQAAw2E
+         XMaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
+         :cc:subject:references:in-reply-to:content-transfer-encoding;
+        bh=P+sg7S7rHtibXd9SvMMU8OB3sAkFT9CGekE5f8GWaSk=;
+        b=VmukoRRIwpOLjMVQ8gojAbbE7sFMJaNhisAYY1eqW0yDUSEZ4YXioAkIT6dtXicQb1
+         tSBoczJXEgUtCd52o0wfQz/oTML6wSA+YBGh+etDteXdWG6UPbNFLdAX6CEOLO7dXNwV
+         Ejv0x0Gbocjo6GRYqbflrmKFWW7BpYCTOhhYzobA+npzlbm2QPveHU5tE/ue4bHP4jv1
+         CSIJpVPJaoBoXgXKawyFCOdg0Xq6crQKdr/ftS6tbWDjCqNHLPCquOwyMr9qBWaJ7EL1
+         owJHSQBV6FUPX6qQEg/EYNr6FyfyLaaRzvrRvCV7BbcHXdZY4qnPUOR1oBCKZk8xMtmM
+         3iQQ==
+X-Gm-Message-State: AOAM532HkJQzgBpsvcRaZep5GIpr/KrFrbDYY//5IrmXE9gUNZJVmkPZ
+        g3DKCIADXl7vwSievJnGIJxDSd6Z04w=
+X-Google-Smtp-Source: ABdhPJynHoMKI44Vh5Z6kUneExJjpl8WCT5BX9QnjFuPExvYnT3liESzgpAFEZHnMAkRSlsFVlJ4Bg==
+X-Received: by 2002:adf:b745:: with SMTP id n5mr16817319wre.338.1630163186411;
+        Sat, 28 Aug 2021 08:06:26 -0700 (PDT)
+Received: from [89.139.98.169] (89-139-98-169.bb.netvision.net.il. [89.139.98.169])
+        by smtp.gmail.com with ESMTPSA id o8sm12752010wmq.21.2021.08.28.08.06.24
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Sat, 28 Aug 2021 08:06:25 -0700 (PDT)
+Message-ID: <612A50C4.2080209@gmail.com>
+Date:   Sat, 28 Aug 2021 18:05:40 +0300
+From:   Eli Billauer <eli.billauer@gmail.com>
+User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
 MIME-Version: 1.0
-Message-ID: <163016303985.25758.12035166832598494364.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+CC:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v1 0/4] char: xillybus: Remove usage of the deprecated
+ 'pci-dma-compat.h' API
+References: <cover.1630083668.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <cover.1630083668.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On 27/08/21 20:17, Christophe JAILLET wrote:
+> In [1], Christoph Hellwig has proposed to remove the wrappers in
+> include/linux/pci-dma-compat.h.
+>    
+Xillybus' driver is an example for why this is a good idea. But has this 
+been decided upon? Are we sure that there isn't a single platform where 
+the DMA mapping for PCI is different from non-PCI, and that such 
+platform will never be?
 
-Commit-ID:     d25a025201ed98f4b93775e0999a3f2135702106
-Gitweb:        https://git.kernel.org/tip/d25a025201ed98f4b93775e0999a3f2135702106
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 12 Aug 2021 09:31:28 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 28 Aug 2021 17:01:32 +02:00
+If so, is there any reference to that decision?
 
-clocksource: Make clocksource watchdog test safe for slow-HZ systems
+I think the best way is to put a comment at the top of pci-dma-compat.h 
+saying that the functions in that header file are deprecated and will go 
+away soon. That would, more than anything else, convince people like me 
+to get rid of those PCI-DMA function calls.
 
-The clocksource watchdog test sets a local JIFFIES_SHIFT macro and assumes
-that HZ is >= 100. For smaller HZ values this shift value is too large and
-causes undefined behaviour.
+The bonus is that the discussion on the patch inserting that comment, 
+along with the decision to apply or reject it, will become the 
+authoritative word on this matter.
 
-Move the HZ-based definitions of JIFFIES_SHIFT from kernel/time/jiffies.c
-to kernel/time/tick-internal.h so the clocksource watchdog test can utilize
-them, which makes it work correctly with all HZ values.
-
-[ tglx: Resolved conflicts and massaged changelog ]
-
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/lkml/20210812000133.GA402890@paulmck-ThinkPad-P17-Gen-1/
----
- kernel/time/clocksource-wdtest.c |  5 ++---
- kernel/time/jiffies.c            | 21 +--------------------
- kernel/time/tick-internal.h      | 20 ++++++++++++++++++++
- 3 files changed, 23 insertions(+), 23 deletions(-)
-
-diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
-index 01df123..df922f4 100644
---- a/kernel/time/clocksource-wdtest.c
-+++ b/kernel/time/clocksource-wdtest.c
-@@ -19,6 +19,8 @@
- #include <linux/prandom.h>
- #include <linux/cpu.h>
- 
-+#include "tick-internal.h"
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Paul E. McKenney <paulmck@kernel.org>");
- 
-@@ -34,9 +36,6 @@ static u64 wdtest_jiffies_read(struct clocksource *cs)
- 	return (u64)jiffies;
- }
- 
--/* Assume HZ > 100. */
--#define JIFFIES_SHIFT	8
--
- static struct clocksource clocksource_wdtest_jiffies = {
- 	.name			= "wdtest-jiffies",
- 	.rating			= 1, /* lowest valid rating*/
-diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
-index 01935aa..bc4db9e 100644
---- a/kernel/time/jiffies.c
-+++ b/kernel/time/jiffies.c
-@@ -10,28 +10,9 @@
- #include <linux/init.h>
- 
- #include "timekeeping.h"
-+#include "tick-internal.h"
- 
- 
--/* Since jiffies uses a simple TICK_NSEC multiplier
-- * conversion, the .shift value could be zero. However
-- * this would make NTP adjustments impossible as they are
-- * in units of 1/2^.shift. Thus we use JIFFIES_SHIFT to
-- * shift both the nominator and denominator the same
-- * amount, and give ntp adjustments in units of 1/2^8
-- *
-- * The value 8 is somewhat carefully chosen, as anything
-- * larger can result in overflows. TICK_NSEC grows as HZ
-- * shrinks, so values greater than 8 overflow 32bits when
-- * HZ=100.
-- */
--#if HZ < 34
--#define JIFFIES_SHIFT	6
--#elif HZ < 67
--#define JIFFIES_SHIFT	7
--#else
--#define JIFFIES_SHIFT	8
--#endif
--
- static u64 jiffies_read(struct clocksource *cs)
- {
- 	return (u64) jiffies;
-diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
-index 3548f08..649f2b4 100644
---- a/kernel/time/tick-internal.h
-+++ b/kernel/time/tick-internal.h
-@@ -177,3 +177,23 @@ void clock_was_set(unsigned int bases);
- void clock_was_set_delayed(void);
- 
- void hrtimers_resume_local(void);
-+
-+/* Since jiffies uses a simple TICK_NSEC multiplier
-+ * conversion, the .shift value could be zero. However
-+ * this would make NTP adjustments impossible as they are
-+ * in units of 1/2^.shift. Thus we use JIFFIES_SHIFT to
-+ * shift both the nominator and denominator the same
-+ * amount, and give ntp adjustments in units of 1/2^8
-+ *
-+ * The value 8 is somewhat carefully chosen, as anything
-+ * larger can result in overflows. TICK_NSEC grows as HZ
-+ * shrinks, so values greater than 8 overflow 32bits when
-+ * HZ=100.
-+ */
-+#if HZ < 34
-+#define JIFFIES_SHIFT	6
-+#elif HZ < 67
-+#define JIFFIES_SHIFT	7
-+#else
-+#define JIFFIES_SHIFT	8
-+#endif
+Thanks,
+    Eli
