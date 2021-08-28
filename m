@@ -2,90 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B593FA200
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 02:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A5E3FA202
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 02:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhH1ADZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Aug 2021 20:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        id S232710AbhH1ADz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Aug 2021 20:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbhH1ADY (ORCPT
+        with ESMTP id S232706AbhH1ADs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Aug 2021 20:03:24 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71A7C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 17:02:34 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id h13so12846634wrp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 17:02:34 -0700 (PDT)
+        Fri, 27 Aug 2021 20:03:48 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80031C0617A8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 17:02:58 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id y23so7263679pgi.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 17:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/F6truudQkrd6D0yWmDRMgUxpMmDNonPusTihynd4Jg=;
-        b=aP4rAV3OQGFz4akh4Cx+FUeaDVTA6Pns1s522jZk/bz5hdm73Br6VyaS9f/wTuYAUC
-         uIvQCBBzEDF+1Wx2JeXDEYtQkumJZpAIGQlCMEdYh0263cAbtNbgTRQMjCzlTzcIXxx/
-         O16zxfebDfux9dok3F7tcv1o1SbxiUHeETJPp6hV0ijdwXSz8Bw+/zq4VboWtOyd7k5c
-         tYM9hzeSsTW7nXY29VTituBUgwv2F+2sRiiYha/otCg6U0914Ou1poNyD4NCZVioBQSe
-         vxsC7Nje26KSvHrDW9Hf/Nu5qg+9wJOhUIONbte4MUa/gcYvIMOon8uX7BIaxc01EXq0
-         cJWQ==
+        bh=vpHRD/GDXCtXf6T/R+VbfrDOl4cnu8hdcSMOeGwnnmk=;
+        b=AVx/g4V6fRSiYb5+aCUHZ+vvxQpnkLRjlTpl7etiotwvxzABQ7KoFK4acqYfMxpiNQ
+         5eCZy4qTlgADhnUkwzr4MoogCRVr/zH5sQ2xmZGhTzW1TkuISRoeOuWocUplwnJFXoLQ
+         x5D2WdKAJouPT7KPod3M9eUkF+ETxeQ91jdnw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/F6truudQkrd6D0yWmDRMgUxpMmDNonPusTihynd4Jg=;
-        b=U97H9dBdxbvniIzZlBOyBd3TKVBiTjs9fAZ+fyx8Xk9w6D2gBeeyQewCp/MeUNPMlt
-         iln47DzTDivztyxo4XfSBYpU2EY+FnAlqku9VUG3DuPLMDcI2XEmCHfXjWuezgdi96xh
-         vf5geVBoIkRWVAquQle5/v30F/2kSe06XD6R8TlBiDBmGedyl6G1XICsvB2EwCCrMxzR
-         b9QT/+BjXpAGTtIjH6WC7u5l6ZH5zgCf7kpZn7qJuvGG54KqVr7Er2Phw8TCtPvUKC4s
-         mEvjlwhAk394XbLjHlE5vCw3QRyvtuL+IVQoq6XUduM56+7eBrPhc2brFggiKVci1vbv
-         iRUQ==
-X-Gm-Message-State: AOAM531tfz278/WewRKDEhkj7F9uVZMW375hKJ18vfHaA85T1LfC+s2B
-        QH2jtA0MZAt77l2KBWq6o/luFw==
-X-Google-Smtp-Source: ABdhPJxRQlGRFsLYO4cEKlBl+QZhbr6u/rPLki7bE+YygdzqH7FnIVWKqgWdlRq6ntkiZzJE5HjFWQ==
-X-Received: by 2002:adf:f2d1:: with SMTP id d17mr12964869wrp.381.1630108953617;
-        Fri, 27 Aug 2021 17:02:33 -0700 (PDT)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id h6sm7059657wmq.5.2021.08.27.17.02.32
+        bh=vpHRD/GDXCtXf6T/R+VbfrDOl4cnu8hdcSMOeGwnnmk=;
+        b=IVrwMmTVroNlIimvJ1ag9pLf+1Ynisng1BfUWQJzkr7qMPu78vsbdpEPUj6pDe8i0E
+         jG8Yj3W5lv4cuNecCsgcJFKJLFeK5yBvzuoO++evUiRJTM+R3eO/Wdbi3WftveqKNwlj
+         N0raTsBJiOsVK3l4bAWJ0iWbU/xx01ddylvMw99/KTqriod/x5z7vacgZrOlx4OwpaMc
+         cpL42zQodCDSnzYOP1tiPlyuZCMpKcKGj2AkhG+QAd2j63X7BaJaU+k4Ge9KkkD05F46
+         LXXqPaCRBZLM22KWFLJugS4yfY9+cH9Z95vw+rFhV8NVfQqwsWFGzslUU+emi43eDIwN
+         CbPQ==
+X-Gm-Message-State: AOAM530EDr98DpoXirRt/fadeAuaP96rA1p6B8vGff9YV+JM7qLuCPqN
+        Xpnm2HXtDOlBsClXxCocwtAPhg==
+X-Google-Smtp-Source: ABdhPJx0Nkoil6Eq3hwUY2XNreZKWHup+/K9Or0Gjs+lkadYQjDQK7Zpttu4uPwhV9lWa+YqLolpSA==
+X-Received: by 2002:a63:cf41:: with SMTP id b1mr9930209pgj.407.1630108977982;
+        Fri, 27 Aug 2021 17:02:57 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g6sm7149077pjs.11.2021.08.27.17.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 17:02:32 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, paskripkin@gmail.com,
-        fabioaiuto83@gmail.com, fmdefrancesco@gmail.com
-Subject: [PATCH] staging: r8188eu: add extra TODO entries
-Date:   Sat, 28 Aug 2021 01:02:31 +0100
-Message-Id: <20210828000231.1458-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
+        Fri, 27 Aug 2021 17:02:57 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH v3] cgroup: Avoid compiler warnings with no subsystems
+Date:   Fri, 27 Aug 2021 17:02:55 -0700
+Message-Id: <20210828000255.3213497-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5181; h=from:subject; bh=wfnValxKLcACBeIlJMD51jipqZPz6JJchrYHO4kvj0I=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhKX0uxRBPCEWXPaLksSSzYiRg+n0CdzY1PINGJ8SW P1zYi2CJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSl9LgAKCRCJcvTf3G3AJl1dD/ 455E8QbUu9CfXqJUHZOvqlHmjm22DvsSzSW1FWeWAI7It4PMgHxUTiLfg0FJkIsgeMBOeAKcV/jcRd 3Nh9uyToj0AeRctJQpUXvdKkV+7L331/48X1VB6SqggfDjjD1jQ+y49UuEBfBau7uNL41eSUSn7t4p ex6wcBQEiP4HY32Yg4Zn9BhNtO2Xjt/bZbF62hAuQ5HNQOwbs6woKWMD4g4cP41/NdvIYGIw6fssOl 0yYheNhN8ZVr+dqnBuB41D+R0Pu85zOCvvKFEz4NKRjTbSiYrInn+2AXE8NNg9QJ07SxNl1D7UJufG 8W1BvYjery34OinE/USvhcJjL52tcijrogxCnuRsz5CactotX8+TRYGnTiVs86dAs2K8f/YZImyoAS TiODY7y/7G8aaik3UxNr6beDSIyP2c8AJZuZxdYllDlYSzywQxJvL5kTROhtBvdEycw0A6TgxUnbvk LaWk5PUi9+pFt09hfomWW2kyDYzVfE0YV9Etr5VltjaVm8r0F9cAm0psYiNKdDY+ZReYAJG5V+CCUm IqBc2FBj7tIWRNMdSYARi/DMwqa8eZrQhxWBlCbbj5d/ta4Y5y8IscSte3LLB2nLPilxWDMEffP+2z HyNBhjySSGyqA0VEsEoHDFctzEdCNI2nNULdiqaGCH/5VelsV8CQi2Z3NUVg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entry for CFG80211 to reflect that it is currently being worked on
-and is a desirable feature to have for this driver. Leave entries for
-LIB80211 and MAC80211 in case anyone else wishes to work on them - they
-can always be removed later, but MAC80211 in particular would certainly
-be good to aim for. Also, include an entry for improving error handling,
-as this is another goal of the cleanup effort.
+As done before in commit cb4a31675270 ("cgroup: use bitmask to filter
+for_each_subsys"), avoid compiler warnings for the pathological case of
+having no subsystems (i.e. CGROUP_SUBSYS_COUNT == 0). This condition is
+hit for the arm multi_v7_defconfig config under -Wzero-length-bounds:
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+In file included from ./arch/arm/include/generated/asm/rwonce.h:1,
+                 from include/linux/compiler.h:264,
+                 from include/uapi/linux/swab.h:6,
+                 from include/linux/swab.h:5,
+                 from arch/arm/include/asm/opcodes.h:86,
+                 from arch/arm/include/asm/bug.h:7,
+                 from include/linux/bug.h:5,
+                 from include/linux/thread_info.h:13,
+                 from include/asm-generic/current.h:5,
+                 from ./arch/arm/include/generated/asm/current.h:1,
+                 from include/linux/sched.h:12,
+                 from include/linux/cgroup.h:12,
+                 from kernel/cgroup/cgroup-internal.h:5,
+                 from kernel/cgroup/cgroup.c:31:
+kernel/cgroup/cgroup.c: In function 'of_css':
+kernel/cgroup/cgroup.c:651:42: warning: array subscript '<unknown>' is outside the bounds of an
+interior zero-length array 'struct cgroup_subsys_state *[0]' [-Wzero-length-bounds]
+  651 |   return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/staging/r8188eu/TODO | 3 +++
- 1 file changed, 3 insertions(+)
+v3:
+- encapsulate test in a macro with a big comment (tj)
+v2: https://lore.kernel.org/lkml/20210827150424.2729274-1-keescook@chromium.org
+v1: https://lore.kernel.org/lkml/20210827034741.2214318-1-keescook@chromium.org
+---
+ kernel/cgroup/cgroup.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/TODO b/drivers/staging/r8188eu/TODO
-index 98f918480990..ab9d5d145b3b 100644
---- a/drivers/staging/r8188eu/TODO
-+++ b/drivers/staging/r8188eu/TODO
-@@ -11,3 +11,6 @@ To-do list:
-   the driver.
- * Switch to use LIB80211.
- * Switch to use MAC80211.
-+* Switch to use CFG80211.
-+* Improve the error handling of various functions, particularly those that use
-+  existing kernel APIs.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 3a0161c21b6b..b320cace5342 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -67,6 +67,14 @@
+ /* let's not notify more than 100 times per second */
+ #define CGROUP_FILE_NOTIFY_MIN_INTV	DIV_ROUND_UP(HZ, 100)
+ 
++/*
++ * To avoid confusing the compiler (and generating warnings) with code
++ * that attempts to access what would be a 0-element array (i.e. sized
++ * to a potentially empty array when CGROUP_SUBSYS_COUNT == 0), this
++ * constant expression can be added.
++ */
++#define CGROUP_HAS_SUBSYS_CONFIG	(CGROUP_SUBSYS_COUNT > 0)
++
+ /*
+  * cgroup_mutex is the master lock.  Any modification to cgroup or its
+  * hierarchy must be performed while holding it.
+@@ -248,7 +256,7 @@ static int cgroup_addrm_files(struct cgroup_subsys_state *css,
+  */
+ bool cgroup_ssid_enabled(int ssid)
+ {
+-	if (CGROUP_SUBSYS_COUNT == 0)
++	if (!CGROUP_HAS_SUBSYS_CONFIG)
+ 		return false;
+ 
+ 	return static_key_enabled(cgroup_subsys_enabled_key[ssid]);
+@@ -472,7 +480,7 @@ static u16 cgroup_ss_mask(struct cgroup *cgrp)
+ static struct cgroup_subsys_state *cgroup_css(struct cgroup *cgrp,
+ 					      struct cgroup_subsys *ss)
+ {
+-	if (ss)
++	if (CGROUP_HAS_SUBSYS_CONFIG && ss)
+ 		return rcu_dereference_check(cgrp->subsys[ss->id],
+ 					lockdep_is_held(&cgroup_mutex));
+ 	else
+@@ -550,6 +558,9 @@ struct cgroup_subsys_state *cgroup_e_css(struct cgroup *cgrp,
+ {
+ 	struct cgroup_subsys_state *css;
+ 
++	if (!CGROUP_HAS_SUBSYS_CONFIG)
++		return NULL;
++
+ 	do {
+ 		css = cgroup_css(cgrp, ss);
+ 
+@@ -577,6 +588,9 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
+ {
+ 	struct cgroup_subsys_state *css;
+ 
++	if (!CGROUP_HAS_SUBSYS_CONFIG)
++		return NULL;
++
+ 	rcu_read_lock();
+ 
+ 	do {
+@@ -647,7 +661,7 @@ struct cgroup_subsys_state *of_css(struct kernfs_open_file *of)
+ 	 * the matching css from the cgroup's subsys table is guaranteed to
+ 	 * be and stay valid until the enclosing operation is complete.
+ 	 */
+-	if (cft->ss)
++	if (CGROUP_HAS_SUBSYS_CONFIG && cft->ss)
+ 		return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
+ 	else
+ 		return &cgrp->self;
+@@ -695,7 +709,7 @@ EXPORT_SYMBOL_GPL(of_css);
+  */
+ #define do_each_subsys_mask(ss, ssid, ss_mask) do {			\
+ 	unsigned long __ss_mask = (ss_mask);				\
+-	if (!CGROUP_SUBSYS_COUNT) { /* to avoid spurious gcc warning */	\
++	if (!CGROUP_HAS_SUBSYS_CONFIG) {					\
+ 		(ssid) = 0;						\
+ 		break;							\
+ 	}								\
+@@ -2373,7 +2387,7 @@ struct task_struct *cgroup_taskset_next(struct cgroup_taskset *tset,
+ 	struct css_set *cset = tset->cur_cset;
+ 	struct task_struct *task = tset->cur_task;
+ 
+-	while (&cset->mg_node != tset->csets) {
++	while (CGROUP_HAS_SUBSYS_CONFIG && &cset->mg_node != tset->csets) {
+ 		if (!task)
+ 			task = list_first_entry(&cset->mg_tasks,
+ 						struct task_struct, cg_list);
+@@ -4644,7 +4658,7 @@ void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
+ 	it->ss = css->ss;
+ 	it->flags = flags;
+ 
+-	if (it->ss)
++	if (CGROUP_HAS_SUBSYS_CONFIG && it->ss)
+ 		it->cset_pos = &css->cgroup->e_csets[css->ss->id];
+ 	else
+ 		it->cset_pos = &css->cgroup->cset_links;
 -- 
-2.31.1
+2.30.2
 
