@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E55F3FA3F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 08:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C713FA3FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 08:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhH1GNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 02:13:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231277AbhH1GNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 02:13:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8447060F25;
-        Sat, 28 Aug 2021 06:13:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630131182;
-        bh=IrfMcD1HRdtmOwrQbiZX6PIiNowxcKTK2W92DQYpM8k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dyMY7N5U5FQpg+iWIUcYdQAJrN8c8WmPsvNsdcQoftjreJQE1UrfC5YnwwhD844I0
-         QPtf+0NZINbTLhmwJUNzbx2N069NyA0dlSPD0e3gS1L/TY0yUdEZ7am3u0r3lHeUIF
-         Gk49VHy/NdaJDzlxYYMkG44mDVDBLBkV3P6kgfwA=
-Date:   Sat, 28 Aug 2021 08:12:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
-Cc:     hello@bryanbrattlof.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: pi433: fix docs typos and references to
- previous struct names
-Message-ID: <YSnT5rXxQNE2sPvw@kroah.com>
-References: <20210828000836.GA10188@localhost.localdomain>
+        id S233277AbhH1GRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 02:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhH1GRX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 02:17:23 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C53C0613D9;
+        Fri, 27 Aug 2021 23:16:33 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id 14so9691669qkc.4;
+        Fri, 27 Aug 2021 23:16:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2VUds+tRV1uK7phslKLzaf41GwwvTN223apPtAuXFmk=;
+        b=GXfkGWakY/bOllhKZrjBvfNKTjsv+bUgt3DHHkXijG096RcJbeJlh/LduoaoF/HDGL
+         PZ4xfBmBdsRXsSKEN1K1cvFcW9RNerorYTNeIb2ssWKqKRJuThlKhmxbK9cQuVwIHqzO
+         FqILQtSFk3TfCMsEE/3zVyReszNh48XmAcAnYYwdOeRit4Np/b+uPBBx6SOYMPQ4gURa
+         mg5Gtyi4dMXOXLFUCus8R0Jt1T+D7jpCnXNL7j7HEQL0IHTBR7gnjcfVge81HfHuebYS
+         p5coeofytq27BeEb/7xwL26swaYEeVRqFwb4w+h/OZZIJtLfGib6ydn0iIxFKYSvA/wU
+         HRmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2VUds+tRV1uK7phslKLzaf41GwwvTN223apPtAuXFmk=;
+        b=LECIvwcDJ83dyDLrBlsZd0pIz43IT5oHCGff1RYW/TsK/mC3LjMYT7mqP0p0p55JMr
+         ZM1lVxZC//YKCx+BD1VTvxBsKCemCFtf6S2XOZaw40PGYmdAosdvZVMcrQSboLSZZ6rX
+         1JWGGHkotubRaSH+kw5DHfs4vwpwP9j0SWYNMjoVQ1Wpv36bZ1dTGpZiAb+1Qc6w0iaN
+         KeMvzQNwwWakKg/pMLa1b39tAfgam7pIHD2mPIWrU2y7Vipgil3GO9ZvaBEwwCiC7Sgj
+         hC4O8ItXkDyRjhQDjpHIJ/MVQXy5NpkfiNUBsnZYWkWArBKJ8XNlvrOWsi1IeciDNTBI
+         SiQA==
+X-Gm-Message-State: AOAM531Z6sSXKX6dbi12rmKXNPZ6ldp9hUKp8xplaEQN+pdPkS5V5X9i
+        qbS7f9WduO4J36zMBLFc36s=
+X-Google-Smtp-Source: ABdhPJznaXr+GP3MSznqlRERTrcL8ZxwT9b0CSeeHkGKNykNhTkMnCOGHONB+BOWhJOlhBITecqKNQ==
+X-Received: by 2002:a37:453:: with SMTP id 80mr12517952qke.397.1630131392190;
+        Fri, 27 Aug 2021 23:16:32 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id e22sm4486377qte.57.2021.08.27.23.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 23:16:31 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] tests: remove unneeded conversions to bool
+Date:   Fri, 27 Aug 2021 23:16:19 -0700
+Message-Id: <20210828061619.12680-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828000836.GA10188@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 12:08:36PM +1200, Paulo Miguel Almeida wrote:
-> In the comments there where some grammar mistakes and references to
-> struct names that have gotten renamed over time but not reflected
-> in the comments.
-> 
-> Signed-off-by: Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
-> ---
->  drivers/staging/pi433/pi433_if.h | 25 ++++++++++++-------------
->  1 file changed, 12 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/staging/pi433/pi433_if.h b/drivers/staging/pi433/pi433_if.h
-> index d5c1521192c1..1fae62c40661 100644
-> --- a/drivers/staging/pi433/pi433_if.h
-> +++ b/drivers/staging/pi433/pi433_if.h
-> @@ -5,16 +5,15 @@
->   * userspace interface for pi433 radio module
->   *
->   * Pi433 is a 433MHz radio module for the Raspberry Pi.
-> - * It is based on the HopeRf Module RFM69CW. Therefore inside of this
-> - * driver, you'll find an abstraction of the rf69 chip.
-> + * It is based on the HopeRf Module RFM69CW. Therefore, inside of this
-> + * driver you'll find an abstraction of the rf69 chip.
->   *
-> - * If needed, this driver could be extended, to also support other
-> - * devices, basing on HopeRfs rf69.
-> + * If needed this driver could also be extended to support other
-> + * devices based on HopeRf rf69 as well as HopeRf modules with a similar
-> + * interface such as RFM69HCW, RFM12, RFM95 and so on.
->   *
-> - * The driver can also be extended, to support other modules of
-> - * HopeRf with a similar interace - e. g. RFM69HCW, RFM12, RFM95, ...
->   * Copyright (C) 2016 Wolf-Entwicklungen
-> - *	Marcus Wolf <linux@wolf-entwicklungen.de>
-> + * Marcus Wolf <linux@wolf-entwicklungen.de>
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Indentation of the name should remain here, right?
+tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c:
+225:18-23:WARNING: conversion to bool not needed here
+Because the definition of function is
+"static int move_mount_set_group_supported(void)",
+the return type should be int.
 
-thanks,
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ .../testing/selftests/move_mount_set_group/move_mount_set_group_test.c  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c b/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c
+index 860198f..beade21 100644
+--- a/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c
++++ b/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c
+@@ -222,7 +222,7 @@ static int move_mount_set_group_supported(void)
+ 		      AT_FDCWD, SET_GROUP_TO, MOVE_MOUNT_SET_GROUP);
+ 	umount2("/tmp", MNT_DETACH);
+ 
+-	return ret < 0 ? false : true;
++	return ret < 0 ? 0 : 1;
+ }
+ 
+ FIXTURE(move_mount_set_group) {
+-- 
+1.8.3.1
+
+
