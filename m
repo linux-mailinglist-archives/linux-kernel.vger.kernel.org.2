@@ -2,93 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D363FA6A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 18:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E988B3FA6AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 18:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234479AbhH1QBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 12:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhH1QBb (ORCPT
+        id S234467AbhH1QHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 12:07:36 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33614 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230290AbhH1QHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 12:01:31 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E993C061756;
-        Sat, 28 Aug 2021 09:00:40 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id me10so20724045ejb.11;
-        Sat, 28 Aug 2021 09:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q+Lu3zsplYuNKF2IF+QmpVTl2y5bBSCP+aSg8wuwsiw=;
-        b=HF+xsgvsnrJrPToIAqza2r4D+a2I4uKoEWs4qUPB9ZtxE2lP61oybEuf71lmwwsehc
-         chY8Av/MqB3ykfHwW0Ja5AxiiZmS4/DeXKkolm4txdYKhEzQZ5l138XMO3+VGsgrn+CR
-         qwuu/5OM9ZpeW453SAUOh2G0AL+xSwJflEuEAGZTKZRElo1NZcF6YyQ3H8TiHqZmsX9W
-         cIp2roGNC2b7of6WssIXw6mppEIUbFl7OvHHsaudDCz6Zt2sFliwpt/O0M5kPzE1zl1N
-         756MlwT00hoeEpixvex5O9YwQCeeFTh1XN4lFUY34JKFo2eSz4EfQNcOSLu2WHn5h/N7
-         mH3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q+Lu3zsplYuNKF2IF+QmpVTl2y5bBSCP+aSg8wuwsiw=;
-        b=RIMVKLZlsL32dyIcp2aUGMkwdJ8hDwCsa68WNKJLKEVZTqPyMENUBcuCJStN23DL/c
-         arKZ1ra35+J+vZLqQ91mNybPZwilMVXw8i9Yu9DyfPpYz3WotaAemZPloBtO950tYe9u
-         yW5M2nLZujS1R6jAB/5lqINvOxx1tLQfK/foR58B83b8WVJO4JBc/rNnus65zxf7Qucd
-         nmfmIDeafQoOa30QVGa2aI3iNz8lrc7ZSlKP+ZzsGvB+xVK+YiMORa2Uy7LwaRQbBnac
-         SfIQ+fVIZNK4PSJwMS3KyLUuWVQ2NHC25KADXZ9ki63bAiaExbpxLbLWFYXIwdJWZldf
-         /meg==
-X-Gm-Message-State: AOAM531DLl1h05KSYXUSjZ4q2T6U256dGh512SQKtKwSd6FzNpfv3Pdw
-        vuKVI7g/fBu4idUJAz99Kje73GdthArsxiBAlyU=
-X-Google-Smtp-Source: ABdhPJwD2vEA5j8yQQHHv0y4xe5OPRu0rQ5pLqz4tIRsU3/TzhWBp80jORvSGA8DCjkphVreH8wjKsmX3LcpVwfxUqE=
-X-Received: by 2002:a17:906:369a:: with SMTP id a26mr15768976ejc.539.1630166438950;
- Sat, 28 Aug 2021 09:00:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-4-linux.amoon@gmail.com>
-In-Reply-To: <20210817041548.1276-4-linux.amoon@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 28 Aug 2021 18:00:28 +0200
-Message-ID: <CAFBinCAx33SnuL8n1GF8nz2Q4giNR8tsWxjU32X0wsb6kR_nhw@mail.gmail.com>
-Subject: Re: [PATCHv3 3/6] arm64: dts: amlogic: odroidc2: Fix the chip enable
- signal for usb power
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Brian Kim <brian.kim@hardkernel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 28 Aug 2021 12:07:35 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 65F6B1FFF0;
+        Sat, 28 Aug 2021 16:06:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630166803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+hbC3CoQ9GVXH6EUwVQgeUfZ0rKGJOCmzlFVSyEolJ8=;
+        b=kISMPvHHQ6O8y4GUBGL/H/u/F0Zg4JfidpT4awwChegbQm4rSecP9MHT53bxdlNuUfqHN3
+        5hxsvPpEva673ZNrGGuAEWaGDO6zxIyhZhTSUwOx0ieokZmvFZHGo71dkUDUSwznlff1A8
+        cPad3NU11BlUccwe7ofiJTvQqbXkzhU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630166803;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+hbC3CoQ9GVXH6EUwVQgeUfZ0rKGJOCmzlFVSyEolJ8=;
+        b=fmISJ3gxhJnk41FlFazH1RZt4ZDZ8QvP5XEsQCVklpYTXWRol/3L5BhqSadzFaGvQMDrb3
+        MpbEl6WbJuN6uHAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 5FF18A3B88;
+        Sat, 28 Aug 2021 16:06:43 +0000 (UTC)
+Date:   Sat, 28 Aug 2021 18:06:43 +0200
+Message-ID: <s5h7dg5sgdo.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: CVE-2021-3640 and the unlimited block of lock_sock()
+In-Reply-To: <CABBYNZ+1=k2eQ4u1WWdj9JcBaB3HmjXzv8rVhQ89gwHDf4YHTg@mail.gmail.com>
+References: <s5hv9418mjk.wl-tiwai@suse.de>
+        <s5hk0k8wlfn.wl-tiwai@suse.de>
+        <CABBYNZ+1=k2eQ4u1WWdj9JcBaB3HmjXzv8rVhQ89gwHDf4YHTg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+On Fri, 27 Aug 2021 03:28:09 +0200,
+Luiz Augusto von Dentz wrote:
+> 
+> Hi Takashi,
+> 
+> On Thu, Aug 26, 2021 at 3:29 AM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > On Thu, 19 Aug 2021 17:46:39 +0200,
+> > Takashi Iwai wrote:
+> > >
+> > > Hi,
+> > >
+> > > it seems that the recent fixes in bluetooth tree address most of
+> > > issues in CVE-2021-3640 ("Use-After-Free vulnerability in function
+> > > sco_sock_sendmsg()").  But there is still a problem left: although we
+> > > cover the race with lock_sock() now, the lock may be blocked endlessly
+> > > (as the task takes over with userfaultd), which result in the trigger
+> > > of watchdog like:
+> > >
+> > > -- 8< --
+> > > [   23.226767][    T7] Bluetooth: hci0: command 0x0419 tx timeout
+> > > [  284.985881][ T1529] INFO: task poc:7603 blocked for more than 143 seconds.
+> > > [  284.989134][ T1529]       Not tainted 5.13.0-rc4+ #48
+> > > [  284.990098][ T1529] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > > [  284.991705][ T1529] task:poc             state:D stack:13784 pid: 7603 ppid:  7593 flags:0x00000000
+> > > [  284.993414][ T1529] Call Trace:
+> > > [  284.994025][ T1529]  __schedule+0x32e/0xb90
+> > > [  284.994842][ T1529]  ? __local_bh_enable_ip+0x72/0xe0
+> > > [  284.995987][ T1529]  schedule+0x38/0xe0
+> > > [  284.996723][ T1529]  __lock_sock+0xa1/0x130
+> > > [  284.997434][ T1529]  ? finish_wait+0x80/0x80
+> > > [  284.998150][ T1529]  lock_sock_nested+0x9f/0xb0
+> > > [  284.998914][ T1529]  sco_conn_del+0xb1/0x1a0
+> > > [  284.999619][ T1529]  ? sco_conn_del+0x1a0/0x1a0
+> > > [  285.000361][ T1529]  sco_disconn_cfm+0x3a/0x60
+> > > [  285.001116][ T1529]  hci_conn_hash_flush+0x95/0x130
+> > > [  285.001921][ T1529]  hci_dev_do_close+0x298/0x680
+> > > [  285.002687][ T1529]  ? up_write+0x12/0x130
+> > > [  285.003367][ T1529]  ? vhci_close_dev+0x20/0x20
+> > > [  285.004107][ T1529]  hci_unregister_dev+0x9f/0x240
+> > > [  285.004886][ T1529]  vhci_release+0x35/0x70
+> > > [  285.005602][ T1529]  __fput+0xdf/0x360
+> > > [  285.006225][ T1529]  task_work_run+0x86/0xd0
+> > > [  285.006927][ T1529]  exit_to_user_mode_prepare+0x267/0x270
+> > > [  285.007824][ T1529]  syscall_exit_to_user_mode+0x19/0x60
+> > > [  285.008694][ T1529]  do_syscall_64+0x42/0xa0
+> > > [  285.009393][ T1529]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > [  285.010321][ T1529] RIP: 0033:0x4065c7
+> > > -- 8< --
+> > >
+> > > Is there any plan to address this?
+> > >
+> > > As a quick hack, I confirmed a workaround like below:
+> > >
+> > > -- 8< --
+> > > --- a/net/core/sock.c
+> > > +++ b/net/core/sock.c
+> > > @@ -2628,7 +2628,7 @@ void __lock_sock(struct sock *sk)
+> > >               prepare_to_wait_exclusive(&sk->sk_lock.wq, &wait,
+> > >                                       TASK_UNINTERRUPTIBLE);
+> > >               spin_unlock_bh(&sk->sk_lock.slock);
+> > > -             schedule();
+> > > +             schedule_timeout(msecs_to_jiffies(10 * 1000));
+> > >               spin_lock_bh(&sk->sk_lock.slock);
+> > >               if (!sock_owned_by_user(sk))
+> > >                       break;
+> > > -- 8< --
+> > >
+> > > .... but I'm not sure whether it's the right way to go.
+> >
+> > Does anyone has an idea?
+> 
+> It seems that we need to rework some code so the functions affected by
+> userfaultfd are not used with sock_lock held.
 
-On Tue, Aug 17, 2021 at 6:17 AM Anand Moon <linux.amoon@gmail.com> wrote:
->
-> Fix the chip enable signal changing from Active High to Active Low
-> to enable input power to USB power. Also updated signal name as per
-> the schematics.
-according to [0] (page 12) Odroid-C2 uses an "RT9715EGB" for USB OTG power
-The datasheet for that power switch [1] mentions on page page 1 that
-the "E" stands for "E : 1.1A/Active High"
-
-Can you please elaborate how you have tested this to confirm that
-active low is the correct polarity?
+OK, now I tried a similar way like the commit 92c685dc5de0 to move the
+memcpy_from_msg() call out of lock_sock(), and it seems working.
+I'm going to submit the fix.
 
 
-Best regards,
-Martin
+thanks,
 
-
-[0] https://dn.odroid.com/S905/Schematic/odroid-c2_rev0.1_20150930.pdf
-[1] https://www.richtek.com/assets/product_file/RT9715/DS9715-03.pdf
+Takashi
