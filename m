@@ -2,91 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB0E3FA79C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 23:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3A43FA7A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 23:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233916AbhH1V1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 17:27:35 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:47959 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbhH1V1e (ORCPT
+        id S231276AbhH1V32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 17:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232305AbhH1V31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 17:27:34 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MQdtO-1mgjKe2KGs-00Ng03; Sat, 28 Aug 2021 23:26:42 +0200
-Received: by mail-wr1-f45.google.com with SMTP id u16so16201750wrn.5;
-        Sat, 28 Aug 2021 14:26:42 -0700 (PDT)
-X-Gm-Message-State: AOAM530A0LiUb5m55CRPyLg2BpilximUExHXKjFmbgu5kb36U/dW/UEl
-        /Fvaq/T9nepORjziTFtMXobrY6W5ELwjGkfp0Sk=
-X-Google-Smtp-Source: ABdhPJwvDnsDJcn3wIhFHRhkw8EPD/pggXR8T4gD9Xh87dD/CiOcm+8HpoR7LLiItw7WlQGpC2ld22sA7ZHK6OreHnU=
-X-Received: by 2002:adf:b781:: with SMTP id s1mr10383658wre.165.1630186002171;
- Sat, 28 Aug 2021 14:26:42 -0700 (PDT)
+        Sat, 28 Aug 2021 17:29:27 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808CAC061756;
+        Sat, 28 Aug 2021 14:28:36 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id m4so18209113ljq.8;
+        Sat, 28 Aug 2021 14:28:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XXM23t7nGqJTGllQ0GBo3dDWWAdzVbWZALkyemvhWNo=;
+        b=YO9S1CFPlYJXAsTzQEafWFpbtOf5hUDAUwwUDT6po2a6SrE4m/UaIhw+YovOop+y/8
+         3zEPZWSEpENbiTKkvzsaIqWMkahjmgO5s+mB3dT/j+GtvX58cEEbFW2Mbk99VjPMyYZg
+         mI+W4uJjaEwa83Tue6rQc6P5Rnk/AeUI+U9z1M3+8zxE8R893EoaFLhn/w3SCrQ/xmD8
+         yd1umBxzRx8IaLfLbIcaMf9+mUpQ8v1vT+1WfHDshQgyzWRGCScShh3BJg5puQ/+dgcM
+         FnK1xYckrS5f7Hy0ZzBHagJgEL4g8S31rneCVsFGG8ccwa5CfBAlwpGE/p4AsDetysOv
+         Lojw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XXM23t7nGqJTGllQ0GBo3dDWWAdzVbWZALkyemvhWNo=;
+        b=eIjCx40h5mnmPjfihJp5q3TcHXbY+rYw/TQu+SLkHuNeYk1vQF81J/6K0Mr8c6nlrM
+         XpHLJOe2oSvZsBbyMWlSUbmouRS4a9HTWRu9IF+pKq92fBHxkVXYFiysY6jFN1W/3aH4
+         NcnbvzXWOBuYwdYJ0r0rSC3+kTBhu41PkoyqWLjI9k8fbUtDS/9wQKh/D1PzrAY+0la+
+         fcTlwyvjPoDJQBXAVYcmsMM4k092HQksAsS9U3fgkA+qdMWpnh7LUXEvrRNS0TzcfaGd
+         R8rJnVrG8vmBeOkbjg2ReE1K0DhNEA8NP85zxgxObvUxpBZwdX5yHe2aZZSVU4KBpj93
+         iFHw==
+X-Gm-Message-State: AOAM5307PN8XreOPGTWXKZOUxG9Y25x82gWbbvWUvKzFZeiGquhCA67X
+        2ghv10j9yX+5psdM7UTFtoQ=
+X-Google-Smtp-Source: ABdhPJxEQbKglQZ/sIqsMfNEKtgB/wPaaCRyWOxraQzixjbdnPWF4zSNUzJOVcUYPxwIPDYxrr9jjg==
+X-Received: by 2002:a2e:804a:: with SMTP id p10mr13718369ljg.216.1630186114923;
+        Sat, 28 Aug 2021 14:28:34 -0700 (PDT)
+Received: from grain.localdomain ([5.18.253.97])
+        by smtp.gmail.com with ESMTPSA id bp10sm1045767lfb.130.2021.08.28.14.28.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 14:28:33 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id D5EE95A001E; Sun, 29 Aug 2021 00:28:32 +0300 (MSK)
+Date:   Sun, 29 Aug 2021 00:28:32 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, ccross@google.com,
+        sumit.semwal@linaro.org, mhocko@suse.com, dave.hansen@intel.com,
+        keescook@chromium.org, willy@infradead.org,
+        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com,
+        rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com,
+        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
+        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
+        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
+        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
+        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
+        legion@kernel.org, eb@emlix.com, songmuchun@bytedance.com,
+        viresh.kumar@linaro.org, thomascedeno@google.com,
+        sashal@kernel.org, cxfcosmos@gmail.com, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
+ anonymous memory
+Message-ID: <YSqqgJ7EC6PO9ggO@grain>
+References: <20210827191858.2037087-1-surenb@google.com>
+ <20210827191858.2037087-3-surenb@google.com>
 MIME-Version: 1.0
-References: <cover.1630083668.git.christophe.jaillet@wanadoo.fr> <612A50C4.2080209@gmail.com>
-In-Reply-To: <612A50C4.2080209@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 28 Aug 2021 23:26:26 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1=tZkb-rxj5Ys_FgUa=qoKPD6fpPjEMHXDL0QwwS0zgg@mail.gmail.com>
-Message-ID: <CAK8P3a1=tZkb-rxj5Ys_FgUa=qoKPD6fpPjEMHXDL0QwwS0zgg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/4] char: xillybus: Remove usage of the deprecated
- 'pci-dma-compat.h' API
-To:     Eli Billauer <eli.billauer@gmail.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Arnd Bergmann <arnd@arndb.de>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:SfZd/6/VPd+vpSJtwx98oNSjKSxpNw4Dj18VzVx1viyfokFzESd
- wka5xkyUfXDzcKtpH8aY2+X0PEqBErPaEnz4+VoHk5bLlU5LkRkSZBSKTYFWEVUgupriGZr
- 3LxbfkIaxA3aQbAUcEK5SrWFo1dNzrClxdomhxEQYivC47fZ/PDIXCxm63jbIV5YWykJXB8
- KlDSXErMH0zSjSTmJ1DOw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:m86IDzp4oNs=:ZyFwd5QinI1i2btLgw+xMm
- qgb98PObe1/9td3pZRMt8C6PpPs3+SiiyMAJEIVwm6f9zdMNt0axPXkl8748nGRRLVy5XG1di
- E+VyHckvfm0NQkZOXJcHGmlzpuYgEcMXdw/f2Fj7+BYKSGXANvL+L8H6A1PFcO6+K4iY5tCb9
- 1AwNKlXPQp29r8JHxH8Lmc2nHp5JNsxsYTHYvUMfE83mDyZqRG0dZXjFtn3p+3g9Kj4uSv6oz
- OfO8shRm4lZeAmTof4MTvUyrkN52+zBUg6fGWnPwv1Fk1jkKpxkPCJHR2sxQ+fM4L/R1K+dK4
- BGCREerzvECjJXTzgSN/s4Fg3cDGJ7GCMf3q/9XXieHBhXJ1zEaqUTZZxFna+Hii4TbT9VpXr
- bR9PSKFEm4U47kAO0DvbKg8M+CpOhAfw/c1GaHLtEJcZUt4+uWC9bzdftET7kGYLDC2P0OBtx
- 5+Bu4vuD1VwAqWbofZVaTABX1kCefzmiNj6nGALzpIn1OE6uqku6LDqGPLcUdutj22/uijEP9
- Q875mTbRj0IjpqC2aMPqEuRWEw5+tMIg1qtZePGmb66mEFqcL5rBpFI3nWx+W/EAZO+w4/+EH
- dYAVDcLUIQfW+dCqTkLjUhUAXq1elmlMHlJJPHgv4vt0YL5OENNT7MNWViCVUN1+Buq0N5Ktg
- 3BESG7asFqp1knedtjrYXGMP7kF1BAqVeRP5bdxQPDw8bPLeud+rGtqce7pch/GR71/Lshjz7
- ECsq9TFYg+IEcUONwTwf4jFA/69kH+uPrio4jA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827191858.2037087-3-surenb@google.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 5:07 PM Eli Billauer <eli.billauer@gmail.com> wrote:
->
-> On 27/08/21 20:17, Christophe JAILLET wrote:
-> > In [1], Christoph Hellwig has proposed to remove the wrappers in
-> > include/linux/pci-dma-compat.h.
-> >
-> Xillybus' driver is an example for why this is a good idea. But has this
-> been decided upon? Are we sure that there isn't a single platform where
-> the DMA mapping for PCI is different from non-PCI, and that such
-> platform will never be?
+On Fri, Aug 27, 2021 at 12:18:57PM -0700, Suren Baghdasaryan wrote:
+> 
+> The name is stored in a pointer in the shared union in vm_area_struct
+> that points to a null terminated string. Anonymous vmas with the same
+> name (equivalent strings) and are otherwise mergeable will be merged.
+> The name pointers are not shared between vmas even if they contain the
+> same name. The name pointer is stored in a union with fields that are
+> only used on file-backed mappings, so it does not increase memory usage.
+> 
+> The patch is based on the original patch developed by Colin Cross, more
+> specifically on its latest version [1] posted upstream by Sumit Semwal.
+> It used a userspace pointer to store vma names. In that design, name
+> pointers could be shared between vmas. However during the last upstreaming
+> attempt, Kees Cook raised concerns [2] about this approach and suggested
+> to copy the name into kernel memory space, perform validity checks [3]
+> and store as a string referenced from vm_area_struct.
+> One big concern is about fork() performance which would need to strdup
+> anonymous vma names. Dave Hansen suggested experimenting with worst-case
+> scenario of forking a process with 64k vmas having longest possible names
+> [4]. I ran this experiment on an ARM64 Android device and recorded a
+> worst-case regression of almost 40% when forking such a process. This
+> regression is addressed in the followup patch which replaces the pointer
+> to a name with a refcounted structure that allows sharing the name pointer
+> between vmas of the same name. Instead of duplicating the string during
+> fork() or when splitting a vma it increments the refcount.
+> 
+> [1] https://lore.kernel.org/linux-mm/20200901161459.11772-4-sumit.semwal@linaro.org/
+> [2] https://lore.kernel.org/linux-mm/202009031031.D32EF57ED@keescook/
+> [3] https://lore.kernel.org/linux-mm/202009031022.3834F692@keescook/
+> [4] https://lore.kernel.org/linux-mm/5d0358ab-8c47-2f5f-8e43-23b89d6a8e95@intel.com/
+...
+> +
+> +/* mmap_lock should be read-locked */
+> +static inline bool is_same_vma_anon_name(struct vm_area_struct *vma,
+> +					 const char *name)
+> +{
+> +	const char *vma_name = vma_anon_name(vma);
+> +
+> +	if (likely(!vma_name))
+> +		return name == NULL;
+> +
+> +	return name && !strcmp(name, vma_name);
+> +}
 
-Yes.
-
-> If so, is there any reference to that decision?
-
-The documentation was updated 11 years ago to only describe the modern
-linux/dma-mapping.h interfaces and mark the old bus-specific ones as
-no longer recommended, see 216bf58f4092 ("Documentation: convert
-PCI-DMA-mapping.txt to use the generic DMA API").
-
-> I think the best way is to put a comment at the top of pci-dma-compat.h
-> saying that the functions in that header file are deprecated and will go
-> away soon. That would, more than anything else, convince people like me
-> to get rid of those PCI-DMA function calls.
-
-The only reason for keeping the old interface around any day longer would
-be to identify drivers that have been unmaintained for the past decade
-and ignored all the previous cleanup patches that got sent to them.
-
-       Arnd
+Hi Suren! There is very important moment with this new feature: if
+we assign a name to some VMA it won't longer be mergeable even if
+near VMA matches by all other attributes such as flags, permissions
+and etc. I mean our vma_merge() start considering the vma namings
+and names mismatch potentially blocks merging which happens now
+without this new feature. Is it known behaviour or I miss something
+pretty obvious here?
