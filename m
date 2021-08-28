@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846E53FA3E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 07:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEF93FA3E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 07:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbhH1F3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 01:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
+        id S233101AbhH1Fx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 01:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbhH1F3e (ORCPT
+        with ESMTP id S231617AbhH1Fx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 01:29:34 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFE3C06179A
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 22:28:45 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id x16so7575044pfh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 22:28:45 -0700 (PDT)
+        Sat, 28 Aug 2021 01:53:27 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249EAC061796
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 22:52:37 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id r13so7200969pff.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Aug 2021 22:52:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=stWDJ7pxROB/EYFBbI7ThyH/rSYnoU9WnqG7bRnPt18=;
-        b=bt25+nM3eSC/BvfoTicc0kvU8X0ALlSypYs6nMG+ihBxWlZaCFTdELOgHd4ypV3SQF
-         bNmfO7MJWL23KdE8b6R633QbGHj6wsYkr8qI4bQIAjy/oem5n+xTmj1AvXlQVcFUHF+r
-         KxLKNJshPsF238Mfaa8vML8FvFyRRVbeIlieg=
+        bh=Z+HuhAltfukR5DxGM9D9CIqPHDVhtycCenUu1P74d+E=;
+        b=bdORIgQRO5qTEimiwy5kQivohDvUrEODFuEj423+D/FNgtSgGvj8uD9iZHQrUldlSS
+         O63NVS+iWTa88tkTbrR4TJWYtTf9ibq33RPNQj6JqBAhpbCCwSeYv8urfqL0N15UKfTx
+         L+o3L2rl2wmR1kzngsKz5V8FbDNbRcZBFP+eY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=stWDJ7pxROB/EYFBbI7ThyH/rSYnoU9WnqG7bRnPt18=;
-        b=X9WSIkOcM5koO8kbvZAKyn0Zp7piQxR7W+bQ+LV5uBPg5WufpReXoAVAubzsMMZRF3
-         nG2TQpgwfh7t0EZjPovBLqI80yWtsxq7I5RdWIB7E8HARUdkKgWQ3DWqUsSlW6CiGHt/
-         Qd7GjHsPTIlO406Eg3Xq2gqSm6aGEQUEjfCrPmkBJMOucSyk5Gjl328OunzxhWhSN7fn
-         hWOCdW5/CWxpHvrsoetUmi48O/qexuckRIM3ENqqEwptVC5vS8TQdgfP3f/iF0naETKr
-         HLzbVtX3pZ9UPPS4zCgvhbZnm+dJVZxlQKow5l0Ctmzfx6S9aQEpap8YdecULXtAxTzW
-         0KAw==
-X-Gm-Message-State: AOAM533LXaXO6gfJ4JEjOXaf4VAnusYK7r45Tt9dyudynqztK6yquoqI
-        gT70Uo7LqcNJfLSeTkr6gRlcDA==
-X-Google-Smtp-Source: ABdhPJyRblUvU4gbCZ7vv2bulSDNoJ7Vp3Z6WWqczImBz1dyvqqdk84ObtLecw4DydDVqpr9htn1SQ==
-X-Received: by 2002:a05:6a00:2142:b029:3b9:e5df:77ab with SMTP id o2-20020a056a002142b02903b9e5df77abmr12703170pfk.52.1630128524423;
-        Fri, 27 Aug 2021 22:28:44 -0700 (PDT)
+        bh=Z+HuhAltfukR5DxGM9D9CIqPHDVhtycCenUu1P74d+E=;
+        b=W9m1wl9HTLQNxVSp1vYfCk/b17Mu9d/iy5zENXM5+/iX41/iBi3i2T6W605O06JwNb
+         teuN3BN078iz6/YLQeaMTeqWXMeFyYqWnAzj/SM41s48ugs4bvTCWuc7hlw3hP3Ruhbn
+         WmoCWnryEwinGeeayEyM0eH1tqGTjOa53eu7bR2FKvuql8KC6bKu9BqarMbEoJE71E7m
+         aesd5luKeWPtzkq4x8xQQlMaBGS203shO/K0gB5brg56n4y0R4Prd3wEC5zFwdyzLApK
+         HaJaVcdCxTapsgGk5d42F7D+iTwprz8NBgqbptymsrZU5aKuND0jOEr/BhcdZu6Znvoz
+         /G3A==
+X-Gm-Message-State: AOAM53071wgrES0FMNoRLxKXfxKsOYhdYY1pj8DhhqMnzwbuSfT7ED/K
+        snqJGQmuPSpen/Z5KjOeZ0lyKg==
+X-Google-Smtp-Source: ABdhPJztO6T36nxEsQz8Izbq5fu8IF66OpnFss/1uDM4zaqqmIHtaBASu0RjxeYiEvzXd06oguZhcw==
+X-Received: by 2002:aa7:9218:0:b0:3ef:5618:6b02 with SMTP id 24-20020aa79218000000b003ef56186b02mr12092111pfo.45.1630129956591;
+        Fri, 27 Aug 2021 22:52:36 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d18sm8883397pgk.24.2021.08.27.22.28.42
+        by smtp.gmail.com with ESMTPSA id y19sm8342507pfr.137.2021.08.27.22.52.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 22:28:43 -0700 (PDT)
-Date:   Fri, 27 Aug 2021 22:28:41 -0700
+        Fri, 27 Aug 2021 22:52:36 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 22:52:33 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, ccross@google.com,
-        sumit.semwal@linaro.org, mhocko@suse.com, dave.hansen@intel.com,
-        willy@infradead.org, kirill.shutemov@linux.intel.com,
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+        ccross@google.com, sumit.semwal@linaro.org, mhocko@suse.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
         vbabka@suse.cz, hannes@cmpxchg.org, corbet@lwn.net,
         viro@zeniv.linux.org.uk, rdunlap@infradead.org,
         kaleshsingh@google.com, peterx@redhat.com, rppt@kernel.org,
@@ -68,42 +68,70 @@ Cc:     akpm@linux-foundation.org, ccross@google.com,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-mm@kvack.org,
         kernel-team@android.com
-Subject: Re: [PATCH v8 3/3] mm: add anonymous vma name refcounting
-Message-ID: <202108271746.F444DA6C9@keescook>
+Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
+ anonymous memory
+Message-ID: <202108272228.7D36F0373@keescook>
 References: <20210827191858.2037087-1-surenb@google.com>
- <20210827191858.2037087-4-surenb@google.com>
+ <20210827191858.2037087-3-surenb@google.com>
+ <YSmVl+DEPrU6oUR4@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210827191858.2037087-4-surenb@google.com>
+In-Reply-To: <YSmVl+DEPrU6oUR4@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 12:18:58PM -0700, Suren Baghdasaryan wrote:
-> While forking a process with high number (64K) of named anonymous vmas the
-> overhead caused by strdup() is noticeable. Experiments with ARM64 Android
-> device show up to 40% performance regression when forking a process with
-> 64k unpopulated anonymous vmas using the max name lengths vs the same
-> process with the same number of anonymous vmas having no name.
-> Introduce anon_vma_name refcounted structure to avoid the overhead of
-> copying vma names during fork() and when splitting named anonymous vmas.
-> When a vma is duplicated, instead of copying the name we increment the
-> refcount of this structure. Multiple vmas can point to the same
-> anon_vma_name as long as they increment the refcount. The name member of
-> anon_vma_name structure is assigned at structure allocation time and is
-> never changed. If vma name changes then the refcount of the original
-> structure is dropped, a new anon_vma_name structure is allocated
-> to hold the new name and the vma pointer is updated to point to the new
-> structure.
-> With this approach the fork() performance regressions is reduced 3-4x
-> times and with usecases using more reasonable number of VMAs (a few
-> thousand) the regressions is not measurable.
+On Sat, Aug 28, 2021 at 02:47:03AM +0100, Matthew Wilcox wrote:
+> On Fri, Aug 27, 2021 at 12:18:57PM -0700, Suren Baghdasaryan wrote:
+> > +		anon_name = vma_anon_name(vma);
+> > +		if (anon_name) {
+> > +			seq_pad(m, ' ');
+> > +			seq_puts(m, "[anon:");
+> > +			seq_write(m, anon_name, strlen(anon_name));
+> > +			seq_putc(m, ']');
+> > +		}
 
-I like the refcounting; thank you!
+Maybe after seq_pad, use: seq_printf(m, "[anon:%s]", anon_name);
 
-Since patch2 adds a lot of things that are changed by patch3; maybe
-combine them?
+> 
+> ...
+> 
+> > +	case PR_SET_VMA_ANON_NAME:
+> > +		name = strndup_user((const char __user *)arg,
+> > +				    ANON_VMA_NAME_MAX_LEN);
+> > +
+> > +		if (IS_ERR(name))
+> > +			return PTR_ERR(name);
+> > +
+> > +		for (pch = name; *pch != '\0'; pch++) {
+> > +			if (!isprint(*pch)) {
+> > +				kfree(name);
+> > +				return -EINVAL;
+> 
+> I think isprint() is too weak a check.  For example, I would suggest
+> forbidding the following characters: ':', ']', '[', ' '.  Perhaps
+> isalnum() would be better?  (permit a-zA-Z0-9)  I wouldn't necessarily
+> be opposed to some punctuation characters, but let's avoid creating
+> confusion.  Do you happen to know which characters are actually in use
+> today?
+
+There's some sense in refusing [, ], and :, but removing " " seems
+unhelpful for reasonable descriptors. As long as weird stuff is escaped,
+I think it's fine. Any parser can just extract with m|\[anon:(.*)\]$|
+
+For example, just escape it here instead of refusing to take it. Something
+like:
+
+	name = strndup_user((const char __user *)arg,
+			    ANON_VMA_NAME_MAX_LEN);
+	escaped = kasprintf(GFP_KERNEL, "%pE", name);
+	if (escaped) {
+		kfree(name);
+		return -ENOMEM;
+	}
+	kfree(name);
+	name = escaped;
 
 -- 
 Kees Cook
