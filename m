@@ -2,113 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4933FA50A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 12:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C5B3FA50C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 12:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbhH1Kio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 06:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233807AbhH1Kih (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 06:38:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49ECCC061756;
-        Sat, 28 Aug 2021 03:37:47 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 10:37:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630147064;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=z1MH+SPX7s30rIq5HTVkXckgHonnETEjsXmBd215+I0=;
-        b=QXFYQFuMeE6koz+XvAuRb1x7ZGzECfb4W33kEWYqggi/VYNl1SheOCZ7IYYalxvqIrFwkb
-        Vrs+aswMB78wIJ3RTZ0pWEVrocLsvXcNgYRqs1gaUm4R9tFoaTlq/oPTY9Qac2qkUbr3An
-        gCHpY4p+yaTKhZyqByth3qdTXGeB9D9qiv2r1E0CQ8C+Z1IepOwcodD2y6/wg7KIGaSooc
-        /0Sia2m82aDgpWwPeBqGla+4ih8zh0jg3Bh3p/rkH1ZNOCAzuv2Uoaz3rD7D391A8O1qKu
-        oGv2ZbuTGasjRoM8OjgXAT7c9AQ9OBWRErXOEEW/llHyZGBWJV8+gB/lHjcXZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630147064;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=z1MH+SPX7s30rIq5HTVkXckgHonnETEjsXmBd215+I0=;
-        b=3ivK08grzrRh0KlTyAV/YnQuyFYZjgxj65Z+joKwyjSBLaiEBbzf2oD8utJ6kXic2WAMfz
-        OHpO73JrhQzd3tDw==
-From:   "tip-bot2 for Rasmus Villemoes" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] efi: cper: fix scnprintf() use in cper_mem_err_location()
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        id S233793AbhH1Kmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 06:42:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233732AbhH1Kmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 06:42:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FD5660E73
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:42:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630147324;
+        bh=LGF0WKQUZra+/yE5pzuIRGhLxWYzaW5Afa09kh8HU8U=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=FLG7n2gDsLlkYI1z8MwxlkP1FcBwDbNbRsGchEjCIwY83pGIiuUa4CLdA5423Kkc9
+         hJ/rqZdIKSlG+lu1mGVZr4+NltPDD31BKvRcdpWDOZIYvq3hKviuW0c6BS6vR3vLP5
+         pzmTWlXdX/qDc3VQoiAW9TImxNtFfC9XTV6tQKk743EfNk0ANtfxHv6Yxx4R/rzIGc
+         xQuxycBHLB3d82N72qLEa+2qTQf6mLrJSVWAvkaT+twudnfRqwPCssljVhGzlAAZxU
+         GksW7WoPcTZtiCTKdIfZP1uFY8djTxIB/h1omDPwnnKlTuwylKfNgkctjZXMctHuuW
+         +m5n9szCtBP7A==
+Received: by mail-oi1-f182.google.com with SMTP id bi4so9469132oib.9
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 03:42:04 -0700 (PDT)
+X-Gm-Message-State: AOAM532AR+7e/A4x9ryd3ZliMHB8gb+iPMEIhRr60dNbWTMjo1nf5sSD
+        yAQiQr3YP0baqLJP4fyKO9Ag1A0PISWY+f3Of00=
+X-Google-Smtp-Source: ABdhPJwszUx2URDxwC4eHDTx25vlI8b5liaDoOvDuNm8WfYbZ3odpjvucFSaOoXqsmK5YS2q0JlzMUOZhzc7HzHtH3Q=
+X-Received: by 2002:aca:1b19:: with SMTP id b25mr18261273oib.138.1630147323365;
+ Sat, 28 Aug 2021 03:42:03 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <163014706409.25758.9928933953235257712.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ac9:1bc6:0:0:0:0:0 with HTTP; Sat, 28 Aug 2021 03:42:02
+ -0700 (PDT)
+In-Reply-To: <202108281623.Fc90gBsN-lkp@intel.com>
+References: <202108281623.Fc90gBsN-lkp@intel.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Sat, 28 Aug 2021 19:42:02 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd_Fg=3qE+D6Cww4Kncuxwac_w5v2xJizyX9XCH1O6fYYQ@mail.gmail.com>
+Message-ID: <CAKYAXd_Fg=3qE+D6Cww4Kncuxwac_w5v2xJizyX9XCH1O6fYYQ@mail.gmail.com>
+Subject: Re: [kees:kspp/memcpy/next-20210816/v2 34/63] include/linux/fortify-string.h:265:4:
+ warning: call to '__write_overflow_field' declared with attribute warning:
+ detected write beyond size of field (1st parameter); maybe use struct_group()?
+To:     kernel test robot <lkp@intel.com>
+Cc:     Kees Cook <keescook@chromium.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/core branch of tip:
+Hi,
 
-Commit-ID:     5eff88dd6b4badd664d7d3b648103d540b390248
-Gitweb:        https://git.kernel.org/tip/5eff88dd6b4badd664d7d3b648103d540b390248
-Author:        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-AuthorDate:    Wed, 21 Apr 2021 21:31:46 +02:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Fri, 27 Aug 2021 16:01:27 +02:00
+2021-08-28 17:55 GMT+09:00, kernel test robot <lkp@intel.com>:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git
+> kspp/memcpy/next-20210816/v2
+> head:   0f0894ea4d0761cc43917960b4878fa3d1ed7a5f
+> commit: 1db8308d772a6ac9744a973ea07cbc811c608c04 [34/63] fortify: Detect
+> struct member overflows in memcpy() at compile-time
+> config: x86_64-allyesconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         #
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?id=1db8308d772a6ac9744a973ea07cbc811c608c04
+>         git remote add kees
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git
+>         git fetch --no-tags kees kspp/memcpy/next-20210816/v2
+>         git checkout 1db8308d772a6ac9744a973ea07cbc811c608c04
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=x86_64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+Thanks for your report!
+>
+> All warnings (new ones prefixed by >>):
+>
+>    In file included from include/linux/string.h:253,
+>                     from include/linux/bitmap.h:10,
+>                     from include/linux/cpumask.h:12,
+>                     from arch/x86/include/asm/cpumask.h:5,
+>                     from arch/x86/include/asm/msr.h:11,
+>                     from arch/x86/include/asm/processor.h:22,
+>                     from arch/x86/include/asm/cpufeature.h:5,
+>                     from arch/x86/include/asm/thread_info.h:53,
+>                     from include/linux/thread_info.h:60,
+>                     from arch/x86/include/asm/preempt.h:7,
+>                     from include/linux/preempt.h:78,
+>                     from include/linux/spinlock.h:51,
+>                     from include/linux/wait.h:9,
+>                     from include/linux/wait_bit.h:8,
+>                     from include/linux/fs.h:6,
+>                     from fs/ksmbd/ndr.c:7:
+>    In function 'fortify_memcpy_chk',
+>        inlined from 'ndr_read_string' at fs/ksmbd/ndr.c:86:2,
+>        inlined from 'ndr_decode_dos_attr' at fs/ksmbd/ndr.c:167:2:
+>>> include/linux/fortify-string.h:265:4: warning: call to
+>>> '__write_overflow_field' declared with attribute warning: detected write
+>>> beyond size of field (1st parameter); maybe use struct_group()?
+>>> [-Wattribute-warning]
+>      265 |    __write_overflow_field(p_size_field, size);
+>          |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We have fixed this issue reported by Dan Carpenter yesterday and
+queued the patch to #cifsd-for-next.
 
-efi: cper: fix scnprintf() use in cper_mem_err_location()
-
-The last two if-clauses fail to update n, so whatever they might have
-written at &msg[n] would be cut off by the final nul-termination.
-
-That nul-termination is redundant; scnprintf(), just like snprintf(),
-guarantees a nul-terminated output buffer, provided the buffer size is
-positive.
-
-And there's no need to discount one byte from the initial buffer;
-vsnprintf() expects to be given the full buffer size - it's not going
-to write the nul-terminator one beyond the given (buffer, size) pair.
-
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/firmware/efi/cper.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-index ea7ca74..1cb7097 100644
---- a/drivers/firmware/efi/cper.c
-+++ b/drivers/firmware/efi/cper.c
-@@ -221,7 +221,7 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
- 		return 0;
- 
- 	n = 0;
--	len = CPER_REC_LEN - 1;
-+	len = CPER_REC_LEN;
- 	if (mem->validation_bits & CPER_MEM_VALID_NODE)
- 		n += scnprintf(msg + n, len - n, "node: %d ", mem->node);
- 	if (mem->validation_bits & CPER_MEM_VALID_CARD)
-@@ -258,13 +258,12 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
- 		n += scnprintf(msg + n, len - n, "responder_id: 0x%016llx ",
- 			       mem->responder_id);
- 	if (mem->validation_bits & CPER_MEM_VALID_TARGET_ID)
--		scnprintf(msg + n, len - n, "target_id: 0x%016llx ",
--			  mem->target_id);
-+		n += scnprintf(msg + n, len - n, "target_id: 0x%016llx ",
-+			       mem->target_id);
- 	if (mem->validation_bits & CPER_MEM_VALID_CHIP_ID)
--		scnprintf(msg + n, len - n, "chip_id: %d ",
--			  mem->extended >> CPER_MEM_CHIP_ID_SHIFT);
-+		n += scnprintf(msg + n, len - n, "chip_id: %d ",
-+			       mem->extended >> CPER_MEM_CHIP_ID_SHIFT);
- 
--	msg[n] = '\0';
- 	return n;
- }
- 
+Thanks!
+>
+>
+> vim +/__write_overflow_field +265 include/linux/fortify-string.h
+>
+>    211	
+>    212	/*
+>    213	 * To make sure the compiler can enforce protection against buffer
+> overflows,
+>    214	 * memcpy(), memmove(), and memset() must not be used beyond
+> individual
+>    215	 * struct members. If you need to copy across multiple members,
+> please use
+>    216	 * struct_group() to create a named mirror of an anonymous struct
+> union.
+>    217	 * (e.g. see struct sk_buff.)
+>    218	 *
+>    219	 * Mitigation coverage
+>    220	 *					Bounds checking at:
+>    221	 *					+-------+-------+-------+-------+
+>    222	 *					| Compile time  | Run time      |
+>    223	 * memcpy() argument sizes:		| write | read  | write | read  |
+>    224	 *					+-------+-------+-------+-------+
+>    225	 * memcpy(known,   known,   constant)	|   y   |   y   |  n/a  |  n/a
+> |
+>    226	 * memcpy(unknown, known,   constant)	|   n   |   y   |   V   |  n/a
+> |
+>    227	 * memcpy(known,   unknown, constant)	|   y   |   n   |  n/a  |   V
+> |
+>    228	 * memcpy(unknown, unknown, constant)	|   n   |   n   |   V   |   V
+> |
+>    229	 * memcpy(known,   known,   dynamic)	|   n   |   n   |   b   |   B
+> |
+>    230	 * memcpy(unknown, known,   dynamic)	|   n   |   n   |   V   |   B
+> |
+>    231	 * memcpy(known,   unknown, dynamic)	|   n   |   n   |   b   |   V
+> |
+>    232	 * memcpy(unknown, unknown, dynamic)	|   n   |   n   |   V   |   V
+> |
+>    233	 *					+-------+-------+-------+-------+
+>    234	 *
+>    235	 * y = deterministic compile-time bounds checking
+>    236	 * n = cannot do deterministic compile-time bounds checking
+>    237	 * n/a = no run-time bounds checking needed since compile-time
+> deterministic
+>    238	 * b = perform run-time bounds checking
+>    239	 * B = can perform run-time bounds checking, but current unenforced
+>    240	 * V = vulnerable to run-time overflow
+>    241	 *
+>    242	 */
+>    243	__FORTIFY_INLINE void fortify_memcpy_chk(__kernel_size_t size,
+>    244						 const size_t p_size,
+>    245						 const size_t q_size,
+>    246						 const size_t p_size_field,
+>    247						 const size_t q_size_field,
+>    248						 const char *func)
+>    249	{
+>    250		if (__builtin_constant_p(size)) {
+>    251			/*
+>    252			 * Length argument is a constant expression, so we
+>    253			 * can perform compile-time bounds checking where
+>    254			 * buffer sizes are known.
+>    255			 */
+>    256	
+>    257			/* Error when size is larger than enclosing struct. */
+>    258			if (p_size > p_size_field && p_size < size)
+>    259				__write_overflow();
+>    260			if (q_size > q_size_field && q_size < size)
+>    261				__read_overflow2();
+>    262	
+>    263			/* Warn when write size argument larger than dest field. */
+>    264			if (p_size_field < size)
+>  > 265				__write_overflow_field(p_size_field, size);
+>    266			/*
+>    267			 * Warn for source field over-read when building with W=1
+>    268			 * or when an over-write happened, so both can be fixed at
+>    269			 * the same time.
+>    270			 */
+>    271			if ((IS_ENABLED(KBUILD_EXTRA_WARN1) || p_size_field < size) &&
+>    272			    q_size_field < size)
+>    273				__read_overflow2_field(q_size_field, size);
+>    274		}
+>    275		/*
+>    276		 * At this point, length argument may not be a constant expression,
+>    277		 * so run-time bounds checking can be done where buffer sizes are
+>    278		 * known. (This is not an "else" because the above checks may only
+>    279		 * be compile-time warnings, and we want to still warn for run-time
+>    280		 * overflows.)
+>    281		 */
+>    282	
+>    283		/*
+>    284		 * Always stop accesses beyond the struct that contains the
+>    285		 * field, when the buffer's remaining size is known.
+>    286		 * (The -1 test is to optimize away checks where the buffer
+>    287		 * lengths are unknown.)
+>    288		 */
+>    289		if ((p_size != (size_t)(-1) && p_size < size) ||
+>    290		    (q_size != (size_t)(-1) && q_size < size))
+>    291			fortify_panic(func);
+>    292	}
+>    293	
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
