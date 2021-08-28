@@ -2,64 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C784A3FA77A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 22:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C5D3FA782
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 22:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbhH1UGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 16:06:03 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:47041 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhH1UGC (ORCPT
+        id S232228AbhH1UPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 16:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhH1UPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 16:06:02 -0400
-Received: by mail-il1-f199.google.com with SMTP id f20-20020a056e020c74b02902243d481d97so6324331ilj.13
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 13:05:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=F3lnrFhJJI9jjY2l9iXzYnttpQ+V2txwHoUaiy15Azg=;
-        b=E147nlA3CEXHgQ1X74zeGD/m6N0ASgCa+UY2Ft6dSCXCFV37L1HeNkSBykaA6W7t2X
-         VTeOK2JcPlfQZmUzUZk/lX5Kn4W/uJ07n/4pXGydJD/uUg4bHljGm6Z5HLUs7Vrtl5/V
-         CylJdMmSs5UjxfqcCbUua6C6XPHALOz8FLGDF03w0Ar7orgis28muBjIfxSAo099tcf5
-         Hu+SnKzrNW1/uB1ksLPLJpbVznwN5zSgPsLmRY0CQBOGbdnaQihLnB9xlrJ+FcK/Whqr
-         SQuhDFfrhV7znymUouse0YxFQm7gavpwr0Fvl3p87lJ0A/xFqoriO/b8okSvT69dqBqs
-         PRrQ==
-X-Gm-Message-State: AOAM5336s8mVuVVfcpX0Izt4r5QI95mldz9oLTDdXKNdYlv1sHE2n1OK
-        Ddz31aIEQ8IPRZFwT+AI3jMI+cRJSDFug3s96mjqXF3l+nRV
-X-Google-Smtp-Source: ABdhPJzHStHr46SCKuO25wOHU94CBgaQa0P1z5qBGKQRRah2nWHjLg3YkzMkQt6Pz6IO+rZsgDqLS+lRh8wqJzQoaZeu4lLfXEHy
+        Sat, 28 Aug 2021 16:15:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D88C061756;
+        Sat, 28 Aug 2021 13:14:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5eM46mJiedShkh/qp5ZYvdDK6rHNXNQh8cRsw3NT0wc=; b=PCb7ByQnKwg1Y1b5amksoxMC18
+        750jnriAADg3ZMPkZsQ1S64I3SWooq8RAWKHR6gvS8yq6sBTJRW/xpIDhQdtdqFGSMkbRqvzaoVOX
+        RbHrtpxkLKFZ4QPToWsR2xgD4PPVFivtUlICzQb4AuxKKXG0q5V1I06RklmKdc6wzT/DQawC2aUYR
+        bAQTfuPsxVqPKCnKmPQWMt4oHoj06J+I7g5V81Vo50dn/UBfFPxoTMXUOcQzRt6ogYKOXQM3TuwyX
+        U9SU7AVxzEm+BWC1B9V1zMc+Wy5pDKewEdcHo9SqQqbovYL6/IUQxLHaa9mf9upz2wZvb/AUhs050
+        1IIDrKxg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mK4hs-00Dw8H-MQ; Sat, 28 Aug 2021 20:13:43 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1A47F9868D7; Sat, 28 Aug 2021 22:13:36 +0200 (CEST)
+Date:   Sat, 28 Aug 2021 22:13:36 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH v2 00/13] perf: KVM: Fix, optimize, and clean up callbacks
+Message-ID: <20210828201336.GD4353@worktop.programming.kicks-ass.net>
+References: <20210828003558.713983-1-seanjc@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d3cf:: with SMTP id c15mr10793586ilh.131.1630181111312;
- Sat, 28 Aug 2021 13:05:11 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 13:05:11 -0700
-In-Reply-To: <20210828180358.GA291431@rowland.harvard.edu>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000f37f405caa41e79@google.com>
-Subject: Re: [syzbot] INFO: task hung in do_proc_bulk
-From:   syzbot <syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, johan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        mathias.nyman@linux.intel.com, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210828003558.713983-1-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Aug 27, 2021 at 05:35:45PM -0700, Sean Christopherson wrote:
+> Like Xu (2):
+>   perf/core: Rework guest callbacks to prepare for static_call support
+>   perf/core: Use static_call to optimize perf_guest_info_callbacks
+> 
+> Sean Christopherson (11):
+>   perf: Ensure perf_guest_cbs aren't reloaded between !NULL check and
+>     deref
+>   KVM: x86: Register perf callbacks after calling vendor's
+>     hardware_setup()
+>   KVM: x86: Register Processor Trace interrupt hook iff PT enabled in
+>     guest
+>   perf: Stop pretending that perf can handle multiple guest callbacks
+>   perf: Force architectures to opt-in to guest callbacks
+>   KVM: x86: Drop current_vcpu for kvm_running_vcpu + kvm_arch_vcpu
+>     variable
+>   KVM: x86: More precisely identify NMI from guest when handling PMI
+>   KVM: Move x86's perf guest info callbacks to generic KVM
+>   KVM: x86: Move Intel Processor Trace interrupt handler to vmx.c
+>   KVM: arm64: Convert to the generic perf callbacks
+>   KVM: arm64: Drop perf.c and fold its tiny bits of code into arm.c /
+>     pmu.c
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Lets keep the whole intel_pt crud inside x86...
 
-Reported-and-tested-by: syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         d5ae8d7f Revert "media: dvb header files: move some he..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
-dashboard link: https://syzkaller.appspot.com/bug?extid=ada0f7d3d9fd2016d927
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16c2799d300000
-
-Note: testing is done by a robot and is best-effort only.
+---
+Index: linux-2.6/arch/x86/events/core.c
+===================================================================
+--- linux-2.6.orig/arch/x86/events/core.c
++++ linux-2.6/arch/x86/events/core.c
+@@ -92,7 +92,7 @@ DEFINE_STATIC_CALL_RET0(x86_pmu_guest_ge
+ 
+ DEFINE_STATIC_CALL_RET0(x86_guest_state, *(perf_guest_cbs->state));
+ DEFINE_STATIC_CALL_RET0(x86_guest_get_ip, *(perf_guest_cbs->get_ip));
+-DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, *(perf_guest_cbs->handle_intel_pt_intr));
++DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, unsigned int (*)(void));
+ 
+ void arch_perf_update_guest_cbs(struct perf_guest_info_callbacks *guest_cbs)
+ {
+@@ -103,14 +103,6 @@ void arch_perf_update_guest_cbs(struct p
+ 		static_call_update(x86_guest_state, (void *)&__static_call_return0);
+ 		static_call_update(x86_guest_get_ip, (void *)&__static_call_return0);
+ 	}
+-
+-	/* Implementing ->handle_intel_pt_intr is optional. */
+-	if (guest_cbs && guest_cbs->handle_intel_pt_intr)
+-		static_call_update(x86_guest_handle_intel_pt_intr,
+-				   guest_cbs->handle_intel_pt_intr);
+-	else
+-		static_call_update(x86_guest_handle_intel_pt_intr,
+-				   (void *)&__static_call_return0);
+ }
+ 
+ u64 __read_mostly hw_cache_event_ids
+Index: linux-2.6/arch/x86/events/intel/core.c
+===================================================================
+--- linux-2.6.orig/arch/x86/events/intel/core.c
++++ linux-2.6/arch/x86/events/intel/core.c
+@@ -2782,7 +2782,7 @@ static void intel_pmu_reset(void)
+ 	local_irq_restore(flags);
+ }
+ 
+-DECLARE_STATIC_CALL(x86_guest_handle_intel_pt_intr, *(perf_guest_cbs->handle_intel_pt_intr));
++DECLARE_STATIC_CALL(x86_guest_handle_intel_pt_intr, unsigned int (*)(void));
+ 
+ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+ {
+Index: linux-2.6/arch/x86/kvm/x86.c
+===================================================================
+--- linux-2.6.orig/arch/x86/kvm/x86.c
++++ linux-2.6/arch/x86/kvm/x86.c
+@@ -10960,7 +10960,14 @@ int kvm_arch_hardware_setup(void *opaque
+ 	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
+ 	kvm_ops_static_call_update();
+ 
+-	kvm_register_perf_callbacks(ops->handle_intel_pt_intr);
++	kvm_register_perf_callbacks();
++	if (ops->handle_intel_pt_intr) {
++		static_call_update(x86_guest_handle_intel_pt_intr,
++				   ops->handle_intel_pt_intr);
++	} else {
++		static_call_update(x86_guest_handle_intel_pt_intr,
++				   (void *)&__static_call_return0);
++	}
+ 
+ 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
+ 		supported_xss = 0;
+Index: linux-2.6/include/linux/perf_event.h
+===================================================================
+--- linux-2.6.orig/include/linux/perf_event.h
++++ linux-2.6/include/linux/perf_event.h
+@@ -32,7 +32,6 @@
+ struct perf_guest_info_callbacks {
+ 	unsigned int			(*state)(void);
+ 	unsigned long			(*get_ip)(void);
+-	unsigned int			(*handle_intel_pt_intr)(void);
+ };
+ 
+ #ifdef CONFIG_HAVE_HW_BREAKPOINT
+Index: linux-2.6/virt/kvm/kvm_main.c
+===================================================================
+--- linux-2.6.orig/virt/kvm/kvm_main.c
++++ linux-2.6/virt/kvm/kvm_main.c
+@@ -5374,12 +5374,10 @@ static unsigned long kvm_guest_get_ip(vo
+ static struct perf_guest_info_callbacks kvm_guest_cbs = {
+ 	.state			= kvm_guest_state,
+ 	.get_ip			= kvm_guest_get_ip,
+-	.handle_intel_pt_intr	= NULL,
+ };
+ 
+-void kvm_register_perf_callbacks(unsigned int (*pt_intr_handler)(void))
++void kvm_register_perf_callbacks(void)
+ {
+-	kvm_guest_cbs.handle_intel_pt_intr = pt_intr_handler;
+ 	perf_register_guest_info_callbacks(&kvm_guest_cbs);
+ }
+ #endif
+Index: linux-2.6/arch/arm64/kvm/arm.c
+===================================================================
+--- linux-2.6.orig/arch/arm64/kvm/arm.c
++++ linux-2.6/arch/arm64/kvm/arm.c
+@@ -1749,7 +1749,7 @@ static int init_subsystems(void)
+ 		goto out;
+ 
+ 	kvm_pmu_init();
+-	kvm_register_perf_callbacks(NULL);
++	kvm_register_perf_callbacks();
+ 
+ 	kvm_sys_reg_table_init();
+ 
+Index: linux-2.6/include/linux/kvm_host.h
+===================================================================
+--- linux-2.6.orig/include/linux/kvm_host.h
++++ linux-2.6/include/linux/kvm_host.h
+@@ -1121,7 +1121,7 @@ static inline bool kvm_arch_intc_initial
+ #ifdef __KVM_WANT_PERF_CALLBACKS
+ unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu);
+ 
+-void kvm_register_perf_callbacks(unsigned int (*pt_intr_handler)(void));
++void kvm_register_perf_callbacks(void);
+ static inline void kvm_unregister_perf_callbacks(void)
+ {
+ 	perf_unregister_guest_info_callbacks();
