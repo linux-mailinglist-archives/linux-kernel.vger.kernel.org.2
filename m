@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8213FA69B
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB0C3FA69D
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbhH1Py6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
+        id S234537AbhH1Pze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 11:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234518AbhH1Py5 (ORCPT
+        with ESMTP id S229813AbhH1Pzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:54:57 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E6BC061756;
-        Sat, 28 Aug 2021 08:54:06 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id b7so14579845edu.3;
-        Sat, 28 Aug 2021 08:54:06 -0700 (PDT)
+        Sat, 28 Aug 2021 11:55:33 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E742C061756;
+        Sat, 28 Aug 2021 08:54:43 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id i3-20020a056830210300b0051af5666070so12070990otc.4;
+        Sat, 28 Aug 2021 08:54:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b/FoITeBxXzYPYRycaXkbD+65bcxuT4OKmmdeFd0Jlo=;
-        b=tf1iMB33IgOI69bWgXQProMFN2EETh3i67dsiFkKRxA9NLeh6/9xl9K6M9XrcT0iWy
-         ZFmsotmZKl1z/y+aAEirsUT/PDgeEu+8hHkFNzANECFnmGiW+0JmHcbPc11mynjxEMic
-         lNJs5eFdIb++dxvldt7ZZffeIIO+sfoUnEiMdH3ya0AdwMdLKbjGoioHQnPksF8rWGy+
-         83Sqr5K2gOgs3X4dcCKS3G0SJb9Gqf0l3d2+xcFQbTi1S+hji3XJEbTYGmfhe8Ijqz20
-         L5bTfjfw96ZWjA53QnbUO3kfIBZIuW0kIJar0qXdpTEof5ekF1uolgO8nAqtZSW8Mi2r
-         LeTg==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=e4TSKtefWHgQZdSiBJs6Tav40y6+gqilbiq5J43BUIw=;
+        b=nFROXdNBrxSlGnuA5utpR0mhMT+0n6ucfU8Qpu1kdrBXnWscx5Ub/IQHf+92Z9WVdN
+         lLS0Dnc6FtM6Z/TZRfD81m4dWXT0fArhfTw4LWhNC/SsQiyN95ZXitQ38ds2rjechkAB
+         RmqpoTUa3M2vrpCXwuB5aAeWg4qlslU+jG/aGRefBXH0iXa4LHDDqNmSZFjwUHHD6Kuj
+         ys3uy+OGE4tNnOiXwASLtm9rWI+NPyx5dMp3M3rkI7MIIEFky4Yc7+njJCqetwupwvLr
+         3dsPYtOV8zd3tn+/b999xYgo5CSu/Y1fv17s7TxM6eUUtq6pVuCyyVMqMFNBiOiRdsjE
+         7rKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b/FoITeBxXzYPYRycaXkbD+65bcxuT4OKmmdeFd0Jlo=;
-        b=iM+EssKdLi2BjXcPeQS8TogGLtKPFHpIwQoPlghCNljq7iwSMqCZ2KUU7nuCE6gAbn
-         8vF/xYFkQc8bWRUGTq9L00FwytCBxQAddENLP59BAvBESDI6az61GbhcVtv2sxawNeKI
-         dFcDFypOhUmwo+ykX/1U0KdyHcDPy0oSJXvXUfHTUBXquJaLXO0yjp2XKsKioEQ0dTKV
-         ExyhWQ0L19jlBTg8p4twyMe9OVHx02929CL6T08P3Ruflu+tjh76eIGQ8fhjoOTg5efl
-         6oNf8HDv9GrrHbNfsKo5qPiKdhSdaIRqvPgSLsyhg2iKs3r3gWbotIdj3bM9p9Ke+9JF
-         uAFg==
-X-Gm-Message-State: AOAM531FB3fTRNAvd7T3M9eEmHMQlFCh81+RetzqlKVCv6a5VbYV68yZ
-        hqNkZap7weZwmdd1gsGJfSeso9QXV9IyI/yqRA4=
-X-Google-Smtp-Source: ABdhPJytLQmCtHspjMyHBMTX4NFKx0mMPjNdfQW3zHxrQS2RLqSasQmOR6hdIPX9F0PdpYCg0LBEGk6dpFFYaYQFU7M=
-X-Received: by 2002:a50:e699:: with SMTP id z25mr15370730edm.130.1630166044946;
- Sat, 28 Aug 2021 08:54:04 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=e4TSKtefWHgQZdSiBJs6Tav40y6+gqilbiq5J43BUIw=;
+        b=pxPcYZUT+kB0wtOg1M0xnee0ODdxX/K6FLhbBAtnOfETCOCHljgr+l4NfOZV5xvmay
+         S3YQkfL0rIq6dSm/a4PgIOR4UkueO+oy3av/Yh3hSNby6YYLUgt/+JrT5cKeeExwXl3I
+         evRk1VqysEga6O+83QJ8bAkHSUeLTuWh3jmBm/GSK0DonVqjPAoX7M150c0vdkWL/fUq
+         Ooni4w6sN2cfFYJhR4HJBw/t+aif3i8tz5NAiPdSCrWoLUJ+qGM0jH7f8mmGS68zXiC+
+         hHJi9xPMVunhqAhEUiTI5xiSu2NweXoK4msOksYQCH1lTEKoiFv3aWoKKGPgz+/D2tKL
+         whsA==
+X-Gm-Message-State: AOAM530jPHJ3pKXzrtW5eu56OGB+QMQpC9Uqh7f1jUpDyjb9OsHanFOl
+        BXsjosVEfLACpTQNLeTLt4hl9tgxIrk=
+X-Google-Smtp-Source: ABdhPJzvfO+otutJpyPVfF9fgAPnQdVfC70ML1OfN4ahmqpyvxFnOY4dSZsijiMT/xxxqFyxyXPxng==
+X-Received: by 2002:a9d:70cc:: with SMTP id w12mr12356628otj.306.1630166082642;
+        Sat, 28 Aug 2021 08:54:42 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x4sm34010ood.2.2021.08.28.08.54.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 08:54:42 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 28 Aug 2021 08:54:41 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Aleksa Savic <savicaleksa83@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] hwmon: add driver for Aquacomputer D5 Next
+Message-ID: <20210828155441.GA820794@roeck-us.net>
 MIME-Version: 1.0
-References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-2-linux.amoon@gmail.com>
-In-Reply-To: <20210817041548.1276-2-linux.amoon@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 28 Aug 2021 17:53:54 +0200
-Message-ID: <CAFBinCBnH1UqaiuHgTXZTH+RPOwCWiWLVheU=bydS4mfkxTP3g@mail.gmail.com>
-Subject: Re: [PATCHv3 1/6] ARM: dts: meson8b: odroidc1: Add usb phy power node
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Brian Kim <brian.kim@hardkernel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+On Sat, Aug 28, 2021 at 07:26:28AM +0200, Aleksa Savic wrote:
+> This driver exposes hardware sensors of the Aquacomputer D5 Next
+> watercooling pump, which communicates through a proprietary USB HID
+> protocol.
+> 
+> Available sensors are pump and fan speed, power, voltage and current, as
+> well as coolant temperature. Also available through debugfs are the serial
+> number, firmware version and power-on count.
+> 
+> Attaching a fan is optional and allows it to be controlled using
+> temperature curves directly from the pump. If it's not connected,
+> the fan-related sensors will report zeroes.
+> 
+> The pump can be configured either through software or via its physical
+> interface. Configuring the pump through this driver is not implemented,
+> as it seems to require sending it a complete configuration. That
+> includes addressable RGB LEDs, for which there is no standard sysfs
+> interface. Thus, that task is better suited for userspace tools.
+> 
+> This driver has been tested on x86_64, both in-kernel and as a module.
+> 
+> Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
 
-sorry for the late reply
-I have three very small comments below, apart from these, this is looking good!
+Applied.
 
-On Tue, Aug 17, 2021 at 6:17 AM Anand Moon <linux.amoon@gmail.com> wrote:
->
-> Add missing usb phy power node for usb node fix below warning.
-> P5V0 regulator supply input voltage range to USB host controller.
-> As described in the C1+ schematics, GPIO GPIOAO_5 is used to
-> enable input power to USB ports, set it to Active Low.
-I would phrase this last sentence as:
-"enable USB VBUS on the Micro-USB port using an active high signal"
-My idea here is to 1) clarify that it's about enabling USB VBUS only
-on the Micro-USB port and 2) use "active high" like the changes inside
-the patch itself
-
-> [    1.260772] dwc2 c90c0000.usb: Looking up vbus-supply from device tree
-> [    1.260784] dwc2 c90c0000.usb: Looking up vbus-supply property in
->                 mode /soc/usb@c90c0000 failed
->
-> Fixes: 2eb79a4d15ff (ARM: dts: meson: enabling the USB Host
->                 controller on Odroid-C1/C1+ board)
->
-please drop this empty line
-
-[...]
-> @@ -119,7 +136,6 @@ vcc_3v3: regulator-vcc-3v3 {
->                 regulator-name = "VCC3V3";
->                 regulator-min-microvolt = <3300000>;
->                 regulator-max-microvolt = <3300000>;
-> -
-I don't think that we should make any VCC3V3 regulator changes in this patch
-so please keep this empty line as-is.
-
-
-Best regards,
-Martin
+Thanks,
+Guenter
