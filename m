@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8121C3FA712
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 19:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356663FA716
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 20:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhH1R6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 13:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhH1R6q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 13:58:46 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162E7C0613D9
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:57:56 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so7232630pjq.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:57:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qoRrda6U6GxHzpOEaIJ6gVUXCj3XTmN8tjTe4PtJ0hc=;
-        b=mmMbPiCU3U+syXMjU8vmu6LDmEoQU8JvLN7kPzP2kUB2pj1DoBzCimW/GwtZyrYsiu
-         ddQHHN+WPFjOXjVBZdvWcwpfDfER+4xVOWV93BdAAmPCASjc1I1FSB6KLfHvnofn1nHK
-         i1/OgItiwbOqlNZtnkp2Ww50woEvHsYEsO+V8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qoRrda6U6GxHzpOEaIJ6gVUXCj3XTmN8tjTe4PtJ0hc=;
-        b=ZnG+Yv5hhuTJm6U2l1ov5Kl21h8als6ezk/rO99vENOTTNTaeYMzkE02/CabvsJ2Or
-         cgb/mUHtfvFPBMCml5ImR2G3fnGk0mf/+ObBYYUXxoRnE5uMYp9FYLvli6lPcgqTYrCm
-         tYtIKWrVVEWeuUBSHfLCiYQxEVVFHn9se7jxrdZyBPJ1tsgV7biZ3wncvq90LXritD6w
-         TAwDtVBgDxbqCjriU1XuxLqAxlDZMwl3+0UKgASN4EfruyijA4yNBZp5uiE+5ns+qEQV
-         zVkjbD7CfwitkXbrhXcPm1fg7h6Qwc+cYk1yA237D7gLAOoXCI8aPHiteegbEZCMOTeH
-         Rqxw==
-X-Gm-Message-State: AOAM530PZjsCdCWHvdQ7bKWlYs51SVRZtweWGVhOdhugNE37IM191ytT
-        vn0aTNFRyp+qnFRngf53NGVcIQ==
-X-Google-Smtp-Source: ABdhPJwIfzGrqWWVKr5y17UZd/DsAh6nRMZPSFCys6z9v4x1Eg8H5t+RpDONcLx091gGh24zKeqkUA==
-X-Received: by 2002:a17:902:fe81:b0:133:851e:5923 with SMTP id x1-20020a170902fe8100b00133851e5923mr14151597plm.25.1630173475568;
-        Sat, 28 Aug 2021 10:57:55 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t15sm11199595pgi.80.2021.08.28.10.57.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 10:57:54 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
-        Ladislav Michl <ladis@linux-mips.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        linux-omap@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] clocksource/drivers/timer-ti-dm: Select TIMER_OF
-Date:   Sat, 28 Aug 2021 10:57:47 -0700
-Message-Id: <20210828175747.3777891-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        id S230028AbhH1SCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 14:02:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhH1SC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 14:02:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C9C860E97;
+        Sat, 28 Aug 2021 18:01:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630173697;
+        bh=BQexk/h9Kqj2ai3AnUJrH79xxSz2oWWtcfEv/pECOV0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ls+xMWYINhp/DQrdSMa+0kqc9RKCv2oR9/Bg4gL4Y3/fJ+n+myb3JSIMQTCe3mE+p
+         Xjf6eKv23GoKAfBC39NgPz9f6z/nEJFhiz8PrKdudhnC0dR+QnUw8dkIUboy5rbMqZ
+         JliYUAkkjvjJ5zXpmitK2/APkbmK88TZIiVs4fW0=
+Date:   Sat, 28 Aug 2021 20:01:33 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB fixes for 5.14
+Message-ID: <YSp5/U1nxmG77m6I@kroah.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1368; h=from:subject; bh=9jx5uQPQqpp6TrFslvjEgR6EW3HiZEM9ERGP13bv27o=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhKnka8IMpGL75t9SdPtlw5cO32b0cj/Ljslc5NM+C Mk3bmEKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSp5GgAKCRCJcvTf3G3AJsbaD/ 9aHBUpWn4I1adVnh/gDEinuFwYEId8xHXMAzcKmAtGYn9aDrtjoho0QB65x/XE3thwjJv4rCtM6cfP im14GI7xHW/uIfagrW0Jiv9Rg9b1t0Gu2w6x6HrzymAHfrplvvcm8A8TDdFOWBrECEbKKEyFHvKxvI 7LEnxaaIY5RGxG17eFQXW2wdFuGppuHhZqenCfX8JRIZ2XzGKOJ6VnV7i5qWldvBe7jSPUbiYAK+xm Mi+AN3Xqkc1Guj/KGGMJ6nAyZKHRQ0l8SVTJeShnoPnWuor8X6haOExTFTH6tPl+0pbOisdtXiOumw axOUWWOeU7ga0QFJ+vacWTKXFmc+fMAS6355YTYFM3q2Rnv1eLDTZoetNwjxvitQtVfoeoY6+DQUtg uRMxDbULb22uh2rWpm5GkRABAdPiNXfbSUjTFRKAOjYFFxA85CC3XlHI9eW4Sa0Xr1hbffFm50Fb7j L+XEGRWoVoO/UONT74eVGC1HLJXDqGUs71GTXbWDRG77Sg2CN/+GNTI+JlJjznLvbWPT8njCD7Qr5n 0ZXDIlKtM2NF2xfDOWksUL6GgQc1sGloiVyDtxVgiyJIpNsHC4AG9hJUSQ0zi0PzoIr3LAz/3ylz6e ktGmQcMYLEmlX14y5Vn4v+WxMigNBrSEQU8vbERGmENn9RVkg4tg3OAs9NHA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building OMAP_DM_TIMER without TIMER_OF, there are orphan sections
-due to the use of TIMER_OF_DELCARE() without CONFIG_TIMER_OF. Select
-CONFIG_TIMER_OF when enaling OMAP_DM_TIMER:
+The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
 
-arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
+  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
 
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/202108282255.tkdt4ani-lkp@intel.com/
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: Ladislav Michl <ladis@linux-mips.org>
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: linux-omap@vger.kernel.org
-Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/clocksource/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+are available in the Git repository at:
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 0f5e3983951a..08f8cb944a2a 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -24,6 +24,7 @@ config I8253_LOCK
- 
- config OMAP_DM_TIMER
- 	bool
-+	select TIMER_OF
- 
- config CLKBLD_I8253
- 	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
--- 
-2.30.2
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.14
 
+for you to fetch changes up to 068fdad20454f815e61e6f6eb9f051a8b3120e88:
+
+  usb: gadget: u_audio: fix race condition on endpoint stop (2021-08-27 16:07:23 +0200)
+
+----------------------------------------------------------------
+USB fixes for 5.14
+
+Here are a few tiny USB fixes for reported issues with some USB drivers.
+
+These fixes include:
+ - gadget driver fixes for regressions
+ - tcpm driver fix
+ - dwc3 driver fixes
+ - xhci renesas firmware loading fix, again.
+ - usb serial option driver device id addition
+ - usb serial ch341 revert for regression
+
+All all of these have been in linux-next with no reported problems.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Greg Kroah-Hartman (1):
+      Merge tag 'usb-serial-5.14-rc8' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
+
+Jerome Brunet (2):
+      usb: gadget: f_uac2: fixup feedback endpoint stop
+      usb: gadget: u_audio: fix race condition on endpoint stop
+
+Johan Hovold (1):
+      Revert "USB: serial: ch341: fix character loss at high transfer rates"
+
+Kyle Tso (1):
+      usb: typec: tcpm: Raise vdm_sm_running flag only when VDM SM is running
+
+Takashi Iwai (1):
+      usb: renesas-xhci: Prefer firmware loading on unknown ROM state
+
+Thinh Nguyen (1):
+      usb: dwc3: gadget: Fix dwc3_calc_trbs_left()
+
+Wesley Cheng (1):
+      usb: dwc3: gadget: Stop EP0 transfers during pullup disable
+
+Zhengjun Zhang (1):
+      USB: serial: option: add new VID/PID to support Fibocom FG150
+
+ drivers/usb/dwc3/gadget.c             | 23 +++++-----
+ drivers/usb/gadget/function/u_audio.c | 23 ++++++----
+ drivers/usb/host/xhci-pci-renesas.c   | 35 +++++++++------
+ drivers/usb/serial/ch341.c            |  1 -
+ drivers/usb/serial/option.c           |  2 +
+ drivers/usb/typec/tcpm/tcpm.c         | 81 ++++++++++++++++-------------------
+ 6 files changed, 89 insertions(+), 76 deletions(-)
