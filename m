@@ -2,71 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F323FA4D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F67A3FA4DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 11:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhH1Jr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 05:47:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230444AbhH1Jr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 05:47:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C60E60ED3;
-        Sat, 28 Aug 2021 09:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630143996;
-        bh=SiGJxzk16eUk9XGSCPM4wzNg/e5oL3uafMhtUaj0g+E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nRLnpRQmpIhLLvrnzK8oTpqSxuKwXAyg6z2i3RQI8WrSVMKyOCUoPlfxipAj/AkJr
-         JVHH1bg9v042ynF0TL5l85Yf5eUzUlbcWLa+MTNhQtX7u2y5VVR3GlIIYchj2gX6Oh
-         056W8pFQNRi6EBbDOi6mDmeOaXp78mH9HoeoB0R8=
-Date:   Sat, 28 Aug 2021 11:46:33 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Krish Jain <krishjain02939@gmail.com>
-Cc:     Bryan Brattlof <hello@bryanbrattlof.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Declare the file_operations struct as const
-Message-ID: <YSoF+VcDuW/2ojjF@kroah.com>
-References: <CAPGkw+x+B1731SL=afoSKiWwH-n-FA5YJ+WOwYdv8iyFhWk1zA@mail.gmail.com>
- <3634721.RBzQ2xsved@localhost.localdomain>
- <1742120.GgyQvu0Ciu@localhost.localdomain>
- <CAPGkw+yJ=V0OwFE+uqCeWWS8JbJD=YBE3+Uk-OKpmHRnvSTh+A@mail.gmail.com>
- <CAPGkw+w-y+iC3dMDLxi8DR3N+jf8roiJ2Vs_-uHxJ=i57eTiUA@mail.gmail.com>
- <CAPGkw+zyj4e-m19KdrHpAN_vHksNDy=k_cPPAftSN-hNoph0=w@mail.gmail.com>
- <20210827233835.px4az5hyqks2n4o5@h510>
- <CAPGkw+wq6LcVXSmuoDcTqOo=ULBBT_4DVXqXnpf7S5GW3Vzy2w@mail.gmail.com>
+        id S233684AbhH1Jw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 05:52:26 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:60789 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230324AbhH1JwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 05:52:25 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 17S9p5iF032486;
+        Sat, 28 Aug 2021 18:51:05 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 17S9p5iF032486
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1630144266;
+        bh=mRdXYx53Ji2/IwMqep6Hxid/WThE4ltfaxnWAzlMAhQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lhlCIiIfoXwRomlDHsW3jf0v7yyIhSc6Zx3jeFUIaaECtQBkNftF9etBKH0Klev6X
+         uKD95i8Ei3/MUrC65GKCYhoOeJF+swARxtmtGWmVMnnR9JIR8b3tHROOo3i+nVsK7B
+         WCV1pamoDGTY79j5EGiVbn8tz+P7i8OnIC6uPmVRTz746RCrWfDQ7U75GklIHcdsU5
+         Gg0RFPuqUXoojmj67xYWCsGH6vc8vQLtKX5tZ/FCAr9EH5kR/AOFRDF+nR/gYbXiN2
+         h6GtJMWT8i4aLaAiDjz6ShB7Ha/eQ9K0zK9rAlgEXU0qwQYFg7N5aIW4EqascLITNP
+         ADKaacFYNfH2g==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] modpost: get the *.mod file path more simply
+Date:   Sat, 28 Aug 2021 18:50:59 +0900
+Message-Id: <20210828095103.2617393-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPGkw+wq6LcVXSmuoDcTqOo=ULBBT_4DVXqXnpf7S5GW3Vzy2w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+get_src_version() strips 'o' or 'lto.o' from the end of the object file
+path (so, postfixlen is 1 or 5), then adds 'mod'.
 
-A: No.
-Q: Should I include quotations after my reply?
+If you look at the code closely, mod->name already holds the base path
+with the extension stripped.
 
-http://daringfireball.net/2007/07/on_top
+Most of the code changes made by commit 7ac204b545f2 ("modpost: lto:
+strip .lto from module names") was actually unneeded.
 
-On Sat, Aug 28, 2021 at 11:37:50AM +0200, Krish Jain wrote:
-> Hi. Thanks for your response. Changing to  "const static" would fix
-> the first error but looking at the second error indicates that it
-> can't be a const, right? So checkpatch.pl was wrong?
+sumversion.c does not need strends(), so it can get back local in
+modpost.c again.
 
-checkpatch.pl is a perl script that does its best here.  You always have
-to then look at the code itself to see if what it is asking you to do is
-correct.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-And you always have to at the very least, test build your changes to
-verify that they do not break anything.
+ scripts/mod/modpost.c    | 11 ++++++++++-
+ scripts/mod/modpost.h    |  9 ---------
+ scripts/mod/sumversion.c |  7 +------
+ 3 files changed, 11 insertions(+), 16 deletions(-)
 
-thanks,
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 270a7df898e2..a26139aa57fd 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -17,6 +17,7 @@
+ #include <ctype.h>
+ #include <string.h>
+ #include <limits.h>
++#include <stdbool.h>
+ #include <errno.h>
+ #include "modpost.h"
+ #include "../../include/linux/license.h"
+@@ -89,6 +90,14 @@ modpost_log(enum loglevel loglevel, const char *fmt, ...)
+ 		error_occurred = true;
+ }
+ 
++static inline bool strends(const char *str, const char *postfix)
++{
++	if (strlen(str) < strlen(postfix))
++		return false;
++
++	return strcmp(str + strlen(str) - strlen(postfix), postfix) == 0;
++}
++
+ void *do_nofail(void *ptr, const char *expr)
+ {
+ 	if (!ptr)
+@@ -2060,7 +2069,7 @@ static void read_symbols(const char *modname)
+ 	if (!mod->is_vmlinux) {
+ 		version = get_modinfo(&info, "version");
+ 		if (version || all_versions)
+-			get_src_version(modname, mod->srcversion,
++			get_src_version(mod->name, mod->srcversion,
+ 					sizeof(mod->srcversion) - 1);
+ 	}
+ 
+diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
+index c1a895c0d682..0c47ff95c0e2 100644
+--- a/scripts/mod/modpost.h
++++ b/scripts/mod/modpost.h
+@@ -2,7 +2,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <stdarg.h>
+-#include <stdbool.h>
+ #include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+@@ -178,14 +177,6 @@ static inline unsigned int get_secindex(const struct elf_info *info,
+ 	return info->symtab_shndx_start[sym - info->symtab_start];
+ }
+ 
+-static inline bool strends(const char *str, const char *postfix)
+-{
+-	if (strlen(str) < strlen(postfix))
+-		return false;
+-
+-	return strcmp(str + strlen(str) - strlen(postfix), postfix) == 0;
+-}
+-
+ /* file2alias.c */
+ extern unsigned int cross_build;
+ void handle_moddevtable(struct module *mod, struct elf_info *info,
+diff --git a/scripts/mod/sumversion.c b/scripts/mod/sumversion.c
+index 760e6baa7eda..905c0ec291e1 100644
+--- a/scripts/mod/sumversion.c
++++ b/scripts/mod/sumversion.c
+@@ -391,14 +391,9 @@ void get_src_version(const char *modname, char sum[], unsigned sumlen)
+ 	struct md4_ctx md;
+ 	char *fname;
+ 	char filelist[PATH_MAX + 1];
+-	int postfix_len = 1;
+-
+-	if (strends(modname, ".lto.o"))
+-		postfix_len = 5;
+ 
+ 	/* objects for a module are listed in the first line of *.mod file. */
+-	snprintf(filelist, sizeof(filelist), "%.*smod",
+-		 (int)strlen(modname) - postfix_len, modname);
++	snprintf(filelist, sizeof(filelist), "%s.mod", modname);
+ 
+ 	buf = read_text_file(filelist);
+ 
+-- 
+2.30.2
 
-greg k-h
