@@ -2,161 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA2A3FA475
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 10:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082CA3FA478
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 10:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233494AbhH1ICD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 04:02:03 -0400
-Received: from relay.sw.ru ([185.231.240.75]:52554 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230208AbhH1ICC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 04:02:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=jluMMVsqCTkZy4J4waEELl6tvgeNZqOCbsfsX0toBMw=; b=vzSkXMdC1iLvHgk9H
-        Nd0foTlpvg7bF82sh+YtypJLi1ikzKNaZqvU2Pmk0eVbvyp594pohddr2idhphAIWct1ma3cz6Fhy
-        rgohntfhIQ+Fab1mhS/bbJ+cKpaDJ9NZ+xB/iNyUv3sbKEDh8DH4r3eArZq6eBo06dP/ZdVpfr2Lk
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mJtGv-0002o2-Rk; Sat, 28 Aug 2021 11:01:01 +0300
-Subject: Re: [PATCH NET-NEXT] ipv6: skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
-References: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
- <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com>
- <CALMXkpZkW+ULMMFgeY=cag1F0=891F-v9NEVcdn7Tyd-VUWGYA@mail.gmail.com>
- <1c12b056-79d2-126a-3f78-64629f072345@gmail.com>
- <2d8a102a-d641-c6c1-b417-7a35efa4e5da@gmail.com>
- <bd90616e-8e86-016b-0979-c4f4167b8bc2@gmail.com>
- <7a6588ad-00fe-cfb9-afcd-d8b31be229cd@virtuozzo.com>
- <478ae732-161d-c692-b60a-6df11c37ac2c@gmail.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <1060942f-d479-7399-df13-d312f963a823@virtuozzo.com>
-Date:   Sat, 28 Aug 2021 11:01:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233493AbhH1IHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 04:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230208AbhH1IHg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 04:07:36 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB91CC0613D9;
+        Sat, 28 Aug 2021 01:06:45 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id z2so19659901lft.1;
+        Sat, 28 Aug 2021 01:06:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VV3OwnMmYtHsdtjbnEj4H2sv1uJ0Sm9kswbc7APspic=;
+        b=BnG05y8O/9yTk/I6r7fwhcthX4+G0KoNRJ3KxEBC9fZLaL0tW9Ie9BBMzdFLmrf1OC
+         /3TBsJgq7IDnDD207Mz9U9qjhSbMvHuQnhSyLgizPnkHXPvEwoKhwQL/xSN41GMPATOh
+         nNCXSF2uRLLwD+5/uStLCdsJtzpR7fG9G1EOC7OigDo+ixhS+BuVhc6y3Z2/4h/82S6Z
+         47TBxh6KQTrGoFETq8OwY+QiOE9PQF1Dy4Aujg6zS1UkNmBEGv3XQZMYRSTElzXZeVZW
+         zsuirGVcWrfT9vTEbM0gfPAfH7H4jTPzhaDbZa9HyMqxK+WN7L6gu7zYu1lnek7ir8Qw
+         TTvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VV3OwnMmYtHsdtjbnEj4H2sv1uJ0Sm9kswbc7APspic=;
+        b=NzwJ27/4a0XfCqPGMEN0EkKyCwKjLkm3RKy498cUhXYzdKwV123rN2d0jiq9cpYnlg
+         1Ma351d3+qYhp51/LFGRnNJQdK/CbHvf+Pv3lzILzJfkecTluW21gGOeKzh5p/zecmAp
+         WDVkCIOoHK6Xe3HQeGk/q3J1UmAL6v+3znnRQcBaiykVs0vw7SiMZteIgYYZfjZ60Nix
+         anM98RBdgF/Jd7h1RyFBTn8eHbO3YrW2EaxyyqfbTXFAJLHIHHySE5GV/JjsVk6/R9KD
+         7QEeswmerXRqHo3U4MsFopcywuctard6fuqA9tNWgmrJNy4/QTmBzviqBPr7qJr+lgUg
+         r8dw==
+X-Gm-Message-State: AOAM532X/6gLL054c5abyChWUXnZl8sI/4KtHT1i9innMf/KQrpEQzeL
+        dlhZStqvS9CP2E1bQNG9l559Yl7rTFgGrxeES94=
+X-Google-Smtp-Source: ABdhPJxOswsBNBZYDtsf9sm+49xTJAJsXz2fWoi1cjbZBgNXtALBPBNLpi4H4SbLnynCMyD657KfyoEg61zeUVqBI5E=
+X-Received: by 2002:a05:6512:3187:: with SMTP id i7mr1022527lfe.104.1630138004056;
+ Sat, 28 Aug 2021 01:06:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <478ae732-161d-c692-b60a-6df11c37ac2c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAAo+4rXNLdgvAiT2-B8cWtLNPnWoGo9RWMW=8SPchzRgxJ4BhA@mail.gmail.com>
+In-Reply-To: <CAAo+4rXNLdgvAiT2-B8cWtLNPnWoGo9RWMW=8SPchzRgxJ4BhA@mail.gmail.com>
+From:   =?UTF-8?B?5Y+25r6E6ZSL?= <dg573847474@gmail.com>
+Date:   Sat, 28 Aug 2021 16:06:33 +0800
+Message-ID: <CAAo+4rVJg--eTqsMPDHtpD2dCnivgWs0xc4eCty3eW05BTJRhw@mail.gmail.com>
+Subject: Re: Possible deadlock errors in tools/perf/builtin-sched.c
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        CAI Yuandao <ycaibb@cse.ust.hk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 7:47 PM, Eric Dumazet wrote:
-> 
-> 
-> On 8/27/21 8:23 AM, Vasily Averin wrote:
-> 
->> I asked Alexey Kuznetsov to look at this problem. Below is his answer:
->> "I think the current scheme is obsolete. It was created
->> when we had only two kinds of skb accounting (rmem & wmem)
->> and with more kinds of accounting it just does not work.
->> Even there we had ignored problems with adjusting accounting.
->>
->> Logically the best solution would be replacing ->destructor,
->> set_owner* etc with skb_ops. Something like:
->>
->> struct skb_ops
->> {
->>         void init(struct sk_buff * skb, struct skb_ops * ops, struct
->> sock * owner);
->>         void fini(struct sk_buff * skb);
->>         void update(struct sk_buff * skb, int adjust);
->>         void inherit(struct sk_buff * skb2, struct sk_buff * skb);
->> };
->>
->> init - is replacement for skb_set_owner_r|w
->> fini - is replacement for skb_orphan
->> update - is new operation to be used in places where skb->truesize changes,
->>        instead of awful constructions like:
->>
->>        if (!skb->sk || skb->destructor == sock_edemux)
->>             skb->truesize += size - osize;
->>
->>        Now it will look like:
->>
->>        if (skb->ops)
->>             skb->ops->update(skb, size - osize);
->>
->> inherit - is replacement for also awful constructs like:
->>
->>       if (skb->sk)
->>             skb_set_owner_w(skb2, skb->sk);
->>
->>       Now it will be:
->>
->>       if (skb->ops)
->>             skb->ops->inherit(skb2, skb);
->>
->> The implementation looks mostly obvious.
->> Some troubles can be only with new functionality:
->> update of accounting was never done before.
->>
->>
->> More efficient, functionally equivalent, but uglier and less flexible
->> alternative would be removal of ->destructor, replaced with
->> a small numeric indicator of ownership:
->>
->> enum
->> {
->>         SKB_OWNER_NONE,  /* aka destructor == NULL */
->>         SKB_OWNER_WMEM,  /* aka destructor == sk_wfree */
->>         SKB_OWNER_RMEM,  /* aka destructor == sk_rfree */
->>         SKB_OWNER_SK,    /* aka destructor == sk_edemux */
->>         SKB_OWNER_TCP,   /* aka destructor == tcp_wfree */
->> }
->>
->> And the same init,fini,inherit,update become functions
->> w/o any inidirect calls. Not sure it is really more efficient though."
->>
-> 
-> Well, this does not look as stable material, and would add a bunch
-> of indirect calls which are quite expensive these days (CONFIG_RETPOLINE=y)
-> 
-> I suggest we work on a fix, using existing infra, then eventually later
-> try to refactor if this is really bringing improvements.
-> 
-> A fix could simply be a revert of 0c9f227bee119 ("ipv6: use skb_expand_head in ip6_xmit")
-> since only IPv6 has the problem (because of arbitrary headers size)
+Dear developers:
 
-I think it is not enough.
+Thank you for your checking.
 
-Root of the problem is that skb_expand_head() works incorrectly with non-shared skb.
-In this case it do not call skb_clone before pskb_expand_head() execution,
-and as result pskb_expand_head() and does not adjust skb->truesize.
+It seems there are two deadlock errors on the
+locksched->work_done_wait_mutexandsched->start_work_mutex.
 
-I think non-shared skb is more frequent case,
-so all skb_expand_head() are affected.
+They are triggered due to one thread(A) runs function run_one_test
+locating in a loop and unreleasing the two locks in
+thewait_for_tasksfunction, and another thread(B) runs function
+thread_func acquiring the two locks.
 
-Therefore we need to revert all my patch set in net-next:
-f1260ff skbuff: introduce skb_expand_head()
-e415ed3 ipv6: use skb_expand_head in ip6_finish_output2
-0c9f227 ipv6: use skb_expand_head in ip6_xmit
-5678a59 ipv4: use skb_expand_head in ip_finish_output2
-14ee70c vrf: use skb_expand_head in vrf_finish_output
-53744a4 ax25: use skb_expand_head
-a1e975e bpf: use skb_expand_head in bpf_out_neigh_v4/6
-07e1d6b Merge branch 'skb_expand_head'
-with fixup
-06669e6 vrf: fix NULL dereference in vrf_finish_output()
+Because the two locks are not properly released in thread A, there
+will be a  deadlock problem if thread B acquires the two locks.
 
-And then rework ip6_finish_output2() in upstream, 
-to call skb_realloc_headroom() like it was done in first patch version:
-https://lkml.org/lkml/2021/7/7/469.
+The related codes are below:
 
-Thank you,
-	Vasily Averin
+Thread A:
 
+static void create_tasks(struct perf_sched *sched)
+{
+     ...;
+    err =3D pthread_mutex_lock(&sched->start_work_mutex);
+    ...;
+    err =3D pthread_mutex_lock(&sched->work_done_wait_mutex);
+    ...;
+}
+
+static int perf_sched__replay(struct perf_sched *sched)
+{
+   ...;
+     create_tasks(sched);
+     printf("------------------------------------------------------------\n=
+");
+     for (i =3D 0; i < sched->replay_repeat; i++)
+          run_one_test(sched);   // multiple reacquisition on the lock
+sched->work_done_wait_mutex and sched->start_work_mutex
+
+   return 0;
+}
+
+static void run_one_test(struct perf_sched *sched)
+{
+        ...;
+      wait_for_tasks(sched);
+        ...;
+}
+
+static void wait_for_tasks(struct perf_sched *sched)
+{
+      ...;
+     pthread_mutex_unlock(&sched->work_done_wait_mutex);
+      ...;
+     ret =3D pthread_mutex_lock(&sched->work_done_wait_mutex);
+     ...;
+     pthread_mutex_unlock(&sched->start_work_mutex);
+     ...;
+
+    ret =3D pthread_mutex_lock(&sched->start_work_mutex);
+    ....;
+}
+
+Thread B:
+static void *thread_func(void *ctx)
+{
+...;
+ret =3D pthread_mutex_lock(&sched->start_work_mutex);
+...;
+ret =3D pthread_mutex_unlock(&sched->start_work_mutex);
+
+...;
+
+ret =3D pthread_mutex_lock(&sched->work_done_wait_mutex);
+...;
+ret =3D pthread_mutex_unlock(&sched->work_done_wait_mutex);
+..;
+
+}
+
+PS: The previous email fails to reach the maillist, so I send it again.
+
+Thanks,
+
+=E5=8F=B6=E6=BE=84=E9=94=8B <dg573847474@gmail.com> =E4=BA=8E2021=E5=B9=B48=
+=E6=9C=8828=E6=97=A5=E5=91=A8=E5=85=AD =E4=B8=8B=E5=8D=883:57=E5=86=99=E9=
+=81=93=EF=BC=9A
+>
+> Dear developers:
+>
+> Thank you for your checking.
+>
+> It seems there are two deadlock errors on the locksched->work_done_wait_m=
+utexandsched->start_work_mutex.
+>
+> They are triggered due to one thread(A) runs function run_one_test locati=
+ng in a loop and unreleasing the two locks in thewait_for_tasksfunction, an=
+d another thread(B) runs function thread_func acquiring the two locks.
+>
+> Because the two locks are not properly released in thread A, there will b=
+e a  deadlock problem if thread B acquires the two locks.
+>
+> The related codes are below:
+>
+> Thread A:
+>
+> static void create_tasks(struct perf_sched *sched)
+> {
+>      ...;
+>   err =3D pthread_mutex_lock(&sched->start_work_mutex);
+>     ...;
+>  err =3D pthread_mutex_lock(&sched->work_done_wait_mutex);
+>        ...;
+> }
+> static int perf_sched__replay(struct perf_sched *sched)
+> {
+>    ...;
+>
+>         create_tasks(sched);
+>      printf("------------------------------------------------------------=
+\n");
+>      for (i =3D 0; i < sched->replay_repeat; i++)
+>           run_one_test(sched);   // multiple reacquisition on the lock sc=
+hed->work_done_wait_mutex and sched->start_work_mutex
+>
+>    return 0;
+> }
+>
+> static void run_one_test(struct perf_sched *sched)
+> {
+>  ...;
+>       wait_for_tasks(sched);
+>         ...;
+> }
+> static void wait_for_tasks(struct perf_sched *sched)
+> {
+>        ...;
+>     pthread_mutex_unlock(&sched->work_done_wait_mutex);
+>
+>   ...;
+>        ret =3D pthread_mutex_lock(&sched->work_done_wait_mutex);
+>      ...;
+>   pthread_mutex_unlock(&sched->start_work_mutex);
+>
+>     ...;
+>
+>  ret =3D pthread_mutex_lock(&sched->start_work_mutex);
+>    ....;
+> }
+>
+> Thread B:
+>
+> static void *thread_func(void *ctx)
+> {
+>
+> ...;
+> ret =3D pthread_mutex_lock(&sched->start_work_mutex);
+> ...;
+> ret =3D pthread_mutex_unlock(&sched->start_work_mutex);
+>
+> ...;
+>
+> ret =3D pthread_mutex_lock(&sched->work_done_wait_mutex);
+> ...;
+> ret =3D pthread_mutex_unlock(&sched->work_done_wait_mutex);
+> ..;
+>
+> }
+>
+>
+> Thanks,
