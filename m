@@ -2,159 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97A73FA684
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD563FA686
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234647AbhH1Pjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:39:32 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:58081 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234569AbhH1PjX (ORCPT
+        id S231368AbhH1Plq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 11:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230092AbhH1Plq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:39:23 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 446FB580A77;
-        Sat, 28 Aug 2021 11:38:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sat, 28 Aug 2021 11:38:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=XZQg+0zFS2CpV
-        gEtfLzvy7d7UeLR2l4fefdb0n1QThA=; b=axWy0Gmip4RJeRjzrqOkd0MzACiTI
-        kZnXyK3zrM8t4vxgw3h4hsTrZXlqAUNhAJO2Hkdv9Djq6R35gUQ4m6jd5ranXhkz
-        Cuf5yPL/yOS2v3tm40xIrWckWlM7b3fn3ZurlACAx7kzSMsMKo/iF+ntbMahGL6E
-        aMGe1vVK5Ac+HDcHsrNc/bR74tMMJ5CBkRwReTtp5Ma54x8k52AEWYarQOlt1z8m
-        0VVkJLeNY5d1VcAanrhJwp7n0Cqm0TLK/3V0YFij1TqsCh6XD/aNvb5IYWklOBma
-        OnHX68j9vrJT/PC/IGN/zdrw+GkF0J2XF9jPPKPp9WDpcULty4YuaMczg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=XZQg+0zFS2CpVgEtfLzvy7d7UeLR2l4fefdb0n1QThA=; b=jTAIQyL5
-        j7pOaQ6CnELvdglo37lfTxEgP2Dal7vfoMIYZe5hmk9tHSZxevxrtdfyWGnVk2Bd
-        WGcSPKar3iBAoGcBx5wVNgOyLN7P20yqA9uLRBDhxuHnsWoU9GKxBPROIq9rhm3o
-        sSQb2bXAGlclO1FPxAspc5o+/KBQVhe9xM8nUe2+IG+LGAeMHX0ASofxsmU9oS1R
-        MI5lZq3NFakmfNc2P3A5AHCA8qbo1wFiTaAcUk2c4WvOAWucLUeXPvjLbgnTQiVD
-        OgTd/G6toYOVsKnF3Khiq23FSM/XujpttD3JE6HSbI3NVZm5bFk7RH0AJigh2eoL
-        mzhngXO3dXErTQ==
-X-ME-Sender: <xms:dVgqYYtXnAa5MrKZE5ajeEgZTM8p7VyF7PBWGMFWpngH-FeHA7NFAg>
-    <xme:dVgqYVdEUs2GN268wrNHikgXM0wd59UtgtAiorWjiRl0mGDUD_PetqZ4St3lJHlz4
-    o17Vhgk7kPsOjrY6RU>
-X-ME-Received: <xmr:dVgqYTybAb-WIWYKj4EzEWcbtLDOOxoEy_ySmRf9XpZVrsOEepDm55bKNy3SN9EAkC1c8-9dP4WKm8CkPpCTH-tcca8RrAM6l5d_nHP0535QJ6LaIDt0gHdF_Q46eQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduhedgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcu
-    rfgvthgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvg
-    hrnheptedvkeetleeuffffhfekteetffeggffgveehieelueefvddtueffveevlefhfeej
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
-    hnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:dVgqYbNsWi0TMuv551B3TDTcK2GV1m34Ttk6SLvzQIzZJbb7nbQzcg>
-    <xmx:dVgqYY_ecDgryvmlAQReQ1SnoDIS-TH3_tdjQlvkg5vB5x8u8rqCMA>
-    <xmx:dVgqYTXZvR7RcD-cuMWc8b8KR1JD7-k1xbpes1kXLmhKMElMoAhtrg>
-    <xmx:dlgqYTYgALfWfnO-lJruAWoDNkJzptd79KlUH_RhkwzTv9qQTKLt1g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 28 Aug 2021 11:38:28 -0400 (EDT)
-From:   Sven Peter <sven@svenpeter.dev>
-To:     iommu@lists.linux-foundation.org
-Cc:     Sven Peter <sven@svenpeter.dev>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Alexander Graf <graf@amazon.com>,
-        Hector Martin <marcan@marcan.st>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] iommu/dart: Remove force_bypass logic
-Date:   Sat, 28 Aug 2021 17:36:42 +0200
-Message-Id: <20210828153642.19396-9-sven@svenpeter.dev>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20210828153642.19396-1-sven@svenpeter.dev>
-References: <20210828153642.19396-1-sven@svenpeter.dev>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 28 Aug 2021 11:41:46 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476D8C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 08:40:55 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so7126089pjt.0
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 08:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=akdugIMHsoyXsfhl3XKBAKae34UmKAEkl8JKPj7EnFs=;
+        b=UrVAIb9+S4rwa2YODgE9Q4ZZr9y00HJhRxBrL83ksYLZ8fKwcOEDr2eWfb/kJioTvV
+         r6wwj9PD2lcdcm0dzmjN3szorTZpB68tpcmTigXugfT7CsSaW7vRAkeH/aUhoofYSsjd
+         5AY0+7HhaL+rOZ2K1bChM1zoh7ykuc+zEDhpbOdeBoAmgGsLhcFENCCJeqttF67RleKM
+         AFwC3/KwH9+JRCJbdZCf5M9unA7CRFjtq3ICBt2rwssnFuJzVCH9ABY3Yv6Ta0vfaI0z
+         odkDj03UoukCVMgHmcgUGRc2XYH6RZswiFO4LsWmLimq+CRbxDq4ORlQjisXQpkmyw78
+         UKOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=akdugIMHsoyXsfhl3XKBAKae34UmKAEkl8JKPj7EnFs=;
+        b=qQ0uBDfoluF19TG/PhLtjgUxdZj0U81DtDtewSUXhw19eMhYAc0WrjaskhEEzCtssH
+         ZOTswW9pZSjfwFd54N/90rIAdhX9IND+wd4Uq0BFbL1PjjFhYoubp8gMR51ipfRoIln7
+         jEkmuu25rFF/kgq6jJLUbeOWn8yqCp6AWrrjFMf13xQdyhUhQqu32oYvChaiRzdvYvr5
+         U/cV24UBA08dj7NXv8lLDVFiZEeanQn77lc2lFD1z5bDQNfQRkCtOxoJ8eX1SfMs4ub1
+         FX4lsUt8GT5tIhOCx76g4vYYNhZEItbys6ntBAF4cSvy0E/QVDzfqBVSKMhwHIDZPjEa
+         M2Fg==
+X-Gm-Message-State: AOAM530gjSpy+SdKKDFPGcUMCi9IHK3+LK/k81v/OTT0OBxemFWST10T
+        dGl2BOhvgaSc3aMADt2dfU+C
+X-Google-Smtp-Source: ABdhPJyFCSQpwgZ/X8ubSpy4OipMWbOOyTJAFIoG0iqKokfsFXHKzOY/xyhQcleKJCB0UXxRqF31xw==
+X-Received: by 2002:a17:90a:af8f:: with SMTP id w15mr29098349pjq.90.1630165254592;
+        Sat, 28 Aug 2021 08:40:54 -0700 (PDT)
+Received: from localhost.localdomain ([123.231.122.209])
+        by smtp.gmail.com with ESMTPSA id d1sm9077316pfa.71.2021.08.28.08.40.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 08:40:54 -0700 (PDT)
+From:   "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+To:     airlied@redhat.com, sean@poorly.run, tzimmermann@suse.de,
+        airlied@linux.ie, daniel@ffwll.ch
+Cc:     "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] GPU:drm: returning ENOMEM
+Date:   Sat, 28 Aug 2021 21:10:27 +0530
+Message-Id: <20210828154027.8198-1-asha.16@itfac.mrt.ac.lk>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the dma-iommu API supports IOMMU granules which are larger than
-the CPU page size and that the kernel no longer runs into a BUG_ON when
-devices are attached to a domain with such a granule there's no need to
-force bypass mode anymore.
+When memory allocation is failed this patch returns out of memory error instead of -1.
 
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
+Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
 ---
- drivers/iommu/apple-dart.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/udl/udl_connector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
-index 559db9259e65..c37fb4790e8a 100644
---- a/drivers/iommu/apple-dart.c
-+++ b/drivers/iommu/apple-dart.c
-@@ -90,7 +90,6 @@
-  * @lock: lock for hardware operations involving this dart
-  * @pgsize: pagesize supported by this DART
-  * @supports_bypass: indicates if this DART supports bypass mode
-- * @force_bypass: force bypass mode due to pagesize mismatch?
-  * @sid2group: maps stream ids to iommu_groups
-  * @iommu: iommu core device
-  */
-@@ -107,7 +106,6 @@ struct apple_dart {
+diff --git a/drivers/gpu/drm/udl/udl_connector.c b/drivers/gpu/drm/udl/udl_connector.c
+index 3750fd216131..afebab6186ab 100644
+--- a/drivers/gpu/drm/udl/udl_connector.c
++++ b/drivers/gpu/drm/udl/udl_connector.c
+@@ -24,7 +24,7 @@ static int udl_get_edid_block(void *data, u8 *buf, unsigned int block,
  
- 	u32 pgsize;
- 	u32 supports_bypass : 1;
--	u32 force_bypass : 1;
+ 	read_buff = kmalloc(2, GFP_KERNEL);
+ 	if (!read_buff)
+-		return -1;
++		return -ENOMEM;
  
- 	struct iommu_group *sid2group[DART_MAX_STREAMS];
- 	struct iommu_device iommu;
-@@ -506,9 +504,6 @@ static int apple_dart_attach_dev(struct iommu_domain *domain,
- 	struct apple_dart_master_cfg *cfg = dev_iommu_priv_get(dev);
- 	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
- 
--	if (cfg->stream_maps[0].dart->force_bypass &&
--	    domain->type != IOMMU_DOMAIN_IDENTITY)
--		return -EINVAL;
- 	if (!cfg->stream_maps[0].dart->supports_bypass &&
- 	    domain->type == IOMMU_DOMAIN_IDENTITY)
- 		return -EINVAL;
-@@ -638,8 +633,6 @@ static int apple_dart_of_xlate(struct device *dev, struct of_phandle_args *args)
- 	if (cfg_dart) {
- 		if (cfg_dart->supports_bypass != dart->supports_bypass)
- 			return -EINVAL;
--		if (cfg_dart->force_bypass != dart->force_bypass)
--			return -EINVAL;
- 		if (cfg_dart->pgsize != dart->pgsize)
- 			return -EINVAL;
- 	}
-@@ -713,8 +706,6 @@ static int apple_dart_def_domain_type(struct device *dev)
- {
- 	struct apple_dart_master_cfg *cfg = dev_iommu_priv_get(dev);
- 
--	if (cfg->stream_maps[0].dart->force_bypass)
--		return IOMMU_DOMAIN_IDENTITY;
- 	if (!cfg->stream_maps[0].dart->supports_bypass)
- 		return IOMMU_DOMAIN_DMA;
- 
-@@ -844,7 +835,6 @@ static int apple_dart_probe(struct platform_device *pdev)
- 	dart_params[1] = readl(dart->regs + DART_PARAMS2);
- 	dart->pgsize = 1 << FIELD_GET(DART_PARAMS_PAGE_SHIFT, dart_params[0]);
- 	dart->supports_bypass = dart_params[1] & DART_PARAMS_BYPASS_SUPPORT;
--	dart->force_bypass = dart->pgsize > PAGE_SIZE;
- 
- 	ret = request_irq(dart->irq, apple_dart_irq, IRQF_SHARED,
- 			  "apple-dart fault handler", dart);
-@@ -868,8 +858,8 @@ static int apple_dart_probe(struct platform_device *pdev)
- 
- 	dev_info(
- 		&pdev->dev,
--		"DART [pagesize %x, bypass support: %d, bypass forced: %d] initialized\n",
--		dart->pgsize, dart->supports_bypass, dart->force_bypass);
-+		"DART [pagesize %x, bypass support: %d] initialized\n",
-+		dart->pgsize, dart->supports_bypass);
- 	return 0;
- 
- err_sysfs_remove:
+ 	for (i = 0; i < len; i++) {
+ 		int bval = (i + block * EDID_LENGTH) << 8;
 -- 
-2.25.1
+2.17.1
 
