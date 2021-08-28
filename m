@@ -2,126 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4CA3FA776
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 21:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C784A3FA77A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 22:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhH1T5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 15:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhH1T5K (ORCPT
+        id S232037AbhH1UGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 16:06:03 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:47041 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhH1UGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 15:57:10 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BC2C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:56:19 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a25so21574207ejv.6
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 12:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=tqa4ZrfDsVyGaU1+CM8aMMCa9NVr2chnhBF8cJPwrec=;
-        b=swEFPqWU6QiBbAxg5VOiyU/IVhZIb3u69gWdNjzXz2u6hK7sBJ0G2/VZ8fbOvIlDLo
-         oznUy4UY5teZCbYDjIl116hT05/XorczS8rSAAG+dxLgwG9/U9vPLj+n0kkXpeBsoIQ0
-         /FAe/m3O7ssLSCOLBiVG2xmfofeBJQH+W/uIW1usLpkz1Ad7J9OkPR+UcaFXGiGFE8pE
-         qbf6VqpPwyCCDb8fWeQ2ZmkjKxeVopTKEWOQ9kYj5VW2K2o/1pYJ940dgPIhBpl4m1dR
-         MHOGx2TFCoFASzN0b9B5ov0f9aboAJlv0W2LbQ2pY59uhDQs4ckXjeB3IO+Px9konVuB
-         WfCA==
+        Sat, 28 Aug 2021 16:06:02 -0400
+Received: by mail-il1-f199.google.com with SMTP id f20-20020a056e020c74b02902243d481d97so6324331ilj.13
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 13:05:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=tqa4ZrfDsVyGaU1+CM8aMMCa9NVr2chnhBF8cJPwrec=;
-        b=IPEmZppJzaIIsZ24WT5sY94Z0kN+ZqBkJbi1mepoE5xc5xOmWOTCVNlFMh5oBwX/9Y
-         BYVDYdyEMM00I2QKKlC8opD9meY/gx0ld/av27oK2b+vD8eUNtJOJI90Q/iC8pppXGLm
-         yd4ASbjuBkMSLkVEVo8gWHPCvoSgwk8pWKxJS5sb8CQAg+TcQgwACd1j+eBMrr4kqzLN
-         J774OmldbE4hOhoJpn2Dw/VPkd+qDAV3X4Adh5xDg4pHSN9Z1FlnpZNkoK5DLdu2oSXy
-         proNz9I1jAY73CfiA2BvEqBnIDKDReZ7Cw+R+NcGlBfeHYddO6ItuZAnU9cw6eB14pjh
-         4++w==
-X-Gm-Message-State: AOAM531lUrT0dlcYF5jK8/C4hVdm0rT/Pa1AbG7GLc6wtuxJ3lshTBn8
-        O12BbBaUGZIwyyJMKFbYqWk=
-X-Google-Smtp-Source: ABdhPJxLUktT4rZoNPaA/IaXDZg3kF1n+91dwfEou7ZTrO0HlpF6n1Okt9SNleL6Bz07WE3PPtCCuA==
-X-Received: by 2002:a17:906:c1c9:: with SMTP id bw9mr16844731ejb.3.1630180577617;
-        Sat, 28 Aug 2021 12:56:17 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::884b? ([2a02:8108:96c0:3b88::884b])
-        by smtp.gmail.com with UTF8SMTPSA id s7sm5292402edu.23.2021.08.28.12.56.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Aug 2021 12:56:17 -0700 (PDT)
-Message-ID: <f6ffc51d-fb39-5191-e2fa-1b3200b89d87@gmail.com>
-Date:   Sat, 28 Aug 2021 21:56:16 +0200
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=F3lnrFhJJI9jjY2l9iXzYnttpQ+V2txwHoUaiy15Azg=;
+        b=E147nlA3CEXHgQ1X74zeGD/m6N0ASgCa+UY2Ft6dSCXCFV37L1HeNkSBykaA6W7t2X
+         VTeOK2JcPlfQZmUzUZk/lX5Kn4W/uJ07n/4pXGydJD/uUg4bHljGm6Z5HLUs7Vrtl5/V
+         CylJdMmSs5UjxfqcCbUua6C6XPHALOz8FLGDF03w0Ar7orgis28muBjIfxSAo099tcf5
+         Hu+SnKzrNW1/uB1ksLPLJpbVznwN5zSgPsLmRY0CQBOGbdnaQihLnB9xlrJ+FcK/Whqr
+         SQuhDFfrhV7znymUouse0YxFQm7gavpwr0Fvl3p87lJ0A/xFqoriO/b8okSvT69dqBqs
+         PRrQ==
+X-Gm-Message-State: AOAM5336s8mVuVVfcpX0Izt4r5QI95mldz9oLTDdXKNdYlv1sHE2n1OK
+        Ddz31aIEQ8IPRZFwT+AI3jMI+cRJSDFug3s96mjqXF3l+nRV
+X-Google-Smtp-Source: ABdhPJzHStHr46SCKuO25wOHU94CBgaQa0P1z5qBGKQRRah2nWHjLg3YkzMkQt6Pz6IO+rZsgDqLS+lRh8wqJzQoaZeu4lLfXEHy
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [PATCH] staging: r8188eu: core: remove null check before vfree
-Content-Language: en-US
-To:     Kari Argillander <kari.argillander@gmail.com>,
-        Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
-References: <YSp4UP1+HrhmDA3C@user>
- <1e31610a-0324-dfb7-abe5-f05d652d461d@gmail.com>
- <b098cbe9-1cc6-d97f-e1d8-df6c99b0afa0@gmail.com>
- <20210828194734.7xn3tkdh2yay5yyt@kari-VirtualBox>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20210828194734.7xn3tkdh2yay5yyt@kari-VirtualBox>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:d3cf:: with SMTP id c15mr10793586ilh.131.1630181111312;
+ Sat, 28 Aug 2021 13:05:11 -0700 (PDT)
+Date:   Sat, 28 Aug 2021 13:05:11 -0700
+In-Reply-To: <20210828180358.GA291431@rowland.harvard.edu>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000f37f405caa41e79@google.com>
+Subject: Re: [syzbot] INFO: task hung in do_proc_bulk
+From:   syzbot <syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, johan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mathias.nyman@linux.intel.com, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On 8/28/21 21:47, Kari Argillander wrote:
-> On Sat, Aug 28, 2021 at 09:30:14PM +0200, Michael Straube wrote:
->> On 8/28/21 21:20, Michael Straube wrote:
->>> On 8/28/21 19:54, Saurav Girepunje wrote:
->>>> Remove NULL check. NULL check before freeing function is not needed.
->>>>
->>>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
->>>> ---
->>>>    drivers/staging/r8188eu/core/rtw_sta_mgt.c | 4 +---
->>>>    1 file changed, 1 insertion(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
->>>> b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
->>>> index f6dffed53a60..4726771a8403 100644
->>>> --- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
->>>> +++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
->>>> @@ -155,9 +155,7 @@ u32    _rtw_free_sta_priv(struct    sta_priv
->>>> *pstapriv)
->>>>            spin_unlock_bh(&pstapriv->sta_hash_lock);
->>>>            /*===============================*/
->>>>
->>>> -        if (pstapriv->pallocated_stainfo_buf)
->>>> -            vfree(pstapriv->pallocated_stainfo_buf);
->>>> -        }
->>>> +        vfree(pstapriv->pallocated_stainfo_buf);
->>>>
->>>>        return _SUCCESS;
->>>>    }
->>>> -- 
->>>> 2.32.0
->>>>
->>>
->>> Acked-by: Michael Straube <straube.linux@gmail.com>
->>>
->>> Thanks,
->>> Michael
->>
->> Whoops, I missed that you removed the } that belongs to the enclosing if
->> block. Probably because it is not properly indented in the original
->> code.
-> 
-> Easy to miss because that bracket is in wrong place in first place.
-> 
-> Michael can you now on even build test before sending. Thanks.
-> 
+Reported-and-tested-by: syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com
 
-Sure, I usually do. For this one I did not but obviously I should have..
-;)
+Tested on:
 
+commit:         d5ae8d7f Revert "media: dvb header files: move some he..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
+dashboard link: https://syzkaller.appspot.com/bug?extid=ada0f7d3d9fd2016d927
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16c2799d300000
+
+Note: testing is done by a robot and is best-effort only.
