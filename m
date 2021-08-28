@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088253FA7DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 00:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855323FA7E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 00:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhH1WPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 18:15:16 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:46436 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230253AbhH1WPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 18:15:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ykqrNZ5+xkEdOSCPLKtfepuHL8Oc2+H/B5h3rAqZXGc=; b=IrALU6x5Fkn8ESg+tD7b/KACL8
-        IKQuwWtI9Zc4Xd7Mn4NRJbqLsKjw8pAJUkmxnlwM0SwbtmQN6hwgMgIbn6HwfXPM924HA+cpE0D1I
-        2xlkD1h7tNNe5EM86mqUBaezjmlWn6qw6qvOFW80eKcVZPIrRaCCg3IYvEa4mT4RwPyQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mK6af-004KOJ-VM; Sun, 29 Aug 2021 00:14:17 +0200
-Date:   Sun, 29 Aug 2021 00:14:17 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] ARM: dts: NSP: Fix MDIO mux node names
-Message-ID: <YSq1OS+z8KKcUdu5@lunn.ch>
-References: <20210828112704.2283805-1-mnhagan88@gmail.com>
- <20210828112704.2283805-3-mnhagan88@gmail.com>
- <YSptPF8MKNahkMbm@lunn.ch>
- <858a86de-c06e-0221-64ea-bb1790db398a@gmail.com>
+        id S232638AbhH1WUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 18:20:07 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:35980 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhH1WUG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 18:20:06 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mK6fI-00Gu1S-6O; Sat, 28 Aug 2021 22:19:04 +0000
+Date:   Sat, 28 Aug 2021 22:19:04 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Subject: Re: [PATCH v7 05/19] iov_iter: Introduce fault_in_iov_iter_writeable
+Message-ID: <YSq2WJindB0pJPRb@zeniv-ca.linux.org.uk>
+References: <CAHk-=wh5p6zpgUUoY+O7e74X9BZyODhnsqvv=xqnTaLRNj3d_Q@mail.gmail.com>
+ <YSk7xfcHVc7CxtQO@zeniv-ca.linux.org.uk>
+ <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
+ <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
+ <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
+ <YSlftta38M4FsWUq@zeniv-ca.linux.org.uk>
+ <20210827232246.GA1668365@agluck-desk2.amr.corp.intel.com>
+ <87r1edgs2w.ffs@tglx>
+ <YSqy+U/3lnF6K0ia@zeniv-ca.linux.org.uk>
+ <YSq0mPAIBfqFC/NE@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <858a86de-c06e-0221-64ea-bb1790db398a@gmail.com>
+In-Reply-To: <YSq0mPAIBfqFC/NE@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 10:52:30PM +0100, Matthew Hagan wrote:
-> On 28/08/2021 18:07, Andrew Lunn wrote:
+On Sat, Aug 28, 2021 at 10:11:36PM +0000, Al Viro wrote:
+> On Sat, Aug 28, 2021 at 10:04:41PM +0000, Al Viro wrote:
+> > On Sat, Aug 28, 2021 at 11:47:03PM +0200, Thomas Gleixner wrote:
+> > 
+> > >   /* Try to handle #PF, but anything else is fatal. */
+> > >   if (ret != -EFAULT)
+> > >      return -EINVAL;
+> > 
+> > > which all end up in user_insn(). user_insn() returns 0 or the negated
+> > > trap number, which results in -EFAULT for #PF, but for #MC the negated
+> > > trap number is -18 i.e. != -EFAULT. IOW, there is no endless loop.
+> > > 
+> > > This used to be a problem before commit:
+> > > 
+> > >   aee8c67a4faa ("x86/fpu: Return proper error codes from user access functions")
+> > > 
+> > > and as the changelog says the initial reason for this was #GP going into
+> > > the fault path, but I'm pretty sure that I also discussed the #MC angle with
+> > > Borislav back then. Should have added some more comments there
+> > > obviously.
+> > 
+> > ... or at least have that check spelled
+> > 
+> > 	if (ret != -X86_TRAP_PF)
+> > 		return -EINVAL;
+> > 
+> > Unless I'm misreading your explanation, that is...
 > 
-> > On Sat, Aug 28, 2021 at 11:27:01AM +0000, Matthew Hagan wrote:
-> >> This patch fixes the following message by adding "mdio-mux" compatible:
-> >> compatible: ['mdio-mux-mmioreg'] is too short
-> >  
-> > Err, what? This sounds like a workaround for a tool problem, not a
-> > real fix. 
-> >
-> > What is actually wrong with:
-> >
-> > compatible = "mdio-mux-mmioreg";
-> 
-> Yes this does work fine either with or without "mdio-mux". The changes
-> have been made to correspond with those submitted by Rafal Milecki for
-> the BCM5301X platform[1] and to conform with
-> Documentation/devicetree/bindings/net/mdio-mux-mmioreg.yaml
-> which does state both as required items (and hence not a tool problem).
+> BTW, is #MC triggered on stored to a poisoned cacheline?  Existence of CLZERO
+> would seem to argue against that...
 
-Hi Matthew
-
-It would be good to expand the commit message a bit, since the error
-'is too short' is particularly uninformative, and leads to questions
-like this if not explained.
-
-It would also good to get the tool improved, but that is out of scope
-for this patch.
-
-     Andrew
+How about taking __clear_user() out of copy_fpregs_to_sigframe()
+and replacing the call of fault_in_pages_writeable() with
+	if (!clear_user(buf_fx, fpu_user_xstate_size))
+		goto retry;
+	return -EFAULT;
+in the caller?
