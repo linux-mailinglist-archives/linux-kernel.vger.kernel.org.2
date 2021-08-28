@@ -2,154 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A243FA504
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 12:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3473FA4EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 12:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbhH1Ki1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 06:38:27 -0400
-Received: from 10.mo52.mail-out.ovh.net ([87.98.187.244]:58726 "EHLO
-        10.mo52.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbhH1KiW (ORCPT
+        id S233725AbhH1KDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 06:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhH1KDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 06:38:22 -0400
-X-Greylist: delayed 4201 seconds by postgrey-1.27 at vger.kernel.org; Sat, 28 Aug 2021 06:38:22 EDT
-Received: from mxplan5.mail.ovh.net (unknown [10.109.156.136])
-        by mo52.mail-out.ovh.net (Postfix) with ESMTPS id 4C731291AE1;
-        Sat, 28 Aug 2021 10:08:33 +0200 (CEST)
-Received: from kaod.org (37.59.142.98) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Sat, 28 Aug
- 2021 10:08:33 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-98R00272d487fd-ef86-4ee1-a566-b4163bc8ecab,
-                    6CE952B1E590FC391734534FA2C2FCCDA042449D) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 83.199.102.86
-Subject: Re: [PATCH 2/2] clocksource/drivers/fttmr010: Be stricter on IRQs
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Jeffery <andrew@aj.id.au>
-CC:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Joel Stanley <joel@jms.id.au>
-References: <20210724224424.2085404-1-linus.walleij@linaro.org>
- <20210724224424.2085404-2-linus.walleij@linaro.org>
- <20210821042010.GA1759866@roeck-us.net>
- <CACRpkdYObGTWni3sSa21iNsgikzj7t9MA6y4TNgkBTTYQt+coA@mail.gmail.com>
- <4d87c7af-d2e3-9456-130a-b35b507ff3a2@roeck-us.net>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <567a65a8-077b-7394-c8e2-dbd9f063e02c@kaod.org>
-Date:   Sat, 28 Aug 2021 10:08:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sat, 28 Aug 2021 06:03:45 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5840C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 03:02:54 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id n11so13638486edv.11
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 03:02:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=8MRyd2KdM0I5iiFpn55i/nDQSTgczndUfsjMuc21j3s=;
+        b=IJjV4OpVGC6L3J3Y43uUEEjqcqcNf0XJyD9GN/hWfLYp+wqDJ+0kDuEmHd9uujufgb
+         ekUhXyCDP63DWyWZ4aqupTDybAgUDFoCxMD2CkcJJaLsAOfxf13rRnPCxjaWsNjDR0Vv
+         gN8DQxYXD/B/WPx0rW2TqnYgsuLz1W1pXn2snpzx+OS4AtvyAU4nnX6+p+ounPMeYUi7
+         SdBphbV5CasyeAJhs1AI6+k9rkdUMQSYP2k4HZDXNdtJXAzGrrcOGQnhpYlmpKWxU7Dn
+         ULjU4f0Wn3iO0YETNNGMwFPsdrs5QBrwwz2QdQgc5sLFms0vtxdzxs9N3LX+dNTcSraQ
+         XnNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8MRyd2KdM0I5iiFpn55i/nDQSTgczndUfsjMuc21j3s=;
+        b=nc3AntMvTzHfvOL6bFKO70CfQ2DmQTeXFYoB0oW527nQjKENoYl7IBEllIXKApFigp
+         BGCtf5yfrHaT8gPyvv13zHfia4VMiArh6Dl5Hk9+TI35IxuLcCGJ0VdO3xvKRYU38lTH
+         UGQFLa4MCkghqG5Z/062olP+nYglpDW3NjCymBWAXw38lpeaXMPqGPhf+iBg86vqZmcY
+         knQYhjmr/RCfGbvU77wcjTpCItAGyTZbiaqD++MN6oWO99vBCU1WKWpSzZySaF6VDAct
+         KoF44g4I1wlMxyosBTVF2GclEL9HRbyIbY+8Rg74gkWknV9K2BK/CUnNmesAvN7+wKpT
+         aVLg==
+X-Gm-Message-State: AOAM533115l83K4Kg139DKBkHSRHU5p3dJJPkjvZ/XoN6y7/4/cxEjw1
+        DWk3OM9IWN92nRRcY4YLKFM=
+X-Google-Smtp-Source: ABdhPJzkSPRLzls4oP6qjwAWyjflymQbFrLiAWUyLTSAf+OohcDHxj29Ah4srJRe/a9a7DZl+BvPLQ==
+X-Received: by 2002:a05:6402:1248:: with SMTP id l8mr14137115edw.94.1630144973480;
+        Sat, 28 Aug 2021 03:02:53 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id i6sm4660621edt.28.2021.08.28.03.02.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 03:02:52 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org, phil@philpotter.co.uk,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Subject: Re: [PATCH v3] staging: r8188eu: Provide a TODO file for this driver
+Date:   Sat, 28 Aug 2021 12:02:48 +0200
+Message-ID: <52588151.DjUuN5SxYT@localhost.localdomain>
+In-Reply-To: <a6265f77-cc21-878e-4980-272202fa5415@lwfinger.net>
+References: <20210827100813.18610-1-fmdefrancesco@gmail.com> <a6265f77-cc21-878e-4980-272202fa5415@lwfinger.net>
 MIME-Version: 1.0
-In-Reply-To: <4d87c7af-d2e3-9456-130a-b35b507ff3a2@roeck-us.net>
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [37.59.142.98]
-X-ClientProxiedBy: DAG3EX1.mxp5.local (172.16.2.21) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: 72be6025-9f93-43a8-9883-949d2b562fd1
-X-Ovh-Tracer-Id: 17222046451889048425
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddugedguddvkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefuvfhfhffkffgfgggjtgfgihesthekredttdefjeenucfhrhhomhepveorughrihgtpgfnvggpifhorghtvghruceotghlgheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeejkeduueduveelgeduueegkeelffevledujeetffeivdelvdfgkeeufeduheehfeenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddrleeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopehlihhnuhigsehrohgvtghkqdhushdrnhgvth
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 8/28/21 5:37 AM, Guenter Roeck wrote:
-> On 8/27/21 3:01 PM, Linus Walleij wrote:
->> On Sat, Aug 21, 2021 at 6:20 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>> On Sun, Jul 25, 2021 at 12:44:24AM +0200, Linus Walleij wrote:
->>
->>>> Make sure we check that the right interrupt occurred before
->>>> calling the event handler for timer 1. Report spurious IRQs
->>>> as IRQ_NONE.
->>>>
->>>> Cc: Cédric Le Goater <clg@kaod.org>
->>>> Cc: Joel Stanley <joel@jms.id.au>
->>>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
->>>
->>> This patch results in boot stalls with several qemu aspeed emulations
->>> (quanta-q71l-bmc, palmetto-bmc, witherspoon-bmc, ast2500-evb,
->>> romulus-bmc, g220a-bmc). Reverting this patch together with
->>> "clocksource/drivers/fttmr010: Clear also overflow bit on AST2600"
->>> fixes the problem. Bisect log is attached.
->>
->> Has it been tested on real hardware?
-
-It breaks the AST2500 EVB.
- 
->>
->> We are reading register 0x34 TIMER_INTR_STATE for this.
->> So this should reflect the state of raw interrupts from the timers.
->>
->> I looked in qemu/hw/timer/aspeed_timer.c
->> and the aspeed_timer_read() looks dubious.
->> It rather looks like this falls down to returning whatever
->> was written to this register and not reflect which IRQ
->> was fired at all.
->>
+On Friday, August 27, 2021 5:00:16 PM CEST Larry Finger wrote:
+> On 8/27/21 5:08 AM, Fabio M. De Francesco wrote:
+> > +* Switch to use LIB80211.
+> > +* Switch to use MAC80211.
 > 
-> Actually, no. Turns out the qemu code is just a bit difficult to understand.
-> The code in question is:
+> You totally ignored my comment of yesterday!!!!! The driver will be converted to 
+> use CFG80211 - not eirher of those you quote, unless you are planning to convert 
+> to use mac80211. I am not.
 > 
->     default:
->         value = ASPEED_TIMER_GET_CLASS(s)->read(s, offset);
->         break;
-> 
-> For ast2500-evb, that translates to a call to aspeed_2500_timer_read().
-> Here is a trace example (after adding some more tracing):
-> 
-> aspeed_2500_timer_read From 0x34: 0x0
-> aspeed_timer_read From 0x34: of size 4: 0x0
-> 
-> Problem is that - at least in qemu - only the 2600 uses register 0x34
-> for the interrupt status. On the 2500, 0x34 is the ctrl2 register.
-> 
-> Indeed, the patch works fine on, for example, ast2600-evb.
-> It only fails on ast2400 and ast2500 boards.
+> Larry
 
-The QEMU modelling is doing a good job ! I agree that the timer model 
-is not the most obvious one to read. 
+Hi Larry,
 
-> I don't have the manuals, so I can't say what the correct behavior is,
-> but at least there is some evidence that TIMER_INTR_STATE may not exist
-> on ast2400 and ast2500 SOCs. 
+To the contrary, I didn't mean to ignore your comment! At least, not voluntarily.
 
-On Aspeed SoCs AST2400 and AST2500, the TMC[34] register is a
-"control register #2" whereas on the AST2600 it is an "interrupt
-status register" with bits [0-7] holding the timers status.
+My confusion arises from the fact that, as far as 802.11 concerns, I know only
+that it is a family of standards that have to do with the lower two of the seven 
+layers of the OSI protocol. I really don't know more than this: I cannot tell the 
+difference between CFG/LIB/MAC80211. 
 
-I would say that the patch simply should handle the "is_aspeed" case.  
+I simply thought that they are complementary (each to the others) and that I should
+have removed "This work is currently..." without mentioning the cfg80211 task to not 
+have someone to duplicate your work in progress.
 
-> From drivers/clocksource/timer-fttmr010.c:
+Fabio Aiuto is right in guessing that I took those tasks from another TODO file. 
 
-yes. See commit 86fe57fc47b1 ("clocksource/drivers/fttmr010: Fix 
-invalid interrupt register access")
+Finally, I want to remember to you that (ahead of v1) I had asked Maintainers to
+do or help with doing this list and I clearly wrote that I didn't know what those
+tasks are and whether or not they are required.
 
-AFAICT, the ast2600 does not use a fttmr010 clocksource. Something to 
-clarify may be Joel ? 
+I hope this message clarifies what I did and why.
 
 Thanks,
 
-C.
+Fabio
 
-> 
-> /*
->  * Interrupt status/mask register definitions for fttmr010/gemini/moxart
->  * timers.
->  * The registers don't exist and they are not needed on aspeed timers
->    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->  * because:
->  *   - aspeed timer overflow interrupt is controlled by bits in Control
->  *     Register (TMC30).
->  *   - aspeed timers always generate interrupt when either one of the
->  *     Match registers equals to Status register.
->  */
-> 
-> Guenter
+
 
