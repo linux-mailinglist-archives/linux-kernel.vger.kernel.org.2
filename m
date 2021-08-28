@@ -2,176 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631AE3FA460
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 09:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207D43FA465
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 09:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbhH1Hj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 03:39:56 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:52321 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233375AbhH1Hjp (ORCPT
+        id S233424AbhH1Hrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 03:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230208AbhH1Hry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 03:39:45 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d24 with ME
-        id mves250093riaq203vesxe; Sat, 28 Aug 2021 09:38:53 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 28 Aug 2021 09:38:53 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     airlied@linux.ie, chris@chris-wilson.co.uk
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] agp/intel: Remove usage of the deprecated "pci-dma-compat.h" API
-Date:   Sat, 28 Aug 2021 09:38:51 +0200
-Message-Id: <e6b5bc8d1f79955ebba652df3deff6b8b39cc607.1630136212.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sat, 28 Aug 2021 03:47:54 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CF8C0613D9;
+        Sat, 28 Aug 2021 00:47:03 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id q11so13890250wrr.9;
+        Sat, 28 Aug 2021 00:47:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AK9mFIjyJpl3hXe9Hogzqd/0krNaNdau3tE1oAPxLAs=;
+        b=FmFYVV/lxsJ0deuAFIdO4cUnBFNYVdrTzwVm+GLV/zi+BHTq0/mFHfVLoPMUHT8kpK
+         kN8LSNnqAlWJEijL+CFu61aut4oq8y7/Eurwi2hkW3cNVJi7kfhFJ9366PAIGK3QYTQ3
+         +m1gwqg2EiGnvj7O5D/6SwASdarXWRf1KtQappCEWwzuD+c+ltRQjiDKVNci28+t4i3a
+         qDK55/E3WzuKL1Xc8DNY+tPZZmQrb9P5f4Tzsyb3uQHCARMmLlWzuoHF5apbNwJ3N5ny
+         63iwsWjdMxlNjQODdOlouEAAy9X1j6lgR0tXppBJcmlYZTxMB6j209kqaSrejsTUuy7j
+         /q+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AK9mFIjyJpl3hXe9Hogzqd/0krNaNdau3tE1oAPxLAs=;
+        b=btvzdszomV7235bngW1RJmGQvBmqZ77ObR6llAg0r4a5SlcsbcYcf2MheCFAYsmzoU
+         GF+ILVNWUq3s1cv78nNoAm1hoz9AaSE0H99bLjeIuexyF1ceoYAWRdFGcU7Gi2a/ovE9
+         DUTYZmuob3e5Fk/K1pv0SA23lGhSQmwpnt7Wrn7t0JijtKvQyj6nkJE2HH9HsQAQIx/M
+         PnFcxl20LDsd/rZuZYrdtVLLcXjOXzTm5r6FkTFBbhOXbrih/3nNjJbkZXR873zUji2D
+         Z4g4u8eeh5HaFRHW9E5MLCKGW6ux+sOijGdoCCnsrzzZTTA5xu8e9AYxdsaXMnxEINmy
+         Yt1A==
+X-Gm-Message-State: AOAM533RmA2iNq79zMCMFkS1aW9lfe1M940JBzELDeNBwZrrhQynwkoW
+        agkyakEYNybE8Fej9Pvc7380COyC/RVEeLnFdps=
+X-Google-Smtp-Source: ABdhPJyRKqyMBnxGsZalCT7QKyEmbB7zs5Qk5AAamZiUAHWAq1pdzdmZWEg7ZZtKaDGJr962vltPF0J3ENklyaDc7Gk=
+X-Received: by 2002:adf:b7c2:: with SMTP id t2mr5643419wre.375.1630136822435;
+ Sat, 28 Aug 2021 00:47:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210822103107.28974-1-lukas.bulwahn@gmail.com> <20210827083842.GF21571@gondor.apana.org.au>
+In-Reply-To: <20210827083842.GF21571@gondor.apana.org.au>
+From:   Sandy Harris <sandyinchina@gmail.com>
+Date:   Sat, 28 Aug 2021 15:46:50 +0800
+Message-ID: <CACXcFm=sRBr6cORdyntuOum6n4dJpKv+vTZSi98_JrDWWKF1NQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: sha512: remove imaginary and mystifying clearing
+ of variables
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In [1], Christoph Hellwig has proposed to remove the wrappers in
-include/linux/pci-dma-compat.h.
+On Fri, Aug 27, 2021 at 4:40 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Sun, Aug 22, 2021 at 12:31:07PM +0200, Lukas Bulwahn wrote:
+> > The function sha512_transform() assigns all local variables to 0 before
+> > returning to its caller with the intent to erase sensitive data.
+> > ....
+> >
+> >   The assignments to clear a through h and t1/t2 are optimized out by the
+> >   compiler because they are unused after the assignments.
 
-Some reasons why this API should be removed have been given by Julia
-Lawall in [2].
+Just no.
 
-A coccinelle script has been used to perform the needed transformation
-Only relevant parts are given below.
+You are right, there is a problem here. I thank you for pointing it
+out & I've already fixed it in some of my own code.
 
-It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-This is less verbose.
+However, I think your solution is dead wrong. You are correct that
+these assignments are useless because the compiler will optimise them
+out, and that's a problem. However, it is not at all "mistiifying";
+they are there for an obvious reason, to avoid leaving state that
+might be useful to an enemy. That is quite a small risk, but then it
+is a small mitigation, so worth doing.
 
+The correct solution is not to just remove the assignments, but rather
+to replace them with code that will not be optimised away, force the
+compiler to do what we need. We already do that for operations that
+clear various arrays and structures, using memzero_explicit() rather
+than memset(). Similarly, we should replace the assignments with calls
+to this macro:
 
-@@ @@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-
-[1]: https://lore.kernel.org/kernel-janitors/20200421081257.GA131897@infradead.org/
-[2]: https://lore.kernel.org/kernel-janitors/alpine.DEB.2.22.394.2007120902170.2424@hadrien/
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-It has been compile tested.
----
- drivers/char/agp/intel-gtt.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/char/agp/intel-gtt.c b/drivers/char/agp/intel-gtt.c
-index 5bfdf222d5f9..4aeccf36f9ee 100644
---- a/drivers/char/agp/intel-gtt.c
-+++ b/drivers/char/agp/intel-gtt.c
-@@ -110,8 +110,8 @@ static int intel_gtt_map_memory(struct page **pages,
- 	for_each_sg(st->sgl, sg, num_entries, i)
- 		sg_set_page(sg, pages[i], PAGE_SIZE, 0);
- 
--	if (!pci_map_sg(intel_private.pcidev,
--			st->sgl, st->nents, PCI_DMA_BIDIRECTIONAL))
-+	if (!dma_map_sg(&intel_private.pcidev->dev, st->sgl, st->nents,
-+			DMA_BIDIRECTIONAL))
- 		goto err;
- 
- 	return 0;
-@@ -126,8 +126,8 @@ static void intel_gtt_unmap_memory(struct scatterlist *sg_list, int num_sg)
- 	struct sg_table st;
- 	DBG("try unmapping %lu pages\n", (unsigned long)mem->page_count);
- 
--	pci_unmap_sg(intel_private.pcidev, sg_list,
--		     num_sg, PCI_DMA_BIDIRECTIONAL);
-+	dma_unmap_sg(&intel_private.pcidev->dev, sg_list, num_sg,
-+		     DMA_BIDIRECTIONAL);
- 
- 	st.sgl = sg_list;
- 	st.orig_nents = st.nents = num_sg;
-@@ -302,9 +302,9 @@ static int intel_gtt_setup_scratch_page(void)
- 	set_pages_uc(page, 1);
- 
- 	if (intel_private.needs_dmar) {
--		dma_addr = pci_map_page(intel_private.pcidev, page, 0,
--				    PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
--		if (pci_dma_mapping_error(intel_private.pcidev, dma_addr)) {
-+		dma_addr = dma_map_page(&intel_private.pcidev->dev, page, 0,
-+					PAGE_SIZE, DMA_BIDIRECTIONAL);
-+		if (dma_mapping_error(&intel_private.pcidev->dev, dma_addr)) {
- 			__free_page(page);
- 			return -EINVAL;
- 		}
-@@ -551,9 +551,9 @@ static void intel_gtt_teardown_scratch_page(void)
- {
- 	set_pages_wb(intel_private.scratch_page, 1);
- 	if (intel_private.needs_dmar)
--		pci_unmap_page(intel_private.pcidev,
--			       intel_private.scratch_page_dma,
--			       PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
-+		dma_unmap_page(&intel_private.pcidev->dev,
-+			       intel_private.scratch_page_dma, PAGE_SIZE,
-+			       DMA_BIDIRECTIONAL);
- 	__free_page(intel_private.scratch_page);
- }
- 
-@@ -1411,13 +1411,11 @@ int intel_gmch_probe(struct pci_dev *bridge_pdev, struct pci_dev *gpu_pdev,
- 
- 	if (bridge) {
- 		mask = intel_private.driver->dma_mask_size;
--		if (pci_set_dma_mask(intel_private.pcidev, DMA_BIT_MASK(mask)))
-+		if (dma_set_mask_and_coherent(&intel_private.pcidev->dev,
-+					      DMA_BIT_MASK(mask)))
- 			dev_err(&intel_private.pcidev->dev,
- 				"set gfx device dma mask %d-bit failed!\n",
- 				mask);
--		else
--			pci_set_consistent_dma_mask(intel_private.pcidev,
--						    DMA_BIT_MASK(mask));
- 	}
- 
- 	if (intel_gtt_init() != 0) {
--- 
-2.30.2
-
+/*
+    clear a variable
+    in a way the compiler will not optimise out
+*/
+#define clear(x)  memzero_explicit( &x, sizeof(x) )
