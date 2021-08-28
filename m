@@ -2,415 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4213FA634
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 16:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A40A3FA63C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 16:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhH1ONZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 28 Aug 2021 10:13:25 -0400
-Received: from aposti.net ([89.234.176.197]:41676 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhH1ONX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 10:13:23 -0400
-Date:   Sat, 28 Aug 2021 15:12:19 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/2] drm/panel: Add driver for the AUO A030JTN01 TFT LCD
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Christophe Branchereau <cbranchereau@gmail.com>,
-        list@opendingux.net, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <JGZJYQ.UFG8C3UEXPVS1@crapouillou.net>
-In-Reply-To: <20210828140139.vwhgcjmgnas4fh7w@kari-VirtualBox>
-References: <20210828112640.7248-1-paul@crapouillou.net>
-        <20210828112640.7248-2-paul@crapouillou.net>
-        <20210828140139.vwhgcjmgnas4fh7w@kari-VirtualBox>
+        id S229911AbhH1Okh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 10:40:37 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:53722 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhH1Okf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 10:40:35 -0400
+Date:   Sat, 28 Aug 2021 14:39:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1630161583;
+        bh=SU97U4k+BG9WpT9upZ0CTmH1ekBpmGjusEIO35UmWHw=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=Rn9ltSP6ephgT5FKCjO/mRb+b/iIJ1AkBh4QtiBlnhyV3WdZWc7Yn6yPPN/1YCili
+         3CT0JciaEyVe8ahQN4vnKq9xedLnMe6Dyn2sIoa8bq3FqzZniqt9eRehM2Z5RORfRu
+         W/EFqNsezy1eXjUehcnLt9DRNotuSnSFeLfawpGA=
+To:     Luke Jones <luke@ljones.dev>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+        hadess@hadess.net, platform-driver-x86@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v5] asus-wmi: Add support for custom fan curves
+Message-ID: <MPiYn0QuHwkWya44TXiM0sSRYZMNs-1J5vsUMxsN4LegmaEKqNr9RVr7ALJFhU7JQfChIOWqNEkXkE_rqPA1TUb9B72cuVi0tq_h0VhXt0U=@protonmail.com>
+In-Reply-To: <P9FJYQ.MFQ4LNL2O0AY@ljones.dev>
+References: <20210826234259.5980-1-luke@ljones.dev> <20210826234259.5980-2-luke@ljones.dev> <l_wjZlSh5I-iPC46H7er23ScdheWKul7iVjIbCUAKyz1sMPoZsFiAMVZa7N2W8Kv8RnFiksYwnWkPv9X428OYZtN5Q1OtI0L8zyHc-6cs2g=@protonmail.com> <P9FJYQ.MFQ4LNL2O0AY@ljones.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Le sam., août 28 2021 at 17:01:39 +0300, Kari Argillander 
-<kari.argillander@gmail.com> a écrit :
-> On Sat, Aug 28, 2021 at 12:26:40PM +0100, Paul Cercueil wrote:
->>  From: Christophe Branchereau <cbranchereau@gmail.com>
->> 
->>  Add driver for the AUO A030JTN01 panel, which is a 320x480 3.0" 4:3
->>  24-bit TFT LCD with non-square pixels and a delta-RGB 8-bit 
->> interface.
->> 
->>  Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/gpu/drm/panel/Kconfig               |   8 +
->>   drivers/gpu/drm/panel/Makefile              |   1 +
->>   drivers/gpu/drm/panel/panel-auo-a030jtn01.c | 297 
->> ++++++++++++++++++++
->>   3 files changed, 306 insertions(+)
->>   create mode 100644 drivers/gpu/drm/panel/panel-auo-a030jtn01.c
->> 
->>  diff --git a/drivers/gpu/drm/panel/Kconfig 
->> b/drivers/gpu/drm/panel/Kconfig
->>  index 0b3784941312..42d42f999266 100644
->>  --- a/drivers/gpu/drm/panel/Kconfig
->>  +++ b/drivers/gpu/drm/panel/Kconfig
->>  @@ -8,6 +8,14 @@ config DRM_PANEL
->>   menu "Display Panels"
->>   	depends on DRM && DRM_PANEL
->> 
->>  +config DRM_PANEL_AUO_A030JTN01
->>  +	tristate "AUO A030JTN01"
->>  +	depends on OF && SPI
->>  +	select REGMAP_SPI
->>  +	help
->>  +	  Say Y here to enable support for the AUO A030JTN01 320x480 3.0" 
->> panel
->>  +	  as found in the YLM RS-97 handheld gaming console.
->>  +
-> 
-> It seems that these should be alphabetical order.
-
-You're totally right, sorry about that.
-
->>   config DRM_PANEL_ABT_Y030XX067A
->>   	tristate "ABT Y030XX067A 320x480 LCD panel"
->>   	depends on OF && SPI
->>  diff --git a/drivers/gpu/drm/panel/Makefile 
->> b/drivers/gpu/drm/panel/Makefile
->>  index 60c0149fc54a..edf62866e4af 100644
->>  --- a/drivers/gpu/drm/panel/Makefile
->>  +++ b/drivers/gpu/drm/panel/Makefile
->>  @@ -1,4 +1,5 @@
->>   # SPDX-License-Identifier: GPL-2.0
->>  +obj-$(CONFIG_DRM_PANEL_AUO_A030JTN01) += panel-auo-a030jtn01.o
->>   obj-$(CONFIG_DRM_PANEL_ABT_Y030XX067A) += panel-abt-y030xx067a.o
->>   obj-$(CONFIG_DRM_PANEL_ARM_VERSATILE) += panel-arm-versatile.o
->>   obj-$(CONFIG_DRM_PANEL_ASUS_Z00T_TM5P5_NT35596) += 
->> panel-asus-z00t-tm5p5-n35596.o
->>  diff --git a/drivers/gpu/drm/panel/panel-auo-a030jtn01.c 
->> b/drivers/gpu/drm/panel/panel-auo-a030jtn01.c
->>  new file mode 100644
->>  index 000000000000..804567a59d19
->>  --- /dev/null
->>  +++ b/drivers/gpu/drm/panel/panel-auo-a030jtn01.c
->>  @@ -0,0 +1,297 @@
->>  +// SPDX-License-Identifier: GPL-2.0
->>  +/*
->>  + * AU Optronics A030JTN01.0 TFT LCD panel driver
->>  + *
->>  + * Copyright (C) 2020, Paul Cercueil <paul@crapouillou.net>
->>  + * Copyright (C) 2020, Christophe Branchereau 
->> <cbranchereau@gmail.com>
-> 
-> Should these be 2021?
-
-The commits were written in 2021, but I guess I can update the date, 
-yes.
-
-Cheers,
--Paul
-
->     Argillander
-> 
->>  + */
->>  +
->>  +#include <linux/delay.h>
->>  +#include <linux/device.h>
->>  +#include <linux/gpio/consumer.h>
->>  +#include <linux/media-bus-format.h>
->>  +#include <linux/module.h>
->>  +#include <linux/of_device.h>
->>  +#include <linux/regmap.h>
->>  +#include <linux/regulator/consumer.h>
->>  +#include <linux/spi/spi.h>
->>  +
->>  +#include <drm/drm_modes.h>
->>  +#include <drm/drm_panel.h>
->>  +
->>  +struct a030jtn01_info {
->>  +	const struct drm_display_mode *display_modes;
->>  +	unsigned int num_modes;
->>  +	u16 width_mm, height_mm;
->>  +	u32 bus_format, bus_flags;
->>  +};
->>  +
->>  +struct a030jtn01 {
->>  +	struct drm_panel panel;
->>  +	struct spi_device *spi;
->>  +	struct regmap *map;
->>  +
->>  +	const struct a030jtn01_info *panel_info;
->>  +
->>  +	struct regulator *supply;
->>  +	struct gpio_desc *reset_gpio;
->>  +};
->>  +
->>  +static inline struct a030jtn01 *to_a030jtn01(struct drm_panel 
->> *panel)
->>  +{
->>  +	return container_of(panel, struct a030jtn01, panel);
->>  +}
->>  +
->>  +static int a030jtn01_prepare(struct drm_panel *panel)
->>  +{
->>  +	struct a030jtn01 *priv = to_a030jtn01(panel);
->>  +	struct device *dev = &priv->spi->dev;
->>  +	int err;
->>  +
->>  +	err = regulator_enable(priv->supply);
->>  +	if (err) {
->>  +		dev_err(dev, "Failed to enable power supply: %d\n", err);
->>  +		return err;
->>  +	}
->>  +
->>  +	usleep_range(1000, 8000);
->>  +
->>  +	/* Reset the chip */
->>  +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
->>  +	usleep_range(100, 8000);
->>  +	gpiod_set_value_cansleep(priv->reset_gpio, 0);
->>  +	usleep_range(2000, 8000);
->>  +
->>  +	/*
->>  +	 * No idea why two writes are needed. If this write is commented,
->>  +	 * the colors are wrong. Doesn't seem to be timing-related, since
->>  +	 * a msleep(200) doesn't fix it.
->>  +	 */
->>  +	regmap_write(priv->map, 0x06, 0x00);
->>  +
->>  +	/* Use (24 + 6) == 0x1e as the vertical back porch */
->>  +	err = regmap_write(priv->map, 0x06, 0x1e);
->>  +	if (err)
->>  +		goto err_disable_regulator;
->>  +
->>  +	/* Use (42 + 30) * 3 == 0xd8 as the horizontal back porch */
->>  +	err = regmap_write(priv->map, 0x07, 0xd8);
->>  +	if (err)
->>  +		goto err_disable_regulator;
->>  +
->>  +	regmap_write(priv->map, 0x05, 0x74);
->>  +
->>  +	return 0;
->>  +
->>  +err_disable_regulator:
->>  +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
->>  +	regulator_disable(priv->supply);
->>  +	return err;
->>  +}
->>  +
->>  +static int a030jtn01_unprepare(struct drm_panel *panel)
->>  +{
->>  +	struct a030jtn01 *priv = to_a030jtn01(panel);
->>  +
->>  +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
->>  +	regulator_disable(priv->supply);
->>  +
->>  +	return 0;
->>  +}
->>  +
->>  +static int a030jtn01_enable(struct drm_panel *panel)
->>  +{
->>  +	struct a030jtn01 *priv = to_a030jtn01(panel);
->>  +	int ret;
->>  +
->>  +	ret = regmap_write(priv->map, 0x05, 0x75);
->>  +	if (ret)
->>  +		return ret;
->>  +
->>  +	/* Wait for the picture to be stable */
->>  +	if (panel->backlight)
->>  +		msleep(100);
->>  +
->>  +	return 0;
->>  +}
->>  +
->>  +static int a030jtn01_disable(struct drm_panel *panel)
->>  +{
->>  +	struct a030jtn01 *priv = to_a030jtn01(panel);
->>  +
->>  +	return regmap_write(priv->map, 0x05, 0x74);
->>  +}
->>  +
->>  +static int a030jtn01_get_modes(struct drm_panel *panel,
->>  +				struct drm_connector *connector)
->>  +{
->>  +	struct a030jtn01 *priv = to_a030jtn01(panel);
->>  +	const struct a030jtn01_info *panel_info = priv->panel_info;
->>  +	struct drm_display_mode *mode;
->>  +	unsigned int i;
->>  +
->>  +	for (i = 0; i < panel_info->num_modes; i++) {
->>  +		mode = drm_mode_duplicate(connector->dev,
->>  +					  &panel_info->display_modes[i]);
->>  +		if (!mode)
->>  +			return -ENOMEM;
->>  +
->>  +		drm_mode_set_name(mode);
->>  +
->>  +		mode->type = DRM_MODE_TYPE_DRIVER;
->>  +		if (panel_info->num_modes == 1)
->>  +			mode->type |= DRM_MODE_TYPE_PREFERRED;
->>  +
->>  +		drm_mode_probed_add(connector, mode);
->>  +	}
->>  +
->>  +	connector->display_info.bpc = 8;
->>  +	connector->display_info.width_mm = panel_info->width_mm;
->>  +	connector->display_info.height_mm = panel_info->height_mm;
->>  +
->>  +	drm_display_info_set_bus_formats(&connector->display_info,
->>  +					 &panel_info->bus_format, 1);
->>  +	connector->display_info.bus_flags = panel_info->bus_flags;
->>  +
->>  +	return panel_info->num_modes;
->>  +}
->>  +
->>  +static const struct drm_panel_funcs a030jtn01_funcs = {
->>  +	.prepare	= a030jtn01_prepare,
->>  +	.unprepare	= a030jtn01_unprepare,
->>  +	.enable		= a030jtn01_enable,
->>  +	.disable	= a030jtn01_disable,
->>  +	.get_modes	= a030jtn01_get_modes,
->>  +};
->>  +
->>  +static bool a030jtn01_has_reg(struct device *dev, unsigned int reg)
->>  +{
->>  +	static const u32 a030jtn01_regs_mask = 0x001823f1fb;
->>  +
->>  +	return a030jtn01_regs_mask & BIT(reg);
->>  +};
->>  +
->>  +static const struct regmap_config a030jtn01_regmap_config = {
->>  +	.reg_bits = 8,
->>  +	.val_bits = 8,
->>  +	.read_flag_mask = 0x40,
->>  +	.max_register = 0x1c,
->>  +	.readable_reg = a030jtn01_has_reg,
->>  +	.writeable_reg = a030jtn01_has_reg,
->>  +};
->>  +
->>  +static int a030jtn01_probe(struct spi_device *spi)
->>  +{
->>  +	struct device *dev = &spi->dev;
->>  +	struct a030jtn01 *priv;
->>  +	int err;
->>  +
->>  +	spi->mode |= SPI_MODE_3 | SPI_3WIRE;
->>  +
->>  +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->>  +	if (!priv)
->>  +		return -ENOMEM;
->>  +
->>  +	priv->spi = spi;
->>  +	spi_set_drvdata(spi, priv);
->>  +
->>  +	priv->map = devm_regmap_init_spi(spi, &a030jtn01_regmap_config);
->>  +	if (IS_ERR(priv->map)) {
->>  +		dev_err(dev, "Unable to init regmap\n");
->>  +		return PTR_ERR(priv->map);
->>  +	}
->>  +
->>  +	priv->panel_info = of_device_get_match_data(dev);
->>  +	if (!priv->panel_info)
->>  +		return -EINVAL;
->>  +
->>  +	priv->supply = devm_regulator_get(dev, "power");
->>  +	if (IS_ERR(priv->supply)) {
->>  +		dev_err(dev, "Failed to get power supply\n");
->>  +		return PTR_ERR(priv->supply);
->>  +	}
->>  +
->>  +	priv->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
->>  +	if (IS_ERR(priv->reset_gpio)) {
->>  +		dev_err(dev, "Failed to get reset GPIO\n");
->>  +		return PTR_ERR(priv->reset_gpio);
->>  +	}
->>  +
->>  +	drm_panel_init(&priv->panel, dev, &a030jtn01_funcs,
->>  +		       DRM_MODE_CONNECTOR_DPI);
->>  +
->>  +	err = drm_panel_of_backlight(&priv->panel);
->>  +	if (err)
->>  +		return err;
->>  +
->>  +	drm_panel_add(&priv->panel);
->>  +
->>  +	return 0;
->>  +}
->>  +
->>  +static int a030jtn01_remove(struct spi_device *spi)
->>  +{
->>  +	struct a030jtn01 *priv = spi_get_drvdata(spi);
->>  +
->>  +	drm_panel_remove(&priv->panel);
->>  +	drm_panel_disable(&priv->panel);
->>  +	drm_panel_unprepare(&priv->panel);
->>  +
->>  +	return 0;
->>  +}
->>  +
->>  +static const struct drm_display_mode a030jtn01_modes[] = {
->>  +	{ /* 60 Hz */
->>  +		.clock = 14400,
->>  +		.hdisplay = 320,
->>  +		.hsync_start = 320 + 8,
->>  +		.hsync_end = 320 + 8 + 42,
->>  +		.htotal = 320 + 8 + 42 + 30,
->>  +		.vdisplay = 480,
->>  +		.vsync_start = 480 + 90,
->>  +		.vsync_end = 480 + 90 + 24,
->>  +		.vtotal = 480 + 90 + 24 + 6,
->>  +		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
->>  +	},
->>  +	{ /* 50 Hz */
->>  +		.clock = 12000,
->>  +		.hdisplay = 320,
->>  +		.hsync_start = 320 + 8,
->>  +		.hsync_end = 320 + 8 + 42,
->>  +		.htotal = 320 + 8 + 42 + 30,
->>  +		.vdisplay = 480,
->>  +		.vsync_start = 480 + 90,
->>  +		.vsync_end = 480 + 90 + 24,
->>  +		.vtotal = 480 + 90 + 24 + 6,
->>  +		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
->>  +	},
->>  +};
->>  +
->>  +static const struct a030jtn01_info a030jtn01_info = {
->>  +	.display_modes = a030jtn01_modes,
->>  +	.num_modes = ARRAY_SIZE(a030jtn01_modes),
->>  +	.width_mm = 70,
->>  +	.height_mm = 51,
->>  +	.bus_format = MEDIA_BUS_FMT_RGB888_3X8_DELTA,
->>  +	.bus_flags = DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
->>  +};
->>  +
->>  +static const struct of_device_id a030jtn01_of_match[] = {
->>  +	{ .compatible = "auo,a030jtn01", .data = &a030jtn01_info },
->>  +	{ /* sentinel */ }
->>  +};
->>  +MODULE_DEVICE_TABLE(of, a030jtn01_of_match);
->>  +
->>  +static struct spi_driver a030jtn01_driver = {
->>  +	.driver = {
->>  +		.name = "auo-a030jtn01",
->>  +		.of_match_table = a030jtn01_of_match,
->>  +	},
->>  +	.probe = a030jtn01_probe,
->>  +	.remove = a030jtn01_remove,
->>  +};
->>  +module_spi_driver(a030jtn01_driver);
->>  +
->>  +MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
->>  +MODULE_AUTHOR("Christophe Branchereau <cbranchereau@gmail.com>");
->>  +MODULE_LICENSE("GPL v2");
->>  --
->>  2.33.0
->> 
+Hi
 
 
+2021. augusztus 28., szombat 8:56 keltez=C3=A9ssel, Luke Jones =C3=ADrta:
+> [...]
+> >>  +/*
+> >>  + * The expected input is of the format
+> >>  + *     "30:1,49:2,59:3,69:4,79:31,89:49,99:56,109:58"
+> >>  + * where a pair is 30:1, with 30 =3D temperature, and 1 =3D percenta=
+ge
+> >>  +*/
+> >>  +static int fan_curve_write(struct asus_wmi *asus, u32 dev, char
+> >> *curve)
+> >>  +{
+> >>  +    char * buf, *set, *pair_tmp, *pair, *set_end, *pair_end;
+> >>  +    int err, ret;
+> >>  +
+> >>  +=09char *set_delimiter =3D ",";
+> >>  +=09char *pair_delimiter =3D ":";
+> >>  +=09bool half_complete =3D false;
+> >>  +=09bool pair_start =3D true;
+> >>  +=09u32 prev_percent =3D 0;
+> >>  +=09u32 prev_temp =3D 0;
+> >>  +=09u32 percent =3D 0;
+> >>  +=09u32 shift =3D 0;
+> >>  +=09u32 temp =3D 0;
+> >>  +    u32 arg1 =3D 0;
+> >>  +    u32 arg2 =3D 0;
+> >>  +    u32 arg3 =3D 0;
+> >>  +    u32 arg4 =3D 0;
+> >>  +
+> >>  +    buf =3D set_end =3D pair_end =3D kstrdup(curve, GFP_KERNEL);
+> >>  +
+> >>  +=09while( (set =3D strsep(&set_end, set_delimiter)) !=3D NULL ) {
+> >>  +=09=09pair_tmp =3D kstrdup(set, GFP_KERNEL);
+> >>  +        pair_start =3D true;
+> >>  +=09=09while( (pair =3D strsep(&pair_tmp, pair_delimiter)) !=3D NULL =
+) {
+> >>  +=09=09=09err =3D kstrtouint(pair, 10, &ret);
+> >>  +            if (err) {
+> >>  +                kfree(pair_tmp);
+> >>  +                kfree(buf);
+> >>  +                return err;
+> >>  +            }
+> >>  +
+> >>  +            if (pair_start) {
+> >>  +                temp =3D ret;
+> >>  +                pair_start =3D false;
+> >>  +            } else {
+> >>  +                percent =3D ret;
+> >>  +            }
+> >>  +=09=09}
+> >>  +=09=09kfree(pair_tmp);
+> >>  +
+> >>  +=09=09if (temp < prev_temp || percent < prev_percent || percent > 10=
+0)
+> >> {
+> >>  +            pr_info("Fan curve invalid");
+> >>  +=09=09=09pr_info("A value is sequentially lower or percentage is > 1=
+00");
+> >>  +            kfree(buf);
+> >>  +            return -EINVAL;
+> >>  +        }
+> >>  +
+> >>  +        prev_temp =3D temp;
+> >>  +        prev_percent =3D percent;
+> >>  +
+> >>  +        if (!half_complete) {
+> >>  +            arg1 +=3D temp << shift;
+> >>  +            arg3 +=3D percent << shift;
+> >>  +        } else {
+> >>  +            arg2 +=3D temp << shift;
+> >>  +            arg4 +=3D percent << shift;
+> >>  +        }
+> >
+> > As far as I see using 64-bit integers would avoid the need for
+> > `half_complete`, et al.
+>
+> Reworked all that as part of the u8-array stuff. Look forward to seeing
+> what you think.
+>
+> >
+> >
+> >>  +        shift +=3D 8;
+> >>  +
+> >>  +        if (shift =3D=3D 32) {
+> >>  +            shift =3D 0;
+> >>  +            half_complete =3D true;
+> >>  +        }
+> >>  +=09}
+> >>  +=09kfree(buf);
+> >>  +
+> >
+> > If you don't insist on using commas, I think it is much simpler to
+> > parse it using `sscanf()`, e.g.:
+> >
+> >   unsigned int temp, prct;
+> >   int at =3D 0, len;
+> >
+> >   while (sscanf(&buf[at], "%u:%u %n", &temp, &prct, &len) =3D=3D 2) {
+> >     /* process `temp` and `prct` */
+> >
+> >     at +=3D len;
+> >   }
+> >
+> >   if (buf[at] !=3D '\0')
+> >     /* error */;
+> >
+> > This also has the advantage that you don't need dynamic memory
+> > allocation.
+>
+> Half the reason I did it in the format of 10:20,30:40,.. is to keep
+> close to a format that many people using some external tools for fan
+> curves (using acpi_call modue!) are using. I'm open to improvements ofc.
+>
+
+If you don't insist on *requiring* commas, then I think the following works=
+:
+
+  while (sscanf(&buf[at], "%u:%u %n", &temp, &prct, &len) =3D=3D 2) {
+    /* process `temp` and `prct` */
+
+    at +=3D len;
+    at +=3D strspn(&buf[at], ",");
+  }
+
+But please, whatever parser you end up submitting, make sure it is thorough=
+ly tested.
+
+
+> [...]
+> >>  +static ssize_t gpu_fan_curve_quiet_show(struct device *dev,
+> >>  +=09=09=09=09   struct device_attribute *attr, char *buf)
+> >>  +{
+> >>  +=09struct asus_wmi *asus =3D dev_get_drvdata(dev);
+> >>  +=09return scnprintf(buf, PAGE_SIZE, "%s", asus->gpu_fan_curve.quiet)=
+;
+> >>  +}
+> >>  +
+> >>  +static ssize_t gpu_fan_curve_quiet_store(struct device *dev,
+> >>  +=09=09=09=09    struct device_attribute *attr,
+> >>  +=09=09=09=09    const char *buf, size_t count)
+> >>  +{
+> >>  +    struct asus_wmi *asus =3D dev_get_drvdata(dev);
+> >>  +    return fan_curve_store(asus, buf, count,
+> >> ASUS_WMI_DEVID_GPU_FAN_CURVE,
+> >>  +=09=09=09=09=09=09=09&asus->gpu_fan_curve.quiet,
+> >>  +=09=09=09=09=09=09=09asus->gpu_fan_curve.quiet_default);
+> >>  +}
+> >>  +
+> >>  +static DEVICE_ATTR_RW(gpu_fan_curve_quiet);
+> >
+> > Even though it is a hwmon thing, I think `SENSOR_ATTR_2()` (from
+> > linux/hwmon-sysfs.h)
+> > would be very useful here as you'd avoid creating n+1 functions, e.g:
+> >
+> >   static ssize_t fan_curve_show(struct device *dev, struct
+> > device_attribute *attr, char *buf)
+> >   {
+> >     struct sensor_device_attribute_2 *sattr =3D
+> > to_sensor_dev_attr_2(attr);
+> >     struct asus_wmi *asus =3D dev_get_drvdata(dev);
+> >
+> >     /*
+> >      * if you stored fan curves in an array, you could then access
+> > the fan
+> >      * curve in `asus->fans[sattr->index].curves[sattr->nr]`
+> >      * /
+> >   }
+> >
+> >   static SENSOR_DEVICE_ATTR_2(some_name1, 0644, fan_curve_show,
+> > fan_curve_store,
+> >                               FAN_CPU /* index in the "fans" array */,
+> >                               ASUS_THROTTLE_THERMAL_POLICY_SILENT /*
+> > index in the "curves" array */);
+> >
+>
+> I'm sorry I don't really understand how this works. Is there a good doc
+> for it anywhere? Being unfamiliar with C makes it look a little more
+> intimidating than what I've managed to do so far.
+>
+
+I am not sure, you can find some uses among hwmon drivers.
+
+If you look into linux/hwmon-sysfs.h, then you can see that `SENSOR_DEVICE_=
+ATTR_2()`
+defines and initializes a `struct sensor_device_attribute_2` object:
+
+  struct sensor_device_attribute_2 {
+    struct device_attribute dev_attr;
+    u8 index;
+    u8 nr;
+  };
+
+So it has a normal device attribute inside it, and two extra pieces of data=
+.
+One difference is that when you create the `struct attribute` array
+(`platform_attributes`), then you will need to use `&some_name1.dev_attr.at=
+tr`.
+
+And the idea here is that the show/store callbacks receive a pointer to the
+device attribute that is being read/written, and we know for a fact, that t=
+his
+device attribute is inside a `sensor_device_attribute_2` struct. And thus w=
+e can
+use the `to_sensor_dev_attr_2()` macro to get a pointer to the "outer"
+`sensor_device_attribute_2` struct that contains the `device_attribute` str=
+uct
+that we have a pointer to.
+
+So now the `index` and `nr` members of that struct can be accessed. You cou=
+ld
+store the index of the fan (e.g. 0 for CPU, 1 for GPU) in `index`, and the =
+profile
+in `nr`. The `ASUS_THROTTLE_THERMAL_POLICY_*` macros go from 0 to 2, so I t=
+hink
+those would be perfect candidates for the curve index. That's why I used
+`ASUS_THROTTLE_THERMAL_POLICY_SILENT` in the example.
+
+The fan curve associated with the attribute can now be
+accessed in `asus->fans[sattr->index].curves[sattr->nr]`.
+
+`to_sensor_dev_attr_2()` is just a wrapper around `container_of()`, so if y=
+ou're
+familiar with the idea behind that, this shouldn't be too hard to wrap your
+head around.
+
+  #define to_sensor_dev_attr_2(_dev_attr) \
+    container_of(_dev_attr, struct sensor_device_attribute_2, dev_attr)
+
+What it does, is that if you give it a pointer to the `dev_attr` member of =
+a
+`struct sensor_device_attribute_2`, then it'll give you back a pointer
+to the `struct sensor_device_attribute_2`. `container_of()` basically does =
+a
+"conversion" from pointer-to-member-of-struct-X to pointer-to-struct-X.
+
+In some sense, you might think of `struct device_attribute` as the "base cl=
+ass",
+and the `struct sensor_device_attribute_2` as the "derived class" here. And=
+ what
+`to_sensor_dev_attr_2()` is a down-cast from the base class to the derived,
+e.g. something like this in C++:
+
+  struct device_attribute { ... };
+  struct sensor_device_attribute_2 : device_attribute {
+    u8 index;
+    u8 nr;
+  };
+
+  /* `device_attr` is of type `struct device_attribute *` */
+  static_cast<sensor_device_attribute_2 *>(device_attr);
+  /* there's also dynamic_cast which can do the same down-cast,
+     but it does runtime type checking as well */
+  /* both of the mentioned C++ casts check if the pointer is nullptr,
+     normal container_of() does not that, but there is container_of_safe() =
+*/
+
+It may be too detailed, I'm not sure; please let me know if you have other =
+questions.
+
+
+> [...]
+
+
+Best regards,
+Barnab=C3=A1s P=C5=91cze
