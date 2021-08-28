@@ -2,140 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72FC3FA5A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 14:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754C43FA5B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 14:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbhH1MlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 08:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35768 "EHLO
+        id S234287AbhH1Mq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 08:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234258AbhH1MlB (ORCPT
+        with ESMTP id S234012AbhH1Mqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 08:41:01 -0400
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE24C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 05:40:10 -0700 (PDT)
-Received: from [192.168.1.101] (83.6.168.105.neoplus.adsl.tpnet.pl [83.6.168.105])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 50CFD20123;
-        Sat, 28 Aug 2021 14:40:08 +0200 (CEST)
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add SM6350 pinctrl
- bindings
-To:     Maulik Shah <mkshah@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210820203751.232645-1-konrad.dybcio@somainline.org>
- <20210820203751.232645-2-konrad.dybcio@somainline.org>
- <YSO+kQnDsqcaBIOg@ripper>
- <82cb4d2d-f347-b823-fa4c-4c2b0c0bfb0c@codeaurora.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <07862c1f-f7c0-51c5-b2a5-60c164a53700@somainline.org>
-Date:   Sat, 28 Aug 2021 14:40:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sat, 28 Aug 2021 08:46:55 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B5BC061756
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 05:46:05 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id s29so3375430pfw.5
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 05:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GCHVrZHXKCU1H+5v0eNhhS2fzXulwWS9z4uFv6L4bSA=;
+        b=hO1VRgqe5cZTyYKXcExM01SXO5zG0rpjx9TSpTOvov/BIu3ukaZIdqLjXdrYnZRJ2S
+         1v/hWlUKtJQMUrMEkXz0daKx780PS7csu0/NMId//y9fPFhewtVygoDCt80W8tW3+BFX
+         kGpsDd9ESSuVxeB1O+S2FqFeEVmYhPBRWvh7JZFMkuwimuPT2lOzjhAqchyQy80Wr/K/
+         t5ot4RoQOukw/CqIw7XYk3AEuDXN0vkviHHF8O0ldNi7xMhXNbAzQXw/mZKpLcTpXQk3
+         zseCdMqzmA2ClXhms7XJRoH+W8ctXsgwZFlrKproxuRMTsvDeC6qLN8AXLC6bis0Aaj8
+         cC/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GCHVrZHXKCU1H+5v0eNhhS2fzXulwWS9z4uFv6L4bSA=;
+        b=SM7tpFdL/kBSCOnZwMwuoooS+xrlbGGpjs04BPaIFOFCvBKBngi38oUvLhvS4bZnkq
+         i7pbpmWJsdkkU4OEJ09DKxia2j8bwlgtqOkaOTba5SQ9vmr58AeCZ1AtNajpdnpIOWH7
+         Cn5tZfQzJX17+r4AQ2olTd5EJyQTS+ojGBs94JyeHHQ11D4U52ZsHyPe9z177Ipp3rlX
+         BhItOj/0vDSutOoqi3M2Ih5cdP+NxF19HAspSpFNE7ofIeTgx6oz5VvxxQa2aEOHH0AU
+         tu5jjWwWmyndZteziSba6ScHAXuImIlGKG+Kj0U6nA6KWgMT6+jaowvlq6kgcRBE95LY
+         DkOg==
+X-Gm-Message-State: AOAM5309zXa72RiCAf+n3+qjDM/NWmO1jWp7Rq0OdO4Jus+19bQxFvE5
+        DXSdZL2qurjZqTuIFZv7JhY=
+X-Google-Smtp-Source: ABdhPJzJ6p62Y2+g2YvTwf/XpUpKNoL3y/nawrlNwL58JaYJtFtCych5NSQBvZA/vEfazQ7HjpO9pQ==
+X-Received: by 2002:aa7:8c41:0:b0:3e3:1279:105 with SMTP id e1-20020aa78c41000000b003e312790105mr13924020pfd.80.1630154764625;
+        Sat, 28 Aug 2021 05:46:04 -0700 (PDT)
+Received: from user ([117.98.200.228])
+        by smtp.gmail.com with ESMTPSA id u17sm9257665pfh.184.2021.08.28.05.46.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 05:46:04 -0700 (PDT)
+Date:   Sat, 28 Aug 2021 18:15:59 +0530
+From:   SAURAV GIREPUNJE <saurav.girepunje@gmail.com>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, nathan@kernel.org,
+        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
+Subject: Re: [PATCH] staging: r8188eu :os_dep: remove condition with no effect
+Message-ID: <YSowB14taJnsZfRM@user>
+References: <YSoCfTaR66C6iJFw@user>
+ <bc0c9cd1-d915-2cb0-ef57-3b9dc5410bbc@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <82cb4d2d-f347-b823-fa4c-4c2b0c0bfb0c@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc0c9cd1-d915-2cb0-ef57-3b9dc5410bbc@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
->>> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
->>> +        pinctrl@f100000 {
->>> +                compatible = "qcom,sm6350-tlmm";
->>> +                reg = <0x0f100000 0x300000>;
->>> +                interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>,
->>> +                            <GIC_SPI 209 IRQ_TYPE_LEVEL_HIGH>,
->>> +                            <GIC_SPI 210 IRQ_TYPE_LEVEL_HIGH>,
->>> +                            <GIC_SPI 211 IRQ_TYPE_LEVEL_HIGH>,
->>> +                            <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>,
->>> +                            <GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>,
->>> +                            <GIC_SPI 214 IRQ_TYPE_LEVEL_HIGH>,
->>> +                            <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>,
->>> +                            <GIC_SPI 216 IRQ_TYPE_LEVEL_HIGH>;
->>> +                gpio-controller;
->>> +                #gpio-cells = <2>;
->>> +                interrupt-controller;
->>> +                #interrupt-cells = <2>;
->>> +                gpio-ranges = <&tlmm 0 0 156>;
->> Shouldn't this be 157?
-
-Yes, it should. Good catch.
-
-
->>
->>> +
->>> +                gpio-wo-subnode-state {
->>> +                        pins = "gpio1";
->>> +                        function = "gpio";
->>> +                };
->>> +
->>> +                uart-w-subnodes-state {
->>> +                        rx {
->>> +                                pins = "gpio25";
->>> +                                function = "qup13_f2";
->>> +                                bias-disable;
->>> +                        };
->>> +
->>> +                        tx {
->>> +                                pins = "gpio26";
->>> +                                function = "qup13_f2";
->>> +                                bias-disable;
->>> +                        };
->>> +                };
->>> +        };
->>> +...
->>> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,tlmm-common.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,tlmm-common.yaml
->>> index 3b37cf102d41..99975122a2ce 100644
->>> --- a/Documentation/devicetree/bindings/pinctrl/qcom,tlmm-common.yaml
->>> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,tlmm-common.yaml
->>> @@ -17,7 +17,7 @@ properties:
->>>     interrupts:
->>>       description:
->>>         Specifies the TLMM summary IRQ
->>> -    maxItems: 1
->>> +    maxItems: 9
->> Is this to support direct connected interrupts?
->>
->> Don't you need to add minItems: 1, to permit the other bindings to not
->> define these? I think that's what Rob's automatic reply complains about
->> at least.
->>
->>
->> PS. Any plans to work up support for direct connected interrupts? I
->> think that and "egpio" is the only downstream delta these days... That
->> said, I don't know if anyone actually uses direct connected interrupts?
-
-I haven't really gotten into that piece yet, trying to get the platform up first..
-
-
-
+On 28 Aug 2021 12:19, Michael Straube wrote:
+> On 8/28/21 11:31, Saurav Girepunje wrote:
+> > Remove the condition with no effect (if == else) in usb_intf.c
+> > file.
+> >
+> > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> > ---
+> >   drivers/staging/r8188eu/os_dep/usb_intf.c | 6 ++----
+> >   1 file changed, 2 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+> > index bb85ab77fd26..849563b54727 100644
+> > --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
+> > +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+> > @@ -496,10 +496,8 @@ static int rtw_resume(struct usb_interface *pusb_intf)
+> >   	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
+> >   	int ret = 0;
+> >
+> > -	if (pwrpriv->bInternalAutoSuspend)
+> > -		ret = -	else
+> > -		ret = rtw_resume_process(padapter);
+> > +	ret = rtw_resume_process(padapter);
+> > +
+> >   	return ret;
+> >   }
 >
-> Using .wakeirq_dual_edge_errata = true, in pinctrl-sm6350.c (msm_pinctrl_soc_data structure) in [1] should help. The direct connect interrupt were added to support dual edge in downstream driver but in upstream setting this flag should help.
+> Thanks for your patch. Perhaps this could be further simplified to:
 >
-> This was used in sc7180 but should apply SM6350 too.
+> int ret = rtw_resume_process(padapter);
 >
-> That way you don't need other TLMM interrupts to be listed here.
+> return ret;
 >
-> [1] https://patchwork.kernel.org/project/linux-arm-msm/patch/20210820203751.232645-3-konrad.dybcio@somainline.org/
+> or even:
 >
-> Thanks,
-> Maulik
+> return rtw_resume_process(padapter);
 >
-Thanks, I'll check and respin a v2 with that.
+> Best regards,
+> Michael
 
 
-Konrad
+Yes, Thanks Michael. I will make it more simple and send v2.
 
+
+Regards,
+Saurav
