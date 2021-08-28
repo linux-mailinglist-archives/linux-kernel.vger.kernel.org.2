@@ -2,104 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4CD3FA694
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2B93FA695
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 17:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbhH1PuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 11:50:24 -0400
-Received: from relay07.th.seeweb.it ([5.144.164.168]:51251 "EHLO
-        relay07.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhH1PuS (ORCPT
+        id S234449AbhH1PxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 11:53:09 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:38773 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230290AbhH1PxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:50:18 -0400
-Received: from [192.168.1.101] (83.6.168.105.neoplus.adsl.tpnet.pl [83.6.168.105])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 6D1D23EF16;
-        Sat, 28 Aug 2021 17:49:25 +0200 (CEST)
-Subject: Re: [PATCH v2 06/18] arm64: dts: qcom: sm6350: Add TLMM block node
-To:     Maulik Shah <mkshah@codeaurora.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Rob Herring <robh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        Vinod Koul <vkoul@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-References: <20210828131814.29589-1-konrad.dybcio@somainline.org>
- <20210828131814.29589-6-konrad.dybcio@somainline.org>
- <3f1dbbf3-8d62-e855-0dcf-740da7adb7df@codeaurora.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <39680f6f-56ff-7f87-0d8a-9bd31dc5ffce@somainline.org>
-Date:   Sat, 28 Aug 2021 17:49:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sat, 28 Aug 2021 11:53:08 -0400
+Received: by mail-io1-f71.google.com with SMTP id n8-20020a6b7708000000b005bd491bdb6aso5991179iom.5
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 08:52:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wGQ0c3k6Xzfe8NlJQcUk/e/a/l0gLOhadY7N8twFvWo=;
+        b=Vy1aeomUcXUpRoLdBbKRegJSWkeovv1MgWmBqn9zxBwW3F4066TuKLm2LyTMnFRDOJ
+         Ee9bc2DGJWG5B1f5jmKR4gAEhkRUZuUPoQRlhvqhR/B/VpS12F1cYAuJmD+fQGSa+cBu
+         fFixkhF7Mq79UkgpE2cAmmC55yqeeGw+sNty1ng2dggF2M2yVf3FmJAsU/+SIojLQNiV
+         7LY58BXDAshW3dndYpFBG5/Jo0seP7UItydy5n/7h0dGUgpVNUyvn4IntK4cJgK8mWBA
+         tqgBrm+EGQJvRbqoumfSHjc9LIs8HB0ZB5/C+IHrJ3BBD4i/VPLvvHHG07edYmhm6KKP
+         N3YQ==
+X-Gm-Message-State: AOAM533fyqXclt8DfxWuvSIRl60P7Syy56QhVLNAgi5L9w2meqbWyi9v
+        GiLMcIFHs0FffKkls9QBcrU28hCkeMqfm7oBst/kOLH7LO1e
+X-Google-Smtp-Source: ABdhPJy3fKXhlwA8aQgy/2SjVTLcNgaJP/CbrAU/Fo4rUTBrBY1PhFljks+NJGVVuYLjs/Ivkqb8T/8s2+eqkVAMV2lk76z1Ko+e
 MIME-Version: 1.0
-In-Reply-To: <3f1dbbf3-8d62-e855-0dcf-740da7adb7df@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Received: by 2002:a05:6638:191c:: with SMTP id p28mr12831892jal.41.1630165937960;
+ Sat, 28 Aug 2021 08:52:17 -0700 (PDT)
+Date:   Sat, 28 Aug 2021 08:52:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a83c6a05caa09572@google.com>
+Subject: [syzbot] INFO: task hung in do_proc_bulk
+From:   syzbot <syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, johan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mathias.nyman@linux.intel.com, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 28.08.2021 17:47, Maulik Shah wrote:
-> Hi,
->
-> On 8/28/2021 6:48 PM, Konrad Dybcio wrote:
->> Add TLMM pinctrl node to enable referencing the SoC pins in other nodes.
->>
->> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
->> ---
->> Changes since v1:
->> - Fix the gpio ranges from 156 to 157
->>
->>   arch/arm64/boot/dts/qcom/sm6350.dtsi | 19 +++++++++++++++++++
->>   1 file changed, 19 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
->> index d57c669ae0d6..03f7601457b4 100644
->> --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
->> @@ -406,6 +406,25 @@ pdc: interrupt-controller@b220000 {
->>               interrupt-controller;
->>           };
->>   +        tlmm: pinctrl@f100000 {
->> +            compatible = "qcom,sm6350-tlmm";
->> +            reg = <0 0x0f100000 0 0x300000>;
->> +            interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>,
->> +                    <GIC_SPI 209 IRQ_TYPE_LEVEL_HIGH>,
->> +                    <GIC_SPI 210 IRQ_TYPE_LEVEL_HIGH>,
->> +                    <GIC_SPI 211 IRQ_TYPE_LEVEL_HIGH>,
->> +                    <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>,
->> +                    <GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>,
->> +                    <GIC_SPI 214 IRQ_TYPE_LEVEL_HIGH>,
->> +                    <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>,
->> +                    <GIC_SPI 216 IRQ_TYPE_LEVEL_HIGH>;
-> you will not require other interrupts (209 to 216) for dual edge to work since you have below set in pinctrl-sm6350.c
->
-> .wakeirq_dual_edge_errata = true,
->
-> Thanks,
-> Maulik
+syzbot found the following issue on:
+
+HEAD commit:    d5ae8d7f85b7 Revert "media: dvb header files: move some he..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=155fa21e300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
+dashboard link: https://syzkaller.appspot.com/bug?extid=ada0f7d3d9fd2016d927
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a1ab0e300000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15662ee1300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17662ee1300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13662ee1300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com
+
+INFO: task syz-executor.0:8700 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc7-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:23192 pid: 8700 ppid:  8455 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4681 [inline]
+ __schedule+0xc07/0x11f0 kernel/sched/core.c:5938
+ schedule+0x14b/0x210 kernel/sched/core.c:6017
+ schedule_timeout+0x98/0x2f0 kernel/time/timer.c:1857
+ do_wait_for_common+0x2da/0x480 kernel/sched/completion.c:85
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion_timeout+0x46/0x60 kernel/sched/completion.c:157
+ usb_start_wait_urb+0x167/0x550 drivers/usb/core/message.c:63
+ do_proc_bulk+0x978/0x1080 drivers/usb/core/devio.c:1236
+ proc_bulk drivers/usb/core/devio.c:1273 [inline]
+ usbdev_do_ioctl drivers/usb/core/devio.c:2547 [inline]
+ usbdev_ioctl+0x3441/0x6b10 drivers/usb/core/devio.c:2713
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665e9
+RSP: 002b:00007f15a90dc188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
+RDX: 0000000020000340 RSI: 00000000c0185502 RDI: 0000000000000004
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffcc552e1bf R14: 00007f15a90dc300 R15: 0000000000022000
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1610:
+ #0: ffffffff8c717ec0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30 arch/x86/pci/mmconfig_64.c:151
+1 lock held by in:imklog/8130:
+ #0: ffff888035998870 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x24e/0x2f0 fs/file.c:974
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 1610 Comm: khungtaskd Not tainted 5.14.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:105
+ nmi_cpu_backtrace+0x16c/0x190 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x191/0x2f0 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0xd06/0xd50 kernel/hung_task.c:295
+ kthread+0x453/0x480 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 10 Comm: kworker/u4:1 Not tainted 5.14.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bat_events batadv_nc_worker
+RIP: 0010:lock_is_held_type+0x1/0x180 kernel/locking/lockdep.c:5653
+Code: 74 df 83 3d d8 22 e1 03 00 75 d6 48 c7 c7 80 c3 2e 8a 48 c7 c6 c0 c3 2e 8a 31 c0 e8 c9 8d 72 f7 0f 0b eb bd e8 90 fd ff ff 55 <41> 57 41 56 41 55 41 54 53 48 83 ec 10 65 48 8b 04 25 28 00 00 00
+RSP: 0018:ffffc90000cf7990 EFLAGS: 00000202
+RAX: 1ffffffff18e3801 RBX: 1ffff9200019ef34 RCX: 0000000080000001
+RDX: 0000000000000000 RSI: 00000000ffffffff RDI: ffffffff8c717e20
+RBP: ffffc90000cf7a28 R08: dffffc0000000000 R09: fffffbfff1b74ee6
+R10: fffffbfff1b74ee6 R11: 0000000000000000 R12: dffffc0000000000
+R13: 1ffff9200019ef58 R14: dffffc0000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0a1e997000 CR3: 000000000c48e000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ lock_is_held include/linux/lockdep.h:283 [inline]
+ rcu_read_lock_sched_held+0x87/0x110 kernel/rcu/update.c:125
+ trace_lock_acquire+0x59/0x190 include/trace/events/lock.h:13
+ lock_acquire+0xa4/0x4a0 kernel/locking/lockdep.c:5596
+ rcu_lock_acquire+0x2a/0x30 include/linux/rcupdate.h:267
+ rcu_read_lock include/linux/rcupdate.h:687 [inline]
+ batadv_nc_purge_orig_hash net/batman-adv/network-coding.c:404 [inline]
+ batadv_nc_worker+0xc8/0x5b0 net/batman-adv/network-coding.c:715
+ process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
+ worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
+ kthread+0x453/0x480 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+----------------
+Code disassembly (best guess):
+   0:	74 df                	je     0xffffffe1
+   2:	83 3d d8 22 e1 03 00 	cmpl   $0x0,0x3e122d8(%rip)        # 0x3e122e1
+   9:	75 d6                	jne    0xffffffe1
+   b:	48 c7 c7 80 c3 2e 8a 	mov    $0xffffffff8a2ec380,%rdi
+  12:	48 c7 c6 c0 c3 2e 8a 	mov    $0xffffffff8a2ec3c0,%rsi
+  19:	31 c0                	xor    %eax,%eax
+  1b:	e8 c9 8d 72 f7       	callq  0xf7728de9
+  20:	0f 0b                	ud2
+  22:	eb bd                	jmp    0xffffffe1
+  24:	e8 90 fd ff ff       	callq  0xfffffdb9
+  29:	55                   	push   %rbp
+* 2a:	41 57                	push   %r15 <-- trapping instruction
+  2c:	41 56                	push   %r14
+  2e:	41 55                	push   %r13
+  30:	41 54                	push   %r12
+  32:	53                   	push   %rbx
+  33:	48 83 ec 10          	sub    $0x10,%rsp
+  37:	65 48 8b 04 25 28 00 	mov    %gs:0x28,%rax
+  3e:	00 00
 
 
-Right, I updated the binding but not the dt... Thanks for spotting that.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-
-Konrad
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
