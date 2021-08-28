@@ -2,153 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6D53FA591
+	by mail.lfdr.de (Postfix) with ESMTP id D2C073FA593
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 14:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234212AbhH1L6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 07:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234099AbhH1L57 (ORCPT
+        id S234229AbhH1L7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 07:59:43 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:50630 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234099AbhH1L7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 07:57:59 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E89CC0613D9;
-        Sat, 28 Aug 2021 04:57:08 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id s25so14028019edw.0;
-        Sat, 28 Aug 2021 04:57:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iLBmY1lddKz7uTq3806Ths/k/ddF0DAc5W9kpbb8u9s=;
-        b=QlH85/uPOCnjjN/jADGyKpUeAw1fcOJXg7DJ4/l9SbWgA3oRa8sGTKgU2ZAWicq24T
-         WIpIqNc3UWp4Zjx7mehBYovw+PMwnkMNfRNB7mTvY69/ZSxkhnff3SFY6RFKFYA3bh9e
-         Ox75QLHn89eXXpojQyE/dMkNqZ3VG8r3woTRP5SwuhtE+YVvP9XRks3Cgabj4+lLjcFj
-         bUQAhSRJgJdrNykMfpdOzoY3qUjYR2OAR7wS32CbMjth9rkYkwQnl4oR2nrMt3bM6HE4
-         Nl9LM9GrU4l5Htux2UzWm/UgFQiKlZbMAuI2KeCvznRf841DTepW1LPAPqXfM5xZGYNw
-         iXdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iLBmY1lddKz7uTq3806Ths/k/ddF0DAc5W9kpbb8u9s=;
-        b=Vlvr+a22rCZ2UL9dVd8rPISYh2R4RC4v0gnxflK2oCvPv/M4zAUV3BVXHAI1M0zA+B
-         hgdY8suU751XMfFSEoAmJR3zMIpQ/MgTN0oD40T4ech9sWOFmVlIAlyFNjgHWuYR6NYL
-         06bixQAVNeIsrG85FOHRKMSYi/q1f1PpNislWRSUI1BOqbGpnU4rzu21M8SbdRhLQHw+
-         +NQB3xd/5z6Wy40cmkI3jOoI1DGyyPcB0eXovWrq3q3ZVdk+VUcpGOrU21hpv7uQjcBX
-         2LYc/0+LJxVY+Ncm2MmuJWnTIj7mqdqG2Z9hx5tmHe3DvCCW1usThBQ5s2aOyteqd6Wu
-         zLbQ==
-X-Gm-Message-State: AOAM531iyG+DjjHDyoADEGMhqENLUHhl4Ykx8x/RxPKJeGVO1adtvikQ
-        MGE75jzkXNw6Z4tlIf9YVsA=
-X-Google-Smtp-Source: ABdhPJyMrN4+lBNa+okLk1rVIjF9z/e/QsIV7/FGOlERX13BkZHghuvbkHtY6nTzDLjwiHwAb63iOg==
-X-Received: by 2002:a50:c94d:: with SMTP id p13mr14934833edh.246.1630151827044;
-        Sat, 28 Aug 2021 04:57:07 -0700 (PDT)
-Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id l18sm2873411edr.83.2021.08.28.04.57.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Aug 2021 04:57:06 -0700 (PDT)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: [RFC PATCH 2/2] regulator: qcom_smd: Add PM6125 regulator support
-Date:   Sat, 28 Aug 2021 14:56:54 +0300
-Message-Id: <20210828115654.647548-3-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210828115654.647548-1-iskren.chernev@gmail.com>
-References: <20210828115654.647548-1-iskren.chernev@gmail.com>
+        Sat, 28 Aug 2021 07:59:42 -0400
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 17SBwHK3032141;
+        Sat, 28 Aug 2021 20:58:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 17SBwHK3032141
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1630151898;
+        bh=DJwBTSB1Ga58CQUosYCACjgumTXwfvbyeghgs73ref0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uHW7FDheehL5Cx41btKsNreWaqR2KA6q8ZT8DhB6xuHb7MeL27EGC7CFHTakSPqgf
+         5pOrSWX7W0OsRTrQAB80FEdpcZrtyycBHSa7QNJON/2pjERK7by1RJIrzL6mHYgcVI
+         ognwGP9SOwZOFNR8mWK3D0W6yvuqiDyAykCmhGqz79ZfHW/4TmvJNfXKVOufrqdUt8
+         lcCXS72vw7jADde/yxxLbBdYC0/FuamLjI1Jya6QaXLtpmE8B0TfFTUeM0TNesR/Y3
+         Sb8Bt9Ur8JdS9+rHmyrr70T5AJI3ZSYbFF7upyRzVnT4n+j2zHjpwQV6z/kEKVpcMJ
+         QqTrGXoYAVRSg==
+X-Nifty-SrcIP: [209.85.215.177]
+Received: by mail-pg1-f177.google.com with SMTP id y23so8515321pgi.7;
+        Sat, 28 Aug 2021 04:58:18 -0700 (PDT)
+X-Gm-Message-State: AOAM533yLVrzuwiF1juMGuvOcoGxZRjDLxhEzkltBgSDB6Gop0lqSdnb
+        msTi9kS+SqaeiCjAL8FNNa87A1xzNZB04KCrvPc=
+X-Google-Smtp-Source: ABdhPJwRhQVqNucYoJyrYOLZIrND7BVSRg4eIVaV65pJokYN0dLEGCI72Yt3W4EyAcgNCd/cn2z00JY6WZZ46ZCZkIU=
+X-Received: by 2002:a62:f243:0:b0:3fb:b8bd:e9d9 with SMTP id
+ y3-20020a62f243000000b003fbb8bde9d9mr859828pfl.63.1630151897130; Sat, 28 Aug
+ 2021 04:58:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210819005744.644908-1-masahiroy@kernel.org> <20210819005744.644908-10-masahiroy@kernel.org>
+ <202108182337.25ECD5503B@keescook>
+In-Reply-To: <202108182337.25ECD5503B@keescook>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 28 Aug 2021 20:57:40 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATyNAu6sa-TT9JXy=BXr5d2Q5K-sp-mVXXtJDuJyi6_bA@mail.gmail.com>
+Message-ID: <CAK7LNATyNAu6sa-TT9JXy=BXr5d2Q5K-sp-mVXXtJDuJyi6_bA@mail.gmail.com>
+Subject: Re: [PATCH 09/13] kbuild: do not create built-in.a.symversions or lib.a.symversions
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for PM6125 regulator which is found on SM4250/6115 SoCs.
+On Thu, Aug 19, 2021 at 3:41 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, Aug 19, 2021 at 09:57:40AM +0900, Masahiro Yamada wrote:
+> > Merge all *.o.symversions in scripts/link-vmlinux.sh instead of
+> > merging them in the unit of built-in.a or lib.a.
+> >
+> > This is a preparation for further code cleanups.
+>
+> Looks good, though I wonder about this becoming serialized during the
+> link phase rather than doing the work per-target. I mean, it always had
+> to collect them all during the link phase (with "cat"), but before it
+> wasn't running $(AR) serially to do it.
+>
+> I'll ponder how this might be made a little more parallel. But for now:
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> -Kees
+>
 
-NOTE: The sources haven't been determined, so currently each regulator
-has it's own source.
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
----
- drivers/regulator/qcom_smd-regulator.c | 46 ++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+I measured the cost of merging all the *.symversions.
 
-diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
-index 198fcc6551f6..e97086d95774 100644
---- a/drivers/regulator/qcom_smd-regulator.c
-+++ b/drivers/regulator/qcom_smd-regulator.c
-@@ -666,6 +666,15 @@ static const struct regulator_desc pm660l_bob = {
- 	.ops = &rpm_bob_ops,
- };
- 
-+static const struct regulator_desc pm6125_ftsmps = {
-+	.linear_ranges = (struct linear_range[]) {
-+		REGULATOR_LINEAR_RANGE(300000, 0, 268, 4000),
-+	},
-+	.n_linear_ranges = 1,
-+	.n_voltages = 269,
-+	.ops = &rpm_smps_ldo_ops,
-+};
+For a typical use-case
+(x86_64 defconfig + CONFIG_LTO_CLANG_THIN + CONFIG_MODVERSIONS),
+my shell script took about 0.40 msec
+for merging all the individual *.symversions files.
+
+Most of the cost of 0.40 msec came from the 'cat' command.
+The 'cat' command is kind of slow when you concatenate
+a large number of files.
+
+I implemented the equivalent functionality with a perl script,
+which worked in only 0.04 msec.
+
+I think 0.04 msec should be acceptable cost because
+this commit eliminates all the intermediate built-in.a.symversions
+and lib.a.symversions, saving disk space.
+
+I also tried allyesconfig + CONFIG_LTO_CLANG_THIN + CONFIG_MODVERSIONS
+(the heaviest load), but the result is similar.
+
+This is because most of EXPORT_SYMBOL's come from the core part of
+the kernel, and enabling drivers as built-in does not give much impact, I think.
+
+So, I will plan to submit v2 with perl implementation.
+
+
+The detailed test code is as follows:
+
+
+
+
+
+
+
+
+masahiro@oscar:~/workspace/linux-kbuild$ cat scripts/merge-symvers.sh
+#!/bin/sh
+
+append_symversion()
+{
+        if [ -f ${1}.symversions ]; then
+                cat ${1}.symversions >> .tmp_symversions.lds
+        fi
+}
+
+# If CONFIG_LTO_CLANG is selected, collect generated symbol versions into
+# .tmp_symversions.lds
+gen_symversions()
+{
+        rm -f .tmp_symversions.lds
+
+        for a in ${KBUILD_VMLINUX_OBJS} ${KBUILD_VMLINUX_LIBS}; do
+                case $a in
+                *.a)
+                        for o in $(${AR} t ${a}); do
+                                append_symversion ${o}
+                        done
+                        ;;
+                *)
+                        append_symversion ${a}
+                        ;;
+                esac
+        done
+}
+
+gen_symversions
+
+
+
+masahiro@oscar:~/workspace/linux-kbuild$ cat scripts/merge-symvers.pl
+#!/usr/bin/env perl
+# SPDX-License-Identifier: GPL-2.0-only
+
+use autodie;
+use strict;
+use warnings;
+use Getopt::Long 'GetOptions';
+
+my $ar;
+my $output;
+
+GetOptions(
+        'a|ar=s' => \$ar,
+        'o|output=s'  => \$output,
+);
+
+# Collect all objects
+my @objects;
+
+foreach (@ARGV) {
+        if (/\.o$/) {
+                # Some objects (head-y) are linked to vmlinux directly.
+                push(@objects, $_);
+        } elsif (/\.a$/) {
+                # Most of built-in objects are contained in built-in.a or lib.a.
+                # Use 'ar -t' to get the list of the contained objects.
+                $_ = `$ar -t $_`;
+                push(@objects, split(/\n/));
+        } else {
+                die "$_: unknown file type\n";
+        }
+}
+
+open(my $out_fh, '>', "$output");
+
+foreach (@objects) {
+        # The symbol CRCs for foo/bar/baz.o is output to
+foo/bar/baz.o.symversions
+        s/(.*)/$1.symversions/;
+
+        if (! -e $_) {
+                # .symversions does not exist if the object does not contain
+                # EXPORT_SYMBOL at all. Skip it.
+                next;
+        }
+
+        open(my $in_fh, '<', "$_");
+        # Concatenate all the existing *.symversions files.
+        print $out_fh do { local $/; <$in_fh> };
+        close $in_fh;
+}
+
+close $out_fh;
+
+
+
+masahiro@oscar:~/workspace/linux-kbuild$ git diff
+diff --git a/Makefile b/Makefile
+index 3ef3685b7e4a..5b8fe617769a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1175,6 +1175,14 @@ vmlinux: scripts/link-vmlinux.sh
+autoksyms_recursive $(vmlinux-deps) FORCE
+
+ targets := vmlinux
+
++PHONY += merge-symvers-by-shell merge-symvers-by-perl
 +
- static const struct regulator_desc pms405_hfsmps3 = {
- 	.linear_ranges = (struct linear_range[]) {
- 		REGULATOR_LINEAR_RANGE(320000, 0, 215, 8000),
-@@ -1148,6 +1157,42 @@ static const struct rpm_regulator_data rpm_pm660l_regulators[] = {
- 	{ }
- };
- 
-+static const struct rpm_regulator_data rpm_pm6125_regulators[] = {
-+	{ "s1", QCOM_SMD_RPM_SMPA, 1, &pm6125_ftsmps, "vdd_s1" },
-+	{ "s2", QCOM_SMD_RPM_SMPA, 2, &pm6125_ftsmps, "vdd_s2" },
-+	{ "s3", QCOM_SMD_RPM_SMPA, 3, &pm6125_ftsmps, "vdd_s3" },
-+	{ "s4", QCOM_SMD_RPM_SMPA, 4, &pm6125_ftsmps, "vdd_s4" },
-+	{ "s5", QCOM_SMD_RPM_SMPA, 5, &pm8998_hfsmps, "vdd_s5" },
-+	{ "s6", QCOM_SMD_RPM_SMPA, 6, &pm8998_hfsmps, "vdd_s6" },
-+	{ "s7", QCOM_SMD_RPM_SMPA, 7, &pm8998_hfsmps, "vdd_s7" },
-+	{ "s8", QCOM_SMD_RPM_SMPA, 8, &pm6125_ftsmps, "vdd_s8" },
-+	{ "l1", QCOM_SMD_RPM_LDOA, 1, &pm660_nldo660, "vdd_l1" },
-+	{ "l2", QCOM_SMD_RPM_LDOA, 2, &pm660_nldo660, "vdd_l2" },
-+	{ "l3", QCOM_SMD_RPM_LDOA, 3, &pm660_nldo660, "vdd_l3" },
-+	{ "l4", QCOM_SMD_RPM_LDOA, 4, &pm660_nldo660, "vdd_l4" },
-+	{ "l5", QCOM_SMD_RPM_LDOA, 5, &pm660_pldo660, "vdd_l5" },
-+	{ "l6", QCOM_SMD_RPM_LDOA, 6, &pm660_nldo660, "vdd_l6" },
-+	{ "l7", QCOM_SMD_RPM_LDOA, 7, &pm660_nldo660, "vdd_l7" },
-+	{ "l8", QCOM_SMD_RPM_LDOA, 8, &pm660_nldo660, "vdd_l8" },
-+	{ "l9", QCOM_SMD_RPM_LDOA, 9, &pm660_ht_lvpldo, "vdd_l5" },
-+	{ "l10", QCOM_SMD_RPM_LDOA, 10, &pm660_ht_lvpldo, "vdd_l10" },
-+	{ "l11", QCOM_SMD_RPM_LDOA, 11, &pm660_ht_lvpldo, "vdd_l11" },
-+	{ "l12", QCOM_SMD_RPM_LDOA, 12, &pm660_ht_lvpldo, "vdd_l12" },
-+	{ "l13", QCOM_SMD_RPM_LDOA, 13, &pm660_ht_lvpldo, "vdd_l13" },
-+	{ "l14", QCOM_SMD_RPM_LDOA, 14, &pm660_ht_lvpldo, "vdd_l14" },
-+	{ "l15", QCOM_SMD_RPM_LDOA, 15, &pm660_pldo660, "vdd_l15" },
-+	{ "l16", QCOM_SMD_RPM_LDOA, 16, &pm660_ht_lvpldo, "vdd_l16" },
-+	{ "l17", QCOM_SMD_RPM_LDOA, 17, &pm660_nldo660, "vdd_l17" },
-+	{ "l18", QCOM_SMD_RPM_LDOA, 18, &pm660_nldo660, "vdd_l18" },
-+	{ "l19", QCOM_SMD_RPM_LDOA, 19, &pm660_pldo660, "vdd_l19" },
-+	{ "l20", QCOM_SMD_RPM_LDOA, 20, &pm660_pldo660, "vdd_l20" },
-+	{ "l21", QCOM_SMD_RPM_LDOA, 21, &pm660_pldo660, "vdd_l21" },
-+	{ "l22", QCOM_SMD_RPM_LDOA, 22, &pm660_pldo660, "vdd_l22" },
-+	{ "l23", QCOM_SMD_RPM_LDOA, 23, &pm660_pldo660, "vdd_l23" },
-+	{ "l24", QCOM_SMD_RPM_LDOA, 24, &pm660_pldo660, "vdd_l24" },
-+	{ }
-+};
++merge-symvers-by-shell:
++       time sh scripts/merge-symvers.sh
 +
- static const struct rpm_regulator_data rpm_pms405_regulators[] = {
- 	{ "s1", QCOM_SMD_RPM_SMPA, 1, &pms405_hfsmps3, "vdd_s1" },
- 	{ "s2", QCOM_SMD_RPM_SMPA, 2, &pms405_hfsmps3, "vdd_s2" },
-@@ -1182,6 +1227,7 @@ static const struct of_device_id rpm_of_match[] = {
- 	{ .compatible = "qcom,rpm-pm8998-regulators", .data = &rpm_pm8998_regulators },
- 	{ .compatible = "qcom,rpm-pm660-regulators", .data = &rpm_pm660_regulators },
- 	{ .compatible = "qcom,rpm-pm660l-regulators", .data = &rpm_pm660l_regulators },
-+	{ .compatible = "qcom,rpm-pm6125-regulators", .data = &rpm_pm6125_regulators },
- 	{ .compatible = "qcom,rpm-pma8084-regulators", .data = &rpm_pma8084_regulators },
- 	{ .compatible = "qcom,rpm-pmi8994-regulators", .data = &rpm_pmi8994_regulators },
- 	{ .compatible = "qcom,rpm-pmi8998-regulators", .data = &rpm_pmi8998_regulators },
++merge-symvers-by-perl:
++       time perl scripts/merge-symvers.pl -a $(AR) -o
+.tmp_symversions.lds $(KBUILD_VMLINUX_OBJS) $(KBUILD_VMLINUX_LIBS)
++
+ # The actual objects are generated when descending,
+ # make sure no implicit rule kicks in
+ $(sort $(vmlinux-deps) $(subdir-modorder)): descend ;
+
+
+
+
+masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1 defconfig
+*** Default configuration is based on 'x86_64_defconfig'
+#
+# configuration written to .config
+#
+masahiro@oscar:~/workspace/linux-kbuild$ ./scripts/config  -d
+LTO_NONE -e LTO_CLANG_THIN -e MODVERSIONS
+masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1  -s -j24
+arch/x86/entry/vdso/Makefile:135: FORCE prerequisite is missing
+arch/x86/entry/vdso/Makefile:135: FORCE prerequisite is missing
+
+
+masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   merge-symvers-by-shell
+time sh scripts/merge-symvers.sh
+0.40user 0.08system 0:00.47elapsed 101%CPU (0avgtext+0avgdata 7156maxresident)k
+0inputs+896outputs (0major+90678minor)pagefaults 0swaps
+
+
+masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   merge-symvers-by-perl
+time perl scripts/merge-symvers.pl -a llvm-ar -o .tmp_symversions.lds
+arch/x86/kernel/head_64.o arch/x86/kernel/head64.o
+arch/x86/kernel/ebda.o arch/x86/kernel/platform-quirks.o
+init/built-in.a usr/built-in.a arch/x86/built-in.a kernel/built-in.a
+certs/built-in.a mm/built-in.a fs/built-in.a ipc/built-in.a
+security/built-in.a crypto/built-in.a block/built-in.a lib/built-in.a
+arch/x86/lib/built-in.a  lib/lib.a  arch/x86/lib/lib.a
+drivers/built-in.a sound/built-in.a net/built-in.a virt/built-in.a
+arch/x86/pci/built-in.a arch/x86/power/built-in.a
+0.04user 0.02system 0:00.06elapsed 101%CPU (0avgtext+0avgdata 10100maxresident)k
+0inputs+896outputs (0major+8590minor)pagefaults 0swaps
+
+
+masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   allyesconfig
+#
+# configuration written to .config
+#
+masahiro@oscar:~/workspace/linux-kbuild$ ./scripts/config  -d
+LTO_NONE -e LTO_CLANG_THIN
+masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1  -s -j24
+  [ snip ]
+
+masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   merge-symvers-by-shell
+time sh scripts/merge-symvers.sh
+0.41user 0.09system 0:00.50elapsed 101%CPU (0avgtext+0avgdata 7172maxresident)k
+0inputs+896outputs (0major+91425minor)pagefaults 0swaps
+
+masahiro@oscar:~/workspace/linux-kbuild$ make LLVM=1   merge-symvers-by-perl
+time perl scripts/merge-symvers.pl -a llvm-ar -o .tmp_symversions.lds
+arch/x86/kernel/head_64.o arch/x86/kernel/head64.o
+arch/x86/kernel/ebda.o arch/x86/kernel/platform-quirks.o
+init/built-in.a usr/built-in.a arch/x86/built-in.a kernel/built-in.a
+certs/built-in.a mm/built-in.a fs/built-in.a ipc/built-in.a
+security/built-in.a crypto/built-in.a block/built-in.a lib/built-in.a
+arch/x86/lib/built-in.a  lib/lib.a  arch/x86/lib/lib.a
+drivers/built-in.a sound/built-in.a samples/built-in.a net/built-in.a
+virt/built-in.a arch/x86/pci/built-in.a arch/x86/power/built-in.a
+arch/x86/video/built-in.a
+0.08user 0.02system 0:00.11elapsed 100%CPU (0avgtext+0avgdata 15984maxresident)k
+0inputs+896outputs (0major+11506minor)pagefaults 0swaps
+
+
+
+
+
 -- 
-2.33.0
-
+Best Regards
+Masahiro Yamada
