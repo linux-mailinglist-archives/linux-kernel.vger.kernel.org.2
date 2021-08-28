@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B2F3FA6EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 19:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4296B3FA6EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 19:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbhH1ROY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 13:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
+        id S229939AbhH1RRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 13:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbhH1ROV (ORCPT
+        with ESMTP id S229674AbhH1RRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 13:14:21 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7151C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:13:29 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id w4so17398149ljh.13
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:13:29 -0700 (PDT)
+        Sat, 28 Aug 2021 13:17:43 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00F5C06179A
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:16:52 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso12203871otv.12
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PG8z+XIonuWGdu3czEMXRzaWItNuzacbk0dZJgvuswY=;
-        b=daw0rvbIk5V4Zm8DIXbqAHGUuI91vkfb3EyX9zrL+a+hl26XvDgDL8r9dYETKE/Ae6
-         NVz34RW6KNXXaquZKrMsm4y3n1D2vXOf6KLPgIF3dO3k1XtDxSAoVKVtq5UPuEzZOwXY
-         C+6YEcQF+K1cqgH+D2AtQjtQx4cGEZE99d2fs=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Q3vx9KPM0ynEgRyDybcuLPMlUBUC/MjvyIKkhWo2C9Y=;
+        b=cQpEkhuIKs61Vf3WunJpRhCiumTRy1vtfM7OwvmTWYxvdHo8sNaJKXBY6RCExXjfw3
+         pxjsa6BUzmaBEEVpFSYhyCq3qnhIkUt4hUUsGlfrUxJmpoivWPCO1I8sWi3PY+XHY113
+         olLH8qayt1qTv7UC1RFPDkTRuUCjvW//liokyp6Ye2Gl55jvMVcDadwUFFObYkddEOs8
+         /el6uuR6zZpnRgLoLQIflveeZ/QXszVrMISEnUCPSxtrpF2cGy50KaGz+dZ2YH3ej20s
+         3IBb7jd0B2Z67KByfkh8ejMzTTlRM01dMWjq3XvbcpUnQd2xhOHpLsh1t2/BiO/hF+qb
+         ZV6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PG8z+XIonuWGdu3czEMXRzaWItNuzacbk0dZJgvuswY=;
-        b=ii25bu5up2LtFMbNc/x4lLcAHU6hsUuMTxS70L17wkjVmxwHNXzGbFf6MeO969yEWn
-         +y/sgV6B/SHNCGqgMKGRGi4564a1uSkDZscWgUgJzaeOjqi/nuTfZmHN5y7Qg/jYZWIM
-         j+Mpg1F0kiBuWpMRXw/tP3y+pSepXkhQ2rylpK2ELv9MAUvGxy9hv0CJNe7pRcwB/V72
-         /xZlW2mbLObdjacFaxwtep5a4gALRwvgi05ehXgTDrUuCUpsSlqPctuP7Dj61bQs1AXI
-         D21UK6vbtoFzpJjgn8v7NApZQcK58Z1hXWm1QcjFYqwYtJlvKUdGyb8bGfD9H9ruYrmu
-         z/qQ==
-X-Gm-Message-State: AOAM533FW2/fjyyrPnDeKNfblLHiOprdOPO/hIwEiGIL16wrUrvadNt2
-        C+Eg+2i9HwPzWWYzp70cZ4CQBwWNLkpVBZnS
-X-Google-Smtp-Source: ABdhPJzEEZYumkA8EJFYVpgY9bt3yxmK5AvIebY0820zd9nmzIQoiJxa3dOssaVkA2iQaFS0h8l0AA==
-X-Received: by 2002:a2e:b613:: with SMTP id r19mr3043709ljn.136.1630170807953;
-        Sat, 28 Aug 2021 10:13:27 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id r199sm585979lff.266.2021.08.28.10.13.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Aug 2021 10:13:27 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id y6so17494042lje.2
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 10:13:27 -0700 (PDT)
-X-Received: by 2002:a2e:7d0e:: with SMTP id y14mr12752568ljc.251.1630170807239;
- Sat, 28 Aug 2021 10:13:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Q3vx9KPM0ynEgRyDybcuLPMlUBUC/MjvyIKkhWo2C9Y=;
+        b=nox8Jh1L+sQDkQ8NE+p8QwTkj+ert1eyQBfBd7V7XzpNvuTXGRaWPLENEaEk7uckKH
+         OYM8xA8JIzBB1J9pVuCipuSUeXBPjCyCAJZRNYHkjygBkVgDscmcaInjtsHwRVyhpxiR
+         nTCAMSummsZ8N+G64ixZiNrb8J/xyYJH7Qxby4v1bxySG43JjL5IVcpWKMA/3QVD8C/K
+         7hIntOy0f0e+E0+Q8295YhgtHP1FhY1o+OwTGHjFubC1hdVd766KzWl/rKSBJg+U2FmT
+         b4ygGprRLmLo7tpI9m56Y7j2bVDkrdKZTWzhRHMIfts0KYSr1Wr8GlPbLe1yqmMomjJq
+         2Bqw==
+X-Gm-Message-State: AOAM533V7bUuzaUAKAMSwVOZWXlJ/prUSfPEuUe50AueVh8b34jwo3yP
+        s4TCgTDGE65WciqSZUWwS+lZeA==
+X-Google-Smtp-Source: ABdhPJwWVKLH+PWa5DIz6f1PzZytQfIjCnHKaoNQWVuvkkNMnvWrp6rSiaLr8zGGgVluzVXI1JOyxQ==
+X-Received: by 2002:a05:6830:1184:: with SMTP id u4mr13170641otq.55.1630171011667;
+        Sat, 28 Aug 2021 10:16:51 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 31sm1940409oti.63.2021.08.28.10.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Aug 2021 10:16:51 -0700 (PDT)
+Date:   Sat, 28 Aug 2021 12:16:48 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] pinctrl: qcom: Add SM6350 pinctrl driver
+Message-ID: <YSpvgNCxKk4zgsCP@yoga>
+References: <20210828125112.14721-1-konrad.dybcio@somainline.org>
+ <20210828125112.14721-2-konrad.dybcio@somainline.org>
+ <YSo+lTwmbVpZYvxS@yoga>
+ <501ee7b9-3db2-7a4a-e25a-fcfbce645bc7@codeaurora.org>
 MIME-Version: 1.0
-References: <20210827164926.1726765-1-agruenba@redhat.com> <20210827164926.1726765-5-agruenba@redhat.com>
- <20210827205644.lkihrypv27er5km3@kari-VirtualBox>
-In-Reply-To: <20210827205644.lkihrypv27er5km3@kari-VirtualBox>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 28 Aug 2021 10:13:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh-TeAeraYo9jM7FsAVDtfCji_5ao=B3eoO10Sf2SdeTA@mail.gmail.com>
-Message-ID: <CAHk-=wh-TeAeraYo9jM7FsAVDtfCji_5ao=B3eoO10Sf2SdeTA@mail.gmail.com>
-Subject: Re: [PATCH v7 04/19] iov_iter: Turn iov_iter_fault_in_readable into fault_in_iov_iter_readable
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, ntfs3@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <501ee7b9-3db2-7a4a-e25a-fcfbce645bc7@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 1:56 PM Kari Argillander
-<kari.argillander@gmail.com> wrote:
->
-> At least this patch will break ntfs3 which is in next. It has been there
-> just couple weeks so I understand. I added Konstantin and ntfs3 list so
-> that we know what is going on. Can you please info if and when do we
-> need rebase.
+On Sat 28 Aug 10:43 CDT 2021, Maulik Shah wrote:
+> On 8/28/2021 7:18 PM, Bjorn Andersson wrote:
+> > On Sat 28 Aug 07:51 CDT 2021, Konrad Dybcio wrote:
+[..]
+> > > diff --git a/drivers/pinctrl/qcom/pinctrl-sm6350.c b/drivers/pinctrl/qcom/pinctrl-sm6350.c
+[..]
+> > > +static const struct msm_gpio_wakeirq_map sm6350_pdc_map[] = {
+> > > +	{ 3, 126 }, { 4, 151 }, { 7, 58 }, { 8, 113 }, { 9, 66 }, { 11, 106 },//
+> > > +	{ 12, 59 }, { 13, 112 }, { 16, 73 }, { 17, 74 }, { 18, 75 }, { 19, 76 },//
+> > > +	{ 21, 130 }, { 22, 96 }, { 23, 146 }, { 24, 114 }, { 25, 83 },//
+> > > +	{ 27, 84 }, { 28, 85 }, { 34, 147 }, { 35, 92 }, { 36, 93 }, { 37, 94 },//
+> > > +	{ 38, 68 }, { 48, 100 }, { 50, 57 }, { 51, 81 }, { 52, 80 }, { 53, 69 },//
+> > > +	{ 54, 71 }, { 55, 70 }, { 57, 152 }, { 58, 115 }, { 59, 116 }, { 60, 117 },//
+> > > +	{ 61, 118 }, { 62, 119 }, { 64, 121 }, { 66, 127 }, { 67, 128 },//
+> > > +	{ 69, 60 }, { 73, 78 }, { 78, 135 }, { 82, 138 }, { 83, 140 },//
+> > > +	{ 84, 141 }, { 85, 98 }, { 87, 88 }, { 88, 107 }, { 89, 109 },//
+> > > +	{ 90, 110 }, { 91, 111 }, { 92, 149 }, { 93, 101 }, { 94, 61 },//
+> > > +	{ 95, 65 }, { 96, 95 }, { 97, 72 }, { 98, 145 }, { 99, 150 },//
+> > > +	{ 100, 108 }, { 104, 129 }, { 107, 131 }, { 110, 132 }, { 112, 133 },//
+> > > +	{ 114, 134 }, { 116, 136 }, { 118, 137 }, { 122, 97 }, { 123, 99 },//
+> minor:
+> 
+> above lines in sm6350_pdc_map[] has // at the end.  Probably Bjorn might fix
+> them when applying.
+> 
 
-No need to rebase. It just makes it harder for me to pick one pull
-over another, since it would mix the two things together.
+Thanks for noticing Maulik! Konrad, can you please trim those when
+you're respinning the binding?
 
-I'll notice the semantic conflict as I do my merge build test, and
-it's easy for me to fix as part of the merge - whichever one I merge
-later.
 
-It's good if both sides remind me about the issue, but these kinds of
-conflicts are not a problem.
+Maulik, when replying to long patches, please trim out unrelated
+snippets so that it's easier to spot your comments in the large block of
+text.
 
-And yes, it does happen that I miss conflicts like this if I merge
-while on the road and don't do my full build tests, or if it's some
-architecture-specific thing or a problem that doesn't happen on my
-usual allmodconfig testing.  But neither of those cases should be
-present in this situation.
-
-                    Linus
+Thanks,
+Bjorn
