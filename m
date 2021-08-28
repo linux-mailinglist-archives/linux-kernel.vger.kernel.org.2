@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499143FA5C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 15:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A1B3FA5CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Aug 2021 15:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234331AbhH1NL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 09:11:27 -0400
-Received: from relay07.th.seeweb.it ([5.144.164.168]:53083 "EHLO
-        relay07.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234188AbhH1NL0 (ORCPT
+        id S234323AbhH1NTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 09:19:12 -0400
+Received: from relay02.th.seeweb.it ([5.144.164.163]:41247 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232574AbhH1NTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 09:11:26 -0400
-Received: from [192.168.1.101] (83.6.168.105.neoplus.adsl.tpnet.pl [83.6.168.105])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 78E9A3E7BD;
-        Sat, 28 Aug 2021 15:10:33 +0200 (CEST)
-Subject: Re: [PATCH v2 2/2] pinctrl: qcom: Add SM6350 pinctrl driver
+        Sat, 28 Aug 2021 09:19:11 -0400
+Received: from localhost.localdomain (83.6.168.105.neoplus.adsl.tpnet.pl [83.6.168.105])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 995A01F6A2;
+        Sat, 28 Aug 2021 15:18:18 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     ~postmarketos/upstreaming@lists.sr.ht
 Cc:     martin.botka@somainline.org,
         angelogioacchino.delregno@somainline.org,
         marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Rob Herring <robh@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        Vinod Koul <vkoul@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210828125112.14721-1-konrad.dybcio@somainline.org>
- <20210828125112.14721-2-konrad.dybcio@somainline.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <b96e0d11-8c05-9850-c4d9-69f3ce6f9f19@somainline.org>
-Date:   Sat, 28 Aug 2021 15:10:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: [PATCH v2 01/18] dt-bindings: arm: cpus: Add Kryo 560 CPUs
+Date:   Sat, 28 Aug 2021 15:17:56 +0200
+Message-Id: <20210828131814.29589-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210828125112.14721-2-konrad.dybcio@somainline.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Document Kryo 560 CPUs found in Qualcomm Snapdragon 690 (SM6350).
 
-On 28.08.2021 14:51, Konrad Dybcio wrote:
-> This adds pincontrol driver for tlmm block found in SM6350 SoC
->
-> This patch is based on downstream copyleft code.
->
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
-> Changes since v1:
-> - Add .wakeirq_dual_edge_errata = true
->
->  drivers/pinctrl/qcom/Kconfig          |    9 +
->  drivers/pinctrl/qcom/Makefile         |    1 +
->  drivers/pinctrl/qcom/pinctrl-sm6350.c | 1593 +++++++++++++++++++++++++
->  3 files changed, 1603 insertions(+)
->  create mode 100644 drivers/pinctrl/qcom/pinctrl-sm6350.c
+Reviewed-by:  AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/arm/cpus.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-I forgot to add Bjorn's r-b [1], sorry for that.
-
-
-Konrad
-
-
-[1] https://patchwork.kernel.org/project/linux-arm-msm/patch/20210820203751.232645-3-konrad.dybcio@somainline.org/#24400233
+diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+index 9a2432a88074..897eec887e5a 100644
+--- a/Documentation/devicetree/bindings/arm/cpus.yaml
++++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+@@ -171,6 +171,7 @@ properties:
+       - qcom,kryo385
+       - qcom,kryo468
+       - qcom,kryo485
++      - qcom,kryo560
+       - qcom,kryo685
+       - qcom,scorpion
+ 
+-- 
+2.33.0
 
