@@ -2,80 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF9B3FABF4
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 15:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7663FABF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 15:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235506AbhH2NYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 09:24:10 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:43814
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235376AbhH2NYI (ORCPT
+        id S235785AbhH2NY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 09:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235759AbhH2NYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 09:24:08 -0400
-Received: from workstation5.fritz.box (ip-88-152-144-157.hsi03.unitymediagroup.de [88.152.144.157])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 837F83F0B8;
-        Sun, 29 Aug 2021 13:23:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630243395;
-        bh=Lck8ieg/DRVz0Gp1/fiKpkSJ54XkbC9/gukX6sShCVA=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=Xp1+St3j8flp394JKP8Spx5GM1WW090lOQ+G4xpW6rDhipjXBx9PgWIzACu/iLKI6
-         8sA+O6ChILCe5f3/6KctodaZJPIkewqXgSpjhLhO0c4ymArYMkmfV8w40jZN84NQvK
-         sAXvJU8qj2d8lBshtY1Cyub/FKqhHM3vknVFFi2zpQZpkj3syIiut3/NyHsntnXlmJ
-         thcrmh0QZ1ps2rVv2fsq/maaICMvN+XO0PpSCeGbEvAtHKxXoCv7LpFbDXFtu+x687
-         xo9yGOYv3Fn4dgx9NCnV8QKGdegV4ToqqyIgardHYtj3GCoJIirHzWqPDpP+emG0ZF
-         zABBFVbNl3tPg==
-From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Heinrich Schuchardt <xypron.gpk@gmx.de>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Subject: [PATCH v2: 1/1] efi/libstub: "Exiting bootservices" message
-Date:   Sun, 29 Aug 2021 15:23:10 +0200
-Message-Id: <20210829132310.75687-1-heinrich.schuchardt@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Sun, 29 Aug 2021 09:24:25 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A969C061575;
+        Sun, 29 Aug 2021 06:23:33 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id h13so18278705wrp.1;
+        Sun, 29 Aug 2021 06:23:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=R3pAucoQ7QlH4/SY6hcDE/PrvHPR7ZVMlnfCsrZbNiM=;
+        b=RK8xZvCGrvsBPf0RaCsD0lCgh6cjjEkGhhOHKjVTP8NVaL6pOiNYyp6nbHtg4hqoj7
+         mGc3A2Fo+0jG10QLW58twlQk4UGM4a9t0ENwBGGszCFKxU+pLOXgL/yOdB3xXWeQlLdd
+         1zURc1YthEJh/lMGgkz2Pc7o0SIKzujoH/rpQjnLAbqRgME/vKXSvsR2VH+wvtKHAGZo
+         rnVskSvuYacnWAGoVYhYK9XKFIFDQUPzFdSxz0dy+G4q9FVoQ489ZmLGEJKJzzZUZ1U7
+         vJDZ35jPuYsyKRGlwUAgJPWBqxZa89cTxN6XRdtdpxyV5iQls9eIWcP3KdobXjBJu79H
+         ZChw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=R3pAucoQ7QlH4/SY6hcDE/PrvHPR7ZVMlnfCsrZbNiM=;
+        b=cFtnSp9qaLnfchIY31qoW8eFdU1/pR/Ipe7n3FrLS1p/6oEl6MI+swpulqwqP4dB9n
+         1U4HYDJtCSTIJDh9BF6FVKnj7RoTCAdnA/6mGfiyV3swk9lUBZMipsBBjUFX+ui5EUsB
+         yuP1Q9ld1yjgT7p5R1CELMZv+wuvyTJ7qWD4eYTg0Q1EOu0M+w2SZeEIvwOZJttuGkHF
+         6VI3u2Rp9Ky42LEqEVRgXM+uj/Unm6wXZoV/iW2O2cC01hzS1adCK0zuKtG/MYDI1mTh
+         3Fgg+90anKCN1drL5VvIrTEE51fNdcpur1mwZ6YOgbsEecbA/XeTvTl8J3qcZfju8FtL
+         lS3A==
+X-Gm-Message-State: AOAM532bFogXr4+5bzSG8TeAUJIO/lwMccpbGXASCQwkW5UDG8oa3Vn0
+        A2CAoMACwZiusnV2kQGE4sNCbodz/4Ujgg==
+X-Google-Smtp-Source: ABdhPJxBrqne3mDHQZusMUKYdndRuQd8LB3mR2SwQDgVTQ8z0QAKEMCTl64z0yQr2kDW5oZDthh4KA==
+X-Received: by 2002:adf:c10e:: with SMTP id r14mr3102358wre.313.1630243411780;
+        Sun, 29 Aug 2021 06:23:31 -0700 (PDT)
+Received: from [192.168.1.107] ([147.235.73.50])
+        by smtp.gmail.com with ESMTPSA id u27sm12845779wru.2.2021.08.29.06.23.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Aug 2021 06:23:31 -0700 (PDT)
+Subject: Re: [PATCH 3/3] checkkconfigsymbols.py: Forbid passing 'HEAD' to
+ --commit
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Ariel Marcovitch <arielmarcovitch@gmail.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Rothberg <valentinrothberg@gmail.com>
+References: <20210822192205.43210-1-arielmarcovitch@gmail.com>
+ <20210822192205.43210-4-arielmarcovitch@gmail.com>
+ <CAK7LNARmSmTTPRWcgcPF8kRntSFuaPkLD0A=xuz=CAp4SzxV=Q@mail.gmail.com>
+From:   Ariel Marcovitch <trhtkmarco@gmail.com>
+Message-ID: <b7f9e9a8-6854-ef3b-a20c-3b4b3d2d8440@gmail.com>
+Date:   Sun, 29 Aug 2021 16:23:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNARmSmTTPRWcgcPF8kRntSFuaPkLD0A=xuz=CAp4SzxV=Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The message
+Hello!
 
-    "Exiting boot services and installing virtual address map...\n"
+On 24/08/2021 16:31, Masahiro Yamada wrote:
+> On Mon, Aug 23, 2021 at 4:23 AM Ariel Marcovitch
+> <arielmarcovitch@gmail.com> wrote:
+>> As opposed to the --diff option, --commit can get ref names instead of
+>> commit hashes.
+>>
+>> When using the --commit option, the script resets the working directory
+>> to the commit before the given ref, by adding '~' to the end of the ref.
+>>
+>> However, the 'HEAD' ref is relative, and so when the working directory
+>> is reset to 'HEAD~', 'HEAD' points to what was 'HEAD~'. Then when the
+>> script resets to 'HEAD' it actually stays in the same commit. In this
+>> case, the script won't report any cases because there is no diff between
+>> the cases of the two refs.
+>>
+>> Prevent the user from using HEAD refs.
+>>
+>> A better solution might be to resolve the refs before doing the
+>> reset, but for now just disallow such refs.
+>
+> Better than doing nothing.
+> So, applied to linux-kbuild.
+>
+>
+>
+>
+>
+>> Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
+>> ---
+>>   scripts/checkkconfigsymbols.py | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/scripts/checkkconfigsymbols.py b/scripts/checkkconfigsymbols.py
+>> index 875e9a2c14b2..6259698e662d 100755
+>> --- a/scripts/checkkconfigsymbols.py
+>> +++ b/scripts/checkkconfigsymbols.py
+>> @@ -103,6 +103,9 @@ def parse_options():
+>>                        "continue.")
+>>
+>>       if args.commit:
+>> +        if args.commit.startswith('HEAD'):
+>> +            sys.exit("The --commit option can't get use the HEAD ref")
 
-is even shown if we have efi=novamap on the command line or the firmware
-does not provide EFI_RT_SUPPORTED_SET_VIRTUAL_ADDRESS_MAP.
+Just realized that the message says "can't get use" which doesn't make
+much sense :)
 
-To avoid confusion just print
+Do you want me to send a new patch to fix it?
 
-    "Exiting boot services...\n"
+>> +
+>>           args.find = False
+>>
+>>       if args.ignore:
+>> --
+>> 2.25.1
+>>
+>
+Thanks for your time :)
 
-Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
----
-v2:
-	reduce complexity, use same message irrespective of efi_novamap
----
- drivers/firmware/efi/libstub/fdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/efi/libstub/fdt.c b/drivers/firmware/efi/libstub/fdt.c
-index 365c3a43a198..fe567be0f118 100644
---- a/drivers/firmware/efi/libstub/fdt.c
-+++ b/drivers/firmware/efi/libstub/fdt.c
-@@ -271,7 +271,7 @@ efi_status_t allocate_new_fdt_and_exit_boot(void *handle,
- 		return status;
- 	}
- 
--	efi_info("Exiting boot services and installing virtual address map...\n");
-+	efi_info("Exiting boot services...\n");
- 
- 	map.map = &memory_map;
- 	status = efi_allocate_pages(MAX_FDT_SIZE, new_fdt_addr, ULONG_MAX);
--- 
-2.30.2
+Ariel Marcovitch
 
