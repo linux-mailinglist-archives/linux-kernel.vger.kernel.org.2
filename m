@@ -2,78 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A6B3FACFB
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 18:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8273FACF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 18:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbhH2P7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235576AbhH2P7u (ORCPT
+        id S235689AbhH2P7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:59:30 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:58818
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S235548AbhH2P73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:59:50 -0400
-X-Greylist: delayed 539 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 29 Aug 2021 08:58:58 PDT
-Received: from dnyon.com (unknown [IPv6:2001:ba0:1800:12f::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5403EC061575;
-        Sun, 29 Aug 2021 08:58:58 -0700 (PDT)
-Received: from dnyon.com (45.74.222.87.dynamic.jazztel.es [87.222.74.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dnyon.com (Postfix) with ESMTPSA id 44C304047D;
-        Sun, 29 Aug 2021 15:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
-        t=1630252202; bh=d+2QNTvIoV14dRg4l4dGxY/K6mqRrojAgpr6qjkd1vY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Osy384ieHriXcIo+oFdAZN118xCPRIeNgdh3SG47Yuvxa8GT3a7PTQAHpNvqleZ71
-         A82drEb1RMbHvlB+SOE2fySWzXW/9s//juzRTYmD1wZJySnxSn06bhdMxnVK52z5eH
-         43jwf/rzq6mR9tyJ1IyHbanN5niGc7Krc1SmQXOlHLKMpQurB1k3OKDVRGjEzbwoVw
-         IYIe2YV3Fl2loGuCKL9F9Nze+qU+Wb6MRvNomHoGXx5Y9ahxk6hIfpFFwlDpo82Jjj
-         HX5yMxELFE/PCrbbQxYdY2Gh5q0cMldXwyyFpNF57YBjUvHGuUJOsH5lrhbhjKd6sq
-         GRPkDNrfzAPXA==
-From:   Alejandro Tafalla <atafalla@dnyon.com>
-Cc:     Alejandro Tafalla <atafalla@dnyon.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] dt-bindings: sound: max98927: Add reset-gpios optional property
-Date:   Sun, 29 Aug 2021 17:45:44 +0200
-Message-Id: <20210829154545.383119-3-atafalla@dnyon.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210829154545.383119-1-atafalla@dnyon.com>
-References: <20210829154545.383119-1-atafalla@dnyon.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Sun, 29 Aug 2021 11:59:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=rgUZgbBBtTunyYwAzXQPQn5I+ZYWQlJxRslZk4bBoZ4=; b=q
+        64EEFqLW+jM6DDmDr0CupQEoRgSnoYb4dgLsfRwUmmbJyOe16kEPfWHwRkt8PvPd
+        97Wp12Gi5m9+Y/G6IRjqBpeBhyooIg3tsiMspYJiUKL9CECpAZ+OVwY4iYE9s//d
+        aMv5rkVN3yBeCpSrLRVunNcjSs0dpXQYYWMwt+pIv8=
+Received: from localhost.localdomain (unknown [223.104.213.4])
+        by app2 (Coremail) with SMTP id XQUFCgBH_j+PrithQNdfAQ--.10733S3;
+        Sun, 29 Aug 2021 23:58:07 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Subject: [PATCH] net: sched: Fix qdisc_rate_table refcount leak when get tcf_block failed
+Date:   Sun, 29 Aug 2021 23:58:01 +0800
+Message-Id: <1630252681-71588-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgBH_j+PrithQNdfAQ--.10733S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF1UWw1Dtw1fGrW7Kw4rKrg_yoWfXFb_Gw
+        n5WF1xZr10qr1UAwsrta95GryS9F1Ivws5ArWDKrWDX3yFyF98JFZYgry8XryfGF42k3s8
+        Jr9Ig3s8Aw4I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE14v_XrWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUjf-BJUUUUU==
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the reset-gpios as an optional property because some devices might 
-not need it to work properly.
+The reference counting issue happens in one exception handling path of
+cbq_change_class(). When failing to get tcf_block, the function forgets
+to decrease the refcount of "rtab" increased by qdisc_put_rtab(),
+causing a refcount leak.
 
-Signed-off-by: Alejandro Tafalla <atafalla@dnyon.com>
+Fix this issue by jumping to "failure" label when get tcf_block failed.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 ---
- Documentation/devicetree/bindings/sound/max9892x.txt | 3 +++
- 1 file changed, 3 insertions(+)
+ net/sched/sch_cbq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/max9892x.txt b/Documentation/devicetree/bindings/sound/max9892x.txt
-index f6171591ddc6..73733fb60136 100644
---- a/Documentation/devicetree/bindings/sound/max9892x.txt
-+++ b/Documentation/devicetree/bindings/sound/max9892x.txt
-@@ -30,6 +30,9 @@ Required properties:
+diff --git a/net/sched/sch_cbq.c b/net/sched/sch_cbq.c
+index b79a7e27bb31..38a3a8394bbd 100644
+--- a/net/sched/sch_cbq.c
++++ b/net/sched/sch_cbq.c
+@@ -1614,7 +1614,7 @@ cbq_change_class(struct Qdisc *sch, u32 classid, u32 parentid, struct nlattr **t
+ 	err = tcf_block_get(&cl->block, &cl->filter_list, sch, extack);
+ 	if (err) {
+ 		kfree(cl);
+-		return err;
++		goto failure;
+ 	}
  
-   - reg : the I2C address of the device for I2C
- 
-+Optional Properties:
-+  - reset-gpios : reference to the GPIO connected to the reset pin, if any.
-+
- Example:
- 
- codec: max98927@3a {
+ 	if (tca[TCA_RATE]) {
 -- 
-2.32.0
+2.7.4
 
