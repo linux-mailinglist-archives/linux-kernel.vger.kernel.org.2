@@ -2,158 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC39F3FAA9E
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CCD3FAAA1
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235226AbhH2J6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 05:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235143AbhH2J5w (ORCPT
+        id S235062AbhH2J6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 05:58:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56779 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234835AbhH2J6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 05:57:52 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88087C06179A;
-        Sun, 29 Aug 2021 02:56:59 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id b4so24507491lfo.13;
-        Sun, 29 Aug 2021 02:56:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JGO9p+zPOp044oimW3cPMiovpARyFCGNR8oIPi8AZPU=;
-        b=iBRgBpa916zJw8hbi24LiAh9/Hu8m47Nx6o4pD2LlpkIF9aQ20gMPj9aGBwVKFWA6s
-         TOypUug1FWRmfJ+zy6F66Q2NzhA5r4uTzogjczATXBXb1StrEgnfQ57khKTPSxpUeDXP
-         LyF5CjDBBny0MI+fgdJEiy9d0vHPizWW0MKDV6m4n6n1vEGmRPKoXPJcczx+LTGGdMHK
-         w3hFynuvjM3XItFYn7AGGMno261glDZa1aYy0mTObKKSPNogvtEsb55uinMf78ncFRHZ
-         Fl3IruujPZGbrg6QHSeUYJWDGwRlYPKVeXpZMwBOcBlfKsJCcofh49+E0WWS66iVC+eE
-         bSgA==
+        Sun, 29 Aug 2021 05:58:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630231079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0K+G7pfYO0Ef+fomYcLnNjeeXSOSFqS366JUpbEaV6U=;
+        b=THaAbFr04UdfU+NlQUtoIRscJTuOI3Nq4pA5S/Pgp9YX08p80t2hjjTxAe3T2oop9/g68U
+        em/qxk4jCKKQSvDTvr5fE5TadhFVRaV8l/V0iZERLCXOcoIehQfxIwhV5gKn5NOH1G+JWJ
+        f7hbpPnFElo+A2YavPmdElWjmxnPuOo=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-_ReyzQT6OeeXdFxWQ9-MBQ-1; Sun, 29 Aug 2021 05:57:58 -0400
+X-MC-Unique: _ReyzQT6OeeXdFxWQ9-MBQ-1
+Received: by mail-ej1-f71.google.com with SMTP id o14-20020a1709062e8e00b005d37183e041so2934000eji.21
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:57:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JGO9p+zPOp044oimW3cPMiovpARyFCGNR8oIPi8AZPU=;
-        b=ca9uGdyJBzM0ycy3ni36PoPGNtIhTohgvRor1xh7NS7JWyZ3ghmUH1/8fP0ugsAdJQ
-         JlbB4PKop7zzk8C2IMt/UgIF5B/hc8TtvHEamTwJGkMmwGD/Fb0nOoehcDFMgyBDrSiY
-         AgSTKsDmqIfEiTsbPOcseWyjc9m9JPRYcvZToMgZf94BUvikcPOWmnVoap5dCsFkVduH
-         LHZ4O1ICKatxCTY072r9tT8GEC6aV5TgKvOYW0HPGU0IKXSxFJkAnrZAWvJd6WHbOjz3
-         ZAlpVipQ0sVPYQLsJd6qDd1oPKEhqK8sCNdwypi0w+aJ4T2axT5t75rnurH9P4DzgSg7
-         walQ==
-X-Gm-Message-State: AOAM531Iz/AmnU0bekdVWyXTTYGcuV7+nb1+igVaJzCBXGGvJr85fS3C
-        lPEWmp4xgzVc0Hlh72UYrlY=
-X-Google-Smtp-Source: ABdhPJxOSCcWhZDxEOrrYu3IkI+msRTPX1/R7tSg5QfgUJ47bXKNWWftop/khiWZU5RKKIBZQOaiTA==
-X-Received: by 2002:a05:6512:234d:: with SMTP id p13mr13276912lfu.461.1630231017923;
-        Sun, 29 Aug 2021 02:56:57 -0700 (PDT)
-Received: from localhost.localdomain (37-33-245-172.bb.dnainternet.fi. [37.33.245.172])
-        by smtp.gmail.com with ESMTPSA id d6sm1090521lfi.57.2021.08.29.02.56.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 02:56:57 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v3 9/9] fs/ntfs3: Show uid/gid always in show_options()
-Date:   Sun, 29 Aug 2021 12:56:14 +0300
-Message-Id: <20210829095614.50021-10-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210829095614.50021-1-kari.argillander@gmail.com>
-References: <20210829095614.50021-1-kari.argillander@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0K+G7pfYO0Ef+fomYcLnNjeeXSOSFqS366JUpbEaV6U=;
+        b=nvzxdyEDECl9+hdw4IBAGWMoftIDKr5yy7euVFJUlSmwRNdzTE3t1SxdtS1J/oc302
+         G8vBR3P8qd+sagXW/fbhm8SW+kmWtZafwv6Qw+cRW9/imKgyyizGmIIxydKMW+QgHF+V
+         xWQyMIJ5WsGQldrlNS1Aeqw2SmW2fVA4gFtIDN7NBssVncZpvG2zem8ciYe7MkukWClq
+         CS86zHZmFBY+fWKdhPCAqlq5ZK1uZjtuE/R7mmLyGTaj6IAnrfzbh+6mo6hliQnBGwJZ
+         7NNeEYq4Kp3BHlwBIiMkmvsMRCmu//I1UpewVEA4X+zGZhymQm3Ful1INdxGY6vNot9v
+         JiIQ==
+X-Gm-Message-State: AOAM53151cMXoG0JwiyqvvczcEQzjCBGi1fmDRUZ3oqhcfpKU4aTwEN+
+        7VvnUElhbS7N37X4Tf3wVOJ1WQvN9KeGZIDsY4apW+mdWQXgy8GbfSd4QhkpFWrcxl7tpEVtm3J
+        bptnwKbV8NHOWaUExVdzyoD01
+X-Received: by 2002:a05:6402:215:: with SMTP id t21mr18767571edv.68.1630231077201;
+        Sun, 29 Aug 2021 02:57:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxVWp8z2OSwJE2Z5L5H11RpYQbR14sREThd8a94tP6IStunw69DzeSddSDgABlBKEp9fnnxCg==
+X-Received: by 2002:a05:6402:215:: with SMTP id t21mr18767565edv.68.1630231077055;
+        Sun, 29 Aug 2021 02:57:57 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id y20sm3177621eje.113.2021.08.29.02.57.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Aug 2021 02:57:56 -0700 (PDT)
+Subject: Re: [PATCH v6 0/1] asus-wmi: Add support for custom fan curves
+To:     "Luke D. Jones" <luke@ljones.dev>, linux-kernel@vger.kernel.org
+Cc:     pobrn@protonmail.com, linux@roeck-us.net,
+        platform-driver-x86@vger.kernel.org
+References: <20210829071402.576380-1-luke@ljones.dev>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <cf42ddd7-29ed-ff8b-7d03-958187863b70@redhat.com>
+Date:   Sun, 29 Aug 2021 11:57:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210829071402.576380-1-luke@ljones.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Show options should show option according documentation when some value
-is not default or when ever coder wants. Uid/gid are problematic because
-it is hard to know which are defaults. In file system there is many
-different implementation for this problem.
+Hi Luke,
 
-Some file systems show uid/gid when they are different than root, some
-when user has set them and some show them always. There is also problem
-that what if root uid/gid change. This code just choose to show them
-always. This way we do not need to think this any more.
+On 8/29/21 9:14 AM, Luke D. Jones wrote:
+> Add support for custom fan curves found on some ASUS ROG laptops.
+> 
+> - V1
+>   + Initial patch work
+> - V2
+>   + Don't fail and remove wmi driver if error from
+>     asus_wmi_evaluate_method_buf() if error is -ENODEV
+> - V3
+>   + Store the "default" fan curves
+>   + Call throttle_thermal_policy_write() if a curve is erased to ensure
+>     that the factory default for a profile is applied again
+> - V4
+>   + Do not apply default curves by default. Testers have found that the
+>     default curves don't quite match actual no-curve behaviours
+>   + Add method to enable/disable curves for each profile
+> - V5
+>   + Remove an unrequired function left over from previous iterations
+>   + Ensure default curves are applied if user writes " " to a curve path
+>   + Rename "active_fan_curve_profiles" to "enabled_fan_curve_profiles" to
+>     better reflect the behavious of this setting
+>   + Move throttle_thermal_policy_write_*pu_curves() and rename to
+>     fan_curve_*pu_write()
+>   + Merge fan_curve_check_valid() and fan_curve_write()
+>   + Remove some leftover debug statements
+> - V6
+>   + Refactor data structs to store  array or u8 instead of strings.
+>     This affects the entire patch except the enabled_fan_curves block
+>   + Use sysfs_match_string in enabled_fan_curve block
+>   + Add some extra comments to describe things
+>   + Allow some variation in how fan curve input can be formatted
+>   + Use SENSOR_DEVICE_ATTR_2_RW() to reduce the amount of lines per
+>     fan+profile combo drastically
 
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
----
- fs/ntfs3/ntfs_fs.h | 23 ++++++++++-------------
- fs/ntfs3/super.c   | 12 ++++--------
- 2 files changed, 14 insertions(+), 21 deletions(-)
+Thank you for your continued work on this. I read in the discussin of v5
+that you discussed using the standard auto_point#_pwm, auto_point#_temp
+pairs. I see here that you have decided to not go that route, may I ask
+why ?
 
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index 5df55bc733bd..a3a7d10de7cb 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -60,19 +60,16 @@ struct ntfs_mount_options {
- 	u16 fs_fmask_inv;
- 	u16 fs_dmask_inv;
- 
--	unsigned uid : 1, /* uid was set */
--		gid : 1, /* gid was set */
--		fmask : 1, /* fmask was set */
--		dmask : 1, /*dmask was set*/
--		sys_immutable : 1, /* immutable system files */
--		discard : 1, /* issue discard requests on deletions */
--		sparse : 1, /*create sparse files*/
--		showmeta : 1, /*show meta files*/
--		nohidden : 1, /*do not show hidden files*/
--		force : 1, /*rw mount dirty volume*/
--		noacs_rules : 1, /*exclude acs rules*/
--		prealloc : 1 /*preallocate space when file is growing*/
--		;
-+	unsigned fmask : 1; /* fmask was set */
-+	unsigned dmask : 1; /*dmask was set*/
-+	unsigned sys_immutable : 1; /* immutable system files */
-+	unsigned discard : 1; /* issue discard requests on deletions */
-+	unsigned sparse : 1; /*create sparse files*/
-+	unsigned showmeta : 1; /*show meta files*/
-+	unsigned nohidden : 1; /*do not show hidden files*/
-+	unsigned force : 1; /*rw mount dirty volume*/
-+	unsigned noacs_rules : 1; /*exclude acs rules*/
-+	unsigned prealloc : 1; /*preallocate space when file is growing*/
- };
- 
- /* special value to unpack and deallocate*/
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index d7408b4f6813..d28fab6c2297 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -287,13 +287,11 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
- 		opts->fs_uid = make_kuid(current_user_ns(), result.uint_32);
- 		if (!uid_valid(opts->fs_uid))
- 			return invalf(fc, "ntfs3: Invalid value for uid.");
--		opts->uid = 1;
- 		break;
- 	case Opt_gid:
- 		opts->fs_gid = make_kgid(current_user_ns(), result.uint_32);
- 		if (!gid_valid(opts->fs_gid))
- 			return invalf(fc, "ntfs3: Invalid value for gid.");
--		opts->gid = 1;
- 		break;
- 	case Opt_umask:
- 		if (result.uint_32 & ~07777)
-@@ -512,12 +510,10 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
- 	struct ntfs_mount_options *opts = sbi->options;
- 	struct user_namespace *user_ns = seq_user_ns(m);
- 
--	if (opts->uid)
--		seq_printf(m, ",uid=%u",
--			   from_kuid_munged(user_ns, opts->fs_uid));
--	if (opts->gid)
--		seq_printf(m, ",gid=%u",
--			   from_kgid_munged(user_ns, opts->fs_gid));
-+	seq_printf(m, ",uid=%u",
-+		  from_kuid_munged(user_ns, opts->fs_uid));
-+	seq_printf(m, ",gid=%u",
-+		  from_kgid_munged(user_ns, opts->fs_gid));
- 	if (opts->fmask)
- 		seq_printf(m, ",fmask=%04o", ~opts->fs_fmask_inv);
- 	if (opts->dmask)
--- 
-2.25.1
+Regards,
+
+Hans
 
