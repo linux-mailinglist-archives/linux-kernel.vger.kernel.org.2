@@ -2,188 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC2A3FA84F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 05:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146533FA855
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 05:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhH2Dfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 23:35:41 -0400
-Received: from mga01.intel.com ([192.55.52.88]:20897 "EHLO mga01.intel.com"
+        id S233899AbhH2Dve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 23:51:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231558AbhH2Dfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 23:35:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10090"; a="240363148"
-X-IronPort-AV: E=Sophos;i="5.84,360,1620716400"; 
-   d="scan'208";a="240363148"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2021 20:34:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,360,1620716400"; 
-   d="scan'208";a="518163797"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Aug 2021 20:34:47 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mKBao-0003zI-Nh; Sun, 29 Aug 2021 03:34:46 +0000
-Date:   Sun, 29 Aug 2021 11:34:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- d25a025201ed98f4b93775e0999a3f2135702106
-Message-ID: <612b0033.UO8O7+IgwZ3wq+wb%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232954AbhH2Dv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 23:51:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A905860F35;
+        Sun, 29 Aug 2021 03:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630209036;
+        bh=hj8IppURBuA6lhrAt5dApf2VLeYLt8qeWhs1yObmonQ=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=pyTWFQF16TAOYnXPoAw/YAQum6E2OBIj2bYIAwtUKTzZQ+ynmQbas1hFFDI1tvTI2
+         //1MYLg9vOZXVHaAuQJGPekGJrBdkoNQs1r/c4+wLNOftjXwLIyQeW+bfXOHVKcXf0
+         0z9ROoO5RdKnu2hmyh/W2q7HMaMzDCeGjH7Uo6Ai/7EdczpjGNRmZfbc3xtmmedAFx
+         F3fCDArUBijQYgev3AbT+KBmnIG4Wx12NTR1edN/XOlw6+baRet/Lhp7JdhwuHC4VQ
+         lqkGZqdKfY8wqbyvU4eFgce0+fhKCG+vcuNZtqAjDSjbURlRN/20Jh4TIP9or7jlZ3
+         n9rLVNQDXSZIA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <08618b13-816b-7fc3-6ee6-fc222aef0607@somainline.org>
+References: <20210825204517.1278130-1-bjorn.andersson@linaro.org> <163000363556.1317818.13808174908685575043@swboyd.mtv.corp.google.com> <08618b13-816b-7fc3-6ee6-fc222aef0607@somainline.org>
+Subject: Re: [PATCH v2] clk: qcom: gcc-sdm660: Replace usage of parent_names
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Date:   Sat, 28 Aug 2021 20:50:35 -0700
+Message-ID: <163020903534.2218116.16710170594346529772@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
-branch HEAD: d25a025201ed98f4b93775e0999a3f2135702106  clocksource: Make clocksource watchdog test safe for slow-HZ systems
+Quoting Marijn Suijten (2021-08-26 12:16:57)
+> Hi Stephen,
+>=20
+> On 8/26/21 8:47 PM, Stephen Boyd wrote:
+> > Quoting Bjorn Andersson (2021-08-25 13:45:17)
+> >> Using parent_data and parent_hws, instead of parent_names, does protect
+> >> against some cases of incompletely defined clock trees. While it turns
+> >> out that the bug being chased this time was totally unrelated, this
+> >> patch converts the SDM660 GCC driver to avoid such issues.
+> >>
+> >> The "xo" fixed_factor clock is unused within the gcc driver, but
+> >> referenced from the DSI PHY. So it's left in place until the DSI driver
+> >> is updated.
+> >>
+> >> Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
+> >> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@som=
+ainline.org>
+> >> Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
+> >> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >> ---
+> >=20
+> > Applied to clk-next after moving back the arrays so the diff is smaller.
+> >=20
+>=20
+> Unfortunately the arrays cannot be moved back up since they (for the=20
+> most part) reference gpll clocks in `.hw =3D &gpll*` fields - these have =
 
-elapsed time: 723m
+> to be defined first or forward-declared otherwise, which is why the=20
+> arrays were moved down in the first place.
+>=20
+> The general structure nowadays seems to place these parent maps/data=20
+> right above the clock that uses them, making it easier to read.
+>=20
 
-configs tested: 130
-configs skipped: 4
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210827
-sh                           se7705_defconfig
-powerpc                        fsp2_defconfig
-xtensa                    smp_lx200_defconfig
-sh                              ul2_defconfig
-sh                        sh7785lcr_defconfig
-sh                           se7780_defconfig
-powerpc                      bamboo_defconfig
-arm                            xcep_defconfig
-sh                            hp6xx_defconfig
-arm                          simpad_defconfig
-powerpc                      makalu_defconfig
-mips                     cu1830-neo_defconfig
-sh                          sdk7780_defconfig
-x86_64                           alldefconfig
-powerpc                   microwatt_defconfig
-mips                          ath25_defconfig
-openrisc                 simple_smp_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                       ebony_defconfig
-sh                             espt_defconfig
-arm                        mvebu_v7_defconfig
-arm                             mxs_defconfig
-mips                     loongson1c_defconfig
-sh                        edosk7705_defconfig
-arm                        mini2440_defconfig
-arm                          iop32x_defconfig
-xtensa                           alldefconfig
-x86_64                           allyesconfig
-nds32                             allnoconfig
-mips                     loongson1b_defconfig
-alpha                               defconfig
-xtensa                              defconfig
-m68k                       m5249evb_defconfig
-powerpc                       ppc64_defconfig
-arm                        cerfcube_defconfig
-powerpc                      chrp32_defconfig
-arc                     haps_hs_smp_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                     kilauea_defconfig
-arm                           sunxi_defconfig
-mips                        bcm47xx_defconfig
-openrisc                    or1ksim_defconfig
-m68k                                defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a014-20210829
-x86_64               randconfig-a016-20210829
-x86_64               randconfig-a015-20210829
-x86_64               randconfig-a012-20210829
-x86_64               randconfig-a013-20210829
-x86_64               randconfig-a011-20210829
-i386                 randconfig-a011-20210829
-i386                 randconfig-a016-20210829
-i386                 randconfig-a012-20210829
-i386                 randconfig-a014-20210829
-i386                 randconfig-a013-20210829
-i386                 randconfig-a015-20210829
-i386                 randconfig-a011-20210827
-i386                 randconfig-a016-20210827
-i386                 randconfig-a012-20210827
-i386                 randconfig-a014-20210827
-i386                 randconfig-a013-20210827
-i386                 randconfig-a015-20210827
-arc                  randconfig-r043-20210829
-riscv                randconfig-r042-20210829
-s390                 randconfig-r044-20210829
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a001-20210829
-x86_64               randconfig-a006-20210829
-x86_64               randconfig-a005-20210829
-x86_64               randconfig-a003-20210829
-x86_64               randconfig-a004-20210829
-x86_64               randconfig-a002-20210829
-i386                 randconfig-a001-20210829
-i386                 randconfig-a006-20210829
-i386                 randconfig-a005-20210829
-i386                 randconfig-a004-20210829
-i386                 randconfig-a003-20210829
-i386                 randconfig-a011-20210828
-i386                 randconfig-a016-20210828
-i386                 randconfig-a012-20210828
-i386                 randconfig-a014-20210828
-i386                 randconfig-a013-20210828
-i386                 randconfig-a015-20210828
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Yes I applied a patch that only moved the arrays around first.
