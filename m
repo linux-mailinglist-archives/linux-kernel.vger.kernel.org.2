@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91AE3FAD6B
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C083FAD6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235866AbhH2RNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 13:13:01 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:10997 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhH2RNA (ORCPT
+        id S235884AbhH2ROs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 13:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhH2ROr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 13:13:00 -0400
-Date:   Sun, 29 Aug 2021 17:11:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1630257126;
-        bh=g8ovrn9TxlnMHd25HdXCOfQFAjbri5sLc5vEvUe/lSY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=nnxWTsDX4W1uX+UANf5bk3VhrPo4mNH8TJWLrdjHK0tVpSG6dPizRDD/IaYTRQb9v
-         /AT/I2wZlk9K6sP6VrjhWgfy7vzaCV9sTVaJpt93d2+EIkSq9v+GJ8mDAirA0p0Ozn
-         r1EY23i1CJYZU2fSqjRLBnK+cEMA+m4c9/exN3X0=
-To:     Al Viro <viro@zeniv.linux.org.uk>
-From:   "Caleb D.S. Brzezinski" <calebdsb@protonmail.com>
-Cc:     hirofumi@mail.parknet.co.jp, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Reply-To: "Caleb D.S. Brzezinski" <calebdsb@protonmail.com>
-Subject: Re: [PATCH 2/3] fat: add the msdos_format_name() filename cache
-Message-ID: <87o89gw4yy.fsf@protonmail.com>
-In-Reply-To: <YSujmt9vman41ecj@zeniv-ca.linux.org.uk>
-References: <20210829142459.56081-1-calebdsb@protonmail.com> <20210829142459.56081-3-calebdsb@protonmail.com> <YSujmt9vman41ecj@zeniv-ca.linux.org.uk>
+        Sun, 29 Aug 2021 13:14:47 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE73C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 10:13:55 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id p15so21564701ljn.3
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 10:13:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X3+Hge5VWCPxleA7QjQ9uJdJi5TXCLwleImqMNApEkI=;
+        b=b9XXk5TcEVP5nklPH7fPEnLD9pWgNcZ5Yhx5UUR/PFUhm1m6N7k6QSm050VxqTFXLk
+         je0jH7RFFDFKjdUCyaMUBI7pKf3v6VpE1Wn55cfI3WxiGveSr8tJSCNX77FmlOW1FlBf
+         MVk1EFVvCVQVe6W4GnHsVMvJbun2843NRqMADbS9l0XplcFn2Rc4yeU4dW/xj75d9SWv
+         W1t0Br8TUxliR1k+3JaEGARUPotYG2t0NdKbeMMnhY/dAM27T99nuILA4H1ylU8TJu8o
+         bNSEMS2WycL8IjI4XwWDH27EA8XRYQ8d4WiO428jVXZolxdzvbuGbdPqzwV1iiDaPenG
+         GsVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X3+Hge5VWCPxleA7QjQ9uJdJi5TXCLwleImqMNApEkI=;
+        b=rm02ojtmGwVKheaBh08nhcIGztvRmSOH+70gIYyzILHMgnfH+fSLf0o1R4J2cxovT7
+         b+0Qen5C2SSS+QHK3lfcTOm6RYsfYYuw5YJW4Krf/E22RaOjY1CDMr8EcxNUShuX/Tsm
+         h4ehzPY5z8vRpQD8OBGPofEx1dNVdh4se5hk45XWgHsr43fmXj9FI1V4YEni8LnZoYr0
+         z0C7ltz93oV+LpVz21PWzynGE33T4Rpi6CIUPTF8Xw+JuKSyKRsAhyyvJfYBcRdb9txt
+         g/xCWxAFUhjQ7BHYFX7vGSOuIeIggojW0aqMIBSZEgWlgbC9Ezp9LfdLlLZz4Ldgz9ZB
+         SJ/w==
+X-Gm-Message-State: AOAM530INchMfL7aYm4fGPYslWISGtENHPKg86jxJQezq4dDRTcTLgk2
+        PSyJmRh3WootTILGEWf7vXSX0P9Zn1Ff1w==
+X-Google-Smtp-Source: ABdhPJy2H5bWSLCuOrDu2NMN5yvggl2SXiJ+2JQBVZb/zSks0gALPhVpqK3lolW8qs7MQ+BvRQgXIw==
+X-Received: by 2002:a2e:90da:: with SMTP id o26mr16725947ljg.504.1630257233635;
+        Sun, 29 Aug 2021 10:13:53 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id n15sm1131731lfq.270.2021.08.29.10.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 10:13:53 -0700 (PDT)
+Date:   Sun, 29 Aug 2021 20:13:51 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        straube.linux@gmail.com, ross.schm.dev@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+Subject: Re: [PATCH v4] staging: r8188eu: core: remove null check before vfree
+Message-ID: <20210829171351.u63zoaqa3x5qfodt@kari-VirtualBox>
+References: <YSu9GQa1A3s6FYQx@user>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSu9GQa1A3s6FYQx@user>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al,
+On Sun, Aug 29, 2021 at 10:30:09PM +0530, Saurav Girepunje wrote:
+> Remove NULL check. NULL check before freeing function is not needed.
+> Correct the indentation.
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> ---
+> 
+> ChangeLog V4:
+> - Add Change log below --- line
+> 
+> ChangeLog V3:
+> - Add change log.
+> 
+> ChangeLog V2:
+> - Correct the indentation.
 
-"Al Viro" <viro@zeniv.linux.org.uk> writes:
+You need "---" here also. So everything what is between
 
-> On Sun, Aug 29, 2021 at 02:25:29PM +0000, Caleb D.S. Brzezinski wrote:
->> Implement the main msdos_format_name() filename cache. If used as a
->> module, all memory allocated for the cache is freed when the module is
->> de-registered.
->>
->> Signed-off-by: Caleb D.S. Brzezinski <calebdsb@protonmail.com>
->> ---
->>  fs/fat/namei_msdos.c | 35 +++++++++++++++++++++++++++++++++++
->>  1 file changed, 35 insertions(+)
->>
->> diff --git a/fs/fat/namei_msdos.c b/fs/fat/namei_msdos.c
->> index 7561674b1..f9d4f63c3 100644
->> --- a/fs/fat/namei_msdos.c
->> +++ b/fs/fat/namei_msdos.c
->> @@ -124,6 +124,16 @@ static int msdos_format_name(const unsigned char *n=
-ame, int len,
->>  =09unsigned char *walk;
->>  =09unsigned char c;
->>  =09int space;
->> +=09u64 hash;
->> +=09struct msdos_name_node *node;
->> +
->> +=09/* check if the name is already in the cache */
->> +
->> +=09hash =3D msdos_fname_hash(name);
->> +=09if (find_fname_in_cache(res, hash))
->> +=09=09return 0;
+---
+here
+---
 
-> Huh?  How could that possibly work, seeing that
-> =09* your hash function only looks at the first 8 characters
+will be ignored when you apply patch. This is good place to write
+changelog, if you have tested this with real hardware, if you have any
+guestions about your own implementation etc.
 
-My understanding was that the maximum length of the name considered when
-passed to msdos_format_name() was eight characters; see:
-
-=09=09while (walk - res < 8)
-
-and
-
-=09=09for (walk =3D res; len && walk - res < 8; walk++) {
-
-If that's an incorrect understanding, then yes, it definitely wouldn't
-work. A larger, more computationally intensive hash function would be
-required, which would most likely cancel out the improved lookup from
-the cache.
-
-> =09* your find_fname_in_cache() assumes that hash collisions
-> are impossible, which is... unlikely, considering the nature of
-> that hash function
-
-If the names are 8 character limited, then logically any name with the
-exact same set of characters would "collide" into the same formatted
-name. Again, if I misunderstood the constraints on the filenames, then
-yes, this is unnecessary.
-
-> Out of curiosity, how have you tested that thing?
-
-I've used it on my own FAT32 drives for profiling, run it through
-kmemleak, ksan, some stress tests, etc. for a few weeks. Like I said, I
-benchmarked it and it shaved about 0.2ms of time off my most common use
-case.
-
-Thanks.
-Caleb B.
-
---=20
-"Come now, and let us reason together," Says the LORD
-    -- Isaiah 1:18a, NASB
-
+> 
+>  drivers/staging/r8188eu/core/rtw_sta_mgt.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+> index f6dffed53a60..c3600cb1790a 100644
+> --- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+> +++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+> @@ -155,9 +155,8 @@ u32	_rtw_free_sta_priv(struct	sta_priv *pstapriv)
+>  		spin_unlock_bh(&pstapriv->sta_hash_lock);
+>  		/*===============================*/
+> 
+> -		if (pstapriv->pallocated_stainfo_buf)
+> -			vfree(pstapriv->pallocated_stainfo_buf);
+> -		}
+> +		vfree(pstapriv->pallocated_stainfo_buf);
+> +	}
+> 
+>  	return _SUCCESS;
+>  }
+> --
+> 2.32.0
+> 
