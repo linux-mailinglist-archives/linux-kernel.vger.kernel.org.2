@@ -2,257 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A620C3FADC1
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0673FADC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbhH2S1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 14:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
+        id S235902AbhH2S3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 14:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235917AbhH2S1k (ORCPT
+        with ESMTP id S235789AbhH2S3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 14:27:40 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACBFC0613D9
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:26:47 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id b65-20020a621b44000000b003edc0db6a05so821475pfb.19
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:26:47 -0700 (PDT)
+        Sun, 29 Aug 2021 14:29:37 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C7EC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:28:45 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so10801912pje.0
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:28:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=aZ7Pxe57fEMPbk2rJbVH9QT9ZPZ0Llj+AGW3Zhhzqrg=;
-        b=pMm/Mr/m+aeIjuPR3E6Tu57eT5lCddN9PZV3IMO6Pjou3ecMrqfq8+Qj6Fen1HDurR
-         Y2p+Z35+8u+klOa2DFSVyoCFHOv883/AKQR3Ef2+h+noBzSv1ohLwwphTLFL1kYaFkzk
-         Dy7JGgsxGDPDUvPXwJYz62ArCioB0ABY/Hin+iwPvE8iEBtrODAyduBi5vRzsh4j4SYA
-         ulBk++yfF46kwYWRdN8vyOWOw5JUGrg+IqVxgzINTcDykJoZdpyKoOCgow3gkx2hbVvz
-         ncSh/d89hB32jVFQUo1tBXUEsSCWOUI8GePUmgbvp5vBBDqKke0Pnlb/NG9bOVhicn5r
-         sLmQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ag9D8N0fhBIrol0HNSilfA7AMgyYglE49DL9RoGRtsU=;
+        b=svC4gFefGSS+cR/UbjmxUfdMp4uT7qfQz8vBEFSDJvv4yVkNw0lAR+cIyAtZtpP2JY
+         YDR7PG68+OREMz6GdOh3hpGjHgSDOJ/f/UfvY69fPcQNFd/tKoDj3NeNxCktR3aTXslN
+         zW4YMJQLpozi/SQEpm28Eg0O1bwgZd4ImCpgIj8sbIbLb2XR9ApTzHS7rn+UgrXyY11c
+         Htn0XXrmIJeFwBNpHLQj3Umhj1xYQ5jJ9SSBNql24qUHoznRI59RCpX8m5i0ZZhfznBM
+         vxrVz30o3NSlRUMd/a/OzVBURD31TFeMn2kSoIuy29KITTOOuhmXMemM8eDQuC71ImF/
+         B5rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=aZ7Pxe57fEMPbk2rJbVH9QT9ZPZ0Llj+AGW3Zhhzqrg=;
-        b=gPS/8YAzQ/pHN62Q2LJlc2M6fx29o/VDr21jNzHm99GubN6ifMBCTKantAEnKtpEzB
-         BMpBs5lOgt/jqmaGJUXdyXpe/9QBwqIyJ10dEWnecwhTq0wxnn4+huNIArzqQgoX8sOS
-         KFRczHWJuvpm4XY62OFZ1hUnJCgQFUuVqqRkgLO7JLR7zk1e1WCWd2kCQKJhtJ1T78WY
-         9JHm5NT5yK4FcVLUvCmvfw/My7NwWjR2n24Cb28F/C8EGVn/JcW+fPAMF7Qv6Tb9IFzp
-         EW6SLMK1pTa0cJFuhj1z9/byBIoM0leWl/puuFq33L9oOVqJhIsldJA6ibdy5IfBQ3mp
-         oQ3Q==
-X-Gm-Message-State: AOAM530QcLxkJ4mGxr1F6qS/HFJOwiJt3fBtggiZhj7RbjEnPk8nNz2H
-        4pm01ku8peqJhxfZLZrVel6Gl4my7YLE
-X-Google-Smtp-Source: ABdhPJzNdyDE37ZnSg/vofjbh4REKSTi7y/r+ggckFH2AlyLQ7A6Tw01hVhzg48Yv/9ZsyehNgKDIRPJeup2
-X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
- (user=mizhang job=sendgmr) by 2002:a17:903:2c2:b029:101:9c88:d928 with SMTP
- id s2-20020a17090302c2b02901019c88d928mr18444239plk.62.1630261607275; Sun, 29
- Aug 2021 11:26:47 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Sun, 29 Aug 2021 18:26:41 +0000
-In-Reply-To: <20210829182641.2505220-1-mizhang@google.com>
-Message-Id: <20210829182641.2505220-3-mizhang@google.com>
-Mime-Version: 1.0
-References: <20210829182641.2505220-1-mizhang@google.com>
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH v2 2/2] selftests: KVM: use dirty logging to check if page
- stats work correctly
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Peter Xu <peterx@redhat.com>, Ben Gardon <bgardon@google.com>,
-        Mingwei Zhang <mizhang@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ag9D8N0fhBIrol0HNSilfA7AMgyYglE49DL9RoGRtsU=;
+        b=Vzw+90TKeRcGWbsF9F2+4noXv4Z6jLhWWm7FnqPJPDwA5zQkWXd7M9wQ2UMBkl/6o4
+         vwTZRkbWu9VRw7I1R/7FiFlEN/1ocKAf8M5/daNepynT0FuhMwq3UxOt6m+4BKVgrHiF
+         6DmjePcxpGGvWoAsoGYuyML9B25v97PGWyE7wdZBlZ6f7IoJxzsktYh+PwP/V2+4eGo5
+         Q4wFxQe0fj/h2ARtvx7DqkRHahZqTj065jD6dD30yOWz6vtTHloWSJ4oFHMdUPldLbr5
+         UJQAiU54P4v6RjDRSBOpEQDw/3xHIpCn63sSWQdBpJ3plc8FH0ET0u9fDhMzvrvYe9PB
+         lUJQ==
+X-Gm-Message-State: AOAM531lEBikuQOWsbr0FPkcJmKy3cAPoLRkhy1/1eXrrvtY9Pa0BGSg
+        ztma2dT6ptycfk1IG/u7PP3kyIx7HvytnTKj5kM=
+X-Google-Smtp-Source: ABdhPJxILhmsT/D4BB4XHvQ4sLJiXMQUnZttdEevpvWn2M3282wW2knpdWHPjJtqDm+pn4FTHFSDu2sVyR65npqsmIM=
+X-Received: by 2002:a17:90a:ec0a:: with SMTP id l10mr373574pjy.26.1630261724681;
+ Sun, 29 Aug 2021 11:28:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+xTFBeH-x-=dsQK-K5KjZZ7JKmQggz2s26=p7g+71kZjA@mail.gmail.com>
+ <20210829164921.u5ntqk5jz2v3hlgr@h510> <CAPGkw+ypKOVsJF_Guna+9+q-+cApYzdBGHMPKKr6MAzGQtqy2g@mail.gmail.com>
+In-Reply-To: <CAPGkw+ypKOVsJF_Guna+9+q-+cApYzdBGHMPKKr6MAzGQtqy2g@mail.gmail.com>
+From:   Krish Jain <krishjain02939@gmail.com>
+Date:   Sun, 29 Aug 2021 20:28:33 +0200
+Message-ID: <CAPGkw+wGn1oTAO7JXXApDMm4cFfxXam913hOGnnup1nSOpcVPA@mail.gmail.com>
+Subject: Re: [PATCH] Declare the file_operations struct as const
+To:     Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When dirty logging is enabled, KVM splits the hugepage mapping in NPT/EPT
-into the smallest 4K size after guest VM writes to it. This property could
-be used to check if the page stats metrics work properly in KVM x86/mmu. At
-the same time, this logic might be used the other way around: using page
-stats to verify if dirty logging really splits all huge pages after guest
-VM writes to all memory.
+Basically it says "you must have a prebuilt kernel available that
+contains the configuration and header files used in the build." Since
+for the staging kernel  "make oldconfig" asked me for  more
+configurations apart from my old configuration file (as it reads the
+existing .config file that was used for an old kernel and prompts the
+user for options in the current kernel source that are not found in
+the file) . So I *don't* currently have a prebuilt kernel that
+contains all the configuration in my staging kernel's .config file. So
+do I have to build the kernel once before I can just build the module
+with "make CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android" ?
 
-So add page stats checking in dirty logging performance selftest. In
-particular, add checks in three locations:
- - just after vm is created;
- - after populating memory into vm without turning on dirty logging;
- - after guest vm writing to all memory again with dirty logging turned on.
 
-Tested using commands:
- - ./dirty_log_perf_test -s anonymous_hugetlb_1gb
- - ./dirty_log_perf_test -s anonymous_hugetlb_2mb
- - ./dirty_log_perf_test -s anonymous_thp
+Thanks again
 
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: David Matlack <dmatlack@google.com>
-Cc: Jing Zhang <jingzhangos@google.com>
-Cc: Peter Xu <peterx@redhat.com>
-
-Suggested-by: Ben Gardon <bgardon@google.com>
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
----
- .../selftests/kvm/dirty_log_perf_test.c       | 44 +++++++++++++++++++
- .../testing/selftests/kvm/include/test_util.h |  1 +
- .../selftests/kvm/include/x86_64/processor.h  |  7 +++
- tools/testing/selftests/kvm/lib/test_util.c   | 29 ++++++++++++
- 4 files changed, 81 insertions(+)
-
-diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-index 3c30d0045d8d..1fc63ad55cf3 100644
---- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-@@ -19,6 +19,10 @@
- #include "perf_test_util.h"
- #include "guest_modes.h"
- 
-+#ifdef __x86_64__
-+#include "processor.h"
-+#endif
-+
- /* How many host loops to run by default (one KVM_GET_DIRTY_LOG for each loop)*/
- #define TEST_HOST_LOOP_N		2UL
- 
-@@ -166,6 +170,18 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	vm = perf_test_create_vm(mode, nr_vcpus, guest_percpu_mem_size,
- 				 p->slots, p->backing_src);
- 
-+#ifdef __x86_64__
-+	/*
-+	 * No vCPUs have been started yet, so KVM should not have created any
-+	 * mapping at this moment.
-+	 */
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) == 0,
-+		    "4K page is non zero");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-+		    "2M page is non zero");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-+		    "1G page is non zero");
-+#endif
- 	perf_test_args.wr_fract = p->wr_fract;
- 
- 	guest_num_pages = (nr_vcpus * guest_percpu_mem_size) >> vm_get_page_shift(vm);
-@@ -211,6 +227,22 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	pr_info("Populate memory time: %ld.%.9lds\n",
- 		ts_diff.tv_sec, ts_diff.tv_nsec);
- 
-+#ifdef __x86_64__
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-+		    "4K page is zero");
-+	/* Ensure THP page stats is non-zero to minimize the flakiness. */
-+	if (p->backing_src == VM_MEM_SRC_ANONYMOUS_THP)
-+		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) > 0
-+			"2M page number is zero");
-+	else if (p->backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB_2MB)
-+		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) ==
-+			(guest_percpu_mem_size * nr_vcpus) >> X86_PAGE_2M_SHIFT,
-+			"2M page number does not match");
-+	else if (p->backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB)
-+		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) ==
-+			(guest_percpu_mem_size * nr_vcpus) >> X86_PAGE_1G_SHIFT,
-+			"1G page number does not match");
-+#endif
- 	/* Enable dirty logging */
- 	clock_gettime(CLOCK_MONOTONIC, &start);
- 	enable_dirty_logging(vm, p->slots);
-@@ -256,6 +288,18 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 				iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
- 		}
- 	}
-+#ifdef __x86_64__
-+	/*
-+	 * When vCPUs writes to all memory again with dirty logging enabled, we
-+	 * should see only 4K page mappings exist in KVM mmu.
-+	 */
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-+		    "4K page is zero after dirtying memory");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-+		    "2M page is non-zero after dirtying memory");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-+		    "1G page is non-zero  after dirtying memory");
-+#endif
- 
- 	/* Disable dirty logging */
- 	clock_gettime(CLOCK_MONOTONIC, &start);
-diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-index d79be15dd3d2..dca5fcf7aa87 100644
---- a/tools/testing/selftests/kvm/include/test_util.h
-+++ b/tools/testing/selftests/kvm/include/test_util.h
-@@ -102,6 +102,7 @@ const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i);
- size_t get_backing_src_pagesz(uint32_t i);
- void backing_src_help(void);
- enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
-+size_t get_page_stats(uint32_t page_level);
- 
- /*
-  * Whether or not the given source type is shared memory (as opposed to
-diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index 242ae8e09a65..9749319821a3 100644
---- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -39,6 +39,13 @@
- #define X86_CR4_SMAP		(1ul << 21)
- #define X86_CR4_PKE		(1ul << 22)
- 
-+#define X86_PAGE_4K_SHIFT	12
-+#define X86_PAGE_4K		(1ul << X86_PAGE_4K_SHIFT)
-+#define X86_PAGE_2M_SHIFT	21
-+#define X86_PAGE_2M		(1ul << X86_PAGE_2M_SHIFT)
-+#define X86_PAGE_1G_SHIFT	30
-+#define X86_PAGE_1G		(1ul << X86_PAGE_1G_SHIFT)
-+
- /* CPUID.1.ECX */
- #define CPUID_VMX		(1ul << 5)
- #define CPUID_SMX		(1ul << 6)
-diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-index af1031fed97f..07eb6b5c125e 100644
---- a/tools/testing/selftests/kvm/lib/test_util.c
-+++ b/tools/testing/selftests/kvm/lib/test_util.c
-@@ -15,6 +15,13 @@
- #include "linux/kernel.h"
- 
- #include "test_util.h"
-+#include "processor.h"
-+
-+static const char * const pagestat_filepaths[] = {
-+	"/sys/kernel/debug/kvm/pages_4k",
-+	"/sys/kernel/debug/kvm/pages_2m",
-+	"/sys/kernel/debug/kvm/pages_1g",
-+};
- 
- /*
-  * Parses "[0-9]+[kmgt]?".
-@@ -141,6 +148,28 @@ size_t get_trans_hugepagesz(void)
- 	return size;
- }
- 
-+#ifdef __x86_64__
-+size_t get_stats_from_file(const char *path)
-+{
-+	size_t value;
-+	FILE *f;
-+
-+	f = fopen(path, "r");
-+	TEST_ASSERT(f != NULL, "Error in opening file: %s\n", path);
-+
-+	fscanf(f, "%ld", &value);
-+	fclose(f);
-+
-+	return value;
-+}
-+
-+size_t get_page_stats(uint32_t page_level)
-+{
-+	TEST_ASSERT(page_level <= X86_PAGE_SIZE_1G, "page type error.");
-+	return get_stats_from_file(pagestat_filepaths[page_level]);
-+}
-+#endif
-+
- size_t get_def_hugetlb_pagesz(void)
- {
- 	char buf[64];
--- 
-2.33.0.259.gc128427fd7-goog
-
+On Sun, Aug 29, 2021 at 6:56 PM Krish Jain <krishjain02939@gmail.com> wrote=
+:
+>
+> On Sun, Aug 29, 2021 at 6:49 PM Bryan Brattlof <hello@bryanbrattlof.com> =
+wrote:
+> >
+> > On this day, August 29, 2021, thus sayeth Krish Jain:
+> > > > >
+> > > > > Hi, what option do you mean?  I already ran make allmodconfig and=
+ sudo
+> > > > > make modules_install install and then make   "CCFLAGS=3D-Werror W=
+=3D1
+> > > > > M=3Ddrivers/staging/android/" and now I do get output but one lin=
+e
+> > > > > "WARNING: Symbol version dump "Module.symvers" is missing. Module=
+s may
+> > > > > not have dependencies or modversions. You may get many unresolved
+> > > > > symbol warnings." . Then I tried "make CCFLAGS=3D-Werror V=3D1
+> > > > > M=3Ddrivers/staging/android/" and that outputted the following:
+> > > > >
+> > > >
+> > > > Most of the answers you're asking for are going to get vague respon=
+ses
+> > > > (if any) on the mailing lists. The idea being (and I agree with) th=
+at
+> > > > giving out the answers will steal your opportunity to explore and l=
+earn
+> > > > the material yourself.
+> > > >
+> > > > Yes, it would be faster if we told you the answer, but ultimately, =
+we
+> > > > would be doing a disservice to you.
+> > > >
+> > > > Besides, more times than not we (me especially) don't have the answ=
+er.
+> > > >
+> > > > With that said, I will give a (generous) hint. :)
+> > > >
+> > >
+> > > Hi. Do I have to build the kernel once before this works? Or can I
+> > > just build a module directly?
+> > >
+> >
+> > Again, do not allow others to rob you of learning how to solve these
+> > issues yourself. I *strongly* encourage you to familiarize yourself wit=
+h
+> > the Kernel Build System in the Documentation.
+> >
+> >   https://www.kernel.org/doc/html/latest/kbuild/modules.html
+> >
+> > Specifically the first paragraph of "2. How to Build External Modules"
+> >
+> > It may seem like a lot for such a simple issue but it *is* worth it.
+> > ~Bryan
+> >
+>
+>
+>
+> That section says
+>
+>
+> "To build external modules, *you must have a prebuilt kernel
+> available* that contains the configuration and header files used in
+> the build. Also, the kernel must have been built with modules enabled.
+> If you are using a distribution kernel, there will be a package for
+> the kernel you are running provided by your distribution.
+>
+> An alternative is to use the =E2=80=9Cmake=E2=80=9D target =E2=80=9Cmodul=
+es_prepare.=E2=80=9D This
+> will make sure the kernel contains the information required. The
+> target exists solely as a simple way to prepare a kernel source tree
+> for building external modules.
+>
+> NOTE: =E2=80=9Cmodules_prepare=E2=80=9D will not build Module.symvers eve=
+n if
+> CONFIG_MODVERSIONS is set; therefore, *a full kernel build needs to be
+> executed to make module versioning work.*"
+>
+> So I am just trying to confirm with you whether I have to first build
+> the kernel with like "make" or not? As you can imagine my hardware
+> takes *very* long to build a kernel as I did in my last attempt so I
+> am asking whether it is needed. Hope you understand.
+>
+> Best Regards
