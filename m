@@ -2,58 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A413FA93C
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F763FA95C
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233763AbhH2FZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 01:25:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35594 "EHLO mail.kernel.org"
+        id S234644AbhH2F2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 01:28:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhH2FZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 01:25:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9850360C3F;
-        Sun, 29 Aug 2021 05:24:13 +0000 (UTC)
+        id S233657AbhH2F2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 01:28:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53E0560F3A;
+        Sun, 29 Aug 2021 05:27:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630214653;
-        bh=bGY6E/Gh/5Z3BzRavpvjvORjqZzRufcVODbVuvcLQ74=;
+        s=k20201202; t=1630214838;
+        bh=RIBMzmRwll8XYCReqJmjVkP9457awMYlTmM3N/i1+Es=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=GVVjNIlRNENg932KxWzpTpCSx8SrDM5BnE8ofagKQJyND+8ouSUZQqIEiC6oX+iFq
-         +ChUyGn0/Y+8nkh6pM6wz6k5bleOMukojimao8d5oTV/wkQcnE/ui2RFu3FX2aJIRX
-         hznFunmrqovXwxjNLKrocm6j5v6ISiv4GTCCsJdTlpCV7TDgmjhqKPRgB3bkAP0jvG
-         6gFL4pyl72HLRJKp5qFecwogUF16UjPcB934RFnhT9EK5DWbXRe5E89vHXlchQHyjV
-         2yJqT99kQujXAkce6qETpDYnCh/SlKJcde3bkIrfC2Wc+yi3GpOGAsPzdbRGsN5B6X
-         92s7EakrOpJCg==
+        b=XC/LslHREKwza4nUVtqQj1BQX+zdtEWUN9LQwKpvl6K/6xCMIVQ1M/RXGiDOXhRBz
+         iz4RVspHJyaLPQw72NOMxySwHAN888NbXfZx7AYKA6QM6wUY3+lIlnJXPNhLqMblaZ
+         HiTQ2N0uje/aCGXDtIVWnvaUXiMg6vrFxO7Zlv+fBRC1T4vndHiwlxX4tIXjzuyQf4
+         Zs1ln2Xjxsb0geH0xm+BgbESt5kYt7lQngBfzMjvWNYTj0R3gBBEtwgDNzelTB2I+W
+         81MVQzjnlbgBOxUsZjlqW6fp3EiyQjuxoWuBq9XMWq0S2d61dYVt1P0KfnbSJzPjRD
+         ZUX32IzVot1DQ==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210727055537.11785-1-sergio.paracuellos@gmail.com>
-References: <20210727055537.11785-1-sergio.paracuellos@gmail.com>
-Subject: Re: [PATCH] clk: ralink: avoid to set 'CLK_IS_CRITICAL' flag for gates
+In-Reply-To: <545df946044fc1fc05a4217cdf0054be7a79e49e.1619161112.git.christophe.jaillet@wanadoo.fr>
+References: <545df946044fc1fc05a4217cdf0054be7a79e49e.1619161112.git.christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] clk: mvebu: ap-cpu-clk: Fix a memory leak in error handling paths
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
-        linux-kernel@vger.kernel.org, dqfext@gmail.com
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-clk@vger.kernel.org
-Date:   Sat, 28 Aug 2021 22:24:12 -0700
-Message-ID: <163021465232.2676726.1524959516246529010@swboyd.mtv.corp.google.com>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Julia.Lawall@inria.fr, gregory.clement@bootlin.com,
+        lee.jones@linaro.org, mturquette@baylibre.com
+Date:   Sat, 28 Aug 2021 22:27:17 -0700
+Message-ID: <163021483704.2676726.2051426762011017819@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sergio Paracuellos (2021-07-26 22:55:37)
-> 'clk_init_data' for gates is setting up 'CLK_IS_CRITICAL'
-> flag for all of them. This was being doing because some
-> drivers of this SoC might not be ready to use the clock
-> and we don't wanted the kernel to disable them since default
-> behaviour without clock driver was to set all gate bits to
-> enabled state. After a bit more testing and checking driver
-> code it is safe to remove this flag and just let the kernel
-> to disable those gates that are not in use. No regressions
-> seems to appear.
+Quoting Christophe JAILLET (2021-04-23 00:02:26)
+> If we exit the for_each_of_cpu_node loop early, the reference on the
+> current node must be decremented, otherwise there is a leak.
 >=20
-> Fixes: 48df7a26f470 ("clk: ralink: add clock driver for mt7621 SoC")
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Fixes: f756e362d938 ("clk: mvebu: add CPU clock driver for Armada 7K/8K")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
+> Also, I wonder if the drivers in drivers/clk/mvebu are used by anyone.
+> In order to compile-test the changes, I also had to change the 'bool' in =
+Kconfig
+> by 'bool "blah"'. Without this change, it was not possible to set
+> CONFIG_ARMADA_AP_CPU_CLK required by Makefile.
+>=20
+> I don't know if I did something wrong, if it is an issue only on my envir=
+onment
+> or if something got broken at some time in the build chain but it looks
+> spurious.
+>=20
+> If I'm right and that these drivers never compile and no-one noticed it,
+> maybe removing them is better than fixing some unlikely issues and style.
+> If these drivers should stay, Kconfig may need some love from someone.
 
-Applied to clk-next
+Nobody has said anything on this patch. So I'm not really sure what's
+going on. Probably we never take the error path, or the whole system
+fails to boot?
