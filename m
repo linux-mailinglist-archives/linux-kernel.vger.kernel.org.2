@@ -2,117 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CCD3FAAA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF323FAAA3
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235062AbhH2J6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 05:58:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56779 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234835AbhH2J6w (ORCPT
+        id S234835AbhH2KAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 06:00:00 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15223 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235020AbhH2J77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 05:58:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630231079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0K+G7pfYO0Ef+fomYcLnNjeeXSOSFqS366JUpbEaV6U=;
-        b=THaAbFr04UdfU+NlQUtoIRscJTuOI3Nq4pA5S/Pgp9YX08p80t2hjjTxAe3T2oop9/g68U
-        em/qxk4jCKKQSvDTvr5fE5TadhFVRaV8l/V0iZERLCXOcoIehQfxIwhV5gKn5NOH1G+JWJ
-        f7hbpPnFElo+A2YavPmdElWjmxnPuOo=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-_ReyzQT6OeeXdFxWQ9-MBQ-1; Sun, 29 Aug 2021 05:57:58 -0400
-X-MC-Unique: _ReyzQT6OeeXdFxWQ9-MBQ-1
-Received: by mail-ej1-f71.google.com with SMTP id o14-20020a1709062e8e00b005d37183e041so2934000eji.21
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:57:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0K+G7pfYO0Ef+fomYcLnNjeeXSOSFqS366JUpbEaV6U=;
-        b=nvzxdyEDECl9+hdw4IBAGWMoftIDKr5yy7euVFJUlSmwRNdzTE3t1SxdtS1J/oc302
-         G8vBR3P8qd+sagXW/fbhm8SW+kmWtZafwv6Qw+cRW9/imKgyyizGmIIxydKMW+QgHF+V
-         xWQyMIJ5WsGQldrlNS1Aeqw2SmW2fVA4gFtIDN7NBssVncZpvG2zem8ciYe7MkukWClq
-         CS86zHZmFBY+fWKdhPCAqlq5ZK1uZjtuE/R7mmLyGTaj6IAnrfzbh+6mo6hliQnBGwJZ
-         7NNeEYq4Kp3BHlwBIiMkmvsMRCmu//I1UpewVEA4X+zGZhymQm3Ful1INdxGY6vNot9v
-         JiIQ==
-X-Gm-Message-State: AOAM53151cMXoG0JwiyqvvczcEQzjCBGi1fmDRUZ3oqhcfpKU4aTwEN+
-        7VvnUElhbS7N37X4Tf3wVOJ1WQvN9KeGZIDsY4apW+mdWQXgy8GbfSd4QhkpFWrcxl7tpEVtm3J
-        bptnwKbV8NHOWaUExVdzyoD01
-X-Received: by 2002:a05:6402:215:: with SMTP id t21mr18767571edv.68.1630231077201;
-        Sun, 29 Aug 2021 02:57:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxVWp8z2OSwJE2Z5L5H11RpYQbR14sREThd8a94tP6IStunw69DzeSddSDgABlBKEp9fnnxCg==
-X-Received: by 2002:a05:6402:215:: with SMTP id t21mr18767565edv.68.1630231077055;
-        Sun, 29 Aug 2021 02:57:57 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id y20sm3177621eje.113.2021.08.29.02.57.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Aug 2021 02:57:56 -0700 (PDT)
-Subject: Re: [PATCH v6 0/1] asus-wmi: Add support for custom fan curves
-To:     "Luke D. Jones" <luke@ljones.dev>, linux-kernel@vger.kernel.org
-Cc:     pobrn@protonmail.com, linux@roeck-us.net,
-        platform-driver-x86@vger.kernel.org
-References: <20210829071402.576380-1-luke@ljones.dev>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <cf42ddd7-29ed-ff8b-7d03-958187863b70@redhat.com>
-Date:   Sun, 29 Aug 2021 11:57:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 29 Aug 2021 05:59:59 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gy86C0D9fz1DDkT;
+        Sun, 29 Aug 2021 17:58:27 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 29 Aug 2021 17:59:05 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sun, 29 Aug 2021 17:59:04 +0800
+Subject: Re: [PATCH] riscv: vdso: map data page before vDSO code
+To:     Sergey Larin <cerg2010cerg2010@mail.ru>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20210829094708.169037-1-cerg2010cerg2010@mail.ru>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <02601412-6f01-f4e5-699a-e285fc3fdf3a@huawei.com>
+Date:   Sun, 29 Aug 2021 17:59:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210829071402.576380-1-luke@ljones.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210829094708.169037-1-cerg2010cerg2010@mail.ru>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luke,
+Hi Sergey
 
-On 8/29/21 9:14 AM, Luke D. Jones wrote:
-> Add support for custom fan curves found on some ASUS ROG laptops.
-> 
-> - V1
->   + Initial patch work
-> - V2
->   + Don't fail and remove wmi driver if error from
->     asus_wmi_evaluate_method_buf() if error is -ENODEV
-> - V3
->   + Store the "default" fan curves
->   + Call throttle_thermal_policy_write() if a curve is erased to ensure
->     that the factory default for a profile is applied again
-> - V4
->   + Do not apply default curves by default. Testers have found that the
->     default curves don't quite match actual no-curve behaviours
->   + Add method to enable/disable curves for each profile
-> - V5
->   + Remove an unrequired function left over from previous iterations
->   + Ensure default curves are applied if user writes " " to a curve path
->   + Rename "active_fan_curve_profiles" to "enabled_fan_curve_profiles" to
->     better reflect the behavious of this setting
->   + Move throttle_thermal_policy_write_*pu_curves() and rename to
->     fan_curve_*pu_write()
->   + Merge fan_curve_check_valid() and fan_curve_write()
->   + Remove some leftover debug statements
-> - V6
->   + Refactor data structs to store  array or u8 instead of strings.
->     This affects the entire patch except the enabled_fan_curves block
->   + Use sysfs_match_string in enabled_fan_curve block
->   + Add some extra comments to describe things
->   + Allow some variation in how fan curve input can be formatted
->   + Use SENSOR_DEVICE_ATTR_2_RW() to reduce the amount of lines per
->     fan+profile combo drastically
+There is already one fix,
 
-Thank you for your continued work on this. I read in the discussin of v5
-that you discussed using the standard auto_point#_pwm, auto_point#_temp
-pairs. I see here that you have decided to not go that route, may I ask
-why ?
+https://patchwork.kernel.org/project/linux-riscv/list/?series=534877
 
-Regards,
-
-Hans
-
+On 2021/8/29 17:47, Sergey Larin wrote:
+> Current vDSO implementation assumes that the code size always fits in
+> single page, and the data page follows it:
+>
+> 	PROVIDE(_vdso_data = . + PAGE_SIZE);
+>
+> However, this was not the case with my kernel build - the
+> shared object had the size of 4800 bytes. This, obviously, is more than
+> 4096 and requires second page for the rest of the data.
+>
+> CLOCK_REALTIME_COARSE clock became broken. It was always returning 0
+> because vDSO code was reading the second code page, not the
+> data page. Glibc uses this clock for the time() function.
+>
+> So instead of computing the offset for the data page (it is necessary to
+> do in runtime - you can't know the size of the binary while you're
+> building it) simply move it behind the code like the ARM does:
+>
+> 	PROVIDE(_vdso_data = . - PAGE_SIZE);
+>
+> This commit also fixes arch_vma_name for the data page - it was
+> reporting the same '[vdso]' name for it in my case.
+>
+> Since I don't have the real hardware, the change was debugged with KGDB
+> in RVVM and also verified in QEMU.
+>
+> Signed-off-by: Sergey Larin <cerg2010cerg2010@mail.ru>
+> ---
+>   arch/riscv/kernel/vdso.c          | 22 +++++++++++-----------
+>   arch/riscv/kernel/vdso/vdso.lds.S |  2 +-
+>   2 files changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
+> index 25a3b8849599..0c49390e9be3 100644
+> --- a/arch/riscv/kernel/vdso.c
+> +++ b/arch/riscv/kernel/vdso.c
+> @@ -44,13 +44,13 @@ static int __init vdso_init(void)
+>   		return -ENOMEM;
+>   	}
+>   
+> +	vdso_pagelist[0] = virt_to_page(vdso_data);
+>   	for (i = 0; i < vdso_pages; i++) {
+>   		struct page *pg;
+>   
+>   		pg = virt_to_page(vdso_start + (i << PAGE_SHIFT));
+> -		vdso_pagelist[i] = pg;
+> +		vdso_pagelist[i + 1] = pg;
+>   	}
+> -	vdso_pagelist[i] = virt_to_page(vdso_data);
+>   
+>   	return 0;
+>   }
+> @@ -77,21 +77,21 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
+>   	 * install_special_mapping or the perf counter mmap tracking code
+>   	 * will fail to recognise it as a vDSO (since arch_vma_name fails).
+>   	 */
+> -	mm->context.vdso = (void *)vdso_base;
+> +	mm->context.vdso = (void *)vdso_base + PAGE_SIZE;
+>   
+> -	ret =
+> -	   install_special_mapping(mm, vdso_base, vdso_pages << PAGE_SHIFT,
+> -		(VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC),
+> -		vdso_pagelist);
+> +	ret = install_special_mapping(mm, vdso_base, PAGE_SIZE,
+> +		(VM_READ | VM_MAYREAD), &vdso_pagelist[0]);
+>   
+>   	if (unlikely(ret)) {
+>   		mm->context.vdso = NULL;
+>   		goto end;
+>   	}
+>   
+> -	vdso_base += (vdso_pages << PAGE_SHIFT);
+> -	ret = install_special_mapping(mm, vdso_base, PAGE_SIZE,
+> -		(VM_READ | VM_MAYREAD), &vdso_pagelist[vdso_pages]);
+> +	vdso_base += PAGE_SIZE;
+> +	ret =
+> +	   install_special_mapping(mm, vdso_base, vdso_pages << PAGE_SHIFT,
+> +		(VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC),
+> +		&vdso_pagelist[1]);
+>   
+>   	if (unlikely(ret))
+>   		mm->context.vdso = NULL;
+> @@ -105,7 +105,7 @@ const char *arch_vma_name(struct vm_area_struct *vma)
+>   	if (vma->vm_mm && (vma->vm_start == (long)vma->vm_mm->context.vdso))
+>   		return "[vdso]";
+>   	if (vma->vm_mm && (vma->vm_start ==
+> -			   (long)vma->vm_mm->context.vdso + PAGE_SIZE))
+> +			   (long)vma->vm_mm->context.vdso - PAGE_SIZE))
+>   		return "[vdso_data]";
+>   	return NULL;
+>   }
+> diff --git a/arch/riscv/kernel/vdso/vdso.lds.S b/arch/riscv/kernel/vdso/vdso.lds.S
+> index e6f558bca71b..fd8a31075256 100644
+> --- a/arch/riscv/kernel/vdso/vdso.lds.S
+> +++ b/arch/riscv/kernel/vdso/vdso.lds.S
+> @@ -8,7 +8,7 @@ OUTPUT_ARCH(riscv)
+>   
+>   SECTIONS
+>   {
+> -	PROVIDE(_vdso_data = . + PAGE_SIZE);
+> +	PROVIDE(_vdso_data = . - PAGE_SIZE);
+>   	. = SIZEOF_HEADERS;
+>   
+>   	.hash		: { *(.hash) }			:text
