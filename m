@@ -2,65 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E8D3FAE45
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 21:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E6A3FAE48
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 21:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235992AbhH2T4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 15:56:03 -0400
-Received: from relay02.th.seeweb.it ([5.144.164.163]:53191 "EHLO
-        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235892AbhH2Tz4 (ORCPT
+        id S235923AbhH2T6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 15:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234080AbhH2T6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 15:55:56 -0400
-Received: from [192.168.1.101] (83.6.166.149.neoplus.adsl.tpnet.pl [83.6.166.149])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 74B341F741;
-        Sun, 29 Aug 2021 21:55:01 +0200 (CEST)
-Subject: Re: [PATCH RESEND v2 2/9] clk: qcom: gcc-msm8994: Modernize the
- driver
-To:     Stephen Boyd <sboyd@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210829193617.4105-1-konrad.dybcio@somainline.org>
- <20210829193617.4105-2-konrad.dybcio@somainline.org>
- <163026676931.2676726.9571008952095354229@swboyd.mtv.corp.google.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <16ef9f50-57f5-1dc0-0cf5-94960124d6db@somainline.org>
-Date:   Sun, 29 Aug 2021 21:55:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 29 Aug 2021 15:58:10 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1979BC061575;
+        Sun, 29 Aug 2021 12:57:18 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id e1so7279855plt.11;
+        Sun, 29 Aug 2021 12:57:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=IzTQ3K1UDT6PxsDmdWkfX0zpptynoMb55Wy2dCfWnGc=;
+        b=UmV/zVByDUjtMx83vlE4Q1BQo06mmUmBjaxZYfoWvnXv8U+3OW7bllFQ7JyxktKY5z
+         FQVxQrgVgv9MRb9wAGQAWWCIisONgl3S1AOlpDUpIeemGIWGQNpzwqtGBKb05DiMNN+/
+         ogqJW+hSnLXuQW1xzMgQOP11135Vi0EUpUC7m0kERN7E3eDaSbTMqOn/fDqVflZ3pES6
+         zd/j7A6zXEcq1REI4SXhID4cwosegjDzmeVAni4/bPps2gb1vlYP3ncItoI2dTzUs+ra
+         rYjuEOS4IJl00S0qSASyWvdIw8HfR8xAZTERLtlXpuTYZRc8XZj91oTI0Ya4W+m5vFuW
+         tlRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=IzTQ3K1UDT6PxsDmdWkfX0zpptynoMb55Wy2dCfWnGc=;
+        b=Bu4QG4SKO3LUELbGDIjZs4WD/Kza0Sr7WapSB7FSoNS+fz3O7DCmNXql6aYTkAKjdG
+         ALS4ch9CE51C+g/Ss3E3oKDmrmwubPKNSXZJIU9ADvrFw9s0nWrQx09az2667PU+Wn6u
+         HExiMMSMUVTysYKrbqenFq1uKzqvOFEJgOqtKFPAFaWxEMDvs/pZc76feZUtACDg+3BL
+         MxBNegBRyiYjd9B0NYWbD+uQ7BV7JmjwLWGcw1yfTJBoMKNR6vOMpVdTxTUws+l5ZDtD
+         m2RguBAWySgvGiM80LW8uwzN8Ys7tUQvkA1E+HfLYUYbd6LfmfLcjlSWrd/fB591nfEE
+         TogQ==
+X-Gm-Message-State: AOAM533LjSz3rtD7FGCp149ddenU7m8w64J8Y8gC+oaEAOariWTEmoZh
+        +o/2y2jLHh2Evqnb8+FzvLPyIleK/Wiii/M9mp042WN+0l1RlmM=
+X-Google-Smtp-Source: ABdhPJz6tYAqzfpO4O4+0S+Vs7fkBfnu8RUkvJX39luTseIctLBIJoijuWdF5qEIJShmaZUVjkoEKNIBUE4qq8ZKOr0=
+X-Received: by 2002:a17:903:310a:b0:133:9bb6:98bd with SMTP id
+ w10-20020a170903310a00b001339bb698bdmr18475284plc.19.1630267037460; Sun, 29
+ Aug 2021 12:57:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <163026676931.2676726.9571008952095354229@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+From:   Andrew Wock <ajwock@gmail.com>
+Date:   Sun, 29 Aug 2021 15:57:06 -0400
+Message-ID: <CAACtx1b_v3nbv8EkAQ1f7ee=yt3ECm_a6kb1KNdBPZ5F20ndFw@mail.gmail.com>
+Subject: [patch] clone.2: Add EACCES with CLONE_INTO_CGROUP + clone3 to ERRORS
+To:     linux-man@vger.kernel.org, alx.manpages@gmail.com,
+        mtk.manpages@gmail.com
+Cc:     christian@brauner.io, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000a8a7f305cab81f4a"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--000000000000a8a7f305cab81f4a
+Content-Type: text/plain; charset="UTF-8"
 
-On 29.08.2021 21:52, Stephen Boyd wrote:
-> Quoting Konrad Dybcio (2021-08-29 12:36:09)
->> Switch to the newer-style parent_data and remove the hardcoded
->> xo clock.
-> This is OK because nothing else is using the hardcoded name of "xo",
-> like another clk driver on this SoC?
+Resending because it's my first time mailing the lkml and I used html.
+Reattempting w/ gmail's plaintext mode.  I apologise if this is
+reaching you twice.
 
-8994 only has RPMCC and MMCC* apart from GCC and both are prepared for this.
+I noticed that clone3 can send the EACCES errno after I wrote a
+program that used clone3 with the CLONE_INTO_CGROUP flag.  To me, it's
+important to know what kind of failure occurred if the clone3 fails,
+so I was glad that a unique errno is set for this case, but it wasn't
+documented on the clone man page.
 
+I've attached a patch and a test program.
 
+Test program is attached as clone3_doc.c.  Create
+/sys/fs/cgroup/not-allowed as root, then run the program.  It should
+set errno to EACCES.
 
-*not counting DEBUGCC and CPUCC for obvious reasons (they are missing upstream)
+Thanks,
+Andrew Wock
 
+--000000000000a8a7f305cab81f4a
+Content-Type: text/plain; charset="US-ASCII"; name="clone3_doc.c"
+Content-Disposition: attachment; filename="clone3_doc.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ksxmvzkw1>
+X-Attachment-Id: f_ksxmvzkw1
 
-Konrad
+I2luY2x1ZGUgPHN0ZGlvLmg+DQojaW5jbHVkZSA8ZXJybm8uaD4NCiNpbmNsdWRlIDxzdGRsaWIu
+aD4NCiNpbmNsdWRlIDxzdHJpbmcuaD4NCiNpbmNsdWRlIDxzaWduYWwuaD4NCiNpbmNsdWRlIDxm
+Y250bC5oPg0KDQojaW5jbHVkZSA8bGludXgvc2NoZWQuaD4gICAgLyogRGVmaW5pdGlvbiBvZiBz
+dHJ1Y3QgY2xvbmVfYXJncyAqLw0KI2luY2x1ZGUgPHNjaGVkLmg+ICAgICAgICAgIC8qIERlZmlu
+aXRpb24gb2YgQ0xPTkVfKiBjb25zdGFudHMgKi8NCiNpbmNsdWRlIDxzeXMvc3lzY2FsbC5oPiAg
+ICAvKiBEZWZpbml0aW9uIG9mIFNZU18qIGNvbnN0YW50cyAqLw0KI2luY2x1ZGUgPHVuaXN0ZC5o
+Pg0KDQovKg0KICogUHJlY29uZGl0aW9uczoNCiAqIC0gL3N5cy9mcy9jZ3JvdXAvbm90LWFsbG93
+ZWQgaXMgYSByZWFsIGNncm91cC4NCiAqIC0gWW91IGFyZSBub3Qgcm9vdCBhbmQgZG8gbm90IGhh
+dmUgd3JpdGUgcGVybWlzc2lvbnMgdG8NCiAqICAgL3N5cy9mcy9jZ3JvdXAvbm90LWFsbG93ZWQv
+Y2dyb3VwLnByb2NzDQogKi8NCmludCBtYWluKCkgew0KICBwaWRfdCBwaWQ7DQogIGludCBmZDsN
+CiAgc3RydWN0IGNsb25lX2FyZ3MgY2xfYXJncyA9IHswfTsNCiAgY2hhciAqY2dQYXRoID0gIi9z
+eXMvZnMvY2dyb3VwL25vdC1hbGxvd2VkIjsNCg0KICBmZCA9IG9wZW4oY2dQYXRoLCBPX1JET05M
+WSk7DQogIGlmIChmZCA9PSAtMSkgew0KICAgIGZwcmludGYoc3RkZXJyLCAiQ291bGQgbm90IG9w
+ZW4gY2dyb3VwICVzOiAlc1xuIiwgY2dQYXRoLCBzdHJlcnJvcihlcnJubykpOw0KICAgIGV4aXQo
+MSk7DQogIH0NCg0KICBjbF9hcmdzLmV4aXRfc2lnbmFsID0gU0lHQ0hMRDsNCiAgY2xfYXJncy5m
+bGFncyA9IENMT05FX0lOVE9fQ0dST1VQOw0KICBjbF9hcmdzLmNncm91cCA9IGZkOw0KICBwaWQg
+PSBzeXNjYWxsKFNZU19jbG9uZTMsICZjbF9hcmdzLCBzaXplb2YoY2xfYXJncykpOw0KICBpZiAo
+cGlkID09IC0xKSB7DQogICAgaWYgKGVycm5vID09IEVBQ0NFUykgew0KICAgICAgcHJpbnRmKCJF
+QUNDRVMgZGV0ZWN0ZWRcbiIpOw0KICAgICAgZXhpdCgwKTsNCiAgICB9DQogICAgZnByaW50Zihz
+dGRlcnIsICJDb3VsZCBub3QgY2xvbmUgaW50byBjZ3JvdXA6ICVzXG4iLCBzdHJlcnJvcihlcnJu
+bykpOw0KICB9IGVsc2UgaWYgKHBpZCA9PSAwKSB7DQogICAgZnByaW50ZihzdGRlcnIsICJBcmUg
+eW91IHJvb3QsIG9yIGRvIHlvdSBoYXZlIHdyaXRlIGFjY2VzcyB0byAlcz9cbiIsIGNnUGF0aCk7
+DQogIH0NCiAgZXhpdCgxKTsNCn0NCg==
+--000000000000a8a7f305cab81f4a
+Content-Type: application/octet-stream; name="clone.2.diff"
+Content-Disposition: attachment; filename="clone.2.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ksxmvxos0>
+X-Attachment-Id: f_ksxmvxos0
 
+ZGlmZiAtLWdpdCBhL21hbjIvY2xvbmUuMiBiL21hbjIvY2xvbmUuMg0KaW5kZXggZTM4MWRhMTY1
+Li44ZjY1ZDlmZWMgMTAwNjQ0DQotLS0gYS9tYW4yL2Nsb25lLjINCisrKyBiL21hbjIvY2xvbmUu
+Mg0KQEAgLTEyMDksNiArMTIwOSwxNiBAQCBpbiB0aGUgY2FsbGVyJ3MgY29udGV4dCwgbm8gY2hp
+bGQgcHJvY2VzcyBpcyBjcmVhdGVkLCBhbmQNCiBpcyBzZXQgdG8gaW5kaWNhdGUgdGhlIGVycm9y
+Lg0KIC5TSCBFUlJPUlMNCiAuVFANCisuQlIgRUFDQ0VTICIgKCIgY2xvbmUzICIoKSBvbmx5KSIN
+CisuQiBDTE9ORV9JTlRPX0NHUk9VUA0KK3dhcyBzcGVjaWZpZWQgaW4NCisuSVIgY2xfYXJncy5m
+bGFncyAsDQorYnV0IHRoZSByZXN0cmljdGlvbnMgKGRlc2NyaWJlZCBpbg0KKy5CUiBjZ3JvdXBz
+ICg3KSkNCitvbiBwbGFjaW5nIHRoZSBjaGlsZCBwcm9jZXNzIGludG8gdGhlIHZlcnNpb24gMiBj
+Z3JvdXAgcmVmZXJyZWQgdG8gYnkNCisuSVIgY2xfYXJncy5jZ3JvdXANCithcmUgbm90IG1ldC4N
+CisuVFANCiAuQiBFQUdBSU4NCiBUb28gbWFueSBwcm9jZXNzZXMgYXJlIGFscmVhZHkgcnVubmlu
+Zzsgc2VlDQogLkJSIGZvcmsgKDIpLg==
+--000000000000a8a7f305cab81f4a--
