@@ -2,80 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CF33FA821
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 03:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802F73FA804
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 02:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbhH2BT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 21:19:29 -0400
-Received: from smtprelay06.ispgateway.de ([80.67.18.29]:45031 "EHLO
-        smtprelay06.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhH2BT2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 21:19:28 -0400
-X-Greylist: delayed 21711 seconds by postgrey-1.27 at vger.kernel.org; Sat, 28 Aug 2021 21:19:27 EDT
-Received: from [87.92.210.171] (helo=[192.168.0.111])
-        by smtprelay06.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <lukas.prediger@lumip.de>)
-        id 1mJvWn-0000E5-1t; Sat, 28 Aug 2021 12:25:33 +0200
-Subject: Re: [PATCH] drivers/cdrom: improved ioctl for media change detection
-To:     Jens Axboe <axboe@kernel.dk>
+        id S233271AbhH2ADf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 20:03:35 -0400
+Received: from mga02.intel.com ([134.134.136.20]:63741 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232017AbhH2ADd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 20:03:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10090"; a="205338466"
+X-IronPort-AV: E=Sophos;i="5.84,360,1620716400"; 
+   d="scan'208";a="205338466"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2021 17:02:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,360,1620716400"; 
+   d="scan'208";a="458469514"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Aug 2021 17:02:40 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mK8HY-0003rI-0i; Sun, 29 Aug 2021 00:02:40 +0000
+Date:   Sun, 29 Aug 2021 08:01:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-References: <20210805194417.12439-1-lumip@lumip.de>
- <6d6c533d-465e-33ee-5801-cb7ea84924a8@kernel.dk>
- <f0d33ff3-6b9d-bbe7-1776-a22f9f271155@lumip.de>
- <5f3b7d8b-9e97-094b-efd1-cad6cab793b6@kernel.dk>
-From:   Lukas Prediger <lukas.prediger@lumip.de>
-Message-ID: <6bbfc86d-8e3b-db5e-0bf5-8bce63d2049f@lumip.de>
-Date:   Sat, 28 Aug 2021 13:27:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: [tip:master] BUILD SUCCESS
+ 29fb75d44ac4e6b59a463283e7789825ac9aeea1
+Message-ID: <612ace65.0nhb51PfZ4yB8wB4%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <5f3b7d8b-9e97-094b-efd1-cad6cab793b6@kernel.dk>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Df-Sender: bHVrYXMucHJlZGlnZXJAbHVtaXAuZGU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the reply and sorry for the spam :/. I am not sure what 
-happened there.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 29fb75d44ac4e6b59a463283e7789825ac9aeea1  Merge branch 'smp/core'
 
->> 2. As the last_media_change field will be in ms now, is it safe to
->> convert those back to jiffies for comparison or is there a risk of
->> information loss (due to rounding or whatever) in either conversion?
->> More technically, can I make the assumption that for any jiffies value
->> x it holds that
-> The granularity of jiffies depends on the HZ setting, generally just
-> consider it somewhere in between 100 and 1000. That's where my initial
-> granularity numbers came from.
->
->> time_before(msecs_to_jiffies(jiffies_to_msecs(x)), x) is always false ?
-> I don't think that matters. Internally, always keep things in jiffies.
-> That's what you use to compare with, and to check if it's changed since
-> last time. The only time you convert to ms is to pass it back to
-> userspace. And that's going to be a delta of jiffies always, just ensure
-> you assign last_checked = jiffies when it's setup initially.
->
-The issue I have is that the value I am comparing to is provided by the code
-calling the ioctl so that I don't have to maintain state for every potential
-calling process in the kernel. Therefore, if we want the API to work with ms,
-I have to convert the user provided value back to jiffies for comparison. 
+elapsed time: 1426m
 
-I now ran a brief test that suggests that the above condition does not hold
-and therefore the value returned in has_changed may be 1 for subsequent calls
-when the disc was not in fact changed.
+configs tested: 128
+configs skipped: 4
 
-Workarounds I see would be to either expose the jiffies value through the
-API (which is maybe not really clean), or making the comparison on the ms value
-(but how to deal with potential wraparounds then?). Of those, I would currently
-tend to the first and treat the nature of the returned timestamp as an opaque
-value from the user perspective - it is probably not really of any use to them
-outside of passing it back into the ioctl for subsequent calls. Do you
-see other ways to resolve this I may not have thought of?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Kind regards,
-Lukas
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210827
+powerpc              randconfig-c003-20210827
+arm                         lpc18xx_defconfig
+m68k                       m5275evb_defconfig
+mips                         mpc30x_defconfig
+mips                           ip32_defconfig
+m68k                        m5272c3_defconfig
+arm                       imx_v4_v5_defconfig
+mips                           xway_defconfig
+mips                        maltaup_defconfig
+arm                         palmz72_defconfig
+powerpc                      tqm8xx_defconfig
+arm                         at91_dt_defconfig
+mips                     loongson1b_defconfig
+arm                         s5pv210_defconfig
+xtensa                           alldefconfig
+sh                        edosk7705_defconfig
+powerpc                        warp_defconfig
+m68k                        mvme147_defconfig
+arm                          badge4_defconfig
+xtensa                       common_defconfig
+arm                        spear6xx_defconfig
+mips                         db1xxx_defconfig
+arm                         vf610m4_defconfig
+xtensa                              defconfig
+um                                  defconfig
+powerpc                      bamboo_defconfig
+powerpc                      ppc64e_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                          allmodconfig
+microblaze                          defconfig
+powerpc                      makalu_defconfig
+sh                          rsk7201_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210828
+i386                 randconfig-a006-20210828
+i386                 randconfig-a002-20210828
+i386                 randconfig-a005-20210828
+i386                 randconfig-a003-20210828
+i386                 randconfig-a004-20210828
+x86_64               randconfig-a014-20210827
+x86_64               randconfig-a015-20210827
+x86_64               randconfig-a016-20210827
+x86_64               randconfig-a013-20210827
+x86_64               randconfig-a012-20210827
+x86_64               randconfig-a011-20210827
+i386                 randconfig-a011-20210827
+i386                 randconfig-a016-20210827
+i386                 randconfig-a012-20210827
+i386                 randconfig-a014-20210827
+i386                 randconfig-a013-20210827
+i386                 randconfig-a015-20210827
+arc                  randconfig-r043-20210827
+riscv                randconfig-r042-20210827
+s390                 randconfig-r044-20210827
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
+clang tested configs:
+s390                 randconfig-c005-20210827
+i386                 randconfig-c001-20210827
+arm                  randconfig-c002-20210827
+riscv                randconfig-c006-20210827
+powerpc              randconfig-c003-20210827
+x86_64               randconfig-c007-20210827
+mips                 randconfig-c004-20210827
+x86_64               randconfig-a005-20210827
+x86_64               randconfig-a001-20210827
+x86_64               randconfig-a006-20210827
+x86_64               randconfig-a003-20210827
+x86_64               randconfig-a004-20210827
+x86_64               randconfig-a002-20210827
+i386                 randconfig-a006-20210827
+i386                 randconfig-a001-20210827
+i386                 randconfig-a002-20210827
+i386                 randconfig-a005-20210827
+i386                 randconfig-a004-20210827
+i386                 randconfig-a003-20210827
+i386                 randconfig-a011-20210828
+i386                 randconfig-a016-20210828
+i386                 randconfig-a012-20210828
+i386                 randconfig-a014-20210828
+i386                 randconfig-a013-20210828
+i386                 randconfig-a015-20210828
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
