@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BB13FAB7B
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 14:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535F93FAB85
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 14:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbhH2MtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 08:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235124AbhH2MtG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 08:49:06 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FD9C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 05:48:14 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id lc21so24786749ejc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 05:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7r+jlTTOw/kHZNfLJXUEqsdPJdmMql3Pod1m4pzmZ5Q=;
-        b=NRYojbaVZwoneKyzCwC4PqTG1+R+i6CMjPgxQN4zp7oLu5efi7GBF0kdnVe8vn/rnm
-         VA8NtjT/l3cXlSe1YgXVvDktDo6CUPIYiuBHMVDdm5F3t/sD9H+sBG+1ZutNhajav9aW
-         rCrWVB+BchQswaX3oB2Cm2S9SDlGPs/IYpwyG7oxG+HdURvWnkuBhQ85Zk/3/D9UBFda
-         IeFoVeDnL6T1bVfpAvoP0fQez5UFmqhQOpSGujQiCjNtWcyxvqWuiiJiW4KpoDvE23Dx
-         ytEwVdRpSoK483LtWZ1QpG9asrmYB5RYsxZ5kjTvbw55fgtlaChHxggXkepprW/ioxOj
-         TjzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7r+jlTTOw/kHZNfLJXUEqsdPJdmMql3Pod1m4pzmZ5Q=;
-        b=TIRbXAmxx9/GCcFq+pkyK7HkGKEsMTmgtY5LDi2WaCxzKfAZSnNIdG/+tJMI+43iOD
-         47MLEiC7eOCeDSjgxzMxtn9su6y8wobsjryhNcU2hOnvaaahTQMR6VKoBeUmjd69MGJ0
-         o9eMIYl27dXuH/or8+RI9uPVATPxkx+MyBvDc/Ew2+6DJZda9VP+tg14H0SjZxaLVzsw
-         crWbUWdWfOULosABdJsA8uZsgT8VfC1JIMLK3NGv59WWRSjAqnibWDQmMjaDvOQIJZ74
-         VQ52w79B25E+YiZoQPNy/WUmSZO7sLvuBYS1eMfLqxhdD9E1V5L1pDwxPwSt7zDNKLSa
-         O3ZA==
-X-Gm-Message-State: AOAM531R90mA9FB56+/YawUjaUFpAbNjwsdJqd0VYxl6ejwRFLwbC+O0
-        6bJctAKvgK1EIPkPRT2UAuV+68VlP24=
-X-Google-Smtp-Source: ABdhPJwj/2aMWbl1wJy3iIdg6yMQrhoVdgxo312L9xENDD3XFzIXP8QDHVw5pDWB1Dchk2mk2Y0bbQ==
-X-Received: by 2002:a17:907:75d0:: with SMTP id jl16mr20538725ejc.166.1630241293123;
-        Sun, 29 Aug 2021 05:48:13 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id n2sm6273410edi.32.2021.08.29.05.48.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 05:48:12 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, Phillip Potter <phil@philpotter.co.uk>
-Cc:     straube.linux@gmail.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] staging: r8188eu: cleanup c2h_handler code
-Date:   Sun, 29 Aug 2021 14:48:11 +0200
-Message-ID: <3884124.htuf3bXTbR@localhost.localdomain>
-In-Reply-To: <20210828212453.898-1-phil@philpotter.co.uk>
-References: <20210828212453.898-1-phil@philpotter.co.uk>
+        id S235352AbhH2Mzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 08:55:39 -0400
+Received: from mengyan1223.wang ([89.208.246.23]:50802 "EHLO mengyan1223.wang"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235271AbhH2Mzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 08:55:37 -0400
+X-Greylist: delayed 330 seconds by postgrey-1.27 at vger.kernel.org; Sun, 29 Aug 2021 08:55:35 EDT
+Received: from localhost.localdomain (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@mengyan1223.wang)
+        by mengyan1223.wang (Postfix) with ESMTPSA id 6DEEE65A34;
+        Sun, 29 Aug 2021 08:49:11 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
+        s=mail; t=1630241352;
+        bh=4VT7HsleXnyApJ065hiHgYH7fPmSKGhjsjtBFnJBnfM=;
+        h=Subject:From:To:Cc:Date:From;
+        b=D2ZrwHnGztEQHojfa7/y/m3YPEfHzW2H1+IATuHJsWw/0wb5cQmgdE5QxZTFlMZ2O
+         Jtx0IXiQkh9lJ+ThDLXZZhe7/vyw+xD/84B8dKxUeG1VurVafV02pCdfBMzDNHekjD
+         jjIpMsgXGcJFe8AlTs5BQYfpaE3KX1qv81Rx4vYeDDwnpjig0wtgnQVvN7gpI0d5e7
+         Vj6deJSVJZxf63lvyLDr8yRauR/RBCNVkV0bMh90uvBVs3R4dfLhN3ftOwjrEVINV5
+         sUR26iZKn+Sg6w5uWOeuWsBJBt9H088uFckgvwo1HAsMOrgMKWhb/oLPSPSPeWIEgy
+         m8JFF6H/oYEjQ==
+Message-ID: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
+Subject: [PATCH] mips: remove reference to "newer Loongson-3"
+From:   Xi Ruoyao <xry111@mengyan1223.wang>
+To:     linux-mips@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
+Date:   Sun, 29 Aug 2021 20:49:09 +0800
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, August 28, 2021 11:24:50 PM CEST Phillip Potter wrote:
-> This small patch set cleans up the c2h_handler code in the HAL layer
-> of the driver. In r8188eu, this field of struct hal_ops, is not even
-> used, so dependent code has always returned _FAIL. For this reason, we
-> should remove this function pointer field, and the wrapper function
-> which checks it. This is done in stages by this set, and helps get
-> the driver closer to the pointer where the HAL layer is
-> deleted/integrated as necessary and no longer a separate entity.
-> 
-> Phillip Potter (3):
->   staging: r8188eu: remove c2h_handler field from struct hal_ops
->   staging: r8188eu: simplify c2h_evt_hdl function
->   staging: r8188eu: remove rtw_hal_c2h_handler function
-> 
->  drivers/staging/r8188eu/core/rtw_cmd.c     | 23 +++-------------------
->  drivers/staging/r8188eu/hal/hal_intf.c     |  9 ---------
->  drivers/staging/r8188eu/include/hal_intf.h |  4 ----
->  3 files changed, 3 insertions(+), 33 deletions(-)
-> 
-> -- 
-> 2.31.1
-> 
-Dear Philip,
+Newest Loongson-3 processors have moved to use LoongArch architecture.
+Sadly, the LL/SC issue is still existing on both latest Loongson-3
+processors using MIPS64 (Loongson-3A4000) and LoongArch
+(Loongson-3A5000).
 
-You work looks good (especially after having clarified a couple of minor doubts 
-I had expressed in another message). So, the entire series is...
+As it's very unlikely there will be new Loongson-3 processors using
+MIPS64, let's stop people from false hoping.
 
-Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+---
 
-Regards,
+Huacai: how's the status of LL/SC issue on Loongson-2K?  If
+the issue exists on it as well, we can just force
+CPU_LOONGSON3_WORKAROUNDS when CONFIG_CPU_LOONGSON64 and
+CONFIG_SMP are both selected.
 
-Fabio
+ arch/mips/Kconfig | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-
-
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 6dfb27d531dd..ff5f344a371e 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1433,19 +1433,14 @@ config LOONGSON3_ENHANCEMENT
+ 	  new Loongson-3 machines only, please say 'Y' here.
+ 
+ config CPU_LOONGSON3_WORKAROUNDS
+-	bool "Old Loongson-3 LLSC Workarounds"
++	bool "Loongson-3 LLSC Workarounds"
+ 	default y if SMP
+ 	depends on CPU_LOONGSON64
+ 	help
+ 	  Loongson-3 processors have the llsc issues which require workarounds.
+ 	  Without workarounds the system may hang unexpectedly.
+ 
+-	  Newer Loongson-3 will fix these issues and no workarounds are needed.
+-	  The workarounds have no significant side effect on them but may
+-	  decrease the performance of the system so this option should be
+-	  disabled unless the kernel is intended to be run on old systems.
+-
+-	  If unsure, please say Y.
++	  Say Y, unless you know what you are doing.
+ 
+ config CPU_LOONGSON3_CPUCFG_EMULATION
+ 	bool "Emulate the CPUCFG instruction on older Loongson cores"
+-- 
+2.33.0
 
 
