@@ -2,96 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE72A3FAA3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55AF3FAA41
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbhH2JCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 05:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbhH2JCP (ORCPT
+        id S234895AbhH2JUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 05:20:34 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:51791 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234584AbhH2JUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 05:02:15 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0791C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:01:23 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso7907549pjq.4
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:01:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=4UhAzAPVc+icCp7Y2EezPOc71pObAloaN9xXjYM1qls=;
-        b=MdjTjxH8zJRW8uWJWPTAZK1RSHyGcYMLiQabXQY/zKTEAt9ixk8Qiovp+36Zabc2Qm
-         2UiOf5rnkOGqf1qd5LPLm+9vhcLRJUOn7z2Q+yMyuPDdqQPYXqEs5+JWGBcWvD0NMr/o
-         BQ2hPynd0ivspYkVbnGqOBk6feCtleyN5N8J/3O2tX6TjxEkWCZ22Ppiin8JaJ2YoK5u
-         VW/CHpEp1ImTl5kTTJhHpW+S6a1LNG/xVIbn4UUeTnq845S5K75Yhaf8/E5IJ/1aqiXF
-         doGnbgADJf1bZWTCAVPBExMWDnyrv5aTt4zY0UxRho8PO9y4UlbBQNNiomHEM7486E1K
-         az1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=4UhAzAPVc+icCp7Y2EezPOc71pObAloaN9xXjYM1qls=;
-        b=JfKCDld4nVn43Xhn/PWmvzOuzZbiQGFrDEq+YmZbt3cfpScKTDWcFuBTHcj/gbYYVG
-         fVUTw/ASJ6liaxBBbdFfisGLwb3U+R/NCPT/WGWK6eiNLBGWTts9QAhu4RtvNLs5cvRP
-         3BJhOJpO4HRup9iaOkhBDDqN277/mCtuwp+q82SS8W/RabbiLEommpimxiB6WV+bxo3T
-         VxZkocw1ZhwlNYKOtlD2flmtpBx6BGGoCds/sdwWVoPURaN/pbNDVEJ8oDIDFq0M5HeO
-         iWWHypxxYKGVhWqnDQ7CeATDslPIy1iDSh+KNxRHUJxcqXp/UmuRaci07EzswlYR5vkD
-         UtJQ==
-X-Gm-Message-State: AOAM530Nm4dPIrKrnAVvHv+Q0mm4WaeJ2IfRUqQ+6EBQYejvB/In/Z84
-        vH1oCk4Y+Hw2EUx55F8Byb8=
-X-Google-Smtp-Source: ABdhPJyhVNmjEHSADuxEbsj5bOgEqE9c1xAjyTeT0qaF9+UN0Qzyo3McstdapWEB8c48mI54qsgyEw==
-X-Received: by 2002:a17:90a:1b07:: with SMTP id q7mr20143146pjq.100.1630227683234;
-        Sun, 29 Aug 2021 02:01:23 -0700 (PDT)
-Received: from user ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id 130sm909293pfy.175.2021.08.29.02.01.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 02:01:22 -0700 (PDT)
-Date:   Sun, 29 Aug 2021 14:31:15 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: r8188eu: core: remove condition with no effect
-Message-ID: <YStM2wxtkDAnRemt@user>
+        Sun, 29 Aug 2021 05:20:32 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CEC41580B0B;
+        Sun, 29 Aug 2021 05:19:39 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 29 Aug 2021 05:19:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=UKA+mD4oTh8sYLLli6c3hx8ym4
+        5MRs9xbz/z6p375ME=; b=AvOfauNwab4X4x1DTdL2cM1nVJCYY71qMig5OvZpKF
+        to0nJih0kS+z5YUFObEno4GbFf/OamBPDOhtPnY+LvQ+3Xz0m1Fag35f9na5mHOH
+        Ul/H8q7xl2SNDLXe99WCuwGvSA7eqOYY82XkhzyNbjxLNDRtrOhGJneCLfp0vWtz
+        BJS5D3T6RF+vsmXxativ3sLT8BCgg7Og0YpGhjm1N+zt38E0uT0mPsLQXeBiiygn
+        ZHR82hDpk4KXlKOJhG36duV5W8KJgi9x34sfSJL/PpJBg6XbUILWzsK0n/gKJTQW
+        nEMIwMka4F1BqHM7tXvGoC3Z6eeUQUTNqC2PsbFjypfw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=UKA+mD4oTh8sYLLli
+        6c3hx8ym45MRs9xbz/z6p375ME=; b=XbWVvJWXNM2dCIA2e3EoqPiAyeH6TfHPU
+        6rJS9VF9A7da1YOtQdpi683nGVdXdNPRwICNGwA5bpqdhBikP1aKvnnxR0gtiPxn
+        l+/CcnVycI47RpiwXj5njQRwWKJOLGOLISQPeM+z/iA4yw9ga6bVReqLkeV/5YYk
+        5eheLMnEnE0Q72XrzRFZgHzZSq9cu9R67sTzTv6VKiIyWT2Vcq88KZP2Cq0Kcw/Y
+        uy9xL9NXrhsAIEmvANSNp6kKgGnThHD3fowOXzQ5nZTInSL4olxoT47G2ZN5KV6s
+        A+j8DZPpCHW8sBSbQ9RnYhW0WNnQuVqWOidg5gLL1bLtJkTG3mImg==
+X-ME-Sender: <xms:KlErYcf-XbFCu1BmTYMH89QEpM3XgNszWdsxo0IPpmHYY5_pF2aB6w>
+    <xme:KlErYeNgVrEAaVe64pWeSHUJKkDja0sysO1aB31LqDZrUbubL9YFXUbnLjgvRQ03X
+    jxdYGV5doXwMwpEHMg>
+X-ME-Received: <xmr:KlErYdiKdz_q5XlZ0_CtG_Pt2XL19Jks8_cgg82dZWdI9bzaOSYKQj6urPjHG7N6OFbCFycul0TQE8XZpkiUyxdPLVdJ_rT3cGLwBZ_fj2EYP3qcEA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddujedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgrihhr
+    segrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeejleeihfdvtefgtd
+    ethfdtgefftdeiffefjeeiffefveeuleejheejvefhffeukeenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlihhsth
+    grihhrvdefrdhmvg
+X-ME-Proxy: <xmx:KlErYR-apwB3tIZ4Fi2EUMeA-cZzc_ZMoKkW2FolexpXrpIJKbzB0Q>
+    <xmx:KlErYYs9rA4OLnu1xM4oystt0200K3qiw7A3fybw95dZw6OI9tbBnQ>
+    <xmx:KlErYYGyq8VKFZN39OiBDlxhw9oZ0Trsj4jTxH7KHpr5voExIZiRHg>
+    <xmx:K1ErYYFnBwniKcVzrgBVHodzLUiCcOlRJdoF_HlB5k7bEzmg2S4_pw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 29 Aug 2021 05:19:33 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, pinglinux@gmail.com,
+        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
+        ping.cheng@wacom.com
+Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v10 00/12] Add Wacom I2C support to rM2
+Date:   Sun, 29 Aug 2021 19:19:12 +1000
+Message-Id: <20210829091925.190-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the condition with no effect (if == else) and group multiple
-cases which execute same statement in rtw_mlme_ext.c
+Add support to the reMarkable2 (rM2) for the Wacom I2C device.
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_mlme_ext.c | 9 ---------
- 1 file changed, 9 deletions(-)
+This is based on the reMarkable Linux fork and with this series I am
+able to use the Wacom digitiser on the rM2.
 
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index 5a472a4954b0..4178b3c1ff57 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -453,17 +453,8 @@ void mgt_dispatcher(struct adapter *padapter, struct recv_frame *precv_frame)
- 		fallthrough;
- 	case WIFI_ASSOCREQ:
- 	case WIFI_REASSOCREQ:
--		_mgt_dispatcher(padapter, ptable, precv_frame);
--		break;
- 	case WIFI_PROBEREQ:
--		if (check_fwstate(pmlmepriv, WIFI_AP_STATE))
--			_mgt_dispatcher(padapter, ptable, precv_frame);
--		else
--			_mgt_dispatcher(padapter, ptable, precv_frame);
--		break;
- 	case WIFI_BEACON:
--		_mgt_dispatcher(padapter, ptable, precv_frame);
--		break;
- 	case WIFI_ACTION:
- 		_mgt_dispatcher(padapter, ptable, precv_frame);
- 		break;
---
-2.32.0
+v10:
+ - Add a new patch to determine the generation
+ - Use generation to determine if tilt is supported
+ - Address comments from v9
+ - Remove flip-pressure
+v9:
+ - Add two new patches
+ - Fixup the device tree interrupt line
+v7:
+ - Fx the compatible name and documentation
+
+Alistair Francis (12):
+  dt-bindings: Add Wacom to vendor bindings
+  dt-bindings: touchscreen: Initial commit of wacom,i2c
+  Input: wacom_i2c - Add device tree support to wacom_i2c
+  Input: wacom_i2c - Add touchscren properties
+  Input: wacom_i2c - Read the descriptor values
+  Input: wacom_i2c - Add support for distance and tilt x/y
+  Input: wacom_i2c - Clean up the query device fields
+  Input: wacom_i2c - Add support for vdd regulator
+  Input: wacom_i2c - Use macros for the bit masks
+  Input: wacom_i2c - Allow flipping the values from the DT
+  ARM: imx_v6_v7_defconfig: Enable Wacom I2C
+  ARM: dts: imx7d: remarkable2: add wacom digitizer device
+
+ .../input/touchscreen/wacom,generic.yaml      |  68 +++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/imx7d-remarkable2.dts       |  61 ++++
+ arch/arm/configs/imx_v6_v7_defconfig          |   1 +
+ drivers/input/touchscreen/wacom_i2c.c         | 262 +++++++++++++++---
+ 5 files changed, 358 insertions(+), 36 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,generic.yaml
+
+-- 
+2.31.1
 
