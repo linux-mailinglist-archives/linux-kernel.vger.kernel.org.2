@@ -2,142 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E826E3FAADD
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846B63FAAE1
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235139AbhH2KX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 06:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235011AbhH2KXz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 06:23:55 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F270C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 03:23:03 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id m26so9797623pff.3
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 03:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+tIlR3yAnihc/8N68dAkVCR/HC1yo91sWJBQN/lr8bM=;
-        b=EpBQc1jEbWZQDKA/Hd96/dSblduNlrZBfncFOQFXZpBZasUh1zyFsHwfMwKgYRKn2h
-         q4NE7GP+NXGct8xScaCRIZnWy+hcmxCEq/nCYqgCQNL6rwF/YRU1M6f1fD4O4cbNoTzz
-         uXwFsacODV17YlAKMBclA++GTdimgD4pqTRn5Q4GCyKHe6AgjXLUHb8GqfqPlIGscUaX
-         ZgDzHZA0qamkZz1/SgpKYCbiJR76MPDn6r/4PVd/QIasX3mNJggJd6mDMt0CtC5TAb4i
-         KmmVTatyoe7/Mi9gAG1PbwKdoNzQK3A0UihvZVjffBNZQkyZ5IEgzccZ6tRbr9QFbn7X
-         5f6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+tIlR3yAnihc/8N68dAkVCR/HC1yo91sWJBQN/lr8bM=;
-        b=AQbRt76nqbfHQXMCvN0XjR5WHJsFucQgii4SfvIi1Vrq02RZHzLYtl0rWyzB8wq3Jc
-         ugdRPFcYronCZbTSVrvQP+QcQX/pDgwvJXCS8pCRwL9iwv6mr2qY2jLtuEZ03N5bmlRT
-         jJlVRb1rGF0lgsiuQQXw58Pr8PWKpDsSG5nIC/BZaH61ViKv0hXzejLiB2vzCkckMw1c
-         j+LUWWycL8ktxcCdrnS6gut23MaUby2f1nbgMJ87341zCOse7vwgHvG9r2F1b0UrtONG
-         HKXu1PJngz34IHQ7vUTuVRXoY07nfkHv9j89G9k8t6cI0k2Z5fsF4+jhbgTEWmtSJryH
-         LV2w==
-X-Gm-Message-State: AOAM532ImvWD/PvOCVWcFy92+JhVN6sxObUUDPvcVzy0Fm5yzcMIroid
-        UG3C/TMLHPBSZD9UshR4hYbxAQ==
-X-Google-Smtp-Source: ABdhPJx0z9GdJsy4ggFkGrduZsKKGG/vfDnVoFB9KZKLY9yy2wtvbqbnc5phggOaYFxXoxCi8NiAQQ==
-X-Received: by 2002:a62:8603:0:b029:3c8:3fdb:4aea with SMTP id x3-20020a6286030000b02903c83fdb4aeamr17882261pfd.6.1630232583070;
-        Sun, 29 Aug 2021 03:23:03 -0700 (PDT)
-Received: from localhost ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id b20sm11404522pfl.9.2021.08.29.03.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 03:23:02 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 2/2] perf auxtrace arm: Support compat_auxtrace_mmap__{read_head|write_tail}
-Date:   Sun, 29 Aug 2021 18:22:38 +0800
-Message-Id: <20210829102238.19693-3-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210829102238.19693-1-leo.yan@linaro.org>
-References: <20210829102238.19693-1-leo.yan@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S235145AbhH2KZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 06:25:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235105AbhH2KZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 06:25:00 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77EC960E90;
+        Sun, 29 Aug 2021 10:24:08 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mKHyw-007qNY-GN; Sun, 29 Aug 2021 11:24:06 +0100
+Date:   Sun, 29 Aug 2021 11:24:06 +0100
+Message-ID: <87sfysczw9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] irqchip/loongson-pch-msi: Fix hwirq setting problem
+In-Reply-To: <20210829092933.4061429-1-chenhuacai@loongson.cn>
+References: <20210829092933.4061429-1-chenhuacai@loongson.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: chenhuacai@loongson.cn, tglx@linutronix.de, linux-kernel@vger.kernel.org, lixuefeng@loongson.cn, chenhuacai@gmail.com, jiaxun.yang@flygoat.com, stable@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the tool runs with compat mode on Arm platform, the kernel is in
-64-bit mode and user space is in 32-bit mode; the user space can use
-instructions "ldrd" and "strd" for 64-bit value atomicity.
+On Sun, 29 Aug 2021 10:29:33 +0100,
+Huacai Chen <chenhuacai@loongson.cn> wrote:
+> 
+> The default msi_domain_ops_init() doesn't set hwirq for irq_data,
+> which causes the hwirq displayed in /proc/interrupts very strange.
+> We fix this by providing a custom msi_domain_ops_init().
 
-This patch adds compat_auxtrace_mmap__{read_head|write_tail} for arm
-building, it uses "ldrd" and "strd" instructions to ensure accessing
-atomicity for aux head and tail.  The file arch/arm/util/auxtrace.c is
-built for arm and arm64 building, these two functions are not needed for
-arm64, so check the compiler macro "__arm__" to only include them for
-arm building.
+I suggest you start by reading pci_msi_domain_set_desc(). Can you
+demonstrate that this function isn't called and that the numbers
+displayed in /proc/interrupts are just random crap pulled out of thin
+air?
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: James Clark <james.clark@arm.com>
-Tested-by: James Clark <james.clark@arm.com>
----
- tools/perf/arch/arm/util/auxtrace.c | 32 +++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+> 
+> Before this patch:
+> 
+> root@loongson-pc:~# cat /proc/interrupts
+>            CPU0       CPU1
+>  30:          0          0      PCH PIC  47  acpi
+>  42:      80020          0      LIOINTC  10  ttyS0
+>  44:          1          0      PCH PIC  49  ohci_hcd:usb3
+>  45:          0          0      PCH PIC  48  ehci_hcd:usb1
+>  46:          1          0      PCH PIC  51  ohci_hcd:usb4
+>  47:          0          0      PCH PIC  50  ehci_hcd:usb2
+>  54:          0          0      PCH PIC  16  ahci[0000:00:08.0]
+>  55:       4364          0      PCH PIC  17  ahci[0000:00:08.1]
+>  56:        103          0      PCH PIC  18  ahci[0000:00:08.2]
+>  57:          0          0     PCH PCI MSI 1048576  ahci[0000:02:00.0]
+>  58:          0          0     PCH PCI MSI 524288  xhci_hcd
+>  59:          0          0     PCH PCI MSI 524289  xhci_hcd
+>  60:          0          0     PCH PCI MSI 524290  xhci_hcd
+>  61:          0          0     PCH PCI MSI 524291  xhci_hcd
+>  62:          1          0     PCH PCI MSI 1572864  enp3s0f0
+>  63:          6        173     PCH PCI MSI 1572865  enp3s0f0-rx-0
+>  64:          6        151     PCH PCI MSI 1572866  enp3s0f0-rx-1
+>  65:          6        151     PCH PCI MSI 1572867  enp3s0f0-rx-2
+>  66:         20          0     PCH PCI MSI 1572868  enp3s0f0-tx-0
+>  67:         20          0     PCH PCI MSI 1572869  enp3s0f0-tx-1
+>  68:        170          0     PCH PCI MSI 1572870  enp3s0f0-tx-2
+> 
+> After this patch:
+> 
+> root@loongson-pc:~# cat /proc/interrupts
+>            CPU0       CPU1
+>  30:          0          0      PCH PIC  47  acpi
+>  42:      83960          0      LIOINTC  10  ttyS0
+>  44:          1          0      PCH PIC  49  ohci_hcd:usb3
+>  45:          0          0      PCH PIC  48  ehci_hcd:usb1
+>  46:          1          0      PCH PIC  51  ohci_hcd:usb4
+>  47:          0          0      PCH PIC  50  ehci_hcd:usb2
+>  54:          0          0      PCH PIC  16  ahci[0000:00:08.0]
+>  55:       6688         13      PCH PIC  17  ahci[0000:00:08.1]
+>  56:        113          2      PCH PIC  18  ahci[0000:00:08.2]
+>  57:          0          0     PCH PCI MSI  67  ahci[0000:02:00.0]
+>  58:          0          0     PCH PCI MSI  68  xhci_hcd
+>  59:          0          0     PCH PCI MSI  69  xhci_hcd
+>  60:          0          0     PCH PCI MSI  70  xhci_hcd
+>  61:          0          0     PCH PCI MSI  71  xhci_hcd
+>  62:          1          0     PCH PCI MSI  72  enp3s0f0
+>  63:         12          4     PCH PCI MSI  73  enp3s0f0-rx-0
+>  64:         12          4     PCH PCI MSI  74  enp3s0f0-rx-1
+>  65:         12          0     PCH PCI MSI  75  enp3s0f0-rx-2
+>  66:         16          0     PCH PCI MSI  76  enp3s0f0-tx-0
+>  67:         22          0     PCH PCI MSI  77  enp3s0f0-tx-1
+>  68:         12          0     PCH PCI MSI  78  enp3s0f0-tx-2
+> 
+> Fixes: 632dcc2c75ef6de327 ("irqchip: Add Loongson PCH MSI controller")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> ---
+>  drivers/irqchip/irq-loongson-pch-msi.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-loongson-pch-msi.c b/drivers/irqchip/irq-loongson-pch-msi.c
+> index 32562b7e681b..c91a731abd99 100644
+> --- a/drivers/irqchip/irq-loongson-pch-msi.c
+> +++ b/drivers/irqchip/irq-loongson-pch-msi.c
+> @@ -81,10 +81,25 @@ static void pch_msi_compose_msi_msg(struct irq_data *data,
+>  	msg->data = data->hwirq;
+>  }
+>  
+> +static int msi_domain_ops_init(struct irq_domain *domain,
+> +				struct msi_domain_info *info,
+> +				unsigned int virq, irq_hw_number_t hwirq,
+> +				msi_alloc_info_t *arg)
+> +{
+> +	irq_domain_set_hwirq_and_chip(domain, virq, arg->hwirq, info->chip,
+> +					info->chip_data);
+> +	return 0;
+> +}
+> +
+> +static struct msi_domain_ops pch_msi_domain_ops = {
+> +	.msi_init	= msi_domain_ops_init,
+> +};
+> +
+>  static struct msi_domain_info pch_msi_domain_info = {
+>  	.flags	= MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
+>  		  MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX,
+>  	.chip	= &pch_msi_irq_chip,
+> +	.ops	= &pch_msi_domain_ops,
+>  };
+>  
+>  static struct irq_chip middle_irq_chip = {
+> @@ -112,8 +127,9 @@ static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
+>  					   unsigned int virq,
+>  					   unsigned int nr_irqs, void *args)
+>  {
+> -	struct pch_msi_data *priv = domain->host_data;
+>  	int hwirq, err, i;
+> +	struct pch_msi_data *priv = domain->host_data;
+> +	msi_alloc_info_t *info = (msi_alloc_info_t *)args;
+>  
+>  	hwirq = pch_msi_allocate_hwirq(priv, nr_irqs);
+>  	if (hwirq < 0)
+> @@ -127,6 +143,7 @@ static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
+>  		irq_domain_set_hwirq_and_chip(domain, virq + i, hwirq + i,
+>  					      &middle_irq_chip, priv);
+>  	}
+> +	info->hwirq = hwirq;
+>  
+>  	return 0;
+>  
 
-diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
-index b187bddbd01a..c7c7ec0812d5 100644
---- a/tools/perf/arch/arm/util/auxtrace.c
-+++ b/tools/perf/arch/arm/util/auxtrace.c
-@@ -107,3 +107,35 @@ struct auxtrace_record
- 	*err = 0;
- 	return NULL;
- }
-+
-+#if defined(__arm__)
-+u64 compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
-+{
-+	struct perf_event_mmap_page *pc = mm->userpg;
-+	u64 result;
-+
-+	__asm__ __volatile__(
-+"	ldrd    %0, %H0, [%1]"
-+	: "=&r" (result)
-+	: "r" (&pc->aux_head), "Qo" (pc->aux_head)
-+	);
-+
-+	return result;
-+}
-+
-+int compat_auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
-+{
-+	struct perf_event_mmap_page *pc = mm->userpg;
-+
-+	/* Ensure all reads are done before we write the tail out */
-+	smp_mb();
-+
-+	__asm__ __volatile__(
-+"	strd    %2, %H2, [%1]"
-+	: "=Qo" (pc->aux_tail)
-+	: "r" (&pc->aux_tail), "r" (tail)
-+	);
-+
-+	return 0;
-+}
-+#endif
+There is nothing to fix here. The hwirq numbers in /proc/interrupts
+are the way they are for a good reason, and there is no need to make
+them look "better".
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
