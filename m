@@ -2,117 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A26D3FACF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45ED63FACFC
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 18:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235692AbhH2PzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        id S235723AbhH2P7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235764AbhH2PzG (ORCPT
+        with ESMTP id S235548AbhH2P7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:55:06 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91595C061760
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 08:54:14 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id eh1so6968264qvb.11
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 08:54:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2lFAxhd8GYho/4ODjYlv7uZMw/0eD5pCCmeHLl+hjPs=;
-        b=mhx9ENQXODT+mzzMPqmHKUrwyDP2qJQeuDuWMS01gHPl43XhTaDa7GIwT5EZrzsKlW
-         XYrJjSXdlg7yFUzDfgrCTeHHFsuK2dGZzpV4e6dDVB43n3znpV5NEOSV5Jb1W542jRuk
-         3Ofp66c2GUjahl/LYi4ixx1JYqgz/DPjN3n81ynmXWItJ02c662hvQlZJ1N7wNrBFO+d
-         LdaHQwaSptg/CV5S2SQ5h/HKx10wJDGKG7Ca5b+kZqHAA7E2f6cJi7/dwGX3PtU2JrjL
-         3R1ypHe5H4Nhg5SwUbFTCZPhLiX53TmhoEGWfqxj67tEbpLDIljuQerpXkUz8qslJ05v
-         IL0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2lFAxhd8GYho/4ODjYlv7uZMw/0eD5pCCmeHLl+hjPs=;
-        b=Wo/xABhvLxBso9IN2NgcHJ84KHbM3ak0tidOI4SFLNLGFs3LojGnlmV7BOvcGEhKYZ
-         R5sjAr9ca9hKIHXjXML18r9jRSkrSnWQbuFbOmZeHJ0EZA0zJKwEN1hT/zk3s3jbB8q2
-         +leTSg2btirjSsfk0Hk0LCeB3kIcadOnl4ceF89BjiUEqChxRUCRei5aACHVvmWQQNx3
-         MtP8IEu1dVkSXx+9SUaz3ibRyGaonv8L0H73L3qLOvWjtJtQcj6y5/bMC6cwJpKlUMet
-         v11lKLLhdlSJ8yuDuZrQzvJ7LjE6Z4WQHhRX16gcG8d63jB99ZomJHjNEaLANk5I0Jlb
-         I10A==
-X-Gm-Message-State: AOAM532lQDri8ymshW7JVEsEbk1fhX6KPRaPjOI757HaZokVUOt181nY
-        dTtofFRtWHzTh9J4ErLZCNnLCZNa7hkaOAKthGYS8w==
-X-Google-Smtp-Source: ABdhPJxe1bgF3xh2bIKzCa9HbcdEnoBohTsx5XK2a6WNzZeS4ponlbCpnvpXa1C9Dxt2513WX+SXZNaLMUhG2s0WPzc=
-X-Received: by 2002:a0c:cb8f:: with SMTP id p15mr19218569qvk.2.1630252453659;
- Sun, 29 Aug 2021 08:54:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210727202004.712665-1-dmitry.baryshkov@linaro.org>
- <163000270629.1317818.2836576068466077505@swboyd.mtv.corp.google.com>
- <42c3fa20-7ffa-255f-ca28-6f0aa2aa4a13@linaro.org> <163020909027.2218116.11109424225803296345@swboyd.mtv.corp.google.com>
-In-Reply-To: <163020909027.2218116.11109424225803296345@swboyd.mtv.corp.google.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sun, 29 Aug 2021 18:54:02 +0300
-Message-ID: <CAA8EJppo8Zze5ViYOWooHy=RR4ueXNeWiBFyKdtpUcm5Cs69ew@mail.gmail.com>
-Subject: Re: [PATCH v6 0/6] clk: qcom: use power-domain for sm8250's clock controllers
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Sun, 29 Aug 2021 11:59:50 -0400
+X-Greylist: delayed 539 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 29 Aug 2021 08:58:58 PDT
+Received: from dnyon.com (unknown [IPv6:2001:ba0:1800:12f::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54200C061756;
+        Sun, 29 Aug 2021 08:58:58 -0700 (PDT)
+Received: from dnyon.com (45.74.222.87.dynamic.jazztel.es [87.222.74.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dnyon.com (Postfix) with ESMTPSA id A336040442;
+        Sun, 29 Aug 2021 15:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
+        t=1630252195; bh=K7WOQRGdrSf+PbNjqY1YtmWTU3lNTVPtvBKbaWcq284=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YomUul1yURUkZT7vFN/EK4seETy+lbrdMjRM5XfjLve9o4BKbNKAOF4cGR27klIgv
+         57uMLgbQPC9pRHImkHtpjvtgtajEg1Hl4S6b9VorG0w/opcJyirfUVlE9OzI7DJKFw
+         WyKnWDjackbOgKu5GaOsK38orAC8g1nHjBvQGbRxiFY5hW/fzOUFkWadBmkuKGmqhx
+         uJQ54ZV32NMNlPtNFMOIOIudQE4z08729sJRDoGSxzKyeLoYa71r5Wsam1us58ezzr
+         7VxnfeW9/S42vguVYF0+p6BHQqr1GqQumyvAsE/mZU8K8BEwzlHSGf+mYEvmsXVenV
+         w6eR50DZYwfoQ==
+From:   Alejandro Tafalla <atafalla@dnyon.com>
+Cc:     Alejandro Tafalla <atafalla@dnyon.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Add reset-gpios handling for max98927
+Date:   Sun, 29 Aug 2021 17:45:42 +0200
+Message-Id: <20210829154545.383119-1-atafalla@dnyon.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Aug 2021 at 06:51, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Dmitry Baryshkov (2021-08-26 14:56:23)
-> > On 26/08/2021 21:31, Stephen Boyd wrote:
-> > > Quoting Dmitry Baryshkov (2021-07-27 13:19:56)
-> > >> On SM8250 both the display and video clock controllers are powered up by
-> > >> the MMCX power domain. Handle this by linking clock controllers to the
-> > >> proper power domain, and using runtime power management to enable and
-> > >> disable the MMCX power domain.
-> > >>
-> > >> Dependencies:
-> > >> - https://lore.kernel.org/linux-arm-msm/20210703005416.2668319-1-bjorn.andersson@linaro.org/
-> > >>    (pending)
-> > >
-> > > Does this patch series need to go through the qcom tree? Presumably the
-> > > dependency is going through qcom -> arm-soc
-> >
-> > It looks like Bjorn did not apply his patches in the for-5.15 series, so
-> > we'd have to wait anyway. Probably I should rebase these patches instead
-> > on Rajendra's required-opps patch (which is going in this window).
-> >
->
-> Ok. Thanks. I'll drop it from my queue for now.
+The max98927 codec on some devices (i.e. Xiaomi Mi A2 Lite phone) require
+hardware-resetting the codec by driving a reset-gpio. This series add
+support for it through an optional reset-gpios property.
 
-Just for the reference. I've sent v7 of this patchset. After thinking
-more about power domains relationship, I think we have a hole in the
-abstraction here. Currently subdomains cause power domains to be
-powered up, but do not dictate the performance level the parent domain
-should be working in. While this does not look like an issue for the
-gdsc (and thus it can be easily solved by the Bjorn's patches, which
-enforce rpmhpd to be powered on to 'at least lowest possible'
-performance state, this might be not the case for the future links. I
-think at some point the pd_add_subdomain() interface should be
-extended with the ability to specify minimum required performance
-state when the link becomes on. Until that time I have changed code to
-enforce having clock controller in pm resume state when gdsc is
-enabled, thus CC itself votes on parent's (rpmhpd) performance state.
+Alejandro Tafalla (2):
+  ASoC: max98927: Handle reset gpio when probing i2c
+  dt-bindings: sound: max98927: Add reset-gpios optional property
 
+ .../devicetree/bindings/sound/max9892x.txt       |  3 +++
+ sound/soc/codecs/max98927.c                      | 16 ++++++++++++++++
+ sound/soc/codecs/max98927.h                      |  1 +
+ 3 files changed, 20 insertions(+)
 
 -- 
-With best wishes
-Dmitry
+2.32.0
+
