@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6353FAA6F
+	by mail.lfdr.de (Postfix) with ESMTP id B46443FAA70
 	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235082AbhH2J0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 05:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
+        id S235106AbhH2J0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 05:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbhH2J0R (ORCPT
+        with ESMTP id S234982AbhH2J0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 05:26:17 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FC3C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:25:25 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id me10so24023700ejb.11
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:25:25 -0700 (PDT)
+        Sun, 29 Aug 2021 05:26:18 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0BFC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:25:26 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id r7so788689edd.6
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:25:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ssZbkXOIC8Nc+zuDyC8swwWy/mmc9lT9t9cyKL316Ho=;
-        b=dOtYhdlQsClPRuAS4N13+n5zgEgSGoDsxsEsSGOTnh2nJvDF6kMdVxJ8JqwEsgpjyp
-         YPbBN6NKzI617+WRtYiBm52gRaikB7yCWncuBG2+d6Uuf7AtthzD5cVW1Tl3fkrphCBq
-         GX1P8SB2nQ6ZtWShMujhqcr3Q77Ke3/0BIEH+8IKkK8MLfXKpcfg3KfAzNdauFYkWPWB
-         /eEbEvBIAsiegsvf+BINH60b8EmF7yGrgcoeLnyVHuqv9PkBof0Tu/D/e0MYguRdIGkd
-         bgZS/UStu/ikMuIPrKhxURIGzYS18k333wbNpYQLm2wpM2vmPxqsBw33Q33rkZCncjyo
-         WpCw==
+        bh=P8cOJwuF63B3kAPlXYd6oasS8yb7CPWzUAASpmG5Xb8=;
+        b=gVCHHH9NHciA1B34T3gAuRPrjTuX53cpRqJEQgM9Gq4LNYSxOwO3j/T9ho1b0YDBgv
+         +0dAkztcE4mzaQ7RL3R3+B1L8gCjNsx/C6pb23oETbXXCOpPoS1RziijwIrKUKvmg/Ln
+         yKS+7/eGdq0AN6ulT8KIOFWiKIQiKNARa+QY+QEcRbpLdZ8kFE3A19jO2QgtjfHmAWfR
+         zcURkAU7yfJmylqmvxk1WiScTlIBf5QTJ6g4zeZw5MEP0yhG+HeJtXmWWjrzxrWu/40T
+         qJpDMzp+olz3hntqiWFpMOHY9uwVXzoCohCXwmdhfdGv3RyQH0GKUHdS4tJhbmXM/7il
+         JVow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ssZbkXOIC8Nc+zuDyC8swwWy/mmc9lT9t9cyKL316Ho=;
-        b=djABnvFKOL2zhb9GIgPDbEXKfbahPFMKbxCCVT0rRq04E6sBHLIh6J7YL4RtKFy6RH
-         9YUImBmCSqKq47gv78hVEjvbu15RNu8rBtUdnyuNSQoKB05l5/YslIQygVQeKNIwquMQ
-         jvxPsMNLXGAdDbJuPTA7IyLXjmxBhPzkCtNIXookJzH6XgtyDM4tJItCqhHSkiQvWbEB
-         OgnmIkingP+R1ZVZ2xk7mrSh2yGgMS3cTF0mh5795QFrVw/CDMGnF1cYCKrNU8Evqrza
-         1r/dC9gAEUJcxsN+NyO+FHqb2EwlxC01dxd1yiu/6t+gfPrUyjXZO+cdCxHCN8r5kos/
-         1oXw==
-X-Gm-Message-State: AOAM530+UE7Q1i2vKCfVTCOoSI+8Z9AUbUO1Yx5l8eVxBZ+1q5mF+56p
-        CyNrQhE0fs3JltQurY1QP6s=
-X-Google-Smtp-Source: ABdhPJxuz0SCg+0G9G78XYDNCr6JniNYVg/mYCJdp5hKRjU82zeR98CSKeZuhbYmuLOVVgRPi0eQeA==
-X-Received: by 2002:a17:906:b14d:: with SMTP id bt13mr19410856ejb.39.1630229124427;
-        Sun, 29 Aug 2021 02:25:24 -0700 (PDT)
+        bh=P8cOJwuF63B3kAPlXYd6oasS8yb7CPWzUAASpmG5Xb8=;
+        b=oR1byRmUW60t49Tr7PQPoK3vpXm4E8wltJrZWtGETVHXtSI6vOiZSQ0NjbqdytWcxw
+         J5zCDk0zBmh27XYUr0DOzE0dZ/eA/cuMvoq2nP2Z7HsfhHa+Edw57RtYe6ZmBL3e7y52
+         CiwS8p/YFf57MYME/gLVLdEk2jdJB7usdL2ftPM8AdYcjfeRBYn06S2G4l/jHUgIGbCo
+         dFOaiX+Tc3Rzqh/ehQKpj/0JPLjlO5+5w0nQ/hh9EfunHTA8GwW5nI1lj2JpijsjK3tK
+         kl+ppowzsmR1b57HsqbaLYqVGUmw+YNvQKza9rgrxdUesWXIiKIb/e8TvA8UfEhnibQH
+         jmgg==
+X-Gm-Message-State: AOAM532vjnDgBnjR4k+4Ibc/jJj5WeaHdTYODeWQ/GDsKnWktLKZpIIV
+        ywtiswIvdWSIIPxVP+QD6U4=
+X-Google-Smtp-Source: ABdhPJxmrLnlHUJtXbMWShP+34rlN/WFLyCROTsnVKZ/ornQblLCWR2/QTS4xi+YKkbUHQSNfPDZvQ==
+X-Received: by 2002:aa7:c60e:: with SMTP id h14mr8450755edq.43.1630229125231;
+        Sun, 29 Aug 2021 02:25:25 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::16fa])
-        by smtp.gmail.com with ESMTPSA id d23sm5814414edt.39.2021.08.29.02.25.21
+        by smtp.gmail.com with ESMTPSA id d23sm5814414edt.39.2021.08.29.02.25.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 29 Aug 2021 02:25:24 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
@@ -54,9 +54,9 @@ Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 3/6] staging: r8188eu: remove get_bsstype()
-Date:   Sun, 29 Aug 2021 11:24:59 +0200
-Message-Id: <20210829092502.3658-4-straube.linux@gmail.com>
+Subject: [PATCH 4/6] staging: r8188eu: remove CAM_empty_entry()
+Date:   Sun, 29 Aug 2021 11:25:00 +0200
+Message-Id: <20210829092502.3658-5-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210829092502.3658-1-straube.linux@gmail.com>
 References: <20210829092502.3658-1-straube.linux@gmail.com>
@@ -66,47 +66,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function get_bsstype() is unused, remove it.
+Function CAM_empty_entry() is unused, remove it.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_wlan_util.c   | 10 ----------
- drivers/staging/r8188eu/include/rtw_mlme_ext.h |  1 -
- 2 files changed, 11 deletions(-)
+ drivers/staging/r8188eu/core/rtw_wlan_util.c   | 5 -----
+ drivers/staging/r8188eu/include/rtw_mlme_ext.h | 1 -
+ 2 files changed, 6 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/core/rtw_wlan_util.c b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-index 57330b3a66d7..bc10a08d01e6 100644
+index bc10a08d01e6..ddc84f6b74e2 100644
 --- a/drivers/staging/r8188eu/core/rtw_wlan_util.c
 +++ b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-@@ -363,16 +363,6 @@ void set_channel_bwmode(struct adapter *padapter, unsigned char channel, unsigne
- 	SetBWMode(padapter, bwmode, channel_offset);
+@@ -427,11 +427,6 @@ unsigned int decide_wait_for_beacon_timeout(unsigned int bcn_interval)
+ 		return bcn_interval << 2;
  }
  
--int get_bsstype(unsigned short capability)
+-void CAM_empty_entry(struct adapter *Adapter, u8 ucIndex)
 -{
--	if (capability & BIT(0))
--		return WIFI_FW_AP_STATE;
--	else if (capability & BIT(1))
--		return WIFI_FW_ADHOC_STATE;
--	else
--		return 0;
+-	rtw_hal_set_hwreg(Adapter, HW_VAR_CAM_EMPTY_ENTRY, (u8 *)(&ucIndex));
 -}
 -
- __inline u8 *get_my_bssid(struct wlan_bssid_ex *pnetwork)
+ void invalidate_cam_all(struct adapter *padapter)
  {
- 	return pnetwork->MacAddress;
+ 	rtw_hal_set_hwreg(padapter, HW_VAR_CAM_INVALID_ALL, NULL);
 diff --git a/drivers/staging/r8188eu/include/rtw_mlme_ext.h b/drivers/staging/r8188eu/include/rtw_mlme_ext.h
-index fe3a32f17308..c6b17da73c5f 100644
+index c6b17da73c5f..01f770d02e5f 100644
 --- a/drivers/staging/r8188eu/include/rtw_mlme_ext.h
 +++ b/drivers/staging/r8188eu/include/rtw_mlme_ext.h
-@@ -473,7 +473,6 @@ u8 collect_bss_info(struct adapter *padapter, struct recv_frame *precv_frame,
- void update_network(struct wlan_bssid_ex *dst, struct wlan_bssid_ex *src,
- 		    struct adapter *adapter, bool update_ie);
+@@ -462,7 +462,6 @@ void write_cam(struct adapter *padapter, u8 entry, u16 ctrl, u8 *mac, u8 *key);
+ void clear_cam_entry(struct adapter *padapter, u8 entry);
  
--int get_bsstype(unsigned short capability);
- u8 *get_my_bssid(struct wlan_bssid_ex *pnetwork);
- u16 get_beacon_interval(struct wlan_bssid_ex *bss);
+ void invalidate_cam_all(struct adapter *padapter);
+-void CAM_empty_entry(struct adapter * Adapter, u8 ucIndex);
  
+ int allocate_fw_sta_entry(struct adapter *padapter);
+ void flush_all_cam_entry(struct adapter *padapter);
 -- 
 2.32.0
 
