@@ -2,158 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122203FAB8A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 15:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8193FABDC
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 15:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbhH2NA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 09:00:56 -0400
-Received: from relay.sw.ru ([185.231.240.75]:49042 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235271AbhH2NAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 09:00:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=8K7FRhFmUut9BDtM0WSDlvm2R6R2V2gQI8Js6NhL0YA=; b=PivL+U5CpIgSawX8jJX
-        U+bbFpFJebnNS+4GLt/FQuWxz7Iw3p+ZqFhBh6HWGDPRb8a4bw/U8sdW3m/OOjwgg2ztSy+vEHy5V
-        dBPK7wn1jcoVw03Fryd9neeX3G0/xmLNOoPFFNdzqdB5RtNZhwVinlbwEFoMtchqAvho2+eipQc=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mKKPl-0007Us-2K; Sun, 29 Aug 2021 15:59:57 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH v2] skb_expand_head() adjust skb->truesize incorrectly
-To:     Christoph Paasch <christoph.paasch@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
+        id S235416AbhH2NOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 09:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235372AbhH2NOD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 09:14:03 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8F6C0613D9
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 06:13:11 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id g13so25234333lfj.12
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 06:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VaIELk3aejG928b4attVmLHeHooVAXSsVOw7u++6ic8=;
+        b=NBuVmcUEZj+2izFzWo7km7GIur/VKIWIdCygLu4Gtd5j+RVmNsWMrgh04N2TZuSMfU
+         qOCfcwDEjE8ZtdKrslnPtXszndze+62w2XWwb6xGVsH1q3jBWtuTLCb9KuSLNbPPRhlK
+         IbpDOICgqNbLc24No+PMG8DhLUM2mN/elJS0GRGV4rFr6iSEdeGZxaI/ykar8IBYY9uy
+         Mctoi0prxcBGI+UT9DvbqIAUUP2Iz4yWSGuhWEeXcrakwQ1fy45teTG3uj0aqnye2YP6
+         lXtLTZX24wvaqQuWHyNbc/msMLpxxBuORKzKEUoSATLWOgQ2fAAvsiPWesmAzPXBNpqI
+         WsVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VaIELk3aejG928b4attVmLHeHooVAXSsVOw7u++6ic8=;
+        b=Gympkj5zPoC7cgAuRshnArPxuYwZ9NIdhOeLYn8yhmqLMZdrVy2rmOYq90vbMxQt4z
+         cIcwoXQb1jylSVUUZkYnxiuGRDLtxVP/v+KxXPDubIQ/vwUyBN9smcRiDHj2d7qdBMHP
+         p9JhneEQ7rizE9+ztWz82vmaxelVXE+5BjREdWwyndylWEvY9MW3VlLgf/9XiJ0YcG3i
+         1oElDExy9QtbuaKjGxGALQDp5/kczQfIgLPc2rnr9lfD44oexxbgsf6of4l/PFC5MEym
+         rMGS1YQFReTmoKla0jIi6FuFXvBQUS0DnplQFovW0zmJuO+GCFst3ZHr4BTSIhe1A4lX
+         Wp2g==
+X-Gm-Message-State: AOAM531AxoBA0vJgcyWApO+tKCaCxldE42KzJtR+s5U5qdMN1jMMdYW0
+        oqdEUGoXMI71c/7xXkH59Rdytg==
+X-Google-Smtp-Source: ABdhPJxoTTCTULxN0AI0ux6Ox/vGsWyAWulCZNHRsyc3AM9WfbWCnshA9YjeDZK67Cxvk0WaVZLaHA==
+X-Received: by 2002:a05:6512:6cd:: with SMTP id u13mr13935373lff.184.1630242789821;
+        Sun, 29 Aug 2021 06:13:09 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id x13sm712503lfq.262.2021.08.29.06.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 06:13:09 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>
-References: <CALMXkpZYGC5HNkJAi4wCuawC-9CVNjN1LqO073YJvUF5ONwupA@mail.gmail.com>
-Message-ID: <860513d5-fd02-832b-1c4c-ea2b17477d76@virtuozzo.com>
-Date:   Sun, 29 Aug 2021 15:59:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [RFC v2 00/13] create power sequencing subsystem
+Date:   Sun, 29 Aug 2021 16:12:52 +0300
+Message-Id: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <CALMXkpZYGC5HNkJAi4wCuawC-9CVNjN1LqO073YJvUF5ONwupA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Paasch reports [1] about incorrect skb->truesize
-after skb_expand_head() call in ip6_xmit.
-This may happen because of two reasons:
-- skb_set_owner_w() for newly cloned skb is called too early,
-before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
-- pskb_expand_head() does not adjust truesize in (skb->sk) case.
-In this case sk->sk_wmem_alloc should be adjusted too.
+This is the second RFC on the proposed power sequencer subsystem. This
+is a generification of the MMC pwrseq code. The subsystem tries to
+abstract the idea of complex power-up/power-down/reset of the devices.
 
-[1] https://lkml.org/lkml/2021/8/20/1082
+To ease migration to pwrseq and to provide compatibility with older
+device trees, while keeping drivers simple, this iteration of RFC
+introduces pwrseq fallback support: pwrseq driver can register fallback
+providers. If another device driver requests pwrseq instance and none
+was declared, the pwrseq fallback code would go through the list of
+fallback providers and if the match is found, driver would return a
+crafted pwrseq instance. For now this mechanism is limited to the OF
+device matching, but it can be extended further to use any combination
+of device IDs.
 
-Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
-v2: based on patch version from Eric Dumazet,
-    added __pskb_expand_head() function, which can be forced
-    to adjust skb->truesize and sk->sk_wmem_alloc.
----
- net/core/skbuff.c | 43 +++++++++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+The primary set of devices that promted me to create this patchset is
+the Qualcomm BT+WiFi family of chips. They reside on serial+platform or
+serial + SDIO interfaces (older generations) or on serial+PCIe (newer
+generations).  They require a set of external voltage regulators to be
+powered on and (some of them) have separate WiFi and Bluetooth enable
+GPIOs.
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index f931176..4691023 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1681,10 +1681,10 @@ struct sk_buff *__pskb_copy_fclone(struct sk_buff *skb, int headroom,
-  *	reloaded after call to this function.
-  */
- 
--int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
--		     gfp_t gfp_mask)
-+static int __pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
-+			      gfp_t gfp_mask, bool update_truesize)
- {
--	int i, osize = skb_end_offset(skb);
-+	int delta, i, osize = skb_end_offset(skb);
- 	int size = osize + nhead + ntail;
- 	long off;
- 	u8 *data;
-@@ -1756,9 +1756,13 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
- 	 * For the moment, we really care of rx path, or
- 	 * when skb is orphaned (not attached to a socket).
- 	 */
--	if (!skb->sk || skb->destructor == sock_edemux)
--		skb->truesize += size - osize;
--
-+	delta = size - osize;
-+	if (!skb->sk || skb->destructor == sock_edemux) {
-+		skb->truesize += delta;
-+	} else if (update_truesize) {
-+		refcount_add(delta, &skb->sk->sk_wmem_alloc);
-+		skb->truesize += delta;
-+	}
- 	return 0;
- 
- nofrags:
-@@ -1766,6 +1770,12 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
- nodata:
- 	return -ENOMEM;
- }
-+
-+int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
-+		     gfp_t gfp_mask)
-+{
-+	return __pskb_expand_head(skb, nhead, ntail, gfp_mask, false);
-+}
- EXPORT_SYMBOL(pskb_expand_head);
- 
- /* Make private copy of skb with writable head and some headroom */
-@@ -1804,28 +1814,33 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
- struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
- {
- 	int delta = headroom - skb_headroom(skb);
-+	struct sk_buff *oskb = NULL;
- 
- 	if (WARN_ONCE(delta <= 0,
- 		      "%s is expecting an increase in the headroom", __func__))
- 		return skb;
- 
-+	delta = SKB_DATA_ALIGN(delta);
- 	/* pskb_expand_head() might crash, if skb is shared */
- 	if (skb_shared(skb)) {
- 		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
- 
--		if (likely(nskb)) {
--			if (skb->sk)
--				skb_set_owner_w(nskb, skb->sk);
--			consume_skb(skb);
--		} else {
-+		if (unlikely(!nskb)) {
- 			kfree_skb(skb);
-+			return NULL;
- 		}
-+		oskb = skb;
- 		skb = nskb;
- 	}
--	if (skb &&
--	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-+	if (__pskb_expand_head(skb, delta, 0, GFP_ATOMIC, true)) {
- 		kfree_skb(skb);
--		skb = NULL;
-+		kfree_skb(oskb);
-+		return NULL;
-+	}
-+	if (oskb) {
-+		if (oskb->sk)
-+			skb_set_owner_w(skb, oskb->sk);
-+		consume_skb(oskb);
- 	}
- 	return skb;
- }
--- 
-1.8.3.1
+This patchset being an RFC tries to demonstrate the approach, design and
+usage of the pwrseq subsystem. Following issues are present in the RFC
+at this moment but will be fixed later if the overall approach would be
+viewed as acceptable:
+
+ - No documentation
+   While the code tries to be self-documenting proper documentation
+   would be required.
+
+ - Minimal device tree bindings changes
+   There are no proper updates for the DT bindings (thus neither Rob
+   Herring nor devicetree are included in the To/Cc lists). The dt
+   schema changes would be a part of v1.
+
+ - Lack of proper PCIe integration
+   At this moment support for PCIe is hacked up to be able to test the
+   PCIe part of qca6390. Proper PCIe support would require automatically
+   powering up the devices before the bus scan depending on the proper
+   device structure in the device tree.
+
+Changes since RFC v1:
+ - Provider pwrseq fallback support
+ - Implement fallback support in pwrseq_qca.
+ - Mmove susclk handling to pwrseq_qca.
+ - Significantly simplify hci_qca.c changes, by dropping all legacy
+   code. Now hci_qca uses only pwrseq calls to power up/down bluetooth
+   parts of the chip.
+
 
