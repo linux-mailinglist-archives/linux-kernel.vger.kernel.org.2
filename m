@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2176C3FAD69
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EF83FAD71
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235765AbhH2RMO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 29 Aug 2021 13:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhH2RMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 13:12:13 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S235292AbhH2RQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 13:16:48 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:52386
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229706AbhH2RQr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 13:16:47 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D90060F38;
-        Sun, 29 Aug 2021 17:11:17 +0000 (UTC)
-Date:   Sun, 29 Aug 2021 18:14:31 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        angelo.compagnucci@gmail.com,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] iio: adc128s052: Fix the error handling path of
- 'adc128_probe()'
-Message-ID: <20210829181431.67a52d36@jic23-huawei>
-In-Reply-To: <f33069f0-601b-4bbb-3766-026f7a161912@wanadoo.fr>
-References: <85189f1cfcf6f5f7b42d8730966f2a074b07b5f5.1629542160.git.christophe.jaillet@wanadoo.fr>
-        <CA+U=DsoTdb3b+LJEtUagKr=LmK8E2M_2yhtNDENKsczqGaUPYA@mail.gmail.com>
-        <f33069f0-601b-4bbb-3766-026f7a161912@wanadoo.fr>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A99C63F232;
+        Sun, 29 Aug 2021 17:15:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630257353;
+        bh=L0cf0NjF33stKTs19OGzzZa1hPrIN3qceVlEcaV1VHI=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=GUpZLZcJJgEiVEMdZQAdfGUIlElVrVH3hzTJGGFCBAQ3QWs5zujv569+wkkWCBatf
+         sd282FNyIX1QjNp7G+HiSNgPxDAXiuo15hWX4eAzhX9r74qe2WGsdfvKzYl+SLBqS1
+         U2SvWRyxtv1c+goNWhgswT9fczZImDFUNNZ1uAb+82Yx79PvcnH1mmSNfn8oSRLzmN
+         ffLhvaXr00xia6PqTYPpg6CUSpab8gJZm6KS2LOwYgdHpx8h0i4SBEuLl0LJJj7qlc
+         ppv4JSqSR2RhWsf7Ziu2MFY7aV003wv/+lEe31fPn16zK+Bhjug198Cv29l9olXgfv
+         6eo2f8SrVcMQw==
+From:   Colin King <colin.king@canonical.com>
+To:     Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-cxl@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] cxl/core: Fix a deference of a pointer cxl_port before it is null checked
+Date:   Sun, 29 Aug 2021 18:15:53 +0100
+Message-Id: <20210829171553.532596-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 21:45:38 +0200
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> Le 23/08/2021 à 08:42, Alexandru Ardelean a écrit :
-> > On Sat, Aug 21, 2021 at 1:43 PM Christophe JAILLET
-> > <christophe.jaillet@wanadoo.fr> wrote:  
-> >>
-> >> A successful 'regulator_enable()' call should be balanced by a
-> >> corresponding 'regulator_disable()' call in the error handling path of the
-> >> probe, as already done in the remove function.
-> >>
-> >> Update the error handling path accordingly.  
-> > 
-> > Good catch.
-> > For the fix:
-> > 
-> > Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+The assignment of pointer port with a dereference of pointer cxl_port
+occurs before cxl_port is null checked. Fix this by only assigning port
+once cxl_port has been null checked.
 
-Applied and marked for stable.
+Addresses-Coverity: ("Dereference before null check")
+Fixes: b7ca54b62551 ("cxl/core: Split decoder setup into alloc + add")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/cxl/core/bus.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks,
-> > 
-> > If you want, you can also send a conversion to
-> > devm_iio_device_register() for this driver.
-> > And also move the regulator_disable() on a devm_add_action_or_reset() callback.
-> > Maybe, that's already part of your plan. If so, apologies for the noise :)
-> >   
-> 
-> Hi,
-> 
-> I hadn't planned another step but I can send a follow-up patch for that.
-> 
-> CJ
+diff --git a/drivers/cxl/core/bus.c b/drivers/cxl/core/bus.c
+index 0b85351be6bf..55db46ba8a18 100644
+--- a/drivers/cxl/core/bus.c
++++ b/drivers/cxl/core/bus.c
+@@ -494,7 +494,7 @@ EXPORT_SYMBOL_GPL(cxl_decoder_alloc);
+ int devm_cxl_add_decoder(struct device *host, struct cxl_decoder *cxld,
+ 			 int *target_map)
+ {
+-	struct cxl_port *port = to_cxl_port(cxld->dev.parent);
++	struct cxl_port *port;
+ 	struct device *dev;
+ 	int rc = 0, i;
+ 
+@@ -509,6 +509,7 @@ int devm_cxl_add_decoder(struct device *host, struct cxl_decoder *cxld,
+ 		goto err;
+ 	}
+ 
++	port = to_cxl_port(cxld->dev.parent);
+ 	device_lock(&port->dev);
+ 	if (list_empty(&port->dports))
+ 		rc = -EINVAL;
+-- 
+2.32.0
 
-Note I'll have to sit on that one until this patch is upstream which will be a few weeks
-(perhaps a month) given timing.
-
-Jonathan
