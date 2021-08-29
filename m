@@ -2,59 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D833FAA01
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765263FAA03
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234763AbhH2HsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 03:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbhH2HsT (ORCPT
+        id S234811AbhH2Hum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 03:50:42 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57284 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232155AbhH2Huk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 03:48:19 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EABC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 00:47:27 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id y23so10241906pgi.7
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 00:47:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=rgLwUeBQq3+dH+kkFTKS1kpx5ij8uaXrUbylQbv8Udw861A7/z1V5Pw37+XvtlRbOa
-         kjmYQoC9EhZYAkNjClp22ixBdCcKRjGbNzauTfCn+AzSpwciRTkiUn2SiT6jZSeBgXuk
-         6oFEBmNW4V1dRRJUbdC6yOmRaTR8aHazXDNIqygcLjiyJNHg9JbmnmxMx6/ouZokk5se
-         f+VFp11bB79xHV5YM6ufy+uZn1Uj1nkKwKW+7ynpfaFrRYFwYxric9RJrfZf8vODj7vJ
-         PMRr2iDtTAiQ5Uic3AXYNST1ANYoK6/lCSeEA4S+m6QLA0e86YbagqT4aKsTYUdy6C9Q
-         q8XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=oA0KzgxgPAG9o0KCf7yzOoenvsAQ/hQ+llLilkCOQf1jGhEJwWqk3pzwizCsMBg/VO
-         U6csmYCOyvVuEuCGPEceP6Z1X48ui1OFMO8JQGr6fZLSqmJSJDVpRcVfBRCRT4r8fDEz
-         Ua9rrjV4W2jt8tGV2jS/k8LjZ1z9JT5bJRCFwPtx0TeRmO5GUYZm+l6h0a/5SocDXNsE
-         EolVmvuLF6spWqbh41MRqD6AaxBadsPkQ1nnMRbr4aZ/27TjHTFdC1NdJTOUQPC3hviS
-         flmT4SiQ4qqgriJoq/+H0hQzceu1VRQUYM2ONt5JOTTNPHkH9UCKVKn1toQnTg7efwO4
-         nF8Q==
-X-Gm-Message-State: AOAM531EOKsPiiC7IAaYuy4IuH36dMzdWAms8jZLdRt1Wab/GkVzP5FB
-        qgUepPmCWUY/6d9e8e6ZyUgbL4ctnJ5kQ1r+b0c=
-X-Google-Smtp-Source: ABdhPJykuiR/JqbWlQD3QxREjT6IuN+YSnMF7CVsbZqR3tOKFz+upkouCuiKubvtuiYFsAJiovLUOQutSFjQ9n5tHXM=
-X-Received: by 2002:a63:de56:: with SMTP id y22mr15803619pgi.157.1630223241945;
- Sun, 29 Aug 2021 00:47:21 -0700 (PDT)
+        Sun, 29 Aug 2021 03:50:40 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 459C01FD75;
+        Sun, 29 Aug 2021 07:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630223388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g6AJCQrMwOYOoE/hrQTuKCTvgVl9v/oGI+DWe9yCP7Y=;
+        b=TLGSfNKyAg9sSaJPyrrXd6sT1MzexconV7pyvDx6iK/7wlvOyVgeh+DzO1sig2UddPsATC
+        CSm2sPnn+rBSGfHFQ+Uquqyu9oNQo76Sj7usntxjj9z/iVZu7Ct0Spo+Q2EsaM7rAuic63
+        mEdoImxLUI/F0JDFHJFBrDWTN67r3rs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630223388;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g6AJCQrMwOYOoE/hrQTuKCTvgVl9v/oGI+DWe9yCP7Y=;
+        b=gJbTPwAyTRSyjPVvJBsXMjALMsTvzthladALsfDcdFZ5aEhxyBF6ms0oBBpptGOKySmstQ
+        /is2DrVNlvW12GBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 751CE139F6;
+        Sun, 29 Aug 2021 07:49:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IiDPDRo8K2FJHQAAMHmgww
+        (envelope-from <colyli@suse.de>); Sun, 29 Aug 2021 07:49:46 +0000
+Subject: Re: [PATCH] bcache: remove the redundant judgment on bi_size
+To:     Fengfei Xi <xi.fengfei@h3c.com>
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kent.overstreet@gmail.com
+References: <20210829044947.14703-1-xi.fengfei@h3c.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <be10bf36-5a99-f441-767f-23e76a96aa73@suse.de>
+Date:   Sun, 29 Aug 2021 15:49:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-From:   Monica Brown <bmaonic@gmail.com>
-Date:   Sun, 29 Aug 2021 07:47:13 +0000
-Message-ID: <CAP79b0FCPSm6M7_jd63jGDzLR3xzV0N357H_FtfYEw-xKfnP2A@mail.gmail.com>
-Subject: Dear , I am .Monica Brown, From Charlotte, North Carolina United
- States. I am US Special Force Team deployed to Afghanistan . I got interested
- in your profile. I would be pleased to keep in touch with you and probably
- build trust among us with time. kindly contact me back via same email for
- proper introduction.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210829044947.14703-1-xi.fengfei@h3c.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/29/21 12:49 PM, Fengfei Xi wrote:
+> The bi_size is unsigned int type data not less than 0,
+> so we can directly add bi_size without extra judgment
+>
+> Signed-off-by: Fengfei Xi <xi.fengfei@h3c.com>
+
+NACK. The check is necessary to avoid redundant and unnecessary memory 
+write.
+
+Coly Li
+
+> ---
+>   drivers/md/bcache/request.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
+> index 6d1de889b..2788eec3a 100644
+> --- a/drivers/md/bcache/request.c
+> +++ b/drivers/md/bcache/request.c
+> @@ -423,9 +423,7 @@ static bool check_should_bypass(struct cached_dev *dc, struct bio *bio)
+>   	add_sequential(task);
+>   	i->sequential = 0;
+>   found:
+> -	if (i->sequential + bio->bi_iter.bi_size > i->sequential)
+> -		i->sequential	+= bio->bi_iter.bi_size;
+> -
+> +	i->sequential		+= bio->bi_iter.bi_size;
+>   	i->last			 = bio_end_sector(bio);
+>   	i->jiffies		 = jiffies + msecs_to_jiffies(5000);
+>   	task->sequential_io	 = i->sequential;
 
