@@ -2,97 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F913FA9F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D833FAA01
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234763AbhH2HfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 03:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
+        id S234763AbhH2HsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 03:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbhH2HfU (ORCPT
+        with ESMTP id S232155AbhH2HsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 03:35:20 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE061C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 00:34:28 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so11713841pjr.1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 00:34:28 -0700 (PDT)
+        Sun, 29 Aug 2021 03:48:19 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EABC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 00:47:27 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id y23so10241906pgi.7
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 00:47:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=rNBZsqRJ7sa4jw3snokI5dgLfCm8tugTaRJ5CIejBq0=;
-        b=Dm2H49KMf8j0JXlHRKQ9ytI3sqTvTgYyeX6jrra2h7aR4/RNNLu2h1yRD7Yosp5bJV
-         upqmr11UgxRQpD8xUbltTH4YojLPRbkh7RPUN/DZwNy7w/sqnA9prPHhtdBvHyN0BN8T
-         lQZT+Qe1z4gMIydI1HLUf/EPDiwVtfQlgQ1C7+jNGnzaWngYXTTBFnJB2B3hcCUUNBBe
-         eIBdYhnfoG/dNfBLKTq6aWPoHFNywFX4FaE8eFPWRs+9ZOuLMaE2mF/XpgkwfG3lUWcY
-         ZHRLgrgH6DqLXD1OlM3hP3uYbTY40syiQMhW0AllGMswzl/toDZXkwb3wp2brJzNgcQS
-         KKCA==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=rgLwUeBQq3+dH+kkFTKS1kpx5ij8uaXrUbylQbv8Udw861A7/z1V5Pw37+XvtlRbOa
+         kjmYQoC9EhZYAkNjClp22ixBdCcKRjGbNzauTfCn+AzSpwciRTkiUn2SiT6jZSeBgXuk
+         6oFEBmNW4V1dRRJUbdC6yOmRaTR8aHazXDNIqygcLjiyJNHg9JbmnmxMx6/ouZokk5se
+         f+VFp11bB79xHV5YM6ufy+uZn1Uj1nkKwKW+7ynpfaFrRYFwYxric9RJrfZf8vODj7vJ
+         PMRr2iDtTAiQ5Uic3AXYNST1ANYoK6/lCSeEA4S+m6QLA0e86YbagqT4aKsTYUdy6C9Q
+         q8XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=rNBZsqRJ7sa4jw3snokI5dgLfCm8tugTaRJ5CIejBq0=;
-        b=Z2llhhX5KYexzcAABLoyXAvHUI788ClF4j3EUa5jfeaUh3VnF8OEZycPYqF8/rKlhR
-         TQ/jFG9AYQ66wxkt1dmcG9hTE7s57OMce4BnahiMKur4rhKzA8tmNiSyCsHNif1YcPO0
-         T5JzXShYIpvffyMQFOmYmp7OZdaTVAsdUfYzVCNgV4WHMwT+p+mjAz5i12z4JgUGl1rT
-         Mb1euPl4i49qjGSmdve9AUB6FFEfkugLJj1glBn/ZLBo1WkeZG3iBemlR+LtstvngbZr
-         4mBJK0fk6aprQIvSZ/l2kkJeoH8IsSK/7Je0i8DGbPcV9YbCmu+JoAxJSMbhBy7O/ulR
-         Em2g==
-X-Gm-Message-State: AOAM531N6XyPwgso/wJ03v9FlTvDck8wZFhB26PXfvHvJN+wrNtEnk+O
-        ORV47MzluVl1U+yx6TgCuIk=
-X-Google-Smtp-Source: ABdhPJwSk5MbWVucehftZPaXxbAzo+mGxol6dbNojKUdm7c2HxjSsHv9txv2vn1URtiAyN7RcstLNg==
-X-Received: by 2002:a17:90a:2e88:: with SMTP id r8mr32311223pjd.169.1630222468075;
-        Sun, 29 Aug 2021 00:34:28 -0700 (PDT)
-Received: from user ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id a23sm6262239pfo.120.2021.08.29.00.34.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 00:34:27 -0700 (PDT)
-Date:   Sun, 29 Aug 2021 13:04:22 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        ross.schm.dev@gmail.com, saurav.girepunje@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH v3] staging: r8188eu: core: remove null check before vfree
-Message-ID: <YSs4fvzUw1PK4C9+@user>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=oA0KzgxgPAG9o0KCf7yzOoenvsAQ/hQ+llLilkCOQf1jGhEJwWqk3pzwizCsMBg/VO
+         U6csmYCOyvVuEuCGPEceP6Z1X48ui1OFMO8JQGr6fZLSqmJSJDVpRcVfBRCRT4r8fDEz
+         Ua9rrjV4W2jt8tGV2jS/k8LjZ1z9JT5bJRCFwPtx0TeRmO5GUYZm+l6h0a/5SocDXNsE
+         EolVmvuLF6spWqbh41MRqD6AaxBadsPkQ1nnMRbr4aZ/27TjHTFdC1NdJTOUQPC3hviS
+         flmT4SiQ4qqgriJoq/+H0hQzceu1VRQUYM2ONt5JOTTNPHkH9UCKVKn1toQnTg7efwO4
+         nF8Q==
+X-Gm-Message-State: AOAM531EOKsPiiC7IAaYuy4IuH36dMzdWAms8jZLdRt1Wab/GkVzP5FB
+        qgUepPmCWUY/6d9e8e6ZyUgbL4ctnJ5kQ1r+b0c=
+X-Google-Smtp-Source: ABdhPJykuiR/JqbWlQD3QxREjT6IuN+YSnMF7CVsbZqR3tOKFz+upkouCuiKubvtuiYFsAJiovLUOQutSFjQ9n5tHXM=
+X-Received: by 2002:a63:de56:: with SMTP id y22mr15803619pgi.157.1630223241945;
+ Sun, 29 Aug 2021 00:47:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From:   Monica Brown <bmaonic@gmail.com>
+Date:   Sun, 29 Aug 2021 07:47:13 +0000
+Message-ID: <CAP79b0FCPSm6M7_jd63jGDzLR3xzV0N357H_FtfYEw-xKfnP2A@mail.gmail.com>
+Subject: Dear , I am .Monica Brown, From Charlotte, North Carolina United
+ States. I am US Special Force Team deployed to Afghanistan . I got interested
+ in your profile. I would be pleased to keep in touch with you and probably
+ build trust among us with time. kindly contact me back via same email for
+ proper introduction.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove NULL check. NULL check before freeing function is not needed.
-Correct the indentation.
-
-ChangeLog V3:
--Added change log.
-
-ChangeLog V2:
--Correct the indentation.
-
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_sta_mgt.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-index f6dffed53a60..c3600cb1790a 100644
---- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-+++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-@@ -155,9 +155,8 @@ u32	_rtw_free_sta_priv(struct	sta_priv *pstapriv)
- 		spin_unlock_bh(&pstapriv->sta_hash_lock);
- 		/*===============================*/
-
--		if (pstapriv->pallocated_stainfo_buf)
--			vfree(pstapriv->pallocated_stainfo_buf);
--		}
-+		vfree(pstapriv->pallocated_stainfo_buf);
-+	}
-
- 	return _SUCCESS;
- }
---
-2.32.0
 
