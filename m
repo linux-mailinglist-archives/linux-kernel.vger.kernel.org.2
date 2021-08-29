@@ -2,399 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD1A3FAEE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 00:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC9D3FAEEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 00:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235556AbhH2WUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 18:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233919AbhH2WUe (ORCPT
+        id S235688AbhH2WWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 18:22:11 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:40443 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233919AbhH2WWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 18:20:34 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC238C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:19:41 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id j12so22544143ljg.10
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:19:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=2XzIdPGQr6fXGRSi9RAppv4bK+5VmbVhxf35NSJuFHU=;
-        b=JPDlt6P6ScD+o7OG8l7f2XhaIPkNVnbL+hesKBRW0tB6DJQ4s1zOJGDOxfELQVyqUf
-         9JMUYxa/0YsgDOJdvyiWb/25/deN3nLf5dBejHGq9vYb5MPpGlUYsd91Mbhfj4Sl00mJ
-         Fw8puhfcvG03lVa3pnTXJifx9XxjQg9pQ349w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=2XzIdPGQr6fXGRSi9RAppv4bK+5VmbVhxf35NSJuFHU=;
-        b=iBU1RFG9FNRcvJWISYTaB6yG0b+iightQMjMnWwQljZA2YTrpBUX+ikhAshXvtXnIf
-         VsYLGWUdLJSKD1j+j3KUE6N7t+a7FssXez7miGSE712+uwLuXaKEe9rclBCWMPQxaCYA
-         GeZBo+kdiLsskB5wSoCLDAGB65KETAtC6S2UGs4YzjhPEU0J/S3qE+sLWJR3FAmYGYCr
-         HmlTDFnI1g1/+IqC0c5vgcgOBUZtnaziB1w1zXQtMVlTJt126rse1bHhFGw9JDHsKfe/
-         4UdHTFn2WA5Wal4GE38n1ooa1HY+oWNm1nEZXLXHiYU77y14WfqgkDuIjpnOWaHrpyAE
-         Rk8w==
-X-Gm-Message-State: AOAM530e42VqG812InOOSexaBT3jGJE4ZFPGIsYRrQpzL99Fx1zaF5Cr
-        4sb0wWtNXYFqcf1wGNPaPDjMXOfSNirzITyr
-X-Google-Smtp-Source: ABdhPJzMn1OogybbTNrTzMOz8Cep3hWfRvPTBbViMRU57Wv+FSXhcHKD0H7HAcTBWYFez1PKlW9H0A==
-X-Received: by 2002:a2e:9b0b:: with SMTP id u11mr17560043lji.463.1630275579856;
-        Sun, 29 Aug 2021 15:19:39 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id v14sm1605423lji.32.2021.08.29.15.19.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Aug 2021 15:19:39 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id k5so27416069lfu.4
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:19:39 -0700 (PDT)
-X-Received: by 2002:a05:6512:230b:: with SMTP id o11mr7059836lfu.377.1630275579022;
- Sun, 29 Aug 2021 15:19:39 -0700 (PDT)
+        Sun, 29 Aug 2021 18:22:10 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4EC9B5C0087;
+        Sun, 29 Aug 2021 18:21:17 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sun, 29 Aug 2021 18:21:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=nRlS9k
+        nEqQhICUh7BwNxBqV2KKp81w2wrUXYJM2Bi8M=; b=SpV+nvYzBdGbZGrv9hgBDS
+        92HQV/dFl0a/HnrQy2npVrKgEk+xS6XytpE/CPXiNSevBfYaTINxrhOTCrpyIlzv
+        OyhUzupgv7MO5zgOJdWeIvr8rq4YlPS/sz1JQd+DqvNVMg0b+NH7dc05VjTLItYe
+        y0U19FySRVxzXnrQ+xyBC4HVJ0D54L+9BBu2Av8JdbG0u6aG20vRUlHnaWpNxe2a
+        jxXB2LU8ktGYCzmr0d2H9+J9MboNyJfmAPQGVhNouz94R4dsNVL1/L8QBpcN4aAj
+        DjQ3j5X20yy00b1D5AnwhV3vEqkMCCeP//+OnD09yMYLW8a8u9W9+z88aJYETqiA
+        ==
+X-ME-Sender: <xms:XAgsYamimqbxdUIcJEs_MmRTTb2LgIRO72bmQYh8dYABNO4VhfUmPA>
+    <xme:XAgsYR00vaeaWHvTQVGDP5LcuTcJ86-t-GPX0A3wfU-GK0LrXGkIsCb8pR8GRtcct
+    4-uUClQHL5hGPGeIxY>
+X-ME-Received: <xmr:XAgsYYqWfZBZmsvwJ9nVA7penHMAd-iJq8-g7h536Hn9tXSYxaGfIYiWk62YvfvP9E3kAQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddukedgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhuffvkfgjfhfogggtsehttdertdertddvnecuhfhrohhmpefnuhhkvgcu
+    lfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrhhnpe
+    fgfeefudffhffgueehgeffffeggeevieefueethfeijefftedugfeuveethedtteenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslh
+    hjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:XAgsYemA1BJGvGgZJSziRDF61V3OdyUZ3k3oWvO2lg3P-hyJvVwQjQ>
+    <xmx:XAgsYY39WxHTy7yf1GmH1e-1S1C4x0EKOTdhixB_f-jgkobmwmm7uA>
+    <xmx:XAgsYVs_2o54w21r1n6nCdlyeJrW30NoHQzaQPBrah-Wqe_VkHkZ2w>
+    <xmx:XQgsYWBPglQ0NWHBDuG4nNYjJHPGHg7tLs54YJhCKkrnqFrYPwsM6Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 29 Aug 2021 18:21:12 -0400 (EDT)
+Date:   Mon, 30 Aug 2021 10:20:57 +1200
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH v6 0/1] asus-wmi: Add support for custom fan curves
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
+        pobrn@protonmail.com, platform-driver-x86@vger.kernel.org
+Message-Id: <XQGMYQ.9VWHCW8VQN7K1@ljones.dev>
+In-Reply-To: <5SCMYQ.7F7995ZKI2HT3@ljones.dev>
+References: <20210829071402.576380-1-luke@ljones.dev>
+        <cf42ddd7-29ed-ff8b-7d03-958187863b70@redhat.com>
+        <RLILYQ.0GH3JY7UCTPI2@ljones.dev>
+        <2af6628e-118f-6a75-8074-2f4144c7f8e7@roeck-us.net>
+        <5SCMYQ.7F7995ZKI2HT3@ljones.dev>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 29 Aug 2021 15:19:23 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh75ELUu99yPkPNt+R166CK=-M4eoV+F62tW3TVgB7=4g@mail.gmail.com>
-Message-ID: <CAHk-=wh75ELUu99yPkPNt+R166CK=-M4eoV+F62tW3TVgB7=4g@mail.gmail.com>
-Subject: Linux 5.14
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So I realize you must all still be busy with all the galas and fancy
-balls and all the other 30th anniversary events, but at some point you
-must be getting tired of the constant glitz, the fireworks, and the
-champagne. That ball gown or tailcoat isn't the most comfortable
-thing, either. The celebrations will go on for a few more weeks yet,
-but you all may just need a breather from them.
 
-And when that happens, I have just the thing for you - a new kernel
-release to test and enjoy. Because 5.14 is out there, just waiting for
-you to kick the tires and remind yourself what all the festivities are
-about.
 
-Of course, the poor tireless kernel maintainers won't have time for
-the festivities, because for them, this just means that the merge
-window will start tomorrow. We have another 30 years to look forward
-to, after all. But for the rest of you, take a breather, build a
-kernel, test it out, and then you can go back to the seemingly endless
-party that I'm sure you just crawled out of.
+On Mon, Aug 30 2021 at 08:55:17 +1200, Luke Jones <luke@ljones.dev> 
+wrote:
+> 
+> 
+> On Sun, Aug 29 2021 at 08:18:01 -0700, Guenter Roeck 
+> <linux@roeck-us.net> wrote:
+>> On 8/29/21 3:03 AM, Luke Jones wrote:
+>>> 
+>>> 
+>>> On Sun, Aug 29 2021 at 11:57:55 +0200, Hans de Goede 
+>>> <hdegoede@redhat.com> wrote:
+>>>> Hi Luke,
+>>>> 
+>>>> On 8/29/21 9:14 AM, Luke D. Jones wrote:
+>>>>>  Add support for custom fan curves found on some ASUS ROG laptops.
+>>>>> 
+>>>>>  - V1
+>>>>>    + Initial patch work
+>>>>>  - V2
+>>>>>    + Don't fail and remove wmi driver if error from
+>>>>>      asus_wmi_evaluate_method_buf() if error is -ENODEV
+>>>>>  - V3
+>>>>>    + Store the "default" fan curves
+>>>>>    + Call throttle_thermal_policy_write() if a curve is erased to 
+>>>>> ensure
+>>>>>      that the factory default for a profile is applied again
+>>>>>  - V4
+>>>>>    + Do not apply default curves by default. Testers have found 
+>>>>> that the
+>>>>>      default curves don't quite match actual no-curve behaviours
+>>>>>    + Add method to enable/disable curves for each profile
+>>>>>  - V5
+>>>>>    + Remove an unrequired function left over from previous 
+>>>>> iterations
+>>>>>    + Ensure default curves are applied if user writes " " to a 
+>>>>> curve path
+>>>>>    + Rename "active_fan_curve_profiles" to 
+>>>>> "enabled_fan_curve_profiles" to
+>>>>>      better reflect the behavious of this setting
+>>>>>    + Move throttle_thermal_policy_write_*pu_curves() and rename to
+>>>>>      fan_curve_*pu_write()
+>>>>>    + Merge fan_curve_check_valid() and fan_curve_write()
+>>>>>    + Remove some leftover debug statements
+>>>>>  - V6
+>>>>>    + Refactor data structs to store  array or u8 instead of 
+>>>>> strings.
+>>>>>      This affects the entire patch except the enabled_fan_curves 
+>>>>> block
+>>>>>    + Use sysfs_match_string in enabled_fan_curve block
+>>>>>    + Add some extra comments to describe things
+>>>>>    + Allow some variation in how fan curve input can be formatted
+>>>>>    + Use SENSOR_DEVICE_ATTR_2_RW() to reduce the amount of lines 
+>>>>> per
+>>>>>      fan+profile combo drastically
+>>>> 
+>>>> Thank you for your continued work on this. I read in the discussin 
+>>>> of v5
+>>>> that you discussed using the standard auto_point#_pwm, 
+>>>> auto_point#_temp
+>>>> pairs. I see here that you have decided to not go that route, may 
+>>>> I ask
+>>>> why ?
+>>> 
+>>> Sure, primary reason is because the RPM for the fans is in 
+>>> percentage so it didn't really make sense to me to use that 
+>>> format.
+>>> 
+>>> Also if the max for that is 255 then I'd need to introduce scaling 
+>>> to make match what the ACPI method expects (max 100). But yeah, 
+>>> auto_point#_pwm changes the meaning.
+>>> 
+>> 
+>> Bad argument. That is true for other controllers as well. You could
+>> just scale it up and down as needed.
+>> 
+>> The whole point of an ABI is that it is standardized.
+>> If others would [be permitted to] follow your line of argument,
+>> we would not have a useful ABI because "my chip provides/needs
+>> data in some other format".
+>> 
+>> Guenter
+> 
+> Understood. But lets see if I understand fully:
+> 
+> The key part is "pwmX_auto_pointN_temp and pwmX_auto_pointN_pwm", 
+> with X being a profile, and N the point in the curve graph. If I use 
+> this format I have:
+> 
+> - 3 profiles
+> - each profile has two fans
+> - each fan has 8 points on it
+> - each point has 2 integers
+> 
+> so that makes for a total of 96 individual sysfs paths. Is that 
+> really okay? And where would the new paths god?
+> - Under /sys/devices/platform/asus-nb-wmi/ still, or
+> - /sys/devices/platform/asus-nb-wmi/hwmon/ ?
+> 
+> I'm currently using SENSOR_DEVICE_ATTR_2_RW with index = profile, nr 
+> = fan. If there weren't profiles involved then I could see it being 
+> easily achieved with that.. Maybe I could use the index(profile) with 
+> a mask to get the fan number.
+> 
+> I've done all the groundwork for it at least, so it can certainly be 
+> done. My only worry is that because of the sheer number of sysfs 
+> paths being added (96) it could become unwieldy to use.
+> 
+> Could I use the existing method + the above?
+
+I've had a bit of a think after morning coffee and I think there is 
+another way to do this:
+
+- CPU Fan = pwm1_auto_pointN_pwm + pwm1_auto_pointN_temp
+- GPU Fan = pwm2_auto_pointN_pwm + pwm2_auto_pointN_temp
+for example. So we're not breaking the meaning of anything or making 
+things obtuse and complex.
+
+Ending up with:
+/* CPU */
+// (name, function, fan, point)
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point1_temp, fan_curve, 1, 0);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point2_temp, fan_curve, 1, 1);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point3_temp, fan_curve, 1, 2);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point4_temp, fan_curve, 1, 3);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point5_temp, fan_curve, 1, 4);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point6_temp, fan_curve, 1, 5);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point7_temp, fan_curve, 1, 6);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point8_temp, fan_curve, 1, 7);
+
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point1_pwm, fan_curve, 1, 0);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point2_pwm, fan_curve, 1, 1);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point3_pwm, fan_curve, 1, 2);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point4_pwm, fan_curve, 1, 3);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point5_pwm, fan_curve, 1, 4);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point6_pwm, fan_curve, 1, 5);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point7_pwm, fan_curve, 1, 6);
+static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point8_pwm, fan_curve, 1, 7);
+/* and the same for GPU fan */
+
+But because we still have 3 profiles to consider, I would propose that 
+the settings be show/store dependant on the profile that the machine is 
+in, e.g, internally show/store to correct profile via checking current 
+profile number active.
+
+I do need some suggestions on what I see as an issue though:
+(1)
+Given that it now becomes difficult to write all the settings at once, 
+at what point should I attempt to write the "block" to the device? 
+Write out for every change?
+(2)
+Also given the above, how do I reasonably check the user isn't trying 
+to create an invalid graph? E.g, lower fan speeds for higher 
+temperature? Check that a point isn't higher/lower than neighbouring 
+points and expect users to write the points in reverse?
+
+I could maybe also have pwm1_enable and pwm2_enable. Perhaps set this 
+to false if a change is made, then only write out the full block if it 
+is then set to enabled. Further to this, if the user changes profiles 
+and the curves have been previously set and enabled, then that curve is 
+written out per usual.
+
+Looking forward to some guidance on this. I'll try making a start on 
+what I've proposed above for now.
+
+
+> Many thanks,
+> Luke.
+> 
 
-                    Linus
 
----
-
-Aaron Ma (1):
-      igc: fix page fault when thunderbolt is unplugged
-
-Adam Ford (1):
-      clk: renesas: rcar-usb2-clock-sel: Fix kernel NULL pointer dereferenc=
-e
-
-Alexey Gladkov (1):
-      ucounts: Increase ucounts reference counter before the security hook
-
-Andrey Ignatov (1):
-      rtnetlink: Return correct error on changing device netns
-
-Andy Shevchenko (1):
-      media: ipu3-cio2: Drop reference on error path in
-cio2_bridge_connect_sensor()
-
-Babu Moger (1):
-      x86/resctrl: Fix a maybe-uninitialized build warning treated as error
-
-Bart Van Assche (1):
-      mq-deadline: Fix request accounting
-
-Bin Meng (2):
-      riscv: dts: microchip: Use 'local-mac-address' for emac1
-      riscv: dts: microchip: Add ethernet0 to the aliases node
-
-Bob Pearson (1):
-      RDMA/rxe: Fix memory allocation while in a spin lock
-
-Borislav Petkov (1):
-      drm/amdgpu: Fix build with missing pm_suspend_target_state module exp=
-ort
-
-Christian K=C3=B6nig (1):
-      drm/amdgpu: use the preferred pin domain after the check
-
-Christoph Hellwig (1):
-      cryptoloop: add a deprecation warning
-
-Christophe JAILLET (1):
-      xgene-v2: Fix a resource leak in the error handling path of 'xge_prob=
-e()'
-
-Colin Ian King (1):
-      perf/x86/intel/uncore: Fix integer overflow on 23 bit left shift of a=
- u32
-
-DENG Qingfang (1):
-      net: phy: mediatek: add the missing suspend/resume callbacks
-
-Dan Carpenter (1):
-      pd: fix a NULL vs IS_ERR() check
-
-Daniel Borkmann (1):
-      bpf: Fix ringbuf helper function compatibility
-
-David Hildenbrand (1):
-      virtio-mem: fix sleeping in RCU read side section in
-virtio_mem_online_page_cb()
-
-Davide Caratti (1):
-      net/sched: ets: fix crash when flipping from 'strict' to 'quantum'
-
-Dinghao Liu (1):
-      RDMA/bnxt_re: Remove unpaired rtnl unlock in bnxt_re_dev_init()
-
-Dmitry Osipenko (1):
-      PM: domains: Improve runtime PM performance state handling
-
-Eric Dumazet (2):
-      ipv6: use siphash in rt6_exception_hash()
-      ipv4: use siphash instead of Jenkins in fnhe_hashfun()
-
-Eric W. Biederman (1):
-      ucounts: Fix regression preventing increasing of rlimits in init_user=
-_ns
-
-Gal Pressman (2):
-      RDMA/uverbs: Track dmabuf memory regions
-      RDMA/efa: Free IRQ vectors on error flow
-
-Geert Uytterhoeven (1):
-      reset: RESET_MCHP_SPARX5 should depend on ARCH_SPARX5
-
-Guangbin Huang (1):
-      net: hns3: fix get wrong pfc_en when query PFC configuration
-
-Guojia Liao (1):
-      net: hns3: fix duplicate node in VLAN list
-
-Harini Katakam (1):
-      net: macb: Add a NULL check on desc_ptp
-
-Helge Deller (1):
-      Revert "parisc: Add assembly implementations for memset, strlen,
-strcpy, strncpy and strcat"
-
-Jacob Keller (1):
-      ice: do not abort devlink info if board identifier can't be found
-
-Jens Axboe (1):
-      Revert "block/mq-deadline: Prioritize high-priority requests"
-
-Jerome Brunet (2):
-      usb: gadget: f_uac2: fixup feedback endpoint stop
-      usb: gadget: u_audio: fix race condition on endpoint stop
-
-Joerg Roedel (1):
-      x86/efi: Restore Firmware IDT before calling ExitBootServices()
-
-Johan Hovold (1):
-      Revert "USB: serial: ch341: fix character loss at high transfer rates=
-"
-
-Kalle Valo (1):
-      Revert "net: really fix the build..."
-
-Kim Phillips (3):
-      perf/x86/amd/ibs: Work around erratum #1197
-      perf/x86/amd/ibs: Extend PERF_PMU_CAP_NO_EXCLUDE to IBS Op
-      perf/x86/amd/power: Assign pmu.module
-
-Krzysztof Ha=C5=82asa (1):
-      gpu: ipu-v3: Fix i.MX IPU-v3 offset calculations for
-(semi)planar U/V formats
-
-Kurt Kanzenbach (2):
-      net: dsa: hellcreek: Fix incorrect setting of GCL
-      net: dsa: hellcreek: Adjust schedule look ahead window
-
-Kyle Tso (1):
-      usb: typec: tcpm: Raise vdm_sm_running flag only when VDM SM is runni=
-ng
-
-Li Jinlin (1):
-      scsi: core: Fix hang of freezing queue between blocking and running d=
-evice
-
-Linus Torvalds (3):
-      Revert "media: dvb header files: move some headers to staging"
-      pipe: do FASYNC notifications for every pipe IO, not just state chang=
-es
-      Linux 5.14
-
-Linus Walleij (1):
-      ARM: 9104/2: Fix Keystone 2 kernel mapping regression
-
-Lukas Bulwahn (2):
-      RDMA/irdma: Use correct kconfig symbol for AUXILIARY_BUS
-      powerpc: Re-enable ARCH_ENABLE_SPLIT_PMD_PTLOCK
-
-Maor Gottlieb (1):
-      RDMA/mlx5: Fix crash when unbind multiport slave
-
-Marc Zyngier (1):
-      stmmac: Revert "stmmac: align RX buffers"
-
-Marek Marczykowski-G=C3=B3recki (1):
-      PCI/MSI: Skip masking MSI-X on Xen PV
-
-Marijn Suijten (1):
-      opp: core: Check for pending links before reading required_opp pointe=
-rs
-
-Matthew Brost (1):
-      drm/i915: Fix syncmap memory leak
-
-Maxim Kiselev (1):
-      net: marvell: fix MVNETA_TX_IN_PRGRS bit number
-
-Miaohe Lin (1):
-      mm/memory_hotplug: fix potential permanent lru cache disable
-
-Michael Riesch (1):
-      net: stmmac: dwmac-rk: fix unbalanced pm_runtime_enable warnings
-
-Michel D=C3=A4nzer (1):
-      drm/amdgpu: Cancel delayed work when GFXOFF is disabled
-
-Namjae Jeon (1):
-      MAINTAINERS: exfat: update my email address
-
-Naresh Kumar PBS (1):
-      RDMA/bnxt_re: Add missing spin lock initialization
-
-Nathan Rossi (1):
-      net: dsa: mv88e6xxx: Update mv88e6393x serdes errata
-
-Nicholas Piggin (1):
-      powerpc/64s: Fix scv implicit soft-mask table for relocated kernels
-
-Oleksij Rempel (2):
-      net: usb: asix: ax88772: move embedded PHY detection as early as poss=
-ible
-      net: usb: asix: do not call phy_disconnect() for ax88178
-
-Peter Zijlstra (1):
-      sched: Fix Core-wide rq->lock for uninitialized CPUs
-
-Petko Manolov (1):
-      net: usb: pegasus: fixes of set_register(s) return value evaluation;
-
-Philipp Zabel (1):
-      drm/imx: ipuv3-plane: fix accidental partial revert of 8 pixel
-alignment fix
-
-Qu Wenruo (1):
-      Revert "btrfs: compression: don't try to compress if we don't
-have enough pages"
-
-Rahul Lakkireddy (1):
-      cxgb4: dont touch blocked freelist bitmap after free
-
-Sai Krishna Potthuri (1):
-      reset: reset-zynqmp: Fixed the argument data type
-
-Sasha Neftin (2):
-      e1000e: Fix the max snoop/no-snoop latency for 10M
-      e1000e: Do not take care about recovery NVM checksum
-
-Sebastian Andrzej Siewior (1):
-      sched: Fix get_push_task() vs migrate_disable()
-
-Shai Malin (2):
-      qed: Fix the VF msix vectors flow
-      qede: Fix memset corruption
-
-Shreyansh Chouhan (2):
-      ip_gre: add validation for csum_start
-      ip6_gre: add validation for csum_start
-
-Song Yoong Siang (2):
-      net: stmmac: fix kernel panic due to NULL pointer dereference of xsk_=
-pool
-      net: stmmac: fix kernel panic due to NULL pointer dereference of buf-=
->xdp
-
-Stefan M=C3=A4tje (1):
-      can: usb: esd_usb2: esd_usb2_rx_event(): fix the interchange of
-the CAN RX and TX error counters
-
-Swati Sharma (1):
-      drm/i915/dp: Drop redundant debug print
-
-Takashi Iwai (1):
-      usb: renesas-xhci: Prefer firmware loading on unknown ROM state
-
-Thinh Nguyen (1):
-      usb: dwc3: gadget: Fix dwc3_calc_trbs_left()
-
-Toshiki Nishioka (1):
-      igc: Use num_tx_queues when iterating over tx_ring queue
-
-Trond Myklebust (1):
-      SUNRPC: Fix XPT_BUSY flag leakage in svc_handle_xprt()...
-
-Tuo Li (2):
-      IB/hfi1: Fix possible null-pointer dereference in _extend_sdma_tx_des=
-cs()
-      ceph: fix possible null-pointer dereference in ceph_mdsmap_decode()
-
-Ulf Hansson (1):
-      Revert "mmc: sdhci-iproc: Set SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN
-on BCM2711"
-
-Vincent Chen (1):
-      riscv: Ensure the value of FP registers in the core dump file is
-up to date
-
-Wesley Cheng (1):
-      usb: dwc3: gadget: Stop EP0 transfers during pullup disable
-
-Will Deacon (1):
-      Partially revert "arm64/mm: drop HAVE_ARCH_PFN_VALID"
-
-Wong Vee Khee (1):
-      net: stmmac: fix kernel panic due to NULL pointer dereference of plat=
-->est
-
-Xiao Yang (1):
-      RDMA/rxe: Zero out index member of struct rxe_queue
-
-Xiaolong Huang (1):
-      net: qrtr: fix another OOB Read in qrtr_endpoint_post
-
-Xiaoyao Li (1):
-      perf/x86/intel/pt: Fix mask of num_address_ranges
-
-Xiubo Li (1):
-      ceph: correctly handle releasing an embedded cap flush
-
-Yonglong Liu (1):
-      net: hns3: fix speed unknown issue in bond 4
-
-Yufeng Mo (4):
-      net: hns3: clear hardware resource when loading driver
-      net: hns3: add waiting time before cmdq memory is released
-      net: hns3: change the method of getting cmd index in debugfs
-      net: hns3: fix GRO configuration error after reset
-
-Zhengjun Zhang (1):
-      USB: serial: option: add new VID/PID to support Fibocom FG150
-
-kernel test robot (1):
-      net: usb: asix: ax88772: fix boolconv.cocci warnings
-
-zhang kai (1):
-      ipv6: correct comments about fib6_node sernum
-
-=E7=8E=8B=E8=B4=87 (1):
-      net: fix NULL pointer reference in cipso_v4_doi_free
