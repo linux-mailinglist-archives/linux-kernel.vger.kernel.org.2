@@ -2,131 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8653FAAB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17EA3FAAC0
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235233AbhH2KEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 06:04:44 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:48485 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234925AbhH2KEn (ORCPT
+        id S234996AbhH2KJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 06:09:26 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:46936 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234835AbhH2KJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 06:04:43 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id E46413200908;
-        Sun, 29 Aug 2021 06:03:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sun, 29 Aug 2021 06:03:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=L7DHWc
-        GAuxWk0nS9qJh1MlT5GUJHq6Kbw4zUDG09KIY=; b=XPt4/gWU3NMqag1T1ZNr8X
-        bsFTLwpxxa1q6LJ4y/VBSQ5FC0TN9fl3FpYm0BzB6LhidLaIs24h6LYiYZDT09si
-        N5270fz2HDz7BPfuCHeB25X9Rv8nZVJi5+tys6N8KbkGSX/F3ax60K6DfDyJZu51
-        sCxRwCITAVFobFnTj5NH0nRYcT1m0V1itXZ+6YJZSQaSdAqBVIIb75hmRFT1aPO/
-        aHxWCceSy/yEQPIwYe1m8RXwr531aTA/pOxS3CJq5Ve7jlAHi7/2UwZ5dCqoHZRr
-        Fgo/kg6JBowDOO/siLhZJNpuhypHRx92nauOY6n8UP/8Cl2V8jIWmypQbMGVrWXw
-        ==
-X-ME-Sender: <xms:hVsrYZxYij8xtW_1qbmhojUWgW7Wpoyyh1ZaT54oXggWqhp2Fmhd_g>
-    <xme:hVsrYZT-SZmP2j0qmRQiLV9faif--wMaDAii0kpVXVFqqIYSiUw4IXHi9y074KhXw
-    KZ2HctDhKeoEjcQwcw>
-X-ME-Received: <xmr:hVsrYTW1Cr-dS3Db9MJY8p1TSdDgeFAaJvR8u6Vr6-qj3uAFSjLMPw-Ul8nELB7GlTZF_w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddujedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhuffvkfgjfhfogggtsehttdertdertddvnecuhfhrohhmpefnuhhkvgcu
-    lfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrhhnpe
-    fgfeefudffhffgueehgeffffeggeevieefueethfeijefftedugfeuveethedtteenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslh
-    hjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:hVsrYbgxHD7PwddCkT7Wmphr_I_kZ8Z72ZSsXB0RUYauImKRON8rxw>
-    <xmx:hVsrYbA_kGisPKs3yx5Xz9dJBc8lqd31bjT6oFglgvuzIjmvcuYtLQ>
-    <xmx:hVsrYULayfXN_3Swm1ZY7atEZrj5rU93oIym3XP67u52CB7ExuSCDQ>
-    <xmx:hlsrYeOSYVO48Mm-yxMr4u7Zfn5Df7-p2BvQrNqSt9hIhRiEAdzzaQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 29 Aug 2021 06:03:43 -0400 (EDT)
-Date:   Sun, 29 Aug 2021 22:03:27 +1200
-From:   Luke Jones <luke@ljones.dev>
-Subject: Re: [PATCH v6 0/1] asus-wmi: Add support for custom fan curves
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, pobrn@protonmail.com,
-        linux@roeck-us.net, platform-driver-x86@vger.kernel.org
-Message-Id: <RLILYQ.0GH3JY7UCTPI2@ljones.dev>
-In-Reply-To: <cf42ddd7-29ed-ff8b-7d03-958187863b70@redhat.com>
-References: <20210829071402.576380-1-luke@ljones.dev>
-        <cf42ddd7-29ed-ff8b-7d03-958187863b70@redhat.com>
-X-Mailer: geary/40.0
+        Sun, 29 Aug 2021 06:09:24 -0400
+Received: by mail-lj1-f181.google.com with SMTP id w4so20084939ljh.13;
+        Sun, 29 Aug 2021 03:08:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=lZ8a62LsBSbCVNMfLtZfAK/Yj9mseijBB0w1OSZc27M=;
+        b=AYszIwPeSM4n8qYMiHhPNjnp8hHXRai+PPK7eGDOnGKCFdwqswve842cSSkBbWIltP
+         7BmmUhLQfOD36EOQUy1DFAuhk1wRXv6LsbwXKbBE7v2mQBAOq3sp2+08s+10R49QgfeZ
+         4caBvBuTI8H5Y7BkZF6sS7TxxSDqza7/uvDFYYZPgCTXmPKUuHRdeNUMSZV43ioduSRV
+         Nq/Y5tvDzPCAel3D/mAIowOpXBj1h1w8YDn+kqo105mG8uepO8eAvTiQu5C1UsZG1go+
+         u3e3BSnHtOesboa3wCx0hsUj6rzYI1B/2+36KoDCvTHAR9KHjRLmLn5y9AqMLkBoEFjn
+         NzEQ==
+X-Gm-Message-State: AOAM531iJiU+dTJFw7R0B3X0JUu+jl2KZGFtmNBGK9iQnH0GClKxL8sc
+        +9Q2NVqN8bR1t9SFwbW/7ppTpT3oWtFHIQ==
+X-Google-Smtp-Source: ABdhPJwLI9Xn31NPmvy9xta3XWhY8V3pnojHLkk6peP3unPMAnMxpWip1yqKkY3zcElhnC9wwi8hEQ==
+X-Received: by 2002:a2e:86cc:: with SMTP id n12mr15725920ljj.384.1630231711533;
+        Sun, 29 Aug 2021 03:08:31 -0700 (PDT)
+Received: from [10.68.32.40] (broadband-109-173-81-86.ip.moscow.rt.ru. [109.173.81.86])
+        by smtp.gmail.com with ESMTPSA id m24sm287602lfb.223.2021.08.29.03.08.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Aug 2021 03:08:30 -0700 (PDT)
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org,
+        Linux-kernel <linux-kernel@vger.kernel.org>
+From:   Denis Efremov <efremov@linux.com>
+Subject: [GIT PULL] Floppy patch for 5.15
+Message-ID: <388418f4-2b9a-6fed-836c-a004369dc7c0@linux.com>
+Date:   Sun, 29 Aug 2021 13:08:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jens,
 
+Sorry for the late PR this time. I'll resend it later if it's too late for
+your for-5.15/drivers branch. Thanks.
 
-On Sun, Aug 29 2021 at 11:57:55 +0200, Hans de Goede 
-<hdegoede@redhat.com> wrote:
-> Hi Luke,
-> 
-> On 8/29/21 9:14 AM, Luke D. Jones wrote:
->>  Add support for custom fan curves found on some ASUS ROG laptops.
->> 
->>  - V1
->>    + Initial patch work
->>  - V2
->>    + Don't fail and remove wmi driver if error from
->>      asus_wmi_evaluate_method_buf() if error is -ENODEV
->>  - V3
->>    + Store the "default" fan curves
->>    + Call throttle_thermal_policy_write() if a curve is erased to 
->> ensure
->>      that the factory default for a profile is applied again
->>  - V4
->>    + Do not apply default curves by default. Testers have found that 
->> the
->>      default curves don't quite match actual no-curve behaviours
->>    + Add method to enable/disable curves for each profile
->>  - V5
->>    + Remove an unrequired function left over from previous iterations
->>    + Ensure default curves are applied if user writes " " to a curve 
->> path
->>    + Rename "active_fan_curve_profiles" to 
->> "enabled_fan_curve_profiles" to
->>      better reflect the behavious of this setting
->>    + Move throttle_thermal_policy_write_*pu_curves() and rename to
->>      fan_curve_*pu_write()
->>    + Merge fan_curve_check_valid() and fan_curve_write()
->>    + Remove some leftover debug statements
->>  - V6
->>    + Refactor data structs to store  array or u8 instead of strings.
->>      This affects the entire patch except the enabled_fan_curves 
->> block
->>    + Use sysfs_match_string in enabled_fan_curve block
->>    + Add some extra comments to describe things
->>    + Allow some variation in how fan curve input can be formatted
->>    + Use SENSOR_DEVICE_ATTR_2_RW() to reduce the amount of lines per
->>      fan+profile combo drastically
-> 
-> Thank you for your continued work on this. I read in the discussin of 
-> v5
-> that you discussed using the standard auto_point#_pwm, 
-> auto_point#_temp
-> pairs. I see here that you have decided to not go that route, may I 
-> ask
-> why ?
+The following changes since commit 461d971215dfb55bcd5f7d040b2b222592040f95:
 
-Sure, primary reason is because the RPM for the fans is in percentage 
-so it didn't really make sense to me to use that format.
+  Merge branch 'md-next' of https://git.kernel.org/pub/scm/linux/kernel/git/song/md into for-5.15/drivers (2021-08-27 16:32:01 -0600)
 
-Also if the max for that is 255 then I'd need to introduce scaling to 
-make match what the ACPI method expects (max 100). But yeah, 
-auto_point#_pwm changes the meaning.
+are available in the Git repository at:
 
-> 
-> Regards,
-> 
-> Hans
-> 
+  https://github.com/evdenis/linux-floppy tags/floppy-for-5.15
 
+for you to fetch changes up to c7e9d0020361f4308a70cdfd6d5335e273eb8717:
 
+  Revert "floppy: reintroduce O_NDELAY fix" (2021-08-28 11:16:47 +0300)
+
+Please, pull
+
+----------------------------------------------------------------
+Bring back O_NDELAY for floppy
+
+Only one commit this time with revert of O_NDELAY removal for the floppy.
+Users reported that the commit breaks userspace utils and known floppy
+workflow patterns. We already reverted the same commit back in 2016
+presumably for the same reason. Completely drop O_NDELAY for floppy seems
+excessive to solve problems it introduces.
+
+I started to write basic selftests for the floppy to prevent this kind of
+userspace breaks in the future.
+
+Signed-off-by: Denis Efremov <efremov@linux.com>
+
+----------------------------------------------------------------
+Denis Efremov (1):
+      Revert "floppy: reintroduce O_NDELAY fix"
+
+ drivers/block/floppy.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
