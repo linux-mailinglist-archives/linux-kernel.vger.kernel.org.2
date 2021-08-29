@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FBE3FACEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A26D3FACF2
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235798AbhH2Pyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:54:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58968 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235738AbhH2Pyn (ORCPT
+        id S235692AbhH2PzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235764AbhH2PzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:54:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630252431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=/jaF7jZC8q/DpP5yyhldi4uUkfv/Q/aJYUDR7M+5EQ4=;
-        b=KQ5pApz2n835EnrAHbjDNq7xPjwus8ZD101vYJNGvXRMLvulWiaf8mVeuPZMHq6+AQO5ch
-        c9xoLFKy3bVcxgSodg644ttoFoCrDgdoJ1fNwMfRW9zJeJEJAiVxPv4Z6lcIcyxbfl1iwH
-        mSghjA0MFslE7+6mWMMF7+gOQopzx6A=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-79-gH4yxyq6Nnmvk27sUQu0Nw-1; Sun, 29 Aug 2021 11:53:50 -0400
-X-MC-Unique: gH4yxyq6Nnmvk27sUQu0Nw-1
-Received: by mail-ej1-f72.google.com with SMTP id ga42-20020a1709070c2a00b005dc8c1cc3a1so189281ejc.17
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 08:53:49 -0700 (PDT)
+        Sun, 29 Aug 2021 11:55:06 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91595C061760
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 08:54:14 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id eh1so6968264qvb.11
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 08:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2lFAxhd8GYho/4ODjYlv7uZMw/0eD5pCCmeHLl+hjPs=;
+        b=mhx9ENQXODT+mzzMPqmHKUrwyDP2qJQeuDuWMS01gHPl43XhTaDa7GIwT5EZrzsKlW
+         XYrJjSXdlg7yFUzDfgrCTeHHFsuK2dGZzpV4e6dDVB43n3znpV5NEOSV5Jb1W542jRuk
+         3Ofp66c2GUjahl/LYi4ixx1JYqgz/DPjN3n81ynmXWItJ02c662hvQlZJ1N7wNrBFO+d
+         LdaHQwaSptg/CV5S2SQ5h/HKx10wJDGKG7Ca5b+kZqHAA7E2f6cJi7/dwGX3PtU2JrjL
+         3R1ypHe5H4Nhg5SwUbFTCZPhLiX53TmhoEGWfqxj67tEbpLDIljuQerpXkUz8qslJ05v
+         IL0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=/jaF7jZC8q/DpP5yyhldi4uUkfv/Q/aJYUDR7M+5EQ4=;
-        b=DKJlpAAQfOlkMVwfVBeTIveKG8kkAcXpUxnZm/D1pd2XV2ZX0+8i/JmuDFjivE+FVg
-         03fN+WNWTpXvvs4TtFLKhB0dxo92gbhw8i8pPnVNl9wcocAuO2RkGXnyO0GiPQZlqMSq
-         yOTe7vsBVRK/+20xMlxeS7Tall0QvV1Kkk7GyuwqOLh1nj+6TZMmGrx5H6nhevR3Fted
-         t12keR/E6fWMfdAQgkuew96yk1IVXUrJnrOi8WevHDuPPE8WJpa2OpunnZM+3hx3bZBf
-         UqIP5+ClUv1xJSEgZy0fiowbrVtfa6TE6k6x5Kxw+1XfGyEgJ6rIP78XSKs9YXvUeUjD
-         btYQ==
-X-Gm-Message-State: AOAM532psd2lZPACWWJrkJEup/6mRS7xUHoaPddGC2SolETFDjtGZ/oN
-        SCtIDR54F+WNPSpbfvwC2p0oi0eL/3ZZNdmjUTB8HBnNJanZt7niWUuq9tsTTSPfbWFfn3NFh3D
-        uHnUa+8zVJvyNmSOTwJIVqrgu
-X-Received: by 2002:a17:907:212e:: with SMTP id qo14mr19145563ejb.501.1630252427534;
-        Sun, 29 Aug 2021 08:53:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzobXz3Ef1GROPF3oUnWQrRnebrjXnwnoH6TBBe6U6SyFAGgXQrD00rBwtykUugZTIDZOQ8Lw==
-X-Received: by 2002:a17:907:212e:: with SMTP id qo14mr19145554ejb.501.1630252427363;
-        Sun, 29 Aug 2021 08:53:47 -0700 (PDT)
-Received: from redhat.com ([2.55.137.4])
-        by smtp.gmail.com with ESMTPSA id s3sm5652608ejm.49.2021.08.29.08.53.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 08:53:46 -0700 (PDT)
-Date:   Sun, 29 Aug 2021 11:53:43 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, dan.carpenter@oracle.com,
-        david@redhat.com, jasowang@redhat.com, mst@redhat.com,
-        torvalds@linux-foundation.org
-Subject: [GIT PULL] virtio: a last minute fix
-Message-ID: <20210829115343-mutt-send-email-mst@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2lFAxhd8GYho/4ODjYlv7uZMw/0eD5pCCmeHLl+hjPs=;
+        b=Wo/xABhvLxBso9IN2NgcHJ84KHbM3ak0tidOI4SFLNLGFs3LojGnlmV7BOvcGEhKYZ
+         R5sjAr9ca9hKIHXjXML18r9jRSkrSnWQbuFbOmZeHJ0EZA0zJKwEN1hT/zk3s3jbB8q2
+         +leTSg2btirjSsfk0Hk0LCeB3kIcadOnl4ceF89BjiUEqChxRUCRei5aACHVvmWQQNx3
+         MtP8IEu1dVkSXx+9SUaz3ibRyGaonv8L0H73L3qLOvWjtJtQcj6y5/bMC6cwJpKlUMet
+         v11lKLLhdlSJ8yuDuZrQzvJ7LjE6Z4WQHhRX16gcG8d63jB99ZomJHjNEaLANk5I0Jlb
+         I10A==
+X-Gm-Message-State: AOAM532lQDri8ymshW7JVEsEbk1fhX6KPRaPjOI757HaZokVUOt181nY
+        dTtofFRtWHzTh9J4ErLZCNnLCZNa7hkaOAKthGYS8w==
+X-Google-Smtp-Source: ABdhPJxe1bgF3xh2bIKzCa9HbcdEnoBohTsx5XK2a6WNzZeS4ponlbCpnvpXa1C9Dxt2513WX+SXZNaLMUhG2s0WPzc=
+X-Received: by 2002:a0c:cb8f:: with SMTP id p15mr19218569qvk.2.1630252453659;
+ Sun, 29 Aug 2021 08:54:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+References: <20210727202004.712665-1-dmitry.baryshkov@linaro.org>
+ <163000270629.1317818.2836576068466077505@swboyd.mtv.corp.google.com>
+ <42c3fa20-7ffa-255f-ca28-6f0aa2aa4a13@linaro.org> <163020909027.2218116.11109424225803296345@swboyd.mtv.corp.google.com>
+In-Reply-To: <163020909027.2218116.11109424225803296345@swboyd.mtv.corp.google.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sun, 29 Aug 2021 18:54:02 +0300
+Message-ID: <CAA8EJppo8Zze5ViYOWooHy=RR4ueXNeWiBFyKdtpUcm5Cs69ew@mail.gmail.com>
+Subject: Re: [PATCH v6 0/6] clk: qcom: use power-domain for sm8250's clock controllers
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Donnu if it's too late - was on vacation and this only arrived
-Wednesday. Seems to be necessary to avoid introducing a regression
-in virtio-mem.
+On Sun, 29 Aug 2021 at 06:51, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Dmitry Baryshkov (2021-08-26 14:56:23)
+> > On 26/08/2021 21:31, Stephen Boyd wrote:
+> > > Quoting Dmitry Baryshkov (2021-07-27 13:19:56)
+> > >> On SM8250 both the display and video clock controllers are powered up by
+> > >> the MMCX power domain. Handle this by linking clock controllers to the
+> > >> proper power domain, and using runtime power management to enable and
+> > >> disable the MMCX power domain.
+> > >>
+> > >> Dependencies:
+> > >> - https://lore.kernel.org/linux-arm-msm/20210703005416.2668319-1-bjorn.andersson@linaro.org/
+> > >>    (pending)
+> > >
+> > > Does this patch series need to go through the qcom tree? Presumably the
+> > > dependency is going through qcom -> arm-soc
+> >
+> > It looks like Bjorn did not apply his patches in the for-5.15 series, so
+> > we'd have to wait anyway. Probably I should rebase these patches instead
+> > on Rajendra's required-opps patch (which is going in this window).
+> >
+>
+> Ok. Thanks. I'll drop it from my queue for now.
 
-The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
+Just for the reference. I've sent v7 of this patchset. After thinking
+more about power domains relationship, I think we have a hole in the
+abstraction here. Currently subdomains cause power domains to be
+powered up, but do not dictate the performance level the parent domain
+should be working in. While this does not look like an issue for the
+gdsc (and thus it can be easily solved by the Bjorn's patches, which
+enforce rpmhpd to be powered on to 'at least lowest possible'
+performance state, this might be not the case for the future links. I
+think at some point the pd_add_subdomain() interface should be
+extended with the ability to specify minimum required performance
+state when the link becomes on. Until that time I have changed code to
+enforce having clock controller in pm resume state when gdsc is
+enabled, thus CC itself votes on parent's (rpmhpd) performance state.
 
-  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-
-for you to fetch changes up to 816ff7595135948efde558221c8551bdd1869243:
-
-  virtio-mem: fix sleeping in RCU read side section in virtio_mem_online_page_cb() (2021-08-29 11:50:04 -0400)
-
-----------------------------------------------------------------
-virtio: a last minute fix
-
-Fix a regression in virtio-mem.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-David Hildenbrand (1):
-      virtio-mem: fix sleeping in RCU read side section in virtio_mem_online_page_cb()
-
- drivers/virtio/virtio_mem.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
+-- 
+With best wishes
+Dmitry
