@@ -2,65 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840C93FA938
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A413FA93C
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234109AbhH2FVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 01:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34052 "EHLO mail.kernel.org"
+        id S233763AbhH2FZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 01:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233657AbhH2FVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 01:21:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E76B60F38;
-        Sun, 29 Aug 2021 05:20:48 +0000 (UTC)
+        id S229634AbhH2FZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 01:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9850360C3F;
+        Sun, 29 Aug 2021 05:24:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630214448;
-        bh=FBmhYvFBl6A2T3xvjfB+bi/07BMWn85G+klp3N2C4CA=;
+        s=k20201202; t=1630214653;
+        bh=bGY6E/Gh/5Z3BzRavpvjvORjqZzRufcVODbVuvcLQ74=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=jUzLhWXna65prjoszxwQQMQZBSTY0VPNqk46zXwUgGbl+/yDZ5RamyK1dQdhFgVE/
-         KKn1mFk2tN9KFhbYwfCKO3oVco3dFGwzgihtFRjmVgP/5XkzT0nRFtpKOV2JOfQtl/
-         i0TFAep5CsgGZclE7/jpYevExt8oE07o63IEibSoBc2ZY1mt2Bg1mrqOQc33hxDUwM
-         cdkGQYovkO8CtXOGZ4GjTMofs7CV7OWRckjfMJjn0t8F+SytBd4SRYT5cNY3EKDPxR
-         z0hOGRiMxLw2SBTjP48Gn7RoPLhnP4CvfFrFN7H4Km197i2voIAaMobnxWGYq+c4/7
-         0EMdNct5poHJg==
+        b=GVVjNIlRNENg932KxWzpTpCSx8SrDM5BnE8ofagKQJyND+8ouSUZQqIEiC6oX+iFq
+         +ChUyGn0/Y+8nkh6pM6wz6k5bleOMukojimao8d5oTV/wkQcnE/ui2RFu3FX2aJIRX
+         hznFunmrqovXwxjNLKrocm6j5v6ISiv4GTCCsJdTlpCV7TDgmjhqKPRgB3bkAP0jvG
+         6gFL4pyl72HLRJKp5qFecwogUF16UjPcB934RFnhT9EK5DWbXRe5E89vHXlchQHyjV
+         2yJqT99kQujXAkce6qETpDYnCh/SlKJcde3bkIrfC2Wc+yi3GpOGAsPzdbRGsN5B6X
+         92s7EakrOpJCg==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210813091118.17571-1-zhipeng.wang_1@nxp.com>
-References: <20210813091118.17571-1-zhipeng.wang_1@nxp.com>
-Subject: Re: [PATCH] clk: add sys node to disable unused clk
+In-Reply-To: <20210727055537.11785-1-sergio.paracuellos@gmail.com>
+References: <20210727055537.11785-1-sergio.paracuellos@gmail.com>
+Subject: Re: [PATCH] clk: ralink: avoid to set 'CLK_IS_CRITICAL' flag for gates
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Zhipeng Wang <zhipeng.wang_1@nxp.com>, mturquette@baylibre.com
-Date:   Sat, 28 Aug 2021 22:20:46 -0700
-Message-ID: <163021444683.2676726.5708766744722496303@swboyd.mtv.corp.google.com>
+Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
+        linux-kernel@vger.kernel.org, dqfext@gmail.com
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-clk@vger.kernel.org
+Date:   Sat, 28 Aug 2021 22:24:12 -0700
+Message-ID: <163021465232.2676726.1524959516246529010@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Zhipeng Wang (2021-08-13 02:11:18)
-> The normal sequence is that the clock provider registers clk to
-> the clock framework, and the clock framework manages the clock resources
-> of the system. Clk consumers obtain clk through the clock framework API,
-> enable and disable clk.
+Quoting Sergio Paracuellos (2021-07-26 22:55:37)
+> 'clk_init_data' for gates is setting up 'CLK_IS_CRITICAL'
+> flag for all of them. This was being doing because some
+> drivers of this SoC might not be ready to use the clock
+> and we don't wanted the kernel to disable them since default
+> behaviour without clock driver was to set all gate bits to
+> enabled state. After a bit more testing and checking driver
+> code it is safe to remove this flag and just let the kernel
+> to disable those gates that are not in use. No regressions
+> seems to appear.
 >=20
-> Not all clk registered through the clock provider will be used
-> by the clock consumer, so the clock framework has a function
-> late_initcall_sync(clk_disable_unused); disables the unused clk.
->=20
-> Now we modularize the clock provider and some consumers, which will
-> cause late_initcall_sync(clk_disable_unused); cannot work properly, so
-> increase the sys node.
+> Fixes: 48df7a26f470 ("clk: ralink: add clock driver for mt7621 SoC")
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
 
-Sorry, I honestly don't know what's going on here. The commit text is
-describing the clk disable unused logic, and then we're adding a sysfs
-attribute without documenting it in Documentation/ABI? And there's one
-sentence about modular clks not working properly, but I don't know what
-is wrong about it besides it is "wrong".
-
-I've been considering ripping out the late initcall to disable unused
-clks. It pretty much only leads to problems. If we want to save power,
-then maybe we should have clk providers tell us what clks aren't ever
-going to be used unless they're referenced in DT or via some clkdev
-lookup and only turn the ones off that are in that list if they're on.
+Applied to clk-next
