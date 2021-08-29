@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17EA3FAAC0
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD123FAAC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234996AbhH2KJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 06:09:26 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:46936 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbhH2KJY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 06:09:24 -0400
-Received: by mail-lj1-f181.google.com with SMTP id w4so20084939ljh.13;
-        Sun, 29 Aug 2021 03:08:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=lZ8a62LsBSbCVNMfLtZfAK/Yj9mseijBB0w1OSZc27M=;
-        b=AYszIwPeSM4n8qYMiHhPNjnp8hHXRai+PPK7eGDOnGKCFdwqswve842cSSkBbWIltP
-         7BmmUhLQfOD36EOQUy1DFAuhk1wRXv6LsbwXKbBE7v2mQBAOq3sp2+08s+10R49QgfeZ
-         4caBvBuTI8H5Y7BkZF6sS7TxxSDqza7/uvDFYYZPgCTXmPKUuHRdeNUMSZV43ioduSRV
-         Nq/Y5tvDzPCAel3D/mAIowOpXBj1h1w8YDn+kqo105mG8uepO8eAvTiQu5C1UsZG1go+
-         u3e3BSnHtOesboa3wCx0hsUj6rzYI1B/2+36KoDCvTHAR9KHjRLmLn5y9AqMLkBoEFjn
-         NzEQ==
-X-Gm-Message-State: AOAM531iJiU+dTJFw7R0B3X0JUu+jl2KZGFtmNBGK9iQnH0GClKxL8sc
-        +9Q2NVqN8bR1t9SFwbW/7ppTpT3oWtFHIQ==
-X-Google-Smtp-Source: ABdhPJwLI9Xn31NPmvy9xta3XWhY8V3pnojHLkk6peP3unPMAnMxpWip1yqKkY3zcElhnC9wwi8hEQ==
-X-Received: by 2002:a2e:86cc:: with SMTP id n12mr15725920ljj.384.1630231711533;
-        Sun, 29 Aug 2021 03:08:31 -0700 (PDT)
-Received: from [10.68.32.40] (broadband-109-173-81-86.ip.moscow.rt.ru. [109.173.81.86])
-        by smtp.gmail.com with ESMTPSA id m24sm287602lfb.223.2021.08.29.03.08.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Aug 2021 03:08:30 -0700 (PDT)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org,
-        Linux-kernel <linux-kernel@vger.kernel.org>
-From:   Denis Efremov <efremov@linux.com>
-Subject: [GIT PULL] Floppy patch for 5.15
-Message-ID: <388418f4-2b9a-6fed-836c-a004369dc7c0@linux.com>
-Date:   Sun, 29 Aug 2021 13:08:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235031AbhH2KLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 06:11:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234835AbhH2KLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 06:11:43 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F24E660E94;
+        Sun, 29 Aug 2021 10:10:51 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mKHm5-007qIz-Tb; Sun, 29 Aug 2021 11:10:50 +0100
+Date:   Sun, 29 Aug 2021 11:10:49 +0100
+Message-ID: <87tuj8d0ie.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Huacai Chen <chenhuacai@gmail.com>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH V3 08/10] irqchip: Add LoongArch CPU interrupt controller support
+In-Reply-To: <CAAhV-H41rridOo_3Eq5t9LPz-mefketAKNdhgbguFtZ0Cqz5Ng@mail.gmail.com>
+References: <20210825061152.3396398-1-chenhuacai@loongson.cn>
+        <20210825061152.3396398-9-chenhuacai@loongson.cn>
+        <87pmu1q5ms.wl-maz@kernel.org>
+        <CAAhV-H5yadRbTt9a-i-65Mvd6mBxm58R_+mWLfJrauuAe3+qyg@mail.gmail.com>
+        <87v93pddzu.wl-maz@kernel.org>
+        <CAAhV-H41rridOo_3Eq5t9LPz-mefketAKNdhgbguFtZ0Cqz5Ng@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: chenhuacai@gmail.com, chenhuacai@loongson.cn, tglx@linutronix.de, linux-kernel@vger.kernel.org, lixuefeng@loongson.cn, jiaxun.yang@flygoat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
+On Sun, 29 Aug 2021 10:37:48 +0100,
+Huacai Chen <chenhuacai@gmail.com> wrote:
 
-Sorry for the late PR this time. I'll resend it later if it's too late for
-your for-5.15/drivers branch. Thanks.
+> > Are you saying that there is no way for the interrupt controller
+> > driver to figure out the hwirq number on its own?  That would seem
+> > pretty odd (even the MIPS GIC has that). Worse case, you can provide
+> > an arch-specific helper that exposes the current hwirq based on the
+> > vector that triggered.
+> We can get the hwirq number by reading CSR.ESTAT register, but in this
+> way "vectored interrupts" is meaningless.
 
-The following changes since commit 461d971215dfb55bcd5f7d040b2b222592040f95:
+Let's face it, the way you use vectored interrupts makes zero sense
+already. The whole point of vectored interrupts is that the CPU can
+branch to the handler directly, making the interrupt handling cheaper
+as there should be no additional decoding and you can run the final
+handler immediately. Here, all your interrupts point to the same
+"default handler"...
 
-  Merge branch 'md-next' of https://git.kernel.org/pub/scm/linux/kernel/git/song/md into for-5.15/drivers (2021-08-27 16:32:01 -0600)
+What do vectored interrupts bring? "Absolutely Nothing! (say it again!)"
 
-are available in the Git repository at:
+	M.
 
-  https://github.com/evdenis/linux-floppy tags/floppy-for-5.15
-
-for you to fetch changes up to c7e9d0020361f4308a70cdfd6d5335e273eb8717:
-
-  Revert "floppy: reintroduce O_NDELAY fix" (2021-08-28 11:16:47 +0300)
-
-Please, pull
-
-----------------------------------------------------------------
-Bring back O_NDELAY for floppy
-
-Only one commit this time with revert of O_NDELAY removal for the floppy.
-Users reported that the commit breaks userspace utils and known floppy
-workflow patterns. We already reverted the same commit back in 2016
-presumably for the same reason. Completely drop O_NDELAY for floppy seems
-excessive to solve problems it introduces.
-
-I started to write basic selftests for the floppy to prevent this kind of
-userspace breaks in the future.
-
-Signed-off-by: Denis Efremov <efremov@linux.com>
-
-----------------------------------------------------------------
-Denis Efremov (1):
-      Revert "floppy: reintroduce O_NDELAY fix"
-
- drivers/block/floppy.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+-- 
+Without deviation from the norm, progress is not possible.
