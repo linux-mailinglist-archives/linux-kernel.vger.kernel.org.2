@@ -2,60 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1C23FA89F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 06:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D863FA8A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 06:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbhH2ER2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 00:17:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39676 "EHLO mail.kernel.org"
+        id S233295AbhH2ETW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 00:19:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhH2ER1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 00:17:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A25DC60231;
-        Sun, 29 Aug 2021 04:16:35 +0000 (UTC)
+        id S229534AbhH2ETV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 00:19:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 599D960231;
+        Sun, 29 Aug 2021 04:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630210595;
-        bh=pb2oOSItitdYHRmLFBfuZ5tLKROV5ou2ACYAG1rAhlA=;
+        s=k20201202; t=1630210710;
+        bh=CbQ9gzpHf6sFvMhiD4zW63O1ivKFrjkNQO388CYuQJg=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=K0rRrxT7xHlmhj3pvc2xNlL6y4w+7IxjTSB3w8c6lWpZ0bAfeWRvdt/rYmJAcIZLZ
-         +bcrRSBjkvKqfevSwgUCbNSKtB8Kh5HKTnvMop7DdrycJAmVKVEHpXswz7MqpBxPtJ
-         JRgB3TyLiu5MvRQdOTflPIgbXxDat6fFcuQzGmCFaU44pvZw2ReO+0zXIhX2Yzp3Qc
-         0Zk5Bk3/x7nbDox7txXSbgyPMhqM0L+YHXJBX7atQd6Uj0GPVD3KiSUwnYzkoPPx0l
-         srl9gaFxNiBXiqCV2z6aVJGAD8xV6BlcWby3CEK9gNyDP7gojXttwHENgLD07LXFXR
-         8yao167SIo92A==
+        b=gfa4G6dOOX2crSWPBw7ZRL8KvQIlK3kfXbJdFMvRZpy4KN/hD30ODwTN0IfLek5aE
+         JpEQkX0AXdU6dgscQNrOjz9rPYaCr165AofU2aKt+pmI3uPNHU/88qqXpK/JIPJ4pn
+         E/2zRrvtBly17RKY/fjZYih6/dwmQgqILwnAQaQac113+7ZScz1lz1sR80uVCEsjZN
+         QnToaccb4fZxEC23XuJxIW85KD+qhDjqEwBvGPAa5pi5B6eBx9S9xt3IOhxhdO9jY7
+         O6kdIZ01xy0jBW0h/MtlivOmdQVH2yOTF4t0MO5kFaDi+rUImWTN9LnsiZvYC1VFeH
+         9Ur4JeI4MDriA==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1629889173-5042-1-git-send-email-abel.vesa@nxp.com>
-References: <1629889173-5042-1-git-send-email-abel.vesa@nxp.com>
-Subject: Re: [GIT PULL] clk: imx: Updates for v5.15
+In-Reply-To: <1629720433-19019-1-git-send-email-rajan.vaja@xilinx.com>
+References: <1629446294-1056-1-git-send-email-rajan.vaja@xilinx.com> <1629720433-19019-1-git-send-email-rajan.vaja@xilinx.com>
+Subject: Re: [PATCH v3] clk: zynqmp: fix kernel doc
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     NXP Linux Team <linux-imx@nxp.com>, linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-To:     Abel Vesa <abel.vesa@nxp.com>
-Date:   Sat, 28 Aug 2021 21:16:34 -0700
-Message-ID: <163021059444.2676726.13636736135059270626@swboyd.mtv.corp.google.com>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rajan Vaja <rajan.vaja@xilinx.com>
+To:     Rajan Vaja <rajan.vaja@xilinx.com>, michal.simek@xilinx.com,
+        mturquette@baylibre.com
+Date:   Sat, 28 Aug 2021 21:18:29 -0700
+Message-ID: <163021070902.2676726.2887966939262149767@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Abel Vesa (2021-08-25 03:59:33)
-> The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58=
-d3:
+Quoting Rajan Vaja (2021-08-23 05:07:13)
+> Add missing description of 'custom_type_flag' structure member.
 >=20
->   Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+> Fixes: e605fa9c4a0c ("clk: zynqmp: Add support for custom type flags")
 >=20
-> are available in the Git repository at:
->=20
->   git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git/ tags/=
-clk-imx-5.15
->=20
-> for you to fetch changes up to 86842d255b45fc2103da1cd202f5064397ed41f8:
->=20
->   clk: imx8mn: Add M7 core clock (2021-08-24 16:09:07 +0300)
->=20
-> ----------------------------------------------------------------
+> Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
+> ---
 
-Thanks. Pulled into clk-next
+Applied to clk-next
