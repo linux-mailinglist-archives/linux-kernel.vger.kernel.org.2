@@ -2,161 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63B93FAAEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30273FAAF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhH2Kg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 06:36:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231945AbhH2Kgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 06:36:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5AE060F35;
-        Sun, 29 Aug 2021 10:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630233363;
-        bh=ox02ScGrdYqAo7QBg65j6S+hebsczaBu8GpVm5VVajA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IxpDmGEYUZ6OWWZ7p0EbTiP80m/L30xdokgpZfcllX8dYcgBplwyScINa74DS1p0t
-         Oxr2R4VgUjljy88piEIDVMzxi4/J8kExgtNZEuqvzb8eiQRqLhdMRLs14gm+t/gTDw
-         sHE+plEyaY3/YNg1GF2kSrwqJNFSFr2AtHf0l079z75dAjzVhaCJGwxqAaVhxRmK/U
-         2y9ZzfI63TtRmI1GEUyXEYIYlcQgUkkp0W4+RA7swosEvm7vFhjszD6lZoSAZn+nMR
-         0rpz/EhrcM0UUiybapOyREoZ70mAI0JLOEaqOXN/Aq7lH7FrO2+m6Qo9yluDJfwY9z
-         +3ivb7UUYwhgQ==
-Received: by pali.im (Postfix)
-        id 54F4CB0F; Sun, 29 Aug 2021 12:36:00 +0200 (CEST)
-Date:   Sun, 29 Aug 2021 12:36:00 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v3 9/9] fs/ntfs3: Show uid/gid always in show_options()
-Message-ID: <20210829103600.pfwtm5c3sdpcnzlm@pali>
-References: <20210829095614.50021-1-kari.argillander@gmail.com>
- <20210829095614.50021-10-kari.argillander@gmail.com>
+        id S235088AbhH2Kus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 06:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231945AbhH2Kup (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 06:50:45 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05001C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 03:49:53 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id x16so5165547pll.2
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 03:49:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kcwbt0QYBilC1KUjADiZKweYPQYwCgMgAZVZ1Z7Fg5w=;
+        b=cWubZFphcxdu24TVVWdwW2ngYth/s1Sj7sIcpFHLlOU7J1VGniqC5o1xSQG3vfeOUg
+         wFiP13SbBxiPAhLzx7+GYgszVoqR0Rm0sICWdLdN5UiaYoE8VR6mCWhtepxRGe8uh4et
+         plfmf6CK/vQ8uS8AIBAaJyd6ItUX9IFZCQ6N1lvW2XjOPi5d2wD5snrn+1CbcX3/0jse
+         QsFq0OmPUJZzRLa9ngNmnIAVCxJ7pR5iBJj/SNfEvy4SHTLJ0thk5GnR3hJBCL5EfveW
+         N8elgOjSDty9ZjvO5jKdtHqdOK7eIhtcdrZv5y0Rnl+2MT5f4Mcv1K2aJ6HcSXKTsz7u
+         J06g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kcwbt0QYBilC1KUjADiZKweYPQYwCgMgAZVZ1Z7Fg5w=;
+        b=LFIx2XYnarEMkuplsMJPoZzotin5Wt0/wuFNC98CEoC1ioIUzjxVV2KptYILMpRUjt
+         GIkVpkaeuACr4mygENUMtNnf+Xa2V8N/qxPbqJe+yCn31awFgw04DqF3FG011Q/+t0dY
+         aB9c8BojfsaWo6qfolrgCBFdSAI/LEQA5NPwPwPWV1csXOdiF/rapMz/A+KV/rxHKtMF
+         M1Nv0Ae2vqmnPpjhTEJgekU88jOApTBCB5j6Lil9KLEfPFEktIngq8GikVlL6NqzWT7/
+         8cd4chRfVZSx/bEHnLOtsp3+zcHSRVOXNiKGcaAK8eknboWZpqb5dBY/mQbFovUY3sb8
+         9fAw==
+X-Gm-Message-State: AOAM533gbLLd+6SNyT7+4a4jfy/VqJnodd7QTMoyVy9vC/yhB3W4dwLi
+        K//IpDZ+wY8UdJEjtIy5Se/PPGVZHWyFmGwtdcgHwQ==
+X-Google-Smtp-Source: ABdhPJyg5OvleoQoU758Mdf0exKeOgwhKC9k987aeUPLHLoMATE2umjufiCp75Lvs+wDPYBBMQCH3EtyKxkmtzJvF5s=
+X-Received: by 2002:a17:90a:1f49:: with SMTP id y9mr33134651pjy.225.1630234192921;
+ Sun, 29 Aug 2021 03:49:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210829095614.50021-10-kari.argillander@gmail.com>
-User-Agent: NeoMutt/20180716
+References: <20210828212453.898-1-phil@philpotter.co.uk> <20210828212453.898-3-phil@philpotter.co.uk>
+ <21174665.bKA57LRvRV@localhost.localdomain>
+In-Reply-To: <21174665.bKA57LRvRV@localhost.localdomain>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Sun, 29 Aug 2021 11:49:42 +0100
+Message-ID: <CAA=Fs0meC_nVjb2gESnmz2pPgzNa4=QT_jnteAh4B8Cds6_0fQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] staging: r8188eu: simplify c2h_evt_hdl function
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday 29 August 2021 12:56:14 Kari Argillander wrote:
-> Show options should show option according documentation when some value
-> is not default or when ever coder wants. Uid/gid are problematic because
-> it is hard to know which are defaults. In file system there is many
-> different implementation for this problem.
-> 
-> Some file systems show uid/gid when they are different than root, some
-> when user has set them and some show them always. There is also problem
-> that what if root uid/gid change. This code just choose to show them
-> always. This way we do not need to think this any more.
+On Sun, 29 Aug 2021 at 09:52, Fabio M. De Francesco
+<fmdefrancesco@gmail.com> wrote:
+>
+> >  static s32 c2h_evt_hdl(struct adapter *adapter, struct c2h_evt_hdr *c2h_evt, c2h_id_filter filter)
+> >  {
+> > -     s32 ret = _FAIL;
+> >       u8 buf[16];
+> >
+> > -     if (!c2h_evt) {
+> > -             /* No c2h event in cmd_obj, read c2h event before handling*/
+> > -             if (c2h_evt_read(adapter, buf) == _SUCCESS) {
+> > -                     c2h_evt = (struct c2h_evt_hdr *)buf;
+>
+> Dear Philip,
+>
+> Not related to your patch, but what kind of odd assignment is it? c2h_evt takes
+> the address of a local variable and therefore it crashes the kernel whenever
+> someone decides to dereference it after this function returns and unwinds
+> the stack...
 
-Hello! IIRC ntfs disk storage supports POSIX permissions and uid/gid for
-files and directories. But from ntfs3 documentation it is not clear if
-this ntfs3 implementation supports it or not.
+Dear Fabio,
 
-Currently ntfs3 documentation says:
-> https://github.com/Paragon-Software-Group/linux-ntfs3/blob/master/Documentation/filesystems/ntfs3.rst
-> uid= gid= umask= Controls the default permissions for
-> files/directories created after the NTFS volume is mounted.
-(and looks that rst formatting is broken)
+Thank you for taking a look firstly, really appreciate it :-) As for the line:
+c2h_evt = (struct c2h_evt_hdr *)buf;
 
-And from this description I'm not really sure what these option
-controls.
+in the original code before I removed it, bear in mind that this
+pointer assignment is
+happening into the parameter variable c2h_evt, which is a copy of the
+passed in argument,
+as C is pass-by-value. Therefore, after the c2h_evt_hdl function
+returns, the value passed
+in as the argument for this parameter would still have its original
+pointer value (or NULL).
 
-For example udf filesystem also supports storing POSIX uid/gid and
-supports also additional extension per file to "do not store uid" and
-"do not store gid". Moreover kernel implementation has mount option
-(uid= and gid=) which overrides disk's uid/gid to mount option value.
-And also has mount option to allow storing new files "without uid/gid".
-So there does not have to be any default for uid=/gid= like it is for
-"native" POSIX filesystems (e.g. ext4).
+It would not therefore be possible to deference the pointer to this
+stack-allocated memory
+from outside the function, even in the original code. I agree though,
+its purpose is dubious.
+Originally, the wrapper function rtw_hal_c2h_handler would have passed
+it through to the
+function assigned to the c2h_handler function pointer, but there was
+no such function in
+this driver, so it was never executed.
 
-And so interpretation of uid/gid options is not always easy; specially
-if filesystem has extensions to POSIX permissions. And NTFS has it too
-as it by default has in its storage (only?) NT permissions and NT SIDs.
+>
+> > +     if (!c2h_evt)
+> > +             c2h_evt_read(adapter, buf);
+>
+> Having said that, I strongly doubt that this path is ever taken. I didn't check the call
+> chain, but it may be that the function in never called or, if it is called, it always
+> has a valid c2h_evt argument.
+>
+> Actually I don't mean to suggest something specific. It simply looks odd, so I'd check
+> and if this happens to be the case, I'd remove the whole c2h_evt_hdl().
+>
+> Regards,
+>
+> Fabio
 
-> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
-> ---
->  fs/ntfs3/ntfs_fs.h | 23 ++++++++++-------------
->  fs/ntfs3/super.c   | 12 ++++--------
->  2 files changed, 14 insertions(+), 21 deletions(-)
-> 
-> diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-> index 5df55bc733bd..a3a7d10de7cb 100644
-> --- a/fs/ntfs3/ntfs_fs.h
-> +++ b/fs/ntfs3/ntfs_fs.h
-> @@ -60,19 +60,16 @@ struct ntfs_mount_options {
->  	u16 fs_fmask_inv;
->  	u16 fs_dmask_inv;
->  
-> -	unsigned uid : 1, /* uid was set */
-> -		gid : 1, /* gid was set */
-> -		fmask : 1, /* fmask was set */
-> -		dmask : 1, /*dmask was set*/
-> -		sys_immutable : 1, /* immutable system files */
-> -		discard : 1, /* issue discard requests on deletions */
-> -		sparse : 1, /*create sparse files*/
-> -		showmeta : 1, /*show meta files*/
-> -		nohidden : 1, /*do not show hidden files*/
-> -		force : 1, /*rw mount dirty volume*/
-> -		noacs_rules : 1, /*exclude acs rules*/
-> -		prealloc : 1 /*preallocate space when file is growing*/
-> -		;
-> +	unsigned fmask : 1; /* fmask was set */
-> +	unsigned dmask : 1; /*dmask was set*/
-> +	unsigned sys_immutable : 1; /* immutable system files */
-> +	unsigned discard : 1; /* issue discard requests on deletions */
-> +	unsigned sparse : 1; /*create sparse files*/
-> +	unsigned showmeta : 1; /*show meta files*/
-> +	unsigned nohidden : 1; /*do not show hidden files*/
-> +	unsigned force : 1; /*rw mount dirty volume*/
-> +	unsigned noacs_rules : 1; /*exclude acs rules*/
-> +	unsigned prealloc : 1; /*preallocate space when file is growing*/
->  };
->  
->  /* special value to unpack and deallocate*/
-> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> index d7408b4f6813..d28fab6c2297 100644
-> --- a/fs/ntfs3/super.c
-> +++ b/fs/ntfs3/super.c
-> @@ -287,13 +287,11 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
->  		opts->fs_uid = make_kuid(current_user_ns(), result.uint_32);
->  		if (!uid_valid(opts->fs_uid))
->  			return invalf(fc, "ntfs3: Invalid value for uid.");
-> -		opts->uid = 1;
->  		break;
->  	case Opt_gid:
->  		opts->fs_gid = make_kgid(current_user_ns(), result.uint_32);
->  		if (!gid_valid(opts->fs_gid))
->  			return invalf(fc, "ntfs3: Invalid value for gid.");
-> -		opts->gid = 1;
->  		break;
->  	case Opt_umask:
->  		if (result.uint_32 & ~07777)
-> @@ -512,12 +510,10 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
->  	struct ntfs_mount_options *opts = sbi->options;
->  	struct user_namespace *user_ns = seq_user_ns(m);
->  
-> -	if (opts->uid)
-> -		seq_printf(m, ",uid=%u",
-> -			   from_kuid_munged(user_ns, opts->fs_uid));
-> -	if (opts->gid)
-> -		seq_printf(m, ",gid=%u",
-> -			   from_kgid_munged(user_ns, opts->fs_gid));
-> +	seq_printf(m, ",uid=%u",
-> +		  from_kuid_munged(user_ns, opts->fs_uid));
-> +	seq_printf(m, ",gid=%u",
-> +		  from_kgid_munged(user_ns, opts->fs_gid));
->  	if (opts->fmask)
->  		seq_printf(m, ",fmask=%04o", ~opts->fs_fmask_inv);
->  	if (opts->dmask)
-> -- 
-> 2.25.1
-> 
+As alluded to, removing the whole of c2h_evt_hdl would lead to
+c2h_evt_read no longer
+being executed, which would mean the reads from the adapter register
+don't happen, and
+nor does the clearing by c2h_evt_clear(adapter); - in particular, the
+comment there mentions
+the FW not updating the next command message if this isn't executed when needed.
+
+This may be perfectly fine, but I thought this approach is safer due
+to the above.
+
+Regards,
+Phil
