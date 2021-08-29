@@ -2,162 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5A23FAC29
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957413FAC2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235393AbhH2OSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 10:18:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37394 "EHLO mail.kernel.org"
+        id S233182AbhH2OXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 10:23:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231199AbhH2OSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 10:18:13 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9058260295;
-        Sun, 29 Aug 2021 14:17:18 +0000 (UTC)
-Date:   Sun, 29 Aug 2021 15:20:21 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Joe Perches <joe@perches.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] drivers/iio: Remove all strcpy() uses
-Message-ID: <20210829152021.7b5cae16@jic23-huawei>
-In-Reply-To: <20210815174204.126593-1-len.baker@gmx.com>
-References: <20210815174204.126593-1-len.baker@gmx.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229824AbhH2OXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 10:23:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2B5160F25;
+        Sun, 29 Aug 2021 14:22:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630246939;
+        bh=SX/6NpmufvIKzczVt2UMmhTOQs88DiHs94U2QsyQkYY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=R2g1EjUpVW/tC+kkOzf4MSi7aifGLmt6HJOCAIDtfYFSjQjrtWT4QgRBqnYCG6IqL
+         JOSj6N+3p8vGiTqqzP9jc1541BN2Rh0/fJksSxznBEAWO20ym4VsMzHarxm8VC+qqW
+         azs8JMuNoyH82OOfaDGUhliiTa3IMFYqLozTlcjclG7pHCqbg5tUGysziijsYBc8o6
+         GAsebadOQEI8Ptiaq+cTVHoeoxzYcuQRdXqzF58VUj+SvBBYpVPAfyNtA5TjaYcn7z
+         5Zfig2ak8IjEzamh1K0MxSZCfUq6rw/cUBscPIiN2ZJIW5WhJCxAoSqh8mst3aLkhc
+         B5x7f/dblu+Ow==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [RFC PATCH 0/1] Non stack-intrusive return probe event
+Date:   Sun, 29 Aug 2021 23:22:14 +0900
+Message-Id: <163024693462.457128.1437820221831758047.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <162756755600.301564.4957591913842010341.stgit@devnote2>
+References: <162756755600.301564.4957591913842010341.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Aug 2021 19:42:04 +0200
-Len Baker <len.baker@gmx.com> wrote:
+Hello,
 
-> strcpy() performs no bounds checking on the destination buffer. This
-> could result in linear overflows beyond the end of the buffer, leading
-> to all kinds of misbehaviors. So, remove all the uses and add
-> devm_kstrdup() or devm_kasprintf() instead.
-> 
-> Also, modify the "for" loop conditions to clarify the access to the
-> st->orientation.rotation buffer.
-> 
-> This patch is an effort to clean up the proliferation of str*()
-> functions in the kernel and a previous step in the path to remove
-> the strcpy function from the kernel entirely [1].
-> 
-> [1] https://github.com/KSPP/linux/issues/88
-> 
-> Signed-off-by: Len Baker <len.baker@gmx.com>
-Applied.
+For a long time, we tackled to fix some issues around kretprobe.
+One of the latest action was the stacktrace fix on x86 in this
+thread.
 
-Thanks,
+https://lore.kernel.org/bpf/162756755600.301564.4957591913842010341.stgit@devnote2/
 
-Jonathan
+However, there seems no progress/further discussion. So I would
+like to make another approach for this (and the other issues.)
 
-> ---
-> The previous versions can be found in:
-> 
-> v1
-> https://lore.kernel.org/linux-hardening/20210801171157.17858-1-len.baker@gmx.com/
-> 
-> v2
-> https://lore.kernel.org/linux-hardening/20210807152225.9403-1-len.baker@gmx.com/
-> 
-> v3
-> https://lore.kernel.org/linux-hardening/20210814090618.8920-1-len.baker@gmx.com/
-> 
-> v4
-> https://lore.kernel.org/linux-hardening/20210814135509.4500-1-len.baker@gmx.com/
-> 
-> Changelog v1 -> v2
-> - Modify the commit changelog to inform that the motivation of this
->   patch is to remove the strcpy() function from the kernel entirely
->   (Jonathan Cameron).
-> 
-> Changelog v2 -> v3
-> - Rewrite the code using devm_kstrdup() and devm_kasprintf() functions
->   (Andy Shevchenko).
-> - Rebase against v5.14-rc5.
-> 
-> Changelog v3 -> v4
-> - Reorder the variables (Andy Shevchenko).
-> - Get the device in the definition block (Andy Shevchenko).
-> - Reword the comment (Andy Shevchenko).
-> - Change the conditions in the "if" statement to clarify the "0" check
->   (Andy Shevchenko).
-> 
-> Changelog v4 -> v5
-> - Use the strcmp() function to clarify the "0" check (Joe Perches).
-> - Modify the "for" loop conditions to clarify the access to the
->   st->orientation.rotation buffer (Joe Perches).
-> 
->  drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c | 36 +++++++++++++---------
->  1 file changed, 21 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
-> index f282e9cc34c5..6aee6c989485 100644
-> --- a/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
-> +++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c
-> @@ -261,6 +261,7 @@ int inv_mpu_magn_set_rate(const struct inv_mpu6050_state *st, int fifo_rate)
->   */
->  int inv_mpu_magn_set_orient(struct inv_mpu6050_state *st)
->  {
-> +	struct device *dev = regmap_get_device(st->map);
->  	const char *orient;
->  	char *str;
->  	int i;
-> @@ -279,22 +280,27 @@ int inv_mpu_magn_set_orient(struct inv_mpu6050_state *st)
->  		st->magn_orient.rotation[4] = st->orientation.rotation[1];
->  		st->magn_orient.rotation[5] = st->orientation.rotation[2];
->  		/* z <- -z */
-> -		for (i = 0; i < 3; ++i) {
-> -			orient = st->orientation.rotation[6 + i];
-> -			/* use length + 2 for adding minus sign if needed */
-> -			str = devm_kzalloc(regmap_get_device(st->map),
-> -					   strlen(orient) + 2, GFP_KERNEL);
-> -			if (str == NULL)
-> +		for (i = 6; i < 9; ++i) {
-> +			orient = st->orientation.rotation[i];
-> +
-> +			/*
-> +			 * The value is negated according to one of the following
-> +			 * rules:
-> +			 *
-> +			 * 1) Drop leading minus.
-> +			 * 2) Leave 0 as is.
-> +			 * 3) Add leading minus.
-> +			 */
-> +			if (orient[0] == '-')
-> +				str = devm_kstrdup(dev, orient + 1, GFP_KERNEL);
-> +			else if (!strcmp(orient, "0"))
-> +				str = devm_kstrdup(dev, orient, GFP_KERNEL);
-> +			else
-> +				str = devm_kasprintf(dev, GFP_KERNEL, "-%s", orient);
-> +			if (!str)
->  				return -ENOMEM;
-> -			if (strcmp(orient, "0") == 0) {
-> -				strcpy(str, orient);
-> -			} else if (orient[0] == '-') {
-> -				strcpy(str, &orient[1]);
-> -			} else {
-> -				str[0] = '-';
-> -				strcpy(&str[1], orient);
-> -			}
-> -			st->magn_orient.rotation[6 + i] = str;
-> +
-> +			st->magn_orient.rotation[i] = str;
->  		}
->  		break;
->  	default:
-> --
-> 2.25.1
-> 
+Here is my idea -- replace kretprobe with kprobe.
+In other words, put a kprobe on the "return instruction" directly
+instead of modifying the kernel stack. This can solve most
+of the kretprobe disadvantges. E.g.
 
+- Since it doesn't change the kernel stack, any special stack
+  unwinder fixup is not needed anymore.
+- No "max-instance" limitations anymore, because it will use
+  kprobes directly.
+- Scalability performance will be improved as same as kprobes.
+  No list-operation in probe-runtime.
+
+Here is a PoC code which introduces "retinsn_probe" event as a part
+of ftrace kprobe event. I don't think we need to replace the
+kretprobe. This should be a higher layer feature, because some
+kernel functions can have multiple "return instructions". Thus,
+the "retinsn_probe" must manage multiple kprobes. That means the
+"retinsn_probe" will be a user of kprobes. I decided to make it
+inside the ftrace "kprobe-event". This gives us another advantage
+for eBPF support. Because eBPF uses "kprobe-event" instead of
+"kprobe" directly, if the "retinsn_probe" is implemented in the
+"kprobe-event", eBPF can use it without any change.
+Anyway, this can be co-exist with kretprobe. So as far as any
+user uses kretprobe, we can keep it.
+
+
+Example
+=======
+For example, I ran a shell script, which was used in the
+stacktrace fix series.
+
+----
+mount -t debugfs debugfs /sys/kernel/debug/
+cd /sys/kernel/debug/tracing
+echo > trace
+echo 1 > options/sym-offset
+echo r vfs_read >> kprobe_events
+echo r full_proxy_read >> kprobe_events
+echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+echo 1 > events/kprobes/enable
+cat /sys/kernel/debug/kprobes/list
+echo 0 > events/kprobes/enable
+cat trace
+----
+
+This is the result.
+----
+ffffffff813b420e  k  full_proxy_read+0x6e    
+ffffffff812b7c0a  k  vfs_read+0xda  
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 3/3   #P:8
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| /     delay
+#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+#              | |         |   ||||      |         |
+             cat-136     [007] d.Z.     8.038381: r_full_proxy_read_0: (vfs_read+0x9b/0x180 <- full_proxy_read)
+             cat-136     [007] d.Z.     8.038386: <stack trace>
+ => kretprobe_trace_func+0x209/0x300
+ => retinsn_dispatcher+0x7a/0xa0
+ => kprobe_post_process+0x28/0x80
+ => kprobe_int3_handler+0x166/0x1a0
+ => exc_int3+0x47/0x140
+ => asm_exc_int3+0x31/0x40
+ => vfs_read+0x9b/0x180
+ => ksys_read+0x68/0xe0
+ => do_syscall_64+0x3b/0x90
+ => entry_SYSCALL_64_after_hwframe+0x44/0xae
+             cat-136     [007] d.Z.     8.038387: r_vfs_read_0: (ksys_read+0x68/0xe0 <- vfs_read)
+----
+
+You can see the return probe events are translated to kprobes
+instead of kretprobes. And also, on the stacktrace, we can see
+an int3 calls the kprobe and decode stacktrace correctly.
+
+
+TODO
+====
+Of course, this is just an PoC code, there are many TODOs.
+
+- This PoC code only supports x86 at this moment. But I think this
+  can be done on the other architectures. What it needs is
+  to implement "find_return_instructions()".
+- Code cleanup is not enough. I have to remove "kretprobe" from
+ "trace_kprobe" data structure, rewrite related functions etc.
+- It has to handle "tail-call" optimized code, which replaces
+  a "call + return" into "jump". find_return_instruction() should
+  detect it and decode the jump destination too.
+
+
+Thank you,
+
+
+---
+
+Masami Hiramatsu (1):
+      [PoC] tracing: kprobe: Add non-stack intrusion return probe event
+
+
+ arch/x86/kernel/kprobes/core.c |   59 +++++++++++++++++++++
+ kernel/trace/trace_kprobe.c    |  110 ++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 164 insertions(+), 5 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
