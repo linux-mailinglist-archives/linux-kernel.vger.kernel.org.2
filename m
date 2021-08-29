@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C5C3FAC50
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECFF3FAC4D
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235495AbhH2Oso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 10:48:44 -0400
-Received: from mout.gmx.net ([212.227.15.15]:34883 "EHLO mout.gmx.net"
+        id S235465AbhH2Opx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 10:45:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhH2Osm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 10:48:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630248461;
-        bh=koZbqgJEfL/7Y29h7AbSuE43MIf9T4IruSs6pFqnKac=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=Xrr0UjdPJdekK+lQoSnHeJCYY1T69bj04GvnZ7QFyuHrrnsKmPjT9L+5BYM2EijHl
-         ZnGU/46wm0c9ZAd/ZGb34tUTScLPKyghntj4z1wXjVghQYFRKddSzeRoaqqrzSg7U+
-         Zq1utD7w0b8Vj/v+j5H25WXCuIUzY15B5bRSLix4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1N9Mta-1n7nUv0h9Q-015K8p; Sun, 29 Aug 2021 16:47:41 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v2] docs: deprecated.rst: Clarify open-coded arithmetic with literals
-Date:   Sun, 29 Aug 2021 16:47:16 +0200
-Message-Id: <20210829144716.2931-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S229824AbhH2Opw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 10:45:52 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD9B460F39;
+        Sun, 29 Aug 2021 14:44:57 +0000 (UTC)
+Date:   Sun, 29 Aug 2021 15:48:12 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        denis.ciocca@st.com, linus.walleij@linaro.org,
+        lee.jones@linaro.org, andy.shevchenko@gmail.com
+Subject: Re: [PATCH v3 0/5] iio: st_sensors: convert probe functions to full
+ devm
+Message-ID: <20210829154812.606e51f5@jic23-huawei>
+In-Reply-To: <20210823112204.243255-1-aardelean@deviqon.com>
+References: <20210823112204.243255-1-aardelean@deviqon.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cFuf6SpUGWOGCHoTzKapRRNLmNuZOZ4RFlsRAo3NnONcykQYVFe
- GP+hOF1x8ASn6qNm3+5k/QieMyTbBBLeqV3sxLxBMb52PI0agw0+NzNkkfBvoGkhxt2IZw8
- dnKuDuD3n4LdnPF6DUa8NwxCIm61q+f8AwDzR/YNGR26TSzt1kBiJNw/hJwjQv/4nO4m8+F
- g71VGbgsHoZLt0MYpkzpg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:PDWEanbmeF8=:XoO2JKQR49WV5Pm2ljjHtp
- u7Zqa1PYlb+Hphe1zwPL2q3Jgo/Mf2mQFuiFk/4EraPGVY/P5W7C2/ZFLIDgnSpaNE0nGc/ta
- IRJH+7WperhnSZ6JWZgv2RX/e90hapHvzvgcS4FsgTyXOquJ71Kb6Nz5cM4b2lj+IoHKvd0ZY
- HGj3DrB61cjNuKC/34AOwKyoID0tIaOvnYbRzCjULotzPp5IRlSxhgLq9clwdJUQha6/V4hYs
- 7R9TXEyFKi/cM4vbxggj5w0FCbjv87BDw0s+L+FURELNpOsZ1DACCFL5XZTJ2amaqR9BLXzQL
- F9FgtyIBohWgXGHmTR77aQ52ln1XMcMBThEPsyGQtRgGRSDTwYWC6LZxdh2dZWFWo3GlKNQ/5
- DcyzvHexwpcwa10NZLGAiEzUMT0jGH6Vsv8MXLxcrh/bVMXbiwZmvPJNyoRORYm9NzCaWf7lj
- P4MpZdjAh4kzDicOQxkwZ40N2f0tOXqbNjWb9nHC4wdQvKxoJN8yzaEQxFgqhUP8jimAUa/hw
- pUqkj/pFqkR1I6zRqz3sf34Tlo15L76M7b+kfFGL+ukrhAodZqCbqVdqHrhrI4jujwYbZO1Zl
- SuBY8PzcVwobGZ3a3rPaUt6VLfy9Skj/GfPcmTnONoiWZEYsRCP2VLfsqm7BmBhBAxSEZvv8B
- aNlTw0yKB5PtgCWY6NzGQZlaL+4CBOOwW8VvoYI8gipp5VOLnxms+VNrYRXSVCYjoAY7FG1DD
- 8LmP7S/k4gXHJiPGHVU77GpU3yXSzjnZLgsOOqZPjBWGGQi5JPvndycwxj3Eb1etdKipcE2xp
- +sII2VHPdZ4rX5JSmhTjAhh7yPddb9kfzQcPP0IuuRW/GZDfWdNxaadLglUp6p6qRSvIn5kZ0
- l+MLcc7wYavTE6p9VCfXbC4GJ6jwurwvmDVo6R9Ei/ToHWt0dZyg3O/7B1WiDHTtux3vXW97D
- RGBZkIYBrF+7abyhqkzwh2SZCGo04S6y6kJfQyo1GBzmcsvAh4il7g2LFyJJ28Dfr0NI+Ba5b
- EFFpvOi/t7wO+/vS8zA0/kJpRp1gdiSAeEJ1nN0b/0QuaxJw/RaYwEZxO3V8HGviMJBdfTuf1
- XgWEFF5YB3LuQiHr2cJ+ejHHaxUM52z7Pu+cRslRYCrP3qDwnA5ESCV5A==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although using literals for size calculation in allocator arguments may
-be harmless due to compiler warnings in case of overflows, it is better
-to refactor the code to avoid the use of open-coded math idiom.
+On Mon, 23 Aug 2021 14:21:59 +0300
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-So, clarify the preferred way in these cases.
+> Changelog v2 - v3:
+> * https://lore.kernel.org/linux-iio/20210816082836.67511-1-aardelean@deviqon.com/
+> * Fixed a build warning
+>   - When debugging is disabled dev_dbg() ops become a noop and this causes 
+>     a warning
+>   - Reported-by: kernel test robot <lkp@intel.com>
+>   - https://lore.kernel.org/linux-iio/202108180707.05EmDSHt-lkp@intel.com/
+> * added tag 'Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>' to
+>   series
+> * added tag 'Reviewed-by: Linus Walleij <linus.walleij@linaro.org>' to
+>   patch 'iio: st_sensors: disable regulators after device unregistration'
+> 
+> Changelog v1 - v2:
+> * https://lore.kernel.org/linux-iio/20210726071404.14529-1-aardelean@deviqon.com/
+> * added patch 'iio: st_sensors: disable regulators after device unregistration'
+>   - splits the regulator disable fix in a separate patch
+> 
+As the fix, whilst clearly correct is for an issue that would take a bit of
+determination to hit, I'm not going to rush it in.  Hence whole series applied
+to the togreg branch of iio.git and pushed out as testing for 0-day to poke at.
 
-Suggested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Changelog v1 -> v2
- - Clarify the sentence by changing "keep <foo> out" with "avoid <foo>"
-   (Joe Perches).
+Thanks,
 
- Documentation/process/deprecated.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Jonathan
 
-diff --git a/Documentation/process/deprecated.rst b/Documentation/process/=
-deprecated.rst
-index 9d83b8db8874..b5a8be914178 100644
-=2D-- a/Documentation/process/deprecated.rst
-+++ b/Documentation/process/deprecated.rst
-@@ -60,7 +60,8 @@ smaller allocation being made than the caller was expect=
-ing. Using those
- allocations could lead to linear overflows of heap memory and other
- misbehaviors. (One exception to this is literal values where the compiler
- can warn if they might overflow. Though using literals for arguments as
--suggested below is also harmless.)
-+suggested below is also harmless. So, the preferred way in these cases is
-+to refactor the code to avoid the open-coded math idiom.)
-
- For example, do not use ``count * size`` as an argument, as in::
-
-=2D-
-2.25.1
+> 
+> Alexandru Ardelean (5):
+>   iio: st_sensors: disable regulators after device unregistration
+>   iio: st_sensors: remove st_sensors_deallocate_trigger() function
+>   iio: st_sensors: remove st_sensors_power_disable() function
+>   iio: st_sensors: remove all driver remove functions
+>   iio: st_sensors: remove reference to parent device object on
+>     st_sensor_data
+> 
+>  drivers/iio/accel/st_accel_core.c             | 31 ++---------
+>  drivers/iio/accel/st_accel_i2c.c              | 23 +-------
+>  drivers/iio/accel/st_accel_spi.c              | 23 +-------
+>  .../iio/common/st_sensors/st_sensors_core.c   | 34 ++++++------
+>  .../iio/common/st_sensors/st_sensors_i2c.c    |  1 -
+>  .../iio/common/st_sensors/st_sensors_spi.c    |  1 -
+>  .../common/st_sensors/st_sensors_trigger.c    | 53 +++++++------------
+>  drivers/iio/gyro/st_gyro_core.c               | 27 ++--------
+>  drivers/iio/gyro/st_gyro_i2c.c                | 23 +-------
+>  drivers/iio/gyro/st_gyro_spi.c                | 23 +-------
+>  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0.h       |  1 -
+>  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c  | 17 +-----
+>  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_i2c.c   |  6 ---
+>  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_spi.c   |  6 ---
+>  drivers/iio/magnetometer/st_magn_core.c       | 29 ++--------
+>  drivers/iio/magnetometer/st_magn_i2c.c        | 23 +-------
+>  drivers/iio/magnetometer/st_magn_spi.c        | 23 +-------
+>  drivers/iio/pressure/st_pressure_core.c       | 27 ++--------
+>  drivers/iio/pressure/st_pressure_i2c.c        | 23 +-------
+>  drivers/iio/pressure/st_pressure_spi.c        | 23 +-------
+>  include/linux/iio/common/st_sensors.h         | 13 -----
+>  21 files changed, 59 insertions(+), 371 deletions(-)
+> 
 
