@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C083FAD6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2176C3FAD69
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235884AbhH2ROs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 13:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhH2ROr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 13:14:47 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE73C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 10:13:55 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id p15so21564701ljn.3
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 10:13:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X3+Hge5VWCPxleA7QjQ9uJdJi5TXCLwleImqMNApEkI=;
-        b=b9XXk5TcEVP5nklPH7fPEnLD9pWgNcZ5Yhx5UUR/PFUhm1m6N7k6QSm050VxqTFXLk
-         je0jH7RFFDFKjdUCyaMUBI7pKf3v6VpE1Wn55cfI3WxiGveSr8tJSCNX77FmlOW1FlBf
-         MVk1EFVvCVQVe6W4GnHsVMvJbun2843NRqMADbS9l0XplcFn2Rc4yeU4dW/xj75d9SWv
-         W1t0Br8TUxliR1k+3JaEGARUPotYG2t0NdKbeMMnhY/dAM27T99nuILA4H1ylU8TJu8o
-         bNSEMS2WycL8IjI4XwWDH27EA8XRYQ8d4WiO428jVXZolxdzvbuGbdPqzwV1iiDaPenG
-         GsVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X3+Hge5VWCPxleA7QjQ9uJdJi5TXCLwleImqMNApEkI=;
-        b=rm02ojtmGwVKheaBh08nhcIGztvRmSOH+70gIYyzILHMgnfH+fSLf0o1R4J2cxovT7
-         b+0Qen5C2SSS+QHK3lfcTOm6RYsfYYuw5YJW4Krf/E22RaOjY1CDMr8EcxNUShuX/Tsm
-         h4ehzPY5z8vRpQD8OBGPofEx1dNVdh4se5hk45XWgHsr43fmXj9FI1V4YEni8LnZoYr0
-         z0C7ltz93oV+LpVz21PWzynGE33T4Rpi6CIUPTF8Xw+JuKSyKRsAhyyvJfYBcRdb9txt
-         g/xCWxAFUhjQ7BHYFX7vGSOuIeIggojW0aqMIBSZEgWlgbC9Ezp9LfdLlLZz4Ldgz9ZB
-         SJ/w==
-X-Gm-Message-State: AOAM530INchMfL7aYm4fGPYslWISGtENHPKg86jxJQezq4dDRTcTLgk2
-        PSyJmRh3WootTILGEWf7vXSX0P9Zn1Ff1w==
-X-Google-Smtp-Source: ABdhPJy2H5bWSLCuOrDu2NMN5yvggl2SXiJ+2JQBVZb/zSks0gALPhVpqK3lolW8qs7MQ+BvRQgXIw==
-X-Received: by 2002:a2e:90da:: with SMTP id o26mr16725947ljg.504.1630257233635;
-        Sun, 29 Aug 2021 10:13:53 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id n15sm1131731lfq.270.2021.08.29.10.13.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 10:13:53 -0700 (PDT)
-Date:   Sun, 29 Aug 2021 20:13:51 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        straube.linux@gmail.com, ross.schm.dev@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH v4] staging: r8188eu: core: remove null check before vfree
-Message-ID: <20210829171351.u63zoaqa3x5qfodt@kari-VirtualBox>
-References: <YSu9GQa1A3s6FYQx@user>
+        id S235765AbhH2RMO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 29 Aug 2021 13:12:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229706AbhH2RMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 13:12:13 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D90060F38;
+        Sun, 29 Aug 2021 17:11:17 +0000 (UTC)
+Date:   Sun, 29 Aug 2021 18:14:31 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        angelo.compagnucci@gmail.com,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] iio: adc128s052: Fix the error handling path of
+ 'adc128_probe()'
+Message-ID: <20210829181431.67a52d36@jic23-huawei>
+In-Reply-To: <f33069f0-601b-4bbb-3766-026f7a161912@wanadoo.fr>
+References: <85189f1cfcf6f5f7b42d8730966f2a074b07b5f5.1629542160.git.christophe.jaillet@wanadoo.fr>
+        <CA+U=DsoTdb3b+LJEtUagKr=LmK8E2M_2yhtNDENKsczqGaUPYA@mail.gmail.com>
+        <f33069f0-601b-4bbb-3766-026f7a161912@wanadoo.fr>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSu9GQa1A3s6FYQx@user>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 10:30:09PM +0530, Saurav Girepunje wrote:
-> Remove NULL check. NULL check before freeing function is not needed.
-> Correct the indentation.
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
-> 
-> ChangeLog V4:
-> - Add Change log below --- line
-> 
-> ChangeLog V3:
-> - Add change log.
-> 
-> ChangeLog V2:
-> - Correct the indentation.
+On Tue, 24 Aug 2021 21:45:38 +0200
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-You need "---" here also. So everything what is between
+> Le 23/08/2021 à 08:42, Alexandru Ardelean a écrit :
+> > On Sat, Aug 21, 2021 at 1:43 PM Christophe JAILLET
+> > <christophe.jaillet@wanadoo.fr> wrote:  
+> >>
+> >> A successful 'regulator_enable()' call should be balanced by a
+> >> corresponding 'regulator_disable()' call in the error handling path of the
+> >> probe, as already done in the remove function.
+> >>
+> >> Update the error handling path accordingly.  
+> > 
+> > Good catch.
+> > For the fix:
+> > 
+> > Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
 
----
-here
----
+Applied and marked for stable.
 
-will be ignored when you apply patch. This is good place to write
-changelog, if you have tested this with real hardware, if you have any
-guestions about your own implementation etc.
+Thanks,
+> > 
+> > If you want, you can also send a conversion to
+> > devm_iio_device_register() for this driver.
+> > And also move the regulator_disable() on a devm_add_action_or_reset() callback.
+> > Maybe, that's already part of your plan. If so, apologies for the noise :)
+> >   
+> 
+> Hi,
+> 
+> I hadn't planned another step but I can send a follow-up patch for that.
+> 
+> CJ
 
-> 
->  drivers/staging/r8188eu/core/rtw_sta_mgt.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-> index f6dffed53a60..c3600cb1790a 100644
-> --- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-> +++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-> @@ -155,9 +155,8 @@ u32	_rtw_free_sta_priv(struct	sta_priv *pstapriv)
->  		spin_unlock_bh(&pstapriv->sta_hash_lock);
->  		/*===============================*/
-> 
-> -		if (pstapriv->pallocated_stainfo_buf)
-> -			vfree(pstapriv->pallocated_stainfo_buf);
-> -		}
-> +		vfree(pstapriv->pallocated_stainfo_buf);
-> +	}
-> 
->  	return _SUCCESS;
->  }
-> --
-> 2.32.0
-> 
+Note I'll have to sit on that one until this patch is upstream which will be a few weeks
+(perhaps a month) given timing.
+
+Jonathan
