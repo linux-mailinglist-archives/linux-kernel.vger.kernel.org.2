@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B15F3FAECA
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 23:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1083FAECE
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 23:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236057AbhH2Vxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 17:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
+        id S236075AbhH2Vyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 17:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbhH2VxX (ORCPT
+        with ESMTP id S234765AbhH2Vye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 17:53:23 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B88C06175F;
-        Sun, 29 Aug 2021 14:52:30 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Sun, 29 Aug 2021 17:54:34 -0400
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E9CC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 14:53:42 -0700 (PDT)
+Received: from [10.0.20.3] (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GyRy24GPTz9sR4;
-        Mon, 30 Aug 2021 07:52:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630273946;
-        bh=OE19xNgfrcKXD41VWPuOu4Sv/paWzqyt11xbINsQXvY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ctPQ48K+BDtDckIwOJt+DvtBs92hFFbt0xdr9CDBCvD2WK0zrOEMqVcTHxWsZ+NQ2
-         UaT+pIh+rgQTFknlXy1ihbPrK/7ndkfasDeyO7w5/aITDgJrmqLw4OKCMKyVJpUzr9
-         ue1cAENnyBCPcLBfDFN8F6YHKflIoPY7Me7KRTAlf6uIv9XCP1DerWOxLPFGpS6zDf
-         jgfXTMqbNRjPMRqc7yIYbQs7J60U6P7gNAhYMOGvZAxMLVQLBLmKOWMa5Qk4EdUyhp
-         QwIsXxHlw7sv8u1B3mEZkY5IZ8B/GxNt9WFJhzSyitASovmvfn1moEyL0KWuwnjDQU
-         utZ823iRPacYQ==
-Date:   Mon, 30 Aug 2021 07:52:24 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the block tree
-Message-ID: <20210830075224.0f234b14@canb.auug.org.au>
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 392761F954;
+        Sun, 29 Aug 2021 23:53:38 +0200 (CEST)
+Subject: Re: [PATCH 2/3] drm/msm/dsi: Use "ref" fw clock instead of global
+ name for VCO parent
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210829203027.276143-1-marijn.suijten@somainline.org>
+ <20210829203027.276143-3-marijn.suijten@somainline.org>
+ <CAA8EJppmBvohk3CC87N_P3m+CP=bRLWWknS7esDrYb-xArJFvg@mail.gmail.com>
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+Message-ID: <a27b4e74-3856-8c5c-73af-05e976430ea2@somainline.org>
+Date:   Sun, 29 Aug 2021 23:53:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xm.n=Q3bhIRZtFu_Wmz063c";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAA8EJppmBvohk3CC87N_P3m+CP=bRLWWknS7esDrYb-xArJFvg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xm.n=Q3bhIRZtFu_Wmz063c
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Dmitry,
 
-Hi all,
+On 8/29/21 10:39 PM, Dmitry Baryshkov wrote:
+> Hi,
+> 
+> On Sun, 29 Aug 2021 at 23:30, Marijn Suijten
+> <marijn.suijten@somainline.org> wrote:
+>>
+>> All DSI PHY/PLL drivers were referencing their VCO parent clock by a
+>> global name, most of which don't exist or have been renamed.  These
+>> clock drivers seem to function fine without that except the 14nm driver
+>> for the sdm6xx [1].
+>>
+>> At the same time all DTs provide a "ref" clock as per the requirements
+>> of dsi-phy-common.yaml, but the clock is never used.  This patchset puts
+>> that clock to use without relying on a global clock name, so that all
+>> dependencies are explicitly defined in DT (the firmware) in the end.
+> 
+> msm8974 (28nm-hpm) does not define the "ref" clock. So you'd have to:
+> 1) add ref clock to the dtsi (should come in a separate patch).
 
-Commits
 
-  2f7eff262585 ("io_uring: allow updating linked timeouts")
-  132bf9af1d0f ("io_uring: keep ltimeouts in a list")
+Thanks for double-checking and noticing this!  I've queued up this patch 
+for v2.
 
-are missing a Signed-off-by from their committer.
+> 2) add .name = "xo" as a fallback to the 28nm driver (to be compatible
+> with older devices)
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/xm.n=Q3bhIRZtFu_Wmz063c
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Are there msm8974 devices out there that might upgrade kernels, but not 
+firmware (DT)?  On other boards (sdm630) I'm removing these from various 
+drivers as to not have any possibility of relying on global names, in 
+favour of having the clock dependencies fully specified in the DT.
 
------BEGIN PGP SIGNATURE-----
+> Other than that this looks good to me.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEsAZgACgkQAVBC80lX
-0GyIAAf/RwUVUhEMsPgcdBKmF/t4xSVTrT+I6EYHJAjgSRmG6J7neoXfNrEkgN0U
-BLL3cNLOxtipbr2LTKcQvHa7X+Qe6BqGz+yT/ajU3f8OlfujUpXy1RkJH7gon5X7
-L5Hfdqwh+HXii7Jraroz5s4Eo4sXxOXJKGK6w691DBO8y6YD6+UObcua4E/p3I9J
-PsNUq75nSsmebQGdRFvrPYq8NgDORTInklojqfp4CbihpxXwznfFUi/q/GEPuTtb
-XQDrRVWLzDTXeeEZMVoqB4me9bpgtmYHBk3ea3/caQ5SldpBwm86HM5Hru/40VOf
-RXxGQ6M2Q5pJapf0v3kGh/pNaIr9XQ==
-=OKSy
------END PGP SIGNATURE-----
 
---Sig_/xm.n=Q3bhIRZtFu_Wmz063c--
+Any r-b/a-b/t-b I can pick up for the next round?
+
+- Marijn
