@@ -2,107 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94093FAF0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 01:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6839D3FAF14
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 01:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235991AbhH2XAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 19:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        id S230147AbhH2XTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 19:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhH2XAw (ORCPT
+        with ESMTP id S229521AbhH2XTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 19:00:52 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4D6C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:59:59 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id r2so11640789pgl.10
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:59:59 -0700 (PDT)
+        Sun, 29 Aug 2021 19:19:21 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B46AC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 16:18:28 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso13426310wmb.2
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 16:18:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z6Bitu04SC8w/Oeyk+aMOmbe0Hn4enRhPwVxGk0NMDQ=;
-        b=QAV2gTPG3WqToA6QnbQKA+4i1GufBx1aXKpygKCDz0TkeEzkQgTLlu2sODYLWvx2pE
-         vDQFpZQEBIixMp6uV87TkJUJcfvBQ8eUo8u7lOJqjzepSZkwakqrAWjdpgG5vNPJKNrz
-         fEOLKEDxRYm2gkCF8ObT6EgdVz7rCHyPSeF9nFZ+JIu91XVT9IOiYjXSfOAv/BtDec5a
-         MhnXYcL6079mrsJjY4etVJYJDWtqrQ8uofYHuKsktD6WUX0BF8Mvf3UtCFkZDBMEMacW
-         wfwq0XjcRlZsA24XdGUzdCaN+HrTogZF53a3j2wbVZkzquDGnRo9Qk7AoeeIU67YNtJ/
-         IklQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rtP9/zqwMm5tTi+7Rao14dM7+IS9AMZy0vyNq2TuYYg=;
+        b=i82vexUq47GpjKiBP1yTgSBfqEswshCxCsLfDix784nRKpCiGif/YqkuNI5Dn6TBOM
+         x1HsTZjZlptPJu/37VbeZ5Ht7WYhRLHEsBt6eSIxbeDpxkmpVEP9JcBTmwqnNJxcsf9s
+         3B2jCu0NpADQpZApfW/VVAPiQgwrEdI4GSNBw2dlXIsbzT5IMbZjhDaNt/C/MRXPrITr
+         thyEOBxlT1h9AqM8aoTBMpSQWqXHZC/tuoZjbPCwxaLGZM4bfAA4BkN/gCJ9Qm3szVrn
+         WL/EIKeOZol7V8p0SY1n3FSen5G4SsDMn1lo37LwbDVG2EGdnudsGV+Zg5WlKAs6Dyrp
+         6GEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z6Bitu04SC8w/Oeyk+aMOmbe0Hn4enRhPwVxGk0NMDQ=;
-        b=J8TYnrIvAqWygJdmhL2M3/cL1GGs1bGxqgupxJg0VOsUrCNMe9E0padexibq0W2BAI
-         QFPTBj23n+8ONiYmO3lc8/u1jrESF9DqdL06NCLawZnZMJh4hfviYqsgdE4oDZBa0NGp
-         1EIY0g0ocMcIWdVuOZkp32RIaGCHaECbOc2Nmx8QHXz6Eo27NMiuYhfFbDIRZCXox8MA
-         f3z7NXv+XyZYCCPmL6KCljKaa5nxo82nGF9m4XX63482XN0Ma93NBd+NuamhBKBlPtkV
-         7+Ki4orhYTSj0XD7UyBSRp0dLJUJrW/IBaMKUXUlVqNO2IuQoW+MNDCUmYUXUyvHJ7Tw
-         E67g==
-X-Gm-Message-State: AOAM5301W9cIVKmrxPdjBpnTHQKbtNXoOCHY1qTJcZ+nxa+0EwVbAamd
-        XLjOdR1o4LBfo01Avvahk3Nu1+d1s/xP/6OAU4IgyA==
-X-Google-Smtp-Source: ABdhPJwtp6YRFVBRJFTzhthGfA7afX2XtHmjB9lS4M2njtIcL2pvEVyhJRarNf8w+B4z82Xz1VbkCF4mZ56gQjV0p5s=
-X-Received: by 2002:a05:6a00:1ac7:b0:3e2:2d05:3b31 with SMTP id
- f7-20020a056a001ac700b003e22d053b31mr20507594pfv.2.1630277998914; Sun, 29 Aug
- 2021 15:59:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210828212453.898-1-phil@philpotter.co.uk> <3884124.htuf3bXTbR@localhost.localdomain>
-In-Reply-To: <3884124.htuf3bXTbR@localhost.localdomain>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rtP9/zqwMm5tTi+7Rao14dM7+IS9AMZy0vyNq2TuYYg=;
+        b=fjbhWDp69m+QcrjyrLU0sXKRXa/c/Y5g80zAyOliwzHvwiRQdyg+mQ4MPMb0utZdU4
+         ekX5YNIcYEtV13Folewr89vCbhGTZftuRbyFh2kNd1pgt+t97UaXOA9HNhV4W/nNrTmd
+         jg9q3ULarrZY9E+liP/JF93VJel+ZYiAaL44fyFNychrx0lLYbQ1vPLGTUja38UJjYc6
+         TQ/kpotZrxdvJxI9bknwPSSiJTfgaLZgQfa6TJ/1icbYuuC0yD9KHvQMpMEqldxiMWp4
+         WYlmYjPMCGxHfqfo3c2Mn7lUQqCefwyzrXoEoHlAy7qtZr7Ac+uvnCsM6HbxiJ8L6neL
+         L8KQ==
+X-Gm-Message-State: AOAM533/ZuMcWTYjlR0YwjtgTl14UI3cxD3SjbTsD22OpDQC3RNH0nMY
+        izxZguoaE1gBaSEIkDV6LL9DKOWw4/pUzQ==
+X-Google-Smtp-Source: ABdhPJwtPAQZpsaldUXKdEeFQGoUq30/MRNwOnkvqhrgAZdCqeCG1vfVgjMn/HMiUMkaJIOPyOnlng==
+X-Received: by 2002:a7b:c0c7:: with SMTP id s7mr18747339wmh.66.1630279107175;
+        Sun, 29 Aug 2021 16:18:27 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id y11sm16515082wru.0.2021.08.29.16.18.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 16:18:26 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 00:18:24 +0100
 From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sun, 29 Aug 2021 23:59:48 +0100
-Message-ID: <CAA=Fs0kyV4UXFSob5kmCSfYXrB=DN+zy3vh70mnkaLg0bswmrw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] staging: r8188eu: cleanup c2h_handler code
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        fmdefrancesco@gmail.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] staging: r8188eu: simplify c2h_evt_hdl function
+Message-ID: <YSwVwKdJaj3EcW5V@equinox>
+References: <20210828212453.898-1-phil@philpotter.co.uk>
+ <20210828212453.898-3-phil@philpotter.co.uk>
+ <19b08be7-964e-fdbc-93c8-825ad41e1ade@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19b08be7-964e-fdbc-93c8-825ad41e1ade@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Aug 2021 at 13:48, Fabio M. De Francesco
-<fmdefrancesco@gmail.com> wrote:
->
-> On Saturday, August 28, 2021 11:24:50 PM CEST Phillip Potter wrote:
-> > This small patch set cleans up the c2h_handler code in the HAL layer
-> > of the driver. In r8188eu, this field of struct hal_ops, is not even
-> > used, so dependent code has always returned _FAIL. For this reason, we
-> > should remove this function pointer field, and the wrapper function
-> > which checks it. This is done in stages by this set, and helps get
-> > the driver closer to the pointer where the HAL layer is
-> > deleted/integrated as necessary and no longer a separate entity.
-> >
-> > Phillip Potter (3):
-> >   staging: r8188eu: remove c2h_handler field from struct hal_ops
-> >   staging: r8188eu: simplify c2h_evt_hdl function
-> >   staging: r8188eu: remove rtw_hal_c2h_handler function
-> >
-> >  drivers/staging/r8188eu/core/rtw_cmd.c     | 23 +++-------------------
-> >  drivers/staging/r8188eu/hal/hal_intf.c     |  9 ---------
-> >  drivers/staging/r8188eu/include/hal_intf.h |  4 ----
-> >  3 files changed, 3 insertions(+), 33 deletions(-)
-> >
-> > --
-> > 2.31.1
-> >
-> Dear Philip,
->
-> You work looks good (especially after having clarified a couple of minor doubts
-> I had expressed in another message). So, the entire series is...
->
-> Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
->
-> Regards,
->
-> Fabio
->
+On Sun, Aug 29, 2021 at 02:54:14PM +0300, Pavel Skripkin wrote:
+> On 8/29/21 12:24 AM, Phillip Potter wrote:
+> > Simplify c2h_evt_hdl function by removing majority of its code. The
+> > function always returns _FAIL anyway, due to the wrapper function it
+> > calls always returning _FAIL. For this reason, it is better to just
+> > return _FAIL directly.
+> > 
+> > Leave the call to c2h_evt_read in place, as without it, event handling
+> > semantics of the driver would be changed, despite nothing actually being
+> > done with the event.
+> > 
+> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > ---
+> >   drivers/staging/r8188eu/core/rtw_cmd.c | 21 +++------------------
+> >   1 file changed, 3 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+> > index ce73ac7cf973..b520c6b43c03 100644
+> > --- a/drivers/staging/r8188eu/core/rtw_cmd.c
+> > +++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+> > @@ -1854,27 +1854,12 @@ u8 rtw_c2h_wk_cmd(struct adapter *padapter, u8 *c2h_evt)
+> >   static s32 c2h_evt_hdl(struct adapter *adapter, struct c2h_evt_hdr *c2h_evt, c2h_id_filter filter)
+> >   {
+> > -	s32 ret = _FAIL;
+> >   	u8 buf[16];
+> > -	if (!c2h_evt) {
+> > -		/* No c2h event in cmd_obj, read c2h event before handling*/
+> > -		if (c2h_evt_read(adapter, buf) == _SUCCESS) {
+> > -			c2h_evt = (struct c2h_evt_hdr *)buf;
+> > +	if (!c2h_evt)
+> > +		c2h_evt_read(adapter, buf);
+> > -			if (filter && !filter(c2h_evt->id))
+> > -				goto exit;
+> > -
+> > -			ret = rtw_hal_c2h_handler(adapter, c2h_evt);
+> > -		}
+> > -	} else {
+> > -		if (filter && !filter(c2h_evt->id))
+> > -			goto exit;
+> > -
+> > -		ret = rtw_hal_c2h_handler(adapter, c2h_evt);
+> > -	}
+> > -exit:
+> > -	return ret;
+> > +	return _FAIL;
+> 
+> 
+> Hi, Phillip!
+> 
+> 
+> Do we really need to return _FAIL every time? The only one caller of
+> c2h_evt_hdl() does not rely on it's return value. Shouldn't we make this
+> function return void to simplify the code?
 
-Dear Fabio,
+Dear Pavel,
 
-Thanks very much for the review and Acked-by, much appreciated.
+Thanks for the review. Good point on the return type, I'll publish a v2
+series.
+
+> 
+> 
+> BTW, this function does nothing now, as I understand. It reads to local
+> buffer and returns. I think, it can be removed
+> 
+> 
+> 
+> >   }
+> >   static void c2h_wk_callback(struct work_struct *work)
+> > 
+
+Not sure if you're referring to c2h_wk_callback or c2h_evt_hdl, but
+either way, they both call (indirectly or otherwise) c2h_evt_read and
+c2h_evt_clear as well as rtw_c2h_wk_cmd in the case of c2h_wk_callback.
+To just delete them wholesale therefore would be unsafe I think, due to
+the effect on event semantics.
+
+Certainly, it is possible to handle this c2h stuff by just reading from
+register and ignoring though - another series is a better place for that
+though I think. Admittedly, I may be talking nonsense here :-)
 
 Regards,
 Phil
