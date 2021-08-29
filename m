@@ -2,72 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC443FA9A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8656B3FA9AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234710AbhH2HAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 03:00:54 -0400
-Received: from m12-17.163.com ([220.181.12.17]:58365 "EHLO m12-17.163.com"
+        id S234760AbhH2HG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 03:06:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229889AbhH2HAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 03:00:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=xUrU6aDYYICCZb35+7
-        I1tQ72m12JFKQdYSV9mvnpfOg=; b=S+8/+mMTTkWlfv1K0Dpa2+V5d5E9xi4vjU
-        iHtXFqec6m7LFCWpOBx7r4aYP0O4kFVUSqiidGk7V78deLHrHYB1B1s2i9txBf72
-        4uD5BV0jXJ26u4A1Wj9F1LosQEGskODnOfDHG2HfyEgJaeIt4cDKrE/WJxFCciiK
-        TL1OHCE1Y=
-Received: from localhost.localdomain (unknown [111.35.62.181])
-        by smtp13 (Coremail) with SMTP id EcCowACnkHg0MCthKk94JA--.40648S2;
-        Sun, 29 Aug 2021 14:59:03 +0800 (CST)
-From:   Dianlong Li <dianlong_lee@163.com>
-To:     tglx@linutronix.de
-Cc:     john.stultz@linaro.org, sboyd@kernel.org,
-        linux-kernel@vger.kernel.org, Dianlong Li <dianlong_lee@163.com>
-Subject: [PATCH] timers: Use the macro LVL_OFFS() to calculate the offset of each level
-Date:   Sun, 29 Aug 2021 06:58:58 +0000
-Message-Id: <20210829065858.30397-1-dianlong_lee@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: EcCowACnkHg0MCthKk94JA--.40648S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKF1xKFy5Jr4UCw4UJr1DWrg_yoWDCFcEgw
-        s293Z8CF1DXryq9w42k3y3Xry5Ka1xJFn5ua12qa9xJrs0vr90vF9FqF98CFykZw43CFy5
-        Xay5Ar9Fyr1Y9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1b_-JUUUUU==
-X-Originating-IP: [111.35.62.181]
-X-CM-SenderInfo: hgld0zprqjszlhh6il2tof0z/xtbBLBH9r1++NFXz+gABsn
+        id S229889AbhH2HGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 03:06:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25CBA6054E;
+        Sun, 29 Aug 2021 07:06:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630220762;
+        bh=6Sej7zZ4V9GeOxURxZTUeaoRMyomHNnQGarsBvk2QZ8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=k4+NiD0ds1AqZrbgMZFoYF59la8J0m4AbUR71kjWbe6SjcjvaXJAEZZmDGkwiznO/
+         s+FiTMKYrlQkGG7QlzMDtmh+U92PlPok/0dkSzY6+IOVPzqMzYZPjNqbDUkX0eOUCX
+         e+x6N1EHymZjydmH3T+K5nAdtLY8zOeW81LcL8MjYnMeEzPwgaiyVE+xdLL1exR2Iu
+         5tcDISlYVRjFW/SJ/iGWIFMp4zA7+6owdRqu8VA+4Bhdw9f4npfRUMr9BbKpUwkSzs
+         NFztoMe7gkAsVekpna9Psa5r2Av8tWzULMkdW3hblPr9g1/fGc7kTVS3pE7IIbDzRb
+         PtkeCNj7rBFvg==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210825134056.219884-2-krzysztof.kozlowski@canonical.com>
+References: <20210825134056.219884-1-krzysztof.kozlowski@canonical.com> <20210825134056.219884-2-krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v3 1/8] dt-bindings: clock: samsung: convert Exynos5250 to dtschema
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Sam Protsenko <semen.protsenko@linaro.org>
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Date:   Sun, 29 Aug 2021 00:06:00 -0700
+Message-ID: <163022076090.2676726.11327135487234941332@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-offset records the offset of the first bucket of each level,
-this can be replaced by the macro LVL_OFFS()
+Quoting Krzysztof Kozlowski (2021-08-25 06:40:49)
+> Convert Samsung Exynos5250 clock controller bindings to DT schema format
+> using json-schema.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
 
-Signed-off-by: Dianlong Li <dianlong_lee@163.com>
----
- kernel/time/timer.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index e3d2c23c413d..3ee5322157a1 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -1522,12 +1522,12 @@ static int next_pending_bucket(struct timer_base *base, unsigned offset,
- static unsigned long __next_timer_interrupt(struct timer_base *base)
- {
- 	unsigned long clk, next, adj;
--	unsigned lvl, offset = 0;
-+	unsigned int lvl;
- 
- 	next = base->clk + NEXT_TIMER_MAX_DELTA;
- 	clk = base->clk;
--	for (lvl = 0; lvl < LVL_DEPTH; lvl++, offset += LVL_SIZE) {
--		int pos = next_pending_bucket(base, offset, clk & LVL_MASK);
-+	for (lvl = 0; lvl < LVL_DEPTH; lvl++) {
-+		int pos = next_pending_bucket(base, LVL_OFFS(lvl), clk & LVL_MASK);
- 		unsigned long lvl_clk = clk & LVL_CLK_MASK;
- 
- 		if (pos >= 0) {
--- 
-2.17.1
-
-
+Applied to clk-next
