@@ -2,144 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2003FAC57
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971B13FAC54
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhH2OyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 10:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235452AbhH2OyG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 10:54:06 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C2BC061575;
-        Sun, 29 Aug 2021 07:53:14 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so8233224pjx.5;
-        Sun, 29 Aug 2021 07:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gZ/nenUcj9mad1OmYCCfvZwnAJEnEhtMP/nmkyY6NOM=;
-        b=SqRgue5J5BHXPuOWjfah7o4X0Mg0vV+2AHpa9GzTTbkeNGDaZCsDmBehausz0MNYaF
-         bHhlG8PxIgz2iW1Cmo83vEep3rsZzrKGQSKmJLNtqciTub6iPZW9hUbN2m663tEGgJJ/
-         /FnW4ospoz5MU7i3+pu/Rn6ETpJgnh5Ywarwg0YaqydcTOfpuKuZX3F+mPTZSHzvgRV8
-         x8i94JuHtgJkk1kdp7CTFd7iUM9edyroXd9FcO8Pmmv59kNgxtwFLk+NiyqaQhUmhco1
-         kVpiVNfRaNOiiBQ4WMphk+v0OpjwgoSfhPhLYWwbBMkHC0HirYofOnTJ1TNX/V5LhaCN
-         eUCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gZ/nenUcj9mad1OmYCCfvZwnAJEnEhtMP/nmkyY6NOM=;
-        b=UO+wcUt/hCekNK7lyRaPmyAyEywyV7oGP8rZN6s+gNdq2M6cc3C1KftphMTs30Adnn
-         J85ctOm1eRTlL7atHDwwHmHw8UrwyuH39enYaSAz+XQbxjdGDyiU/Dp7tremsSHahaGc
-         AyGoKhZnhLOSAeApLdDXpJjiNQHrygspbr21MqsFa64qHiNszWw/ZitsHipeAAcUNt9D
-         iMWSCu+UgxfuTfWVVpQg+783jU7zhpS1xewf4l1GRDFHMUnnuJKMBHQcQjfmbdCPNrDm
-         cmgvDCxFGSRlcA+bpQYK9xzxg1DzhOaNQhTtbjN8FO6SE8uYTYDstnX+r1m0un6beLUW
-         TspQ==
-X-Gm-Message-State: AOAM533gz1+KhrhVMaUalwxRvZKwIQqcqG8buBLDyRt5Tk8Z0VHZO8Md
-        gz5MfpB5VmLnHHbhbOGkyNg=
-X-Google-Smtp-Source: ABdhPJxPHa7w5kquVU9Z/WHTw75OhAcL/7ILjKvG07d436dAB8mEf1pFhEPpzpbaTarZaI0AdPgPxg==
-X-Received: by 2002:a17:90a:e001:: with SMTP id u1mr30902387pjy.183.1630248794241;
-        Sun, 29 Aug 2021 07:53:14 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id n14sm19456487pjm.5.2021.08.29.07.53.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Aug 2021 07:53:13 -0700 (PDT)
-Subject: Re: [syzbot] KASAN: use-after-free Write in sco_sock_timeout
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.von.dentz@intel.com,
-        syzbot <syzbot+2bef95d3ab4daa10155b@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000b2725705ca78de29@google.com>
- <20210827011931.2323-1-hdanton@sina.com>
- <20210829082929.2897-1-hdanton@sina.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <11a30bc1-574f-aa1a-21d6-b886de9fc981@gmail.com>
-Date:   Sun, 29 Aug 2021 22:53:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235478AbhH2Ov3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 10:51:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229824AbhH2Ov0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 10:51:26 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC7BA60F38;
+        Sun, 29 Aug 2021 14:50:29 +0000 (UTC)
+Date:   Sun, 29 Aug 2021 15:53:44 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     Rob Herring <robh@kernel.org>, "lars@metafoo.de" <lars@metafoo.de>,
+        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [v4 01/15] dt-bindings: iio: adc: Add ast2600-adc bindings
+Message-ID: <20210829155344.370348d1@jic23-huawei>
+In-Reply-To: <DEB9D606-6489-4993-A5E7-6E4F3226EE5A@aspeedtech.com>
+References: <20210823070240.12600-1-billy_tsai@aspeedtech.com>
+        <20210823070240.12600-2-billy_tsai@aspeedtech.com>
+        <YSTiUPQa+HYSA63t@robh.at.kernel.org>
+        <DEB9D606-6489-4993-A5E7-6E4F3226EE5A@aspeedtech.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210829082929.2897-1-hdanton@sina.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/8/21 4:29 pm, Hillf Danton wrote:
-> On Fri, 27 Aug 2021 15:58:34 +0800 Desmond Cheong Zhi Xi wrote:
->> On 27/8/21 9:19 am, Hillf Danton wrote:
->>> On Thu, 26 Aug 2021 09:29:24 -0700
->>>> syzbot found the following issue on:
->>>>
->>>> HEAD commit:    e3f30ab28ac8 Merge branch 'pktgen-samples-next'
->>>> git tree:       net-next
->>>> console output: https://syzkaller.appspot.com/x/log.txt?x=13249c96300000
->>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=ef482942966bf763
->>>> dashboard link: https://syzkaller.appspot.com/bug?extid=2bef95d3ab4daa10155b
->>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a29ea9300000
->>>>
->>>> The issue was bisected to:
->>>>
->>>> commit e1dee2c1de2b4dd00eb44004a4bda6326ed07b59
->>>> Author: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->>>> Date:   Tue Aug 10 04:14:10 2021 +0000
->>>>
->>>>       Bluetooth: fix repeated calls to sco_sock_kill
+On Wed, 25 Aug 2021 00:06:47 +0000
+Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+
+> Hi Rob,
 > 
-> To fix the uaf, grab another hold to sock to make the timeout work safe.
+> On 2021/8/24, 8:13 PM, "Rob Herring" <robh@kernel.org> wrote:
 > 
-> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git e3f30ab28ac8
+>     On Mon, Aug 23, 2021 at 03:02:26PM +0800, Billy Tsai wrote:
+>     >   > +properties:
+>     >   > +  compatible:
+>     >   > +    enum:
+>     >   > +      - aspeed,ast2600-adc0
+>     >   > +      - aspeed,ast2600-adc1  
 > 
-> --- a/net/bluetooth/sco.c
-> +++ b/net/bluetooth/sco.c
-> @@ -190,15 +190,14 @@ static void sco_conn_del(struct hci_conn
->   	sco_conn_unlock(conn);
->   
->   	if (sk) {
-> -		sock_hold(sk);
->   		lock_sock(sk);
->   		sco_sock_clear_timer(sk);
->   		sco_chan_del(sk, err);
->   		release_sock(sk);
-> -		sock_put(sk);
->   
->   		/* Ensure no more work items will run before freeing conn. */
->   		cancel_delayed_work_sync(&conn->timeout_work);
-> +		sock_put(sk);
+>     > What's the difference between 0 and 1?  
+> 
+> Their trimming data, which is used to calibrate internal reference volage,
+> locates in different address of OTP.
 
-Hi Hillf,
+At very least document that with a description: here to avoid anyone looking
+at this later asking the same question! 
 
-Saw that this passed the reproducer. But on closer inspection, I think 
-what's happening is that sco_conn_del is never run.
+Jonathan
 
-So the extra sock_hold prevents a UAF, but that's because now the 
-reference count never goes to 0. In my opinion, something closer to your 
-previous proposal (+ also addressing other calls to __sco_sock_close) 
-where we call cancel_delayed_work_sync after the channel is deleted 
-would address the root cause better.
-
-Just my two cents.
-
->   	}
->   
->   	hcon->sco_data = NULL;
-> @@ -212,6 +211,8 @@ static void __sco_chan_add(struct sco_co
->   
->   	sco_pi(sk)->conn = conn;
->   	conn->sk = sk;
-> +	/* make timeout_work safe; will be put in  sco_conn_del() */
-> +	sock_hold(sk);
->   
->   	INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
->   
-> --
+> 
+> Best Regards,
+> Billy Tsai
+> 
+>  
 > 
 
