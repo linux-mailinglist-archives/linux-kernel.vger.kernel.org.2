@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3CE3FAE00
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 21:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0123FAE04
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 21:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235798AbhH2TMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 15:12:51 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:47791 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231863AbhH2TMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 15:12:50 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GyNNr2xzlz9sWB;
-        Sun, 29 Aug 2021 21:11:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id i_Y0K4S6eRNS; Sun, 29 Aug 2021 21:11:56 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GyNNr1y4Rz9sW6;
-        Sun, 29 Aug 2021 21:11:56 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1EA008B768;
-        Sun, 29 Aug 2021 21:11:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id uB39iU4iX29x; Sun, 29 Aug 2021 21:11:56 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9F4B08B763;
-        Sun, 29 Aug 2021 21:11:55 +0200 (CEST)
-Subject: Re: [PATCH v4 4/4] powerpc/ptdump: Convert powerpc to GENERIC_PTDUMP
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <b864a92693ca8413ef0b19f0c12065c212899b6e.1625762905.git.christophe.leroy@csgroup.eu>
- <03166d569526be70214fe9370a7bad219d2f41c8.1625762907.git.christophe.leroy@csgroup.eu>
- <YSvYFTSwP5EkXQZ0@Ryzen-9-3900X.localdomain>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <5c479866-f31a-3579-9d71-357c85b777d0@csgroup.eu>
-Date:   Sun, 29 Aug 2021 21:11:47 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232867AbhH2T3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 15:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230459AbhH2T3a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 15:29:30 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10CFC061575;
+        Sun, 29 Aug 2021 12:28:37 -0700 (PDT)
+Date:   Sun, 29 Aug 2021 19:28:33 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630265314;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iuZBXIGF3gU4xhLyoJf+sJ78djKKn5izyrGC0zoExVs=;
+        b=d12GBYtjXJHehAsrciEuzcMA3TK837iUXzNADu+3vtcKkv6WgsVvZkeJ6bvttnVfl0lKu7
+        A28WpnKwKwRFbbgUFGyoCG+gCL4qBhmB1YrJWmF/m3bDwl+IYH5J73Ys3WjTPT4UqtF9pv
+        aGX5YHOWNwSPqIa+6lIYUtLAJ9xKeovKMlNsdreg89Z7XFDR7QxhiEQLXDyezY4XpMBN+x
+        vZZSw2Ju/ewFLGZczjHnyPZjSKKOq/U4AcyKvtepqEhcKlspPStCx3sMT8pEzzbwLo3jYd
+        VZibVVN0V/tmIhTi7mlHFAWF4d2v7O8gpwXk7CbitwT4ZIVFxXIOBqTIfO9Otw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630265314;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iuZBXIGF3gU4xhLyoJf+sJ78djKKn5izyrGC0zoExVs=;
+        b=4M7mmnAvdbTvwVSW2rp4bl9KVfwMoafYQZ/svua32vzRaXSwlTd8w7udrUGZgwtlu2+U2r
+        kHbkh8R1p+eOtxAg==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] Merge tag 'irqchip-5.15' of
+ git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20210828121013.2647964-1-maz@kernel.org>
+References: <20210828121013.2647964-1-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YSvYFTSwP5EkXQZ0@Ryzen-9-3900X.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Message-ID: <163026531340.25758.15073464033059744433.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nathan,
+The following commit has been merged into the irq/core branch of tip:
 
-Le 29/08/2021 à 20:55, Nathan Chancellor a écrit :
-> Hi Christophe,
-> 
-> On Thu, Jul 08, 2021 at 04:49:43PM +0000, Christophe Leroy wrote:
->> This patch converts powerpc to the generic PTDUMP implementation.
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
-> This patch as commit e084728393a5 ("powerpc/ptdump: Convert powerpc to
-> GENERIC_PTDUMP") in powerpc/next causes a panic with Fedora's ppc64le
-> config [1] when booting up in QEMU with [2]:
-> 
-> [    1.621864] BUG: Unable to handle kernel data access on read at 0xc0eeff7f00000000
-> [    1.623058] Faulting instruction address: 0xc00000000045e5fc
-> [    1.623832] Oops: Kernel access of bad area, sig: 11 [#1]
-> [    1.624318] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA PowerNV
-> [    1.625015] Modules linked in:
-> [    1.625463] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc7-next-20210827 #16
-> [    1.626237] NIP:  c00000000045e5fc LR: c00000000045e580 CTR: c000000000518220
-> [    1.626839] REGS: c00000000752b820 TRAP: 0380   Not tainted  (5.14.0-rc7-next-20210827)
-> [    1.627528] MSR:  9000000002009033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 84002482  XER: 20000000
-> [    1.628449] CFAR: c000000000518300 IRQMASK: 0
-> [    1.628449] GPR00: c00000000045e580 c00000000752bac0 c0000000028a9300 0000000000000000
-> [    1.628449] GPR04: c200800000000000 ffffffffffffffff 000000000000000a 0000000000000001
-> [    1.628449] GPR08: c0eeff7f00000000 0000000000000012 0000000000000000 0000000000000000
-> [    1.628449] GPR12: 0000000000000000 c000000002b20000 fffffffffffffffe c000000002971a70
-> [    1.628449] GPR16: c000000002960040 c0000000011a8f98 c00000000752bbf0 ffffffffffffffff
-> [    1.628449] GPR20: c2008fffffffffff c0eeff7f00000000 c000000002971a68 c00a0003ff000000
-> [    1.628449] GPR24: c000000002971a78 0000000000000002 0000000000000001 c0000000011a8f98
-> [    1.628449] GPR28: c0000000011a8f98 c0000000028daef8 c200800000000000 c200900000000000
-> [    1.634090] NIP [c00000000045e5fc] __walk_page_range+0x2bc/0xce0
-> [    1.635117] LR [c00000000045e580] __walk_page_range+0x240/0xce0
-> [    1.635755] Call Trace:
-> [    1.636018] [c00000000752bac0] [c00000000045e580] __walk_page_range+0x240/0xce0 (unreliable)
-> [    1.636811] [c00000000752bbd0] [c00000000045f234] walk_page_range_novma+0x74/0xb0
-> [    1.637459] [c00000000752bc20] [c000000000518448] ptdump_walk_pgd+0x98/0x170
-> [    1.638138] [c00000000752bc70] [c0000000000aa988] ptdump_check_wx+0x88/0xd0
-> [    1.638738] [c00000000752bd50] [c00000000008d6d8] mark_rodata_ro+0x48/0x80
-> [    1.639299] [c00000000752bdb0] [c000000000012a34] kernel_init+0x74/0x1a0
-> [    1.639842] [c00000000752be10] [c00000000000cfd4] ret_from_kernel_thread+0x5c/0x64
-> [    1.640597] Instruction dump:
-> [    1.641021] 38e7ffff 39490010 7ce707b4 7fca5436 79081564 7d4a3838 7908f082 794a1f24
-> [    1.641740] 78a8f00e 30e6ffff 7ea85214 7ce73110 <7d48502a> 78f90fa4 2c2a0000 39290010
-> [    1.642771] ---[ end trace 6cf72b085097ad52 ]---
-> [    1.643220]
-> [    2.644228] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> [    2.645523] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-> 
-> This is not compiler specific, I can reproduce it with GCC 11.2.0 and
-> binutils 2.37. If there is any additional information I can provide,
-> please let me know.
+Commit-ID:     47fb0cfdb7a71a8a0ff8fe1d117363dc81f6ca77
+Gitweb:        https://git.kernel.org/tip/47fb0cfdb7a71a8a0ff8fe1d117363dc81f6ca77
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sun, 29 Aug 2021 21:19:50 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sun, 29 Aug 2021 21:19:50 +02:00
 
-Can you provide a dissassembly of __walk_page_range() ? Or provide your vmlinux binary.
+Merge tag 'irqchip-5.15' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
 
-Thanks
-Christophe
+Pull irqchip updates from Marc Zyngier:
 
+- API updates:
 
-> 
-> [1]: https://src.fedoraproject.org/rpms/kernel/raw/rawhide/f/kernel-ppc64le-fedora.config
-> [2]: https://github.com/ClangBuiltLinux/boot-utils
-> 
-> Cheers,
-> Nathan
-> 
+  - Treewide conversion to generic_handle_domain_irq() for anything
+    that looks like a chained interrupt controller
+
+  - Update the irqdomain documentation
+
+  - Use of bitmap_zalloc() throughout the tree
+
+- New functionalities:
+
+  - Support for GICv3 EPPI partitions
+
+- Fixes:
+
+  - Qualcomm PDC hierarchy fixes
+
+  - Yet another priority decoding fix for the GICv3 pseudo-NMIs
+
+  - Fix the apple-aic driver irq_eoi() callback to always unmask
+    the interrupt
+
+  - Properly handle edge interrupts on loongson-pch-pic
+
+  - Let the mtk-sysirq driver advertise IRQCHIP_SKIP_SET_WAKE
+
+Link: https://lore.kernel.org/r/20210828121013.2647964-1-maz@kernel.org
+---
