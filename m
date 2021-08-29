@@ -2,106 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378493FAC41
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163EC3FAC3F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235457AbhH2OdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 10:33:19 -0400
-Received: from mout.gmx.net ([212.227.15.18]:46603 "EHLO mout.gmx.net"
+        id S235425AbhH2ObU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 10:31:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231791AbhH2OdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 10:33:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630247534;
-        bh=nvs8837RL/FatuUxRpR3LhumAcLvvX9cPIPV4FvwiMY=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=BjFyeo8JUe3Jw+zYj7BGClvNYAj0E9f+o7JAfMNlQOS4NaNkNdNS8TDnzxpABsSLl
-         6Gvxk25GsS0+hxX33+3A2e5xn2w2+8D0tv8RtnGFmnc+PyEUgAtJ4R4YIP1aO6+iAz
-         Hs1Q1T+BUjAadhrDUjivdGBtEYiR5P8RCTPOgvdw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5G9n-1n392G41On-011BBk; Sun, 29
- Aug 2021 16:32:14 +0200
-Date:   Sun, 29 Aug 2021 16:32:00 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Len Baker <len.baker@gmx.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] docs: deprecated.rst: Clarify open-coded arithmetic with
- literals
-Message-ID: <20210829143200.GA2185@titan>
-References: <20210827171226.2938-1-len.baker@gmx.com>
- <bd7487c725e15b0c20612a44ecf301637a60c157.camel@perches.com>
+        id S229824AbhH2ObO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 10:31:14 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A6AD60F36;
+        Sun, 29 Aug 2021 14:30:19 +0000 (UTC)
+Date:   Sun, 29 Aug 2021 15:33:34 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com,
+        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v6 2/5] iio: adc: ad7949: fix spi messages on non 14-bit
+ controllers
+Message-ID: <20210829153334.07f5c64c@jic23-huawei>
+In-Reply-To: <20210815213309.2847711-3-liambeguin@gmail.com>
+References: <20210815213309.2847711-1-liambeguin@gmail.com>
+        <20210815213309.2847711-3-liambeguin@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <bd7487c725e15b0c20612a44ecf301637a60c157.camel@perches.com>
-X-Provags-ID: V03:K1:FeeK8l1PQF76mrGFcok+5fvjCtP8b80O0RczVz9pQCL76eUr90Y
- YOqUfFd9Wu6YV5NK7NhbaEDZ5PsWH+OVf5icznT9kVfiDChGgQsdBnxO6awRVi/BDGKOhzi
- m/5cJjg6xXp56u6Th1uxU9hiUJYX3gn3qU9zU3use1GIkS20PCP8dMEaaKMX9yD9h4Lteyy
- QDQxkKHCLzszbU8IZiTug==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BbSC90bemSE=:57FwL7S+I37KEX6nDvpsT/
- MD3jACPRwaJ/PZc7PjI3vpohZjJsmNoD5iVIuz6Y2ivWWPjJMiLBGMpj8h/hDngjxOLUV6Fv6
- vafjv1OjiwSj39j86Zq9iuqm1Q3/8KP3cd+Bzu55Z/s04iIHwP0CXCV8XZ5wHO1+Eq7Udlw5u
- gYfVKNjVtpHDpRTFl/7he8VC8J7ojvNsElkz2xwOb2R9pIttFjeLV40h7E8/+u2KwhJNuv+39
- JDyJNITRWI6yE7cgAtTLAsVw0tAn2+IQvc8FMvernU7ppc5+x4nB7oRTdVqqrCNOh1EtYNPyh
- kOol2cDUJ1g8kILQqAAExUJi7VojOUsFYZCzJeFxz27zMLZ3Ja0vEx0HrdF7hLtONu4NPOgrH
- XU3HGa2mHviFDM0Nlx8ZK28sP1rqQqdO9OPJHA/WoZeNk67oBHD6JRbJWAgBJWAwGYkWrZYEL
- eJfG37FtDYZxM1jseG6ign4jiRkYu0nqNodm9mR7/XZJt3OO6IhZ8GnyUAH0k0PaDhoDvK/tZ
- /sIHrhLrKxbWF9PZDi2mIzmjIMEdf+cUnohEGmRERjWKnVORoXKfvSgQZL/cHJR91fjovMjCa
- u+xaPl4ebv+QIJXW2B1WCqiJBUIUZ1dFYu1dYHapqcohda8+fLWpPoZZYzvCg8PL9846vCW64
- 0YNumYeYjdJ3/gbkvvZkZExo3GmnUnKYcTYXbAYt2gF/lsPrXg+bw6pOwbtz/4loK1Z6G1Mju
- lIlXqBUhW18EP4HUFo/rX6dFxz8jDLGiw8W1F6y3hyHYJ6QF9BGiTQjT0//ThCiZ/s2xmYGtI
- nKFUAAZ+yVv7Mko4CO+KC7vX2by0eBJXH/GWaM5X45PUoL9CIP9Z9iDHxVIBS2cBkB7npSltu
- aoezIM8zVqeQ94ZhYEHMX1pNLnu4/HcOc30OM5GNVnFxIKW73XW77HFrZ0Xxh7bH2iZERCm3s
- NjXB2CuttKTOwPAvuBfGraf4i9VhpJmcDyoWYSLEuDwhtSJ0SyxgbXAJ/CVoVvA74kgAVxv3r
- XARAdMC+6TSRag6/cfN4sDVEc7tC7cDqGV8E3HzxQNHbt1fswSxU5tlAa6wHSefFRPwoYs/43
- VqhbVEo2ecCwbc6uY/cm2FXajA74nL/cJHQjp8KED2luLJh9M3VewbvMw==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, 15 Aug 2021 17:33:06 -0400
+Liam Beguin <liambeguin@gmail.com> wrote:
 
-On Fri, Aug 27, 2021 at 12:06:18PM -0700, Joe Perches wrote:
-> On Fri, 2021-08-27 at 19:12 +0200, Len Baker wrote:
-> > Although using literals for size calculation in allocator arguments ma=
-y
-> > be harmless due to compiler warnings in case of overflows, it is bette=
-r
-> > to refactor the code to avoid the use of open-coded math idiom.
-> >
-> > So, clarify the preferred way in these cases.
-> []
-> > diff --git a/Documentation/process/deprecated.rst b/Documentation/proc=
-ess/deprecated.rst
-> []
-> > @@ -60,7 +60,8 @@ smaller allocation being made than the caller was ex=
-pecting. Using those
-> > =A0allocations could lead to linear overflows of heap memory and other
-> > =A0misbehaviors. (One exception to this is literal values where the co=
-mpiler
-> > =A0can warn if they might overflow. Though using literals for argument=
-s as
-> > -suggested below is also harmless.)
-> > +suggested below is also harmless. So, the preferred way in these case=
-s is
-> > +to refactor the code to keep the open-coded math idiom out.)
->
-> wordsmithing trivia:
->
-> 'keep <foo> out' is difficult to parse as 'keep' is generally a positive
-> word but its meaning is later reversed with out.
->
-> 'avoid <foo>' maybe be better phrasing.
->
-Understood. I will do this change and I will send a new version.
-Thanks for the review.
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> This driver supports devices with 14-bit and 16-bit sample sizes.
+> This implies different SPI transfer lengths which are not always handled
+> properly by some SPI controllers.
+> 
+> To work around this limitation, define a big endian buffer used to split
+> the buffer into two 8-bit messages in the event that the controller
+> doesn't support 14-bit or 16-bit transfers.
+> A separate buffer is introduced here to avoid performing operations on
+> types of different endianness.
+> 
+> Since all transfers use the same bits_per_word value, move that logic to
+> the probe function, and let transfers default to the value defined in
+> the struct spi_device.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+Hi Liam, 
 
-Regards,
-Len
+I changed the title of this one to avoid it being picked up for automated
+backporting.  I don't mind if you want to request it is backported explicitly
+but it isn't a regression fix (as it never worked on such controllers) and
+is non trivial.  As a result I want a backport to be a deliberate decision.
+Now titled "iio: adc: ad7949: enable use with non 14/16-bit controllers"
+
+This and previous applied to the togreg branch of iio.git and pushed out
+as testing for 0-day to poke at it.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/adc/ad7949.c | 86 +++++++++++++++++++++++++++-------------
+>  1 file changed, 58 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
+> index adc4487a7d56..a263d0fcec75 100644
+> --- a/drivers/iio/adc/ad7949.c
+> +++ b/drivers/iio/adc/ad7949.c
+> @@ -14,7 +14,6 @@
+>  #include <linux/bitfield.h>
+>  
+>  #define AD7949_CFG_MASK_TOTAL		GENMASK(13, 0)
+> -#define AD7949_CFG_REG_SIZE_BITS	14
+>  
+>  /* CFG: Configuration Update */
+>  #define AD7949_CFG_MASK_OVERWRITE	BIT(13)
+> @@ -71,6 +70,7 @@ static const struct ad7949_adc_spec ad7949_adc_spec[] = {
+>   * @cfg: copy of the configuration register
+>   * @current_channel: current channel in use
+>   * @buffer: buffer to send / receive data to / from device
+> + * @buf8b: be16 buffer to exchange data with the device in 8-bit transfers
+>   */
+>  struct ad7949_adc_chip {
+>  	struct mutex lock;
+> @@ -81,27 +81,34 @@ struct ad7949_adc_chip {
+>  	u16 cfg;
+>  	unsigned int current_channel;
+>  	u16 buffer ____cacheline_aligned;
+> +	__be16 buf8b;
+>  };
+>  
+>  static int ad7949_spi_write_cfg(struct ad7949_adc_chip *ad7949_adc, u16 val,
+>  				u16 mask)
+>  {
+>  	int ret;
+> -	int bits_per_word = ad7949_adc->resolution;
+> -	int shift = bits_per_word - AD7949_CFG_REG_SIZE_BITS;
+> -	struct spi_message msg;
+> -	struct spi_transfer tx[] = {
+> -		{
+> -			.tx_buf = &ad7949_adc->buffer,
+> -			.len = 2,
+> -			.bits_per_word = bits_per_word,
+> -		},
+> -	};
+>  
+>  	ad7949_adc->cfg = (val & mask) | (ad7949_adc->cfg & ~mask);
+> -	ad7949_adc->buffer = ad7949_adc->cfg << shift;
+> -	spi_message_init_with_transfers(&msg, tx, 1);
+> -	ret = spi_sync(ad7949_adc->spi, &msg);
+> +
+> +	switch (ad7949_adc->spi->bits_per_word) {
+> +	case 16:
+> +		ad7949_adc->buffer = ad7949_adc->cfg << 2;
+> +		ret = spi_write(ad7949_adc->spi, &ad7949_adc->buffer, 2);
+> +		break;
+> +	case 14:
+> +		ad7949_adc->buffer = ad7949_adc->cfg;
+> +		ret = spi_write(ad7949_adc->spi, &ad7949_adc->buffer, 2);
+> +		break;
+> +	case 8:
+> +		/* Here, type is big endian as it must be sent in two transfers */
+> +		ad7949_adc->buf8b = cpu_to_be16(ad7949_adc->cfg << 2);
+> +		ret = spi_write(ad7949_adc->spi, &ad7949_adc->buf8b, 2);
+> +		break;
+> +	default:
+> +		dev_err(&ad7949_adc->indio_dev->dev, "unsupported BPW\n");
+> +		return -EINVAL;
+> +	}
+>  
+>  	/*
+>  	 * This delay is to avoid a new request before the required time to
+> @@ -116,16 +123,6 @@ static int ad7949_spi_read_channel(struct ad7949_adc_chip *ad7949_adc, int *val,
+>  {
+>  	int ret;
+>  	int i;
+> -	int bits_per_word = ad7949_adc->resolution;
+> -	int mask = GENMASK(ad7949_adc->resolution - 1, 0);
+> -	struct spi_message msg;
+> -	struct spi_transfer tx[] = {
+> -		{
+> -			.rx_buf = &ad7949_adc->buffer,
+> -			.len = 2,
+> -			.bits_per_word = bits_per_word,
+> -		},
+> -	};
+>  
+>  	/*
+>  	 * 1: write CFG for sample N and read old data (sample N-2)
+> @@ -144,9 +141,11 @@ static int ad7949_spi_read_channel(struct ad7949_adc_chip *ad7949_adc, int *val,
+>  	}
+>  
+>  	/* 3: write something and read actual data */
+> -	ad7949_adc->buffer = 0;
+> -	spi_message_init_with_transfers(&msg, tx, 1);
+> -	ret = spi_sync(ad7949_adc->spi, &msg);
+> +	if (ad7949_adc->spi->bits_per_word == 8)
+> +		ret = spi_read(ad7949_adc->spi, &ad7949_adc->buf8b, 2);
+> +	else
+> +		ret = spi_read(ad7949_adc->spi, &ad7949_adc->buffer, 2);
+> +
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -158,7 +157,25 @@ static int ad7949_spi_read_channel(struct ad7949_adc_chip *ad7949_adc, int *val,
+>  
+>  	ad7949_adc->current_channel = channel;
+>  
+> -	*val = ad7949_adc->buffer & mask;
+> +	switch (ad7949_adc->spi->bits_per_word) {
+> +	case 16:
+> +		*val = ad7949_adc->buffer;
+> +		/* Shift-out padding bits */
+> +		*val >>= 16 - ad7949_adc->resolution;
+> +		break;
+> +	case 14:
+> +		*val = ad7949_adc->buffer & GENMASK(13, 0);
+> +		break;
+> +	case 8:
+> +		/* Here, type is big endian as data was sent in two transfers */
+> +		*val = be16_to_cpu(ad7949_adc->buf8b);
+> +		/* Shift-out padding bits */
+> +		*val >>= 16 - ad7949_adc->resolution;
+> +		break;
+> +	default:
+> +		dev_err(&ad7949_adc->indio_dev->dev, "unsupported BPW\n");
+> +		return -EINVAL;
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -266,6 +283,7 @@ static int ad7949_spi_init(struct ad7949_adc_chip *ad7949_adc)
+>  
+>  static int ad7949_spi_probe(struct spi_device *spi)
+>  {
+> +	u32 spi_ctrl_mask = spi->controller->bits_per_word_mask;
+>  	struct device *dev = &spi->dev;
+>  	const struct ad7949_adc_spec *spec;
+>  	struct ad7949_adc_chip *ad7949_adc;
+> @@ -292,6 +310,18 @@ static int ad7949_spi_probe(struct spi_device *spi)
+>  	indio_dev->num_channels = spec->num_channels;
+>  	ad7949_adc->resolution = spec->resolution;
+>  
+> +	/* Set SPI bits per word */
+> +	if (spi_ctrl_mask & SPI_BPW_MASK(ad7949_adc->resolution)) {
+> +		spi->bits_per_word = ad7949_adc->resolution;
+> +	} else if (spi_ctrl_mask == SPI_BPW_MASK(16)) {
+> +		spi->bits_per_word = 16;
+> +	} else if (spi_ctrl_mask == SPI_BPW_MASK(8)) {
+> +		spi->bits_per_word = 8;
+> +	} else {
+> +		dev_err(dev, "unable to find common BPW with spi controller\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	ad7949_adc->vref = devm_regulator_get(dev, "vref");
+>  	if (IS_ERR(ad7949_adc->vref)) {
+>  		dev_err(dev, "fail to request regulator\n");
+
