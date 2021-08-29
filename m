@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02D83FADAE
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22103FADB2
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235798AbhH2STe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 14:19:34 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:51934
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234080AbhH2STT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 14:19:19 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C5B413F045;
-        Sun, 29 Aug 2021 18:18:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630261104;
-        bh=vtkJ21NZ5st7A9TNC1m9k0qYl+hOlEeJL7XpCm/xgCY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=n5Gdta2xWHAf2lVWJZlToICeRn9N8LKE7cGo3s8RYytWs/f/HRT3eZG+s2Bs2RCsi
-         mvEoKXzOA0Kqkbe5ZMob+i2kZEhZ+EskpSF12M5cdpJtJYQ6zeEMaWMDsFJMI00+d4
-         FQPMR+9X0sZGPU2pqcolNp+oVIt2PqokyoXkpibKN0Lze7pUh5fDi3jMaHb5xRmmcj
-         G59t77FMNRIoRA95SCP7KkvymYLW/sRyYFm43TKAyqSx7uJy56ptKJs6lwnk+budNf
-         GHH/+4acq9FQ0I4IXOBAEpihCIme6MkzihPPUfkomW5vctpIGU+VMCZUB9lpweDCYG
-         hczhQxHixvV3A==
-From:   Colin King <colin.king@canonical.com>
-To:     Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Xiubo Li <xiubli@redhat.com>, ceph-devel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ceph: Fix dereference of null pointer cf
-Date:   Sun, 29 Aug 2021 19:18:24 +0100
-Message-Id: <20210829181824.534447-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S235283AbhH2SZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 14:25:44 -0400
+Received: from mga12.intel.com ([192.55.52.136]:63344 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230010AbhH2SZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 14:25:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10091"; a="197736737"
+X-IronPort-AV: E=Sophos;i="5.84,361,1620716400"; 
+   d="scan'208";a="197736737"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2021 11:24:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,361,1620716400"; 
+   d="scan'208";a="445519073"
+Received: from coresw01.iind.intel.com ([10.106.46.194])
+  by orsmga002.jf.intel.com with ESMTP; 29 Aug 2021 11:24:44 -0700
+From:   rashmi.a@intel.com
+To:     michal.simek@xilinx.com, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org,
+        andriy.shevchenko@linux.intel.com, linux-phy@lists.infradead.org
+Cc:     mgross@linux.intel.com, kris.pan@linux.intel.com,
+        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
+        adrian.hunter@intel.com, mahesh.r.vaidya@intel.com,
+        nandhini.srikandan@intel.com, rashmi.a@intel.com
+Subject: [PATCH v2 0/4] Add support of eMMC PHY for Intel Thunder Bay
+Date:   Sun, 29 Aug 2021 23:54:39 +0530
+Message-Id: <20210829182443.30802-1-rashmi.a@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Rashmi A <rashmi.a@intel.com>
 
-Currently in the case where kmem_cache_alloc fails the null pointer
-cf is dereferenced when assigning cf->is_capsnap = false. Fix this
-by adding a null pointer check and return path.
-
-Addresses-Coverity: ("Dereference null return")
-Fixes: b2f9fa1f3bd8 ("ceph: correctly handle releasing an embedded cap flush")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- fs/ceph/caps.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index 39db97f149b9..eceb3ceaac48 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -1746,6 +1746,8 @@ struct ceph_cap_flush *ceph_alloc_cap_flush(void)
- 	struct ceph_cap_flush *cf;
+This patch set enables the support for eMMC PHY on the Intel Thunder 
+Bay SoC. eMMC PHY is based on arasan phy.
  
- 	cf = kmem_cache_alloc(ceph_cap_flush_cachep, GFP_KERNEL);
-+	if (!cf)
-+		return NULL;
- 	cf->is_capsnap = false;
- 	return cf;
- }
+Patch 1 Adds arasan sdhci support for eMMC in Intel Thunder Bay.
+Patch 2 Adds arasan sdhci dt bindings.
+Patch 3 Holds the device tree binding documentation for eMMC PHY
+	and listings of new files in MAINTAINERS file.
+Patch 4 Holds the eMMC PHY driver.
+
+
+Rashmi A (4):
+  mmc: sdhci-of-arasan: Add intel Thunder Bay SOC support to the arasan
+    eMMC driver
+  dt-bindings: mmc: Add bindings for Intel Thunder Bay SoC
+  dt-bindings: phy: intel: Add Thunder Bay eMMC PHY bindings
+  phy: intel: Add Thunder Bay eMMC PHY support
+
+ .../devicetree/bindings/mmc/arasan,sdhci.yaml |  25 +
+ .../phy/intel,phy-thunderbay-emmc.yaml        |  46 ++
+ MAINTAINERS                                   |   7 +
+ drivers/mmc/host/sdhci-of-arasan.c            |  29 +-
+ drivers/phy/intel/Kconfig                     |  10 +
+ drivers/phy/intel/Makefile                    |   1 +
+ drivers/phy/intel/phy-intel-thunderbay-emmc.c | 512 ++++++++++++++++++
+ 7 files changed, 629 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/intel,phy-thunderbay-emmc.yaml
+ create mode 100644 drivers/phy/intel/phy-intel-thunderbay-emmc.c
+
 -- 
-2.32.0
+2.17.1
 
