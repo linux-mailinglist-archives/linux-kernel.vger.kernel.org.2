@@ -2,203 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD4F3FABEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 15:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011EB3FABF2
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 15:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbhH2NS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 09:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235343AbhH2NSz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 09:18:55 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC5FC061575;
-        Sun, 29 Aug 2021 06:18:03 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id e26so1586185wmk.2;
-        Sun, 29 Aug 2021 06:18:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=EyXmTgzZ2zMDj7nsmJ87p+yGZvGhOM2tNp+X59sw35E=;
-        b=R1xfsFbn2UTnbSLdJyexs6uW2wrEaS3KsTJyrIu+QV9lBRqUW4NNR/R3mYj8tjYzEH
-         QUo1P7B9bsr5KAWq8IG/dqvCkQ7BoNITg/pfhN6+lf9mDwUitMxEId463HIrssvVAyG8
-         tdFgR1QYYlBj5B2TCr0OaoqNibjAeosF0boHdOt1gSrRPQX7SHQKLP7bB0g7O8v8Cx0b
-         vebPCuVT43XOKgsl7rggWQtHgnf+dfSMeGDbUidx0/rsLb56M22FpPNyV3Mt89JW7uuN
-         vloTNLsi7LndEcZPZRfxNZxWyrnvA6g2pk58n0gfCV07/dn952hPbwCRv4HFzJHzkwrn
-         5arA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=EyXmTgzZ2zMDj7nsmJ87p+yGZvGhOM2tNp+X59sw35E=;
-        b=hrfRXLXFqlWIR3H7URdITi5LFjoP4VSeN+ff+kKOVCCuzlQJtUd4vM1TX62y3140Cg
-         P3CIrfwfHL5ZiazF1GJ+lyJVAXF3LlcGtBGdGu8CdMQODIbLxBPwAp3CCIJ0ZkiXac30
-         IciIvw+tea4ckzqt/9VNy3swSUTMZkkhEeZlfJ0yLy/Fc5IFDdVoQYIBRxBDq5EN05C3
-         gAI562JQe6xk9dvSJOlrZFw64mo0ghlF6Trk2t53SjGSVE4UE7hVadm6yBGj8BIJgUbX
-         pECZD1KB9FhAqTTbp4WFZxnSjBTboT5t8ZWFLMEVQfbabY8nrLk31Otqc3DyDfwLUKNr
-         AW/w==
-X-Gm-Message-State: AOAM530iHjanPmO8uI3EZHtMjVysg/+Hx6NmhdKwSKBKa5a0MlmdwzE0
-        et8b8uLFxJRDK8/jWLKTDVYPjGclFRfsmg==
-X-Google-Smtp-Source: ABdhPJzmGdk93MK3MTqEwxVzTGxK6uvggZeDCdnkjUSzNcJ8nZ8880OY7b2ib279roa2BBQXpMUPoA==
-X-Received: by 2002:a1c:35c9:: with SMTP id c192mr8180677wma.121.1630243082150;
-        Sun, 29 Aug 2021 06:18:02 -0700 (PDT)
-Received: from [192.168.1.107] ([147.235.73.50])
-        by smtp.gmail.com with ESMTPSA id l187sm10972182wml.39.2021.08.29.06.18.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Aug 2021 06:18:01 -0700 (PDT)
-Subject: Re: [PATCH 2/3] checkkconfigsymbols.py: Fix Kconfig parsing to find
- 'if' lines
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Valentin Rothberg <valentinrothberg@gmail.com>
-References: <20210822192205.43210-1-arielmarcovitch@gmail.com>
- <20210822192205.43210-3-arielmarcovitch@gmail.com>
- <CAK7LNATy17OQ900ThKJwHRy35+4Yg=9CRNg9Zp0tZ_O=uQ+kaw@mail.gmail.com>
-From:   Ariel Marcovitch <arielmarcovitch@gmail.com>
-Message-ID: <2bba4c0a-8639-1d3a-5dd5-8e2576f6ab77@gmail.com>
-Date:   Sun, 29 Aug 2021 16:17:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235480AbhH2NXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 09:23:39 -0400
+Received: from mga12.intel.com ([192.55.52.136]:8392 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235434AbhH2NXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 09:23:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10090"; a="197722819"
+X-IronPort-AV: E=Sophos;i="5.84,361,1620716400"; 
+   d="scan'208";a="197722819"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2021 06:22:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,361,1620716400"; 
+   d="scan'208";a="644731144"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga005.jf.intel.com with ESMTP; 29 Aug 2021 06:22:44 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2B198C5; Sun, 29 Aug 2021 16:22:45 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: [PATCH v1 1/1] Documentation: ACPI: Align the SSDT overlays file with the code
+Date:   Sun, 29 Aug 2021 16:22:43 +0300
+Message-Id: <20210829132243.82281-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNATy17OQ900ThKJwHRy35+4Yg=9CRNg9Zp0tZ_O=uQ+kaw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello again!
+This updates the following:
 
-On 24/08/2021 16:30, Masahiro Yamada wrote:
- > On Mon, Aug 23, 2021 at 4:22 AM Ariel Marcovitch
- > <arielmarcovitch@gmail.com> wrote:
- >>
- >> When parsing Kconfig files to find symbol definitions and references,
- >> lines after a 'help' line are skipped until a new config definition
- >> starts.
- >>
- >> However, it is quite common to define a config and then make some other
- >> configs depend on it by adding an 'if' line. This kind of kconfig
- >> statement usually appears after a config definition which might contain
- >> a 'help' section. The 'if' line is skipped in parse_kconfig_file()
- >> because it is not a config definition.
- >>
- >> This means that symbols referenced in this kind of statements are
- >> ignored by this function and thus are not considered undefined
- >> references in case the symbol is not defined.
- >>
- >> The REGEX_KCONFIG_STMT regex can't be used because the other types of
- >> statements can't break help lines.
- >>
- >> Define a new regex for matching 'if' statements and stop the 'help'
- >> skipping in case it is encountered.
- >>
- >> Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
- >> ---
- >>  scripts/checkkconfigsymbols.py | 8 +++++++-
- >>  1 file changed, 7 insertions(+), 1 deletion(-)
- >>
- >> diff --git a/scripts/checkkconfigsymbols.py 
-b/scripts/checkkconfigsymbols.py
- >> index b9b0f15e5880..875e9a2c14b2 100755
- >> --- a/scripts/checkkconfigsymbols.py
- >> +++ b/scripts/checkkconfigsymbols.py
- >> @@ -26,6 +26,7 @@ EXPR = r"(?:" + OPERATORS + r"|\s|" + SYMBOL + r")+"
- >>  DEFAULT = r"default\s+.*?(?:if\s.+){,1}"
- >>  STMT = r"^\s*(?:if|select|imply|depends\s+on|(?:" + DEFAULT + 
-r"))\s+" + EXPR
- >>  SOURCE_SYMBOL = r"(?:\W|\b)+[D]{,1}CONFIG_(" + SYMBOL + r")"
- >> +IF_LINE = r"^\s*(?:if)\s+" + EXPR
- >
- >
- > Why is it enclosed by "(?: )"   ?
- >
- > "(?:if)"  seems to the same as "if"
-Oh you are absolutely right.
-I just mindlessly copied the STMT regex and removed the other types :)
- >
- >
- >
- >
- >
- >
- >>
- >>  # regex objects
- >>  REGEX_FILE_KCONFIG = re.compile(r".*Kconfig[\.\w+\-]*$")
- >> @@ -35,11 +36,11 @@ REGEX_KCONFIG_DEF = re.compile(DEF)
- >>  REGEX_KCONFIG_EXPR = re.compile(EXPR)
- >>  REGEX_KCONFIG_STMT = re.compile(STMT)
- >>  REGEX_KCONFIG_HELP = re.compile(r"^\s+help\s*$")
- >> +REGEX_KCONFIG_IF_LINE = re.compile(IF_LINE)
- >>  REGEX_FILTER_SYMBOLS = re.compile(r"[A-Za-z0-9]$")
- >>  REGEX_NUMERIC = re.compile(r"0[xX][0-9a-fA-F]+|[0-9]+")
- >>  REGEX_QUOTES = re.compile("(\"(.*?)\")")
- >>
- >> -
- >>  def parse_options():
- >>      """The user interface of this module."""
- >>      usage = "Run this tool to detect Kconfig symbols that are 
-referenced but " \
- >> @@ -445,6 +446,11 @@ def parse_kconfig_file(kfile):
- >>          line = line.strip('\n')
- >>          line = line.split("#")[0]  # ignore comments
- >>
- >> +        # 'if EXPR' lines can be after help lines
- >> +        # The if line itself is handled later
- >> +        if REGEX_KCONFIG_IF_LINE.match(line):
- >> +            skip = False
- >> +
- >
- >
- > I do not think this is the right fix.
- > There are similar patterns where
- > config references are ignored.
- >
- > For example, FOO and BAR are ignored
- > in the following cases.
- >
- > ex1)
- >
- > choice
- >           prompt "foo"
- >           default FOO
- >
- >
- >
- > ex2)
- >
- > menu "bar"
- >            depends on BAR
- >
- >
- >
- >
- > The help block ends with shallower indentation.
-So IIUC we need to measure the indentation when we encounter a help
-statement and in the next lines look for a line with a different depth
-(which is not an empty line because these are allowed).
- >
- >
- >
- >
- >>          if REGEX_KCONFIG_DEF.match(line):
- >>              symbol_def = REGEX_KCONFIG_DEF.findall(line)
- >>              defined.append(symbol_def[0])
- >> --
- >> 2.25.1
- >>
- >
- >
- > --
- > Best Regards
- > Masahiro Yamada
+1) The ASL code to follow latest ACPI requirements, i.e.
+   - static buffer to be defined outside of the method
+   - The _ADR and _HID shouldn't be together for the same device
 
-Thanks for your time!
+2) EFI section relies on the additional kernel configuration option,
+   i.e. CONFIG_EFI_CUSTOM_SSDT_OVERLAYS
 
-Ariel Marcovitch
+3) Refer to ACPI machine language as AML (capitalized)
+
+4) Miscellaneous amendments
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ .../admin-guide/acpi/ssdt-overlays.rst        | 49 ++++++++++---------
+ 1 file changed, 25 insertions(+), 24 deletions(-)
+
+diff --git a/Documentation/admin-guide/acpi/ssdt-overlays.rst b/Documentation/admin-guide/acpi/ssdt-overlays.rst
+index 5d7e25988085..b5fbf54dca19 100644
+--- a/Documentation/admin-guide/acpi/ssdt-overlays.rst
++++ b/Documentation/admin-guide/acpi/ssdt-overlays.rst
+@@ -30,22 +30,21 @@ following ASL code can be used::
+         {
+             Device (STAC)
+             {
+-                Name (_ADR, Zero)
+                 Name (_HID, "BMA222E")
++                Name (RBUF, ResourceTemplate ()
++                {
++                    I2cSerialBus (0x0018, ControllerInitiated, 0x00061A80,
++                                AddressingMode7Bit, "\\_SB.I2C6", 0x00,
++                                ResourceConsumer, ,)
++                    GpioInt (Edge, ActiveHigh, Exclusive, PullDown, 0x0000,
++                            "\\_SB.GPO2", 0x00, ResourceConsumer, , )
++                    { // Pin list
++                        0
++                    }
++                })
+ 
+                 Method (_CRS, 0, Serialized)
+                 {
+-                    Name (RBUF, ResourceTemplate ()
+-                    {
+-                        I2cSerialBus (0x0018, ControllerInitiated, 0x00061A80,
+-                                    AddressingMode7Bit, "\\_SB.I2C6", 0x00,
+-                                    ResourceConsumer, ,)
+-                        GpioInt (Edge, ActiveHigh, Exclusive, PullDown, 0x0000,
+-                                "\\_SB.GPO2", 0x00, ResourceConsumer, , )
+-                        { // Pin list
+-                            0
+-                        }
+-                    })
+                     Return (RBUF)
+                 }
+             }
+@@ -75,7 +74,7 @@ This option allows loading of user defined SSDTs from initrd and it is useful
+ when the system does not support EFI or when there is not enough EFI storage.
+ 
+ It works in a similar way with initrd based ACPI tables override/upgrade: SSDT
+-aml code must be placed in the first, uncompressed, initrd under the
++AML code must be placed in the first, uncompressed, initrd under the
+ "kernel/firmware/acpi" path. Multiple files can be used and this will translate
+ in loading multiple tables. Only SSDT and OEM tables are allowed. See
+ initrd_table_override.txt for more details.
+@@ -103,12 +102,14 @@ This is the preferred method, when EFI is supported on the platform, because it
+ allows a persistent, OS independent way of storing the user defined SSDTs. There
+ is also work underway to implement EFI support for loading user defined SSDTs
+ and using this method will make it easier to convert to the EFI loading
+-mechanism when that will arrive.
++mechanism when that will arrive. To enable it, the
++CONFIG_EFI_CUSTOM_SSDT_OVERLAYS shoyld be chosen to y.
+ 
+-In order to load SSDTs from an EFI variable the efivar_ssdt kernel command line
+-parameter can be used. The argument for the option is the variable name to
+-use. If there are multiple variables with the same name but with different
+-vendor GUIDs, all of them will be loaded.
++In order to load SSDTs from an EFI variable the ``"efivar_ssdt=..."`` kernel
++command line parameter can be used (the name has a limitation of 16 characters).
++The argument for the option is the variable name to use. If there are multiple
++variables with the same name but with different vendor GUIDs, all of them will
++be loaded.
+ 
+ In order to store the AML code in an EFI variable the efivarfs filesystem can be
+ used. It is enabled and mounted by default in /sys/firmware/efi/efivars in all
+@@ -127,7 +128,7 @@ variable with the content from a given file::
+ 
+     #!/bin/sh -e
+ 
+-    while ! [ -z "$1" ]; do
++    while [ -n "$1" ]; do
+             case "$1" in
+             "-f") filename="$2"; shift;;
+             "-g") guid="$2"; shift;;
+@@ -167,14 +168,14 @@ variable with the content from a given file::
+ Loading ACPI SSDTs from configfs
+ ================================
+ 
+-This option allows loading of user defined SSDTs from userspace via the configfs
++This option allows loading of user defined SSDTs from user space via the configfs
+ interface. The CONFIG_ACPI_CONFIGFS option must be select and configfs must be
+ mounted. In the following examples, we assume that configfs has been mounted in
+-/config.
++/sys/kernel/config.
+ 
+-New tables can be loading by creating new directories in /config/acpi/table/ and
+-writing the SSDT aml code in the aml attribute::
++New tables can be loading by creating new directories in /sys/kernel/config/acpi/table
++and writing the SSDT AML code in the aml attribute::
+ 
+-    cd /config/acpi/table
++    cd /sys/kernel/config/acpi/table
+     mkdir my_ssdt
+     cat ~/ssdt.aml > my_ssdt/aml
+-- 
+2.33.0
+
