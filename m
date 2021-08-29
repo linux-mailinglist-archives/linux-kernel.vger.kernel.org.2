@@ -2,118 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0413FAC3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378493FAC41
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbhH2O3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 10:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhH2O3B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 10:29:01 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1143C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 07:28:09 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id 2so10067712pfo.8
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 07:28:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qOZleRD8pCzJyM10JVouBjLRKaJx/Dr3UENRm/FbtnA=;
-        b=BS30odEtgM4ZIUyd4SzRHypP8CAs70ZQrHf2PcAgQD2VuIRE9quIVFx90p9n6sKa1l
-         or1b+3yNRrflvFOaUeCAybNZl/Bgtdvtb2nM8pguUN73BzH7o+boz9KRE79dDhfXxOre
-         82Zr7sILiq6lP426960l550AEwRqr2NoXD5LazSPlVCoPwrteLkxVmyjRY7gR6B9MbEq
-         UIzVXHU1II8/F11M2E4cGgqr8IK9Omnww7NXpwThFqimZPcyleW2/58iXvAdqsZDNtWT
-         o7G8HEgi5q3dWh5MEAlgrH9c3c0/HuqAFKNFdotSJTgRr6rkVyXkpX2aH5rwuTYiwxB9
-         o/XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qOZleRD8pCzJyM10JVouBjLRKaJx/Dr3UENRm/FbtnA=;
-        b=hBTs4eFn8LX7xZ/xxdr1qwrvl+5xzPjTksC6VoCYXwulGQ01eh1QJhVQORo0D8J8uO
-         0jXO1epM+JSlbMk2PeQmQMcHv4mR5pOTLmVWfulwpE//CJgbb+Csuj3QJHqBAiEXh1kz
-         2MIdJ4CYrIezFmpz28FeJsl5zBzcv3Po4VACerokC7LMr3LwVPt2LFJWCcJKE+Q3MiWg
-         +wyQ4q8hiWALcf8IhVlSbQ/B/WCyoOVGrofrEe6lFyySOL4NNUquVM4AnGLGa0sGjmpM
-         Rt7V2FBBN/tOjcnwNTU5ySAl4J4lt9wK97KYIaoFC1jDZwZb+ZZ2kUbf96AuDpPOLQx7
-         RWoA==
-X-Gm-Message-State: AOAM530u436XSP8TUzTnti9su9bLqr3Mqa22YmmOnmdgrb/8Fkp0gDl5
-        7GC9IP11xj8xvT6+TsaAMYcgBQ==
-X-Google-Smtp-Source: ABdhPJwizvyf802+JtqxkB4pHwYNMDzQeajZ0wsosunlo6KatX/rEBVWDJmbeJ5Ldm6grKGeh2+ubA==
-X-Received: by 2002:a65:6487:: with SMTP id e7mr17088629pgv.27.1630247288979;
-        Sun, 29 Aug 2021 07:28:08 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([213.173.35.225])
-        by smtp.gmail.com with ESMTPSA id t28sm12818428pfe.144.2021.08.29.07.28.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 07:28:08 -0700 (PDT)
-Date:   Sun, 29 Aug 2021 22:28:02 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Tao Zhang <quic_taozha@quicinc.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>
-Subject: Re: [PATCH] coresight: cti: Correct the parameter for pm_runtime_put
-Message-ID: <20210829142802.GA186881@leoy-ThinkPad-X240s>
-References: <1629365377-5937-1-git-send-email-quic_taozha@quicinc.com>
+        id S235457AbhH2OdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 10:33:19 -0400
+Received: from mout.gmx.net ([212.227.15.18]:46603 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231791AbhH2OdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 10:33:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630247534;
+        bh=nvs8837RL/FatuUxRpR3LhumAcLvvX9cPIPV4FvwiMY=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=BjFyeo8JUe3Jw+zYj7BGClvNYAj0E9f+o7JAfMNlQOS4NaNkNdNS8TDnzxpABsSLl
+         6Gvxk25GsS0+hxX33+3A2e5xn2w2+8D0tv8RtnGFmnc+PyEUgAtJ4R4YIP1aO6+iAz
+         Hs1Q1T+BUjAadhrDUjivdGBtEYiR5P8RCTPOgvdw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5G9n-1n392G41On-011BBk; Sun, 29
+ Aug 2021 16:32:14 +0200
+Date:   Sun, 29 Aug 2021 16:32:00 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Len Baker <len.baker@gmx.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] docs: deprecated.rst: Clarify open-coded arithmetic with
+ literals
+Message-ID: <20210829143200.GA2185@titan>
+References: <20210827171226.2938-1-len.baker@gmx.com>
+ <bd7487c725e15b0c20612a44ecf301637a60c157.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1629365377-5937-1-git-send-email-quic_taozha@quicinc.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <bd7487c725e15b0c20612a44ecf301637a60c157.camel@perches.com>
+X-Provags-ID: V03:K1:FeeK8l1PQF76mrGFcok+5fvjCtP8b80O0RczVz9pQCL76eUr90Y
+ YOqUfFd9Wu6YV5NK7NhbaEDZ5PsWH+OVf5icznT9kVfiDChGgQsdBnxO6awRVi/BDGKOhzi
+ m/5cJjg6xXp56u6Th1uxU9hiUJYX3gn3qU9zU3use1GIkS20PCP8dMEaaKMX9yD9h4Lteyy
+ QDQxkKHCLzszbU8IZiTug==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BbSC90bemSE=:57FwL7S+I37KEX6nDvpsT/
+ MD3jACPRwaJ/PZc7PjI3vpohZjJsmNoD5iVIuz6Y2ivWWPjJMiLBGMpj8h/hDngjxOLUV6Fv6
+ vafjv1OjiwSj39j86Zq9iuqm1Q3/8KP3cd+Bzu55Z/s04iIHwP0CXCV8XZ5wHO1+Eq7Udlw5u
+ gYfVKNjVtpHDpRTFl/7he8VC8J7ojvNsElkz2xwOb2R9pIttFjeLV40h7E8/+u2KwhJNuv+39
+ JDyJNITRWI6yE7cgAtTLAsVw0tAn2+IQvc8FMvernU7ppc5+x4nB7oRTdVqqrCNOh1EtYNPyh
+ kOol2cDUJ1g8kILQqAAExUJi7VojOUsFYZCzJeFxz27zMLZ3Ja0vEx0HrdF7hLtONu4NPOgrH
+ XU3HGa2mHviFDM0Nlx8ZK28sP1rqQqdO9OPJHA/WoZeNk67oBHD6JRbJWAgBJWAwGYkWrZYEL
+ eJfG37FtDYZxM1jseG6ign4jiRkYu0nqNodm9mR7/XZJt3OO6IhZ8GnyUAH0k0PaDhoDvK/tZ
+ /sIHrhLrKxbWF9PZDi2mIzmjIMEdf+cUnohEGmRERjWKnVORoXKfvSgQZL/cHJR91fjovMjCa
+ u+xaPl4ebv+QIJXW2B1WCqiJBUIUZ1dFYu1dYHapqcohda8+fLWpPoZZYzvCg8PL9846vCW64
+ 0YNumYeYjdJ3/gbkvvZkZExo3GmnUnKYcTYXbAYt2gF/lsPrXg+bw6pOwbtz/4loK1Z6G1Mju
+ lIlXqBUhW18EP4HUFo/rX6dFxz8jDLGiw8W1F6y3hyHYJ6QF9BGiTQjT0//ThCiZ/s2xmYGtI
+ nKFUAAZ+yVv7Mko4CO+KC7vX2by0eBJXH/GWaM5X45PUoL9CIP9Z9iDHxVIBS2cBkB7npSltu
+ aoezIM8zVqeQ94ZhYEHMX1pNLnu4/HcOc30OM5GNVnFxIKW73XW77HFrZ0Xxh7bH2iZERCm3s
+ NjXB2CuttKTOwPAvuBfGraf4i9VhpJmcDyoWYSLEuDwhtSJ0SyxgbXAJ/CVoVvA74kgAVxv3r
+ XARAdMC+6TSRag6/cfN4sDVEc7tC7cDqGV8E3HzxQNHbt1fswSxU5tlAa6wHSefFRPwoYs/43
+ VqhbVEo2ecCwbc6uY/cm2FXajA74nL/cJHQjp8KED2luLJh9M3VewbvMw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tao,
+Hi,
 
-On Thu, Aug 19, 2021 at 05:29:37PM +0800, Tao Zhang wrote:
-> The input parameter of the function pm_runtime_put should be the
-> same in the function cti_enable_hw and cti_disable_hw. The correct
-> parameter to use here should be dev->parent.
-> 
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> ---
->  drivers/hwtracing/coresight/coresight-cti-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
-> index e2a3620..8988b2e 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-> @@ -175,7 +175,7 @@ static int cti_disable_hw(struct cti_drvdata *drvdata)
->  	coresight_disclaim_device_unlocked(csdev);
->  	CS_LOCK(drvdata->base);
->  	spin_unlock(&drvdata->spinlock);
-> -	pm_runtime_put(dev);
-> +	pm_runtime_put(dev->parent);
+On Fri, Aug 27, 2021 at 12:06:18PM -0700, Joe Perches wrote:
+> On Fri, 2021-08-27 at 19:12 +0200, Len Baker wrote:
+> > Although using literals for size calculation in allocator arguments ma=
+y
+> > be harmless due to compiler warnings in case of overflows, it is bette=
+r
+> > to refactor the code to avoid the use of open-coded math idiom.
+> >
+> > So, clarify the preferred way in these cases.
+> []
+> > diff --git a/Documentation/process/deprecated.rst b/Documentation/proc=
+ess/deprecated.rst
+> []
+> > @@ -60,7 +60,8 @@ smaller allocation being made than the caller was ex=
+pecting. Using those
+> > =A0allocations could lead to linear overflows of heap memory and other
+> > =A0misbehaviors. (One exception to this is literal values where the co=
+mpiler
+> > =A0can warn if they might overflow. Though using literals for argument=
+s as
+> > -suggested below is also harmless.)
+> > +suggested below is also harmless. So, the preferred way in these case=
+s is
+> > +to refactor the code to keep the open-coded math idiom out.)
+>
+> wordsmithing trivia:
+>
+> 'keep <foo> out' is difficult to parse as 'keep' is generally a positive
+> word but its meaning is later reversed with out.
+>
+> 'avoid <foo>' maybe be better phrasing.
+>
+Understood. I will do this change and I will send a new version.
+Thanks for the review.
 
-coresight_register() allocates data structure 'coresight_device' and
-assigns probed device to the field 'coresight_device::dev::parent';
-thus afterwards we need to pass 'coresight_device::dev::parent' for
-pm_runtime_xxx() functions.  It's not directive for understanding, so
-log the info at here.
-
-For the patch:
-
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
-
-We could wait for Mike to review as well.
-
-Thanks,
-Leo
-
->  	return 0;
->  
->  	/* not disabled this call */
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Regards,
+Len
