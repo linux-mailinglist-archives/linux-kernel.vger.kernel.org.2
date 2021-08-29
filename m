@@ -2,171 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F22A3FAE5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 22:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0CC3FAED7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 00:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234668AbhH2UPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 16:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
+        id S235827AbhH2WM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 18:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234517AbhH2UPs (ORCPT
+        with ESMTP id S231800AbhH2WM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 16:15:48 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64EDC06175F;
-        Sun, 29 Aug 2021 13:14:55 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id dm15so18444757edb.10;
-        Sun, 29 Aug 2021 13:14:55 -0700 (PDT)
+        Sun, 29 Aug 2021 18:12:26 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD86C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:11:34 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so5541398pjc.3
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:11:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gWowyDdx9hWadSykEaaEDUsjdIUvYH4g4UM8gIo6z+E=;
-        b=WABp1Rr1vQTvX0gXWSrVXWB0xAQBJ4gU8rKE5eyabfT+C+dYM0u0W453BSE+DXwvq7
-         gBNQBRWrb3QfO3JeY+fy0pt0+XpfD4fXDB4UkkGXA2Pg1bWuBrJCFeCKQbTEd826Ouky
-         RVh9U0Ox1okrLiaWD4QM8qEPFz2qLFvFl4ef2MQX0TVd78GQlJK+8tlXJXthkWVXiJVa
-         yF1EUBapi79W4zjhtYYo8H/aUKr59NCqTG9YajMIZwDhofMpGMZXkUnxwZenb0Bs5WQF
-         V7//SLpWqspo/hc3+VLyOLN5jNqlJICzqx29rfS6KOuoB/KXwjCsSLSS4hSxMHdJYGqs
-         jGBQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lWn3Bwou+Kf1nMYgp9cDWjibnKU0wXoStsKIGvX9v/A=;
+        b=ihNwTTQe/p5A9yQjNu2AQMoA0nnTtKLgI8nQQKu8iFOxRJ5iLjhF6hFCcJScWiTVy/
+         emoVLcd4Secb02/M4tF0+CSrnGM1E0gDndtaqS31ZFHH+R17WGcOGsS9nceUuOKCGnGW
+         fsiCjLk7TOckm37BEMcLFL+C0CW82qjwv5qBspo91HxJXOrY00lPxMneedIapI/vH9jt
+         9vhkepf/LEPK2T5CZxCbyiviGMQa0gwff7gmEa65rBGLfX/cC6qy1cBOBzWDRJ7jBY+q
+         GxYFcV+c5tjeBfnFj+jglzHDj0ZLfOEbj9JIdShXNLyti5XzKED6wmoZnYFRGihAWvOS
+         hyXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gWowyDdx9hWadSykEaaEDUsjdIUvYH4g4UM8gIo6z+E=;
-        b=T4Yep8pVEVsFWosvgn1eWOPOeripUiHv56NZRnqSjlszYnnAC4pHrNTNqC/uWcc1RV
-         t37vKdXsNyQ9qS1912rD3sjUSKf8XEZwrD0kinbQz9O5VBYwuQX1OU6nGKKwMIvZQsuZ
-         dBGpMk3Ek8qFot1Kzk6Rq0SmU8LET1Olyvmai2ZzcX3gESL9fQrHBD+NYA5DTOWkd2xZ
-         3nIrci/fL7tZfysOTZC77sJS2ZZzpChMtyBjN/JM2lA3luuB0yTdOzcluVDgIILuO26j
-         YOH2nBukZMj0RHXbUXjOUfB9LpNUpI72JTVShP28Jcn6Ppp2AHlCVTIacm7JXBSukL3U
-         HmuA==
-X-Gm-Message-State: AOAM533nURHOX/27Tl0kdPLs9qx5UFMgKG7R9jHaaBWX3uXYBbEbxErV
-        2pUxJKPRkNUQuO922sh1Bvpwc5XJ6UUvwp+8uws=
-X-Google-Smtp-Source: ABdhPJz41yIvPb/YbMjwfkFtOsqUhztPX4oI1iWfCCpFeBdLPdblridSani8TW2bgMnV2wKFM5CAdA==
-X-Received: by 2002:aa7:d613:: with SMTP id c19mr20499558edr.196.1630268094235;
-        Sun, 29 Aug 2021 13:14:54 -0700 (PDT)
-Received: from localhost.localdomain (host-79-37-188-60.retail.telecomitalia.it. [79.37.188.60])
-        by smtp.gmail.com with ESMTPSA id mf2sm5750149ejb.76.2021.08.29.13.14.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 13:14:53 -0700 (PDT)
-From:   "=?UTF-8?q?Sergio=20Migu=C3=A9ns=20Iglesias?=" <lonyelon@gmail.com>
-X-Google-Original-From: =?UTF-8?q?Sergio=20Migu=C3=A9ns=20Iglesias?= <sergio@lony.xyz>
-To:     konrad.wilk@oracle.com
-Cc:     boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, bhelgaas@google.com,
-        xen-devel@lists.xenproject.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Sergio=20Migu=C3=A9ns=20Iglesias?= <sergio@lony.xyz>
-Subject: [PATCH] xen/pcifront: Removed unnecessary __ref annotation
-Date:   Mon, 30 Aug 2021 00:14:15 +0200
-Message-Id: <20210829221415.647744-1-sergio@lony.xyz>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lWn3Bwou+Kf1nMYgp9cDWjibnKU0wXoStsKIGvX9v/A=;
+        b=gVIfKfn9X8Z4X390rtvl79OUmuuXpuylXDsbw0Yb7pvgY8qFTOAGCy4VRPNyctj0RZ
+         k25P4Cw0OztLq0+nyC6zZwxbh7jH0ST4qAIUyX0Iwp1EuJbP8SP+qjXR5j1/SYewd44K
+         1Jin1a2cumjGg+r/lr1eZRng1iKQ/QUgYwLeVjdSKqICRlsvrICsqn9Jr3rTawTn0Et/
+         bHe6nPGdu0CnQMXQ/lQatHuGS1cnVJzU/0fqBvhU0OHXNhhTybExbTb8nb92jQfdiL9Q
+         khSaKnOALJcAd9F5+Y/MGnSSQuGK9maQtZXBn6DIvVYP1kmF503TncFJqneznB4b87vJ
+         lZPw==
+X-Gm-Message-State: AOAM530rUyH1XD1eeG1jUDOhfvQYU2bHWlVlTfiSLnTWGJNIu8x+x2E/
+        DFDsWnPJR/jTSSuntc7/7oO7aUQ+UILXBhst4IFlnVh8o7qXo5J0
+X-Google-Smtp-Source: ABdhPJxx/P4ra5QpWd5duArZLdcPIpwnYCzDJcQdTyLKMbGhl3SM+TwPUew0ZRRYUl+cSk9xgN4fZjN5aLaYIk6QhW8=
+X-Received: by 2002:a17:902:930b:b029:12c:a7f4:afb2 with SMTP id
+ bc11-20020a170902930bb029012ca7f4afb2mr18970184plb.24.1630275093687; Sun, 29
+ Aug 2021 15:11:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+xTFBeH-x-=dsQK-K5KjZZ7JKmQggz2s26=p7g+71kZjA@mail.gmail.com>
+ <20210829164921.u5ntqk5jz2v3hlgr@h510> <CAPGkw+ypKOVsJF_Guna+9+q-+cApYzdBGHMPKKr6MAzGQtqy2g@mail.gmail.com>
+ <CAPGkw+wGn1oTAO7JXXApDMm4cFfxXam913hOGnnup1nSOpcVPA@mail.gmail.com>
+ <CAPGkw+xroJmxa9i6X++un6tQFQ-3F5uMRCatzufWsdfw7cQ2LQ@mail.gmail.com> <20210829205953.63ebc32xlyudsqzg@h510>
+In-Reply-To: <20210829205953.63ebc32xlyudsqzg@h510>
+From:   Krish Jain <krishjain02939@gmail.com>
+Date:   Mon, 30 Aug 2021 00:11:22 +0200
+Message-ID: <CAPGkw+wtE0HMQmYsMkFEt_BPqqB2j_TQ6zwATp6zyXLyxxwTOA@mail.gmail.com>
+Subject: Re: [PATCH] Declare the file_operations struct as const
+To:     Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An unnecessary "__ref" annotation was removed from the
-"drivers/pci/xen_pcifront.c" file. The function where the annotation
-was used was "pcifront_backend_changed()", which does not call any
-functions annotated as "__*init" nor "__*exit". This makes "__ref"
-unnecessary since this annotation is used to make the compiler ignore
-section miss-matches when they are not happening here in the first
-place.
+On Sun, Aug 29, 2021 at 11:00 PM Bryan Brattlof <hello@bryanbrattlof.com> w=
+rote:
+>
+> On this day, August 29, 2021, thus sayeth Krish Jain:
+> > Keeping you updated. Small win. The "Symbol version dump
+> > "Module.symvers" is missing. " error disappeared. Now I still don't
+> > know why
+> >
+>
+> Whoop! Any win, no matter their size, always feel great. I ran around
+> the house yesterday after cross compiling DOOM! for an armel chip. It's
+> that "win" feeling you get that keeps me involved.
+>
+> It is important that you find out why though. What is the importance to
+> having Module.symvers? and why is it a WARNING and not an ERROR?
 
-In addition to the aforementioned change, some code style issues were
-fixed in the same file.
+ When a module is loaded/used, the values contained in the kernel are
+compared with similar values in the module; if they are not equal, the
+kernel refuses to load the module. I don't need it in my case.
 
-Signed-off-by: Sergio Miguéns Iglesias <sergio@lony.xyz>
----
- drivers/pci/xen-pcifront.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+> What would happen if we didn't have the proper symbols when compiling or
+> installing this driver?
+> How and what generates the Module.symvers file when we *do* need it?
 
-diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
-index b7a8f3a1921f..f06661704f3a 100644
---- a/drivers/pci/xen-pcifront.c
-+++ b/drivers/pci/xen-pcifront.c
-@@ -115,7 +115,7 @@ static int do_pci_op(struct pcifront_device *pdev, struct xen_pci_op *op)
- 	struct xen_pci_op *active_op = &pdev->sh_info->op;
- 	unsigned long irq_flags;
- 	evtchn_port_t port = pdev->evtchn;
--	unsigned irq = pdev->irq;
-+	unsigned int irq = pdev->irq;
- 	s64 ns, ns_timeout;
- 
- 	spin_lock_irqsave(&pdev->sh_info_lock, irq_flags);
-@@ -152,11 +152,10 @@ static int do_pci_op(struct pcifront_device *pdev, struct xen_pci_op *op)
- 		}
- 	}
- 
--	/*
--	* We might lose backend service request since we
--	* reuse same evtchn with pci_conf backend response. So re-schedule
--	* aer pcifront service.
--	*/
-+	/* We might lose backend service request since we
-+	 * reuse same evtchn with pci_conf backend response. So re-schedule
-+	 * aer pcifront service.
-+	 */
- 	if (test_bit(_XEN_PCIB_active,
- 			(unsigned long *)&pdev->sh_info->flags)) {
- 		dev_err(&pdev->xdev->dev,
-@@ -493,7 +492,8 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
- 	list_add(&bus_entry->list, &pdev->root_buses);
- 
- 	/* pci_scan_root_bus skips devices which do not have a
--	* devfn==0. The pcifront_scan_bus enumerates all devfn. */
-+	 * devfn==0. The pcifront_scan_bus enumerates all devfn.
-+	 */
- 	err = pcifront_scan_bus(pdev, domain, bus, b);
- 
- 	/* Claim resources before going "live" with our devices */
-@@ -651,8 +651,9 @@ static void pcifront_do_aer(struct work_struct *data)
- 	pci_channel_state_t state =
- 		(pci_channel_state_t)pdev->sh_info->aer_op.err;
- 
--	/*If a pci_conf op is in progress,
--		we have to wait until it is done before service aer op*/
-+	/* If a pci_conf op is in progress, we have to wait until it is done
-+	 * before service aer op
-+	 */
- 	dev_dbg(&pdev->xdev->dev,
- 		"pcifront service aer bus %x devfn %x\n",
- 		pdev->sh_info->aer_op.bus, pdev->sh_info->aer_op.devfn);
-@@ -676,6 +677,7 @@ static void pcifront_do_aer(struct work_struct *data)
- static irqreturn_t pcifront_handler_aer(int irq, void *dev)
- {
- 	struct pcifront_device *pdev = dev;
-+
- 	schedule_pcifront_aer_op(pdev);
- 	return IRQ_HANDLED;
- }
-@@ -1027,6 +1029,7 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
- 	/* Find devices being detached and remove them. */
- 	for (i = 0; i < num_devs; i++) {
- 		int l, state;
-+
- 		l = snprintf(str, sizeof(str), "state-%d", i);
- 		if (unlikely(l >= (sizeof(str) - 1))) {
- 			err = -ENOMEM;
-@@ -1078,7 +1081,7 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
- 	return err;
- }
- 
--static void __ref pcifront_backend_changed(struct xenbus_device *xdev,
-+static void pcifront_backend_changed(struct xenbus_device *xdev,
- 						  enum xenbus_state be_state)
- {
- 	struct pcifront_device *pdev = dev_get_drvdata(&xdev->dev);
-@@ -1137,6 +1140,7 @@ static int pcifront_xenbus_probe(struct xenbus_device *xdev,
- static int pcifront_xenbus_remove(struct xenbus_device *xdev)
- {
- 	struct pcifront_device *pdev = dev_get_drvdata(&xdev->dev);
-+
- 	if (pdev)
- 		free_pdev(pdev);
- 
--- 
-2.33.0
+The kernel would refuse to load the module.
 
+
+
+
+
+> How can we turn this warning off when we don't need it?
+>
+> This is covered in chapter "6. Module Versioning"
+>
+>   https://www.kernel.org/doc/html/latest/kbuild/modules.html
+>
+> >
+> > ERROR: Kernel configuration is invalid."; \
+> > echo >&2 "         include/generated/autoconf.h or
+> > include/config/auto.conf are missing.";\
+> > echo >&2 "         Run 'make oldconfig && make prepare' on kernel src
+> > to fix it."; \
+> >
+> >
+> > is still present.
+> >
+> > How can I fix this?
+> >
+>
+> Are there any other 'make *config' options we could try?
+
+Yes, like main menuconfig. I tried it but it still doesn't work.
+
+> What does 'make prepare' even do?
+
+
+Prepares for different architectures etc.
+
+
+> Why do we even need a configuration file?
+>
+>   https://www.kernel.org/doc/html/latest/kbuild/kconfig.html
+>
+> >
+> > Best Regards
+> >
+> > On Sun, Aug 29, 2021 at 8:28 PM Krish Jain <krishjain02939@gmail.com> w=
+rote:
+> > >
+> > > Basically it says "you must have a prebuilt kernel available that
+> > > contains the configuration and header files used in the build." Since
+> > > for the staging kernel  "make oldconfig" asked me for  more
+> > > configurations apart from my old configuration file (as it reads the
+> > > existing .config file that was used for an old kernel and prompts the
+> > > user for options in the current kernel source that are not found in
+> > > the file) . So I *don't* currently have a prebuilt kernel that
+> > > contains all the configuration in my staging kernel's .config file. S=
+o
+> > > do I have to build the kernel once before I can just build the module
+> > > with "make CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android" ?
+> > >
+>
+> What do all these other configuration settings turn on and off anyway?
+>
+> Do we really need CONFIG_INFINIBAND turned on if we're working in the
+> drivers/staging tree of the kernel?
+
+
+No, we don't. I removed it.
+
+> What would we gain from having a compiled kernel if we want to test a
+> single staging driver?
+
+No need to compile the entire kernel I guess for my use case. But
+after all this reading :( I still don't get why " sudo make
+CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android/  V=3D1" worked for you
+but not for me. I still get the following errors
+
+
+test -e include/generated/autoconf.h -a -e include/config/auto.conf || ( \
+echo >&2; \
+echo >&2 "  ERROR: Kernel configuration is invalid."; \
+echo >&2 "         include/generated/autoconf.h or
+include/config/auto.conf are missing.";\
+echo >&2 "         Run 'make oldconfig && make prepare' on kernel src
+to fix it."; \
+echo >&2 ; \
+/bin/false)
+.....
+
+
+How can I fix this?
+
+
+
+
+> If you found what Module.symvers does, you should know this.
+>
+> > > > >
+> > > > > Again, do not allow others to rob you of learning how to solve th=
+ese
+> > > > > issues yourself. I *strongly* encourage you to familiarize yourse=
+lf with
+> > > > > the Kernel Build System in the Documentation.
+> > > > >
+> > > > >   https://www.kernel.org/doc/html/latest/kbuild/modules.html
+> > > > >
+> > > > > Specifically the first paragraph of "2. How to Build External Mod=
+ules"
+> > > > >
+> > > > > It may seem like a lot for such a simple issue but it *is* worth =
+it.
+> > > > > ~Bryan
+> > > > >
+> > > >
+> > > > That section says
+> > > >
+> > > >
+> > > > "To build external modules, *you must have a prebuilt kernel
+> > > > available* that contains the configuration and header files used in
+> > > > the build. Also, the kernel must have been built with modules enabl=
+ed.
+> > > > If you are using a distribution kernel, there will be a package for
+> > > > the kernel you are running provided by your distribution.
+> > > >
+> > > > An alternative is to use the =E2=80=9Cmake=E2=80=9D target =E2=80=
+=9Cmodules_prepare.=E2=80=9D This
+> > > > will make sure the kernel contains the information required. The
+> > > > target exists solely as a simple way to prepare a kernel source tre=
+e
+> > > > for building external modules.
+> > > >
+> > > > NOTE: =E2=80=9Cmodules_prepare=E2=80=9D will not build Module.symve=
+rs even if
+> > > > CONFIG_MODVERSIONS is set; therefore, *a full kernel build needs to=
+ be
+> > > > executed to make module versioning work.*"
+> > > >
+> > > > So I am just trying to confirm with you whether I have to first bui=
+ld
+> > > > the kernel with like "make" or not? As you can imagine my hardware
+> > > > takes *very* long to build a kernel as I did in my last attempt so =
+I
+> > > > am asking whether it is needed. Hope you understand.
+> > > >
+>
+> I understand. Though I still don't wish to rob you of this opportunity.
+>
+> Your ability to come up with these questions and answer them yourself is
+> what will make you a better programmer and developer.
+>
+> Don't get me wrong. Greg knows all too well the garbage I can shovel his
+> way. It's not about knowing the answer. It about knowing how to find the
+> answer yourself.
+>
+> ~Bryan
+>
