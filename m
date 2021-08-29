@@ -2,179 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C933FAA6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3229B3FAA6B
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbhH2JVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 05:21:37 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:39601 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235037AbhH2JVg (ORCPT
+        id S234923AbhH2JXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 05:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234835AbhH2JXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 05:21:36 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 55167580B14;
-        Sun, 29 Aug 2021 05:20:44 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sun, 29 Aug 2021 05:20:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=9COMIqJL2Ybx3
-        3JZ6BTNawSa1Jp0SEZ7LgvLm9CZf2M=; b=m7hlypwHAe8y3g6j+f8yf7UfBt6Kf
-        I7dWWiCliYnEZt/LnCqvMH97ryRmghS3nE7TfXmy/6QoF3ziRv7atJX8l78F9M/+
-        C3usyUiZ018fGl3boO50txx5TABtSBMdYZ8h7qsu798dyhLEJ3cBB6jJX8LXZvpY
-        57XAhrnwUpu6i1me04RpXJRn7iKxbY4NdTCguyJxZYFuSXIdiwxl+0acakLz0Bik
-        LLn/ErN2wjMuLkLk9Bgcg3IsdZCs08igdPzGltNOkMJZ6eDWzmNUciaNyRRW3HPI
-        f6K9EEV93IJz2AcHOi/EJf8KADhE55pw+nykaed/PTY4PqFK7IM6u8izQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=9COMIqJL2Ybx33JZ6BTNawSa1Jp0SEZ7LgvLm9CZf2M=; b=toEZuPc5
-        2DW0kxDaESVwRMOTuhrdZqGMQcht1ObEjRuH6PkQntX3ASdhPfBs2RzPXMAleQQV
-        GvRA1NcrwsCckXCpNFZXeQbbsXID1bZ5TLAae1Q9Df8Q0rdMbAXVbFr/0yMK15Ad
-        ZOjB5r5LLSatkFhIYpv8f5aNrY1hbem8VFwNTmRxjUbkZill845bE3pkV6ahW998
-        aieq9ubgX/NtR60hkYpqWSxJmvByB3/2yZY/XavaRwvg7phH+XGg91RtLGZDDaHl
-        2GhfpubQNEu1riyYwwDCPSYvpGAsTL34dGJYuxYnsVvDmtqhmL8u/huCfoYPLSOG
-        ltcfcMSCu672kA==
-X-ME-Sender: <xms:bFErYflcmnR21wcGqE_fm4cNEH-ECI7inOVgztZts3vGHaiFYzs_tw>
-    <xme:bFErYS1ow0CgstwPw67ZdUWDKYXMsJCrOL5KA23BtcOgHfAh88OKHYqXcB_0VNoLA
-    MYmZNFnw1z8GP0v6Ag>
-X-ME-Received: <xmr:bFErYVohqCmyROOTj-B3tkoMHfhh9kg1uneQRMp3Muhhy6xmgGNyfhZU3HluPBMjihvWyaAHv7j-Mdq1hPEbTbqVssPrz8PAmMuf4ZN_aLvjHFOfjQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddujedguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgr
-    ihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeeggedtteejke
-    eggeeugfehueevudegvdetjeeviedugedvtdekffekhedtteduhfenucevlhhushhtvghr
-    ufhiiigvpeefnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlih
-    hsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:bFErYXl7aNq0pCQ1-7B1oF3Xq6tuaWaBJlWr1Fo_qevne3HP2UlfQw>
-    <xmx:bFErYd0MO9sVm5PFMIznTM3goL1o3cStG8WG38xn9TyUZ6VziPBTmQ>
-    <xmx:bFErYWukVWhcFt8bOZwS0pGKdDkDySvj6yDY0mKk-IWtXnxv_6iskA>
-    <xmx:bFErYeunGQgb7KLCbu808x_VXWLPv6bAmOFHOcrn3KHaHpdfZa8b7Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 29 Aug 2021 05:20:40 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, pinglinux@gmail.com,
-        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
-        ping.cheng@wacom.com
-Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v10 12/12] ARM: dts: imx7d: remarkable2: add wacom digitizer device
-Date:   Sun, 29 Aug 2021 19:19:25 +1000
-Message-Id: <20210829091925.190-14-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210829091925.190-1-alistair@alistair23.me>
-References: <20210829091925.190-1-alistair@alistair23.me>
+        Sun, 29 Aug 2021 05:23:52 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215CAC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:23:00 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id mf2so24033393ejb.9
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e+dqt6XS4ZNHrivjUXrH9fxmNodvBLxJ0+D0nFk09Hs=;
+        b=JU8XOd2b7Xq5IKjUsiaaBVKqQ3ZtsFJwsPoNIih8o+KUk46lR4ecr611my62NK94Z5
+         cLZlHegUnhQo6eN7sxiYLPLd8CIrtDYVLdwdtExbixGnYWFDEtkzsa11hQ/XG2rPr6mj
+         RFadpuwGKvGyQGDZtydcVxY6RyAFMU1Tw44uD4EZhKQhbEUw4IVrdf0EK0tkinCyvFCO
+         +lotJf7sryrklWXPjz0BHrU88LxcL6cgcP6lFcUZCXcQFP2d9RNBKMCdmK/CvckqjQwJ
+         98Zcc5y4MDfDcgf5akQMDpnikq15HZn3lw+PvDjhQNydQomY60Im6u5BjleJdZ2rEZmX
+         bUdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e+dqt6XS4ZNHrivjUXrH9fxmNodvBLxJ0+D0nFk09Hs=;
+        b=mwBhpSBFXsFNYqwPjfvhNzvlxunRkR33lAtN0czLXLtwjsZJFDhX6P5zk/ycW5Vhqj
+         xFkpTvRVwWQd6t5+kC+hDqxAtuqRC5mB0UWp31PmsGPpOfwjJUSEWiasc2q58kaJUhiP
+         1Grp4a2UJMlW3BIPt28kJ/JFxW0SuF9VmuUPN+nUZFX+hysU2nApgWyUyZxGRmItG1mZ
+         9FU+GWh6tc6q110VhoojAUfzO/pEIAiNFRUSrd8trHxGCQDzbqMUmgDQZBN+xu/pw24a
+         WkkmHRKWh1jWOwiYB584macwwia9NcJroSZhqcemG8rxxJp4X9hZjoGED3diphzW7pnC
+         dxJg==
+X-Gm-Message-State: AOAM533LyWBPQGhydyNsIw8CiZVRhdDxmXAQymZFLiMPFPXOFFuZn5qc
+        O8YfsUtTo9cBlde+cCB77k0=
+X-Google-Smtp-Source: ABdhPJy6D7wvo+5iCtrPdFblc/OhtL1DNGesRrmldOnErYS5oePwvizVmEzgWREo4pwFRIlztOd93g==
+X-Received: by 2002:a17:907:628d:: with SMTP id nd13mr19549239ejc.7.1630228978627;
+        Sun, 29 Aug 2021 02:22:58 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id u4sm610916ejc.19.2021.08.29.02.22.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 02:22:57 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v4] staging: greybus: Convert uart.c from IDR to XArray
+Date:   Sun, 29 Aug 2021 11:22:50 +0200
+Message-Id: <20210829092250.25379-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the wacom_i2c touchscreen for the reMarkable2.
+Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
+is more memory-efficient, parallelisable, and cache friendly. It takes
+advantage of RCU to perform lookups without locking. Furthermore, IDR is
+deprecated because XArray has a better (cleaner and more consistent) API.
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- arch/arm/boot/dts/imx7d-remarkable2.dts | 61 +++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
-index 89cbf13097a4..052f9da32398 100644
---- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-+++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-@@ -34,6 +34,19 @@ reg_brcm: regulator-brcm {
- 		startup-delay-us = <150>;
- 	};
+v3->v4: 
+	Remove mutex_lock/unlock around xa_load(). These locks seem to
+	be unnecessary because there is a 1:1 correspondence between
+	a specific minor and its gb_tty and there is no reference
+	counting. I think that the RCU locks used inside xa_load()
+	are sufficient to protect this API from returning an invalid
+	gb_tty in case of concurrent access. Some more considerations 
+	on this topic are in the following message to linux-kernel list:
+	https://lore.kernel.org/lkml/3554184.2JXonMZcNW@localhost.localdomain/
+v2->v3:
+        Fix some issues according to a review by Alex Elder <elder@ieee.org>
+v1->v2:
+        Fix an issue found by the kernel test robot. It is due to
+        passing to xa_*lock() the same old mutex that IDR used with
+        the previous version of the code.
+
+ drivers/staging/greybus/uart.c | 32 ++++++++++++++------------------
+ 1 file changed, 14 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
+index 73f01ed1e5b7..f66983adb51b 100644
+--- a/drivers/staging/greybus/uart.c
++++ b/drivers/staging/greybus/uart.c
+@@ -22,7 +22,7 @@
+ #include <linux/serial.h>
+ #include <linux/tty_driver.h>
+ #include <linux/tty_flip.h>
+-#include <linux/idr.h>
++#include <linux/xarray.h>
+ #include <linux/fs.h>
+ #include <linux/kdev_t.h>
+ #include <linux/kfifo.h>
+@@ -32,8 +32,9 @@
  
-+	reg_digitizer: regulator-digitizer {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDD_3V3_DIGITIZER";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_digitizer_reg>;
-+		pinctrl-1 = <&pinctrl_digitizer_reg>;
-+		gpio = <&gpio1 6 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		startup-delay-us = <100000>; /* 100 ms */
-+	};
-+
- 	wifi_pwrseq: wifi_pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		pinctrl-names = "default";
-@@ -51,6 +64,28 @@ &clks {
- 	assigned-clock-rates = <0>, <32768>;
+ #include "gbphy.h"
+ 
+-#define GB_NUM_MINORS	16	/* 16 is more than enough */
+-#define GB_NAME		"ttyGB"
++#define GB_NUM_MINORS		16	/* 16 is more than enough */
++#define GB_RANGE_MINORS		XA_LIMIT(0, GB_NUM_MINORS)
++#define GB_NAME			"ttyGB"
+ 
+ #define GB_UART_WRITE_FIFO_SIZE		PAGE_SIZE
+ #define GB_UART_WRITE_ROOM_MARGIN	1	/* leave some space in fifo */
+@@ -67,8 +68,7 @@ struct gb_tty {
  };
  
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	wacom_digitizer: digitizer@9 {
-+		compatible = "wacom,i2c-30";
-+		reg = <0x09>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_wacom>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
-+		flip-tilt-x;
-+		flip-tilt-y;
-+		flip-pos-x;
-+		flip-pos-y;
-+		flip-distance;
-+		vdd-supply = <&reg_digitizer>;
-+	};
-+};
-+
- &snvs_pwrkey {
- 	status = "okay";
- };
-@@ -117,6 +152,25 @@ &wdog1 {
- 	fsl,ext-reset-output;
- };
+ static struct tty_driver *gb_tty_driver;
+-static DEFINE_IDR(tty_minors);
+-static DEFINE_MUTEX(table_lock);
++static DEFINE_XARRAY(tty_minors);
  
-+&iomuxc_lpsr {
-+	pinctrl_digitizer_reg: digitizerreggrp {
-+		fsl,pins = <
-+			/* DIGITIZER_PWR_EN */
-+			MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6	0x14
-+		>;
-+	};
-+
-+	pinctrl_wacom: wacomgrp {
-+		fsl,pins = <
-+			/*MX7D_PAD_LPSR_GPIO1_IO05__GPIO1_IO5	0x00000014 /* FWE */
-+			MX7D_PAD_LPSR_GPIO1_IO04__GPIO1_IO4	0x00000074 /* PDCTB */
-+			MX7D_PAD_LPSR_GPIO1_IO01__GPIO1_IO1	0x00000034 /* WACOM INT */
-+			/*MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6	0x00000014 /* WACOM PWR ENABLE */
-+			/*MX7D_PAD_LPSR_GPIO1_IO00__GPIO1_IO0	0x00000074 /* WACOM RESET */
-+		>;
-+	};
-+};
-+
- &iomuxc {
- 	pinctrl_brcm_reg: brcmreggrp {
- 		fsl,pins = <
-@@ -125,6 +179,13 @@ MX7D_PAD_SAI1_TX_BCLK__GPIO6_IO13	0x14
- 		>;
- 	};
+ static int gb_uart_receive_data_handler(struct gb_operation *op)
+ {
+@@ -341,8 +341,7 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
+ {
+ 	struct gb_tty *gb_tty;
  
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX7D_PAD_I2C1_SDA__I2C1_SDA		0x4000007f
-+			MX7D_PAD_I2C1_SCL__I2C1_SCL		0x4000007f
-+		>;
-+	};
-+
- 	pinctrl_uart1: uart1grp {
- 		fsl,pins = <
- 			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
+-	mutex_lock(&table_lock);
+-	gb_tty = idr_find(&tty_minors, minor);
++	gb_tty = xa_load(&tty_minors, minor);
+ 	if (gb_tty) {
+ 		mutex_lock(&gb_tty->mutex);
+ 		if (gb_tty->disconnected) {
+@@ -353,19 +352,18 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
+ 			mutex_unlock(&gb_tty->mutex);
+ 		}
+ 	}
+-	mutex_unlock(&table_lock);
+ 	return gb_tty;
+ }
+ 
+ static int alloc_minor(struct gb_tty *gb_tty)
+ {
+ 	int minor;
++	int ret;
+ 
+-	mutex_lock(&table_lock);
+-	minor = idr_alloc(&tty_minors, gb_tty, 0, GB_NUM_MINORS, GFP_KERNEL);
+-	mutex_unlock(&table_lock);
+-	if (minor >= 0)
+-		gb_tty->minor = minor;
++	ret = xa_alloc(&tty_minors, &minor, gb_tty, GB_RANGE_MINORS, GFP_KERNEL);
++	if (ret)
++		return ret;
++	gb_tty->minor = minor;
+ 	return minor;
+ }
+ 
+@@ -374,9 +372,7 @@ static void release_minor(struct gb_tty *gb_tty)
+ 	int minor = gb_tty->minor;
+ 
+ 	gb_tty->minor = 0;	/* Maybe should use an invalid value instead */
+-	mutex_lock(&table_lock);
+-	idr_remove(&tty_minors, minor);
+-	mutex_unlock(&table_lock);
++	xa_erase(&tty_minors, minor);
+ }
+ 
+ static int gb_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+@@ -837,7 +833,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+ 
+ 	minor = alloc_minor(gb_tty);
+ 	if (minor < 0) {
+-		if (minor == -ENOSPC) {
++		if (minor == -EBUSY) {
+ 			dev_err(&gbphy_dev->dev,
+ 				"no more free minor numbers\n");
+ 			retval = -ENODEV;
+@@ -982,7 +978,7 @@ static void gb_tty_exit(void)
+ {
+ 	tty_unregister_driver(gb_tty_driver);
+ 	put_tty_driver(gb_tty_driver);
+-	idr_destroy(&tty_minors);
++	xa_destroy(&tty_minors);
+ }
+ 
+ static const struct gbphy_device_id gb_uart_id_table[] = {
 -- 
-2.31.1
+2.32.0
 
