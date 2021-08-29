@@ -2,131 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65623FAC7C
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE06E3FAC7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235568AbhH2PS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhH2PS5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:18:57 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B08CC061575;
-        Sun, 29 Aug 2021 08:18:05 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id n27so17017343oij.0;
-        Sun, 29 Aug 2021 08:18:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sbgY53rxu2C/Bzp1Fq3Hlx4nUgLjjGXWejXFRVYrqhw=;
-        b=P2xhmBc4+k9rU4F3yTt6/j1+VZCULGBkfOOtIKLdppfm3JBlItxbfq1uo0/4lXEj8b
-         6i9m8/8YEieVLDu/kxQ55blgNT+1wwFXF1EXvEmsjFGWKKnzvcnzw3uA8IeNeffzTs2E
-         h8KHudv9WasZlWYbxD5atF074Alcdo0qgf3utDOQvzQbRtjaMHmlfbxkh6sHX0w6Ctsi
-         6tjnpsDLHgipQP6YP2bSWfWa5U/uEryDTrAbnpSI39+opegZi1HP9qy1SlX9k63zOTqM
-         VWDZxxInySBOXe5iNlJlntUvae1GIqYWe9hb0lgFJSUEjZ5WFTd+TGUs47+tIn6pLF3c
-         51Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sbgY53rxu2C/Bzp1Fq3Hlx4nUgLjjGXWejXFRVYrqhw=;
-        b=DbK7s0tiKGI58zmiYXhyZhwkHAduZIo4g25ohgxMPhe4ZSpuBTGhFl/J7rS0ICDN49
-         nzFSpNqKeLPrsxU7XsLFK3NBa4ANe/IWAxScYq6cnIaf03PVhT3/6+o1uCZCkCFckfCg
-         ETaUJGYWjv641nlSItjBdtzbMlN/VMSNeeSsNqyxNg0ur3yttxDELpNFWbhoyK985MYe
-         NSjHMNJ3DrJ+q847MH0E8N5N3jqwzAyOJzVGbKrodlZn4W+3D0ALhOm/f4+hMl3sJu0j
-         aZk3mFwGL3IvSJfaKsYzpf79j2sOeEsjsH6HbExXSkb5F6Qa+Xg2sz10hyB+TO0p8K2O
-         GUyw==
-X-Gm-Message-State: AOAM533ayhEk96ahUuOveETtm1OSJ6U2Tnlw/6xjk/WcvtUw9/624Ehu
-        t2JeJVtQc22ih7hXUHOx0VGa/GwJOuM=
-X-Google-Smtp-Source: ABdhPJyb2Ut2IjTAb/bfrFeYaDBMs3C+cpNS7YKc2KKgmXQobV/OxuwwKTpZ0wTKs03x3O5EHD9nEQ==
-X-Received: by 2002:a54:4189:: with SMTP id 9mr20687971oiy.45.1630250284257;
-        Sun, 29 Aug 2021 08:18:04 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c7sm2622446otm.27.2021.08.29.08.18.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Aug 2021 08:18:03 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Luke Jones <luke@ljones.dev>, Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, pobrn@protonmail.com,
-        platform-driver-x86@vger.kernel.org
-References: <20210829071402.576380-1-luke@ljones.dev>
- <cf42ddd7-29ed-ff8b-7d03-958187863b70@redhat.com>
- <RLILYQ.0GH3JY7UCTPI2@ljones.dev>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v6 0/1] asus-wmi: Add support for custom fan curves
-Message-ID: <2af6628e-118f-6a75-8074-2f4144c7f8e7@roeck-us.net>
-Date:   Sun, 29 Aug 2021 08:18:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235542AbhH2PSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:18:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231216AbhH2PSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 11:18:07 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB906606A5;
+        Sun, 29 Aug 2021 15:17:09 +0000 (UTC)
+Date:   Sun, 29 Aug 2021 16:20:22 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
+        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [RESEND v4 08/15] iio: adc: aspeed: Use model_data to set clk
+ scaler.
+Message-ID: <20210829162022.7ee18854@jic23-huawei>
+In-Reply-To: <202108250006.17P06IgG097015@twspam01.aspeedtech.com>
+References: <20210824091243.9393-1-billy_tsai@aspeedtech.com>
+        <202108250006.17P06IgG097015@twspam01.aspeedtech.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <RLILYQ.0GH3JY7UCTPI2@ljones.dev>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/21 3:03 AM, Luke Jones wrote:
-> 
-> 
-> On Sun, Aug 29 2021 at 11:57:55 +0200, Hans de Goede <hdegoede@redhat.com> wrote:
->> Hi Luke,
->>
->> On 8/29/21 9:14 AM, Luke D. Jones wrote:
->>>  Add support for custom fan curves found on some ASUS ROG laptops.
->>>
->>>  - V1
->>>    + Initial patch work
->>>  - V2
->>>    + Don't fail and remove wmi driver if error from
->>>      asus_wmi_evaluate_method_buf() if error is -ENODEV
->>>  - V3
->>>    + Store the "default" fan curves
->>>    + Call throttle_thermal_policy_write() if a curve is erased to ensure
->>>      that the factory default for a profile is applied again
->>>  - V4
->>>    + Do not apply default curves by default. Testers have found that the
->>>      default curves don't quite match actual no-curve behaviours
->>>    + Add method to enable/disable curves for each profile
->>>  - V5
->>>    + Remove an unrequired function left over from previous iterations
->>>    + Ensure default curves are applied if user writes " " to a curve path
->>>    + Rename "active_fan_curve_profiles" to "enabled_fan_curve_profiles" to
->>>      better reflect the behavious of this setting
->>>    + Move throttle_thermal_policy_write_*pu_curves() and rename to
->>>      fan_curve_*pu_write()
->>>    + Merge fan_curve_check_valid() and fan_curve_write()
->>>    + Remove some leftover debug statements
->>>  - V6
->>>    + Refactor data structs to store  array or u8 instead of strings.
->>>      This affects the entire patch except the enabled_fan_curves block
->>>    + Use sysfs_match_string in enabled_fan_curve block
->>>    + Add some extra comments to describe things
->>>    + Allow some variation in how fan curve input can be formatted
->>>    + Use SENSOR_DEVICE_ATTR_2_RW() to reduce the amount of lines per
->>>      fan+profile combo drastically
->>
->> Thank you for your continued work on this. I read in the discussin of v5
->> that you discussed using the standard auto_point#_pwm, auto_point#_temp
->> pairs. I see here that you have decided to not go that route, may I ask
->> why ?
-> 
-> Sure, primary reason is because the RPM for the fans is in percentage so it didn't really make sense to me to use that format.
-> 
-> Also if the max for that is 255 then I'd need to introduce scaling to make match what the ACPI method expects (max 100). But yeah, auto_point#_pwm changes the meaning.
-> 
+On Tue, 24 Aug 2021 17:12:36 +0800
+Billy Tsai <billy_tsai@aspeedtech.com> wrote:
 
-Bad argument. That is true for other controllers as well. You could
-just scale it up and down as needed.
+> This patch use need_prescaler and scaler_bit_width to set the adc clock
+> scaler.
+> 
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Hi Billy,
 
-The whole point of an ABI is that it is standardized.
-If others would [be permitted to] follow your line of argument,
-we would not have a useful ABI because "my chip provides/needs
-data in some other format".
+One minor comment inline.
 
-Guenter
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/adc/aspeed_adc.c | 39 +++++++++++++++++++++---------------
+>  1 file changed, 23 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
+> index 2d6215a91f99..52db38be9699 100644
+> --- a/drivers/iio/adc/aspeed_adc.c
+> +++ b/drivers/iio/adc/aspeed_adc.c
+> @@ -202,9 +202,10 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  {
+>  	struct iio_dev *indio_dev;
+>  	struct aspeed_adc_data *data;
+> -	const char *clk_parent_name;
+>  	int ret;
+>  	u32 adc_engine_control_reg_val;
+> +	unsigned long scaler_flags = 0;
+> +	char clk_name[32], clk_parent_name[32];
+>  
+>  	indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*data));
+>  	if (!indio_dev)
+> @@ -221,24 +222,28 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  
+>  	/* Register ADC clock prescaler with source specified by device tree. */
+>  	spin_lock_init(&data->clk_lock);
+> -	clk_parent_name = of_clk_get_parent_name(pdev->dev.of_node, 0);
+> -
+> -	data->clk_prescaler = clk_hw_register_divider(
+> -				&pdev->dev, "prescaler", clk_parent_name, 0,
+> -				data->base + ASPEED_REG_CLOCK_CONTROL,
+> -				17, 15, 0, &data->clk_lock);
+> -	if (IS_ERR(data->clk_prescaler))
+> -		return PTR_ERR(data->clk_prescaler);
+> -
+> +	snprintf(clk_parent_name, 32, of_clk_get_parent_name(pdev->dev.of_node, 0));
+
+ARRAY_SIZE(clk_parent_name) instead of 32.
+Same for other places this pattern occurs.
+
+
+> +	if (data->model_data->need_prescaler) {
+> +		snprintf(clk_name, 32, "%s-prescaler",
+> +			 data->model_data->model_name);
+> +		data->clk_prescaler = clk_hw_register_divider(
+> +			&pdev->dev, clk_name, clk_parent_name, 0,
+> +			data->base + ASPEED_REG_CLOCK_CONTROL, 17, 15, 0,
+> +			&data->clk_lock);
+> +		if (IS_ERR(data->clk_prescaler))
+> +			return PTR_ERR(data->clk_prescaler);
+> +		snprintf(clk_parent_name, 32, clk_name);
+> +		scaler_flags = CLK_SET_RATE_PARENT;
+> +	}
+>  	/*
+>  	 * Register ADC clock scaler downstream from the prescaler. Allow rate
+>  	 * setting to adjust the prescaler as well.
+>  	 */
+> +	snprintf(clk_name, 32, "%s-scaler", data->model_data->model_name);
+>  	data->clk_scaler = clk_hw_register_divider(
+> -				&pdev->dev, "scaler", "prescaler",
+> -				CLK_SET_RATE_PARENT,
+> -				data->base + ASPEED_REG_CLOCK_CONTROL,
+> -				0, 10, 0, &data->clk_lock);
+> +		&pdev->dev, clk_name, clk_parent_name, scaler_flags,
+> +		data->base + ASPEED_REG_CLOCK_CONTROL, 0,
+> +		data->model_data->scaler_bit_width, 0, &data->clk_lock);
+>  	if (IS_ERR(data->clk_scaler)) {
+>  		ret = PTR_ERR(data->clk_scaler);
+>  		goto scaler_error;
+> @@ -310,7 +315,8 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  reset_error:
+>  	clk_hw_unregister_divider(data->clk_scaler);
+>  scaler_error:
+> -	clk_hw_unregister_divider(data->clk_prescaler);
+> +	if (data->model_data->need_prescaler)
+> +		clk_hw_unregister_divider(data->clk_prescaler);
+>  	return ret;
+>  }
+>  
+> @@ -325,7 +331,8 @@ static int aspeed_adc_remove(struct platform_device *pdev)
+>  	clk_disable_unprepare(data->clk_scaler->clk);
+>  	reset_control_assert(data->rst);
+>  	clk_hw_unregister_divider(data->clk_scaler);
+> -	clk_hw_unregister_divider(data->clk_prescaler);
+> +	if (data->model_data->need_prescaler)
+> +		clk_hw_unregister_divider(data->clk_prescaler);
+>  
+>  	return 0;
+>  }
+
