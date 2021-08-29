@@ -2,160 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0673FADC5
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603283FADC7
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235902AbhH2S3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 14:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
+        id S235283AbhH2SfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 14:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235789AbhH2S3h (ORCPT
+        with ESMTP id S230010AbhH2SfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 14:29:37 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C7EC061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:28:45 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so10801912pje.0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:28:45 -0700 (PDT)
+        Sun, 29 Aug 2021 14:35:08 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2DDC061575;
+        Sun, 29 Aug 2021 11:34:15 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id v123so10373913pfb.11;
+        Sun, 29 Aug 2021 11:34:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ag9D8N0fhBIrol0HNSilfA7AMgyYglE49DL9RoGRtsU=;
-        b=svC4gFefGSS+cR/UbjmxUfdMp4uT7qfQz8vBEFSDJvv4yVkNw0lAR+cIyAtZtpP2JY
-         YDR7PG68+OREMz6GdOh3hpGjHgSDOJ/f/UfvY69fPcQNFd/tKoDj3NeNxCktR3aTXslN
-         zW4YMJQLpozi/SQEpm28Eg0O1bwgZd4ImCpgIj8sbIbLb2XR9ApTzHS7rn+UgrXyY11c
-         Htn0XXrmIJeFwBNpHLQj3Umhj1xYQ5jJ9SSBNql24qUHoznRI59RCpX8m5i0ZZhfznBM
-         vxrVz30o3NSlRUMd/a/OzVBURD31TFeMn2kSoIuy29KITTOOuhmXMemM8eDQuC71ImF/
-         B5rA==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qQjfu8WxFIS1DldFoOXKxC6q+BF0Msctmm3ppp/j+9E=;
+        b=PdstMbCe4wjuo5XTSUGYKYi1BVmCnR99/SE8rnzloUFya9CUn0Q0UWnnUwkeTAtGlK
+         KdVMdAW3K6iI30gAgQLiqxG0J4Lhrkk/+9e0GrYuANkTEyn9Ci0j6ARC9wv5zt+pglKD
+         LmV3Yic5HXawqwvi0Se/b26JQTvqoYkdSAg4h/0HjN59st2FjO/rfp8SWEVganyz3bER
+         Fztc3dXgYup9dN3VHhcLMnxK5HqciUpaqiKXh068wdyQu0rwSKZMjBGRco7iH4KMEFAj
+         lJQSprDZAiMUKISUAAjfs087noBXsxCiJ6EMEbHEPRFORrjcDdPVJ3e1YPwP7sICu6+q
+         1eKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ag9D8N0fhBIrol0HNSilfA7AMgyYglE49DL9RoGRtsU=;
-        b=Vzw+90TKeRcGWbsF9F2+4noXv4Z6jLhWWm7FnqPJPDwA5zQkWXd7M9wQ2UMBkl/6o4
-         vwTZRkbWu9VRw7I1R/7FiFlEN/1ocKAf8M5/daNepynT0FuhMwq3UxOt6m+4BKVgrHiF
-         6DmjePcxpGGvWoAsoGYuyML9B25v97PGWyE7wdZBlZ6f7IoJxzsktYh+PwP/V2+4eGo5
-         Q4wFxQe0fj/h2ARtvx7DqkRHahZqTj065jD6dD30yOWz6vtTHloWSJ4oFHMdUPldLbr5
-         UJQAiU54P4v6RjDRSBOpEQDw/3xHIpCn63sSWQdBpJ3plc8FH0ET0u9fDhMzvrvYe9PB
-         lUJQ==
-X-Gm-Message-State: AOAM531lEBikuQOWsbr0FPkcJmKy3cAPoLRkhy1/1eXrrvtY9Pa0BGSg
-        ztma2dT6ptycfk1IG/u7PP3kyIx7HvytnTKj5kM=
-X-Google-Smtp-Source: ABdhPJxILhmsT/D4BB4XHvQ4sLJiXMQUnZttdEevpvWn2M3282wW2knpdWHPjJtqDm+pn4FTHFSDu2sVyR65npqsmIM=
-X-Received: by 2002:a17:90a:ec0a:: with SMTP id l10mr373574pjy.26.1630261724681;
- Sun, 29 Aug 2021 11:28:44 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qQjfu8WxFIS1DldFoOXKxC6q+BF0Msctmm3ppp/j+9E=;
+        b=cx+a+Pfe3IsThiY7nyFIPzvt/6aCTji/lYSqYJ9U5qjYelqdQ55CeF/tu0+CJVswmN
+         bBAy/tW+3AFIWflAIvn9d17kdBJRamzL+hXErAJfS+ev6dkwsoEEXadx4H7YMJ8mvM1w
+         +fSiReiTvNtMOtt2CseOIV29D0/6VOAvtLg3qv8r9YA4Ea8iwKt8dH6NnS2RElXaWPsW
+         +JbwYZx8UtN2SLQmtknweAXFxM0+F8YccbWI1IpVncLKtTh6qDzTYL7VlEx9qUIFgPwF
+         Bbg0IM0fVPxDdmMom5YV0EtruoXaGo0Qnc8I3qIWLA1bTyvB96dFsJ8STBwRgS8bXHNJ
+         +YAQ==
+X-Gm-Message-State: AOAM531msAPjGeuTyWM62xCkxFavan0ORQpmli80CQ8S1VKa8AKqsxZd
+        6wHInZ+xCb2tAgqI8O/D27CppTf385lsJt1v
+X-Google-Smtp-Source: ABdhPJw5Y1hp+771Qtd5cnbZNHkPbmIHd31FTBkvleSwXsgCTpYYESo+fEkJmbBKMFykEd/CjX7MfQ==
+X-Received: by 2002:aa7:978d:0:b0:3f2:526b:f247 with SMTP id o13-20020aa7978d000000b003f2526bf247mr17938617pfp.68.1630262055191;
+        Sun, 29 Aug 2021 11:34:15 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id k12sm18478793pjg.6.2021.08.29.11.34.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Aug 2021 11:34:14 -0700 (PDT)
+Subject: Re: [syzbot] KASAN: use-after-free Write in sco_sock_timeout
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+2bef95d3ab4daa10155b@syzkaller.appspotmail.com>
+Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.von.dentz@intel.com, syzkaller-bugs@googlegroups.com
+References: <000000000000b2725705ca78de29@google.com>
+ <20210827011931.2323-1-hdanton@sina.com>
+ <20210829082929.2897-1-hdanton@sina.com>
+ <11a30bc1-574f-aa1a-21d6-b886de9fc981@gmail.com>
+Message-ID: <9b1afb1f-45d5-8664-eeb6-e8373d95cad3@gmail.com>
+Date:   Mon, 30 Aug 2021 02:34:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+xTFBeH-x-=dsQK-K5KjZZ7JKmQggz2s26=p7g+71kZjA@mail.gmail.com>
- <20210829164921.u5ntqk5jz2v3hlgr@h510> <CAPGkw+ypKOVsJF_Guna+9+q-+cApYzdBGHMPKKr6MAzGQtqy2g@mail.gmail.com>
-In-Reply-To: <CAPGkw+ypKOVsJF_Guna+9+q-+cApYzdBGHMPKKr6MAzGQtqy2g@mail.gmail.com>
-From:   Krish Jain <krishjain02939@gmail.com>
-Date:   Sun, 29 Aug 2021 20:28:33 +0200
-Message-ID: <CAPGkw+wGn1oTAO7JXXApDMm4cFfxXam913hOGnnup1nSOpcVPA@mail.gmail.com>
-Subject: Re: [PATCH] Declare the file_operations struct as const
-To:     Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <11a30bc1-574f-aa1a-21d6-b886de9fc981@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Basically it says "you must have a prebuilt kernel available that
-contains the configuration and header files used in the build." Since
-for the staging kernel  "make oldconfig" asked me for  more
-configurations apart from my old configuration file (as it reads the
-existing .config file that was used for an old kernel and prompts the
-user for options in the current kernel source that are not found in
-the file) . So I *don't* currently have a prebuilt kernel that
-contains all the configuration in my staging kernel's .config file. So
-do I have to build the kernel once before I can just build the module
-with "make CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android" ?
+On 29/8/21 10:53 pm, Desmond Cheong Zhi Xi wrote:
+> On 29/8/21 4:29 pm, Hillf Danton wrote:
+>> On Fri, 27 Aug 2021 15:58:34 +0800 Desmond Cheong Zhi Xi wrote:
+>>> On 27/8/21 9:19 am, Hillf Danton wrote:
+>>>> On Thu, 26 Aug 2021 09:29:24 -0700
+>>>>> syzbot found the following issue on:
+>>>>>
+>>>>> HEAD commit:    e3f30ab28ac8 Merge branch 'pktgen-samples-next'
+>>>>> git tree:       net-next
+>>>>> console output: 
+>>>>> https://syzkaller.appspot.com/x/log.txt?x=13249c96300000
+>>>>> kernel config:  
+>>>>> https://syzkaller.appspot.com/x/.config?x=ef482942966bf763
+>>>>> dashboard link: 
+>>>>> https://syzkaller.appspot.com/bug?extid=2bef95d3ab4daa10155b
+>>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU 
+>>>>> Binutils for Debian) 2.35.1
+>>>>> syz repro:      
+>>>>> https://syzkaller.appspot.com/x/repro.syz?x=16a29ea9300000
+>>>>>
+>>>>> The issue was bisected to:
+>>>>>
+>>>>> commit e1dee2c1de2b4dd00eb44004a4bda6326ed07b59
+>>>>> Author: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>>>>> Date:   Tue Aug 10 04:14:10 2021 +0000
+>>>>>
+>>>>>       Bluetooth: fix repeated calls to sco_sock_kill
+>>
+>> To fix the uaf, grab another hold to sock to make the timeout work safe.
+>>
+>> #syz test: 
+>> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git 
+>> e3f30ab28ac8
+>>
+>> --- a/net/bluetooth/sco.c
+>> +++ b/net/bluetooth/sco.c
+>> @@ -190,15 +190,14 @@ static void sco_conn_del(struct hci_conn
+>>       sco_conn_unlock(conn);
+>>       if (sk) {
+>> -        sock_hold(sk);
+>>           lock_sock(sk);
+>>           sco_sock_clear_timer(sk);
+>>           sco_chan_del(sk, err);
+>>           release_sock(sk);
+>> -        sock_put(sk);
+>>           /* Ensure no more work items will run before freeing conn. */
+>>           cancel_delayed_work_sync(&conn->timeout_work);
+>> +        sock_put(sk);
+> 
+> Hi Hillf,
+> 
+> Saw that this passed the reproducer. But on closer inspection, I think 
+> what's happening is that sco_conn_del is never run.
+> 
+> So the extra sock_hold prevents a UAF, but that's because now the 
+> reference count never goes to 0. In my opinion, something closer to your 
+> previous proposal (+ also addressing other calls to __sco_sock_close) 
+> where we call cancel_delayed_work_sync after the channel is deleted 
+> would address the root cause better.
+> 
+> Just my two cents.
+> 
 
+Ok I went back to make a more thorough audit. Even without calling
+cancel_delayed_work_sync, sco_sock_timeout should not cause a UAF.
 
-Thanks again
+I believe the real issue is that we can allocate a connection twice in
+sco_connect. This means that the first connection gets lost and we're
+unable to clean it up properly.
 
-On Sun, Aug 29, 2021 at 6:56 PM Krish Jain <krishjain02939@gmail.com> wrote=
-:
->
-> On Sun, Aug 29, 2021 at 6:49 PM Bryan Brattlof <hello@bryanbrattlof.com> =
-wrote:
-> >
-> > On this day, August 29, 2021, thus sayeth Krish Jain:
-> > > > >
-> > > > > Hi, what option do you mean?  I already ran make allmodconfig and=
- sudo
-> > > > > make modules_install install and then make   "CCFLAGS=3D-Werror W=
-=3D1
-> > > > > M=3Ddrivers/staging/android/" and now I do get output but one lin=
-e
-> > > > > "WARNING: Symbol version dump "Module.symvers" is missing. Module=
-s may
-> > > > > not have dependencies or modversions. You may get many unresolved
-> > > > > symbol warnings." . Then I tried "make CCFLAGS=3D-Werror V=3D1
-> > > > > M=3Ddrivers/staging/android/" and that outputted the following:
-> > > > >
-> > > >
-> > > > Most of the answers you're asking for are going to get vague respon=
-ses
-> > > > (if any) on the mailing lists. The idea being (and I agree with) th=
-at
-> > > > giving out the answers will steal your opportunity to explore and l=
-earn
-> > > > the material yourself.
-> > > >
-> > > > Yes, it would be faster if we told you the answer, but ultimately, =
-we
-> > > > would be doing a disservice to you.
-> > > >
-> > > > Besides, more times than not we (me especially) don't have the answ=
-er.
-> > > >
-> > > > With that said, I will give a (generous) hint. :)
-> > > >
-> > >
-> > > Hi. Do I have to build the kernel once before this works? Or can I
-> > > just build a module directly?
-> > >
-> >
-> > Again, do not allow others to rob you of learning how to solve these
-> > issues yourself. I *strongly* encourage you to familiarize yourself wit=
-h
-> > the Kernel Build System in the Documentation.
-> >
-> >   https://www.kernel.org/doc/html/latest/kbuild/modules.html
-> >
-> > Specifically the first paragraph of "2. How to Build External Modules"
-> >
-> > It may seem like a lot for such a simple issue but it *is* worth it.
-> > ~Bryan
-> >
->
->
->
-> That section says
->
->
-> "To build external modules, *you must have a prebuilt kernel
-> available* that contains the configuration and header files used in
-> the build. Also, the kernel must have been built with modules enabled.
-> If you are using a distribution kernel, there will be a package for
-> the kernel you are running provided by your distribution.
->
-> An alternative is to use the =E2=80=9Cmake=E2=80=9D target =E2=80=9Cmodul=
-es_prepare.=E2=80=9D This
-> will make sure the kernel contains the information required. The
-> target exists solely as a simple way to prepare a kernel source tree
-> for building external modules.
->
-> NOTE: =E2=80=9Cmodules_prepare=E2=80=9D will not build Module.symvers eve=
-n if
-> CONFIG_MODVERSIONS is set; therefore, *a full kernel build needs to be
-> executed to make module versioning work.*"
->
-> So I am just trying to confirm with you whether I have to first build
-> the kernel with like "make" or not? As you can imagine my hardware
-> takes *very* long to build a kernel as I did in my last attempt so I
-> am asking whether it is needed. Hope you understand.
->
-> Best Regards
+Thoughts on this?
+
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git e3f30ab28ac8
+
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -578,9 +578,6 @@ static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen
+  	    addr->sa_family != AF_BLUETOOTH)
+  		return -EINVAL;
+  
+-	if (sk->sk_state != BT_OPEN && sk->sk_state != BT_BOUND)
+-		return -EBADFD;
+-
+  	if (sk->sk_type != SOCK_SEQPACKET)
+  		return -EINVAL;
+  
+@@ -591,6 +588,13 @@ static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen
+  
+  	lock_sock(sk);
+  
++	if (sk->sk_state != BT_OPEN && sk->sk_state != BT_BOUND) {
++		hci_dev_unlock(hdev);
++		hci_dev_put(hdev);
++		err = -EBADFD;
++		goto done;
++	}
++
+  	/* Set destination address and psm */
+  	bacpy(&sco_pi(sk)->dst, &sa->sco_bdaddr);
+  
