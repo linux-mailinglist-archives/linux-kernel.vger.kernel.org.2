@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C873FAED9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 00:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F5C3FAEDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 00:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236057AbhH2WM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 18:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235659AbhH2WM1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 18:12:27 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DD4C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:11:35 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id i13so13734553ilm.4
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gtoYl7kiNjX3TbLNo3eXXB5Snple9cEEruGWOWNoSu0=;
-        b=U98asr0mRpi1ANWcBZWBGLpmqWSU6HUFP431VThGIIx2Dhe0uJjIKFODAZaT7sRfEV
-         Vw+3XL3mwkCIC1vy6vesHRAFGI4ourUW3faDpgr3azgkBkpoyfVgD/iWDhORFwkURSJz
-         w5kX9CpqckkymE11CPjeMo55wFEzHfapGeleJZbP7Vi9CTLTwwfuvk+X8ED5fNTuFgAa
-         B2ggxSsNRilaOuQze1MqTLthM2FlWd8HfxutU2gJtir1C1hm8bBdbubnssTdNPlbeDCE
-         BY24Gueqzm98+gLXW9wvPyMy84NB2+AttperenmX8fQsrP9QDWmSLcG6UsLHx8Me7ASx
-         xBRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gtoYl7kiNjX3TbLNo3eXXB5Snple9cEEruGWOWNoSu0=;
-        b=D9b/8wOF+DIP9FSOFfbFUlndpSR/61DWJakPS7GELJdklzG+DvkVEfJJDH1fz3i/mu
-         QSmczoG7Ea9ns6IqE6Y6RqrJsCKplwolMvZQ4FzETS21hIIl+0UdBjlDvSyDYUofgVuN
-         avNuCy0uIqyz9SElZIz6k2L/Rvh35PQrPtqBX/BQG+oUzIDsslocoTFYNCMd8JUM1W4C
-         drHhct//kjpsQM0hcVJ81xrQ97YKMlasML4ryJ/KTs7a9e9+Mv+eDF2+MgO4EB24mkjd
-         CtlXktOVqyuWv/YJketkzUhjSlUi80JwycnXrXRzRY3IvwV05UPTDVkaBRVccMkNlann
-         E7bA==
-X-Gm-Message-State: AOAM533PnEO7841wHTFxiueDa5U375pCXaxZWvbMl8VmsS/JGcKV0E+q
-        oKOYZBlFDExXmjyOo0J3cRXdA18va4a1gw==
-X-Google-Smtp-Source: ABdhPJwQ1ZgoVSLy8sGEWoc30jIrKltpYXFP7WCPG03ooDuF0J5ydYAo6XUDkzAX1OVakNG8aR7xPg==
-X-Received: by 2002:a05:6e02:1888:: with SMTP id o8mr14221155ilu.124.1630275094416;
-        Sun, 29 Aug 2021 15:11:34 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id k5sm7144836iob.45.2021.08.29.15.11.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Aug 2021 15:11:33 -0700 (PDT)
-Subject: Re: linux-next: Signed-off-by missing for commits in the block tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210830075224.0f234b14@canb.auug.org.au>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a9af10c7-a597-f323-638f-3ee28492786c@kernel.dk>
-Date:   Sun, 29 Aug 2021 16:11:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236082AbhH2WOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 18:14:38 -0400
+Received: from dnyon.com ([82.223.165.189]:56182 "EHLO dnyon.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235370AbhH2WOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 18:14:36 -0400
+X-Greylist: delayed 23025 seconds by postgrey-1.27 at vger.kernel.org; Sun, 29 Aug 2021 18:14:36 EDT
+Received: from dnyon.com (45.74.222.87.dynamic.jazztel.es [87.222.74.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dnyon.com (Postfix) with ESMTPSA id B9FFC40442;
+        Sun, 29 Aug 2021 22:13:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
+        t=1630275223; bh=aw1SvFqyWFMuJYWbD3SZOO+rClzP6Lw/Acya+RIY0Z4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0Rm6SJJkrMKPuF+qpFkge2kUEP2OnceG6Oj82j5mVk5rpJ5ifwekPM3xIcBdpVKax
+         guOds/fzBIIN3+sEkB4s1Fp9HtUlr1/h4Uv08V2rinlaUaTJc8lL29/5Ha4F+dYDgx
+         B4E7w15wun17uk/RXfxooBui4QdPCc60SOfzBdHIo1KCXqPLLFMbpQ+2y7hAMTWFLB
+         iOTzEORaqZO9+ueEg+7vyGzdApzmR6Bk6ybW2A3J1ZTkk3eGxfslMVDbb0kY3y4g9w
+         yOlJCrN23bjtoj0b8zE40rkjOmMtmAq5HPN7d7TbuLOyS3D+aQvDURkklfNeMu5IZu
+         +xhjR9EBwcRbA==
+Date:   Mon, 30 Aug 2021 00:13:41 +0200
+From:   Alejandro Tafalla <atafalla@dnyon.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RESEND 1/2] ASoC: max98927: Handle reset gpio when
+ probing i2c
+Message-ID: <YSwGlXEFRuUvNGZ7@dnyon.com>
+References: <20210829170019.384632-1-atafalla@dnyon.com>
+ <20210829170019.384632-2-atafalla@dnyon.com>
+ <CAHp75VdY9uoTWeJEroi3iChnToUSxe+Henmg7Yux+UWkK59jQg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210830075224.0f234b14@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=mensaje
+In-Reply-To: <CAHp75VdY9uoTWeJEroi3iChnToUSxe+Henmg7Yux+UWkK59jQg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/21 3:52 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Commits
-> 
->   2f7eff262585 ("io_uring: allow updating linked timeouts")
->   132bf9af1d0f ("io_uring: keep ltimeouts in a list")
-> 
-> are missing a Signed-off-by from their committer.
+Hello Andy,
 
-Oops, will fix.
+On Sun, Aug 29, 2021 at 11:22:35PM +0300, Andy Shevchenko wrote:
+> > +       max98927->reset_gpio
+> > +               = devm_gpiod_get_optional(&i2c->dev, "reset",
+> > GPIOD_OUT_HIGH);
+> > +       if (IS_ERR(max98927->reset_gpio)) {
+> > +               ret = PTR_ERR(max98927->reset_gpio);
+> > +               dev_err(&i2c->dev,
+> > +                       "Failed to request GPIO reset pin, error %d\n",
+> > ret);
+> > +               return ret;
+> 
+> 
+> 
+> Spamming logs is not good. Use
+> 
+> return dev_err_probe(...);
+Okay.
+ 
+> > +       }
+> > +
+> > +       if (max98927->reset_gpio) {
+> > +               gpiod_set_value_cansleep(max98927->reset_gpio, 0);
+> 
+> 
+> 
+> You may request the pin in a proper state, also with current code you seems
+> mishandle the conception of the logical pin level vs. physical one.
+Right, i made the mistake of basing off an old driver that use legacy
+functions.
+ 
+> > diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
+> > index 05f495db914d..5c04bf38e24a 100644
+> > --- a/sound/soc/codecs/max98927.h
+> > +++ b/sound/soc/codecs/max98927.h
+> > @@ -255,6 +255,7 @@ struct max98927_priv {
+> >         struct regmap *regmap;
+> >         struct snd_soc_component *component;
+> >         struct max98927_pdata *pdata;
+> 
+> 
+> 
+> > +       struct gpio_desc *reset_gpio;
+> 
+> 
+> Why? Are you using it outside of ->probe()?
+No, I'll delete it and use a local variable.
 
--- 
-Jens Axboe
+> With Best Regards,
+> Andy Shevchenko
+Thank you for the feedback, I'll address all the issues in a V2.
 
+Alejandro Tafalla
