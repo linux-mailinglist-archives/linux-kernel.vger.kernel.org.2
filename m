@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C3F3FA9CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50423FA9D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbhH2HJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 03:09:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52906 "EHLO mail.kernel.org"
+        id S234842AbhH2HKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 03:10:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234777AbhH2HJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 03:09:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC9C2601FD;
-        Sun, 29 Aug 2021 07:08:39 +0000 (UTC)
+        id S232001AbhH2HKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 03:10:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DEE960F4C;
+        Sun, 29 Aug 2021 07:09:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630220919;
-        bh=0/EAkFZjZJHLqx7U69lZrBnoNuaxpFrT10kfScOdsUk=;
+        s=k20201202; t=1630220986;
+        bh=olAG6rBxAWbnUThXRykMVAfSeKRBGOfhj2tniWMJDKM=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=KiekGfE2FZ0EnVLZgMAMpqQn3Wn7qaVz7f/Uuyt+Gc4VZa2TRff8Ff5YaHI4d9Rlm
-         uXWhBYU2PiiL0r+I1CAykhOAbrDvT5uOrMQhS9p/vl3MQVykewrryoYz91CPIYY793
-         Km/Yx8btrVliH2mgQcC4iIen0tTwX8lKZoBv1jR/kM5HIK57kNn/cLgkWUDxM16WsM
-         q++6F4oGxYCjVVO8t+Ij7IQDqxT6iUM+tJYOCegrdjdVyxp/DlSuWs8cpyk35Xc15b
-         8RQCoY9qeTcmxQCaohF5OKRk4MeWd3+8v0zOUPGA39o9FSx9ziGZRMhLmY3BtdQIG9
-         vzmRNOFwkd70g==
+        b=XY+m2XbTMIeX9hNOqK30m4XP+LnYulxcyDky+6xf43fIwroT7y6N6H5Nb5fJMgpQy
+         ELkww5HV2NLwzZvTk1AE3tUbFELsQeqxwiuFFl74Q3pKqKOXnCxIPZGtMW59NXURxG
+         ZPSJWy7/eZsLM3XRnLI0fRH/ngLdzT9zc3EiVp5z0pvDE7kNfc/CM7vE0W8yTJSrjw
+         OqLnRM4iikj/+hGCv0HDLvxvnq9/5dT0Icf6CsJEBDmbJByk1EOfdcXlamsBJjC77m
+         8xZ6gF4nxIU0MWgwjhKXDRCQiP65jq0jK4sACNAz0dYuXgym/yJOHlXs9Oz0JmhR+L
+         8UctPCVnlmMng==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210825134251.220098-3-krzysztof.kozlowski@canonical.com>
-References: <20210825134056.219884-6-krzysztof.kozlowski@canonical.com> <20210825134251.220098-3-krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v3 8/8] MAINTAINERS: clock: include S3C and S5P in Samsung SoC clock entry
+In-Reply-To: <20210825134056.219884-1-krzysztof.kozlowski@canonical.com>
+References: <20210825134056.219884-1-krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v3 0/8] dt-bindings: clock: samsung: convert to dtschema
 From:   Stephen Boyd <sboyd@kernel.org>
 Cc:     Sam Protsenko <semen.protsenko@linaro.org>
 To:     Chanwoo Choi <cw00.choi@samsung.com>,
@@ -40,19 +40,26 @@ To:     Chanwoo Choi <cw00.choi@samsung.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-samsung-soc@vger.kernel.org
-Date:   Sun, 29 Aug 2021 00:08:38 -0700
-Message-ID: <163022091855.2676726.10244708006623939894@swboyd.mtv.corp.google.com>
+Date:   Sun, 29 Aug 2021 00:09:44 -0700
+Message-ID: <163022098497.2676726.6455473597971395732@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Krzysztof Kozlowski (2021-08-25 06:42:51)
-> Cover the S3C and S5Pv210 clock controller binding headers by Samsung
-> SoC clock controller drivers maintainer entry.
+Quoting Krzysztof Kozlowski (2021-08-25 06:40:48)
+> Hi,
 >=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
+> Changes since v2:
+> 1. Add reviews.
+> 2. Split Exynos4 ISP into separate schema.
+> 3. Add maxItems to clocks and power-domains (review feedback).
+> 4. Do not allow samsung,exynos5420-clock and samsung,exynos5800-clock
+>    without syscon. These clock controllers should always use syscon
+>    to allow DMC bindings access the registers.
+> 5. Drop assigned-clocks.
+>=20
+> Changes since v1:
+> 1. Patch 7/8: include header to fix clock IDs error in example.
 
-Applied to clk-next
+I think this header file isn't in clk tree?
