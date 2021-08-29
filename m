@@ -2,254 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0846E3FAC4A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236DB3FAC47
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbhH2OlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 10:41:25 -0400
-Received: from smtprelay03.ispgateway.de ([80.67.18.15]:40260 "EHLO
-        smtprelay03.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhH2OlX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 10:41:23 -0400
-Received: from [87.92.210.171] (helo=lumip-notebook.fritz.box)
-        by smtprelay03.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <lumip@lumip.de>)
-        id 1mKLzd-00023c-Fu; Sun, 29 Aug 2021 16:41:05 +0200
-From:   Lukas Prediger <lumip@lumip.de>
-To:     axboe@kernel.dk
-Cc:     linux-kernel@vger.kernel.org, Lukas Prediger <lumip@lumip.de>
-Subject: [PATCH v2] drivers/cdrom: improved ioctl for media change detection
-Date:   Sun, 29 Aug 2021 17:37:37 +0300
-Message-Id: <20210829143735.512146-1-lumip@lumip.de>
-X-Mailer: git-send-email 2.25.1
+        id S235416AbhH2Og2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 10:36:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229824AbhH2Og0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 10:36:26 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D28C6023D;
+        Sun, 29 Aug 2021 14:35:30 +0000 (UTC)
+Date:   Sun, 29 Aug 2021 15:38:45 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Liam Beguin" <liambeguin@gmail.com>
+Cc:     "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        "Michael Hennerich" <Michael.Hennerich@analog.com>,
+        "Charles-Antoine Couret" <charles-antoine.couret@essensium.com>,
+        Nuno =?UTF-8?B?U8Oh?= <Nuno.Sa@analog.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "linux-iio" <linux-iio@vger.kernel.org>,
+        "devicetree" <devicetree@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>
+Subject: Re: [PATCH v6 0/5] AD7949 Fixes
+Message-ID: <20210829153845.0c7eda30@jic23-huawei>
+In-Reply-To: <CDKYEMJOURHJ.2U1JRK17FRGD0@shaak>
+References: <20210815213309.2847711-1-liambeguin@gmail.com>
+        <CAHp75VdOMg-7xX+KbdaDt5tduPhorujFwvpMPmdHKMVg=vj2Ew@mail.gmail.com>
+        <CDKYEMJOURHJ.2U1JRK17FRGD0@shaak>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Df-Sender: bHVrYXMucHJlZGlnZXJAbHVtaXAuZGU=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation of the CDROM_MEDIA_CHANGED ioctl relies on
-global state, meaning that only one process can detect a disc change
-while the ioctl call will return 0 for other calling processes afterwards
-(see bug 213267 ).
+On Mon, 16 Aug 2021 08:59:28 -0400
+"Liam Beguin" <liambeguin@gmail.com> wrote:
 
-This introduces a new cdrom ioctl, CDROM_TIMED_MEDIA_CHANGE, that
-works by maintaining a timestamp of the last detected disc change instead
-of a boolean flag: Processes calling this ioctl command can provide
-a timestamp of the last disc change known to them and receive
-an indication whether the disc was changed since then and the updated
-timestamp.
+> On Mon Aug 16, 2021 at 4:08 AM EDT, Andy Shevchenko wrote:
+> > On Mon, Aug 16, 2021 at 12:35 AM Liam Beguin <liambeguin@gmail.com>
+> > wrote:  
+> > >
+> > > While working on another series[1] I ran into issues where my SPI
+> > > controller would fail to handle 14-bit and 16-bit SPI messages. This
+> > > addresses that issue and adds support for selecting a different voltage
+> > > reference source from the devicetree.
+> > >
+> > > v1 was base on a series[2] that seems to not have made it all the way,
+> > > and was tested on an ad7689.
+> > >
+> > > v6 drops support for per channel vref selection.
+> > > After switching the voltage reference, readings take a little while to
+> > > stabilize, invalidating consecutive readings.
+> > >
+> > > This could've been addressed by adding more dummy cycles at the expense
+> > > of speed, but discussing the issue with colleagues more involved in
+> > > hardware design, it turns out these circuits are usually designed with a
+> > > single vref in mind.
+> > >
+> > > [1] https://patchwork.kernel.org/project/linux-iio/list/?series=511545
+> > > [2] https://patchwork.kernel.org/project/linux-iio/list/?series=116971&state=%2A&archive=both
+> > >
+> > > Changes since v5:
+> > > - rename defines: s/AD7949_CFG_BIT_/AD7949_CFG_MASK_/g
+> > > - rename AD7949_MASK_TOTAL to match other defines  
+> >  
+> > > - make vref selection global instead of per channel, and update
+> > >   dt-bindings  
+> 
+> Hi Andy,
+> 
+> >
+> > Same as per v5: is it a hardware limitation?
+> > It's unclear to me what happened here.  
+> 
+> I tried to provide more details in the last paragraph above.
+> 
+> After switching the voltage reference, readings take a little while to
+> stabilize invalidating consecutive readings.
+> 
+> One option was to add more dummy cycles, but in addition to making
+> things slower it was brought to my attention that this kind of circuit
+> is usually designed with a single vref in mind.
+> 
+> For those reasons and because I didn't have an explicit need for it, I
+> decided to drop that part.
 
-I considered fixing the buggy behavior in the original
-CDROM_MEDIA_CHANGED ioctl but that would require maintaining state
-for each calling process in the kernel, which seems like a worse
-solution than introducing this new ioctl.
+It's not 'impossible' to add it back in later if someone needs it, but
+until then this works for me.
 
-Signed-off-by: Lukas Prediger <lumip@lumip.de>
----
-Second version based on your feedback for the first
-attempt. Please let me know if further changes are required.
----
- Documentation/cdrom/cdrom-standard.rst      | 11 ++++
- Documentation/userspace-api/ioctl/cdrom.rst |  3 ++
- drivers/cdrom/cdrom.c                       | 56 +++++++++++++++++++--
- include/linux/cdrom.h                       |  1 +
- include/uapi/linux/cdrom.h                  | 15 ++++++
- 5 files changed, 82 insertions(+), 4 deletions(-)
+Series applied with tweaks as described in individual patch replies.
 
-diff --git a/Documentation/cdrom/cdrom-standard.rst b/Documentation/cdrom/cdrom-standard.rst
-index 5845960ca382..52ea7b6b2fe8 100644
---- a/Documentation/cdrom/cdrom-standard.rst
-+++ b/Documentation/cdrom/cdrom-standard.rst
-@@ -907,6 +907,17 @@ commands can be identified by the underscores in their names.
- 	specifies the slot for which the information is given. The special
- 	value *CDSL_CURRENT* requests that information about the currently
- 	selected slot be returned.
-+`CDROM_TIMED_MEDIA_CHANGE`
-+	Checks whether the disc has been changed since a user supplied time
-+	and returns the time of the last disc change.
-+
-+	*arg* is a pointer to a *cdrom_timed_media_change_info* struct.
-+	*arg->last_media_change* may be set by calling code to signal
-+	the timestamp of the last known media change (by the caller).
-+	Upon successful return, this ioctl call will set
-+	*arg->last_media_change* to the latest media change timestamp (in ms)
-+	known by the kernel/driver and set *arg->has_changed* to 1 if
-+	that timestamp is more recent than the timestamp set by the caller.
- `CDROM_DRIVE_STATUS`
- 	Returns the status of the drive by a call to
- 	*drive_status()*. Return values are defined in cdrom_drive_status_.
-diff --git a/Documentation/userspace-api/ioctl/cdrom.rst b/Documentation/userspace-api/ioctl/cdrom.rst
-index 3b4c0506de46..bac5bbf93ca0 100644
---- a/Documentation/userspace-api/ioctl/cdrom.rst
-+++ b/Documentation/userspace-api/ioctl/cdrom.rst
-@@ -54,6 +54,9 @@ are as follows:
- 	CDROM_SELECT_SPEED	Set the CD-ROM speed
- 	CDROM_SELECT_DISC	Select disc (for juke-boxes)
- 	CDROM_MEDIA_CHANGED	Check is media changed
-+	CDROM_TIMED_MEDIA_CHANGE	Check if media changed
-+					since given time
-+					(struct cdrom_timed_media_change_info)
- 	CDROM_DRIVE_STATUS	Get tray position, etc.
- 	CDROM_DISC_STATUS	Get disc type, etc.
- 	CDROM_CHANGER_NSLOTS	Get number of slots
-diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-index feb827eefd1a..a040a867f6a2 100644
---- a/drivers/cdrom/cdrom.c
-+++ b/drivers/cdrom/cdrom.c
-@@ -344,6 +344,12 @@ static void cdrom_sysctl_register(void);
- 
- static LIST_HEAD(cdrom_list);
- 
-+static void signal_media_change(struct cdrom_device_info *cdi)
-+{
-+	cdi->mc_flags = 0x3; /* set media changed bits, on both queues */
-+	cdi->last_media_change_ms = ktime_to_ms(ktime_get());
-+}
-+
- int cdrom_dummy_generic_packet(struct cdrom_device_info *cdi,
- 			       struct packet_command *cgc)
- {
-@@ -616,6 +622,7 @@ int register_cdrom(struct gendisk *disk, struct cdrom_device_info *cdi)
- 	ENSURE(cdo, generic_packet, CDC_GENERIC_PACKET);
- 	cdi->mc_flags = 0;
- 	cdi->options = CDO_USE_FFLAGS;
-+	cdi->last_media_change_ms = ktime_to_ms(ktime_get());
- 
- 	if (autoclose == 1 && CDROM_CAN(CDC_CLOSE_TRAY))
- 		cdi->options |= (int) CDO_AUTO_CLOSE;
-@@ -1421,8 +1428,7 @@ static int cdrom_select_disc(struct cdrom_device_info *cdi, int slot)
- 		cdi->ops->check_events(cdi, 0, slot);
- 
- 	if (slot == CDSL_NONE) {
--		/* set media changed bits, on both queues */
--		cdi->mc_flags = 0x3;
-+		signal_media_change(cdi);
- 		return cdrom_load_unload(cdi, -1);
- 	}
- 
-@@ -1455,7 +1461,7 @@ static int cdrom_select_disc(struct cdrom_device_info *cdi, int slot)
- 		slot = curslot;
- 
- 	/* set media changed bits on both queues */
--	cdi->mc_flags = 0x3;
-+	signal_media_change(cdi);
- 	if ((ret = cdrom_load_unload(cdi, slot)))
- 		return ret;
- 
-@@ -1521,7 +1527,7 @@ int media_changed(struct cdrom_device_info *cdi, int queue)
- 	cdi->ioctl_events = 0;
- 
- 	if (changed) {
--		cdi->mc_flags = 0x3;    /* set bit on both queues */
-+		signal_media_change(cdi);
- 		ret |= 1;
- 		cdi->media_written = 0;
- 	}
-@@ -2391,6 +2397,46 @@ static int cdrom_ioctl_media_changed(struct cdrom_device_info *cdi,
- 	return ret;
- }
- 
-+/*
-+ * Media change detection with timing information.
-+ *
-+ * arg is a pointer to a cdrom_timed_media_change_info struct.
-+ * arg->last_media_change may be set by calling code to signal
-+ * the timestamp (in ms) of the last known media change (by the caller).
-+ * Upon successful return, ioctl call will set arg->last_media_change
-+ * to the latest media change timestamp known by the kernel/driver
-+ * and set arg->has_changed to 1 if that timestamp is more recent
-+ * than the timestamp set by the caller.
-+ */
-+static int cdrom_ioctl_timed_media_change(struct cdrom_device_info *cdi,
-+		unsigned long arg)
-+{
-+	int ret;
-+	struct cdrom_timed_media_change_info __user *info;
-+	struct cdrom_timed_media_change_info tmp_info;
-+
-+	if (!CDROM_CAN(CDC_MEDIA_CHANGED))
-+		return -ENOSYS;
-+
-+	info = (struct cdrom_timed_media_change_info __user *)arg;
-+	cd_dbg(CD_DO_IOCTL, "entering CDROM_TIMED_MEDIA_CHANGE\n");
-+
-+	ret = cdrom_ioctl_media_changed(cdi, CDSL_CURRENT);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (copy_from_user(&tmp_info, info, sizeof(tmp_info)) != 0)
-+		return -EFAULT;
-+
-+	tmp_info.has_changed = ((tmp_info.last_media_change - cdi->last_media_change_ms) < 0);
-+	tmp_info.last_media_change = cdi->last_media_change_ms;
-+
-+	if (copy_to_user(info, &tmp_info, sizeof(*info)) != 0)
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
- static int cdrom_ioctl_set_options(struct cdrom_device_info *cdi,
- 		unsigned long arg)
- {
-@@ -3375,6 +3421,8 @@ int cdrom_ioctl(struct cdrom_device_info *cdi, struct block_device *bdev,
- 		return cdrom_ioctl_eject_sw(cdi, arg);
- 	case CDROM_MEDIA_CHANGED:
- 		return cdrom_ioctl_media_changed(cdi, arg);
-+	case CDROM_TIMED_MEDIA_CHANGE:
-+		return cdrom_ioctl_timed_media_change(cdi, arg);
- 	case CDROM_SET_OPTIONS:
- 		return cdrom_ioctl_set_options(cdi, arg);
- 	case CDROM_CLEAR_OPTIONS:
-diff --git a/include/linux/cdrom.h b/include/linux/cdrom.h
-index f48d0a31deae..7c10b564db29 100644
---- a/include/linux/cdrom.h
-+++ b/include/linux/cdrom.h
-@@ -64,6 +64,7 @@ struct cdrom_device_info {
- 	int for_data;
- 	int (*exit)(struct cdrom_device_info *);
- 	int mrw_mode_page;
-+	__s64 last_media_change_ms;
- };
- 
- struct cdrom_device_ops {
-diff --git a/include/uapi/linux/cdrom.h b/include/uapi/linux/cdrom.h
-index 6c34f6e2f1f7..9b17868667ed 100644
---- a/include/uapi/linux/cdrom.h
-+++ b/include/uapi/linux/cdrom.h
-@@ -147,6 +147,8 @@
- #define CDROM_NEXT_WRITABLE	0x5394	/* get next writable block */
- #define CDROM_LAST_WRITTEN	0x5395	/* get last block written on disc */
- 
-+#define CDROM_TIMED_MEDIA_CHANGE   0x5396  /* get the timestamp of the last media change */
-+
- /*******************************************************
-  * CDROM IOCTL structures
-  *******************************************************/
-@@ -295,6 +297,19 @@ struct cdrom_generic_command
- 	};
- };
- 
-+/* This struct is used by CDROM_TIMED_MEDIA_CHANGE */
-+struct cdrom_timed_media_change_info
-+{
-+	__s64	last_media_change;	/* Timestamp of the last detected media
-+					 * change in ms. May be set by caller, updated
-+					 * upon successful return of ioctl.
-+					 */
-+	__u64	has_changed;		/* Set to 1 by ioctl if last detected media
-+					 * change was more recent than
-+					 * last_media_change set by caller.
-+					 */
-+};
-+
- /*
-  * A CD-ROM physical sector size is 2048, 2052, 2056, 2324, 2332, 2336, 
-  * 2340, or 2352 bytes long.  
--- 
-2.25.1
+Thanks,
+
+Jonathan
+
+> 
+> Liam
+> 
+> >  
+> > > - reword commits 2/5, 3/5, and 4/5
+> > > - move bits_per_word configuration to struct spi_device, and switch to
+> > >   spi_{read,write}.  
+> >
+> > --
+> > With Best Regards,
+> > Andy Shevchenko  
+> 
 
