@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D79A3FAB22
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 13:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3543FAB27
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 13:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235233AbhH2Lhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 07:37:46 -0400
-Received: from elvis.franken.de ([193.175.24.41]:54442 "EHLO elvis.franken.de"
+        id S235229AbhH2LqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 07:46:20 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:46696 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235143AbhH2Lhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 07:37:43 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mKJ7I-0006Zi-01; Sun, 29 Aug 2021 13:36:48 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 62BD9C08FD; Sun, 29 Aug 2021 13:36:22 +0200 (CEST)
-Date:   Sun, 29 Aug 2021 13:36:22 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] mips:mmu: fix boolreturn.cocci warnings
-Message-ID: <20210829113622.GB4573@alpha.franken.de>
-References: <20210824063004.59604-1-deng.changcheng@zte.com.cn>
+        id S235143AbhH2LqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 07:46:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630237527; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=irGqUUIYdBveN6/7OVMy9T8jCS+s1qL+o56/wbFqR2s=;
+ b=mKAOZxBgrORbrtLKytPb0jkJlIJ/pj3YGZKWfE1hBhGxiOgclkrQFWxiXPZYL7YjI27kMVoM
+ acy56V2hieKlbkxw2ivWP0NuHdsgsG/HLoEgSEtQflISPHC/o0Mk996N8iygfQsdiN+jE78N
+ smc99C9nN5oczoJlWRLILhZAAZI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 612b7350825e13c54a35bc0c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 29 Aug 2021 11:45:20
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 46822C4360D; Sun, 29 Aug 2021 11:45:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6054C43460;
+        Sun, 29 Aug 2021 11:45:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A6054C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824063004.59604-1-deng.changcheng@zte.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/2] bcma: Fix memory leak for internally-handled cores
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210727025232.663-2-yuzenghui@huawei.com>
+References: <20210727025232.663-2-yuzenghui@huawei.com>
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zajec5@gmail.com>, <hauke@hauke-m.de>, <linville@tuxdriver.com>,
+        <wanghaibin.wang@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210829114519.46822C4360D@smtp.codeaurora.org>
+Date:   Sun, 29 Aug 2021 11:45:19 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 11:30:04PM -0700, CGEL wrote:
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
-> 
-> ./arch/mips/kvm/mmu.c:489:9-10:WARNING: return of 0/1 in function
-> 'kvm_test_age_gfn' with return type bool
-> ./arch/mips/kvm/mmu.c:445:8-9  WARNING: return of 0/1 in function
-> 'kvm_unmap_gfn_range' with return type bool
-> 
-> Return statements in functions returning bool should use true/false
-> instead of 1/0.
-> 
-> Generated by: scripts/coccinelle/misc/boolreturn.cocci
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
-> ---
->  arch/mips/kvm/mmu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-> index 6d1f68c..1bfd1b5 100644
-> --- a/arch/mips/kvm/mmu.c
-> +++ b/arch/mips/kvm/mmu.c
-> @@ -442,7 +442,7 @@ static int kvm_mips_mkold_gpa_pt(struct kvm *kvm, gfn_t start_gfn,
->  bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
->  {
->  	kvm_mips_flush_gpa_pt(kvm, range->start, range->end);
-> -	return 1;
-> +	return true;
->  }
->  
->  bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-> @@ -486,7 +486,7 @@ bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
->  	pte_t *gpa_pte = kvm_mips_pte_for_gpa(kvm, NULL, gpa);
->  
->  	if (!gpa_pte)
-> -		return 0;
-> +		return false;
->  	return pte_young(*gpa_pte);
+Zenghui Yu <yuzenghui@huawei.com> wrote:
 
-this is already "fixed" in mips-next by
+> kmemleak reported that dev_name() of internally-handled cores were leaked
+> on driver unbinding. Let's use device_initialize() to take refcounts for
+> them and put_device() to properly free the related stuff.
+> 
+> While looking at it, there's another potential issue for those which should
+> be *registered* into driver core. If device_register() failed, we put
+> device once and freed bcma_device structures. In bcma_unregister_cores(),
+> they're treated as unregistered and we hit both UAF and double-free. That
+> smells not good and has also been fixed now.
+> 
+> Fixes: ab54bc8460b5 ("bcma: fill core details for every device")
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
 
-126b39368604 MIPS: Return true/false (not 1/0) from bool functions
+2 patches applied to wireless-drivers-next.git, thanks.
 
-Thomas.
+b63aed3ff195 bcma: Fix memory leak for internally-handled cores
+9fc8048c56f3 bcma: Drop the unused parameter of bcma_scan_read32()
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+https://patchwork.kernel.org/project/linux-wireless/patch/20210727025232.663-2-yuzenghui@huawei.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
