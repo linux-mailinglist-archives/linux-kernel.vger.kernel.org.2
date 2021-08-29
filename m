@@ -2,55 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8213FA95E
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE26B3FA960
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234325AbhH2F33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 01:29:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhH2F30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 01:29:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 297AC60F36;
-        Sun, 29 Aug 2021 05:28:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630214915;
-        bh=d9x09IXoGPv8OxxwYSFTT3FSxVPusg18qTaIMyUUiPc=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=hmlhwSYPz4321xRyh9tQBvsJ1MOydibjEjWRHVwnKNzy9jrskG05C8gZrGAhfnxbf
-         dwS8GAkanizh1ArCWUi/rm+UMhDRkw0dwgc/+NG33CuxR5h0Ha1YCAH+7PoJYcJn3T
-         MrP/n2dad5mFGG5AfjSK+JE1g1HQacm5qTCOpmhcxP5MEyfd6FkeGBeGCCMbg65ogF
-         owyC+N5Z672/yHA6lBLnhtRWdEpNveLIeH3pZw+y3Of/emYJJZ61G2EMsRZPuG3STZ
-         gei1q6Rqk40K/VBxb8UwTKqwZ0odTFiTSPIQcteQWrZBkFjx/9rJ0YFn8bAL54YjHU
-         ocMIZ1ng6TDww==
-Content-Type: text/plain; charset="utf-8"
+        id S234468AbhH2Fh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 01:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhH2Fhx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 01:37:53 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A80C061756;
+        Sat, 28 Aug 2021 22:37:01 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so11656914pjb.0;
+        Sat, 28 Aug 2021 22:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GigqQr4jZpg3pAe2RkzgaB2tw0Rbe327aEgOEyUQSVY=;
+        b=tLNSisQ2Jiq2EL833cIUewmZ4de6YK51SLEz0zcgz5IRCdmFaCSKpXFkyciuGZ6E9x
+         FuVYJ0wTN90qxXW20aGqxgnY0JE254CKeqaJY+9RbULwkPVMtnnOzBU3YGiyJgc/8Hed
+         n80PwPOG7JUnjlSA/1IrI8uyw/FAI1fZLCS4limgypRE0sKo4KMvOgeSVzgOT5NVUQXV
+         cPfzsZXG3LVFCUfUUZi2eL6MRXyZMLDyDkkfkmzNKHBoYgZY4xwLJpmuVnr3yvFBmza4
+         QfgWMG3jULOpLPEj/+tI22873WMIvHoqi/G3lQUvPMzzxdGXXD2aiqz3HSaFHkmHJKFB
+         d7tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GigqQr4jZpg3pAe2RkzgaB2tw0Rbe327aEgOEyUQSVY=;
+        b=O1rI56mwAUcy1qTXf9k7+10PBJCV0rAr9JskFt2BZ4YZhK+7c2A5oyjKT7+l6fbXf5
+         LEY64SiCA7ffVsatHCHW0hHYwOww3fa/TXhcPC6ZuIusIIYBJ6HtsnM9Ot6Sq0zTY7RP
+         a9MZTSCNnENQNmXm4MEhC+KHh/1JD+2ZNoGH4THJ/MD/K7Bm78DbWkPbpFmTi3Fihlve
+         plxNLI+xtVMND2F5x+1JKLdCAG0rTl87CrF6olHaHLkHnVDuB+Vpl5q6rzUPdQueowcO
+         D60bDCp1X2iIeRgoiB33dE7+8cA8OyFPH7mtErkUzCQKKDVfaWptJpJULldbB2O4fG4+
+         cadw==
+X-Gm-Message-State: AOAM530qB/yTMePgI3oKyrICRJk3JGjoabt82F8MrGfXAjN1MWyB+F7b
+        K9726ymPU3pfuqmm8emrQuU=
+X-Google-Smtp-Source: ABdhPJwIZQ+Uz9V6ByG8VZSXVtIBZ7i8VBr0WYrGDxdsq1kDrSUWcCazfHjN0Vmmn8z9rm4epief3A==
+X-Received: by 2002:a17:90a:680c:: with SMTP id p12mr20110337pjj.33.1630215421132;
+        Sat, 28 Aug 2021 22:37:01 -0700 (PDT)
+Received: from localhost.localdomain ([222.238.85.219])
+        by smtp.gmail.com with ESMTPSA id s16sm10517252pfu.108.2021.08.28.22.36.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 28 Aug 2021 22:37:00 -0700 (PDT)
+From:   jiwonaid0@gmail.com
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Jiwon Kim <jiwonaid0@gmail.com>
+Subject: [PATCH] ipv6: add spaces for accept_ra_min_hop_limit
+Date:   Sun, 29 Aug 2021 14:35:44 +0900
+Message-Id: <20210829053544.51149-1-jiwonaid0@gmail.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210707131213.3283509-1-codrin.ciubotariu@microchip.com>
-References: <20210707131213.3283509-1-codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH] clk: at91: clk-generated: Limit the requested rate to our range
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     mturquette@baylibre.com, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        claudiu.beznea@microchip.com,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 28 Aug 2021 22:28:33 -0700
-Message-ID: <163021491397.2676726.7633391558529179439@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Codrin Ciubotariu (2021-07-07 06:12:13)
-> On clk_generated_determine_rate(), the requested rate could be outside
-> of clk's range. Limit the rate to the clock's range to not return an
-> error.
->=20
-> Fixes: df70aeef6083 ("clk: at91: add generated clock driver")
-> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> ---
+From: Jiwon Kim <jiwonaid0@gmail.com>
 
-Applied to clk-next
+The checkpatch reported
+ERROR: spaces required around that '=' (ctx:VxW)
+from the net/ipv6/addrconf.c.
+
+So, spaces are added for accept_ra_min_hop_limit.
+
+Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
+---
+ net/ipv6/addrconf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index 17756f3ed33b..ce71480a92d9 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -208,7 +208,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
+ 	.accept_ra_defrtr	= 1,
+ 	.ra_defrtr_metric	= IP6_RT_PRIO_USER,
+ 	.accept_ra_from_local	= 0,
+-	.accept_ra_min_hop_limit= 1,
++	.accept_ra_min_hop_limit = 1,
+ 	.accept_ra_pinfo	= 1,
+ #ifdef CONFIG_IPV6_ROUTER_PREF
+ 	.accept_ra_rtr_pref	= 1,
+@@ -267,7 +267,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
+ 	.accept_ra_defrtr	= 1,
+ 	.ra_defrtr_metric	= IP6_RT_PRIO_USER,
+ 	.accept_ra_from_local	= 0,
+-	.accept_ra_min_hop_limit= 1,
++	.accept_ra_min_hop_limit = 1,
+ 	.accept_ra_pinfo	= 1,
+ #ifdef CONFIG_IPV6_ROUTER_PREF
+ 	.accept_ra_rtr_pref	= 1,
+--
+2.25.1
+
