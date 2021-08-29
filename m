@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684773FACD5
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB5F3FACD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbhH2PtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
+        id S235642AbhH2Ps7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235660AbhH2Psy (ORCPT
+        with ESMTP id S235680AbhH2Psz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:48:54 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9338DC0613D9
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 08:48:02 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id q21so21226236ljj.6
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 08:48:02 -0700 (PDT)
+        Sun, 29 Aug 2021 11:48:55 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F4EC061760
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 08:48:03 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id l18so21200983lji.12
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 08:48:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FTbSV1E56r1NVZnQXDLnD85O88p/XKd1hFPjXfdyNKM=;
-        b=fUKbEOZOe8ciXUu+L1aPDtOfETIX4lcjQ4ye+RO8Tb0n1yBBGrGTWsfykF/igiM2ti
-         JsntY4K3BnJ0JSV52cElEARTVg7hjXxeOm/ObhO+4voF5W8gZCVj5cAPpFviz2dXL5z2
-         ZkyHOsYV343oMOambqC74/BCeIHJ9tAJvvGvWYWW5JOEcPkbM+pVOGBdfeC+B3VAC8Nx
-         qkH7BTiwbSGg2hoQbJnZJcDlc7MxGQXTguFaXElriA/Kjq0fmfAu3sp3VaYRHuShlgjJ
-         McJntFk9Ecn3hcYI8GEbPTqTICpCH0JGAV/g04Xx3ANQFhFakicsFmRUMbjirUWIn5yU
-         rzJA==
+        bh=uAcFEY+E0qmgNU+cIgtsjckvcJT9e5o7gZcnimCS7qE=;
+        b=txsSBxfFz3uME9EGWLKsPisD83NoqkW3PVZXnetyTCer1e+GSgMWMqq7SAD4ZUJa8I
+         TvwG1N0kBLFhSg7gEzUYf+eieOVTCRzMza6Uje55n4Zilr76DyeS/doFV/8xEa4xBZWw
+         v0tNqrwaCfRBsg+/e1rmKntNVjm0iZEvyunpzFyVvJTmq0zn9d8FHzZ/C4ZBbhjVjmV1
+         /Hr8hi8gVwPM32KXdYL4yDYTwsOOVpDpUANtgfh+GzYh50EllusbX+yCyi3dw7Vc3Vsp
+         F8B+TB84Mx0ulR7Az3eKnBf4L5SDD9T1fbyg44b9XKV1ucec2bvPktai9NMl+EkCpDj7
+         nJrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FTbSV1E56r1NVZnQXDLnD85O88p/XKd1hFPjXfdyNKM=;
-        b=Tyrw0AqX5KeueRvZ5Y0wXnf58QJqHA97nOlWjTn0weAxWv23gyYikojMEpUS8Nzcqr
-         Yc7oX8bEMfJDyDa1SdgM7/7THv0CGWo35gkSqOHSfckGzIouF7SxpsMUkc/a51k0TpCa
-         gVl/qvzaPbn7LLTsrH8TB4HvbsiVL3pSWnGspwn4Er5j+15sDH4+Z6Xjx6HkxlY/djI/
-         q1mZQ+dr2kpPXjbi98hsUVeLrfkditmvs/b0wUU5w8JFc1K2/ZqVCzc7glaczq8ARUpp
-         BXMbbSxSth7sdjxbbwZXgvZxDhhVczEmQ0J4bOm95Z4Ed4V0M6lgzWjJ2mA5sbIO4DWO
-         FJMw==
-X-Gm-Message-State: AOAM533/5u44WKaCU9Q05nYeirjZXAujk5Y0LVH0EOXve3VoYW8p3S0t
-        j6gjegQGSo9oHiHHVNti+CBprg==
-X-Google-Smtp-Source: ABdhPJwu1w8Ez8V1SSEP1iN9iT0vYNZi4Mw24O1Bs5AWrkAvlJWFDrzy8Pzs0mcDOxQoHdV1ODa9ww==
-X-Received: by 2002:a2e:bb93:: with SMTP id y19mr16468601lje.79.1630252080977;
-        Sun, 29 Aug 2021 08:48:00 -0700 (PDT)
+        bh=uAcFEY+E0qmgNU+cIgtsjckvcJT9e5o7gZcnimCS7qE=;
+        b=RG3DOzc0RqNfpbaKgQ4+sLZUKY2L+QjgU3IDDRmT7zSNeWJUO+1lbptwONICDTXAi+
+         zW57ahoGD4ZFIWLL9QlScAd0Ycc8Ay8ZCxSRTFw0EUfURiPF7qQKitud5eTXvp80iMQK
+         aPx2s28zR01mccnj1BoSXt0wS0tnYxhlrFjpIZR1awxXSS0vl+S/esr/STHiUmBXGNhz
+         CV11BNEeuqeLBZDSeKht7kPkPy1J+aRxDBxIKoJbQN56OqNHnGBURyHr8m6KXQ+CDmnJ
+         GIrSKovbjLrztJ7tcsVlB/x9VOLJ70D6V5WhgvtqZslHHx5bJfhGPIB9v3stdXVArxJx
+         uXgA==
+X-Gm-Message-State: AOAM531DW+vH7hqstWqeZtLkWDZOPLfhTRPNwD08jFBUfQgMUiqY96vo
+        Pu6MBdpvOrYt0fzjavbHVMiC9w==
+X-Google-Smtp-Source: ABdhPJxh6ttGvJTuKrUIAct+s3sIoQe21OrLpijFoCP5JmFHSJh2yRJsONxu3oyPpABJLDKFO5PnMw==
+X-Received: by 2002:a2e:a785:: with SMTP id c5mr16291427ljf.434.1630252081609;
+        Sun, 29 Aug 2021 08:48:01 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id y5sm1481243ljd.38.2021.08.29.08.48.00
+        by smtp.gmail.com with ESMTPSA id y5sm1481243ljd.38.2021.08.29.08.48.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 08:48:00 -0700 (PDT)
+        Sun, 29 Aug 2021 08:48:01 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -61,10 +61,10 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
         Mark Brown <broonie@kernel.org>,
         Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: [PATCH v7 2/8] dt-bindings: clock: qcom,videocc: add mmcx power domain
-Date:   Sun, 29 Aug 2021 18:47:51 +0300
-Message-Id: <20210829154757.784699-3-dmitry.baryshkov@linaro.org>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v7 3/8] clk: qcom: dispcc-sm8250: use runtime PM for the clock controller
+Date:   Sun, 29 Aug 2021 18:47:52 +0300
+Message-Id: <20210829154757.784699-4-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210829154757.784699-1-dmitry.baryshkov@linaro.org>
 References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org>
@@ -74,56 +74,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On sm8250 videocc requires MMCX power domain to be powered up before
-clock controller's registers become available. For now sm8250 was using
-external regulator driven by the power domain to describe this
-relationship. Switch into specifying power-domain and required opp-state
-directly.
+On sm8250 dispcc and videocc registers are powered up by the MMCX power
+domain. Use runtime PM calls to make sure that required power domain is
+powered on while we access clock controller's registers.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/clock/qcom,videocc.yaml     | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/clk/qcom/dispcc-sm8250.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
-index 567202942b88..5d7053503435 100644
---- a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
-+++ b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
-@@ -47,6 +47,16 @@ properties:
-   reg:
-     maxItems: 1
+diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
+index 601c7c0ba483..108dd1249b6a 100644
+--- a/drivers/clk/qcom/dispcc-sm8250.c
++++ b/drivers/clk/qcom/dispcc-sm8250.c
+@@ -6,6 +6,7 @@
+ #include <linux/clk-provider.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/reset-controller.h>
  
-+  power-domains:
-+    description:
-+      A phandle and PM domain specifier for the MMCX power domain.
-+    maxItems: 1
+@@ -1226,13 +1227,31 @@ static const struct of_device_id disp_cc_sm8250_match_table[] = {
+ };
+ MODULE_DEVICE_TABLE(of, disp_cc_sm8250_match_table);
+ 
++static void disp_cc_sm8250_pm_runtime_disable(void *data)
++{
++	pm_runtime_disable(data);
++}
 +
-+  required-opps:
-+    description:
-+      A phandle to an OPP node describing required MMCX performance point.
-+    maxItems: 1
+ static int disp_cc_sm8250_probe(struct platform_device *pdev)
+ {
+ 	struct regmap *regmap;
++	int ret;
 +
- required:
-   - compatible
-   - reg
-@@ -61,6 +71,7 @@ additionalProperties: false
- examples:
-   - |
-     #include <dt-bindings/clock/qcom,rpmh.h>
-+    #include <dt-bindings/power/qcom-rpmpd.h>
-     clock-controller@ab00000 {
-       compatible = "qcom,sdm845-videocc";
-       reg = <0x0ab00000 0x10000>;
-@@ -69,5 +80,7 @@ examples:
-       #clock-cells = <1>;
-       #reset-cells = <1>;
-       #power-domain-cells = <1>;
-+      power-domains = <&rpmhpd SM8250_MMCX>;
-+      required-opps = <&rpmhpd_opp_low_svs>;
-     };
- ...
++	pm_runtime_enable(&pdev->dev);
++
++	ret = devm_add_action_or_reset(&pdev->dev, disp_cc_sm8250_pm_runtime_disable, &pdev->dev);
++	if (ret)
++		return ret;
++
++	ret = pm_runtime_resume_and_get(&pdev->dev);
++	if (ret)
++		return ret;
+ 
+ 	regmap = qcom_cc_map(pdev, &disp_cc_sm8250_desc);
+-	if (IS_ERR(regmap))
++	if (IS_ERR(regmap)) {
++		pm_runtime_put(&pdev->dev);
+ 		return PTR_ERR(regmap);
++	}
+ 
+ 	/* note: trion == lucid, except for the prepare() op */
+ 	BUILD_BUG_ON(CLK_ALPHA_PLL_TYPE_TRION != CLK_ALPHA_PLL_TYPE_LUCID);
+@@ -1257,7 +1276,11 @@ static int disp_cc_sm8250_probe(struct platform_device *pdev)
+ 	/* DISP_CC_XO_CLK always-on */
+ 	regmap_update_bits(regmap, 0x605c, BIT(0), BIT(0));
+ 
+-	return qcom_cc_really_probe(pdev, &disp_cc_sm8250_desc, regmap);
++	ret = qcom_cc_really_probe(pdev, &disp_cc_sm8250_desc, regmap);
++
++	pm_runtime_put(&pdev->dev);
++
++	return ret;
+ }
+ 
+ static struct platform_driver disp_cc_sm8250_driver = {
 -- 
 2.33.0
 
