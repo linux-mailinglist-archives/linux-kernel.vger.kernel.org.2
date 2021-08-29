@@ -2,179 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7993FAD9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A323FAD9E
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhH2SAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 14:00:02 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51626 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhH2SAB (ORCPT
+        id S235709AbhH2SGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 14:06:04 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53932
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230010AbhH2SGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 14:00:01 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 06DA41C0B76; Sun, 29 Aug 2021 19:59:07 +0200 (CEST)
-Date:   Sun, 29 Aug 2021 19:59:07 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>, Dan Murphy <dmurphy@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Russell King <linux@armlinux.org.uk>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, ~lkcamp/patches@lists.sr.ht,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
-        kernel@collabora.com
-Subject: Re: [PATCH v3 2/5] leds: Add driver for QCOM SPMI Flash LEDs
-Message-ID: <20210829175906.GA663@amd>
-References: <20210803162641.1525980-1-nfraprado@collabora.com>
- <20210803162641.1525980-3-nfraprado@collabora.com>
- <b1060e9a-f78e-fbe9-bde3-2b4d89cbc73e@gmail.com>
- <20210824214515.ekjpvaymkgxltlzp@notapiano>
- <278ea1e8-8b21-457d-78d7-fbb32544fe0a@gmail.com>
+        Sun, 29 Aug 2021 14:06:00 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 51ABC3F101;
+        Sun, 29 Aug 2021 18:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630260306;
+        bh=5xRSsNwOwnDTizm0g7YvHUz989lGjI0HmFERSykg4No=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=icGu6xT/3v5EVTU5eqCoiS/SUT+GBzzk8C4C9vrqV61fCfSUuUGGYZnyuqjGXIXAa
+         4ZRGqPTwazDTaFZy1rGaSRECho8HDeHCu2RuyjgrzI69ai6oME51A+l2rgNUhseVHi
+         rnNgiYgJ/zorLayPh/KZcnBida0W/Sld/xz8xm1qBXNpDYbIFj6em5lEyXmnUHYNY8
+         ZurntEBcQjn9D/ipmZjUlJ1fV6RXqEzyYuFn+fF7rXoTqpENEun7YCB93e+lRCvs6l
+         g//5nexOWoZXT5YYRQhHU5f5/84ExrlUqsf6J/BH+20dBbGToMErhg7RJKHTSfBsrB
+         irryICpIp5aLQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] rtlwifi: rtl8192de: Fix uninitialized variable place
+Date:   Sun, 29 Aug 2021 19:05:03 +0100
+Message-Id: <20210829180503.533934-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
-Content-Disposition: inline
-In-Reply-To: <278ea1e8-8b21-457d-78d7-fbb32544fe0a@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---/9DWx/yDrRhgMJTb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In the case where chnl <= 14 variable place is not initialized and
+the function returns an uninitialized value. This fixes an earlier
+cleanup where I introduced this bug. My bad.
 
-Hi both!
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: 369956ae5720 ("rtlwifi: rtl8192de: Remove redundant variable initializations")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please trim your replies (removing code you are not commenting
-on). Scolling 600 lines to find where discussion is is not fun.
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
+index 8ae69d914312..b32fa7a75f17 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
+@@ -896,7 +896,7 @@ static void _rtl92d_ccxpower_index_check(struct ieee80211_hw *hw,
+ 
+ static u8 _rtl92c_phy_get_rightchnlplace(u8 chnl)
+ {
+-	u8 place;
++	u8 place = chnl;
+ 
+ 	if (chnl > 14) {
+ 		for (place = 14; place < sizeof(channel5g); place++) {
+-- 
+2.32.0
 
-Best regards,
-								Pavel
-
-> >>>+static int qcom_flash_torch_on(struct qcom_flash_led *led)
-> >>>+{
-> >>>+	int rc, error;
-> >>>+	struct qcom_flash_device *leds_dev =3D led_to_leds_dev(led);
-> >>>+	struct device *dev =3D leds_dev->dev;
-> >>>+
-> >>>+	if (leds_dev->peripheral_subtype =3D=3D QCOM_FLASH_SUBTYPE_DUAL) {
-> >>>+		rc =3D qcom_flash_torch_regulator_on(leds_dev);
-> >>>+		if (rc)
-> >>>+			goto error_reg_write;
-> >>>+	} else if (leds_dev->peripheral_subtype =3D=3D QCOM_FLASH_SUBTYPE_SI=
-NGLE) {
-> >>>+		rc =3D qcom_flash_fled_regulator_on(leds_dev);
-> >>
-> >>Why for torch mode you need to enable fled regulator?
-> >
-> >Based on [1], apparently the hardware present in the Single variant of t=
-he PMIC
-> >has some limitation that requires the use of the flash regulator and the=
- value
-> >QCOM_FLASH_ENABLE_ALL to enable the LEDs for the torch mode. The Dual va=
-riant on
-> >the other hand can just use the torch regulator and enables the LEDs with
-> >QCOM_FLASH_ENABLE_MODULE.
-> >
-> >[1] https://github.com/AICP/kernel_lge_hammerhead/commit/0f47c747c074993=
-655d0bfebd045e8ddd228fe4c
-> >
-> >I'm honestly not sure what the impact is on using the different regulato=
-rs and
-> >enable values. I have tested enabling the Dual PMIC with different enabl=
-e values
-> >and all seemed to work the same, so must be some hardware detail.
-> >
-> >I left that Single codepath in the hope that it is useful for devices th=
-at have
-> >that variant of the hardware, but I have only actually tested the Dual P=
-MIC,
-> >which is the one present on the Nexus 5.
->=20
-> Thanks for the explanation. Just wanted to confirm that it was not
-> a mistake.
->=20
-> >>
-> >>>+		if (rc)
-> >>>+			goto error_flash_set;
-> >>>+
-> >>>+		/*
-> >>>+		 * Write 0x80 to MODULE_ENABLE before writing
-> >>>+		 * 0xE0 in order to avoid a hardware bug caused
-> >>>+		 * by register value going from 0x00 to 0xE0.
-> >>>+		 */
-> >>>+		rc =3D qcom_flash_masked_write(leds_dev,
-> >>>+					     QCOM_FLASH_ADDR_ENABLE_CONTROL,
-> >>>+					     QCOM_FLASH_ENABLE_MODULE_MASK,
-> >>>+					     QCOM_FLASH_ENABLE_MODULE);
-> >>>+		if (rc) {
-> >>>+			dev_err(dev, "Enable reg write failed(%d)\n", rc);
-> >>>+			goto error_flash_set;
-> >>>+		}
-> >>>+	}
-> >>>+
-> >>>+	rc =3D qcom_flash_torch_reg_enable(leds_dev, true);
-> >>>+	if (rc)
-> >>>+		goto error_reg_write;
-> >>>+
-> >>>+	rc =3D qcom_flash_masked_write(leds_dev, QCOM_FLASH_ADDR_ENABLE_CONT=
-ROL,
-> >>>+				     QCOM_FLASH_ENABLE_MASK,
-> >>>+				     leds_dev->torch_enable_cmd);
-> >>>+	if (rc) {
-> >>>+		dev_err(dev, "Enable reg write failed(%d)\n", rc);
-> >>>+		goto error_reg_write;
-> >>>+	}
-> >>>+
-> >>>+	rc =3D qcom_flash_masked_write(leds_dev, QCOM_FLASH_ADDR_LED_STROBE_=
-CTRL,
-> >>>+				     led->flash_strobe_cmd,
-> >>>+				     led->flash_strobe_cmd);
-> >>
-> >>Just to make sure - the hardware requires strobe cmd to enable torch?
-> >
-> >Yes. The strobe value is the one that actually turns each of the LEDs on,
-> >doesn't matter if it's on flash or torch mode. The difference in torch m=
-ode is
-> >actually just that the timeout on the LEDs is disabled (done by writing =
-0x00
-> >into the TORCH, 0xE4, register).
-> >So for both modes, the LEDs are turned on by writing to the STROBE_CTRL,=
- 0x47,
-> >register. If torch is on they'll stay on indefinitely, while on flash mo=
-de
-> >they'll turn off after the timeout.
-> >
-> >Perhaps it's just a naming issue?
->=20
-> I propose to add these comments next to the calls in question.
-
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---/9DWx/yDrRhgMJTb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEryuoACgkQMOfwapXb+vITYACfTzmB/yQMp8pEyspMSXKVmTXc
-00kAoIV7dtVg8PxzAHH9lUhUZiImRPmJ
-=8kYL
------END PGP SIGNATURE-----
-
---/9DWx/yDrRhgMJTb--
