@@ -2,176 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846B63FAAE1
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36D23FAAEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235145AbhH2KZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 06:25:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235105AbhH2KZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 06:25:00 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77EC960E90;
-        Sun, 29 Aug 2021 10:24:08 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mKHyw-007qNY-GN; Sun, 29 Aug 2021 11:24:06 +0100
-Date:   Sun, 29 Aug 2021 11:24:06 +0100
-Message-ID: <87sfysczw9.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        id S235076AbhH2Kf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 06:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233920AbhH2KfZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 06:35:25 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DFDC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 03:34:33 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id k24so8208967vsg.9
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 03:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cFa0z+8tZXoXVohz3bA4teT10uueXUcgoj4/QykJ7Dg=;
+        b=tDNKhmtz2UihxgLgra36E4OtwVK/2Cvka4Oa5mN0sWEWxmm9ebnp/P0NXMk/STNL4t
+         +ZOi/VjH0zYVxeqPUM2mK/1pxs4VHMhfndGq5oGlOEgcVJ9yo3X46mP6GYyKMQcWDxGV
+         Db7/S7aIA9rQygT+jrUN+guBju81SB1PagRRPVlBq8bhw/KajEE/rEL7I0nVaYRYiJhz
+         QaDquBKKsiJhwJQ+jPrBdeiLH0zpJ+Em7xS7alDrgZircHIBxeN9Fr/+7CMhnJzIaEFj
+         TvLBo/Og/mTUMFrTfkVScvlWvJGqWbfuBJXBGnkbLIxj2gc9VXp6Cwjec33vknYBArXL
+         mBRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cFa0z+8tZXoXVohz3bA4teT10uueXUcgoj4/QykJ7Dg=;
+        b=XEzAiFZcOVZ39E1DrAGZWSkk3dO5+SR6VW6fnVLzqOowxwdx8htB8lNhXgV0erMhMl
+         z1dIBbvkaN5sZHeDznmLCKiOKpWQbsY+VqmYk5VTf8w4D95LFgVtmbUO86igEOdmYJiO
+         B9o01A+7zfGZyVGqFeR8WuVYxP04YHXG38U0oMrJRQ+HZXfJrDcevnZnQ1gjeAl6vrRo
+         PC+DxzGas2UMc9WiGRZUR2whx4n5Ttt5po9r7CpebVSmLAfZVM+PPVmRm+wyQ1/oYCYn
+         37MPQAJDfbfMLLxtIuWtxWayusD8pYfWxTEdizVr+ltn+LHJCBsMun5dc+kjpLmSL7iB
+         MzTA==
+X-Gm-Message-State: AOAM53350AaEbZkNS1Hw7mT2mPNjm4IL+SEtj5+PuDo6mL5x9FRsz/QE
+        xZTo6gm0LPxnKCWmWGyYrLV5himaRB1EqV/og4Q=
+X-Google-Smtp-Source: ABdhPJxN5aAtGPJwEYD4lKYZYHWpnZJmavNjywQk8+4g9ErEDknneIFfLOQWbhvOtpyPvcO0FkINqhcQ7dDvYOQM9wI=
+X-Received: by 2002:a67:f510:: with SMTP id u16mr12392210vsn.60.1630233272549;
+ Sun, 29 Aug 2021 03:34:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210825061152.3396398-1-chenhuacai@loongson.cn>
+ <20210825061152.3396398-9-chenhuacai@loongson.cn> <87pmu1q5ms.wl-maz@kernel.org>
+ <CAAhV-H5yadRbTt9a-i-65Mvd6mBxm58R_+mWLfJrauuAe3+qyg@mail.gmail.com>
+ <87v93pddzu.wl-maz@kernel.org> <CAAhV-H41rridOo_3Eq5t9LPz-mefketAKNdhgbguFtZ0Cqz5Ng@mail.gmail.com>
+ <87tuj8d0ie.wl-maz@kernel.org>
+In-Reply-To: <87tuj8d0ie.wl-maz@kernel.org>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Sun, 29 Aug 2021 18:34:21 +0800
+Message-ID: <CAAhV-H5cf0N5RAQTRN9MqO-=bsf7YNMCvqVLtwOTpXJ7zaFU=Q@mail.gmail.com>
+Subject: Re: [PATCH V3 08/10] irqchip: Add LoongArch CPU interrupt controller support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
         Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] irqchip/loongson-pch-msi: Fix hwirq setting problem
-In-Reply-To: <20210829092933.4061429-1-chenhuacai@loongson.cn>
-References: <20210829092933.4061429-1-chenhuacai@loongson.cn>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: chenhuacai@loongson.cn, tglx@linutronix.de, linux-kernel@vger.kernel.org, lixuefeng@loongson.cn, chenhuacai@gmail.com, jiaxun.yang@flygoat.com, stable@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Aug 2021 10:29:33 +0100,
-Huacai Chen <chenhuacai@loongson.cn> wrote:
-> 
-> The default msi_domain_ops_init() doesn't set hwirq for irq_data,
-> which causes the hwirq displayed in /proc/interrupts very strange.
-> We fix this by providing a custom msi_domain_ops_init().
+Hi, Marc,
 
-I suggest you start by reading pci_msi_domain_set_desc(). Can you
-demonstrate that this function isn't called and that the numbers
-displayed in /proc/interrupts are just random crap pulled out of thin
-air?
+On Sun, Aug 29, 2021 at 6:10 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Sun, 29 Aug 2021 10:37:48 +0100,
+> Huacai Chen <chenhuacai@gmail.com> wrote:
+>
+> > > Are you saying that there is no way for the interrupt controller
+> > > driver to figure out the hwirq number on its own?  That would seem
+> > > pretty odd (even the MIPS GIC has that). Worse case, you can provide
+> > > an arch-specific helper that exposes the current hwirq based on the
+> > > vector that triggered.
+> > We can get the hwirq number by reading CSR.ESTAT register, but in this
+> > way "vectored interrupts" is meaningless.
+>
+> Let's face it, the way you use vectored interrupts makes zero sense
+> already. The whole point of vectored interrupts is that the CPU can
+> branch to the handler directly, making the interrupt handling cheaper
+> as there should be no additional decoding and you can run the final
+> handler immediately. Here, all your interrupts point to the same
+> "default handler"...
+The default handler can be overridden by arch code.
 
-> 
-> Before this patch:
-> 
-> root@loongson-pc:~# cat /proc/interrupts
->            CPU0       CPU1
->  30:          0          0      PCH PIC  47  acpi
->  42:      80020          0      LIOINTC  10  ttyS0
->  44:          1          0      PCH PIC  49  ohci_hcd:usb3
->  45:          0          0      PCH PIC  48  ehci_hcd:usb1
->  46:          1          0      PCH PIC  51  ohci_hcd:usb4
->  47:          0          0      PCH PIC  50  ehci_hcd:usb2
->  54:          0          0      PCH PIC  16  ahci[0000:00:08.0]
->  55:       4364          0      PCH PIC  17  ahci[0000:00:08.1]
->  56:        103          0      PCH PIC  18  ahci[0000:00:08.2]
->  57:          0          0     PCH PCI MSI 1048576  ahci[0000:02:00.0]
->  58:          0          0     PCH PCI MSI 524288  xhci_hcd
->  59:          0          0     PCH PCI MSI 524289  xhci_hcd
->  60:          0          0     PCH PCI MSI 524290  xhci_hcd
->  61:          0          0     PCH PCI MSI 524291  xhci_hcd
->  62:          1          0     PCH PCI MSI 1572864  enp3s0f0
->  63:          6        173     PCH PCI MSI 1572865  enp3s0f0-rx-0
->  64:          6        151     PCH PCI MSI 1572866  enp3s0f0-rx-1
->  65:          6        151     PCH PCI MSI 1572867  enp3s0f0-rx-2
->  66:         20          0     PCH PCI MSI 1572868  enp3s0f0-tx-0
->  67:         20          0     PCH PCI MSI 1572869  enp3s0f0-tx-1
->  68:        170          0     PCH PCI MSI 1572870  enp3s0f0-tx-2
-> 
-> After this patch:
-> 
-> root@loongson-pc:~# cat /proc/interrupts
->            CPU0       CPU1
->  30:          0          0      PCH PIC  47  acpi
->  42:      83960          0      LIOINTC  10  ttyS0
->  44:          1          0      PCH PIC  49  ohci_hcd:usb3
->  45:          0          0      PCH PIC  48  ehci_hcd:usb1
->  46:          1          0      PCH PIC  51  ohci_hcd:usb4
->  47:          0          0      PCH PIC  50  ehci_hcd:usb2
->  54:          0          0      PCH PIC  16  ahci[0000:00:08.0]
->  55:       6688         13      PCH PIC  17  ahci[0000:00:08.1]
->  56:        113          2      PCH PIC  18  ahci[0000:00:08.2]
->  57:          0          0     PCH PCI MSI  67  ahci[0000:02:00.0]
->  58:          0          0     PCH PCI MSI  68  xhci_hcd
->  59:          0          0     PCH PCI MSI  69  xhci_hcd
->  60:          0          0     PCH PCI MSI  70  xhci_hcd
->  61:          0          0     PCH PCI MSI  71  xhci_hcd
->  62:          1          0     PCH PCI MSI  72  enp3s0f0
->  63:         12          4     PCH PCI MSI  73  enp3s0f0-rx-0
->  64:         12          4     PCH PCI MSI  74  enp3s0f0-rx-1
->  65:         12          0     PCH PCI MSI  75  enp3s0f0-rx-2
->  66:         16          0     PCH PCI MSI  76  enp3s0f0-tx-0
->  67:         22          0     PCH PCI MSI  77  enp3s0f0-tx-1
->  68:         12          0     PCH PCI MSI  78  enp3s0f0-tx-2
-> 
-> Fixes: 632dcc2c75ef6de327 ("irqchip: Add Loongson PCH MSI controller")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
->  drivers/irqchip/irq-loongson-pch-msi.c | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-loongson-pch-msi.c b/drivers/irqchip/irq-loongson-pch-msi.c
-> index 32562b7e681b..c91a731abd99 100644
-> --- a/drivers/irqchip/irq-loongson-pch-msi.c
-> +++ b/drivers/irqchip/irq-loongson-pch-msi.c
-> @@ -81,10 +81,25 @@ static void pch_msi_compose_msi_msg(struct irq_data *data,
->  	msg->data = data->hwirq;
->  }
->  
-> +static int msi_domain_ops_init(struct irq_domain *domain,
-> +				struct msi_domain_info *info,
-> +				unsigned int virq, irq_hw_number_t hwirq,
-> +				msi_alloc_info_t *arg)
-> +{
-> +	irq_domain_set_hwirq_and_chip(domain, virq, arg->hwirq, info->chip,
-> +					info->chip_data);
-> +	return 0;
-> +}
-> +
-> +static struct msi_domain_ops pch_msi_domain_ops = {
-> +	.msi_init	= msi_domain_ops_init,
-> +};
-> +
->  static struct msi_domain_info pch_msi_domain_info = {
->  	.flags	= MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
->  		  MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX,
->  	.chip	= &pch_msi_irq_chip,
-> +	.ops	= &pch_msi_domain_ops,
->  };
->  
->  static struct irq_chip middle_irq_chip = {
-> @@ -112,8 +127,9 @@ static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
->  					   unsigned int virq,
->  					   unsigned int nr_irqs, void *args)
->  {
-> -	struct pch_msi_data *priv = domain->host_data;
->  	int hwirq, err, i;
-> +	struct pch_msi_data *priv = domain->host_data;
-> +	msi_alloc_info_t *info = (msi_alloc_info_t *)args;
->  
->  	hwirq = pch_msi_allocate_hwirq(priv, nr_irqs);
->  	if (hwirq < 0)
-> @@ -127,6 +143,7 @@ static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
->  		irq_domain_set_hwirq_and_chip(domain, virq + i, hwirq + i,
->  					      &middle_irq_chip, priv);
->  	}
-> +	info->hwirq = hwirq;
->  
->  	return 0;
->  
-
-There is nothing to fix here. The hwirq numbers in /proc/interrupts
-are the way they are for a good reason, and there is no need to make
-them look "better".
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Huacai
+>
+> What do vectored interrupts bring? "Absolutely Nothing! (say it again!)"
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
