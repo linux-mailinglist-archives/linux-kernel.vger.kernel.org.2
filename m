@@ -2,92 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177E33FA9B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E89F3FA9B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 09:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234802AbhH2HHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 03:07:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51666 "EHLO mail.kernel.org"
+        id S234790AbhH2HHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 03:07:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234753AbhH2HHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 03:07:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C1FB60F39;
-        Sun, 29 Aug 2021 07:06:13 +0000 (UTC)
+        id S234745AbhH2HHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 03:07:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E627601FD;
+        Sun, 29 Aug 2021 07:06:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630220777;
-        bh=/n4BHEfwRpAkQl+6zQT6qVT0qSub4et7m03Zgo/XEPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EK1gvSJl2SZyOTieaHwz8h6/K/9AimVgahG7x7Na6f2EmGseoRAYhFnD2I5Wk88mY
-         vtw76Km759OuxFL4PaH4rm1Na3bvOhwUTJf4o6gY4BGmcJZAwRHUBMXne8y0Zlwrs2
-         QWsG6/UABUy2XIw2tAqEcwe2Kn/e0oOxfB4gA83FQ1xfuTy6eMLNN9TpXmW4kGEu/2
-         WnFg/z7uZw8sR1a+ZHcxXa8vyV05GBVBk3wsKUrF+LHV4eJPY24I7c8r7vJG1CwemG
-         RBLFJX1sihXBRR8AecUcgjX++DyavEPQy9+RiIeu51ZGAOnrVMm6ZLuQnE6iM5RSZL
-         OGfNNfU3f3/bw==
-Date:   Sun, 29 Aug 2021 10:06:10 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 0/4] mm/page_alloc: cache pte-mapped allocations
-Message-ID: <YSsx4qFlvQEwI1kz@kernel.org>
-References: <20210823132513.15836-1-rppt@kernel.org>
- <9d61b4f7-82d0-5caf-88fa-ff1b78704eea@suse.cz>
+        s=k20201202; t=1630220776;
+        bh=/bo8CQ5ubL+De4iP99wspV3BIMOcw67mLr0gSrsEL6Y=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Qp2uprQkED0AFOJjO/H2Ei3mleyJOyi592OMt7oYW0mVGvCb8rnT/7gQvDU2XFAl9
+         jmg6MoW9lUym9p1yqlZYqbDiTNYp273nen3nOgfxgrFdQasE5hSI5yWayJffzmznhY
+         eF+UbKvFSnh5QHiPNzvYOxBE1dg9Lur21WCIZPMD3Bwb4CMhzSuq8OI8Dt5XRjp5Ec
+         txbn/w6n+KcO1144RnJeivaYO1yGk0JkOLOqhAown/1pG2E0oDW/mbEi0bLpjhfIzZ
+         DLZVEGjPz10ZtFR/LW3tJTJFObz2qrbm9HAEOj9tKqofPOm8VrAWyoFAW+6tR8+VOA
+         ay/WjuvKvw7Tw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9d61b4f7-82d0-5caf-88fa-ff1b78704eea@suse.cz>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210825134056.219884-4-krzysztof.kozlowski@canonical.com>
+References: <20210825134056.219884-1-krzysztof.kozlowski@canonical.com> <20210825134056.219884-4-krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v3 3/8] dt-bindings: clock: samsung: convert Exynos542x to dtschema
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Sam Protsenko <semen.protsenko@linaro.org>
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Date:   Sun, 29 Aug 2021 00:06:15 -0700
+Message-ID: <163022077504.2676726.5936865865796813700@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 06:09:44PM +0200, Vlastimil Babka wrote:
-> On 8/23/21 15:25, Mike Rapoport wrote:
-> >
-> > The idea is to use a gfp flag that will instruct the page allocator to use
-> > the cache of pte-mapped pages because the caller needs to remove them from
-> > the direct map or change their attributes. 
-> 
-> Like Dave, I don't like much the idea of a new GFP flag that all page
-> allocations now have to check, and freeing that has to check a new pageblock
-> flag, although I can see some of the benefits this brings...
-> 
-> > When the cache is empty there is an attempt to refill it using PMD-sized
-> > allocation so that once the direct map is split we'll be able to use all 4K
-> > pages made available by the split. 
-> > 
-> > If the high order allocation fails, we fall back to order-0 and mark the
-> 
-> Yeah, this fallback is where we benefit from the page allocator implementation,
-> because of the page freeing hook that will recognize page from such fallback
-> blocks and free them to the cache. But does that prevent so much fragmentation
-> to be worth it? I'd see first if we can do without it.
+Quoting Krzysztof Kozlowski (2021-08-25 06:40:51)
+> Merge Exynos542x clock controller bindings to existing DT schema.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
 
-I've run 'stress-ng --mmapfork 20 -t 30' in a VM with 4G or RAM and then
-checked splits reported in /proc/vmstat to get some ideas what may be the
-benefit.
-
-I've compared Rick's implementation of grouped alloc (rebased on v5.14-rc6)
-with this set. For that simple test there were ~30% less splits.
-
-                      | grouped alloc | pte-mapped
-----------------------+---------------+------------
-PMD splits after boot |       16      |     14
-PMD splits after test |       49      |     34
-
-(there were no PUD splits at all).
-
-I think the closer we have such cache to the buddy, the better would be
-memory utilization. The downside is that it will be harder to reclaim 2M
-blocks than with separate caches because at page allocator level we don't
-have enough information to make the pages allocated from the cache movable.
-
--- 
-Sincerely yours,
-Mike.
+Applied to clk-next
