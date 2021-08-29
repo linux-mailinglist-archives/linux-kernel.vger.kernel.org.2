@@ -2,130 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA363FAEEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 00:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED513FAEF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 00:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235905AbhH2WYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 18:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234860AbhH2WYE (ORCPT
+        id S236064AbhH2W1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 18:27:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39441 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235582AbhH2W1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 18:24:04 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9E5C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:23:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GySdT3JDbz9sRf;
-        Mon, 30 Aug 2021 08:23:09 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630275790;
-        bh=w52mmyAw0pCyePwhvBMaQ5okadNuOVKqKoPVEPrVa1E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RLvrV5K/iYIxUs9llbO68YWtqBm7Bt8ujpgQUiIrsgPGHYcWVCTMwoQEa1gYMBLqz
-         PrGtbBTxIeS+9vUkhleLub75g92LzRLRKU9nyWGmYtZ0LykMRo1DVrzkhPoOmwZTQk
-         I8fLYgHiL15WLaBBcuNg+f9WQljyYV0Iz2i2RKTdX0sC3P6egH8wL4kiTzBVyAkAee
-         jFX30rI9S/8Et13StLuRs8HuYIW9rqX5Grq6rz9dXp2k13j2567SX022OmuT/+yJcU
-         IIR5JL4LtQCRVyZ+LaZcHzw3fOqki3ebg4gX+lfkP+E2VWoEl7vi8Q3vzo2IzAzVkV
-         uQjQ2UbU3UZCg==
-Date:   Mon, 30 Aug 2021 08:23:08 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: Ntfs3 git repo in github should not back merge
-Message-ID: <20210830082308.649f2026@canb.auug.org.au>
-In-Reply-To: <20210825192746.ryi2vzn5gz4myxri@kari-VirtualBox>
-References: <20210825192746.ryi2vzn5gz4myxri@kari-VirtualBox>
+        Sun, 29 Aug 2021 18:27:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630275990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w+MBpgO+PBJKHqx0Y7eErLZSvPvNS8U9WRpzvSbhkVw=;
+        b=gAmBZHwpZem49MSfu5U/CZ/a5gr5V2xPAiE8x7s7qTrcmyfHUZMhvXgnbBO48QN3T2mExC
+        dO1u1BknmTb7tV0FmR+iQOV+BEZ7G638rsmFUPAERL53ZoCG+bUOEYbJE+c6RSOTkl8b/o
+        ajJCJ6lUbgZfEZWmQfT67AkAmqdybSI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-287-cHZvzSkLNP6NJchpKXThwA-1; Sun, 29 Aug 2021 18:26:28 -0400
+X-MC-Unique: cHZvzSkLNP6NJchpKXThwA-1
+Received: by mail-wm1-f69.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso9201719wma.9
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 15:26:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w+MBpgO+PBJKHqx0Y7eErLZSvPvNS8U9WRpzvSbhkVw=;
+        b=fAYMLdwLfWu6f56G/3GV9Q1zxAPefGYskOcWpOkMa1LeYqIz8z/16+YqM5lI4v7RSd
+         1TatluhGjW19sYkAvaIfsbLzwmcel2O4bO8NmEz4cZE7XSF/sTdo7kRP3j9TD4yQ1oIi
+         uinf/XumUjoKIZfanCs7ms/NespXgc+tw/MN0T3cDnkIuHIA73dhvUZvzWNqx1RyubSE
+         2ec7R0s3MMIT1qFChx9iRqOCNXVSmRZOO5NqK9Nlm6uc41V6HalNY4IaaylTErTRaX+f
+         QA/N0siJbtifyfwWtp5tDnX1DZ7Z/zKJUQ/i9/npP9dW0wuf48E5n8yMjEUgUuikmfi0
+         Yuyw==
+X-Gm-Message-State: AOAM532BrcuXAGTQ9fBGKbJeYit4GzE0EeoeAPvZM3auB9KdbC+ZVowc
+        UmTeKckOkYVi+HYnuNUUZ4kGvF+LKlpKneg6DkKa/aFY2HjZf109XGGz3CBxDl6VSfbEbViT531
+        463E2nBOy3Sf1p/BI/ovoZsAd
+X-Received: by 2002:adf:d191:: with SMTP id v17mr9646950wrc.345.1630275987855;
+        Sun, 29 Aug 2021 15:26:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwrWdV4UWjmsxWXnznxAyF40RS7x+qTXWNuG7vw+rYxDj6nRO9NmovukIvxjT80bQD6fn6smQ==
+X-Received: by 2002:adf:d191:: with SMTP id v17mr9646917wrc.345.1630275987667;
+        Sun, 29 Aug 2021 15:26:27 -0700 (PDT)
+Received: from redhat.com ([2.55.28.138])
+        by smtp.gmail.com with ESMTPSA id c190sm12208101wma.21.2021.08.29.15.26.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 15:26:26 -0700 (PDT)
+Date:   Sun, 29 Aug 2021 18:26:20 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+Message-ID: <20210829181635-mutt-send-email-mst@kernel.org>
+References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210823195409-mutt-send-email-mst@kernel.org>
+ <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
+ <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
+ <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
+ <20210824053830-mutt-send-email-mst@kernel.org>
+ <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
+ <20210829112105-mutt-send-email-mst@kernel.org>
+ <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TRsi1qC31IpCGEQ/serF0R6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TRsi1qC31IpCGEQ/serF0R6
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Aug 29, 2021 at 09:17:53AM -0700, Andi Kleen wrote:
+> Also I changing this single call really that bad? It's not that we changing
+> anything drastic here, just give the low level subsystem a better hint about
+> the intention. If you don't like the function name, could make it an
+> argument instead?
 
-Hi Konstantin,
+My point however is that the API should say that the
+driver has been audited, not that the mapping has been
+done in some special way. For example the mapping can be
+in some kind of wrapper, not directly in the driver.
+However you want the driver validated, not the wrapper.
 
-On Wed, 25 Aug 2021 22:27:46 +0300 Kari Argillander <kari.argillander@gmail=
-.com> wrote:
->
-> I notice that you have made back-merge in ntfs3 git repo in github.
-> This should not be done without good reason and there is none in this
-> case. If there is reason you should also write good merge commit for it.
+Here's an idea:
 
-This is correct, but in this case with an initial submission, Linus is
-likely to be a bit easier on you.  Just explain that you realise that
-you probably should not have done the back merge.  Also, if you are
-going to merge another branch you should not use the github web
-interface to do it.  It does not allow you to produce a useful commit
-message for the merge commit.  Linus has expressed this recently about
-another tree that is maintained on github (unfortunately in a private
-message, so it is not archived anywhere).
 
-> Here is link which you can read about back-merges. If you have any
-> questions you can always ask.
->=20
-> 01.org/linuxgraphics/gfx-docs/drm/maintainer/rebasing-and-merging.html#me=
-rging-from-sibling-or-upstream-trees
 
-Also available in the kernel tree at Documentation/maintainer/...
+diff --git a/include/linux/audited.h b/include/linux/audited.h
+new file mode 100644
+index 000000000000..e23fd6ad50db
+--- /dev/null
++++ b/include/linux/audited.h
+@@ -0,0 +1,3 @@
++#ifndef AUDITED_MODULE
++#define AUDITED_MODULE
++#endif
 
-> You could also go check some other trees how they do it. Usually there
-> is next/master/main/for-next which will be repo which will contain stuff
-> for next-merge window. This is usually based on rc1, rc2, rc3 depending
-> when you put first patches to next merge window. As you based your
-> branch top of the rc5.
+Now any audited driver must do
+#include <linux/audited.h>
+first of all.
+Implementation-wise it can do any number of things,
+e.g. if you like then sure you can do:
 
-Again with an initial submission this should not be a problem.  And, in
-any case, varies among maintainer quite a bit.  But -rc1/2 is usually a
-good place to start your next round of development.
+#ifdef AUDITED_MODULE
+#define pci_ioremap pci_ioremap_shared
+#else
+#define pci_ioremap pci_ioremap
+#endif
 
-> Because your master branch is  for next you could have rebased your
-> branch top of the rc7 if you want to but that is kinda pointless. You
-> could always fix little mistakes in next branch with rebase, but you
-> should propably info this action to ntfs3 mailing list.
+but you can also thinkably do something like (won't work,
+but just to give you the idea):
 
-Do *not* rebase a published branch except in exceptional circumstances.
-All branches included in linux-next should be considered published.
+#ifdef AUDITED_MODULE
+#define __init __init
+#else
+#define __init
+#endif
 
-> The idea is that this repo has very clean history always when it get
-> merged to Linus tree. Also developers who work with ntfs3 can see
-> everything in one eye.
->=20
-> Example take a look Ext4 dev (for-next) branch
-> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/log/?h=3Dd=
-ev
-> You see that this is based on rc2. Theodore will create pull-request
-> based on this when he creates pull-request. Very clean history and no
-> back-merges.
+or any number of hacks like this.
 
-Also no rebasing (that I can remember).
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+MST
 
---Sig_/TRsi1qC31IpCGEQ/serF0R6
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEsCMwACgkQAVBC80lX
-0Gyzuwf/QfXftzQytSL4L+HYtK3drBCW+hFcxcp6nie1tJvQckTntVEWbpj70qr9
-k+aJmtpL9TuGyhs4qZKTOQYgNDaiItS51VKgRvdyh05OF2bAgIwfDLlDKkhO4T0E
-NHvLUJFAXjMhqW7ADe6yK/eeHI2M5sLpBF78ZGvKpxgUug9hkY9iR10zd37oACT0
-+0ol84935bAU24iBwaGM2ZdrZXvcBlu+USxXtSWpIXvgi8azG4zjfbCR44OQey8R
-FjSMcrE2dvoRwnSbF/xm/4X5pqON7FHlJB1FxbpQ9pkdS13gNLxNGxHJP+9V/Yo2
-iwLrx3cvajPi0tL0L79o9XYxSfvAJQ==
-=OcAe
------END PGP SIGNATURE-----
-
---Sig_/TRsi1qC31IpCGEQ/serF0R6--
