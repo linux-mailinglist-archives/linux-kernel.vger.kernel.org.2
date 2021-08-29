@@ -2,64 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510EE3FAA0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 10:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899AF3FAA12
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 10:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbhH2ICD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 04:02:03 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:41675 "EHLO pegase2.c-s.fr"
+        id S234802AbhH2ILh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 04:11:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232155AbhH2ICC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 04:02:02 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Gy5Vr4nytz9sVn;
-        Sun, 29 Aug 2021 10:01:08 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8bMiWTobom5H; Sun, 29 Aug 2021 10:01:08 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gy5Vr3pKlz9sVH;
-        Sun, 29 Aug 2021 10:01:08 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 63E878B767;
-        Sun, 29 Aug 2021 10:01:08 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id uyQ1It10e89s; Sun, 29 Aug 2021 10:01:08 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D4BB68B763;
-        Sun, 29 Aug 2021 10:01:07 +0200 (CEST)
-Subject: Re: [PATCH] net: spider_net: switch from 'pci_' to 'dma_' API
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        kou.ishizaki@toshiba.co.jp, geoff@infradead.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <60abc3d0c8b4ef8368a4d63326a25a5cb3cd218c.1630094078.git.christophe.jaillet@wanadoo.fr>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <90220a35-bd0a-ccf3-91b1-c2a459c447e7@csgroup.eu>
-Date:   Sun, 29 Aug 2021 10:01:02 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232155AbhH2ILe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 04:11:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9424C608FB;
+        Sun, 29 Aug 2021 08:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630224643;
+        bh=9rYyvMODTtObBSqfSrojxx5ZQ0pfDpovtGm0HkyPW+w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XTMOJ1BPPUlIrSn2F8oIoxKLOdios+4mn8o9NzIbO4jTn2M7EVvPyN3axtkf2tsyl
+         GuUIKwIb4mFGDK73Kxc9dyYdIwiWj0JcF2207IKV/SXLJagOg0xp1HjUktx5OVO5Bh
+         oekl86pa23iMYDXd2i6H5hHeDlRB266LjAYBLIhc=
+Date:   Sun, 29 Aug 2021 10:10:33 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, ross.schm.dev@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+Subject: Re: [PATCH v3] staging: r8188eu: core: remove null check before vfree
+Message-ID: <YStA+Yts2hG6eoMV@kroah.com>
+References: <YSs4fvzUw1PK4C9+@user>
 MIME-Version: 1.0
-In-Reply-To: <60abc3d0c8b4ef8368a4d63326a25a5cb3cd218c.1630094078.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSs4fvzUw1PK4C9+@user>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 29, 2021 at 01:04:22PM +0530, Saurav Girepunje wrote:
+> Remove NULL check. NULL check before freeing function is not needed.
+> Correct the indentation.
+> 
+> ChangeLog V3:
+> -Added change log.
+> 
+> ChangeLog V2:
+> -Correct the indentation.
 
+Please put this information below the --- line, as the documentation
+says to do.
 
-Le 27/08/2021 à 21:56, Christophe JAILLET a écrit :
-> ---
-> It has *not* been compile tested because I don't have the needed
-> configuration or cross-compiler. However, the modification is completely
-> mechanical and done by coccinelle.
+thanks,
 
-All you need is at https://mirrors.edge.kernel.org/pub/tools/crosstool/
-
-Christophe
+greg k-h
