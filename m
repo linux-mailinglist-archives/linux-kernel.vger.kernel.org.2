@@ -2,54 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E0C3FAAAE
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CD43FAAA7
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 12:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235164AbhH2KBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 06:01:23 -0400
-Received: from ixit.cz ([94.230.151.217]:44086 "EHLO ixit.cz"
+        id S235148AbhH2KA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 06:00:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234992AbhH2KBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 06:01:21 -0400
-Received: from [192.168.1.138] (ixit.cz [94.230.151.217])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id A8C1624A25;
-        Sun, 29 Aug 2021 12:00:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1630231225; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type; bh=hiVqLmiD+PF9oPmO+LTXOSyjkcfofZrCBQaNyAikZOk=;
-        b=uyQNC2ALZgKo1rZCSSNjtL5N5GUXNVsdy33eKiw83Nf9dz93tLQ2ip5abD9m6rquh12M2D
-        c/G4d5aOSU05ArEwm5eMdntrIf7MoxmkFx5MvQdwIFS3EIUyGnIsb95Y1hhTks+3M62wBf
-        msDUeRBE4qD6aldziruzzRSPn3RABwg=
-Date:   Sun, 29 Aug 2021 11:59:10 +0200
-From:   David Heidelberg <david@ixit.cz>
-Reply-To: 20210828070202.7033-1-shawn.guo@linaro.org
-Subject: [PATCH v2] soc: qcom: mdt_loader: Drop PT_LOAD check on hash segment
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Shawn Guo <shawn.guo@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <MEILYQ.9EFG5UCQQGNS2@ixit.cz>
-X-Mailer: geary/40.0
+        id S235029AbhH2KA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 06:00:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D1B1760E94;
+        Sun, 29 Aug 2021 10:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630231205;
+        bh=bf39DLPRpFLQLU7qP5hJ8jEJigQQ58cqA7mArihAzHI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XDOIdamjCukLyzXwBGBwUr7N4AE0LkGS5un8qP0JZWMuJTlNo74Zcb8kONKanUJ/J
+         8idhdeFLCvR/KLIAqcpr33/clrbbrUe4h38k+bi71AUhmKLzUo8xASaKwhER+6tpAz
+         GkO9Rd+yjwg6jnJPNXtjrYjsdOkXweR1vDdgkj5bJeeEsEDeX3QbzxSdW+gX6jX+Ck
+         qmM8iTGflfe0xQHrhklYjnQqu/+YihOW+HrGhoZkIqsftM8vxG0Z4ACrLe6Q4Nm3o0
+         DEny1xkkfWrjo0EZCbCggf5++dcY+VtHv6AtUKJ27Q2yUjljrKw/ab0LGIXswrjYU4
+         eGl59FqixqcKA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C7F2360A6A;
+        Sun, 29 Aug 2021 10:00:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] fddi: switch from 'pci_' to 'dma_' API
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163023120581.23170.4945897183136463788.git-patchwork-notify@kernel.org>
+Date:   Sun, 29 Aug 2021 10:00:05 +0000
+References: <abc49c24a591b4701dd39fa76506cfdf19aff3cd.1630094399.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <abc49c24a591b4701dd39fa76506cfdf19aff3cd.1630094399.git.christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     davem@davemloft.net, kuba@kernel.org, arnd@arndb.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested-by: David Heidelberg <david@ixit.cz>
+Hello:
 
-On Nexus 7 2013 this patch fixes WiFi firmware loading regression.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Possible please Cc: <stable@vger.kernel.org> (at least from 5.10, where 
-I tested)
+On Fri, 27 Aug 2021 22:00:57 +0200 you wrote:
+> In [1], Christoph Hellwig has proposed to remove the wrappers in
+> include/linux/pci-dma-compat.h.
+> 
+> Some reasons why this API should be removed have been given by Julia
+> Lawall in [2].
+> 
+> A coccinelle script has been used to perform the needed transformation
+> Only relevant parts are given below.
+> 
+> [...]
 
-Thank you
-Best regards
-David Heidelberg
+Here is the summary with links:
+  - fddi: switch from 'pci_' to 'dma_' API
+    https://git.kernel.org/netdev/net-next/c/a3ba7fd1d3bf
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
