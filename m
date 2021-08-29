@@ -2,137 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520533FAA72
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E41C3FAA76
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235122AbhH2J0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 05:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235016AbhH2J0U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 05:26:20 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328D8C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:25:28 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id d6so16800761edt.7
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=j2nLY9bxz+JbWZICE9X6brYpetbTS5b7tdHTmciRbeg=;
-        b=n/Q+UFRSMfKigPpKTAXNFUmmC9dtlpbf/TM1MCQBM4UlzNY99Frzxf8ct+ou/0yd+u
-         jaD6t0FnyHLS+GcgxlqZXyjNqv5C5IvnaSWHXHXZmIwehugZl+ljwuedJIJw0o+ZSj4e
-         WlyubP1boQSWQHiGOIe0LCHwYVTX3qTZUAZ+6WQpU2N9/eDJaAEK/t0DUsjJCMIVR3xf
-         8epjtIbQDsVei541FMGwjR+wb1wkNQ6ikSNlX5KLAlPHlrq41wZ4ij6S9BUjIBVzSR4o
-         hbQO9wtdDIFzdltIjq2s9mbuJI52K1+xYmKs7KQYfR2mOcOPID71RsKz+JjEu4bbddva
-         8zzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=j2nLY9bxz+JbWZICE9X6brYpetbTS5b7tdHTmciRbeg=;
-        b=E+wI1flodQ/llM9wQdkStbCbs5I3hIBg4AJkoUd5Xqtmog4ErmBPotX4c//BTCIqHR
-         rGovB4D2JkI3n1+F6FT2zdavy/M5gw54E5jFOUJEXLbGlUl1ja3ZVoDa/JgquCXxhBYY
-         dwLKnlYhQaNNCfIMUBOPqze8M/8rrhtjeYRNLAQmccXzSP+ekwjEJShOa161RS6NFJmB
-         JuotdjPHwcztMr6LTE9TeDDRhcsBjfebiBNb96tCNmViqvzSZwmVJN5a8Wky/J9yiYAP
-         z9LZN34UWxMTWq0RWuib0b0vmndvqOYWXRSJIgYU+E1d9SsHiNIPAXNXfrmYI7/d+VRu
-         apSw==
-X-Gm-Message-State: AOAM530q00UMwHYwy/ZO9xhO4aeJxAguB1Jx61XHXPIdaexXA6sOftKm
-        R9pHto1UMqapUpBmzcVq0r0=
-X-Google-Smtp-Source: ABdhPJzg6gJhgOmAKutVRldIdUtXRSRPkmlgscysnDt4294IyhfpYr2pKgemush/zixPz8l/96sX9g==
-X-Received: by 2002:a05:6402:d6b:: with SMTP id ec43mr14953958edb.107.1630229126800;
-        Sun, 29 Aug 2021 02:25:26 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::16fa])
-        by smtp.gmail.com with ESMTPSA id d23sm5814414edt.39.2021.08.29.02.25.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 02:25:26 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 6/6] staging: r8188eu: remove should_forbid_n_rate()
-Date:   Sun, 29 Aug 2021 11:25:02 +0200
-Message-Id: <20210829092502.3658-7-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210829092502.3658-1-straube.linux@gmail.com>
-References: <20210829092502.3658-1-straube.linux@gmail.com>
+        id S234984AbhH2JbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 05:31:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234889AbhH2JbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 05:31:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4710D60E94;
+        Sun, 29 Aug 2021 09:30:03 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>, stable@vger.kernel.org
+Subject: [PATCH] irqchip/loongson-pch-msi: Fix hwirq setting problem
+Date:   Sun, 29 Aug 2021 17:29:33 +0800
+Message-Id: <20210829092933.4061429-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function should_forbid_n_rate() is unused, remove it.
+The default msi_domain_ops_init() doesn't set hwirq for irq_data,
+which causes the hwirq displayed in /proc/interrupts very strange.
+We fix this by providing a custom msi_domain_ops_init().
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
+Before this patch:
+
+root@loongson-pc:~# cat /proc/interrupts
+           CPU0       CPU1
+ 30:          0          0      PCH PIC  47  acpi
+ 42:      80020          0      LIOINTC  10  ttyS0
+ 44:          1          0      PCH PIC  49  ohci_hcd:usb3
+ 45:          0          0      PCH PIC  48  ehci_hcd:usb1
+ 46:          1          0      PCH PIC  51  ohci_hcd:usb4
+ 47:          0          0      PCH PIC  50  ehci_hcd:usb2
+ 54:          0          0      PCH PIC  16  ahci[0000:00:08.0]
+ 55:       4364          0      PCH PIC  17  ahci[0000:00:08.1]
+ 56:        103          0      PCH PIC  18  ahci[0000:00:08.2]
+ 57:          0          0     PCH PCI MSI 1048576  ahci[0000:02:00.0]
+ 58:          0          0     PCH PCI MSI 524288  xhci_hcd
+ 59:          0          0     PCH PCI MSI 524289  xhci_hcd
+ 60:          0          0     PCH PCI MSI 524290  xhci_hcd
+ 61:          0          0     PCH PCI MSI 524291  xhci_hcd
+ 62:          1          0     PCH PCI MSI 1572864  enp3s0f0
+ 63:          6        173     PCH PCI MSI 1572865  enp3s0f0-rx-0
+ 64:          6        151     PCH PCI MSI 1572866  enp3s0f0-rx-1
+ 65:          6        151     PCH PCI MSI 1572867  enp3s0f0-rx-2
+ 66:         20          0     PCH PCI MSI 1572868  enp3s0f0-tx-0
+ 67:         20          0     PCH PCI MSI 1572869  enp3s0f0-tx-1
+ 68:        170          0     PCH PCI MSI 1572870  enp3s0f0-tx-2
+
+After this patch:
+
+root@loongson-pc:~# cat /proc/interrupts
+           CPU0       CPU1
+ 30:          0          0      PCH PIC  47  acpi
+ 42:      83960          0      LIOINTC  10  ttyS0
+ 44:          1          0      PCH PIC  49  ohci_hcd:usb3
+ 45:          0          0      PCH PIC  48  ehci_hcd:usb1
+ 46:          1          0      PCH PIC  51  ohci_hcd:usb4
+ 47:          0          0      PCH PIC  50  ehci_hcd:usb2
+ 54:          0          0      PCH PIC  16  ahci[0000:00:08.0]
+ 55:       6688         13      PCH PIC  17  ahci[0000:00:08.1]
+ 56:        113          2      PCH PIC  18  ahci[0000:00:08.2]
+ 57:          0          0     PCH PCI MSI  67  ahci[0000:02:00.0]
+ 58:          0          0     PCH PCI MSI  68  xhci_hcd
+ 59:          0          0     PCH PCI MSI  69  xhci_hcd
+ 60:          0          0     PCH PCI MSI  70  xhci_hcd
+ 61:          0          0     PCH PCI MSI  71  xhci_hcd
+ 62:          1          0     PCH PCI MSI  72  enp3s0f0
+ 63:         12          4     PCH PCI MSI  73  enp3s0f0-rx-0
+ 64:         12          4     PCH PCI MSI  74  enp3s0f0-rx-1
+ 65:         12          0     PCH PCI MSI  75  enp3s0f0-rx-2
+ 66:         16          0     PCH PCI MSI  76  enp3s0f0-tx-0
+ 67:         22          0     PCH PCI MSI  77  enp3s0f0-tx-1
+ 68:         12          0     PCH PCI MSI  78  enp3s0f0-tx-2
+
+Fixes: 632dcc2c75ef6de327 ("irqchip: Add Loongson PCH MSI controller")
+Cc: stable@vger.kernel.org
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- drivers/staging/r8188eu/core/rtw_wlan_util.c  | 36 -------------------
- .../staging/r8188eu/include/rtw_mlme_ext.h    |  1 -
- 2 files changed, 37 deletions(-)
+ drivers/irqchip/irq-loongson-pch-msi.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_wlan_util.c b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-index 8491d82f4a70..ccb5fbbc3ffb 100644
---- a/drivers/staging/r8188eu/core/rtw_wlan_util.c
-+++ b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-@@ -1098,42 +1098,6 @@ unsigned int is_ap_in_tkip(struct adapter *padapter)
- 	}
+diff --git a/drivers/irqchip/irq-loongson-pch-msi.c b/drivers/irqchip/irq-loongson-pch-msi.c
+index 32562b7e681b..c91a731abd99 100644
+--- a/drivers/irqchip/irq-loongson-pch-msi.c
++++ b/drivers/irqchip/irq-loongson-pch-msi.c
+@@ -81,10 +81,25 @@ static void pch_msi_compose_msi_msg(struct irq_data *data,
+ 	msg->data = data->hwirq;
  }
  
--unsigned int should_forbid_n_rate(struct adapter *padapter)
--{
--	u32 i;
--	struct ndis_802_11_var_ie *pIE;
--	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
--	struct wlan_bssid_ex  *cur_network = &pmlmepriv->cur_network.network;
--
--	if (rtw_get_capability((struct wlan_bssid_ex *)cur_network) & WLAN_CAPABILITY_PRIVACY) {
--		for (i = sizeof(struct ndis_802_11_fixed_ie); i < cur_network->IELength;) {
--			pIE = (struct ndis_802_11_var_ie *)(cur_network->IEs + i);
--
--			switch (pIE->ElementID) {
--			case _VENDOR_SPECIFIC_IE_:
--				if (!memcmp(pIE->data, RTW_WPA_OUI, 4) &&
--				    ((!memcmp((pIE->data + 12), WPA_CIPHER_SUITE_CCMP, 4)) ||
--				    (!memcmp((pIE->data + 16), WPA_CIPHER_SUITE_CCMP, 4))))
--					return false;
--				break;
--			case _RSN_IE_2_:
--				if  ((!memcmp((pIE->data + 8), RSN_CIPHER_SUITE_CCMP, 4))  ||
--				     (!memcmp((pIE->data + 12), RSN_CIPHER_SUITE_CCMP, 4)))
--					return false;
--				break;
--			default:
--				break;
--			}
--
--			i += (pIE->Length + 2);
--		}
--
--		return true;
--	} else {
--		return false;
--	}
--}
--
- int wifirate2_ratetbl_inx(unsigned char rate)
- {
- 	int	inx = 0;
-diff --git a/drivers/staging/r8188eu/include/rtw_mlme_ext.h b/drivers/staging/r8188eu/include/rtw_mlme_ext.h
-index 1695a9695ddf..e15e2cec77bd 100644
---- a/drivers/staging/r8188eu/include/rtw_mlme_ext.h
-+++ b/drivers/staging/r8188eu/include/rtw_mlme_ext.h
-@@ -516,7 +516,6 @@ unsigned int receive_disconnect(struct adapter *padapter,
- unsigned char get_highest_rate_idx(u32 mask);
- int support_short_GI(struct adapter *padapter, struct HT_caps_element *caps);
- unsigned int is_ap_in_tkip(struct adapter *padapter);
--unsigned int should_forbid_n_rate(struct adapter *padapter);
++static int msi_domain_ops_init(struct irq_domain *domain,
++				struct msi_domain_info *info,
++				unsigned int virq, irq_hw_number_t hwirq,
++				msi_alloc_info_t *arg)
++{
++	irq_domain_set_hwirq_and_chip(domain, virq, arg->hwirq, info->chip,
++					info->chip_data);
++	return 0;
++}
++
++static struct msi_domain_ops pch_msi_domain_ops = {
++	.msi_init	= msi_domain_ops_init,
++};
++
+ static struct msi_domain_info pch_msi_domain_info = {
+ 	.flags	= MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
+ 		  MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX,
+ 	.chip	= &pch_msi_irq_chip,
++	.ops	= &pch_msi_domain_ops,
+ };
  
- void report_join_res(struct adapter *padapter, int res);
- void report_survey_event(struct adapter *padapter, struct recv_frame *precv_frame);
+ static struct irq_chip middle_irq_chip = {
+@@ -112,8 +127,9 @@ static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
+ 					   unsigned int virq,
+ 					   unsigned int nr_irqs, void *args)
+ {
+-	struct pch_msi_data *priv = domain->host_data;
+ 	int hwirq, err, i;
++	struct pch_msi_data *priv = domain->host_data;
++	msi_alloc_info_t *info = (msi_alloc_info_t *)args;
+ 
+ 	hwirq = pch_msi_allocate_hwirq(priv, nr_irqs);
+ 	if (hwirq < 0)
+@@ -127,6 +143,7 @@ static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
+ 		irq_domain_set_hwirq_and_chip(domain, virq + i, hwirq + i,
+ 					      &middle_irq_chip, priv);
+ 	}
++	info->hwirq = hwirq;
+ 
+ 	return 0;
+ 
 -- 
-2.32.0
+2.27.0
 
