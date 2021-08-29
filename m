@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561253FAD80
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC0D3FAD75
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhH2Ryi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 13:54:38 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:60826 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhH2Ryh (ORCPT
+        id S229904AbhH2Rfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 13:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhH2Rfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 13:54:37 -0400
-Date:   Sun, 29 Aug 2021 17:19:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1630257571;
-        bh=av0NQK53DTwWvhm77BFXmCSJeGiZ1e8OmGOoZPBG0xw=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=EEENe+Nf1QYd/HPTGjjHzHo8SNMj4YxrorK/0oXgpyZHfbaJUY4pb97OoneLn2bas
-         YDY/ne4O/jUWNmFESpmQq1qJqiR1Tsy93onDmq7ANRQlO4edJTJVEqonxts79C4/90
-         vLgVKnSjgIMjEtav5VhJGUXg9lla/abBEJmQCf7M=
-To:     Al Viro <viro@zeniv.linux.org.uk>
-From:   "Caleb D.S. Brzezinski" <calebdsb@protonmail.com>
-Cc:     hirofumi@mail.parknet.co.jp, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Reply-To: "Caleb D.S. Brzezinski" <calebdsb@protonmail.com>
-Subject: Re: [PATCH 2/3] fat: add the msdos_format_name() filename cache
-Message-ID: <87k0k4w4mb.fsf@protonmail.com>
-In-Reply-To: <YSunFyR1f9+MTmsk@zeniv-ca.linux.org.uk>
-References: <20210829142459.56081-1-calebdsb@protonmail.com> <20210829142459.56081-3-calebdsb@protonmail.com> <YSujmt9vman41ecj@zeniv-ca.linux.org.uk> <YSunFyR1f9+MTmsk@zeniv-ca.linux.org.uk>
+        Sun, 29 Aug 2021 13:35:44 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA2BC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 10:34:52 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id m4so21601683ljq.8
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 10:34:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+tyqDIpy9lHRPLEmWy2u7JRjZCjvRQis9Naz0mJ7yyE=;
+        b=oySpogacRpk+LnLteHTL+o2IoGe71EsG5C/4mD9Ax0r26rFKnrzw9z2VMz7rcjWYdc
+         fw15ujivpp8Md4Kz+u3+j5zTzZXJiQewWAE4GSmX9MTAvudRvByxHXJXNQdGFllvo7sQ
+         UpzpElBsMS+G0kQ8F1v9FWXYIqJrnhEeHHG0whVXni+ClRcl/iR82bXJwuhzKEthXthJ
+         ORUXsDpKMu73UHfW5j9naMJXJmM8qQFP6v/Ip8EsTMGtY3IatnNlmQYXvFgQIPS4W4AC
+         mbTaJKjGXFD+yXlIHk3PXnXm4FqfLSp8OfbI2W2nH/bGqDrhsDDYoKIx17rBFZ4FBat4
+         x2KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+tyqDIpy9lHRPLEmWy2u7JRjZCjvRQis9Naz0mJ7yyE=;
+        b=fvvsZQl+CDWPBA/3W+3QLO5Jfn8Jli3U1ugZNrUi36HB3VuOQ4sRJKP9Uzq2JHeY3d
+         SH+8hnHK4XeNVyDKlteADyeIMkVQWI/bE7k7Vx4ejx1125L4Y9As4Vt4oufQtLaXQgvJ
+         MsH5wg1V8BjUMuc7GBZg/WabraSgzrhLSKF+zg5czv9scZLQmNWPOrqem+zf2H6jNakn
+         /f71IOSJTbR9FNIwTHoJCYKq1Xiyi3GTqkdEUdIRCMJI21zX0WPJNUmRnU8IlyhaBWsg
+         qdhRxXGnkSvfFZW2Avk6HNknv4kT0V8/cZx1IyPpp/isBJPPajOEFknzXROEq9S598x9
+         ckQw==
+X-Gm-Message-State: AOAM530Dh6yDzU19tXUEVgryiOnen6RRzb1ZpKSynYwsoEz9gpfD5ZfX
+        MVjjwyCNMeEisDTM/ys5bjs1/LLKLCGWfw==
+X-Google-Smtp-Source: ABdhPJxNAUdpNwROozWgJHg/GNiHjvth3ssRdC8Jhxxk0/TA5hltCIGQaZPDWWSVf9B733nuKb+aAA==
+X-Received: by 2002:a2e:8610:: with SMTP id a16mr17648219lji.66.1630258490789;
+        Sun, 29 Aug 2021 10:34:50 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id r23sm1508814ljd.86.2021.08.29.10.34.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 10:34:50 -0700 (PDT)
+Date:   Sun, 29 Aug 2021 20:34:48 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Skyler =?utf-8?Q?M=C3=A4ntysaari?= <lists@samip.fi>
+Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org
+Subject: Re: [drm/amdgpu] Driver crashes on 5.13.9 kernel
+Message-ID: <20210829173448.3cwk4rz6wfxfxdpj@kari-VirtualBox>
+References: <4ada1100-fbce-44e4-b69d-0f5196f86bcb@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4ada1100-fbce-44e4-b69d-0f5196f86bcb@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al,
+On Sun, Aug 29, 2021 at 06:38:39PM +0300, Skyler Mäntysaari wrote:
+> Hello everyone on the list,
 
-"Al Viro" <viro@zeniv.linux.org.uk> writes:
+This is universal kernel list and it is not read by many. I have added
+hopefully right list (amd-gfx@lists.freedesktop.org).
 
-> On Sun, Aug 29, 2021 at 03:11:22PM +0000, Al Viro wrote:
->> On Sun, Aug 29, 2021 at 02:25:29PM +0000, Caleb D.S. Brzezinski wrote:
->> > Implement the main msdos_format_name() filename cache. If used as a
->> > module, all memory allocated for the cache is freed when the module is
->> > de-registered.
->> >
->> > Signed-off-by: Caleb D.S. Brzezinski <calebdsb@protonmail.com>
->> > ---
->> >  fs/fat/namei_msdos.c | 35 +++++++++++++++++++++++++++++++++++
->> >  1 file changed, 35 insertions(+)
->> >
->> > diff --git a/fs/fat/namei_msdos.c b/fs/fat/namei_msdos.c
->> > index 7561674b1..f9d4f63c3 100644
->> > --- a/fs/fat/namei_msdos.c
->> > +++ b/fs/fat/namei_msdos.c
->> > @@ -124,6 +124,16 @@ static int msdos_format_name(const unsigned char =
-*name, int len,
->> >  =09unsigned char *walk;
->> >  =09unsigned char c;
->> >  =09int space;
->> > +=09u64 hash;
->> > +=09struct msdos_name_node *node;
->> > +
->> > +=09/* check if the name is already in the cache */
->> > +
->> > +=09hash =3D msdos_fname_hash(name);
->> > +=09if (find_fname_in_cache(res, hash))
->> > +=09=09return 0;
->>
->> Huh?  How could that possibly work, seeing that
->> =09* your hash function only looks at the first 8 characters
->> =09* your find_fname_in_cache() assumes that hash collisions
->> are impossible, which is... unlikely, considering the nature of
->> that hash function
->> =09* find_fname_in_cache(res, hash) copies at most 8 characters
+> Subject: Re: [drm/amdgpu] Driver crashes on 5.13.9 kernel
 
->> Where does the extension come from?
+I have no influence or knowledge about this driver, but I still try to
+help because it seems good bug report. Have you test with 5.13.13 or
+5.14-rc7. Does this work with some other kernel? If needed can you git
+bisect if needed? You will probably get some support for it if needed.
 
-I'll be honest, I don't have any. Before I started writing this code I
-poked msdos_format_name() with a lot of sticks to make sure I understood
-the behavior, and it never carried over extentions into the FAT system;
-at least, not that I saw through this function.
+	Argillander
 
-> While we are at it, your "fast path" doesn't even look at opts
-> argument...
-
-My understanding is that opts is a semi-global/per-drive setting. If
-that's wrong then again, yes, this won't function correctly, but it does
-seem to work.
-
-Thanks.
-Caleb B.
-
---=20
-"Come now, and let us reason together," Says the LORD
-    -- Isaiah 1:18a, NASB
-
+> I thought that this should probably be discussed here,  so I came
+> across weird issue to me which is driver crashing while trying to get
+> one of my monitors working on Gentoo.  I would like to ask here how
+> that would happen that the Display appears to jump from DisplayPort-6
+> (physical port) to DisplayPort-7 (which doesn't exist physically)? Has
+> anyone else experienced this?
+> 
+> It seems that the driver sees a rather large amount of inputs for the
+> GPU, even though I only have 4, 3 of which are DisplayPort, and the
+> issue monitor is also on DisplayPort. 
+> 
+> Hardware:
+> CPU: AMD Ryzen 5800X
+> GPU: AMD Radeon RX 6800
+> System Memory: 32GB of DDR4 3200Mhz
+> Display(s): BenQ Zowie XL2430 (1080p), DELL U2414H (1080p), DELL U2415 (1920x1200)
+> Type of Diplay Connection: All are connected via Display-Port
+> 
+> Related DRM issue:
+> https://gitlab.freedesktop.org/drm/amd/-/issues/1621 which includes
+> logs too.
+> 
+> 
+> Best regards,
+> Skyler Mäntysaari
