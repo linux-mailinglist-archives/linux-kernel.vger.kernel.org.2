@@ -2,173 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939623FACA4
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B243FACB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235576AbhH2Pen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:34:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhH2Pem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:34:42 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2557760F3A;
-        Sun, 29 Aug 2021 15:33:44 +0000 (UTC)
-Date:   Sun, 29 Aug 2021 16:36:59 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [RESEND v4 12/15] iio: adc: aspeed: Add func to set sampling
- rate.
-Message-ID: <20210829163659.2f7f5974@jic23-huawei>
-In-Reply-To: <202108250003.17P03KRU092474@twspam01.aspeedtech.com>
-References: <20210824091243.9393-1-billy_tsai@aspeedtech.com>
-        <202108250003.17P03KRU092474@twspam01.aspeedtech.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235576AbhH2PkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:40:02 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:46439 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234237AbhH2Pj5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 11:39:57 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 9573F3200907
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:39:05 -0400 (EDT)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Sun, 29 Aug 2021 11:39:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samip.fi; h=
+        mime-version:message-id:date:from:to:subject:content-type
+        :content-transfer-encoding; s=fm1; bh=czAd6ZZdR+RIUb+2EG2Eqv7ZYJ
+        JyzxdZfAMJGdCvlqE=; b=YNxo9iG1uQJSuMGe7MbInInUaQnU8yp+cUH4XNJFto
+        YxZYFJRntjyeBScm/kuaR1BVa8C2haMLeQ1Lwq7e0crxlm7eheiT1WyZUEHzFbSo
+        P+gLcOPi1Gnn06YQfMGLxXt5cjNpKJSsczgeBsiPoFG3whlErk2hUcRvMfvxu7La
+        LOzN4Tu2sYWgWFmdasxLIPzu61CMF1H5psSPMG71s7zejuYstXmWipqUbuK20Tlb
+        L7TvfHXYVKcFyFFVSzca/AWccsHYa32Db5Jr1j868vMHel5DGZONLymyEpD2ZG5z
+        v+dygRIAyb3fEbPPxi8A2BmeCRT4Ul15f5rTeP0K8A0Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=czAd6Z
+        ZdR+RIUb+2EG2Eqv7ZYJJyzxdZfAMJGdCvlqE=; b=CwocZnXf1KHKOs5xXvVUg7
+        RjgHAWPmVV2Xvn9X6aJ6Hb9NlZh+Yeq+lfopoM0anY9ZZmba4RlHL+gRqdF+NUuQ
+        DGz7ZLC1WnXVKHQ1eUvc1MBsdJUsT6dBZP45ktAMvS+YJP7FK+LOg5BbjWwBxkCJ
+        3etylAwcZnU746ZxxfFV++tDXHd1uWq8612frxBYbVMfGvfbR8mvQtouKQBRyoVm
+        vZVXR4u2cUlJVhLlIK33CCAWTwh3K7PTQ56Poz1yDPKBrl8eZRrzXnsKFvA2z4ie
+        EzB+kSKLFWVJwHp9zfmn+7hQVol2PDgBB2rG+3FwRdzitycrzW0hYlc7u97aJJoA
+        ==
+X-ME-Sender: <xms:GKorYYtjgGNVRICnoJb2nNnQjYjZTHskztFzF8NhjXVJJbGTbFUjzQ>
+    <xme:GKorYVdgM02z6QRkOtaQKstXG0pPvD7oERpHnceWOkOv30pAw9hGY1G1mXcYjdI6z
+    3kaN1k7FRaty3EeZCE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddujedgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfffhffvufgtgfesthhqre
+    dtreerjeenucfhrhhomhepufhkhihlvghrpgfomohnthihshgrrghrihcuoehlihhsthhs
+    sehsrghmihhprdhfiheqnecuggftrfgrthhtvghrnhepueffhfeiveefueetfeevgfdule
+    fgvdeigffgtdelkedvhfdukeelveejgfehhfeinecuffhomhgrihhnpehfrhgvvgguvghs
+    khhtohhprdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomheplhhishhtshesshgrmhhiphdrfhhi
+X-ME-Proxy: <xmx:GKorYTyHAkFb4Ip8YTAo0QsTJ4dQZ5CYxjESv1tc_KDXx_78JHmVhg>
+    <xmx:GKorYbPoxutSSd_hBuUsqVI0ZhteoZ6oIwJvH-v3srbNxQG7OnFSFA>
+    <xmx:GKorYY-qCRS3qwf7vIJqyadrO_pL58CGMPs0F1aK4YdSri9egfjNnA>
+    <xmx:GaorYdHPSus5POWMJh_1fxkDkXUWBviMS7k4_lr6QCgLgIV0-xGENQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8DF0DFA0AA4; Sun, 29 Aug 2021 11:39:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1125-g685cec594c-fm-20210825.001-g685cec59
+Mime-Version: 1.0
+Message-Id: <4ada1100-fbce-44e4-b69d-0f5196f86bcb@www.fastmail.com>
+Date:   Sun, 29 Aug 2021 18:38:39 +0300
+From:   =?UTF-8?Q?Skyler_M=C3=A4ntysaari?= <lists@samip.fi>
+To:     linux-kernel@vger.kernel.org
+Subject: [drm/amdgpu] Driver crashes on 5.13.9 kernel
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 17:12:40 +0800
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+Hello everyone on the list,
 
-> Add the function to set the sampling rate and keep the sampling period
-> for a driver used to wait the lastest value.
-> 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+I thought that this should probably be discussed here,  so I came across=
+ weird issue to me which is driver crashing while trying to get one of m=
+y monitors working on Gentoo.  I would like to ask here how that would h=
+appen that the Display appears to jump from DisplayPort-6 (physical port=
+) to DisplayPort-7 (which doesn't exist physically)? Has anyone else exp=
+erienced this?
 
-Why move the code as well as factoring out the setter function?
-I doubt it does any harm, but I'd like to understand why you did it.
+It seems that the driver sees a rather large amount of inputs for the GP=
+U, even though I only have 4, 3 of which are DisplayPort, and the issue =
+monitor is also on DisplayPort.=20
 
-Jonathan
+Hardware:
+CPU: AMD Ryzen 5800X
+GPU: AMD Radeon RX 6800
+System Memory: 32GB of DDR4 3200Mhz
+Display(s): BenQ Zowie XL2430 (1080p), DELL U2414H (1080p), DELL U2415 (=
+1920x1200)
+Type of Diplay Connection: All are connected via Display-Port
+
+Related DRM issue: https://gitlab.freedesktop.org/drm/amd/-/issues/1621 =
+which includes logs too.
 
 
-> ---
->  drivers/iio/adc/aspeed_adc.c | 58 +++++++++++++++++++++++++-----------
->  1 file changed, 40 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-> index 8fe7da1a651f..4d979dd7fe88 100644
-> --- a/drivers/iio/adc/aspeed_adc.c
-> +++ b/drivers/iio/adc/aspeed_adc.c
-> @@ -65,6 +65,12 @@
->  
->  #define ASPEED_ADC_INIT_POLLING_TIME	500
->  #define ASPEED_ADC_INIT_TIMEOUT		500000
-> +/*
-> + * When the sampling rate is too high, the ADC may not have enough charging
-> + * time, resulting in a low voltage value. Thus, default use slow sampling
-> + * rate for most user case.
-> + */
-> +#define ASPEED_ADC_DEF_SAMPLING_RATE	65000
->  
->  struct aspeed_adc_model_data {
->  	const char *model_name;
-> @@ -88,6 +94,7 @@ struct aspeed_adc_data {
->  	struct clk_hw		*clk_scaler;
->  	struct reset_control	*rst;
->  	int			vref;
-> +	u32			sample_period_ns;
->  };
->  
->  #define ASPEED_CHAN(_idx, _data_reg_addr) {			\
-> @@ -119,6 +126,24 @@ static const struct iio_chan_spec aspeed_adc_iio_channels[] = {
->  	ASPEED_CHAN(15, 0x2E),
->  };
->  
-> +static int aspeed_adc_set_sampling_rate(struct iio_dev *indio_dev, u32 rate)
-> +{
-> +	struct aspeed_adc_data *data = iio_priv(indio_dev);
-> +
-> +	if (rate < data->model_data->min_sampling_rate ||
-> +	    rate > data->model_data->max_sampling_rate)
-> +		return -EINVAL;
-> +	/* Each sampling needs 12 clocks to covert.*/
-
-convert.  Please run a spell checker over these patches.
-
-> +	clk_set_rate(data->clk_scaler->clk, rate * ASPEED_CLOCKS_PER_SAMPLE);
-> +	rate = clk_get_rate(data->clk_scaler->clk);
-> +	data->sample_period_ns = DIV_ROUND_UP_ULL(
-> +		(u64)NSEC_PER_SEC * ASPEED_CLOCKS_PER_SAMPLE, rate);
-> +	dev_dbg(data->dev, "Adc clock = %d sample period = %d ns", rate,
-> +		data->sample_period_ns);
-> +
-> +	return 0;
-> +}
-> +
->  static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
->  			       struct iio_chan_spec const *chan,
->  			       int *val, int *val2, long mask)
-> @@ -149,17 +174,10 @@ static int aspeed_adc_write_raw(struct iio_dev *indio_dev,
->  				struct iio_chan_spec const *chan,
->  				int val, int val2, long mask)
->  {
-> -	struct aspeed_adc_data *data = iio_priv(indio_dev);
->  
->  	switch (mask) {
->  	case IIO_CHAN_INFO_SAMP_FREQ:
-> -		if (val < data->model_data->min_sampling_rate ||
-> -			val > data->model_data->max_sampling_rate)
-> -			return -EINVAL;
-> -
-> -		clk_set_rate(data->clk_scaler->clk,
-> -				val * ASPEED_CLOCKS_PER_SAMPLE);
-> -		return 0;
-> +		return aspeed_adc_set_sampling_rate(indio_dev, val);
->  
->  	case IIO_CHAN_INFO_SCALE:
->  	case IIO_CHAN_INFO_RAW:
-> @@ -386,6 +404,20 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
->  
-> +	ret = clk_prepare_enable(data->clk_scaler->clk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = devm_add_action_or_reset(data->dev,
-> +				       aspeed_adc_clk_disable_unprepare,
-> +				       data->clk_scaler->clk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = aspeed_adc_set_sampling_rate(indio_dev, ASPEED_ADC_DEF_SAMPLING_RATE);
-> +	if (ret)
-> +		return ret;
-> +
->  	ret = aspeed_adc_vref_config(indio_dev);
->  	if (ret)
->  		return ret;
-> @@ -413,16 +445,6 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  	}
->  
->  	/* Start all channels in normal mode. */
-
-Why move this code up?
-
-> -	ret = clk_prepare_enable(data->clk_scaler->clk);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = devm_add_action_or_reset(data->dev,
-> -				       aspeed_adc_clk_disable_unprepare,
-> -				       data->clk_scaler->clk);
-> -	if (ret)
-> -		return ret;
-> -
->  	adc_engine_control_reg_val =
->  		readl(data->base + ASPEED_REG_ENGINE_CONTROL);
->  	adc_engine_control_reg_val |=
-
+Best regards,
+Skyler M=C3=A4ntysaari
